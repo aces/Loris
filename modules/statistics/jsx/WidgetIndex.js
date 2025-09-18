@@ -207,8 +207,11 @@ const WidgetIndex = (props) => {
     Object.keys(chartDetails[section]).forEach(
       (chart) => {
         // update filters
-        let newChart = {...chartDetails[section][chart], filters: queryString};
-        setupCharts(false,
+        let newChart = {
+          ...clearedChartDetails[section][chart],
+          filters: queryString,
+        };
+        const chartPromise = setupCharts(false,
           {[section]: {[chart]: newChart}},
           t('Total', {ns: 'loris'}),
         ).then(

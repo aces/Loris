@@ -26,7 +26,7 @@ const StudyProgression = (props) => {
     let newdetails = {...chartDetails};
     newdetails['total_scans']['scans_bymonth']['title']
       = t('Scan sessions per site', {ns: 'statistics'});
-    newdetails['total_recruitment']['siterecruitment_line']['title']
+    newdetails['total_recruitment']['siterecruitment_bymonth']['title']
       = t('Recruitment per site', {ns: 'statistics'});
     setChartDetails(newdetails);
   }, []);

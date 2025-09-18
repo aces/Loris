@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {SelectElement, FormElement, ButtonElement} from 'jsx/Form';
+import {SelectElement, FormElement, ButtonElement, DateElement} from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
 
 /**

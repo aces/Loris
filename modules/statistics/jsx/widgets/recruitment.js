@@ -4,7 +4,7 @@ import Loader from 'Loader';
 import Panel from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {progressBarBuilder} from './helpers/progressbarBuilder';
-
+import {useTranslation} from 'react-i18next';
 import {setupCharts} from './helpers/chartBuilder';
 
 /**
@@ -14,6 +14,7 @@ import {setupCharts} from './helpers/chartBuilder';
  * @return {JSX.Element}
  */
 const Recruitment = (props) => {
+  const {t} = useTranslation();
   const [loading, setLoading] = useState(true);
   const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
 
@@ -66,7 +67,6 @@ const Recruitment = (props) => {
       },
       'projectBreakdown': {
         'agedistribution_line': {
-          sizing: 11,
           title: 'Candidate Age at Registration',
           filters: '',
           chartType: 'line',
@@ -129,7 +129,7 @@ const Recruitment = (props) => {
   useEffect(
     () => {
       if (json && Object.keys(json).length !== 0) {
-        setupCharts(false, chartDetails).then(
+        setupCharts(false, chartDetails, t('Total', {ns: 'loris'})).then(
           (data) => {
             setChartDetails(data);
           }
@@ -147,7 +147,7 @@ const Recruitment = (props) => {
         title ='Recruitment'
         id ='statistics_recruitment'
         onChangeView ={(index) => {
-          setupCharts(false, chartDetails);
+          setupCharts(false, chartDetails, t('Total', {ns: 'loris'}));
           setShowFiltersBreakdown(false);
         }}
         views ={[

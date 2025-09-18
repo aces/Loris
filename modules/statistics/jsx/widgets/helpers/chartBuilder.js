@@ -167,7 +167,6 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
       }
     }
   }
-
   let newChart = c3.generate({
     size: {
       height: targetModal && 500,
@@ -310,10 +309,6 @@ const setupCharts = async (targetIsModal, chartDetails, totalLabel) => {
             colours = sexColours;
           } else if (chart.dataType === 'line') {
             columns = formatLineData(chartData, totalLabel);
-            if (chart.chartType !== 'line') {
-              // remove first and last (x and total)
-              columns = columns.slice(1, columns.length - 1);
-            }
           }
           let chartObject = null;
           if (chart.chartType === 'pie') {
