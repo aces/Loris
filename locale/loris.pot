@@ -190,7 +190,7 @@ msgid "Hide Advanced Filters"
 msgstr ""
 
 # Data table strings
-msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgid "{{rowLength}} rows displayed of {{filteredCount}}."
 msgstr ""
 
 msgid "Maximum rows per page:"
@@ -198,14 +198,3 @@ msgstr ""
 
 msgid "Download Table as CSV"
 msgstr ""
-
-# Common strings on widgets
-msgid "NEW"
-msgstr ""
-
-msgid "Updated"
-msgstr ""
-
-msgid "Uploaded"
-msgstr ""
-
