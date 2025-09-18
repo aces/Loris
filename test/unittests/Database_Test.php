@@ -4,7 +4,7 @@
  * This tests the LorisForm replacement for HTML_QuickForm used by
  * Loris.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main

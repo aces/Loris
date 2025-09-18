@@ -5,7 +5,7 @@
  *
  * Gets data to populate the front-end form fields
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Loris
  * @package  Media

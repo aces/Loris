@@ -4,7 +4,7 @@
  * This file contains a class used to generate SiteIDs i.e. both PSCIDs and
  * ExternalIDs.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS

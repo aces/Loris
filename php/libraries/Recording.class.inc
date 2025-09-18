@@ -3,7 +3,7 @@
 /**
  * File that describe the Recording class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  *  @category Recording
  *  @package  Main

@@ -5,7 +5,7 @@
  * survey module, for creating user account/keys that are tied to a
  * CommentID and only valid for one use.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Survey
  * @package  Loris

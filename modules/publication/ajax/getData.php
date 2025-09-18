@@ -5,7 +5,7 @@
  *
  * This retrieves data for publication uploads & editing
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Publication

@@ -279,7 +279,7 @@ const unloadCharts = (chartDetails, section) => {
  * This is determined by the original chart type of the data provided from the API
  * If data was provided as a Pie, and the requested chartType is Bar, then the data will be reformatted
  */
-const setupCharts = async (targetIsModal, chartDetails) => {
+const setupCharts = async (targetIsModal, chartDetails, totalLabel) => {
   const chartPromises = [];
   let newChartDetails = {...chartDetails}
   Object.keys(chartDetails).forEach((section) => {
@@ -309,7 +309,7 @@ const setupCharts = async (targetIsModal, chartDetails) => {
             labels = chartData.labels;
             colours = sexColours;
           } else if (chart.dataType === 'line') {
-            columns = formatLineData(chartData);
+            columns = formatLineData(chartData, totalLabel);
             if (chart.chartType !== 'line') {
               // remove first and last (x and total)
               columns = columns.slice(1, columns.length - 1);
@@ -341,7 +341,7 @@ const setupCharts = async (targetIsModal, chartDetails) => {
  * @param {object} data
  * @return {*[]}
  */
-const formatLineData = (data) => {
+const formatLineData = (data, totalLabel) => {
   const processedData = [];
   const labels = [];
   labels.push('x');
@@ -355,7 +355,7 @@ const formatLineData = (data) => {
     processedData.push(dataset.concat(data['datasets'][i].data));
   }
   const totals = [];
-  totals.push('Total');
+  totals.push(totalLabel);
   for (let j = 0; j < data['datasets'][0].data.length; j++) {
     let total = 0;
     for (let i = 0; i < data['datasets'].length; i++) {
