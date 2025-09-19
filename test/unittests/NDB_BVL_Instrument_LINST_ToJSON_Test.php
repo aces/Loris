@@ -12,7 +12,10 @@ require_once 'NDB_Config.class.inc';
 /**
  * File-level suppression for Phan analysis.
  *
+ *
+ * @phan-file-suppress PhanUndeclaredMethod
  * @phan-file-suppress PhanUndeclaredProperty
+ * @phan-file-suppress PhanTypeMismatchProperty
  */
 use PHPUnit\Framework\TestCase;
 /**
@@ -129,7 +132,15 @@ class SessionStub
  */
 class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 {
-    protected \Loris\Behavioural\NDB_BVL_Instrument_LINST $i;
+    /**
+     * Instrument stub property used in tests.
+     *
+     * This property holds a mock object of NDB_BVL_Instrument_LINST for PHPUnit
+     *
+     * @var \Loris\Behavioural\NDB_BVL_Instrument_LINST
+     *      &\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected $i;
     protected \NDB_Client $Client;
 
     /**

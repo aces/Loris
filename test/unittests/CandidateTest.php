@@ -828,7 +828,6 @@ class CandidateTest extends TestCase
      */
     public function testCandidateExistsReturnsFalseWhenCandidateDoesNotExists()
     {
-        $this->_dbMock = $this->createMock(Database::class);
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn(null);

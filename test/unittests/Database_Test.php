@@ -838,10 +838,11 @@ class Database_Test extends TestCase
             ->getMock();
         $PDO->expects($this->once())->method('prepare')->willReturn($stmt);
         $PDO->method('lastInsertId')->willReturn('123');
-
+        // @phan-suppress-next-line PhanUndeclaredProperty
         $stub->_PDO = $PDO;
 
         // Call the method
+        // @phan-suppress-next-line PhanUndeclaredMethod
         $result = $stub->insertOnDuplicateUpdate(
             'test',
             ['field' => '<b>Hello</b>'],
@@ -849,6 +850,7 @@ class Database_Test extends TestCase
         );
 
         $this->assertTrue($result);
+        // @phan-suppress-next-line PhanUndeclaredProperty
         $this->assertEquals('123', $stub->lastInsertID);
     }
 
@@ -892,15 +894,18 @@ class Database_Test extends TestCase
         $PDO->method('lastInsertId')->willReturn('123');
 
         // Inject PDO into the stub
+        // @phan-suppress-next-line PhanUndeclaredProperty
         $stub->_PDO = $PDO;
 
         // Call the method
+        // @phan-suppress-next-line PhanUndeclaredMethod
         $result = $stub->unsafeInsertOnDuplicateUpdate(
             'test_table',
             ['field' => '<b>Hello</b>']
         );
 
         $this->assertTrue($result);
+        // @phan-suppress-next-line PhanUndeclaredProperty
         $this->assertEquals('123', $stub->lastInsertID);
     }
 
