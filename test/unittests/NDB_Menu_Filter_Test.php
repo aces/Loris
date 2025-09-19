@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  * @phan-file-suppress PhanUndeclaredMethod
  * @phan-file-suppress PhanUndeclaredProperty
  * @phan-file-suppress PhanTypeMismatchProperty
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @license            http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class SessionStub
 {
