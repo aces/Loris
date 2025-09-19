@@ -10,11 +10,10 @@ require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument_LINST.class.inc'
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
 /**
- * Phan-file-suppress
- * 
+ * File-level suppression for Phan analysis.
+ *
  * @phan-file-suppress PhanUndeclaredProperty
-*/
-
+ */
 use PHPUnit\Framework\TestCase;
 /**
  * Stub class to simulate Query behavior for testing
