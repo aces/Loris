@@ -222,7 +222,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $json     = $this->i->toJSON();
         $outArray = json_decode($json, true);
-
+        $this->assertIsArray($outArray);
         $ExpectedMeta = [
             'InstrumentVersion'       => "1l",
             'InstrumentFormatVersion' => "v0.0.1a-dev",
