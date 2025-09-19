@@ -32,7 +32,7 @@
       {$edc_age}
     </td>
     <td>
-      {dgettext("loris", $candidate.Sex)}
+      {$candidate.Sex}
     </td>
       <td>
         {$candidate.ProjectTitle}
@@ -81,18 +81,21 @@
     <tbody>
     {section name=timepoint loop=$timePoints}
         <tr>
-            <td><a href="{$baseurl|default}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">{$timePoints[timepoint].Visit_label}</a></td>
-
+            <td>
+              <a href="{$baseurl|default}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">
+                  {$timePoints[timepoint].Visit_label}
+              </a>
+            </td>
             <td>{$timePoints[timepoint].CohortTitle}</td>
 
             <td>{$timePoints[timepoint].SiteAlias}</td>
             <td>{$timePoints[timepoint].ProjectName}</td>
 
             {if $timePoints[timepoint].staticStage|default != "" || $timePoints[timepoint].Current_stage == "Not Started"}
-            <td colspan="3">{dgettext("loris",$timePoints[timepoint].Current_stage)}</td>
+            <td colspan="3">{dgettext("loris", $timePoints[timepoint].Current_stage)}</td>
             {else}
-            <td>{dgettext("loris",$timePoints[timepoint].Current_stage)}</td>
-            <td>{dgettext("loris",$timePoints[timepoint].currentStatus)}</td>
+            <td>{dgettext("loris", $timePoints[timepoint].Current_stage)}</td>
+            <td>{dgettext("loris", $timePoints[timepoint].currentStatus)}</td>
             <td>{$timePoints[timepoint].currentDate}</td>
             {/if}
 
@@ -120,7 +123,7 @@
 
             <td bgColor="{$timePoints[timepoint].feedbackColor}">
             {if $timePoints[timepoint].feedbackCount}
-                {$timePoints[timepoint].feedbackStatus}
+                {dgettext("timepoint_list", $timePoints[timepoint].feedbackStatus)}
             {else}
                 -
             {/if}
@@ -128,7 +131,7 @@
 
             <td>
             {if $timePoints[timepoint].BVLQCStatus}
-                {$timePoints[timepoint].BVLQCType}
+                {dgettext("timepoint_list", $timePoints[timepoint].BVLQCType)}
             {else}
                 <img src="{$baseurl|default}/images/delete.gif" border="0" />
             {/if}
