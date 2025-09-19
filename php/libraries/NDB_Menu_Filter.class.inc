@@ -3,7 +3,7 @@
 /**
  * This class features the code for the Menu Filter.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Main

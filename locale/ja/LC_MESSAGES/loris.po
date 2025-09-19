@@ -209,9 +209,14 @@ msgstr "{{totalCount}}行中{{pageCount}}行を表示"
 msgid "Maximum rows per page:"
 msgstr "ページあたりの最大行数:"
 
-msgid "Download Table as CSV"
-msgstr "表をCSVとしてダウンロード"
+msgid "Download Data as CSV"
+msgstr "データをCSVとしてダウンロード"
 
+# Dashboard panel strings
+msgid "Views"
+msgstr "ビュー"
+
+# Common strings on widgets
 msgid "NEW"
 msgstr "新しい"
 
@@ -221,3 +226,5 @@ msgstr "更新"
 msgid "Uploaded"
 msgstr "アップロード済み"
 
+msgid "Total"
+msgstr "合計"

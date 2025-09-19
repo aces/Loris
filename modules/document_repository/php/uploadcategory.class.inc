@@ -2,7 +2,7 @@
 
 /**
  * This class handles a post request to upload a new category.
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository
@@ -16,7 +16,7 @@ use \Psr\Http\Message\ResponseInterface;
 
 /**
  * This class handles a post request to upload a new category.
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository

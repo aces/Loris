@@ -3,7 +3,7 @@
 /**
  * Unit test for NDB_BVL_Instrument class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -25,7 +25,7 @@ require_once 'SessionID.php';
 /**
  * Unit test for NDB_BVL_Instrument class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main

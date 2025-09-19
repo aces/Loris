@@ -3,7 +3,7 @@
 /**
  * This file contains the base class for instruments in Loris
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Behavioural

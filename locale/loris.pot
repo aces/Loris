@@ -208,7 +208,11 @@ msgstr ""
 msgid "Maximum rows per page:"
 msgstr ""
 
-msgid "Download Table as CSV"
+msgid "Download Data as CSV"
+msgstr ""
+
+# Dashboard panel strings
+msgid "Views"
 msgstr ""
 
 # Common strings on widgets
@@ -219,6 +223,9 @@ msgid "Updated"
 msgstr ""
 
 msgid "Uploaded"
+msgstr ""
+
+msgid "Total"
 msgstr ""
 
 # Common timepoint and vist terms
