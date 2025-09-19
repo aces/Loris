@@ -172,6 +172,24 @@ msgstr "जन्म तिथि"
 msgid "Visits"
 msgstr "भ्रमण"
 
+msgid "Visit"
+msgstr "भेंट"
+
+msgid "Instrument"
+msgstr "उपकरण"
+
+msgid "Created"
+msgstr "बनाया गया"
+
+msgid "Sent"
+msgstr "भेजा गया"
+
+msgid "In Progress"
+msgstr "प्रगति पर"
+
+msgid "Complete"
+msgstr "पूर्ण"
+
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 

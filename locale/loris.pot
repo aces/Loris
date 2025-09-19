@@ -171,6 +171,24 @@ msgstr ""
 msgid "Visits"
 msgstr ""
 
+msgid "Visit"
+msgstr ""
+
+msgid "Instrument"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
 msgid "An error occured while loading the page."
 msgstr ""
 
