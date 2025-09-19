@@ -24,7 +24,7 @@ msgstr ""
 msgid "Error!"
 msgstr ""
 
-msgid "Could not update "
+msgid "Could not update"
 msgstr ""
 
 msgid "Success!"
@@ -45,8 +45,11 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-msgid "Could not find module "
+msgid "Could not find module"
 msgstr ""
 
 msgid "Full Name"
+msgstr ""
+
+msgid "ReloadPrompt"
 msgstr ""

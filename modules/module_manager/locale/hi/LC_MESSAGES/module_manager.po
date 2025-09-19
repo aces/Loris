@@ -24,14 +24,14 @@ msgstr "मॉड्यूल प्रबंधक"
 msgid "Error!"
 msgstr "त्रुटि!"
 
-msgid "Could not update "
-msgstr "अद्यतन नहीं कर सका "
+msgid "Could not update"
+msgstr "मॉड्यूल {{name}} को अद्यतन नहीं किया जा सका।"
 
 msgid "Success!"
 msgstr "सफलता!"
 
 msgid "Updated"
-msgstr "अद्यतन किया गया"
+msgstr "{{name}} की स्थिति अद्यतन की गई!"
 
 msgid "status!"
 msgstr "स्थिति!"
@@ -45,8 +45,11 @@ msgstr "पृष्ठ पुनः लोड करें"
 msgid "Continue"
 msgstr "जारी रखें"
 
-msgid "Could not find module "
-msgstr "मॉड्यूल नहीं मिला "
+msgid "Could not find module"
+msgstr "मॉड्यूल {{id}} नहीं मिला।"
 
 msgid "Full Name"
 msgstr "पूरा नाम"
+
+msgid "ReloadPrompt"
+msgstr "परिवर्तनों को लागू करने के लिए इंटरफ़ेस को पुनः लोड करना आवश्यक है। क्या आप आगे बढ़ना चाहते हैं?"

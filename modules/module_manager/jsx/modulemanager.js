@@ -106,7 +106,7 @@ class ModuleManagerIndex extends Component {
       if (response.status != 205) {
         swal.fire(
           t('Error!', {ns: 'module_manager'}),
-          t('Could not update ', {ns: 'module_manager'}) + name + '.',
+          t('Could not update module', {ns: 'module_manager', name}),
           'error'
         );
       } else {
@@ -114,10 +114,8 @@ class ModuleManagerIndex extends Component {
         if (success === true) {
           swal.fire({
             title: t('Success!', {ns: 'module_manager'}),
-            text: t('Updated', {ns: 'module_manager'}) +
-            name + t(' status! ', {ns: 'module_manager'}) +
-                  t('To apply changes the interface must be reloaded. Proceed?',
-                    {ns: 'module_manager'}),
+            text: t('Updated status', {ns: 'module_manager', name}) +
+                  ' ' + t('ReloadPrompt', {ns: 'module_manager'}),
             type: 'success',
             showCancelButton: true,
             confirmButtonText: t('Reload the page',
@@ -134,8 +132,8 @@ class ModuleManagerIndex extends Component {
           // a module was toggled that isn't in the table.
           swal.fire(
             t('Error!', {ns: 'module_manager'}),
-            t('Could not find module ',
-              {ns: 'module_manager'}) + id + '.',
+            t('Could not find module',
+              {ns: 'module_manager', id}),
             'error'
           );
         }
