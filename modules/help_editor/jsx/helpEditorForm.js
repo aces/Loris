@@ -149,7 +149,7 @@ const HelpEditorForm = (props) => {
                 className="btn btn-sm btn-primary"
                 id="save-help"
                 name="fire_away"
-                value={t('Save', {ns: 'help_editor'})}
+                value={t('Save', {ns: 'loris'})}
                 type="submit"
                 onClick={save}
               />

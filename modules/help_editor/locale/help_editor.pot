@@ -36,9 +36,6 @@ msgstr ""
 msgid "Open the help dialog to preview the changes."
 msgstr ""
 
-msgid "Save"
-msgstr ""
-
 msgid "Content update successful!"
 msgstr ""
 
