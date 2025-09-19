@@ -360,12 +360,10 @@ class NDB_ConfigTest extends TestCase
      */
     public function testGetExternalLinks()
     {
-        // Create a fake Query object that is iterable
         $fakeQuery = $this->getMockBuilder(\LORIS\Database\Query::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        // Make it return an iterator over the fake rows
         $fakeQuery->method('getIterator')
             ->willReturn(
                 new ArrayIterator(
@@ -375,7 +373,6 @@ class NDB_ConfigTest extends TestCase
                 )
             );
 
-        // Make pselect return our fake Query
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn($fakeQuery);

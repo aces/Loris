@@ -122,7 +122,6 @@ class NDB_Menu_Filter_Test extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        // Replace with PHP 12 compatible callback for consecutive calls
         $mockSession = $this->getMockBuilder(SessionStub::class)
             ->onlyMethods(['setProperty'])
             ->getMock();
@@ -190,7 +189,6 @@ class NDB_Menu_Filter_Test extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        // Setup form with trim filter
         $stub->form = new LorisForm();
         $stub->form->applyFilter('__ALL__', 'trim');
 
