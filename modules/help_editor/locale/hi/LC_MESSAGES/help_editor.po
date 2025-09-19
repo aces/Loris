@@ -36,9 +36,6 @@ msgstr "शीर्षक"
 msgid "Open the help dialog to preview the changes."
 msgstr "परिवर्तनों का पूर्वावलोकन करने के लिए सहायता संवाद खोलें।"
 
-msgid "Save"
-msgstr "सहेजें"
-
 msgid "Content update successful!"
 msgstr "सामग्री सफलतापूर्वक अपडेट की गई!"
 
