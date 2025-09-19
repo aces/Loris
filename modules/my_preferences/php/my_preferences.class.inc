@@ -11,9 +11,11 @@ class My_Preferences extends \NDB_Form
 {
     // Use gettext for error messages
     private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
-    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be your user name.';
+    private const PASSWORD_ERROR_IS_USER   = 
+                    'Your password cannot be your user name.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
-    private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are identical: please choose another one';
+    private const PASSWORD_ERROR_NO_CHANGE = 
+                    'New and old passwords are identical: please choose another one';
 
     /**
      * Computes the initial values this page will be filled with.
@@ -231,7 +233,8 @@ class My_Preferences extends \NDB_Form
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
-        $firstNameInvalidMsg = dgettext('my_preferences', "First name is required and should not exceed 120 characters");
+        $firstNameInvalidMsg = dgettext('my_preferences', 
+        "First name is required and should not exceed 120 characters");
         $this->addBasicText(
             'First_name',
             dgettext('my_preferences', 'First name'),
@@ -247,7 +250,8 @@ class My_Preferences extends \NDB_Form
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
-        $lastNameInvalidMsg = dgettext('my_preferences', "Last name is required and should not exceed 120 characters");
+        $lastNameInvalidMsg = dgettext('my_preferences', 
+        "Last name is required and should not exceed 120 characters");
         $this->addBasicText(
             'Last_name',
             dgettext('my_preferences', 'Last name'),
@@ -266,27 +270,35 @@ class My_Preferences extends \NDB_Form
             dgettext('my_preferences', 'Email address'),
             [],
             [
-                'oninvalid' => "this.setCustomValidity('" . dgettext('my_preferences', 'Email address is required') . "')",
+                'oninvalid' => "this.setCustomValidity(
+                    '" . dgettext('my_preferences',
+                 'Email address is required') . "')",
                 'onchange'  => "this.setCustomValidity('')",
             ]
         );
 
         // email address rules
-        $this->addRule('Email', dgettext('my_preferences', 'Email address is required'), 'required');
+        $this->addRule('Email', dgettext('my_preferences', 
+        'Email address is required'),
+         'required');
         $this->addRule(
             'Email',
-            dgettext('my_preferences', 'Your email address must be less than 255 characters long'),
+            dgettext('my_preferences',
+             'Your email address must be less than 255 characters long'),
             'maxlength',
             "255"
         );
 
         // password
-        $this->form->addElement('password', 'Password_hash', dgettext('my_preferences', 'New Password'));
-        $this->form->addElement('password', '__Confirm', dgettext('my_preferences', 'Confirm Password'));
+        $this->form->addElement('password', 'Password_hash',
+         dgettext('my_preferences', 'New Password'));
+        $this->form->addElement('password', '__Confirm',
+         dgettext('my_preferences', 'Confirm Password'));
 
         // language preference
         $languages = \Utility::getLanguageList();
-        $this->addSelect('language_preference', dgettext('my_preferences', 'Language preference'), $languages);
+        $this->addSelect('language_preference', dgettext('my_preferences',
+         'Language preference'), $languages);
 
         // Notification headers
         $nGroup   = [];
@@ -393,18 +405,21 @@ class My_Preferences extends \NDB_Form
         $plaintext = $values['Password_hash'];
 
         if ($values['Email'] === $plaintext) {
-            $errors['Password_Group'] = dgettext('my_preferences', self::PASSWORD_ERROR_IS_EMAIL);
+            $errors['Password_Group'] = dgettext('my_preferences',
+             self::PASSWORD_ERROR_IS_EMAIL);
         }
 
         // Make sure the user is not using their username as their password.
         if ($this->identifier === $plaintext) {
-            $errors['Password_Group'] = dgettext('my_preferences', self::PASSWORD_ERROR_IS_USER);
+            $errors['Password_Group'] = dgettext('my_preferences',
+             self::PASSWORD_ERROR_IS_USER);
         }
 
         // Ensure that the password and confirm password fields match.
         // TODO This validation should be done on the front-end instead.
         if ($values['Password_hash'] !== $values['__Confirm']) {
-            $errors['Password_Group'] = dgettext('my_preferences', self::PASSWORD_ERROR_NO_MATCH);
+            $errors['Password_Group'] = dgettext('my_preferences',
+             self::PASSWORD_ERROR_NO_MATCH);
             return $errors;
         }
 
@@ -421,10 +436,12 @@ class My_Preferences extends \NDB_Form
                     $decoded
                 )
                 ) {
-                    $errors['Password_Group'] = dgettext('my_preferences', self::PASSWORD_ERROR_NO_CHANGE);
+                    $errors['Password_Group'] = dgettext('my_preferences',
+                     self::PASSWORD_ERROR_NO_CHANGE);
                 }
             } catch (\InvalidArgumentException $e) {
-                $errors['Password_Group'] = dgettext('my_preferences', $e->getMessage());
+                $errors['Password_Group'] = dgettext('my_preferences',
+                 $e->getMessage());
             }
         }
 
