@@ -13,7 +13,13 @@ use PHPUnit\Framework\TestCase;
  * @package  LORIS\TestStubs
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-
+/**
+ * File-level Phan suppression for PHPUnit mocks.
+ *
+ * @phan-file-suppress PhanUndeclaredMethod
+ * @phan-file-suppress PhanUndeclaredProperty
+ * @phan-file-suppress PhanTypeMismatchProperty
+ */
 class SessionStub
 {
     /**
@@ -138,7 +144,7 @@ class NDB_Menu_Filter_Test extends TestCase
 
         global $_SESSION;
         $_SESSION['State'] = $mockSession;
-
+        //@phan-suppress-next-line PhanUndeclaredMethod
         $stub->_resetFilters();
     }
 
@@ -159,7 +165,7 @@ class NDB_Menu_Filter_Test extends TestCase
             ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
-
+        //@phan-suppress-next-line PhanUndeclaredMethod
         $stub->_setSearchKeyword('abc');
 
         $this->assertEquals('abc', $stub->searchKey['keyword']);
@@ -200,7 +206,7 @@ class NDB_Menu_Filter_Test extends TestCase
         ];
         $stub->validFilters       = ['table.column', 'abcd.def'];
         $stub->validHavingFilters = ['abcd.def'];
-
+        //@phan-suppress-next-line PhanUndeclaredMethod
         $stub->_setFilters($submittedValues);
 
         $this->assertEquals(

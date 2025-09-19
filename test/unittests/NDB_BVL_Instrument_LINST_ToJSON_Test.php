@@ -230,7 +230,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
             "LongName"                => "Test Instrument",
             "IncludeMetaDataFields"   => "true",
         ];
-
+        //@phan-suppress-next-line PhanTypeArraySuspiciousNullable
         $this->assertEquals($ExpectedMeta, $outArray['Meta']);
     }
 
