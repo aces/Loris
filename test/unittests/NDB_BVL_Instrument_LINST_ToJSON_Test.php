@@ -12,7 +12,6 @@ require_once 'NDB_Config.class.inc';
 /**
  * File-level suppression for Phan analysis.
  *
- *
  * @phan-file-suppress PhanUndeclaredMethod
  * @phan-file-suppress PhanUndeclaredProperty
  * @phan-file-suppress PhanTypeMismatchProperty
