@@ -114,10 +114,10 @@ msgstr ""
 
 # Common select option labels
 msgid "Yes"
-msgstr ""
+msgstr "Sí"
 
 msgid "No"
-msgstr ""
+msgstr "No"
 
 msgid "Cancel"
 msgstr ""
@@ -161,6 +161,12 @@ msgstr ""
 
 msgid "Sex"
 msgstr ""
+
+msgid "Male"
+msgstr "Macho"
+
+msgid "Female"
+msgstr "Hembra"
 
 msgid "Feedback"
 msgstr "Retroalimentación"
@@ -215,3 +221,34 @@ msgstr ""
 msgid "Uploaded"
 msgstr ""
 
+# Common timepoint and vist terms
+
+msgid "Not Started"
+msgstr "No Iniciado"
+
+msgid "Screening"
+msgstr "Cribado"
+
+msgid "Visit"
+msgstr "Visita"
+
+msgid "Approval"
+msgstr "Aprobación"
+
+msgid "Subject"
+msgstr "Sujeto"
+
+msgid "Recycling Bin"
+msgstr "Papelera de Reciclage"
+
+msgid "Pass"
+msgstr "Aprobado"
+
+msgid "Failure"
+msgstr "Fallido"
+
+msgid "Withdrawal"
+msgstr "Retirado"
+
+msgid "In Progress"
+msgstr "En Progreso"

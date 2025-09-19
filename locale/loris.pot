@@ -162,6 +162,12 @@ msgstr ""
 msgid "Sex"
 msgstr ""
 
+msgid "Male"
+msgstr ""
+
+msgid "Female"
+msgstr ""
+
 msgid "Feedback"
 msgstr ""
 
@@ -215,3 +221,34 @@ msgstr ""
 msgid "Uploaded"
 msgstr ""
 
+# Common timepoint and vist terms
+
+msgid "Not Started"
+msgstr ""
+
+msgid "Screening"
+msgstr ""
+
+msgid "Visit"
+msgstr ""
+
+msgid "Approval"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Recycling Bin"
+msgstr ""
+
+msgid "Pass"
+msgstr ""
+
+msgid "Failure"
+msgstr ""
+
+msgid "Withdrawal"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""

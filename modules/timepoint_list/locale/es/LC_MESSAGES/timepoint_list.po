@@ -68,3 +68,9 @@ msgstr "Sexo Biológico"
 
 msgid "You do not have access to any timepoints registered for this candidate."
 msgstr "Usted no tiene ningún Punto de Tiempo registrado para este candidato."
+
+msgid " y / "
+msgstr " a / "
+
+msgid " m"
+msgstr " m"

@@ -68,3 +68,8 @@ msgstr ""
 
 msgid "You do not have access to any timepoints registered for this candidate."
 msgstr ""
+msgid " y / "
+msgstr ""
+
+msgid " m"
+msgstr ""

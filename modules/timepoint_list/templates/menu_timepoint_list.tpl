@@ -32,7 +32,7 @@
       {$edc_age}
     </td>
     <td>
-      {$candidate.Sex}
+      {dgettext("loris", $candidate.Sex)}
     </td>
       <td>
         {$candidate.ProjectTitle}
@@ -89,10 +89,10 @@
             <td>{$timePoints[timepoint].ProjectName}</td>
 
             {if $timePoints[timepoint].staticStage|default != "" || $timePoints[timepoint].Current_stage == "Not Started"}
-            <td colspan="3">{$timePoints[timepoint].Current_stage}</td>
+            <td colspan="3">{dgettext("loris",$timePoints[timepoint].Current_stage)}</td>
             {else}
-            <td>{$timePoints[timepoint].Current_stage}</td>
-            <td>{$timePoints[timepoint].currentStatus}</td>
+            <td>{dgettext("loris",$timePoints[timepoint].Current_stage)}</td>
+            <td>{dgettext("loris",$timePoints[timepoint].currentStatus)}</td>
             <td>{$timePoints[timepoint].currentDate}</td>
             {/if}
 
@@ -106,11 +106,11 @@
             <td>
             {if $timePoints[timepoint].Scan_done != ""}
                     {if $timePoints[timepoint].Scan_done == 'Y'}
-                        {assign var="scan_done" value="Yes"}
+                        {assign var="scan_done" value={dgettext("loris", "Yes")}}
                         <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$timePoints[timepoint].SessionID}" class="timepoint_list">
                         {$scan_done}</a>
                     {else}
-                        {assign var="scan_done" value="No"}
+                        {assign var="scan_done" value={dgettext("loris", "No")}}
                         {$scan_done}
                     {/if}
             {else}
@@ -137,9 +137,9 @@
             <td>
             {if $timePoints[timepoint].BVLQCExclusion}
                 {if $timePoints[timepoint].BVLQCExclusion == 'Not Excluded'}
-                Pass
+                {dgettext("loris", "Pass")}
                 {else}
-                Fail
+                {dgettext("loris", "Failure")}
                 {/if}
             {else}
                 <img src="{$baseurl|default}/images/delete.gif" border="0" />
