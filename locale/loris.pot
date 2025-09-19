@@ -186,6 +186,12 @@ msgstr ""
 msgid "Hide Advanced Filters"
 msgstr ""
 
+msgid "Save"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""

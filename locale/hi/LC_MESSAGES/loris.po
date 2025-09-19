@@ -187,6 +187,12 @@ msgstr "उन्नत फ़िल्टर दिखाएँ"
 msgid "Hide Advanced Filters"
 msgstr "उन्नत फ़िल्टर छुपाएँ"
 
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Reset"
+msgstr "रीसेट करें"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"

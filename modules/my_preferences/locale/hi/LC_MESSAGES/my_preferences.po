@@ -44,9 +44,3 @@ msgstr "मेरी जानकारी संपादित करें"
 
 msgid "Notifications"
 msgstr "सूचनाएँ"
-
-msgid "Save"
-msgstr "सहेजें"
-
-msgid "Reset"
-msgstr "रीसेट करें"

@@ -44,9 +44,3 @@ msgstr ""
 
 msgid "Notifications"
 msgstr ""
-
-msgid "Save"
-msgstr ""
-
-msgid "Reset"
-msgstr ""
