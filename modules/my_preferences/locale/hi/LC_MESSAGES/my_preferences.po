@@ -22,7 +22,7 @@ msgid "My Preferences"
 msgstr "मेरी प्राथमिकताएँ"
 
 msgid "Password Rules"
-msgstr "पासवर्ड के नियम"
+msgstr "पासवर्ड नियम"
 
 msgid "The password must be at least 8 characters long."
 msgstr "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।"
@@ -31,16 +31,76 @@ msgid "The password cannot be your username or email address."
 msgstr "पासवर्ड आपका उपयोगकर्ता नाम या ईमेल पता नहीं हो सकता।"
 
 msgid "No special characters are required but your password must be sufficiently complex to be accepted."
-msgstr "कोई विशेष अक्षर आवश्यक नहीं हैं, लेकिन पासवर्ड पर्याप्त जटिल होना चाहिए ताकि स्वीकार किया जा सके।"
+msgstr "कोई विशेष अक्षर आवश्यक नहीं हैं, लेकिन पासवर्ड पर्याप्त जटिल होना चाहिए ताकि उसे स्वीकार किया जा सके।"
 
 msgid "Please choose a unique password."
 msgstr "कृपया एक अद्वितीय पासवर्ड चुनें।"
 
 msgid "We suggest using a password manager to generate one for you."
-msgstr "हम सुझाव देते हैं कि आपके लिए पासवर्ड बनाने के लिए पासवर्ड प्रबंधक का उपयोग करें।"
+msgstr "हम सुझाव देते हैं कि आपके लिए पासवर्ड बनाने हेतु पासवर्ड मैनेजर का उपयोग करें।"
 
 msgid "Edit My Information"
 msgstr "मेरी जानकारी संपादित करें"
 
 msgid "Notifications"
 msgstr "सूचनाएँ"
+
+msgid "User name"
+msgstr "उपयोगकर्ता नाम"
+
+msgid "First name"
+msgstr "पहला नाम"
+
+msgid "First name is required and should not exceed 120 characters"
+msgstr "पहला नाम आवश्यक है और 120 अक्षरों से अधिक नहीं होना चाहिए।"
+
+msgid "Last name"
+msgstr "अंतिम नाम"
+
+msgid "Last name is required and should not exceed 120 characters"
+msgstr "अंतिम नाम आवश्यक है और 120 अक्षरों से अधिक नहीं होना चाहिए।"
+
+msgid "Email address"
+msgstr "ईमेल पता"
+
+msgid "Email address is required"
+msgstr "ईमेल पता आवश्यक है"
+
+msgid "Your email address must be less than 255 characters long"
+msgstr "आपका ईमेल पता 255 अक्षरों से कम होना चाहिए।"
+
+msgid "New Password"
+msgstr "नया पासवर्ड"
+
+msgid "Confirm Password"
+msgstr "पासवर्ड की पुष्टि करें"
+
+msgid "Language preference"
+msgstr "भाषा वरीयता"
+
+msgid "Operation"
+msgstr "क्रिया"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "N/A"
+msgstr "लागू नहीं"
+
+msgid "Invalid email address"
+msgstr "अमान्य ईमेल पता"
+
+msgid "The email address already exists"
+msgstr "ईमेल पता पहले से मौजूद है"
+
+msgid "Your password cannot be your email."
+msgstr "आपका पासवर्ड आपका ईमेल नहीं हो सकता।"
+
+msgid "Your password cannot be your user name."
+msgstr "आपका पासवर्ड आपका उपयोगकर्ता नाम नहीं हो सकता।"
+
+msgid "The passwords do not match."
+msgstr "पासवर्ड मेल नहीं खाते।"
+
+msgid "New and old passwords are identical: please choose another one"
+msgstr "नया और पुराना पासवर्ड समान हैं: कृपया कोई और चुनें।"

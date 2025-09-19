@@ -44,3 +44,63 @@ msgstr ""
 
 msgid "Notifications"
 msgstr ""
+
+msgid "User name"
+msgstr ""
+
+msgid "First name"
+msgstr ""
+
+msgid "First name is required and should not exceed 120 characters"
+msgstr ""
+
+msgid "Last name"
+msgstr ""
+
+msgid "Last name is required and should not exceed 120 characters"
+msgstr ""
+
+msgid "Email address"
+msgstr ""
+
+msgid "Email address is required"
+msgstr ""
+
+msgid "Your email address must be less than 255 characters long"
+msgstr ""
+
+msgid "New Password"
+msgstr ""
+
+msgid "Confirm Password"
+msgstr ""
+
+msgid "Language preference"
+msgstr ""
+
+msgid "Operation"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
+msgid "Invalid email address"
+msgstr ""
+
+msgid "The email address already exists"
+msgstr ""
+
+msgid "Your password cannot be your email."
+msgstr ""
+
+msgid "Your password cannot be your user name."
+msgstr ""
+
+msgid "The passwords do not match."
+msgstr ""
+
+msgid "New and old passwords are identical: please choose another one"
+msgstr ""

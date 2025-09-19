@@ -112,6 +112,9 @@ msgstr ""
 msgid "TimePoint"
 msgstr ""
 
+msgid "Module"
+msgstr ""
+
 # Common select option labels
 msgid "Yes"
 msgstr ""
@@ -130,9 +133,6 @@ msgid "Visit Label"
 msgstr ""
 
 msgid "Site"
-msgstr ""
-
-msgid "Module"
 msgstr ""
 
 msgid "Project"
