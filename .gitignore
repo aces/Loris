@@ -36,4 +36,3 @@ VERSION
 .eslintcache
 tools/logs
 *.mo
-*.swp
