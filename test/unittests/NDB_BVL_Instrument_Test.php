@@ -834,8 +834,12 @@ class NDB_BVL_Instrument_Test extends TestCase
         $i = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
-                ["getFullName", "getSubtestList", "getDataDictionary"]
-            )->addMethods(['_setupForm'])->getMock();
+                [
+                    "getFullName",
+                    "getSubtestList",
+                    "getDataDictionary"
+                ]
+            )->getMock();
         $i->method('getFullName')->willReturn("Test Instrument");
         $i->method('getSubtestList')->willReturn(
             [
@@ -852,8 +856,10 @@ class NDB_BVL_Instrument_Test extends TestCase
         $json     = $i->toJSON();
         $outArray = json_decode($json, true);
         assert(is_array($outArray));
+
         $page1 = $outArray['Elements'][0];
         $page2 = $outArray['Elements'][1];
+
         $this->assertEquals(
             $page1,
             [
@@ -863,6 +869,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Description' => 'The first page'
             ]
         );
+
         $this->assertEquals(
             $page2,
             [
