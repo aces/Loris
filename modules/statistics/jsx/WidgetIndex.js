@@ -12,7 +12,6 @@ import {useTranslation} from 'react-i18next';
 import '../css/WidgetIndex.css';
 
 import {setupCharts} from './widgets/helpers/chartBuilder';
-import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
 
 /**
  * WidgetIndex - the main window.
@@ -26,7 +25,8 @@ const WidgetIndex = (props) => {
   const [modalChart, setModalChart] = useState(null);
   const {t, i18n} = useTranslation();
   useEffect( () => {
-    i18n.addResourceBundle('ja', 'statistics', jaStrings);
+
+    i18n.addResourceBundle('ja', 'statistics', require('../locale/ja/LC_MESSAGES/statistics.json'));
   }, []);
 
   // used by recruitment.js and studyprogression.js to display each chart.
