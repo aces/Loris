@@ -165,10 +165,12 @@ class Timepoint_List extends \NDB_Menu
             $this->tpl_data['timePoints'][$x]['currentStatus']
                 = $timePoint->getCurrentStatus();
             // get current date
+            $curDate = $timePoint->getCurrentDate();
+            if ($curDate != null) {
+                $curDate = new \DateTimeImmutable($curDate);
+            }
             $this->tpl_data['timePoints'][$x]['currentDate']
-                = $dateFormatter->format(
-                    new \DateTimeImmutable($timePoint->getCurrentDate())
-                );
+                = $curDate != null ? $dateFormatter->format($curDate) : null;
 
             // create feedback object for the time point
             $feedback = \NDB_BVL_Feedback::singleton(
