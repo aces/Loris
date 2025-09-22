@@ -9,9 +9,6 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
 
-import hiStrings from '../locale/hi/LC_MESSAGES/dictionary.json';
-import jaStrings from '../locale/ja/LC_MESSAGES/dictionary.json';
-
 /**
  * Data Dictionary Page.
  *
@@ -357,8 +354,9 @@ DataDictIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'dictionary', jaStrings);
-  i18n.addResourceBundle('hi', 'dictionary', hiStrings);
+  i18n.addResourceBundle('ja', 'dictionary', require('../locale/ja/LC_MESSAGES/dictionary.json'));
+  i18n.addResourceBundle('hi', 'dictionary', require('../locale/hi/LC_MESSAGES/dictionary.json'));
+
   const Index = withTranslation(
     ['dictionary', 'loris']
   )(DataDictIndex);
