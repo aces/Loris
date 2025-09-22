@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
 
 /**
  * CandidateInfo is a React component which is used for the
@@ -37,9 +37,15 @@ class CandidateInfo extends Component {
     const months = years*12 + now.getMonth() - dobdate.getMonth();
 
     if (months <= 36) {
-      return this.props.t('{{months}} months old', {ns: 'loris', months: months});
+      return this.props.t(
+        '{{months}} months old',
+        {ns: 'loris', months: months}
+      );
     }
-    return this.props.t('{{years}} years old', {ns: 'loris', years: years});
+    return this.props.t(
+      '{{years}} years old',
+      {ns: 'loris', years: years}
+    );
   }
 
   /**
@@ -107,6 +113,14 @@ class CandidateInfo extends Component {
    */
   render() {
     const cohorts = this.getCohorts(this.props.Visits);
+    const dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        style: 'short',
+        timeZone: 'UTC',
+
+      }
+    );
 
     const data = [
       {
@@ -119,7 +133,7 @@ class CandidateInfo extends Component {
       },
       {
         label: this.props.t('Date of Birth', {ns: 'loris'}),
-        value: this.props.Candidate.Meta.DoB,
+        value: dateFormatter.format(new Date(this.props.Candidate.Meta.DoB)),
         valueWhitespace: 'nowrap',
       },
       {
@@ -210,6 +224,11 @@ CandidateInfo.propTypes = {
   Visits: PropTypes.array.isRequired,
   VisitMap: PropTypes.object.isRequired,
   ExtraCandidateInfo: PropTypes.array,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
-export default {CandidateInfo: withTranslation(['candidate_profile', 'loris'])(CandidateInfo)};
+export default {
+  CandidateInfo: withTranslation(['candidate_profile', 'loris'])(CandidateInfo),
+};
