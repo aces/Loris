@@ -13,7 +13,7 @@
       {dgettext("timepoint_list", "Biological Sex")}
     </th>
     <th>
-      Project
+      {dgettext("loris", "Project")}
     </th>
     {foreach from=$candidate.DisplayParameters item=value key=name}
       <th>
@@ -111,7 +111,7 @@
                     {if $timePoints[timepoint].Scan_done == 'Y'}
                         {assign var="scan_done" value={dgettext("loris", "Yes")}}
                         <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$timePoints[timepoint].SessionID}" class="timepoint_list">
-                        {$scan_done}</a>
+                        {dgettext('loris', $scan_done)}</a>
                     {else}
                         {assign var="scan_done" value={dgettext("loris", "No")}}
                         {$scan_done}
@@ -131,7 +131,9 @@
 
             <td>
             {if $timePoints[timepoint].BVLQCStatus}
-                {dgettext("timepoint_list", $timePoints[timepoint].BVLQCType)}
+                {if $timePoints[timepoint].BVLQCType != ""}
+		    {dgettext("timepoint_list", $timePoints[timepoint].BVLQCType)}
+                {/if}
             {else}
                 <img src="{$baseurl|default}/images/delete.gif" border="0" />
             {/if}
