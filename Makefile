@@ -126,6 +126,7 @@ locales:
 	npx i18next-conv -l ja -s modules/statistics/locale/ja/LC_MESSAGES/statistics.po -t modules/statistics/locale/ja/LC_MESSAGES/statistics.json
 	msgfmt -o modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.mo modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.po
 	msgfmt -o modules/timepoint_list/locale/ja/LC_MESSAGES/timepoint_list.mo modules/timepoint_list/locale/ja/LC_MESSAGES/timepoint_list.po
+	msgfmt -o modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.mo modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.po
 	msgfmt -o modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po
 
 
