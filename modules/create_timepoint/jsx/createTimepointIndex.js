@@ -190,11 +190,13 @@ class CreateTimepoint extends React.Component {
    * Cohort refreshes when Project changes.
    */
   handleCohort() {
-    const { t } = this.props;
+    const {t} = this.props;
     const state = Object.assign({}, this.state);
     if (Array.isArray(state.storage.cohort[state.form.value.project])) {
       // Display error message to user.
-      const errorMessage = t('No cohorts defined for project:', {ns: 'create_timepoint'}) + ` ${
+      const errorMessage = t(
+        'No cohorts defined for project:',
+        {ns: 'create_timepoint'}) + ` ${
         this.state.form.options.project[
           this.state.form.value.project
         ]}`;
@@ -224,7 +226,7 @@ class CreateTimepoint extends React.Component {
    * Visit Labels refreshes when Cohort changes.
    */
   handleVisitLabel() {
-    const { t } = this.props;
+    const {t} = this.props;
     const state = Object.assign({}, this.state);
     if (state.storage.visit[
       state.form.value.project
@@ -232,7 +234,9 @@ class CreateTimepoint extends React.Component {
       if (Array.isArray(state.storage.visit[
         state.form.value.project][state.form.value.cohort])
       ) {
-        const errorMessage = t('No visit labels defined for combination of project: ', {ns: 'create_timepoint'}) + `${
+        const errorMessage = t(
+          'No visit labels defined for combination of project: ',
+          {ns: 'create_timepoint'}) + `${
           this.state.form.options.project[
           this.state.form.value.project
           ]
@@ -281,7 +285,7 @@ class CreateTimepoint extends React.Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
-    const { t } = this.props;
+    const {t} = this.props;
     e.preventDefault();
     const state = Object.assign({}, this.state);
     const url = `${this.props.baseURL}/create_timepoint/Timepoint`;
@@ -305,7 +309,9 @@ class CreateTimepoint extends React.Component {
       }
     ).then((response) => {
       if (response.ok) {
-        swal.fire(t('Success!', {ns: 'loris'}), t('Time Point created.', {ns: 'create_timepoint'}), 'success')
+        swal.fire(
+          t('Success!', {ns: 'loris'}),
+          t('Time Point created.', {ns: 'create_timepoint'}), 'success')
           .then(() => {
             window.location.replace(
               `${this.props.baseURL}/${this.state.url.params.candID}`
@@ -330,7 +336,7 @@ class CreateTimepoint extends React.Component {
    * @return {JSX} - React create timepoint component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
