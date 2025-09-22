@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 
 /**
  * CandidateInfo is a React component which is used for the
  * CandidateInfo table providing an overview of the candidate.
  */
-export class CandidateInfo extends Component {
+class CandidateInfo extends Component {
   /**
    * Construct the object.
    *
@@ -35,9 +37,9 @@ export class CandidateInfo extends Component {
     const months = years*12 + now.getMonth() - dobdate.getMonth();
 
     if (months <= 36) {
-      return months + ' months old';
+      return this.props.t('{{months}} months old', {ns: 'loris', months: months});
     }
-    return years + ' years old';
+    return this.props.t('{{years}} years old', {ns: 'loris', years: years});
   }
 
   /**
@@ -105,45 +107,43 @@ export class CandidateInfo extends Component {
    */
   render() {
     const cohorts = this.getCohorts(this.props.Visits);
-    const subprojlabel = cohorts.length == 1 ? 'Cohort'
-      : 'Cohorts';
 
     const data = [
       {
-        label: 'PSCID',
+        label: this.props.t('PSCID', {ns: 'loris'}),
         value: this.props.Candidate.Meta.PSCID,
       },
       {
-        label: 'DCCID',
+        label: this.props.t('DCCID', {ns: 'loris'}),
         value: this.props.Candidate.Meta.CandID,
       },
       {
-        label: 'Date of Birth',
+        label: this.props.t('Date of Birth', {ns: 'loris'}),
         value: this.props.Candidate.Meta.DoB,
         valueWhitespace: 'nowrap',
       },
       {
-        label: 'Age',
+        label: this.props.t('Age', {ns: 'loris'}),
         value: this.calcAge(this.props.Candidate.Meta.DoB),
       },
       {
-        label: 'Sex',
+        label: this.props.t('Sex', {ns: 'loris'}),
         value: this.props.Candidate.Meta.Sex,
       },
       {
-        label: 'Project',
+        label: this.props.t('Project', {ns: 'loris'}),
         value: this.props.Candidate.Meta.Project,
       },
       {
-        label: subprojlabel,
+        label: this.props.t('Cohort', {ns: 'loris', count: cohorts.length}),
         value: cohorts.join(', '),
       },
       {
-        label: 'Site',
+        label: this.props.t('Site', {ns: 'loris'}),
         value: this.props.Candidate.Meta.Site,
       },
       {
-        label: 'Visits',
+        label: this.props.t('Visits', {ns: 'loris'}),
         value: this.getVisitList(this.props.Visits),
         width: '12em',
       },
@@ -211,3 +211,5 @@ CandidateInfo.propTypes = {
   VisitMap: PropTypes.object.isRequired,
   ExtraCandidateInfo: PropTypes.array,
 };
+
+export default {CandidateInfo: withTranslation(['candidate_profile', 'loris'])(CandidateInfo)};
