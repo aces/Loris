@@ -1,15 +1,12 @@
 import i18n from 'i18next';
 import {initReactI18next} from 'react-i18next';
 
-import jaResources from '../locale/ja/LC_MESSAGES/loris.json';
-import hiResources from '../locale/hi/LC_MESSAGES/loris.json';
-
 const resources = {
   ja: {
-    loris: jaResources,
+    loris: require('../locale/ja/LC_MESSAGES/loris.json'),
   },
   hi: {
-    loris: hiResources,
+    loris: require('../locale/hi/LC_MESSAGES/loris.json'),
   },
 };
 

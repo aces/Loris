@@ -10,9 +10,6 @@ import FilterableDataTable from 'FilterableDataTable';
 
 import fetchDataStream from 'jslib/fetchDataStream';
 
-import hiStrings from '../locale/hi/LC_MESSAGES/datadict.json';
-import jaStrings from '../locale/ja/LC_MESSAGES/datadict.json';
-
 /**
  * Data Dictionary Page.
  *
@@ -239,8 +236,10 @@ DataDictIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('hi', 'datadict', hiStrings);
-  i18n.addResourceBundle('ja', 'datadict', jaStrings);
+  i18n.addResourceBundle('hi', 'datadict', require('../locale/hi/LC_MESSAGES/datadict.json'));
+  i18n.addResourceBundle('ja', 'datadict', require('../locale/ja/LC_MESSAGES/datadict.json'));
+
+
   const Index = withTranslation(
     ['datadict', 'loris']
   )(DataDictIndex);
