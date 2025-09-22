@@ -238,11 +238,11 @@ class CreateTimepoint extends React.Component {
           'No visit labels defined for combination of project: ',
           {ns: 'create_timepoint'}) + `${
           this.state.form.options.project[
-          this.state.form.value.project
+            this.state.form.value.project
           ]
         }` + t('and cohort: ', {ns: 'create_timepoint'}) + `${
           this.state.form.options.cohort[
-          this.state.form.value.cohort
+            this.state.form.value.cohort
           ]
         }`;
         state.messages = [errorMessage];
