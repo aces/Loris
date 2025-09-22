@@ -18,7 +18,7 @@ const resources = {
   },
   en: {
     loris: enResources,
-  }
+  },
 };
 
 i18n
