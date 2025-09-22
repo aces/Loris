@@ -105,42 +105,42 @@ msgstr ""
 
 # Common select option labels
 msgid "Yes"
-msgstr ""
+msgstr "Sí"
 
 msgid "No"
-msgstr ""
+msgstr "No"
 
 # Common swal labels
 msgid "Cancel"
 msgstr ""
 
 msgid "Success!"
-msgstr ""
+msgstr "Exitoso!"
 
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
 
 msgid "DCCID"
-msgstr ""
+msgstr "CCDID"
 
 msgid "Visit Label"
-msgstr ""
+msgstr "Etiqueta de Visita"
 
 msgid "Site"
-msgstr ""
+msgstr "Sitio"
 
 msgid "Module"
 msgstr ""
 
 msgid "Project"
-msgstr ""
+msgstr "Projecto"
 
 msgid "Cohort"
-msgstr ""
+msgstr "Cohorte"
 
 msgid "Cohorts"
-msgstr ""
+msgstr "Cohortes"
 
 msgid "Session"
 msgstr ""
@@ -158,16 +158,16 @@ msgid "Sex"
 msgstr ""
 
 msgid "Feedback"
-msgstr ""
+msgstr "Retroalimentación"
 
 msgid "Scans"
 msgstr ""
 
 msgid "Stage"
-msgstr ""
+msgstr "Etapa"
 
 msgid "Sent To DCC"
-msgstr ""
+msgstr "Enviar a CCD"
 
 msgid "Date of Birth"
 msgstr ""
@@ -197,7 +197,7 @@ msgstr ""
 msgid "Maximum rows per page:"
 msgstr ""
 
-msgid "Download Data as CSV"
+msgid "Download Table as CSV"
 msgstr ""
 
 # Dashboard panel strings
@@ -219,35 +219,35 @@ msgstr ""
 
 # Common timepoint and vist terms
 msgid "Not Started"
-msgstr ""
+msgstr "No Iniciado"
 
 msgid "Screening"
-msgstr ""
+msgstr "Cribado"
 
 msgid "Visit"
-msgstr ""
+msgstr "Visita"
 
 msgid "Approval"
-msgstr ""
+msgstr "Aprobación"
 
 msgid "Subject"
-msgstr ""
+msgstr "Sujeto"
 
 msgid "Recycling Bin"
-msgstr ""
+msgstr "Papelera de Reciclage"
 
 msgid "Pass"
-msgstr ""
+msgstr "Aprobado"
 
 msgid "Failure"
-msgstr ""
+msgstr "Fallido"
 
 msgid "Withdrawal"
-msgstr ""
+msgstr "Retirado"
 
 msgid "In Progress"
-msgstr ""
+msgstr "En Progreso"
 
 # Console log terms
 msgid "Error! "
-msgstr ""
+msgstr "Error! "

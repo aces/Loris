@@ -1,6 +1,10 @@
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Panel from 'Panel';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
@@ -10,6 +14,8 @@ import {
   StaticElement,
   ButtonElement,
 } from 'jsx/Form';
+
+import esStrings from '../locale/es/LC_MESSAGES/create_timepoint.json';
 
 /**
  * Create Timepoint.
@@ -184,10 +190,11 @@ class CreateTimepoint extends React.Component {
    * Cohort refreshes when Project changes.
    */
   handleCohort() {
+    const { t } = this.props;
     const state = Object.assign({}, this.state);
     if (Array.isArray(state.storage.cohort[state.form.value.project])) {
       // Display error message to user.
-      const errorMessage = `No cohorts defined for project: ${
+      const errorMessage = t('No cohorts defined for project:', {ns: 'create_timepoint'}) + ` ${
         this.state.form.options.project[
           this.state.form.value.project
         ]}`;
@@ -217,6 +224,7 @@ class CreateTimepoint extends React.Component {
    * Visit Labels refreshes when Cohort changes.
    */
   handleVisitLabel() {
+    const { t } = this.props;
     const state = Object.assign({}, this.state);
     if (state.storage.visit[
       state.form.value.project
@@ -224,15 +232,15 @@ class CreateTimepoint extends React.Component {
       if (Array.isArray(state.storage.visit[
         state.form.value.project][state.form.value.cohort])
       ) {
-        const errorMessage = `No visit labels defined for
-        combination of project: ${
-  this.state.form.options.project[
-    this.state.form.value.project
-  ]
-} and cohort: ${
-  this.state.form.options.cohort[
-    this.state.form.value.cohort
-  ]}`;
+        const errorMessage = t('No visit labels defined for combination of project: ', {ns: 'create_timepoint'}) + `${
+          this.state.form.options.project[
+          this.state.form.value.project
+          ]
+        }` + t('and cohort: ', {ns: 'create_timepoint'}) + `${
+          this.state.form.options.cohort[
+          this.state.form.value.cohort
+          ]
+        }`;
         state.messages = [errorMessage];
         swal.fire(errorMessage, '', 'error');
         state.form.options.visit = {};
@@ -273,6 +281,7 @@ class CreateTimepoint extends React.Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
+    const { t } = this.props;
     e.preventDefault();
     const state = Object.assign({}, this.state);
     const url = `${this.props.baseURL}/create_timepoint/Timepoint`;
@@ -296,7 +305,7 @@ class CreateTimepoint extends React.Component {
       }
     ).then((response) => {
       if (response.ok) {
-        swal.fire('Success!', 'Time Point created.', 'success')
+        swal.fire(t('Success!', {ns: 'loris'}), t('Time Point created.', {ns: 'create_timepoint'}), 'success')
           .then(() => {
             window.location.replace(
               `${this.props.baseURL}/${this.state.url.params.candID}`
@@ -311,7 +320,7 @@ class CreateTimepoint extends React.Component {
         });
       }
     }).catch((error) => {
-      console.error('Error! ' + error);
+      console.error(t('Error! ', {ns: 'loris'}) + error);
     });
   }
 
@@ -321,6 +330,8 @@ class CreateTimepoint extends React.Component {
    * @return {JSX} - React create timepoint component
    */
   render() {
+    const { t } = this.props;
+
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -355,7 +366,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'cohort'}
         name={'cohort'}
-        label={'Cohort'}
+        label={t('Cohort', {ns: 'loris'})}
         value={this.state.form.value.cohort}
         options={this.state.form.options.cohort}
         onUserInput={this.setForm}
@@ -370,7 +381,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'psc'}
         name={'psc'}
-        label={'Site'}
+        label={t('Site', {ns: 'loris'})}
         value={this.state.form.value.psc}
         options={this.state.form.options.psc}
         onUserInput={this.setForm}
@@ -385,7 +396,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'project'}
         name={'project'}
-        label={'Project'}
+        label={t('Project', {ns: 'loris'})}
         value={this.state.form.value.project}
         options={this.state.form.options.project}
         onUserInput={this.setForm}
@@ -400,7 +411,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'visit'}
         name={'visit'}
-        label={'Visit label'}
+        label={t('Visit Label', {ns: 'loris'})}
         value={this.state.form.value.visit}
         options={this.state.form.options.visit}
         onUserInput={this.setForm}
@@ -417,7 +428,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'languageID'}
         name={'languages'}
-        label={'Language'}
+        label={t('Language', {ns: 'create_timepoint'})}
         value={this.state.form.value.languages}
         options={this.state.form.options.languages}
         onUserInput={this.setForm}
@@ -429,7 +440,7 @@ class CreateTimepoint extends React.Component {
     ) : null;
 
     return (
-      <Panel title='Create Time Point'>
+      <Panel title={t('Create Time Point', {ns: 'create_timepoint'})}>
         {messages}
         <FormElement
           name={'timepointInfo'}
@@ -437,7 +448,7 @@ class CreateTimepoint extends React.Component {
           onSubmit={this.handleSubmit}
         >
           <StaticElement
-            label={'DCCID'}
+            label={t('DCCID', {ns: 'loris'})}
             text={this.state.data.dccid}
           />
           {psc}
@@ -446,7 +457,7 @@ class CreateTimepoint extends React.Component {
           {visit}
           {languages}
           <ButtonElement
-            label={'Create Time Point'}
+            label={t('Create Time Point', {ns: 'create_timepoint'})}
             type={'submit'}
             name={'fire_away'}
           />
@@ -457,16 +468,23 @@ class CreateTimepoint extends React.Component {
 }
 CreateTimepoint.propTypes = {
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 /**
  * Render create_timepoint on page load.
  */
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('es', 'create_timepoint', esStrings);
+
+  const TranslatedCreateTimepoint = withTranslation(
+    ['create_timepoint', 'loris']
+  )(CreateTimepoint);
+
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <CreateTimepoint
+    <TranslatedCreateTimepoint
       baseURL={loris.BaseURL}
     />
   );

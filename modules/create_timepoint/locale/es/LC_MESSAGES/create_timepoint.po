@@ -9,40 +9,40 @@ msgid ""
 msgstr ""
 
 msgid "Create Timepoint"
-msgstr ""
+msgstr "Crear Punto en el Tiempo"
 
 msgid "Create Time Point"
-msgstr ""
+msgstr "Crear Punto en el Tiempo"
 
 msgid "Language"
-msgstr ""
+msgstr "Lenguaje"
 
 msgid "No cohorts defined for project:"
-msgstr ""
+msgstr "No existen cohortes definidos en el projecto:"
 
 msgid "No visit labels defined for combination of project: "
-msgstr ""
+msgstr "No existen etiquetas de visitas definida para la combinacion de projecto: "
 
 msgid "and cohort: "
-msgstr ""
+msgstr "y cohorte: "
 
 msgid "Time Point created."
-msgstr ""
+msgstr "Punto en el Tiempo creado."
 
 msgid "This visit label is not unique."
-msgstr ""
+msgstr "Esta etiqueta de Visita no es única"
 
 msgid "You must be affiliated with a site to create a timepoint."
-msgstr ""
+msgstr "Debe estar affiliado a un Sitio para poder crear un Punto en el Tiempo."
 
 msgid "Site must be selected from the available dropdown."
-msgstr ""
+msgstr "Un Sitio debe ser seleccionado de la siguiente lista."
 
 msgid "You must be affiliated with a project to create a timepoint."
-msgstr ""
+msgstr "Debe estar affiliado a un Projecto para poder crear un Punto en el Tiempo."
 
 msgid "A project must be selected from the available dropdown."
-msgstr ""
+msgstr "Un projecto debe ser seleccionado de la siguiente lista."
 
 msgid "A language must be selected."
-msgstr ""
+msgstr "Un lenguage debe ser seleccionado."
