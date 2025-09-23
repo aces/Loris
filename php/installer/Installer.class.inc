@@ -34,7 +34,8 @@ class Installer
         '02-Permission.sql',
         '03-ConfigTables.sql',
         '04-Help.sql',
-        '05-ElectrophysiologyTables.sql'
+        '05-ElectrophysiologyTables.sql',
+        '06-BiobankTables.sql'
     ];
 
     /**
