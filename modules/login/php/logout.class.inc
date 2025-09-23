@@ -14,7 +14,6 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Logout extends \LORIS\Http\Endpoint
 {
-
     /**
      * {@inheritDoc}
      *
