@@ -634,13 +634,16 @@ class Charts extends \NDB_Page
      * Helper to generate query conditions for for incoming requests.
      *
      * @param ServerRequestInterface $request      The incoming PSR7 request
-     * @param bool                   $scansbymonth Whether or not the request is for scans by month.
+     * @param bool                   $scansbymonth Whether or not the
+     *                                             request is for scans by month.
      *
      * @return array
      */
-    private function _buildQueryConditions(ServerRequestInterface $request, $scansbymonth = false)
-    {
-        $user = \NDB_Factory::singleton()->user();
+    private function _buildQueryConditions(
+        ServerRequestInterface $request,
+        $scansbymonth = false
+    ) {
+        $user        = \NDB_Factory::singleton()->user();
         $queryParams = $request->getQueryParams();
 
         $cohortQuery = '';
@@ -649,18 +652,18 @@ class Charts extends \NDB_Page
         $PSJoin      = '';
         $candJoin    = '';
         $participantStatusQuery = '';
-        $params = [];
+        $params       = [];
         $paramCounter = 0;
 
         /**
          * Helper function to generate parameterized IN clause
          */
-        $generateInClause = function($values) use (&$params, &$paramCounter) {
+        $generateInClause = function ($values) use (&$params, &$paramCounter) {
             $placeholders = [];
-            $valueArray = explode(',', $values);
+            $valueArray   = explode(',', $values);
             foreach ($valueArray as $value) {
-                $paramName = 'param' . (++$paramCounter);
-                $placeholders[] = ':' . $paramName;
+                $paramName          = 'param' . (++$paramCounter);
+                $placeholders[]     = ':' . $paramName;
                 $params[$paramName] = trim($value);
             }
             return '(' . implode(',', $placeholders) . ')';
@@ -668,14 +671,15 @@ class Charts extends \NDB_Page
 
         if (($queryParams['selectedProjects'] ?? "undefined") != 'undefined') {
             if ($scansbymonth === true) {
-                $projectQuery = " AND s.ProjectID IN " . $generateInClause($queryParams['selectedProjects']);
+                $projectQuery = " AND s.ProjectID IN "
+                    . $generateInClause($queryParams['selectedProjects']);
             } else {
                 $candJoin     = "JOIN candidate c ON c.ID=s.CandidateID";
                 $projectQuery = " AND c.RegistrationProjectID IN "
-                                 . $generateInClause($queryParams['selectedProjects']);
+                    . $generateInClause($queryParams['selectedProjects']);
             }
         } else {
-            $userProjects = $user->getProjectIDs();
+            $userProjects        = $user->getProjectIDs();
             $projectPlaceholders = [];
             foreach ($userProjects as $projectId) {
                 $paramName = 'userProject' . (++$paramCounter);
@@ -684,73 +688,84 @@ class Charts extends \NDB_Page
                 $params[$paramName] = $projectId->__toString();
             }
             if ($scansbymonth === true) {
-                $projectQuery = " AND s.ProjectID IN (" . implode(',', $projectPlaceholders) . ") ";
+                $projectQuery = " AND s.ProjectID IN ("
+                    . implode(',', $projectPlaceholders) . ") ";
                 $sessionJoin  = "JOIN session s ON s.CandidateID=c.ID";
             } else {
-                $projectQuery = " AND c.RegistrationProjectID IN (" . implode(',', $projectPlaceholders) . ") ";
+                $projectQuery = " AND c.RegistrationProjectID IN ("
+                    . implode(',', $projectPlaceholders) . ") ";
             }
         }
 
         if (($queryParams['selectedCohorts'] ?? "undefined") != 'undefined') {
-            $cohortQuery = " AND s.CohortID IN " . $generateInClause($queryParams['selectedCohorts']) . " ";
+            $cohortQuery = " AND s.CohortID IN "
+                . $generateInClause($queryParams['selectedCohorts']) . " ";
             $sessionJoin = "JOIN session s ON s.CandidateID=c.ID";
         }
 
         if (($queryParams['selectedSites'] ?? "undefined") != 'undefined') {
             // Set site query if selected
             if ($scansbymonth === true) {
-                $siteQuery = " AND s.CenterID IN " . $generateInClause($queryParams['selectedSites']) . " ";
+                $siteQuery = " AND s.CenterID IN "
+                    . $generateInClause($queryParams['selectedSites']) . " ";
             } else {
-                $siteQuery = " AND c.RegistrationCenterID IN " . $generateInClause($queryParams['selectedSites']) . " ";
+                $siteQuery = " AND c.RegistrationCenterID IN "
+                    . $generateInClause($queryParams['selectedSites']) . " ";
             }
         } else {
             // If not selected, only take user sites
-            $centerIDs = $user->getCenterIDs();
+            $centerIDs          = $user->getCenterIDs();
             $centerPlaceholders = [];
             foreach ($centerIDs as $centerId) {
-                $paramName = 'userCenter' . (++$paramCounter);
+                $paramName            = 'userCenter' . (++$paramCounter);
                 $centerPlaceholders[] = ':' . $paramName;
                 // Extract the actual ID value from the CenterID object
                 $params[$paramName] = $centerId->__toString();
             }
             if ($scansbymonth === true) {
-                $siteQuery = " AND s.CenterID IN (" . implode(',', $centerPlaceholders) . ") ";
+                $siteQuery = " AND s.CenterID IN ("
+                    . implode(',', $centerPlaceholders) . ") ";
             } else {
-                $siteQuery = " AND c.RegistrationCenterID IN (" . implode(',', $centerPlaceholders) . ") ";
+                $siteQuery = " AND c.RegistrationCenterID IN ("
+                    . implode(',', $centerPlaceholders) . ") ";
             }
         }
 
         if (($queryParams['selectedVisits'] ?? "undefined") != 'undefined') {
             // Set visit query if visits selected
-            $visitQuery  = " AND s.Visit_label IN " . $generateInClause($queryParams['selectedVisits']) . " ";
+            $visitQuery  = " AND s.Visit_label IN "
+                . $generateInClause($queryParams['selectedVisits']) . " ";
             $sessionJoin = "JOIN session s ON s.CandidateID=c.ID";
         }
-        if (($queryParams['selectedParticipantStatus'] ?? "undefined") != 'undefined') {
+        if (
+            ($queryParams['selectedParticipantStatus'] ?? "undefined") != 'undefined'
+        ) {
             $candJoin = "JOIN candidate c ON c.ID=s.CandidateID";
             $PSJoin   = 'LEFT JOIN participant_status ps ON c.ID=ps.CandidateID';
             // Null participant status counts as Active because
             // sometimes users do not update the participant_status tab
             if (str_contains($queryParams['selectedParticipantStatus'] ?? '', '1')) {
                 $participantStatusQuery = " AND (
-                    ps.participant_status IN " . $generateInClause($queryParams['selectedParticipantStatus']) . "
-                    OR ps.participant_status IS NULL
+                    ps.participant_status IN " .
+                    $generateInClause($queryParams['selectedParticipantStatus'])
+                    . " OR ps.participant_status IS NULL
                 )";
             } else {
-                $participantStatusQuery = " AND ps.participant_status
-                IN " . $generateInClause($queryParams['selectedParticipantStatus']) . " ";
+                $participantStatusQuery = " AND ps.participant_status IN " .
+                $generateInClause($queryParams['selectedParticipantStatus']) . " ";
             }
         }
 
         if (($queryParams['dateRegisteredStart'] ?? "undefined") != 'undefined') {
-            $candJoin      = "JOIN candidate c ON c.ID=s.CandidateID";
-            $paramName = 'dateStart' . (++$paramCounter);
-            $projectQuery .= " AND c.Date_registered >= :$paramName";
+            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
+            $paramName          = 'dateStart' . (++$paramCounter);
+            $projectQuery      .= " AND c.Date_registered >= :$paramName";
             $params[$paramName] = $queryParams['dateRegisteredStart'];
         }
         if (($queryParams['dateRegisteredEnd'] ?? "undefined") != 'undefined') {
-            $candJoin      = "JOIN candidate c ON c.ID=s.CandidateID";
-            $paramName = 'dateEnd' . (++$paramCounter);
-            $projectQuery .= " AND c.Date_registered <= :$paramName";
+            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
+            $paramName          = 'dateEnd' . (++$paramCounter);
+            $projectQuery      .= " AND c.Date_registered <= :$paramName";
             $params[$paramName] = $queryParams['dateRegisteredEnd'];
         }
 
