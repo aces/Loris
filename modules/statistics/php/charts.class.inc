@@ -737,8 +737,7 @@ class Charts extends \NDB_Page
                 . $generateInClause($queryParams['selectedVisits']) . " ";
             $sessionJoin = "JOIN session s ON s.CandidateID=c.ID";
         }
-        if (
-            ($queryParams['selectedParticipantStatus'] ?? "undefined") != 'undefined'
+        if (($queryParams['selectedParticipantStatus'] ?? "undefined") != 'undefined'
         ) {
             $candJoin = "JOIN candidate c ON c.ID=s.CandidateID";
             $PSJoin   = 'LEFT JOIN participant_status ps ON c.ID=ps.CandidateID';
