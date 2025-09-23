@@ -16,6 +16,7 @@ import {
 } from 'jsx/Form';
 
 import esStrings from '../locale/es/LC_MESSAGES/create_timepoint.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/create_timepoint.json';
 
 /**
  * Create Timepoint.
@@ -483,6 +484,7 @@ CreateTimepoint.propTypes = {
  */
 window.addEventListener('load', () => {
   i18n.addResourceBundle('es', 'create_timepoint', esStrings);
+  i18n.addResourceBundle('ja', 'create_timepoint', jaStrings);
 
   const TranslatedCreateTimepoint = withTranslation(
     ['create_timepoint', 'loris']
