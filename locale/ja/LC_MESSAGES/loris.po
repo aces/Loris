@@ -122,6 +122,9 @@ msgstr "いいえ"
 msgid "Cancel"
 msgstr "取り消す"
 
+msgid "Success!"
+msgstr "成功！"
+
 # Filters
 msgid "Selection Filter"
 msgstr "'選択フィルター"
@@ -207,6 +210,9 @@ msgstr "詳細フィルターを表示"
 
 msgid "Hide Advanced Filters"
 msgstr "詳細フィルターを非表示"
+
+msgid "Language"
+msgstr "言語"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
