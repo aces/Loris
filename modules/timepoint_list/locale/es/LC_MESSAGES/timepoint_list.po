@@ -5,7 +5,6 @@
 # This file is distributed under the same license as the LORIS package.
 # Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
 #
-
 msgid ""
 msgstr ""
 "Project-Id-Version: LORIS 27\n"
@@ -14,74 +13,73 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: ja\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Timepoint List"
-msgstr "タイムポイントリスト"
+msgstr "Lista de Puntos en el Tiempo"
 
 msgid "Click to Open"
-msgstr "クリックして開く"
+msgstr "Haga clic para abrir"
 
 msgid "Stage Status"
-msgstr "ステージステータス"
+msgstr "Estado de la Etapa"
 
 msgid "Date of Stage"
-msgstr "ステージの日付"
+msgstr "Día de la Etapa"
 
 msgid "Imaging Scan Done"
-msgstr "画像スキャン完了"
+msgstr "Imagen de Scan hecha"
 
 msgid "BVL QC"
-msgstr "行動品質管理"
+msgstr "CC Conductual"
 
 msgid "BVL Exclusion"
-msgstr "行動的排除"
+msgstr "Exclusión Conductual"
 
 msgid "Registered By"
-msgstr "登録者"
+msgstr "Registrado por"
 
 msgid "List of Visits (Time Points)"
-msgstr "訪問リスト（時点）"
+msgstr "Lista de Visitas (Puntos en el Tiempo)"
 
 msgid "Create time point"
-msgstr "タイムポイントを作成"
+msgstr "Crear punto en el Tiempo"
 
 msgid "Candidate Info"
-msgstr "候補者情報"
+msgstr "Información del Candidato"
 
 msgid "View Imaging datasets"
-msgstr "画像データセットを表示"
+msgstr "Ver secuencias de datos de Imágenes"
 
 msgid "Actions:"
-msgstr "アクション:"
+msgstr "Acciones:"
 
 msgid "Derived Age"
-msgstr "派生年齢"
+msgstr "Edad Calculada"
 
 msgid "EDC Age"
-msgstr "EDC時代"
+msgstr "Edad EDC"
 
 msgid "Biological Sex"
-msgstr "生物学的性別"
+msgstr "Sexo Biológico"
 
 msgid "You do not have access to any timepoints registered for this candidate."
-msgstr "この候補者に対して登録されたタイムポイントにアクセスできません。"
+msgstr "Usted no tiene ningún Punto de Tiempo registrado para este candidato."
 
 msgid " y / "
-msgstr ""
+msgstr " a / "
 
 msgid " m"
-msgstr ""
+msgstr " m"
 
 msgid "Visual"
-msgstr "ビジュアル"
+msgstr "Visual"
 
 msgid "Hardcopy"
-msgstr "ハードコピー"
+msgstr "Copia Dura"
 
 msgid "Complete"
-msgstr "完了"
+msgstr "Completo"

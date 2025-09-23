@@ -5,7 +5,6 @@
 # This file is distributed under the same license as the LORIS package.
 # Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
 #
-
 msgid ""
 msgstr ""
 "Project-Id-Version: LORIS 27\n"
@@ -14,7 +13,7 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -115,10 +114,10 @@ msgstr ""
 
 # Common select option labels
 msgid "Yes"
-msgstr ""
+msgstr "Sí"
 
 msgid "No"
-msgstr ""
+msgstr "No"
 
 msgid "Cancel"
 msgstr ""
@@ -131,22 +130,22 @@ msgid "DCCID"
 msgstr ""
 
 msgid "Visit Label"
-msgstr ""
+msgstr "Etiqueta de Visita"
 
 msgid "Site"
-msgstr ""
+msgstr "Sitio"
 
 msgid "Module"
 msgstr ""
 
 msgid "Project"
-msgstr ""
+msgstr "Projecto"
 
 msgid "Cohort"
-msgstr ""
+msgstr "Cohorte"
 
 msgid "Cohorts"
-msgstr ""
+msgstr "Cohortes"
 
 msgid "Session"
 msgstr ""
@@ -164,16 +163,16 @@ msgid "Sex"
 msgstr ""
 
 msgid "Feedback"
-msgstr ""
+msgstr "Retroalimentación"
 
 msgid "Scans"
 msgstr ""
 
 msgid "Stage"
-msgstr ""
+msgstr "Etapa"
 
 msgid "Sent To DCC"
-msgstr ""
+msgstr "Enviar a CCD"
 
 msgid "Date of Birth"
 msgstr ""
@@ -203,7 +202,7 @@ msgstr ""
 msgid "Maximum rows per page:"
 msgstr ""
 
-msgid "Download Data as CSV"
+msgid "Download Table as CSV"
 msgstr ""
 
 # Dashboard panel strings
@@ -225,31 +224,31 @@ msgstr ""
 
 # Common timepoint and vist terms
 msgid "Not Started"
-msgstr ""
+msgstr "No Iniciado"
 
 msgid "Screening"
-msgstr ""
+msgstr "Cribado"
 
 msgid "Visit"
-msgstr ""
+msgstr "Visita"
 
 msgid "Approval"
-msgstr ""
+msgstr "Aprobación"
 
 msgid "Subject"
-msgstr ""
+msgstr "Sujeto"
 
 msgid "Recycling Bin"
-msgstr ""
+msgstr "Papelera de Reciclage"
 
 msgid "Pass"
-msgstr ""
+msgstr "Aprobado"
 
 msgid "Failure"
-msgstr ""
+msgstr "Fallido"
 
 msgid "Withdrawal"
-msgstr ""
+msgstr "Retirado"
 
 msgid "In Progress"
-msgstr ""
+msgstr "En Progreso"
