@@ -24,9 +24,6 @@ msgstr ""
 msgid "Create Time Point"
 msgstr ""
 
-msgid "Language"
-msgstr ""
-
 msgid "No cohorts defined for project:"
 msgstr ""
 

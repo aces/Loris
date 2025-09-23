@@ -24,9 +24,6 @@ msgstr "Crear Punto en el Tiempo"
 msgid "Create Time Point"
 msgstr "Crear Punto en el Tiempo"
 
-msgid "Language"
-msgstr "Lenguaje"
-
 msgid "No cohorts defined for project:"
 msgstr "No existen cohortes definidos en el projecto:"
 

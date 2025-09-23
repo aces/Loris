@@ -199,6 +199,9 @@ msgstr ""
 msgid "Hide Advanced Filters"
 msgstr ""
 
+msgid "Language"
+msgstr "Lenguaje"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
@@ -255,8 +258,4 @@ msgid "Withdrawal"
 msgstr ""
 
 msgid "In Progress"
-msgstr ""
-
-# Console log terms
-msgid "Error! "
 msgstr ""

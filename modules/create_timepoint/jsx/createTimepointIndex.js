@@ -326,7 +326,7 @@ class CreateTimepoint extends React.Component {
         });
       }
     }).catch((error) => {
-      console.error(t('Error! ', {ns: 'loris'}) + error);
+      console.error('Error! ' + error);
     });
   }
 
@@ -434,7 +434,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'languageID'}
         name={'languages'}
-        label={t('Language', {ns: 'create_timepoint'})}
+        label={t('Language', {ns: 'loris'})}
         value={this.state.form.value.languages}
         options={this.state.form.options.languages}
         onUserInput={this.setForm}
