@@ -1,0 +1,397 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Data Query Tool (Beta)"
+msgstr "डेटा क्वेरी टूल (बीटा)"
+
+msgid "Query not yet run"
+msgstr "क्वेरी अभी तक नहीं चलाई गई"
+
+msgid "Loading data:"
+msgstr "डेटा लोड हो रहा है:"
+
+msgid "{{value}} of {{max}} candidates"
+msgstr "{{max}} में से {{value}} उम्मीदवार"
+
+msgid "Organizing headers:"
+msgstr "हेडर व्यवस्थित किए जा रहे हैं:"
+
+msgid "{{value}} of {{max}} columns"
+msgstr "{{max}} में से {{value}} कॉलम"
+
+msgid "Organizing data:"
+msgstr "डेटा व्यवस्थित किया जा रहा है:"
+
+msgid "Invalid progress type: {{type}}"
+msgstr "अमान्य प्रगति प्रकार: {{type}}"
+
+msgid "No data for visit"
+msgstr "इस विज़िट के लिए कोई डेटा नहीं"
+
+msgid "Field Name"
+msgstr "फ़ील्ड नाम"
+
+msgid "Field Description"
+msgstr "फ़ील्ड विवरण"
+
+msgid "Field Name: Field Description"
+msgstr "फ़ील्ड नाम: फ़ील्ड विवरण"
+
+msgid "Rows (Cross-sectional)"
+msgstr "पंक्तियाँ (क्रॉस-सेक्शनल)"
+
+msgid "Columns (Longitudinal)"
+msgstr "कॉलम (लॉन्गिट्यूडिनल)"
+
+msgid "Inline values (no download)"
+msgstr "इनलाइन मान (कोई डाउनलोड नहीं)"
+
+msgid "Raw JSON (debugging only)"
+msgstr "कच्चा JSON (सिर्फ डीबगिंग के लिए)"
+
+msgid "Header Display Format"
+msgstr "हेडर प्रदर्शन प्रारूप"
+
+msgid "Display visits as"
+msgstr "विज़िट प्रदर्शित करें इस प्रकार"
+
+msgid "Labels"
+msgstr "लेबल्स"
+
+msgid "Values"
+msgstr "मान"
+
+msgid "Display options as"
+msgstr "विकल्प प्रदर्शित करें इस प्रकार"
+
+msgid "Display empty visits?"
+msgstr "खाली विज़िट दिखाएँ?"
+
+msgid "Row Number"
+msgstr "पंक्ति संख्या"
+
+msgid "Modify Fields"
+msgstr "फ़ील्ड संशोधित करें"
+
+msgid "Choose Fields"
+msgstr "फ़ील्ड चुनें"
+
+msgid "Modify Filters"
+msgstr "फ़िल्टर संशोधित करें"
+
+msgid "Add Filters"
+msgstr "फ़िल्टर जोड़ें"
+
+msgid "Run Query"
+msgstr "क्वेरी चलाएँ"
+
+msgid "Next Steps"
+msgstr "अगले चरण"
+
+msgid "Delete item"
+msgstr "आइटम हटाएँ"
+
+msgid "Delete Group"
+msgstr "समूह हटाएँ"
+
+msgid "Group does not have any items."
+msgstr "समूह में कोई आइटम नहीं है।"
+
+msgid "Group only has 1 item. A group with only 1 item is equivalent to not having the group."
+msgstr "समूह में केवल 1 आइटम है। केवल 1 आइटम वाला समूह होना, समूह न होने के बराबर है।"
+
+msgid "Add \"{{operator}}\" condition to group"
+msgstr "समूह में \"{{operator}}\" शर्त जोड़ें"
+
+msgid "New \"{{antiOperator}}\" subgroup"
+msgstr "नया \"{{antiOperator}}\" उपसमूह"
+
+msgid "Hide Advanced"
+msgstr "उन्नत विकल्प छिपाएँ"
+
+msgid "Show Advanced"
+msgstr "उन्नत विकल्प दिखाएँ"
+
+msgid "The \"nested groups\" options are advanced options for queries that do not have any specific condition at the base of the query. Use Add nested \"or\" condition groups if you need to build a query of the form. (a or b) and (c or d) [or (e and f)..]"
+msgstr "\"नेस्टेड समूह\" विकल्प उन क्वेरीज़ के लिए उन्नत विकल्प हैं जिनके आधार में कोई विशिष्ट शर्त नहीं होती। Add nested \"or\" condition groups का उपयोग करें यदि आपको (a या b) और (c या d) [या (e और f)..] जैसी क्वेरी बनानी हो।"
+
+msgid "Add nested \"or\" condition groups"
+msgstr "नेस्टेड \"or\" शर्त समूह जोड़ें"
+
+msgid "Use Add nested \"and\" condition groups if you need to build a query of the form (a and b) or (c and d) [or (e and f)..]"
+msgstr "यदि आपको (a और b) या (c और d) [या (e और f)..] जैसी क्वेरी बनानी है तो Add nested \"and\" condition groups का उपयोग करें।"
+
+msgid "Add nested \"and\" condition groups"
+msgstr "नेस्टेड \"and\" शर्त समूह जोड़ें"
+
+msgid "Currently querying for ALL candidates."
+msgstr "वर्तमान में सभी उम्मीदवारों के लिए क्वेरी की जा रही है।"
+
+msgid "You can add conditions by clicking one of the buttons below."
+msgstr "आप नीचे दिए गए बटनों में से किसी पर क्लिक करके शर्तें जोड़ सकते हैं।"
+
+msgid "Click Add Condition to add one or more conditions to your filters (ie. \"Date Of Birth < 2015-02-15\"). This is most likely where you want to start your filters."
+msgstr "फ़िल्टर में एक या अधिक शर्तें जोड़ने के लिए Add Condition पर क्लिक करें (जैसे \"जन्म तिथि < 2015-02-15\")। संभवतः यही वह जगह है जहाँ से आप अपने फ़िल्टर शुरू करना चाहेंगे।"
+
+msgid "You can also import a population from a CSV by clicking the Import from CSV button."
+msgstr "आप Import from CSV बटन पर क्लिक करके CSV से जनसंख्या भी आयात कर सकते हैं।"
+
+msgid "The advanced options are for queries that do not have a condition to add at the base of the query."
+msgstr "उन्नत विकल्प उन क्वेरीज़ के लिए हैं जिनके आधार में कोई शर्त जोड़ने के लिए नहीं है।"
+
+msgid "Add Condition"
+msgstr "शर्त जोड़ें"
+
+msgid "Import from CSV"
+msgstr "CSV से आयात करें"
+
+msgid "Use New \"and\" subgroup if the rest of the query you need to write is a subgroup consisting of \"and\" conditions. ie your query is of the form: (your condition above) or (c and d [and e and f..])"
+msgstr "नया \"and\" उपसमूह उपयोग करें यदि बाकी क्वेरी \"and\" शर्तों वाले उपसमूह से बनी हो। जैसे: (ऊपर की शर्त) या (c और d [और e और f..])।"
+
+msgid "New \"and\" subgroup"
+msgstr "नया \"and\" उपसमूह"
+
+msgid "Use New \"or\" subgroup if the rest of the query you need to write is a subgroup consisting of \"or\" conditions. ie your query is of the form: (your condition above) and (c or d [or e or f..])"
+msgstr "नया \"or\" उपसमूह उपयोग करें यदि बाकी क्वेरी \"or\" शर्तों वाले उपसमूह से बनी हो। जैसे: (ऊपर की शर्त) और (c या d [या e या f..])।"
+
+msgid "New \"or\" subgroup"
+msgstr "नया \"or\" उपसमूह"
+
+msgid "Currently querying for any candidates with:"
+msgstr "वर्तमान में ऐसे किसी भी उम्मीदवार के लिए क्वेरी की जा रही है जिनमें हो:"
+
+msgid "Add \"and\" condition"
+msgstr "\"and\" शर्त जोड़ें"
+
+msgid "Add \"or\" condition"
+msgstr "\"or\" शर्त जोड़ें"
+
+msgid "Delete Item"
+msgstr "आइटम हटाएँ"
+
+msgid "Query matches <b>{{count}}</b> candidates"
+msgstr "क्वेरी <b>{{count}}</b> उम्मीदवारों से मेल खाती है"
+
+msgid "Current Query"
+msgstr "वर्तमान क्वेरी"
+
+msgid "Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query."
+msgstr "ध्यान दें कि केवल वे उम्मीदवार शामिल हैं जिन्हें LORIS में एक्सेस करने की आपको अनुमति है। परिणामों की संख्या अन्य उपयोगकर्ताओं से भिन्न हो सकती है।"
+
+msgid "Candidate matches"
+msgstr "उम्मीदवार मेल खाते हैं"
+
+msgid "Note: matches count only includes candidates that you have access to. Results may vary from other users due to permissions."
+msgstr "नोट: मेल गिनती केवल उन्हीं उम्मीदवारों को शामिल करती है जिन तक आपकी पहुँच है। अनुमतियों के कारण परिणाम अन्य उपयोगकर्ताओं से भिन्न हो सकते हैं।"
+
+msgid "Select Visits"
+msgstr "विज़िट चुनें"
+
+msgid "Criteria"
+msgstr "मानदंड"
+
+msgid "Select an operator"
+msgstr "ऑपरेटर चुनें"
+
+msgid "for at least one of the following visits"
+msgstr "निम्नलिखित में से कम से कम एक विज़िट के लिए"
+
+msgid "This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <i>at least one</i> of the data points."
+msgstr "यह फ़ील्ड एक {{scope}} के लिए कई बार हो सकती है। इस पर आधारित मानदंड जोड़ने का मतलब है कि यह <i>कम से कम एक</i> डेटा बिंदु के लिए मेल खाना चाहिए।"
+
+msgid "Invalid field"
+msgstr "अमान्य फ़ील्ड"
+
+msgid "You must select a field for the criteria."
+msgstr "आपको मानदंड के लिए एक फ़ील्ड चुननी होगी।"
+
+msgid "Invalid operator"
+msgstr "अमान्य ऑपरेटर"
+
+msgid "You must select an operator for the criteria."
+msgstr "आपको मानदंड के लिए एक ऑपरेटर चुनना होगा।"
+
+msgid "Invalid value"
+msgstr "अमान्य मान"
+
+msgid "You must enter a value to compare the field against."
+msgstr "फ़ील्ड की तुलना करने के लिए आपको एक मान दर्ज करना होगा।"
+
+msgid "Invalid visits"
+msgstr "अमान्य विज़िट"
+
+msgid "No visits selected for criteria."
+msgstr "मानदंड के लिए कोई विज़िट चयनित नहीं है।"
+
+msgid "Add criteria"
+msgstr "मानदंड जोड़ें"
+
+msgid "Field"
+msgstr "फ़ील्ड"
+
+msgid "Select a field"
+msgstr "फ़ील्ड चुनें"
+
+msgid "in"
+msgstr "में"
+
+msgid "starts with"
+msgstr "से शुरू होता है"
+
+msgid "contains"
+msgstr "शामिल है"
+
+msgid "ends with"
+msgstr "से समाप्त होता है"
+
+msgid "has data"
+msgstr "डेटा है"
+
+msgid "has no data"
+msgstr "कोई डेटा नहीं है"
+
+msgid "exists"
+msgstr "मौजूद है"
+
+msgid "does not exist"
+msgstr "मौजूद नहीं है"
+
+msgid "number of"
+msgstr "संख्या"
+
+msgid "true"
+msgstr "सही"
+
+msgid "false"
+msgstr "ग़लत"
+
+msgid "Select a value"
+msgstr "मान चुनें"
+
+msgid "Import Population From CSV"
+msgstr "CSV से जनसंख्या आयात करें"
+
+msgid "CSV containing list of"
+msgstr "CSV जिसमें सूची है"
+
+msgid "Candidate identifier type"
+msgstr "उम्मीदवार पहचानकर्ता प्रकार"
+
+msgid "Does CSV contain a header line?"
+msgstr "क्या CSV में हेडर पंक्ति है?"
+
+msgid "CSV File"
+msgstr "CSV फ़ाइल"
+
+msgid "Invalid CSV"
+msgstr "अमान्य CSV"
+
+msgid "Could not parse CSV file"
+msgstr "CSV फ़ाइल पार्स नहीं की जा सकी"
+
+msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
+msgstr "CSV में {{expectedLength}} कॉलम अपेक्षित थे। पंक्ति {{line}} पर {{gotLength}} मिले।"
+
+msgid "Invalid DCC ID"
+msgstr "अमान्य DCC ID"
+
+msgid "Invalid DCC ID ({{id}}) on line {{line}}."
+msgstr "अमान्य DCC ID ({{id}}) पंक्ति {{line}} पर।"
+
+msgid "Welcome to the Data Query Tool"
+msgstr "डेटा क्वेरी टूल में आपका स्वागत है"
+
+msgid "Study Queries"
+msgstr "अध्ययन क्वेरीज़"
+
+msgid "Instructions"
+msgstr "निर्देश"
+
+msgid "Recent Queries"
+msgstr "हाल की क्वेरीज़"
+
+msgid "Shared Queries"
+msgstr "साझा की गई क्वेरीज़"
+
+msgid "Starred Only"
+msgstr "केवल स्टार की गई"
+
+msgid "Shared Only"
+msgstr "केवल साझा की गई"
+
+msgid "No run times (eliminate duplicates)"
+msgstr "कोई रन समय नहीं (डुप्लीकेट हटाएँ)"
+
+msgid "Filter"
+msgstr "फ़िल्टर"
+
+msgid "Named Only"
+msgstr "केवल नाम वाली"
+
+msgid "Collapse queries"
+msgstr "क्वेरीज़ समेटें"
+
+msgid "(No filters for query)"
+msgstr "(क्वेरी के लिए कोई फ़िल्टर नहीं)"
+
+msgid "Page"
+msgstr "पृष्ठ"
+
+msgid "Unstar"
+msgstr "स्टार हटाएँ"
+
+msgid "Star"
+msgstr "स्टार करें"
+
+msgid "Unshare"
+msgstr "साझा हटाएँ"
+
+msgid "Share"
+msgstr "साझा करें"
+
+msgid "Query Loaded"
+msgstr "क्वेरी लोड हो गई"
+
+msgid "Successfully loaded query."
+msgstr "क्वेरी सफलतापूर्वक लोड हो गई।"
+
+msgid "(Run at {{runTime}})"
+msgstr "(चलाया गया {{runTime}} पर)"
+
+msgid "You ran this query at {{runTime}}"
+msgstr "आपने यह क्वेरी {{runTime}} पर चलाई"
+
+msgid "You ran this query"
+msgstr "आपने यह क्वेरी चलाई"
+
+msgid "(Shared by {{sharedBy}})"
+msgstr "(साझा किया गया {{sharedBy}} द्वारा)"
+
+msgid "Query shared by {{sharedBy}}"
+msgstr "क्वेरी {{sharedBy}} द्वारा साझा की गई"
+
+msgid "Name query"
+msgstr "क्वेरी का नाम दें"
+
+msgid "Fields"
+msgstr "फ़ील्ड्स"
+
+msgid "Filters"
+msgstr "फ़िल्टर्स"
