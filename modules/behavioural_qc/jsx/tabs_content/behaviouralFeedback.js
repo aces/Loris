@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import FilterableDataTable from 'jsx/FilterableDataTable';
+import {withTranslation} from 'react-i18next'; 
 
 /**
  * Behavioural Feedback Component.
@@ -157,6 +158,7 @@ class BehaviouralFeedback extends Component {
    * @return {JSX} the feedback form to render.
    */
   render() {
+    const {t} = this.props; 
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -167,7 +169,7 @@ class BehaviouralFeedback extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: 'Instrument',
+        label: t('Instrument', {ns: 'loris'}),
         show: false,
         filter: {
           name: 'Instrument',
@@ -179,7 +181,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'DCCID',
+        label: t('DCCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'DCCID',
@@ -187,7 +189,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'PSCID',
+        label: t('PSCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'PSCID',
@@ -195,7 +197,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'Visit',
+        label: t('Visit', {ns: 'loris'}),
         show: false,
         filter: {
           name: 'Visit',
@@ -204,7 +206,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'Project',
+        label: t('Project', {ns: 'loris'}),
         show: false,
         filter: {
           name: 'Project',
@@ -213,7 +215,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'Cohort',
+        label: t('Cohort', {ns: 'loris'}),
         show: false,
         filter: {
           name: 'Cohort',
@@ -222,7 +224,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'Site',
+        label: t('Site', {ns: 'loris'}),
         show: false,
         filter: {
           name: 'Site',
@@ -243,19 +245,19 @@ class BehaviouralFeedback extends Component {
         show: false,
       },
       {
-        label: 'Feedback Level',
+        label: t('Feedback Level', {ns: 'behavioural_qc'}),
         show: true,
       },
       {
-        label: 'Test Name',
+        label: t('Test Name', {ns: 'behavioural_qc'}),
         show: false,
       },
       {
-        label: 'Field Name',
+        label: t('Field Name', {ns: 'behavioural_qc'}),
         show: false,
       },
       {
-        label: 'Feedback Status',
+        label: t('Feedback Status', {ns: 'behavioural_qc'}),
         show: true,
       },
     ];
@@ -280,6 +282,7 @@ BehaviouralFeedback.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func, 
 };
 
-export default BehaviouralFeedback;
+export default withTranslation(['behavioural_qc', 'loris'])(BehaviouralFeedback);
