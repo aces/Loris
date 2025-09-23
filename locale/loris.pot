@@ -200,7 +200,7 @@ msgid "Hide Advanced Filters"
 msgstr ""
 
 msgid "Language"
-msgstr "Lenguaje"
+msgstr ""
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
