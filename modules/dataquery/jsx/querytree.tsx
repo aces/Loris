@@ -4,6 +4,7 @@ import {CriteriaTerm} from './criteriaterm';
 import {ButtonElement} from 'jsx/Form';
 import {FullDictionary} from './types';
 import {useEffect} from 'react'; // already present
+import {useTranslation} from 'react-i18next'; // <-- ADD THIS
 
 /**
  * Alternate background colour for a QueryTree
@@ -61,6 +62,7 @@ function QueryTree(props: {
     mapCategoryName: (module: string, category: string) => string,
 }) {
   const [deleteItemIndex, setDeleteItemIndex] = useState<number|null>(null);
+  const {t} = useTranslation('dataquery'); // <-- ADD THIS
 
   useEffect(() => {
     // Reset strikethrough when group is empty or changed
@@ -114,7 +116,7 @@ function QueryTree(props: {
           if (item instanceof QueryTerm) {
             const deleteIcon = props.removeQueryGroupItem ? (
               <div style={{alignSelf: 'center'}}>
-                <i title="Delete item"
+                <i title={t('Delete item', {ns: 'dataquery'})}
                   className="fas fa-trash-alt"
                   onClick={deleteItem}
                   onMouseEnter={() => setDeleteItemIndex(i)}
@@ -190,7 +192,7 @@ function QueryTree(props: {
           marginLeft: 10,
         }}></i>
       <div style={{alignSelf: 'center'}}>
-                Group does not have any items.
+        {t('Group does not have any items.', {ns: 'dataquery'})}
       </div>
     </div>;
     break;
@@ -204,8 +206,7 @@ function QueryTree(props: {
           marginLeft: 10,
         }}></i>
       <div style={{alignSelf: 'center'}}>
-            Group only has 1 item. A group with only 1 item is equivalent
-            to not having the group.
+        {t('Group only has 1 item. A group with only 1 item is equivalent to not having the group.', {ns: 'dataquery'})}
       </div>
     </div>;
     break;
@@ -248,8 +249,7 @@ function QueryTree(props: {
     deleteGroupHTML = (
       <div style={{alignSelf: 'center', marginLeft: 'auto'}}>
         <i className="fas fa-trash-alt"
-          title='Delete Group'
-
+          title={t('Delete Group', {ns: 'dataquery'})}
           onMouseEnter={props.onDeleteHover}
           onMouseLeave={props.onDeleteLeave}
           onClick={props.deleteItem}
@@ -269,8 +269,7 @@ function QueryTree(props: {
           <div style={{...props.buttonGroupStyle, width: '100%'}}>
             <div style={{margin: 5}}>
               <ButtonElement
-                label={'Add "' + props.items.operator
-                        + '" condition to group'}
+                label={t('Add "{{operator}}" condition to group', {ns: 'dataquery', operator: props.items.operator})}
                 onUserInput={newItemClick}
                 style={props.buttonStyle}
                 columnSize='col-sm-12'
@@ -278,7 +277,7 @@ function QueryTree(props: {
             </div>
             <div style={{margin: 5}}>
               <ButtonElement
-                label={'New "' + antiOperator + '" subgroup'}
+                label={t('New "{{antiOperator}}" subgroup', {ns: 'dataquery', antiOperator})}
                 onUserInput={newGroupClick}
                 style={props.buttonStyle}
                 columnSize='col-sm-12'

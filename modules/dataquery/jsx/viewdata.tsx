@@ -1,5 +1,6 @@
 import swal from 'sweetalert2';
 import {useState, useEffect, ReactNode} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import fetchDataStream from 'jslib/fetchDataStream';
 
@@ -112,36 +113,37 @@ function DisplayValue(props: {
  * @returns {React.ReactElement} - The ProgressBar element
  */
 function ProgressBar(props: {type: string, value: number, max: number}) {
+  const {t} = useTranslation('dataquery');
   switch (props.type) {
   case 'loading':
     if (props.value == 0) {
-      return <h2>Query not yet run</h2>;
+      return <h2>{t('Query not yet run', {ns: 'dataquery'})}</h2>;
     }
     return (<div>
-      <label htmlFor="loadingprogress">Loading data:</label>
+      <label htmlFor="loadingprogress">{t('Loading data:', {ns: 'dataquery'})}</label>
       <progress id="loadingprogress"
         value={props.value} max={props.max}>
-        {props.value} of {props.max} candidates
+        {t('{{value}} of {{max}} candidates', {ns: 'dataquery', value: props.value, max: props.max})}
       </progress>
     </div>);
   case 'headers':
     return (<div>
-      <label htmlFor="loadingprogress">Organizing headers:</label>
+      <label htmlFor="loadingprogress">{t('Organizing headers:', {ns: 'dataquery'})}</label>
       <progress id="loadingprogress"
         value={props.value} max={props.max}>
-        {props.value} of {props.max} columns
+        {t('{{value}} of {{max}} columns', {ns: 'dataquery', value: props.value, max: props.max})}
       </progress>
     </div>);
   case 'dataorganization':
     return (<div>
-      <label htmlFor="loadingprogress">Organizing data:</label>
+      <label htmlFor="loadingprogress">{t('Organizing data:', {ns: 'dataquery'})}</label>
       <progress id="loadingprogress"
         value={props.value} max={props.max}>
-        {props.value} of {props.max} columns
+        {t('{{value}} of {{max}} columns', {ns: 'dataquery', value: props.value, max: props.max})}
       </progress>
     </div>);
   }
-  return <h2>Invalid progress type: {props.type}</h2>;
+  return <h2>{t('Invalid progress type: {{type}}', {ns: 'dataquery', type: props.type})}</h2>;
 }
 
 type RunQueryType = {
@@ -798,6 +800,7 @@ function organizedFormatter(
   displayEmptyVisits: boolean,
   enumDisplay: EnumDisplayTypes,
 ) {
+  const {t} = useTranslation('dataquery');
   let callback;
   switch (visitOrganization) {
   case 'raw':
@@ -841,20 +844,18 @@ function organizedFormatter(
       }
       if (fielddict.scope == 'candidate') {
         if (cell === '') {
-          return <td><i>(No data)</i></td>;
+          return <td><i>{t('(No data)', {ns: 'dataquery'})}</i></td>;
         }
         switch (fielddict.cardinality) {
         case 'many':
-          return <td><i>(Not implemented)</i></td>;
+          return <td><i>{t('(Not implemented)', {ns: 'dataquery'})}</i></td>;
         case 'single':
         case 'unique':
         case 'optional':
           return <TableCell data={cell} />;
         default:
           return (<td>
-            <i>(Internal Error. Unhandled cardinality:
-              {fielddict.cardinality})
-            </i>
+            <i>{t('(Internal Error. Unhandled cardinality: {{cardinality}})', {ns: 'dataquery', cardinality: fielddict.cardinality})}</i>
           </td>);
         }
       }
@@ -932,7 +933,7 @@ function organizedFormatter(
                 return null;
               } catch (e) {
                 console.error(e);
-                return <i>(Internal error)</i>;
+                return <i>{t('(Internal error)', {ns: 'dataquery'})}</i>;
               }
             };
             let theval = visitval(visit, cell);
@@ -940,7 +941,7 @@ function organizedFormatter(
               return <div key={visit} />;
             }
             if (theval === null) {
-              theval = <i>(No data)</i>;
+              theval = <i>{t('(No data)', {ns: 'dataquery'})}</i>;
             }
             return (<div key={visit} style={
               {
@@ -997,7 +998,7 @@ function organizedFormatter(
                   }
                 }
               } catch (e) {
-                return <i>(Internal error)</i>;
+                return <i>{t('(Internal error)', {ns: 'dataquery'})}</i>;
               }
               return null;
             };
@@ -1006,7 +1007,7 @@ function organizedFormatter(
               return <div key={visit} />;
             }
             if (theval === null) {
-              theval = <i>(No data)</i>;
+              theval = <i>{t('(No data)', {ns: 'dataquery'})}</i>;
             }
             return (<div key={visit} style={
               {
@@ -1071,7 +1072,7 @@ function organizedFormatter(
       }
       return <>{cells.map((cell: LongitudinalExpansion) => {
         if (cell.value === null) {
-          return <td><i>(No data)</i></td>;
+          return <td><i>{t('(No data)', {ns: 'dataquery'})}</i></td>;
         }
 
         return (<td>
@@ -1102,7 +1103,7 @@ function organizedFormatter(
       fieldNo: number
     ): ReactNode => {
       if (cell === null) {
-        return <td><i>No data for visit</i></td>;
+        return <td><i>{t('No data for visit', {ns: 'dataquery'})}</i></td>;
       }
       if (fieldNo == 0) {
         // automatically added Visit column

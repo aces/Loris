@@ -4,6 +4,7 @@ import {useState} from 'react';
 import Papa from 'papaparse';
 import swal from 'sweetalert2';
 import {FileElement} from 'jsx/Form';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Render a modal window for adding a filter
@@ -17,6 +18,7 @@ function ImportCSVModal(props: {
     setQuery: (root: QueryGroup) => void,
     closeModal: () => void,
 }) {
+  const {t} = useTranslation('dataquery');
   const [csvFile, setCSVFile] = useState<string|null>(null);
   const [csvHeader, setCSVHeader] = useState<boolean>(false);
   const [csvType, setCSVType] = useState<string>('candidate');
@@ -53,8 +55,8 @@ function ImportCSVModal(props: {
       console.error(value.errors);
       swal.fire({
         type: 'error',
-        title: 'Invalid CSV',
-        text: 'Could not parse CSV file',
+        title: t('Invalid CSV', {ns: 'dataquery'}),
+        text: t('Could not parse CSV file', {ns: 'dataquery'}),
       });
       setCSVFile(null);
       return;
@@ -80,10 +82,8 @@ function ImportCSVModal(props: {
       if (value.data[i].length != expectedLength) {
         swal.fire({
           type: 'error',
-          title: 'Invalid CSV',
-          text: 'Expected ' + expectedLength + ' columns in CSV.'
-                        + ' Got ' + value.data[i].length + ' on line ' +
-                        (i+1) + '.',
+          title: t('Invalid CSV', {ns: 'dataquery'}),
+          text: t('Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}.', {ns: 'dataquery', expectedLength, gotLength: value.data[i].length, line: i+1}),
         });
         setCSVFile(null);
         return;
@@ -92,10 +92,8 @@ function ImportCSVModal(props: {
         if (candIDRegex.test(value.data[i][0]) !== true) {
           swal.fire({
             type: 'error',
-            title: 'Invalid DCC ID',
-            text: 'Invalid DCC ID (' + value.data[i][0]
-                            + ') on line '
-                            + (i+1) + '.',
+            title: t('Invalid DCC ID', {ns: 'dataquery'}),
+            text: t('Invalid DCC ID ({{id}}) on line {{line}}.', {ns: 'dataquery', id: value.data[i][0], line: i+1}),
           });
           setCSVFile(null);
           return;
@@ -149,7 +147,7 @@ function ImportCSVModal(props: {
     marginTop: '1em',
   };
 
-  return <Modal title="Import Population From CSV"
+  return <Modal title={t('Import Population From CSV', {ns: 'dataquery'})}
     show={true}
     throwWarning={true}
     onClose={props.closeModal}
@@ -157,43 +155,43 @@ function ImportCSVModal(props: {
     <fieldset>
       <div>
         <dl>
-          <dt style={dtstyle}>CSV containing list of</dt>
+          <dt style={dtstyle}>{t('CSV containing list of', {ns: 'dataquery'})}</dt>
           <dd>
             <input type="radio" name="csvtype"
               checked={csvType == 'candidate'}
               onChange={() => setCSVType('candidate')}
-            /> Candidates
+            /> {t('Candidates', {ns: 'dataquery'})}
             <input type="radio" name="csvtype"
               style={{marginLeft: '1.5em'}}
               checked={csvType == 'session'}
               onChange={() => setCSVType('session')}
-            /> Sessions
+            /> {t('Sessions', {ns: 'dataquery'})}
           </dd>
-          <dt style={dtstyle}>Candidate identifier type</dt>
+          <dt style={dtstyle}>{t('Candidate identifier type', {ns: 'dataquery'})}</dt>
           <dd><input type="radio" name="candidtype"
             checked={idType == 'CandID'}
             onChange={() => setIdType('CandID')}
-          /> DCC ID
+          /> {t('DCC ID', {ns: 'dataquery'})}
           <input type="radio" name="candidtype"
             style={{marginLeft: '1.5em'}}
             checked={idType == 'PSCID'}
             onChange={() => setIdType('PSCID')}
-          /> PSCID
+          /> {t('PSCID', {ns: 'dataquery'})}
           </dd>
           <dt style={dtstyle}>
-                            Does CSV contain a header line?
+            {t('Does CSV contain a header line?', {ns: 'dataquery'})}
           </dt>
           <dd><input type="radio" name="header"
             checked={csvHeader == true}
             onChange={() => setCSVHeader(true)}
-          /> Yes
+          /> {t('Yes', {ns: 'dataquery'})}
           <input type="radio" name="header"
             style={{marginLeft: '1.5em'}}
             checked={csvHeader == false}
             onChange={() => setCSVHeader(false)}
-          /> No
+          /> {t('No', {ns: 'dataquery'})}
           </dd>
-          <dt style={dtstyle}>CSV File</dt>
+          <dt style={dtstyle}>{t('CSV File', {ns: 'dataquery'})}</dt>
           <dd><FileElement label='' name="csvfile"
             value={csvFile}
             onUserInput={

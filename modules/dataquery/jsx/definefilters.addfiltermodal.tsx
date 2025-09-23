@@ -18,6 +18,7 @@ import {
   VisitOption,
 } from './types';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Renders a selectable list of visits
@@ -33,6 +34,7 @@ function VisitList(props: {
     options: string[],
     onChange: (newvals: string[]) => void,
 }) {
+  const {t} = useTranslation('dataquery');
   const selectOptions: VisitOption[] = props.options.map(
     (vl) => {
       return {value: vl, label: vl};
@@ -50,7 +52,7 @@ function VisitList(props: {
         newvals.map((valobj) => valobj.value)
       );
     }}
-    placeholder='Select Visits'
+    placeholder={t('Select Visits', {ns: 'dataquery'})}
     value={selectedVisits}
     menuPortalTarget={document.body}
     styles={{menuPortal:
@@ -92,6 +94,7 @@ function AddFilterModal(props: {
     module: string,
     category: string,
 }) {
+  const {t} = useTranslation('dataquery');
   let fieldSelect;
   let criteriaSelect;
   let visitSelect;
@@ -129,11 +132,11 @@ function AddFilterModal(props: {
   if (fieldDictionary) {
     let valueSelect;
     if (op) {
-      valueSelect = valueInput(fieldDictionary, op, value, setValue);
+      valueSelect = valueInput(fieldDictionary, op, value, setValue,t);
     }
 
     criteriaSelect = <div>
-      <h3>Criteria</h3>
+      <h3>{t('Criteria', {ns: 'dataquery'})}</h3>
       <div style={{display: 'flex'}}>
         <div style={{width: '20%'}}>
           <FilterableSelectGroup groups={
@@ -142,7 +145,7 @@ function AddFilterModal(props: {
           onChange={(value: string, operator: string) => {
             setOp(operator as Operators);
           }}
-          placeholder="Select an operator"
+          placeholder={t('Select an operator', {ns: 'dataquery'})}
           />
         </div>
         <div style={{width: '80%'}}>{valueSelect}</div>
@@ -151,7 +154,7 @@ function AddFilterModal(props: {
 
     if (fieldDictionary.scope == 'session' && fieldDictionary.visits) {
       visitSelect = <div onClick={(e) => e.stopPropagation()}>
-        <h3>for at least one of the following visits</h3>
+        <h3>{t('for at least one of the following visits', {ns: 'dataquery'})}</h3>
         <VisitList options={fieldDictionary.visits}
           selected={selectedVisits || []}
           onChange={setSelectedVisits}
@@ -173,10 +176,7 @@ function AddFilterModal(props: {
         <div style={{
           color: 'white',
           padding: '1em',
-        }}>This field may exist multiple times for a
-            single {fieldDictionary.scope}. Adding a criteria
-            based on it means that it must match for <i>at least
-            one</i> of the data points.</div>
+        }}>{t('This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <i>at least one</i> of the data points.', {ns: 'dataquery', scope: fieldDictionary.scope})}</div>
       </div>;
     }
   }
@@ -193,8 +193,8 @@ function AddFilterModal(props: {
       if (!fieldname) {
         swal.fire({
           type: 'error',
-          title: 'Invalid field',
-          text: 'You must select a field for the criteria.',
+          title: t('Invalid field', {ns: 'dataquery'}),
+          text: t('You must select a field for the criteria.', {ns: 'dataquery'}),
         });
         reject();
         return;
@@ -202,8 +202,8 @@ function AddFilterModal(props: {
       if (!op) {
         swal.fire({
           type: 'error',
-          title: 'Invalid operator',
-          text: 'You must select an operator for the criteria.',
+          title: t('Invalid operator', {ns: 'dataquery'}),
+          text: t('You must select an operator for the criteria.', {ns: 'dataquery'}),
         });
         reject();
         return;
@@ -214,9 +214,8 @@ function AddFilterModal(props: {
                    && op != 'exists' && op != 'notexists') {
           swal.fire({
             type: 'error',
-            title: 'Invalid value',
-            text: 'You must enter a value to compare the ' +
-                         'field against.',
+            title: t('Invalid value', {ns: 'dataquery'}),
+            text: t('You must enter a value to compare the field against.', {ns: 'dataquery'}),
           });
           reject();
           return;
@@ -227,8 +226,8 @@ function AddFilterModal(props: {
         if (!selectedVisits || selectedVisits.length == 0) {
           swal.fire({
             type: 'error',
-            title: 'Invalid visits',
-            text: 'No visits selected for criteria.',
+            title: t('Invalid visits', {ns: 'dataquery'}),
+            text: t('No visits selected for criteria.', {ns: 'dataquery'}),
           });
           reject();
           return;
@@ -257,13 +256,13 @@ function AddFilterModal(props: {
     }
     );
   return (
-    <Modal title="Add criteria"
+    <Modal title={t('Add criteria', {ns: 'dataquery'})}
       show={true}
       throwWarning={true}
       onClose={props.closeModal}
       onSubmit={submitPromise}>
       <div style={{width: '100%', padding: '1em'}}>
-        <h3>Field</h3>
+        <h3>{t('Field', {ns: 'dataquery'})}</h3>
         <div style={{display: 'flex', width: '100%'}}>
           <div style={{width: '40%'}}>
             <FilterableSelectGroup
@@ -300,7 +299,7 @@ function AddFilterModal(props: {
  */
 function getOperatorOptions(dict: FieldDictionary) {
   let options: {[operator: string]: string};
-
+  const {t} = useTranslation('dataquery');
   if (dict.type == 'integer' || dict.type == 'date' ||
             dict.type == 'interval' || dict.type == 'time' ||
             dict.type == 'decimal') {
@@ -329,9 +328,9 @@ function getOperatorOptions(dict: FieldDictionary) {
     options = {
       'eq': '=',
       'neq': '≠',
-      'startsWith': 'starts with',
-      'contains': 'contains',
-      'endsWith': 'ends with',
+      'startsWith': t('starts with', {ns: 'dataquery'}),
+      'contains': t('contains', {ns: 'dataquery'}),
+      'endsWith': t('ends with', {ns: 'dataquery'}),
     };
   } else {
     // fall back to == and !=, valid for any type.
@@ -344,12 +343,12 @@ function getOperatorOptions(dict: FieldDictionary) {
   // 1-many cardinalities have a couple more
   // things you can check.
   if (dict.cardinality == 'optional') {
-    options['isnotnull'] = 'has data';
-    options['isnull'] = 'has no data';
+    options['isnotnull'] = t('has data', {ns: 'dataquery'});
+    options['isnull'] = t('has no data', {ns: 'dataquery'});
   } else if (dict.cardinality == 'many') {
-    options['exists'] = 'exists';
-    options['notexists'] = 'does not exist';
-    options['numberof'] = 'number of';
+    options['exists'] = t('exists', {ns: 'dataquery'});
+    options['notexists'] = t('does not exist', {ns: 'dataquery'});
+    options['numberof'] = t('number of', {ns: 'dataquery'});
   }
   return options;
 }
@@ -368,7 +367,8 @@ function getOperatorOptions(dict: FieldDictionary) {
 function valueInput(fielddict: FieldDictionary,
   op: Operators,
   value: string|string[],
-  setValue: (val: string) => void
+  setValue: (val: string) => void,
+  t: any
 ) {
   const vs: string = value as string;
   switch (op) {
@@ -415,14 +415,14 @@ function valueInput(fielddict: FieldDictionary,
   case 'boolean':
     return <FilterableSelectGroup groups={
       {'Value': {
-        'true': 'true',
-        'false': ' false',
+        'true': t('true', {ns: 'dataquery'}),
+        'false': t('false', {ns: 'dataquery'}),
       },
       }}
     onChange={(_: string, value: string) => {
       setValue(value);
     }}
-    placeholder="Select a value"
+    placeholder={t('Select a value', {ns: 'dataquery'})}
     />;
   case 'enumeration':
     const opts: {[key: string]: string} = {};
@@ -453,7 +453,7 @@ function valueInput(fielddict: FieldDictionary,
       onChange={(_: string, value: string) => {
         setValue(value);
       }}
-      placeholder="Select a value"
+      placeholder={t('Select a value', {ns: 'dataquery'})}
     />;
   default:
     return <TextboxElement
