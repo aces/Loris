@@ -5,7 +5,6 @@
 # This file is distributed under the same license as the LORIS package.
 # Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
 #
-
 msgid ""
 msgstr ""
 "Project-Id-Version: LORIS 27\n"
@@ -120,7 +119,11 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+# Common swal labels
 msgid "Cancel"
+msgstr ""
+
+msgid "Success!"
 msgstr ""
 
 # Common candidate terms
@@ -194,6 +197,9 @@ msgid "Show Advanced Filters"
 msgstr ""
 
 msgid "Hide Advanced Filters"
+msgstr ""
+
+msgid "Language"
 msgstr ""
 
 # Data table strings

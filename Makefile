@@ -81,6 +81,8 @@ locales:
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po
 	msgfmt -o modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po
+	msgfmt -o modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po
+	npx i18next-conv -l es -s modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po -t modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.json
 	msgfmt -o modules/dashboard/locale/ja/LC_MESSAGES/dashboard.mo modules/dashboard/locale/ja/LC_MESSAGES/dashboard.po
 	msgfmt -o modules/datadict/locale/ja/LC_MESSAGES/datadict.mo modules/datadict/locale/ja/LC_MESSAGES/datadict.po
 	msgfmt -o modules/datadict/locale/hi/LC_MESSAGES/datadict.mo modules/datadict/locale/hi/LC_MESSAGES/datadict.po
@@ -130,6 +132,9 @@ locales:
 
 acknowledgements:
 	target=acknowledgements npm run compile
+
+create_timepoint:
+	target=data_release npm run compile
 
 data_release:
 	msgfmt -o modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/hi/LC_MESSAGES/data_release.po

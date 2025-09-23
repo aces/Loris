@@ -350,7 +350,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         foreach ($timePointArray AS $used_name) {
             if (strcasecmp($visitName, $used_name) == 0) {
                 throw new \LorisException(
-                    'This visit label is not unique.'
+                    dgettext("create_timepoint", "This visit label is not unique.")
                 );
             }
         }
