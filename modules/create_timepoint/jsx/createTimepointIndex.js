@@ -195,11 +195,12 @@ class CreateTimepoint extends React.Component {
     if (Array.isArray(state.storage.cohort[state.form.value.project])) {
       // Display error message to user.
       const errorMessage = t(
-        'No cohorts defined for project:',
-        {ns: 'create_timepoint'}) + ` ${
-        this.state.form.options.project[
-          this.state.form.value.project
-        ]}`;
+        'No cohorts defined for project: {{project}}',
+        {ns: 'create_timepoint',
+          project: this.state.form.options.project[
+            this.state.form.value.project
+        ]});
+      state.messages = [errorMessage];
       state.messages = [errorMessage];
       swal.fire(errorMessage, '', 'error');
       state.form.options.cohort = {};
@@ -235,16 +236,15 @@ class CreateTimepoint extends React.Component {
         state.form.value.project][state.form.value.cohort])
       ) {
         const errorMessage = t(
-          'No visit labels defined for combination of project: ',
-          {ns: 'create_timepoint'}) + `${
-          this.state.form.options.project[
-            this.state.form.value.project
-          ]
-        }` + t('and cohort: ', {ns: 'create_timepoint'}) + `${
-          this.state.form.options.cohort[
-            this.state.form.value.cohort
-          ]
-        }`;
+          "No visit labels defined for combination project: {{project}} and cohort: {{cohort}}",
+          {ns: 'create_timepoint',
+            project: this.state.form.options.project[
+              this.state.form.value.project
+            ],
+            cohort: this.state.form.options.cohort[
+              this.state.form.value.cohort
+            ]
+          });
         state.messages = [errorMessage];
         swal.fire(errorMessage, '', 'error');
         state.form.options.visit = {};
