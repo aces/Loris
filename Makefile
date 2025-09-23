@@ -103,6 +103,8 @@ locales:
 	msgfmt -o modules/examiner/locale/ja/LC_MESSAGES/examiner.mo modules/examiner/locale/ja/LC_MESSAGES/examiner.po
 	msgfmt -o modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.mo modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.po
 	msgfmt -o modules/help_editor/locale/ja/LC_MESSAGES/help_editor.mo modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po
+	msgfmt -o modules/help_editor/locale/hi/LC_MESSAGES/help_editor.mo modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po
+	npx i18next-conv -l hi -s modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po -t modules/help_editor/locale/hi/LC_MESSAGES/help_editor.json
 	msgfmt -o modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.mo modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po
 	msgfmt -o modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.mo modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.po
 	msgfmt -o modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.mo modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po
