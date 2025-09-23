@@ -6,7 +6,7 @@ import {CheckboxElement} from 'jsx/Form';
 import {FullDictionary, FieldDictionary, DictionaryCategory} from './types';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import {APIQueryField, VisitOption} from './types';
-
+import {useTranslation} from 'react-i18next';
 
 /**
  * Displays a single field to be selected for querying
@@ -46,6 +46,7 @@ function QueryField(props: {
     ) => void,
     defaultVisits: string[],
 }) {
+  const {t} = useTranslation('dataquery');
   const item=props.item;
   const className = props.selected ?
     'list-group-item active' :
@@ -93,14 +94,14 @@ function QueryField(props: {
 
     if (props.selected) {
       visits = <div onClick={(e) => e.stopPropagation()}>
-        <h4>Visits</h4>
+        <h4>{t('Visits', {ns: 'loris'})}</h4>
         <Select options={selectOptions.map((visit: string): VisitOption => {
           return {value: visit, label: visit};
         })
         }
         isMulti
         onChange={selected}
-        placeholder='Select Visits'
+        placeholder={t('Select Visits', {ns: 'loris'})}
         value={selectedVisits.map( (visit: string): VisitOption => {
           return {value: visit, label: visit};
         })
