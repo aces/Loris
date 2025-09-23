@@ -113,6 +113,9 @@ msgstr ""
 msgid "TimePoint"
 msgstr ""
 
+msgid "Module"
+msgstr ""
+
 # Common select option labels
 msgid "Yes"
 msgstr ""
@@ -134,9 +137,6 @@ msgid "Visit Label"
 msgstr ""
 
 msgid "Site"
-msgstr ""
-
-msgid "Module"
 msgstr ""
 
 msgid "Project"
@@ -194,6 +194,12 @@ msgid "Show Advanced Filters"
 msgstr ""
 
 msgid "Hide Advanced Filters"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Reset"
 msgstr ""
 
 # Data table strings
