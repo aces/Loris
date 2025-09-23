@@ -312,7 +312,7 @@ class CreateTimepoint extends React.Component {
       if (response.ok) {
         swal.fire(
           t('Success!', {ns: 'loris'}),
-          t('Time Point created.', {ns: 'create_timepoint'}), 'success')
+          t('Timepoint created.', {ns: 'create_timepoint'}), 'success')
           .then(() => {
             window.location.replace(
               `${this.props.baseURL}/${this.state.url.params.candID}`
@@ -447,7 +447,7 @@ class CreateTimepoint extends React.Component {
     ) : null;
 
     return (
-      <Panel title={t('Create Time Point', {ns: 'create_timepoint'})}>
+      <Panel title={t('Create Timepoint', {ns: 'create_timepoint'})}>
         {messages}
         <FormElement
           name={'timepointInfo'}
@@ -464,7 +464,7 @@ class CreateTimepoint extends React.Component {
           {visit}
           {languages}
           <ButtonElement
-            label={t('Create Time Point', {ns: 'create_timepoint'})}
+            label={t('Create Timepoint', {ns: 'create_timepoint'})}
             type={'submit'}
             name={'fire_away'}
           />
