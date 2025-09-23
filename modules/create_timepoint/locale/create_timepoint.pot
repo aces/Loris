@@ -24,10 +24,10 @@ msgstr ""
 msgid "Create Time Point"
 msgstr ""
 
-msgid "No cohorts defined for project:"
+msgid "No cohorts defined for project: {{project}}"
 msgstr ""
 
-msgid "No visit labels defined for combination project: {{project}} and cohort: {{cohort}}"
+msgid "No visit labels defined for the combination project: {{project}} and cohort: {{cohort}}"
 msgstr ""
 
 msgid "Time Point created."

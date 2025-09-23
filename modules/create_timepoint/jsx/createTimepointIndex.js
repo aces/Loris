@@ -199,7 +199,7 @@ class CreateTimepoint extends React.Component {
         {ns: 'create_timepoint',
           project: this.state.form.options.project[
             this.state.form.value.project
-        ]});
+          ]});
       state.messages = [errorMessage];
       state.messages = [errorMessage];
       swal.fire(errorMessage, '', 'error');
@@ -236,14 +236,15 @@ class CreateTimepoint extends React.Component {
         state.form.value.project][state.form.value.cohort])
       ) {
         const errorMessage = t(
-          "No visit labels defined for combination project: {{project}} and cohort: {{cohort}}",
+          'No visit labels defined for the combination'
+            + ' project: {{project}} and cohort: {{cohort}}',
           {ns: 'create_timepoint',
             project: this.state.form.options.project[
               this.state.form.value.project
             ],
             cohort: this.state.form.options.cohort[
               this.state.form.value.cohort
-            ]
+            ],
           });
         state.messages = [errorMessage];
         swal.fire(errorMessage, '', 'error');

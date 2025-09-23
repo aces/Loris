@@ -24,10 +24,10 @@ msgstr "Crear Punto en el Tiempo"
 msgid "Create Time Point"
 msgstr "Crear Punto en el Tiempo"
 
-msgid "No cohorts defined for project:"
-msgstr "No existen cohortes definidos en el projecto:"
+msgid "No cohorts defined for project: {{project}}"
+msgstr "No existen cohortes definidos en el projecto: {{project}}"
 
-msgid "No visit labels defined for combination project: {{project}} and cohort: {{cohort}}"
+msgid "No visit labels defined for the combination project: {{project}} and cohort: {{cohort}}"
 msgstr "No existen Etiquetas de Visita definidas para la combinación projecto: {{project}} y cohorte: {{cohort}}"
 
 msgid "Time Point created."
