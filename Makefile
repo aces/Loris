@@ -1,23 +1,25 @@
-.PHONY: clean dev all check checkstatic unittests phpdev jslatest testdata fastdev jsdev locales
+.PHONY: clean dev all check checkstatic unittests jslatest testdata locales
 
-all: locales VERSION
-	composer install --no-dev
-	npm ci
+all: node_modules locales VERSION vendor
 	npm run build
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
 	tools/gen-version.sh
 
-phpdev:
+vendor/bin/phan: composer.lock
 	composer install
 
-dev: jsdev locales phpdev fastdev
+vendor/bin/phpunit: composer.lock
+	composer install
 
-jsdev:
+vendor: composer.lock
+	composer install --no-dev
+
+node_modules: package-lock.json
 	npm ci
 
-fastdev: VERSION
+dev: node_modules locales vendor/bin/phan VERSION vendor
 	npm run compile
 
 jslatest: clean
@@ -35,7 +37,7 @@ clean:
 	rm -f modules/*/locale/*/LC_MESSAGES/*.mo
 
 # Perform static analysis checks
-checkstatic: phpdev
+checkstatic: vendor/bin/phan dev
 	npm run lint:php
 	vendor/bin/phan
 	npm run lint:js
@@ -48,7 +50,7 @@ checkstatic: phpdev
 make checklanguage:
 	npx alex --quiet --why --diff
 
-unittests: phpdev
+unittests: vendor/bin/phpunit
 	vendor/bin/phpunit --configuration test/phpunit.xml
 
 # Perform all tests that don't require an install.
