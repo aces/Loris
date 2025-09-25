@@ -58,12 +58,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
         // check EDC shows on the page
-        $value = "#lorisworkspace > fieldset > div > form > div > div:nth-child(3)>".
-                 " div > div:nth-child(1) > label";
-        $EDC   = $this->safeFindElement(
-            WebDriverBy::cssSelector($value)
+        $EDCLabel = $this->safeFindElement(
+            WebDriverBy::xpath("//label[contains(text(), 'Expected Date of Confinement')]")
         )->getText();
-        $this->assertStringContainsString("Expected Date of Confinement", $EDC);
+        $this->assertStringContainsString("Expected Date of Confinement", $EDCLabel);
         // check Project shows on the page
         $value   = "#lorisworkspace > fieldset > div > form>div>div:nth-child(7)>".
                    " div > label";
