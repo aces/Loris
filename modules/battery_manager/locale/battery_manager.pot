@@ -119,3 +119,6 @@ msgstr ""
 
 msgid "Maximum Age (days)"
 msgstr ""
+
+msgid "Minimum Age (days)"
+msgstr ""
