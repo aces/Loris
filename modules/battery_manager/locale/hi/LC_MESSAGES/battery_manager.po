@@ -122,3 +122,6 @@ msgstr "सबमिट करें"
 
 msgid "Maximum Age (days)"
 msgstr "अधिकतम आयु (दिन)"
+
+msgid "Minimum Age (days)"
+msgstr "न्यूनतम आयु (दिन)"
