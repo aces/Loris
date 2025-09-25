@@ -129,7 +129,13 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
+msgid "Sites"
+msgstr ""
+
 msgid "Project"
+msgstr ""
+
+msgid "Projects"
 msgstr ""
 
 msgid "Cohort"
@@ -157,6 +163,9 @@ msgid "Date of Birth"
 msgstr ""
 
 msgid "An error occured while loading the page."
+msgstr ""
+
+msgid "Active"
 msgstr ""
 
 # Data table strings

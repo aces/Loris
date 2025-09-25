@@ -41,9 +41,6 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-msgid "Active"
-msgstr ""
-
 msgid "Pending Approval"
 msgstr ""
 
@@ -96,6 +93,135 @@ msgid "Back"
 msgstr ""
 
 msgid "Reject User"
+msgstr ""
+
+msgid "User name"
+msgstr ""
+
+msgid "Make user name match email address"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Generate new password"
+msgstr ""
+
+msgid "Confirm Password"
+msgstr ""
+
+msgid "First name"
+msgstr ""
+
+msgid "Last name"
+msgstr ""
+
+msgid "Degree"
+msgstr ""
+
+msgid "Academic Position"
+msgstr ""
+
+msgid "Institution"
+msgstr ""
+
+msgid "Department"
+msgstr ""
+
+msgid "Street Address"
+msgstr ""
+
+msgid "City"
+msgstr ""
+
+msgid "State/Province"
+msgstr ""
+
+msgid "Zip/Postal Code"
+msgstr ""
+
+msgid "Country"
+msgstr ""
+
+msgid "FAX"
+msgstr ""
+
+msgid "Email address"
+msgstr ""
+
+msgid "Send email to user"
+msgstr ""
+
+msgid "Confirm Email"
+msgstr ""
+
+msgid "Examiner At:"
+msgstr ""
+
+msgid "Examiner Status"
+msgstr ""
+
+msgid "Pending approval"
+msgstr ""
+
+msgid "Active from"
+msgstr ""
+
+msgid "Active to"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Supervisors"
+msgstr ""
+
+msgid "You cannot enter a user name if you want it to match the email address"
+msgstr ""
+
+msgid "You must enter a user name or choose to make it match the email address"
+msgstr ""
+
+msgid "The user name already exists"
+msgstr ""
+
+msgid "The user name must not exceed 255 characters"
+msgstr ""
+
+msgid "You cannot have the user name match an email address that contains a whitespace character"
+msgstr ""
+
+msgid "Whitespace characters are not allowed in user names"
+msgstr ""
+
+msgid "Please specify password or click Generate new password"
+msgstr ""
+
+msgid "Password is required"
+msgstr ""
+
+msgid "You must enter an email address"
+msgstr ""
+
+msgid "Email and confirmed email do not match"
+msgstr ""
+
+msgid "You must select at least one site/affiliation"
+msgstr ""
+
+msgid "You must select at least one project/affiliation"
+msgstr ""
+
+msgid "Please specify if examiner is a radiologist"
+msgstr ""
+
+msgid "Please set pending approval Yes or No"
+msgstr ""
+
+msgid "Please select at least one examiner site or clear the 'Examiner status' fields below (i.e. 'Radiologist' and 'Pending Approval')."
+msgstr ""
+
+msgid "Please notice that the \"Active from\" date should be lesser or equal to the \"Active to\" date."
 msgstr ""
 
 

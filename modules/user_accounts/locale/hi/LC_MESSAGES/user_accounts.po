@@ -41,9 +41,6 @@ msgstr "पूरा नाम"
 msgid "Email"
 msgstr "ईमेल"
 
-msgid "Active"
-msgstr "सक्रिय"
-
 msgid "Pending Approval"
 msgstr "स्वीकृति लंबित"
 
@@ -98,4 +95,132 @@ msgstr "वापस"
 msgid "Reject User"
 msgstr "उपयोगकर्ता को अस्वीकार करें"
 
+msgid "User name"
+msgstr "उपयोगकर्ता नाम"
+
+msgid "Make user name match email address"
+msgstr "उपयोगकर्ता नाम को ईमेल पता से मिलाएँ"
+
+msgid "Password"
+msgstr "पासवर्ड"
+
+msgid "Generate new password"
+msgstr "नया पासवर्ड बनाएं"
+
+msgid "Confirm Password"
+msgstr "पासवर्ड की पुष्टि करें"
+
+msgid "First name"
+msgstr "पहला नाम"
+
+msgid "Last name"
+msgstr "अंतिम नाम"
+
+msgid "Degree"
+msgstr "डिग्री"
+
+msgid "Academic Position"
+msgstr "शैक्षणिक पद"
+
+msgid "Institution"
+msgstr "संस्थान"
+
+msgid "Department"
+msgstr "विभाग"
+
+msgid "Street Address"
+msgstr "सड़क का पता"
+
+msgid "City"
+msgstr "शहर"
+
+msgid "State/Province"
+msgstr "राज्य/प्रांत"
+
+msgid "Zip/Postal Code"
+msgstr "पिन/डाक कोड"
+
+msgid "Country"
+msgstr "देश"
+
+msgid "FAX"
+msgstr "फैक्स"
+
+msgid "Email address"
+msgstr "ईमेल पता"
+
+msgid "Send email to user"
+msgstr "उपयोगकर्ता को ईमेल भेजें"
+
+msgid "Confirm Email"
+msgstr "ईमेल की पुष्टि करें"
+
+msgid "Examiner At:"
+msgstr "परीक्षक स्थल:"
+
+msgid "Examiner Status"
+msgstr "परीक्षक की स्थिति"
+
+msgid "Pending approval"
+msgstr "अनुमोदन प्रतीक्षारत"
+
+msgid "Active from"
+msgstr "सक्रिय शुरू"
+
+msgid "Active to"
+msgstr "सक्रिय समाप्त"
+
+msgid "Permissions"
+msgstr "अनुमतियाँ"
+
+msgid "Supervisors"
+msgstr "पर्यवेक्षक"
+
+msgid "You cannot enter a user name if you want it to match the email address"
+msgstr "यदि आप उपयोगकर्ता नाम को ईमेल से मेल करना चाहते हैं, तो आप इसे अलग से दर्ज नहीं कर सकते"
+
+msgid "You must enter a user name or choose to make it match the email address"
+msgstr "आपको उपयोगकर्ता नाम दर्ज करना होगा या इसे ईमेल से मेल करने का विकल्प चुनना होगा"
+
+msgid "The user name already exists"
+msgstr "उपयोगकर्ता नाम पहले से मौजूद है"
+
+msgid "The user name must not exceed 255 characters"
+msgstr "उपयोगकर्ता नाम 255 अक्षरों से अधिक नहीं होना चाहिए"
+
+msgid "You cannot have the user name match an email address that contains a whitespace character"
+msgstr "आप उपयोगकर्ता नाम को ऐसे ईमेल से मेल नहीं कर सकते जिसमें रिक्त स्थान हो"
+
+msgid "Whitespace characters are not allowed in user names"
+msgstr "उपयोगकर्ता नाम में रिक्त स्थान की अनुमति नहीं है"
+
+msgid "Please specify password or click Generate new password"
+msgstr "कृपया पासवर्ड निर्दिष्ट करें या 'नया पासवर्ड बनाएं' पर क्लिक करें"
+
+msgid "Password is required"
+msgstr "पासवर्ड आवश्यक है"
+
+msgid "You must enter an email address"
+msgstr "आपको ईमेल पता दर्ज करना होगा"
+
+msgid "Email and confirmed email do not match"
+msgstr "ईमेल और पुष्टि की गई ईमेल मेल नहीं खाते"
+
+msgid "You must select at least one site/affiliation"
+msgstr "आपको कम से कम एक साइट/संलग्नता चुननी होगी"
+
+msgid "You must select at least one project/affiliation"
+msgstr "आपको कम से कम एक प्रोजेक्ट/संलग्नता चुननी होगी"
+
+msgid "Please specify if examiner is a radiologist"
+msgstr "कृपया निर्दिष्ट करें कि परीक्षक रेडियोलॉजिस्ट है या नहीं"
+
+msgid "Please set pending approval Yes or No"
+msgstr "कृपया 'अनुमोदन प्रतीक्षारत' को हाँ या नहीं सेट करें"
+
+msgid "Please select at least one examiner site or clear the 'Examiner status' fields below (i.e. 'Radiologist' and 'Pending Approval')."
+msgstr "कृपया कम से कम एक परीक्षक स्थल चुनें या नीचे के 'परीक्षक स्थिति' फ़ील्ड्स (जैसे 'रेडियोलॉजिस्ट' और 'अनुमोदन प्रतीक्षारत') को साफ़ करें।"
+
+msgid "Please notice that the \"Active from\" date should be lesser or equal to the \"Active to\" date."
+msgstr "कृपया ध्यान दें कि 'सक्रिय शुरू' तिथि, 'सक्रिय समाप्त' तिथि के बराबर या उससे पहले होनी चाहिए।"
 
