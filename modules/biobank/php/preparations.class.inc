@@ -132,7 +132,7 @@ class Preparations implements RequestHandlerInterface
         $this->loris = $request->getAttribute("loris");
 
         $db        = $this->loris->getDatabaseConnection();
-        $endpoint  = $request->getURI()->getPath();
+        $endpoint  = $request->getAttribute("unhandledURI")->getPath();
         $pathparts = explode('/', $endpoint);
         $db->delete(
             'biobank_specimen_preparation',
