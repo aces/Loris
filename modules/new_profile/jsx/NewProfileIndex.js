@@ -269,6 +269,11 @@ class NewProfileIndex extends React.Component {
         ),
       },
       {
+        label: this.props.t('Expected Date of Confinement',
+          {ns: 'new_profile'}),
+        element: edc,
+      },
+      {
         label: this.props.t('Sex', {ns: 'loris'}) ,
         element: (
           <SelectElement
@@ -286,6 +291,10 @@ class NewProfileIndex extends React.Component {
         element: site,
       },
       {
+        label: this.props.t('PSCID', {ns: 'loris'}),
+        element: pscid,
+      },
+      {
         label: this.props.t('Project', {ns: 'loris'}) ,
         element: (
           <SelectElement
@@ -298,15 +307,8 @@ class NewProfileIndex extends React.Component {
           />
         ),
       },
-      {
-        label: this.props.t('PSCID', {ns: 'loris'}),
-        element: pscid,
-      },
-      {
-        label: this.props.t('Expected Date of Confinement',
-          {ns: 'new_profile'}),
-        element: edc,
-      },
+      
+      
     ];
 
     return (
