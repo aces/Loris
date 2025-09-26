@@ -243,6 +243,12 @@ msgstr ""
 msgid "Ethnicity"
 msgstr ""
 
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
 msgid "Save"
 msgstr ""
 

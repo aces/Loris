@@ -64,13 +64,7 @@ msgstr ""
 msgid "Pending New"
 msgstr ""
 
-msgid "Entity Type"
-msgstr ""
-
 msgid "QC Status"
-msgstr ""
-
-msgid "selected"
 msgstr ""
 
 msgid "all types"
@@ -89,6 +83,9 @@ msgid "Header Info"
 msgstr ""
 
 msgid "Selected"
+msgstr ""
+
+msgid "selected"
 msgstr ""
 
 msgid "Download Image"
@@ -119,4 +116,61 @@ msgid "Different shades represent different modalities. Only native modalities a
 msgstr ""
 
 msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
+msgstr ""
+
+msgid "%1 file(s) displayed."
+msgstr ""
+
+msgid "No data available"
+msgstr ""
+
+msgid "Patient Name"
+msgstr ""
+
+msgid "QC Pending"
+msgstr ""
+
+msgid "Output Type"
+msgstr ""
+
+msgid "Scanner"
+msgstr ""
+
+msgid "EDC"
+msgstr ""
+
+msgid "Navigation"
+msgstr ""
+
+msgid "Back to list"
+msgstr ""
+
+msgid "Volume Viewer"
+msgstr ""
+
+msgid "3D Only"
+msgstr ""
+
+msgid "3D + Overlay"
+msgstr ""
+
+msgid "Report a Bug (Mantis)"
+msgstr ""
+
+msgid "Visit Level QC"
+msgstr ""
+
+msgid "Visit Level Feedback"
+msgstr ""
+
+msgid "Visit Level Caveat"
+msgstr ""
+
+msgid "DCC MRI Quality Control"
+msgstr ""
+
+msgid "Click here to close this window"
+msgstr ""
+
+msgid "Comments saved."
 msgstr ""

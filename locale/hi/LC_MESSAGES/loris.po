@@ -241,6 +241,18 @@ msgstr "सहेजें"
 msgid "Reset"
 msgstr "रीसेट करें"
 
+msgid "Language"
+msgstr "भाषा"
+
+msgid "Previous"
+msgstr "पिछला"
+
+msgid "Next"
+msgstr "अगला"
+
+msgid "Save"
+msgstr "सहेजें"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
