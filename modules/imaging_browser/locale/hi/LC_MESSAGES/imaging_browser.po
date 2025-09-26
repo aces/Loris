@@ -57,14 +57,8 @@ msgstr "सीक्वेंस प्रकार"
 msgid "Pending New"
 msgstr "लंबित नया"
 
-msgid "Entity Type"
-msgstr "इकाई प्रकार"
-
 msgid "QC Status"
 msgstr "QC स्थिति"
-
-msgid "selected"
-msgstr "चयनित"
 
 msgid "all types"
 msgstr "सभी प्रकार"
@@ -82,6 +76,9 @@ msgid "Header Info"
 msgstr "हेडर जानकारी"
 
 msgid "Selected"
+msgstr "चयनित"
+
+msgid "selected"
 msgstr "चयनित"
 
 msgid "Download Image"
@@ -113,3 +110,60 @@ msgstr "विभिन्न शेड्स विभिन्न मोडै
 
 msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
 msgstr "किसी भी विजिट पर होवर करें ताकि विजिट के लिए विस्तृत मोडैलिटी ब्रेकडाउन देखें, क्लिक करें और इमेजिंग ब्राउज़र पर जाएं।"
+
+msgid "%1 file(s) displayed."
+msgstr "%1 फ़ाइल(ओं) प्रदर्शित।"
+
+msgid "No data available"
+msgstr "कोई डेटा उपलब्ध नहीं है"
+
+msgid "Patient Name"
+msgstr "रोगी का नाम"
+
+msgid "QC Pending"
+msgstr "गुणवत्ता नियंत्रण लंबित"
+
+msgid "Output Type"
+msgstr "आउटपुट प्रकार"
+
+msgid "Scanner"
+msgstr "स्कैनर"
+
+msgid "EDC"
+msgstr "ईडीसी"
+
+msgid "Navigation"
+msgstr "नेविगेशन"
+
+msgid "Back to list"
+msgstr "सूची में वापस जाएँ"
+
+msgid "Volume Viewer"
+msgstr "वॉल्यूम व्यूअर"
+
+msgid "3D Only"
+msgstr "केवल 3D"
+
+msgid "3D + Overlay"
+msgstr "3D + ओवरले"
+
+msgid "Report a Bug (Mantis)"
+msgstr "बग रिपोर्ट करें (मैन्टिस)"
+
+msgid "Visit Level QC"
+msgstr "भेंट स्तर गुणवत्ता नियंत्रण"
+
+msgid "Visit Level Feedback"
+msgstr "भेंट स्तर प्रतिक्रिया"
+
+msgid "Visit Level Caveat"
+msgstr "भेंट स्तर चेतावनी"
+
+msgid "DCC MRI Quality Control"
+msgstr "डीसीसी एमआरआई गुणवत्ता नियंत्रण"
+
+msgid "Click here to close this window"
+msgstr "इस विंडो को बंद करने के लिए यहाँ क्लिक करें"
+
+msgid "Comments saved."
+msgstr "टिप्पणियाँ सहेजी गईं।"
