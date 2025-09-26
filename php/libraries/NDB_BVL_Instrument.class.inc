@@ -896,7 +896,15 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         }
         $examiners = $this->_getExaminerNames();
-        $this->addSelect('Examiner', 'Examiner', $examiners);
+
+        $this->addSelect(
+            'Examiner',
+            'Examiner',
+            array_merge(
+                ['' => ''],
+                array_column($examiners, 'examinerID', 'full_name')
+            )
+        );
 
         $this->addRule(
             'Date_taken',
@@ -985,7 +993,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function _getExaminerNames(): array
     {
         if (empty($this->getCommentID())) {
-            return [];
+            return Utility::getAllActiveExaminers();
         }
 
         $db = $this->loris->getDatabaseConnection();
@@ -2409,7 +2417,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 		    JOIN test_names tn ON (tn.ID=f.TestID)
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (s.CandidateID=c.ID)
-                     
+
 		    $where";
             \Profiler::checkpoint("Running query (table instrument): " . $query);
             $data = $db->pselect($query, $params);
