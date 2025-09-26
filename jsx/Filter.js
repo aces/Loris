@@ -172,6 +172,7 @@ function Filter(props) {
       id={props.id}
       name={props.name}
     >
+      <input type="text" name="title" style={{display: 'none'}} />
       <FieldsetElement
         columns={props.columns}
         legend={props.title}
