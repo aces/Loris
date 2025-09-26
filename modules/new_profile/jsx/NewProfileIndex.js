@@ -265,11 +265,37 @@ class NewProfileIndex extends React.Component {
         ),
       },
       {
+        label: this.props.t('Expected Date of Confinement',
+          {ns: 'new_profile'}),
+        element: edc,
+      },
+      {
         label: this.props.t('Sex', {ns: 'loris'}) ,
         element: (
           <SelectElement
             name = "sex"
             label = {this.props.t('Sex', {ns: 'loris'})}
+            options = {this.state.configData.sex}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.sex}
+            required = {true}
+          />
+        ),
+      },
+      {
+        label: this.props.t('Site', {ns: 'loris'}) ,
+        element: site,
+      },
+      {
+        label: this.props.t('PSCID', {ns: 'loris'}),
+        element: pscid,
+      },
+      {
+        label: this.props.t('Project', {ns: 'loris'}) ,
+        element: (
+          <SelectElement
+            name = "project"
+            label = {this.props.t('Project', {ns: 'loris'}) }
             options = {this.state.configData.project}
             onUserInput = {this.setFormData}
             value = {this.state.formData.project}
@@ -277,15 +303,8 @@ class NewProfileIndex extends React.Component {
           />
         ),
       },
-      {
-        label: this.props.t('PSCID', {ns: 'loris'}),
-        element: pscid,
-      },
-      {
-        label: this.props.t('Expected Date of Confinement',
-          {ns: 'new_profile'}),
-        element: edc,
-      },
+      
+      
     ];
 
     return (
