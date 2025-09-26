@@ -160,6 +160,18 @@ msgstr "जन्म तिथि"
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
+msgid "Entity Type"
+msgstr "इकाई प्रकार"
+
+msgid "Previous"
+msgstr "पिछला"
+
+msgid "Next"
+msgstr "अगला"
+
+msgid "Save"
+msgstr "सहेजें"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
