@@ -13,6 +13,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\dataquery;
+use \Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Data Querying Module
@@ -29,6 +30,7 @@ namespace LORIS\dataquery;
 class Dataquery extends \NDB_Page
 {
     public $skipTemplate = true;
+    private \User $user;
 
     /**
      * Check user access permission
@@ -44,6 +46,20 @@ class Dataquery extends \NDB_Page
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param \User                  $user    - The user loading the page
+     * @param ServerRequestInterface $request - The page to load resources for
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user,
+        ServerRequestInterface $request,
+    ) : void {
+        $this->user = $user;
+    }
+    /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
      *
@@ -51,11 +67,32 @@ class Dataquery extends \NDB_Page
      */
     function getJSDependencies()
     {
+        $widgetsJS = [];
+
+        foreach ($this->loris->getActiveModules() as $module) {
+            if (!$module->hasAccess($this->user)) {
+                continue;
+            }
+
+            $widgets = $module->getWidgets(
+                'dataquery:action',
+                $this->user,
+                [],
+            );
+            foreach ($widgets as $widget) {
+                assert($widget instanceof ActionWidget);
+                // de-duplicate widgets from the same javascript source
+                $widgetsJS[$widget->jsurl] = 1;
+            }
+        }
+        $widgetsJS = array_keys($widgetsJS);
+
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
+            $widgetsJS,
             [
                 $baseURL . "/dataquery/js/index.js",
             ]

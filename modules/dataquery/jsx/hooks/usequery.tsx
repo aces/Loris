@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {QueryGroup, QueryTerm} from '../querydef';
 import {APIQueryField} from '../types';
+import {Tabs} from '../nextsteps';
 
 type FieldActions = {
     clear: () => void,
