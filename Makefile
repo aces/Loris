@@ -1,9 +1,7 @@
 .PHONY: clean dev all check checkstatic unittests jslatest testdata locales
 
-all: locales VERSION
-	composer install --no-dev
-	npm ci
-	NODE_OPTIONS="--max-old-space-size=4096" npm run build
+all: node_modules locales VERSION vendor
+	npm run build
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
@@ -21,8 +19,8 @@ vendor: composer.lock
 node_modules: package-lock.json
 	npm ci
 
-fastdev: VERSION
-	NODE_OPTIONS="--max-old-space-size=4096" npm run compile
+dev: node_modules locales vendor/bin/phan VERSION vendor
+	npm run compile
 
 jslatest: clean
 	rm -rf package-lock.json

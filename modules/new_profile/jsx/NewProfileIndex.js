@@ -18,10 +18,19 @@ import {withTranslation} from 'react-i18next';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/new_profile.json';
 
-// Register Hindi translations for this namespace
-
-
+/**
+ * New Profile Form
+ *
+ * Create a new profile form
+ *
+ * @author  Shen Wang
+ * @version 1.0.0
+ */
 class NewProfileIndex extends React.Component {
+   /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -36,11 +45,19 @@ class NewProfileIndex extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
+   /**
+   * Retrieve data from the provided URL and save it in state
+   *
+   * @return {object}
+   */
   fetchData() {
     return fetch(this.props.dataURL,
       {credentials: 'same-origin'})
@@ -51,6 +68,13 @@ class NewProfileIndex extends React.Component {
       });
   }
 
+   /**
+   * It checks the date of birth and Expected Date of Confinement,
+   * the date fields must match.
+   * If match, this function will return true.
+   *
+   * @return {boolean}
+   */
   validateMatchDate() {
     let validate = false;
     const formData = this.state.formData;
@@ -70,6 +94,11 @@ class NewProfileIndex extends React.Component {
     return validate;
   }
 
+   /**
+   * Handles form submission
+   *
+   * @param {event} e - Form submission event
+   */
   handleSubmit(e) {
     e.preventDefault();
     const match = this.validateMatchDate();
@@ -136,6 +165,7 @@ class NewProfileIndex extends React.Component {
             });
         } else {
           resp.json().then((message) => {
+            // enable button for form resubmission.
             this.setState({submitDisabled: false});
             swal.fire(this.props.t('Error!',
               {ns: 'loris'}), message.error, 'error');
@@ -159,6 +189,12 @@ class NewProfileIndex extends React.Component {
       });
   }
 
+  /**
+   * Set the form data based on state values of child elements/components
+   *
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
+   */
   setFormData(formElement, value) {
     let formData = Object.assign({}, this.state.formData);
     formData[formElement] = value;
@@ -166,12 +202,19 @@ class NewProfileIndex extends React.Component {
     this.setState({formData: formData});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
+    // If error occurs, return a message.
     if (this.state.error) {
       return <h3>{this.props.t('An error occured while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
+    // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
@@ -257,7 +300,8 @@ class NewProfileIndex extends React.Component {
         element: (
           <DateElement
             name = "dobDateConfirm"
-              {ns: 'new_profile'}) + '*'}
+            label = {this.props.t('Date of Birth Confirm',
+               {ns: 'new_profile'})}
             onUserInput = {this.setFormData}
             value = {this.state.formData.dobDateConfirm}
             required = {requireBirthDate}
@@ -303,8 +347,7 @@ class NewProfileIndex extends React.Component {
           />
         ),
       },
-      
-      
+        
     ];
 
     return (
