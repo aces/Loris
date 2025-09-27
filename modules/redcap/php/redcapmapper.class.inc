@@ -472,6 +472,8 @@ class RedcapMapper
                 $this->_queries->tryGetCandidateWithCandId($candidate_identifier),
             RedcapConfigLorisId::PscId =>
                 $this->_queries->tryGetCandidateWithPscId($candidate_identifier),
+            RedcapConfigLorisId::ExternalId=>
+                $this->_queries->tryGetCandidateWithExternalId($candidate_identifier)
         };
 
         // If no candidate matches the REDCap participant identifier, raise an

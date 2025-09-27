@@ -311,6 +311,8 @@ class RedcapConfigParser
             return RedcapConfigLorisId::CandId;
         case 'pscid':
             return RedcapConfigLorisId::PscId;
+        case 'external_id':
+            return RedcapConfigLorisId::ExternalId;
         default:
             throw $this->_exception(
                 "invalid LORIS candidate identifier type for the selected project,"

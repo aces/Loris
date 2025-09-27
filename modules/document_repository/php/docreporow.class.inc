@@ -4,7 +4,7 @@
  * This class implements a data Instance which represents a single
  * module in the acknowledgements menu table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -38,6 +38,7 @@ class DocRepoRow implements
     protected $DBRow;
 
     private \CenterID $CenterID;
+
     /**
      * Create a new HelpRow
      *
@@ -49,6 +50,7 @@ class DocRepoRow implements
         $this->DBRow    = $row;
         $this->CenterID = $cid;
     }
+
     /**
      * Returns the CenterID for this row
      *
@@ -58,6 +60,7 @@ class DocRepoRow implements
     {
         return $this->CenterID;
     }
+
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *

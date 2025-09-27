@@ -4,7 +4,7 @@
  * Script to convert MyISAM tables in the database into InnoDB tables. Multiple
  * options are proposed to the user, see showHelp() function for more details.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

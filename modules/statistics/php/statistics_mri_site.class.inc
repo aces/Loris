@@ -3,7 +3,7 @@
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -16,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -48,6 +48,7 @@ class Statistics_Mri_Site extends Statistics_Site
             $this->query_vars['pid'] = $projectID;
         }
     }
+
     /**
      * GetIssueName function
      *
@@ -67,6 +68,7 @@ class Statistics_Mri_Site extends Statistics_Site
         }
         return $issue;
     }
+
     /**
      * CompleteCount function
      *

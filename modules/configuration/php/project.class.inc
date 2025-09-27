@@ -40,7 +40,6 @@ class Project extends \NDB_Form
         return $user->hasPermission('config');
     }
 
-
     /**
      * Loads the project page.
      *

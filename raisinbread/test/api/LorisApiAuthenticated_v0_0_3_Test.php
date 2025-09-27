@@ -3,7 +3,7 @@
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 use GuzzleHttp\Client;
-
+use PHPUnit\Framework\Attributes\Test;
 /**
  * PHPUnit class for API test suite. This script sends HTTP requests to every
  * endpoints of the api module and look at the response content, status code and
@@ -217,7 +217,19 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
         ];
         $this->headers = $headers;
     }
+    #[Test]
+    public function projects_endpoint_should_return_200(): void
+    {
+        $response = $this->client->request('GET', 'projects', [
+            'headers' => $this->headers
+        ]);
 
+        $this->assertEquals(
+            200,
+            $response->getStatusCode(),
+            'Expected HTTP 200 from /projects endpoint'
+        );
+    }
     /**
      * Overrides LorisIntegrationTest::tearDown() to set the original key back.
      *

@@ -39,6 +39,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      * Path to the uploaded file (value of SourceLocation in mri_upload table).
      */
     var $uploaded_file_path;
+
     /**
      * The hasAccess function ensures that the user has the imaging_uploader
      * permission.
@@ -56,6 +57,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             ]
         );
     }
+
     /**
      * Sets up the Filter Variables
      *
@@ -186,6 +188,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             exit(json_encode(['errors' => $errors]));
         }
     }
+
     /**
      * Returns true if the _saveFile has successfully
      * completed
@@ -261,6 +264,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     }
 
     // methods available to all children
+
     /**
      * Save the file to the DataBase by:
      * 1) registering the file handlers
@@ -302,6 +306,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $file->processFiles();
         return true;
     }
+
     /**
      * If file is not Phantom, validates advanced options by ensuring that:
      *  - The CandID exists in the database
@@ -534,6 +539,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->setTempPath($new_temp_file);
         return true;
     }
+
     /**
      * Inserts into the mri_upload table the following information:
      *   - UploadedBy, UploadDate, UploadLocation, SessionID and
@@ -646,6 +652,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->mri_upload_id = $db->getLastInsertId();
         return true;
     }
+
     /**
      * Creates a temporary directory
      *
@@ -665,6 +672,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             return $tempfile;
         }
     }
+
     /**
      * The SetTempDir sets the tempdir
      *
@@ -676,6 +684,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         $this->temp_path = $tempFilePath;
     }
+
     /**
      * The getTempPath gets the temp_path
      *
@@ -685,6 +694,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         return $this->temp_path;
     }
+
     /**
      * The getTargetDirectory retrieves info about where the file should be stored.
      *
@@ -703,6 +713,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $args['user_id'] ?? \User::singleton()->getUsername()
         );
     }
+
     /**
      * The function isCompressed returns true if the file is
      * compressed (gzip or zip) or false otherwise
@@ -715,6 +726,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         return strpos(mime_content_type($file), 'zip') !== false;
     }
+
     /**
      * The function removes the uploaded file from the /tmp directory
      * only if the file is moved from the /tmp directory to the
@@ -731,6 +743,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         }
         return $success;
     }
+
     /**
      * The function removes the directory and all its contents
      *
@@ -748,6 +761,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         }
         return rmdir($folder);
     }
+
     /**
      * The function returns an array of filenames that exist in the mri
      * upload directory.
@@ -788,6 +802,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         }
         return $files;
     }
+
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
@@ -807,6 +822,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             ]
         );
     }
+
     /**
      * Include additional CSS files:
      *  imaging_uploader.css
@@ -823,6 +839,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             [$baseURL . "/imaging_uploader/css/imaging_uploader.css"]
         );
     }
+
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json

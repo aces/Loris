@@ -20,7 +20,6 @@ enum Operator: string
     case LIKE = 'like';                    // Like (pattern match)
     case IN   = 'in';                        // In (value in set)
 
-
     /**
      * Converts the Operator enum value to its corresponding SQL representation.
      *
