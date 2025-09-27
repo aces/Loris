@@ -194,5 +194,30 @@ msgstr "{{totalCount}} में से {{pageCount}} पंक्तिया�
 msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
+msgid "Download Table as CSV"
+msgstr "तालिका को CSV के रूप में डाउनलोड करें"
+
+msgid "Are You Sure?"
+msgstr "क्या आप निश्चित हैं?"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "फॉर्म छोड़ने से दर्ज की गई कोई भी जानकारी खो जाएगी।"
+
+msgid "Proceed"
+msgstr "आगे बढ़ें"
+
+msgid "Cancel"
+msgstr "रद्द करें"
+
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Saving"
+msgstr "सहेजा जा रहा है"
+
+msgid "Success!"
+msgstr "सफलता!"
+
 msgid "Download Data as CSV"
 msgstr "डेटा को CSV के रूप में डाउनलोड करें"
+
