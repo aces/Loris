@@ -95,7 +95,7 @@ abstract class Endpoint
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
-        $path      = trim($request->getURI()->getPath(), "/");
+        $path      = trim($request->getAttribute("unhandledURI")->getPath(), "/");
         $pathparts = explode('/', $path);
 
         // Check if sub-handlers are supported
