@@ -26,6 +26,7 @@ class Publication extends \NDB_Menu_Filter_Form
 {
     public $AjaxModule   = true;
     public $skipTemplate = true;
+
     /**
      * Returns true if user has access to this page.
      *
@@ -252,7 +253,6 @@ class Publication extends \NDB_Menu_Filter_Form
             ]
         );
     }
-
 
     /**
      * Include the column formatter required to display the feedback link colours

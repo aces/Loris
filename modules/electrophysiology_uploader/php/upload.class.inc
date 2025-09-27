@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * used to process the EEG files sent over HTTP to
  * the electrophysiology uploader
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -104,7 +104,6 @@ class Upload extends \NDB_Page
             $request->withAttribute('filename', $filename)
         );
     }
-
 
     /**
      * Processes the values & saves to database and return a json response.

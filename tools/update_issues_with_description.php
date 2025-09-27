@@ -8,7 +8,7 @@
  *
  * Usage: php update_issues_with_description.php
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

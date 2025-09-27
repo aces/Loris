@@ -153,5 +153,4 @@ class Expired extends \NDB_Page implements ETagCalculator
     {
         return true;
     }
-
 }

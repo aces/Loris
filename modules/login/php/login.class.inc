@@ -33,6 +33,7 @@ class Login extends \NDB_Page
             ]
         );
     }
+
     /**
      * Include additional CSS files:
      *
@@ -48,5 +49,4 @@ class Login extends \NDB_Page
             [$baseURL . '/login/css/login.css']
         );
     }
-
 }

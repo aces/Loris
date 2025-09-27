@@ -233,6 +233,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         );
         return [$ids, $demographics, $meta];
     }
+
     /**
      * {@inheritDoc}
      *

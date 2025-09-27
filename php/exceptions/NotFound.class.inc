@@ -3,7 +3,7 @@
 /**
  * This file contains the NotFound exception type.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Errors
  * @package  Loris

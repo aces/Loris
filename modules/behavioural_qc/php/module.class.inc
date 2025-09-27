@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Loris
@@ -27,7 +27,6 @@ namespace LORIS\behavioural_qc;
  */
 class Module extends \Module
 {
-
     /**
      * {@inheritDoc}
      *
@@ -98,7 +97,11 @@ class Module extends \Module
             );
             return [
                 new \LORIS\dashboard\DataWidget(
-                    "Behavioural Session",
+                    new \LORIS\GUI\LocalizableString(
+                        "behavioural_qc",
+                        "Behavioural Session",
+                        "Behavioural Sessions"
+                    ),
                     $data,
                     "",
                     'rgb(252, 241, 255)'

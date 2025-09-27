@@ -5,7 +5,7 @@
  * Stub class.. all this does is check permissions, since everything else is
  * done in the template/javascript
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -21,7 +21,7 @@ namespace LORIS\instrument_builder;
  * Stub class.. all this does is check permissions, since everything else is
  * done in the template/javascript
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
