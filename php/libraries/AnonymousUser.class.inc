@@ -3,7 +3,7 @@
 /**
  * File implements the AnonymousUser class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main

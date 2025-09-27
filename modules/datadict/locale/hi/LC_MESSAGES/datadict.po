@@ -1,0 +1,50 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Data Dictionary (Legacy)"
+msgstr "डेटा शब्दकोश (पुराना)"
+
+msgid "Source From"
+msgstr "स्रोत से"
+
+msgid "Name"
+msgstr "नाम"
+
+msgid "Source Field"
+msgstr "स्रोत फ़ील्ड"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "Description Status"
+msgstr "विवरण स्थिति"
+
+msgid "Empty"
+msgstr "खाली"
+
+msgid "Modified"
+msgstr "संशोधित"
+
+msgid "Unchanged"
+msgstr "अपरिवर्तित"
+
+msgid "Cohorts"
+msgstr "समूह"
+

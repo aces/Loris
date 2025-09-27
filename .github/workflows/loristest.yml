@@ -259,7 +259,7 @@ jobs:
         restore-keys: ${{ runner.os }}-composer-
 
     - name: Change PHP Version in Dockerfile
-      run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
+      run: sed -i "s/8.3/${{ matrix.php }}/g" Dockerfile.test.php8
 
     - name: Install protoc-gen-js plugin
       run: npm install -g protoc-gen-js

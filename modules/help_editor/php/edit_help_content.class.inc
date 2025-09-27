@@ -3,7 +3,7 @@
 /**
  * This file sets up the Edit Help Content page and form.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

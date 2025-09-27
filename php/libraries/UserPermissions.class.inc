@@ -3,7 +3,7 @@
 /**
  * The UserPermissions class manages checking of user permissions
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -64,7 +64,6 @@ class UserPermissions
         return true;
     }
 
-
     /**
      * Loads the users's permissions
      *
@@ -94,7 +93,6 @@ class UserPermissions
             $this->permissions[$row['code']] = $userMatch;
         }
     }
-
 
     /**
      * Determines if the user has the permission to access a specific module
@@ -182,7 +180,6 @@ class UserPermissions
         return $this->permissions;
     }
 
-
     /**
      * Add permissions to a user
      *
@@ -210,7 +207,6 @@ class UserPermissions
         // refresh the user permissions
         $this->setPermissions();
     }
-
 
     /**
      * Removes permissions from a user
@@ -247,7 +243,6 @@ class UserPermissions
         $this->setPermissions();
     }
 
-
     /**
      * Returns an array of the user's permission IDs
      *
@@ -276,7 +271,6 @@ class UserPermissions
         return $permIDs;
     }
 
-
     /**
      * Returns an array with all permissions information for the user
      *
@@ -295,7 +289,11 @@ class UserPermissions
                 p.code,
                 p.description,
                 pc.Description as type,
-                GROUP_CONCAT(pa.name SEPARATOR '/') as action,
+                GROUP_CONCAT(
+                    DISTINCT pa.name
+                    ORDER BY pa.name ASC
+                    SEPARATOR '/'
+                ) as action,
                 p.moduleID
             FROM permissions p
                 LEFT JOIN perm_perm_action_rel ppar ON (p.permID = ppar.permID)

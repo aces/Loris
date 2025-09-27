@@ -3,7 +3,7 @@
 /**
  * This file implements a data provisioner to get starred queries for a user.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @author Dave MacFarlane <david.macfarlane2@mcgill.ca>
  */

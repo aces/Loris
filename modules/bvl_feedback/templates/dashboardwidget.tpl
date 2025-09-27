@@ -2,11 +2,11 @@
     {foreach from=$notifications item=link}
         <a href="{$baseURL}{$link.URL}" class="list-group-item">
             {if $link.new eq 1}
-                <span class="pull-left new-flag">NEW</span>
+                <span class="pull-left new-flag">{dgettext("loris", "NEW")}</span>
             {/if}
-            <span class="pull-right text-muted small">Updated: {$link.Testdate}</span>
+            <span class="pull-right text-muted small">{dgettext("loris", "Updated")}: {$link.Testdate}</span>
             <br>
-            {$link.Name}: {$link.Comment}
+            {dgettext("bvl_feedback", "{$link.Name}")}: {dgettext("bvl_feedback", "{$link.Comment}")}
         </a>
     {/foreach}
 </div>

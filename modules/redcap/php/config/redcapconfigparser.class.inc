@@ -36,13 +36,6 @@ class RedcapConfigParser
     private \LORIS\LorisInstance $_loris;
 
     /**
-     * The LORIS database.
-     *
-     * @var \Database
-     */
-    private \Database $_db;
-
-    /**
      * The REDCap instance URL.
      *
      * @var string
@@ -69,7 +62,6 @@ class RedcapConfigParser
         string $redcap_project_id,
     ) {
         $this->_loris = $loris;
-        $this->_db    = $loris->getDatabaseConnection();
         $this->_redcap_instance_url = $redcap_instance_url;
         $this->_redcap_project_id   = $redcap_project_id;
     }
@@ -104,8 +96,6 @@ class RedcapConfigParser
      */
     private function _parseRedcapNode(array $redcap_node): ?RedcapConfig
     {
-        $issue_assignee = $this->_getIssueAssignee();
-
         $instance_node = $this->_getInstanceNode($redcap_node);
         if ($instance_node === null) {
             throw $this->_exception(
@@ -131,7 +121,6 @@ class RedcapConfigParser
         $visits       = $this->_parseVisits($project_node);
 
         return new RedcapConfig(
-            $issue_assignee,
             $this->_redcap_project_id,
             $this->_redcap_instance_url,
             $redcap_api_token,
@@ -140,55 +129,6 @@ class RedcapConfigParser
             $candidate_id,
             $visits,
         );
-    }
-
-    /**
-     * Get the REDCap issue assignee from configuration module.
-     *
-     * @return \User The REDCap issue assignee user.
-     */
-    private function _getIssueAssignee(): \User
-    {
-        $assignee_user_id = $this->_db->pselectOne(
-            "SELECT c.Value
-            FROM Config c
-                JOIN ConfigSettings cs ON (cs.ID = c.ConfigID)
-            WHERE cs.Name = 'redcap_issue_assignee'
-            ",
-            []
-        );
-
-        if (empty($assignee_user_id)) {
-            throw $this->_exception(
-                "no REDCap issue assignee in configuration, missing"
-                . " 'redcap_issue_assignee'."
-            );
-        }
-
-        $assignee = $this->_db->pselectOne(
-            "SELECT DISTINCT u.userID
-            FROM users u
-                JOIN user_perm_rel upr ON (upr.userid = u.id)
-                JOIN permissions p ON (p.permid = upr.permid)
-            WHERE u.userID = :usid
-                AND u.Active = 'Y'
-                AND u.Pending_approval = 'N'
-                AND (
-                    p.code = 'issue_tracker_developer'
-                    OR p.code = 'superuser'
-                )
-            ",
-            ['usid' => $assignee_user_id]
-        );
-
-        if ($assignee === null) {
-            throw $this->_exception(
-                "REDCap issue assignee '$assignee_user_id' does not exist or does"
-                . " not have enough privileges."
-            );
-        }
-
-        return \User::factory($assignee_user_id);
     }
 
     /**
@@ -371,6 +311,8 @@ class RedcapConfigParser
             return RedcapConfigLorisId::CandId;
         case 'pscid':
             return RedcapConfigLorisId::PscId;
+        case 'external_id':
+            return RedcapConfigLorisId::ExternalId;
         default:
             throw $this->_exception(
                 "invalid LORIS candidate identifier type for the selected project,"
@@ -426,11 +368,60 @@ class RedcapConfigParser
 
         $redcap_arm_name   = $visit_node['redcap-arm-name'] ?? null;
         $redcap_event_name = $visit_node['redcap-event-name'] ?? null;
+        $create_session    = $this->_parseCreateSession($visit_node);
 
         return new RedcapConfigVisit(
             $visit_label,
             $redcap_arm_name,
             $redcap_event_name,
+            $create_session,
+        );
+    }
+
+    /**
+     * Parse a REDCap session creation configuration from a REDCap session creation
+     * configuration XML node.
+     *
+     * @param array $visit_node The REDCap configuration visit mapping XML node.
+     *
+     * @return ?RedcapConfigCreateSession The REDCap session creation configuration.
+     */
+    private function _parseCreateSession(
+        array $visit_node,
+    ): ?RedcapConfigCreateSession {
+        $create_session_node = $visit_node['create-session'] ?? null;
+        if (empty($create_session_node)) {
+            return null;
+        }
+
+        $site_name = $create_session_node['site-name'] ?? null;
+        if (empty($site_name)) {
+            throw $this->_exception(
+                "no site name in session creation configuration, missing node"
+                . " 'site-name'."
+            );
+        }
+
+        $project_name = $create_session_node['project-name'] ?? null;
+        if (empty($project_name)) {
+            throw $this->_exception(
+                "no project name in session creation configuration, missing node"
+                . " 'project-name'."
+            );
+        }
+
+        $cohort_name = $create_session_node['cohort-name'] ?? null;
+        if (empty($cohort_name)) {
+            throw $this->_exception(
+                "no cohort name in session creation configuration, missing node"
+                . " 'cohort-name'."
+            );
+        }
+
+        return new RedcapConfigCreateSession(
+            $site_name,
+            $project_name,
+            $cohort_name,
         );
     }
 

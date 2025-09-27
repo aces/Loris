@@ -3,7 +3,7 @@
 /**
  * The candidate list menu
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Candidate_List

@@ -184,6 +184,7 @@ class Imaging_Session_ControlPanel
         $subjectData['prevTimepoint']['URL'] = $NavBar->prevLink();
         return $subjectData;
     }
+
     /**
      * Generates the HTML to display the set of buttons
      * for the timepoint status flags

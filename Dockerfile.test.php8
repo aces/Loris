@@ -1,11 +1,11 @@
-FROM php:8.1
+FROM php:8.3
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y mariadb-client libzip-dev
+    apt-get install -y mariadb-client libzip-dev libicu-dev
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql zip gettext
+RUN docker-php-ext-install pdo_mysql zip gettext intl
 
 # Ensure the logs directory exists
 RUN mkdir -p /app/logs
