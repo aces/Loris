@@ -41,14 +41,14 @@ class Resolve extends \NDB_Page
     {
         $user = $request->getAttribute("user");
         if (!$this->_hasAccess($user)) {
-            return new \LORIS\Http\Response\JSON\Forbidden("Access denied");
+            return new \LORIS\Http\Response\JSON\Forbidden(dgettext('loris',
+             "Access denied"));
         }
 
         $requestdata = json_decode((string) $request->getBody(), true);
         if (!is_array($requestdata)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                "Must submit data in JSON format"
-            );
+            return new \LORIS\Http\Response\JSON\BadRequest(dgettext('loris',
+             "Must submit data in JSON format"));
         }
 
         $DB   = $this->loris->getDatabaseConnection();

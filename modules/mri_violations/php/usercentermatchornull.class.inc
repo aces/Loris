@@ -37,7 +37,8 @@ class UserCenterMatchOrNull implements \LORIS\Data\Filter
             return true;
         }
         throw new \LorisException(
-            "Can not implement filter on a resource type that has no centers."
+            dgettext('mri_violations', 
+            "Can not implement filter on a resource type that has no centers.")
         );
     }
 }
