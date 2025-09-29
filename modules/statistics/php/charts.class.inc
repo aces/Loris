@@ -890,9 +890,9 @@ class Charts extends \NDB_Page
     private function _handleSiteEEGRecordingsBreakdown(
         ServerRequestInterface $request
     ) {
-        $DB       = \NDB_Factory::singleton()->database();
-        $user     = \NDB_Factory::singleton()->user();
-        $sites    = $user->getSites();
+        $DB    = \NDB_Factory::singleton()->database();
+        $user  = \NDB_Factory::singleton()->user();
+        $sites = $user->getSites();
 
         $conditions = $this->_buildQueryConditions();
 
