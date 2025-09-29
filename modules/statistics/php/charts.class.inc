@@ -929,10 +929,10 @@ class Charts extends \NDB_Page
         }
 
         $siteData = [];
-        foreach ($sites as $siteID => $siteName) {
+        foreach ($sites as $siteID => $site) {
             if (in_array($siteID, array_keys($processedData))) {
                 $siteData[] = [
-                    'label' => $siteName,
+                    'label' => $site->getCenterName(),
                     'total' => $processedData[$siteID]['count'],
                 ];
             }
