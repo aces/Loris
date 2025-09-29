@@ -19,9 +19,10 @@ The steps for each are similar.
 ## Architecture
 
 Translatable strings used by LORIS are stored in `.po` (portable object)
-files which is the standard used by `gettext` library in the PHP backend. These
-are compiled into the `json` files used by the javascript frontend, so
-that the same translations are used throughout LORIS. 
+files which is the standard used by `gettext` library. These are compiled
+into both the `json` files used by the javascript frontend, and the 'mo' files
+used by the PHP backend, so that the same translations are used throughout
+LORIS.
 
 (For advanced usage of the format in languages that include multiple forms of
 plural an internet search is likely to provide better guidance than this
