@@ -64,7 +64,6 @@ class Module extends \Module
     {
         return dgettext("electrophysiology_browser", "Electrophysiology Browser");
     }
-    
 
     /**
      * {@inheritDoc}
