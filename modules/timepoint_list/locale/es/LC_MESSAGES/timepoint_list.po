@@ -36,6 +36,9 @@ msgstr "Imagen de Scan hecha"
 msgid "BVL QC"
 msgstr "CC Conductual"
 
+msgid "BVL QC Status"
+msgstr "Estado del CC Conductual"
+
 msgid "BVL Exclusion"
 msgstr "Exclusión Conductual"
 
@@ -74,6 +77,9 @@ msgstr " a / "
 
 msgid " m"
 msgstr " m"
+
+msgid "Not Done"
+msgstr "No Hecha"
 
 msgid "Visual"
 msgstr "Visual"

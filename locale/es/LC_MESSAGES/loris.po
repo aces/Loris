@@ -86,7 +86,7 @@ msgstr ""
 #: modules/imaging_uploader/php/module.class.inc:54
 #: modules/mri_violations/php/module.class.inc:53
 msgid "Imaging"
-msgstr ""
+msgstr "Imágenes"
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
@@ -110,7 +110,7 @@ msgstr ""
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr ""
+msgstr "Punto en el tiempo"
 
 # Common select option labels
 msgid "Yes"
@@ -145,6 +145,12 @@ msgstr ""
 msgid "Project"
 msgstr "Projecto"
 
+msgid "Candidate Registration Project"
+msgstr "Projecto donde se registró al Candidato"
+
+msgid "Timepoint Project"
+msgstr "Punto en el tiempo del Projecto"
+
 msgid "Cohort"
 msgstr "Cohorte"
 
@@ -177,6 +183,9 @@ msgstr "Etapa"
 
 msgid "Sent To DCC"
 msgstr "Enviar a CCD"
+
+msgid "Reverse Send To DCC"
+msgstr "Revertir Enviar al CCD"
 
 msgid "Date of Birth"
 msgstr ""
@@ -259,3 +268,18 @@ msgstr "Retirado"
 
 msgid "In Progress"
 msgstr "En Progreso"
+
+msgid "Complete"
+msgstr "Completo"
+
+msgid "Instruments"
+msgstr "Instrumentos"
+
+msgid "None"
+msgstr "Ninguna"
+
+msgid "Partial"
+msgstr "Parcial"
+
+msgid "All"
+msgstr "Completa"

@@ -145,6 +145,12 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
+msgid "Candidate Registration Project"
+msgstr ""
+
+msgid "Timepoint Project"
+msgstr ""
+
 msgid "Cohort"
 msgstr ""
 
@@ -176,6 +182,9 @@ msgid "Stage"
 msgstr ""
 
 msgid "Sent To DCC"
+msgstr ""
+
+msgid "Reverse Send To DCC"
 msgstr ""
 
 msgid "Date of Birth"
@@ -258,4 +267,22 @@ msgid "Withdrawal"
 msgstr ""
 
 msgid "In Progress"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "Instruments"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Partial"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Start"
 msgstr ""

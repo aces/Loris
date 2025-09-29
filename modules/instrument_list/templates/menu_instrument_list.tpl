@@ -5,27 +5,27 @@
   <tr class="info">
     {assign var="DoB" value=$candidate->getDisplayDoB()}
     <th>
-      Derived Age
+      {dgettext("timepoint_list", "Derived Age")}
     </th>
     <th>
-        EDC Age
+      {dgettext("timepoint_list", "EDC Age")}
     </th>
     <th>
-      Biological Sex
+      {dgettext("timepoint_list", "Biological Sex")}
     </th>
     {if $display.ProjectTitle == $display.ProjectName && $display.ProjectName != ""}
       <th>
-        Project
+        {dgettext("loris", "Project")}
       </th>
     {else}
       {if $display.ProjectTitle != ""}
         <th>
-          Candidate Registration Project
+          {dgettext("loris", "Candidate Registration Project")}
         </th>
       {/if}
       {if $display.ProjectName != ""}
         <th>
-          Timepoint Project
+          {dgettext("loris", "Timepoint Project")}
         </th>
       {/if}
     {/if}
@@ -36,22 +36,22 @@
     {/foreach}
     {if $sessionID != ""}
       <th>
-        Visit Label
+        {dgettext("loris", "Visit Label")}
       </th>
       <th>
-        Visit to Site
+        {dgettext("instrument_list", "Visit to Site")}
       </th>
       <th>
-        Cohort
+        {dgettext("loris", "Cohort")}
       </th>
       <th>
-        MR Scan Done
+        {dgettext("timepoint_list", "Imaging Scan Done")}
       </th>
       <th>
-        Within Optimal
+        {dgettext("instrument_list", "Within Optimal")}
       </th>
       <th>
-        Within Permitted
+        {dgettext("instrument_list", "Within Permitted")}
       </th>
       {if $SupplementalSessionStatuses|default}
         {foreach from=$timePoint.status item=status key=name}
@@ -113,16 +113,16 @@
       </td>
       <td>
         {if $display.WindowInfo.Optimum|default}
-          Yes
+          {dgettext("loris", "Yes")}
         {else}
-          No
+          {dgettext("loris", "No")}
         {/if}
       </td>
       <td {if not $display.WindowInfo.Optimum|default}class="error"{/if}>
         {if $display.WindowInfo.Permitted|default}
-          Yes
+          {dgettext("loris", "Yes")}
         {else}
-          No
+          {dgettext("loris", "No")}
         {/if}
       </td>
       {if $SupplementalSessionStatuses|default}
@@ -142,20 +142,20 @@
     <thead>
     <tr class="info">
       <th nowrap="nowrap" colspan="3">
-        Stage
+        {dgettext("loris", "Stage")}
       </th>
       <th nowrap="nowrap" colspan="3">
-        Status
+        {dgettext("timepoint_list", "Stage Status")}
       </th>
       <th nowrap="nowrap" colspan="2">
-        Date
+        {dgettext("timepoint_list", "Date of Stage")}
       </th>
     </tr>
     </thead>
     <tbody>
     <tr>
       <td nowrap="nowrap" colspan="3">
-        Screening
+        {dgettext("loris", "Screening")}
       </td>
       <td nowrap="nowrap" colspan="3">
         {$display.Screening}
@@ -166,10 +166,12 @@
     </tr>
     <tr>
       <td nowrap="nowrap" colspan="3">
-        Visit
+        {dgettext("loris", "Visit")}
       </td>
       <td nowrap="nowrap" colspan="3">
-        {$display.Visit}
+        {if $display.Visit != ""}
+            {dgettext("loris", $display.Visit)}
+        {/if}
       </td>
       <td nowrap="nowrap" colspan="2">
         {$display.Date_visit}
@@ -177,7 +179,7 @@
     </tr>
     <tr>
       <td nowrap="nowrap" colspan="3">
-        Approval
+        {dgettext("loris", "Approval")}
       </td>
       <td nowrap="nowrap" colspan="3">
         {$display.Approval}
@@ -191,7 +193,7 @@
 </div>
 
 <!-- table title -->
-<h3>Behavioural Battery of Instruments</h3>
+<h3>{dgettext("instrument_list", "Behavioural Battery of Instruments")}</h3>
 
 <!-- table with list of instruments and links to open them -->
 <table class="table table-hover table-bordered dynamictable" cellpadding="2">
@@ -199,17 +201,17 @@
     <!-- print the sub group header row -->
     <thead>
     <tr class="info">
-	    <th>{$instrument_groups[group].title}
+	    <th>{dgettext("loris", $instrument_groups[group].title)}
 	       <!-- show the instruction only one time -->
 	       {if $smarty.section.group.iteration == 1}
-	       <br />(Click To Open)
+	       <br />({dgettext("timepoint_list", "Click to Open")})
 	       {/if}
 	    </th>
-	    <th>Data Entry</th>
-	    <th>Administration</th>
-	    <th>Feedback</th>
-	    <th>Double Data Entry Form</th>
-	    <th>Double Data Entry Status</th>
+	    <th>{dgettext("instrument_list", "Data Entry")}</th>
+	    <th>{dgettext("instrument_list", "Administration")}</th>
+	    <th>{dgettext("loris", "Feedback")}</th>
+	    <th>{dgettext("instrument_list", "Double Data Entry Form")}</th>
+	    <th>{dgettext("instrument_list", "Double Data Entry Status")}</th>
     </tr>
     </thead>
 	{section name=instrument loop=$instruments[group]}
@@ -218,29 +220,42 @@
 	    	<td>
                 <a href="{$baseurl|default}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].commentID}&sessionID={$sessionID}&candID={$candID}">
 	            {$instruments[group][instrument].fullName}</a></td>
-	    	<td>{$instruments[group][instrument].dataEntryStatus}</td>
-	    	<td>{$instruments[group][instrument].administrationStatus}</td>
+	    	<td>
+                    {if $instruments[group][instrument].dataEntryStatus != ""}
+                        {dgettext("loris", $instruments[group][instrument].dataEntryStatus)}</td>
+                    {/if}
+	    	<td>
+                    {if $instruments[group][instrument].administrationStatus != ""}
+                        {dgettext("loris", $instruments[group][instrument].administrationStatus)}
+                    {/if}
+                </td>
 	    	<td bgcolor="{$instruments[group][instrument].feedbackColor|default}">
-		    	{$instruments[group][instrument].feedbackStatus}
+                    {dgettext("timepoint_list", $instruments[group][instrument].feedbackStatus)}
 	        </td>
 			<td>
-				{if $instruments[group][instrument].isDdeEnabled }
-				    	<a href="{$baseurl|default}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">Double Data Entry</a>
-			   {/if}&nbsp;
+                            {if $instruments[group][instrument].isDdeEnabled }
+				    	<a href="{$baseurl|default}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">{dgettext("instrument_list", "Double Data Entry")}</a>
+                            {/if}&nbsp;
 			</td>
-			<td>{if $instruments[group][instrument].isDdeEnabled }{$instruments[group][instrument].ddeDataEntryStatus}{/if}&nbsp;</td>
+			<td>
+                            {if $instruments[group][instrument].isDdeEnabled && $instruments[group][instrument].ddeDataEntryStatus != "" }
+                                {dgettext("loris", $instruments[group][instrument].ddeDataEntryStatus)}
+                            {/if}&nbsp;
+                        </td>
 	   	</tr>
 	   </tbody>
 	{/section}
 {sectionelse}
-     <tr><td nowrap="nowrap">The battery has no registered instruments</td></tr>
+     <tr><td nowrap="nowrap">{dgettext("instrument_list", "The battery has no registered instruments")}</td></tr>
 {/section}
 </table>
 {if $imaging_browser_permission}
   <div class="col-xs-12 row">
   </div>
   <div class="col-xs-12 row">
-    <button class="btn btn-primary" onclick="location.href='{$baseurl|default}/imaging_browser/viewSession/?sessionID={$sessionID}'">View Imaging data</button>
+      <button class="btn btn-primary" onclick="location.href='{$baseurl|default}/imaging_browser/viewSession/?sessionID={$sessionID}'">
+          {dgettext("instrument_list", "View Imaging data")}
+      </button>
   </div>
 {/if}
 </div>
