@@ -36,9 +36,6 @@ msgstr ""
 msgid "BVL QC"
 msgstr ""
 
-msgid "BVL QC Status"
-msgstr ""
-
 msgid "BVL Exclusion"
 msgstr ""
 

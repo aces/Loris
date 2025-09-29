@@ -21,9 +21,6 @@ msgstr ""
 msgid "Instrument List"
 msgstr "Lista de Instrumentos"
 
-msgid "Instruments"
-msgstr "Instrumentos"
-
 msgid "Visit to Site"
 msgstr "Visita al Sitio"
 
@@ -35,21 +32,6 @@ msgstr "Dentro de permitido"
 
 msgid "Behavioural Battery of Instruments"
 msgstr "Batería de instrumentos de comportamiento"
-
-msgid "Data Entry"
-msgstr "Entrada de datos"
-
-msgid "Administration"
-msgstr "Administración"
-
-msgid "Double Data Entry Form"
-msgstr "Formulario de entrada de datos duplicado"
-
-msgid "Double Data Entry Status"
-msgstr "Estado del formulario de entrada de datos duplicado"
-
-msgid "Double Data Entry"
-msgstr "Entrada de datos duplicada"
 
 msgid "The battery has no registered instruments"
 msgstr "La batería no tiene instrumentos registrados"

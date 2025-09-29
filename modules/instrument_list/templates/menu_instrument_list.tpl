@@ -207,11 +207,11 @@
 	       <br />({dgettext("timepoint_list", "Click to Open")})
 	       {/if}
 	    </th>
-	    <th>{dgettext("instrument_list", "Data Entry")}</th>
-	    <th>{dgettext("instrument_list", "Administration")}</th>
+	    <th>{dgettext("loris", "Data Entry")}</th>
+	    <th>{dgettext("loris", "Administration")}</th>
 	    <th>{dgettext("loris", "Feedback")}</th>
-	    <th>{dgettext("instrument_list", "Double Data Entry Form")}</th>
-	    <th>{dgettext("instrument_list", "Double Data Entry Status")}</th>
+	    <th>{dgettext("loris", "Double Data Entry Form")}</th>
+	    <th>{dgettext("loris", "Double Data Entry Status")}</th>
     </tr>
     </thead>
 	{section name=instrument loop=$instruments[group]}
@@ -234,7 +234,7 @@
 	        </td>
 			<td>
                             {if $instruments[group][instrument].isDdeEnabled }
-				    	<a href="{$baseurl|default}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">{dgettext("instrument_list", "Double Data Entry")}</a>
+				    	<a href="{$baseurl|default}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">{dgettext("loris", "Double Data Entry")}</a>
                             {/if}&nbsp;
 			</td>
 			<td>

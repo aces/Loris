@@ -284,5 +284,17 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-msgid "Start"
+msgid "Data Entry"
+msgstr ""
+
+msgid "Administration"
+msgstr ""
+
+msgid "Double Data Entry Form"
+msgstr ""
+
+msgid "Double Data Entry Status"
+msgstr ""
+
+msgid "Double Data Entry"
 msgstr ""
