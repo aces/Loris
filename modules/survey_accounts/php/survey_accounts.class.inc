@@ -76,10 +76,10 @@ class Survey_Accounts extends \DataFrameworkMenu
     public function getFieldOptions() : array
     {
         $statusOptions = [
-            'Created'     => 'Created',
-            'Sent'        => 'Sent',
-            'In Progress' => 'In Progress',
-            'Complete'    => 'Complete',
+            'Created'     => dgettext("loris", "Created"),
+            'Sent'        => dgettext("loris", "Sent"),
+            'In Progress' => dgettext("loris", "In Progress"),
+            'Complete'    => dgettext("loris", "Complete"),
         ];
 
         $instruments
