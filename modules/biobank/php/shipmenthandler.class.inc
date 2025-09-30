@@ -4,7 +4,7 @@
  * This class features the code that enables access to the Shipments of the LORIS
  * Biobank Module.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   Handler
  * @package    Loris
@@ -19,7 +19,7 @@ namespace LORIS\biobank;
  * This class features the code that enables access to the Shipments of the LORIS
  * Biobank Module.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   Handler
  * @package    Loris

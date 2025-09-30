@@ -103,6 +103,7 @@ class Files extends \NDB_Page
             ));
         }
     }
+
     /**
      * Handles the document editing process
      *
@@ -158,6 +159,7 @@ class Files extends \NDB_Page
             );
         }
     }
+
     /**
      * Handles the document deleting process
      *
@@ -207,6 +209,7 @@ class Files extends \NDB_Page
             unlink($path);
         }
     }
+
     /**
      * Returns a list of categories fields from database
      *
@@ -261,6 +264,7 @@ class Files extends \NDB_Page
 
         return $result;
     }
+
     /**
      * Handler of parsing category
      *
@@ -449,6 +453,7 @@ class Files extends \NDB_Page
             ]
         ));
     }
+
     /**
      * Check the find name in the database, if exists return false
      *

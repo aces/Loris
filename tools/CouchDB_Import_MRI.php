@@ -4,7 +4,7 @@
  * This file contains code to import MRI data into
  * DQT
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main

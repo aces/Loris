@@ -13,6 +13,7 @@ RUN cat /sql/0000-00-00-schema.sql \
         /sql/0000-00-03-ConfigTables.sql \
         /sql/0000-00-04-Help.sql \
         /sql/0000-00-05-ElectrophysiologyTables.sql \
+        /sql/0000-00-06-BiobankTables.sql \
         /instruments_sql/*.sql \
         /test_instrument.sql \
         /RB_files/*.sql \

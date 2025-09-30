@@ -167,3 +167,10 @@ msgstr ""
 
 msgid "Comments saved."
 msgstr ""
+
+msgid "Imaging Session"
+msgstr ""
+
+msgid "Imaging Sessions"
+msgstr ""
+

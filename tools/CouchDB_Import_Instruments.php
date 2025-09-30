@@ -302,6 +302,7 @@ class CouchDBInstrumentImporter
         );
         print "Created run log with id $id\n";
     }
+
     /**
      * Runs the importer
      *
