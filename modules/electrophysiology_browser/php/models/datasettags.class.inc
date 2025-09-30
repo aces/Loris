@@ -22,6 +22,7 @@ class DatasetTags
     private ?int $_projectID;
     private array $_data = [];
     private array $_hedSchema;
+    private array $_hedEndorsements = [];
     private \LORIS\LorisInstance $loris;
 
     /**
@@ -63,6 +64,27 @@ class DatasetTags
     }
 
     /**
+     * Convert Tagger name to expected format
+     *
+     * @return void
+     */
+    public static function convertTaggerName($column): string {
+      $taggerName = 'Origin';
+      if (!is_null($column['TaggedBy'])) {
+        if ($column['FirstName']) {
+          $taggerName = $column['FirstName'];
+          if ($column['LastName']) {
+            $taggerName = substr($column['FirstName'], 0, 1)
+              . '.' . $column['LastName'];
+          }
+        } else if ($column['LastName']) {
+          $taggerName = $column['LastName'];
+        }
+      }
+      return $taggerName;
+    }
+
+    /**
      * Fetch and set data for the DatasetTags
      *
      * @return void
@@ -75,11 +97,14 @@ class DatasetTags
             'SELECT
             opt.PropertyName as columnName,
             opt.PropertyValue as columnValue,
-            sm.*
+            sm.*,
+            tagger.First_name AS FirstName,
+            tagger.Last_name AS LastName
         FROM physiological_task_event_opt AS opt
         LEFT JOIN bids_event_dataset_mapping AS sm
         ON sm.PropertyName = opt.PropertyName
         AND sm.PropertyValue = opt.PropertyValue
+        LEFT JOIN users AS tagger ON sm.TaggedBy = tagger.ID
         WHERE opt.PhysiologicalTaskEventID IN (
           SELECT te.PhysiologicalTaskEventID
           FROM physiological_task_event AS te
@@ -98,7 +123,11 @@ class DatasetTags
         );
 
         $trialTypes = $db->pselect(
-            'SELECT pte.TrialType, sm.*
+            'SELECT
+            pte.TrialType,
+            sm.*,
+            tagger.First_name AS FirstName,
+            tagger.Last_name AS LastName
         FROM (
             SELECT PhysiologicalFileID, TrialType
             FROM physiological_task_event
@@ -113,33 +142,11 @@ class DatasetTags
             GROUP BY TrialType
         ) AS pte
         LEFT JOIN bids_event_dataset_mapping AS sm
+        LEFT JOIN users AS tagger on sm.TaggedBy = tagger.ID
         ON sm.PropertyName = "TrialType"
         AND sm.PropertyValue = pte.TrialType
         AND sm.ProjectID=:PID
         ORDER BY pte.TrialType ASC, sm.ID DESC',
-            ['PID' => $this->_projectID]
-        );
-
-        $eventValues = $db->pselect(
-            'SELECT pte.EventValue, sm.*
-        FROM (
-            SELECT PhysiologicalFileID, EventValue
-            FROM physiological_task_event
-            WHERE PhysiologicalFileID IN (
-              SELECT pf.PhysiologicalFileID
-              FROM physiological_file AS pf
-              WHERE pf.SessionID IN (
-                SELECT ID FROM session
-                WHERE ProjectID=:PID
-              )
-            )
-            GROUP BY EventValue
-        ) AS pte
-        LEFT JOIN bids_event_dataset_mapping AS sm
-        ON sm.PropertyName = "EventValue"
-        AND sm.PropertyValue = pte.EventValue
-        AND sm.ProjectID=:PID
-        ORDER BY pte.EventValue ASC, sm.ID DESC',
             ['PID' => $this->_projectID]
         );
 
@@ -153,38 +160,43 @@ class DatasetTags
             if (array_key_exists(strval($column['columnValue']), $propertyValues)) {
                 $propertyTags = $propertyValues[strval($column['columnValue'])];
             }
+          $column['TaggerName'] = $this->convertTaggerName($column);
+          unset($column['FirstName']);
+          unset($column['LastName']);
+          if (!is_null($column['ID'])) {  // Empty left join
             $propertyTags[] = $column;
-            $propertyValues[strval($column['columnValue'])] = $propertyTags;
-            $columnMapping[strval($column['columnName'])]   = $propertyValues;
+          }
+          $propertyValues[strval($column['columnValue'])] = $propertyTags;
+          $columnMapping[strval($column['columnName'])]   = $propertyValues;
         }
 
-        $trialTypeList = [];
-        foreach ($trialTypes as $trialType) {
-            $trialTypeTags  = [];
-            $trialTypeValue = strval($trialType['TrialType']);
-            if (array_key_exists($trialTypeValue, $trialTypeList)) {
-                $trialTypeTags = $trialTypeList[$trialTypeValue];
-            }
-            $trialTypeTags[] = $trialType;
-            $trialTypeList[$trialTypeValue] = $trialTypeTags;
+        $hedColumns = [
+          'TrialType' => [
+            'name' => 'trial_type',
+            'values' => $trialTypes,
+          ],
+        ];
+
+
+        foreach ($hedColumns as $columnName => $column) {
+          $valueList = [];
+          foreach ($column['values'] as $columnValue) {
+            $columnTags = [];
+            $value = strval($columnValue[$columnName]);
+            if (array_key_exists($value, $valueList))
+              $columnTags = $valueList[$value];
+            $columnValue['TaggerName'] = $this->convertTaggerName($columnValue);
+            unset($columnValue['FirstName']);
+            unset($columnValue['LastName']);
+            if (!is_null($columnValue['ID'])) // Empty left join
+              $columnTags[] = $columnValue;
+            $valueList[$value] = $columnTags;
+          }
+          // This would overwrite custom columns with the same name
+          $columnMapping[$column['name']] = $valueList;
         }
 
-        $eventValueList = [];
-        foreach ($eventValues as $eventValue) {
-            $eventValueTags = [];
-            $eventValueStr  = strval($eventValue['EventValue']);
-            if (array_key_exists($eventValueStr, $eventValueList)) {
-                $eventValueTags = $eventValueList[$eventValueStr];
-            }
-            $eventValueTags[] = $eventValue;
-            $eventValueList[$eventValueStr] = $eventValueTags;
-        }
-
-        // This would overwrite customs
-        $columnMapping['TrialType']  = $trialTypeList;
-        $columnMapping['EventValue'] = $eventValueList;
-
-        $this->_data = $columnMapping;
+      $this->_data = $columnMapping;
     }
 
     /**
@@ -198,6 +210,21 @@ class DatasetTags
             $this->setData();
         }
         return $this->_data;
+    }
+
+    /**
+     * Get HED Endorsements
+     *
+     * @return array The data array
+     */
+    function getHEDEndorsements(): array
+    {
+      if (!$this->_hedEndorsements) {
+        $this->_hedEndorsements = (
+        new HEDEndorsement($this->_physioFileID)
+        )->getDatasetLevelEndorsements();
+      }
+      return $this->_hedEndorsements;
     }
 
     /**
@@ -263,6 +290,7 @@ class DatasetTags
                     ) {
                         $addedTag['PairRelID'] = $freshPairRelID;
                     }
+                    $addedTag['TaggedBy'] = $user->getId();
                     $db->insert(
                         'bids_event_dataset_mapping',
                         [
@@ -276,12 +304,26 @@ class DatasetTags
                                                     ? '1' : '0',
                             'AdditionalMembers' => $addedTag['AdditionalMembers'],
                             'PairRelID'         => $addedTag['PairRelID'],
+                            'TaggedBy' => $addedTag['TaggedBy'],
                         ],
                     );
+                    $addedTag['FirstName'] = $user->getData('First_name');
+                    $addedTag['LastName'] = $user->getData('Last_name');
+
+                    $insertID = $db->getLastInsertId();
                     $addedTagIDs[] = [
-                        'RelID' => $db->getLastInsertId(),
-                        'AddID' => $addedTag['ID'],
+                      'RelID' => $insertID,
+                      'AddID' => $addedTag['ID'],
+                      'TaggedBy' => $user->getId(),
+                      'TaggerName' => self::convertTaggerName($addedTag),
                     ];
+
+                    $hedTagMapping['ID'] = $insertID;
+                    $this->insertHEDTagHistory(
+                      'bids_event_dataset_mapping',
+                      $hedTagMapping,
+                      'insert'
+                    );
                 }
             }
 
@@ -301,14 +343,23 @@ class DatasetTags
                             break;
                         }
                     }
+                    $editedTag['TaggedBy'] = $user->getId();
                     $db->update(
-                        'bids_event_dataset_mapping',
-                        [
-                            'HasPairing'        => $editedTag['HasPairing'],
-                            'AdditionalMembers' => $editedTag['AdditionalMembers'],
-                            'PairRelID'         => $editedTag['PairRelID'],
-                        ],
-                        ['ID'  => $editedTag['ID']]
+                      'bids_event_dataset_mapping',
+                      [
+                        'HasPairing' => $editedTag['HasPairing'],
+                        'AdditionalMembers' => $editedTag['AdditionalMembers'],
+                        'PairRelID' => $editedTag['PairRelID'],
+                        'TagValue' => $editedTag['TagValue'],
+                        'Description' => $editedTag['Description'],
+                        'TaggedBy' => $editedTag['TaggedBy']
+                      ],
+                      ['ID'  => $editedTag['ID']]
+                    );
+                    $this->insertHEDTagHistory(
+                      'bids_event_dataset_mapping',
+                      $editedTag,
+                      'update'
                     );
                 }
             }
@@ -355,6 +406,105 @@ class DatasetTags
     }
 
     /**
+     * Gets all HED tags for a property name and value
+     *
+     * @param int $physioFileID,
+     * @param string $propertyName,
+     * @param string $propertyValue,
+     *
+     * @return array
+     */
+    public static function getAllHEDTagIDs(
+      int $physioFileID,
+      string $propertyName,
+      string $propertyValue
+    ) : array
+    {
+      $db = \NDB_Factory::singleton()->database();
+      $hedRelIDs = $db->pselect(
+        'SELECT ID
+          FROM bids_event_dataset_mapping
+          WHERE PropertyName=:PNAME
+          AND PropertyValue=:PVALUE
+          AND ProjectID = (
+            SELECT ProjectID FROM session AS s WHERE s.ID = (
+              SELECT SessionID FROM physiological_file
+              WHERE PhysiologicalFileID=:PFID
+            )
+          )',
+        [
+          'PFID' => $physioFileID,
+          'PNAME' => $propertyName,
+          'PVALUE' => $propertyValue,
+        ]
+      );
+      return $hedRelIDs;
+    }
+
+    /**
+     * Deletes one dataset-level HED tag
+     *
+     * @param string $tableName DB table name
+     * @param object $hedTag    HED tag object
+     *
+     * @return void
+     */
+    function deleteDatasetTag(string $tableName, array $hedTag) : void
+    {
+      $db = \NDB_Factory::singleton()->database();
+      $db->delete(
+        $tableName,
+        ['ID'  => $hedTag['ID']]
+      );
+
+      $this->insertHEDTagHistory(
+        $tableName,
+        $hedTag,
+        'delete'
+      );
+      $db->delete(
+        $tableName,
+        ['ID'  => $hedTag['ID']]
+      );
+    }
+
+    /**
+     * Tracks tagging event in history table
+     *
+     * @param string $tableName         DB table name
+     * @param mixed $hedTag             HEDTag
+     * @param string $modificationType  DB modification type (insert, update, delete)
+     *
+     * @return void
+     */
+    function insertHEDTagHistory(
+      string $tableName,
+      array $hedTag,
+      string $modificationType,
+    ): void
+    {
+      $db = \NDB_Factory::singleton()->database();
+
+      $historyObject =  [
+        'HEDTableID' => $hedTag['ID'],
+        'HEDTable' => $tableName,
+        'TaggedBy' => $hedTag['TaggedBy'],
+        'HEDReferenceID' => $this->_projectID,
+        'PropertyName' => $hedTag['PropertyName'],
+        'PropertyValue' => $hedTag['PropertyValue'],
+        'HEDTagID' => $hedTag['HEDTagID'],
+        'TagValue' => $hedTag['TagValue'],
+        'Description' => $hedTag['Description'],
+        'HasPairing' => $hedTag['HasPairing'] ? '1' : '0',
+        'PairRelID' => $hedTag['PairRelID'],
+        'AdditionalMembers' => $hedTag['AdditionalMembers'],
+        'ModificationType' => $modificationType
+      ];
+      $db->insert('hed_tag_history', $historyObject);
+    }
+
+
+  /**
      * Build HED string from HED tags
      *
      * @param array $instance_data          Event instance data
@@ -402,15 +552,6 @@ class DatasetTags
                     $this->buildHEDTags(
                         $trial_type_values[$instance_data['TrialType']]
                     )
-                );
-            }
-
-            // value
-            $event_values = $dataset_tags['EventValue'];
-            if (array_key_exists($instance_data['EventValue'], $event_values)) {
-                $hed_tags = array_merge(
-                    $hed_tags,
-                    $this->buildHEDTags($event_values[$instance_data['EventValue']])
                 );
             }
         }
