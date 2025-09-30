@@ -190,6 +190,14 @@ msgstr ""
 msgid "Entity Type"
 msgstr ""
 
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Save"
+
 msgid "Scan Done"
 msgstr ""
 

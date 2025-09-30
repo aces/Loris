@@ -1,20 +1,20 @@
 <table class="table table-hover table-bordered dynamictable" id='table-header-left'>
      <thead>
         <tr class="info">
-            <th>QC Status</th>
-            <th>Patient Name</th>
-            <th>PSCID</th>
-            <th>DCCID</th>
-            <th>Visit Label</th>
-            <th>Site</th>
-            <th>QC Pending</th>
-            <th>DOB</th>
-            <th>Sex</th>
-            <th>Output Type</th>
-            <th>Scanner</th>
-            <th>Cohort</th>
+            <th>{t text="QC Status" domain="imaging_browser"}</th>
+            <th>{t text="Patient Name" domain="imaging_browser"}</th>
+            <th>{t text="PSCID" domain="loris"}</th>
+            <th>{t text="DCCID" domain="loris"}</th>
+            <th>{t text="Visit Label" domain="loris"}</th>
+            <th>{t text="Site" domain="loris"}</th>
+            <th>{t text="QC Pending" domain="imaging_browser"}</th>
+            <th>{t text="DOB" domain="loris"}</th>
+            <th>{t text="Sex" domain="loris"}</th>
+            <th>{t text="Output Type" domain="imaging_browser"}</th>
+            <th>{t text="Scanner" domain="imaging_browser"}</th>
+            <th>{t text="Cohort" domain="loris"}</th>
             {if $useEDC|default}
-            <th>EDC</th>
+            <th>{t text="EDC" domain="imaging_browser"}</th>
             {/if}
         </tr>
     </thead>
