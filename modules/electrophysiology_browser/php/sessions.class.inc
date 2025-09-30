@@ -138,6 +138,7 @@ class Sessions extends \NDB_Page
                 'Invalid output type'
             ));
         }
+        header("Cache-Control: no-store");  // Fixes tab re-open bug (json)
         return $this->getSessionData($outputType);
     }
 

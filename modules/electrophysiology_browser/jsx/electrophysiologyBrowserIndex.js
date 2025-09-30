@@ -7,6 +7,7 @@ import {withTranslation} from 'react-i18next';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import {HasHEDIcon} from "./react-series-data-viewer/src/series/components/components";
 
 /**
  * Electrophysiology Browser page.
@@ -147,6 +148,17 @@ class ElectrophysiologyBrowserIndex extends Component {
         name: 'visitLabel',
         type: 'text',
       }},
+      {label: 'Has HED Tags', show: true, filter: {
+          name: 'HasHEDTags',
+          type: 'select',
+          hide: false,
+          options: {
+            'yes': 'Yes',
+            'no': 'No',
+          },
+        },
+        custom_label: <HasHEDIcon />
+      },
       {label: 'Acquisition Time', show: true},
       {label: 'Insertion Time', show: true},
       {label: 'Links', show: true},

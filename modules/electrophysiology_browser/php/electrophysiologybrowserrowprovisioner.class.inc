@@ -50,6 +50,22 @@ class ElectrophysiologyBrowserRowProvisioner
               c.CandID                                      AS DCCID,
               Project.Name                              AS Project,
               s.Visit_label                             AS Visit_Label,
+              (
+                SELECT IF((
+                  SELECT COUNT(*)
+                  FROM bids_event_dataset_mapping
+                  WHERE ProjectID = s.ProjectID
+                ) + (
+                  SELECT COUNT(*)
+                  FROM physiological_task_event_hed_rel
+                  WHERE PhysiologicalTaskEventID IN (
+                    SELECT PhysiologicalTaskEventID
+                    FROM physiological_task_event pte
+                    JOIN physiological_file pf USING (PhysiologicalFileID)
+                    WHERE pf.SessionID = s.ID
+                  )
+                ) > 0, 'Yes', 'No')
+              )                                         AS HasHEDTags,
               MIN(pf.AcquisitionTime)                   AS Acquisition_Time,
               MIN(pf.InsertTime)                        AS Insert_Time,
               GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Links,

@@ -163,6 +163,60 @@ class Events extends \NDB_Page
                 return (new \LORIS\Http\Response\JSON\OK(
                     ['mapping' => $idMapping]
                 ));
+            case 'endorse_dataset_tags':
+                // TODO: Add permission checks
+                $propertyName       = $parameters['property_name'];
+                $propertyValue      = $parameters['property_value'];
+                $endorsementStatus  = $parameters['endorsement_status'];
+                $endorsementComment = $parameters['endorsement_comment'];
+                $endorserID         = $user->getId();
+
+                $tagInsertion = HEDEndorsement::insertDatasetTagEndorsements(
+                  $parameters['physioFileID'],
+                  $propertyName,
+                  $propertyValue,
+                  $endorserID,
+                  $endorsementStatus,
+                  $endorsementStatus === 'Comment'
+                    ? $endorsementComment
+                    : null
+                );
+                $endorserName = substr($user->getData('First_name'), 0, 1) .
+                  '.' . $user->getData('Last_name');
+                return (new \LORIS\Http\Response\JSON\OK(
+                  [
+                    'endorsementID'   => $tagInsertion['endorsementID'],
+                    'endorsedBy'      => $endorserName,
+                    'endorsedByID'    => $endorserID,
+                    'endorsementTime' => $tagInsertion['endorsementTime'],
+                  ]
+                ));
+            case 'endorse_hed_instance':
+                // TODO: Add permission checks
+                $hedRelID          = $parameters['hed_rel_id'];
+                $endorsementStatus  = $parameters['endorsement_status'];
+                $endorsementComment = $parameters['endorsement_comment'];
+                $endorserID       = $user->getId();
+
+                $tagInsertion = HEDEndorsement::insertHEDEndorsement(
+                  $hedRelID,
+                  'physiological_task_event_hed_rel',
+                  $endorserID,
+                  $endorsementStatus,
+                  $endorsementStatus === 'Comment'
+                    ? $endorsementComment
+                    : null
+                );
+                $endorserName = substr($user->getData('First_name'), 0, 1) .
+                  '.' . $user->getData('Last_name');
+                return (new \LORIS\Http\Response\JSON\OK(
+                  [
+                    'endorsementID'   => $tagInsertion['endorsementID'],
+                    'endorsedBy'      => $endorserName,
+                    'endorsedByID'    => $endorserID,
+                    'endorsementTime' => $tagInsertion['endorsementTime'],
+                  ]
+                ));
             }
             default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
