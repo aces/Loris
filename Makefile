@@ -121,6 +121,7 @@ locales:
 	msgfmt -o modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po
 	msgfmt -o modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.po
 	msgfmt -o modules/next_stage/locale/ja/LC_MESSAGES/next_stage.mo modules/next_stage/locale/ja/LC_MESSAGES/next_stage.po
+	msgfmt -o modules/next_stage/locale/es/LC_MESSAGES/next_stage.mo modules/next_stage/locale/es/LC_MESSAGES/next_stage.po
 	msgfmt -o modules/oidc/locale/ja/LC_MESSAGES/oidc.mo modules/oidc/locale/ja/LC_MESSAGES/oidc.po
 	msgfmt -o modules/publication/locale/ja/LC_MESSAGES/publication.mo modules/publication/locale/ja/LC_MESSAGES/publication.po
 	msgfmt -o modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.mo modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.po
