@@ -245,8 +245,7 @@ class Edit_User extends \NDB_Form
         // Keep old permissions if the editor is not allowed to edit them,
         // unless editor is superuser
         foreach ($current_permissionids as $perm) {
-            if (
-                !in_array($perm, $newPermissions)
+            if (!in_array($perm, $newPermissions)
                 && !in_array($perm, $editorPermissions)
                 && !$editor->hasPermission('superuser')
             ) {
@@ -426,8 +425,7 @@ class Edit_User extends \NDB_Form
             );
 
             // START EXAMINER UPDATE
-            if (
-                !empty($ex_radiologist)
+            if (!empty($ex_radiologist)
                 && !empty($ex_pending)
                 && !empty($ex_curr_sites)
                 && count($examinerID) === 0
@@ -449,8 +447,7 @@ class Edit_User extends \NDB_Form
                             WHERE userID=:uid",
                     ['uid' => $uid]
                 );
-            } elseif (
-                count($examinerID) > 0
+            } elseif (count($examinerID) > 0
                 && ((!empty($ex_radiologist)
                 && !empty($ex_pending)
                 && !empty($ex_curr_sites))
@@ -1112,8 +1109,7 @@ class Edit_User extends \NDB_Form
                         "user_accounts",
                         "You must enter a user name or choose to make it match the email address"
                     );
-            } elseif (
-                !empty($values['UserID'])
+            } elseif (!empty($values['UserID'])
                 || ($values['NA_UserID'] == 'on' && $values['Email'])
             ) {
                 // Either specified a UID or clicked on "UID = email"
@@ -1167,8 +1163,7 @@ class Edit_User extends \NDB_Form
         // Do not show this error if the password is an empty string: in this
         // case, that means the email is empty also. It's more appropriate to
         // display only the error 'You must enter an email'.
-        if (
-            $values['Email'] === $values['Password_hash']
+        if ($values['Email'] === $values['Password_hash']
             && $values['Password_hash'] !== ''
         ) {
             $errors['Password'] = self::PASSWORD_ERROR_IS_EMAIL;
@@ -1179,8 +1174,7 @@ class Edit_User extends \NDB_Form
         // case 2 - New user and Make user name match email address checked
         //          already handled in email/password check
         // case 3 - Edit user
-        if (
-            (isset($values['UserID']) && !isset($values['NA_UserID'])
+        if ((isset($values['UserID']) && !isset($values['NA_UserID'])
             && $values['UserID'] === $values['Password_hash'])
             || (!empty($this->identifier)
             && $this->identifier === $values['Password_hash'])
@@ -1198,8 +1192,7 @@ class Edit_User extends \NDB_Form
             // case of new user the password column will be null
             // so either password should be set or
             // password should be generated
-            if (
-                is_null($pass)
+            if (is_null($pass)
                 && empty($values['Password_hash'])
                 && $values['NA_Password'] != 'on'
             ) {
@@ -1214,8 +1207,7 @@ class Edit_User extends \NDB_Form
         }
 
         // if password is user-defined, and user wants to change password
-        if (
-            empty($values['NA_Password'])
+        if (empty($values['NA_Password'])
             && (!empty($values['Password_hash']) || !empty($values['__Confirm']))
         ) {
             try {
@@ -1235,8 +1227,7 @@ class Edit_User extends \NDB_Form
         }
 
         // if password is generated then the email user button should be clicked
-        if (
-            isset($values['NA_Password'])
+        if (isset($values['NA_Password'])
             && $values['NA_Password'] == "on"
             && $values['SendEmail'] != "on"
         ) {
@@ -1245,8 +1236,7 @@ class Edit_User extends \NDB_Form
                 . 'please notify the user by checking Send email to user box';
         }
 
-        if (
-            isset($values['NA_Password'])
+        if (isset($values['NA_Password'])
             && $values['NA_Password'] == 'on'
             && $plaintext != ''
         ) {
@@ -1254,8 +1244,7 @@ class Edit_User extends \NDB_Form
                 . 'if you want the system to generate one for you';
         }
 
-        if (
-            is_null($this->identifier)
+        if (is_null($this->identifier)
             && (!isset($values['NA_Password']) || $values['NA_Password'] != 'on')
             && empty($plaintext)
         ) {
@@ -1311,8 +1300,7 @@ class Edit_User extends \NDB_Form
                             "Please specify if examiner is a radiologist"
                         );
                     }
-                    if (
-                        $values['examiner_radiologist'] !== ''
+                    if ($values['examiner_radiologist'] !== ''
                         && $values['examiner_pending'] == ''
                     ) {
                         $errors['examiner_group'] = dgettext(
@@ -1322,8 +1310,7 @@ class Edit_User extends \NDB_Form
                     }
                 }
             }
-            if (
-                !$matched
+            if (!$matched
                 && ($values['examiner_radiologist'] !== ''
                 || $values['examiner_pending'] ?? '' !== '')
             ) {
@@ -1343,8 +1330,7 @@ class Edit_User extends \NDB_Form
         //    should be less or equal to the time to it will be active.
         //======================================
 
-        if (
-            ($values['active_to'] != null)
+        if (($values['active_to'] != null)
             && ($values['active_from'] > $values['active_to'])
         ) {
             $errors['active_timeWindows']

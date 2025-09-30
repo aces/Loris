@@ -505,7 +505,6 @@
   <input class="btn btn-sm btn-primary" onclick="location.href='{$baseurl|default}/user_accounts/'" value="{dgettext("user_accounts", "Back")}" type="button" />
 </div>
 {if $can_reject}
-Confirm
 <div class="col-sm-2">
     <input type=hidden id ="UserID" value="{$form.UserID.html}">
     <input class="btn btn-sm btn-primary" value="{dgettext("user_accounts", "Reject User")}" type="button" id="btn_reject"/>
