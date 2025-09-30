@@ -18,8 +18,7 @@ const StudyProgression = (props) => {
   const {t} = useTranslation();
   const [loading, setLoading] = useState(true);
   const [showFiltersScans, setShowFiltersScans] = useState(false);
-  const [showFiltersRecruitment, setShowFiltersRecruitment] = useState(false);
-  const [activeView, setActiveView] = useState(0);
+  const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
   useEffect( () => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
 
@@ -27,7 +26,7 @@ const StudyProgression = (props) => {
     let newdetails = {...chartDetails};
     newdetails['total_scans']['scans_bymonth']['title']
       = t('Scan sessions per site', {ns: 'statistics'});
-    newdetails['total_recruitment']['siterecruitment_line']['title']
+    newdetails['total_recruitment']['siterecruitment_bymonth']['title']
       = t('Recruitment per site', {ns: 'statistics'});
     setChartDetails(newdetails);
   }, []);
@@ -45,10 +44,12 @@ const StudyProgression = (props) => {
         label: t('Scans', {ns: 'loris'}),
         legend: 'under',
         options: {line: 'line'},
+        chartObject: null,
+        titlePrefix: 'Month',
       },
     },
     'total_recruitment': {
-      'siterecruitment_line': {
+      'siterecruitment_bymonth': {
         sizing: 11,
         title: t('Recruitment per site', {ns: 'statistics'}),
         filters: '',
@@ -56,6 +57,8 @@ const StudyProgression = (props) => {
         dataType: 'line',
         legend: '',
         options: {line: 'line'},
+        chartObject: null,
+        titlePrefix: 'Month',
       },
     },
   });
@@ -97,17 +100,10 @@ const StudyProgression = (props) => {
       <Panel
         title={t('Study Progression', {ns: 'statistics'})}
         id='statistics_studyprogression'
-        activeView={activeView}
         onChangeView={(index) => {
-          setActiveView(index);
           setupCharts(false, chartDetails, t('Total', {ns: 'loris'}));
-
           // reset filters when switching views
-          if (index === 0) {
-            setShowFiltersScans(false);
-          } else if (index === 1) {
-            setShowFiltersRecruitment(false);
-          }
+          setShowFiltersBreakdown(false);
         }}
         views={[
           {
@@ -157,12 +153,12 @@ const StudyProgression = (props) => {
                   <button
                     type="button"
                     className="btn btn-default btn-xs"
-                    onClick={() => setShowFiltersScans((prev) => !prev)}
+                    onClick={() => setShowFiltersBreakdown((prev) => !prev)}
                   >
                     {filterLabel(showFiltersScans)}
                   </button>
                 </div>
-                {showFiltersScans && (
+                {showFiltersBreakdown && (
                   <QueryChartForm
                     Module={'statistics'}
                     name={'studyprogression'}
@@ -196,12 +192,12 @@ const StudyProgression = (props) => {
                     <button
                       type="button"
                       className="btn btn-default btn-xs"
-                      onClick={() => setShowFiltersRecruitment((prev) => !prev)}
+                      onClick={() => setShowFiltersBreakdown((prev) => !prev)}
                     >
-                      {filterLabel(showFiltersRecruitment)}
+                      {filterLabel(showFiltersBreakdown)}
                     </button>
                   </div>
-                  {showFiltersRecruitment && (
+                  {showFiltersBreakdown && (
                     <QueryChartForm
                       Module={'statistics'}
                       name={'studyprogression'}
@@ -212,13 +208,13 @@ const StudyProgression = (props) => {
                       }}
                     />
                   )}
-                  {showChart('total_recruitment', 'siterecruitment_line')}
+                  {showChart('total_recruitment', 'siterecruitment_bymonth')}
                 </div>
               ) : (
                 <p>There have been no candidates registered yet.</p>
               ),
             title: title('Site Recruitment'),
-            onToggleFilters: () => setShowFiltersRecruitment((prev) => !prev),
+            onToggleFilters: () => showFiltersBreakdown((prev) => !prev),
           },
         ]}
       />

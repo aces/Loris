@@ -93,6 +93,14 @@ const Panel = (props) => {
         {props.views && props.views[activeView]['title']
           ? props.views[activeView]['title']
           : props.title}
+        {props.views && props.views[activeView]['subtitle']
+          && <span>
+            {!props.views[activeView]['subtitle'].endsWith('-1')
+              ? ' | ' + `${props.views[activeView]['subtitle']}`
+              : ' | ' + 'Loading...'
+            }
+          </span>
+        }
       </h3>
       {panelViews}
       {props.collapsing
