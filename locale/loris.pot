@@ -226,6 +226,27 @@ msgstr ""
 msgid "Uploaded"
 msgstr ""
 
+msgid "Are You Sure?"
+msgstr ""
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr ""
+
+msgid "Proceed"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Saving"
+msgstr ""
+
+msgid "Success!"
+msgstr ""
+
 msgid "Total"
 msgstr ""
 
@@ -259,3 +280,4 @@ msgstr ""
 
 msgid "In Progress"
 msgstr ""
+
