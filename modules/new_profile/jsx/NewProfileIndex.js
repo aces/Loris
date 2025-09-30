@@ -27,7 +27,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/new_profile.json';
  * @version 1.0.0
  */
 class NewProfileIndex extends React.Component {
-   /**
+  /**
    * @constructor
    * @param {object} props - React Component properties
    */
@@ -53,7 +53,7 @@ class NewProfileIndex extends React.Component {
       .then(() => this.setState({isLoaded: true}));
   }
 
-   /**
+  /**
    * Retrieve data from the provided URL and save it in state
    *
    * @return {object}
@@ -68,7 +68,7 @@ class NewProfileIndex extends React.Component {
       });
   }
 
-   /**
+  /**
    * It checks the date of birth and Expected Date of Confinement,
    * the date fields must match.
    * If match, this function will return true.
@@ -94,7 +94,7 @@ class NewProfileIndex extends React.Component {
     return validate;
   }
 
-   /**
+  /**
    * Handles form submission
    *
    * @param {event} e - Form submission event
@@ -301,7 +301,7 @@ class NewProfileIndex extends React.Component {
           <DateElement
             name = "dobDateConfirm"
             label = {this.props.t('Date of Birth Confirm',
-               {ns: 'new_profile'})}
+              {ns: 'new_profile'})}
             onUserInput = {this.setFormData}
             value = {this.state.formData.dobDateConfirm}
             required = {requireBirthDate}
@@ -314,7 +314,7 @@ class NewProfileIndex extends React.Component {
         element: edc,
       },
       {
-        label: this.props.t('Sex', {ns: 'loris'}) ,
+        label: this.props.t('Sex', {ns: 'loris'}),
         element: (
           <SelectElement
             name = "sex"
@@ -327,7 +327,7 @@ class NewProfileIndex extends React.Component {
         ),
       },
       {
-        label: this.props.t('Site', {ns: 'loris'}) ,
+        label: this.props.t('Site', {ns: 'loris'}),
         element: site,
       },
       {
@@ -335,7 +335,7 @@ class NewProfileIndex extends React.Component {
         element: pscid,
       },
       {
-        label: this.props.t('Project', {ns: 'loris'}) ,
+        label: this.props.t('Project', {ns: 'loris'}),
         element: (
           <SelectElement
             name = "project"
@@ -347,7 +347,7 @@ class NewProfileIndex extends React.Component {
           />
         ),
       },
-        
+
     ];
 
     return (
