@@ -12,6 +12,7 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
+
 namespace LORIS\mri_violations;
 
 /**
@@ -40,7 +41,7 @@ class UserProjectMatchOrNull implements \LORIS\Data\Filter
      *
      * @return bool true if the user has a project in common with the data
      */
-    public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
+    public function filter(\User $user, \Loris\Data\DataInstance $resource): bool
     {
         // phan only understands method_exists on simple variables.
         // Assigning to a variable is the a workaround
@@ -57,7 +58,10 @@ class UserProjectMatchOrNull implements \LORIS\Data\Filter
             return true;
         }
         throw new \LorisException(
-            "Can not implement filter on a resource type that has no projects."
+            dgettext(
+                'loris',
+                "Can not implement filter on a resource type that has no projects."
+            )
         );
     }
 }
