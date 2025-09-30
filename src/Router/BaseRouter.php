@@ -54,8 +54,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $uri  = $request->getUri();
-        $path = $uri->getPath();
+        $request = $request->withAttribute("unhandledURI", $request->getURI());
+        $uri     = $request->getUri();
+        $path    = $uri->getPath();
 
         // Replace multiple slashes in the URL with a single slash
         $path = preg_replace("/\/+/", "/", $path);
@@ -157,7 +158,8 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                 $module->setLogger(new \PSR\Log\NullLogger);
             }
             $mr      = new ModuleRouter($module);
-            $request = $request->withURI($suburi);
+            $request = $request->withAttribute("unhandledURI", $suburi);
+
             return $ehandler->process($request, $mr);
         }
         // Legacy from .htaccess. A CandID goes to the timepoint_list
