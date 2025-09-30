@@ -3,7 +3,7 @@
 /**
  * Unit tests for the User and UserPermissions class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -302,6 +302,7 @@ class UserTest extends TestCase
      * @var array config name => value
      */
     private $_configMap = [];
+
     /**
      * This method is called before each test is executed.
      *

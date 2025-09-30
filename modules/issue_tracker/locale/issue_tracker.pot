@@ -165,3 +165,9 @@ msgstr ""
 msgid "Error!"
 msgstr ""
 
+msgid "Your assigned issue"
+msgstr ""
+
+msgid "Your assigned issues"
+msgstr ""
+

@@ -4,7 +4,7 @@
  * This file features the code for the form portion of the Loris issue
  * tracker.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Loris
  * @package    Main
