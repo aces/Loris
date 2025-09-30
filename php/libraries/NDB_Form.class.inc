@@ -66,14 +66,15 @@ class NDB_Form extends NDB_Page
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return void
-     * @access public
+     * @return bool
      */
-    function save()
+    public function save() : bool
     {
-        if ($this->form->validate()) {
-            $this->form->process([&$this, "_save"]);
-        }
+        if (!$this->form->validate()) {
+            return false;
+	}
+        $this->form->process([&$this, "_save"]);
+	return true;
     }
 
     /**
@@ -129,7 +130,9 @@ class NDB_Form extends NDB_Page
     {
         $this->setup();
         if ($request->getMethod() === "POST") {
-            $this->save();
+            if ($this->save()) {
+		    return new \LORIS\Http\Response\JSON\SeeOther($request->getURI());
+            }
         }
 
         return (new \LORIS\Http\Response())
