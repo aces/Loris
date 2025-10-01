@@ -10,11 +10,11 @@ namespace LORIS\my_preferences;
 class My_Preferences extends \NDB_Form
 {
     // Use gettext for error messages
-    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
-    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be your user name.';
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password can't be your email.';
+    private const PASSWORD_ERROR_IS_USER   = 'Your password can't be your username.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
-    private const PASSWORD_ERROR_NO_CHANGE
-        =   'New and old passwords are identical: please choose another one';
+    private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are identical:'
+                                            . ' please choose another one';
 
     /**
      * Computes the initial values this page will be filled with.
@@ -86,7 +86,8 @@ class My_Preferences extends \NDB_Form
             foreach ($operations as $operation => $services) {
                 unset($services['desc']);
                 foreach ($services as $service => $subscribed) {
-                    $var_name = "notif_" . $module . "_" . $operation . "_" . $service;
+                    $var_name
+                        = "notif_" . $module . "_" . $operation . "_" . $service;
 
                     if ($subscribed === 'Y') {
                         $defaults[$var_name] = 'on';
@@ -461,7 +462,8 @@ class My_Preferences extends \NDB_Form
                 $decoded = htmlspecialchars_decode($plaintext);
                 new \Password($decoded);
                 // New password must be different than current one
-                if (! \User::factory($this->identifier)->isPasswordDifferent($decoded)) {
+                if (!\User::factory($this->identifier)->isPasswordDifferent($decoded)
+                ) {
                     $errors['Password_Group'] = dgettext(
                         'my_preferences',
                         self::PASSWORD_ERROR_NO_CHANGE
