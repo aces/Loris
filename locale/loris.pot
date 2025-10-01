@@ -139,10 +139,16 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
+msgid "Sites"
+msgstr ""
+
 msgid "Module"
 msgstr ""
 
 msgid "Project"
+msgstr ""
+
+msgid "Projects"
 msgstr ""
 
 msgid "Cohort"
@@ -185,6 +191,10 @@ msgid "Visits"
 msgstr ""
 
 msgid "An error occured while loading the page."
+msgstr ""
+
+
+msgid "Active"
 msgstr ""
 
 msgid "Entity Type"
