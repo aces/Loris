@@ -4,7 +4,7 @@
  * An API endpoint is an endpoint which abstracts away common element
  * of different LORIS API endpoints.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

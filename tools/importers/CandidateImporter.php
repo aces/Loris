@@ -9,7 +9,6 @@ require_once 'DataImporter.class.inc';
  */
 class CandidateImporter extends DataImporter
 {
-
     /**
      * {@inheritDoc}
      *

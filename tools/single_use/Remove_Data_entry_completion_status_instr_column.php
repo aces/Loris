@@ -6,7 +6,7 @@
  * field from instrument tables. To be run after
  * Set_Required_elements_completed_flag.php
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
