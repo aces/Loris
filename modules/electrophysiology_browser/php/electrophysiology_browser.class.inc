@@ -96,8 +96,6 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
         return new ElectrophysiologyBrowserRowProvisioner($this->loris);
     }
 
-
-
     /**
      * Include additional JS files
      *
@@ -115,5 +113,4 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
             ]
         );
     }
-
 }

@@ -30,6 +30,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
     \LORIS\Data\DataInstance
 {
     protected $data;
+
     /**
      * Construct a Query object
      *

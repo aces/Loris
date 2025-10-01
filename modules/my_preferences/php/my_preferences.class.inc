@@ -15,6 +15,7 @@ class My_Preferences extends \NDB_Form
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
                                         'identical: please choose another one';
+
     /**
      * Computes the initial values this page will be filled with.
      *
@@ -378,7 +379,6 @@ class My_Preferences extends \NDB_Form
         $this->form->addFormRule([&$this, '_validateMyPreferences']);
     }
 
-
     /**
      * Validates the data entered in the form when editing one's preferences.
      *
@@ -440,7 +440,6 @@ class My_Preferences extends \NDB_Form
 
         return $errors;
     }
-
 
     /**
      * Validates that en email address entered for a given user

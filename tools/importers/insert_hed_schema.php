@@ -47,7 +47,6 @@ foreach ($schema as $parentNode) {
     insertNodes($newSchemaID, $parentNode, 0, '');
 }
 
-
 /**
  * Insert HED tag nodes in DB
  *

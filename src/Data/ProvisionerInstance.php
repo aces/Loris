@@ -4,7 +4,7 @@
  * This file defines a helper for implementing the \LORIS\Data\Provisioner
  * interface.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Data
  * @package    Main
