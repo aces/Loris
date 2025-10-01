@@ -373,7 +373,7 @@ class ScheduleIndex extends Component {
           <SelectElement
             name="Session"
             options={this.state.formData.SessionFieldOptions}
-            label={t('Visit', {ns: 'schedule_module'})}
+            label={t('Visit', {ns: 'loris'})}
             value={this.state.formData.Session}
             required={true}
             onUserInput={this.setFormData}
@@ -454,11 +454,11 @@ class ScheduleIndex extends Component {
         type: 'select',
         options: options.AppointmentType,
       }},
-      {label: t('Date', {ns: 'schedule_module'}), show: false, filter: {
+      {label: t('Date', {ns: 'loris'}), show: false, filter: {
         name: 'Date',
         type: 'date',
       }},
-      {label: t('Time', {ns: 'schedule_module'}), show: false, filter: {
+      {label: t('Time', {ns: 'loris'}), show: false, filter: {
         name: 'Time',
         type: 'time',
       }},

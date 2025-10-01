@@ -21,9 +21,6 @@ msgstr ""
 msgid "Schedule Appointment"
 msgstr ""
 
-msgid "Visit"
-msgstr ""
-
 msgid "Appointment Date"
 msgstr ""
 
@@ -111,14 +108,3 @@ msgstr ""
 msgid "Starts At"
 msgstr ""
 
-msgid "Subproject"
-msgstr ""
-
-msgid "Date"
-msgstr ""
-
-msgid "Time"
-msgstr ""
-
-msgid "An error occured while loading the page."
-msgstr ""
