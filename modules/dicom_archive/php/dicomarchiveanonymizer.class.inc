@@ -4,7 +4,7 @@
  * This class implements a data mapper which anonymizes Patient Name
  * or patient ID in the DICOM Archive based on the LORIS configuration.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main

@@ -4,7 +4,7 @@
  * Implements PrefixRouter, a class for handling prefixes
  * of a URL and then delegating to other request handlers.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Router
  * @package  Router

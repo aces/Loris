@@ -122,6 +122,13 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+# Common swal labels
+msgid "Cancel"
+msgstr ""
+
+msgid "Success!"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -165,6 +172,12 @@ msgstr ""
 msgid "Scans"
 msgstr ""
 
+msgid "Stage"
+msgstr ""
+
+msgid "Sent To DCC"
+msgstr ""
+
 msgid "Date of Birth"
 msgstr ""
 
@@ -192,6 +205,9 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
+msgid "Language"
+msgstr ""
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
@@ -199,7 +215,11 @@ msgstr ""
 msgid "Maximum rows per page:"
 msgstr ""
 
-msgid "Download Table as CSV"
+msgid "Download Data as CSV"
+msgstr ""
+
+# Dashboard panel strings
+msgid "Views"
 msgstr ""
 
 # Common strings on widgets
@@ -212,3 +232,36 @@ msgstr ""
 msgid "Uploaded"
 msgstr ""
 
+msgid "Total"
+msgstr ""
+
+# Common timepoint and vist terms
+msgid "Not Started"
+msgstr ""
+
+msgid "Screening"
+msgstr ""
+
+msgid "Visit"
+msgstr ""
+
+msgid "Approval"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Recycling Bin"
+msgstr ""
+
+msgid "Pass"
+msgstr ""
+
+msgid "Failure"
+msgstr ""
+
+msgid "Withdrawal"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
