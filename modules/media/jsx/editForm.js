@@ -21,9 +21,14 @@ import {
   ButtonElement,
 } from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
-
-
+/**
+ * Media Edit Form component
+ */
 class MediaEditForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -39,6 +44,9 @@ class MediaEditForm extends Component {
     this.setFormData = this.setFormData.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     const {t} = this.props;
     fetch(this.props.DataURL, {
@@ -77,6 +85,11 @@ class MediaEditForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const {t} = this.props;
     if (this.state.error !== undefined) {

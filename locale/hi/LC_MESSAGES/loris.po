@@ -193,3 +193,13 @@ msgstr "प्रति पृष्ठ अधिकतम पंक्तिय
 
 msgid "Download Table as CSV"
 msgstr "तालिका को CSV के रूप में डाउनलोड करें"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "नया"
+
+msgid "Updated"
+msgstr "अद्यतन"
+
+msgid "Uploaded"
+msgstr "अपलोड किया गया"
