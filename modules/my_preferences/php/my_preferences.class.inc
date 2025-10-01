@@ -10,11 +10,10 @@ namespace LORIS\my_preferences;
 class My_Preferences extends \NDB_Form
 {
     // Use gettext for error messages
-    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
-    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be your user name.';
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password can't be your email.';
+    private const PASSWORD_ERROR_IS_USER   = 'Your password can't be your username.';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
-    private const PASSWORD_ERROR_NO_CHANGE
-        =   'New and old passwords are identical: please choose another one';
+    private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are identical';
 
     /**
      * Computes the initial values this page will be filled with.
@@ -58,22 +57,22 @@ class My_Preferences extends \NDB_Form
             }
         }
 
-        foreach ($defaults['examiner'] as $cid => $vals) {
+        foreach ($defaults['examiner'] as $cid=>$vals) {
             //sets pending approval info
-            if ($cid == 'pending') {
+            if ($cid=='pending') {
                 $defaults['examiner_pending'] = $vals;
                 continue;
             }
             //gets radiologist Y/N from any of the active sites
-            if ($vals[0] == 'Y') {
-                if ($vals[1] === '1') {
+            if ($vals[0]=='Y') {
+                if ($vals[1]==='1') {
                     $defaults['examiner_radiologist'] = 'Y';
                 } else {
                     $defaults['examiner_radiologist'] = 'N';
                 }
             }
             if ($vals[0] == 'Y') {
-                $defaults['ex_' . $cid] = 'on';
+                $defaults['ex_'.$cid] = 'on';
             }
         }
 
@@ -82,13 +81,14 @@ class My_Preferences extends \NDB_Form
         $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
             $user->getId()
         );
-        foreach ($curr_sub as $module => $operations) {
+        foreach ($curr_sub as $module=>$operations) {
             foreach ($operations as $operation => $services) {
                 unset($services['desc']);
                 foreach ($services as $service => $subscribed) {
-                    $var_name = "notif_" . $module . "_" . $operation . "_" . $service;
+                    $var_name
+                        = "notif_".$module."_".$operation."_".$service;
 
-                    if ($subscribed === 'Y') {
+                    if ($subscribed==='Y') {
                         $defaults[$var_name] = 'on';
                     }
                 }
@@ -342,8 +342,8 @@ class My_Preferences extends \NDB_Form
         unset($nGroup);
 
         // Notification rows
-        $notification_rows = [];
-        foreach ($notifier_list as $module => $operation_services) {
+        $notification_rows =[];
+        foreach ($notifier_list as $module=>$operation_services) {
             foreach ($operation_services as $operation => $services) {
                 $nGroup   = [];
                 $nGroup[] = $this->createLabel($module);
@@ -364,7 +364,7 @@ class My_Preferences extends \NDB_Form
                 foreach ($services as $service => $avail) {
                     if ($avail === 'Y' && $display) {
                         $nGroup[] = $this->createCheckbox(
-                            "notif_" . $module . "_" . $operation . "_" . $service,
+                            "notif_".$module."_".$operation."_".$service,
                             ""
                         );
                     } else {
@@ -376,11 +376,11 @@ class My_Preferences extends \NDB_Form
 
                 $this->addGroup(
                     $nGroup,
-                    "row_" . $module . "_" . $operation,
+                    "row_".$module."_".$operation,
                     '',
                     $this->_GUIDelimiter
                 );
-                $notification_rows[] = "row_" . $module . "_" . $operation;
+                $notification_rows[] = "row_".$module."_".$operation;
                 unset($nGroup);
             }
         }
@@ -461,7 +461,8 @@ class My_Preferences extends \NDB_Form
                 $decoded = htmlspecialchars_decode($plaintext);
                 new \Password($decoded);
                 // New password must be different than current one
-                if (! \User::factory($this->identifier)->isPasswordDifferent($decoded)) {
+                if (!\User::factory($this->identifier)->isPasswordDifferent($decoded)
+                ) {
                     $errors['Password_Group'] = dgettext(
                         'my_preferences',
                         self::PASSWORD_ERROR_NO_CHANGE

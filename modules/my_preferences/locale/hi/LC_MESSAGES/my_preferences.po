@@ -93,10 +93,10 @@ msgstr "अमान्य ईमेल पता"
 msgid "The email address already exists"
 msgstr "ईमेल पता पहले से मौजूद है"
 
-msgid "Your password cannot be your email."
+msgid "Your password can't be your email."
 msgstr "आपका पासवर्ड आपका ईमेल नहीं हो सकता।"
 
-msgid "Your password cannot be your user name."
+msgid "Your password can't be your username."
 msgstr "आपका पासवर्ड आपका उपयोगकर्ता नाम नहीं हो सकता।"
 
 msgid "The passwords do not match."
