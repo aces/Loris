@@ -141,7 +141,6 @@ final class QueryParamsHandler
         return [$operatorStr, $logicalOperatorStr, $field];
     }
 
-
     /**
      * Parses the 'limit' query parameter.
      *

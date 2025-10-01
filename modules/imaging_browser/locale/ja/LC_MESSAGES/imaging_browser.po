@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Imaging Browser"
 msgstr "イメージングブラウザ"
@@ -29,3 +30,7 @@ msgstr "新規および保留中のMRI セッション"
 
 msgid "New and pending imaging sessions"
 msgstr "新規および保留中のMRI セッション"
+
+msgid "Imaging Session"
+msgid_plural "Imaging Sessions"
+msgstr[0] "イメージングセッション"

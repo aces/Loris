@@ -247,5 +247,4 @@ class Attachment extends \NDB_Page implements ETagCalculator
             ]
         );
     }
-
 }

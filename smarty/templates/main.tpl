@@ -198,7 +198,7 @@
                                     </li>
                                     {/if}
                                     <li>
-                                        <a href="{$baseurl}/?logout=true">
+                                        <a href="{$baseurl}/login/logout">
                                             {dgettext("loris", "Log Out")}
                                         </a>
                                     </li>
