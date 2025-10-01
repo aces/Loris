@@ -20,31 +20,31 @@ msgstr ""
 
 # Smarty template main.tpl strings
 msgid "LORIS"
-msgstr "LORIS"
+msgstr ""
 
 msgid "DEV"
-msgstr "DEV"
+msgstr ""
 
 msgid "Affiliations"
-msgstr "Affiliations"
+msgstr ""
 
 msgid "Site Affiliation"
-msgstr "Affiliation du Site"
+msgstr ""
 
 msgid "Site Affiliations"
-msgstr "Affiliations du Site"
+msgstr ""
 
 msgid "Project Affiliation"
-msgstr "Affiliation au Projet"
+msgstr ""
 
 msgid "Project Affiliations"
-msgstr "Affiliations au Projet"
+msgstr ""
 
 msgid "Log Out"
-msgstr "Déconnexion"
+msgstr ""
 
 msgid "My Preferences"
-msgstr "Mes préférences"
+msgstr ""
 
 # Auto extracted strings from PHP
 # Menu categories
@@ -56,7 +56,7 @@ msgstr "Mes préférences"
 #: modules/survey_accounts/php/module.class.inc:48
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
-msgstr "Admin"
+msgstr ""
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -64,21 +64,21 @@ msgstr "Admin"
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
 msgid "Data Dictionary"
-msgstr "Dictionnaire de Données"
+msgstr ""
 
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
-msgstr "Outils"
+msgstr ""
 
 #: modules/behavioural_qc/php/module.class.inc:51
 #: modules/conflict_resolver/php/module.class.inc:83
 #: modules/examiner/php/module.class.inc:50
 #: modules/media/php/module.class.inc:33
 msgid "Clinical"
-msgstr "Clinique"
+msgstr ""
 
 #: modules/dicom_archive/php/module.class.inc:115
 #: modules/imaging_browser/php/module.class.inc:40
@@ -86,70 +86,70 @@ msgstr "Clinique"
 #: modules/imaging_uploader/php/module.class.inc:54
 #: modules/mri_violations/php/module.class.inc:53
 msgid "Imaging"
-msgstr "Imagerie"
+msgstr ""
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr "Candidat"
+msgstr ""
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
-msgstr "Génomique"
+msgstr ""
 
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
-msgstr "Électrophysiologie"
+msgstr ""
 
 #: modules/dataquery/php/module.class.inc:33
 #: modules/dqt/php/module.class.inc:49
 #: modules/publication/php/module.class.inc:55
 #: modules/statistics/php/module.class.inc:49
 msgid "Reports"
-msgstr "Rapports"
+msgstr ""
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr "Point temporel"
+msgstr ""
 
 # Common select option labels
 msgid "Yes"
-msgstr "Oui"
+msgstr ""
 
 msgid "No"
-msgstr "Non"
+msgstr ""
 
 # Common swal labels
 msgid "Cancel"
-msgstr "Annuler"
+msgstr ""
 
 msgid "Success!"
-msgstr "Succès!"
+msgstr ""
 
 # Common candidate terms
 msgid "PSCID"
-msgstr "PSCID"
+msgstr ""
 
 msgid "DCCID"
-msgstr "CCDID"
+msgstr ""
 
 msgid "Visit Label"
-msgstr "Etiqueta de Visita"
+msgstr ""
 
 msgid "Site"
-msgstr "Sitio"
+msgstr ""
 
 msgid "Module"
 msgstr ""
 
 msgid "Project"
-msgstr "Projecto"
+msgstr ""
 
 msgid "Cohort"
-msgstr "Cohorte"
+msgstr ""
 
 msgid "Cohorts"
-msgstr "Cohortes"
+msgstr ""
 
 msgid "Session"
 msgstr ""
@@ -167,16 +167,16 @@ msgid "Sex"
 msgstr ""
 
 msgid "Feedback"
-msgstr "Retroalimentación"
+msgstr ""
 
 msgid "Scans"
 msgstr ""
 
 msgid "Stage"
-msgstr "Etapa"
+msgstr ""
 
 msgid "Sent To DCC"
-msgstr "Enviar a CCD"
+msgstr ""
 
 msgid "Date of Birth"
 msgstr ""
@@ -200,7 +200,7 @@ msgid "Hide Advanced Filters"
 msgstr ""
 
 msgid "Language"
-msgstr "Lenguaje"
+msgstr ""
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -231,31 +231,31 @@ msgstr ""
 
 # Common timepoint and vist terms
 msgid "Not Started"
-msgstr "No Iniciado"
+msgstr ""
 
 msgid "Screening"
-msgstr "Cribado"
+msgstr ""
 
 msgid "Visit"
-msgstr "Visita"
+msgstr ""
 
 msgid "Approval"
-msgstr "Aprobación"
+msgstr ""
 
 msgid "Subject"
-msgstr "Sujeto"
+msgstr ""
 
 msgid "Recycling Bin"
-msgstr "Papelera de Reciclage"
+msgstr ""
 
 msgid "Pass"
-msgstr "Aprobado"
+msgstr ""
 
 msgid "Failure"
-msgstr "Fallido"
+msgstr ""
 
 msgid "Withdrawal"
-msgstr "Retirado"
+msgstr ""
 
 msgid "In Progress"
-msgstr "En Progreso"
+msgstr ""
