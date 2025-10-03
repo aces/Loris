@@ -22,6 +22,7 @@ jobs:
       # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
         run: |
+          sudo apt-get update
           sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
              libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler          
           cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
@@ -268,6 +269,7 @@ jobs:
       # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
+        sudo apt-get update
         sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
              libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
