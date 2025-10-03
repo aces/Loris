@@ -17,6 +17,8 @@ import {
   DateElement,
   ButtonElement,
 } from 'jsx/Form';
+import { Acknowledgement } from 'jslib/entities'
+import { Query } from 'jslib/core'
 
 /**
  * Acknowledgements Module page.
@@ -103,14 +105,16 @@ class AcknowledgementsIndex extends Component {
    *
    * @return {object}
    */
-  fetchData() {
-    return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+  async fetchData() {
+    const query = new Query().addParam({field: 'form', value: 'json'});
+    const client = new Acknowledgement.Client();
+    try {
+      const acknowledgements = await client.get(query);
+      this.setState({acknowledgements});
+    } catch (error) {
+      this.setState({error: true});
+      console.error(error);
+    }
   }
 
   /**
@@ -477,7 +481,6 @@ class AcknowledgementsIndex extends Component {
 }
 
 AcknowledgementsIndex.propTypes = {
-  dataURL: PropTypes.string.isRequired,
   submitURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
 };
@@ -491,7 +494,6 @@ window.addEventListener('load', () => {
     document.getElementById('lorisworkspace')
   ).render(
     <Index
-      dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
       submitURL={`${loris.BaseURL}/acknowledgements/AcknowledgementsProcess`}
       hasPermission={loris.userHasPermission}
     />
