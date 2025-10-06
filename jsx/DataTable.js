@@ -563,6 +563,7 @@ class DataTable extends Component {
        ({this.props.t('Maximum rows per page:')} {rowsPerPageDropdown})
     </span>;
 
+
     let header = this.props.hide.rowsPerPage === true ? '' : (
       <div className="table-header">
         <div className="row">
@@ -601,7 +602,7 @@ class DataTable extends Component {
                   className="btn btn-primary"
                   onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
                 >
-                  {this.props.t('Download Data as CSV')}
+                  {this.props.t('Download Table as CSV')}
                 </button>)
               }
               <PaginationLinks
