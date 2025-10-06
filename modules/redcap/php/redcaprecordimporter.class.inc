@@ -77,6 +77,13 @@ class RedcapRecordImporter
     private RedcapQueries $_queries;
 
     /**
+     * The visit label of the REDCap record being imported.
+     *
+     * @var string
+     */
+    public string $visit_label;
+
+    /**
      * Constructor.
      *
      * @param LorisInstance    $loris         The LORIS instance.
@@ -122,7 +129,7 @@ class RedcapRecordImporter
 
         $psc_id = $candidate->getPSCID();
 
-        $visit_label = $this->_mapper->getVisitLabel(
+        $this->visit_label = $this->_mapper->getVisitLabel(
             $record,
             $candidate,
         );
@@ -130,7 +137,7 @@ class RedcapRecordImporter
         // get the comment ID for that instrument
         $comment_id = $this->_getCommentId(
             $candidate,
-            $visit_label,
+            $this->visit_label,
             $instrument_name,
         );
 
@@ -146,7 +153,7 @@ class RedcapRecordImporter
         // check if instrument has "Data_entry = 'In Progress'"
         if (!$instrument->determineDataEntryAllowed()) {
             error_log(
-                "[redcap] [pscid:{$psc_id}][visit:$visit_label]"
+                "[redcap] [pscid:{$psc_id}][visit:$this->visit_label]"
                 . "[instrument:$instrument_name] instrument already 'complete'."
             );
 
@@ -244,7 +251,7 @@ class RedcapRecordImporter
             array_reduce(
                 $record_names,
                 function ($names, $name) {
-                    preg_match('/(.*)[_][_][_](.*)/', $name, $matches);
+                    preg_match('/(.*)___(.*)/', $name, $matches);
                     if (!empty($matches[1])) {
                         $name = $matches[1];
                     }

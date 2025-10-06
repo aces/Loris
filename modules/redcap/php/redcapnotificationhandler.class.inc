@@ -166,6 +166,9 @@ class RedcapNotificationHandler
             $this->_config,
         );
 
+        // The visit label is populated later using record information.
+        $visit_label = null;
+
         // Import each REDCap record into LORIS.
         foreach ($records as $record) {
             // if repeating instrument, contains the repeat index
@@ -176,12 +179,14 @@ class RedcapNotificationHandler
             } else {
                 $instruments_updated[] = $instrument_name;
             }
+
+            $visit_label = $record_importer->visit_label;
         }
 
         // all not update = raise error
         if (count($instruments_not_updated) === count($records)) {
             throw new \LorisException(
-                "[redcap] [pscid:{$psc_id}]"
+                "[redcap] [pscid:{$psc_id}][visit:{$visit_label}]"
                 . " instrument(s) not updatable."
             );
         }
@@ -190,13 +195,13 @@ class RedcapNotificationHandler
         if (count($instruments_not_updated) > 0) {
             $instruments_error_string = implode(',', $instruments_not_updated);
             throw new \LorisException(
-                "[redcap] [pscid:{$psc_id}]"
+                "[redcap] [pscid:{$psc_id}][visit:{$visit_label}]"
                 . " repeating instruments not updated: $instruments_error_string."
             );
         }
 
         error_log(
-            "[redcap] [pscid:{$psc_id}] instrument updated."
+            "[redcap] [pscid:{$psc_id}][visit:{$visit_label}] instrument updated."
         );
     }
 
