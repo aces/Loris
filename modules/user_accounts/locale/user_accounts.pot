@@ -44,6 +44,9 @@ msgstr ""
 msgid "Pending Approval"
 msgstr ""
 
+msgid "Radiologist"
+msgstr ""
+
 msgid "Account Request Date"
 msgstr ""
 
@@ -81,15 +84,6 @@ msgid "When generating a new password, please notify the user by checking 'Send 
 msgstr ""
 
 msgid "Add/Edit User"
-msgstr ""
-
-msgid "Save"
-msgstr ""
-
-msgid "Reset"
-msgstr ""
-
-msgid "Back"
 msgstr ""
 
 msgid "Reject User"

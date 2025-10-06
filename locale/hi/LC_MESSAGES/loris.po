@@ -117,6 +117,18 @@ msgstr "हाँ"
 msgid "No"
 msgstr "नहीं"
 
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Reset"
+msgstr "रीसेट करें"
+
+msgid "Back"
+msgstr "वापस"
+
+msgid "None"
+msgstr "कोई नहीं"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
@@ -140,7 +152,8 @@ msgid "Projects"
 msgstr "प्रोजेक्ट्स"
 
 msgid "Cohort"
-msgstr "समूह"
+msgid_plural "Cohorts"
+msgstr[0] "समूह"
 
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
@@ -176,5 +189,15 @@ msgstr "{{totalCount}} में से {{pageCount}} पंक्तिया�
 msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
-msgid "Download Table as CSV"
-msgstr "तालिका को CSV के रूप में डाउनलोड करें"
+msgid "Download Data as CSV"
+msgstr "डेटा को CSV के रूप में डाउनलोड करें"
+
+#: php/libraries/Password.class.inc
+msgid "The password is too short"
+msgstr "पासवर्ड बहुत छोटा है"
+
+msgid "The password is not complex enough."
+msgstr "पासवर्ड पर्याप्त जटिल नहीं है।"
+
+msgid "This password is known to be exposed in online data breaches."
+msgstr "यह पासवर्ड ऑनलाइन डेटा उल्लंघनों में उजागर होने के लिए जाना जाता है।"

@@ -114,7 +114,7 @@ class UserAccountsIndex extends Component {
       url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
       result = <td><a href={url}>{cell}</a></td>;
       break;
-    case t('Active', {ns: 'user_accounts'}):
+    case t('Active', {ns: 'loris'}):
       if (row.Active === 'Y') {
         result = <td>{t('Yes', {ns: 'loris'})}</td>;
       } else if (row.Active === 'N') {
@@ -210,7 +210,7 @@ class UserAccountsIndex extends Component {
         },
       },
       {
-        label: t('Active', {ns: 'user_accounts'}),
+        label: t('Active', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'active',

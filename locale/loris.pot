@@ -116,6 +116,18 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Save"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -139,7 +151,8 @@ msgid "Projects"
 msgstr ""
 
 msgid "Cohort"
-msgstr ""
+msgid_plural "Cohorts"
+msgstr[0] ""
 
 msgid "Date of registration"
 msgstr ""
@@ -175,5 +188,15 @@ msgstr ""
 msgid "Maximum rows per page:"
 msgstr ""
 
-msgid "Download Table as CSV"
+msgid "Download Data as CSV"
+msgstr ""
+
+#: php/libraries/Password.class.inc
+msgid "The password is too short"
+msgstr ""
+
+msgid "The password is not complex enough."
+msgstr ""
+
+msgid "This password is known to be exposed in online data breaches."
 msgstr ""

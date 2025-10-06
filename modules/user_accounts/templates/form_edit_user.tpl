@@ -496,15 +496,16 @@
 </div>
 <div class="row form-group form-inline">
    <div class="col-sm-2">
-      <input class="btn btn-sm btn-primary" name="fire_away" value="{dgettext("user_accounts", "Save")}" type="submit" />
+      <input class="btn btn-sm btn-primary" name="fire_away" value="{dgettext("loris", "Save")}" type="submit" />
   </div>
   <div class="col-sm-2">
-    <input class="btn btn-sm btn-primary" value="{dgettext("user_accounts", "Reset")}" type="reset"/>
+    <input class="btn btn-sm btn-primary" value="{dgettext("loris", "Reset")}" type="reset"/>
 </div>
 <div class="col-sm-2">
-  <input class="btn btn-sm btn-primary" onclick="location.href='{$baseurl|default}/user_accounts/'" value="{dgettext("user_accounts", "Back")}" type="button" />
+  <input class="btn btn-sm btn-primary" onclick="location.href='{$baseurl|default}/user_accounts/'" value="{dgettext("loris", "Back")}" type="button" />
 </div>
 {if $can_reject}
+
 <div class="col-sm-2">
     <input type=hidden id ="UserID" value="{$form.UserID.html}">
     <input class="btn btn-sm btn-primary" value="{dgettext("user_accounts", "Reject User")}" type="button" id="btn_reject"/>

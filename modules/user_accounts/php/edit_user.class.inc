@@ -13,7 +13,6 @@
  */
 
 namespace LORIS\user_accounts;
-
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -158,7 +157,7 @@ class Edit_User extends \NDB_Form
                 foreach ($operations as $operation => $services) {
                     unset($services['desc']);
                     foreach ($services as $service => $subscribed) {
-                        $var_name = "notif_" . $module . "_" . $operation . "_" . $service;
+                        $var_name = "notif_".$module."_".$operation."_".$service;
 
                         if ($subscribed === 'Y') {
                             $defaults[$var_name] = 'on';
@@ -693,7 +692,14 @@ class Edit_User extends \NDB_Form
         // it is a new user
         if ($this->identifier == '') {
             // user name
-            $this->addBasicText('UserID', dgettext("user_accounts", "User name"), ['required' => true]);
+            $this->addBasicText(
+                'UserID',
+                dgettext(
+                    "user_accounts",
+                    "User name"
+                ),
+                ['required' => true]
+            );
             $this->addCheckbox(
                 'NA_UserID',
                 dgettext("user_accounts", "Make user name match email address"),
@@ -704,8 +710,10 @@ class Edit_User extends \NDB_Form
             //     display user name and account request date
             $this->addScoreColumn('UserID', dgettext("user_accounts", "User name"));
         }
-        // Account Request Date - always displayed
-        $this->addScoreColumn('account_request_date', dgettext("user_accounts", "Account Request Date"));
+        $this->addScoreColumn(
+            'account_request_date',
+            dgettext("user_accounts", "Account Request Date")
+        );
 
         // password
         if ($this->isCreatingNewUser()) {
@@ -714,9 +722,21 @@ class Edit_User extends \NDB_Form
             $pwd_attribs = [];
         }
 
-        $this->addPassword('Password_hash', dgettext("user_accounts", "Password"), $pwd_attribs);
-        $this->addCheckbox('NA_Password', dgettext("user_accounts", "Generate new password"), []);
-        $this->addPassword('__Confirm', dgettext("user_accounts", "Confirm Password"), $pwd_attribs);
+        $this->addPassword(
+            'Password_hash',
+            dgettext("user_accounts", "Password"),
+            $pwd_attribs
+        );
+        $this->addCheckbox(
+            'NA_Password',
+            dgettext("user_accounts", "Generate new password"),
+            []
+        );
+        $this->addPassword(
+            '__Confirm',
+            dgettext("user_accounts", "Confirm Password"),
+            $pwd_attribs
+        );
 
         // The supplied pattern is:
         //   - must have at least one non-whitespace characters
@@ -760,21 +780,59 @@ class Edit_User extends \NDB_Form
         // if the option is not set or if it's and it's true then display it
 
         if ($additional_user_info) {
-            $this->addBasicText('Degree', dgettext("user_accounts", "Degree"));
-            $this->addBasicText('Position_title', dgettext("user_accounts", "Academic Position"));
-            $this->addBasicText('Institution', dgettext("user_accounts", "Institution"));
-            $this->addBasicText('Department', dgettext("user_accounts", "Department"));
-            $this->addBasicText('Address', dgettext("user_accounts", "Street Address"));
-            $this->addBasicText('City', dgettext("user_accounts", "City"));
-            $this->addBasicText('State', dgettext("user_accounts", "State/Province"));
-            $this->addBasicText('Zip_code', dgettext("user_accounts", "Zip/Postal Code"));
-            $this->addBasicText('Country', dgettext("user_accounts", "Country"));
-            $this->addBasicText('Fax', dgettext("user_accounts", "FAX"));
+            $this->addBasicText(
+                'Degree',
+                dgettext("user_accounts", "Degree")
+            );
+            $this->addBasicText(
+                'Position_title',
+                dgettext("user_accounts", "Academic Position")
+            );
+            $this->addBasicText(
+                'Institution',
+                dgettext("user_accounts", "Institution")
+            );
+            $this->addBasicText(
+                'Department',
+                dgettext("user_accounts", "Department")
+            );
+            $this->addBasicText(
+                'Address',
+                dgettext("user_accounts", "Street Address")
+            );
+            $this->addBasicText(
+                'City',
+                dgettext("user_accounts", "City")
+            );
+            $this->addBasicText(
+                'State',
+                dgettext("user_accounts", "State/Province")
+            );
+            $this->addBasicText(
+                'Zip_code',
+                dgettext("user_accounts", "Zip/Postal Code")
+            );
+            $this->addBasicText(
+                'Country',
+                dgettext("user_accounts", "Country")
+            );
+            $this->addBasicText(
+                'Fax',
+                dgettext("user_accounts", "FAX")
+            );
         }
 
         // email address
-        $this->addBasicText('Email', dgettext("user_accounts", "Email address"), ['required' => true]);
-        $this->addCheckbox('SendEmail', dgettext("user_accounts", "Send email to user"), []);
+        $this->addBasicText(
+            'Email',
+            dgettext("user_accounts", "Email address"),
+            ['required' => true]
+        );
+        $this->addCheckbox(
+            'SendEmail',
+            dgettext("user_accounts", "Send email to user"),
+            []
+        );
 
         // Add a confirm email text field only if creating a new user
         // (to make sure that account creation email goes through)
@@ -857,28 +915,28 @@ class Edit_User extends \NDB_Form
                 );
             }
             $groupB[] = $this->createLabel(
-                "Radiologist: "
+                dgettext("user_accounts", "Radiologist") . ": "
             );
             $groupB[] = $this->createSelect(
                 "examiner_radiologist",
-                "Radiologist: ",
+                dgettext("user_accounts", "Radiologist") . ": ",
                 [
                     ''  => "",
-                    'Y' => 'Yes',
-                    'N' => 'No',
+                    'Y' => dgettext("loris", "Yes"),
+                    'N' => dgettext("loris", "No"),
                 ]
             );
 
             $groupB[] = $this->createLabel(
-                "Pending Approval:"
+                dgettext("user_accounts", "Pending Approval") . ":"
             );
             $groupB[] = $this->createSelect(
                 "examiner_pending",
-                "Pending Approval: ",
+                dgettext("user_accounts", "Pending Approval") . ": ",
                 [
-                    ''  => "",
-                    'Y' => 'Yes',
-                    'N' => 'No',
+                    ''  => dgettext("loris", "None"),
+                    'Y' => dgettext("loris", "Yes"),
+                    'N' => dgettext("loris", "No"),
                 ]
             );
             $this->addGroup(
@@ -993,7 +1051,12 @@ class Edit_User extends \NDB_Form
                 $attribs
             );
         }
-        $this->addGroup($group, 'PermID_Group', dgettext("user_accounts", "Permissions"), "");
+        $this->addGroup(
+            $group,
+            'PermID_Group',
+            dgettext("user_accounts", "Permissions"),
+            ""
+        );
         unset($group);
 
         //getting users name and emails to create checkboxes
@@ -1033,7 +1096,12 @@ class Edit_User extends \NDB_Form
             );
         }
 
-        $this->addGroup($group, 'Supervisors_Group', dgettext("user_accounts", "Supervisors"), "");
+        $this->addGroup(
+            $group,
+            'Supervisors_Group',
+            dgettext("user_accounts", "Supervisors"),
+            ""
+        );
         unset($group);
 
         if (!$this->isCreatingNewUser()) {
@@ -1100,14 +1168,16 @@ class Edit_User extends \NDB_Form
                 $errors['UserID_Group']
                     = dgettext(
                         "user_accounts",
-                        "You cannot enter a user name if you want it to match the email address"
+                        'You cannot enter a user name '
+                        . 'if you want it to match the email address'
                     );
             } elseif (empty($values['UserID']) && $values['NA_UserID'] != 'on') {
                 // Not clicked on "UID == email" and not specified a UID
                 $errors['UserID_Group']
                     = dgettext(
                         "user_accounts",
-                        "You must enter a user name or choose to make it match the email address"
+                        'You must enter a user name '
+                        . 'or choose to make it match the email address'
                     );
             } elseif (!empty($values['UserID'])
                 || ($values['NA_UserID'] == 'on' && $values['Email'])
@@ -1126,30 +1196,33 @@ class Edit_User extends \NDB_Form
                 );
 
                 if ($result > 0) {
-                    $errors['UserID_Group'] = dgettext("user_accounts", "The user name already exists");
+                    $errors['UserID_Group'] = dgettext(
+                        "user_accounts",
+                        "The user name already exists"
+                    );
                 }
 
                 if (strlen($effectiveUID) > 255) {
-                    $errors['UserID_Group']
-                        = dgettext("user_accounts", "The user name must not exceed 255 characters");
+                    $errors['UserID_Group'] = dgettext(
+                        "user_accounts",
+                        "The user name must not exceed 255 characters"
+                    );
                 }
                 // Check that user name does not contain a whitespace character
                 if (preg_match('/\s/', $effectiveUID)) {
                     // Note: email addresses can contain comments which themselves
                     // can contain spaces
                     if ($values['NA_UserID'] == 'on') {
-                        $errors['UserID_Group']
-                            = dgettext(
-                                "user_accounts",
-                                "You cannot have the user name match an email address"
-                                . " that contains a whitespace character"
-                            );
+                        $errors['UserID_Group'] = dgettext(
+                            "user_accounts",
+                            "You cannot have the user name match an email address"
+                            . " that contains a whitespace character"
+                        );
                     } else {
-                        $errors['UserID_Group']
-                            = dgettext(
-                                "user_accounts",
-                                "Whitespace characters are not allowed in user names"
-                            );
+                        $errors['UserID_Group'] = dgettext(
+                            "user_accounts",
+                            "Whitespace characters are not allowed in user names"
+                        );
                     }
                 }
             }
@@ -1196,8 +1269,10 @@ class Edit_User extends \NDB_Form
                 && empty($values['Password_hash'])
                 && $values['NA_Password'] != 'on'
             ) {
-                $errors['Password']
-                    = dgettext("user_accounts", "Please specify password or click Generate new password");
+                $errors['Password'] = dgettext(
+                    "user_accounts",
+                    "Please specify password or click Generate new password"
+                );
             }
         }
         // Ensure that the password and confirm password fields match.
@@ -1262,12 +1337,18 @@ class Edit_User extends \NDB_Form
                 $errors['Email'] = $emailError;
             } elseif ($this->isCreatingNewUser()) {
                 if ($values['Email'] != $values['__ConfirmEmail']) {
-                    $errors['__ConfirmEmail'] = dgettext("user_accounts", "Email and confirmed email do not match");
+                    $errors['__ConfirmEmail'] = dgettext(
+                        "user_accounts",
+                        "Email and confirmed email do not match"
+                    );
                 }
             }
         } else {
             // No email entered: error
-            $errors['Email'] = dgettext("user_accounts", "You must enter an email address");
+            $errors['Email'] = dgettext(
+                "user_accounts",
+                "You must enter an email address"
+            );
         }
 
         //======================================
@@ -1275,7 +1356,10 @@ class Edit_User extends \NDB_Form
         //======================================
         // Ensure that at least one site is selected
         if (empty($values['CenterIDs'])) {
-            $errors['sites_group'] = dgettext("user_accounts", "You must select at least one site/affiliation");
+            $errors['sites_group'] = dgettext(
+                "user_accounts",
+                "You must select at least one site/affiliation"
+            );
         }
 
         //======================================
@@ -1283,7 +1367,10 @@ class Edit_User extends \NDB_Form
         //======================================
         // Ensure that at least one site is selected
         if (empty($values['ProjectIDs'])) {
-            $errors['projects_group'] = dgettext("user_accounts", "You must select at least one project/affiliation");
+            $errors['projects_group'] = dgettext(
+                "user_accounts",
+                "You must select at least one project/affiliation"
+            );
         }
 
         //======================================
@@ -1317,7 +1404,8 @@ class Edit_User extends \NDB_Form
                 $errors['examiner_sites'] = dgettext(
                     "user_accounts",
                     "Please select at least one examiner site or clear the "
-                    . "'Examiner status' fields below (i.e. 'Radiologist' and 'Pending Approval')."
+                    . "'Examiner status' fields below "
+                    . "(i.e. 'Radiologist' and 'Pending Approval')."
                 );
             }
         }
@@ -1333,11 +1421,11 @@ class Edit_User extends \NDB_Form
         if (($values['active_to'] != null)
             && ($values['active_from'] > $values['active_to'])
         ) {
-            $errors['active_timeWindows']
-                = dgettext(
-                    "user_accounts",
-                    "Please notice that the \"Active from\" date should be lesser or equal to the \"Active to\" date."
-                );
+            $errors['active_timeWindows'] = dgettext(
+                "user_accounts",
+                "Please notice that the \"Active from\" date should be"
+                . " lesser or equal to the \"Active to\" date."
+            );
         }
         return $errors;
     }
