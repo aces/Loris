@@ -119,6 +119,15 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Clear Filters"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
 # Common swal labels
 msgid "Cancel"
 msgstr ""
@@ -131,6 +140,9 @@ msgid "PSCID"
 msgstr ""
 
 msgid "DCCID"
+msgstr ""
+
+msgid "CandID"
 msgstr ""
 
 msgid "Visit Label"
@@ -220,42 +232,3 @@ msgstr ""
 msgid "NEW"
 msgstr ""
 
-msgid "Updated"
-msgstr ""
-
-msgid "Uploaded"
-msgstr ""
-
-msgid "Total"
-msgstr ""
-
-# Common timepoint and vist terms
-msgid "Not Started"
-msgstr ""
-
-msgid "Screening"
-msgstr ""
-
-msgid "Visit"
-msgstr ""
-
-msgid "Approval"
-msgstr ""
-
-msgid "Subject"
-msgstr ""
-
-msgid "Recycling Bin"
-msgstr ""
-
-msgid "Pass"
-msgstr ""
-
-msgid "Failure"
-msgstr ""
-
-msgid "Withdrawal"
-msgstr ""
-
-msgid "In Progress"
-msgstr ""
