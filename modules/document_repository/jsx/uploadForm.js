@@ -119,7 +119,7 @@ class DocUploadForm extends Component {
             />
             <SearchableDropdown
               name="forSite"
-              label={t('Site', {ns: 'document_repository'})}
+              label={t('Site', {ns: 'loris'})}
               placeHolder={t('Search for site', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.sites}
               strictSearch={true}
@@ -129,20 +129,20 @@ class DocUploadForm extends Component {
             />
             <SelectElement
               name="instrument"
-              label={t('Instrument', {ns: 'document_repository'})}
+              label={t('Instrument', {ns: 'loris'})}
               options={this.state.data.fieldOptions.instruments}
               onUserInput={this.setFormData}
               value={this.state.formData.instrument}
             />
             <TextboxElement
               name="pscid"
-              label={t('PSCID', {ns: 'document_repository'})}
+              label={t('PSCID', {ns: 'loris'})}
               onUserInput={this.setFormData}
               value={this.state.formData.pscid}
             />
             <TextboxElement
               name="visitLabel"
-              label={t('Visit Label', {ns: 'document_repository'})}
+              label={t('Visit Label', {ns: 'loris'})}
               onUserInput={this.setFormData}
               value={this.state.formData.visitLabel}
             />

@@ -112,7 +112,7 @@ class DocEditForm extends React.Component {
           />
           <SelectElement
             name="forSite"
-            label={t('Site', {ns: 'document_repository'})}
+            label={t('Site', {ns: 'loris'})}
             options={this.state.data.sites}
             onUserInput={this.setFormData}
             required={true}
@@ -121,21 +121,21 @@ class DocEditForm extends React.Component {
           />
           <SelectElement
             name="instrument"
-            label={t('Instrument', {ns: 'document_repository'})}
+            label={t('Instrument', {ns: 'loris'})}
             options={this.state.data.instruments}
             onUserInput={this.setFormData}
             value={this.state.docData.instrument}
           />
           <TextboxElement
             name="pscid"
-            label={t('PSCID', {ns: 'document_repository'})}
+            label={t('PSCID', {ns: 'loris'})}
             onUserInput={this.setFormData}
             disable = {true}
             value={this.state.docData.pscid}
           />
           <TextboxElement
             name="visitLabel"
-            label={t('Visit Label', {ns: 'document_repository'})}
+            label={t('Visit Label', {ns: 'loris'})}
             onUserInput={this.setFormData}
             value={this.state.docData.visitLabel}
           />
