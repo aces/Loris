@@ -5,7 +5,7 @@
  * contain ALL of the references to HTML_QuickForm (or any library
  * used to render HTML.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main

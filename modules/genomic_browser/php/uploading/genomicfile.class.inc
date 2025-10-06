@@ -3,7 +3,7 @@
 /**
  * Used for uploading file with Genomic Browser.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Genomic_Browser

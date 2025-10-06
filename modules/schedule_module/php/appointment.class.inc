@@ -11,7 +11,7 @@ use LORIS\StudyEntities\Candidate\CandID;
  * Post method handles updating and add an appointment.
  * Delete method handles deleting an appointment.
  * get method handles get an appointments.*
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Schedule_Module

@@ -3,7 +3,7 @@
 /**
  * Unit tests for the User and UserPermissions class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main

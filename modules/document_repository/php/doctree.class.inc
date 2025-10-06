@@ -5,7 +5,7 @@
  * Get method handles getting the parent's categroies and
  * the children's categories of one category.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository
@@ -22,7 +22,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Get method handles getting the parent's categroies and
  * the children's categories of one category.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository

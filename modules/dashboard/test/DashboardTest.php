@@ -3,7 +3,7 @@
 /**
  * Dashboard automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -18,7 +18,7 @@ require_once __DIR__ .
 /**
  * Dashboard module automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -621,7 +621,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan1()
     {
-        $this->safeGet($this->url . '/main.php?logout=true');
+        $this->safeGet($this->url . '/login/logout');
         $this->login("UnitTester", $this->validPassword);
         $welcomeText = $this->safeFindElement(
             WebDriverBy::cssSelector(".welcome")

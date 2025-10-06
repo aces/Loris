@@ -64,6 +64,9 @@ msgstr "प्रशासन"
 #: modules/datadict/php/module.class.inc:49
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr "डेटा शब्दकोश"
+
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
@@ -130,11 +133,20 @@ msgstr "दौरे का लेबल"
 msgid "Site"
 msgstr "साइट"
 
+msgid "Module"
+msgstr "मॉड्यूल"
+
 msgid "Project"
 msgstr "परियोजना"
 
 msgid "Cohort"
 msgstr "समूह"
+
+msgid "Cohorts"
+msgstr "समूह"
+
+msgid "Session"
+msgstr "सत्र"
 
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
@@ -156,6 +168,9 @@ msgstr "स्कैन"
 
 msgid "Date of Birth"
 msgstr "जन्म तिथि"
+
+msgid "Visits"
+msgstr "भ्रमण"
 
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
@@ -182,5 +197,5 @@ msgstr "{{totalCount}} में से {{pageCount}} पंक्तिया�
 msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
-msgid "Download Table as CSV"
-msgstr "तालिका को CSV के रूप में डाउनलोड करें"
+msgid "Download Data as CSV"
+msgstr "डेटा को CSV के रूप में डाउनलोड करें"

@@ -3,7 +3,7 @@
 /**
  * Unit tests for NDB_Page class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main

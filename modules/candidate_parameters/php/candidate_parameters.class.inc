@@ -3,7 +3,7 @@
 /**
  * This file contains the NDB_Form_candidate_parameters class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Candidate_Parameters
@@ -22,7 +22,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
  * Displays a list of candidate_parameter categories
  * and tabs to view them.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Candidate_Parameters
