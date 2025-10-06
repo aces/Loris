@@ -30,9 +30,6 @@ msgstr ""
 msgid "Search for site"
 msgstr ""
 
-msgid "Instrument"
-msgstr ""
-
 msgid "Version"
 msgstr ""
 
@@ -142,8 +139,5 @@ msgid "Delete error!"
 msgstr ""
 
 msgid "Delete Successful!"
-msgstr ""
-
-msgid "An error occured while loading the page."
 msgstr ""
 

@@ -32,9 +32,6 @@ msgstr "श्रेणी"
 msgid "Search for site"
 msgstr "साइट खोजें"
 
-msgid "Instrument"
-msgstr "इंस्ट्रूमेंट"
-
 msgid "Version"
 msgstr "संस्करण"
 
@@ -145,7 +142,3 @@ msgstr "हटाने में त्रुटि!"
 
 msgid "Delete Successful!"
 msgstr "हटाना सफल रहा!"
-
-msgid "An error occured while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
-
