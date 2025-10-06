@@ -3,7 +3,7 @@
 /**
  * This file contains a class used to generate CandIDs for use in LORIS.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS
@@ -16,7 +16,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
  * This class defines functions used to generate valid Candidate identifiers in
  * LORIS. It leverages the CandID study entity for validation.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS

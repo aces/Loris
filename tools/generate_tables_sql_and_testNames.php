@@ -10,7 +10,7 @@
  *
  * Example usage:  cat ip_output.txt |  php generate_tables_sql_and_testNames.php
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

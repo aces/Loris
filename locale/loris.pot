@@ -63,6 +63,9 @@ msgstr ""
 #: modules/datadict/php/module.class.inc:49
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr ""
+
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
@@ -125,6 +128,13 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
+# Common swal labels
+msgid "Cancel"
+msgstr ""
+
+msgid "Success!"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -141,10 +151,19 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
+msgid "Module"
+msgstr ""
+
 msgid "Project"
 msgstr ""
 
 msgid "Cohort"
+msgstr ""
+
+msgid "Cohorts"
+msgstr ""
+
+msgid "Session"
 msgstr ""
 
 msgid "Date of registration"
@@ -165,10 +184,34 @@ msgstr ""
 msgid "Scans"
 msgstr ""
 
+msgid "Stage"
+msgstr ""
+
+msgid "Sent To DCC"
+msgstr ""
+
 msgid "Date of Birth"
 msgstr ""
 
+msgid "Visits"
+msgstr ""
+
 msgid "An error occured while loading the page."
+msgstr ""
+
+msgid "Entity Type"
+msgstr ""
+
+msgid "Scan Done"
+msgstr ""
+
+msgid "Show Advanced Filters"
+msgstr ""
+
+msgid "Hide Advanced Filters"
+msgstr ""
+
+msgid "Language"
 msgstr ""
 
 # Data table strings
@@ -178,7 +221,11 @@ msgstr ""
 msgid "Maximum rows per page:"
 msgstr ""
 
-msgid "Download Table as CSV"
+msgid "Download Data as CSV"
+msgstr ""
+
+# Dashboard panel strings
+msgid "Views"
 msgstr ""
 
 # Common strings on widgets

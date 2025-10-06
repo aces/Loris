@@ -3,7 +3,7 @@
 /**
  * NDB_BVL_Feedback class tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Test
@@ -32,7 +32,6 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
     private $_feedbackObj;
 
     private $_sessionID;
-
 
     /**
      * Setup test

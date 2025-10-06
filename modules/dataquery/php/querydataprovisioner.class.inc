@@ -88,7 +88,6 @@ class QueryDataProvisioner extends ProvisionerInstance
         return $this->_mergeIterators($candidates, $dataiterators, $fieldsarray);
     }
 
-
     /**
      * Merge all iterators into a single iterator.
      *

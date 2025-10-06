@@ -5,7 +5,7 @@
  * It holds the processing of adding/updating content
  * for all modules.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

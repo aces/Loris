@@ -21,3 +21,6 @@ msgstr ""
 msgid "Document Repository"
 msgstr "ドキュメントリポジトリ"
 
+msgid "Document Repository Notifications"
+msgstr "ドキュメントリポジトリ通知"
+
