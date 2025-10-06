@@ -102,5 +102,4 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
     {
         return true;
     }
-
 }

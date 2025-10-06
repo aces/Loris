@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all modules
  * for the Module Manager menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\document_repository;
  * This class implements a data provisioner to get all modules
  * for the module manager menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -81,5 +81,4 @@ ORDER BY
         $cid = \CenterID::singleton(intval($row['For_site']));
         return new DocRepoRow($row, $cid);
     }
-
 }

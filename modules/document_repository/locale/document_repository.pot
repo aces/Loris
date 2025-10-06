@@ -21,8 +21,6 @@ msgstr ""
 msgid "Document Repository"
 msgstr ""
 
-# --- Strings not in loris.pot, add below ---
-
 msgid "Upload files"
 msgstr ""
 

@@ -21,7 +21,7 @@ namespace LORIS\redcap\client\models\records;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class RedcapRepeatingRecord extends RedcapRecord implements IRedcapRecord
+class RedcapRepeatingRecord extends RedcapRecord
 {
     private int $_repeat_index;
 
@@ -50,11 +50,11 @@ class RedcapRepeatingRecord extends RedcapRecord implements IRedcapRecord
     }
 
     /**
-     * Get the instrument name.
+     * Get the LORIS instrument name.
      *
      * @return string
      */
-    public function getInstrumentName(): string
+    public function getLorisInstrumentName(): string
     {
         return $this->getFormName() . '_' . $this->_repeat_index;
     }

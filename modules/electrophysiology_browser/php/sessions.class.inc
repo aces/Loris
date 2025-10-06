@@ -141,7 +141,6 @@ class Sessions extends \NDB_Page
         return $this->getSessionData($outputType);
     }
 
-
     /**
      * Get the session data information.
      *
@@ -187,7 +186,6 @@ class Sessions extends \NDB_Page
         return new \LORIS\Http\Response\JSON\OK($response);
     }
 
-
     /**
      * Get the subject data information.
      *
@@ -214,8 +212,6 @@ class Sessions extends \NDB_Page
 
         return $subjectData;
     }
-
-
 
     /**
      * Get the list of electrophysiology recordings with their recording information.
@@ -255,7 +251,6 @@ class Sessions extends \NDB_Page
 
         return $fileCollection;
     }
-
 
     /**
      * Get the electrophysiology recording summary metadata.

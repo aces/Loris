@@ -3,7 +3,7 @@
 /**
  * File that describe the ImageDTO class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  *  @category Imaging
  *  @package  Main
