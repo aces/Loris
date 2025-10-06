@@ -116,11 +116,23 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Clear Filters"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
 
 msgid "DCCID"
+msgstr ""
+
+msgid "CandID"
 msgstr ""
 
 msgid "Visit Label"
@@ -173,5 +185,3 @@ msgstr ""
 msgid "NEW"
 msgstr ""
 
-msgid "Updated"
-msgstr ""

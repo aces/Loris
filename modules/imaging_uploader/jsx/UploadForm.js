@@ -170,7 +170,7 @@ class UploadForm extends Component {
       if (!data.candID || !data.pSCID || !data.visitLabel) {
         swal.fire({
           title: t('Incorrect file name!', {ns: 'imaging_uploader'}),
-          text: t('Could not determine PSCID, CandID and Visit Label'
+          text: t('Could not determine PSCID, DCCID and Visit Label'
             +' based on the filename!', {ns: 'imaging_uploader'}),
           type: 'error',
           confirmButtonText: t('OK', {ns: 'imaging_uploader'}),
@@ -438,7 +438,7 @@ class UploadForm extends Component {
         {t('For files that are not Phantom Scans, file name must begin with',
           {ns: 'imaging_uploader'})}
         <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
-        {t('For example, for CandID', {ns: 'imaging_uploader'})}
+        {t('For example, for DCCID', {ns: 'imaging_uploader'})}
         <i>100000</i>, {t('PSCID', {ns: 'loris'})} <i>ABC123</i>,
         {t('and Visit Label', {ns: 'imaging_uploader'})} <i>V1</i>
         {t('the file name should be prefixed by:', {ns: 'imaging_uploader'})}
@@ -471,7 +471,7 @@ class UploadForm extends Component {
             />
             <TextboxElement
               name='candID'
-              label={t('CandID', {ns: 'loris'})}
+              label={t('DCCID', {ns: 'loris'})}
               disabled={true}
               required={false}
               errorMessage={this.state.errorMessage.candID}

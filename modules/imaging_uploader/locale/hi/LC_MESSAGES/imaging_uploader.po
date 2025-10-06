@@ -42,8 +42,8 @@ msgstr "फ़ाइल का प्रकार .tgz, .tar.gz या .zip ह�
 msgid "For files that are not Phantom Scans, file name must begin with"
 msgstr "जो फाइलें फैंटम स्कैन नहीं हैं, उनका नाम इससे शुरू होना चाहिए"
 
-msgid "For example, for CandID"
-msgstr "उदाहरण के लिए, CandID के लिए"
+msgid "For example, for DCCID"
+msgstr "उदाहरण के लिए, DCCID के लिए"
 
 msgid "and Visit Label"
 msgstr "और विजिट लेबल"
@@ -63,8 +63,8 @@ msgstr "का प्रकार .tgz, .tar.gz या .zip होना चा�
 msgid "Incorrect file name!"
 msgstr "अमान्य फ़ाइल नाम!"
 
-msgid "Could not determine PSCID, CandID and Visit Label based on the filename!"
-msgstr "फ़ाइल नाम के आधार पर PSCID, CandID और Visit Label निर्धारित नहीं किया जा सका!"
+msgid "Could not determine PSCID, DCCID and Visit Label based on the filename!"
+msgstr "फ़ाइल नाम के आधार पर PSCID, DCCID और Visit Label निर्धारित नहीं किया जा सका!"
 
 msgid "File already exists!"
 msgstr "फ़ाइल पहले से मौजूद है!"
@@ -119,9 +119,6 @@ msgstr "अपलोड विफल: HTTP प्रतिक्रिया क
 
 msgid "Submission error!"
 msgstr "सबमिशन त्रुटि!"
-
-msgid "Clear Filters"
-msgstr "फ़िल्टर साफ़ करें"
 
 msgid "Log Viewer"
 msgstr "लॉग व्यूअर"

@@ -239,7 +239,7 @@ class ImagingUploader extends Component {
                 <SelectElement {... this.state.data.form.visitLabel} />
                 <ButtonElement
                   type='reset'
-                  label={t('Clear Filters', {ns: 'imaging_uploader'})}
+                  label={t('Clear Filters', {ns: 'loris'})}
                   onUserInput={this.resetFilters}
                 />
               </FilterForm>

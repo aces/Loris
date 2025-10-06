@@ -42,7 +42,7 @@ msgstr ""
 msgid "For files that are not Phantom Scans, file name must begin with"
 msgstr ""
 
-msgid "For example, for CandID"
+msgid "For example, for DCCID"
 msgstr ""
 
 msgid "and Visit Label"
@@ -63,7 +63,7 @@ msgstr ""
 msgid "Incorrect file name!"
 msgstr ""
 
-msgid "Could not determine PSCID, CandID and Visit Label based on the filename!"
+msgid "Could not determine PSCID, DCCID and Visit Label based on the filename!"
 msgstr ""
 
 msgid "File already exists!"
@@ -118,9 +118,6 @@ msgid "Upload failed: received HTTP response code"
 msgstr ""
 
 msgid "Submission error!"
-msgstr ""
-
-msgid "Clear Filters"
 msgstr ""
 
 msgid "Log Viewer"
