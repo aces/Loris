@@ -117,12 +117,24 @@ msgstr "हाँ"
 msgid "No"
 msgstr "नहीं"
 
+msgid "Browse"
+msgstr "ब्राउज़ करें"
+
+msgid "Upload"
+msgstr "अपलोड करें"
+
+msgid "Clear Filters"
+msgstr "फ़िल्टर हटाएँ"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
 
 msgid "DCCID"
 msgstr "डीसीसीआईडी"
+
+msgid "CandID"
+msgstr "उम्मीदवार आईडी"
 
 msgid "Visit Label"
 msgstr "दौरे का लेबल"
