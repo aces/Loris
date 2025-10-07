@@ -128,49 +128,49 @@ msgstr ""
 
 # Common candidate terms
 msgid "PSCID"
-msgstr ""
+msgstr "Identifiant du projet"
 
 msgid "DCCID"
-msgstr ""
+msgstr "CCDID"
 
 msgid "Visit Label"
-msgstr ""
+msgstr "Étiquette de Visite"
 
 msgid "Site"
-msgstr ""
+msgstr "Site"
 
 msgid "Module"
-msgstr ""
+msgstr "Module"
 
 msgid "Project"
-msgstr ""
+msgstr "Projet"
 
 msgid "Cohort"
-msgstr ""
+msgstr "Cohorte"
 
 msgid "Cohorts"
-msgstr ""
+msgstr "Cohortes"
 
 msgid "Session"
-msgstr ""
+msgstr "Session"
 
 msgid "Date of registration"
-msgstr ""
+msgstr "Date d'Enregistrement"
 
 msgid "Participant Status"
-msgstr ""
+msgstr "Statut du Participant"
 
 msgid "DoB"
-msgstr ""
+msgstr "Date de Naissance"
 
 msgid "Sex"
-msgstr ""
+msgstr "Sexe"
 
 msgid "Feedback"
-msgstr ""
+msgstr "Rétroaction"
 
 msgid "Scans"
-msgstr ""
+msgstr "Scans"
 
 msgid "Stage"
 msgstr ""
