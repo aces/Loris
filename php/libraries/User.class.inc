@@ -3,7 +3,7 @@
 /**
  * This file contains the Loris user class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main

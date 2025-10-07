@@ -3,7 +3,7 @@
 /**
  * This implements the Project page class under Projects
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris

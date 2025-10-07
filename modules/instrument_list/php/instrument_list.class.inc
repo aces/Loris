@@ -3,7 +3,7 @@
 /**
  * Instrument_List
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Main
  * @package    Instrument_List
@@ -28,7 +28,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 /**
  * Instrument_List
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Main
  * @package    Instrument_List
