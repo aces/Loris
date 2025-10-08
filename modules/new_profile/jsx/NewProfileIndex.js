@@ -63,7 +63,7 @@ class NewProfileIndex extends React.Component {
       {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => this.setState({configData: data.fieldOptions}))
-      .catch(() => {
+      .catch((error) => {
         this.setState({error: true});
       });
   }

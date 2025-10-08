@@ -25,8 +25,8 @@ msgstr "नई प्रोफ़ाइल"
 msgid "Create a New Profile"
 msgstr "नई प्रोफ़ाइल बनाएं"
 
-msgid "Date of Birth Confirm*"
-msgstr "जन्म तिथि की पुष्टि करें*"
+msgid "Date of Birth Confirm"
+msgstr "जन्म तिथि की पुष्टि करें"
 
 msgid "Date of Birth fields must match"
 msgstr "जन्म तिथि फ़ील्ड मेल खाना चाहिए"

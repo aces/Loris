@@ -25,7 +25,7 @@ msgstr ""
 msgid "Create a New Profile"
 msgstr ""
 
-msgid "Date of Birth Confirm*"
+msgid "Date of Birth Confirm"
 msgstr ""
 
 msgid "Date of Birth fields must match"

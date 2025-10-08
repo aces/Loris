@@ -119,6 +119,9 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Create"
+msgstr ""
+
 # Common swal labels
 msgid "Cancel"
 msgstr ""
@@ -227,6 +230,9 @@ msgid "Uploaded"
 msgstr ""
 
 msgid "Total"
+msgstr ""
+
+msgid "Error!"
 msgstr ""
 
 # Common timepoint and vist terms
