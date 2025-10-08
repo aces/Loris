@@ -4,7 +4,7 @@
  * This class implements a data Instance which represents a single
  * module in the acknowledgements menu table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -42,6 +42,7 @@ class InstrumentRow implements \LORIS\Data\DataInstance
      * @var string
      */
     private string $_path;
+
     /**
      * Create a new HelpRow
      *
@@ -65,11 +66,13 @@ class InstrumentRow implements \LORIS\Data\DataInstance
 
         $this->DBRow = $row;
     }
+
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
      * @return array which can be serialized by json_encode()
      */
+
     /**
      * Determine the instrument type between LINST and PHP
      *
@@ -326,6 +329,7 @@ class InstrumentRow implements \LORIS\Data\DataInstance
         }
         return 'Appears Valid';
     }
+
     /**
      * JsonSerialize function
      *

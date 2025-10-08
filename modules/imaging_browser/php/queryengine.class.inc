@@ -170,6 +170,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     ];
 
     protected $baseURL;
+
     /**
      * {@inheritDoc}
      *

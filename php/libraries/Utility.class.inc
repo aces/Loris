@@ -14,7 +14,6 @@ use \Loris\StudyEntities\Candidate\CandID;
  */
 class Utility
 {
-
     /**
      * Stops anyone from instantiating an instance of Utility
      */
@@ -87,6 +86,7 @@ class Utility
 
         return $age;
     }
+
     /**
      * Returns list of consent groups in the database
      *
@@ -106,6 +106,7 @@ class Utility
 
         return $result;
     }
+
     /**
      * Returns list of consents in the database
      *
@@ -405,8 +406,6 @@ class Utility
 
         return $result;
     }
-
-
 
     /**
      * Returns a list of bvl instruments
@@ -737,7 +736,6 @@ class Utility
         }
         return iterator_to_array($sourcefields);
     }
-
 
     /**
      * Returns a list of study Visit Labels that are being used by this study.

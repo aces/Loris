@@ -4,7 +4,7 @@
  * This class features the code that enables access to the Pools of the
  * LORIS Biobank Module.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   Controller
  * @package    Loris
@@ -19,7 +19,7 @@ namespace LORIS\biobank;
  * This class features the code that enables access to the Pools of the
  * LORIS Biobank Module.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   Controller
  * @package    Loris
@@ -73,6 +73,7 @@ class PoolController
 
     // TODO: Decide if this should be able to handle a list of pools rather
     // than a singular pool array.
+
     /**
      * Takes a list of pool arrays from the client-side, validates them,
      * instantiates them and sends them to the DAO to be saved to the database.
@@ -165,7 +166,6 @@ class PoolController
         }
         // TODO: Validate Label with Regex and required
     }
-
 
     /**
      * Validates Pool Object Specimen IDs

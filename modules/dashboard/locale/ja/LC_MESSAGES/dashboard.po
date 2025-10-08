@@ -29,3 +29,13 @@ msgstr "サイト: すべて"
 
 msgid "Site: All User Sites"
 msgstr "サイト: すべてのユーザーサイト"
+
+msgid "...never. Welcome!"
+msgstr "…絶対にない。初めまして！"
+
+msgid "Welcome, %s!"
+msgstr "ようこそ、%s ！"
+
+msgid "Last login:"
+msgstr "最終ログイン:"
+

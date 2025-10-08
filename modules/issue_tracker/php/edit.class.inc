@@ -572,7 +572,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         return [
             'reporter'      => $this->formatUserInformation($user->getUsername()),
             'dateCreated'   => date('Y-m-d H:i:s'),
-            'centerID'      => $user->getCenterIDs(),
+            'centerID'      => null,
             'status'        => 'new',
             'priority'      => 'normal',
             'issueID'       => 0, // TODO: this is dumb
