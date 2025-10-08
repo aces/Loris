@@ -1,4 +1,4 @@
-import { HttpError } from './HttpError';
+import {HttpError} from './HttpError';
 
 /**
  * Error thrown for non-2xx HTTP responses from the API.
@@ -7,9 +7,17 @@ import { HttpError } from './HttpError';
 export class ApiResponseError extends HttpError {
   public readonly response: Response;
 
+  /**
+   *
+   * @param response The raw HTTP Response object.
+   * @param request  The Request object that generated the error.
+   * @param message  The error message.
+   */
   constructor(response: Response, request: Request, message?: string) {
-    // The message can now be constructed dynamically
-    super(message || `Request to ${request.url} failed with status code ${response.status}.`);
+    super(
+      message ||
+      `Request to ${request.url} failed with status code ${response.status}.`
+    );
     this.name = 'ApiResponseError';
     this.response = response;
   }

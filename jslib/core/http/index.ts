@@ -1,2 +1,2 @@
-export { Client } from "./Client";
-export { Query, QueryParam } from "./Query";
+export {Client} from './Client';
+export {Query, QueryParam} from './Query';
