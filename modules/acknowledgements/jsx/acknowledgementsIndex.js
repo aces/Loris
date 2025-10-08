@@ -17,8 +17,8 @@ import {
   DateElement,
   ButtonElement,
 } from 'jsx/Form';
-import { Acknowledgement } from 'jslib/entities'
-import { Query } from 'jslib/core'
+import {Acknowledgement} from 'jslib/entities';
+import {Query} from 'jslib/core';
 
 /**
  * Acknowledgements Module page.
