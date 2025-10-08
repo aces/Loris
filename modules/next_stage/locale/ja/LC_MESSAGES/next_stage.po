@@ -24,3 +24,36 @@ msgstr "次のステージ"
 
 msgid "Start Next Stage"
 msgstr "次のステージを開始"
+
+msgid "Date of %s"
+msgstr "%sの日付"
+
+msgid "Retype Date of %s"
+msgstr "%s の日付を再入力してください"
+
+msgid "Start %s"
+msgstr "%s を開始"
+
+msgid "CohortID:"
+msgstr "コホートID:"
+
+msgid "Date is required."
+msgstr "日付は必須です。"
+
+msgid "Both date fields are required."
+msgstr "両方の日付フィールドは必須です。"
+
+msgid "Both Date fields must match."
+msgstr "両方の日付フィールドが一致する必要があります。"
+
+msgid "Date of Visit is less than Date of Screening."
+msgstr "訪問日が検査日よりも前です。"
+
+msgid "Date of Visit is less than Date of Birth/EDC."
+msgstr "訪問日が生年月日より前です。"
+
+msgid "Next stage started."
+msgstr "次のステージが始まりました。"
+
+msgid "Click here to continue."
+msgstr "続行するにはここをクリックしてください。"
