@@ -35,4 +35,4 @@ CREATE TABLE `perm_perm_action_rel` (
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- run "tools/single_run/migrate_permission_actions.php" migrate script after that.
+-- run "tools/single_use/migrate_permission_actions.php" migrate script after that.

@@ -21,3 +21,11 @@ msgstr ""
 msgid "Issue Tracker"
 msgstr "問題トラッカー"
 
+
+# Google Translate is giving me completely different translations for
+# singular and plural. Might be worth investigating.
+msgid "Your assigned issue"
+msgstr "担当する問題"
+
+msgid "Your assigned issues"
+msgstr "割り当てられた問題"

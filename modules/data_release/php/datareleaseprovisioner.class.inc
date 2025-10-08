@@ -4,7 +4,7 @@
  * This class implements a data provisioner to get all data released files
  * for the data_release menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\data_release;
  * This class implements a data provisioner to get all data released files
  * for the data_release menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main

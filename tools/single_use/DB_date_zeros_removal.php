@@ -5,7 +5,7 @@
  * Script exporting Update statements to remove 0000-00-00 values
  * and replace them by NULL
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

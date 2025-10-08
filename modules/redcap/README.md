@@ -87,10 +87,10 @@ Only instruments defined there can be imported. **All others will be ignored**.
 ### LORIS Instrument State
 
 To be importable, the LORIS version of a REDCap instrument must:
-- have a associated instrument file.
-- have a database definition i.e. in test_names, session, test_battery tables.
-- have a started visit, with a populated battery.
-- have a visit that corresponds to a REDCap event name.
+- Have an associated instrument file.
+- Have a database definition, that is, have an entry in the `test_names`, `session`, and `test_battery` tables.
+- Have a visit that corresponds to a REDCap event name, or use a visit mapping in the REDCap module configuration.
+- Have a started visit with a populated battery, or use the automatic session creation feature in the REDCap module configuration.
 
 ## REDCap instrument naming
 

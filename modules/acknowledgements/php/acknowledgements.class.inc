@@ -3,7 +3,7 @@
 /**
  * File contains the acknowledgements class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -66,6 +66,7 @@ class Acknowledgements extends \DataFrameworkMenu
         ];
 
     }
+
     /**
      * {@inheritDoc}
      *
@@ -75,6 +76,7 @@ class Acknowledgements extends \DataFrameworkMenu
     {
         return new AcknowledgementsProvisioner($this->loris);
     }
+
     /**
      * Override the toJSON function to provide custom behavior.
      *
@@ -104,6 +106,7 @@ class Acknowledgements extends \DataFrameworkMenu
             ]
         );
     }
+
     /**
      * {@inheritDoc}
      *

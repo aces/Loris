@@ -4,7 +4,7 @@
  * Implements BaseRouter, a Router to handle the base of a LORIS
  * install.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Router
  * @package  Router

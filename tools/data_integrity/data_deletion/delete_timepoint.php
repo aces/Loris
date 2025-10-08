@@ -4,7 +4,7 @@
  * This script deletes the specified candidate timepoint.
  * Delete all timepoint rows for a given candidate.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

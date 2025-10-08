@@ -3,7 +3,7 @@
 /**
  * This file contains a wrapper around imaging comments for a session or File.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Imaging
  * @package  Imaging
@@ -515,6 +515,5 @@ class FeedbackMRI
         }
         return $where;
     }
-
 }
 
