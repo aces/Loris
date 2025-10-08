@@ -6,25 +6,25 @@
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="{$baseurl|default}/images/mni_icon.ico" type="image/ico" />
 
-<title>DCC MRI Quality Control</title>
+<title>{t text="DCC MRI Quality Control" domain="imaging_browser"}</title>
 </head>
 <body>
 {section name=error loop=$error_message}
 {$error_message[error]}<br />
 {/section}
 
-<p><a href="javascript:window.close()">Click here to close this window</a></p>
+<p><a href="javascript:window.close()">{t text="Click here to close this window" domain="imaging_browser"}</a></p>
 
 <div>
 
 {if $saved|default}
-<p>Comments saved.</p>
+<p>{t text="Comments saved." domain="imaging_browser"}</p>
 {/if}
 
 <table cellpadding="2" class="table table-hover table-bordered dynamictable">
 {section name=data loop=$identifier}
     <tr>
-        <th style="text-align:left">{$identifier[data].name}:</th>
+        <th style="text-align:left">{t text=$identifier[data].name domain="imaging_browser"}:</th>
         <td style="text-align:left">{$identifier[data].value}</td>
     </tr>
 {/section}
@@ -82,7 +82,7 @@
 {/foreach}
 
 {if $has_permission}
-<input type="submit" name="fire_away" value="Save">
+<input type="submit" name="fire_away" value="{t text='Save' domain='loris'}">
 </form>
 {/if}
 
