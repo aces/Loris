@@ -17,6 +17,7 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/new_profile.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/new_profile.json';
 
 /**
  * New Profile Form
@@ -379,6 +380,7 @@ NewProfileIndex.propTypes = {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'new_profile', hiStrings);
+  i18n.addResourceBundle('ja', 'new_profile', jaStrings);
 
   const NPIndex = withTranslation(['new_profile'])(NewProfileIndex);
   createRoot(
