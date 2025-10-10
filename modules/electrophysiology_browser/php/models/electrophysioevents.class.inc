@@ -90,9 +90,9 @@ class ElectrophysioEvents
             unset($hedTag['FirstName']);
             unset($hedTag['LastName']);
             return $hedTag;
-          }, $hedTags),
+          }, iterator_to_array($hedTags)),
           'hed_endorsements' => $hedEndorsements,
-          'channel_delimiter' => $channelDelimiter ?? '', // Default is none (BIDS-spec)
+          'channel_delimiter' => $channelDelimiter,
         ];
     }
 
@@ -224,7 +224,7 @@ class ElectrophysioEvents
             );
           }
 
-          $taskEvent = $db->pselect(
+          $taskEvent = $db->pselectRow(
             'SELECT * FROM physiological_task_event
             WHERE PhysiologicalTaskEventID=:PTEID',
             ['PTEID' => $instance_id]
@@ -260,15 +260,15 @@ class ElectrophysioEvents
           );
 
           return [
-            'instance' => $taskEvent[0],
-            'extra_columns' => $extraColumns,
+            'instance' => $taskEvent,
+            'extra_columns' => iterator_to_array($extraColumns),
             'hed_tags' => array_map(function ($hedTag) {
               $hedTag['TaggerName'] =
                 DatasetTags::convertTaggerName($hedTag);
               unset($hedTag['FirstName']);
               unset($hedTag['LastName']);
               return $hedTag;
-            }, $hedTags),
+            }, iterator_to_array($hedTags)),
             'hed_endorsements' => $hedEndorsements,
           ];
         }
@@ -334,12 +334,12 @@ class ElectrophysioEvents
     function addToEventHistory(int $physiologicalTaskEventID, string $action, int $userID): void
     {
       $db = \NDB_Factory::singleton()->database();
-      $event = $db->pselect(
+      $event = iterator_to_array($db->pselect(
         "SELECT *
             FROM physiological_task_event
             WHERE PhysiologicalTaskEventID=:PTID",
         ['PTID' => $physiologicalTaskEventID]
-      )[0];
+      ))[0];
 
       $historyObject = $event;
       $historyObject['ModifiedBy'] = $userID;
@@ -359,12 +359,12 @@ class ElectrophysioEvents
     function addToHEDHistory(string $tableID, string $action): void
     {
       $db = \NDB_Factory::singleton()->database();
-      $hedTag = $db->pselect(
+      $hedTag = iterator_to_array($db->pselect(
         "SELECT *
             FROM physiological_task_event_hed_rel
             WHERE ID=:ID",
         ['ID' => $tableID]
-      )[0];
+      ))[0];
 
       $historyObject =  [
         'HEDTableID' => $hedTag['ID'],
@@ -599,7 +599,7 @@ class ElectrophysioEvents
 
             // Add columns names
             $columns = implode("\t", $tsvEntries);
-            fwrite($tsvFile, "$columns\n");
+            fwrite($tsvFile, "$columns\n");   // TODO: Handle RB data
 
             $instances = $db->pselect(
                 "SELECT
@@ -837,6 +837,6 @@ class ElectrophysioEvents
               WHERE PhysiologicalFileID=:PFID
             )',
         ['PFID' => $this->_physioFileID]
-      );
+      ) ?? ',';  // Default should be '' (BIDS-spec)
     }
 }

@@ -8,7 +8,7 @@ import {setRightPanel} from '../store/state/rightPanel';
 import * as R from 'ramda';
 import {RootState} from '../store';
 import {setInterval} from '../store/state/bounds';
-import Panel from 'jsx/Panel';
+import Panel from './Panel';
 import {setEpochs} from "../store/state/dataset";
 
 type CProps = {
@@ -605,6 +605,7 @@ const HEDEndorsement = ({
       case HEDFilter['ENDORSED']:
       case HEDFilter['ENDORSED_BY']:
         filterNameDecoration = <i
+          key={`filter-decoration-${filterName}`}
           className='glyphicon glyphicon-flag'
           style={{ color: 'green', }}
         />;
@@ -612,18 +613,21 @@ const HEDEndorsement = ({
       case HEDFilter['CAVEAT']:
       case HEDFilter['CAVEAT_BY']:
         filterNameDecoration = <i
+          key={`filter-decoration-${filterName}`}
           className='glyphicon glyphicon-flag'
           style={{ color: 'red', }}
         />
         break;
       case HEDFilter['WITH_COMMENT']:
         filterNameDecoration = <i
+          key={`filter-decoration-${filterName}`}
           className='glyphicon glyphicon-comment'
           style={{ color: '#256eb6', }}
         />
         break;
       case HEDFilter['TAGGED_BY']:
         filterNameDecoration = <i
+          key={`filter-decoration-${filterName}`}
           className='glyphicon glyphicon-tag'
           style={{ color: '#064785', }}
         />
@@ -667,6 +671,7 @@ const HEDEndorsement = ({
   }: TooltipProps) => {
     return (
       <div
+        key={`hed-endorsement-tooltip-${itemRef}`}
         className={['hed-endorsement-tooltip', extraClasses].join(' ')}
         style={{
           display: itemRef === hoveredItem ? 'inline-block' : 'none',
@@ -681,6 +686,7 @@ const HEDEndorsement = ({
           tooltipLines.map((line) => {
             return (
               <div
+                key={`tooltip-line-${itemRef}`}
                 className='hed-endorsement-tooltip-line'
                 style={{
                   width: line.isVertical ? '1px' : line.lineLength,
@@ -794,10 +800,10 @@ const HEDEndorsement = ({
             >
               {
                 Object.values(HEDFilter).map((filterName, filterIndex, filters) => {
-                  let filterItem = <>
+                  let filterItem = <React.Fragment key={`filter-item-${filterName}-${filterIndex}`}>
                     {getFilterDecoration(filterName)}&nbsp;
                     {filterName}
-                  </>;
+                  </React.Fragment>;
                   if ([HEDFilter.TAGGED_BY, HEDFilter.ENDORSED_BY, HEDFilter.CAVEAT_BY].includes(filterName)) {
 
                     let itemList = [];
@@ -888,12 +894,13 @@ const HEDEndorsement = ({
                           {
                             // Get unique list of taggers
                             itemList.length > 0
-                              ? itemList.map((item) => {
+                              ? itemList.map((item, i) => {
                                 const activeItem =
                                   item.id === activeSubmenuItem.id &&
                                   activeFilter === filterName
                                 return (
                                   <li
+                                    key={`tagger_${item.id}_${i}`}
                                     className={activeItem ? 'active' : null}
                                     onClick={(event) => {
                                       event.stopPropagation();
@@ -908,7 +915,7 @@ const HEDEndorsement = ({
                                 );
                               })
                               : (
-                                <li>
+                                <li key={'empty_tagger_list'}>
                                   <span
                                     style={{
                                       color: 'lightgray',
@@ -926,6 +933,7 @@ const HEDEndorsement = ({
 
                   return (
                     <li
+                      key={`'filter-${filterIndex}`}
                       className={filterName === activeFilter ? 'active' : null}
                       onClick={(event) => {
                         switch (filterName) {
@@ -1028,6 +1036,7 @@ const HEDEndorsement = ({
                 <i className={'glyphicon glyphicon-map-marker'} />
               </button>
               <Tooltip
+                key={`tooltip-scrollToSelected`}
                 itemRef={'jumpToSelected'}
                 tooltipText={
                   <>
@@ -1053,6 +1062,7 @@ const HEDEndorsement = ({
                 ]}
               />
               <Tooltip
+                key={`tooltip-jumpToSelected`}
                 itemRef={'jumpToSelected'}
                 tooltipText={
                   <>
@@ -1110,6 +1120,7 @@ const HEDEndorsement = ({
               />
             </button>
             <Tooltip
+              key={`tooltip-selectPrevious`}
               itemRef={'selectPrevious'}
               tooltipText={
                 <>
@@ -1135,6 +1146,7 @@ const HEDEndorsement = ({
               ]}
             />
             <Tooltip
+              key={`tooltip-selectNext`}
               itemRef={'selectNext'}
               tooltipText={
                 <>
@@ -1179,6 +1191,7 @@ const HEDEndorsement = ({
               <i className={'glyphicon glyphicon-triangle-bottom'} />
             </button>
             <Tooltip
+              key={`tooltip-jumpSelectPrevious`}
               itemRef={'jumpSelectPrevious'}
               tooltipText={
                 <>
@@ -1204,6 +1217,7 @@ const HEDEndorsement = ({
               ]}
             />
             <Tooltip
+              key={`tooltip-jumpSelectNext`}
               itemRef={'jumpSelectNext'}
               tooltipText={
                 <>
@@ -1351,6 +1365,7 @@ const HEDEndorsement = ({
                       {
                         <>
                           <Tooltip
+                            key={`tooltip-jumpToSelected-${i}`}
                             itemRef={`jumpToSelected-${i}`}
                             tooltipText={
                               <>
@@ -1376,6 +1391,7 @@ const HEDEndorsement = ({
                             ]}
                           />
                           <Tooltip
+                            key={`tooltip-editSelected-${i}`}
                             itemRef={`editSelected-${i}`}
                             tooltipText={
                               <>
@@ -1494,15 +1510,16 @@ const HEDEndorsement = ({
                                     return tag.Endorsements.length > 0;
                                   })
                                   .map((tag) => {
-                                    return tag.Endorsements.map((endorsement) => {
+                                    return tag.Endorsements.map((endorsement, i) => {
                                       return (
-                                        <>
+                                        <React.Fragment key={`hed-endorsement-status-${i}`}>
                                           {
                                             endorsement.EndorsementStatus !== 'Comment' && (
-                                              <li className={'hed-endorsement hed-' +
+                                              <li
+                                                className={'hed-endorsement hed-' +
                                                 endorsement.EndorsementStatus.toLowerCase()
                                               }>
-                                                <span>
+                                                <span key={`hed-endorsement-status-${i}`}>
                                                   {endorsement.EndorsedBy}
                                                 </span>
                                               </li>
@@ -1510,7 +1527,8 @@ const HEDEndorsement = ({
                                           }
                                           {
                                             endorsement.EndorsementComment && (
-                                              <li className='hed-endorsement hed-comment'>
+                                              <li
+                                                  className='hed-endorsement hed-comment'>
                                                 <span>
                                                   {endorsement.EndorsedBy}:&nbsp;
                                                 </span>
@@ -1520,7 +1538,7 @@ const HEDEndorsement = ({
                                               </li>
                                             )
                                           }
-                                        </>
+                                        </React.Fragment>
                                       );
                                     });
                                   })
@@ -1545,6 +1563,7 @@ const HEDEndorsement = ({
                           <div className={(i + 1) === totalHEDTags ? 'dropup' : ''}>
                             {
                               <Tooltip
+                                key={`action-tooltip-${i}`}
                                 itemRef={`endorseActions-${i}`}
                                 tooltipText={
                                   <>
@@ -1673,9 +1692,10 @@ const HEDEndorsement = ({
                                 }}
                             >
                               {
-                                Object.keys(TagAction).map((tagAction) => {
+                                Object.keys(TagAction).map((tagAction, i) => {
                                   return (
                                     <li
+                                      key={`tag-action-${i}`}
                                       onClick={() => {
                                         const panelFound = openCommentPanels
                                           .find(panel => panel.ID === event.tagGroup[0].ID);

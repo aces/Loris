@@ -190,6 +190,7 @@ window.addEventListener('load', () => {
   const Index = withTranslation(
     ['electrophysiology_browser', 'loris']
   )(ElectrophysiologyBrowserIndex);
+  console.log('load');
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(

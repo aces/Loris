@@ -61,14 +61,12 @@ const SeriesCursor = (
     channelMetadata,
   }: CProps
 ) => {
-  if (!cursorPosition) return null;
-
   let reversedEpochs = [...filteredEpochs].reverse();
   useEffect(() => {
     reversedEpochs = [...filteredEpochs].reverse();
   }, [filteredEpochs]);
-  const left = Math.min(Math.max(100 * cursorPosition[0], 0), 100) + '%';
-  const time = interval[0] + cursorPosition[0] * (interval[1] - interval[0]);
+  const left = cursorPosition ? (Math.min(Math.max(100 * cursorPosition[0], 0), 100) + '%') : 0;
+  const time = cursorPosition ? (interval[0] + cursorPosition[0] * (interval[1] - interval[0])) : 0;
 
   /**
    *
@@ -201,7 +199,9 @@ const SeriesCursor = (
       <div>
         {
           indices.map((index, i) => {
-            return <span style={{
+            return <span
+              key={`hovered-channel-${index}-${i}`}
+              style={{
               fontWeight: (
                 (epochs[index].channels.length === 0) ||
                 hoveredChannelNames.some((hoveredChannel) => {

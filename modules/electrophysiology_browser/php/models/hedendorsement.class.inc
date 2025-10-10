@@ -54,7 +54,7 @@ class HEDEndorsement
         )',
       ['PFID' => $this->_physioFileID]
     );
-    return $hed_endorsements;
+    return iterator_to_array($hed_endorsements);
   }
 
   /**
@@ -67,7 +67,7 @@ class HEDEndorsement
     $db = \NDB_Factory::singleton()->database();
 
     $hed_endorsements = $db->pselect(
-      'SELECT *, endorser.ID AS EndorsedByID,
+      'SELECT hte.*, endorser.ID AS EndorsedByID,
        endorser.First_name AS FirstName, endorser.Last_name AS LastName
         FROM hed_tag_endorsement AS hte
         LEFT JOIN users AS endorser ON hte.EndorsedBy = endorser.ID
@@ -85,7 +85,7 @@ class HEDEndorsement
         )',
       ['PFID' => $this->_physioFileID]
     );
-    return $hed_endorsements;
+    return iterator_to_array($hed_endorsements);
   }
 
   /**
@@ -269,6 +269,6 @@ class HEDEndorsement
         AND ptehr.PhysiologicalTaskEventID=:PTEID',
       ['PTEID' => $physiologicalTaskEventID]
     );
-    return $hed_endorsements;
+    return iterator_to_array($hed_endorsements);
   }
 }

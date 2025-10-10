@@ -131,7 +131,7 @@ Panel.propTypes = {
   parentId: PropTypes.string,
   id: PropTypes.string,
   height: PropTypes.string,
-  title: PropTypes.string,
+  title: PropTypes.object,
   class: PropTypes.string,
   children: PropTypes.node,
   views: PropTypes.array,

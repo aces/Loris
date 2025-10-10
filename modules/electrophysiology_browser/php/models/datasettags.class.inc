@@ -143,7 +143,7 @@ class DatasetTags
         ) AS pte
         LEFT JOIN bids_event_dataset_mapping AS sm
         LEFT JOIN users AS tagger on sm.TaggedBy = tagger.ID
-        ON sm.PropertyName = "TrialType"
+        ON sm.PropertyName = "trial_type"
         AND sm.PropertyValue = pte.TrialType
         AND sm.ProjectID=:PID
         ORDER BY pte.TrialType ASC, sm.ID DESC',
@@ -318,10 +318,10 @@ class DatasetTags
                       'TaggerName' => self::convertTaggerName($addedTag),
                     ];
 
-                    $hedTagMapping['ID'] = $insertID;
+                    $addedTag['ID'] = $insertID;
                     $this->insertHEDTagHistory(
                       'bids_event_dataset_mapping',
-                      $hedTagMapping,
+                      $addedTag,
                       'insert'
                     );
                 }
@@ -438,7 +438,7 @@ class DatasetTags
           'PVALUE' => $propertyValue,
         ]
       );
-      return $hedRelIDs;
+      return iterator_to_array($hedRelIDs);
     }
 
     /**
@@ -545,7 +545,7 @@ class DatasetTags
             }
 
             // trial_type
-            $trial_type_values = $dataset_tags['TrialType'];
+            $trial_type_values = $dataset_tags['trial_type'];
             if (array_key_exists($instance_data['TrialType'], $trial_type_values)) {
                 $hed_tags = array_merge(
                     $hed_tags,

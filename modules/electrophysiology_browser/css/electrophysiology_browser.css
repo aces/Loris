@@ -641,12 +641,12 @@ li.hed-comment::before {
   margin-bottom: 15px;
 }
 
-#tag-modal-container > div > button {
+#tag-modal-container > button {
   position: unset;
   width: unset;
 }
 
-#tag-modal-container > div > div > div {
+#tag-modal-container > div > div {
   width: 75vw !important;
   height: 75vh;
 }
@@ -781,7 +781,7 @@ li.hed-comment::before {
   max-height: 80vh !important;
 }
 
-#channel-selector-montage > div > div > div:last-child {
+#channel-selector-montage > div > div > div > div:last-child {
   display: none !important;  /* Disappear modal footer */
 }
 
@@ -789,42 +789,8 @@ li.hed-comment::before {
   padding-top: 2px !important;
 }
 
-.glyph-option {
-  /*  background: url('/images/noList.svg') 0 center no-repeat;*/
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-}
-
-.panel-heading .glyph-option {
-  background-color: #064785;
-  margin-right: 0.5em;
-}
-
-.epoch-action .glyph-option {
-  background-color: #555;
-  padding: 0.6em;
-}
-
-.glyphicon-list-show {
-  -webkit-mask-image: url(/images/list.svg);
-  mask-image: url(/images/list.svg);
-}
-
-.glyphicon-list-hide {
-  -webkit-mask-image: url(/images/noList.svg);
-  mask-image: url(/images/noList.svg);
-}
-
-.glyphicon-option-show {
-  -webkit-mask-image: url(/images/option.svg);
-  mask-image: url(/images/option.svg);
-}
-
-.glyphicon-option-hide {
-  -webkit-mask-image: url(/images/noOption.svg);
-  mask-image: url(/images/noOption.svg);
+.glyphicon-option-show:before {
+  content: '•••';
 }
 
 #eegSessionView .table-scroll {
@@ -927,7 +893,7 @@ li.hed-comment::before {
     margin-left: 150px;
   }
 
-  #tag-modal-container > div > button {
+  #tag-modal-container > button {
     position: fixed;
     left: 15px;
     bottom: 20px;

@@ -34,17 +34,17 @@ export const SelectElement = (props) => {
 
   // Add required asterisk
   if (required) {
-    requiredHTML = <span className="text-danger">*</span>;
+    requiredHTML = <span key={`text-danger-${props.key}`} className="text-danger">*</span>;
   }
 
   // Add empty option
   if (props.emptyOption) {
-    emptyOptionHTML = <option>{props.emptyText}</option>;
+    emptyOptionHTML = <option key={`empty-${props.key}`}>{props.emptyText}</option>;
   }
 
   // Add error message
   if (props.hasError) {
-    errorMessage = <span>{props.errorMessage}</span>;
+    errorMessage = <span key={`error-message-${props.key}`}>{props.errorMessage}</span>;
     elementClass = elementClass + ' has-error';
   }
 
@@ -60,8 +60,8 @@ export const SelectElement = (props) => {
       let isDisabled = (newOptions[option] in disabledOptions);
       return (
         <option
-          value={newOptions[option]}
           key={newOptions[option]}
+          value={newOptions[option]}
           disabled={isDisabled}
         >
           {option}
@@ -74,7 +74,7 @@ export const SelectElement = (props) => {
 
       optionList = Array.from(optGroups).sort().map((optGroup) => {
         return (
-          <optgroup label={optGroup}>
+          <optgroup key={`optgroup-${optGroup}`} label={optGroup}>
             {
               options.filter((option) =>
                 option.optgroup === optGroup
@@ -100,8 +100,8 @@ export const SelectElement = (props) => {
         let isDisabled = (option in disabledOptions);
         return (
           <option
+            key={option.type}
             value={option.value}
-            key={option.label}
             disabled={isDisabled}
           >
             {option.value}
@@ -112,7 +112,7 @@ export const SelectElement = (props) => {
   }
 
   if (props.placeholder !== '') {
-    optionList.unshift(<option value={''} selected={true}>
+    optionList.unshift(<option key={props.placeholder} value={''} selected={true}>
       {props.placeholder}
     </option>);
   }
@@ -129,6 +129,7 @@ export const SelectElement = (props) => {
   if (props.label && props.label !== '') {
     label = (
       <label
+        key={`label-${props.key}`}
         className={
           props.noMargins
             ? ''
@@ -141,16 +142,19 @@ export const SelectElement = (props) => {
       </label>
     );
     // inputClass = 'col-sm-12';
+
   }
 
   return (
     <div
+      key={`opt-container-${props.name}`}
       className={elementClass}
       style={{ marginBottom: '5px' }}
     >
       {label}
-      <div className={inputClass}>
+      <div key={`opt-inner-${props.name}`} className={inputClass}>
         <select
+          key={`opt-${props.name}`}
           name={props.name}
           multiple={multiple}
           className={
@@ -539,7 +543,7 @@ CheckboxElement.defaultProps = {
 };
 CheckboxElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.object.isRequired,
   value: PropTypes.bool.isRequired,
   id: PropTypes.string,
   class: PropTypes.string,
@@ -912,7 +916,7 @@ export class SelectDropdown extends Component {
 }
 SelectDropdown.propTypes = {
   multi: PropTypes.bool,
-  options: PropTypes.array,
+  options: PropTypes.object,
   onFieldClick: PropTypes.func,
   onToggleAll: PropTypes.func,
   selectedCategory: PropTypes.string,

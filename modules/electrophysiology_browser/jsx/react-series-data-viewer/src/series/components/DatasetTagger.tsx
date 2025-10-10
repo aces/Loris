@@ -3,7 +3,7 @@ import * as R from 'ramda';
 import {connect} from "react-redux";
 import {RootState} from "../store";
 import {CheckboxElement, SelectDropdown} from './Form';
-import Panel from './Panel'; // Different from jsx/Panel
+import Panel from './Panel'; // Different from ./Panel
 import {HEDSchemaElement, HEDTag} from "../store/types";
 import {setAddedTags, setDatasetTags, setDeletedTags, setRelOverrides, setDatasetMetadata} from "../store/state/dataset";
 import swal from "sweetalert2";
@@ -169,11 +169,11 @@ const DatasetTagger = ({
     }
 
     // Prevent default behaviour
-    document.querySelector('#tag-modal-container > div > div')
+    document.querySelector('#tag-modal-container > div')
       .addEventListener('click', handleOutsideClick, true);
 
     return () => {
-      document.querySelector('#tag-modal-container > div > div')
+      document.querySelector('#tag-modal-container > div')
         ?.removeEventListener('click', handleOutsideClick, true);
 
     };
@@ -463,12 +463,12 @@ const DatasetTagger = ({
     // Override onClose()
     document
       .querySelector(
-        '#tag-modal-container > div > div > div > div > span'
+        '#tag-modal-container > div > div > div > span'
       ).addEventListener('click', onModalClose, true);
 
     return () => {
       document.querySelector(
-        '#tag-modal-container > div > div > div > div > span')
+        '#tag-modal-container > div > div > div > span')
         ?.removeEventListener('click', onModalClose, true);
     }
   }, [addedTags, deletedTags])
@@ -528,7 +528,7 @@ const DatasetTagger = ({
 
     const tagsToSearch = applyOverrides(datasetTags[activeColumnName][activeFieldValue]);
     const tagFromDataset = tagsToSearch.find((tag) => {
-      return tag.ID === tagRelID;
+      return tag.ID == tagRelID;
     })
 
     if (tagFromDataset) {
@@ -536,11 +536,11 @@ const DatasetTagger = ({
       const rootTags = getRootTags(tagsToSearch);
 
       const tagInRootTags = rootTags.find((tag) => {
-        return tag.ID === tagFromDataset.ID
+        return tag.ID == tagFromDataset.ID
       });
 
       const tagInGroupedTags = applyOverrides(groupedTags).find((tag) => {
-        return tag.ID === tagFromDataset.ID;
+        return tag.ID == tagFromDataset.ID;
       })
 
       if (!tagInGroupedTags && tagInRootTags && tagInRootTags.PairRelID === null) {
@@ -557,16 +557,16 @@ const DatasetTagger = ({
       // Remove tag from addedTags
       if (tagRelID.startsWith('add_')) {
         const tagFromAdded = updatedAddedTags.find((tag) => {
-          return tag.ID === tagRelID;
+          return tag.ID == tagRelID;
         });
         const tagInGroupedTags = tagFromAdded
           ? updatedGroupedTags.find((tag) => {
-            return tag.ID === tagFromDataset.ID;
+            return tag.ID == tagFromDataset.ID;
           })
           : false;
         if (!tagInGroupedTags && tagFromAdded) {
           setAddedTags(updatedAddedTags.filter((tag) => {
-            return tag !== tagFromAdded;
+            return tag != tagFromAdded;
           }));
         }
       }
@@ -744,7 +744,7 @@ const DatasetTagger = ({
         while (pairRelID !== null) {
           const pairRelTag = applyOverrides([...addedTags, ...datasetTags[activeColumnName][activeFieldValue]])
             .find((t) => {
-              return t.ID === pairRelID;
+              return t.ID == pairRelID;
             });
           if (pairRelTag) {
             tagPairings.push(pairRelTag);
@@ -761,11 +761,13 @@ const DatasetTagger = ({
 
   const buildGroupSpan = (char: string, colorIndex: number) => {
     return (
-      <span style={{
-        fontSize: '30px',
-        position: 'relative',
-        bottom: '8px',
-        color: colorOrder(colorIndex.toString()).toString(),
+      <span
+        key={`group-span-${char}-${colorIndex}`}
+        style={{
+          fontSize: '30px',
+          position: 'relative',
+          bottom: '8px',
+          color: colorOrder(colorIndex.toString()).toString(),
       }}>
         {char}
       </span>
@@ -810,7 +812,7 @@ const DatasetTagger = ({
               true, tag.TaggerName ===  'Data Authors'
             ));
           } else {
-            if (groupTag.HasPairing === '1') {
+            if (groupTag.HasPairing == '1') {
               if (groupTag.AdditionalMembers > 0 || tagBadgeSubgroup.length === 0) {
                 let commaIndex = getNthMemberTrailingBadgeIndex(
                   tagBadgeGroup,
@@ -891,10 +893,10 @@ const DatasetTagger = ({
         : datasetTags[activeColumnName][activeFieldValue].map(addSchemaElement);
 
     let hedTagObj = isSubmitted && tagsToSearch.find((tag) => {
-        return tag.ID === relID;
+      return tag.ID == relID;
     });
 
-    const tagIsGrouped = hedTagObj && hedTagObj.HasPairing === '1' || (
+    const tagIsGrouped = hedTagObj && hedTagObj.HasPairing == '1' || (
       tagsToSearch.some((tag) => {
         return tag.PairRelID ? tag.PairRelID.toString() : undefined === relID
       })
@@ -904,18 +906,18 @@ const DatasetTagger = ({
 
     if (hedTagObj && activeMenuTab === 'TAG_MODE') {
       tagIsSelected = applyOverrides(groupedTags).some((tag) => {
-        if (tag.ID === relID) {
+        if (tag.ID == relID) {
           return true;
         }
         if (tag.PairRelID) {
           let tagObject = tagsToSearch.find((t) => {
-              return t.ID === tag.ID;
+              return t.ID == tag.ID;
             });
-          while (tagObject && (tagObject.PairRelID !== null || tagObject.HasPairing === '1')) {
+          while (tagObject && (tagObject.PairRelID !== null || tagObject.HasPairing == '1')) {
             tagObject = tagsToSearch.find((t) => {
-                return t.ID === tagObject.PairRelID;
+                return t.ID == tagObject.PairRelID;
               });
-            if (tagObject && tagObject.ID === relID) {
+            if (tagObject && tagObject.ID == relID) {
               return true;
             }
           }
@@ -929,6 +931,7 @@ const DatasetTagger = ({
 
     return (
       <div
+        key={`hed-badge-${relID}`}
         className={
           'selection-filter-tags dataset-tag-hed' + (
             !taggedByOrigin ? ' hed-badge-not-origin' : ''
@@ -959,7 +962,7 @@ const DatasetTagger = ({
               if (tagIsSelected) {
                 // Remove leaf
                 setGroupedTags(applyOverrides(groupedTags).filter((tag) => {
-                  return tag.ID !== tagRelID;
+                  return tag.ID != tagRelID;
                 }));
               } else {
                 // Add leaf
@@ -1011,7 +1014,7 @@ const DatasetTagger = ({
 
   const addSchemaElement = (hedTag: HEDTag) => {
     const schemaElement = schemaTags.find((tag) => {
-      return tag.id === hedTag.HEDTagID;
+      return tag.id == hedTag.HEDTagID;
     })
     return {
       ...hedTag,
@@ -1024,7 +1027,7 @@ const DatasetTagger = ({
       let schemaElement = hedTag.schemaElement;
 
       const overriddenTag = relOverrides.find((tag) => {
-        return tag.ID === hedTag.ID;
+        return tag.ID == hedTag.ID;
       });
       if (overriddenTag) {
         hedTag = {
@@ -1079,7 +1082,7 @@ const DatasetTagger = ({
     updatedGroupTags.forEach((rootTag, groupTagIndex) => {
       const tagPairings = applyOverrides(getGroupedTagPairings([rootTag]));
       const leafTag = tagPairings.length > 0 ? tagPairings.slice(-1)[0] : rootTag;
-      const leafHadPairing = leafTag.HasPairing === '1';
+      const leafHadPairing = leafTag.HasPairing == '1';
 
       if ((groupTagIndex + 1) < updatedGroupTags.length) {
         tagOverrides.push({
@@ -1384,7 +1387,7 @@ const DatasetTagger = ({
                     : ''
                 )}
                 style={{ width: '100%' }}
-                value={activeColumnName}
+                value={activeColumnName ?? ''}
                 onChange={handleColumnValueChange}
               >
                 <option
@@ -1408,7 +1411,7 @@ const DatasetTagger = ({
               id='field-levels'
               size={10}
               style={{ width: '90%', height: '40vh', }}
-              value={activeFieldValue}
+              value={activeFieldValue ?? ''}
               onChange={handleFieldValueChange}
             >
               {buildFieldValues(activeColumnName)}
@@ -1476,8 +1479,8 @@ const DatasetTagger = ({
                               return ['Endorsed', 'Caveat']
                                 .includes(endorsement.EndorsementStatus);
                             })
-                              .map((endorsement) => {
-                                return <>
+                              .map((endorsement, i) => {
+                                return <React.Fragment key={`flag-${endorsement.EndorsedByID}-${i}`}>
                                   {endorsement.EndorsedBy}
                                   <i
                                     className='glyphicon glyphicon-flag'
@@ -1488,7 +1491,7 @@ const DatasetTagger = ({
                                       paddingLeft: '5px',
                                     }}
                                   />
-                                </>
+                                </React.Fragment>
                               })
                             : 'n/a'
                         }
@@ -1776,10 +1779,11 @@ const DatasetTagger = ({
                                         )
                                         .map((endorsement) => {
                                           return (
-                                            <>
+                                            <React.Fragment key={`endorsement-${endorsement.EndorsedByID}`}>
                                               {
                                                 endorsement.EndorsementStatus !== 'Comment' && (
-                                                  <li className={'hed-endorsement hed-' +
+                                                  <li key={`li-${endorsement.EndorsedByID}`}
+                                                      className={'hed-endorsement hed-' +
                                                     endorsement.EndorsementStatus.toLowerCase()
                                                   }>
                                                     <div
@@ -1800,7 +1804,8 @@ const DatasetTagger = ({
                                               }
                                               {
                                                 endorsement.EndorsementComment && (
-                                                  <li className='hed-endorsement hed-comment'>
+                                                  <li key={`endorsement-${endorsement.EndorsedByID}`}
+                                                      className='hed-endorsement hed-comment'>
                                                     <div
                                                       style={{
                                                         display: 'flex',
@@ -1822,7 +1827,7 @@ const DatasetTagger = ({
                                                   </li>
                                                 )
                                               }
-                                            </>
+                                            </React.Fragment>
                                           );
                                         })
                                     }
@@ -1859,7 +1864,7 @@ const DatasetTagger = ({
                   <CheckboxElement
                     name='toggle-long-hed'
                     offset=''
-                    label='Show long-form HED tags'
+                    label={<span>Show long-form HED tags</span>}
                     value={showLongFormHED}
                     onUserInput={() => {
                       setShowLongFormHED(!showLongFormHED);
@@ -1952,7 +1957,7 @@ const DatasetTagger = ({
                     }
                     {
                       groupedTags.length === 1 && (
-                        applyOverrides(groupedTags)[0].HasPairing === '1' || applyOverrides(groupedTags)[0].PairRelID !== null
+                        applyOverrides(groupedTags)[0].HasPairing == '1' || applyOverrides(groupedTags)[0].PairRelID !== null
                       ) && (
                         <button
                           className='btn btn-primary'
@@ -2015,9 +2020,10 @@ const DatasetTagger = ({
                       }}
                     >
                       {
-                        Object.keys(TagAction).map((tagAction) => {
+                        Object.keys(TagAction).map((tagAction, i) => {
                           return (
                             <li
+                              key={`endorsement-${TagAction[tagAction].icon}-${i}`}
                               onClick={() => {
                                 setActiveEndorsementMenuItem({
                                   ...activeEndorsementMenuItem,

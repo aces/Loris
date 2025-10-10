@@ -1,3 +1,4 @@
+import React from 'react';
 import {vec2} from 'gl-matrix';
 import {MIN_EPOCH_WIDTH} from '../../vector';
 import {ScaleLinear} from 'd3-scale';
@@ -6,6 +7,7 @@ import {RootState} from "../store";
 import {Channel, ChannelMetadata} from "../store/types";
 
 type CProps = {
+  key: string,
   parentHeight: number,
   onset: number,
   duration: number,
@@ -37,6 +39,7 @@ type CProps = {
  */
 const Epoch = (
   {
+    key,
     parentHeight,
     onset,
     duration,
@@ -77,11 +80,12 @@ const Epoch = (
     const rectHeight = height / channels.length;
 
     return (
-      <>
+      <React.Fragment key={key}>
         {
           indicesToDraw.map((channelIndex) => {
             return (
               <rect
+                key={`rect-${key}-${channelIndex}`}
                 fill={color}
                 fillOpacity={opacity}
                 width={width}
@@ -92,7 +96,7 @@ const Epoch = (
             );
           })
         }
-      </>
+      </React.Fragment>
     );
   }
 

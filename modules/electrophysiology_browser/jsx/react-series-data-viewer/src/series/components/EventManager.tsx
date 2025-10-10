@@ -303,10 +303,10 @@ const EventManager = ({
           <div style={{display: 'flex', flexDirection: 'row'}}>
             <i
               className={
-                'glyphicon glyph-option glyphicon-option-'
+                'glyphicon glyphicon-option-'
                 + (allCommentsVisible ? 'show' : 'show')
                 + (epochsInRange.length >= MAX_RENDERED_EPOCHS ? ' glyphicon-greyed' : '')}
-              style={{cursor: 'pointer', padding: '0.5em'}}
+              style={{cursor: 'pointer', paddingTop: '0.375em', paddingRight: '0.5em',}}
               onClick={() => setCommentsInRangeVisibility(!allCommentsVisible)}
             ></i>
             <i
@@ -361,7 +361,7 @@ const EventManager = ({
             >
               {
                 getDatasetColumns().map((column, i) => {
-                  return <li onClick={() => {
+                  return <li key={`column-select-${i}`} onClick={() => {
                     setActiveLabel(column);
                   }}>
                     {column}
@@ -392,8 +392,9 @@ const EventManager = ({
         }}>
           <CheckboxElement
             id='toggle-ignore_na'
+            name='toggle-ignore_na'
             offset=''
-            label="Ignore 'n/a'"
+            label={<React.Fragment>Ignore 'n/a'</React.Fragment>}
             value={ignoreNA}
             onUserInput={() => {
               setIgnoreNA(!ignoreNA);
@@ -408,6 +409,7 @@ const EventManager = ({
             searchText.length > 0 &&
             <CheckboxElement
               id='toggle-invert-search'
+              name='toggle-invert-search'
               offset=''
               label={
                 <>
@@ -553,7 +555,9 @@ const EventManager = ({
                                 - channelMetadata.findIndex(channel => channel.name === channelB);
                             })
                             .map((channel, i) => {
-                            return <span style={{
+                            return <span
+                              key={`span-${channel}-${i}`}
+                              style={{
                               fontWeight: channelNamesInView.includes(channel)
                                 ? 'normal' : 'lighter'
                             }}>
@@ -608,9 +612,8 @@ const EventManager = ({
                             onClick={() => handleCommentVisibilityChange()}
                           >
                             <i className={
-                              'glyphicon glyph-option glyphicon-option-'
-                              + (hedVisible ? 'show' : 'show')
-                            }></i>
+                              'glyphicon glyphicon-option-show'
+                            }/>
                           </button>
                         )
                       }
@@ -659,10 +662,10 @@ const EventManager = ({
                           {
                             epoch.channels.length > 0
                               ? epoch.channels.map((channel, i) => {
-                                return <>
+                                return <React.Fragment key={`epoch-channel-${channel}-${i}`}>
                                   {i > 0 && <>{channelDelimiter}&nbsp;</>}
                                   {channel}
-                                </>;
+                                </React.Fragment>;
                               })
                               : 'n/a'
                           }
