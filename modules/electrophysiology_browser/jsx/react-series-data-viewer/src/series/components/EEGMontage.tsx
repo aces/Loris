@@ -7,7 +7,7 @@ import {CheckboxElement} from './Form';
 import {CoordinateSystem, Electrode} from '../store/types';
 import {setHidden} from '../store/state/montage';
 import React, {useState, useEffect, SetStateAction, Dispatch} from 'react';
-import Panel from 'Panel';
+import Panel from './Panel';
 import {RootState} from '../store';
 
 type CProps = {
@@ -52,7 +52,7 @@ const EEGMontage = (
     setChannelSelectorVisible,
     eegMontageName,
   }: CProps) => {
-  if (electrodes.length === 0 || coordinateSystem === null) return null;
+  // if (electrodes.length === 0 || coordinateSystem === null) return null;
 
   const [angleX, setAngleX] = useState(0);
   const [angleZ, setAngleZ] = useState(0);
@@ -219,8 +219,8 @@ const EEGMontage = (
   const scale3D = montageRadius / headRadius;
   const scale2D = montageRadius / stereographicProjection(headRadius, 0, 0, headRadius)[0];
 
-  const multiplier2D = get2DMultiplier(coordinateSystem.units);
-  const multiplier3D = get3DMultiplier(coordinateSystem.units);
+  const multiplier2D = get2DMultiplier(coordinateSystem?.units);
+  const multiplier3D = get3DMultiplier(coordinateSystem?.units);
 
   electrodes.map((electrode, i) => {
     let electrodeCoords = electrode.position.slice();
@@ -580,6 +580,7 @@ const EEGMontage = (
           // @ts-ignore
           chunksURL={chunksURL}
           parentHeight={withPanel ? 300 : 550}
+          cssClass={''}
         >
           <Montage2D />
         </ResponsiveViewer>
@@ -647,17 +648,23 @@ const EEGMontage = (
                 width: '86%',
               }}
             />
-            <label htmlFor='channel-montage-name'>
-              Montage
-            </label>
-            &nbsp;
-            <span
-              id={'channel-montage-name'}
-              className='code-mimic'
-              style={{ backgroundColor: '#eff1f2', color: '#1f2329', marginLeft: '5px', }}
-            >
-             {eegMontageName}
-          </span>
+            {
+              (eegMontageName && eegMontageName.length > 0) && (
+                <>
+                  <label htmlFor='channel-montage-name'>
+                    Montage
+                  </label>
+                  &nbsp;
+                  <span
+                    id={'channel-montage-name'}
+                    className='code-mimic'
+                    style={{ backgroundColor: '#eff1f2', color: '#1f2329', marginLeft: '5px', }}
+                  >
+                   {eegMontageName}
+                  </span>
+                </>
+              )
+            }
           </div>
         )
       }
@@ -676,7 +683,7 @@ const EEGMontage = (
                 <CheckboxElement
                   name='toggle-channel-indices'
                   offset=''
-                  label='Show indices'
+                  label={<span>Show indices</span>}
                   value={showChannelIndices}
                   onUserInput={() => {
                     setShowChannelIndices(!showChannelIndices);
@@ -764,23 +771,29 @@ const EEGMontage = (
 
   return withPanel ? (
     <div className='col-lg-4 col-md-6'>
-       <Panel
-        id='electrode-montage'
-        title={
-         <>
-           Electrode Map
-           &nbsp;&nbsp;
-           <span
-             className='code-mimic'
-             style={{ backgroundColor: '#eff1f2', color: '#1f2329', }}
-           >
-             {eegMontageName}
-          </span>
-        </>
-       }
-      >
-        {panelContent}
-      </Panel>
+     <Panel
+      id='electrode-montage'
+      title={
+       <>
+         Electrode Map
+         {
+           (eegMontageName && eegMontageName.length > 0) && (
+             <>
+               &nbsp;&nbsp;
+               <span
+                 className='code-mimic'
+                 style={{ backgroundColor: '#eff1f2', color: '#1f2329', }}
+               >
+                 {eegMontageName}
+               </span>
+             </>
+           )
+         }
+      </>
+     }
+    >
+      {panelContent}
+    </Panel>
     </div>
   ) : (
     <div>

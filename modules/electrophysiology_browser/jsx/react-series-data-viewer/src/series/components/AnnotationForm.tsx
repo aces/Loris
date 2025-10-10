@@ -14,7 +14,7 @@ import {RootState} from '../store';
 import {setEpochs} from '../store/state/dataset';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {NumericElement, SelectElement, TextboxElement} from './Form';
-import Panel from 'jsx/Panel';
+import Panel from './Panel';
 import Modal from 'jsx/Modal';
 import EEGMontage from "./EEGMontage";
 import swal from 'sweetalert2';
@@ -134,7 +134,6 @@ const AnnotationForm = ({
   }, [timeSelection]);
 
   useEffect(() => {
-    console.log('ue trigger');
     setPanelIsDirty(
       (deletedTagIDs.length > 0 ||
         (newTags.length > 0 && newTags.find((tag) => tag.value !== '')) ||
@@ -297,7 +296,7 @@ const AnnotationForm = ({
     const tagRelID = elementID.split('-').pop();
     if (currentAnnotation.hed &&
       currentAnnotation.hed.map((tag) => {
-        return tag.ID
+        return tag.ID.toString();
       }).includes(tagRelID)
     ) {
       setDeletedTagIDs([...deletedTagIDs, tagRelID]);
@@ -349,7 +348,6 @@ const AnnotationForm = ({
       setEventProperties(
         Object.keys(eventProperties)
           .reduce((props, prop) => {
-            console.log('prop', prop);
             return {
               ...props,
               [prop]: '',
@@ -408,7 +406,7 @@ const AnnotationForm = ({
     ).map((tag) => {
       return tag.ID;
     }).filter(currentTagID => {
-      return !deletedTagIDs.includes(currentTagID)
+      return !deletedTagIDs.includes(currentTagID.toString())
     });
 
     // Prevent duplicates
@@ -851,8 +849,8 @@ const AnnotationForm = ({
                           return ['Endorsed', 'Caveat']
                             .includes(endorsement.EndorsementStatus);
                         })
-                        .map((endorsement) => {
-                          return <>
+                        .map((endorsement, i) => {
+                          return <React.Fragment key={`hed-tag-${hedTag.ID}-endorsement-${i}`}>
                             {endorsement.EndorsedBy}
                             <i
                               className='glyphicon glyphicon-flag'
@@ -863,7 +861,7 @@ const AnnotationForm = ({
                                 paddingLeft: '5px',
                               }}
                             />
-                          </>
+                          </React.Fragment>
                         })
                       : 'n/a'
                   }
@@ -894,7 +892,7 @@ const AnnotationForm = ({
     const tagBadges = [];
 
     rootTags.forEach((tag) => {
-      if (deletedTagIDs.includes(tag.ID)) {
+      if (deletedTagIDs.includes(tag.ID.toString())) {
         return;
       }
       let groupColorIndex = 0;
@@ -917,7 +915,7 @@ const AnnotationForm = ({
           if (groupTag.PairRelID === null) {
             tagBadgeGroup.push(buildHEDBadge(groupTag, belongsToEvent));
           } else {
-            if (groupTag.HasPairing === '1') {
+            if (groupTag.HasPairing == '1') {
               if (groupTag.AdditionalMembers > 0 || tagBadgeSubgroup.length === 0) {
                 let commaIndex = getNthMemberTrailingBadgeIndex(
                   tagBadgeGroup,
@@ -1008,7 +1006,7 @@ const AnnotationForm = ({
                 : ''
             )}
             label="trial_type"
-            value={currentAnnotation ? currentAnnotation.label : label}
+            value={currentAnnotation ? currentAnnotation.label : (label ?? '')}
             onUserInput={(_, value) => setLabel(value)}
             required={false/*currentAnnotation === null*/}
             disabled={currentAnnotation !== null}
@@ -1042,8 +1040,8 @@ const AnnotationForm = ({
                 )}
                 disabled={currentAnnotation !== null}
                 value={eventInterval
-                  ? parseFloat(eventInterval[0].toString())
-                  : 0
+                  ? eventInterval[0].toString()
+                  : '0'
                 }
                 required={currentAnnotation === null}
                 onUserInput={handleStartTimeChange}
@@ -1069,8 +1067,8 @@ const AnnotationForm = ({
                           parseFloat(eventInterval[1].toString()) - parseFloat(eventInterval[0].toString())
                         // )
                         + Number.EPSILON) * 1000) / 1000
-                  )
-                  : 0
+                  ).toString()
+                  : '0'
                 }
                 required={currentAnnotation === null}
                 onUserInput={handleDurationChange}
@@ -1090,10 +1088,10 @@ const AnnotationForm = ({
                 )}
                 disabled={currentAnnotation !== null}
                 value={eventInterval
-                  ? Math.round((
+                  ? (Math.round((
                     parseFloat(eventInterval[1].toString())
-                    + Number.EPSILON) * 1000) / 1000
-                  : 0
+                    + Number.EPSILON) * 1000) / 1000).toString()
+                  : '0'
                 }
                 required={currentAnnotation === null}
                 onUserInput={handleEndTimeChange}
@@ -1125,11 +1123,9 @@ const AnnotationForm = ({
                   </button>
                   <Modal
                     title='Select Channels'
-                    // label='`Open Channel Selection'
                     throwWarning={throwChannelEditWarning}
                     onClose={() => { setChannelSelectorVisible(false); }}
                     show={channelSelectorVisible}
-                    // onSubmit={() => { new Promise() console.log('submit'); }}
                   >
                     <EEGMontage
                       // @ts-ignore
@@ -1167,6 +1163,7 @@ const AnnotationForm = ({
                   <div className='flex-basis-40' />
                 }
                 <div
+                  key={`channel-list-${currentAnnotation ? currentAnnotation.physiologicalTaskEventID : 'new'}`}
                   style={{
                     display: 'block',
                     marginLeft: '15px',
@@ -1183,9 +1180,10 @@ const AnnotationForm = ({
                             - channelMetadata.findIndex(channel => channel.name === channelB);
                         })
                         .map((channel, i) => {
-                          return <>
+                          return <span key={`list-channel-${channel}`}>
                             {i > 0 && <>{channelDelimiter}&nbsp;</>}
-                            <span style={{
+                            <span
+                              style={{
                               textDecoration: !eventChannels.includes(channel)
                                 ? 'line-through'
                                 : 'none',
@@ -1201,7 +1199,7 @@ const AnnotationForm = ({
                               {channel}
                               {/*!currentAnnotation?.channels.includes(channel) ? '*' : ''*/}
                             </span>
-                          </>
+                          </span>
                         })
                       : 'n/a'
                   }
@@ -1214,64 +1212,67 @@ const AnnotationForm = ({
               Object.keys(datasetTags)
                 .filter(column => column !== 'trial_type')
                 .length > 0 && (
-                <Panel
-                  id={`additional-columns-panel`}
-                  class={'panel-primary additional-columns-panel'}
-                  title={
-                    <span style={{ fontWeight: 'bold', }}>
+                <>
+                  <Panel
+                    id={`additional-columns-panel`}
+                    class={'panel-primary additional-columns-panel'}
+                    title={
+                      <span style={{ fontWeight: 'bold', }}>
                       Additional Columns
                     </span>
-                  }
-                  initCollapsed={true}
-                  collapsed={true}
-                  style={{
-                    padding: '0 15px',
-                    margin: '5px 15px 0 15px',
-                  }}
-                >
-                  <div
-                    className="row form-group"
-                  >
-                    <div>
-                    {
-                      Object.keys(datasetTags)
-                        .filter(column => column !== 'trial_type')
-                        .map((property) => {
-                          return (
-                            <TextboxElement
-                              name="property-name"
-                              className={"form-control input-sm" + (
-                                currentAnnotation
-                                  ? ' form-edit'
-                                  : ''
-                              )}
-                              label={property}
-                              value={
-                                currentAnnotation
-                                  ? currentAnnotation.properties.some(prop => prop.PropertyName === property)
-                                    ? currentAnnotation.properties.find(prop => prop.PropertyName === property).PropertyValue
-                                    : 'n/a'
-                                  : eventProperties[property]
-                              }
-                              onUserInput={
-                                (_, value) =>  setEventProperties({
-                                  ...eventProperties,
-                                  [property]: value,
-                                })
-                              }
-                              required={false}
-                              disabled={currentAnnotation !== null}
-                              labelOuterClass={'flex-basis-40'}
-                              labelClass={'event-label code-mimic word-break-word'}
-                              elementClass={'additional-columns-outer'}
-                              inputClass={'additional-columns-inner'}
-                            />
-                          );
-                       })
                     }
+                    initCollapsed={true}
+                    collapsed={true}
+                    style={{
+                      padding: '0 15px',
+                      margin: '5px 15px 0 15px',
+                    }}
+                  >
+                    <div
+                      className="row form-group"
+                    >
+                      <div>
+                        {
+                          Object.keys(datasetTags)
+                            .filter(column => column !== 'trial_type')
+                            .map((property, i) => {
+                              return (
+                                <TextboxElement
+                                  key={`property-${property}-${i}`}
+                                  name="property-name"
+                                  className={"form-control input-sm" + (
+                                    currentAnnotation
+                                      ? ' form-edit'
+                                      : ''
+                                  )}
+                                  label={property}
+                                  value={
+                                    currentAnnotation
+                                      ? currentAnnotation.properties.some(prop => prop.PropertyName === property)
+                                        ? currentAnnotation.properties.find(prop => prop.PropertyName === property).PropertyValue
+                                        : 'n/a'
+                                      : eventProperties[property]
+                                  }
+                                  onUserInput={
+                                    (_, value) =>  setEventProperties({
+                                      ...eventProperties,
+                                      [property]: value,
+                                    })
+                                  }
+                                  required={false}
+                                  disabled={currentAnnotation !== null}
+                                  labelOuterClass={'flex-basis-40'}
+                                  labelClass={'event-label code-mimic word-break-word'}
+                                  elementClass={'additional-columns-outer'}
+                                  inputClass={'additional-columns-inner'}
+                                />
+                              );
+                            })
+                        }
+                      </div>
                     </div>
-                  </div>
-                </Panel>
+                  </Panel>
+                </>
               )
             }
           <div
@@ -1378,7 +1379,7 @@ const AnnotationForm = ({
                     }`;
 
                     return (
-                      <>
+                      <React.Fragment key={`select-${tag}-${tagIndex}`}>
                         <SelectElement
                           name={`new-tag-${tagIndex}`}
                           label=""
@@ -1398,6 +1399,7 @@ const AnnotationForm = ({
                           useOptionGroups={true}
                         />
                         <div
+                          key={`remove-tag-${tagIndex}`}
                           onClick={() => handleRemoveAddedTag(tagIndex)}
                           style={{
                             position: 'relative',
@@ -1413,7 +1415,7 @@ const AnnotationForm = ({
                         >
                           x
                         </div>
-                      </>
+                      </React.Fragment>
                     );
                   })
                 }

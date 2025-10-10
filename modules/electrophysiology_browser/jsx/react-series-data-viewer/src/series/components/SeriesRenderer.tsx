@@ -193,8 +193,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   updateActiveEpoch,
   setTimeSelection,
 }) => {
-  if (channels.length === 0) return null;
-
     const [
         numDisplayedChannels,
         setNumDisplayedChannels,
@@ -399,11 +397,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               toggleSingleMode();
             }
             break;
-          case 'KeyC':
-            confirmPanelClose(() => {
-              setRightPanel(null);
-            });
-            break;
+          // case 'KeyC':
+          //   confirmPanelClose(() => {
+          //     setRightPanel(null);
+          //   });
+          //   break;
           case 'KeyA':
             setRightPanel('annotationForm');
             break;
@@ -611,6 +609,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             return filteredEpochs.plotVisibility.includes(index) &&
               filteredEpochs.searchVisibility.includes(index) &&  (
               <Epoch
+                key={`epoch-${index}`}
                 {...epochs[index]}
                 parentHeight={viewerHeight}
                 color={
@@ -619,7 +618,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     ? '#7ef1de'
                     : '#a6d5f2'
                 }
-                key={`${index}`}
                 scales={scales}
                 opacity={0.7}
                 minWidth={minEpochWidth}
@@ -630,6 +628,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         }
         {timeSelection && activeEpoch === null &&
           <Epoch
+            key={`epoch-${activeEpoch}`}
             onset={Math.min(timeSelection[0], timeSelection[1])}
             duration={Math.abs(timeSelection[1] - timeSelection[0])}
             color={'#ff9585'}
@@ -645,6 +644,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         }
         {activeEpoch !== null &&
           <Epoch
+            key={`epoch-${activeEpoch}`}
             {...epochs[activeEpoch]}
             parentHeight={viewerHeight}
             scales={scales}
@@ -953,6 +953,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   const setProgressBarWidth = (width) => {
     setLoadingBarVisibility(false);
     const progressBarRef = document.querySelector<HTMLElement>('#chunk-progress-bar');
+    if (!progressBarRef) return;
     progressBarRef.style.transition = '';
     progressBarRef.style.width = width;
     flushWidth(progressBarRef);
@@ -961,7 +962,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   useEffect(() => {
     if (loadedChannels < limit) {
       const progressBarRef = document.querySelector<HTMLElement>('#chunk-progress-bar');
-      if (progressBarRef.style.width === '0%') {
+      if (progressBarRef && progressBarRef.style.width === '0%') {
         setProgressBarWidth('0%');
       } else if (!loadingBarVisibility) {
         setProgressBarWidth(`${100 * loadedChannels / limit}%`);
@@ -983,7 +984,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   return (
     <>
-      {channels.length > 0 ? (
+{/*      {channels.length > 0 ? (*/}
         <>
         <div
           className='row'
@@ -996,7 +997,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           <div id="right-panel-controls">
             <button
               className={'btn btn-primary'}
-              disabled={!chunksURL[0].includes('Face13') || rightPanel === 'annotationForm'}
+              disabled={!chunksURL || !chunksURL[0].includes('Face13') || rightPanel === 'annotationForm'}
               onClick={() => {
                 confirmPanelClose(() => {
                   setRightPanel('annotationForm')
@@ -1407,6 +1408,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       }, [bounds])}
                       showOverflow={showOverflow}
                       chunksURL={chunksURL}
+                      cssClass={''}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
@@ -1505,6 +1507,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         (rightPanel === 'hedEndorsement' && menuOption == 'HED_ENDORSEMENT')
                       return (
                         <li
+                          key={`event-tab-${i}`}
                           role="presentation"
                           className={'event-tab' + (isActiveMenuOption ? ' active' : '')}
                           onClick={async (e) => {
@@ -1546,6 +1549,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     })
                   }
                   <li
+                    key={'close-tab'}
                     role="presentation"
                     style={{
                       display: 'flex',
@@ -1598,11 +1602,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           }
         </div>
         </>
-      ) : (
+      { /*) : (
         <div style={{width: '100%', height: '100%'}}>
           <h4>Loading...</h4>
         </div>
-      )}
+      )}*/}
     </>
   );
 };

@@ -482,8 +482,10 @@ class Sessions extends \NDB_Page
             $physioFileID
         );
         $fileSummary['datasetTags'] = $datasetTags->getData();
+        $fileSummary['datasetTagEndorsements'] = $datasetTags->getHEDEndorsements();
 
-        $fileSummary['epochsURL'] = $db->pselectOne(
+
+      $fileSummary['epochsURL'] = $db->pselectOne(
             "SELECT FilePath
             FROM physiological_event_file
             WHERE PhysiologicalFileID=:physioFileID

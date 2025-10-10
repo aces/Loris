@@ -105,23 +105,25 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       }
     }
 
+    console.log('datasetTagEndorsements', datasetTagEndorsements);
+
     const formattedDatasetTags = {};
     Object.keys(datasetTags).forEach((column) => {
       formattedDatasetTags[column] = {};
       Object.keys(datasetTags[column]).forEach((value) => {
         formattedDatasetTags[column][value] = datasetTags[column][value].map((tag) => {
           const hedEndorsements = datasetTagEndorsements
-            .filter((edorsement) => {
-              return edorsement.HEDRelID === tag.ID;
-            }).map((edorsement) => {
+            .filter((endorsement) => {
+              return endorsement.HEDRelID === tag.ID;
+            }).map((endorsement) => {
               const endorserName =
-                `${edorsement.FirstName.substring(0, 1)}.${edorsement.LastName}`;
+                `${endorsement.FirstName.substring(0, 1)}.${endorsement.LastName}`;
               return {
                 EndorsedBy: endorserName,
-                EndorsedByID: edorsement.EndorsedByID,
-                EndorsementComment: edorsement.EndorsementComment,
-                EndorsementStatus: edorsement.EndorsementStatus,
-                EndorsementTime: edorsement.LastUpdate,
+                EndorsedByID: endorsement.EndorsedByID,
+                EndorsementComment: endorsement.EndorsementComment,
+                EndorsementStatus: endorsement.EndorsementStatus,
+                EndorsementTime: endorsement.LastUpdate,
               }
             });
           return {
@@ -256,7 +258,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
             trial_type: instance.TrialType,
             properties: extraColumns,
             hed: hedTags,
-            channels: instance.Channel === 'n/a'
+            channels: ['n/a', null].includes(instance.Channel)
               ? []
               : channelDelimiter.length > 0
                 ? instance.Channel.split(channelDelimiter)
@@ -384,6 +386,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
                       Object.keys(MenuOption).map((menuOption) => {
                         return (
                           <li
+                            key={menuOption}
                             role="presentation"
                             className={
                               this.state.activeMenuOption === menuOption

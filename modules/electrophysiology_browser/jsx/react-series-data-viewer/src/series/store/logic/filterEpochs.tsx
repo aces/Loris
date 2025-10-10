@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import * as Rx from 'rxjs/operators';
 import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
-import {setFilteredEpochs, setActiveEpoch} from '../state/dataset';
+import {setFilteredEpochs, setActiveEpoch, State} from '../state/dataset';
 import {MAX_RENDERED_EPOCHS} from '../../../vector';
 import {Epoch, HEDSchemaElement, HEDTag} from '../types';
 
@@ -68,7 +68,7 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
     ofType(TOGGLE_EPOCH),
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]) => {
+    Rx.map<[number, State], any>(([payload, state]) => {
       const {filteredEpochs, epochs} = fromState(state);
       const index = payload;
       let newFilteredEpochs;
@@ -107,7 +107,7 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
     ofType(UPDATE_ACTIVE_EPOCH),
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]) => {
+    Rx.map<[number, State], any>(([payload, state]) => {
       const {epochs} = fromState(state);
       const index = payload;
 
@@ -254,7 +254,7 @@ export const buildHEDString = (hedTags: HEDTag[], longFormHED: boolean = false) 
           ? groupTag.schemaElement.longName
           : groupTag.schemaElement.name;
       } else {
-        if (groupTag.HasPairing === '1') {
+        if (groupTag.HasPairing == '1') {
           if (groupTag.AdditionalMembers > 0 || subGroupString.length === 0) {
             let commaIndex = getNthMemberTrailingCommaIndex(
               tagString,
