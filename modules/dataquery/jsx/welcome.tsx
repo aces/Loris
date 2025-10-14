@@ -18,7 +18,7 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import {createRoot} from 'react-dom/client';
 
-const hiStrings = require('../locale/hi/LC_MESSAGES/dataquery.json');
+import hiStrings from '../locale/hi/LC_MESSAGES/dataquery.json';
 
 /**
  * Return the welcome tab for the DQT
@@ -491,19 +491,21 @@ function QueryList(props: {
       });
   }
   const starFilter = props.starQuery ?
-    <CheckboxElement name='onlystar' label={t('Starred Only', {ns: 'dataquery'})}
-      value={onlyStarred}
-      offset=''
-      onUserInput={
-        (name: string, value: boolean) => setOnlyStarred(value)
-      }/> : <span />;
+    <CheckboxElement name='onlystar' label={t('Starred Only',
+      {ns: 'dataquery'})}
+    value={onlyStarred}
+    offset=''
+    onUserInput={
+      (name: string, value: boolean) => setOnlyStarred(value)
+    }/> : <span />;
   const shareFilter = props.shareQuery ?
-    <CheckboxElement name='onlyshare' label={t('Shared Only', {ns: 'dataquery'})}
-      value={onlyShared}
-      offset=''
-      onUserInput={
-        (name: string, value: boolean) => setOnlyShared(value)
-      }/>
+    <CheckboxElement name='onlyshare' label={t('Shared Only',
+      {ns: 'dataquery'})}
+    value={onlyShared}
+    offset=''
+    onUserInput={
+      (name: string, value: boolean) => setOnlyShared(value)
+    }/>
     : <span />;
     // Use whether shareQuery prop is defined as proxy
     // to determine if this is a shared query or a recent
@@ -538,20 +540,22 @@ function QueryList(props: {
       }}>
         {starFilter}
         {shareFilter}
-        <CheckboxElement name='onlynamed' label={t('Named Only', {ns: 'dataquery'})}
-          value={onlyNamed}
-          offset=''
-          onUserInput={
-            (name: string, value: boolean) => setOnlyNamed(value)
-          }/>
+        <CheckboxElement name='onlynamed' label={t('Named Only',
+          {ns: 'dataquery'})}
+        value={onlyNamed}
+        offset=''
+        onUserInput={
+          (name: string, value: boolean) => setOnlyNamed(value)
+        }/>
         {duplicateFilter}
-        <CheckboxElement name='fullquery' label={t('Collapse queries', {ns: 'dataquery'})}
-          value={!fullQuery}
-          offset=''
-          onUserInput={
-            (name: string, value: boolean) =>
-              setFullQuery(!value)
-          }/>
+        <CheckboxElement name='fullquery' label={t('Collapse queries',
+          {ns: 'dataquery'})}
+        value={!fullQuery}
+        offset=''
+        onUserInput={
+          (name: string, value: boolean) =>
+            setFullQuery(!value)
+        }/>
       </div>
     </div>
     <Pager>
@@ -660,7 +664,7 @@ function Pager(props: {
       onChangePage={setPageNum}
       RowsPerPage={rowsPerPage}
       Active={pageNum}
-      //label={t('Page', {ns: 'dataquery'})}
+      // label={t('Page', {ns: 'dataquery'})}
     />
     {displayedRange}
     <PaginationLinks
@@ -668,7 +672,7 @@ function Pager(props: {
       onChangePage={setPageNum}
       RowsPerPage={rowsPerPage}
       Active={pageNum}
-      //label={t('Page', {ns: 'dataquery'})}
+      // label={t('Page', {ns: 'dataquery'})}
     />
   </div>;
 }
@@ -830,9 +834,11 @@ function SingleQueryDisplay(props: {
     let desc = query.Name
       ? <span>
         <b>{query.Name}</b>
-             &nbsp;<i>{t('(Run at {{runTime}})', {ns: 'dataquery', runTime: query.RunTime})}</i>
+             &nbsp;<i>{t('(Run at {{runTime}})', {ns: 'dataquery',
+          runTime: query.RunTime})}</i>
       </span>
-      : <i>{t('You ran this query at {{runTime}}', {ns: 'dataquery', runTime: query.RunTime})}</i>;
+      : <i>{t('You ran this query at {{runTime}}', {ns: 'dataquery',
+        runTime: query.RunTime})}</i>;
     if (!props.includeRuns) {
       desc = query.Name
         ? <span>
@@ -853,9 +859,11 @@ function SingleQueryDisplay(props: {
     const desc = query.Name
       ? <span>
         <b>{query.Name}</b>
-                &nbsp;<i>{t('(Shared by {{sharedBy}})', {ns: 'dataquery', sharedBy: query.SharedBy.join(', ')})}</i>
+                &nbsp;<i>{t('(Shared by {{sharedBy}})', {ns: 'dataquery',
+          sharedBy: query.SharedBy.join(', ')})}</i>
       </span>
-      : <i>{t('Query shared by {{sharedBy}}', {ns: 'dataquery', sharedBy: query.SharedBy.join(', ')})}</i>;
+      : <i>{t('Query shared by {{sharedBy}}', {ns: 'dataquery',
+        sharedBy: query.SharedBy.join(', ')})}</i>;
     msg = <div>{desc}
              &nbsp;{loadIcon}{pinIcon}
     </div>;
@@ -1075,21 +1083,41 @@ function IntroductionMessage(props: {
   const {t} = useTranslation('dataquery');
   const studyQueriesParagraph = props.hasStudyQueries ? (
     <p>
-      {t('Above, there is also a Study Queries panel. This are a special type of shared queries that have been pinned by a study administer to always display at the top of this page.', {ns: 'dataquery'})}
+      {t('Above, there is also a Study Queries panel. This are a'
+        +' special type of shared queries that have been pinned by a study'
+        +' administer to always display at the top of this page.',
+      {ns: 'dataquery'})}
     </p>
   ) : '';
   return (
     <div>
-      <p>{t('The data query tool allows you to query data within LORIS. There are three steps to defining a query:', {ns: 'dataquery'})}</p>
+      <p>{t('The data query tool allows you to query data within LORIS. '
+        +'There are three steps to defining a query:', {ns: 'dataquery'})}</p>
       <ol>
-        <li>{t("First, you must select the fields that you're interested in on the Define Fields page.", {ns: 'dataquery'})}</li>
-        <li>{t("Next, you can optionally define filters on the Define Filters page to restrict the population that is returned.", {ns: 'dataquery'})}</li>
-        <li>{t("Finally, you view your query results on the View Data page", {ns: 'dataquery'})}</li>
+        <li>{t('First, you must select the fields that you\'re interested in'
+          +' on the Define Fields page.', {ns: 'dataquery'})}</li>
+        <li>{t('Next, you can optionally define filters on the Define '
+          +'Filters page to restrict the population that is returned.',
+        {ns: 'dataquery'})}</li>
+        <li>{t('Finally, you view your query results on the View Data page',
+          {ns: 'dataquery'})}</li>
       </ol>
-      <p>{t('The Next Steps on the bottom right of your screen always the context-sensitive next steps that you can do to build your query.', {ns: 'dataquery'})}</p>
-      <p>{t("Your recently run queries will be displayed in the Recent Queries panel below. Instead of building a new query, you can reload a query that you've recently run by clicking on the icon next to the query.", {ns: 'dataquery'})}</p>
-      <p>{t("Queries can be shared with others by clicking the icon. This will cause the query to be shared with all users who have access to the fields used by the query. It will display in a Shared Queries panel below the Recent Queries.", {ns: 'dataquery'})}</p>
-      <p>{t("You may also give a query a name at any time by clicking the icon. This makes it easier to find queries you care about by giving them an easier to remember name that can be used for filtering. When you share a query, the name will be shared along with it.", {ns: 'dataquery'})}</p>
+      <p>{t('The Next Steps on the bottom right of your screen always the '
+        +'context-sensitive next steps that you can do to build your query.',
+      {ns: 'dataquery'})}</p>
+      <p>{t('Your recently run queries will be displayed in the Recent '
+        +'Queries panel below. Instead of building a new query, you can '
+        +'reload a query that you\'ve recently run by clicking on the icon'
+        +' next to the query.', {ns: 'dataquery'})}</p>
+      <p>{t('Queries can be shared with others by clicking the icon. This will'
+        +' cause the query to be shared with all users who have access to the '
+        +'fields used by the query. It will display in a Shared Queries panel '
+        +'below the Recent Queries.', {ns: 'dataquery'})}</p>
+      <p>{t('You may also give a query a name at any time by clicking the icon.'
+      +'This makes it easier to find queries you care about by giving them an'
+        +' easier to remember name that can be used for filtering. When you '
+        +'share a query, the name will be shared along with it.',
+      {ns: 'dataquery'})}</p>
       {studyQueriesParagraph}
       <div style={{
         display: 'flex',
@@ -1107,14 +1135,14 @@ function IntroductionMessage(props: {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'dataquery', hiStrings);
-  const TranslatedWelcome = withTranslation(['dataquery','loris'])(Welcome);
+  const TranslatedWelcome = withTranslation(['dataquery', 'loris'])(Welcome);
 
   const container = document.getElementById('lorisworkspace');
   if (container) {
     const root = createRoot(container);
     root.render(<TranslatedWelcome />);
   } else {
-    console.error("Element with id 'lorisworkspace' not found in DOM");
+    console.error('Element with id \'lorisworkspace\' not found in DOM');
   }
 });
 

@@ -42,7 +42,8 @@ function AdminQueryModal(props: {
       if (queryName.trim() == '') {
         swal.fire({
           type: 'error',
-          text: t('Must provide a query name to pin query as.', {ns: 'dataquery'}),
+          text: t('Must provide a query name to pin query as.',
+            {ns: 'dataquery'}),
         });
         reject();
         return;
@@ -50,7 +51,8 @@ function AdminQueryModal(props: {
       if (!topQuery && !dashboardQuery && !loginQuery) {
         swal.fire({
           type: 'error',
-          text: t('Must pin as study query, to dashboard, or to the login page.', {ns: 'dataquery'}),
+          text: t('Must pin as study query, to dashboard, or to the '
+            +'login page.', {ns: 'dataquery'}),
         });
         reject();
         return;

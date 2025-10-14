@@ -40,6 +40,7 @@ function alternateColour(c: string): string {
  * @param {object} props.mapModuleName - Function to map the backend module name to a user friendly name
  * @param {object} props.mapCategoryName - Function to map the backend category name to a user friendly name
  * @param {object} props.fulldictionary - The dictionary of all modules that have been loaded
+ * @param props.setDeleteItemIndex
  * @returns {React.ReactElement} - the react element
  */
 function QueryTree(props: {
@@ -206,7 +207,8 @@ function QueryTree(props: {
           marginLeft: 10,
         }}></i>
       <div style={{alignSelf: 'center'}}>
-        {t('Group only has 1 item. A group with only 1 item is equivalent to not having the group.', {ns: 'dataquery'})}
+        {t('Group only has 1 item. A group with only 1 item is equivalent'
+          +' to not having the group.', {ns: 'dataquery'})}
       </div>
     </div>;
     break;
@@ -269,7 +271,8 @@ function QueryTree(props: {
           <div style={{...props.buttonGroupStyle, width: '100%'}}>
             <div style={{margin: 5}}>
               <ButtonElement
-                label={t('Add "{{operator}}" condition to group', {ns: 'dataquery', operator: props.items.operator})}
+                label={t('Add "{{operator}}" condition to group', {ns: 'dataquery',
+                  operator: props.items.operator})}
                 onUserInput={newItemClick}
                 style={props.buttonStyle}
                 columnSize='col-sm-12'
@@ -277,7 +280,8 @@ function QueryTree(props: {
             </div>
             <div style={{margin: 5}}>
               <ButtonElement
-                label={t('New "{{antiOperator}}" subgroup', {ns: 'dataquery', antiOperator})}
+                label={t('New "{{antiOperator}}" subgroup', {ns: 'dataquery',
+                  antiOperator})}
                 onUserInput={newGroupClick}
                 style={props.buttonStyle}
                 columnSize='col-sm-12'
