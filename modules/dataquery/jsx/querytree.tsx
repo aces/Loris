@@ -3,8 +3,8 @@ import {QueryGroup, QueryTerm} from './querydef';
 import {CriteriaTerm} from './criteriaterm';
 import {ButtonElement} from 'jsx/Form';
 import {FullDictionary} from './types';
-import {useEffect} from 'react'; // already present
-import {useTranslation} from 'react-i18next'; // <-- ADD THIS
+import {useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Alternate background colour for a QueryTree
@@ -40,7 +40,7 @@ function alternateColour(c: string): string {
  * @param {object} props.mapModuleName - Function to map the backend module name to a user friendly name
  * @param {object} props.mapCategoryName - Function to map the backend category name to a user friendly name
  * @param {object} props.fulldictionary - The dictionary of all modules that have been loaded
- * @param props.setDeleteItemIndex
+ * @param {function} props.setDeleteItemIndex - Callback to set or clear the index of the item marked for deletion
  * @returns {React.ReactElement} - the react element
  */
 function QueryTree(props: {
@@ -63,7 +63,7 @@ function QueryTree(props: {
     mapCategoryName: (module: string, category: string) => string,
 }) {
   const [deleteItemIndex, setDeleteItemIndex] = useState<number|null>(null);
-  const {t} = useTranslation('dataquery'); // <-- ADD THIS
+  const {t} = useTranslation('dataquery');
 
   useEffect(() => {
     // Reset strikethrough when group is empty or changed
@@ -271,8 +271,9 @@ function QueryTree(props: {
           <div style={{...props.buttonGroupStyle, width: '100%'}}>
             <div style={{margin: 5}}>
               <ButtonElement
-                label={t('Add "{{operator}}" condition to group', {ns: 'dataquery',
-                  operator: props.items.operator})}
+                label={t('Add "{{operator}}" condition to group',
+                  {ns: 'dataquery',
+                    operator: props.items.operator})}
                 onUserInput={newItemClick}
                 style={props.buttonStyle}
                 columnSize='col-sm-12'

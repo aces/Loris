@@ -35,8 +35,10 @@ function FieldDisplay(props: {
       {description}
     </div>
     <div style={{fontSize: '0.8em', color: '#aaa'}}>
-      {t('Category', {ns: 'dataquery'})}: {props.mapCategoryName(props.module, props.category)}
-      &nbsp;({t('Module', {ns: 'dataquery'})}: {props.mapModuleName(props.module)})
+      {t('Category', {ns: 'dataquery'})}:
+      {props.mapCategoryName(props.module, props.category)}
+      &nbsp;({t('Module', {ns: 'dataquery'})}:
+      {props.mapModuleName(props.module)})
     </div>
   </div>
   );
