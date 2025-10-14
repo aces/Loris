@@ -395,3 +395,60 @@ msgstr "फ़ील्ड्स"
 
 msgid "Filters"
 msgstr "फ़िल्टर्स"
+
+msgid "Continue to Define Fields"
+msgstr "फ़ील्ड परिभाषित करना जारी रखें"
+
+msgid "Above, there is also a Study Queries panel. This are a special type of shared queries that have been pinned by a study administer to always display at the top of this page."
+msgstr "ऊपर एक अध्ययन क्वेरी पैनल भी है। यह साझा क्वेरी का एक विशेष प्रकार है जिसे अध्ययन प्रशासक द्वारा इस पृष्ठ के शीर्ष पर हमेशा प्रदर्शित होने के लिए पिन किया गया है।"
+
+msgid "The data query tool allows you to query data within LORIS. There are three steps to defining a query:"
+msgstr "डेटा क्वेरी टूल आपको LORIS के भीतर डेटा क्वेरी करने की अनुमति देता है। क्वेरी को परिभाषित करने के तीन चरण हैं:"
+
+msgid "First, you must select the fields that you're interested in on the Define Fields page."
+msgstr "पहले, आपको 'फ़ील्ड परिभाषित करें' पृष्ठ पर वे फ़ील्ड चुननी होंगी जिनमें आपकी रुचि है।"
+
+msgid "Next, you can optionally define filters on the Define Filters page to restrict the population that is returned."
+msgstr "इसके बाद, आप वैकल्पिक रूप से 'फ़िल्टर परिभाषित करें' पृष्ठ पर फ़िल्टर परिभाषित कर सकते हैं ताकि लौटाई गई जनसंख्या को सीमित किया जा सके।"
+
+msgid "Finally, you view your query results on the View Data page"
+msgstr "अंत में, आप 'डेटा देखें' पृष्ठ पर अपनी क्वेरी के परिणाम देख सकते हैं।"
+
+msgid "The Next Steps on the bottom right of your screen always the context-sensitive next steps that you can do to build your query."
+msgstr "आपकी स्क्रीन के नीचे दाईं ओर स्थित 'अगले चरण' हमेशा संदर्भ-संवेदनशील चरण दिखाते हैं जो आप अपनी क्वेरी बनाने के लिए कर सकते हैं।"
+
+msgid "Your recently run queries will be displayed in the Recent Queries panel below. Instead of building a new query, you can reload a query that you've recently run by clicking on the icon next to the query."
+msgstr "आपकी हाल ही में चलाई गई क्वेरी नीचे 'हाल की क्वेरी' पैनल में दिखाई देंगी। नई क्वेरी बनाने के बजाय, आप क्वेरी के बगल में स्थित आइकन पर क्लिक करके हाल ही में चलाई गई क्वेरी को फिर से लोड कर सकते हैं।"
+
+msgid "Queries can be shared with others by clicking the icon. This will cause the query to be shared with all users who have access to the fields used by the query. It will display in a Shared Queries panel below the Recent Queries."
+msgstr "क्वेरी को आइकन पर क्लिक करके दूसरों के साथ साझा किया जा सकता है। इससे क्वेरी उन सभी उपयोगकर्ताओं के साथ साझा हो जाएगी जिन्हें उस क्वेरी में उपयोग किए गए फ़ील्ड तक पहुँच है। यह 'हाल की क्वेरी' के नीचे 'साझा क्वेरी' पैनल में दिखाई देगी।"
+
+msgid "You may also give a query a name at any time by clicking the icon. This makes it easier to find queries you care about by giving them an easier to remember name that can be used for filtering. When you share a query, the name will be shared along with it."
+msgstr "आप किसी भी समय आइकन पर क्लिक करके क्वेरी को एक नाम भी दे सकते हैं। इससे उन क्वेरियों को ढूंढना आसान हो जाता है जिनकी आपको परवाह है, क्योंकि आप उन्हें याद रखने में आसान नाम दे सकते हैं जिसका उपयोग फ़िल्टर करने के लिए किया जा सकता है। जब आप क्वेरी साझा करते हैं, तो उसका नाम भी उसके साथ साझा किया जाएगा।"
+
+msgid "Selected Fields"
+msgstr "चयनित फ़ील्ड"
+
+msgid "Available Fields"
+msgstr "उपलब्ध फ़ील्ड"
+
+msgid "Add all"
+msgstr "सभी जोड़ें"
+
+msgid "Remove all"
+msgstr "सभी हटाएँ"
+
+msgid "Filter within category"
+msgstr "श्रेणी के भीतर फ़िल्टर करें"
+
+msgid "Default Visits"
+msgstr "डिफ़ॉल्ट विज़िट"
+
+msgid "Sync with selected fields"
+msgstr "चयनित फ़ील्ड के साथ समन्वय करें"
+
+msgid "Select a category"
+msgstr "एक फ़ील्ड चुनें"
+
+msgid "Invalid response"
+msgstr "अमान्य उत्तर"
