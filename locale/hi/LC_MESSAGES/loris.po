@@ -26,19 +26,19 @@ msgid "DEV"
 msgstr "डेव"
 
 msgid "Affiliations"
-msgstr "संबद्धता"
+msgstr "अफिलिएशन्स"
 
 msgid "Site Affiliation"
-msgstr "साइट संबद्धता"
+msgstr "साइट अफिलिएशन"
 
 msgid "Site Affiliations"
-msgstr "साइट संबद्धताएँ"
+msgstr "साइट अफिलिएशन्स"
 
 msgid "Project Affiliation"
-msgstr "परियोजना संबद्धता"
+msgstr "प्रोजेक्ट अफिलिएशन"
 
 msgid "Project Affiliations"
-msgstr "परियोजना संबद्धताएँ"
+msgstr "प्रोजेक्ट अफिलिएशन्स"
 
 msgid "Log Out"
 msgstr "लॉग आउट"
@@ -57,7 +57,6 @@ msgstr "मेरी पसंद"
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr "प्रशासन"
-
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -111,7 +110,7 @@ msgstr "रिपोर्ट्स"
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr "समय बिंदु"
+msgstr "टाइमपॉइंट"
 
 # Common select option labels
 msgid "Yes"
@@ -119,6 +118,19 @@ msgstr "हाँ"
 
 msgid "No"
 msgstr "नहीं"
+
+# Filters
+msgid "Selection Filter"
+msgstr "सेलेक्शन फ़िल्टर"
+
+msgid "Show Filters"
+msgstr "फ़िल्टर दिखाएँ"
+
+msgid "Hide Filters"
+msgstr "फ़िल्टर छुपाएँ"
+
+msgid "Clear Filters"
+msgstr "फ़िल्टर साफ़ करें"
 
 msgid "Create"
 msgstr "बनाएँ"
@@ -138,7 +150,7 @@ msgid "DCCID"
 msgstr "डीसीसीआईडी"
 
 msgid "Visit Label"
-msgstr "दौरे का लेबल"
+msgstr "भेंट लेबल"
 
 msgid "Site"
 msgstr "साइट"
@@ -213,8 +225,8 @@ msgstr "{{totalCount}} में से {{pageCount}} पंक्तिया�
 msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
-msgid "Download Data as CSV"
-msgstr "डेटा को CSV के रूप में डाउनलोड करें"
+msgid "Download Table as CSV"
+msgstr "तालिका को CSV के रूप में डाउनलोड करें"
 
 # Dashboard panel strings
 msgid "Views"

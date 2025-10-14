@@ -206,7 +206,7 @@ msgid "Language"
 msgstr ""
 
 # Data table strings
-msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgid "{{rowLength}} rows displayed of {{filteredCount}}."
 msgstr ""
 
 msgid "Maximum rows per page:"
@@ -265,3 +265,4 @@ msgstr ""
 
 msgid "In Progress"
 msgstr ""
+
