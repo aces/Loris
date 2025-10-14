@@ -83,7 +83,9 @@ function ImportCSVModal(props: {
         swal.fire({
           type: 'error',
           title: t('Invalid CSV', {ns: 'dataquery'}),
-          text: t('Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}.', {ns: 'dataquery', expectedLength, gotLength: value.data[i].length, line: i+1}),
+          text: t('Expected {{expectedLength}} columns in CSV. '
+            +'Got {{gotLength}} on line {{line}}.', {ns: 'dataquery',
+            expectedLength, gotLength: value.data[i].length, line: i+1}),
         });
         setCSVFile(null);
         return;
@@ -93,7 +95,8 @@ function ImportCSVModal(props: {
           swal.fire({
             type: 'error',
             title: t('Invalid DCC ID', {ns: 'dataquery'}),
-            text: t('Invalid DCC ID ({{id}}) on line {{line}}.', {ns: 'dataquery', id: value.data[i][0], line: i+1}),
+            text: t('Invalid DCC ID ({{id}}) on line {{line}}.',
+              {ns: 'dataquery', id: value.data[i][0], line: i+1}),
           });
           setCSVFile(null);
           return;
@@ -155,7 +158,8 @@ function ImportCSVModal(props: {
     <fieldset>
       <div>
         <dl>
-          <dt style={dtstyle}>{t('CSV containing list of', {ns: 'dataquery'})}</dt>
+          <dt style={dtstyle}>{t('CSV containing list of',
+            {ns: 'dataquery'})}</dt>
           <dd>
             <input type="radio" name="csvtype"
               checked={csvType == 'candidate'}
@@ -167,7 +171,8 @@ function ImportCSVModal(props: {
               onChange={() => setCSVType('session')}
             /> {t('Sessions', {ns: 'dataquery'})}
           </dd>
-          <dt style={dtstyle}>{t('Candidate identifier type', {ns: 'dataquery'})}</dt>
+          <dt style={dtstyle}>{t('Candidate identifier type',
+            {ns: 'dataquery'})}</dt>
           <dd><input type="radio" name="candidtype"
             checked={idType == 'CandID'}
             onChange={() => setIdType('CandID')}

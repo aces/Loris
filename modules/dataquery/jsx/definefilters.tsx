@@ -120,7 +120,8 @@ function DefineFilters(props: {
   const mapModuleName = props.mapModuleName;
   const mapCategoryName = props.mapCategoryName;
 
-  const advancedLabel = showAdvanced ? t('Hide Advanced', {ns: 'dataquery'}) : t('Show Advanced', {ns: 'dataquery'});
+  const advancedLabel = showAdvanced ? t('Hide Advanced',
+    {ns: 'dataquery'}) : t('Show Advanced', {ns: 'dataquery'});
   let advancedButtons;
   const toggleAdvancedButton = (
     <div>
@@ -140,7 +141,11 @@ function DefineFilters(props: {
     if (showAdvanced) {
       advancedButtons = (
         <div>
-          <p>{t('The "nested groups" options are advanced options for queries that do not have any specific condition at the base of the query. Use Add nested "or" condition groups if you need to build a query of the form. (a or b) and (c or d) [or (e and f)..]', {ns: 'dataquery'})}</p>
+          <p>{t('The "nested groups" options are advanced options for '
+            +'queries that do not have any specific condition at the base'
+            +' of the query. Use Add nested "or" condition groups if you'
+            +' need to build a query of the form. (a or b) and (c or d)'
+            +' [or (e and f)..]', {ns: 'dataquery'})}</p>
           <div style={bGroupStyle}>
             <ButtonElement
               label={t('Add nested "or" condition groups', {ns: 'dataquery'})}
@@ -151,7 +156,9 @@ function DefineFilters(props: {
               }}
             />
           </div>
-          <p>{t('Use Add nested "and" condition groups if you need to build a query of the form (a and b) or (c and d) [or (e and f)..]', {ns: 'dataquery'})}</p>
+          <p>{t('Use Add nested "and" condition groups if you need to '
+            +'build a query of the form (a and b) or (c and d) '
+            +'[or (e and f)..]', {ns: 'dataquery'})}</p>
           <div style={bGroupStyle}>
             <ButtonElement
               label={t('Add nested "and" condition groups', {ns: 'dataquery'})}
@@ -171,10 +178,15 @@ function DefineFilters(props: {
       <div style={{paddingLeft: '2em',
         paddingRight: '2em'}}>
         <p>{t('Currently querying for ALL candidates.', {ns: 'dataquery'})}</p>
-        <p>{t('You can add conditions by clicking one of the buttons below.', {ns: 'dataquery'})}</p>
-        <p>{t('Click Add Condition to add one or more conditions to your filters (ie. "Date Of Birth < 2015-02-15"). This is most likely where you want to start your filters.', {ns: 'dataquery'})}</p>
-        <p>{t('You can also import a population from a CSV by clicking the Import from CSV button.', {ns: 'dataquery'})}</p>
-        <p>{t('The advanced options are for queries that do not have a condition to add at the base of the query.', {ns: 'dataquery'})}</p>
+        <p>{t('You can add conditions by clicking one of the buttons below.',
+          {ns: 'dataquery'})}</p>
+        <p>{t('Click Add Condition to add one or more conditions to your'
+          +' filters (ie. "Date Of Birth < 2015-02-15"). This is most likely'
+          +' where you want to start your filters.', {ns: 'dataquery'})}</p>
+        <p>{t('You can also import a population from a CSV by clicking the'
+          +' Import from CSV button.', {ns: 'dataquery'})}</p>
+        <p>{t('The advanced options are for queries that do not have a '
+          +'condition to add at the base of the query.', {ns: 'dataquery'})}</p>
       </div>
       <form>
         <fieldset>
@@ -218,7 +230,11 @@ function DefineFilters(props: {
       advancedButtons = (
         <div>
           <div style={bGroupStyle}>
-            <p>{t('Use New "and" subgroup if the rest of the query you need to write is a subgroup consisting of "and" conditions. ie your query is of the form: (your condition above) or (c and d [and e and f..])', {ns: 'dataquery'})}</p>
+            <p>{t('Use New "and" subgroup if the rest of the query you'
+              +' need to write is a subgroup consisting of "and" '
+              +'conditions. ie your query is of the form: (your condition'
+              +' above) or (c and d [and e and f..])',
+            {ns: 'dataquery'})}</p>
             <ButtonElement
               label={t('New "and" subgroup', {ns: 'dataquery'})}
               onUserInput={(e: React.MouseEvent) => {
@@ -226,7 +242,11 @@ function DefineFilters(props: {
                 props.query.operator = 'or';
                 props.addNewQueryGroup(props.query);
               }} />
-            <p>{t('Use New "or" subgroup if the rest of the query you need to write is a subgroup consisting of "or" conditions. ie your query is of the form: (your condition above) and (c or d [or e or f..])', {ns: 'dataquery'})}</p>
+            <p>{t('Use New "or" subgroup if the rest of the query you '
+              +'need to write is a subgroup consisting of "or" '
+              +'conditions. ie your query is of the form: (your '
+              +'condition above) and (c or d [or e or f..])',
+            {ns: 'dataquery'})}</p>
             <ButtonElement
               label={t('New "or" subgroup', {ns: 'dataquery'})}
               onUserInput={(e: React.MouseEvent) => {
@@ -240,7 +260,8 @@ function DefineFilters(props: {
     }
     // buttons for 1. Add "and" condition 2. Add "or" condition
     displayquery = (<div>
-      <p>{t('Currently querying for any candidates with:', {ns: 'dataquery'})}</p>
+      <p>{t('Currently querying for any candidates with:',
+        {ns: 'dataquery'})}</p>
 
       <form>
         <fieldset>
@@ -300,7 +321,8 @@ function DefineFilters(props: {
     // Add buttons are delegated to the QueryTree rendering so they
     // can be placed at the right level
     displayquery = <div>
-      <p>{t('Currently querying for any candidates with:', {ns: 'dataquery'})}</p>
+      <p>{t('Currently querying for any candidates with:',
+        {ns: 'dataquery'})}</p>
       <form>
         <fieldset>
           <QueryTree
@@ -352,7 +374,8 @@ function DefineFilters(props: {
 
   const matchCount = queryMatches === null
     ? <div>&nbsp;</div> // So the header doesn't jump around
-    : <div>{t('Query matches <b>{{count}}</b> candidates', {ns: 'dataquery', count: queryMatches})}</div>;
+    : <div>{t('Query matches <b>{{count}}</b> candidates',
+      {ns: 'dataquery', count: queryMatches})}</div>;
   return (<div>
     {modal}
     {csvModalHTML}
@@ -365,7 +388,10 @@ function DefineFilters(props: {
       {matchCount}
     </div>
     <InfoPanel>
-      {t('Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query.', {ns: 'dataquery'})}
+      {t('Note that only candidates which you have permission to '
+        +'access in LORIS are included in results. Number of results'
+        +' may vary from other users running the same query.',
+      {ns: 'dataquery'})}
     </InfoPanel>
     {displayquery}
   </div>
