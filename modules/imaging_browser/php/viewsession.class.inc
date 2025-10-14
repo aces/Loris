@@ -447,6 +447,7 @@ class ViewSession extends \NDB_Form
             return $file->getParameter($parameter);
         }
     }
+
     /**
      * Gets the date according to the type
      *
@@ -476,6 +477,7 @@ class ViewSession extends \NDB_Form
             return "";
         }
     }
+
     /**
      * Updates QCStatus in the form
      *
@@ -687,6 +689,7 @@ class ViewSession extends \NDB_Form
             }
         }
     }
+
     /**
      * Updates selections
      *
@@ -752,6 +755,7 @@ class ViewSession extends \NDB_Form
             }
         }
     }
+
     /**
      * Updates status
      *
@@ -910,6 +914,7 @@ class ViewSession extends \NDB_Form
         $html = $smarty->fetch("table_session_header.tpl");
         return $html;
     }
+
     /**
      * Populates data for the template
      *
@@ -975,6 +980,7 @@ class ViewSession extends \NDB_Form
         // Cache the data
         return $subjectData;
     }
+
     /**
      * Gets control panel
      *
@@ -987,6 +993,7 @@ class ViewSession extends \NDB_Form
         );
         return $controlPanel->display();
     }
+
     /**
      * Get js Dependencies
      *
@@ -1042,5 +1049,4 @@ class ViewSession extends \NDB_Form
             )
         );
     }
-
 }

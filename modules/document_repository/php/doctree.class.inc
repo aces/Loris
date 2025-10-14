@@ -5,7 +5,7 @@
  * Get method handles getting the parent's categroies and
  * the children's categories of one category.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository
@@ -22,7 +22,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Get method handles getting the parent's categroies and
  * the children's categories of one category.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository
@@ -75,6 +75,7 @@ class DocTree extends \NDB_Page
                 );
         }
     }
+
     /**
      * This method will return an array of document_repository_categories
      *
@@ -89,6 +90,7 @@ class DocTree extends \NDB_Page
             )
         );
     }
+
     /**
      * This method will return an array of all children's categories
      *
@@ -138,6 +140,7 @@ class DocTree extends \NDB_Page
         }
         return $arr;
     }
+
     /**
      * This method will return a json of the parent's categroies and
      * the children's categories of one category.
@@ -182,5 +185,4 @@ class DocTree extends \NDB_Page
 
         return $result;
     }
-
 }

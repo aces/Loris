@@ -29,3 +29,7 @@ msgstr ""
 
 msgid "New and pending imaging sessions"
 msgstr ""
+
+msgid "Imaging Session"
+msgid_plural "Imaging Sessions"
+msgstr[0] ""

@@ -5,7 +5,7 @@
  * function to ensure that no Identifier of that type exists if the value is
  * not validated.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category StudyEntities
  * @package  LORIS

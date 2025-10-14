@@ -4,7 +4,7 @@
  * This file contains a class defining a well-formed (i.e. sufficiently complex)
  * password for LORIS.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main

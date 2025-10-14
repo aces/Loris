@@ -11,7 +11,7 @@
  *
  * Used by MRI Browser and (old) Data Query GUI.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Loris
  * @package  MRI

@@ -64,6 +64,9 @@ msgstr "प्रशासन"
 #: modules/datadict/php/module.class.inc:49
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr "डेटा शब्दकोश"
+
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
@@ -117,6 +120,16 @@ msgstr "हाँ"
 msgid "No"
 msgstr "नहीं"
 
+msgid "Create"
+msgstr "बनाएँ"
+
+# Common swal labels
+msgid "Cancel"
+msgstr "रद्द करें"
+
+msgid "Success!"
+msgstr "सफलता!"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
@@ -130,11 +143,20 @@ msgstr "दौरे का लेबल"
 msgid "Site"
 msgstr "साइट"
 
+msgid "Module"
+msgstr "मॉड्यूल"
+
 msgid "Project"
 msgstr "परियोजना"
 
 msgid "Cohort"
 msgstr "समूह"
+
+msgid "Cohorts"
+msgstr "समूह"
+
+msgid "Session"
+msgstr "सत्र"
 
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
@@ -154,8 +176,17 @@ msgstr "प्रतिक्रिया"
 msgid "Scans"
 msgstr "स्कैन"
 
+msgid "Stage"
+msgstr "चरण"
+
+msgid "Sent To DCC"
+msgstr "डीसीसी को भेजा गया"
+
 msgid "Date of Birth"
 msgstr "जन्म तिथि"
+
+msgid "Visits"
+msgstr "भ्रमण"
 
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
@@ -172,6 +203,9 @@ msgstr "उन्नत फ़िल्टर दिखाएँ"
 msgid "Hide Advanced Filters"
 msgstr "उन्नत फ़िल्टर छुपाएँ"
 
+msgid "Language"
+msgstr "भाषा"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
@@ -179,20 +213,31 @@ msgstr "{{totalCount}} में से {{pageCount}} पंक्तिया�
 msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
-msgid "Download Table as CSV"
+msgid "Download Data as CSV"
 msgstr "तालिका को CSV के रूप में डाउनलोड करें"
 
+# Dashboard panel strings
+msgid "Views"
+msgstr "दृश्य"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "नया"
+
+msgid "Updated"
+msgstr "अद्यतन"
+
+msgid "Uploaded"
+msgstr "अपलोड किया गया"
+
 msgid "Are You Sure?"
-msgstr "क्या आप निश्चित हैं?"
+msgstr "क्या आप सुनिश्चित हैं?"
 
 msgid "Leaving the form will result in the loss of any information entered."
-msgstr "फॉर्म छोड़ने से दर्ज की गई कोई भी जानकारी खो जाएगी।"
+msgstr "फ़ॉर्म छोड़ने से दर्ज की गई सभी जानकारी खो जाएगी।"
 
 msgid "Proceed"
 msgstr "आगे बढ़ें"
-
-msgid "Cancel"
-msgstr "रद्द करें"
 
 msgid "Save"
 msgstr "सहेजें"
@@ -200,5 +245,39 @@ msgstr "सहेजें"
 msgid "Saving"
 msgstr "सहेजा जा रहा है"
 
-msgid "Success!"
-msgstr "सफलता!"
+msgid "Total"
+msgstr "कुल"
+
+msgid "Error!"
+msgstr "त्रुटि!"
+
+# Common timepoint and visit terms
+msgid "Not Started"
+msgstr "शुरू नहीं हुआ"
+
+msgid "Screening"
+msgstr "जांच"
+
+msgid "Visit"
+msgstr "भेंट"
+
+msgid "Approval"
+msgstr "स्वीकृति"
+
+msgid "Subject"
+msgstr "विषय"
+
+msgid "Recycling Bin"
+msgstr "रिसाइक्लिंग बिन"
+
+msgid "Pass"
+msgstr "उत्तीर्ण"
+
+msgid "Failure"
+msgstr "असफलता"
+
+msgid "Withdrawal"
+msgstr "वापसी"
+
+msgid "In Progress"
+msgstr "प्रगति पर"

@@ -7,10 +7,12 @@ import {fetchData} from './Fetch';
 import Modal from 'Modal';
 import Loader from 'Loader';
 import {SelectElement} from 'jsx/Form';
+import {useTranslation} from 'react-i18next';
 
 import '../css/WidgetIndex.css';
 
 import {setupCharts} from './widgets/helpers/chartBuilder';
+import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
 
 /**
  * WidgetIndex - the main window.
@@ -22,6 +24,10 @@ const WidgetIndex = (props) => {
   const [recruitmentData, setRecruitmentData] = useState({});
   const [studyProgressionData, setStudyProgressionData] = useState({});
   const [modalChart, setModalChart] = useState(null);
+  const {t, i18n} = useTranslation();
+  useEffect( () => {
+    i18n.addResourceBundle('ja', 'statistics', jaStrings);
+  }, []);
 
   // used by recruitment.js and studyprogression.js to display each chart.
   const showChart = (section, chartID, chartDetails, setChartDetails) => {
@@ -62,7 +68,8 @@ const WidgetIndex = (props) => {
                           chartType: options[value],
                         },
                       },
-                    }
+                    },
+                    t('Total', {ns: 'loris'}),
                   );
                 }}
               />
@@ -79,7 +86,8 @@ const WidgetIndex = (props) => {
                 {
                   [section]:
                   {[chartID]: chartDetails[section][chartID]},
-                }
+                },
+                t('Total', {ns: 'loris'}),
               );
             }}
             id ={chartID}
@@ -91,11 +99,11 @@ const WidgetIndex = (props) => {
     );
   };
 
-  const downloadAsCSV = (data, filename, dataType) => {
+  const downloadAsCSV = (data, filename, dataType, labelsLabel) => {
     const convertBarToCSV = (data) => {
       const csvRows = [];
       // Adding headers row
-      const headers = ['Labels', ...Object.keys(data.datasets)];
+      const headers = [labelsLabel, ...Object.keys(data.datasets)];
       csvRows.push(headers.join(','));
       // Adding data rows
       const maxDatasetLength = Math.max(
@@ -132,7 +140,7 @@ const WidgetIndex = (props) => {
       const csvRows = [];
       // Adding headers row
       const headers = [
-        'Labels',
+        t('Labels', {ns: 'statistics'}),
         ...data.datasets.map((dataset) => dataset.name),
       ];
       csvRows.push(headers.join(','));
@@ -185,7 +193,9 @@ const WidgetIndex = (props) => {
         // update filters
         let newChart = {...chartDetails[section][chart], filters: queryString};
         setupCharts(false,
-          {[section]: {[chart]: newChart}}).then(
+          {[section]: {[chart]: newChart}},
+          t('Total', {ns: 'loris'}),
+        ).then(
           (data) => {
             // update chart data
             newChartDetails[section][chart] = data[section][chart];
@@ -263,14 +273,15 @@ const WidgetIndex = (props) => {
                 downloadAsCSV(
                   modalChart.data,
                   modalChart.title,
-                  modalChart.dataType
+                  modalChart.dataType,
+                  t('Labels', {ns: 'statistics'}),
                 );
               }}
               className ='btn btn-info'>
               <span
                 className ='glyphicon glyphicon-download'
                 aria-hidden='true'/>
-              {' '}Download data as csv
+              {' '}{t('Download Data as CSV', {ns: 'loris'})}
             </a>
         }
         {modalChart
@@ -290,7 +301,7 @@ const WidgetIndex = (props) => {
                 className ='glyphicon glyphicon-download'
                 aria-hidden ='true'
               />
-              {' '}Download as image(png)
+              {' '}{t('Download as PNG', {ns: 'statistics'})}
             </a>
         }
       </Modal>

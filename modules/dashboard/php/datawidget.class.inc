@@ -12,6 +12,7 @@
  * @link     https://www.github.com/aces/Loris
  */
 namespace LORIS\dashboard;
+use \LORIS\GUI\LocalizableString;
 
 /**
  * A DataWidget is a type of dashboard widget which contains data from
@@ -33,13 +34,13 @@ class DataWidget implements \LORIS\GUI\Widget
     /**
      * Construct a DataWidget with the given properties.
      *
-     * @param string $label    The label to describe the data.
-     * @param array  $data     The array data.
-     * @param string $cssclass A CSS class to add to the element.
-     * @param string $colour   The colour to use for the element.
+     * @param LocalizableString $label    The label to describe the data.
+     * @param array             $data     The array data.
+     * @param string            $cssclass A CSS class to add to the element.
+     * @param string            $colour   The colour to use for the element.
      */
     public function __construct(
-        string $label,
+        \LORIS\GUI\LocalizableString $label,
         array $data,
         string $cssclass,
         string $colour,
@@ -53,9 +54,9 @@ class DataWidget implements \LORIS\GUI\Widget
     /**
      * Returns the label for this task.
      *
-     * @return string
+     * @return LocalizableString
      */
-    public function label() : string
+    public function label() : LocalizableString
     {
         return $this->label;
     }

@@ -21,3 +21,29 @@ msgstr ""
 msgid "Create Timepoint"
 msgstr ""
 
+msgid "No cohorts defined for project: {{project}}"
+msgstr ""
+
+msgid "No visit labels defined for the combination project: {{project}} and cohort: {{cohort}}"
+msgstr ""
+
+msgid "Timepoint created."
+msgstr ""
+
+msgid "This visit label is not unique."
+msgstr ""
+
+msgid "You must be affiliated with a site to create a timepoint."
+msgstr ""
+
+msgid "Site must be selected from the available dropdown."
+msgstr ""
+
+msgid "You must be affiliated with a project to create a timepoint."
+msgstr ""
+
+msgid "A project must be selected from the available dropdown."
+msgstr ""
+
+msgid "A language must be selected."
+msgstr ""

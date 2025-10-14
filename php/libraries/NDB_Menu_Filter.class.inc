@@ -3,7 +3,7 @@
 /**
  * This class features the code for the Menu Filter.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Main
@@ -375,6 +375,7 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         return;
     }
+
     /**
      * Gets the base query
      *
@@ -392,6 +393,7 @@ class NDB_Menu_Filter extends NDB_Menu
         return $query;
 
     }
+
     /**
      * Adds filters
      *
@@ -601,7 +603,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
     }
 
-
     /**
      * Sets the template data for the data table's rows
      *
@@ -774,6 +775,7 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         return json_encode($this->toArray());
     }
+
     /**
      * Returns the full list of candidates, users, etc.
      *

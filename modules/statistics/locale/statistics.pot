@@ -20,3 +20,30 @@ msgstr ""
 
 msgid "Statistics"
 msgstr ""
+
+msgid "Study Progression"
+msgstr ""
+
+msgid "Summary"
+msgstr ""
+
+msgid "Site Scans"
+msgstr ""
+
+msgid "Site Recruitment"
+msgstr ""
+
+msgid "-- Clear Selection --"
+msgstr ""
+
+msgid "Scan sessions per site"
+msgstr ""
+
+msgid "Recruitment per site"
+msgstr ""
+
+msgid "Download as PNG"
+msgstr ""
+
+msgid "Labels"
+msgstr ""
