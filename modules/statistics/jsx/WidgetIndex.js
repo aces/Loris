@@ -6,7 +6,7 @@ import StudyProgression from './widgets/studyprogression';
 import {fetchData} from './Fetch';
 import Modal from 'Modal';
 import Loader from 'Loader';
-import {SelectElement} from 'jsx/Form';
+
 import {useTranslation} from 'react-i18next';
 
 import '../css/WidgetIndex.css';
@@ -36,43 +36,47 @@ const WidgetIndex = (props) => {
       <div
         className ="chart-card"
       >
-        {/* Chart Title and Dropdown */}
+        {/* Chart Title and Toggle */}
         <div className ='chart-header'>
           <h5 className ='chart-title'>{title}</h5>
           {Object.keys(chartDetails[section][chartID].options).length > 1 && (
-            <div className ="chart-dropdown-wrapper">
-              <SelectElement
-                className ='chart-dropdown'
-                emptyOption ={false}
-                options ={options}
-                value ={options[chartType]}
-                onUserInput ={(name, value) => {
-                  setChartDetails(
-                    {
-                      ...chartDetails,
-                      [section]: {
-                        ...chartDetails[section],
-                        [chartID]: {
-                          ...chartDetails[section][chartID],
-                          chartType: options[value],
+            <div className ="chart-toggle-wrapper">
+              {Object.entries(options).map(([key, value]) => (
+                <button
+                  key={key}
+                  className={`chart-toggle-btn ${
+                    chartType === value ? 'active' : ''
+                  }`}
+                  onClick={() => {
+                    setChartDetails(
+                      {
+                        ...chartDetails,
+                        [section]: {
+                          ...chartDetails[section],
+                          [chartID]: {
+                            ...chartDetails[section][chartID],
+                            chartType: value,
+                          },
+                        },
+                      }
+                    );
+                    setupCharts(
+                      false,
+                      {
+                        [section]: {
+                          [chartID]: {
+                            ...chartDetails[section][chartID],
+                            chartType: value,
+                          },
                         },
                       },
-                    }
-                  );
-                  setupCharts(
-                    false,
-                    {
-                      [section]: {
-                        [chartID]: {
-                          ...chartDetails[section][chartID],
-                          chartType: options[value],
-                        },
-                      },
-                    },
-                    t('Total', {ns: 'loris'}),
-                  );
-                }}
-              />
+                      t('Total', {ns: 'loris'}),
+                    );
+                  }}
+                >
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </button>
+              ))}
             </div>
           )}
         </div>
