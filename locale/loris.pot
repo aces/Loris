@@ -142,6 +142,9 @@ msgstr ""
 msgid "Module"
 msgstr ""
 
+msgid "Instrument"
+msgstr ""
+
 msgid "Project"
 msgstr ""
 

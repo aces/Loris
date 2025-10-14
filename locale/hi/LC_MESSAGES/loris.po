@@ -136,6 +136,9 @@ msgstr "साइट"
 msgid "Module"
 msgstr "मॉड्यूल"
 
+msgid "Instrument"
+msgstr "उपकरण"
+
 msgid "Project"
 msgstr "परियोजना"
 

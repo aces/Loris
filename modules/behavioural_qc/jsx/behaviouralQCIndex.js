@@ -21,11 +21,14 @@ import hiStrings from '../locale/hi/LC_MESSAGES/behavioural_qc.json';
  * @version 1.0.0
  */
 const BehaviouralQC = (props) => {
-  const {t} = props; 
+  const {t} = props;
   const tabList = [
-    {id: 'tabIncompleteForms', label: t('Incomplete Forms', {ns: 'behavioural_qc'})},
-    {id: 'tabDataConflicts', label: t('Data Conflicts', {ns: 'behavioural_qc'})},
-    {id: 'tabBehaviouralFeedback', label: t('Behavioural Feedback', {ns: 'behavioural_qc'})},
+    {id: 'tabIncompleteForms', label: t('Incomplete Forms',
+      {ns: 'behavioural_qc'})},
+    {id: 'tabDataConflicts', label: t('Data Conflicts',
+      {ns: 'behavioural_qc'})},
+    {id: 'tabBehaviouralFeedback', label: t('Behavioural Feedback',
+      {ns: 'behavioural_qc'})},
   ];
 
   /**

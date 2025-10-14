@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import FilterableDataTable from 'jsx/FilterableDataTable';
-import {withTranslation} from 'react-i18next'; 
+import {withTranslation} from 'react-i18next';
 
 /**
  * Behavioural Feedback Component.
@@ -158,7 +158,7 @@ class BehaviouralFeedback extends Component {
    * @return {JSX} the feedback form to render.
    */
   render() {
-    const {t} = this.props; 
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -282,7 +282,8 @@ BehaviouralFeedback.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
-  t: PropTypes.func, 
+  t: PropTypes.func,
 };
 
-export default withTranslation(['behavioural_qc', 'loris'])(BehaviouralFeedback);
+export default withTranslation(
+  ['behavioural_qc', 'loris'])(BehaviouralFeedback);

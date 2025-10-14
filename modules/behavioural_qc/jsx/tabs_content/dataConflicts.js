@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import FilterableDataTable from 'jsx/FilterableDataTable';
-import {withTranslation} from 'react-i18next'; 
+import {withTranslation} from 'react-i18next';
 
 /**
  * Data Conflicts Component.
@@ -151,7 +151,7 @@ class DataConflicts extends Component {
    * @return {JSX} the data conflicts form to render.
    */
   render() {
-    const { t } = this.props; 
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -268,7 +268,7 @@ DataConflicts.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
-  t: PropTypes.func, 
+  t: PropTypes.func,
 };
 
 export default withTranslation(['behavioural_qc', 'loris'])(DataConflicts);
