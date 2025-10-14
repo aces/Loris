@@ -1,4 +1,5 @@
 import Select, {SingleValue} from 'react-select';
+import {useTranslation} from 'react-i18next';
 
 type SelectOption = {
     label: string,
@@ -27,8 +28,9 @@ function FilterableSelectGroup(props: {
     groups: object,
     mapGroupName?: (module: string) => string,
 }) {
+  const {t} = useTranslation('dataquery');
   const groups: SelectGroup[] = [];
-  const placeholder = props.placeholder || 'Select a category';
+  const placeholder = props.placeholder || t('Select a category');
   for (const [module, subcategories]
     of Object.entries(props.groups)) {
     const options: SelectOption[] = [];
