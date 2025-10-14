@@ -13,47 +13,47 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: modules/new_profile/php/module.class.inc:60
 msgid "Next Stage"
-msgstr ""
+msgstr "Próxima Etapa"
 
 msgid "Start Next Stage"
-msgstr ""
+msgstr "Comenzar próxima etapa"
 
 msgid "Date of %s"
-msgstr ""
+msgstr "Fecha de %s"
 
 msgid "Retype Date of %s"
-msgstr ""
+msgstr "Confirme la fecha de %s"
 
 msgid "Start %s"
-msgstr ""
+msgstr "Comenzar %s"
 
 msgid "CohortID:"
-msgstr ""
+msgstr "Identificador del Cohorte:"
 
 msgid "Date is required."
-msgstr ""
+msgstr "La fecha es requerida."
 
 msgid "Both date fields are required."
-msgstr ""
+msgstr "Los dos campos de fecha son requeridos."
 
 msgid "Both Date fields must match."
-msgstr ""
+msgstr "Las dos fechas deben coincidir."
 
 msgid "Date of Visit is less than Date of Screening."
-msgstr ""
+msgstr "Las dos fechas deben coincidir."
 
 msgid "Date of Visit is less than Date of Birth/EDC."
-msgstr ""
+msgstr "Las dos fechas deben coincidir."
 
 msgid "Next stage started."
-msgstr ""
+msgstr "Próxima etapa iniciada."
 
 msgid "Click here to continue."
-msgstr ""
+msgstr "Click aquí para continuar."
