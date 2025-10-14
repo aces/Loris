@@ -132,7 +132,7 @@ function AddFilterModal(props: {
   if (fieldDictionary) {
     let valueSelect;
     if (op) {
-      valueSelect = valueInput(fieldDictionary, op, value, setValue,t);
+      valueSelect = valueInput(fieldDictionary, op, value, setValue, t);
     }
 
     criteriaSelect = <div>
@@ -154,7 +154,8 @@ function AddFilterModal(props: {
 
     if (fieldDictionary.scope == 'session' && fieldDictionary.visits) {
       visitSelect = <div onClick={(e) => e.stopPropagation()}>
-        <h3>{t('for at least one of the following visits', {ns: 'dataquery'})}</h3>
+        <h3>{t('for at least one of the following visits',
+          {ns: 'dataquery'})}</h3>
         <VisitList options={fieldDictionary.visits}
           selected={selectedVisits || []}
           onChange={setSelectedVisits}
@@ -176,7 +177,10 @@ function AddFilterModal(props: {
         <div style={{
           color: 'white',
           padding: '1em',
-        }}>{t('This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <i>at least one</i> of the data points.', {ns: 'dataquery', scope: fieldDictionary.scope})}</div>
+        }}>{t('This field may exist multiple times for a single {{scope}}.'
+        +' Adding a criteria based on it means that it must match for '
+        +'<i>at least one</i> of the data points.', {ns: 'dataquery',
+            scope: fieldDictionary.scope})}</div>
       </div>;
     }
   }
@@ -194,7 +198,8 @@ function AddFilterModal(props: {
         swal.fire({
           type: 'error',
           title: t('Invalid field', {ns: 'dataquery'}),
-          text: t('You must select a field for the criteria.', {ns: 'dataquery'}),
+          text: t('You must select a field for the criteria.',
+            {ns: 'dataquery'}),
         });
         reject();
         return;
@@ -203,7 +208,8 @@ function AddFilterModal(props: {
         swal.fire({
           type: 'error',
           title: t('Invalid operator', {ns: 'dataquery'}),
-          text: t('You must select an operator for the criteria.', {ns: 'dataquery'}),
+          text: t('You must select an operator for the criteria.',
+            {ns: 'dataquery'}),
         });
         reject();
         return;
@@ -215,7 +221,8 @@ function AddFilterModal(props: {
           swal.fire({
             type: 'error',
             title: t('Invalid value', {ns: 'dataquery'}),
-            text: t('You must enter a value to compare the field against.', {ns: 'dataquery'}),
+            text: t('You must enter a value to compare the field against.',
+              {ns: 'dataquery'}),
           });
           reject();
           return;
@@ -362,6 +369,7 @@ function getOperatorOptions(dict: FieldDictionary) {
  * @param {string} op - The operator selected
  * @param {string|string[]} value - The current value
  * @param {string} setValue - a callback when a new value is selected
+ * @param {function} t - Translation function from i18next
  * @returns {React.ReactElement} - the react element
  */
 function valueInput(fielddict: FieldDictionary,
