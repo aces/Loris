@@ -319,6 +319,7 @@ function ViewData(props: {
     onRun: () => void
     fulldictionary: FullDictionary,
 }) {
+  const {t} = useTranslation('dataquery');
   const [visitOrganization, setVisitOrganization]
         = useState<VisitOrgType>('inline');
   const [headerDisplay, setHeaderDisplay]
@@ -344,7 +345,7 @@ function ViewData(props: {
   } else {
     switch (organizedData['status']) {
     case null:
-      return queryTable = <h2>Query not yet run</h2>;
+      return queryTable = <h2>{t('Query not yet run')}</h2>;
     case 'headers':
       queryTable = <ProgressBar
         type='headers'
@@ -360,7 +361,7 @@ function ViewData(props: {
     case 'done':
       try {
         queryTable = <DataTable
-          rowNumLabel="Row Number"
+          rowNumLabel={t('Row Number')}
           fields={organizedData.headers.map(
             (val: string) => {
               return {show: true, label: val};
@@ -407,7 +408,7 @@ function ViewData(props: {
     <CheckboxElement
       name="emptyvisits"
       value={emptyVisits}
-      label="Display empty visits?"
+      label={t('Display empty visits?', {ns: 'dataquery'})}
       onUserInput={
         (name: string, value: boolean) =>
           setEmptyVisits(value)
@@ -418,9 +419,9 @@ function ViewData(props: {
     <SelectElement
       name='headerdisplay'
       options={{
-        'fieldname': 'Field Name',
-        'fielddesc': 'Field Description',
-        'fieldnamedesc': 'Field Name: Field Description',
+        'fieldname': t('Field Name'),
+        'fielddesc': t('Field Description'),
+        'fieldnamedesc': t('Field Name: Field Description'),
       }}
       label='Header Display Format'
       value={headerDisplay}
@@ -435,12 +436,12 @@ function ViewData(props: {
     <SelectElement
       name='visitorganization'
       options={{
-        'crosssection': 'Rows (Cross-sectional)',
-        'longitudinal': 'Columns (Longitudinal)',
-        'inline': 'Inline values (no download)',
-        'raw': 'Raw JSON (debugging only)',
+        'crosssection': t('Rows (Cross-sectional)', {ns: 'dataquery'}),
+        'longitudinal': t('Columns (Longitudinal)', {ns: 'dataquery'}),
+        'inline': t('Inline values (no download)', {ns: 'dataquery'}),
+        'raw': t('Raw JSON (debugging only)', {ns: 'dataquery'}),
       }}
-      label='Display visits as'
+      label={t('Display visits as', {ns: 'dataquery'})}
       value={visitOrganization}
       multiple={false}
       emptyOption={false}
@@ -453,10 +454,10 @@ function ViewData(props: {
     <SelectElement
       name='enumdisplay'
       options={{
-        'labels': 'Labels',
-        'values': 'Values',
+        'labels': t('Labels', {ns: 'dataquery'}),
+        'values': t('Values', {ns: 'dataquery'}),
       }}
-      label='Display options as'
+      label={t('Display options as', {ns: 'dataquery'})}
       value={enumDisplay == EnumDisplayTypes.EnumLabel
         ? 'labels'
         : 'values'}

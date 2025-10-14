@@ -126,7 +126,7 @@ function AddFilterModal(props: {
           setSelectedVisits(null);
         }
       }}
-      placeholder="Select a field" />;
+      placeholder={t('Select a field', {ns: 'dataquery'})} />;
   }
 
   if (fieldDictionary) {

@@ -1114,7 +1114,7 @@ function IntroductionMessage(props: {
         +'fields used by the query. It will display in a Shared Queries panel '
         +'below the Recent Queries.', {ns: 'dataquery'})}</p>
       <p>{t('You may also give a query a name at any time by clicking the icon.'
-      +'This makes it easier to find queries you care about by giving them an'
+      +' This makes it easier to find queries you care about by giving them an'
         +' easier to remember name that can be used for filtering. When you '
         +'share a query, the name will be shared along with it.',
       {ns: 'dataquery'})}</p>
