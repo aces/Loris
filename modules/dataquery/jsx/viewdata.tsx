@@ -120,30 +120,37 @@ function ProgressBar(props: {type: string, value: number, max: number}) {
       return <h2>{t('Query not yet run', {ns: 'dataquery'})}</h2>;
     }
     return (<div>
-      <label htmlFor="loadingprogress">{t('Loading data:', {ns: 'dataquery'})}</label>
+      <label htmlFor="loadingprogress">{t('Loading data:',
+        {ns: 'dataquery'})}</label>
       <progress id="loadingprogress"
         value={props.value} max={props.max}>
-        {t('{{value}} of {{max}} candidates', {ns: 'dataquery', value: props.value, max: props.max})}
+        {t('{{value}} of {{max}} candidates',
+          {ns: 'dataquery', value: props.value, max: props.max})}
       </progress>
     </div>);
   case 'headers':
     return (<div>
-      <label htmlFor="loadingprogress">{t('Organizing headers:', {ns: 'dataquery'})}</label>
+      <label htmlFor="loadingprogress">{t('Organizing headers:',
+        {ns: 'dataquery'})}</label>
       <progress id="loadingprogress"
         value={props.value} max={props.max}>
-        {t('{{value}} of {{max}} columns', {ns: 'dataquery', value: props.value, max: props.max})}
+        {t('{{value}} of {{max}} columns', {ns: 'dataquery',
+          value: props.value, max: props.max})}
       </progress>
     </div>);
   case 'dataorganization':
     return (<div>
-      <label htmlFor="loadingprogress">{t('Organizing data:', {ns: 'dataquery'})}</label>
+      <label htmlFor="loadingprogress">{t('Organizing data:',
+        {ns: 'dataquery'})}</label>
       <progress id="loadingprogress"
         value={props.value} max={props.max}>
-        {t('{{value}} of {{max}} columns', {ns: 'dataquery', value: props.value, max: props.max})}
+        {t('{{value}} of {{max}} columns', {ns: 'dataquery',
+          value: props.value, max: props.max})}
       </progress>
     </div>);
   }
-  return <h2>{t('Invalid progress type: {{type}}', {ns: 'dataquery', type: props.type})}</h2>;
+  return <h2>{t('Invalid progress type: {{type}}', {ns: 'dataquery',
+    type: props.type})}</h2>;
 }
 
 type RunQueryType = {
@@ -855,7 +862,8 @@ function organizedFormatter(
           return <TableCell data={cell} />;
         default:
           return (<td>
-            <i>{t('(Internal Error. Unhandled cardinality: {{cardinality}})', {ns: 'dataquery', cardinality: fielddict.cardinality})}</i>
+            <i>{t('(Internal Error. Unhandled cardinality: {{cardinality}})',
+              {ns: 'dataquery', cardinality: fielddict.cardinality})}</i>
           </td>);
         }
       }

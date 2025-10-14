@@ -16,6 +16,7 @@
     "lib": [
       "es6", "dom", "es2017"
     ],
-    "strict" : true
+    "strict" : true,
+    "resolveJsonModule": true
   }
 }
