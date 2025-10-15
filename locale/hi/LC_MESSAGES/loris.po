@@ -167,6 +167,9 @@ msgstr "समूह"
 msgid "Cohorts"
 msgstr "समूह"
 
+msgid "Instrument"
+msgstr "उपकरण"
+
 msgid "Session"
 msgstr "सत्र"
 

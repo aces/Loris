@@ -116,7 +116,7 @@ class ResolvedFilterableDataTable extends Component {
       return (
         <div className="alert alert-danger" role="alert">
           <h4>{t('An error occured while loading the page.',
-            {ns: 'conflict_resolver'})}</h4>
+            {ns: 'loris'})}</h4>
           {this.state.error.message}
         </div>
       );
@@ -148,7 +148,7 @@ class ResolvedFilterableDataTable extends Component {
         type: 'select',
         options: options.site,
       }},
-      {label: t('CandID', {ns: 'loris'}), show: true, filter: {
+      {label: t('DCCID', {ns: 'loris'}), show: true, filter: {
         name: 'candidateID',
         type: 'text',
         value: '300001',

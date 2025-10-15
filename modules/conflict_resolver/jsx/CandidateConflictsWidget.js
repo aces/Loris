@@ -36,7 +36,7 @@ function CandidateConflictsWidget(props) {
           type: 'category',
           categories: visits,
           label: {
-            text: t('Visit', {ns: 'conflict_resolver'}),
+            text: t('Visit', {ns: 'loris'}),
             position: 'outer-center',
           },
         },

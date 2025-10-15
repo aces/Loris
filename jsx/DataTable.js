@@ -602,7 +602,7 @@ class DataTable extends Component {
                   className="btn btn-primary"
                   onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
                 >
-                  {this.props.t('Download Table as CSV')}
+                  {this.props.t('Download Data as CSV')}
                 </button>)
               }
               <PaginationLinks

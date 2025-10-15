@@ -85,11 +85,12 @@ class FixConflictForm extends Component {
    */
   render() {
     const {value, success, error, emptyOption} = this.state;
+    const color = {
+      backgroundColor: success ? '#d1ffcf' : '',
+      transition: 'background-color 1s',
+    };
     return (
-      <td style={{
-        backgroundColor: success ? '#d1ffcf' : '',
-        transition: 'background-color 1s',
-      }}>
+      <td style={color}>
         <SelectElement
           name={this.props.conflictId}
           value={value}

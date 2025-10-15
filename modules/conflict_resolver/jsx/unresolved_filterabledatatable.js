@@ -158,7 +158,7 @@ class UnresolvedFilterableDataTable extends Component {
         type: 'select',
         options: options.site,
       }},
-      {label: t('CandID', {ns: 'loris'}), show: true, filter: {
+      {label: t('DCCID', {ns: 'loris'}), show: true, filter: {
         name: 'candidateID',
         type: 'text',
         value: '300001',

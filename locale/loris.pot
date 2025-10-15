@@ -151,8 +151,6 @@ msgstr ""
 msgid "Success!"
 msgstr ""
 
-=======
->>>>>>> 845246779 (Translate strings from data table / filters so that candidate list module is fully translated)
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -185,6 +183,15 @@ msgstr[0] ""
 msgid "Session"
 msgstr ""
 
+msgid "Cohorts"
+msgstr ""
+
+msgid "Instrument"
+msgstr ""
+
+msgid "Session"
+msgstr ""
+
 msgid "Date of registration"
 msgstr ""
 
@@ -204,6 +211,7 @@ msgid "Scans"
 msgstr ""
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 msgid "Stage"
 msgstr ""
 
@@ -219,6 +227,14 @@ msgstr ""
 msgid "Date of Birth"
 msgstr ""
 
+=======
+msgid "Date of Birth"
+msgstr ""
+
+msgid "Visit"
+msgstr ""
+
+>>>>>>> 601c86c5f (fixes)
 msgid "Visits"
 msgstr ""
 
@@ -231,7 +247,14 @@ msgstr ""
 msgid "Scan Done"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Language"
+=======
+msgid "Show Advanced Filters"
+msgstr ""
+
+msgid "Hide Advanced Filters"
+>>>>>>> 601c86c5f (fixes)
 msgstr ""
 
 # Data table strings
