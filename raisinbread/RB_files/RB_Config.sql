@@ -107,5 +107,9 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,131,'/data/EEGUploa
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (129,132,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (130,133,'EEGS3DataPath');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (131,134,'false');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (132,137,'/images/LORIS_logo_white.svg');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (133,138,'/images/GitHub-Mark-Light-64px.png');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (134,139,'/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (135,140,'https://github.com/aces/Loris');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
