@@ -109,9 +109,6 @@ class Module extends \Module
             if (count($scansummary) === 0) {
                 return [];
             }
-            foreach ($scansummary as $summary) {
-                $summary['nfiles'] = (int )$summary['nfiles'];
-            }
             return [
                 new CandidateWidget(
                     "Imaging QC Summary",
