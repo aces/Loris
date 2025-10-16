@@ -54,10 +54,6 @@
     max-height: 150px;
 }
 
-#default-panel .panel-body div[align="center"] img {
-    width: 100%;
-}
-
 @media (max-width: 991px) {
     .partner-container-desktop {
         display: none;
