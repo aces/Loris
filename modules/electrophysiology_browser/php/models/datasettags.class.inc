@@ -66,11 +66,11 @@ class DatasetTags
     /**
      * Convert Tagger name to expected format
      *
-     * @param string $column Column name
+     * @param array $column Column
      *
      * @return string
      */
-    public static function convertTaggerName(string $column): string
+    public static function convertTaggerName(array $column): string
     {
         $taggerName = 'Origin';
         if (!is_null($column['TaggedBy'])) {
