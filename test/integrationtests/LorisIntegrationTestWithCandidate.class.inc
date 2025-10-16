@@ -16,7 +16,6 @@ require_once __DIR__ . "/LorisIntegrationTest.class.inc";
  */
 abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
 {
-
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user

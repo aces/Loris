@@ -44,7 +44,6 @@ class Module extends \Module
         }
     }
 
-
     /**
      * {@inheritDoc}
      *
@@ -93,7 +92,7 @@ class Module extends \Module
                 new CandidateWidget(
                     dgettext("candidate_profile", "Candidate Info"),
                     $baseurl . "/candidate_profile/js/CandidateInfo.js",
-                    "lorisjs.candidate_profile.CandidateInfo.CandidateInfo",
+                    "lorisjs.candidate_profile.CandidateInfo.default.CandidateInfo",
                     ['ExtraCandidateInfo' => $params],
                     1,
                     2,

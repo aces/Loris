@@ -18,7 +18,7 @@
  *
  * need error trapping to prevent screen display in case of all failures
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Loris
@@ -255,7 +255,6 @@ class NDB_BVL_Feedback
         }
         return $list;
     }
-
 
     /**
      * Get feedback type id given the feedback type name

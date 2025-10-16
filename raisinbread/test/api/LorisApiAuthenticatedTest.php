@@ -2,6 +2,7 @@
 
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+use PHPUnit\Framework\Attributes\Test;
 use GuzzleHttp\Client;
 
 /**
@@ -199,7 +200,19 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
         ];
         $this->headers = $headers;
     }
+#[Test]
+public function projects_endpoint_should_return_200(): void
+{
+    $response = $this->client->request('GET', 'projects', [
+        'headers' => $this->headers
+    ]);
 
+    $this->assertEquals(
+        200,
+        $response->getStatusCode(),
+        'Expected HTTP 200 from /projects endpoint'
+    );
+}
     /**
      * Overrides LorisIntegrationTest::tearDown() to set the original key back.
      *

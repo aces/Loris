@@ -56,7 +56,9 @@ The following Ubuntu packages are required and should be installed using
 
 * php8.3-zip
 
-* php8.3-curl (for development instances only)
+* php8.3-curl
+
+* php8.3-intl
 
 * libapache2-mod-php8.3
 

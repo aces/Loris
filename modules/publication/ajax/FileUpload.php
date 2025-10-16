@@ -5,7 +5,7 @@
  *
  * This processes and inserts data for publication uploads & editing
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Publication
@@ -385,6 +385,7 @@ function insertVOIs(int $pubID) : void
         }
     }
 }
+
 /**
  * Deletes all inserted data if there is an exception thrown
  *
@@ -968,6 +969,7 @@ function editUploads($id) : void
         }
     }
 }
+
 /**
  * Utility function to return errors from the server
  *

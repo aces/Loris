@@ -3,7 +3,7 @@
 /**
  * The user account page
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  User_Account

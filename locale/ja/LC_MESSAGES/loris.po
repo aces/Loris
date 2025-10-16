@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
@@ -64,6 +65,9 @@ msgstr "行政上の"
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
 #: modules/document_repository/php/module.class.inc:56
+msgid "Data Dictionary"
+msgstr "データ辞書"
+
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
@@ -116,6 +120,18 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
+msgid "Create"
+msgstr "作成する"
+
+msgid "Cancel"
+msgstr "取り消す"
+
+msgid "N/A"
+msgstr "適用できない"
+
+msgid "Success!"
+msgstr "成功！"
+
 # Filters
 msgid "Selection Filter"
 msgstr "'選択フィルター"
@@ -142,11 +158,18 @@ msgstr "ラベルを訪問"
 msgid "Site"
 msgstr "サイト"
 
+msgid "Module"
+msgstr "モジュール"
+
 msgid "Project"
 msgstr "プロジェクト"
 
 msgid "Cohort"
-msgstr "コホート"
+msgid_plural "Cohorts"
+msgstr[0] "コホート"
+
+msgid "Session"
+msgstr "セッション"
 
 msgid "Date of registration"
 msgstr "入学日"
@@ -166,6 +189,36 @@ msgstr "フィードバック"
 msgid "Scans"
 msgstr "スキャン"
 
+msgid "Stage"
+msgstr "ステージ"
+
+msgid "Sent To DCC"
+msgstr "DCCに送信"
+
+msgid "Date of Birth"
+msgstr "生年月日"
+
+msgid "Visits"
+msgstr "訪問"
+
+msgid "An error occured while loading the page."
+msgstr "このページの読み込み中にエラーが発生しました"
+
+msgid "Entity Type"
+msgstr "エンティティタイプ"
+
+msgid "Scan Done"
+msgstr "スキャン完了"
+
+msgid "Show Advanced Filters"
+msgstr "詳細フィルターを表示"
+
+msgid "Hide Advanced Filters"
+msgstr "詳細フィルターを非表示"
+
+msgid "Language"
+msgstr "言語"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}}行中{{pageCount}}行を表示"
@@ -173,11 +226,66 @@ msgstr "{{totalCount}}行中{{pageCount}}行を表示"
 msgid "Maximum rows per page:"
 msgstr "ページあたりの最大行数:"
 
-msgid "Download Table as CSV"
-msgstr "表をCSVとしてダウンロード"
+msgid "Download Data as CSV"
+msgstr "データをCSVとしてダウンロード"
 
+# Dashboard panel strings
+msgid "Views"
+msgstr "ビュー"
+
+# Common strings on widgets
 msgid "NEW"
 msgstr "新しい"
 
 msgid "Updated"
 msgstr "更新"
+
+msgid "Uploaded"
+msgstr "アップロード済み"
+
+msgid "Total"
+msgstr "合計"
+
+msgid "Error!"
+msgstr "エラー！"
+
+# Common timepoint and vist terms
+msgid "Not Started"
+msgstr "開始されていません"
+
+msgid "Screening"
+msgstr "スクリーニング"
+
+msgid "Visit"
+msgstr "訪問"
+
+msgid "Approval"
+msgstr "承認"
+
+msgid "Subject"
+msgstr "候補者"
+
+msgid "Recycling Bin"
+msgstr "リサイクルビン"
+
+msgid "Pass"
+msgstr "合格"
+
+msgid "Failure"
+msgstr "失敗"
+
+msgid "Withdrawal"
+msgstr "撤退"
+
+msgid "In Progress"
+msgstr "進行中"
+
+# Age related terms
+msgid "Age"
+msgstr "年"
+
+msgid "{{months}} months old"
+msgstr "{{months}}ヶ月"
+
+msgid "{{years}} years old"
+msgstr "{{years}}歳"

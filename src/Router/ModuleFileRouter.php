@@ -4,7 +4,7 @@
  * Implements ModuleFileRouter, a class for routing to files
  * directly stored on the file system.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Router
  * @package  Router

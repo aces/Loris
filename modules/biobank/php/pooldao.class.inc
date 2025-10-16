@@ -5,7 +5,7 @@
  * This class contains all database handling that is needed to
  * permanently store and retrieve Pool Object instances
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   DAO
  * @package    Loris
@@ -22,7 +22,7 @@ namespace LORIS\biobank;
  * This class contains all database handling that is needed to
  * permanently store and retrieve Pool Object instances
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   DAO
  * @package    Loris
@@ -72,6 +72,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
 
     // XXX: Currently this function is never used with any conditions passed as
     // paramters. Decide if this is a necessary feature.
+
     /**
      * This will select all pools from the database that match the
      * attribute values passed through $poolData and will return an array

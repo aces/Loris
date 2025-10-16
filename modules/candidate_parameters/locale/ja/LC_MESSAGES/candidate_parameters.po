@@ -21,3 +21,5 @@ msgstr ""
 msgid "Candidate Parameters"
 msgstr "候補パラメータ"
 
+msgid "Caveat"
+msgstr "警告"

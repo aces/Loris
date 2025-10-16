@@ -8,7 +8,7 @@
  *
  * The this entry point then prints the resulting value to the user.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

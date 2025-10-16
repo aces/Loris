@@ -3,7 +3,7 @@
 /**
  * This file contains the VisitController class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Controller
  * @package  Visits
@@ -182,5 +182,4 @@ class VisitController
             )
         );
     }
-
 }
