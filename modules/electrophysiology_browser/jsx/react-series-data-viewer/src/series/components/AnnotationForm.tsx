@@ -528,7 +528,7 @@ const AnnotationForm = ({
         type: 'Event',
         label: epochLabel ?? data.instance.EventValue,
         value: data.instance.EventValue,
-        trial_type: data.instance.TrialType,
+        trialType: data.instance.TrialType,
         properties: data.extra_columns,
         hed: hedTags,
         channels: data.instance.Channel === 'n/a'

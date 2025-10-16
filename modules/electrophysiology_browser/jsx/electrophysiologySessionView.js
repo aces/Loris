@@ -18,7 +18,6 @@ import {SummaryPanel} from './components/electrophysiology_session_summary';
 import {DownloadPanel} from './components/DownloadPanel';
 import Sidebar from './components/Sidebar';
 import SidebarContent from './components/SidebarContent';
-import {HasHEDIcon} from "./react-series-data-viewer/src/series/components/components";
 let EEGLabSeriesProvider;
 let SeriesRenderer;
 let EEGMontage;
@@ -386,7 +385,7 @@ class ElectrophysiologySessionView extends Component {
                 return prop.PropertyName === column &&
                   prop.PropertyValue === columnValue;
               });
-            })
+            });
           });
         database.push(
           <div key={i}>
@@ -409,19 +408,21 @@ class ElectrophysiologySessionView extends Component {
                   datasetTags={datasetTags}
                   datasetTagEndorsements={datasetTagEndorsements}
                   physioFileID={this.state.database[i].file.id}
-                  samplingFrequency={this.state.database[i].file.summary[0].value}
+                  samplingFrequency={
+                    this.state.database[i].file.summary[0].value
+                  }
                   eegMontageName={eegMontage}
                   recordingHasHED={recordingHasHED}
                 >
                   <Panel
                     id='channel-viewer'
                     title={
-                    <span>
-                      {'Signal Viewer' + (file.splitData
+                      <span>
+                        {'Signal Viewer' + (file.splitData
                           ? ' [split ' + (file.splitData?.splitIndex + 1) + ']'
                           : ''
-                      )}
-                    </span>
+                        )}
+                      </span>
                     }
                   >
                     {file.splitData &&

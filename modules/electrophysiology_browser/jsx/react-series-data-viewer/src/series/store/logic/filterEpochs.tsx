@@ -74,7 +74,8 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
       let newFilteredEpochs;
 
       if (filteredEpochs.plotVisibility.includes(index)) {
-        newFilteredEpochs = filteredEpochs.plotVisibility.filter((i) => i !== index);
+        newFilteredEpochs = filteredEpochs.plotVisibility
+          .filter((i) => i !== index);
       } else if (index >= 0 && index < epochs.length) {
         newFilteredEpochs = filteredEpochs.plotVisibility.slice();
         newFilteredEpochs.push(index);
@@ -140,7 +141,7 @@ export const getEpochsInRange = (epochs, interval) => {
       )
     )
   );
-}
+};
 
 /**
  * getTagsForEpoch
@@ -150,27 +151,29 @@ export const getEpochsInRange = (epochs, interval) => {
  * @param {HEDSchemaElement[]} hedSchema - HED schema to search
  * @returns {HEDTag[]} - List of HED tags within dataset associated with the epoch
  */
-export const getTagsForEpoch = (epoch: Epoch, datasetTags: any, hedSchema: HEDSchemaElement[]) => {
+export const getTagsForEpoch = (
+  epoch: Epoch, datasetTags: any, hedSchema: HEDSchemaElement[]
+) => {
   const hedTags = [];
 
   // if (datasetTags['EventValue'].hasOwnProperty(epoch.label)) {
   //   hedTags.push(...datasetTags['EventValue'][epoch.label])
   // }
 
-  if (datasetTags['trial_type'].hasOwnProperty(epoch.trial_type)) {
-    hedTags.push(...datasetTags['trial_type'][epoch.trial_type])
+  if (datasetTags['trial_type'].hasOwnProperty(epoch.trialType)) {
+    hedTags.push(...datasetTags['trial_type'][epoch.trialType]);
   }
 
   epoch.properties.forEach((prop) => {
     if (datasetTags[prop.PropertyName].hasOwnProperty(prop.PropertyValue)) {
-      hedTags.push(...datasetTags[prop.PropertyName][prop.PropertyValue])
+      hedTags.push(...datasetTags[prop.PropertyName][prop.PropertyValue]);
     }
   });
 
   return hedTags.map((tag) => {
     const schemaTag = hedSchema.find((t) => {
       return t.id === tag.HEDTagID;
-    })
+    });
     return {
       schemaElement: schemaTag ?? null,
       HEDTagID: schemaTag ? schemaTag.id : null,
@@ -185,11 +188,11 @@ export const getTagsForEpoch = (epoch: Epoch, datasetTags: any, hedSchema: HEDSc
       TaggedBy: tag.TaggedBy,
       TaggerName: tag.TaggerName,
       Endorsements: [],
-    }
+    };
   }).filter((tag) => {
     return tag.HEDTagID !== null || tag.PairRelID !== null;
   });
-}
+};
 
 /**
  * getNthMemberTrailingCommaIndex
@@ -199,8 +202,9 @@ export const getTagsForEpoch = (epoch: Epoch, datasetTags: any, hedSchema: HEDSc
  * @returns {number} - Returns index of comma expected after nth member
  */
 const getNthMemberTrailingCommaIndex = (tagString: string, n: number) => {
-  if (n < 1)
+  if (n < 1) {
     return tagString.length;
+  }
 
   let membersToFind = n;
   let openParenthesesCount = 0;
@@ -219,7 +223,7 @@ const getNthMemberTrailingCommaIndex = (tagString: string, n: number) => {
     commaIndex = i;
   }
   return commaIndex + 1;
-}
+};
 
 /**
  * buildHEDString
@@ -228,11 +232,11 @@ const getNthMemberTrailingCommaIndex = (tagString: string, n: number) => {
  * @param {boolean} longFormHED - Shows long form of HED tag if true
  * @returns {string[]} - String array representing the assembled HED tags
  */
-export const buildHEDString = (hedTags: HEDTag[], longFormHED: boolean = false) => {
+export const buildHEDString = (hedTags: HEDTag[], longFormHED = false) => {
   const rootTags = hedTags.filter((tag) => {
     return !hedTags.some((t) => {
-      return tag.ID === t.PairRelID
-    })
+      return tag.ID === t.PairRelID;
+    });
   });
 
   const tagNames = [];
@@ -256,7 +260,7 @@ export const buildHEDString = (hedTags: HEDTag[], longFormHED: boolean = false) 
       } else {
         if (groupTag.HasPairing == '1') {
           if (groupTag.AdditionalMembers > 0 || subGroupString.length === 0) {
-            let commaIndex = getNthMemberTrailingCommaIndex(
+            const commaIndex = getNthMemberTrailingCommaIndex(
               tagString,
               groupTag.AdditionalMembers + (
                 subGroupString.length > 0 ? 0 : 1
@@ -266,9 +270,9 @@ export const buildHEDString = (hedTags: HEDTag[], longFormHED: boolean = false) 
               (
                 groupTag.HEDTagID !== null
                   ? `${longFormHED
-                      ? groupTag.schemaElement.longName
-                      : groupTag.schemaElement.name
-                    }, `
+                    ? groupTag.schemaElement.longName
+                    : groupTag.schemaElement.name
+                  }, `
                   : ''
               ) +
               (subGroupString.length > 0 ? `${subGroupString}, ` : '') +
@@ -311,7 +315,7 @@ export const buildHEDString = (hedTags: HEDTag[], longFormHED: boolean = false) 
   });
 
   return tagNames;
-}
+};
 
 /**
  * getNthMemberTrailingCommaIndex
@@ -320,9 +324,12 @@ export const buildHEDString = (hedTags: HEDTag[], longFormHED: boolean = false) 
  * @param {number} n - Nth member to encapsulate. Members, (can), (be, groups)
  * @returns {number} - Returns index of comma expected after nth member
  */
-export const getNthMemberTrailingBadgeIndex = (tagBadgeGroup: any[], n: number) => {
-  if (n === 0)
+export const getNthMemberTrailingBadgeIndex = (
+  tagBadgeGroup: any[], n: number
+) => {
+  if (n === 0) {
     return tagBadgeGroup.length;
+  }
 
   let membersToFind = n;
   let openParenthesesCount = 0;
@@ -362,7 +369,7 @@ export const getRootTags = (tags: HEDTag[]) => {
     return tag.ID &&
       !tags.some((t) => {
         return tag.ID === t.PairRelID;
-      })
+      });
   });
-}
+};
 

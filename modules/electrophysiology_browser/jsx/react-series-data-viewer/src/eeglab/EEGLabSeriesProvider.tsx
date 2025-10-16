@@ -6,8 +6,10 @@ import {createEpicMiddleware} from 'redux-observable';
 import thunk from 'redux-thunk';
 import {fetchJSON, fetchText} from '../ajax';
 import {rootEpic, rootReducer} from '../series/store';
-import {emptyChannels, setChannels,} from '../series/store/state/channels';
-import {DEFAULT_CHANNEL_DELIMITER, DEFAULT_MAX_CHANNELS, DEFAULT_TIME_INTERVAL} from '../vector';
+import {emptyChannels, setChannels} from '../series/store/state/channels';
+import {
+  DEFAULT_CHANNEL_DELIMITER, DEFAULT_MAX_CHANNELS, DEFAULT_TIME_INTERVAL,
+} from '../vector';
 import {
   setDatasetMetadata,
   setDatasetTags,
@@ -17,7 +19,9 @@ import {
   setPhysioFileID,
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
-import {setCoordinateSystem, setElectrodes} from '../series/store/state/montage';
+import {
+  setCoordinateSystem, setElectrodes,
+} from '../series/store/state/montage';
 import {EventMetadata, HEDSchemaElement} from '../series/store/types';
 import TriggerableModal from 'jsx/TriggerableModal';
 import DatasetTagger from '../series/components/DatasetTagger';
@@ -50,7 +54,7 @@ const MenuOption = {
   'TAG_MODE': 'View/Edit Tags',
   'ENDORSEMENT_MODE': 'Endorse Tags',
   'JSON_MODE': 'View JSON',
-}
+};
 
 /**
  * EEGLabSeriesProvider component
@@ -74,7 +78,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
     this.state = {
       activeMenuOption: 'TAG_MODE',
       datasetTaggerTabsRef: createRef(),
-    }
+    };
 
     epicMiddleware.run(rootEpic);
 
@@ -94,48 +98,54 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       recordingHasHED,
     } = props;
 
-    if (!window.EEGLabSeriesProviderStore)
+    if (!window.EEGLabSeriesProviderStore) {
       window.EEGLabSeriesProviderStore = [];
+    }
     window.EEGLabSeriesProviderStore[chunksURL] = this.store;
 
+    /**
+     *
+     */
     window.onbeforeunload = function() {
-      const dataset = window.EEGLabSeriesProviderStore[chunksURL].getState().dataset;
+      const dataset = window.EEGLabSeriesProviderStore[chunksURL]
+        .getState().dataset;
       if ([...dataset.addedTags, ...dataset.deletedTags].length > 0) {
         return 'Are you sure you want to leave unsaved changes behind?';
       }
-    }
-
-    console.log('datasetTagEndorsements', datasetTagEndorsements);
+    };
 
     const formattedDatasetTags = {};
     Object.keys(datasetTags).forEach((column) => {
       formattedDatasetTags[column] = {};
       Object.keys(datasetTags[column]).forEach((value) => {
-        formattedDatasetTags[column][value] = datasetTags[column][value].map((tag) => {
-          const hedEndorsements = datasetTagEndorsements
-            .filter((endorsement) => {
-              return endorsement.HEDRelID === tag.ID;
-            }).map((endorsement) => {
-              const endorserName =
-                `${endorsement.FirstName.substring(0, 1)}.${endorsement.LastName}`;
-              return {
-                EndorsedBy: endorserName,
-                EndorsedByID: endorsement.EndorsedByID,
-                EndorsementComment: endorsement.EndorsementComment,
-                EndorsementStatus: endorsement.EndorsementStatus,
-                EndorsementTime: endorsement.LastUpdate,
-              }
-            });
-          return {
-            ...tag,
-            AdditionalMembers: parseInt(tag.AdditionalMembers),
-            TaggerName: tag.TaggerName === 'Origin' ? 'Data Authors' : tag.TaggerName,
-            TaggedBy: tag.TaggedBy,
-            Endorsements: hedEndorsements,
-          }
-        });
+        formattedDatasetTags[column][value]
+          = datasetTags[column][value].map((tag) => {
+            const hedEndorsements = datasetTagEndorsements
+              .filter((endorsement) => {
+                return endorsement.HEDRelID === tag.ID;
+              }).map((endorsement) => {
+                const endorserName =
+                  `${endorsement.FirstName.substring(0, 1)}.` +
+                  endorsement.LastName;
+                return {
+                  EndorsedBy: endorserName,
+                  EndorsedByID: endorsement.EndorsedByID,
+                  EndorsementComment: endorsement.EndorsementComment,
+                  EndorsementStatus: endorsement.EndorsementStatus,
+                  EndorsementTime: endorsement.LastUpdate,
+                };
+              });
+            return {
+              ...tag,
+              AdditionalMembers: parseInt(tag.AdditionalMembers),
+              TaggerName: tag.TaggerName === 'Origin'
+                ? 'Data Authors' : tag.TaggerName,
+              TaggedBy: tag.TaggedBy,
+              Endorsements: hedEndorsements,
+            };
+          });
       });
-    })
+    });
     this.store.dispatch(setPhysioFileID(physioFileID));
     this.store.dispatch(setHedSchemaDocument(hedSchema));
     this.store.dispatch(setDatasetTags(formattedDatasetTags));
@@ -154,19 +164,19 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
           // if request fails don't resolve
           .catch((error) => {
             console.error(error);
-            return new Promise((resolve) => {
-            });
+            return Promise.resolve();
           })];
       } else {
-        return [new Promise((resolve) => {
-        })];
+        return [Promise.resolve()];
       }
     };
 
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
         if (json) {
-          const {channelMetadata, shapes, timeInterval, seriesRange, validSamples} = json;
+          const {
+            channelMetadata, shapes, timeInterval, seriesRange, validSamples,
+          } = json;
           this.store.dispatch(
             setDatasetMetadata({
               chunksURL: url,
@@ -191,20 +201,28 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       }
     ).then(() => {
       const epochs = [];
-      const channelDelimiter = events.channel_delimiter.length > 0
-        ? events.channel_delimiter
+      const channelDelimiter = events.channelDelimiter.length > 0
+        ? events.channelDelimiter
         : DEFAULT_CHANNEL_DELIMITER;
-      this.store.dispatch(setDatasetMetadata({ channelDelimiter: channelDelimiter }));
+      this.store.dispatch(
+        setDatasetMetadata({channelDelimiter: channelDelimiter})
+      );
 
       events.instances.map((instance) => {
-        const epochIndex = epochs.findIndex((e) => e.physiologicalTaskEventID === instance.PhysiologicalTaskEventID);
+        const epochIndex = epochs.findIndex(
+          (e) => e.physiologicalTaskEventID
+            === instance.PhysiologicalTaskEventID
+        );
 
-        const extraColumns = Array.from(events.extra_columns).filter((column) => {
-          return column.PhysiologicalTaskEventID === instance.PhysiologicalTaskEventID
-        });
+        const extraColumns = Array.from(events.extraColumns)
+          .filter((column) => {
+            return column.PhysiologicalTaskEventID
+            === instance.PhysiologicalTaskEventID;
+          });
 
-        const hedTags = Array.from(events.hed_tags).filter((column) => {
-          return column.PhysiologicalTaskEventID === instance.PhysiologicalTaskEventID
+        const hedTags = Array.from(events.hedTags).filter((column) => {
+          return column.PhysiologicalTaskEventID
+            === instance.PhysiologicalTaskEventID;
         }).map((hedTag) => {
           const foundTag = hedSchema.find((tag) => {
             return tag.id === hedTag.HEDTagID;
@@ -212,19 +230,21 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
 
           const additionalMembers = parseInt(hedTag.AdditionalMembers);
 
-          const hedEndorsements = events.hed_endorsements
+          const hedEndorsements = events.hedEndorsements
             .filter((endorsement) => {
               return endorsement.HEDRelID === hedTag.ID;
             }).map((endorsement) => {
               const endorserName =
-                `${endorsement.FirstName.substring(0, 1)}.${endorsement.LastName}`;
+                `${
+                  endorsement.FirstName.substring(0, 1)}.${endorsement.LastName
+                }`;
               return {
                 EndorsedBy: endorserName,
                 EndorsedByID: endorsement.EndorsedByID,
                 EndorsementComment: endorsement.EndorsementComment,
                 EndorsementStatus: endorsement.EndorsementStatus,
                 EndorsementTime: endorsement.LastUpdate,
-              }
+              };
             });
 
           // Currently only supporting schema-defined HED tags
@@ -238,11 +258,13 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
             Description: hedTag.Description,
             HasPairing: hedTag.HasPairing,
             PairRelID: hedTag.PairRelID,
-            AdditionalMembers: isNaN(additionalMembers) ? 0 : additionalMembers,
-            TaggerName: hedTag.TaggerName === 'Origin' ? 'Data Authors' : hedTag.TaggerName,
+            AdditionalMembers: isNaN(additionalMembers)
+              ? 0 : additionalMembers,
+            TaggerName: hedTag.TaggerName === 'Origin'
+              ? 'Data Authors' : hedTag.TaggerName,
             TaggedBy: hedTag.TaggedBy,
             Endorsements: hedEndorsements,
-          }
+          };
         });
 
         if (epochIndex === -1) {
@@ -254,7 +276,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
             duration: parseFloat(instance.Duration),
             type: 'Event',
             label: epochLabel ?? instance.EventValue,
-            value:  instance.EventValue,
+            value: instance.EventValue,
             trial_type: instance.TrialType,
             properties: extraColumns,
             hed: hedTags,
@@ -273,7 +295,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
     }).then((epochs) => {
       const sortedEpochs = epochs
         .flat()
-        .sort(function (a, b) {
+        .sort(function(a, b) {
           return a.onset - b.onset;
         });
 
@@ -282,7 +304,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       this.store.dispatch(setFilteredEpochs({
         plotVisibility: sortedEpochs.reduce((indices, epoch, index) => {
           if (!(epoch.onset < 1 && epoch.duration >= timeInterval[1])) {
-            indices.push(index);  // Full-recording events not visible by default
+            indices.push(index); // Full-recording events not visible by default
           }
           return indices;
         }, []),
@@ -311,14 +333,18 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       });
 
     Promise.race(racers(fetchJSON, coordSystemURL))
-      .then( ({json, _}) => {
+      .then( ({json}) => {
         if (json) {
-          const {EEGCoordinateSystem, EEGCoordinateUnits, EEGCoordinateSystemDescription} = json;
+          const {
+            EEGCoordinateSystem,
+            EEGCoordinateUnits,
+            EEGCoordinateSystemDescription,
+          } = json;
           this.store.dispatch(
             setCoordinateSystem({
-              name: EEGCoordinateSystem	?? 'Other',
+              name: EEGCoordinateSystem ?? 'Other',
               units: EEGCoordinateUnits ?? 'm',
-              description: EEGCoordinateSystemDescription ?? 'n/a'
+              description: EEGCoordinateSystemDescription ?? 'n/a',
             })
           );
         }
@@ -339,7 +365,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
     const hedTagLogo = (
       <img
         src="https://images.loris.ca/HED_logo.png"
-        style={{ height: '46px', }}
+        style={{height: '46px'}}
       />
     );
 
@@ -361,11 +387,11 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
                     <a href='https://www.hedtags.org' target='_blank'>
                       {hedTagLogo}
                     </a>
-                    <span style={{ marginLeft: '15px', }}>
+                    <span style={{marginLeft: '15px'}}>
                   Dataset Tag Manager
-                </span>
+                    </span>
                   </div>
-                  <div style={{ fontSize: '12px', }}>
+                  <div style={{fontSize: '12px'}}>
                     More about HED
                     <InfoIcon
                       title='Click to view the HED schema'
@@ -394,7 +420,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
                                 : ''
                             }
                             onClick={() => {
-                              this.setState({ activeMenuOption: menuOption })
+                              this.setState({activeMenuOption: menuOption});
                             }}
                           >
                             <a
@@ -421,11 +447,11 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
               tabsRef={this.state.datasetTaggerTabsRef}
               activeMenuTab={this.state.activeMenuOption}
               setActiveMenuTab={(menuOption) => {
-                this.setState({ activeMenuOption: menuOption })
+                this.setState({activeMenuOption: menuOption});
               }}
               filenamePrefix={this.props.chunksURL[0]
-                .split('/').at(-1)  // filename
-                .split('_').slice(0, -1)     // prefix
+                .split('/').at(-1) // filename
+                .split('_').slice(0, -1) // prefix
                 .join('_')
               }
             />

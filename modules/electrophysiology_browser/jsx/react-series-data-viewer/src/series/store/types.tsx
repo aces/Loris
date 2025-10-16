@@ -31,7 +31,7 @@ export type Epoch = {
   type: 'Event',
   label: string,
   value: string,
-  trial_type: string,
+  trialType: string,
   properties?: any[],
   hed?: HEDTag[],
   channels: string[],
@@ -46,10 +46,10 @@ export type EpochFilter = {
 
 export type EventMetadata = {
   instances: any[],
-  extra_columns: any[],
-  hed_tags: any[],
-  hed_endorsements: any[],
-  channel_delimiter: string,
+  extraColumns: any[],
+  hedTags: any[],
+  hedEndorsements: any[],
+  channelDelimiter: string,
 }
 
 export type RightPanel =
@@ -93,7 +93,7 @@ export type EndorsementStatus =
 // Currently uppercase. DB columns unprocessed
 export type HEDTag = {
   schemaElement: HEDSchemaElement | null,
-  HEDTagID: number | null,  // redundant (in above)
+  HEDTagID: number | null, // redundant (in above)
   ID: any,
   PropertyName: string | null,
   PropertyValue: string | null,
@@ -108,7 +108,7 @@ export type HEDTag = {
 };
 
 export type HEDEndorsement = {
-  EndorsedBy: string,  // Name
+  EndorsedBy: string, // Name
   EndorsedByID: number | null,
   EndorsementComment: string | null,
   EndorsementStatus: EndorsementStatus,

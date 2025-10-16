@@ -31,8 +31,9 @@ export const loadChunks = (chunksData: FetchedChunks[]) => {
   return (dispatch: (_: any) => void) => {
     const channels : Channel[] = [];
 
-    const filters: Filter[] = window.EEGLabSeriesProviderStore[chunksData[0].chunksURL]
-                              .getState().filters;
+    const filters: Filter[]
+      = window.EEGLabSeriesProviderStore[chunksData[0].chunksURL]
+        .getState().filters;
     for (let index = 0; index < chunksData.length; index++) {
       const {channelIndex, chunks} : {
         channelIndex: number,
@@ -40,9 +41,11 @@ export const loadChunks = (chunksData: FetchedChunks[]) => {
       } = chunksData[index];
 
       // Concatenate all visible chunks
-      const originalChunkValues = chunks.reduce((chunkValues: number[], chunk: Chunk) => {
-        return chunkValues.concat(chunk.originalValues);
-      }, []);
+      const originalChunkValues = chunks.reduce(
+        (chunkValues: number[], chunk: Chunk) => {
+          return chunkValues.concat(chunk.originalValues);
+        }, []
+      );
 
       // Filter entire visible signal
       const filteredChunkValues = Object.values(filters).reduce(
@@ -104,7 +107,11 @@ export const fetchChunkAt = R.memoizeWith(
       `${baseURL}/raw/${downsampling}/${channelIndex}/`
       + `${traceIndex}/${chunkIndex}.buf`
     ).then((chunk) => {
-      store.dispatch(setDatasetMetadata({loadedChannels: ++store.getState().dataset.loadedChannels}));
+      store.dispatch(
+        setDatasetMetadata({
+          loadedChannels: ++store.getState().dataset.loadedChannels,
+        })
+      );
       return chunk;
     });
   }
@@ -187,11 +194,13 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
 
               const chunkPromises = R.range(...finestChunks.interval).flatMap(
                 (chunkIndex) => {
-
                   const numChunks = finestChunks.numChunks;
 
                   const filledChunks = (numChunks - 1) +
-                    (validSamples[finestChunks.downsampling] / valuesPerChunk[finestChunks.downsampling]);
+                    (
+                      validSamples[finestChunks.downsampling] /
+                      valuesPerChunk[finestChunks.downsampling]
+                    );
 
                   const chunkInterval = [
                     timeInterval[0] +
@@ -214,7 +223,7 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                       return ({
                         interval: chunkInterval,
                         ...chunk,
-                      })
+                      });
                     });
                   } else {
                     return [];
