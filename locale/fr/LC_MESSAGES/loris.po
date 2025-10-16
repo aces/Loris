@@ -20,31 +20,31 @@ msgstr ""
 
 # Smarty template main.tpl strings
 msgid "LORIS"
-msgstr ""
+msgstr "LORIS"
 
-msgid "DEV"
-msgstr ""
+#msgid "DEV"
+#msgstr ""
 
-msgid "Affiliations"
-msgstr ""
+#msgid "Affiliations"
+#msgstr ""
 
-msgid "Site Affiliation"
-msgstr ""
+#msgid "Site Affiliation"
+#msgstr ""
 
-msgid "Site Affiliations"
-msgstr ""
+#msgid "Site Affiliations"
+#msgstr ""
 
-msgid "Project Affiliation"
-msgstr ""
+#msgid "Project Affiliation"
+#msgstr ""
 
-msgid "Project Affiliations"
-msgstr ""
+#msgid "Project Affiliations"
+#msgstr ""
 
-msgid "Log Out"
-msgstr ""
+#msgid "Log Out"
+#msgstr ""
 
-msgid "My Preferences"
-msgstr ""
+#msgid "My Preferences"
+#msgstr ""
 
 # Auto extracted strings from PHP
 # Menu categories
@@ -55,152 +55,152 @@ msgstr ""
 #: modules/server_processes_manager/php/module.class.inc:104
 #: modules/survey_accounts/php/module.class.inc:48
 #: modules/user_accounts/php/module.class.inc:53
-msgid "Admin"
-msgstr ""
+#msgid "Admin"
+#msgstr ""
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
 #: modules/datadict/php/module.class.inc:49
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
-msgid "Data Dictionary"
-msgstr ""
+#msgid "Data Dictionary"
+#msgstr ""
 
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
-msgid "Tools"
-msgstr ""
+#msgid "Tools"
+#msgstr ""
 
 #: modules/behavioural_qc/php/module.class.inc:51
 #: modules/conflict_resolver/php/module.class.inc:83
 #: modules/examiner/php/module.class.inc:50
 #: modules/media/php/module.class.inc:33
-msgid "Clinical"
-msgstr ""
+#msgid "Clinical"
+#msgstr ""
 
 #: modules/dicom_archive/php/module.class.inc:115
 #: modules/imaging_browser/php/module.class.inc:40
 #: modules/imaging_qc/php/module.class.inc:50
 #: modules/imaging_uploader/php/module.class.inc:54
 #: modules/mri_violations/php/module.class.inc:53
-msgid "Imaging"
-msgstr ""
+#msgid "Imaging"
+#msgstr ""
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
-msgid "Candidate"
-msgstr ""
+#msgid "Candidate"
+#msgstr ""
 
 #: modules/genomic_browser/php/module.class.inc:53
-msgid "Genomics"
-msgstr ""
+#msgid "Genomics"
+#msgstr ""
 
 #: modules/electrophysiology_browser/php/module.class.inc:54
-msgid "Electrophysiology"
-msgstr ""
+#msgid "Electrophysiology"
+#msgstr ""
 
 #: modules/dataquery/php/module.class.inc:33
 #: modules/dqt/php/module.class.inc:49
 #: modules/publication/php/module.class.inc:55
 #: modules/statistics/php/module.class.inc:49
-msgid "Reports"
-msgstr ""
+#msgid "Reports"
+#msgstr ""
 
 # Common loris terms. Consider moving these to their own textdomain?
-msgid "TimePoint"
-msgstr ""
+#msgid "TimePoint"
+#msgstr ""
 
 # Common select option labels
-msgid "Yes"
-msgstr ""
+#msgid "Yes"
+#msgstr ""
 
-msgid "No"
-msgstr ""
+#msgid "No"
+#msgstr ""
 
 # Common swal labels
-msgid "Cancel"
-msgstr ""
+#msgid "Cancel"
+#msgstr ""
 
-msgid "Success!"
-msgstr ""
+#msgid "Success!"
+#msgstr ""
 
 # Common candidate terms
-msgid "PSCID"
-msgstr ""
+#msgid "PSCID"
+#msgstr ""
 
-msgid "DCCID"
-msgstr ""
+#msgid "DCCID"
+#msgstr ""
 
-msgid "Visit Label"
-msgstr ""
+#msgid "Visit Label"
+#msgstr ""
 
-msgid "Site"
-msgstr ""
+#msgid "Site"
+#msgstr ""
 
-msgid "Module"
-msgstr ""
+#msgid "Module"
+#msgstr ""
 
-msgid "Project"
-msgstr ""
+#msgid "Project"
+#msgstr ""
 
-msgid "Cohort"
-msgstr ""
+#msgid "Cohort"
+#msgstr ""
 
-msgid "Cohorts"
-msgstr ""
+#msgid "Cohorts"
+#msgstr ""
 
-msgid "Session"
-msgstr ""
+#msgid "Session"
+#msgstr ""
 
-msgid "Date of registration"
-msgstr ""
+#msgid "Date of registration"
+#msgstr ""
 
-msgid "Participant Status"
-msgstr ""
+#msgid "Participant Status"
+#msgstr ""
 
-msgid "DoB"
-msgstr ""
+#msgid "DoB"
+#msgstr ""
 
-msgid "Sex"
-msgstr ""
+#msgid "Sex"
+#msgstr ""
 
-msgid "Feedback"
-msgstr ""
+#msgid "Feedback"
+#msgstr ""
 
-msgid "Scans"
-msgstr ""
+#msgid "Scans"
+#msgstr ""
 
-msgid "Stage"
-msgstr ""
+#msgid "Stage"
+#msgstr ""
 
-msgid "Sent To DCC"
-msgstr ""
+#msgid "Sent To DCC"
+#msgstr ""
 
-msgid "Date of Birth"
-msgstr ""
+#msgid "Date of Birth"
+#msgstr ""
 
-msgid "Visits"
-msgstr ""
+#msgid "Visits"
+#msgstr ""
 
-msgid "An error occured while loading the page."
-msgstr ""
+#msgid "An error occured while loading the page."
+#msgstr ""
 
-msgid "Entity Type"
-msgstr ""
+#msgid "Entity Type"
+#msgstr ""
 
-msgid "Scan Done"
-msgstr ""
+#msgid "Scan Done"
+#msgstr ""
 
-msgid "Show Advanced Filters"
-msgstr ""
+#msgid "Show Advanced Filters"
+#msgstr ""
 
-msgid "Hide Advanced Filters"
-msgstr ""
+#msgid "Hide Advanced Filters"
+#msgstr ""
 
-msgid "Language"
-msgstr ""
+#msgid "Language"
+#msgstr ""
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -213,49 +213,49 @@ msgid "Download Table as CSV"
 msgstr "Télecharger le tableau en format CSV"
 
 # Dashboard panel strings
-msgid "Views"
-msgstr ""
+#msgid "Views"
+#msgstr ""
 
 # Common strings on widgets
-msgid "NEW"
-msgstr ""
+#msgid "NEW"
+#msgstr ""
 
-msgid "Updated"
-msgstr ""
+#msgid "Updated"
+#msgstr ""
 
-msgid "Uploaded"
-msgstr ""
+#msgid "Uploaded"
+#msgstr ""
 
-msgid "Total"
-msgstr ""
+#msgid "Total"
+#msgstr ""
 
 # Common timepoint and vist terms
-msgid "Not Started"
-msgstr ""
+#msgid "Not Started"
+#msgstr ""
 
-msgid "Screening"
-msgstr ""
+#msgid "Screening"
+#msgstr ""
 
-msgid "Visit"
-msgstr ""
+#msgid "Visit"
+#msgstr ""
 
-msgid "Approval"
-msgstr ""
+#msgid "Approval"
+#msgstr ""
 
-msgid "Subject"
-msgstr ""
+#msgid "Subject"
+#msgstr ""
 
-msgid "Recycling Bin"
-msgstr ""
+#msgid "Recycling Bin"
+#msgstr ""
 
-msgid "Pass"
-msgstr ""
+#msgid "Pass"
+#msgstr ""
 
-msgid "Failure"
-msgstr ""
+#msgid "Failure"
+#msgstr ""
 
-msgid "Withdrawal"
-msgstr ""
+#msgid "Withdrawal"
+#msgstr ""
 
-msgid "In Progress"
-msgstr ""
+#msgid "In Progress"
+#msgstr ""
