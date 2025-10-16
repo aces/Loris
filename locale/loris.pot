@@ -119,6 +119,12 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Create"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
 # Common swal labels
 msgid "Cancel"
 msgstr ""
@@ -146,11 +152,9 @@ msgid "Project"
 msgstr ""
 
 msgid "Cohort"
-msgstr ""
-
-msgid "Cohorts"
-msgstr ""
-
+msgid_plural "Cohorts"
+msgstr[0] ""
+ 
 msgid "Session"
 msgstr ""
 
@@ -229,6 +233,9 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
+msgid "Error!"
+msgstr ""
+
 # Common timepoint and vist terms
 msgid "Not Started"
 msgstr ""
@@ -258,4 +265,14 @@ msgid "Withdrawal"
 msgstr ""
 
 msgid "In Progress"
+msgstr ""
+
+# Age related terms
+msgid "Age"
+msgstr ""
+
+msgid "{{months}} months old"
+msgstr ""
+
+msgid "{{years}} years old"
 msgstr ""
