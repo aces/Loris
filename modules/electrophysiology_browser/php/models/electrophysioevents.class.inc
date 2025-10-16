@@ -44,7 +44,7 @@ class ElectrophysioEvents
         );
 
         $extraColumns = $db->pselect(
-          'SELECT *
+            'SELECT *
              FROM physiological_task_event_opt AS opt
              WHERE EXISTS (
                SELECT 1
@@ -55,11 +55,11 @@ class ElectrophysioEvents
                  AND f.PhysiologicalFileID=:PFID
                  AND f.FileType="tsv"
              )',
-          ['PFID' => $this->_physioFileID]
+            ['PFID' => $this->_physioFileID]
         );
 
         $hedTags = $db->pselect(
-          'SELECT ptehr.*,
+            'SELECT ptehr.*,
               tagger.First_name AS FirstName, tagger.Last_name AS LastName
               FROM physiological_task_event_hed_rel AS ptehr
               LEFT JOIN users AS tagger ON ptehr.TaggedBy = tagger.ID
@@ -72,7 +72,7 @@ class ElectrophysioEvents
                  AND f.PhysiologicalFileID=:PFID
                  AND f.FileType="tsv"
              )',
-          ['PFID' => $this->_physioFileID]
+            ['PFID' => $this->_physioFileID]
         );
 
         $hedEndorsements = (
@@ -82,17 +82,20 @@ class ElectrophysioEvents
         $channelDelimiter = $this->getChannelDelimiter($db);
 
         $this->_data = [
-          'instances' => $taskEvents,
-          'extra_columns' => $extraColumns,
-          'hed_tags' => array_map(function ($hedTag) {
-            $hedTag['TaggerName'] =
-              DatasetTags::convertTaggerName($hedTag);
-            unset($hedTag['FirstName']);
-            unset($hedTag['LastName']);
-            return $hedTag;
-          }, iterator_to_array($hedTags)),
-          'hed_endorsements' => $hedEndorsements,
-          'channel_delimiter' => $channelDelimiter,
+            'instances'         => $taskEvents,
+            'extra_columns'     => $extraColumns,
+            'hed_tags'          => array_map(
+                function ($hedTag) {
+                    $hedTag['TaggerName']
+                        = DatasetTags::convertTaggerName($hedTag);
+                    unset($hedTag['FirstName']);
+                    unset($hedTag['LastName']);
+                    return $hedTag;
+                },
+                iterator_to_array($hedTags)
+            ),
+            'hed_endorsements'  => $hedEndorsements,
+            'channel_delimiter' => $channelDelimiter,
         ];
     }
 
@@ -130,167 +133,179 @@ class ElectrophysioEvents
 
             //If no derivative files exist, must create new files
             $eventFileID = $db->pselectOne(
-              "SELECT EventFileID
+                "SELECT EventFileID
                         FROM physiological_event_file
                         WHERE FileType = 'tsv'
                         AND PhysiologicalFileID=:PFID",
-              ['PFID' => $this->_physioFileID]
+                ['PFID' => $this->_physioFileID]
             );
 
             $channelDelimiter = $this->getChannelDelimiter($db) ?? '';
 
             $instance = [
-              'Onset'             => $instance_data['onset'],
-              'Duration'          => $instance_data['duration'],
-              'Channel'           => join($channelDelimiter, $instance_data['channels']),
+                'Onset'    => $instance_data['onset'],
+                'Duration' => $instance_data['duration'],
+                'Channel'  => join($channelDelimiter, $instance_data['channels']),
             ];
 
-          if (!empty($eventFileID)) {
-            $action = 'update';
-            if (is_null($instance_id)) {
-              // Insert new event
-              $action = 'insert';
-              $instance['PhysiologicalFileID'] = $this->_physioFileID;
-              $instance['EventFileID'] = $eventFileID;
-              $instance['TrialType'] = $instance_data['event_type'] === 'trial_type'
-                ? $instance_data['label_name']
-                : null;
-              $instance_id = $this->addEvent($instance);
+            if (!empty($eventFileID)) {
+                $action = 'update';
+                if (is_null($instance_id)) {
+                    // Insert new event
+                    $action = 'insert';
+                    $instance['PhysiologicalFileID'] = $this->_physioFileID;
+                    $instance['EventFileID']         = $eventFileID;
+                    $instance['TrialType']           = $instance_data['event_type']
+                                                        === 'trial_type'
+                    ? $instance_data['label_name']
+                    : null;
+                    $instance_id = $this->addEvent($instance);
 
-              // Create extra columns
-              foreach ($instance_data['properties'] as $propertyName => $propertyValue) {
-                $db->insert(
-                  'physiological_task_event_opt',
-                  [
-                    'PhysiologicalTaskEventID' => $instance_id,
-                    'PropertyName' => $propertyName,
-                    'PropertyValue' => $propertyValue,
-                  ]
+                    // Create extra columns
+                    foreach (
+                        $instance_data['properties']
+                        as $propertyName => $propertyValue
+                    ) {
+                        $db->insert(
+                            'physiological_task_event_opt',
+                            [
+                                'PhysiologicalTaskEventID' => $instance_id,
+                                'PropertyName'             => $propertyName,
+                                'PropertyValue'            => $propertyValue,
+                            ]
+                        );
+                    }
+                }
+
+                // TODO: VALIDATE HED
+                $deletedTagIDs = $instance_data['deleted_hed'];
+                $newTagIDs     = $instance_data['added_hed'];
+
+                // Update physiological_task_event
+                $db->update(
+                    'physiological_task_event',
+                    $instance,
+                    ['PhysiologicalTaskEventID' => $instance_id]
                 );
-              }
-            }
 
-            // TODO: VALIDATE HED
-            $deletedTagIDs = $instance_data['deleted_hed'];
-            $newTagIDs = $instance_data['added_hed'];
-
-
-
-            // Update physiological_task_event
-            $db->update(
-              'physiological_task_event',
-              $instance,
-              ['PhysiologicalTaskEventID' => $instance_id]
-            );
-
-            /* // Update extra columns
-             foreach ($instance_data['properties'] as $propertyName => $propertyValue) {
-               $db->update(
-                 'physiological_task_event_opt',
-                 ['PropertyValue' => $propertyValue,],
-                 [
+                /* // Update extra columns - Not currently supported
+                foreach (
+                    $instance_data['properties']
+                    as $propertyName => $propertyValue
+                ) {
+                 $db->update(
+                   'physiological_task_event_opt',
+                   ['PropertyValue' => $propertyValue,],
+                   [
                    'PropertyName' => $propertyName,
                    'PhysiologicalTaskEventID' => $instance_id,
-                 ]
-               );
-             }*/
+                   ]
+                 );
+                }*/
 
-            $this->addToEventHistory(intval($instance_id), $action, $user->getId());
+                $this->addToEventHistory(
+                    intval($instance_id),
+                    $action,
+                    $user->getId()
+                );
 
-            // Delete HED tags
-            foreach ($deletedTagIDs as $deletedTagID) {
-              $this->deleteHEDTag($deletedTagID);
+                // Delete HED tags
+                foreach ($deletedTagIDs as $deletedTagID) {
+                    $this->deleteHEDTag($deletedTagID);
+                }
+
+                foreach ($newTagIDs as $newTagID) {
+                    $db->insert(
+                        'physiological_task_event_hed_rel',
+                        [
+                            'PhysiologicalTaskEventID' => $instance_id,
+                            'HEDTagID'                 => $newTagID,
+                            'TaggedBy'                 => $user->getId(),
+                        ]
+                    );
+                    $this->addToHEDHistory(
+                        $db->getLastInsertId(),
+                        'insert'
+                    );
+                }
+
+                $db->update(
+                    'physiological_event_file',
+                    ['LastUpdate' => date("Y-m-d H:i:s")],
+                    ['PhysiologicalFileID' => $this->_physioFileID]
+                );
             }
 
-            foreach ($newTagIDs as $newTagID) {
-              $db->insert(
-                'physiological_task_event_hed_rel',
-                [
-                  'PhysiologicalTaskEventID'  => $instance_id,
-                  'HEDTagID'                  => $newTagID,
-                  'TaggedBy'                  => $user->getId(),
-                ]
-              );
-              $this->addToHEDHistory(
-                $db->getLastInsertId(),
-                'insert'
-              );
-            }
-
-            $db->update(
-              'physiological_event_file',
-              ['LastUpdate' => date("Y-m-d H:i:s")],
-              ['PhysiologicalFileID' => $this->_physioFileID]
-            );
-          }
-
-          $taskEvent = $db->pselectRow(
-            'SELECT * FROM physiological_task_event
+            $taskEvent = $db->pselectRow(
+                'SELECT * FROM physiological_task_event
             WHERE PhysiologicalTaskEventID=:PTEID',
-            ['PTEID' => $instance_id]
-          );
+                ['PTEID' => $instance_id]
+            );
 
-          $extraColumns = $db->pselect(
-            'SELECT opt.*
+            $extraColumns = $db->pselect(
+                'SELECT opt.*
                   FROM physiological_task_event_opt AS opt
                   WHERE opt.PhysiologicalTaskEventID=:PTEID',
-            ['PTEID' => $instance_id]
-          );
+                ['PTEID' => $instance_id]
+            );
 
-          $hedTags = $db->pselect(
-            'SELECT ptehr.*, tagger.First_name AS FirstName, tagger.Last_name AS LastName
+            $hedTags = $db->pselect(
+                'SELECT ptehr.*,
+            tagger.First_name AS FirstName, tagger.Last_name AS LastName
             FROM physiological_task_event_hed_rel AS ptehr
             LEFT JOIN users AS tagger ON ptehr.TaggedBy = tagger.ID
             WHERE PhysiologicalTaskEventID=:PTEID',
-            ['PTEID' => $instance_id]
-          );
+                ['PTEID' => $instance_id]
+            );
 
-          $hedEndorsements = array_map(
-            function ($endorsement) {
-              $endorserName = substr($endorsement['FirstName'], 0, 1) .
-                '.' . $endorsement['LastName'];
-              unset($endorsement['FirstName']);
-              unset($endorsement['LastName']);
-              $endorsement['EndorsedBy'] = $endorserName;
-              $endorsement['EndorsementTime'] = $endorsement['EndorsedAt'];
+            $hedEndorsements = array_map(
+                function ($endorsement) {
+                    $endorserName = substr($endorsement['FirstName'], 0, 1) .
+                    '.' . $endorsement['LastName'];
+                    unset($endorsement['FirstName']);
+                    unset($endorsement['LastName']);
+                    $endorsement['EndorsedBy']      = $endorserName;
+                    $endorsement['EndorsementTime'] = $endorsement['EndorsedAt'];
 
-              return $endorsement;
-            },
-            HEDEndorsement::getHEDEndorsements(strval($instance_id))
-          );
+                    return $endorsement;
+                },
+                HEDEndorsement::getHEDEndorsements(strval($instance_id))
+            );
 
-          return [
-            'instance' => $taskEvent,
-            'extra_columns' => iterator_to_array($extraColumns),
-            'hed_tags' => array_map(function ($hedTag) {
-              $hedTag['TaggerName'] =
-                DatasetTags::convertTaggerName($hedTag);
-              unset($hedTag['FirstName']);
-              unset($hedTag['LastName']);
-              return $hedTag;
-            }, iterator_to_array($hedTags)),
-            'hed_endorsements' => $hedEndorsements,
-          ];
+            return [
+                'instance'         => $taskEvent,
+                'extra_columns'    => iterator_to_array($extraColumns),
+                'hed_tags'         => array_map(
+                    function ($hedTag) {
+                        $hedTag['TaggerName']
+                            = DatasetTags::convertTaggerName($hedTag);
+                        unset($hedTag['FirstName']);
+                        unset($hedTag['LastName']);
+                        return $hedTag;
+                    },
+                    iterator_to_array($hedTags)
+                ),
+                'hed_endorsements' => $hedEndorsements,
+            ];
         }
-      return [];
+        return [];
     }
-
 
     /**
      * Adds new event. Returns PhysiologicalTaskEventID
      *
-     * @param array $instance     Physiological Task Event
+     * @param array $instance Physiological Task Event
      *
      * @return string
      */
     function addEvent(array $instance): string
     {
-      $db = \NDB_Factory::singleton()->database();
-      $db->insert(
-        'physiological_task_event',
-        $instance,
-      );
-      return $db->getLastInsertId();
+        $db = \NDB_Factory::singleton()->database();
+        $db->insert(
+            'physiological_task_event',
+            $instance,
+        );
+        return $db->getLastInsertId();
     }
 
     /**
@@ -302,7 +317,7 @@ class ElectrophysioEvents
      */
     function deleteEvent(int $physiologicalTaskEventID): void
     {
-        $db =  $this->loris->getDatabaseConnection();
+        $db   =  $this->loris->getDatabaseConnection();
         $user = \NDB_Factory::singleton()->user();
 
         $physioFileID = $db->pselectone(
@@ -312,81 +327,87 @@ class ElectrophysioEvents
             ['taskEventID' => $physiologicalTaskEventID]
         );
 
-        // TODO: Check that this cascades properly to rel tables
         if ($this->_physioFileID == $physioFileID) {
             $db->delete(
                 "physiological_task_event",
                 ['PhysiologicalTaskEventID' => $physiologicalTaskEventID]
             );
         }
-        $this->addToEventHistory($physiologicalTaskEventID, 'delete', $user->getId());
+        $this->addToEventHistory(
+            $physiologicalTaskEventID,
+            'delete',
+            $user->getId()
+        );
     }
 
     /**
      * Add event action to history
      *
-     * @param int    $physiologicalTaskEventID
+     * @param int    $pteID  PhysiologicalTaskEventID
      * @param string $action DB modification type (insert, update, delete)
      * @param int    $userID ID of user performing action
      *
      * @return void
      */
-    function addToEventHistory(int $physiologicalTaskEventID, string $action, int $userID): void
-    {
-      $db = \NDB_Factory::singleton()->database();
-      $event = iterator_to_array($db->pselect(
-        "SELECT *
+    function addToEventHistory(
+        int $pteID, string $action, int $userID
+    ): void {
+        $db    = \NDB_Factory::singleton()->database();
+        $event = iterator_to_array(
+            $db->pselect(
+                "SELECT *
             FROM physiological_task_event
-            WHERE PhysiologicalTaskEventID=:PTID",
-        ['PTID' => $physiologicalTaskEventID]
-      ))[0];
+            WHERE PhysiologicalTaskEventID=:PTEID",
+                ['PTEID' => $pteID]
+            )
+        )[0];
 
-      $historyObject = $event;
-      $historyObject['ModifiedBy'] = $userID;
-      $historyObject['ModificationType'] = $action;
-      $db->insert('physiological_task_event_history', $historyObject);
+        $historyObject = $event;
+        $historyObject['ModifiedBy']       = $userID;
+        $historyObject['ModificationType'] = $action;
+        $db->insert('physiological_task_event_history', $historyObject);
     }
-
 
     /**
      * Add HED tagging action to history
      *
-     * @param int   $tableID DB PK ID
-     * @param string $action DB modification type (insert, update, delete)
+     * @param string $tableID DB PK ID
+     * @param string $action  DB modification type (insert, update, delete)
      *
      * @return void
      */
     function addToHEDHistory(string $tableID, string $action): void
     {
-      $db = \NDB_Factory::singleton()->database();
-      $hedTag = iterator_to_array($db->pselect(
-        "SELECT *
+        $db     = \NDB_Factory::singleton()->database();
+        $hedTag = iterator_to_array(
+            $db->pselect(
+                "SELECT *
             FROM physiological_task_event_hed_rel
             WHERE ID=:ID",
-        ['ID' => $tableID]
-      ))[0];
+                ['ID' => $tableID]
+            )
+        )[0];
 
-      $historyObject =  [
-        'HEDTableID' => $hedTag['ID'],
-        'HEDTable' => 'physiological_task_event_hed_rel',
-        'TaggedBy' => $hedTag['TaggedBy'],
-        'HEDReferenceID' => $hedTag['PhysiologicalTaskEventID'],
-        'HEDTagID' => null,
-        'TagValue' => null,
-        'Description' => null,
-        'HasPairing' => $hedTag['HasPairing'] ? '1' : '0',
-        'PairRelID' => $hedTag['PairRelID'],
-        'AdditionalMembers' => $hedTag['AdditionalMembers'],
-        'ModificationType' => $action,
-      ];
-      $db->insert('hed_tag_history', $historyObject);
+        $historyObject =  [
+            'HEDTableID'        => $hedTag['ID'],
+            'HEDTable'          => 'physiological_task_event_hed_rel',
+            'TaggedBy'          => $hedTag['TaggedBy'],
+            'HEDReferenceID'    => $hedTag['PhysiologicalTaskEventID'],
+            'HEDTagID'          => null,
+            'TagValue'          => null,
+            'Description'       => null,
+            'HasPairing'        => $hedTag['HasPairing'] ? '1' : '0',
+            'PairRelID'         => $hedTag['PairRelID'],
+            'AdditionalMembers' => $hedTag['AdditionalMembers'],
+            'ModificationType'  => $action,
+        ];
+        $db->insert('hed_tag_history', $historyObject);
     }
 
     /**
      * Deletes one event's HED tag
      *
-     * @param int $physiologicalTaskEventID PhysiologicalTaskEventID
-     * @param int $hedTagID                 HEDTagID
+     * @param string $tableID Table ID (physiological_task_event_hed_rel.ID)
      *
      * @return void
      */
@@ -396,10 +417,9 @@ class ElectrophysioEvents
 
         $this->addToHEDHistory($tableID, 'delete');
 
-        // TODO: Check that this cascades properly to rel tables
         $db->delete(
-          "physiological_task_event_hed_rel",
-          ['ID' => $tableID]
+            "physiological_task_event_hed_rel",
+            ['ID' => $tableID]
         );
     }
 
@@ -690,10 +710,10 @@ class ElectrophysioEvents
             // Add channel delimiter
             $channelDelimiter = $this->getChannelDelimiter($db) ?? '';
             if (strlen($channelDelimiter) > 0) {
-              $eventsJSON['channel'] = [
-                'Description' => 'Channel(s) associated with the event',
-                'Delimiter' => $channelDelimiter,
-              ];
+                $eventsJSON['channel'] = [
+                    'Description' => 'Channel(s) associated with the event',
+                    'Delimiter'   => $channelDelimiter,
+                ];
             }
 
             foreach (array_keys($datasetHEDTags) as $eventColumn) {
@@ -723,19 +743,23 @@ class ElectrophysioEvents
 
             $encodedEvents = json_encode($eventsJSON, JSON_PRETTY_PRINT);
             if (strlen($jsonPath) === 0) {
-              $tsvRelPath = $tsv[0]['filePath'];
-              $jsonPath = substr($tsvRelPath, 0, strrpos($tsvRelPath, '.')) . '.json';
-              $db->insert(
-                'physiological_event_file',
-                [
-                  'ProjectID'               => $tsv[0]['projectID'],
-                  'PhysiologicalFileID'     => $this->_physioFileID,
-                  'FileType'                => 'json',
-                  'FilePath'                => $jsonPath,
-                ]
-              );
+                $tsvRelPath = $tsv[0]['filePath'];
+                $jsonPath   = substr(
+                    $tsvRelPath,
+                    0,
+                    strrpos($tsvRelPath, '.')
+                ) . '.json';
+                $db->insert(
+                    'physiological_event_file',
+                    [
+                        'ProjectID'           => $tsv[0]['projectID'],
+                        'PhysiologicalFileID' => $this->_physioFileID,
+                        'FileType'            => 'json',
+                        'FilePath'            => $jsonPath,
+                    ]
+                );
             }
-            $jsonFile      = fopen($jsonPath, 'w');
+            $jsonFile = fopen($jsonPath, 'w');
             fwrite($jsonFile, $encodedEvents);
             fclose($jsonFile);
 
@@ -822,13 +846,16 @@ class ElectrophysioEvents
     }
 
     /**
-     * @param \Database $db
+     * Get channel delimiter
+     *
+     * @param \Database $db Database object
+     *
      * @return string|null
      */
     public function getChannelDelimiter(\Database $db): ?string
     {
-      return $db->pselectOne(
-        'SELECT Value FROM parameter_project
+        return $db->pselectOne(
+            'SELECT Value FROM parameter_project
             JOIN parameter_type pt USING (ParameterTypeID)
             JOIN session s USING (ProjectID)
             WHERE pt.Name = "ChannelDelimiter"
@@ -836,7 +863,7 @@ class ElectrophysioEvents
               SELECT SessionID FROM physiological_file
               WHERE PhysiologicalFileID=:PFID
             )',
-        ['PFID' => $this->_physioFileID]
-      ) ?? ',';  // Default should be '' (BIDS-spec)
+            ['PFID' => $this->_physioFileID]
+        ) ?? ',';  // Default should be '' (BIDS-spec)
     }
 }
