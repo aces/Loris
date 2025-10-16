@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
 namespace LORIS\electrophysiology_browser\Models;
-use DatabaseException;
 
 /**
  * This class obtains HED endorsements
@@ -211,7 +210,7 @@ class HEDEndorsement
               FROM hed_tag_endorsement
               WHERE ID=:eID',
             ['eID' => $endorsementID]
-        );
+        ) ?? '';
     }
 
     /**
@@ -232,23 +231,25 @@ class HEDEndorsement
             ['eID' => $endorsementID]
         );
 
-        $insertionFields =  [
+        if (!is_null($endorsement)) {
+          $insertionFields =  [
             'HEDRelID'           => $endorsement['HEDRelID'],
             'HEDTable'           => $endorsement['HEDTable'],
             'EndorsedBy'         => $endorsement['EndorsedBy'],
             'EndorsementStatus'  => $endorsement['EndorsementStatus'],
             'EndorsementComment' => $endorsement['EndorsementComment'],
-        ];
+          ];
 
-        $db->delete(
+          $db->delete(
             "hed_tag_endorsement",
             ['ID' => $endorsementID]
-        );
-        HEDEndorsement::insertHEDEndorsementHistory(
+          );
+          HEDEndorsement::insertHEDEndorsementHistory(
             $insertionFields,
             $endorsementID,
             'DELETE'
-        );
+          );
+        }
     }
 
     /**
