@@ -86,7 +86,7 @@ msgstr ""
 #: modules/imaging_uploader/php/module.class.inc:54
 #: modules/mri_violations/php/module.class.inc:53
 msgid "Imaging"
-msgstr "Imágenes"
+msgstr ""
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
@@ -110,7 +110,7 @@ msgstr ""
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr "Punto en el tiempo"
+msgstr ""
 
 # Common select option labels
 msgid "Yes"
@@ -118,6 +118,12 @@ msgstr "Sí"
 
 msgid "No"
 msgstr "No"
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "N/A"
+msgstr "N/A"
 
 # Common swal labels
 msgid "Cancel"
@@ -149,13 +155,12 @@ msgid "Candidate Registration Project"
 msgstr "Projecto donde se registró al Candidato"
 
 msgid "Timepoint Project"
-msgstr "Punto en el tiempo del Projecto"
+msgstr ""
 
 msgid "Cohort"
-msgstr "Cohorte"
-
-msgid "Cohorts"
-msgstr "Cohortes"
+msgid_plural "Cohorts"
+msgstr[0] "Cohorte"
+msgstr[1] "Cohortes"
 
 msgid "Session"
 msgstr ""
@@ -188,54 +193,57 @@ msgid "Reverse Send To DCC"
 msgstr "Revertir Enviar al CCD"
 
 msgid "Date of Birth"
-msgstr ""
+msgstr "Fecha de Nacimiento"
 
 msgid "Visits"
-msgstr ""
+msgstr "Visitas"
 
 msgid "An error occured while loading the page."
-msgstr ""
+msgstr "Un error ocurrió minstras cargaba la página"
 
 msgid "Entity Type"
-msgstr ""
+msgstr "Tipo de Entidad"
 
 msgid "Scan Done"
-msgstr ""
+msgstr "Scan hecho"
 
 msgid "Show Advanced Filters"
-msgstr ""
+msgstr "Mostras filtros avanzados"
 
 msgid "Hide Advanced Filters"
-msgstr ""
+msgstr "Ocultar filtros avanzados"
 
 msgid "Language"
 msgstr "Lenguaje"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
-msgstr ""
+msgstr "{{pageCount}} filas mostradas de {{totalCount}}."
 
 msgid "Maximum rows per page:"
-msgstr ""
+msgstr "Máximo de filasa por página"
 
-msgid "Download Table as CSV"
-msgstr ""
+msgid "Download Data as CSV"
+msgstr "Descargar Datos como CSV"
 
 # Dashboard panel strings
 msgid "Views"
-msgstr ""
+msgstr "Vistas"
 
 # Common strings on widgets
 msgid "NEW"
-msgstr ""
+msgstr "Nuevo"
 
 msgid "Updated"
-msgstr ""
+msgstr "Actualizado"
 
 msgid "Uploaded"
-msgstr ""
+msgstr "Subido"
 
 msgid "Total"
+msgstr "Total"
+
+msgid "Error!"
 msgstr ""
 
 # Common timepoint and vist terms
@@ -291,10 +299,20 @@ msgid "Administration"
 msgstr "Administración"
 
 msgid "Double Data Entry Form"
-msgstr "Formulario de entrada de datos duplicado"
+msgstr "Formulario de entrada de datos duplicad"
 
 msgid "Double Data Entry Status"
 msgstr "Estado del formulario de entrada de datos duplicado"
 
 msgid "Double Data Entry"
-msgstr "Entrada de datos duplicada"
+msgstr "Entrada de datos doble"
+
+# Age related terms
+msgid "Age"
+msgstr "Edad"
+
+msgid "{{months}} months old"
+msgstr "{{months}} meses"
+
+msgid "{{years}} years old"
+msgstr "{{years}} años"

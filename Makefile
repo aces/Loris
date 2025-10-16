@@ -3,6 +3,9 @@
 all: node_modules locales VERSION vendor
 	npm run build
 
+%.mo: %.po
+	msgfmt -o $@ $<
+
 # If anything changes, re-generate the VERSION file
 VERSION: .
 	tools/gen-version.sh
@@ -60,13 +63,18 @@ testdata:
 	php tools/raisinbread_refresh.php
 
 locales: 
+	msgfmt -o locale/en/LC_MESSAGES/loris.mo locale/en/LC_MESSAGES/loris.po
+	npx i18next-conv -l en -s locale/en/LC_MESSAGES/loris.po -t locale/en/LC_MESSAGES/loris.json --compatibilityJSON v4
 	msgfmt -o locale/ja/LC_MESSAGES/loris.mo locale/ja/LC_MESSAGES/loris.po
-	npx i18next-conv -l ja -s locale/ja/LC_MESSAGES/loris.po -t locale/ja/LC_MESSAGES/loris.json
+	npx i18next-conv -l ja -s locale/ja/LC_MESSAGES/loris.po -t locale/ja/LC_MESSAGES/loris.json --compatibilityJSON v4
 	msgfmt -o locale/hi/LC_MESSAGES/loris.mo locale/hi/LC_MESSAGES/loris.po
-	npx i18next-conv -l hi -s locale/hi/LC_MESSAGES/loris.po -t locale/hi/LC_MESSAGES/loris.json
+	npx i18next-conv -l hi -s locale/hi/LC_MESSAGES/loris.po -t locale/hi/LC_MESSAGES/loris.json --compatibilityJSON v4
 	msgfmt -o locale/es/LC_MESSAGES/loris.mo locale/es/LC_MESSAGES/loris.po
-	npx i18next-conv -l es -s locale/es/LC_MESSAGES/loris.po -t locale/es/LC_MESSAGES/loris.json
+	npx i18next-conv -l es -s locale/es/LC_MESSAGES/loris.po -t locale/es/LC_MESSAGES/loris.json --compatibilityJSON v4
 	msgfmt -o modules/new_profile/locale/ja/LC_MESSAGES/new_profile.mo modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po
+	npx i18next-conv -l ja -s modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po -t modules/new_profile/locale/ja/LC_MESSAGES/new_profile.json
+	msgfmt -o modules/new_profile/locale/hi/LC_MESSAGES/new_profile.mo modules/new_profile/locale/hi/LC_MESSAGES/new_profile.po
+	npx i18next-conv -l hi -s modules/new_profile/locale/hi/LC_MESSAGES/new_profile.po -t modules/new_profile/locale/hi/LC_MESSAGES/new_profile.json
 	msgfmt -o modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po
 	msgfmt -o modules/api_docs/locale/ja/LC_MESSAGES/api_docs.mo modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po
 	msgfmt -o modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po
@@ -122,6 +130,7 @@ locales:
 	msgfmt -o modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po
 	msgfmt -o modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.po
 	msgfmt -o modules/next_stage/locale/ja/LC_MESSAGES/next_stage.mo modules/next_stage/locale/ja/LC_MESSAGES/next_stage.po
+	msgfmt -o modules/next_stage/locale/es/LC_MESSAGES/next_stage.mo modules/next_stage/locale/es/LC_MESSAGES/next_stage.po
 	msgfmt -o modules/oidc/locale/ja/LC_MESSAGES/oidc.mo modules/oidc/locale/ja/LC_MESSAGES/oidc.po
 	msgfmt -o modules/publication/locale/ja/LC_MESSAGES/publication.mo modules/publication/locale/ja/LC_MESSAGES/publication.po
 	msgfmt -o modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.mo modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.po
@@ -134,55 +143,51 @@ locales:
 	msgfmt -o modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po
 
 
-acknowledgements:
+acknowledgements: modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo
 	target=acknowledgements npm run compile
 
 create_timepoint:
 	target=data_release npm run compile
 
-data_release:
-	msgfmt -o modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/hi/LC_MESSAGES/data_release.po
+data_release: modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.mo
 	npx i18next-conv -l hi -s modules/data_release/locale/hi/LC_MESSAGES/data_release.po -t modules/data_release/locale/hi/LC_MESSAGES/data_release.json 
-	msgfmt -o modules/data_release/locale/ja/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.po
 	npx i18next-conv -l ja -s modules/data_release/locale/ja/LC_MESSAGES/data_release.po -t modules/data_release/locale/ja/LC_MESSAGES/data_release.json 
 	target=data_release npm run compile
 
-instrument_manager:
+instrument_manager: modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.mo
 	target=instrument_manager npm run compile
 
-dataquery:
+dataquery: modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo
 	msgfmt -o modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po
 	target=dataquery npm run compile
 
-login:
+login: modules/login/locale/ja/LC_MESSAGES/login.mo
 	target=login npm run compile
 
-module_manager:
+module_manager: modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo
 	target=module_manager npm run compile
 
-mri_violations:
+mri_violations: modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.mo
 	target=mri_violations npm run compile
 
-issue_tracker:
+issue_tracker: modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo
 	target=issue_tracker npm run compile
 
-candidate_list:
-	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
+candidate_list: modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo
 	npx i18next-conv -l ja -s modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json
-	msgfmt -o modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po
 	npx i18next-conv -l hi -s modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.json
 	target=candidate_list npm run compile
 
-candidate_parameters:
+candidate_parameters: modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.mo
 	target=candidate_parameters npm run compile
 
-dashboard:
+dashboard: modules/dashboard/locale/ja/LC_MESSAGES/dashboard.mo
 	target=dashboard npm run compile
 
-publication:
+publication: modules/publication/locale/ja/LC_MESSAGES/publication.mo
 	target=publication npm run compile
 
-server_processes_manager:
+server_processes_manager: modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo
 	target=server_processes_manager npm run compile
 
 conflict_resolver:

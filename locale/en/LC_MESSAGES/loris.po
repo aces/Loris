@@ -5,6 +5,7 @@
 # This file is distributed under the same license as the LORIS package.
 # Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
 #
+
 msgid ""
 msgstr ""
 "Project-Id-Version: LORIS 27\n"
@@ -17,34 +18,35 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
-msgstr ""
+msgstr "LORIS"
 
 msgid "DEV"
-msgstr ""
+msgstr "DEV"
 
 msgid "Affiliations"
-msgstr ""
+msgstr "Affiliations"
 
 msgid "Site Affiliation"
-msgstr ""
+msgstr "Site Affiliation"
 
 msgid "Site Affiliations"
-msgstr ""
+msgstr "Site Affiliations"
 
 msgid "Project Affiliation"
-msgstr ""
+msgstr "Project Affiliation"
 
 msgid "Project Affiliations"
-msgstr ""
+msgstr "Project Affiliations"
 
 msgid "Log Out"
-msgstr ""
+msgstr "Log Out"
 
 msgid "My Preferences"
-msgstr ""
+msgstr "My Preferences"
 
 # Auto extracted strings from PHP
 # Menu categories
@@ -56,7 +58,7 @@ msgstr ""
 #: modules/survey_accounts/php/module.class.inc:48
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -64,21 +66,21 @@ msgstr ""
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
 msgid "Data Dictionary"
-msgstr ""
+msgstr "Data Dictionary"
 
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
-msgstr ""
+msgstr "Tools"
 
 #: modules/behavioural_qc/php/module.class.inc:51
 #: modules/conflict_resolver/php/module.class.inc:83
 #: modules/examiner/php/module.class.inc:50
 #: modules/media/php/module.class.inc:33
 msgid "Clinical"
-msgstr ""
+msgstr "Clinical"
 
 #: modules/dicom_archive/php/module.class.inc:115
 #: modules/imaging_browser/php/module.class.inc:40
@@ -86,232 +88,168 @@ msgstr ""
 #: modules/imaging_uploader/php/module.class.inc:54
 #: modules/mri_violations/php/module.class.inc:53
 msgid "Imaging"
-msgstr ""
+msgstr "Imaging"
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr ""
+msgstr "Candidate"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
-msgstr ""
+msgstr "Genomics"
 
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
-msgstr ""
+msgstr "Electrophysiology"
 
 #: modules/dataquery/php/module.class.inc:33
 #: modules/dqt/php/module.class.inc:49
 #: modules/publication/php/module.class.inc:55
 #: modules/statistics/php/module.class.inc:49
 msgid "Reports"
-msgstr ""
+msgstr "Reports"
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr ""
+msgstr "TimePoint"
 
 # Common select option labels
 msgid "Yes"
-msgstr ""
+msgstr "Yes"
 
 msgid "No"
-msgstr ""
+msgstr "No"
 
-msgid "Create"
-msgstr ""
-
-msgid "N/A"
-msgstr ""
-
-# Common swal labels
 msgid "Cancel"
-msgstr ""
-
-msgid "Success!"
-msgstr ""
+msgstr "Cancel"
 
 # Common candidate terms
 msgid "PSCID"
-msgstr ""
+msgstr "PSCID"
 
 msgid "DCCID"
-msgstr ""
+msgstr "DCCID"
 
 msgid "Visit Label"
-msgstr ""
+msgstr "Visit Label"
 
 msgid "Site"
-msgstr ""
+msgstr "Site"
 
 msgid "Module"
-msgstr ""
+msgstr "Module"
 
 msgid "Project"
-msgstr ""
-
-msgid "Candidate Registration Project"
-msgstr ""
-
-msgid "Timepoint Project"
-msgstr "Punto en el tiempo del Projecto"
+msgstr "Project"
 
 msgid "Cohort"
 msgid_plural "Cohorts"
-msgstr[0] ""
+msgstr[0] "Cohort"
+msgstr[1] "Cohorts"
  
 msgid "Session"
-msgstr ""
+msgstr "Session"
 
 msgid "Date of registration"
-msgstr ""
+msgstr "Date of registration"
 
 msgid "Participant Status"
-msgstr ""
+msgstr "Participant Status"
 
 msgid "DoB"
-msgstr ""
+msgstr "DoB"
 
 msgid "Sex"
-msgstr ""
+msgstr "Sex"
 
 msgid "Feedback"
-msgstr ""
+msgstr "Feedback"
 
 msgid "Scans"
-msgstr ""
+msgstr "Scans"
 
 msgid "Stage"
-msgstr ""
+msgstr "Stage"
 
 msgid "Sent To DCC"
-msgstr ""
-
-msgid "Reverse Send To DCC"
-msgstr ""
+msgstr "Sent To DCC"
 
 msgid "Date of Birth"
-msgstr ""
+msgstr "Date of Birth"
 
 msgid "Visits"
-msgstr ""
+msgstr "Visits"
 
 msgid "An error occured while loading the page."
-msgstr ""
+msgstr "An error occured while loading the page."
 
 msgid "Entity Type"
-msgstr ""
+msgstr "Entity Type"
 
 msgid "Scan Done"
-msgstr ""
+msgstr "Scan Done"
 
 msgid "Show Advanced Filters"
-msgstr ""
+msgstr "Show Advanced Fitlers"
 
 msgid "Hide Advanced Filters"
-msgstr ""
-
-msgid "Language"
-msgstr ""
+msgstr "Hide Advanced Filters"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
-msgstr ""
+msgstr "{{pageCount}} rows displayed of {{totalCount}}."
 
 msgid "Maximum rows per page:"
-msgstr ""
+msgstr "Maximum rows per page:"
 
 msgid "Download Data as CSV"
-msgstr ""
+msgstr "Download Data as CSV"
 
 # Dashboard panel strings
 msgid "Views"
-msgstr ""
+msgstr "Views"
 
 # Common strings on widgets
 msgid "NEW"
-msgstr ""
+msgstr "NEW"
 
 msgid "Updated"
-msgstr ""
+msgstr "Updated"
 
 msgid "Uploaded"
-msgstr ""
+msgstr "Uploaded"
 
 msgid "Total"
-msgstr ""
-
-msgid "Error!"
-msgstr ""
+msgstr "Total"
 
 # Common timepoint and vist terms
 msgid "Not Started"
-msgstr ""
+msgstr "Not Started"
 
 msgid "Screening"
-msgstr ""
+msgstr "Screening"
 
 msgid "Visit"
-msgstr ""
+msgstr "Visit"
 
 msgid "Approval"
-msgstr ""
+msgstr "Approval"
 
 msgid "Subject"
-msgstr ""
+msgstr "Subject"
 
 msgid "Recycling Bin"
-msgstr ""
+msgstr "Recycling Bin"
 
 msgid "Pass"
-msgstr ""
+msgstr "Pass"
 
 msgid "Failure"
-msgstr ""
+msgstr "Failure"
 
 msgid "Withdrawal"
-msgstr ""
+msgstr "Withdrawal"
 
 msgid "In Progress"
-msgstr ""
-
-msgid "Complete"
-msgstr ""
-
-msgid "Instruments"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "Partial"
-msgstr ""
-
-msgid "All"
-msgstr ""
-
-msgid "Data Entry"
-msgstr ""
-
-msgid "Administration"
-msgstr ""
-
-msgid "Double Data Entry Form"
-msgstr ""
-
-msgid "Double Data Entry Status"
-msgstr ""
-
-msgid "Double Data Entry"
-msgstr ""
-
-# Age related terms
-msgid "Age"
-msgstr ""
-
-msgid "{{months}} months old"
-msgstr ""
-
-msgid "{{years}} years old"
-msgstr ""
+msgstr "In Progress"
