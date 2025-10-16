@@ -69,6 +69,8 @@ h1, h2, h3, h4 {
     position: relative;
     padding: 0 20px;
     box-sizing: border-box;
+    max-width: 1170px;
+    margin: auto;
 }
 
 .logo-wrapper {
