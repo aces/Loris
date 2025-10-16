@@ -20,12 +20,12 @@ import {setDomain, setInterval} from '../series/store/state/bounds';
 import {setCoordinateSystem, setElectrodes} from '../series/store/state/montage';
 import {EventMetadata, HEDSchemaElement} from '../series/store/types';
 import TriggerableModal from 'jsx/TriggerableModal';
-import DatasetTagger from "../series/components/DatasetTagger";
-import {InfoIcon} from "../series/components/components";
+import DatasetTagger from '../series/components/DatasetTagger';
+import {InfoIcon} from '../series/components/components';
 
 declare global {
   interface Window {
-    EEGLabSeriesProviderStore: Store[];   // Store reference per recording
+    EEGLabSeriesProviderStore: Store[]; // Store reference per recording
   }
 }
 
