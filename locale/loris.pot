@@ -155,7 +155,7 @@ msgid "Candidate Registration Project"
 msgstr ""
 
 msgid "Timepoint Project"
-msgstr "Punto en el tiempo del Projecto"
+msgstr ""
 
 msgid "Cohort"
 msgid_plural "Cohorts"
