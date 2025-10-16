@@ -19,6 +19,7 @@ const resources = {
   },
   fr: {
     loris: frResources,
+  },
   en: {
     loris: enResources,
   },
