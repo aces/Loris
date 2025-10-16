@@ -224,7 +224,7 @@ class HEDEndorsement
     {
         $db = \NDB_Factory::singleton()->database();
 
-        $endorsement = $db->pselectOne(
+        $endorsement = $db->pselectRow(
             'SELECT *
               FROM hed_tag_endorsement
               WHERE ID=:eID',
