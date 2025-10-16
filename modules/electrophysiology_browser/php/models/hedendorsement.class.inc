@@ -232,23 +232,23 @@ class HEDEndorsement
         );
 
         if (!is_null($endorsement)) {
-          $insertionFields =  [
-            'HEDRelID'           => $endorsement['HEDRelID'],
-            'HEDTable'           => $endorsement['HEDTable'],
-            'EndorsedBy'         => $endorsement['EndorsedBy'],
-            'EndorsementStatus'  => $endorsement['EndorsementStatus'],
-            'EndorsementComment' => $endorsement['EndorsementComment'],
-          ];
+            $insertionFields =  [
+                'HEDRelID'           => $endorsement['HEDRelID'],
+                'HEDTable'           => $endorsement['HEDTable'],
+                'EndorsedBy'         => $endorsement['EndorsedBy'],
+                'EndorsementStatus'  => $endorsement['EndorsementStatus'],
+                'EndorsementComment' => $endorsement['EndorsementComment'],
+            ];
 
-          $db->delete(
-            "hed_tag_endorsement",
-            ['ID' => $endorsementID]
-          );
-          HEDEndorsement::insertHEDEndorsementHistory(
-            $insertionFields,
-            $endorsementID,
-            'DELETE'
-          );
+            $db->delete(
+                "hed_tag_endorsement",
+                ['ID' => $endorsementID]
+            );
+            HEDEndorsement::insertHEDEndorsementHistory(
+                $insertionFields,
+                $endorsementID,
+                'DELETE'
+            );
         }
     }
 

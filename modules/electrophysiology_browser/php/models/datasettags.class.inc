@@ -448,7 +448,7 @@ class DatasetTags
      * Deletes one dataset-level HED tag
      *
      * @param string $tableName DB table name
-     * @param array $hedTag    HED tag object
+     * @param array  $hedTag    HED tag object
      *
      * @return void
      */
