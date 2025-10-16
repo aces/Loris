@@ -40,8 +40,8 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     static $DCCIDHeader  = "#dynamictable > thead > tr > th:nth-child(4)";
     static $firstElement = "#dynamictable > tbody > tr:nth-child(1)";
 
-    static $allLink = "tbody > tr:nth-child(1) > td:nth-child(9) > a:last-child";
-    static $rawLink = "tbody > tr:nth-child(1) > td:nth-child(9) > a:nth-child(1)";
+    static $allLink = "tbody > tr:nth-child(1) > td:nth-child(10) > a:last-child";
+    static $rawLink = "tbody > tr:nth-child(1) > td:nth-child(10) > a:nth-child(1)";
 
     static $prevLink       = "#nav_previous";
     static $nextLink       = "#nav_next";

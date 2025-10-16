@@ -448,7 +448,7 @@ class DatasetTags
      * Deletes one dataset-level HED tag
      *
      * @param string $tableName DB table name
-     * @param object $hedTag    HED tag object
+     * @param array $hedTag    HED tag object
      *
      * @return void
      */
@@ -475,7 +475,7 @@ class DatasetTags
      * Tracks tagging event in history table
      *
      * @param string $tableName        DB table name
-     * @param mixed  $hedTag           HEDTag
+     * @param array  $hedTag           HEDTag
      * @param string $modificationType DB modification type (insert, update, delete)
      *
      * @return void
