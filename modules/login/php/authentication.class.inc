@@ -113,7 +113,7 @@ class Authentication extends \NDB_Page implements ETagCalculator
                 'windowName' => $windowName,
             ];
         }
-        $loginData['description'] = html_entity_decode(
+        $loginData['description']   = html_entity_decode(
             $config->getSetting('StudyDescription')
         );
         $loginData['title']         = $config->getSetting('title');
