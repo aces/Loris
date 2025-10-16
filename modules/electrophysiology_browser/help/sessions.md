@@ -32,7 +32,6 @@ Use the Shift key &#8679; in order to :
 (&#8679; +) **E**: Open 'Event Panel'  
 (&#8679; +) **A**: Open 'Add Event' panel  
 (&#8679; +) **H**: Open 'HED Endorsement' panel  
-(&#8679; +) **C**: Close open panel  
 (&#8679; +) **V**: Show values at cursor (on/off)  
 (&#8679; +) **B**: Plot all signals on same axis ('Stacked' on/off)  
 (&#8679; +) **S**: 'Isolate' mode - Show one channel at a time (in 'Stacked' view) by hovering on channel name
