@@ -51,6 +51,7 @@
 .partner-container-mobile .panel-body img {
     width: calc(50% - 8px);
     object-fit: contain;
+    max-height: 150px;
 }
 
 #default-panel .panel-body div[align="center"] img {

@@ -116,9 +116,10 @@ class Authentication extends \NDB_Page implements ETagCalculator
         $loginData['description'] = html_entity_decode(
             $config->getSetting('StudyDescription')
         );
-        $loginData['title']       = $config->getSetting('title');
-        $loginData['logo']        = $config->getSetting('studylogo');
-        $values['login']          = $loginData;
+        $loginData['title']         = $config->getSetting('title');
+        $loginData['logo']          = $config->getSetting('studylogo');
+        $loginData['partner_logos'] = $config->getSetting('partner_logos');
+        $values['login']            = $loginData;
 
         // Request Account Setup.
         $requestAccountData = [];
