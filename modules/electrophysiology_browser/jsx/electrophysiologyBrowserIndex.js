@@ -7,7 +7,8 @@ import {withTranslation} from 'react-i18next';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-import {HasHEDIcon} from "./react-series-data-viewer/src/series/components/components";
+import {HasHEDIcon} from
+  './react-series-data-viewer/src/series/components/components';
 
 /**
  * Electrophysiology Browser page.
@@ -149,15 +150,15 @@ class ElectrophysiologyBrowserIndex extends Component {
         type: 'text',
       }},
       {label: 'Has HED Tags', show: true, filter: {
-          name: 'HasHEDTags',
-          type: 'select',
-          hide: false,
-          options: {
-            'yes': 'Yes',
-            'no': 'No',
-          },
+        name: 'HasHEDTags',
+        type: 'select',
+        hide: false,
+        options: {
+          'yes': 'Yes',
+          'no': 'No',
         },
-        custom_label: <HasHEDIcon />
+      },
+      custom_label: <HasHEDIcon />,
       },
       {label: 'Acquisition Time', show: true},
       {label: 'Insertion Time', show: true},
@@ -190,7 +191,6 @@ window.addEventListener('load', () => {
   const Index = withTranslation(
     ['electrophysiology_browser', 'loris']
   )(ElectrophysiologyBrowserIndex);
-  console.log('load');
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(

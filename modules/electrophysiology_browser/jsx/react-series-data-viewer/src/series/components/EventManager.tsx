@@ -116,7 +116,7 @@ const EventManager = ({
     epochs.forEach((epoch) => {
       switch (label) {
         case 'trial_type':
-          labels.push(epoch.trial_type ?? 'n/a');
+          labels.push(epoch.trialType ?? 'n/a');
           break;
         case 'HED':
           const hedTags = [
@@ -525,7 +525,7 @@ const EventManager = ({
                     <div className="epoch-label">
                       {
                         activeLabel === 'trial_type'
-                          ? epoch.trial_type ?? 'n/a'
+                          ? epoch.trialType ?? 'n/a'
                           : activeLabel === 'HED'
                             ? [
                                 ...epoch.hed,
@@ -650,7 +650,7 @@ const EventManager = ({
                         </code>
                         &nbsp;
                         <span>
-                          {epoch.trial_type}
+                          {epoch.trialType}
                         </span>
                       </div>
                       <div>

@@ -6,7 +6,7 @@ import {createAction} from 'redux-actions';
 import {updateViewedChunks} from './fetchChunks';
 import {setFilter} from '../state/filters';
 import {DifferenceEquationSignal1D}
-from '../../../libs/DifferenceEquationSignal1D';
+  from '../../../libs/DifferenceEquationSignal1D';
 
 export const SET_LOW_PASS_FILTER = 'SET_LOW_PASS_FILTER';
 export const setLowPassFilter = createAction(SET_LOW_PASS_FILTER);
@@ -213,7 +213,9 @@ export const createLowPassFilterEpic = () => (
     dispatch(setFilter({
       key: 'lowPass',
       name: payload,
-      fn: R.curry(applyFilter)(LOW_PASS_FILTERS[payload].coefficients[samplingFrequency]),
+      fn: R.curry(applyFilter)(
+        LOW_PASS_FILTERS[payload].coefficients[samplingFrequency]
+      ),
     }));
     dispatch(updateViewedChunks());
   })
@@ -322,12 +324,12 @@ export const HIGH_PASS_FILTERS = {
     label: 'High Pass 10Hz',
     coefficients: {
       '500': {
-          b: [0.9565, -1.9131, 0.9565],
-          a: [1.0000, -1.9112, 0.9150],
+        b: [0.9565, -1.9131, 0.9565],
+        a: [1.0000, -1.9112, 0.9150],
       },
       '512': {
-          b: [0.9575, -1.9151, 0.9575],
-          a: [1.0000, -1.9133, 0.9169],
+        b: [0.9575, -1.9151, 0.9575],
+        a: [1.0000, -1.9133, 0.9169],
       },
       '1000': {
         b: [0.9780, -1.9561, 0.9780],
@@ -366,7 +368,9 @@ export const createHighPassFilterEpic = () => (
     dispatch(setFilter({
       key: 'highPass',
       name: payload,
-      fn: R.curry(applyFilter)(HIGH_PASS_FILTERS[payload].coefficients[samplingFrequency]),
+      fn: R.curry(applyFilter)(
+        HIGH_PASS_FILTERS[payload].coefficients[samplingFrequency]
+      ),
     }));
     dispatch(updateViewedChunks());
   })
