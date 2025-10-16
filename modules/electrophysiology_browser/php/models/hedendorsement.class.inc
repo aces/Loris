@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\electrophysiology_browser\Models;
 use DatabaseException;
 
@@ -13,30 +14,30 @@ use DatabaseException;
  */
 class HEDEndorsement
 {
-  protected int $_physioFileID;
+    protected int $_physioFileID;
 
-  /**
-   * Construct an HEDEndorsement object
-   *
-   * @param integer $physioFileID Electrophysiological file ID
-   *                              to collect HED endorsements
-   */
-  function __construct(int $physioFileID)
-  {
-    $this->_physioFileID = $physioFileID;
-  }
+    /**
+     * Construct an HEDEndorsement object
+     *
+     * @param integer $physioFileID Electrophysiological file ID
+     *                              to collect HED endorsements
+     */
+    function __construct(int $physioFileID)
+    {
+        $this->_physioFileID = $physioFileID;
+    }
 
-  /**
-   * Get instance-level HED endorsements
-   *
-   * @return array
-   */
-  public function getIntanceLevelEndorsements(): array
-  {
-    $db = \NDB_Factory::singleton()->database();
+    /**
+     * Get instance-level HED endorsements
+     *
+     * @return array
+     */
+    public function getIntanceLevelEndorsements(): array
+    {
+        $db = \NDB_Factory::singleton()->database();
 
-    $hed_endorsements = $db->pselect(
-      'SELECT hte.*, endorser.ID AS EndorsedByID,
+        $hed_endorsements = $db->pselect(
+            'SELECT hte.*, endorser.ID AS EndorsedByID,
        endorser.First_name AS FirstName, endorser.Last_name AS LastName
         FROM hed_tag_endorsement AS hte
         LEFT JOIN users AS endorser ON hte.EndorsedBy = endorser.ID
@@ -52,22 +53,22 @@ class HEDEndorsement
               AND f.PhysiologicalFileID=:PFID
               AND f.FileType="tsv"
         )',
-      ['PFID' => $this->_physioFileID]
-    );
-    return iterator_to_array($hed_endorsements);
-  }
+            ['PFID' => $this->_physioFileID]
+        );
+        return iterator_to_array($hed_endorsements);
+    }
 
-  /**
-   * Get dataset-level HED endorsements
-   *
-   * @return array
-   */
-  public function getDatasetLevelEndorsements(): array // TODO: Support session-level
-  {
-    $db = \NDB_Factory::singleton()->database();
+    /**
+     * Get dataset-level HED endorsements – Note: Session-level not supported
+     *
+     * @return array
+     */
+    public function getDatasetLevelEndorsements(): array
+    {
+        $db = \NDB_Factory::singleton()->database();
 
-    $hed_endorsements = $db->pselect(
-      'SELECT hte.*, endorser.ID AS EndorsedByID,
+        $hed_endorsements = $db->pselect(
+            'SELECT hte.*, endorser.ID AS EndorsedByID,
        endorser.First_name AS FirstName, endorser.Last_name AS LastName
         FROM hed_tag_endorsement AS hte
         LEFT JOIN users AS endorser ON hte.EndorsedBy = endorser.ID
@@ -83,183 +84,187 @@ class HEDEndorsement
               AND f.PhysiologicalFileID=:PFID
               AND f.FileType="tsv"
         )',
-      ['PFID' => $this->_physioFileID]
-    );
-    return iterator_to_array($hed_endorsements);
-  }
-
-  /**
-   * @param array $insertionFields,
-   * @param int $endorsementID,
-   * @param string $insertionType,
-   *
-   * @return void
-   */
-  protected static function insertHEDEndorsementHistory(
-    array  $insertionFields,
-    int    $endorsementID,
-    string $action,
-  ): void
-  {
-    $db = \NDB_Factory::singleton()->database();
-    $insertionFields['EndorsementID'] =  $endorsementID;
-    $insertionFields['Action'] = $action;
-    $db->insert('hed_tag_endorsement_history', $insertionFields);
-  }
-
-  /**
-   * Insert HED tag endorsement
-   *
-   * @param int $hedRelID,
-   * @param string $hedTable,
-   * @param int $endorsedBy,
-   * @param string $endorsementStatus,
-   * @param string | null $endorsementComment
-   *
-   * @return array
-   */
-  public static function insertHEDEndorsement(
-    int           $hedRelID,
-    string        $hedTable,
-    int           $endorsedBy,
-    string        $endorsementStatus,
-    string | null $endorsementComment
-  ): array
-  {
-    $db = \NDB_Factory::singleton()->database();
-    $insertionFields = [
-      'HEDRelID'           => $hedRelID,
-      'HEDTable'           => $hedTable,
-      'EndorsedBy'         => $endorsedBy,
-      'EndorsementStatus'  => $endorsementStatus,
-      'EndorsementComment' => $endorsementComment,
-    ];
-    $db->insert('hed_tag_endorsement', $insertionFields);
-    $endorsementID =  (int) $db->getLastInsertId();
-    HEDEndorsement::insertHEDEndorsementHistory(
-      $insertionFields,
-      $endorsementID,
-      'INSERT'
-    );
-    $endorsementTime = HEDEndorsement::getEndorsementTime($endorsementID);
-    return [
-      'endorsementID' => $endorsementID,
-      'endorsementTime' => $endorsementTime,
-    ];
-  }
-
-  /**
-   * Insert Dataset tag endorsements
-   *
-   * @param int $physioFileID,
-   * @param string $propertyName,
-   * @param string $propertyValue,
-   * @param int $endorserID,
-   * @param string $endorsementStatus,
-   * @param string | null $endorsementComment
-   *
-   * @return array
-   */
-  public static function insertDatasetTagEndorsements(
-    int           $physioFileID,
-    string        $propertyName,
-    string        $propertyValue,
-    int           $endorserID,
-    string        $endorsementStatus,
-    string | null $endorsementComment
-  ): array
-  {
-    $hedRelIDs = DatasetTags::getAllHEDTagIDs(
-      $physioFileID,
-      $propertyName,
-      $propertyValue
-    );
-    $lastEndorsement = [];
-    array_map(
-      function ($hedRelID)
-      use (&$lastEndorsement, $endorserID, $endorsementStatus, $endorsementComment) {
-        $lastEndorsement = HEDEndorsement::insertHEDEndorsement(
-          (int) $hedRelID['ID'],
-          'bids_event_dataset_mapping',
-          $endorserID,
-          $endorsementStatus,
-          $endorsementStatus === 'Comment'
-            ? $endorsementComment
-            : null
+            ['PFID' => $this->_physioFileID]
         );
-      },
-      $hedRelIDs
-    );
-    return $lastEndorsement;
-  }
+        return iterator_to_array($hed_endorsements);
+    }
 
-  /**
-   * Get EndorsementTime
-   *
-   * @param int $endorsementID `hed_tag_endorsement`.ID
-   *
-   * @return string
-   */
-  public static function getEndorsementTime(int $endorsementID): string
-  {
-    $db = \NDB_Factory::singleton()->database();
+    /**
+     * Insert entry in history table
+     *
+     * @param array  $insertionFields HED Fields
+     * @param int    $endorsementID   EndorsementID
+     * @param string $action          DB Action
+     *
+     * @return void
+     */
+    protected static function insertHEDEndorsementHistory(
+        array  $insertionFields,
+        int    $endorsementID,
+        string $action,
+    ): void {
+        $db = \NDB_Factory::singleton()->database();
+        $insertionFields['EndorsementID'] =  $endorsementID;
+        $insertionFields['Action']        = $action;
+        $db->insert('hed_tag_endorsement_history', $insertionFields);
+    }
 
-    return $db->pselectOne(
-      'SELECT EndorsedAt
+    /**
+     * Insert HED tag endorsement
+     *
+     * @param int           $hedRelID           HedRelID
+     * @param string        $hedTable           HedTable
+     * @param int           $endorsedBy         EndorsedBy
+     * @param string        $endorsementStatus  EndorsementStatus
+     * @param string | null $endorsementComment EndorsementComment
+     *
+     * @return array
+     */
+    public static function insertHEDEndorsement(
+        int           $hedRelID,
+        string        $hedTable,
+        int           $endorsedBy,
+        string        $endorsementStatus,
+        string | null $endorsementComment
+    ): array {
+        $db = \NDB_Factory::singleton()->database();
+        $insertionFields = [
+            'HEDRelID'           => $hedRelID,
+            'HEDTable'           => $hedTable,
+            'EndorsedBy'         => $endorsedBy,
+            'EndorsementStatus'  => $endorsementStatus,
+            'EndorsementComment' => $endorsementComment,
+        ];
+        $db->insert('hed_tag_endorsement', $insertionFields);
+        $endorsementID =  (int) $db->getLastInsertId();
+        HEDEndorsement::insertHEDEndorsementHistory(
+            $insertionFields,
+            $endorsementID,
+            'INSERT'
+        );
+        $endorsementTime = HEDEndorsement::getEndorsementTime($endorsementID);
+        return [
+            'endorsementID'   => $endorsementID,
+            'endorsementTime' => $endorsementTime,
+        ];
+    }
+
+    /**
+     * Insert Dataset tag endorsements
+     *
+     * @param int           $physioFileID       PhysioFileID
+     * @param string        $propertyName       PropertyName
+     * @param string        $propertyValue      PropertyValue
+     * @param int           $endorserID         EndorserID
+     * @param string        $endorsementStatus  EndorsementStatus
+     * @param string | null $endorsementComment EndorsementComment
+     *
+     * @return array
+     */
+    public static function insertDatasetTagEndorsements(
+        int           $physioFileID,
+        string        $propertyName,
+        string        $propertyValue,
+        int           $endorserID,
+        string        $endorsementStatus,
+        string | null $endorsementComment
+    ): array {
+        $hedRelIDs       = DatasetTags::getAllHEDTagIDs(
+            $physioFileID,
+            $propertyName,
+            $propertyValue
+        );
+        $lastEndorsement = [];
+        array_map(
+            function ($hedRelID) use (
+                &$lastEndorsement, $endorserID,
+                $endorsementStatus, $endorsementComment
+            ) {
+                $lastEndorsement = HEDEndorsement::insertHEDEndorsement(
+                    (int) $hedRelID['ID'],
+                    'bids_event_dataset_mapping',
+                    $endorserID,
+                    $endorsementStatus,
+                    $endorsementStatus === 'Comment'
+                    ? $endorsementComment
+                    : null
+                );
+            },
+            $hedRelIDs
+        );
+        return $lastEndorsement;
+    }
+
+    /**
+     * Get EndorsementTime
+     *
+     * @param int $endorsementID `hed_tag_endorsement`.ID
+     *
+     * @return string
+     */
+    public static function getEndorsementTime(int $endorsementID): string
+    {
+        $db = \NDB_Factory::singleton()->database();
+
+        return $db->pselectOne(
+            'SELECT EndorsedAt
               FROM hed_tag_endorsement
               WHERE ID=:eID',
-      ['eID' => $endorsementID]
-    );
-  }
+            ['eID' => $endorsementID]
+        );
+    }
 
-  /**
-   * Delete HED tag endorsement
-   *
-   * @param int $endorsementID `hed_tag_endorsement`.ID
-   *
-   * @return void
-   */
-  public static function deleteHEDEndorsement(int $endorsementID): void
-  {
-    $db = \NDB_Factory::singleton()->database();
+    /**
+     * Delete HED tag endorsement
+     *
+     * @param int $endorsementID `hed_tag_endorsement`.ID
+     *
+     * @return void
+     */
+    public static function deleteHEDEndorsement(int $endorsementID): void
+    {
+        $db = \NDB_Factory::singleton()->database();
 
-    $endorsement = $db->pselectOne(
-      'SELECT *
+        $endorsement = $db->pselectOne(
+            'SELECT *
               FROM hed_tag_endorsement
               WHERE ID=:eID',
-      ['eID' => $endorsementID]
-    );
+            ['eID' => $endorsementID]
+        );
 
-    $insertionFields =  [
-      'HEDRelID'           => $endorsement['HEDRelID'],
-      'HEDTable'           => $endorsement['HEDTable'],
-      'EndorsedBy'         => $endorsement['EndorsedBy'],
-      'EndorsementStatus'  => $endorsement['EndorsementStatus'],
-      'EndorsementComment' => $endorsement['EndorsementComment'],
-    ];
+        $insertionFields =  [
+            'HEDRelID'           => $endorsement['HEDRelID'],
+            'HEDTable'           => $endorsement['HEDTable'],
+            'EndorsedBy'         => $endorsement['EndorsedBy'],
+            'EndorsementStatus'  => $endorsement['EndorsementStatus'],
+            'EndorsementComment' => $endorsement['EndorsementComment'],
+        ];
 
-    $db->delete(
-      "hed_tag_endorsement",
-      ['ID' => $endorsementID]
-    );
-    HEDEndorsement::insertHEDEndorsementHistory(
-      $insertionFields,
-      $endorsementID,
-      'DELETE'
-    );
-  }
+        $db->delete(
+            "hed_tag_endorsement",
+            ['ID' => $endorsementID]
+        );
+        HEDEndorsement::insertHEDEndorsementHistory(
+            $insertionFields,
+            $endorsementID,
+            'DELETE'
+        );
+    }
 
-  /**
-   * Get an event's HED endorsements
-   *
-   * @return array
-   */
-  public static function getHEDEndorsements(string $physiologicalTaskEventID): array
-  {
-    $db = \NDB_Factory::singleton()->database();
+    /**
+     * Get an event's HED endorsements
+     *
+     * @param string $physiologicalTaskEventID PhysiologicalTaskEventID
+     *
+     * @return array
+     */
+    public static function getHEDEndorsements(
+        string $physiologicalTaskEventID
+    ): array {
+        $db = \NDB_Factory::singleton()->database();
 
-    $hed_endorsements = $db->pselect(
-      'SELECT hte.*, endorser.ID AS EndorsedByID,
+        $hed_endorsements = $db->pselect(
+            'SELECT hte.*, endorser.ID AS EndorsedByID,
        endorser.First_name AS FirstName, endorser.Last_name AS LastName
         FROM hed_tag_endorsement AS hte
         LEFT JOIN users AS endorser ON hte.EndorsedBy = endorser.ID
@@ -267,8 +272,8 @@ class HEDEndorsement
          ON hte.HEDRelID = ptehr.ID
         WHERE hte.HEDTable = "physiological_task_event_hed_rel"
         AND ptehr.PhysiologicalTaskEventID=:PTEID',
-      ['PTEID' => $physiologicalTaskEventID]
-    );
-    return iterator_to_array($hed_endorsements);
-  }
+            ['PTEID' => $physiologicalTaskEventID]
+        );
+        return iterator_to_array($hed_endorsements);
+    }
 }
