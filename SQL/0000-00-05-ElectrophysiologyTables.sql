@@ -632,20 +632,6 @@ CREATE TABLE `bids_event_file_mapping` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
--- Create parameter_project table to track parameters and channel delimiter
-CREATE TABLE `parameter_project` (
-  `ParameterProjectID` int(10) unsigned NOT NULL auto_increment,
- `ProjectID` int(10) unsigned NOT NULL default '0',
- `ParameterTypeID` int(10) unsigned NOT NULL default '0',
- `Value` text default NULL,
- `InsertTime` int(10) unsigned NOT NULL default '0',
- PRIMARY KEY  (`ParameterProjectID`),
- UNIQUE KEY `project_type` (`ProjectID`,`ParameterTypeID`),
- KEY `parameter_value` (`ParameterTypeID`,`Value`(64)),
- CONSTRAINT `FK_parameter_project_2` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`),
- CONSTRAINT `FK_parameter_project_1` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- Create parameter_project table to track channel delimiter
 CREATE TABLE `parameter_project` (
  `ParameterProjectID` int(10) unsigned NOT NULL auto_increment,
