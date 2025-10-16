@@ -201,8 +201,8 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       }
     ).then(() => {
       const epochs = [];
-      const channelDelimiter = events.channelDelimiter.length > 0
-        ? events.channelDelimiter
+      const channelDelimiter = events['channel_delimiter'].length > 0
+        ? events['channel_delimiter']
         : DEFAULT_CHANNEL_DELIMITER;
       this.store.dispatch(
         setDatasetMetadata({channelDelimiter: channelDelimiter})
@@ -214,36 +214,37 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
             === instance.PhysiologicalTaskEventID
         );
 
-        const extraColumns = Array.from(events.extraColumns)
+        const extraColumns = Array.from(events['extra_columns'])
           .filter((column) => {
-            return column.PhysiologicalTaskEventID
+            return column['PhysiologicalTaskEventID']
             === instance.PhysiologicalTaskEventID;
           });
 
-        const hedTags = Array.from(events.hedTags).filter((column) => {
-          return column.PhysiologicalTaskEventID
+        const hedTags = Array.from(events['hed_tags']).filter((column) => {
+          return column['PhysiologicalTaskEventID']
             === instance.PhysiologicalTaskEventID;
         }).map((hedTag) => {
           const foundTag = hedSchema.find((tag) => {
-            return tag.id === hedTag.HEDTagID;
+            return tag.id === hedTag['HEDTagID'];
           });
 
-          const additionalMembers = parseInt(hedTag.AdditionalMembers);
+          const additionalMembers = parseInt(
+            hedTag['AdditionalMembers'] as string
+          );
 
-          const hedEndorsements = events.hedEndorsements
+          const hedEndorsements = events['hed_endorsements']
             .filter((endorsement) => {
-              return endorsement.HEDRelID === hedTag.ID;
+              return endorsement['HEDRelID'] === hedTag['ID'];
             }).map((endorsement) => {
               const endorserName =
-                `${
-                  endorsement.FirstName.substring(0, 1)}.${endorsement.LastName
-                }`;
+                `${endorsement['FirstName'].substring(0, 1)}.` +
+                endorsement['LastName'];
               return {
                 EndorsedBy: endorserName,
-                EndorsedByID: endorsement.EndorsedByID,
-                EndorsementComment: endorsement.EndorsementComment,
-                EndorsementStatus: endorsement.EndorsementStatus,
-                EndorsementTime: endorsement.LastUpdate,
+                EndorsedByID: endorsement['EndorsedByID'],
+                EndorsementComment: endorsement['EndorsementComment'],
+                EndorsementStatus: endorsement['EndorsementStatus'],
+                EndorsementTime: endorsement['LastUpdate'],
               };
             });
 
@@ -251,18 +252,18 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
           return {
             schemaElement: foundTag ?? null,
             HEDTagID: foundTag ? foundTag.id : null,
-            ID: hedTag.ID,
-            PropertyName: hedTag.PropertyName,
-            PropertyValue: hedTag.PropertyValue,
-            TagValue: hedTag.TagValue,
-            Description: hedTag.Description,
-            HasPairing: hedTag.HasPairing,
-            PairRelID: hedTag.PairRelID,
+            ID: hedTag['ID'],
+            PropertyName: hedTag['PropertyName'],
+            PropertyValue: hedTag['PropertyValue'],
+            TagValue: hedTag['TagValue'],
+            Description: hedTag['Description'],
+            HasPairing: hedTag['HasPairing'],
+            PairRelID: hedTag['PairRelID'],
             AdditionalMembers: isNaN(additionalMembers)
               ? 0 : additionalMembers,
-            TaggerName: hedTag.TaggerName === 'Origin'
-              ? 'Data Authors' : hedTag.TaggerName,
-            TaggedBy: hedTag.TaggedBy,
+            TaggerName: hedTag['TaggerName'] === 'Origin'
+              ? 'Data Authors' : hedTag['TaggerName'],
+            TaggedBy: hedTag['TaggedBy'],
             Endorsements: hedEndorsements,
           };
         });
