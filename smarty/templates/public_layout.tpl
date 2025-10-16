@@ -25,7 +25,7 @@
     <div class="header-container">
       <div class="flex-wrapper">
         <!-- Left Logo (conditionally a link) -->
-        <div class="logo-wrapper logo-left">
+        <div class="logo-wrapper logo-left{if !isset($logo_left)} d-none{/if}">
           {if isset($logo_left_link)}
             <a href="{$logo_left_link}">
               <img src="{$logo_left}" alt="Left Logo"/>
@@ -39,7 +39,7 @@
           {$study_title}
         </div>
         <!-- Right Logo (conditionally a link) -->
-        <div class="logo-wrapper logo-right">
+        <div class="logo-wrapper logo-right{if !isset($logo_right)} d-none{/if}">
           {if isset($logo_right_link)}
             <a href="{$logo_right_link}" target="_blank" rel="noopener noreferrer">
               <img src="{$logo_right}" alt="Right Logo"/>

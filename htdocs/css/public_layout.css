@@ -93,6 +93,10 @@ h1, h2, h3, h4 {
     margin-left: auto;
 }
 
+.d-none {
+    display: none;
+}
+
 .study-title {
     flex: 1;
     padding: 0 20px;
