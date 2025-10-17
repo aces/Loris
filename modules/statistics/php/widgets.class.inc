@@ -59,13 +59,18 @@ class Widgets extends \NDB_Page implements ETagCalculator
         if (isset($this->_cache)) {
             return $this->_cache;
         }
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-        $db      = $request->getAttribute('loris')->getDatabaseConnection();
-
+        $factory   = \NDB_Factory::singleton();
+        $config    = $factory->config();
+        $db        = $request->getAttribute('loris')->getDatabaseConnection();
+        $user      = $factory->user();
+        $projects  = $user->getProjectIDs();
+        $centerIDs = $user->getCenterIDs();
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
-        $recruitmentRaw = iterator_to_array(
+        $projectString = "('".implode("','", array_map('strval', $projects))."')";
+        $centerString  = "('".implode("','", array_map('strval', $centerIDs))."')";
+
+        $recruitmentRaw     = iterator_to_array(
             $db->pselect(
                 "SELECT
                 COUNT(*) as Count,
@@ -73,30 +78,38 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 c.RegistrationProjectID as ProjectID
              FROM candidate c
                  WHERE c.Active='Y' AND c.Entity_type='Human'
-                 AND c.RegistrationCenterID <> 1
+                 AND c.RegistrationProjectID IN $projectString
+                 AND c.RegistrationCenterID IN $centerString
              GROUP BY c.Sex, c.RegistrationProjectID",
                 []
             )
         );
-        $totalScans     = array_sum(array_column($recruitmentRaw, 'Count'));
-        $recruitment    = [
+        $total_participants = array_sum(array_column($recruitmentRaw, 'Count'));
+        $totalScans         = $db->pselectOne(
+            "SELECT COUNT(distinct s.ID)
+                FROM files f
+                LEFT JOIN parameter_file pf USING (FileID)
+                LEFT JOIN session s ON (s.ID=f.SessionID)
+                JOIN parameter_type pt USING (ParameterTypeID)
+                WHERE pt.Name='acquisition_date'
+                AND s.ProjectID IN {$projectString}
+                AND s.CenterID IN {$centerString}",
+            []
+        );
+        $recruitment        = [
             'overall' => $this->_createProjectProgressBar(
                 'overall',
                 "Overall Recruitment",
                 $recruitmentTarget,
-                $totalScans,
+                $total_participants,
                 $recruitmentRaw,
             )
         ];
-
-        $user     = $factory->user();
-        $projects = $user->getProjectIDs();
 
         $projectOptions     = [];
         $cohortOptions      = [];
         $visitOptions       = [];
         $recruitmentCohorts = [];
-        $centerIDs          = $user->getCenterIDs();
         $sites = \Utility::getSiteList();
 
         $studyWidgets = $this->_collectStudyProgressionWidgets($user);
@@ -109,6 +122,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
         foreach ($projects as $pid) {
             // Set project recruitment data
             $projectInfo = $config->getProjectSettings(intval(strval($pid)));
+            $projectOptions[intval(strval($pid))] = $projectInfo['Name'] ?? "";
             if (is_null($projectInfo)) {
                 throw new \LorisException(
                     'No project settings exist in the Database for ' .
@@ -152,6 +166,13 @@ class Widgets extends \NDB_Page implements ETagCalculator
                         $db,
                         $sp["Count"]
                     );
+                $cohortVisits = \Utility::getVisitsForCohort(
+                    intval($sp["CohortID"])
+                );
+                foreach ($cohortVisits as $visitLabel => $visitName) {
+                    // get visit id
+                    $visitOptions[$visitLabel] = $visitName;
+                }
             }
         }
 

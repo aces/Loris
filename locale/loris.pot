@@ -119,6 +119,12 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Create"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
 # Common swal labels
 msgid "Cancel"
 msgstr ""
@@ -154,12 +160,16 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
+msgid "Candidate Registration Project"
+msgstr ""
+
+msgid "Timepoint Project"
+msgstr ""
+
 msgid "Cohort"
-msgstr ""
-
-msgid "Cohorts"
-msgstr ""
-
+msgid_plural "Cohorts"
+msgstr[0] ""
+ 
 msgid "Session"
 msgstr ""
 
@@ -184,7 +194,13 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
+msgid "Send To DCC"
+msgstr ""
+
 msgid "Sent To DCC"
+msgstr ""
+
+msgid "Reverse Send To DCC"
 msgstr ""
 
 msgid "Date of Birth"
@@ -238,6 +254,9 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
+msgid "Error!"
+msgstr ""
+
 # Common timepoint and vist terms
 msgid "Not Started"
 msgstr ""
@@ -267,4 +286,44 @@ msgid "Withdrawal"
 msgstr ""
 
 msgid "In Progress"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "Instruments"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Partial"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Data Entry"
+msgstr ""
+
+msgid "Administration"
+msgstr ""
+
+msgid "Double Data Entry Form"
+msgstr ""
+
+msgid "Double Data Entry Status"
+msgstr ""
+
+msgid "Double Data Entry"
+msgstr ""
+
+# Age related terms
+msgid "Age"
+msgstr ""
+
+msgid "{{months}} months old"
+msgstr ""
+
+msgid "{{years}} years old"
 msgstr ""

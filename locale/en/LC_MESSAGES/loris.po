@@ -5,6 +5,7 @@
 # This file is distributed under the same license as the LORIS package.
 # Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
 #
+
 msgid ""
 msgstr ""
 "Project-Id-Version: LORIS 27\n"
@@ -13,38 +14,39 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: hi\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
-msgstr "लोरिस"
+msgstr "LORIS"
 
 msgid "DEV"
-msgstr "डेव"
+msgstr "DEV"
 
 msgid "Affiliations"
-msgstr "संबद्धता"
+msgstr "Affiliations"
 
 msgid "Site Affiliation"
-msgstr "साइट संबद्धता"
+msgstr "Site Affiliation"
 
 msgid "Site Affiliations"
-msgstr "साइट संबद्धताएँ"
+msgstr "Site Affiliations"
 
 msgid "Project Affiliation"
-msgstr "परियोजना संबद्धता"
+msgstr "Project Affiliation"
 
 msgid "Project Affiliations"
-msgstr "परियोजना संबद्धताएँ"
+msgstr "Project Affiliations"
 
 msgid "Log Out"
-msgstr "लॉग आउट"
+msgstr "Log Out"
 
 msgid "My Preferences"
-msgstr "मेरी पसंद"
+msgstr "My Preferences"
 
 # Auto extracted strings from PHP
 # Menu categories
@@ -56,8 +58,7 @@ msgstr "मेरी पसंद"
 #: modules/survey_accounts/php/module.class.inc:48
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
-msgstr "प्रशासन"
-
+msgstr "Admin"
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -65,21 +66,21 @@ msgstr "प्रशासन"
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
 msgid "Data Dictionary"
-msgstr "डेटा शब्दकोश"
+msgstr "Data Dictionary"
 
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
-msgstr "उपकरण"
+msgstr "Tools"
 
 #: modules/behavioural_qc/php/module.class.inc:51
 #: modules/conflict_resolver/php/module.class.inc:83
 #: modules/examiner/php/module.class.inc:50
 #: modules/media/php/module.class.inc:33
 msgid "Clinical"
-msgstr "नैदानिक"
+msgstr "Clinical"
 
 #: modules/dicom_archive/php/module.class.inc:115
 #: modules/imaging_browser/php/module.class.inc:40
@@ -87,191 +88,168 @@ msgstr "नैदानिक"
 #: modules/imaging_uploader/php/module.class.inc:54
 #: modules/mri_violations/php/module.class.inc:53
 msgid "Imaging"
-msgstr "इमेजिंग"
+msgstr "Imaging"
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr "उम्मीदवार"
+msgstr "Candidate"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
-msgstr "जीनोमिक्स"
+msgstr "Genomics"
 
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
-msgstr "इलेक्ट्रोफिजियोलॉजी"
+msgstr "Electrophysiology"
 
 #: modules/dataquery/php/module.class.inc:33
 #: modules/dqt/php/module.class.inc:49
 #: modules/publication/php/module.class.inc:55
 #: modules/statistics/php/module.class.inc:49
 msgid "Reports"
-msgstr "रिपोर्ट्स"
+msgstr "Reports"
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr "समय बिंदु"
+msgstr "TimePoint"
 
 # Common select option labels
 msgid "Yes"
-msgstr "हाँ"
+msgstr "Yes"
 
 msgid "No"
-msgstr "नहीं"
+msgstr "No"
 
-msgid "Create"
-msgstr "बनाएँ"
-
-# Common swal labels
 msgid "Cancel"
-msgstr "रद्द करें"
-
-msgid "Success!"
-msgstr "सफलता!"
-
-msgid "Selection Filter"
-msgstr "चयन फ़िल्टर"
-
-msgid "Clear Filters"
-msgstr "फ़िल्टर साफ़ करें"
+msgstr "Cancel"
 
 # Common candidate terms
 msgid "PSCID"
-msgstr "पीएससीआईडी"
+msgstr "PSCID"
 
 msgid "DCCID"
-msgstr "डीसीसीआईडी"
+msgstr "DCCID"
 
 msgid "Visit Label"
-msgstr "दौरे का लेबल"
+msgstr "Visit Label"
 
 msgid "Site"
-msgstr "साइट"
+msgstr "Site"
 
 msgid "Module"
-msgstr "मॉड्यूल"
-
-msgid "Instrument"
-msgstr "उपकरण"
+msgstr "Module"
 
 msgid "Project"
-msgstr "परियोजना"
+msgstr "Project"
 
 msgid "Cohort"
-msgstr "समूह"
-
-msgid "Cohorts"
-msgstr "समूह"
-
+msgid_plural "Cohorts"
+msgstr[0] "Cohort"
+msgstr[1] "Cohorts"
+ 
 msgid "Session"
-msgstr "सत्र"
+msgstr "Session"
 
 msgid "Date of registration"
-msgstr "पंजीकरण की तिथि"
+msgstr "Date of registration"
 
 msgid "Participant Status"
-msgstr "प्रतिभागी की स्थिति"
+msgstr "Participant Status"
 
 msgid "DoB"
-msgstr "जन्म तिथि"
+msgstr "DoB"
 
 msgid "Sex"
-msgstr "लिंग"
+msgstr "Sex"
 
 msgid "Feedback"
-msgstr "प्रतिक्रिया"
+msgstr "Feedback"
 
 msgid "Scans"
-msgstr "स्कैन"
+msgstr "Scans"
 
 msgid "Stage"
-msgstr "चरण"
+msgstr "Stage"
 
 msgid "Sent To DCC"
-msgstr "डीसीसी को भेजा गया"
+msgstr "Sent To DCC"
 
 msgid "Date of Birth"
-msgstr "जन्म तिथि"
+msgstr "Date of Birth"
 
 msgid "Visits"
-msgstr "भ्रमण"
+msgstr "Visits"
 
 msgid "An error occured while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
+msgstr "An error occured while loading the page."
 
 msgid "Entity Type"
-msgstr "इकाई प्रकार"
+msgstr "Entity Type"
 
 msgid "Scan Done"
-msgstr "स्कैन पूरा हुआ"
+msgstr "Scan Done"
 
 msgid "Show Advanced Filters"
-msgstr "उन्नत फ़िल्टर दिखाएँ"
+msgstr "Show Advanced Fitlers"
 
 msgid "Hide Advanced Filters"
-msgstr "उन्नत फ़िल्टर छुपाएँ"
-
-msgid "Language"
-msgstr "भाषा"
+msgstr "Hide Advanced Filters"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
-msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
+msgstr "{{pageCount}} rows displayed of {{totalCount}}."
 
 msgid "Maximum rows per page:"
-msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
+msgstr "Maximum rows per page:"
 
 msgid "Download Data as CSV"
-msgstr "डेटा को CSV के रूप में डाउनलोड करें"
+msgstr "Download Data as CSV"
 
 # Dashboard panel strings
 msgid "Views"
-msgstr "दृश्य"
+msgstr "Views"
 
 # Common strings on widgets
 msgid "NEW"
-msgstr "नया"
+msgstr "NEW"
 
 msgid "Updated"
-msgstr "अपडेट किया गया"
+msgstr "Updated"
 
 msgid "Uploaded"
-msgstr "अपलोड किया गया"
+msgstr "Uploaded"
 
 msgid "Total"
-msgstr "कुल"
+msgstr "Total"
 
-msgid "Error!"
-msgstr "त्रुटि!"
-
-# Common timepoint and visit terms
+# Common timepoint and vist terms
 msgid "Not Started"
-msgstr "शुरू नहीं हुआ"
+msgstr "Not Started"
 
 msgid "Screening"
-msgstr "जांच"
+msgstr "Screening"
 
 msgid "Visit"
-msgstr "भेंट"
+msgstr "Visit"
 
 msgid "Approval"
-msgstr "स्वीकृति"
+msgstr "Approval"
 
 msgid "Subject"
-msgstr "विषय"
+msgstr "Subject"
 
 msgid "Recycling Bin"
-msgstr "रिसाइक्लिंग बिन"
+msgstr "Recycling Bin"
 
 msgid "Pass"
-msgstr "उत्तीर्ण"
+msgstr "Pass"
 
 msgid "Failure"
-msgstr "विफलता"
+msgstr "Failure"
 
 msgid "Withdrawal"
-msgstr "निकासी"
+msgstr "Withdrawal"
 
 msgid "In Progress"
-msgstr "प्रगति पर"
+msgstr "In Progress"
