@@ -163,6 +163,15 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Saving"
+msgstr ""
+
+msgid "Are You Sure?"
+msgstr ""
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -196,7 +205,7 @@ msgstr ""
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] ""
- 
+
 msgid "Session"
 msgstr ""
 

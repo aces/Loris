@@ -130,16 +130,16 @@ msgid "Show Advanced"
 msgstr "उन्नत विकल्प दिखाएँ"
 
 msgid "The \"nested groups\" options are advanced options for queries that do not have any specific condition at the base of the query. Use Add nested \"or\" condition groups if you need to build a query of the form. (a or b) and (c or d) [or (e and f)..]"
-msgstr "\"नेस्टेड समूह\" विकल्प उन क्वेरीज़ के लिए उन्नत विकल्प हैं जिनके आधार में कोई विशिष्ट शर्त नहीं होती। Add nested \"or\" condition groups का उपयोग करें यदि आपको (a या b) और (c या d) [या (e और f)..] जैसी क्वेरी बनानी हो।"
+msgstr "\"नेस्टेड समूह\" विकल्प उन क्वेरीज़ के लिए उन्नत विकल्प हैं जिनके आधार में कोई विशिष्ट शर्त नहीं होती। नेस्टेड \"या\" शर्त समूह जोड़ें का उपयोग करें यदि आपको (a या b) और (c या d) [या (e और f)..] जैसी क्वेरी बनानी हो।"
 
 msgid "Add nested \"or\" condition groups"
-msgstr "नेस्टेड \"or\" शर्त समूह जोड़ें"
+msgstr "नेस्टेड \"या\" शर्त समूह जोड़ें"
 
 msgid "Use Add nested \"and\" condition groups if you need to build a query of the form (a and b) or (c and d) [or (e and f)..]"
-msgstr "यदि आपको (a और b) या (c और d) [या (e और f)..] जैसी क्वेरी बनानी है तो Add nested \"and\" condition groups का उपयोग करें।"
+msgstr "यदि आपको (a और b) या (c और d) [या (e और f)..] जैसी क्वेरी बनानी है तो नेस्टेड \"और\" शर्त समूह जोड़ें का उपयोग करें।"
 
 msgid "Add nested \"and\" condition groups"
-msgstr "नेस्टेड \"and\" शर्त समूह जोड़ें"
+msgstr "नेस्टेड \"और\" शर्त समूह जोड़ें"
 
 msgid "Currently querying for ALL candidates."
 msgstr "वर्तमान में सभी उम्मीदवारों के लिए क्वेरी की जा रही है।"
@@ -148,10 +148,10 @@ msgid "You can add conditions by clicking one of the buttons below."
 msgstr "आप नीचे दिए गए बटनों में से किसी पर क्लिक करके शर्तें जोड़ सकते हैं।"
 
 msgid "Click Add Condition to add one or more conditions to your filters (ie. \"Date Of Birth < 2015-02-15\"). This is most likely where you want to start your filters."
-msgstr "फ़िल्टर में एक या अधिक शर्तें जोड़ने के लिए Add Condition पर क्लिक करें (जैसे \"जन्म तिथि < 2015-02-15\")। संभवतः यही वह जगह है जहाँ से आप अपने फ़िल्टर शुरू करना चाहेंगे।"
+msgstr "फ़िल्टर में एक या अधिक शर्तें जोड़ने के लिए 'शर्त जोड़ें' पर क्लिक करें (जैसे \"जन्म तिथि < 2015-02-15\")। संभवतः यही वह जगह है जहाँ से आप अपने फ़िल्टर शुरू करना चाहेंगे।"
 
 msgid "You can also import a population from a CSV by clicking the Import from CSV button."
-msgstr "आप Import from CSV बटन पर क्लिक करके CSV से जनसंख्या भी आयात कर सकते हैं।"
+msgstr "आप 'CSV से आयात करें' बटन पर क्लिक करके CSV से जनसंख्या भी आयात कर सकते हैं।"
 
 msgid "The advanced options are for queries that do not have a condition to add at the base of the query."
 msgstr "उन्नत विकल्प उन क्वेरीज़ के लिए हैं जिनके आधार में कोई शर्त जोड़ने के लिए नहीं है।"
@@ -395,6 +395,15 @@ msgstr "फ़ील्ड्स"
 
 msgid "Filters"
 msgstr "फ़िल्टर्स"
+
+msgid "Define Filters"
+msgstr "फ़िल्टर निर्धारित करें"
+
+msgid "Define Fields"
+msgstr "फ़ील्ड निर्धारित करें"
+
+msgid "Reload query"
+msgstr "क्वेरी पुनः लोड करें"
 
 msgid "Continue to Define Fields"
 msgstr "फ़ील्ड परिभाषित करना जारी रखें"
