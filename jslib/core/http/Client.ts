@@ -29,7 +29,7 @@ export class Client<T> {
    * @param baseUrl The base URL for the API requests.
    */
   constructor(baseUrl: string) {
-    this.baseUrl = loris.BaseURL+'/'+baseUrl;
+    this.baseUrl = loris.BaseURL+'/'+baseUrl+'/';
   }
 
   /**
