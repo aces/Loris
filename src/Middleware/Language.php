@@ -79,6 +79,7 @@ class Language implements MiddlewareInterface, MiddlewareChainer
         $lang  = self::detectLocale($loris, $request);
         if ($lang !== null) {
             \setlocale(LC_MESSAGES, $lang . '.utf8');
+	    ini_set('intl.default_locale', $lang);
             return $this->next->process(
                 $request->withAttribute("locale", $lang),
                 $handler
