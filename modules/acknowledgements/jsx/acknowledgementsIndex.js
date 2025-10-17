@@ -495,7 +495,6 @@ window.addEventListener('load', () => {
     document.getElementById('lorisworkspace')
   ).render(
     <Index
-      dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
       submitURL={`${loris.BaseURL}/acknowledgements/AcknowledgementsProcess`}
       hasPermission={loris.userHasPermission}
     />
