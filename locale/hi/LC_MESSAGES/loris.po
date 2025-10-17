@@ -212,6 +212,15 @@ msgstr "सफलता!"
 msgid "Close"
 msgstr "बंद करें"
 
+msgid "Saving"
+msgstr "सहेजा जा रहा है"
+
+msgid "Are You Sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "फॉर्म छोड़ने पर दर्ज की गई सभी जानकारी खो जाएगी।"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"

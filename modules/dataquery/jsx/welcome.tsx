@@ -1018,8 +1018,9 @@ function QueryRunList(props:{
 function LoadIcon(props: {
     onClick?: () => void,
 }) {
+  const {t} = useTranslation('dataquery');
   return <span onClick={props.onClick}
-    title="Reload query"
+    title={t('Reload query', {ns: 'dataquery'})}
     style={{cursor: 'pointer'}}
     className="fa-stack">
     <i className="fas fa-sync fa-stack-1x"></i>

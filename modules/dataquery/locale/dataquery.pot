@@ -405,6 +405,15 @@ msgstr ""
 msgid "Filters"
 msgstr ""
 
+msgid "Define Filters"
+msgstr ""
+
+msgid "Define Fields"
+msgstr ""
+
+msgid "Reload query"
+msgstr ""
+
 msgid "Continue to Define Fields"
 msgstr ""
 
