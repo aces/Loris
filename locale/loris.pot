@@ -188,6 +188,9 @@ msgstr ""
 msgid "Send To DCC"
 msgstr ""
 
+msgid "Sent To DCC"
+msgstr ""
+
 msgid "Reverse Send To DCC"
 msgstr ""
 

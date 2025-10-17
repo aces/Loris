@@ -109,7 +109,18 @@
         {$display.CohortTitle}
       </td>
       <td>
-        {$display.Scan_done|default:"<img alt=\"Data Missing\" src=\"{$baseurl|default}/images/help2.gif\" width=\"12\" height=\"12\" />"}
+        {if $display.Scan_done != ""}
+            {if $display.Scan_done == 'Y'}
+                {assign var="scan_done" value=dgettext("loris", "Yes")}
+                <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$sessionID}" class="timepoint_list">
+                {$scan_done}</a>
+            {else}
+                {assign var="scan_done" value={dgettext("loris", "No")}}
+                {$scan_done}
+            {/if}
+        {else}
+            <img alt="Data Missing" src="{$baseurl|default}/images/help2.gif" border=0>
+        {/if}
       </td>
       <td>
         {if $display.WindowInfo.Optimum|default}

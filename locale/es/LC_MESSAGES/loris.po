@@ -190,6 +190,9 @@ msgstr "Etapa"
 msgid "Send To DCC"
 msgstr "Enviar a CCD"
 
+msgid "Sent To DCC"
+msgstr "Enviado a CCD"
+
 msgid "Reverse Send To DCC"
 msgstr "Revertir Enviar al CCD"
 
