@@ -130,6 +130,12 @@ msgstr "रद्द करें"
 msgid "Success!"
 msgstr "सफलता!"
 
+msgid "Selection Filter"
+msgstr "चयन फ़िल्टर"
+
+msgid "Clear Filters"
+msgstr "फ़िल्टर साफ़ करें"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
@@ -145,6 +151,9 @@ msgstr "साइट"
 
 msgid "Module"
 msgstr "मॉड्यूल"
+
+msgid "Instrument"
+msgstr "उपकरण"
 
 msgid "Project"
 msgstr "परियोजना"
