@@ -71,6 +71,8 @@ locales:
 	npx i18next-conv -l hi -s locale/hi/LC_MESSAGES/loris.po -t locale/hi/LC_MESSAGES/loris.json --compatibilityJSON v4
 	msgfmt -o locale/es/LC_MESSAGES/loris.mo locale/es/LC_MESSAGES/loris.po
 	npx i18next-conv -l es -s locale/es/LC_MESSAGES/loris.po -t locale/es/LC_MESSAGES/loris.json --compatibilityJSON v4
+    msgfmt -o locale/fr/LC_MESSAGES/loris.mo locale/fr/LC_MESSAGES/loris.po
+	npx i18next-conv -l fr -s locale/fr/LC_MESSAGES/loris.po -t locale/fr/LC_MESSAGES/loris.json --compatibilityJSON v4
 	msgfmt -o modules/new_profile/locale/ja/LC_MESSAGES/new_profile.mo modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po
 	npx i18next-conv -l ja -s modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po -t modules/new_profile/locale/ja/LC_MESSAGES/new_profile.json
 	msgfmt -o modules/new_profile/locale/hi/LC_MESSAGES/new_profile.mo modules/new_profile/locale/hi/LC_MESSAGES/new_profile.po
