@@ -6,12 +6,12 @@ import StudyProgression from './widgets/studyprogression';
 import {fetchData} from './Fetch';
 import Modal from 'Modal';
 import Loader from 'Loader';
-import {SelectElement} from 'jsx/Form';
+
 import {useTranslation} from 'react-i18next';
 
 import '../css/WidgetIndex.css';
 
-import {setupCharts} from './widgets/helpers/chartBuilder';
+import {setupCharts, unloadCharts} from './widgets/helpers/chartBuilder';
 import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
 
 /**
@@ -34,45 +34,49 @@ const WidgetIndex = (props) => {
     let {title, chartType, options} = chartDetails[section][chartID];
     return (
       <div
-        className ="site-breakdown-card"
+        className ="chart-card"
       >
-        {/* Chart Title and Dropdown */}
+        {/* Chart Title and Toggle */}
         <div className ='chart-header'>
           <h5 className ='chart-title'>{title}</h5>
           {Object.keys(chartDetails[section][chartID].options).length > 1 && (
-            <div className ="chart-dropdown-wrapper">
-              <SelectElement
-                className ='chart-dropdown'
-                emptyOption ={false}
-                options ={options}
-                value ={options[chartType]}
-                onUserInput ={(name, value) => {
-                  setChartDetails(
-                    {
-                      ...chartDetails,
-                      [section]: {
-                        ...chartDetails[section],
-                        [chartID]: {
-                          ...chartDetails[section][chartID],
-                          chartType: options[value],
+            <div className ="chart-toggle-wrapper">
+              {Object.entries(options).map(([key, value]) => (
+                <button
+                  key={key}
+                  className={`chart-toggle-btn ${
+                    chartType === value ? 'active' : ''
+                  }`}
+                  onClick={() => {
+                    setChartDetails(
+                      {
+                        ...chartDetails,
+                        [section]: {
+                          ...chartDetails[section],
+                          [chartID]: {
+                            ...chartDetails[section][chartID],
+                            chartType: value,
+                          },
+                        },
+                      }
+                    );
+                    setupCharts(
+                      false,
+                      {
+                        [section]: {
+                          [chartID]: {
+                            ...chartDetails[section][chartID],
+                            chartType: value,
+                          },
                         },
                       },
-                    }
-                  );
-                  setupCharts(
-                    false,
-                    {
-                      [section]: {
-                        [chartID]: {
-                          ...chartDetails[section][chartID],
-                          chartType: options[value],
-                        },
-                      },
-                    },
-                    t('Total', {ns: 'loris'}),
-                  );
-                }}
-              />
+                      t('Total', {ns: 'loris'}),
+                    );
+                  }}
+                >
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </button>
+              ))}
             </div>
           )}
         </div>
@@ -180,6 +184,20 @@ const WidgetIndex = (props) => {
     chartDetails,
     setChartDetails
   ) => {
+    // Unload all charts in the section first
+    unloadCharts(chartDetails, section);
+
+    // Clear cached data from chartDetails to prevent old data from showing
+    let clearedChartDetails = {...chartDetails};
+    Object.keys(chartDetails[section]).forEach((chartID) => {
+      clearedChartDetails[section][chartID] = {
+        ...chartDetails[section][chartID],
+        data: null,
+        chartObject: null,
+      };
+    });
+    setChartDetails(clearedChartDetails);
+
     let formObject = new FormData();
     for (const key in formDataObj) {
       if (formDataObj[key] != '' && formDataObj[key] != ['']) {
@@ -187,12 +205,17 @@ const WidgetIndex = (props) => {
       }
     }
     const queryString = '?' + new URLSearchParams(formObject).toString();
-    let newChartDetails = {...chartDetails};
+    let newChartDetails = {...clearedChartDetails};
+
+    const chartPromises = [];
     Object.keys(chartDetails[section]).forEach(
       (chart) => {
         // update filters
-        let newChart = {...chartDetails[section][chart], filters: queryString};
-        setupCharts(false,
+        let newChart = {
+          ...clearedChartDetails[section][chart],
+          filters: queryString,
+        };
+        const chartPromise = setupCharts(false,
           {[section]: {[chart]: newChart}},
           t('Total', {ns: 'loris'}),
         ).then(
@@ -201,9 +224,13 @@ const WidgetIndex = (props) => {
             newChartDetails[section][chart] = data[section][chart];
           }
         );
+        chartPromises.push(chartPromise);
       }
     );
-    setChartDetails(newChartDetails);
+
+    Promise.all(chartPromises).then(() => {
+      setChartDetails(newChartDetails);
+    });
   };
 
   /**
