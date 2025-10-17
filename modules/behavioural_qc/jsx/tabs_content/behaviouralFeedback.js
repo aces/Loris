@@ -81,77 +81,68 @@ class BehaviouralFeedback extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    let reactElement;
-    switch (column) {
-    case 'PSCID':
-      reactElement = (
+    const {t} = this.props;
+    const labelPSCID = t('PSCID', {ns: 'loris'});
+    const labelDCCID = t('DCCID', {ns: 'loris'});
+    const labelBVL = t('Feedback Level', {ns: 'behavioural_qc'});
+
+    // PSCID column (match English or translated)
+    if (column === 'PSCID' || column === labelPSCID) {
+      return (
         <td>
-          <a href={this.props.baseURL +
-            '/' +
-            rowData['DCCID']
-          }>
+          <a href={this.props.baseURL + '/' + rowData['DCCID']}>
             {rowData['PSCID']}
           </a>
         </td>
       );
-      break;
-    case 'DCCID':
-      reactElement = (
+    }
+
+    // DCCID column
+    if (column === 'DCCID' || column === labelDCCID) {
+      return (
         <td>
-          <a href={this.props.baseURL +
-            '/' +
-            rowData['DCCID']
-          }>
+          <a href={this.props.baseURL + '/' + rowData['DCCID']}>
             {rowData['DCCID']}
           </a>
         </td>
       );
-      break;
-    case 'Feedback Level':
+    }
+
+    // Feedback Level column — build link depending on row data
+    if (column === 'Feedback Level' || column === labelBVL) {
       let bvlLink = '';
       let bvlLevel = '';
       if (rowData['Instrument']) {
         bvlLink = this.props.baseURL +
-                     '/instruments/' +
-                     rowData['Test Name'] +
-                     '/?candID=' +
-                     rowData['DCCID'] +
-                     '&sessionID=' +
-                     rowData['sessionID'] +
-                     '&commentID=' +
-                     rowData['commentID'];
-        // Open feedback panel
-        bvlLink += '&showFeedback=true';
-        bvlLevel ='Instrument : ' + rowData['Instrument'];
+                  '/instruments/' +
+                  rowData['Test Name'] +
+                  '/?candID=' + rowData['DCCID'] +
+                  '&sessionID=' + rowData['sessionID'] +
+                  '&commentID=' + rowData['commentID'] +
+                  '&showFeedback=true';
+        bvlLevel = t('Instrument', {ns: 'behavioural_qc'}) + ' : '
+        + rowData['Instrument'];
       } else if (rowData['Visit']) {
         bvlLink = this.props.baseURL +
-                     '/instrument_list/' +
-                     '?candID=' +
-                     rowData['DCCID'] +
-                     '&sessionID=' +
-                     rowData['sessionID'];
-        // Open feedback panel
-        bvlLink += '&showFeedback=true';
-        bvlLevel ='Visit : ' + rowData['Visit'];
+                  '/instrument_list/?candID=' + rowData['DCCID'] +
+                  '&sessionID=' + rowData['sessionID'] +
+                  '&showFeedback=true';
+        bvlLevel = t('Visit', {ns: 'behavioural_qc'}) + ' : '
+        + rowData['Visit'];
       } else {
-        bvlLink = this.props.baseURL +
-                     '/' + rowData['DCCID'];
-        // Open feedback panel
-        bvlLink += '/?showFeedback=true';
-        bvlLevel ='Profile : ' + rowData['PSCID'];
+        bvlLink = this.props.baseURL + '/' + rowData['DCCID']
+        + '/?showFeedback=true';
+        bvlLevel = t('Profile', {ns: 'behavioural_qc'}) + ' : '
+        + rowData['PSCID'];
       }
-      reactElement = (
+      return (
         <td>
           <a href={bvlLink}>{bvlLevel}</a>
         </td>
       );
-      break;
-    default:
-      reactElement = (
-        <td>{cell}</td>
-      );
     }
-    return reactElement;
+
+    return <td>{cell}</td>;
   }
 
   /**

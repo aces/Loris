@@ -126,6 +126,12 @@ msgstr ""
 msgid "Success!"
 msgstr ""
 
+msgid "Selection Filters"
+msgstr ""
+
+msgid "Clear Filters"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
