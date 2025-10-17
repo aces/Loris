@@ -38,17 +38,21 @@
 		<li>
 			{if $access.send_to_dcc===true}
     				{if $send_to_dcc.set_submitted=='Check'}
-                        		<span class="fa-li"><i class="{$send_to_dcc.icon|default:'far fa-square'}"></i></span><a href="{$baseurl}/timepoint_flag/check_timepoint_flag/?identifier={$sessionID}">{$send_to_dcc.reverse|default:dgettext("loris", "Sent To DCC")}</a><br>
+                                        <span class="fa-li"><i class="{$send_to_dcc.icon|default:'far fa-square'}"></i></span><a href="{$baseurl}/timepoint_flag/check_timepoint_flag/?identifier={$sessionID}">{$send_to_dcc.reverse|default:dgettext("loris", "Send To DCC")}</a><br>
 	    			{else}
 						<a
-							onclick="sendUpdate('/instrument_list/?candID={$candID}&sessionID={$sessionID}&setSubmitted={$send_to_dcc.set_submitted}')"
-							style="cursor: pointer;"
+                                                        onclick="sendUpdate('/instrument_list/?candID={$candID}&sessionID={$sessionID}&setSubmitted={$send_to_dcc.set_submitted}')"
+                                                        style="cursor: pointer;"
 						>
-							{dgettext("loris", $send_to_dcc.reverse)|default:dgettext("loris", "Sent To DCC")}
+                                                        {if ($send_to_dcc.reverse) }
+                                                            {dgettext("loris", $send_to_dcc.reverse)}
+                                                        {else}
+                                                            {dgettext("loris", "Send To DCC")}
+                                                        {/if}
 						</a>
     				{/if}
 			{else}
-                        <span title='{$access.send_to_dcc_status_message}'><span class="fa-li"><i class="{$send_to_dcc.icon|default:'fas fa-times'}"></i></span>{dgettext("loris", "Sent To DCC")}</span>
+                        <span title='{$access.send_to_dcc_status_message}'><span class="fa-li"><i class="{$send_to_dcc.icon|default:'fas fa-times'}"></i></span>{dgettext("loris", "Send To DCC")}</span>
 			{/if}
 		</li>
 	</ul>

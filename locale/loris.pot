@@ -185,7 +185,7 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
-msgid "Sent To DCC"
+msgid "Send To DCC"
 msgstr ""
 
 msgid "Reverse Send To DCC"
