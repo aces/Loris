@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {APIQueryField} from './types';
 import {ButtonElement} from 'jsx/Form';
 import {QueryGroup} from './querydef';
@@ -19,17 +20,18 @@ function NextSteps(props: {
     page: string,
     changePage: (newpage: string) => void,
 }) {
+  const {t} = useTranslation('dataquery');
   const [expanded, setExpanded] = useState(true);
   const steps: React.ReactElement[] = [];
 
 
   const canRun = (props.fields && props.fields.length > 0);
   const fieldLabel = (props.fields && props.fields.length > 0)
-    ? 'Modify Fields'
-    : 'Choose Fields';
+    ? t('Modify Fields', {ns: 'dataquery'})
+    : t('Choose Fields', {ns: 'dataquery'});
   const filterLabel = (props.filters && props.filters.group.length > 0)
-    ? 'Modify Filters'
-    : 'Add Filters';
+    ? t('Modify Filters', {ns: 'dataquery'})
+    : t('Add Filters', {ns: 'dataquery'});
   switch (props.page) {
   case 'Info':
     if (canRun) {
@@ -48,7 +50,7 @@ function NextSteps(props: {
         onUserInput={() => props.changePage('DefineFilters')}
       />);
       steps.push(<ButtonElement
-        label='Run Query'
+        label={t('Run Query', {ns: 'dataquery'})}
         columnSize='col-sm-12'
         key='runquery'
         onUserInput={() => props.changePage('ViewData')}
@@ -72,7 +74,7 @@ function NextSteps(props: {
     />);
     if (canRun) {
       steps.push(<ButtonElement
-        label='Run Query'
+        label={t('Run Query', {ns: 'dataquery'})}
         columnSize='col-sm-12'
         key='runquery'
         onUserInput={() => props.changePage('ViewData')}
@@ -82,7 +84,7 @@ function NextSteps(props: {
   case 'DefineFilters':
     if (canRun) {
       steps.push(<ButtonElement
-        label='Run Query'
+        label={t('Run Query', {ns: 'dataquery'})}
         key='runquery'
         columnSize='col-sm-12'
         onUserInput={() => props.changePage('ViewData')}
@@ -148,7 +150,7 @@ function NextSteps(props: {
         paddingRight: '14px',
       }}>
         <div style={style}>
-          <h3>Next Steps</h3>
+          <h3>{t('Next Steps', {ns: 'dataquery'})}</h3>
           <div style={{display: 'flex'}}>
             {steps}
           </div>

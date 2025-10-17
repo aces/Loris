@@ -16,6 +16,11 @@ import {useSharedQueries, useLoadQueryFromURL} from './hooks/usesharedqueries';
 
 import {useDataDictionary, useCategories} from './hooks/usedatadictionary';
 import {ModuleDictionary, DictionaryCategory} from './types';
+// @ts-ignore
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/dataquery.json';
 
 type ActiveCategoryType = {
     module: string,
@@ -244,6 +249,10 @@ function DataQueryApp(props: {
 
 declare const loris: any;
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'dataquery', hiStrings);
+  const TranslatedDataQueryApp = withTranslation(
+    ['dataquery', 'loris'])(DataQueryApp);
+
   const element = document.getElementById('lorisworkspace');
   if (!element) {
     throw new Error('Missing lorisworkspace');
@@ -251,7 +260,7 @@ window.addEventListener('load', () => {
   const root = createRoot(element);
 
   root.render(
-    <DataQueryApp
+    <TranslatedDataQueryApp
       queryAdmin={loris.userHasPermission('dataquery_admin')}
       username={loris.user.username}
     />,
