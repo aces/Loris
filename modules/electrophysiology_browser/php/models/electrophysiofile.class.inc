@@ -3,7 +3,7 @@
 /**
  * Contains the ElectrophysioFile class used for electrophysiological browser
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Electrophysiology
  * @package  Electrophysiology

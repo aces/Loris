@@ -378,18 +378,27 @@ CREATE TABLE `biobank_container_shipment_rel` (
 
 -- Insert units, processes, container status and shipment status
 INSERT INTO `biobank_unit` VALUES (1,'mL'),(2,'µL');
-INSERT INTO `biobank_specimen_attribute_datatype` VALUES (1, 'text'),(2, 'number'),(3, 'date'),(4, 'time'),(5, 'boolean');
-INSERT INTO `biobank_specimen_protocol` VALUES (1, 'Blood Collection', 1, 1), (2, 'Blood Preparation', 2, 1), (3, 'Serum Collection', 1, 2);
-INSERT INTO `biobank_specimen_type` VALUES (1,'Blood',0),(2,'Serum', 1);
-INSERT INTO `biobank_specimen_type_unit_rel` VALUES (1, 1), (2, 2);
-INSERT INTO `biobank_specimen_type_parent` VALUES (2, 1);
-INSERT INTO `biobank_container_dimension` VALUES (1, 1, 1, 1, 1, 0, 0), (2, 10, 1, 10, 0, 1, 0), (3, 1, 0, 5, 0, 1, 0);
-INSERT INTO `biobank_container_capacity` VALUES (1, 1, 1);
-INSERT INTO `biobank_container_type` VALUES (1, 'Brand', 'Product Number 1', 'Vial', 1, 1, 1), (2, 'Brand', 'Product Number 2', 'Matrix Box', 0, null, 2), (3, 'Brand', 'Product Number 3', 'Rack', 0, null, 3);
-INSERT INTO `biobank_specimen_type_container_type_rel` VALUES (1, 1), (2, 1);
-INSERT INTO `biobank_specimen_process` VALUES (2,'Analysis'),(1,'Collection'),(3,'Preparation');
-INSERT INTO `biobank_container_status` VALUES (1,'Available'),(4,'Discarded'),(3,'Dispensed');
+INSERT INTO `biobank_specimen_attribute_datatype` VALUES (1,'text'),(2,'number'),(3,'date'),(4,'time'),(5,'boolean');
+INSERT INTO `biobank_specimen_process` VALUES (1,'Collection'),(2,'Analysis'),(3,'Preparation');
+INSERT INTO `biobank_container_status` VALUES (1,'Available'),(3,'Dispensed'),(4,'Discarded');
 INSERT INTO `shipment_status` VALUES (1,'cancelled'),(2,'created'),(3,'received'),(4,'returned'),(5,'shipped');
+INSERT INTO `biobank_specimen_type` VALUES (1,'Blood',0),(2,'Serum',1);
+INSERT INTO `biobank_container_dimension`
+VALUES (1,1,1,1,1,0,0),
+       (2,10,1,10,0,1,0),
+       (3,1,0,5,0,1,0);
+INSERT INTO `biobank_container_capacity` VALUES (1,1,1);
+INSERT INTO `biobank_container_type`
+VALUES (1,'Brand','Product Number 1','Vial',1,1,1),
+       (2,'Brand','Product Number 2','Matrix Box',0,NULL,2),
+       (3,'Brand','Product Number 3','Rack',0,NULL,3);
+INSERT INTO `biobank_specimen_protocol`
+VALUES (1,'Blood Collection',1,1),
+       (2,'Blood Preparation',2,1),
+       (3,'Serum Collection',1,2);
+INSERT INTO `biobank_specimen_type_unit_rel` VALUES (1,1),(2,2);
+INSERT INTO `biobank_specimen_type_parent` VALUES (2,1);
+INSERT INTO `biobank_specimen_type_container_type_rel` VALUES (1,1),(2,1);
 
 -- Insert ConfigSettings for label printing endpoint
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('biobank', 'Settings related to the biobank module', 1, 0, 'Biobank', 16);

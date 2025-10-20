@@ -5,7 +5,7 @@
  * This class contains all database handling that is needed to
  * permanently store and retrieve Specimen Object instances
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   DAO
  * @package    Loris
@@ -21,7 +21,7 @@ namespace LORIS\biobank;
  * This class contains all database handling that is needed to
  * permanently store and retrieve Specimen Object instances
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   DAO
  * @package    Loris

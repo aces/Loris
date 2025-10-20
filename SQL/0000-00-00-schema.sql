@@ -51,7 +51,7 @@ CREATE TABLE `psc` (
   `Phone2` varchar(12) DEFAULT NULL,
   `Contact1` varchar(150) DEFAULT NULL,
   `Contact2` varchar(150) DEFAULT NULL,
-  `Alias` char(3) NOT NULL DEFAULT '',
+  `Alias` char(4) NOT NULL DEFAULT '',
   `MRI_alias` varchar(4) NOT NULL DEFAULT '',
   `Account` varchar(8) DEFAULT NULL,
   `Study_site` enum('N','Y') DEFAULT 'Y',

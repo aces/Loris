@@ -3,7 +3,7 @@
 /**
  * The UserPermissions class manages checking of user permissions
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main

@@ -74,3 +74,4 @@ msgstr "多くの"
 
 msgid "Description"
 msgstr "説明"
+

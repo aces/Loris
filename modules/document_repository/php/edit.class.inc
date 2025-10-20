@@ -3,7 +3,7 @@
 /**
  * This file loads the Edit file page
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Document_Repository

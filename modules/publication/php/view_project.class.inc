@@ -3,7 +3,7 @@
 /**
  * This file contains the NDB_Form_media class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Publication

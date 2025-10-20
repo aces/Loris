@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import Panel from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {setupCharts} from './helpers/chartBuilder';
+import {useTranslation} from 'react-i18next';
+import jaStrings from '../../locale/ja/LC_MESSAGES/statistics.json';
 
 /**
  * StudyProgression - a widget containing statistics for study data.
@@ -12,8 +15,23 @@ import {setupCharts} from './helpers/chartBuilder';
  * @return {JSX.Element}
  */
 const StudyProgression = (props) => {
+  const {t} = useTranslation();
   const [loading, setLoading] = useState(true);
   const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
+  const [showFiltersScans, setShowFiltersScans] = useState(false);
+  const [showFiltersRecruitment, setShowFiltersRecruitment] = useState(false);
+  const [activeView, setActiveView] = useState(0);
+  useEffect( () => {
+    i18n.addResourceBundle('ja', 'statistics', jaStrings);
+
+    // Re-set default state that depended on the translation
+    let newdetails = {...chartDetails};
+    newdetails['total_scans']['scans_bymonth']['title']
+      = t('Scan sessions per site', {ns: 'statistics'});
+    newdetails['total_recruitment']['siterecruitment_line']['title']
+      = t('Recruitment per site', {ns: 'statistics'});
+    setChartDetails(newdetails);
+  }, []);
 
   let json = props.data;
 
@@ -21,11 +39,11 @@ const StudyProgression = (props) => {
     'total_scans': {
       'scans_bymonth': {
         sizing: 11,
-        title: 'Scan sessions per site',
+        title: t('Scan sessions per site', {ns: 'statistics'}),
         filters: '',
         chartType: 'line',
         dataType: 'line',
-        label: 'Scans',
+        label: t('Scans', {ns: 'loris'}),
         legend: 'under',
         options: {line: 'line'},
         chartObject: null,
@@ -36,7 +54,7 @@ const StudyProgression = (props) => {
     'total_recruitment': {
       'siterecruitment_bymonth': {
         sizing: 11,
-        title: 'Recruitment per site',
+        title: t('Recruitment per site', {ns: 'statistics'}),
         filters: '',
         chartType: 'line',
         dataType: 'line',
@@ -76,14 +94,18 @@ const StudyProgression = (props) => {
    */
   useEffect(() => {
     if (json && Object.keys(json).length !== 0) {
-      setupCharts(false, chartDetails).then((data) => {
+      setupCharts(
+        false,
+        chartDetails,
+        t('Total', {ns: 'loris'})
+      ).then((data) => {
         setChartDetails(data);
       });
       json = props.data;
       console.log('thejson', json);
       setLoading(false);
     }
-  }, [props.data]);
+  }, [props.data, t]);
 
   const updateFilters = (formDataObj, section) => {
     props.updateFilters(formDataObj, section,
@@ -96,13 +118,19 @@ const StudyProgression = (props) => {
       ['overall']['total_recruitment'] || -1;
   };
 
+  const title = (subtitle) => t('Study Progression', {ns: 'statistics'})
+    + ' — ' + t(subtitle, {ns: 'statistics'});
+  const filterLabel = (hide) => hide ?
+    t('Hide Filters', {ns: 'loris'})
+    : t('Show Filters', {ns: 'loris'});
   return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
     <>
       <Panel
-        title='Study Progression'
+        title={t('Study Progression', {ns: 'statistics'})}
         id='statistics_studyprogression'
         onChangeView={(index) => {
-          setupCharts(false, chartDetails);
+          setActiveView(index);
+          setupCharts(false, chartDetails, t('Total', {ns: 'loris'}));
 
           // reset filters when switching views
           setShowFiltersBreakdown(false);
@@ -140,7 +168,7 @@ const StudyProgression = (props) => {
                   }
                 )}
               </div>,
-            title: 'Study Progression - summary',
+            title: title('Summary'),
           },
           {
             content: json['studyprogression']['total_scans'] > 0 ? (
@@ -157,7 +185,7 @@ const StudyProgression = (props) => {
                     className="btn btn-default btn-xs"
                     onClick={() => setShowFiltersBreakdown((prev) => !prev)}
                   >
-                    {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
+                    {filterLabel(showFiltersScans)}
                   </button>
                 </div>
                 {showFiltersBreakdown && (
@@ -176,9 +204,8 @@ const StudyProgression = (props) => {
             ) : (
               <p>There have been no scans yet.</p>
             ),
-            title: 'Study Progression - site scans',
-            subtitle: 'Total scans: '
-              + json['studyprogression']['total_scans'] || -1,
+            title: title('Site Scans'),
+            onToggleFilters: () => setShowFiltersScans((prev) => !prev),
           },
           {
             content: json['studyprogression']['recruitment']['overall'][
@@ -197,7 +224,7 @@ const StudyProgression = (props) => {
                       className="btn btn-default btn-xs"
                       onClick={() => setShowFiltersBreakdown((prev) => !prev)}
                     >
-                      {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
+                      {filterLabel(showFiltersRecruitment)}
                     </button>
                   </div>
                   {showFiltersBreakdown && (
@@ -247,10 +274,11 @@ const StudyProgression = (props) => {
               ) : (
                 <p>There is no data yet.</p>
               ),
-            title: 'Study Progression - project dataset sizes',
+            title: title('Study Progression - project dataset sizes'),
             subtitle: 'Total size: '
               + (json['studyprogression']['total_size'] ?? -1)
               + ' GB',
+            onToggleFilters: () => setShowFiltersRecruitment((prev) => !prev),
           },
         ]}
       />

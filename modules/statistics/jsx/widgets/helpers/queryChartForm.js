@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {SelectElement, FormElement, ButtonElement, DateElement} from 'jsx/Form';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -18,6 +19,7 @@ const QueryChartForm = (props) => {
     visits: {},
     participantStatus: {},
   });
+  const {t} = useTranslation();
 
   // Load options from props.data when rendered
   useEffect(
@@ -71,6 +73,7 @@ const QueryChartForm = (props) => {
     setFormDataObj({});
   };
 
+  const clearSelection = t('-- Clear Selection --', {ns: 'statistics'});
   /**
    * Renders the React component.
    *
@@ -92,7 +95,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px', display: 'block'}}>
-                Project</label>
+              {t('Project', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedProjects'
               options ={{__clear__: '-- Clear Selection --',
@@ -115,7 +118,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>Cohort</label>
+              display: 'block'}}>{t('Cohort', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedCohorts'
               options ={{__clear__: '-- Clear Selection --',
@@ -138,7 +141,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>Site</label>
+              display: 'block'}}>{t('Site', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedSites'
               options ={{__clear__: '-- Clear Selection --', ...options.sites}}
@@ -184,7 +187,9 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>Status</label>
+              display: 'block'}}>
+              {t('Participant Status', {ns: 'loris'})}
+            </label>
             <SelectElement
               name ='selectedParticipantStatus'
               options ={{__clear__: '-- Clear Selection --',
@@ -237,7 +242,7 @@ const QueryChartForm = (props) => {
         justifyContent: 'center',
         marginTop: '20px'}}>
         <ButtonElement
-          label ='Clear Filters'
+          label={t('Clear Filters', {ns: 'loris'})}
           onUserInput ={resetFilters}
           buttonClass ='btn btn-sm btn-primary'
         />

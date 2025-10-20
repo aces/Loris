@@ -3,7 +3,7 @@
 /**
  * Imaging browser MRI Feedback class file.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category MRI
  * @package  Loris
