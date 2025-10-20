@@ -140,11 +140,10 @@ class Edit_User extends \NDB_Form
                     } else {
                         $defaults['examiner_radiologist'] = 'N';
                     }
+                    $defaults['examiner_sites'][] = $cid;
                 }
-                if ($vals[0]=='Y') {
-                    $defaults['ex_'.$cid] ='on';
-                }
-            }
+             }
+             unset($defaults['examiner']);
 
             // Notification defaults
             // "notif_".$module."_".$operation."_".$service
@@ -346,26 +345,12 @@ class Edit_User extends \NDB_Form
         // EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
-            $ex_curr_sites  = [];
+            $ex_curr_sites  = $values['examiner_sites'] ?? [];
             $ex_prev_sites  = [];
-            $ex_radiologist = 'N';
-
-            foreach ($values as $k => $v) {
-                //examiner fields
-                if (preg_match("/^ex_[0-9]+$/", $k)) {
-                    //get centerID
-                    $parse_key = explode('_', $k);
-                    $cid       = $parse_key[1];
-                    $ex_curr_sites[$k] = $cid;
-                }
-                if ($k === 'examiner_radiologist') {
-                    $ex_radiologist = $v;
-                }
-            }
-            foreach ($ex_curr_sites as $k => $v) {
-                unset($values[$k]);
-            }
+            $ex_radiologist = $values['examiner_radiologist'] ?? 'N';
         }
+
+        unset($values['examiner_sites']);
         unset($values['examiner_radiologist']);
         $ex_pending = $values['examiner_pending'];
         unset($values['examiner_pending']);
@@ -413,10 +398,10 @@ class Edit_User extends \NDB_Form
 
         // START EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
-            $examinerID = $DB->pselect(
+            $examinerID = $DB->pselectCol(
                 "SELECT e.examinerID
-             FROM examiners e
-             WHERE e.userID=:uid",
+                 FROM examiners e
+                 WHERE e.userID=:uid",
                 [
                     "uid" => $uid,
                 ]
@@ -466,8 +451,7 @@ class Edit_User extends \NDB_Form
                     ]
                 );
 
-                $examinerID = iterator_to_array($examinerID);
-                $examinerID = $examinerID[0]['examinerID'];
+                $examinerID = $examinerID[0];
 
                 //get existing sites for examiner
                 $prev_sites = $DB->pselect(
@@ -484,7 +468,6 @@ class Edit_User extends \NDB_Form
             }
             if (!empty($ex_curr_sites)) {
                 foreach ($ex_curr_sites as $v) {
-
                     //Check if examiner already in db for site
                     $result = $DB->pselectRow(
                         "SELECT epr.centerID
@@ -526,7 +509,7 @@ class Edit_User extends \NDB_Form
             }
             //de-activate examiner if sites where no longer checked
             if (!empty($ex_prev_sites)) {
-                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites ?? []);
             }
             if (!empty($ex_inactive)) {
                 foreach ($ex_inactive as $cid) {
@@ -842,25 +825,21 @@ class Edit_User extends \NDB_Form
         // END PROJECT SECTION
 
         if ($editor->hasPermission('examiner_multisite')) {
-            $groupA = [];
-            $groupB = [];
+            $examinerGroup = [];
 
-            //get site aliases
-            $factory = \NDB_Factory::singleton();
-            $DB      = $factory->database();
-            $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", []);
-
-            foreach ($aliases as $row) {
-                $groupA[] = $this->createCheckbox(
-                    'ex_'.$row['CenterID'],
-                    $row['Alias'],
-                    []
-                );
-            }
-            $groupB[] = $this->createLabel(
+            $this->addSelect(
+                "examiner_sites",
+                "Examiner at:",
+                $siteOptions,
+                [
+                    'class'    => 'form-control input-sm resizable',
+                    'multiple' => 'multiple',
+                ]
+            );
+            $examinerGroup[] = $this->createLabel(
                 "Radiologist: "
             );
-            $groupB[] = $this->createSelect(
+            $examinerGroup[] = $this->createSelect(
                 "examiner_radiologist",
                 "Radiologist: ",
                 [
@@ -870,10 +849,10 @@ class Edit_User extends \NDB_Form
                 ]
             );
 
-            $groupB[] = $this->createLabel(
+            $examinerGroup[] = $this->createLabel(
                 "Pending Approval:"
             );
-            $groupB[] = $this->createSelect(
+            $examinerGroup[] = $this->createSelect(
                 "examiner_pending",
                 "Pending Approval: ",
                 [
@@ -883,19 +862,12 @@ class Edit_User extends \NDB_Form
                 ]
             );
             $this->addGroup(
-                $groupA,
-                'examiner_sites',
-                'Examiner At:',
-                $this->_GUIDelimiter
-            );
-            $this->addGroup(
-                $groupB,
+                $examinerGroup,
                 "examiner_group",
                 "Examiner Status",
                 $this->_GUIDelimiter
             );
-            unset($groupA);
-            unset($groupB);
+            unset($examinerGroup);
         }
 
         // It doesn't make sense for a user to be editing their own
@@ -1286,7 +1258,7 @@ class Edit_User extends \NDB_Form
         if ($editor->hasPermission('examiner_multisite')) {
             $matched = false;
             foreach (array_keys($values) as $k) {
-                if (preg_match("/^ex_[0-9]+$/", $k)) {
+                if ($values['examiner_sites'] ?? null) {
                     $matched = true;
                     if ($values['examiner_radiologist'] == '') {
                         $errors['examiner_group'] = "Please specify if examiner " .
