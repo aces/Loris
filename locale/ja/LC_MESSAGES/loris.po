@@ -123,14 +123,8 @@ msgstr "いいえ"
 msgid "Create"
 msgstr "作成する"
 
-msgid "Cancel"
-msgstr "取り消す"
-
 msgid "N/A"
 msgstr "適用できない"
-
-msgid "Success!"
-msgstr "成功！"
 
 # Filters
 msgid "Selection Filter"
@@ -144,6 +138,13 @@ msgstr "フィルターを非表示"
 
 msgid "Clear Filters"
 msgstr "フィルターをクリア"
+
+# Common swal labels
+msgid "Cancel"
+msgstr "取り消す"
+
+msgid "Success!"
+msgstr "成功！"
 
 # Common candidate terms
 msgid "PSCID"

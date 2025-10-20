@@ -126,9 +126,28 @@ msgstr "Crear"
 msgid "N/A"
 msgstr "N/A"
 
+# Filters
+msgid "Selection Filter"
+msgstr "Selección de Filtros"
+
+msgid "Show Filters"
+msgstr "Mostrar Filtros"
+
+msgid "Hide Filters"
+msgstr "Ocultar Filtros"
+
+msgid "Clear Filters"
+msgstr "Limpiar Filtros"
+
+msgid "Show Advanced Filters"
+msgstr "Mostras filtros avanzados"
+
+msgid "Hide Advanced Filters"
+msgstr "Ocultar filtros avanzados"
+
 # Common swal labels
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 msgid "Success!"
 msgstr "Exitoso!"
@@ -210,12 +229,6 @@ msgstr "Tipo de Entidad"
 
 msgid "Scan Done"
 msgstr "Scan hecho"
-
-msgid "Show Advanced Filters"
-msgstr "Mostras filtros avanzados"
-
-msgid "Hide Advanced Filters"
-msgstr "Ocultar filtros avanzados"
 
 msgid "Language"
 msgstr "Lenguaje"
