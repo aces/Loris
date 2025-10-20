@@ -125,6 +125,25 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
+# Filters
+msgid "Selection Filter"
+msgstr ""
+
+msgid "Show Filters"
+msgstr ""
+
+msgid "Hide Filters"
+msgstr ""
+
+msgid "Clear Filters"
+msgstr ""
+
+msgid "Show Advanced Filters"
+msgstr ""
+
+msgid "Hide Advanced Filters"
+msgstr ""
+
 # Common swal labels
 msgid "Cancel"
 msgstr ""
@@ -207,12 +226,6 @@ msgid "Entity Type"
 msgstr ""
 
 msgid "Scan Done"
-msgstr ""
-
-msgid "Show Advanced Filters"
-msgstr ""
-
-msgid "Hide Advanced Filters"
 msgstr ""
 
 msgid "Language"
