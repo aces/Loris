@@ -451,6 +451,7 @@ class Edit_User extends \NDB_Form
                     ]
                 );
 
+                $examinerID = array_values($examinerID);
                 $examinerID = $examinerID[0];
 
                 //get existing sites for examiner
@@ -1256,26 +1257,20 @@ class Edit_User extends \NDB_Form
         //        Validate Examiner Status
         //======================================
         if ($editor->hasPermission('examiner_multisite')) {
-            $matched = false;
-            foreach (array_keys($values) as $k) {
-                if ($values['examiner_sites'] ?? null) {
-                    $matched = true;
-                    if ($values['examiner_radiologist'] == '') {
-                        $errors['examiner_group'] = "Please specify if examiner " .
-                            "is a radiologist";
+            if ($values['examiner_sites'] ?? null) {
+                if ($values['examiner_radiologist'] == '') {
+                    $errors['examiner_group'] = "Please specify if examiner " .
+                        "is a radiologist";
 
-                    }
-                    if ($values['examiner_radiologist'] !== ''
-                        && $values['examiner_pending'] == ''
-                    ) {
-                        $errors['examiner_group'] = "Please set pending " .
-                            "approval Yes or No";
-                    }
                 }
-            }
-            if (!$matched
-                && ($values['examiner_radiologist'] !== ''
-                || $values['examiner_pending'] ?? '' !== '')
+                if ($values['examiner_radiologist'] !== ''
+                    && $values['examiner_pending'] == ''
+                ) {
+                    $errors['examiner_group'] = "Please set pending " .
+                        "approval Yes or No";
+                }
+            } elseif ($values['examiner_radiologist'] !== ''
+                || $values['examiner_pending'] ?? '' !== ''
             ) {
                 $errors['examiner_sites'] = "Please select at least one examiner
                 site or clear the 'Examiner status' fields below (i.e.
