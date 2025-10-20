@@ -19,8 +19,7 @@ const StudyProgression = (props) => {
   const [loading, setLoading] = useState(true);
   const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
   const [showFiltersScans, setShowFiltersScans] = useState(false);
-  const [showFiltersRecruitment, setShowFiltersRecruitment] = useState(false);
-  const [activeView, setActiveView] = useState(0);
+  const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
   useEffect( () => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
 
@@ -28,7 +27,7 @@ const StudyProgression = (props) => {
     let newdetails = {...chartDetails};
     newdetails['total_scans']['scans_bymonth']['title']
       = t('Scan sessions per site', {ns: 'statistics'});
-    newdetails['total_recruitment']['siterecruitment_line']['title']
+    newdetails['total_recruitment']['siterecruitment_bymonth']['title']
       = t('Recruitment per site', {ns: 'statistics'});
     setChartDetails(newdetails);
   }, []);
@@ -129,9 +128,7 @@ const StudyProgression = (props) => {
         title={t('Study Progression', {ns: 'statistics'})}
         id='statistics_studyprogression'
         onChangeView={(index) => {
-          setActiveView(index);
           setupCharts(false, chartDetails, t('Total', {ns: 'loris'}));
-
           // reset filters when switching views
           setShowFiltersBreakdown(false);
         }}
@@ -226,7 +223,7 @@ const StudyProgression = (props) => {
                       className="btn btn-default btn-xs"
                       onClick={() => setShowFiltersBreakdown((prev) => !prev)}
                     >
-                      {filterLabel(showFiltersRecruitment)}
+                      {filterLabel(showFiltersBreakdown)}
                     </button>
                   </div>
                   {showFiltersBreakdown && (
@@ -276,11 +273,11 @@ const StudyProgression = (props) => {
               ) : (
                 <p>There is no data yet.</p>
               ),
-            title: title('Study Progression - project dataset sizes'),
+            title: title('Project dataset sizes'),
             subtitle: 'Total size: '
               + (json['studyprogression']['total_size'] ?? -1)
               + ' GB',
-            onToggleFilters: () => setShowFiltersRecruitment((prev) => !prev),
+            onToggleFilters: () => showFiltersBreakdown((prev) => !prev),
           },
         ]}
       />

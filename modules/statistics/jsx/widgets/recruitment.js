@@ -4,7 +4,7 @@ import Loader from 'Loader';
 import Panel from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {progressBarBuilder} from './helpers/progressbarBuilder';
-
+import {useTranslation} from 'react-i18next';
 import {setupCharts} from './helpers/chartBuilder';
 
 /**
@@ -14,6 +14,7 @@ import {setupCharts} from './helpers/chartBuilder';
  * @return {JSX.Element}
  */
 const Recruitment = (props) => {
+  const {t} = useTranslation();
   const [loading, setLoading] = useState(true);
   const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
 
@@ -134,7 +135,7 @@ const Recruitment = (props) => {
   useEffect(
     () => {
       if (json && Object.keys(json).length !== 0) {
-        setupCharts(false, chartDetails).then(
+        setupCharts(false, chartDetails, t('Total', {ns: 'loris'})).then(
           (data) => {
             setChartDetails(data);
           }
@@ -152,7 +153,7 @@ const Recruitment = (props) => {
         title ='Recruitment'
         id ='statistics_recruitment'
         onChangeView ={(index) => {
-          setupCharts(false, chartDetails);
+          setupCharts(false, chartDetails, t('Total', {ns: 'loris'}));
           setShowFiltersBreakdown(false);
         }}
         views ={[
@@ -162,7 +163,7 @@ const Recruitment = (props) => {
               <div className ='recruitment-panel' id='overall-recruitment'>
                 {progressBarBuilder(json['recruitment']['overall'])}
               </div>
-              <br />
+              <hr />
               {showFilters('generalBreakdown')}
               <div className={'charts-grid'}>
                 {Object
@@ -210,13 +211,13 @@ const Recruitment = (props) => {
               <div
                 style={{
                   maxHeight: '400px',
-                  overflowY: 'scroll',
+                  overflowY: 'auto',
                   overflowX: 'hidden',
                 }}
               >
                 {Object.entries(json['recruitment']).map(
                   ([key, value]) => {
-                    if (key !== 'overall' && value['total_recruitment'] > 0) {
+                    if (key !== 'overall') {
                       return <div key ={`projectBreakdown_${key}`}>
                         {progressBarBuilder(value)}
                       </div>;
@@ -233,7 +234,7 @@ const Recruitment = (props) => {
               <div
                 style={{
                   maxHeight: '400px',
-                  overflowY: 'scroll',
+                  overflowY: 'auto',
                   overflowX: 'hidden',
                 }}
               >

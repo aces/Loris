@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {SelectElement, FormElement, ButtonElement, DateElement} from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
 
-
 /**
  * QueryChartForm - a form used for statistics query to modify graphs/charts.
  *
@@ -20,6 +19,13 @@ const QueryChartForm = (props) => {
     participantStatus: {},
   });
   const {t} = useTranslation();
+  const [options, setOptions] = useState({
+    projects: {},
+    cohorts: {},
+    sites: {},
+    visits: {},
+    participantStatus: {},
+  });
 
   // Load options from props.data when rendered
   useEffect(
@@ -74,13 +80,6 @@ const QueryChartForm = (props) => {
   };
 
   const clearSelection = t('-- Clear Selection --', {ns: 'statistics'});
-  /**
-   * Renders the React component.
-   *
-   * @param name
-   * @param value
-   * @return {JSX.Element} - React markup for component.
-   */
   return (
     <FormElement
       Module ={props.Module}
@@ -121,7 +120,7 @@ const QueryChartForm = (props) => {
               display: 'block'}}>{t('Cohort', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedCohorts'
-              options ={{__clear__: '-- Clear Selection --',
+              options ={{__clear__: clearSelection,
                 ...options.cohorts}}
               multiple ={true}
               emptyOption ={false}
@@ -144,7 +143,7 @@ const QueryChartForm = (props) => {
               display: 'block'}}>{t('Site', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedSites'
-              options ={{__clear__: '-- Clear Selection --', ...options.sites}}
+              options ={{__clear__: clearSelection, ...options.sites}}
               multiple ={true}
               emptyOption ={false}
               value ={formDataObj['selectedSites'] || []}
@@ -166,7 +165,7 @@ const QueryChartForm = (props) => {
               display: 'block'}}>Visit</label>
             <SelectElement
               name ='selectedVisits'
-              options ={{__clear__: '-- Clear Selection --',
+              options ={{__clear__: clearSelection,
                 ...options.visits}}
               multiple ={true}
               emptyOption ={false}
@@ -192,7 +191,7 @@ const QueryChartForm = (props) => {
             </label>
             <SelectElement
               name ='selectedParticipantStatus'
-              options ={{__clear__: '-- Clear Selection --',
+              options ={{__clear__: clearSelection,
                 ...options.participantStatus}}
               multiple ={true}
               emptyOption ={false}

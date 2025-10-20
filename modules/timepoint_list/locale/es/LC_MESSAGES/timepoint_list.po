@@ -75,6 +75,9 @@ msgstr " a / "
 msgid " m"
 msgstr " m"
 
+msgid "Not Done"
+msgstr "No Hecha"
+
 msgid "Visual"
 msgstr "Visual"
 

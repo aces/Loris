@@ -84,8 +84,7 @@ const createPieChart = (columns, id, targetModal, colours, units = null, showPie
       type: 'pie',
     },
     size: {
-      height: targetModal ? 500 : 350,
-      width: targetModal ? 700 : 350,
+      height: targetModal ? 500 : 300,
     },
     color: {
       pattern: colours,
@@ -106,9 +105,6 @@ const createPieChart = (columns, id, targetModal, colours, units = null, showPie
     tooltip: {
       format: {
         value: function (value, ratio) {
-          if (units) {
-            value = `${value} ${units}`;
-          }
           return `${value} (${(ratio * 100).toFixed(0)}%)`;
         },
       },
@@ -135,8 +131,7 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType, yLa
         }
     },
     size: {
-      width: targetModal ? 1000 : 700,
-      height: targetModal ? 500 : 350,
+      height: targetModal ? 500 : 300,
     },
     axis: {
       x: {
@@ -178,7 +173,6 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
       }
     }
   }
-
   let newChart = c3.generate({
     size: {
       height: targetModal && 500,
@@ -238,10 +232,10 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
 
           name = nameFormat(d[i].name);
           value = valueFormat(d[i].value, d[i].ratio, d[i].id, d[i].index);
-
+          
           // Calculate percentage based on grand total of entire dataset
           let percentage = grandTotal > 0 ? ((d[i].value / grandTotal) * 100).toFixed(1) : 0;
-
+          
           bgcolor = $$.levelColor ? $$.levelColor(d[i].value) : color(d[i].id);
 
           text += "<tr class='" + $$.CLASS.tooltipName + "-" + d[i].id + "'>";
@@ -321,10 +315,6 @@ const setupCharts = async (targetIsModal, chartDetails, totalLabel) => {
             colours = sexColours;
           } else if (chart.dataType === 'line') {
             columns = formatLineData(chartData, totalLabel);
-            if (chart.chartType !== 'line') {
-              // remove first and last (x and total)
-              columns = columns.slice(1, columns.length - 1);
-            }
           }
           let chartObject = null;
           if (chart.chartType === 'pie') {
