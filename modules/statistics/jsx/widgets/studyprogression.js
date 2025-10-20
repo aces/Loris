@@ -197,6 +197,8 @@ const StudyProgression = (props) => {
               <p>There have been no scans yet.</p>
             ),
             title: title('Site Scans'),
+            subtitle: 'Total scans: '
+              + json['studyprogression']['total_scans'],
             onToggleFilters: () => setShowFiltersScans((prev) => !prev),
           },
           {
