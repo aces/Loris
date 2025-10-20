@@ -139,6 +139,9 @@ msgstr ""
 msgid "DCCID"
 msgstr ""
 
+msgid "Visit"
+msgstr ""
+
 msgid "Visit Label"
 msgstr ""
 
@@ -180,6 +183,12 @@ msgid "Feedback"
 msgstr ""
 
 msgid "Scans"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Time"
 msgstr ""
 
 msgid "Stage"
