@@ -240,7 +240,7 @@ const StudyProgression = (props) => {
               ) : (
                 <p>There have been no candidates registered yet.</p>
               ),
-            title: 'Study Progression - site recruitment',
+            title: title('Site Recruitment'),
             subtitle: `Total recruitment: ${getTotalRecruitment()}`,
           },
           {
