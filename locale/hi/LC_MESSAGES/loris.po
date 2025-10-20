@@ -214,7 +214,7 @@ msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
 msgid "Download Data as CSV"
-msgstr "डेटा को CSV के रूप में डाउनलोड करें"
+msgstr "तालिका को CSV के रूप में डाउनलोड करें"
 
 # Dashboard panel strings
 msgid "Views"
@@ -225,10 +225,25 @@ msgid "NEW"
 msgstr "नया"
 
 msgid "Updated"
-msgstr "अपडेट किया गया"
+msgstr "अद्यतन"
 
 msgid "Uploaded"
 msgstr "अपलोड किया गया"
+
+msgid "Are You Sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "फ़ॉर्म छोड़ने से दर्ज की गई सभी जानकारी खो जाएगी।"
+
+msgid "Proceed"
+msgstr "आगे बढ़ें"
+
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Saving"
+msgstr "सहेजा जा रहा है"
 
 msgid "Total"
 msgstr "कुल"
@@ -259,10 +274,10 @@ msgid "Pass"
 msgstr "उत्तीर्ण"
 
 msgid "Failure"
-msgstr "विफलता"
+msgstr "असफलता"
 
 msgid "Withdrawal"
-msgstr "निकासी"
+msgstr "वापसी"
 
 msgid "In Progress"
 msgstr "प्रगति पर"

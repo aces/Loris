@@ -78,6 +78,8 @@ locales:
 	msgfmt -o modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po
 	msgfmt -o modules/api_docs/locale/ja/LC_MESSAGES/api_docs.mo modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po
 	msgfmt -o modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po
+	msgfmt -o modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po
+	npx i18next-conv -l hi -s modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po -t modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.json
 	msgfmt -o modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po
 	msgfmt -o modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po
 	msgfmt -o modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.mo modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po

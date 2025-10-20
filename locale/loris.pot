@@ -57,6 +57,7 @@ msgstr ""
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr ""
+
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -253,6 +254,21 @@ msgid "Updated"
 msgstr ""
 
 msgid "Uploaded"
+msgstr ""
+
+msgid "Are You Sure?"
+msgstr ""
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr ""
+
+msgid "Proceed"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Saving"
 msgstr ""
 
 msgid "Total"
