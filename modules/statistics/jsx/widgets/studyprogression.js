@@ -100,7 +100,6 @@ const StudyProgression = (props) => {
         setChartDetails(data);
       });
       json = props.data;
-      console.log('thejson', json);
       setLoading(false);
     }
   }, [props.data, t]);
