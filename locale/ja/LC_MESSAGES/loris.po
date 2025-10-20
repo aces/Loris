@@ -164,6 +164,12 @@ msgstr "モジュール"
 msgid "Project"
 msgstr "プロジェクト"
 
+msgid "Candidate Registration Project"
+msgstr "候補者登録プロジェクト"
+
+msgid "Timepoint Project"
+msgstr "タイムポイントプロジェクト"
+
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] "コホート"
@@ -194,6 +200,12 @@ msgstr "ステージ"
 
 msgid "Sent To DCC"
 msgstr "DCCに送信"
+
+msgid "Send To DCC"
+msgstr "DCCに送信"
+
+msgid "Reverse Send To DCC"
+msgstr "DCCへの逆送信"
 
 msgid "Date of Birth"
 msgstr "生年月日"
@@ -279,6 +291,36 @@ msgstr "撤退"
 
 msgid "In Progress"
 msgstr "進行中"
+
+msgid "Complete"
+msgstr "完了"
+
+msgid "Instruments"
+msgstr "楽器"
+
+msgid "None"
+msgstr "なし"
+
+msgid "Partial"
+msgstr "部分的"
+
+msgid "All"
+msgstr "全て"
+
+msgid "Data Entry"
+msgstr "データ入力"
+
+msgid "Administration"
+msgstr "管理"
+
+msgid "Double Data Entry Form"
+msgstr "二重データ入力フォーム"
+
+msgid "Double Data Entry Status"
+msgstr "二重データ入力ステータス"
+
+msgid "Double Data Entry"
+msgstr "二重データ入力"
 
 # Age related terms
 msgid "Age"
