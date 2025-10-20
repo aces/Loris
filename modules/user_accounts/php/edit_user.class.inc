@@ -142,7 +142,7 @@ class Edit_User extends \NDB_Form
                     }
                     $defaults['examiner_sites'][] = $cid;
                 }
-             }
+            }
              unset($defaults['examiner']);
 
             // Notification defaults
