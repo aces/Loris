@@ -17,7 +17,6 @@ import jaStrings from '../../locale/ja/LC_MESSAGES/statistics.json';
 const StudyProgression = (props) => {
   const {t} = useTranslation();
   const [loading, setLoading] = useState(true);
-  const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
   const [showFiltersScans, setShowFiltersScans] = useState(false);
   const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
   useEffect( () => {

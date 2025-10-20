@@ -11,13 +11,6 @@ import {useTranslation} from 'react-i18next';
  */
 const QueryChartForm = (props) => {
   const [formDataObj, setFormDataObj] = useState({});
-  const [options, setOptions] = useState({
-    projects: {},
-    cohorts: {},
-    sites: {},
-    visits: {},
-    participantStatus: {},
-  });
   const {t} = useTranslation();
   const [options, setOptions] = useState({
     projects: {},
