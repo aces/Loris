@@ -111,7 +111,7 @@ class AcknowledgementsIndex extends Component {
     try {
       const acknowledgements = await client.get(query);
       console.log({acknowledgements}, {depth: null, colors: true});
-      this.setState({acknowledgements});
+      this.setState({data: { ...acknowledgements }});
     } catch (error) {
       this.setState({error: true});
       console.error(error);
@@ -279,7 +279,7 @@ class AcknowledgementsIndex extends Component {
         title='Citation Policy'
       >
         <div className='col-sm-12 col-md-12'>
-          <span>{this.state.acknowledgements.meta.citation_policy}</span>
+          <span>{this.state.data.meta.citation_policy}</span>
         </div>
       </Panel>
     );
@@ -358,8 +358,8 @@ class AcknowledgementsIndex extends Component {
             label='Start date'
             value={this.state.formData.addStartDate}
             maxYear={this.state.formData.addEndDate
-              || this.state.acknowledgements.meta.maxYear}
-            minYear={this.state.acknowledgements.meta.minYear}
+              || this.state.data.meta.maxYear}
+            minYear={this.state.data.meta.minYear}
             required={true}
             onUserInput={this.setFormData}
           />
@@ -367,15 +367,15 @@ class AcknowledgementsIndex extends Component {
             name='addEndDate'
             label='End date'
             value={this.state.formData.addEndDate}
-            maxYear={this.state.acknowledgements.meta.maxYear}
+            maxYear={this.state.data.meta.maxYear}
             minYear={this.state.formData.addStartDate
-              || this.state.acknowledgements.meta.minYear}
+              || this.state.data.meta.minYear}
             required={false}
             onUserInput={this.setFormData}
           />
           <SelectElement
             name='addPresent'
-            options={this.state.acknowledgements.fieldOptions.presents}
+            options={this.state.data.fieldOptions.presents}
             label='Present'
             value={this.state.formData.addPresent}
             emptyOption={true}
@@ -417,7 +417,7 @@ class AcknowledgementsIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in acknowledgements.class.inc
      */
-    const options = this.state.acknowledgements.fieldOptions;
+    const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'Ordering', show: true},
       {
@@ -471,7 +471,7 @@ class AcknowledgementsIndex extends Component {
         <FilterableDataTable
           name='acknowledgements'
           title='Acknowledgements'
-          data={this.state.acknowledgements.Data}
+          data={this.state.data.Data}
           fields={fields}
           getFormattedCell={this.formatColumn}
           actions={actions}
