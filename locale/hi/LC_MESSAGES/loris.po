@@ -120,8 +120,20 @@ msgstr "हाँ"
 msgid "No"
 msgstr "नहीं"
 
+msgid "Browse"
+msgstr "ब्राउज़ करें"
+
+msgid "Upload"
+msgstr "अपलोड करें"
+
+msgid "Clear Filters"
+msgstr "फ़िल्टर हटाएँ"
+
 msgid "Create"
 msgstr "बनाएँ"
+
+msgid "N/A"
+msgstr "लागू नहीं"
 
 # Common swal labels
 msgid "Cancel"
@@ -136,6 +148,9 @@ msgstr "पीएससीआईडी"
 
 msgid "DCCID"
 msgstr "डीसीसीआईडी"
+
+msgid "CandID"
+msgstr "उम्मीदवार आईडी"
 
 msgid "Visit Label"
 msgstr "दौरे का लेबल"
@@ -213,6 +228,9 @@ msgstr "{{totalCount}} में से {{pageCount}} पंक्तिया�
 msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
+msgid "Download Table as CSV"
+msgstr "तालिका को CSV के रूप में डाउनलोड करें"
+
 msgid "Download Data as CSV"
 msgstr "डेटा को CSV के रूप में डाउनलोड करें"
 
@@ -266,3 +284,14 @@ msgstr "निकासी"
 
 msgid "In Progress"
 msgstr "प्रगति पर"
+
+# Age related terms
+msgid "Age"
+msgstr "आयु"
+
+msgid "{{months}} months old"
+msgstr "{{months}} महीने का/की"
+
+msgid "{{years}} years old"
+msgstr "{{years}} वर्ष का/की"
+
