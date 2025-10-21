@@ -155,6 +155,7 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Success!"
+msgid "Close"
 msgstr ""
 
 # Common candidate terms

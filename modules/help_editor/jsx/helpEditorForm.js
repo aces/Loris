@@ -76,15 +76,15 @@ const HelpEditorForm = (props) => {
       method: 'POST',
       body: formData,
     }).then((response) => {
-      console.log(response);
-
       if (response.status !== 200) {
         swal.fire({
-          title: 'Content update unsuccessful.',
-          text: 'Help content cannot be added to an instrument '
+          title: t('Content update unsuccessful.',
+            {ns: 'help_editor'}),
+          text: t('Help content cannot be added to an instrument '
            + 'that has already been registered.',
+          {ns: 'help_editor'}),
           type: 'error',
-          confirmButtonText: 'Try again',
+          confirmButtonText: t('Try again', {ns: 'help_editor'}),
         });
         console.error(response.status);
         return;
@@ -93,7 +93,7 @@ const HelpEditorForm = (props) => {
         title: t('Content update successful!',
           {ns: 'help_editor'}),
         type: 'success',
-        confirmButtonText: t('Close', {ns: 'help_editor'}),
+        confirmButtonText: t('Close', {ns: 'loris'}),
       });
     }).catch((error) => {
       console.error(error);
@@ -120,7 +120,7 @@ const HelpEditorForm = (props) => {
 
             <SelectElement
               name='instrument'
-              label='Instrument'
+              label={t('Instrument', {ns: 'help_editor'})}
               emptyOption={true}
               options={props.instrumentslist}
               onUserInput={onUserInput}

@@ -111,7 +111,8 @@ class HelpEditor extends React.Component {
       );
     };
     const actions = [
-      {label: 'Adding help content for a specific instrument', action: addHelp},
+      {label: t('Adding help content for a specific instrument',
+        {ns: 'help_editor'}), action: addHelp},
     ];
     const fields = [
       {label: t('Help ID', {ns: 'help_editor'}), show: false},
@@ -123,7 +124,7 @@ class HelpEditor extends React.Component {
         name: 'content',
         type: 'text',
       }},
-      {label: 'Instrument', show: true},
+      {label: t('Instrument', {ns: 'loris'}), show: true},
     ];
 
     return (

@@ -21,6 +21,9 @@ msgstr ""
 msgid "Help Editor"
 msgstr "सहायता संपादक"
 
+msgid "Edit Help Content"
+msgstr "सहायता सामग्री संपादित करें"
+
 msgid "Help ID"
 msgstr "सहायता आईडी"
 
@@ -50,3 +53,9 @@ msgstr "कुछ गलत हो गया"
 
 msgid "Try again"
 msgstr "पुनः प्रयास करें"
+
+msgid "Help content cannot be added to an instrument that has already been registered."
+msgstr "एक ऐसे इंस्ट्रूमेंट में हेल्प कंटेंट नहीं जोड़ा जा सकता है जो पहले से पंजीकृत हो चुका है।"
+
+msgid "Adding help content for a specific instrument"
+msgstr "किसी विशिष्ट उपकरण के लिए सहायता सामग्री जोड़ना"

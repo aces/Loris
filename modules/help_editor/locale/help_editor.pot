@@ -21,6 +21,9 @@ msgstr ""
 msgid "Help Editor"
 msgstr ""
 
+msgid "Edit Help Content"
+msgstr ""
+
 msgid "Help ID"
 msgstr ""
 
@@ -39,9 +42,6 @@ msgstr ""
 msgid "Content update successful!"
 msgstr ""
 
-msgid "Close"
-msgstr ""
-
 msgid "Content update unsuccessful."
 msgstr ""
 
@@ -49,4 +49,10 @@ msgid "Something went wrong"
 msgstr ""
 
 msgid "Try again"
+msgstr ""
+
+msgid "Help content cannot be added to an instrument that has already been registered."
+msgstr ""
+
+msgid "Adding help content for a specific instrument"
 msgstr ""
