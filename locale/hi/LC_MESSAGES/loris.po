@@ -302,9 +302,6 @@ msgstr "विषय"
 msgid "Recycling Bin"
 msgstr "रिसाइक्लिंग बिन"
 
-msgid "Pass"
-msgstr "उत्तीर्ण"
-
 msgid "Failure"
 msgstr "विफलता"
 
