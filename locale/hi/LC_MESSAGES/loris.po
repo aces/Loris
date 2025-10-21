@@ -148,6 +148,24 @@ msgstr "उन्नत फ़िल्टर दिखाएँ"
 msgid "Hide Advanced Filters"
 msgstr "उन्नत फ़िल्टर छिपाएँ"
 
+msgid "Pass"
+msgstr "पास"
+
+msgid "Fail"
+msgstr "फेल"
+
+msgid "True"
+msgstr "सत्य"
+
+msgid "False"
+msgstr "असत्य"
+
+msgid "Selected"
+msgstr "चयनित"
+
+msgid "selected"
+msgstr "चयनित"
+
 # Common swal labels
 msgid "Cancel"
 msgstr "रद्द करें"
@@ -349,6 +367,9 @@ msgstr "त्रुटि!"
 msgid "Not Started"
 msgstr "शुरू नहीं हुआ"
 
+msgid "Total"
+msgstr "कुल"
+
 msgid "Screening"
 msgstr "जांच"
 
@@ -419,3 +440,7 @@ msgstr "{{years}} वर्ष का"
 # Other generic terms
 msgid "Loading..."
 msgstr "लोड हो रहा है..."
+msgstr "वापसी"
+
+msgid "In Progress"
+msgstr "प्रगति पर"

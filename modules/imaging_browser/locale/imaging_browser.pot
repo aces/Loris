@@ -70,22 +70,7 @@ msgstr ""
 msgid "all types"
 msgstr ""
 
-msgid "NEW"
-msgstr ""
-
-msgid "Pass"
-msgstr ""
-
-msgid "Fail"
-msgstr ""
-
 msgid "Header Info"
-msgstr ""
-
-msgid "Selected"
-msgstr ""
-
-msgid "selected"
 msgstr ""
 
 msgid "Download Image"

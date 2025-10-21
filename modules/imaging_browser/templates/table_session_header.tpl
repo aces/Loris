@@ -1,20 +1,20 @@
 <table class="table table-hover table-bordered dynamictable" id='table-header-left'>
      <thead>
         <tr class="info">
-            <th>{t text="QC Status" domain="imaging_browser"}</th>
-            <th>{t text="Patient Name" domain="imaging_browser"}</th>
-            <th>{t text="PSCID" domain="loris"}</th>
-            <th>{t text="DCCID" domain="loris"}</th>
-            <th>{t text="Visit Label" domain="loris"}</th>
-            <th>{t text="Site" domain="loris"}</th>
-            <th>{t text="QC Pending" domain="imaging_browser"}</th>
-            <th>{t text="DOB" domain="loris"}</th>
-            <th>{t text="Sex" domain="loris"}</th>
-            <th>{t text="Output Type" domain="imaging_browser"}</th>
-            <th>{t text="Scanner" domain="imaging_browser"}</th>
-            <th>{t text="Cohort" domain="loris"}</th>
+            <th>{dgettext("imaging_browser","QC Status")}</th>
+            <th>{dgettext("imaging_browser","Patient Name")}</th>
+            <th>{dgettext("loris","PSCID")}</th>
+            <th>{dgettext("loris","DCCID")}</th>
+            <th>{dgettext("loris","Visit Label")}</th>
+            <th>{dgettext("loris","Site")}</th>
+            <th>{dgettext("imaging_browser","QC Pending")}</th>
+            <th>{dgettext("loris","DOB")}</th>
+            <th>{dgettext("loris","Sex")}</th>
+            <th>{dgettext("imaging_browser","Output Type")}</th>
+            <th>{dgettext("imaging_browser","Scanner")}</th>
+            <th>{dgettext("loris","Cohort")}</th>
             {if $useEDC|default}
-            <th>{t text="EDC" domain="imaging_browser"}</th>
+            <th>{dgettext("imaging_browser","EDC")}</th>
             {/if}
         </tr>
     </thead>

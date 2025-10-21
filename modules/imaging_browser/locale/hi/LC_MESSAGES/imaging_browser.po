@@ -63,23 +63,8 @@ msgstr "QC स्थिति"
 msgid "all types"
 msgstr "सभी प्रकार"
 
-msgid "NEW"
-msgstr "नया"
-
-msgid "Pass"
-msgstr "पास"
-
-msgid "Fail"
-msgstr "फेल"
-
 msgid "Header Info"
 msgstr "हेडर जानकारी"
-
-msgid "Selected"
-msgstr "चयनित"
-
-msgid "selected"
-msgstr "चयनित"
 
 msgid "Download Image"
 msgstr "इमेज डाउनलोड करें"
