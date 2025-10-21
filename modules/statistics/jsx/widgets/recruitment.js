@@ -161,10 +161,12 @@ const Recruitment = (props) => {
     [props.data]
   );
 
+  const title = (subtitle) => t('Recruitment', {ns: 'statistics'})
+    + ' — ' + t(subtitle, {ns: 'statistics'});
   return loading ? <Panel title ='Recruitment'><Loader/></Panel> : (
     <>
       <Panel
-        title ='Recruitment'
+        title={t('Recruitment', {ns: 'statistics'})}
         id ='statistics_recruitment'
         onChangeView ={(index) => {
           setupCharts(t, false, chartDetails, t('Total', {ns: 'loris'}));
@@ -189,9 +191,9 @@ const Recruitment = (props) => {
                   ))}
               </div>
             </>,
-            title: 'Recruitment - overall',
-            subtitle: `Total participants: `
-              + json['recruitment']['overall']['total_recruitment'] || -1,
+            title: title('Overall'),
+            subtitle: t(`Total Participants: {{count}}`, {ns: 'statistics', count: 
+              json['recruitment']['overall']['total_recruitment'] || -1})
           },
           {
             content:
@@ -214,9 +216,9 @@ const Recruitment = (props) => {
                 ) : (
                   <p>There have been no candidates registered yet.</p>
                 ),
-            title: 'Recruitment - site breakdown',
-            subtitle: 'Total participants: '
-              + json['recruitment']['overall']['total_recruitment'] || -1,
+            title: title('Site Breakdown'),
+            subtitle: t(`Total Participants: {{count}}`, {ns: 'statistics', count: 
+              json['recruitment']['overall']['total_recruitment'] || -1})
           },
           {
             content: <>
@@ -241,8 +243,8 @@ const Recruitment = (props) => {
               {showFilters('projectBreakdown')}
               {showChart('projectBreakdown', 'agedistribution_line')}
             </>,
-            title: 'Recruitment - project breakdown',
-            subtitle: `Projects: ${getTotalProjectsCount()}`,
+            title: title('Project Breakdown'),
+            subtitle: t(`Projects: {{count}}`, {ns: 'statistics', count: getTotalProjectsCount()}),
           },
           {
             content:
@@ -262,8 +264,8 @@ const Recruitment = (props) => {
                     }
                   )}
               </div>,
-            title: 'Recruitment - cohort breakdown',
-            subtitle: `Cohorts: ${getTotalCohortsCount()}`,
+            title: title('Cohort Breakdown'),
+            subtitle: t(`Cohorts: {{count}}`, {ns: 'statistics', 'count': getTotalCohortsCount()}),
           },
         ]}
       />

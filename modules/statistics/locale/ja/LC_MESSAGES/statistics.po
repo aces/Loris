@@ -93,3 +93,28 @@ msgstr "参加者総数は {{total}} 人です。"
 
 msgid "Overall Recruitment"
 msgstr "全体的な採用"
+
+msgid "Recruitment"
+msgstr "採用"
+
+msgid "Overall"
+msgstr "全体"
+
+msgid "Site Breakdown"
+msgstr "サイトの内訳"
+
+msgid "Project Breakdown"
+msgstr "プロジェクトの内訳"
+
+msgid "Cohort Breakdown"
+msgstr "コホートの内訳"
+
+msgid "Total Participants: {{count}}"
+msgstr "参加者総数: {{count}}"
+
+msgid "Projects: {{count}}"
+msgstr "プロジェクト: {{count}}"
+
+msgid "Cohorts: {{count}}"
+msgstr "コホート: {{count}}"
+

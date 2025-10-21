@@ -92,3 +92,27 @@ msgstr ""
 
 msgid "Overall Recruitment"
 msgstr ""
+
+msgid "Recruitment"
+msgstr ""
+
+msgid "Overall"
+msgstr ""
+
+msgid "Site Breakdown"
+msgstr ""
+
+msgid "Project Breakdown"
+msgstr ""
+
+msgid "Cohort Breakdown"
+msgstr ""
+
+msgid "Total Participants: {{count}}"
+msgstr ""
+
+msgid "Projects: {{count}}"
+msgstr ""
+
+msgid "Cohorts: {{count}}"
+msgstr ""
