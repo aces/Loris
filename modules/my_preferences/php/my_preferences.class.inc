@@ -10,8 +10,8 @@ namespace LORIS\my_preferences;
 class My_Preferences extends \NDB_Form
 {
     // Use gettext for error messages
-    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password can't be your email.';
-    private const PASSWORD_ERROR_IS_USER   = 'Your password can't be your username.';
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be your username';
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are identical';
 

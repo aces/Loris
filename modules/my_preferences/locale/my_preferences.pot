@@ -93,10 +93,10 @@ msgstr ""
 msgid "The email address already exists"
 msgstr ""
 
-msgid "Your password can't be your email."
+msgid "Your password cannot be your email."
 msgstr ""
 
-msgid "Your password can't be your username."
+msgid "Your password cannot be your username"
 msgstr ""
 
 msgid "The passwords do not match."
