@@ -21,6 +21,9 @@ msgstr ""
 msgid "Help Editor"
 msgstr "सहायता संपादक"
 
+msgid "Edit Help Content"
+msgstr "सहायता सामग्री संपादित करें"
+
 msgid "Help ID"
 msgstr "सहायता आईडी"
 

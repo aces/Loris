@@ -21,6 +21,9 @@ msgstr ""
 msgid "Help Editor"
 msgstr ""
 
+msgid "Edit Help Content"
+msgstr ""
+
 msgid "Help ID"
 msgstr ""
 
@@ -37,9 +40,6 @@ msgid "Open the help dialog to preview the changes."
 msgstr ""
 
 msgid "Content update successful!"
-msgstr ""
-
-msgid "Close"
 msgstr ""
 
 msgid "Content update unsuccessful."

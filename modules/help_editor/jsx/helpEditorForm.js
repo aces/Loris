@@ -76,7 +76,7 @@ const HelpEditorForm = (props) => {
         title: t('Content update successful!',
           {ns: 'help_editor'}),
         type: 'success',
-        confirmButtonText: t('Close', {ns: 'help_editor'}),
+        confirmButtonText: t('Close', {ns: 'loris'}),
       });
     }).catch((error) => {
       console.error(error);
