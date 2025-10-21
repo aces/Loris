@@ -21,3 +21,5 @@ msgstr ""
 msgid "Candidate Parameters"
 msgstr ""
 
+msgid "Caveat"
+msgstr ""

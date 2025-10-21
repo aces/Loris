@@ -163,7 +163,7 @@ class CandidateListIndex extends Component {
       );
     }
 
-    if (column === this.props.t('Cohort', {ns: 'loris'})) {
+    if (column === this.props.t('Cohort', {ns: 'loris', count: 1})) {
       let result = (cell) ? <td>{cell}</td> : <td></td>;
       return result;
     }
@@ -230,7 +230,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': this.props.t('Cohort', {ns: 'loris'}),
+        'label': this.props.t('Cohort', {ns: 'loris', count: 1}),
         'show': true,
         'filter': {
           name: 'cohort',
