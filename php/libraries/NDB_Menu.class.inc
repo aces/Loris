@@ -4,7 +4,7 @@
  * This file contains the base class for an NDB_Menu. An NDB_Menu is the
  * base class for any menu page for a Loris module.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main

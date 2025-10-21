@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category SnpViews
  * @package  Loris
@@ -57,5 +57,4 @@ class SNP
     {
         return $this->_formElement;
     }
-
 }

@@ -3,7 +3,7 @@
 /**
  * Update or insert into the data dictionary
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

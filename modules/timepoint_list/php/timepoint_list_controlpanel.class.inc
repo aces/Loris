@@ -86,6 +86,5 @@ Class TimePoint_List_ControlPanel extends \Candidate
         $html = $smarty->fetch("timepoint_list_controlpanel.tpl");
         return $html;
     }
-
 }
 

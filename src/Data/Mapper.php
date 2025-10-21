@@ -3,7 +3,7 @@
 /**
  * Thie file defines the \LORIS\Data\Mapper interface.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Data
  * @package    Main

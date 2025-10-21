@@ -148,5 +148,4 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
             'commentID'         => $this->_commentID,
         ];
     }
-
 }

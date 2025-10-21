@@ -3,7 +3,7 @@
 /**
  * This file implements a data provisioner to the schedule_module menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -18,7 +18,7 @@ namespace LORIS\schedule_module;
  * This class implements a data provisioner to get all modules
  * for the schedule_module menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -53,6 +53,7 @@ class ScheduleModuleProvisioner extends \LORIS\Data\Provisioners\DBRowProvisione
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
+
     /**
      * Returns a SQL query string.
      *
@@ -109,6 +110,7 @@ ON
             return $query;
 
     }
+
         /**
          * Returns an instance of a CandidateListRow object for a given
          * table row.

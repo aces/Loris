@@ -11,199 +11,35 @@
     background-color: #2FA4E7;
 }
 
-.c3-chart-line.c3-target.c3-target-Total{
-    display: none !important;
+.study-progression-container {
+  max-height: 415px;
+  overflow-y: auto;
 }
 
-/* ===== Chart Header (Title + Dropdown) ===== */
-.chart-header {
+.study-progression-project {
+  flex-direction: row;
   display: flex;
-  flex-direction: column;
-  align-items: center; /* center both title and dropdown */
-  gap: 10px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+  margin-left: 5px;
 }
 
-.chart-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.chart-dropdown-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.chart-dropdown {
-  padding: 5px 10px;
-  font-size: 0.9rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  min-width: 100px;
-  max-width: 200px;
-}
-
-
-.chart-visual-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.chart-visual-wrapper svg {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-}
-
-/* Mobile view: stack title and dropdown */
-@media (max-width: 600px) {
-  .chart-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .chart-title {
-    padding: 10px;
-  }
-
-  .chart-dropdown {
-    width: 100%;
-    margin-top: 8px;
-  }
-}
-
-/* ===== Grid Wrapper for Chart Cards + Filters ===== */
-
-.site-breakdown-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  padding: 20px;
-  margin: 0 auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-#site-breakdown-grid-one-column {
-  grid-template-columns: 1fr;
-}
-
-/* Chart Card */
-.site-breakdown-card {
+.study-progression-button {
   background-color: #ffffff;
-  border-radius: 20px;
+  border-radius: 15px;
+  min-width: 150px;
   padding: 10px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease;
+  text-align: center;
+  margin: 0 10px 10px 0;
+  padding: 10px;
+  color: black !important;
+  text-decoration: none !important;
 }
 
-.site-breakdown-card:hover {
+.study-progression-button:hover {
   transform: translateY(-10px);
   background-color: #f9fdff;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-  border: 1px solid #acacac;
-} 
-
-/* Ensure the form spans full width */
-.site-breakdown-filters {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
-  margin-top: 20px;
-  width: 100%;
-  gap: 20px;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-}
-
-.site-breakdown-filters:hover {
-  transform: translateY(-10px);
-  background-color: #f9fdff;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-  border: 1px solid #d1d1d1;
-}
-
-/* This targets each dropdown/input block inside the filter area */
-.site-breakdown-filters>div {
-  flex: 1 1 200px;
-  min-width: 200px;
-}
-
-.filter-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  padding: 20px;
-  width: 100%;
-}
-
-@media (max-width: 768px) {
-
-  body,
-  html {
-    width: 100%;
-    overflow-x: hidden;
-  }
-
-  .site-breakdown-grid,
-  .site-breakdown-card,
-  .site-breakdown-grid>[class*="col-"] {
-    max-width: 100% !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-sizing: border-box;
-  }
-
-  .site-breakdown-card svg,
-  .site-breakdown-card .c3 {
-    max-width: 100%;
-    width: 100%;
-    box-sizing: border-box;
-    overflow-x: hidden;
-  }
-
-  .site-breakdown-card .c3 {
-    display: flex;
-    justify-content: center;
-  }
-
-  .site-breakdown-grid {
-    grid-template-columns: 1fr;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
-    box-sizing: border-box;
-  }
-
-  .site-breakdown-grid>[class*="col-"] {
-    width: 100% !important;
-    margin: 0 auto !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    box-sizing: border-box;
-  }
-
-  .site-breakdown-card {
-    width: 100% !important;
-    box-sizing: border-box;
-  }
-
-  .site-breakdown-filters>div {
-    flex: 1 1 100%;
-    min-width: 100%;
-  }
-
-  .filter-grid {
-    grid-template-columns: 1fr;
-  }
+  box-shadow: 0 12px 12px rgba(0, 0, 0, 0.25);
 }
