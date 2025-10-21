@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import Panel from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {progressBarBuilder} from './helpers/progressbarBuilder';
 import {useTranslation} from 'react-i18next';
 import {setupCharts} from './helpers/chartBuilder';
+import jaStrings from '../../locale/ja/LC_MESSAGES/statistics.json';
 
 /**
  * Recruitment - a widget containing statistics for recruitment data.
@@ -24,7 +26,7 @@ const Recruitment = (props) => {
     {
       'generalBreakdown': {
         'agerecruitment_pie': {
-          title: 'Total recruitment by Age',
+	  title: t('Total recruitment by Age', { ns: 'statistics' }),
           filters: '',
           chartType: 'pie',
           dataType: 'pie',
@@ -34,7 +36,7 @@ const Recruitment = (props) => {
           chartObject: null,
         },
         'ethnicity_pie': {
-          title: 'Ethnicity at Screening',
+	  title: t('Ethnicity at Screening', {ns: 'statistics'}),
           filters: '',
           chartType: 'pie',
           dataType: 'pie',
@@ -46,7 +48,7 @@ const Recruitment = (props) => {
       },
       'siteBreakdown': {
         'siterecruitment_pie': {
-          title: 'Total Recruitment per Site',
+	  title: t('Total Recruitment per Site', {ns: 'statistics'}),
           filters: '',
           chartType: 'pie',
           dataType: 'pie',
@@ -56,7 +58,7 @@ const Recruitment = (props) => {
           chartObject: null,
         },
         'siterecruitment_bysex': {
-          title: 'Biological sex breakdown by site',
+	  title: t('Biological sex breakdown by site', {ns: 'statistics'}),
           filters: '',
           chartType: 'bar',
           dataType: 'bar',
@@ -67,7 +69,7 @@ const Recruitment = (props) => {
       },
       'projectBreakdown': {
         'agedistribution_line': {
-          title: 'Candidate Age at Registration',
+          title: t('Candidate Age at Registration', {ns: 'statistics'}),
           filters: '',
           chartType: 'line',
           dataType: 'line',
@@ -78,6 +80,24 @@ const Recruitment = (props) => {
       },
     }
   );
+
+  useEffect( () => {
+    i18n.addResourceBundle('ja', 'statistics', jaStrings);
+
+    // Re-set default state that depended on the translation
+    let newdetails = {...chartDetails};
+    newdetails['generalBreakdown']['agerecruitment_pie']['title']
+      = t('Total recruitment by Age', { ns: 'statistics' });
+    newdetails['generalBreakdown']['ethnicity_pie']['title']
+      = t('Ethnicity at Screening', {ns: 'statistics'});
+    newdetails['siteBreakdown']['siterecruitment_pie']['title']
+      = t('Total Recruitment per Site', {ns: 'statistics'});
+    newdetails['siteBreakdown']['siterecruitment_bysex']['title']
+      = t('Biological sex breakdown by site', {ns: 'statistics'});
+    newdetails['projectBreakdown']['agedistribution_line']['title']
+      = t('Candidate Age at Registration', {ns: 'statistics'});
+    setChartDetails(newdetails);
+  }, []);
 
   const showChart = (section, chartID) => {
     return props.showChart(section, chartID, chartDetails, setChartDetails);
@@ -129,7 +149,7 @@ const Recruitment = (props) => {
   useEffect(
     () => {
       if (json && Object.keys(json).length !== 0) {
-        setupCharts(false, chartDetails, t('Total', {ns: 'loris'})).then(
+        setupCharts(t, false, chartDetails, t('Total', {ns: 'loris'})).then(
           (data) => {
             setChartDetails(data);
           }
@@ -147,7 +167,7 @@ const Recruitment = (props) => {
         title ='Recruitment'
         id ='statistics_recruitment'
         onChangeView ={(index) => {
-          setupCharts(false, chartDetails, t('Total', {ns: 'loris'}));
+          setupCharts(t, false, chartDetails, t('Total', {ns: 'loris'}));
           setShowFiltersBreakdown(false);
         }}
         views ={[
@@ -155,7 +175,7 @@ const Recruitment = (props) => {
             content:
             <>
               <div className ='recruitment-panel' id='overall-recruitment'>
-                {progressBarBuilder(json['recruitment']['overall'])}
+                {progressBarBuilder(t, json['recruitment']['overall'])}
               </div>
               <hr />
               {showFilters('generalBreakdown')}
@@ -211,7 +231,7 @@ const Recruitment = (props) => {
                   ([key, value]) => {
                     if (key !== 'overall') {
                       return <div key ={`projectBreakdown_${key}`}>
-                        {progressBarBuilder(value)}
+                        {progressBarBuilder(t, value)}
                       </div>;
                     }
                   }
@@ -237,7 +257,7 @@ const Recruitment = (props) => {
                   .map(
                     ([key, value]) => {
                       return <div key ={`cohortBreakdown_${key}`}>
-                        {progressBarBuilder(value)}
+                        {progressBarBuilder(t, value)}
                       </div>;
                     }
                   )}

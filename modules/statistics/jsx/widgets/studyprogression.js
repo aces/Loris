@@ -74,6 +74,7 @@ const StudyProgression = (props) => {
   useEffect(() => {
     if (json && Object.keys(json).length !== 0) {
       setupCharts(
+	t, 
         false,
         chartDetails,
         t('Total', {ns: 'loris'})
@@ -101,7 +102,7 @@ const StudyProgression = (props) => {
         title={t('Study Progression', {ns: 'statistics'})}
         id='statistics_studyprogression'
         onChangeView={(index) => {
-          setupCharts(false, chartDetails, t('Total', {ns: 'loris'}));
+          setupCharts(t, false, chartDetails, t('Total', {ns: 'loris'}));
           // reset filters when switching views
           setShowFiltersBreakdown(false);
         }}

@@ -61,6 +61,7 @@ const WidgetIndex = (props) => {
                       }
                     );
                     setupCharts(
+                      t,
                       false,
                       {
                         [section]: {
@@ -86,6 +87,7 @@ const WidgetIndex = (props) => {
             onClick ={() => {
               setModalChart(chartDetails[section][chartID]);
               setupCharts(
+                t,
                 true,
                 {
                   [section]:
@@ -215,7 +217,9 @@ const WidgetIndex = (props) => {
           ...clearedChartDetails[section][chart],
           filters: queryString,
         };
-        const chartPromise = setupCharts(false,
+        const chartPromise = setupCharts(
+          t,
+          false,
           {[section]: {[chart]: newChart}},
           t('Total', {ns: 'loris'}),
         ).then(

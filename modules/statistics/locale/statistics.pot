@@ -56,3 +56,39 @@ msgstr ""
 
 msgid "Range End"
 msgstr ""
+
+msgid "Total recruitment by Age"
+msgstr ""
+
+msgid "Ethnicity at Screening"
+msgstr ""
+
+msgid "Total Recruitment per Site"
+msgstr ""
+
+msgid "Biological sex breakdown by site"
+msgstr ""
+
+msgid "Candidate Age at Registration"
+msgstr ""
+
+msgid "Candidates registered"
+msgstr ""
+
+msgid "Target: {{target}}"
+msgstr ""
+
+msgid "Recruitment target of {{target}} was reached."
+msgstr ""
+
+msgid "Recruitment target of {{target}} was not reached."
+msgstr ""
+
+msgid "No target set"
+msgstr ""
+
+msgid "{{total}} total participants."
+msgstr ""
+
+msgid "Overall Recruitment"
+msgstr ""
