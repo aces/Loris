@@ -501,12 +501,12 @@ class ImagePanelQCSelectedSelector extends Component {
     const {t} = this.props;
     return (
       <TranslatedImageQCDropdown
-        Label={t('Selected', {ns: 'imaging_browser'})}
+        Label={t('Selected', {ns: 'loris'})}
         FormName="selectedvol"
         FileID={this.props.FileID}
         editable={this.props.HasQCPerm}
-        options={{'': '', 'true': t('True', {ns: 'imaging_browser'}),
-          'false': t('False', {ns: 'imaging_browser'})}}
+        options={{'': '', 'true': t('True', {ns: 'loris'}),
+          'false': t('False', {ns: 'loris'})}}
         defaultValue={this.props.Selected}
       />
     );
@@ -559,8 +559,8 @@ class ImagePanelQCCaveatSelector extends Component {
         options={
           {
             '': '',
-            '1': t('True', {ns: 'imaging_browser'}),
-            '0': t('False', {ns: 'imaging_browser'}),
+            '1': t('True', {ns: 'loris'}),
+            '0': t('False', {ns: 'loris'}),
           }
         }
         defaultValue={this.props.Caveat}

@@ -91,7 +91,7 @@ class ImagingBrowserIndex extends Component {
         '/imaging_browser/viewSession/?sessionID=' +
         row.SessionID +
         '&selectedOnly=1&backURL=/imaging_browser/'}>
-        {t('selected', {ns: 'imaging_browser'})}
+        {t('selected', {ns: 'loris'})}
       </a>);
 
       cellLinks.push(' | ');

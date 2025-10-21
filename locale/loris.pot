@@ -119,6 +119,24 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Pass"
+msgstr ""
+
+msgid "Fail"
+msgstr ""
+
+msgid "True"
+msgstr ""
+
+msgid "False"
+msgstr ""
+
+msgid "Selected"
+msgstr ""
+
+msgid "selected"
+msgstr ""
+
 # Common swal labels
 msgid "Cancel"
 msgstr ""
