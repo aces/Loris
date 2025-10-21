@@ -3,7 +3,7 @@
 /**
  * This file contains the Create_Timepoint class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category LORIS_Module
  * @package  Create_Timepoint

@@ -4,7 +4,7 @@
  * This class features the code that enables access to the Pools of the
  * LORIS Biobank Module.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   Controller
  * @package    Loris
@@ -19,7 +19,7 @@ namespace LORIS\biobank;
  * This class features the code that enables access to the Pools of the
  * LORIS Biobank Module.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   Controller
  * @package    Loris

@@ -4,7 +4,7 @@
  * This class implements a data Instance which represents a single
  * module in the acknowledgements menu table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main

@@ -3,7 +3,7 @@
 /**
  * Contains the base code to use for all NeuroDB forms
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main

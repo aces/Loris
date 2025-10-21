@@ -162,7 +162,7 @@ class Notifications extends Endpoint
         // get a new redcap client based on the notification info
         try {
             $redcap_client = new RedcapHttpClient(
-                "{$config->redcap_instance_url}/api/",
+                $config->redcap_instance_url,
                 $config->redcap_api_token,
             );
 
