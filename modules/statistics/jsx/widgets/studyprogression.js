@@ -74,7 +74,7 @@ const StudyProgression = (props) => {
   useEffect(() => {
     if (json && Object.keys(json).length !== 0) {
       setupCharts(
-	t, 
+        t,
         false,
         chartDetails,
         t('Total', {ns: 'loris'})

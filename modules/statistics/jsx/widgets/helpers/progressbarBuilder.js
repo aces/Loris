@@ -1,7 +1,8 @@
 /**
  * progressBarBuilder - generates the graph content.
  *
- * @param  {object} data - data needed to generate the graph content.
+ * @param {function} t - i18next React translation callback
+ * @param {object} data - data needed to generate the graph content.
  * @return {JSX.Element} the charts to render to the widget panel.
  */
 const progressBarBuilder = (t, data) => {
@@ -54,14 +55,23 @@ const progressBarBuilder = (t, data) => {
               </div>
           }
           <p className ='pull-right small target'>
-            {t('Target: {{target}}', {target: data['recruitment_target'], ns: 'statistics'})}
+            {t(
+              'Target: {{target}}',
+              {'target': data['recruitment_target'], 'ns': 'statistics'}
+            )}
           </p>
         </div>
         {
           data['recruitment_target'] &&
             <small>
-		{t('Recruitment target of {{target}} was reached.', { 'target': data['recruitment_target'], ns: 'statistics'})}
-              {' '}{t('{{total}} total participants.', { 'total': data['total_recruitment'], ns: 'statistics'})}
+              {t(
+                'Recruitment target of {{target}} was reached.',
+                {'target': data['recruitment_target'], 'ns': 'statistics'}
+              )}
+              {' '}{t(
+                '{{total}} total participants.',
+                {'total': data['total_recruitment'], 'ns': 'statistics'}
+              )}
             </small>
         }
       </div>
@@ -112,18 +122,27 @@ const progressBarBuilder = (t, data) => {
           {
             data['recruitment_target'] ?
               <p className ='pull-right small target'>
-		  {t('Target: {{target}}', { 'target': data['recruitment_target'], ns: 'statistics'})}
+                {t(
+                  'Target: {{target}}',
+                  {'target': data['recruitment_target'], 'ns': 'statistics'}
+                )}
               </p>
               : <p className ='pull-right small target'>
-		  {t('No target set', {ns: 'statistics'})}
+                {t('No target set', {ns: 'statistics'})}
               </p>
           }
         </div>
         {
           data['recruitment_target'] &&
             <small>
-		{t('Recruitment target of {{target}} was not reached.', { 'target': data['recruitment_target'], ns: 'statistics'})}
-              {' '}{t('{{total}} total participants.', { 'total': data['total_recruitment'], ns: 'statistics'})}
+              {t(
+                'Recruitment target of {{target}} was not reached.',
+                {'target': data['recruitment_target'], 'ns': 'statistics'}
+              )}
+              {' '}{t(
+                '{{total}} total participants.',
+                {'total': data['total_recruitment'], 'ns': 'statistics'}
+              )}
             </small>
         }
       </>

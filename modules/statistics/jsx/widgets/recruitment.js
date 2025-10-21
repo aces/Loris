@@ -26,7 +26,7 @@ const Recruitment = (props) => {
     {
       'generalBreakdown': {
         'agerecruitment_pie': {
-	  title: t('Total recruitment by Age', { ns: 'statistics' }),
+          title: t('Total recruitment by Age', {ns: 'statistics'}),
           filters: '',
           chartType: 'pie',
           dataType: 'pie',
@@ -36,7 +36,7 @@ const Recruitment = (props) => {
           chartObject: null,
         },
         'ethnicity_pie': {
-	  title: t('Ethnicity at Screening', {ns: 'statistics'}),
+          title: t('Ethnicity at Screening', {ns: 'statistics'}),
           filters: '',
           chartType: 'pie',
           dataType: 'pie',
@@ -48,7 +48,7 @@ const Recruitment = (props) => {
       },
       'siteBreakdown': {
         'siterecruitment_pie': {
-	  title: t('Total Recruitment per Site', {ns: 'statistics'}),
+          title: t('Total Recruitment per Site', {ns: 'statistics'}),
           filters: '',
           chartType: 'pie',
           dataType: 'pie',
@@ -58,7 +58,7 @@ const Recruitment = (props) => {
           chartObject: null,
         },
         'siterecruitment_bysex': {
-	  title: t('Biological sex breakdown by site', {ns: 'statistics'}),
+          title: t('Biological sex breakdown by site', {ns: 'statistics'}),
           filters: '',
           chartType: 'bar',
           dataType: 'bar',
@@ -87,7 +87,7 @@ const Recruitment = (props) => {
     // Re-set default state that depended on the translation
     let newdetails = {...chartDetails};
     newdetails['generalBreakdown']['agerecruitment_pie']['title']
-      = t('Total recruitment by Age', { ns: 'statistics' });
+      = t('Total recruitment by Age', {ns: 'statistics'});
     newdetails['generalBreakdown']['ethnicity_pie']['title']
       = t('Ethnicity at Screening', {ns: 'statistics'});
     newdetails['siteBreakdown']['siterecruitment_pie']['title']
@@ -111,7 +111,9 @@ const Recruitment = (props) => {
           className="btn btn-default btn-xs"
           onClick={() => setShowFiltersBreakdown((prev) => !prev)}
         >
-          {showFiltersBreakdown ? t('Hide Filters', {ns: 'loris'}) : t('Show Filters', {ns: 'loris'})}
+          {showFiltersBreakdown ?
+            t('Hide Filters', {ns: 'loris'})
+            : t('Show Filters', {ns: 'loris'})}
         </button>
       </div>
       {showFiltersBreakdown && (
@@ -192,8 +194,13 @@ const Recruitment = (props) => {
               </div>
             </>,
             title: title('Overall'),
-            subtitle: t(`Total Participants: {{count}}`, {ns: 'statistics', count: 
-              json['recruitment']['overall']['total_recruitment'] || -1})
+            subtitle: t(
+              'Total Participants: {{count}}',
+              {
+                ns: 'statistics',
+                count: json['recruitment']['overall']['total_recruitment'],
+              }
+            ),
           },
           {
             content:
@@ -217,8 +224,13 @@ const Recruitment = (props) => {
                   <p>There have been no candidates registered yet.</p>
                 ),
             title: title('Site Breakdown'),
-            subtitle: t(`Total Participants: {{count}}`, {ns: 'statistics', count: 
-              json['recruitment']['overall']['total_recruitment'] || -1})
+            subtitle: t(
+              'Total Participants: {{count}}',
+              {
+                ns: 'statistics',
+                count: json['recruitment']['overall']['total_recruitment'],
+              }
+            ),
           },
           {
             content: <>
@@ -244,7 +256,10 @@ const Recruitment = (props) => {
               {showChart('projectBreakdown', 'agedistribution_line')}
             </>,
             title: title('Project Breakdown'),
-            subtitle: t(`Projects: {{count}}`, {ns: 'statistics', count: getTotalProjectsCount()}),
+            subtitle: t(
+              'Projects: {{count}}',
+              {ns: 'statistics', count: getTotalProjectsCount()}
+            ),
           },
           {
             content:
@@ -265,7 +280,10 @@ const Recruitment = (props) => {
                   )}
               </div>,
             title: title('Cohort Breakdown'),
-            subtitle: t(`Cohorts: {{count}}`, {ns: 'statistics', 'count': getTotalCohortsCount()}),
+            subtitle: t(
+              'Cohorts: {{count}}',
+              {'ns': 'statistics', 'count': getTotalCohortsCount()}
+            ),
           },
         ]}
       />

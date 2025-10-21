@@ -203,7 +203,8 @@ const QueryChartForm = (props) => {
         <div>
           <label style ={{fontWeight: 'bold',
             marginBottom: '5px',
-            display: 'block'}}>{t('Date Registered', {ns: 'statistics'})}</label>
+            display: 'block'}}>
+            {t('Date Registered', {ns: 'statistics'})}</label>
           <DateElement
             name='dateRegisteredStart'
             value={formDataObj['dateRegisteredStart'] || ''}
