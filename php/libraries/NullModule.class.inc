@@ -6,7 +6,7 @@
  * places that need a Module argument but have no meaningful
  * "module" to provide.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

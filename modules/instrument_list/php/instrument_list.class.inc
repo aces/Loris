@@ -3,7 +3,7 @@
 /**
  * Instrument_List
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Main
  * @package    Instrument_List
@@ -28,7 +28,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 /**
  * Instrument_List
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Main
  * @package    Instrument_List
@@ -309,7 +309,8 @@ class Instrument_List extends \NDB_Menu_Filter
             $current_date = new \DateTime();
             $dob_year     = abs($current_date->diff($dob_date)->y);
             $dob_month    = abs($current_date->diff($dob_date)->m);
-            $dob_age      = $dob_year . " y / " . $dob_month . " m";
+            $dob_age      = $dob_year . dgettext("timepoint_list", " y / ")
+                . $dob_month . dgettext("timepoint_list", " m");
             $this->tpl_data['dob_age'] = $dob_age;
         }
         // EDC to EDC Age
@@ -319,7 +320,8 @@ class Instrument_List extends \NDB_Menu_Filter
             $current_date = new \DateTime();
             $edc_year     = abs($current_date->diff($edc_date)->y);
             $edc_month    = abs($current_date->diff($edc_date)->m);
-            $edc_age      = $edc_year . " y / " . $edc_month . " m";
+            $edc_age      = $edc_year . dgettext("timepoint_list", " y / ")
+                . $edc_month . dgettext("timepoint_list", " m");
             $this->tpl_data['edc_age'] = $edc_age;
         }
     }

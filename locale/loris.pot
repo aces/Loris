@@ -122,6 +122,38 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Create"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
+# Filters
+msgid "Selection Filter"
+msgstr ""
+
+msgid "Show Filters"
+msgstr ""
+
+msgid "Hide Filters"
+msgstr ""
+
+msgid "Clear Filters"
+msgstr ""
+
+msgid "Show Advanced Filters"
+msgstr ""
+
+msgid "Hide Advanced Filters"
+msgstr ""
+
+# Common swal labels
+msgid "Cancel"
+msgstr ""
+
+msgid "Success!"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -138,12 +170,16 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
+msgid "Candidate Registration Project"
+msgstr ""
+
+msgid "Timepoint Project"
+msgstr ""
+
 msgid "Cohort"
-msgstr ""
-
-msgid "Cohorts"
-msgstr ""
-
+msgid_plural "Cohorts"
+msgstr[0] ""
+ 
 msgid "Session"
 msgstr ""
 
@@ -165,6 +201,18 @@ msgstr ""
 msgid "Scans"
 msgstr ""
 
+msgid "Stage"
+msgstr ""
+
+msgid "Send To DCC"
+msgstr ""
+
+msgid "Sent To DCC"
+msgstr ""
+
+msgid "Reverse Send To DCC"
+msgstr ""
+
 msgid "Date of Birth"
 msgstr ""
 
@@ -180,10 +228,7 @@ msgstr ""
 msgid "Scan Done"
 msgstr ""
 
-msgid "Show Advanced Filters"
-msgstr ""
-
-msgid "Hide Advanced Filters"
+msgid "Language"
 msgstr ""
 
 msgid "Save"
@@ -199,7 +244,11 @@ msgstr ""
 msgid "Maximum rows per page:"
 msgstr ""
 
-msgid "Download Table as CSV"
+msgid "Download Data as CSV"
+msgstr ""
+
+# Dashboard panel strings
+msgid "Views"
 msgstr ""
 
 # Common strings on widgets
@@ -212,3 +261,79 @@ msgstr ""
 msgid "Uploaded"
 msgstr ""
 
+msgid "Total"
+msgstr ""
+
+msgid "Error!"
+msgstr ""
+
+# Common timepoint and vist terms
+msgid "Not Started"
+msgstr ""
+
+msgid "Screening"
+msgstr ""
+
+msgid "Visit"
+msgstr ""
+
+msgid "Approval"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Recycling Bin"
+msgstr ""
+
+msgid "Pass"
+msgstr ""
+
+msgid "Failure"
+msgstr ""
+
+msgid "Withdrawal"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "Instruments"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Partial"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Data Entry"
+msgstr ""
+
+msgid "Administration"
+msgstr ""
+
+msgid "Double Data Entry Form"
+msgstr ""
+
+msgid "Double Data Entry Status"
+msgstr ""
+
+msgid "Double Data Entry"
+msgstr ""
+
+# Age related terms
+msgid "Age"
+msgstr ""
+
+msgid "{{months}} months old"
+msgstr ""
+
+msgid "{{years}} years old"
+msgstr ""

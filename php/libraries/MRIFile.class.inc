@@ -3,7 +3,7 @@
 /**
  * Contains the MRIFile class used for NeuroDB imaging
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Imaging
  * @package  Imaging

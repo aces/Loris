@@ -123,6 +123,16 @@ msgstr "हाँ"
 msgid "No"
 msgstr "नहीं"
 
+msgid "Create"
+msgstr "बनाएँ"
+
+# Common swal labels
+msgid "Cancel"
+msgstr "रद्द करें"
+
+msgid "Success!"
+msgstr "सफलता!"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
@@ -166,6 +176,12 @@ msgstr "प्रतिक्रिया"
 msgid "Scans"
 msgstr "स्कैन"
 
+msgid "Stage"
+msgstr "चरण"
+
+msgid "Sent To DCC"
+msgstr "डीसीसी को भेजा गया"
+
 msgid "Date of Birth"
 msgstr "जन्म तिथि"
 
@@ -193,6 +209,9 @@ msgstr "सहेजें"
 msgid "Reset"
 msgstr "रीसेट करें"
 
+msgid "Language"
+msgstr "भाषा"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
@@ -200,5 +219,56 @@ msgstr "{{totalCount}} में से {{pageCount}} पंक्तिया�
 msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
-msgid "Download Table as CSV"
-msgstr "तालिका को CSV के रूप में डाउनलोड करें"
+msgid "Download Data as CSV"
+msgstr "डेटा को CSV के रूप में डाउनलोड करें"
+
+# Dashboard panel strings
+msgid "Views"
+msgstr "दृश्य"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "नया"
+
+msgid "Updated"
+msgstr "अपडेट किया गया"
+
+msgid "Uploaded"
+msgstr "अपलोड किया गया"
+
+msgid "Total"
+msgstr "कुल"
+
+msgid "Error!"
+msgstr "त्रुटि!"
+
+# Common timepoint and visit terms
+msgid "Not Started"
+msgstr "शुरू नहीं हुआ"
+
+msgid "Screening"
+msgstr "जांच"
+
+msgid "Visit"
+msgstr "भेंट"
+
+msgid "Approval"
+msgstr "स्वीकृति"
+
+msgid "Subject"
+msgstr "विषय"
+
+msgid "Recycling Bin"
+msgstr "रिसाइक्लिंग बिन"
+
+msgid "Pass"
+msgstr "उत्तीर्ण"
+
+msgid "Failure"
+msgstr "विफलता"
+
+msgid "Withdrawal"
+msgstr "निकासी"
+
+msgid "In Progress"
+msgstr "प्रगति पर"
