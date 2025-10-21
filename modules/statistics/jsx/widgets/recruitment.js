@@ -91,7 +91,7 @@ const Recruitment = (props) => {
           className="btn btn-default btn-xs"
           onClick={() => setShowFiltersBreakdown((prev) => !prev)}
         >
-          {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
+          {showFiltersBreakdown ? t('Hide Filters', {ns: 'loris'}) : t('Show Filters', {ns: 'loris'})}
         </button>
       </div>
       {showFiltersBreakdown && (

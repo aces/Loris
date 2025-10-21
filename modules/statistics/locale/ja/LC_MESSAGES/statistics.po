@@ -47,3 +47,13 @@ msgstr "PNGとしてダウンロード"
 
 msgid "Labels"
 msgstr "ラベル"
+
+msgid "Date Registered"
+msgstr "登録日"
+
+msgid "Range Start"
+msgstr "範囲開始"
+
+msgid "Range End"
+msgstr "範囲終了"
+

@@ -47,3 +47,12 @@ msgstr ""
 
 msgid "Labels"
 msgstr ""
+
+msgid "Date Registered"
+msgstr ""
+
+msgid "Range Start"
+msgstr ""
+
+msgid "Range End"
+msgstr ""
