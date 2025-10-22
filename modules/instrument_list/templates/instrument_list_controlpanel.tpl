@@ -101,7 +101,7 @@
 		<li>
                 	<span class="fa-li"><i class="{$bvl_qc_status_complete.icon|default:'far fa-square'}"></i></span>
 			{if $bvl_qc_status_complete.showlink|default}
-                        	<a href="?candID={$candID}&sessionID={$sessionID}&setBVLQCStatus=Complete">Complete</a>
+                                <a href="?candID={$candID}&sessionID={$sessionID}&setBVLQCStatus=Complete">{dgettext("timepoint_list", "Complete")}</a>
 			{else}
                                                 {dgettext("timepoint_list", "Complete")}
 			{/if}
