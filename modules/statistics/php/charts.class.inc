@@ -910,7 +910,7 @@ class Charts extends \NDB_Page
         $user  = \NDB_Factory::singleton()->user();
         $sites = $user->getSites();
 
-        $conditions = $this->_buildQueryConditions();
+        $conditions = $this->_buildQueryConditions($request);
 
         $data = iterator_to_array(
             $DB->pselect(
@@ -971,7 +971,7 @@ class Charts extends \NDB_Page
         $user     = \NDB_Factory::singleton()->user();
         $projects = $user->getProjects();
 
-        $conditions = $this->_buildQueryConditions();
+        $conditions = $this->_buildQueryConditions($request);
 
         $data = iterator_to_array(
             $DB->pselect(
