@@ -118,3 +118,8 @@ msgstr "プロジェクト: {{count}}"
 msgid "Cohorts: {{count}}"
 msgstr "コホート: {{count}}"
 
+msgid "Age (Years)"
+msgstr "年齢（歳）"
+
+msgid "Participants"
+msgstr "参加者"

@@ -88,12 +88,22 @@ const Recruitment = (props) => {
     let newdetails = {...chartDetails};
     newdetails['generalBreakdown']['agerecruitment_pie']['title']
       = t('Total recruitment by Age', {ns: 'statistics'});
+    newdetails['generalBreakdown']['agerecruitment_pie']['label']
+      = t('Age (Years)', {ns: 'statistics'});
+
     newdetails['generalBreakdown']['ethnicity_pie']['title']
       = t('Ethnicity at Screening', {ns: 'statistics'});
+    newdetails['generalBreakdown']['ethnicity_pie']['label']
+      = t('Ethnicity', {ns: 'loris'});
+
     newdetails['siteBreakdown']['siterecruitment_pie']['title']
       = t('Total Recruitment per Site', {ns: 'statistics'});
+    newdetails['siteBreakdown']['siterecruitment_pie']['label']
+      = t('Participants', {ns: 'statistics'});
+
     newdetails['siteBreakdown']['siterecruitment_bysex']['title']
       = t('Biological sex breakdown by site', {ns: 'statistics'});
+
     newdetails['projectBreakdown']['agedistribution_line']['title']
       = t('Candidate Age at Registration', {ns: 'statistics'});
     setChartDetails(newdetails);

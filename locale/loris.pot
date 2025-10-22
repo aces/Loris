@@ -231,6 +231,9 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid "Ethnicity"
+msgstr ""
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""

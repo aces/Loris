@@ -116,3 +116,9 @@ msgstr ""
 
 msgid "Cohorts: {{count}}"
 msgstr ""
+
+msgid "Age (Years)"
+msgstr ""
+
+msgid "Participants"
+msgstr ""
