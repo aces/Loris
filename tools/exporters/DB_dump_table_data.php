@@ -69,14 +69,14 @@ if (empty($adminUser) || empty($adminPassword) || empty($dbHost)) {
 
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
-    $paths    = \NDB_Config::singleton()->getSetting('paths');
+    $paths        = \NDB_Config::singleton()->getSetting('paths');
     $filenamebase = $paths['base'] . "/raisinbread/RB_files/$tableName";
     exec(
         'mysql --raw -u '.escapeshellarg($adminUser).
         ' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
         " -e 'SELECT * FROM $tableName' "
         . escapeshellarg($databaseInfo['database'])
-	. " | sed -e 's/NULL/\\\\N/g'"
+        . " | sed -e 's/NULL/\\\\N/g'"
         . "> $filenamebase.tsv"
     );
 
