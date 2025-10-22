@@ -119,6 +119,15 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Save"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -164,10 +173,16 @@ msgstr ""
 msgid "Site"
 msgstr ""
 
+msgid "Sites"
+msgstr ""
+
 msgid "Module"
 msgstr ""
 
 msgid "Project"
+msgstr ""
+
+msgid "Projects"
 msgstr ""
 
 msgid "Candidate Registration Project"
@@ -182,6 +197,10 @@ msgstr[0] ""
  
 msgid "Session"
 msgstr ""
+
+msgid "Cohort"
+msgid_plural "Cohorts"
+msgstr[0] ""
 
 msgid "Date of registration"
 msgstr ""
@@ -207,9 +226,6 @@ msgstr ""
 msgid "Send To DCC"
 msgstr ""
 
-msgid "Sent To DCC"
-msgstr ""
-
 msgid "Reverse Send To DCC"
 msgstr ""
 
@@ -220,6 +236,9 @@ msgid "Visits"
 msgstr ""
 
 msgid "An error occured while loading the page."
+msgstr ""
+
+msgid "Active"
 msgstr ""
 
 msgid "Entity Type"
@@ -330,4 +349,14 @@ msgid "{{months}} months old"
 msgstr ""
 
 msgid "{{years}} years old"
+msgstr ""
+
+#: php/libraries/Password.class.inc
+msgid "The password is too short"
+msgstr ""
+
+msgid "The password is not complex enough."
+msgstr ""
+
+msgid "This password is known to be exposed in online data breaches."
 msgstr ""
