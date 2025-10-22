@@ -30,6 +30,7 @@ const Recruitment = (props) => {
           dataType: 'pie',
           label: 'Age (Years)',
           options: {pie: 'pie', bar: 'bar'},
+          yLabel: 'Candidates registered',
           legend: 'under',
           chartObject: null,
         },
@@ -40,6 +41,7 @@ const Recruitment = (props) => {
           dataType: 'pie',
           label: 'Ethnicity',
           options: {pie: 'pie', bar: 'bar'},
+          yLabel: 'Candidates registered',
           legend: 'under',
           chartObject: null,
         },
@@ -53,6 +55,7 @@ const Recruitment = (props) => {
           label: 'Participants',
           legend: '',
           options: {pie: 'pie', bar: 'bar'},
+          yLabel: 'Candidates registered',
           chartObject: null,
         },
         'siterecruitment_bysex': {
@@ -62,17 +65,20 @@ const Recruitment = (props) => {
           dataType: 'bar',
           legend: 'under',
           options: {bar: 'bar', pie: 'pie'},
+          yLabel: 'Candidates registered',
           chartObject: null,
         },
       },
       'projectBreakdown': {
         'agedistribution_line': {
+          sizing: 11,
           title: 'Candidate Age at Registration',
           filters: '',
           chartType: 'line',
           dataType: 'line',
           legend: '',
           options: {line: 'line'},
+          yLabel: 'Candidates registered',
           chartObject: null,
         },
       },
@@ -200,6 +206,8 @@ const Recruitment = (props) => {
           },
           {
             content: <>
+              {showFilters('projectBreakdown')}
+              {showChart('projectBreakdown', 'agedistribution_line')}
               <div
                 style={{
                   maxHeight: '400px',
@@ -217,9 +225,6 @@ const Recruitment = (props) => {
                   }
                 )}
               </div>
-              <hr />
-              {showFilters('projectBreakdown')}
-              {showChart('projectBreakdown', 'agedistribution_line')}
             </>,
             title: 'Recruitment - project breakdown',
             subtitle: `Projects: ${getTotalProjectsCount()}`,

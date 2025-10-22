@@ -45,6 +45,7 @@ const StudyProgression = (props) => {
         legend: 'under',
         options: {line: 'line'},
         chartObject: null,
+        yLabel: 'Candidates registered',
         titlePrefix: 'Month',
       },
     },
@@ -58,7 +59,25 @@ const StudyProgression = (props) => {
         legend: '',
         options: {line: 'line'},
         chartObject: null,
+        yLabel: 'Candidates registered',
         titlePrefix: 'Month',
+      },
+    },
+    'project_sizes': { // This should be a class
+      'size_byproject': {
+        sizing: 11,
+        title: 'Dataset size breakdown by project',
+        filters: '',
+        chartType: 'pie',
+        dataType: 'pie',
+        label: 'Size (GB)',
+        units: 'GB',
+        showPieLabelRatio: false,
+        legend: '',
+        options: {pie: 'pie', bar: 'bar'},
+        chartObject: null,
+        yLabel: 'Size (GB)',
+        titlePrefix: 'Project',
       },
     },
   });
@@ -88,6 +107,12 @@ const StudyProgression = (props) => {
   const updateFilters = (formDataObj, section) => {
     props.updateFilters(formDataObj, section,
       chartDetails, setChartDetails);
+  };
+
+  // Helper function to calculate total recruitment
+  const getTotalRecruitment = () => {
+    return json['studyprogression']['recruitment']
+      ['overall']['total_recruitment'] || -1;
   };
 
   const title = (subtitle) => t('Study Progression', {ns: 'statistics'})
@@ -175,6 +200,8 @@ const StudyProgression = (props) => {
               <p>There have been no scans yet.</p>
             ),
             title: title('Site Scans'),
+            subtitle: 'Total scans: '
+              + json['studyprogression']['total_scans'],
             onToggleFilters: () => setShowFiltersScans((prev) => !prev),
           },
           {
@@ -214,6 +241,40 @@ const StudyProgression = (props) => {
                 <p>There have been no candidates registered yet.</p>
               ),
             title: title('Site Recruitment'),
+            subtitle: `Total recruitment: ${getTotalRecruitment()}`,
+          },
+          {
+            content:
+              Object.keys(json['options']['projects']).length > 0 ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                  }}
+                >
+                  <div className="btn-group" style={{marginBottom: '10px'}}>
+                  </div>
+                  {showFiltersBreakdown && (
+                    <QueryChartForm
+                      Module={'statistics'}
+                      name={'studyprogression'}
+                      id={'studyprogressionProjectSizesForm'}
+                      data={props.data}
+                      callback={(formDataObj) => {
+                        updateFilters(formDataObj, 'project_sizes');
+                      }}
+                    />
+                  )}
+                  {showChart('project_sizes', 'size_byproject')}
+                </div>
+              ) : (
+                <p>There is no data yet.</p>
+              ),
+            title: title('Project dataset sizes'),
+            subtitle: 'Total size: '
+              + (json['studyprogression']['total_size'] ?? -1)
+              + ' GB',
             onToggleFilters: () => showFiltersBreakdown((prev) => !prev),
           },
         ]}
