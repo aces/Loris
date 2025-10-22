@@ -17,7 +17,13 @@ RUN cat /sql/0000-00-00-schema.sql \
         /instruments_sql/*.sql \
         /test_instrument.sql \
         /RB_files/*.sql \
-    > /docker-entrypoint-initdb.d/0000-compiled.sql
+    > /RB_files/0000-compiled.sql
+
+RUN echo "#!/bin/sh" > /docker-entrypoint-initdb.d/0000-compiled.sh \
+    && echo "env">> /docker-entrypoint-initdb.d/0000-compiled.sh \
+    && echo "cat /docker-entrypoint-initdb.d/0000-compiled.sh">> /docker-entrypoint-initdb.d/0000-compiled.sh \
+    && echo "cd /RB_files" >> /docker-entrypoint-initdb.d/0000-compiled.sh \
+    && echo "mariadb --protocol=socket -uroot --password=\$MARIADB_ROOT_PASSWORD -hlocalhost LorisTest < 0000-compiled.sql" >> /docker-entrypoint-initdb.d/0000-compiled.sh
 
 RUN echo "USE LorisTest;" > /docker-entrypoint-initdb.d/0001-paths.sql \
     && echo "UPDATE Config SET Value='${BASE_DIR}/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');" >> /docker-entrypoint-initdb.d/0001-paths.sql \
