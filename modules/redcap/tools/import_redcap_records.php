@@ -94,12 +94,19 @@ $importable_instruments = $config->getSetting('redcap_importable_instrument');
 
 // Fetch the REDCap records that match the REDCap importable instruments and unique
 // event names.
+$records = [];
 
-$records = $redcap_client->getRecords(
-    $importable_instruments,
-    $unique_event_names,
-    [],
-);
+foreach ($unique_event_names as $unique_event_name) {
+    foreach ($importable_instruments as $importable_instrument) {
+        $instrument_records = $redcap_client->getInstrumentRecords(
+            $importable_instrument,
+            $unique_event_name,
+            null,
+        );
+
+        $records = array_merge($records, $instrument_records);
+    }
+}
 
 $record_importer = new RedcapRecordImporter(
     $lorisInstance,
