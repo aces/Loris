@@ -14,38 +14,44 @@ const progressBarBuilder = (data) => {
     content = (
       <div>
         <div className ='progress'>
-          <div className ='progress-bar progress-bar-female'
-            role ='progressbar'
-            style ={{width: `${data['female_full_percent']}%`}}
-            data-toggle ='tooltip'
-            data-placement ='bottom'
-            title ={`${data['female_full_percent']}% female`}>
-            <p>
-              {data['female_total']}<br/>Females
-            </p>
-          </div>
-          <div className ='progress-bar progress-bar-male'
-            data-toggle ='tooltip'
-            data-placement ='bottom'
-            role ='progressbar'
-            style ={{width: `${data['male_full_percent']}%`}}
-            title ={`${data['male_full_percent']}% male`}>
-            <p>
-              {data['male_total']}<br/>Males
-            </p>
-          </div>
+          {
+            data['female_percent'] &&
+              <div className ='progress-bar progress-bar-female'
+                role ='progressbar'
+                style ={{width: `${data['female_full_percent']}%`}}
+                data-toggle ='tooltip'
+                data-placement ='bottom'
+                title ={`${data['female_full_percent']}% female`}>
+                <p>
+                  {data['female_total']}<br/>Females
+                </p>
+              </div>
+          }
+          {
+            data['male_percent'] &&
+              <div className ='progress-bar progress-bar-male'
+                data-toggle ='tooltip'
+                data-placement ='bottom'
+                role ='progressbar'
+                style ={{width: `${data['male_full_percent']}%`}}
+                title ={`${data['male_full_percent']}% male`}>
+                <p>
+                  {data['male_total']}<br/>Males
+                </p>
+              </div>
+          }
           {
             data['non_binary_percent'] &&
-                <div className ='progress-bar progress-bar-other'
-                  data-toggle ='tooltip'
-                  data-placement ='bottom'
-                  role ='progressbar'
-                  style ={{width: `${data['non_binary_percent']}%`}}
-                  title ={`${data['non_binary_percent']}% other`}>
-                  <p>
-                    {data['non_binary_total']}<br/>Other
-                  </p>
-                </div>
+              <div className ='progress-bar progress-bar-other'
+                data-toggle ='tooltip'
+                data-placement ='bottom'
+                role ='progressbar'
+                style ={{width: `${data['non_binary_percent']}%`}}
+                title ={`${data['non_binary_percent']}% other`}>
+                <p>
+                  {data['non_binary_total']}<br/>Other
+                </p>
+              </div>
           }
           <p className ='pull-right small target'>
         Target: {data['recruitment_target']}
@@ -64,26 +70,32 @@ const progressBarBuilder = (data) => {
     content = (
       <>
         <div className ='progress'>
-          <div className ='progress-bar progress-bar-female'
-            role ='progressbar'
-            style ={{width: `${data['female_percent']}%`}}
-            data-toggle ='tooltip'
-            data-placement ='bottom'
-            title ={`${data['female_percent']}% female`}>
-            <p>
-              {data['female_total']}<br/>Females
-            </p>
-          </div>
-          <div className ='progress-bar progress-bar-male'
-            data-toggle ='tooltip'
-            data-placement ='bottom'
-            role ='progressbar'
-            style ={{width: `${data['male_percent']}%`}}
-            title ={`${data['male_percent']}% male`}>
-            <p>
-              {data['male_total']}<br/>Males
-            </p>
-          </div>
+          {
+            data['female_percent'] &&
+              <div className ='progress-bar progress-bar-female'
+                role ='progressbar'
+                style ={{width: `${data['female_percent']}%`}}
+                data-toggle ='tooltip'
+                data-placement ='bottom'
+                title ={`${data['female_percent']}% female`}>
+                <p>
+                  {data['female_total']}<br/>Females
+                </p>
+              </div>
+          }
+          {
+            data['male_percent'] &&
+              <div className ='progress-bar progress-bar-male'
+                data-toggle ='tooltip'
+                data-placement ='bottom'
+                role ='progressbar'
+                style ={{width: `${data['male_percent']}%`}}
+                title ={`${data['male_percent']}% male`}>
+                <p>
+                  {data['male_total']}<br/>Males
+                </p>
+              </div>
+          }
           {
             data['non_binary_percent'] &&
                 <div className ='progress-bar progress-bar-other'
@@ -98,10 +110,13 @@ const progressBarBuilder = (data) => {
                 </div>
           }
           {
-            data['recruitment_target'] &&
-                <p className ='pull-right small target'>
+            data['recruitment_target'] ?
+              <p className ='pull-right small target'>
                 Target: {data['recruitment_target']}
-                </p>
+              </p>
+              : <p className ='pull-right small target'>
+                No target set
+              </p>
           }
         </div>
         {

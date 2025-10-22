@@ -311,6 +311,8 @@ class RedcapConfigParser
             return RedcapConfigLorisId::CandId;
         case 'pscid':
             return RedcapConfigLorisId::PscId;
+        case 'external_id':
+            return RedcapConfigLorisId::ExternalId;
         default:
             throw $this->_exception(
                 "invalid LORIS candidate identifier type for the selected project,"
@@ -366,11 +368,60 @@ class RedcapConfigParser
 
         $redcap_arm_name   = $visit_node['redcap-arm-name'] ?? null;
         $redcap_event_name = $visit_node['redcap-event-name'] ?? null;
+        $create_session    = $this->_parseCreateSession($visit_node);
 
         return new RedcapConfigVisit(
             $visit_label,
             $redcap_arm_name,
             $redcap_event_name,
+            $create_session,
+        );
+    }
+
+    /**
+     * Parse a REDCap session creation configuration from a REDCap session creation
+     * configuration XML node.
+     *
+     * @param array $visit_node The REDCap configuration visit mapping XML node.
+     *
+     * @return ?RedcapConfigCreateSession The REDCap session creation configuration.
+     */
+    private function _parseCreateSession(
+        array $visit_node,
+    ): ?RedcapConfigCreateSession {
+        $create_session_node = $visit_node['create-session'] ?? null;
+        if (empty($create_session_node)) {
+            return null;
+        }
+
+        $site_name = $create_session_node['site-name'] ?? null;
+        if (empty($site_name)) {
+            throw $this->_exception(
+                "no site name in session creation configuration, missing node"
+                . " 'site-name'."
+            );
+        }
+
+        $project_name = $create_session_node['project-name'] ?? null;
+        if (empty($project_name)) {
+            throw $this->_exception(
+                "no project name in session creation configuration, missing node"
+                . " 'project-name'."
+            );
+        }
+
+        $cohort_name = $create_session_node['cohort-name'] ?? null;
+        if (empty($cohort_name)) {
+            throw $this->_exception(
+                "no cohort name in session creation configuration, missing node"
+                . " 'cohort-name'."
+            );
+        }
+
+        return new RedcapConfigCreateSession(
+            $site_name,
+            $project_name,
+            $cohort_name,
         );
     }
 

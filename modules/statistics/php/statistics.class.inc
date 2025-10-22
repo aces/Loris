@@ -3,7 +3,7 @@
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -16,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -75,6 +75,7 @@ class Statistics extends \NDB_Form
             ]
         );
     }
+
     /**
      * Include additional CSS files:
      *

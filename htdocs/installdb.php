@@ -31,7 +31,7 @@
  *       writable, print the content that should go there and ask
  *       the user to manually create the file.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -224,6 +224,7 @@ function tplvar($name)
         $tpl_data[$name] = '';
     }
 }
+
 tplvar('dbhost');
 tplvar('dbadminuser');
 tplvar('dbadminpassword');

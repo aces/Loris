@@ -21,3 +21,6 @@ msgstr ""
 msgid "Behavioural Quality Control"
 msgstr ""
 
+msgid  "Behavioural Session"
+msgid_plural "Behavioural Sessions"
+msgstr[0] ""

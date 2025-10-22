@@ -153,3 +153,8 @@ msgstr ""
 msgid "Issue created!"
 msgstr ""
 
+msgid "Your assigned issue"
+msgstr ""
+
+msgid "Your assigned issues"
+msgstr ""

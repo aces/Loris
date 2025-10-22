@@ -5,6 +5,7 @@ LOCK TABLES `menu_categories` WRITE;
 INSERT INTO `menu_categories` (`name`, `orderby`) VALUES ('Admin',8);
 INSERT INTO `menu_categories` (`name`, `orderby`) VALUES ('Candidate',1);
 INSERT INTO `menu_categories` (`name`, `orderby`) VALUES ('Clinical',2);
+INSERT INTO `menu_categories` (`name`, `orderby`) VALUES ('Biobank',98);
 INSERT INTO `menu_categories` (`name`, `orderby`) VALUES ('Electrophysiology',99);
 INSERT INTO `menu_categories` (`name`, `orderby`) VALUES ('foo',1);
 INSERT INTO `menu_categories` (`name`, `orderby`) VALUES ('Genomics',4);
