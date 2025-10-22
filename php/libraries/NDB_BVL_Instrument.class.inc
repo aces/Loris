@@ -3210,15 +3210,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candid / $pscid",
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                "TimePoint $visitlabel Details",
+                sprintf(dgettext("loris", "TimePoint %s Details"), $visitlabel),
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             ),
             new \LORIS\Breadcrumb(

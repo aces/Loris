@@ -112,6 +112,9 @@ msgstr ""
 msgid "TimePoint"
 msgstr ""
 
+msgid "TimePoint %s Details"
+msgstr ""
+
 # Common select option labels
 msgid "Yes"
 msgstr ""
