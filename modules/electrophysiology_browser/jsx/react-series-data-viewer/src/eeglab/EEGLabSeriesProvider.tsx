@@ -278,7 +278,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
             type: 'Event',
             label: epochLabel ?? instance.EventValue,
             value: instance.EventValue,
-            trial_type: instance.TrialType,
+            trialType: instance.TrialType,
             properties: extraColumns,
             hed: hedTags,
             channels: ['n/a', null].includes(instance.Channel)

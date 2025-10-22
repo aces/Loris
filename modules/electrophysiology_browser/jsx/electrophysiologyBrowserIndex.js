@@ -7,7 +7,7 @@ import {withTranslation} from 'react-i18next';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-import HasHEDIcon from './components/HasHedIcon';
+import HasHEDIcon from './components/HasHEDIcon';
 
 /**
  * Electrophysiology Browser page.
