@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE shipment_status;
+LOCK TABLE shipment_status WRITE;
+LOAD DATA LOCAL INFILE 'shipment_status.tsv' INTO TABLE shipment_status
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

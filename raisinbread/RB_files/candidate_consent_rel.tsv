@@ -1,0 +1,4 @@
+CandidateID	ConsentID	Status	DateGiven	DateWithdrawn
+162	1	yes	2015-12-31	\N
+166	1	yes	2015-10-30	\N
+1004	1	no	2015-12-31	2015-12-31

@@ -1,0 +1,11 @@
+id	module_name	operation_type	as_admin	template_file	description
+1	media	upload	N	notifier_media_upload.tpl	Media: New File Uploaded
+2	media	download	N	notifier_media_download.tpl	Media: File Downloaded
+3	document_repository	new_category	N	notifier_document_repository_new_category.tpl	Document Repository: New Category
+4	document_repository	upload	N	notifier_document_repository_upload.tpl	Document Repository: New Document Uploaded
+5	document_repository	delete	N	notifier_document_repository_delete.tpl	Document Repository: Document Deleted
+6	document_repository	edit	N	notifier_document_repository_edit.tpl	Document Repository: Document Edited
+7	publication	submission	N	notifier_publication_submission.tpl	Publication: Submission Received
+8	publication	review	N	notifier_publication_review.tpl	Publication: Proposal has been reviewed
+9	publication	edit	N	notifier_publication_edit.tpl	Publication: Proposal has been edited
+10	media	digest	N	media_upload_digest.tpl	Media: Email Digest of Recently Uploaded Files

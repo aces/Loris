@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE test_subgroups;
+LOCK TABLE test_subgroups WRITE;
+LOAD DATA LOCAL INFILE 'test_subgroups.tsv' INTO TABLE test_subgroups
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

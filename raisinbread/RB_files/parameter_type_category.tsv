@@ -1,0 +1,9 @@
+ParameterTypeCategoryID	Name	Type
+3	MRI Variables	Metavars
+4	Identifiers	Metavars
+5	Electrophysiology Variables	Metavars
+26	AOSI	Instrument
+27	Medical History	Instrument
+28	MRI Parameter Form	Instrument
+29	Radiology review	Instrument
+30	BMI Calculator	Instrument

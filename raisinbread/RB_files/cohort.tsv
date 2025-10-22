@@ -1,0 +1,5 @@
+CohortID	title	useEDC	WindowDifference	RecruitmentTarget
+1	Stale	0	optimal	100
+2	Fresh	0	optimal	100
+3	Low Yeast	1	battery	100
+4	High Yeast	1	battery	25

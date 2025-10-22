@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE instrument_data;
+LOCK TABLE instrument_data WRITE;
+LOAD DATA LOCAL INFILE 'instrument_data.tsv' INTO TABLE instrument_data
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

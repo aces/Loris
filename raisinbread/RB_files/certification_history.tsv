@@ -1,0 +1,39 @@
+id	col	old	old_date	new	new_date	primaryCols	primaryVals	testID	visit_label	changeDate	userID	type
+8	certified	\N	\N	\N	\N	certID	\N	\N	\N	2016-06-29 17:34:44	admin	D
+9	certified	\N	\N	\N	\N	certID	\N	\N	\N	2016-06-29 17:34:44	admin	D
+10	pass	\N	\N	certified	2016-06-29	certID	8	2	\N	2016-06-29 17:38:27	admin	I
+11	pass	certified	2016-06-29	not_certified	2016-06-29	certID	8	2	\N	2016-06-29 17:38:42	admin	U
+12	pass	not_certified	2016-06-29	in_training	2016-06-14	certID	8	2	\N	2016-06-29 17:40:07	admin	U
+13	pass	in_training	2016-06-14	certified	2016-06-14	certID	8	2	\N	2016-06-29 17:44:40	admin	U
+14	pass	\N	\N	certified	2016-06-29	certID	9	2	\N	2016-06-29 17:44:57	admin	I
+15	pass	\N	\N	certified	2016-06-22	certID	10	2	\N	2016-06-29 17:45:19	admin	I
+16	certified	\N	\N	\N	\N	certID	\N	\N	\N	2016-06-29 17:45:42	slee@loris-hackathon.cbrain.mcgill.ca	D
+17	pass	\N	\N	certified	2016-12-31	certID	11	2	\N	2016-07-27 17:24:35	admin	I
+18	pass	certified	2016-12-31		1001-01-01	certID	11	2	\N	2016-07-27 17:24:44	admin	U
+19	pass		1001-01-01	certified	2016-12-31	certID	11	2	\N	2016-07-27 17:25:11	admin	U
+20	pass	\N	\N	certified	2008-01-04	certID	12	2	\N	2016-08-15 19:50:00	admin	I
+21	pass	\N	\N	certified	2003-03-03	certID	13	2	\N	2016-08-16 22:41:50	admin	I
+22	pass	\N	\N	certified	2003-04-05	certID	14	1	\N	2016-08-16 22:41:50	admin	I
+23	pass	\N	\N	in_training	2004-05-06	certID	15	2	\N	2016-08-16 22:42:18	admin	I
+24	pass	\N	\N	in_training	2016-05-05	certID	16	2	\N	2016-08-16 22:42:31	admin	I
+25	pass	\N	\N	in_training	2016-05-05	certID	17	1	\N	2016-08-16 22:42:31	admin	I
+26	pass	\N	\N	certified	2008-09-08	certID	18	2	\N	2016-08-16 22:42:43	admin	I
+27	pass	\N	\N	certified	2009-09-08	certID	19	1	\N	2016-08-16 22:42:43	admin	I
+28	pass	\N	\N	certified	2011-09-01	certID	20	1	\N	2016-08-16 22:42:51	admin	I
+29	pass	\N	\N	certified	2005-09-07	certID	21	2	\N	2016-08-16 22:43:07	admin	I
+30	pass	\N	\N	in_training	2016-05-05	certID	22	1	\N	2016-08-16 22:43:08	admin	I
+31	pass	\N	\N	certified	2014-04-04	certID	23	2	\N	2016-08-16 22:43:36	admin	I
+32	pass	\N	\N	certified	2016-05-01	certID	24	1	\N	2016-08-16 22:43:36	admin	I
+33	pass	\N	\N	in_training	2016-05-06	certID	25	2	\N	2016-08-16 22:43:48	admin	I
+34	pass	\N	\N	in_training	2016-05-09	certID	26	1	\N	2016-08-16 22:43:49	admin	I
+35	pass	\N	\N	certified	2006-09-01	certID	27	2	\N	2016-08-16 22:44:00	admin	I
+36	pass	\N	\N	certified	2011-11-11	certID	28	1	\N	2016-08-16 22:44:00	admin	I
+37	pass	\N	\N	in_training	2016-05-04	certID	29	2	\N	2016-08-16 22:44:29	admin	I
+38	pass	\N	\N	certified	2016-04-03	certID	30	1	\N	2016-08-16 22:44:37	admin	I
+39	pass	\N	\N	certified	2009-08-05	certID	31	2	\N	2016-08-16 22:44:51	admin	I
+40	pass	\N	\N	certified	2000-02-01	certID	32	1	\N	2016-08-16 22:44:52	admin	I
+41	pass	\N	\N	in_training	2016-05-09	certID	33	2	\N	2016-08-16 22:45:09	admin	I
+42	pass	\N	\N	certified	2005-09-04	certID	34	1	\N	2016-08-16 22:45:09	admin	I
+43	pass	\N	\N	certified	2009-09-08	certID	35	1	\N	2016-08-16 22:45:19	admin	I
+44	pass	\N	\N	certified	2000-01-01	certID	36	2	\N	2016-08-16 22:45:35	admin	I
+45	pass	\N	\N	certified	2000-01-01	certID	37	1	\N	2016-08-16 22:45:36	admin	I

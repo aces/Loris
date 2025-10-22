@@ -1,0 +1,4 @@
+SpecimenProtocolID	Label	SpecimenProcessID	SpecimenTypeID
+1	Blood Collection	1	1
+2	Blood Preparation	2	1
+3	Serum Collection	1	2

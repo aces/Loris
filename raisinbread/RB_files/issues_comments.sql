@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE issues_comments;
+LOCK TABLE issues_comments WRITE;
+LOAD DATA LOCAL INFILE 'issues_comments.tsv' INTO TABLE issues_comments
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

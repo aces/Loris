@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE tarchive_files;
+LOCK TABLE tarchive_files WRITE;
+LOAD DATA LOCAL INFILE 'tarchive_files.tsv' INTO TABLE tarchive_files
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

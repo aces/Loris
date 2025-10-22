@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE hed_schema_nodes;
+LOCK TABLE hed_schema_nodes WRITE;
+LOAD DATA LOCAL INFILE 'hed_schema_nodes.tsv' INTO TABLE hed_schema_nodes
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

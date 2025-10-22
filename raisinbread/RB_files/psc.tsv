@@ -1,0 +1,5 @@
+CenterID	Name	PSCArea	Address	City	StateID	ZIP	Phone1	Phone2	Contact1	Contact2	Alias	MRI_alias	Account	Study_site
+1	Data Coordinating Center				0						DCC	DCC		Y
+2	Montreal	\N	\N	\N	\N	\N	\N	\N	\N	\N	MTL	MTL	\N	Y
+3	Ottawa	\N	\N	\N	\N	\N	\N	\N	\N	\N	OTT	OTT	\N	Y
+4	Rome	\N	\N	\N	\N	\N	\N	\N	\N	\N	ROM	ROM	\N	Y

@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE issues_watching;
+LOCK TABLE issues_watching WRITE;
+LOAD DATA LOCAL INFILE 'issues_watching.tsv' INTO TABLE issues_watching
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

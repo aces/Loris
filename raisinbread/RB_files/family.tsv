@@ -1,0 +1,4 @@
+ID	FamilyID	CandidateID	Relationship_type
+21	1	1004	full_sibling
+24	1	1005	full_sibling
+26	2	166	half_sibling

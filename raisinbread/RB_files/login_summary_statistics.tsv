@@ -1,0 +1,27 @@
+Title	Project	Value	QueryOrder
+EEG Recording	All Projects	10	7
+EEG Recording	Pumpernickel	10	7
+Female Participant	All Projects	334	1
+Female Participant	Challah	47	1
+Female Participant	Pumpernickel	225	1
+Female Participant	Rye	62	1
+Instrument	All Projects	5	5
+Instrument	Challah	5	5
+Instrument	Pumpernickel	5	5
+Instrument	Rye	2	5
+Male Participant	All Projects	328	2
+Male Participant	Challah	60	2
+Male Participant	Pumpernickel	210	2
+Male Participant	Rye	58	2
+Scan	All Projects	311	6
+Scan	Challah	23	6
+Scan	Pumpernickel	247	6
+Scan	Rye	41	6
+Site	All Projects	4	3
+Site	Challah	1	3
+Site	Pumpernickel	4	3
+Site	Rye	1	3
+Visit	All Projects	1133	4
+Visit	Challah	147	4
+Visit	Pumpernickel	855	4
+Visit	Rye	131	4

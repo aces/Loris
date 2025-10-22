@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE caveat_options;
+LOCK TABLE caveat_options WRITE;
+LOAD DATA LOCAL INFILE 'caveat_options.tsv' INTO TABLE caveat_options
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

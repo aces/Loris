@@ -1,0 +1,6 @@
+BIDSNonImagingFileCategoryID	BIDSNonImagingFileCategoryName
+1	dataset_description
+2	README
+3	bids-validator-config
+4	participants_list_file
+5	session_list_of_scans
