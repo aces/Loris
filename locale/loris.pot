@@ -201,34 +201,7 @@ msgstr ""
 msgid "Scans"
 msgstr ""
 
-msgid "Stage"
-msgstr ""
-
-msgid "Send To DCC"
-msgstr ""
-
-msgid "Sent To DCC"
-msgstr ""
-
-msgid "Reverse Send To DCC"
-msgstr ""
-
-msgid "Date of Birth"
-msgstr ""
-
-msgid "Visits"
-msgstr ""
-
 msgid "An error occured while loading the page."
-msgstr ""
-
-msgid "Entity Type"
-msgstr ""
-
-msgid "Scan Done"
-msgstr ""
-
-msgid "Language"
 msgstr ""
 
 # Data table strings
