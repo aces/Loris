@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE certification;
 LOCK TABLE certification WRITE;
+TRUNCATE TABLE certification;
 LOAD DATA LOCAL INFILE 'certification.tsv' INTO TABLE certification
  IGNORE 1 LINES;
 SET FOREIGN_KEY_CHECKS=1;

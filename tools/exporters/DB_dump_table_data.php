@@ -82,8 +82,8 @@ foreach ($tableNames as $tableName) {
 
     $fd = fopen($filenamebase . ".sql", "w");
     fwrite($fd, "SET FOREIGN_KEY_CHECKS=0;\n");
-    fwrite($fd, "TRUNCATE TABLE $tableName;\n");
     fwrite($fd, "LOCK TABLE $tableName WRITE;\n");
+    fwrite($fd, "TRUNCATE TABLE $tableName;\n");
     fwrite($fd, "LOAD DATA LOCAL INFILE '$tableName.tsv' INTO TABLE $tableName\n");
     fwrite($fd, " IGNORE 1 LINES;\n");
     fwrite($fd, "SET FOREIGN_KEY_CHECKS=1;\n");

@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE appointment_type;
 LOCK TABLE appointment_type WRITE;
+TRUNCATE TABLE appointment_type;
 LOAD DATA LOCAL INFILE 'appointment_type.tsv' INTO TABLE appointment_type
  IGNORE 1 LINES;
 SET FOREIGN_KEY_CHECKS=1;

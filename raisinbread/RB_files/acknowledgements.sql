@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE acknowledgements;
 LOCK TABLE acknowledgements WRITE;
+TRUNCATE TABLE acknowledgements;
 LOAD DATA LOCAL INFILE 'acknowledgements.tsv' INTO TABLE acknowledgements
  IGNORE 1 LINES;
 SET FOREIGN_KEY_CHECKS=1;

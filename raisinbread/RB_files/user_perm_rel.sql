@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE user_perm_rel;
 LOCK TABLE user_perm_rel WRITE;
+TRUNCATE TABLE user_perm_rel;
 LOAD DATA LOCAL INFILE 'user_perm_rel.tsv' INTO TABLE user_perm_rel
  IGNORE 1 LINES;
 SET FOREIGN_KEY_CHECKS=1;

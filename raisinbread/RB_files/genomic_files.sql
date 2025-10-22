@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE genomic_files;
 LOCK TABLE genomic_files WRITE;
+TRUNCATE TABLE genomic_files;
 LOAD DATA LOCAL INFILE 'genomic_files.tsv' INTO TABLE genomic_files
  IGNORE 1 LINES;
 SET FOREIGN_KEY_CHECKS=1;

@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE mri_scan_type;
 LOCK TABLE mri_scan_type WRITE;
+TRUNCATE TABLE mri_scan_type;
 LOAD DATA LOCAL INFILE 'mri_scan_type.tsv' INTO TABLE mri_scan_type
  IGNORE 1 LINES;
 SET FOREIGN_KEY_CHECKS=1;

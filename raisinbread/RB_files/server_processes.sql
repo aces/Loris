@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE server_processes;
 LOCK TABLE server_processes WRITE;
+TRUNCATE TABLE server_processes;
 LOAD DATA LOCAL INFILE 'server_processes.tsv' INTO TABLE server_processes
  IGNORE 1 LINES;
 SET FOREIGN_KEY_CHECKS=1;

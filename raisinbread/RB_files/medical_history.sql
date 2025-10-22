@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE medical_history;
 LOCK TABLE medical_history WRITE;
+TRUNCATE TABLE medical_history;
 LOAD DATA LOCAL INFILE 'medical_history.tsv' INTO TABLE medical_history
  IGNORE 1 LINES;
 SET FOREIGN_KEY_CHECKS=1;

@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE consent_group;
 LOCK TABLE consent_group WRITE;
+TRUNCATE TABLE consent_group;
 LOAD DATA LOCAL INFILE 'consent_group.tsv' INTO TABLE consent_group
  IGNORE 1 LINES;
 SET FOREIGN_KEY_CHECKS=1;

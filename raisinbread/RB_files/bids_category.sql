@@ -1,6 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE bids_category;
 LOCK TABLE bids_category WRITE;
+TRUNCATE TABLE bids_category;
 LOAD DATA LOCAL INFILE 'bids_category.tsv' INTO TABLE bids_category
  IGNORE 1 LINES;
 SET FOREIGN_KEY_CHECKS=1;
