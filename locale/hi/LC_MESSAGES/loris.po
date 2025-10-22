@@ -113,6 +113,9 @@ msgstr "रिपोर्ट्स"
 msgid "TimePoint"
 msgstr "समय बिंदु"
 
+msgid "Module"
+msgstr "मॉड्यूल"
+
 # Common select option labels
 msgid "Yes"
 msgstr "हाँ"
@@ -142,9 +145,6 @@ msgstr "दौरे का लेबल"
 
 msgid "Site"
 msgstr "साइट"
-
-msgid "Module"
-msgstr "मॉड्यूल"
 
 msgid "Project"
 msgstr "परियोजना"
@@ -202,6 +202,12 @@ msgstr "उन्नत फ़िल्टर दिखाएँ"
 
 msgid "Hide Advanced Filters"
 msgstr "उन्नत फ़िल्टर छुपाएँ"
+
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Reset"
+msgstr "रीसेट करें"
 
 msgid "Language"
 msgstr "भाषा"
