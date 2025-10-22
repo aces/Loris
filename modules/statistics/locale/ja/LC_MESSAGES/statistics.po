@@ -123,3 +123,6 @@ msgstr "年齢（歳）"
 
 msgid "Participants"
 msgstr "参加者"
+
+msgid "Unknown"
+msgstr "未知"

@@ -335,3 +335,8 @@ msgstr "{{months}}ヶ月"
 
 msgid "{{years}} years old"
 msgstr "{{years}}歳"
+
+# Other generic terms
+msgid "Loading..."
+msgstr "読み込み中..."
+

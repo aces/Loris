@@ -187,7 +187,7 @@ const WidgetIndex = (props) => {
     setChartDetails
   ) => {
     // Unload all charts in the section first
-    unloadCharts(chartDetails, section);
+    unloadCharts(t, chartDetails, section);
 
     // Clear cached data from chartDetails to prevent old data from showing
     let clearedChartDetails = {...chartDetails};

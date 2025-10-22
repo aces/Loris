@@ -334,3 +334,8 @@ msgstr ""
 
 msgid "{{years}} years old"
 msgstr ""
+
+# Other generic terms
+msgid "Loading..."
+msgstr ""
+

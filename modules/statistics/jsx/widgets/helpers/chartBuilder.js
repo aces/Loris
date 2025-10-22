@@ -254,10 +254,11 @@ const getChartData = async (target, filters) => {
 
 /**
  * unloadCharts - unload all charts in a section to clear their data
+ * @param {t} The i18next translation callback
  * @param {object} chartDetails
  * @param {string} section
  */
-const unloadCharts = (chartDetails, section) => {
+const unloadCharts = (t, chartDetails, section) => {
   Object.keys(chartDetails[section]).forEach((chartID) => {
     const chart = chartDetails[section][chartID].chartObject;
     if (chart && typeof chart.unload === 'function') {
@@ -266,7 +267,7 @@ const unloadCharts = (chartDetails, section) => {
     // Clear the chart container completely
     const element = document.getElementById(chartID);
     if (element) {
-      element.innerHTML ='<p>Loading...</p>';
+      element.innerHTML ='<p>' + t('Loading...', {ns: 'loris'}) + '</p>';
     }
   });
 };
