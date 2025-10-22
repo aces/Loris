@@ -116,7 +116,7 @@ const EventManager = ({
     epochs.forEach((epoch) => {
       switch (label) {
         case 'trial_type':
-          labels.push(epoch.trial_type ?? 'n/a');
+          labels.push(epoch.trialType ?? 'n/a');
           break;
         case 'HED':
           const hedTags = [
