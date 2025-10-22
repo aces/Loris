@@ -100,7 +100,7 @@ class IssueForm extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t('An error occurred while loading the page.',
-        {ns: 'issue_tracker'})}</h3>;
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for data to load
@@ -577,7 +577,7 @@ class IssueForm extends Component {
       };
     } else if (msgType === 'error') {
       type = 'error';
-      title = t('Error!', {ns: 'issue_tracker'});
+      title = t('Error!', {ns: 'loris'});
     } else if (msgType === 'success' && !this.state.isNewIssue) {
       callback = function() {
         this.setState({submissionResult: null});

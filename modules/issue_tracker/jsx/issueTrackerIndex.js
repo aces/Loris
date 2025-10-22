@@ -191,7 +191,7 @@ class IssueTrackerIndex extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        {ns: 'issue_tracker'})}</h3>;
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -213,7 +213,7 @@ class IssueTrackerIndex extends Component {
         name: 'title',
         type: 'text',
       }},
-      {label: t('Module', {ns: 'issue_tracker'}), show: true, filter: {
+      {label: t('Module', {ns: 'loris'}), show: true, filter: {
         name: 'module',
         type: 'select',
         options: options.modules,
@@ -263,7 +263,7 @@ class IssueTrackerIndex extends Component {
       }},
       {label: t('Last Update', {ns: 'issue_tracker'}), show: true},
       {label: t('SessionID', {ns: 'issue_tracker'}), show: false},
-      {label: t('CandID', {ns: 'issue_tracker'}), show: false},
+      {label: t('DCCID', {ns: 'loris'}), show: false},
       {label: t('Watching', {ns: 'issue_tracker'}), show: false, filter: {
         name: 'watching',
         type: 'checkbox',
