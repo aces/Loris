@@ -31,7 +31,7 @@ export type Epoch = {
   type: 'Event',
   label: string,
   value: string,
-  trialType: string,
+  trial_type: string,
   properties?: any[],
   hed?: HEDTag[],
   channels: string[],
