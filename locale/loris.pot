@@ -119,6 +119,24 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Pass"
+msgstr ""
+
+msgid "Fail"
+msgstr ""
+
+msgid "True"
+msgstr ""
+
+msgid "False"
+msgstr ""
+
+msgid "Selected"
+msgstr ""
+
+msgid "selected"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -229,6 +247,15 @@ msgid "Scan Done"
 msgstr ""
 
 msgid "Language"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Save"
 msgstr ""
 
 # Data table strings
