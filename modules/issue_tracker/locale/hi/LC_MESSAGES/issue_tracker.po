@@ -27,9 +27,6 @@ msgstr "समस्या आईडी"
 msgid "Title"
 msgstr "शीर्षक"
 
-msgid "Module"
-msgstr "मॉड्यूल"
-
 msgid "Category"
 msgstr "श्रेणी"
 
@@ -54,9 +51,6 @@ msgstr "अंतिम अपडेट"
 msgid "SessionID"
 msgstr "सत्र आईडी"
 
-msgid "CandID"
-msgstr "कैंडिडेट आईडी"
-
 msgid "Watching"
 msgstr "देख रहे हैं"
 
@@ -74,9 +68,6 @@ msgstr "तत्काल"
 
 msgid "Low"
 msgstr "निम्न"
-
-msgid "None"
-msgstr "कोई नहीं"
 
 msgid "All Sites"
 msgstr "सभी साइटें"
@@ -102,8 +93,8 @@ msgstr "समस्याएँ ब्राउज़ करें"
 msgid "Batch Edit"
 msgstr "बैच संपादन"
 
-msgid "An error occured while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
+msgid "Add Comment"
+msgstr "टिप्पणी जोड़ें"
 
 msgid "Create New Issue"
 msgstr "नई समस्या बनाएँ"
@@ -162,6 +153,4 @@ msgstr "समस्या अपडेट की गई!"
 msgid "Issue created!"
 msgstr "समस्या बनाई गई!"
 
-msgid "Error!"
-msgstr "त्रुटि!"
 

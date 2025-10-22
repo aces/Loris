@@ -27,9 +27,6 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-msgid "Module"
-msgstr ""
-
 msgid "Category"
 msgstr ""
 
@@ -54,9 +51,6 @@ msgstr ""
 msgid "SessionID"
 msgstr ""
 
-msgid "CandID"
-msgstr ""
-
 msgid "Watching"
 msgstr ""
 
@@ -73,9 +67,6 @@ msgid "Immediate"
 msgstr ""
 
 msgid "Low"
-msgstr ""
-
-msgid "None"
 msgstr ""
 
 msgid "All Sites"
@@ -102,7 +93,7 @@ msgstr ""
 msgid "Batch Edit"
 msgstr ""
 
-msgid "An error occured while loading the page."
+msgid "Add Comment"
 msgstr ""
 
 msgid "Create New Issue"
@@ -160,8 +151,5 @@ msgid "Issue updated!"
 msgstr ""
 
 msgid "Issue created!"
-msgstr ""
-
-msgid "Error!"
 msgstr ""
 

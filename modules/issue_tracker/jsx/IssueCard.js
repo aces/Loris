@@ -310,7 +310,7 @@ const IssueCard = React.memo(function IssueCard(props) {
             {issue.lastUpdate}</span>
           <span>{t('Assignee', {ns: 'issue_tracker'})}:
             {issue.assignee || t('None',
-              {ns: 'issue_tracker'})}</span>
+              {ns: 'loris'})}</span>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="issue-form">
