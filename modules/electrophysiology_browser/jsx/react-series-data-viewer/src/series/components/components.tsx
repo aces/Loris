@@ -135,18 +135,3 @@ export const InfoIcon: React.FC<IInfoIcon> = ({
     }
   </a>
 );
-
-export const HasHEDIcon: React.FC = () => (
-  <>
-    <img
-      src="https://images.loris.ca/HED_logo.png"
-      alt="HED"
-      style={{ width: '36px', }}
-    />
-    <InfoIcon
-      title='Has HED tags'
-      url='https://www.hed-resources.org/en/latest/index.html'
-      tooltipText={'HED tags in recording metadata (click for info)'}
-    />
-  </>
-);
