@@ -1,11 +1,10 @@
-import {Component} from "react";
+import {Component} from 'react';
 
 /**
  * HED Icon for data table column
  *
  */
 class HasHEDIcon extends Component {
-
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -24,7 +23,7 @@ class HasHEDIcon extends Component {
       <img
         src="https://images.loris.ca/HED_logo.png"
         alt="HED"
-        style={{width: '36px',}}
+        style={{width: '36px'}}
       />
       <a
         href={'https://www.hed-resources.org/en/latest/index.html'}
@@ -39,8 +38,8 @@ class HasHEDIcon extends Component {
       >
         <i className='glyphicon glyphicon-info-sign'/>
         <span className='browser-index-tooltip-text'>
-        HED tags in recording metadata (click for info)
-      </span>
+          HED tags in recording metadata (click for info)
+        </span>
       </a>
     </>;
   }
