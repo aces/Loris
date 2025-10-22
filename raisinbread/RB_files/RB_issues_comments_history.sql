@@ -1,5 +1,0 @@
-SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE `issues_comments_history`;
-LOCK TABLES `issues_comments_history` WRITE;
-UNLOCK TABLES;
-SET FOREIGN_KEY_CHECKS=1;
