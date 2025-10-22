@@ -74,6 +74,8 @@ $host     = $dbInfo['host'];
 $username = $dbInfo['adminUser'];
 $password = $dbInfo['adminPassword'];
 
+chdir($baseConfigSetting . '/raisinbread/RB_files/');
+
 if (! $config->getSetting('dev')['sandbox']) {
     fwrite(
         STDERR,
@@ -93,7 +95,7 @@ if ($input !== $dbname) {
     die(printWarning('Input did not match database name. Exiting.'));
 }
 
-$mysqlCommand = sprintf("mysql -A %s", escapeshellarg($dbname));
+$mysqlCommand = sprintf("mysql --local-infile -A %s", escapeshellarg($dbname));
 
 echo 'Checking connection via MySQL configuration file...' . PHP_EOL;
 // Test whether a connection to MySQL is possible via a MySQL config file.
@@ -122,7 +124,7 @@ if ($status != 0) {
 
     // Try connecting by supplying parameters on command line.
     $mysqlCommand = sprintf(
-        "mysql -A %s -u %s -h %s -p%s",
+        "mysql --local-infile -A %s -u %s -h %s -p%s",
         escapeshellarg($dbname),
         escapeshellarg($username),
         escapeshellarg($host),

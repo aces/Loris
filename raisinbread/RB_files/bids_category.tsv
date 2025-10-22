@@ -1,0 +1,5 @@
+BIDSCategoryID	BIDSCategoryName
+1	anat
+3	dwi
+4	fmap
+2	func

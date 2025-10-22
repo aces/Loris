@@ -1,0 +1,4 @@
+ContainerTypeID	Brand	ProductNumber	Label	Primary	ContainerCapacityID	ContainerDimensionID
+1	Brand	Product Number 1	Vial	1	1	1
+2	Brand	Product Number 2	Matrix Box	0	\N	2
+3	Brand	Product Number 3	Rack	0	\N	3

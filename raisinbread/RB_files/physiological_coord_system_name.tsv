@@ -1,0 +1,21 @@
+PhysiologicalCoordSystemNameID	Name	Orientation	Origin
+1	Not registered	\N	\N
+2	ACPC	RAS	anterior commissure
+3	Allen Institute	RAS	Bregma point
+4	Analyze	LAS	
+5	BTi/4D	ALS	between the ears
+6	CTF	ALS	between the ears
+7	CTF MRI	ALS	between the ears
+8	CTF gradiometer	ALS	between the ears
+9	CapTrak	RAS	approximately between the ears
+10	Chieti ITAB	RAS	between the ears
+11	DICOM	LPS	centre of MRI gradient coil
+12	EEGLAB	ALS	between the ears
+13	FreeSurfer	RAS	center of isotropic 1mm 256x256x256 volume
+14	MNI	RAS	anterior commissure
+15	NIfTI	RAS	
+16	Neuromag/Elekta/Megin	RAS	between the ears
+17	Paxinos-Franklin	RSP	Bregma point
+18	Scanner RAS (scanras)	RAS	scanner origin
+19	Talairach-Tournoux	RAS	anterior commissure
+20	Yokogawa	ALS	center of device

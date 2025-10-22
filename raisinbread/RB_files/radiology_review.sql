@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+LOCK TABLE radiology_review WRITE;
+TRUNCATE TABLE radiology_review;
+LOAD DATA LOCAL INFILE 'radiology_review.tsv' INTO TABLE radiology_review
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

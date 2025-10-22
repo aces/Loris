@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+LOCK TABLE menu_categories WRITE;
+TRUNCATE TABLE menu_categories;
+LOAD DATA LOCAL INFILE 'menu_categories.tsv' INTO TABLE menu_categories
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

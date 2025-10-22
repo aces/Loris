@@ -1,0 +1,3 @@
+PhysiologicalOutputTypeID	OutputTypeName	OutputTypeDescription
+1	raw	raw dataset
+2	derivative	derivative/processed dataset

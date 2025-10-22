@@ -1,0 +1,6 @@
+MRIScanTypeID	BIDSCategoryID	BIDSScanTypeSubCategoryID	BIDSScanTypeID	BIDSEchoNumber	BIDSPhaseEncodingDirectionID
+40	2	1	1	\N	\N
+41	1	\N	2	\N	\N
+44	1	\N	3	\N	\N
+45	1	\N	4	\N	\N
+48	3	\N	5	\N	\N

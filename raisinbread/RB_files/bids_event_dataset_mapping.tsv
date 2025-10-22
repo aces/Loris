@@ -1,0 +1,49 @@
+ID	ProjectID	PropertyName	PropertyValue	HEDTagID	TagValue	Description	HasPairing	PairRelID	AdditionalMembers
+1	1	TrialType	boundary	682	\N	boundary event	0	\N	0
+2	1	TrialType	boundary	6	\N	boundary event	0	1	0
+3	1	TrialType	checker-left	966	\N	checker board stimuli on left half	0	\N	0
+4	1	TrialType	checker-left	561	\N	checker board stimuli on left half	0	\N	0
+5	1	TrialType	checker-left	340	\N	checker board stimuli on left half	0	\N	0
+6	1	TrialType	checker-left	893	\N	checker board stimuli on left half	0	\N	0
+7	1	TrialType	checker-left	923	\N	checker board stimuli on left half	0	\N	0
+8	1	TrialType	checker-left	2	\N	checker board stimuli on left half	0	\N	0
+9	1	TrialType	checker-right	966	\N	checker board stimuli on right half	0	\N	0
+10	1	TrialType	checker-right	563	\N	checker board stimuli on right half	0	\N	0
+11	1	TrialType	checker-right	340	\N	checker board stimuli on right half	0	\N	0
+12	1	TrialType	checker-right	893	\N	checker board stimuli on right half	0	\N	0
+13	1	TrialType	checker-right	923	\N	checker board stimuli on right half	0	\N	0
+14	1	TrialType	checker-right	2	\N	checker board stimuli on right half	0	\N	0
+15	1	TrialType	press-left	291	\N	participant pressed the left most key	0	\N	0
+16	1	TrialType	press-left	122	\N	participant pressed the left most key	1	15	0
+17	1	TrialType	press-left	927	\N	participant pressed the left most key	0	\N	0
+18	1	TrialType	press-left	460	\N	participant pressed the left most key	0	\N	0
+19	1	TrialType	press-left	3	\N	participant pressed the left most key	0	\N	0
+20	1	TrialType	press-right	291	\N	participant pressed the right most key	0	\N	0
+21	1	TrialType	press-right	122	\N	participant pressed the right most key	1	20	0
+22	1	TrialType	press-right	927	\N	participant pressed the right most key	0	\N	0
+23	1	TrialType	press-right	460	\N	participant pressed the right most key	0	\N	0
+24	1	TrialType	press-right	3	\N	participant pressed the right most key	0	\N	0
+25	1	TrialType	face-upright	565	\N	upright face stimuli	0	\N	0
+26	1	TrialType	face-upright	178	\N	upright face stimuli	0	\N	0
+27	1	TrialType	face-upright	340	\N	upright face stimuli	0	\N	0
+28	1	TrialType	face-upright	893	\N	upright face stimuli	0	\N	0
+29	1	TrialType	face-upright	923	\N	upright face stimuli	0	\N	0
+30	1	TrialType	face-upright	2	\N	upright face stimuli	0	\N	0
+31	1	TrialType	face-inverted	558	\N	inverted face stimuli	0	\N	0
+32	1	TrialType	face-inverted	564	\N	inverted face stimuli	1	31	0
+33	1	TrialType	face-inverted	178	\N	inverted face stimuli	0	\N	0
+34	1	TrialType	face-inverted	340	\N	inverted face stimuli	0	\N	0
+35	1	TrialType	face-inverted	893	\N	inverted face stimuli	0	\N	0
+36	1	TrialType	face-inverted	923	\N	inverted face stimuli	0	\N	0
+37	1	TrialType	face-inverted	2	\N	inverted face stimuli	0	\N	0
+38	1	TrialType	house-upright	565	\N	upright house stimuli	0	\N	0
+39	1	TrialType	house-upright	340	\N	upright house stimuli	0	\N	0
+40	1	TrialType	house-upright	893	\N	upright house stimuli	0	\N	0
+41	1	TrialType	house-upright	923	\N	upright house stimuli	0	\N	0
+42	1	TrialType	house-upright	2	\N	upright house stimuli	0	\N	0
+43	1	TrialType	house-inverted	558	\N	inverted house stimuli	0	\N	0
+44	1	TrialType	house-inverted	564	\N	inverted house stimuli	1	43	0
+45	1	TrialType	house-inverted	340	\N	inverted house stimuli	0	\N	0
+46	1	TrialType	house-inverted	893	\N	inverted house stimuli	0	\N	0
+47	1	TrialType	house-inverted	923	\N	inverted house stimuli	0	\N	0
+48	1	TrialType	house-inverted	2	\N	inverted house stimuli	0	\N	0

@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+LOCK TABLE session_status WRITE;
+TRUNCATE TABLE session_status;
+LOAD DATA LOCAL INFILE 'session_status.tsv' INTO TABLE session_status
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

@@ -1,0 +1,648 @@
+ParameterTypeID	Name	Alias	Type	Description	RangeMin	RangeMax	SourceField	SourceFrom	SourceCondition	Queryable	IsFile
+2	Geometric_distortion	\N	text	\N	\N	\N	\N	parameter_file	\N	0	0
+3	Intensity_artifact	\N	text	\N	\N	\N	\N	parameter_file	\N	0	0
+4	Movement_artifacts_within_scan	\N	text	\N	\N	\N	\N	parameter_file	\N	0	0
+5	Movement_artifacts_between_packets	\N	text	\N	\N	\N	\N	parameter_file	\N	0	0
+6	Coverage	\N	text	\N	\N	\N	\N	parameter_file	\N	0	0
+7	md5hash	\N	varchar(255)	md5hash magically created by NeuroDB::File	\N	\N	parameter_file.Value	parameter_file	\N	1	0
+8	Color_Artifact	\N	text	\N	\N	\N	\N	parameter_file	\N	0	0
+9	Entropy	\N	text	\N	\N	\N	\N	parameter_file	\N	0	0
+10	candidate_label	\N	text	Identifier_of_candidate	\N	\N	PSCID	candidate	\N	1	0
+11	Visit_label	\N	varchar(255)	Visit_label	\N	\N	visit_label	session	\N	1	0
+12	candidate_dob	\N	date	Candidate_Dob	\N	\N	DoB	candidate	\N	1	0
+13	slice_thickness	SliceThickness	text	Nominal reconstructed slice thickness (for tomographic imaging) or depth of field (for optical non-tomographic imaging), in mm. DICOM:0018_0050	\N	\N	\N	parameter_file	\N	0	0
+14	acquisition:slice_order	\N	text	acquisition:slice_order magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+15	dicom_0x0051:el_0x1011	\N	text	dicom_0x0051:el_0x1011 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+16	image:vartype	\N	text	image:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+17	acquisition:percent_sampling	\N	text	acquisition:percent_sampling magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+18	dicom_0x0051:el_0x1012	\N	text	dicom_0x0051:el_0x1012 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+19	dicom_0x0028:vartype	\N	text	dicom_0x0028:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+20	yspace:alignment	\N	text	yspace:alignment magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+21	acquisition:receive_coil	\N	text	acquisition:receive_coil magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+22	dicom_0x0018:el_0x0015	BodyPartExamined	text	Text description of the part of the body examined. Some IODs support the Anatomic Region Sequence (0008,2218), which can provide a more comprehensive mechanism for specifying the body part being examined. DICOM:0018_0015	\N	\N	\N	parameter_file	\N	0	0
+23	max:vartype	\N	text	max:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+24	acquisition:num_slices	NumberOfSlices	text	The maximum number of Slices that may exist in this Series. DICOM:0054_0081	\N	\N	\N	parameter_file	\N	0	0
+25	pixel_bandwidth	PixelBandwidth	text	Reciprocal of the total sampling period, in hertz per pixel. DICOM:0018_0095	\N	\N	\N	parameter_file	\N	0	0
+26	dicom_0x0019:el_0x1015	\N	text	dicom_0x0019:el_0x1015 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+27	xspace	\N	text	xspace magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+28	xstep	\N	text	xstep magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+29	acquisition_matrix	AcquisitionMatrixPE	text	Dimensions of the acquired frequency/phase data before reconstruction. Multi-valued: frequency rowsfrequency columnsphase rowsphase columns. DICOM:0018_1310	\N	\N	\N	parameter_file	\N	0	0
+30	dicom_0x0019:varid	\N	text	dicom_0x0019:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+31	acquisition:injection_route	\N	text	acquisition:injection_route magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+32	acquisition:tracer	\N	text	acquisition:tracer magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+33	study_id	StudyID	text	User or equipment generated Study identifier. DICOM:0020_0010	\N	\N	\N	parameter_file	\N	0	0
+34	xspace:version	\N	text	xspace:version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+35	dicom_0x0051:vartype	\N	text	dicom_0x0051:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+36	dicom_0x0040:el_0x0000	\N	text	dicom_0x0040:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+37	xspace:step	\N	text	xspace:step magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+38	dicom_0x0029:varid	\N	text	dicom_0x0029:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+39	dicom_groups:varid	\N	text	dicom_groups:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+40	dicom_0x0051:el_0x1019	\N	text	dicom_0x0051:el_0x1019 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+41	modality	Modality	text	Type of equipment that originally acquired the data used to create images or related objects. DICOM:0008_0060	\N	\N	\N	parameter_file	\N	0	0
+42	dicom_0x0008:el_0x0000	\N	text	dicom_0x0008:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+43	dicom_0x0029:el_0x1009	\N	text	dicom_0x0029:el_0x1009 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+44	dicom_0x0019:el_0x1011	\N	text	dicom_0x0019:el_0x1011 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+45	dicom_0x0029:el_0x0010	\N	text	dicom_0x0029:el_0x0010 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+46	:history	\N	text	:history magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+47	min:version	\N	text	min:version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+48	sequence_variant	SequenceVariant	text	Variant of the Scanning Sequence. DICOM:0018_0021	\N	\N	\N	parameter_file	\N	0	0
+49	acquisition:positron_fraction	\N	text	acquisition:positron_fraction magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+50	acquisition:SAR	\N	text	acquisition:SAR magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+51	study:varid	\N	text	study:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+52	dicom_0x0018:vartype	\N	text	dicom_0x0018:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+53	mr_acquisition_type	MRAcquisitionType	text	Identification of data encoding scheme. DICOM:0018_0023	\N	\N	\N	parameter_file	\N	0	0
+54	dicom_0x0028:el_0x0002	SamplesPerPixel	text	Number of samples (planes) in this image. DICOM:0028_0002	\N	\N	\N	parameter_file	\N	0	0
+55	patient_name	PatientName	text	Set of identifiers used to determine to which candidate the scan belongs to. DICOM:0010_0010	\N	\N	\N	parameter_file	\N	0	0
+56	dicom_0x0028:el_0x0004	PhotometricInterpretation	text	Specifies the intended interpretation of the pixel data. DICOM:0028_0004	\N	\N	\N	parameter_file	\N	0	0
+57	max:version	\N	text	max:version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+58	acquisition:start_time	PerformedProcedureStepStartTime	text	Time on which the Performed Procedure Step started. DICOM:0040_0245	\N	\N	\N	parameter_file	\N	0	0
+59	number_of_phase_encoding_steps	PhaseEncodingSteps	text	Total number of lines in k-space in the "y" direction collected during acquisition. DICOM:0018_0089	\N	\N	\N	parameter_file	\N	0	0
+60	dicom_0x0019:el_0x1017	\N	text	dicom_0x0019:el_0x1017 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+61	acquisition:repetition_time	\N	text	acquisition:repetition_time magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+62	percent_phase_field_of_view	PercentPhaseFOV	text	Ratio of field of view dimension in phase direction to field of view dimension in frequency direction, expressed as a percent. DICOM:0018_0094	\N	\N	\N	parameter_file	\N	0	0
+63	study:field_value	ValueField	text	The field within a Data Element that contains the Value(s) of that Data Element. DICOM:0000_0060	\N	\N	\N	parameter_file	\N	0	0
+64	acquisition:num_averages	\N	text	acquisition:num_averages magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+65	dicom_0x0020:varid	\N	text	dicom_0x0020:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+66	dicom_0x0051:el_0x0000	\N	text	dicom_0x0051:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+67	dicom_0x0023:vartype	\N	text	dicom_0x0023:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+68	largest_pixel_image_value	LargestPixelImageValue	text	The maximum actual pixel value encountered in this image. DICOM:0028_0107	\N	\N	\N	parameter_file	\N	0	0
+69	dicom_0x0023:el_0x0000	\N	text	dicom_0x0023:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+70	:ident	\N	text	:ident magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+71	acquisition:scanning_sequence	\N	text	acquisition:scanning_sequence magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+72	software_versions	SoftwareVersions	text	Manufacturers designation of software version of the equipment that produced the composite instances. DICOM:0018_1020	\N	\N	\N	parameter_file	\N	0	0
+73	spacing_between_slices	SpacingBetweenSlices	text	Spacing between slices, in mm, measured from center-to-center of each slice along the normal to the first image. The sign of the Spacing Between Slices (0018,0088) determines the direction of stacking. The normal is determined by the cross product of the direction cosines of the first row and first column of the first frame, such that a positive spacing indicates slices are stacked behind the first slice and a negative spacing indicates slices are stacked in front of the first slice. DICOM:0018_0088	\N	\N	\N	parameter_file	\N	0	0
+74	transmitting_coil	TransmitCoilName	text	Name of transmit coil used. DICOM:0018_1251	\N	\N	\N	parameter_file	\N	0	0
+75	acquisition:version	\N	text	acquisition:version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+76	xspace:alignment	\N	text	xspace:alignment magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+77	dicom_0x0010:varid	\N	text	dicom_0x0010:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+78	acquisition:varid	\N	text	acquisition:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+79	dicominfo:window_min	\N	text	dicominfo:window_min magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+80	cols	Columns	text	Number of columns in the image. DICOM:0028_0011	\N	\N	\N	parameter_file	\N	0	0
+81	dicom_0x0032:el_0x0000	\N	text	dicom_0x0032:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+82	image:varid	\N	text	image:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+83	yspace:version	\N	text	yspace:version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+84	dicom_0x0018:el_0x0000	\N	text	dicom_0x0018:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+85	:minc_version	\N	text	:minc_version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+86	acquisition:pixel_bandwidth	\N	text	acquisition:pixel_bandwidth magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+87	xspace:start	\N	text	xspace:start magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+88	acquisition:protocol	\N	text	acquisition:protocol magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+89	dicom_0x0023:varid	\N	text	dicom_0x0023:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+90	number_of_averages	NumberOfAverages	text	Number of times a given pulse sequence is repeated before any parameter is changed. DICOM:0018_0083	\N	\N	\N	parameter_file	\N	0	0
+91	dicom_0x0032:vartype	\N	text	dicom_0x0032:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+92	scanning_sequence	ScanningSequence	text	Description of the type of data taken. DICOM:0018_0020	\N	\N	\N	parameter_file	\N	0	0
+93	ystart	\N	text	ystart magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+94	min:varid	\N	text	min:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+95	yspace:start	\N	text	yspace:start magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+96	zspace:spacing	\N	text	zspace:spacing magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+97	dicom_0x0018:varid	\N	text	dicom_0x0018:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+98	study:device_model	\N	text	study:device_model magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+99	xspace:spacetype	\N	text	xspace:spacetype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+100	pixel_representation	PixelRepresentation	text	Data representation of the pixel samples. Each sample shall have the same pixel representation. DICOM:0028_0103	\N	\N	\N	parameter_file	\N	0	0
+101	acquisition:injection_time	\N	text	acquisition:injection_time magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+102	dicom_0x0021:el_0x0000	\N	text	dicom_0x0021:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+103	phase_encoding_direction	InPlanePhaseEncodingDirectionDICOM	text	The axes of the in-plane phase encoding with respect to the frame. DICOM:0018_1312	\N	\N	\N	parameter_file	\N	0	0
+104	acquisition:dose_units	DoseUnits	text	Dose axis units. DICOM:3004_0002	\N	\N	\N	parameter_file	\N	0	0
+105	manufacturer	Manufacturer	text	Manufacturer of the equipment that produced the composite instances. Corresponds to DICOM Tag 0008, 0070 Manufacturer	\N	\N	\N	parameter_file	\N	0	0
+106	bits_allocated	BitsAllocated	text	Number of bits allocated for each pixel sample. Each sample shall have the same number of bits allocated. DICOM:0028_0100	\N	\N	\N	parameter_file	\N	0	0
+107	dicom_0x0019:el_0x1016	\N	text	dicom_0x0019:el_0x1016 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+108	image:dimorder	\N	text	image:dimorder magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+109	acquisition:radionuclide_halflife	\N	text	acquisition:radionuclide_halflife magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+110	zspace:step	\N	text	zspace:step magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+111	imaged_nucleus	ImagedNucleus	text	Nucleus that is resonant at the imaging frequency. Examples: 31P, 1H. DICOM:0018_0085	\N	\N	\N	parameter_file	\N	0	0
+112	acquisition:imaged_nucleus	\N	text	acquisition:imaged_nucleus magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+113	acquisition:echo_time	\N	text	acquisition:echo_time magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+114	image_position_patient	ImagePositionPatient	text	The x, y, and z coordinates of the upper left hand corner (center of the first voxel transmitted) of the image, in mm. DICOM:0020_0032	\N	\N	\N	parameter_file	\N	0	0
+115	study:study_id	\N	text	study:study_id magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+116	zspace:comments	\N	text	zspace:comments magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+117	zspace:vartype	\N	text	zspace:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+118	study:modality	\N	text	study:modality magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+119	sequence_name	SequenceName	text	Any arbitrary name of a molecular sequence. DICOM:0018_0024	\N	\N	\N	parameter_file	\N	0	0
+120	dicom_0x0021:varid	\N	text	dicom_0x0021:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+121	dicom_0x0019:el_0x1009	\N	text	dicom_0x0019:el_0x1009 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+122	dicom_0x0010:vartype	\N	text	dicom_0x0010:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+123	dicom_0x0008:el_0x1140	\N	text	dicom_0x0008:el_0x1140 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+124	series_number	SeriesNumber	text	A number that identifies this Series. DICOM:0020_0011	\N	\N	\N	parameter_file	\N	0	0
+125	dicom_0x0020:el_0x1001	\N	text	dicom_0x0020:el_0x1001 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+126	dicom_0x0029:el_0x1160	\N	text	dicom_0x0029:el_0x1160 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+127	slice_location	SliceLocation	text	Relative position of the image plane expressed in mm. DICOM:0020_1041	\N	\N	\N	parameter_file	\N	0	0
+128	dicom_0x0040:varid	\N	text	dicom_0x0040:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+129	window_center	WindowCenter	text	Preferred value for Window Center (0028,1050) in the image instances produced by this reconstruction protocol element. DICOM:0028_1050	\N	\N	\N	parameter_file	\N	0	0
+130	echo_time	EchoTime	text	Time in ms between the middle of the excitation pulse and the peak of the echo produced (kx=0). In the case of segmented k-space, the TE(eff) is the time between the middle of the excitation pulse to the peak of the echo that is used to cover the center of k-space (i.e.,-kx=0, ky=0). DICOM:0018_0081	\N	\N	\N	parameter_file	\N	0	0
+131	dicom_0x0018:el_0x0080	\N	text	dicom_0x0018:el_0x0080 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+132	yspace	\N	text	yspace magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+133	dicom_0x0051:el_0x100b	\N	text	dicom_0x0051:el_0x100b magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+134	dicom_0x0051:el_0x0010	\N	text	dicom_0x0051:el_0x0010 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+135	dicom_0x0028:el_0x0000	\N	text	dicom_0x0028:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+136	dicom_0x0008:vartype	\N	text	dicom_0x0008:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+137	dicom_0x0020:vartype	\N	text	dicom_0x0020:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+138	dicom_0x0019:el_0x1014	\N	text	dicom_0x0019:el_0x1014 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+139	dicom_0x0029:el_0x1008	\N	text	dicom_0x0029:el_0x1008 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+140	image:signtype	\N	text	image:signtype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+141	manufacturer_model_name	ManufacturersModelName	text	Manufacturer's model name of the equipment that produced the composite instances. Corresponds to DICOM Tag 0008, 1090 Manufacturers Model Name	\N	\N	\N	parameter_file	\N	0	0
+142	xstart	\N	text	xstart magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+143	max:dimorder	\N	text	max:dimorder magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+144	dicom_0x0010:el_0x0000	\N	text	dicom_0x0010:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+145	dicom_0x0019:el_0x0010	\N	text	dicom_0x0019:el_0x0010 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+146	dicom_0x0051:el_0x100a	\N	text	dicom_0x0051:el_0x100a magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+147	dicominfo:image_type	ImageType	text	Image identification characteristics. DICOM:0008_0008	\N	\N	\N	parameter_file	\N	0	0
+148	window_width	WindowWidth	text	Window Width for display. DICOM:0028_1051	\N	\N	\N	parameter_file	\N	0	0
+149	zspace:version	\N	text	zspace:version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+150	acquisition:transmit_coil	\N	text	acquisition:transmit_coil magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+151	xspace:length	\N	text	xspace:length magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+152	repetition_time	RepetitionTime	text	The period of time in msec between the beginning of a pulse sequence and the beginning of the succeeding (essentially identical) pulse sequence. Required except when Scanning Sequence (0018,0020) is EP and Sequence Variant (0018,0021) is not SK.	\N	\N	\N	parameter_file	\N	0	0
+153	dicom_0x0051:el_0x100e	\N	text	dicom_0x0051:el_0x100e magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+154	acquisition:delay_in_TR	\N	text	acquisition:delay_in_TR magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+155	acquisition:injection_year	\N	text	acquisition:injection_year magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+156	acquisition:image_type	\N	text	acquisition:image_type magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+157	dicom_0x0020:el_0x0000	\N	text	dicom_0x0020:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+158	acquisition:injection_hour	\N	text	acquisition:injection_hour magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+159	acquisition:injection_day	\N	text	acquisition:injection_day magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+160	patient:position	\N	text	patient:position magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+161	image:complete	\N	text	image:complete magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+162	receiving_coil	ReceiveCoilName	text	Name of receive coil used. DICOM:0018_1250	\N	\N	\N	parameter_file	\N	0	0
+163	image:valid_range	\N	text	image:valid_range magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+164	dicom_0x0051:el_0x100f	\N	text	dicom_0x0051:el_0x100f magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+165	sar	SAR	text	Calculated whole body Specific Absorption Rate in watts/kilogram. DICOM:0018_1316	\N	\N	\N	parameter_file	\N	0	0
+166	zspace:spacetype	\N	text	zspace:spacetype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+167	dicom_0x0028:varid	\N	text	dicom_0x0028:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+168	dicom_0x0023:el_0x0008	\N	text	dicom_0x0023:el_0x0008 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+169	yspace:comments	\N	text	yspace:comments magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+170	min:dimorder	\N	text	min:dimorder magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+171	dicom_0x0029:el_0x0011	\N	text	dicom_0x0029:el_0x0011 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+172	dicom_0x0051:el_0x100c	\N	text	dicom_0x0051:el_0x100c magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+173	dicom_groups:vartype	\N	text	dicom_groups:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+174	dicom_0x0021:el_0x1120	\N	text	dicom_0x0021:el_0x1120 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+175	dicom_0x0008:el_0x0016	\N	text	dicom_0x0008:el_0x0016 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+176	acquisition:phase_enc_dir	\N	text	acquisition:phase_enc_dir magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+177	patient_position	PatientPosition	text	Description of imaging subject's position relative to the equipment. DICOM:0018_5100	\N	\N	\N	parameter_file	\N	0	0
+178	xspace:comments	\N	text	xspace:comments magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+179	zspace:alignment	\N	text	zspace:alignment magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+180	window_center_width_explanation	WindowCenterWidthExplanation	text	Explanation of the Window Center and Width. DICOM:0028_1055	\N	\N	\N	parameter_file	\N	0	0
+181	dicom_0x0019:el_0x0000	\N	text	dicom_0x0019:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+182	dicom_0x0008:el_0x0005	\N	text	dicom_0x0008:el_0x0005 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+183	dicom_0x0019:el_0x1013	\N	text	dicom_0x0019:el_0x1013 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+184	tarchiveMD5	\N	text	tarchiveMD5 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+185	zstart	\N	text	zstart magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+186	acquisition:mr_acq_type	\N	text	acquisition:mr_acq_type magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+187	max:varid	\N	text	max:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+188	dicom_0x0029:el_0x0000	\N	text	dicom_0x0029:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+189	acquisition:percent_phase_fov	\N	text	acquisition:percent_phase_fov magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+190	xspace:direction_cosines	\N	text	xspace:direction_cosines magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+191	high_bit	HighBit	text	Most significant bit for pixel sample data. Each sample shall have the same high bit. DICOM:0028_0102	\N	\N	\N	parameter_file	\N	0	0
+192	dicom_0x0019:el_0x100f	\N	text	dicom_0x0019:el_0x100f magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+193	acquisition:window_center	\N	text	acquisition:window_center magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+194	acquisition:num_dyn_scans	\N	text	acquisition:num_dyn_scans magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+195	dicominfo:window_max	\N	text	dicominfo:window_max magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+196	dicom_0x0051:el_0x1009	\N	text	dicom_0x0051:el_0x1009 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+197	dicom_0x0051:el_0x100d	\N	text	dicom_0x0051:el_0x100d magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+198	acquisition:injection_seconds	\N	text	acquisition:injection_seconds magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+199	acquisition:injection_minute	\N	text	acquisition:injection_minute magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+200	dicom_0x0029:el_0x1019	\N	text	dicom_0x0029:el_0x1019 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+201	acquisition:slice_thickness	\N	text	acquisition:slice_thickness magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+202	rows	Rows	text	Number of rows in the image. DICOM:0028_0010	\N	\N	\N	parameter_file	\N	0	0
+203	dicom_0x0018:el_0x1318	\N	text	dicom_0x0018:el_0x1318 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+204	acquisition_number	AcquisitionNumber	text	A number identifying the single continuous gathering of data over a period of time that resulted in this image or instance, which may include multiple bed positions. This number is not required to be unique across SOP Instances in a series. DICOM:0020_0012	\N	\N	\N	parameter_file	\N	0	0
+205	dicom_0x0029:vartype	\N	text	dicom_0x0029:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+206	acquisition:vartype	\N	text	acquisition:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+207	echo_numbers	EchoNumber	text	The echo number used in generating this image. In the case of segmented k-space, it is the effective Echo Number. DICOM:0018_0086	\N	\N	\N	parameter_file	\N	0	0
+208	zspace:start	\N	text	zspace:start magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+209	dicom_0x0018:el_0x0081	\N	text	dicom_0x0018:el_0x0081 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+210	dicom_0x0051:el_0x1013	\N	text	dicom_0x0051:el_0x1013 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+211	percent_sampling	PercentSampling	text	Fraction of acquisition matrix lines acquired, expressed as a percent. DICOM:0018_0093	\N	\N	\N	parameter_file	\N	0	0
+212	acquisition:injection_month	\N	text	acquisition:injection_month magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+213	image_orientation_patient	ImageOrientationPatientDICOM	text	The direction cosines of the first row and the first column with respect to the patient. DICOM:0020_0037	\N	\N	\N	parameter_file	\N	0	0
+214	dicom_0x0021:el_0x1340	\N	text	dicom_0x0021:el_0x1340 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+215	acquisition:injection_dose	\N	text	acquisition:injection_dose magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+216	instance_number	InstanceNumber	text	A number that identifies this SOP Instance. DICOM:0020_0013	\N	\N	\N	parameter_file	\N	0	0
+217	dicom_0x0018:el_0x9087	\N	text	dicom_0x0018:el_0x9087 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+218	yspace:spacetype	\N	text	yspace:spacetype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+219	echo_train_length	EchoTrainLength	text	Number of lines in k-space acquired per excitation of the same volume regardless of the type of echo or the number of frames derived from them. DICOM:0018_0091	\N	\N	\N	parameter_file	\N	0	0
+220	patient:varid	\N	text	patient:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+221	xspace:vartype	\N	text	xspace:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+222	yspace:direction_cosines	\N	text	yspace:direction_cosines magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+223	dicom_0x0021:el_0x1370	\N	text	dicom_0x0021:el_0x1370 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+224	study:vartype	\N	text	study:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+225	zspace	\N	text	zspace magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+226	dicom_0x0018:el_0x1314	\N	text	dicom_0x0018:el_0x1314 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+227	dicom_0x0019:vartype	\N	text	dicom_0x0019:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+228	zstep	\N	text	zstep magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+229	dicom_0x0008:el_0x0008	\N	text	dicom_0x0008:el_0x0008 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+230	zspace:length	\N	text	zspace:length magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+231	zspace:varid	\N	text	zspace:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+232	bits_stored	BitsStored	text	Number of bits stored for each pixel sample. Each sample shall have the same number of bits stored. See PS 3.5 for further explanation. DICOM:0028_0101	\N	\N	\N	parameter_file	\N	0	0
+233	acquisition:num_phase_enc_steps	\N	text	acquisition:num_phase_enc_steps magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+234	protocol_name	ProtocolName	text	Description of the conditions under which the Series was performed. DICOM:0018_1030	\N	\N	\N	parameter_file	\N	0	0
+235	series_description	SeriesDescription	text	User provided description of the Series. DICOM:0008_103E	\N	\N	\N	parameter_file	\N	0	0
+236	magnetic_field_strength	MagneticFieldStrength	text	Nominal field strength of MR magnet in Tesla. DICOM:0018_0087	\N	\N	\N	parameter_file	\N	0	0
+237	dicom_0x0051:el_0x1016	\N	text	dicom_0x0051:el_0x1016 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+239	dicominfo:vartype	\N	text	dicominfo:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+240	dicom_0x0020:el_0x1002	ImagesInAcquisition	text	Number of images that resulted from this acquisition of data. DICOM:0020_1002	\N	\N	\N	parameter_file	\N	0	0
+241	dicom_0x0040:vartype	\N	text	dicom_0x0040:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+242	dicom_0x0019:el_0x1012	\N	text	dicom_0x0019:el_0x1012 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+243	acquisition:echo_number	\N	text	acquisition:echo_number magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+244	yspace:spacing	\N	text	yspace:spacing magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+245	dicom_0x0018:el_0x0025	AngioFlag	text	Angio Image Indicator. Primary image for Angio processing. Enumerated Values: Y Image is Angio N Image is not Angio. DICOM:0018_0025	\N	\N	\N	parameter_file	\N	0	0
+246	dicom_0x0018:el_0x9075	DiffusionDirectionality	text	Specifies whether diffusion conditions for the frame are directional, or isotropic with respect to direction. DICOM:0018_9075	\N	\N	\N	parameter_file	\N	0	0
+247	dicom_0x0051:varid	\N	text	dicom_0x0051:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+248	acquisition:imaging_frequency	\N	text	acquisition:imaging_frequency magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+249	acquisition:echo_train_length	\N	text	acquisition:echo_train_length magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+250	dicom_0x0008:varid	\N	text	dicom_0x0008:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+251	study_instance_uid	StudyInstanceUID	text	Unique identifier for the Study. DICOM:0020_000D	\N	\N	\N	parameter_file	\N	0	0
+252	study:version	\N	text	study:version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+253	pixel_spacing	PixelSpacing	text	Physical distance in the patient between the center of each pixel, specified by a numeric pair - adjacent row spacing (delimiter) adjacent column spacing in mm. DICOM:0028_0030	\N	\N	\N	parameter_file	\N	0	0
+254	dicom_0x0029:el_0x1018	\N	text	dicom_0x0029:el_0x1018 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+255	ystep	\N	text	ystep magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+256	dicom_0x0023:el_0x0009	\N	text	dicom_0x0023:el_0x0009 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+257	yspace:step	\N	text	yspace:step magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+258	patient:weight	PatientWeight	text	Weight of the patient in kilograms. DICOM:0010_1030	\N	\N	\N	parameter_file	\N	0	0
+259	variable_flip_angle_flag	VariableFlipAngle	text	Flip angle variation applied during image acquisition. DICOM:0018_1315	\N	\N	\N	parameter_file	\N	0	0
+260	dicom_0x0051:el_0x1015	\N	text	dicom_0x0051:el_0x1015 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+261	dicom_0x0021:el_0x1330	\N	text	dicom_0x0021:el_0x1330 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+262	dicom_0x0021:vartype	\N	text	dicom_0x0021:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+263	dicom_0x0010:el_0x1030	PatientWeight	text	Weight of the patient in kilograms. DICOM:0010_1030	\N	\N	\N	parameter_file	\N	0	0
+264	patient:vartype	\N	text	patient:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+265	imaging_frequency	ImagingFrequency	text	Precession frequency in MHz of the nucleus being imaged. DICOM:0018_0084	\N	\N	\N	parameter_file	\N	0	0
+266	dicom_0x0032:varid	\N	text	dicom_0x0032:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+267	dicom_0x0051:el_0x1008	\N	text	dicom_0x0051:el_0x1008 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+268	xspace:varid	\N	text	xspace:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+269	patient:version	\N	text	patient:version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+270	acquisition:flip_angle	FlipAngle	text	Steady state angle in degrees to which the magnetic vector is flipped from the magnetic vector of the primary field. DICOM:0018_1314	\N	\N	\N	parameter_file	\N	0	0
+271	acquisition:injection_volume	\N	text	acquisition:injection_volume magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+272	study:manufacturer	\N	text	study:manufacturer magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+273	yspace:vartype	\N	text	yspace:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+274	dicominfo:varid	\N	text	dicominfo:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+275	zspace:direction_cosines	\N	text	zspace:direction_cosines magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+276	dicom_0x0019:el_0x100b	\N	text	dicom_0x0019:el_0x100b magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+277	tarchiveLocation	\N	text	tarchiveLocation magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+278	patient:full_name	\N	text	patient:full_name magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+279	series_instance_uid	SeriesInstanceUID	text	Unique identifier for the Series that is part of the Study identified in Study Instance UID (0020,000D), if present, and contains the referenced object instance(s). DICOM:0020_000E	\N	\N	\N	parameter_file	\N	0	0
+280	yspace:varid	\N	text	yspace:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+281	dicom_0x0019:el_0x1018	\N	text	dicom_0x0019:el_0x1018 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+282	study:software_version	\N	text	study:software_version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+283	acquisition:window_width	\N	text	acquisition:window_width magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+284	acquisition:series_description	\N	text	acquisition:series_description magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+285	dicom_0x0051:el_0x1017	\N	text	dicom_0x0051:el_0x1017 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+286	xspace:spacing	\N	text	xspace:spacing magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+287	yspace:length	\N	text	yspace:length magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+288	acquisition:acquisition_id	\N	text	acquisition:acquisition_id magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+289	smallest_pixel_image_value	SmallestPixelImageValue	text	The minimum actual pixel value encountered in this image. DICOM:0028_0106	\N	\N	\N	parameter_file	\N	0	0
+290	min:vartype	\N	text	min:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+291	dicom_0x0019:el_0x1008	\N	text	dicom_0x0019:el_0x1008 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+292	image:version	\N	text	image:version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+293	dimnames	\N	text	dimnames magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+294	check_nii_filename	\N	text	check_nii_filename magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+295	acquisition:inversion_time	\N	text	acquisition:inversion_time magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+296	inversion_time	InversionTime	text	Time in msec after the middle of inverting RF pulse to middle of excitation pulse to detect the amount of longitudinal magnetization. Required if Scanning Sequence (0018,0020) has values of IR. DICOM:0018_0082	\N	\N	\N	parameter_file	\N	0	0
+297	dicom_0x0018:el_0x0022	ScanOptions	text	Parameters of scanning sequence. DICOM:0018_0022	\N	\N	\N	parameter_file	\N	0	0
+298	dicom_0x0018:el_0x0082	\N	text	dicom_0x0018:el_0x0082 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+299	time:version	\N	text	time:version magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+300	dicom_0x0023:el_0x0005	\N	text	dicom_0x0023:el_0x0005 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+301	acquisition:b_matrix	\N	text	acquisition:b_matrix magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+302	time:dimorder	\N	text	time:dimorder magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+303	dicom_0x0021:el_0x1160	\N	text	dicom_0x0021:el_0x1160 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+304	dicom_0x0023:el_0x0004	\N	text	dicom_0x0023:el_0x0004 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+305	dicom_0x0023:el_0x0002	\N	text	dicom_0x0023:el_0x0002 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+306	time:alignment	\N	text	time:alignment magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+307	dicom_0x0020:el_0x0100	TemporalPositionIdentifier	text	Temporal order of a dynamic or functional set of Images. DICOM:0020_0100	\N	\N	\N	parameter_file	\N	0	0
+308	time:varid	\N	text	time:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+309	dicom_0x0019:el_0x100a	\N	text	dicom_0x0019:el_0x100a magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+310	time:length	\N	text	time:length magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+311	dicom_0x0008:el_0x9209	AcquisitionContrast	text	Indication of acquisition contrast used with frames in the SOP Instance. DICOM:0008_9209	\N	\N	\N	parameter_file	\N	0	0
+312	time:spacing	\N	text	time:spacing magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+313	time:step	\N	text	time:step magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+314	dicom_0x0023:el_0x0001	\N	text	dicom_0x0023:el_0x0001 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+315	acquisition:b_value	\N	text	acquisition:b_value magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+316	dicom_0x0019:el_0x100c	\N	text	dicom_0x0019:el_0x100c magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+317	acquisition:direction_z	\N	text	acquisition:direction_z magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+318	dicom_0x0023:el_0x000b	\N	text	dicom_0x0023:el_0x000b magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+319	dicom_0x0019:el_0x1028	\N	text	dicom_0x0019:el_0x1028 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+320	acquisition:bvalues	\N	text	acquisition:bvalues magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+321	dicom_0x0019:el_0x1029	\N	text	dicom_0x0019:el_0x1029 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+322	time:vartype	\N	text	time:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+323	dicom_0x0019:el_0x100d	\N	text	dicom_0x0019:el_0x100d magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+324	acquisition:direction_x	\N	text	acquisition:direction_x magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+325	time:start	\N	text	time:start magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+326	dicom_0x0021:el_0x1342	\N	text	dicom_0x0021:el_0x1342 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+327	time:units	\N	text	time:units magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+328	acquisition_time	AcquisitionTime	text	The time the acquisition of data that resulted in this image started. DICOM:0008_0032	\N	\N	\N	parameter_file	\N	0	0
+329	acquisition:acquisition_time	\N	text	acquisition:acquisition_time magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+330	acquisition:direction_y	\N	text	acquisition:direction_y magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+331	dicom_0x0018:el_0x1090	CardiacNumberOfImages	text	Number of images per cardiac cycle. DICOM:0018_1090	\N	\N	\N	parameter_file	\N	0	0
+332	dicom_0x0023:el_0x0003	\N	text	dicom_0x0023:el_0x0003 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+333	dicom_0x0023:el_0x0007	\N	text	dicom_0x0023:el_0x0007 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+334	time	\N	text	time magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+335	check_bval_filename	\N	text	check_bval_filename magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+336	check_bvec_filename	\N	text	check_bvec_filename magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+337	dicom_0x0028:el_0x0006	PlanarConfiguration	text	Indicates whether the pixel data are encoded color-by-plane or color-by-pixel. DICOM:0028_0006	\N	\N	\N	parameter_file	\N	0	0
+338	dicom_0x0018:el_0x1012	\N	text	dicom_0x0018:el_0x1012 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+339	dicom_0x0008:el_0x0064	ConversionType	text	Describes the kind of image conversion. DICOM:0008_0064	\N	\N	\N	parameter_file	\N	0	0
+340	dicom_0x0020:el_0x0020	PatientOrientation	text	Patient direction of the rows and columns of the image. DICOM:0020_0020	\N	\N	\N	parameter_file	\N	0	0
+341	dicom_0x0018:el_0x1014	\N	text	dicom_0x0018:el_0x1014 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+342	check_pic_filename	\N	text	check_pic_filename magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+343	dicom_0x0008:el_0x1120	\N	text	dicom_0x0008:el_0x1120 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+344	dicom_0x0040:el_0x0275	\N	text	dicom_0x0040:el_0x0275 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+345	dicom_0x0008:el_0x1032	ProcedureCodeSequence	text	A Sequence that conveys the type of procedure performed. DICOM:0008_1032	\N	\N	\N	parameter_file	\N	0	0
+346	dicom_0x0010:el_0x1020	PatientHeight	text	Patient's height or length in meters. DICOM:0010_1020	\N	\N	\N	parameter_file	\N	0	0
+347	dicom_0x0008:el_0x1110	\N	text	dicom_0x0008:el_0x1110 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+348	dicom_0x0032:el_0x1064	StudyInstance	text	A sequence that conveys the requested procedure. One or more Items may be included in this Sequence. DICOM:0032_1064	\N	\N	\N	parameter_file	\N	0	0
+349	dicom_0x0008:el_0x0050	\N	text	dicom_0x0008:el_0x0050 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+350	dicom_0x0040:el_0x0244	\N	text	dicom_0x0040:el_0x0244 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+351	study:start_date	\N	text	study:start_date magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+352	study:start_time	\N	text	study:start_time magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+353	image_date	ContentDate	text	The date the data creation was started. For instance, this is the date the pixel data is created, not the date the data is acquired. DICOM:0008_0023	\N	\N	\N	parameter_file	\N	0	0
+354	acquisition_date	AcquisitionDate	text	The date the acquisition of data that resulted in this image started. DICOM:0008_0022	\N	\N	\N	parameter_file	\N	0	0
+355	dicom_0x0008:el_0x0018	\N	text	dicom_0x0008:el_0x0018 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+356	dicom_0x0040:el_0x0245	\N	text	dicom_0x0040:el_0x0245 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+357	series_date	SeriesDate	text	Date the Series started. DICOM:0008_0021	\N	\N	\N	parameter_file	\N	0	0
+358	dicom_0x0008:el_0x0013	\N	text	dicom_0x0008:el_0x0013 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+359	image_time	ContentTime	text	The time the data creation was started. For instance, this is the time the pixel data is created, not the time the data is acquired. DICOM:0008_0033	\N	\N	\N	parameter_file	\N	0	0
+360	study:serial_no	\N	text	study:serial_no magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+361	series_time	SeriesTime	text	Time the Series started. DICOM:0008_0031	\N	\N	\N	parameter_file	\N	0	0
+362	study_date	StudyDate	text	Date the Study started. DICOM:0008_0020	\N	\N	\N	parameter_file	\N	0	0
+363	dicom_0x0008:el_0x0012	\N	text	dicom_0x0008:el_0x0012 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+364	study_time	StudyTime	text	Time the Study started. DICOM:0008_0030	\N	\N	\N	parameter_file	\N	0	0
+365	acquisition:image_time	\N	text	acquisition:image_time magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+366	device_serial_number	DeviceSerialNumber	text	Manufacturer's serial number of the device. DICOM:0018_1000	\N	\N	\N	parameter_file	\N	0	0
+367	frame_of_reference_uid	FrameOfReferenceUID	text	Uniquely identifies the frame of reference for a Series. shall be used to uniquely identify a frame of reference for a series. Each series shall have a single Frame of Reference UID. However, multiple Series within a Study may share a Frame of Reference. DICOM:0020_0052	\N	\N	\N	parameter_file	\N	0	0
+368	acquisition:series_time	\N	text	acquisition:series_time magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+369	SNR	\N	text	SNR magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+370	acquisition:comments	\N	text	acquisition:comments magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+371	dicom_0x0029:el_0x0012	\N	text	dicom_0x0029:el_0x0012 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+372	dicom_0x0029:el_0x1260	\N	text	dicom_0x0029:el_0x1260 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+373	image_comments	ImageComments	text	User-defined comments about the image. DICOM:0020_4000	\N	\N	\N	parameter_file	\N	0	0
+374	dicom_0x0032:el_0x4000	\N	text	dicom_0x0032:el_0x4000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+375	dicom_0x0010:el_0x2150	\N	text	dicom_0x0010:el_0x2150 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+376	dicom_0x0010:el_0x21c0	\N	text	dicom_0x0010:el_0x21c0 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+377	dicom_0x0010:el_0x21a0	\N	text	dicom_0x0010:el_0x21a0 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+378	dicom_0x0010:el_0x2160	\N	text	dicom_0x0010:el_0x2160 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+379	dicom_0x0088:varid	\N	text	dicom_0x0088:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+380	dicom_0x0088:vartype	\N	text	dicom_0x0088:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+381	dicom_0x0088:el_0x0140	\N	text	dicom_0x0088:el_0x0140 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+382	dicom_0x0088:el_0x0000	\N	text	dicom_0x0088:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+383	dicom_0x0010:el_0x2110	\N	text	dicom_0x0010:el_0x2110 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+384	dicom_0x0032:el_0x1033	\N	text	dicom_0x0032:el_0x1033 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+385	dicom_0x0032:el_0x000a	\N	text	dicom_0x0032:el_0x000a magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+386	dicom_0x0010:el_0x2000	\N	text	dicom_0x0010:el_0x2000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+387	dicom_0x0010:el_0x0032	\N	text	dicom_0x0010:el_0x0032 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+388	dicom_0x0028:el_0x1053	RescaleSlope	text	m in the equation specified by Rescale Intercept (0028,1052). DICOM:0028_1053	\N	\N	\N	parameter_file	\N	0	0
+389	dicom_0x0028:el_0x1054	RescaleType	text	Specifies the output units of Rescale Slope (0028,1053) and Rescale Intercept (0028,1052). DICOM:0028_1054	\N	\N	\N	parameter_file	\N	0	0
+390	dicom_0x0028:el_0x1052	RescaleIntercept	text	The value b in relationship between stored values (SV) and pixel value units (U) defined in Units (0054,1001): U = m*SV+b. DICOM:0028_1052	\N	\N	\N	parameter_file	\N	0	0
+391	dicom_0x0031:el_0x1001	\N	text	dicom_0x0031:el_0x1001 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+392	dicom_0x0038:vartype	\N	text	dicom_0x0038:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+393	dicom_0x0031:el_0x1000	\N	text	dicom_0x0031:el_0x1000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+394	dicom_0x0038:varid	\N	text	dicom_0x0038:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+395	dicom_0x0010:el_0x21b0	\N	text	dicom_0x0010:el_0x21b0 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+396	dicom_0x0031:el_0x0010	\N	text	dicom_0x0031:el_0x0010 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+397	dicom_0x0040:el_0x1001	\N	text	dicom_0x0040:el_0x1001 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+398	dicom_0x0008:el_0x1060	\N	text	dicom_0x0008:el_0x1060 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+399	dicom_0x0032:el_0x000c	\N	text	dicom_0x0032:el_0x000c magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+400	dicom_0x0033:el_0x100c	\N	text	dicom_0x0033:el_0x100c magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+401	dicom_0x0031:el_0x0000	\N	text	dicom_0x0031:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+402	dicom_0x0033:varid	\N	text	dicom_0x0033:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+403	dicom_0x0033:el_0x100e	\N	text	dicom_0x0033:el_0x100e magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+404	dicom_0x0038:el_0x0300	\N	text	dicom_0x0038:el_0x0300 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+405	dicom_0x0033:el_0x1016	\N	text	dicom_0x0033:el_0x1016 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+406	dicom_0x0010:el_0x1081	\N	text	dicom_0x0010:el_0x1081 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+407	dicom_0x0032:el_0x1030	\N	text	dicom_0x0032:el_0x1030 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+408	dicom_0x0038:el_0x0000	\N	text	dicom_0x0038:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+409	dicom_0x0033:vartype	\N	text	dicom_0x0033:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+410	dicom_0x0033:el_0x0000	\N	text	dicom_0x0033:el_0x0000 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+411	dicom_0x0033:el_0x1019	\N	text	dicom_0x0033:el_0x1019 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+412	dicom_0x0031:vartype	\N	text	dicom_0x0031:vartype magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+413	dicom_0x0031:varid	\N	text	dicom_0x0031:varid magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+414	dicom_0x0033:el_0x1004	\N	text	dicom_0x0033:el_0x1004 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+415	dicom_0x0033:el_0x0010	\N	text	dicom_0x0033:el_0x0010 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+416	xspace:units	\N	text	xspace:units magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+417	yspace:units	\N	text	yspace:units magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+418	zspace:units	\N	text	zspace:units magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+419	dicom_0x0019:el_0x1023	\N	text	dicom_0x0019:el_0x1023 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+420	dicom_0x0019:el_0x1026	\N	text	dicom_0x0019:el_0x1026 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+421	dicom_0x0019:el_0x1024	\N	text	dicom_0x0019:el_0x1024 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+422	dicom_0x0019:el_0x1025	\N	text	dicom_0x0019:el_0x1025 magically created by NeuroDB::File	\N	\N	\N	parameter_file	\N	0	0
+942	aosi_Date_taken	\N	date	Date of Administration	\N	\N	Date_taken	aosi	\N	1	0
+943	aosi_Candidate_Age	\N	varchar(255)	Candidate Age (Months)	\N	\N	Candidate_Age	aosi	\N	1	0
+944	aosi_Window_Difference	\N	varchar(255)	Window Difference (+/- Days)	\N	\N	Window_Difference	aosi	\N	1	0
+945	aosi_Examiner	\N	varchar(255)	Examiner	\N	\N	Examiner	aosi	\N	1	0
+946	aosi_examiner_location	\N	enum('examiner','in_room_observer','behind_mirror','videotape','not_answered')	(Circle One)	\N	\N	examiner_location	aosi	\N	1	0
+947	aosi_total_score_1_18	\N	varchar(255)	Total Score (Calculated) (items 1-18)	\N	\N	total_score_1_18	aosi	\N	1	0
+948	aosi_total_score_1_18_override	\N	varchar(255)	Total Score (Using Overrides) (items 1-18)	\N	\N	total_score_1_18_override	aosi	\N	1	0
+949	aosi_number_of_markers	\N	varchar(255)	Number of Markers (Calculated) (non-zero items, 1-18)	\N	\N	number_of_markers	aosi	\N	1	0
+950	aosi_number_of_markers_override	\N	varchar(255)	Number of Markers (Using Overrides) (non-zero items, 1-18)	\N	\N	number_of_markers_override	aosi	\N	1	0
+951	aosi_other_comments	\N	text	Comments about Validity:	\N	\N	other_comments	aosi	\N	1	0
+952	aosi_other_comments_status	\N	enum('not_answered')	Comments about Validity:	\N	\N	other_comments_status	aosi	\N	1	0
+953	aosi_q1_visual_tracking_press_1	\N	enum('0','1','2','not_answered')	Press #1	\N	\N	q1_visual_tracking_press_1	aosi	\N	1	0
+954	aosi_q1_visual_tracking_press_2	\N	enum('0','1','2','not_answered')	Press #2	\N	\N	q1_visual_tracking_press_2	aosi	\N	1	0
+955	aosi_q1_visual_tracking_press_3	\N	enum('0','1','2','not_answered')	Press #3	\N	\N	q1_visual_tracking_press_3	aosi	\N	1	0
+956	aosi_q1_visual_tracking_score_override	\N	enum('0','1','2','8')	Override score (required):	\N	\N	q1_visual_tracking_score_override	aosi	\N	1	0
+957	aosi_q1_visual_tracking_score	\N	varchar(255)	Score (Calculated):	\N	\N	q1_visual_tracking_score	aosi	\N	1	0
+958	aosi_q1_visual_tracking_notes	\N	text	Notes:	\N	\N	q1_visual_tracking_notes	aosi	\N	1	0
+959	aosi_q1_visual_tracking_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q1_visual_tracking_notes_status	aosi	\N	1	0
+960	aosi_q2_disengagement_of_attention_press_1	\N	enum('0','1','2','not_answered')	Press #1	\N	\N	q2_disengagement_of_attention_press_1	aosi	\N	1	0
+961	aosi_q2_disengagement_of_attention_press_2	\N	enum('0','1','2','not_answered')	Press #2	\N	\N	q2_disengagement_of_attention_press_2	aosi	\N	1	0
+962	aosi_q2_disengagement_of_attention_press_3	\N	enum('0','1','2','not_answered')	Press #3	\N	\N	q2_disengagement_of_attention_press_3	aosi	\N	1	0
+963	aosi_q2_disengagement_of_attention_score_override	\N	enum('0','1','2','8')	Override score (required):	\N	\N	q2_disengagement_of_attention_score_override	aosi	\N	1	0
+964	aosi_q2_disengagement_of_attention_score	\N	varchar(255)	Score (Calculated):	\N	\N	q2_disengagement_of_attention_score	aosi	\N	1	0
+965	aosi_q2_disengagement_of_attention_notes	\N	text	Notes:	\N	\N	q2_disengagement_of_attention_notes	aosi	\N	1	0
+966	aosi_q2_disengagement_of_attention_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q2_disengagement_of_attention_notes_status	aosi	\N	1	0
+967	aosi_free_play_period_1_notes	\N	text	Free Play Period 1 Notes:	\N	\N	free_play_period_1_notes	aosi	\N	1	0
+968	aosi_free_play_period_1_notes_status	\N	enum('not_answered')	Free Play Period 1 Notes:	\N	\N	free_play_period_1_notes_status	aosi	\N	1	0
+969	aosi_q3_orients_to_name_press_1_trial_1	\N	enum('orients_with_eye_contact','orients_without_eye_contact','fail_to_orient','not_answered')	Press #1, Trial #1	\N	\N	q3_orients_to_name_press_1_trial_1	aosi	\N	1	0
+970	aosi_q3_orients_to_name_press_1_trial_2	\N	enum('orients_with_eye_contact','orients_without_eye_contact','fail_to_orient','not_answered')	Press #1, Trial #2	\N	\N	q3_orients_to_name_press_1_trial_2	aosi	\N	1	0
+971	aosi_q3_orients_to_name_press_2_trial_1	\N	enum('orients_with_eye_contact','orients_without_eye_contact','fail_to_orient','not_answered')	Press #2, Trial #1	\N	\N	q3_orients_to_name_press_2_trial_1	aosi	\N	1	0
+972	aosi_q3_orients_to_name_press_2_trial_2	\N	enum('orients_with_eye_contact','orients_without_eye_contact','fail_to_orient','not_answered')	Press #2, Trial #2	\N	\N	q3_orients_to_name_press_2_trial_2	aosi	\N	1	0
+973	aosi_q3_orients_to_name_press_3_trial_1	\N	enum('orients_with_eye_contact','orients_without_eye_contact','fail_to_orient','not_answered')	Press #3, Trial #1 (parents)	\N	\N	q3_orients_to_name_press_3_trial_1	aosi	\N	1	0
+974	aosi_q3_orients_to_name_press_3_trial_2	\N	enum('orients_with_eye_contact','orients_without_eye_contact','fail_to_orient','not_answered')	Press #3, Trial #2 (parents)	\N	\N	q3_orients_to_name_press_3_trial_2	aosi	\N	1	0
+975	aosi_q3_orients_to_name_score_override	\N	enum('0','1','2','8')	Override score (required):	\N	\N	q3_orients_to_name_score_override	aosi	\N	1	0
+976	aosi_q3_orients_to_name_score	\N	varchar(255)	Score (Calculated):	\N	\N	q3_orients_to_name_score	aosi	\N	1	0
+977	aosi_q3_orients_to_name_notes	\N	text	Notes:	\N	\N	q3_orients_to_name_notes	aosi	\N	1	0
+978	aosi_q3_orients_to_name_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q3_orients_to_name_notes_status	aosi	\N	1	0
+979	aosi_q4_differential_response_to_facial_emotion	\N	enum('0','1','2','8','not_answered')	Score:	\N	\N	q4_differential_response_to_facial_emotion	aosi	\N	1	0
+980	aosi_q4_differential_response_to_facial_emotion_score	\N	varchar(255)	Score:	\N	\N	q4_differential_response_to_facial_emotion_score	aosi	\N	1	0
+981	aosi_q4_differential_response_to_facial_emotion_notes	\N	text	Notes:	\N	\N	q4_differential_response_to_facial_emotion_notes	aosi	\N	1	0
+982	aosi_q4_differential_response_to_facial_emotion_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q4_differential_response_to_facial_emotion_notes_status	aosi	\N	1	0
+983	aosi_q5_anticipatory_response	\N	enum('0','1','2','3','8','not_answered')	Score:	\N	\N	q5_anticipatory_response	aosi	\N	1	0
+984	aosi_q5_anticipatory_response_score	\N	varchar(255)	Score:	\N	\N	q5_anticipatory_response_score	aosi	\N	1	0
+985	aosi_q5_anticipatory_response_notes	\N	text	Notes:	\N	\N	q5_anticipatory_response_notes	aosi	\N	1	0
+986	aosi_q5_anticipatory_response_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q5_anticipatory_response_notes_status	aosi	\N	1	0
+987	aosi_q6_imitation_of_actions_activity_1	\N	varchar(255)	Activity 1	\N	\N	q6_imitation_of_actions_activity_1	aosi	\N	1	0
+988	aosi_q6_imitation_of_actions_act_1_att_1	\N	enum('0','1','2','not_answered')	Activity 1	\N	\N	q6_imitation_of_actions_act_1_att_1	aosi	\N	1	0
+989	aosi_q6_imitation_of_actions_act_1_att_2	\N	enum('0','1','2','not_answered')	Activity 1	\N	\N	q6_imitation_of_actions_act_1_att_2	aosi	\N	1	0
+990	aosi_q6_imitation_of_actions_act_1_att_3	\N	enum('0','1','2','not_answered')	Activity 1	\N	\N	q6_imitation_of_actions_act_1_att_3	aosi	\N	1	0
+991	aosi_q6_imitation_of_actions_activity_2	\N	varchar(255)	Activity 2	\N	\N	q6_imitation_of_actions_activity_2	aosi	\N	1	0
+992	aosi_q6_imitation_of_actions_act_2_att_1	\N	enum('0','1','2','not_answered')	Activity 2	\N	\N	q6_imitation_of_actions_act_2_att_1	aosi	\N	1	0
+993	aosi_q6_imitation_of_actions_act_2_att_2	\N	enum('0','1','2','not_answered')	Activity 2	\N	\N	q6_imitation_of_actions_act_2_att_2	aosi	\N	1	0
+994	aosi_q6_imitation_of_actions_act_2_att_3	\N	enum('0','1','2','not_answered')	Activity 2	\N	\N	q6_imitation_of_actions_act_2_att_3	aosi	\N	1	0
+995	aosi_q6_imitation_of_actions_activity_3	\N	varchar(255)	Activity 3	\N	\N	q6_imitation_of_actions_activity_3	aosi	\N	1	0
+996	aosi_q6_imitation_of_actions_act_3_att_1	\N	enum('0','1','2','not_answered')	Activity 3	\N	\N	q6_imitation_of_actions_act_3_att_1	aosi	\N	1	0
+997	aosi_q6_imitation_of_actions_act_3_att_2	\N	enum('0','1','2','not_answered')	Activity 3	\N	\N	q6_imitation_of_actions_act_3_att_2	aosi	\N	1	0
+998	aosi_q6_imitation_of_actions_act_3_att_3	\N	enum('0','1','2','not_answered')	Activity 3	\N	\N	q6_imitation_of_actions_act_3_att_3	aosi	\N	1	0
+999	aosi_q6_imitation_of_actions_score_override	\N	enum('0','1','2','8')	Override score (required):	\N	\N	q6_imitation_of_actions_score_override	aosi	\N	1	0
+1000	aosi_q6_imitation_of_actions_score	\N	varchar(255)	Score (calculated):	\N	\N	q6_imitation_of_actions_score	aosi	\N	1	0
+1001	aosi_q6_imitation_of_actions_notes	\N	text	Notes:	\N	\N	q6_imitation_of_actions_notes	aosi	\N	1	0
+1002	aosi_q6_imitation_of_actions_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q6_imitation_of_actions_notes_status	aosi	\N	1	0
+1003	aosi_free_play_period_2_notes	\N	text	Free Play Period 2 Notes:	\N	\N	free_play_period_2_notes	aosi	\N	1	0
+1004	aosi_free_play_period_2_notes_status	\N	enum('not_answered')	Free Play Period 2 Notes:	\N	\N	free_play_period_2_notes_status	aosi	\N	1	0
+1005	aosi_q7_social_babbling	\N	enum('0','1','2','3','8','not_answered')	7. Social babbling	\N	\N	q7_social_babbling	aosi	\N	1	0
+1006	aosi_q7_social_babbling_notes	\N	text	Notes:	\N	\N	q7_social_babbling_notes	aosi	\N	1	0
+1007	aosi_q7_social_babbling_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q7_social_babbling_notes_status	aosi	\N	1	0
+1008	aosi_q8_eye_contact	\N	enum('0','2','8','not_answered')	8. Eye contact	\N	\N	q8_eye_contact	aosi	\N	1	0
+1009	aosi_q8_eye_contact_notes	\N	text	Notes:	\N	\N	q8_eye_contact_notes	aosi	\N	1	0
+1010	aosi_q8_eye_contact_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q8_eye_contact_notes_status	aosi	\N	1	0
+1011	aosi_q9_reciprocal_social_smile	\N	enum('0','1','2','3','8','not_answered')	9.Reciprocal social smile	\N	\N	q9_reciprocal_social_smile	aosi	\N	1	0
+1012	aosi_q9_reciprocal_social_smile_notes	\N	text	Notes:	\N	\N	q9_reciprocal_social_smile_notes	aosi	\N	1	0
+1013	aosi_q9_reciprocal_social_smile_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q9_reciprocal_social_smile_notes_status	aosi	\N	1	0
+1014	aosi_q10_coordination_of_eye_gaze_and_action	\N	enum('0','1','2','3','8','not_answered')	10. Coordination of eye gaze and action	\N	\N	q10_coordination_of_eye_gaze_and_action	aosi	\N	1	0
+1015	aosi_q10_coordination_of_eye_gaze_and_action_notes	\N	text	Notes:	\N	\N	q10_coordination_of_eye_gaze_and_action_notes	aosi	\N	1	0
+1016	aosi_q10_coordination_of_eye_gaze_and_action_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q10_coordination_of_eye_gaze_and_action_notes_status	aosi	\N	1	0
+1017	aosi_q11_reactivity	\N	enum('0','1','2','3','8','not_answered')	11. Reactivity	\N	\N	q11_reactivity	aosi	\N	1	0
+1018	aosi_q11_reactivity_notes	\N	text	Notes:	\N	\N	q11_reactivity_notes	aosi	\N	1	0
+1019	aosi_q11_reactivity_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q11_reactivity_notes_status	aosi	\N	1	0
+1020	aosi_q14_social_interest	\N	enum('0','1','2','3','8','not_answered')	14. Social interest and shared affect	\N	\N	q14_social_interest	aosi	\N	1	0
+1021	aosi_q14_social_interest_notes	\N	text	Notes:	\N	\N	q14_social_interest_notes	aosi	\N	1	0
+1022	aosi_q14_social_interest_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q14_social_interest_notes_status	aosi	\N	1	0
+1023	aosi_q15_transitions	\N	enum('0','1','2','8','not_answered')	15. Transitions	\N	\N	q15_transitions	aosi	\N	1	0
+1024	aosi_q15_transitions_notes	\N	text	Notes:	\N	\N	q15_transitions_notes	aosi	\N	1	0
+1025	aosi_q15_transitions_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q15_transitions_notes_status	aosi	\N	1	0
+1026	aosi_q16_motor_control_and_behaviour	\N	enum('0','1','2','8','not_answered')	16. Motor control and behaviour	\N	\N	q16_motor_control_and_behaviour	aosi	\N	1	0
+1027	aosi_q16_motor_control_and_behaviour_notes	\N	text	Notes:	\N	\N	q16_motor_control_and_behaviour_notes	aosi	\N	1	0
+1028	aosi_q16_motor_control_and_behaviour_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q16_motor_control_and_behaviour_notes_status	aosi	\N	1	0
+1029	aosi_q17_atypical_motor	\N	enum('0','2','8','not_answered')	17. Atypical motor behaviours	\N	\N	q17_atypical_motor	aosi	\N	1	0
+1030	aosi_q17_atypical_motor_notes	\N	text	Notes:	\N	\N	q17_atypical_motor_notes	aosi	\N	1	0
+1031	aosi_q17_atypical_motor_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q17_atypical_motor_notes_status	aosi	\N	1	0
+1032	aosi_q18_atypical_sensory	\N	enum('0','2','8','not_answered')	18. Atypical sensory behaviours	\N	\N	q18_atypical_sensory	aosi	\N	1	0
+1033	aosi_q18_atypical_sensory_notes	\N	text	Notes:	\N	\N	q18_atypical_sensory_notes	aosi	\N	1	0
+1034	aosi_q18_atypical_sensory_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q18_atypical_sensory_notes_status	aosi	\N	1	0
+1035	aosi_q19_engagement_of_attention	\N	enum('0','1','2','8','not_answered')	19. Engagement of attention	\N	\N	q19_engagement_of_attention	aosi	\N	1	0
+1036	aosi_q19_engagement_of_attention_notes	\N	text	Notes:	\N	\N	q19_engagement_of_attention_notes	aosi	\N	1	0
+1037	aosi_q19_engagement_of_attention_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q19_engagement_of_attention_notes_status	aosi	\N	1	0
+1038	aosi_q20_insistence_on_particular_objects	\N	enum('0','1','2','8','not_answered')	20. Insistence on having or playing with particular objects	\N	\N	q20_insistence_on_particular_objects	aosi	\N	1	0
+1039	aosi_q20_insistence_on_particular_objects_notes	\N	text	Notes:	\N	\N	q20_insistence_on_particular_objects_notes	aosi	\N	1	0
+1040	aosi_q20_insistence_on_particular_objects_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q20_insistence_on_particular_objects_notes_status	aosi	\N	1	0
+1041	aosi_q21_social_referencing	\N	enum('0','1','2','8','not_answered')	21. Social Referencing	\N	\N	q21_social_referencing	aosi	\N	1	0
+1042	aosi_q21_social_referencing_notes	\N	text	Notes:	\N	\N	q21_social_referencing_notes	aosi	\N	1	0
+1043	aosi_q21_social_referencing_notes_status	\N	enum('not_answered')	Notes:	\N	\N	q21_social_referencing_notes_status	aosi	\N	1	0
+1044	aosi_Validity	\N	enum('Questionable', 'Invalid', 'Valid')	Validity of aosi	\N	\N	Validity	aosi	\N	1	0
+1045	aosi_Administration	\N	enum('None', 'Partial', 'All')	Administration for aosi	\N	\N	Administration	aosi	\N	1	0
+1046	medical_history_Date_taken	\N	date	Date of Administration	\N	\N	Date_taken	medical_history	\N	1	0
+1047	medical_history_Candidate_Age	\N	varchar(255)	Candidate Age (Months)	\N	\N	Candidate_Age	medical_history	\N	1	0
+1048	medical_history_Window_Difference	\N	varchar(255)	Window Difference (+/- Days)	\N	\N	Window_Difference	medical_history	\N	1	0
+1049	medical_history_Examiner	\N	varchar(255)	Examiner	\N	\N	Examiner	medical_history	\N	1	0
+1050	medical_history_arthritis	\N	enum('yes','no')	1. Do you have any type of arthritis?	\N	\N	arthritis	medical_history	\N	1	0
+1051	medical_history_arthritis_age	\N	varchar(255)	Age:	\N	\N	arthritis_age	medical_history	\N	1	0
+1052	medical_history_arthritis_age_status	\N	enum('not_answered')	Age:	\N	\N	arthritis_age_status	medical_history	\N	1	0
+1053	medical_history_pulmonary_issues	\N	enum('yes','no')	2. Do you currently have, or have you ever had any pulmonary issues?	\N	\N	pulmonary_issues	medical_history	\N	1	0
+1054	medical_history_pulmonary_issues_specific	\N	varchar(255)	If YES, please specify:	\N	\N	pulmonary_issues_specific	medical_history	\N	1	0
+1055	medical_history_hypertension	\N	enum('yes','no')	7. Do you have hypertension?	\N	\N	hypertension	medical_history	\N	1	0
+1056	medical_history_hypertension_while_pregnant	\N	enum('yes','no')	If YES + FEMALE, were you pregnant when you were diagnosed with hypertension?	\N	\N	hypertension_while_pregnant	medical_history	\N	1	0
+1057	medical_history_hypertension_while_pregnant_age	\N	varchar(255)	Age:	\N	\N	hypertension_while_pregnant_age	medical_history	\N	1	0
+1058	medical_history_hypertension_while_pregnant_age_status	\N	enum('not_answered')	Age:	\N	\N	hypertension_while_pregnant_age_status	medical_history	\N	1	0
+1059	medical_history_concussion_or_head_trauma	\N	enum('yes','no')	21. Have you ever had a concussion?	\N	\N	concussion_or_head_trauma	medical_history	\N	1	0
+1060	medical_history_concussion_1_description	\N	varchar(255)	Incident	\N	\N	concussion_1_description	medical_history	\N	1	0
+1061	medical_history_concussion_1_hospitalized	\N	enum('yes','no')	Hospitalized?	\N	\N	concussion_1_hospitalized	medical_history	\N	1	0
+1062	medical_history_concussion_1_age	\N	varchar(255)	Age	\N	\N	concussion_1_age	medical_history	\N	1	0
+1063	medical_history_concussion_2_description	\N	varchar(255)	Incident	\N	\N	concussion_2_description	medical_history	\N	1	0
+1064	medical_history_concussion_2_hospitalized	\N	enum('yes','no')	Hospitalized?	\N	\N	concussion_2_hospitalized	medical_history	\N	1	0
+1065	medical_history_concussion_2_age	\N	varchar(255)	Age	\N	\N	concussion_2_age	medical_history	\N	1	0
+1066	medical_history_concussion_3_description	\N	varchar(255)	Incident	\N	\N	concussion_3_description	medical_history	\N	1	0
+1067	medical_history_concussion_3_hospitalized	\N	enum('yes','no')	Hospitalized?	\N	\N	concussion_3_hospitalized	medical_history	\N	1	0
+1068	medical_history_concussion_3_age	\N	varchar(255)	Age	\N	\N	concussion_3_age	medical_history	\N	1	0
+1069	medical_history_current_concussion_symptoms	\N	varchar(255)	d) Are you currently experiencing any problems that you think might be related to a concussion?	\N	\N	current_concussion_symptoms	medical_history	\N	1	0
+1070	medical_history_Validity	\N	enum('Questionable', 'Invalid', 'Valid')	Validity of medical_history	\N	\N	Validity	medical_history	\N	1	0
+1071	medical_history_Administration	\N	enum('None', 'Partial', 'All')	Administration for medical_history	\N	\N	Administration	medical_history	\N	1	0
+1072	mri_parameter_form_Date_taken	\N	date	Date of Administration	\N	\N	Date_taken	mri_parameter_form	\N	1	0
+1073	mri_parameter_form_Candidate_Age	\N	varchar(255)	Candidate Age (Months)	\N	\N	Candidate_Age	mri_parameter_form	\N	1	0
+1074	mri_parameter_form_Window_Difference	\N	varchar(255)	Window Difference (+/- Days)	\N	\N	Window_Difference	mri_parameter_form	\N	1	0
+1075	mri_parameter_form_Examiner	\N	varchar(255)	Examiner	\N	\N	Examiner	mri_parameter_form	\N	1	0
+1076	mri_parameter_form_mri_dataset_name	\N	varchar(255)	MRI Dataset Name:	\N	\N	mri_dataset_name	mri_parameter_form	\N	1	0
+1077	mri_parameter_form_type_of_data	\N	enum('participant','human_phantom','geometric_phantom')	Type of Data:	\N	\N	type_of_data	mri_parameter_form	\N	1	0
+1078	mri_parameter_form_site	\N	enum('1','2','3','4')	MRI Site Name:	\N	\N	site	mri_parameter_form	\N	1	0
+1079	mri_parameter_form_total_duration_hours	\N	varchar(255)	Hours:	\N	\N	total_duration_hours	mri_parameter_form	\N	1	0
+1080	mri_parameter_form_total_duration_hours_status	\N	enum('not_answered')	Hours:	\N	\N	total_duration_hours_status	mri_parameter_form	\N	1	0
+1081	mri_parameter_form_total_duration_minutes	\N	varchar(255)	Minutes:	\N	\N	total_duration_minutes	mri_parameter_form	\N	1	0
+1082	mri_parameter_form_total_duration_minutes_status	\N	enum('not_answered')	Minutes:	\N	\N	total_duration_minutes_status	mri_parameter_form	\N	1	0
+1083	mri_parameter_form_mri_operator_name	\N	varchar(255)	MRI Operator Name:	\N	\N	mri_operator_name	mri_parameter_form	\N	1	0
+1084	mri_parameter_form_scan_date	\N	date	Scan Date:	\N	\N	scan_date	mri_parameter_form	\N	1	0
+1085	mri_parameter_form_3d_t1w_Scan_Done	\N	enum('yes','partial','no')		\N	\N	3d_t1w_Scan_Done	mri_parameter_form	\N	1	0
+1086	mri_parameter_form_3d_t1w_number_attempts	\N	varchar(255)		\N	\N	3d_t1w_number_attempts	mri_parameter_form	\N	1	0
+1087	mri_parameter_form_3d_t1w_comments	\N	text		\N	\N	3d_t1w_comments	mri_parameter_form	\N	1	0
+1088	mri_parameter_form_2d_flair_Scan_Done	\N	enum('yes','partial','no')		\N	\N	2d_flair_Scan_Done	mri_parameter_form	\N	1	0
+1089	mri_parameter_form_2d_flair_number_attempts	\N	varchar(255)		\N	\N	2d_flair_number_attempts	mri_parameter_form	\N	1	0
+1090	mri_parameter_form_2d_flair_comments	\N	text		\N	\N	2d_flair_comments	mri_parameter_form	\N	1	0
+1091	mri_parameter_form_Validity	\N	enum('Questionable', 'Invalid', 'Valid')	Validity of mri_parameter_form	\N	\N	Validity	mri_parameter_form	\N	1	0
+1092	mri_parameter_form_Administration	\N	enum('None', 'Partial', 'All')	Administration for mri_parameter_form	\N	\N	Administration	mri_parameter_form	\N	1	0
+1093	radiology_review_Date_taken	\N	date	Date of Administration	\N	\N	Date_taken	radiology_review	\N	1	0
+1094	radiology_review_Candidate_Age	\N	varchar(255)	Candidate Age (Months)	\N	\N	Candidate_Age	radiology_review	\N	1	0
+1095	radiology_review_Window_Difference	\N	varchar(255)	Window Difference (+/- Days)	\N	\N	Window_Difference	radiology_review	\N	1	0
+1096	radiology_review_Examiner	\N	varchar(255)	Examiner	\N	\N	Examiner	radiology_review	\N	1	0
+1097	radiology_review_Scan_done	\N	enum('no','yes','not_answered')	Was an MRI performed?	\N	\N	Scan_done	radiology_review	\N	1	0
+1098	radiology_review_MRI_date	\N	date	Date of MRI acquisition	\N	\N	MRI_date	radiology_review	\N	1	0
+1099	radiology_review_MRI_date_status	\N	enum('not_answered')	Date of MRI acquisition	\N	\N	MRI_date_status	radiology_review	\N	1	0
+1100	radiology_review_Review_date	\N	date	Date of local radiology review	\N	\N	Review_date	radiology_review	\N	1	0
+1101	radiology_review_Review_date_status	\N	enum('not_answered')	Date of local radiology review	\N	\N	Review_date_status	radiology_review	\N	1	0
+1102	radiology_review_Review_results	\N	enum('normal','abnormal','atypical','not_answered')	Results of local radiology review?	\N	\N	Review_results	radiology_review	\N	1	0
+1103	radiology_review_abnormal_atypical_exclusionary	\N	enum('exclusionary','non_exclusionary','not_answered')	If the results are ABNORMAL or ATYPICAL:	\N	\N	abnormal_atypical_exclusionary	radiology_review	\N	1	0
+1104	radiology_review_Incidental_findings	\N	text	Description of incidental findings:	\N	\N	Incidental_findings	radiology_review	\N	1	0
+1105	radiology_review_Incidental_findings_status	\N	enum('not_answered')	Description of incidental findings:	\N	\N	Incidental_findings_status	radiology_review	\N	1	0
+1106	bmi_Date_taken	\N	date	Date of Administration	\N	\N	Date_taken	bmi	\N	1	0
+1107	bmi_Candidate_Age	\N	varchar(255)	Candidate Age (Months)	\N	\N	Candidate_Age	bmi	\N	1	0
+1108	bmi_Window_Difference	\N	varchar(255)	Window Difference (+/- Days)	\N	\N	Window_Difference	bmi	\N	1	0
+1109	bmi_Examiner	\N	varchar(255)	Examiner	\N	\N	Examiner	bmi	\N	1	0
+1110	bmi_unit_classification	\N	enum('metric','imperial')	Choose unit of measurement	\N	\N	unit_classification	bmi	\N	1	0
+1111	bmi_height_feet	\N	numeric	Your height (feet) :	\N	\N	height_feet	bmi	\N	1	0
+1112	bmi_height_feet_status	\N	enum('not_answered')		\N	\N	height_feet_status	bmi	\N	1	0
+1113	bmi_height_inches	\N	numeric	Your height (inches) :	\N	\N	height_inches	bmi	\N	1	0
+1114	bmi_height_inches_status	\N	enum('not_answered')		\N	\N	height_inches_status	bmi	\N	1	0
+1115	bmi_weight_lbs	\N	numeric	Your weight (lbs) :	\N	\N	weight_lbs	bmi	\N	1	0
+1116	bmi_weight_lbs_status	\N	enum('not_answered')		\N	\N	weight_lbs_status	bmi	\N	1	0
+1117	bmi_height_cms	\N	numeric	Your height (cms) :	\N	\N	height_cms	bmi	\N	1	0
+1118	bmi_height_cms_status	\N	enum('not_answered')		\N	\N	height_cms_status	bmi	\N	1	0
+1119	bmi_weight_kgs	\N	numeric	Your weight (kgs) :	\N	\N	weight_kgs	bmi	\N	1	0
+1120	bmi_weight_kgs_status	\N	enum('not_answered')		\N	\N	weight_kgs_status	bmi	\N	1	0
+1121	bmi_bmi	\N	varchar(255)	Your BMI	\N	\N	bmi	bmi	\N	1	0
+1122	bmi_bmi_category	\N	varchar(255)	Your BMI Classification	\N	\N	bmi_category	bmi	\N	1	0
+1123	bmi_Validity	\N	enum('Questionable', 'Invalid', 'Valid')	Validity of bmi	\N	\N	Validity	bmi	\N	1	0
+1124	bmi_Administration	\N	enum('None', 'Partial', 'All')	Administration for bmi	\N	\N	Administration	bmi	\N	1	0
+1125	EEGReference	\N	text	EEGReference magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1126	SamplingFrequency	\N	text	SamplingFrequency magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1127	ECGChannelCount	\N	text	ECGChannelCount magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1128	HardwareFilters	\N	text	HardwareFilters magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1129	RecordingDuration	\N	text	RecordingDuration magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1130	CapManufacturer	\N	text	CapManufacturer magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1131	physiological_file_blake2b_hash	\N	text	physiological_file_blake2b_hash magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1132	PowerLineFrequency	\N	text	PowerLineFrequency magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1133	TaskName	\N	text	TaskName magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1134	Manufacturer	\N	text	Manufacturer magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1135	TaskDescription	\N	text	TaskDescription magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1136	InstitutionAddress	\N	text	InstitutionAddress magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1137	RecordingType	\N	text	RecordingType magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1138	EOGChannelCount	\N	text	EOGChannelCount magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1139	json_file	\N	text	json_file magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1140	TriggerChannelCount	\N	text	TriggerChannelCount magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1141	MiscChannelCount	\N	text	MiscChannelCount magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1142	InstitutionName	\N	text	InstitutionName magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1143	physiological_json_file_blake2b_hash	\N	text	physiological_json_file_blake2b_hash magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1144	EEGChannelCount	\N	text	EEGChannelCount magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1145	EEGPlacementScheme	\N	text	EEGPlacementScheme magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1146	SoftwareFilters	\N	text	SoftwareFilters magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1147	EMGChannelCount	\N	text	EMGChannelCount magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1148	electrode_file_blake2b_hash	\N	text	electrode_file_blake2b_hash magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1149	channel_file_blake2b_hash	\N	text	channel_file_blake2b_hash magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1150	event_file_blake2b_hash	\N	text	event_file_blake2b_hash magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1151	electrophysiology_chunked_dataset_path	\N	text	electrophysiology_chunked_dataset_path magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1152	institution_name	InstitutionName	text	Institution or organization to which the identified individual is responsible or accountable May also refer to the institution or organization at which the relevant equipment is located. DICOM:0008_0080	\N	\N	\N	parameter_file	\N	1	0
+1153	study_description	StudyDescription	text	Institution-generated description or classification of the Study (component) performed. DICOM:0008_1030	\N	\N	\N	parameter_file	\N	1	0
+1154	operator_name	OperatorName	text	Name(s) of the operator(s) who supporting this Series. DICOM:0008_1070	\N	\N	\N	parameter_file	\N	1	0
+1155	patient_id	PatientID	text	A primary identifier for the patient. In the case of imaging a group of small animals simultaneously, the single value of this identifier corresponds to the identification of the entire group. DICOM:0010_0020	\N	\N	\N	parameter_file	\N	1	0
+1156	patient_dob	PatientsBirthDate	text	Birth date of the patient. DICOM:0010_0030	\N	\N	\N	parameter_file	\N	1	0
+1157	effective_series_duration	EffectiveDuration	text	Total time in seconds that data was actually taken for the entire Multi-frame image. DICOM:0018_0072	\N	\N	\N	parameter_file	\N	1	0
+1158	spatial_resolution	SpatialResolution	text	The inherent limiting resolution in mm of the acquisition equipment for high contrast objects for the data gathering and reconstruction technique chosen. If variable across the images of the series, the value at the image center. DICOM:0018_1050	\N	\N	\N	parameter_file	\N	1	0
+1159	fov_dimensions	FieldOfViewDimensions	text	Dimensions of the field of view, in mm. If Field of View Shape (0018,1147) is: RECTANGLE: row dimension followed by column. ROUND: diameter. HEXAGONAL: diameter of a circumscribed circle. DICOM:0018_1149	\N	\N	\N	parameter_file	\N	1	0
+1160	laterality	Laterality	text	Laterality of (paired) body part examined. Required if the body part examined is a paired structure and Image Laterality (0020,0062) or Frame Laterality (0020,9072) are not sent. DICOM:0020_0060	\N	\N	\N	parameter_file	\N	1	0
+1161	position_reference_indicator	PositionReferenceIndicator	text	Part of the imaging target used as a reference. DICOM:0020_1040	\N	\N	\N	parameter_file	\N	1	0
+1162	pixel_padding_value	PixelPaddingValue	text	Value of pixels added to non-rectangular image to pad to rectangular format. DICOM:0028_0120	\N	\N	\N	parameter_file	\N	1	0
+1163	EEGGround	\N	text	EEGGround magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1164	eegjson_file	\N	text	eegjson_file magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1165	age_at_scan	\N	text	age_at_scan magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1166	scans_tsv_file	\N	text	scans_tsv_file magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1167	physiological_scans_tsv_file_bake2hash	\N	text	physiological_scans_tsv_file_bake2hash magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0
+1168	coordsystem_file_json_blake2b_hash	\N	text	coordsystem_file_json_blake2b_hash magically created by lib.physiological python class	\N	\N	\N	physiological_parameter_file	\N	0	0

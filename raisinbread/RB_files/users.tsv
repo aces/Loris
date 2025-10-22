@@ -1,0 +1,2 @@
+ID	UserID	Password	Real_name	First_name	Last_name	Degree	Position_title	Institution	Department	Address	City	State	Zip_code	Country	Phone	Fax	Email	Privilege	PSCPI	DBAccess	Active	Password_hash	PasswordChangeRequired	Pending_approval	Doc_Repo_Notifications	language_preference	active_from	active_to	account_request_date
+1	admin	\N	Admin account	Admin	account	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	admin@example.com	0	N		Y	$2y$12$hKZlnio2csZhkJXhenNVieUpyM0qgzimpFgRPg6Po17Z4JH7vxxTe	0	N	N	\N	\N	\N	\N

@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+LOCK TABLE biobank_specimen WRITE;
+TRUNCATE TABLE biobank_specimen;
+LOAD DATA LOCAL INFILE 'biobank_specimen.tsv' INTO TABLE biobank_specimen
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

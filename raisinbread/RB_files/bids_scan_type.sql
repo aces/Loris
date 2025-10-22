@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+LOCK TABLE bids_scan_type WRITE;
+TRUNCATE TABLE bids_scan_type;
+LOAD DATA LOCAL INFILE 'bids_scan_type.tsv' INTO TABLE bids_scan_type
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;
