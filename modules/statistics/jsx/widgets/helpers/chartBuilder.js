@@ -107,7 +107,7 @@ const createPieChart = (columns, id, targetModal, colours) => {
   return newChart;
 }
 
-const createBarChart = (labels, columns, id, targetModal, colours, dataType) => {
+const createBarChart = (t, labels, columns, id, targetModal, colours, dataType) => {
   let newChart = c3.generate({
     bindto: targetModal ? targetModal : id,
     data: {
@@ -134,7 +134,7 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType) => 
       },
       y: {
         label: {
-          text: 'Candidates registered',
+          text: t('Candidates registered', { ns: 'statistics'}),
           position: 'inner-top'
         },
       },
@@ -254,10 +254,11 @@ const getChartData = async (target, filters) => {
 
 /**
  * unloadCharts - unload all charts in a section to clear their data
+ * @param {t} The i18next translation callback
  * @param {object} chartDetails
  * @param {string} section
  */
-const unloadCharts = (chartDetails, section) => {
+const unloadCharts = (t, chartDetails, section) => {
   Object.keys(chartDetails[section]).forEach((chartID) => {
     const chart = chartDetails[section][chartID].chartObject;
     if (chart && typeof chart.unload === 'function') {
@@ -266,7 +267,7 @@ const unloadCharts = (chartDetails, section) => {
     // Clear the chart container completely
     const element = document.getElementById(chartID);
     if (element) {
-      element.innerHTML ='<p>Loading...</p>';
+      element.innerHTML ='<p>' + t('Loading...', {ns: 'loris'}) + '</p>';
     }
   });
 };
@@ -278,7 +279,7 @@ const unloadCharts = (chartDetails, section) => {
  * This is determined by the original chart type of the data provided from the API
  * If data was provided as a Pie, and the requested chartType is Bar, then the data will be reformatted
  */
-const setupCharts = async (targetIsModal, chartDetails, totalLabel) => {
+const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
   const chartPromises = [];
   let newChartDetails = {...chartDetails}
   Object.keys(chartDetails).forEach((section) => {
@@ -314,7 +315,7 @@ const setupCharts = async (targetIsModal, chartDetails, totalLabel) => {
           if (chart.chartType === 'pie') {
             chartObject = createPieChart(columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours);
           } else if (chart.chartType === 'bar') {
-            chartObject = createBarChart(labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
+            chartObject = createBarChart(t, labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
           } else if (chart.chartType === 'line') {
             chartObject = createLineChart(chartData, columns, `#${chartID}`, chart.label, targetIsModal && '#dashboardModal', chart.titlePrefix);
           }

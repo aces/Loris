@@ -425,7 +425,7 @@ class Charts extends \NDB_Page
             $id = strtolower($id);
             $id = ucwords($id);
             if ($id == null) {
-                $id = "Unknown";
+                $id = dgettext("statistics", "Unknown");
             }
             $label = $id;
             $recruitmentByEthnicityData[] = ["label" => $label, "total" => $count];
