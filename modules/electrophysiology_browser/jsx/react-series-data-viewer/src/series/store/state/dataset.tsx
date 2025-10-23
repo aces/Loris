@@ -59,8 +59,13 @@ export type Action =
         timeInterval: [number, number],
         seriesRange: [number, number],
         limit: number,
+        loadedChannels: number,
         samplingFrequency: string,
+        eegMontageName: string,
         offsetIndex: number,
+        channelDelimiter: string,
+        tagsHaveChanges: boolean,
+        recordingHasHED: boolean,
       }
     };
 
@@ -68,8 +73,11 @@ export type State = {
   chunksURL: string,
   channelMetadata: ChannelMetadata[],
   offsetIndex: number,
+  channelDelimiter: string,
   limit: number,
+  loadedChannels: number,
   samplingFrequency: string,
+  eegMontageName: string,
   epochs: Epoch[],
   filteredEpochs: EpochFilter,
   activeEpoch: number | null,
@@ -83,6 +91,8 @@ export type State = {
   hedRelOverrides: HEDTag[],
   addedTags: HEDTag[],
   deletedTags: HEDTag[],
+  tagsHaveChanges: boolean,
+  recordingHasHED: boolean,
 };
 
 /**
@@ -100,12 +110,16 @@ export const datasetReducer = (
     filteredEpochs: {
       plotVisibility: [],
       columnVisibility: [],
+      searchVisibility: [],
     },
     activeEpoch: null,
     physioFileID: null,
     offsetIndex: 1,
+    channelDelimiter: '',
     limit: DEFAULT_MAX_CHANNELS,
+    loadedChannels: 0,
     samplingFrequency: '',
+    eegMontageName: '',
     shapes: [],
     validSamples: [],
     timeInterval: [0, 1],
@@ -115,6 +129,8 @@ export const datasetReducer = (
     hedRelOverrides: [],
     addedTags: [],
     deletedTags: [],
+    tagsHaveChanges: false,
+    recordingHasHED: false,
   },
   action?: Action
 ): State => {

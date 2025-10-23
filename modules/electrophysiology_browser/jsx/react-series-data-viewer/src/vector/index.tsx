@@ -35,3 +35,5 @@ export const SIGNAL_SCALE = Math.pow(10, 6);
 export const SIGNAL_UNIT = 'µV';
 
 export const MAX_RENDERED_EPOCHS = 500;
+
+export const DEFAULT_CHANNEL_DELIMITER = ',';
