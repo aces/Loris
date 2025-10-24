@@ -124,6 +124,7 @@ locales:
 	msgfmt -o modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.mo modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.po
 	msgfmt -o modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.mo modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.po
 	msgfmt -o modules/instruments/locale/ja/LC_MESSAGES/instruments.mo modules/instruments/locale/ja/LC_MESSAGES/instruments.po
+	msgfmt -o modules/instruments/locale/es/LC_MESSAGES/instruments.mo modules/instruments/locale/es/LC_MESSAGES/instruments.po
 	msgfmt -o modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po
 	msgfmt -o modules/login/locale/ja/LC_MESSAGES/login.mo modules/login/locale/ja/LC_MESSAGES/login.po
 	msgfmt -o modules/media/locale/ja/LC_MESSAGES/media.mo modules/media/locale/ja/LC_MESSAGES/media.po

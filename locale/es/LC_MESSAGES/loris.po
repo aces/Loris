@@ -113,6 +113,9 @@ msgstr ""
 msgid "TimePoint"
 msgstr "Punto en el tiempo"
 
+msgid "TimePoint %s Details"
+msgstr "Detalles del Punto en el Tiempo %s"
+
 # Common select option labels
 msgid "Yes"
 msgstr "Sí"

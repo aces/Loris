@@ -13,37 +13,37 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Instruments"
-msgstr ""
+msgstr "Instrumentos"
 
 msgid "Incomplete form"
-msgstr ""
+msgstr "Formulario incompleto"
 
 msgid "Incomplete forms"
-msgstr ""
+msgstr "Formularios incompletos"
 
 msgid "Clear Instrument"
-msgstr ""
+msgstr "Limpiar Instrumento"
 
 msgid "Validity"
-msgstr ""
+msgstr "Validez"
 
 msgid "Valid"
-msgstr ""
+msgstr "Válido"
 
 msgid "Questionable"
-msgstr ""
+msgstr "Questionable"
 
 msgid "Invalid"
-msgstr ""
+msgstr "No válido"
 
 msgid "Subtests"
-msgstr ""
+msgstr "Sub-exámenes"
 
 msgid "Top"
-msgstr ""
+msgstr "Portada"
