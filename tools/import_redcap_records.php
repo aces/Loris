@@ -5,7 +5,7 @@
  * This script will fetch records from REDCap and import them into LORIS.
  */
 
-require_once __DIR__ . "/../../../tools/generic_includes.php";
+require_once __DIR__ . "/generic_includes.php";
 
 // Load the REDCap module.
 
