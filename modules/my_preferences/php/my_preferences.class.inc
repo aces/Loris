@@ -10,9 +10,9 @@ namespace LORIS\my_preferences;
 class My_Preferences extends \NDB_Form
 {
     // Use gettext for error messages
-    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email';
     private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be your username';
-    private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
+    private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are identical';
 
     /**
@@ -225,7 +225,7 @@ class My_Preferences extends \NDB_Form
         $notifier_services = \NDB_Notifier::getNotificationServices();
 
         // user name
-        $this->addScoreColumn('UserID', dgettext('my_preferences', 'User name'));
+        $this->addScoreColumn('UserID', dgettext('loris', 'Username'));
 
         // full name
         // The supplied pattern is:
@@ -233,12 +233,12 @@ class My_Preferences extends \NDB_Form
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
         $firstNameInvalidMsg = dgettext(
-            'my_preferences',
+            'loris',
             "First name is required and should not exceed 120 characters"
         );
         $this->addBasicText(
             'First_name',
-            dgettext('my_preferences', 'First name'),
+            dgettext('loris', 'First name'),
             [],
             [
                 'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
@@ -252,12 +252,12 @@ class My_Preferences extends \NDB_Form
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
         $lastNameInvalidMsg = dgettext(
-            'my_preferences',
+            'loris',
             "Last name is required and should not exceed 120 characters"
         );
         $this->addBasicText(
             'Last_name',
-            dgettext('my_preferences', 'Last name'),
+            dgettext('loris', 'Last name'),
             [],
             [
                 'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
@@ -270,12 +270,12 @@ class My_Preferences extends \NDB_Form
         // email address
         $this->addBasicText(
             'Email',
-            dgettext('my_preferences', 'Email address'),
+            dgettext('loris', 'Email address'),
             [],
             [
                 'oninvalid' => "this.setCustomValidity(
                     '" . dgettext(
-                    'my_preferences',
+                    'loris',
                     'Email address is required'
                 ) . "')",
                 'onchange'  => "this.setCustomValidity('')",
@@ -286,7 +286,7 @@ class My_Preferences extends \NDB_Form
         $this->addRule(
             'Email',
             dgettext(
-                'my_preferences',
+                'loris',
                 'Email address is required'
             ),
             'required'
@@ -305,12 +305,12 @@ class My_Preferences extends \NDB_Form
         $this->form->addElement(
             'password',
             'Password_hash',
-            dgettext('my_preferences', 'New Password')
+            dgettext('loris', 'New Password')
         );
         $this->form->addElement(
             'password',
             '__Confirm',
-            dgettext('my_preferences', 'Confirm Password')
+            dgettext('loris', 'Confirm Password')
         );
 
         // language preference
@@ -326,7 +326,7 @@ class My_Preferences extends \NDB_Form
 
         // Notification headers
         $nGroup   = [];
-        $nGroup[] = $this->createLabel(dgettext('my_preferences', "Module"));
+        $nGroup[] = $this->createLabel(dgettext('loris', "Module"));
         $nGroup[] = $this->createLabel(dgettext('my_preferences', "Operation"));
         $nGroup[] = $this->createLabel(dgettext('my_preferences', "Description"));
 
@@ -369,7 +369,7 @@ class My_Preferences extends \NDB_Form
                         );
                     } else {
                         $nGroup[] = $this->createLabel(
-                            dgettext('my_preferences', "N/A")
+                            dgettext('loris', "N/A")
                         );
                     }
                 }
@@ -500,7 +500,7 @@ class My_Preferences extends \NDB_Form
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // If email not syntactically valid
-            return dgettext('my_preferences', "Invalid email address");
+            return dgettext('loris', "Invalid email address");
         }
 
         // check email address' uniqueness

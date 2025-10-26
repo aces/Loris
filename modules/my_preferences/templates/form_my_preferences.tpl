@@ -1,12 +1,12 @@
 <form method="post" name="my_preferences" id="my_preferences" autocomplete="off">
-    <h3>{dgettext("my_preferences", "Password Rules")}</h3>
+    <h3>{dgettext("loris", "Password Rules")}</h3>
       <ul>
-        <li>{dgettext("my_preferences", "The password must be at least 8 characters long.")}</li>
-        <li>{dgettext("my_preferences", "The password cannot be your username or email address.")}</li>
-        <li>{dgettext("my_preferences", "No special characters are required but your password must be sufficiently complex to be accepted.")}</li>
+        <li>{dgettext("loris", "The password must be at least 8 characters long.")}</li>
+        <li>{dgettext("loris", "The password cannot be your username or email address.")}</li>
+        <li>{dgettext("loris", "No special characters are required but your password must be sufficiently complex to be accepted.")}</li>
       </ul>
-        <p>{dgettext("my_preferences", "Please choose a unique password.")}</p>
-        <p>{dgettext("my_preferences", "We suggest using a password manager to generate one for you.")}</p>
+        <p>{dgettext("loris", "Please choose a unique password.")}</p>
+        <p>{dgettext("loris", "We suggest using a password manager to generate one for you.")}</p>
     <h3>{dgettext("my_preferences", "Edit My Information")}</h3>
     {foreach from=$form.errors item=error}
         <ul>
