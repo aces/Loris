@@ -145,6 +145,9 @@ msgid "Hide Advanced Filters"
 msgstr ""
 
 # Common swal labels
+msgid "OK"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 

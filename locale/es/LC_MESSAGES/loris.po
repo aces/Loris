@@ -146,6 +146,9 @@ msgid "Hide Advanced Filters"
 msgstr "Ocultar filtros avanzados"
 
 # Common swal labels
+msgid "OK"
+msgstr "Aceptar"
+
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -195,7 +198,7 @@ msgid "DoB"
 msgstr ""
 
 msgid "Sex"
-msgstr ""
+msgstr "Sexo"
 
 msgid "Feedback"
 msgstr "Retroalimentación"
