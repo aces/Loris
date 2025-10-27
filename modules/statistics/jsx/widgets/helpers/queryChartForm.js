@@ -54,21 +54,6 @@ const QueryChartForm = (props) => {
       }
     }
 
-    setFormDataObj((prevState) => {
-      const newFormData = {
-        ...prevState,
-        [formElement]: normalizedValue,
-      };
-      if (
-        (normalizedValue !== undefined
-        || prevState[formElement] !== undefined)
-        && !(formElement.includes('date') && value < '1900-01-01')
-      ) {
-        props.callback(newFormData);
-      }
-      return newFormData;
-    });
-
     const newFormData = {
       ...formDataObj,
       [formElement]: normalizedValue,

@@ -121,16 +121,16 @@ class Module extends \Module
                     AS url,
                     ProjectName
                 FROM (
-                    SELECT
+                    SELECT 
                         c.PSCID,
                         COALESCE(p.ProjectID, p2.ProjectID) AS ProjectID,
                         COALESCE(p.Name, p2.Name) AS ProjectName
                     FROM candidate c
-                    LEFT JOIN session s ON s.CandidateID = c.ID
+                    LEFT JOIN session s ON s.CandidateID = c.ID 
                     LEFT JOIN Project p ON p.ProjectID = s.ProjectID
-                    JOIN Project p2 ON c.RegistrationProjectID = p2.ProjectID
-                    WHERE c.Active <> 'N'
-                    AND s.Active <> 'N'
+                    JOIN Project p2 ON c.RegistrationProjectID = p2.ProjectID 
+                    WHERE c.Active <> 'N' 
+                    AND s.Active <> 'N' 
                     AND s.CenterID <> 1
                 ) AS sub
                 GROUP BY ProjectID, ProjectName;",

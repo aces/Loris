@@ -78,18 +78,18 @@ class Module extends \Module
         case 'study-progression':
             $DB   = $factory->database();
             $data = $DB->pselectWithIndexKey(
-                "SELECT
+                "SELECT 
                             p.ProjectID,
                             COUNT(*) AS count,
                             CONCAT('$baseURL/behavioural_qc/?Project=', p.ProjectID)
                             AS url,
                             p.Name AS ProjectName
-                        FROM flag f
-                        JOIN session s ON f.SessionID = s.ID
+                        FROM flag f 
+                        JOIN session s ON f.SessionID = s.ID 
                         JOIN Project p ON p.ProjectID = s.ProjectID
                         WHERE DataID IS NOT NULL
-                        AND s.Active <> 'N'
-                        AND s.CenterID <> 1
+                        AND s.Active <> 'N' 
+                        AND s.CenterID <> 1 
                         AND f.CommentID NOT LIKE 'DDE_%'
                         GROUP BY p.Name",
                 [],

@@ -45,7 +45,7 @@ const StudyProgression = (props) => {
         legend: 'under',
         options: {line: 'line'},
         chartObject: null,
-        yLabel: 'Candidates registered',
+        yLabel: t('Candidates registered', {ns: 'statistics'}),
         titlePrefix: 'Month',
       },
     },
@@ -59,7 +59,7 @@ const StudyProgression = (props) => {
         legend: '',
         options: {line: 'line'},
         chartObject: null,
-        yLabel: 'Candidates registered',
+        yLabel: t('Candidates registered', {ns: 'statistics'}),
         titlePrefix: 'Month',
       },
     },
@@ -76,7 +76,7 @@ const StudyProgression = (props) => {
         legend: '',
         options: {pie: 'pie', bar: 'bar'},
         chartObject: null,
-        yLabel: 'Size (GB)',
+        yLabel: t('Size (GB)', {ns: 'statistics'}),
         titlePrefix: 'Project',
       },
     },
@@ -115,7 +115,6 @@ const StudyProgression = (props) => {
   const filterLabel = (hide) => hide ?
     t('Hide Filters', {ns: 'loris'})
     : t('Show Filters', {ns: 'loris'});
-
   return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
     <>
       <Panel
