@@ -867,10 +867,12 @@ class Charts extends \NDB_Page
         foreach ($projects as $project) {
             $projectName = $project->getName();
             if (in_array($projectName, array_keys($cachedSizeData))) {
-                $projectData[] = [
-                    'label' => $projectName,
-                    ...$cachedSizeData[$projectName],
-                ];
+                if (!is_null($cachedSizeData[$projectName])) {
+                    $projectData[] = [
+                        'label' => $projectName,
+                        ...$cachedSizeData[$projectName],
+                    ];
+                }
             }
         }
 
@@ -887,10 +889,6 @@ class Charts extends \NDB_Page
         $DB    = \NDB_Factory::singleton()->database();
         $user  = \NDB_Factory::singleton()->user();
         $sites = $user->getStudySites();
-
-        $conditions = $this->_buildQueryConditions();
-
-        $user = \NDB_Factory::singleton()->user();
 
         $data = $DB->pselect(
             "SELECT s.CenterID,
