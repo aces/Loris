@@ -117,8 +117,14 @@ msgstr "Punto en el tiempo"
 msgid "Yes"
 msgstr "Sí"
 
+msgid "True"
+msgstr "Cierto"
+
 msgid "No"
 msgstr "No"
+
+msgid "False"
+msgstr "Falso"
 
 msgid "Create"
 msgstr "Crear"
@@ -146,6 +152,9 @@ msgid "Hide Advanced Filters"
 msgstr "Ocultar filtros avanzados"
 
 # Common swal labels
+msgid "OK"
+msgstr "Aceptar"
+
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -154,7 +163,7 @@ msgstr "Exitoso!"
 
 # Common candidate terms
 msgid "PSCID"
-msgstr ""
+msgstr "SCPID"
 
 msgid "DCCID"
 msgstr "CCDID"
@@ -192,7 +201,10 @@ msgid "Participant Status"
 msgstr ""
 
 msgid "DoB"
-msgstr ""
+msgstr "Fecha de nacimiento"
+
+msgid "DoD"
+msgstr "Fecha de defunción"
 
 msgid "Sex"
 msgstr ""
@@ -250,6 +262,15 @@ msgstr "Vistas"
 # Common strings on widgets
 msgid "NEW"
 msgstr "Nuevo"
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Update Successful!"
+msgstr "Actualización Exitosa!"
+
+msgid "Failed to update!"
+msgstr "Actualización Fallida!"
 
 msgid "Updated"
 msgstr "Actualizado"

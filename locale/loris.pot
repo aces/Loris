@@ -116,7 +116,13 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+msgid "True"
+msgstr ""
+
 msgid "No"
+msgstr ""
+
+msgid "False"
 msgstr ""
 
 msgid "Create"
@@ -145,6 +151,9 @@ msgid "Hide Advanced Filters"
 msgstr ""
 
 # Common swal labels
+msgid "OK"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
@@ -190,6 +199,9 @@ msgid "Participant Status"
 msgstr ""
 
 msgid "DoB"
+msgstr ""
+
+msgid "DoD"
 msgstr ""
 
 msgid "Sex"
@@ -247,6 +259,15 @@ msgstr ""
 
 # Common strings on widgets
 msgid "NEW"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Update Successful!"
+msgstr ""
+
+msgid "Failed to update!"
 msgstr ""
 
 msgid "Updated"
