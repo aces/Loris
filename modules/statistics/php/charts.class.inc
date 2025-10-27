@@ -361,12 +361,6 @@ class Charts extends \NDB_Page
             } else {
                 $agesByProject[$projectID]['ages'][$age]++;
             }
-
-            if (!isset($agesByProject[$projectID]['ages'][$age])) {
-                $agesByProject[$projectID]['ages'][$age] = 0;
-            }
-
-            $agesByProject[$projectID]['ages'][$age]++;
         }
 
         // Create sorted labels (individual ages)
@@ -771,13 +765,15 @@ class Charts extends \NDB_Page
             }
         }
 
-        if (($queryParams['dateParticipantRegisteredStart'] ?? "undefined") != 'undefined') {
+        $startDate = $queryParams['dateParticipantRegisteredStart'] ?? 'undefined';
+        $endDate   = $queryParams['dateParticipantRegisteredEnd'] ?? 'undefined';
+        if ($startDate != 'undefined') {
             $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
             $paramName          = 'dateStart' . (++$paramCounter);
             $projectQuery      .= " AND c.Date_registered >= :$paramName";
             $params[$paramName] = $queryParams['dateParticipantRegisteredStart'];
         }
-        if (($queryParams['dateParticipantRegisteredEnd'] ?? "undefined") != 'undefined') {
+        if ($endDate != 'undefined') {
             $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
             $paramName          = 'dateEnd' . (++$paramCounter);
             $projectQuery      .= " AND c.Date_registered <= :$paramName";
@@ -847,7 +843,6 @@ class Charts extends \NDB_Page
         }
         return $data;
     }
-
 
     /**
      * Handle an incoming request for project size breakdown.

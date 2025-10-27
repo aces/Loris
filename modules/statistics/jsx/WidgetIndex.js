@@ -36,7 +36,7 @@ const WidgetIndex = (props) => {
     let {title, chartType, options} = chartDetails[section][chartID];
     return (
       <div
-        className ="site-breakdown-card"
+        className ="chart-card"
       >
         {/* Chart Title and Toggle */}
         <div className ='chart-header'>
@@ -209,7 +209,9 @@ const WidgetIndex = (props) => {
       }
     }
     const queryString = '?' + new URLSearchParams(formObject).toString();
-    let newChartDetails = {...chartDetails};
+    let newChartDetails = {...clearedChartDetails};
+
+    const chartPromises = [];
     Object.keys(chartDetails[section]).forEach(
       (chart) => {
         // update filters
@@ -228,9 +230,13 @@ const WidgetIndex = (props) => {
             newChartDetails[section][chart] = data[section][chart];
           }
         );
+        chartPromises.push(chartPromise);
       }
     );
-    setChartDetails(newChartDetails);
+
+    Promise.all(chartPromises).then(() => {
+      setChartDetails(newChartDetails);
+    });
   };
 
   /**

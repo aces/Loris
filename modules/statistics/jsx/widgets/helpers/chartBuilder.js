@@ -236,10 +236,8 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
 
           name = nameFormat(d[i].name);
           value = valueFormat(d[i].value, d[i].ratio, d[i].id, d[i].index);
-
           // Calculate percentage based on grand total of entire dataset
           let percentage = grandTotal > 0 ? ((d[i].value / grandTotal) * 100).toFixed(1) : 0;
-
           bgcolor = $$.levelColor ? $$.levelColor(d[i].value) : color(d[i].id);
 
           text += "<tr class='" + $$.CLASS.tooltipName + "-" + d[i].id + "'>";
