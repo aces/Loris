@@ -42,7 +42,7 @@
  * -- to fix bvl battery (run only once the dates are fixed)
  * fix_timepoint_date_problems.php add_instrument <candID> <sessionID> <test_name>
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -52,17 +52,7 @@
  */
 use LORIS\StudyEntities\Candidate\CandID;
 
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
-
-// path to config file
-$configFile = dirname(__FILE__) . "/../project/config.xml";
-
 require_once __DIR__ . "/generic_includes.php";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize($configFile);
-
-$db = $lorisInstance->getDatabaseConnection();
 
 /**
  * HELP SCREEN
@@ -79,6 +69,15 @@ if (empty($argv[1]) || empty($argv[2]) || $argv[1] == 'help') {
  */
 // get $action argument
 $action = strtolower($argv[1]);
+
+// loosely check that CandID has proper syntax
+if (!preg_match("/^([0-9]{1,10})$/", strval($argv[2]))) {
+    fwrite(
+        STDERR,
+        "Error: invalid 2st argument CandID ({$argv[2]}).\n"
+    );
+    printUsage();
+}
 
 // CandID
 $candID = new CandID($argv[2]);
@@ -153,19 +152,7 @@ if (!in_array($action, ['diagnose', 'fix_date', 'add_instrument'])) {
     );
     return false;
 }
-// check $candID
-if (!preg_match("/^([0-9]{1,10})$/", $candID)) {
-    fwrite(
-        STDERR,
-        "Error: invalid 2st argument CandID ($candID).\n " .
-        "It has to be a 6-digit number\n"
-    );
-    fwrite(
-        STDERR,
-        "For the script syntax type: fix_timepoint_date_problems.php help \n"
-    );
-    return false;
-}
+
 // Candidate object - to check if valid $candID
 $candidate =& Candidate::singleton($candID);
 //get the list of timepoints (sessionIDs) for the profile
@@ -326,7 +313,6 @@ case 'diagnose':
     break;
 } // end switch ($action)
 
-
 /**
  * Print usage
  *
@@ -387,15 +373,7 @@ function printUsage()
  */
 function addInstrument($sessionID, $testName, $loris)
 {
-    // check the user $_ENV['USER']
-    $user =& User::singleton(getenv('USER'));
-    if (is_a($user, 'LORIS\AnonymousUser')) {
-        throw new LorisException(
-            "Error: Database user named " . getenv('USER')
-            . " does not exist. Please create and then retry script\n"
-        );
-    }
-
+    global $lorisInstance;
     // check the args
     if (empty($sessionID) || empty($testName)) {
         throw new LorisException("SessionID and Test name must be provided");
@@ -424,7 +402,7 @@ function addInstrument($sessionID, $testName, $loris)
     }
 
     // add to battery - this method check if the $testName is valid
-    $success = $battery->addInstrument($testName);
+    $success = $battery->addInstrument($lorisInstance, $testName);
 
     // get CommentID of the newly assigned instrument
     $query = "SELECT CommentID FROM flag
@@ -436,11 +414,12 @@ function addInstrument($sessionID, $testName, $loris)
      * add Feedback
      */
     // feedback object
+    $user = (new \User())->factory('admin');
     print $user->getUsername();
     $feedback = NDB_BVL_Feedback::singleton(
         $user->getUsername(),
         null,
-        $sessionID
+        new \SessionID($sessionID)
     );
 
     //get thread feedback type
@@ -516,7 +495,11 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
     // check the date format (redundant)
     $dateArray = explode('-', $newDate);
     if (!is_array($dateArray)
-        || !checkdate($dateArray[1], $dateArray[2], $dateArray[0])
+        || !checkdate(
+            intval($dateArray[1]),
+            intval($dateArray[2]),
+            intval($dateArray[0])
+        )
     ) {
         throw new LorisException(
             "Invalid Date! Please use the following format: YYYY-MM-DD \n"
@@ -636,7 +619,6 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
 
     return;
 }
-
 
 /**
  * Returns an array of missing instruments for the timepoint

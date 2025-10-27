@@ -1,0 +1,341 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Smarty template main.tpl strings
+msgid "LORIS"
+msgstr ""
+
+msgid "DEV"
+msgstr ""
+
+msgid "Affiliations"
+msgstr ""
+
+msgid "Site Affiliation"
+msgstr ""
+
+msgid "Site Affiliations"
+msgstr ""
+
+msgid "Project Affiliation"
+msgstr ""
+
+msgid "Project Affiliations"
+msgstr ""
+
+msgid "Log Out"
+msgstr ""
+
+msgid "My Preferences"
+msgstr ""
+
+# Auto extracted strings from PHP
+# Menu categories
+#: modules/configuration/php/module.class.inc:50
+#: modules/help_editor/php/module.class.inc:47
+#: modules/instrument_manager/php/module.class.inc:53
+#: modules/module_manager/php/module.class.inc:50
+#: modules/server_processes_manager/php/module.class.inc:104
+#: modules/survey_accounts/php/module.class.inc:48
+#: modules/user_accounts/php/module.class.inc:53
+msgid "Admin"
+msgstr ""
+#: modules/acknowledgements/php/module.class.inc:54
+#: modules/api_docs/php/module.class.inc:66
+#: modules/battery_manager/php/module.class.inc:55
+#: modules/datadict/php/module.class.inc:49
+#: modules/data_release/php/module.class.inc:56
+#: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr ""
+
+#: modules/document_repository/php/module.class.inc:56
+#: modules/instrument_builder/php/module.class.inc:48
+#: modules/issue_tracker/php/module.class.inc:54
+#: modules/schedule_module/php/module.class.inc:49
+msgid "Tools"
+msgstr ""
+
+#: modules/behavioural_qc/php/module.class.inc:51
+#: modules/conflict_resolver/php/module.class.inc:83
+#: modules/examiner/php/module.class.inc:50
+#: modules/media/php/module.class.inc:33
+msgid "Clinical"
+msgstr ""
+
+#: modules/dicom_archive/php/module.class.inc:115
+#: modules/imaging_browser/php/module.class.inc:40
+#: modules/imaging_qc/php/module.class.inc:50
+#: modules/imaging_uploader/php/module.class.inc:54
+#: modules/mri_violations/php/module.class.inc:53
+msgid "Imaging"
+msgstr ""
+
+#: modules/candidate_list/php/module.class.inc:76
+#: modules/new_profile/php/module.class.inc:50
+msgid "Candidate"
+msgstr ""
+
+#: modules/genomic_browser/php/module.class.inc:53
+msgid "Genomics"
+msgstr ""
+
+#: modules/electrophysiology_browser/php/module.class.inc:54
+msgid "Electrophysiology"
+msgstr ""
+
+#: modules/dataquery/php/module.class.inc:33
+#: modules/dqt/php/module.class.inc:49
+#: modules/publication/php/module.class.inc:55
+#: modules/statistics/php/module.class.inc:49
+msgid "Reports"
+msgstr ""
+
+# Common loris terms. Consider moving these to their own textdomain?
+msgid "TimePoint"
+msgstr ""
+
+# Common select option labels
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
+# Filters
+msgid "Selection Filter"
+msgstr ""
+
+msgid "Show Filters"
+msgstr ""
+
+msgid "Hide Filters"
+msgstr ""
+
+msgid "Clear Filters"
+msgstr ""
+
+msgid "Show Advanced Filters"
+msgstr ""
+
+msgid "Hide Advanced Filters"
+msgstr ""
+
+# Common swal labels
+msgid "Cancel"
+msgstr ""
+
+msgid "Success!"
+msgstr ""
+
+# Common candidate terms
+msgid "PSCID"
+msgstr ""
+
+msgid "DCCID"
+msgstr ""
+
+msgid "Visit Label"
+msgstr ""
+
+msgid "Site"
+msgstr ""
+
+msgid "Module"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Candidate Registration Project"
+msgstr ""
+
+msgid "Timepoint Project"
+msgstr ""
+
+msgid "Cohort"
+msgid_plural "Cohorts"
+msgstr[0] ""
+ 
+msgid "Session"
+msgstr ""
+
+msgid "Date of registration"
+msgstr ""
+
+msgid "Participant Status"
+msgstr ""
+
+msgid "DoB"
+msgstr ""
+
+msgid "Sex"
+msgstr ""
+
+msgid "Feedback"
+msgstr ""
+
+msgid "Scans"
+msgstr ""
+
+msgid "Stage"
+msgstr ""
+
+msgid "Send To DCC"
+msgstr ""
+
+msgid "Sent To DCC"
+msgstr ""
+
+msgid "Reverse Send To DCC"
+msgstr ""
+
+msgid "Date of Birth"
+msgstr ""
+
+msgid "Visits"
+msgstr ""
+
+msgid "An error occured while loading the page."
+msgstr ""
+
+msgid "Entity Type"
+msgstr ""
+
+msgid "Scan Done"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Ethnicity"
+msgstr ""
+
+# Data table strings
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgstr ""
+
+msgid "Maximum rows per page:"
+msgstr ""
+
+msgid "Download Data as CSV"
+msgstr ""
+
+# Dashboard panel strings
+msgid "Views"
+msgstr ""
+
+# Common strings on widgets
+msgid "NEW"
+msgstr ""
+
+msgid "Updated"
+msgstr ""
+
+msgid "Uploaded"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "Error!"
+msgstr ""
+
+# Common timepoint and vist terms
+msgid "Not Started"
+msgstr ""
+
+msgid "Screening"
+msgstr ""
+
+msgid "Visit"
+msgstr ""
+
+msgid "Approval"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Recycling Bin"
+msgstr ""
+
+msgid "Pass"
+msgstr ""
+
+msgid "Failure"
+msgstr ""
+
+msgid "Withdrawal"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "Instruments"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Partial"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Data Entry"
+msgstr ""
+
+msgid "Administration"
+msgstr ""
+
+msgid "Double Data Entry Form"
+msgstr ""
+
+msgid "Double Data Entry Status"
+msgstr ""
+
+msgid "Double Data Entry"
+msgstr ""
+
+# Age related terms
+msgid "Age"
+msgstr ""
+
+msgid "{{months}} months old"
+msgstr ""
+
+msgid "{{years}} years old"
+msgstr ""
+
+# Other generic terms
+msgid "Loading..."
+msgstr ""
+

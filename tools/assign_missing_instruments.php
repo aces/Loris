@@ -41,17 +41,8 @@ use LORIS\StudyEntities\Candidate\CandID;
 //foreach candidate we need to look at each timepoint
 //compare the looked up battery to the actual assigned battery
 //add missing instruments.
-set_include_path(
-    get_include_path().":".
-    __DIR__."/../project/libraries:".
-    __DIR__."/../php/libraries:"
-);
-
 require_once __DIR__ . "/../vendor/autoload.php";
-require_once "NDB_Client.class.inc";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
+require_once __DIR__ . "/generic_includes.php";
 
 $confirm = false;
 if ((isset($argv[1]) && $argv[1] === "confirm")
@@ -135,7 +126,7 @@ function populateVisitLabel($result, $visit_label)
 
 if (isset($visit_label)) {
     $query ="SELECT s.ID, s.cohortID, c.CandID from session
-            s LEFT JOIN candidate c ON c.ID=s.CandiateID
+            s LEFT JOIN candidate c ON c.ID=s.CandidateID
             WHERE s.Active='Y'
             AND c.Active='Y' AND s.visit_label=:vl";
     $where = ['vl' => $argv[1]];

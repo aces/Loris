@@ -59,7 +59,7 @@ class Datadict extends \DataFrameworkMenu
      */
     public function getFieldOptions() : array
     {
-        $instruments     = \Utility::getAllInstruments();
+        $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
         $dictInstruments = [];
         $user            = \User::singleton();
 
@@ -130,18 +130,6 @@ class Datadict extends \DataFrameworkMenu
             [
                 $baseURL . "/datadict/js/dataDictIndex.js",
             ]
-        );
-    }
-
-    /**
-     * Generate a breadcrumb trail for this page.
-     *
-     * @return \LORIS\BreadcrumbTrail
-     */
-    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-    {
-        return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Data Dictionary', "/$this->name")
         );
     }
 

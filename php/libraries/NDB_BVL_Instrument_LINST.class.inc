@@ -3,7 +3,7 @@
 /**
  * This file contains the base class for instruments in Loris
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Behavioural
@@ -446,49 +446,65 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             'instrument_title',
                             $pieces[1]
                         );
-                        if ($this->DataEntryType!=="DirectEntry") {
-                            $this->_addMetadataFields();
-                        }
                     }
-                    $this->dictionary = array_merge(
-                        $this->dictionary,
-                        [
-                            new DictionaryItem(
-                                $this->testName.'_Date_taken',
-                                'Date of Administration',
-                                $scope,
-                                new \LORIS\Data\Types\DateType(),
-                                new Cardinality(Cardinality::SINGLE),
-                                'Date_taken',
-                            ),
-                        ]
-                    );
-                    if (strrpos($this->testName ?? '', '_proband') === false) {
-                        if (!$this->postMortem) {
+                    // The sequence of if statements below building the data dict
+                    // mimics the same logic in the _addMetadataFields() function of
+                    // NDB_BVL_Instrument to keep the dictionary in sync with the
+                    // fields added to the form, make sure to modify it accordingly
+                    if ($this->DataEntryType!=="DirectEntry") {
+                        $this->dictionary = array_merge(
+                            $this->dictionary,
+                            [
+                                new DictionaryItem(
+                                    $this->testName.'_Date_taken',
+                                    'Date of Administration',
+                                    $scope,
+                                    new \LORIS\Data\Types\DateType(),
+                                    new Cardinality(Cardinality::SINGLE),
+                                    'Date_taken',
+                                ),
+                            ]
+                        );
+                        if (strrpos($this->testName ?? '', '_proband') === false) {
+                            if (!$this->postMortem) {
+                                $this->dictionary = array_merge(
+                                    $this->dictionary,
+                                    [
+                                        new DictionaryItem(
+                                            $this->testName.'_Candidate_Age',
+                                            'Candidate Age (Months)',
+                                            $scope,
+                                            new \LORIS\Data\Types\Duration(),
+                                            new Cardinality(Cardinality::SINGLE),
+                                            'Candidate_Age',
+                                        ),
+                                    ]
+                                );
+                            } else {
+                                $this->dictionary = array_merge(
+                                    $this->dictionary,
+                                    [
+                                        new DictionaryItem(
+                                            $this->testName.'_Candidate_Age',
+                                            'Candidate Age at Death (Months)',
+                                            $scope,
+                                            new \LORIS\Data\Types\Duration(),
+                                            new Cardinality(Cardinality::SINGLE),
+                                            'Candidate_Age',
+                                        ),
+                                    ]
+                                );
+                            }
                             $this->dictionary = array_merge(
                                 $this->dictionary,
                                 [
                                     new DictionaryItem(
-                                        $this->testName.'_Candidate_Age',
-                                        'Candidate Age (Months)',
+                                        $this->testName.'_Window_Difference',
+                                        'Window difference from test battery (days)',
                                         $scope,
                                         new \LORIS\Data\Types\Duration(),
                                         new Cardinality(Cardinality::SINGLE),
-                                        'Candidate_Age',
-                                    ),
-                                ]
-                            );
-                        } else {
-                            $this->dictionary = array_merge(
-                                $this->dictionary,
-                                [
-                                    new DictionaryItem(
-                                        $this->testName.'_Candidate_Age',
-                                        'Candidate Age at Death (Months)',
-                                        $scope,
-                                        new \LORIS\Data\Types\Duration(),
-                                        new Cardinality(Cardinality::SINGLE),
-                                        'Candidate_Age',
+                                        'Window_Difference',
                                     ),
                                 ]
                             );
@@ -497,32 +513,22 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $this->dictionary,
                             [
                                 new DictionaryItem(
-                                    $this->testName.'_Window_Difference',
-                                    'Window difference from test battery (days)',
+                                    $this->testName.'_Examiner',
+                                    'Examiner',
                                     $scope,
-                                    new \LORIS\Data\Types\Duration(),
+                                    // This should be an enum of examiners, but
+                                    // getExaminerNames currently returns an empty
+                                    // array if CommentID is not set.
+                                    new StringType(255),
                                     new Cardinality(Cardinality::SINGLE),
-                                    'Window_Difference',
+                                    'Examiner',
                                 ),
                             ]
                         );
+                        if ($addElements) {
+                            $this->_addMetadataFields();
+                        }
                     }
-                    $this->dictionary = array_merge(
-                        $this->dictionary,
-                        [
-                            new DictionaryItem(
-                                $this->testName.'_Examiner',
-                                'Examiner',
-                                $scope,
-                                // This should be an enum of examiners, but
-                                // getExaminerNames currently returns an empty
-                                // array if CommentID is not set.
-                                new StringType(255),
-                                new Cardinality(Cardinality::SINGLE),
-                                'Examiner',
-                            ),
-                        ]
-                    );
                     break;
                 case 'begingroup':
                     if ($addElements) {

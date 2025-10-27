@@ -3,7 +3,7 @@
 /**
  * This file contains the Test Endpoint.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Battery_Manager
@@ -22,7 +22,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Handles requests for retrieving and saving Test Instances.
  * Allows users to add, activate, and deactivate entries in the test battery.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Battery_Manager
@@ -157,7 +157,10 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         $testArray = json_decode($request->getBody()->getContents(), true);
-        $test      = new Test($this->loris, null, $testArray);
+        $dde       = 'DoubleDataEntryEnabled';
+        $testArray[$dde] = $testArray[$dde] ?? 'N';
+
+        $test = new Test($this->loris, null, $testArray);
         $test->row['active'] = 'Y';
         return $this->_saveInstance($test, "post");
     }

@@ -48,6 +48,27 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::UNIQUE),
                 ),
+                new DictionaryItem(
+                    "flagged_caveatemptor",
+                    "Caveat Emptor Flag for Candidate",
+                    $candscope,
+                    new \LORIS\Data\Types\Enumeration("true", "false"),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "flagged_reason",
+                    "Reason for Caveat Emptor Flag Candidate",
+                    $candscope,
+                    new \LORIS\Data\Types\StringType(255), // FIXME: Make an enum
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "flagged_other",
+                    "Other reason for Caveat Emptor Flag Candidate, please specify",
+                    $candscope,
+                    new \LORIS\Data\Types\StringType(255),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
             ]
         );
 
@@ -107,6 +128,38 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     new Cardinality(Cardinality::UNIQUE),
                 ),
                 new DictionaryItem(
+                    "DateRegistered",
+                    "The date when the visit was registered",
+                    $sesscope,
+                    new \LORIS\Data\Types\DateType(),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "CurrentStage",
+                    "Visit's current stage",
+                    $sesscope,
+                    new \LORIS\Data\Types\StringType(255), // FIXME: Make an enum
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "SessionFeedback",
+                    "Behavioural feedback at the session level",
+                    $sesscope,
+                    new \LORIS\Data\Types\StringType(255),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "SessionFailure",
+                    "Whether a session was failure or did the candidate withdrawal",
+                    $sesscope,
+                    new \LORIS\Data\Types\Enumeration(
+                        'Failure',
+                        'Withdrawal',
+                        'Neither'
+                    ),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
                     "Project",
                     "The LORIS project to categorize this session",
                     $sesscope,
@@ -142,6 +195,27 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
+                    "ParticipantStatusReason",
+                    "The reason of the status of the participant within the study",
+                    $candscope,
+                    new \LORIS\Data\Types\Enumeration(...$participantstatus_options),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "ParticipantStatusComments",
+                    "Comments about the status of the participant within the study",
+                    $candscope,
+                    new \LORIS\Data\Types\StringType(),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
+                    "CandidateComments",
+                    "Candidate comments",
+                    $candscope,
+                    new \LORIS\Data\Types\StringType(255),
+                    new Cardinality(Cardinality::SINGLE),
+                ),
+                new DictionaryItem(
                     "RegistrationSite",
                     "The site at which this candidate was initially registered",
                     $candscope,
@@ -159,6 +233,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         );
         return [$ids, $demographics, $meta];
     }
+
     /**
      * {@inheritDoc}
      *
@@ -195,6 +270,15 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return 'c.CandID';
         case 'PSCID':
             return 'c.PSCID';
+        case 'flagged_caveatemptor':
+            return 'c.flagged_caveatemptor';
+        case 'flagged_reason':
+            $this->addTable(
+                'LEFT JOIN caveat_options co ON co.ID=c.flagged_reason'
+            );
+            return 'co.Description';
+        case 'flagged_other':
+            return 'c.flagged_other';
         case 'Site':
             $this->addTable(
                 "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
@@ -207,6 +291,39 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 . ' ON (c.RegistrationCenterID=rsite.CenterID)'
             );
             return 'rsite.Name';
+        case 'DateRegistered':
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
+            );
+            return 's.Date_registered';
+        case 'CurrentStage':
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
+            );
+            return 's.Current_stage';
+        case 'SessionFeedback':
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
+            );
+            $this->addTable(
+                "LEFT JOIN feedback_bvl_thread fbt ON (fbt.SessionID=s.ID)"
+            );
+            $this->addTable(
+                "LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)"
+            );
+            return 'fbe.Comment';
+        case 'SessionFailure':
+            $this->addTable(
+                "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
+            );
+            return
+            "CASE
+                WHEN s.Visit='Failure' THEN 'Failure'
+                WHEN s.Screening='Failure' THEN 'Failure'
+                WHEN s.Visit='Withdrawal' THEN 'Withdrawal'
+                WHEN s.Screening='Withdrawal' THEN 'Withdrawal'
+                ELSE 'Neither'
+             END";
         case 'Sex':
             return 'c.Sex';
         case 'DoB':
@@ -255,6 +372,30 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 'ON (ps.participant_status=pso.ID)'
             );
             return 'pso.Description';
+        case 'ParticipantStatusReason':
+            $this->addTable(
+                'LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)'
+            );
+            $this->addTable(
+                'LEFT JOIN participant_status_options pso1 ' .
+                'ON (ps.participant_suboptions=pso1.ID)'
+            );
+            return 'pso1.Description';
+        case 'ParticipantStatusComments':
+            $this->addTable(
+                'LEFT JOIN participant_status ps ON (ps.CandidateID=c.ID)'
+            );
+            return 'ps.reason_specify';
+        case 'CandidateComments':
+            $this->addTable(
+                "LEFT JOIN parameter_candidate pc_comment " .
+                "ON (pc_comment.CandidateID=c.ID) " .
+                "AND pc_comment.ParameterTypeID=( " .
+                    "SELECT ParameterTypeID " .
+                    "FROM parameter_type " .
+                    "WHERE Name='candidate_comment')"
+            );
+            return 'pc_comment.Value';
         default:
             throw new \DomainException("Invalid field " . $item->getName());
         }

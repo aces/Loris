@@ -3,7 +3,7 @@
 /**
  * This file contains the Create_Timepoint class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category LORIS_Module
  * @package  Create_Timepoint
@@ -65,19 +65,21 @@ class Create_Timepoint extends \NDB_Form
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                .  " $candid / $pscid",
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                'Create Time Point',
+                dgettext("create_timepoint", 'Create Timepoint'),
                 "/create_timepoint/?candID=$candid&identifier=$candid"
             )
         );
     }
+
     /**
      * Get js Dependencies
      *

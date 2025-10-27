@@ -3,7 +3,7 @@
 /**
  * File contains the LORIS\schedule_module\Module class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -42,11 +42,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Tools";
+        return \LORIS\GUI\MenuCategory::singleton("Tools");
     }
 
     /**
@@ -56,6 +56,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Schedule Appointment";
+        return dgettext("schedule_module", "Schedule Appointment");
     }
 }

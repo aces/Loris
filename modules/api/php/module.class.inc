@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It handles the basic routing for the module.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   API
  * @package    Main
@@ -29,7 +29,6 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Module extends \Module
 {
-
     /**
      * The API module is a module which is "public" so that the login endpoint
      * is accessible. Each endpoint must do its own validation of access levels
@@ -131,7 +130,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "API";
+        return dgettext("api", "API");
     }
 
     /**

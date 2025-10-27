@@ -5,7 +5,7 @@
  *
  * This processes and inserts data for publication uploads & editing
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Publication
@@ -68,15 +68,14 @@ function uploadPublication() : void
     $leadInvest = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
-    // check if lead investigator already exists in collaborator table
+    // check if lead investigator email already exists in collaborator table
     // use ID if exists, else insert
     $leadInvID = $db->pselectOne(
         'SELECT PublicationCollaboratorID '.
         'FROM publication_collaborator '.
-        'WHERE Name = :n AND Email = :e',
+        'WHERE Email = :e',
         [
-            'e' => $leadInvestEmail,
-            'n' => $leadInvest,
+            'e' => $leadInvestEmail
         ]
     );
     if (empty($leadInvID)) {
@@ -89,6 +88,8 @@ function uploadPublication() : void
         );
 
         $leadInvID = $db->getLastInsertId();
+    } else {
+        showPublicationError('Lead Investigator email already exists', 400);
     }
     if (!isset($desc, $leadInvest, $leadInvestEmail)) {
         showPublicationError('A mandatory field is missing!', 400);
@@ -384,6 +385,7 @@ function insertVOIs(int $pubID) : void
         }
     }
 }
+
 /**
  * Deletes all inserted data if there is an exception thrown
  *
@@ -604,11 +606,41 @@ function editProject() : void
     if ($pubData['link'] !== $link) {
         $toUpdate['link'] = $link;
     }
-    if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
-        $leadInvToUpdate['Name'] = $leadInvestigator;
-    }
+    $leadInvToUpdate['Name'] = $leadInvestigator;
+
     if ($pubData['LeadInvestigatorEmail'] !== $leadInvestigatorEmail) {
+        // check if email exists in database
+        $cid = $db->pselectOne(
+            'SELECT PublicationCollaboratorID '.
+            'FROM publication_collaborator '.
+            'WHERE Email=:email',
+            ['email' => $leadInvestigatorEmail]
+        );
         $leadInvToUpdate['Email'] = $leadInvestigatorEmail;
+
+        // if email exists in database, update new email association to name & cid
+        if ($cid) {
+            $db->update(
+                'publication_collaborator',
+                $leadInvToUpdate,
+                ['PublicationCollaboratorID' => $cid]
+            );
+             $toUpdate['LeadInvestigatorID'] = $cid;
+        } else {
+            // otherwise, create new collaborator with a new id
+            $db->insert(
+                'publication_collaborator',
+                $leadInvToUpdate
+            );
+            $toUpdate['LeadInvestigatorID'] = $db->getLastInsertId();
+        }
+        // if only name is updated, update name associated to the email
+    } else if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
+        $db->update(
+            'publication_collaborator',
+            $leadInvToUpdate,
+            ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
+        );
     }
 
     editEditors($id);
@@ -629,13 +661,6 @@ function editProject() : void
             'publication',
             $toUpdate,
             ['PublicationID' => $id]
-        );
-    }
-    if (!empty($leadInvToUpdate)) {
-        $db->update(
-            'publication_collaborator',
-            $leadInvToUpdate,
-            ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
         );
     }
 }
@@ -944,6 +969,7 @@ function editUploads($id) : void
         }
     }
 }
+
 /**
  * Utility function to return errors from the server
  *

@@ -8,7 +8,7 @@ use LORIS\Data\DataInstance;
  * This class implements a data provisioner to get all possible rows
  * for the electrophysiology uploader menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main

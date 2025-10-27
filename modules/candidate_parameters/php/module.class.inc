@@ -14,11 +14,28 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) &&
+        $user->hasAnyPermission(
+            ['candidate_parameter_view',
+                'candidate_parameter_edit'
+            ]
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @return string The human readable name for this module
      */
     public function getLongName() : string
     {
-        return "Candidate Parameters";
+        return dgettext("candidate_parameters", "Candidate Parameters");
     }
 
     /**
@@ -99,8 +116,9 @@ class Module extends \Module
             // Participant Status
             $entries = [
                 new CandidateInfo(
-                    "Participant Status",
-                    $candidate->getParticipantStatusDescription($db) ?: 'N/A',
+                    dgettext("loris", "Participant Status"),
+                    $candidate->getParticipantStatusDescription($db)
+                    ?: dgettext("loris", 'N/A'),
                 ),
             ];
 
@@ -147,10 +165,11 @@ class Module extends \Module
             return null;
         }
 
+        $title = dgettext("candidate_parameters", "Caveat");
         if ($caveat['Description'] == 'Other') {
-            return new CandidateInfo("Caveat", $caveat['flagged_other']);
+            return new CandidateInfo($title, $caveat['flagged_other']);
         }
-        return new CandidateInfo("Caveat", $caveat['Description']);
+        return new CandidateInfo($title, $caveat['Description']);
     }
 
     /**

@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all possible rows
  * for the issue tracker menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\issue_tracker;
  * This class implements a data provisioner to get all possible rows
  * for the issue tracker menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -48,7 +48,6 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                i.dateCreated,
                i.lastUpdate,
                s.ID AS sessionId,
-               c.CandID AS candidateId,
                w.userID AS userId
         FROM issues AS i
         LEFT JOIN modules m ON m.ID = i.module

@@ -4,7 +4,7 @@
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -119,7 +119,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         return $timePointList["$sessionID"];
     }
 
-
     /**
      * Loads the data from the given sessionID into the current TimePoint class.
      *
@@ -222,7 +221,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         }
 
     }
-
 
     /**
      * Registers a new timepoint into the session table
@@ -352,7 +350,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         foreach ($timePointArray AS $used_name) {
             if (strcasecmp($visitName, $used_name) == 0) {
                 throw new \LorisException(
-                    'This visit label is not unique.'
+                    dgettext("create_timepoint", "This visit label is not unique.")
                 );
             }
         }
@@ -581,7 +579,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     {
         return $this->_timePointInfo["Active"] == 'Y';
     }
-
 
     /**
      * Gets whether or not a scan was done for this TimePoint
@@ -1106,7 +1103,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         return new \LORIS\Recording($recordingdto->getFileid());
     }
 
-
     /**
      * Gets the DicomTars of that session.
      *
@@ -1156,6 +1152,145 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         return (new \LORIS\DicomTar(intval($row['tarchiveid'])))->asDTO();
+    }
+
+    /**
+     * Try to get an existing MRI upload ID for this session and a given file, or
+     * insert a new one if no corresponding MRI upload exists.
+     *
+     * @param \User        $user        The user inserting the file.
+     * @param \SplFileInfo $file        The file on the file system.
+     * @param string       $patientname The patient name
+     * @param bool         $isphantom   True if it's a phantom file
+     *
+     * @return int The UploadID from the mri_upload table sequence.
+     */
+    public function getOrAddMRIUpload(
+        \User $user,
+        \SplFileInfo $file,
+        string $patientname,
+        bool $isphantom
+    ): int {
+        // We try to re-use an existing MRI upload if there already is one for the
+        // file to insert. There may be several uploads per file, so we choose to
+        // re-use the last upload when that is the case.
+        $db         = \NDB_Factory::singleton()->database();
+        $mri_upload = $db->pselect(
+            '
+                SELECT UploadID
+                FROM mri_upload
+                WHERE
+                    UploadedBy     = :UploadedBy     AND
+                    UploadLocation = :UploadLocation AND
+                    SessionID      = :SessionID      AND
+                    PatientName    = :PatientName    AND
+                    IsPhantom      = :IsPhantom
+                ORDER BY UploadID DESC
+                LIMIT 1
+            ',
+            [
+                'UploadedBy'     => $user->getUsername(),
+                'UploadLocation' => $file->getPathname(),
+                'SessionID'      => $this->getSessionID(),
+                'PatientName'    => $patientname,
+                'IsPhantom'      => $isphantom ? 'Y' : 'N',
+            ],
+        );
+
+        if ($mri_upload->count() !== 0) {
+            return $mri_upload->getFirstRow()['UploadID'];
+        }
+
+        $db->insert(
+            'mri_upload',
+            [
+                'UploadedBy'     => $user->getUsername(),
+                'UploadDate'     => date('Y-m-d H:i:s'),
+                'UploadLocation' => $file->getPathname(),
+                'SessionID'      => $this->getSessionID(),
+                'PatientName'    => $patientname,
+                'IsPhantom'      => $isphantom ? 'Y' : 'N',
+            ],
+        );
+
+        return (int) $db->getLastInsertId();
+    }
+
+    /**
+     * This retrieves all MRIUpload with the given filename for that session.
+     *
+     * @param \LORIS\LorisInstance $loris    The LORIS instance.
+     * @param \User                $user     The requesting user.
+     * @param string               $filename The mri_upload file's basename.
+     *
+     * @return \LORIS\Data\Models\MRIUploadDTO[]
+     */
+    public function getMRIUploadsByFilename(
+        \LORIS\LorisInstance $loris,
+        \User $user,
+        string $filename,
+    ): array {
+        $provisioner = new \LORIS\Data\Provisioners\TimepointMRIUploadsProvisioner(
+            $loris,
+            $this,
+            $filename,
+        );
+        $traversable = (new \LORIS\Data\Table())
+            ->withDataFrom($provisioner)
+            ->getRows($user);
+
+        return iterator_to_array($traversable);
+    }
+
+    /**
+     * This retrieves a MRIUpload with the given id for that session.
+     *
+     * @param \User $user        The requesting user.
+     * @param int   $mriuploadid The mri_upload id.
+     *
+     * @throws \NotFound When the id can not be found for that session.
+     *
+     * @return \LORIS\Data\Models\MRIUploadDTO
+     */
+    public function getMRIUploadsById(
+        \User $user,
+        int $mriuploadid
+    ): \LORIS\Data\Models\MRIUploadDTO {
+        $db  = \NDB_Factory::singleton()->database();
+        $row = $db->pselectRow(
+            '
+             SELECT
+               m.UploadID as mri_upload_id,
+               m.UploadedBy as uploaded_by,
+               m.UploadDate as upload_date,
+               m.UploadLocation as upload_location,
+               m.DecompressedLocation as decompress_location,
+               m.InsertionComplete as insertion_complete,
+               m.Inserting as inserting,
+               m.PatientName as patient_name,
+               m.number_of_mincInserted as inserted_minc_count,
+               m.number_of_mincCreated as created_minc_count,
+               m.TarchiveID as tarchive_id,
+               m.SessionID as session_id,
+               m.IsCandidateInfoValidated as is_candidate_info_validated,
+               m.IsTarchiveValidated as is_tarchive_validated,
+               m.IsPhantom as is_phantom
+             FROM
+               mri_upload m
+             WHERE
+               m.SessionID = :v_sessionid AND
+               m.UploadID = :v_mriuploadid
+            ',
+            [
+                'v_sessionid'   => $this->getSessionID(),
+                'v_mriuploadid' => $mriuploadid,
+            ]
+        );
+        if (empty($row)) {
+            throw new \NotFound('MRIUploadID not found.');
+        }
+
+        return \LORIS\Data\Models\MRIUploadDTO::fromDBRow($row);
     }
 
     /**

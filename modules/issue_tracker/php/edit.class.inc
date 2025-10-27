@@ -94,7 +94,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $assignee_expanded = $db->pselect(
                 "SELECT DISTINCT u.Real_name, u.UserID FROM users u
                  LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-                 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
+                 WHERE (FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC))
                  AND Active='Y' AND Pending_approval='N'",
                 [
                     'CenterID' => $CenterID,
@@ -105,7 +105,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             $inactive_users_expanded = $db->pselect(
                 "SELECT DISTINCT u.Real_name, u.UserID FROM users u
                  LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-                 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)
+                 WHERE (FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC))
                  AND Active='N'",
                 [
                     'CenterID' => $CenterID,
@@ -142,36 +142,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             }
         }
 
-        // can't set to closed if no any of the persmissions.
-        $reporter         = $db->pselectOne(
-            "SELECT reporter FROM issues WHERE IssueID=:issueID",
-            ['issueID' => $values['issueID']]
-        );
-        $hasPartialAccess = $user->hasAnyPermission(
-            [
-                'issue_tracker_close_site_issue',
-                'issue_tracker_close_all_issue',
-            ]
-        ) || $reporter == $user->getUsername();
-        if ($hasPartialAccess) {
-            $statuses = [
-                'new'          => 'New',
-                'acknowledged' => 'Acknowledged',
-                'assigned'     => 'Assigned',
-                'feedback'     => 'Feedback',
-                'resolved'     => 'Resolved',
-                'closed'       => 'Closed',
-            ];
-        } else {
-            $statuses = [
-                'new'          => 'New',
-                'acknowledged' => 'Acknowledged',
-                'assigned'     => 'Assigned',
-                'feedback'     => 'Feedback',
-                'resolved'     => 'Resolved',
-            ];
-        }
-
         $priorities = [
             'low'       => 'Low',
             'normal'    => 'Normal',
@@ -202,12 +172,18 @@ class Edit extends \NDB_Page implements ETagCalculator
         $instruments = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
 
         // Now get issue values
-        $issueData = $this->getIssueData(null, $user);
+        $issueData  = $this->getIssueData(null, $user);
+        $isOwnIssue = $issueData['reporter'] ==
+            $this->formatUserInformation($user->getUsername());
         if (!empty($values['issueID'])
             && $values['issueID'] != "new"
         ) { // if an existing issue
             $issueID   = intval($values['issueID']);
             $issueData = $this->getIssueData($issueID, $user);
+
+            // Re-set isOwnIssue variable if not a new issue
+            $isOwnIssue = $issueData['reporter'] ==
+                $this->formatUserInformation($user->getUsername());
 
             $provisioner = (new AttachmentProvisioner($issueID));
             $attachments = (new \LORIS\Data\Table())
@@ -273,8 +249,39 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
         $issueData['comment'] = null;
 
-        $isOwnIssue = $issueData['reporter']
-            == $this->formatUserInformation($user->getUsername());
+        $statuses = [
+            'new'          => 'New',
+            'acknowledged' => 'Acknowledged',
+            'assigned'     => 'Assigned',
+            'feedback'     => 'Feedback',
+            'resolved'     => 'Resolved',
+        ];
+
+        // Give "close" option if user has site close permissions and the issue
+        // is at a user site, or if the user has close permissions for all sites,
+        // or it is the user's own permission
+        $userHasSite = $user->hasPermission('issue_tracker_close_site_issue') &&
+            $issueData['centerID'] ?
+                $user->hasCenter(new \CenterID((string)$issueData['centerID'])) :
+                false;
+        if ($user->hasPermission('issue_tracker_close_all_issue')
+            || $userHasSite
+            || ($user->hasPermission('issue_tracker_own_issue')
+            && $isOwnIssue)
+        ) {
+            $statuses['closed'] = 'Closed';
+        }
+
+        // Give edit permission if they are able to see all issues, site issues,
+        // or their own issue
+        $hasEditPermission = $user->hasAnyPermission(
+            [
+                'issue_tracker_all_issue',
+                'issue_tracker_site_issue',
+            ]
+        )
+            || ($user->hasPermission('issue_tracker_own_issue')
+            && $isOwnIssue);
 
         $result = [
             'assignees'         => $assignees,
@@ -287,12 +294,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'instruments'       => $instruments,
             'otherWatchers'     => $otherWatchers,
             'issueData'         => $issueData,
-            'hasEditPermission' => $user->hasAnyPermission(
-                [
-                    'issue_tracker_all_issue',
-                    'issue_tracker_site_issue',
-                ]
-            ),
+            'hasEditPermission' => $hasEditPermission,
             'isOwnIssue'        => $isOwnIssue,
         ];
 
@@ -400,7 +402,7 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         // Fetch issues
         $baseQuery = "
-            SELECT i.*, c.CandID as candID, c.PSCID, s.Visit_label AS visitLabel
+            SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
             FROM issues AS i
             LEFT JOIN candidate c ON i.CandidateID = c.ID
             LEFT JOIN session s ON i.sessionID = s.ID
@@ -479,6 +481,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 : null;
 
             $issue['topComments'] = $this->getTopComments($issueID);
+            unset($issue['CandidateID']);
         }
 
         return [
@@ -537,7 +540,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueData = $db->pselectRow(
                 "SELECT
                             i.*,
-                            c.CandID AS candID,
                             c.PSCID,
                             s.Visit_label AS visitLabel,
                             t.Test_name as instrument_name
@@ -563,13 +565,14 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $issueData['lastUpdatedBy']
             );
             // return
+            unset($issueData['CandidateID']);
             return $issueData;
         }
 
         return [
             'reporter'      => $this->formatUserInformation($user->getUsername()),
             'dateCreated'   => date('Y-m-d H:i:s'),
-            'centerID'      => $user->getCenterIDs(),
+            'centerID'      => null,
             'status'        => 'new',
             'priority'      => 'normal',
             'issueID'       => 0, // TODO: this is dumb
@@ -627,10 +630,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     intval($comment['newValue'])
                 );
                 $comment['fieldChanged'] = 'site';
-            } else if ($comment['fieldChanged'] === 'candID') {
+            } else if ($comment['fieldChanged'] === 'CandidateID') {
                 $PSCID = $db->pselectOne(
-                    "SELECT PSCID FROM candidate WHERE CandID=:candID",
-                    ['candID' => $comment['newValue']]
+                    "SELECT PSCID FROM candidate WHERE ID=:candidateID",
+                    ['candidateID' => $comment['newValue']]
                 );
                 $comment['newValue']     = $PSCID;
                 $comment['fieldChanged'] = 'PSCID';
@@ -802,9 +805,12 @@ class Edit extends \NDB_Page implements ETagCalculator
         if (array_key_exists('sessionID', $validatedInput)) {
             $issueValues['sessionID'] = $validatedInput['sessionID'];
         }
-
         if (array_key_exists('candID', $validatedInput)) {
-            $issueValues['candID'] = $validatedInput['candID'];
+            $candidateID = $db->pselectOne(
+                "SELECT ID FROM candidate WHERE CandID=:candID",
+                ['candID' => $validatedInput['candID']]
+            );
+            $issueValues['CandidateID'] = $candidateID;
         }
 
         // Get changed values to save in history
@@ -1157,7 +1163,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         // If both are set, return SessionID and CandID
         if (isset($result['PSCID']) && isset($result['visit'])) {
             $session = iterator_to_array(
-                $db->pSelect(
+                $db->pselect(
                     "SELECT s.ID as sessionID, c.CandID as candID FROM candidate c
                 INNER JOIN session s on (c.ID = s.CandidateID)
                 WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
@@ -1193,7 +1199,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $query .= " AND FIND_IN_SET(RegistrationCenterID,:CenterID)";
             }
 
-            $candidate = $db->pSelectOne($query, $params);
+            $candidate = $db->pselectOne($query, $params);
             if ($candidate) {
                 $result['candID'] = $candidate;
             } else {

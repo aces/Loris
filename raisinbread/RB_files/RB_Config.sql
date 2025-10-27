@@ -1,3 +1,4 @@
+/*M!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `Config`;
 LOCK TABLES `Config` WRITE;
@@ -54,6 +55,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (59,77,'/data-raisinbrea
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (60,78,'PatientName');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (61,79,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (62,80,'1');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (63,81,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (64,82,'65');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (65,83,'t1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (66,84,'19');
@@ -82,7 +84,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (95,49,'1000');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (96,100,'environment');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (97,70,'/data-raisinbread/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (98,93,'V1');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (99,101,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (102,19,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (103,102,'/data/document_repository_uploads/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (104,103,'/data/data_release_uploads/');
@@ -100,13 +101,11 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (119,119,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (120,120,'database_config.py');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (121,125,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (122,126,'0');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (123,127,'');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (124,128,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (126,129,'365');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (127,130,'/var/www/loris/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,131,'/data/EEGUploadIncomingPath/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (129,132,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (130,133,'EEGS3DataPath');
-
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (131,134,'false');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

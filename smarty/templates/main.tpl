@@ -73,6 +73,19 @@
                 toggleIcon.classList.add('glyphicon-chevron-down');
               }
             });
+
+            const policyButtonEl = document.getElementById("header-policy-button");
+            if (policyButtonEl) {
+                headerPolicyRoot = ReactDOM.createRoot(
+                    policyButtonEl
+                );
+                headerPolicyRoot.render(
+                    React.createElement(PolicyButton, {
+                        onClickPolicy: {$header_policy|json_encode},
+                        popUpPolicy: {$pop_up_policy|json_encode},
+                })
+                );
+            }
           });
         </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
@@ -120,20 +133,20 @@
                        <!-- toggle feedback in mobile view -->
 
 
-                        <a class="navbar-brand" href="{$baseurl}/">LORIS{if $sandbox}: DEV{/if}</a>
+                        <a class="navbar-brand" href="{$baseurl}/">{dgettext("loris", "LORIS")}{if $sandbox}: {dgettext("loris", "DEV")}{/if}</a>
                    </div>
                    <div class="collapse navbar-collapse" id="example-navbar-collapse">
                         <ul class="nav navbar-nav">
-                            {foreach from=$menus item=menuitems key=category}
+		            {section name=category loop=$menus}
                                  <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{$category}<b class="caret"></b>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{$menus[category].Category}<b class="caret"></b>
                                         <ul class="dropdown-menu">
-                                            {section name=itemloop loop=$menuitems}
-                                            <li><a href="{$menuitems[itemloop]->getLink()}">{$menuitems[itemloop]->getLabel()}</a></li>
+                                            {section name=item loop=$menus[category].Items}
+                                            <li><a href="{$menus[category].Items[item]->link}">{$menus[category].Items[item]->label}</a></li>
                                             {/section}
                                         </ul>
                                     </a>
-                            {/foreach}
+                            {/section}
                         </ul>
                         <ul class="nav navbar-nav navbar-right" id="nav-right">
                             {if $bvl_feedback|default}
@@ -143,17 +156,20 @@
                                 </a>
                             </li>
                             {/if}
+                            {if $header_policy}
+                                <li class="hidden-xs hidden-sm" id="header-policy-button"></li>
+                            {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>
 
                             <!-- Affiliations Dropdown Menu -->
                             <li class="nav dropdown nav-affiliations">
                                 <a href="#" class="css-tooltip dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    Affiliations
+                                    {dgettext("loris", "Affiliations")}
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu affiliations-dropdown">
-                                    <li class="dropdown-header">Site Affiliations: {$userNumSites}</li>
+                                    <li class="dropdown-header">{dngettext("loris", "Site Affiliation", "Site Affiliations", $userNumSites)}: {$userNumSites}</li>
                                     <li>
                                         <a href="#">
                                             <span class="tooltip-text">{$user.SitesTooltip}</span>
@@ -162,7 +178,7 @@
 
                                     <li role="separator" class="divider"></li>
 
-                                    <li class="dropdown-header">Project Affiliations: {$userNumProjects}</li>
+                                    <li class="dropdown-header">{dngettext("loris", "Project Affiliation", "Project Affiliations", $userNumProjects)}: {$userNumProjects}</li>
                                     <li>
                                         <a href="#">
                                             <span class="tooltip-text">{$user.ProjectsTooltip}</span>
@@ -180,13 +196,13 @@
                                     {if $my_preferences|default}
                                     <li>
                                         <a href="{$baseurl}/my_preferences/">
-                                            My Preferences
+                                            {dgettext("loris", "My Preferences")}
                                         </a>
                                     </li>
                                     {/if}
                                     <li>
-                                        <a href="{$baseurl}/?logout=true">
-                                            Log Out
+                                        <a href="{$baseurl}/login/logout">
+                                            {dgettext("loris", "Log Out")}
                                         </a>
                                     </li>
                                 </ul>

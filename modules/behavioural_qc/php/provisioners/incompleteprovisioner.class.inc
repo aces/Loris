@@ -26,6 +26,10 @@ class IncompleteProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             "
             SELECT DISTINCT
                 t.Full_name AS _instrument,
+                CASE
+                    WHEN f.commentid LIKE 'DDE_%' THEN 'DDE'
+                    ELSE 'IDE'
+                END AS _data_entry_type,
                 c.CandID AS _candID,
                 c.PSCID AS _pscID,
                 s.visit_label AS _visit,

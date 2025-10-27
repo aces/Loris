@@ -3,7 +3,7 @@
 /**
  * Imaging browser MRI Feedback class file.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category MRI
  * @package  Loris
@@ -223,9 +223,7 @@ class Feedback_MRI_Popup extends \NDB_Page
                     );
             }
 
-            if (is_array($comment_array)) {
-                $CommentTpl['name'] = $comment_array['name'];
-            }
+            $CommentTpl['name'] = $comment_array['name'];
 
             // get the list of predefined feedbackObj for the current type
             $predefined_comments = $feedbackObj->getAllPredefinedComments(
@@ -304,9 +302,7 @@ class Feedback_MRI_Popup extends \NDB_Page
         }
 
         // save all comment status fields
-        if (isset($values['saveCommentStatusField'])
-            && is_array($values['saveCommentStatusField'])
-        ) {
+        if (isset($values['saveCommentStatusField'])) {
             foreach ($values['saveCommentStatusField'] as $status_field => $value) {
                 $feedbackObj->setMRIValue($status_field, $value);
             }
@@ -329,5 +325,4 @@ class Feedback_MRI_Popup extends \NDB_Page
         $html = $smarty->fetch("form_feedback_mri_popup.tpl");
         return $html;
     }
-
 }

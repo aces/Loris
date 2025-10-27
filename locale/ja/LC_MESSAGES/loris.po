@@ -1,0 +1,342 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+# Smarty template main.tpl strings
+msgid "LORIS"
+msgstr "ロリス"
+
+msgid "DEV"
+msgstr "開発環境"
+
+msgid "Affiliations"
+msgstr "所属"
+
+msgid "Site Affiliation"
+msgstr "サイトの所属"
+
+msgid "Site Affiliations"
+msgstr "サイトの所属"
+
+msgid "Project Affiliation"
+msgstr "プロジェクトの所属"
+
+msgid "Project Affiliations"
+msgstr "プロジェクトの所属"
+
+msgid "Log Out"
+msgstr "ログアウト"
+
+msgid "My Preferences"
+msgstr "私の好み"
+
+# Auto extracted strings from PHP
+# Menu categories
+#: modules/configuration/php/module.class.inc:50
+#: modules/help_editor/php/module.class.inc:47
+#: modules/instrument_manager/php/module.class.inc:53
+#: modules/module_manager/php/module.class.inc:50
+#: modules/server_processes_manager/php/module.class.inc:104
+#: modules/survey_accounts/php/module.class.inc:48
+#: modules/user_accounts/php/module.class.inc:53
+msgid "Admin"
+msgstr "行政上の"
+#: modules/acknowledgements/php/module.class.inc:54
+#: modules/api_docs/php/module.class.inc:66
+#: modules/battery_manager/php/module.class.inc:55
+#: modules/datadict/php/module.class.inc:49
+#: modules/data_release/php/module.class.inc:56
+#: modules/dictionary/php/module.class.inc:49
+#: modules/document_repository/php/module.class.inc:56
+msgid "Data Dictionary"
+msgstr "データ辞書"
+
+#: modules/instrument_builder/php/module.class.inc:48
+#: modules/issue_tracker/php/module.class.inc:54
+#: modules/schedule_module/php/module.class.inc:49
+msgid "Tools"
+msgstr "ツール"
+
+#: modules/behavioural_qc/php/module.class.inc:51
+#: modules/conflict_resolver/php/module.class.inc:83
+#: modules/examiner/php/module.class.inc:50
+#: modules/media/php/module.class.inc:33
+msgid "Clinical"
+msgstr "臨床的"
+
+#: modules/dicom_archive/php/module.class.inc:115
+#: modules/imaging_browser/php/module.class.inc:40
+#: modules/imaging_qc/php/module.class.inc:50
+#: modules/imaging_uploader/php/module.class.inc:54
+#: modules/mri_violations/php/module.class.inc:53
+msgid "Imaging"
+msgstr "イメージング"
+
+#: modules/candidate_list/php/module.class.inc:76
+#: modules/new_profile/php/module.class.inc:50
+msgid "Candidate"
+msgstr "為り手"
+
+#: modules/genomic_browser/php/module.class.inc:53
+msgid "Genomics"
+msgstr "ゲノミクス"
+
+#: modules/electrophysiology_browser/php/module.class.inc:54
+msgid "Electrophysiology"
+msgstr "電気生理学"
+
+#: modules/dataquery/php/module.class.inc:33
+#: modules/dqt/php/module.class.inc:49
+#: modules/publication/php/module.class.inc:55
+#: modules/statistics/php/module.class.inc:49
+msgid "Reports"
+msgstr "レポート"
+
+# Common loris terms. Consider moving these to their own textdomain?
+msgid "TimePoint"
+msgstr "タイムポイント"
+
+# Common select option labels
+msgid "Yes"
+msgstr "はい"
+
+msgid "No"
+msgstr "いいえ"
+
+msgid "Create"
+msgstr "作成する"
+
+msgid "N/A"
+msgstr "適用できない"
+
+# Filters
+msgid "Selection Filter"
+msgstr "'選択フィルター"
+
+msgid "Show Filters"
+msgstr "フィルターを表示"
+
+msgid "Hide Filters"
+msgstr "フィルターを非表示"
+
+msgid "Clear Filters"
+msgstr "フィルターをクリア"
+
+# Common swal labels
+msgid "Cancel"
+msgstr "取り消す"
+
+msgid "Success!"
+msgstr "成功！"
+
+# Common candidate terms
+msgid "PSCID"
+msgstr "プロジェクト識別子"
+
+msgid "DCCID"
+msgstr "候補者識別子"
+
+msgid "Visit Label"
+msgstr "ラベルを訪問"
+
+msgid "Site"
+msgstr "サイト"
+
+msgid "Module"
+msgstr "モジュール"
+
+msgid "Project"
+msgstr "プロジェクト"
+
+msgid "Candidate Registration Project"
+msgstr "候補者登録プロジェクト"
+
+msgid "Timepoint Project"
+msgstr "タイムポイントプロジェクト"
+
+msgid "Cohort"
+msgid_plural "Cohorts"
+msgstr[0] "コホート"
+
+msgid "Session"
+msgstr "セッション"
+
+msgid "Date of registration"
+msgstr "入学日"
+
+msgid "Participant Status"
+msgstr "参加者ステータス"
+
+msgid "DoB"
+msgstr "生年月日"
+
+msgid "Sex"
+msgstr "性別"
+
+msgid "Feedback"
+msgstr "フィードバック"
+
+msgid "Scans"
+msgstr "スキャン"
+
+msgid "Stage"
+msgstr "ステージ"
+
+msgid "Sent To DCC"
+msgstr "DCCに送信"
+
+msgid "Send To DCC"
+msgstr "DCCに送信"
+
+msgid "Reverse Send To DCC"
+msgstr "DCCへの逆送信"
+
+msgid "Date of Birth"
+msgstr "生年月日"
+
+msgid "Visits"
+msgstr "訪問"
+
+msgid "An error occured while loading the page."
+msgstr "このページの読み込み中にエラーが発生しました"
+
+msgid "Entity Type"
+msgstr "エンティティタイプ"
+
+msgid "Scan Done"
+msgstr "スキャン完了"
+
+msgid "Show Advanced Filters"
+msgstr "詳細フィルターを表示"
+
+msgid "Hide Advanced Filters"
+msgstr "詳細フィルターを非表示"
+
+msgid "Language"
+msgstr "言語"
+
+msgid "Ethnicity"
+msgstr "民族"
+
+# Data table strings
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgstr "{{totalCount}}行中{{pageCount}}行を表示"
+
+msgid "Maximum rows per page:"
+msgstr "ページあたりの最大行数:"
+
+msgid "Download Data as CSV"
+msgstr "データをCSVとしてダウンロード"
+
+# Dashboard panel strings
+msgid "Views"
+msgstr "ビュー"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "新しい"
+
+msgid "Updated"
+msgstr "更新"
+
+msgid "Uploaded"
+msgstr "アップロード済み"
+
+msgid "Total"
+msgstr "合計"
+
+msgid "Error!"
+msgstr "エラー！"
+
+# Common timepoint and vist terms
+msgid "Not Started"
+msgstr "開始されていません"
+
+msgid "Screening"
+msgstr "スクリーニング"
+
+msgid "Visit"
+msgstr "訪問"
+
+msgid "Approval"
+msgstr "承認"
+
+msgid "Subject"
+msgstr "候補者"
+
+msgid "Recycling Bin"
+msgstr "リサイクルビン"
+
+msgid "Pass"
+msgstr "合格"
+
+msgid "Failure"
+msgstr "失敗"
+
+msgid "Withdrawal"
+msgstr "撤退"
+
+msgid "In Progress"
+msgstr "進行中"
+
+msgid "Complete"
+msgstr "完了"
+
+msgid "Instruments"
+msgstr "楽器"
+
+msgid "None"
+msgstr "なし"
+
+msgid "Partial"
+msgstr "部分的"
+
+msgid "All"
+msgstr "全て"
+
+msgid "Data Entry"
+msgstr "データ入力"
+
+msgid "Administration"
+msgstr "管理"
+
+msgid "Double Data Entry Form"
+msgstr "二重データ入力フォーム"
+
+msgid "Double Data Entry Status"
+msgstr "二重データ入力ステータス"
+
+msgid "Double Data Entry"
+msgstr "二重データ入力"
+
+# Age related terms
+msgid "Age"
+msgstr "年"
+
+msgid "{{months}} months old"
+msgstr "{{months}}ヶ月"
+
+msgid "{{years}} years old"
+msgstr "{{years}}歳"
+
+# Other generic terms
+msgid "Loading..."
+msgstr "読み込み中..."
+

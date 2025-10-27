@@ -4,7 +4,7 @@
  * This class implements a data Instance which represents a single
  * row in the help editor menu table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main

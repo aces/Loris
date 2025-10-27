@@ -3,7 +3,7 @@
 /**
  * This file contains the TaskQueryWidget class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -13,6 +13,7 @@
  */
 
 namespace LORIS\dashboard;
+use \LORIS\GUI\LocalizableString;
 
 /**
  * A TaskQueryWidget is a special type of TaskWidget which gets its data from
@@ -34,27 +35,30 @@ class TaskQueryWidget extends TaskWidget
     /**
      * Construct a TaskQueryWidget
      *
-     * @param \User     $user         The user whose tasks are being displayed
-     * @param string    $label        The label for the task widget. It should be
-     *                                singular and phrased in a way that adding
-     *                                an "s" pluralizes.
-     * @param \Database $db           The database connection for the query.
-     * @param string    $dbquery      The query to run to get a count.
-     * @param string    $allperm      The permission to use to determine if the user
-     *                                has access to all sites, or only user sites.
-     *                                If the empty string, center permissions will
-     *                                not be used.
-     * @param string    $sitefield    The field to use in the query to site-restrict
-     *                                the results.
-     * @param string    $projectfield The field to use in the query to restrict the
-     *                                project in results.
-     * @param string    $link         The link for the widget to go to when clicked.
-     * @param string    $cssclass     An optional css class to add to the task for
-     *                                testing.
+     * @param \User             $user         The user whose tasks are being
+     *                                        displayed
+     * @param LocalizableString $label        The gettext textdomain to use for
+     *                                        the label
+     * @param \Database         $db           The database connection for the
+     *                                        query.
+     * @param string            $dbquery      The query to run to get a count.
+     * @param string            $allperm      The permission to use to determine
+     *                                        if the user has access to all sites,
+     *                                        or only user sites. If the empty
+     *                                        string, center permissions will
+     *                                        not be used.
+     * @param string            $sitefield    The field to use in the query to
+     *                                        site-restrict the results.
+     * @param string            $projectfield The field to use in the query to
+     *                                        restrict the project in results.
+     * @param string            $link         The link for the widget to go to
+     *                                        when clicked.
+     * @param string            $cssclass     An optional css class to add to
+     *                                        the task for testing.
      */
     public function __construct(
         \User $user,
-        string $label,
+        LocalizableString $label,
         \Database $db,
         string $dbquery,
         string $allperm,
@@ -64,13 +68,13 @@ class TaskQueryWidget extends TaskWidget
         string $cssclass
     ) {
         $queryparams = [];
-        $siteLabel   = 'Site: All';
+        $siteLabel   = dgettext("dashboard", 'Site: All');
         if ($allperm != '') {
             if (!$user->hasPermission($allperm)) {
                 $sites = $user->getCenterIDs();
                 $queryparams['SiteID'] = implode(',', $sites);
                 $dbquery  .= " AND FIND_IN_SET($sitefield, :SiteID)";
-                $siteLabel = 'Site: All User Sites';
+                $siteLabel = dgettext("dashboard", 'Site: All User Sites');
             }
         }
         if ($projectfield) {
@@ -79,10 +83,13 @@ class TaskQueryWidget extends TaskWidget
         }
 
         $number = (int )$db->pselectOne($dbquery, $queryparams);
-        if ($number != 1) {
-            $label .= "s";
-        }
 
-        parent::__construct($label, $number, $link, $cssclass, $siteLabel);
+        parent::__construct(
+            $label->getN($number),
+            $number,
+            $link,
+            $cssclass,
+            $siteLabel
+        );
     }
 }

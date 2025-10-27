@@ -6,95 +6,116 @@ import StudyProgression from './widgets/studyprogression';
 import {fetchData} from './Fetch';
 import Modal from 'Modal';
 import Loader from 'Loader';
-import {SelectElement} from 'jsx/Form';
+
+import {useTranslation} from 'react-i18next';
 
 import '../css/WidgetIndex.css';
 
-import {setupCharts} from './widgets/helpers/chartBuilder';
+import {setupCharts, unloadCharts} from './widgets/helpers/chartBuilder';
+import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
 
 /**
  * WidgetIndex - the main window.
  *
- * @param {object} props
+ * @param  {object} props
  * @return {JSX.Element}
  */
 const WidgetIndex = (props) => {
   const [recruitmentData, setRecruitmentData] = useState({});
   const [studyProgressionData, setStudyProgressionData] = useState({});
-
   const [modalChart, setModalChart] = useState(null);
+  const {t, i18n} = useTranslation();
+  useEffect( () => {
+    i18n.addResourceBundle('ja', 'statistics', jaStrings);
+  }, []);
 
   // used by recruitment.js and studyprogression.js to display each chart.
   const showChart = (section, chartID, chartDetails, setChartDetails) => {
-    let {sizing, title, chartType, options} = chartDetails[section][chartID];
-    return <div
-      className={'col-lg-' + sizing + ' col-md-' + sizing + ' col-sm-' + sizing}
-    >
+    let {title, chartType, options} = chartDetails[section][chartID];
+    return (
       <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}
+        className ="chart-card"
       >
-        <h5 className='chart-title'>
-          {title}
-        </h5>
-        {Object.keys(chartDetails[section][chartID].options).length > 1 &&
-          <SelectElement
-            className='col-md-3'
-            emptyOption={false}
-            options={options}
-            value={options[chartType]}
-            onUserInput={(name, value) => {
-            // set the chart type in the chartDetails object for that chartID
-              setChartDetails(
-                {...chartDetails,
-                  [section]: {
-                    ...chartDetails[section],
-                    [chartID]: {
-                      ...chartDetails[section][chartID],
-                      chartType: options[value],
-                    },
-                  },
-                });
+        {/* Chart Title and Toggle */}
+        <div className ='chart-header'>
+          <h5 className ='chart-title'>{title}</h5>
+          {Object.keys(chartDetails[section][chartID].options).length > 1 && (
+            <div className ="chart-toggle-wrapper">
+              {Object.entries(options).map(([key, value]) => (
+                <button
+                  key={key}
+                  className={`chart-toggle-btn ${
+                    chartType === value ? 'active' : ''
+                  }`}
+                  onClick={() => {
+                    setChartDetails(
+                      {
+                        ...chartDetails,
+                        [section]: {
+                          ...chartDetails[section],
+                          [chartID]: {
+                            ...chartDetails[section][chartID],
+                            chartType: value,
+                          },
+                        },
+                      }
+                    );
+                    setupCharts(
+                      t,
+                      false,
+                      {
+                        [section]: {
+                          [chartID]: {
+                            ...chartDetails[section][chartID],
+                            chartType: value,
+                          },
+                        },
+                      },
+                      t('Total', {ns: 'loris'}),
+                    );
+                  }}
+                >
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        {/* Chart Canvas / Modal Trigger */}
+        <div className ="chart-visual-wrapper">
+          <a
+            onClick ={() => {
+              setModalChart(chartDetails[section][chartID]);
               setupCharts(
-                false,
-                {[section]: {[chartID]: {
-                  ...chartDetails[section][chartID],
-                  chartType: options[value]},
-                }}
+                t,
+                true,
+                {
+                  [section]:
+                  {[chartID]: chartDetails[section][chartID]},
+                },
+                t('Total', {ns: 'loris'}),
               );
             }}
-          />
-        }
+            id ={chartID}
+          >
+            <Loader />
+          </a>
+        </div>
       </div>
-      <a
-        onClick={() => {
-          setModalChart(chartDetails[section][chartID]);
-          setupCharts(
-            true,
-            {[section]: {[chartID]: chartDetails[section][chartID]}}
-          );
-        }}
-        id={chartID}
-      >
-        <Loader />
-      </a>
-    </div>;
+    );
   };
 
-  const downloadAsCSV = (data, filename, dataType) => {
+  const downloadAsCSV = (data, filename, dataType, labelsLabel) => {
     const convertBarToCSV = (data) => {
       const csvRows = [];
-
       // Adding headers row
-      const headers = ['Labels', ...Object.keys(data.datasets)];
+      const headers = [labelsLabel, ...Object.keys(data.datasets)];
       csvRows.push(headers.join(','));
-
       // Adding data rows
-      const maxDatasetLength = Math.max(...Object.values(data.datasets).map(
-        (arr) => arr.length)
+      const maxDatasetLength = Math.max(
+        ...Object.values(data.datasets).map(
+          (arr) => arr.length
+        )
       );
       for (let i = 0; i < maxDatasetLength; i++) {
         const values = [`"${data.labels[i]}"` || '']; // Label for this row
@@ -106,33 +127,29 @@ const WidgetIndex = (props) => {
       }
       return csvRows.join('\n');
     };
-
     const convertPieToCSV = (data) => {
       const csvRows = [];
       const headers = Object.keys(data[0]);
       csvRows.push(headers.join(','));
-
       for (const row of data) {
-        const values = headers.map((header) => {
-          const escapedValue = row[header].toString().replace(/"/g, '\\"');
-          return `"${escapedValue}"`;
-        });
+        const values = headers.map(
+          (header) => {
+            const escapedValue = row[header].toString().replace(/"/g, '\\"');
+            return `"${escapedValue}"`;
+          }
+        );
         csvRows.push(values.join(','));
       }
-
       return csvRows.join('\n');
     };
-
     const convertLineToCSV = (data) => {
       const csvRows = [];
-
       // Adding headers row
       const headers = [
-        'Labels',
+        t('Labels', {ns: 'statistics'}),
         ...data.datasets.map((dataset) => dataset.name),
       ];
       csvRows.push(headers.join(','));
-
       // Adding data rows
       for (let i = 0; i < data.labels.length; i++) {
         const values = [data.labels[i]]; // Label for this row
@@ -141,10 +158,8 @@ const WidgetIndex = (props) => {
         }
         csvRows.push(values.join(','));
       }
-
       return csvRows.join('\n');
     };
-
     let csvData = '';
     if (dataType == 'pie') {
       csvData = convertPieToCSV(data);
@@ -171,6 +186,20 @@ const WidgetIndex = (props) => {
     chartDetails,
     setChartDetails
   ) => {
+    // Unload all charts in the section first
+    unloadCharts(t, chartDetails, section);
+
+    // Clear cached data from chartDetails to prevent old data from showing
+    let clearedChartDetails = {...chartDetails};
+    Object.keys(chartDetails[section]).forEach((chartID) => {
+      clearedChartDetails[section][chartID] = {
+        ...chartDetails[section][chartID],
+        data: null,
+        chartObject: null,
+      };
+    });
+    setChartDetails(clearedChartDetails);
+
     let formObject = new FormData();
     for (const key in formDataObj) {
       if (formDataObj[key] != '' && formDataObj[key] != ['']) {
@@ -178,39 +207,61 @@ const WidgetIndex = (props) => {
       }
     }
     const queryString = '?' + new URLSearchParams(formObject).toString();
+    let newChartDetails = {...clearedChartDetails};
 
-    let newChartDetails = {...chartDetails};
-    Object.keys(chartDetails[section]).forEach((chart) => {
-      // update filters
-      let newChart = {...chartDetails[section][chart], filters: queryString};
-      setupCharts(false, {[section]: {[chart]: newChart}}).then((data) => {
-        // update chart data
-        newChartDetails[section][chart] = data[section][chart];
-      });
+    const chartPromises = [];
+    Object.keys(chartDetails[section]).forEach(
+      (chart) => {
+        // update filters
+        let newChart = {
+          ...clearedChartDetails[section][chart],
+          filters: queryString,
+        };
+        const chartPromise = setupCharts(
+          t,
+          false,
+          {[section]: {[chart]: newChart}},
+          t('Total', {ns: 'loris'}),
+        ).then(
+          (data) => {
+            // update chart data
+            newChartDetails[section][chart] = data[section][chart];
+          }
+        );
+        chartPromises.push(chartPromise);
+      }
+    );
+
+    Promise.all(chartPromises).then(() => {
+      setChartDetails(newChartDetails);
     });
-    setChartDetails(newChartDetails);
   };
 
   /**
    * Similar to componentDidMount and componentDidUpdate.
    */
-  useEffect(() => {
-    /**
-     * setup - fetch recruitment and study progression data.
-     *
-     * @return {Promise<void>}
-     */
-    const setup = async () => {
-      const data = await fetchData(
-        `${props.baseURL}/Widgets`
+  useEffect(
+    () => {
+      /**
+       * setup - fetch recruitment and study progression data.
+       *
+       * @return {Promise<void>}
+       */
+      const setup = async () => {
+        const data = await fetchData(
+          `${props.baseURL}/Widgets`
+        );
+        setRecruitmentData(data);
+        setStudyProgressionData(data);
+      };
+      setup().catch(
+        (error) => {
+          console.error(error);
+        }
       );
-      setRecruitmentData(data);
-      setStudyProgressionData(data);
-    };
-    setup().catch((error) => {
-      console.error(error);
-    });
-  }, []);
+    },
+    []
+  );
 
   /**
    * Renders the React component.
@@ -220,79 +271,82 @@ const WidgetIndex = (props) => {
   return (
     <>
       <Modal
-        show={modalChart}
-        onClose={() => setModalChart(null)}
-        width={'1200px'}
-        title={modalChart && modalChart.title}
-        throwWarning={false}
+        show ={modalChart}
+        onClose ={() => setModalChart(null)}
+        width ={'1200px'}
+        title ={modalChart && modalChart.title}
+        throwWarning ={false}
       >
         <div
-          style={{
+          style ={{
             margin: 'auto',
             display: 'flex',
           }}
         >
           <div
-            style={{
+            style ={{
               margin: 'auto',
               display: 'flex',
             }}
-            id='dashboardModal'
+            id ='dashboardModal'
           >
             <Loader />
           </div>
         </div>
         {modalChart && modalChart.chartType &&
-          <a
-            style={{
-              position: 'absolute',
-              bottom: '10px',
-              left: '10px',
-            }}
-            onClick={() => {
-              downloadAsCSV(
-                modalChart.data,
-                modalChart.title,
-                modalChart.dataType
-              );
-            }}
-            className='btn btn-info'>
-            <span className='glyphicon glyphicon-download' aria-hidden='true'/>
-            {' '}Download data as csv
-          </a>
+            <a
+              style ={{
+                position: 'absolute',
+                bottom: '10px',
+                left: '10px',
+              }}
+              onClick ={() => {
+                downloadAsCSV(
+                  modalChart.data,
+                  modalChart.title,
+                  modalChart.dataType,
+                  t('Labels', {ns: 'statistics'}),
+                );
+              }}
+              className ='btn btn-info'>
+              <span
+                className ='glyphicon glyphicon-download'
+                aria-hidden='true'/>
+              {' '}{t('Download Data as CSV', {ns: 'loris'})}
+            </a>
         }
         {modalChart
-          && modalChart.chartType
-          && modalChart.chartType !== 'line'
-          && <a
-            style={{
-              position: 'absolute',
-              bottom: '10px',
-              right: '10px',
-            }}
-            onClick={() => {
-              exportChartAsImage('dashboardModal');
-            }}
-            className='btn btn-info'>
-            <span
-              className='glyphicon glyphicon-download'
-              aria-hidden='true'
-            />
-            {' '}Download as image (png)
-          </a>
+            && modalChart.chartType
+            && modalChart.chartType !== 'line'
+            && <a
+              style ={{
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+              }}
+              onClick ={() => {
+                exportChartAsImage('dashboardModal');
+              }}
+              className ='btn btn-info'>
+              <span
+                className ='glyphicon glyphicon-download'
+                aria-hidden ='true'
+              />
+              {' '}{t('Download as PNG', {ns: 'statistics'})}
+            </a>
         }
       </Modal>
       <Recruitment
-        data={recruitmentData}
-        baseURL={props.baseURL}
-        showChart={showChart}
-        updateFilters={updateFilters}
+        data ={recruitmentData}
+        baseURL ={props.baseURL}
+        showChart ={showChart}
+        updateFilters ={updateFilters}
       />
       <StudyProgression
-        data={studyProgressionData}
-        baseURL={props.baseURL}
-        showChart={showChart}
-        updateFilters={updateFilters}
+        data ={studyProgressionData}
+        baseURL ={props.baseURL}
+        showChart ={showChart}
+        updateFilters ={updateFilters}
       />
     </>
   );
@@ -304,15 +358,18 @@ WidgetIndex.propTypes = {
 /**
  * Render StatisticsIndex on page load.
  */
-window.addEventListener('load', () => {
-  createRoot(
-    document.getElementById('statistics_widgets')
-  ).render(
-    <WidgetIndex
-      baseURL={`${loris.BaseURL}/statistics`}
-    />
-  );
-});
+window.addEventListener(
+  'load',
+  () => {
+    createRoot(
+      document.getElementById('statistics_widgets')
+    ).render(
+      <WidgetIndex
+        baseURL ={`${loris.BaseURL}/statistics`}
+      />
+    );
+  }
+);
 
 /**
  * Helper function to export a chart as an image
@@ -335,10 +392,12 @@ const exportChartAsImage = (chartId) => {
 
   // Modify the font properties of the text elements
   const textElements = clonedSvgNode.querySelectorAll('text');
-  textElements.forEach((textElement) => {
-    textElement.style.fontFamily = 'Arial, sans-serif';
-    textElement.style.fontSize = '12px';
-  });
+  textElements.forEach(
+    (textElement) => {
+      textElement.style.fontFamily = 'Arial, sans-serif';
+      textElement.style.fontSize = '12px';
+    }
+  );
 
   // Create a canvas element
   const canvas = document.createElement('canvas');
@@ -370,6 +429,6 @@ const exportChartAsImage = (chartId) => {
     canvas.remove();
   };
   img.src =
-    'data:image/svg+xml;base64,'
-    + btoa(unescape(encodeURIComponent(svgData)));
+  'data:image/svg+xml;base64,'
+  + btoa(unescape(encodeURIComponent(svgData)));
 };

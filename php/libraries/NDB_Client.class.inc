@@ -3,7 +3,7 @@
 /**
  * This file contains the NDB_Client class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -52,31 +52,8 @@ class NDB_Client
         // Load the config file.
         $factory = NDB_Factory::singleton();
 
-        $config = $factory->config($configFile);
-
-        $DB = $factory->database();
-
-        // Register S3 stream wrapper if configured
-        if (getenv('AWS_ACCESS_KEY_ID') !== false) {
-            // AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
-            // should both be set as environment variables
-            $s3config = [
-                'version' => '2006-03-01',
-            ];
-            $endpoint = $config->getSetting('AWS_S3_Endpoint');
-            if (!empty($endpoint)) {
-                $s3config['region']   = '';
-                $s3config['endpoint'] = $endpoint;
-            } else {
-                $s3config['region'] = $config->getSetting('AWS_S3_Region');
-            }
-
-            $s3client = new Aws\S3\S3Client($s3config);
-
-            // Register the stream wrapper so that s3:// urls can be
-            // treated as regular files.
-            $s3client->registerStreamWrapper();
-        }
+        // Load config file into factory as a side-effect
+        $factory->config($configFile);
 
         // stop here if this is a command line client
         if (!$this->_isWebClient) {
@@ -91,46 +68,6 @@ class NDB_Client
             return true;
         }
 
-        $config_additions = $DB->pselectOne(
-            "SELECT c.Value
-            FROM Config c
-            JOIN ConfigSettings cs ON (c.ConfigID=cs.ID)
-            WHERE cs.Name=:nm",
-            ["nm" => "CSPAdditionalHeaders"]
-        );
-        if (empty($config_additions)) {
-            $config_additions = "";
-        }
-        $CaptchaDomains ="";
-        // Get reCATPCHA keys
-        $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
-        $reCAPTCHAPublic  = $config->getSetting('reCAPTCHAPublic');
-        // Display reCAPTCHA if both private and public keys are set
-        if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
-            $CaptchaDomains ="www.google.com  www.gstatic.com";
-        }
-
-        // Content-Security policy for LORIS
-        // 1. By default, only allow things that are self-hosted
-        // 2. Allow inline CSS and JS (inline JS is required for
-        //    the Loris base class to load smarty variables
-        // 3. Allow unsafe-eval because jQuery requires it to load
-        //    our menus. It will be fixed in jQuery 3.0.0.
-        //    See: https://github.com/jquery/jquery/issues/2012
-        // 4. Allow data URLs for fonts, because our bootstrap theme
-        //    seems to load a font that way.
-        // 5. Allow reCAPTCHA domains only if the CAPTCHA keys were set
-        //    up by the project
-        header(
-            "Content-Security-Policy: "
-            . "default-src 'self' 'unsafe-inline'; "
-            . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
-            . "font-src 'self' data:; "
-            . "img-src 'self' https://images.loris.ca data:; "
-            . "frame-ancestors 'none'; "
-            . "form-action 'self'; "
-            . $config_additions
-        );
         // start php session
         $sessionOptions = ['cookie_httponly' => true];
 

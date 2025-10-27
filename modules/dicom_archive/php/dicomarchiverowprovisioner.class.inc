@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all possible rows
  * for the dicom archive menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\dicom_archive;
  * This class implements a data provisioner to get all possible rows
  * for the dicom archive menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -56,7 +56,9 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
             t.TarchiveID AS TarchiveID,
             s.ID AS SessionID,
             s.CenterID AS CenterID,
-            m.IsPhantom AS IsPhantom
+            s.ProjectID AS ProjectID,
+            m.IsPhantom AS IsPhantom,
+            t.CreatingUser
             FROM tarchive t
                   LEFT JOIN session s ON (s.ID=t.SessionID)
                   LEFT JOIN candidate c ON (c.ID=s.CandidateID)
@@ -77,12 +79,23 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        if ($row['CenterID'] !== null) {
+        $creator = \User::factory($row['CreatingUser']);
+
+        if ($row['CenterID'] !== null
+            && $row['ProjectID'] !== null
+            && $row['SessionID'] !== null
+        ) {
             $cid = \CenterID::singleton(intval($row['CenterID']));
+            $pid = \ProjectID::singleton(intval($row['ProjectID']));
+            $sid = new \SessionID(strval($row['SessionID']));
             unset($row['CenterID']);
-            return new DICOMArchiveRowWithSession($row, $cid);
+            unset($row['ProjectID']);
+            unset($row['CreatingUser']);
+            return new DICOMArchiveRowWithSession($row, $cid, $pid, $sid, $creator);
         }
         unset($row['CenterID']);
-        return new DICOMArchiveRowWithoutSession($row);
+        unset($row['ProjectID']);
+        unset($row['CreatingUser']);
+        return new DICOMArchiveRowWithoutSession($row, $creator);
     }
 }

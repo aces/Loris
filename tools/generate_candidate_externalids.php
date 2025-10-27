@@ -19,7 +19,7 @@
  * -- to reset all candidates external IDs and regenerate them
  * generate_candidate_externalids.php reset
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -79,8 +79,8 @@ foreach ($cands as $cand) {
         continue;
     }
 
-    $site    = \Site::singleton($cand['site']);
-    $project = \Project::getProjectFromID($cand['project']);
+    $site    = \Site::singleton(new \CenterID(strval($cand['site'])));
+    $project = \Project::getProjectFromID(new \ProjectID(strval($cand['project'])));
 
     $externalID = (new \ExternalIDGenerator(
         $site->getSiteAlias(),

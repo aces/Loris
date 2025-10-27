@@ -15,6 +15,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "My Preferences";
+        return _("My Preferences");
     }
 }
