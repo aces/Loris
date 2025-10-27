@@ -129,7 +129,7 @@ class Password
                     dgettext(
                         'loris',
                         'This password is known to be exposed in online data'
-                        . 'breaches.'
+                        . ' breaches.'
                     )
                 );
             }

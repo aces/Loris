@@ -24,21 +24,13 @@ msgstr ""
 msgid "Edit User"
 msgstr ""
 
-# --- Strings not in loris.pot, add below ---
-
 msgid "This user has no site affiliations"
 msgstr ""
 
 msgid "This user has no project affiliations"
 msgstr ""
 
-msgid "Username"
-msgstr ""
-
 msgid "Full Name"
-msgstr ""
-
-msgid "Email"
 msgstr ""
 
 msgid "Pending Approval"
@@ -56,24 +48,6 @@ msgstr ""
 msgid "The form you submitted contains data entry errors"
 msgstr ""
 
-msgid "Password Rules"
-msgstr ""
-
-msgid "The password must be at least 8 characters long."
-msgstr ""
-
-msgid "The password cannot be your username or email address."
-msgstr ""
-
-msgid "No special characters are required but your password must be sufficiently complex to be accepted."
-msgstr ""
-
-msgid "Please choose a unique password."
-msgstr ""
-
-msgid "We suggest using a password manager to generate one for you."
-msgstr ""
-
 msgid "Notes"
 msgstr ""
 
@@ -89,25 +63,10 @@ msgstr ""
 msgid "Reject User"
 msgstr ""
 
-msgid "User name"
-msgstr ""
-
 msgid "Make user name match email address"
 msgstr ""
 
-msgid "Password"
-msgstr ""
-
 msgid "Generate new password"
-msgstr ""
-
-msgid "Confirm Password"
-msgstr ""
-
-msgid "First name"
-msgstr ""
-
-msgid "Last name"
 msgstr ""
 
 msgid "Degree"
@@ -138,9 +97,6 @@ msgid "Country"
 msgstr ""
 
 msgid "FAX"
-msgstr ""
-
-msgid "Email address"
 msgstr ""
 
 msgid "Send email to user"
@@ -217,5 +173,3 @@ msgstr ""
 
 msgid "Please notice that the \"Active from\" date should be lesser or equal to the \"Active to\" date."
 msgstr ""
-
-

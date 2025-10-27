@@ -8,14 +8,14 @@
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <h3>{dgettext("user_accounts", "Password Rules")}</h3>
+            <h3>{dgettext("loris", "Password Rules")}</h3>
             <ul>
-                <li>{dgettext("user_accounts", "The password must be at least 8 characters long.")}</li>
-                <li>{dgettext("user_accounts", "The password cannot be your username or email address.")}</li>
-                <li>{dgettext("user_accounts", "No special characters are required but your password must be sufficiently complex to be accepted.")}</li>
+                <li>{dgettext("loris", "The password must be at least 8 characters long.")}</li>
+                <li>{dgettext("loris", "The password cannot be your username or email address.")}</li>
+                <li>{dgettext("loris", "No special characters are required but your password must be sufficiently complex to be accepted.")}</li>
             </ul>
-            <p>{dgettext("user_accounts", "Please choose a unique password.")}</p>
-            <p>{dgettext("user_accounts", "We suggest using a password manager to generate one for you.")}</p>
+            <p>{dgettext("loris", "Please choose a unique password.")}</p>
+            <p>{dgettext("loris", "We suggest using a password manager to generate one for you.")}</p>
             <h3>{dgettext("user_accounts", "Notes")}</h3>
             <ul>
                 <li>{dgettext("user_accounts", "It is recommended to use an email address as the username, for clarity and uniqueness.")}</li>
@@ -453,7 +453,7 @@
             {$form.account_request_date.label}
         </label>
         <div class="col-sm-10">
-            {$form.account_request_date.html|default:'None'}
+            {$form.account_request_date.html|default:dgettext('loris', 'None')}
         </div>
     </div>
 

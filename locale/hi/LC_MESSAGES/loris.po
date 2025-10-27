@@ -117,6 +117,9 @@ msgstr "हाँ"
 msgid "No"
 msgstr "नहीं"
 
+msgid "N/A"
+msgstr "लागू नहीं"
+
 msgid "Save"
 msgstr "सहेजें"
 
@@ -129,6 +132,12 @@ msgstr "वापस"
 msgid "None"
 msgstr "कोई नहीं"
 
+msgid "Y"
+msgstr "हाँ"
+
+msgid "N"
+msgstr "नहीं"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
@@ -138,6 +147,9 @@ msgstr "डीसीसीआईडी"
 
 msgid "Visit Label"
 msgstr "दौरे का लेबल"
+
+msgid "Email"
+msgstr "ईमेल"
 
 msgid "Site"
 msgstr "साइट"
@@ -201,3 +213,71 @@ msgstr "पासवर्ड पर्याप्त जटिल नहीं
 
 msgid "This password is known to be exposed in online data breaches."
 msgstr "यह पासवर्ड ऑनलाइन डेटा उल्लंघनों में उजागर होने के लिए जाना जाता है।"
+
+msgid "Data Supervisors to Email"
+msgstr "ईमेल करने के लिए डेटा पर्यवेक्षक"
+
+msgid "Invalid email address"
+msgstr "अमान्य ईमेल पता"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "नया"
+
+msgid "Updated"
+msgstr "अद्यतन किया गया"
+
+msgid "Uploaded"
+msgstr "अपलोड किया गया"
+
+# User Account related
+msgid "Password Rules"
+msgstr "पासवर्ड नियम"
+
+msgid "Username"
+msgstr "उपयोगकर्ता नाम"
+
+msgid "First name"
+msgstr "पहला नाम"
+
+msgid "First name is required and should not exceed 120 characters"
+msgstr "पहला नाम आवश्यक है और 120 अक्षरों से अधिक नहीं होना चाहिए।"
+
+msgid "Last name"
+msgstr "अंतिम नाम"
+
+msgid "Last name is required and should not exceed 120 characters"
+msgstr "अंतिम नाम आवश्यक है और 120 अक्षरों से अधिक नहीं होना चाहिए।"
+
+msgid "Email address"
+msgstr "ईमेल पता"
+
+msgid "New Password"
+msgstr "नया पासवर्ड"
+
+msgid "Password"
+msgstr "पासवर्ड"
+
+msgid "Confirm Password"
+msgstr "पासवर्ड की पुष्टि करें"
+
+msgid "Email address is required"
+msgstr "ईमेल पता आवश्यक है"
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "ईमेल पता निम्नलिखित किसी भी वर्ण को नहीं शामिल कर सकता: <, >, &, और \""
+
+msgid "The password must be at least 8 characters long."
+msgstr "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।"
+
+msgid "The password cannot be your username or email address."
+msgstr "पासवर्ड आपका उपयोगकर्ता नाम या ईमेल पता नहीं हो सकता।"
+
+msgid "Please choose a unique password."
+msgstr "कृपया एक अद्वितीय पासवर्ड चुनें।"
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr "कोई विशेष अक्षर आवश्यक नहीं हैं, लेकिन पासवर्ड पर्याप्त जटिल होना चाहिए ताकि उसे स्वीकार किया जा सके।"
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr "हम सुझाव देते हैं कि आपके लिए पासवर्ड बनाने हेतु पासवर्ड मैनेजर का उपयोग करें।"

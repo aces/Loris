@@ -24,22 +24,14 @@ msgstr "उपयोगकर्ता खाते"
 msgid "Edit User"
 msgstr "उपयोगकर्ता संपादित करें"
 
-# --- Strings not in loris.pot, add below ---
-
 msgid "This user has no site affiliations"
 msgstr "इस उपयोगकर्ता की कोई साइट संबद्धता नहीं है"
 
 msgid "This user has no project affiliations"
 msgstr "इस उपयोगकर्ता की कोई परियोजना संबद्धता नहीं है"
 
-msgid "Username"
-msgstr "उपयोगकर्ता नाम"
-
 msgid "Full Name"
 msgstr "पूरा नाम"
-
-msgid "Email"
-msgstr "ईमेल"
 
 msgid "Pending Approval"
 msgstr "स्वीकृति लंबित"
@@ -56,24 +48,6 @@ msgstr "उपयोगकर्ता जोड़ें"
 msgid "The form you submitted contains data entry errors"
 msgstr "आपके द्वारा प्रस्तुत फॉर्म में डेटा प्रविष्टि त्रुटियां हैं"
 
-msgid "Password Rules"
-msgstr "पासवर्ड नियम"
-
-msgid "The password must be at least 8 characters long."
-msgstr "पासवर्ड कम से कम 8 अक्षर लंबा होना चाहिए।"
-
-msgid "The password cannot be your username or email address."
-msgstr "पासवर्ड आपका उपयोगकर्ता नाम या ईमेल पता नहीं हो सकता।"
-
-msgid "No special characters are required but your password must be sufficiently complex to be accepted."
-msgstr "कोई विशेष वर्ण आवश्यक नहीं हैं लेकिन आपका पासवर्ड स्वीकार किए जाने के लिए पर्याप्त रूप से जटिल होना चाहिए।"
-
-msgid "Please choose a unique password."
-msgstr "कृपया एक अनूठा पासवर्ड चुनें।"
-
-msgid "We suggest using a password manager to generate one for you."
-msgstr "हम आपके लिए एक उत्पन्न करने के लिए पासवर्ड प्रबंधक का उपयोग करने का सुझाव देते हैं।"
-
 msgid "Notes"
 msgstr "नोट्स"
 
@@ -89,26 +63,11 @@ msgstr "उपयोगकर्ता जोड़ें/संपादित 
 msgid "Reject User"
 msgstr "उपयोगकर्ता को अस्वीकार करें"
 
-msgid "User name"
-msgstr "उपयोगकर्ता नाम"
-
 msgid "Make user name match email address"
 msgstr "उपयोगकर्ता नाम को ईमेल पता से मिलाएँ"
 
-msgid "Password"
-msgstr "पासवर्ड"
-
 msgid "Generate new password"
 msgstr "नया पासवर्ड बनाएं"
-
-msgid "Confirm Password"
-msgstr "पासवर्ड की पुष्टि करें"
-
-msgid "First name"
-msgstr "पहला नाम"
-
-msgid "Last name"
-msgstr "अंतिम नाम"
 
 msgid "Degree"
 msgstr "डिग्री"
@@ -139,9 +98,6 @@ msgstr "देश"
 
 msgid "FAX"
 msgstr "फैक्स"
-
-msgid "Email address"
-msgstr "ईमेल पता"
 
 msgid "Send email to user"
 msgstr "उपयोगकर्ता को ईमेल भेजें"
@@ -217,4 +173,3 @@ msgstr "कृपया कम से कम एक परीक्षक स्
 
 msgid "Please notice that the \"Active from\" date should be lesser or equal to the \"Active to\" date."
 msgstr "कृपया ध्यान दें कि 'सक्रिय शुरू' तिथि, 'सक्रिय समाप्त' तिथि के बराबर या उससे पहले होनी चाहिए।"
-

@@ -110,21 +110,23 @@ class UserAccountsIndex extends Component {
         );
       }
       break;
-    case t('Username', {ns: 'user_accounts'}):
+    case t('Username', {ns: 'loris'}):
       url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
       result = <td><a href={url}>{cell}</a></td>;
       break;
     case t('Active', {ns: 'loris'}):
-      if (row.Active === 'Y') {
+      const activeKey = t('Active', {ns: 'loris'});
+      if (row[activeKey] === 'Y') {
         result = <td>{t('Yes', {ns: 'loris'})}</td>;
-      } else if (row.Active === 'N') {
+      } else if (row[activeKey] === 'N') {
         result = <td>{t('No', {ns: 'loris'})}</td>;
       }
       break;
     case t('Pending Approval', {ns: 'user_accounts'}):
-      if (row['Pending Approval'] === 'Y') {
+      const pendingKey = t('Pending Approval', { ns: 'user_accounts' });
+      if (row[pendingKey] === 'Y') {
         result = <td>{t('Yes', {ns: 'loris'})}</td>;
-      } else if (row['Pending Approval'] === 'N') {
+      } else if (row[pendingKey] === 'N') {
         result = <td>{t('No', {ns: 'loris'})}</td>;
       }
       break;
@@ -186,7 +188,7 @@ class UserAccountsIndex extends Component {
         },
       },
       {
-        label: t('Username', {ns: 'user_accounts'}),
+        label: t('Username', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'username',
@@ -202,7 +204,7 @@ class UserAccountsIndex extends Component {
         },
       },
       {
-        label: t('Email', {ns: 'user_accounts'}),
+        label: t('Email', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'email',

@@ -695,8 +695,8 @@ class Edit_User extends \NDB_Form
             $this->addBasicText(
                 'UserID',
                 dgettext(
-                    "user_accounts",
-                    "User name"
+                    "loris",
+                    "Username"
                 ),
                 ['required' => true]
             );
@@ -708,7 +708,7 @@ class Edit_User extends \NDB_Form
         } else {
             // It is an existing user:
             //     display user name and account request date
-            $this->addScoreColumn('UserID', dgettext("user_accounts", "User name"));
+            $this->addScoreColumn('UserID', dgettext("loris", "Username"));
         }
         $this->addScoreColumn(
             'account_request_date',
@@ -724,7 +724,7 @@ class Edit_User extends \NDB_Form
 
         $this->addPassword(
             'Password_hash',
-            dgettext("user_accounts", "Password"),
+            dgettext("loris", "Password"),
             $pwd_attribs
         );
         $this->addCheckbox(
@@ -734,7 +734,7 @@ class Edit_User extends \NDB_Form
         );
         $this->addPassword(
             '__Confirm',
-            dgettext("user_accounts", "Confirm Password"),
+            dgettext("loris", "Confirm Password"),
             $pwd_attribs
         );
 
@@ -743,11 +743,15 @@ class Edit_User extends \NDB_Form
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
         $onInvalidMsg
-            = "this.setCustomValidity('First name is required and "
-            . "should not exceed 120 characters')";
+            = "this.setCustomValidity('"
+            . dgettext(
+                "user_accounts",
+                "First name is required and should not exceed 120 characters"
+            )
+            . "')";
         $this->addBasicText(
             'First_name',
-            dgettext("user_accounts", "First name"),
+            dgettext("loris", "First name"),
             [],
             [
                 'oninvalid' => $onInvalidMsg,
@@ -761,11 +765,15 @@ class Edit_User extends \NDB_Form
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
         $onInvalidMsg
-            = "this.setCustomValidity('Last name is required and "
-            . "should not exceed 120 characters')";
+            = "this.setCustomValidity('"
+            . dgettext(
+                "user_accounts",
+                "Last name is required and should not exceed 120 characters"
+            )
+            . "')";
         $this->addBasicText(
             'Last_name',
-            dgettext("user_accounts", "Last name"),
+            dgettext("loris", "Last name"),
             [],
             [
                 'oninvalid' => $onInvalidMsg,
@@ -825,7 +833,7 @@ class Edit_User extends \NDB_Form
         // email address
         $this->addBasicText(
             'Email',
-            dgettext("user_accounts", "Email address"),
+            dgettext("loris", "Email address"),
             ['required' => true]
         );
         $this->addCheckbox(
@@ -1077,7 +1085,7 @@ class Edit_User extends \NDB_Form
             '</div>'
             . "<h3 id=\"header_supervisors\" class=\"perm_header button\" "
             . "style=\"text-align: center; margin-top: 5px;\"> "
-            . "Data Supervisors to Email </h3> "
+            . dgettext('loris', 'Data Supervisors to Email') . " </h3> "
             . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">"
         );
 
@@ -1445,11 +1453,14 @@ class Edit_User extends \NDB_Form
             // Although some of these characters are legal in emails, due to the
             // current HTML escaping method, it is better to reject email
             // addresses containing them
-            return 'Email address can not contain any the following ' .
-                'characters: <, >, & and "';
+            return dgettext(
+                'loris',
+                'Email address cannot contain any of the following characters: '
+                . '<, >, &, and "'
+            );
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // If email not syntactically valid
-            return "Invalid email address";
+            return dgettext('loris', 'Invalid email address');
         }
 
         // check email address' uniqueness
