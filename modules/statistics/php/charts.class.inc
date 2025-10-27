@@ -858,7 +858,7 @@ class Charts extends \NDB_Page
                   JOIN cached_data_type USING (CachedDataTypeID)
                   WHERE Name='projects_disk_space'",
                     []
-                )
+                ) ?? ''
             ),
             true
         );
