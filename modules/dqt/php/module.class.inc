@@ -86,7 +86,7 @@ class Module extends \Module
                   JOIN cached_data_type USING (CachedDataTypeID)
                   WHERE Name='projects_disk_space'",
                         []
-                    )
+                    ) ?? ''
                 ),
                 true
             );

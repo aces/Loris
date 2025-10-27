@@ -129,7 +129,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                   JOIN cached_data_type USING (CachedDataTypeID)
                   WHERE Name='projects_disk_space'",
                     []
-                )
+                ) ?? ''
             ),
             true
         );
