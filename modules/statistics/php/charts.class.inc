@@ -864,10 +864,10 @@ class Charts extends \NDB_Page
         );
 
         $projectData = [];
-        foreach ($projects as $project) {
-            $projectName = $project->getName();
-            if (in_array($projectName, array_keys($cachedSizeData))) {
-                if (!is_null($cachedSizeData[$projectName])) {
+        if (!is_null($cachedSizeData)) {
+            foreach ($projects as $project) {
+                $projectName = $project->getName();
+                if (in_array($projectName, array_keys($cachedSizeData))) {
                     $projectData[] = [
                         'label' => $projectName,
                         ...$cachedSizeData[$projectName],
