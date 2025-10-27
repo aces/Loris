@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
-
+import {withTranslation} from 'react-i18next';
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 import {TextboxElement, SelectElement, ButtonElement} from 'jsx/Form';
@@ -211,13 +211,14 @@ class ImagingUploader extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
 
     const tabList = [
-      {id: 'browse', label: 'Browse'},
-      {id: 'upload', label: 'Upload'},
+      {id: 'browse', label: t('Browse', {ns: 'loris'})},
+      {id: 'upload', label: t('Upload', {ns: 'loris'})},
     ];
 
     return (
@@ -238,13 +239,13 @@ class ImagingUploader extends Component {
                 <SelectElement {... this.state.data.form.visitLabel} />
                 <ButtonElement
                   type='reset'
-                  label='Clear Filters'
+                  label={t('Clear Filters', {ns: 'loris'})}
                   onUserInput={this.resetFilters}
                 />
               </FilterForm>
             </div>
             <div className='col-md-7'>
-              <LogPanel />
+              <LogPanel t={t}/>
             </div>
           </div>
           <div id='mri_upload_table'>
@@ -265,6 +266,7 @@ class ImagingUploader extends Component {
             imagingUploaderAutoLaunch={
               this.state.data.imagingUploaderAutoLaunch
             }
+            t={t}
           />
         </TabPane>
       </Tabs>
@@ -274,6 +276,7 @@ class ImagingUploader extends Component {
 
 ImagingUploader.propTypes = {
   DataURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
-export default ImagingUploader;
+export default withTranslation(['imaging_uploader', 'loris'])(ImagingUploader);

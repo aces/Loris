@@ -119,6 +119,15 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Browse"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Clear Filters"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -156,6 +165,9 @@ msgid "PSCID"
 msgstr ""
 
 msgid "DCCID"
+msgstr ""
+
+msgid "CandID"
 msgstr ""
 
 msgid "Visit Label"
@@ -239,6 +251,9 @@ msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
 
 msgid "Maximum rows per page:"
+msgstr ""
+
+msgid "Download Table as CSV"
 msgstr ""
 
 msgid "Download Data as CSV"
