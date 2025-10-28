@@ -186,6 +186,9 @@ msgstr[0] ""
 msgid "Session"
 msgstr ""
 
+msgid "Instrument"
+msgstr ""
+
 msgid "Date of registration"
 msgstr ""
 
@@ -341,4 +344,3 @@ msgstr ""
 # Other generic terms
 msgid "Loading..."
 msgstr ""
-
