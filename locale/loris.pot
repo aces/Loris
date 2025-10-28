@@ -151,6 +151,12 @@ msgstr ""
 msgid "Success!"
 msgstr ""
 
+msgid "Selection Filters"
+msgstr ""
+
+msgid "Clear Filters"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -165,6 +171,9 @@ msgid "Site"
 msgstr ""
 
 msgid "Module"
+msgstr ""
+
+msgid "Instrument"
 msgstr ""
 
 msgid "Project"
