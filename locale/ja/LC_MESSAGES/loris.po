@@ -140,6 +140,9 @@ msgid "Clear Filters"
 msgstr "フィルターをクリア"
 
 # Common swal labels
+msgid "OK"
+msgstr "わかりました"
+
 msgid "Cancel"
 msgstr "取り消す"
 

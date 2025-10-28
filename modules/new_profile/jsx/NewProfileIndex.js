@@ -85,7 +85,8 @@ class NewProfileIndex extends React.Component {
     if (formData.dobDate !== formData.dobDateConfirm) {
       swal.fire({
         title: this.props.t('Error!', {ns: 'loris'}),
-        text: this.props.t('Date of Birth fields must match', {ns: 'new_profile'}),
+        text: this.props.t('Date of Birth fields must match',
+          {ns: 'new_profile'}),
         type: 'error',
         confirmButtonText: t('OK', {ns: 'loris'}),
       });
@@ -110,6 +111,7 @@ class NewProfileIndex extends React.Component {
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
     const match = this.validateMatchDate();
     if (!match) {
