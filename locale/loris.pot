@@ -183,13 +183,7 @@ msgstr[0] ""
 msgid "Session"
 msgstr ""
 
-msgid "Cohorts"
-msgstr ""
-
 msgid "Instrument"
-msgstr ""
-
-msgid "Session"
 msgstr ""
 
 msgid "Date of registration"
@@ -210,8 +204,6 @@ msgstr ""
 msgid "Scans"
 msgstr ""
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 msgid "Stage"
 msgstr ""
 
@@ -227,14 +219,6 @@ msgstr ""
 msgid "Date of Birth"
 msgstr ""
 
-=======
-msgid "Date of Birth"
-msgstr ""
-
-msgid "Visit"
-msgstr ""
-
->>>>>>> 601c86c5f (fixes)
 msgid "Visits"
 msgstr ""
 
@@ -247,14 +231,10 @@ msgstr ""
 msgid "Scan Done"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Language"
-=======
-msgid "Show Advanced Filters"
 msgstr ""
 
-msgid "Hide Advanced Filters"
->>>>>>> 601c86c5f (fixes)
+msgid "Ethnicity"
 msgstr ""
 
 # Data table strings
@@ -358,4 +338,6 @@ msgstr ""
 msgid "{{years}} years old"
 msgstr ""
 
-
+# Other generic terms
+msgid "Loading..."
+msgstr ""

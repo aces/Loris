@@ -90,7 +90,7 @@ const QueryChartForm = (props) => {
               {t('Project', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedProjects'
-              options ={{__clear__: '-- Clear Selection --',
+              options ={{__clear__: clearSelection,
                 ...options.projects}}
               multiple ={true}
               emptyOption ={false}
@@ -110,7 +110,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>{t('Cohort', {ns: 'loris'})}</label>
+              display: 'block'}}>{t('Cohort', {ns: 'loris', count: 1})}</label>
             <SelectElement
               name ='selectedCohorts'
               options ={{__clear__: clearSelection,
@@ -155,7 +155,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>Visit</label>
+              display: 'block'}}>{t('Visit', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedVisits'
               options ={{__clear__: clearSelection,
@@ -203,7 +203,8 @@ const QueryChartForm = (props) => {
         <div>
           <label style ={{fontWeight: 'bold',
             marginBottom: '5px',
-            display: 'block'}}>Date Registered</label>
+            display: 'block'}}>
+            {t('Date Registered', {ns: 'statistics'})}</label>
           <DateElement
             name='dateRegisteredStart'
             value={formDataObj['dateRegisteredStart'] || ''}
@@ -213,7 +214,7 @@ const QueryChartForm = (props) => {
             style={{width: '100%', padding: '8px',
               borderRadius: '5px',
               border: '1px solid #ccc'}}
-            label={'Range Start'}
+            label={t('Range Start', {ns: 'statistics'})}
           />
           <DateElement
             name='dateRegisteredEnd'
@@ -224,7 +225,7 @@ const QueryChartForm = (props) => {
             style={{width: '100%', padding: '8px',
               borderRadius: '5px',
               border: '1px solid #ccc'}}
-            label={'Range End'}
+            label={t('Range End', {ns: 'statistics'})}
           />
         </div>
       </div>
