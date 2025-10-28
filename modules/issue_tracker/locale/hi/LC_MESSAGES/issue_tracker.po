@@ -24,20 +24,11 @@ msgstr "समस्या ट्रैकर"
 msgid "Issue ID"
 msgstr "समस्या आईडी"
 
-msgid "Title"
-msgstr "शीर्षक"
-
-msgid "Category"
-msgstr "श्रेणी"
-
 msgid "Reporter"
 msgstr "रिपोर्टर"
 
 msgid "Assignee"
 msgstr "असाइन किए गए"
-
-msgid "Status"
-msgstr "स्थिति"
 
 msgid "Priority"
 msgstr "प्राथमिकता"
@@ -152,5 +143,3 @@ msgstr "समस्या अपडेट की गई!"
 
 msgid "Issue created!"
 msgstr "समस्या बनाई गई!"
-
-

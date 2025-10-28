@@ -231,7 +231,7 @@ class IssueForm extends Component {
           {header}
           <TextboxElement
             name='title'
-            label={t('Title', {ns: 'issue_tracker'})}
+            label={t('Title', {ns: 'loris'})}
             onUserInput={this.setFormData}
             value={this.state.formData.title}
             disabled={!hasEditPermission}
@@ -258,7 +258,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='centerID'
-            label={t('Site', {ns: 'issue_tracker'})}
+            label={t('Site', {ns: 'loris'})}
             emptyOption={true}
             options={siteOptions}
             onUserInput={this.setFormData}
@@ -268,7 +268,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='status'
-            label={t('Status', {ns: 'issue_tracker'})}
+            label={t('Status', {ns: 'loris'})}
             emptyOption={false}
             options={this.state.Data.statuses}
             onUserInput={this.setFormData}
@@ -308,7 +308,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='module'
-            label={t('Module', {ns: 'issue_tracker'})}
+            label={t('Module', {ns: 'loris'})}
             emptyOption={true}
             options={this.state.Data.modules}
             onUserInput={this.setFormData}
@@ -317,14 +317,14 @@ class IssueForm extends Component {
           />
           <TextboxElement
             name='PSCID'
-            label={t('PSCID', {ns: 'issue_tracker'})}
+            label={t('PSCID', {ns: 'loris'})}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.PSCID}
           />
           <TextboxElement
             name='visitLabel'
-            label={t('Visit Label', {ns: 'issue_tracker'})}
+            label={t('Visit Label', {ns: 'loris'})}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.visitLabel}
@@ -333,7 +333,8 @@ class IssueForm extends Component {
             name='watching'
             label={t('Watching?', {ns: 'issue_tracker'})}
             emptyOption={false}
-            options={{No: 'No', Yes: 'Yes'}}
+            options={{No: t('No', {ns: 'loris'}),
+              Yes: t('Yes', {ns: 'loris'})}}
             onUserInput={this.setFormData}
             value={isWatching}
           />

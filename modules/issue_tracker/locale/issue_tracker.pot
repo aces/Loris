@@ -30,19 +30,10 @@ msgstr ""
 msgid "Issue ID"
 msgstr ""
 
-msgid "Title"
-msgstr ""
-
-msgid "Category"
-msgstr ""
-
 msgid "Reporter"
 msgstr ""
 
 msgid "Assignee"
-msgstr ""
-
-msgid "Status"
 msgstr ""
 
 msgid "Priority"
@@ -158,4 +149,3 @@ msgstr ""
 
 msgid "Issue created!"
 msgstr ""
-

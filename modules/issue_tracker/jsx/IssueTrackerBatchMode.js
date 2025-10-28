@@ -173,7 +173,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
       id: 'category',
       label: (
         <span>
-          {t('Category', {ns: 'issue_tracker'})}{' '}
+          {t('Category', {ns: 'loris'})}{' '}
           <span className="badge bg-primary">{selectedCategories.length}</span>
         </span>
       ),
@@ -191,7 +191,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
       id: 'status',
       label: (
         <span>
-          {t('Status', {ns: 'issue_tracker'})}{' '}
+          {t('Status', {ns: 'loris'})}{' '}
           <span className="badge bg-primary">{selectedStatuses.length}</span>
         </span>
       ),
@@ -200,7 +200,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
       id: 'site', // Added site tab
       label: (
         <span>
-          {t('Site', {ns: 'issue_tracker'})}{' '}
+          {t('Site', {ns: 'loris'})}{' '}
           <span className="badge bg-primary">{selectedSites.length}</span>
         </span>
       ),
@@ -209,13 +209,13 @@ function IssueTrackerBatchMode({options = {}, t}) {
 
   const panelTitle = (
     <div className="panel-title-container">
-      <span>{t('Filters', {ns: 'issue_tracker'})}</span>
+      <span>{t('Filters', {ns: 'loris'})}</span>
       <button
         type="button"
         className="btn btn-primary btn-sm filter-reset-button"
         onClick={resetFilters}
       >
-        {t('Reset', {ns: 'issue_tracker'})}
+        {t('Reset', {ns: 'loris'})}
       </button>
     </div>
   );

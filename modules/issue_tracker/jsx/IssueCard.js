@@ -96,7 +96,7 @@ const IssueCard = React.memo(function IssueCard(props) {
 
     if (msgType === 'error') {
       type = 'error';
-      title = t('Error!', {ns: 'issue_tracker'});
+      title = t('Error!', {ns: 'loris'});
     } else if (msgType === 'info') {
       type = 'info';
       title = t('Information', {ns: 'issue_tracker'});
@@ -280,7 +280,7 @@ const IssueCard = React.memo(function IssueCard(props) {
               onClick={handleCloseAddCommentModal}
               disabled={isSubmittingComment}
             >
-              {t('Cancel', {ns: 'issue_tracker'})}
+              {t('Cancel', {ns: 'loris'})}
             </button>
           </div>
         </form>
@@ -361,7 +361,7 @@ const IssueCard = React.memo(function IssueCard(props) {
               </div>
               <div className="control-group">
                 <label htmlFor="category">
-                  {t('Category', {ns: 'issue_tracker'})}:&nbsp;
+                  {t('Category', {ns: 'loris'})}:&nbsp;
                 </label>
                 <select
                   id="category"
@@ -385,7 +385,7 @@ const IssueCard = React.memo(function IssueCard(props) {
               </div>
               <div className="control-group">
                 <label htmlFor="centerID">
-                  {t('Site', {ns: 'issue_tracker'})}:&nbsp;
+                  {t('Site', {ns: 'loris'})}:&nbsp;
                 </label>
                 <select
                   id="centerID"
@@ -407,7 +407,7 @@ const IssueCard = React.memo(function IssueCard(props) {
                     </option>
                   ))}
                 </select>
-              </div>lol
+              </div>
             </>
           ) : (
             <>
@@ -426,14 +426,14 @@ const IssueCard = React.memo(function IssueCard(props) {
                 </span>
               </div>
               <div className="control-group">
-                <label>{t('Category', {ns: 'issue_tracker'})}:&nbsp;</label>
+                <label>{t('Category', {ns: 'loris'})}:&nbsp;</label>
                 <span>
                   {categories[tempEditedIssue.category] ||
                     t('Uncategorized', {ns: 'issue_tracker'})}
                 </span>
               </div>
               <div className="control-group">
-                <label>{t('Site', {ns: 'issue_tracker'})}:&nbsp;</label>
+                <label>{t('Site', {ns: 'loris'})}:&nbsp;</label>
                 <span>
                   {sites[String(tempEditedIssue.centerID)] ||
                     t('All Sites', {ns: 'issue_tracker'})}
@@ -518,7 +518,7 @@ const IssueCard = React.memo(function IssueCard(props) {
                 setTempEditedIssue({...editedIssue});
               }}
             >
-              {t('Cancel', {ns: 'issue_tracker'})}
+              {t('Cancel', {ns: 'loris'})}
             </button>
           </div>
         )}

@@ -96,28 +96,41 @@ class IssueTrackerIndex extends Component {
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     let link;
+    const {t} = this.props;
+    const issueIDKey = t('Issue ID', {ns: 'issue_tracker',
+      defaultValue: 'Issue ID'});
+    const titleKey = t('Title', {ns: 'loris', defaultValue: 'Title'});
+    const priorityKey = t('Priority', {ns: 'issue_tracker',
+      defaultValue: 'Priority'});
+    const siteKey = t('Site', {ns: 'loris', defaultValue: 'Site'});
+    const pscidKey = t('PSCID', {ns: 'loris', defaultValue: 'PSCID'});
+    const visitLabelKey = t('Visit Label', {ns: 'loris',
+      defaultValue: 'Visit Label'});
+    const sessionIDKey = t('Session ID', {ns: 'loris',
+      defaultValue: 'Session ID'});
+    const dccidKey = t('DCCID', {ns: 'loris', defaultValue: 'DCCID'});
     switch (column) {
-    case 'Title':
+    case titleKey:
       link = (
         <a
-          href={loris.BaseURL+'/issue_tracker/issue/'+row['Issue ID']}
+          href={loris.BaseURL+'/issue_tracker/issue/'+row[issueIDKey]}
         >
-          {row.Title}
+          {row[titleKey]}
         </a>
       );
       result = <td>{link}</td>;
       break;
-    case 'Issue ID':
+    case issueIDKey:
       link = (
         <a
-          href={loris.BaseURL+'/issue_tracker/issue/'+cell}
+          href={loris.BaseURL+'/issue_tracker/issue/'+row[issueIDKey]}
         >
           {cell}
         </a>
       );
       result = <td>{link}</td>;
       break;
-    case 'Priority':
+    case priorityKey:
       switch (cell) {
       case 'normal':
         result = <td style={{background: '#CCFFCC'}}>Normal</td>;
@@ -138,7 +151,7 @@ class IssueTrackerIndex extends Component {
         result = <td>None</td>;
       }
       break;
-    case 'Site':
+    case siteKey:
       // if cell is an array containing all sites values
       if (
         JSON.stringify(
@@ -153,21 +166,21 @@ class IssueTrackerIndex extends Component {
         </td>;
       }
       break;
-    case 'PSCID':
+    case pscidKey:
       if (row.PSCID !== null) {
         link = (
-          <a href={loris.BaseURL+'/'+row.CandID + '/'}>
+          <a href={loris.BaseURL+'/'+ row[dccidKey] + '/'}>
             {cell}
           </a>
         );
         result = <td>{link}</td>;
       }
       break;
-    case 'Visit Label':
-      if (row['Visit Label'] !== null) {
+    case visitLabelKey:
+      if (row[visitLabelKey] !== null) {
         link = (
           <a href={loris.BaseURL + '/instrument_list/?candID=' +
-                  row.CandID + '&sessionID=' + row.SessionID }>
+                  row[dccidKey] + '&sessionID=' + row[sessionIDKey]}>
             {cell}
           </a>
         );
@@ -209,7 +222,7 @@ class IssueTrackerIndex extends Component {
         name: 'issueID',
         type: 'text',
       }},
-      {label: t('Title', {ns: 'issue_tracker'}), show: true, filter: {
+      {label: t('Title', {ns: 'loris'}), show: true, filter: {
         name: 'title',
         type: 'text',
       }},
@@ -218,7 +231,7 @@ class IssueTrackerIndex extends Component {
         type: 'select',
         options: options.modules,
       }},
-      {label: t('Category', {ns: 'issue_tracker'}), show: true, filter: {
+      {label: t('Category', {ns: 'loris'}), show: true, filter: {
         name: 'category',
         type: 'select',
         options: options.categories,
@@ -233,7 +246,7 @@ class IssueTrackerIndex extends Component {
         type: 'select',
         options: options.assignees,
       }},
-      {label: t('Status', {ns: 'issue_tracker'}), show: true, filter: {
+      {label: t('Status', {ns: 'loris'}), show: true, filter: {
         name: 'status',
         type: 'multiselect',
         options: options.statuses,
@@ -244,16 +257,16 @@ class IssueTrackerIndex extends Component {
         sortByValue: false,
         options: options.priorities,
       }},
-      {label: t('Site', {ns: 'issue_tracker'}), show: true, filter: {
+      {label: t('Site', {ns: 'loris'}), show: true, filter: {
         name: 'site',
         type: 'multiselect',
         options: options.sites,
       }},
-      {label: t('PSCID', {ns: 'issue_tracker'}), show: true, filter: {
+      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'pscid',
         type: 'text',
       }},
-      {label: t('Visit Label', {ns: 'issue_tracker'}), show: true, filter: {
+      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'text',
       }},

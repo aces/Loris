@@ -157,6 +157,39 @@ msgstr ""
 msgid "Success!"
 msgstr ""
 
+msgid "Browse"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Saving"
+msgstr ""
+
+msgid "Are You Sure?"
+msgstr ""
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Y"
+msgstr ""
+
+msgid "N"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -164,13 +197,22 @@ msgstr ""
 msgid "DCCID"
 msgstr ""
 
+msgid "CandID"
+msgstr ""
+
 msgid "Visit Label"
+msgstr ""
+
+msgid "Email"
 msgstr ""
 
 msgid "Site"
 msgstr ""
 
 msgid "Module"
+msgstr ""
+
+msgid "Sites"
 msgstr ""
 
 msgid "Project"
@@ -187,6 +229,9 @@ msgid_plural "Cohorts"
 msgstr[0] ""
  
 msgid "Session"
+msgstr ""
+
+msgid "Projects"
 msgstr ""
 
 msgid "Date of registration"
@@ -240,6 +285,15 @@ msgstr ""
 msgid "Ethnicity"
 msgstr ""
 
+msgid "Active"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
@@ -248,6 +302,77 @@ msgid "Maximum rows per page:"
 msgstr ""
 
 msgid "Download Data as CSV"
+msgstr ""
+
+#: php/libraries/Password.class.inc
+msgid "The password is too short"
+msgstr ""
+
+msgid "The password is not complex enough."
+msgstr ""
+
+msgid "This password is known to be exposed in online data breaches."
+msgstr ""
+
+msgid "Data Supervisors to Email"
+msgstr ""
+
+msgid "Invalid email address"
+msgstr ""
+
+# User Account related
+msgid "Password Rules"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "User name"
+msgstr ""
+
+msgid "First name"
+msgstr ""
+
+msgid "First name is required and should not exceed 120 characters"
+msgstr ""
+
+msgid "Last name"
+msgstr ""
+
+msgid "Last name is required and should not exceed 120 characters"
+msgstr ""
+
+msgid "Email address"
+msgstr ""
+
+msgid "New Password"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Confirm Password"
+msgstr ""
+
+msgid "Email address is required"
+msgstr ""
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr ""
+
+msgid "The password must be at least 8 characters long."
+msgstr ""
+
+msgid "The password cannot be your username or email address."
+msgstr ""
+
+msgid "Please choose a unique password."
+msgstr ""
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr ""
+
+msgid "We suggest using a password manager to generate one for you."
 msgstr ""
 
 # Dashboard panel strings
@@ -305,9 +430,6 @@ msgid "Complete"
 msgstr ""
 
 msgid "Instruments"
-msgstr ""
-
-msgid "None"
 msgstr ""
 
 msgid "Partial"
