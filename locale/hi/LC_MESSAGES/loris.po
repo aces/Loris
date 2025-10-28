@@ -151,25 +151,6 @@ msgstr "रद्द करें"
 msgid "Success!"
 msgstr "सफलता!"
 
-# Filters
-msgid "Selection Filter"
-msgstr "सेलेक्शन फ़िल्टर"
-
-msgid "Show Filters"
-msgstr "फ़िल्टर दिखाएँ"
-
-msgid "Hide Filters"
-msgstr "फ़िल्टर छुपाएँ"
-
-msgid "Clear Filters"
-msgstr "फ़िल्टर साफ़ करें"
-
-msgid "Show Advanced Filters"
-msgstr "उन्नत फ़िल्टर दिखाएँ"
-
-msgid "Hide Advanced Filters"
-msgstr "उन्नत फ़िल्टर छुपाएँ"
-
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
