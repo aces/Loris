@@ -27,24 +27,16 @@ msgstr ""
 msgid "Unresolved Conflicts"
 msgstr ""
 
-# --- Strings not in loris.pot, add below ---
-
 msgid "Unresolved"
 msgstr ""
 
 msgid "Resolved"
 msgstr ""
 
-msgid "An error occured while loading the page."
-msgstr ""
-
 msgid "Correct Answer"
 msgstr ""
 
 msgid "Conflict ID"
-msgstr ""
-
-msgid "Cohort"
 msgstr ""
 
 msgid "Question"
@@ -75,12 +67,6 @@ msgid "Resolver"
 msgstr ""
 
 msgid "Resolution Timestamp"
-msgstr ""
-
-msgid "Error!"
-msgstr ""
-
-msgid "Visit"
 msgstr ""
 
 msgid "Number of Conflicts"

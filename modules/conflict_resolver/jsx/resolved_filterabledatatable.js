@@ -138,7 +138,7 @@ class ResolvedFilterableDataTable extends Component {
         options: options.project,
       }},
       {label: t('Cohort',
-        {ns: 'conflict_resolver'}), show: true, filter: {
+        {ns: 'loris'}), show: true, filter: {
         name: 'Cohort',
         type: 'select',
         options: options.cohort,

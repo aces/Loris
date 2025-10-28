@@ -128,7 +128,7 @@ class UnresolvedFilterableDataTable extends Component {
       return (
         <div className="alert alert-danger" role="alert">
           <h4>{t('An error occured while loading the page.',
-            {ns: 'conflict_resolver'})}</h4>
+            {ns: 'loris'})}</h4>
           {this.state.error.toString()}
         </div>
       );
@@ -148,7 +148,7 @@ class UnresolvedFilterableDataTable extends Component {
         type: 'select',
         options: options.project,
       }},
-      {label: t('Cohort', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Cohort', {ns: 'loris'}), show: true, filter: {
         name: 'cohort',
         type: 'select',
         options: options.cohort,

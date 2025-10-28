@@ -27,25 +27,17 @@ msgstr "डेटा प्रविष्टि टकराव"
 msgid "Unresolved Conflicts"
 msgstr "असुलझे टकराव"
 
-# --- Strings not in loris.pot, add below ---
-
 msgid "Unresolved"
 msgstr "असुलझा"
 
 msgid "Resolved"
 msgstr "सुलझा हुआ"
 
-msgid "An error occured while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
-
 msgid "Correct Answer"
 msgstr "सही उत्तर"
 
 msgid "Conflict ID"
 msgstr "टकराव आईडी"
-
-msgid "Cohort"
-msgstr "समूह"
 
 msgid "Question"
 msgstr "प्रश्न"
@@ -76,12 +68,6 @@ msgstr "सुलझाने वाला"
 
 msgid "Resolution Timestamp"
 msgstr "संकल्प समय"
-
-msgid "Error!"
-msgstr "त्रुटि!"
-
-msgid "Visit"
-msgstr "विज़िट"
 
 msgid "Number of Conflicts"
 msgstr "टकरावों की संख्या"

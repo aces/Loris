@@ -73,7 +73,7 @@ class FixConflictForm extends Component {
         this.setState({success: true, error: null, emptyOption: false, value});
       })
       .catch((error) => {
-        swal(t('Error!', {ns: 'conflict_resolver'}), error, 'error');
+        swal(t('Error!', {ns: 'loris'}), error, 'error');
         this.setState({error, success: false, emptyOption: true});
       });
   }

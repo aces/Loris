@@ -26,19 +26,19 @@ msgid "DEV"
 msgstr "डेव"
 
 msgid "Affiliations"
-msgstr "अफिलिएशन्स"
+msgstr "संबद्धता"
 
 msgid "Site Affiliation"
-msgstr "साइट अफिलिएशन"
+msgstr "साइट संबद्धता"
 
 msgid "Site Affiliations"
-msgstr "साइट अफिलिएशन्स"
+msgstr "साइट संबद्धता"
 
 msgid "Project Affiliation"
-msgstr "प्रोजेक्ट अफिलिएशन"
+msgstr "प्रोजेक्ट संबद्धता"
 
 msgid "Project Affiliations"
-msgstr "प्रोजेक्ट अफिलिएशन्स"
+msgstr "प्रोजेक्ट संबद्धता"
 
 msgid "Log Out"
 msgstr "लॉग आउट"
@@ -142,6 +142,12 @@ msgstr "फ़िल्टर छुपाएँ"
 msgid "Clear Filters"
 msgstr "फ़िल्टर साफ़ करें"
 
+msgid "Show Advanced Filters"
+msgstr "उन्नत फ़िल्टर दिखाएँ"
+
+msgid "Hide Advanced Filters"
+msgstr "उन्नत फ़िल्टर छुपाएँ"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
@@ -211,12 +217,6 @@ msgstr "इकाई प्रकार"
 
 msgid "Scan Done"
 msgstr "स्कैन पूरा हुआ"
-
-msgid "Show Advanced Filters"
-msgstr "उन्नत फ़िल्टर दिखाएँ"
-
-msgid "Hide Advanced Filters"
-msgstr "उन्नत फ़िल्टर छुपाएँ"
 
 msgid "Language"
 msgstr "भाषा"
