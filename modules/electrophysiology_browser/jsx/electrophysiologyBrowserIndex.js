@@ -73,15 +73,15 @@ class ElectrophysiologyBrowserIndex extends Component {
     const style = '';
     let result = <td className={style}>{cell}</td>;
     switch (column) {
-    case 'Links':
+    case t('Links', {ns: 'electrophysiology_browser'}):
       let cellTypes = cell.split(',');
       let cellLinks = [];
       cellTypes.reverse();
       for (let i = 0; i < cellTypes.length; i += 1) {
         cellLinks.push(<a key={i} href={loris.BaseURL +
-            '/electrophysiology_browser/sessions/' +
-            row.SessionID + '?outputType=' +
-            cellTypes[i]}>
+              '/electrophysiology_browser/sessions/' +
+              row.SessionID + '?outputType=' +
+              cellTypes[i]}>
           {cellTypes[i]}
         </a>);
 
@@ -91,9 +91,9 @@ class ElectrophysiologyBrowserIndex extends Component {
       }
       if (cellTypes.length > 1) {
         cellLinks.push(<a key="all" href={loris.BaseURL +
-          '/electrophysiology_browser/sessions/' +
-          row.SessionID}>
-            all types
+            '/electrophysiology_browser/sessions/' +
+            row.SessionID}>
+          {t('all types', {ns: 'electrophysiology_browser'})}
         </a>);
       }
       result = (<td>{cellLinks}</td>);
@@ -111,7 +111,8 @@ class ElectrophysiologyBrowserIndex extends Component {
   render() {
     // If error occurs, return a message
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'electrophysiology_browser'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -125,37 +126,47 @@ class ElectrophysiologyBrowserIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'Site', show: true, filter: {
-        name: 'site',
-        type: 'select',
-        options: options.sites,
-      }},
-      {label: 'PSCID', show: true, filter: {
-        name: 'PSCID',
-        type: 'text',
-      }},
-      {label: 'DCCID', show: true, filter: {
-        name: 'DCCID',
-        type: 'text',
-      }},
-      {label: 'Project', show: true, filter: {
-        name: 'project',
-        type: 'select',
-        options: options.projects,
-      }},
-      {label: 'Visit Label', show: true, filter: {
-        name: 'visitLabel',
-        type: 'text',
-      }},
-      {label: 'Acquisition Time', show: true},
-      {label: 'Insertion Time', show: true},
-      {label: 'Links', show: true},
-      {label: 'Type', show: false, filter: {
+      {label: t('Site', {ns: 'electrophysiology_browser'}),
+        show: true, filter: {
+          name: 'site',
+          type: 'select',
+          options: options.sites,
+        }},
+      {label: t('PSCID', {ns: 'electrophysiology_browser'}),
+        show: true, filter: {
+          name: 'PSCID',
+          type: 'text',
+        }},
+      {label: t('DCCID', {ns: 'electrophysiology_browser'}),
+        show: true, filter: {
+          name: 'DCCID',
+          type: 'text',
+        }},
+      {label: t('Project', {ns: 'electrophysiology_browser'}),
+        show: true, filter: {
+          name: 'project',
+          type: 'select',
+          options: options.projects,
+        }},
+      {label: t('Visit Label', {ns: 'electrophysiology_browser'}),
+        show: true, filter: {
+          name: 'visitLabel',
+          type: 'text',
+        }},
+      {label: t('Acquisition Time',
+        {ns: 'electrophysiology_browser'}), show: true},
+      {label: t('Insertion Time',
+        {ns: 'electrophysiology_browser'}), show: true},
+      {label: t('Links',
+        {ns: 'electrophysiology_browser'}), show: true},
+      {label: t('Type',
+        {ns: 'electrophysiology_browser'}), show: false, filter: {
         name: 'type',
         type: 'multiselect',
         options: options.types,
       }},
-      {label: 'SessionID', show: false},
+      {label: t('SessionID',
+        {ns: 'electrophysiology_browser'}), show: false},
     ];
 
     return (
@@ -186,3 +197,6 @@ window.addEventListener('load', () => {
     />
   );
 });
+
+export default withTranslation(
+  ['electrophysiology_browser', 'loris'])(ElectrophysiologyBrowserIndex);
