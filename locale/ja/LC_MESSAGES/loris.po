@@ -113,6 +113,9 @@ msgstr "レポート"
 msgid "TimePoint"
 msgstr "タイムポイント"
 
+msgid "TimePoint %s Details"
+msgstr "タイムポイント%s の詳細"
+
 # Common select option labels
 msgid "Yes"
 msgstr "はい"
