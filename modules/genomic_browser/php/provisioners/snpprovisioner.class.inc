@@ -28,7 +28,7 @@ class SnpProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 LPAD(candidate.CandID, 10, '0') AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
-                cohort.title AS _Cohort,
+                co.title AS _Cohort,
                 candidate.ExternalID AS _externalID,
                 candidate.RegistrationCenterID as _centerID,
                 candidate.RegistrationProjectID as _projectID,
@@ -65,8 +65,8 @@ class SnpProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     JOIN candidate c ON c.ID=s.CandidateID
                     GROUP BY
                         c.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
-                LEFT JOIN cohort
-                    ON (cohort.CohortID = CohortID)
+                LEFT JOIN cohort AS co
+                    ON (cohort.CohortID = co.CohortID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)
                 JOIN SNP_candidate_rel
                     ON (candidate.ID = SNP_candidate_rel.CandidateID)
