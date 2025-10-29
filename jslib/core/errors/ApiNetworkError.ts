@@ -8,8 +8,12 @@ export class ApiNetworkError extends HttpError {
    *
    * @param message The error message.
    */
-  constructor(message?: string) {
-    super(message || 'Network error occurred during API call.');
+  constructor(request: Request, message?: string) {          
+    super(
+      request,
+      undefined,
+      message || 'Network error occurred during API call.'
+    );
     this.name = 'APINetworkError';
   }
 }
