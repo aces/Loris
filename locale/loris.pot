@@ -112,6 +112,9 @@ msgstr ""
 msgid "TimePoint"
 msgstr ""
 
+msgid "TimePoint %s Details"
+msgstr ""
+
 # Common select option labels
 msgid "Yes"
 msgstr ""
@@ -137,7 +140,35 @@ msgstr ""
 msgid "selected"
 msgstr ""
 
+msgid "Create"
+msgstr ""
+
+msgid "N/A"
+msgstr ""
+
+# Filters
+msgid "Selection Filter"
+msgstr ""
+
+msgid "Show Filters"
+msgstr ""
+
+msgid "Hide Filters"
+msgstr ""
+
+msgid "Clear Filters"
+msgstr ""
+
+msgid "Show Advanced Filters"
+msgstr ""
+
+msgid "Hide Advanced Filters"
+msgstr ""
+
 # Common swal labels
+msgid "OK"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
@@ -163,12 +194,16 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
+msgid "Candidate Registration Project"
+msgstr ""
+
+msgid "Timepoint Project"
+msgstr ""
+
 msgid "Cohort"
-msgstr ""
-
-msgid "Cohorts"
-msgstr ""
-
+msgid_plural "Cohorts"
+msgstr[0] ""
+ 
 msgid "Session"
 msgstr ""
 
@@ -193,7 +228,13 @@ msgstr ""
 msgid "Stage"
 msgstr ""
 
+msgid "Send To DCC"
+msgstr ""
+
 msgid "Sent To DCC"
+msgstr ""
+
+msgid "Reverse Send To DCC"
 msgstr ""
 
 msgid "Date of Birth"
@@ -211,13 +252,10 @@ msgstr ""
 msgid "Scan Done"
 msgstr ""
 
-msgid "Show Advanced Filters"
-msgstr ""
-
-msgid "Hide Advanced Filters"
-msgstr ""
-
 msgid "Language"
+msgstr ""
+
+msgid "Ethnicity"
 msgstr ""
 
 msgid "Previous"
@@ -259,6 +297,9 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
+msgid "Error!"
+msgstr ""
+
 # Common timepoint and vist terms
 msgid "Not Started"
 msgstr ""
@@ -278,9 +319,6 @@ msgstr ""
 msgid "Recycling Bin"
 msgstr ""
 
-msgid "Pass"
-msgstr ""
-
 msgid "Failure"
 msgstr ""
 
@@ -289,3 +327,48 @@ msgstr ""
 
 msgid "In Progress"
 msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "Instruments"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Partial"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Data Entry"
+msgstr ""
+
+msgid "Administration"
+msgstr ""
+
+msgid "Double Data Entry Form"
+msgstr ""
+
+msgid "Double Data Entry Status"
+msgstr ""
+
+msgid "Double Data Entry"
+msgstr ""
+
+# Age related terms
+msgid "Age"
+msgstr ""
+
+msgid "{{months}} months old"
+msgstr ""
+
+msgid "{{years}} years old"
+msgstr ""
+
+# Other generic terms
+msgid "Loading..."
+msgstr ""
+

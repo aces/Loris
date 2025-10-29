@@ -78,7 +78,7 @@ function CandidateScanQCSummaryWidget(props) {
 CandidateScanQCSummaryWidget.propTypes = {
   Files: PropTypes.array,
   BaseURL: PropTypes.string,
-  VisitMap: PropTypes.array,
+  VisitMap: PropTypes.object,
 };
 
 /**
