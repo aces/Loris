@@ -82,8 +82,8 @@ class Module extends \Module
 
         switch ($type) {
         case 'study-progression':
-            $DB   = $factory->database();
-            $data = $DB->pselectWithIndexKey(
+            $DB          = $factory->database();
+            $sessionData = $DB->pselectWithIndexKey(
                 "SELECT
                     p.ProjectID,
                     p.Name AS ProjectName,
@@ -101,6 +101,25 @@ class Module extends \Module
                 [],
                 'ProjectID'
             );
+            $eventData   = $DB->pselectWithIndexKey(
+                "SELECT
+                    p.ProjectID,
+                    p.Name AS ProjectName,
+                    COUNT(pte.PhysiologicalTaskEventID) AS count,
+                    CONCAT('"
+                . $baseURL .
+                "/electrophysiology_browser/?project=', p.Name
+                    ) as url
+                FROM session s
+                JOIN Project p ON p.ProjectID = s.ProjectID
+                JOIN physiological_file pf ON pf.SessionID = s.ID
+                JOIN physiological_task_event pte USING (PhysiologicalFileID)
+                WHERE s.Active <> 'N'
+                AND s.CenterID <> 1
+                GROUP BY p.Name",
+                [],
+                'ProjectID'
+            );
             return [
                 new \LORIS\dashboard\DataWidget(
                     new \LORIS\GUI\LocalizableString(
@@ -108,7 +127,17 @@ class Module extends \Module
                         "EEG Session",
                         "EEG Sessions",
                     ),
-                    $data,
+                    $sessionData,
+                    "",
+                    'rgb(186,255,201)',
+                ),
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        "dqt",
+                        "EEG Event",
+                        "EEG Events",
+                    ),
+                    $eventData,
                     "",
                     'rgb(186,255,201)',
                 )
