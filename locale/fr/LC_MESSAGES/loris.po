@@ -34,7 +34,7 @@ msgid "Site Affiliation"
 msgstr "Affiliation du site"
 
 msgid "Site Affiliations"
-msgstr "Affiliations du site"
+msgstr "Sites affiliés"
 
 msgid "Project Affiliation"
 msgstr "Affiliation du projet"
