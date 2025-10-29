@@ -152,7 +152,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 msgid "Success!"
-msgstr "Réussi !"
+msgstr "Réussi!"
 
 # Common candidate terms
 msgid "PSCID"
