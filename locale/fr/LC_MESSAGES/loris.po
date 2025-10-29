@@ -275,7 +275,7 @@ msgstr "Erreur !"
 # Common timepoint and vist terms
 # - might need to be modified to “non commencée” when we talk about a visit
 msgid "Not Started"
-msgstr "Non commencé"
+msgstr "Non commencée"
 
 msgid "Screening"
 msgstr "Dépistage"
