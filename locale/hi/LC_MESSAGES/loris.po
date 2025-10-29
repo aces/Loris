@@ -305,6 +305,9 @@ msgstr "दृश्य"
 msgid "NEW"
 msgstr "नया"
 
+msgid "New"
+msgstr "नया"
+
 msgid "Updated"
 msgstr "अद्यतन किया गया"
 

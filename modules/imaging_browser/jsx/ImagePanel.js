@@ -28,13 +28,13 @@ class ImagePanelHeader extends Component {
   render() {
     const {t} = this.props;
     let QCStatusLabel;
-    if (this.props.QCStatus === t('Pass', {ns: 'imaging_browser'})) {
+    if (this.props.QCStatus === t('Pass', {ns: 'loris'})) {
       QCStatusLabel = <span className="label label-success">
-        {t('Pass', {ns: 'imaging_browser'})}
+        {t('Pass', {ns: 'loris'})}
       </span>;
-    } else if (this.props.QCStatus === t('Fail', {ns: 'imaging_browser'})) {
+    } else if (this.props.QCStatus === t('Fail', {ns: 'loris'})) {
       QCStatusLabel = <span className="label label-danger">
-        {t('Fail', {ns: 'imaging_browser'})}
+        {t('Fail', {ns: 'loris'})}
       </span>;
     }
 
@@ -448,7 +448,7 @@ class ImagePanelQCStatusSelector extends Component {
       qcStatusLabel = <span>
         {t('QC Status', {ns: 'imaging_browser'})} <span className="text-info">
                              ( <span className="glyphicon glyphicon-star">
-          </span> {t('New', {ns: 'imaging_browser'})} )
+          </span> {t('New', {ns: 'loris'})} )
         </span>
       </span>;
     } else {

@@ -1,4 +1,4 @@
-# Default LORIS strings to be translated (English).
+# Default LORIS strings to be translated (English)
 # Copy this to a language specific file and add translations to the
 # new file.
 # Copyright (C) 2025
@@ -306,6 +306,9 @@ msgstr ""
 # Common strings on widgets
 msgid "NEW"
 msgstr ""
+
+msgid "New"
+msgstr "नया"
 
 msgid "Updated"
 msgstr ""
