@@ -207,12 +207,22 @@ class Widgets extends \NDB_Page implements ETagCalculator
             }
         }
 
-        $eeg_data = $db->pselectOneInt(
+        $eeg_recordings = $db->pselectOneInt(
             "SELECT COUNT(distinct s.ID) as total_recordings
             FROM physiological_file pf
             JOIN session s ON (s.ID=pf.SessionID)
             WHERE s.ProjectID IN (" .
                 join(',', $user->getProjectIDs())
+            . ")",
+            []
+        );
+        $eeg_events     = $db->pselectOneInt(
+            "SELECT COUNT(pte.PhysiologicalTaskEventID) as total_events
+            FROM physiological_task_event pte
+            JOIN physiological_file pf USING (PhysiologicalFileID)
+            JOIN session s ON (s.ID=pf.SessionID)
+            WHERE s.ProjectID IN (" .
+            join(',', $user->getProjectIDs())
             . ")",
             []
         );
@@ -243,7 +253,8 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $values['size_byproject'] = $projectsSizes;
 
         $values['eeg_data'] = [
-            'total_recordings' => $eeg_data
+            'total_recordings' => $eeg_recordings,
+            'total_events'     => $eeg_events
         ];
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse($values);

@@ -106,6 +106,8 @@ class Charts extends \NDB_Page
             return $this->_handleSiteEEGRecordingsBreakdown($request);
         case 'eeg_recordings_by_project':
             return $this->_handleProjectEEGRecordingsBreakdown($request);
+        case 'eeg_events_by_project':
+            return $this->_handleProjectEEGEventsBreakdown($request);
         case 'size_byproject':
             return $this->_handleProjectSizeBreakdown();
         default:
@@ -961,6 +963,69 @@ class Charts extends \NDB_Page
                 p.Name,
                 COUNT(distinct s.ID) as count
                 FROM physiological_file pf
+                JOIN session s ON (s.ID=pf.SessionID)
+                JOIN Project p USING (ProjectID)
+                JOIN candidate c ON (c.ID=s.CandidateID)
+                JOIN psc ON (s.CenterID = psc.CenterID)
+                {$conditions['participantStatusJoin']}
+                WHERE 1 = 1
+                {$conditions['projectQuery']}
+                {$conditions['cohortQuery']}
+                {$conditions['visitQuery']}
+                {$conditions['siteQuery']}
+                {$conditions['participantStatusQuery']}
+                GROUP BY s.CenterID
+                ORDER BY s.CenterID",
+                $conditions['params']
+            )
+        );
+
+        $processedData = [];
+        foreach ($data as $row) {
+            $processedData[$row['ProjectID']] = [
+                'ProjectID' => $row['ProjectID'],
+                'Name'      => $row['Name'],
+                'count'     => intval($row['count']),
+            ];
+        }
+
+        $projectData = [];
+        foreach ($projects as $projectID => $projectName) {
+            if (in_array($projectID, array_keys($processedData))) {
+                $projectData[] = [
+                    'label' => $projectName,
+                    'total' => $processedData[$projectID]['count'],
+                ];
+            }
+        }
+
+        return (new \LORIS\Http\Response\JsonResponse($projectData));
+    }
+
+    /**
+     * Handle an incoming request for EEG events by project breakdown.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
+     */
+    private function _handleProjectEEGEventsBreakdown(
+        ServerRequestInterface $request
+    ) {
+        $DB       = \NDB_Factory::singleton()->database();
+        $user     = \NDB_Factory::singleton()->user();
+        $projects = $user->getProjects();
+
+        $conditions = $this->_buildQueryConditions($request);
+
+        $data = iterator_to_array(
+            $DB->pselect(
+                "SELECT
+                s.ProjectID,
+                p.Name,
+                COUNT(pte.PhysiologicalTaskEventID) as count
+                FROM physiological_task_event pte
+                JOIN physiological_file pf USING (PhysiologicalFileID)
                 JOIN session s ON (s.ID=pf.SessionID)
                 JOIN Project p USING (ProjectID)
                 JOIN candidate c ON (c.ID=s.CandidateID)
