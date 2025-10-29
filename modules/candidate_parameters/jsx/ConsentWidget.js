@@ -30,9 +30,9 @@ function ConsentWidget(props) {
   return (<table className="table" style={{width: '100%'}}>
     <thead>
       <tr>
-        <th>{t('Consent Type', { ns: 'candidate_parameters' })}</th>
-        <th>{t('Status', { ns: 'loris' })} <span style={{display: 'none'}}>{reload}</span></th>
-        <th>{t('Date', { ns: 'loris' })}</th>
+        <th>{t('Consent Type', {ns: 'candidate_parameters'})}</th>
+        <th>{t('Status', {ns: 'loris'})}</th>
+        <th>{t('Date', {ns: 'loris'})}</th>
       </tr>
     </thead>
     <tbody>
@@ -47,18 +47,19 @@ ConsentWidget.propTypes = {
 /**
  * Returns a rendered JSX component for a single consent type
  *
+ * @param {function} t - Translation callback
  * @param {array} consent - The type of consent
  * @return {object}
  */
 function consentTerm(t, consent) {
-    const dateFormatter = new Intl.DateTimeFormat(
-      loris.user.langpref.replace('_', '-'),
-      {
-        style: 'short',
-        timeZone: 'UTC',
+  const dateFormatter = new Intl.DateTimeFormat(
+    loris.user.langpref.replace('_', '-'),
+    {
+      style: 'short',
+      timeZone: 'UTC',
 
-      }
-    );
+    }
+  );
   let value;
   let date;
   switch (consent.Status) {
@@ -82,7 +83,7 @@ function consentTerm(t, consent) {
     </tr>);
   }
   if (date) {
-	  date = dateFormatter.format(new Date(date));
+    date = dateFormatter.format(new Date(date));
   }
   return (<tr key={consent.ConsentID}>
     <th>{consent.Label}</th>
