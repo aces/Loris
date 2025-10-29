@@ -239,7 +239,7 @@ msgid "Scan Done"
 msgstr "Scan complété"
 
 msgid "Language"
-msgstr "Langage"
+msgstr "Langue"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
