@@ -43,6 +43,7 @@ class DataTable extends Component {
   /**
    * Set the component page variable
    * to a new value
+   *
    * @param {number} i - Page index
    */
   changePage(i) {
@@ -55,6 +56,7 @@ class DataTable extends Component {
    * Update the sort column
    * If component sort.column is already set to column
    * Toggle sort.ascending
+   *
    * @param {number} column - The column index
    */
   setSortColumn(column) {
@@ -67,6 +69,7 @@ class DataTable extends Component {
 
   /**
    * Update the sort column
+   *
    * @param {number} column - The column index
    */
   updateSortColumn(column) {
@@ -86,6 +89,7 @@ class DataTable extends Component {
 
   /**
    * Updates page state
+   *
    * @param {number} number - Number of page
    */
   updatePageNumber(number) {
@@ -96,6 +100,7 @@ class DataTable extends Component {
 
   /**
    * Update number of rows per page
+   *
    * @param {object} e - Event from which to abstract value
    */
   updatePageRows(e) {
@@ -107,6 +112,7 @@ class DataTable extends Component {
 
   /**
    * Export the filtered rows and columns into a csv
+   *
    * @param {number[]} filteredRowIndexes - The filtered Row Indexes
    */
 
@@ -115,8 +121,8 @@ class DataTable extends Component {
     // Map cell data to proper values if applicable.
     if (this.props.getMappedCell) {
       csvData = csvData
-      .map((row, i) => this.props.fields
-        .map((field, j) => this.props.getMappedCell(
+        .map((row, i) => this.props.fields
+          .map((field, j) => this.props.getMappedCell(
             field.label,
             row[j],
             row,
@@ -210,6 +216,7 @@ class DataTable extends Component {
 
   /**
    * Sort the given rows according to the sort configuration
+   *
    * @param {number[]} rowIndexes - The row indexes
    * @return {object[]}
    */
@@ -297,6 +304,7 @@ class DataTable extends Component {
    * Searches for the filter keyword in the column cell
    *
    * Note: Search is case-insensitive.
+   *
    * @param {string} name field name
    * @param {string} data search string
    * @return {boolean} true, if filter value is found to be a substring
@@ -396,6 +404,7 @@ class DataTable extends Component {
 
   /**
    * Renders the Actions buttons.
+   *
    * @return {string[]|void} - Array of React Elements
    */
   renderActions() {
@@ -416,6 +425,7 @@ class DataTable extends Component {
 
   /**
    * Renders the React component.
+   *
    * @return {JSX} - React markup for the component
    */
   render() {
