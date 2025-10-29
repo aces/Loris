@@ -1,5 +1,5 @@
 import {Acknowledgement} from '../../';
-import {Http} from 'jsx/../jslib/core';
+import {Http} from 'jslib/core';
 
 /**
  *

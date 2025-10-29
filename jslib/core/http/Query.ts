@@ -109,6 +109,7 @@ export class Query {
     case Operator.LessThanOrEqual: return '<=';
     case Operator.GreaterThanOrEqual: return '>=';
     case Operator.Like: return '_like';
+    case Operator.Includes: return '_in';
     default: return '';
     }
   }
