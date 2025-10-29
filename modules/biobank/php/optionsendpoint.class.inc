@@ -170,7 +170,13 @@ class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
         // XXX: This should eventually be replaced by a call directly to a
         // Candidate endpoint or Candidate controller that will be able to
         // provide Diagnosis Options.
-        $query     = 'SELECT DxEvolutionID as id, Name as label FROM diagnosis_evolution';
+        $query     = '
+            SELECT
+                DxEvolutionID as id,
+                Name as label
+            FROM
+                diagnosis_evolution
+        ';
         $diagnoses = $db->pselectWithIndexKey($query, [], 'id');
 
         $sessionQuery = "SELECT
