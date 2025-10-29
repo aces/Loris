@@ -5,7 +5,7 @@
  * module. Since BrainBrowser is implemented in Javascript on the
  * front end, it does nothing but check permissions.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category BrainBrowser
  * @package  LorisModules

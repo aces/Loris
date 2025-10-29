@@ -3,7 +3,7 @@
 /**
  * File contains the LORIS\acknowledgements\Module class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main

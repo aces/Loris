@@ -5,7 +5,7 @@
  * (database lookup) for abstract functions getFullNames and
  * getSubtestList.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Behavioural

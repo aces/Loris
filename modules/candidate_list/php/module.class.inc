@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -139,7 +139,11 @@ class Module extends \Module
             );
             return [
                 new \LORIS\dashboard\DataWidget(
-                    "Candidate",
+                    new \LORIS\GUI\LocalizableString(
+                        "loris",
+                        "Candidate",
+                        "Candidates"
+                    ),
                     $data,
                     "",
                     'rgb(255, 252, 199)',

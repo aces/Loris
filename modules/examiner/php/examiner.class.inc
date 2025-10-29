@@ -3,7 +3,7 @@
 /**
  * Examiner module menu filter form
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Clinical
  * @package  Loris
@@ -16,7 +16,7 @@ namespace LORIS\examiner;
 /**
  * Examiner module menu filter form
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Clinical
  * @package  Loris

@@ -11,7 +11,7 @@
  * Options:
  *          [-D]: Adds DROP TABLE statement to output query
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

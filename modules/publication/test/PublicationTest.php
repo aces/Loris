@@ -27,7 +27,7 @@ require_once __DIR__ .
  * @link     https://github.com/aces/Loris
  */
 
-class PublicaitonTest extends LorisIntegrationTest
+class PublicationTest extends LorisIntegrationTest
 {
     private $_loadingBrowseUI  = [
         [

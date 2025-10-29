@@ -3,6 +3,8 @@ import {initReactI18next} from 'react-i18next';
 
 import jaResources from '../locale/ja/LC_MESSAGES/loris.json';
 import hiResources from '../locale/hi/LC_MESSAGES/loris.json';
+import esResources from '../locale/es/LC_MESSAGES/loris.json';
+import enResources from '../locale/en/LC_MESSAGES/loris.json';
 
 const resources = {
   ja: {
@@ -10,6 +12,12 @@ const resources = {
   },
   hi: {
     loris: hiResources,
+  },
+  es: {
+    loris: esResources,
+  },
+  en: {
+    loris: enResources,
   },
 };
 

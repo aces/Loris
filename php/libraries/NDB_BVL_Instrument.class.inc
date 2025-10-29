@@ -384,7 +384,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $current_date = new \DateTime();
             $dob_year     = abs($current_date->diff($dob_date)->y);
             $dob_month    = abs($current_date->diff($dob_date)->m);
-            $dob_age      = $dob_year . " y / " . $dob_month . " m";
+            $dob_age      = $dob_year . dgettext("timepoint_list", " y / ")
+                . $dob_month . dgettext("timepoint_list", " m");
             $this->tpl_data['dob_age'] = $dob_age;
         }
         // EDC to EDC Age
@@ -394,7 +395,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $current_date = new DateTime();
             $edc_year     = abs($current_date->diff($edc_date)->y);
             $edc_month    = abs($current_date->diff($edc_date)->m);
-            $edc_age      = $edc_year . " y / " . $edc_month . " m";
+            $edc_age      = $edc_year . dgettext("timepoint_list", " y / ")
+                . $edc_month . dgettext("timepoint_list", " m");
             $this->tpl_data['edc_age'] = $edc_age;
         }
     }
@@ -3208,15 +3210,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candid / $pscid",
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                "TimePoint $visitlabel Details",
+                sprintf(dgettext("loris", "TimePoint %s Details"), $visitlabel),
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             ),
             new \LORIS\Breadcrumb(
