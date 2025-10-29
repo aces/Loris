@@ -276,7 +276,6 @@ const WidgetIndex = (props) => {
         setRecruitmentData(data);
         setStudyProgressionData(data);
         setElectrophysiologyData(data);
-
       };
       setup().catch(
         (error) => {

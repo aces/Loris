@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import Panel from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {setupCharts} from './helpers/chartBuilder';
 import {useTranslation} from 'react-i18next';
-import jaStrings from '../../locale/ja/LC_MESSAGES/statistics.json';
 
 /**
  * Electrophysiology - a widget containing statistics for EEG data.
@@ -22,6 +20,23 @@ const Electrophysiology = (props) => {
   let json = props.data;
 
   const [chartDetails, setChartDetails] = useState({
+    'project_recordings': {
+      'eeg_recordings_by_project': {
+        sizing: 11,
+        title: t('EEG Recordings by project', {ns: 'statistics'}),
+        filters: '',
+        chartType: 'pie',
+        dataType: 'pie',
+        label: t('EEG Recordings', {ns: 'statistics'}),
+        units: null,
+        showPieLabelRatio: true,
+        legend: '',
+        options: {pie: 'pie', bar: 'bar'},
+        chartObject: null,
+        yLabel: t('EEG Recordings', {ns: 'statistics'}),
+        titlePrefix: t('Project', {ns: 'loris'}),
+      },
+    },
     'site_recordings': {
       'eeg_recordings_by_site': {
         sizing: 11,
@@ -39,20 +54,20 @@ const Electrophysiology = (props) => {
         titlePrefix: t('Site', {ns: 'loris'}),
       },
     },
-    'project_recordings': {
-      'eeg_recordings_by_project': {
+    'project_events': {
+      'eeg_events_by_project': {
         sizing: 11,
-        title: t('EEG Recordings by project', {ns: 'statistics'}),
+        title: t('EEG Events by project', {ns: 'statistics'}),
         filters: '',
         chartType: 'pie',
         dataType: 'pie',
-        label: t('EEG Recordings', {ns: 'statistics'}),
+        label: t('EEG Events', {ns: 'statistics'}),
         units: null,
         showPieLabelRatio: true,
         legend: '',
         options: {pie: 'pie', bar: 'bar'},
         chartObject: null,
-        yLabel: t('EEG Recordings', {ns: 'statistics'}),
+        yLabel: t('EEG Events', {ns: 'statistics'}),
         titlePrefix: t('Project', {ns: 'loris'}),
       },
     },
@@ -89,6 +104,9 @@ const Electrophysiology = (props) => {
   // Helper function to calculate total recruitment
   const getTotalRecordings = () => {
     return json['eeg_data']['total_recordings'] || -1;
+  };
+  const getTotalEvents = () => {
+    return json['eeg_data']['total_events'] || -1;
   };
   const title = (subtitle) => t('EEG data', {ns: 'statistics'})
     + ' — ' + t(subtitle, {ns: 'statistics'});
@@ -164,13 +182,13 @@ const Electrophysiology = (props) => {
                   }}
                 >
                   <div className="btn-group" style={{marginBottom: '10px'}}>
-                  <button
-                    type="button"
-                    className="btn btn-default btn-xs"
-                    onClick={() => setShowFiltersBreakdown((prev) => !prev)}
-                  >
-                    {filterLabel(showFiltersBreakdown)}
-                  </button>
+                    <button
+                      type="button"
+                      className="btn btn-default btn-xs"
+                      onClick={() => setShowFiltersBreakdown((prev) => !prev)}
+                    >
+                      {filterLabel(showFiltersBreakdown)}
+                    </button>
                   </div>
                   {showFiltersBreakdown && (
                     <QueryChartForm
@@ -197,7 +215,52 @@ const Electrophysiology = (props) => {
               }
             ),
             onToggleFilters: () => setShowFiltersBreakdown((prev) => !prev),
-          }
+          },
+          {
+            content:
+              getTotalEvents() > 0 ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '10px',
+                  }}
+                >
+                  <div className="btn-group" style={{marginBottom: '10px'}}>
+                    <button
+                      type="button"
+                      className="btn btn-default btn-xs"
+                      onClick={() => setShowFiltersBreakdown((prev) => !prev)}
+                    >
+                      {filterLabel(showFiltersBreakdown)}
+                    </button>
+                  </div>
+                  {showFiltersBreakdown && (
+                    <QueryChartForm
+                      Module={'statistics'}
+                      name={'eeg_data'}
+                      id={'eeg_dataEventsForm'}
+                      data={props.data}
+                      callback={(formDataObj) => {
+                        updateFilters(formDataObj, 'project_events');
+                      }}
+                    />
+                  )}
+                  {showChart('project_events', 'eeg_events_by_project')}
+                </div>
+              ) : (
+                <p>{t('There is no data yet.', {ns: 'statistics'})}</p>
+              ),
+            title: title('Events by Project'),
+            subtitle: t(
+              'Total Events: {{count}}',
+              {
+                ns: 'statistics',
+                count: getTotalEvents(),
+              }
+            ),
+            onToggleFilters: () => setShowFiltersBreakdown((prev) => !prev),
+          },
         ]}
       />
     </>
