@@ -71,7 +71,7 @@ class ImagingBrowserIndex extends Component {
     case t('New Data', {ns: 'imaging_browser'}):
       if (cell === 'new') {
         result = (
-          <td className="newdata">{t('NEW', {ns: 'imaging_browser'})}</td>
+          <td className="newdata">{t('NEW', {ns: 'loris'})}</td>
         );
       }
       break;
@@ -119,7 +119,7 @@ class ImagingBrowserIndex extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        {ns: 'imaging_browser'})}</h3>;
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -180,7 +180,7 @@ class ImagingBrowserIndex extends Component {
           type: 'multiselect',
           options: options.pendingNew,
         }},
-      {label: t('Entity Type', {ns: 'imaging_browser'}),
+      {label: t('Entity Type', {ns: 'loris'}),
         show: false, filter: {
           name: 'entityType',
           type: 'multiselect',
