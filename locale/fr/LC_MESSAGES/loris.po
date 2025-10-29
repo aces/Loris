@@ -40,7 +40,7 @@ msgid "Project Affiliation"
 msgstr "Affiliation du projet"
 
 msgid "Project Affiliations"
-msgstr "Affiliations du projet"
+msgstr "Projets affiliés"
 
 msgid "Log Out"
 msgstr "Se déconnecter"
