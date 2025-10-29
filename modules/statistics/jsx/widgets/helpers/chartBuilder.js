@@ -300,6 +300,7 @@ const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
           let labels = [];
           let colours = [];
           if (chart.dataType === 'pie') {
+            console.log('charDetails', chartDetails);
             columns = formatPieData(chartData);
             colours = siteColours;
             // reformating the columns for a bar chart when it was originally pie data

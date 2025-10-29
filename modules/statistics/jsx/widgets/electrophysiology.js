@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import Panel from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {setupCharts} from './helpers/chartBuilder';
+import {useTranslation} from 'react-i18next';
+import jaStrings from '../../locale/ja/LC_MESSAGES/statistics.json';
 
 /**
  * Electrophysiology - a widget containing statistics for EEG data.
@@ -12,6 +15,7 @@ import {setupCharts} from './helpers/chartBuilder';
  * @return {JSX.Element}
  */
 const Electrophysiology = (props) => {
+  const {t} = useTranslation();
   const [loading, setLoading] = useState(true);
   const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
 
@@ -21,35 +25,35 @@ const Electrophysiology = (props) => {
     'site_recordings': {
       'eeg_recordings_by_site': {
         sizing: 11,
-        title: 'EEG Recordings by site',
+        title: t('EEG Recordings by site', {ns: 'statistics'}),
         filters: '',
         chartType: 'pie',
         dataType: 'pie',
-        label: 'EEG Recordings',
+        label: t('EEG Recordings', {ns: 'statistics'}),
         units: null,
         showPieLabelRatio: true,
         legend: '',
         options: {pie: 'pie', bar: 'bar'},
         chartObject: null,
-        yLabel: 'EEG Recordings',
-        titlePrefix: 'Site',
+        yLabel: t('EEG Recordings', {ns: 'statistics'}),
+        titlePrefix: t('Site', {ns: 'loris'}),
       },
     },
     'project_recordings': {
       'eeg_recordings_by_project': {
         sizing: 11,
-        title: 'EEG Recordings by project',
+        title: t('EEG Recordings by project', {ns: 'statistics'}),
         filters: '',
         chartType: 'pie',
         dataType: 'pie',
-        label: 'EEG Recordings',
+        label: t('EEG Recordings', {ns: 'statistics'}),
         units: null,
         showPieLabelRatio: true,
         legend: '',
         options: {pie: 'pie', bar: 'bar'},
         chartObject: null,
-        yLabel: 'EEG Recordings',
-        titlePrefix: 'Project',
+        yLabel: t('EEG Recordings', {ns: 'statistics'}),
+        titlePrefix: t('Project', {ns: 'loris'}),
       },
     },
   });
@@ -64,11 +68,15 @@ const Electrophysiology = (props) => {
    */
   useEffect(() => {
     if (json && Object.keys(json).length !== 0) {
-      setupCharts(false, chartDetails).then((data) => {
+      setupCharts(
+        t,
+        false,
+        chartDetails,
+        t('Total', {ns: 'loris'})
+      ).then((data) => {
         setChartDetails(data);
       });
       json = props.data;
-      console.log('eeg_json', json);
       setLoading(false);
     }
   }, [props.data]);
@@ -82,14 +90,18 @@ const Electrophysiology = (props) => {
   const getTotalRecordings = () => {
     return json['eeg_data']['total_recordings'] || -1;
   };
-
+  const title = (subtitle) => t('EEG data', {ns: 'statistics'})
+    + ' — ' + t(subtitle, {ns: 'statistics'});
+  const filterLabel = (hide) => hide ?
+    t('Hide Filters', {ns: 'loris'})
+    : t('Show Filters', {ns: 'loris'});
   return loading ? <Panel title='EEG data'><Loader/></Panel> : (
     <>
       <Panel
-        title='EEG data'
+        title={t('EEG data', {ns: 'statistics'})}
         id='eeg_recordings'
         onChangeView={(index) => {
-          setupCharts(false, chartDetails);
+          setupCharts(t, false, chartDetails, t('Total', {ns: 'loris'}));
 
           // reset filters when switching views
           setShowFiltersBreakdown(false);
@@ -111,7 +123,7 @@ const Electrophysiology = (props) => {
                       className="btn btn-default btn-xs"
                       onClick={() => setShowFiltersBreakdown((prev) => !prev)}
                     >
-                      {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
+                      {filterLabel(showFiltersBreakdown)}
                     </button>
                   </div>
                   {showFiltersBreakdown && (
@@ -128,10 +140,18 @@ const Electrophysiology = (props) => {
                   {showChart('project_recordings', 'eeg_recordings_by_project')}
                 </div>
               ) : (
-                <p>There is no data yet.</p>
+                <p>{t('There is no data yet.', {ns: 'statistics'})}</p>
               ),
-            title: 'EEG data - recordings by project',
-            subtitle: 'Total recordings: ' + getTotalRecordings(),
+
+            title: title('Recordings by Project'),
+            subtitle: t(
+              'Total Recordings: {{count}}',
+              {
+                ns: 'statistics',
+                count: getTotalRecordings(),
+              }
+            ),
+            onToggleFilters: () => setShowFiltersBreakdown((prev) => !prev),
           },
           {
             content:
@@ -149,7 +169,7 @@ const Electrophysiology = (props) => {
                     className="btn btn-default btn-xs"
                     onClick={() => setShowFiltersBreakdown((prev) => !prev)}
                   >
-                  {showFiltersBreakdown ? 'Hide Filters' : 'Show Filters'}
+                    {filterLabel(showFiltersBreakdown)}
                   </button>
                   </div>
                   {showFiltersBreakdown && (
@@ -166,11 +186,18 @@ const Electrophysiology = (props) => {
                   {showChart('site_recordings', 'eeg_recordings_by_site')}
                 </div>
               ) : (
-                <p>There is no data yet.</p>
+                <p>{t('There is no data yet.', {ns: 'statistics'})}</p>
               ),
-            title: 'EEG data - recordings by site',
-            subtitle: 'Total recordings: ' + getTotalRecordings(),
-          },
+            title: title('Recordings by Site'),
+            subtitle: t(
+              'Total Recordings: {{count}}',
+              {
+                ns: 'statistics',
+                count: getTotalRecordings(),
+              }
+            ),
+            onToggleFilters: () => setShowFiltersBreakdown((prev) => !prev),
+          }
         ]}
       />
     </>
