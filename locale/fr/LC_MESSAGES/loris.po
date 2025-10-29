@@ -270,7 +270,7 @@ msgid "Total"
 msgstr "Total"
 
 msgid "Error!"
-msgstr "Erreur !"
+msgstr "Erreur!"
 
 # Common timepoint and vist terms
 # - might need to be modified to “non commencée” when we talk about a visit
