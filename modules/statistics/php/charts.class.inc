@@ -895,7 +895,26 @@ class Charts extends \NDB_Page
         $sites = $user->getSites();
 
         $conditions = $this->_buildQueryConditions($request);
+        error_log(json_encode($conditions));
 
+
+        error_log("SELECT
+                s.CenterID,
+                psc.Name,
+                COUNT(distinct s.ID) as count
+            FROM physiological_file pf
+            JOIN session s ON (s.ID=pf.SessionID)
+            JOIN candidate c ON (c.ID=s.CandidateID)
+            JOIN psc USING (CenterID)
+            {$conditions['participantStatusJoin']}
+            WHERE 1 = 1
+            {$conditions['projectQuery']}
+            {$conditions['cohortQuery']}
+            {$conditions['visitQuery']}
+            {$conditions['siteQuery']}
+            {$conditions['participantStatusQuery']}
+            GROUP BY s.CenterID
+            ORDER BY s.CenterID");
         $data = iterator_to_array(
             $DB->pselect(
                 "SELECT
@@ -937,6 +956,10 @@ class Charts extends \NDB_Page
                 ];
             }
         }
+
+
+        error_log('sitedata');
+        error_log(json_encode($siteData));
 
         return (new \LORIS\Http\Response\JsonResponse($siteData));
     }
