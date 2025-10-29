@@ -138,18 +138,25 @@ class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
         // TODO: This should eventually be replaced by a call directly to a
         // Candidate endpoint or Candidate controller that will be able to
         // provide Candidate Objects.
-        $query      = "SELECT c.CandID as id,
-                            PSCID as pscid,
-                            Sex as sex,
-                            GROUP_CONCAT(DISTINCT DxEvolutionID) as diagnosisIds,
-                            GROUP_CONCAT(DISTINCT s.ID) as sessionIds
-                       FROM candidate c
-                            LEFT JOIN session s ON s.CandidateID=c.CandID
-                            LEFT JOIN candidate_diagnosis_evolution_rel cedr on cedr.CandidateID=c.CandID
-                       WHERE s.CenterID IN ($userCenters)
-                            AND s.ProjectID IN ($userProjects)
-                       GROUP BY
-                          CandID";
+        $query      = "
+            SELECT
+                c.CandID as id,
+                PSCID as pscid,
+                Sex as sex,
+                GROUP_CONCAT(DISTINCT DxEvolutionID) as diagnosisIds,
+                GROUP_CONCAT(DISTINCT s.ID) as sessionIds
+            FROM
+                candidate c
+                LEFT JOIN session s
+                  ON s.CandidateID=c.CandID
+                LEFT JOIN candidate_diagnosis_evolution_rel cedr
+                  ON cedr.CandidateID=c.CandID
+            WHERE
+                s.CenterID IN ($userCenters)
+                AND s.ProjectID IN ($userProjects)
+            GROUP BY
+                CandID
+        ";
         $candidates = $db->pselectWithIndexKey($query, [], 'id');
         foreach ($candidates as $id => $candidate) {
             $candidates[$id]['diagnosisIds'] = $candidate['diagnosisIds']
