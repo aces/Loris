@@ -74,15 +74,18 @@
               }
             });
 
-            headerPolicyRoot = ReactDOM.createRoot(
-                document.getElementById("header-policy-button")
-            );
-            headerPolicyRoot.render(
-                React.createElement(PolicyButton, {
-                    onClickPolicy: {$header_policy|json_encode},
-                    popUpPolicy: {$pop_up_policy|json_encode},
+            const policyButtonEl = document.getElementById("header-policy-button");
+            if (policyButtonEl) {
+                headerPolicyRoot = ReactDOM.createRoot(
+                    policyButtonEl
+                );
+                headerPolicyRoot.render(
+                    React.createElement(PolicyButton, {
+                        onClickPolicy: {$header_policy|json_encode},
+                        popUpPolicy: {$pop_up_policy|json_encode},
                 })
-            );
+                );
+            }
           });
         </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
@@ -198,7 +201,7 @@
                                     </li>
                                     {/if}
                                     <li>
-                                        <a href="{$baseurl}/?logout=true">
+                                        <a href="{$baseurl}/login/logout">
                                             {dgettext("loris", "Log Out")}
                                         </a>
                                     </li>

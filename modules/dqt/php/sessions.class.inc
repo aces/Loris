@@ -3,7 +3,7 @@
 /**
  * The Sessions 'endpoint' class for the DQT Module.
  *
- * PHP Version 7.4
+ * PHP Version 8.4
  *
  * @category   API
  * @package    Loris
@@ -23,7 +23,7 @@ use \Psr\Http\Message\ResponseInterface;
  * the background for the stream "reader" to retrieve
  * the needed sessions from couchDB.
  *
- * PHP Version 7.4
+ * PHP Version 8.4
  *
  * @category   API
  * @package    LORIS

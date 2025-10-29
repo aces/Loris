@@ -7,7 +7,7 @@
  * a thin wrapper around a Provisioner to ease creation of frontend
  * data tables.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Data
  * @package    Main

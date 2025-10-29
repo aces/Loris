@@ -46,7 +46,6 @@ class RedcapRepeatingInstrumentEvent implements IRedcapInstrumentEvent
      */
     public readonly ?string $custom_label;
 
-
     /**
      * Constructor
      *

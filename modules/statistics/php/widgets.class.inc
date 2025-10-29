@@ -59,13 +59,18 @@ class Widgets extends \NDB_Page implements ETagCalculator
         if (isset($this->_cache)) {
             return $this->_cache;
         }
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-        $db      = $request->getAttribute('loris')->getDatabaseConnection();
-
+        $factory   = \NDB_Factory::singleton();
+        $config    = $factory->config();
+        $db        = $request->getAttribute('loris')->getDatabaseConnection();
+        $user      = $factory->user();
+        $projects  = $user->getProjectIDs();
+        $centerIDs = $user->getCenterIDs();
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
 
-        $recruitmentRaw = iterator_to_array(
+        $projectString = "('".implode("','", array_map('strval', $projects))."')";
+        $centerString  = "('".implode("','", array_map('strval', $centerIDs))."')";
+
+        $recruitmentRaw     = iterator_to_array(
             $db->pselect(
                 "SELECT
                 COUNT(*) as Count,
@@ -73,53 +78,67 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 c.RegistrationProjectID as ProjectID
              FROM candidate c
                  WHERE c.Active='Y' AND c.Entity_type='Human'
-                 AND c.RegistrationCenterID <> 1
+                 AND c.RegistrationProjectID IN $projectString
+                 AND c.RegistrationCenterID IN $centerString
              GROUP BY c.Sex, c.RegistrationProjectID",
                 []
             )
         );
-        $totalScans     = array_sum(array_column($recruitmentRaw, 'Count'));
-        $recruitment    = [
+        $total_participants = array_sum(array_column($recruitmentRaw, 'Count'));
+        $totalScans         = $db->pselectOne(
+            "SELECT COUNT(distinct s.ID)
+                FROM files f
+                LEFT JOIN parameter_file pf USING (FileID)
+                LEFT JOIN session s ON (s.ID=f.SessionID)
+                JOIN parameter_type pt USING (ParameterTypeID)
+                WHERE pt.Name='acquisition_date'
+                AND s.ProjectID IN {$projectString}
+                AND s.CenterID IN {$centerString}",
+            []
+        );
+        $recruitment        = [
             'overall' => $this->_createProjectProgressBar(
                 'overall',
-                "Overall Recruitment",
+                dgettext("statistics", "Overall Recruitment"),
                 $recruitmentTarget,
-                $totalScans,
+                $total_participants,
                 $recruitmentRaw,
             )
         ];
-
-        $user     = $factory->user();
-        $projects = $user->getProjectIDs();
 
         $projectOptions     = [];
         $cohortOptions      = [];
         $visitOptions       = [];
         $recruitmentCohorts = [];
-        $centerIDs          = $user->getCenterIDs();
         $sites = \Utility::getSiteList();
 
-        foreach ($projects as $projectID) {
+        $studyWidgets = $this->_collectStudyProgressionWidgets($user);
+        $studyProgressionProjects = $this->_createStudyProgressionProjects(
+            $projects,
+            $config,
+            $studyWidgets
+        );
+
+        foreach ($projects as $pid) {
             // Set project recruitment data
-            $projectInfo = $config->getProjectSettings(intval(strval($projectID)));
+            $projectInfo = $config->getProjectSettings(intval(strval($pid)));
+            $projectOptions[intval(strval($pid))] = $projectInfo['Name'] ?? "";
             if (is_null($projectInfo)) {
                 throw new \LorisException(
                     'No project settings exist in the Database for ' .
-                    'project ID ' . intval(strval($projectID))
+                    'project ID ' . intval(strval($pid))
                 );
             }
-            $recruitment[intval(strval($projectID))]
-                = $this->_createProjectProgressBar(
-                    strval($projectID),
-                    $projectInfo['Name'],
-                    $projectInfo['recruitmentTarget'],
-                    $this->getTotalRecruitmentByProject(
-                        $recruitmentRaw,
-                        $projectID
-                    ),
-                    $recruitmentRaw
-                );
-
+            $recruitment[intval(strval($pid))] = $this->_createProjectProgressBar(
+                strval($pid),
+                $projectInfo['Name'],
+                $projectInfo['recruitmentTarget'],
+                $this->getTotalRecruitmentByProject(
+                    $recruitmentRaw,
+                    $pid
+                ),
+                $recruitmentRaw
+            );
             // Set cohort recruitment data
             $centerList  = "'" . implode("','", $centerIDs) . "'";
             $projectList = "'" . implode("','", $projects) . "'";
@@ -147,8 +166,16 @@ class Widgets extends \NDB_Page implements ETagCalculator
                         $db,
                         $sp["Count"]
                     );
+                $cohortVisits = \Utility::getVisitsForCohort(
+                    intval($sp["CohortID"])
+                );
+                foreach ($cohortVisits as $visitLabel => $visitName) {
+                    // get visit id
+                    $visitOptions[$visitLabel] = $visitName;
+                }
             }
         }
+
         $siteOptions = [];
         foreach ($centerIDs as $center) {
             if (array_key_exists($center->__toString(), $sites)) {
@@ -164,15 +191,16 @@ class Widgets extends \NDB_Page implements ETagCalculator
             'cohorts'           => $cohortOptions,
             'sites'             => $siteOptions,
             'visits'            => $visitOptions,
-            'participantStatus' => $participantStatusOptions
+            'participantStatus' => $participantStatusOptions,
         ];
         $values  = [];
         // Used for the react widget recruitment.js
         $values['recruitment'] = $recruitment;
         // Used for the react widget studyprogression.js
         $values['studyprogression']   = [
-            'total_scans' => $totalScans,
-            'recruitment' => $recruitment
+            'total_scans'     => $totalScans,
+            'recruitment'     => $recruitment,
+            'progressionData' => $studyProgressionProjects,
         ];
         $values['options']            = $options;
         $values['recruitmentcohorts'] = $recruitmentCohorts;
@@ -420,6 +448,171 @@ class Widgets extends \NDB_Page implements ETagCalculator
             }
         }
         return $sum;
+    }
+
+    /**
+     * Collects study progression widgets from all active modules.
+     *
+     * @param \User $user The current user
+     *
+     * @return array Collected study widgets data
+     */
+    private function _collectStudyProgressionWidgets(\User $user): array
+    {
+        $modules      = $this->loris->getActiveModules();
+        $studyWidgets = [];
+
+        foreach ($modules as $module) {
+            $moduleWidgets = $module->getWidgets('study-progression', $user, []);
+
+            foreach ($moduleWidgets as $widget) {
+                if (!($widget instanceof \LORIS\dashboard\DataWidget)) {
+                    continue;
+                }
+
+                $widgetData = [
+                    ...$widget->data(),
+                    "colour" => $widget->colour(),
+                    "ref"    => $widget,
+                ];
+
+                // Remove URLs if user doesn't have access to the module
+                if (!$module->hasAccess($user)) {
+                    $widgetData = $this->_removeUrlsFromWidgetData($widgetData);
+                }
+
+                $studyWidgets[$widget->label()->getN(1)] = $widgetData;
+            }
+        }
+
+        return $studyWidgets;
+    }
+
+    /**
+     * Removes URLs from widget data for unauthorized access.
+     *
+     * @param array $widgetData The widget data to process
+     *
+     * @return array Widget data with URLs removed
+     */
+    private function _removeUrlsFromWidgetData(array $widgetData): array
+    {
+        foreach ($widgetData as $key => $value) {
+            if (isset($value['url'])) {
+                $widgetData[$key]['url'] = null;
+            }
+        }
+        return $widgetData;
+    }
+
+    /**
+     * Creates study progression data for all projects.
+     *
+     * @param array       $projects     Array of project IDs
+     * @param \NDB_Config $config       Configuration object
+     * @param array       $studyWidgets Collected study widgets
+     *
+     * @return array Study progression data organized by project
+     */
+    private function _createStudyProgressionProjects(
+        array $projects,
+        \NDB_Config $config,
+        array $studyWidgets
+    ): array {
+        $studyProgressionProjects = [];
+
+        foreach ($projects as $pid) {
+            $projectInfo = $config->getProjectSettings(intval(strval($pid)));
+            if (is_null($projectInfo)) {
+                continue;
+            }
+
+            $studyProgressionProjects[$projectInfo['Name']]
+                = $this->_createProjectSummary(strval($pid), $studyWidgets);
+        }
+
+        return $this->_sortProjectsByPopularity($studyProgressionProjects);
+    }
+
+    /**
+     * Sorts project progression data by the most common statistic titles.
+     *
+     * @param array $projects The project data to sort
+     *
+     * @return array Sorted project data
+     */
+    private function _sortProjectsByPopularity(array $projects): array
+    {
+        $statisticCounts = $this->_calculateStatisticCounts($projects);
+
+        foreach ($projects as &$projectData) {
+            usort(
+                $projectData,
+                function ($a, $b) use ($statisticCounts) {
+                    return ($statisticCounts[$b['title']] ?? 0)
+                        - ($statisticCounts[$a['title']] ?? 0);
+                }
+            );
+        }
+
+        return $projects;
+    }
+
+    /**
+     * Calculates how many times each statistic title appears across projects.
+     *
+     * @param array $studyProgressionProjects The project data
+     *
+     * @return array Count of each statistic title
+     */
+    private function _calculateStatisticCounts(
+        array $studyProgressionProjects
+    ): array {
+        $statisticCounts = [];
+
+        foreach ($studyProgressionProjects as $projectData) {
+            foreach ($projectData as $data) {
+                $title = $data['title'];
+                $statisticCounts[$title] = ($statisticCounts[$title] ?? 0) + 1;
+            }
+        }
+
+        return $statisticCounts;
+    }
+
+    /**
+     * Generates the template data for a project summary.
+     *
+     * @param string $projectID The project ID being processed
+     * @param array  $widgets   The collected study widgets
+     *
+     * @return array Data for the project summary
+     */
+    private function _createProjectSummary(string $projectID, array $widgets): array
+    {
+        $projectData = [];
+
+        foreach ($widgets as $widgetConfig) {
+            // Search through numeric indices for matching ProjectID
+            foreach ($widgetConfig as $value) {
+                if (is_array($value)
+                    && isset($value['ProjectID'])
+                    && strval($value['ProjectID']) === $projectID
+                ) {
+                    $title = $widgetConfig['ref']->label()->getN($value['count']);
+
+                    $projectData[] = [
+                        'title'  => $title,
+                        'url'    => $value['url'] ?? null,
+                        'colour' => $widgetConfig['colour'] ?? null,
+                        'count'  => $value['count'] ?? 0
+                    ];
+                    break;
+                }
+            }
+        }
+
+        return $projectData;
     }
 
     /**

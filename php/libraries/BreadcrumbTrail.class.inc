@@ -4,7 +4,7 @@
  * This file represents a BreadcrumbTrail object that can be printed as a string
  * that contains all its breadcrumbs.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Breadcrumbs
  * @package  User_Interface

@@ -129,6 +129,7 @@ if ($send_emails) {
         );
     }
 }
+
 /**
  * Returns an array containing the user's files,
  * and the names of the projects the user is involved with.
