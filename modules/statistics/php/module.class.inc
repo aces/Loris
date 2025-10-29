@@ -71,11 +71,11 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
         switch ($type) {
         case 'dashboard':
-            $factory = \NDB_Factory::singleton();
-            $baseURL = $factory->settings()->getBaseURL();
-            $widget  = new \LORIS\dashboard\Widget(
+            $widget = new \LORIS\dashboard\Widget(
                 new \LORIS\dashboard\WidgetContent(
                     '',
                     '',
@@ -100,6 +100,56 @@ class Module extends \Module
             $widget->setTemplateVariables(['id' => 'statistics_widgets']);
 
             return [$widget];
+        case 'study-progression':
+            $DB = $factory->database();
+            $cachedSizeData = json_decode(
+                html_entity_decode(
+                    $DB->pselectOne(
+                        "SELECT Value
+                      FROM cached_data
+                      JOIN cached_data_type USING (CachedDataTypeID)
+                      WHERE Name='projects_disk_space'",
+                        []
+                    ) ?? ''
+                ),
+                true
+            );
+
+            $data = [];
+
+            $projects = $user->getProjects();
+            if (!is_null($cachedSizeData)) {
+                foreach ($projects as $project) {
+                    $projectName = $project->getName();
+                    if (!in_array($projectName, array_keys($cachedSizeData))) {
+                        continue;
+                    }
+
+                    $datasetSize = sprintf(
+                        dgettext('statistics', '%s GB'),
+                        $cachedSizeData[$projectName]['total']
+                    );
+                    $data[]      = [
+                        'ProjectID'   => $project->getId(),
+                        'ProjectName' => $projectName,
+                        'count'       => $datasetSize,
+                        'url'         => "$baseURL/dqt",
+                    ];
+                }
+            }
+
+            return [
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        "dqt",
+                        "Dataset Size",
+                        "Dataset Size",
+                    ),
+                    $data,
+                    "",
+                    'rgb(186,225,255)',
+                )
+            ];
         }
         return [];
     }

@@ -46,7 +46,7 @@ const StudyProgression = (props) => {
         options: {line: 'line'},
         chartObject: null,
         yLabel: t('Candidates registered', {ns: 'statistics'}),
-        titlePrefix: 'Month',
+        titlePrefix: t('Month', {ns: 'loris'}),
       },
     },
     'total_recruitment': {
@@ -60,24 +60,24 @@ const StudyProgression = (props) => {
         options: {line: 'line'},
         chartObject: null,
         yLabel: t('Candidates registered', {ns: 'statistics'}),
-        titlePrefix: 'Month',
+        titlePrefix: t('Month', {ns: 'loris'}),
       },
     },
-    'project_sizes': { // This should be a class
+    'project_sizes': {
       'size_byproject': {
         sizing: 11,
-        title: 'Dataset size breakdown by project',
+        title: t('Dataset size breakdown by project', {ns: 'statistics'}),
         filters: '',
         chartType: 'pie',
         dataType: 'pie',
-        label: 'Size (GB)',
-        units: 'GB',
+        label: t('Size (GB)', {ns: 'statistics'}),
+        units: t('GB', {ns: 'loris'}),
         showPieLabelRatio: false,
         legend: '',
         options: {pie: 'pie', bar: 'bar'},
         chartObject: null,
         yLabel: t('Size (GB)', {ns: 'statistics'}),
-        titlePrefix: 'Project',
+        titlePrefix: t('Project', {ns: 'loris'}),
       },
     },
   });
@@ -192,11 +192,16 @@ const StudyProgression = (props) => {
                 {showChart('total_scans', 'scans_bymonth')}
               </div>
             ) : (
-              <p>There have been no scans yet.</p>
+              <p>{t('There have been no scans yet.', {ns: 'statistics'})}</p>
             ),
             title: title('Site Scans'),
-            subtitle: 'Total scans: '
-              + json['studyprogression']['total_scans'],
+            subtitle: t(
+              'Total Scans: {{count}}',
+              {
+                ns: 'statistics',
+                count: json['studyprogression']['total_scans'],
+              }
+            ),
             onToggleFilters: () => setShowFiltersScans((prev) => !prev),
           },
           {
@@ -233,7 +238,12 @@ const StudyProgression = (props) => {
                   {showChart('total_recruitment', 'siterecruitment_bymonth')}
                 </div>
               ) : (
-                <p>There have been no candidates registered yet.</p>
+                <p>
+                  {t(
+                    'There have been no candidates registered yet.',
+                    {ns: 'statistics'}
+                  )}
+                </p>
               ),
             title: title('Site Recruitment'),
             onToggleFilters: () => showFiltersBreakdown((prev) => !prev),
@@ -264,12 +274,16 @@ const StudyProgression = (props) => {
                   {showChart('project_sizes', 'size_byproject')}
                 </div>
               ) : (
-                <p>There is no data yet.</p>
+                <p>{t('There is no data yet.', {ns: 'statistics'})}</p>
               ),
-            title: 'Study Progression - project dataset sizes',
-            subtitle: 'Total size: '
-              + (json['studyprogression']['total_size'] ?? -1)
-              + ' GB',
+            title: title('Project Dataset Sizes'),
+            subtitle: t(
+              'Total Size: {{count}} GB',
+              {
+                ns: 'statistics',
+                count: json['studyprogression']['total_size'] ?? -1,
+              }
+            ),
           },
         ]}
       />
