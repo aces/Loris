@@ -154,7 +154,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                LEFT JOIN session s
                  ON bs.SessionID=s.ID
                LEFT JOIN candidate c
-                 ON s.CandidateID=c.CandID
+                 ON s.CandidateID=c.ID
                LEFT JOIN biobank_specimen_pool_rel bspor
                  ON bs.SpecimenID=bspor.SpecimenID
                LEFT JOIN biobank_specimen_collection bsc

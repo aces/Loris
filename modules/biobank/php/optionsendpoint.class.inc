@@ -148,9 +148,9 @@ class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
             FROM
                 candidate c
                 LEFT JOIN session s
-                  ON s.CandidateID=c.CandID
-                LEFT JOIN candidate_diagnosis_evolution_rel cedr
-                  ON cedr.CandidateID=c.CandID
+                  ON s.CandidateID=c.ID
+                LEFT JOIN candidate_diagnosis_evolution_rel cder
+                  ON cder.CandidateID=c.ID
             WHERE
                 s.CenterID IN ($userCenters)
                 AND s.ProjectID IN ($userProjects)
