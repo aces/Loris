@@ -219,7 +219,7 @@ msgid "Sent To DCC"
 msgstr "Envoyé au CCD"
 
 msgid "Reverse Send To DCC"
-msgstr "Envoi inversé vers CCD"
+msgstr "Annuler l'envoi vers la CCD"
 
 msgid "Date of Birth"
 msgstr "Date de naissance"
