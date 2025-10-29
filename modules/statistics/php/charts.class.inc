@@ -113,10 +113,13 @@ class Charts extends \NDB_Page
             return $this->_handleSiteEEGRecordingsBreakdown($request);
         case 'eeg_recordings_by_project':
             return $this->_handleProjectEEGRecordingsBreakdown($request);
+        case 'size_byproject':
+            return $this->_handleProjectSizeBreakdown();
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
         }
     }
+
 
     /**
      * Handle an incoming request for pie data.
@@ -791,6 +794,7 @@ class Charts extends \NDB_Page
                 c.Date_registered
             ) <= :$paramName";
             $params[$paramName] = $queryParams['candidateAgeMax'];
+
         }
 
         return [
@@ -911,46 +915,27 @@ class Charts extends \NDB_Page
         $sites = $user->getSites();
 
         $conditions = $this->_buildQueryConditions($request);
-        error_log(json_encode($conditions));
 
-
-        error_log("SELECT
-                s.CenterID,
-                psc.Name,
-                COUNT(distinct s.ID) as count
-            FROM physiological_file pf
-            JOIN session s ON (s.ID=pf.SessionID)
-            JOIN candidate c ON (c.ID=s.CandidateID)
-            JOIN psc USING (CenterID)
-            {$conditions['participantStatusJoin']}
-            WHERE 1 = 1
-            {$conditions['projectQuery']}
-            {$conditions['cohortQuery']}
-            {$conditions['visitQuery']}
-            {$conditions['siteQuery']}
-            {$conditions['participantStatusQuery']}
-            GROUP BY s.CenterID
-            ORDER BY s.CenterID");
         $data = iterator_to_array(
             $DB->pselect(
                 "SELECT
                 s.CenterID,
                 psc.Name,
                 COUNT(distinct s.ID) as count
-            FROM physiological_file pf
-            JOIN session s ON (s.ID=pf.SessionID)
-            JOIN candidate c ON (c.ID=s.CandidateID)
-            JOIN psc USING (CenterID)
-            {$conditions['participantStatusJoin']}
-            WHERE 1 = 1
-            {$conditions['projectQuery']}
-            {$conditions['cohortQuery']}
-            {$conditions['visitQuery']}
-            {$conditions['siteQuery']}
-            {$conditions['participantStatusQuery']}
-            GROUP BY s.CenterID
-            ORDER BY s.CenterID",
-                []
+                FROM physiological_file pf
+                JOIN session s ON (s.ID=pf.SessionID)
+                JOIN candidate c ON (c.ID=s.CandidateID)
+                JOIN psc USING (CenterID)
+                {$conditions['participantStatusJoin']}
+                WHERE 1 = 1
+                {$conditions['projectQuery']}
+                {$conditions['cohortQuery']}
+                {$conditions['visitQuery']}
+                {$conditions['siteQuery']}
+                {$conditions['participantStatusQuery']}
+                GROUP BY s.CenterID
+                ORDER BY s.CenterID",
+                $conditions['params']
             )
         );
 
@@ -972,10 +957,6 @@ class Charts extends \NDB_Page
                 ];
             }
         }
-
-
-        error_log('sitedata');
-        error_log(json_encode($siteData));
 
         return (new \LORIS\Http\Response\JsonResponse($siteData));
     }
@@ -1002,21 +983,21 @@ class Charts extends \NDB_Page
                 s.ProjectID,
                 p.Name,
                 COUNT(distinct s.ID) as count
-            FROM physiological_file pf
-            JOIN session s ON (s.ID=pf.SessionID)
-            JOIN Project p USING (ProjectID)
-            JOIN candidate c ON (c.ID=s.CandidateID)
-            JOIN psc ON (s.CenterID = psc.CenterID)
-            {$conditions['participantStatusJoin']}
-            WHERE 1 = 1
-            {$conditions['projectQuery']}
-            {$conditions['cohortQuery']}
-            {$conditions['visitQuery']}
-            {$conditions['siteQuery']}
-            {$conditions['participantStatusQuery']}
-            GROUP BY s.CenterID
-            ORDER BY s.CenterID",
-                []
+                FROM physiological_file pf
+                JOIN session s ON (s.ID=pf.SessionID)
+                JOIN Project p USING (ProjectID)
+                JOIN candidate c ON (c.ID=s.CandidateID)
+                JOIN psc ON (s.CenterID = psc.CenterID)
+                {$conditions['participantStatusJoin']}
+                WHERE 1 = 1
+                {$conditions['projectQuery']}
+                {$conditions['cohortQuery']}
+                {$conditions['visitQuery']}
+                {$conditions['siteQuery']}
+                {$conditions['participantStatusQuery']}
+                GROUP BY s.CenterID
+                ORDER BY s.CenterID",
+                $conditions['params']
             )
         );
 
