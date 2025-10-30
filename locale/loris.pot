@@ -270,6 +270,12 @@ msgstr ""
 msgid "Error!"
 msgstr ""
 
+msgid "Status"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
 # Common timepoint and vist terms
 msgid "Not Started"
 msgstr ""
@@ -296,6 +302,9 @@ msgid "Failure"
 msgstr ""
 
 msgid "Withdrawal"
+msgstr ""
+
+msgid "Withdrawn"
 msgstr ""
 
 msgid "In Progress"
