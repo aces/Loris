@@ -293,8 +293,6 @@ class Unresolved extends Endpoint implements ETagCalculator
             '
              REPLACE INTO conflicts_resolved (
                UserID,
-               User1,
-               User2,
                TestName,
                ExtraKeyColumn,
                ExtraKey1,
@@ -309,8 +307,6 @@ class Unresolved extends Endpoint implements ETagCalculator
              )
              SELECT
                :v_username,
-               f1.UserID,
-               f2.UserID,
                cu.TestName,
                cu.ExtraKeyColumn,
                cu.ExtraKey1,
@@ -331,8 +327,6 @@ class Unresolved extends Endpoint implements ETagCalculator
              UNION DISTINCT
              SELECT
                :v_username,
-               cr.User1,
-               cr.User2,
                cr.TestName,
                cr.ExtraKeyColumn,
                cr.ExtraKey1,

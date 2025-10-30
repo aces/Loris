@@ -829,6 +829,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // don't overwrite data from other pages.
         $newData = array_merge($this->getInstanceData() ?? [], $values);
 
+        $userID = $db->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:uid",
+            ['uid' => $newData['UserID'] ?? ""]
+        );
+        if (($userID ?? "") != "") {
+            $db->insertOnDuplicateUpdate(
+                "flag_editors",
+                [
+                    'userID'    => $userID,
+                    'CommentID' => $this->getCommentID(),
+                ],
+            );
+        }
         // If there's already a row with the same data, re-use the DataID.
         // Otherwise, insert it, then update the DataID on flag.
         $jsonencoded = json_encode($newData);
