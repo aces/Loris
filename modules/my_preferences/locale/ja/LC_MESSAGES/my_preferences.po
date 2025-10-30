@@ -66,3 +66,15 @@ msgstr "認証アプリで次のコードを使用してください: <0>{{code}
 
 msgid "Scan the following QR code below in your MFA authenticator and enter the code to validate."
 msgstr "多要素認証システムで以下の QR コードをスキャンし、コードを入力して検証します。"
+
+msgid "Note that this will <0>overwrite</0> any previously setup MFA in LORIS!"
+msgstr "これにより、ロリスで以前に設定された多要素認証が <0>上書き</0> されることに注意してください。"
+
+msgid "Can't scan the QR code? <0>Setup manually.</0>"
+msgstr "QR コードをスキャンできませんか? <0>手動で設定してください。</0>"
+
+msgid "Validate Code"
+msgstr "コードの検証"
+
+msgid "Successfully registered multifactor authenticator"
+msgstr "多要素認証の登録に成功しました"

@@ -29,6 +29,7 @@ function genPotentialSecret() {
 function CodeValidator(props: {
   secret: string
 }): React.ReactElement {
+  const {t} = useTranslation();
   const formSubmit = useCallback(
     (code: string, onError: (msg: string) => void) => {
       const formObject = new FormData();
@@ -46,7 +47,12 @@ function CodeValidator(props: {
         return resp.json();
       }).then( (json) => {
         if (json.ok == 'success') {
-          swal.fire('Success!', json.message, 'success').then( () => {
+          swal.fire({
+            title: t('Success!', {ns: 'loris'}),
+            text: json.message,
+	    type: 'success',
+	    confirmButtonText: t('OK', {ns: 'loris'}),
+	  }).then( () => {
             window.location.href = loris.BaseURL + '/my_preferences/';
           });
         } else if (json.error) {
@@ -60,7 +66,7 @@ function CodeValidator(props: {
     }, [props.secret]);
   return (
     <div>
-      <h3>Validate Code</h3>
+      <h3>{t('Validate Code', {ns: 'my_preferences'})}</h3>
       <MFAPrompt validate={formSubmit} />
     </div>
   );
@@ -92,13 +98,16 @@ function MFAIndex(): React.ReactElement {
     </Modal>
     <p>{t('Scan the following QR code below in your MFA authenticator and enter the code to validate.', {ns: 'my_preferences'})}</p>
     <p>
-      <b>Note that this will <i>overwrite</i> any previously
-      setup MFA in LORIS!</b>
+      <strong><Trans
+          ns="my_preferences"
+	  components={[<strong>overwrite</strong>]}
+          defaults="Note that this will <0>overwrite</0> any previously setup MFA in LORIS!" /></strong>
     </p>
     <QRCode value={mfaUrl} />
-    <p>Can't scan the QR code? <a href="#" onClick={() => setShowModal(true)}>
-    Setup manually.</a>
-    </p>
+    <p><Trans
+    	ns="my_preferences"
+	defaults="Can't scan the QR code? <0>Setup manually.</0>"
+	components={[<a href="#" onClick={() => setShowModal(true)} />]} /></p>
     <CodeValidator secret={key} />
   </div>;
 }

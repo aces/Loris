@@ -689,7 +689,6 @@ class User extends UserPermissions implements
         return $this->userInfo['Pending_approval'] == 'Y';
     }
 
-
     /**
      * Returns a TOTP validator for this account, or null if 2FA
      * has never been enabled by the user.

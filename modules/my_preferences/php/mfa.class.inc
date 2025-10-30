@@ -55,6 +55,7 @@ class MFA extends \NDB_Page
 
         }
     }
+
     /**
      * {@inheritDoc}
      *
@@ -111,8 +112,12 @@ class MFA extends \NDB_Page
         $login = $_SESSION['State']->getProperty('login');
         $login->setPassedMFA();
         return new \LORIS\Http\Response\JSON\OK(
-            ['ok' => 'success',
-                'message' => 'Successfully registered multifactor authenticator'
+            [
+                'ok'      => 'success',
+                'message' => dgettext(
+                    'my_preferences',
+                    'Successfully registered multifactor authenticator'
+                )
             ]
         );
     }

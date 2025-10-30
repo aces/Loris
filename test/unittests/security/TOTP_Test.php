@@ -15,7 +15,6 @@ use \LORIS\Security\OTP\TOTP;
  */
 class TOTP_Test extends TestCase
 {
-
     /**
      * Test that test vector counters from RFC6238 pass
      *

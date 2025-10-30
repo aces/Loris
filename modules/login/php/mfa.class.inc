@@ -50,6 +50,7 @@ class MFA extends \NDB_Page
             [$baseURL . '/login/css/login.css']
         );
     }
+
     /**
      * This function will return a json object for login module.
      *

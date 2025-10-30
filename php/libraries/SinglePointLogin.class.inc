@@ -623,5 +623,4 @@ class SinglePointLogin
         $_SESSION['PassedMFA'] = true;
         session_write_close();
     }
-
 }
