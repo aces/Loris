@@ -237,12 +237,10 @@ class ConsentStatus extends Component {
         swal.fire('Success!', 'Update successful.', 'success')
           .then((result) => {
             if (result.value) {
-              this.setState({submitDisabled: false});
-              this.fetchData();
+              location.reload();
             }
           }
           );
-        this.fetchData();
       },
       error: (error) => {
         console.error(error);
