@@ -133,7 +133,7 @@ class Edit_Help_Content extends \NDB_Form
                 )
             );
             $data['instrument'] = $help_data['instrument'];
-            $data['instrumentslist'] = ['a'=>'a'];
+            $data['instrumentslist'] = [];
             $instrumentList          = \NDB_BVL_Instrument::getInstrumentNamesList(
                 $request->getAttribute("loris")
             );
