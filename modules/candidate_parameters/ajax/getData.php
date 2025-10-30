@@ -337,6 +337,7 @@ function getParticipantStatusFields()
         ['candid' => $candID]
     );
 
+    $statusOptions = \Candidate::getParticipantStatusOptions();
     $reasonOptions = [];
 
     $req      = $db->pselect(
@@ -394,6 +395,7 @@ function getParticipantStatusFields()
     $result = [
         'pscid'                 => $pscid,
         'candID'                => $candID->__toString(),
+        'statusOptions'         => $statusOptions,
         'required'              => $required,
         'commentRequired'       => $commentRequired,
         'reasonOptions'         => $reasonOptions,
