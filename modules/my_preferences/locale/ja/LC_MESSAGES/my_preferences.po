@@ -58,5 +58,11 @@ msgstr "多要素認証を設定する"
 msgid "Configure MFA"
 msgstr "多要素認証を設定する"
 
-msgid "Use the following key in your authenticator app: <b>{{code}}</b>"
-msgstr "認証アプリで次のコードを使用してください: <b>{{code}}</b>"
+msgid "Manual MFA Setup"
+msgstr "手動多要素認証の設定"
+
+msgid "Use the following key in your authenticator app: <0>{{code}}</0>"
+msgstr "認証アプリで次のコードを使用してください: <0>{{code}}</0>"
+
+msgid "Scan the following QR code below in your MFA authenticator and enter the code to validate."
+msgstr "多要素認証システムで以下の QR コードをスキャンし、コードを入力して検証します。"

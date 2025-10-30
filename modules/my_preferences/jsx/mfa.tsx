@@ -80,17 +80,17 @@ function MFAIndex(): React.ReactElement {
     + '&period=30&digits=6&issuer=' + encodeURI(studyTitle);
   return <div>
     <Modal
-      title='Manual MFA Setup'
+      title={t('Manual MFA Setup', {ns: 'my_preferences'})}
       onClose={() => setShowModal(false)}
       show={showModal}
       throwWarning={false}>
-      <Trans
-      	defaults="<p>Use the following key in your authenticator app: <b>{{code}}</b></p>"
-         values={{code: key}}>
-      </Trans>
+      <p><Trans
+      	defaults="Use the following key in your authenticator app: <0>{{code}}</0>"
+	ns="my_preferences"
+	components={[<strong>CODE</strong>]}
+        values={{code: key}} /></p>
     </Modal>
-    <p>Scan the following QR code below in your MFA authenticator and
-      enter the code to validate.</p>
+    <p>{t('Scan the following QR code below in your MFA authenticator and enter the code to validate.', {ns: 'my_preferences'})}</p>
     <p>
       <b>Note that this will <i>overwrite</i> any previously
       setup MFA in LORIS!</b>
