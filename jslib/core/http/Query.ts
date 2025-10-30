@@ -1,12 +1,12 @@
 export enum Operator {
-  Equals = '=',
+  Equals = '',
   NotEquals = '!=',
   LessThan = '<',
   GreaterThan = '>',
   LessThanOrEqual = '<=',
   GreaterThanOrEqual = '>=',
-  Like = 'like',
-  Includes = 'in'
+  Like = '_like',
+  Includes = '_in'
 }
 
 export interface QueryParam {
@@ -36,8 +36,7 @@ export class Query {
   }: QueryParam): this {
     const encodedField = encodeURIComponent(field);
     const encodedValue = encodeURIComponent(value);
-    const operatorSuffix = this.getOperatorSuffix(operator);
-    this.params[`${encodedField}${operatorSuffix}`] = encodedValue;
+    this.params[`${encodedField}${operator}`] = encodedValue;
     return this;
   }
 
@@ -93,24 +92,5 @@ export class Query {
    */
   build(): string {
     return new URLSearchParams(this.params).toString();
-  }
-
-  /**
-   * Gets string suffix for a given operator to be used in a query parameter key.
-   *
-   * @param operator The comparison operator enum value.
-   */
-  private getOperatorSuffix(operator: Operator): string {
-    switch (operator) {
-    case Operator.Equals: return '';
-    case Operator.NotEquals: return '!=';
-    case Operator.LessThan: return '<';
-    case Operator.GreaterThan: return '>';
-    case Operator.LessThanOrEqual: return '<=';
-    case Operator.GreaterThanOrEqual: return '>=';
-    case Operator.Like: return '_like';
-    case Operator.Includes: return '_in';
-    default: return '';
-    }
   }
 }

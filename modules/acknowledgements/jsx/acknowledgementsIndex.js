@@ -110,7 +110,6 @@ class AcknowledgementsIndex extends Component {
     const client = new Acknowledgement.Client();
     try {
       const acknowledgements = await client.get(query);
-      console.log({acknowledgements}, {depth: null, colors: true});
       this.setState({data: {...acknowledgements}});
     } catch (error) {
       this.setState({error: true});
