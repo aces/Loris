@@ -50,10 +50,10 @@ export class Client<T> {
    */
   async get<U = T>(query?: Query): Promise<U[]> {
     // 1. Determine the path to resolve
-    const relativePath = this.subEndpoint ? this.subEndpoint : '';          
+    const relativePath = this.subEndpoint ? this.subEndpoint : '';
 
     // 2. Create the full URL object by resolving the path against this.baseURL.
-    const url = new URL(relativePath, this.baseURL);    
+    const url = new URL(relativePath, this.baseURL);
 
     // 3. Add Query Parameters using the URL object's searchParams
     if (query) {
@@ -61,7 +61,7 @@ export class Client<T> {
       params.forEach((value, key) => {
         url.searchParams.append(key, value);
       });
-    }    
+    }
 
     // 4. Use the final URL object for the fetch request.
     return this.fetchJSON<U[]>(url, {
@@ -87,8 +87,8 @@ export class Client<T> {
    * @param id The unique identifier of the resource to fetch.
    */
   async getById(id: string): Promise<T> {
-    // 1. Resolve the ID as a path segment against the this.baseURL object.      
-    const url = new URL(id, this.baseURL);          
+    // 1. Resolve the ID as a path segment against the this.baseURL object.
+    const url = new URL(id, this.baseURL);
 
     // 2. Pass the final URL string to fetchJSON
     return this.fetchJSON<T>(url, {
@@ -120,7 +120,7 @@ export class Client<T> {
    */
   async update(id: string, data: T): Promise<T> {
     // 1. Resolve the ID as a path segment against the this.baseURL object.
-    const url = new URL(id, this.baseURL);          
+    const url = new URL(id, this.baseURL);
 
     // 2. Pass the final URL string to fetchJSON
     return this.fetchJSON<T>(url, {
@@ -133,7 +133,7 @@ export class Client<T> {
   /**
    * Handles the actual fetching and JSON parsing, including error handling.
    *
-   * @param URL     The URL to which the request will be made.
+   * @param url     The URL to which the request will be made.
    * @param options The Fetch API request initialization options.
    */
   protected async fetchJSON<U>(
@@ -146,15 +146,21 @@ export class Client<T> {
 
       // 1. Handle HTTP status errors (e.g., 404, 500)
       if (!response.ok) {
-        const message = this.getErrorMessage('ApiResponseError', request, response);
-        throw new Errors.ApiResponse(request, response, message);
+        throw new Errors.ApiResponse(
+          request,
+          response,
+          this.getErrorMessage('ApiResponseError', request, response)
+        );
       }
 
       // Handle responses with no content or non-JSON content
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        const message = this.getErrorMessage('NoContentError', request, response); 
-        throw new Errors.NoContent(request, response, message);              
+        throw new Errors.NoContent(
+          request,
+          response,
+          this.getErrorMessage('NoContentError', request, response)
+        );
       }
 
       // 2. Handle JSON parsing errors

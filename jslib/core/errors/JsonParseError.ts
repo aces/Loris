@@ -5,7 +5,7 @@ import {HttpError} from './HttpError';
  */
 export class JsonParseError extends HttpError {
   /**
-   *
+   * @param request The Request object that generated the error.
    * @param message The error message.
    */
   constructor(request: Request, message?: string) {
