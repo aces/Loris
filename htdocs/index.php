@@ -40,6 +40,7 @@ if (version_compare(PHP_VERSION, '8.4', '<')) {
 
     // phpcs:ignore
     if (!function_exists('array_any')) {
+        // phpcs:ignore
         function array_any(array $array, callable $callback): bool
         {
             foreach ($array as $key => $value) {
@@ -51,8 +52,8 @@ if (version_compare(PHP_VERSION, '8.4', '<')) {
         }
     }
     // phpcs:ignore
-
     if (!function_exists('array_find')) {
+        // phpcs:ignore
         function array_find(array $array, callable $callback)
         {
             foreach ($array as $key => $value) {
