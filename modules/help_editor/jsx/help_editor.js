@@ -12,6 +12,7 @@ import React from 'react';
  *
  * Renders Help Editor main page consisting of FilterForm and
  * StaticDataTable components.
+ *
  * @author LORIS Team
  * @version 1.0.0
  */
@@ -44,6 +45,7 @@ class HelpEditor extends React.Component {
 
   /**
    * Retrieve data from the provided URL and save it in state.
+   *
    * @return {object}
    */
   fetchData() {
@@ -58,6 +60,7 @@ class HelpEditor extends React.Component {
 
   /**
    * Modify behaviour of specified column cells in the Data Table component
+   *
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
@@ -79,6 +82,7 @@ class HelpEditor extends React.Component {
 
   /**
    * Renders the React component.
+   *
    * @return {JSX} - React markup for the component
    */
   render() {
