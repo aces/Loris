@@ -51,7 +51,7 @@ CREATE TABLE `psc` (
   `Phone2` varchar(12) DEFAULT NULL,
   `Contact1` varchar(150) DEFAULT NULL,
   `Contact2` varchar(150) DEFAULT NULL,
-  `Alias` char(3) NOT NULL DEFAULT '',
+  `Alias` char(4) NOT NULL DEFAULT '',
   `MRI_alias` varchar(4) NOT NULL DEFAULT '',
   `Account` varchar(8) DEFAULT NULL,
   `Study_site` enum('N','Y') DEFAULT 'Y',
@@ -1204,10 +1204,12 @@ INSERT INTO notification_modules (module_name, operation_type, as_admin, templat
   ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited'),
   ('publication', 'submission', 'N', 'notifier_publication_submission.tpl', 'Publication: Submission Received'),
   ('publication', 'review', 'N', 'notifier_publication_review.tpl', 'Publication: Proposal has been reviewed'),
-  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited');
+  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited'),
+  ('issue_tracker', 'create/edit', 'N', 'issue_change.tpl', 'Issue Tracker: All issues created or edited');
 
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text';
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='publication' AND ns.service='email_text';
+INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='issue_tracker' AND ns.service='email_text';
 
 -- Transfer Document repository notifications to new system
 INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text' AND u.Doc_Repo_Notifications='Y';
@@ -1377,6 +1379,11 @@ CREATE TABLE `examiners_psc_rel` (
   CONSTRAINT `FK_examiners_psc_rel_2` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- REDCap examiner
+INSERT INTO examiners (full_name) VALUES ('REDCap');
+INSERT IGNORE INTO examiners_psc_rel (examinerID, centerID, active, pending_approval)
+    SELECT e.examinerID, p.CenterID, "Y", "N" from psc p JOIN examiners e WHERE e.Full_name = "REDCap";
+
 CREATE TABLE `certification` (
   `certID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `examinerID` int(10) unsigned NOT NULL,
@@ -1420,6 +1427,38 @@ CREATE TABLE `user_account_history` (
   `ChangeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ********************************
+-- tables for policies
+-- ********************************
+
+CREATE TABLE policies (
+    PolicyID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Version INT NOT NULL,
+    ModuleID INT NOT NULL,
+    PolicyRenewalTime INT DEFAULT 7,
+    PolicyRenewalTimeUnit enum('D','Y','M','H') DEFAULT 'D',
+    Content TEXT NULL,
+    SwalTitle VARCHAR(255) DEFAULT 'Terms of Use',
+    HeaderButton enum('Y','N') DEFAULT 'Y',
+    HeaderButtonText VARCHAR(255) DEFAULT 'Terms of Use',
+    Active enum('Y','N') DEFAULT 'Y',
+    AcceptButtonText VARCHAR(255) DEFAULT 'Accept',
+    DeclineButtonText VARCHAR(255) DEFAULT 'Decline',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_policy_decision (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    PolicyID INT NOT NULL,
+    Decision enum('Accepted','Declined') NOT NULL,
+    DecisionDate DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- ********************************
 -- user_login_history tables
@@ -1479,6 +1518,18 @@ CREATE TABLE `server_processes` (
   PRIMARY KEY (`id`),
   KEY `FK_task_1` (`userid`),
   CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mri_upload_server_processes_rel` (
+  `UploadID` int(10) unsigned NOT NULL,
+  `ProcessID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`UploadID`,`ProcessID`),
+  CONSTRAINT `UK_mri_upload_server_processes_rel_ProcessID`
+    UNIQUE KEY `ProcessID` (`ProcessID`),
+  CONSTRAINT `FK_mri_upload_server_processes_rel_UploadID`
+    FOREIGN KEY (`UploadID`) REFERENCES `mri_upload` (`UploadID`),
+  CONSTRAINT `FK_mri_upload_server_processes_rel_ProcessID`
+    FOREIGN KEY (`ProcessID`) REFERENCES `server_processes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `media` (
@@ -2503,12 +2554,12 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-CREATE TABLE Login_Summary_Statistics (
+CREATE TABLE login_summary_statistics (
     Title VARCHAR(255),
     Project VARCHAR(255),
     Value INT,
     QueryOrder INT,
-     PRIMARY KEY (Title, Project)
+    PRIMARY KEY (Title, Project)
 );
 
 CREATE TABLE dataquery_queries (
@@ -2601,3 +2652,42 @@ CREATE TABLE `appointment` (
   CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `openid_connect_providers` (
+    `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `Name` varchar(255) NOT NULL,
+    `BaseURI` text NOT NULL, -- the provider's base uri that hosts .well-known/openid-configuration
+    `ClientID` text NOT NULL,
+    `ClientSecret` text NOT NULL,
+    `RedirectURI` text NOT NULL, -- our local redirectURI that the provider is configured to authorize
+                                 -- should be something like "https://something.loris.ca/oidc/callback"
+    PRIMARY KEY (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `openid_connect_csrf` (
+    `State` varchar(64) NOT NULL UNIQUE,
+    `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `Nonce` varchar(64) NOT NULL,
+    `Created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`State`),
+    CONSTRAINT `FK_openid_provider` FOREIGN KEY (`OpenIDProviderID`) REFERENCES `openid_connect_providers` (`OpenIDProviderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ********************************
+-- REDCap tables
+-- ********************************
+
+CREATE TABLE `redcap_notification` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `complete` char(1) NOT NULL,
+  `project_id` varchar(50) NOT NULL,
+  `record` varchar(20) NOT NULL COMMENT 'PSCID',
+  `redcap_event_name` varchar(50) NOT NULL COMMENT 'Visit_label',
+  `instrument` varchar(150) NOT NULL COMMENT 'Test_name',
+  `username` varchar(100) NOT NULL,
+  `redcap_url` varchar(255) NOT NULL,
+  `project_url` varchar(255) NOT NULL,
+  `received_dt` datetime NOT NULL,
+  `handled_dt` datetime NULL,
+  PRIMARY KEY (`id`),
+  KEY `i_redcap_notif_received_dt` (`received_dt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

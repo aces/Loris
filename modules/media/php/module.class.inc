@@ -26,11 +26,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Clinical";
+        return \LORIS\GUI\MenuCategory::singleton("Clinical");
     }
 
     /**
@@ -40,7 +40,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Media";
+        return dgettext("media", "Media");
     }
 
     /**

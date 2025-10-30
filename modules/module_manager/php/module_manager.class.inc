@@ -3,7 +3,7 @@
 /**
  * File contains the Module_Manager class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -58,6 +58,7 @@ class Module_Manager extends \DataFrameworkMenu
         return [];
 
     }
+
     /**
      * {@inheritDoc}
      *

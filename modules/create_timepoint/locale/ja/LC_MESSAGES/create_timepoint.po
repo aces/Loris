@@ -1,0 +1,49 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Create Timepoint"
+msgstr "タイムポイントを作成"
+
+msgid "No cohorts defined for project: {{project}}"
+msgstr "プロジェクト {{project}} にコホートが定義されていません"
+
+msgid "No visit labels defined for the combination project: {{project}} and cohort: {{cohort}}"
+msgstr "プロジェクト {{project}} とコホート {{cohort}} の組み合わせに訪問ラベルが定義されていません"
+
+msgid "Timepoint created."
+msgstr "タイムポイント作成"
+
+msgid "This visit label is not unique."
+msgstr "この訪問ラベルは一意ではありません。"
+
+msgid "You must be affiliated with a site to create a timepoint."
+msgstr "タイムポイントを作成するには、サイトに所属している必要があります。"
+
+msgid "Site must be selected from the available dropdown."
+msgstr "利用可能なドロップダウンからサイトを選択する必要があります。"
+
+msgid "You must be affiliated with a project to create a timepoint."
+msgstr "タイムポイントを作成するには、プロジェクトに所属している必要があります。"
+
+msgid "A project must be selected from the available dropdown."
+msgstr "利用可能なドロップダウンからプロジェクトを選択する必要があります。"
+
+msgid "A language must be selected."
+msgstr "言語を選択する必要があります。"

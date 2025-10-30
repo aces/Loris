@@ -30,6 +30,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
     \LORIS\Data\DataInstance
 {
     protected $data;
+
     /**
      * Construct a Query object
      *
@@ -752,8 +753,8 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
 
             // FIXME: Verify visits, test was done with candidate scope data
             $visitlist = null;
-            if (isset($query['visits'])) {
-                $visitlist = $query['visits'];
+            if (isset($crit['visits'])) {
+                $visitlist = $crit['visits'];
             }
 
             \Profiler::checkpoint("Calling engine get matches");
@@ -766,10 +767,17 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
             \Profiler::checkpoint("Done group");
         }
         $combinedresult = [];
-        if (count($results) == 1) {
+        switch (count($results)) {
+        case 0:
+            // One side has the empty set as part of the criteria. This can
+            // happen while building a query, and is better than crashing.
+            $combinedresult = [];
+            break;
+        case 1:
             // Doesn't matter if it's 'and' or 'or', there's only 1 criteria
             $combinedresult = $results[0];
-        } else {
+            break;
+        default:
             if ($criteria['operator'] == 'and') {
                 $combinedresult = array_intersect(...$results);
             } else if ($criteria['operator'] == 'or') {

@@ -1,6 +1,10 @@
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import {TabPane, Tabs} from 'jsx/Tabs';
 import Profiles from './tabs_content/profiles';
 import GWAS from './tabs_content/gwas';
@@ -66,10 +70,14 @@ GenomicBrowser.propTypes = {
  * Render Genomic Browser on page load.
  */
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'genomic_browser', {});
+  const GenomicB = withTranslation(
+    ['genomic_browser', 'loris']
+  )(GenomicBrowser);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <GenomicBrowser
+    <GenomicB
       baseURL={loris.BaseURL}
     />
   );

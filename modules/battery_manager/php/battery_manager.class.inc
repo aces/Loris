@@ -11,7 +11,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Displays a list of records in the test battery and control panel to search them
  * Allows user to add, activate, and deactivate entries in the test battery
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Battery_Manager

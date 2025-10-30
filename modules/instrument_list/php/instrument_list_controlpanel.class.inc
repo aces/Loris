@@ -6,7 +6,7 @@
  * This class provides the management GUI for the status flags
  * (session table) of a time point in the NeuroDB framework.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Instrument_List
  * @package  Loris
@@ -22,7 +22,7 @@ namespace LORIS\instrument_list;
  * This class provides the management GUI for the status flags
  * (session table) of a time point in the NeuroDB framework.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Instrument_List
  * @package  Loris
@@ -322,6 +322,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             return;
         }
     }
+
     /**
      * DeterminePreviousStage function
      *
@@ -340,7 +341,6 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
         return  'Not Started';
     }
-
 
     /**
      * DisplayStatus function
@@ -461,6 +461,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
         return $hasAccess;
     }
+
     /**
      * DisplayStatus function
      *
@@ -480,6 +481,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         return $user->hasPermission('data_entry')
             && $user->hasCenter($this->getCenterID());
     }
+
     /**
      * DisplayStatus function
      *
@@ -723,6 +725,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             return "All instruments must have data entry marked as complete.";
         }
     }
+
     /**
      * HasAccessSendToDCC function
      *
@@ -769,6 +772,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
         return false;
     }
+
     /**
      * DisplayStartNextStage function
      *
@@ -789,6 +793,5 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
         return $this->isStartable();
     }
-
 }
 

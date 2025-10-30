@@ -83,13 +83,6 @@ class SnpDTO implements DataInstance, SiteHaver
     private $_Cohort = "";
 
     /**
-     * The DoB
-     *
-     * @var string
-     */
-    private $_DoB = "";
-
-    /**
      * The externalID
      *
      * @var string
@@ -270,7 +263,6 @@ class SnpDTO implements DataInstance, SiteHaver
             'PSCID'               => $this->_PSCID,
             'Sex'                 => $this->_Sex,
             'Cohort'              => $this->_Cohort,
-            'DoB'                 => $this->_DoB,
             'externalID'          => $this->_externalID,
             'Chromosome'          => $this->_Chromosome,
             'Strand'              => $this->_Strand,

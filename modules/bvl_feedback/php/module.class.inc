@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -46,7 +46,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Behavioural Feedback";
+        return dgettext("bvl_feedback", "Behavioural Feedback");
     }
 
     /**
@@ -96,12 +96,21 @@ class Module extends \Module
             );
 
             $frontend_feedback = [];
+
+            $dateformatter = new \IntlDateFormatter(
+                "",
+                \IntlDateFormatter::SHORT,
+                \IntlDateFormatter::SHORT
+            );
+
             foreach ($bvl_feedback as $row) {
-                if (new \DateTime($row['Testdate']) > $last_login) {
+                $row['Testdate'] = new \DateTime($row['Testdate']);
+                if ($row['Testdate'] > $last_login) {
                     $row['new'] = true;
                 } else {
                     $row['new'] = false;
                 }
+                $row['Testdate'] = $dateformatter->format($row['Testdate']);
                 $url = '';
                 switch ($row['Feedback_level']) {
                 case 'profile':
@@ -134,7 +143,10 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
-                        "Behavioural Feedback Notifications",
+                        dgettext(
+                            "bvl_feedback",
+                            "Behavioural Feedback Notifications"
+                        ),
                         $this->renderTemplate(
                             "dashboardwidget.tpl",
                             [

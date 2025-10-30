@@ -1,0 +1,140 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Data Release"
+msgstr ""
+
+msgid "File Name"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Upload Date"
+msgstr ""
+
+msgid "Project Name"
+msgstr ""
+
+msgid "Data Release ID"
+msgstr ""
+
+msgid "Upload File"
+msgstr ""
+
+msgid "Upload a New File"
+msgstr ""
+
+msgid "Add Permission"
+msgstr ""
+
+msgid "Manage Permissions"
+msgstr ""
+
+msgid "An error occured while loading the page."
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "Version names will be saved as lowercase."
+msgstr ""
+
+msgid "File to upload"
+msgstr ""
+
+msgid "You must select a file to upload"
+msgstr ""
+
+msgid "You must select a project"
+msgstr ""
+
+msgid "File size exceeds the maximum allowed"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Upload error!"
+msgstr ""
+
+msgid "Upload Successful!"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "A file with this name already exists!"
+msgstr ""
+
+msgid "Would you like to overwrite existing file?"
+msgstr ""
+
+msgid "Note that the version associated with the file will also be overwritten."
+msgstr ""
+
+msgid "Yes, I am sure!"
+msgstr ""
+
+msgid "No, cancel it!"
+msgstr ""
+
+msgid "Choose a specific file or an entire release below"
+msgstr ""
+
+msgid "Data Release File"
+msgstr ""
+
+msgid "OR"
+msgstr ""
+
+msgid "Data Release Version"
+msgstr ""
+
+msgid "Permission Update Success!"
+msgstr ""
+
+msgid "Submission Error!"
+msgstr ""
+
+msgid "You must select a user!"
+msgstr ""
+
+msgid "You must select a file OR a version to grant permission on!"
+msgstr ""
+
+msgid "Manage Versions a User has access to"
+msgstr ""
+
+msgid "Search for a User"
+msgstr ""
+
+msgid "Versions"
+msgstr ""
+
+msgid "Manage Users with access to a Version"
+msgstr ""
+
+msgid "Search for a Version"
+msgstr ""
+
+msgid "An error occurred when loading the form!"
+msgstr ""
+

@@ -3,7 +3,7 @@
 /**
  * This file contains the Loris user class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -78,7 +78,14 @@ class User extends UserPermissions implements
         }
 
         //Change 'language_preference' to number rather than a string
-        $row['language_preference'] = (int)$row['language_preference'];
+        if ($row['language_preference'] !== null) {
+            $row['language_preference'] = (int)$row['language_preference'];
+            $language_code        = $DB->pselectOne(
+                "SELECT language_code FROM language WHERE language_id=:langid",
+                ['langid' => $row['language_preference']]
+            );
+            $row['language_code'] = $language_code;
+        }
 
         // get user sites
         $user_centerID_query =  $DB->pselect(
@@ -170,7 +177,6 @@ class User extends UserPermissions implements
         return $obj;
     }
 
-
     /**
      * Singleton method. Retrieve the user passed as parameter, but only
      * 1 instance.
@@ -199,7 +205,6 @@ class User extends UserPermissions implements
         return $instance;
     }
 
-
     /**
      * Inserts data into the `users` table.
      *
@@ -213,7 +218,6 @@ class User extends UserPermissions implements
     {
         \NDB_Factory::singleton()->database()->insert('users', $set);
     }
-
 
     /**
      * Updates a user
@@ -354,7 +358,6 @@ class User extends UserPermissions implements
         return $this->userInfo['ProjectIDs'] ?? [];
     }
 
-
     /**
      * Get the user's projects
      *
@@ -376,6 +379,17 @@ class User extends UserPermissions implements
     function getLanguagePreference(): ?int
     {
         return $this->userInfo['language_preference'] ?? null;
+    }
+
+    /**
+     * Return the ISO 639 language code for the language
+     * this user prefers to use.
+     *
+     * @return string
+     */
+    function getLanguageCode() : string
+    {
+        return $this->userInfo['language_code'] ?? 'en_CA';
     }
 
     /**
@@ -419,7 +433,6 @@ class User extends UserPermissions implements
         }
         return $sites;
     }
-
 
     /**
      * Returns all user's sites that are StudySites

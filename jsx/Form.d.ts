@@ -5,17 +5,17 @@ type formElement = {
     type: string
 };
 type formElementProps = {
-    name: string
-    id: string
-    method: 'POST' | 'GET',
-    action: string
-    class: string
-    columns: number
-    formElements: {[elementName: string]: formElement}
+    name?: string
+    id?: string
+    method?: 'POST' | 'GET' = 'POST',
+    action?: string = '',
+    class?: string
+    columns?: number
+    formElements?: {[elementName: string]: formElement}
     onSubmit: (FormEvent) => void
-    onUserInput : (name: string, value: string) => void
+    onUserInput?: (name: string, value: string) => void
     children: ReactNode
-    fieUpload: boolean
+    fileUpload?: boolean = false
 };
 /**
  * FormElement class. See Form.js

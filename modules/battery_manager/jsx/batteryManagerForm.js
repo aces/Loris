@@ -24,7 +24,6 @@ class BatteryManagerForm extends Component {
   render() {
     const {test, options, setTest, add, errors, handleSubmit} = this.props;
 
-    // Inform users about duplicate entries
     const renderHelpText = () => {
       if (add) {
         return (
@@ -42,7 +41,7 @@ class BatteryManagerForm extends Component {
              You cannot edit an entry to have the same values as another active
              entry.<br/>
              If the duplicate entry is inactive, you will be given the option
-             to active it.
+             to activate it.
             <br/>
             <br/>
           </span>
@@ -66,7 +65,7 @@ class BatteryManagerForm extends Component {
           options={options.instruments}
           onUserInput={setTest}
           required={true}
-          value={test.testName}
+          value={test.testName ?? ''}
           errorMessage={errors.testName}
         />
         <NumericElement
@@ -76,7 +75,7 @@ class BatteryManagerForm extends Component {
           min={0}
           max={99999}
           required={true}
-          value={test.ageMinDays}
+          value={test.ageMinDays != null ? String(test.ageMinDays) : ''}
           errorMessage={errors.ageMinDays}
         />
         <NumericElement
@@ -86,7 +85,7 @@ class BatteryManagerForm extends Component {
           min={0}
           max={99999}
           required={true}
-          value={test.ageMaxDays}
+          value={test.ageMaxDays != null ? String(test.ageMaxDays) : ''}
           errorMessage={errors.ageMaxDays}
         />
         <SelectElement
@@ -95,7 +94,7 @@ class BatteryManagerForm extends Component {
           options={options.stages}
           onUserInput={setTest}
           required={true}
-          value={test.stage}
+          value={test.stage ?? ''}
           errorMessage={errors.stage}
         />
         <SelectElement
@@ -104,7 +103,7 @@ class BatteryManagerForm extends Component {
           options={options.cohorts}
           onUserInput={setTest}
           required={false}
-          value={test.cohort}
+          value={test.cohort ?? ''}
         />
         <SelectElement
           name="visitLabel"
@@ -112,7 +111,7 @@ class BatteryManagerForm extends Component {
           options={options.visits}
           onUserInput={setTest}
           required={false}
-          value={test.visitLabel}
+          value={test.visitLabel ?? ''}
         />
         <SelectElement
           name="centerId"
@@ -122,7 +121,7 @@ class BatteryManagerForm extends Component {
           strictSearch={true}
           onUserInput={setTest}
           required={false}
-          value={test.centerId}
+          value={test.centerId ?? ''}
         />
         <SelectElement
           name="firstVisit"
@@ -130,7 +129,7 @@ class BatteryManagerForm extends Component {
           options={options.firstVisit}
           onUserInput={setTest}
           required={false}
-          value={test.firstVisit}
+          value={test.firstVisit ?? ''}
         />
         <NumericElement
           name="instrumentOrder"
@@ -138,8 +137,9 @@ class BatteryManagerForm extends Component {
           onUserInput={setTest}
           required={false}
           min={0}
-          max={127} // max value allowed by default column type of instr_order
-          value={test.instrumentOrder}
+          max={127}
+          value={test.instrumentOrder != null ?
+            String(test.instrumentOrder) : ''}
         />
         <SelectElement
           name="DoubleDataEntryEnabled"
@@ -147,7 +147,7 @@ class BatteryManagerForm extends Component {
           options={options.DoubleDataEntryEnabled}
           onUserInput={setTest}
           required={true}
-          value={test.DoubleDataEntryEnabled}
+          value={test.DoubleDataEntryEnabled ?? ''}
           emptyOption={false}
         />
         <ButtonElement
@@ -168,3 +168,4 @@ BatteryManagerForm.propTypes = {
 };
 
 export default BatteryManagerForm;
+

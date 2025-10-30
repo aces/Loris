@@ -47,18 +47,16 @@ function NameQueryModal(props: {
     throwWarning={true}
     onClose={props.closeModal}
     onSubmit={submitPromise}>
-    <form style={{width: '100%', padding: '1em'}}>
-      <FieldsetElement
-        legend='Query name'>
-        <TextboxElement name='queryname'
-          value={queryName}
-          placeholder="Enter your query name"
-          onUserInput={
-            (name: string, value: string) => setQueryName(value)
-          }
-        />
-      </FieldsetElement>
-    </form>
+    <FieldsetElement
+      legend='Query name'>
+      <TextboxElement name='queryname'
+        value={queryName}
+        placeholder="Enter your query name"
+        onUserInput={
+          (name: string, value: string) => setQueryName(value)
+        }
+      />
+    </FieldsetElement>
   </Modal>;
 }
 

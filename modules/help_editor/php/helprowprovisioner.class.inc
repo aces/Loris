@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all possible rows
  * for the help editor menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\help_editor;
  * This class implements a data provisioner to get all possible rows
  * for the help editory menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
