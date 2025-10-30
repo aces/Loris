@@ -13,68 +13,68 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Edit My Information"
-msgstr ""
+msgstr "私の情報を編集する"
 
 msgid "Notifications"
-msgstr ""
+msgstr "通知"
 
 msgid "Your email address must be less than 255 characters long"
-msgstr ""
+msgstr "メールアドレスは255文字未満でなければなりません"
 
 msgid "Language preference"
-msgstr ""
+msgstr "言語設定"
 
 msgid "Operation"
-msgstr ""
+msgstr "作用"
 
 msgid "Description"
-msgstr ""
+msgstr "説明"
 
 msgid "The email address already exists"
-msgstr ""
+msgstr "メールアドレスは既に存在します"
 
 msgid "Your password cannot be your email"
-msgstr ""
+msgstr "パスワードにメールアドレスは使用できません"
 
 msgid "Your password cannot be your username"
-msgstr ""
+msgstr "パスワードをユーザー名と同じにすることはできません。"
 
 msgid "The passwords do not match"
-msgstr ""
+msgstr "パスワードが一致しません"
 
 msgid "New and old passwords are identical"
-msgstr ""
+msgstr "新しいパスワードと古いパスワードは同一です"
 
 msgid "Configure multi-factor authentication (MFA)"
-msgstr ""
+msgstr "多要素認証を設定する"
 
 msgid "Configure MFA"
-msgstr ""
+msgstr "多要素認証を設定する"
 
 msgid "Manual MFA Setup"
-msgstr ""
+msgstr "手動多要素認証の設定"
 
 msgid "Use the following key in your authenticator app: <0>{{code}}</0>"
-msgstr ""
+msgstr "認証アプリで次のコードを使用してください: <0>{{code}}</0>"
 
 msgid "Scan the following QR code below in your MFA authenticator and enter the code to validate."
-msgstr ""
+msgstr "多要素認証システムで以下の QR コードをスキャンし、コードを入力して検証します。"
 
 msgid "Note that this will <0>overwrite</0> any previously setup MFA in LORIS!"
-msgstr ""
+msgstr "これにより、ロリスで以前に設定された多要素認証が <0>上書き</0> されることに注意してください。"
 
 msgid "Can't scan the QR code? <0>Setup manually.</0>"
-msgstr ""
+msgstr "QR コードをスキャンできませんか? <0>手動で設定してください。</0>"
 
 msgid "Validate Code"
-msgstr ""
+msgstr "コードの検証"
 
 msgid "Successfully registered multifactor authenticator"
-msgstr ""
-
+msgstr "多要素認証の登録に成功しました"

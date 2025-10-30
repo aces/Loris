@@ -1139,9 +1139,9 @@ class Edit_User extends \NDB_Form
         //          already handled in email/password check
         // case 3 - Edit user
         if ((isset($values['UserID']) && !isset($values['NA_UserID'])
-            && $values['UserID'] === $values['Password_hash'])
+            && $values['UserID'] === ($values['Password_hash'] ?? ''))
             || (!empty($this->identifier)
-            && $this->identifier === $values['Password_hash'])
+            && $this->identifier === ($values['Password_hash'] ?? ''))
         ) {
             $errors['Password'] = self::PASSWORD_ERROR_IS_USER;
         }

@@ -720,4 +720,28 @@ class User extends UserPermissions implements
     {
         return $this->userInfo['Pending_approval'] == 'Y';
     }
+
+    /**
+     * Returns a TOTP validator for this account, or null if 2FA
+     * has never been enabled by the user.
+     *
+     * @return ?\LORIS\Security\OTP\TOTP
+     */
+    public function getTOTPValidator() : ?\LORIS\Security\OTP\TOTP
+    {
+        if ($this->userInfo['TOTPSecret'] === null) {
+            return null;
+        }
+        return new \LORIS\Security\OTP\TOTP(secret: $this->userInfo['TOTPSecret']);
+    }
+
+    /**
+     * Returns true if a TOTP code is required to authenticate this account
+     *
+     * @return bool
+     */
+    public function totpRequired(): bool
+    {
+        return $this->userInfo['TOTPSecret'] !== null;
+    }
 }

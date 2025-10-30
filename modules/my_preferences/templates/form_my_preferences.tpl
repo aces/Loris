@@ -63,6 +63,17 @@
             <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
+    <div>
+    <div class="row form-group">
+       <label class="col-sm-2">
+       {* It would be nice to do this inline but the whole page is embedded
+          in a different form element with a smarty template and it's easier
+          to create a new "fresh" page with modern react/etc than rewrite
+          the whole page or do a hybrid here *}
+       <a href="{$baseurl}/my_preferences/mfa">{dgettext("my_preferences", "Configure multi-factor authentication (MFA)")}</a>
+	</label>
+    </div>
+
     <div class="row form-group">
         <label class="col-sm-2">
             {$form.language_preference.label}
