@@ -1,0 +1,62 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Edit My Information"
+msgstr "私の情報を編集する"
+
+msgid "Notifications"
+msgstr "通知"
+
+msgid "Your email address must be less than 255 characters long"
+msgstr "メールアドレスは255文字未満でなければなりません"
+
+msgid "Language preference"
+msgstr "言語設定"
+
+msgid "Operation"
+msgstr "作用"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "The email address already exists"
+msgstr "メールアドレスは既に存在します"
+
+msgid "Your password cannot be your email"
+msgstr "パスワードにメールアドレスは使用できません"
+
+msgid "Your password cannot be your username"
+msgstr "パスワードをユーザー名と同じにすることはできません。"
+
+msgid "The passwords do not match"
+msgstr "パスワードが一致しません"
+
+msgid "New and old passwords are identical"
+msgstr "新しいパスワードと古いパスワードは同一です"
+
+msgid "Configure multi-factor authentication (MFA)"
+msgstr "多要素認証を設定する"
+
+msgid "Configure MFA"
+msgstr "多要素認証を設定する"
+
+msgid "Use the following key in your authenticator app: <b>{{code}}</b>"
+msgstr "認証アプリで次のコードを使用してください: <b>{{code}}</b>"
