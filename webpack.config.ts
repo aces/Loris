@@ -157,7 +157,6 @@ const resolve: webpack.ResolveOptions = {
   fallback: {
     fs: false,
     path: false,
-    stream: require.resolve("stream-browserify"),
   },
 };
 
