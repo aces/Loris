@@ -18,9 +18,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "My Preferences"
-msgstr ""
-
 msgid "Edit My Information"
 msgstr ""
 
@@ -52,4 +49,10 @@ msgid "The passwords do not match"
 msgstr ""
 
 msgid "New and old passwords are identical"
+msgstr ""
+
+msgid "Configure multi-factor authentication (MFA)"
+msgstr ""
+
+msgid "Configure MFA"
 msgstr ""

@@ -18,9 +18,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "My Preferences"
-msgstr "मेरी प्राथमिकताएँ"
-
 msgid "Edit My Information"
 msgstr "मेरी जानकारी संपादित करें"
 

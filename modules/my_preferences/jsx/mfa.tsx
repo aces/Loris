@@ -5,6 +5,8 @@ import QRCode from 'react-qr-code';
 import * as base32 from 'hi-base32';
 import Modal from 'Modal';
 import MFAPrompt from 'jsx/MFAPrompt';
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
 
 declare const loris: any;
 
@@ -98,16 +100,17 @@ function MFAIndex(): React.ReactElement {
 }
 
 window.addEventListener('load', () => {
-  /*
-  const MFAIndex = withTranslation(
+  i18n.addResourceBundle('ja', 'my_preferences', require("../locale/ja/LC_MESSAGES/my_preferences.json"));
+  i18n.addResourceBundle('hi', 'my_preferences', require("../locale/ja/LC_MESSAGES/my_preferences.json"));
+  const TranslatedMFAIndex = withTranslation(
     ['my_preferences', 'loris']
   )(MFAIndex);
- */
+
   const element = document.getElementById('lorisworkspace');
   if (!element) {
     throw new Error('Missing lorisworkspace');
   }
   createRoot(element).render(
-    <MFAIndex />
+    <TranslatedMFAIndex />
   );
 });
