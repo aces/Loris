@@ -57,5 +57,24 @@ msgstr ""
 msgid "Configure MFA"
 msgstr ""
 
-msgid "Use the following key in your authenticator app: <b>{code}</b>"
+msgid "Manual MFA Setup"
 msgstr ""
+
+msgid "Use the following key in your authenticator app: <0>{{code}}</0>"
+msgstr ""
+
+msgid "Scan the following QR code below in your MFA authenticator and enter the code to validate."
+msgstr ""
+
+msgid "Note that this will <0>overwrite</0> any previously setup MFA in LORIS!"
+msgstr ""
+
+msgid "Can't scan the QR code? <0>Setup manually.</0>"
+msgstr ""
+
+msgid "Validate Code"
+msgstr ""
+
+msgid "Successfully registered multifactor authenticator"
+msgstr ""
+
