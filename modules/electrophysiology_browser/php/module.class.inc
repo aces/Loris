@@ -78,7 +78,6 @@ class Module extends \Module
     {
         $factory  = \NDB_Factory::singleton();
         $baseURL  = $factory->settings()->getBaseURL();
-        $projects = $user->getProjects();
 
         switch ($type) {
         case 'study-progression':
