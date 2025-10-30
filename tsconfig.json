@@ -5,8 +5,6 @@
     "moduleResolution": "nodenext",
     "baseUrl": ".",
     "paths": {
-      "core/*": ["jslib/core/*"],
-      "entities/*": ["jslib/entity/*"],
       "*": ["*", "jsx/*"]
     },
     "resolveJsonModule": true,
