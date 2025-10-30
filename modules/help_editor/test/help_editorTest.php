@@ -3,7 +3,7 @@
 /**
  * Help editor automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -17,7 +17,7 @@ use Facebook\WebDriver\WebDriverBy;
  /**
   * Help_editor automated integration tests
   *
-  * PHP Version 5
+  * PHP Version 8
   *
   * @category Test
   * @package  Loris
@@ -36,6 +36,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
     }
+
     /**
      * Delete testing data from database
      *
@@ -73,6 +74,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }//end test_help_pageload()
+
     /**
      * Tests that, when loading the help_editor module > edit help submodule, some
      * text appears in the body.
@@ -109,6 +111,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         );
          $this->resetPermissions();
     }
+
     /**
      * Tests that help editor does not load with the permission
      *
@@ -127,6 +130,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         );
          $this->resetPermissions();
     }
+
     /**
      * Tests that help editor does not load with the permission
      *
@@ -144,6 +148,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("bmi", $bodyText);
     }
+
     /**
      * Tests that help editor does not load with the permission
      *
@@ -155,12 +160,9 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("content")
         )->sendKeys("BMI");
-
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector('.panel-body')
         )->getText();
         $this->assertStringContainsString("BMI", $bodyText);
     }
-
 }
-
