@@ -14,6 +14,7 @@ import {SelectElement} from 'jsx/Form';
  * component page on load.
  *
  * Renders Help Editor form page
+ *
  * @author LORIS Team
  * @version 1.0.0
  */
@@ -102,6 +103,7 @@ const HelpEditorForm = (props) => {
 
   /**
    * Renders the React component.
+   *
    * @return {JSX} - React markup for the component
    */
   return (
