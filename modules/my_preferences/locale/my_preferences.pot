@@ -56,3 +56,6 @@ msgstr ""
 
 msgid "Configure MFA"
 msgstr ""
+
+msgid "Use the following key in your authenticator app: <b>{code}</b>"
+msgstr ""
