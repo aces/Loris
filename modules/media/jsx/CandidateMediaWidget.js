@@ -23,13 +23,14 @@ function CandidateMediaWidget(props) {
   let files = [];
   for (let i = 0; i < props.Files.length; i++) {
     const file = props.Files[i];
+    const dateStr = dateFormatter.format(new Date(file.LastModified));
     files.push(
       <a className="list-group-item" key={i}
         href={props.BaseURL
                     + '/media/files/'
                     + encodeURIComponent(file.Filename)}>
         <span className="pull-right text-muted small">
-	    {t('Updated', {ns: 'loris'})}: {dateFormatter.format(new Date(file.LastModified))}
+          {t('Updated', {ns: 'loris'})}: {dateStr}
         </span>
         <br />
         {file.Filename}
