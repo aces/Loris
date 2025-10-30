@@ -5,7 +5,7 @@ import QRCode from 'react-qr-code';
 import * as base32 from 'hi-base32';
 import Modal from 'Modal';
 import MFAPrompt from 'jsx/MFAPrompt';
-import {withTranslation} from 'react-i18next';
+import {useTranslation, Trans} from 'react-i18next';
 import i18n from 'I18nSetup';
 
 declare const loris: any;
@@ -71,6 +71,7 @@ function CodeValidator(props: {
 function MFAIndex(): React.ReactElement {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [key] = useState<string>(genPotentialSecret());
+  const {t} = useTranslation();
   const studyTitle = loris.config('studyTitle');
   const mfaUrl = 'otpauth://totp/'
     + encodeURI(studyTitle)
@@ -83,7 +84,10 @@ function MFAIndex(): React.ReactElement {
       onClose={() => setShowModal(false)}
       show={showModal}
       throwWarning={false}>
-      <p>Use the following key in your authenticator app: <b>{key}</b></p>
+      <Trans
+      	defaults="<p>Use the following key in your authenticator app: <b>{{code}}</b></p>"
+         values={{code: key}}>
+      </Trans>
     </Modal>
     <p>Scan the following QR code below in your MFA authenticator and
       enter the code to validate.</p>
@@ -102,15 +106,12 @@ function MFAIndex(): React.ReactElement {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'my_preferences', require("../locale/ja/LC_MESSAGES/my_preferences.json"));
   i18n.addResourceBundle('hi', 'my_preferences', require("../locale/ja/LC_MESSAGES/my_preferences.json"));
-  const TranslatedMFAIndex = withTranslation(
-    ['my_preferences', 'loris']
-  )(MFAIndex);
 
   const element = document.getElementById('lorisworkspace');
   if (!element) {
     throw new Error('Missing lorisworkspace');
   }
   createRoot(element).render(
-    <TranslatedMFAIndex />
+    <MFAIndex />
   );
 });
