@@ -230,7 +230,7 @@ function writeLINSTFile(
     fwrite(STDERR, " -> writing '$instrument_name'\n");
     //
     $fp = fopen("$output_dir/$instrument_name.linst", "w");
-    fwrite($fp, "{-@-}testname{@}$instrument_name\n");
+    fwrite($fp, "testname{@}$instrument_name\n");
     fwrite($fp, "table{@}$instrument_name\n");
     fwrite($fp, "title{@}$instrument_title\n");
 
@@ -258,6 +258,8 @@ function writeLINSTFile(
 
         }
     }
+
+    fwrite($fp, "{-@-}\n");
     fclose($fp);
 
     // META file
@@ -381,7 +383,7 @@ function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
     $config = $config_parser->parse();
 
     $redcap_client = new RedcapHttpClient(
-        "{$config->redcap_instance_url}/api/",
+        $config->redcap_instance_url,
         $config->redcap_api_token,
     );
 

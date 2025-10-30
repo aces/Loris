@@ -42,7 +42,7 @@
  * -- to fix bvl battery (run only once the dates are fixed)
  * fix_timepoint_date_problems.php add_instrument <candID> <sessionID> <test_name>
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -312,7 +312,6 @@ case 'diagnose':
     }
     break;
 } // end switch ($action)
-
 
 /**
  * Print usage
@@ -620,7 +619,6 @@ function fixDate($candID, $dateType, $newDate, $sessionID, $db)
 
     return;
 }
-
 
 /**
  * Returns an array of missing instruments for the timepoint

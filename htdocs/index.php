@@ -8,7 +8,7 @@
  *
  * The this entry point then prints the resulting value to the user.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -76,6 +76,7 @@ $middlewarechain = (new \LORIS\Middleware\Language())
     ->withMiddleware(new \LORIS\Middleware\LorisMenu())
     ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\AWS())
+    ->withMiddleware(new \LORIS\Middleware\ContentSecurityPolicy())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
 $serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
@@ -106,7 +107,7 @@ $lorisInstance = new \LORIS\LorisInstance(
     $factory->database(),
     $factory->config(),
     [
-        __DIR__ . "/../project/",
+        __DIR__ . "/../project/modules",
         __DIR__ . "/../modules/"
     ]
 );

@@ -51,7 +51,7 @@ CREATE TABLE `psc` (
   `Phone2` varchar(12) DEFAULT NULL,
   `Contact1` varchar(150) DEFAULT NULL,
   `Contact2` varchar(150) DEFAULT NULL,
-  `Alias` char(3) NOT NULL DEFAULT '',
+  `Alias` char(4) NOT NULL DEFAULT '',
   `MRI_alias` varchar(4) NOT NULL DEFAULT '',
   `Account` varchar(8) DEFAULT NULL,
   `Study_site` enum('N','Y') DEFAULT 'Y',
@@ -1204,10 +1204,12 @@ INSERT INTO notification_modules (module_name, operation_type, as_admin, templat
   ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited'),
   ('publication', 'submission', 'N', 'notifier_publication_submission.tpl', 'Publication: Submission Received'),
   ('publication', 'review', 'N', 'notifier_publication_review.tpl', 'Publication: Proposal has been reviewed'),
-  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited');
+  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited'),
+  ('issue_tracker', 'create/edit', 'N', 'issue_change.tpl', 'Issue Tracker: All issues created or edited');
 
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text';
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='publication' AND ns.service='email_text';
+INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='issue_tracker' AND ns.service='email_text';
 
 -- Transfer Document repository notifications to new system
 INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text' AND u.Doc_Repo_Notifications='Y';
@@ -1425,6 +1427,38 @@ CREATE TABLE `user_account_history` (
   `ChangeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ********************************
+-- tables for policies
+-- ********************************
+
+CREATE TABLE policies (
+    PolicyID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Version INT NOT NULL,
+    ModuleID INT NOT NULL,
+    PolicyRenewalTime INT DEFAULT 7,
+    PolicyRenewalTimeUnit enum('D','Y','M','H') DEFAULT 'D',
+    Content TEXT NULL,
+    SwalTitle VARCHAR(255) DEFAULT 'Terms of Use',
+    HeaderButton enum('Y','N') DEFAULT 'Y',
+    HeaderButtonText VARCHAR(255) DEFAULT 'Terms of Use',
+    Active enum('Y','N') DEFAULT 'Y',
+    AcceptButtonText VARCHAR(255) DEFAULT 'Accept',
+    DeclineButtonText VARCHAR(255) DEFAULT 'Decline',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_policy_decision (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    PolicyID INT NOT NULL,
+    Decision enum('Accepted','Declined') NOT NULL,
+    DecisionDate DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- ********************************
 -- user_login_history tables

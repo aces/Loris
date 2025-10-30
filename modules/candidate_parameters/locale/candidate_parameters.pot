@@ -21,3 +21,11 @@ msgstr ""
 msgid "Candidate Parameters"
 msgstr ""
 
+msgid "Caveat"
+msgstr ""
+
+msgid "Consent Summary"
+msgstr ""
+
+msgid "Consent Type"
+msgstr ""

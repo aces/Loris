@@ -3,7 +3,7 @@
 /**
  * Unit test for Password class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -112,25 +112,26 @@ class PasswordTest extends TestCase
         ];
     }
 
-
     /**
      * Test the CandID constructor with invalid values
-     *
-     * @param string $invalidValue An invalid value
      *
      * @dataProvider invalidValues
      *
      * @expectedException \InvalidArgumentException
      * @return            void
      */
-    public function testContructorInvalidValues($invalidValue): void
+    public function testConstructorInvalidValues(): void
     {
-        $this->expectException("InvalidArgumentException");
-        $this->_configMock->expects($this->any())
-            ->method('getSetting')
-            ->willReturn('false');
+        $invalidValues = [null, '', 123, [], new stdClass()]; // all invalid values
 
-        new \Password($invalidValue);
+        foreach ($invalidValues as $invalidValue) {
+            $this->expectException(\TypeError::class);
+            $this->_configMock->expects($this->any())
+                ->method('getSetting')
+                ->willReturn('false');
+
+            new \Password($invalidValue);
+        }
     }
 
     /**

@@ -13,6 +13,7 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/candidate_list.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/candidate_list.json';
 
 /**
  * Candidate List
@@ -162,7 +163,7 @@ class CandidateListIndex extends Component {
       );
     }
 
-    if (column === this.props.t('Cohort', {ns: 'loris'})) {
+    if (column === this.props.t('Cohort', {ns: 'loris', count: 1})) {
       let result = (cell) ? <td>{cell}</td> : <td></td>;
       return result;
     }
@@ -229,7 +230,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': this.props.t('Cohort', {ns: 'loris'}),
+        'label': this.props.t('Cohort', {ns: 'loris', count: 1}),
         'show': true,
         'filter': {
           name: 'cohort',
@@ -238,7 +239,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        label: this.props.t('Entity Type', {ns: 'candidate_list'}),
+        label: this.props.t('Entity Type', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'entityType',
@@ -250,7 +251,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': this.props.t('Scan Done', {ns: 'candidate_list'}),
+        'label': this.props.t('Scan Done', {ns: 'loris'}),
         'show': true,
         'filter': {
           name: 'scanDone',
@@ -368,8 +369,8 @@ class CandidateListIndex extends Component {
     const actions = [
       {
         label: this.state.hideFilter ?
-          this.props.t('Show Advanced Filters', {ns: 'candidate_list'}) :
-          this.props.t('Hide Advanced Filters', {ns: 'candidate_list'}),
+          this.props.t('Show Advanced Filters', {ns: 'loris'}) :
+          this.props.t('Hide Advanced Filters', {ns: 'loris'}),
         action: this.toggleFilters,
         name: 'advanced',
       },
@@ -407,6 +408,8 @@ CandidateListIndex.propTypes = {
 window.addEventListener('load', () => {
   const args = QueryString.get();
   i18n.addResourceBundle('ja', 'candidate_list', jaStrings);
+  i18n.addResourceBundle('hi', 'candidate_list', hiStrings);
+
 
   const CLIndex = withTranslation(
     ['candidate_list', 'loris']

@@ -21,7 +21,6 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      */
     private $visitcache = [];
 
-
     /**
      * Constructor
      *
@@ -98,7 +97,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 $fields = array_merge($fields, $inst->getDataDictionary());
                 $dict[] = $cat->withItems($fields);
             } catch (\LorisException $e) {
-                error_log($e);
+                error_log($e->getMessage());
             }
         }
         return $dict;
