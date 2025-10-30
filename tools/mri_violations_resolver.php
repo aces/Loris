@@ -9,7 +9,7 @@
  *
  * Usage: php mri_violations_resolver.php [confirm]
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category MRI
  * @package  Main

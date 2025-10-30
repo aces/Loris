@@ -4,7 +4,7 @@
  * Defines Authenticator interface to authenticate access
  * to incoming requests.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Interfaces
  * @package  Middleware

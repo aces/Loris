@@ -3,7 +3,7 @@
 /**
  * Data Querying Module
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Module
  * @package    Loris
@@ -17,7 +17,7 @@ namespace LORIS\dataquery;
 /**
  * Data Querying Module
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Module
  * @package    Loris

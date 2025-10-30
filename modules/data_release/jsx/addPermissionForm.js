@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import swal from 'sweetalert2';
+import {withTranslation} from 'react-i18next';
 import {
   FormElement,
   SelectElement,
@@ -82,6 +83,7 @@ class AddPermissionForm extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Data loading error
     if (this.state.error !== undefined) {
       return (
@@ -105,7 +107,7 @@ class AddPermissionForm extends Component {
       >
         <SelectElement
           name='userid'
-          label='User'
+          label={t('User', {ns: 'data_release'})}
           options={this.state.fieldOptions.users}
           onUserInput={this.setFormData}
           ref='userid'
@@ -116,10 +118,11 @@ class AddPermissionForm extends Component {
         />
         {this.state.specificReleaseId === null ?
           <>
-            <h3>Choose a specific file or an entire release below</h3><br/>
+            <h3>{t('Choose a specific file or an entire release below',
+              {ns: 'data_release'})}</h3><br/>
             <SelectElement
               name='data_release_id'
-              label='Data Release File'
+              label={t('Data Release File', {ns: 'data_release'})}
               options={this.state.fieldOptions.filenames}
               onUserInput={this.setFormData}
               ref='data_release_id'
@@ -128,10 +131,10 @@ class AddPermissionForm extends Component {
               value={this.state.formData.data_release_id}
               autoSelect={false}
             />
-            <h4>OR</h4><br/>
+            <h4>{t('OR', {ns: 'data_release'})}</h4><br/>
             <SelectElement
               name='data_release_version'
-              label='Data Release Version'
+              label={t('Data Release Version', {ns: 'data_release'})}
               options={this.state.fieldOptions.versions}
               onUserInput={this.setFormData}
               ref='data_release_version'
@@ -145,16 +148,17 @@ class AddPermissionForm extends Component {
           // If from manageFileForm, don't allow user to change the file
           <SelectElement
             name='data_release_id'
-            label='Data Release File'
+            label={t('Data Release File', {ns: 'data_release'})}
             options={this.state.fieldOptions.filenames}
-            onUserInput={() => {}}
+            onUserInput={this.setFormData}
             ref='data_release_id'
-            disabled={true}
-            value={this.state.specificReleaseId}
+            errorMessage={this.state.errorMessage.Filename}
+            required={false}
+            value={this.state.formData.data_release_id}
             autoSelect={false}
           />
         }
-        <ButtonElement label='Add Permission'/>
+        <ButtonElement label={t('Add Permission', {ns: 'data_release'})}/>
       </FormElement>
     );
   }
@@ -184,6 +188,7 @@ class AddPermissionForm extends Component {
    *
    */
   handleSubmit() {
+    const {t} = this.props;
     let myFormData = this.state.formData;
     let formObj = new FormData();
     for (let key in myFormData) {
@@ -204,7 +209,7 @@ class AddPermissionForm extends Component {
     }).then( (response) => {
       if (response.ok) {
         swal.fire({
-          text: 'Permission Update Success!',
+          text: t('Permission Update Success!', {ns: 'data_release'}),
           title: '',
           type: 'success',
         }).then(function() {
@@ -213,7 +218,7 @@ class AddPermissionForm extends Component {
       } else {
         let msg = response.statusText ?
           response.statusText :
-          'Submission Error!';
+          t('Submission Error!', {ns: 'data_release'});
         swal.fire(msg, '', 'error');
         console.error(msg);
       }
@@ -226,6 +231,7 @@ class AddPermissionForm extends Component {
    * @return {boolean} true if the form data is valid, false otherwise
    */
   isValidFormData() {
+    const {t} = this.props;
     let isValid = true;
 
     let formData = this.state.formData;
@@ -238,14 +244,16 @@ class AddPermissionForm extends Component {
 
     // make sure a user was selected
     if (!formData.userid) {
-      errorMessage.Username = 'You must select a user!';
+      errorMessage.Username = t('You must select a user!',
+        {ns: 'data_release'});
       isValid = false;
     }
 
     // make sure either a file or a version was selected
     if ((!formData.data_release_version && !formData.data_release_id)
       || (formData.data_release_version && formData.data_release_id)) {
-      let msg = 'You must select a file OR a version to grant permission on!';
+      let msg = t('You must select a file OR a version to grant permission on!',
+        {ns: 'data_release'});
       errorMessage.Filename = msg;
       errorMessage.Version = msg;
       isValid = false;
@@ -264,6 +272,7 @@ AddPermissionForm.propTypes = {
   specificReleaseId: PropTypes.number,
   fieldOptions: PropTypes.object,
   data: PropTypes.object,
+  t: PropTypes.func.isRequired,
 };
 
-export default AddPermissionForm;
+export default withTranslation(['data_release', 'loris'])(AddPermissionForm);

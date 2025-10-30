@@ -4,7 +4,7 @@
  * This file retrieves content for specific help section
  * and returns a json object
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

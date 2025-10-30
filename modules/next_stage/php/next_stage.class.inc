@@ -3,7 +3,7 @@
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -15,7 +15,7 @@ namespace LORIS\next_stage;
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -125,6 +125,7 @@ class Next_Stage extends \NDB_Form
         $this->tpl_data['candID']    = $timePoint->getCandID();
 
     }
+
     /**
      * Add elements to the page (after LorisForm has been
      * initialized in the parent.)
@@ -183,11 +184,19 @@ class Next_Stage extends \NDB_Form
         }
 
         // add date rules
-        $this->addRule('date1', 'Date is required', 'required');
-        $this->addRule(['date1', 'date2'], 'Date fields must match', 'compare');
-
+        $this->addRule(
+            'date1',
+            dgettext("next_stage", "Date is required."),
+            'required'
+        );
+        $this->addRule(
+            ['date1', 'date2'],
+            dgettext("next_stage", "Date fields must match."),
+            'compare'
+        );
         $this->form->addFormRule([&$this, '_validate']);
     }
+
     /**
      * Validate function
      *
@@ -209,16 +218,18 @@ class Next_Stage extends \NDB_Form
             || is_null($values['date1'])
             || is_null($values['date2'])
         ) {
-            $errors['date1'] .= "Both date fields are required.";
+            $errors['date1']
+                .= dgettext("next_stage", "Both date fields are required.");
             return $errors;
         }
         // check date pairs
         if (empty($values['date1'])) {
-            $errors['date1'] .= "Date is required. \n";
+            $errors['date1']
+                .= dgettext("next_stage", "Date is required.")."\n";
         }
-
         if ($values['date1'] != $values['date2']) {
-            $errors['date1'] .= "Both Date fields must match. \n";
+            $errors['date1']
+                .= dgettext("next_stage", "Both Date fields must match.");
         }
 
         // get candidate's DOB or EDC according to CohortID
@@ -235,14 +246,18 @@ class Next_Stage extends \NDB_Form
                 && $config->getSetting('screeningAfterVisit')!="true"
                 && strcmp($date, $timePoint->getData('Date_screening')) < 0
             ) {
-                $errors['date1'] .= "Date of Visit is less than".
-                                    " Date of Screening. \n";
+                $errors['date1'] .= dgettext(
+                    "next_stage",
+                    "Date of Visit is less than Date of Screening."
+                );
             }
             if ($config->getSetting('allowPrenatalTimepoints')!="true"
                 && strcmp($date, $candidateBirthDate) < 1
             ) {
-                $errors['date1'] .= "Date of Visit is less than ".
-                                    "Date of Birth/EDC. \n";
+                $errors['date1'] .= dgettext(
+                    "next_stage",
+                    "Date of Visit is less than Date of Birth/EDC."
+                );
             }
         }
 
@@ -285,5 +300,4 @@ class Next_Stage extends \NDB_Form
             )
         );
     }
-
 }

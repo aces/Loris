@@ -3,7 +3,7 @@
 /**
  * This file handles the Data Release for LORIS
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category LORIS
  * @package  Main

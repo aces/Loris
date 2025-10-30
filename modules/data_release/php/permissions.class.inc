@@ -17,6 +17,7 @@ class Permissions extends \NDB_Page
     public $skipTemplate = true;
 
     private $filesdir;
+
     /**
      * Check user permissions
      *

@@ -5,7 +5,7 @@
  * a html response using smarthy templates. It rely on the Diactoros implementation
  * of the Response object to provide the reason phrase according to the status code.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category PSR7
  * @package  Http
@@ -47,7 +47,7 @@ class Error extends HtmlResponse
     ) {
         $uri          = $request->getURI();
         $serverParams = $request->getServerParams();
-        $redirectUrl  = $serverParams['REDIRECT_URL'] ?? null;
+        $redirectUrl  = $serverParams['REQUEST_URI'] ?? null;
         $baseurl      = $uri->getScheme() .'://'. $uri->getAuthority();
 
         $tpl_data = [
