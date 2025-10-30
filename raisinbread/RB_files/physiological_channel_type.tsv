@@ -1,0 +1,31 @@
+PhysiologicalChannelTypeID	ChannelTypeName	ChannelDescription
+1	EEG	ElectoEncephaloGram: EEG sensors
+2	VEOG	Vertical ElectroOculoGram (eyes)
+3	HEOG	Horizontal ElectOculoGram
+4	EOG	Generic EOG channel, if HEOG or VEOG information not available
+5	ECG	ElectroCardioGram (heart)
+6	EMG	ElectroMyoGram (muscle)
+7	TRIG	System Triggers
+8	REF	Reference electrode
+9	GRD	Ground electrode
+10	MISC	Miscellaneous
+11	MEGMAG	MEG magnetometer
+12	MEGGRADAXIAL	MEG axial gradiometer
+13	MEGGRADPLANAR	MEG planar gradiometer
+14	MEGGREFMAG	MEG reference magnetometer
+15	MEGREFGRADAXIAL	MEG reference axial gradiometer
+16	MEGREFGRADPLANAR	MEG reference planar gradiometer
+17	MEGOTHER	Any other type of MEG sensor
+18	ECOG	Electrode channel: electrocortigogram (intracranial)
+19	SEEG	Electrode channel: stereo-electroencephalogram (intracranial)
+20	DBS	Electrode channel: deep brain stimulation (intracranial)
+21	AUDIO	Audio signal
+22	PD	Photodiode
+23	EYEGAZE	Eye Tracker gaze
+24	PUPIL	Eye Tracker pupil diameter
+25	SYSCLOCK	System time showing elapsed time since trial started
+26	ADC	Analog to Digital input
+27	DAC	Digital to Analog input
+28	HLU	Measure position of head and head coils
+29	FITERR	Fit error signal from each head localization coil
+30	OTHER	Any other type of channel

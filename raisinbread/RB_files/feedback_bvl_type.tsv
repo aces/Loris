@@ -1,0 +1,4 @@
+Feedback_type	Name	Description
+3	Input	Input Errors
+4	Scoring	Scoring Errors
+5	Other	Other

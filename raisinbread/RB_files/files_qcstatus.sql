@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+LOCK TABLE files_qcstatus WRITE;
+TRUNCATE TABLE files_qcstatus;
+LOAD DATA LOCAL INFILE 'files_qcstatus.tsv' INTO TABLE files_qcstatus
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

@@ -67,61 +67,25 @@ if (empty($adminUser) || empty($adminPassword) || empty($dbHost)) {
     die();
 }
 
-/*
- * Definitions of the flags used in the command below (ORDERING is IMPORTANT):
- * --complete-insert -> Use complete INSERT statements that include column names
- * --no-create-db    -> Do not write CREATE DATABASE statements
- * --no-create-info  -> Do not write CREATE TABLE statements that re-create each
- *                      dumped table
- * --skip-opt        -> Do not add any of the --opt options (--opt is shorthand for:
- *                      --add-drop-table --add-locks --create-options --disable-keys
- *                      --extended-insert --lock-tables --quick --set-charset)
- * --compact         -> This option enables the --skip-add-drop-table,
- *                      --skip-add-locks, --skip-comments, --skip-disable-keys,
- *                      and --skip-set-charset
- * --add-locks       -> To undo part of --compact. Surround each table dump with
- *                      LOCK TABLES and UNLOCK TABLES statements
- * --verbose         -> Print more information about what the program does.
- * --skip-tz-utc     -> This option prevents MySQL from modifying TIMESTAMP
- *                      values to accommodate for timezone differences.
- */
-
-
-// Check MySQL version
-$mysqlVersionOutput = shell_exec(
-    'mysql -u '.escapeshellarg($adminUser).' -p'.escapeshellarg($adminPassword).
-    ' -h '.escapeshellarg($dbHost).' -e "SELECT VERSION();" 2>/dev/null'
-);
-
-preg_match('/\d+\.\d+\.\d+/', $mysqlVersionOutput, $matches);
-$mysqlVersion = $matches[0] ?? '0.0.0';
-
-// Determine whether --column-statistics=0 is needed
-$columnStatisticsFlag = version_compare($mysqlVersion, '8.0.0', '<=') ?
- '--column-statistics=0 ' : '';
-
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
-    $paths    = \NDB_Config::singleton()->getSetting('paths');
-    $filename = $paths['base'] . "/raisinbread/RB_files/RB_$tableName.sql";
+    $paths        = \NDB_Config::singleton()->getSetting('paths');
+    $filenamebase = $paths['base'] . "/raisinbread/RB_files/$tableName";
     exec(
-        'mysqldump -u '.escapeshellarg($adminUser).
+        'mysql --raw -u '.escapeshellarg($adminUser).
         ' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
-        escapeshellarg($databaseInfo['database']).' '.
-        $columnStatisticsFlag.
-        '--complete-insert '.
-        '--no-create-db '.
-        '--no-create-info '.
-        '--skip-opt '.
-        '--compact '.
-        '--add-locks '.
-        '--verbose '.
-        '--skip-tz-utc '.
-        $tableName .
-        ' | sed -E \'s/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\n'.
-        'TRUNCATE TABLE \1;\n'.
-        'LOCK TABLES \1/g\''.
-        ' > '. $filename .
-        '&& echo "SET FOREIGN_KEY_CHECKS=1;" >> '. $filename
+        " -e 'SELECT * FROM $tableName' "
+        . escapeshellarg($databaseInfo['database'])
+        . " | sed -e 's/NULL/\\\\N/g'"
+        . "> $filenamebase.tsv"
     );
+
+    $fd = fopen($filenamebase . ".sql", "w");
+    fwrite($fd, "SET FOREIGN_KEY_CHECKS=0;\n");
+    fwrite($fd, "LOCK TABLE $tableName WRITE;\n");
+    fwrite($fd, "TRUNCATE TABLE $tableName;\n");
+    fwrite($fd, "LOAD DATA LOCAL INFILE '$tableName.tsv' INTO TABLE $tableName\n");
+    fwrite($fd, " IGNORE 1 LINES;\n");
+    fwrite($fd, "SET FOREIGN_KEY_CHECKS=1;\n");
+    fclose($fd);
 }

@@ -1,0 +1,6 @@
+CandidateConsentHistoryID	EntryDate	DateGiven	DateWithdrawn	PSCID	ConsentName	ConsentLabel	Status	EntryStaff
+11	2016-09-02 17:57:55	2015-12-31	1001-01-01	DCC090	study_consent	Consent to Study	yes	admin
+12	2016-09-02 17:58:24	2015-12-31	1001-01-01	DCC090	study_consent	Consent to Study	yes	admin
+13	2016-09-09 22:36:30	\N	2015-12-31	DCC090	study_consent	Consent to Study	no	admin
+19	2016-09-24 06:19:17	2015-12-31	\N	MTL001	study_consent	Consent to Study	yes	admin
+20	2016-10-08 01:02:40	2015-10-30	\N	MTL005	study_consent	Consent to Study	yes	admin

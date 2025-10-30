@@ -1,0 +1,22 @@
+type	description
+archive	Archive file
+bdf	Biosemi file format (EEG)
+bval	NIfTI DWI file with b-values
+bvec	NIfTI DWI file with b-vectors
+cnt	Neuroscan CNT data format (EEG)
+edf	European data format (EEG)
+grid_0	MNI BIC non-linear field for non-linear transformation
+json	JSON file
+mnc	MINC file
+nii	NIfTI file
+nrrd	NRRD file format (used by DTIPrep)
+obj	3D imaging format
+readme	README file
+set	EEGlab file format (EEG)
+tsv	Tab separated values (TSV) file
+txt	text file
+vertstat	file describing the cortical thickness in a single column
+vhdr	Brainvision file format (EEG)
+vsm	BrainStorm file format (EEG)
+xfm	transformation matrix file
+xml	XML file

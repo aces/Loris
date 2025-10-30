@@ -1,0 +1,81 @@
+permID	code	description	moduleID	categoryID
+1	superuser	Superuser - supersedes all permissions	\N	1
+2	user_accounts	User Accounts - Own Sites	38	2
+3	user_accounts_multisite	User Accounts - All Sites	38	2
+4	context_help	Help documentation	19	2
+5	bvl_feedback	Feedback Threads	5	1
+6	imaging_browser_qc	Status	20	2
+8	send_to_dcc	Send to DCC	24	2
+9	unsend_to_dcc	Reverse Send from DCC	24	2
+10	access_all_profiles	Candidates and Timepoints - All Sites	6	2
+11	data_entry	Candidates and Timepoints - Own Sites	6	1
+12	examiner_view	Add and Certify Examiners - Own Sites	17	2
+13	examiner_multisite	Add and Certify Examiners - All Sites	17	2
+17	conflict_resolver	Resolve Conflicts	9	2
+18	data_dict_view	Parameter Type Descriptions	46	2
+19	violated_scans_view_allsites	Violated Scans - All Sites	30	2
+22	config	Settings	8	2
+23	imaging_browser_view_site	Imaging Scans - Own Sites	20	2
+24	imaging_browser_view_allsites	Imaging Scans - All Sites	20	2
+25	dicom_archive_view_allsites	DICOMs - All Sites	15	2
+28	instrument_builder	Instrument Forms	23	2
+29	data_dict_edit	Parameter Type Descriptions	46	2
+31	candidate_parameter_view	Candidate Information	7	2
+32	candidate_parameter_edit	Candidate Information	7	2
+33	genomic_browser_view_site	Genomic Data - Own Sites	18	2
+34	genomic_browser_view_allsites	Genomic Data - All Sites	18	2
+35	document_repository_view	Documents	16	2
+36	document_repository_delete	Documents	16	2
+37	server_processes_manager	Processes	34	2
+38	imaging_uploader_allsites	Imaging Scans - All Sites	22	2
+39	acknowledgements_view	Acknowledgee List	1	2
+40	acknowledgements_edit	Acknowledgee List	1	2
+41	dataquery_view	Cross-Modality Data	49	2
+42	genomic_data_manager	Genomic Files	18	2
+43	media_write	Candidate Media Files	29	2
+44	media_read	Candidate Media Files	29	2
+45	issue_tracker_own_issue	Issues - Own	27	2
+46	issue_tracker_all_issue	Issues - All Sites	27	2
+47	imaging_browser_phantom_allsites	Phantom Scans - All Sites	20	2
+48	imaging_browser_phantom_ownsite	Phantom Scans - Own Sites	20	2
+49	instrument_manager_read	Installed Instruments	25	2
+50	instrument_manager_write	Upload and Install Instruments	25	2
+51	data_release_upload	Release Files	12	2
+52	data_release_edit_file_access	Grant Other Users Access to Releases	12	2
+53	publication_view	Publication Projects	33	2
+54	publication_propose	Propose Publication Projects	33	2
+55	publication_approve	Accept/Reject Publication Projects	33	2
+56	data_release_view	Release Files	12	2
+57	candidate_dob_edit	Dates of Birth	7	2
+58	battery_manager_view	Battery Entries	39	2
+59	battery_manager_edit	Battery Entries	39	2
+60	electrophysiology_browser_view_allsites	EEGs - All Sites	41	2
+61	electrophysiology_browser_view_site	EEGs - Own Sites	41	2
+62	module_manager_view	Installed Modules	40	2
+63	module_manager_edit	Installed Modules	40	2
+64	candidate_dod_edit	Dates of Death	7	2
+65	violated_scans_view_ownsite	Violated Scans - Own Sites	30	2
+66	document_repository_upload_edit	Documents	16	2
+67	survey_accounts_view	Candidate Surveys	36	2
+68	imaging_quality_control_view	Flagged Imaging Entries	21	2
+69	behavioural_quality_control_view	Flagged Behavioural Entries	3	2
+70	api_docs	LORIS API Manual	45	2
+71	electrophysiology_browser_edit_annotations	Annotations	41	2
+72	monitor_eeg_uploads	Monitor EEG uploads	47	2
+73	schedule_module	Schedule Module: edit and delete appointment	48	2
+74	document_repository_categories	Categories	16	2
+75	document_repository_hidden	Restricted files	16	2
+76	media_upload_digest	Media files: Access to recently uploaded media notifications digest.	29	2
+77	issue_tracker_site_issue	Issues - Own Sites	27	2
+78	issue_tracker_close_site_issue	Issues - Own Sites	27	2
+79	issue_tracker_close_all_issue	Issues - All Sites	27	2
+80	dataquery_admin	Admin dataquery queries	44	2
+81	imaging_uploader_ownsites	Imaging Scans - Own Sites	22	2
+82	imaging_uploader_nosessionid	Imaging Scans with no session ID	22	2
+83	dicom_archive_nosessionid	DICOMs with no session ID	15	2
+84	dicom_archive_view_ownsites	DICOMs - Own Sites	15	2
+85	view_instrument_data	Data	26	2
+86	biobank_specimen_view	View Specimens	51	2
+87	biobank_container_view	View Containers	51	2
+88	biobank_pool_view	View Pools	51	2
+89	dqt_view	Cross-Modality Data (legacy)	44	2

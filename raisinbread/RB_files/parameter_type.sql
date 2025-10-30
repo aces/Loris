@@ -1,0 +1,6 @@
+SET FOREIGN_KEY_CHECKS=0;
+LOCK TABLE parameter_type WRITE;
+TRUNCATE TABLE parameter_type;
+LOAD DATA LOCAL INFILE 'parameter_type.tsv' INTO TABLE parameter_type
+ IGNORE 1 LINES;
+SET FOREIGN_KEY_CHECKS=1;

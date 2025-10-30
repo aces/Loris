@@ -1,0 +1,13 @@
+ID	Description	Required	parentID
+1	Active	0	\N
+2	Refused/Not Enrolled	0	\N
+3	Ineligible	0	\N
+4	Excluded	0	\N
+5	Inactive	1	\N
+6	Incomplete	1	\N
+7	Complete	0	\N
+8	Unsure	\N	5
+9	Requiring Further Investigation	\N	5
+10	Not Responding	\N	5
+11	Death	\N	6
+12	Lost to Followup	\N	6
