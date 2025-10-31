@@ -1029,7 +1029,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        $allValues  = $this->getInstanceData();
+        $allValues       = $this->getInstanceData();
         $curr_examinerID = $allValues['Examiner'];
 
         list(
