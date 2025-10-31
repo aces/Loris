@@ -182,7 +182,9 @@ CREATE TABLE `biobank_specimen_protocol_attribute_rel` (
   `SpecimenAttributeID` int(10) unsigned NOT NULL,
   `Required` tinyint(1) DEFAULT NULL,
   `showInDataTable` tinyint(1) DEFAULT NULL,
+  `OrderIndex` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`SpecimenProtocolID`,`SpecimenAttributeID`),
+  UNIQUE KEY `UK_SpecimenProtocolId_OrderIndex` (`SpecimenProtocolID`, `OrderIndex`),
   KEY `FK_biobank_specimen_protocol_attribute_rel_SpecimenAttributeID` (`SpecimenAttributeID`),
   CONSTRAINT `FK_biobank_specimen_protocol_attribute__rel_SpecimenProtocolID` FOREIGN KEY (`SpecimenProtocolID`) REFERENCES `biobank_specimen_protocol` (`SpecimenProtocolID`),
   CONSTRAINT `FK_biobank_specimen_protocol_attribute_rel_SpecimenAttributeID` FOREIGN KEY (`SpecimenAttributeID`) REFERENCES `biobank_specimen_attribute` (`SpecimenAttributeID`)
