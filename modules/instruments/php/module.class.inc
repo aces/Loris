@@ -57,7 +57,7 @@ class Module extends \Module
             return $resp;
         }
 
-        $path           = $request->getURI()->getPath();
+        $path           = $request->getAttribute("unhandledURI")->getPath();
         $pathComponents = [];
 
         // Breakdown path information from the request.

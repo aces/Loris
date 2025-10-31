@@ -97,7 +97,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 $fields = array_merge($fields, $inst->getDataDictionary());
                 $dict[] = $cat->withItems($fields);
             } catch (\LorisException $e) {
-                error_log($e);
+                error_log($e->getMessage());
             }
         }
         return $dict;
@@ -182,6 +182,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         if (isset($this->visitcache[$inst->getName()])) {
             return $this->visitcache[$inst->getName()];
         }
+        $user        = \NDB_Factory::singleton()->user();
+        $user_visits = "('" . join("','", $user->getVisits()) . "')";
 
         $DB     = \NDB_Factory::singleton()->database();
         $visits = $DB->pselectCol(
@@ -191,6 +193,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                    JOIN session s ON (f.SessionID=s.ID)
                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Active='Y' AND c.Active='Y' and tn.Test_name=:tn
+                AND s.Visit_Label IN $user_visits
             ORDER BY s.Visit_label",
             ['tn' => $inst->getName()]
         );

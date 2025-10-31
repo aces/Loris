@@ -98,10 +98,14 @@ class HelpEditor extends React.Component {
     }
 
     const {data} = this.state;
-    /**
-     * XXX: Currently, the order of these fields MUST match the order of the
-     * queried columns in _setupVariables() in media.class.inc
-     */
+    const addHelp = () => {
+      window.location.replace(
+        loris.BaseURL+'/help_editor/edit_help_content?helpID=null'
+      );
+    };
+    const actions = [
+      {label: 'Adding help content for a specific instrument', action: addHelp},
+    ];
     const fields = [
       {label: 'Help ID', show: false},
       {label: 'Topic', show: true, filter: {
@@ -112,6 +116,7 @@ class HelpEditor extends React.Component {
         name: 'content',
         type: 'text',
       }},
+      {label: 'Instrument', show: true},
     ];
 
     return (
@@ -119,6 +124,7 @@ class HelpEditor extends React.Component {
         name="help_filter"
         data={data}
         fields={fields}
+        actions={actions}
         getFormattedCell={this.formatColumn}
       />
     );

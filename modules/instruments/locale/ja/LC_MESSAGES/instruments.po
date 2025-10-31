@@ -21,9 +21,30 @@ msgstr ""
 msgid "Instruments"
 msgstr "機器"
 
-
 msgid "Incomplete form"
 msgstr "不完全なフォーム"
 
 msgid "Incomplete forms"
 msgstr "不完全なフォーム"
+
+msgid "Clear Instrument"
+msgstr "クリアインストルメント"
+
+msgid "Validity"
+msgstr "有効"
+
+msgid "Valid"
+msgstr "有効"
+
+msgid "Questionable"
+msgstr "疑わしい"
+
+msgid "Invalid"
+msgstr "無効"
+
+msgid "Subtests"
+msgstr "サブテスト"
+
+msgid "Top"
+msgstr "トップ"
+

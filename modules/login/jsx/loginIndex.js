@@ -36,6 +36,7 @@ class Login extends Component {
       study: {
         logo: '',
         title: '',
+        partner_logos: [],
         links: [],
         description: '',
       },
@@ -90,6 +91,8 @@ class Login extends Component {
         state.study.title = json.login.title;
         state.study.logo = window.location.origin
           + '/' + json.login.logo;
+        state.study.partner_logos = json?.login?.partner_logos
+          ? [...json?.login?.partner_logos] : [];
         // request account setup.
         state.component.requestAccount = json.requestAccount;
         state.oidc = json.oidc;
@@ -222,6 +225,14 @@ class Login extends Component {
         />
         : null;
       const oidc = this.state.oidc ? this.getOIDCLinks() : '';
+      const partnerLogos = this.state.study.partner_logos.map((logo) => (
+        <>
+          <img
+            src={logo}
+            alt={`${(logo ?? '').split('/').pop().split('.')[0]} Logo`}
+          />
+        </>
+      ));
       const login = (
         <div>
           <section className={'study-logo'}>
@@ -290,6 +301,16 @@ class Login extends Component {
               >
                 {login}
               </Panel>
+              {partnerLogos.length > 0 ? (
+                <Panel
+                  title="Our Partners"
+                  class="panel-default partner-container-desktop"
+                  collapsing={false}
+                  bold
+                >
+                  {partnerLogos}
+                </Panel>
+              ) : <></>}
             </section>
             <section className={'col-md-8 col-md-pull-4'}>
               <Panel
@@ -308,6 +329,16 @@ class Login extends Component {
                   {study}
                 </div>
               </Panel>
+              {partnerLogos.length > 0 ? (
+                <Panel
+                  title="Our Partners"
+                  class="panel-default partner-container-mobile"
+                  collapsing={false}
+                  bold
+                >
+                  {partnerLogos}
+                </Panel>
+              ) : <></>}
             </section>
             <section>
             </section>

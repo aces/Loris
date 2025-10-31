@@ -1,0 +1,80 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Edit My Information"
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "Your email address must be less than 255 characters long"
+msgstr ""
+
+msgid "Language preference"
+msgstr ""
+
+msgid "Operation"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "The email address already exists"
+msgstr ""
+
+msgid "Your password cannot be your email"
+msgstr ""
+
+msgid "Your password cannot be your username"
+msgstr ""
+
+msgid "The passwords do not match"
+msgstr ""
+
+msgid "New and old passwords are identical"
+msgstr ""
+
+msgid "Configure multi-factor authentication (MFA)"
+msgstr ""
+
+msgid "Configure MFA"
+msgstr ""
+
+msgid "Manual MFA Setup"
+msgstr ""
+
+msgid "Use the following key in your authenticator app: <0>{{code}}</0>"
+msgstr ""
+
+msgid "Scan the following QR code below in your MFA authenticator and enter the code to validate."
+msgstr ""
+
+msgid "Note that this will <0>overwrite</0> any previously setup MFA in LORIS!"
+msgstr ""
+
+msgid "Can't scan the QR code? <0>Setup manually.</0>"
+msgstr ""
+
+msgid "Validate Code"
+msgstr ""
+
+msgid "Successfully registered multifactor authenticator"
+msgstr ""
+

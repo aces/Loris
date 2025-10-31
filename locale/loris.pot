@@ -280,6 +280,10 @@ msgstr ""
 msgid "Download Data as CSV"
 msgstr ""
 
+# Dashboard panel strings
+msgid "Views"
+msgstr ""
+
 #: php/libraries/Password.class.inc
 msgid "The password is too short"
 msgstr ""
@@ -294,10 +298,6 @@ msgid "Data Supervisors to Email"
 msgstr ""
 
 msgid "Invalid email address"
-msgstr ""
-
-# Dashboard panel strings
-msgid "Views"
 msgstr ""
 
 # Common strings on widgets
@@ -368,6 +368,12 @@ msgstr ""
 msgid "Error!"
 msgstr ""
 
+msgid "Status"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
 # Common timepoint and vist terms
 msgid "Not Started"
 msgstr ""
@@ -394,6 +400,9 @@ msgid "Failure"
 msgstr ""
 
 msgid "Withdrawal"
+msgstr ""
+
+msgid "Withdrawn"
 msgstr ""
 
 msgid "In Progress"
