@@ -164,6 +164,9 @@ msgstr ""
 msgid "DCCID"
 msgstr ""
 
+msgid "Visit"
+msgstr ""
+
 msgid "Visit Label"
 msgstr ""
 
@@ -205,6 +208,12 @@ msgid "Feedback"
 msgstr ""
 
 msgid "Scans"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Time"
 msgstr ""
 
 msgid "Stage"
@@ -338,9 +347,6 @@ msgid "Error!"
 msgstr ""
 
 msgid "Status"
-msgstr ""
-
-msgid "Date"
 msgstr ""
 
 # Common timepoint and vist terms
