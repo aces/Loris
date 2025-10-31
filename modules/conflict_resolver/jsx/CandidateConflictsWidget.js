@@ -72,12 +72,12 @@ function CandidateConflictsWidget(props) {
       <li>
         {t('Click on instrument in legend to visit conflict resolver '
                 + 'for that instrument across all visits.',
-           {ns: 'conflict_resolver'})}
+        {ns: 'conflict_resolver'})}
       </li>
       <li>
         {t('Click on bar in graph to visit conflict resolver '
                 + 'for that visit and instrument combination.',
-           {ns: 'conflict_resolver'})}
+        {ns: 'conflict_resolver'})}
       </li>
     </ul>
   </div>;
