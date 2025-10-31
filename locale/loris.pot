@@ -192,6 +192,9 @@ msgstr ""
 msgid "Date of registration"
 msgstr ""
 
+msgid "Date Of Visit"
+msgstr ""
+
 msgid "Participant Status"
 msgstr ""
 
@@ -380,8 +383,9 @@ msgstr ""
 msgid "Complete"
 msgstr ""
 
-msgid "Instruments"
-msgstr ""
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] ""
 
 msgid "None"
 msgstr ""
