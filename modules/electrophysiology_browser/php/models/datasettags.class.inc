@@ -323,7 +323,6 @@ class DatasetTags
         return $addedTagIDs;
     }
 
-
     /**
      * Deletes one event's HED tag
      *
@@ -527,7 +526,6 @@ class DatasetTags
         : 'n/a';
     }
 
-
     /**
      * Build HED tags from schema
      *
@@ -580,7 +578,6 @@ class DatasetTags
         );
     }
 
-
     /**
      * Returns true if at least one element satisfies the function's criteria
      *
@@ -598,7 +595,6 @@ class DatasetTags
         }
         return false;
     }
-
 
     /**
      * Returns index of the Nth member

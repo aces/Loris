@@ -3,7 +3,7 @@
 /**
  * This file contains the Imaging_QC class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Imaging_QC
@@ -20,7 +20,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Main class for imaging quality control module corresponding to /imaging_qc/
  * endpoint.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Imaging_QC
@@ -88,8 +88,6 @@ class Imaging_QC extends \NDB_Menu_Filter
         }
         return $scan_types;
     }
-
-
 
     /**
      * Builds query for given modality. Works with t1w, t2w, dti.

@@ -7,7 +7,7 @@
  * serve as the ONLY way that files are uploaded so that all file uploading
  * functionality can occur on a well-tested foundation.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  *  @category Main
  *  @package  Behavioural

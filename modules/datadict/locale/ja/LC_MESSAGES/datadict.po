@@ -21,3 +21,30 @@ msgstr ""
 msgid "Data Dictionary (Legacy)"
 msgstr "データ辞書（レガシー）"
 
+msgid "Source From"
+msgstr "ソース元"
+
+msgid "Name"
+msgstr "名前"
+
+msgid "Source Field"
+msgstr "ソースフィールド"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Description Status"
+msgstr "説明 ステータス"
+
+msgid "Empty"
+msgstr "空の"
+
+msgid "Modified"
+msgstr "修正済み"
+
+msgid "Unchanged"
+msgstr "変更なし"
+
+msgid "Cohorts"
+msgstr "コホート"
+

@@ -1,0 +1,52 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Edit My Information"
+msgstr "मेरी जानकारी संपादित करें"
+
+msgid "Notifications"
+msgstr "सूचनाएँ"
+
+msgid "Your email address must be less than 255 characters long"
+msgstr "आपका ईमेल पता 255 अक्षरों से कम होना चाहिए।"
+
+msgid "Language preference"
+msgstr "भाषा वरीयता"
+
+msgid "Operation"
+msgstr "क्रिया"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "The email address already exists"
+msgstr "ईमेल पता पहले से मौजूद है"
+
+msgid "Your password cannot be your email"
+msgstr "आपका पासवर्ड आपका ईमेल नहीं हो सकता।"
+
+msgid "Your password cannot be your username"
+msgstr "आपका पासवर्ड आपका उपयोगकर्ता नाम नहीं हो सकता।"
+
+msgid "The passwords do not match"
+msgstr "पासवर्ड मेल नहीं खाते।"
+
+msgid "New and old passwords are identical"
+msgstr "नया और पुराना पासवर्ड समान हैं।"

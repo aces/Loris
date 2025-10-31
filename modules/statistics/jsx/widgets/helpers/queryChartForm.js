@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {SelectElement, FormElement, ButtonElement} from 'jsx/Form';
-
+import {SelectElement, FormElement, ButtonElement, DateElement} from 'jsx/Form';
+import {useTranslation} from 'react-i18next';
 
 /**
  * QueryChartForm - a form used for statistics query to modify graphs/charts.
@@ -10,50 +10,28 @@ import {SelectElement, FormElement, ButtonElement} from 'jsx/Form';
  * @return {JSX.Element}
  */
 const QueryChartForm = (props) => {
-  const [optionsProjects, setOptionsProjects] = useState({});
-  const [optionsCohorts, setOptionsCohorts] = useState({});
-  const [optionsSites, setOptionsSites] = useState({});
-  const [optionsVisits, setOptionsVisits] = useState({});
-  const [optionsStatus, setOptionsStatus] = useState({});
   const [formDataObj, setFormDataObj] = useState({});
+  const {t} = useTranslation();
+  const [options, setOptions] = useState({
+    projects: {},
+    cohorts: {},
+    sites: {},
+    visits: {},
+    participantStatus: {},
+  });
 
-  /**
-   * useEffect - modified to run when props.data updates.
-   */
+  // Load options from props.data when rendered
   useEffect(
     () => {
       const json = props.data;
       if (json && Object.keys(json).length !== 0) {
-        let projectOptions = {};
-        for (const [key, value] of
-          Object.entries(json['options']['projects'])) {
-          projectOptions[key] = value;
-        }
-        setOptionsProjects(projectOptions);
-        let cohortOptions = {};
-        for (
-          const [key, value] of Object.entries(json['options']['cohorts'])
-        ) {
-          cohortOptions[key] = value;
-        }
-        setOptionsCohorts(cohortOptions);
-        let siteOptions = {};
-        for (const [key, value] of Object.entries(json['options']['sites'])) {
-          siteOptions[key] = value;
-        }
-        setOptionsSites(siteOptions);
-        let visitOptions = {};
-        for (const [key, value] of Object.entries(json['options']['visits'])) {
-          visitOptions[key] = value;
-        }
-        setOptionsVisits(visitOptions);
-        let participantStatusOptions = {};
-        for (const [key, value] of Object.entries(
-          json['options']['participantStatus']
-        )) {
-          participantStatusOptions[key] = value;
-        }
-        setOptionsStatus(participantStatusOptions);
+        setOptions({
+          projects: json['options']['projects'] || {},
+          cohorts: json['options']['cohorts'] || {},
+          sites: json['options']['sites'] || {},
+          visits: json['options']['visits'] || {},
+          participantStatus: json['options']['participantStatus'] || {},
+        });
       }
     },
     [props.data]
@@ -67,34 +45,34 @@ const QueryChartForm = (props) => {
    */
 
   const setFormData = (formElement, value) => {
-    // Normalize single selection into array (in case)
-    const normalizedValue = Array.isArray(value) ? value : [value];
-
-    setFormDataObj(
-      (prevState) => {
-        const newFormData = {
-          ...prevState,
-          [formElement]: normalizedValue.length > 0
-            ?normalizedValue : undefined,
-        };
-        props.callback(newFormData);
-        return newFormData;
+    let normalizedValue = value;
+    if (!formElement.includes('date')) {
+      normalizedValue = Array.isArray(value) ? value : [value];
+      // Handle clear selection
+      if (normalizedValue.includes('__clear__')) {
+        normalizedValue = undefined;
       }
-    );
-  };
+    }
 
+    const newFormData = {
+      ...formDataObj,
+      [formElement]: normalizedValue,
+    };
+    if (
+      (normalizedValue !== undefined
+      || formDataObj[formElement] !== undefined)
+      && !(formElement.includes('date') && value < '1900-01-01')
+    ) {
+      props.callback(newFormData);
+      setFormDataObj(newFormData);
+    }
+  };
 
   const resetFilters = () => {
     setFormDataObj({});
   };
 
-  /**
-   * Renders the React component.
-   *
-   * @param name
-   * @param value
-   * @return {JSX.Element} - React markup for component.
-   */
+  const clearSelection = t('-- Clear Selection --', {ns: 'statistics'});
   return (
     <FormElement
       Module ={props.Module}
@@ -109,20 +87,16 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px', display: 'block'}}>
-                Project</label>
+              {t('Project', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedProjects'
-              options ={{__clear__: '-- Clear Selection --',
-                ...optionsProjects}}
+              options ={{__clear__: clearSelection,
+                ...options.projects}}
               multiple ={true}
               emptyOption ={false}
-              value ={formDataObj['selectedProjects']}
+              value ={formDataObj['selectedProjects'] || []}
               onUserInput ={(name, value) => {
-                if (value.includes('__clear__')) {
-                  setFormData(name, []);
-                } else {
-                  setFormData(name, value);
-                }
+                setFormData(name, value);
               }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
@@ -136,20 +110,16 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>Cohort</label>
+              display: 'block'}}>{t('Cohort', {ns: 'loris', count: 1})}</label>
             <SelectElement
               name ='selectedCohorts'
-              options ={{__clear__: '-- Clear Selection --',
-                ...optionsCohorts}}
+              options ={{__clear__: clearSelection,
+                ...options.cohorts}}
               multiple ={true}
               emptyOption ={false}
-              value ={formDataObj['selectedCohorts']}
+              value ={formDataObj['selectedCohorts'] || []}
               onUserInput ={(name, value) => {
-                if (value.includes('__clear__')) {
-                  setFormData(name, []);
-                } else {
-                  setFormData(name, value);
-                }
+                setFormData(name, value);
               }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
@@ -163,19 +133,15 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>Site</label>
+              display: 'block'}}>{t('Site', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedSites'
-              options ={{__clear__: '-- Clear Selection --', ...optionsSites}}
+              options ={{__clear__: clearSelection, ...options.sites}}
               multiple ={true}
               emptyOption ={false}
-              value ={formDataObj['selectedSites']}
+              value ={formDataObj['selectedSites'] || []}
               onUserInput ={(name, value) => {
-                if (value.includes('__clear__')) {
-                  setFormData(name, []);
-                } else {
-                  setFormData(name, value);
-                }
+                setFormData(name, value);
               }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
@@ -189,20 +155,16 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>Visit</label>
+              display: 'block'}}>{t('Visit', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedVisits'
-              options ={{__clear__: '-- Clear Selection --',
-                ...optionsVisits}}
+              options ={{__clear__: clearSelection,
+                ...options.visits}}
               multiple ={true}
               emptyOption ={false}
-              value ={formDataObj['selectedVisits']}
+              value ={formDataObj['selectedVisits'] || []}
               onUserInput ={(name, value) => {
-                if (value.includes('__clear__')) {
-                  setFormData(name, []);
-                } else {
-                  setFormData(name, value);
-                }
+                setFormData(name, value);
               }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
@@ -217,20 +179,18 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>Status</label>
+              display: 'block'}}>
+              {t('Participant Status', {ns: 'loris'})}
+            </label>
             <SelectElement
               name ='selectedParticipantStatus'
-              options ={{__clear__: '-- Clear Selection --',
-                ...optionsStatus}}
+              options ={{__clear__: clearSelection,
+                ...options.participantStatus}}
               multiple ={true}
               emptyOption ={false}
-              value ={formDataObj['selectedParticipantStatus']}
+              value ={formDataObj['selectedParticipantStatus'] || []}
               onUserInput ={(name, value) => {
-                if (value.includes('__clear__')) {
-                  setFormData(name, []);
-                } else {
-                  setFormData(name, value);
-                }
+                setFormData(name, value);
               }}
               style ={{width: '100%', padding: '8px',
                 borderRadius: '5px',
@@ -238,6 +198,36 @@ const QueryChartForm = (props) => {
             />
           </div>
         )}
+
+        {/* DateRegistered Section */}
+        <div>
+          <label style ={{fontWeight: 'bold',
+            marginBottom: '5px',
+            display: 'block'}}>
+            {t('Date Registered', {ns: 'statistics'})}</label>
+          <DateElement
+            name='dateRegisteredStart'
+            value={formDataObj['dateRegisteredStart'] || ''}
+            onUserInput ={(name, value) => {
+              setFormData(name, value);
+            }}
+            style={{width: '100%', padding: '8px',
+              borderRadius: '5px',
+              border: '1px solid #ccc'}}
+            label={t('Range Start', {ns: 'statistics'})}
+          />
+          <DateElement
+            name='dateRegisteredEnd'
+            value={formDataObj['dateRegisteredEnd'] || ''}
+            onUserInput={(name, value) => {
+              setFormData(name, value);
+            }}
+            style={{width: '100%', padding: '8px',
+              borderRadius: '5px',
+              border: '1px solid #ccc'}}
+            label={t('Range End', {ns: 'statistics'})}
+          />
+        </div>
       </div>
 
       {/* Buttons Section */}
@@ -245,7 +235,7 @@ const QueryChartForm = (props) => {
         justifyContent: 'center',
         marginTop: '20px'}}>
         <ButtonElement
-          label ='Clear Filters'
+          label={t('Clear Filters', {ns: 'loris'})}
           onUserInput ={resetFilters}
           buttonClass ='btn btn-sm btn-primary'
         />

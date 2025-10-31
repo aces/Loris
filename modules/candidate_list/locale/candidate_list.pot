@@ -21,20 +21,10 @@ msgstr ""
 msgid "Access Profile"
 msgstr ""
 
-msgid "Entity Type"
-msgstr ""
-
-msgid "Scan Done"
-msgstr ""
-
 msgid "Visit Count"
 msgstr ""
 
 msgid "Open Profile"
 msgstr ""
 
-msgid "Show Advanced Filters"
-msgstr ""
 
-msgid "Hide Advanced Filters"
-msgstr ""

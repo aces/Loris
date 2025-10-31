@@ -21,3 +21,29 @@ msgstr ""
 msgid "Instruments"
 msgstr ""
 
+msgid "Incomplete form"
+msgstr ""
+
+msgid "Incomplete forms"
+msgstr ""
+
+msgid "Clear Instrument"
+msgstr ""
+
+msgid "Validity"
+msgstr ""
+
+msgid "Valid"
+msgstr ""
+
+msgid "Questionable"
+msgstr ""
+
+msgid "Invalid"
+msgstr ""
+
+msgid "Subtests"
+msgstr ""
+
+msgid "Top"
+msgstr ""
