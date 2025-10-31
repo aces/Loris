@@ -22,7 +22,10 @@ function CandidateIssuesWidget(props) {
   const issues = props.Issues.map(function(issue) {
     let comments;
     if (issue.comments && issue.comments != '0' ) {
-      comments = t('({{count}} comment)', {ns: 'issue_tracker', count: issue.comments})
+      comments = t(
+        '({{count}} comment)',
+        {ns: 'issue_tracker', count: issue.comments}
+      );
     }
     return (<li key={issue.ID}>
       <a href={props.BaseURL + '/issue_tracker/issue/' + issue.ID}>
