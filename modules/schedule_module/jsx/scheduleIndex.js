@@ -159,7 +159,7 @@ class ScheduleIndex extends Component {
       formData: formData,
     });
   }
- /**
+  /**
    * Handles the submission of the Add Schedule form
    *
    * @param {event} e - event of the form
