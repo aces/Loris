@@ -474,7 +474,11 @@ class DataTable extends Component {
             <th key={'th_col_' + colIndex} onClick={() => {
               this.setSortColumn(i);
             }}>
-              {this.props.fields[i].label}
+              {
+                this.props.fields[i].custom_label
+                  ? this.props.fields[i].custom_label
+                  : this.props.fields[i].label
+              }
             </th>
           );
         }
