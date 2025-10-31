@@ -136,50 +136,50 @@ testdata:
 
 locales: $(MOFILES) $(I18NJSONFILES)
 
-acknowledgements: modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo
+acknowledgements: $(filter modules/acknowledgements/%,$(MOFILES)) $(filter modules/acknowledgements/%,$(I18NJSONFILES))
 	target=acknowledgements npm run compile
 
-create_timepoint:
+create_timepoint: $(filter modules/create_timepoint/%,$(MOFILES)) $(filter modules/create_timepoint/%,$(I18NJSONFILES))
 	target=data_release npm run compile
 
-data_release: modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.mo modules/data_release/locale/hi/LC_MESSAGES/data_release.json modules/data_release/locale/ja/LC_MESSAGES/data_release.json 
+data_release: $(filter modules/data_release/%,$(MOFILES)) $(filter modules/data_release/%,$(I18NJSONFILES))
 	target=data_release npm run compile
 
-instrument_manager: modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.mo
+instrument_manager: $(filter modules/instrument_manager/%,$(MOFILES)) $(filter modules/instrument_manager/%,$(I18NJSONFILES))
 	target=instrument_manager npm run compile
 
-dataquery: modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo
+dataquery: $(filter modules/dataquery/%,$(MOFILES)) $(filter modules/dataquery/%,$(I18NJSONFILES))
 	target=dataquery npm run compile
 
-login: modules/login/locale/ja/LC_MESSAGES/login.mo
+login: $(filter modules/login/%,$(MOFILES)) $(filter modules/login/%,$(I18NJSONFILES))
 	target=login npm run compile
 
-module_manager: modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo
+module_manager: $(filter modules/module_manager/%,$(MOFILES)) $(filter modules/module_manager/%,$(I18NJSONFILES))
 	target=module_manager npm run compile
 
-mri_violations: modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.mo
+mri_violations: $(filter modules/mri_violations/%,$(MOFILES)) $(filter modules/mri_violations/%,$(I18NJSONFILES))
 	target=mri_violations npm run compile
 
-issue_tracker: modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo
+issue_tracker: $(filter modules/issue_tracker/%,$(MOFILES)) $(filter modules/issue_tracker/%,$(I18NJSONFILES))
 	target=issue_tracker npm run compile
 
-candidate_list: modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.json
+candidate_list: $(filter modules/candidate_list/%,$(MOFILES)) $(filter modules/candidate_list/%,$(I18NJSONFILES))
 	target=candidate_list npm run compile
 
-candidate_parameters: modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.mo
+candidate_parameters: $(filter modules/candidate_parameters/%,$(MOFILES)) $(filter modules/candidate_parameters/%,$(I18NJSONFILES))
 	target=candidate_parameters npm run compile
 
-dashboard: modules/dashboard/locale/ja/LC_MESSAGES/dashboard.mo
+dashboard: $(filter modules/dashboard/%,$(MOFILES)) $(filter modules/dashboard/%,$(I18NJSONFILES))
 	target=dashboard npm run compile
 
-publication: modules/publication/locale/ja/LC_MESSAGES/publication.mo
+publication: $(filter modules/publication/%,$(MOFILES)) $(filter modules/publication/%,$(I18NJSONFILES))
 	target=publication npm run compile
 
-server_processes_manager: modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo
+server_processes_manager: $(filter modules/server_processes_manager/%,$(MOFILES)) $(filter modules/server_processes_manager/%,$(I18NJSONFILES))
 	target=server_processes_manager npm run compile
 
-conflict_resolver:
+conflict_resolver: $(filter modules/conflict_resolver/%,$(MOFILES)) $(filter modules/conflict_resolver/%,$(I18NJSONFILES))
 	target=conflict_resolver npm run compile
 
-my_preferences: modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.mo modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.mo modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.json modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.json
+my_preferences: $(filter modules/my_preferences/%,$(MOFILES)) $(filter modules/my_preferences/%,$(I18NJSONFILES))
 	target=my_preferences npm run compile
