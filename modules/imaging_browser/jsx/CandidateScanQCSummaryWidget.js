@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/imaging_browser.json';
 
 /**
  * A CandidateScanQCSummaryWidget is a type of React widget
@@ -15,7 +16,7 @@ import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
  * @return {*} - rendered React component
  */
 function CandidateScanQCSummaryWidget(props) {
-  const {t, i18n} = useTranslation();
+  const {t, i18n} = useTranslation(['imaging_browser', 'loris']);
   const [reload, setReload] = useState(0);
   useEffect(() => {
     const modalities = getModalities(props.Files);

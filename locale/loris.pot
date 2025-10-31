@@ -1,4 +1,4 @@
-# Default LORIS strings to be translated (English).
+# Default LORIS strings to be translated (English)
 # Copy this to a language specific file and add translations to the
 # new file.
 # Copyright (C) 2025
@@ -122,10 +122,28 @@ msgstr ""
 msgid "No"
 msgstr ""
 
-msgid "N/A"
+msgid "Pass"
+msgstr ""
+
+msgid "Fail"
+msgstr ""
+
+msgid "True"
+msgstr ""
+
+msgid "False"
+msgstr ""
+
+msgid "Selected"
+msgstr ""
+
+msgid "selected"
 msgstr ""
 
 msgid "Create"
+msgstr ""
+
+msgid "N/A"
 msgstr ""
 
 # Filters
@@ -240,6 +258,12 @@ msgstr ""
 msgid "Ethnicity"
 msgstr ""
 
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
 msgid "Save"
 msgstr ""
 
@@ -279,6 +303,9 @@ msgstr ""
 # Common strings on widgets
 msgid "NEW"
 msgstr ""
+
+msgid "New"
+msgstr "नया"
 
 msgid "Updated"
 msgstr ""
@@ -360,9 +387,6 @@ msgid "Subject"
 msgstr ""
 
 msgid "Recycling Bin"
-msgstr ""
-
-msgid "Pass"
 msgstr ""
 
 msgid "Failure"

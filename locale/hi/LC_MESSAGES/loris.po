@@ -123,11 +123,29 @@ msgstr "हाँ"
 msgid "No"
 msgstr "नहीं"
 
-msgid "N/A"
-msgstr "लागू नहीं"
+msgid "Pass"
+msgstr "पास"
+
+msgid "Fail"
+msgstr "फेल"
+
+msgid "True"
+msgstr "सत्य"
+
+msgid "False"
+msgstr "असत्य"
+
+msgid "Selected"
+msgstr "चयनित"
+
+msgid "selected"
+msgstr "चयनित"
 
 msgid "Create"
 msgstr "बनाएँ"
+
+msgid "N/A"
+msgstr "लागू नहीं"
 
 # Filters
 msgid "Selection Filter"
@@ -235,6 +253,12 @@ msgstr "भाषा"
 msgid "Ethnicity"
 msgstr "जातीयता"
 
+msgid "Previous"
+msgstr "पिछला"
+
+msgid "Next"
+msgstr "अगला"
+
 msgid "Save"
 msgstr "सहेजें"
 
@@ -273,6 +297,9 @@ msgstr "दृश्य"
 
 # Common strings on widgets
 msgid "NEW"
+msgstr "नया"
+
+msgid "New"
 msgstr "नया"
 
 msgid "Updated"
@@ -330,12 +357,12 @@ msgstr "हम सुझाव देते हैं कि आपके लि
 msgid "Total"
 msgstr "कुल"
 
-msgid "Error!"
-msgstr "त्रुटि!"
-
 # Common timepoint and visit terms
 msgid "Not Started"
-msgstr "शुरू नहीं हुआ"
+msgstr "प्रारंभ नहीं हुआ"
+
+msgid "Error!"
+msgstr "त्रुटि!"
 
 msgid "Screening"
 msgstr "जांच"
@@ -344,16 +371,13 @@ msgid "Visit"
 msgstr "भेंट"
 
 msgid "Approval"
-msgstr "स्वीकृति"
+msgstr "अनुमोदन"
 
 msgid "Subject"
 msgstr "विषय"
 
 msgid "Recycling Bin"
 msgstr "रिसाइक्लिंग बिन"
-
-msgid "Pass"
-msgstr "उत्तीर्ण"
 
 msgid "Failure"
 msgstr "विफलता"
