@@ -13,7 +13,7 @@ function CandidateMediaWidget(props) {
   for (let i = 0; i < props.Files.length; i++) {
     const file = props.Files[i];
     files.push(
-      <a className="list-group-item" key={i}
+      <a className="list-group-item" style={{wordBreak: 'break-word'}} key={i}
         href={props.BaseURL
                     + '/media/files/'
                     + encodeURIComponent(file.Filename)}>
