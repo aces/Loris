@@ -79,7 +79,7 @@ class Module extends \Module
             }
             return [
                 new CandidateWidget(
-                    "Candidate Media",
+                    dgettext("media", "Candidate Media"),
                     $baseurl . "/media/js/CandidateMediaWidget.js",
                     "lorisjs.media.CandidateMediaWidget.default",
                     [ 'Files' => iterator_to_array($media)],

@@ -1,8 +1,11 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {useTranslation} from 'react-i18next';
+import 'I18nSetup';
+import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/imaging_browser.json';
 
 /**
  * A CandidateScanQCSummaryWidget is a type of React widget
@@ -13,11 +16,13 @@ import {useTranslation} from 'react-i18next';
  * @return {*} - rendered React component
  */
 function CandidateScanQCSummaryWidget(props) {
-  const {t} = useTranslation(['imaging_browser', 'loris']);
+  const {t, i18n} = useTranslation(['imaging_browser', 'loris']);
+  const [reload, setReload] = useState(0);
   useEffect(() => {
     const modalities = getModalities(props.Files);
     const data = getDataObject(modalities, props.Files);
     const visits = getVisits(props.Files);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
     c3.generate({
       bindto: '#imagebreakdownchart',
       data: {
@@ -52,7 +57,8 @@ function CandidateScanQCSummaryWidget(props) {
         show: false,
       },
     });
-  });
+    setReload(reload+1);
+  }, [t]);
 
   return <div>
     <div id='imagebreakdownchart' />
@@ -65,13 +71,13 @@ function CandidateScanQCSummaryWidget(props) {
         {ns: 'imaging_browser'})}</li>
     </ul>
     <p>
-      {t('Different shades represent different modalities.'+
-        ' Only native modalities are displayed in results.',
+      {t('Different shades represent different modalities. '
+         + 'Only native modalities are displayed in results.',
       {ns: 'imaging_browser'})}
     </p>
     <p>
-      {t('Hover over any visit to see detailed modality breakdown for visit,'+
-        ' click to go to imaging browser.', {ns: 'imaging_browser'})}
+      {t('Hover over any visit to see detailed modality breakdown for visit, '
+         + 'click to go to imaging browser.', {ns: 'imaging_browser'})}
     </p>
   </div>;
 }

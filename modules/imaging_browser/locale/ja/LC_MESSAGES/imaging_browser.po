@@ -34,3 +34,24 @@ msgstr "新規および保留中のMRI セッション"
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"
 msgstr[0] "イメージングセッション"
+
+msgid "Imaging QC Summary"
+msgstr "画像品質管理の概要"
+
+msgid "Number of Scans"
+msgstr "スキャン回数"
+
+msgid "Red bar denotes number of failed QC scans."
+msgstr "赤いバーは、品質管理に失敗したスキャンの数を示します。"
+
+msgid "Green bar denotes number of passed QC scans."
+msgstr "緑色のバーは、品質管理に合格したが失敗したスキャンの数を示します。"
+
+msgid "Grey bar denotes other QC statuses."
+msgstr "灰色のバーはその他の品質管理ステータスを示します。"
+
+msgid "Different shades represent different modalities. Only native modalities are displayed in results."
+msgstr "異なる色合いは異なるモダリティを表します。結果にはネイティブモダリティのみが表示されます。"
+
+msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
+msgstr "訪問の上にマウスを移動すると、訪問の詳細なモダリティの内訳が表示されます。クリックすると、イメージング ブラウザーに移動します。"

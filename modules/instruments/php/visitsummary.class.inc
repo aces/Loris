@@ -122,6 +122,12 @@ class VisitSummary extends \NDB_Page
                 );
                 continue;
             }
+
+            $rslt[$key] = [
+                'Test_name'     => $row['Test_name'],
+                'CommentID'     => $row['CommentID'],
+                'NumOfConflict' => $row['NumOfConflict'],
+            ];
             if ($instrument === null) {
                 $rslt[$key]['Completion'] = 0;
             } else {

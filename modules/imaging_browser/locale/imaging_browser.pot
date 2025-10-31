@@ -78,6 +78,13 @@ msgstr ""
 msgid "Series Instance UID"
 msgstr ""
 
+msgid "Imaging Session"
+msgid_plural "Imaging Sessions"
+msgstr[0] ""
+
+msgid "Imaging QC Summary"
+msgstr ""
+
 msgid "Number of Scans"
 msgstr ""
 

@@ -357,9 +357,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return $visits;
         }
 
-        // Fall back on all visits if something ends up getting
+        $user = \NDB_Factory::singleton()->user();
+
+        // Fall back on user visits if something ends up getting
         // added that we can't derive the modality of.
-        return array_keys(\Utility::getVisitList());
+        return array_keys($user->getVisits());
     }
 
     /**

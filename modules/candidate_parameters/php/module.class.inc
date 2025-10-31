@@ -81,7 +81,7 @@ class Module extends \Module
 
             return [
                 new CandidateWidget(
-                    "Consent Summary",
+                    dgettext("candidate_parameters", "Consent Summary"),
                     $baseurl . "/candidate_parameters/js/ConsentWidget.js",
                     "lorisjs.candidate_parameters.ConsentWidget.default",
                     [

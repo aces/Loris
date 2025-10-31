@@ -325,7 +325,7 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Get the user's sites' ID numbers
+     * Get the names of projects accessible to the user
      *
      * @return array
      */
@@ -336,6 +336,38 @@ class User extends UserPermissions implements
             return [];
         }
         return explode(';', $projects);
+    }
+
+    /**
+     * Get the visits the User has access to
+     * through their projects and their cohorts.
+     *
+     * @return array of study visits in the format array('VL' => 'VL')
+     *         where VL is the visit label
+     */
+    public function getVisits(): array
+    {
+        $visit_labels   = [];
+        $userProjectIDs = $this->getProjectIDs();
+
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        // Get VisitController instance
+        $visitController        = new \LORIS\VisitController($DB);
+        $allVisitsProjectCohort = $visitController->getVisitsProjectCohort();
+
+        foreach ($allVisitsProjectCohort as [$visit, $projectID]) {
+            // Check if user has access to this project
+            if (in_array(\ProjectID::singleton($projectID), $userProjectIDs)) {
+                $visitLabel = $visit->getName();
+                if (!in_array($visitLabel, $visit_labels)) {
+                    $visit_labels[$visitLabel] = $visitLabel;
+                }
+            }
+        }
+
+        return $visit_labels;
     }
 
     /**
@@ -687,5 +719,29 @@ class User extends UserPermissions implements
     public function isPendingApproval() : bool
     {
         return $this->userInfo['Pending_approval'] == 'Y';
+    }
+
+    /**
+     * Returns a TOTP validator for this account, or null if 2FA
+     * has never been enabled by the user.
+     *
+     * @return ?\LORIS\Security\OTP\TOTP
+     */
+    public function getTOTPValidator() : ?\LORIS\Security\OTP\TOTP
+    {
+        if ($this->userInfo['TOTPSecret'] === null) {
+            return null;
+        }
+        return new \LORIS\Security\OTP\TOTP(secret: $this->userInfo['TOTPSecret']);
+    }
+
+    /**
+     * Returns true if a TOTP code is required to authenticate this account
+     *
+     * @return bool
+     */
+    public function totpRequired(): bool
+    {
+        return $this->userInfo['TOTPSecret'] !== null;
     }
 }
