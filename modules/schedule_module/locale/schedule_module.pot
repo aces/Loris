@@ -48,9 +48,6 @@ msgstr ""
 msgid "No Data Found"
 msgstr ""
 
-msgid "In Progress"
-msgstr ""
-
 msgid "Not Started"
 msgstr ""
 

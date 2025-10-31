@@ -21,9 +21,6 @@ msgstr ""
 msgid "Schedule Appointment"
 msgstr "अपॉइंटमेंट निर्धारित करें"
 
-msgid "Visit"
-msgstr "दौरा"
-
 msgid "Appointment Date"
 msgstr "अपॉइंटमेंट तिथि"
 
@@ -50,9 +47,6 @@ msgstr "पूर्ण"
 
 msgid "No Data Found"
 msgstr "कोई डेटा नहीं मिला"
-
-msgid "In Progress"
-msgstr "प्रगति पर"
 
 msgid "Not Started"
 msgstr "शुरू नहीं हुआ"

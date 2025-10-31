@@ -20,6 +20,13 @@ import {withTranslation} from 'react-i18next';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/schedule_module.json';
 
+/**
+ * Schedule Module
+ *
+ * Main module component rendering the data release module
+ *
+ * @author Shen Wang
+ */
 class ScheduleIndex extends Component {
   constructor(props) {
     super(props);
@@ -116,16 +123,27 @@ class ScheduleIndex extends Component {
         console.error(error);
       });
   }
-
+  /**
+   * Updates filter state
+   *
+   * @param {object} filter passed from FilterForm
+   */
   updateFilter(filter) {
     this.setState({filter});
   }
-
+  /**
+   * Sets Filter to empty object
+   */
   clearFilter() {
     this.updateFilter({});
     history.replaceState({}, '', '?');
   }
-
+  /**
+   * Store the value of the element in this.state.formData
+   *
+   * @param {string} formElement - name of the form element
+   * @param {string} value - value of the form element
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -141,7 +159,11 @@ class ScheduleIndex extends Component {
       formData: formData,
     });
   }
-
+ /**
+   * Handles the submission of the Add Schedule form
+   *
+   * @param {event} e - event of the form
+   */
   handleSubmit(e) {
     const {t} = this.props;
     let formData = this.state.formData;
@@ -165,7 +187,7 @@ class ScheduleIndex extends Component {
             {ns: 'schedule_module'}) : t('Appointment added.',
             {ns: 'schedule_module'});
           swal.fire(t('Success!',
-            {ns: 'schedule_module'}), msg, 'success').then((result) => {
+            {ns: 'loris'}), msg, 'success').then((result) => {
             if (result.value) {
               this.fetchData();
               this.closeModal();
@@ -186,7 +208,11 @@ class ScheduleIndex extends Component {
   mapColumn(column, cell) {
     return cell;
   }
-
+  /**
+   * Handles the delete a Schedule
+   *
+   * @param {string} id - appointment id
+   */
   deleteConfirm(id) {
     const {t} = this.props;
     swal.fire({
@@ -236,7 +262,11 @@ class ScheduleIndex extends Component {
         console.error(error);
       });
   }
-
+  /**
+   * Handles the edit a Schedule
+   *
+   * @param {string} row - appointment row
+   */
   edit(row) {
     this.openModal();
     this.setState({editModal: true});
@@ -268,7 +298,15 @@ class ScheduleIndex extends Component {
       editModal: false,
     });
   }
-
+  /**
+   * Modify behaviour of specified column cells in the Data Table component
+   *
+   * @param {string} column - column name
+   * @param {string} cell - cell content
+   * @param {object} row - row content indexed by column
+   *
+   * @return {*} a formated table cell for a given column
+   */
   formatColumn(column, cell, row) {
     const {t} = this.props;
     let result = <td>{cell}</td>;
@@ -302,7 +340,7 @@ class ScheduleIndex extends Component {
       if (cell===t('No Data Found', {ns: 'schedule_module'})) {
         css='label label-danger';
       }
-      if (cell===t('In Progress', {ns: 'schedule_module'}) ||
+      if (cell===t('In Progress', {ns: 'loris'}) ||
         cell===t('Not Started', {ns: 'schedule_module'})) {
         css='label label-warning';
       }
@@ -409,12 +447,15 @@ class ScheduleIndex extends Component {
   }
 
   render() {
+    // If error occurs, return a message.
+    // XXX: Replace this with a UI component for 500 errors.
     const {t} = this.props;
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
+    // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
@@ -557,4 +598,4 @@ window.addEventListener('load', () => {
     />
   );
 });
-
+/* eslint-enable */
