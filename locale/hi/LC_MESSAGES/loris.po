@@ -113,8 +113,8 @@ msgstr "रिपोर्ट्स"
 msgid "TimePoint"
 msgstr "समय बिंदु"
 
-msgid "Module"
-msgstr "मॉड्यूल"
+msgid "TimePoint %s Details"
+msgstr "समय बिंदु %s का विवरण"
 
 # Common select option labels
 msgid "Yes"
@@ -125,6 +125,24 @@ msgstr "नहीं"
 
 msgid "N/A"
 msgstr "लागू नहीं"
+
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Reset"
+msgstr "रीसेट करें"
+
+msgid "Back"
+msgstr "वापस"
+
+msgid "None"
+msgstr "कोई नहीं"
+
+msgid "Y"
+msgstr "हाँ"
+
+msgid "N"
+msgstr "नहीं"
 
 msgid "Create"
 msgstr "बनाएँ"
@@ -149,6 +167,9 @@ msgid "Hide Advanced Filters"
 msgstr "उन्नत फ़िल्टर छिपाएँ"
 
 # Common swal labels
+msgid "OK"
+msgstr "ठीक है"
+
 msgid "Cancel"
 msgstr "रद्द करें"
 
@@ -165,11 +186,23 @@ msgstr "डीसीसीआईडी"
 msgid "Visit Label"
 msgstr "दौरे का लेबल"
 
+msgid "Email"
+msgstr "ईमेल"
+
 msgid "Site"
 msgstr "साइट"
 
+msgid "Sites"
+msgstr "साइट्स"
+
+msgid "Module"
+msgstr "मॉड्यूल"
+
 msgid "Project"
 msgstr "परियोजना"
+
+msgid "Projects"
+msgstr "प्रोजेक्ट्स"
 
 msgid "Candidate Registration Project"
 msgstr "उम्मीदवार पंजीकरण परियोजना"
@@ -223,6 +256,9 @@ msgstr "भ्रमण"
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
+msgid "Active"
+msgstr "सक्रिय"
+
 msgid "Entity Type"
 msgstr "इकाई प्रकार"
 
@@ -234,12 +270,6 @@ msgstr "भाषा"
 
 msgid "Ethnicity"
 msgstr "जातीयता"
-
-msgid "Save"
-msgstr "सहेजें"
-
-msgid "Reset"
-msgstr "रीसेट करें"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -306,11 +336,17 @@ msgstr "ईमेल पता"
 msgid "New Password"
 msgstr "नया पासवर्ड"
 
+msgid "Password"
+msgstr "पासवर्ड"
+
 msgid "Confirm Password"
 msgstr "पासवर्ड की पुष्टि करें"
 
 msgid "Email address is required"
 msgstr "ईमेल पता आवश्यक है"
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "ईमेल पता निम्नलिखित किसी भी वर्ण को नहीं शामिल कर सकता: <, >, &, और \""
 
 msgid "The password must be at least 8 characters long."
 msgstr "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।"
@@ -369,9 +405,6 @@ msgstr "पूर्ण"
 
 msgid "Instruments"
 msgstr "उपकरण"
-
-msgid "None"
-msgstr "कोई नहीं"
 
 msgid "Partial"
 msgstr "आंशिक"

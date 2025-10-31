@@ -125,6 +125,24 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
+msgid "Save"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Y"
+msgstr ""
+
+msgid "N"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -167,13 +185,22 @@ msgstr ""
 msgid "Visit Label"
 msgstr ""
 
+msgid "Email"
+msgstr ""
+
 msgid "Site"
+msgstr ""
+
+msgid "Sites"
 msgstr ""
 
 msgid "Module"
 msgstr ""
 
 msgid "Project"
+msgstr ""
+
+msgid "Projects"
 msgstr ""
 
 msgid "Candidate Registration Project"
@@ -228,6 +255,9 @@ msgstr ""
 msgid "An error occured while loading the page."
 msgstr ""
 
+msgid "Active"
+msgstr ""
+
 msgid "Entity Type"
 msgstr ""
 
@@ -238,12 +268,6 @@ msgid "Language"
 msgstr ""
 
 msgid "Ethnicity"
-msgstr ""
-
-msgid "Save"
-msgstr ""
-
-msgid "Reset"
 msgstr ""
 
 # Data table strings
@@ -311,10 +335,16 @@ msgstr ""
 msgid "New Password"
 msgstr ""
 
+msgid "Password"
+msgstr ""
+
 msgid "Confirm Password"
 msgstr ""
 
 msgid "Email address is required"
+msgstr ""
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
 msgstr ""
 
 msgid "The password must be at least 8 characters long."
@@ -331,6 +361,7 @@ msgstr ""
 
 msgid "We suggest using a password manager to generate one for you."
 msgstr ""
+
 msgid "Total"
 msgstr ""
 
@@ -383,9 +414,6 @@ msgstr ""
 msgid "Instruments"
 msgstr ""
 
-msgid "None"
-msgstr ""
-
 msgid "Partial"
 msgstr ""
 
@@ -420,4 +448,3 @@ msgstr ""
 # Other generic terms
 msgid "Loading..."
 msgstr ""
-
