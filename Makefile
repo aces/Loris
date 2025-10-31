@@ -136,76 +136,64 @@ testdata:
 
 locales: $(MOFILES) $(I18NJSONFILES)
 
-acknowledgements: modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo
+acknowledgements: $(filter modules/acknowledgements/%,$(MOFILES)) $(filter modules/acknowledgements/%,$(I18NJSONFILES))
 	target=acknowledgements npm run compile
 
-create_timepoint:
+create_timepoint: $(filter modules/create_timepoint/%,$(MOFILES)) $(filter modules/create_timepoint/%,$(I18NJSONFILES))
 	target=data_release npm run compile
 
-data_release: modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.mo modules/data_release/locale/hi/LC_MESSAGES/data_release.json modules/data_release/locale/ja/LC_MESSAGES/data_release.json 
+data_release: $(filter modules/data_release/%,$(MOFILES)) $(filter modules/data_release/%,$(I18NJSONFILES))
 	target=data_release npm run compile
 
-instrument_manager: modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.mo
+instrument_manager: $(filter modules/instrument_manager/%,$(MOFILES)) $(filter modules/instrument_manager/%,$(I18NJSONFILES))
 	target=instrument_manager npm run compile
 
-instrument_builder: modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.mo
+instrument_builder: $(filter modules/instrument_builder/%,$(MOFILES)) $(filter modules/instrument_builder/%,$(I18NJSONFILES))
 	target=instrument_builder npm run compile
 
-dataquery: modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo
+dataquery: $(filter modules/dataquery/%,$(MOFILES)) $(filter modules/dataquery/%,$(I18NJSONFILES))
 	target=dataquery npm run compile
 
-login: modules/login/locale/ja/LC_MESSAGES/login.mo
-	npx i18next-conv -l ja -s modules/login/locale/ja/LC_MESSAGES/login.po -t modules/login/locale/ja/LC_MESSAGES/login.json --compatibilityJSON v4
+login: $(filter modules/login/%,$(MOFILES)) $(filter modules/login/%,$(I18NJSONFILES))
 	target=login npm run compile
 
-module_manager: modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/hi/LC_MESSAGES/module_manager.mo
+module_manager: $(filter modules/module_manager/%,$(MOFILES)) $(filter modules/module_manager/%,$(I18NJSONFILES))
 	target=module_manager npm run compile
 
-mri_violations:
-	msgfmt -o modules/mri_violations/locale/hi/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/hi/LC_MESSAGES/mri_violations.po
-	npx i18next-conv -l hi -s modules/mri_violations/locale/hi/LC_MESSAGES/mri_violations.po -t modules/mri_violations/locale/hi/LC_MESSAGES/mri_violations.json
+mri_violations: $(filter modules/mri_violations/%,$(MOFILES)) $(filter modules/mri_violations/%,$(I18NJSONFILES))
 	target=mri_violations npm run compile
 
-issue_tracker:
-	msgfmt -o modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po
-	npx i18next-conv -l hi -s modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.json
+issue_tracker: $(filter modules/issue_tracker/%,$(MOFILES)) $(filter modules/issue_tracker/%,$(I18NJSONFILES))
 	target=issue_tracker npm run compile
 
-candidate_list: modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.json modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.json
+candidate_list: $(filter modules/candidate_list/%,$(MOFILES)) $(filter modules/candidate_list/%,$(I18NJSONFILES))
 	target=candidate_list npm run compile
 
-candidate_parameters: modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.mo
+candidate_parameters: $(filter modules/candidate_parameters/%,$(MOFILES)) $(filter modules/candidate_parameters/%,$(I18NJSONFILES))
 	target=candidate_parameters npm run compile
 
-dashboard: modules/dashboard/locale/ja/LC_MESSAGES/dashboard.mo
+dashboard: $(filter modules/dashboard/%,$(MOFILES)) $(filter modules/dashboard/%,$(I18NJSONFILES))
 	target=dashboard npm run compile
 
-publication:
-	msgfmt -o modules/publication/locale/hi/LC_MESSAGES/publication.mo modules/publication/locale/hi/LC_MESSAGES/publication.po
-	npx i18next-conv -l hi -s modules/publication/locale/hi/LC_MESSAGES/publication.po -t modules/publication/locale/hi/LC_MESSAGES/publication.json
-	target=publication npm run compile
-
-brainbrowser:
+brainbrowser: $(filter modules/brainbrowser/%,$(MOFILES)) $(filter modules/brainbrowser/%,$(I18NJSONFILES))
 	msgfmt -o modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po
 	npx i18next-conv -l hi -s modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po -t modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.json
 	target=brainbrowser npm run compile
 
-schedule_module:
-	msgfmt -o modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.mo modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po
-	npx i18next-conv -l hi -s modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po -t modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.json
+schedule_module: $(filter modules/schedule_module/%,$(MOFILES)) $(filter modules/schedule_module/%,$(I18NJSONFILES))
 	target=schedule_module npm run compile
 
-server_processes_manager: modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo
-	target=server_processes_manager npm run compile
-
-conflict_resolver:
-	msgfmt -o modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po
-	npx i18next-conv -l hi -s modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.json
-	npx i18next-conv -l ja -s modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.json
-	target=conflict_resolver npm run compile
-
-behavioural_qc: modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.json
+behavioural_qc: $(filter modules/behavioural_qc/%,$(MOFILES)) $(filter modules/behavioural_qc/%,$(I18NJSONFILES))
 	target=behavioural_qc npm run compile
 
-my_preferences: modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.mo modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.mo modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.json modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.json 
+publication: $(filter modules/publication/%,$(MOFILES)) $(filter modules/publication/%,$(I18NJSONFILES))
+	target=publication npm run compile
+
+server_processes_manager: $(filter modules/server_processes_manager/%,$(MOFILES)) $(filter modules/server_processes_manager/%,$(I18NJSONFILES))
+	target=server_processes_manager npm run compile
+
+conflict_resolver: $(filter modules/conflict_resolver/%,$(MOFILES)) $(filter modules/conflict_resolver/%,$(I18NJSONFILES))
+	target=conflict_resolver npm run compile
+
+my_preferences: $(filter modules/my_preferences/%,$(MOFILES)) $(filter modules/my_preferences/%,$(I18NJSONFILES))
 	target=my_preferences npm run compile
