@@ -131,6 +131,7 @@ locales:
 	msgfmt -o modules/instruments/locale/ja/LC_MESSAGES/instruments.mo modules/instruments/locale/ja/LC_MESSAGES/instruments.po
 	msgfmt -o modules/instruments/locale/es/LC_MESSAGES/instruments.mo modules/instruments/locale/es/LC_MESSAGES/instruments.po
 	msgfmt -o modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po
+	npx i18next-conv -l ja -s modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.json --compatibilityJSON v4
 	msgfmt -o modules/login/locale/ja/LC_MESSAGES/login.mo modules/login/locale/ja/LC_MESSAGES/login.po
 	msgfmt -o modules/media/locale/ja/LC_MESSAGES/media.mo modules/media/locale/ja/LC_MESSAGES/media.po
 	msgfmt -o modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po
