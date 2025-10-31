@@ -25,7 +25,7 @@ function CandidateMediaWidget(props) {
     const file = props.Files[i];
     const dateStr = dateFormatter.format(new Date(file.LastModified));
     files.push(
-      <a className="list-group-item" key={i}
+      <a className="list-group-item" style={{wordBreak: 'break-word'}} key={i}
         href={props.BaseURL
                     + '/media/files/'
                     + encodeURIComponent(file.Filename)}>
