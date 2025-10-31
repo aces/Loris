@@ -1029,7 +1029,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        $curr_examinerID = $this->getFieldValue("Examiner");
+        $allValues       = $this->getInstanceData();
+        $curr_examinerID = $allValues['Examiner'];
 
         list(
             $CertificationEnabled,
