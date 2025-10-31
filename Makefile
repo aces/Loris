@@ -96,6 +96,7 @@ locales:
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po
+	npx i18next-conv -l ja -s modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.json
 	msgfmt -o modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po
 	npx i18next-conv -l ja -s modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po -t modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.json
 	msgfmt -o modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po
