@@ -7,7 +7,7 @@
  * NDB_Config, and the installer uses smarty, so this is required to make things
  * not crash.
  *
- * PHP Version 5.4+
+ * PHP Version 8.4+
  *
  * @category Installer
  * @package  Installer
@@ -24,7 +24,7 @@ namespace LORIS\Installer;
  * NDB_Config, and the installer uses smarty, so this is required to make things
  * not crash.
  *
- * PHP Version 5.4+
+ * PHP Version 8.4+
  *
  * @category Installer
  * @package  Installer
@@ -50,7 +50,6 @@ class NDB_Config extends \NDB_Config
         }
         return $cfg;
     }
-
 
     /**
      * Get a setting used by the installer.

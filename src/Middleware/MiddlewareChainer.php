@@ -3,7 +3,7 @@
 /**
  * File defines the MiddlewareChainer interface.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Interfaces
  * @package  Middleware

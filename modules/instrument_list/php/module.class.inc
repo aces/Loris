@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -31,7 +31,6 @@ use LORIS\StudyEntities\Candidate\CandID;
  */
 class Module extends \Module
 {
-
     /**
      * The instrument_list module falls back to the instrument_list page regardless
      * of what the page loaded was. This ensures that routes which use the CandID

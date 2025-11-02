@@ -3,7 +3,7 @@
 /**
  * This implements the Login page class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris

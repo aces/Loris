@@ -3,7 +3,7 @@
 /**
  * This file implements a class used for detecting conflicts for an instrument.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -24,7 +24,6 @@
  */
 class ConflictDetector
 {
-
     /**
      * Detects of there are any conflicts between 2 given CommentIDs
      *
@@ -155,6 +154,5 @@ class ConflictDetector
         );
         return ($conflictCount != 0);
     }
-
 }
 

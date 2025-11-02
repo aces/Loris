@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   Module
  * @package    Main
@@ -48,7 +48,6 @@ class Module extends \Module
             );
     }
 
-
     /**
      * The default handler for a module routes to a page of the first component of
      * the URL's name, or the same name as the module if serving the root of the
@@ -66,8 +65,8 @@ class Module extends \Module
     {
         $this->logger->debug("Module handle function called");
         $resp = parent::handle($request);
+        $path = $request->getAttribute("unhandledURI")->getPath();
         if ($resp->getStatusCode() != 404) {
-            $path = $request->getURI()->getPath();
             if (preg_match('/(\.css)$/', $path) == 1) {
                 $resp = $resp->withHeader(
                     "Content-Type",
@@ -85,7 +84,7 @@ class Module extends \Module
 
         $this->loris = $request->getAttribute("loris");
         $pagename    = $this->getName();
-        $path        = trim($request->getURI()->getPath(), "/");
+        $path        = trim($path, "/");
         if ($path == 'optionsendpoint'
             || $path == 'poolendpoint'
             || $path == 'containerendpoint'

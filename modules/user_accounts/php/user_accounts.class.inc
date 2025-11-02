@@ -3,7 +3,7 @@
 /**
  * The menu for user accounts
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  User_Account
@@ -16,7 +16,7 @@ namespace LORIS\user_accounts;
 /**
  * The menu for user accounts
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  User_Account

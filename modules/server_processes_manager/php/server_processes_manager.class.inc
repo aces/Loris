@@ -3,7 +3,7 @@
 /**
  * Page used to view/manage the processes launched asynchronously by LORIS users.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category ServerProcessLauncher
  * @package  Loris
@@ -17,7 +17,7 @@ namespace LORIS\server_processes_manager;
  * Builds a new filter to view/manage processes launched asynchronously by LORIS
  * users.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category ServerProcessLauncher
  * @package  Loris
@@ -124,5 +124,4 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
             ]
         );
     }
-
 }

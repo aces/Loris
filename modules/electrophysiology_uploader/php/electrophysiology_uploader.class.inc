@@ -14,7 +14,6 @@ namespace LORIS\electrophysiology_uploader;
  */
 class Electrophysiology_Uploader extends \DataFrameworkMenu
 {
-
     /**
      * Determine whether the user has permission to view this page
      *
@@ -78,7 +77,7 @@ class Electrophysiology_Uploader extends \DataFrameworkMenu
 
         return [
             'sites'      => $site_options,
-            'visitLabel' => \Utility::getVisitList(),
+            'visitLabel' => $user->getVisits(),
         ];
     }
 
