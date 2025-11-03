@@ -1247,7 +1247,10 @@ class Edit_User extends \NDB_Form
         if ($values['Email'] === $values['Password_hash']
             && $values['Password_hash'] !== ''
         ) {
-            $errors['Password'] = self::PASSWORD_ERROR_IS_EMAIL;
+            $errors['Password'] = dgettext(
+                "user_accounts",
+                "Your password cannot be your email."
+            );
         }
 
         // Make sure the user is not using their username as their password.
@@ -1260,7 +1263,10 @@ class Edit_User extends \NDB_Form
             || (!empty($this->identifier)
             && $this->identifier === $values['Password_hash'])
         ) {
-            $errors['Password'] = self::PASSWORD_ERROR_IS_USER;
+            $errors['Password'] = dgettext(
+                "user_accounts",
+                "Your password cannot be your user name."
+            );
         }
 
         if (!is_null($this->identifier)) {
@@ -1286,7 +1292,10 @@ class Edit_User extends \NDB_Form
         // Ensure that the password and confirm password fields match.
         // TODO This validation should be done on the front-end instead.
         if ($plaintext !== $values['__Confirm']) {
-            $errors['Password'] = self::PASSWORD_ERROR_NO_MATCH;
+            $errors['Password'] = dgettext(
+                "user_accounts",
+                "The passwords do not match."
+            );
         }
 
         // if password is user-defined, and user wants to change password
@@ -1302,7 +1311,10 @@ class Edit_User extends \NDB_Form
                 $isPasswordDifferent = \User::factory($this->identifier)
                     ->isPasswordDifferent($decoded);
                 if (! $isPasswordDifferent) {
-                    $errors['Password'] = self::PASSWORD_ERROR_NO_CHANGE;
+                    $errors['Password'] = dgettext(
+                        "user_accounts",
+                        "New and old passwords are identical"
+                    );
                 }
             } catch (\InvalidArgumentException $e) {
                 $errors['Password'] = $e->getMessage();
@@ -1314,17 +1326,22 @@ class Edit_User extends \NDB_Form
             && $values['NA_Password'] == "on"
             && $values['SendEmail'] != "on"
         ) {
-            $errors['Email']
-                = 'When generating a new password, '
-                . 'please notify the user by checking Send email to user box';
+            $errors['Email'] = dgettext(
+                "user_accounts",
+                "When generating a new password, please notify the user by checking"
+                + " 'Send email to user' box"
+            );
         }
 
         if (isset($values['NA_Password'])
             && $values['NA_Password'] == 'on'
             && $plaintext != ''
         ) {
-            $errors['Password'] = 'You must leave the password field empty '
-                . 'if you want the system to generate one for you';
+            $errors['Password'] = dgettext(
+                "user_accounts",
+                "You must leave the password field empty if you want the system to"
+                + " generate one for you"
+            );
         }
 
         if (is_null($this->identifier)
@@ -1474,7 +1491,10 @@ class Edit_User extends \NDB_Form
 
         // Email already exists in database
         if ($result > 0) {
-            return self::EMAIL_NOT_UNIQUE;
+            return dgettext(
+                "user_accounts",
+                "This email address is already in use"
+            );
         }
 
         return null;

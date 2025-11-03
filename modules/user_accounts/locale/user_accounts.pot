@@ -54,7 +54,10 @@ msgstr ""
 msgid "It is recommended to use an email address as the username, for clarity and uniqueness."
 msgstr ""
 
-msgid "When generating a new password, please notify the user by checking 'Send email to user' box below!"
+msgid "When generating a new password, please notify the user by checking 'Send email to user' box"
+msgstr ""
+
+msgid "You must leave the password field empty if you want the system to generate one for you"
 msgstr ""
 
 msgid "Add/Edit User"
@@ -172,4 +175,19 @@ msgid "Please select at least one examiner site or clear the 'Examiner status' f
 msgstr ""
 
 msgid "Please notice that the \"Active from\" date should be lesser or equal to the \"Active to\" date."
+msgstr ""
+
+msgid "Your password cannot be your email."
+msgstr ""
+
+msgid "Your password cannot be your user name."
+msgstr ""
+
+msgid "The passwords do not match."
+msgstr ""
+
+msgid "New and old passwords are identical"
+msgstr ""
+
+msgid "This email address is already in use"
 msgstr ""

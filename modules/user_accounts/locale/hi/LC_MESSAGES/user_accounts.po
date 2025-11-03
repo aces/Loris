@@ -54,8 +54,11 @@ msgstr "नोट्स"
 msgid "It is recommended to use an email address as the username, for clarity and uniqueness."
 msgstr "स्पष्टता और अद्वितीयता के लिए उपयोगकर्ता नाम के रूप में ईमेल पते का उपयोग करने की अनुशंसा की जाती है।"
 
-msgid "When generating a new password, please notify the user by checking 'Send email to user' box below!"
-msgstr "नया पासवर्ड बनाते समय, कृपया नीचे 'उपयोगकर्ता को ईमेल भेजें' बॉक्स को चेक करके उपयोगकर्ता को सूचित करें!"
+msgid "When generating a new password, please notify the user by checking 'Send email to user' box"
+msgstr "नया पासवर्ड बनाते समय, कृपया 'उपयोगकर्ता को ईमेल भेजें' बॉक्स को चुनकर उपयोगकर्ता को सूचित करें।"
+
+msgid "You must leave the password field empty if you want the system to generate one for you"
+msgstr "यदि आप चाहते हैं कि सिस्टम आपके लिए पासवर्ड बनाए, तो पासवर्ड फ़ील्ड खाली छोड़ना आवश्यक है।"
 
 msgid "Add/Edit User"
 msgstr "उपयोगकर्ता जोड़ें/संपादित करें"
@@ -173,3 +176,18 @@ msgstr "कृपया कम से कम एक परीक्षक स्
 
 msgid "Please notice that the \"Active from\" date should be lesser or equal to the \"Active to\" date."
 msgstr "कृपया ध्यान दें कि 'सक्रिय शुरू' तिथि, 'सक्रिय समाप्त' तिथि के बराबर या उससे पहले होनी चाहिए।"
+
+msgid "Your password cannot be your email."
+msgstr "आपका पासवर्ड आपका ईमेल नहीं हो सकता।"
+
+msgid "Your password cannot be your user name."
+msgstr "आपका पासवर्ड आपका उपयोगकर्ता नाम नहीं हो सकता।"
+
+msgid "The passwords do not match."
+msgstr "पासवर्ड मेल नहीं खाते।"
+
+msgid "New and old passwords are identical"
+msgstr "नया और पुराना पासवर्ड समान हैं।"
+
+msgid "This email address is already in use"
+msgstr "यह ईमेल पता पहले से उपयोग में है।"
