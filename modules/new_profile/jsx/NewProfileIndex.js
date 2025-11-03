@@ -18,6 +18,7 @@ import {withTranslation} from 'react-i18next';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/new_profile.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/new_profile.json';
+import esStrings from '../locale/es/LC_MESSAGES/new_profile.json';
 
 /**
  * New Profile Form
@@ -77,18 +78,27 @@ class NewProfileIndex extends React.Component {
    * @return {boolean}
    */
   validateMatchDate() {
+    const {t} = this.props;
     let validate = false;
     const formData = this.state.formData;
 
     if (formData.dobDate !== formData.dobDateConfirm) {
-      swal.fire(this.props.t('Error!', {ns: 'loris'}),
-        this.props.t('Date of Birth fields must match',
-          {ns: 'new_profile'}), 'error');
+      swal.fire({
+        title: this.props.t('Error!', {ns: 'loris'}),
+        text: this.props.t('Date of Birth fields must match',
+          {ns: 'new_profile'}),
+        type: 'error',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
     } else if (this.state.configData['edc'] === 'true' &&
          (formData.edcDate !== formData.edcDateConfirm)
     ) {
-      swal.fire(this.props.t('Error!', {ns: 'loris'}),
-        this.props.t('EDC fields must match', {ns: 'new_profile'}), 'error');
+      swal.fire({
+        title: this.props.t('Error!', {ns: 'loris'}),
+        text: this.props.t('EDC fields must match', {ns: 'new_profile'}),
+        type: 'error',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
     } else {
       validate = true;
     }
@@ -101,6 +111,7 @@ class NewProfileIndex extends React.Component {
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
     const match = this.validateMatchDate();
     if (!match) {
@@ -161,6 +172,7 @@ class NewProfileIndex extends React.Component {
                 icon: 'error',
                 title: this.props.t('Error!', {ns: 'loris'}),
                 text: error,
+                confirmButtonText: t('OK', {ns: 'loris'}),
               });
               console.error(error);
             });
@@ -175,6 +187,7 @@ class NewProfileIndex extends React.Component {
               icon: 'error',
               title: this.props.t('Error!', {ns: 'loris'}),
               text: error,
+              confirmButtonText: t('OK', {ns: 'loris'}),
             });
             console.error(error);
           });
@@ -185,6 +198,7 @@ class NewProfileIndex extends React.Component {
           icon: 'error',
           title: this.props.t('Error!', {ns: 'loris'}),
           text: error,
+          confirmButtonText: t('OK', {ns: 'loris'}),
         });
         console.error(error);
       });
@@ -381,6 +395,7 @@ NewProfileIndex.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'new_profile', hiStrings);
   i18n.addResourceBundle('ja', 'new_profile', jaStrings);
+  i18n.addResourceBundle('es', 'new_profile', esStrings);
 
   const NPIndex = withTranslation(['new_profile'])(NewProfileIndex);
   createRoot(

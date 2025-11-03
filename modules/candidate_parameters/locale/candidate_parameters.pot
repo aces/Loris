@@ -26,3 +26,9 @@ msgstr ""
 
 msgid "Candidate Information"
 msgstr ""
+
+msgid "Consent Summary"
+msgstr ""
+
+msgid "Consent Type"
+msgstr ""

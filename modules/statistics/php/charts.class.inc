@@ -81,7 +81,11 @@ class Charts extends \NDB_Page
         // Strip any prefix of '/' to ensure that we don't have an empty string
         // when splitting the path, then there should be exactly 2 parts left,
         // "charts", and the endpoint requested.
-        $url       = ltrim($request->getURI()->getPath(), '/');
+        $url = ltrim(
+            $request->getAttribute("unhandledURI")->getURI()->getPath(),
+            '/'
+        );
+
         $pathparts = explode('/', $url);
         if (count($pathparts) != 2) {
             return new \LORIS\Http\Response\JSON\NotFound();
@@ -189,7 +193,7 @@ class Charts extends \NDB_Page
         foreach ($data as $row) {
             $siteid = $row['SiteID'];
             $count  = intval($row['Count']);
-            $sex    = strtolower($row['Sex']);
+            $sex    = is_string($row['Sex']) ? strtolower($row['Sex']) : '';
             if (!isset($processed_data[$siteid])) {
                 $processed_data[$siteid] = [
                     strtolower($sex) => $count
@@ -425,7 +429,7 @@ class Charts extends \NDB_Page
             $id = strtolower($id);
             $id = ucwords($id);
             if ($id == null) {
-                $id = "Unknown";
+                $id = dgettext("statistics", "Unknown");
             }
             $label = $id;
             $recruitmentByEthnicityData[] = ["label" => $label, "total" => $count];

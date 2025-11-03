@@ -113,6 +113,9 @@ msgstr ""
 msgid "TimePoint"
 msgstr "Punto en el tiempo"
 
+msgid "TimePoint %s Details"
+msgstr "Detalles del Punto en el Tiempo %s"
+
 # Common select option labels
 msgid "Yes"
 msgstr "Sí"
@@ -207,7 +210,7 @@ msgid "DoD"
 msgstr "Fecha de defunción"
 
 msgid "Sex"
-msgstr ""
+msgstr "Sexo"
 
 msgid "Feedback"
 msgstr "Retroalimentación"
