@@ -187,6 +187,9 @@ msgstr "セッション"
 msgid "Date of registration"
 msgstr "入学日"
 
+msgid "Date Of Visit"
+msgstr "訪問日"
+
 msgid "Participant Status"
 msgstr "参加者ステータス"
 
@@ -336,8 +339,9 @@ msgstr "進行中"
 msgid "Complete"
 msgstr "完了"
 
-msgid "Instruments"
-msgstr "楽器"
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "楽器"
 
 msgid "None"
 msgstr "なし"
