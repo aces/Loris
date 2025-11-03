@@ -39,34 +39,32 @@ DROP TABLE IF EXISTS `biobank_container_dimension`;
 DROP TABLE IF EXISTS `biobank_unit`;
 
 -- 0000-00-05-ElectrophysiologyTables.sql
+DROP TABLE IF EXISTS `bids_event_file_mapping`;
+DROP TABLE IF EXISTS `bids_event_dataset_mapping`;
+DROP TABLE IF EXISTS `physiological_task_event_hed_rel`;
+DROP TABLE IF EXISTS `hed_schema_nodes`;
+DROP TABLE IF EXISTS `hed_schema`;
+DROP TABLE IF EXISTS `electrophysiology_uploader`;
 DROP TABLE IF EXISTS `physiological_event_parameter_category_level`;
 DROP TABLE IF EXISTS `physiological_event_parameter`;
 DROP TABLE IF EXISTS `physiological_event_archive`;
+DROP TABLE IF EXISTS `physiological_task_event_opt`;
+DROP TABLE IF EXISTS `physiological_task_event`;
 DROP TABLE IF EXISTS `physiological_event_file`;
 DROP TABLE IF EXISTS `physiological_coord_system_electrode_rel`;
 DROP TABLE IF EXISTS `physiological_coord_system_point_3d_rel`;
-DROP TABLE IF EXISTS `point_3d`;
+DROP TABLE IF EXISTS `physiological_electrode`;
+DROP TABLE IF EXISTS `physiological_electrode_material`;
+DROP TABLE IF EXISTS `physiological_electrode_type`;
 DROP TABLE IF EXISTS `physiological_coord_system`;
 DROP TABLE IF EXISTS `physiological_coord_system_unit`;
 DROP TABLE IF EXISTS `physiological_coord_system_name`;
 DROP TABLE IF EXISTS `physiological_coord_system_type`;
-DROP TABLE IF EXISTS `electrophysiology_uploader`;
-DROP TABLE IF EXISTS `physiological_annotation_rel`;
-DROP TABLE IF EXISTS `physiological_annotation_instance`;
-DROP TABLE IF EXISTS `physiological_annotation_parameter`;
-DROP TABLE IF EXISTS `physiological_annotation_archive`;
-DROP TABLE IF EXISTS `physiological_annotation_file`;
-DROP TABLE IF EXISTS `physiological_annotation_file_type`;
-DROP TABLE IF EXISTS `physiological_annotation_label`;
-DROP TABLE IF EXISTS `physiological_archive`;
-DROP TABLE IF EXISTS `physiological_task_event_opt`;
-DROP TABLE IF EXISTS `physiological_task_event`;
-DROP TABLE IF EXISTS `physiological_electrode`;
-DROP TABLE IF EXISTS `physiological_electrode_material`;
-DROP TABLE IF EXISTS `physiological_electrode_type`;
+DROP TABLE IF EXISTS `point_3d`;
 DROP TABLE IF EXISTS `physiological_channel`;
 DROP TABLE IF EXISTS `physiological_channel_type`;
 DROP TABLE IF EXISTS `physiological_status_type`;
+DROP TABLE IF EXISTS `physiological_archive`;
 DROP TABLE IF EXISTS `physiological_parameter_file`;
 DROP TABLE IF EXISTS `physiological_split_file`;
 DROP TABLE IF EXISTS `physiological_file`;
@@ -77,8 +75,10 @@ DROP TABLE IF EXISTS `physiological_modality`;
 DROP TABLE IF EXISTS `help`;
 
 -- 0000-00-03-ConfigTables.sql
+DROP TABLE IF EXISTS `ConfigI18n`;
 DROP TABLE IF EXISTS `Config`;
 DROP TABLE IF EXISTS `ConfigSettings`;
+DROP TABLE IF EXISTS `menu_categories`;
 
 -- issues must be deleted before `modules` table
 DROP TABLE IF EXISTS `issues_attachments`;
@@ -197,6 +197,8 @@ DROP TABLE IF EXISTS `notification_modules`;
 DROP TABLE IF EXISTS `document_repository`;
 DROP TABLE IF EXISTS `document_repository_categories`;
 
+DROP TABLE IF EXISTS `bids_event_dataset_mapping`;
+DROP TABLE IF EXISTS `bids_event_file_mapping`;
 DROP TABLE IF EXISTS `bids_mri_scan_type_rel`;
 DROP TABLE IF EXISTS `bids_export_files`;
 DROP TABLE IF EXISTS `bids_category`;
@@ -235,10 +237,17 @@ DROP TABLE IF EXISTS `hrrt_archive`;
 DROP TABLE IF EXISTS `appointment`;
 DROP TABLE IF EXISTS `appointment_type`;
 
+DROP TABLE IF EXISTS `openid_connect_csrf`;
+DROP TABLE IF EXISTS `openid_connect_providers`;
+
+
+DROP TABLE IF EXISTS `candidate_diagnosis_evolution_rel`;
+DROP TABLE IF EXISTS `diagnosis_evolution`;
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `Visit_Windows`;
 DROP TABLE IF EXISTS `test_battery`;
 DROP TABLE IF EXISTS `flag`;
+DROP TABLE IF EXISTS `instrument_data`;
 DROP TABLE IF EXISTS `instrument_subtests`;
 DROP TABLE IF EXISTS `test_names`;
 DROP TABLE IF EXISTS `test_subgroups`;
@@ -249,6 +258,7 @@ DROP TABLE IF EXISTS `user_project_rel`;
 DROP TABLE IF EXISTS `candidate`;
 DROP TABLE IF EXISTS `caveat_options`;
 DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `sex`;
 DROP TABLE IF EXISTS `language`;
 DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `visit_project_cohort_rel`;

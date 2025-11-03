@@ -1,0 +1,349 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-10-23 20:11-0400\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+# Smarty template main.tpl strings
+msgid "LORIS"
+msgstr "LORIS"
+
+msgid "DEV"
+msgstr "DEV"
+
+msgid "Affiliations"
+msgstr "Affiliations"
+
+msgid "Site Affiliation"
+msgstr "Affiliation du site"
+
+msgid "Site Affiliations"
+msgstr "Sites affiliés"
+
+msgid "Project Affiliation"
+msgstr "Affiliation du projet"
+
+msgid "Project Affiliations"
+msgstr "Projets affiliés"
+
+msgid "Log Out"
+msgstr "Se déconnecter"
+
+msgid "My Preferences"
+msgstr "Mes préférences"
+
+# Auto extracted strings from PHP
+# Menu categories
+#: modules/configuration/php/module.class.inc:50
+#: modules/help_editor/php/module.class.inc:47
+#: modules/instrument_manager/php/module.class.inc:53
+#: modules/module_manager/php/module.class.inc:50
+#: modules/server_processes_manager/php/module.class.inc:104
+#: modules/survey_accounts/php/module.class.inc:48
+#: modules/user_accounts/php/module.class.inc:53
+msgid "Admin"
+msgstr "Admin"
+
+#: modules/acknowledgements/php/module.class.inc:54
+#: modules/api_docs/php/module.class.inc:66
+#: modules/battery_manager/php/module.class.inc:55
+#: modules/datadict/php/module.class.inc:49
+#: modules/data_release/php/module.class.inc:56
+#: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr "Dictionnaire des données"
+
+#: modules/document_repository/php/module.class.inc:56
+#: modules/instrument_builder/php/module.class.inc:48
+#: modules/issue_tracker/php/module.class.inc:54
+#: modules/schedule_module/php/module.class.inc:49
+msgid "Tools"
+msgstr "Outils"
+
+#: modules/behavioural_qc/php/module.class.inc:51
+#: modules/conflict_resolver/php/module.class.inc:83
+#: modules/examiner/php/module.class.inc:50
+#: modules/media/php/module.class.inc:33
+msgid "Clinical"
+msgstr "Clinique"
+
+#: modules/dicom_archive/php/module.class.inc:115
+#: modules/imaging_browser/php/module.class.inc:40
+#: modules/imaging_qc/php/module.class.inc:50
+#: modules/imaging_uploader/php/module.class.inc:54
+#: modules/mri_violations/php/module.class.inc:53
+msgid "Imaging"
+msgstr "Imagerie"
+
+#: modules/candidate_list/php/module.class.inc:76
+#: modules/new_profile/php/module.class.inc:50
+msgid "Candidate"
+msgstr "Candidat"
+
+#: modules/genomic_browser/php/module.class.inc:53
+msgid "Genomics"
+msgstr "Génomique"
+
+#: modules/electrophysiology_browser/php/module.class.inc:54
+msgid "Electrophysiology"
+msgstr "Électrophysiologie"
+
+#: modules/dataquery/php/module.class.inc:33
+#: modules/dqt/php/module.class.inc:49
+#: modules/publication/php/module.class.inc:55
+#: modules/statistics/php/module.class.inc:49
+msgid "Reports"
+msgstr "Rapports"
+
+# Common loris terms. Consider moving these to their own textdomain?
+msgid "TimePoint"
+msgstr "Temps d'acquisition"
+
+# Common select option labels
+msgid "Yes"
+msgstr "Oui"
+
+msgid "No"
+msgstr "Non"
+
+msgid "Create"
+msgstr "Créer"
+
+msgid "N/A"
+msgstr "N/A"
+
+# Filters
+msgid "Selection Filter"
+msgstr "Filtre de sélection"
+
+msgid "Show Filters"
+msgstr "Afficher les filtres"
+
+msgid "Hide Filters"
+msgstr "Masquer les filtres"
+
+msgid "Clear Filters"
+msgstr "Effacer les filtres"
+
+msgid "Show Advanced Filters"
+msgstr "Afficher les filtres avancés"
+
+msgid "Hide Advanced Filters"
+msgstr "Masquer les filtres avancés"
+
+# Common swal labels
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Success!"
+msgstr "Réussi!"
+
+# Common candidate terms
+msgid "PSCID"
+msgstr "PSCID"
+
+msgid "DCCID"
+msgstr "DCCID"
+
+#, fuzzy
+msgid "Visit Label"
+msgstr "Nom de visite"
+
+msgid "Site"
+msgstr "Site"
+
+msgid "Module"
+msgstr "Module"
+
+msgid "Project"
+msgstr "Projet"
+
+#, fuzzy
+msgid "Candidate Registration Project"
+msgstr "Projet d'inscription des candidats"
+
+#, fuzzy
+msgid "Timepoint Project"
+msgstr "Temps d’acquisition du projet"
+
+msgid "Cohort"
+msgid_plural "Cohorts"
+msgstr[0] "Cohorte"
+msgstr[1] "Cohortes"
+
+msgid "Session"
+msgstr "Session"
+
+msgid "Date of registration"
+msgstr "Date d'inscription"
+
+msgid "Participant Status"
+msgstr "Statut du participant"
+
+msgid "DoB"
+msgstr "DdN"
+
+msgid "Sex"
+msgstr "Sexe"
+
+msgid "Feedback"
+msgstr "Commentaires"
+
+msgid "Scans"
+msgstr "Scans"
+
+#, fuzzy
+msgid "Stage"
+msgstr "Stade"
+
+msgid "Send To DCC"
+msgstr "Envoyer au CCD"
+
+msgid "Sent To DCC"
+msgstr "Envoyé au CCD"
+
+msgid "Reverse Send To DCC"
+msgstr "Annuler l'envoi vers la CCD"
+
+msgid "Date of Birth"
+msgstr "Date de naissance"
+
+msgid "Visits"
+msgstr "Visites"
+
+msgid "An error occured while loading the page."
+msgstr "Une erreur s'est produite lors du chargement de la page."
+
+#, fuzzy
+msgid "Entity Type"
+msgstr "Type d'entité"
+
+#, fuzzy
+msgid "Scan Done"
+msgstr "Scan complété"
+
+msgid "Language"
+msgstr "Langue"
+
+# Data table strings
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgstr "{{pageCount}} lignes affichées de {{totalCount}}."
+
+msgid "Maximum rows per page:"
+msgstr "Nombre maximal de lignes par page :"
+
+msgid "Download Data as CSV"
+msgstr "Télécharger les données au format CSV"
+
+# Dashboard panel strings
+msgid "Views"
+msgstr "Vues"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "Nouveau"
+
+# Might need to be modified to “Mise à jour” depending on the context
+msgid "Updated"
+msgstr "Mis à jour"
+
+msgid "Uploaded"
+msgstr "Téléversé"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Error!"
+msgstr "Erreur!"
+
+# Common timepoint and vist terms
+# - might need to be modified to “non commencée” when we talk about a visit
+msgid "Not Started"
+msgstr "Non commencée"
+
+msgid "Screening"
+msgstr "Dépistage"
+
+msgid "Visit"
+msgstr "Visite"
+
+msgid "Approval"
+msgstr "Approbation"
+
+# I think this should be right, but I would need to context in which it is presented.
+#, fuzzy
+msgid "Subject"
+msgstr "Sujet"
+
+msgid "Recycling Bin"
+msgstr "Poubelle de recyclage"
+
+msgid "Pass"
+msgstr "Approuver"
+
+msgid "Failure"
+msgstr "Échec"
+
+msgid "Withdrawal"
+msgstr "Retrait"
+
+msgid "In Progress"
+msgstr "En cours"
+
+msgid "Complete"
+msgstr "Complète"
+
+msgid "Instruments"
+msgstr "Instruments"
+
+msgid "None"
+msgstr "Aucun"
+
+# feminine in the case of “entrée de donnée partielle”
+msgid "Partial"
+msgstr "Partielle"
+
+#, fuzzy
+msgid "All"
+msgstr "Tout"
+
+msgid "Data Entry"
+msgstr "Entrée de données"
+
+msgid "Administration"
+msgstr "Administration"
+
+msgid "Double Data Entry Form"
+msgstr "Formulaire de double entrée de données"
+
+msgid "Double Data Entry Status"
+msgstr "Statut de double entrée des données"
+
+msgid "Double Data Entry"
+msgstr "Double entrée de données"
+
+# Age related terms
+msgid "Age"
+msgstr "Âge"
+
+msgid "{{months}} months old"
+msgstr "{{months}} mois"
+
+msgid "{{years}} years old"
+msgstr "{{years}} ans"

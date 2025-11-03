@@ -57,7 +57,7 @@ class Module extends \Module
             return $resp;
         }
 
-        $path           = $request->getURI()->getPath();
+        $path           = $request->getAttribute("unhandledURI")->getPath();
         $pathComponents = [];
 
         // Breakdown path information from the request.
@@ -154,7 +154,7 @@ class Module extends \Module
 
             return [
                 new \LORIS\candidate_profile\CandidateWidget(
-                    "Behavioural Data",
+                    dgettext("instruments", "Behavioural Data"),
                     $baseurl . "/instruments/js/CandidateInstrumentList.js",
                     'lorisjs.instruments.CandidateInstrumentList.default',
                     [],

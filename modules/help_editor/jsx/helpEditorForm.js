@@ -5,6 +5,7 @@ import Markdown from 'jsx/Markdown';
 import Help from 'jsx/Help';
 import swal from 'sweetalert2';
 import {TextboxElement, TextareaElement} from 'jsx/Form';
+import {SelectElement} from 'jsx/Form';
 
 /**
  * Help Editor Form Page.
@@ -21,6 +22,7 @@ import {TextboxElement, TextareaElement} from 'jsx/Form';
 const HelpEditorForm = (props) => {
   const [title, setTitle] = useState(props.title ?? '');
   const [content, setContent] = useState(props.content ?? '');
+  const [instrument, setInstrument] = useState(props.instrument ?? '');
   const helpPreview = [];
   const helpContainers = document.getElementsByClassName('help-container');
 
@@ -46,6 +48,9 @@ const HelpEditorForm = (props) => {
     case 'content':
       setContent(value);
       break;
+    case 'instrument':
+      setInstrument(value);
+      break;
     }
   };
 
@@ -59,12 +64,24 @@ const HelpEditorForm = (props) => {
     formData.append('section', props.section ?? '');
     formData.append('subsection', props.subsection ?? '');
     formData.append('helpID', props.helpid ?? '');
-
+    if (!props.helpid) {
+      formData.append('new', 'true');
+      formData.append('instrument', instrument ?? '');
+    }
     fetch(loris.BaseURL + '/help_editor/ajax/process.php', {
       method: 'POST',
       body: formData,
     }).then((response) => {
+      console.log(response);
+
       if (response.status !== 200) {
+        swal.fire({
+          title: 'Content update unsuccessful.',
+          text: 'Help content cannot be added to an instrument '
+           + 'that has already been registered.',
+          type: 'error',
+          confirmButtonText: 'Try again',
+        });
         console.error(response.status);
         return;
       }
@@ -94,6 +111,16 @@ const HelpEditorForm = (props) => {
       <div className="panel-body">
         <div className="row">
           <div className="col-sm-9">
+
+            <SelectElement
+              name='instrument'
+              label='Instrument'
+              emptyOption={true}
+              options={props.instrumentslist}
+              onUserInput={onUserInput}
+              value={instrument}
+              disabled={props.helpid !== null}
+            />
             <TextboxElement
               label='Title'
               name='title'
@@ -135,6 +162,8 @@ HelpEditorForm.propTypes = {
   subsection: PropTypes.string,
   helpid: PropTypes.string,
   url: PropTypes.string,
+  instrument: PropTypes.string,
+  instrumentslist: PropTypes.objectOf(PropTypes.string),
 };
 
 window.RHelpEditorForm = React.createFactory(HelpEditorForm);

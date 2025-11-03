@@ -21,3 +21,32 @@ msgstr ""
 msgid "Instrument List"
 msgstr ""
 
+msgid "Visit to Site"
+msgstr ""
+
+msgid "Within Optimal"
+msgstr ""
+
+msgid "Within Permitted"
+msgstr ""
+
+msgid "Behavioural Battery of Instruments"
+msgstr ""
+
+msgid "The battery has no registered instruments"
+msgstr ""
+
+msgid "View Imaging data"
+msgstr ""
+
+msgid "Send TimePoint"
+msgstr ""
+
+msgid "No actions"
+msgstr ""
+
+msgid "Stage: %s"
+msgstr ""
+
+msgid "Start %s Stage"
+msgstr ""

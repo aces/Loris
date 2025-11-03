@@ -29,7 +29,7 @@
 class SinglePointLogin
 {
     /**
-     * Defines whether a user is currently logged in
+     * Whether the user has already provided the an MFA token
      */
     var $_isLoggedIn = false;
 
@@ -184,10 +184,11 @@ class SinglePointLogin
      * @param string $password The password to validate
      * @param bool   $redirect If this flag is true, this
      *                         function may instead print
-     *                         out a login or password expiry
-     *                         page. when trying to authenticate.
-     *                         If false, it won't provide any output
-     *                         in those situation.
+     *                         out a login or password
+     *                         expiry page. when trying
+     *                         to authenticate. If false,
+     *                         it won't provide any
+     *                         output in those situation.
      *
      * @return bool False unless account is valid and password correct.
      * @access public
@@ -260,7 +261,6 @@ class SinglePointLogin
                         Password_hash,
 			active_from,
 			active_to
-
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
@@ -290,9 +290,7 @@ class SinglePointLogin
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                 try {
                     $newHash = new \Password($password);
-                    \User::factory($username)->updatePassword(
-                        $newHash
-                    );
+                    \User::factory($username)->updatePassword($newHash);
                 } catch (\InvalidArgumentException $e) {
                     // Edge-case: if a user has a password based on old LORIS
                     // password standards and it needs rehashing, it will
@@ -309,7 +307,6 @@ class SinglePointLogin
                         ['UserID' => $username]
                     );
                 }
-
             }
 
             if ($row['Active'] == 'N'
@@ -599,5 +596,31 @@ class SinglePointLogin
         $this->_username = $user->getUsername();
         $this->setState();
         $_SESSION['State']->setProperty('login', $this);
+    }
+
+    /**
+     * Returns true if this login session has already passed a 2 factor
+     * authentication check
+     *
+     * @return bool
+     */
+    public function passedMFA(): bool
+    {
+        return $_SESSION['PassedMFA'] ?? false === true;
+    }
+
+    /**
+     * Declare this session as having passed a 2 factor authentication
+     * check
+     *
+     * @return void
+     */
+    public function setPassedMFA()
+    {
+        // NDB_Client called session_write_close, we need to re-start it
+        // to edit a session variable.
+        session_start();
+        $_SESSION['PassedMFA'] = true;
+        session_write_close();
     }
 }
