@@ -1303,7 +1303,7 @@ class Edit_User extends \NDB_Form
             $errors['Email'] = dgettext(
                 "user_accounts",
                 "When generating a new password, please notify the user by checking"
-                + " 'Send email to user' box"
+                . " 'Send email to user' box"
             );
         }
 
@@ -1314,7 +1314,7 @@ class Edit_User extends \NDB_Form
             $errors['Password'] = dgettext(
                 "user_accounts",
                 "You must leave the password field empty if you want the system to"
-                + " generate one for you"
+                . " generate one for you"
             );
         }
 
