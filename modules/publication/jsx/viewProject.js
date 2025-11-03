@@ -92,7 +92,7 @@ class ViewProject extends React.Component {
         return;
       }
 
-      swal.fire(t('Edit Successful!', 
+      swal.fire(t('Edit Successful!',
         {ns: 'publication'}), '', 'success').then(() => {
         window.location.replace(loris.BaseURL + '/publication/');
       });
