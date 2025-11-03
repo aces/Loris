@@ -1379,17 +1379,17 @@ class Edit_User extends \NDB_Form
             if ($values['examiner_sites'] ?? null) {
                 if ($values['examiner_radiologist'] == '') {
                     $errors['examiner_group'] = dgettext(
-                            "user_accounts",
-                            "Please specify if examiner is a radiologist"
-                        );
+                        "user_accounts",
+                        "Please specify if examiner is a radiologist"
+                    );
                 }
                 if ($values['examiner_radiologist'] !== ''
                     && $values['examiner_pending'] == ''
                 ) {
                     $errors['examiner_group'] = dgettext(
-                            "user_accounts",
-                            "Please set pending approval Yes or No"
-                        );
+                        "user_accounts",
+                        "Please set pending approval Yes or No"
+                    );
                 }
             } elseif ($values['examiner_radiologist'] !== ''
                 || $values['examiner_pending'] ?? '' !== ''
