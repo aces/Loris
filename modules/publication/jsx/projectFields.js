@@ -535,9 +535,6 @@ class ProjectFormFields extends React.Component {
           name="collaborators"
           id="collaborators"
           label={t('Collaborators', {ns: 'publication'})}
-          options={this.props.allCollabs}
-          useSearch={true}
-          strictSearch={false}
           onUserInput={this.props.setFormData}
           onUserAdd={this.addCollaborator}
           onUserRemove={this.removeCollaborator}
@@ -611,7 +608,6 @@ ProjectFormFields.propTypes = {
   users: PropTypes.object,
   addListItem: PropTypes.func,
   removeListItem: PropTypes.func,
-  allCollabs: PropTypes.object,
   allKWs: PropTypes.object,
   editMode: PropTypes.string,
   projectOptions: PropTypes.object,
