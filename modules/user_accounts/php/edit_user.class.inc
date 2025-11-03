@@ -3,7 +3,7 @@
 /**
  * The user account page
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  User_Account
@@ -141,11 +141,10 @@ class Edit_User extends \NDB_Form
                     } else {
                         $defaults['examiner_radiologist'] = 'N';
                     }
-                }
-                if ($vals[0] == 'Y') {
-                    $defaults['ex_' . $cid] = 'on';
+                    $defaults['examiner_sites'][] = $cid;
                 }
             }
+            unset($defaults['examiner']);
 
             // Notification defaults
             // "notif_".$module."_".$operation."_".$service
@@ -347,26 +346,12 @@ class Edit_User extends \NDB_Form
         // EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
-            $ex_curr_sites  = [];
+            $ex_curr_sites  = $values['examiner_sites'] ?? [];
             $ex_prev_sites  = [];
-            $ex_radiologist = 'N';
-
-            foreach ($values as $k => $v) {
-                //examiner fields
-                if (preg_match("/^ex_[0-9]+$/", $k)) {
-                    //get centerID
-                    $parse_key = explode('_', $k);
-                    $cid       = $parse_key[1];
-                    $ex_curr_sites[$k] = $cid;
-                }
-                if ($k === 'examiner_radiologist') {
-                    $ex_radiologist = $v;
-                }
-            }
-            foreach ($ex_curr_sites as $k => $v) {
-                unset($values[$k]);
-            }
+            $ex_radiologist = $values['examiner_radiologist'] ?? 'N';
         }
+
+        unset($values['examiner_sites']);
         unset($values['examiner_radiologist']);
         $ex_pending = $values['examiner_pending'];
         unset($values['examiner_pending']);
@@ -414,10 +399,10 @@ class Edit_User extends \NDB_Form
 
         // START EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
-            $examinerID = $DB->pselect(
+            $examinerID = $DB->pselectCol(
                 "SELECT e.examinerID
-             FROM examiners e
-             WHERE e.userID=:uid",
+                 FROM examiners e
+                 WHERE e.userID=:uid",
                 [
                     "uid" => $uid,
                 ]
@@ -467,8 +452,8 @@ class Edit_User extends \NDB_Form
                     ]
                 );
 
-                $examinerID = iterator_to_array($examinerID);
-                $examinerID = $examinerID[0]['examinerID'];
+                $examinerID = array_values($examinerID);
+                $examinerID = $examinerID[0];
 
                 //get existing sites for examiner
                 $prev_sites = $DB->pselect(
@@ -526,7 +511,7 @@ class Edit_User extends \NDB_Form
             }
             //de-activate examiner if sites where no longer checked
             if (!empty($ex_prev_sites)) {
-                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites ?? []);
             }
             if (!empty($ex_inactive)) {
                 foreach ($ex_inactive as $cid) {
@@ -907,25 +892,21 @@ class Edit_User extends \NDB_Form
         // END PROJECT SECTION
 
         if ($editor->hasPermission('examiner_multisite')) {
-            $groupA = [];
-            $groupB = [];
+            $examinerGroup = [];
 
-            //get site aliases
-            $factory = \NDB_Factory::singleton();
-            $DB      = $factory->database();
-            $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", []);
-
-            foreach ($aliases as $row) {
-                $groupA[] = $this->createCheckbox(
-                    'ex_' . $row['CenterID'],
-                    $row['Alias'],
-                    []
-                );
-            }
-            $groupB[] = $this->createLabel(
-                dgettext("user_accounts", "Radiologist") . ": "
+            $this->addSelect(
+                "examiner_sites",
+                dgettext("user_accounts", "Examiner At:"),
+                $siteOptions,
+                [
+                    'class'    => 'form-control input-sm resizable',
+                    'multiple' => 'multiple',
+                ]
             );
-            $groupB[] = $this->createSelect(
+            $examinerGroup[] = $this->createLabel(
+                "Radiologist: "
+            );
+            $examinerGroup[] = $this->createSelect(
                 "examiner_radiologist",
                 dgettext("user_accounts", "Radiologist") . ": ",
                 [
@@ -935,10 +916,10 @@ class Edit_User extends \NDB_Form
                 ]
             );
 
-            $groupB[] = $this->createLabel(
+            $examinerGroup[] = $this->createLabel(
                 dgettext("user_accounts", "Pending Approval") . ":"
             );
-            $groupB[] = $this->createSelect(
+            $examinerGroup[] = $this->createSelect(
                 "examiner_pending",
                 dgettext("user_accounts", "Pending Approval") . ": ",
                 [
@@ -948,19 +929,12 @@ class Edit_User extends \NDB_Form
                 ]
             );
             $this->addGroup(
-                $groupA,
-                'examiner_sites',
-                dgettext("user_accounts", "Examiner At:"),
-                $this->_GUIDelimiter
-            );
-            $this->addGroup(
-                $groupB,
+                $examinerGroup,
                 "examiner_group",
                 dgettext("user_accounts", "Examiner Status"),
                 $this->_GUIDelimiter
             );
-            unset($groupA);
-            unset($groupB);
+            unset($examinerGroup);
         }
 
         // It doesn't make sense for a user to be editing their own
@@ -1259,9 +1233,9 @@ class Edit_User extends \NDB_Form
         //          already handled in email/password check
         // case 3 - Edit user
         if ((isset($values['UserID']) && !isset($values['NA_UserID'])
-            && $values['UserID'] === $values['Password_hash'])
+            && $values['UserID'] === ($values['Password_hash'] ?? ''))
             || (!empty($this->identifier)
-            && $this->identifier === $values['Password_hash'])
+            && $this->identifier === ($values['Password_hash'] ?? ''))
         ) {
             $errors['Password'] = dgettext(
                 "user_accounts",
@@ -1402,29 +1376,23 @@ class Edit_User extends \NDB_Form
         //        Validate Examiner Status
         //======================================
         if ($editor->hasPermission('examiner_multisite')) {
-            $matched = false;
-            foreach (array_keys($values) as $k) {
-                if (preg_match("/^ex_[0-9]+$/", $k)) {
-                    $matched = true;
-                    if ($values['examiner_radiologist'] == '') {
-                        $errors['examiner_group'] = dgettext(
+            if ($values['examiner_sites'] ?? null) {
+                if ($values['examiner_radiologist'] == '') {
+                    $errors['examiner_group'] = dgettext(
                             "user_accounts",
                             "Please specify if examiner is a radiologist"
                         );
-                    }
-                    if ($values['examiner_radiologist'] !== ''
-                        && $values['examiner_pending'] == ''
-                    ) {
-                        $errors['examiner_group'] = dgettext(
+                }
+                if ($values['examiner_radiologist'] !== ''
+                    && $values['examiner_pending'] == ''
+                ) {
+                    $errors['examiner_group'] = dgettext(
                             "user_accounts",
                             "Please set pending approval Yes or No"
                         );
-                    }
                 }
-            }
-            if (!$matched
-                && ($values['examiner_radiologist'] !== ''
-                || $values['examiner_pending'] ?? '' !== '')
+            } elseif ($values['examiner_radiologist'] !== ''
+                || $values['examiner_pending'] ?? '' !== ''
             ) {
                 $errors['examiner_sites'] = dgettext(
                     "user_accounts",

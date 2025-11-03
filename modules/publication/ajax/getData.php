@@ -5,7 +5,7 @@
  *
  * This retrieves data for publication uploads & editing
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Publication
@@ -46,6 +46,7 @@ if (isset($_REQUEST['action'])) {
         exit(0);
     }
 }
+
 /**
  * Gets publication and parameter_type data from database
  *
@@ -122,19 +123,12 @@ function getData($db) : array
     );
     $kws = array_combine($kws, $kws);
 
-    $collabs = $db->pselectCol(
-        'SELECT Name FROM publication_collaborator',
-        []
-    );
-    $collabs = array_combine($collabs, $collabs);
-
     $data['projectOptions'] = $projectOptions;
     $data['users']          = $users;
     $data['uploadTypes']    = getUploadTypes();
     $data['existingTitles'] = $titles;
     $data['allVOIs']        = $allVOIs;
     $data['allKWs']         = $kws;
-    $data['allCollabs']     = $collabs;
     return $data;
 }
 
@@ -152,11 +146,9 @@ function getProjectData($db, $user, $id) : array
     $query  = 'SELECT Title, Description, ' .
         'p.project as project, pr.Name as projectName, datePublication, '.
         'journal, link, publishingStatus, DateProposed, '.
-        'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
+        'LeadInvestigator, LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
         'FROM publication p '.
-        'LEFT JOIN publication_collaborator pc '.
-        'ON p.LeadInvestigatorID = pc.PublicationCollaboratorID '.
         'LEFT JOIN Project pr '.
         'ON p.project = pr.ProjectID '.
         'WHERE p.PublicationID=:pid ';
@@ -231,6 +223,7 @@ function getProjectData($db, $user, $id) : array
         }
     }
 }
+
 /**
  * Gets Variables of Interest for a given publication ID
  *
@@ -260,6 +253,7 @@ function getVOIs($id) : array
     $vois      =  array_merge($testNames, $fields);
     return $vois;
 }
+
 /**
  * Gets Keywords for a given publication ID
  *

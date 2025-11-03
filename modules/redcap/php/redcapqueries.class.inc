@@ -129,7 +129,30 @@ class RedcapQueries
         // Check that the candidate exists first.
         $cand_id = $this->_db->pselectOne(
             "SELECT CandID FROM candidate WHERE CandID = :cand_id",
-            ['psc_id' => $cand_id],
+            ['cand_id' => $cand_id],
+        );
+
+        if ($cand_id === null) {
+            return null;
+        }
+
+        return \Candidate::singleton(new CandID($cand_id));
+    }
+
+    /**
+     * Get a candidate from the database using a given ExternalID.
+     *
+     * @param string $external_id A potential ExternalID.
+     *
+     * @return ?\Candidate A LORIS candidate, or `null` if no candidate matches the
+     *                     given ExternalID.
+     */
+    public function tryGetCandidateWithExternalId(string $external_id): ?\Candidate
+    {
+        // Check that the candidate exists first.
+        $cand_id = $this->_db->pselectOne(
+            "SELECT CandID FROM candidate WHERE ExternalID = :external_id",
+            ['external_id' => $external_id],
         );
 
         if ($cand_id === null) {
@@ -254,7 +277,6 @@ class RedcapQueries
 
         $stmt->execute($notif_params);
     }
-
 
     /**
      * Mark a flag as complete.

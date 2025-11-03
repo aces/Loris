@@ -46,7 +46,7 @@ class RedcapHttpClient
     private bool $_verbose;
 
     /**
-     * REDCap URL.
+     * REDCap API URL.
      */
     private string $_url;
 
@@ -70,18 +70,20 @@ class RedcapHttpClient
     /**
      * Create a new REDCap Client for a specific REDCap instance and project.
      *
-     * @param string $instance_api_url  A REDCap instance API URL.
+     * @param string $instance_url      A REDCap instance URL.
      * @param string $project_api_token A REDCap project API token.
      * @param bool   $verbose           Verbose mode.
      */
     public function __construct(
-        string $instance_api_url,
+        string $instance_url,
         string $project_api_token,
         bool $verbose = false
     ) {
-        $this->_url     = $instance_api_url;
+        $trimmed_url    = rtrim($instance_url, '/');
+        $api_url        = "{$trimmed_url}/api/";
+        $this->_url     = $api_url;
         $this->_token   = $project_api_token;
-        $this->_client  = new Client($instance_api_url);
+        $this->_client  = new Client($api_url);
         $this->_verbose = $verbose;
     }
 
@@ -784,7 +786,9 @@ class RedcapHttpClient
             'type'                   => 'flat',
             'csvDelimiter'           => '',
             'forms'                  => $instrument_names,
-            'fields'                 => [],
+            // The 'record_id' parameter adds both the 'record_id' and
+            // 'redcap_event_name' fields to the REDCap records.
+            'fields'                 => ['record_id'],
             'events'                 => $unique_event_names,
             'records'                => $record_ids,
             'rawOrLabel'             => 'raw',

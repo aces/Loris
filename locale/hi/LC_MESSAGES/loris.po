@@ -64,6 +64,9 @@ msgstr "प्रशासन"
 #: modules/datadict/php/module.class.inc:49
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr "डेटा शब्दकोश"
+
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
@@ -110,6 +113,9 @@ msgstr "रिपोर्ट्स"
 msgid "TimePoint"
 msgstr "समय बिंदु"
 
+msgid "Module"
+msgstr "मॉड्यूल"
+
 # Common select option labels
 msgid "Yes"
 msgstr "हाँ"
@@ -138,6 +144,35 @@ msgstr "हाँ"
 msgid "N"
 msgstr "नहीं"
 
+msgid "Create"
+msgstr "बनाएँ"
+
+# Filters
+msgid "Selection Filter"
+msgstr "चयन फ़िल्टर"
+
+msgid "Show Filters"
+msgstr "फ़िल्टर दिखाएँ"
+
+msgid "Hide Filters"
+msgstr "फ़िल्टर छिपाएँ"
+
+msgid "Clear Filters"
+msgstr "फ़िल्टर साफ़ करें"
+
+msgid "Show Advanced Filters"
+msgstr "उन्नत फ़िल्टर दिखाएँ"
+
+msgid "Hide Advanced Filters"
+msgstr "उन्नत फ़िल्टर छिपाएँ"
+
+# Common swal labels
+msgid "Cancel"
+msgstr "रद्द करें"
+
+msgid "Success!"
+msgstr "सफलता!"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
@@ -163,9 +198,18 @@ msgstr "परियोजना"
 msgid "Projects"
 msgstr "प्रोजेक्ट्स"
 
+msgid "Candidate Registration Project"
+msgstr "उम्मीदवार पंजीकरण परियोजना"
+
+msgid "Timepoint Project"
+msgstr "समय बिंदु परियोजना"
+
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] "समूह"
+
+msgid "Session"
+msgstr "सत्र"
 
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
@@ -185,14 +229,41 @@ msgstr "प्रतिक्रिया"
 msgid "Scans"
 msgstr "स्कैन"
 
+msgid "Stage"
+msgstr "चरण"
+
+msgid "Send To DCC"
+msgstr "डीसीसी को भेजें"
+
+msgid "Sent To DCC"
+msgstr "डीसीसी को भेजा गया"
+
+msgid "Reverse Send To DCC"
+msgstr "डीसीसी को भेजना रद्द करें"
+
 msgid "Date of Birth"
 msgstr "जन्म तिथि"
+
+msgid "Visits"
+msgstr "भ्रमण"
 
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
 msgid "Active"
 msgstr "सक्रिय"
+
+msgid "Entity Type"
+msgstr "इकाई प्रकार"
+
+msgid "Scan Done"
+msgstr "स्कैन पूरा हुआ"
+
+msgid "Language"
+msgstr "भाषा"
+
+msgid "Ethnicity"
+msgstr "जातीयता"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -219,6 +290,10 @@ msgstr "ईमेल करने के लिए डेटा पर्यव�
 
 msgid "Invalid email address"
 msgstr "अमान्य ईमेल पता"
+
+# Dashboard panel strings
+msgid "Views"
+msgstr "दृश्य"
 
 # Common strings on widgets
 msgid "NEW"
@@ -281,3 +356,81 @@ msgstr "कोई विशेष अक्षर आवश्यक नही�
 
 msgid "We suggest using a password manager to generate one for you."
 msgstr "हम सुझाव देते हैं कि आपके लिए पासवर्ड बनाने हेतु पासवर्ड मैनेजर का उपयोग करें।"
+
+msgid "Total"
+msgstr "कुल"
+
+msgid "Error!"
+msgstr "त्रुटि!"
+
+# Common timepoint and visit terms
+msgid "Not Started"
+msgstr "शुरू नहीं हुआ"
+
+msgid "Screening"
+msgstr "जांच"
+
+msgid "Visit"
+msgstr "भेंट"
+
+msgid "Approval"
+msgstr "स्वीकृति"
+
+msgid "Subject"
+msgstr "विषय"
+
+msgid "Recycling Bin"
+msgstr "रिसाइक्लिंग बिन"
+
+msgid "Pass"
+msgstr "उत्तीर्ण"
+
+msgid "Failure"
+msgstr "विफलता"
+
+msgid "Withdrawal"
+msgstr "निकासी"
+
+msgid "In Progress"
+msgstr "प्रगति पर"
+
+msgid "Complete"
+msgstr "पूर्ण"
+
+msgid "Instruments"
+msgstr "उपकरण"
+
+msgid "Partial"
+msgstr "आंशिक"
+
+msgid "All"
+msgstr "सभी"
+
+msgid "Data Entry"
+msgstr "डेटा प्रविष्टि"
+
+msgid "Administration"
+msgstr "प्रशासन"
+
+msgid "Double Data Entry Form"
+msgstr "दोहरी डेटा प्रविष्टि फ़ॉर्म"
+
+msgid "Double Data Entry Status"
+msgstr "दोहरी डेटा प्रविष्टि स्थिति"
+
+msgid "Double Data Entry"
+msgstr "दोहरी डेटा प्रविष्टि"
+
+# Age related terms
+msgid "Age"
+msgstr "आयु"
+
+msgid "{{months}} months old"
+msgstr "{{months}} महीने का"
+
+msgid "{{years}} years old"
+msgstr "{{years}} वर्ष का"
+
+# Other generic terms
+msgid "Loading..."
+msgstr "लोड हो रहा है..."

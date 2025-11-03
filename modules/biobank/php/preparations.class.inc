@@ -3,7 +3,7 @@
 /**
  * This implements the Preparation endpoint class for the Biobank Module.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   API
  * @package    Loris
@@ -20,7 +20,7 @@ use \Psr\Http\Message\ResponseInterface;
 /**
  * A class for handling the /biobank/pool/ endpoint.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   API
  * @package    Loris
@@ -32,6 +32,7 @@ use \Psr\Http\Message\ResponseInterface;
 class Preparations implements RequestHandlerInterface
 {
     private \LORIS\LorisInstance $loris;
+
     /**
      * Returns true if user has access to this endpoint.
      *
@@ -131,7 +132,7 @@ class Preparations implements RequestHandlerInterface
         $this->loris = $request->getAttribute("loris");
 
         $db        = $this->loris->getDatabaseConnection();
-        $endpoint  = $request->getURI()->getPath();
+        $endpoint  = $request->getAttribute("unhandledURI")->getPath();
         $pathparts = explode('/', $endpoint);
         $db->delete(
             'biobank_specimen_preparation',

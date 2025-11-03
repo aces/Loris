@@ -22,6 +22,7 @@ jobs:
       # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
         run: |
+          sudo apt-get update 
           sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
              libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
           cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
@@ -259,7 +260,7 @@ jobs:
         restore-keys: ${{ runner.os }}-composer-
 
     - name: Change PHP Version in Dockerfile
-      run: sed -i "s/8.0/${{ matrix.php }}/g" Dockerfile.test.php8
+      run: sed -i "s/8.3/${{ matrix.php }}/g" Dockerfile.test.php8
 
     - name: Install protoc-gen-js plugin
       run: npm install -g protoc-gen-js
@@ -270,6 +271,7 @@ jobs:
       # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
       # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
+        sudo apt-get update
         sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
            libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler gettext
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/

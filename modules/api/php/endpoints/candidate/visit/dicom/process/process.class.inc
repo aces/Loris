@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -58,6 +58,7 @@ class Process extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $this->_visit   = $visit;
         $this->_tarname = $tarname;
     }
+
     /**
      * Return which methods are supported by this endpoint.
      *
