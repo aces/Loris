@@ -1,94 +1,70 @@
 # Timepoint List - Test Plan
 
-## Table of Contents
+This test plan aim to test the GUI functionality of access to a candidate's timepoints within incremental permissions changes.
 
-1. [Setup](#setup)
-2. [Test Site Constraint](#test-site-constraint)
-3. [Test Project Constraint](#test-project-constraint)
-4. [Test All Sites Permission](#test-all-sites-permission)
-5. [Test Buttons](#test-buttons)
+Table of Contents
 
-## Setup
+1. [Timepoint list](#timepoint-list)
+2. [Permission Leak](#permission-leak)
+3. [All Sites Permission](#all-sites-permission)
+4. [View Imaging Datasets Permission](#view-imaging-datasets-permission)
 
-Sign into your loris instance with an **admin** account.
+Begin with 2 users:
 
-- Select Admin > User Accounts and click the Add User button.
-- Enter all required information.
-- Select *ONE* site for example, "Rome".
-- Select *ONE* project, for example Pumpernickel.
-- [x] View/Create Candidates and Timepoints - Own Sites.
-- Open a separate **incognito** or **private** browser window.
-- Sign into your loris instance. Enter the credentials of the user that you just created.
+1. The first with a single site/
+2. The second with a different site.
 
-## Test Site Constraint
+Give both the following permission:
 
-### List only candidates of same site
+- [x] Access Profile: Candidates and Timepoints - Own
 
-- Click Candidate/Access Profile.
+## Timepoint List
 
-Assert that you see only candidates of that site "Rome" (in our example)**
+- Go into Access Profile and select the first PSCID in the list
 
-### Load time points by entering CandID in url
+1. Assert that there are timepoints in the Visit Label Column
+2. Click on a time point and assert that you are redirected to instrument_list where you see the candidate's instrument battery.
+3. Assert that the visit label is listed in the top table in the `Visit Label` field.
 
-- Copy the CandID of this user, paste as follows:
-https://\<yourInstance>\.loris.ca\/\<paste the candidateID here
+## Permission Leak
 
-Assert that this loads a list of timepoints **or** returns :
->There are no timepoints associated with this candidate
+- Copy the URL of this candidate's instrument list and paste it into the URL of user 2, who does **not** have permission to the same site
 
-### Deny access to candidate of a different site
+- assert that the user 2 is instead redirected to the their own list of candidates.
 
-- Enter a candidate ID into url that is from a different site.
+## All Sites Permission
 
-Assert that the following message is shown:**
+- Return to user 1 and give them the follwoing permission:
+- [x] Access Profile: Candidates and Timepoints - All Sites
+- Assert that the user can see all candidates from all sites.
+- Select a candidate from each site and assert the following:
 
->Permission Denied
+    1. you see a list of their timepoints
+    2. you can see the battery of instruments of each
+    3. For a candidate with a different site assert that you can not see the Candidate Information buttons `Create Time Point` and `Candidate info`
 
-## Open Profile Button
+- Select a candidate with the same site as your user setting. 
 
-- [x] View/Create Candidates and Timepoints - Own Sites.
+Assert that the following buttons appear under `Actions`:
 
-- Click the 'Open Profile' button.
-- Enter the CandID number and PSCID of the same candidate.
-This will replicate the same behaviour as clicking on the candidate's PSCID, showing their list of timepoints.
+1. `Create time point`
+        - Assert that this links to `>Create Timepoint` and that the site configuration (the possibilities of sites that you see) is constrained to the user setting.
 
-Assert that it does
+2. `Candidate Info`
+        - Assert that by clicking this button you get a 403
 
-## Test Project Constraint
+- Add the following permission:
 
-- Are the projects shown the same as those you selected in your user settings (in our example: "Pumpernickel")?
-- Refresh your incognito (or private) browser.
-You will see a list of time points from all sites that share your selected project (in this case "Pumpernickel")
+- [x] Candidate Parameters : Candidate Information
+- Click on the `Candidate Info` button again and assert that you are redirected to the candidate's parameters.
+- Click on the `Candidate Information` button and assert that you are re-directed to  `>Candidate Parameters`  
 
-Assert that other projects are **not** shown
+## View Imaging Datasets Permission
 
-## Test All Sites Permission
+Add the following permission to user 1:
 
-- [x] View/Create Candidates and Timepoints - All Sites
+- [x] Imaging Browser: Imaging Scans - Own Sites
 
-- Select a candidate from a different site and open up a timepoint. Assert that, for this candidate, you can see timepoints from different sites.
+- Click on the `View Imaging Datasets` button and assert that you are taken to the imaging browser
 
-## Test Buttons
-
-- For a Candidate of **same site** (Rome, in our example), there should be 3 Buttons, as follows:
-
-### Create Time Point
-
-- Click this and assert that it takes you to 'Create Time Point'.**
-
-### Candidate Info
-
-- With the following permissions unchecked :
-- [ ] Candidate Parameters: View Candidate Information
-- [ ] Candidate Parameters: Edit Candidate Information
-Assert that you do not see the `Candidate Info` button. Assert that the button appears when one or both are checked.
-
-### View Imaging Datasets
-
-Assert that, if you click this button, you are taken to imaging browser
-
-- If you don't see this button, set the following permission :
-- [x] Imaging Browser: View Imaging Scans - Own Sites
-- Refresh and try again.
-
-## End
+- Assert that if `Scan Done` indicates yes, that the link takes you to the imaging browser and that images of that candidate are shown.
