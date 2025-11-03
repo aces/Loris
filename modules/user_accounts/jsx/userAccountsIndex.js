@@ -123,7 +123,7 @@ class UserAccountsIndex extends Component {
       }
       break;
     case t('Pending Approval', {ns: 'user_accounts'}):
-      const pendingKey = t('Pending Approval', { ns: 'user_accounts' });
+      const pendingKey = t('Pending Approval', {ns: 'user_accounts'});
       if (row[pendingKey] === 'Y') {
         result = <td>{t('Yes', {ns: 'loris'})}</td>;
       } else if (row[pendingKey] === 'N') {
