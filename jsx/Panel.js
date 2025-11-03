@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {useTranslation} from 'react-i18next';
-import { max } from 'd3';
 
 /**
  * Panel - a collapsible panel component with optional multiple views.
