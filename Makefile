@@ -65,6 +65,8 @@ testdata:
 locales: 
 	msgfmt -o locale/en/LC_MESSAGES/loris.mo locale/en/LC_MESSAGES/loris.po
 	npx i18next-conv -l en -s locale/en/LC_MESSAGES/loris.po -t locale/en/LC_MESSAGES/loris.json --compatibilityJSON v4
+	msgfmt -o locale/fr/LC_MESSAGES/loris.mo locale/fr/LC_MESSAGES/loris.po
+	npx i18next-conv -l fr -s locale/fr/LC_MESSAGES/loris.po -t locale/fr/LC_MESSAGES/loris.json --compatibilityJSON v4
 	msgfmt -o locale/ja/LC_MESSAGES/loris.mo locale/ja/LC_MESSAGES/loris.po
 	npx i18next-conv -l ja -s locale/ja/LC_MESSAGES/loris.po -t locale/ja/LC_MESSAGES/loris.json --compatibilityJSON v4
 	msgfmt -o locale/hi/LC_MESSAGES/loris.mo locale/hi/LC_MESSAGES/loris.po
@@ -94,6 +96,7 @@ locales:
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po
+	npx i18next-conv -l ja -s modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.json
 	msgfmt -o modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po
 	npx i18next-conv -l ja -s modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po -t modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.json
 	msgfmt -o modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po
@@ -121,6 +124,7 @@ locales:
 	msgfmt -o modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.mo modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.po
 	msgfmt -o modules/help_editor/locale/ja/LC_MESSAGES/help_editor.mo modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po
 	msgfmt -o modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.mo modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po
+	npx i18next-conv -l ja -s modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po -t modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.json --compatibilityJSON v4
 	msgfmt -o modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.mo modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.po
 	msgfmt -o modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.mo modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po
 	msgfmt -o modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po
@@ -128,8 +132,10 @@ locales:
 	msgfmt -o modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.mo modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.po
 	msgfmt -o modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.mo modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.po
 	msgfmt -o modules/instruments/locale/ja/LC_MESSAGES/instruments.mo modules/instruments/locale/ja/LC_MESSAGES/instruments.po
+	npx i18next-conv -l ja -s modules/instruments/locale/ja/LC_MESSAGES/instruments.po -t modules/instruments/locale/ja/LC_MESSAGES/instruments.json --compatibilityJSON v4
 	msgfmt -o modules/instruments/locale/es/LC_MESSAGES/instruments.mo modules/instruments/locale/es/LC_MESSAGES/instruments.po
 	msgfmt -o modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po
+	npx i18next-conv -l ja -s modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.json --compatibilityJSON v4
 	msgfmt -o modules/login/locale/ja/LC_MESSAGES/login.mo modules/login/locale/ja/LC_MESSAGES/login.po
 	msgfmt -o modules/media/locale/ja/LC_MESSAGES/media.mo modules/media/locale/ja/LC_MESSAGES/media.po
 	msgfmt -o modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po

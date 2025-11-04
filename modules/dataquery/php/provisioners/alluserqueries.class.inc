@@ -32,7 +32,7 @@ class AllUserQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
             FROM dataquery_queries dq
                 -- User named queries
                 LEFT JOIN dataquery_query_names name ON 
-                    (dq.QueryID=name.QueryID AND name.UserID=:userid)
+                    (dq.QueryID=name.QueryID)
                 -- Admin pinned top queries
                 LEFT JOIN dataquery_study_queries_rel dsq ON
                     (dq.QueryID=dsq.QueryID AND PinType='topquery')
@@ -50,7 +50,7 @@ class AllUserQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
                      SELECT QueryID FROM dataquery_study_queries_rel
                         WHERE PinType='topquery'
                 )
-            GROUP BY dq.QueryID
+            GROUP BY dq.QueryID, name.Name, starred.StarredBy
             ",
             ['userid' => $user->getId()]
         );

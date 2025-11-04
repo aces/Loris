@@ -10,41 +10,43 @@ msgstr ""
 "Project-Id-Version: LORIS 27\n"
 "Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
 "POT-Creation-Date: 2025-04-08 14:37-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-10-23 20:11-0400\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.8\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
-msgstr ""
+msgstr "LORIS"
 
 msgid "DEV"
-msgstr ""
+msgstr "DEV"
 
 msgid "Affiliations"
-msgstr ""
+msgstr "Affiliations"
 
 msgid "Site Affiliation"
-msgstr ""
+msgstr "Affiliation du site"
 
 msgid "Site Affiliations"
-msgstr ""
+msgstr "Sites affiliés"
 
 msgid "Project Affiliation"
-msgstr ""
+msgstr "Affiliation du projet"
 
 msgid "Project Affiliations"
-msgstr ""
+msgstr "Projets affiliés"
 
 msgid "Log Out"
-msgstr ""
+msgstr "Se déconnecter"
 
 msgid "My Preferences"
-msgstr ""
+msgstr "Mes préférences"
 
 # Auto extracted strings from PHP
 # Menu categories
@@ -56,7 +58,8 @@ msgstr ""
 #: modules/survey_accounts/php/module.class.inc:48
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
+
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -64,21 +67,21 @@ msgstr ""
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
 msgid "Data Dictionary"
-msgstr ""
+msgstr "Dictionnaire des données"
 
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
-msgstr ""
+msgstr "Outils"
 
 #: modules/behavioural_qc/php/module.class.inc:51
 #: modules/conflict_resolver/php/module.class.inc:83
 #: modules/examiner/php/module.class.inc:50
 #: modules/media/php/module.class.inc:33
 msgid "Clinical"
-msgstr ""
+msgstr "Clinique"
 
 #: modules/dicom_archive/php/module.class.inc:115
 #: modules/imaging_browser/php/module.class.inc:40
@@ -86,342 +89,261 @@ msgstr ""
 #: modules/imaging_uploader/php/module.class.inc:54
 #: modules/mri_violations/php/module.class.inc:53
 msgid "Imaging"
-msgstr ""
+msgstr "Imagerie"
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr ""
+msgstr "Candidat"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
-msgstr ""
+msgstr "Génomique"
 
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
-msgstr ""
+msgstr "Électrophysiologie"
 
 #: modules/dataquery/php/module.class.inc:33
 #: modules/dqt/php/module.class.inc:49
 #: modules/publication/php/module.class.inc:55
 #: modules/statistics/php/module.class.inc:49
 msgid "Reports"
-msgstr ""
+msgstr "Rapports"
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr ""
-
-msgid "TimePoint %s Details"
-msgstr ""
+msgstr "Temps d'acquisition"
 
 # Common select option labels
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 msgid "No"
-msgstr ""
-
-msgid "N/A"
-msgstr ""
+msgstr "Non"
 
 msgid "Create"
-msgstr ""
+msgstr "Créer"
+
+msgid "N/A"
+msgstr "N/A"
 
 # Filters
 msgid "Selection Filter"
-msgstr ""
+msgstr "Filtre de sélection"
 
 msgid "Show Filters"
-msgstr ""
+msgstr "Afficher les filtres"
 
 msgid "Hide Filters"
-msgstr ""
+msgstr "Masquer les filtres"
 
 msgid "Clear Filters"
-msgstr ""
+msgstr "Effacer les filtres"
 
 msgid "Show Advanced Filters"
-msgstr ""
+msgstr "Afficher les filtres avancés"
 
 msgid "Hide Advanced Filters"
-msgstr ""
+msgstr "Masquer les filtres avancés"
 
 # Common swal labels
-msgid "OK"
-msgstr ""
-
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 msgid "Success!"
-msgstr ""
+msgstr "Réussi!"
 
 # Common candidate terms
 msgid "PSCID"
-msgstr ""
+msgstr "PSCID"
 
 msgid "DCCID"
-msgstr ""
+msgstr "DCCID"
 
+#, fuzzy
 msgid "Visit Label"
-msgstr ""
+msgstr "Nom de visite"
 
 msgid "Site"
-msgstr ""
+msgstr "Site"
 
 msgid "Module"
-msgstr ""
+msgstr "Module"
 
 msgid "Project"
-msgstr ""
+msgstr "Projet"
 
+#, fuzzy
 msgid "Candidate Registration Project"
-msgstr ""
+msgstr "Projet d'inscription des candidats"
 
+#, fuzzy
 msgid "Timepoint Project"
-msgstr ""
+msgstr "Temps d’acquisition du projet"
 
 msgid "Cohort"
 msgid_plural "Cohorts"
-msgstr[0] ""
- 
+msgstr[0] "Cohorte"
+msgstr[1] "Cohortes"
+
 msgid "Session"
-msgstr ""
+msgstr "Session"
 
 msgid "Date of registration"
-msgstr ""
-
-msgid "Date Of Visit"
-msgstr ""
+msgstr "Date d'inscription"
 
 msgid "Participant Status"
-msgstr ""
+msgstr "Statut du participant"
 
 msgid "DoB"
-msgstr ""
+msgstr "DdN"
 
 msgid "Sex"
-msgstr ""
+msgstr "Sexe"
 
 msgid "Feedback"
-msgstr ""
+msgstr "Commentaires"
 
 msgid "Scans"
-msgstr ""
+msgstr "Scans"
 
+#, fuzzy
 msgid "Stage"
-msgstr ""
+msgstr "Stade"
 
 msgid "Send To DCC"
-msgstr ""
+msgstr "Envoyer au CCD"
 
 msgid "Sent To DCC"
-msgstr ""
+msgstr "Envoyé au CCD"
 
 msgid "Reverse Send To DCC"
-msgstr ""
+msgstr "Annuler l'envoi vers la CCD"
 
 msgid "Date of Birth"
-msgstr ""
+msgstr "Date de naissance"
 
 msgid "Visits"
-msgstr ""
+msgstr "Visites"
 
 msgid "An error occured while loading the page."
-msgstr ""
+msgstr "Une erreur s'est produite lors du chargement de la page."
 
+#, fuzzy
 msgid "Entity Type"
-msgstr ""
+msgstr "Type d'entité"
 
+#, fuzzy
 msgid "Scan Done"
-msgstr ""
+msgstr "Scan complété"
 
 msgid "Language"
-msgstr ""
-
-msgid "Ethnicity"
-msgstr ""
-
-msgid "Save"
-msgstr ""
-
-msgid "Reset"
-msgstr ""
+msgstr "Langue"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
-msgstr ""
+msgstr "{{pageCount}} lignes affichées de {{totalCount}}."
 
 msgid "Maximum rows per page:"
-msgstr ""
+msgstr "Nombre maximal de lignes par page :"
 
 msgid "Download Data as CSV"
-msgstr ""
+msgstr "Télécharger les données au format CSV"
 
 # Dashboard panel strings
 msgid "Views"
-msgstr ""
-
-#: php/libraries/Password.class.inc
-msgid "The password is too short"
-msgstr ""
-
-msgid "The password is not complex enough."
-msgstr ""
-
-msgid "This password is known to be exposed in online data breaches."
-msgstr ""
-
-msgid "Data Supervisors to Email"
-msgstr ""
-
-msgid "Invalid email address"
-msgstr ""
+msgstr "Vues"
 
 # Common strings on widgets
 msgid "NEW"
-msgstr ""
+msgstr "Nouveau"
 
+# Might need to be modified to “Mise à jour” depending on the context
 msgid "Updated"
-msgstr ""
+msgstr "Mis à jour"
 
 msgid "Uploaded"
-msgstr ""
+msgstr "Téléversé"
 
-# User Account related
-msgid "Password Rules"
-msgstr ""
-
-msgid "Username"
-msgstr ""
-
-msgid "First name"
-msgstr ""
-
-msgid "First name is required and should not exceed 120 characters"
-msgstr ""
-
-msgid "Last name"
-msgstr ""
-
-msgid "Last name is required and should not exceed 120 characters"
-msgstr ""
-
-msgid "Email address"
-msgstr ""
-
-msgid "New Password"
-msgstr ""
-
-msgid "Confirm Password"
-msgstr ""
-
-msgid "Email address is required"
-msgstr ""
-
-msgid "The password must be at least 8 characters long."
-msgstr ""
-
-msgid "The password cannot be your username or email address."
-msgstr ""
-
-msgid "Please choose a unique password."
-msgstr ""
-
-msgid "No special characters are required but your password must be sufficiently complex to be accepted."
-msgstr ""
-
-msgid "We suggest using a password manager to generate one for you."
-msgstr ""
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 msgid "Error!"
-msgstr ""
-
-msgid "Status"
-msgstr ""
-
-msgid "Date"
-msgstr ""
+msgstr "Erreur!"
 
 # Common timepoint and vist terms
+# - might need to be modified to “non commencée” when we talk about a visit
 msgid "Not Started"
-msgstr ""
+msgstr "Non commencée"
 
 msgid "Screening"
-msgstr ""
+msgstr "Dépistage"
 
 msgid "Visit"
-msgstr ""
+msgstr "Visite"
 
 msgid "Approval"
-msgstr ""
+msgstr "Approbation"
 
+# I think this should be right, but I would need to context in which it is presented.
+#, fuzzy
 msgid "Subject"
-msgstr ""
+msgstr "Sujet"
 
 msgid "Recycling Bin"
-msgstr ""
+msgstr "Poubelle de recyclage"
 
 msgid "Pass"
-msgstr ""
+msgstr "Approuver"
 
 msgid "Failure"
-msgstr ""
+msgstr "Échec"
 
 msgid "Withdrawal"
-msgstr ""
-
-msgid "Withdrawn"
-msgstr ""
+msgstr "Retrait"
 
 msgid "In Progress"
-msgstr ""
+msgstr "En cours"
 
 msgid "Complete"
-msgstr ""
+msgstr "Complète"
 
-msgid "Instrument"
-msgid_plural "Instruments"
-msgstr[0] ""
+msgid "Instruments"
+msgstr "Instruments"
 
 msgid "None"
-msgstr ""
+msgstr "Aucun"
 
+# feminine in the case of “entrée de donnée partielle”
 msgid "Partial"
-msgstr ""
+msgstr "Partielle"
 
+#, fuzzy
 msgid "All"
-msgstr ""
+msgstr "Tout"
 
 msgid "Data Entry"
-msgstr ""
+msgstr "Entrée de données"
 
 msgid "Administration"
-msgstr ""
+msgstr "Administration"
 
 msgid "Double Data Entry Form"
-msgstr ""
+msgstr "Formulaire de double entrée de données"
 
 msgid "Double Data Entry Status"
-msgstr ""
+msgstr "Statut de double entrée des données"
 
 msgid "Double Data Entry"
-msgstr ""
+msgstr "Double entrée de données"
 
 # Age related terms
 msgid "Age"
-msgstr ""
+msgstr "Âge"
 
 msgid "{{months}} months old"
-msgstr ""
+msgstr "{{months}} mois"
 
 msgid "{{years}} years old"
-msgstr ""
-
-# Other generic terms
-msgid "Loading..."
-msgstr ""
-
+msgstr "{{years}} ans"

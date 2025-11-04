@@ -48,3 +48,14 @@ msgstr "サブテスト"
 msgid "Top"
 msgstr "トップ"
 
+msgid "Behavioural Data"
+msgstr "行動データ"
+
+msgid "Completion"
+msgstr "完了"
+
+msgid "Conflicts?"
+msgstr "衝突？"
+
+msgid "Visit has no registered instruments in test battery."
+msgstr "訪問にはテスト バッテリーに登録された機器がありません。"
