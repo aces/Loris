@@ -67,6 +67,8 @@ class ImagingBrowserIndex extends Component {
     const style = '';
     let result = <td className={style}>{cell}</td>;
     const {t} = this.props;
+    const sessionIDKey = t('SessionID', {ns: 'imaging_browser'});
+    const sessionID = row[sessionIDKey];
     switch (column) {
     case t('New Data', {ns: 'imaging_browser'}):
       if (cell === 'new') {
@@ -81,7 +83,7 @@ class ImagingBrowserIndex extends Component {
       for (let i = 0; i < cellTypes.length; i += 1) {
         cellLinks.push(<a key={i} href={loris.BaseURL +
           '/imaging_browser/viewSession/?sessionID=' +
-          row.SessionID + '&outputType=' +
+          sessionID + '&outputType=' +
           cellTypes[i] + '&backURL=/imaging_browser/'}>
           {cellTypes[i]}
         </a>);
@@ -89,7 +91,7 @@ class ImagingBrowserIndex extends Component {
       }
       cellLinks.push(<a key="selected" href={loris.BaseURL +
         '/imaging_browser/viewSession/?sessionID=' +
-        row.SessionID +
+        sessionID +
         '&selectedOnly=1&backURL=/imaging_browser/'}>
         {t('selected', {ns: 'loris'})}
       </a>);
@@ -97,7 +99,7 @@ class ImagingBrowserIndex extends Component {
       cellLinks.push(' | ');
       cellLinks.push(<a key="all" href={loris.BaseURL +
         '/imaging_browser/viewSession/?sessionID=' +
-        row.SessionID +
+        sessionID +
         '&backURL=/imaging_browser/'}>
         {t('all types', {ns: 'imaging_browser'})}
       </a>);
