@@ -154,6 +154,7 @@ msgstr "रद्द करें"
 
 msgid "Success!"
 msgstr "सफलता!"
+
 msgid "Close"
 msgstr "बंद करें"
 
@@ -242,9 +243,6 @@ msgstr "सहेजें"
 
 msgid "Reset"
 msgstr "रीसेट करें"
-
-msgid "Save"
-msgstr "सहेजें"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
