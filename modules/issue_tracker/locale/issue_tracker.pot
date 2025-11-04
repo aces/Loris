@@ -22,9 +22,10 @@ msgid "Issue Tracker"
 msgstr ""
 
 msgid "Your assigned issue"
-msgstr ""
+msgid_plural "Your assigned issues"
+msgstr[0] ""
 
-msgid "Your assigned issues"
+msgid "Open Issues"
 msgstr ""
 
 msgid "Issue ID"
@@ -149,3 +150,7 @@ msgstr ""
 
 msgid "Issue created!"
 msgstr ""
+
+msgid "({{count}} issue)"
+msgid_plural "({{count}} issues)"
+msgstr[0] ""
