@@ -446,3 +446,6 @@ msgstr "特殊文字は必要ありませんが、パスワードは受け入れ
 
 msgid "We suggest using a password manager to generate one for you."
 msgstr "パスワード マネージャーを使用してパスワードを生成することをお勧めします。"
+
+msgid "Incorrect username or password."
+msgstr "ユーザー名またはパスワードが正しくありません。"
