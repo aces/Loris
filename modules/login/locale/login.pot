@@ -21,3 +21,53 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+msgid "Login to LORIS"
+msgstr ""
+
+msgid "Forgot your password?"
+msgstr ""
+
+msgid "Request Account"
+msgstr ""
+
+
+msgid "Multifactor authentication required"
+msgstr ""
+
+msgid "Enter the code from your authenticator app below to proceed."
+msgstr ""
+
+msgid "Data in LORIS:"
+msgstr ""
+
+# Hack for the login page.
+# These strings come from the database and are
+# the defaults in the login_summary_statistics table
+
+msgid "EEG Recording"
+msgid_plural "EEG Recordings"
+msgstr[0] ""
+
+msgid "Female Participant"
+msgid_plural "Female Participants"
+msgstr[0] ""
+
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] ""
+
+msgid "Male Participant"
+msgid_plural "Male Participants"
+msgstr[0] ""
+
+msgid "Scan"
+msgid_plural "Scans"
+msgstr[0] ""
+
+msgid "Site"
+msgid_plural "Sites"
+msgstr[0] ""
+
+msgid "Visit"
+msgid_plural "Visits"
+msgstr[0] ""

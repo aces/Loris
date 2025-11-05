@@ -117,8 +117,10 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $module = $this->loris->getModule($modulename);
             $module->registerAutoloader();
 
+            $lang    = \LORIS\Middleware\Language::detectLocale($this->loris, $request);
+            $request = $request->withAttribute("lang", $lang);
+
             if (file_exists(__DIR__ . "/../../project/locale/")) {
-                $lang = \LORIS\Middleware\Language::detectLocale($this->loris, $request);
                 if ($lang !== null) {
                     /* detectLanguage should have validated that it's a valid locale, but
                      * ensure that there are no unsafe characters just in case since we

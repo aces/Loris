@@ -143,6 +143,7 @@ locales:
 	msgfmt -o modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po
 	npx i18next-conv -l ja -s modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.json --compatibilityJSON v4
 	msgfmt -o modules/login/locale/ja/LC_MESSAGES/login.mo modules/login/locale/ja/LC_MESSAGES/login.po
+	npx i18next-conv -l ja -s modules/login/locale/ja/LC_MESSAGES/login.po -t modules/login/locale/ja/LC_MESSAGES/login.json --compatibilityJSON v4
 	msgfmt -o modules/media/locale/ja/LC_MESSAGES/media.mo modules/media/locale/ja/LC_MESSAGES/media.po
 	msgfmt -o modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po
 	msgfmt -o modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.po
@@ -186,6 +187,7 @@ dataquery: modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo
 	target=dataquery npm run compile
 
 login: modules/login/locale/ja/LC_MESSAGES/login.mo
+	npx i18next-conv -l ja -s modules/login/locale/ja/LC_MESSAGES/login.po -t modules/login/locale/ja/LC_MESSAGES/login.json --compatibilityJSON v4
 	target=login npm run compile
 
 module_manager: modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo
