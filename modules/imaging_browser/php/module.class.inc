@@ -113,12 +113,9 @@ class Module extends \Module
             if (count($scansummary) === 0) {
                 return [];
             }
-            foreach ($scansummary as $summary) {
-                $summary['nfiles'] = (int )$summary['nfiles'];
-            }
             return [
                 new CandidateWidget(
-                    "Imaging QC Summary",
+                    dgettext("imaging_browser", "Imaging QC Summary"),
                     $baseURL. "/imaging_browser/js/CandidateScanQCSummaryWidget.js",
                     "lorisjs.imaging_browser.CandidateScanQCSummaryWidget.default",
                     [ 'Files' => iterator_to_array($scansummary)],

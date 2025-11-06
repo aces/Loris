@@ -27,3 +27,11 @@ msgstr ""
 msgid "Unresolved Conflicts"
 msgstr ""
 
+msgid "Number of Conflicts"
+msgstr ""
+
+msgid "Click on instrument in legend to visit conflict resolver for that instrument across all visits."
+msgstr ""
+
+msgid "Click on bar in graph to visit conflict resolver for that visit and instrument combination."
+msgstr ""

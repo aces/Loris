@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
@@ -86,7 +87,7 @@ msgstr ""
 #: modules/imaging_uploader/php/module.class.inc:54
 #: modules/mri_violations/php/module.class.inc:53
 msgid "Imaging"
-msgstr ""
+msgstr "Imágenes"
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
@@ -110,7 +111,10 @@ msgstr ""
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr ""
+msgstr "Punto en el tiempo"
+
+msgid "TimePoint %s Details"
+msgstr "Detalles del Punto en el Tiempo %s"
 
 # Common select option labels
 msgid "Yes"
@@ -119,9 +123,37 @@ msgstr "Sí"
 msgid "No"
 msgstr "No"
 
+msgid "Create"
+msgstr "Crear"
+
+msgid "N/A"
+msgstr "N/A"
+
+# Filters
+msgid "Selection Filter"
+msgstr "Selección de Filtros"
+
+msgid "Show Filters"
+msgstr "Mostrar Filtros"
+
+msgid "Hide Filters"
+msgstr "Ocultar Filtros"
+
+msgid "Clear Filters"
+msgstr "Limpiar Filtros"
+
+msgid "Show Advanced Filters"
+msgstr "Mostras filtros avanzados"
+
+msgid "Hide Advanced Filters"
+msgstr "Ocultar filtros avanzados"
+
 # Common swal labels
+msgid "OK"
+msgstr "Aceptar"
+
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 msgid "Success!"
 msgstr "Exitoso!"
@@ -145,11 +177,16 @@ msgstr ""
 msgid "Project"
 msgstr "Projecto"
 
-msgid "Cohort"
-msgstr "Cohorte"
+msgid "Candidate Registration Project"
+msgstr "Projecto donde se registró al Candidato"
 
-msgid "Cohorts"
-msgstr "Cohortes"
+msgid "Timepoint Project"
+msgstr "Punto en el tiempo del Projecto"
+
+msgid "Cohort"
+msgid_plural "Cohorts"
+msgstr[0] "Cohorte"
+msgstr[1] "Cohortes"
 
 msgid "Session"
 msgstr ""
@@ -164,7 +201,7 @@ msgid "DoB"
 msgstr ""
 
 msgid "Sex"
-msgstr ""
+msgstr "Sexo"
 
 msgid "Feedback"
 msgstr "Retroalimentación"
@@ -175,59 +212,62 @@ msgstr ""
 msgid "Stage"
 msgstr "Etapa"
 
-msgid "Sent To DCC"
+msgid "Send To DCC"
 msgstr "Enviar a CCD"
 
+msgid "Sent To DCC"
+msgstr "Enviado a CCD"
+
+msgid "Reverse Send To DCC"
+msgstr "Revertir Enviar al CCD"
+
 msgid "Date of Birth"
-msgstr ""
+msgstr "Fecha de Nacimiento"
 
 msgid "Visits"
-msgstr ""
+msgstr "Visitas"
 
 msgid "An error occured while loading the page."
-msgstr ""
+msgstr "Un error ocurrió minstras cargaba la página"
 
 msgid "Entity Type"
-msgstr ""
+msgstr "Tipo de Entidad"
 
 msgid "Scan Done"
-msgstr ""
-
-msgid "Show Advanced Filters"
-msgstr ""
-
-msgid "Hide Advanced Filters"
-msgstr ""
+msgstr "Scan hecho"
 
 msgid "Language"
 msgstr "Lenguaje"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
-msgstr ""
+msgstr "{{pageCount}} filas mostradas de {{totalCount}}."
 
 msgid "Maximum rows per page:"
-msgstr ""
+msgstr "Máximo de filasa por página"
 
-msgid "Download Table as CSV"
-msgstr ""
+msgid "Download Data as CSV"
+msgstr "Descargar Datos como CSV"
 
 # Dashboard panel strings
 msgid "Views"
-msgstr ""
+msgstr "Vistas"
 
 # Common strings on widgets
 msgid "NEW"
-msgstr ""
+msgstr "Nuevo"
 
 msgid "Updated"
-msgstr ""
+msgstr "Actualizado"
 
 msgid "Uploaded"
-msgstr ""
+msgstr "Subido"
 
 msgid "Total"
-msgstr ""
+msgstr "Total"
+
+msgid "Error!"
+msgstr "Error!"
 
 # Common timepoint and vist terms
 msgid "Not Started"
@@ -259,3 +299,43 @@ msgstr "Retirado"
 
 msgid "In Progress"
 msgstr "En Progreso"
+
+msgid "Complete"
+msgstr "Completo"
+
+msgid "Instruments"
+msgstr "Instrumentos"
+
+msgid "None"
+msgstr "Ninguna"
+
+msgid "Partial"
+msgstr "Parcial"
+
+msgid "All"
+msgstr "Completa"
+
+msgid "Data Entry"
+msgstr "Entrada de datos"
+
+msgid "Administration"
+msgstr "Administración"
+
+msgid "Double Data Entry Form"
+msgstr "Formulario de entrada de datos duplicado"
+
+msgid "Double Data Entry Status"
+msgstr "Estado del formulario de entrada de datos duplicado"
+
+msgid "Double Data Entry"
+msgstr "Entrada de datos duplicada"
+
+# Age related terms
+msgid "Age"
+msgstr "Edad"
+
+msgid "{{months}} months old"
+msgstr "{{months}} meses"
+
+msgid "{{years}} years old"
+msgstr "{{years}} años"
