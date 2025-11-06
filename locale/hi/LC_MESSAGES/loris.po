@@ -221,6 +221,9 @@ msgstr "उन्नत फ़िल्टर छुपाएँ"
 msgid "Language"
 msgstr "भाषा"
 
+msgid "View details"
+msgstr "विवरण देखें"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
@@ -284,6 +287,12 @@ msgstr "निकासी"
 
 msgid "In Progress"
 msgstr "प्रगति पर"
+
+msgid "Progress"
+msgstr "प्रगति"
+
+msgid "Success"
+msgstr "सफलता"
 
 # Age related terms
 msgid "Age"

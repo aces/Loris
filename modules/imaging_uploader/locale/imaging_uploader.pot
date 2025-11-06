@@ -132,3 +132,27 @@ msgstr ""
 msgid "Detailed"
 msgstr ""
 
+msgid "<select a row in the table below to view the upload logs>"
+msgstr "<अपलोड लॉग देखने के लिए नीचे तालिका में एक पंक्ति चुनें>"
+
+msgid "Number Of Files Created"
+msgstr "बनाई गई फ़ाइलों की संख्या"
+
+msgid "Number Of Files Inserted"
+msgstr "डाली गई फ़ाइलों की संख्या"
+
+msgid "Tarchive Info"
+msgstr "टीआर्काइव जानकारी"
+
+msgid "Upload ID"
+msgstr "अपलोड आईडी"
+
+msgid "Upload Location"
+msgstr "अपलोड स्थान"
+
+msgid "Upload Date"
+msgstr "अपलोड की तिथि"
+
+msgid "Uploaded By"
+msgstr "द्वारा अपलोड किया गया"
+

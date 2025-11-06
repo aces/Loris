@@ -218,6 +218,9 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid "View details"
+msgstr ""
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
@@ -280,6 +283,12 @@ msgid "Withdrawal"
 msgstr ""
 
 msgid "In Progress"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Success"
 msgstr ""
 
 # Age related terms

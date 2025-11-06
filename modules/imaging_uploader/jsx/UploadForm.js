@@ -149,7 +149,7 @@ class UploadForm extends Component {
         text: t('Filename extension does not match .zip, .tgz or .tar.gz ',
           {ns: 'imaging_uploader'}),
         type: 'error',
-        confirmButtonText: t('OK', {ns: 'imaging_uploader'}),
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
 
       let errorMessage = {
@@ -173,7 +173,7 @@ class UploadForm extends Component {
           text: t('Could not determine PSCID, DCCID and Visit Label'
             +' based on the filename!', {ns: 'imaging_uploader'}),
           type: 'error',
-          confirmButtonText: t('OK', {ns: 'imaging_uploader'}),
+          confirmButtonText: t('OK', {ns: 'loris'}),
         });
         return;
       }
@@ -198,7 +198,7 @@ class UploadForm extends Component {
           +' passed the MRI pipeline!',
         {ns: 'imaging_uploader'}),
         type: 'error',
-        confirmButtonText: t('OK', {ns: 'imaging_uploader'}),
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       return;
     }
@@ -211,7 +211,7 @@ class UploadForm extends Component {
           +' through the MRI pipeline!',
         {ns: 'imaging_uploader'}),
         type: 'error',
-        confirmButtonText: t('OK', {ns: 'imaging_uploader'}),
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       return;
     }
@@ -330,7 +330,7 @@ class UploadForm extends Component {
           title: t('Upload Successful!', {ns: 'imaging_uploader'}),
           text: text,
           type: 'success',
-          confirmButtonText: t('OK', {ns: 'imaging_uploader'}),
+          confirmButtonText: t('OK', {ns: 'loris'}),
         }).then((result) => {
           window.location.assign(loris.BaseURL + '/imaging_uploader/');
         });
