@@ -155,3 +155,5 @@ msgstr ""
 msgid "This field is required."
 msgstr ""
 
+msgid "Candidate Media"
+msgstr ""

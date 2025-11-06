@@ -21,3 +21,11 @@ msgstr ""
 msgid "Candidate Parameters"
 msgstr "候補パラメータ"
 
+msgid "Caveat"
+msgstr "警告"
+
+msgid "Consent Summary"
+msgstr "同意の概要"
+
+msgid "Consent Type"
+msgstr "同意の種類"

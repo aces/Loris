@@ -22,3 +22,29 @@ msgstr ""
 msgid "New Profile"
 msgstr "新しいプロフィール"
 
+msgid "Create a New Profile"
+msgstr "新しいプロフィールを作成する"
+
+msgid "Date of Birth Confirm"
+msgstr "生年月日の確認"
+
+msgid "Date of Birth fields must match"
+msgstr "生年月日のフィールドは一致する必要があります"
+
+msgid "EDC fields must match"
+msgstr "EDCフィールドは一致する必要があります"
+
+msgid "New Candidate Created"
+msgstr "新しい候補者が作成されました"
+
+msgid "Expected Date of Confinement"
+msgstr "出産予定日"
+
+msgid "Confirm EDC"
+msgstr "出産予定日を確認する"
+
+msgid "Recruit another candidate"
+msgstr "別の候補者を募集する"
+
+msgid "Access Profile"
+msgstr "アクセスプロファイル"

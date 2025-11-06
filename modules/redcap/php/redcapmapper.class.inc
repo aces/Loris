@@ -89,25 +89,22 @@ class RedcapMapper
      * session creation is enabled for that visit in the REDCap module
      * configuration, or throws an error if it is not.
      *
-     * @param RedcapRecord $redcap_record     The REDCap record.
-     * @param string       $unique_event_name The unique event name associated with
-     *                                        that REDCap record.
-     * @param \Candidate   $candidate         The LORIS candidate associated with
-     *                                        that REDCap record.
+     * @param RedcapRecord $redcap_record The REDCap record.
+     * @param \Candidate   $candidate     The LORIS candidate associated with
+     *                                    that REDCap record.
      *
      * @return string The visit label of the relevant session.
      */
     public function getVisitLabel(
         RedcapRecord $redcap_record,
-        string $unique_event_name,
         \Candidate $candidate,
     ): string {
-        $visit_config = $this->getVisitConfig($unique_event_name);
+        $visit_config = $this->getVisitConfig($redcap_record->unique_event_name);
 
         // If no visit mappings are defined in the configuration, use the REDCap
         // unique event name as the visit label directly.
         if ($visit_config === null) {
-            return $unique_event_name;
+            return $redcap_record->unique_event_name;
         }
 
         $session = $this->checkOrCreateSession($candidate, $visit_config);
@@ -140,7 +137,7 @@ class RedcapMapper
         // Find the REDCap event that matches the REDCap notification event.
         $redcap_event = array_find(
             $redcap_events,
-            fn($redcap_event) => $unique_event_name === $redcap_event->unique_name,
+            fn($redcap_event) => $redcap_event->unique_name === $unique_event_name,
         );
 
         // There should always be a REDCap event that matches the REDCap
