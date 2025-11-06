@@ -123,7 +123,7 @@ class ImagingUploader extends Component {
       {ns: 'imaging_uploader'});
     const tarchiveInfoKey = t('Tarchive Info', {ns: 'imaging_uploader'});
     const failureText = t('Failure', {ns: 'loris'});
-    const inProgressText = t('In Progress', { ns: 'loris' }) + '...';
+    const inProgressText = t('In Progress', {ns: 'loris'}) + '...';
     const successText = t('Success', {ns: 'loris'});
     const notStartedText = t('Not Started', {ns: 'loris'});
 
