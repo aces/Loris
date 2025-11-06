@@ -60,6 +60,12 @@ msgstr "लंबित नया"
 msgid "QC Status"
 msgstr "QC स्थिति"
 
+msgid "Caveat"
+msgstr "चेतावनी"
+
+msgid "SNR"
+msgstr "सिग्नल-से-शोर अनुपात"
+
 msgid "all types"
 msgstr "सभी प्रकार"
 

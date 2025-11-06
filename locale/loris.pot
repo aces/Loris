@@ -308,7 +308,7 @@ msgid "NEW"
 msgstr ""
 
 msgid "New"
-msgstr "नया"
+msgstr ""
 
 msgid "Updated"
 msgstr ""

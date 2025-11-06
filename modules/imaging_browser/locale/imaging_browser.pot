@@ -30,13 +30,6 @@ msgstr ""
 msgid "New and pending imaging sessions"
 msgstr ""
 
-msgid "Imaging Session"
-msgid_plural "Imaging Sessions"
-msgstr[0] ""
-
-msgid "Imaging QC Summary"
-msgstr ""
-
 msgid "Visit QC Status"
 msgstr ""
 
@@ -65,6 +58,18 @@ msgid "Pending New"
 msgstr ""
 
 msgid "QC Status"
+msgstr ""
+
+msgid "Caveat"
+msgstr ""
+
+msgid "SNR"
+msgstr ""
+
+msgid "Caveat"
+msgstr ""
+
+msgid "SNR"
 msgstr ""
 
 msgid "all types"
