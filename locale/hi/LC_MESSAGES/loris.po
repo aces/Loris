@@ -431,5 +431,3 @@ msgstr "{{years}} वर्ष का"
 # Other generic terms
 msgid "Loading..."
 msgstr "लोड हो रहा है..."
-msgstr "वापसी"
-
