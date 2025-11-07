@@ -313,17 +313,29 @@ class RedcapDictionaryRecord
 
         $choices      = explode('|', $dictionary);
         $linstChoices = [];
-        $pattern      = "/^(\s)*([[:alnum:]]+)(\s)*,(.*)$/";
-        foreach ($choices as $choice) {
-            $matches = [];
-            if (preg_match($pattern, $choice, $matches) !== 1) {
-                throw new \DomainException(
-                    "Could not parse radio option: '$choice'"
-                );
+        $pattern      = "/^(\s)*([[:alnum:]._]+)(\s)*,(.*)$/";
 
+        $index = 1; //Auto-index counter
+        foreach ($choices as $choice) {
+            $choice = trim($choice);
+            if (empty($choice)) continue;
+
+            $matches = [];
+            
+            if (preg_match($pattern, $choice, $matches) !== 1) {
+                // Missing code -auto-generate one
+                error_log("Warning: Auto-indexing malformed option:
+                    '$choice' as index $index");
+                $backend = $index;
+                $label - $choice;
+                $index++;
+            } else {
+                //Normal parsing
+                $backend = $matches[2];
+                $label = trim($matches[4]);
             }
-            $backend        = $matches[2];
-            $linstFormat    = "'$backend'=>'" . trim($matches[4]) . '\'';
+
+            $linstFormat    = "'$backend'=>'$label'";
             $linstChoices[] = $linstFormat;
 
         }
