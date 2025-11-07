@@ -369,7 +369,7 @@ Table of Contents
 2. [Display Formats](#display-formats)
 3. [Ensure that no instrument data is shown](#ensure-that-no-instrument-data-is-shown)
 
-When the Candidate Parameters permission is enabled, additional fields are added to the Data Query Tool:
+When the Candidate Parameters permission is enabled, the following: additional fields are added to the Data Query Tool:
 
 In Available Fields: `Candidate identifiers`, `Candidate Demographics`, and `Other Parameters` appear.
 
