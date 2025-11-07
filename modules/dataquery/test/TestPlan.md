@@ -280,61 +280,86 @@ The rotating arrows icon allows you to load a former query that has been sroried
 
 The `No Run Times` checkbox performs 2 functions:
 
-1. Makes the date and time of the query invisible. So, assert that, whe it is ticked, that the 'No run times' checkbox filter makes the date and time dissappear
+- Makes the date and time of the query invisible. So, assert that, when it is ticked, that the `No run times` checkbox filter makes the date and time dissappear.
 
-2. Eliminates queries that have the exact same parameters (the same fields and filters and conditions)
+- Eliminates one of two queries that have the exact same parameters (the same fields and filters and conditions). 
 
-[therefore thorough testing of this is needed]
+1. Assert that, when you click the `No run times` checkbox filter, that the date and times of all queries disappear
 
-- same fields, same filters, same conditions, etc.
+2. To test the second functionality, create two complex queries with exactly the same parameters, check the box, and assert that the second query has disappeared.
+
 
 #### Mix Check Boxes
+
+Finally, mix the checkboxes to assert that they filter the queries correctly.
 
 ***********************************************************
 Go to : [Global Table of Contents](#global-table-of-contents)
 / [Access Profile Permission](#access-profile-permission)
 
-
 IS THE PIN RELEVENT ANYMORE ?
 
 ### Pin
 
+The pin affords user the option to place a selected query in three different locations in the LORIS website: 1. The module itself, 2. the dashboard page, 3. the login page
+
+[Issue: does pin to login work]??
+
+in `>Data Query Tool` :
+
 - Click the `Pin` icon to perform the following tests
+
+[insert image]
 
 1. With the `query name` text field empty, click the `Submit` button and assert that the error message reads:
 
    `Must provide a query name to pin query as.`
 2. Enter a query name and uncheck the following:
 
-   - [ ] `Pin Study Query`
+   - [ ] `Pin Study Query` (could be pin to study query panel)
    - [ ] `Pin Dashboard Summary`
    - [ ] `Pin to Login Page`
 
+   [ISSUE pin "to" ??? Dashboard summary  ]
+
 3. Click 'Submit' and assert that the error message reads : `Must pin as study query, to dashboard, or to the login page.`
-4. Check the following box [x]`Pin Study Query`
 
-   - click the submit button and assert that the query is now pinned at the top of the page in the `Study Queries` panel
-5. Go to LORIS main page by clicking the **LORIS** name in the top-left corner
+[ISSUE this language is not clear, "esp must pin as study query". Rather: you must select an option"]
 
-   - assert that the query is **not** displayed inside the right-side `Study Queries` panel
-6. Return to the module's splash page and pin a query, only checking the `Pin Dashboard Summary`
+#### Pin Study Query
 
-   - Assert that the query is **not** pinned at the top of the page in the `Study Queries` panel
-7. Assert that the query is displayed inside the `Study Queries` panel on the right side
-8. Click the pinned query. Assert that `Loaded Query` is displayed.
-9. Pin a query with `Pin Study Query`. Assert the selected query is displayed in **both** the dataquery module Study Query Section and in the LORIS login page.
-10. `Pin Dashboard Summary` and `Pin to Login Page` options.
+- Check the following box [x]`Pin Study Query`
 
-- Assert that `Study Queries` in the dataquery module **and** `Study Queries` in LORIS welcome page **and** `Data in LORIS` on the LORIS Login Page are displayed.
-- Assert that the query is now pinned at the top of the page, in `Study Queries` panel.
+   1. click the submit button and assert that the query is now pinned at the top of the page in the `Study Queries` panel
 
-11. Assert that: `starred queries` are available in the right side `Starred Queries` panel.
+***************************************************
+- Go to LORIS main page by clicking the **LORIS** name in the top-left corner
 
-12. Assert that: clicking on any `starred query` sends you back to dataquery module with the selected query loaded (bottom-right panel already with the `Run Query` button active).
 
-13. Assert that: clicking on any `study query` sends you back to the dataquery module with the selected query loaded (bottom-right panel already with the `Run Query` button active).
+   2. assert that the query is **not** displayed inside the right-side `Study Queries` panel
+***********************************************************************8
 
-14. Remove all pinned queries and assert that there is no `Study Queries` panel at the top of the page.
+#### Pin to Dashboard Summary
+
+- Return to `>Data Query Tool` in and expand the  `Recent Queries` panel, if not already expanded.
+
+1. Click on the pin and select
+   - [x] Pin to Dashboard Summary - Study Queries Panel
+   - Assert that it appears in the Study Queries Panel of the Loris Dashboard
+
+2. Click the same pinned query (in the Dashboard `Study Queries` panel). 
+   - Assert that `Loaded Query` is displayed.
+
+#### Pin to Login Page
+
+- Pin a third query titled 'CC'
+
+1. Assert the selected query is displayed in **both** the dataquery module Study Query Panel and in the LORIS login page.
+
+2. Assert that: clicking on any `starred query` sends you back to dataquery module with the selected query loaded (bottom-right panel already with the `Run Query` button active).
+
+3. Assert that: clicking on any `study query` sends you back to the dataquery module with the selected query loaded (bottom-right panel already with the `Run Query` button active).
+
 
 ## Candidate Parameters Permission
 
