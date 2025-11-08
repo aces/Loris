@@ -331,7 +331,7 @@ class RedcapDictionaryRecord
                     '$choice' as index $index"
                 );
                 $backend = $index;
-                $label - $choice;
+                $label = $choice;
                 $index++;
             } else {
                 //Normal parsing
