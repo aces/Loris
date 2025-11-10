@@ -158,3 +158,37 @@ msgstr "इस विंडो को बंद करने के लिए �
 
 msgid "Comments saved."
 msgstr "टिप्पणियाँ सहेजी गईं।"
+
+msgid "Voxel Size"
+msgstr "वॉक्सल का आकार"
+
+msgid "Protocol"
+msgstr "प्रोटोकॉल"
+
+msgid "Acquisition Date"
+msgstr "अधिग्रहण तिथि"
+
+msgid "Inserted Date"
+msgstr "प्रविष्ट तिथि"
+
+msgid "Series Number"
+msgstr "श्रृंखला संख्या"
+
+msgid "Series Description"
+msgstr "श्रृंखला का विवरण"
+
+msgid "Slice Thick"
+msgstr "मोटा काटें"
+
+msgid "Phase Encoding Direction"
+msgstr "चरण एन्कोडिंग दिशा"
+
+msgid "Image Type"
+msgstr "छवि का प्रकार"
+
+msgid "Echo Number"
+msgstr "प्रतिध्वनि संख्या"
+
+msgid "Number of volumes"
+msgstr "खंडों की संख्या"
+
