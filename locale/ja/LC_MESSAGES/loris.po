@@ -129,6 +129,9 @@ msgstr "作成する"
 msgid "N/A"
 msgstr "適用できない"
 
+msgid "Back"
+msgstr "戻る"
+
 # Filters
 msgid "Selection Filter"
 msgstr "'選択フィルター"
@@ -162,14 +165,19 @@ msgstr "候補者識別子"
 msgid "Visit Label"
 msgstr "ラベルを訪問"
 
+msgid "Email"
+msgstr "メール"
+
 msgid "Site"
-msgstr "サイト"
+msgid_plural "Sites"
+msgstr[0] "サイト"
 
 msgid "Module"
 msgstr "モジュール"
 
 msgid "Project"
-msgstr "プロジェクト"
+msgid_plural "Projects"
+msgstr[0] "プロジェクト"
 
 msgid "Candidate Registration Project"
 msgstr "候補者登録プロジェクト"
@@ -225,6 +233,9 @@ msgstr "訪問"
 
 msgid "An error occured while loading the page."
 msgstr "このページの読み込み中にエラーが発生しました"
+
+msgid "Active"
+msgstr "アクティブ"
 
 msgid "Entity Type"
 msgstr "エンティティタイプ"
@@ -403,6 +414,9 @@ msgstr "姓は必須で、120文字以内で入力してください。"
 msgid "Email address"
 msgstr "電子メールアドレス"
 
+msgid "Password"
+msgstr "パスワード"
+
 msgid "New Password"
 msgstr "新しいパスワード"
 
@@ -411,6 +425,9 @@ msgstr "パスワードを認証する"
 
 msgid "Email address is required"
 msgstr "メールアドレスは必須です"
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "メールアドレスには、<、>、&、\" の文字を含めることはできません。"
 
 msgid "The password must be at least 8 characters long."
 msgstr "パスワードは8文字以上である必要があります"
