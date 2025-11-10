@@ -282,12 +282,6 @@ msgstr "भाषा"
 msgid "Ethnicity"
 msgstr "जातीयता"
 
-msgid "Save"
-msgstr "सहेजें"
-
-msgid "Reset"
-msgstr "रीसेट करें"
-
 msgid "Previous"
 msgstr "पिछला"
 
