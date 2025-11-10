@@ -370,6 +370,9 @@ msgstr "पूर्ण"
 msgid "Instruments"
 msgstr "उपकरण"
 
+msgid "Instrument"
+msgstr "यंत्र"
+
 msgid "None"
 msgstr "कोई नहीं"
 
