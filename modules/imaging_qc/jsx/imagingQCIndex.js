@@ -3,7 +3,8 @@ import React, {Component} from 'react';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import PropTypes from 'prop-types';
-
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
 /**
  * Imaging Quality Control React Component
  */
@@ -252,14 +253,14 @@ ImagingQCIndex.propTypes = {
   hasPermission: PropTypes.func.isRequired,
 };
 
-window.addEventListener('load', () => {
-  createRoot(
-    document.getElementById('lorisworkspace')
-  ).render(
-    <ImagingQCIndex
-      ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
-      hasPermission={loris.userHasPermission}
-    />
+ window.addEventListener('load', () => {
+  i18n.addResourceBundle('jp', 'loris', {}, true, true);
+  const ImagingQC = withTranslation(['loris'])(ImagingQCIndex);
+  createRoot(document.getElementById('lorisworkspace')).render(
+    <ImagingQC
+       ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
+       hasPermission={loris.userHasPermission}
+     />
   );
 });
 
