@@ -254,13 +254,13 @@ ImagingQCIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
- i18n.addResourceBundle('jp', 'loris', {}, true, true);
- const ImagingQC = withTranslation(['loris'])(ImagingQCIndex);
- createRoot(document.getElementById('lorisworkspace')).render(
-   <ImagingQC
-      ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
-      hasPermission={loris.userHasPermission}
-   />
+  i18n.addResourceBundle('jp', 'loris', {}, true, true);
+  const ImagingQC = withTranslation(['loris'])(ImagingQCIndex);
+  createRoot(document.getElementById('lorisworkspace')).render(
+    <ImagingQC
+       ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
+       hasPermission={loris.userHasPermission}
+    />
   );
 });
 
