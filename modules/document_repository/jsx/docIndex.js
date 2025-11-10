@@ -218,6 +218,7 @@ class DocIndex extends React.Component {
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
+          cancelButtonText: t('Cancel', {ns: 'document_repository'}),
           confirmButtonText: t('Yes, delete it!',
             {ns: 'document_repository'}),
         }).then((result) => {

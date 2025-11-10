@@ -141,3 +141,47 @@ msgstr ""
 msgid "Delete Successful!"
 msgstr ""
 
+msgid "Browse"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "File Name"
+msgstr ""
+
+msgid "Uploaded By"
+msgstr ""
+
+msgid "For Site"
+msgstr ""
+
+msgid "File Type"
+msgstr ""
+
+msgid "Date Uploaded"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete File"
+msgstr ""
+
+msgid "Filter globally"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "You won't be able to revert this!"
+msgstr ""
+
+msgid "Yes, delete it!"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
