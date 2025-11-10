@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * This script updates the Login Summary Statistics table in the database
+ * This script updates the login_summary_statistics table in the database
  * based on the queries that are pinned to the login page in the dataquery module,
  * and on the SQL queries in the project/tools/Login_Summary_Statistics folder,
  * or if that does not exist, the SQL/Login_Summary_Statistics folder.
