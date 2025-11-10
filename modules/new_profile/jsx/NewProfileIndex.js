@@ -19,6 +19,7 @@ import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/new_profile.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/new_profile.json';
 import esStrings from '../locale/es/LC_MESSAGES/new_profile.json';
+import frStrings from '../locale/fr/LC_MESSAGES/new_profile.json';
 
 /**
  * New Profile Form
@@ -396,6 +397,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'new_profile', hiStrings);
   i18n.addResourceBundle('ja', 'new_profile', jaStrings);
   i18n.addResourceBundle('es', 'new_profile', esStrings);
+  i18n.addResourceBundle('fr', 'new_profile', frStrings);
 
   const NPIndex = withTranslation(['new_profile'])(NewProfileIndex);
   createRoot(
