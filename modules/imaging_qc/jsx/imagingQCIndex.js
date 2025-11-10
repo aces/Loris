@@ -258,8 +258,8 @@ window.addEventListener('load', () => {
   const ImagingQC = withTranslation(['loris'])(ImagingQCIndex);
   createRoot(document.getElementById('lorisworkspace')).render(
     <ImagingQC
-       ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
-       hasPermission={loris.userHasPermission}
+        ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
+        hasPermission={loris.userHasPermission}
     />
   );
 });
