@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line no-unused-vars
 import i18n from 'I18nSetup';
 /**
  * Imaging Quality Control React Component
