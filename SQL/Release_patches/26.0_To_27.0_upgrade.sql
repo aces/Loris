@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS = 0;
 -- create new permissions to upload and to hide files
 INSERT INTO permissions (code, description, moduleID, action, categoryID) VALUES
     (
@@ -471,7 +472,6 @@ UPDATE parameter_candidate SET CandID=(SELECT ID from candidate c WHERE c.CandID
 ALTER TABLE parameter_candidate CHANGE CandID CandidateID int(10) unsigned NOT NULL;
 ALTER TABLE parameter_candidate ADD CONSTRAINT FK_parameter_candidate_2 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
-SET FOREIGN_KEY_CHECKS = 0;
 
 ALTER TABLE candidate_diagnosis_evolution_rel DROP FOREIGN KEY FK_candidate_diagnosis_evolution_rel_CandID;
 ALTER TABLE candidate_diagnosis_evolution_rel DROP PRIMARY KEY;
@@ -487,7 +487,6 @@ ADD CONSTRAINT FK_candidate_diagnosis_evolution_rel_CandID
 FOREIGN KEY (CandidateID) REFERENCES candidate(ID)
 ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-SET FOREIGN_KEY_CHECKS = 1;
 
 -- Changes references to candidate.CandID that were NOT FK. Add FK
 UPDATE feedback_bvl_thread SET CandID=(SELECT ID from candidate c WHERE c.CandID=feedback_bvl_thread.CandID);
@@ -589,3 +588,4 @@ CREATE TABLE `openid_connect_csrf` (
     PRIMARY KEY (`State`),
     CONSTRAINT `FK_openid_provider` FOREIGN KEY (`OpenIDProviderID`) REFERENCES `openid_connect_providers` (`OpenIDProviderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SET FOREIGN_KEY_CHECKS = 1;

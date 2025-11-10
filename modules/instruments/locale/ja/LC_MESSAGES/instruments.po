@@ -21,9 +21,41 @@ msgstr ""
 msgid "Instruments"
 msgstr "機器"
 
-
 msgid "Incomplete form"
 msgstr "不完全なフォーム"
 
 msgid "Incomplete forms"
 msgstr "不完全なフォーム"
+
+msgid "Clear Instrument"
+msgstr "クリアインストルメント"
+
+msgid "Validity"
+msgstr "有効"
+
+msgid "Valid"
+msgstr "有効"
+
+msgid "Questionable"
+msgstr "疑わしい"
+
+msgid "Invalid"
+msgstr "無効"
+
+msgid "Subtests"
+msgstr "サブテスト"
+
+msgid "Top"
+msgstr "トップ"
+
+msgid "Behavioural Data"
+msgstr "行動データ"
+
+msgid "Completion"
+msgstr "完了"
+
+msgid "Conflicts?"
+msgstr "衝突？"
+
+msgid "Visit has no registered instruments in test battery."
+msgstr "訪問にはテスト バッテリーに登録された機器がありません。"
