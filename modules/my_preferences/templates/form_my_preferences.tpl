@@ -1,13 +1,13 @@
 <form method="post" name="my_preferences" id="my_preferences" autocomplete="off">
-    <h3>Password Rules</h3>
+    <h3>{dgettext("loris", "Password Rules")}</h3>
       <ul>
-        <li>The password must be at least 8 characters long.</li>
-        <li>The password cannot be your username or email address.</li>
-        <li>No special characters are required but your password must be sufficiently complex to be accepted.</li>
+        <li>{dgettext("loris", "The password must be at least 8 characters long.")}</li>
+        <li>{dgettext("loris", "The password cannot be your username or email address.")}</li>
+        <li>{dgettext("loris", "No special characters are required but your password must be sufficiently complex to be accepted.")}</li>
       </ul>
-        <p>Please choose a unique password.</p>
-        <p>We suggest using a password manager to generate one for you.</p>
-    <h3>Edit My Information</h3>
+        <p>{dgettext("loris", "Please choose a unique password.")}</p>
+        <p>{dgettext("loris", "We suggest using a password manager to generate one for you.")}</p>
+    <h3>{dgettext("my_preferences", "Edit My Information")}</h3>
     {foreach from=$form.errors item=error}
         <ul>
             <li class="error">{$error}</li>
@@ -38,7 +38,8 @@
         <div class="col-sm-10">
             {$form.Last_name.html}
         </div>
-    </div><div class="row form-group">
+    </div>
+    <div class="row form-group">
         <label class="col-sm-2">
             {$form.Email.label}
         </label>
@@ -62,6 +63,17 @@
             <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
+    <div>
+    <div class="row form-group">
+       <label class="col-sm-2">
+       {* It would be nice to do this inline but the whole page is embedded
+          in a different form element with a smarty template and it's easier
+          to create a new "fresh" page with modern react/etc than rewrite
+          the whole page or do a hybrid here *}
+       <a href="{$baseurl}/my_preferences/mfa">{dgettext("my_preferences", "Configure multi-factor authentication (MFA)")}</a>
+	</label>
+    </div>
+
     <div class="row form-group">
         <label class="col-sm-2">
             {$form.language_preference.label}
@@ -71,7 +83,7 @@
         </div>
     </div>
     <br><br>
-    <h3>Notifications</h3>
+    <h3>{dgettext("my_preferences", "Notifications")}</h3>
     <table class="table table-instrument" >
         <thead>
             {foreach key=gkey item=gitem from=$form.notification_headers.elements}
@@ -110,13 +122,12 @@
     </div>
     <div class="row form-group">
         <div class="col-sm-2">
-            <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
+            <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="{dgettext("loris", "Save")}" type="submit" />
         </div>
         <div class="col-sm-2">
-            <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" />
+            <input class="btn btn-sm btn-primary col-xs-12" value="{dgettext("loris", "Reset")}" type="reset" />
         </div>
     </div>
-
 
 {$form.hidden|default}
 </form>

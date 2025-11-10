@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all modules
  * for the acknowledgements menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\acknowledgements;
  * This class implements a data provisioner to get all modules
  * for the acknowledgements menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -68,5 +68,4 @@ class AcknowledgementsProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
     {
             return new AcknowledgementRow($row);
     }
-
 }

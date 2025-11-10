@@ -4,7 +4,7 @@
  * This file retrieves content for specific help section
  * and returns a json object
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -16,8 +16,8 @@
 $factory  = \NDB_Factory::singleton();
 $user     = $factory->user();
 $editable = $user->hasPermission('context_help');
-
 try {
+
     $moduleName  = $_REQUEST['testName'] ?? null;
     $subpageName = $_REQUEST['subtest'] ?? null;
     $m           = $loris->getModule($moduleName);
@@ -33,6 +33,7 @@ try {
     if (ob_get_level() > 0) {
         ob_end_flush();
     }
+
     exit(0);
 } catch (Exception $e) {
 
@@ -41,11 +42,12 @@ try {
 
     if (!empty($moduleName)) {
         try {
-            $helpID    = \LORIS\help_editor\HelpFile::hashToID(
+            $helpID = \LORIS\help_editor\HelpFile::hashToID(
                 md5($subpageName ?? $moduleName)
             );
-            $help_file = \LORIS\help_editor\HelpFile::factory($helpID);
-            $data      = $help_file->toArray();
+
+                    $help_file = \LORIS\help_editor\HelpFile::factory($helpID);
+                    $data      = $help_file->toArray();
         } catch (\NotFound $e) {
             // Send data with empty strings so that the content can be edited
             $data = [

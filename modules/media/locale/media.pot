@@ -21,3 +21,5 @@ msgstr ""
 msgid "Media"
 msgstr ""
 
+msgid "Candidate Media"
+msgstr ""

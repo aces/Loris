@@ -3,7 +3,7 @@
 /**
  * This contains tests relevant to the Login endpoint
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   API
  * @package    Tests
@@ -27,7 +27,7 @@ use \Laminas\Diactoros\ServerRequest;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class LoginTest extends TestCase
+class Login_Test extends TestCase
 {
     /**
      * A PSR Request object representing the incoming request
@@ -101,7 +101,8 @@ class LoginTest extends TestCase
             ->willReturn(true);
 
         $handler = $this->getMockBuilder('\LORIS\api\Endpoints\Login')
-            ->addMethods(['getLoginAuthenticator', 'getEncodedToken'])
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getLoginAuthenticator', 'getEncodedToken'])
             ->getMock();
 
         $handler->expects($this->once())

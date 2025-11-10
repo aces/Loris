@@ -5,7 +5,7 @@
  *
  * Used for uploading file with Issue Tracker.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Issue_Tracker

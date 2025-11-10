@@ -84,9 +84,10 @@ function useDataDictionary(): DataDictionaryReturnType {
           }
           return resp.json();
         }).then((result) => {
-          fulldictionary[module] = result;
-          setDictionary({...fulldictionary});
-
+          setDictionary((prev) => ({
+            ...prev,
+            [module]: result,
+          }));
           resolve(result);
         }).catch( (error) => {
           console.error(error);

@@ -9,12 +9,12 @@ namespace LORIS\my_preferences;
  */
 class My_Preferences extends \NDB_Form
 {
-    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
-    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be ' .
-                                        'your user name.';
-    private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match.';
-    private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are ' .
-                                        'identical: please choose another one';
+    // Use gettext for error messages
+    private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email';
+    private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be your username';
+    private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match';
+    private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are identical';
+
     /**
      * Computes the initial values this page will be filled with.
      *
@@ -71,8 +71,8 @@ class My_Preferences extends \NDB_Form
                     $defaults['examiner_radiologist'] = 'N';
                 }
             }
-            if ($vals[0]=='Y') {
-                $defaults['ex_'.$cid] ='on';
+            if ($vals[0] == 'Y') {
+                $defaults['ex_'.$cid] = 'on';
             }
         }
 
@@ -85,7 +85,8 @@ class My_Preferences extends \NDB_Form
             foreach ($operations as $operation => $services) {
                 unset($services['desc']);
                 foreach ($services as $service => $subscribed) {
-                    $var_name = "notif_".$module."_".$operation."_".$service;
+                    $var_name
+                        = "notif_".$module."_".$operation."_".$service;
 
                     if ($subscribed==='Y') {
                         $defaults[$var_name] = 'on';
@@ -222,21 +223,22 @@ class My_Preferences extends \NDB_Form
         //get notification details
         $notifier_list     = \NDB_Notifier::getNotificationModuleServices();
         $notifier_services = \NDB_Notifier::getNotificationServices();
-        //------------------------------------------------------------
 
         // user name
-        $this->addScoreColumn('UserID', 'User name');
+        $this->addScoreColumn('UserID', dgettext('loris', 'Username'));
 
         // full name
         // The supplied pattern is:
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
-        $firstNameInvalidMsg = "First name is required and "
-            . "should not exceed 120 characters";
+        $firstNameInvalidMsg = dgettext(
+            'loris',
+            "First name is required and should not exceed 120 characters"
+        );
         $this->addBasicText(
             'First_name',
-            'First name',
+            dgettext('loris', 'First name'),
             [],
             [
                 'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
@@ -249,11 +251,13 @@ class My_Preferences extends \NDB_Form
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
-        $lastNameInvalidMsg = "Last name is required and "
-            . "should not exceed 120 characters";
+        $lastNameInvalidMsg = dgettext(
+            'loris',
+            "Last name is required and should not exceed 120 characters"
+        );
         $this->addBasicText(
             'Last_name',
-            'Last name',
+            dgettext('loris', 'Last name'),
             [],
             [
                 'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
@@ -266,36 +270,65 @@ class My_Preferences extends \NDB_Form
         // email address
         $this->addBasicText(
             'Email',
-            'Email address',
+            dgettext('loris', 'Email address'),
             [],
             [
-                'oninvalid' => "this.setCustomValidity('Email address is required')",
+                'oninvalid' => "this.setCustomValidity(
+                    '" . dgettext(
+                    'loris',
+                    'Email address is required'
+                ) . "')",
                 'onchange'  => "this.setCustomValidity('')",
             ]
         );
 
         // email address rules
-        $this->addRule('Email', 'Email address is required', 'required');
         $this->addRule(
             'Email',
-            'Your email address must be less than 255 characters long',
+            dgettext(
+                'loris',
+                'Email address is required'
+            ),
+            'required'
+        );
+        $this->addRule(
+            'Email',
+            dgettext(
+                'my_preferences',
+                'Your email address must be less than 255 characters long'
+            ),
             'maxlength',
             "255"
         );
 
         // password
-        $this->form->addElement('password', 'Password_hash', 'New Password');
-        $this->form->addElement('password', '__Confirm', 'Confirm Password');
+        $this->form->addElement(
+            'password',
+            'Password_hash',
+            dgettext('loris', 'New Password')
+        );
+        $this->form->addElement(
+            'password',
+            '__Confirm',
+            dgettext('loris', 'Confirm Password')
+        );
 
         // language preference
         $languages = \Utility::getLanguageList();
-        $this->addSelect('language_preference', 'Language preference', $languages);
+        $this->addSelect(
+            'language_preference',
+            dgettext(
+                'my_preferences',
+                'Language preference'
+            ),
+            $languages
+        );
 
         // Notification headers
         $nGroup   = [];
-        $nGroup[] = $this->createLabel("Module");
-        $nGroup[] = $this->createLabel("Operation");
-        $nGroup[] = $this->createLabel("Description");
+        $nGroup[] = $this->createLabel(dgettext('loris', "Module"));
+        $nGroup[] = $this->createLabel(dgettext('my_preferences', "Operation"));
+        $nGroup[] = $this->createLabel(dgettext('my_preferences', "Description"));
 
         foreach ($notifier_services as $serv) {
             $nGroup[] = $this->createLabel($serv);
@@ -311,7 +344,7 @@ class My_Preferences extends \NDB_Form
         // Notification rows
         $notification_rows =[];
         foreach ($notifier_list as $module=>$operation_services) {
-            foreach ($operation_services as $operation=>$services) {
+            foreach ($operation_services as $operation => $services) {
                 $nGroup   = [];
                 $nGroup[] = $this->createLabel($module);
                 $nGroup[] = $this->createLabel($operation);
@@ -319,27 +352,26 @@ class My_Preferences extends \NDB_Form
                 unset($services['desc']);
 
                 // Check for permissions
-                $display =true;
+                $display = true;
                 foreach ($services['perm'] as $permission) {
                     if (!$user->hasPermission($permission)) {
-                        $display =false;
+                        $display = false;
                         break;
                     }
                 }
                 unset($services['perm']);
 
-                foreach ($services as $service=>$avail) {
-                    if ($avail==='Y' && $display) {
+                foreach ($services as $service => $avail) {
+                    if ($avail === 'Y' && $display) {
                         $nGroup[] = $this->createCheckbox(
                             "notif_".$module."_".$operation."_".$service,
                             ""
                         );
                     } else {
                         $nGroup[] = $this->createLabel(
-                            "N/A"
+                            dgettext('loris', "N/A")
                         );
                     }
-
                 }
 
                 $this->addGroup(
@@ -348,10 +380,11 @@ class My_Preferences extends \NDB_Form
                     '',
                     $this->_GUIDelimiter
                 );
-                $notification_rows[] ="row_".$module."_".$operation;
+                $notification_rows[] = "row_".$module."_".$operation;
                 unset($nGroup);
             }
         }
+
         $this->tpl_data['notification_rows'] = $notification_rows;
         //------------------------------------------------------------
 
@@ -378,7 +411,6 @@ class My_Preferences extends \NDB_Form
         $this->form->addFormRule([&$this, '_validateMyPreferences']);
     }
 
-
     /**
      * Validates the data entered in the form when editing one's preferences.
      *
@@ -397,18 +429,27 @@ class My_Preferences extends \NDB_Form
         $plaintext = $values['Password_hash'];
 
         if ($values['Email'] === $plaintext) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+            $errors['Password_Group'] = dgettext(
+                'my_preferences',
+                self::PASSWORD_ERROR_IS_EMAIL
+            );
         }
 
         // Make sure the user is not using their username as their password.
         if ($this->identifier === $plaintext) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_USER;
+            $errors['Password_Group'] = dgettext(
+                'my_preferences',
+                self::PASSWORD_ERROR_IS_USER
+            );
         }
 
         // Ensure that the password and confirm password fields match.
         // TODO This validation should be done on the front-end instead.
         if ($values['Password_hash'] !== $values['__Confirm']) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_NO_MATCH;
+            $errors['Password_Group'] = dgettext(
+                'my_preferences',
+                self::PASSWORD_ERROR_NO_MATCH
+            );
             return $errors;
         }
 
@@ -421,26 +462,29 @@ class My_Preferences extends \NDB_Form
                 $decoded = htmlspecialchars_decode($plaintext);
                 new \Password($decoded);
                 // New password must be different than current one
-                if (! \User::factory($this->identifier)->isPasswordDifferent(
-                    $decoded
-                )
+                if (!\User::factory($this->identifier)->isPasswordDifferent($decoded)
                 ) {
-                    $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
+                    $errors['Password_Group'] = dgettext(
+                        'my_preferences',
+                        self::PASSWORD_ERROR_NO_CHANGE
+                    );
                 }
             } catch (\InvalidArgumentException $e) {
-                $errors['Password_Group'] = $e->getMessage();
+                $errors['Password_Group'] = dgettext(
+                    'my_preferences',
+                    $e->getMessage()
+                );
             }
         }
 
         // Validate email
         $emailError = $this->_getEmailError($DB, $values['Email']);
         if (!is_null($emailError)) {
-            $errors['Email'] = $emailError;
+            $errors['Email'] = dgettext('my_preferences', $emailError);
         }
 
         return $errors;
     }
-
 
     /**
      * Validates that en email address entered for a given user
@@ -457,7 +501,7 @@ class My_Preferences extends \NDB_Form
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // If email not syntactically valid
-            return "Invalid email address";
+            return dgettext('loris', "Invalid email address");
         }
 
         // check email address' uniqueness
@@ -471,7 +515,7 @@ class My_Preferences extends \NDB_Form
 
         // Email already exists in database
         if ($result > 0) {
-            return 'The email address already exists';
+            return dgettext('my_preferences', 'The email address already exists');
         }
 
         return null;
@@ -517,4 +561,3 @@ class My_Preferences extends \NDB_Form
         );
     }
 }
-

@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -210,10 +213,14 @@ UserAccountsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'user_accounts', {});
+  const Index = withTranslation(
+    ['user_accounts', 'loris']
+  )(UserAccountsIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <UserAccountsIndex
+    <Index
       dataURL={`${loris.BaseURL}/user_accounts/?format=json`}
       hasPermission={loris.userHasPermission}
     />

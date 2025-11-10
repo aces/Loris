@@ -20,3 +20,108 @@ msgstr ""
 
 msgid "Statistics"
 msgstr ""
+
+msgid "Study Progression"
+msgstr ""
+
+msgid "Summary"
+msgstr ""
+
+msgid "Site Scans"
+msgstr ""
+
+msgid "Site Recruitment"
+msgstr ""
+
+msgid "-- Clear Selection --"
+msgstr ""
+
+msgid "Scan sessions per site"
+msgstr ""
+
+msgid "Recruitment per site"
+msgstr ""
+
+msgid "Download as PNG"
+msgstr ""
+
+msgid "Labels"
+msgstr ""
+
+msgid "Date Registered"
+msgstr ""
+
+msgid "Range Start"
+msgstr ""
+
+msgid "Range End"
+msgstr ""
+
+msgid "Total recruitment by Age"
+msgstr ""
+
+msgid "Ethnicity at Screening"
+msgstr ""
+
+msgid "Total Recruitment per Site"
+msgstr ""
+
+msgid "Biological sex breakdown by site"
+msgstr ""
+
+msgid "Candidate Age at Registration"
+msgstr ""
+
+msgid "Candidates registered"
+msgstr ""
+
+msgid "Target: {{target}}"
+msgstr ""
+
+msgid "Recruitment target of {{target}} was reached."
+msgstr ""
+
+msgid "Recruitment target of {{target}} was not reached."
+msgstr ""
+
+msgid "No target set"
+msgstr ""
+
+msgid "{{total}} total participants."
+msgstr ""
+
+msgid "Overall Recruitment"
+msgstr ""
+
+msgid "Recruitment"
+msgstr ""
+
+msgid "Overall"
+msgstr ""
+
+msgid "Site Breakdown"
+msgstr ""
+
+msgid "Project Breakdown"
+msgstr ""
+
+msgid "Cohort Breakdown"
+msgstr ""
+
+msgid "Total Participants: {{count}}"
+msgstr ""
+
+msgid "Projects: {{count}}"
+msgstr ""
+
+msgid "Cohorts: {{count}}"
+msgstr ""
+
+msgid "Age (Years)"
+msgstr ""
+
+msgid "Participants"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""

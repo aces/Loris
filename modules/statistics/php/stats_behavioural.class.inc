@@ -3,7 +3,7 @@
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -16,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -43,6 +43,7 @@ class Stats_Behavioural extends \NDB_Form
     {
         return $user->hasPermission('data_entry');
     }
+
     /**
      * InCenter function
      *
@@ -166,7 +167,7 @@ class Stats_Behavioural extends \NDB_Form
             }
             $Visits = \Utility::getVisitList($currentProject);
         } else {
-            $Visits = \Utility::getVisitList();
+            $Visits = $user->getVisits();
         }
 
         $this->tpl_data['Visits'] = $Visits ?? '';

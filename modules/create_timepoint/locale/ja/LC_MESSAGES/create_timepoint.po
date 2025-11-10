@@ -21,3 +21,29 @@ msgstr ""
 msgid "Create Timepoint"
 msgstr "タイムポイントを作成"
 
+msgid "No cohorts defined for project: {{project}}"
+msgstr "プロジェクト {{project}} にコホートが定義されていません"
+
+msgid "No visit labels defined for the combination project: {{project}} and cohort: {{cohort}}"
+msgstr "プロジェクト {{project}} とコホート {{cohort}} の組み合わせに訪問ラベルが定義されていません"
+
+msgid "Timepoint created."
+msgstr "タイムポイント作成"
+
+msgid "This visit label is not unique."
+msgstr "この訪問ラベルは一意ではありません。"
+
+msgid "You must be affiliated with a site to create a timepoint."
+msgstr "タイムポイントを作成するには、サイトに所属している必要があります。"
+
+msgid "Site must be selected from the available dropdown."
+msgstr "利用可能なドロップダウンからサイトを選択する必要があります。"
+
+msgid "You must be affiliated with a project to create a timepoint."
+msgstr "タイムポイントを作成するには、プロジェクトに所属している必要があります。"
+
+msgid "A project must be selected from the available dropdown."
+msgstr "利用可能なドロップダウンからプロジェクトを選択する必要があります。"
+
+msgid "A language must be selected."
+msgstr "言語を選択する必要があります。"

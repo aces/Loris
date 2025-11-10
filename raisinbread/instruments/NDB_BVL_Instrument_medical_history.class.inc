@@ -2,7 +2,7 @@
 /**
  * This file contains the Medical History Instrument class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Instrument
  * @package  TEMPLATE

@@ -141,6 +141,7 @@ class ViewDetails extends \NDB_Form
             $this->_validateNamesIDs();
         }
     }
+
     /**
      * Retrieves data for the template from the database
      *
@@ -208,6 +209,7 @@ class ViewDetails extends \NDB_Form
 
         return $tarchiveData ?? [];
     }
+
     /**
      * Validates PatientName and PatientID,
      * sets INVALID-HIDDEN if not validated.
@@ -323,6 +325,7 @@ class ViewDetails extends \NDB_Form
             return false;
         }
     }
+
     /**
      * Finds the protocol name by comparing parameters of a series.
      *
@@ -381,6 +384,7 @@ class ViewDetails extends \NDB_Form
             return $protocolMin <= $seriesRange && $seriesRange <= $protocolMax;
         }
     }
+
     /**
      * Retrieves the protocol name given the protocol ID
      * from mri_scan_table table

@@ -173,6 +173,18 @@ class IncompleteForms extends Component {
         },
       },
       {
+        label: 'Data Entry Type',
+        show: true,
+        filter: {
+          name: 'Data Entry Type',
+          type: 'select',
+          options: {
+            'IDE': 'Initial Data Entry (IDE)',
+            'DDE': 'Double Data Entry (DDE)',
+          },
+        },
+      },
+      {
         label: 'DCCID',
         show: true,
         filter: {

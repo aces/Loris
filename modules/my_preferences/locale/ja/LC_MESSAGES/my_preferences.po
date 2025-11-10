@@ -1,0 +1,80 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Edit My Information"
+msgstr "私の情報を編集する"
+
+msgid "Notifications"
+msgstr "通知"
+
+msgid "Your email address must be less than 255 characters long"
+msgstr "メールアドレスは255文字未満でなければなりません"
+
+msgid "Language preference"
+msgstr "言語設定"
+
+msgid "Operation"
+msgstr "作用"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "The email address already exists"
+msgstr "メールアドレスは既に存在します"
+
+msgid "Your password cannot be your email"
+msgstr "パスワードにメールアドレスは使用できません"
+
+msgid "Your password cannot be your username"
+msgstr "パスワードをユーザー名と同じにすることはできません。"
+
+msgid "The passwords do not match"
+msgstr "パスワードが一致しません"
+
+msgid "New and old passwords are identical"
+msgstr "新しいパスワードと古いパスワードは同一です"
+
+msgid "Configure multi-factor authentication (MFA)"
+msgstr "多要素認証を設定する"
+
+msgid "Configure MFA"
+msgstr "多要素認証を設定する"
+
+msgid "Manual MFA Setup"
+msgstr "手動多要素認証の設定"
+
+msgid "Use the following key in your authenticator app: <0>{{code}}</0>"
+msgstr "認証アプリで次のコードを使用してください: <0>{{code}}</0>"
+
+msgid "Scan the following QR code below in your MFA authenticator and enter the code to validate."
+msgstr "多要素認証システムで以下の QR コードをスキャンし、コードを入力して検証します。"
+
+msgid "Note that this will <0>overwrite</0> any previously setup MFA in LORIS!"
+msgstr "これにより、ロリスで以前に設定された多要素認証が <0>上書き</0> されることに注意してください。"
+
+msgid "Can't scan the QR code? <0>Setup manually.</0>"
+msgstr "QR コードをスキャンできませんか? <0>手動で設定してください。</0>"
+
+msgid "Validate Code"
+msgstr "コードの検証"
+
+msgid "Successfully registered multifactor authenticator"
+msgstr "多要素認証の登録に成功しました"

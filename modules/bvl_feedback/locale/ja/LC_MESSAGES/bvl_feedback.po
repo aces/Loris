@@ -21,6 +21,28 @@ msgstr ""
 msgid "Behavioural Feedback"
 msgstr "行動フィードバック"
 
+
 msgid "Behavioural Feedback Notifications"
 msgstr "行動フィードバック通知"
 
+# Default strings from feedback_bvl_type in raisinbread
+msgid "Input"
+msgstr "インプット"
+
+msgid "Input Errors"
+msgstr "入力エラー"
+
+msgid "Scoring"
+msgstr "得点"
+
+msgid "Scoring Errors"
+msgstr "得点エラー"
+
+msgid "Other"
+msgstr "他の"
+
+# Comments from dashboard widget on raisinbread.
+# These are dynamically entered user data, but having
+# the test set value on demo translated looks better
+msgid "Feedback description"
+msgstr "フィードバックの説明"

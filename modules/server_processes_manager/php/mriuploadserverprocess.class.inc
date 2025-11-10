@@ -3,7 +3,7 @@
 /**
  * This file contains code to perform a complete MRI upload on the server.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category ServerProcessLauncher
  * @package  Loris

@@ -167,14 +167,17 @@ abstract class SQLQueryEngine implements QueryEngine
         $sessionVariables = false;
         $keyFields        = [];
         foreach ($items as $dict) {
+            // Quote the question marks otherwise PDO will interpret
+            // these as positional placeholders
+            $dictName = str_replace('?', '??', $dict->getName());
             $fields[] = $this->getFieldNameFromDict($dict)
                 . ' as '
-                . "`{$dict->getName()}`";
+                . "`$dictName`";
             if ($dict->getScope() == 'session') {
                 $sessionVariables = true;
             }
             if ($dict->getCardinality()->__toString() === "many") {
-                $keyFields[] = $this->getCorrespondingKeyField($dict) . " as `{$dict->getName()}:key`";
+                $keyFields[] = $this->getCorrespondingKeyField($dict) . " as `$dictName:key`";
             }
         }
 

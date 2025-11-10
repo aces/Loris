@@ -51,6 +51,7 @@ class AddExaminer extends \NDB_Page
             ));
         }
     }
+
     /**
      * Handles the document editing process
      *
@@ -134,6 +135,7 @@ class AddExaminer extends \NDB_Page
                 )
             );
     }
+
     /**
      * Check the examiner name from the database
      *
@@ -160,6 +162,7 @@ class AddExaminer extends \NDB_Page
 
         return !empty($examinerID);
     }
+
     /**
      * Getter for the examinerID value from the database
      *

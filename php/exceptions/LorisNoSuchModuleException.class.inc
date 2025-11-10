@@ -5,7 +5,7 @@
  * Exception from the case when a module can't be loaded because it is not a module
  * (instruments, forms, reliability forms,...)
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Errors
  * @package  Loris

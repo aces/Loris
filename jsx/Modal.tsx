@@ -212,7 +212,10 @@ const Modal = ({
         </div>
         <div>
           {onSubmit ? (
-            <FormElement onSubmit={handleSubmit}>
+            <FormElement
+              name='modal'
+              onSubmit={handleSubmit}
+            >
               {content}
             </FormElement>
           ) : content}

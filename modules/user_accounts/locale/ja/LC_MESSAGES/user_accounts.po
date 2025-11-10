@@ -24,3 +24,8 @@ msgstr "ユーザーアカウント"
 msgid "Edit User"
 msgstr "ユーザーを編集"
 
+msgid "Pending account approval"
+msgstr "アカウント承認待ち"
+
+msgid "Pending account approvals"
+msgstr "保留中のアカウント承認"

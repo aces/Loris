@@ -19,7 +19,7 @@
  * -- to reset all candidates external IDs and regenerate them
  * generate_candidate_externalids.php reset
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

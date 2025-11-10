@@ -25,7 +25,6 @@ use \LORIS\Middleware\ETagCalculator;
  */
 class Methylation extends \DataFrameworkMenu implements ETagCalculator
 {
-
     /**
      * This function will return a json response.
      *
@@ -45,6 +44,7 @@ class Methylation extends \DataFrameworkMenu implements ETagCalculator
             );
         }
     }
+
     /**
      * Initialize setup, the extra values for the
      * create timepoint form. (psc & errors)

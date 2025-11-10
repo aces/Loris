@@ -26,11 +26,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return dgettext("loris", "Clinical");
+        return \LORIS\GUI\MenuCategory::singleton("Clinical");
     }
 
     /**
@@ -79,7 +79,7 @@ class Module extends \Module
             }
             return [
                 new CandidateWidget(
-                    "Candidate Media",
+                    dgettext("media", "Candidate Media"),
                     $baseurl . "/media/js/CandidateMediaWidget.js",
                     "lorisjs.media.CandidateMediaWidget.default",
                     [ 'Files' => iterator_to_array($media)],

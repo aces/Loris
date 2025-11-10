@@ -11,7 +11,7 @@
  *  - examiners_psc_rel
  *  - certification
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

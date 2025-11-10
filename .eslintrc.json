@@ -91,7 +91,8 @@
     "jsdoc/check-tag-names": "error",
     "jsdoc/check-types": "error",
     "jsdoc/valid-types": "error",
-    "jsdoc/no-undefined-types": "error"
+    "jsdoc/no-undefined-types": "error",
+    "jsdoc/tag-lines": ["error", "any", {"startLines": 1}]
   },
   "overrides": [
     {

@@ -291,7 +291,6 @@ class PublicationUploadForm extends React.Component {
               users={this.state.Data.users}
               allVOIs={this.state.Data.allVOIs}
               allKWs={this.state.Data.allKWs}
-              allCollabs={this.state.Data.allCollabs}
               editMode={false}
             />
           </FormElement>

@@ -3,7 +3,7 @@
 /**
  * This file sets up the Edit Help Content page and form.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -107,7 +107,7 @@ class Edit_Help_Content extends \NDB_Form
                     'UTF-8',
                     false
                 )
-                    : null,
+        : null,
         ];
 
         if (!empty($data['section'])) {
@@ -125,9 +125,23 @@ class Edit_Help_Content extends \NDB_Form
         }
 
         if ($data['helpid']) {
-            $help_data       = HelpFile::factory($data['helpid'])->toArray();
-            $data['title']   = $help_data['topic'];
-            $data['content'] = htmlspecialchars_decode(trim($help_data['content']));
+            $help_data          = HelpFile::factory($data['helpid'])->toArray();
+            $data['title']      = $help_data['topic'];
+            $data['content']    = htmlspecialchars_decode(
+                trim(
+                    $help_data['content']
+                )
+            );
+            $data['instrument'] = $help_data['instrument'];
+            $data['instrumentslist'] = [];
+            $instrumentList          = \NDB_BVL_Instrument::getInstrumentNamesList(
+                $request->getAttribute("loris")
+            );
+                   $data['instrumentslist'] =  $instrumentList;
+
+            if ($data['helpid'] =='null') {
+                $data['instrumentslist'] =  $instrumentList;
+            }
         }
 
         // case where no help content exists

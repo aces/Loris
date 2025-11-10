@@ -35,6 +35,7 @@ class Instrument_Manager extends \DataFrameworkMenu
     const UPLOAD_NO_INSTALL     = 'File upload is successful but the ' .
                                   'instrument needs to be installed manually.';
     private string $_path;
+
     /**
      * Checking permissions
      *
@@ -46,6 +47,7 @@ class Instrument_Manager extends \DataFrameworkMenu
     {
         return $user->hasAnyPermission(self::PERMISSIONS);
     }
+
     /**
      * Handle a PSR7 Request for that endpoint.
      *
@@ -165,6 +167,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         }
         return new \LORIS\Http\Response\JSON\Created(["ok"=>"ok"]);
     }
+
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -202,6 +205,7 @@ class Instrument_Manager extends \DataFrameworkMenu
         ];
 
     }
+
     /**
      * {@inheritDoc}
      *

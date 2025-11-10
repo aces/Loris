@@ -181,10 +181,6 @@ class Profiles extends Component {
         },
       },
       {
-        label: 'Date of Birth',
-        show: false,
-      },
-      {
         label: 'External ID',
         show: false,
         filter: {

@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get the candidate information
  * of all active candidates accessible to a given user.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -21,7 +21,7 @@ use \LORIS\api\Models\CandidatesRow;
  * This class implements a data provisioner to get the candidate information
  * of all active candidates accessible to a given user.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris

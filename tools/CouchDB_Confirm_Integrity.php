@@ -10,7 +10,7 @@
  * delete both (and then the import script will reimport the correct one if run
  * in that order.)
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -36,7 +36,6 @@ class CouchDBIntegrityChecker
 {
     var $SQLDB; // reference to the database handler
     var $CouchDB; // reference to the CouchDB database handler
-
 
     /**
      * Initialize references to SQL database and CouchDB wrapper

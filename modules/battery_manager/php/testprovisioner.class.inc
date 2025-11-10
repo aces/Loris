@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all possible tests
  * for the battery_manager menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\battery_manager;
  * This class implements a data provisioner to get all possible tests
  * for the battery_manager menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main

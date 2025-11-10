@@ -4,7 +4,7 @@
  * This class implements a data Instance which represents a single
  * row in the imaging browser menu table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -78,7 +78,6 @@ class ImagingBrowserRow implements \LORIS\Data\DataInstance,
     {
         return $this->ProjectID;
     }
-
 
     /**
      * This tells if the image is a phantom.

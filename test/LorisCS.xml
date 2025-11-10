@@ -5,12 +5,12 @@
     <config name="installed_paths" value="../../slevomat/coding-standard"/>
 
 
-     <!-- Require strict types to be declared -->
-     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
-         <properties>
-             <property name="spacesCountAroundEqualsSign" value="0"/>
-         </properties>
-     </rule>
+    <!-- Require strict types to be declared -->
+    <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
+        <properties>
+            <property name="spacesCountAroundEqualsSign" value="0"/>
+        </properties>
+    </rule>
 
     <!-- Include the PEAR standard -->
     <rule ref="PEAR">
@@ -97,15 +97,28 @@
     <!-- Do not allow trailing whitespace at the end of lines -->
     <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
 
+    <!-- Ensure that there is a single blank line between functions. -->
+    <rule ref="Squiz.WhiteSpace.FunctionSpacing">
+        <properties>
+            <property name="spacing" value="1" />
+            <property name="spacingBeforeFirst" value="0" />
+            <property name="spacingAfterLast" value="0" />
+        </properties>
+    </rule>
+
     <!-- Ensure that proper line endings are used -->
-     <rule ref="Generic.Files.LineEndings">
-         <properties>
-             <property name="eolChar" value="\n"/>
-         </properties>
-     </rule>
+    <rule ref="Generic.Files.LineEndings">
+        <properties>
+            <property name="eolChar" value="\n"/>
+        </properties>
+    </rule>
+
+    <!-- Ensure that there is a single newline at the end of files. -->
+    <rule ref="Generic.Files.EndFileNewline"/>
+
      <!-- Do not allow PHP closing tags because they can cause problems -->
      <rule ref="PSR2.Files.ClosingTag"/>
 
-     <!-- Force short array syntax -->
-     <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found"/>
+    <!-- Force short array syntax -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found"/>
 </ruleset>

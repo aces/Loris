@@ -113,12 +113,13 @@ class Authentication extends \NDB_Page implements ETagCalculator
                 'windowName' => $windowName,
             ];
         }
-        $loginData['description'] = html_entity_decode(
+        $loginData['description']   = html_entity_decode(
             $config->getSetting('StudyDescription')
         );
-        $loginData['title']       = $config->getSetting('title');
-        $loginData['logo']        = $config->getSetting('studylogo');
-        $values['login']          = $loginData;
+        $loginData['title']         = $config->getSetting('title');
+        $loginData['logo']          = $config->getSetting('studylogo');
+        $loginData['partner_logos'] = $config->getSetting('partner_logos');
+        $values['login']            = $loginData;
 
         // Request Account Setup.
         $requestAccountData = [];
@@ -130,7 +131,9 @@ class Authentication extends \NDB_Page implements ETagCalculator
         }
         $requestAccountData['site']    = \Utility::getSiteList();
         $requestAccountData['project'] = \Utility::getProjectList();
-        $values['requestAccount']      = $requestAccountData;
+        $loris = $request->getAttribute("loris");
+        $requestAccountData['policy'] = $this->getHeaderPolicy($loris);
+        $values['requestAccount']     = $requestAccountData;
 
         if ($this->loris->hasModule('oidc')) {
             $DB        = $this->loris->getDatabaseConnection();
@@ -229,5 +232,4 @@ class Authentication extends \NDB_Page implements ETagCalculator
     {
         return true;
     }
-
 }

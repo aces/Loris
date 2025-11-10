@@ -3,7 +3,7 @@
 /**
  * This implements the Visit endpoint class under Candidates/$candid
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris

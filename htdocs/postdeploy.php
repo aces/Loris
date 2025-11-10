@@ -3,7 +3,7 @@
 /**
  * This file contains the post procedures for Heroku deployment
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS

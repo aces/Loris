@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category FileViews
  * @package  Loris
@@ -83,5 +83,4 @@ class File
             []
         );
     }
-
 }

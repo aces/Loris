@@ -3,7 +3,7 @@
 /**
  * This implements the Electrophysiology page class under Project
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  LORIS
@@ -70,7 +70,6 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
     ) {
         $this->_project = $project;
     }
-
 
     /**
      * Returns which methods are supported by this endpoint.

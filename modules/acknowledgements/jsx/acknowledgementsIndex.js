@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import swal from 'sweetalert2';
 import Modal from 'Modal';
 import Panel from 'Panel';
@@ -480,10 +483,14 @@ AcknowledgementsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'acknowledgements', {});
+  const Index = withTranslation(
+    ['acknowledgements', 'loris']
+  )(AcknowledgementsIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <AcknowledgementsIndex
+    <Index
       dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
       submitURL={`${loris.BaseURL}/acknowledgements/AcknowledgementsProcess`}
       hasPermission={loris.userHasPermission}

@@ -141,10 +141,6 @@ foreach ($instruments as $instrument => $full_name) {
     }
 }
 
-
-
-
-
 /**
  * Get the commentids for the given instrument, candidate and visit_label
  *
@@ -202,8 +198,6 @@ function getCommentIDs(
     return $commentids;
 }
 
-
-
 /**
  * Write the data into a csv file
  *
@@ -238,6 +232,7 @@ function writeCSV($output, $path, $instrument)
         is available under $path \n";
     }
 }
+
 /**
  * Checks to see if the table has some data
  *

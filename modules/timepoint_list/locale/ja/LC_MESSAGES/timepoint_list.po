@@ -5,6 +5,7 @@
 # This file is distributed under the same license as the LORIS package.
 # Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
 #
+
 msgid ""
 msgstr ""
 "Project-Id-Version: LORIS 27\n"
@@ -17,7 +18,73 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
-# I am not sure if this is the right kanji for "survey" 
 msgid "Timepoint List"
 msgstr "タイムポイントリスト"
+
+msgid "Click to Open"
+msgstr "クリックして開く"
+
+msgid "Stage Status"
+msgstr "ステージステータス"
+
+msgid "Date of Stage"
+msgstr "ステージの日付"
+
+msgid "Imaging Scan Done"
+msgstr "画像スキャン完了"
+
+msgid "BVL QC"
+msgstr "行動品質管理"
+
+msgid "BVL Exclusion"
+msgstr "行動的排除"
+
+msgid "Registered By"
+msgstr "登録者"
+
+msgid "List of Visits (Time Points)"
+msgstr "訪問リスト（時点）"
+
+msgid "Create time point"
+msgstr "タイムポイントを作成"
+
+msgid "Candidate Info"
+msgstr "候補者情報"
+
+msgid "View Imaging datasets"
+msgstr "画像データセットを表示"
+
+msgid "Actions:"
+msgstr "アクション:"
+
+msgid "Derived Age"
+msgstr "派生年齢"
+
+msgid "EDC Age"
+msgstr "EDC時代"
+
+msgid "Biological Sex"
+msgstr "生物学的性別"
+
+msgid "You do not have access to any timepoints registered for this candidate."
+msgstr "この候補者に対して登録されたタイムポイントにアクセスできません。"
+
+msgid " y / "
+msgstr ""
+
+msgid " m"
+msgstr ""
+
+msgid "Not Done"
+msgstr "未完了"
+
+msgid "Visual"
+msgstr "ビジュアル"
+
+msgid "Hardcopy"
+msgstr "ハードコピー"
+
+msgid "Complete"
+msgstr "完了"

@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -123,10 +126,16 @@ ServerProcessesManagerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  // FIXME: This is adding an empty object so that eslint doesn't complain about
+  // i18n being unused. Translate the module
+  i18n.addResourceBundle('ja', 'server_processes_manager', {});
+  const SPMIndex = withTranslation(
+    ['server_processes_manager', 'loris']
+  )(ServerProcessesManagerIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <ServerProcessesManagerIndex
+    <SPMIndex
       dataURL={`${loris.BaseURL}/server_processes_manager/?format=json`}
     />
   );

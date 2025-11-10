@@ -15,42 +15,16 @@ const siteColours = [
 // Colours for the recruitment bar chart: breakdown by sex
 const sexColours = ['#2FA4E7', '#1C70B6'];
 
-/**
- * onload - override link click to cancel any fetch for statistical data.
- */
-window.onload = () => {
-  document.body.addEventListener('click', (e) => {
-    // User clicks on a link..
-    if (
-      e.target &&
-      e.target.nodeName === 'A' &&
-      e.target.hasAttribute('data-target') === false
-    ) {
-      window.stop();
-    } else if (
-      e.target &&
-      e.target.nodeName === 'A' &&
-      e.target.hasAttribute('data-target') === true
-    ) {
-      const myTimeout = setTimeout(() => {
-        resizeGraphs();
-        clearTimeout(myTimeout);
-      }, 500);
-    }
-  });
-};
-
 let charts = []
-const resizeGraphs = () => {
-  charts.forEach((chart) => {
-    if (chart !== undefined) {
-      elementVisibility(chart.element, (visible) => {
-        if (visible) {
-          chart.resize();
-        }
-      })
-    }
-  })
+const resizeGraphs = (chartDetails) => {
+  Object.keys(chartDetails).forEach((section) => {
+    Object.keys(chartDetails[section]).forEach((chartID) => {
+      const chart = chartDetails[section][chartID].chartObject;
+      if (chart !== undefined && chart !== null) {
+        chart.resize();
+      }
+    });
+  });
 };
 
 /**
@@ -110,8 +84,7 @@ const createPieChart = (columns, id, targetModal, colours) => {
       type: 'pie',
     },
     size: {
-      height: targetModal ? 700 : 350,
-      width: targetModal ? 700 : 350,
+      height: targetModal ? 500 : 300,
     },
     color: {
       pattern: colours,
@@ -123,12 +96,18 @@ const createPieChart = (columns, id, targetModal, colours) => {
         }
       }
     },
+    tooltip: {
+      format: {
+        value: function (value, ratio) {
+          return `${value} (${(ratio * 100).toFixed(0)}%)`;
+        },
+      },
+    },
   });
-  charts.push(newChart);
-  resizeGraphs();
+  return newChart;
 }
 
-const createBarChart = (labels, columns, id, targetModal, colours, dataType) => {
+const createBarChart = (t, labels, columns, id, targetModal, colours, dataType) => {
   let newChart = c3.generate({
     bindto: targetModal ? targetModal : id,
     data: {
@@ -146,8 +125,7 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType) => 
         }
     },
     size: {
-      width: targetModal ? 1000 : 700,
-      height: targetModal ? 700 : 350,
+      height: targetModal ? 500 : 300,
     },
     axis: {
       x: {
@@ -156,7 +134,7 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType) => 
       },
       y: {
         label: {
-          text: 'Candidates registered',
+          text: t('Candidates registered', { ns: 'statistics'}),
           position: 'inner-top'
         },
       },
@@ -176,27 +154,33 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType) => 
       show: false
     }
   });
-  charts.push(newChart);
-  resizeGraphs();
+  return newChart;
 }
 
-const createLineChart = (data, columns, id, label, targetModal) => {
+const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => {
+  // Calculate grand total across all data points for percentage calculation
+  let grandTotal = 0;
+  if (data && data.datasets) {
+    for (let i = 0; i < data.datasets.length; i++) {
+      for (let j = 0; j < data.datasets[i].data.length; j++) {
+        grandTotal += parseInt(data.datasets[i].data[j]);
+      }
+    }
+  }
   let newChart = c3.generate({
     size: {
-      height: targetModal && 1000,
+      height: targetModal && 500,
       width: targetModal && 1000
     },
     bindto: targetModal ? targetModal : id,
     data: {
       x: 'x',
-      xFormat: '%m-%Y',
+      xFormat: id.includes('bymonth') && '%m-%Y',
       columns: columns,
       type: 'area-spline',
     },
-    legend: {
-      show: targetModal ? true : false,
-    },
-    axis: {
+    spline: {interpolation: {type: 'monotone'}},
+    axis: id.includes('bymonth') && {
       x: {
         type: 'timeseries',
         tick: {
@@ -217,7 +201,7 @@ const createLineChart = (data, columns, id, label, targetModal) => {
       pattern: siteColours,
     },
     tooltip: {
-      // hide if 0
+      // hide if 0 and add percentage calculations based on grand total
       contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
         let $$ = this,
           config = $$.config,
@@ -225,30 +209,39 @@ const createLineChart = (data, columns, id, label, targetModal) => {
           nameFormat = config.tooltip_format_name || function (name) { return name; },
           valueFormat = config.tooltip_format_value || defaultValueFormat,
           text, i, title, value, name, bgcolor;
+
         for (i = 0; i < d.length; i++) {
           if (d[i] && d[i].value == 0) { continue; }
 
           if (! text) {
             title = titleFormat ? titleFormat(d[i].x) : d[i].x;
+            // Format title based on chart type or titlePrefix
+            if (titlePrefix) {
+              title = `${titlePrefix}: ${title}`;
+            } else if (id.includes('agedistribution')) {
+              title = `Age: ${title}`;
+            }
             text = "<table class='" + $$.CLASS.tooltip + "'>" + (title || title === 0 ? "<tr><th colspan='2'>" + title + "</th></tr>" : "");
           }
 
           name = nameFormat(d[i].name);
           value = valueFormat(d[i].value, d[i].ratio, d[i].id, d[i].index);
+          
+          // Calculate percentage based on grand total of entire dataset
+          let percentage = grandTotal > 0 ? ((d[i].value / grandTotal) * 100).toFixed(1) : 0;
+          
           bgcolor = $$.levelColor ? $$.levelColor(d[i].value) : color(d[i].id);
 
           text += "<tr class='" + $$.CLASS.tooltipName + "-" + d[i].id + "'>";
           text += "<td class='name'><span style='background-color:" + bgcolor + "'></span>" + name + "</td>";
-          text += "<td class='value'>" + value + "</td>";
+          text += "<td class='value'>" + value + " (" + percentage + "%)</td>";
           text += "</tr>";
         }
         return text + "</table>";
       }
-
     }
   });
-  charts.push(newChart);
-  resizeGraphs();
+  return newChart;
 }
 
 const getChartData = async (target, filters) => {
@@ -260,13 +253,33 @@ const getChartData = async (target, filters) => {
 }
 
 /**
+ * unloadCharts - unload all charts in a section to clear their data
+ * @param {t} The i18next translation callback
+ * @param {object} chartDetails
+ * @param {string} section
+ */
+const unloadCharts = (t, chartDetails, section) => {
+  Object.keys(chartDetails[section]).forEach((chartID) => {
+    const chart = chartDetails[section][chartID].chartObject;
+    if (chart && typeof chart.unload === 'function') {
+      chart.unload();
+    }
+    // Clear the chart container completely
+    const element = document.getElementById(chartID);
+    if (element) {
+      element.innerHTML ='<p>' + t('Loading...', {ns: 'loris'}) + '</p>';
+    }
+  });
+};
+
+/**
  * setupCharts - fetch data for charts
  * If data is provided, use that instead of fetching
  * There are three types of data provided. Pie, bar and line
  * This is determined by the original chart type of the data provided from the API
  * If data was provided as a Pie, and the requested chartType is Bar, then the data will be reformatted
  */
-const setupCharts = async (targetIsModal, chartDetails) => {
+const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
   const chartPromises = [];
   let newChartDetails = {...chartDetails}
   Object.keys(chartDetails).forEach((section) => {
@@ -296,23 +309,22 @@ const setupCharts = async (targetIsModal, chartDetails) => {
             labels = chartData.labels;
             colours = sexColours;
           } else if (chart.dataType === 'line') {
-            columns = formatLineData(chartData);
-            if (chart.chartType !== 'line') {
-              // remove first and last (x and total)
-              columns = columns.slice(1, columns.length - 1);
-            }
+            columns = formatLineData(chartData, totalLabel);
           }
+          let chartObject = null;
           if (chart.chartType === 'pie') {
-            createPieChart(columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours);
+            chartObject = createPieChart(columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours);
           } else if (chart.chartType === 'bar') {
-            createBarChart(labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
+            chartObject = createBarChart(t, labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
           } else if (chart.chartType === 'line') {
-            createLineChart(chartData, columns, `#${chartID}`, chart.label, targetIsModal && '#dashboardModal');
+            chartObject = createLineChart(chartData, columns, `#${chartID}`, chart.label, targetIsModal && '#dashboardModal', chart.titlePrefix);
           }
           newChartDetails[section][chartID].data = chartData;
+          newChartDetails[section][chartID].chartObject = chartObject;
         });
 
       chartPromises.push(chartPromise);
+      resizeGraphs(newChartDetails);
     });
   });
 
@@ -325,7 +337,7 @@ const setupCharts = async (targetIsModal, chartDetails) => {
  * @param {object} data
  * @return {*[]}
  */
-const formatLineData = (data) => {
+const formatLineData = (data, totalLabel) => {
   const processedData = [];
   const labels = [];
   labels.push('x');
@@ -339,7 +351,7 @@ const formatLineData = (data) => {
     processedData.push(dataset.concat(data['datasets'][i].data));
   }
   const totals = [];
-  totals.push('Total');
+  totals.push(totalLabel);
   for (let j = 0; j < data['datasets'][0].data.length; j++) {
     let total = 0;
     for (let i = 0; i < data['datasets'].length; i++) {
@@ -370,4 +382,5 @@ export {
   // following used by WidgetIndex.js,
   // recruitment.js and studyProgression.js
   setupCharts,
+  unloadCharts,
 };

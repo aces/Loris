@@ -3,7 +3,7 @@
 /**
  * This implements the Sites endpoint class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris

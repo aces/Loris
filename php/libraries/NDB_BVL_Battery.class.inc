@@ -9,7 +9,7 @@
  * identifier.  Thus, we use the session table's ID column to identify
  * any battery.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Behavioural
@@ -203,8 +203,8 @@ class NDB_BVL_Battery
             throw new \LorisException("Invalid instrument");
         }
 
-        // get SessionID, UserID, Visit_label
-        $query = "SELECT ID as SessionID, UserID, Visit_label
+        // get SessionID, UserID, Visit_label, CohortID
+        $query = "SELECT ID as SessionID, UserID, Visit_label, CohortID
                   FROM session WHERE ID=:SID";
         $rows  = $DB->pselect($query, ['SID' => $this->sessionID]);
         if (count($rows)==0) {
@@ -249,9 +249,22 @@ class NDB_BVL_Battery
                 'SessionID' => $sessionData['SessionID'],
                 'TestID'    => $testId,
                 'CommentID' => $commentID,
-                'UserID'    => $sessionData['UserID'],
             ]
         );
+
+        $userID = $DB->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:uid",
+            ['uid' => $sessionData['UserID'] ?? ""]
+        );
+        if (($userID ?? "") != "") {
+            $DB->insertOnDuplicateUpdate(
+                "flag_editors",
+                [
+                    'userID'    => $userID,
+                    'CommentID' => $commentID,
+                ],
+            );
+        }
 
         // insert the dde into the flag table
         if ($DDEEnabled) {
@@ -261,9 +274,17 @@ class NDB_BVL_Battery
                     'SessionID' => $sessionData['SessionID'],
                     'TestID'    => $testId,
                     'CommentID' => $ddeCommentID,
-                    'UserID'    => $sessionData['UserID'],
                 ]
             );
+            if (($userID ?? "") != "") {
+                $DB->insertOnDuplicateUpdate(
+                    "flag_editors",
+                    [
+                        'userID'    => $userID,
+                        'CommentID' => $ddeCommentID,
+                    ],
+                );
+            }
         }
 
         return $commentID ?? '';

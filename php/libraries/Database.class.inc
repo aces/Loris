@@ -422,10 +422,20 @@ class Database implements LoggerAwareInterface
             );
         }
 
+        $operation = 'I'; // Default to an insert
+
+        // If it was an 'ON DUPLICATE KEY UPDATE' query, check the PDO rowCount()
+        if ($onDuplicateUpdate) {
+            $rowsAffected = $prep->rowCount();
+            if ($rowsAffected !== 2) {
+                $operation = 'U'; // It was an update
+            }
+        }
+
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $this->trackChanges($table, $set, '2=1', 'I');
+        $this->trackChanges($table, $set, '2=1', $operation);
         return true;
     }
 
@@ -731,6 +741,7 @@ class Database implements LoggerAwareInterface
         }
         return $rows;
     }
+
     /**
      * Runs an SQL select statement as a prepared query
      *

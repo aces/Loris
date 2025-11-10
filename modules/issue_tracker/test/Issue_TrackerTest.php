@@ -3,7 +3,7 @@
 /**
  * Issue Tracker automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -18,7 +18,7 @@ require_once __DIR__ .
 /**
  * Issue Tracker automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -29,7 +29,6 @@ require_once __DIR__ .
 
 class Issue_TrackerTest extends LorisIntegrationTest
 {
-
     /**
      * Insert testing data into the database
      *
@@ -134,6 +133,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->_testFilter('low');
         $this->_testFilter('Test User');
     }
+
     /**
      * Tests that Issue Tracker filter
      *
@@ -151,6 +151,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->assertStringContainsString($value, $bodyText);
 
     }
+
     /**
      * Tests Clear Form function in Issue Tracker
      *

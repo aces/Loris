@@ -5,7 +5,7 @@
  *
  * Deletes a specified file by upload ID (PublicationUploadID)
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Publication

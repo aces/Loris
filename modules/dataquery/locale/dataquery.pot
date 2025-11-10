@@ -21,3 +21,14 @@ msgstr ""
 msgid "Data Query Tool (Beta)"
 msgstr ""
 
+msgid "Starred Queries"
+msgstr ""
+
+msgid "Study Queries"
+msgstr ""
+
+msgid "Candidate matches:"
+msgstr ""
+
+msgid "Note: matches count only includes candidates that you have access to. Results may vary from other users due to permissions."
+msgstr ""

@@ -3,7 +3,7 @@
 /**
  * This file contains a wrapper around imaging comments for a session or File.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Imaging
  * @package  Imaging
@@ -177,7 +177,7 @@ class FeedbackMRI
      * @return array A two-dimensional array with key (int) PredefinedCommentID
      *               and one-element array ('Comment'=> string CommentName)
      */
-    function getAllPredefinedComments(int $commentTypeID): array
+    public static function getAllPredefinedComments(int $commentTypeID): array
     {
         // create DB object
         $DB = \NDB_Factory::singleton()->database();
@@ -194,8 +194,9 @@ class FeedbackMRI
         foreach ($result as $row) {
             $PredefinedID       = $row['PredefinedCommentID'];
             $preDefinedComments = [];
-            $preDefinedComments['Comment'] = stripslashes($row['Comment']);
-            $comments[$PredefinedID]       = $preDefinedComments;
+            $preDefinedComments['Comment']     = stripslashes($row['Comment']);
+            $preDefinedComments['FullComment'] = $row['Comment'];
+            $comments[$PredefinedID]           = $preDefinedComments;
         }
 
         // return the output array
@@ -323,6 +324,26 @@ class FeedbackMRI
      */
     function getAllCommentTypes(): array
     {
+        return self::getAllCommentTypesForObjectType($this->objectType);
+    }
+
+    /**
+     * Gets the list of all comment types for a given object type.
+     *
+     * @param string $objectType Type of object (i.e value of column ComentType
+     *                           in table feedback_mri_comment_types).
+     *
+     * @return array A two-dimensional array of ints (CommentTypeID) and
+     *               three-element arrays ('name'=>string CommentName,
+     *               'field'=>string name of column in mri table for status,
+     *               'values'=>array of possible enum values for field)
+     */
+    public static function getAllCommentTypesForObjectType(string $objectType): array
+    {
+        if ($objectType != 'volume' && $objectType != 'visit') {
+            throw new \LorisException("Invalid object type $objectType");
+        }
+
         // create DB object
         $DB = \NDB_Factory::singleton()->database();
 
@@ -331,7 +352,7 @@ class FeedbackMRI
                     FROM feedback_mri_comment_types
                   WHERE CommentType=:CT";
 
-        $result = $DB->pselect($query, ['CT' => $this->objectType]);
+        $result = $DB->pselect($query, ['CT' => $objectType]);
 
         // build the output array and keep overall section at the end of the array
         $commentNames = [];
@@ -494,6 +515,5 @@ class FeedbackMRI
         }
         return $where;
     }
-
 }
 

@@ -49,6 +49,7 @@ class Acknowledgementsprocess extends \NDB_Page
             );
         }
     }
+
     /**
      * Creates a new acknowledgement entry.
      *
@@ -114,6 +115,7 @@ class Acknowledgementsprocess extends \NDB_Page
                 );
         }
     }
+
     /**
      * Return an array of valid HTTP methods for this endpoint
      *

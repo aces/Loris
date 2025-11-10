@@ -3,7 +3,7 @@
  * This file contains the NDB_BVL_Instrument_mri_parameter_form
  * class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Instrument
  * @package  Initial_MRI

@@ -1,0 +1,14 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `permissions_action`;
+LOCK TABLES `permissions_action` WRITE;
+INSERT INTO `permissions_action` (`ID`, `name`) VALUES (1, "View");
+INSERT INTO `permissions_action` (`ID`, `name`) VALUES (2, "Create");
+INSERT INTO `permissions_action` (`ID`, `name`) VALUES (3, "Edit");
+INSERT INTO `permissions_action` (`ID`, `name`) VALUES (4, "Delete");
+INSERT INTO `permissions_action` (`ID`, `name`) VALUES (5, "Comment");
+INSERT INTO `permissions_action` (`ID`, `name`) VALUES (6, "Close");
+INSERT INTO `permissions_action` (`ID`, `name`) VALUES (7, "Hide");
+INSERT INTO `permissions_action` (`ID`, `name`) VALUES (8, "Download");
+INSERT INTO `permissions_action` (`ID`, `name`) VALUES (9, "Upload");
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

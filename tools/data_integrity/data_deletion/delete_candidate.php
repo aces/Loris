@@ -10,7 +10,7 @@
  * "Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm";
  * "Example: php delete_candidate.php delete_candidate 965327 dcc0007 tosql";
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -140,6 +140,7 @@ under the following path:
 USAGE;
     die;
 }
+
 /**
  * All tables with entries to be deleted here are only those with FOREIGN KEY
  * relations to `candidate`.

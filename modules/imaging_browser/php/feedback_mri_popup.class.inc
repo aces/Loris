@@ -3,7 +3,7 @@
 /**
  * Imaging browser MRI Feedback class file.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category MRI
  * @package  Loris
@@ -325,5 +325,4 @@ class Feedback_MRI_Popup extends \NDB_Page
         $html = $smarty->fetch("form_feedback_mri_popup.tpl");
         return $html;
     }
-
 }

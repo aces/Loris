@@ -1,0 +1,30 @@
+<?php declare(strict_types=1);
+
+/**
+ * This file contains the NotFound exception type.
+ *
+ * PHP Version 8
+ *
+ * @category Errors
+ * @package  Loris
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+namespace LORIS\biobank;
+
+/**
+ * The NotFound exception is thrown when a resource can not
+ * be found. It maps to a 404 error.
+ *
+ * @category Errors
+ * @package  Loris
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+
+class Forbidden extends \LorisException
+{
+}
+

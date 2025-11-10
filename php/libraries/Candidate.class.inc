@@ -52,6 +52,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         $this->data = $data;
     }
+
     /**
      * This returns a single Candidate object for the given
      * candID, and will only ever instantiate one object in
@@ -565,7 +566,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         return true;
     }
 
-
     /**
      * Returns the ProjectID for the current candidate
      *
@@ -597,6 +597,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         return $this->candidateInfo["CandID"];
     }
+
     /**
      * Returns the ID of this candidate
      *
@@ -626,7 +627,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         return $this->candidateInfo["PSC"];
     }
-
 
     /**
      * Returns the ID of this candidate's site

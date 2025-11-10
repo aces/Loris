@@ -21,3 +21,10 @@ msgstr ""
 msgid "MRI Violated Scans"
 msgstr "MRI違反スキャン"
 
+
+msgid "Violated scan"
+msgstr "違反スキャン"
+
+msgid "Violated scans"
+msgstr "違反スキャン"
+

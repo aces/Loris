@@ -4,7 +4,7 @@
  * This file contains a class which encapsulates the concept of a "Project"
  * in LORIS.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

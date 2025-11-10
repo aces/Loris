@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -177,14 +178,6 @@ class ResolvedFilterableDataTable extends Component {
         name: 'CorrectAnswer',
         type: 'text',
       }},
-      {label: 'User 1', show: true, filter: {
-        name: 'User1',
-        type: 'text',
-      }},
-      {label: 'User 2', show: true, filter: {
-        name: 'User2',
-        type: 'text',
-      }},
       {label: 'Resolver', show: true, filter: {
         name: 'Resolver',
         type: 'text',
@@ -206,4 +199,6 @@ class ResolvedFilterableDataTable extends Component {
   }
 }
 
-export default ResolvedFilterableDataTable;
+export default withTranslation(
+  ['conflict_resolver', 'loris']
+)(ResolvedFilterableDataTable);

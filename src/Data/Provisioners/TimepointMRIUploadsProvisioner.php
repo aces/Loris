@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -16,7 +16,7 @@ namespace LORIS\Data\Provisioners;
  * This file implements a data provisioner to get all MRIUploads
  * of a visit with a given filename.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris

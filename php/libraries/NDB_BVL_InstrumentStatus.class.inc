@@ -3,7 +3,7 @@
 /**
  * Class for managing the status of instrument flags
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Behavioural
@@ -93,6 +93,7 @@ class NDB_BVL_InstrumentStatus
     {
         $this->loris = $loris;
     }
+
     /**
      * Loads the object with the current status of the instrument
      *
@@ -339,5 +340,4 @@ class NDB_BVL_InstrumentStatus
         );
         $this->select($this->_commentID);
     }
-
 } // end of class

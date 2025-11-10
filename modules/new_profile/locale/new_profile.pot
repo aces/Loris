@@ -22,3 +22,29 @@ msgstr ""
 msgid "New Profile"
 msgstr ""
 
+msgid "Create a New Profile"
+msgstr ""
+
+msgid "Date of Birth Confirm"
+msgstr ""
+
+msgid "Date of Birth fields must match"
+msgstr ""
+
+msgid "EDC fields must match"
+msgstr ""
+
+msgid "New Candidate Created"
+msgstr ""
+
+msgid "Expected Date of Confinement"
+msgstr ""
+
+msgid "Confirm EDC"
+msgstr ""
+
+msgid "Recruit another candidate"
+msgstr ""
+
+msgid "Access Profile"
+msgstr ""

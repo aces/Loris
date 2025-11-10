@@ -20,3 +20,109 @@ msgstr ""
 
 msgid "Statistics"
 msgstr "統計"
+
+msgid "Study Progression"
+msgstr "学習の進捗"
+
+msgid "Summary"
+msgstr "まとめ"
+
+msgid "Site Scans"
+msgstr "サイトスキャン"
+
+msgid "Site Recruitment"
+msgstr "現場採用"
+
+msgid "-- Clear Selection --"
+msgstr "-- 選択をクリア--"
+
+msgid "Scan sessions per site"
+msgstr "サイトごとのスキャンセッション"
+
+msgid "Recruitment per site"
+msgstr "サイトごとの募集"
+
+msgid "Download as PNG"
+msgstr "PNGとしてダウンロード"
+
+msgid "Labels"
+msgstr "ラベル"
+
+msgid "Date Registered"
+msgstr "登録日"
+
+msgid "Range Start"
+msgstr "範囲開始"
+
+msgid "Range End"
+msgstr "範囲終了"
+
+
+msgid "Total recruitment by Age"
+msgstr "年齢別総採用数"
+
+msgid "Ethnicity at Screening"
+msgstr "スクリーニング時の民族"
+
+msgid "Total Recruitment per Site"
+msgstr "サイトあたりの総採用数"
+
+msgid "Biological sex breakdown by site"
+msgstr "部位別の生物学的性別の内訳"
+
+msgid "Candidate Age at Registration"
+msgstr "登録時の候補者の年齢"
+
+msgid "Candidates registered"
+msgstr "登録候補者"
+
+msgid "Target: {{target}}"
+msgstr "ターゲット: {{target}}"
+
+msgid "Recruitment target of {{target}} was reached."
+msgstr "{{target}} の採用目標に達しました。"
+
+msgid "Recruitment target of {{target}} was not reached."
+msgstr "{{target}}の募集目標には達しませんでした"
+
+msgid "No target set"
+msgstr "目標設定なし"
+
+msgid "{{total}} total participants."
+msgstr "参加者総数は {{total}} 人です。"
+
+msgid "Overall Recruitment"
+msgstr "全体的な採用"
+
+msgid "Recruitment"
+msgstr "採用"
+
+msgid "Overall"
+msgstr "全体"
+
+msgid "Site Breakdown"
+msgstr "サイトの内訳"
+
+msgid "Project Breakdown"
+msgstr "プロジェクトの内訳"
+
+msgid "Cohort Breakdown"
+msgstr "コホートの内訳"
+
+msgid "Total Participants: {{count}}"
+msgstr "参加者総数: {{count}}"
+
+msgid "Projects: {{count}}"
+msgstr "プロジェクト: {{count}}"
+
+msgid "Cohorts: {{count}}"
+msgstr "コホート: {{count}}"
+
+msgid "Age (Years)"
+msgstr "年齢（歳）"
+
+msgid "Participants"
+msgstr "参加者"
+
+msgid "Unknown"
+msgstr "未知"

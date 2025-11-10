@@ -24,3 +24,36 @@ msgstr ""
 
 msgid "Start Next Stage"
 msgstr ""
+
+msgid "Date of %s"
+msgstr ""
+
+msgid "Retype Date of %s"
+msgstr ""
+
+msgid "Start %s"
+msgstr ""
+
+msgid "CohortID:"
+msgstr ""
+
+msgid "Date is required."
+msgstr ""
+
+msgid "Both date fields are required."
+msgstr ""
+
+msgid "Both Date fields must match."
+msgstr ""
+
+msgid "Date of Visit is less than Date of Screening."
+msgstr ""
+
+msgid "Date of Visit is less than Date of Birth/EDC."
+msgstr ""
+
+msgid "Next stage started."
+msgstr ""
+
+msgid "Click here to continue."
+msgstr ""

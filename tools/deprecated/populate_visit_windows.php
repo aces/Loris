@@ -13,7 +13,7 @@
  * utility function in PHP, so if the table is not up to date some drop downs
  * may not appear correctly.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

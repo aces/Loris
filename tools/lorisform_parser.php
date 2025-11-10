@@ -16,13 +16,8 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
-
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize("../project/config.xml");
 
 $instrumentsToSkip = [];
 $instruments       = getExcludedInstruments();

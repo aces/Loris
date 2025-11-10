@@ -7,7 +7,7 @@ use \Psr\Http\Message\ResponseInterface;
 /**
  * Contains the File_Reader class used for electrophysiological browser
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Electrophysiology
  * @package  Electrophysiology

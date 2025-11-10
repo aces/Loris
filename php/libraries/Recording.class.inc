@@ -3,7 +3,7 @@
 /**
  * File that describe the Recording class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  *  @category Recording
  *  @package  Main
@@ -42,6 +42,7 @@ class Recording
     private ?string $_electrode_file_path;
     private ?string $_event_file_path;
     private ?string $_archive_file_path;
+
     /**
      * Constructor
      *

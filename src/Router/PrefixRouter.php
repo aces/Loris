@@ -4,7 +4,7 @@
  * Implements PrefixRouter, a class for handling prefixes
  * of a URL and then delegating to other request handlers.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Router
  * @package  Router
@@ -92,11 +92,11 @@ class PrefixRouter implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $uri = $request->getAttribute("unhandledURI");
         foreach ($this->paths as $path => $subhandler) {
-            if ($this->hasPrefix($path, $request->getURI())) {
-                // Strip the prefix before passing it to the subhandler.
-                $newURI  = $this->stripPrefix($path, $request->getURI());
-                $request = $request->withURI($newURI);
+            if ($this->hasPrefix($path, $uri)) {
+                $newURI  = $this->stripPrefix($path, $uri);
+                $request = $request->withAttribute("unhandledURI", $newURI);
                 return $subhandler->handle($request);
             }
         }

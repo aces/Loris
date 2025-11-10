@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all Dicoms
  * of a visit.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -21,7 +21,7 @@ use \LORIS\Data\Provisioners\DBRowProvisioner;
  * This class implements a data provisioner to get all Dicoms
  * from a Visit.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris

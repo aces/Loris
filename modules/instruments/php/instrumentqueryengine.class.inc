@@ -21,7 +21,6 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
      */
     private $visitcache = [];
 
-
     /**
      * Constructor
      *
@@ -98,7 +97,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                 $fields = array_merge($fields, $inst->getDataDictionary());
                 $dict[] = $cat->withItems($fields);
             } catch (\LorisException $e) {
-                error_log($e);
+                error_log($e->getMessage());
             }
         }
         return $dict;
@@ -151,7 +150,9 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $values = $inst->bulkLoadInstanceData(
             null,
             $term,
+            $visitlist,
         );
+
         foreach ($values as $match) {
             yield $match->getCandID();
         }
@@ -181,6 +182,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         if (isset($this->visitcache[$inst->getName()])) {
             return $this->visitcache[$inst->getName()];
         }
+        $user        = \NDB_Factory::singleton()->user();
+        $user_visits = "('" . join("','", $user->getVisits()) . "')";
 
         $DB     = \NDB_Factory::singleton()->database();
         $visits = $DB->pselectCol(
@@ -190,6 +193,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                    JOIN session s ON (f.SessionID=s.ID)
                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Active='Y' AND c.Active='Y' and tn.Test_name=:tn
+                AND s.Visit_Label IN $user_visits
             ORDER BY s.Visit_label",
             ['tn' => $inst->getName()]
         );
@@ -243,7 +247,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $DB->run("DROP TEMPORARY TABLE IF EXISTS querycandidates");
         $DB->run(
             "CREATE TEMPORARY TABLE querycandidates (
-                 CandID int(10),
+                 CandID int(10) UNSIGNED,
                  PRIMARY KEY (CandID)
             );"
         );
@@ -252,10 +256,10 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
          * @phan-suppress-next-line PhanParamSpecial1 */
             . join('),(', $candidates)
             . ')';
-
-        $q = $DB->prepare($insertstmt);
-        $q->execute([]);
-
+        if (is_array($candidates) && !empty($candidates)) {
+            $q = $DB->prepare($insertstmt);
+            $q->execute([]);
+        }
         $rows = $DB->pselect(
             "SELECT c.CandID, CommentID FROM flag f
 		JOIN test_names tn ON (f.TestID=tn.ID)
@@ -278,7 +282,9 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         foreach ($instruments as $instrument) {
             $inst   = \NDB_BVL_Instrument::factory($this->loris, $instrument);
             $values = $inst->bulkLoadInstanceData(
-                array_keys($commentID2CandID)
+                array_keys($commentID2CandID),
+                null,
+                null
             );
 
             $instrumentIterators[$instrument] = $this->_dataToIterator(

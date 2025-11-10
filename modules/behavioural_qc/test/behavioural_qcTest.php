@@ -3,7 +3,7 @@
 /**
  * Behavioural_QC automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -43,6 +43,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that behavioural_qc does not load with the permission
      *
@@ -59,6 +60,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
             "You do not have access to this page."
         );
     }
+
     /**
      * Tests that help editor loads with the permission
      * Ensures that the module loads if and only if the user has one of the
@@ -76,6 +78,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
             "Behavioural Quality Control"
         );
     }
+
     /**
      * Tests that link to correct directions
      *
@@ -98,7 +101,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(
                 " #dynamictable >".
-                " tbody > tr:nth-child(1) > td:nth-child(3) > a"
+                " tbody > tr:nth-child(1) > td:nth-child(4) > a"
             )
         )->getAttribute('href');
         // check        Instrument link
@@ -120,7 +123,7 @@ class Behavioural_QCTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(
                 " #dynamictable >".
-                " tbody > tr:nth-child(1) > td:nth-child(5) > a"
+                " tbody > tr:nth-child(1) > td:nth-child(6) > a"
             )
         )->getAttribute('href');
         // check        Instrument link
