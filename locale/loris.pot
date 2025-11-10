@@ -125,22 +125,7 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
-msgid "Save"
-msgstr ""
-
-msgid "Reset"
-msgstr ""
-
 msgid "Back"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "Y"
-msgstr ""
-
-msgid "N"
 msgstr ""
 
 msgid "Create"
@@ -189,19 +174,15 @@ msgid "Email"
 msgstr ""
 
 msgid "Site"
-msgstr ""
-
-msgid "Sites"
-msgstr ""
+msgid_plural "Sites"
+msgstr[0] ""
 
 msgid "Module"
 msgstr ""
 
 msgid "Project"
-msgstr ""
-
-msgid "Projects"
-msgstr ""
+msgid_plural "Projects"
+msgstr[0] ""
 
 msgid "Candidate Registration Project"
 msgstr ""
@@ -271,6 +252,12 @@ msgid "Language"
 msgstr ""
 
 msgid "Ethnicity"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Reset"
 msgstr ""
 
 # Data table strings
@@ -417,6 +404,9 @@ msgstr ""
 msgid "Instrument"
 msgid_plural "Instruments"
 msgstr[0] ""
+
+msgid "None"
+msgstr ""
 
 msgid "Partial"
 msgstr ""

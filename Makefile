@@ -157,7 +157,8 @@ locales:
 	msgfmt -o modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.mo modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.po
 	msgfmt -o modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po
 	msgfmt -o modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po
-	npx i18next-conv -l hi -s modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.json
+	npx i18next-conv -l hi -s modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
+	npx i18next-conv -l ja -s modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
 
 acknowledgements: modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo
 	target=acknowledgements npm run compile

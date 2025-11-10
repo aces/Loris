@@ -730,7 +730,7 @@ class Edit_User extends \NDB_Form
         $onInvalidMsg
             = "this.setCustomValidity('"
             . dgettext(
-                "user_accounts",
+                "loris",
                 "First name is required and should not exceed 120 characters"
             )
             . "')";
@@ -752,7 +752,7 @@ class Edit_User extends \NDB_Form
         $onInvalidMsg
             = "this.setCustomValidity('"
             . dgettext(
-                "user_accounts",
+                "loris",
                 "Last name is required and should not exceed 120 characters"
             )
             . "')";
@@ -861,7 +861,7 @@ class Edit_User extends \NDB_Form
 
         $this->addSelect(
             'CenterIDs',
-            dgettext("loris", "Sites"),
+            dngettext("loris", "Site", "Sites", count($siteOptions)),
             $siteOptions,
             [
                 'class'    => 'form-control input-sm resizable',
@@ -881,7 +881,7 @@ class Edit_User extends \NDB_Form
 
         $this->addSelect(
             'ProjectIDs',
-            dgettext("loris", "Projects"),
+            dngettext("loris", "Project", "Projects", count($projects)),
             $projectOptions,
             [
                 'class'    => 'form-control input-sm resizable',

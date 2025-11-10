@@ -24,6 +24,12 @@ msgstr ""
 msgid "Edit User"
 msgstr ""
 
+msgid "Pending account approval"
+msgstr ""
+
+msgid "Pending account approvals"
+msgstr ""
+
 msgid "This user has no site affiliations"
 msgstr ""
 
@@ -54,7 +60,7 @@ msgstr ""
 msgid "It is recommended to use an email address as the username, for clarity and uniqueness."
 msgstr ""
 
-msgid "When generating a new password, please notify the user by checking 'Send email to user' box"
+msgid "When generating a new password, please notify the user by checking 'Send email to user' box below!"
 msgstr ""
 
 msgid "You must leave the password field empty if you want the system to generate one for you"

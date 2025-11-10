@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
@@ -187,16 +188,14 @@ msgid "Email"
 msgstr "ईमेल"
 
 msgid "Site"
-msgstr "साइट"
-
-msgid "Sites"
-msgstr "साइट्स"
+msgid_plural "Sites"
+msgstr[0] "साइट"
+msgstr[1] "साइट्स"
 
 msgid "Project"
-msgstr "परियोजना"
-
-msgid "Projects"
-msgstr "प्रोजेक्ट्स"
+msgid_plural "Projects"
+msgstr[0] "परियोजना"
+msgstr[1] "प्रोजेक्ट्"
 
 msgid "Candidate Registration Project"
 msgstr "उम्मीदवार पंजीकरण परियोजना"

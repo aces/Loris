@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/user_accounts.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/user_accounts.json';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -78,7 +79,7 @@ class UserAccountsIndex extends Component {
     let url;
     let result = <td>{cell}</td>;
     switch (column) {
-    case t('Site', {ns: 'loris'}):
+    case t('Site', {ns: 'loris', count: 1}):
       result = (
         <td>
           {cell
@@ -94,7 +95,7 @@ class UserAccountsIndex extends Component {
         );
       }
       break;
-    case t('Project', {ns: 'loris'}):
+    case t('Project', {ns: 'loris', count: 1}):
       result = (
         <td>
           {cell.map(
@@ -111,7 +112,8 @@ class UserAccountsIndex extends Component {
       }
       break;
     case t('Username', {ns: 'loris'}):
-      url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
+      const username = row[t('Username', {ns: 'loris'})];
+      url = loris.BaseURL + '/user_accounts/edit_user/' + username;
       result = <td><a href={url}>{cell}</a></td>;
       break;
     case t('Active', {ns: 'loris'}):
@@ -170,7 +172,7 @@ class UserAccountsIndex extends Component {
     const options = this.state.data.fieldOptions;
     const fields = [
       {
-        label: t('Site', {ns: 'loris'}),
+        label: t('Site', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'site',
@@ -179,7 +181,7 @@ class UserAccountsIndex extends Component {
         },
       },
       {
-        label: t('Project', {ns: 'loris'}),
+        label: t('Project', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'project',
@@ -266,7 +268,7 @@ UserAccountsIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'user_accounts', {});
+  i18n.addResourceBundle('ja', 'user_accounts', jaStrings);
   i18n.addResourceBundle('hi', 'user_accounts', hiStrings);
   const Index = withTranslation(
     ['user_accounts', 'loris']
