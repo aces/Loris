@@ -221,7 +221,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        label: this.props.t('Site', {ns: 'loris'}),
+        label: this.props.t('Site', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'site',
@@ -326,7 +326,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': this.props.t('Project', {ns: 'loris'}),
+        'label': this.props.t('Project', {ns: 'loris', count: 1}),
         'show': true,
         'filter': {
           name: 'project',
