@@ -125,6 +125,9 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
+msgid "Back"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -185,14 +188,19 @@ msgstr ""
 msgid "Visit Label"
 msgstr ""
 
-msgid "Site"
+msgid "Email"
 msgstr ""
+
+msgid "Site"
+msgid_plural "Sites"
+msgstr[0] ""
 
 msgid "Module"
 msgstr ""
 
 msgid "Project"
-msgstr ""
+msgid_plural "Projects"
+msgstr[0] ""
 
 msgid "Candidate Registration Project"
 msgstr ""
@@ -247,6 +255,9 @@ msgid "Visits"
 msgstr ""
 
 msgid "An error occured while loading the page."
+msgstr ""
+
+msgid "Active"
 msgstr ""
 
 msgid "Entity Type"
@@ -341,10 +352,16 @@ msgstr ""
 msgid "New Password"
 msgstr ""
 
+msgid "Password"
+msgstr ""
+
 msgid "Confirm Password"
 msgstr ""
 
 msgid "Email address is required"
+msgstr ""
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
 msgstr ""
 
 msgid "The password must be at least 8 characters long."

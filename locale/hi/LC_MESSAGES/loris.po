@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
@@ -126,6 +127,24 @@ msgstr "नहीं"
 msgid "N/A"
 msgstr "लागू नहीं"
 
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Reset"
+msgstr "रीसेट करें"
+
+msgid "Back"
+msgstr "वापस"
+
+msgid "None"
+msgstr "कोई नहीं"
+
+msgid "Y"
+msgstr "हाँ"
+
+msgid "N"
+msgstr "नहीं"
+
 msgid "Create"
 msgstr "बनाएँ"
 
@@ -183,11 +202,18 @@ msgstr "डीसीसीआईडी"
 msgid "Visit Label"
 msgstr "दौरे का लेबल"
 
+msgid "Email"
+msgstr "ईमेल"
+
 msgid "Site"
-msgstr "साइट"
+msgid_plural "Sites"
+msgstr[0] "साइट"
+msgstr[1] "साइट्स"
 
 msgid "Project"
-msgstr "परियोजना"
+msgid_plural "Projects"
+msgstr[0] "परियोजना"
+msgstr[1] "प्रोजेक्ट्"
 
 msgid "Candidate Registration Project"
 msgstr "उम्मीदवार पंजीकरण परियोजना"
@@ -240,6 +266,9 @@ msgstr "भ्रमण"
 
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
+
+msgid "Active"
+msgstr "सक्रिय"
 
 msgid "Entity Type"
 msgstr "इकाई प्रकार"
@@ -333,11 +362,17 @@ msgstr "ईमेल पता"
 msgid "New Password"
 msgstr "नया पासवर्ड"
 
+msgid "Password"
+msgstr "पासवर्ड"
+
 msgid "Confirm Password"
 msgstr "पासवर्ड की पुष्टि करें"
 
 msgid "Email address is required"
 msgstr "ईमेल पता आवश्यक है"
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "ईमेल पता निम्नलिखित किसी भी वर्ण को नहीं शामिल कर सकता: <, >, &, और \""
 
 msgid "The password must be at least 8 characters long."
 msgstr "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।"
@@ -393,9 +428,6 @@ msgstr "पूर्ण"
 
 msgid "Instruments"
 msgstr "उपकरण"
-
-msgid "None"
-msgstr "कोई नहीं"
 
 msgid "Partial"
 msgstr "आंशिक"
