@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
 import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
-import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Renders a representation of the candidate conflicts as a React
@@ -23,7 +22,6 @@ function CandidateConflictsWidget(props) {
   useEffect(() => {
     const visits = getVisits(props.Conflicts);
     const instruments = getInstruments(props.Conflicts);
-    i18n.addResourceBundle('ja', 'conflict_resolver', jaStrings);
     c3.generate({
       bindto: '#conflictschart',
       data: {
