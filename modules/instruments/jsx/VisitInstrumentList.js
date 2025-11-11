@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
+import jaStrings from '../locale/ja/LC_MESSAGES/instruments.json';
 
 /**
  * A VisitInstrumentList is a type of React component which displays
@@ -17,6 +20,7 @@ class VisitInstrumentList extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('ja', 'instruments', jaStrings);
     this.state = {
       expanded: false,
       hover: false,
@@ -47,10 +51,17 @@ class VisitInstrumentList extends Component {
     let vdate = new Date(visit);
     let years = vdate.getFullYear()-dobdate.getFullYear();
     let months = years*12 + vdate.getMonth() - dobdate.getMonth();
+
     if (months <= 36) {
-      return months + ' months old';
+      return this.props.t(
+        '{{months}} months old',
+        {ns: 'loris', months: months}
+      );
     }
-    return years + ' years old';
+    return this.props.t(
+      '{{years}} years old',
+      {ns: 'loris', years: years}
+    );
   }
 
   /**
@@ -86,6 +97,14 @@ class VisitInstrumentList extends Component {
    * @return {object} - The rendered JSX
    */
   render() {
+    const dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        style: 'short',
+        timeZone: 'UTC',
+
+      }
+    );
     let style = {
       marginRight: '0.5%',
       textAlign: 'center',
@@ -96,16 +115,18 @@ class VisitInstrumentList extends Component {
       backgroundColor: 'transparent',
     };
 
-    let vstatus = 'Not Started';
+    let vstatus = this.props.t('Not Started', {ns: 'loris'});
     let bg = '#ea9999';
+    const statusString = (s) => this.props.t(s, {ns: 'loris'})
+      + '—' + this.props.t(this.props.Visit.Stages[s].Status, {ns: 'loris'});
     if (this.props.Visit.Stages.Approval) {
-      vstatus = 'Approval - ' + this.props.Visit.Stages.Approval.Status;
+      vstatus = statusString('Approval');
       bg = '#b6d7a8';
     } else if (this.props.Visit.Stages.Visit) {
-      vstatus = 'Visit - ' + this.props.Visit.Stages.Visit.Status;
+      vstatus = statusString('Visit');
       bg = '#ffe599';
     } else if (this.props.Visit.Stages.Screening) {
-      vstatus = 'Screening - ' + this.props.Visit.Stages.Screening.Status;
+      vstatus = statusString('Screening');
       bg = '#f9cb9c';
     }
 
@@ -185,24 +206,30 @@ class VisitInstrumentList extends Component {
       if (this.state.instruments.length === 0) {
         instruments = (
           <div>
-            {'Visit has no registered instruments in test battery.'}
+            {this.props.t(
+              'Visit has no registered instruments in test battery.',
+              {ns: 'instruments'})
+            }
           </div>
         );
       } else {
         instruments = (<div>
-          <h5>Instruments</h5>
+          <h5>{this.props.t(
+            'Instrument',
+            {ns: 'loris', count: this.state.instruments.length}
+          )}</h5>
           <table
             className="table table-hover table-bordered"
             style={{width: '95%'}}
           >
             <thead>
               <tr>
-                <th>Instrument</th>
+                <th>{this.props.t('Instrument', {ns: 'loris', count: 1})}</th>
                 <th style={{textAlign: 'center'}}>
-                                        Completion
+                  {this.props.t('Completion', {ns: 'instruments'})}
                 </th>
                 <th style={{textAlign: 'center'}}>
-                                        Conflicts?
+                  {this.props.t('Conflicts?', {ns: 'instruments'})}
                 </th>
               </tr>
             </thead>
@@ -223,11 +250,13 @@ class VisitInstrumentList extends Component {
     let vage = null;
     if (this.props.Visit.Stages.Visit) {
       vdate = (<div style={termstyle}>
-        <dt>Date Of Visit</dt>
-        <dd>{this.props.Visit.Stages.Visit.Date}</dd>
+        <dt>{this.props.t('Date Of Visit', {ns: 'loris'})}</dt>
+        <dd>{dateFormatter.format(
+          new Date(this.props.Visit.Stages.Visit.Date)
+        )}</dd>
       </div>);
       vage = (<div style={termstyle}>
-        <dt>Age</dt>
+        <dt>{this.props.t('Age', {ns: 'loris'})}</dt>
         <dd>{this.calcAge(
           this.props.Candidate.Meta.DoB,
           this.props.Visit.Stages.Visit.Date
@@ -268,17 +297,17 @@ class VisitInstrumentList extends Component {
           <div>
             <dl style={defliststyle}>
               <div style={termstyle}>
-                <dt>Cohort</dt>
+                <dt>{this.props.t('Cohort', {ns: 'loris', count: 1})}</dt>
                 <dd>{this.props.Visit.Meta.Battery}</dd>
               </div>
               <div style={termstyle}>
-                <dt>Site</dt>
+                <dt>{this.props.t('Site', {ns: 'loris'})}</dt>
                 <dd>{this.props.Visit.Meta.Site}</dd>
               </div>
               {vdate}
               {vage}
               <div style={termstyle}>
-                <dt>Status</dt>
+                <dt>{this.props.t('Status', {ns: 'loris'})}</dt>
                 <dd>{vstatus}</dd>
               </div>
             </dl>
@@ -294,6 +323,7 @@ VisitInstrumentList.propTypes = {
   Candidate: PropTypes.object,
   Visit: PropTypes.object,
   VisitMap: PropTypes.object,
+  t: PropTypes.Func,
 };
 
-export default VisitInstrumentList;
+export default withTranslation(['instruments', 'loris'])(VisitInstrumentList);

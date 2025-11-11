@@ -113,6 +113,9 @@ msgstr ""
 msgid "TimePoint"
 msgstr "Punto en el tiempo"
 
+msgid "TimePoint %s Details"
+msgstr "Detalles del Punto en el Tiempo %s"
+
 # Common select option labels
 msgid "Yes"
 msgstr "Sí"
@@ -146,6 +149,9 @@ msgid "Hide Advanced Filters"
 msgstr "Ocultar filtros avanzados"
 
 # Common swal labels
+msgid "OK"
+msgstr "Aceptar"
+
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -195,7 +201,7 @@ msgid "DoB"
 msgstr ""
 
 msgid "Sex"
-msgstr ""
+msgstr "Sexo"
 
 msgid "Feedback"
 msgstr "Retroalimentación"

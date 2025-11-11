@@ -187,18 +187,7 @@ class ResolvedFilterableDataTable extends Component {
         name: 'CorrectAnswer',
         type: 'text',
       }},
-      {label: t('User 1',
-        {ns: 'conflict_resolver'}), show: true, filter: {
-        name: 'User1',
-        type: 'text',
-      }},
-      {label: t('User 2',
-        {ns: 'conflict_resolver'}), show: true, filter: {
-        name: 'User2',
-        type: 'text',
-      }},
-      {label: t('Resolver',
-        {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: 'Resolver', show: true, filter: {
         name: 'Resolver',
         type: 'text',
       }},

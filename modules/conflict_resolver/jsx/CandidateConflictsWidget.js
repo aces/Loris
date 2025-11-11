@@ -1,8 +1,11 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+import 'I18nSetup';
+import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Renders a representation of the candidate conflicts as a React
@@ -16,7 +19,12 @@ function CandidateConflictsWidget(props) {
   const visits = getVisits(props.Conflicts);
   const instruments = getInstruments(props.Conflicts);
 
+  const {t, i18n} = useTranslation();
+  const [reload, setReload] = useState(0);
   useEffect(() => {
+    const visits = getVisits(props.Conflicts);
+    const instruments = getInstruments(props.Conflicts);
+    i18n.addResourceBundle('ja', 'conflict_resolver', jaStrings);
     c3.generate({
       bindto: '#conflictschart',
       data: {
@@ -60,7 +68,8 @@ function CandidateConflictsWidget(props) {
         },
       },
     });
-  });
+    setReload(reload+1);
+  }, [t]);
 
   return <div>
     <div id='conflictschart' />
