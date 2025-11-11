@@ -15,7 +15,6 @@ import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
  * @return {object}
  */
 function CandidateConflictsWidget(props) {
-  const {t} = props;
   const visits = getVisits(props.Conflicts);
   const instruments = getInstruments(props.Conflicts);
 
