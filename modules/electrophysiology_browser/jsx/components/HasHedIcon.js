@@ -26,7 +26,7 @@ class HasHEDIcon extends Component {
         style={{width: '36px'}}
       />
       <a
-        href={'https://www.hed-resources.org/en/latest/index.html'}
+        href={'https://www.hedtags.org/hed-resources/'}
         target="_blank"
         style={{
           cursor: 'help',
