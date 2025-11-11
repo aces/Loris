@@ -189,12 +189,10 @@ msgstr "ईमेल"
 msgid "Site"
 msgid_plural "Sites"
 msgstr[0] "साइट"
-msgstr[1] "साइट्स"
 
 msgid "Project"
 msgid_plural "Projects"
 msgstr[0] "परियोजना"
-msgstr[1] "प्रोजेक्ट्"
 
 msgid "Candidate Registration Project"
 msgstr "उम्मीदवार पंजीकरण परियोजना"
