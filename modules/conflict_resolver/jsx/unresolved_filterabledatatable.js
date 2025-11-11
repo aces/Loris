@@ -142,18 +142,18 @@ class UnresolvedFilterableDataTable extends Component {
     const options = this.state.data.fieldOptions;
 
     const fields = [
-      {label: t('Conflict ID', {ns: 'conflict_resolver'}), show: false},
-      {label: t('Project', {ns: 'loris'}), show: true, filter: {
+      {label: 'Conflict ID', show: false},
+      {label: t('Project', {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Project',
         type: 'select',
         options: options.project,
       }},
-      {label: t('Cohort', {ns: 'loris'}), show: true, filter: {
+      {label: t('Cohort', {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'cohort',
         type: 'select',
         options: options.cohort,
       }},
-      {label: t('Site', {ns: 'loris'}), show: true, filter: {
+      {label: t('Site', {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Site',
         type: 'select',
         options: options.site,

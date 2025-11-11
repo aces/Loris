@@ -63,6 +63,15 @@ msgstr "उपयोगकर्ता 1"
 msgid "User 2"
 msgstr "उपयोगकर्ता 2"
 
+msgid "Site"
+msgstr "साइट"
+
+msgid "Project"
+msgstr "परियोजना"
+
+msgid "Cohort"
+msgstr "समूह"
+
 msgid "Resolver"
 msgstr "सुलझाने वाला"
 

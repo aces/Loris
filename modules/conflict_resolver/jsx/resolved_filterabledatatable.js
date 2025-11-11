@@ -132,18 +132,18 @@ class ResolvedFilterableDataTable extends Component {
     const fields = [
       {label: t('Resolved ID',
         {ns: 'conflict_resolver'}), show: false},
-      {label: t('Project', {ns: 'loris'}), show: true, filter: {
+      {label: t('Project', {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Project',
         type: 'select',
         options: options.project,
       }},
       {label: t('Cohort',
-        {ns: 'loris'}), show: true, filter: {
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Cohort',
         type: 'select',
         options: options.cohort,
       }},
-      {label: t('Site', {ns: 'loris'}), show: true, filter: {
+      {label: t('Site', {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Site',
         type: 'select',
         options: options.site,
@@ -187,7 +187,8 @@ class ResolvedFilterableDataTable extends Component {
         name: 'CorrectAnswer',
         type: 'text',
       }},
-      {label: 'Resolver', show: true, filter: {
+      {label: t('Resolver',
+	{ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Resolver',
         type: 'text',
       }},
