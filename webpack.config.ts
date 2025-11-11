@@ -154,7 +154,7 @@ const resolve: webpack.ResolveOptions = {
     Help: path.resolve(__dirname, './jsx/Help'),
     I18nSetup: path.resolve(__dirname, './jsx/I18nSetup'),
   },
-  extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
+  extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
     fs: false,
     path: false,
