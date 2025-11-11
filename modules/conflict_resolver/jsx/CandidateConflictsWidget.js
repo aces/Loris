@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
 import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
-
+/* eslint-disable no-unused-vars */
 /**
  * Renders a representation of the candidate conflicts as a React
  * component
