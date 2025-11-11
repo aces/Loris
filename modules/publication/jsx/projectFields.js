@@ -11,7 +11,6 @@ import {
   SelectElement,
   DateElement,
 } from 'jsx/Form';
-import {withTranslation} from 'react-i18next';
 
 /**
  * Email element component
@@ -50,7 +49,6 @@ class EmailElement extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const {t} = this.props;
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
     let errorMessage = null;
@@ -96,7 +94,7 @@ class EmailElement extends React.Component {
               onChange={this.props.toggleEmailNotify}
               value={this.props.addressee}
             />
-            <span>{t('Send email notification?', {ns: 'publication'})}</span>
+            <span>Send email notification?</span>
           </span>
         </div>
       </div>
@@ -115,7 +113,6 @@ EmailElement.propTypes = {
   id: PropTypes.string,
   toggleEmailNotify: PropTypes.func,
   addressee: PropTypes.string,
-  t: PropTypes.func,
 };
 EmailElement.defaultProps = {
   name: '',
@@ -132,9 +129,6 @@ EmailElement.defaultProps = {
   onUserBlur: function() {
   },
 };
-
-export const TranslatedEmailElement = withTranslation(
-  ['publication', 'loris'])(EmailElement);
 
 /**
  * Project form fields component
@@ -197,7 +191,6 @@ class ProjectFormFields extends React.Component {
    * @return {React.ReactElement[]} - Array of React markup for the component
    */
   createFileFields() {
-    const {t} = this.props;
     let fileFields = [];
     // Create download link & edit fields for existing files
     if (this.props.files) {
@@ -235,13 +228,13 @@ class ProjectFormFields extends React.Component {
             />
             <TextboxElement
               name={pubCit}
-              label={t('Citation', {ns: 'publication'})}
+              label="Citation"
               onUserInput={this.props.setFormData}
               value={this.props.formData[pubCit]}
             />
             <TextboxElement
               name={pubVer}
-              label={t('Publication Version', {ns: 'publication'})}
+              label="Publication Version"
               onUserInput={this.props.setFormData}
               value={this.props.formData[pubVer]}
             />
@@ -258,7 +251,7 @@ class ProjectFormFields extends React.Component {
             name={fileName}
             id={'publicationUploadEl_' + i}
             onUserInput={this.props.setFileData}
-            label={t('File to upload', {ns: 'publication'})}
+            label="File to upload"
             value={this.props.formData[fileName]}
           />
         </div>
@@ -271,7 +264,7 @@ class ProjectFormFields extends React.Component {
           <div>
             <SelectElement
               name={publicationType}
-              label={t('Publication Type', {ns: 'publication'})}
+              label="Publication Type"
               onUserInput={this.props.setFormData}
               value={this.props.formData[publicationType]}
               options={this.props.uploadTypes}
@@ -279,13 +272,13 @@ class ProjectFormFields extends React.Component {
             />
             <TextboxElement
               name={publicationCitation}
-              label={t('Citation', {ns: 'publication'})}
+              label="Citation"
               onUserInput={this.props.setFormData}
               value={this.props.formData[publicationCitation]}
             />
             <TextboxElement
               name={publicationVersion}
-              label={t('Publication Version', {ns: 'publication'})}
+              label="Publication Version"
               onUserInput={this.props.setFormData}
               value={this.props.formData[publicationVersion]}
             />
@@ -309,7 +302,7 @@ class ProjectFormFields extends React.Component {
         function(c, i) {
           let name = 'collabEmail_' + c.name;
           collabEmails.push(
-            <TranslatedEmailElement
+            <EmailElement
               name={name}
               label={c.name + (c.name.slice(-1) === 's' ?
                 '\'' :
@@ -398,17 +391,13 @@ class ProjectFormFields extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const {t} = this.props;
     let collabEmails = this.createCollabEmailFields();
     let fileFields = this.createFileFields();
 
     let voiHelp = (
       <span>
-        {t('For help finding variables of interest, consult',
-          {ns: 'publication'})}
-        &nbsp;
-        <a href={loris.BaseURL + '/datadict/'}>{t('Data Dictionary',
-          {ns: 'loris'})}</a>
+        For help finding variables of interest, consult
+      the <a href={loris.BaseURL + '/datadict/'}>Data Dictionary</a>
       </span>
     );
     let collabNames = [];
@@ -444,14 +433,14 @@ class ProjectFormFields extends React.Component {
       <div>
         <TextareaElement
           name="description"
-          label={t('Description', {ns: 'publication'})}
+          label="Description"
           onUserInput={this.props.setFormData}
           required={true}
           value={this.props.formData.description}
         />
         <SelectElement
           name="project"
-          label={t('Project', {ns: 'loris'})}
+          label="Project"
           options={this.props.projectOptions}
           onUserInput={this.props.setFormData}
           required={true}
@@ -460,7 +449,7 @@ class ProjectFormFields extends React.Component {
         />
         <SelectElement
           name="publishingStatus"
-          label={t('Publishing status', {ns: 'publication'})}
+          label="Publishing status"
           options={publishingStatusOptions}
           onUserInput={this.props.setFormData}
           required={true}
@@ -469,7 +458,7 @@ class ProjectFormFields extends React.Component {
         />
         <DateElement
           name="datePublication"
-          label={t('Date published', {ns: 'publication'})}
+          label="Date published"
           onUserInput={this.props.setFormData}
           required={published}
           value={this.props.formData.datePublication}
@@ -477,7 +466,7 @@ class ProjectFormFields extends React.Component {
         />
         <TextboxElement
           name="journal"
-          label={t('Journal', {ns: 'publication'})}
+          label="Journal"
           onUserInput={this.props.setFormData}
           required={published}
           value={this.props.formData.journal}
@@ -485,7 +474,7 @@ class ProjectFormFields extends React.Component {
         />
         <TextboxElement
           name="doi"
-          label={t('DOI', {ns: 'publication'})}
+          label="DOI"
           onUserInput={this.props.setFormData}
           required={false}
           value={this.props.formData.doi}
@@ -493,7 +482,7 @@ class ProjectFormFields extends React.Component {
         />
         <TextboxElement
           name="link"
-          label={t('Link', {ns: 'publication'})}
+          label="Link"
           onUserInput={this.props.setFormData}
           required={published}
           value={this.props.formData.link}
@@ -501,14 +490,14 @@ class ProjectFormFields extends React.Component {
         />
         <TextboxElement
           name="leadInvestigator"
-          label={t('Lead Investigator', {ns: 'publication'})}
+          label="Lead Investigator"
           onUserInput={this.props.setFormData}
           required={true}
           value={this.props.formData.leadInvestigator}
         />
-        <TranslatedEmailElement
+        <EmailElement
           name="leadInvestigatorEmail"
-          label={t('Lead Investigator Email', {ns: 'publication'})}
+          label="Lead Investigator Email"
           onUserInput={this.props.setFormData}
           toggleEmailNotify={this.toggleEmailNotify}
           errorMessage={this.props.formErrors.leadInvestigatorEmail}
@@ -519,7 +508,7 @@ class ProjectFormFields extends React.Component {
         <TagsElement
           name="usersWithEditPerm"
           id="usersWithEditPerm"
-          label={t('LORIS Users with Edit Permission', {ns: 'publication'})}
+          label="LORIS Users with Edit Permission"
           options={this.props.users}
           useSearch={true}
           strictSearch={true}
@@ -529,25 +518,25 @@ class ProjectFormFields extends React.Component {
           value={this.props.formData.pendingUWEP}
           pendingValKey="pendingUWEP"
           items={this.props.formData.usersWithEditPerm}
-          btnLabel={t('Add User', {ns: 'publication'})}
+          btnLabel="Add User"
         />
         <TagsElement
           name="collaborators"
           id="collaborators"
-          label={t('Collaborators', {ns: 'publication'})}
+          label="Collaborators"
           onUserInput={this.props.setFormData}
           onUserAdd={this.addCollaborator}
           onUserRemove={this.removeCollaborator}
           value={this.props.formData.pendingCollab}
           pendingValKey="pendingCollab"
           items={collabNames}
-          btnLabel={t('Add Collaborator', {ns: 'publication'})}
+          btnLabel="Add Collaborator"
         />
         {collabEmails}
         <TagsElement
           name="keywords"
           id="keywords"
-          label={t('Keywords', {ns: 'publication'})}
+          label="Keywords"
           options={this.props.allKWs}
           useSearch={true}
           strictSearch={false}
@@ -557,11 +546,11 @@ class ProjectFormFields extends React.Component {
           value={this.props.formData.pendingKWItem}
           pendingValKey="pendingKWItem"
           items={this.props.formData.keywords}
-          btnLabel={t('Add Keyword', {ns: 'publication'})}
+          btnLabel="Add Keyword"
         />
         <SelectElement
           name="voiType"
-          label={t('Type of Variables of Interest', {ns: 'publication'})}
+          label="Type of Variables of Interest"
           options={voiTypeOptions}
           onUserInput={this.props.setFormData}
           value={this.props.formData.voiType}
@@ -570,7 +559,7 @@ class ProjectFormFields extends React.Component {
         <TagsElement
           name="voiFields"
           id="voiFields"
-          label={t('Variables of Interest', {ns: 'publication'})}
+          label="Variables of Interest"
           useSearch={true}
           strictSearch={true}
           onUserInput={this.props.setFormData}
@@ -581,15 +570,15 @@ class ProjectFormFields extends React.Component {
           options={voiOptions}
           pendingValKey="pendingItemVF"
           items={this.props.formData.voiFields}
-          btnLabel={t('Add Variable of Interest', {ns: 'publication'})}
+          btnLabel="Add Variable of Interest"
         />
         <StaticElement
           text={voiHelp}
         />
         {fileFields}
         <ButtonElement label={this.props.editMode ?
-          t('Submit', {ns: 'publication'}) :
-          t('Propose Project', {ns: 'publication'})}
+          'Submit' :
+          'Propose Project'}
         />
       </div>
     );
@@ -611,7 +600,5 @@ ProjectFormFields.propTypes = {
   allKWs: PropTypes.object,
   editMode: PropTypes.string,
   projectOptions: PropTypes.object,
-  t: PropTypes.func,
 };
-export default withTranslation(
-  ['publication', 'loris'])(ProjectFormFields);
+export default ProjectFormFields;

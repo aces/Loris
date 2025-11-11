@@ -112,7 +112,7 @@ class View_Project extends \NDB_Form
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                dgettext("publication", "View Project"),
+                'View Project',
                 "/publication/view_project?id=" . $_GET['id']
             )
         );

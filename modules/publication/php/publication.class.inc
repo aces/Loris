@@ -126,21 +126,21 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->query   = $query;
         $this->headers = [
-            dgettext("publication", "Title"),
-            dgettext("publication", "Lead Investigator"),
-            dgettext("publication", "Date Proposed"),
-            dgettext("publication", "Approval Status"),
-            dgettext("publication", "Project"),
-            dgettext("publication", "Journal"),
-            dgettext("publication", "Link"),
-            dgettext("publication", "Publishing Status"),
-            dgettext("publication", "Date published"),
-            dgettext("publication", "Project Proposal Creator"),
-            dgettext("publication", "Description"),
-            dgettext("publication", "Collaborators"),
-            dgettext("publication", "Variables Of Interest"),
-            dgettext("publication", "Keywords"),
-            dgettext("publication", "Publication ID"),
+            'Title',
+            'Lead Investigator',
+            'Date Proposed',
+            'Approval Status',
+            'Project',
+            'Journal',
+            'Link',
+            'Publishing Status',
+            'Date published',
+            'Project Proposal Creator',
+            'Description',
+            'Collaborators',
+            'Variables Of Interest',
+            'Keywords',
+            'Publication ID',
         ];
 
         $this->validFilters = [
@@ -185,61 +185,58 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->addBasicText(
             'title',
-            dgettext("publication", "Title")
+            'Title'
         );
         $this->addSelect(
             'approvalStatus',
-            dgettext("publication", "Approval Status"),
+            'Approval Status',
             $statusOptions
         );
 
         // filters by name
         $this->addBasicText(
             'leadInvestigator',
-            dgettext("publication", "Lead Investigator")
+            'Lead Investigator'
         );
 
         //also filters by name
         $this->addBasicText(
             'collaborators',
-            dgettext("publication", "Collaborators")
+            'Collaborators'
         );
 
         $this->addBasicText(
             'keywords',
-            dgettext("publication", "Keywords")
+            'Keywords'
         );
 
         $this->addBasicText(
             'variablesOfInterest',
-            dgettext("publication", "Variables of Interest")
+            'Variables of Interest'
         );
 
         $this->addBasicText(
             'journal',
-            dgettext("publication", "Journal")
+            'Journal'
         );
 
         $this->addSelect(
             'project',
-            dgettext("publication", "Project"),
+            'Project',
             $projectOptions
         );
 
         $this->addBasicText(
             'link',
-            dgettext("publication", "Link")
+            'Link'
         );
-
-        $pubPublished  = dgettext("publication", "Published");
-        $pubInProgress = dgettext("publication", "In Progress");
 
         $this->addSelect(
             'publishingStatus',
-            dgettext("publication", "Publishing Status"),
+            'Publishing Status',
             [
-                $pubPublished  => $pubPublished,
-                $pubInProgress => $pubInProgress,
+                'Published'   => 'Published',
+                'In Progress' => 'In Progress'
             ]
         );
     }

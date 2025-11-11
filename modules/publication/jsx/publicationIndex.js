@@ -6,21 +6,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {ButtonElement} from 'jsx/Form';
 import StaticDataTable from 'jsx/StaticDataTable';
-import {withTranslation} from 'react-i18next';
-
-import i18n from 'I18nSetup';
-import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
 
 /**
  * Publication index component
  */
 class PublicationIndex extends React.Component {
   /**
-   * @param {object} props - React Component properties
    * @constructor
    */
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     loris.hiddenHeaders = [
       'Description',
       'Publication ID',
@@ -87,11 +82,10 @@ class PublicationIndex extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const {t} = this.props;
     if (!this.state.isLoaded) {
       return (
         <button className="btn-info has-spinner">
-          {t('Loading', {ns: 'publication'})}
+          Loading
           <span
             className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
           </span>
@@ -101,14 +95,14 @@ class PublicationIndex extends React.Component {
     let tabList = [
       {
         id: 'browse',
-        label: t('Browse', {ns: 'publication'}),
+        label: 'Browse',
       },
     ];
     let proposalTab;
     if (loris.userHasPermission('publication_propose')) {
       tabList.push({
         id: 'propose',
-        label: t('Propose a Project', {ns: 'publication'}),
+        label: 'Propose a Project',
       });
 
       proposalTab = (
@@ -143,7 +137,7 @@ class PublicationIndex extends React.Component {
           >
             <br/>
             <ButtonElement
-              label={t('Clear Filters', {ns: 'loris'})}
+              label="Clear Filters"
               type="reset"
               onUserInput={this.resetFilters}
             />
@@ -197,13 +191,14 @@ class PublicationIndex extends React.Component {
 }
 PublicationIndex.propTypes = {
   DataURL: PropTypes.string,
-  t: PropTypes.func,
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  i18n.addResourceBundle('hi', 'publication', hiStrings);
-  const PIIndex = withTranslation(['publication', 'loris'])(PublicationIndex);
-  createRoot(document.getElementById('lorisworkspace')).render(
-    <PIIndex DataURL={`${loris.BaseURL}/publication/?format=json`} />
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
+    <div className="page-publications">
+      <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
+    </div>
   );
 });
