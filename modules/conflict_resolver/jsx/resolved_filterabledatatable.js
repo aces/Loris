@@ -188,7 +188,7 @@ class ResolvedFilterableDataTable extends Component {
         type: 'text',
       }},
       {label: t('Resolver',
-	{ns: 'conflict_resolver'}), show: true, filter: {
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Resolver',
         type: 'text',
       }},
