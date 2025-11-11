@@ -1,4 +1,4 @@
-CREATE TABLE login_summary_statistics (
+CREATE TABLE Login_Summary_Statistics (
     Title VARCHAR(255),
     Project VARCHAR(255),
     Value INT,
