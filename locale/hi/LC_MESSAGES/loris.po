@@ -127,6 +127,9 @@ msgstr "नहीं"
 msgid "Browse"
 msgstr "ब्राउज़ करें"
 
+msgid "Submit"
+msgstr "सबमिट करें"
+
 msgid "Upload"
 msgstr "अपलोड करें"
 

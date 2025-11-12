@@ -190,7 +190,7 @@ class FilterForm extends Component {
     if (formElements) {
       Object.keys(formElements).forEach(function(fieldName) {
         let queryFieldName = (fieldName === 'candID') ?
-          this.props.t('CandID', {ns: 'loris'}) :
+          'candidateID' :
           fieldName;
         formElements[fieldName].onUserInput = this.onElementUpdate.bind(
           null,

@@ -33,8 +33,8 @@ msgstr "अपलोड करने के लिए फ़ाइल"
 msgid "Notes"
 msgstr "नोट्स"
 
-msgid "File cannot exceed"
-msgstr "फ़ाइल इससे अधिक नहीं हो सकती"
+msgid "File cannot exceed {{maxUploadSize}}"
+msgstr "फ़ाइल इससे अधिक नहीं हो सकती {{maxUploadSize}}"
 
 msgid "File must be of type .tgz or tar.gz or .zip"
 msgstr "फ़ाइल का प्रकार .tgz, .tar.gz या .zip होना चाहिए"
@@ -42,23 +42,17 @@ msgstr "फ़ाइल का प्रकार .tgz, .tar.gz या .zip ह�
 msgid "For files that are not Phantom Scans, file name must begin with"
 msgstr "जो फाइलें फैंटम स्कैन नहीं हैं, उनका नाम इससे शुरू होना चाहिए"
 
-msgid "For example, for DCCID"
-msgstr "उदाहरण के लिए, DCCID के लिए"
+msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
+msgstr "उदाहरण के लिए, DCCID {{dccid}}, PSCID {{pscid}}, और विजिट लेबल {{visitLabel}} के लिए फ़ाइल नाम की शुरुआत इससे होनी चाहिए: {{prefix}}"
 
-msgid "and Visit Label"
-msgstr "और विजिट लेबल"
-
-msgid "the file name should be prefixed by:"
-msgstr "फ़ाइल नाम की शुरुआत इससे होनी चाहिए:"
+msgid "The file {{fileName}} must be of type .tgz, .tar.gz or .zip."
+msgstr "फ़ाइल {{fileName}} का प्रकार .tgz, .tar.gz या .zip होना चाहिए।"
 
 msgid "Invalid extension for the uploaded file!"
 msgstr "अपलोड की गई फ़ाइल के लिए एक्सटेंशन अमान्य है!"
 
 msgid "Filename extension does not match .zip, .tgz or .tar.gz "
 msgstr "फ़ाइल नाम एक्सटेंशन .zip, .tgz या .tar.gz से मेल नहीं खाता"
-
-msgid "must be of type .tgz, .tar.gz or .zip."
-msgstr "का प्रकार .tgz, .tar.gz या .zip होना चाहिए।"
 
 msgid "Incorrect file name!"
 msgstr "अमान्य फ़ाइल नाम!"
@@ -111,8 +105,8 @@ msgstr "प्रोसेसिंग प्रगति देखने के
 msgid "Upload failed: a network error occured"
 msgstr "अपलोड विफल: नेटवर्क त्रुटि हुई"
 
-msgid "Please make sure files are not larger than"
-msgstr "कृपया सुनिश्चित करें कि फ़ाइलें इससे बड़ी न हों"
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "कृपया सुनिश्चित करें कि फ़ाइलें {{maxFileSize}} से बड़ी न हों"
 
 msgid "Upload failed: received HTTP response code"
 msgstr "अपलोड विफल: HTTP प्रतिक्रिया कोड प्राप्त हुआ"
@@ -140,6 +134,12 @@ msgstr "बनाई गई फ़ाइलों की संख्या"
 
 msgid "Number Of Files Inserted"
 msgstr "डाली गई फ़ाइलों की संख्या"
+
+msgid "{{successText}} ({{inserted}} out of {{created}})"
+msgstr "{{successText}} ({{created}} में से {{inserted}})"
+
+msgid "{{numViolatedScans}} violated scans"
+msgstr "{{numViolatedScans}} उल्लंघन स्कैन"
 
 msgid "Tarchive Info"
 msgstr "टीआर्काइव जानकारी"

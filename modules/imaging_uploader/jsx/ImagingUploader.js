@@ -151,8 +151,14 @@ class ImagingUploader extends Component {
         const inserted = row[filesInsertedKey];
         return (
           <td style={cellStyle}>
-            {successText} ({inserted} {t('out of',
-              {ns: 'imaging_uploader'})} {created})
+            {t('{{successText}} ({{inserted}} out of {{created}})',
+              {
+                ns: 'imaging_uploader',
+                successText: successText,
+                inserted: inserted,
+                created: created,
+              }
+            )}
           </td>
         );
       }
@@ -201,8 +207,9 @@ class ImagingUploader extends Component {
         const violUrl = loris.BaseURL +
                          '/mri_violations/?patientName=' + row.PatientName;
         violatedScans = <a href={violUrl}>
-          {numViolatedScans} + {' '}
-          {this.props.t('violated scans', {ns: 'imaging_uploader'})}
+          {this.props.t('{{numViolatedScans}} violated scans',
+            {ns: 'imaging_uploader', numViolatedScans: numViolatedScans}
+          )}
         </a>;
       }
 

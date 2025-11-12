@@ -153,10 +153,10 @@ class UploadForm extends Component {
       });
 
       let errorMessage = {
-        mriFile: t('The file', {ns: 'imaging_uploader'}) + ' '
-                 + fileName
-                 + ' ' + t('must be of type .tgz, .tar.gz or .zip.',
-          {ns: 'imaging_uploader'}),
+        mriFile: t(
+          'The file {{fileName}} must be of type .tgz, .tar.gz or .zip.',
+          {ns: 'imaging_uploader', fileName: fileName}
+        ),
         candID: undefined,
         pSCID: undefined,
         visitLabel: undefined,
@@ -376,9 +376,10 @@ class UploadForm extends Component {
     } else if (xhr.status == 413) {
       errorMessage = {
         'mriFile': [
-          t('Please make sure files are not larger than',
-            {ns: 'imaging_uploader'})
-          + ' ' + this.props.maxUploadSize,
+          t(
+            'Please make sure files are not larger than {{maxFileSize}}',
+            {ns: 'imaging_uploader', maxFileSize: this.props.maxUploadSize}
+          ),
         ],
       };
     } else {
@@ -431,18 +432,26 @@ class UploadForm extends Component {
 
     const notes = (
       <span>
-        {t('File cannot exceed', {ns: 'imaging_uploader'})}
-        {this.props.maxUploadSize}<br/>
+        {t('File cannot exceed {{maxUploadSize}}',
+          {ns: 'imaging_uploader', maxUploadSize: this.props.maxUploadSize}
+        )}<br/>
         {t('File must be of type .tgz or tar.gz or .zip',
           {ns: 'imaging_uploader'})}<br/>
         {t('For files that are not Phantom Scans, file name must begin with',
           {ns: 'imaging_uploader'})}
         <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
-        {t('For example, for DCCID', {ns: 'imaging_uploader'})}
-        <i>100000</i>, {t('PSCID', {ns: 'loris'})} <i>ABC123</i>,
-        {t('and Visit Label', {ns: 'imaging_uploader'})} <i>V1</i>
-        {t('the file name should be prefixed by:', {ns: 'imaging_uploader'})}
-        <b> ABC123_100000_V1</b><br/>
+        {t(
+          `For example, for DCCID {{dccid}}, PSCID {{pscid}}, ` +
+          `and Visit Label {{visitLabel}} ` +
+          `the file name should be prefixed by: {{prefix}}`,
+          {
+            ns: 'imaging_uploader',
+            dccid: '100000',
+            pscid: 'ABC123',
+            visitLabel: 'V1',
+            prefix: 'ABC123_100000_V1',
+          }
+        )}<br/>
       </span>
     );
 
