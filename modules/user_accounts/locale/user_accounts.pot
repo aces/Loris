@@ -29,3 +29,171 @@ msgstr ""
 
 msgid "Pending account approvals"
 msgstr ""
+
+msgid "This user has no site affiliations"
+msgstr ""
+
+msgid "This user has no project affiliations"
+msgstr ""
+
+msgid "Full Name"
+msgstr ""
+
+msgid "Pending Approval"
+msgstr ""
+
+msgid "Radiologist"
+msgstr ""
+
+msgid "Account Request Date"
+msgstr ""
+
+msgid "Add User"
+msgstr ""
+
+msgid "The form you submitted contains data entry errors"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "It is recommended to use an email address as the username, for clarity and uniqueness."
+msgstr ""
+
+msgid "When generating a new password, please notify the user by checking 'Send email to user' box below!"
+msgstr ""
+
+msgid "You must leave the password field empty if you want the system to generate one for you"
+msgstr ""
+
+msgid "Add/Edit User"
+msgstr ""
+
+msgid "Reject User"
+msgstr ""
+
+msgid "Make user name match email address"
+msgstr ""
+
+msgid "Generate new password"
+msgstr ""
+
+msgid "Degree"
+msgstr ""
+
+msgid "Academic Position"
+msgstr ""
+
+msgid "Institution"
+msgstr ""
+
+msgid "Department"
+msgstr ""
+
+msgid "Street Address"
+msgstr ""
+
+msgid "City"
+msgstr ""
+
+msgid "State/Province"
+msgstr ""
+
+msgid "Zip/Postal Code"
+msgstr ""
+
+msgid "Country"
+msgstr ""
+
+msgid "FAX"
+msgstr ""
+
+msgid "Send email to user"
+msgstr ""
+
+msgid "Confirm Email"
+msgstr ""
+
+msgid "Examiner At:"
+msgstr ""
+
+msgid "Examiner Status"
+msgstr ""
+
+msgid "Pending approval"
+msgstr ""
+
+msgid "Active from"
+msgstr ""
+
+msgid "Active to"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Supervisors"
+msgstr ""
+
+msgid "You cannot enter a user name if you want it to match the email address"
+msgstr ""
+
+msgid "You must enter a user name or choose to make it match the email address"
+msgstr ""
+
+msgid "The user name already exists"
+msgstr ""
+
+msgid "The user name must not exceed 255 characters"
+msgstr ""
+
+msgid "You cannot have the user name match an email address that contains a whitespace character"
+msgstr ""
+
+msgid "Whitespace characters are not allowed in user names"
+msgstr ""
+
+msgid "Please specify password or click Generate new password"
+msgstr ""
+
+msgid "Password is required"
+msgstr ""
+
+msgid "You must enter an email address"
+msgstr ""
+
+msgid "Email and confirmed email do not match"
+msgstr ""
+
+msgid "You must select at least one site/affiliation"
+msgstr ""
+
+msgid "You must select at least one project/affiliation"
+msgstr ""
+
+msgid "Please specify if examiner is a radiologist"
+msgstr ""
+
+msgid "Please set pending approval Yes or No"
+msgstr ""
+
+msgid "Please select at least one examiner site or clear the 'Examiner status' fields below (i.e. 'Radiologist' and 'Pending Approval')."
+msgstr ""
+
+msgid "Please notice that the \"Active from\" date should be lesser or equal to the \"Active to\" date."
+msgstr ""
+
+msgid "Your password cannot be your email."
+msgstr ""
+
+msgid "Your password cannot be your user name."
+msgstr ""
+
+msgid "The passwords do not match."
+msgstr ""
+
+msgid "New and old passwords are identical"
+msgstr ""
+
+msgid "This email address is already in use"
+msgstr ""

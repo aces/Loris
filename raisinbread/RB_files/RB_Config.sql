@@ -93,7 +93,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (107,106,'/data/issue_tr
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (108,107,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (113,112,'warning');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (114,113,'warning');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (115,114,'none');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (115,114,'warning');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (116,116,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (117,117,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (118,118,'');
