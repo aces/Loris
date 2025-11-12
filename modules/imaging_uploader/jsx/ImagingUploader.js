@@ -201,7 +201,8 @@ class ImagingUploader extends Component {
         const violUrl = loris.BaseURL +
                          '/mri_violations/?patientName=' + row.PatientName;
         violatedScans = <a href={violUrl}>
-           ({numViolatedScans} violated scans)
+          {numViolatedScans} + {' '}
+          {this.props.t('violated scans', {ns: 'imaging_uploader'})}
         </a>;
       }
 

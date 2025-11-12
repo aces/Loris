@@ -513,6 +513,7 @@ class UploadForm extends Component {
             <ButtonElement
               onUserInput={this.submitForm}
               buttonClass={btnClass}
+              label={t('Submit', {ns: 'loris'})}
             />
           </FormElement>
         </div>

@@ -156,14 +156,14 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        $phantomOtions = [
-            'N' => 'No',
-            'Y' => 'Yes',
+        $phantomOptions = [
+            'N' => dgettext("loris", "No"),
+            'Y' => dgettext("loris", "Yes"),
         ];
         $user          = \NDB_Factory::singleton()->user();
         $visitlabels   = $user->getVisits();
         // Fields used for selection filter and upload form
-        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
+        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOptions);
         $this->addBasicText('candID', 'CandID');
         $this->addBasicText('pSCID', 'PSCID');
         $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
