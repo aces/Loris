@@ -127,29 +127,10 @@ class Publication extends \NDB_Menu_Filter_Form
         $this->query   = $query;
         $this->headers = [
             'Title',
-            'Lead Investigator',
-            'Date Proposed',
-            'Approval Status',
-            'Project',
-            'Journal',
-            'Link',
-            'Publishing Status',
-            'Date published',
-            'Project Proposal Creator',
-            'Description',
-            'Collaborators',
-            'Variables Of Interest',
-            'Keywords',
-            'Publication ID',
         ];
 
         $this->validFilters = [
             'p.Title',
-            'p.LeadInvestigator',
-            'p.ApprovalStatus',
-            'pc.Name',
-            'pk.Label',
-            'pt.Name',
         ];
     }
 
@@ -186,58 +167,6 @@ class Publication extends \NDB_Menu_Filter_Form
         $this->addBasicText(
             'title',
             'Title'
-        );
-        $this->addSelect(
-            'approvalStatus',
-            'Approval Status',
-            $statusOptions
-        );
-
-        // filters by name
-        $this->addBasicText(
-            'leadInvestigator',
-            'Lead Investigator'
-        );
-
-        //also filters by name
-        $this->addBasicText(
-            'collaborators',
-            'Collaborators'
-        );
-
-        $this->addBasicText(
-            'keywords',
-            'Keywords'
-        );
-
-        $this->addBasicText(
-            'variablesOfInterest',
-            'Variables of Interest'
-        );
-
-        $this->addBasicText(
-            'journal',
-            'Journal'
-        );
-
-        $this->addSelect(
-            'project',
-            'Project',
-            $projectOptions
-        );
-
-        $this->addBasicText(
-            'link',
-            'Link'
-        );
-
-        $this->addSelect(
-            'publishingStatus',
-            'Publishing Status',
-            [
-                'Published'   => 'Published',
-                'In Progress' => 'In Progress'
-            ]
         );
     }
 

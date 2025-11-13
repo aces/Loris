@@ -209,9 +209,10 @@ candidate_parameters: modules/candidate_parameters/locale/ja/LC_MESSAGES/candida
 dashboard: modules/dashboard/locale/ja/LC_MESSAGES/dashboard.mo
 	target=dashboard npm run compile
 
-publication: modules/publication/locale/ja/LC_MESSAGES/publication.mo
+publication:
+	msgfmt -o modules/publication/locale/hi/LC_MESSAGES/publication.mo modules/publication/locale/hi/LC_MESSAGES/publication.po
+	npx i18next-conv -l hi -s modules/publication/locale/hi/LC_MESSAGES/publication.po -t modules/publication/locale/hi/LC_MESSAGES/publication.json
 	target=publication npm run compile
-
 server_processes_manager: modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo
 	target=server_processes_manager npm run compile
 

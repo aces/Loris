@@ -6,6 +6,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {ButtonElement} from 'jsx/Form';
 import StaticDataTable from 'jsx/StaticDataTable';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
+import FilterableDataTable from 'FilterableDataTable';
 
 /**
  * Publication index component
@@ -82,6 +86,8 @@ class PublicationIndex extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+  const {t} = this.props;
+
     if (!this.state.isLoaded) {
       return (
         <button className="btn-info has-spinner">
@@ -121,33 +127,27 @@ class PublicationIndex extends React.Component {
     const filterRef = function(f) {
       this.publicationsFilter = f;
     }.bind(this);
-
-    return (
+const fields = [
+  {
+    label: t('Title', {ns: 'publication'}),
+    show: true,
+    filter: {
+      name: 'Title', // this becomes ?Title=... in URL
+      type: 'text',
+    },
+  },
+  // other columns...
+];    
+	  return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
-          <FilterForm
-            Module="publication"
-            name="publications_filter"
-            id="publications_filter_form"
-            ref={filterRef}
-            columns={3}
-            formElements={this.state.Data.form}
-            onUpdate={this.updateFilter}
-            filter={this.state.filter}
-          >
-            <br/>
-            <ButtonElement
-              label="Clear Filters"
-              type="reset"
-              onUserInput={this.resetFilters}
-            />
-          </FilterForm>
-          <StaticDataTable
-            Data={this.state.Data.Data}
-            Headers={this.state.Data.Headers}
-            Filter={this.state.filter}
-            getFormattedCell={this.formatColumn}
-          />
+	<FilterableDataTable
+        name="publication"
+        title={t('publication', {ns: 'user_accounts'})}
+        data={this.state.Data.Data}
+        fields={fields}
+        getFormattedCell={this.formatColumn}
+      />
         </TabPane>
         {proposalTab}
       </Tabs>
@@ -164,6 +164,10 @@ class PublicationIndex extends React.Component {
    * @return {JSX} - React markup for the component
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+	  console.log(column);
+	   console.log(cell);
+	   console.log(rowData);
+	   console.log(rowHeaders);
     // If a column if set as hidden, don't display it
     if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
@@ -192,13 +196,14 @@ class PublicationIndex extends React.Component {
 PublicationIndex.propTypes = {
   DataURL: PropTypes.string,
 };
+window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'publication', hiStrings);
 
-document.addEventListener('DOMContentLoaded', () => {
-  createRoot(
-    document.getElementById('lorisworkspace')
-  ).render(
-    <div className="page-publications">
-      <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
-    </div>
-  );
-});
+  const PubIndex = withTranslation(['loris', 'publication'])(PublicationIndex);
+
+  createRoot(document.getElementById('lorisworkspace')).render(
+     <div className="page-publications">
+      <PubIndex DataURL={`${loris.BaseURL}/publication/?format=json`} />
+     </div>
+   );
+ });
