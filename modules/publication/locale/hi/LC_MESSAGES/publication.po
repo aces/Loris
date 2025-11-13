@@ -96,16 +96,16 @@ msgstr "सहयोगी"
 msgid "Keywords"
 msgstr "कुंजीशब्द"
 
-msgid "Variables of Interest"
+msgid "Variables Of Interest"
 msgstr "रुचि के चर"
 
 msgid "Description"
 msgstr "विवरण"
 
-msgid "Publishing status"
+msgid "Publishing Status"
 msgstr "प्रकाशन स्थिति"
 
-msgid "Date published"
+msgid "Date Published"
 msgstr "प्रकाशित तिथि"
 
 msgid "Link"
@@ -146,9 +146,6 @@ msgstr "परियोजना"
 
 msgid "Project Proposal Creator"
 msgstr "परियोजना प्रस्ताव निर्माता"
-
-msgid "Publication ID"
-msgstr "प्रकाशन आईडी"
 
 msgid "Published"
 msgstr "प्रकाशित"
