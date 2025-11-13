@@ -202,7 +202,8 @@ class PublicationIndex extends React.Component {
     if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
-    if (column === 'शीर्षक') {
+//    if (column === 'शीर्षक') {
+if (rowHeaders[0] === column){	    
       const pubID = rowData['Publication ID'];
       const viewURL = `${loris.BaseURL}/publication/view_project?id=${pubID}`;
       return (
