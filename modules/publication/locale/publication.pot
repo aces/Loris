@@ -179,3 +179,9 @@ msgstr ""
 
 msgid "Add Variable of Interest"
 msgstr ""
+
+msgid "Publication Type"
+msgstr ""
+
+msgid "Publication Version"
+msgstr ""

@@ -177,5 +177,11 @@ msgstr "सहयोगी जोड़ें"
 msgid "Add Keyword"
 msgstr "कीवर्ड जोड़ें"
 
+msgid "Publication Type"
+msgstr "प्रकाशन प्रकार"
+
+msgid "Publication Version"
+msgstr "प्रकाशन संस्करण"
+
 msgid "Add Variable of Interest"
 msgstr "रुचि वाला वेरिएबल जोड़ें"
