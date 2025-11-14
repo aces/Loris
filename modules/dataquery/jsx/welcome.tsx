@@ -78,15 +78,12 @@ function Welcome(props: {
         </div>
         <div>
           <ul style ={{lineHeight: 2.0}}>
-            <li>Click on the <strong>Star</strong> icon to mark your query as 'starred'</li>
-            <li>Click on <ShareIcon /> to <strong>share</strong> your query with all users who
-            have access to the fields in it.</li>
-            <li>Click on <LoadIcon /> to <strong>load</strong> your query.</li>
-            <li>Click on <NameIcon /> to <strong>name</strong> (or rename) your query.</li>
-            <li>Click on the the pin icon to <strong>display</strong> your query on the Loris
+            <li>Select <StarIcon/> to mark your query.</li>
+            <li>Select <ShareIcon/> to share your query with other users.</li>
+            <li>Select <LoadIcon/> to load your query.</li>
+            <li>Select <NameIcon/> to name (or rename) your query.</li>
+            <li>Select <PinIcon/> to display your query on the LORIS
               welcome page and in the 'Important Queries' pane.</li>
-            <li>Use Filter to <strong>find</strong> your query or queries by name.</li>
-            <li>Use the checkboxes to customize your query</li>
           </ul>
         </div>
         <div>
@@ -511,14 +508,14 @@ function QueryList(props: {
       });
   }
   const starFilter = props.starQuery ?
-    <CheckboxElement name='onlystar' label='Starred Only'
+    <CheckboxElement name='onlystar' label='Starred Queries'
       value={onlyStarred}
       offset=''
       onUserInput={
         (name: string, value: boolean) => setOnlyStarred(value)
       }/> : <span />;
   const shareFilter = props.shareQuery ?
-    <CheckboxElement name='onlyshare' label='Shared Only'
+    <CheckboxElement name='onlyshare' label='Shared Queries'
       value={onlyShared}
       offset=''
       onUserInput={
@@ -530,7 +527,7 @@ function QueryList(props: {
     // query list
   const duplicateFilter = props.shareQuery ?
     <CheckboxElement name='noduplicate'
-      label='Remove date'
+      label='Remove Duplicate Queries'
       value={noDuplicates}
       offset=''
       onUserInput={
@@ -558,14 +555,14 @@ function QueryList(props: {
       }}>
         {starFilter}
         {shareFilter}
-        <CheckboxElement name='onlynamed' label='Named Only'
+        <CheckboxElement name='onlynamed' label='Named Queries'
           value={onlyNamed}
           offset=''
           onUserInput={
             (name: string, value: boolean) => setOnlyNamed(value)
           }/>
         {duplicateFilter}
-        <CheckboxElement name='fullquery' label='Collapse queries'
+        <CheckboxElement name='fullquery' label='Collapse All Queries'
           value={!fullQuery}
           offset=''
           onUserInput={
@@ -1075,6 +1072,30 @@ function NameIcon(props: {
   </span>);
 }
 
+function PinIcon(props: {
+    onClick?: () => void
+}): React.ReactElement {
+  return (<span title="Pin query"
+    style={{cursor: 'default'}}
+    className="fa-stack"
+    onClick={props.onClick}
+  >
+    <i className="fas fa-thumbtack fa-stack-1x"> </i>
+  </span>);
+}
+
+function StarIcon(props: {
+    onClick?: () => void
+}): React.ReactElement {
+  return (<span title="Pin query"
+    style={{cursor: 'default'}}
+    className="fa-stack"
+    onClick={props.onClick}
+  >
+    <i className="far fa-star fa-stack-1x"> </i>
+  </span>);
+}
+
 /**
  * Displays the message for the introduction panel
  *
@@ -1096,11 +1117,9 @@ function IntroductionMessage(_props: {
   return (
     <div>
       <ul style ={{lineHeight: 2.0}}>
-        <li>Click <code>Define Fields</code> to select what you are looking
-        for.</li>
-        <li>Click <code>Add Filters</code> to filter what you have
-        selected.</li>
-        <li>Click <code>Run Query</code> to view the results.</li>
+        <li>Select <code>Define Fields</code> to begin your query.</li>
+        <li>Select <code>Add Filters</code> to filter your data selection.</li>
+        <li>Select <code>Run Query</code> to view the results.</li>
         {/* <li><code>Recent Queries</code> stores the queries you have run.</li> */}
       </ul>
       {/* <p>Click <ShareIcon /> to share your queries with all users who have access
