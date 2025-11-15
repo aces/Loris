@@ -170,6 +170,10 @@
 - changed-files:
   - any-glob-to-any-file: modules/publication/**
 
+"Module: redcap":
+- changed-files:
+  - any-glob-to-any-file: modules/redcap/**
+
 "Module: schedule_module":
 - changed-files:
   - any-glob-to-any-file: modules/schedule_module/**
