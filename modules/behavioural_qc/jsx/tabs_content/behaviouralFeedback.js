@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import FilterableDataTable from 'jsx/FilterableDataTable';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Behavioural Feedback Component.
@@ -80,83 +81,80 @@ class BehaviouralFeedback extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    let reactElement;
-    switch (column) {
-    case 'PSCID':
-      reactElement = (
+    const {t} = this.props;
+    const labelPSCID = t('PSCID', {ns: 'loris'});
+    const labelDCCID = t('DCCID', {ns: 'loris'});
+    const labelBVL = t('Feedback Level', {ns: 'behavioural_qc'});
+    const labelInstrument = t('Instrument', {ns: 'loris', count: 1});
+    const labelTestName = t('Test Name', {ns: 'behavioural_qc'});
+    const labelVisit = t('Visit', {ns: 'loris'});
+
+    // PSCID column (match English or translated)
+    if (column === 'PSCID' || column === labelPSCID) {
+      return (
         <td>
-          <a href={this.props.baseURL +
-            '/' +
-            rowData['DCCID']
-          }>
-            {rowData['PSCID']}
+          <a
+            href={this.props.baseURL + '/' + rowData[labelDCCID]}
+          >
+            {rowData[labelPSCID]}
           </a>
         </td>
       );
-      break;
-    case 'DCCID':
-      reactElement = (
+    }
+
+    // DCCID column
+    if (column === 'DCCID' || column === labelDCCID) {
+      return (
         <td>
-          <a href={this.props.baseURL +
-            '/' +
-            rowData['DCCID']
-          }>
-            {rowData['DCCID']}
+          <a href={this.props.baseURL + '/' + rowData[labelDCCID]}>
+            {rowData[labelDCCID]}
           </a>
         </td>
       );
-      break;
-    case 'Feedback Level':
+    }
+
+    // Feedback Level column — build link depending on row data
+    if (column === 'Feedback Level' || column === labelBVL) {
       let bvlLink = '';
       let bvlLevel = '';
-      if (rowData['Instrument']) {
+      if (rowData[labelInstrument]) {
         bvlLink = this.props.baseURL +
-                     '/instruments/' +
-                     rowData['Test Name'] +
-                     '/?candID=' +
-                     rowData['DCCID'] +
-                     '&sessionID=' +
-                     rowData['sessionID'] +
-                     '&commentID=' +
-                     rowData['commentID'];
-        // Open feedback panel
-        bvlLink += '&showFeedback=true';
-        bvlLevel ='Instrument : ' + rowData['Instrument'];
-      } else if (rowData['Visit']) {
+                  '/instruments/' +
+                  rowData[labelTestName] +
+                  '/?candID=' + rowData[labelDCCID] +
+                  '&sessionID=' + rowData['sessionID'] +
+                  '&commentID=' + rowData['commentID'] +
+                  '&showFeedback=true';
+        bvlLevel = labelInstrument + ' : '
+        + rowData[labelInstrument];
+      } else if (rowData[labelVisit]) {
         bvlLink = this.props.baseURL +
-                     '/instrument_list/' +
-                     '?candID=' +
-                     rowData['DCCID'] +
-                     '&sessionID=' +
-                     rowData['sessionID'];
-        // Open feedback panel
-        bvlLink += '&showFeedback=true';
-        bvlLevel ='Visit : ' + rowData['Visit'];
+                  '/instrument_list/?candID=' + rowData[labelDCCID] +
+                  '&sessionID=' + rowData['sessionID'] +
+                  '&showFeedback=true';
+        bvlLevel = labelVisit + ' : '
+        + rowData[labelVisit];
       } else {
-        bvlLink = this.props.baseURL +
-                     '/' + rowData['DCCID'];
-        // Open feedback panel
-        bvlLink += '/?showFeedback=true';
-        bvlLevel ='Profile : ' + rowData['PSCID'];
+        bvlLink = this.props.baseURL + '/' + rowData[labelDCCID]
+        + '/?showFeedback=true';
+        bvlLevel = t('Profile', {ns: 'behavioural_qc'}) + ' : '
+        + rowData[labelPSCID];
       }
-      reactElement = (
+      return (
         <td>
           <a href={bvlLink}>{bvlLevel}</a>
         </td>
       );
-      break;
-    default:
-      reactElement = (
-        <td>{cell}</td>
-      );
     }
-    return reactElement;
+
+    return <td>{cell}</td>;
   }
 
   /**
    * @return {JSX} the feedback form to render.
    */
   render() {
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -167,7 +165,7 @@ class BehaviouralFeedback extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: 'Instrument',
+        label: t('Instrument', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Instrument',
@@ -179,7 +177,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'DCCID',
+        label: t('DCCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'DCCID',
@@ -187,7 +185,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'PSCID',
+        label: t('PSCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'PSCID',
@@ -195,7 +193,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'Visit',
+        label: t('Visit', {ns: 'loris'}),
         show: false,
         filter: {
           name: 'Visit',
@@ -204,7 +202,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'Project',
+        label: t('Project', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Project',
@@ -213,7 +211,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'Cohort',
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Cohort',
@@ -222,7 +220,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: 'Site',
+        label: t('Site', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Site',
@@ -243,19 +241,19 @@ class BehaviouralFeedback extends Component {
         show: false,
       },
       {
-        label: 'Feedback Level',
+        label: t('Feedback Level', {ns: 'behavioural_qc'}),
         show: true,
       },
       {
-        label: 'Test Name',
+        label: t('Test Name', {ns: 'behavioural_qc'}),
         show: false,
       },
       {
-        label: 'Field Name',
+        label: t('Field Name', {ns: 'behavioural_qc'}),
         show: false,
       },
       {
-        label: 'Feedback Status',
+        label: t('Feedback Status', {ns: 'behavioural_qc'}),
         show: true,
       },
     ];
@@ -280,6 +278,8 @@ BehaviouralFeedback.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
-export default BehaviouralFeedback;
+export default withTranslation(
+  ['behavioural_qc', 'loris'])(BehaviouralFeedback);
