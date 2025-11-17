@@ -42,7 +42,7 @@ This section tests the basic GUI functionality of the module **without access to
   - [x] Data Dictionary: Parameter Type Descriptions.
 
 1. Load the Data Query Tool (Beta) and assert that you access the module
-2. Assert that you can collapseThis section tests the basic GUI functionality of the module **without access to any fields or their data** and expand the `Next Steps` window on the bottom right of the page.
+2. Assert that you can collapse and expand the `Next Steps` window on the bottom right of the page.
 3. Assert that you can expand and collapse the `Study Queries` pane, the`Instructions` pane, and the `Recent queries` pane.
 
 ## Define Fields
@@ -52,19 +52,17 @@ This section tests the basic GUI functionality of the module **without access to
 The user can navigate to `Define Fields` in 2 ways:
 
 1. Click on `Continue to Define Fields` in the `Instructions` pane.
-2. Click on `Modify Fields` in `Next Steps`
+2. Click on `Modify Fields` in `Next Steps`.
 
-- Within the `Instructions` pane, Click on `Continue to Define Fields`
-   1. Assert that you are taken to `>Define Fields`
-   2. Return to the splash page by clicking `>Data Query Tool` and click `Modify Fields` in the `Next Steps` window. Assert that it replicates the behaviour of clicking `Continue to Define Fields`
+- Within the `Instructions` pane, Click on `Continue to Define Fields`.
+   1. Assert that you are taken to `>Define Fields`.
+   2. Return to the splash page by clicking `>Data Query Tool` and click `Modify Fields` in the `Next Steps` .window. Assert that it replicates the behaviour of clicking `Continue to Define Fields`.
    3. Assert that the `Available Fields` `field (which says "Select a category") shows 'No options'.
-   4. Assert that `PSCID - Project Candidate Identifier` is selected **by default** in the `Selected Fields`
-[ISSUE : do we need to include both the acronym and the full ?]
-   5. Click on `Clear` and assert that the list is cleared (empty)
-   6. Click on the trash can icon [image] in the `Selected Fields` section and assert that the screen goes blank (MAKE ISSUE HERE - you can't navigate)
-[OTHER ISSUE: does the screen need to scroll to an imprcise vertical point indicating that the field has been erased ???]
-   7. Click `Run Query` and assert that you get a swalfire error and hit `ok`
-   8. After hitting `ok`, assert that you are now in `View Data` [insert image]
+   4. Assert that `PSCID - Project Candidate Identifier` is selected **by default** in the `Selected Fields`.
+   5. Click on `Clear` and assert that the list is cleared (empty).
+   6. Click on the trash can icon [image] in the `Selected Fields` section and assert that the screen goes blank.
+   7. Click `Run Query` and assert that you get a swalfire error and hit `ok`.
+   8. After hitting `ok`, assert that you are now in `View Data` [insert image].
 
 ***********************************************************
 Go to : [Global Table of Contents](#table-of-contents)
@@ -73,10 +71,10 @@ Go to : [Global Table of Contents](#table-of-contents)
 
 ![alt text](<Screenshot from 2025-11-03 11-28-50.png>)
 
-To get to `Define Filters`, click on `Add Filters` in `Next Steps`(bottom right of page)
+To get to `Define Filters`, click on `Add Filters` in `Next Steps`(bottom right of page).
 
-1. Click on `Add Filters` and assert that you are taken into the `Current Query` Area
-2. Click on `Add Condition` and assert that you see no `category` (where is says 'Select a category') and no `field options` (where it says 'Select a field') [MAKE ISSUE HERE for the word field appearing twice]`
+1. Click on `Add Filters` and assert that you are taken into the `Current Query` Area.
+2. Click on `Add Condition` and assert that you see no `category` (where is says 'Select a category') and no `field options` (where it says 'Select a field').
    - In the resulting modal window [insert are you sure image], select `Cancel`, and, assert that you remain in the `Add Criteria` modal window.
 3. Click on `x` again, and, this time, hit `Proceed`. Assert that you return to the `Current Query` Area
 4. Click on `Add Condition` and hit `Submit`.
@@ -126,12 +124,11 @@ To get to `Define Filters`, click on `Add Filters` in `Next Steps`(bottom right 
 
 The user can navigate to `View Data` by clicking `Run Query`
 
-- Click `Run Query` and assert that you get an Swalfire error modal saying `Error: Error Creating Query`
-[ISSUE - error message could be more precise]
-- Select each option in the `Header Display Format` field an  
+- Click `Run Query` and assert that you get an Swalfire error modal saying `Error: Error Creating Query`.
+- Select each option in the `Header Display Format` field and  
 - Select each option in the `Display visits as` field and assert the following:
-  - `x Display empty visits ?` appears when `Inline Values (no download)` is selected
-- Select each option in the `Display options as` field
+  - `x Display empty visits ?` appears when `Inline Values (no download)` is selected.
+- Select each option in the `Display options as` field.
 
 ***********************************************************
 Go to : [Global Table of Contents](#global-table-of-contents)
@@ -158,22 +155,21 @@ Table of Contents
 7. [Pin](#pin)
 
 - [x] Access Profile: Candidates and Timepoints - Own Sites
-[ISSUE - why are instruments being added here]
 
 1. Click `Continue to Define Fields` and assert that you see four instruments in the `Available Fields':
-`Bmi calculator`,`Medical history`,`Mri parameter`,`Radiology review`
+`Bmi calculator`,`Medical history`,`Mri parameter`,`Radiology review`.
 
-2. Assert that PSCID is selected **by default** in the 'Selected Fields' list
+2. Assert that PSCID is selected **by default** in the 'Selected Fields' list.
 3. Select 'Bmi calculator' and assert that you see the BMI Calculator fields as follows:
 
 `bmi_Administration`, `bmi_data_entry`, `bmi_validity`, `bmi_date_taken`, `bmi_Candidate_Age`, `bmi_Window_Difference`, `bmi_Examiner`, `bmi_unit_classification`, `bmi_height_feet`, `bmi_height_inches`, `bmi_weight_lbs`, `bmi_height_cms`, `bmi_weight_kgs`, `bmi_bmi`, `bmi_bmi_category`
 
-4. Go into the /instruments folder and assert that all fields are in the bmi.linst
+4. Go into the /instruments folder and assert that all fields are in the bmi.linst.
 
 ### Fields
 
 1. Enter the letter 'b' in the `Filter within Category` area and assert that **only** BMI instrument fields are shown and that **all** BMI instrument category fields are shown.
-2. Enter the letter `j` in the `Filter within Category` area and assert that there are no fields shown. This means that no fields contain this letter at any position in the string
+2. Enter the letter `j` in the `Filter within Category` area and assert that there are no fields shown. This means that no fields contain this letter at any position in the string.
 3. Enter the letter `k` and assert that only `bmi_Date_taken` and `bmi_weight_kgs` are shown. Then
 
 - Remove the `k` from filter
@@ -181,8 +177,8 @@ Table of Contents
 1. Highlight all fields by clicking 'Add All'. Assert that they are all highlighted and that they all appear in the `Selected Fields` area on the right.
 2. Click `Remove All` and assert that they are all removed from `Selected Fields`
 3. Click `Add All` again, de-select some fields, and assert that they have disappeared from the `Selected Fields`.
-4. Click the trash can next to the 'bmi_Administration field in the `Selected Area` and assert that it is de-selected in the (no longer highlighted) in the main table. [ ISSUE - the screen scrolls here]
-5. hit `Clear` in the `Selecte fields` Area and assert that all fields have been removed from that area and de-selected in the main table
+4. Click the trash can next to the 'bmi_Administration field in the `Selected Area` and assert that it is de-selected in the (no longer highlighted) in the main table. 
+5. hit `Clear` in the `Selected fields` Area and assert that all fields have been removed from that area and de-selected in the main table
 
 ### Visits
 
@@ -197,7 +193,7 @@ Table of Contents
 7. Add a second field, `V2` to `Default Visits` and check each of your selected fields to see if you can add `V2`. Assert that you can not do so.
 . Highlight a 5th field and assert that it takes on visit `V1` and that you can not add other visits.
 [image]
-8. Check the `Sync with selected fields` box [ISSUE]
+8. Check the `Sync with selected fields` box
 
 ### Run Query
 
