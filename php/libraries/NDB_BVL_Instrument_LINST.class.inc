@@ -63,7 +63,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->commentID = $commentID;
         $this->page      = $page;
 
-        $this->form = new \LorisForm();
+        //$this->form = new \LorisForm();
+	//$this->form->textdomain = $this->testName;
     }
 
     /**
