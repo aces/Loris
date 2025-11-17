@@ -60,6 +60,7 @@ class BehaviouralFeedback extends Component {
             data,
             isLoaded: true,
           });
+          console.log(data);
         });
       } else {
         this.setState({error: true});
@@ -85,13 +86,18 @@ class BehaviouralFeedback extends Component {
     const labelPSCID = t('PSCID', {ns: 'loris'});
     const labelDCCID = t('DCCID', {ns: 'loris'});
     const labelBVL = t('Feedback Level', {ns: 'behavioural_qc'});
+    console.log(rowData);
+    console.log(rowHeaders);
 
     // PSCID column (match English or translated)
+    console.log(column);
     if (column === 'PSCID' || column === labelPSCID) {
       return (
         <td>
-          <a href={this.props.baseURL + '/' + rowData['DCCID']}>
-            {rowData['PSCID']}
+          <a
+            href={this.props.baseURL + '/' + rowData[labelDCCID]}
+          >
+            {rowData[labelPSCID]}
           </a>
         </td>
       );
@@ -101,8 +107,8 @@ class BehaviouralFeedback extends Component {
     if (column === 'DCCID' || column === labelDCCID) {
       return (
         <td>
-          <a href={this.props.baseURL + '/' + rowData['DCCID']}>
-            {rowData['DCCID']}
+          <a href={this.props.baseURL + '/' + rowData[labelDCCID]}>
+            {rowData[labelDCCID]}
           </a>
         </td>
       );
@@ -112,28 +118,28 @@ class BehaviouralFeedback extends Component {
     if (column === 'Feedback Level' || column === labelBVL) {
       let bvlLink = '';
       let bvlLevel = '';
-      if (rowData['Instrument']) {
+      if (rowData[t('Instrument', {ns: 'loris'})]) {
         bvlLink = this.props.baseURL +
                   '/instruments/' +
-                  rowData['Test Name'] +
-                  '/?candID=' + rowData['DCCID'] +
+                  rowData[t('Test Name', {ns: 'behavioural_qc'})] +
+                  '/?candID=' + rowData[labelDCCID] +
                   '&sessionID=' + rowData['sessionID'] +
                   '&commentID=' + rowData['commentID'] +
                   '&showFeedback=true';
-        bvlLevel = t('Instrument', {ns: 'behavioural_qc'}) + ' : '
-        + rowData['Instrument'];
-      } else if (rowData['Visit']) {
+        bvlLevel = t('Instrument', {ns: 'loris'}) + ' : '
+        + rowData[t('Instrument', {ns: 'loris'})];
+      } else if (rowData[t('Visit', {ns: 'loris'})]) {
         bvlLink = this.props.baseURL +
-                  '/instrument_list/?candID=' + rowData['DCCID'] +
+                  '/instrument_list/?candID=' + rowData[labelDCCID] +
                   '&sessionID=' + rowData['sessionID'] +
                   '&showFeedback=true';
-        bvlLevel = t('Visit', {ns: 'behavioural_qc'}) + ' : '
-        + rowData['Visit'];
+        bvlLevel = t('Visit', {ns: 'loris'}) + ' : '
+        + rowData[t('Visit', {ns: 'loris'})];
       } else {
-        bvlLink = this.props.baseURL + '/' + rowData['DCCID']
+        bvlLink = this.props.baseURL + '/' + rowData[labelDCCID]
         + '/?showFeedback=true';
         bvlLevel = t('Profile', {ns: 'behavioural_qc'}) + ' : '
-        + rowData['PSCID'];
+        + rowData[labelPSCID];
       }
       return (
         <td>

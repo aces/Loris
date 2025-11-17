@@ -51,4 +51,7 @@ msgstr "परीक्षण नाम"
 msgid "Feedback Status"
 msgstr "प्रतिक्रिया स्थिति"
 
+msgid "Profile"
+msgstr "प्रोफाइल"
+
 

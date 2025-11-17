@@ -16,6 +16,7 @@ class VisitList extends \NDB_Page
     protected $itemmodule;
     protected $itemcategory;
     protected $dictionaryitem;
+    protected $user;
 
     /**
      * {@inheritDoc}
@@ -28,9 +29,7 @@ class VisitList extends \NDB_Page
     {
         if ($this->dictionaryitem === null) {
             return new \LORIS\Http\Response\JSON\OK(
-                [
-                    'Visits' => array_values(\Utility::getVisitList()),
-                ],
+                ['Visits' => array_values($this->user->getVisits())],
             );
         }
 
@@ -62,6 +61,7 @@ class VisitList extends \NDB_Page
         \User $user,
         ServerRequestInterface $request,
     ) : void {
+        $this->user  = $user;
         $queryparams = $request->getQueryParams();
         if (!isset($queryparams['module']) || !isset($queryparams['item'])) {
             return;

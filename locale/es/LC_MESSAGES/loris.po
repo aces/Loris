@@ -113,6 +113,9 @@ msgstr ""
 msgid "TimePoint"
 msgstr "Punto en el tiempo"
 
+msgid "TimePoint %s Details"
+msgstr "Detalles del Punto en el Tiempo %s"
+
 # Common select option labels
 msgid "Yes"
 msgstr "Sí"
@@ -126,9 +129,31 @@ msgstr "Crear"
 msgid "N/A"
 msgstr "N/A"
 
+# Filters
+msgid "Selection Filter"
+msgstr "Selección de Filtros"
+
+msgid "Show Filters"
+msgstr "Mostrar Filtros"
+
+msgid "Hide Filters"
+msgstr "Ocultar Filtros"
+
+msgid "Clear Filters"
+msgstr "Limpiar Filtros"
+
+msgid "Show Advanced Filters"
+msgstr "Mostras filtros avanzados"
+
+msgid "Hide Advanced Filters"
+msgstr "Ocultar filtros avanzados"
+
 # Common swal labels
+msgid "OK"
+msgstr "Aceptar"
+
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 msgid "Success!"
 msgstr "Exitoso!"
@@ -176,7 +201,7 @@ msgid "DoB"
 msgstr ""
 
 msgid "Sex"
-msgstr ""
+msgstr "Sexo"
 
 msgid "Feedback"
 msgstr "Retroalimentación"
@@ -210,12 +235,6 @@ msgstr "Tipo de Entidad"
 
 msgid "Scan Done"
 msgstr "Scan hecho"
-
-msgid "Show Advanced Filters"
-msgstr "Mostras filtros avanzados"
-
-msgid "Hide Advanced Filters"
-msgstr "Ocultar filtros avanzados"
 
 msgid "Language"
 msgstr "Lenguaje"
