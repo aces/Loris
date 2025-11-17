@@ -1386,5 +1386,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $centerMatch = in_array($this->getCenterID(), $centers);
         return $projMatch && $centerMatch;
     }
+
+    public function getLanguageCode() : string
+    {
+	    return "fr";
+    }
 }
 
