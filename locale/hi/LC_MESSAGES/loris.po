@@ -397,10 +397,9 @@ msgid "Complete"
 msgstr "पूर्ण"
 
 msgid "Instrument"
-msgstr "उपकरण"
-
-msgid "Instruments"
-msgstr "उपकरण"
+msgid_plural "Instruments"
+msgstr[0] "उपकरण"
+msgstr[1] "उपकरण"
 
 msgid "Partial"
 msgstr "आंशिक"

@@ -85,7 +85,7 @@ class BehaviouralFeedback extends Component {
     const labelPSCID = t('PSCID', {ns: 'loris'});
     const labelDCCID = t('DCCID', {ns: 'loris'});
     const labelBVL = t('Feedback Level', {ns: 'behavioural_qc'});
-    const labelInstrument = t('Instrument', {ns: 'loris'});
+    const labelInstrument = t('Instrument', {ns: 'loris', count: 1});
     const labelTestName = t('Test Name', {ns: 'behavioural_qc'});
     const labelVisit = t('Visit', {ns: 'loris'});
 
@@ -165,7 +165,7 @@ class BehaviouralFeedback extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: t('Instrument', {ns: 'loris'}),
+        label: t('Instrument', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Instrument',
@@ -202,7 +202,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: t('Project', {ns: 'loris'}),
+        label: t('Project', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Project',
@@ -211,7 +211,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: t('Cohort', {ns: 'loris'}),
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Cohort',
@@ -220,7 +220,7 @@ class BehaviouralFeedback extends Component {
         },
       },
       {
-        label: t('Site', {ns: 'loris'}),
+        label: t('Site', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Site',

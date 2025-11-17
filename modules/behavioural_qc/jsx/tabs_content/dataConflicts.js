@@ -163,7 +163,7 @@ class DataConflicts extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: t('Instrument', {ns: 'loris'}),
+        label: t('Instrument', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Instrument',
@@ -191,7 +191,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: t('Visit', {ns: 'loris'}),
+        label: t('Visit', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Visit',
@@ -200,7 +200,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: t('Project', {ns: 'loris'}),
+        label: t('Project', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Project',
@@ -209,7 +209,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: t('Cohort', {ns: 'loris'}),
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Cohort',
@@ -218,7 +218,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: t('Site', {ns: 'loris'}),
+        label: t('Site', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Site',
