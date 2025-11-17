@@ -1,10 +1,10 @@
+/* eslint-disable */
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import PublicationUploadForm from './uploadForm.js';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {ButtonElement} from 'jsx/Form';
 import StaticDataTable from 'jsx/StaticDataTable';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
@@ -155,14 +155,14 @@ class PublicationIndex extends React.Component {
         filter: {name: 'projectProposalCreator', type: 'text'},
       },
       {
-	label: 'Description',
+        label: 'Description',
         show: false,
-	filter: {name: 'description',hide: true},      
+        filter: {name: 'description', hide: true},
       },
       {
         label: t('Collaborators', {ns: 'publication'}),
         show: true,
-        filter: {name: 'collaborators',hide: true},
+        filter: {name: 'collaborators', hide: true},
       },
       {
         label: t('Variables Of Interest', {ns: 'publication'}),
@@ -202,8 +202,8 @@ class PublicationIndex extends React.Component {
     if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
-//    if (column === 'शीर्षक') {
-if (rowHeaders[0] === column){	    
+    //    if (column === 'शीर्षक') {
+    if (rowHeaders[0] === column) {
       const pubID = rowData['Publication ID'];
       const viewURL = `${loris.BaseURL}/publication/view_project?id=${pubID}`;
       return (
