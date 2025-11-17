@@ -60,7 +60,6 @@ class BehaviouralFeedback extends Component {
             data,
             isLoaded: true,
           });
-          console.log(data);
         });
       } else {
         this.setState({error: true});
@@ -86,11 +85,11 @@ class BehaviouralFeedback extends Component {
     const labelPSCID = t('PSCID', {ns: 'loris'});
     const labelDCCID = t('DCCID', {ns: 'loris'});
     const labelBVL = t('Feedback Level', {ns: 'behavioural_qc'});
-    console.log(rowData);
-    console.log(rowHeaders);
+    const labelInstrument = t('Instrument', {ns: 'loris'});
+    const labelTestName = t('Test Name', {ns: 'behavioural_qc'});
+    const labelVisit = t('Visit', {ns: 'loris'});
 
     // PSCID column (match English or translated)
-    console.log(column);
     if (column === 'PSCID' || column === labelPSCID) {
       return (
         <td>
@@ -118,23 +117,23 @@ class BehaviouralFeedback extends Component {
     if (column === 'Feedback Level' || column === labelBVL) {
       let bvlLink = '';
       let bvlLevel = '';
-      if (rowData[t('Instrument', {ns: 'loris'})]) {
+      if (rowData[labelInstrument]) {
         bvlLink = this.props.baseURL +
                   '/instruments/' +
-                  rowData[t('Test Name', {ns: 'behavioural_qc'})] +
+                  rowData[labelTestName] +
                   '/?candID=' + rowData[labelDCCID] +
                   '&sessionID=' + rowData['sessionID'] +
                   '&commentID=' + rowData['commentID'] +
                   '&showFeedback=true';
-        bvlLevel = t('Instrument', {ns: 'loris'}) + ' : '
-        + rowData[t('Instrument', {ns: 'loris'})];
-      } else if (rowData[t('Visit', {ns: 'loris'})]) {
+        bvlLevel = labelInstrument + ' : '
+        + rowData[labelInstrument];
+      } else if (rowData[labelVisit]) {
         bvlLink = this.props.baseURL +
                   '/instrument_list/?candID=' + rowData[labelDCCID] +
                   '&sessionID=' + rowData['sessionID'] +
                   '&showFeedback=true';
-        bvlLevel = t('Visit', {ns: 'loris'}) + ' : '
-        + rowData[t('Visit', {ns: 'loris'})];
+        bvlLevel = labelVisit + ' : '
+        + rowData[labelVisit];
       } else {
         bvlLink = this.props.baseURL + '/' + rowData[labelDCCID]
         + '/?showFeedback=true';
