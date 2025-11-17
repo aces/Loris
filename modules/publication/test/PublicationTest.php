@@ -32,8 +32,8 @@ class PublicationTest extends LorisIntegrationTest
     private $_loadingBrowseUI  = [
         [
             "label"    => "Title",
-	    "selector" => "#publication_filter>div>div>fieldset>".
-	                   "div:nth-child(3)>div>label",
+            "selector" => "#publication_filter>div>div>fieldset>".
+                "div:nth-child(3)>div>label",
         ],
     ];
     private $_loadingproposeUI = [
