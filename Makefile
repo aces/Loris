@@ -88,6 +88,7 @@ locales:
 	msgfmt -o modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po
 	msgfmt -o modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po
 	npx i18next-conv -l hi -s modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po -t modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.json
+	npx i18next-conv -l ja -s modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po -t modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.json
 	msgfmt -o modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po
 	msgfmt -o modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.mo modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po
 	msgfmt -o modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.po
