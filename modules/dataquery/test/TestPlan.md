@@ -356,7 +356,6 @@ in `>Data Query Tool` :
 
 3. Assert that: clicking on any `study query` sends you back to the dataquery module with the selected query loaded (bottom-right panel already with the `Run Query` button active).
 
-
 ## Candidate Parameters Permission
 
 Table of Contents
