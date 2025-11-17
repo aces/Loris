@@ -33,7 +33,7 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-msgid "File cannot exceed"
+msgid "File cannot exceed {{maxUploadSize}}"
 msgstr ""
 
 msgid "File must be of type .tgz or tar.gz or .zip"
@@ -42,22 +42,16 @@ msgstr ""
 msgid "For files that are not Phantom Scans, file name must begin with"
 msgstr ""
 
-msgid "For example, for DCCID"
+msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
 msgstr ""
 
-msgid "and Visit Label"
-msgstr ""
-
-msgid "the file name should be prefixed by:"
+msgid "The file {{fileName}} must be of type .tgz, .tar.gz or .zip."
 msgstr ""
 
 msgid "Invalid extension for the uploaded file!"
 msgstr ""
 
 msgid "Filename extension does not match .zip, .tgz or .tar.gz "
-msgstr ""
-
-msgid "must be of type .tgz, .tar.gz or .zip."
 msgstr ""
 
 msgid "Incorrect file name!"
@@ -111,8 +105,9 @@ msgstr ""
 msgid "Upload failed: a network error occured"
 msgstr ""
 
-msgid "Please make sure files are not larger than"
+msgid "Please make sure files are not larger than {{maxFileSize}}"
 msgstr ""
+
 
 msgid "Upload failed: received HTTP response code"
 msgstr ""
@@ -133,26 +128,32 @@ msgid "Detailed"
 msgstr ""
 
 msgid "<select a row in the table below to view the upload logs>"
-msgstr "<अपलोड लॉग देखने के लिए नीचे तालिका में एक पंक्ति चुनें>"
+msgstr ""
 
 msgid "Number Of Files Created"
-msgstr "बनाई गई फ़ाइलों की संख्या"
+msgstr ""
 
 msgid "Number Of Files Inserted"
-msgstr "डाली गई फ़ाइलों की संख्या"
+msgstr ""
+
+msgid "{{successText}} ({{inserted}} out of {{created}})"
+msgstr ""
+
+msgid "{{numViolatedScans}} violated scans"
+msgstr ""
 
 msgid "Tarchive Info"
-msgstr "टीआर्काइव जानकारी"
+msgstr ""
 
 msgid "Upload ID"
-msgstr "अपलोड आईडी"
+msgstr ""
 
 msgid "Upload Location"
-msgstr "अपलोड स्थान"
+msgstr ""
 
 msgid "Upload Date"
-msgstr "अपलोड की तिथि"
+msgstr ""
 
 msgid "Uploaded By"
-msgstr "द्वारा अपलोड किया गया"
+msgstr ""
 
