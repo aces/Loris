@@ -11,6 +11,7 @@ import DataConflicts from './tabs_content/dataConflicts';
 import BehaviouralFeedback from './tabs_content/behaviouralFeedback';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/behavioural_qc.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/behavioural_qc.json';
 /**
  * Behavioural Quality Control.
  *
@@ -61,7 +62,7 @@ BehaviouralQC.propTypes = {
  * Render Behavioural Quality Control on page load.
  */
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'behavioural_qc', {});
+  i18n.addResourceBundle('ja', 'behavioural_qc', jaStrings);
   i18n.addResourceBundle('hi', 'behavioural_qc', hiStrings);
   const Index = withTranslation(
     ['behavioural_qc', 'loris']
