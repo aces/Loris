@@ -396,11 +396,10 @@ msgstr "प्रगति पर"
 msgid "Complete"
 msgstr "पूर्ण"
 
-msgid "Instruments"
-msgstr "उपकरण"
-
 msgid "Instrument"
-msgstr "यंत्र"
+msgid_plural "Instruments"
+msgstr[0] "यंत्र"
+msgstr[1] "उपकरण"
 
 msgid "Partial"
 msgstr "आंशिक"

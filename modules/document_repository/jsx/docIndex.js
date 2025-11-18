@@ -287,7 +287,7 @@ class DocIndex extends React.Component {
         options: options.fileTypes,
       }},
       {label: t('Instrument',
-        {ns: 'document_repository'}), show: false},
+        {ns: 'document_repository', count: 1}), show: false},
       {label: t('Uploaded By',
         {ns: 'document_repository'}), show: true, filter: {
         name: 'uploadedBy',

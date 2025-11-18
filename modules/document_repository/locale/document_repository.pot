@@ -21,6 +21,9 @@ msgstr ""
 msgid "Document Repository"
 msgstr ""
 
+msgid "Document Repository Notifications"
+msgstr ""
+
 msgid "Upload files"
 msgstr ""
 

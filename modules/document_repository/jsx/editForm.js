@@ -46,6 +46,7 @@ class DocEditForm extends React.Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
+    i18n.addResourceBundle('hi', 'document_repository', hiStrings);
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
@@ -113,7 +114,7 @@ class DocEditForm extends React.Component {
           />
           <SelectElement
             name="forSite"
-            label={t('Site', {ns: 'loris'})}
+            label={t('Site', {ns: 'loris', count: 1})}
             options={this.state.data.sites}
             onUserInput={this.setFormData}
             required={true}
@@ -122,7 +123,7 @@ class DocEditForm extends React.Component {
           />
           <SelectElement
             name="instrument"
-            label={t('Instrument', {ns: 'loris'})}
+            label={t('Instrument', {ns: 'loris', count: 1})}
             options={this.state.data.instruments}
             onUserInput={this.setFormData}
             value={this.state.docData.instrument}
@@ -212,7 +213,5 @@ DocEditForm.propTypes = {
   action: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
-
-i18n.addResourceBundle('hi', 'document_repository', hiStrings);
 
 export default withTranslation(['document_repository', 'loris'])(DocEditForm);

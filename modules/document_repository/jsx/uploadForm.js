@@ -119,7 +119,7 @@ class DocUploadForm extends Component {
             />
             <SearchableDropdown
               name="forSite"
-              label={t('Site', {ns: 'loris'})}
+              label={t('Site', {ns: 'loris', count: 1})}
               placeHolder={t('Search for site', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.sites}
               strictSearch={true}
@@ -129,7 +129,7 @@ class DocUploadForm extends Component {
             />
             <SelectElement
               name="instrument"
-              label={t('Instrument', {ns: 'loris'})}
+              label={t('Instrument', {ns: 'loris', count: 1})}
               options={this.state.data.fieldOptions.instruments}
               onUserInput={this.setFormData}
               value={this.state.formData.instrument}
@@ -325,6 +325,17 @@ DocUploadForm.propTypes = {
   t: PropTypes.func,
 };
 
-i18n.addResourceBundle('hi', 'document_repository', hiStrings);
-
 export default withTranslation(['document_repository', 'loris'])(DocUploadForm);
+
+window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'document_repository', jaStrings);
+  i18n.addResourceBundle('hi', 'document_repository', hiStrings);
+
+  const element = document.getElementById('lorisworkspace');
+  if (!element) {
+    throw new Error('Missing lorisworkspace');
+  }
+  createRoot(element).render(
+    <MFAIndex />
+  );
+});

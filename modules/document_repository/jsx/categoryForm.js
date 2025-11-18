@@ -75,7 +75,7 @@ class DocCategoryForm extends React.Component {
     // Data loading error
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        {ns: 'document_repository'})}</h3>;
+        {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -215,7 +215,18 @@ DocCategoryForm.propTypes = {
   t: PropTypes.func,
 };
 
-i18n.addResourceBundle('hi', 'document_repository', hiStrings);
-
 export default withTranslation(
   ['document_repository', 'loris'])(DocCategoryForm);
+
+window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'document_repository', jaStrings);
+  i18n.addResourceBundle('hi', 'document_repository', hiStrings);
+
+  const element = document.getElementById('lorisworkspace');
+  if (!element) {
+    throw new Error('Missing lorisworkspace');
+  }
+  createRoot(element).render(
+    <MFAIndex />
+  );
+});
