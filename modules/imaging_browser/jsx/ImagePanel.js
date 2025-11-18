@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/imaging_browser.json';
+
 /**
  * Image panel header component
  */
@@ -19,6 +20,13 @@ class ImagePanelHeader extends Component {
    */
   constructor(props) {
     super(props);
+  }
+
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
   /**
@@ -119,12 +127,18 @@ class ImagePanelHeadersTable extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     const {t} = this.props;
     let inversionTime = null;
     if (this.props.HeaderInfo.InversionTime !== '0.00') {
@@ -322,12 +336,18 @@ class ImageQCDropdown extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     let label = <label>{this.props.Label}</label>;
     if (this.props.url) {
       label = <label>
@@ -398,6 +418,13 @@ class ImageQCStatic extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -440,12 +467,18 @@ class ImagePanelQCStatusSelector extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     const {t} = this.props;
     let qcStatusLabel;
     if (this.props.HasQCPerm && this.props.FileNew) {
@@ -497,12 +530,18 @@ class ImagePanelQCSelectedSelector extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     const {t} = this.props;
     return (
       <TranslatedImageQCDropdown
@@ -541,12 +580,18 @@ class ImagePanelQCCaveatSelector extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     const {t} = this.props;
     // Link caveat to MRI Violations if set true
     let mriViolationsLink = null;
@@ -601,12 +646,18 @@ class ImagePanelQCSNRValue extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     const {t} = this.props;
     let label = null;
     if (this.props.SNR) {
@@ -641,6 +692,13 @@ class ImagePanelQCPanel extends Component {
    */
   constructor(props) {
     super(props);
+  }
+
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
   /**
@@ -708,12 +766,18 @@ class DownloadButton extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     const {t} = this.props;
     const empty = (prop) => {
       return !prop || prop == '';
@@ -762,6 +826,13 @@ class ImageQCCommentsButton extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Open window handler
    *
    * @param {object} e - Event object
@@ -784,7 +855,6 @@ class ImageQCCommentsButton extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     const {t} = this.props;
     if (!this.props.FileID || this.props.FileID === '') {
       return <span/>;
@@ -826,6 +896,13 @@ class LongitudinalViewButton extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Open window handler
    *
    * @param {object} e - Event object
@@ -846,7 +923,6 @@ class LongitudinalViewButton extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     const {t} = this.props;
     if (!this.props.FileID || this.props.FileID === '') {
       return <span/>;
@@ -888,12 +964,18 @@ class ImageDownloadButtons extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     const {t} = this.props;
     return (
       <div className="row mri-second-row-panel col-xs-12">
@@ -982,6 +1064,13 @@ class ImagePanelBody extends Component {
   }
 
   /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+  }
+
+  /**
    * Open window handler
    *
    * @param {object} e - Event object
@@ -999,7 +1088,6 @@ class ImagePanelBody extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     return (
       <div className="panel-body">
         <div className="row">
@@ -1088,6 +1176,13 @@ class ImagePanel extends Component {
     };
     this.toggleBody = this.toggleBody.bind(this);
     this.toggleHeaders = this.toggleHeaders.bind(this);
+  }
+
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
+  componentDidMount() {
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
   /**
