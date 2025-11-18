@@ -9,7 +9,9 @@ import {
   SelectElement,
   ButtonElement,
 } from 'jsx/Form';
+import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 
 /**
  * Document Edit Form
@@ -210,5 +212,7 @@ DocEditForm.propTypes = {
   action: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
+
+i18n.addResourceBundle('hi', 'document_repository', hiStrings);
 
 export default withTranslation(['document_repository', 'loris'])(DocEditForm);
