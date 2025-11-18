@@ -1,0 +1,54 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-11-04 20:02-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Instrument List"
+msgstr "Liste des instruments"
+
+msgid "Visit to Site"
+msgstr "Visite du site"
+
+#, fuzzy
+msgid "Within Optimal"
+msgstr "Dans Optimal"
+
+msgid "Within Permitted"
+msgstr "Dans les limites autorisées"
+
+msgid "Behavioural Battery of Instruments"
+msgstr "Batterie d'instruments comportementaux"
+
+msgid "The battery has no registered instruments"
+msgstr "Aucun instrument n'est enregistré pour la batterie."
+
+msgid "View Imaging data"
+msgstr "Afficher les données d'imagerie"
+
+msgid "Send TimePoint"
+msgstr "Envoyer le temps d'acquisition"
+
+msgid "No actions"
+msgstr "Aucune action"
+
+msgid "Stage: %s"
+msgstr "Stade: %s"
+
+msgid "Start %s Stage"
+msgstr "Démarrer %s Stade"

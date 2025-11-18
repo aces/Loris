@@ -69,7 +69,7 @@ class Behavioural_QC extends \NDB_Form
     {
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Behavioural Quality Control',
+                dgettext("behavioural_qc", "Behavioural Quality Control"),
                 '/behavioural_qc'
             )
         );

@@ -138,23 +138,5 @@ class NDB_Client
         // finished initializing
         return true;
     }
-
-    /**
-     * Returns true if the user is logged in
-     *
-     * @return true only if user is logged in
-     */
-    function isLoggedIn()
-    {
-        if (!isset($_SESSION['State'])) {
-            $_SESSION['State'] =& State::singleton();
-            $login = new SinglePointLogin();
-            $_SESSION['State']->setProperty('login', $login);
-        } else {
-            $login = $_SESSION['State']->getProperty('login');
-        }
-
-        return $login->isLoggedIn();
-    }
 }
 
