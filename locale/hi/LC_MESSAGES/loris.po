@@ -152,6 +152,9 @@ msgstr "बनाएँ"
 msgid "Selection Filter"
 msgstr "चयन फ़िल्टर"
 
+msgid "Filters"
+msgstr "फ़िल्टर"
+
 msgid "Show Filters"
 msgstr "फ़िल्टर दिखाएँ"
 
@@ -160,6 +163,9 @@ msgstr "फ़िल्टर छिपाएँ"
 
 msgid "Clear Filters"
 msgstr "फ़िल्टर साफ़ करें"
+
+msgid "Load Filter Preset"
+msgstr "फ़िल्टर प्रीसेट लोड करें"
 
 msgid "Show Advanced Filters"
 msgstr "उन्नत फ़िल्टर दिखाएँ"
@@ -183,6 +189,18 @@ msgstr "डीसीसीआईडी"
 
 msgid "Visit Label"
 msgstr "दौरे का लेबल"
+
+msgid "Title"
+msgstr "शीर्षक"
+
+msgid "Category"
+msgstr "श्रेणी"
+
+msgid "Status"
+msgstr "स्थिति"
+
+msgid "No."
+msgstr "संख्या"
 
 msgid "Email"
 msgstr "ईमेल"

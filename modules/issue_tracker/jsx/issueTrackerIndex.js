@@ -109,6 +109,8 @@ class IssueTrackerIndex extends Component {
     const sessionIDKey = t('Session ID', {ns: 'loris',
       defaultValue: 'Session ID'});
     const dccidKey = t('DCCID', {ns: 'loris', defaultValue: 'DCCID'});
+    const statusKey = t('Status', {ns: 'loris', defaultValue: 'Status'});
+    const categoryKey = t('Category', {ns: 'loris', defaultValue: 'Category'});
     switch (column) {
     case titleKey:
       link = (
@@ -150,6 +152,14 @@ class IssueTrackerIndex extends Component {
       default:
         result = <td>None</td>;
       }
+      break;
+    case statusKey:
+      // Display status values as-is (not translated)
+      result = <td>{cell}</td>;
+      break;
+    case categoryKey:
+      // Display category values as-is (not translated)
+      result = <td>{cell || ''}</td>;
       break;
     case siteKey:
       // if cell is an array containing all sites values
@@ -257,7 +267,7 @@ class IssueTrackerIndex extends Component {
         sortByValue: false,
         options: options.priorities,
       }},
-      {label: t('Site', {ns: 'loris'}), show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'multiselect',
         options: options.sites,

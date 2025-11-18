@@ -200,7 +200,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
       id: 'site', // Added site tab
       label: (
         <span>
-          {t('Site', {ns: 'loris'})}{' '}
+          {t('Site', {ns: 'loris', count: 1})}{' '}
           <span className="badge bg-primary">{selectedSites.length}</span>
         </span>
       ),

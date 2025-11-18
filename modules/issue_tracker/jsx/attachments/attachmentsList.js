@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 import swal from 'sweetalert2';
 import {ButtonElement} from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
 
 /**
  * React component used to display
@@ -62,7 +63,7 @@ class AttachmentsList extends Component {
             + '/issue_tracker/issue/'
             + this.props.issue;
         } else {
-          swal.fire('Permission denied', '', 'error');
+          swal.fire(this.props.t('Permission denied', {ns: 'issue_tracker'}), '', 'error');
         }
       }).catch((error) => {
         console.error(error);
@@ -102,18 +103,19 @@ class AttachmentsList extends Component {
    * @return {DOMRect} row - to display.
    */
   displayAttachmentOptions(deleteData, item) {
+    const {t} = this.props;
     if (this.props.userHasPermission
       || this.props.whoami === item.user) {
       return (
         <div className='row'>
           <div className='col-md-12'>
-            <div className='col-md-2'><b>Attachment options: </b></div>
+            <div className='col-md-2'><b>{t('Attachment options: ', {ns: 'issue_tracker'})}</b></div>
             <div className='col-md-10'>
               <a onClick={this.openModalAttachmentDelete}
                 href={'#'}
                 value={deleteData}
               >
-                Delete
+                {t('Delete', {ns: 'issue_tracker'})}
               </a>&nbsp;&nbsp;|&nbsp;&nbsp;
               <a href={this.props.baseURL +
               '/issue_tracker/Attachment' +
@@ -121,7 +123,7 @@ class AttachmentsList extends Component {
               }
               download={true}
               >
-                Download
+                {t('Download', {ns: 'issue_tracker'})}
               </a>
             </div>
           </div>
@@ -131,7 +133,7 @@ class AttachmentsList extends Component {
     return (
       <div className='row'>
         <div className='col-md-12'>
-          <div className='col-md-2'><b>Attachment options: </b></div>
+          <div className='col-md-2'><b>{t('Attachment options: ', {ns: 'issue_tracker'})}</b></div>
           <div className='col-md-10'>
             <a href={this.props.baseURL +
             '/issue_tracker/Attachment' +
@@ -144,7 +146,7 @@ class AttachmentsList extends Component {
             download={true}
               // style={{cursor: 'pointer'}}
             >
-              Download
+              {t('Download', {ns: 'issue_tracker'})}
             </a>
           </div>
         </div>
@@ -167,6 +169,7 @@ class AttachmentsList extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     const footerCSS = {
       float: 'right',
       paddingRight: '100px',
@@ -179,18 +182,18 @@ class AttachmentsList extends Component {
     };
     const modalConfirmationDeleteAttachment = (
       <Modal
-        title='Confirmation'
+        title={t('Confirmation', {ns: 'issue_tracker'})}
         onClose={this.closeModalAttachmentDelete}
         show={this.state.showModalAttachmentDelete}
       >
         <p style={overflowCSS}>
-          Please confirm the request to delete the
-          "{this.state.deleteItem.file_name}" attachment.
+          {t('Please confirm the request to delete the', {ns: 'issue_tracker'})}{' '}
+          "{this.state.deleteItem.file_name}" {t('attachment.', {ns: 'issue_tracker'})}
         </p>
         <div style={footerCSS}>
           <ButtonElement
             onUserInput={this.deleteAttachment}
-            label={'Delete attachment'}
+            label={t('Delete attachment', {ns: 'issue_tracker'})}
           />
         </div>
       </Modal>
@@ -211,11 +214,11 @@ class AttachmentsList extends Component {
             <div className='row'>
               <hr/>
               <div className='col-md-3'>
-                <div className='col-md-5'><b>Date of attachment: </b></div>
+                <div className='col-md-5'><b>{t('Date of attachment: ', {ns: 'issue_tracker'})}</b></div>
                 <div className='col-md-7'>{item.date_added}</div>
               </div>
               <div className='col-md-8'>
-                <div className='col-md-1'><b>File: </b></div>
+                <div className='col-md-1'><b>{t('File: ', {ns: 'issue_tracker'})}</b></div>
                 <div className='col-md-11'>
                   <i>{item.file_name}</i>
                   {regexImg.test(item.mime_type) ?
@@ -240,13 +243,13 @@ class AttachmentsList extends Component {
             </div>
             <div className='row'>
               <div className='col-md-3'>
-                <div className='col-md-5'><b>User: </b></div>
+                <div className='col-md-5'><b>{t('User: ', {ns: 'issue_tracker'})}</b></div>
                 <div className='col-md-7'>{item.user}</div>
               </div>
               <div className='col-md-8'>
                 {item.description ? (
                   <>
-                    <div className='col-md-2'><b>Description: </b></div>
+                    <div className='col-md-2'><b>{t('Description: ', {ns: 'issue_tracker'})}</b></div>
                     <div className='col-md-10'>{item.description}</div>
                   </>
                 ) : null}
@@ -259,7 +262,7 @@ class AttachmentsList extends Component {
     }
     const issueAttachments = attachmentsRows.length > 0 ? (
       <>
-        <h3>Attachment History</h3>
+        <h3>{t('Attachment History', {ns: 'issue_tracker'})}</h3>
         {attachmentsRows}
       </>
     ) : null;
@@ -278,9 +281,10 @@ AttachmentsList.propTypes = {
   attachments: PropTypes.array,
   userHasPermission: PropTypes.bool,
   whoami: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 AttachmentsList.defaultProps = {
   attachments: [],
 };
 
-export default AttachmentsList;
+export default withTranslation()(AttachmentsList);

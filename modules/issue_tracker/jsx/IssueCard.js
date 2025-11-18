@@ -319,7 +319,7 @@ const IssueCard = React.memo(function IssueCard(props) {
             <>
               <div className="control-group">
                 <label htmlFor="status">
-                  {t('Status', {ns: 'issue_tracker'})}:&nbsp;
+                  {t('Status', {ns: 'loris'})}:&nbsp;
                 </label>
                 <select
                   id="status"
@@ -371,7 +371,7 @@ const IssueCard = React.memo(function IssueCard(props) {
                   }
                 >
                   <option value="">
-                    {t('Uncategorized', {ns: 'issue_tracker'})}
+                    Uncategorized
                   </option>
                   {Object.entries(categories).map(([value, label]) => (
                     <option
@@ -385,7 +385,7 @@ const IssueCard = React.memo(function IssueCard(props) {
               </div>
               <div className="control-group">
                 <label htmlFor="centerID">
-                  {t('Site', {ns: 'loris'})}:&nbsp;
+                  {t('Site', {ns: 'loris', count: 1})}:&nbsp;
                 </label>
                 <select
                   id="centerID"
@@ -396,7 +396,7 @@ const IssueCard = React.memo(function IssueCard(props) {
                   }
                 >
                   <option value="">
-                    {t('All Sites', {ns: 'issue_tracker'})}
+                    All Sites
                   </option>
                   {Object.entries(sites).map(([id, name]) => (
                     <option
@@ -412,7 +412,7 @@ const IssueCard = React.memo(function IssueCard(props) {
           ) : (
             <>
               <div className="control-group">
-                <label>{t('Status', {ns: 'issue_tracker'})}:&nbsp;</label>
+                <label>{t('Status', {ns: 'loris'})}:&nbsp;</label>
                 <span>
                   {statuses[tempEditedIssue.status] ||
                     tempEditedIssue.status}
@@ -429,14 +429,14 @@ const IssueCard = React.memo(function IssueCard(props) {
                 <label>{t('Category', {ns: 'loris'})}:&nbsp;</label>
                 <span>
                   {categories[tempEditedIssue.category] ||
-                    t('Uncategorized', {ns: 'issue_tracker'})}
+                    'Uncategorized'}
                 </span>
               </div>
               <div className="control-group">
-                <label>{t('Site', {ns: 'loris'})}:&nbsp;</label>
+                <label>{t('Site', {ns: 'loris', count: 1})}:&nbsp;</label>
                 <span>
                   {sites[String(tempEditedIssue.centerID)] ||
-                    t('All Sites', {ns: 'issue_tracker'})}
+                    'All Sites'}
                 </span>
               </div>
             </>

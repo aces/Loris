@@ -21,6 +21,14 @@ msgstr ""
 msgid "Issue Tracker"
 msgstr "समस्या ट्रैकर"
 
+msgid "Your assigned issue"
+msgid_plural "Your assigned issues"
+msgstr[0] "आपकी असाइन की गई समस्या"
+msgstr[1] "आपकी असाइन की गई समस्याएँ"
+
+msgid "Open Issues"
+msgstr "खुली समस्याएँ"
+
 msgid "Issue ID"
 msgstr "समस्या आईडी"
 
@@ -143,3 +151,202 @@ msgstr "समस्या अपडेट की गई!"
 
 msgid "Issue created!"
 msgstr "समस्या बनाई गई!"
+
+msgid "({{count}} issue)"
+msgid_plural "({{count}} issues)"
+msgstr[0] "({{count}} समस्या)"
+msgstr[1] "({{count}} समस्याएँ)"
+
+msgid "Last Updated By"
+msgstr "अंतिम अपडेट किया गया"
+
+msgid "Instrument"
+msgstr "उपकरण"
+
+msgid "Unassigned"
+msgstr "असाइन नहीं किया गया"
+
+msgid "Watchers"
+msgstr "दर्शक"
+
+msgid "Submitting..."
+msgstr "सबमिट कर रहे हैं..."
+
+msgid "Submit Comment"
+msgstr "टिप्पणी सबमिट करें"
+
+msgid "Created"
+msgstr "बनाया गया"
+
+msgid "Last Updated"
+msgstr "अंतिम अपडेट"
+
+msgid "None"
+msgstr "कोई नहीं"
+
+msgid "Uncategorized"
+msgstr "अवर्गीकृत"
+
+msgid "Comments and History"
+msgstr "टिप्पणियाँ और इतिहास"
+
+msgid "on"
+msgstr "पर"
+
+msgid "at"
+msgstr "पर"
+
+msgid "seconds ago"
+msgstr "सेकंड पहले"
+
+msgid "minutes ago"
+msgstr "मिनट पहले"
+
+msgid "hours ago"
+msgstr "घंटे पहले"
+
+msgid "Title cannot be empty"
+msgstr "शीर्षक खाली नहीं हो सकता"
+
+msgid "No changes were made"
+msgstr "कोई परिवर्तन नहीं किए गए"
+
+msgid "Issue updated successfully"
+msgstr "समस्या सफलतापूर्वक अपडेट की गई"
+
+msgid "Failed to update issue"
+msgstr "समस्या अपडेट करने में विफल"
+
+msgid "Information"
+msgstr "जानकारी"
+
+msgid "Add New Comment"
+msgstr "नई टिप्पणी जोड़ें"
+
+msgid "Comment"
+msgstr "टिप्पणी"
+
+msgid "Failed to add comment"
+msgstr "टिप्पणी जोड़ने में विफल"
+
+msgid "of"
+msgstr "का"
+
+msgid "Maximum issues per page"
+msgstr "प्रति पृष्ठ अधिकतम समस्याएँ"
+
+msgid "Failed to fetch issues. Please try again later."
+msgstr "समस्याएँ प्राप्त करने में विफल। कृपया बाद में पुनः प्रयास करें।"
+
+msgid "No issues match the selected filters."
+msgstr "कोई समस्या चयनित फ़िल्टर से मेल नहीं खाती।"
+
+msgid "issues displayed"
+msgstr "समस्याएँ प्रदर्शित"
+
+msgid "({{count}} comment)"
+msgid_plural "({{count}} comments)"
+msgstr[0] "({{count}} टिप्पणी)"
+msgstr[1] "({{count}} टिप्पणियाँ)"
+
+msgid "New"
+msgstr "नया"
+
+msgid "Acknowledged"
+msgstr "स्वीकृत"
+
+msgid "Feedback"
+msgstr "प्रतिक्रिया"
+
+msgid "Assigned"
+msgstr "असाइन किया गया"
+
+msgid "Resolved"
+msgstr "हल किया गया"
+
+msgid "Closed"
+msgstr "बंद"
+
+msgid "Behavioural Battery"
+msgstr "व्यवहारिक बैटरी"
+
+msgid "Behavioural Instruments"
+msgstr "व्यवहारिक उपकरण"
+
+msgid "Data Entry"
+msgstr "डेटा प्रविष्टि"
+
+msgid "Examiners"
+msgstr "परीक्षक"
+
+msgid "Imaging"
+msgstr "इमेजिंग"
+
+msgid "Other"
+msgstr "अन्य"
+
+msgid "Technical Issue"
+msgstr "तकनीकी समस्या"
+
+msgid "User Accounts"
+msgstr "उपयोगकर्ता खाते"
+
+msgid "Last 3 Comments"
+msgstr "अंतिम 3 टिप्पणियाँ"
+
+msgid "Permission denied"
+msgstr "अनुमति अस्वीकृत"
+
+msgid "Confirmation"
+msgstr "पुष्टिकरण"
+
+msgid "Delete attachment"
+msgstr "संलग्नक हटाएँ"
+
+msgid "Attachment options: "
+msgstr "संलग्नक विकल्प: "
+
+msgid "Delete"
+msgstr "हटाएँ"
+
+msgid "Download"
+msgstr "डाउनलोड"
+
+msgid "Date of attachment: "
+msgstr "संलग्नक की तिथि: "
+
+msgid "File: "
+msgstr "फ़ाइल: "
+
+msgid "User: "
+msgstr "उपयोगकर्ता: "
+
+msgid "Description: "
+msgstr "विवरण: "
+
+msgid "Attachment History"
+msgstr "संलग्नक इतिहास"
+
+msgid "Please confirm the request to delete the"
+msgstr "कृपया हटाने के अनुरोध की पुष्टि करें"
+
+msgid "attachment."
+msgstr "संलग्नक।"
+
+msgid "Upload Successful!"
+msgstr "अपलोड सफल!"
+
+msgid "Upload error!"
+msgstr "अपलोड त्रुटि!"
+
+msgid "File to upload"
+msgstr "अपलोड करने के लिए फ़ाइल"
+
+msgid "Submit Attachment"
+msgstr "संलग्नक सबमिट करें"
+
+msgid "An error occurred when loading the form!"
+msgstr "फ़ॉर्म लोड करते समय एक त्रुटि हुई!"
+
+msgid "Please add a comment or make changes"
+msgstr "कृपया एक टिप्पणी जोड़ें या परिवर्तन करें"

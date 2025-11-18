@@ -126,7 +126,7 @@ class IssueForm extends Component {
     const siteOptions = this.state.Data.sites;
     // Add an 'All Sites' options in the Site dropdown
     // to allow NULL value
-    siteOptions['all'] = t('All Sites', {ns: 'issue_tracker'});
+    siteOptions['all'] = 'All Sites';
 
     if (this.state.isNewIssue) {
       headerText = t('Create New Issue', {ns: 'issue_tracker'});
@@ -258,7 +258,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='centerID'
-            label={t('Site', {ns: 'loris'})}
+            label={t('Site', {ns: 'loris', count: 1})}
             emptyOption={true}
             options={siteOptions}
             onUserInput={this.setFormData}
@@ -299,7 +299,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='category'
-            label={t('Category', {ns: 'issue_tracker'})}
+            label={t('Category', {ns: 'loris'})}
             emptyOption={true}
             options={this.state.Data.categories}
             onUserInput={this.setFormData}
@@ -333,8 +333,8 @@ class IssueForm extends Component {
             name='watching'
             label={t('Watching?', {ns: 'issue_tracker'})}
             emptyOption={false}
-            options={{No: t('No', {ns: 'loris'}),
-              Yes: t('Yes', {ns: 'loris'})}}
+            options={{No: 'No',
+              Yes: 'Yes'}}
             onUserInput={this.setFormData}
             value={isWatching}
           />
@@ -378,7 +378,7 @@ class IssueForm extends Component {
       if (!response.ok) {
         console.error(response.status);
         this.setState({
-          error: 'An error occurred when loading the form!\n Error: ' +
+          error: this.props.t('An error occurred when loading the form!', {ns: 'issue_tracker'}) + '\n Error: ' +
           response.status + ' (' + response.statusText + ')',
         });
         return;
@@ -423,7 +423,7 @@ class IssueForm extends Component {
       // Network error
       console.error(error);
       this.setState({
-        loadError: 'An error occurred when loading the form!',
+        loadError: this.props.t('An error occurred when loading the form!', {ns: 'issue_tracker'}),
       });
     });
   }
