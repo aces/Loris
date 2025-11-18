@@ -18,7 +18,7 @@
 <div>
 
 {if $saved|default}
-<p>{t text="Comments saved." domain="imaging_browser"}</p>
+<p>{dgettext("imaging_browser","Comments saved")}</p>
 {/if}
 
 <table cellpadding="2" class="table table-hover table-bordered dynamictable">

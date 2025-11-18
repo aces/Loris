@@ -135,9 +135,8 @@ class ImagingBrowserIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const configLabels = options.configLabels;
-    const count = 1;
     const fields = [
-      {label: t('Site', {ns: 'loris', count}), show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
@@ -150,7 +149,7 @@ class ImagingBrowserIndex extends Component {
         name: 'DCCID',
         type: 'text',
       }},
-      {label: t('Project', {ns: 'loris', count}), show: true, filter: {
+      {label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'project',
         type: 'select',
         options: options.projects,
