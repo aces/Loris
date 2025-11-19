@@ -398,7 +398,7 @@ msgstr "पूर्ण"
 
 msgid "Instrument"
 msgid_plural "Instruments"
-msgstr[0] "यंत्र"
+msgstr[0] "उपकरण"
 msgstr[1] "उपकरण"
 
 msgid "Partial"
