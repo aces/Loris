@@ -124,7 +124,7 @@ class HelpEditor extends React.Component {
         name: 'content',
         type: 'text',
       }},
-      {label: t('Instrument', {ns: 'loris'}), show: true},
+      {label: t('Instrument', {ns: 'help_editor'}), show: true},
     ];
 
     return (
