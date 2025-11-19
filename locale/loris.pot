@@ -57,14 +57,12 @@ msgstr ""
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr ""
-
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
 #: modules/datadict/php/module.class.inc:49
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
-
 msgid "Data Dictionary"
 msgstr ""
 
@@ -196,7 +194,6 @@ msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] ""
 
- 
 msgid "Session"
 msgstr ""
 
