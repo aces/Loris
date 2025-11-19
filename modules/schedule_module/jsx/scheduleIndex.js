@@ -100,30 +100,36 @@ class ScheduleIndex extends Component {
   }
 
   fetchDataForm(type, value) {
-    return fetch(this.props.formURL+'/'+type+'/'+value, {
-      method: 'GET',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        if (type === 'DCCID' ) {
-          this.setState({formData: {...this.state.formData,
-            PSCID: data['PSCID']}});
+  return fetch(this.props.formURL + '/' + type + '/' + value, {
+    method: 'GET',
+    cache: 'no-cache',
+    credentials: 'same-origin',
+  })
+    .then(resp => resp.json())
+    .then(data => {
+      let returnedValue = null;
+
+      if (type === 'DCCID') {
+        returnedValue = data.PSCID ?? null;
+      }
+
+      if (type === 'PSCID') {
+        returnedValue = data.DCCID ?? null;
+      }
+      // Update React state
+      this.setState(prev => ({
+        formData: {
+          ...prev.formData,
+          PSCID: type === 'DCCID' ? returnedValue : prev.formData.PSCID,
+          DCCID: type === 'PSCID' ? returnedValue : prev.formData.DCCID,
+          SessionFieldOptions: data.Session ?? {}
         }
-        if (type === 'PSCID' ) {
-          this.setState({formData: {...this.state.formData,
-            DCCID: data['DCCID']}});
-        }
-        this.setState({formData: {...this.state.formData,
-          SessionFieldOptions: data['Session']}});
-      })
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
-  }
-  /**
+      }));
+
+      return returnedValue; // ✔ correct returned value
+    });
+}
+ /**
    * Updates filter state
    *
    * @param {object} filter passed from FilterForm
@@ -144,21 +150,53 @@ class ScheduleIndex extends Component {
    * @param {string} formElement - name of the form element
    * @param {string} value - value of the form element
    */
-  setFormData(formElement, value) {
+/*  setFormData(formElement, value) {
     let formData = this.state.formData;
+	  console.log(formData);
+	  console.log(value);
     formData[formElement] = value;
     if (formElement === 'DCCID') {
-      formData['PSCID'] = null;
-      this.fetchDataForm('DCCID', formData['DCCID']);
+      formData['PSCID'] = this.fetchDataForm('DCCID', formData['DCCID']);
     }
     if (formElement === 'PSCID') {
-      formData['DCCID'] = null;
-      this.fetchDataForm('PSCID', formData['PSCID']);
+      formData['DCCID'] = this.fetchDataForm('PSCID', formData['PSCID']);
     }
     this.setState({
       formData: formData,
     });
   }
+  */
+setFormData = (formElement, value) => {
+  // create a safe copy
+  const formData = { ...this.state.formData, [formElement]: value };
+
+  // update the typed field immediately
+  this.setState({ formData });
+
+  // If DCCID typed → fetch PSCID
+  if (formElement === 'DCCID') {
+    this.fetchDataForm('DCCID', value).then(pscid => {
+      this.setState(prev => ({
+        formData: {
+          ...prev.formData,
+          PSCID: pscid
+        }
+      }));
+    });
+  }
+
+  // If PSCID typed → fetch DCCID
+  if (formElement === 'PSCID') {
+    this.fetchDataForm('PSCID', value).then(dccid => {
+      this.setState(prev => ({
+        formData: {
+          ...prev.formData,
+          DCCID: dccid
+        }
+      }));
+    });
+  }
+};
   /**
    * Handles the submission of the Add Schedule form
    *
@@ -309,10 +347,12 @@ class ScheduleIndex extends Component {
    */
   formatColumn(column, cell, row) {
     const {t} = this.props;
+	  const keyPSCID = t('PSCID', { ns: 'loris' });
+          const keyDCCID = t('DCCID', { ns: 'loris' });
     let result = <td>{cell}</td>;
     switch (column) {
     case t('PSCID', {ns: 'loris'}):
-      let url = loris.BaseURL + '/' + row['DCCID'] + '/';
+      let url = loris.BaseURL + '/' + row[keyDCCID] + '/';
       result = <td><a href ={url}>{cell}</a></td>;
       break;
     case t('Visit Label', {ns: 'loris'}):
@@ -352,7 +392,6 @@ class ScheduleIndex extends Component {
     }
     return result;
   }
-
   renderScheduleFormButton() {
     const {t} = this.props;
     if (this.state.editModal) {
