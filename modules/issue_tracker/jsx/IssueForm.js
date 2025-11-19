@@ -378,7 +378,8 @@ class IssueForm extends Component {
       if (!response.ok) {
         console.error(response.status);
         this.setState({
-          error: this.props.t('An error occurred when loading the form!', {ns: 'issue_tracker'}) + '\n Error: ' +
+          error: this.props.t('An error occurred when loading the form!',
+            {ns: 'issue_tracker'}) + '\n Error: ' +
           response.status + ' (' + response.statusText + ')',
         });
         return;
@@ -423,7 +424,8 @@ class IssueForm extends Component {
       // Network error
       console.error(error);
       this.setState({
-        loadError: this.props.t('An error occurred when loading the form!', {ns: 'issue_tracker'}),
+        loadError: this.props.t('An error occurred when loading the form!',
+          {ns: 'issue_tracker'}),
       });
     });
   }

@@ -30,6 +30,7 @@ class CommentList extends Component {
 
   /**
    * Maps field names to their translated labels
+   *
    * @param {string} fieldName - The field name from database
    * @param {function} t - Translation function
    * @return {string} - Translated label
@@ -37,17 +38,24 @@ class CommentList extends Component {
   getFieldLabel(fieldName, t) {
     const fieldLabelMap = {
       'title': t('Title', {ns: 'loris', defaultValue: 'Title'}),
-      'lastUpdatedBy': t('Last Updated By', {ns: 'issue_tracker', defaultValue: 'Last Updated By'}),
-      'assignee': t('Assignee', {ns: 'issue_tracker', defaultValue: 'Assignee'}),
+      'lastUpdatedBy': t('Last Updated By',
+        {ns: 'issue_tracker', defaultValue: 'Last Updated By'}),
+      'assignee': t('Assignee',
+        {ns: 'issue_tracker', defaultValue: 'Assignee'}),
       'status': t('Status', {ns: 'loris', defaultValue: 'Status'}),
-      'priority': t('Priority', {ns: 'issue_tracker', defaultValue: 'Priority'}),
-      'category': t('Category', {ns: 'loris', defaultValue: 'Category'}),
+      'priority': t('Priority',
+        {ns: 'issue_tracker', defaultValue: 'Priority'}),
+      'category': t('Category',
+        {ns: 'loris', defaultValue: 'Category'}),
       'site': t('Site', {ns: 'loris', count: 1, defaultValue: 'Site'}),
       'PSCID': t('PSCID', {ns: 'loris', defaultValue: 'PSCID'}),
-      'Visit Label': t('Visit Label', {ns: 'loris', defaultValue: 'Visit Label'}),
+      'Visit Label': t('Visit Label',
+        {ns: 'loris', defaultValue: 'Visit Label'}),
       'module': t('Module', {ns: 'loris', defaultValue: 'Module'}),
-      'instrument': t('Instrument', {ns: 'issue_tracker', defaultValue: 'Instrument'}),
-      'description': t('Description', {ns: 'issue_tracker', defaultValue: 'Description'}),
+      'instrument': t('Instrument',
+        {ns: 'issue_tracker', defaultValue: 'Instrument'}),
+      'description': t('Description',
+        {ns: 'issue_tracker', defaultValue: 'Description'}),
     };
     return fieldLabelMap[fieldName] || fieldName;
   }
@@ -83,7 +91,9 @@ class CommentList extends Component {
           <li key={j} className='row' style={{color: 'rgb(149, 149, 149)'}}>
             <div className='col-md-2'>
               <div className='col-md-8'><strong>{fieldLabel}</strong></div>
-              <div className='col-md-4'> {t(' to ', {ns: 'issue_tracker'})} </div>
+              <div className='col-md-4'>
+                {' '}{t(' to ', {ns: 'issue_tracker'})}{' '}
+              </div>
             </div>
             <div className='col-md-10'><i>{item.data[index]}</i></div>
           </li>

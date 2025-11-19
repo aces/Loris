@@ -10,7 +10,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
 window.addEventListener('load', () => {
   // Load Hindi translations for issue_tracker
   i18n.addResourceBundle('hi', 'issue_tracker', hiStrings);
-  
+
   const id = location.href.split('/issue/')[1];
   createRoot(
     document.getElementById('lorisworkspace')

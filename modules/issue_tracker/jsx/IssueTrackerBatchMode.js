@@ -13,6 +13,7 @@ import {withTranslation} from 'react-i18next';
  *
  * @param {object} props - The component props
  * @param {object} props.options - The options for the IssueTrackerBatchMode
+ * @param {function} props.t - Translation function
  */
 function IssueTrackerBatchMode({options = {}, t}) {
   const [issues, setIssues] = useState([]);
@@ -140,7 +141,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
   // Pagination functions
   /**
    *
-   * @param pageNumber
+   * @param {number} pageNumber - The page number to navigate to
    */
   function changePage(pageNumber) {
     setPage((prevPage) => ({...prevPage, number: pageNumber}));
@@ -148,7 +149,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
 
   /**
    *
-   * @param e
+   * @param {object} e - The event object
    */
   function updatePageRows(e) {
     const newRowsPerPage = parseInt(e.target.value, 10);

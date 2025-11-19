@@ -100,14 +100,23 @@ class IssueUploadAttachmentForm extends Component {
             },
             uploadProgress: -1,
           });
-          swal.fire(this.props.t('Upload Successful!', {ns: 'issue_tracker'}), '', 'success');
-          window.location.href = this.props.baseURL
-            + '/issue_tracker/issue/'
-            + this.props.issue;
+          swal.fire(
+            this.props.t('Upload Successful!',
+              {ns: 'issue_tracker'}),
+            '',
+            'success'
+          );
+          window.location.href = this.props.baseURL +
+            '/issue_tracker/issue/' +
+            this.props.issue;
         } else if (data.error) {
           swal.fire(data.error, '', 'error');
         } else {
-          swal.fire(this.props.t('Permission denied', {ns: 'issue_tracker'}), '', 'error');
+          swal.fire(
+            this.props.t('Permission denied', {ns: 'issue_tracker'}),
+            '',
+            'error'
+          );
         }
       }).catch((error) => {
         console.error(error);
@@ -146,7 +155,8 @@ class IssueUploadAttachmentForm extends Component {
             />
             <TextareaElement
               name='fileDescription'
-              label={t('Description', {ns: 'issue_tracker'})}
+              label={t('Description',
+                {ns: 'issue_tracker'})}
               value={this.state.formData.fileDescription}
               onUserInput={this.setFileUploadFormData}
               required={false}
@@ -156,7 +166,9 @@ class IssueUploadAttachmentForm extends Component {
                 <ProgressBar value={this.state.uploadProgress}/>
               </div>
             </div>
-            <ButtonElement label={t('Submit Attachment', {ns: 'issue_tracker'})}/>
+            <ButtonElement
+              label={t('Submit Attachment', {ns: 'issue_tracker'})}
+            />
           </FormElement>
         </div>
       </div>
