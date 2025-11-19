@@ -21,3 +21,5 @@ msgstr ""
 msgid "Media"
 msgstr "メディア"
 
+msgid "Candidate Media"
+msgstr "候補者メディア"

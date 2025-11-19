@@ -1,0 +1,62 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Behavioural Quality Control"
+msgstr "व्यवहारिक गुणवत्ता नियंत्रण"
+
+msgid "Behavioural Session"
+msgid_plural "Behavioural Sessions"
+msgstr[0] "व्यवहारिक सत्र"
+msgstr[1] "व्यवहारिक सत्र"
+
+msgid "Incomplete Forms"
+msgstr "अधूरी प्रपत्र"
+
+msgid "Data Conflicts"
+msgstr "डेटा संघर्ष"
+
+msgid "Behavioural Feedback"
+msgstr "व्यवहारिक प्रतिक्रिया"
+
+msgid "Data Entry Type"
+msgstr "डेटा प्रविष्टि प्रकार"
+
+msgid "Initial Data Entry (IDE)"
+msgstr "प्रारंभिक डेटा प्रविष्टि (IDE)"
+
+msgid "Double Data Entry (DDE)"
+msgstr "द्वि-डेटा प्रविष्टि (DDE)"
+
+msgid "Field Name"
+msgstr "फ़ील्ड नाम"
+
+msgid "Feedback Level"
+msgstr "प्रतिक्रिया स्तर"
+
+msgid "Test Name"
+msgstr "परीक्षण नाम"
+
+msgid "Feedback Status"
+msgstr "प्रतिक्रिया स्थिति"
+
+msgid "Profile"
+msgstr "प्रोफाइल"
+
+

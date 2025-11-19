@@ -21,6 +21,37 @@ msgstr ""
 msgid "Behavioural Quality Control"
 msgstr ""
 
-msgid  "Behavioural Session"
+msgid "Behavioural Session"
 msgid_plural "Behavioural Sessions"
 msgstr[0] ""
+
+msgid "Incomplete Forms"
+msgstr ""
+
+msgid "Data Conflicts"
+msgstr ""
+
+msgid "Behavioural Feedback"
+msgstr ""
+
+msgid "Data Entry Type"
+msgstr ""
+
+msgid "Initial Data Entry (IDE)"
+msgstr ""
+
+msgid "Double Data Entry (DDE)"
+msgstr ""
+
+msgid "Field Name"
+msgstr ""
+
+msgid "Feedback Level"
+msgstr ""
+
+msgid "Test Name"
+msgstr ""
+
+msgid "Feedback Status"
+msgstr ""
+

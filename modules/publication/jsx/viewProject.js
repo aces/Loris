@@ -85,7 +85,9 @@ class ViewProject extends React.Component {
         return;
       }
 
-      swal.fire('Edit Successful!', '', 'success');
+      swal.fire('Edit Successful!', '', 'success').then(() => {
+        window.location.replace(loris.BaseURL + '/publication/');
+      });
     }).catch((error) => {
       // Network error
       console.error(error);
@@ -156,7 +158,6 @@ class ViewProject extends React.Component {
             userCanEdit: data.userCanEdit,
             allVOIs: data.allVOIs,
             allKWs: data.allKWs,
-            allCollabs: data.allCollabs,
             uploadTypes: data.uploadTypes,
             files: data.files,
             isLoaded: true,
@@ -372,7 +373,6 @@ class ViewProject extends React.Component {
           users={this.state.users}
           allVOIs={this.state.allVOIs}
           allKWs={this.state.allKWs}
-          allCollabs={this.state.allCollabs}
           editMode={true}
           fetchData={this.fetchData}
         />
