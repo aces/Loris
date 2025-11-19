@@ -254,14 +254,10 @@ export default withTranslation(
   ['document_repository', 'loris'])(EditDocCategoryForm);
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'document_repository', jaStrings);
   i18n.addResourceBundle('hi', 'document_repository', hiStrings);
 
   const element = document.getElementById('lorisworkspace');
   if (!element) {
     throw new Error('Missing lorisworkspace');
   }
-  createRoot(element).render(
-    <MFAIndex />
-  );
 });
