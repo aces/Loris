@@ -288,7 +288,7 @@ class NewProfileIndex extends React.Component {
       site =
         <SelectElement
           name = "site"
-          label = {this.props.t('Site', {ns: 'loris'})}
+          label = {this.props.t('Site', {ns: 'loris', count: 1})}
           options = {this.state.configData.site}
           onUserInput = {this.setFormData}
           value = {this.state.formData.site}
@@ -343,7 +343,7 @@ class NewProfileIndex extends React.Component {
         ),
       },
       {
-        label: this.props.t('Site', {ns: 'loris'}),
+        label: this.props.t('Site', {ns: 'loris', count: 1}),
         element: site,
       },
       {
@@ -351,11 +351,11 @@ class NewProfileIndex extends React.Component {
         element: pscid,
       },
       {
-        label: this.props.t('Project', {ns: 'loris'}),
+        label: this.props.t('Project', {ns: 'loris', count: 1}),
         element: (
           <SelectElement
             name = "project"
-            label = {this.props.t('Project', {ns: 'loris'}) }
+            label = {this.props.t('Project', {ns: 'loris', count: 1}) }
             options = {this.state.configData.project}
             onUserInput = {this.setFormData}
             value = {this.state.formData.project}
