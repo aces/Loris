@@ -231,7 +231,7 @@ class IssueForm extends Component {
           {header}
           <TextboxElement
             name='title'
-            label={t('Title', {ns: 'loris'})}
+            label={t('Title', {ns: 'issue_tracker'})}
             onUserInput={this.setFormData}
             value={this.state.formData.title}
             disabled={!hasEditPermission}
@@ -299,7 +299,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='category'
-            label={t('Category', {ns: 'loris'})}
+            label={t('Category', {ns: 'issue_tracker'})}
             emptyOption={true}
             options={this.state.Data.categories}
             onUserInput={this.setFormData}

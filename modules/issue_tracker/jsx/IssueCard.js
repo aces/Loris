@@ -361,7 +361,7 @@ const IssueCard = React.memo(function IssueCard(props) {
               </div>
               <div className="control-group">
                 <label htmlFor="category">
-                  {t('Category', {ns: 'loris'})}:&nbsp;
+                  {t('Category', {ns: 'issue_tracker'})}:&nbsp;
                 </label>
                 <select
                   id="category"
@@ -426,7 +426,7 @@ const IssueCard = React.memo(function IssueCard(props) {
                 </span>
               </div>
               <div className="control-group">
-                <label>{t('Category', {ns: 'loris'})}:&nbsp;</label>
+                <label>{t('Category', {ns: 'issue_tracker'})}:&nbsp;</label>
                 <span>
                   {categories[tempEditedIssue.category] ||
                     'Uncategorized'}

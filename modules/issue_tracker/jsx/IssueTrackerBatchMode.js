@@ -174,7 +174,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
       id: 'category',
       label: (
         <span>
-          {t('Category', {ns: 'loris'})}{' '}
+          {t('Category', {ns: 'issue_tracker'})}{' '}
           <span className="badge bg-primary">{selectedCategories.length}</span>
         </span>
       ),
@@ -321,10 +321,16 @@ function IssueTrackerBatchMode({options = {}, t}) {
       <br/>
       <div className="pagination-container">
         <div>
-          {paginatedIssues.length} {t('issues displayed',
-            {ns: 'issue_tracker'})}
-          {t('of', {ns: 'issue_tracker'})} {filteredIssues.length}
-          ({t('Maximum issues per page', {ns: 'issue_tracker'})}:
+          {t('{{count}} issues displayed of {{total}}', {
+            ns: 'issue_tracker',
+            count: paginatedIssues.length,
+            total: filteredIssues.length
+          })}
+          {' ('}
+          {t('Maximum issues per page: {{count}}', {
+            ns: 'issue_tracker',
+            count: paginatedIssues.length
+          })}
           <select
             className="input-sm perPage"
             onChange={updatePageRows}
@@ -334,7 +340,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
             <option>50</option>
             <option>100</option>
           </select>
-          )
+          {')'}
         </div>
         <div className="pagination-controls">
           <PaginationLinks
@@ -369,10 +375,16 @@ function IssueTrackerBatchMode({options = {}, t}) {
       </div>
       <div className="pagination-container">
         <div>
-          {paginatedIssues.length} {t('issues displayed',
-            {ns: 'issue_tracker'})}
-          {t('of', {ns: 'issue_tracker'})} {filteredIssues.length}.
-          ({t('Maximum issues per page', {ns: 'issue_tracker'})}:
+          {t('{{count}} issues displayed of {{total}}', {
+            ns: 'issue_tracker',
+            count: paginatedIssues.length,
+            total: filteredIssues.length
+          })}.
+          {' ('}
+          {t('Maximum issues per page: {{count}}', {
+            ns: 'issue_tracker',
+            count: paginatedIssues.length
+          })}
           <select
             className="input-sm perPage"
             onChange={updatePageRows}
@@ -382,7 +394,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
             <option>50</option>
             <option>100</option>
           </select>
-          )
+          {')'}
         </div>
         <div className="pagination-controls">
           <PaginationLinks

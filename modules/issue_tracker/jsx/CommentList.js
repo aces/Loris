@@ -37,25 +37,18 @@ class CommentList extends Component {
    */
   getFieldLabel(fieldName, t) {
     const fieldLabelMap = {
-      'title': t('Title', {ns: 'loris', defaultValue: 'Title'}),
-      'lastUpdatedBy': t('Last Updated By',
-        {ns: 'issue_tracker', defaultValue: 'Last Updated By'}),
-      'assignee': t('Assignee',
-        {ns: 'issue_tracker', defaultValue: 'Assignee'}),
-      'status': t('Status', {ns: 'loris', defaultValue: 'Status'}),
-      'priority': t('Priority',
-        {ns: 'issue_tracker', defaultValue: 'Priority'}),
-      'category': t('Category',
-        {ns: 'loris', defaultValue: 'Category'}),
-      'site': t('Site', {ns: 'loris', count: 1, defaultValue: 'Site'}),
-      'PSCID': t('PSCID', {ns: 'loris', defaultValue: 'PSCID'}),
-      'Visit Label': t('Visit Label',
-        {ns: 'loris', defaultValue: 'Visit Label'}),
-      'module': t('Module', {ns: 'loris', defaultValue: 'Module'}),
-      'instrument': t('Instrument',
-        {ns: 'issue_tracker', defaultValue: 'Instrument'}),
-      'description': t('Description',
-        {ns: 'issue_tracker', defaultValue: 'Description'}),
+      'title': t('Title', {ns: 'issue_tracker'}),
+      'lastUpdatedBy': t('Last Updated By', {ns: 'issue_tracker'}),
+      'assignee': t('Assignee', {ns: 'issue_tracker'}),
+      'status': t('Status', {ns: 'loris'}),
+      'priority': t('Priority', {ns: 'issue_tracker'}),
+      'category': t('Category', {ns: 'issue_tracker'}),
+      'site': t('Site', {ns: 'loris', count: 1}),
+      'PSCID': t('PSCID', {ns: 'loris'}),
+      'Visit Label': t('Visit Label', {ns: 'loris'}),
+      'module': t('Module', {ns: 'loris'}),
+      'instrument': t('Instrument', {ns: 'issue_tracker'}),
+      'description': t('Description', {ns: 'issue_tracker'}),
     };
     return fieldLabelMap[fieldName] || fieldName;
   }

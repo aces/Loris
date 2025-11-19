@@ -356,3 +356,9 @@ msgstr "द्वारा अपडेट किया गया"
 
 msgid " to "
 msgstr " से "
+
+msgid "Title"
+msgstr "शीर्षक"
+
+msgid "Category"
+msgstr "श्रेणी"

@@ -99,18 +99,15 @@ class IssueTrackerIndex extends Component {
     const {t} = this.props;
     const issueIDKey = t('Issue ID', {ns: 'issue_tracker',
       defaultValue: 'Issue ID'});
-    const titleKey = t('Title', {ns: 'loris', defaultValue: 'Title'});
-    const priorityKey = t('Priority', {ns: 'issue_tracker',
-      defaultValue: 'Priority'});
-    const siteKey = t('Site', {ns: 'loris', defaultValue: 'Site'});
-    const pscidKey = t('PSCID', {ns: 'loris', defaultValue: 'PSCID'});
-    const visitLabelKey = t('Visit Label', {ns: 'loris',
-      defaultValue: 'Visit Label'});
-    const sessionIDKey = t('Session ID', {ns: 'loris',
-      defaultValue: 'Session ID'});
-    const dccidKey = t('DCCID', {ns: 'loris', defaultValue: 'DCCID'});
-    const statusKey = t('Status', {ns: 'loris', defaultValue: 'Status'});
-    const categoryKey = t('Category', {ns: 'loris', defaultValue: 'Category'});
+    const titleKey = t('Title', {ns: 'issue_tracker'});
+    const priorityKey = t('Priority', {ns: 'issue_tracker'});
+    const siteKey = t('Site', {ns: 'loris'});
+    const pscidKey = t('PSCID', {ns: 'loris'});
+    const visitLabelKey = t('Visit Label', {ns: 'loris'});
+    const sessionIDKey = t('Session ID', {ns: 'loris'});
+    const dccidKey = t('DCCID', {ns: 'loris'});
+    const statusKey = t('Status', {ns: 'loris'});
+    const categoryKey = t('Category', {ns: 'issue_tracker'});
     switch (column) {
     case titleKey:
       link = (
@@ -232,7 +229,7 @@ class IssueTrackerIndex extends Component {
         name: 'issueID',
         type: 'text',
       }},
-      {label: t('Title', {ns: 'loris'}), show: true, filter: {
+      {label: t('Title', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'title',
         type: 'text',
       }},
@@ -241,7 +238,7 @@ class IssueTrackerIndex extends Component {
         type: 'select',
         options: options.modules,
       }},
-      {label: t('Category', {ns: 'loris'}), show: true, filter: {
+      {label: t('Category', {ns: 'issue_tracker'}), show: true, filter: {
         name: 'category',
         type: 'select',
         options: options.categories,

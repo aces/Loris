@@ -190,12 +190,6 @@ msgstr "डीसीसीआईडी"
 msgid "Visit Label"
 msgstr "दौरे का लेबल"
 
-msgid "Title"
-msgstr "शीर्षक"
-
-msgid "Category"
-msgstr "श्रेणी"
-
 msgid "Status"
 msgstr "स्थिति"
 

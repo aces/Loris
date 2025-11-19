@@ -40,6 +40,12 @@ msgstr ""
 msgid "Priority"
 msgstr ""
 
+msgid "Title"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
 msgid "Date Created"
 msgstr ""
 
@@ -154,3 +160,9 @@ msgstr ""
 msgid "({{count}} issue)"
 msgid_plural "({{count}} issues)"
 msgstr[0] ""
+
+msgid "{{count}} issues displayed of {{total}}"
+msgstr ""
+
+msgid "Maximum issues per page: {{count}}"
+msgstr ""
