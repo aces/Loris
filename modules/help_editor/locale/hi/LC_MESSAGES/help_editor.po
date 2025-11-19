@@ -42,9 +42,6 @@ msgstr "परिवर्तनों का पूर्वावलोकन 
 msgid "Content update successful!"
 msgstr "सामग्री सफलतापूर्वक अपडेट की गई!"
 
-msgid "Close"
-msgstr "बंद करें"
-
 msgid "Content update unsuccessful."
 msgstr "सामग्री अपडेट असफल रहा।"
 

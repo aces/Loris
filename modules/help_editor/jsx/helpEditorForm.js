@@ -167,13 +167,21 @@ HelpEditorForm.propTypes = {
   content: PropTypes.string,
   section: PropTypes.string,
   subsection: PropTypes.string,
-  helpid: PropTypes.string,
+  helpid: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   url: PropTypes.string,
   instrument: PropTypes.string,
   instrumentslist: PropTypes.objectOf(PropTypes.string),
   t: PropTypes.func,
 };
 
-i18n.addResourceBundle('hi', 'help_editor', hiStrings);
 window.RHelpEditorForm = React.createFactory(
   withTranslation(['help_editor'])(HelpEditorForm));
+
+window.addEventListener('load', () => {
+  const currentLang = i18n.language || 'en';
+  if (currentLang === 'hi') {
+    i18n.addResourceBundle('hi', 'help_editor', hiStrings);
+    // Force a re-render by changing language back to itself
+    i18n.changeLanguage(currentLang);
+  }
+});
