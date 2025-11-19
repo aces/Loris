@@ -158,6 +158,8 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Success!"
+msgstr ""
+
 msgid "Close"
 msgstr ""
 
@@ -262,9 +264,6 @@ msgid "Save"
 msgstr ""
 
 msgid "Reset"
-msgstr ""
-
-msgid "Save"
 msgstr ""
 
 # Data table strings
