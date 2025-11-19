@@ -174,6 +174,9 @@ msgstr "रद्द करें"
 msgid "Success!"
 msgstr "सफलता!"
 
+msgid "Close"
+msgstr "बंद करें"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
