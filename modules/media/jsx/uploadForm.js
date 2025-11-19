@@ -16,7 +16,13 @@ import {
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/media.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/media.json';
+import frStrings from '../locale/fr/LC_MESSAGES/media.json';
+import esStrings from '../locale/es/LC_MESSAGES/media.json';
 i18n.addResourceBundle('hi', 'media', hiStrings);
+i18n.addResourceBundle('ja', 'media', jaStrings);
+i18n.addResourceBundle('fr', 'media', frStrings);
+i18n.addResourceBundle('es', 'media', esStrings);
 
 /**
  * Media Upload Form

@@ -69,6 +69,9 @@ msgstr "अपलोड करें"
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
+msgid "Language"
+msgstr "भाषा"
+
 # New strings from uploadForm.js
 
 msgid "An error occurred when loading the form!"
@@ -80,7 +83,7 @@ msgstr "फ़ाइल नाम इससे शुरू होना चा�
 msgid "For example, for candidate"
 msgstr "उदाहरण के लिए, उम्मीदवार"
 
-msgid "visit"
+msgid "Visit Label"
 msgstr "विज़िट"
 
 msgid "for"
@@ -115,6 +118,15 @@ msgstr "अपलोड करने के लिए फ़ाइल"
 
 msgid "Upload File"
 msgstr "फ़ाइल अपलोड करें"
+
+msgid "Update File"
+msgstr "अद्यतन फ़ाइल"
+
+msgid "Uploaded file"
+msgstr "फ़ाइल अपलोड की गई"
+
+msgid "Hide File"
+msgstr "फ़ाइल छिपाएँ"
 
 msgid "Invalid file name!"
 msgstr "अमान्य फ़ाइल नाम!"

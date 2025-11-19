@@ -14,6 +14,9 @@ import MediaUploadForm from './uploadForm';
 import MediaEditForm from './editForm';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/media.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/media.json';
+import frStrings from '../locale/fr/LC_MESSAGES/media.json';
+import esStrings from '../locale/es/LC_MESSAGES/media.json';
 
 /**
  * Media Index component
@@ -297,7 +300,9 @@ MediaIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'media', {});
+  i18n.addResourceBundle('es', 'media', esStrings);
+  i18n.addResourceBundle('fr', 'media', frStrings);
+  i18n.addResourceBundle('ja', 'media', jaStrings);
   i18n.addResourceBundle('hi', 'media', hiStrings);
   const Index = withTranslation(
     ['media', 'loris']

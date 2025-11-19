@@ -160,7 +160,7 @@ msgstr "Exitoso!"
 
 # Common candidate terms
 msgid "PSCID"
-msgstr ""
+msgstr "PSCID"
 
 msgid "DCCID"
 msgstr "CCDID"
