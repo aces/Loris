@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Markdown from 'jsx/Markdown';
+import {withTranslation} from 'react-i18next';
 
 /**
  * React component used to display a button and a collapsible list
@@ -33,6 +34,7 @@ class CommentList extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     const changes = this.props.commentHistory.reduce(function(carry, item) {
       let label = item.dateAdded.concat(' - ', item.addedBy);
       if (!carry[label]) {
@@ -71,14 +73,18 @@ class CommentList extends Component {
       const datediffSec = (now.getTime() - item.date.getTime()) / 1000;
       let timestr;
       if (datediffSec < 60) {
-        timestr = <span> {Math.round(datediffSec)} seconds ago</span>;
+        timestr = <span> {Math.round(datediffSec)} {t('seconds ago',
+          {ns: 'issue_tracker'})}</span>;
       } else if (datediffSec < 60*60) {
-        timestr = <span> {Math.round(datediffSec / 60)} minutes ago</span>;
+        timestr = <span> {Math.round(datediffSec / 60)} {t('minutes ago',
+          {ns: 'issue_tracker'})}</span>;
       } else if (datediffSec < 60*60*24) {
-        timestr = <span> {Math.round(datediffSec / (60*60))} hours ago</span>;
+        timestr = <span> {Math.round(datediffSec / (60*60))} {t('hours ago',
+          {ns: 'issue_tracker'})}</span>;
       } else {
         timestr = <span>
-            on {item.date.toLocaleDateString()} at {item.date.toTimeString()}
+          {t('on', {ns: 'issue_tracker'})} {item.date.toLocaleDateString()}
+          {t('at', {ns: 'issue_tracker'})} {item.date.toTimeString()}
         </span>;
       }
 
@@ -100,7 +106,7 @@ class CommentList extends Component {
 
     return (
       <div id='comment-history'>
-        <h3>Comments and History</h3>
+        <h3>{t('Comments and History', {ns: 'issue_tracker'})}</h3>
         {history}
       </div>
     );
@@ -108,6 +114,7 @@ class CommentList extends Component {
 }
 CommentList.propTypes = {
   commentHistory: PropTypes.array,
+  t: PropTypes.func,
 };
 
-export default CommentList;
+export default withTranslation(['issue_tracker', 'loris'])(CommentList);

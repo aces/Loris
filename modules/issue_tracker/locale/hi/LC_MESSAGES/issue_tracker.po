@@ -1,0 +1,145 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Issue Tracker"
+msgstr "समस्या ट्रैकर"
+
+msgid "Issue ID"
+msgstr "समस्या आईडी"
+
+msgid "Reporter"
+msgstr "रिपोर्टर"
+
+msgid "Assignee"
+msgstr "असाइन किए गए"
+
+msgid "Priority"
+msgstr "प्राथमिकता"
+
+msgid "Date Created"
+msgstr "निर्माण तिथि"
+
+msgid "Last Update"
+msgstr "अंतिम अपडेट"
+
+msgid "SessionID"
+msgstr "सत्र आईडी"
+
+msgid "Watching"
+msgstr "देख रहे हैं"
+
+msgid "Normal"
+msgstr "सामान्य"
+
+msgid "High"
+msgstr "उच्च"
+
+msgid "Urgent"
+msgstr "अत्यावश्यक"
+
+msgid "Immediate"
+msgstr "तत्काल"
+
+msgid "Low"
+msgstr "निम्न"
+
+msgid "All Sites"
+msgstr "सभी साइटें"
+
+msgid "All Issues"
+msgstr "सभी समस्याएँ"
+
+msgid "Active Issues"
+msgstr "सक्रिय समस्याएँ"
+
+msgid "Closed Issues"
+msgstr "बंद समस्याएँ"
+
+msgid "My Issues"
+msgstr "मेरी समस्याएँ"
+
+msgid "New Issue"
+msgstr "नई समस्या"
+
+msgid "Browse Issues"
+msgstr "समस्याएँ ब्राउज़ करें"
+
+msgid "Batch Edit"
+msgstr "बैच संपादन"
+
+msgid "Add Comment"
+msgstr "टिप्पणी जोड़ें"
+
+msgid "Create New Issue"
+msgstr "नई समस्या बनाएँ"
+
+msgid "Never!"
+msgstr "कभी नहीं!"
+
+msgid "No-one!"
+msgstr "कोई नहीं!"
+
+msgid "Sometime Soon!"
+msgstr "जल्द ही!"
+
+msgid "Submit Issue"
+msgstr "समस्या सबमिट करें"
+
+msgid "Edit Issue"
+msgstr "समस्या संपादित करें"
+
+msgid "Update Issue"
+msgstr "समस्या अपडेट करें"
+
+msgid "Add Attachment"
+msgstr "संलग्नक जोड़ें"
+
+msgid "Attachment for issue"
+msgstr "समस्या के लिए संलग्नक"
+
+msgid "Attachment for Issue"
+msgstr "समस्या के लिए संलग्नक"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "Watching?"
+msgstr "देख रहे हैं?"
+
+msgid "Add others to watching?"
+msgstr "अन्य को देखने में जोड़ें?"
+
+msgid "New Comment"
+msgstr "नई टिप्पणी"
+
+msgid "This field is required"
+msgstr "यह फ़ील्ड आवश्यक है"
+
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr "आपको 2 सेकंड में मुख्य पृष्ठ पर भेज दिया जाएगा!"
+
+msgid "Failed to submit issue :("
+msgstr "समस्या सबमिट करने में विफल :("
+
+msgid "Issue updated!"
+msgstr "समस्या अपडेट की गई!"
+
+msgid "Issue created!"
+msgstr "समस्या बनाई गई!"
