@@ -20,7 +20,7 @@
     "An error occurred when loading the form!": "फॉर्म लोड करते समय एक त्रुटि हुई!",
     "File name must begin with": "फ़ाइल नाम इससे शुरू होना चाहिए",
     "For example, for candidate": "उदाहरण के लिए, उम्मीदवार",
-    "Visit Label": "विज़िट",
+    "visit": "विज़िट",
     "for": "के लिए",
     "the file name should be prefixed by": "फ़ाइल नाम के पहले यह होना चाहिए",
     "File cannot exceed": "फ़ाइल इससे अधिक नहीं हो सकती",

@@ -83,7 +83,7 @@ msgstr ""
 msgid "For example, for candidate"
 msgstr ""
 
-msgid "Visit Label"
+msgid "visit"
 msgstr ""
 
 msgid "for"

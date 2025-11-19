@@ -83,8 +83,8 @@ msgstr "El nombre del archivo debe comenzar con"
 msgid "For example, for candidate"
 msgstr "Por ejemplo, para el candidato"
 
-msgid "Visit Label"
-msgstr "Visitar etiqueta"
+msgid "visit"
+msgstr "visita"
 
 msgid "for"
 msgstr "para"

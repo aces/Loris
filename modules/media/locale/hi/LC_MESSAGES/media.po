@@ -83,7 +83,7 @@ msgstr "फ़ाइल नाम इससे शुरू होना चा�
 msgid "For example, for candidate"
 msgstr "उदाहरण के लिए, उम्मीदवार"
 
-msgid "Visit Label"
+msgid "visit"
 msgstr "विज़िट"
 
 msgid "for"

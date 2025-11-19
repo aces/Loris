@@ -21,7 +21,7 @@
     "An error occurred when loading the form!": "フォームの読み込み中にエラーが発生しました。",
     "File name must begin with": "ファイル名は",
     "For example, for candidate": "例えば、候補者の場合",
-    "Visit Label": "ラベルにアクセス",
+    "visit": "訪問",
     "for": "のために",
     "the file name should be prefixed by": "ファイル名の先頭に",
     "File cannot exceed": "ファイルは次の値を超えることはできません",

@@ -86,8 +86,8 @@ msgstr "ファイル名は"
 msgid "For example, for candidate"
 msgstr "例えば、候補者の場合"
 
-msgid "Visit Label"
-msgstr "ラベルにアクセス"
+msgid "visit"
+msgstr "訪問"
 
 msgid "for"
 msgstr "のために"
