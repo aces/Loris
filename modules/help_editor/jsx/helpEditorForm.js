@@ -120,7 +120,7 @@ const HelpEditorForm = (props) => {
 
             <SelectElement
               name='instrument'
-              label={t('Instrument', {ns: 'help_editor'})}
+              label={t('Instrument', {ns: 'loris', count: 1})}
               emptyOption={true}
               options={props.instrumentslist}
               onUserInput={onUserInput}

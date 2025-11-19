@@ -56,6 +56,3 @@ msgstr ""
 
 msgid "Adding help content for a specific instrument"
 msgstr ""
-
-msgid "Instrument"
-msgstr ""
