@@ -144,7 +144,7 @@ Panel.propTypes = {
   parentId: PropTypes.string,
   id: PropTypes.string,
   height: PropTypes.string,
-  title: PropTypes.object,
+  title: PropTypes.string,
   class: PropTypes.string,
   children: PropTypes.node,
   views: PropTypes.array,
@@ -153,6 +153,7 @@ Panel.propTypes = {
   bold: PropTypes.bool,
   panelSize: PropTypes.string,
   style: PropTypes.object,
+  children: PropTypes.node,
 };
 Panel.defaultProps = {
   initCollapsed: false,

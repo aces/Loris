@@ -1,4 +1,4 @@
-import {ReactInstance, ReactNode} from 'react';
+import {ReactNode} from 'react';
 
 type PanelProps = {
     initCollapsed?: boolean
@@ -6,7 +6,7 @@ type PanelProps = {
     parentId?: string
     id?: string
     height?: string
-    title?: ReactNode | object
+    title?: string
     class?: string
     children: ReactNode
     views?: object

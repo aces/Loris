@@ -41,7 +41,13 @@ class FilePanel extends Component {
           </div>
           <Panel
             id={this.props.id + '_details'}
-            title={<span>{'Acquisition Details for Recording'}</span>}
+            title={this.props.title
+              ? (
+                  'Acquisition Details for Recording ' +
+                  this.props.title.split('.').slice(0, -1).join('.')
+              )
+              : 'Loading...'
+            }
           >
             <div className={'container-fluid'}>
               <div className={'row no-gutters'}>
@@ -97,7 +103,7 @@ class FilePanel extends Component {
 
 FilePanel.propTypes = {
   id: PropTypes.string,
-  title: PropTypes.object,
+  title: PropTypes.string,
   data: PropTypes.array,
   children: PropTypes.node,
 };

@@ -3,7 +3,7 @@ import * as R from 'ramda';
 import {connect} from "react-redux";
 import {RootState} from "../store";
 import {CheckboxElement, SelectDropdown} from './Form';
-import Panel from './Panel'; // Different from ./Panel
+import Panel from './Panel'; // Different from jsx/Panel
 import {HEDSchemaElement, HEDTag} from "../store/types";
 import {setAddedTags, setDatasetTags, setDeletedTags, setRelOverrides, setDatasetMetadata} from "../store/state/dataset";
 import swal from "sweetalert2";

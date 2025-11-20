@@ -391,7 +391,7 @@ class ElectrophysiologySessionView extends Component {
           <div key={i}>
             <FilePanel
               id={'filename_panel_' + i}
-              title={<span>{this.state.database[i].file.name}</span>}
+              title={this.state.database[i].file.name}
               data={this.state.database[i].file.details}
             >
               {EEG_VIS_ENABLED &&
@@ -417,12 +417,11 @@ class ElectrophysiologySessionView extends Component {
                   <Panel
                     id='channel-viewer'
                     title={
-                      <span>
-                        {'Signal Viewer' + (file.splitData
+                      'Signal Viewer' + (
+                        file.splitData
                           ? ' [split ' + (file.splitData?.splitIndex + 1) + ']'
                           : ''
-                        )}
-                      </span>
+                      )
                     }
                   >
                     {file.splitData &&

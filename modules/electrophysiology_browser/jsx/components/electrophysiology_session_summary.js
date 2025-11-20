@@ -31,7 +31,7 @@ class SummaryPanel extends Component {
       <div className="summary-panel">
         <Panel
           id={this.props.id}
-          title={<span>Summary</span>}
+          title="Summary"
         >
           <div
             style={{

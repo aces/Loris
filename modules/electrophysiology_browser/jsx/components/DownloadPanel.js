@@ -36,7 +36,7 @@ class DownloadPanel extends Component {
     return (
       <Panel
         id={this.props.id}
-        title={<span>File Download</span>}
+        title={'File Download'}
       >
         <div
           style={{minHeight: '300px'}}
