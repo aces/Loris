@@ -132,19 +132,19 @@ msgstr "अनसुलझा"
 msgid "Reran"
 msgstr "पुनः चलाया गया"
 
-msgid "emailed site/pending"
+msgid "Emailed site/pending"
 msgstr "साइट को ईमेल किया/लंबित"
 
-msgid "inserted"
+msgid "Inserted"
 msgstr "डाला गया"
 
-msgid "rejected"
+msgid "Rejected"
 msgstr "अस्वीकृत"
 
 msgid "Inserted with flag"
 msgstr "फ्लैग के साथ डाला गया"
 
-msgid "other"
+msgid "Other"
 msgstr "अन्य"
 
 msgid "Type of Problem"
@@ -162,5 +162,14 @@ msgstr "डेटा JSON प्रारूप में जमा करना
 msgid "Can not implement filter on a resource type that has no centers."
 msgstr "ऐसे संसाधन प्रकार पर फ़िल्टर लागू नहीं किया जा सकता जिसमें कोई केंद्र नहीं हैं।"
 
+msgid "hash"
+msgstr "हैश"
+
+msgid "JoinID"
+msgstr "जॉइनआईडी"
+
+msgid "TarchiveID"
+msgstr "टार्चिवआईडी"
+
 msgid "Can not implement filter on a resource type that has no projects."
-msgstr "ऐसे संसाधन प्रकार पर फ़िल्टर लागू नहीं किया जा सकता जिसमें कोई प्रोजेक्ट नहीं हैं।"
+msgstr "ऐसे संसाधन प्रकार पर फ़िल्टर लागू नहीं किया जा सकता जिसमें कोई परियोजना नहीं है."

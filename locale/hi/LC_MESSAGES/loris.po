@@ -264,9 +264,6 @@ msgstr "भाषा"
 msgid "Ethnicity"
 msgstr "जातीयता"
 
-msgid "Language"
-msgstr "भाषा"
-
 msgid "Access denied"
 msgstr "पहुँच अस्वीकृत"
 

@@ -255,6 +255,12 @@ msgstr "言語"
 msgid "Ethnicity"
 msgstr "民族"
 
+msgid "Access denied"
+msgstr "アクセスが拒否されました"
+
+msgid "No."
+msgstr "番号"
+
 msgid "Save"
 msgstr "保存"
 

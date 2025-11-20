@@ -7,6 +7,9 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/mri_violations.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/mri_violations.json';
+import frStrings from '../locale/fr/LC_MESSAGES/mri_violations.json';
+import esStrings from '../locale/es/LC_MESSAGES/mri_violations.json';
 
 /**
  * Entry point for the MRI Violatons module.
@@ -71,7 +74,7 @@ function MRIViolationsIndex(props) {
         const filtersData = filters(fieldOptions);
         const resolutionStatusfilterIndex = filtersData
           .findIndex(
-            (filter) => filter.label === 'Resolution Status'
+            (filter) => filter.label ===  t('Resolution Status', {ns: 'mri_violations'})
           );
         const hashfilterIndex = filtersData
           .findIndex((filter) => filter.label === 'hash');
@@ -109,14 +112,21 @@ function MRIViolationsIndex(props) {
     const Mapper = function(column, cell, rowData) {
       cell = mapper(column, cell);
       const hashname = rowData.hash;
+      const labelTypeOfProblem = t('Type of Problem', {ns: 'mri_violations'});
+      const labelProtocolViolation = t('Protocol Violation', {ns: 'mri_violations'});
+      const labelCouldNotIdentifyScanType = t('Could not identify scan type', {ns: 'mri_violations'});
+      const labelResolutionStatus = t('Resolution Status', {ns: 'mri_violations'});
+      const labelSelectResolution = t('Select Resolution', {ns: 'mri_violations'});
+      const labelImageFile = t('Image File', {ns: 'mri_violations'});
+      const labelSeriesDescriptionOrScanType = t('Series Description or Scan Type', {ns: 'mri_violations'});
 
       // Create the mapping between rowHeaders and rowData in a row object.
       let fontColor = {color: '#FFFFFF'};
       let resolutionStatusStyle;
       let resolutionStatus;
 
-      if (column === t('Type of Problem', {ns: 'mri_violations'}) &&
-        cell === t('Protocol Violation', {ns: 'mri_violations'})) {
+      if ((column === 'Type of Problem' || column === labelTypeOfProblem) &&
+        (cell === 'Protocol Violation' || cell === labelProtocolViolation)) {
         return (
           <td>
             <a href="#" onClick={
@@ -127,17 +137,17 @@ function MRIViolationsIndex(props) {
                 TarchiveID: rowData['TarchiveID'],
                 CandID: rowData.CandId,
               })
-            }>{t('Protocol Violation', {ns: 'mri_violations'})}</a>
+            }>{labelProtocolViolation}</a>
           </td>
         );
       }
 
       if (
-        column === t('Type of Problem', {ns: 'mri_violations'}) &&
-          cell === t('Could not identify scan type', {ns: 'mri_violations'})
+        (column === 'Type of Problem' || column === labelTypeOfProblem) &&
+          (cell === 'Could not identify scan type' || cell === labelCouldNotIdentifyScanType)
       ) {
         const seriesDescription = rowData[
-          t('Series Description or Scan Type', {ns: 'mri_violations'})
+          labelSeriesDescriptionOrScanType
         ];
         return (
           <td>
@@ -152,46 +162,46 @@ function MRIViolationsIndex(props) {
                 TimeRun: rowData['Time Run'],
                 SeriesDescription: seriesDescription,
               })}
-            >Could not identify scan type</a>
+            >{labelCouldNotIdentifyScanType}</a>
           </td>
         );
       }
 
-      if (column === 'Resolution Status') {
-        switch (rowData['Resolution Status']) {
+      if (column === 'Resolution Status' || column === labelResolutionStatus) {
+        switch (rowData[labelResolutionStatus]) {
         case 'unresolved':
           fontColor = {color: '#000000'};
-          resolutionStatus = 'Unresolved';
+          resolutionStatus = t('Unresolved', {ns: 'mri_violations'});
           break;
 
         case 'reran':
           resolutionStatusStyle = 'label-success';
-          resolutionStatus = 'Reran';
+          resolutionStatus = t('Reran', {ns: 'mri_violations'});
           break;
 
         case 'emailed':
           resolutionStatusStyle = 'label-info';
-          resolutionStatus = 'Emailed site/pending';
+          resolutionStatus = t('Emailed site/pending', {ns: 'mri_violations'});
           break;
 
         case 'rejected':
           resolutionStatusStyle = 'label-danger';
-          resolutionStatus = 'Rejected';
+          resolutionStatus = t('Rejected', {ns: 'mri_violations'});
           break;
 
         case 'inserted':
           resolutionStatusStyle = 'label-warning';
-          resolutionStatus = 'Inserted';
+          resolutionStatus = t('Inserted', {ns: 'mri_violations'});
           break;
 
         case 'other':
           resolutionStatusStyle = 'label-primary';
-          resolutionStatus = 'Other';
+          resolutionStatus = t('Other', {ns: 'mri_violations'});
           break;
 
         case 'inserted_flag':
           resolutionStatusStyle = 'label-default';
-          resolutionStatus = 'Inserted with flag';
+          resolutionStatus = t('Inserted with flag', {ns: 'mri_violations'});
           break;
         }
         return (
@@ -200,7 +210,7 @@ function MRIViolationsIndex(props) {
           </td>
         );
       }
-      if (column === 'Select Resolution') {
+      if (column === 'Select Resolution' || column === labelSelectResolution) {
         return (
           <td>
             <select
@@ -214,22 +224,22 @@ function MRIViolationsIndex(props) {
               }}
             >
               <option value=""> </option>
-              <option value="unresolved">Unresolved</option>
-              <option value="reran">Reran</option>
-              <option value="emailed">Emailed site/pending</option>
-              <option value="inserted">Inserted</option>
-              <option value="rejected">Rejected</option>
-              <option value="inserted_flag">Inserted with flag</option>
-              <option value="other">Other</option>
+              <option value="unresolved">{t('Unresolved', {ns: 'mri_violations'})}</option>
+              <option value="reran">{t('Reran', {ns: 'mri_violations'})}</option>
+              <option value="emailed">{t('Emailed site/pending', {ns: 'mri_violations'})}</option>
+              <option value="inserted">{t('Inserted', {ns: 'mri_violations'})}</option>
+              <option value="rejected">{t('Rejected', {ns: 'mri_violations'})}</option>
+              <option value="inserted_flag">{t('Inserted with flag', {ns: 'mri_violations'})}</option>
+              <option value="other">{t('Other', {ns: 'mri_violations'})}</option>
             </select>
           </td>
         );
       }
-      if (column === 'Image File') {
+      if (column === 'Image File' || column === labelImageFile) {
         let log;
-        if (rowData['Type of Problem'] === 'Could not identify scan type') {
+        if (rowData[labelTypeOfProblem] === 'Could not identify scan type') {
           log = 1;
-        } else if (rowData['Type of Problem'] === 'Protocol Violation') {
+        } else if (rowData[labelTypeOfProblem] === 'Protocol Violation') {
           log = 2;
         } else {
           log = 3;
@@ -272,21 +282,21 @@ function MRIViolationsIndex(props) {
         },
       },
       {
-        label: t('Project', {ns: 'loris'}), show: true, filter: {
+	      label: t('Project', {ns: 'loris', count: 0}), show: true, filter: {
           name: 'project',
           type: 'select',
           options: fieldoptions.projects,
         },
       },
       {
-        label: t('Cohort', {ns: 'loris'}), show: true, filter: {
+	      label: t('Cohort', {ns: 'loris', count: 0}), show: true, filter: {
           name: 'cohort',
           type: 'select',
           options: fieldoptions.cohorts,
         },
       },
       {
-        label: t('Site', {ns: 'loris'}), show: true, filter: {
+	      label: t('Site', {ns: 'loris', count: 0}), show: true, filter: {
           name: 'site',
           type: 'select',
           options: fieldoptions.sites,
@@ -327,11 +337,11 @@ function MRIViolationsIndex(props) {
           options: {
             'unresolved': t('Unresolved', {ns: 'mri_violations'}),
             'reran': t('Reran', {ns: 'mri_violations'}),
-            'emailed': t('emailed site/pending', {ns: 'mri_violations'}),
-            'inserted': t('inserted', {ns: 'mri_violations'}),
-            'rejected': t('rejected', {ns: 'mri_violations'}),
-            'inserted_flag': t('inserted with flag', {ns: 'mri_violations'}),
-            'other': t('other', {ns: 'mri_violations'}),
+            'emailed': t('Emailed site/pending', {ns: 'mri_violations'}),
+            'inserted': t('Inserted', {ns: 'mri_violations'}),
+            'rejected': t('Rejected', {ns: 'mri_violations'}),
+            'inserted_flag': t('Inserted with flag', {ns: 'mri_violations'}),
+            'other': t('Other', {ns: 'mri_violations'}),
           },
         },
       },
@@ -341,11 +351,11 @@ function MRIViolationsIndex(props) {
           type: 'text',
         },
       },
-      {label: 'hash', show: false},
-      {label: 'JoinID', show: false},
-      {label: 'TarchiveID', show: false},
-      {label: 'CandID', show: false},
-      {label: 'PSCID', show: false},
+      {label: t('hash', {ns: 'mri_violations'}), show: false},
+      {label: t('JoinID', {ns: 'mri_violations'}), show: false},
+      {label: t('TarchiveID', {ns: 'mri_violations'}), show: false},
+      {label: t('CandID', {ns: 'loris'}), show: false},
+      {label: t('PSCID', {ns: 'loris'}), show: false},
 
       // Add fake column for resolution dropdown
       {label: t('Select Resolution', {ns: 'mri_violations'}), show: true},
@@ -414,6 +424,9 @@ function columnMapper(fieldOptions) {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'mri_violations', hiStrings);
+  i18n.addResourceBundle('ja', 'mri_violations', jaStrings);
+  i18n.addResourceBundle('fr', 'mri_violations', frStrings);
+  i18n.addResourceBundle('es', 'mri_violations', esStrings);
 
   const ViolationsIndex = withTranslation(
     ['mri_violations', 'loris']
