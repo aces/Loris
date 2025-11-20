@@ -105,3 +105,11 @@ msgstr ""
 msgid "Starts At"
 msgstr ""
 
+msgid "Date"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Appointment Type Name"
+msgstr ""
