@@ -46,7 +46,7 @@ function Filter(props) {
    * @param {string} value - the name of the form element
    */
   const onFieldUpdate = (name, value) => {
-    const {fields} = JSON.parse(JSON.stringify(props));
+    const {fields} = props;
     const type = fields
       .find((field) => (field.filter||{}).name == name).filter.type;
     const exactMatch = (!(type === 'text' || type === 'date'
