@@ -453,6 +453,7 @@ class DateOptions extends Component {
 
   /**
    * Get translated date format options
+   *
    * @return {object} - Date format options with translated labels
    */
   getDateFormatOptions() {
@@ -1109,7 +1110,8 @@ class AddElement extends Component {
         let temp = (this.state.error) ? this.state.error : {};
 
         temp.dateOption = t(
-          'The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999.',
+          'The year must have exactly 4 digits. ' +
+          'Please choose an integer number between 1000 and 9999.',
           {ns: 'instrument_builder'}
         );
         this.setState({

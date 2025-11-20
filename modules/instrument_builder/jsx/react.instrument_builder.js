@@ -794,7 +794,8 @@ class BuildPane extends Component {
                 data-toggle='dropdown'
               >
                 <span id='search_concept'>
-                  {this.state.Elements[this.state.currentPage].Description === 'Top' ?
+                  {this.state.Elements[this.state.currentPage].Description ===
+                    'Top' ?
                     t('Top', {ns: 'instrument_builder'}) :
                     this.state.Elements[this.state.currentPage].Description}
                 </span>
