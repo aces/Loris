@@ -148,7 +148,7 @@ function NextSteps(props: {
           alignItems: 'center',
           justifyContent: 'center',
           gap: '1rem',
-          padding: '16px 3rem',
+          padding: expanded ? '16px 3rem 8px' : '16px 3rem',
           cursor: 'pointer',
           backgroundColor: '#fff',
         }}

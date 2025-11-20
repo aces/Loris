@@ -842,7 +842,7 @@ function SingleQueryDisplay(props: {
         props.setNameModalID(query.QueryID);
       }} />;
     msg = <div>{desc}
-            &nbsp;{starredIcon}{sharedIcon}{loadIcon}{nameIcon}{pinIcon}
+            &nbsp;{loadIcon}{nameIcon}{starredIcon}{pinIcon}{sharedIcon}
     </div>;
   } else if (query.SharedBy) {
     const desc = query.Name
@@ -1009,7 +1009,7 @@ function LoadIcon(props: {
     title="Reload query"
     style={{cursor: 'pointer'}}
     className="fa-stack">
-    <i className="fas fa-sync fa-stack-1x"></i>
+    <i className="fas fa-play fa-stack-1x"></i>
   </span>;
 }
 
@@ -1032,7 +1032,7 @@ function ShareIcon(props: {
     title={props.title}
     onClick={props.onClick}>
     <i style={props.isShared ? {color: 'blue'} : {}}
-      className="fas fa-globe fa-stack-1x" />
+      className="fas fa-share fa-stack-1x" />
   </span>;
 }
 
