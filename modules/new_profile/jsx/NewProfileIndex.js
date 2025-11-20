@@ -320,6 +320,7 @@ class NewProfileIndex extends React.Component {
             onUserInput = {this.setFormData}
             minYear = {minYear}
             maxYear = {this.state.configData.maxYear}
+            dateFormat = {dateFormat}
             value = {this.state.formData.dobDateConfirm}
             required = {requireBirthDate}
           />
