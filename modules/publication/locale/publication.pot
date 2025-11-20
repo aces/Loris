@@ -185,3 +185,6 @@ msgstr ""
 
 msgid "Publication Version"
 msgstr ""
+
+msgid "helpFindingVariables"
+msgstr ""

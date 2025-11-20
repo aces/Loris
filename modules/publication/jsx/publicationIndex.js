@@ -15,7 +15,10 @@ import FilterableDataTable from 'FilterableDataTable';
  * Publication index component
  */
 class PublicationIndex extends React.Component {
-  constructor() {
+  /**
+   * @constructor
+   */
+   constructor() {
     super();
     loris.hiddenHeaders = [
       'Description',
@@ -25,16 +28,22 @@ class PublicationIndex extends React.Component {
       isLoaded: false,
       filter: {},
     };
-
+    // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
     fetch(this.props.DataURL, {method: 'GET'})
       .then((response) => {
@@ -52,21 +61,33 @@ class PublicationIndex extends React.Component {
       .catch((error) => console.error(error));
   }
 
+  /**
+   * Update filter
+   *
+   * @param {*} filter
+   */
   updateFilter(filter) {
     this.setState({filter});
   }
 
+  /**
+   * Reset filters
+   */
   resetFilters() {
     this.publicationsFilter.clearFilter();
   }
-
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const {t} = this.props;
 
     if (!this.state.isLoaded) {
       return (
         <button className="btn-info has-spinner">
-          {t('Loading', {ns: 'publication'})}
+          {t('Loading...', {ns: 'loris'})}
           <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
         </button>
       );
@@ -117,7 +138,7 @@ class PublicationIndex extends React.Component {
         },
       },
       {
-        label: t('Project', {ns: 'publication'}),
+        label: t('Project', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'project',
@@ -197,12 +218,20 @@ class PublicationIndex extends React.Component {
       </Tabs>
     );
   }
-
+  /**
+   * Format column
+   *
+   * @param {string} column
+   * @param {*} cell
+   * @param {object} rowData
+   * @param {string[]} rowHeaders
+   * @return {JSX} - React markup for the component
+   */
   formatColumn(column, cell, rowData, rowHeaders) {
+    // If a column if set as hidden, don't display it
     if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
-    //    if (column === 'शीर्षक') {
     if (rowHeaders[0] === column) {
       const pubID = rowData['Publication ID'];
       const viewURL = `${loris.BaseURL}/publication/view_project?id=${pubID}`;

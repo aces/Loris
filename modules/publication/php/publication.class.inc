@@ -126,21 +126,21 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->query   = $query;
         $this->headers = [
-            "Title",
-            "Lead Investigator",
-            "Date Proposed",
-            "Approval Status",
-            "Project",
-            "Journal",
-            "Link",
-            "Publishing Status",
-            "Date published",
-            "Project Proposal Creator",
-            "Description",
-            "Collaborators",
-            "Variables Of Interest",
-            "Keywords",
-            "Publication ID",
+            'Title',
+            'Lead Investigator',
+            'Date Proposed',
+            'Approval Status',
+            'Project',
+            'Journal',
+            'Link',
+            'Publishing Status',
+            'Date published',
+            'Project Proposal Creator',
+            'Description',
+            'Collaborators',
+            'Variables Of Interest',
+            'Keywords',
+            'Publication ID',
         ];
 
         $this->validFilters = [

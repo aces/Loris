@@ -246,7 +246,7 @@ class PublicationUploadForm extends React.Component {
     if (!this.state.isLoaded) {
       return (
         <button className="btn-info has-spinner">
-          {t('Loading', {ns: 'publication'})}
+          {t('Loading...', {ns: 'loris'})}
           <span
             className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
           </span>
