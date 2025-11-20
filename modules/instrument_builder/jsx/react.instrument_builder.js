@@ -72,8 +72,10 @@ class LoadPane extends Component {
         errorMessage = t('Multiple periods in the file name are not allowed.',
           {ns: 'instrument_builder'});
       } else if (!validNamePattern.test(nameWithoutExtension)) {
-        errorMessage = t('Special characters are not allowed (only letters, numbers, and _).',
-          {ns: 'instrument_builder'});
+        errorMessage = t(
+          'Special characters are not allowed (only letters, numbers, and _).',
+          {ns: 'instrument_builder'}
+        );
       } else if (invalidTrailingChars.test(nameWithoutExtension)) {
         errorMessage = t('File name cannot end with a special character.',
           {ns: 'instrument_builder'});
@@ -171,7 +173,10 @@ class LoadPane extends Component {
       break;
     }
     return (
-      <TabPane Title={t('Load Instrument', {ns: 'instrument_builder'})} {...this.props}>
+      <TabPane
+        Title={t('Load Instrument', {ns: 'instrument_builder'})}
+        {...this.props}
+      >
         <div className='col-sm-6 col-xs-12'>
           <div id='load_alert'
             style={{display: alert.display}}
@@ -274,10 +279,15 @@ class SavePane extends Component {
     const {t} = this.props;
     let value = this.state.fileName;
     return (
-      <TabPane Title={t('Save Instrument', {ns: 'instrument_builder'})} {...this.props}>
+      <TabPane
+        Title={t('Save Instrument', {ns: 'instrument_builder'})}
+        {...this.props}
+      >
         <div className='form-group'>
           <div className='col-xs-12'>
-            <label className='col-sm-2 control-label'>{t('Filename:', {ns: 'instrument_builder'})} </label>
+            <label className='col-sm-2 control-label'>
+              {t('Filename:', {ns: 'instrument_builder'})}{' '}
+            </label>
             <div className='col-sm-4'>
               <input className='form-control'
                 type='text' id='filename'
@@ -287,7 +297,9 @@ class SavePane extends Component {
             </div>
           </div>
           <div className='col-xs-12 spacingTop'>
-            <label className='col-sm-2 control-label'>{t('Instrument Name:', {ns: 'instrument_builder'})} </label>
+            <label className='col-sm-2 control-label'>
+              {t('Instrument Name:', {ns: 'instrument_builder'})}{' '}
+            </label>
             <div className='col-sm-4'>
               <input className='form-control'
                 type='text' id='longname'
@@ -348,7 +360,9 @@ class DisplayElements extends Component {
       let td = document.createElement('td');
       td.colSpan = 2;
       const {t} = this.props;
-      td.appendChild(document.createTextNode(t('Drop here', {ns: 'instrument_builder'})));
+      td.appendChild(
+        document.createTextNode(t('Drop here', {ns: 'instrument_builder'}))
+      );
       tr.appendChild(td);
       this.placeholder = tr;
     }
@@ -510,9 +524,15 @@ class DisplayElements extends Component {
       <table id='sortable' className='table table-hover' style={tableStyles}>
         <thead>
           <tr>
-            <th className='col-xs-2'>{t('Database Name', {ns: 'instrument_builder'})}</th>
-            <th className='col-xs-6'>{t('Question Display (Front End)', {ns: 'instrument_builder'})}</th>
-            <th className='col-xs-4'>{t('Edit', {ns: 'instrument_builder'})}</th>
+            <th className='col-xs-2'>
+              {t('Database Name', {ns: 'instrument_builder'})}
+            </th>
+            <th className='col-xs-6'>
+              {t('Question Display (Front End)', {ns: 'instrument_builder'})}
+            </th>
+            <th className='col-xs-4'>
+              {t('Edit', {ns: 'instrument_builder'})}
+            </th>
           </tr>
         </thead>
         <tbody onDragOver={this.dragOver}>
@@ -528,6 +548,7 @@ DisplayElements.propTypes = {
   editElement: PropTypes.func,
   deleteElement: PropTypes.func,
   elements: PropTypes.array,
+  t: PropTypes.func,
 };
 
 /**
@@ -747,7 +768,8 @@ class BuildPane extends Component {
     let pages = this.state.Elements.map(function(element, i) {
       const description = this.state.Elements[i].Description;
       const translatedDescription = description === 'Top' ?
-        t('Top', {ns: 'instrument_builder'}) : description;
+        t('Top', {ns: 'instrument_builder'}) :
+        description;
       return (
         <li key={i} onClick={this.selectPage.bind(null, i)}>
           <a>{translatedDescription}</a>
@@ -756,7 +778,10 @@ class BuildPane extends Component {
     }.bind(this));
 
     return (
-      <TabPane Title={t('Build Instrument', {ns: 'instrument_builder'})} {...this.props}>
+      <TabPane
+        Title={t('Build Instrument', {ns: 'instrument_builder'})}
+        {...this.props}
+      >
         <div className='form-group col-xs-12'>
           <label htmlFor='selected-input'
             className='col-xs-2 col-sm-1 control-label'
@@ -802,7 +827,9 @@ BuildPane.propTypes = {
   t: PropTypes.func,
 };
 
-const TranslatedDisplayElements = withTranslation(['instrument_builder', 'loris'])(DisplayElements);
+const TranslatedDisplayElements = withTranslation(
+  ['instrument_builder', 'loris']
+)(DisplayElements);
 
 /**
  * This is the React class for the instrument builder

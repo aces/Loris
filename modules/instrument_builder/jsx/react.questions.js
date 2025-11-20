@@ -231,7 +231,9 @@ class BasicOptions extends Component {
     return (
       <div>
         <div className={errorClass}>
-          <label className="col-sm-2 control-label">{this.props.t('Question Name:', {ns: 'instrument_builder'})} </label>
+          <label className="col-sm-2 control-label">
+            {this.props.t('Question Name:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-6">
             <input className="form-control"
               type="text" id="questionName"
@@ -244,7 +246,10 @@ class BasicOptions extends Component {
         <QuestionText
           updateState={this.props.updateState}
           element={this.props.element}
-          inputLabel={this.props.t('Question Text', {ns: 'instrument_builder'})}
+          inputLabel={this.props.t(
+            'Question Text',
+            {ns: 'instrument_builder'}
+          )}
         />
       </div>
     );
@@ -253,6 +258,7 @@ class BasicOptions extends Component {
 BasicOptions.propTypes = {
   updateState: PropTypes.func,
   element: PropTypes.object,
+  t: PropTypes.func,
 };
 
 /**
@@ -375,7 +381,9 @@ class DropdownOptions extends Component {
           t={this.props.t}
         />
         <div className={dropdownClass}>
-          <label className="col-sm-2 control-label">{this.props.t('Dropdown Option:', {ns: 'instrument_builder'})} </label>
+          <label className="col-sm-2 control-label">
+            {this.props.t('Dropdown Option:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-3">
             <input
               className="form-control"
@@ -403,7 +411,9 @@ class DropdownOptions extends Component {
           </div>
         </div>
         <div className="form-group">
-          <label className="col-sm-2 control-label">{this.props.t('Preview:', {ns: 'instrument_builder'})} </label>
+          <label className="col-sm-2 control-label">
+            {this.props.t('Preview:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-2">
             <select
               multiple={multi}
@@ -449,8 +459,14 @@ class DateOptions extends Component {
     const {t} = this.props;
     return {
       Date: t('Standard Date', {ns: 'instrument_builder'}),
-      BasicDate: t('Basic Date (does not include \'Not Answered\' option)', {ns: 'instrument_builder'}),
-      MonthYear: t('Month Year (does not include day of the month)', {ns: 'instrument_builder'}),
+      BasicDate: t(
+        'Basic Date (does not include \'Not Answered\' option)',
+        {ns: 'instrument_builder'}
+      ),
+      MonthYear: t(
+        'Month Year (does not include day of the month)',
+        {ns: 'instrument_builder'}
+      ),
     };
   }
 
@@ -517,7 +533,9 @@ class DateOptions extends Component {
           t={this.props.t}
         />
         <div id="dateoptions" className={dateOptionsClass}>
-          <label className="col-sm-2 control-label">{t('Start year:', {ns: 'instrument_builder'})} </label>
+          <label className="col-sm-2 control-label">
+            {t('Start year:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-2">
             <input
               className="form-control"
@@ -530,7 +548,9 @@ class DateOptions extends Component {
             />
             {errorMessage}
           </div>
-          <label className="col-sm-2 control-label">{t('End year:', {ns: 'instrument_builder'})} </label>
+          <label className="col-sm-2 control-label">
+            {t('End year:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-2">
             <input
               className="form-control"
@@ -544,7 +564,9 @@ class DateOptions extends Component {
           </div>
         </div>
         <div className="form-group">
-          <label className="col-sm-2 control-label">{t('Date Format:', {ns: 'instrument_builder'})} </label>
+          <label className="col-sm-2 control-label">
+            {t('Date Format:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-6">
             <select
               id="dateFormat"
@@ -632,7 +654,9 @@ class NumericOptions extends Component {
           t={this.props.t}
         />
         <div id="numericoptions" className={optionsClass}>
-          <label className="col-sm-2 control-label">{this.props.t('Min:', {ns: 'instrument_builder'})} </label>
+          <label className="col-sm-2 control-label">
+            {this.props.t('Min:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-2">
             <input
               className="form-control"
@@ -642,7 +666,9 @@ class NumericOptions extends Component {
               value={this.props.element.Options.MinValue}
             />
           </div>
-          <label className="col-sm-2 control-label">{this.props.t('Max:', {ns: 'instrument_builder'})} </label>
+          <label className="col-sm-2 control-label">
+            {this.props.t('Max:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-2">
             <input
               className="form-control"
@@ -769,7 +795,9 @@ class ListElements extends Component {
             <ul className="dropdown-menu" role="menu">
               <li>
                 <div className="col-sm-12">
-                  <h5 className="">{t('Information', {ns: 'instrument_builder'})}</h5>
+                  <h5 className="">
+                    {t('Information', {ns: 'instrument_builder'})}
+                  </h5>
                 </div>
               </li>
               <li onClick={this.selectType.bind(
@@ -805,7 +833,9 @@ class ListElements extends Component {
               <li className="divider"></li>
               <li>
                 <div className="col-sm-12">
-                  <h5 className="">{t('Data entry', {ns: 'instrument_builder'})}</h5>
+                  <h5 className="">
+                    {t('Data entry', {ns: 'instrument_builder'})}
+                  </h5>
                 </div>
               </li>
               <li onClick={this.selectType.bind(
@@ -860,9 +890,11 @@ class ListElements extends Component {
                   title="User data entry of a date"
                 >{t('Date', {ns: 'loris'})}</a>
               </li>
-              <li onClick={
-                this.selectType.bind(this, 'numeric', t('Numeric', {ns: 'instrument_builder'}))
-              }>
+              <li onClick={this.selectType.bind(
+                this,
+                'numeric',
+                t('Numeric', {ns: 'instrument_builder'})
+              )}>
                 <a id="numeric"
                   className="option"
                   title="User data entry of a number"
@@ -871,12 +903,16 @@ class ListElements extends Component {
               <li className="divider"></li>
               <li>
                 <div className="col-sm-12">
-                  <h5 className="">{t('Formatting', {ns: 'instrument_builder'})}</h5>
+                  <h5 className="">
+                    {t('Formatting', {ns: 'instrument_builder'})}
+                  </h5>
                 </div>
               </li>
-              <li onClick={
-                this.selectType.bind(this, 'line', t('Blank Line', {ns: 'instrument_builder'}))
-              }>
+              <li onClick={this.selectType.bind(
+                this,
+                'line',
+                t('Blank Line', {ns: 'instrument_builder'})
+              )}>
                 <a id="line"
                   className="option"
                   title="Empty line"
@@ -1043,7 +1079,10 @@ class AddElement extends Component {
       if ((isNaN(minDate) && min !== '') || (isNaN(maxDate) && max !== '')) {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = t('Invalid date provided', {ns: 'instrument_builder'});
+        temp.dateOption = t(
+          'Invalid date provided',
+          {ns: 'instrument_builder'}
+        );
         this.setState({
           error: temp,
         });
@@ -1053,7 +1092,10 @@ class AddElement extends Component {
       if (minDate > maxDate && min !== '' && max !== '') {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = t('End year happened before start year', {ns: 'instrument_builder'});
+        temp.dateOption = t(
+          'End year happened before start year',
+          {ns: 'instrument_builder'}
+        );
         this.setState({
           error: temp,
         });
@@ -1066,8 +1108,10 @@ class AddElement extends Component {
       ) {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = t('The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999.',
-          {ns: 'instrument_builder'});
+        temp.dateOption = t(
+          'The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999.',
+          {ns: 'instrument_builder'}
+        );
         this.setState({
           error: temp,
         });
@@ -1090,7 +1134,10 @@ class AddElement extends Component {
 
       if (min != null && max != null && min >= max) {
         let temp = (this.state.error) ? this.state.error : {};
-        temp.numeric = t('Max value must be larger than min value', {ns: 'instrument_builder'});
+        temp.numeric = t(
+          'Max value must be larger than min value',
+          {ns: 'instrument_builder'}
+        );
         this.setState({
           error: temp,
         });
@@ -1112,9 +1159,15 @@ class AddElement extends Component {
       // for the questionText with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
       if (selected === 'page-break') {
-        temp.questionText = t('Must use question text as page header', {ns: 'instrument_builder'});
+        temp.questionText = t(
+          'Must use question text as page header',
+          {ns: 'instrument_builder'}
+        );
       } else {
-        temp.questionText = t('No question text specified', {ns: 'instrument_builder'});
+        temp.questionText = t(
+          'No question text specified',
+          {ns: 'instrument_builder'}
+        );
       }
       this.setState({
         error: temp,
@@ -1138,7 +1191,10 @@ class AddElement extends Component {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = t('Please shorten to 64 characters maximum', {ns: 'instrument_builder'});
+      temp.questionName = t(
+        'Please shorten to 64 characters maximum',
+        {ns: 'instrument_builder'}
+      );
       this.setState({
         error: temp,
       });
@@ -1162,7 +1218,10 @@ class AddElement extends Component {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = t('Please shorten to 57 characters maximum', {ns: 'instrument_builder'});
+      temp.questionName = t(
+        'Please shorten to 57 characters maximum',
+        {ns: 'instrument_builder'}
+      );
       this.setState({
         error: temp,
       });
@@ -1185,7 +1244,10 @@ class AddElement extends Component {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = t('Must specify name for database to save value into', {ns: 'instrument_builder'});
+      temp.questionName = t(
+        'Must specify name for database to save value into',
+        {ns: 'instrument_builder'}
+      );
       this.setState({
         error: temp,
       });
@@ -1254,7 +1316,10 @@ class AddElement extends Component {
       const {t} = this.props;
       this.setState(function(state) {
         let temp = (state.error) ? state.error : {};
-        temp.questionName = t('Duplicate question name', {ns: 'instrument_builder'});
+        temp.questionName = t(
+          'Duplicate question name',
+          {ns: 'instrument_builder'}
+        );
         return {
           error: temp,
         };
@@ -1371,7 +1436,9 @@ class AddElement extends Component {
         />
       );
     } else {
-      header = (<h2>{this.props.t('Add Question', {ns: 'instrument_builder'})}</h2>);
+      header = (
+        <h2>{this.props.t('Add Question', {ns: 'instrument_builder'})}</h2>
+      );
       buttons = (
         <input
           className="btn btn-default"
@@ -1411,12 +1478,24 @@ AddElement.propTypes = {
 // Add resource bundle for Hindi translations
 i18n.addResourceBundle('hi', 'instrument_builder', hiStrings);
 
-TranslatedBasicOptions = withTranslation(['instrument_builder', 'loris'])(BasicOptions);
-TranslatedDropdownOptions = withTranslation(['instrument_builder', 'loris'])(DropdownOptions);
-TranslatedDateOptions = withTranslation(['instrument_builder', 'loris'])(DateOptions);
-TranslatedNumericOptions = withTranslation(['instrument_builder', 'loris'])(NumericOptions);
-TranslatedListElements = withTranslation(['instrument_builder', 'loris'])(ListElements);
-const TranslatedAddElement = withTranslation(['instrument_builder', 'loris'])(AddElement);
+TranslatedBasicOptions = withTranslation(
+  ['instrument_builder', 'loris']
+)(BasicOptions);
+TranslatedDropdownOptions = withTranslation(
+  ['instrument_builder', 'loris']
+)(DropdownOptions);
+TranslatedDateOptions = withTranslation(
+  ['instrument_builder', 'loris']
+)(DateOptions);
+TranslatedNumericOptions = withTranslation(
+  ['instrument_builder', 'loris']
+)(NumericOptions);
+TranslatedListElements = withTranslation(
+  ['instrument_builder', 'loris']
+)(ListElements);
+const TranslatedAddElement = withTranslation(
+  ['instrument_builder', 'loris']
+)(AddElement);
 
 window.LorisElement = LorisElement;
 window.QuestionText = QuestionText;
