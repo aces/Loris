@@ -43,8 +43,8 @@ class FilePanel extends Component {
             id={this.props.id + '_details'}
             title={this.props.title
               ? (
-                  'Acquisition Details for Recording ' +
-                  this.props.title.split('.').slice(0, -1).join('.')
+                'Acquisition Details for Recording ' +
+                this.props.title.split('.').slice(0, -1).join('.')
               )
               : 'Loading...'
             }
