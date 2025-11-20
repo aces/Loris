@@ -2192,7 +2192,7 @@ export class CheckboxElement extends React.Component {
     }
 
     return (
-      <div className={elementClass}>
+      <div className={elementClass} style={this.props.style}>
         <div className="col-sm-12">
           <label htmlFor={this.props.id}>
             <div style={divStyle}>
@@ -2228,6 +2228,7 @@ CheckboxElement.propTypes = {
   errorMessage: PropTypes.string,
   elementClass: PropTypes.string,
   onUserInput: PropTypes.func,
+  style: PropTypes.object,
 };
 
 CheckboxElement.defaultProps = {
@@ -2238,6 +2239,7 @@ CheckboxElement.defaultProps = {
   offset: 'col-sm-offset-3',
   class: 'checkbox-inline',
   elementClass: 'checkbox-inline col-sm-offset-3',
+  style: {},
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
