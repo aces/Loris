@@ -148,6 +148,7 @@ function NextSteps(props: {
           gap: '1rem',
           padding: '0 3rem',
           cursor: 'pointer',
+          backgroundColor: '#fff',
         }}
         onClick={() => setExpanded(!expanded)}
       >
