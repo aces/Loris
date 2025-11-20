@@ -146,13 +146,13 @@ function NextSteps(props: {
           alignItems: 'center',
           justifyContent: 'center',
           gap: '1rem',
-          padding: '0 3rem',
+          padding: '16px 3rem',
           cursor: 'pointer',
           backgroundColor: '#fff',
         }}
         onClick={() => setExpanded(!expanded)}
       >
-        <h3 style={{marginTop: '10px'}}>Next Steps</h3>
+        <h3 style={{margin: '0'}}>Next Steps</h3>
         {expandIcon}</div>
       <div style={{
         display: 'flex',
