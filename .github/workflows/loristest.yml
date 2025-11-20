@@ -13,9 +13,6 @@ jobs:
     steps: 
       - uses: actions/checkout@v4
 
-      - name: Install protoc-gen-js plugin
-        run: npm install -g protoc-gen-js
-
       - name: Install EEG package dependencies
       # We only need to install protobuf-compiler
       # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
@@ -261,9 +258,6 @@ jobs:
 
     - name: Change PHP Version in Dockerfile
       run: sed -i "s/8.3/${{ matrix.php }}/g" Dockerfile.test.php8
-
-    - name: Install protoc-gen-js plugin
-      run: npm install -g protoc-gen-js
 
     - name: Install package dependencies
       # We only need to install protobuf-compiler
