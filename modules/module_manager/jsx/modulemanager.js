@@ -108,7 +108,8 @@ class ModuleManagerIndex extends Component {
             title: t('Success!', {ns: 'loris'}),
             text: t('Updated', {ns: 'loris'}) + ' ' + name + ' ' +
                   t('status!', {ns: 'module_manager'}) + ' ' +
-                  t('To apply changes the interface must be reloaded. Proceed?', {ns: 'module_manager'}),
+                  t('To apply changes the interface must be reloaded. Proceed?',
+                    {ns: 'module_manager'}),
             type: 'success',
             showCancelButton: true,
             confirmButtonText: t('Reload the page', {ns: 'module_manager'}),
@@ -166,7 +167,8 @@ class ModuleManagerIndex extends Component {
     const {t} = this.props;
     const labelActive = t('Active', {ns: 'loris'});
     const labelName = t('Name', {ns: 'module_manager'});
-    if ((column === 'Active' || column === labelActive) && this.props.hasEditPermission) {
+    if ((column === 'Active' || column === labelActive) &&
+        this.props.hasEditPermission) {
       const moduleName = row[labelName] || row['Name'];
       return <td><SelectElement
         name={moduleName}
@@ -194,7 +196,9 @@ class ModuleManagerIndex extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       const {t} = this.props;
-      return <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>;
+      return (
+        <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>
+      );
     }
 
     // Waiting for async data to load
@@ -239,7 +243,9 @@ ModuleManagerIndex.propTypes = {
   t: PropTypes.func,
 };
 
-const TranslatedModuleManagerIndex = withTranslation(['module_manager', 'loris'])(ModuleManagerIndex);
+const TranslatedModuleManagerIndex = withTranslation(
+  ['module_manager', 'loris']
+)(ModuleManagerIndex);
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'module_manager', hiStrings);
