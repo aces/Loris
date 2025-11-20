@@ -11,7 +11,7 @@ import {
   SelectElement,
   DateElement,
 } from 'jsx/Form';
-import {Trans,withTranslation} from 'react-i18next';
+import {Trans, withTranslation} from 'react-i18next';
 
 /**
  * Email element component
@@ -402,16 +402,16 @@ class ProjectFormFields extends React.Component {
     let collabEmails = this.createCollabEmailFields();
     let fileFields = this.createFileFields();
     const voiHelp = (
-       <Trans
+      <Trans
         i18nKey="helpFindingVariables"
         ns="publication"
         components={{
-          ddLink: <a href={loris.BaseURL + '/datadict/'} />
+          ddLink: <a href={loris.BaseURL + '/datadict/'} />,
         }}
       />
     );
 
-	  let collabNames = [];
+    let collabNames = [];
     if (this.props.formData.collaborators) {
       collabNames = this.props.formData.collaborators.map((c) => c.name);
     }
