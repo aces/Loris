@@ -63,4 +63,85 @@ class Module extends \Module
     {
         return dgettext("electrophysiology_browser", "Electrophysiology Browser");
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user, array $options) : array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+
+        switch ($type) {
+        case 'study-progression':
+            $DB          = $factory->database();
+            $sessionData = $DB->pselectWithIndexKey(
+                "SELECT
+                    p.ProjectID,
+                    p.Name AS ProjectName,
+                    COUNT(s.ID) AS count,
+                    CONCAT('"
+                        . $baseURL .
+                        "/electrophysiology_browser/?project=', p.Name
+                    ) as url
+                FROM session s
+                JOIN Project p ON p.ProjectID = s.ProjectID
+                JOIN physiological_file pf ON pf.SessionID = s.ID
+                WHERE s.Active <> 'N'
+                AND s.CenterID <> 1
+                GROUP BY p.Name",
+                [],
+                'ProjectID'
+            );
+            $eventData   = $DB->pselectWithIndexKey(
+                "SELECT
+                    p.ProjectID,
+                    p.Name AS ProjectName,
+                    COUNT(pte.PhysiologicalTaskEventID) AS count,
+                    CONCAT('"
+                . $baseURL .
+                "/electrophysiology_browser/?project=', p.Name
+                    ) as url
+                FROM session s
+                JOIN Project p ON p.ProjectID = s.ProjectID
+                JOIN physiological_file pf ON pf.SessionID = s.ID
+                JOIN physiological_task_event pte USING (PhysiologicalFileID)
+                WHERE s.Active <> 'N'
+                AND s.CenterID <> 1
+                GROUP BY p.Name",
+                [],
+                'ProjectID'
+            );
+            return [
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        "dqt",
+                        "EEG Session",
+                        "EEG Sessions",
+                    ),
+                    $sessionData,
+                    "",
+                    'rgb(186,255,201)',
+                ),
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        "dqt",
+                        "EEG Event",
+                        "EEG Events",
+                    ),
+                    $eventData,
+                    "",
+                    'rgb(186,255,201)',
+                )
+            ];
+        }
+        return [];
+    }
 }

@@ -11,7 +11,7 @@
     background-color: #2FA4E7;
 }
 
-.study-progression-container {
+.study-progression-container, .eeg-data-container {
   max-height: 415px;
   overflow-y: auto;
 }
