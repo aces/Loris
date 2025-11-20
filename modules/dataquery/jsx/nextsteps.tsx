@@ -122,10 +122,12 @@ function NextSteps(props: {
   const style = expanded ? {
     background: 'white',
     padding: '1rem 2rem',
+    width: '100%',
   } : {
     display: 'hidden',
     padding: '0rem 2rem',
     height: '0px',
+    width: '100%',
   };
 
   return (
@@ -157,9 +159,10 @@ function NextSteps(props: {
       <div style={{
         display: 'flex',
         alignItems: 'stretch',
+        backgroundColor: '#fff',
       }}>
         <div style={style}>
-          <div style={{display: 'flex'}}>
+          <div style={{display: 'flex', justifyContent: 'center', gap: '1rem'}}>
             {steps}
           </div>
         </div>
