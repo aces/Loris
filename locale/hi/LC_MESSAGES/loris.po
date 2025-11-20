@@ -362,6 +362,9 @@ msgstr "कुल"
 msgid "Error!"
 msgstr "त्रुटि!"
 
+msgid "Date"
+msgstr "दिनांक"
+
 # Common timepoint and visit terms
 msgid "Not Started"
 msgstr "शुरू नहीं हुआ"
