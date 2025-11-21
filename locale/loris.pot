@@ -180,9 +180,6 @@ msgstr ""
 msgid "DCCID"
 msgstr ""
 
-msgid "CandID"
-msgstr ""
-
 msgid "Visit Label"
 msgstr ""
 
@@ -284,9 +281,6 @@ msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
 
 msgid "Maximum rows per page:"
-msgstr ""
-
-msgid "Download Table as CSV"
 msgstr ""
 
 msgid "Download Data as CSV"

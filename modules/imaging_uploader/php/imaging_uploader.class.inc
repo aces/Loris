@@ -115,7 +115,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->columns      = [
             'UploadID AS Upload_ID',
             $progressSelectPart,
-            'c.CandID',
+            'c.CandID as ' . dgettext("loris", "DCCID"),
             'c.PSCID',
             's.Visit_label',
             'UploadLocation AS Upload_Location',
@@ -164,7 +164,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $visitlabels    = $user->getVisits();
         // Fields used for selection filter and upload form
         $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOptions);
-        $this->addBasicText('candID', 'CandID');
+        $this->addBasicText('candID', dgettext('loris', 'DCCID'));
         $this->addBasicText('pSCID', 'PSCID');
         $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
         $this->addFile('mriFile', 'File to Upload');
