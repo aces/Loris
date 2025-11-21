@@ -374,7 +374,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'cohort'}
         name={'cohort'}
-        label={t('Cohort', {ns: 'loris'})}
+        label={t('Cohort', {ns: 'loris', count: 1})}
         value={this.state.form.value.cohort}
         options={this.state.form.options.cohort}
         onUserInput={this.setForm}
@@ -389,7 +389,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'psc'}
         name={'psc'}
-        label={t('Site', {ns: 'loris'})}
+        label={t('Site', {ns: 'loris', count: 1})}
         value={this.state.form.value.psc}
         options={this.state.form.options.psc}
         onUserInput={this.setForm}
@@ -404,7 +404,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'project'}
         name={'project'}
-        label={t('Project', {ns: 'loris'})}
+        label={t('Project', {ns: 'loris', count: 1})}
         value={this.state.form.value.project}
         options={this.state.form.options.project}
         onUserInput={this.setForm}

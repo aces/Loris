@@ -1,6 +1,7 @@
 import Markdown from 'jsx/Markdown';
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Help Widget
@@ -19,6 +20,7 @@ import PropTypes from 'prop-types';
  * @return {JSX}
  */
 const Help = (props) => {
+  const {t} = useTranslation();
   // If props.children is true,
   // we are using the component to preview the changes done in Help Editor
   // The Component is active (visible) on load
@@ -133,7 +135,7 @@ const Help = (props) => {
             margin: '10px 10px 10px 0',
           }}
           onClick={() => setIsActive(!isActive)}
-        >Close</button>
+        >{t('Close', {ns: 'loris'})}</button>
         {editBtn}
         <div className="help-wrapper">
           {content}

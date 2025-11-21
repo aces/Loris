@@ -29,3 +29,172 @@ msgstr "アカウント承認待ち"
 
 msgid "Pending account approvals"
 msgstr "保留中のアカウント承認"
+
+msgid "This user has no site affiliations"
+msgstr "このユーザーにはサイト所属がありません。"
+
+msgid "This user has no project affiliations"
+msgstr "このユーザーにはプロジェクトへの所属はありません。"
+
+msgid "Full Name"
+msgstr "フルネーム"
+
+msgid "Pending Approval"
+msgstr "承認待ち"
+
+msgid "Radiologist"
+msgstr "放射線科医"
+
+msgid "Account Request Date"
+msgstr "アカウントリクエスト日"
+
+msgid "Add User"
+msgstr "ユーザーを追加"
+
+msgid "The form you submitted contains data entry errors"
+msgstr "送信したフォームにデータ入力エラーが含まれています。"
+
+msgid "Notes"
+msgstr "注記"
+
+msgid "It is recommended to use an email address as the username, for clarity and uniqueness."
+msgstr "明確さと一意性を保つために、ユーザー名として電子メール アドレスを使用することをお勧めします。"
+
+msgid "When generating a new password, please notify the user by checking 'Send email to user' box below!"
+msgstr "新しいパスワードを生成するときは、「ユーザーにメールを送信」ボックスをチェックしてユーザーに通知してください。"
+
+msgid "You must leave the password field empty if you want the system to generate one for you"
+msgstr "システムでパスワードを生成する場合は、パスワード フィールドを空のままにしておく必要があります。"
+
+msgid "Add/Edit User"
+msgstr "ユーザーの追加/編集"
+
+msgid "Reject User"
+msgstr "ユーザーを拒否"
+
+msgid "Make user name match email address"
+msgstr "ユーザー名をメールアドレスと一致させます。"
+
+msgid "Generate new password"
+msgstr "新しいパスワードを生成します。"
+
+msgid "Degree"
+msgstr "程度"
+
+msgid "Academic Position"
+msgstr "学術的地位"
+
+msgid "Institution"
+msgstr "機関"
+
+msgid "Department"
+msgstr "部門"
+
+msgid "Street Address"
+msgstr "住所"
+
+msgid "City"
+msgstr "市"
+
+msgid "State/Province"
+msgstr "州/県"
+
+msgid "Zip/Postal Code"
+msgstr "郵便番号"
+
+msgid "Country"
+msgstr "国"
+
+msgid "FAX"
+msgstr "ファックス"
+
+msgid "Send email to user"
+msgstr "ユーザーにメールを送信"
+
+msgid "Confirm Email"
+msgstr "メール確認"
+
+msgid "Examiner At:"
+msgstr "審査官:"
+
+msgid "Examiner Status"
+msgstr "審査官のステータス"
+
+msgid "Pending approval"
+msgstr "承認待ち"
+
+msgid "Active from"
+msgstr "アクティブ開始日"
+
+msgid "Active to"
+msgstr "アクティブに"
+
+msgid "Permissions"
+msgstr "権限"
+
+msgid "Supervisors"
+msgstr "監督者"
+
+msgid "You cannot enter a user name if you want it to match the email address"
+msgstr "メールアドレスと一致させたい場合、ユーザー名を入力することはできません。"
+
+msgid "You must enter a user name or choose to make it match the email address"
+msgstr "ユーザー名を入力するか、ユーザー名と電子メール アドレスを一致させるように選択する必要があります。"
+
+msgid "The user name already exists"
+msgstr "ユーザー名は既に存在します。"
+
+msgid "The user name must not exceed 255 characters"
+msgstr "ユーザー名は 255 文字を超えてはなりません。"
+
+msgid "You cannot have the user name match an email address that contains a whitespace character"
+msgstr "ユーザー名を、空白文字を含む電子メール アドレスと一致させることはできません。"
+
+msgid "Whitespace characters are not allowed in user names"
+msgstr "ユーザー名には空白文字は使用できません。"
+
+msgid "Please specify password or click Generate new password"
+msgstr "パスワードを指定するか、「新しいパスワードを生成」をクリックしてください。"
+
+msgid "Password is required"
+msgstr "パスワードが必要です。"
+
+msgid "You must enter an email address"
+msgstr "メールアドレスを入力する必要があります。"
+
+msgid "Email and confirmed email do not match"
+msgstr "メールアドレスと確認メールアドレスが一致しません。"
+
+msgid "You must select at least one site/affiliation"
+msgstr "少なくとも 1 つのサイト/所属先を選択する必要があります。"
+
+msgid "You must select at least one project/affiliation"
+msgstr "少なくとも 1 つのプロジェクト/所属を選択する必要があります。"
+
+msgid "Please specify if examiner is a radiologist"
+msgstr "検査者が放射線科医の場合は選択してください。"
+
+msgid "Please set pending approval Yes or No"
+msgstr "保留中の承認を「はい」または「いいえ」に設定してください。"
+
+msgid "Please select at least one examiner site or clear the 'Examiner status' fields below (i.e. 'Radiologist' and 'Pending Approval')."
+msgstr "少なくとも 1 つの検査官サイトを選択するか、以下の「検査官ステータス」フィールド (「放射線科医」および「承認待ち」など) をクリアしてください。"
+
+msgid "Please notice that the \"Active from\" date should be lesser or equal to the \"Active to\" date."
+msgstr "「アクティブ開始日」は「アクティブ終了日」と同じかそれより小さい日付にする必要があることに注意してください。"
+
+msgid "Your password cannot be your email."
+msgstr "パスワードにメールアドレスは使用できません。"
+
+msgid "Your password cannot be your user name."
+msgstr "パスワードをユーザー名と同じにすることはできません。"
+
+msgid "The passwords do not match."
+msgstr "パスワードが一致しません。"
+
+msgid "New and old passwords are identical"
+msgstr "新しいパスワードと古いパスワードは同一です。"
+
+msgid "This email address is already in use"
+msgstr "このメールアドレスはすでに使用されています。"
+

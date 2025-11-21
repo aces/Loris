@@ -158,6 +158,10 @@ class Edit_Help_Content extends \NDB_Form
             }
         }
 
+        $data['edit_help_text'] = dgettext('help_editor', 'Edit Help Content');
+        $data['display_title']  = !empty($data['title']) ? $data['title'] :
+         $data['edit_help_text'];
+
         $this->tpl_data = $data;
         return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
