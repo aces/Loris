@@ -47,11 +47,15 @@ class UnresolvedFilterableDataTable extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+     const {t} = this.props;
+     const keyValue1 = t('Value 1', {ns: 'conflict_resolver'});
+     const keyValue2 = t('Value 2', {ns: 'conflict_resolver'});
+	  
     switch (column) {
     case this.props.t('Correct Answer', {ns: 'conflict_resolver'}):
       const options = {
-        1: rowData['Value 1'],
-        2: rowData['Value 2'],
+        1: rowData[keyValue1],
+        2: rowData[keyValue2],
       };
       return (
         <FixConflictForm
