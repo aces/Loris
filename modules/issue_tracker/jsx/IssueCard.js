@@ -2,18 +2,23 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import Modal from 'jsx/Modal';
+import {withTranslation} from 'react-i18next';
 import '../css/issue_card.css';
 
-const IssueCard = React.memo(function IssueCard({
-  issue,
-  onUpdate,
-  statuses,
-  priorities,
-  categories,
-  sites,
-  assignees,
-  otherWatchers,
-}) {
+const IssueCard = React.memo(function IssueCard(props) {
+  const {t} = props;
+
+  const {
+    issue,
+    onUpdate,
+    statuses,
+    priorities,
+    categories,
+    sites,
+    assignees,
+    otherWatchers,
+  } = props;
+
   const [isEditing, setIsEditing] = useState(false);
   const [editedIssue, setEditedIssue] = useState({...issue});
   const [tempEditedIssue, setTempEditedIssue] = useState({...issue});
@@ -37,7 +42,8 @@ const IssueCard = React.memo(function IssueCard({
     e.preventDefault();
 
     if (!tempEditedIssue.title || !tempEditedIssue.title.trim()) {
-      showAlertMessage('error', 'Title cannot be empty');
+      showAlertMessage('error', t('Title cannot be empty',
+        {ns: 'issue_tracker'}));
       return;
     }
 
@@ -52,7 +58,8 @@ const IssueCard = React.memo(function IssueCard({
     );
 
     if (!hasChanges) {
-      showAlertMessage('info', 'No changes were made');
+      showAlertMessage('info', t('No changes were made',
+        {ns: 'issue_tracker'}));
       return;
     }
 
@@ -67,30 +74,32 @@ const IssueCard = React.memo(function IssueCard({
       }
       return response.json();
     }).then((data) => {
-      showAlertMessage('success', 'Issue updated successfully');
+      showAlertMessage('success', t('Issue updated successfully',
+        {ns: 'issue_tracker'}));
       setEditedIssue(tempEditedIssue);
       onUpdate();
       setIsEditing(false);
     }).catch((error) => {
       console.error('Error:', error);
-      showAlertMessage('error', error.message || 'Failed to update issue');
+      showAlertMessage('error', error.message || t('Failed to update issue',
+        {ns: 'issue_tracker'}));
       setTempEditedIssue({...editedIssue});
     });
   };
 
   const showAlertMessage = (msgType, message) => {
     let type = 'success';
-    let title = 'Issue updated!';
+    let title = t('Issue updated!', {ns: 'issue_tracker'});
     let text = message || '';
     let timer = null;
     let confirmation = true;
 
     if (msgType === 'error') {
       type = 'error';
-      title = 'Error!';
+      title = t('Error!', {ns: 'loris'});
     } else if (msgType === 'info') {
       type = 'info';
-      title = 'Information';
+      title = t('Information', {ns: 'issue_tracker'});
     }
 
     swal.fire({
@@ -144,7 +153,8 @@ const IssueCard = React.memo(function IssueCard({
     const hasWatchersChanged = JSON.stringify(newWatchers) !==
       JSON.stringify(issue.othersWatching);
     if (!trimmedComment && !hasAssigneeChanged && !hasWatchersChanged) {
-      showAlertMessage('info', 'Please add a comment or make changes');
+      showAlertMessage('info', t('Please add a comment or make changes',
+        {ns: 'issue_tracker'}));
       return;
     }
 
@@ -182,13 +192,15 @@ const IssueCard = React.memo(function IssueCard({
         return response.json();
       })
       .then((data) => {
-        showAlertMessage('success', 'Issue updated successfully');
+        showAlertMessage('success', t('Issue updated successfully',
+          {ns: 'issue_tracker'}));
         handleCloseAddCommentModal();
         onUpdate();
       })
       .catch((error) => {
         console.error('Error:', error);
-        showAlertMessage('error', error.message || 'Failed to add comment');
+        showAlertMessage('error', error.message ||
+          t('Failed to add comment', {ns: 'issue_tracker'}));
       });
   };
 
@@ -197,14 +209,14 @@ const IssueCard = React.memo(function IssueCard({
   return (
     <div className="issue-card">
       <Modal
-        title="Add New Comment"
+        title={t('Add New Comment', {ns: 'issue_tracker'})}
         onClose={handleCloseAddCommentModal}
         show={showAddCommentModal}
       >
         <form onSubmit={handleAddCommentSubmit} className="add-comment-form">
           <div className="form-group">
             <label htmlFor="newComment" className="small">
-              Comment
+              {t('Comment', {ns: 'issue_tracker'})}
             </label>
             <textarea
               id="newComment"
@@ -216,7 +228,7 @@ const IssueCard = React.memo(function IssueCard({
           </div>
           <div className="form-group">
             <label htmlFor="newAssignee" className="small">
-              Assignee
+              {t('Assignee', {ns: 'issue_tracker'})}
             </label>
             <select
               id="newAssignee"
@@ -225,7 +237,7 @@ const IssueCard = React.memo(function IssueCard({
               className="form-control"
               disabled={isSubmittingComment}
             >
-              <option value="">Unassigned</option>
+              <option value="">{t('Unassigned', {ns: 'issue_tracker'})}</option>
               {Object.entries(assignees).map(([id, name]) => (
                 <option key={id} value={id}>
                   {name}
@@ -235,7 +247,7 @@ const IssueCard = React.memo(function IssueCard({
           </div>
           <div className="form-group">
             <label htmlFor="newWatchers" className="small">
-              Watchers
+              {t('Watchers', {ns: 'issue_tracker'})}
             </label>
             <select
               id="newWatchers"
@@ -259,7 +271,8 @@ const IssueCard = React.memo(function IssueCard({
               className="btn btn-primary"
               disabled={isSubmittingComment}
             >
-              {isSubmittingComment ? 'Submitting...' : 'Submit Comment'}
+              {isSubmittingComment ? t('Submitting...', {ns: 'issue_tracker'}) :
+                t('Submit Comment', {ns: 'issue_tracker'})}
             </button>
             <button
               type="button"
@@ -267,7 +280,7 @@ const IssueCard = React.memo(function IssueCard({
               onClick={handleCloseAddCommentModal}
               disabled={isSubmittingComment}
             >
-              Cancel
+              {t('Cancel', {ns: 'loris'})}
             </button>
           </div>
         </form>
@@ -291,9 +304,13 @@ const IssueCard = React.memo(function IssueCard({
           </h3>
         </div>
         <div className="issue-dates">
-          <span>Created: {issue.dateCreated}</span>
-          <span>Last Updated: {issue.lastUpdate}</span>
-          <span>Assignee: {issue.assignee || 'None'}</span>
+          <span>{t('Created', {ns: 'issue_tracker'})}:
+            {issue.dateCreated}</span>
+          <span>{t('Last Updated', {ns: 'issue_tracker'})}:
+            {issue.lastUpdate}</span>
+          <span>{t('Assignee', {ns: 'issue_tracker'})}:
+            {issue.assignee || t('None',
+              {ns: 'loris'})}</span>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="issue-form">
@@ -302,7 +319,7 @@ const IssueCard = React.memo(function IssueCard({
             <>
               <div className="control-group">
                 <label htmlFor="status">
-                  Status:&nbsp;
+                  {t('Status', {ns: 'loris'})}:&nbsp;
                 </label>
                 <select
                   id="status"
@@ -323,7 +340,7 @@ const IssueCard = React.memo(function IssueCard({
               </div>
               <div className="control-group">
                 <label htmlFor="priority">
-                  Priority:&nbsp;
+                  {t('Priority', {ns: 'issue_tracker'})}:&nbsp;
                 </label>
                 <select
                   id="priority"
@@ -344,7 +361,7 @@ const IssueCard = React.memo(function IssueCard({
               </div>
               <div className="control-group">
                 <label htmlFor="category">
-                  Category:&nbsp;
+                  {t('Category', {ns: 'issue_tracker'})}:&nbsp;
                 </label>
                 <select
                   id="category"
@@ -368,16 +385,19 @@ const IssueCard = React.memo(function IssueCard({
               </div>
               <div className="control-group">
                 <label htmlFor="centerID">
-                  Site:&nbsp;
+                  {t('Site', {ns: 'loris', count: 1})}:&nbsp;
                 </label>
                 <select
                   id="centerID"
                   value={tempEditedIssue.centerID || ''}
                   onChange={(e) =>
-                    handleInputChange('centerID', e.target.value)
+                    handleInputChange('centerID',
+                      e.target.value)
                   }
                 >
-                  <option value="">All Sites</option>
+                  <option value="">
+                    All Sites
+                  </option>
                   {Object.entries(sites).map(([id, name]) => (
                     <option
                       key={id}
@@ -392,28 +412,28 @@ const IssueCard = React.memo(function IssueCard({
           ) : (
             <>
               <div className="control-group">
-                <label>Status:&nbsp;</label>
+                <label>{t('Status', {ns: 'loris'})}:&nbsp;</label>
                 <span>
                   {statuses[tempEditedIssue.status] ||
                     tempEditedIssue.status}
                 </span>
               </div>
               <div className="control-group">
-                <label>Priority:&nbsp;</label>
+                <label>{t('Priority', {ns: 'issue_tracker'})}:&nbsp;</label>
                 <span>
                   {priorities[tempEditedIssue.priority] ||
                     tempEditedIssue.priority}
                 </span>
               </div>
               <div className="control-group">
-                <label>Category:&nbsp;</label>
+                <label>{t('Category', {ns: 'issue_tracker'})}:&nbsp;</label>
                 <span>
                   {categories[tempEditedIssue.category] ||
                     'Uncategorized'}
                 </span>
               </div>
               <div className="control-group">
-                <label>Site:&nbsp;</label>
+                <label>{t('Site', {ns: 'loris', count: 1})}:&nbsp;</label>
                 <span>
                   {sites[String(tempEditedIssue.centerID)] ||
                     'All Sites'}
@@ -424,7 +444,8 @@ const IssueCard = React.memo(function IssueCard({
         </div>
         <div className="issue-content">
           <div className="description-section">
-            <label htmlFor="description" className="small">Description</label>
+            <label htmlFor="description" className="small">{t('Description',
+              {ns: 'issue_tracker'})}</label>
             {isEditing ? (
               <textarea
                 value={tempEditedIssue.description || ''}
@@ -435,24 +456,30 @@ const IssueCard = React.memo(function IssueCard({
               />
             ) : (
               <div className="description-container">
-                <p className="description-text">{description}</p>
+                <p className="description-text">
+                  {description}</p>
               </div>
             )}
           </div>
           <div className="comments-section">
-            <label className="small">Last 3 Comments</label>
+            <label className="small">{t('Last 3 Comments',
+              {ns: 'issue_tracker'})}</label>
             <div className="comments-container">
               {issue.topComments.length > 0 ? (
                 issue.topComments.map((comment, index) => (
                   <div key={index} className="comment">
-                    <p className="comment-text">{comment.issueComment}</p>
+                    <p className="comment-text">
+                      {comment.issueComment}</p>
                     <span className="comment-meta">
-                      {comment.addedBy} on {comment.dateAdded}
+                      {comment.addedBy} {t('on',
+                        {ns: 'issue_tracker'})}
+                      {comment.dateAdded}
                     </span>
                   </div>
                 ))
               ) : (
-                <p className="no-comments">No comments available.</p>
+                <p className="no-comments">{t('No comments available.',
+                  {ns: 'issue_tracker'})}</p>
               )}
             </div>
           </div>
@@ -464,14 +491,14 @@ const IssueCard = React.memo(function IssueCard({
               className="btn btn-primary"
               onClick={() => setIsEditing(true)}
             >
-              Edit Issue
+              {t('Edit Issue', {ns: 'issue_tracker'})}
             </button>
             <button
               type="button"
               className="btn btn-primary"
               onClick={handleOpenAddCommentModal}
             >
-              Add Comment
+              {t('Add Comment', {ns: 'issue_tracker'})}
             </button>
           </div>
         )}
@@ -481,7 +508,7 @@ const IssueCard = React.memo(function IssueCard({
               type="submit"
               className="btn btn-primary"
             >
-              Update Issue
+              {t('Update Issue', {ns: 'issue_tracker'})}
             </button>
             <button
               type="button"
@@ -491,7 +518,7 @@ const IssueCard = React.memo(function IssueCard({
                 setTempEditedIssue({...editedIssue});
               }}
             >
-              Cancel
+              {t('Cancel', {ns: 'loris'})}
             </button>
           </div>
         )}
@@ -536,6 +563,7 @@ IssueCard.propTypes = {
   sites: PropTypes.object.isRequired,
   assignees: PropTypes.object.isRequired,
   otherWatchers: PropTypes.object.isRequired,
+  t: PropTypes.func,
 };
 
-export default IssueCard;
+export default withTranslation(['issue_tracker', 'loris'])(IssueCard);

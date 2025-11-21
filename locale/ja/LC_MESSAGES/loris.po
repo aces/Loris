@@ -155,6 +155,9 @@ msgstr "取り消す"
 msgid "Success!"
 msgstr "成功！"
 
+msgid "Close"
+msgstr "近い"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "プロジェクト識別子"

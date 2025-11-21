@@ -179,11 +179,12 @@ class Issue extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
+        $label      = dgettext("issue_tracker", "Issue Tracker");
+        $issueLabel = dgettext("issue_tracker", "Issue");
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'Issue',
+                $issueLabel,
                 "/issue_tracker/issue/$this->issueID"
             )
         );

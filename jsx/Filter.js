@@ -146,7 +146,7 @@ function Filter(props) {
             data-toggle='dropdown'
             role='button'
           >
-            Load Filter Preset <span className='caret'/>
+            {props.t('Load Filter Preset')} <span className='caret'/>
           </a>
           <ul className='dropdown-menu' role='menu'>
             {presets}

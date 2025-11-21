@@ -109,7 +109,7 @@ msgstr ""
 msgid "Reports"
 msgstr ""
 
-# Common loris terms. Consider moving these to their own textdomain?
+# Common loris terms.
 msgid "TimePoint"
 msgstr ""
 
@@ -159,6 +159,12 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Success!"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Close"
 msgstr ""
 
 # Common candidate terms
@@ -448,4 +454,7 @@ msgstr ""
 
 # Other generic terms
 msgid "Loading..."
+msgstr ""
+
+msgid "Permission denied"
 msgstr ""

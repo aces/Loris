@@ -13,47 +13,46 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: ja\n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Help Editor"
-msgstr "ヘルプエディター"
+msgstr "सहायता संपादक"
 
 msgid "Edit Help Content"
-msgstr "ヘルプコンテンツを編集する"
+msgstr "सहायता सामग्री संपादित करें"
 
 msgid "Help ID"
-msgstr "ヘルプ識別子"
+msgstr "सहायता आईडी"
 
 msgid "Topic"
-msgstr "トピック"
+msgstr "विषय"
 
 msgid "Content"
-msgstr "興奮した"
+msgstr "सामग्री"
 
 msgid "Title"
-msgstr "タイトル"
+msgstr "शीर्षक"
 
 msgid "Open the help dialog to preview the changes."
-msgstr "変更をプレビューするにはヘルプ ダイアログを開きます。"
+msgstr "परिवर्तनों का पूर्वावलोकन करने के लिए सहायता संवाद खोलें।"
 
 msgid "Content update successful!"
-msgstr "コンテンツの更新に成功しました!"
+msgstr "सामग्री सफलतापूर्वक अपडेट की गई!"
 
 msgid "Content update unsuccessful."
-msgstr "コンテンツの更新に失敗しました。"
+msgstr "सामग्री अपडेट असफल रहा।"
 
 msgid "Something went wrong"
-msgstr "問題が発生しました"
+msgstr "कुछ गलत हो गया"
 
 msgid "Try again"
-msgstr "もう一度やり直してください"
+msgstr "पुनः प्रयास करें"
 
 msgid "Help content cannot be added to an instrument that has already been registered."
-msgstr "すでに登録されている機器にはヘルプ コンテンツを追加できません。"
+msgstr "एक ऐसे इंस्ट्रूमेंट में हेल्प कंटेंट नहीं जोड़ा जा सकता है जो पहले से पंजीकृत हो चुका है।"
 
 msgid "Adding help content for a specific instrument"
-msgstr "特定の機器のヘルプコンテンツを追加する"
-
+msgstr "किसी विशिष्ट उपकरण के लिए सहायता सामग्री जोड़ना"

@@ -104,6 +104,8 @@ locales:
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/configuration/locale/ja/LC_MESSAGES/configuration.mo modules/configuration/locale/ja/LC_MESSAGES/configuration.po
 	msgfmt -o modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po
+	msgfmt -o modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po
+	npx i18next-conv -l hi -s modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.json
 	npx i18next-conv -l ja -s modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.json
 	msgfmt -o modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po
 	npx i18next-conv -l ja -s modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po -t modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.json
@@ -120,6 +122,8 @@ locales:
 	msgfmt -o modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/hi/LC_MESSAGES/data_release.po
 	npx i18next-conv -l hi -s modules/data_release/locale/hi/LC_MESSAGES/data_release.po -t modules/data_release/locale/hi/LC_MESSAGES/data_release.json
 	msgfmt -o modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.mo modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po
+	msgfmt -o modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.mo modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.po
+	npx i18next-conv -l hi -s modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.po -t modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.json
 	msgfmt -o modules/dictionary/locale/ja/LC_MESSAGES/dictionary.mo modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po
 	npx i18next-conv -l ja -s modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po -t modules/dictionary/locale/ja/LC_MESSAGES/dictionary.json
 	msgfmt -o modules/dictionary/locale/hi/LC_MESSAGES/dictionary.mo modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po
@@ -131,11 +135,16 @@ locales:
 	msgfmt -o modules/examiner/locale/ja/LC_MESSAGES/examiner.mo modules/examiner/locale/ja/LC_MESSAGES/examiner.po
 	msgfmt -o modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.mo modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.po
 	msgfmt -o modules/help_editor/locale/ja/LC_MESSAGES/help_editor.mo modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po
+	msgfmt -o modules/help_editor/locale/hi/LC_MESSAGES/help_editor.mo modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po
+	npx i18next-conv -l hi -s modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po -t modules/help_editor/locale/hi/LC_MESSAGES/help_editor.json
+	npx i18next-conv -l ja -s modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po -t modules/help_editor/locale/ja/LC_MESSAGES/help_editor.json
 	msgfmt -o modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.mo modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po
 	npx i18next-conv -l ja -s modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po -t modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.json --compatibilityJSON v4
 	msgfmt -o modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.mo modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.po
 	msgfmt -o modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.mo modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po
 	msgfmt -o modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po
+	msgfmt -o modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po
+	npx i18next-conv -l hi -s modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po -t modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.json --compatibilityJSON v4
 	msgfmt -o modules/instrument_list/locale/ja/LC_MESSAGES/instrument_list.mo modules/instrument_list/locale/ja/LC_MESSAGES/instrument_list.po
 	msgfmt -o modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.mo modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.po
 	msgfmt -o modules/instrument_list/locale/fr/LC_MESSAGES/instrument_list.mo modules/instrument_list/locale/fr/LC_MESSAGES/instrument_list.po
@@ -144,12 +153,16 @@ locales:
 	npx i18next-conv -l ja -s modules/instruments/locale/ja/LC_MESSAGES/instruments.po -t modules/instruments/locale/ja/LC_MESSAGES/instruments.json --compatibilityJSON v4
 	msgfmt -o modules/instruments/locale/es/LC_MESSAGES/instruments.mo modules/instruments/locale/es/LC_MESSAGES/instruments.po
 	msgfmt -o modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po
+	msgfmt -o modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po
+	npx i18next-conv -l hi -s modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.json --compatibilityJSON v4
 	npx i18next-conv -l ja -s modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.json --compatibilityJSON v4
 	msgfmt -o modules/login/locale/ja/LC_MESSAGES/login.mo modules/login/locale/ja/LC_MESSAGES/login.po
 	msgfmt -o modules/media/locale/ja/LC_MESSAGES/media.mo modules/media/locale/ja/LC_MESSAGES/media.po
 	msgfmt -o modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po
 	msgfmt -o modules/mri_violations/locale/es/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/es/LC_MESSAGES/mri_violations.po
 	msgfmt -o modules/mri_violations/locale/fr/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/fr/LC_MESSAGES/mri_violations.po
+	msgfmt -o modules/module_manager/locale/hi/LC_MESSAGES/module_manager.mo modules/module_manager/locale/hi/LC_MESSAGES/module_manager.po
+	npx i18next-conv -l hi -s modules/module_manager/locale/hi/LC_MESSAGES/module_manager.po -t modules/module_manager/locale/hi/LC_MESSAGES/module_manager.json
 	msgfmt -o modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.po
 	msgfmt -o modules/mri_violations/locale/hi/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/hi/LC_MESSAGES/mri_violations.po
 	npx i18next-conv -l es -s modules/mri_violations/locale/es/LC_MESSAGES/mri_violations.po -t modules/mri_violations/locale/es/LC_MESSAGES/mri_violations.json
@@ -165,6 +178,8 @@ locales:
 	msgfmt -o modules/oidc/locale/ja/LC_MESSAGES/oidc.mo modules/oidc/locale/ja/LC_MESSAGES/oidc.po
 	msgfmt -o modules/publication/locale/ja/LC_MESSAGES/publication.mo modules/publication/locale/ja/LC_MESSAGES/publication.po
 	msgfmt -o modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.mo modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.po
+	msgfmt -o modules/publication/locale/hi/LC_MESSAGES/publication.mo modules/publication/locale/hi/LC_MESSAGES/publication.po
+	npx i18next-conv -l hi -s modules/publication/locale/hi/LC_MESSAGES/publication.po -t modules/publication/locale/hi/LC_MESSAGES/publication.json
 	msgfmt -o modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.po
 	msgfmt -o modules/statistics/locale/ja/LC_MESSAGES/statistics.mo modules/statistics/locale/ja/LC_MESSAGES/statistics.po
 	npx i18next-conv -l ja -s modules/statistics/locale/ja/LC_MESSAGES/statistics.po -t modules/statistics/locale/ja/LC_MESSAGES/statistics.json
@@ -184,12 +199,16 @@ create_timepoint:
 	target=data_release npm run compile
 
 data_release: modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.mo
-	npx i18next-conv -l hi -s modules/data_release/locale/hi/LC_MESSAGES/data_release.po -t modules/data_release/locale/hi/LC_MESSAGES/data_release.json 
-	npx i18next-conv -l ja -s modules/data_release/locale/ja/LC_MESSAGES/data_release.po -t modules/data_release/locale/ja/LC_MESSAGES/data_release.json 
+	npx i18next-conv -l hi -s modules/data_release/locale/hi/LC_MESSAGES/data_release.po -t modules/data_release/locale/hi/LC_MESSAGES/data_release.json
+	npx i18next-conv -l ja -s modules/data_release/locale/ja/LC_MESSAGES/data_release.po -t modules/data_release/locale/ja/LC_MESSAGES/data_release.json
 	target=data_release npm run compile
 
 instrument_manager: modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.mo
 	target=instrument_manager npm run compile
+
+instrument_builder: modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.mo
+	npx i18next-conv -l hi -s modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po -t modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.json --compatibilityJSON v4
+	target=instrument_builder npm run compile
 
 dataquery: modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo
 	msgfmt -o modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po
@@ -198,7 +217,7 @@ dataquery: modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo
 login: modules/login/locale/ja/LC_MESSAGES/login.mo
 	target=login npm run compile
 
-module_manager: modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo
+module_manager: modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/hi/LC_MESSAGES/module_manager.mo
 	target=module_manager npm run compile
 
 mri_violations:
@@ -206,7 +225,9 @@ mri_violations:
 	npx i18next-conv -l hi -s modules/mri_violations/locale/hi/LC_MESSAGES/mri_violations.po -t modules/mri_violations/locale/hi/LC_MESSAGES/mri_violations.json
 	target=mri_violations npm run compile
 
-issue_tracker: modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo
+issue_tracker:
+	msgfmt -o modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po
+	npx i18next-conv -l hi -s modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.json
 	target=issue_tracker npm run compile
 
 candidate_list: modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo
@@ -221,13 +242,17 @@ candidate_parameters: modules/candidate_parameters/locale/ja/LC_MESSAGES/candida
 dashboard: modules/dashboard/locale/ja/LC_MESSAGES/dashboard.mo
 	target=dashboard npm run compile
 
-publication: modules/publication/locale/ja/LC_MESSAGES/publication.mo
+publication:
+	msgfmt -o modules/publication/locale/hi/LC_MESSAGES/publication.mo modules/publication/locale/hi/LC_MESSAGES/publication.po
+	npx i18next-conv -l hi -s modules/publication/locale/hi/LC_MESSAGES/publication.po -t modules/publication/locale/hi/LC_MESSAGES/publication.json
 	target=publication npm run compile
-
 server_processes_manager: modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo
 	target=server_processes_manager npm run compile
 
 conflict_resolver:
+	msgfmt -o modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.mo modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po
+	npx i18next-conv -l hi -s modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.json
+	npx i18next-conv -l ja -s modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.json
 	target=conflict_resolver npm run compile
 
 behavioural_qc:

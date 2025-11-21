@@ -1,7 +1,7 @@
-<h2>Tarchive Metadata</h2>
+<h2>{dgettext("dicom_archive", "Tarchive Metadata")}</h2>
 <table class="table table-hover table-primary table-bordered details-outer-table">
   <tr>
-    <th>Acquisition ID</th>
+    <th>{dgettext("dicom_archive", "Acquisition ID")}</th>
     <td>
       <a href="/mri_violations?patientName={$archive.PatientName}">
         {$archive.DicomArchiveID}
@@ -9,106 +9,106 @@
     </td>
   </tr>
   <tr>
-    <th>Patient ID</th>
+    <th>{dgettext("dicom_archive", "Patient ID")}</th>
     <td{if $archive.patientIDValid == 0} class="error"{/if}>{$archive.PatientID}</td>
   </tr>
   <tr>
-    <th>Patient Name</th>
+    <th>{dgettext("dicom_archive", "Patient Name")}</th>
     <td{if $archive.patientNameValid == 0} class="error"{/if}>{$archive.PatientName}</td>
   </tr>
   <tr>
-    <th>Patient Birthdate</th>
+    <th>{dgettext("dicom_archive", "Patient Birthdate")}</th>
     <td>{$archive.PatientDoB}</td>
   </tr>
   <tr>
-    <th>Patient Biological Sex</th>
+    <th>{dgettext("dicom_archive", "Patient Biological Sex")}</th>
     <td>{$archive.PatientSex}</td>
   </tr>
   <tr>
-    <th>Date acquired</th>
+    <th>{dgettext("dicom_archive", "Date acquired")}</th>
     <td>{$archive.DateAcquired}</td>
   </tr>
   <tr>
-    <th>Scanner Model</th>
+    <th>{dgettext("dicom_archive", "Scanner Model")}</th>
     <td>
       {$archive.ScannerManufacturer} {$archive.ScannerModel}
-      (Serial Number: {$archive.ScannerSerialNumber})
+      ({dgettext("dicom_archive", "Serial Number")}: {$archive.ScannerSerialNumber})
     </td>
   </tr>
   <tr>
-    <th>Scanner Software Version</th>
+    <th>{dgettext("dicom_archive", "Scanner Software Version")}</th>
     <td>{$archive.ScannerSoftwareVersion}</td>
   </tr>
   <tr>
-    <th>Acquired at</th>
+    <th>{dgettext("dicom_archive", "Acquired at")}</th>
     <td>{$archive.CenterName}</td>
   </tr>
   <tr>
-    <th>Number of Acquisitions</th>
+    <th>{dgettext("dicom_archive", "Number of Acquisitions")}</th>
     <td>{$archive.AcquisitionCount}</td>
   </tr>
   <tr>
-    <th>Archived by</th>
+    <th>{dgettext("dicom_archive", "Archived by")}</th>
     <td>{$archive.CreatingUser}</td>
   </tr>
   <tr>
-    <th>Last update</th>
-    <td>{if !isset($archive.LastUpdate)}Never{/if}</td>
+    <th>{dgettext("dicom_archive", "Last update")}</th>
+    <td>{if !isset($archive.LastUpdate)}{dgettext("dicom_archive", "Never")}{/if}</td>
   </tr>
   <tr>
-    <th>Summary type version</th>
+    <th>{dgettext("dicom_archive", "Summary type version")}</th>
     <td>{$archive.sumTypeVersion}</td>
   </tr>
   <tr>
-    <th>Source location</th>
+    <th>{dgettext("dicom_archive", "Source location")}</th>
     <td>{$archive.SourceLocation}</td>
   </tr>
   <tr>
-    <th>Archive type version</th>
+    <th>{dgettext("dicom_archive", "Archive type version")}</th>
     <td>{$archive.tarTypeVersion}</td>
   </tr>
   <tr>
-    <th>Archive location</th>
+    <th>{dgettext("dicom_archive", "Archive location")}</th>
     <td>{$archive.ArchiveLocation}</td>
   </tr>
   <tr>
-    <th>Archiving log</th>
+    <th>{dgettext("dicom_archive", "Archiving log")}</th>
     <td>
       <pre>{$archive.CreateInfo}</pre>
     </td>
   </tr>
   <tr>
-    <th>md5sum of Archive</th>
+    <th>{dgettext("dicom_archive", "md5sum of Archive")}</th>
     <td>
       <pre><b>{$archive.md5sumArchive}</b></pre>
     </td>
   </tr>
   <tr>
-    <th>md5sum of Dicom unzipped</th>
+    <th>{dgettext("dicom_archive", "md5sum of Dicom unzipped")}</th>
     <td>
       <pre><b>{$archive.md5sumDicomOnly}</b></pre>
     </td>
   </tr>
   <tr>
-    <th class="valign-top">Series</th>
+    <th class="valign-top">{dgettext("dicom_archive", "Series")}</th>
     <td>
       <a data-toggle="collapse" href="#series-data" aria-expanded="false" aria-controls="series-data">
-        Show/Hide series ({count($archive_series)})
+        {dgettext("dicom_archive", "Show/Hide series")} ({count($archive_series)})
       </a>
       <div id="series-data" class="collapse">
         <table class="table table-hover table-primary table-bordered">
         <tr class="info">
-          <th>Series Number</th>
-          <th>Series Description</th>
-          <th>Protocol Name</th>
-          <th>Sequence Name</th>
-          <th>Echo Time</th>
-          <th>Repetition Time</th>
-          <th>Inversion Time</th>
-          <th>Slice Thickness</th>
-          <th>Phase Encoding</th>
-          <th>Number of Files</th>
-          <th>SeriesUID</th>
+          <th>{dgettext("dicom_archive", "Series Number")}</th>
+          <th>{dgettext("dicom_archive", "Series Description")}</th>
+          <th>{dgettext("dicom_archive", "Protocol Name")}</th>
+          <th>{dgettext("dicom_archive", "Sequence Name")}</th>
+          <th>{dgettext("dicom_archive", "Echo Time")}</th>
+          <th>{dgettext("dicom_archive", "Repetition Time")}</th>
+          <th>{dgettext("dicom_archive", "Inversion Time")}</th>
+          <th>{dgettext("dicom_archive", "Slice Thickness")}</th>
+          <th>{dgettext("dicom_archive", "Phase Encoding")}</th>
+          <th>{dgettext("dicom_archive", "Number of Files")}</th>
+          <th>{dgettext("dicom_archive", "SeriesUID")}</th>
         </tr>
         {section name=record loop=$archive_series}
           <tr>
@@ -134,20 +134,20 @@
     </td>
   </tr>
   <tr>
-    <th class="valign-top">Files</th>
+    <th class="valign-top">{dgettext("dicom_archive", "Files")}</th>
     <td>
       <a data-toggle="collapse" href="#files-data" aria-expanded="false" aria-controls="files-data">
-        Show/Hide files ({count($archive_files)})
+        {dgettext("dicom_archive", "Show/Hide files")} ({count($archive_files)})
       </a>
       <div id="files-data" class="collapse">
         <table class="table table-hover table-primary table-bordered">
           <tr class="info">
-            <th>SeriesNumber</th>
-            <th>FileNumber</th>
-            <th>EchoNumber</th>
-            <th>SeriesDescription</th>
-            <th>Md5Sum</th>
-            <th>FileName</th>
+            <th>{dgettext("dicom_archive", "SeriesNumber")}</th>
+            <th>{dgettext("dicom_archive", "FileNumber")}</th>
+            <th>{dgettext("dicom_archive", "EchoNumber")}</th>
+            <th>{dgettext("dicom_archive", "SeriesDescription")}</th>
+            <th>{dgettext("dicom_archive", "Md5Sum")}</th>
+            <th>{dgettext("dicom_archive", "FileName")}</th>
           </tr>
           {section name=record loop=$archive_files}
             <tr>

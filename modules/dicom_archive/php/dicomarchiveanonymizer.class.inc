@@ -92,10 +92,10 @@ class DICOMArchiveAnonymizer implements Mapper
         }
 
         if (!$isValid) {
-            $newrow['patientName'] = 'INVALID - HIDDEN';
+            $newrow['patientName'] = dgettext('dicom_archive', 'INVALID - HIDDEN');
         }
         if (!preg_match("/$pIDRegex/", $newrow['patientID'] ?? '')) {
-            $newrow['patientID'] = 'INVALID - HIDDEN';
+            $newrow['patientID'] = dgettext('dicom_archive', 'INVALID - HIDDEN');
         }
 
         if (!$resource instanceof \LORIS\StudyEntities\SiteHaver) {
