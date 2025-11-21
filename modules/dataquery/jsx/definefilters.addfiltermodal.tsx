@@ -18,7 +18,7 @@ import {
   VisitOption,
 } from './types';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
-import {useTranslation} from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 
 /**
  * Renders a selectable list of visits
@@ -177,10 +177,18 @@ function AddFilterModal(props: {
         <div style={{
           color: 'white',
           padding: '1em',
-        }}>{t('This field may exist multiple times for a single {{scope}}.'
-        +' Adding a criteria based on it means that it must match for '
-        +'<i>at least one</i> of the data points.', {ns: 'dataquery',
-            scope: fieldDictionary.scope})}</div>
+        }}>
+          <Trans
+            i18nKey={
+              'This field may exist multiple times for a single {{scope}}.' +
+              ' Adding a criteria based on it means that it must match for ' +
+              '<italic>at least one</italic> of the data points.'
+            }
+            ns="dataquery"
+            values={{ scope: fieldDictionary.scope}}
+            components={{italic: <i/>,}}
+          />
+        </div>
       </div>;
     }
   }
