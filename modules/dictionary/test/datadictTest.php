@@ -3,7 +3,7 @@
 /**
  * Datadict automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -18,7 +18,7 @@ require_once __DIR__ .
 /**
  * Datadict automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -65,6 +65,7 @@ class DictionaryTestIntegrationTest extends LorisIntegrationTest
             ]
         );
     }
+
     /**
      * Deleting testing data
      *
@@ -78,6 +79,7 @@ class DictionaryTestIntegrationTest extends LorisIntegrationTest
             ['Name' => 'TestParameterNotRealMAGICNUMBER335']
         );
     }
+
     /**
      * Tests that, when loading the datadict module, some
      * text appears in the body.

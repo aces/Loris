@@ -8,7 +8,7 @@ use \Psr\Http\Message\ResponseInterface;
 /**
  * A class for handling the /biobank/specimens/ endpoint.
  *
- * PHP Version 7.2
+ * PHP Version 8.2
  *
  * @category   Biobank
  * @package    Main

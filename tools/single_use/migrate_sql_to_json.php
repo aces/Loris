@@ -4,7 +4,7 @@
  * an SQL table to having its data stored in the flag.Data column
  * in JSON format.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

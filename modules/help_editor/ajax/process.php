@@ -5,7 +5,7 @@
  * It holds the processing of adding/updating content
  * for all modules.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -78,4 +78,21 @@ if (!empty($_POST['helpID'])
             ),
         ]
     );
+
+}
+
+if ($_POST['new'] == true) {
+    // insert the help file
+    HelpFile::insert(
+        [
+            'hash'    => md5($_POST['instrument']),
+            'topic'   => $_POST['title'],
+            'content' => $_POST['content'],
+            'created' => date(
+                'Y-m-d h:i:s',
+                time()
+            ),
+        ]
+    );
+    echo "done";
 }
