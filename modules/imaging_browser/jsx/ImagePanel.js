@@ -20,12 +20,6 @@ class ImagePanelHeader extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -124,12 +118,6 @@ class ImagePanelHeadersTable extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -333,12 +321,6 @@ class ImageQCDropdown extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -415,12 +397,6 @@ class ImageQCStatic extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -464,12 +440,6 @@ class ImagePanelQCStatusSelector extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -527,12 +497,6 @@ class ImagePanelQCSelectedSelector extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -577,12 +541,6 @@ class ImagePanelQCCaveatSelector extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -643,12 +601,6 @@ class ImagePanelQCSNRValue extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -692,12 +644,6 @@ class ImagePanelQCPanel extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -763,12 +709,6 @@ class DownloadButton extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -823,12 +763,6 @@ class ImageQCCommentsButton extends Component {
   constructor(props) {
     super(props);
     this.openWindowHandler = this.openWindowHandler.bind(this);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -866,8 +800,9 @@ class ImageQCCommentsButton extends Component {
       >
         <span className="text-default">
           <span className="glyphicon glyphicon-pencil"></span>
-          <span className="hidden-xs">{t('QC Comments',
-            {ns: 'imaging_browser'})}</span>
+          <span className="hidden-xs">
+            {t('QC Comments', {ns: 'imaging_browser'})}
+          </span>
         </span>
       </a>
     );
@@ -893,12 +828,6 @@ class LongitudinalViewButton extends Component {
   constructor(props) {
     super(props);
     this.openWindowHandler = this.openWindowHandler.bind(this);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -961,12 +890,6 @@ class ImageDownloadButtons extends Component {
    */
   constructor(props) {
     super(props);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -1061,12 +984,6 @@ class ImagePanelBody extends Component {
   constructor(props) {
     super(props);
     this.openWindowHandler = this.openWindowHandler.bind(this);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
@@ -1176,13 +1093,6 @@ class ImagePanel extends Component {
     };
     this.toggleBody = this.toggleBody.bind(this);
     this.toggleHeaders = this.toggleHeaders.bind(this);
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
   /**
