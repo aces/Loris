@@ -64,6 +64,9 @@ msgstr "प्रशासन"
 #: modules/datadict/php/module.class.inc:49
 #: modules/data_release/php/module.class.inc:56
 #: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr ""
+
 #: modules/document_repository/php/module.class.inc:56
 #: modules/instrument_builder/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
@@ -110,12 +113,56 @@ msgstr "रिपोर्ट्स"
 msgid "TimePoint"
 msgstr "समय बिंदु"
 
+msgid "TimePoint %s Details"
+msgstr ""
+
 # Common select option labels
 msgid "Yes"
 msgstr "हाँ"
 
 msgid "No"
 msgstr "नहीं"
+
+msgid "N/A"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+# Filters
+msgid "Selection Filter"
+msgstr ""
+
+msgid "Show Filters"
+msgstr ""
+
+msgid "Hide Filters"
+msgstr ""
+
+msgid "Clear Filters"
+msgstr ""
+
+msgid "Show Advanced Filters"
+msgstr "उन्नत फ़िल्टर दिखाएँ"
+
+msgid "Hide Advanced Filters"
+msgstr "उन्नत फ़िल्टर छुपाएँ"
+
+# Common swal labels
+msgid "OK"
+msgstr ""
+
+msgid "Cancel"
+msgstr "रद्द करें"
+
+msgid "Success!"
+msgstr "सफलता!"
+
+msgid "Close"
+msgstr ""
 
 # Common candidate terms
 msgid "PSCID"
@@ -124,20 +171,47 @@ msgstr "पीएससीआईडी"
 msgid "DCCID"
 msgstr "डीसीसीआईडी"
 
+msgid "Visit"
+msgstr ""
+
 msgid "Visit Label"
 msgstr "दौरे का लेबल"
 
+msgid "Email"
+msgstr ""
+
 msgid "Site"
-msgstr "साइट"
+msgid_plural "Sites"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Module"
+msgstr ""
 
 msgid "Project"
-msgstr "परियोजना"
+msgid_plural "Projects"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Candidate Registration Project"
+msgstr ""
+
+msgid "Timepoint Project"
+msgstr ""
 
 msgid "Cohort"
-msgstr "समूह"
+msgid_plural "Cohorts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Session"
+msgstr ""
 
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
+
+msgid "Date Of Visit"
+msgstr ""
 
 msgid "Participant Status"
 msgstr "प्रतिभागी की स्थिति"
@@ -154,11 +228,35 @@ msgstr "प्रतिक्रिया"
 msgid "Scans"
 msgstr "स्कैन"
 
+msgid "Date"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Stage"
+msgstr ""
+
+msgid "Send To DCC"
+msgstr ""
+
+msgid "Sent To DCC"
+msgstr ""
+
+msgid "Reverse Send To DCC"
+msgstr ""
+
 msgid "Date of Birth"
 msgstr "जन्म तिथि"
 
+msgid "Visits"
+msgstr ""
+
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
+
+msgid "Active"
+msgstr ""
 
 msgid "Entity Type"
 msgstr "इकाई प्रकार"
@@ -166,11 +264,17 @@ msgstr "इकाई प्रकार"
 msgid "Scan Done"
 msgstr "स्कैन पूरा हुआ"
 
-msgid "Show Advanced Filters"
-msgstr "उन्नत फ़िल्टर दिखाएँ"
+msgid "Language"
+msgstr ""
 
-msgid "Hide Advanced Filters"
-msgstr "उन्नत फ़िल्टर छुपाएँ"
+msgid "Ethnicity"
+msgstr ""
+
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Reset"
+msgstr ""
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -179,26 +283,179 @@ msgstr "{{totalCount}} में से {{pageCount}} पंक्तिया�
 msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
-msgid "Download Table as CSV"
-msgstr "तालिका को CSV के रूप में डाउनलोड करें"
+msgid "Download Data as CSV"
+msgstr ""
 
-msgid "Are You Sure?"
-msgstr "क्या आप निश्चित हैं?"
+# Dashboard panel strings
+msgid "Views"
+msgstr ""
 
-msgid "Leaving the form will result in the loss of any information entered."
-msgstr "फॉर्म छोड़ने से दर्ज की गई कोई भी जानकारी खो जाएगी।"
+#: php/libraries/Password.class.inc
+msgid "The password is too short"
+msgstr ""
 
-msgid "Proceed"
-msgstr "आगे बढ़ें"
+msgid "The password is not complex enough."
+msgstr ""
 
-msgid "Cancel"
-msgstr "रद्द करें"
+msgid "This password is known to be exposed in online data breaches."
+msgstr ""
 
-msgid "Save"
-msgstr "सहेजें"
+msgid "Data Supervisors to Email"
+msgstr ""
 
-msgid "Saving"
-msgstr "सहेजा जा रहा है"
+msgid "Invalid email address"
+msgstr ""
 
-msgid "Success!"
-msgstr "सफलता!"
+# Common strings on widgets
+msgid "NEW"
+msgstr ""
+
+msgid "Updated"
+msgstr ""
+
+msgid "Uploaded"
+msgstr ""
+
+# User Account related
+msgid "Password Rules"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "First name"
+msgstr ""
+
+msgid "First name is required and should not exceed 120 characters"
+msgstr ""
+
+msgid "Last name"
+msgstr ""
+
+msgid "Last name is required and should not exceed 120 characters"
+msgstr ""
+
+msgid "Email address"
+msgstr ""
+
+msgid "New Password"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Confirm Password"
+msgstr ""
+
+msgid "Email address is required"
+msgstr ""
+
+msgid ""
+"Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr ""
+
+msgid "The password must be at least 8 characters long."
+msgstr ""
+
+msgid "The password cannot be your username or email address."
+msgstr ""
+
+msgid "Please choose a unique password."
+msgstr ""
+
+msgid ""
+"No special characters are required but your password must be sufficiently "
+"complex to be accepted."
+msgstr ""
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "Error!"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+# Common timepoint and vist terms
+msgid "Not Started"
+msgstr ""
+
+msgid "Screening"
+msgstr ""
+
+msgid "Approval"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Recycling Bin"
+msgstr ""
+
+msgid "Pass"
+msgstr ""
+
+msgid "Failure"
+msgstr ""
+
+msgid "Withdrawal"
+msgstr ""
+
+msgid "Withdrawn"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "None"
+msgstr ""
+
+msgid "Partial"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Data Entry"
+msgstr ""
+
+msgid "Administration"
+msgstr ""
+
+msgid "Double Data Entry Form"
+msgstr ""
+
+msgid "Double Data Entry Status"
+msgstr ""
+
+msgid "Double Data Entry"
+msgstr ""
+
+# Age related terms
+msgid "Age"
+msgstr ""
+
+msgid "{{months}} months old"
+msgstr ""
+
+msgid "{{years}} years old"
+msgstr ""
+
+# Other generic terms
+msgid "Loading..."
+msgstr ""
+
+msgid "Permission denied"
+msgstr ""

@@ -164,9 +164,6 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-msgid "Close"
-msgstr ""
-
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -350,7 +347,8 @@ msgstr ""
 msgid "Email address is required"
 msgstr ""
 
-msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgid ""
+"Email address cannot contain any of the following characters: <, >, &, and \""
 msgstr ""
 
 msgid "The password must be at least 8 characters long."
@@ -362,7 +360,9 @@ msgstr ""
 msgid "Please choose a unique password."
 msgstr ""
 
-msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgid ""
+"No special characters are required but your password must be sufficiently "
+"complex to be accepted."
 msgstr ""
 
 msgid "We suggest using a password manager to generate one for you."
@@ -382,9 +382,6 @@ msgid "Not Started"
 msgstr ""
 
 msgid "Screening"
-msgstr ""
-
-msgid "Visit"
 msgstr ""
 
 msgid "Approval"
