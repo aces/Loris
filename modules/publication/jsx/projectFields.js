@@ -451,7 +451,7 @@ class ProjectFormFields extends React.Component {
         />
         <SelectElement
           name="project"
-          label={t('Project', {ns: 'publication'})}
+          label={t('Project', {ns: 'loris', count: 1})}
           options={this.props.projectOptions}
           onUserInput={this.props.setFormData}
           required={true}

@@ -9,7 +9,6 @@ import {
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
-i18n.addResourceBundle('hi', 'publication', hiStrings);
 
 /**
  * Publication upload form component
