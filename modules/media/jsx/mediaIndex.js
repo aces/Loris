@@ -93,7 +93,7 @@ class MediaIndex extends Component {
    */
   mapColumn(column, value) {
     switch (column) {
-        case this.props.t('Site', {ns: 'loris', count: 1}):
+    case this.props.t('Site', {ns: 'loris', count: 1}):
       return this.state.fieldOptions.sites[value];
     default:
       return value;
@@ -141,10 +141,10 @@ class MediaIndex extends Component {
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
-          case t('Site', {ns: 'loris', count: 1}):
+    case t('Site', {ns: 'loris', count: 1}):
       result = <td className={style}>{cell}</td>;
       break;
-          case t('Project', {ns: 'loris', count: 1}):
+    case t('Project', {ns: 'loris', count: 1}):
       result = <td className={style}>
         {this.state.fieldOptions.projects[cell]}
       </td>;
