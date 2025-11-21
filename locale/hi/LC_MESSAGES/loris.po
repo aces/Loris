@@ -33,7 +33,7 @@ msgid "Site Affiliation"
 msgstr "साइट संबद्धता"
 
 msgid "Site Affiliations"
-msgstr "साइट संबद्धता"
+msgstr "साइट संबद्धताएँ"
 
 msgid "Project Affiliation"
 msgstr "प्रोजेक्ट संबद्धता"

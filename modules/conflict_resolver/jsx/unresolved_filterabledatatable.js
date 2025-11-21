@@ -143,17 +143,17 @@ class UnresolvedFilterableDataTable extends Component {
 
     const fields = [
       {label: 'Conflict ID', show: false},
-      {label: t('Project', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'Project',
         type: 'select',
         options: options.project,
       }},
-      {label: t('Cohort', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Cohort', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'cohort',
         type: 'select',
         options: options.cohort,
       }},
-      {label: t('Site', {ns: 'conflict_resolver'}), show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'Site',
         type: 'select',
         options: options.site,
@@ -172,7 +172,7 @@ class UnresolvedFilterableDataTable extends Component {
         type: 'select',
         options: options.visitLabel,
       }},
-      {label: t('Instrument', {ns: 'loris'}), show: true, filter: {
+      {label: t('Instrument', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'instrument',
         type: 'select',
         options: options.instrument,
