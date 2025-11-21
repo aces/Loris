@@ -192,3 +192,11 @@ msgstr "प्रतिध्वनि संख्या"
 msgid "Number of volumes"
 msgstr "खंडों की संख्या"
 
+msgid "Feedback MRI Popup"
+msgstr "फीडबैक एमआरआई पॉपअप"
+
+msgid "Subject"
+msgstr "विषय"
+
+msgid "Download DICOM"
+msgstr "DICOM डाउनलोड करें"

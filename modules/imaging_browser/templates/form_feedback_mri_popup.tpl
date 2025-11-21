@@ -24,7 +24,7 @@
 <table cellpadding="2" class="table table-hover table-bordered dynamictable">
 {section name=data loop=$identifier}
     <tr>
-        <th style="text-align:left">{dgettext("imaging_browser",$identifier[data].name)}:</th>
+        <th style="text-align:left">{dgettext("loris",$identifier[data].name)}:</th>
         <td style="text-align:left">{$identifier[data].value}</td>
     </tr>
 {/section}
