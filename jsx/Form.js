@@ -2178,7 +2178,9 @@ export class CheckboxElement extends React.Component {
     let elementClass = this.props.class + ' ' + this.props.offset;
     const divStyle = this.props.class === 'checkbox-inline'
       ? {paddingRight: '5px'}
-      : {paddingRight: '5px', display: 'inline-block'};
+      : this.props.class === 'checkbox-flex' ?
+        {paddingRight: '5px', display: 'flex'}
+        : {paddingRight: '5px', display: 'inline-block'};
 
     // Add required asterix
     if (this.props.required) {
@@ -2194,7 +2196,10 @@ export class CheckboxElement extends React.Component {
     return (
       <div className={elementClass} style={this.props.style}>
         <div className="col-sm-12">
-          <label htmlFor={this.props.id}>
+          <label htmlFor={this.props.id}
+            style={
+              this.props.class === 'checkbox-flex'
+                ? {display: 'flex'} : {}}>
             <div style={divStyle}>
               <input
                 type="checkbox"
@@ -2204,6 +2209,9 @@ export class CheckboxElement extends React.Component {
                 required={this.props.required}
                 disabled={this.props.disabled}
                 onChange={this.handleChange}
+                style={
+                  this.props.class === 'checkbox-flex' ? {marginTop: '0'} : {}
+                }
               />
             </div>
             {errorMessage}

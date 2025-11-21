@@ -353,9 +353,9 @@ function DefineFields(props: {
         flexDirection: 'column',
         marginBottom: '16px'}}>
         <div style={{marginBottom: '8px'}}>
-          <CheckboxElement label='Sync visit selection across all fields'
+          <CheckboxElement label='Sync visit selection across selected fields'
             name="syncVisits"
-            class=""
+            class="checkbox-flex"
             offset=""
             value={syncVisits}
             style={{}}
@@ -430,6 +430,7 @@ function DefineFields(props: {
                   justifyContent: 'center',
                   alignItems: 'center',
                   padding: '0 20px',
+                  cursor: 'pointer',
                 }}
                 id="input-filter-addon">
                 <span className="glyphicon glyphicon-search"/>
@@ -461,10 +462,11 @@ function DefineFields(props: {
     <div>
       <div style={{display: 'flex', gap: '1rem', width: '100%'}}>
         <div style={{width: 'calc(70% - 1rem/2)', padding: '1em'}}>
-          <h1>Available Fields</h1>
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
             onChange={props.onCategoryChange}
+            label="Select a Field"
+            placeholder='Available options'
           />
           {fieldList}
         </div>
@@ -481,7 +483,7 @@ function DefineFields(props: {
             marginBottom: '1em',
             flexWrap: 'wrap',
           }}>
-            <h2>Selected Fields</h2>
+            <h2>Field Selection</h2>
             <div>
               <button type="button" className="btn btn-primary"
                 style={{marginBottom: 7}}
