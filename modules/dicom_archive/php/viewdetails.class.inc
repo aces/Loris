@@ -303,6 +303,7 @@ class ViewDetails extends \NDB_Form
                 $this->tpl_data['archive']['patientIDValid'] = 1;
             } else {
                 $this->tpl_data['archive']['patientIDValid'] = 0;
+
                 $this->tpl_data['archive']['PatientID']
                     = dgettext('dicom_archive', 'INVALID - HIDDEN');
             }
