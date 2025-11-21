@@ -378,10 +378,10 @@ function DefineFilters(props: {
       <Trans
         i18nKey="Query matches <bold>{{count}}</bold> candidates"
         ns="dataquery"
-        values={{ count: queryMatches}}
-        components={{bold: <b/>,}}
+        values={{count: queryMatches}}
+        components={{bold: <b/>}}
       />
-  </div>;
+    </div>;
   return (<div>
     {modal}
     {csvModalHTML}

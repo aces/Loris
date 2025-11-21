@@ -185,8 +185,8 @@ function AddFilterModal(props: {
               '<italic>at least one</italic> of the data points.'
             }
             ns="dataquery"
-            values={{ scope: fieldDictionary.scope}}
-            components={{italic: <i/>,}}
+            values={{scope: fieldDictionary.scope}}
+            components={{italic: <i/>}}
           />
         </div>
       </div>;
