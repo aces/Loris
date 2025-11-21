@@ -88,25 +88,27 @@ class DicomArchive extends Component {
       break;
     }
     case t('Metadata', {ns: 'dicom_archive'}): {
-      const metadataURL = loris.BaseURL +
-          '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
-      result = <td><a href={metadataURL}>{cell}</a></td>;
+      const metaURL = loris.BaseURL
+          + '/dicom_archive/viewDetails/?tarchiveID='
+          + row[t('TarchiveID', {ns: 'dicom_archive'})];
+      result=<td><a href={metaURL}>{t(cell, {ns: 'dicom_archive'})}</a></td>;
       break;
     }
     case t('MRI Browser', {ns: 'dicom_archive'}): {
-      if (row.SessionID === null || row.SessionID === '') {
+      const sessionID = row[t('SessionID', {ns: 'dicom_archive'})];
+      if (sessionID === null || sessionID === '') {
         result = <td>&nbsp;</td>;
       } else {
         let mrlURL = loris.BaseURL
                        + '/imaging_browser/viewSession/?sessionID='
-                       + row.SessionID;
-        result = <td><a href={mrlURL}>{cell}</a></td>;
+                       + sessionID;
+        result=<td><a href={mrlURL}>{t(cell, {ns: 'dicom_archive'})}</a></td>;
       }
       break;
     }
-    case 'INVALID - HIDDEN':
-      result = <td className="text-danger">{cell}</td>;
-      break;
+    }
+    if (cell == 'INVALID - HIDDEN') {
+      result=<td className="text-danger">{t(cell, {ns: 'dicom_archive'})}</td>;
     }
 
     return result;
@@ -170,7 +172,7 @@ class DicomArchive extends Component {
         name: 'seriesUID',
         type: 'text',
       }},
-      {label: t('Site', {ns: 'loris'}), show: false, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: false, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,

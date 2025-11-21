@@ -174,3 +174,11 @@ msgstr "Md5Sum"
 msgid "FileName"
 msgstr "फ़ाइल नाम"
 
+msgid "INVALID - HIDDEN"
+msgstr "अमान्य - छुपा हुआ"
+
+msgid "View Details"
+msgstr "विवरण देखें"
+
+msgid "View Images"
+msgstr "छवियाँ देखें"

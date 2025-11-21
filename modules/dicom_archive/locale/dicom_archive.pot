@@ -174,3 +174,11 @@ msgstr ""
 msgid "FileName"
 msgstr ""
 
+msgid "INVALID - HIDDEN"
+msgstr ""
+
+msgid "View Details"
+msgstr ""
+
+msgid "View Images"
+msgstr ""
