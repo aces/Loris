@@ -41,8 +41,12 @@ class FilePanel extends Component {
           </div>
           <Panel
             id={this.props.id + '_details'}
-            title={'Acquisition Details for Recording '
-            + this.props.title.split('.').slice(0, -1).join('.')
+            title={this.props.title
+              ? (
+                'Acquisition Details for Recording ' +
+                this.props.title.split('.').slice(0, -1).join('.')
+              )
+              : 'Loading...'
             }
           >
             <div className={'container-fluid'}>

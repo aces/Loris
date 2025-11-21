@@ -18,7 +18,6 @@ import {SummaryPanel} from './components/electrophysiology_session_summary';
 import {DownloadPanel} from './components/DownloadPanel';
 import Sidebar from './components/Sidebar';
 import SidebarContent from './components/SidebarContent';
-
 let EEGLabSeriesProvider;
 let SeriesRenderer;
 let EEGMontage;
@@ -241,6 +240,12 @@ class ElectrophysiologySessionView extends Component {
         datasetTags:
           dbEntry
           && dbEntry.file.datasetTags,
+        datasetTagEndorsements:
+          dbEntry
+          && dbEntry.file.datasetTagEndorsements,
+        eegMontage:
+          dbEntry
+          && dbEntry.file.eegMontage,
       }));
 
       this.setState({
@@ -342,8 +347,10 @@ class ElectrophysiologySessionView extends Component {
           events,
           hedSchema,
           datasetTags,
+          datasetTagEndorsements,
           electrodesURL,
           coordSystemURL,
+          eegMontage,
         } = this.state.database[i];
         const file = this.state.database[i].file;
         const splitPagination = [];
@@ -359,6 +366,27 @@ class ElectrophysiologySessionView extends Component {
             >{j+1}</a>
           );
         }
+        const recordingHasHED = events.hed_tags.length > 0 ||
+          Object.keys(datasetTags).some((column) => {
+            return Object.keys(datasetTags[column]).filter((columnValue) => {
+              return datasetTags[column][columnValue].length > 0;
+            }).some((columnValue) => {
+              if (column === 'trial_type') {
+                return events.instances.some((event) => {
+                  return event['TrialType'] === columnValue;
+                });
+              } else if (column === 'value') {
+                return events.instances.some((event) => {
+                  return event['EventValue'] === columnValue;
+                });
+              }
+
+              return events.extra_columns.some((prop) => {
+                return prop.PropertyName === column &&
+                  prop.PropertyValue === columnValue;
+              });
+            });
+          });
         database.push(
           <div key={i}>
             <FilePanel
@@ -378,17 +406,21 @@ class ElectrophysiologySessionView extends Component {
                   coordSystemURL={coordSystemURL}
                   hedSchema={hedSchema}
                   datasetTags={datasetTags}
+                  datasetTagEndorsements={datasetTagEndorsements}
                   physioFileID={this.state.database[i].file.id}
                   samplingFrequency={
                     this.state.database[i].file.summary[0].value
                   }
+                  eegMontageName={eegMontage}
+                  recordingHasHED={recordingHasHED}
                 >
                   <Panel
                     id='channel-viewer'
                     title={
-                      'Signal Viewer' + (file.splitData
-                        ? ' [split '+(file.splitData?.splitIndex+1)+']'
-                        : ''
+                      'Signal Viewer' + (
+                        file.splitData
+                          ? ' [split ' + (file.splitData?.splitIndex + 1) + ']'
+                          : ''
                       )
                     }
                   >

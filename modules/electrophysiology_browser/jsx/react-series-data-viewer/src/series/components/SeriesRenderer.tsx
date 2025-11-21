@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
+import swal from 'sweetalert2';
 import {Group} from '@visx/group';
 import {connect} from 'react-redux';
 import {scaleLinear, ScaleLinear} from 'd3-scale';
@@ -28,6 +29,7 @@ import Axis from './Axis';
 import LineChunk from './LineChunk';
 import Epoch from './Epoch';
 import SeriesCursor from './SeriesCursor';
+import LoadingBar from './LoadingBar';
 import {setRightPanel} from '../store/state/rightPanel';
 import {setDatasetMetadata} from '../store/state/dataset';
 import {setOffsetIndex} from '../store/logic/pagination';
@@ -61,12 +63,14 @@ import {
   ChannelMetadata,
   Channel,
   Epoch as EpochType,
-  RightPanel,
+  RightPanel, EpochFilter,
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {setCursorInteraction} from '../store/logic/cursorInteraction';
 import {setHoveredChannels} from '../store/state/cursor';
-import {getEpochsInRange} from '../store/logic/filterEpochs';
+import {getEpochsInRange, updateActiveEpoch} from '../store/logic/filterEpochs';
+import HEDEndorsement from "./HEDEndorsement";
+import {setTimeSelection} from "../store/state/timeSelection";
 
 type CProps = {
   ref: MutableRefObject<any>,
@@ -78,13 +82,13 @@ type CProps = {
   rightPanel: RightPanel,
   timeSelection?: [number, number],
   setCursor: (number) => void,
-  setRightPanel: (_: RightPanel) => void,
+  setRightPanel: (_: RightPanel | void) => void,
   chunksURL: string,
   channels: Channel[],
   channelMetadata: ChannelMetadata[],
   hidden: number[],
   epochs: EpochType[],
-  filteredEpochs: number[],
+  filteredEpochs: EpochFilter,
   activeEpoch: number,
   offsetIndex: number,
   setOffsetIndex: (_: number) => void,
@@ -94,17 +98,19 @@ type CProps = {
   setHighPassFilter: (_: string) => void,
   setViewerWidth: (_: number) => void,
   setViewerHeight: (_: number) => void,
-  setFilteredEpochs: (_: number[]) => void,
   setDatasetMetadata: (_: { limit: number }) => void,
   dragStart: (_: number) => void,
   dragContinue: (_: number) => void,
   dragEnd: (_: number) => void,
   limit: number,
+  loadedChannels: number,
   setInterval: (_: [number, number]) => void,
   setCurrentAnnotation: (_: EpochType) => void,
   physioFileID: number,
   hoveredChannels: number[],
   setHoveredChannels:  (_: number[]) => void,
+  updateActiveEpoch: (_: number) => void,
+  setTimeSelection: (_: [number, number]) => void,
 };
 
 /**
@@ -135,16 +141,18 @@ type CProps = {
  * @param root0.setHighPassFilter
  * @param root0.setViewerWidth
  * @param root0.setViewerHeight
- * @param root0.setFilteredEpochs
  * @param root0.setDatasetMetadata
  * @param root0.dragStart
  * @param root0.dragContinue
  * @param root0.dragEnd
  * @param root0.limit
+ * @param root0.loadedChannels
  * @param root0.setCurrentAnnotation
  * @param root0.physioFileID
  * @param root0.hoveredChannels
  * @param root0.setHoveredChannels
+ * @param root0.updateActiveEpoch
+ * @param root0.setTimeSelection
  */
 const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
@@ -172,44 +180,55 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setHighPassFilter,
   setViewerWidth,
   setViewerHeight,
-  setFilteredEpochs,
   setDatasetMetadata,
   dragStart,
   dragContinue,
   dragEnd,
   limit,
+  loadedChannels,
   setCurrentAnnotation,
   physioFileID,
   hoveredChannels,
   setHoveredChannels,
+  updateActiveEpoch,
+  setTimeSelection,
 }) => {
-  if (channels.length === 0) return null;
+    const [
+        numDisplayedChannels,
+        setNumDisplayedChannels,
+    ] = useState<number>(DEFAULT_MAX_CHANNELS);
+    const [cursorEnabled, setCursorEnabled] = useState(false);
+    const toggleCursor = () => setCursorEnabled((value) => !value);
+    const [DCOffsetView, setDCOffsetView] = useState(true);
+    const toggleDCOffsetView = () => setDCOffsetView((value) => !value);
+    const [stackedView, setStackedView] = useState(false);
+    const toggleStackedView = () => setStackedView((value) => !value);
+    const [singleMode, setSingleMode] = useState(false);
+    const toggleSingleMode = () => setSingleMode((value) => !value);
+    const [showOverflow, setShowOverflow] = useState(false);
+    const toggleShowOverflow = () => setShowOverflow((value) => !value);
+    const [highPass, setHighPass] = useState('none');
+    const [lowPass, setLowPass] = useState('none');
+    const [refNode, setRefNode] = useState<HTMLDivElement>(null);
+    const [bounds, setBounds] = useState<ClientRect>(null);
+    const getBounds = useCallback((domNode) => {
+        if (domNode) {
+            setRefNode(domNode);
+        }
+    }, []);
+    const [loadingBarVisibility, setLoadingBarVisibility] = useState(false);
 
-  const [
-    numDisplayedChannels,
-    setNumDisplayedChannels,
-  ] = useState<number>(DEFAULT_MAX_CHANNELS);
-  const [cursorEnabled, setCursorEnabled] = useState(false);
-  const toggleCursor = () => setCursorEnabled((value) => !value);
-  const [DCOffsetView, setDCOffsetView] = useState(true);
-  const toggleDCOffsetView = () => setDCOffsetView((value) => !value);
-  const [stackedView, setStackedView] = useState(false);
-  const toggleStackedView = () => setStackedView((value) => !value);
-  const [singleMode, setSingleMode] = useState(false);
-  const toggleSingleMode = () => setSingleMode((value) => !value);
-  const [showOverflow, setShowOverflow] = useState(false);
-  const toggleShowOverflow = () => setShowOverflow((value) => !value);
-  const [highPass, setHighPass] = useState('none');
-  const [lowPass, setLowPass] = useState('none');
-  const [refNode, setRefNode] = useState<HTMLDivElement>(null);
-  const [bounds, setBounds] = useState<ClientRect>(null);
-  const getBounds = useCallback((domNode) => {
-    if (domNode) {
-      setRefNode(domNode);
+    const [panelIsDirty, setPanelIsDirty] = useState(false);
+    const [eventChannels, setEventChannels] = useState([]);
+
+    window.onbeforeunload = function() {
+      if (panelIsDirty) {
+        return 'Are you sure you want to leave unsaved changes behind?';
+      }
     }
-  }, []);
+    const [pressedKey, setPressedKey] = useState('');
 
-  const intervalChange = Math.pow(
+    const intervalChange = Math.pow(
     10,
     Math.max(
       Math.floor(Math.log10(interval[1] - interval[0])) - 1,
@@ -280,6 +299,30 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     }
   };
 
+  const confirmPanelClose = (callbackFn) => {
+    if (panelIsDirty) {
+      return swal.fire({
+        title: 'Are you sure?',
+        text: 'Leaving the form will result in the loss of any information entered.',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Proceed',
+        cancelButtonText: 'Cancel',
+      }).then((result) => {
+        if (result.value) {
+          callbackFn();
+          setPanelIsDirty(false);
+          updateActiveEpoch(null);
+          return true;
+        } else {
+          return false;
+        }
+      });
+    }
+    callbackFn();
+    updateActiveEpoch(null);
+    return true;
+  }
 
   const viewerRef = useRef(null);
   const cursorRef = useRef(null);
@@ -289,94 +332,149 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
      *
      * @param e
      */
-    const keybindHandler = (e) => {
-      if (cursorRef.current) { // Cursor is on plot / focus
-        if ([
-          'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-        ].indexOf(e.code) > -1) {
-          e.preventDefault(); // Make sure arrows don't scroll
-
-          const intervalSize = interval[1] - interval[0];
-          switch (e.code) {
-            case 'ArrowUp':
-              setOffsetIndex(offsetIndex - limit);
-              break;
-            case 'ArrowDown':
-              setOffsetIndex(offsetIndex + limit);
-              break;
-            case 'ArrowRight':
-              setInterval([
-                Math.min(
-                  Math.ceil(domain[1]) - intervalSize,
-                  interval[0] + intervalSize
-                ),
-                Math.min(Math.ceil(domain[1]), interval[1] + intervalSize),
-              ]);
-              break;
-            case 'ArrowLeft':
-              setInterval([
-                Math.max(Math.floor(domain[0]), interval[0] - intervalSize),
-                Math.max(
-                  Math.floor(domain[0]) + intervalSize,
-                  interval[1] - intervalSize
-                ),
-              ]);
-              break;
-            default:
-              console.log('Keyboard event handler error.');
-              break;
+    const keydownHandler = (e) => {
+      const hedSearchIsFocus = document.activeElement.id === 'hed-search';
+      if ([
+        'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyI', 'KeyJ', 'KeyK'
+      ].indexOf(e.code) > -1) {
+        if (!hedSearchIsFocus) {
+          if (rightPanel && e.shiftKey) {
+            e.preventDefault(); // Make sure arrows don't scroll
+            // Interact with RightPanel
+            setPressedKey(e.code);
+          } else if (cursorRef.current && !e.shiftKey) { // Cursor is on plot / focus
+            e.preventDefault(); // Make sure arrows don't scroll
+            // Interact with SeriesRenderer
+            const intervalSize = interval[1] - interval[0];
+            switch (e.code) {
+              case 'ArrowUp':
+                setOffsetIndex(offsetIndex - limit);
+                break;
+              case 'ArrowDown':
+                setOffsetIndex(offsetIndex + limit);
+                break;
+              case 'ArrowRight':
+                setInterval([
+                  Math.min(
+                    Math.ceil(domain[1]) - intervalSize,
+                    interval[0] + intervalSize
+                  ),
+                  Math.min(Math.ceil(domain[1]), interval[1] + intervalSize),
+                ]);
+                break;
+              case 'ArrowLeft':
+                setInterval([
+                  Math.max(Math.floor(domain[0]), interval[0] - intervalSize),
+                  Math.max(
+                    Math.floor(domain[0]) + intervalSize,
+                    interval[1] - intervalSize
+                  ),
+                ]);
+                break;
+            }
           }
         }
+      }
 
-        if (e.shiftKey) {
-          switch (e.code) {
-            case 'KeyV':
-              toggleCursor();
-              break;
-            case 'KeyB':
-              toggleStackedView();
-              break;
-            case 'KeyS':
-              if (stackedView) {
-                toggleSingleMode();
-              }
-              break;
-            case 'KeyC':
-              setRightPanel(null);
-              break;
-            // case 'KeyA':
-            //   setRightPanel('annotationForm');
-            //   break;
-            case 'KeyZ':
-              zoomToSelection();
-              break;
-            case 'KeyX':
-              zoomReset();
-              break;
-            case 'Minus':
-              zoomOut();
-              break;
-            case 'Equal': // This key combination is '+'
-              zoomIn();
-              break;
-            case 'KeyN': // Lower amplitude scale
-              setAmplitudesScale(1.1);
-              break;
-            case 'KeyM': // Increase amplitude scale
-              setAmplitudesScale(0.9);
-              break;
-          }
+      if (rightPanel && e.ctrlKey) {
+        if ([
+          'KeyC', 'KeyE', 'KeyM', 'Enter',
+        ].indexOf(e.code) > -1) {
+          setPressedKey(e.code);
+        }
+      }
+
+      if (cursorRef.current && e.shiftKey) {
+        switch (e.code) {
+          case 'KeyV':
+            toggleCursor();
+            break;
+          case 'KeyB':
+            toggleStackedView();
+            break;
+          case 'KeyS':
+            if (stackedView) {
+              toggleSingleMode();
+            }
+            break;
+          // case 'KeyC':
+          //   confirmPanelClose(() => {
+          //     setRightPanel(null);
+          //   });
+          //   break;
+          case 'KeyA':
+            setRightPanel('annotationForm');
+            break;
+          case 'KeyE':
+            setRightPanel('eventList');
+            break;
+          case 'KeyH':
+            setRightPanel('hedEndorsement');
+            break;
+          case 'KeyZ':
+            zoomToSelection();
+            break;
+          case 'KeyX':
+            zoomReset();
+            break;
+          case 'Minus':
+            zoomOut();
+            break;
+          case 'Equal': // This key combination is '+'
+            zoomIn();
+            break;
+          case 'KeyN': // Lower amplitude scale
+            setAmplitudesScale(1.1);
+            break;
+          case 'KeyM': // Increase amplitude scale
+            setAmplitudesScale(0.9);
+            break;
         }
       }
     };
 
-    window.addEventListener('keydown', keybindHandler);
+    window.addEventListener('keydown', keydownHandler);
     return function cleanUp() { // Prevent multiple listeners
-      window.removeEventListener('keydown', keybindHandler);
+      window.removeEventListener('keydown', keydownHandler);
     };
   }, [
     offsetIndex, interval, limit, timeSelection, amplitudeScale, stackedView
   ]);
+
+  useEffect(() => { // Keyup handler
+    const keyupHandler = (e) => {
+      if ([
+        'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+      ].indexOf(e.code) > -1) {
+        setPressedKey('');
+      }
+    }
+    window.addEventListener('keyup', keyupHandler);
+    return function cleanUp() { // Prevent multiple listeners
+      window.removeEventListener('keyup', keyupHandler);
+    };
+  }, []);
+
+  useEffect(() => {
+    setEventChannels(
+      activeEpoch !== null
+        ? epochs[activeEpoch]?.channels ?? []
+        : []
+    );
+  }, [activeEpoch]);
+
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (rightPanel !== 'annotationForm') {
+      if (!firstRender.current) {
+        updateActiveEpoch(null);
+      } else {
+        firstRender.current = false;
+      }
+      setEventChannels([]);
+      setTimeSelection(null);
+    }
+  }, [rightPanel]);
 
   useEffect(() => {
     setViewerHeight(viewerHeight);
@@ -450,8 +548,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   vec2.scale(center, center, 1 / 2);
 
   const scales: [
-    ScaleLinear<number, number, never>,
-    ScaleLinear<number, number, never>
+      ScaleLinear<number, number, never>,
+      ScaleLinear<number, number, never>
   ] = [
     scaleLinear()
       .domain(interval)
@@ -480,6 +578,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             domain={interval}
             range={[0, viewerWidth]}
             orientation='bottom'
+            hideLine={true}
           />
         </Group>
         <Group top={viewerHeight/2} left={-viewerWidth/2}>
@@ -496,48 +595,62 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const EpochsLayer = () => {
     const visibleEpochs = rightPanel ? getEpochsInRange(epochs, interval) : [];
-    const minEpochWidth = (interval[1] - interval[0]) *
-      MIN_EPOCH_WIDTH / DEFAULT_TIME_INTERVAL[1];
+    const minEpochWidth = (interval[1] - interval[0]) * MIN_EPOCH_WIDTH / DEFAULT_TIME_INTERVAL[1];
 
     return (
       <Group>
         {
-          visibleEpochs.length < MAX_RENDERED_EPOCHS &&
-          visibleEpochs.map((index) => {
-            return filteredEpochs.includes(index) && (
+         visibleEpochs.length < MAX_RENDERED_EPOCHS &&
+          visibleEpochs.sort((a, b) => {
+              return epochs[a]?.channels.length === 0
+                ? -1
+                : 1;
+            }).map((index) => {
+            return filteredEpochs.plotVisibility.includes(index) &&
+              filteredEpochs.searchVisibility.includes(index) &&  (
               <Epoch
+                key={`epoch-${index}`}
                 {...epochs[index]}
                 parentHeight={viewerHeight}
-                color={epochs[index]?.type === 'Event'
-                  ? '#8eecfa'
-                  : '#fabb8e'
-
+                color={
+                  epochs[index]?.channels &&
+                  epochs[index]?.channels.length > 0
+                    ? '#7ef1de'
+                    : '#a6d5f2'
                 }
-                key={`${index}`}
                 scales={scales}
-                opacity={0.8}
+                opacity={0.7}
                 minWidth={minEpochWidth}
+                epochChannels={epochs[index]?.channels}
               />
             );
           })
         }
-        {timeSelection &&
+        {timeSelection && activeEpoch === null &&
           <Epoch
+            key={`epoch-${activeEpoch}`}
             onset={Math.min(timeSelection[0], timeSelection[1])}
             duration={Math.abs(timeSelection[1] - timeSelection[0])}
-            color={'#ffcccc'}
+            color={'#ff9585'}
             parentHeight={viewerHeight}
             scales={scales}
-            opacity={0.5}
+            opacity={0.7}
+            epochChannels={
+              activeEpoch
+                ? epochs[activeEpoch]?.channels ?? []
+                : eventChannels
+            }
           />
         }
         {activeEpoch !== null &&
           <Epoch
+            key={`epoch-${activeEpoch}`}
             {...epochs[activeEpoch]}
             parentHeight={viewerHeight}
             scales={scales}
-            color={'#97b68c'}
+            color={'#fff9d6'}
             minWidth={minEpochWidth}
+            epochChannels={eventChannels}
           />
         }
       </Group>
@@ -609,116 +722,116 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
         {
           channelList.map((channel, i) => {
-            if (!channelMetadata[channel.index]) {
-              return null;
-            }
-            const subTopLeft = vec2.create();
-            vec2.add(
-              subTopLeft,
-              topLeft,
-              vec2.fromValues(
-                0,
-                stackedView && !singleMode
-                  ? (numDisplayedChannels - 2) *
+          if (!channelMetadata[channel.index]) {
+            return null;
+          }
+          const subTopLeft = vec2.create();
+          vec2.add(
+            subTopLeft,
+            topLeft,
+            vec2.fromValues(
+              0,
+              stackedView && !singleMode
+                ? (numDisplayedChannels - 2) *
                   diagonal[1] / (2 * numDisplayedChannels)
-                  : (i * diagonal[1]) / numDisplayedChannels
-              )
-            );
+                : (i * diagonal[1]) / numDisplayedChannels
+            )
+          );
 
-            const subBottomRight = vec2.create();
-            vec2.add(
-              subBottomRight,
-              topLeft,
-              vec2.fromValues(
-                diagonal[0],
-                stackedView && !singleMode
-                  ? (numDisplayedChannels + 2) *
+          const subBottomRight = vec2.create();
+          vec2.add(
+            subBottomRight,
+            topLeft,
+            vec2.fromValues(
+              diagonal[0],
+              stackedView && !singleMode
+                ? (numDisplayedChannels + 2) *
                   diagonal[1] / (2 * numDisplayedChannels)
-                  : ((i + 1) * diagonal[1]) / numDisplayedChannels
-              )
-            );
+                : ((i + 1) * diagonal[1]) / numDisplayedChannels
+            )
+          );
 
-            const subDiagonal = vec2.create();
-            vec2.sub(subDiagonal, subBottomRight, subTopLeft);
+          const subDiagonal = vec2.create();
+          vec2.sub(subDiagonal, subBottomRight, subTopLeft);
 
-            const axisEnd = vec2.create();
-            vec2.add(axisEnd, subTopLeft, vec2.fromValues(0.1, subDiagonal[1]));
+          const axisEnd = vec2.create();
+          vec2.add(axisEnd, subTopLeft, vec2.fromValues(0.1, subDiagonal[1]));
 
-            return (
-              channel.traces.map((trace, j) => {
-                const numChunks = trace.chunks.filter(
-                  (chunk) => chunk.values.length > 0
-                ).length;
+          return (
+            channel.traces.map((trace, j) => {
+              const numChunks = trace.chunks.filter(
+                (chunk) => chunk.values.length > 0
+              ).length;
 
-                const valuesInView = trace.chunks.map((chunk) => {
-                  let includedIndices = [0, chunk.values.length];
-                  if (chunk.interval[0] < interval[0]) {
-                    const startIndex = chunk.values.length *
-                      (interval[0] - chunk.interval[0]) /
-                      (chunk.interval[1] - chunk.interval[0]);
-                    includedIndices = [startIndex, includedIndices[1]];
-                  }
-                  if (chunk.interval[1] > interval[1]) {
-                    const endIndex = chunk.values.length *
-                      (interval[1] - chunk.interval[0]) /
-                      (chunk.interval[1] - chunk.interval[0]);
-                    includedIndices = [includedIndices[0], endIndex];
-                  }
-                  return chunk.values.slice(
-                    includedIndices[0], includedIndices[1]
-                  );
-                }).flat();
-
-                if (valuesInView.length === 0) {
-                  return;
+              const valuesInView = trace.chunks.map((chunk) => {
+                let includedIndices = [0, chunk.values.length];
+                if (chunk.interval[0] < interval[0]) {
+                  const startIndex = chunk.values.length *
+                    (interval[0] - chunk.interval[0]) /
+                    (chunk.interval[1] - chunk.interval[0]);
+                  includedIndices = [startIndex, includedIndices[1]];
                 }
+                if (chunk.interval[1] > interval[1]) {
+                  const endIndex = chunk.values.length *
+                    (interval[1] - chunk.interval[0]) /
+                    (chunk.interval[1] - chunk.interval[0]);
+                  includedIndices = [includedIndices[0], endIndex];
+                }
+                return chunk.values.slice(
+                  includedIndices[0], includedIndices[1]
+                );
+              }).flat();
 
-                const seriesRange: [number, number] = STATIC_SERIES_RANGE;
+              if (valuesInView.length === 0) {
+                return;
+              }
 
-                const scales: [
-                  ScaleLinear<number, number, never>,
-                  ScaleLinear<number, number, never>
-                ] = [
-                  scaleLinear()
-                    .domain(interval)
-                    .range([subTopLeft[0], subBottomRight[0]]),
-                  scaleLinear()
-                    .domain(seriesRange)
-                    .range(
-                      stackedView
-                        ? [
-                          -viewerHeight / (2 * numDisplayedChannels),
-                          viewerHeight / (2 * numDisplayedChannels),
-                        ]
-                        : [subTopLeft[1], subBottomRight[1]]
-                    ),
-                ];
+              const seriesRange: [number, number] = STATIC_SERIES_RANGE;
 
-                const scaleByAmplitude = scaleLinear()
-                  .domain(seriesRange.map((x) => x * amplitudeScale))
-                  .range([-0.5, 0.5]);
+              const scales: [
+                ScaleLinear<number, number, never>,
+                ScaleLinear<number, number, never>
+              ] = [
+                scaleLinear()
+                  .domain(interval)
+                  .range([subTopLeft[0], subBottomRight[0]]),
+                scaleLinear()
+                  .domain(seriesRange)
+                  .range(
+                    stackedView
+                      ? [
+                        -viewerHeight / (2 * numDisplayedChannels),
+                        viewerHeight / (2 * numDisplayedChannels),
+                      ]
+                      : [subTopLeft[1], subBottomRight[1]]
+                  ),
+              ];
 
-                /**
-                 *
-                 * @param values
-                 */
-                const getScaledMean = (values) => {
-                  let numValues = values.length;
-                  return values.reduce((a, b) => {
+              const scaleByAmplitude = scaleLinear()
+                .domain(seriesRange.map((x) => x * amplitudeScale))
+                .range([-0.5, 0.5]);
+
+              /**
+               *
+               * @param values
+               */
+              const getScaledMean = (values) => {
+                let numValues = values.length;
+                return values.reduce((a, b) => {
                     if (isNaN(b)) {
                       numValues--;
                       return a;
                     }
-                    return a + scaleByAmplitude(b);
-                  }, 0) / numValues;
-                };
+                  return a + scaleByAmplitude(b);
+                }, 0) / numValues;
+              };
 
-                const DCOffset = DCOffsetView
-                  ? getScaledMean(valuesInView)
-                  : 0;
+              const DCOffset = DCOffsetView
+                ? getScaledMean(valuesInView)
+                : 0;
 
-                return (
-                  trace.chunks.map((chunk, k, chunks) => (
+              return (
+                trace.chunks.map((chunk, k, chunks) => (
                     <LineChunk
                       channelIndex={channel.index}
                       traceIndex={j}
@@ -740,11 +853,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                           : chunks[k - 1].values.slice(-1)[0]
                       }
                     />
-                  ))
-                );
-              })
-            );
-          })}
+                ))
+              );
+            })
+          );
+        })}
       </>
     );
   };
@@ -796,14 +909,131 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
    *
    * @param channelIndex
    */
+  const onChannelClick = (channelIndex : number) => {
+    if (rightPanel !== 'annotationForm') {
+      return;
+    }
+
+    if (channelMetadata[channelIndex]) {
+      const channelName = channelMetadata[channelIndex].name;
+      if (eventChannels.includes(channelName)) {
+        setEventChannels(
+          eventChannels.filter((channel) => {
+            return channel !== channelName;
+          })
+        );
+      } else {
+        setEventChannels([
+          ...eventChannels,
+          channelName
+        ]);
+      }
+    }
+  }
+
+  /**
+   *
+   * @param channelIndex
+   */
   const onChannelHover = (channelIndex : number) => {
     setHoveredChannels(channelIndex === -1 ? [] : [channelIndex]);
   };
 
+  const flushWidth = (progressBarRef) => {
+    progressBarRef.style.width; // Force flush
+    setTimeout(
+      () => {
+        // Reset to original transition
+        progressBarRef.style.transition = 'width 1s linear';
+        setLoadingBarVisibility(true);
+      }, 50
+    );
+  }
+
+  const setProgressBarWidth = (width) => {
+    setLoadingBarVisibility(false);
+    const progressBarRef = document.querySelector<HTMLElement>('#chunk-progress-bar');
+    if (!progressBarRef) return;
+    progressBarRef.style.transition = '';
+    progressBarRef.style.width = width;
+    flushWidth(progressBarRef);
+  }
+
+  useEffect(() => {
+    if (loadedChannels < limit) {
+      const progressBarRef = document.querySelector<HTMLElement>('#chunk-progress-bar');
+      if (progressBarRef && progressBarRef.style.width === '0%') {
+        setProgressBarWidth('0%');
+      } else if (!loadingBarVisibility) {
+        setProgressBarWidth(`${100 * loadedChannels / limit}%`);
+      }
+    }
+  }, [loadedChannels]);
+
+
+  useEffect(() => {
+    if (loadedChannels < limit) {
+      setProgressBarWidth(`${100 * loadedChannels / limit}%`);
+    }
+  }, [limit]);
+
+  const MenuOption = {
+    'MANAGE_EVENTS': 'Events',
+    'HED_ENDORSEMENT': 'HED Endorsements',
+  }
+
   return (
     <>
-      {channels.length > 0 ? (
-        <div className='row'>
+{/*      {channels.length > 0 ? (*/}
+        <>
+        <div
+          className='row'
+          style={{
+            width: rightPanel ? '72.5%' : '96.5%',
+            position: 'absolute',
+            zIndex: 3,
+          }}
+        >
+          <div id="right-panel-controls">
+            <button
+              className={'btn btn-primary'}
+              disabled={!chunksURL || !chunksURL[0].includes('Face13') || rightPanel === 'annotationForm'}
+              onClick={() => {
+                confirmPanelClose(() => {
+                  setRightPanel('annotationForm')
+                  setCurrentAnnotation(null);
+                });
+              }}
+            >
+              Add Event
+            </button>
+            {
+              rightPanel === null && (
+                <button
+                  className={
+                    'btn btn-primary btn-blue'
+                    + (rightPanel ? ' active' : '')
+                  }
+                  onClick={() => {
+                    confirmPanelClose(() => {
+                      setRightPanel(
+                        rightPanel
+                          ? null
+                          : 'eventList'
+                      );
+                    })
+                  }}
+                >
+                  {rightPanel
+                    ? 'Close Panel'
+                    : 'Display Events'
+                  }
+                </button>
+              )
+            }
+          </div>
+        </div>
+        <div className={'row'}>
           <div className={rightPanel ? 'col-md-9' : 'col-xs-12'}>
             <div
               className='col-xs-1'
@@ -874,7 +1104,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   className='row'
                   style={{
                     paddingTop: '15px',
-                    paddingBottom: '20px',
                   }}
                 >
                   <div
@@ -1053,7 +1282,25 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                visibility: loadingBarVisibility ? 'visible' : 'hidden',
               }}>
+                <LoadingBar
+                  progress={
+                      100 * loadedChannels / Math.min(channels.length, limit)
+                  }
+                  wrapperStyle={{
+                    marginLeft: 'calc(100% / 12 - 10px)',
+                    textAlign: 'center',
+                    width: 'calc(1100% / 12 - 15px)',
+                  }}
+                  onTransitionEnd={(e) => {
+                    if (e.propertyName === 'width') {
+                      setTimeout(() => {
+                        setLoadingBarVisibility(false);
+                      }, 500);
+                    }
+                  }}
+                />
               </div>
             </div>
             <div className='row'>
@@ -1065,34 +1312,45 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   alignItems: 'center',
                   height: viewerHeight,
                   paddingRight: '0px',
+                  userSelect: 'none',
                 }}
               >{/* Below slice changes labels to be subset of channel choice */}
                 {filteredChannels
                   .slice(0, numDisplayedChannels)
                   .map((channel) => (
-                    <div
-                      key={channel.index}
-                      style={{
-                        display: 'flex',
-                        height: 1 / numDisplayedChannels * 100 + '%',
-                        alignItems: 'center',
-                        cursor: 'default',
-                        color: `${stackedView ||
+                  <div
+                    key={channel.index}
+                    style={{
+                      display: 'flex',
+                      height: 1 / numDisplayedChannels * 100 + '%',
+                      alignItems: 'center',
+                      cursor: 'default',
+                      color: `${stackedView ||
                         hoveredChannels.includes(channel.index)
-                          ? colorOrder(channel.index.toString())
-                          : '#333'}`,
-                        fontWeight: `${stackedView &&
+                        ? colorOrder(channel.index.toString())
+                        : '#333'}`,
+                      fontWeight: `${stackedView &&
                         hoveredChannels.includes(channel.index)
-                          ? 'bold'
-                          : 'normal'}`,
-                      }}
-                      onMouseEnter={() => onChannelHover(channel.index)}
-                      onMouseLeave={() => onChannelHover(-1)}
-                    >
-                      {channelMetadata[channel.index] &&
-                        channelMetadata[channel.index].name}
-                    </div>
-                  ))}
+                        ? 'bold'
+                        : 'normal'}`,
+                      background:
+                        (
+                          channelMetadata[channel.index] &&
+                          eventChannels.includes(channelMetadata[channel.index].name)
+                        )
+                          ? (activeEpoch === null && rightPanel === 'annotationForm')
+                            ? '#ff9585'
+                            : '#fff9d6'
+                          : 'unset',
+                    }}
+                    onMouseEnter={() => onChannelHover(channel.index)}
+                    onMouseLeave={() => onChannelHover(-1)}
+                    onClick={() => onChannelClick(channel.index)}
+                  >
+                    {channelMetadata[channel.index] &&
+                    channelMetadata[channel.index].name}
+                  </div>
+                ))}
               </div>
               <div
                 className='col-xs-11'
@@ -1136,6 +1394,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   <div style={{height: viewerHeight}} ref={getBounds}>
                     <ResponsiveViewer
                       ref={viewerRef}
+                      // @ts-ignore
                       mouseMove={useCallback((cursor: [number, number]) => {
                         setCursor({
                           cursorPosition: [cursor[0], cursor[1]],
@@ -1149,6 +1408,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       }, [bounds])}
                       showOverflow={showOverflow}
                       chunksURL={chunksURL}
+                      cssClass={''}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
@@ -1180,7 +1440,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 style={{
                   textAlign: 'center',
                   position: 'absolute',
-                  bottom: '0',
+                  bottom: '-38px',
                 }}
               >
                 <input
@@ -1217,45 +1477,136 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   value={`${singleMode ? 'Standard' : 'Isolate'}`}
                 />
               </div>
-              <div className='col-xs-offset-1 col-xs-11'>
-                {
-                  [...Array(epochs.length).keys()].filter((i) =>
-                    epochs[i].type === 'Event'
-                  ).length > 0 &&
-                  <button
-                    className={
-                      'btn btn-primary'
-                      + (rightPanel === 'eventList' ? ' active' : '')
-                    }
-                    onClick={() => {
-                      rightPanel === 'eventList'
-                        ? setRightPanel(null)
-                        : setRightPanel('eventList');
-                    }}
-                  >
-                    {rightPanel === 'eventList'
-                      ? 'Hide Event Panel'
-                      : 'Show Event Panel'
-                    }
-                  </button>
-                }
-              </div>
             </div>
           </div>
           {rightPanel &&
             <div className='col-md-3'>
-              {rightPanel === 'annotationForm' &&
-                <AnnotationForm/>
+              <div
+                style={{
+                  display: rightPanel ? 'flex' : 'none',
+                  color: '#064785',
+                  borderColor: '#C3D5DB',
+                }}
+              >
+                <ul
+                  className="nav nav-tabs"
+                  role="tablist"
+                  style={{
+                    marginLeft: 0,
+                    marginBottom: '-1px',
+                    borderBottomColor: '#C3D5DB',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                  }}
+                >
+                  {
+                    Object.keys(MenuOption).map((menuOption, i) => {
+                      const isActiveMenuOption =
+                        (['eventList', 'annotationForm'].includes(rightPanel) && menuOption == 'MANAGE_EVENTS') ||
+                        (rightPanel === 'hedEndorsement' && menuOption == 'HED_ENDORSEMENT')
+                      return (
+                        <li
+                          key={`event-tab-${i}`}
+                          role="presentation"
+                          className={'event-tab' + (isActiveMenuOption ? ' active' : '')}
+                          onClick={async (e) => {
+                            if (!(await confirmPanelClose(() => {
+                              switch (menuOption) {
+                                case 'MANAGE_EVENTS':
+                                  setRightPanel('eventList');
+                                  break;
+                                case 'HED_ENDORSEMENT':
+                                  setTimeSelection(null);
+                                  setRightPanel('hedEndorsement');
+                                  break;
+                              }
+                            }))) {
+                              e.stopPropagation();
+                            }
+                          }}
+                        >
+                          <a
+                            style={{
+                              backgroundColor: 'rgb(228, 235, 242)',
+                              border: '1px solid #C3D5DB',
+                              borderBottomColor: isActiveMenuOption ? 'rgb(228, 235, 242)' : '#C3D5DB',
+                              fontWeight: isActiveMenuOption ? 'bold' : 'normal',
+                              padding: '10px 0',
+                              textAlign: 'center',
+                            }}
+                            href={'#'}
+                            role="tab"
+                            data-toggle="tab"
+                            onClick={(event) => {
+                              event.preventDefault();
+                            }}
+                          >
+                            {MenuOption[menuOption]}
+                          </a>
+                        </li>
+                      );
+                    })
+                  }
+                  <li
+                    key={'close-tab'}
+                    role="presentation"
+                    style={{
+                      display: 'flex',
+                      maxWidth: '42px',
+                      flexGrow: 1,
+                    }}
+                    onClick={async (e) => {
+                      if (!(await confirmPanelClose(() => {
+                        setRightPanel(null);
+                      }))) {
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
+                    <a
+                      className={'close-tab'}
+                      href={'#'}
+                      onClick={(event) => {
+                        event.preventDefault();
+                      }}
+                      role="tab"
+                    >
+                      ×
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              {
+                rightPanel === 'annotationForm' &&
+                chunksURL[0].includes('Face13') &&
+                <AnnotationForm
+                  panelIsDirty={panelIsDirty}
+                  setPanelIsDirty={setPanelIsDirty}
+                  eventChannels={eventChannels}
+                  setEventChannels={setEventChannels}
+                />
               }
-              {rightPanel === 'eventList' && <EventManager/>}
+              {
+                rightPanel === 'eventList' &&
+                <EventManager canEdit={chunksURL[0].includes('Face13')} />
+              }
+              {
+                rightPanel === 'hedEndorsement' &&
+                <HEDEndorsement
+                  canEndorse={chunksURL[0].includes('Face13')}
+                  pressedKey={pressedKey}
+                />
+              }
             </div>
           }
         </div>
-      ) : (
+        </>
+      { /*) : (
         <div style={{width: '100%', height: '100%'}}>
           <h4>Loading...</h4>
         </div>
-      )}
+      )}*/}
     </>
   );
 };
@@ -1283,12 +1634,13 @@ export default connect(
     chunksURL: state.dataset.chunksURL,
     channels: state.channels,
     epochs: state.dataset.epochs,
-    filteredEpochs: state.dataset.filteredEpochs.plotVisibility,
+    filteredEpochs: state.dataset.filteredEpochs,
     activeEpoch: state.dataset.activeEpoch,
     hidden: state.montage.hidden,
     channelMetadata: state.dataset.channelMetadata,
     offsetIndex: state.dataset.offsetIndex,
     limit: state.dataset.limit,
+    loadedChannels: state.dataset.loadedChannels,
     domain: state.bounds.domain,
     physioFileID: state.dataset.physioFileID,
     hoveredChannels: state.cursor.hoveredChannels,
@@ -1357,6 +1709,14 @@ export default connect(
     setHoveredChannels: R.compose(
       dispatch,
       setHoveredChannels
+    ),
+    updateActiveEpoch: R.compose(
+      dispatch,
+      updateActiveEpoch
+    ),
+    setTimeSelection: R.compose(
+      dispatch,
+      setTimeSelection
     ),
   })
 )(SeriesRenderer);

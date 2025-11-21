@@ -25,7 +25,6 @@ interface IHandleProps {
  * @param root0.handle.percent
  * @param root0.getHandleProps
  */
-
 export const Handle: React.FC<IHandleProps> = ({
   domain: [min, max],
   handle: {id, value, percent},
@@ -104,6 +103,7 @@ export const Tick: React.FC<ITickProps> = ({tick, count}) => (
 interface IInfoIcon {
   title: string;
   url: string;
+  tooltipText?: string,
 }
 
 /**
@@ -111,11 +111,13 @@ interface IInfoIcon {
  * @param root0
  * @param root0.title
  * @param root0.url
+ * @param root0.tooltipText
  */
 export const InfoIcon: React.FC<IInfoIcon> = ({
-  title,
-  url,
-}) => (
+                                                title,
+                                                url,
+                                                tooltipText = null,
+                                              }) => (
   <a
     href={url}
     target="_blank"
@@ -124,9 +126,12 @@ export const InfoIcon: React.FC<IInfoIcon> = ({
       marginLeft: '5px',
       color: '#A9A9A9',
     }}
-    title={title}
+    title={tooltipText ? null : title}
+    className={tooltipText ? 'browser-index-css-tooltip' : ''}
   >
     <i className='glyphicon glyphicon-info-sign'/>
+    {
+      tooltipText && <span className='browser-index-tooltip-text'>{tooltipText}</span>
+    }
   </a>
 );
-
