@@ -120,6 +120,8 @@ locales:
 	msgfmt -o modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/hi/LC_MESSAGES/data_release.po
 	npx i18next-conv -l hi -s modules/data_release/locale/hi/LC_MESSAGES/data_release.po -t modules/data_release/locale/hi/LC_MESSAGES/data_release.json
 	msgfmt -o modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.mo modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po
+	msgfmt -o modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.mo modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.po
+	npx i18next-conv -l hi -s modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.po -t modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.json
 	msgfmt -o modules/dictionary/locale/ja/LC_MESSAGES/dictionary.mo modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po
 	npx i18next-conv -l ja -s modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po -t modules/dictionary/locale/ja/LC_MESSAGES/dictionary.json
 	msgfmt -o modules/dictionary/locale/hi/LC_MESSAGES/dictionary.mo modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po
