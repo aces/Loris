@@ -264,9 +264,6 @@ msgstr "भ्रमण"
 msgid "Visit"
 msgstr "भेंट"
 
-msgid "Instrument"
-msgstr "उपकरण"
-
 msgid "Created"
 msgstr "बनाया गया"
 
@@ -405,9 +402,6 @@ msgstr "शुरू नहीं हुआ"
 msgid "Screening"
 msgstr "जांच"
 
-msgid "Visit"
-msgstr "भेंट"
-
 msgid "Approval"
 msgstr "स्वीकृति"
 
@@ -425,12 +419,6 @@ msgstr "विफलता"
 
 msgid "Withdrawal"
 msgstr "निकासी"
-
-msgid "In Progress"
-msgstr "प्रगति पर"
-
-msgid "Complete"
-msgstr "पूर्ण"
 
 msgid "Instrument"
 msgid_plural "Instruments"
