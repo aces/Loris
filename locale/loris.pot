@@ -57,6 +57,7 @@ msgstr ""
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr ""
+
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -108,7 +109,7 @@ msgstr ""
 msgid "Reports"
 msgstr ""
 
-# Common loris terms. Consider moving these to their own textdomain?
+# Common loris terms.
 msgid "TimePoint"
 msgstr ""
 
@@ -170,11 +171,17 @@ msgid "Leaving the form will result in the loss of any information entered."
 msgid "Close"
 msgstr ""
 
+msgid "Close"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
 
 msgid "DCCID"
+msgstr ""
+
+msgid "Visit"
 msgstr ""
 
 msgid "Visit Label"
@@ -203,7 +210,7 @@ msgstr ""
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] ""
- 
+
 msgid "Session"
 msgstr ""
 
@@ -226,6 +233,12 @@ msgid "Feedback"
 msgstr ""
 
 msgid "Scans"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Time"
 msgstr ""
 
 msgid "Stage"
@@ -371,9 +384,6 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-msgid "Date"
-msgstr ""
-
 # Common timepoint and vist terms
 msgid "Not Started"
 msgstr ""
@@ -453,3 +463,5 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
+msgid "Permission denied"
+msgstr ""

@@ -1,0 +1,115 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Schedule Appointment"
+msgstr "अपॉइंटमेंट निर्धारित करें"
+
+msgid "Appointment Date"
+msgstr "अपॉइंटमेंट तिथि"
+
+msgid "Appointment Time"
+msgstr "अपॉइंटमेंट समय"
+
+msgid "Appointment Type"
+msgstr "अपॉइंटमेंट प्रकार"
+
+msgid "AppointmentTypeName"
+msgstr "अपॉइंटमेंट प्रकार नाम"
+
+msgid "Edit"
+msgstr "संपादित करें"
+
+msgid "Delete"
+msgstr "हटाएँ"
+
+msgid "Data Entry Status"
+msgstr "डेटा प्रविष्टि स्थिति"
+
+msgid "Complete"
+msgstr "पूर्ण"
+
+msgid "No Data Found"
+msgstr "कोई डेटा नहीं मिला"
+
+msgid "Not Started"
+msgstr "शुरू नहीं हुआ"
+
+msgid "Edit Appointment"
+msgstr "अपॉइंटमेंट संपादित करें"
+
+msgid "Create Appointment"
+msgstr "अपॉइंटमेंट बनाएँ"
+
+msgid "Add Appointment"
+msgstr "अपॉइंटमेंट जोड़ें"
+
+msgid "All"
+msgstr "सभी"
+
+msgid "Past"
+msgstr "पिछला"
+
+msgid "Next 30 Days"
+msgstr "अगले 30 दिन"
+
+msgid "Today"
+msgstr "आज"
+
+msgid "Appointment modified."
+msgstr "अपॉइंटमेंट संशोधित किया गया।"
+
+msgid "Appointment added."
+msgstr "अपॉइंटमेंट जोड़ा गया।"
+
+msgid "Success!"
+msgstr "सफलता!"
+
+msgid "No changes were made!"
+msgstr "कोई परिवर्तन नहीं किया गया!"
+
+msgid "Are you sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "You won't be able to revert this!"
+msgstr "आप इसे वापस नहीं कर पाएंगे!"
+
+msgid "Yes, delete it!"
+msgstr "हाँ, हटाएँ!"
+
+msgid "No, cancel it!"
+msgstr "नहीं, रद्द करें!"
+
+msgid "Deleted!"
+msgstr "हटा दिया गया!"
+
+msgid "Your appointment has been deleted."
+msgstr "आपका अपॉइंटमेंट हटा दिया गया है।"
+
+msgid "Starts At"
+msgstr "प्रारंभ समय"
+
+msgid "Date"
+msgstr "दिनांक"
+
+msgid "Time"
+msgstr "समय"
+
+msgid "Appointment Type Name"
+msgstr "अपॉइंटमेंट प्रकार नाम"

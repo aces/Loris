@@ -21,3 +21,39 @@ msgstr ""
 msgid "Help Editor"
 msgstr "ヘルプエディター"
 
+msgid "Edit Help Content"
+msgstr "ヘルプコンテンツを編集する"
+
+msgid "Help ID"
+msgstr "ヘルプ識別子"
+
+msgid "Topic"
+msgstr "トピック"
+
+msgid "Content"
+msgstr "興奮した"
+
+msgid "Title"
+msgstr "タイトル"
+
+msgid "Open the help dialog to preview the changes."
+msgstr "変更をプレビューするにはヘルプ ダイアログを開きます。"
+
+msgid "Content update successful!"
+msgstr "コンテンツの更新に成功しました!"
+
+msgid "Content update unsuccessful."
+msgstr "コンテンツの更新に失敗しました。"
+
+msgid "Something went wrong"
+msgstr "問題が発生しました"
+
+msgid "Try again"
+msgstr "もう一度やり直してください"
+
+msgid "Help content cannot be added to an instrument that has already been registered."
+msgstr "すでに登録されている機器にはヘルプ コンテンツを追加できません。"
+
+msgid "Adding help content for a specific instrument"
+msgstr "特定の機器のヘルプコンテンツを追加する"
+
