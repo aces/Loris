@@ -71,7 +71,7 @@ class SurveyAccountsIndex extends Component {
       const url = loris.BaseURL + '/survey.php?key=' + row.URL;
       result = <td><a href={url}>{cell}</a></td>;
       break;
-    case t('Instrument', {ns: 'survey_accounts'}):
+	    case t('Instrument', {ns: 'loris', count: 1}):
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
     }
@@ -114,7 +114,7 @@ class SurveyAccountsIndex extends Component {
         type: 'select',
         options: options.visits,
       }},
-      {label: t('Instrument', {ns: 'loris'}), show: true, filter: {
+      {label: t('Instrument', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'instrument',
         type: 'select',
         options: options.instruments,
