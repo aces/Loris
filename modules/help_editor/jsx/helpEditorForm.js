@@ -9,6 +9,7 @@ import {SelectElement} from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/help_editor.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/help_editor.json';
 
 /**
  * Help Editor Form Page.
@@ -174,14 +175,10 @@ HelpEditorForm.propTypes = {
   t: PropTypes.func,
 };
 
+window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'help_editor', hiStrings);
+  i18n.addResourceBundle('ja', 'help_editor', jaStrings);
+  i18n.changeLanguage(i18n.language || 'en');
+});
 window.RHelpEditorForm = React.createFactory(
   withTranslation(['help_editor'])(HelpEditorForm));
-
-window.addEventListener('load', () => {
-  const currentLang = i18n.language || 'en';
-  if (currentLang === 'hi') {
-    i18n.addResourceBundle('hi', 'help_editor', hiStrings);
-    // Force a re-render by changing language back to itself
-    i18n.changeLanguage(currentLang);
-  }
-});

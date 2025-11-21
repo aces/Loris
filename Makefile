@@ -133,6 +133,7 @@ locales:
 	msgfmt -o modules/help_editor/locale/ja/LC_MESSAGES/help_editor.mo modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po
 	msgfmt -o modules/help_editor/locale/hi/LC_MESSAGES/help_editor.mo modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po
 	npx i18next-conv -l hi -s modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po -t modules/help_editor/locale/hi/LC_MESSAGES/help_editor.json
+	npx i18next-conv -l ja -s modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po -t modules/help_editor/locale/ja/LC_MESSAGES/help_editor.json
 	msgfmt -o modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.mo modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po
 	npx i18next-conv -l ja -s modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po -t modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.json --compatibilityJSON v4
 	msgfmt -o modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.mo modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.po

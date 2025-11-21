@@ -184,6 +184,25 @@ class Edit_Help_Content extends \NDB_Form
             ]
         );
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                dgettext("help_editor", 'Help Editor'),
+                '/help_editor/'
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("help_editor", 'Edit Help Content'),
+                "/help_editor/edit_help_content"
+            )
+        );
+    }
 }
 
 
