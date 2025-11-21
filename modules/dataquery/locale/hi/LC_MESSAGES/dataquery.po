@@ -102,6 +102,9 @@ msgstr "फ़िल्टर जोड़ें"
 msgid "Run Query"
 msgstr "क्वेरी चलाएँ"
 
+msgid "View Data"
+msgstr "डेटा देखें"
+
 msgid "Next Steps"
 msgstr "अगले चरण"
 
@@ -186,8 +189,8 @@ msgstr "\"or\" शर्त जोड़ें"
 msgid "Delete Item"
 msgstr "आइटम हटाएँ"
 
-msgid "Query matches <b>{{count}}</b> candidates"
-msgstr "क्वेरी <b>{{count}}</b> उम्मीदवारों से मेल खाती है"
+msgid "Query matches <bold>{{count}}</bold> candidates"
+msgstr "क्वेरी <bold>{{count}}</bold> उम्मीदवारों से मेल खाती है"
 
 msgid "Current Query"
 msgstr "वर्तमान क्वेरी"
@@ -213,8 +216,8 @@ msgstr "ऑपरेटर चुनें"
 msgid "for at least one of the following visits"
 msgstr "निम्नलिखित में से कम से कम एक विज़िट के लिए"
 
-msgid "This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <i>at least one</i> of the data points."
-msgstr "यह फ़ील्ड एक {{scope}} के लिए कई बार हो सकती है। इस पर आधारित मानदंड जोड़ने का मतलब है कि यह <i>कम से कम एक</i> डेटा बिंदु के लिए मेल खाना चाहिए।"
+msgid "This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <italic>at least one</italic> of the data points."
+msgstr "यह फ़ील्ड एक {{scope}} के लिए कई बार हो सकती है। इस पर आधारित मानदंड जोड़ने का मतलब है कि यह <italic>कम से कम एक</italic> डेटा बिंदु के लिए मेल खाना चाहिए।"
 
 msgid "Invalid field"
 msgstr "अमान्य फ़ील्ड"
@@ -340,7 +343,9 @@ msgid "No run times (eliminate duplicates)"
 msgstr "कोई रन समय नहीं (डुप्लीकेट हटाएँ)"
 
 msgid "Filter"
-msgstr "फ़िल्टर"
+msgid_plural "Filters"
+msgstr[0] "फ़िल्टर"
+msgstr[1] "फिल्टर"
 
 msgid "Named Only"
 msgstr "केवल नाम वाली"
@@ -393,8 +398,8 @@ msgstr "क्वेरी का नाम दें"
 msgid "Fields"
 msgstr "फ़ील्ड्स"
 
-msgid "Filters"
-msgstr "फ़िल्टर्स"
+msgid "{{columnName}} fields"
+msgstr "{{columnName}} फ़ील्ड्स"
 
 msgid "Define Filters"
 msgstr "फ़िल्टर निर्धारित करें"

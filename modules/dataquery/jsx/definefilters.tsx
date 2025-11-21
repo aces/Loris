@@ -11,7 +11,7 @@ import {FullDictionary, DictionaryCategory} from './types';
 import {calcPayload} from './calcpayload';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 
 /**
  * The define filters tab of the DQT
@@ -374,8 +374,14 @@ function DefineFilters(props: {
 
   const matchCount = queryMatches === null
     ? <div>&nbsp;</div> // So the header doesn't jump around
-    : <div>{t('Query matches <b>{{count}}</b> candidates',
-      {ns: 'dataquery', count: queryMatches})}</div>;
+    : <div>
+      <Trans
+        i18nKey="Query matches <bold>{{count}}</bold> candidates"
+        ns="dataquery"
+        values={{ count: queryMatches}}
+        components={{bold: <b/>,}}
+      />
+  </div>;
   return (<div>
     {modal}
     {csvModalHTML}

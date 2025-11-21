@@ -206,6 +206,15 @@ msgstr "चयनित"
 msgid "Cancel"
 msgstr "रद्द करें"
 
+msgid "Clear"
+msgstr "हटाना"
+
+msgid "Submit"
+msgstr "जमा करना"
+
+msgid "Proceed"
+msgstr "आगे बढ़ना"
+
 msgid "Success!"
 msgstr "सफलता!"
 

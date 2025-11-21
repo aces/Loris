@@ -376,7 +376,7 @@ function DefineFields(props: {
     fieldList = (<div>
       <div style={{display: 'flex', flexWrap: 'wrap',
         justifyContent: 'space-between'}}>
-        <h2>{cname} {t('fields')}</h2>
+        <h2>{t('{{columnName}} fields', {ns: 'dataquery', columnName: cname})}</h2>
         <div style={{marginTop: '1em',
           display: 'flex',
           flexWrap: 'nowrap',
@@ -445,7 +445,7 @@ function DefineFields(props: {
               <div>
                 <button type="button" className="btn btn-primary"
                   style={{marginBottom: 7}}
-                  onClick={props.onClearAll}>{t('Clear')}</button>
+                  onClick={props.onClearAll}>{t('Clear', {ns: 'loris'})}</button>
               </div>
             </div>
             <SelectedFieldList
