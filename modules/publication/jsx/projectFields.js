@@ -588,7 +588,7 @@ class ProjectFormFields extends React.Component {
         />
         {fileFields}
         <ButtonElement label={this.props.editMode ?
-          t('Submit', {ns: 'publication'}) :
+          t('Submit', {ns: 'loris'}) :
           t('Propose Project', {ns: 'publication'})}
         />
       </div>
