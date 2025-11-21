@@ -197,9 +197,6 @@ msgstr[0] ""
 msgid "Session"
 msgstr ""
 
-msgid "Instrument"
-msgstr ""
-
 msgid "Date of registration"
 msgstr ""
 
