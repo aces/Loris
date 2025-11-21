@@ -13,12 +13,7 @@ import {APIQueryField} from './types';
 import {FullDictionary} from './types';
 import {FlattenedField, FlattenedQuery, VisitOption} from './types';
 import {useTranslation} from 'react-i18next';
-// @ts-ignore
-import i18n from 'I18nSetup';
-import {withTranslation} from 'react-i18next';
-import {createRoot} from 'react-dom/client';
-
-import hiStrings from '../locale/hi/LC_MESSAGES/dataquery.json';
+import 'I18nSetup';
 
 /**
  * Return the welcome tab for the DQT
