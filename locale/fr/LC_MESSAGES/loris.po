@@ -241,6 +241,12 @@ msgstr "Scan complété"
 msgid "Language"
 msgstr "Langue"
 
+msgid "Access denied"
+msgstr "Accès refusé"
+
+msgid "No."
+msgstr "Nombre"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{pageCount}} lignes affichées de {{totalCount}}."
