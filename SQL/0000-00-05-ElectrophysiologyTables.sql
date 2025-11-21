@@ -299,6 +299,7 @@ CREATE TABLE `physiological_task_event` (
   `InsertTime`               TIMESTAMP        NOT NULL      DEFAULT CURRENT_TIMESTAMP,
   `Onset`                    DECIMAL(11,6)    NOT NULL,
   `Duration`                 DECIMAL(11,6)    NOT NULL,
+  `Channel`                  TEXT             DEFAULT NULL,
   `EventCode`                INT(10)          DEFAULT NULL,
   `EventValue`               varchar(255)     DEFAULT NULL,
   `EventSample`              decimal(11,6)    DEFAULT NULL,
@@ -577,6 +578,7 @@ CREATE TABLE `physiological_task_event_hed_rel` (
   `HasPairing` boolean DEFAULT FALSE,   -- Is grouped with #AdditionalMembers# members
   `PairRelID` int(10) unsigned NULL,    -- The `ID` of right side of the pair
   `AdditionalMembers` int(10) unsigned DEFAULT 0, -- Number of additional members to encapsulate
+  `TaggedBy` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `FK_physiological_task_event_hed_rel_pair` FOREIGN KEY (`PairRelID`)
       REFERENCES `physiological_task_event_hed_rel` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -584,7 +586,8 @@ CREATE TABLE `physiological_task_event_hed_rel` (
   CONSTRAINT `FK_physiological_task_event_hed_rel_2` FOREIGN KEY (`HEDTagID`)
       REFERENCES `hed_schema_nodes` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_physiological_task_event_hed_rel_1` FOREIGN KEY (`PhysiologicalTaskEventID`)
-        REFERENCES `physiological_task_event` (`PhysiologicalTaskEventID`) ON DELETE CASCADE ON UPDATE CASCADE
+        REFERENCES `physiological_task_event` (`PhysiologicalTaskEventID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_pte_tagged_by_user` FOREIGN KEY (`TaggedBy`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create `bids_event_dataset_mapping` table
@@ -599,10 +602,12 @@ CREATE TABLE `bids_event_dataset_mapping` (
   `HasPairing` BOOLEAN DEFAULT FALSE,   -- Is grouped with #AdditionalMembers# members
   `PairRelID` int(10) unsigned NULL,    -- The `ID` of right side of the pair
   `AdditionalMembers` int(10) unsigned DEFAULT 0, -- Number of additional members to encapsulate
+  `TaggedBy` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`),
   INDEX idx_event_dataset_PropertyName_PropertyValue (`PropertyName`, `PropertyValue`),
   CONSTRAINT `FK_project_id` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_dataset_hed_tag_id` FOREIGN KEY (`HEDTagID`) REFERENCES `hed_schema_nodes` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_dataset_hed_tag_id` FOREIGN KEY (`HEDTagID`) REFERENCES `hed_schema_nodes` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_bed_tagged_by_user` FOREIGN KEY (`TaggedBy`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -618,8 +623,143 @@ CREATE TABLE `bids_event_file_mapping` (
  `HasPairing` BOOLEAN DEFAULT FALSE,   -- Is grouped with #AdditionalMembers# members
  `PairRelID` int(10) unsigned NULL,    -- The `ID` of right side of the pair
  `AdditionalMembers` int(10) unsigned DEFAULT 0, -- Number of additional members to encapsulate
+ `TaggedBy` int(10) unsigned DEFAULT NULL,
  PRIMARY KEY (`ID`),
  INDEX idx_event_file_PropertyName_PropertyValue (`PropertyName`, `PropertyValue`),
  CONSTRAINT `FK_event_mapping_file_id` FOREIGN KEY (`EventFileID`) REFERENCES `physiological_event_file` (`EventFileID`) ON DELETE CASCADE ON UPDATE CASCADE,
- CONSTRAINT `FK_file_hed_tag_id` FOREIGN KEY (`HEDTagID`) REFERENCES `hed_schema_nodes` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+ CONSTRAINT `FK_file_hed_tag_id` FOREIGN KEY (`HEDTagID`) REFERENCES `hed_schema_nodes` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+ CONSTRAINT `FK_bef_tagged_by_user` FOREIGN KEY (`TaggedBy`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- Create parameter_project table to track channel delimiter
+CREATE TABLE `parameter_project` (
+ `ParameterProjectID` int(10) unsigned NOT NULL auto_increment,
+ `ProjectID` int(10) unsigned NOT NULL default '0',
+ `ParameterTypeID` int(10) unsigned NOT NULL default '0',
+ `Value` varchar(255) default NULL,
+ `InsertTime` int(10) unsigned NOT NULL default '0',
+ PRIMARY KEY  (`ParameterProjectID`),
+ UNIQUE KEY `project_type` (`ProjectID`,`ParameterTypeID`),
+ KEY `parameter_value` (`ParameterTypeID`,`Value`(64)),
+ CONSTRAINT `FK_parameter_project_2` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`),
+ CONSTRAINT `FK_parameter_project_1` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT IGNORE INTO `parameter_type_category` (Name, Type)
+VALUES ('Project Parameters', 'Metavars');
+
+-- Add channel delimiter, taken from events.json to DB
+INSERT IGNORE INTO parameter_type (Name, Type, Description, SourceFrom, Queryable, IsFile) VALUES
+  ('ChannelDelimiter', 'text', 'Channel name separator', 'parameter_project', 1, 0);
+
+INSERT INTO parameter_type_category_rel (ParameterTypeID, ParameterTypeCategoryID)
+SELECT pt.ParameterTypeID, ptc.ParameterTypeCategoryID
+FROM parameter_type pt, parameter_type_category ptc
+WHERE ptc.Name='Project Parameters' AND pt.Name IN ('ChannelDelimiter');
+
+
+
+-- Create `hed_tag_endorsement` table
+CREATE TABLE `hed_tag_endorsement` (
+ `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+ `HEDRelID` int(10) unsigned NOT NULL,   -- TODO: Manually handle ON DELETE CASCADE
+ `HEDTable` enum(
+   'physiological_task_event_hed_rel',
+   'bids_event_dataset_mapping',
+   'bids_event_file_mapping'
+   ) NOT NULL,
+ `EndorsedBy` int(10) unsigned NOT NULL,
+ `EndorsementStatus` enum(
+   'Endorsed',
+   'Caveat',
+   'Comment'
+   ) NOT NULL,
+ `EndorsementComment` TEXT DEFAULT NULL,
+ `EndorsedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `LastUpdate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ PRIMARY KEY (`ID`),
+ CONSTRAINT `FK_endorsed_by_user`
+   FOREIGN KEY (`EndorsedBy`) REFERENCES `users` (`ID`) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create `hed_tag_endorsement_history` table
+CREATE TABLE `hed_tag_endorsement_history` (
+ `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+ `EndorsementID` int(10) unsigned NOT NULL,
+ `Action` enum(
+   'INSERT',
+   'UPDATE',
+   'DELETE'
+   ) NOT NULL,
+ `HEDRelID` int(10) unsigned NOT NULL,
+ `HEDTable` enum(
+   'physiological_task_event_hed_rel',
+   'bids_event_dataset_mapping',
+   'bids_event_file_mapping'
+   ) NOT NULL,
+ `EndorsedBy` int(10) unsigned NOT NULL,
+ `EndorsementStatus` enum(
+   'Endorsed',
+   'Caveat',
+   'Comment'
+   ) NOT NULL,
+ `EndorsementComment` TEXT DEFAULT NULL,
+ `EndorsedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (`ID`),
+ CONSTRAINT `FK_endorsement_id`
+   FOREIGN KEY (`EndorsementID`) REFERENCES `hed_tag_endorsement` (`ID`) ON UPDATE CASCADE,
+ CONSTRAINT `FK_endorsed_by_user_history`
+   FOREIGN KEY (`EndorsedBy`) REFERENCES `users` (`ID`) ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create `hed_tag_history` table
+CREATE TABLE `hed_tag_history` (
+ `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+ `HEDTableID` int(10) unsigned NOT NULL,
+ `HEDTable` enum(
+   'physiological_task_event_hed_rel',
+   'bids_event_dataset_mapping',
+   'bids_event_file_mapping'
+   ) NOT NULL,
+ `HEDReferenceID` int(10) unsigned NOT NULL, -- PhysiologicalTaskEventID, ProjectID, EventFileID
+ `TaggedBy` int(10) unsigned DEFAULT NULL,
+ `PropertyName` varchar(50) DEFAULT NULL,
+ `PropertyValue` varchar(255) DEFAULT NULL,
+ `HEDTagID` int(10) unsigned DEFAULT NULL,   -- Reference to hed_schema_nodes.ID. Can be null to only add parentheses
+ `TagValue` TEXT NULL,
+ `Description` TEXT NULL,
+ `HasPairing` BOOLEAN DEFAULT FALSE,   -- Is grouped with #AdditionalMembers# members
+ `PairRelID` int(10) unsigned NULL,    -- The `ID` of right side of the pair
+ `AdditionalMembers` int(10) unsigned DEFAULT 0,
+ `ModificationType` enum('insert', 'update', 'delete') NOT NULL,
+ `ModifiedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY (`ID`),
+ CONSTRAINT `FK_hed_tagged_by_history`
+   FOREIGN KEY (`TaggedBy`) REFERENCES `users` (`ID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create `physiological_task_event_history` table
+CREATE TABLE `physiological_task_event_history` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PhysiologicalTaskEventID` int(10) unsigned NOT NULL,
+  `PhysiologicalFileID` int(10) unsigned NOT NULL,
+  `EventFileID` int(10) unsigned NOT NULL,
+  `InsertTime` timestamp NOT NULL,
+  `Onset` decimal(11,6) DEFAULT NULL,
+  `Duration` decimal(11,6) DEFAULT NULL,
+  `Channel` TEXT DEFAULT NULL,
+  `EventCode` int(10) DEFAULT NULL,
+  `EventValue` varchar(255) DEFAULT NULL,
+  `EventSample` decimal(11,6) DEFAULT NULL,
+  `EventType` varchar(50) DEFAULT NULL,
+  `TrialType` varchar(255) DEFAULT NULL,
+  `ResponseTime` time DEFAULT NULL,
+  `ModifiedBy` int(10) unsigned DEFAULT NULL,
+  `ModificationType` enum('insert', 'update', 'delete') NOT NULL,
+  `ModifiedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `FK_physiological_task_event_modified_by_history`
+    FOREIGN KEY (`ModifiedBy`) REFERENCES `users` (`ID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+

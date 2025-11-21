@@ -3,7 +3,7 @@ import {ofType} from 'redux-observable';
 import {Observable, from, of} from 'rxjs';
 import * as Rx from 'rxjs/operators';
 import {createAction} from 'redux-actions';
-import {State as DatasetState} from '../state/dataset';
+import {setDatasetMetadata, State as DatasetState} from '../state/dataset';
 import {Filter} from '../state/filters';
 import {Channel, Chunk} from '../types';
 import {State as BoundsState} from '../state/bounds';
@@ -31,22 +31,36 @@ export const loadChunks = (chunksData: FetchedChunks[]) => {
   return (dispatch: (_: any) => void) => {
     const channels : Channel[] = [];
 
-    const filters: Filter[] = window
-      .EEGLabSeriesProviderStore[chunksData[0].chunksURL]
-      .getState().filters;
+    const filters: Filter[]
+      = window.EEGLabSeriesProviderStore[chunksData[0].chunksURL]
+        .getState().filters;
     for (let index = 0; index < chunksData.length; index++) {
       const {channelIndex, chunks} : {
         channelIndex: number,
         chunks: Chunk[]
       } = chunksData[index];
+
+      // Concatenate all visible chunks
+      const originalChunkValues = chunks.reduce(
+        (chunkValues: number[], chunk: Chunk) => {
+          return chunkValues.concat(chunk.originalValues);
+        }, []
+      );
+
+      // Filter entire visible signal
+      const filteredChunkValues = Object.values(filters).reduce(
+        (signal: number[], filter: Filter) => {
+          return filter.fn(signal);
+        },
+        originalChunkValues
+      );
+
+      // Modify values of chunks
       for (let i = 0; i < chunks.length; i++) {
-        chunks[i].filters = [];
-        chunks[i].values = Object.values(filters).reduce(
-          (signal: number[], filter: Filter) => {
-            chunks[i].filters.push(filter.name);
-            return filter.fn(signal);
-          },
-          chunks[i].originalValues
+        chunks[i].filters = Object.values(filters).map((filter) => filter.name);
+        chunks[i].values = filteredChunkValues.slice(
+          i * chunks[0].values.length,
+          (i + 1) * chunks[i].values.length
         );
       }
 
@@ -80,19 +94,30 @@ export const fetchChunkAt = R.memoizeWith(
     downsampling: number,
     channelIndex: number,
     traceIndex: number,
-    chunkIndex: number
-  ) => fetchChunk(
-    `${baseURL}/raw/${downsampling}/${channelIndex}/`
-     + `${traceIndex}/${chunkIndex}.buf`
-  )
+    chunkIndex: number,
+    limit: number,
+    arrIndex: number,
+  ) => {
+    const store = window.EEGLabSeriesProviderStore[baseURL];
+    const datasetState = store.getState().dataset;
+    if (arrIndex <= datasetState.loadedChannels) {
+      store.dispatch(setDatasetMetadata({loadedChannels: arrIndex}));
+    }
+    return fetchChunk(
+      `${baseURL}/raw/${downsampling}/${channelIndex}/`
+      + `${traceIndex}/${chunkIndex}.buf`
+    ).then((chunk) => {
+      store.dispatch(
+        setDatasetMetadata({
+          loadedChannels: ++store.getState().dataset.loadedChannels,
+        })
+      );
+      return chunk;
+    });
+  }
 );
 
 type State = {bounds: BoundsState, dataset: DatasetState, channels: Channel[]};
-type chunkIntervals = {
-  interval: [ number, number ],
-  numChunks: number,
-  downsampling: number,
-};
 
 const UPDATE_DEBOUNCE_TIME = 100;
 
@@ -104,7 +129,7 @@ const UPDATE_DEBOUNCE_TIME = 100;
  */
 export const createFetchChunksEpic = (fromState: (any) => State) => (
   action$: Observable<any>,
-  state$: Observable<any>
+  state$: Observable<any>,
 ) => {
   return action$.pipe(
     ofType(UPDATE_VIEWED_CHUNKS),
@@ -112,13 +137,13 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
     Rx.map(([, state]) => fromState(state)),
     Rx.debounceTime(UPDATE_DEBOUNCE_TIME),
     Rx.concatMap(({bounds, dataset, channels}) => {
-      const {chunksURL, shapes, validSamples, timeInterval} = dataset;
+      const {chunksURL, shapes, validSamples, timeInterval, limit} = dataset;
       if (!chunksURL) {
         return of();
       }
 
       const fetches = R.flatten(
-        channels.map((channel) => {
+        channels.map((channel, arrIndex) => {
           return (
             channel &&
             channel.traces.map((_, traceIndex) => {
@@ -141,12 +166,10 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                     (filledChunks *
                       Math.floor(bounds.interval[0] - bounds.domain[0])
                     ) / recordingDuration;
-
                   const i1 =
                     (filledChunks *
                       Math.ceil(bounds.interval[1] - bounds.domain[0])
                     ) / recordingDuration;
-
                   return {
                     interval:
                       [
@@ -157,14 +180,15 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                     downsampling,
                   };
                 })
-                .filter(({interval}) =>
-                  interval[1] - interval[0] < MAX_VIEWED_CHUNKS
+                .filter(
+                  ({interval}) =>
+                    interval[1] - interval[0] < MAX_VIEWED_CHUNKS
                 )
                 .reverse();
 
-              const finestChunks : chunkIntervals = R.reduce(
+              const finestChunks = R.reduce(
                 R.maxBy(({interval}) => interval[1] - interval[0]),
-                chunkIntervals[0],
+                {interval: [0, 0]},
                 chunkIntervals
               );
 
@@ -172,10 +196,11 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                 (chunkIndex) => {
                   const numChunks = finestChunks.numChunks;
 
-                  const filledChunks = (numChunks - 1) + (
-                    validSamples[finestChunks.downsampling] /
-                    valuesPerChunk[finestChunks.downsampling]
-                  );
+                  const filledChunks = (numChunks - 1) +
+                    (
+                      validSamples[finestChunks.downsampling] /
+                      valuesPerChunk[finestChunks.downsampling]
+                    );
 
                   const chunkInterval = [
                     timeInterval[0] +
@@ -191,11 +216,15 @@ export const createFetchChunksEpic = (fromState: (any) => State) => (
                       finestChunks.downsampling,
                       channel.index,
                       traceIndex,
-                      chunkIndex
-                    ).then((chunk) => ({
-                      interval: chunkInterval,
-                      ...chunk,
-                    }));
+                      chunkIndex,
+                      limit,
+                      arrIndex,
+                    ).then((chunk) => {
+                      return ({
+                        interval: chunkInterval,
+                        ...chunk,
+                      });
+                    });
                   } else {
                     return [];
                   }

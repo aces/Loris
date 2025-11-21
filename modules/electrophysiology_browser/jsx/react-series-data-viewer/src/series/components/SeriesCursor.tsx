@@ -65,11 +65,8 @@ const SeriesCursor = (
   useEffect(() => {
     reversedEpochs = [...filteredEpochs].reverse();
   }, [filteredEpochs]);
-
-  if (!cursorPosition) return null;
-
-  const left = Math.min(Math.max(100 * cursorPosition[0], 0), 100) + '%';
-  const time = interval[0] + cursorPosition[0] * (interval[1] - interval[0]);
+  const left = cursorPosition ? (Math.min(Math.max(100 * cursorPosition[0], 0), 100) + '%') : 0;
+  const time = cursorPosition ? (interval[0] + cursorPosition[0] * (interval[1] - interval[0])) : 0;
 
   /**
    *
@@ -139,8 +136,6 @@ const SeriesCursor = (
       }}
     >
       {Math.round(time * 1000) / 1000}s
-      <br/>
-      {showEvents && <EpochMarker />}
       <div
         style={{
           display: 'flex',
@@ -173,8 +168,10 @@ const SeriesCursor = (
           );
         })}
       </div>
+      {showEvents && <EpochMarker />}
     </div>
   );
+
 
   /**
    *
@@ -182,22 +179,43 @@ const SeriesCursor = (
   const EpochMarker = () => {
     const visibleEpochs = getEpochsInRange(epochs, interval);
     if (visibleEpochs
-        .filter((index) => {
- filteredEpochs.includes(index);
-})
-        .length > MAX_RENDERED_EPOCHS
+      .filter((index) => { filteredEpochs.includes(index) })
+      .length > MAX_RENDERED_EPOCHS
     ) {
       return null;
     }
 
-    const index = visibleEpochs.find((index) =>
-      epochs[index].onset < time &&
-      (epochs[index].onset + Math.max(epochs[index].duration, 0.05)) > time
+    const indices = visibleEpochs.filter((index) =>
+      filteredEpochs.includes(index) &&
+      epochs[index].onset <= time &&
+      (epochs[index].onset + Math.max(epochs[index].duration, 1)) >= time
     );
 
-    return index !== undefined ? (
+    const hoveredChannelNames = hoveredChannels.map((channelIndex) => {
+      return channelMetadata[channelIndex].name;
+    });
+
+    return indices.length > 0 ? (
       <div>
-        {epochs[index].label}
+        {
+          indices.map((index, i) => {
+            return <span
+              key={`hovered-channel-${index}-${i}`}
+              style={{
+              fontWeight: (
+                (epochs[index].channels.length === 0) ||
+                hoveredChannelNames.some((hoveredChannel) => {
+                  return epochs[index].channels.includes(hoveredChannel);
+                })
+              )
+                ? 'bold'
+                : 'normal'
+            }}>
+              {i > 0 && ', '}
+              {epochs[index].label}
+            </span>
+          })
+        }
       </div>
     ) : null;
   };
@@ -220,7 +238,7 @@ const SeriesCursor = (
 };
 
 const createIndices = R.memoizeWith(
-  (s: string) => s,
+  R.identity,
   (array) => array.map((_, i) => i)
 );
 
@@ -231,6 +249,7 @@ const createIndices = R.memoizeWith(
 const indexToTime = (chunk) => (index) =>
   chunk.interval[0] +
   (index / chunk.values.length) * (chunk.interval[1] - chunk.interval[0]);
+
 
 /**
  *

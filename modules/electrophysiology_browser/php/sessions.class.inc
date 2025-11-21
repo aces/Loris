@@ -138,6 +138,7 @@ class Sessions extends \NDB_Page
                 'Invalid output type'
             ));
         }
+        header("Cache-Control: no-store");  // Fixes tab re-open bug (json)
         return $this->getSessionData($outputType);
     }
 
@@ -480,7 +481,8 @@ class Sessions extends \NDB_Page
             $this->loris,
             $physioFileID
         );
-        $fileSummary['datasetTags'] = $datasetTags->getData();
+        $fileSummary['datasetTags']            = $datasetTags->getData();
+        $fileSummary['datasetTagEndorsements'] = $datasetTags->getHEDEndorsements();
 
         $fileSummary['epochsURL'] = $db->pselectOne(
             "SELECT FilePath
