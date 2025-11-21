@@ -58,6 +58,7 @@ msgstr "मेरी पसंद"
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr "प्रशासन"
+
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -79,7 +80,7 @@ msgstr "उपकरण"
 #: modules/examiner/php/module.class.inc:50
 #: modules/media/php/module.class.inc:33
 msgid "Clinical"
-msgstr "क्लिनिकल"
+msgstr "नैदानिक"
 
 #: modules/dicom_archive/php/module.class.inc:115
 #: modules/imaging_browser/php/module.class.inc:40
@@ -111,7 +112,7 @@ msgstr "रिपोर्ट्स"
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr "टाइमपॉइंट"
+msgstr "समय बिंदु"
 
 msgid "Module"
 msgstr "मॉड्यूल"
@@ -173,6 +174,9 @@ msgstr "रद्द करें"
 msgid "Success!"
 msgstr "सफलता!"
 
+msgid "Close"
+msgstr "बंद करें"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
@@ -181,7 +185,7 @@ msgid "DCCID"
 msgstr "डीसीसीआईडी"
 
 msgid "Visit Label"
-msgstr "भेंट लेबल"
+msgstr "दौरे का लेबल"
 
 msgid "Email"
 msgstr "ईमेल"
@@ -205,9 +209,6 @@ msgstr "समय बिंदु परियोजना"
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] "समूह"
-
-msgid "Instrument"
-msgstr "उपकरण"
 
 msgid "Session"
 msgstr "सत्र"
@@ -398,8 +399,10 @@ msgstr "प्रगति पर"
 msgid "Complete"
 msgstr "पूर्ण"
 
-msgid "Instruments"
-msgstr "उपकरण"
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "उपकरण"
+msgstr[1] "उपकरण"
 
 msgid "Partial"
 msgstr "आंशिक"
