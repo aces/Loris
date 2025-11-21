@@ -66,10 +66,11 @@ class ModuleManagerIndex extends Component {
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, cell) {
+    const {t} = this.props;
     if (cell === 'Y') {
-      return 'Yes';
+      return t('Yes', {ns: 'loris'});
     } else if (cell === 'N') {
-      return 'No';
+      return t('No', {ns: 'loris'});
     }
     return cell;
   }
@@ -176,7 +177,10 @@ class ModuleManagerIndex extends Component {
         label=''
         emptyOption={false}
         sortByValue={false}
-        options={{'Y': 'Yes', 'N': 'No'}}
+        options={{
+          'Y': t('Yes', {ns: 'loris'}),
+          'N': t('No', {ns: 'loris'}),
+        }}
         value={cell}
         onUserInput={this.toggleActive}
         noMargins={true}
@@ -220,8 +224,8 @@ class ModuleManagerIndex extends Component {
         name: 'Active',
         type: 'select',
         options: {
-          'Y': 'Yes',
-          'N': 'No',
+          'Y': t('Yes', {ns: 'loris'}),
+          'N': t('No', {ns: 'loris'}),
         },
       }},
     ];
