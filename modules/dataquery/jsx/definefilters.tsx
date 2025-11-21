@@ -35,6 +35,7 @@ import React from 'react';
  *                                           to the existing QueryGroup
  * @param {function} props.removeQueryGroupItem - Function that will remove an item from a
  *                                                QueryGroup by index.
+ * @param {string[]} props.visitLabels - Array of allowed visit label values
  * @returns {React.ReactElement} - The Define Filters page
  */
 function DefineFilters(props: {
@@ -59,6 +60,7 @@ function DefineFilters(props: {
     ) => QueryGroup,
     addNewQueryGroup: (group: QueryGroup) => void,
     removeQueryGroupItem: (group: QueryGroup, i: number) => QueryGroup,
+    visitLabels: string[],
 }) : React.ReactElement {
   let displayquery: React.ReactNode = null;
   const [addModal, setAddModal] = useState(false);
@@ -372,6 +374,7 @@ function DefineFilters(props: {
     <ImportCSVModal
       setQuery={props.setQuery}
       closeModal={() => setCSVModal(false)}
+      visitLabels={props.visitLabels}
     />
   ) : '';
 
