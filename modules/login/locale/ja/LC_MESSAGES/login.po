@@ -17,7 +17,58 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Login"
 msgstr "ログイン"
 
+
+msgid "Login to LORIS"
+msgstr "ロリスにログイン"
+
+msgid "Forgot your password?"
+msgstr "パスワードをお忘れですか？"
+
+msgid "Request Account"
+msgstr "アカウントをリクエスト"
+
+msgid "Multifactor authentication required"
+msgstr "多要素認証が必要"
+
+msgid "Enter the code from your authenticator app below to proceed."
+msgstr "続行するには、認証アプリからのコードを入力してください。"
+
+msgid "Data in LORIS:"
+msgstr "ロリスのデータ:"
+
+# Hack for the login page.
+# These strings come from the database and are
+# the defaults in the login_summary_statistics table
+
+msgid "EEG Recording"
+msgid_plural "EEG Recordings"
+msgstr[0] "脳波記録"
+
+msgid "Female Participant"
+msgid_plural "Female Participants"
+msgstr[0] "女性参加者"
+
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "楽器"
+
+msgid "Male Participant"
+msgid_plural "Male Participants"
+msgstr[0] "男性参加者"
+
+msgid "Scan"
+msgid_plural "Scans"
+msgstr[0] "スキャン"
+
+msgid "Site"
+msgid_plural "Sites"
+msgstr[0] "サイト"
+
+msgid "Visit"
+msgid_plural "Visits"
+msgstr[0] "訪問"
