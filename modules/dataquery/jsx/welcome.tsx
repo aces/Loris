@@ -1134,18 +1134,4 @@ function IntroductionMessage(props: {
   );
 }
 
-window.addEventListener('load', () => {
-  i18n.addResourceBundle('hi', 'dataquery', hiStrings);
-  const TranslatedWelcome = withTranslation(['dataquery', 'loris'])(Welcome);
-
-  const container = document.getElementById('lorisworkspace');
-  if (container) {
-    const root = createRoot(container);
-    root.render(<TranslatedWelcome />);
-  } else {
-    console.error('Element with id \'lorisworkspace\' not found in DOM');
-  }
-});
-
-
 export default Welcome;
