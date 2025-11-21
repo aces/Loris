@@ -1,0 +1,47 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Module Manager"
+msgstr "मॉड्यूल प्रबंधक"
+
+msgid "Name"
+msgstr "नाम"
+
+msgid "Full Name"
+msgstr "पूरा नाम"
+
+msgid "Could not update"
+msgstr "अपडेट नहीं कर सका"
+
+msgid "status!"
+msgstr "स्थिति!"
+
+msgid "To apply changes the interface must be reloaded. Proceed?"
+msgstr "परिवर्तन लागू करने के लिए इंटरफ़ेस को पुनः लोड करना होगा। आगे बढ़ें?"
+
+msgid "Reload the page"
+msgstr "पृष्ठ पुनः लोड करें"
+
+msgid "Continue"
+msgstr "जारी रखें"
+
+msgid "Could not find module"
+msgstr "मॉड्यूल नहीं मिला"
+

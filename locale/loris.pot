@@ -57,6 +57,7 @@ msgstr ""
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr ""
+
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -108,7 +109,7 @@ msgstr ""
 msgid "Reports"
 msgstr ""
 
-# Common loris terms. Consider moving these to their own textdomain?
+# Common loris terms.
 msgid "TimePoint"
 msgstr ""
 
@@ -123,6 +124,9 @@ msgid "No"
 msgstr ""
 
 msgid "N/A"
+msgstr ""
+
+msgid "Back"
 msgstr ""
 
 msgid "Create"
@@ -157,6 +161,12 @@ msgstr ""
 msgid "Success!"
 msgstr ""
 
+msgid "Close"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -170,14 +180,19 @@ msgstr ""
 msgid "Visit Label"
 msgstr ""
 
-msgid "Site"
+msgid "Email"
 msgstr ""
+
+msgid "Site"
+msgid_plural "Sites"
+msgstr[0] ""
 
 msgid "Module"
 msgstr ""
 
 msgid "Project"
-msgstr ""
+msgid_plural "Projects"
+msgstr[0] ""
 
 msgid "Candidate Registration Project"
 msgstr ""
@@ -188,11 +203,14 @@ msgstr ""
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] ""
- 
+
 msgid "Session"
 msgstr ""
 
 msgid "Date of registration"
+msgstr ""
+
+msgid "Date Of Visit"
 msgstr ""
 
 msgid "Participant Status"
@@ -235,6 +253,9 @@ msgid "Visits"
 msgstr ""
 
 msgid "An error occured while loading the page."
+msgstr ""
+
+msgid "Active"
 msgstr ""
 
 msgid "Entity Type"
@@ -320,10 +341,16 @@ msgstr ""
 msgid "New Password"
 msgstr ""
 
+msgid "Password"
+msgstr ""
+
 msgid "Confirm Password"
 msgstr ""
 
 msgid "Email address is required"
+msgstr ""
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
 msgstr ""
 
 msgid "The password must be at least 8 characters long."
@@ -340,6 +367,7 @@ msgstr ""
 
 msgid "We suggest using a password manager to generate one for you."
 msgstr ""
+
 msgid "Total"
 msgstr ""
 
@@ -386,8 +414,9 @@ msgstr ""
 msgid "Complete"
 msgstr ""
 
-msgid "Instruments"
-msgstr ""
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] ""
 
 msgid "None"
 msgstr ""
@@ -427,3 +456,5 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
+msgid "Permission denied"
+msgstr ""

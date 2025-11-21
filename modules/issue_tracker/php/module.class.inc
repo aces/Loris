@@ -128,7 +128,7 @@ class Module extends \Module
             }
             return [
                 new \LORIS\candidate_profile\CandidateWidget(
-                    "Open Issues",
+                    dgettext("issue_tracker", "Open Issues"),
                     $baseURL . "/issue_tracker/js/CandidateIssuesWidget.js",
                     "lorisjs.issue_tracker.CandidateIssuesWidget.default",
                     [
