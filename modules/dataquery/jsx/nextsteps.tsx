@@ -112,19 +112,22 @@ function NextSteps(props: {
   }
 
   const expandIcon = <i
-    style={{transform: 'scaleY(2)', fontSize: '2em'}}
+    style={{
+      fontSize: '2em',
+      rotate: expanded ? '270deg' : '90deg',
+      color: '#064785',
+    }}
     className='fas fa-chevron-left'
-    onClick={() => setExpanded(!expanded)}
   ></i>;
   const style = expanded ? {
     background: 'white',
-    padding: '0.5em',
-    paddingLeft: '2em',
+    padding: '1rem 2rem',
+    width: '100%',
   } : {
-    display: 'none',
-    visibility: 'hidden' as const,
-    padding: '0.5em',
-    paddingLeft: '2em',
+    display: 'hidden',
+    padding: '0rem 2rem',
+    height: '0px',
+    width: '100%',
   };
 
   return (
@@ -137,25 +140,33 @@ function NextSteps(props: {
       borderColor: 'black',
       // Fix the height size so it doesn't move when
       // expanded or collapsed
-      height: 120,
       // Make sure we're on top of the footer
       zIndex: 300,
     }}>
+      <div
+        style={{display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '1rem',
+          padding: expanded ? '16px 3rem 8px' : '16px 3rem',
+          cursor: 'pointer',
+          backgroundColor: '#fff',
+        }}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <h3 style={{margin: '0'}}>Next Steps</h3>
+        {expandIcon}</div>
       <div style={{
         display: 'flex',
         alignItems: 'stretch',
-        height: 120,
-        paddingRight: '14px',
+        backgroundColor: '#fff',
       }}>
         <div style={style}>
-          <h3>Next Steps</h3>
-          <div style={{display: 'flex'}}>
+          <div style={{display: 'flex', justifyContent: 'center', gap: '1rem'}}>
             {steps}
           </div>
         </div>
-        <div
-          style={{alignSelf: 'center'}}
-        >{expandIcon}</div>
+
       </div>
     </div>
   );
