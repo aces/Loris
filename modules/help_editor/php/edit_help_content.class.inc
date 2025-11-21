@@ -3,7 +3,7 @@
 /**
  * This file sets up the Edit Help Content page and form.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -107,7 +107,7 @@ class Edit_Help_Content extends \NDB_Form
                     'UTF-8',
                     false
                 )
-                    : null,
+        : null,
         ];
 
         if (!empty($data['section'])) {
@@ -125,9 +125,23 @@ class Edit_Help_Content extends \NDB_Form
         }
 
         if ($data['helpid']) {
-            $help_data       = HelpFile::factory($data['helpid'])->toArray();
-            $data['title']   = $help_data['topic'];
-            $data['content'] = htmlspecialchars_decode(trim($help_data['content']));
+            $help_data          = HelpFile::factory($data['helpid'])->toArray();
+            $data['title']      = $help_data['topic'];
+            $data['content']    = htmlspecialchars_decode(
+                trim(
+                    $help_data['content']
+                )
+            );
+            $data['instrument'] = $help_data['instrument'];
+            $data['instrumentslist'] = [];
+            $instrumentList          = \NDB_BVL_Instrument::getInstrumentNamesList(
+                $request->getAttribute("loris")
+            );
+                   $data['instrumentslist'] =  $instrumentList;
+
+            if ($data['helpid'] =='null') {
+                $data['instrumentslist'] =  $instrumentList;
+            }
         }
 
         // case where no help content exists
@@ -143,6 +157,10 @@ class Edit_Help_Content extends \NDB_Form
                 $data['title'] = str_replace("_", " ", $data['subsection']);
             }
         }
+
+        $data['edit_help_text'] = dgettext('help_editor', 'Edit Help Content');
+        $data['display_title']  = !empty($data['title']) ? $data['title'] :
+         $data['edit_help_text'];
 
         $this->tpl_data = $data;
         return (new \LORIS\Http\Response())
@@ -164,6 +182,25 @@ class Edit_Help_Content extends \NDB_Form
             [
                 $baseURL . "/help_editor/js/helpEditorForm.js",
             ]
+        );
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                dgettext("help_editor", 'Help Editor'),
+                '/help_editor/'
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("help_editor", 'Edit Help Content'),
+                "/help_editor/edit_help_content"
+            )
         );
     }
 }

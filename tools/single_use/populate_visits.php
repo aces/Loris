@@ -8,7 +8,7 @@
  *
  * The script also populates the visits_cohort_project_rel table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

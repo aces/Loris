@@ -21,3 +21,38 @@ msgstr ""
 msgid "Help Editor"
 msgstr ""
 
+msgid "Edit Help Content"
+msgstr ""
+
+msgid "Help ID"
+msgstr ""
+
+msgid "Topic"
+msgstr ""
+
+msgid "Content"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Open the help dialog to preview the changes."
+msgstr ""
+
+msgid "Content update successful!"
+msgstr ""
+
+msgid "Content update unsuccessful."
+msgstr ""
+
+msgid "Something went wrong"
+msgstr ""
+
+msgid "Try again"
+msgstr ""
+
+msgid "Help content cannot be added to an instrument that has already been registered."
+msgstr ""
+
+msgid "Adding help content for a specific instrument"
+msgstr ""

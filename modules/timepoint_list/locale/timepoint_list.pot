@@ -20,3 +20,69 @@ msgstr ""
 
 msgid "Timepoint List"
 msgstr ""
+
+msgid "Click to Open"
+msgstr ""
+
+msgid "Stage Status"
+msgstr ""
+
+msgid "Date of Stage"
+msgstr ""
+
+msgid "Imaging Scan Done"
+msgstr ""
+
+msgid "BVL QC"
+msgstr ""
+
+msgid "BVL Exclusion"
+msgstr ""
+
+msgid "Registered By"
+msgstr ""
+
+msgid "List of Visits (Time Points)"
+msgstr ""
+
+msgid "Create time point"
+msgstr ""
+
+msgid "Candidate Info"
+msgstr ""
+
+msgid "View Imaging datasets"
+msgstr ""
+
+msgid "Actions:"
+msgstr ""
+
+msgid "Derived Age"
+msgstr ""
+
+msgid "EDC Age"
+msgstr ""
+
+msgid "Biological Sex"
+msgstr ""
+
+msgid "You do not have access to any timepoints registered for this candidate."
+msgstr ""
+
+msgid " y / "
+msgstr ""
+
+msgid " m"
+msgstr ""
+
+msgid "Not Done"
+msgstr ""
+
+msgid "Visual"
+msgstr ""
+
+msgid "Hardcopy"
+msgstr ""
+
+msgid "Complete"
+msgstr ""

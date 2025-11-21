@@ -3,7 +3,7 @@
 /**
  * This file contains the NDB_Client class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -137,24 +137,6 @@ class NDB_Client
         session_write_close();
         // finished initializing
         return true;
-    }
-
-    /**
-     * Returns true if the user is logged in
-     *
-     * @return true only if user is logged in
-     */
-    function isLoggedIn()
-    {
-        if (!isset($_SESSION['State'])) {
-            $_SESSION['State'] =& State::singleton();
-            $login = new SinglePointLogin();
-            $_SESSION['State']->setProperty('login', $login);
-        } else {
-            $login = $_SESSION['State']->getProperty('login');
-        }
-
-        return $login->isLoggedIn();
     }
 }
 

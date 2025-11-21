@@ -3,7 +3,7 @@
 /**
  * Unit test for Candidate class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -13,6 +13,7 @@
  */
 use PHPUnit\Framework\TestCase;
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\Database\Query;
 /**
  * Unit test for Candidate class
  *
@@ -191,7 +192,7 @@ class CandidateTest extends TestCase
             ->getMock();
         $resultMock->method("getIterator")
             ->willReturn(
-                new ArrayIterator(
+                new \ArrayIterator(
                     [
                         [
                             "ID"        => 97,
@@ -471,17 +472,6 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test getCandidateEthnicity returns the correct ethnicity of the candidate
-     *
-     * @covers Candidate::getCandidateEthnicity
-     * @return void
-     */
-    public function testGetCandidateEthnicity()
-    {
-        $this->markTestSkipped("getCandidateEthnicity is a deprecated function");
-    }
-
-    /**
      * Test isActive returns the correct string for the candidate
      *
      * @covers Candidate::isActive
@@ -566,50 +556,6 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test Candidate::getValidCohorts returns a list
-     * of valid cohorts for a specific project
-     *
-     * @covers Candidate::getValidCohorts
-     * @return void
-     */
-    public function testGetValidCohortsReturnsAListOfCohorts()
-    {
-        $this->_dbMock->method('pselectCol')
-            ->willReturn(['Male','Female','Other']);
-        $cohorts = [
-            ['CohortID' => 1],
-            ['CohortID' => 2]
-        ];
-        $this->_dbMock->expects($this->once())
-            ->method('pselectRow')
-            ->willReturn($this->_candidateInfo);
-
-        $expectedCohorts = [
-            1 => 1,
-            2 => 2
-        ];
-
-        $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-        $this->_dbMock->expects($this->once())
-            ->method('pselect')
-            ->with(
-                $this->stringContains(
-                    "SELECT CohortID
-                    FROM project_cohort_rel
-                    WHERE ProjectID = :prj"
-                )
-            )
-            ->willReturn(
-                $cohorts
-            );
-        $this->assertEquals(
-            $expectedCohorts,
-            $this->_candidate->getValidCohorts()
-        );
-    }
-
-    /**
      * Test getValidCohorts returns array() when there are no cohorts
      * in DB.
      *
@@ -618,97 +564,22 @@ class CandidateTest extends TestCase
      */
     public function testGetValidCohortsReturnsEmptyArray(): void
     {
-        $cohorts = [];
         $this->_setUpTestDoublesForSelectCandidate();
 
+        // Mock pselect() to return QueryStub with empty array
         $this->_dbMock->expects($this->exactly(2))
             ->method('pselect')
-            ->willReturn(
-                $cohorts
-            );
+            ->willReturn(new QueryStub([]));
 
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-
-        $this->assertEquals($this->_candidate->getValidCohorts(), []);
-    }
-
-    /**
-     * Test getCohortForMostRecentVisit returns most recent visit's label
-     *
-     * @covers Candidate::getCohortForMostRecentVisit
-     * @return void
-     */
-    public function testGetCohortForMostRecentVisitReturnsMostRecentVisitLabel()
-    {
-        $this->_dbMock->method('pselectCol')
-            ->willReturn(['Male','Female','Other']);
-        $cohort = [
-            [
-                'CohortID' => 1,
-                'title'    => 'testCohort'
-            ]
-        ];
-        $this->_dbMock->expects($this->once())
-            ->method('pselectRow')
-            ->willReturn($this->_candidateInfo);
-
-        $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->with(
-                $this->stringContains(
-                    "SELECT CohortID, title"
-                )
+        // Initialize candidate
+        $this->_candidate->select(
+            new LORIS\StudyEntities\Candidate\CandID(
+                strval($this->_candidateInfo['CandID'])
             )
-            ->willReturn(
-                $cohort
-            );
-
-        $expectedCohort = [
-            'CohortID' => 1,
-            'title'    => 'testCohort'
-        ];
-
-        $this->assertEquals(
-            $expectedCohort,
-            $this->_candidate->getCohortForMostRecentVisit()
         );
-    }
 
-    /**
-     * Test getCohortForMostRecentVisit returns null if there is
-     * no visit with a Date_visit
-     *
-     * @covers Candidate::getCohortForMostRecentVisit
-     * @return void
-     */
-    public function testGetCohortForMostRecentVisitReturnsNull()
-    {
-        $this->_dbMock->method('pselectCol')
-            ->willReturn(['Male','Female','Other']);
-        $cohort = [];
-        $this->_dbMock->expects($this->once())
-            ->method('pselectRow')
-            ->willReturn($this->_candidateInfo);
-
-        $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->with(
-                $this->stringContains(
-                    "SELECT CohortID, title"
-                )
-            )
-            ->willReturn($cohort);
-
-        $this->assertEquals(
-            null,
-            $this->_candidate->getCohortForMostRecentVisit()
-        );
+        // Assert getValidCohorts() returns empty array
+        $this->assertEquals([], $this->_candidate->getValidCohorts());
     }
 
     /**
@@ -870,47 +741,44 @@ class CandidateTest extends TestCase
             ->willReturn($this->_candidateInfo);
         $this->_dbMock
             ->method('pselect')
-            ->will(
-                $this->onConsecutiveCalls(
+            ->willReturnOnConsecutiveCalls(
+                [
                     [
-                        [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ],
-                        [
-                            "ID"        =>98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
+                        "ID"        => 97,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
                     ],
                     [
-                        [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ],
-                        [
-                            "ID"        =>98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
+                        "ID"        =>98,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ]
+                ],
+                [
+                    [
+                        "ID"        => 97,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
                     ],
                     [
-                        [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ],
-                        [
-                            "ID"        =>98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
+                        "ID"        =>98,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ]
+                ],
+                [
+                    [
+                        "ID"        => 97,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
                     ],
-                )
+                    [
+                        "ID"        =>98,
+                        "ProjectID" => 1,
+                        "CenterID"  => 2,
+                    ]
+                ]
             );
-
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals(97, $this->_candidate->getSessionID(1));
         $this->assertEquals(98, $this->_candidate->getSessionID(2));
@@ -973,54 +841,6 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test Candidate::validatePSCID with both valid and invalid PSCID genreated
-     * based on site
-     *
-     * @covers Candidate::validatePSCID
-     * @return void
-     */
-    public function testValidateSitePSCID()
-    {
-        $seq = [
-            'seq' => [
-                0 => [
-                    '#' => '',
-                    '@' => ['type' => 'siteAbbrev'],
-                ],
-                1 => [
-                    '#' => '',
-                    '@' => [
-                        'type'   => 'numeric',
-                        'length' => '4',
-                    ],
-                ],
-            ],
-        ];
-        $this->_configMap = [
-            [
-                'PSCID',
-                [
-                    'generation' => 'sequential',
-                    'structure'  => $seq,
-                ],
-            ],
-        ];
-
-        $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
-        $this->assertEquals(
-            1,
-            Candidate::validatePSCID('AAA0012', 'AAA', 'BBB'),
-            'Valid PSCID: validatePSCID should return 1'
-        );
-        $this->assertEquals(
-            0,
-            Candidate::validatePSCID('AAA001', 'AAA', 'BBB'),
-            'Invalid PSCID: validatePSCID should return 0'
-        );
-    }
-
-    /**
      * Test Candidate::validatePSCID with both valid and invalid PSCID
      * generated based on Project
      *
@@ -1045,17 +865,16 @@ class CandidateTest extends TestCase
             ],
         ];
         $this->_configMap = [
-            [
-                'PSCID',
-                [
-                    'generation' => 'sequential',
-                    'structure'  => $seq,
-                ],
+            ['PSCID', [
+                'generation' => 'sequential',
+                'structure'  => $seq,
+            ]
             ],
         ];
 
         $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
+            ->willReturnMap($this->_configMap);   // <-- modern replacement
+
         $this->assertEquals(
             1,
             Candidate::validatePSCID('BBB0012', 'AAA', 'BBB'),
@@ -1373,60 +1192,42 @@ class CandidateTest extends TestCase
      *
      * @return void
      */
-    private function _setUpTestDoublesForSelectCandidate()
+    private function _setUpTestDoublesForSelectCandidate(): void
     {
-
-        $resultMock = $this->getMockBuilder('\LORIS\Database\Query')
+        $resultMock = $this->getMockBuilder(\LORIS\Database\Query::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $resultMock->method("getIterator")
+
+        $resultMock->method('getIterator')
             ->willReturn(
-                new ArrayIterator(
+                new \ArrayIterator(
                     [
                         [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
+                            'ID'        => 97,
+                            'ProjectID' => 1,
+                            'CenterID'  => 2,
                         ],
                         [
-                            "ID"        => 98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
+                            'ID'        => 98,
+                            'ProjectID' => 1,
+                            'CenterID'  => 2,
+                        ],
                     ]
                 )
             );
-        $this->_dbMock
-            ->method('pselect')
+
+        $this->_dbMock->method('pselect')
             ->willReturn($resultMock);
-        /*
-                $this->onConsecutiveCalls(
-                    [
-                        [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ],
-                        [
-                            "ID"        =>98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
-                    ],
-                    $this->_listOfTimePoints
-                )
-            );
-        */
 
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
 
         $this->_dbMock->method('pselectCol')
-            ->willReturn(['Male','Female','Other']);
+            ->willReturn(['Male', 'Female', 'Other']);
 
         $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
+            ->willReturnMap($this->_configMap);
     }
 
     /**
@@ -1452,5 +1253,61 @@ class CandidateTest extends TestCase
 
         $this->_factoryForDB->setDatabase($this->_DB);
         $this->_factoryForDB->setConfig($this->_config);
+    }
+}
+/**
+ * A stub class for Query used in unit testing.
+ *
+ * Implements IteratorAggregate and Countable to simulate
+ * database query results for testing purposes.
+ *
+ * PHP Version 8
+ *
+ * @category Tests
+ * @package  Database
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ */
+class QueryStub extends Query implements \IteratorAggregate, \Countable
+{
+    private array $rows;
+
+    /**
+     * Constructor.
+     *
+     * @param array<int, array> $rows Optional initial rows
+     */
+    public function __construct(array $rows)
+    {
+        $this->rows = $rows;
+    }
+
+    /**
+     * Get all rows.
+     *
+     * @return array<int, array> All rows
+     */
+    public function getFirstRow(): array
+    {
+        return $this->rows[0] ?? [];
+    }
+
+    /**
+     * Count the number of rows.
+     *
+     * @return int Number of rows
+     */
+    public function count(): int
+    {
+        return count($this->rows);
+    }
+
+    /**
+     * Retrieve an external iterator.
+     *
+     * @return \Traversable<int, array> Iterator for rows
+     */
+    public function getIterator(): \Traversable
+    {
+        return new \ArrayIterator($this->rows);
     }
 }

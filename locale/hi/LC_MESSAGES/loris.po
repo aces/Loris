@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
@@ -113,12 +114,74 @@ msgstr "रिपोर्ट्स"
 msgid "TimePoint"
 msgstr "समय बिंदु"
 
+msgid "Module"
+msgstr "मॉड्यूल"
+
 # Common select option labels
 msgid "Yes"
 msgstr "हाँ"
 
 msgid "No"
 msgstr "नहीं"
+
+msgid "N/A"
+msgstr "लागू नहीं"
+
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Reset"
+msgstr "रीसेट करें"
+
+msgid "Back"
+msgstr "वापस"
+
+msgid "None"
+msgstr "कोई नहीं"
+
+msgid "Y"
+msgstr "हाँ"
+
+msgid "N"
+msgstr "नहीं"
+
+msgid "Create"
+msgstr "बनाएँ"
+
+# Filters
+msgid "Selection Filter"
+msgstr "चयन फ़िल्टर"
+
+msgid "Filters"
+msgstr "फ़िल्टर"
+
+msgid "Show Filters"
+msgstr "फ़िल्टर दिखाएँ"
+
+msgid "Hide Filters"
+msgstr "फ़िल्टर छिपाएँ"
+
+msgid "Clear Filters"
+msgstr "फ़िल्टर साफ़ करें"
+
+msgid "Load Filter Preset"
+msgstr "फ़िल्टर प्रीसेट लोड करें"
+
+msgid "Show Advanced Filters"
+msgstr "उन्नत फ़िल्टर दिखाएँ"
+
+msgid "Hide Advanced Filters"
+msgstr "उन्नत फ़िल्टर छिपाएँ"
+
+# Common swal labels
+msgid "Cancel"
+msgstr "रद्द करें"
+
+msgid "Success!"
+msgstr "सफलता!"
+
+msgid "Close"
+msgstr "बंद करें"
 
 # Common candidate terms
 msgid "PSCID"
@@ -130,20 +193,34 @@ msgstr "डीसीसीआईडी"
 msgid "Visit Label"
 msgstr "दौरे का लेबल"
 
-msgid "Site"
-msgstr "साइट"
+msgid "Status"
+msgstr "स्थिति"
 
-msgid "Module"
-msgstr "मॉड्यूल"
+msgid "No."
+msgstr "संख्या"
+
+msgid "Email"
+msgstr "ईमेल"
+
+msgid "Site"
+msgid_plural "Sites"
+msgstr[0] "साइट"
+msgstr[1] "साइट्स"
 
 msgid "Project"
-msgstr "परियोजना"
+msgid_plural "Projects"
+msgstr[0] "परियोजना"
+msgstr[1] "प्रोजेक्ट्"
+
+msgid "Candidate Registration Project"
+msgstr "उम्मीदवार पंजीकरण परियोजना"
+
+msgid "Timepoint Project"
+msgstr "समय बिंदु परियोजना"
 
 msgid "Cohort"
-msgstr "समूह"
-
-msgid "Cohorts"
-msgstr "समूह"
+msgid_plural "Cohorts"
+msgstr[0] "समूह"
 
 msgid "Session"
 msgstr "सत्र"
@@ -165,6 +242,18 @@ msgstr "प्रतिक्रिया"
 
 msgid "Scans"
 msgstr "स्कैन"
+
+msgid "Stage"
+msgstr "चरण"
+
+msgid "Send To DCC"
+msgstr "डीसीसी को भेजें"
+
+msgid "Sent To DCC"
+msgstr "डीसीसी को भेजा गया"
+
+msgid "Reverse Send To DCC"
+msgstr "डीसीसी को भेजना रद्द करें"
 
 msgid "Date of Birth"
 msgstr "जन्म तिथि"
@@ -193,17 +282,20 @@ msgstr "पूर्ण"
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
+msgid "Active"
+msgstr "सक्रिय"
+
 msgid "Entity Type"
 msgstr "इकाई प्रकार"
 
 msgid "Scan Done"
 msgstr "स्कैन पूरा हुआ"
 
-msgid "Show Advanced Filters"
-msgstr "उन्नत फ़िल्टर दिखाएँ"
+msgid "Language"
+msgstr "भाषा"
 
-msgid "Hide Advanced Filters"
-msgstr "उन्नत फ़िल्टर छुपाएँ"
+msgid "Ethnicity"
+msgstr "जातीयता"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -212,5 +304,173 @@ msgstr "{{totalCount}} में से {{pageCount}} पंक्तिया�
 msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
-msgid "Download Table as CSV"
-msgstr "तालिका को CSV के रूप में डाउनलोड करें"
+msgid "Download Data as CSV"
+msgstr "डेटा को CSV के रूप में डाउनलोड करें"
+
+#: php/libraries/Password.class.inc
+msgid "The password is too short"
+msgstr "पासवर्ड बहुत छोटा है"
+
+msgid "The password is not complex enough."
+msgstr "पासवर्ड पर्याप्त जटिल नहीं है।"
+
+msgid "This password is known to be exposed in online data breaches."
+msgstr "यह पासवर्ड ऑनलाइन डेटा उल्लंघनों में उजागर होने के लिए जाना जाता है।"
+
+msgid "Data Supervisors to Email"
+msgstr "ईमेल करने के लिए डेटा पर्यवेक्षक"
+
+msgid "Invalid email address"
+msgstr "अमान्य ईमेल पता"
+
+# Dashboard panel strings
+msgid "Views"
+msgstr "दृश्य"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "नया"
+
+msgid "Updated"
+msgstr "अद्यतन किया गया"
+
+msgid "Uploaded"
+msgstr "अपलोड किया गया"
+
+# User Account related
+msgid "Password Rules"
+msgstr "पासवर्ड नियम"
+
+msgid "Username"
+msgstr "उपयोगकर्ता नाम"
+
+msgid "First name"
+msgstr "पहला नाम"
+
+msgid "First name is required and should not exceed 120 characters"
+msgstr "पहला नाम आवश्यक है और 120 अक्षरों से अधिक नहीं होना चाहिए।"
+
+msgid "Last name"
+msgstr "अंतिम नाम"
+
+msgid "Last name is required and should not exceed 120 characters"
+msgstr "अंतिम नाम आवश्यक है और 120 अक्षरों से अधिक नहीं होना चाहिए।"
+
+msgid "Email address"
+msgstr "ईमेल पता"
+
+msgid "New Password"
+msgstr "नया पासवर्ड"
+
+msgid "Password"
+msgstr "पासवर्ड"
+
+msgid "Confirm Password"
+msgstr "पासवर्ड की पुष्टि करें"
+
+msgid "Email address is required"
+msgstr "ईमेल पता आवश्यक है"
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "ईमेल पता निम्नलिखित किसी भी वर्ण को नहीं शामिल कर सकता: <, >, &, और \""
+
+msgid "The password must be at least 8 characters long."
+msgstr "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।"
+
+msgid "The password cannot be your username or email address."
+msgstr "पासवर्ड आपका उपयोगकर्ता नाम या ईमेल पता नहीं हो सकता।"
+
+msgid "Please choose a unique password."
+msgstr "कृपया एक अद्वितीय पासवर्ड चुनें।"
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr "कोई विशेष अक्षर आवश्यक नहीं हैं, लेकिन पासवर्ड पर्याप्त जटिल होना चाहिए ताकि उसे स्वीकार किया जा सके।"
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr "हम सुझाव देते हैं कि आपके लिए पासवर्ड बनाने हेतु पासवर्ड मैनेजर का उपयोग करें।"
+
+msgid "Total"
+msgstr "कुल"
+
+msgid "Error!"
+msgstr "त्रुटि!"
+
+msgid "Date"
+msgstr "दिनांक"
+
+# Common timepoint and visit terms
+msgid "Not Started"
+msgstr "शुरू नहीं हुआ"
+
+msgid "Screening"
+msgstr "जांच"
+
+msgid "Visit"
+msgstr "भेंट"
+
+msgid "Approval"
+msgstr "स्वीकृति"
+
+msgid "Subject"
+msgstr "विषय"
+
+msgid "Recycling Bin"
+msgstr "रिसाइक्लिंग बिन"
+
+msgid "Pass"
+msgstr "उत्तीर्ण"
+
+msgid "Failure"
+msgstr "विफलता"
+
+msgid "Withdrawal"
+msgstr "निकासी"
+
+msgid "In Progress"
+msgstr "प्रगति पर"
+
+msgid "Complete"
+msgstr "पूर्ण"
+
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "उपकरण"
+msgstr[1] "उपकरण"
+
+msgid "Partial"
+msgstr "आंशिक"
+
+msgid "All"
+msgstr "सभी"
+
+msgid "Data Entry"
+msgstr "डेटा प्रविष्टि"
+
+msgid "Administration"
+msgstr "प्रशासन"
+
+msgid "Double Data Entry Form"
+msgstr "दोहरी डेटा प्रविष्टि फ़ॉर्म"
+
+msgid "Double Data Entry Status"
+msgstr "दोहरी डेटा प्रविष्टि स्थिति"
+
+msgid "Double Data Entry"
+msgstr "दोहरी डेटा प्रविष्टि"
+
+# Age related terms
+msgid "Age"
+msgstr "आयु"
+
+msgid "{{months}} months old"
+msgstr "{{months}} महीने का"
+
+msgid "{{years}} years old"
+msgstr "{{years}} वर्ष का"
+
+# Other generic terms
+msgid "Loading..."
+msgstr "लोड हो रहा है..."
+
+msgid "Permission denied"
+msgstr "अनुमति अस्वीकृत"

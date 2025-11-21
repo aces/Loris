@@ -8,6 +8,7 @@ import {
   TextboxElement,
   ButtonElement,
 } from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
 
 /**
  * View project component
@@ -45,10 +46,12 @@ class ViewProject extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
+    const {t} = this.props;
 
     if (Object.keys(this.state.formErrors).length > 0) {
       swal.fire(
-        'Please fix any remaining form errors before submission',
+        t('Please fix any remaining form errors before submission',
+          {ns: 'publication'}),
         '',
         'error'
       );
@@ -79,17 +82,23 @@ class ViewProject extends React.Component {
       if (!response.ok) {
         console.error(response.status);
         response.json().then((data) => {
-          let message = (data && data.message) || 'Something went wrong!';
-          swal.fire('Edit failed!', message, 'error');
+          let message = (data && data.message) || t('Something went wrong!',
+            {ns: 'publication'});
+          swal.fire(t('Edit failed!', {ns: 'publication'}), message, 'error');
         });
         return;
       }
 
-      swal.fire('Edit Successful!', '', 'success');
+      swal.fire(t('Edit Successful!',
+        {ns: 'publication'}), '', 'success').then(() => {
+        window.location.replace(loris.BaseURL + '/publication/');
+      });
     }).catch((error) => {
       // Network error
       console.error(error);
-      swal.fire('Edit failed!', 'Something went wrong!', 'error');
+      swal.fire(t('Edit failed!', {ns: 'publication'}),
+        t('Something went wrong!',
+          {ns: 'publication'}), 'error');
     });
   }
 
@@ -97,13 +106,14 @@ class ViewProject extends React.Component {
    * Fetch data
    */
   fetchData() {
+    const {t} = this.props;
     fetch(this.props.DataURL, {
       method: 'GET',
     }).then((response) => {
       if (!response.ok) {
         console.error(response.status);
         this.setState({
-          error: 'An error occurred when loading the form!',
+          error: t('An error occured while loading the page.', {ns: 'loris'}),
         });
         return;
       }
@@ -156,7 +166,6 @@ class ViewProject extends React.Component {
             userCanEdit: data.userCanEdit,
             allVOIs: data.allVOIs,
             allKWs: data.allKWs,
-            allCollabs: data.allCollabs,
             uploadTypes: data.uploadTypes,
             files: data.files,
             isLoaded: true,
@@ -166,7 +175,7 @@ class ViewProject extends React.Component {
       // Network error
       console.error(error);
       this.setState({
-        error: 'An error occurred when loading the form!',
+        error: t('An error occured while loading the page.', {ns: 'loris'}),
       });
     });
   }
@@ -260,6 +269,7 @@ class ViewProject extends React.Component {
     let voiLinks;
     let files;
 
+
     if (this.state.formData.collaborators.length > 0) {
       collabLinks = this.createMenuFilterLinks(
         this.state.formData.collaborators.map((c) => c.name),
@@ -267,7 +277,7 @@ class ViewProject extends React.Component {
       );
       collaborators = <StaticElement
         name="collaborators"
-        label="Collaborators"
+        label={this.props.t('Collaborators', {ns: 'publication'})}
         text={collabLinks}
       />;
     }
@@ -279,7 +289,7 @@ class ViewProject extends React.Component {
       );
       keywords = <StaticElement
         name="keywords"
-        label="Keywords"
+        label={this.props.t('Keywords', {ns: 'publication'})}
         text={keywordLinks}
       />;
     }
@@ -291,7 +301,7 @@ class ViewProject extends React.Component {
       );
       vois = <StaticElement
         name="variablesOfInterest"
-        label="Variables of Interest"
+        label={this.props.t('Variables Of Interest', {ns: 'publication'})}
         text={voiLinks}
       />;
     }
@@ -303,42 +313,42 @@ class ViewProject extends React.Component {
       <div>
         <StaticElement
           name="description"
-          label="Description"
+          label={this.props.t('Description', {ns: 'publication'})}
           text={this.state.formData.description}
         />
         <StaticElement
           name="project"
-          label="Project"
+          label={this.props.t('Project', {ns: 'loris', count: 1})}
           text={this.state.formData.projectName}
         />
         <StaticElement
           name="publishingStatus"
-          label="Publishing status"
+          label={this.props.t('Publishing Status', {ns: 'publication'})}
           text={this.state.formData.publishingStatus}
         />
         <StaticElement
           name="datePublication"
-          label="Date published"
+          label={this.props.t('Date Published', {ns: 'publication'})}
           text={this.state.formData.datePublication}
         />
         <StaticElement
           name="journal"
-          label="Journal"
+          label={this.props.t('Journal', {ns: 'publication'})}
           text={this.state.formData.journal}
         />
         <StaticElement
           name="link"
-          label="Link"
+          label={this.props.t('Link', {ns: 'publication'})}
           text={this.state.formData.link}
         />
         <StaticElement
           name="leadInvestigator"
-          label="Lead Investigator"
+          label={this.props.t('Lead Investigator', {ns: 'publication'})}
           text={this.state.formData.leadInvestigator}
         />
         <StaticElement
           name='leadInvestigatorEmail'
-          label='Lead Investigator Email'
+          label={this.props.t('Lead Investigator Email', {ns: 'publication'})}
           text={this.state.formData.leadInvestigatorEmail}
         />
         {collaborators}
@@ -372,7 +382,6 @@ class ViewProject extends React.Component {
           users={this.state.users}
           allVOIs={this.state.allVOIs}
           allKWs={this.state.allKWs}
-          allCollabs={this.state.allCollabs}
           editMode={true}
           fetchData={this.fetchData}
         />
@@ -462,10 +471,11 @@ class ViewProject extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       return (
         <button className="btn-info has-spinner">
-          Loading
+          {t('Loading...', {ns: 'loris'})}
           <span
             className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
           </span>
@@ -482,7 +492,7 @@ class ViewProject extends React.Component {
       // in formData reflects the ID, not the description
       statusElement = <SelectElement
         name="status"
-        label="Status"
+        label={t('Status', {ns: 'publication'})}
         id="status"
         value={this.state.formData.status}
         onUserInput={this.setFormData}
@@ -494,7 +504,7 @@ class ViewProject extends React.Component {
       if (status === 'Rejected') {
         rejectReason = <TextboxElement
           name="rejectedReason"
-          label="Reason for rejection"
+          label={t('Reason for rejection', {ns: 'publication'})}
           value={this.state.formData.rejectedReason}
           onUserInput={this.setFormData}
           required={true}
@@ -504,7 +514,7 @@ class ViewProject extends React.Component {
       // to avoid having 2 submit buttons
       reviewBtn = this.state.userCanEdit ?
         undefined :
-        <ButtonElement label="Submit" />;
+        <ButtonElement label={t('Submit', {ns: 'loris'})} />;
     } else {
       const statClassMap = {
         Pending: 'text-warning',
@@ -517,12 +527,12 @@ class ViewProject extends React.Component {
         </span>
       );
       statusElement = <StaticElement
-        label="Status"
+        label={t('Status', {ns: 'loris'})}
         text={statusText}
       />;
       if (status === 'Rejected') {
         rejectReason = <StaticElement
-          label="Reason for rejection"
+          label={t('Reason for rejection', {ns: 'publication'})}
           text={this.state.formData.rejectedReason}
         />;
       }
@@ -542,7 +552,7 @@ class ViewProject extends React.Component {
       title = (
         <TextboxElement
           name="title"
-          label="Title"
+          label={t('Title', {ns: 'publication'})}
           onUserInput={this.setFormData}
           required={true}
           value={this.state.formData.title}
@@ -581,6 +591,8 @@ class ViewProject extends React.Component {
 ViewProject.propTypes = {
   action: PropTypes.string,
   DataURL: PropTypes.string,
+  t: PropTypes.func,
 };
 
-export default ViewProject;
+export default withTranslation(
+  ['publication', 'loris'])(ViewProject);

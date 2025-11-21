@@ -22,7 +22,7 @@
  * Example: php delete_ignored_conflicts.php confirm
  * (Will use confirm mode and remove all obsolete conflicts)
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

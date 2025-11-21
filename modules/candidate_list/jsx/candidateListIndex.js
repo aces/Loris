@@ -14,6 +14,7 @@ import {withTranslation} from 'react-i18next';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/candidate_list.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/candidate_list.json';
+import frStrings from '../locale/fr/LC_MESSAGES/candidate_list.json';
 
 /**
  * Candidate List
@@ -163,7 +164,7 @@ class CandidateListIndex extends Component {
       );
     }
 
-    if (column === this.props.t('Cohort', {ns: 'loris'})) {
+    if (column === this.props.t('Cohort', {ns: 'loris', count: 1})) {
       let result = (cell) ? <td>{cell}</td> : <td></td>;
       return result;
     }
@@ -221,7 +222,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        label: this.props.t('Site', {ns: 'loris'}),
+        label: this.props.t('Site', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'site',
@@ -230,7 +231,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': this.props.t('Cohort', {ns: 'loris'}),
+        'label': this.props.t('Cohort', {ns: 'loris', count: 1}),
         'show': true,
         'filter': {
           name: 'cohort',
@@ -326,7 +327,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': this.props.t('Project', {ns: 'loris'}),
+        'label': this.props.t('Project', {ns: 'loris', count: 1}),
         'show': true,
         'filter': {
           name: 'project',
@@ -409,6 +410,7 @@ window.addEventListener('load', () => {
   const args = QueryString.get();
   i18n.addResourceBundle('ja', 'candidate_list', jaStrings);
   i18n.addResourceBundle('hi', 'candidate_list', hiStrings);
+  i18n.addResourceBundle('fr', 'candidate_list', frStrings);
 
 
   const CLIndex = withTranslation(

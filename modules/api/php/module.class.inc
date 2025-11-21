@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It handles the basic routing for the module.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   API
  * @package    Main
@@ -68,7 +68,7 @@ class Module extends \Module
         }
 
         // Requests sent to this module must start with /api/$version
-        $url    = $request->getURI()->getPath();
+        $url    = $request->getAttribute("unhandledURI")->getPath();
         $pieces = [];
         if (preg_match(
             "/^\/?(v[0-9]+\.[0-9]+\.[0-9]+[^\/]*)\/(.*)/",

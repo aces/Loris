@@ -1,0 +1,58 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Help Editor"
+msgstr "सहायता संपादक"
+
+msgid "Edit Help Content"
+msgstr "सहायता सामग्री संपादित करें"
+
+msgid "Help ID"
+msgstr "सहायता आईडी"
+
+msgid "Topic"
+msgstr "विषय"
+
+msgid "Content"
+msgstr "सामग्री"
+
+msgid "Title"
+msgstr "शीर्षक"
+
+msgid "Open the help dialog to preview the changes."
+msgstr "परिवर्तनों का पूर्वावलोकन करने के लिए सहायता संवाद खोलें।"
+
+msgid "Content update successful!"
+msgstr "सामग्री सफलतापूर्वक अपडेट की गई!"
+
+msgid "Content update unsuccessful."
+msgstr "सामग्री अपडेट असफल रहा।"
+
+msgid "Something went wrong"
+msgstr "कुछ गलत हो गया"
+
+msgid "Try again"
+msgstr "पुनः प्रयास करें"
+
+msgid "Help content cannot be added to an instrument that has already been registered."
+msgstr "एक ऐसे इंस्ट्रूमेंट में हेल्प कंटेंट नहीं जोड़ा जा सकता है जो पहले से पंजीकृत हो चुका है।"
+
+msgid "Adding help content for a specific instrument"
+msgstr "किसी विशिष्ट उपकरण के लिए सहायता सामग्री जोड़ना"

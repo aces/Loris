@@ -3,7 +3,7 @@
 /**
  * The DQT_Setup 'endpoint' class for the DQT Module.
  *
- * PHP Version 7.4
+ * PHP Version 8.4
  *
  * @category   API
  * @package    Loris
@@ -23,7 +23,7 @@ use \Psr\Http\Message\ResponseInterface;
  * ProgressBar's stream "reader" to get the needed
  * setup data from couchDB.
  *
- * PHP Version 7.4
+ * PHP Version 8.4
  *
  * @category   API
  * @package    LORIS

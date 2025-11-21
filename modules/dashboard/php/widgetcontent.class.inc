@@ -3,7 +3,7 @@
 /**
  * File contains the \LORIS\dashboard\WidgetContent class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

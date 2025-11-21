@@ -3,6 +3,11 @@ import Loader from 'Loader';
 import PropTypes from 'prop-types';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/help_editor.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/help_editor.json';
+import {withTranslation} from 'react-i18next';
+
 
 /**
  * Help Editor Archive Page.
@@ -67,13 +72,14 @@ class HelpEditor extends React.Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const {t} = this.props;
     let url;
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'Topic':
+    case t('Topic', {ns: 'help_editor'}):
       url = loris.BaseURL + '/help_editor/edit_help_content/?helpID='
-            + row['Help ID'];
-      result = <td><a href ={url}>{cell}</a></td>;
+            + row[t('Help ID', {ns: 'help_editor'})];
+      result = <td><a href={url}>{cell}</a></td>;
       break;
     }
 
@@ -86,10 +92,12 @@ class HelpEditor extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -98,20 +106,26 @@ class HelpEditor extends React.Component {
     }
 
     const {data} = this.state;
-    /**
-     * XXX: Currently, the order of these fields MUST match the order of the
-     * queried columns in _setupVariables() in media.class.inc
-     */
+    const addHelp = () => {
+      window.location.replace(
+        loris.BaseURL+'/help_editor/edit_help_content?helpID=null'
+      );
+    };
+    const actions = [
+      {label: t('Adding help content for a specific instrument',
+        {ns: 'help_editor'}), action: addHelp},
+    ];
     const fields = [
-      {label: 'Help ID', show: false},
-      {label: 'Topic', show: true, filter: {
+      {label: t('Help ID', {ns: 'help_editor'}), show: false},
+      {label: t('Topic', {ns: 'help_editor'}), show: true, filter: {
         name: 'topic',
         type: 'text',
       }},
-      {label: 'Content', show: true, filter: {
+      {label: t('Content', {ns: 'help_editor'}), show: true, filter: {
         name: 'content',
         type: 'text',
       }},
+      {label: t('Instrument', {ns: 'loris', count: 1}), show: true},
     ];
 
     return (
@@ -119,6 +133,7 @@ class HelpEditor extends React.Component {
         name="help_filter"
         data={data}
         fields={fields}
+        actions={actions}
         getFormattedCell={this.formatColumn}
       />
     );
@@ -127,13 +142,19 @@ class HelpEditor extends React.Component {
 
 HelpEditor.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
+const TranslatedHelpEditor = withTranslation(
+  ['help_editor'])(HelpEditor);
+
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'help_editor', hiStrings);
+  i18n.addResourceBundle('ja', 'help_editor', jaStrings);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <HelpEditor
+    <TranslatedHelpEditor
       Module="help_editor"
       dataURL={loris.BaseURL + '/help_editor/?format=json'}
     />
