@@ -264,7 +264,7 @@ msgid "Reset"
 msgstr ""
 
 # Data table strings
-msgid "{{rowLength}} rows displayed of {{filteredCount}}."
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
 
 msgid "Maximum rows per page:"

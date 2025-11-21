@@ -273,7 +273,7 @@ msgstr "{{totalCount}} में से {{pageCount}} पंक्तिया�
 msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
-msgid "Download Table as CSV"
+msgid "Download Data as CSV"
 msgstr "तालिका को CSV के रूप में डाउनलोड करें"
 
 #: php/libraries/Password.class.inc

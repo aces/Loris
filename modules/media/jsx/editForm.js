@@ -142,7 +142,7 @@ class MediaEditForm extends Component {
           />
           <SelectElement
             name='instrument'
-            label={t('Instrument', {ns: 'media'})}
+            label={t('Instrument', {ns: 'loris', count:1})}
             options={this.state.Data.instruments}
             onUserInput={this.setFormData}
             ref='instrument'
@@ -168,7 +168,7 @@ class MediaEditForm extends Component {
           <SelectElement
             name='language'
             id='language_id'
-            label={t('Language', {ns: 'media'})}
+            label={t('Language', {ns: 'loris'})}
             options={this.state.Data.language}
             onUserInput={this.setFormData}
             value={this.state.formData.language}
@@ -188,8 +188,8 @@ class MediaEditForm extends Component {
             label={t('Hide File', {ns: 'media'})}
             emptyOption={false}
             options={[
-              t('No', {ns: 'media'}),
-              t('Yes', {ns: 'media'}),
+              t('No', {ns: 'loris'}),
+              t('Yes', {ns: 'loris'}),
             ]}
             onUserInput={this.setFormData}
             ref='hideFile'

@@ -93,7 +93,7 @@ class MediaIndex extends Component {
    */
   mapColumn(column, value) {
     switch (column) {
-    case this.props.t('Site', {ns: 'loris'}):
+	    case this.props.t('Site', {ns: 'loris', count:1}):
       return this.state.fieldOptions.sites[value];
     default:
       return value;
@@ -134,17 +134,17 @@ class MediaIndex extends Component {
         );
       }
       break;
-    case t('Visit Label', {ns: 'media'}):
+    case t('Visit Label', {ns: 'loris'}):
       if (row['CandID'] !== null && row['SessionID']) {
         const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
           row['CandID'] + '&sessionID=' + row['SessionID'];
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
-    case t('Site', {ns: 'loris'}):
+	    case t('Site', {ns: 'loris', count:1}):
       result = <td className={style}>{cell}</td>;
       break;
-    case t('Project', {ns: 'loris'}):
+	    case t('Project', {ns: 'loris', count:1}):
       result = <td className={style}>
         {this.state.fieldOptions.projects[cell]}
       </td>;
@@ -186,7 +186,7 @@ class MediaIndex extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        {ns: 'media'})}</h3>;
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -208,27 +208,27 @@ class MediaIndex extends Component {
         name: 'pscid',
         type: 'text',
       }},
-      {label: t('Visit Label', {ns: 'media'}), show: true, filter: {
+      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'select',
         options: options.visits,
       }},
-      {label: t('Language', {ns: 'media'}), show: true, filter: {
+      {label: t('Language', {ns: 'loris'}), show: true, filter: {
         name: 'language',
         type: 'select',
         options: options.languages,
       }},
-      {label: t('Instrument', {ns: 'media'}), show: true, filter: {
+      {label: t('Instrument', {ns: 'loris', count:1}), show: true, filter: {
         name: 'instrument',
         type: 'select',
         options: options.instruments,
       }},
-      {label: t('Site', {ns: 'loris'}), show: true, filter: {
+      {label: t('Site', {ns: 'loris', count:1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
-      {label: t('Project', {ns: 'loris'}), show: true, filter: {
+      {label: t('Project', {ns: 'loris', count:1}), show: true, filter: {
         name: 'project',
         type: 'select',
         options: options.projects,
