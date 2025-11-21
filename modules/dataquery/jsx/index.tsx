@@ -16,6 +16,10 @@ import {useSharedQueries, useLoadQueryFromURL} from './hooks/usesharedqueries';
 
 import {useDataDictionary, useCategories} from './hooks/usedatadictionary';
 import {ModuleDictionary, DictionaryCategory} from './types';
+// @ts-ignore
+import i18n from 'I18nSetup';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/dataquery.json';
 
 type ActiveCategoryType = {
     module: string,
@@ -244,6 +248,8 @@ function DataQueryApp(props: {
 
 declare const loris: any;
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'dataquery', hiStrings);
+
   const element = document.getElementById('lorisworkspace');
   if (!element) {
     throw new Error('Missing lorisworkspace');
