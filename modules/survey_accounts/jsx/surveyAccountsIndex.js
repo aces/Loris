@@ -71,7 +71,7 @@ class SurveyAccountsIndex extends Component {
       const url = loris.BaseURL + '/survey.php?key=' + row.URL;
       result = <td><a href={url}>{cell}</a></td>;
       break;
-	    case t('Instrument', {ns: 'loris', count: 1}):
+    case t('Instrument', {ns: 'loris', count: 1}):
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
     }
