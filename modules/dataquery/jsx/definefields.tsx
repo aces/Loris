@@ -493,7 +493,7 @@ function DefineFields(props: {
           <div style={{
             overflowY: 'auto',
             overflowX: 'hidden',
-            maxHeight: '90vh',
+            maxHeight: '80vh',
           }}>
             <SelectedFieldList
               selected={props.selected}
