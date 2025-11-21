@@ -145,7 +145,7 @@ class CandidateInfo extends Component {
         value: this.props.Candidate.Meta.Sex,
       },
       {
-        label: this.props.t('Project', {ns: 'loris'}),
+        label: this.props.t('Project', {ns: 'loris', count: 1}),
         value: this.props.Candidate.Meta.Project,
       },
       {
@@ -153,7 +153,7 @@ class CandidateInfo extends Component {
         value: cohorts.join(', '),
       },
       {
-        label: this.props.t('Site', {ns: 'loris'}),
+        label: this.props.t('Site', {ns: 'loris', count: 1}),
         value: this.props.Candidate.Meta.Site,
       },
       {
