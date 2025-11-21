@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
@@ -173,6 +173,24 @@ msgstr "उन्नत फ़िल्टर दिखाएँ"
 msgid "Hide Advanced Filters"
 msgstr "उन्नत फ़िल्टर छिपाएँ"
 
+msgid "Pass"
+msgstr "पास"
+
+msgid "Fail"
+msgstr "फेल"
+
+msgid "True"
+msgstr "सत्य"
+
+msgid "False"
+msgstr "असत्य"
+
+msgid "Selected"
+msgstr "चयनित"
+
+msgid "selected"
+msgstr "चयनित"
+
 # Common swal labels
 msgid "Cancel"
 msgstr "रद्द करें"
@@ -279,6 +297,12 @@ msgstr "भाषा"
 msgid "Ethnicity"
 msgstr "जातीयता"
 
+msgid "Previous"
+msgstr "पिछला"
+
+msgid "Next"
+msgstr "अगला"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
@@ -311,6 +335,9 @@ msgstr "दृश्य"
 
 # Common strings on widgets
 msgid "NEW"
+msgstr "नया"
+
+msgid "New"
 msgstr "नया"
 
 msgid "Updated"
@@ -371,9 +398,6 @@ msgstr "कोई विशेष अक्षर आवश्यक नही�
 msgid "We suggest using a password manager to generate one for you."
 msgstr "हम सुझाव देते हैं कि आपके लिए पासवर्ड बनाने हेतु पासवर्ड मैनेजर का उपयोग करें।"
 
-msgid "Total"
-msgstr "कुल"
-
 msgid "Error!"
 msgstr "त्रुटि!"
 
@@ -383,6 +407,9 @@ msgstr "दिनांक"
 # Common timepoint and visit terms
 msgid "Not Started"
 msgstr "शुरू नहीं हुआ"
+
+msgid "Total"
+msgstr "कुल"
 
 msgid "Screening"
 msgstr "जांच"
@@ -398,9 +425,6 @@ msgstr "विषय"
 
 msgid "Recycling Bin"
 msgstr "रिसाइक्लिंग बिन"
-
-msgid "Pass"
-msgstr "उत्तीर्ण"
 
 msgid "Failure"
 msgstr "विफलता"

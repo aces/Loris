@@ -122,8 +122,8 @@ class Imaging_Browser extends \DataFrameworkMenu
 
         // get visit QC status options
         $visitQCStatus = [
-            'Pass' => 'Pass',
-            'Fail' => 'Fail',
+            'Pass' => dgettext("loris", "Pass"),
+            'Fail' => dgettext("loris", "Fail"),
         ];
 
         // get Pending/New options
