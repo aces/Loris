@@ -282,9 +282,6 @@ msgstr "जातीयता"
 msgid "Access denied"
 msgstr "पहुँच अस्वीकृत"
 
-msgid "No."
-msgstr "क्रमांक"
-
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
