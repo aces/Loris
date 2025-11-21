@@ -142,7 +142,7 @@ class MediaEditForm extends Component {
           />
           <SelectElement
             name='instrument'
-            label={t('Instrument', {ns: 'loris', count:1})}
+            label={t('Instrument', {ns: 'loris', count: 1})}
             options={this.state.Data.instruments}
             onUserInput={this.setFormData}
             ref='instrument'

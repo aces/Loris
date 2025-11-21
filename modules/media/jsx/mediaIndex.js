@@ -93,7 +93,7 @@ class MediaIndex extends Component {
    */
   mapColumn(column, value) {
     switch (column) {
-	    case this.props.t('Site', {ns: 'loris', count:1}):
+	    case this.props.t('Site', {ns: 'loris', count: 1}):
       return this.state.fieldOptions.sites[value];
     default:
       return value;
@@ -141,10 +141,10 @@ class MediaIndex extends Component {
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
-	    case t('Site', {ns: 'loris', count:1}):
+	    case t('Site', {ns: 'loris', count: 1}):
       result = <td className={style}>{cell}</td>;
       break;
-	    case t('Project', {ns: 'loris', count:1}):
+	    case t('Project', {ns: 'loris', count: 1}):
       result = <td className={style}>
         {this.state.fieldOptions.projects[cell]}
       </td>;
@@ -218,17 +218,17 @@ class MediaIndex extends Component {
         type: 'select',
         options: options.languages,
       }},
-      {label: t('Instrument', {ns: 'loris', count:1}), show: true, filter: {
+      {label: t('Instrument', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'instrument',
         type: 'select',
         options: options.instruments,
       }},
-      {label: t('Site', {ns: 'loris', count:1}), show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
-      {label: t('Project', {ns: 'loris', count:1}), show: true, filter: {
+      {label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'project',
         type: 'select',
         options: options.projects,

@@ -119,7 +119,7 @@ class MediaUploadForm extends Component {
     let helpText = (
       <span>
         {t('File name must begin with', {ns: 'media'})}
-        <b>[{t('PSCID',{ns:'loris'})}]_[{t('Visit Label',{ns:'loris'})}]_[{t('Instrument',{ns:'loris',count:1})}]</b><br/>
+        <b>[{t('PSCID', {ns: 'loris'})}]_[{t('Visit Label', {ns: 'loris'})}]_[{t('Instrument', {ns: 'loris', count: 1})}]</b><br/>
         {t('For example, for candidate', {ns: 'media'})}
         <i>ABC123</i>, {t('visit', {ns: 'media'})} <i>V1</i>
         {t('for', {ns: 'media'})}
@@ -182,7 +182,7 @@ class MediaUploadForm extends Component {
             />
             <SelectElement
               name='instrument'
-              label={t('Instrument', {ns: 'loris', count:1})}
+              label={t('Instrument', {ns: 'loris', count: 1})}
               options={instruments}
               placeholder={instErrMsg}
               onUserInput={this.setFormData}
