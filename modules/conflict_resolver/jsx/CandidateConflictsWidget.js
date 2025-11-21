@@ -2,11 +2,9 @@ import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {useTranslation, withTranslation} from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
-/* eslint-disable no-unused-vars */
 import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
-
 
 /**
  * Renders a representation of the candidate conflicts as a React
@@ -16,9 +14,6 @@ import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
  * @return {object}
  */
 function CandidateConflictsWidget(props) {
-  const visits = getVisits(props.Conflicts);
-  const instruments = getInstruments(props.Conflicts);
-
   const {t, i18n} = useTranslation();
   const [reload, setReload] = useState(0);
   useEffect(() => {
@@ -75,13 +70,13 @@ function CandidateConflictsWidget(props) {
     <div id='conflictschart' />
     <ul>
       <li>
-        {t('Click on instrument in legend to visit conflict resolver' +
-        ' for that instrument across all visits.',
+        {t('Click on instrument in legend to visit conflict resolver '
+                + 'for that instrument across all visits.',
         {ns: 'conflict_resolver'})}
       </li>
       <li>
-        {t('Click on bar in graph to visit conflict resolver' +
-        ' for that visit and instrument combination.',
+        {t('Click on bar in graph to visit conflict resolver '
+                + 'for that visit and instrument combination.',
         {ns: 'conflict_resolver'})}
       </li>
     </ul>
@@ -91,7 +86,6 @@ CandidateConflictsWidget.propTypes = {
   Conflicts: PropTypes.array,
   BaseURL: PropTypes.string,
   Candidate: PropTypes.object,
-  t: PropTypes.func,
 };
 
 /**
@@ -164,5 +158,4 @@ function getDataBreakdown(visits, instruments, conflicts) {
   return data;
 }
 
-export default withTranslation(
-  ['conflict_resolver', 'loris'])(CandidateConflictsWidget);
+export default CandidateConflictsWidget;
