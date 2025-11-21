@@ -7,8 +7,6 @@ import {
   TextboxElement,
 } from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
-import i18n from 'I18nSetup';
-import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
 
 /**
  * Publication upload form component
