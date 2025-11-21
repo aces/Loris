@@ -11,7 +11,6 @@ import {
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
-i18n.addResourceBundle('hi', 'publication', hiStrings);
 
 /**
  * View project component
@@ -321,7 +320,7 @@ class ViewProject extends React.Component {
         />
         <StaticElement
           name="project"
-          label={this.props.t('Project', {ns: 'publication'})}
+          label={this.props.t('Project', {ns: 'loris', count: 1})}
           text={this.state.formData.projectName}
         />
         <StaticElement
