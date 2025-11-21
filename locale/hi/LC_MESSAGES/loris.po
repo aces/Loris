@@ -136,16 +136,7 @@ msgstr "रीसेट करें"
 msgid "Back"
 msgstr "वापस"
 
-msgid "modules/issue_tracker/jsx/attachments/attachmentsList.js
-        <p style={overflowCSS}>
-          Please confirm the request to delete the
-          "{this.state.deleteItem.file_name}" attachment.
-          {t('Please confirm the request to delete the',
-Member
-@driusan
-driusan
-39 minutes ago
-This should be a template string with a variable so that the filename location can change within the different languages"
+msgid "None"
 msgstr "कोई नहीं"
 
 msgid "Y"
