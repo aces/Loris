@@ -152,6 +152,9 @@ msgstr "बनाएँ"
 msgid "Selection Filter"
 msgstr "चयन फ़िल्टर"
 
+msgid "Filters"
+msgstr "फ़िल्टर"
+
 msgid "Show Filters"
 msgstr "फ़िल्टर दिखाएँ"
 
@@ -160,6 +163,9 @@ msgstr "फ़िल्टर छिपाएँ"
 
 msgid "Clear Filters"
 msgstr "फ़िल्टर साफ़ करें"
+
+msgid "Load Filter Preset"
+msgstr "फ़िल्टर प्रीसेट लोड करें"
 
 msgid "Show Advanced Filters"
 msgstr "उन्नत फ़िल्टर दिखाएँ"
@@ -174,6 +180,9 @@ msgstr "रद्द करें"
 msgid "Success!"
 msgstr "सफलता!"
 
+msgid "Close"
+msgstr "बंद करें"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
@@ -183,6 +192,12 @@ msgstr "डीसीसीआईडी"
 
 msgid "Visit Label"
 msgstr "दौरे का लेबल"
+
+msgid "Status"
+msgstr "स्थिति"
+
+msgid "No."
+msgstr "संख्या"
 
 msgid "Email"
 msgstr "ईमेल"
@@ -435,3 +450,6 @@ msgstr "{{years}} वर्ष का"
 # Other generic terms
 msgid "Loading..."
 msgstr "लोड हो रहा है..."
+
+msgid "Permission denied"
+msgstr "अनुमति अस्वीकृत"
