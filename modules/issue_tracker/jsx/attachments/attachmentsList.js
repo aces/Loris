@@ -197,7 +197,8 @@ class AttachmentsList extends Component {
       >
         <p style={overflowCSS}>
           {t(
-            'Please confirm the request to delete the "{{fileName}}" attachment.',
+            'Please confirm the request to delete the "{{fileName}}" ' +
+            'attachment.',
             {
               ns: 'issue_tracker',
               fileName: this.state.deleteItem.file_name,
