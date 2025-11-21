@@ -113,7 +113,7 @@ class IssueUploadAttachmentForm extends Component {
           swal.fire(data.error, '', 'error');
         } else {
           swal.fire(
-            this.props.t('Permission denied', {ns: 'issue_tracker'}),
+            this.props.t('Permission denied', {ns: 'loris'}),
             '',
             'error'
           );

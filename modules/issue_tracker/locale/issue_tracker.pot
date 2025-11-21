@@ -21,6 +21,9 @@ msgstr ""
 msgid "Issue Tracker"
 msgstr ""
 
+msgid "Issue"
+msgstr ""
+
 msgid "Your assigned issue"
 msgid_plural "Your assigned issues"
 msgstr[0] ""
@@ -165,4 +168,7 @@ msgid "{{count}} issues displayed of {{total}}"
 msgstr ""
 
 msgid "Maximum issues per page: {{count}}"
+msgstr ""
+
+msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr ""

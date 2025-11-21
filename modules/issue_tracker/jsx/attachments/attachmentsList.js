@@ -65,7 +65,7 @@ class AttachmentsList extends Component {
         } else {
           swal.fire(
             this.props.t('Permission denied',
-              {ns: 'issue_tracker'}),
+              {ns: 'loris'}),
             '',
             'error'
           );
@@ -196,10 +196,13 @@ class AttachmentsList extends Component {
         show={this.state.showModalAttachmentDelete}
       >
         <p style={overflowCSS}>
-          {t('Please confirm the request to delete the',
-            {ns: 'issue_tracker'})}{' '}
-          "{this.state.deleteItem.file_name}"{' '}
-          {t('attachment.', {ns: 'issue_tracker'})}
+          {t(
+            'Please confirm the request to delete the "{{fileName}}" attachment.',
+            {
+              ns: 'issue_tracker',
+              fileName: this.state.deleteItem.file_name,
+            }
+          )}
         </p>
         <div style={footerCSS}>
           <ButtonElement

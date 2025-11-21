@@ -406,6 +406,9 @@ msgid "Instrument"
 msgid_plural "Instruments"
 msgstr[0] ""
 
+msgid "None"
+msgstr ""
+
 msgid "Partial"
 msgstr ""
 
@@ -439,4 +442,7 @@ msgstr ""
 
 # Other generic terms
 msgid "Loading..."
+msgstr ""
+
+msgid "Permission denied"
 msgstr ""

@@ -333,8 +333,10 @@ class IssueForm extends Component {
             name='watching'
             label={t('Watching?', {ns: 'issue_tracker'})}
             emptyOption={false}
-            options={{No: 'No',
-              Yes: 'Yes'}}
+            locale/loris.pot            options={{
+              No: t('No', {ns: 'loris'}),
+              Yes: t('Yes', {ns: 'loris'}),
+            }}
             onUserInput={this.setFormData}
             value={isWatching}
           />

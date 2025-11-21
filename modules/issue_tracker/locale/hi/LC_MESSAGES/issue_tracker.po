@@ -21,6 +21,9 @@ msgstr ""
 msgid "Issue Tracker"
 msgstr "समस्या ट्रैकर"
 
+msgid "Issue"
+msgstr "समस्या"
+
 msgid "Your assigned issue"
 msgid_plural "Your assigned issues"
 msgstr[0] "आपकी असाइन की गई समस्या"
@@ -294,9 +297,6 @@ msgstr "उपयोगकर्ता खाते"
 msgid "Last 3 Comments"
 msgstr "अंतिम 3 टिप्पणियाँ"
 
-msgid "Permission denied"
-msgstr "अनुमति अस्वीकृत"
-
 msgid "Confirmation"
 msgstr "पुष्टिकरण"
 
@@ -327,11 +327,8 @@ msgstr "विवरण: "
 msgid "Attachment History"
 msgstr "संलग्नक इतिहास"
 
-msgid "Please confirm the request to delete the"
-msgstr "कृपया हटाने के अनुरोध की पुष्टि करें"
-
-msgid "attachment."
-msgstr "संलग्नक।"
+msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
+msgstr "कृपया \"{{fileName}}\" संलग्नक को हटाने के अनुरोध की पुष्टि करें"
 
 msgid "Upload Successful!"
 msgstr "अपलोड सफल!"
