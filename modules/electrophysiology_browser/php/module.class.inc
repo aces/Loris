@@ -13,6 +13,10 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\electrophysiology_browser;
+
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
 /**
  * Class module implements the basic LORIS module functionality
  *
@@ -41,6 +45,29 @@ class Module extends \Module
                     'electrophysiology_browser_view_site'
                 ]
             );
+    }
+
+    /**
+    * Overrides the default handler in order to delegate custom endpoints.
+    *
+    * @param ServerRequestInterface $request The incoming PSR7 request
+    *
+    * @return ResponseInterface The outgoing PSR15 response
+    */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $path        = trim($request->getURI()->getPath(), "/");
+        $pathparts   = explode('/', $path);
+        $handlername = array_shift($pathparts);
+
+        switch ($handlername) {
+        case 'pipelinearchive':
+            $handler = new \PipelineArchive($this->loris);
+            $request = $request->withAttribute('pathparts', $pathparts);
+            return $handler->process($request, $handler);
+        default:
+            return parent::handle($request);
+        }
     }
 
     /**
