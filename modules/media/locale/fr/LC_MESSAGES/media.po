@@ -13,159 +13,157 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Media"
-msgstr ""
+msgstr "Médias"
 
 msgid "File Name"
-msgstr ""
+msgstr "Nom de fichier"
 
 msgid "Instrument"
-msgstr ""
+msgstr "Instrument"
 
 msgid "Uploaded By"
-msgstr ""
+msgstr "Téléchargé par"
 
 msgid "Date Taken"
-msgstr ""
+msgstr "Date de prise"
 
 msgid "Comments"
-msgstr ""
+msgstr "Commentaires"
 
 msgid "Last Modified"
-msgstr ""
+msgstr "Dernière modification"
 
 msgid "File Type"
-msgstr ""
+msgstr "Type de fichier"
 
 msgid "CandID"
-msgstr ""
+msgstr "Candide"
 
 msgid "SessionID"
-msgstr ""
+msgstr "ID de session"
 
 msgid "File Visibility"
-msgstr ""
+msgstr "Visibilité des fichiers"
 
 msgid "Edit Metadata"
-msgstr ""
+msgstr "Modifier les métadonnées"
 
 msgid "Edit Media File"
-msgstr ""
+msgstr "Modifier le fichier multimédia"
 
 msgid "Edit"
-msgstr ""
+msgstr "Modifier"
 
 msgid "Browse"
-msgstr ""
+msgstr "Parcourir"
 
 msgid "Upload"
-msgstr ""
+msgstr "Télécharger"
 
 msgid "An error occured while loading the page."
-msgstr ""
+msgstr "Une erreur s'est produite lors du chargement de la page."
 
 msgid "Language"
-msgstr ""
+msgstr "Langue"
 
 # New strings from uploadForm.js
 
 msgid "An error occurred when loading the form!"
-msgstr ""
+msgstr "Une erreur s'est produite lors du chargement du formulaire!"
 
 msgid "File name must begin with"
-msgstr ""
+msgstr "Le nom du fichier doit commencer par"
 
 msgid "For example, for candidate"
-msgstr ""
+msgstr "Par exemple, pour un candidat"
 
 msgid "visit"
-msgstr ""
+msgstr "visite"
 
 msgid "for"
-msgstr ""
+msgstr "pour"
 
 msgid "the file name should be prefixed by"
-msgstr ""
+msgstr "le nom du fichier doit être préfixé par"
 
 msgid "File cannot exceed"
-msgstr ""
+msgstr "Le fichier ne peut pas dépasser"
 
 msgid "No visits available for this candidate"
-msgstr ""
+msgstr "Aucune visite n'est disponible pour ce candidat."
 
 msgid "No instruments available for this visit"
-msgstr ""
+msgstr "Aucun instrument n'est disponible pour cette visite."
 
 msgid "Upload a media file"
-msgstr ""
+msgstr "Téléverser un fichier multimédia"
 
 msgid "Note"
-msgstr ""
+msgstr "Note"
 
 msgid "Date of Administration"
-msgstr ""
+msgstr "Date d'administration"
 
 msgid "Document's Language"
-msgstr ""
+msgstr "Langue du document"
 
 msgid "File to upload"
-msgstr ""
+msgstr "Fichier à télécharger"
 
 msgid "Upload File"
-msgstr ""
+msgstr "Télécharger le fichier"
 
 msgid "Update File"
-msgstr ""
+msgstr "Mettre à jour le fichier"
 
 msgid "Uploaded file"
-msgstr ""
+msgstr "Fichier téléchargé"
 
 msgid "Hide File"
-msgstr ""
+msgstr "Masquer le fichier"
 
 msgid "Invalid file name!"
-msgstr ""
+msgstr "Nom de fichier invalide!"
 
 msgid "File name should begin with:"
-msgstr ""
+msgstr "Le nom du fichier doit commencer par:"
 
 msgid "Are you sure?"
-msgstr ""
+msgstr "Es-tu sûr?"
 
 msgid "A file with this name already exists!\n Would you like to override existing file?"
-msgstr ""
+msgstr "Un fichier portant ce nom existe déjà !\n Voulez-vous remplacer le fichier existant?"
 
 msgid "Yes, I am sure!"
-msgstr ""
+msgstr "Oui, j'en suis sûr!"
 
 msgid "No, cancel it!"
-msgstr ""
+msgstr "Non, annulez-le !"
 
 msgid "Cancelled"
-msgstr ""
+msgstr "Annulé"
 
-msgid "Your imaginary file is safe :)"
-msgstr ""
+msgid "Your imaginary file is safe :"
+msgstr "Votre fichier imaginaire est en sécurité:"
 
 msgid "Success!"
-msgstr ""
+msgstr "Succès!"
 
 msgid "Upload of media file completed."
-msgstr ""
+msgstr "Téléchargement du fichier multimédia terminé."
 
 msgid "Upload error!"
-msgstr ""
+msgstr "Erreur de téléchargement!"
 
 msgid "File too large!"
-msgstr ""
+msgstr "Fichier trop volumineux!"
 
 msgid "This field is required."
-msgstr ""
+msgstr "Ce champ est obligatoire."
 
-msgid "Candidate Media"
-msgstr ""
