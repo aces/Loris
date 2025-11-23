@@ -1597,7 +1597,7 @@ CREATE TABLE `issues` (
   `title` varchar(255) NOT NULL DEFAULT '',
   `reporter` varchar(255) NOT NULL DEFAULT '',
   `assignee` varchar(255) DEFAULT NULL,
-  `status` enum('new','acknowledged','feedback','assigned','resolved','closed') NOT NULL DEFAULT 'new',
+  `status` enum('new','acknowledged','feedback','assigned','resolved','closed','rejected') NOT NULL DEFAULT 'new',
   `priority` enum('low','normal','high','urgent','immediate') NOT NULL DEFAULT 'low',
   `module` int(10) unsigned DEFAULT NULL,
   `dateCreated` datetime DEFAULT NULL,
