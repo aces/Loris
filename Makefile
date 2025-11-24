@@ -142,6 +142,8 @@ locales:
 	npx i18next-conv -l ja -s modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po -t modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.json --compatibilityJSON v4
 	msgfmt -o modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.mo modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.po
 	msgfmt -o modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.mo modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po
+	msgfmt -o modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.mo modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.po
+	npx i18next-conv -l hi -s modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.po -t modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.json
 	msgfmt -o modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po
 	msgfmt -o modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po
 	npx i18next-conv -l hi -s modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po -t modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.json --compatibilityJSON v4
