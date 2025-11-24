@@ -1,11 +1,10 @@
-<?php declare(strict_types=1);
-
+<?php
 /**
  * This file contains the NDB_Page base class. This file should
  * contain ALL of the references to HTML_QuickForm (or any library
  * used to render HTML.
  *
- * PHP Version 8
+ * PHP Version 5
  *
  * @category Main
  * @package  Main
@@ -98,13 +97,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      * The default dateOptions to send to LorisForm to render elements
      * on this page. This is usually set by subclasses of NDB_Page which
      * need to modify the options to show on a date (ie. min year, max year,
-     * etc.). Default values can be added here, which can be overriden.
+     * etc.)
      *
      * @var array
      */
-    public $dateOptions = [
-        'maxYear' => '9999'
-    ];
+    public $dateOptions;
 
     /**
      * Does the setup required for this page. By default, sets up elements
@@ -147,7 +144,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
 
     }
-
     /**
      * Safely sets a smarty template variable.
      *
@@ -159,12 +155,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function setTemplateVar($name, $value)
     {
-        $this->tpl_data[$name] = htmlspecialchars(
-            strval($value),
-            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
-            'UTF-8',
-            false
-        );
+        $this->tpl_data[$name] = htmlspecialchars($value);
     }
 
     /**
@@ -274,6 +265,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             dgettext($this->name, $label)
         );
     }
+
 
     /**
      * Adds a text element to the current page with no accompanying
@@ -604,7 +596,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             dgettext($this->name, $labelString),
         );
     }
-
     /**
      * Creates a QuickForm text element but does not add it to the form
      *
@@ -665,7 +656,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     function createDate(
         $field,
         $label,
-        $dateOptions=[],
+        $dateOptions=null,
         $attribs=[
             'class' => 'form-control input-sm',
             'style' => 'max-width:33%; display:inline-block;',
@@ -791,9 +782,8 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $get = $request->getQueryParams();
         if (isset($get['format']) && $get['format'] === 'json') {
             $this->format = $get['format'];
-            return (new \LORIS\Http\Response())
-                ->withBody(new \LORIS\Http\StringStream($this->toJSON()))
-                ->withHeader("Content-Type", "application/json");            
+            return $handler->handle($request)
+                ->withHeader("Content-Type", "application/json");
         }
 
         return (new \LORIS\Middleware\PageDecorationMiddleware($user))
@@ -866,6 +856,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $html;
     }
 
+
     /**
      * Returns the form-specific defaults
      *
@@ -929,12 +920,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             $baseurl . '/js/jquery.fileupload.js',
             $baseurl . '/bootstrap/js/bootstrap.min.js',
             $baseurl . '/js/components/Breadcrumbs.js',
-            $baseurl . '/js/components/PolicyButton.js',
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Help.js',
         ];
         return $files;
     }
+
 
     /**
      * Returns an ordered list of CSS dependencies that this page depends
@@ -1001,171 +992,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($this->Module->getLongName(), "/$this->name"),
             new \LORIS\Breadcrumb($sublabel, "/$this->name/$this->page")
-        );
-    }
-
-    /**
-     * Get latest Policy for this module with an optional Policy Name
-     *
-     * @param \LORIS\LorisInstance $loris        The LORIS instance
-     * @param string               $policyName   The policy name
-     * @param bool                 $headerButton If true, only return policies that
-     *                                           have HeaderButton = 'Y'
-     *
-     * @return array The policy details
-     * @throws \DatabaseException
-     */
-    function getPolicy(
-        \LORIS\LorisInstance $loris,
-        string $policyName ='',
-        bool $headerButton = false
-    ) {
-        $moduleName = $this->Module->getName();
-        $DB         = $loris->getDatabaseConnection();
-        // If no policy name is given, we return the latest policy for the module
-        if (!empty($policyName)) {
-            $policyName = 'AND p.Name = '. $DB->quote($policyName);
-        }
-        // If we want just a policy that goes in the header,
-        // then we need HeaderButton = 'Y'
-        if ($headerButton == true) {
-            $headerWhere = "('Y')";
-        } else {
-            $headerWhere = "('Y', 'N')";
-        }
-        return iterator_to_array(
-            $DB->pselect(
-                "SELECT
-                    p.Name as PolicyName,
-                    Version,
-                    Content,
-                    SwalTitle,
-                    HeaderButtonText,
-                    AcceptButtonText,
-                    DeclineButtonText,
-                    m.Name as ModuleName,
-                    PolicyID,
-                    PolicyRenewalTime,
-                    PolicyRenewalTimeUnit
-                FROM policies p
-                JOIN modules m ON m.ID = p.ModuleID
-                WHERE m.Name = :moduleName
-                    $policyName
-                    AND p.Active = 'Y'
-                    AND p.HeaderButton IN $headerWhere
-                ORDER BY p.Version DESC
-                LIMIT 1
-                ",
-                [
-                    'moduleName' => $moduleName
-                ]
-            )
-        )[0] ?? [];
-    }
-
-    /**
-     * Returns the latest Policy for this page with a HeaderButton
-     *
-     * @param \LORIS\LorisInstance $loris The LORIS instance
-     *
-     * @return array
-     */
-    public function getHeaderPolicy(
-        \LORIS\LorisInstance $loris
-    ): array {
-        return $this->getPolicy(
-            $loris,
-            '',
-            true
-        ) ?? [];
-    }
-
-    /**
-     * Get a User's latest policy decision, and whether or not they need to renew.
-     *
-     * @param \LORIS\LorisInstance $loris      The LORIS instance
-     * @param string               $policyName The policy name
-     * @param int|null             $userID     The user ID, or current user if null
-     *
-     * @return array The decision details
-     * @throws \DatabaseException
-     * @access public
-     */
-    public function getLatestPolicyDecision(
-        \LORIS\LorisInstance $loris,
-        string $policyName,
-        int|null $userID
-    ) {
-        $userID = $userID ?? User::singleton()->getID();
-        $DB     = $loris->getDatabaseConnection();
-
-        $policyInfo = $this->getPolicy($loris, $policyName, false) ?? [];
-        if (empty($policyInfo)) {
-            return [];
-        }
-        $decision     = iterator_to_array(
-            $DB->pselect(
-                "SELECT Decision, DecisionDate
-                FROM user_policy_decision
-                WHERE
-                    UserID = :uid
-                    AND PolicyID=:policyID
-                ORDER BY DecisionDate DESC
-                LIMIT 1
-                ",
-                [
-                    'uid'      => $userID,
-                    'policyID' => $policyInfo['PolicyID']
-                ]
-            )
-        )[0] ?? [];
-        $needsRenewal = true;
-        if ($decision
-            && $decision['Decision'] == 'Accepted'
-            && $policyInfo['PolicyRenewalTime'] > 0
-        ) {
-            $decisionDate = new \DateTime($decision['DecisionDate']);
-            $interval     = new \DateInterval(
-                "P{$policyInfo['PolicyRenewalTime']}".
-                "{$policyInfo['PolicyRenewalTimeUnit']}"
-            );
-            $renewalDate  = $decisionDate->add($interval);
-            if ($renewalDate > new \DateTime()) {
-                $needsRenewal = false;
-            }
-        }
-        return [
-            ...$policyInfo,
-            'needsRenewal' => $needsRenewal,
-        ];
-    }
-
-    /**
-     * Save a User's Policy decision
-     *
-     * @param \LORIS\LorisInstance $loris      The LORIS instance
-     * @param string               $PolicyName The Policy Name
-     * @param string               $decision   The decision made by the current user
-     *
-     * @return void
-     * @throws \DatabaseException
-     */
-    function saveUserPolicyDecision(
-        \LORIS\LorisInstance $loris,
-        string $PolicyName,
-        string $decision
-    ) {
-        $user = User::singleton();
-        $DB   = $this->loris->getDatabaseConnection();
-
-        $policy = $this->getPolicy($loris, $PolicyName, false);
-        $DB->insert(
-            'user_policy_decision',
-            [
-                'UserID'   => $user->getId(),
-                'PolicyID' => $policy['PolicyID'],
-                'Decision' => $decision,
-            ]
         );
     }
 
