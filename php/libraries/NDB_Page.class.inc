@@ -791,8 +791,9 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $get = $request->getQueryParams();
         if (isset($get['format']) && $get['format'] === 'json') {
             $this->format = $get['format'];
-            return $handler->handle($request)
-                ->withHeader("Content-Type", "application/json");
+            return (new \LORIS\Http\Response())
+                ->withBody(new \LORIS\Http\StringStream($this->toJSON()))
+                ->withHeader("Content-Type", "application/json");            
         }
 
         return (new \LORIS\Middleware\PageDecorationMiddleware($user))
