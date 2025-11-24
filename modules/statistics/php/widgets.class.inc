@@ -206,17 +206,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 $siteOptions[$center->__toString()] = $sites[$center->__toString()];
             }
         }
-
-        $eeg_data = $db->pselectOneInt(
-            "SELECT COUNT(distinct s.ID) as total_recordings
-            FROM physiological_file pf
-            JOIN session s ON (s.ID=pf.SessionID)
-            WHERE s.ProjectID IN (" .
-                join(',', $user->getProjectIDs())
-            . ")",
-            []
-        );
-
+        
         $participantStatusOptions
             = \Candidate::getParticipantStatusOptions();
 
