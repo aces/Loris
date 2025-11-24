@@ -270,10 +270,25 @@ msgstr ""
 msgid "Ethnicity"
 msgstr ""
 
+msgid "Are You Sure?"
+msgstr ""
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr ""
+
+msgid "Proceed"
+msgstr ""
+
 msgid "Save"
 msgstr ""
 
+msgid "Saving"
+msgstr ""
+
 msgid "Reset"
+msgstr ""
+
+msgid "Note"
 msgstr ""
 
 # Data table strings

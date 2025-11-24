@@ -102,8 +102,8 @@ class TestOptionsEndpoint extends \NDB_Page
     private function _getYesNoList() : array
     {
         return [
-            'Y' => 'Yes',
-            'N' => 'No',
+            'Y' => dgettext('loris', 'Yes'),
+            'N' => dgettext('loris', 'No'),
         ];
     }
 }
