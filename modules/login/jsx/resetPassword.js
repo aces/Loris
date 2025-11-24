@@ -111,7 +111,7 @@ class ResetPassword extends Component {
             name={'username'}
             value={this.state.form.value.username}
             onUserInput={this.setForm}
-	    placeholder={this.props.t('Username', {ns: 'loris'})}
+            placeholder={this.props.t('Username', {ns: 'loris'})}
             class={'col-sm-12'}
             required={true}
             type={'text'}
@@ -124,14 +124,21 @@ class ResetPassword extends Component {
           />
         </FormElement>
         <a onClick={() => this.props.setMode('login')}
-          style={{cursor: 'pointer'}}>{this.props.t('Back to login page', {ns: 'login'})}</a>
+          style={{cursor: 'pointer'}}>{this.props.t(
+            'Back to login page',
+            {ns: 'login'}
+          )}</a>
       </div>
     ) : (
       <div className={'success-message'}>
         <h1>{this.props.t('Thank you!', {ns: 'login'})}</h1>
-        <p>{this.props.t('Password reset. You should receive an email within a few minutes.', {ns: 'login'})}</p>
+        <p>{this.props.t('Password reset. You should receive an email within ' +
+          'a few minutes.', {ns: 'login'})}</p>
         <a onClick={() => window.location.href = window.location.origin}
-          style={{cursor: 'pointer'}}>{this.props.t('Return to Login Page', {ns: 'login'})}</a>
+          style={{cursor: 'pointer'}}>{this.props.t(
+            'Return to Login Page',
+            {ns: 'login'}
+          )}</a>
       </div>
     );
     return (
@@ -151,6 +158,8 @@ class ResetPassword extends Component {
 ResetPassword.propTypes = {
   module: PropTypes.string,
   setMode: PropTypes.func,
+
+  t: PropTypes.func, /* from withTranslation HoC */
 };
 
 export default withTranslation(['login', 'loris'])(ResetPassword);

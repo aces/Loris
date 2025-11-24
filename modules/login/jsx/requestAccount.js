@@ -196,8 +196,11 @@ class RequestAccount extends Component {
           onSubmit={this.handleSubmit}
         >
           <StaticElement
-            text={this.props.t('Please fill in the form below to request a LORIS account. ' +
-            'We will contact you once your account has been approved.', {ns: 'login'})}
+            text={this.props.t(
+              'Please fill in the form below to request a LORIS account. ' +
+              'We will contact you once your account has been approved.',
+              {ns: 'login'}
+            )}
             class={'col-sm-12'}
             textClass={'text-center'}
           />
@@ -271,15 +274,27 @@ class RequestAccount extends Component {
           />
         </FormElement>
         <a onClick={() => this.props.setMode('login')}
-          style={{cursor: 'pointer'}}>{this.props.t('Back to login page', {ns: 'login'})}</a>
+          style={{cursor: 'pointer'}}>{this.props.t(
+            'Back to login page',
+            {ns: 'login'}
+          )}</a>
       </div>
     ) : (
       <div className={'success-message'}>
         <h1>{this.props.t('Thank you!', {ns: 'login'})}</h1>
-        <p>{this.props.t('Your request for an account has been received successfully.', {ns: 'login'})}</p>
-        <p>{this.props.t('Please contact your project administrator to activate this account.', {ns: 'login'})}</p>
+        <p>{this.props.t(
+          'Your request for an account has been received successfully.',
+          {ns: 'login'}
+        )}</p>
+        <p>{this.props.t(
+          'Please contact your project administrator to activate this account.',
+          {ns: 'login'}
+        )}</p>
         <a onClick={() => window.location.href = window.location.origin}
-          style={{cursor: 'pointer'}}>{this.props.t('Return to Login Page', {ns: 'login'})}</a>
+          style={{cursor: 'pointer'}}>{this.props.t(
+            'Return to Login Page',
+            {ns: 'login'}
+          )}</a>
       </div>
     );
     return (
@@ -296,8 +311,6 @@ class RequestAccount extends Component {
   }
 }
 
-
-
 RequestAccount.propTypes = {
   module: PropTypes.string,
   setMode: PropTypes.func,
@@ -306,6 +319,8 @@ RequestAccount.propTypes = {
   defaultFirstName: PropTypes.string,
   defaultLastName: PropTypes.string,
   defaultEmail: PropTypes.string,
+
+  t: PropTypes.func, /* from withTranslation HoC */
 };
 
 export default withTranslation(['login', 'loris'])(RequestAccount);
