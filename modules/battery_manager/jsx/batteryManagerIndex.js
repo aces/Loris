@@ -99,18 +99,23 @@ class BatteryManagerIndex extends Component {
           .then((body) => {
             body = JSON.parse(body);
             if (response.ok) {
-              swal.fire(
-                this.props.t('Submission successful!', {ns: 'battery_manager'}),
-                body.message,
-                'success'
-              ).then((result) => {
+              swal.fire({
+                title: this.props.t('Submission successful!',
+                  {ns: 'battery_manager'}),
+                text: body.message,
+                icon: 'success',
+              }).then((result) => {
                 if (result.value) {
                   this.closeForm();
                   resolve(body.message);
                 }
               });
             } else {
-              swal.fire(body.error, '', 'error');
+              swal.fire({
+                title: body.error,
+                text: '',
+                icon: 'error',
+              });
               reject(body.error);
             }
           })
@@ -293,12 +298,12 @@ class BatteryManagerIndex extends Component {
         .catch((e) => {
           if (e.message !== 'Validation failed') {
             const {t} = this.props;
-            swal.fire(
-              t('Error', {ns: 'loris'}),
-              e.message || t('An error occurred while saving the test.',
+            swal.fire({
+              title: t('Error', {ns: 'loris'}),
+              text: e.message || t('An error occurred while saving the test.',
                 {ns: 'battery_manager'}),
-              'error'
-            );
+              icon: 'error',
+            });
           }
           reject(e);
         });
@@ -560,7 +565,7 @@ class BatteryManagerIndex extends Component {
               ) +
               ' ' +
               edit,
-            type: 'warning',
+            icon: 'warning',
             confirmButtonText: t('Activate', {ns: 'battery_manager'}),
             showCancelButton: true,
           }).then((result) => {
@@ -573,12 +578,12 @@ class BatteryManagerIndex extends Component {
             }
           });
         } else if (duplicate.active === 'Y') {
-          swal.fire(
-            t('Test Duplicate', {ns: 'battery_manager'}),
-            t('You cannot duplicate an active test',
+          swal.fire({
+            title: t('Test Duplicate', {ns: 'battery_manager'}),
+            text: t('You cannot duplicate an active test',
               {ns: 'battery_manager'}),
-            'error'
-          );
+            icon: 'error',
+          });
         }
         reject();
       } else {
@@ -630,7 +635,8 @@ class BatteryManagerIndex extends Component {
         errors.stage = t('This field is required',
           {ns: 'battery_manager'});
       }
-      if (test.DoubleDataEntryEnabled == null || test.DoubleDataEntryEnabled === '') {
+      if (test.DoubleDataEntryEnabled == null ||
+          test.DoubleDataEntryEnabled === '') {
         errors.DoubleDataEntryEnabled = t('This field is required',
           {ns: 'battery_manager'});
       }
