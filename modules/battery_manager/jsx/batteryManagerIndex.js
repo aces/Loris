@@ -290,7 +290,18 @@ class BatteryManagerIndex extends Component {
         ))
         .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
         .then(() => resolve())
-        .catch((e) => reject(e));
+        .catch((e) => {
+          if (e.message !== 'Validation failed') {
+            const {t} = this.props;
+            swal.fire(
+              t('Error', {ns: 'loris'}),
+              e.message || t('An error occurred while saving the test.',
+                {ns: 'battery_manager'}),
+              'error'
+            );
+          }
+          reject(e);
+        });
     });
   }
 
@@ -619,11 +630,15 @@ class BatteryManagerIndex extends Component {
         errors.stage = t('This field is required',
           {ns: 'battery_manager'});
       }
+      if (test.DoubleDataEntryEnabled == null || test.DoubleDataEntryEnabled === '') {
+        errors.DoubleDataEntryEnabled = t('This field is required',
+          {ns: 'battery_manager'});
+      }
 
       if (Object.entries(errors).length === 0) {
         this.setState({errors}, () => resolve(test));
       } else {
-        this.setState({errors}, reject);
+        this.setState({errors}, () => reject(new Error('Validation failed')));
       }
     });
   }

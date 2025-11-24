@@ -170,6 +170,7 @@ class BatteryManagerForm extends Component {
           onUserInput={setTest}
           required={true}
           value={test.DoubleDataEntryEnabled}
+          errorMessage={errors.DoubleDataEntryEnabled}
           emptyOption={false}
         />
         <ButtonElement
