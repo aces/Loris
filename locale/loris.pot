@@ -567,6 +567,13 @@ msgstr ""
 msgid "Dataset"
 msgstr ""
 
+msgid "GB"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr ""
+
