@@ -159,7 +159,14 @@ locales:
 	npx i18next-conv -l hi -s modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.json --compatibilityJSON v4
 	npx i18next-conv -l ja -s modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.json --compatibilityJSON v4
 	msgfmt -o modules/login/locale/ja/LC_MESSAGES/login.mo modules/login/locale/ja/LC_MESSAGES/login.po
+	msgfmt -o modules/media/locale/es/LC_MESSAGES/media.mo modules/media/locale/es/LC_MESSAGES/media.po
+	msgfmt -o modules/media/locale/fr/LC_MESSAGES/media.mo modules/media/locale/fr/LC_MESSAGES/media.po
 	msgfmt -o modules/media/locale/ja/LC_MESSAGES/media.mo modules/media/locale/ja/LC_MESSAGES/media.po
+	msgfmt -o modules/media/locale/hi/LC_MESSAGES/media.mo modules/media/locale/hi/LC_MESSAGES/media.po
+	npx i18next-conv -l es -s modules/media/locale/es/LC_MESSAGES/media.po -t modules/media/locale/es/LC_MESSAGES/media.json
+	npx i18next-conv -l fr -s modules/media/locale/fr/LC_MESSAGES/media.po -t modules/media/locale/fr/LC_MESSAGES/media.json
+	npx i18next-conv -l ja -s modules/media/locale/ja/LC_MESSAGES/media.po -t modules/media/locale/ja/LC_MESSAGES/media.json
+	npx i18next-conv -l hi -s modules/media/locale/hi/LC_MESSAGES/media.po -t modules/media/locale/hi/LC_MESSAGES/media.json
 	msgfmt -o modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po
 	msgfmt -o modules/module_manager/locale/hi/LC_MESSAGES/module_manager.mo modules/module_manager/locale/hi/LC_MESSAGES/module_manager.po
 	npx i18next-conv -l hi -s modules/module_manager/locale/hi/LC_MESSAGES/module_manager.po -t modules/module_manager/locale/hi/LC_MESSAGES/module_manager.json

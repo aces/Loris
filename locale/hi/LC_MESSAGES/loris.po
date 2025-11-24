@@ -27,19 +27,19 @@ msgid "DEV"
 msgstr "डेव"
 
 msgid "Affiliations"
-msgstr "संबद्धता"
+msgstr "अफिलिएशन्स"
 
 msgid "Site Affiliation"
-msgstr "साइट संबद्धता"
+msgstr "साइट अफिलिएशन"
 
 msgid "Site Affiliations"
-msgstr "साइट संबद्धताएँ"
+msgstr "साइट अफिलिएशन्स"
 
 msgid "Project Affiliation"
-msgstr "परियोजना संबद्धता"
+msgstr "प्रोजेक्ट अफिलिएशन"
 
 msgid "Project Affiliations"
-msgstr "परियोजना संबद्धताएँ"
+msgstr "प्रोजेक्ट अफिलिएशन्स"
 
 msgid "Log Out"
 msgstr "लॉग आउट"
@@ -58,7 +58,6 @@ msgstr "मेरी पसंद"
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr "प्रशासन"
-
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -112,7 +111,7 @@ msgstr "रिपोर्ट्स"
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr "समय बिंदु"
+msgstr "टाइमपॉइंट"
 
 msgid "Module"
 msgstr "मॉड्यूल"
@@ -200,7 +199,7 @@ msgid "DCCID"
 msgstr "डीसीसीआईडी"
 
 msgid "Visit Label"
-msgstr "दौरे का लेबल"
+msgstr "भेंट लेबल"
 
 msgid "Status"
 msgstr "स्थिति"
@@ -299,7 +298,7 @@ msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
 msgid "Download Data as CSV"
-msgstr "डेटा को CSV के रूप में डाउनलोड करें"
+msgstr "तालिका को CSV के रूप में डाउनलोड करें"
 
 #: php/libraries/Password.class.inc
 msgid "The password is too short"
