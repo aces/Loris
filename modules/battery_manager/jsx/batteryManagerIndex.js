@@ -151,7 +151,7 @@ class BatteryManagerIndex extends Component {
     cell = this.mapColumn(column, cell);
     let result = <td>{cell}</td>;
     const testId = row['ID'];
-    
+
     // Get translated column names for comparison
     const labelInstrument = t('Instrument', {ns: 'battery_manager'});
     const labelCohort = t('Cohort', {ns: 'loris', count: 1});
@@ -159,7 +159,7 @@ class BatteryManagerIndex extends Component {
     const labelActive = t('Active', {ns: 'loris'});
     const labelChangeStatus = t('Change Status', {ns: 'battery_manager'});
     const labelEditMetadata = t('Edit Metadata', {ns: 'battery_manager'});
-    
+
     // Check both English and translated column names
     if (column === 'Instrument' || column === labelInstrument) {
       result = <td>{this.state.options.instruments[cell]}</td>;
@@ -180,7 +180,9 @@ class BatteryManagerIndex extends Component {
             />
           </td>
         );
-      } else if (activeValue === 'N' || activeValue === t('No', {ns: 'loris'})) {
+      } else if (
+        activeValue === 'N' || activeValue === t('No', {ns: 'loris'})
+      ) {
         result = (
           <td>
             <CTA
@@ -204,7 +206,7 @@ class BatteryManagerIndex extends Component {
       );
       result = <td>{editButton}</td>;
     }
-    
+
     return result;
   }
 

@@ -31,11 +31,13 @@ class BatteryManagerForm extends Component {
         return (
           <span>
             {t(
-              'You cannot add an entry if it has a duplicate entry in the test battery.',
+              'You cannot add an entry if it has a duplicate entry in the ' +
+              'test battery.',
               {ns: 'battery_manager'}
             )}<br/>
             {t(
-              'If the duplicate entry is inactive, you will be given the option to activate it.',
+              'If the duplicate entry is inactive, you will be given the ' +
+              'option to activate it.',
               {ns: 'battery_manager'}
             )}
           </span>
@@ -48,11 +50,13 @@ class BatteryManagerForm extends Component {
               {ns: 'battery_manager'}
             )}<br/>
             {t(
-              'You cannot edit an entry to have the same values as another active entry.',
+              'You cannot edit an entry to have the same values as another ' +
+              'active entry.',
               {ns: 'battery_manager'}
             )}<br/>
             {t(
-              'If the duplicate entry is inactive, you will be given the option to activate it.',
+              'If the duplicate entry is inactive, you will be given the ' +
+              'option to activate it.',
               {ns: 'battery_manager'}
             )}
             <br/>
