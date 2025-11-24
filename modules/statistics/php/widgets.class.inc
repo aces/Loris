@@ -206,7 +206,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 $siteOptions[$center->__toString()] = $sites[$center->__toString()];
             }
         }
-        
+
         $participantStatusOptions
             = \Candidate::getParticipantStatusOptions();
 
