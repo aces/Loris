@@ -124,6 +124,15 @@ msgstr "हाँ"
 msgid "No"
 msgstr "नहीं"
 
+msgid "Browse"
+msgstr "ब्राउज़ करें"
+
+msgid "Submit"
+msgstr "सबमिट करें"
+
+msgid "Upload"
+msgstr "अपलोड करें"
+
 msgid "N/A"
 msgstr "लागू नहीं"
 
@@ -279,6 +288,9 @@ msgstr "स्कैन पूरा हुआ"
 msgid "Language"
 msgstr "भाषा"
 
+msgid "View details"
+msgstr "विवरण देखें"
+
 msgid "Ethnicity"
 msgstr "जातीयता"
 
@@ -414,6 +426,12 @@ msgstr "निकासी"
 msgid "In Progress"
 msgstr "प्रगति पर"
 
+msgid "Progress"
+msgstr "प्रगति"
+
+msgid "Success"
+msgstr "सफलता"
+
 msgid "Complete"
 msgstr "पूर्ण"
 
@@ -448,7 +466,7 @@ msgid "Age"
 msgstr "आयु"
 
 msgid "{{months}} months old"
-msgstr "{{months}} महीने का"
+msgstr "{{months}} महीने का/की"
 
 msgid "{{years}} years old"
 msgstr "{{years}} वर्ष का"
