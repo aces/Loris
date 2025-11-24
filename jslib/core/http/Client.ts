@@ -29,7 +29,10 @@ export class Client<T> {
    * @param baseURL The base URL for the API requests.
    */
   constructor(baseURL: string) {
-    this.baseURL = new URL(baseURL, window.location.origin);
+    const origin = window.location.origin; // always https://...
+    const full = ${origin}/${baseURL}/;
+    this.baseURL = new URL(full);
+
   }
 
   /**
