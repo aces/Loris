@@ -185,7 +185,7 @@ msgstr ""
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] ""
- 
+
 msgid "Session"
 msgstr ""
 
@@ -345,3 +345,8 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
+msgid "GB"
+msgstr ""
+
+msgid "Month"
+msgstr ""
