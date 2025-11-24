@@ -401,6 +401,7 @@ VALUES (1,'Blood Collection',1,1),
 INSERT INTO `biobank_specimen_type_unit_rel` VALUES (1,1),(2,2);
 INSERT INTO `biobank_specimen_type_parent` VALUES (2,1);
 INSERT INTO `biobank_specimen_type_container_type_rel` VALUES (1,1),(2,1);
+INSERT INTO `shipment_type` VALUES (1, 'Gel Pack Container'),(2, 'Insulated Foam Box'),(3, 'Dry Shipper');
 
 -- Insert ConfigSettings for label printing endpoint
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('biobank', 'Settings related to the biobank module', 1, 0, 'Biobank', 16);
