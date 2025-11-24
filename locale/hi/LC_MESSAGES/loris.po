@@ -431,17 +431,11 @@ msgstr "विफलता"
 msgid "Withdrawal"
 msgstr "निकासी"
 
-msgid "In Progress"
-msgstr "प्रगति पर"
-
 msgid "Progress"
 msgstr "प्रगति"
 
 msgid "Success"
 msgstr "सफलता"
-
-msgid "Complete"
-msgstr "पूर्ण"
 
 msgid "Instrument"
 msgid_plural "Instruments"
