@@ -126,6 +126,9 @@ msgstr ""
 msgid "Scanner"
 msgstr ""
 
+msgid "Human"
+msgstr ""
+
 msgid "EDC"
 msgstr ""
 

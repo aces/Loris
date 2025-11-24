@@ -120,6 +120,9 @@ msgstr "आउटपुट प्रकार"
 msgid "Scanner"
 msgstr "स्कैनर"
 
+msgid "Human"
+msgstr "मानव"
+
 msgid "EDC"
 msgstr "ईडीसी"
 

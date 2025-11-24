@@ -469,8 +469,8 @@ class ImagePanelQCStatusSelector extends Component {
         FileID={this.props.FileID}
         editable={this.props.HasQCPerm}
         defaultValue={this.props.QCStatus}
-        options={{'': '', 'Pass': t('Pass', {ns: 'imaging_browser'}),
-          'Fail': t('Fail', {ns: 'imaging_browser'})}}
+        options={{'': '', 'Pass': t('Pass', {ns: 'loris'}),
+          'Fail': t('Fail', {ns: 'loris'})}}
       />
     );
   }

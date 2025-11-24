@@ -260,6 +260,9 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+msgid "Pending"
+msgstr ""
+
 msgid "Entity Type"
 msgstr ""
 

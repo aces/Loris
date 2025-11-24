@@ -237,6 +237,9 @@ msgstr "このページの読み込み中にエラーが発生しました"
 msgid "Active"
 msgstr "アクティブ"
 
+msgid "Pending"
+msgstr "保留中"
+
 msgid "Entity Type"
 msgstr "エンティティタイプ"
 

@@ -163,7 +163,8 @@ class Feedback_MRI_Popup extends \NDB_Page
 
         // get identifier of subject/volume
         if ($feedbackObj->fileID) {
-            $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label as Visit_Label,
+            $query = "SELECT c.CandID AS DCCID, c.PSCID,
+                             s.Visit_label as Visit_Label,
                              co.title AS Cohort, f.File AS File_name,
                              mst.MriScanTypeName AS ScanType
                       FROM files AS f, session AS s, candidate AS c,
@@ -176,7 +177,8 @@ class Feedback_MRI_Popup extends \NDB_Page
 
             $qparams = ['FID' => $feedbackObj->fileID];
         } elseif ($feedbackObj->sessionID) {
-            $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label as Visit_Label, co.title AS Cohort
+            $query = "SELECT c.CandID AS DCCID,
+                c.PSCID, s.Visit_label as Visit_Label, co.title AS Cohort
                 FROM session AS s, candidate AS c, cohort co
               WHERE s.ID=:SID AND s.CandidateID=c.ID AND s.Active='Y'";
 
@@ -226,7 +228,8 @@ class Feedback_MRI_Popup extends \NDB_Page
                     );
             }
 
-            $CommentTpl['name'] = dgettext("imaging_browser", $comment_array['name']);
+            $CommentTpl['name']
+                = dgettext("imaging_browser", $comment_array['name']);
 
             // get the list of predefined feedbackObj for the current type
             $predefined_comments = $feedbackObj->getAllPredefinedComments(
