@@ -5,20 +5,27 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	locale/hi/LC_MESSAGES/loris.po \
 	locale/es/LC_MESSAGES/loris.po \
 	locale/en/LC_MESSAGES/loris.po \
+	modules/media/locale/fr/LC_MESSAGES/media.po \
 	modules/media/locale/ja/LC_MESSAGES/media.po \
+	modules/media/locale/hi/LC_MESSAGES/media.po \
+	modules/media/locale/es/LC_MESSAGES/media.po \
 	modules/datadict/locale/ja/LC_MESSAGES/datadict.po \
 	modules/datadict/locale/hi/LC_MESSAGES/datadict.po \
 	modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.po \
 	modules/statistics/locale/ja/LC_MESSAGES/statistics.po \
 	modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.po \
 	modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po \
+	modules/module_manager/locale/hi/LC_MESSAGES/module_manager.po \
 	modules/configuration/locale/ja/LC_MESSAGES/configuration.po \
 	modules/oidc/locale/ja/LC_MESSAGES/oidc.po \
+	modules/instrument_list/locale/fr/LC_MESSAGES/instrument_list.po \
 	modules/instrument_list/locale/ja/LC_MESSAGES/instrument_list.po \
 	modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.po \
 	modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.po \
 	modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.po \
 	modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po \
+	modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.po \
+	modules/new_profile/locale/fr/LC_MESSAGES/new_profile.po \
 	modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po \
 	modules/new_profile/locale/hi/LC_MESSAGES/new_profile.po \
 	modules/new_profile/locale/es/LC_MESSAGES/new_profile.po \
@@ -30,18 +37,26 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po \
 	modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po \
 	modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.po \
+	modules/candidate_profile/locale/fr/LC_MESSAGES/candidate_profile.po \
 	modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.po \
 	modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po \
+	modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po \
 	modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po \
+	modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po \
 	modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.po \
+	modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po \
 	modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po \
+	modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.po \
 	modules/next_stage/locale/ja/LC_MESSAGES/next_stage.po \
 	modules/next_stage/locale/es/LC_MESSAGES/next_stage.po \
 	modules/examiner/locale/ja/LC_MESSAGES/examiner.po \
 	modules/login/locale/ja/LC_MESSAGES/login.po \
 	modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po \
+	modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po \
 	modules/document_repository/locale/ja/LC_MESSAGES/document_repository.po \
 	modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po \
+	modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po \
+	modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.po \
 	modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po \
 	modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po \
 	modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po \
@@ -49,6 +64,8 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po \
 	modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po \
 	modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po \
+	modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po \
+	modules/timepoint_list/locale/fr/LC_MESSAGES/timepoint_list.po \
 	modules/timepoint_list/locale/ja/LC_MESSAGES/timepoint_list.po \
 	modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.po \
 	modules/data_release/locale/ja/LC_MESSAGES/data_release.po \
@@ -57,14 +74,19 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po \
 	modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.po \
 	modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po \
+	modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po \
 	modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.po \
 	modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.po \
 	modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po \
 	modules/publication/locale/ja/LC_MESSAGES/publication.po \
+	modules/publication/locale/hi/LC_MESSAGES/publication.po \
+	modules/publication/locale/en/LC_MESSAGES/publication.po \
 	modules/dashboard/locale/ja/LC_MESSAGES/dashboard.po \
 	modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.po \
 	modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po \
-	modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po
+	modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.po \
+	modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po \
+	modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po
 
 MOFILES=$(patsubst %.po,%.mo,$(POFILES))
 I18NJSONFILES=$(patsubst %.po,%.json,$(POFILES))
