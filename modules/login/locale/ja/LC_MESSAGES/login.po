@@ -59,6 +59,27 @@ msgstr "パスワードをリセットします。数分以内にメールが届
 msgid "Return to Login Page"
 msgstr "ログインページに戻ります。"
 
+msgid "Choose your site:"
+msgstr "サイトを選択してください:"
+
+msgid "Choose your project:"
+msgstr "プロジェクトを選択してください:"
+
+msgid "Radiologist"
+msgstr "放射線科医"
+
+msgid "Examiner role"
+msgstr "審査官の役割"
+
+msgid "Please fill in the form below to request a LORIS account. We will contact you once your account has been approved."
+msgstr "ロリスアカウントを申請するには、以下のフォームにご記入ください。アカウントが承認され次第、ご連絡いたします。"
+
+msgid "Your request for an account has been received successfully."
+msgstr "アカウントのリクエストが正常に受信されました。"
+
+msgid "Please contact your project administrator to activate this account."
+msgstr "このアカウントを有効にするには、プロジェクト管理者に問い合わせてください。"
+
 # Hack for the login page.
 # These strings come from the database and are
 # the defaults in the login_summary_statistics table

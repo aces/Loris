@@ -58,6 +58,27 @@ msgstr ""
 msgid "Return to Login Page"
 msgstr ""
 
+msgid "Choose your site:"
+msgstr ""
+
+msgid "Choose your project:"
+msgstr ""
+
+msgid "Radiologist"
+msgstr ""
+
+msgid "Examiner role"
+msgstr ""
+
+msgid "Please fill in the form below to request a LORIS account. We will contact you once your account has been approved."
+msgstr ""
+
+msgid "Your request for an account has been received successfully."
+msgstr ""
+
+msgid "Please contact your project administrator to activate this account."
+msgstr ""
+
 # Hack for the login page.
 # These strings come from the database and are
 # the defaults in the login_summary_statistics table

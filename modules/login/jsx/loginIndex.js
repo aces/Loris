@@ -410,7 +410,7 @@ Login.propTypes = {
   defaultRequestLastName: PropTypes.string,
   defaultRequestEmail: PropTypes.string,
   redirect: PropTypes.string,
-  t: PropTypes.Func,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
