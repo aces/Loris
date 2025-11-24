@@ -40,6 +40,24 @@ msgstr ""
 msgid "Data in LORIS:"
 msgstr ""
 
+msgid "Please enter your username below, and a new password will be sent to you."
+msgstr ""
+
+msgid "Back to login page"
+msgstr ""
+
+msgid "Reset Password"
+msgstr ""
+
+msgid "Thank you!"
+msgstr ""
+
+msgid "Password reset. You should receive an email within a few minutes."
+msgstr ""
+
+msgid "Return to Login Page"
+msgstr ""
+
 # Hack for the login page.
 # These strings come from the database and are
 # the defaults in the login_summary_statistics table

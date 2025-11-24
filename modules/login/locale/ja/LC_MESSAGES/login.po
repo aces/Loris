@@ -41,6 +41,24 @@ msgstr "続行するには、認証アプリからのコードを入力してく
 msgid "Data in LORIS:"
 msgstr "ロリスのデータ:"
 
+msgid "Please enter your username below, and a new password will be sent to you."
+msgstr "下記にユーザー名を入力すると、新しいパスワードが送信されます。"
+
+msgid "Back to login page"
+msgstr "ログインページに戻る"
+
+msgid "Reset Password"
+msgstr "パスワードをリセットする"
+
+msgid "Thank you!"
+msgstr "ありがとうございます"
+
+msgid "Password reset. You should receive an email within a few minutes."
+msgstr "パスワードをリセットします。数分以内にメールが届きます。"
+
+msgid "Return to Login Page"
+msgstr "ログインページに戻ります。"
+
 # Hack for the login page.
 # These strings come from the database and are
 # the defaults in the login_summary_statistics table
