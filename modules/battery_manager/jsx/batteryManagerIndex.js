@@ -460,7 +460,10 @@ class BatteryManagerIndex extends Component {
     const actions = [
       {
         label: t('New Test', {ns: 'battery_manager'}),
-        action: () => this.setState({add: true}),
+        action: () => this.setState({
+          add: true,
+          test: {DoubleDataEntryEnabled: 'N'},
+        }),
         show: hasPermission('battery_manager_edit'),
       },
     ];
