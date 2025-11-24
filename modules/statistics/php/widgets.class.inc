@@ -242,10 +242,6 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         $values['size_byproject'] = $projectsSizes;
 
-        $values['eeg_data'] = [
-            'total_recordings' => $eeg_data
-        ];
-
         $this->_cache = new \LORIS\Http\Response\JsonResponse($values);
 
         return $this->_cache;
