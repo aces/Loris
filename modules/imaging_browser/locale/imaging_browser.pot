@@ -33,3 +33,24 @@ msgstr ""
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"
 msgstr[0] ""
+
+msgid "Imaging QC Summary"
+msgstr ""
+
+msgid "Number of Scans"
+msgstr ""
+
+msgid "Red bar denotes number of failed QC scans."
+msgstr ""
+
+msgid "Green bar denotes number of passed QC scans."
+msgstr ""
+
+msgid "Grey bar denotes other QC statuses."
+msgstr ""
+
+msgid "Different shades represent different modalities. Only native modalities are displayed in results."
+msgstr ""
+
+msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
+msgstr ""

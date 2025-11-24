@@ -1,0 +1,91 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-11-04 20:09-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Timepoint List"
+msgstr "Liste des temps d'acquisition"
+
+msgid "Click to Open"
+msgstr "Cliquez pour ouvrir"
+
+#, fuzzy
+msgid "Stage Status"
+msgstr "Statue du stade"
+
+#, fuzzy
+msgid "Date of Stage"
+msgstr "Date du stade"
+
+msgid "Imaging Scan Done"
+msgstr "Scan d'imagerie complété"
+
+msgid "BVL QC"
+msgstr "CQ comportemental"
+
+msgid "BVL Exclusion"
+msgstr "Exclusion comportementale"
+
+msgid "Registered By"
+msgstr "Enregistré par"
+
+msgid "List of Visits (Time Points)"
+msgstr "Liste des visites (temps d'acquisition)"
+
+msgid "Create time point"
+msgstr "Créer un temps d'acquisition"
+
+msgid "Candidate Info"
+msgstr "Informations sur le candidat"
+
+msgid "View Imaging datasets"
+msgstr "Afficher les ensembles de données d'imagerie"
+
+msgid "Actions:"
+msgstr "Actions:"
+
+msgid "Derived Age"
+msgstr "Âge dérivé"
+
+msgid "EDC Age"
+msgstr "Âge DPA"
+
+msgid "Biological Sex"
+msgstr "Sexe biologique"
+
+msgid "You do not have access to any timepoints registered for this candidate."
+msgstr "Vous n'avez pas accès aux temps d'acquisitions enregistrés pour ce candidat."
+
+msgid " y / "
+msgstr " y / "
+
+msgid " m"
+msgstr " m"
+
+msgid "Not Done"
+msgstr "Non réalisé"
+
+msgid "Visual"
+msgstr "Visuel"
+
+msgid "Hardcopy"
+msgstr "copie papier"
+
+msgid "Complete"
+msgstr "Compléter"

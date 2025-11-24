@@ -15,7 +15,7 @@ const target = process.env.target;
 const lorisModules: Record<string, string[]> = {
   media: ['CandidateMediaWidget', 'mediaIndex'],
   issue_tracker: ['issueTrackerIndex', 'index', 'CandidateIssuesWidget'],
-  login: ['loginIndex'],
+  login: ['loginIndex', 'mfaPrompt'],
   publication: ['publicationIndex', 'viewProjectIndex'],
   document_repository: ['docIndex', 'editFormIndex'],
   candidate_parameters: ['CandidateParameters', 'ConsentWidget', 'DiagnosisEvolution'],
@@ -84,6 +84,7 @@ const lorisModules: Record<string, string[]> = {
   schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
+  my_preferences: ['mfa'],
 };
 
 /*

@@ -22,20 +22,31 @@
 </head>
 <body>
   <header class="header">
-    <div class="container">
+    <div class="header-container">
       <div class="flex-wrapper">
-        <div class="loris-logo">
-          <a href="{$baseurl}">
-            <img src="{$baseurl}/images/LORIS_logo_white.svg" class="loris-logo" alt="Loris Logo"/>
-          </a>
+        <!-- Left Logo (conditionally a link) -->
+        <div class="logo-wrapper logo-left{if !isset($logo_left)} d-none{/if}">
+          {if isset($logo_left_link)}
+            <a href="{$logo_left_link}">
+              <img src="{$logo_left}" alt="Left Logo"/>
+            </a>
+          {else}
+            <img src="{$logo_left}" alt="Left Logo"/>
+          {/if}
         </div>
+        <!-- Center Study Title -->
         <div class="study-title hidden-xs">
           {$study_title}
         </div>
-        <div class="github-logo">
-          <a href="https://github.com/aces/Loris" target="_blank" rel="noopener noreferrer">
-            <img src="{$baseurl}/images/GitHub-Mark-Light-64px.png" alt="Github"/>
-          </a>
+        <!-- Right Logo (conditionally a link) -->
+        <div class="logo-wrapper logo-right{if !isset($logo_right)} d-none{/if}">
+          {if isset($logo_right_link)}
+            <a href="{$logo_right_link}" target="_blank" rel="noopener noreferrer">
+              <img src="{$logo_right}" alt="Right Logo"/>
+            </a>
+          {else}
+            <img src="{$logo_right}" alt="Right Logo"/>
+          {/if}
         </div>
       </div>
     </div>
@@ -46,13 +57,13 @@
   </section>
 
   <footer class="footer">
-    Powered by <a href="http://www.loris.ca/" target="_blank">LORIS</a>
+    Powered by <a href="https://loris.ca/" target="_blank">LORIS</a>
     | GPL-3.0 &copy; {$currentyear} <br/>
     Developed at
-    <a href="http://www.mni.mcgill.ca" target="_blank">
-      Montreal Neurological Institute and Hospital
+    <a href="https://mcgill.ca/neuro/" target="_blank">
+      The Neuro (Montreal Neurological Institute-Hospital)
     </a>
-    by <a href="http://mcin-cnim.ca" target="_blank">MCIN</a>
+    by <a href="https://mcin.ca/" target="_blank">MCIN</a>
   </footer>
   <script src="{$baseurl}/js/modernizr/modernizr.min.js"/>
   <script>

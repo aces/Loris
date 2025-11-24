@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import FilterableDataTable from 'jsx/FilterableDataTable';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Data Conflicts Component.
@@ -150,6 +151,7 @@ class DataConflicts extends Component {
    * @return {JSX} the data conflicts form to render.
    */
   render() {
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -161,7 +163,7 @@ class DataConflicts extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: 'Instrument',
+        label: t('Instrument', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Instrument',
@@ -173,7 +175,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: 'DCCID',
+        label: t('DCCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'DCCID',
@@ -181,7 +183,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: 'PSCID',
+        label: t('PSCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'PSCID',
@@ -189,7 +191,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: 'Visit',
+        label: t('Visit', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Visit',
@@ -198,7 +200,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: 'Project',
+        label: t('Project', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Project',
@@ -207,7 +209,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: 'Cohort',
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Cohort',
@@ -216,7 +218,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: 'Site',
+        label: t('Site', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Site',
@@ -225,7 +227,7 @@ class DataConflicts extends Component {
         },
       },
       {
-        label: 'Field Name',
+        label: t('Field Name', {ns: 'behavioural_qc'}),
         show: true,
       },
       {
@@ -266,6 +268,7 @@ DataConflicts.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
-export default DataConflicts;
+export default withTranslation(['behavioural_qc', 'loris'])(DataConflicts);

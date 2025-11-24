@@ -21,3 +21,27 @@ msgstr ""
 msgid "Module Manager"
 msgstr ""
 
+msgid "Name"
+msgstr ""
+
+msgid "Full Name"
+msgstr ""
+
+msgid "Could not update"
+msgstr ""
+
+msgid "status!"
+msgstr ""
+
+msgid "To apply changes the interface must be reloaded. Proceed?"
+msgstr ""
+
+msgid "Reload the page"
+msgstr ""
+
+msgid "Continue"
+msgstr ""
+
+msgid "Could not find module"
+msgstr ""
+

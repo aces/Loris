@@ -77,7 +77,7 @@ class Electrophysiology_Uploader extends \DataFrameworkMenu
 
         return [
             'sites'      => $site_options,
-            'visitLabel' => \Utility::getVisitList(),
+            'visitLabel' => $user->getVisits(),
         ];
     }
 

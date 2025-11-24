@@ -271,9 +271,11 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $this->logger->debug("Module handle function called");
-        $resp = parent::handle($request);
+        $moduleURI = $request->getAttribute("unhandledURI");
+        $resp      = parent::handle($request);
+
         if ($resp->getStatusCode() != 404) {
-            $path = $request->getURI()->getPath();
+            $path = $moduleURI->getPath();
             if (preg_match('/(\.css)$/', $path) == 1) {
                 $resp = $resp->withHeader(
                     "Content-Type",
@@ -290,7 +292,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         }
 
         $pagename = $this->getName();
-        $path     = trim($request->getURI()->getPath(), "/");
+        $path     = trim($moduleURI->getPath(), "/");
         if (!empty($path)) {
             // There is a subpage
             $pagename = explode("/", $path)[0];

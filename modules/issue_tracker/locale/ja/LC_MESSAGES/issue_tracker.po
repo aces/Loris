@@ -17,15 +17,20 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Issue Tracker"
 msgstr "問題トラッカー"
 
-
 # Google Translate is giving me completely different translations for
 # singular and plural. Might be worth investigating.
 msgid "Your assigned issue"
-msgstr "担当する問題"
+msgid_plural "Your assigned issues"
+msgstr[0] "担当する問題"
 
-msgid "Your assigned issues"
-msgstr "割り当てられた問題"
+msgid "Open Issues"
+msgstr "未解決の問題"
+
+msgid "({{count}} comment)"
+msgid_plural "({{count}} comments)"
+msgstr[0] "（{{count}}件のコメント）"

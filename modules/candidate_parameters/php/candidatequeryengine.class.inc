@@ -250,9 +250,10 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         if ($item->getScope()->__toString() !== 'session') {
             return [];
         }
+        $user = \NDB_Factory::singleton()->user();
 
         // Session scoped variables: VisitLabel, project, site, cohort
-        return array_keys(\Utility::getVisitList());
+        return array_keys($user->getVisits());
     }
 
     /**

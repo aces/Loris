@@ -113,6 +113,9 @@ msgstr "レポート"
 msgid "TimePoint"
 msgstr "タイムポイント"
 
+msgid "TimePoint %s Details"
+msgstr "タイムポイント%s の詳細"
+
 # Common select option labels
 msgid "Yes"
 msgstr "はい"
@@ -125,6 +128,9 @@ msgstr "作成する"
 
 msgid "N/A"
 msgstr "適用できない"
+
+msgid "Back"
+msgstr "戻る"
 
 # Filters
 msgid "Selection Filter"
@@ -149,6 +155,9 @@ msgstr "取り消す"
 msgid "Success!"
 msgstr "成功！"
 
+msgid "Close"
+msgstr "近い"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "プロジェクト識別子"
@@ -159,14 +168,19 @@ msgstr "候補者識別子"
 msgid "Visit Label"
 msgstr "ラベルを訪問"
 
+msgid "Email"
+msgstr "メール"
+
 msgid "Site"
-msgstr "サイト"
+msgid_plural "Sites"
+msgstr[0] "サイト"
 
 msgid "Module"
 msgstr "モジュール"
 
 msgid "Project"
-msgstr "プロジェクト"
+msgid_plural "Projects"
+msgstr[0] "プロジェクト"
 
 msgid "Candidate Registration Project"
 msgstr "候補者登録プロジェクト"
@@ -183,6 +197,9 @@ msgstr "セッション"
 
 msgid "Date of registration"
 msgstr "入学日"
+
+msgid "Date Of Visit"
+msgstr "訪問日"
 
 msgid "Participant Status"
 msgstr "参加者ステータス"
@@ -220,6 +237,9 @@ msgstr "訪問"
 msgid "An error occured while loading the page."
 msgstr "このページの読み込み中にエラーが発生しました"
 
+msgid "Active"
+msgstr "アクティブ"
+
 msgid "Entity Type"
 msgstr "エンティティタイプ"
 
@@ -238,6 +258,12 @@ msgstr "言語"
 msgid "Ethnicity"
 msgstr "民族"
 
+msgid "Save"
+msgstr "保存"
+
+msgid "Reset"
+msgstr "リセット"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}}行中{{pageCount}}行を表示"
@@ -251,6 +277,22 @@ msgstr "データをCSVとしてダウンロード"
 # Dashboard panel strings
 msgid "Views"
 msgstr "ビュー"
+
+#: php/libraries/Password.class.inc
+msgid "The password is too short"
+msgstr "パスワードが短すぎます"
+
+msgid "The password is not complex enough."
+msgstr "パスワードが十分に複雑ではありません。"
+
+msgid "This password is known to be exposed in online data breaches."
+msgstr "このパスワードは、オンラインデータ侵害で漏洩されることが知られています。"
+
+msgid "Data Supervisors to Email"
+msgstr "データ管理者に電子メールで連絡"
+
+msgid "Invalid email address"
+msgstr "無効なメールアドレス"
 
 # Common strings on widgets
 msgid "NEW"
@@ -267,6 +309,12 @@ msgstr "合計"
 
 msgid "Error!"
 msgstr "エラー！"
+
+msgid "Status"
+msgstr "状態"
+
+msgid "Date"
+msgstr "日付"
 
 # Common timepoint and vist terms
 msgid "Not Started"
@@ -296,14 +344,18 @@ msgstr "失敗"
 msgid "Withdrawal"
 msgstr "撤退"
 
+msgid "Withdrawn"
+msgstr "撤退"
+
 msgid "In Progress"
 msgstr "進行中"
 
 msgid "Complete"
 msgstr "完了"
 
-msgid "Instruments"
-msgstr "楽器"
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "楽器"
 
 msgid "None"
 msgstr "なし"
@@ -343,3 +395,54 @@ msgstr "{{years}}歳"
 msgid "Loading..."
 msgstr "読み込み中..."
 
+# User Account related
+msgid "Password Rules"
+msgstr "パスワードルール"
+
+msgid "Username"
+msgstr "ユーザー名"
+
+msgid "First name"
+msgstr "ファーストネーム"
+
+msgid "First name is required and should not exceed 120 characters"
+msgstr "名は必須で、120文字以内で入力してください。"
+
+msgid "Last name"
+msgstr "苗字"
+
+msgid "Last name is required and should not exceed 120 characters"
+msgstr "姓は必須で、120文字以内で入力してください。"
+
+msgid "Email address"
+msgstr "電子メールアドレス"
+
+msgid "Password"
+msgstr "パスワード"
+
+msgid "New Password"
+msgstr "新しいパスワード"
+
+msgid "Confirm Password"
+msgstr "パスワードを認証する"
+
+msgid "Email address is required"
+msgstr "メールアドレスは必須です"
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "メールアドレスには、<、>、&、\" の文字を含めることはできません。"
+
+msgid "The password must be at least 8 characters long."
+msgstr "パスワードは8文字以上である必要があります"
+
+msgid "The password cannot be your username or email address."
+msgstr "パスワードにはユーザー名やメールアドレスは使用できません。"
+
+msgid "Please choose a unique password."
+msgstr "固有のパスワードを選択してください。"
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr "特殊文字は必要ありませんが、パスワードは受け入れられるほど複雑である必要があります。"
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr "パスワード マネージャーを使用してパスワードを生成することをお勧めします。"

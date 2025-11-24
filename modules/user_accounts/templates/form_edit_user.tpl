@@ -2,28 +2,28 @@
 <form method="post" name="edit_user" autocomplete="off">
     {if $form.errors}
     <div class="alert alert-danger" role="alert">
-        The form you submitted contains data entry errors
+        {dgettext("user_accounts", "The form you submitted contains data entry errors")}
     </div>
     {/if}
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <h3>Password Rules</h3>
+            <h3>{dgettext("loris", "Password Rules")}</h3>
             <ul>
-                <li>The password must be at least 8 characters long.</li>
-                <li>The password cannot be your username or email address.</li>
-                <li>No special characters are required but your password must be sufficiently complex to be accepted.</li>
+                <li>{dgettext("loris", "The password must be at least 8 characters long.")}</li>
+                <li>{dgettext("loris", "The password cannot be your username or email address.")}</li>
+                <li>{dgettext("loris", "No special characters are required but your password must be sufficiently complex to be accepted.")}</li>
             </ul>
-            <p>Please choose a unique password.</p>
-            <p>We suggest using a password manager to generate one for you.</p>
-            <h3>Notes</h3>
+            <p>{dgettext("loris", "Please choose a unique password.")}</p>
+            <p>{dgettext("loris", "We suggest using a password manager to generate one for you.")}</p>
+            <h3>{dgettext("user_accounts", "Notes")}</h3>
             <ul>
-                <li>It is recommended to use an email address as the username, for clarity and uniqueness.</li>
-                <li>When generating a new password, please notify the user by checking 'Send email to user' box below!</li>
+                <li>{dgettext("user_accounts", "It is recommended to use an email address as the username, for clarity and uniqueness.")}</li>
+                <li>{dgettext("user_accounts", "When generating a new password, please notify the user by checking 'Send email to user' box below!")}</li>
             </ul>
         </div>
     </div>
-    <h3>Add/Edit User</h3>
+    <h3>{dgettext("user_accounts", "Add/Edit User")}</h3>
 	    {if $form.errors.UserID_Group|default}
         <div class="row form-group has-error">
         {else}
@@ -453,7 +453,7 @@
             {$form.account_request_date.label}
         </label>
         <div class="col-sm-10">
-            {$form.account_request_date.html|default:'None'}
+            {$form.account_request_date.html|default:dgettext('loris', 'None')}
         </div>
     </div>
 
@@ -496,19 +496,19 @@
 </div>
 <div class="row form-group form-inline">
    <div class="col-sm-2">
-      <input class="btn btn-sm btn-primary" name="fire_away" value="Save" type="submit" />
+      <input class="btn btn-sm btn-primary" name="fire_away" value="{dgettext("loris", "Save")}" type="submit" />
   </div>
   <div class="col-sm-2">
-    <input class="btn btn-sm btn-primary" value="Reset" type="reset"/>
+    <input class="btn btn-sm btn-primary" value="{dgettext("loris", "Reset")}" type="reset"/>
 </div>
 <div class="col-sm-2">
-  <input class="btn btn-sm btn-primary" onclick="location.href='{$baseurl|default}/user_accounts/'" value="Back" type="button" />
+  <input class="btn btn-sm btn-primary" onclick="location.href='{$baseurl|default}/user_accounts/'" value="{dgettext("loris", "Back")}" type="button" />
 </div>
 {if $can_reject}
 
 <div class="col-sm-2">
     <input type=hidden id ="UserID" value="{$form.UserID.html}">
-    <input class="btn btn-sm btn-primary" value="Reject User" type="button" id="btn_reject"/>
+    <input class="btn btn-sm btn-primary" value="{dgettext("user_accounts", "Reject User")}" type="button" id="btn_reject"/>
     </div>
     {/if}
 </div>

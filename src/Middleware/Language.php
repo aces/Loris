@@ -79,6 +79,8 @@ class Language implements MiddlewareInterface, MiddlewareChainer
         $lang  = self::detectLocale($loris, $request);
         if ($lang !== null) {
             \setlocale(LC_MESSAGES, $lang . '.utf8');
+             putenv("LANG=$lang");
+             putenv("LANGUAGE=$lang");
             // Set the default_locale for intl to match the user preference,
             // so that date formatting works correctly.
             // PHPCS complains about ini_set not being allowed, but there

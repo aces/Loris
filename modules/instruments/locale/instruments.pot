@@ -47,3 +47,15 @@ msgstr ""
 
 msgid "Top"
 msgstr ""
+
+msgid "Behavioural Data"
+msgstr ""
+
+msgid "Completion"
+msgstr ""
+
+msgid "Conflicts?"
+msgstr ""
+
+msgid "Visit has no registered instruments in test battery."
+msgstr ""

@@ -6,6 +6,7 @@ import {
   FormElement,
   TextboxElement,
 } from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Publication upload form component
@@ -157,10 +158,12 @@ class PublicationUploadForm extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
+    const {t} = this.props;
 
     if (Object.keys(this.state.formErrors).length > 0) {
       swal.fire(
-        'Please fix any remaining form errors before submission',
+        t('Please fix any remaining form errors before submission',
+          {ns: 'loris'}),
         '',
         'error'
       );
@@ -192,7 +195,8 @@ class PublicationUploadForm extends React.Component {
         console.error(response.status);
         response.json().then((data) => {
           let message = (data && data.message) || '';
-          swal.fire('Something went wrong!', message, 'error');
+          swal.fire(t('Something went wrong!', {ns: 'loris'}),
+            message, 'error');
         });
         return;
       }
@@ -205,7 +209,7 @@ class PublicationUploadForm extends React.Component {
 
       swal.fire(
         {
-          title: 'Submission Successful!',
+          title: t('Submission Successful!', {ns: 'loris'}),
           type: 'success',
         }).then(function() {
         window.location.replace(loris.BaseURL + '/publication/');
@@ -213,7 +217,7 @@ class PublicationUploadForm extends React.Component {
     }).catch((error) => {
       // Network error
       console.error(error);
-      swal.fire('Something went wrong!', '', 'error');
+      swal.fire(t('Something went wrong!', {ns: 'loris'}), '', 'error');
     });
   }
 
@@ -223,12 +227,13 @@ class PublicationUploadForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Data loading error
     if (this.state.loadError !== undefined) {
       return (
         <div className="alert alert-danger text-center">
           <strong>
-            {this.state.error}
+            {t('An error occured while loading the page.', {ns: 'loris'})}
           </strong>
         </div>
       );
@@ -238,7 +243,7 @@ class PublicationUploadForm extends React.Component {
     if (!this.state.isLoaded) {
       return (
         <button className="btn-info has-spinner">
-          Loading
+          {t('Loading...', {ns: 'loris'})}
           <span
             className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
           </span>
@@ -252,11 +257,11 @@ class PublicationUploadForm extends React.Component {
       createElements = (
         <div key='propose_new_project'>
           <h3 className="col-md-offset-3 col-lg-offset-3">
-            Propose a new project
+            {t('Propose a new project', {ns: 'publication'})}
           </h3>
           <TextboxElement
             name="title"
-            label="Title"
+            label={t('Title', {ns: 'publication'})}
             onUserInput={this.setFormData}
             required={true}
             value={this.state.formData.title}
@@ -291,7 +296,6 @@ class PublicationUploadForm extends React.Component {
               users={this.state.Data.users}
               allVOIs={this.state.Data.allVOIs}
               allKWs={this.state.Data.allKWs}
-              allCollabs={this.state.Data.allCollabs}
               editMode={false}
             />
           </FormElement>
@@ -304,6 +308,7 @@ PublicationUploadForm.propTypes = {
   DataURL: PropTypes.string,
   action: PropTypes.string,
   editMode: PropTypes.bool,
+  t: PropTypes.func,
 };
 
-export default PublicationUploadForm;
+export default withTranslation(['loris'])(PublicationUploadForm);

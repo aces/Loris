@@ -21,8 +21,154 @@ msgstr ""
 msgid "Issue Tracker"
 msgstr ""
 
-msgid "Your assigned issue"
+msgid "Issue"
 msgstr ""
 
-msgid "Your assigned issues"
+msgid "Your assigned issue"
+msgid_plural "Your assigned issues"
+msgstr[0] ""
+
+msgid "Open Issues"
+msgstr ""
+
+msgid "Issue ID"
+msgstr ""
+
+msgid "Reporter"
+msgstr ""
+
+msgid "Assignee"
+msgstr ""
+
+msgid "Priority"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Date Created"
+msgstr ""
+
+msgid "Last Update"
+msgstr ""
+
+msgid "SessionID"
+msgstr ""
+
+msgid "Watching"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "High"
+msgstr ""
+
+msgid "Urgent"
+msgstr ""
+
+msgid "Immediate"
+msgstr ""
+
+msgid "Low"
+msgstr ""
+
+msgid "All Sites"
+msgstr ""
+
+msgid "All Issues"
+msgstr ""
+
+msgid "Active Issues"
+msgstr ""
+
+msgid "Closed Issues"
+msgstr ""
+
+msgid "My Issues"
+msgstr ""
+
+msgid "New Issue"
+msgstr ""
+
+msgid "Browse Issues"
+msgstr ""
+
+msgid "Batch Edit"
+msgstr ""
+
+msgid "Add Comment"
+msgstr ""
+
+msgid "Create New Issue"
+msgstr ""
+
+msgid "Never!"
+msgstr ""
+
+msgid "No-one!"
+msgstr ""
+
+msgid "Sometime Soon!"
+msgstr ""
+
+msgid "Submit Issue"
+msgstr ""
+
+msgid "Edit Issue"
+msgstr ""
+
+msgid "Update Issue"
+msgstr ""
+
+msgid "Add Attachment"
+msgstr ""
+
+msgid "Attachment for issue"
+msgstr ""
+
+msgid "Attachment for Issue"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Watching?"
+msgstr ""
+
+msgid "Add others to watching?"
+msgstr ""
+
+msgid "New Comment"
+msgstr ""
+
+msgid "This field is required"
+msgstr ""
+
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr ""
+
+msgid "Failed to submit issue :("
+msgstr ""
+
+msgid "Issue updated!"
+msgstr ""
+
+msgid "Issue created!"
+msgstr ""
+
+msgid "({{count}} issue)"
+msgid_plural "({{count}} issues)"
+msgstr[0] ""
+
+msgid "{{count}} issues displayed of {{total}}"
+msgstr ""
+
+msgid "Maximum issues per page: {{count}}"
+msgstr ""
+
+msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr ""

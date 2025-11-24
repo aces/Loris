@@ -47,8 +47,8 @@ class Options extends \LORIS\Http\Endpoint
         $user    = $factory->user();
         $config  = $factory->config();
 
-        // get the list of visit labels
-        $visit_label_options = \Utility::getVisitList();
+        // get the list of visit labels that the user has access to
+        $visit_label_options = $user->getVisits();
 
         // get the list of sites available for the user
         if ($user->hasPermission('access_all_profiles')) {
@@ -62,7 +62,8 @@ class Options extends \LORIS\Http\Endpoint
         }
 
         // get the list of projects
-        $list_of_projects = \Utility::getProjectList();
+        // $list_of_projects = \Utility::getProjectList();
+        $list_of_projects = $user->getProjectNames();
         $project_options  = [];
         foreach (array_values($list_of_projects) as $name) {
             $project_options[$name] = $name;

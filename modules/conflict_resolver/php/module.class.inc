@@ -58,7 +58,7 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $path = trim($request->getURI()->getPath(), "/");
+        $path = trim($request->getAttribute("unhandledURI")->getPath(), "/");
         switch ($path) {
         case 'unresolved':
             $handler = new Endpoints\Unresolved($this->loris);

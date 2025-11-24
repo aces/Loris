@@ -19,6 +19,7 @@ import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/new_profile.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/new_profile.json';
 import esStrings from '../locale/es/LC_MESSAGES/new_profile.json';
+import frStrings from '../locale/fr/LC_MESSAGES/new_profile.json';
 
 /**
  * New Profile Form
@@ -287,7 +288,7 @@ class NewProfileIndex extends React.Component {
       site =
         <SelectElement
           name = "site"
-          label = {this.props.t('Site', {ns: 'loris'})}
+          label = {this.props.t('Site', {ns: 'loris', count: 1})}
           options = {this.state.configData.site}
           onUserInput = {this.setFormData}
           value = {this.state.formData.site}
@@ -318,6 +319,9 @@ class NewProfileIndex extends React.Component {
             label = {this.props.t('Date of Birth Confirm',
               {ns: 'new_profile'})}
             onUserInput = {this.setFormData}
+            minYear = {minYear}
+            maxYear = {this.state.configData.maxYear}
+            dateFormat = {dateFormat}
             value = {this.state.formData.dobDateConfirm}
             required = {requireBirthDate}
           />
@@ -342,7 +346,7 @@ class NewProfileIndex extends React.Component {
         ),
       },
       {
-        label: this.props.t('Site', {ns: 'loris'}),
+        label: this.props.t('Site', {ns: 'loris', count: 1}),
         element: site,
       },
       {
@@ -350,11 +354,11 @@ class NewProfileIndex extends React.Component {
         element: pscid,
       },
       {
-        label: this.props.t('Project', {ns: 'loris'}),
+        label: this.props.t('Project', {ns: 'loris', count: 1}),
         element: (
           <SelectElement
             name = "project"
-            label = {this.props.t('Project', {ns: 'loris'}) }
+            label = {this.props.t('Project', {ns: 'loris', count: 1}) }
             options = {this.state.configData.project}
             onUserInput = {this.setFormData}
             value = {this.state.formData.project}
@@ -396,6 +400,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'new_profile', hiStrings);
   i18n.addResourceBundle('ja', 'new_profile', jaStrings);
   i18n.addResourceBundle('es', 'new_profile', esStrings);
+  i18n.addResourceBundle('fr', 'new_profile', frStrings);
 
   const NPIndex = withTranslation(['new_profile'])(NewProfileIndex);
   createRoot(
