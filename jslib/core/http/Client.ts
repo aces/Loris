@@ -154,14 +154,14 @@ export class Client<T> {
       }
 
       // Handle responses with no content or non-JSON content
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Errors.NoContent(
-          request,
-          response,
-          this.getErrorMessage('NoContentError', request, response)
-        );
-      }
+      // const contentType = response.headers.get('content-type');
+      // if (!contentType || !contentType.includes('application/json')) {
+      //   throw new Errors.NoContent(
+      //     request,
+      //     response,
+      //     this.getErrorMessage('NoContentError', request, response)
+      //   );
+      // }
 
       // 2. Handle JSON parsing errors
       try {
