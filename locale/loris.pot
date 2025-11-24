@@ -123,6 +123,12 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Browse"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
 msgid "N/A"
 msgstr ""
 
@@ -294,6 +300,9 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
+msgid "View details"
+msgstr ""
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
@@ -427,6 +436,12 @@ msgid "Withdrawn"
 msgstr ""
 
 msgid "In Progress"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Success"
 msgstr ""
 
 msgid "Complete"

@@ -9,6 +9,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Static Data Table component
@@ -648,12 +649,25 @@ class StaticDataTable extends Component {
       csvData = filteredData;
     }
 
+    // This doesn't feel like a very robust way to handle the dropdown.
+    // It's not clear if there's any good way to structure this for locales that
+    // use RTL languages or prefer a different kind of parenthesis.
+    let changeRowsDropdown = <span>
+       ({this.props.t('Maximum rows per page:')} {RowsPerPageDropdown})
+    </span>;
+
     let header = this.state.Hide.rowsPerPage === true ? '' : (
       <div className="table-header panel-heading">
         <div className="row">
           <div className="col-xs-12">
-            {rows.length} rows displayed of {filteredRows}.
-            (Maximum rows per page: {RowsPerPageDropdown})
+            {this.props.t(
+              '{{pageCount}} rows displayed of {{totalCount}}.',
+              {
+                pageCount: rows.length,
+                totalCount: filteredRows,
+              }
+            )}
+            {changeRowsDropdown}
             <div className="pull-right">
               <PaginationLinks
                 Total={filteredRows}
@@ -672,15 +686,21 @@ class StaticDataTable extends Component {
         <div className="row">
           <div className="col-xs-12">
             <div className="col-xs-12 footerText">
-              {rows.length} rows displayed of {filteredRows}.
-              (Maximum rows per page: {RowsPerPageDropdown})
+              {this.props.t(
+                '{{pageCount}} rows displayed of {{totalCount}}.',
+                {
+                  pageCount: rows.length,
+                  totalCount: filteredRows,
+                }
+              )}
+              {changeRowsDropdown}
             </div>
             <div className="col-xs-6">
               <button
                 className="btn btn-primary downloadCSV"
                 onClick={this.downloadCSV.bind(null, csvData)}
               >
-                Download Table as CSV
+                {this.props.t('Download Data as CSV')}
               </button>
             </div>
             <div className="pull-right">
@@ -730,6 +750,9 @@ StaticDataTable.propTypes = {
   freezeColumn: PropTypes.string,
   RowNameMap: PropTypes.string,
   Filter: PropTypes.object,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
 StaticDataTable.defaultProps = {
@@ -748,4 +771,4 @@ StaticDataTable.defaultProps = {
 
 window.StaticDataTable = StaticDataTable;
 
-export default StaticDataTable;
+export default withTranslation('loris')(StaticDataTable);
