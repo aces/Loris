@@ -32,7 +32,6 @@ export class Client<T> {
     const origin = window.location.origin; // always https://...
     const full = `${origin}/${baseURL}/`;
     this.baseURL = new URL(full);
-
   }
 
   /**
