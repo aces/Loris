@@ -274,9 +274,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 	$origlang = \getenv("LANG");
 	$obj->form->textdomain = $instrument;
         // if a script is loading this form without a commentID, display all fields
-        if (!isset($commentID)) {
+        if (empty($commentID)) {
             $obj->displayAllFields = true;
 	} else {
+		$obj->commentID = $commentID;
 		$timepoint = \TimePoint::singleton($obj->getSessionID());
 		$ilang = $timepoint->getLanguageCode();
 		\putenv("LANG=" . $ilang . ".utf8");
@@ -903,29 +904,29 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->dateOptions = $dateOptions;
 
-        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
+        $this->addBasicDate('Date_taken', dgettext('instruments', 'Date of Administration'), $dateOptions);
 
         if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age (Months)'
+                    dgettext("instruments", 'Candidate Age (Months)')
                 );
             } else {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age at Death (Months)'
+                    dgettext("instruments", 'Candidate Age at Death (Months)')
                 );
             }
             $this->addScoreColumn(
                 'Window_Difference',
-                'Window Difference (+/- Days)'
+                dgettext("instruments", 'Window Difference (+/- Days)')
             );
         }
         $examiners = $this->_getExaminerNames();
         $this->addSelect(
             'Examiner',
-            'Examiner',
+            dgettext("instruments", 'Examiner'),
             array_merge(['' => ''], $examiners)
         );
 
