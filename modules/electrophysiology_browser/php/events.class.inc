@@ -119,8 +119,6 @@ class Events extends \NDB_Page
                 return (new \LORIS\Http\Response\JSON\BadRequest());
             }
 
-            error_log(json_encode($parameters));
-
             switch ($parameters['request_type']) {
             case 'event_update':
                 $instance_data = $parameters['instance'];
@@ -183,7 +181,6 @@ class Events extends \NDB_Page
                     ? $endorsementComment
                     : null
                 );
-                error_log(json_encode($tagInsertion));
                 $endorserName = substr($user->getData('First_name'), 0, 1) .
                   '.' . $user->getData('Last_name');
                 return (new \LORIS\Http\Response\JSON\OK(
