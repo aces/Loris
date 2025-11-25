@@ -186,6 +186,8 @@ locales:
 	msgfmt -o modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po
 	npx i18next-conv -l hi -s modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
 	npx i18next-conv -l ja -s modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
+	msgfmt -o modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po
+	npx i18next-conv -l hi -s modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po -t modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.json
 
 acknowledgements: modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo
 	target=acknowledgements npm run compile
@@ -239,6 +241,11 @@ publication:
 	msgfmt -o modules/publication/locale/hi/LC_MESSAGES/publication.mo modules/publication/locale/hi/LC_MESSAGES/publication.po
 	npx i18next-conv -l hi -s modules/publication/locale/hi/LC_MESSAGES/publication.po -t modules/publication/locale/hi/LC_MESSAGES/publication.json
 	target=publication npm run compile
+
+brainbrowser:
+	msgfmt -o modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po
+	npx i18next-conv -l hi -s modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po -t modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.json
+	target=brainbrowser npm run compile
 
 schedule_module:
 	msgfmt -o modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.mo modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po

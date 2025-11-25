@@ -13,53 +13,52 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Brainbrowser"
-msgstr ""
-
-
 msgid "Sync Volumes"
-msgstr ""
+msgstr "वॉल्यूम सिंक करें"
 
 msgid "Reset View"
-msgstr ""
+msgstr "दृश्य रीसेट करें"
 
 msgid "Auto"
-msgstr ""
+msgstr "स्वतः"
+
+msgid "Loading..."
+msgstr "लोड हो रहा है..."
 
 msgid "100 Pixels"
-msgstr ""
+msgstr "100 पिक्सेल"
 
 msgid "200 Pixels"
-msgstr ""
+msgstr "200 पिक्सेल"
 
 msgid "256 Pixels"
-msgstr ""
+msgstr "256 पिक्सेल"
 
 msgid "300 Pixels (Default)"
-msgstr ""
+msgstr "300 पिक्सेल (डिफ़ॉल्ट)"
 
 msgid "400 Pixels"
-msgstr ""
+msgstr "400 पिक्सेल"
 
 msgid "500 Pixels"
-msgstr ""
+msgstr "500 पिक्सेल"
 
 msgid "600 Pixels"
-msgstr ""
+msgstr "600 पिक्सेल"
 
 msgid "700 Pixels"
-msgstr ""
+msgstr "700 पिक्सेल"
 
 msgid "800 Pixels"
-msgstr ""
+msgstr "800 पिक्सेल"
 
 msgid "900 Pixels"
-msgstr ""
+msgstr "900 पिक्सेल"
 
 msgid "1000 Pixels"
-msgstr ""
+msgstr "1000 पिक्सेल"
