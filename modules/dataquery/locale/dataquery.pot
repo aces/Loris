@@ -393,12 +393,6 @@ msgstr ""
 msgid "Name query"
 msgstr ""
 
-msgid "Fields"
-msgstr ""
-
-msgid "Filters"
-msgstr ""
-
 msgid "Define Filters"
 msgstr ""
 
