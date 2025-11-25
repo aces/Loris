@@ -151,7 +151,8 @@ function MRIViolationsIndex(props) {
               onClick={() =>
                 setPage({
                   ViolationType: 'protocolcheck',
-                  PatientName: rowData[t('Patient Name', {ns: 'mri_violations'})],
+                  PatientName: rowData[t('Patient Name', {ns: 'mri_violations'})
+                  ],
                   SeriesUID: rowData[t('Series UID', {ns: 'mri_violations'})],
                   TarchiveID: rowData[t('TarchiveID', {ns: 'mri_violations'})],
                   CandID: rowData.CandID,
@@ -177,7 +178,8 @@ function MRIViolationsIndex(props) {
               onClick={() =>
                 setPage({
                   ViolationType: 'protocolviolation',
-                  PatientName: rowData[t('Patient Name', {ns: 'mri_violations'})],
+                  PatientName: rowData[t('Patient Name', {ns: 'mri_violations'})
+                  ],
                   SeriesUID: rowData[t('Series UID', {ns: 'mri_violations'})],
                   TarchiveID: rowData[t('TarchiveID', {ns: 'mri_violations'})],
                   CandID: rowData.CandID,
