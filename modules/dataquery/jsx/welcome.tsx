@@ -900,7 +900,7 @@ function SingleQueryDisplay(props: {
       </div>
       {query.criteria ?
         <div>
-          <h3>{t('Filter', {ns: 'dataquery', count: 2})}</h3>
+          <h3>{t('Filter', {ns: 'dataquery', count: query.criteria.group.length})}</h3>
           <QueryListCriteria
             criteria={query.criteria}
             fulldictionary={props.fulldictionary}
