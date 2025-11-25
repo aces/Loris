@@ -306,10 +306,10 @@ msgstr ""
 msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
 msgstr ""
 
-msgid "Invalid DCC ID"
+msgid "Invalid DCCID"
 msgstr ""
 
-msgid "Invalid DCC ID ({{id}}) on line {{line}}."
+msgid "Invalid DCCID ({{id}}) on line {{line}}."
 msgstr ""
 
 msgid "Welcome to the Data Query Tool"

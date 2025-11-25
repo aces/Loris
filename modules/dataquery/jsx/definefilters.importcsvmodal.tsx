@@ -94,8 +94,8 @@ function ImportCSVModal(props: {
         if (candIDRegex.test(value.data[i][0]) !== true) {
           swal.fire({
             type: 'error',
-            title: t('Invalid DCC ID', {ns: 'dataquery'}),
-            text: t('Invalid DCC ID ({{id}}) on line {{line}}.',
+            title: t('Invalid DCCID', {ns: 'dataquery'}),
+            text: t('Invalid DCCID ({{id}}) on line {{line}}.',
               {ns: 'dataquery', id: value.data[i][0], line: i+1}),
           });
           setCSVFile(null);
@@ -176,7 +176,7 @@ function ImportCSVModal(props: {
           <dd><input type="radio" name="candidtype"
             checked={idType == 'CandID'}
             onChange={() => setIdType('CandID')}
-          /> {t('DCC ID', {ns: 'dataquery'})}
+          /> {t('DCCID', {ns: 'loris'})}
           <input type="radio" name="candidtype"
             style={{marginLeft: '1.5em'}}
             checked={idType == 'PSCID'}
