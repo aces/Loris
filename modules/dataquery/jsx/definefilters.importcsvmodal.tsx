@@ -189,12 +189,12 @@ function ImportCSVModal(props: {
           <dd><input type="radio" name="header"
             checked={csvHeader == true}
             onChange={() => setCSVHeader(true)}
-          /> {t('Yes', {ns: 'dataquery'})}
+          /> {t('Yes', {ns: 'loris'})}
           <input type="radio" name="header"
             style={{marginLeft: '1.5em'}}
             checked={csvHeader == false}
             onChange={() => setCSVHeader(false)}
-          /> {t('No', {ns: 'dataquery'})}
+          /> {t('No', {ns: 'loris'})}
           </dd>
           <dt style={dtstyle}>{t('CSV File', {ns: 'dataquery'})}</dt>
           <dd><FileElement label='' name="csvfile"
