@@ -92,7 +92,7 @@ class BatteryManagerForm extends Component {
           min={0}
           max={99999}
           required={true}
-          value={test.ageMinDays}
+          value={test.ageMinDays != null ? String(test.ageMinDays) : ''}
           errorMessage={errors.ageMinDays}
         />
         <NumericElement
@@ -102,7 +102,7 @@ class BatteryManagerForm extends Component {
           min={0}
           max={99999}
           required={true}
-          value={test.ageMaxDays}
+          value={test.ageMaxDays != null ? String(test.ageMaxDays) : ''}
           errorMessage={errors.ageMaxDays}
         />
         <SelectElement

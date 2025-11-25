@@ -277,7 +277,7 @@ class BatteryManagerIndex extends Component {
   saveTest(test, request) {
     return new Promise((resolve, reject) => {
       Object.keys(test).forEach((key) => {
-        if (test[key] == '') {
+        if (test[key] === '') {
           test[key] = null;
         }
       });
