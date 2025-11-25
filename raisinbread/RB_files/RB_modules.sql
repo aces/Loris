@@ -43,7 +43,6 @@ INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (40,'module_manager','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (41,'electrophysiology_browser','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (42,'my_preferences','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (43,'candidate_profile','Y');
-INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (44,'dqt','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (45,'api_docs','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (46,'dictionary','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (47,'electrophysiology_uploader','Y');
