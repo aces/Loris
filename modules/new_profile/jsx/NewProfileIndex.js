@@ -319,6 +319,9 @@ class NewProfileIndex extends React.Component {
             label = {this.props.t('Date of Birth Confirm',
               {ns: 'new_profile'})}
             onUserInput = {this.setFormData}
+            minYear = {minYear}
+            maxYear = {this.state.configData.maxYear}
+            dateFormat = {dateFormat}
             value = {this.state.formData.dobDateConfirm}
             required = {requireBirthDate}
           />

@@ -70,13 +70,13 @@ function CandidateScanQCSummaryWidget(props) {
         {ns: 'imaging_browser'})}</li>
     </ul>
     <p>
-      {t('Different shades represent different modalities. '
-         + 'Only native modalities are displayed in results.',
+      {t('Different shades represent different modalities.'+
+        ' Only native modalities are displayed in results.',
       {ns: 'imaging_browser'})}
     </p>
     <p>
-      {t('Hover over any visit to see detailed modality breakdown for visit, '
-         + 'click to go to imaging browser.', {ns: 'imaging_browser'})}
+      {t('Hover over any visit to see detailed modality breakdown for visit,'+
+        ' click to go to imaging browser.', {ns: 'imaging_browser'})}
     </p>
   </div>;
 }

@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import * as Rx from 'rxjs/operators';
 import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
-import {setFilteredEpochs, setActiveEpoch} from '../state/dataset';
+import {setFilteredEpochs, setActiveEpoch, State} from '../state/dataset';
 import {MAX_RENDERED_EPOCHS} from '../../../vector';
 import {Epoch, HEDSchemaElement, HEDTag} from '../types';
 
@@ -33,7 +33,7 @@ export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
     Rx.map(([, state]) => {
-      const {interval, epochs} = fromState(state);
+      const {interval, epochs, filteredEpochs} = fromState(state);
       let newFilteredEpochs = [...Array(epochs.length).keys()]
         .filter((index) =>
           epochs[index].onset + epochs[index].duration > interval[0]
@@ -45,7 +45,10 @@ export const createFilterEpochsEpic = (fromState: (_: any) => any) => (
       }
 
       return (dispatch) => {
-        dispatch(setFilteredEpochs(newFilteredEpochs));
+        dispatch(setFilteredEpochs({
+          ...filteredEpochs,
+          plotVisibility: newFilteredEpochs,
+        }));
       };
     })
   );
@@ -65,15 +68,14 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
     ofType(TOGGLE_EPOCH),
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]: [any, any]) => {
+    Rx.map<[number, State], any>(([payload, state]) => {
       const {filteredEpochs, epochs} = fromState(state);
       const index = payload;
       let newFilteredEpochs;
 
       if (filteredEpochs.plotVisibility.includes(index)) {
-        newFilteredEpochs = filteredEpochs.plotVisibility.filter(
-          (i) => i !== index
-        );
+        newFilteredEpochs = filteredEpochs.plotVisibility
+          .filter((i) => i !== index);
       } else if (index >= 0 && index < epochs.length) {
         newFilteredEpochs = filteredEpochs.plotVisibility.slice();
         newFilteredEpochs.push(index);
@@ -84,8 +86,8 @@ export const createToggleEpochEpic = (fromState: (_: any) => any) => (
 
       return (dispatch) => {
         dispatch(setFilteredEpochs({
+          ...filteredEpochs,
           plotVisibility: newFilteredEpochs,
-          columnVisibility: filteredEpochs.columnVisibility,
         }));
       };
     })
@@ -106,7 +108,7 @@ export const createActiveEpochEpic = (fromState: (_: any) => any) => (
     ofType(UPDATE_ACTIVE_EPOCH),
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
-    Rx.map(([payload, state]: [any, any]) => {
+    Rx.map<[number, State], any>(([payload, state]) => {
       const {epochs} = fromState(state);
       const index = payload;
 
@@ -141,7 +143,6 @@ export const getEpochsInRange = (epochs, interval) => {
   );
 };
 
-
 /**
  * getTagsForEpoch
  *
@@ -151,17 +152,16 @@ export const getEpochsInRange = (epochs, interval) => {
  * @returns {HEDTag[]} - List of HED tags within dataset associated with the epoch
  */
 export const getTagsForEpoch = (
-  epoch: Epoch, datasetTags: any,
-  hedSchema: HEDSchemaElement[]
+  epoch: Epoch, datasetTags: any, hedSchema: HEDSchemaElement[]
 ) => {
   const hedTags = [];
 
-  if (datasetTags['EventValue'].hasOwnProperty(epoch.label)) {
-    hedTags.push(...datasetTags['EventValue'][epoch.label]);
-  }
+  // if (datasetTags['EventValue'].hasOwnProperty(epoch.label)) {
+  //   hedTags.push(...datasetTags['EventValue'][epoch.label])
+  // }
 
-  if (datasetTags['TrialType'].hasOwnProperty(epoch.trialType)) {
-    hedTags.push(...datasetTags['TrialType'][epoch.trialType]);
+  if (datasetTags['trial_type'].hasOwnProperty(epoch.trialType)) {
+    hedTags.push(...datasetTags['trial_type'][epoch.trialType]);
   }
 
   epoch.properties.forEach((prop) => {
@@ -185,6 +185,9 @@ export const getTagsForEpoch = (
       PropertyName: tag.PropertyName,
       PropertyValue: tag.PropertyValue,
       AdditionalMembers: tag.AdditionalMembers,
+      TaggedBy: tag.TaggedBy,
+      TaggerName: tag.TaggerName,
+      Endorsements: [],
     };
   }).filter((tag) => {
     return tag.HEDTagID !== null || tag.PairRelID !== null;
@@ -255,7 +258,7 @@ export const buildHEDString = (hedTags: HEDTag[], longFormHED = false) => {
           ? groupTag.schemaElement.longName
           : groupTag.schemaElement.name;
       } else {
-        if (groupTag.HasPairing === '1') {
+        if (groupTag.HasPairing == '1') {
           if (groupTag.AdditionalMembers > 0 || subGroupString.length === 0) {
             const commaIndex = getNthMemberTrailingCommaIndex(
               tagString,
@@ -322,8 +325,7 @@ export const buildHEDString = (hedTags: HEDTag[], longFormHED = false) => {
  * @returns {number} - Returns index of comma expected after nth member
  */
 export const getNthMemberTrailingBadgeIndex = (
-  tagBadgeGroup: any[],
-  n: number
+  tagBadgeGroup: any[], n: number
 ) => {
   if (n === 0) {
     return tagBadgeGroup.length;
@@ -355,3 +357,19 @@ export const getNthMemberTrailingBadgeIndex = (
   }
   return commaIndex + 1;
 };
+
+/**
+ * getRootTags
+ *
+ * @param {HEDTag[]} tags - HEDTag list
+ * @returns {HEDTag[]} - Returns the root tags
+ */
+export const getRootTags = (tags: HEDTag[]) => {
+  return tags.filter((tag) => {
+    return tag.ID &&
+      !tags.some((t) => {
+        return tag.ID === t.PairRelID;
+      });
+  });
+};
+

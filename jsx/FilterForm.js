@@ -8,6 +8,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
 import {FormElement} from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
 
 /**
  * FilterForm component.
@@ -203,7 +204,7 @@ class FilterForm extends Component {
       <Panel
         id={this.props.id}
         height={this.props.height}
-        title={this.props.title}
+        title={this.props.t(this.props.title, {ns: 'loris'})}
       >
         <FormElement {...this.props}>
           {formChildren}
@@ -230,6 +231,9 @@ FilterForm.propTypes = {
   onUpdate: PropTypes.func,
   children: PropTypes.node,
   formElements: PropTypes.object,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
-export default FilterForm;
+export default withTranslation('loris')(FilterForm);

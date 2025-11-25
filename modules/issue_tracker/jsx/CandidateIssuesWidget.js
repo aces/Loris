@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/issue_tracker.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
 
 /**
  * CandidateIssuesWidget represents a list of open issues to be displayed
@@ -17,6 +19,7 @@ function CandidateIssuesWidget(props) {
   const [reload, setReload] = useState(0);
   useEffect( () => {
     i18n.addResourceBundle('ja', 'issue_tracker', jaStrings);
+    i18n.addResourceBundle('hi', 'issue_tracker', hiStrings);
     setReload(reload+1);
   }, [t]);
   const issues = props.Issues.map(function(issue) {
@@ -39,6 +42,8 @@ function CandidateIssuesWidget(props) {
 CandidateIssuesWidget.propTypes = {
   Issues: PropTypes.array,
   BaseURL: PropTypes.string,
+  t: PropTypes.func,
 };
 
-export default CandidateIssuesWidget;
+export default withTranslation(
+  ['issue_tracker', 'loris'])(CandidateIssuesWidget);

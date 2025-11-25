@@ -30,7 +30,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     // expect UIs for Browse Tab
     private $_loadingBrowseUI = [
         [
-            "label"    => "CandID",
+            "label"    => "DCCID",
             "selector" => "#imaging_filter>div",
         ],
         [
@@ -45,7 +45,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             "label"    => "Logs to display",
             "selector" => "#log_panel>div>form>div",
         ],
-                                 // expected_headers
+        // expected_headers
         [
             "label"    => "No.",
             "selector" => "#dynamictable > thead",
@@ -59,7 +59,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             "selector" => "#dynamictable > thead",
         ],
         [
-            "label"    => "CandID",
+            "label"    => "DCCID",
             "selector" => "#dynamictable > thead",
         ],
         [

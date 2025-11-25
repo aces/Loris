@@ -138,7 +138,9 @@ class Sessions extends \NDB_Page
                 'Invalid output type'
             ));
         }
-        return $this->getSessionData($outputType);
+        // Header fixes tab re-open bug (json payload)
+        return $this->getSessionData($outputType)
+            ->withHeader("Cache-Control", "no-store");
     }
 
     /**
@@ -480,7 +482,8 @@ class Sessions extends \NDB_Page
             $this->loris,
             $physioFileID
         );
-        $fileSummary['datasetTags'] = $datasetTags->getData();
+        $fileSummary['datasetTags']            = $datasetTags->getData();
+        $fileSummary['datasetTagEndorsements'] = $datasetTags->getHEDEndorsements();
 
         $fileSummary['epochsURL'] = $db->pselectOne(
             "SELECT FilePath

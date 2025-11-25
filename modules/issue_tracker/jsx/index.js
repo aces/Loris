@@ -1,11 +1,16 @@
 import IssueForm from './IssueForm';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
 
 /**
  * Render IssueForm on page load
  */
 window.addEventListener('load', () => {
+  // Load Hindi translations for issue_tracker
+  i18n.addResourceBundle('hi', 'issue_tracker', hiStrings);
+
   const id = location.href.split('/issue/')[1];
   createRoot(
     document.getElementById('lorisworkspace')

@@ -147,6 +147,15 @@ class ElectrophysiologyBrowserIndex extends Component {
         name: 'visitLabel',
         type: 'text',
       }},
+      {label: 'Has HED Tags', show: true, filter: {
+        name: 'HasHEDTags',
+        type: 'select',
+        hide: false,
+        options: {
+          'yes': 'Yes',
+          'no': 'No',
+        },
+      }},
       {label: 'Acquisition Time', show: true},
       {label: 'Insertion Time', show: true},
       {label: 'Links', show: true},
