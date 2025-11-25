@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * This script updates the login_summary_statistics table in the database
+ * This script updates the Login_Summary_Statistics table in the database
  * based on the queries that are pinned to the login page in the dataquery module,
  * and on the SQL queries in the project/tools/Login_Summary_Statistics folder,
  * or if that does not exist, the SQL/Login_Summary_Statistics folder.
@@ -66,7 +66,7 @@ $pinnedqueries = $DB->pselectWithIndexKey(
 );
 $user          = (new \User())->factory('admin');
 $data          = ['All Projects' => []];
-$DB->run("DELETE FROM login_summary_statistics", []);
+$DB->run("DELETE FROM Login_Summary_Statistics", []);
 foreach ($projects as $project) {
     $data[$project] = [];
 }
@@ -155,7 +155,7 @@ print_r($data);
 foreach ($data as $project => $values) {
     foreach ($values as $title => $value) {
         $DB->insertOnDuplicateUpdate(
-            'login_summary_statistics',
+            'Login_Summary_Statistics',
             [
                 'Project'    => $project,
                 'Title'      => $title,

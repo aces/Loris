@@ -389,7 +389,8 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
   FROM ConfigSettings parent_config
   LEFT JOIN ConfigSettings child_config ON (parent_config.ID = child_config.Parent)
   WHERE parent_config.Name = 'redcap';
-CREATE TABLE login_summary_statistics (
+
+CREATE TABLE Login_Summary_Statistics (
     Title VARCHAR(255),
     Project VARCHAR(255),
     Value INT,
