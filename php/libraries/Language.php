@@ -3,6 +3,8 @@
 /**
  * A Language object represents the concept of a language that has been
  * configured on this LORIS instance.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Language
 {
@@ -16,6 +18,7 @@ class Language
      */
     public function __construct(
         public readonly string $label,
-	public readonly string $code
-    ) { }
+        public readonly string $code
+    ) {
+    }
 }
