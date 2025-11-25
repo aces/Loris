@@ -138,8 +138,9 @@ class Sessions extends \NDB_Page
                 'Invalid output type'
             ));
         }
-        header("Cache-Control: no-store");  // Fixes tab re-open bug (json)
-        return $this->getSessionData($outputType);
+        // Header fixes tab re-open bug (json payload)
+        return $this->getSessionData($outputType)
+            ->withHeader("Cache-Control", "no-store");
     }
 
     /**
