@@ -36,8 +36,8 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-msgid "File cannot exceed"
-msgstr ""
+msgid "File cannot exceed {{maxFileSize}}"
+msgstr "फ़ाइल {{maxFileSize}} से अधिक नहीं हो सकती"
 
 msgid "File name must match the following convention:"
 msgstr ""
@@ -51,11 +51,8 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-msgid "The file"
-msgstr ""
-
-msgid "must be of type .tar.gz."
-msgstr ""
+msgid "The file {{filename}} must be of type .tar.gz."
+msgstr "फ़ाइल {{filename}} का प्रकार .tar.gz होना चाहिए।"
 
 msgid "Invalid filename!"
 msgstr ""
@@ -73,9 +70,6 @@ msgid "Processing of this file by the EEG pipeline has started"
 msgstr ""
 
 msgid "Upload failed: a network error occured"
-msgstr ""
-
-msgid "Please make sure files are not larger than"
 msgstr ""
 
 msgid "Upload failed: received HTTP response code"

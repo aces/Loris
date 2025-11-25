@@ -36,12 +36,6 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-msgid "File cannot exceed"
-msgstr ""
-
-msgid "File name must match the following convention:"
-msgstr ""
-
 msgid "Invalid extension for the uploaded file!"
 msgstr ""
 
@@ -51,10 +45,10 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-msgid "The file"
+msgid "The file {{filename}} must be of type .tar.gz."
 msgstr ""
 
-msgid "must be of type .tar.gz."
+msgid "File name must match the following convention:"
 msgstr ""
 
 msgid "Invalid filename!"
@@ -75,7 +69,7 @@ msgstr ""
 msgid "Upload failed: a network error occured"
 msgstr ""
 
-msgid "Please make sure files are not larger than"
+msgid "File cannot exceed {{maxFileSize}}"
 msgstr ""
 
 msgid "Upload failed: received HTTP response code"

@@ -87,9 +87,10 @@ export default function UploadForm(props) {
       });
 
       setErrorMessage({
-        eegFile: t('The file', {ns: 'electrophysiology_uploader'}) +
-         ' ' + fileName + ' ' + t('must be of type .tar.gz.',
-          {ns: 'electrophysiology_uploader'}),
+        eegFile: t('The file {{filename}} must be of type .tar.gz.', {
+          ns: 'electrophysiology_uploader',
+          filename: fileName,
+        }),
         candID: null,
         pscid: null,
         visit: null,
@@ -192,11 +193,6 @@ export default function UploadForm(props) {
    * @param {XMLHttpRequest} xhr - XMLHttpRequest
    */
   const processError = (xhr) => {
-    // Upon errors in upload:
-    // - Displays pop up window with submission error message
-    // - Updates errorMessage so relevant errors are displayed on form
-    // - Returns to Upload tab
-
     console.error(xhr.status + ': ' + xhr.statusText);
 
     let error = null;
@@ -209,9 +205,13 @@ export default function UploadForm(props) {
       error = t('Upload failed: a network error occured',
         {ns: 'electrophysiology_uploader'});
     } else if (xhr.status == 413) {
-      error = t('Please make sure files are not larger than',
-        {ns: 'electrophysiology_uploader'})
-          + ' ' + props.maxUploadSize;
+      error = t(
+        'Please make sure files are not larger than {{maxFileSize}}',
+        {
+          ns: 'loris',
+          maxFileSize: props.maxUploadSize,
+        }
+      );
     } else {
       error = t('Upload failed: received HTTP response code',
         {ns: 'electrophysiology_uploader'})
@@ -274,11 +274,15 @@ export default function UploadForm(props) {
             label={t('Notes', {ns: 'electrophysiology_uploader'})}
             text={
               <span>
-                {props.maxUploadSize &&
-                  t('File cannot exceed',
-                    {ns: 'electrophysiology_uploader'}) +
-                  ` ${props.maxUploadSize}<br/>x`
-                }
+                {props.maxUploadSize && (
+                  <>
+                    {t('File cannot exceed {{maxFileSize}}', {
+                      ns: 'electrophysiology_uploader',
+                      maxFileSize: props.maxUploadSize,
+                    })}
+                    <br/>
+                  </>
+                )}
                 {t('File name must match the following convention:',
                   {ns: 'electrophysiology_uploader'})}<br/>
                 <b>[PSCID]_[DCCID]_[Visit Label]_bids.tar.gz</b>

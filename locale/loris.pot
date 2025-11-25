@@ -500,3 +500,6 @@ msgstr ""
 
 msgid "Permission denied"
 msgstr ""
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr ""

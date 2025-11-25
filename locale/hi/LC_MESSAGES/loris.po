@@ -500,3 +500,6 @@ msgstr "लोड हो रहा है..."
 
 msgid "Permission denied"
 msgstr "अनुमति अस्वीकृत"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "कृपया सुनिश्चित करें कि फ़ाइलें {{maxFileSize}} से बड़ी न हों"
