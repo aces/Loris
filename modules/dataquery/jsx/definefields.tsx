@@ -340,6 +340,8 @@ function DefineFields(props: {
   let fieldList: React.ReactElement|null = null;
   if (props.category) {
     // Put into a short variable name for line length
+    const mCategories = props.allCategories.categories[props.module];
+    const cname = mCategories[props.category];
     let defaultVisits;
     if (props.defaultVisits) {
       const allVisits = props.allVisits.map((el) => {
@@ -418,7 +420,7 @@ function DefineFields(props: {
               <input onChange={setFilter}
                 className='form-control'
                 type="text"
-                placeholder="Search fields"
+                placeholder={`Search within ${cname}`}
                 aria-describedby="input-filter-addon"
                 value={activeFilter}
                 style={{borderRadius: '32px 0 0 32px'}}/>
