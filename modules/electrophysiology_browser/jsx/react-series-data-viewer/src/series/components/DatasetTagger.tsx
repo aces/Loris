@@ -516,13 +516,13 @@ const DatasetTagger = ({
       setSearchText('');
       setSearchTextValid(false);
     } else {
-      console.log('Failed to add tag. TODO: report')
+      console.error('Failed to add tag. TODO: report')
     }
   }
 
   const handleRemoveTag = (tagRelID: any) => {
     if (groupMode) {
-      console.log('If you want to delete a tag, you cannot be in "Group Mode". Press the "Tag Mode" button');
+      console.warn('If you want to delete a tag, you cannot be in "Group Mode". Press the "Tag Mode" button');
       return;
     }
 
@@ -750,7 +750,7 @@ const DatasetTagger = ({
             tagPairings.push(pairRelTag);
             pairRelID = pairRelTag.PairRelID;
           } else {
-            console.log(`Something went wrong. Tag with ID ${pairRelID} not found. Should not proceed.`);
+            console.warn(`Something went wrong. Tag with ID ${pairRelID} not found. Should not proceed.`);
             pairRelID = null;
           }
         }
