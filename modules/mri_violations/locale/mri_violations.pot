@@ -179,3 +179,55 @@ msgstr ""
 
 msgid "TarchiveID"
 msgstr ""
+
+msgid "Center Name"
+msgstr ""
+
+msgid "Scanner ID"
+msgstr ""
+
+msgid "Scan Type"
+msgstr ""
+
+msgid "TR Range"
+msgstr ""
+
+msgid "TE Range"
+msgstr ""
+
+msgid "TI Range"
+msgstr ""
+
+msgid "Slice Thickness Range"
+msgstr ""
+
+msgid "Xspace Range"
+msgstr ""
+
+msgid "Yspace Range"
+msgstr ""
+
+msgid "Zspace Range"
+msgstr ""
+
+msgid "Xstep Range"
+msgstr ""
+
+msgid "Ystep Range"
+msgstr ""
+
+msgid "Zstep Range"
+msgstr ""
+
+msgid "Time Range"
+msgstr ""
+
+msgid "Image Type"
+msgstr ""
+
+msgid "Phase Encoding Direction"
+msgstr ""
+
+msgid "Echo Number"
+msgstr ""
+

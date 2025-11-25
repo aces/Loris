@@ -174,6 +174,45 @@ msgstr "参加ID"
 msgid "TarchiveID"
 msgstr "アーカイブID"
 
+msgid "Center Name"
+msgstr "センター名"
+
+msgid "Scanner ID"
+msgstr "スキャナID"
+
+msgid "TR Range"
+msgstr "TR範囲"
+
+msgid "TE Range"
+msgstr "THE レンジ"
+
+msgid "TI Range"
+msgstr "TI 範囲"
+
+msgid "Slice Thickness Range"
+msgstr "スライス厚さ範囲"
+
+msgid "Xspace Range"
+msgstr "Xspace 範囲"
+
+msgid "Yspace Range"
+msgstr "Yspace 範囲"
+
+msgid "Zspace Range"
+msgstr "Zspace 範囲"
+
+msgid "Xstep Range"
+msgstr "Xstep 範囲"
+
+msgid "Ystep Range"
+msgstr "Yステップ範囲"
+
+msgid "Zstep Range"
+msgstr "Zstep 範囲"
+
+msgid "Time Range"
+msgstr "時間範囲"
+
 msgid "Can not implement filter on a resource type that has no projects."
 msgstr "プロジェクトがないリソース タイプにフィルターを実装することはできません。"
 

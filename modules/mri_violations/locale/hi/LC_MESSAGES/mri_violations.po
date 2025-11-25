@@ -171,5 +171,44 @@ msgstr "जॉइनआईडी"
 msgid "TarchiveID"
 msgstr "टार्चिवआईडी"
 
+msgid "Center Name"
+msgstr "केंद्र का नाम"
+
+msgid "Scanner ID"
+msgstr "स्कैनर आईडी"
+
+msgid "TR Range"
+msgstr "टीआर रेंज"
+
+msgid "TE Range"
+msgstr "सीमा"
+
+msgid "TI Range"
+msgstr "टीआई रेंज"
+
+msgid "Slice Thickness Range"
+msgstr "स्लाइस मोटाई रेंज"
+
+msgid "Xspace Range"
+msgstr "एक्सस्पेस रेंज"
+
+msgid "Yspace Range"
+msgstr "वाईस्पेस रेंज"
+
+msgid "Zspace Range"
+msgstr "ज़ेडस्पेस रेंज"
+
+msgid "Xstep Range"
+msgstr "एक्सस्टेप रेंज"
+
+msgid "Ystep Range"
+msgstr "यस्टेप रेंज"
+
+msgid "Zstep Range"
+msgstr "ज़स्टेप रेंज"
+
+msgid "Time Range"
+msgstr "समय सीमा"
+
 msgid "Can not implement filter on a resource type that has no projects."
 msgstr "ऐसे संसाधन प्रकार पर फ़िल्टर लागू नहीं किया जा सकता जिसमें कोई परियोजना नहीं है."

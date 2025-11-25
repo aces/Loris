@@ -171,5 +171,44 @@ msgstr "UnirseID"
 msgid "TarchiveID"
 msgstr "ID de archivo"
 
+msgid "Center Name"
+msgstr "Nombre del centro"
+
+msgid "Scanner ID"
+msgstr "ID del escáner"
+
+msgid "TR Range"
+msgstr "Gama TR"
+
+msgid "TE Range"
+msgstr "LA GAMA"
+
+msgid "TI Range"
+msgstr "Rango TI"
+
+msgid "Slice Thickness Range"
+msgstr "Rango de espesor de rebanada"
+
+msgid "Xspace Range"
+msgstr "Gama Xspace"
+
+msgid "Yspace Range"
+msgstr "Gama Yspace"
+
+msgid "Zspace Range"
+msgstr "Gama Zspace"
+
+msgid "Xstep Range"
+msgstr "Gama Xstep"
+
+msgid "Ystep Range"
+msgstr "Rango de paso Y"
+
+msgid "Zstep Range"
+msgstr "Rango de paso Z"
+
+msgid "Time Range"
+msgstr "Rango de tiempo"
+
 msgid "Can not implement filter on a resource type that has no projects."
 msgstr "No se puede implementar un filtro en un tipo de recurso que no tenga proyectos."

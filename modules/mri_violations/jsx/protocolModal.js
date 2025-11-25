@@ -68,7 +68,7 @@ function ProtocolViolationModal(props) {
       <div key={violation[4]}>
         <dl className="violation-description-list">
           <div>
-            <dt>{t('CandID', {ns: 'mri_violations'})}</dt>
+            <dt>{t('CandID', {ns: 'loris'})}</dt>
             <dd>{violation[0]}</dd>
           </div>
           <div>

@@ -171,5 +171,44 @@ msgstr "ID de jointure"
 msgid "TarchiveID"
 msgstr "TarchiveID"
 
+msgid "Center Name"
+msgstr "Nom du centre"
+
+msgid "Scanner ID"
+msgstr "ID du scanner"
+
+msgid "TR Range"
+msgstr "Gamme TR"
+
+msgid "TE Range"
+msgstr "LA GAMME"
+
+msgid "TI Range"
+msgstr "Gamme TI"
+
+msgid "Slice Thickness Range"
+msgstr "Plage d'épaisseur de tranche"
+
+msgid "Xspace Range"
+msgstr "Gamme Xspace"
+
+msgid "Yspace Range"
+msgstr "Gamme Yspace"
+
+msgid "Zspace Range"
+msgstr "Gamme Zspace"
+
+msgid "Xstep Range"
+msgstr "Gamme Xstep"
+
+msgid "Ystep Range"
+msgstr "Plage Ystep"
+
+msgid "Zstep Range"
+msgstr "Plage de pas Z"
+
+msgid "Time Range"
+msgstr "Plage de temps"
+
 msgid "Can not implement filter on a resource type that has no projects."
 msgstr "Impossible d'appliquer un filtre à un type de ressource qui ne comporte aucun projet."
