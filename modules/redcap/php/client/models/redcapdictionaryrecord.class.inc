@@ -318,9 +318,6 @@ class RedcapDictionaryRecord
         $index = 1; //Auto-index counter
         foreach ($choices as $choice) {
             $choice = trim($choice);
-            if (empty($choice)) {
-                continue;
-            }
 
             $matches = [];
 
