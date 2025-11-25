@@ -17,6 +17,7 @@ import {
  * @return {JSX}
  */
 export default function UploadForm(props) {
+  const {t} = props;
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState({});
   const [uploadProgress, setuploadProgress] = useState(-1);
@@ -77,14 +78,18 @@ export default function UploadForm(props) {
     const fileNameConvention = pNameElements.join('_') + '.tar.gz';
     if (!fileName.match(properExt)) {
       swal.fire({
-        title: 'Invalid extension for the uploaded file!',
-        text: 'Filename extension does not match .tar.gz ',
+        title: t('Invalid extension for the uploaded file!',
+          {ns: 'electrophysiology_uploader'}),
+        text: t('Filename extension does not match .tar.gz ',
+          {ns: 'electrophysiology_uploader'}),
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'electrophysiology_uploader'}),
       });
 
       setErrorMessage({
-        eegFile: 'The file ' + fileName + ' must be of type .tar.gz.',
+        eegFile: t('The file', {ns: 'electrophysiology_uploader'}) +
+         ' ' + fileName + ' ' + t('must be of type .tar.gz.',
+          {ns: 'electrophysiology_uploader'}),
         candID: null,
         pscid: null,
         visit: null,
@@ -95,15 +100,17 @@ export default function UploadForm(props) {
 
     if (fileName !== fileNameConvention) {
       swal.fire({
-        title: 'Invalid filename!',
-        text: 'Filename should be of the form '
-              + '[PSCID]_[CandID]_[VisitLabel]_bids.tar.gz',
+        title: t('Invalid filename!', {ns: 'electrophysiology_uploader'}),
+        text: t('Filename should be of the form',
+          {ns: 'electrophysiology_uploader'}) +
+           ' [PSCID]_[CandID]_[VisitLabel]_bids.tar.gz',
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'electrophysiology_uploader'}),
       });
 
       setErrorMessage({
-        eegFile: 'The file does not respect name convention',
+        eegFile: t('The file does not respect name convention',
+          {ns: 'electrophysiology_uploader'}),
         candID: null,
         pscid: null,
         visit: null,
@@ -151,15 +158,17 @@ export default function UploadForm(props) {
 
         let text = '';
         if (props.autoLaunch === 'true' || props.autoLaunch === '1') {
-          text = 'Processing of this file by the EEG pipeline has started';
+          text = t('Processing of this file by the EEG pipeline has started',
+            {ns: 'electrophysiology_uploader'});
         }
         swal.fire({
-          title: 'Upload Successful!',
+          title: t('Upload Successful!',
+            {ns: 'electrophysiology_uploader'}),
           text: text,
           type: 'success',
         }).then((result) => {
           if (result.value) {
-            this.props.refreshPage();
+            props.refreshPage();
           }
         });
 
@@ -197,17 +206,20 @@ export default function UploadForm(props) {
         error = resp.error;
       }
     } else if (xhr.status == 0) {
-      error = 'Upload failed: a network error occured';
+      error = t('Upload failed: a network error occured',
+        {ns: 'electrophysiology_uploader'});
     } else if (xhr.status == 413) {
-      error = 'Please make sure files are not larger than '
-          + props.maxUploadSize;
+      error = t('Please make sure files are not larger than',
+        {ns: 'electrophysiology_uploader'})
+          + ' ' + props.maxUploadSize;
     } else {
-      error = 'Upload failed: received HTTP response code '
-          + xhr.status;
+      error = t('Upload failed: received HTTP response code',
+        {ns: 'electrophysiology_uploader'})
+          + ' ' + xhr.status;
     }
 
     swal.fire({
-      title: 'Submission error!',
+      title: t('Submission error!', {ns: 'electrophysiology_uploader'}),
       text: error,
       type: 'error',
     });
@@ -218,7 +230,8 @@ export default function UploadForm(props) {
   return (
     <div className='row'>
       <div className='col-md-7'>
-        <h3>Upload an electrophysiology recording session</h3>
+        <h3>{t('Upload an electrophysiology recording session',
+          {ns: 'electrophysiology_uploader'})}</h3>
         <br/>
         <FormElement
           name='upload_form'
@@ -226,7 +239,8 @@ export default function UploadForm(props) {
         >
           <FileElement
             name='eegFile'
-            label='File to Upload'
+            label={t('File to Upload',
+              {ns: 'electrophysiology_uploader'})}
             onUserInput={onFormChange}
             required={true}
             errorMessage={errorMessage.eegFile}
@@ -234,7 +248,7 @@ export default function UploadForm(props) {
           />
           <TextboxElement
             name='candID'
-            label='CandID'
+            label={t('DCCID', {ns: 'loris'})}
             disabled={true}
             required={false}
             errorMessage={errorMessage.candID}
@@ -242,7 +256,7 @@ export default function UploadForm(props) {
           />
           <TextboxElement
             name='pscid'
-            label='PSCID'
+            label={t('PSCID', {ns: 'loris'})}
             disabled={true}
             required={false}
             errorMessage={errorMessage.pscid}
@@ -250,21 +264,24 @@ export default function UploadForm(props) {
           />
           <TextboxElement
             name='visit'
-            label='Visit Label'
+            label={t('Visit Label', {ns: 'loris'})}
             disabled={true}
             required={false}
             errorMessage={errorMessage.visit}
             value={formData.visit}
           />
           <StaticElement
-            label='Notes'
+            label={t('Notes', {ns: 'electrophysiology_uploader'})}
             text={
               <span>
                 {props.maxUploadSize &&
-                  `File cannot exceed ${props.maxUploadSize}<br/>x`
+                  t('File cannot exceed',
+                    {ns: 'electrophysiology_uploader'}) +
+                  ` ${props.maxUploadSize}<br/>x`
                 }
-                File name must match the following convention:<br/>
-                <b>[PSCID]_[CandID]_[Visit Label]_bids.tar.gz</b>
+                {t('File name must match the following convention:',
+                  {ns: 'electrophysiology_uploader'})}<br/>
+                <b>[PSCID]_[DCCID]_[Visit Label]_bids.tar.gz</b>
               </span>
             }
           />
@@ -289,4 +306,6 @@ UploadForm.propTypes = {
   autoLaunch: PropTypes.string,
   uploadURL: PropTypes.string.isRequired,
   maxUploadSize: PropTypes.number,
+  refreshPage: PropTypes.func,
+  t: PropTypes.func,
 };

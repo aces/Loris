@@ -22,10 +22,10 @@ msgid "Electrophysiology Uploader"
 msgstr ""
 
 msgid "LORIS 26 Beta Note:"
-msgstr ""
+msgstr "LORIS 26 बीटा नोट:"
 
 msgid "Files uploaded in this module will not be viewable in the Electrophysiology Browser module. This feature is under construction for the next release. Please get in touch with the LORIS team to configure this for your project."
-msgstr ""
+msgstr "इस मॉड्यूल में अपलोड की गई फ़ाइलें Electrophysiology Browser मॉड्यूल में अभी दिखाई नहीं देंगी। यह सुविधा अगली रिलीज़ के लिए निर्माणाधीन है। कृपया अपने प्रोजेक्ट के लिए इसे कॉन्फ़िगर कराने के लिए LORIS टीम से संपर्क करें।"
 
 msgid "Upload an electrophysiology recording session"
 msgstr ""
