@@ -51,7 +51,6 @@ INSERT INTO modules (Name, Active) VALUES ('survey_accounts', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('timepoint_list', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('user_accounts', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('electrophysiology_browser', 'Y');
-INSERT INTO modules (Name, Active) VALUES ('dqt', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('electrophysiology_uploader', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('dataquery', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('schedule_module', 'Y');

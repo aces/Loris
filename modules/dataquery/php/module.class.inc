@@ -40,7 +40,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return dgettext("dataquery", "Data Query Tool (Beta)");
+        return dgettext("dataquery", "Data Query Tool");
     }
 
     /**
