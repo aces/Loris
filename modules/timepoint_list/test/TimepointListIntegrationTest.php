@@ -41,7 +41,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         '',
         '',
         '',
-	'Unknown',
+        'Unknown',
     ];
 
     /**

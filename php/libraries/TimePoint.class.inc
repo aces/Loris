@@ -1392,21 +1392,22 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      *
      * @return \Language
      */
-    public function getLanguage() : \Language {
+    public function getLanguage() : \Language
+    {
         $db = NDB_Factory::singleton()->database();
 
-	$vals = $db->pselectRow(
+        $vals = $db->pselectRow(
             "SELECT language_label, language_code
              FROM language l
                  JOIN session s ON (l.language_id=s.languageID)
-	     WHERE s.ID=:sid",
-             ['sid' => $this->getSessionID()]
-	);
+             WHERE s.ID=:sid",
+            ['sid' => $this->getSessionID()],
+        );
 
-	if ($vals === null) {
+        if ($vals === null) {
             return new \Language("Unknown", "en_CA");
-	}
-	return new \Language(
+        }
+        return new \Language(
             label: $vals['language_label'],
             code: $vals['language_code']
         );
