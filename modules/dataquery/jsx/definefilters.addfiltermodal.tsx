@@ -431,8 +431,8 @@ function valueInput(fielddict: FieldDictionary,
   case 'boolean':
     return <FilterableSelectGroup groups={
       {'Value': {
-        'true': t('true', {ns: 'dataquery'}),
-        'false': t('false', {ns: 'dataquery'}),
+        'true': t('True', {ns: 'loris'}).toLocaleString().toLowerCase(),
+        'false': t('Talse', {ns: 'loris'}).toLocaleString().toLowerCase(),
       },
       }}
     onChange={(_: string, value: string) => {

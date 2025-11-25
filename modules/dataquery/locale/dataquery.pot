@@ -279,12 +279,6 @@ msgstr ""
 msgid "number of"
 msgstr ""
 
-msgid "true"
-msgstr ""
-
-msgid "false"
-msgstr ""
-
 msgid "Select a value"
 msgstr ""
 
