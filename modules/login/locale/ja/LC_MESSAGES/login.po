@@ -80,6 +80,9 @@ msgstr "アカウントのリクエストが正常に受信されました。"
 msgid "Please contact your project administrator to activate this account."
 msgstr "このアカウントを有効にするには、プロジェクト管理者に問い合わせてください。"
 
+msgid "View {{policy}}"
+msgstr "{{policy}}を表示"
+
 msgid "{{title}} not accepted"
 msgstr "{{title}}は受け入れられませんでした"
 

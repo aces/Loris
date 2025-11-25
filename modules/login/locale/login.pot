@@ -79,6 +79,9 @@ msgstr ""
 msgid "Please contact your project administrator to activate this account."
 msgstr ""
 
+msgid "View {{policy}}"
+msgstr ""
+
 msgid "{{title}} not accepted"
 msgstr ""
 

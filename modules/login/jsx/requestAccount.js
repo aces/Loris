@@ -180,7 +180,10 @@ class RequestAccount extends Component {
         onClickPolicy={this.state.policy}
         popUpPolicy={this.state.policy}
         buttonStyle={{marginTop: '10px'}}
-        buttonText={'View ' + this.state.policy.HeaderButtonText}
+        buttonText={this.props.t(
+          'View {{policy}}',
+          {ns: 'login', policy: this.state.policy.HeaderButtonText}
+        )}
         anon={true}
         callback={() => {
           this.setState({
