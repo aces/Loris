@@ -82,8 +82,14 @@ class RequestAccount extends Component {
     if (this.props.data.policy && !this.state.form.viewedPolicy) {
       let title = this.props.data.policy.SwalTitle;
       swal.fire({
-        title: title + ' not accepted',
-        text: 'You must accept the ' + title + ' before requesting an account.',
+        title: this.props.t(
+          '{{title}} not accepted',
+          {ns: 'login', title: title},
+        ),
+        text: this.props.t(
+          'You must accept the {{title}} before requesting an account.',
+          {ns: 'login', title: title},
+        ),
         icon: 'error',
       });
       e.stopPropagation();

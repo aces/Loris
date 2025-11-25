@@ -80,6 +80,12 @@ msgstr "アカウントのリクエストが正常に受信されました。"
 msgid "Please contact your project administrator to activate this account."
 msgstr "このアカウントを有効にするには、プロジェクト管理者に問い合わせてください。"
 
+msgid "{{title}} not accepted"
+msgstr "{{title}}は受け入れられませんでした"
+
+msgid "You must accept the {{title}} before requesting an account."
+msgstr "アカウントをリクエストする前に {{title}} に同意する必要があります。"
+
 # Hack for the login page.
 # These strings come from the database and are
 # the defaults in the login_summary_statistics table

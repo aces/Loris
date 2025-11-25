@@ -79,6 +79,12 @@ msgstr ""
 msgid "Please contact your project administrator to activate this account."
 msgstr ""
 
+msgid "{{title}} not accepted"
+msgstr ""
+
+msgid "You must accept the {{title}} before requesting an account."
+msgstr ""
+
 # Hack for the login page.
 # These strings come from the database and are
 # the defaults in the login_summary_statistics table
