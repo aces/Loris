@@ -175,6 +175,7 @@ locales:
 	msgfmt -o modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po
 	msgfmt -o modules/module_manager/locale/hi/LC_MESSAGES/module_manager.mo modules/module_manager/locale/hi/LC_MESSAGES/module_manager.po
 	npx i18next-conv -l hi -s modules/module_manager/locale/hi/LC_MESSAGES/module_manager.po -t modules/module_manager/locale/hi/LC_MESSAGES/module_manager.json
+	npx i18next-conv -l ja -s modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po -t modules/module_manager/locale/ja/LC_MESSAGES/module_manager.json
 	msgfmt -o modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.po
 	msgfmt -o modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.mo modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.po
 	npx i18next-conv -l ja -s modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.po -t modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.json --compatibilityJSON v4

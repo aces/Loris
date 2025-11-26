@@ -8,6 +8,7 @@ import {SelectElement} from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/module_manager.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/module_manager.json';
 
 /**
  * Module Manager React Component
@@ -99,7 +100,7 @@ class ModuleManagerIndex extends Component {
       if (response.status != 205) {
         swal.fire(
           t('Error!', {ns: 'loris'}),
-          t('Could not update', {ns: 'module_manager'}) + ' ' + name + '.',
+          t('Could not update {{name}}.', {ns: 'module_manager', name: name}),
           'error'
         );
       } else {
@@ -107,8 +108,7 @@ class ModuleManagerIndex extends Component {
         if (success === true) {
           swal.fire({
             title: t('Success!', {ns: 'loris'}),
-            text: t('Updated', {ns: 'loris'}) + ' ' + name + ' ' +
-                  t('status!', {ns: 'module_manager'}) + ' ' +
+            text: t('Updated {{name}} status!', {ns: 'module_manager', name: name}) +
                   t('To apply changes the interface must be reloaded. Proceed?',
                     {ns: 'module_manager'}),
             type: 'success',
@@ -126,7 +126,7 @@ class ModuleManagerIndex extends Component {
           // a module was toggled that isn't in the table.
           swal.fire(
             t('Error!', {ns: 'loris'}),
-            t('Could not find module', {ns: 'module_manager'}) + ' ' + id + '.',
+            t('Could not find module {{id}}.', {ns: 'module_manager', id: id}),
             'error'
           );
         }
@@ -253,6 +253,7 @@ const TranslatedModuleManagerIndex = withTranslation(
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'module_manager', hiStrings);
+  i18n.addResourceBundle('ja', 'module_manager', jaStrings);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
