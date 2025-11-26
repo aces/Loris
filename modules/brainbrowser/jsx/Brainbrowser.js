@@ -114,5 +114,6 @@ let RBrainBrowser = React.createFactory(TranslatedBrainBrowser);
 
 window.BrainBrowser = TranslatedBrainBrowser;
 window.RBrainBrowser = RBrainBrowser;
+window.hiStrings = hiStrings;
 
 export default TranslatedBrainBrowser;

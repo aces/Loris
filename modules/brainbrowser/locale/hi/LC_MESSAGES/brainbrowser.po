@@ -62,3 +62,16 @@ msgstr "900 पिक्सेल"
 
 msgid "1000 Pixels"
 msgstr "1000 पिक्सेल"
+
+msgid "Overlay"
+msgstr "ओवरले"
+
+msgid "World Coordinates"
+msgstr "वर्ल्ड कोऑर्डिनेट"
+
+msgid "Threshold"
+msgstr "थ्रेशहोल्ड"
+
+msgid "Color Map"
+msgstr "कलर मैप"
+

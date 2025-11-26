@@ -73,8 +73,8 @@
       <div class="panel-body">
         <div class="volume-viewer-controls volume-controls">
           <div class="coords">
-            <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
-              World Coordinates
+            <div data-t="World Coordinates" class="control-heading" id="world-coordinates-heading-{{VOLID}}">
+                 World Coordinates
             </div>
             <div class="world-coords" data-volume-id="{{VOLID}}">
               X<input id="world-x-{{VOLID}}" class="control-inputs">
@@ -85,7 +85,7 @@
             <hr/>
 
             <div id="color-map-{{VOLID}}">
-              <span class="control-heading" id="color-map-heading-{{VOLID}}">
+              <span data-t="Color Map" class="control-heading" id="color-map-heading-{{VOLID}}">
                   Color Map
               </span>
             </div>
@@ -93,7 +93,7 @@
             <hr/>
 
             <div class="threshold-div" data-volume-id="{{VOLID}}">
-              <div class="control-heading">
+              <div class="control-heading" data-t="Threshold">
                 Threshold
               </div>
               <div class="thresh-inputs">
@@ -184,3 +184,38 @@
     document.getElementById('brainbrowserPage')
   ).render(RBrainBrowser());
 </script>
+
+<script>
+(function() {
+
+  const lang = loris?.user?.langpref ?? "en";
+  if (['en', 'en_CA', 'en_ca'].includes(lang)) {
+    return;
+  } 
+  const map = {
+    hi: "hiStrings",
+    //jp: "jpStrings" if jp translate is done 
+  };
+  const key = map[lang];
+  const t = window[key];
+  const obs = new MutationObserver(() => {
+    // Check only once BrainBrowser renders UI
+    if (document.body.innerText.includes("World Coordinates")) {
+
+    document.querySelectorAll("[data-t]").forEach(el => {
+    const en = el.getAttribute("data-t");
+    const translated = t[en];
+
+    if (translated) {
+      el.textContent = translated;
+    }
+  });
+      obs.disconnect();
+    }
+  });
+
+  obs.observe(document.body, { childList: true, subtree: true });
+
+})();
+</script>
+
