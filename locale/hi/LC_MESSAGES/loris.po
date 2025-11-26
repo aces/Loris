@@ -521,24 +521,3 @@ msgstr "लोड हो रहा है..."
 
 msgid "Permission denied"
 msgstr "अनुमति अस्वीकृत"
-
-msgid "Are You Sure?"
-msgstr "क्या आप सुनिश्चित हैं?"
-
-msgid "Are you sure?"
-msgstr "क्या आप सुनिश्चित हैं?"
-
-msgid "Yes, I am sure!"
-msgstr "हाँ, मैं सुनिश्चित हूँ!"
-
-msgid "No, cancel it!"
-msgstr "नहीं, रद्द करें!"
-
-msgid "Leaving the form will result in the loss of any information entered."
-msgstr "फ़ॉर्म छोड़ने से दर्ज की गई सभी जानकारी खो जाएगी।"
-
-msgid "Proceed"
-msgstr "आगे बढ़ें"
-
-msgid "Saving"
-msgstr "सहेजा जा रहा है"
