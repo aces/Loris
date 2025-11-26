@@ -123,6 +123,9 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
+msgid "Browse"
+msgstr "ブラウズ"
+
 msgid "Create"
 msgstr "作成する"
 

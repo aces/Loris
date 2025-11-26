@@ -21,22 +21,10 @@ msgstr ""
 msgid "Publications"
 msgstr ""
 
-msgid "Loading"
-msgstr ""
-
-msgid "Browse"
-msgstr ""
-
 msgid "File to upload"
 msgstr ""
 
-msgid "Upload"
-msgstr ""
-
 msgid "Are you sure?"
-msgstr ""
-
-msgid "Cancel"
 msgstr ""
 
 msgid "Submit"
@@ -123,9 +111,6 @@ msgstr ""
 msgid "Reason for rejection"
 msgstr ""
 
-msgid "Pending"
-msgstr ""
-
 msgid "Approved"
 msgstr ""
 
@@ -148,9 +133,6 @@ msgid "Project Proposal Creator"
 msgstr ""
 
 msgid "Published"
-msgstr ""
-
-msgid "In Progress"
 msgstr ""
 
 msgid "View Project"
