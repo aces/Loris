@@ -142,6 +142,9 @@ msgstr ""
 msgid "Selection Filter"
 msgstr ""
 
+msgid "Filters"
+msgstr ""
+
 msgid "Show Filters"
 msgstr ""
 
@@ -149,6 +152,9 @@ msgid "Hide Filters"
 msgstr ""
 
 msgid "Clear Filters"
+msgstr ""
+
+msgid "Load Filter Preset"
 msgstr ""
 
 msgid "Show Advanced Filters"

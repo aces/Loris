@@ -139,6 +139,9 @@ msgstr "戻る"
 msgid "Selection Filter"
 msgstr "'選択フィルター"
 
+msgid "Filters"
+msgstr "フィルター"
+
 msgid "Show Filters"
 msgstr "フィルターを表示"
 
@@ -147,6 +150,9 @@ msgstr "フィルターを非表示"
 
 msgid "Clear Filters"
 msgstr "フィルターをクリア"
+
+msgid "Load Filter Preset"
+msgstr "フィルタープリセットを読み込む"
 
 # Common swal labels
 msgid "OK"
