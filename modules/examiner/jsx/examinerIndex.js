@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 
+import hiStrings from
+  '../locale/hi/LC_MESSAGES/examiner.json';
+
 import swal from 'sweetalert2';
 import Modal from 'Modal';
 import Loader from 'Loader';
@@ -102,6 +105,7 @@ class ExaminerIndex extends Component {
    * @param {event} e - event of the form
    */
   handleSubmit(e) {
+    const {t} = this.props;
     let formData = this.state.formData;
     let formObject = new FormData();
     for (let key in formData) {
@@ -119,7 +123,11 @@ class ExaminerIndex extends Component {
     })
       .then((resp) => {
         if (resp.ok && resp.status === 200) {
-          swal.fire('Success!', 'Examiner added.', 'success').then((result) => {
+          swal.fire(
+            t('Success!', {ns: 'loris'}),
+            t('Examiner added.', {ns: 'examiner'}),
+            'success'
+          ).then((result) => {
             if (result.value) {
               this.closeModal();
               this.fetchData();
@@ -127,7 +135,11 @@ class ExaminerIndex extends Component {
           });
         } else {
           resp.json().then((message) => {
-            swal.fire('Error!', message.error, 'error');
+            swal.fire(
+              t('Error!', {ns: 'loris'}),
+              message.error,
+              'error'
+            );
           });
         }
       })
@@ -159,14 +171,14 @@ class ExaminerIndex extends Component {
       break;
     case 'Radiologist':
       if (row.Radiologist === '1') {
-        result = <td>Yes</td>;
+        result = <td>{this.props.t('Yes', {ns: 'loris'})}</td>;
       } else if (row.Radiologist === '0') {
-        result = <td>No</td>;
+        result = <td>{this.props.t('No', {ns: 'loris'})}</td>;
       }
       break;
     case 'Certification':
       if (row.Certification === null) {
-        result = <td>None</td>;
+        result = <td>{this.props.t('None', {ns: 'loris'})}</td>;
       }
       break;
     case 'Site':
@@ -181,7 +193,10 @@ class ExaminerIndex extends Component {
       );
       if (cell.length === 0) {
         result = (
-          <td>This user has no site affiliations</td>
+          <td>{this.props.t(
+            'This user has no site affiliations',
+            {ns: 'examiner'}
+          )}</td>
         );
       }
       break;
@@ -212,9 +227,10 @@ class ExaminerIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   renderAddExaminerForm() {
+    const {t} = this.props;
     return (
       <Modal
-        title='Add Examiner'
+        title={t('Add Examiner', {ns: 'examiner'})}
         onClose={this.closeModal}
         show={this.state.showModal}
       >
@@ -227,7 +243,7 @@ class ExaminerIndex extends Component {
         >
           <TextboxElement
             name="addName"
-            label="Name"
+            label={t('Name', {ns: 'examiner'})}
             value={this.state.formData.addName}
             required={true}
             onUserInput={this.setFormData}
@@ -235,14 +251,14 @@ class ExaminerIndex extends Component {
           <SelectElement
             name="addSite"
             options={this.state.data.fieldOptions.sites}
-            label="Site"
+            label={t('Site', {ns: 'loris', count: 1})}
             value={this.state.formData.addSite}
             required={true}
             onUserInput={this.setFormData}
           />
           <CheckboxElement
             name="addRadiologist"
-            label="Radiologist"
+            label={t('Radiologist', {ns: 'examiner'})}
             id="checkRadiologist"
             value={this.state.formData.addRadiologist}
             onUserInput={this.setFormData}
@@ -251,7 +267,7 @@ class ExaminerIndex extends Component {
             name="fire_away"
             label={
               <div>
-                <span className="glyphicon glyphicon-plus"/> Add
+                <span className="glyphicon glyphicon-plus"/> {t('Add', {ns: 'examiner'})}
               </div>
             }
             type="submit"
@@ -268,10 +284,15 @@ class ExaminerIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return (
+        <h3>
+          {t('An error occured while loading the page.', {ns: 'loris'})}
+        </h3>
+      );
     }
 
     // Waiting for async data to load
@@ -285,27 +306,34 @@ class ExaminerIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'Examiner', show: true, filter: {
+      {label: t('Examiner', {ns: 'examiner'}), show: true, filter: {
         name: 'examiner',
         type: 'text',
       }},
-      {label: 'Email', show: true},
-      {label: 'Site', show: true, filter: {
+      {label: t('Email', {ns: 'loris'}), show: true},
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
-      {label: 'ID', show: false},
-      {label: 'Radiologist', show: true, filter: {
+      {label: t('ID', {ns: 'examiner'}), show: false},
+      {label: t('Radiologist', {ns: 'examiner'}), show: true, filter: {
         name: 'radiologist',
         type: 'select',
-        options: options.radiologists,
+        options: {
+          '1': t('Yes', {ns: 'loris'}),
+          '0': t('No', {ns: 'loris'}),
+        },
       }},
-      {label: 'Certification',
+      {label: t('Certification', {ns: 'examiner'}),
         show: this.state.data.fieldOptions.useCertification},
     ];
     const actions = [
-      {name: 'addExaminer', label: 'Add Examiner', action: this.openModal},
+      {
+        name: 'addExaminer',
+        label: t('Add Examiner', {ns: 'examiner'}),
+        action: this.openModal,
+      },
     ];
 
     return (
@@ -313,7 +341,7 @@ class ExaminerIndex extends Component {
         {this.renderAddExaminerForm()}
         <FilterableDataTable
           name='examiner'
-          title='Examiner'
+          title={t('Examiner', {ns: 'examiner'})}
           data={this.state.data.Data}
           fields={fields}
           getFormattedCell={this.formatColumn}
@@ -331,6 +359,7 @@ ExaminerIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'examiner', hiStrings);
   i18n.addResourceBundle('ja', 'examiner', {});
   const Index = withTranslation(
     ['examiner', 'loris']
