@@ -142,6 +142,9 @@ msgstr ""
 msgid "Selection Filter"
 msgstr ""
 
+msgid "Filters"
+msgstr ""
+
 msgid "Show Filters"
 msgstr ""
 

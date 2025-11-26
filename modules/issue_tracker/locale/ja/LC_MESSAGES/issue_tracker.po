@@ -170,6 +170,12 @@ msgstr "コメントと履歴"
 msgid "Last Updated By"
 msgstr "最終更新者"
 
+msgid "Created"
+msgstr "作成日"
+
+msgid "Last Updated"
+msgstr "最終更新日"
+
 msgid "({{count}} issue)"
 msgid_plural "({{count}} issues)"
 msgstr[0] "（{{count}}件のコメント）"
@@ -178,10 +184,28 @@ msgid "{{count}} issues displayed of {{total}}"
 msgstr "{{count}} 個のうち {{total}} 個が表示されています"
 
 msgid "Maximum issues per page: {{total}}"
-msgstr "Maximum issues per page: {{total}}"
+msgstr "ページあたりの最大発行数: {{total}}"
+
+msgid "Failed to fetch issues. Please try again later."
+msgstr "問題を取得できませんでした。しばらくしてからもう一度お試しください。"
+
+msgid "No issues match the selected filters."
+msgstr "選択したフィルターに一致する問題はありません。"
 
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr "添付ファイル「{{fileName}}」の削除リクエストを確認してください。"
+
+msgid "Title cannot be empty"
+msgstr "タイトルは空欄にできません"
+
+msgid "No changes were made"
+msgstr "変更は行われませんでした。"
+
+msgid "Issue updated successfully"
+msgstr "問題が正常に更新されました"
+
+msgid "Information"
+msgstr "情報"
 
 msgid "Updated by <0>{{user}}</0> on {{date}}"
 msgstr "<0>{{user}}</0>によって{{date}}に更新されました"
@@ -194,4 +218,49 @@ msgstr "<0>{{user}}</0>が{{minutes}}分前に更新しました"
 
 msgid "Updated by <0>{{user}}</0> {{hours}} hours ago"
 msgstr "<0>{{user}}</0>が{{hours}}時間前に更新しました"
+
+msgid "New"
+msgstr "新しい"
+
+msgid "Acknowledged"
+msgstr "承認済み"
+
+msgid "Feedback"
+msgstr "フィードバック"
+
+msgid "Assigned"
+msgstr "割り当て済み"
+
+msgid "Resolved"
+msgstr "解決済み"
+
+msgid "Closed"
+msgstr "閉鎖"
+
+msgid "Behavioural Battery"
+msgstr "行動バッテリー"
+
+msgid "Behavioural Instruments"
+msgstr "行動測定機器"
+
+msgid "Data Entry"
+msgstr "データ入力"
+
+msgid "Examiners"
+msgstr "審査官"
+
+msgid "Imaging"
+msgstr "イメージング"
+
+msgid "Other"
+msgstr "他の"
+
+msgid "Technical Issue"
+msgstr "技術的な問題"
+
+msgid "User Accounts"
+msgstr "ユーザーアカウント"
+
+msgid "Last 3 Comments"
+msgstr "最後の3つのコメント"
 

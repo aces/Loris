@@ -250,11 +250,11 @@ class Edit extends \NDB_Page implements ETagCalculator
         $issueData['comment'] = null;
 
         $statuses = [
-            'new'          => 'New',
-            'acknowledged' => 'Acknowledged',
-            'assigned'     => 'Assigned',
-            'feedback'     => 'Feedback',
-            'resolved'     => 'Resolved',
+            'new'          => dgettext('issue_tracker', 'New'),
+            'acknowledged' => dgettext('issue_tracker', 'Acknowledged'),
+            'assigned'     => dgettext('issue_tracker', 'Assigned'),
+            'feedback'     => dgettext('issue_tracker', 'Feedback'),
+            'resolved'     => dgettext('issue_tracker', 'Resolved'),
         ];
 
         // Give "close" option if user has site close permissions and the issue
@@ -270,7 +270,7 @@ class Edit extends \NDB_Page implements ETagCalculator
                 || ($user->hasPermission('issue_tracker_own_issue')
                 && $isOwnIssue)
             ) {
-                $statuses['closed'] = 'Closed';
+                $statuses['closed'] = dgettext('issue_tracker', 'Closed');
             }
         }
 

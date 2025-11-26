@@ -136,6 +136,9 @@ msgstr "戻る"
 msgid "Selection Filter"
 msgstr "'選択フィルター"
 
+msgid "Filters"
+msgstr "フィルター"
+
 msgid "Show Filters"
 msgstr "フィルターを表示"
 
