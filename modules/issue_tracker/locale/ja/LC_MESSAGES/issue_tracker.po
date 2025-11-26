@@ -24,6 +24,10 @@ msgstr "問題トラッカー"
 
 # Google Translate is giving me completely different translations for
 # singular and plural. Might be worth investigating.
+
+msgid "Issue"
+msgstr "問題"
+
 msgid "Your assigned issue"
 msgid_plural "Your assigned issues"
 msgstr[0] "担当する問題"
@@ -31,6 +35,145 @@ msgstr[0] "担当する問題"
 msgid "Open Issues"
 msgstr "未解決の問題"
 
-msgid "({{count}} comment)"
-msgid_plural "({{count}} comments)"
+msgid "Issue ID"
+msgstr "問題識別子"
+
+msgid "Reporter"
+msgstr "記者"
+
+msgid "Assignee"
+msgstr "譲受人"
+
+msgid "Priority"
+msgstr "優先度"
+
+msgid "Title"
+msgstr "タイトル"
+
+msgid "Category"
+msgstr "カテゴリ"
+
+msgid "Date Created"
+msgstr "作成日"
+
+msgid "Last Update"
+msgstr "最終更新日"
+
+msgid "SessionID"
+msgstr "SessionID"
+
+msgid "Watching"
+msgstr "ウォッチン"
+
+msgid "Normal"
+msgstr "普通"
+
+msgid "High"
+msgstr "高い"
+
+msgid "Urgent"
+msgstr "緊急"
+
+msgid "Immediate"
+msgstr "すぐに"
+
+msgid "Low"
+msgstr "低い"
+
+msgid "All Sites"
+msgstr "すべてのサイト"
+
+msgid "All Issues"
+msgstr "すべての問題"
+
+msgid "Active Issues"
+msgstr "進行中の問題"
+
+msgid "Closed Issues"
+msgstr "解決済みの問題"
+
+msgid "My Issues"
+msgstr "私の問題"
+
+msgid "New Issue"
+msgstr "新刊"
+
+msgid "Browse Issues"
+msgstr "問題を閲覧する"
+
+msgid "Batch Edit"
+msgstr "一括編集"
+
+msgid "Add Comment"
+msgstr "コメントを追加"
+
+msgid "Create New Issue"
+msgstr "新しい問題を作成"
+
+msgid "Never!"
+msgstr "一度もない！"
+
+msgid "No-one!"
+msgstr "誰も！"
+
+msgid "Sometime Soon!"
+msgstr "近いうちに！"
+
+msgid "Submit Issue"
+msgstr "問題を送信"
+
+msgid "Edit Issue"
+msgstr "問題を編集"
+
+msgid "Update Issue"
+msgstr "アップデートの問題"
+
+msgid "Add Attachment"
+msgstr "添付ファイルを追加"
+
+msgid "Attachment for issue"
+msgstr "問題の添付ファイル"
+
+msgid "Attachment for Issue"
+msgstr "問題の添付ファイル"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Watching?"
+msgstr "見ている"
+
+msgid "Add others to watching?"
+msgstr "他の人をウォッチリストに追加する"
+
+msgid "New Comment"
+msgstr "新しいコメント"
+
+msgid "This field is required"
+msgstr "この項目は必須です"
+
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr "2 秒以内にメイン ページにリダイレクトされます。"
+
+msgid "Failed to submit issue :("
+msgstr "問題の送信に失敗しました :("
+
+msgid "Issue updated!"
+msgstr "号が更新されました！"
+
+msgid "Issue created!"
+msgstr "問題が作成されました!"
+
+msgid "({{count}} issue)"
+msgid_plural "({{count}} issues)"
 msgstr[0] "（{{count}}件のコメント）"
+
+msgid "{{count}} issues displayed of {{total}}"
+msgstr "{{count}} 個のうち {{total}} 個が表示されています"
+
+msgid "Maximum issues per page: {{count}}"
+msgstr "Maximum issues per page: {{count}}"
+
+msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
+msgstr "添付ファイル「{{fileName}}」の削除リクエストを確認してください。"
+
