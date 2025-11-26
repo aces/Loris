@@ -162,7 +162,6 @@ type checkboxProps = {
     required?: boolean
     errorMessage?: string
     elementClass?: string
-    style?: object
     onUserInput?: (name: string, value: any) => void
 }
 /**
