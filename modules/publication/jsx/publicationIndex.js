@@ -9,6 +9,8 @@ import StaticDataTable from 'jsx/StaticDataTable';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/publication.json';
+import enStrings from '../locale/en/LC_MESSAGES/publication.json';
 import FilterableDataTable from 'FilterableDataTable';
 
 /**
@@ -93,7 +95,7 @@ class PublicationIndex extends React.Component {
       );
     }
 
-    let tabList = [{id: 'browse', label: t('Browse', {ns: 'publication'})}];
+    let tabList = [{id: 'browse', label: t('Browse', {ns: 'loris'})}];
     let proposalTab;
 
     if (loris.userHasPermission('publication_propose')) {
@@ -250,6 +252,8 @@ PublicationIndex.propTypes = {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'publication', hiStrings);
+  i18n.addResourceBundle('ja', 'publication', jaStrings);
+  i18n.addResourceBundle('en', 'publication', enStrings);
 
   const PubIndex = withTranslation(['publication'])(PublicationIndex);
 
