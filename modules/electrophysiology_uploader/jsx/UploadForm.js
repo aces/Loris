@@ -83,7 +83,7 @@ export default function UploadForm(props) {
         text: t('Filename extension does not match .tar.gz ',
           {ns: 'electrophysiology_uploader'}),
         type: 'error',
-        confirmButtonText: t('OK', {ns: 'electrophysiology_uploader'}),
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
 
       setErrorMessage({
@@ -106,7 +106,7 @@ export default function UploadForm(props) {
           {ns: 'electrophysiology_uploader'}) +
            ' [PSCID]_[CandID]_[VisitLabel]_bids.tar.gz',
         type: 'error',
-        confirmButtonText: t('OK', {ns: 'electrophysiology_uploader'}),
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
 
       setErrorMessage({
