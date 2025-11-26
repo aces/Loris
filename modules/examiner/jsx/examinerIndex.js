@@ -267,7 +267,9 @@ class ExaminerIndex extends Component {
             name="fire_away"
             label={
               <div>
-                <span className="glyphicon glyphicon-plus"/> {t('Add', {ns: 'examiner'})}
+                <span className="glyphicon glyphicon-plus"/>
+                {' '}
+                {t('Add', {ns: 'examiner'})}
               </div>
             }
             type="submit"
@@ -355,6 +357,7 @@ class ExaminerIndex extends Component {
 ExaminerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
   submitURL: PropTypes.string,
 };
 
