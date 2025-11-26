@@ -413,8 +413,8 @@ function DefineFields(props: {
 
   return (
     <div>
-      <div style={{display: 'flex', flexWrap: 'nowrap'}}>
-        <div style={{width: '80vw', padding: '1em'}}>
+      <div style={{display: 'flex', gap: '1rem', width: '100%'}}>
+        <div style={{width: 'calc(70% - 1rem/2)', padding: '1em'}}>
           <h1>Available Fields</h1>
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
@@ -423,27 +423,29 @@ function DefineFields(props: {
           {fieldList}
         </div>
         <div style={{
-          width: '20vw',
-          padding: '1em',
+          width: 'calc(30% - 1rem/2)',
           position: 'sticky',
           top: 0,
-          maxHeight: '90vh',
-          overflow: 'auto',
         }}>
-          <div>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              marginBottom: '1em',
-            }}>
-              <h2>Selected Fields</h2>
-              <div>
-                <button type="button" className="btn btn-primary"
-                  style={{marginBottom: 7}}
-                  onClick={props.onClearAll}>Clear</button>
-              </div>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            marginBottom: '1em',
+            flexWrap: 'wrap',
+          }}>
+            <h2>Field Selection</h2>
+            <div>
+              <button type="button" className="btn btn-primary"
+                style={{marginBottom: 7}}
+                onClick={props.onClearAll}>Clear</button>
             </div>
+          </div>
+          <div style={{
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            maxHeight: '80vh',
+          }}>
             <SelectedFieldList
               selected={props.selected}
               removeField={props.removeField}
@@ -527,6 +529,7 @@ function SelectedFieldList(props: {
     const style: React.CSSProperties = {display: 'flex',
       flexWrap: 'nowrap' as const,
       cursor: 'grab',
+      gap: '4px',
       justifyContent: 'space-between'};
     if (removingIdx === i) {
       style.textDecoration = 'line-through' as const;
@@ -543,6 +546,7 @@ function SelectedFieldList(props: {
         fontStyle: 'italic',
         color: '#aaa',
         fontSize: '0.7em',
+        wordBreak: 'break-word' as const,
         marginLeft: 20,
       };
       fieldvisits = <dd style={style}>{item.visits.join(', ')}</dd>;
@@ -572,13 +576,17 @@ function SelectedFieldList(props: {
       onDrop={() => moveSelected()}
     >
       <div>
-        <dt>{item.field}</dt>
-        <dd style={{marginLeft: 20}}>{getDictionaryDescription(
-          item.module,
-          item.category,
-          item.field,
-          props.fulldictionary,
-        )}</dd>
+        <dt style={{wordBreak: 'break-word'}}>{item.field}</dt>
+        <dd style={{
+          marginLeft: 20,
+          wordBreak: 'break-word',
+        }}>
+          {getDictionaryDescription(
+            item.module,
+            item.category,
+            item.field,
+            props.fulldictionary
+          )}</dd>
         {fieldvisits}
       </div>
       <div
