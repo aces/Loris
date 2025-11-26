@@ -6,6 +6,7 @@ import {
   ButtonElement,
   FormElement,
 } from 'jsx/Form';
+import {useTranslation} from 'react-i18next';
 
 export type ModalProps = PropsWithChildren<{
   throwWarning?: boolean;
@@ -39,7 +40,7 @@ const Modal = ({
 }: ModalProps) => {
   const [loading, setLoading] = useState(false); // Tracks loading during submit
   const [success, setSuccess] = useState(false); // Tracks success after submit
-  const {t} = useTranslation('loris');
+  const {t} = useTranslation('loris'); // Initialize translation
 
   /**
    * Handles modal close event. Shows a confirmation if `throwWarning` is true.
@@ -92,7 +93,7 @@ const Modal = ({
    */
   const submitButton = () => {
     if (onSubmit && !(loading || success)) { // Show button if conditions met
-      return <div style={submitStyle}><ButtonElement/></div>;
+      return <div style={submitStyle}><ButtonElement label={t('Save')}/></div>;
     }
   };
 

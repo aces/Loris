@@ -85,6 +85,8 @@ locales:
 	msgfmt -o modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po
 	msgfmt -o modules/api_docs/locale/ja/LC_MESSAGES/api_docs.mo modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po
 	msgfmt -o modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po
+	msgfmt -o modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po
+	npx i18next-conv -l hi -s modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po -t modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.json --compatibilityJSON v4
 	msgfmt -o modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po
 	msgfmt -o modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po
 	npx i18next-conv -l hi -s modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po -t modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.json
@@ -164,6 +166,7 @@ locales:
 	npx i18next-conv -l hi -s modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.json --compatibilityJSON v4
 	npx i18next-conv -l ja -s modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po -t modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.json --compatibilityJSON v4
 	msgfmt -o modules/login/locale/ja/LC_MESSAGES/login.mo modules/login/locale/ja/LC_MESSAGES/login.po
+	npx i18next-conv -l ja -s modules/login/locale/ja/LC_MESSAGES/login.po -t modules/login/locale/ja/LC_MESSAGES/login.json --compatibilityJSON v4
 	msgfmt -o modules/media/locale/es/LC_MESSAGES/media.mo modules/media/locale/es/LC_MESSAGES/media.po
 	msgfmt -o modules/media/locale/fr/LC_MESSAGES/media.mo modules/media/locale/fr/LC_MESSAGES/media.po
 	msgfmt -o modules/media/locale/ja/LC_MESSAGES/media.mo modules/media/locale/ja/LC_MESSAGES/media.po
@@ -227,6 +230,7 @@ instrument_builder: modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_
 	target=instrument_builder npm run compile
 
 login: modules/login/locale/ja/LC_MESSAGES/login.mo
+	npx i18next-conv -l ja -s modules/login/locale/ja/LC_MESSAGES/login.po -t modules/login/locale/ja/LC_MESSAGES/login.json --compatibilityJSON v4
 	target=login npm run compile
 
 module_manager: modules/module_manager/locale/ja/LC_MESSAGES/module_manager.mo modules/module_manager/locale/hi/LC_MESSAGES/module_manager.mo
