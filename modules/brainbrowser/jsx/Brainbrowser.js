@@ -14,7 +14,10 @@ import hiStrings from '../locale/hi/LC_MESSAGES/brainbrowser.json';
  * @version 1.0.0
  */
 class BrainBrowser extends Component {
-  // ... (Constructor and ComponentDidMount remain the same) ...
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -24,6 +27,9 @@ class BrainBrowser extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */	
   componentDidMount() {
     let modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
     if (!modulePrefs) {
@@ -37,7 +43,11 @@ class BrainBrowser extends Component {
     this.setState({panelSize});
     this.modulePrefs = modulePrefs;
   }
-  
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */  
   handleChange(e) {
     const panelSize = e.target.value || this.state.defaultPanelSize;
     this.modulePrefs[loris.TestName].panelSize = panelSize;
