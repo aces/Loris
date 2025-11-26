@@ -12,6 +12,8 @@ import {ButtonElement, CheckboxElement, TextboxElement} from 'jsx/Form';
 import {APIQueryField} from './types';
 import {FullDictionary} from './types';
 import {FlattenedField, FlattenedQuery, VisitOption} from './types';
+import ReplayIcon from './ReplayIcon';
+import ShareIconA from './ShareIconA';
 /**
  * Return the welcome tab for the DQT
  *
@@ -1007,9 +1009,15 @@ function LoadIcon(props: {
 }) {
   return <span onClick={props.onClick}
     title="Reload query"
-    style={{cursor: 'pointer'}}
+    style={{
+      cursor: 'pointer',
+      textAlign: 'center',
+      verticalAlign: 'text-top',
+      width: '35px',
+      height: '28px',
+    }}
     className="fa-stack">
-    <i className="fas fa-play fa-stack-1x"></i>
+    <ReplayIcon />
   </span>;
 }
 
@@ -1028,11 +1036,16 @@ function ShareIcon(props: {
     isShared?: boolean,
 }) {
   return <span className="fa-stack"
-    style={{cursor: 'pointer'}}
+    style={{
+      cursor: 'pointer',
+      textAlign: 'center',
+      verticalAlign: 'text-top',
+      width: '35px',
+      height: '28px',
+    }}
     title={props.title}
     onClick={props.onClick}>
-    <i style={props.isShared ? {color: 'blue'} : {}}
-      className="fas fa-share fa-stack-1x" />
+    <ShareIconA />
   </span>;
 }
 
