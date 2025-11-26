@@ -621,17 +621,13 @@ function SelectedFieldList(props: {
       onDrop={() => moveSelected()}
     >
       <div>
-        <dt style={{wordBreak: 'break-word'}}>{item.field}</dt>
-        <dd style={{
-          marginLeft: 20,
-          wordBreak: 'break-word',
-        }}>
-          {getDictionaryDescription(
-            item.module,
-            item.category,
-            item.field,
-            props.fulldictionary
-          )}</dd>
+        <dt>{item.field}</dt>
+        <dd style={{marginLeft: 20}}>{getDictionaryDescription(
+          item.module,
+          item.category,
+          item.field,
+          props.fulldictionary,
+        )}</dd>
         {fieldvisits}
       </div>
       <div
@@ -670,4 +666,3 @@ function SelectedFieldList(props: {
 
 
 export default DefineFields;
-
