@@ -152,8 +152,10 @@ function QueryField(props: {
         selectedVisits,
       )}>
       <dl>
-        <dt style={{fontSize: '18px'}}>{item}</dt>
-        <dd>{value.description} {download}</dd>
+        <dt style={{fontSize: '18px', wordBreak: 'break-word'}}>{item}</dt>
+        <dd
+          style={{wordBreak: 'break-word'}}
+        >{value.description} {download}</dd>
       </dl>
       {visits}
     </div>);
