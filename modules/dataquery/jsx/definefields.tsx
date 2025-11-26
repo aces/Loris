@@ -93,7 +93,7 @@ function QueryField(props: {
 
     if (props.selected) {
       visits = <div onClick={(e) => e.stopPropagation()}>
-        <h4>Visits</h4>
+        <h4 style={{fontSize: '16px'}}>Visits</h4>
         <Select options={selectOptions.map((visit: string): VisitOption => {
           return {value: visit, label: visit};
         })
@@ -108,13 +108,25 @@ function QueryField(props: {
         menuPortalTarget={document.body}
         styles={
           {menuPortal:
-                        /**
-                         * Adds appropriate zIndex to the react select's base CSS
-                         *
-                         * @param {object} base - The current CSS
-                         * @returns {object} New CSS with z-index added
-                         */
-                        (base) => ({...base, zIndex: 9999}),
+                            /**
+                             * Adds appropriate zIndex to the react select's base CSS
+                             *
+                             * @param {object} base - The current CSS
+                             * @returns {object} New CSS with z-index added
+                             */
+                            (base) => ({...base, zIndex: 9999}),
+          valueContainer:
+                            /**
+                             * Adds appropriate zIndex to the react select's base CSS
+                             *
+                             * @param {object} base - The current CSS
+                             * @returns {object} New CSS with z-index added
+                             */
+                            (base) => ({
+                              ...base,
+                              maxHeight: '150px',
+                              overflowY: 'auto',
+                            }),
           }
         }
         closeMenuOnSelect={false}
@@ -130,7 +142,8 @@ function QueryField(props: {
       style={{
         cursor: 'pointer',
         display: 'flex',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        marginBottom: '4px',
       }}
       onClick={() => props.onFieldToggle(
         props.module,
@@ -139,7 +152,7 @@ function QueryField(props: {
         selectedVisits,
       )}>
       <dl>
-        <dt>{item}</dt>
+        <dt style={{fontSize: '18px'}}>{item}</dt>
         <dd>{value.description} {download}</dd>
       </dl>
       {visits}
@@ -337,73 +350,109 @@ function DefineFields(props: {
       const selectedVisits = props.defaultVisits.map((el) => {
         return {value: el, label: el};
       });
-      defaultVisits = <div style={{paddingBottom: '1em', display: 'flex'}}>
-        <h4 style={{paddingRight: '1ex'}}>Default Visits</h4>
-        <Select options={allVisits}
-          isMulti
-          onChange={props.onChangeDefaultVisits}
-          placeholder='Select Visits'
-          menuPortalTarget={document.body}
-          styles={
-            {menuPortal:
-                            /**
-                             * Adds appropriate zIndex to the react select's base CSS
-                             *
-                             * @param {object} base - The current CSS
-                             * @returns {object} New CSS with z-index added
-                             */
-                            (base) => ({...base, zIndex: 9999}),
-            }
-          }
-          value={selectedVisits}
-          closeMenuOnSelect={false}
-        />
-        <div>
-          <CheckboxElement label='Sync with selected fields'
+      defaultVisits = <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: '16px'}}>
+        <div style={{marginBottom: '8px'}}>
+          <CheckboxElement label='Sync visit selection across selected fields'
             name="syncVisits"
+            class="checkbox-flex"
+            offset=""
             value={syncVisits}
+            style={{}}
             onUserInput={
               (name: string, value: boolean) => setSyncVisits(value)
             } />
         </div>
+        {syncVisits && <div style={{marginBottom: '16px'}}>
+          <Select options={allVisits}
+            isMulti
+            onChange={props.onChangeDefaultVisits}
+            placeholder='Select Visits'
+            menuPortalTarget={document.body}
+            styles={
+              {menuPortal:
+                              /**
+                               * Adds appropriate zIndex to the react select's base CSS
+                               *
+                               * @param {object} base - The current CSS
+                               * @returns {object} New CSS with z-index added
+                               */
+                              (base) => ({...base, zIndex: 9999}),
+              valueContainer:
+                              /**
+                               * Adds appropriate zIndex to the react select's base CSS
+                               *
+                               * @param {object} base - The current CSS
+                               * @returns {object} New CSS with z-index added
+                               */
+                              (base) => ({
+                                ...base,
+                                maxHeight: '200px',
+                                overflowY: 'auto',
+                              }),
+              }
+            }
+            value={selectedVisits}
+            closeMenuOnSelect={false}
+          /></div>}
       </div>;
     }
 
     fieldList = (<div>
-      <div style={{display: 'flex', flexWrap: 'wrap',
-        justifyContent: 'space-between'}}>
-        <h2>{cname} fields</h2>
-        <div style={{marginTop: '1em',
+      <div style={{display: 'flex', flexDirection: 'column',
+        marginTop: '32px'}}>
+        <div style={{
           display: 'flex',
           flexWrap: 'nowrap',
           flexDirection: 'column',
         }}>
           {defaultVisits}
-          <div className="input-group">
-            <input onChange={setFilter}
-              className='form-control'
-              type="text"
-              placeholder="Filter within category"
-              aria-describedby="input-filter-addon"
-              value={activeFilter} />
-            <span className="input-group-addon">
-              <span className="glyphicon glyphicon-search"/>
-            </span>
-          </div>
-          <div style={{margin: '1ex',
+          <div style={{
+            width: '100%',
             display: 'flex',
-            flexWrap: 'wrap',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-          }}>
-            <button type="button" className="btn btn-primary"
-              onClick={addAll}>
-                            Add all
-            </button>
-            <button type="button" className="btn btn-primary"
-              onClick={removeAll}>
-                            Remove all
-            </button>
+            marginBottom: '8px',
+            alignItems: 'center',
+            justifyContent: 'space-between'}}>
+            <div className="input-group"
+              style={{width: '50%', display: 'flex'}}>
+              <input onChange={setFilter}
+                className='form-control'
+                type="text"
+                placeholder={`Search within ${cname}`}
+                aria-describedby="input-filter-addon"
+                value={activeFilter}
+                style={{borderRadius: '32px 0 0 32px'}}/>
+              <span className="input-group-addon"
+                style={{
+                  borderRadius: '0 32px 32px 0',
+                  height: '34px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: '0 20px',
+                  cursor: 'pointer',
+                }}
+                id="input-filter-addon">
+                <span className="glyphicon glyphicon-search"/>
+              </span>
+            </div>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+            }}>
+              <button type="button" className="btn btn-primary"
+                onClick={addAll}>
+                              Add all
+              </button>
+              <button type="button" className="btn btn-primary"
+                onClick={removeAll}>
+                              Remove all
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -413,37 +462,41 @@ function DefineFields(props: {
 
   return (
     <div>
-      <div style={{display: 'flex', flexWrap: 'nowrap'}}>
-        <div style={{width: '80vw', padding: '1em'}}>
-          <h1>Available Fields</h1>
+      <div style={{display: 'flex', gap: '1rem', width: '100%'}}>
+        <div style={{width: 'calc(70% - 1rem/2)', padding: '1em'}}>
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
             onChange={props.onCategoryChange}
+            label="Select a Field"
+            placeholder='Available options'
           />
           {fieldList}
         </div>
         <div style={{
-          width: '20vw',
           padding: '1em',
           position: 'sticky',
           top: 0,
-          maxHeight: '90vh',
-          overflow: 'auto',
+          width: 'calc(30% - 1rem/2)',
         }}>
-          <div>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              marginBottom: '1em',
-            }}>
-              <h2>Selected Fields</h2>
-              <div>
-                <button type="button" className="btn btn-primary"
-                  style={{marginBottom: 7}}
-                  onClick={props.onClearAll}>Clear</button>
-              </div>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            marginBottom: '1em',
+            flexWrap: 'wrap',
+          }}>
+            <h2>Field Selection</h2>
+            <div>
+              <button type="button" className="btn btn-primary"
+                style={{marginBottom: 7}}
+                onClick={props.onClearAll}>Clear</button>
             </div>
+          </div>
+          <div style={{
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            maxHeight: '80vh',
+          }}>
             <SelectedFieldList
               selected={props.selected}
               removeField={props.removeField}
@@ -527,6 +580,7 @@ function SelectedFieldList(props: {
     const style: React.CSSProperties = {display: 'flex',
       flexWrap: 'nowrap' as const,
       cursor: 'grab',
+      gap: '4px',
       justifyContent: 'space-between'};
     if (removingIdx === i) {
       style.textDecoration = 'line-through' as const;
@@ -543,6 +597,7 @@ function SelectedFieldList(props: {
         fontStyle: 'italic',
         color: '#aaa',
         fontSize: '0.7em',
+        wordBreak: 'break-word' as const,
         marginLeft: 20,
       };
       fieldvisits = <dd style={style}>{item.visits.join(', ')}</dd>;
@@ -572,13 +627,17 @@ function SelectedFieldList(props: {
       onDrop={() => moveSelected()}
     >
       <div>
-        <dt>{item.field}</dt>
-        <dd style={{marginLeft: 20}}>{getDictionaryDescription(
-          item.module,
-          item.category,
-          item.field,
-          props.fulldictionary,
-        )}</dd>
+        <dt style={{wordBreak: 'break-word'}}>{item.field}</dt>
+        <dd style={{
+          marginLeft: 20,
+          wordBreak: 'break-word',
+        }}>
+          {getDictionaryDescription(
+            item.module,
+            item.category,
+            item.field,
+            props.fulldictionary
+          )}</dd>
         {fieldvisits}
       </div>
       <div
@@ -617,3 +676,4 @@ function SelectedFieldList(props: {
 
 
 export default DefineFields;
+
