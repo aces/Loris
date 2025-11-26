@@ -97,44 +97,43 @@ class CommentList extends Component {
       const datediffSec = (now.getTime() - item.date.getTime()) / 1000;
       let headerstr;
       if (datediffSec < 60) {
-	headerstr = <Trans
-	  ns="issue_tracker"
-	  defaults="Updated by <0>{{user}}</0> {{seconds}} seconds ago"
-	  components={[<span className='history-item-user' />]}
-	  values={{user: item.user, seconds: Math.round(datediffSec)}}
-	/>;
+        headerstr = <Trans
+          ns="issue_tracker"
+          defaults="Updated by <0>{{user}}</0> {{seconds}} seconds ago"
+          components={[<span className='history-item-user' />]}
+          values={{user: item.user, seconds: Math.round(datediffSec)}}
+        />;
       } else if (datediffSec < 60*60) {
-	headerstr = <Trans
-	  ns="issue_tracker"
-	  defaults="Updated by <0>{{user}}</0> {{minutes}} minutes ago"
-	  components={[<span className='history-item-user' />]}
-	  values={{user: item.user, minutes: Math.round(datediffSec / 60)}}
-	/>;
+        headerstr = <Trans
+          ns="issue_tracker"
+          defaults="Updated by <0>{{user}}</0> {{minutes}} minutes ago"
+          components={[<span className='history-item-user' />]}
+          values={{user: item.user, minutes: Math.round(datediffSec / 60)}}
+        />;
       } else if (datediffSec < 60*60*24) {
-	headerstr = <Trans
-	  ns="issue_tracker"
-	  defaults="Updated by <0>{{user}}</0> {{hours}} hours ago"
-	  components={[<span className='history-item-user' />]}
-	  values={{user: item.user, hours: Math.round(datediffSec / (60*60))}}
-	/>;
+        headerstr = <Trans
+          ns="issue_tracker"
+          defaults="Updated by <0>{{user}}</0> {{hours}} hours ago"
+          components={[<span className='history-item-user' />]}
+          values={{user: item.user, hours: Math.round(datediffSec / (60*60))}}
+        />;
       } else {
-	const dateFormatter = new Intl.DateTimeFormat(
-		loris.user.langpref.replace('_', '-'),
-		{
-			dateStyle: 'full',
-			timeStyle: 'long'
-		}
-	);
+        const dateFormatter = new Intl.DateTimeFormat(
+          loris.user.langpref.replace('_', '-'),
+          {
+            dateStyle: 'full',
+            timeStyle: 'long',
+          }
+        );
 
-	headerstr = <Trans
-	  ns="issue_tracker"
-	  defaults="Updated by <0>{{user}}</0> on {{date}}"
-	  components={[<span className='history-item-user' />]}
-	  values={{user: item.user, date: dateFormatter.format(item.date)}}
-	/>;
+        headerstr = <Trans
+          ns="issue_tracker"
+          defaults="Updated by <0>{{user}}</0> on {{date}}"
+          components={[<span className='history-item-user' />]}
+          values={{user: item.user, date: dateFormatter.format(item.date)}}
+        />;
       }
 
-	
       return (
         <div key={i}>
           <hr/>

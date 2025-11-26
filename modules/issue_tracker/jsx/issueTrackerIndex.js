@@ -133,19 +133,29 @@ class IssueTrackerIndex extends Component {
     case priorityKey:
       switch (cell) {
       case 'normal':
-        result = <td style={{background: '#CCFFCC'}}>{t('Normal', {ns: 'issue_tracker'})}</td>;
+        result = <td style={{background: '#CCFFCC'}}>{
+          t('Normal', {ns: 'issue_tracker'})
+        }</td>;
         break;
       case 'high':
-        result = <td style={{background: '#EEEEAA'}}>{t('High', {ns: 'issue_tracker'})}</td>;
+        result = <td style={{background: '#EEEEAA'}}>{
+          t('High', {ns: 'issue_tracker'})
+        }</td>;
         break;
       case 'urgent':
-        result = <td style={{background: '#CC6600'}}>{t('Urgent', {ns: 'issue_tracker'})}</td>;
+        result = <td style={{background: '#CC6600'}}>{
+          t('Urgent', {ns: 'issue_tracker'})
+        }</td>;
         break;
       case 'immediate':
-        result = <td style={{background: '#E4A09E'}}>{t('Immediate', {ns: 'issue_tracker'})}</td>;
+        result = <td style={{background: '#E4A09E'}}>{
+          t('Immediate', {ns: 'issue_tracker'})
+        }</td>;
         break;
       case 'low':
-        result = <td style={{background: '#99CCFF'}}>{t('Low', {ns: 'issue_tracker'})}</td>;
+        result = <td style={{background: '#99CCFF'}}>{
+          t('Low', {ns: 'issue_tracker'})
+        }</td>;
         break;
       default:
         result = <td>{t('None', {ns: 'loris'})}</td>;

@@ -471,12 +471,15 @@ const IssueCard = React.memo(function IssueCard(props) {
                     <p className="comment-text">
                       {comment.issueComment}</p>
                     <span className="comment-meta">
-			<Trans
-			  ns="issue_tracker"
-			  defaults="Updated by <0>{{user}}</0> on {{date}}"
-			  components={[<span />]}
-			  values={{user: comment.addedBy, date: comment.dateAdded}}
-			/>
+                      <Trans
+                        ns="issue_tracker"
+                        defaults="Updated by <0>{{user}}</0> on {{date}}"
+                        components={[<span />]}
+                        values={{
+                          user: comment.addedBy,
+                          date: comment.dateAdded,
+                        }}
+                      />
                     </span>
                   </div>
                 ))
