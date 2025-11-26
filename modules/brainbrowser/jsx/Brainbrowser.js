@@ -2,8 +2,9 @@
 
 import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
-import i18n from 'I18nSetup'; 
-import hiStrings from '../locale/hi/LC_MESSAGES/brainbrowser.json'; 
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/brainbrowser.json';
+import PropTypes from 'prop-types';
 
 /**
  * Brainbrowser Page.
@@ -29,7 +30,7 @@ class BrainBrowser extends Component {
 
   /**
    * Called by React when the component has been rendered on the page.
-   */	
+   */
   componentDidMount() {
     let modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
     if (!modulePrefs) {
@@ -47,7 +48,7 @@ class BrainBrowser extends Component {
    * Handle change
    *
    * @param {object} e - Event
-   */  
+   */
   handleChange(e) {
     const panelSize = e.target.value || this.state.defaultPanelSize;
     this.modulePrefs[loris.TestName].panelSize = panelSize;
@@ -59,11 +60,12 @@ class BrainBrowser extends Component {
   /**
    * Renders the React component.
    * Uses t() for all displayed strings.
+   *
    * @return {JSX} - React markup for the component
    */
   render() {
-    const {t} = this.props; 
-    const ns = 'brainbrowser'; 
+    const {t} = this.props;
+    const ns = 'brainbrowser';
 
     let options = {
       100: t('100 Pixels', {ns}),
@@ -112,13 +114,17 @@ class BrainBrowser extends Component {
     );
   }
 }
-
+BrainBrowser.propTypes = {
+  t: PropTypes.func.isRequired,
+};
 // i18next Configuration and Export
 if (typeof i18n !== 'undefined') {
   i18n.addResourceBundle('hi', 'brainbrowser', hiStrings);
 }
 
-const TranslatedBrainBrowser = withTranslation(['brainbrowser', 'loris'])(BrainBrowser);
+const TranslatedBrainBrowser = withTranslation(
+  ['brainbrowser', 'loris']
+)(BrainBrowser);
 
 let RBrainBrowser = React.createFactory(TranslatedBrainBrowser);
 
