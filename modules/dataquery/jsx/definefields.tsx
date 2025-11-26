@@ -466,10 +466,11 @@ function DefineFields(props: {
     <div>
       <div style={{display: 'flex', flexWrap: 'nowrap'}}>
         <div style={{width: '80vw', padding: '1em'}}>
-          <h1>Available Fields</h1>
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
             onChange={props.onCategoryChange}
+            label="Select a Field"
+            placeholder='Available options'
           />
           {fieldList}
         </div>
