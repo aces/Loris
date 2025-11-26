@@ -422,7 +422,7 @@ function DefineFields(props: {
               <input onChange={setFilter}
                 className='form-control'
                 type="text"
-                placeholder={`Search within ${cname}`}
+                placeholder={`Filter within ${cname}`}
                 aria-describedby="input-filter-addon"
                 value={activeFilter}
                 style={{borderRadius: '32px 0 0 32px'}}/>
