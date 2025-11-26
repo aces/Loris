@@ -145,6 +145,9 @@ msgstr "フィルターを非表示"
 msgid "Clear Filters"
 msgstr "フィルターをクリア"
 
+msgid "Load Filter Preset"
+msgstr "フィルタープリセットを読み込む"
+
 # Common swal labels
 msgid "OK"
 msgstr "わかりました"

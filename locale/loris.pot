@@ -151,6 +151,9 @@ msgstr ""
 msgid "Clear Filters"
 msgstr ""
 
+msgid "Load Filter Preset"
+msgstr ""
+
 msgid "Show Advanced Filters"
 msgstr ""
 

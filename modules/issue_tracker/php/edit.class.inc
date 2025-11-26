@@ -143,11 +143,11 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         $priorities = [
-            'low'       => 'Low',
-            'normal'    => 'Normal',
-            'high'      => 'High',
-            'urgent'    => 'Urgent',
-            'immediate' => 'Immediate',
+            'low'       => dgettext('issue_tracker', 'Low'),
+            'normal'    => dgettext('issue_tracker', 'Normal'),
+            'high'      => dgettext('issue_tracker', 'High'),
+            'urgent'    => dgettext('issue_tracker', 'Urgent'),
+            'immediate' => dgettext('issue_tracker', 'Immediate'),
         ];
 
         $unorgCategories = $db->pselect(

@@ -164,6 +164,12 @@ msgstr "号が更新されました！"
 msgid "Issue created!"
 msgstr "問題が作成されました!"
 
+msgid "Comments and History"
+msgstr "コメントと履歴"
+
+msgid "Last Updated By"
+msgstr "最終更新者"
+
 msgid "({{count}} issue)"
 msgid_plural "({{count}} issues)"
 msgstr[0] "（{{count}}件のコメント）"
@@ -171,9 +177,21 @@ msgstr[0] "（{{count}}件のコメント）"
 msgid "{{count}} issues displayed of {{total}}"
 msgstr "{{count}} 個のうち {{total}} 個が表示されています"
 
-msgid "Maximum issues per page: {{count}}"
-msgstr "Maximum issues per page: {{count}}"
+msgid "Maximum issues per page: {{total}}"
+msgstr "Maximum issues per page: {{total}}"
 
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr "添付ファイル「{{fileName}}」の削除リクエストを確認してください。"
+
+msgid "Updated by <0>{{user}}</0> on {{date}}"
+msgstr "<0>{{user}}</0>によって{{date}}に更新されました"
+
+msgid "Updated by <0>{{user}}</0> {{seconds}} seconds ago"
+msgstr "<0>{{user}}</0>が{{seconds}}秒前に更新しました"
+
+msgid "Updated by <0>{{user}}</0> {{minutes}} minutes ago"
+msgstr "<0>{{user}}</0>が{{minutes}}分前に更新しました"
+
+msgid "Updated by <0>{{user}}</0> {{hours}} hours ago"
+msgstr "<0>{{user}}</0>が{{hours}}時間前に更新しました"
 

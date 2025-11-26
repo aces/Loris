@@ -172,11 +172,11 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         );
 
         $priorities = [
-            'low'       => 'Low',
-            'normal'    => 'Normal',
-            'high'      => 'High',
-            'urgent'    => 'Urgent',
-            'immediate' => 'Immediate',
+            'low'       => dgettext('issue_tracker', 'Low'),
+            'normal'    => dgettext('issue_tracker', 'Normal'),
+            'high'      => dgettext('issue_tracker', 'High'),
+            'urgent'    => dgettext('issue_tracker', 'Urgent'),
+            'immediate' => dgettext('issue_tracker', 'Immediate'),
         ];
 
         $statuses = [

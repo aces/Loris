@@ -160,6 +160,12 @@ msgstr ""
 msgid "Issue created!"
 msgstr ""
 
+msgid "Comments and History"
+msgstr ""
+
+msgid "Last Updated By"
+msgstr ""
+
 msgid "({{count}} issue)"
 msgid_plural "({{count}} issues)"
 msgstr[0] ""
@@ -167,8 +173,21 @@ msgstr[0] ""
 msgid "{{count}} issues displayed of {{total}}"
 msgstr ""
 
-msgid "Maximum issues per page: {{count}}"
+msgid "Maximum issues per page: {{total}}"
 msgstr ""
 
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr ""
+
+msgid "Updated by <0>{{user}}</0> on {{date}}"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> {{seconds}} seconds ago"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> {{minutes}} minutes ago"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> {{hours}} hours ago"
+msgstr ""
+
