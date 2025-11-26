@@ -19,7 +19,6 @@ type SelectGroup = {
  * @param {string?} props.placeholder - An optional placeholder value when no elements are selected
  * @param {object} props.groups - Groups to select the dropdown into
  * @param {function} props.mapGroupName - A mapper from backend to frontend name for groups
- * @param {string?} props.label - Select input label
  * @returns {React.ReactElement} - The element
  */
 function FilterableSelectGroup(props: {
@@ -27,7 +26,6 @@ function FilterableSelectGroup(props: {
     placeholder?: string,
     groups: object,
     mapGroupName?: (module: string) => string,
-    label?: string,
 }) {
   const groups: SelectGroup[] = [];
   const placeholder = props.placeholder || 'Select a category';
@@ -72,50 +70,19 @@ function FilterableSelectGroup(props: {
   };
   return (
     <div>
-      {props.label ?
-        <label style={{width: '100%', fontSize: '24px'}}>
-          {props.label}
-          <Select options={groups} onChange={selected}
-            menuPortalTarget={document.body}
-            styles={{menuPortal:
-                        /**
-                         * Add a z-index to ensure the element stays visible
-                         *
-                         * @param {object} base - the base CSS
-                         * @returns {object} - the new CSS with z-index added
-                         */
-                        (base) => ({...base, zIndex: 9999}),
-            valueContainer:
-                            /**
-                             * Adds appropriate zIndex to the react select's base CSS
-                             *
-                             * @param {object} base - The current CSS
-                             * @returns {object} New CSS with z-index added
-                             */
-                            (base) => ({
-                              ...base,
-                              fontSize: '14px',
-                              fontWeight: 400,
-                            }),
-            }}
-            placeholder={placeholder}
-          />
-        </label>
-        :
-        <Select options={groups} onChange={selected}
-          menuPortalTarget={document.body}
-          styles={{menuPortal:
-                      /**
-                       * Add a z-index to ensure the element stays visible
-                       *
-                       * @param {object} base - the base CSS
-                       * @returns {object} - the new CSS with z-index added
-                       */
-                      (base) => ({...base, zIndex: 9999})}
-          }
-          placeholder={placeholder}
-        />
-      }
+      <Select options={groups} onChange={selected}
+        menuPortalTarget={document.body}
+        styles={{menuPortal:
+                    /**
+                     * Add a z-index to ensure the element stays visible
+                     *
+                     * @param {object} base - the base CSS
+                     * @returns {object} - the new CSS with z-index added
+                     */
+                    (base) => ({...base, zIndex: 9999})}
+        }
+        placeholder={placeholder}
+      />
     </div>
   );
 }
