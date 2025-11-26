@@ -62,7 +62,7 @@ check: checkstatic unittests
 testdata:
 	php tools/raisinbread_refresh.php
 
-locales: 
+locales:
 	msgfmt -o locale/en/LC_MESSAGES/loris.mo locale/en/LC_MESSAGES/loris.po
 	npx i18next-conv -l en -s locale/en/LC_MESSAGES/loris.po -t locale/en/LC_MESSAGES/loris.json --compatibilityJSON v4
 	msgfmt -o locale/fr/LC_MESSAGES/loris.mo locale/fr/LC_MESSAGES/loris.po
@@ -118,6 +118,7 @@ locales:
 	npx i18next-conv -l ja -s modules/datadict/locale/ja/LC_MESSAGES/datadict.po -t modules/datadict/locale/ja/LC_MESSAGES/datadict.json
 	msgfmt -o modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po
 	msgfmt -o modules/dataquery/locale/hi/LC_MESSAGES/dataquery.mo modules/dataquery/locale/hi/LC_MESSAGES/dataquery.po
+	npx i18next-conv -l ja -s modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po -t modules/dataquery/locale/ja/LC_MESSAGES/dataquery.json
 	npx i18next-conv -l hi -s modules/dataquery/locale/hi/LC_MESSAGES/dataquery.po -t modules/dataquery/locale/hi/LC_MESSAGES/dataquery.json
 	msgfmt -o modules/data_release/locale/ja/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.po
 	npx i18next-conv -l ja -s modules/data_release/locale/ja/LC_MESSAGES/data_release.po -t modules/data_release/locale/ja/LC_MESSAGES/data_release.json
@@ -187,7 +188,7 @@ locales:
 	npx i18next-conv -l hi -s modules/publication/locale/hi/LC_MESSAGES/publication.po -t modules/publication/locale/hi/LC_MESSAGES/publication.json
 	msgfmt -o modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.mo modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.po
 	msgfmt -o modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.mo modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po
-	npx i18next-conv -l hi -s modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po -t modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.json	
+	npx i18next-conv -l hi -s modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po -t modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.json
 	msgfmt -o modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.po
 	msgfmt -o modules/statistics/locale/ja/LC_MESSAGES/statistics.mo modules/statistics/locale/ja/LC_MESSAGES/statistics.po
 	npx i18next-conv -l ja -s modules/statistics/locale/ja/LC_MESSAGES/statistics.po -t modules/statistics/locale/ja/LC_MESSAGES/statistics.json
@@ -214,13 +215,13 @@ data_release: modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules
 instrument_manager: modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.mo
 	target=instrument_manager npm run compile
 
-dataquery: modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo
+dataquery: modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo
+	msgfmt -o modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po
 	msgfmt -o modules/dataquery/locale/hi/LC_MESSAGES/dataquery.mo modules/dataquery/locale/hi/LC_MESSAGES/dataquery.po
-  npx i18next-conv -l hi -s modules/dataquery/locale/hi/LC_MESSAGES/dataquery.po -t modules/dataquery/locale/hi/LC_MESSAGES/dataquery.json
-  msgfmt -o modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po
-  npx i18next-conv -l ja -s modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po -t modules/dataquery/locale/ja/LC_MESSAGES/dataquery.json
+	npx i18next-conv -l ja -s modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po -t modules/dataquery/locale/ja/LC_MESSAGES/dataquery.json
+	npx i18next-conv -l hi -s modules/dataquery/locale/hi/LC_MESSAGES/dataquery.po -t modules/dataquery/locale/hi/LC_MESSAGES/dataquery.json
  	target=dataquery npm run compile
-  
+
 instrument_builder: modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.mo
 	npx i18next-conv -l hi -s modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po -t modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.json --compatibilityJSON v4
 	target=instrument_builder npm run compile
