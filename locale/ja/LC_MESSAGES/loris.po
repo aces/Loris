@@ -123,6 +123,9 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
+msgid "Browse"
+msgstr "ブラウズ"
+
 msgid "Create"
 msgstr "作成する"
 
@@ -136,6 +139,9 @@ msgstr "戻る"
 msgid "Selection Filter"
 msgstr "'選択フィルター"
 
+msgid "Filters"
+msgstr "フィルター"
+
 msgid "Show Filters"
 msgstr "フィルターを表示"
 
@@ -144,6 +150,9 @@ msgstr "フィルターを非表示"
 
 msgid "Clear Filters"
 msgstr "フィルターをクリア"
+
+msgid "Load Filter Preset"
+msgstr "フィルタープリセットを読み込む"
 
 # Common swal labels
 msgid "OK"
@@ -239,6 +248,9 @@ msgstr "このページの読み込み中にエラーが発生しました"
 
 msgid "Active"
 msgstr "アクティブ"
+
+msgid "Pending"
+msgstr "保留中"
 
 msgid "Entity Type"
 msgstr "エンティティタイプ"
@@ -452,3 +464,6 @@ msgstr "特殊文字は必要ありませんが、パスワードは受け入れ
 
 msgid "We suggest using a password manager to generate one for you."
 msgstr "パスワード マネージャーを使用してパスワードを生成することをお勧めします。"
+
+msgid "Incorrect username or password."
+msgstr "ユーザー名またはパスワードが正しくありません。"
