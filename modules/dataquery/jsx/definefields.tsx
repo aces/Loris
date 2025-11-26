@@ -413,8 +413,8 @@ function DefineFields(props: {
 
   return (
     <div>
-      <div style={{display: 'flex', gap: '1rem', width: '100%'}}>
-        <div style={{width: 'calc(70% - 1rem/2)', padding: '1em'}}>
+      <div style={{display: 'flex', gap: '2rem', width: '100%'}}>
+        <div style={{width: 'calc(70% - 2rem/2)'}}>
           <h1>Available Fields</h1>
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
@@ -423,7 +423,7 @@ function DefineFields(props: {
           {fieldList}
         </div>
         <div style={{
-          width: 'calc(30% - 1rem/2)',
+          width: 'calc(30% - 2rem/2)',
           position: 'sticky',
           top: 0,
         }}>
