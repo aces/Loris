@@ -1,5 +1,4 @@
 import {useState, PropsWithChildren, CSSProperties, ReactNode} from 'react';
-import {useTranslation} from 'react-i18next';
 import Swal from 'sweetalert2';
 import Loader from './Loader';
 import {
