@@ -433,7 +433,10 @@ class ViewDetails extends \NDB_Form
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb(dgettext('dicom_archive', "DICOM Archive"), "/$this->name"),
+            new \LORIS\Breadcrumb(
+                dgettext('dicom_archive', "DICOM Archive"),
+                "/$this->name",
+            ),
             new \LORIS\Breadcrumb(
                 dgettext('dicom_archive', 'View Details'),
                 "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
