@@ -81,7 +81,10 @@ class CandidateDOB extends Component {
   render() {
     const {t} = this.props;
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>;
+      return
+        <h3>
+          {t('An error occured while loading the page.', {ns: 'loris'})}
+        </h3>;
     }
 
     if (!this.state.isLoaded) {
@@ -113,8 +116,11 @@ class CandidateDOB extends Component {
           />
           <StaticElement
             label={t('Disclaimer:', {ns: 'candidate_parameters'})}
-            text={t('Any changes to the date of birth requires an administrator '
-                 + 'to run the fix_candidate_age script.', {ns: 'candidate_parameters'})}
+            text={
+              t('Any changes to the date of birth requires an administrator '
+                + 'to run the fix_candidate_age script.',
+              {ns: 'candidate_parameters'}
+            )}
             class='form-control-static text-danger bg-danger col-sm-10'
           />
           <DateElement
@@ -152,7 +158,9 @@ class CandidateDOB extends Component {
     if (dob > today) {
       swal.fire({
         title: t('Error!', {ns: 'loris'}),
-        text: t('Date of birth cannot be later than today!', {ns: 'candidate_parameters'}),
+        text: t('Date of birth cannot be later than today!',
+	        {ns: 'candidate_parameters'}
+        ),
         type: 'error',
         confirmButtonText: t('OK', {ns: 'loris'}),
       });
@@ -206,5 +214,6 @@ CandidateDOB.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
+  t: PropTypes.string.isRequired,
 };
 export default withTranslation(['candidate_parameters', 'loris'])(CandidateDOB);
