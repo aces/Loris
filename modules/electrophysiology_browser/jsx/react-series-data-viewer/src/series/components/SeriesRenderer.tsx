@@ -71,6 +71,7 @@ import {setHoveredChannels} from '../store/state/cursor';
 import {getEpochsInRange, updateActiveEpoch} from '../store/logic/filterEpochs';
 import HEDEndorsement from "./HEDEndorsement";
 import {setTimeSelection} from "../store/state/timeSelection";
+import {useTranslation} from "react-i18next";
 
 type CProps = {
   ref: MutableRefObject<any>,
@@ -220,10 +221,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
     const [panelIsDirty, setPanelIsDirty] = useState(false);
     const [eventChannels, setEventChannels] = useState([]);
+    const {t} = useTranslation();
 
     window.onbeforeunload = function() {
       if (panelIsDirty) {
-        return 'Are you sure you want to leave unsaved changes behind?';
+        return t(
+          'Are you sure you want to leave unsaved changes behind?',
+          {ns: 'loris'}
+        );
       }
     }
     const [pressedKey, setPressedKey] = useState('');
@@ -302,12 +307,15 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   const confirmPanelClose = (callbackFn) => {
     if (panelIsDirty) {
       return swal.fire({
-        title: 'Are you sure?',
-        text: 'Leaving the form will result in the loss of any information entered.',
+        title: t('Are you sure?', {ns: 'loris'}),
+        text: t(
+          'Leaving the form will result in the loss of any information entered.',
+          {ns: 'loris'}
+        ),
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Proceed',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: t('Proceed', {ns: 'loris'}),
+        cancelButtonText: t('Cancel', {ns: 'loris'}),
       }).then((result) => {
         if (result.value) {
           callbackFn();
@@ -1005,7 +1013,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 });
               }}
             >
-              Add Event
+              {t('Add Event', {ns: 'electrophysiology_browser'})}
             </button>
             {
               rightPanel === null && (
@@ -1025,8 +1033,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   }}
                 >
                   {rightPanel
-                    ? 'Close Panel'
-                    : 'Display Events'
+                    ? t('Close Panel', {ns: 'electrophysiology_browser'})
+                    : t('Display Events', {ns: 'electrophysiology_browser'})
                   }
                 </button>
               )
@@ -1051,7 +1059,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 }}
               >
                 <h5 className='col-xs-title btn-zoom'>
-                  Zoom
+                  {t('Zoom', {ns: 'electrophysiology_browser'})}
                 </h5>
                 <div>
                   <input
@@ -1062,7 +1070,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       (interval[1] - interval[0]) ===
                       (DEFAULT_TIME_INTERVAL[1] - DEFAULT_TIME_INTERVAL[0])
                     }
-                    value='Reset'
+                    value={{t('Reset', {ns: 'loris'})}}
                   />
                   <br/>
                   <input
@@ -1089,7 +1097,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     className='btn btn-primary btn-xs btn-zoom'
                     onClick={zoomToSelection}
                     disabled={!selectionCanBeZoomedTo}
-                    value='Fit to Window'
+                    value={t('Fit to Window', {ns: 'electrophysiology_browser'})}
                   />
                 </div>
               </div>
@@ -1125,7 +1133,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         type='button'
                         className='btn btn-primary btn-xs'
                         onClick={() => resetAmplitudesScale()}
-                        value='Reset Amplitude'
+                        value={t('Reset Amplitude', {ns: 'electrophysiology_browser'})}
                       />
                       <input
                         type='button'

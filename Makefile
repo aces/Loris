@@ -231,3 +231,7 @@ conflict_resolver: $(filter modules/conflict_resolver/%,$(MOFILES)) $(filter mod
 
 my_preferences: $(filter modules/my_preferences/%,$(MOFILES)) $(filter modules/my_preferences/%,$(I18NJSONFILES))
 	target=my_preferences npm run compile
+
+electrophysiology_browser: modules/electrophysiology_browser/locale/fr/LC_MESSAGES/electrophysiology_browser.mo modules/electrophysiology_browser/locale/fr/LC_MESSAGES/electrophysiology_browser.mo
+	npx i18next-conv -l fr -s modules/electrophysiology_browser/locale/fr/LC_MESSAGES/electrophysiology_browser.po -t modules/electrophysiology_browser/locale/fr/LC_MESSAGES/electrophysiology_browser.json
+	target=electrophysiology_browser npm run compile

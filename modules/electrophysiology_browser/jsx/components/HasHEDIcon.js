@@ -1,4 +1,6 @@
 import {Component} from 'react';
+import Sidebar from "./Sidebar";
+import PropTypes from "prop-types";
 
 /**
  * HED Icon for data table column
@@ -19,6 +21,7 @@ class HasHEDIcon extends Component {
    * @return {React.ReactNode} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     return <>
       <img
         src="https://images.loris.ca/HED_logo.png"
@@ -33,16 +36,25 @@ class HasHEDIcon extends Component {
           marginLeft: '5px',
           color: '#A9A9A9',
         }}
-        title={'HED tags in recording metadata (click for info)'}
+        title={t(
+          'HED tags in recording metadata (click for info)',
+          {ns: 'electrophysiology_browser'}
+        )}
         className={'browser-index-css-tooltip'}
       >
         <i className='glyphicon glyphicon-info-sign'/>
         <span className='browser-index-tooltip-text'>
-          HED tags in recording metadata (click for info)
+          {t(
+            'HED tags in recording metadata (click for info)',
+            {ns: 'electrophysiology_browser'}
+          )}
         </span>
       </a>
     </>;
   }
 }
 
+Sidebar.propTypes = {
+  t: PropTypes.func,
+}
 export default HasHEDIcon;

@@ -33,6 +33,7 @@ declare global {
   }
 }
 
+
 type CProps = {
   chunksURL: string,
   epochsURL: string,
@@ -48,6 +49,7 @@ type CProps = {
   eegMontageName: string,
   recordingHasHED: boolean,
   children: React.ReactNode,
+  t: any,
 };
 
 const MenuOption = {
@@ -96,6 +98,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       samplingFrequency,
       eegMontageName,
       recordingHasHED,
+      t,
     } = props;
 
     if (!window.EEGLabSeriesProviderStore) {
@@ -110,7 +113,10 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       const dataset = window.EEGLabSeriesProviderStore[chunksURL]
         .getState().dataset;
       if ([...dataset.addedTags, ...dataset.deletedTags].length > 0) {
-        return 'Are you sure you want to leave unsaved changes behind?';
+        return t(
+          'Are you sure you want to leave unsaved changes behind?',
+          {ns: 'electrophysiology_browser'}
+        );
       }
     };
 
@@ -139,7 +145,8 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
               ...tag,
               AdditionalMembers: parseInt(tag.AdditionalMembers),
               TaggerName: tag.TaggerName === 'Origin'
-                ? 'Data Authors' : tag.TaggerName,
+                ? t('Data Authors', {ns: 'electrophysiology_browser'})
+                : tag.TaggerName,
               TaggedBy: tag.TaggedBy,
               Endorsements: hedEndorsements,
             };
@@ -262,7 +269,8 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
             AdditionalMembers: isNaN(additionalMembers)
               ? 0 : additionalMembers,
             TaggerName: hedTag['TaggerName'] === 'Origin'
-              ? 'Data Authors' : hedTag['TaggerName'],
+              ? t('Data Authors', {ns: 'electrophysiology_browser'})
+              : hedTag['TaggerName'],
             TaggedBy: hedTag['TaggedBy'],
             Endorsements: hedEndorsements,
           };
@@ -361,8 +369,8 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
    * @returns {JSX} - React markup for the component
    */
   render() {
+    const t = this.props.t;
     const [signalViewer, ...rest] = React.Children.toArray(this.props.children);
-
     const hedTagLogo = (
       <img
         src="https://images.loris.ca/HED_logo.png"
@@ -389,13 +397,23 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
                       {hedTagLogo}
                     </a>
                     <span style={{marginLeft: '15px'}}>
-                  Dataset Tag Manager
+                    {t(
+                      'Dataset Tag Manager',
+                      {ns: 'electrophysiology_browser'}
+                    )}
                     </span>
                   </div>
                   <div style={{fontSize: '12px'}}>
-                    More about HED
+                    {t(
+                      'More about HED',
+                      {ns: 'electrophysiology_browser'}
+                    )}
+
                     <InfoIcon
-                      title='Click to view the HED schema'
+                      title={t(
+                        'Click to view the HED schema',
+                        {ns: 'electrophysiology_browser'}
+                      )}
                       url='https://www.hedtags.org/display_hed.html'
                     />
                   </div>
@@ -432,7 +450,12 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
                                 event.preventDefault();
                               }}
                             >
-                              {MenuOption[menuOption]}
+                              {
+                                t(
+                                  MenuOption[menuOption],
+                                  {ns: 'electrophysiology_browser'}
+                                )
+                              }
                             </a>
                           </li>
                         );
@@ -442,7 +465,10 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
                 </div>
               </>
             }
-            label="Open Dataset Tag Manager"
+            label={t(
+              'Open Dataset Tag Manager',
+              {ns: 'electrophysiology_browser'}
+            )}
           >
             <DatasetTagger
               tabsRef={this.state.datasetTaggerTabsRef}

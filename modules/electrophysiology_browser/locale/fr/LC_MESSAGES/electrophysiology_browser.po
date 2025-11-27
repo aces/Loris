@@ -13,139 +13,118 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Electrophysiology Browser"
-msgstr ""
+msgstr "Navigateur d'Électrophysiologie"
 
 msgid "Links"
-msgstr ""
+msgstr "Liens"
 
 msgid "all types"
-msgstr ""
+msgstr "tous types"
 
 msgid "Has HED Tags"
-msgstr ""
+msgstr "A des balises HED"
 
 msgid "Acquisition Time"
-msgstr ""
+msgstr "Temps d'Acquisition"
 
 msgid "Insertion Time"
-msgstr ""
+msgstr "Temps d'Insertion"
 
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 msgid "Signal Viewer"
-msgstr ""
+msgstr "Visualiseur de signaux"
 
 msgid "SessionID"
-msgstr ""
+msgstr "SessionID"
 
 msgid "split {{splitNum}}"
-msgstr ""
+msgstr "division {{splitNum}}"
 
 msgid "Viewing signal split file:"
-msgstr ""
+msgstr "Visualisation du signal du fichier divisé:"
 
 msgid "Output Type"
-msgstr ""
+msgstr "Type du fichier"
 
 msgid "File Download"
-msgstr ""
+msgstr "Téléchargements"
 
 msgid "Download"
-msgstr ""
+msgstr "Télécharger"
 
 msgid "Not Available"
-msgstr ""
+msgstr "Non disponible"
 
 msgid "Acquisition Details for Recording {{recording}}"
-msgstr ""
+msgstr "Détails d'acquisition pour l'enregistrement {{recording}}"
 
 msgid "Summary"
-msgstr ""
+msgstr "Sommaire"
 
 msgid "HED tags in recording metadata (click for info)"
-msgstr ""
+msgstr "Balises HED dans les métadonnées d'enregistrement (cliquez pour plus d'informations)"
 
 msgid "Navigation"
-msgstr ""
+msgstr "Navigation"
 
 msgid "Are you sure you want to leave unsaved changes behind?"
-msgstr ""
+msgstr "Êtes-vous certain de vouloir laisser des modifications non enregistrées?"
 
 msgid "Data Authors"
-msgstr ""
-
-# Filters
-msgid "No High Pass Filter"
-msgstr ""
-
-msgid "High Pass {{frequency}}Hz"
-msgstr ""
-
-msgid "No Low Pass Filter"
-msgstr ""
-
-msgid "Low Pass {{frequency}}Hz"
-msgstr ""
+msgstr "Auteurs de données"
 
 # Series Renderer
 msgid "Close Panel"
-msgstr ""
+msgstr "Fermer panneau"
 
 msgid "Display Events"
-msgstr ""
+msgstr "Afficher les événements"
 
 msgid "Add Event"
-msgstr ""
+msgstr "Ajouter évenement"
 
 msgid "Zoom"
-msgstr ""
-
-msgid "Fit to Window"
-msgstr ""
-
-msgid "Reset Amplitude"
-msgstr ""
-
-msgid "Fit to Window"
-msgstr ""
+msgstr "Zoom"
 
 # Dataset Tag Manager
 msgid "Dataset Tag Manager"
-msgstr ""
+msgstr "Gestionnaire de balises"
 
 msgid "More about HED"
-msgstr ""
+msgstr "plus d'infos sur HED"
 
 msgid "Click to view the HED schema"
-msgstr ""
+msgstr "Cliquez pour afficher le schéma HED"
 
 msgid "Open Dataset Tag Manager"
-msgstr ""
+msgstr "Ouvrir gestionnaire de balises"
 
 msgid "View/Edit Tags"
-msgstr ""
+msgstr "Afficher/Modifier les balises"
 
 msgid "Endorse Tags"
-msgstr ""
+msgstr "Approbation de balises"
 
 msgid "View JSON"
-msgstr ""
+msgstr "Afficher JSON"
 
-msgid "Endorsed"
+msgid "Approuvé"
 msgstr ""
 
 msgid "Caveat"
-msgstr ""
+msgstr "Caveat"
 
 msgid "Comment"
-msgstr ""
+msgstr "Commentaire"
 
 msgid "ChangeMe"
 msgstr ""
+

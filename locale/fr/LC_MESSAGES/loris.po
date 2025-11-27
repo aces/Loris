@@ -161,6 +161,12 @@ msgstr "PSCID"
 msgid "DCCID"
 msgstr "DCCID"
 
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Next"
+msgstr "Suivant"
+
 #, fuzzy
 msgid "Visit Label"
 msgstr "Nom de visite"

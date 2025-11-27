@@ -10,7 +10,8 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
 import StaticDataTable from 'jsx/StaticDataTable';
 import Panel from 'jsx/Panel';
 import {FilePanel} from './components/electrophysiology_session_panels';
@@ -32,6 +33,8 @@ if (EEG_VIS_ENABLED) {
     './react-series-data-viewer/src/series/components/EEGMontage'
   ).default;
 }
+import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
+
 
 /**
  * Electrophysiology Session View page
@@ -327,10 +330,11 @@ class ElectrophysiologySessionView extends Component {
    * @return {JSX|void} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       return (
         <button className='btn-info has-spinner'>
-          Loading
+          {t('Loading...', {ns: 'loris'})}
           <span
             className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
@@ -393,6 +397,7 @@ class ElectrophysiologySessionView extends Component {
               id={'filename_panel_' + i}
               title={this.state.database[i].file.name}
               data={this.state.database[i].file.details}
+              t={t}
             >
               {EEG_VIS_ENABLED &&
               <div className="react-series-data-viewer-scoped col-xs-12">
@@ -413,13 +418,19 @@ class ElectrophysiologySessionView extends Component {
                   }
                   eegMontageName={eegMontage}
                   recordingHasHED={recordingHasHED}
+                  t={t}
                 >
                   <Panel
                     id='channel-viewer'
                     title={
-                      'Signal Viewer' + (
+                      t('Signal Viewer', {ns: 'electrophysiology_browser'}) + (
                         file.splitData
-                          ? ' [split ' + (file.splitData?.splitIndex + 1) + ']'
+                          ? ` [${
+                            t('split {{splitNum}}', {
+                              ns: 'electrophysiology_browser',
+                              splitNum: file.splitData?.splitIndex + 1
+                            })
+                          }]`
                           : ''
                       )
                     }
@@ -434,7 +445,10 @@ class ElectrophysiologySessionView extends Component {
                           paddingRight: '15px',
                         }}
                       >
-                      Viewing signal split file:
+                      {t(
+                        'Viewing signal split file:',
+                        {ns: 'electrophysiology_browser'}
+                      )}
                       </span>
                       <a
                         className={
@@ -481,6 +495,7 @@ class ElectrophysiologySessionView extends Component {
                       <SummaryPanel
                         id={'filename_summary_' + i}
                         data={this.state.database[i].file.summary}
+                        t={t}
                       />
                     </div>
                     <EEGMontage />
@@ -490,6 +505,7 @@ class ElectrophysiologySessionView extends Component {
                         downloads={this.state.database[i].file.downloads}
                         physioFileID={this.state.database[i].file.id}
                         outputType={this.state.database[i].file.output_type}
+                        t={t}
                       />
                     </div>
                   </div>
@@ -504,14 +520,14 @@ class ElectrophysiologySessionView extends Component {
         <div id='lorisworkspace'>
           <StaticDataTable
             Headers={[
-              'PSCID',
-              'DCCID',
-              'Visit Label',
-              'Site',
-              'DOB',
-              'Sex',
-              'Output Type',
-              'Cohort',
+              t('PSCID', {ns: 'loris'}),
+              t('DCCID', {ns: 'loris'}),
+              t('Visit Label', {ns: 'loris'}),
+              t('Site', {ns: 'loris', count: 1}),
+              t('DoB', {ns: 'loris'}),
+              t('Sex', {ns: 'loris'}),
+              t('Output Type', {ns: 'electrophysiology_browser'}),
+              t('Cohort', {ns: 'loris', count: 1}),
             ]}
             Data={[
               [
@@ -525,7 +541,7 @@ class ElectrophysiologySessionView extends Component {
                 this.state.patient.info.cohort,
               ],
             ]}
-            freezeColumn='PSCID'
+            freezeColumn={t('PSCID', {ns: 'loris'})}
             Hide={{rowsPerPage: true, downloadCSV: true, defaultColumn: true}}
           />
           {database}
@@ -538,6 +554,7 @@ class ElectrophysiologySessionView extends Component {
 ElectrophysiologySessionView.propTypes = {
   module: PropTypes.string.isRequired,
   sessionid: PropTypes.string,
+  t: PropTypes.func,
 };
 ElectrophysiologySessionView.defaultProps = {
   module: '',
@@ -547,9 +564,11 @@ ElectrophysiologySessionView.defaultProps = {
  * Render EEGSession on page load.
  */
 window.onload = function() {
-  const sidebarContent = (
-    <SidebarContent previous={'previous'} next={'next'}/>
-  );
+  const i18nNamespaces = ['electrophysiology_browser', 'loris'];
+  const SideContent = withTranslation(i18nNamespaces)(SidebarContent);
+  const sidebarContent = <SideContent
+    previous={'previous'} next={'next'}
+  />;
 
   const eegSidebar = (
     <Sidebar
@@ -569,12 +588,10 @@ window.onload = function() {
   wrapDOM.insertBefore(eegSidebarDOM, page);
 
   const pathparts = window.location.pathname.split('/');
-  const eegSessionView = (
-    <ElectrophysiologySessionView
-      module={'eegSessionView'}
-      sessionid={pathparts[pathparts.length - 1]}
-    />
-  );
+
+  const EegSessionView = withTranslation(i18nNamespaces)
+    (ElectrophysiologySessionView);
+
   // Create a wrapper div in which react component will be loaded.
   const EEGSessionViewAppDOM = document.createElement('div');
   EEGSessionViewAppDOM.id = 'eegSessionView';
@@ -586,7 +603,12 @@ window.onload = function() {
   // Render the React Components.
   createRoot(
     document.getElementById('eegSessionView')
-  ).render(eegSessionView);
+  ).render(
+    <EegSessionView
+      module={'eegSessionView'}
+      sessionid={pathparts[pathparts.length - 1]}
+    />
+  );
 
   createRoot(
     document.getElementById('eegSidebar')
