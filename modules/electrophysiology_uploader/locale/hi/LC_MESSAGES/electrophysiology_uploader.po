@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Electrophysiology Uploader"
-msgstr ""
+msgstr "इलेक्ट्रोफिजियोलॉजी अपलोडर"
 
 msgid "LORIS 26 Beta Note:"
 msgstr "LORIS 26 बीटा नोट:"
