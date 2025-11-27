@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
 import Loader from 'Loader';
 import StaticDataTable from 'jsx/StaticDataTable';
 import {
@@ -143,8 +145,9 @@ class DiagnosisEvolution extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>;
     }
 
     if (!this.state.isLoaded) {
@@ -212,16 +215,16 @@ class DiagnosisEvolution extends Component {
           class='col-md-12'
         >
           <StaticElement
-            label='PSCID'
+            label={t('PSCID', {ns: 'loris'})}
             text={this.state.data.pscid}
           />
           <StaticElement
-            label='DCCID'
+            label={t('DCCID', {ns: 'loris'})}
             text={this.state.data.candID}
           />
           {latestDiagnosis}
           {latestConfirmedDiagnosis}
-          <h3>Diagnosis Evolution</h3>
+          <h3>{t('Diagnosis Evolution', {ns: 'candidate_parameters'})}</h3>
           <StaticDataTable
             Headers={[
               'Trajectory Name',
@@ -247,4 +250,4 @@ DiagnosisEvolution.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
 };
-export default DiagnosisEvolution;
+export default withTranslation(['candidate_parameters', 'loris'])(DiagnosisEvolution);

@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
 import {
   FormElement,
   StaticElement,
@@ -62,7 +64,7 @@ class FamilyInfo extends Component {
         }.bind(this),
         error: function(data, errorCode, errorMsg) {
           this.setState({
-            error: 'An error occurred when loading the form!',
+            error: t('An error occurred when loading the form!', {ns: 'candidate_parameters'}),
           });
         }.bind(this),
       }
@@ -105,6 +107,7 @@ class FamilyInfo extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return (
@@ -126,18 +129,17 @@ class FamilyInfo extends Component {
         </button>
       );
     }
-
     let relationshipOptions = {
-      'full_sibling': 'Full Sibling',
-      'half_sibling': 'Half Sibling',
-      '1st_cousin': 'First Cousin',
+      'full_sibling': t('Full Sibling', {ns: 'candidate_parameters'}),
+      'half_sibling': t('Half Sibling', {ns: 'candidate_parameters'}),
+      '1st_cousin': t('First Cousin', {ns: 'candidate_parameters'}),
     };
 
     let disabled = true;
     let addButton = null;
     if (loris.userHasPermission('candidate_parameter_edit')) {
       disabled = false;
-      addButton = <ButtonElement label="Add"/>;
+      addButton = <ButtonElement label={t('Add', {ns: 'candidate_parameters'})}/>;
     }
 
     let candidateList = this.state.Data.candidates;
@@ -154,15 +156,16 @@ class FamilyInfo extends Component {
         familyMembersHTML.push(
           <div key={key}>
             <StaticElement
-              label="Family Member DCCID"
+              label={t('Family Member ID (DCCID)', {ns: 'candidate_parameters'})}
               text={<a href={link}>{candID}</a>}
             />
             <StaticElement
-              label="Relation Type"
+              label={t('Relation Type', {ns: 'candidate_parameters'})}
               text={relationshipOptions[relationship]}
             />
+
             <ButtonElement
-              label="Delete"
+              label={t('Delete', {ns: 'candidate_parameters'})}
               type="button"
               onUserInput={this.deleteFamilyMember.bind(
                 null,
@@ -184,11 +187,11 @@ class FamilyInfo extends Component {
     if (this.state.updateResult) {
       if (this.state.updateResult === 'success') {
         alertClass = 'alert alert-success text-center';
-        alertMessage = 'Update Successful!';
+        alertMessage = t('Update Successful!', {ns: 'candidate_parameters'});
       } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
-        alertMessage = errorMessage ? errorMessage : 'Failed to update!';
+        alertMessage = errorMessage ? errorMessage : t('Failed to update!', {ns: 'candidate_parameters'});
       }
     }
 
@@ -204,17 +207,17 @@ class FamilyInfo extends Component {
           class="col-md-6"
         >
           <StaticElement
-            label="PSCID"
+            label={t('PSCID', {ns: 'loris'})}
             text={this.state.Data.pscid}
           />
           <StaticElement
-            label="DCCID"
+            label={t('DCCID', {ns: 'loris'})}
             text={this.state.Data.candID}
           />
           <hr/>
           {familyMembersHTML}
           <SelectElement
-            label="Family Member ID (DCCID)"
+            label={t('Family Member ID (DCCID)', {ns: 'candidate_parameters'})}
             name="FamilyCandID"
             options={candidateList}
             onUserInput={this.setFormData}
@@ -224,7 +227,7 @@ class FamilyInfo extends Component {
             value={this.state.formData.FamilyCandID}
           />
           <SelectElement
-            label="Relation Type"
+            label={t('Relation Type', {ns: 'candidate_parameters'})}
             name="Relationship_type"
             options={relationshipOptions}
             onUserInput={this.setFormData}
@@ -398,4 +401,4 @@ FamilyInfo.propTypes = {
   action: PropTypes.string,
 };
 
-export default FamilyInfo;
+export default withTranslation(['candidate_parameters', 'loris'])(FamilyInfo);
