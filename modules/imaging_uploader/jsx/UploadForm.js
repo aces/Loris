@@ -436,13 +436,14 @@ class UploadForm extends Component {
         )}<br/>
         {t('File must be of type .tgz or tar.gz or .zip',
           {ns: 'imaging_uploader'})}<br/>
-	    <Trans
-	    ns="imaging_uploader"
-	    defaults="For files that are not Phantom Scans, file name must begin with <0>{{prefix}}</0>"
-	    components={[<b/>]}
-	    values={{prefix:'[PSCID]_[CandID]_[Visit Label]'  }}
-	    /><br/>
-	    {t(
+        <Trans
+          ns="imaging_uploader"
+          defaults={'For files that are not Phantom Scans, '
+            + 'file name must begin with <0>{{prefix}}</0>'}
+          components={[<b/>]}
+          values={{prefix: '[PSCID]_[CandID]_[Visit Label]'}}
+        /><br/>
+        {t(
           `For example, for DCCID {{dccid}}, PSCID {{pscid}}, ` +
           `and Visit Label {{visitLabel}} ` +
           `the file name should be prefixed by: {{prefix}}`,
