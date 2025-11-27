@@ -21,3 +21,165 @@ msgstr ""
 msgid "DICOM Archive"
 msgstr "DICOMアーカイブ"
 
+msgid "Patient ID"
+msgstr "患者識別番号"
+
+msgid "Patient Name"
+msgstr "患者名"
+
+msgid "Acquisition Date"
+msgstr "取得日"
+
+msgid "Archive Location"
+msgstr "アーカイブの場所"
+
+msgid "Metadata"
+msgstr "メタデータ"
+
+msgid "MRI Browser"
+msgstr "MRIブラウザ"
+
+msgid "Series UID"
+msgstr "シリーズ固有識別子"
+
+msgid "TarchiveID"
+msgstr "TarchiveID"
+
+msgid "SessionID"
+msgstr "SessionID"
+
+msgid "CenterID"
+msgstr "CenterID"
+
+msgid "IsPhantom"
+msgstr "IsPhantom"
+
+msgid "Tarchive Metadata"
+msgstr "アーカイブメタデータ"
+
+msgid "Acquisition ID"
+msgstr "取得識別子"
+
+msgid "Patient Birthdate"
+msgstr "患者の生年月日"
+
+msgid "Patient Biological Sex"
+msgstr "患者の生物学的性別"
+
+msgid "Date acquired"
+msgstr "取得日"
+
+msgid "Scanner Model"
+msgstr "スキャナーモデル"
+
+msgid "Serial Number"
+msgstr "シリアルナンバー"
+
+msgid "Scanner Software Version"
+msgstr "スキャナーソフトウェアバージョン"
+
+msgid "Acquired at"
+msgstr "取得場所"
+
+msgid "Number of Acquisitions"
+msgstr "買収件数"
+
+msgid "Archived by"
+msgstr "買収者"
+
+msgid "Last update"
+msgstr "最終更新日"
+
+msgid "Never"
+msgstr "一度もない"
+
+msgid "Summary type version"
+msgstr "概要タイプバージョン"
+
+msgid "Source location"
+msgstr "ソースの場所"
+
+msgid "Archive type version"
+msgstr "アーカイブタイプバージョン"
+
+msgid "Archive location"
+msgstr "アーカイブタイプバージョン"
+
+msgid "Archiving log"
+msgstr "アーカイブログ"
+
+msgid "md5sum of Archive"
+msgstr "アーカイブのmd5sum"
+
+msgid "md5sum of Dicom unzipped"
+msgstr "解凍されたDICOMのmd5sum"
+
+msgid "Series"
+msgstr "シリーズ"
+
+msgid "Show/Hide series"
+msgstr "シリーズを表示/非表示"
+
+msgid "Series Number"
+msgstr "シリーズ番号"
+
+msgid "Series Description"
+msgstr "シリーズの説明"
+
+msgid "Protocol Name"
+msgstr "プロトコル名"
+
+msgid "Sequence Name"
+msgstr "シーケンス名"
+
+msgid "Echo Time"
+msgstr "エコータイム"
+
+msgid "Repetition Time"
+msgstr "繰り返し時間"
+
+msgid "Inversion Time"
+msgstr "反転時間"
+
+msgid "Slice Thickness"
+msgstr "スライスの厚さ"
+
+msgid "Phase Encoding"
+msgstr "位相エンコーディング"
+
+msgid "Number of Files"
+msgstr "位相エンコーディング"
+
+msgid "SeriesUID"
+msgstr "シリーズ固有識別子"
+
+msgid "Files"
+msgstr "ファイル"
+
+msgid "Show/Hide files"
+msgstr "ファイルの表示/非表示"
+
+msgid "SeriesNumber"
+msgstr "シリーズ番号"
+
+msgid "FileNumber"
+msgstr "ファイル番号"
+
+msgid "EchoNumber"
+msgstr "エコー番号"
+
+msgid "Md5Sum"
+msgstr "Md5sum"
+
+msgid "FileName"
+msgstr "ファイル名"
+
+msgid "INVALID - HIDDEN"
+msgstr "無効 - 非表示"
+
+msgid "View Details"
+msgstr "詳細を表示"
+
+msgid "View Images"
+msgstr "画像を見る"
+

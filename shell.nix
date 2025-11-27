@@ -4,7 +4,7 @@ let
     enabled ++ [ all.ast ]);
 in
 pkgs.mkShell {
-  buildInputs = with pkgs; [ php git nodejs php84Packages.composer gettext ];
+  buildInputs = with pkgs; [ php git nodejs php84Packages.composer gettext webpack-cli typescript ];
   shellHook =
     ''
        php -v;

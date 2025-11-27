@@ -16,6 +16,9 @@ import {
 } from 'jsx/Form';
 import SummaryStatistics from './summaryStatistics';
 import {PolicyButton} from 'jsx/PolicyButton';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+import jaStrings from '../locale/ja/LC_MESSAGES/login.json';
 
 /**
  * Login form.
@@ -249,7 +252,7 @@ class Login extends Component {
               name={'username'}
               value={this.state.form.value.username}
               onUserInput={this.setForm}
-              placeholder={'Username'}
+              placeholder={this.props.t('Username', {ns: 'loris'})}
               class={'col-sm-12'}
               autoComplete={'username'}
               required={true}
@@ -258,14 +261,14 @@ class Login extends Component {
               name={'password'}
               value={this.state.form.value.password}
               onUserInput={this.setForm}
-              placeholder={'Password'}
+              placeholder={this.props.t('Password', {ns: 'loris'})}
               class={'col-sm-12'}
               required={true}
               autoComplete={'current-password'}
             />
             {error}
             <ButtonElement
-              label={'Login'}
+              label={this.props.t('Login', {ns: 'login'})}
               type={'submit'}
               name={'login'}
               id={'login'}
@@ -275,18 +278,20 @@ class Login extends Component {
           </FormElement>
           <div className={'help-links'}>
             <a onClick={() => this.setMode('reset')}
-              style={{cursor: 'pointer'}}>Forgot your password?</a>
+              style={{cursor: 'pointer'}}>{this.props.t(
+                'Forgot your password?',
+                {ns: 'login'}
+              )}</a>
             <br/>
             <a onClick={() => this.setMode('request')}
-              style={{cursor: 'pointer'}}>Request Account</a>
+              style={{cursor: 'pointer'}}>{this.props.t(
+                'Request Account',
+                {ns: 'login'}
+              )}</a>
             <br />
             {policyButton}
           </div>
           {oidc}
-          <div className={'help-text'}>
-            A WebGL-compatible browser is required for full functionality
-            (Mozilla Firefox, Google Chrome)
-          </div>
         </div>
       );
       return (
@@ -294,7 +299,7 @@ class Login extends Component {
           <div className={'row'}>
             <section className={'col-md-4 col-md-push-8'}>
               <Panel
-                title={'Login to LORIS'}
+                title={this.props.t('Login to LORIS', {ns: 'login'})}
                 class={'panel-default login-panel'}
                 collapsing={false}
                 bold={true}
@@ -405,6 +410,7 @@ Login.propTypes = {
   defaultRequestLastName: PropTypes.string,
   defaultRequestEmail: PropTypes.string,
   redirect: PropTypes.string,
+  t: PropTypes.func, /* from withTranslation HoC */
 };
 
 window.addEventListener('load', () => {
@@ -412,11 +418,13 @@ window.addEventListener('load', () => {
   const getParam = (name, deflt) => {
     return params.has(name) ? params.get(name) : deflt;
   };
+  i18n.addResourceBundle('ja', 'login', jaStrings);
+  const TLogin = withTranslation(['login', 'loris'])(Login);
 
   createRoot(
     document.getElementsByClassName('main-content')[0]
   ).render(
-    <Login
+    <TLogin
       defaultmode={getParam('page', null)}
       defaultRequestFirstName={getParam('firstname', '')}
       defaultRequestLastName={getParam('lastname', '')}

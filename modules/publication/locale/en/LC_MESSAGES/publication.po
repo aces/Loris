@@ -13,35 +13,11 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Module Manager"
-msgstr ""
-
-msgid "Name"
-msgstr ""
-
-msgid "Full Name"
-msgstr ""
-
-msgid "Could not update {{name}}."
-msgstr ""
-
-msgid "Updated {{name}} status!"
-msgstr ""
-
-msgid "To apply changes the interface must be reloaded. Proceed?"
-msgstr ""
-
-msgid "Reload the page"
-msgstr ""
-
-msgid "Continue"
-msgstr ""
-
-msgid "Could not find module {{id}}"
-msgstr ""
+msgid "helpFindingVariables"
+msgstr "For help finding variables of interest, consult the <ddLink>Data Dictionary</ddLink>"
 

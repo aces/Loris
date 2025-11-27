@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import Modal from 'jsx/Modal';
-import {withTranslation} from 'react-i18next';
+import {withTranslation, Trans} from 'react-i18next';
 import '../css/issue_card.css';
 
 const IssueCard = React.memo(function IssueCard(props) {
@@ -471,9 +471,15 @@ const IssueCard = React.memo(function IssueCard(props) {
                     <p className="comment-text">
                       {comment.issueComment}</p>
                     <span className="comment-meta">
-                      {comment.addedBy} {t('on',
-                        {ns: 'issue_tracker'})}
-                      {comment.dateAdded}
+                      <Trans
+                        ns="issue_tracker"
+                        defaults="Updated by <0>{{user}}</0> on {{date}}"
+                        components={[<span />]}
+                        values={{
+                          user: comment.addedBy,
+                          date: comment.dateAdded,
+                        }}
+                      />
                     </span>
                   </div>
                 ))
