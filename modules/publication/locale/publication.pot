@@ -20,3 +20,153 @@ msgstr ""
 
 msgid "Publications"
 msgstr ""
+
+msgid "File to upload"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Authors"
+msgstr ""
+
+msgid "Journal"
+msgstr ""
+
+msgid "DOI"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "Please fix any remaining form errors before submission"
+msgstr ""
+
+msgid "Something went wrong!"
+msgstr ""
+
+msgid "Submission Successful!"
+msgstr ""
+
+msgid "Propose a Project"
+msgstr ""
+
+msgid "Propose a new project"
+msgstr ""
+
+msgid "Edit failed!"
+msgstr ""
+
+msgid "Edit Successful!"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Citation"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Collaborators"
+msgstr ""
+
+msgid "Keywords"
+msgstr ""
+
+msgid "Variables Of Interest"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Publishing Status"
+msgstr ""
+
+msgid "Date Published"
+msgstr ""
+
+msgid "Link"
+msgstr ""
+
+msgid "Lead Investigator"
+msgstr ""
+
+msgid "Lead Investigator Email"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Reason for rejection"
+msgstr ""
+
+msgid "Approved"
+msgstr ""
+
+msgid "Rejected"
+msgstr ""
+
+msgid "For help finding variables of interest, consult"
+msgstr ""
+
+msgid "Date Proposed"
+msgstr ""
+
+msgid "Approval Status"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Project Proposal Creator"
+msgstr ""
+
+msgid "Published"
+msgstr ""
+
+msgid "View Project"
+msgstr ""
+
+msgid "LORIS Users with Edit Permission"
+msgstr ""
+
+msgid "Type of Variables of Interest"
+msgstr ""
+
+msgid "Propose Project"
+msgstr ""
+
+msgid "Send email notification?"
+msgstr ""
+
+msgid "Add User"
+msgstr ""
+
+msgid "Add Collaborator"
+msgstr ""
+
+msgid "Add Keyword"
+msgstr ""
+
+msgid "Add Variable of Interest"
+msgstr ""
+
+msgid "Publication Type"
+msgstr ""
+
+msgid "Publication Version"
+msgstr ""
+
+msgid "helpFindingVariables"
+msgstr ""

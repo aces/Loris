@@ -21,8 +21,242 @@ msgstr ""
 msgid "Issue Tracker"
 msgstr ""
 
-msgid "Your assigned issue"
+msgid "Issue"
 msgstr ""
 
-msgid "Your assigned issues"
+msgid "Your assigned issue"
+msgid_plural "Your assigned issues"
+msgstr[0] ""
+
+msgid "Open Issues"
 msgstr ""
+
+msgid "Issue ID"
+msgstr ""
+
+msgid "Reporter"
+msgstr ""
+
+msgid "Assignee"
+msgstr ""
+
+msgid "Priority"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Date Created"
+msgstr ""
+
+msgid "Last Update"
+msgstr ""
+
+msgid "SessionID"
+msgstr ""
+
+msgid "Watching"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "High"
+msgstr ""
+
+msgid "Urgent"
+msgstr ""
+
+msgid "Immediate"
+msgstr ""
+
+msgid "Low"
+msgstr ""
+
+msgid "All Sites"
+msgstr ""
+
+msgid "All Issues"
+msgstr ""
+
+msgid "Active Issues"
+msgstr ""
+
+msgid "Closed Issues"
+msgstr ""
+
+msgid "My Issues"
+msgstr ""
+
+msgid "New Issue"
+msgstr ""
+
+msgid "Browse Issues"
+msgstr ""
+
+msgid "Batch Edit"
+msgstr ""
+
+msgid "Add Comment"
+msgstr ""
+
+msgid "Create New Issue"
+msgstr ""
+
+msgid "Never!"
+msgstr ""
+
+msgid "No-one!"
+msgstr ""
+
+msgid "Sometime Soon!"
+msgstr ""
+
+msgid "Submit Issue"
+msgstr ""
+
+msgid "Edit Issue"
+msgstr ""
+
+msgid "Update Issue"
+msgstr ""
+
+msgid "Add Attachment"
+msgstr ""
+
+msgid "Attachment for issue"
+msgstr ""
+
+msgid "Attachment for Issue"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Watching?"
+msgstr ""
+
+msgid "Add others to watching?"
+msgstr ""
+
+msgid "New Comment"
+msgstr ""
+
+msgid "This field is required"
+msgstr ""
+
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr ""
+
+msgid "Failed to submit issue :("
+msgstr ""
+
+msgid "Issue updated!"
+msgstr ""
+
+msgid "Issue created!"
+msgstr ""
+
+msgid "Comments and History"
+msgstr ""
+
+msgid "Last Updated By"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Last Updated"
+msgstr ""
+
+msgid "({{count}} issue)"
+msgid_plural "({{count}} issues)"
+msgstr[0] ""
+
+msgid "{{count}} issues displayed of {{total}}"
+msgstr ""
+
+msgid "Maximum issues per page: {{total}}"
+msgstr ""
+
+msgid "Failed to fetch issues. Please try again later."
+msgstr ""
+
+msgid "No issues match the selected filters."
+msgstr ""
+
+msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
+msgstr ""
+
+msgid "Title cannot be empty"
+msgstr ""
+
+msgid "No changes were made"
+msgstr ""
+
+msgid "Issue updated successfully"
+msgstr ""
+
+msgid "Information"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> on {{date}}"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> {{seconds}} seconds ago"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> {{minutes}} minutes ago"
+msgstr ""
+
+msgid "Updated by <0>{{user}}</0> {{hours}} hours ago"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "Acknowledged"
+msgstr ""
+
+msgid "Feedback"
+msgstr ""
+
+msgid "Assigned"
+msgstr ""
+
+msgid "Resolved"
+msgstr ""
+
+msgid "Closed"
+msgstr ""
+
+msgid "Behavioural Battery"
+msgstr ""
+
+msgid "Behavioural Instruments"
+msgstr ""
+
+msgid "Data Entry"
+msgstr ""
+
+msgid "Examiners"
+msgstr ""
+
+msgid "Imaging"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Technical Issue"
+msgstr ""
+
+msgid "User Accounts"
+msgstr ""
+
+msgid "Last 3 Comments"
+msgstr ""
+

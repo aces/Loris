@@ -27,3 +27,12 @@ msgstr "データ入力の競合"
 msgid "Unresolved Conflicts"
 msgstr "未解決の紛争"
 
+
+msgid "Number of Conflicts"
+msgstr "競合の数"
+
+msgid "Click on instrument in legend to visit conflict resolver for that instrument across all visits."
+msgstr "凡例の機器をクリックすると、すべての訪問にわたってその機器の競合解決ツールにアクセスできます。"
+
+msgid "Click on bar in graph to visit conflict resolver for that visit and instrument combination."
+msgstr "グラフ内のバーをクリックすると、その訪問と機器の組み合わせの競合解決ツールが表示されます。"

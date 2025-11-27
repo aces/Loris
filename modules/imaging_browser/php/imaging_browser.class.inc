@@ -122,14 +122,14 @@ class Imaging_Browser extends \DataFrameworkMenu
 
         // get visit QC status options
         $visitQCStatus = [
-            'Pass' => 'Pass',
-            'Fail' => 'Fail',
+            'Pass' => dgettext("loris", "Pass"),
+            'Fail' => dgettext("loris", "Fail"),
         ];
 
         // get Pending/New options
         $pending = [
-            'P' => 'Pending',
-            'N' => 'New',
+            'P' => dgettext("loris", "Pending"),
+            'N' => dgettext("loris", "New"),
         ];
 
         $all_scan_types = array_values(\Utility::getScanTypeList());
@@ -140,8 +140,8 @@ class Imaging_Browser extends \DataFrameworkMenu
 
         // get entity type options
         $entityType = [
-            'Human'   => 'Human',
-            'Scanner' => 'Scanner',
+            'Human'   => dgettext("imaging_browser", "Human"),
+            'Scanner' => dgettext("imaging_browser", "Scanner"),
         ];
 
         return [

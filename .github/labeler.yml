@@ -2,197 +2,201 @@
 - changed-files:
   - any-glob-to-any-file: modules/acknowledgements/**
 
-"Module: candidate_list":
-- changed-files:
-  - any-glob-to-any-file: modules/candidate_list/**
-
-"Module: datadict":
-- changed-files:
-  - any-glob-to-any-file: modules/datadict/**
-
-"Module: electrophysiology_browser":
-- changed-files:
-  - any-glob-to-any-file: modules/electrophysiology_browser/**
-
-"Module: imaging_uploader":
-- changed-files:
-  - any-glob-to-any-file: modules/imaging_uploader/**
-
-"Module: media":
-- changed-files:
-  - any-glob-to-any-file: modules/media/**
-
-"Module: publication":
-- changed-files:
-  - any-glob-to-any-file: modules/publication/**
-
-"Module: user_accounts":
-- changed-files:
-  - any-glob-to-any-file: modules/user_accounts/**
-
 "Module: api":
 - changed-files:
   - any-glob-to-any-file: modules/api/**
-
-"Module: candidate_parameters":
-- changed-files:
-  - any-glob-to-any-file: modules/candidate_parameters/**
-
-"Module: dataquery":
-- changed-files:
-  - any-glob-to-any-file: modules/dataquery/**
-
-"Module: electrophysiology_uploader":
-- changed-files:
-  - any-glob-to-any-file: modules/electrophysiology_uploader/**
-
-"Module: instrument_builder":
-- changed-files:
-  - any-glob-to-any-file: modules/instrument_builder/**
-
-"Module: module_manager":
-- changed-files:
-  - any-glob-to-any-file: modules/module_manager/**
 
 "Module: api_docs":
 - changed-files:
   - any-glob-to-any-file: modules/api_docs/**
 
-"Module: candidate_profile":
-- changed-files:
-  - any-glob-to-any-file: modules/candidate_profile/**
-
-"Module: data_release":
-- changed-files:
-  - any-glob-to-any-file: modules/data_release/**
-
-"Module: examiner":
-- changed-files:
-  - any-glob-to-any-file: modules/examiner/**
-
-"Module: instrument_list":
-- changed-files:
-  - any-glob-to-any-file: modules/instrument_list/**
-
-"Module: mri_violations":
-- changed-files:
-  - any-glob-to-any-file: modules/mri_violations/**
-
-"Module: schedule_module":
-- changed-files:
-  - any-glob-to-any-file: modules/schedule_module/**
-
 "Module: battery_manager":
 - changed-files:
   - any-glob-to-any-file: modules/battery_manager/**
-
-"Module: configuration":
-- changed-files:
-  - any-glob-to-any-file: modules/configuration/**
-
-"Module: dicom_archive":
-- changed-files:
-  - any-glob-to-any-file: modules/dicom_archive/**
-
-"Module: genomic_browser":
-- changed-files:
-  - any-glob-to-any-file: modules/genomic_browser/**
-
-"Module: instrument_manager":
-- changed-files:
-  - any-glob-to-any-file: modules/instrument_manager/**
-
-"Module: my_preferences":
-- changed-files:
-  - any-glob-to-any-file: modules/my_preferences/**
-
-"Module: server_processes_manager":
-- changed-files:
-  - any-glob-to-any-file: modules/server_processes_manager/**
 
 "Module: behavioural_qc":
 - changed-files:
   - any-glob-to-any-file: modules/behavioural_qc/**
 
-"Module: conflict_resolver":
-- changed-files:
-  - any-glob-to-any-file: modules/conflict_resolver/**
-
-"Module: dictionary":
-- changed-files:
-  - any-glob-to-any-file: modules/dictionary/**
-
-"Module: help_editor":
-- changed-files:
-  - any-glob-to-any-file: modules/help_editor/**
-
-"Module: instruments":
-- changed-files:
-  - any-glob-to-any-file: modules/instruments/**
-
-"Module: new_profile":
-- changed-files:
-  - any-glob-to-any-file: modules/new_profile/**
-
-"Module: statistics":
-- changed-files:
-  - any-glob-to-any-file: modules/statistics/**
-
 "Module: brainbrowser":
 - changed-files:
   - any-glob-to-any-file: modules/brainbrowser/**
-
-"Module: create_timepoint":
-- changed-files:
-  - any-glob-to-any-file: modules/create_timepoint/**
-
-"Module: document_repository":
-- changed-files:
-  - any-glob-to-any-file: modules/document_repository/**
-
-"Module: imaging_browser":
-- changed-files:
-  - any-glob-to-any-file: modules/imaging_browser/**
-
-"Module: issue_tracker":
-- changed-files:
-  - any-glob-to-any-file: modules/issue_tracker/**
-
-"Module: next_stage":
-- changed-files:
-  - any-glob-to-any-file: modules/next_stage/**
-
-"Module: survey_accounts":
-- changed-files:
-  - any-glob-to-any-file: modules/survey_accounts/**
 
 "Module: bvl_feedback":
 - changed-files:
   - any-glob-to-any-file: modules/bvl_feedback/**
 
+"Module: candidate_list":
+- changed-files:
+  - any-glob-to-any-file: modules/candidate_list/**
+
+"Module: candidate_parameters":
+- changed-files:
+  - any-glob-to-any-file: modules/candidate_parameters/**
+
+"Module: candidate_profile":
+- changed-files:
+  - any-glob-to-any-file: modules/candidate_profile/**
+
+"Module: configuration":
+- changed-files:
+  - any-glob-to-any-file: modules/configuration/**
+
+"Module: conflict_resolver":
+- changed-files:
+  - any-glob-to-any-file: modules/conflict_resolver/**
+
+"Module: create_timepoint":
+- changed-files:
+  - any-glob-to-any-file: modules/create_timepoint/**
+
 "Module: dashboard":
 - changed-files:
   - any-glob-to-any-file: modules/dashboard/**
+
+"Module: datadict":
+- changed-files:
+  - any-glob-to-any-file: modules/datadict/**
+
+"Module: dataquery":
+- changed-files:
+  - any-glob-to-any-file: modules/dataquery/**
+
+"Module: data_release":
+- changed-files:
+  - any-glob-to-any-file: modules/data_release/**
+
+"Module: dicom_archive":
+- changed-files:
+  - any-glob-to-any-file: modules/dicom_archive/**
+
+"Module: dictionary":
+- changed-files:
+  - any-glob-to-any-file: modules/dictionary/**
+
+"Module: document_repository":
+- changed-files:
+  - any-glob-to-any-file: modules/document_repository/**
 
 "Module: dqt":
 - changed-files:
   - any-glob-to-any-file: modules/dqt/**
 
+"Module: electrophysiology_browser":
+- changed-files:
+  - any-glob-to-any-file: modules/electrophysiology_browser/**
+
+"Module: electrophysiology_uploader":
+- changed-files:
+  - any-glob-to-any-file: modules/electrophysiology_uploader/**
+
+"Module: examiner":
+- changed-files:
+  - any-glob-to-any-file: modules/examiner/**
+
+"Module: genomic_browser":
+- changed-files:
+  - any-glob-to-any-file: modules/genomic_browser/**
+
+"Module: help_editor":
+- changed-files:
+  - any-glob-to-any-file: modules/help_editor/**
+
+"Module: imaging_browser":
+- changed-files:
+  - any-glob-to-any-file: modules/imaging_browser/**
+
 "Module: imaging_qc":
 - changed-files:
   - any-glob-to-any-file: modules/imaging_qc/**
+
+"Module: imaging_uploader":
+- changed-files:
+  - any-glob-to-any-file: modules/imaging_uploader/**
+
+"Module: instrument_builder":
+- changed-files:
+  - any-glob-to-any-file: modules/instrument_builder/**
+
+"Module: instrument_list":
+- changed-files:
+  - any-glob-to-any-file: modules/instrument_list/**
+
+"Module: instrument_manager":
+- changed-files:
+  - any-glob-to-any-file: modules/instrument_manager/**
+
+"Module: instruments":
+- changed-files:
+  - any-glob-to-any-file: modules/instruments/**
+
+"Module: issue_tracker":
+- changed-files:
+  - any-glob-to-any-file: modules/issue_tracker/**
 
 "Module: login":
 - changed-files:
   - any-glob-to-any-file: modules/login/**
 
+"Module: media":
+- changed-files:
+  - any-glob-to-any-file: modules/media/**
+
+"Module: module_manager":
+- changed-files:
+  - any-glob-to-any-file: modules/module_manager/**
+
+"Module: mri_violations":
+- changed-files:
+  - any-glob-to-any-file: modules/mri_violations/**
+
+"Module: my_preferences":
+- changed-files:
+  - any-glob-to-any-file: modules/my_preferences/**
+
+"Module: new_profile":
+- changed-files:
+  - any-glob-to-any-file: modules/new_profile/**
+
+"Module: next_stage":
+- changed-files:
+  - any-glob-to-any-file: modules/next_stage/**
+
 "Module: oidc":
 - changed-files:
   - any-glob-to-any-file: modules/oidc/**
 
+"Module: publication":
+- changed-files:
+  - any-glob-to-any-file: modules/publication/**
+
+"Module: redcap":
+- changed-files:
+  - any-glob-to-any-file: modules/redcap/**
+
+"Module: schedule_module":
+- changed-files:
+  - any-glob-to-any-file: modules/schedule_module/**
+
+"Module: server_processes_manager":
+- changed-files:
+  - any-glob-to-any-file: modules/server_processes_manager/**
+
+"Module: statistics":
+- changed-files:
+  - any-glob-to-any-file: modules/statistics/**
+
+"Module: survey_accounts":
+- changed-files:
+  - any-glob-to-any-file: modules/survey_accounts/**
+
 "Module: timepoint_list":
 - changed-files:
   - any-glob-to-any-file: modules/timepoint_list/**
+
+"Module: user_accounts":
+- changed-files:
+  - any-glob-to-any-file: modules/user_accounts/**
 
 RaisinBread:
 - changed-files:

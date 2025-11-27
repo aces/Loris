@@ -82,7 +82,7 @@ class Charts extends \NDB_Page
         // when splitting the path, then there should be exactly 2 parts left,
         // "charts", and the endpoint requested.
         $url = ltrim(
-            $request->getAttribute("unhandledURI")->getURI()->getPath(),
+            $request->getAttribute("unhandledURI")->getPath(),
             '/'
         );
 

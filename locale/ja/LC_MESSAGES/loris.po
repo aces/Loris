@@ -123,15 +123,24 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
+msgid "Browse"
+msgstr "ブラウズ"
+
 msgid "Create"
 msgstr "作成する"
 
 msgid "N/A"
 msgstr "適用できない"
 
+msgid "Back"
+msgstr "戻る"
+
 # Filters
 msgid "Selection Filter"
 msgstr "'選択フィルター"
+
+msgid "Filters"
+msgstr "フィルター"
 
 msgid "Show Filters"
 msgstr "フィルターを表示"
@@ -141,6 +150,9 @@ msgstr "フィルターを非表示"
 
 msgid "Clear Filters"
 msgstr "フィルターをクリア"
+
+msgid "Load Filter Preset"
+msgstr "フィルタープリセットを読み込む"
 
 # Common swal labels
 msgid "OK"
@@ -152,6 +164,9 @@ msgstr "取り消す"
 msgid "Success!"
 msgstr "成功！"
 
+msgid "Close"
+msgstr "近い"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "プロジェクト識別子"
@@ -162,14 +177,19 @@ msgstr "候補者識別子"
 msgid "Visit Label"
 msgstr "ラベルを訪問"
 
+msgid "Email"
+msgstr "メール"
+
 msgid "Site"
-msgstr "サイト"
+msgid_plural "Sites"
+msgstr[0] "サイト"
 
 msgid "Module"
 msgstr "モジュール"
 
 msgid "Project"
-msgstr "プロジェクト"
+msgid_plural "Projects"
+msgstr[0] "プロジェクト"
 
 msgid "Candidate Registration Project"
 msgstr "候補者登録プロジェクト"
@@ -186,6 +206,9 @@ msgstr "セッション"
 
 msgid "Date of registration"
 msgstr "入学日"
+
+msgid "Date Of Visit"
+msgstr "訪問日"
 
 msgid "Participant Status"
 msgstr "参加者ステータス"
@@ -222,6 +245,12 @@ msgstr "訪問"
 
 msgid "An error occured while loading the page."
 msgstr "このページの読み込み中にエラーが発生しました"
+
+msgid "Active"
+msgstr "アクティブ"
+
+msgid "Pending"
+msgstr "保留中"
 
 msgid "Entity Type"
 msgstr "エンティティタイプ"
@@ -336,8 +365,9 @@ msgstr "進行中"
 msgid "Complete"
 msgstr "完了"
 
-msgid "Instruments"
-msgstr "楽器"
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "楽器"
 
 msgid "None"
 msgstr "なし"
@@ -399,6 +429,9 @@ msgstr "姓は必須で、120文字以内で入力してください。"
 msgid "Email address"
 msgstr "電子メールアドレス"
 
+msgid "Password"
+msgstr "パスワード"
+
 msgid "New Password"
 msgstr "新しいパスワード"
 
@@ -407,6 +440,9 @@ msgstr "パスワードを認証する"
 
 msgid "Email address is required"
 msgstr "メールアドレスは必須です"
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "メールアドレスには、<、>、&、\" の文字を含めることはできません。"
 
 msgid "The password must be at least 8 characters long."
 msgstr "パスワードは8文字以上である必要があります"
@@ -422,3 +458,6 @@ msgstr "特殊文字は必要ありませんが、パスワードは受け入れ
 
 msgid "We suggest using a password manager to generate one for you."
 msgstr "パスワード マネージャーを使用してパスワードを生成することをお勧めします。"
+
+msgid "Incorrect username or password."
+msgstr "ユーザー名またはパスワードが正しくありません。"

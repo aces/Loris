@@ -1,0 +1,51 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-11-04 19:54-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#: modules/new_profile/php/module.class.inc:60
+msgid "New Profile"
+msgstr "Nouveau profil"
+
+msgid "Create a New Profile"
+msgstr "Créer un nouveau profil"
+
+msgid "Date of Birth Confirm"
+msgstr "Confirmation de la date de naissance"
+
+msgid "Date of Birth fields must match"
+msgstr "Les champs « Date de naissance » doivent être identiques."
+
+msgid "EDC fields must match"
+msgstr "Les champs DPA doivent correspondre"
+
+msgid "New Candidate Created"
+msgstr "Nouveau candidat créé"
+
+msgid "Expected Date of Confinement"
+msgstr "Date prévue de l'accouchement"
+
+msgid "Confirm EDC"
+msgstr "Confirmer DPA"
+
+msgid "Recruit another candidate"
+msgstr "Recruter un autre candidat"
+
+msgid "Access Profile"
+msgstr "Accéder au profil"
