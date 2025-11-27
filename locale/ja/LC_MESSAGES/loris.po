@@ -126,6 +126,9 @@ msgstr "いいえ"
 msgid "Browse"
 msgstr "ブラウズ"
 
+msgid "Upload"
+msgstr "アップロード"
+
 msgid "Create"
 msgstr "作成する"
 
@@ -279,6 +282,9 @@ msgstr "リセット"
 msgid "Note"
 msgstr "注記"
 
+msgid "View details"
+msgstr "詳細を表示"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}}行中{{pageCount}}行を表示"
@@ -364,6 +370,12 @@ msgstr "撤退"
 
 msgid "In Progress"
 msgstr "進行中"
+
+msgid "Progress"
+msgstr "進捗"
+
+msgid "Success"
+msgstr "成功"
 
 msgid "Complete"
 msgstr "完了"

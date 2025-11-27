@@ -109,7 +109,7 @@ msgid "Please make sure files are not larger than {{maxFileSize}}"
 msgstr ""
 
 
-msgid "Upload failed: received HTTP response code"
+msgid "Upload failed: received HTTP response code {{code}}"
 msgstr ""
 
 msgid "Submission error!"
