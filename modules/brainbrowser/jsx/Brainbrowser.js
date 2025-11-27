@@ -1,5 +1,5 @@
 /* exported RBrainBrowser */
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
@@ -20,7 +20,7 @@ class BrainBrowser extends Component {
    * into this component as a required prop.
    */
   static propTypes = {
-    t: PropTypes.func.isRequired
+    t: PropTypes.func.isRequired;
   }
   /**
    * @constructor
