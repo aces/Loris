@@ -150,6 +150,7 @@ locales:
 	msgfmt -o modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.mo modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po
 	msgfmt -o modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.mo modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.po
 	npx i18next-conv -l hi -s modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.po -t modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.json
+	npx i18next-conv -l ja -s modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po -t modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.json
 	msgfmt -o modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po
 	msgfmt -o modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po
 	npx i18next-conv -l hi -s modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po -t modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.json --compatibilityJSON v4
