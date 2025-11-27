@@ -1,5 +1,5 @@
 /* exported RBrainBrowser */
-
+import PropTypes from "prop-types";
 import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
@@ -14,6 +14,14 @@ import hiStrings from '../locale/hi/LC_MESSAGES/brainbrowser.json';
  * @version 1.0.0
  */
 class BrainBrowser extends Component {
+  /**
+   * React PropTypes validation.
+   * Ensures that the translation function `t` is passed
+   * into this component as a required prop.
+   */
+  static propTypes = {
+    t: PropTypes.func.isRequired
+  }
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -62,7 +70,6 @@ class BrainBrowser extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    // phan-ignore-next-line react/prop-types	  
     const {t} = this.props;
     const ns = 'brainbrowser';
 
