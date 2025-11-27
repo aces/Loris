@@ -30,9 +30,6 @@ msgstr "दृश्य रीसेट करें"
 msgid "Auto"
 msgstr "स्वतः"
 
-msgid "Loading..."
-msgstr "लोड हो रहा है..."
-
 msgid "{{count}} Pixels"
 msgstr "{{count}} पिक्सेल"
 
