@@ -261,7 +261,7 @@ class Upload extends \NDB_Page
               WHERE p.code='monitor_eeg_uploads'",
             []
         );
-        $timepoint = \TimePoint::singleton(new \SessionID((string)($session['ID']));
+        $timepoint = \TimePoint::singleton(new \SessionID(strval($session['ID'])));
         $msg_data  = [
             'Site'           => $timepoint->getPSC(),
             'PSCID'          => $pscid,
