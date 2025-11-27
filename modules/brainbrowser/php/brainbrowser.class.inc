@@ -51,6 +51,23 @@ class Brainbrowser extends \NDB_Page
     }
 
     /**
+     * Determine setup
+     *
+     * @return null
+     */
+    function setup()
+    {
+        parent::setup();
+        $this->setTemplateVar(
+            'world_coordinates',
+            dgettext("brainbrowser", "World Coordinates")
+        );
+        $this->setTemplateVar('color_map', dgettext("brainbrowser", "Color Map"));
+        $this->setTemplateVar('threshold', dgettext("brainbrowser", "Threshold"));
+
+    }
+
+    /**
      * Override base function to include brainbrowser javascript files
      * and dependencies
      *

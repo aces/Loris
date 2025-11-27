@@ -4,7 +4,6 @@ import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/brainbrowser.json';
-import PropTypes from 'prop-types';
 
 /**
  * Brainbrowser Page.
@@ -55,7 +54,6 @@ class BrainBrowser extends Component {
     localStorage.setItem('modulePrefs', JSON.stringify(this.modulePrefs));
     this.setState({panelSize});
   }
-  // ... (End of unchanged methods) ...
 
   /**
    * Renders the React component.
@@ -64,22 +62,21 @@ class BrainBrowser extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    // phan-ignore-next-line react/prop-types	  
     const {t} = this.props;
     const ns = 'brainbrowser';
 
-    let options = {
-      100: t('100 Pixels', {ns}),
-      200: t('200 Pixels', {ns}),
-      256: t('256 Pixels', {ns}),
-      300: t('300 Pixels (Default)', {ns}),
-      400: t('400 Pixels', {ns}),
-      500: t('500 Pixels', {ns}),
-      600: t('600 Pixels', {ns}),
-      700: t('700 Pixels', {ns}),
-      800: t('800 Pixels', {ns}),
-      900: t('900 Pixels', {ns}),
-      1000: t('1000 Pixels', {ns}),
-    };
+    // Generic pixel options
+    const pixelOptions = [100, 200, 256, 400, 500, 600, 700, 800, 900, 1000];
+    const options = {};
+
+    pixelOptions.forEach((count) => {
+      options[count] = t('{{count}} Pixels', {ns, count});
+    });
+
+    // Special case
+    options[300] = t('300 Pixels (Default)', {ns});
+
 
     return (
       <div>
@@ -91,22 +88,22 @@ class BrainBrowser extends Component {
             <button id='reset-view' className='control'>
               {t('Reset View', {ns})}
             </button>
-            <select id='panel-size'
+            <select
+              id='panel-size'
               className='control'
               value={this.state.panelSize}
-              onChange={this.handleChange}>
-              <option value='-1'>
-                {t('Auto', {ns})}
-              </option>
-              {Object.keys(options).map(function(option) {
-                return (
-                  <option value={option} key={option}>{options[option]}</option>
-                );
-              })}
+              onChange={this.handleChange}
+            >
+              <option value='-1'>{t('Auto', {ns})}</option>
+              {Object.keys(options).map((option) => (
+                <option value={option} key={option}>
+                  {options[option]}
+                </option>
+              ))}
             </select>
           </div>
         </div>
-        <div id='brainbrowser' className='brainbrowser'/>
+        <div id='brainbrowser' className='brainbrowser' />
         <div id='loading' className='loading-message'>
           {t('Loading...', {ns: 'loris'})}
         </div>
@@ -114,13 +111,19 @@ class BrainBrowser extends Component {
     );
   }
 }
-BrainBrowser.propTypes = {
-  t: PropTypes.func.isRequired,
-};
+
 // i18next Configuration and Export
 if (typeof i18n !== 'undefined') {
   i18n.addResourceBundle('hi', 'brainbrowser', hiStrings);
+//  i18n.addResourceBundle('jp', 'brainbrowser', jpStrings);
 }
+
+const strings = {
+  hi: hiStrings,
+//  jp: jpStrings
+};
+const activeLang = loris?.user?.langpref || 'en';
+const t = strings[activeLang] || strings['en'];
 
 const TranslatedBrainBrowser = withTranslation(
   ['brainbrowser', 'loris']
@@ -130,6 +133,6 @@ let RBrainBrowser = React.createFactory(TranslatedBrainBrowser);
 
 window.BrainBrowser = TranslatedBrainBrowser;
 window.RBrainBrowser = RBrainBrowser;
-window.hiStrings = hiStrings;
+window.tStrings = t;
 
 export default TranslatedBrainBrowser;

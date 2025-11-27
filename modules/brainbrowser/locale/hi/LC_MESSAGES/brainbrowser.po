@@ -33,38 +33,11 @@ msgstr "स्वतः"
 msgid "Loading..."
 msgstr "लोड हो रहा है..."
 
-msgid "100 Pixels"
-msgstr "100 पिक्सेल"
-
-msgid "200 Pixels"
-msgstr "200 पिक्सेल"
-
-msgid "256 Pixels"
-msgstr "256 पिक्सेल"
+msgid "{{count}} Pixels"
+msgstr "{{count}} पिक्सेल"
 
 msgid "300 Pixels (Default)"
 msgstr "300 पिक्सेल (डिफ़ॉल्ट)"
-
-msgid "400 Pixels"
-msgstr "400 पिक्सेल"
-
-msgid "500 Pixels"
-msgstr "500 पिक्सेल"
-
-msgid "600 Pixels"
-msgstr "600 पिक्सेल"
-
-msgid "700 Pixels"
-msgstr "700 पिक्सेल"
-
-msgid "800 Pixels"
-msgstr "800 पिक्सेल"
-
-msgid "900 Pixels"
-msgstr "900 पिक्सेल"
-
-msgid "1000 Pixels"
-msgstr "1000 पिक्सेल"
 
 msgid "Overlay"
 msgstr "ओवरले"
@@ -78,3 +51,17 @@ msgstr "थ्रेशहोल्ड"
 msgid "Color Map"
 msgstr "कलर मैप"
 
+msgid "Gray"
+msgstr "धूसर"
+
+msgid "Spectral"
+msgstr "स्पेक्ट्रल"
+
+msgid "Thermal"
+msgstr "थर्मल"
+
+msgid "Blue"
+msgstr "नीला"
+
+msgid "Green"
+msgstr "हरा"

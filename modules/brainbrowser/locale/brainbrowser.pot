@@ -21,7 +21,6 @@ msgstr ""
 msgid "Brainbrowser"
 msgstr ""
 
-
 msgid "Sync Volumes"
 msgstr ""
 
@@ -31,35 +30,23 @@ msgstr ""
 msgid "Auto"
 msgstr ""
 
-msgid "100 Pixels"
-msgstr ""
-
-msgid "200 Pixels"
-msgstr ""
-
-msgid "256 Pixels"
-msgstr ""
-
 msgid "300 Pixels (Default)"
 msgstr ""
 
-msgid "400 Pixels"
+msgid "{{count}} Pixels"
 msgstr ""
 
-msgid "500 Pixels"
+msgid "Gray"
 msgstr ""
 
-msgid "600 Pixels"
+msgid "Spectral"
 msgstr ""
 
-msgid "700 Pixels"
+msgid "Thermal"
 msgstr ""
 
-msgid "800 Pixels"
+msgid "Blue"
 msgstr ""
 
-msgid "900 Pixels"
-msgstr ""
-
-msgid "1000 Pixels"
+msgid "Green"
 msgstr ""

@@ -25,7 +25,6 @@
             </div>
 
             <hr/>
-
             <div class="filename-overlay-additional-info">
               <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
                 World Coordinates
@@ -74,7 +73,10 @@
         <div class="volume-viewer-controls volume-controls">
           <div class="coords">
             <div data-t="World Coordinates" class="control-heading" id="world-coordinates-heading-{{VOLID}}">
-                 World Coordinates
+
+            {/literal}
+               {$world_coordinates}
+            {literal}
             </div>
             <div class="world-coords" data-volume-id="{{VOLID}}">
               X<input id="world-x-{{VOLID}}" class="control-inputs">
@@ -86,7 +88,9 @@
 
             <div id="color-map-{{VOLID}}">
               <span data-t="Color Map" class="control-heading" id="color-map-heading-{{VOLID}}">
-                  Color Map
+                {/literal}
+                   {$color_map}
+                {literal}
               </span>
             </div>
 
@@ -94,7 +98,9 @@
 
             <div class="threshold-div" data-volume-id="{{VOLID}}">
               <div class="control-heading" data-t="Threshold">
-                Threshold
+               {/literal}
+                 {$threshold}
+               {literal}
               </div>
               <div class="thresh-inputs">
                 <input id="min-threshold-{{VOLID}}" class="control-inputs thresh-input-left" value="0"/>
@@ -183,39 +189,5 @@
   ReactDOM.createRoot(
     document.getElementById('brainbrowserPage')
   ).render(RBrainBrowser());
-</script>
-
-<script>
-(function() {
-
-  const lang = loris?.user?.langpref ?? "en";
-  if (['en', 'en_CA', 'en_ca'].includes(lang)) {
-    return;
-  } 
-  const map = {
-    hi: "hiStrings",
-    //jp: "jpStrings" if jp translate is done 
-  };
-  const key = map[lang];
-  const t = window[key];
-  const obs = new MutationObserver(() => {
-    // Check only once BrainBrowser renders UI
-    if (document.body.innerText.includes("World Coordinates")) {
-
-    document.querySelectorAll("[data-t]").forEach(el => {
-    const en = el.getAttribute("data-t");
-    const translated = t[en];
-
-    if (translated) {
-      el.textContent = translated;
-    }
-  });
-      obs.disconnect();
-    }
-  });
-
-  obs.observe(document.body, { childList: true, subtree: true });
-
-})();
 </script>
 
