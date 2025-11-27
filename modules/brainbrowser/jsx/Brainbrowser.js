@@ -122,7 +122,7 @@ const strings = {
   hi: hiStrings,
 //  jp: jpStrings
 };
-const activeLang = loris?.user?.langpref || 'en';
+const activeLang = (loris?.user?.langpref || 'en').slice(0, 2);
 const t = strings[activeLang] || strings['en'];
 
 const TranslatedBrainBrowser = withTranslation(

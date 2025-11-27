@@ -63,9 +63,6 @@
     '" target="_blank">mris_convert</a> ' +
     'to convert your binary surface files into .asc format.'
   );
-  console.log('============');
-  // Color maps
-  console.log(window.tStrings);
   BrainBrowser.config.set('color_maps', [
     {
       name: window.tStrings?.['Gray'] ?? 'Gray',
