@@ -20,7 +20,7 @@ class BrainBrowser extends Component {
    * into this component as a required prop.
    */
   static propTypes = {
-    t: PropTypes.func.isRequired;
+    t: PropTypes.func.isRequired,
   }
   /**
    * @constructor
