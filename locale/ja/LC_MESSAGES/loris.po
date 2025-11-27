@@ -276,6 +276,9 @@ msgstr "保存"
 msgid "Reset"
 msgstr "リセット"
 
+msgid "Note"
+msgstr "注記"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}}行中{{pageCount}}行を表示"

@@ -87,6 +87,7 @@ locales:
 	msgfmt -o modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po
 	msgfmt -o modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po
 	npx i18next-conv -l hi -s modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po -t modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.json --compatibilityJSON v4
+	npx i18next-conv -l ja -s modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po -t modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.json --compatibilityJSON v4
 	msgfmt -o modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po
 	msgfmt -o modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po
 	npx i18next-conv -l hi -s modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po -t modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.json
