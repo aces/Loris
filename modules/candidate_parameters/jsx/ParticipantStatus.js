@@ -47,6 +47,7 @@ class ParticipantStatus extends Component {
    * Fetch data
    */
   fetchData() {
+    const {t} = this.props;
     let that = this;
     $.ajax(
       this.props.dataURL,
@@ -83,7 +84,9 @@ class ParticipantStatus extends Component {
         error: function(data, errorCode, errorMsg) {
           that.setState(
             {
-              error: t('An error occured while loading the page.', {ns: 'loris'}),
+              error: t('An error occured while loading the page.',
+                {ns: 'loris'}
+              ),
             }
           );
         },
@@ -353,6 +356,9 @@ ParticipantStatus.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
+  t: PropTypes.string.isRequired,
 };
 
-export default withTranslation(['candidate_parameters', 'loris'])(ParticipantStatus);
+export default withTranslation(
+  ['candidate_parameters', 'loris']
+)(ParticipantStatus);

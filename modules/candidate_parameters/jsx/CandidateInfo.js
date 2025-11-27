@@ -45,6 +45,7 @@ class CandidateInfo extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
+    const {t} = this.props;
     let that = this;
     $.ajax(
       this.props.dataURL,
@@ -255,7 +256,8 @@ class CandidateInfo extends Component {
       } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
-        alertMessage = errorMessage ? errorMessage : t('Failed to update!', {ns: 'loris'});
+        alertMessage =
+          errorMessage ? errorMessage : t('Failed to update!', {ns: 'loris'});
       }
     }
 
@@ -278,7 +280,10 @@ class CandidateInfo extends Component {
             text={this.state.Data.candID}
           />
           <SelectElement
-            label={t('Caveat Emptor Flag for Candidate', {ns: 'candidate_parameters'})}
+            label={
+              t('Caveat Emptor Flag for Candidate',
+                {ns: 'candidate_parameters'})
+            }
             name="flaggedCaveatemptor"
             options={this.state.caveatOptions}
             value={this.state.formData.flaggedCaveatemptor}
@@ -288,7 +293,10 @@ class CandidateInfo extends Component {
             required={true}
           />
           <SelectElement
-            label={t('Reason for Caveat Emptor Flag', {ns: 'candidate_parameters'})}
+            label={
+              t('Reason for Caveat Emptor Flag',
+                {ns: 'candidate_parameters'})
+            }
             name="flaggedReason"
             options={this.state.Data.caveatReasonOptions}
             value={this.state.formData.flaggedReason}
@@ -385,7 +393,8 @@ CandidateInfo.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
+  t: PropTypes.string.isRequired,
 };
-
-
-export default withTranslation(['candidate_parameters', 'loris'])(CandidateInfo);
+export default withTranslation(
+  ['candidate_parameters', 'loris']
+)(CandidateInfo);

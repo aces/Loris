@@ -40,6 +40,7 @@ class FamilyInfo extends Component {
    * Fetch data
    */
   fetchData() {
+    const {t} = this.props;
     $.ajax(
       this.props.dataURL,
       {
@@ -64,7 +65,9 @@ class FamilyInfo extends Component {
         }.bind(this),
         error: function(data, errorCode, errorMsg) {
           this.setState({
-            error: t('An error occurred when loading the form!', {ns: 'candidate_parameters'}),
+            error: t('An error occurred when loading the form!',
+              {ns: 'candidate_parameters'}
+            ),
           });
         }.bind(this),
       }
@@ -139,7 +142,8 @@ class FamilyInfo extends Component {
     let addButton = null;
     if (loris.userHasPermission('candidate_parameter_edit')) {
       disabled = false;
-      addButton = <ButtonElement label={t('Add', {ns: 'candidate_parameters'})}/>;
+      addButton =
+        <ButtonElement label={t('Add', {ns: 'candidate_parameters'})}/>;
     }
 
     let candidateList = this.state.Data.candidates;
@@ -156,7 +160,9 @@ class FamilyInfo extends Component {
         familyMembersHTML.push(
           <div key={key}>
             <StaticElement
-              label={t('Family Member ID (DCCID)', {ns: 'candidate_parameters'})}
+              label={
+                t('Family Member ID (DCCID)', {ns: 'candidate_parameters'})
+              }
               text={<a href={link}>{candID}</a>}
             />
             <StaticElement
@@ -191,7 +197,8 @@ class FamilyInfo extends Component {
       } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
-        alertMessage = errorMessage ? errorMessage : t('Failed to update!', {ns: 'candidate_parameters'});
+        alertMessage = errorMessage ? errorMessage :
+          t('Failed to update!', {ns: 'candidate_parameters'});
       }
     }
 
@@ -399,6 +406,7 @@ FamilyInfo.propTypes = {
   tabName: PropTypes.string,
   candID: PropTypes.string,
   action: PropTypes.string,
+  t: PropTypes.string.isRequired,
 };
 
 export default withTranslation(['candidate_parameters', 'loris'])(FamilyInfo);

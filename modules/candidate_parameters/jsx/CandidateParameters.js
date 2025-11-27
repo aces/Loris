@@ -122,7 +122,7 @@ class CandidateParameters extends Component {
           href={loris.BaseURL + '/' + this.props.candID}
           style={{marginBottom: '20px'}}
         >
-	  {t('Return to timepoint list', {ns: 'candidate_parameters'})}
+          {t('Return to timepoint list', {ns: 'candidate_parameters'})}
         </a>
         <br />
         <Tabs tabs={tabList} defaultTab='candidateInfo' updateURL={true}>
@@ -135,6 +135,7 @@ class CandidateParameters extends Component {
 
 CandidateParameters.propTypes = {
   candID: PropTypes.string.isRequired,
+  t: PropTypes.string.isRequired,
 };
 
 /**
@@ -147,7 +148,7 @@ window.addEventListener('load', () => {
 
   const TranslatedCandidateParameters = withTranslation(
     ['candidate_parameters', 'loris']
-  )(CandidateParameters)
+  )(CandidateParameters);
 
   createRoot(
     document.getElementById('lorisworkspace')

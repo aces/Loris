@@ -79,7 +79,9 @@ class CandidateDOD extends Component {
   render() {
     const {t} = this.props;
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>;
+      return (
+        <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>
+      );
     }
 
     if (!this.state.isLoaded) {
@@ -111,8 +113,12 @@ class CandidateDOD extends Component {
           />
           <StaticElement
             label={t('Disclaimer:', {ns: 'candidate_parameters'})}
-            text={t('Any changes to the date of death requires an administrator '
-                 + 'to run the fix_candidate_age script.', {ns: 'candidate_parameters'})}
+            text={
+              t('Any changes to the date of death requires an administrator '
+                 + 'to run the fix_candidate_age script.',
+              {ns: 'candidate_parameters'}
+              )
+            }
             class='form-control-static text-danger bg-danger col-sm-10'
           />
           <DateElement
@@ -153,7 +159,10 @@ class CandidateDOD extends Component {
     if (dod > today) {
       swal.fire({
         title: t('Invalid date', {ns: 'candidate_parameters'}),
-        text: t('Date of death cannot be later than today!', {ns: 'candidate_parameters'}),
+        text:
+          t('Date of death cannot be later than today!',
+            {ns: 'candidate_parameters'}
+          ),
         type: 'error',
         confirmButtonText: t('OK', {ns: 'loris'}),
       });
@@ -163,7 +172,10 @@ class CandidateDOD extends Component {
     if (dob > dod) {
       swal.fire({
         title: t('Invalid date', {ns: 'candidate_parameters'}),
-        text: t('Date of death must be after date of birth!', {ns: 'candidate_parameters'}),
+        text:
+          t('Date of death must be after date of birth!',
+            {ns: 'candidate_parameters'}
+          ),
         type: 'error',
         confirmButtonText: t('OK', {ns: 'loris'}),
       });
@@ -215,5 +227,6 @@ CandidateDOD.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
+  t: PropTypes.string.isRequired,
 };
 export default withTranslation(['candidate_parameters', 'loris'])(CandidateDOD);

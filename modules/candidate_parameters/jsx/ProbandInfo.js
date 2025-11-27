@@ -56,6 +56,7 @@ class ProbandInfo extends Component {
    * Retrieve data from the provided URL and save it in state
    */
   fetchData() {
+    const {t} = this.props;
     $.ajax(this.props.dataURL, {
       method: 'GET',
       dataType: 'json',
@@ -78,7 +79,9 @@ class ProbandInfo extends Component {
       },
       error: (error) => {
         this.setState({
-          error: t('An error occurred when loading the form!', {ns: 'candidate_parameters'}),
+          error: t('An error occurred when loading the form!',
+            {ns: 'candidate_parameters'}
+          ),
         });
       },
     });
@@ -135,7 +138,10 @@ class ProbandInfo extends Component {
     if (dob1 > today) {
       swal.fire({
         title: t('Error!', {ns: 'loris'}),
-        text: t('Proband date of birth cannot be later than today!', {ns: 'candidate_parameters'}),
+        text:
+          t('Proband date of birth cannot be later than today!',
+            {ns: 'candidate_parameters'}
+          ),
         type: 'error',
         confirmButtonText: t('OK', {ns: 'loris'}),
       });
@@ -297,7 +303,8 @@ class ProbandInfo extends Component {
       } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
-        alertMessage = errorMessage ? errorMessage : t('Failed to update!', {ns: 'candidate_parameters'});
+        alertMessage = errorMessage ? errorMessage :
+          t('Failed to update!', {ns: 'candidate_parameters'});
       }
     }
 
@@ -364,6 +371,7 @@ ProbandInfo.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   tabName: PropTypes.string,
+  t: PropTypes.string.isRequired,
 };
 
 export default withTranslation(['candidate_parameters', 'loris'])(ProbandInfo);
