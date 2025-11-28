@@ -297,6 +297,12 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid "Access denied"
+msgstr ""
+
+msgid "No."
+msgstr ""
+
 msgid "Ethnicity"
 msgstr ""
 

@@ -13,221 +13,202 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "MRI Violated Scans"
-msgstr ""
-
-msgid "Violated scan"
-msgstr ""
-
-msgid "Violated scans"
-msgstr ""
+msgstr "MRI Scans violés"
 
 msgid "Violations for SeriesUID"
-msgstr ""
+msgstr "Violations pour SeriesUID"
 
 msgid "Violations for"
-msgstr ""
+msgstr "Violations pour"
 
 msgid "Time Run"
-msgstr ""
+msgstr "Temps d'exécution"
 
 msgid "Series Description"
-msgstr ""
+msgstr "Description de la série"
 
 msgid "Image Location"
-msgstr ""
+msgstr "Emplacement de l'image"
 
 msgid "Patient Name"
-msgstr ""
+msgstr "Nom du patient"
 
 msgid "Series UID"
-msgstr ""
+msgstr "UID de la série"
 
 msgid "Echo Time"
-msgstr ""
+msgstr "Temps d'écho"
 
 msgid "Protocol Group"
-msgstr ""
+msgstr "Groupe de protocole"
 
 msgid "TR"
-msgstr ""
+msgstr "TR"
 
 msgid "TE"
-msgstr ""
+msgstr "TE"
 
 msgid "TI"
-msgstr ""
+msgstr "TI"
 
 msgid "Slice Thickness"
-msgstr ""
+msgstr "Épaisseur de tranche"
 
 msgid "Xspace"
-msgstr ""
+msgstr "Xespace"
 
 msgid "Yspace"
-msgstr ""
+msgstr "Yspace"
 
 msgid "Zspace"
-msgstr ""
+msgstr "EspaceZ"
 
 msgid "Xstep"
-msgstr ""
+msgstr "Xétape"
 
 msgid "Ystep"
-msgstr ""
+msgstr "Étape Y"
 
 msgid "Zstep"
-msgstr ""
+msgstr "Zétape"
 
 msgid "Time"
-msgstr ""
+msgstr "Temps"
 
 msgid "Image Type"
-msgstr ""
+msgstr "Type d'image"
 
 msgid "Phase Encoding Direction"
-msgstr ""
+msgstr "Direction de codage de phase"
 
 msgid "Echo Number"
-msgstr ""
+msgstr "Numéro d'écho"
 
 msgid "Image Protocol"
-msgstr ""
+msgstr "Protocole d'image"
 
 msgid "Study Protocols"
-msgstr ""
+msgstr "Protocoles d'étude"
 
 msgid "Scan Problems"
-msgstr ""
+msgstr "Problèmes de numérisation"
 
 msgid "Scan Type"
-msgstr ""
+msgstr "Type de numérisation"
 
 msgid "Severity"
-msgstr ""
+msgstr "Gravité"
 
 msgid "Header"
-msgstr ""
+msgstr "En-tête"
 
 msgid "Value"
-msgstr ""
+msgstr "Valeur"
 
 msgid "Valid Values"
-msgstr ""
+msgstr "Valeurs valides"
 
 msgid "Protocol Violation"
-msgstr ""
+msgstr "Violation du protocole"
 
 msgid "Could not identify scan type"
-msgstr ""
+msgstr "Type de numérisation non identifié"
 
 msgid "Series Description or Scan Type"
-msgstr ""
+msgstr "Description de la série ou type de numérisation"
 
 msgid "Resolution Status"
-msgstr ""
+msgstr "Statut de résolution"
 
 msgid "Unresolved"
-msgstr ""
+msgstr "Non résolu"
 
 msgid "Reran"
-msgstr ""
+msgstr "Réexécuter"
 
 msgid "Emailed site/pending"
-msgstr ""
+msgstr "Site envoyé par courriel/en attente"
 
 msgid "Inserted"
-msgstr ""
+msgstr "Inséré"
 
 msgid "Rejected"
-msgstr ""
+msgstr "Rejeté"
 
 msgid "Inserted with flag"
-msgstr ""
+msgstr "Inséré avec un drapeau"
 
 msgid "Other"
-msgstr ""
+msgstr "Autre"
 
 msgid "Type of Problem"
-msgstr ""
+msgstr "Type de problème"
 
 msgid "Select Resolution"
-msgstr ""
+msgstr "Sélectionnez la résolution"
 
 msgid "Image File"
-msgstr ""
+msgstr "Fichier image"
 
 msgid "Must submit data in JSON format"
-msgstr ""
+msgstr "Les données doivent être soumises au format JSON."
 
 msgid "Can not implement filter on a resource type that has no centers."
-msgstr ""
-
-msgid "Can not implement filter on a resource type that has no projects."
-msgstr ""
+msgstr "Impossible d'appliquer un filtre à un type de ressource sans centre."
 
 msgid "hash"
-msgstr ""
+msgstr "hacher"
 
 msgid "JoinID"
-msgstr ""
+msgstr "ID de jointure"
 
 msgid "TarchiveID"
-msgstr ""
+msgstr "TarchiveID"
 
 msgid "Center Name"
-msgstr ""
+msgstr "Nom du centre"
 
 msgid "Scanner ID"
-msgstr ""
-
-msgid "Scan Type"
-msgstr ""
+msgstr "ID du scanner"
 
 msgid "TR Range"
-msgstr ""
+msgstr "Gamme TR"
 
 msgid "TE Range"
-msgstr ""
+msgstr "LA GAMME"
 
 msgid "TI Range"
-msgstr ""
+msgstr "Gamme TI"
 
 msgid "Slice Thickness Range"
-msgstr ""
+msgstr "Plage d'épaisseur de tranche"
 
 msgid "Xspace Range"
-msgstr ""
+msgstr "Gamme Xspace"
 
 msgid "Yspace Range"
-msgstr ""
+msgstr "Gamme Yspace"
 
 msgid "Zspace Range"
-msgstr ""
+msgstr "Gamme Zspace"
 
 msgid "Xstep Range"
-msgstr ""
+msgstr "Gamme Xstep"
 
 msgid "Ystep Range"
-msgstr ""
+msgstr "Plage Ystep"
 
 msgid "Zstep Range"
-msgstr ""
+msgstr "Plage de pas Z"
 
 msgid "Time Range"
-msgstr ""
+msgstr "Plage de temps"
 
-msgid "Image Type"
-msgstr ""
-
-msgid "Phase Encoding Direction"
-msgstr ""
-
-msgid "Echo Number"
-msgstr ""
-
+msgid "Can not implement filter on a resource type that has no projects."
+msgstr "Impossible d'appliquer un filtre à un type de ressource qui ne comporte aucun projet."
