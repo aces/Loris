@@ -146,12 +146,15 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
                          s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
                          pr.Name as ProjectName, p.Alias as SiteAlias,
-                         s.ProjectID as ProjectID
+			 s.ProjectID as ProjectID,
+                         l.language_code as LanguageCode,
+                         l.language_label as LanguageLabel
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                         LEFT JOIN Project AS pr USING(ProjectID)
                         LEFT JOIN candidate AS c ON (s.CandidateID=c.ID)
+                        LEFT JOIN language l ON (s.languageID=l.language_id)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
         $row   = $db->pselectRow(
             $query,
@@ -171,10 +174,17 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $cohortSettings       = $config->getCohortSettings(
+            if (isset($row['LanguageCode'])) {
+                $this->_timePointInfo['Language'] = new \Language(
+                    $row['LanguageLabel'],
+                    $row['LanguageCode']
+                );
+            }
+            unset($row['language_code'], $row['language_label']);
+            $cohortSettings = $config->getCohortSettings(
                 intval($row['CohortID'] ?? null)
             );
-            $title = $cohortSettings['title'] ?? '';
+            $title          = $cohortSettings['title'] ?? '';
             $this->_timePointInfo['CohortTitle'] = $title;
 
             $this->_timePointInfo['CandID']
@@ -1394,23 +1404,11 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function getLanguage() : \Language
     {
-        $db = NDB_Factory::singleton()->database();
-
-        $vals = $db->pselectRow(
-            "SELECT language_label, language_code
-             FROM language l
-                 JOIN session s ON (l.language_id=s.languageID)
-             WHERE s.ID=:sid",
-            ['sid' => $this->getSessionID()],
-        );
-
-        if ($vals === null) {
+        $lang = $this->getData('Language');
+        if ($lang === null) {
             return new \Language("Unknown", "en_CA");
         }
-        return new \Language(
-            label: $vals['language_label'],
-            code: $vals['language_code']
-        );
+        return $lang;
     }
 }
 
