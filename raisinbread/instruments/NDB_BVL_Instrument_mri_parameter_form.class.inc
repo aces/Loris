@@ -161,12 +161,12 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         $this->addLabel("Total Duration of Session");
         $this->addNumericElement(
             'total_duration_hours',
-            $this->indent . $this->indent . 'Hours:'
+            $this->indent . $this->indent . dgettext($this->name, 'Hours:')
         );
 
         $this->addNumericElement(
             'total_duration_minutes',
-            $this->indent . $this->indent . 'Minutes:'
+            $this->indent . $this->indent . dgettext($this->name, 'Minutes:')
         );
 
         $this->addBasicText(
@@ -185,9 +185,9 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
 
         $acquiredOptions = array(
             null      => '',
-            'yes'     => 'Yes',
-            'partial' => 'Partial',
-            'no'      => 'No',
+            'yes'     => dgettext("loris", 'Yes'),
+            'partial' => dgettext($this->name, 'Partial'),
+            'no'      => dgettext("loris", 'No'),
         );
 
         $scanTypes = array(
