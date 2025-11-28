@@ -1387,9 +1387,14 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         return $projMatch && $centerMatch;
     }
 
+    /**
+     * Get the language code used for this timepoint
+     *
+     * @return string
+     */
     public function getLanguageCode() : string
     {
-	    return "fr";
+        return "fr";
     }
 }
 

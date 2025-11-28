@@ -234,8 +234,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             return null;
         }
 
-	\bind_textdomain_codeset($instrument, 'UTF-8');
-	\bindtextdomain($instrument, __DIR__ . "/../../project/locale");
+        \bind_textdomain_codeset($instrument, 'UTF-8');
+        \bindtextdomain($instrument, __DIR__ . "/../../project/locale");
         if (file_exists($base."project/instruments/$instrument.linst")
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
@@ -271,18 +271,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
-	$origlang = \getenv("LANG");
-	$obj->form->textdomain = $instrument;
+        $origlang = \getenv("LANG");
+        $obj->form->textdomain = $instrument;
         // if a script is loading this form without a commentID, display all fields
         if (empty($commentID)) {
             $obj->displayAllFields = true;
-	} else {
-		$obj->commentID = $commentID;
-		$timepoint = \TimePoint::singleton($obj->getSessionID());
-		$ilang = $timepoint->getLanguageCode();
-		\putenv("LANG=" . $ilang . ".utf8");
-		\putenv("LANGUAGE=" . $ilang . ".utf8");
-	}
+        } else {
+            $obj->commentID = $commentID;
+            $timepoint      = \TimePoint::singleton($obj->getSessionID());
+            $ilang          = $timepoint->getLanguageCode();
+            \putenv("LANG=" . $ilang . ".utf8");
+            \putenv("LANGUAGE=" . $ilang . ".utf8");
+        }
 
         // Set page name to testName
         $obj->name = $instrument;
@@ -313,8 +313,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $base . "project/instruments/$instrument.rules"
         );
 
-	\putenv("LANG=$origlang");
-	\putenv("LANGUAGE=$origlang");
+        \putenv("LANG=$origlang");
+        \putenv("LANGUAGE=$origlang");
         return $obj;
     }
 
@@ -904,7 +904,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->dateOptions = $dateOptions;
 
-        $this->addBasicDate('Date_taken', dgettext('instruments', 'Date of Administration'), $dateOptions);
+        $this->addBasicDate(
+            'Date_taken',
+            dgettext('instruments', 'Date of Administration'),
+            $dateOptions
+        );
 
         if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
