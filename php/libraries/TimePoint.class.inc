@@ -1400,7 +1400,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     /**
      * Get the language code used for this timepoint
      *
-     * @return string
+     * @return \Language
      */
     public function getLanguage() : \Language
     {
