@@ -9,6 +9,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/imaging_browser.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
 
 /**
  * Imaging browser index component
@@ -217,7 +218,7 @@ ImagingBrowserIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'imaging_browser', {});
+  i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   const Index = withTranslation(
     ['imaging_browser', 'loris']

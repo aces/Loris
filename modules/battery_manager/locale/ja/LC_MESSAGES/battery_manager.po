@@ -21,3 +21,104 @@ msgstr ""
 msgid "Battery Manager"
 msgstr "バッテリーマネージャー"
 
+msgid "Submission successful!"
+msgstr "送信成功しました!"
+
+msgid "Instrument"
+msgstr "楽器"
+
+msgid "Minimum Age"
+msgstr "最低年齢"
+
+msgid "Maximum Age"
+msgstr "最大年齢"
+
+msgid "Stage"
+msgstr "ステージ"
+
+msgid "First Visit"
+msgstr "初回訪問"
+
+msgid "Instrument Order"
+msgstr "楽器の注文"
+
+msgid "Double Data Entry Enabled"
+msgstr "二重データ入力が有効"
+
+msgid "Change Status"
+msgstr "ステータスの変更"
+
+msgid "Edit Metadata"
+msgstr "メタデータの編集"
+
+msgid "Deactivate"
+msgstr "無効化"
+
+msgid "Activate"
+msgstr "活性化"
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "New Test"
+msgstr "新しいテスト"
+
+msgid "Edit Test"
+msgstr "編集テスト"
+
+msgid "Add New Test"
+msgstr "新しいテストを追加"
+
+msgid "This field is required"
+msgstr "この項目は必須です"
+
+msgid "This field must be 0 or greater"
+msgstr "このフィールドは 0 以上である必要があります。"
+
+msgid "Minimum age must be lesser than maximum age."
+msgstr "最低年齢は最高年齢より小さくなければなりません。"
+
+msgid "Maximum age must be greater than minimum age."
+msgstr "最高年齢は最低年齢より大きくなければなりません。"
+
+msgid "Test Duplicate"
+msgstr "テストの重複"
+
+msgid "The information provided corresponds with a deactivated test that already exists in the system."
+msgstr "提供された情報は、システムにすでに存在する非アクティブなテストに対応しています。"
+
+msgid "Would you to like activate that test?"
+msgstr "そのテストを有効にしますか?"
+
+msgid "You cannot duplicate an active test"
+msgstr "アクティブなテストを複製することはできません"
+
+msgid "You cannot add an entry if it has a duplicate entry in the test battery."
+msgstr "テスト バッテリーに重複したエントリがある場合は、エントリを追加できません。"
+
+msgid "If the duplicate entry is inactive, you will be given the option to activate it."
+msgstr "重複したエントリが非アクティブな場合は、アクティブにするオプションが表示されます。"
+
+msgid "Editing an entry will alter the current entry."
+msgstr "エントリを編集すると、現在のエントリが変更されます。"
+
+msgid "You cannot edit an entry to have the same values as another active entry."
+msgstr "エントリを編集して、別のアクティブなエントリと同じ値に設定することはできません。"
+
+msgid "Search for instrument"
+msgstr "楽器を探す"
+
+msgid "Search for site"
+msgstr "サイトを検索"
+
+msgid "Enable Double Data Entry"
+msgstr "二重データ入力を有効にする"
+
+msgid "Submit"
+msgstr "提出する"
+
+msgid "Maximum Age (days)"
+msgstr "最大年齢（日数）"
+
+msgid "Minimum Age (days)"
+msgstr "最低年齢（日数）"

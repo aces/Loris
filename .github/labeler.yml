@@ -217,3 +217,7 @@ RaisinBread:
 "Language: SQL":
 - changed-files:
   - any-glob-to-any-file: '**/*.sql'
+
+"Multilingual":
+- changed-files:
+  - any-glob-to-any-file: '**/*.po'

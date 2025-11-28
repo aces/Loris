@@ -20,3 +20,97 @@ msgstr ""
 
 msgid "Schedule Appointment"
 msgstr "予約する"
+
+msgid "Appointment Date"
+msgstr "予約日"
+
+msgid "Appointment Time"
+msgstr "予約時間"
+
+msgid "Appointment Type"
+msgstr "予約の種類"
+
+# ???
+msgid "AppointmentTypeName"
+msgstr ""
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "Delete"
+msgstr "消去"
+
+msgid "Data Entry Status"
+msgstr "データ入力ステータス"
+
+msgid "Complete"
+msgstr "完了"
+
+msgid "No Data Found"
+msgstr "データが見つかりません"
+
+msgid "Not Started"
+msgstr "開始されていません"
+
+msgid "Edit Appointment"
+msgstr "予約を編集"
+
+msgid "Create Appointment"
+msgstr "予約を作成"
+
+msgid "Add Appointment"
+msgstr "予約を追加"
+
+msgid "All"
+msgstr "全て"
+
+msgid "Past"
+msgstr "過去"
+
+msgid "Next 30 Days"
+msgstr "今後30日間"
+
+msgid "Today"
+msgstr "今日"
+
+msgid "Appointment modified."
+msgstr "予約が変更されました。"
+
+msgid "Appointment added."
+msgstr "予約を追加しました。"
+
+msgid "Success!"
+msgstr "成功！"
+
+msgid "No changes were made!"
+msgstr "変更は行われませんでした。"
+
+msgid "Are you sure?"
+msgstr "本気ですか？"
+
+msgid "You won't be able to revert this!"
+msgstr "これを元に戻すことはできません!"
+
+msgid "Yes, delete it!"
+msgstr "はい、削除します！"
+
+msgid "No, cancel it!"
+msgstr "いいえ、キャンセルします！"
+
+msgid "Deleted!"
+msgstr "削除されました!"
+
+msgid "Your appointment has been deleted."
+msgstr "予約は削除されました。"
+
+msgid "Starts At"
+msgstr "開始価格"
+
+msgid "Date"
+msgstr "日付"
+
+msgid "Time"
+msgstr "時間"
+
+msgid "Appointment Type Name"
+msgstr "予約タイプ名"

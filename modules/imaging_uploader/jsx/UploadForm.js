@@ -2,7 +2,7 @@ import ProgressBar from 'ProgressBar';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
-import {withTranslation} from 'react-i18next';
+import {withTranslation, Trans} from 'react-i18next';
 import {
   FormElement,
   SelectElement,
@@ -385,9 +385,8 @@ class UploadForm extends Component {
     } else {
       errorMessage = {
         'mriFile': [
-          t('Upload failed: received HTTP response code',
-            {ns: 'imaging_uploader'})
-          + ' ' + xhr.status,
+          t('Upload failed: received HTTP response code {{code}}',
+            {ns: 'imaging_uploader', code: xhr.status}),
         ],
       };
     }
@@ -437,9 +436,13 @@ class UploadForm extends Component {
         )}<br/>
         {t('File must be of type .tgz or tar.gz or .zip',
           {ns: 'imaging_uploader'})}<br/>
-        {t('For files that are not Phantom Scans, file name must begin with',
-          {ns: 'imaging_uploader'})}
-        <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
+        <Trans
+          ns="imaging_uploader"
+          defaults={'For files that are not Phantom Scans, '
+            + 'file name must begin with <0>{{prefix}}</0>'}
+          components={[<b/>]}
+          values={{prefix: '[PSCID]_[CandID]_[Visit Label]'}}
+        /><br/>
         {t(
           `For example, for DCCID {{dccid}}, PSCID {{pscid}}, ` +
           `and Visit Label {{visitLabel}} ` +

@@ -144,6 +144,9 @@ msgstr ""
 msgid "Selection Filter"
 msgstr ""
 
+msgid "Filters"
+msgstr ""
+
 msgid "Show Filters"
 msgstr ""
 
@@ -151,6 +154,9 @@ msgid "Hide Filters"
 msgstr ""
 
 msgid "Clear Filters"
+msgstr ""
+
+msgid "Load Filter Preset"
 msgstr ""
 
 msgid "Show Advanced Filters"
@@ -207,9 +213,6 @@ msgid "PSCID"
 msgstr ""
 
 msgid "DCCID"
-msgstr ""
-
-msgid "Visit"
 msgstr ""
 
 msgid "Visit Label"
@@ -441,6 +444,9 @@ msgid "Error!"
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Incorrect username or password."
 msgstr ""
 
 # Common timepoint and vist terms

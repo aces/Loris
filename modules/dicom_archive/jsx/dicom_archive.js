@@ -9,6 +9,7 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/dicom_archive.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/dicom_archive.json';
 /**
  * DICOM Archive Page.
  *
@@ -202,6 +203,7 @@ DicomArchive.propTypes = {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'dicom_archive', hiStrings);
+  i18n.addResourceBundle('ja', 'dicom_archive', jaStrings);
   const Index = withTranslation(
     ['dicom_archive', 'loris']
   )(DicomArchive);
