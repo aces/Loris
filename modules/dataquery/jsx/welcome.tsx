@@ -1054,13 +1054,13 @@ function ShareIcon(props: {
  * An icon to name a query
  *
  * @param {object} props - React props
- * @param {function} props.t - useTranslation
+ * @param {any} props.t - useTranslation
  * @param {function} props.onClick - Handler to call when icon clicked
  *
  * @returns {React.ReactElement} - The React element
  */
 function NameIcon(props: {
-  t: (str: string, obj: object) => string,
+  t: any,
   onClick?: () => void
 }): React.ReactElement {
   return (<span title={props.t('Name Query', {ns: 'dataquery'})}
