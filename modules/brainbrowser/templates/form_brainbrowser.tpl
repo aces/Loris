@@ -25,7 +25,6 @@
             </div>
 
             <hr/>
-
             <div class="filename-overlay-additional-info">
               <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
                 World Coordinates
@@ -73,8 +72,11 @@
       <div class="panel-body">
         <div class="volume-viewer-controls volume-controls">
           <div class="coords">
-            <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
-              World Coordinates
+            <div data-t="World Coordinates" class="control-heading" id="world-coordinates-heading-{{VOLID}}">
+
+            {/literal}
+               {$world_coordinates}
+            {literal}
             </div>
             <div class="world-coords" data-volume-id="{{VOLID}}">
               X<input id="world-x-{{VOLID}}" class="control-inputs">
@@ -85,16 +87,20 @@
             <hr/>
 
             <div id="color-map-{{VOLID}}">
-              <span class="control-heading" id="color-map-heading-{{VOLID}}">
-                  Color Map
+              <span data-t="Color Map" class="control-heading" id="color-map-heading-{{VOLID}}">
+                {/literal}
+                   {$color_map}
+                {literal}
               </span>
             </div>
 
             <hr/>
 
             <div class="threshold-div" data-volume-id="{{VOLID}}">
-              <div class="control-heading">
-                Threshold
+              <div class="control-heading" data-t="Threshold">
+               {/literal}
+                 {$threshold}
+               {literal}
               </div>
               <div class="thresh-inputs">
                 <input id="min-threshold-{{VOLID}}" class="control-inputs thresh-input-left" value="0"/>
@@ -184,3 +190,4 @@
     document.getElementById('brainbrowserPage')
   ).render(RBrainBrowser());
 </script>
+

@@ -13,40 +13,52 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Brainbrowser"
-msgstr ""
+msgstr "ब्रेनब्राउज़र"
 
 msgid "Sync Volumes"
-msgstr ""
+msgstr "वॉल्यूम सिंक करें"
 
 msgid "Reset View"
-msgstr ""
+msgstr "दृश्य रीसेट करें"
 
 msgid "Auto"
-msgstr ""
-
-msgid "300 Pixels (Default)"
-msgstr ""
+msgstr "स्वतः"
 
 msgid "{{count}} Pixels"
-msgstr ""
+msgstr "{{count}} पिक्सेल"
+
+msgid "300 Pixels (Default)"
+msgstr "300 पिक्सेल (डिफ़ॉल्ट)"
+
+msgid "Overlay"
+msgstr "ओवरले"
+
+msgid "World Coordinates"
+msgstr "वर्ल्ड कोऑर्डिनेट"
+
+msgid "Threshold"
+msgstr "थ्रेशहोल्ड"
+
+msgid "Color Map"
+msgstr "कलर मैप"
 
 msgid "Gray"
-msgstr ""
+msgstr "धूसर"
 
 msgid "Spectral"
-msgstr ""
+msgstr "स्पेक्ट्रल"
 
 msgid "Thermal"
-msgstr ""
+msgstr "थर्मल"
 
 msgid "Blue"
-msgstr ""
+msgstr "नीला"
 
 msgid "Green"
-msgstr ""
+msgstr "हरा"
