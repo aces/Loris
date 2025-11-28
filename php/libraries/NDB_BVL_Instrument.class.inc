@@ -279,9 +279,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         } else {
             $obj->commentID = $commentID;
             $timepoint      = \TimePoint::singleton($obj->getSessionID());
-            $ilang          = $timepoint->getLanguageCode();
-            \putenv("LANG=" . $ilang . ".utf8");
-            \putenv("LANGUAGE=" . $ilang . ".utf8");
+            $ilang          = $timepoint->getLanguage();
+            \putenv("LANG=" . $ilang->code . ".utf8");
+            \putenv("LANGUAGE=" . $ilang->code . ".utf8");
         }
 
         // Set page name to testName
