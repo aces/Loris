@@ -59,3 +59,25 @@ msgstr "衝突？"
 
 msgid "Visit has no registered instruments in test battery."
 msgstr "訪問にはテスト バッテリーに登録された機器がありません。"
+
+msgid "Date of Administration"
+msgstr "投与日"
+
+msgid "Date of Administration is required"
+msgstr "投与日が必要です。"
+
+msgid "Candidate Age (Months)"
+msgstr "候補者の年齢（月齢）"
+
+msgid "Candidate Age at Death (Months)"
+msgstr "候補者の死亡時の年齢（月齢）"
+
+msgid "Window Difference (+/- Days)"
+msgstr "ウィンドウ差（+/- 日数）"
+
+msgid "Examiner"
+msgstr "審査官"
+
+msgid "Examiner is required"
+msgstr "審査官が必要です"
+

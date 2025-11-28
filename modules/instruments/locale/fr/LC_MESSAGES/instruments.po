@@ -13,7 +13,7 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,62 +21,24 @@ msgstr ""
 msgid "Instruments"
 msgstr ""
 
-msgid "Incomplete form"
-msgstr ""
-
-msgid "Incomplete forms"
-msgstr ""
-
-msgid "Clear Instrument"
-msgstr ""
-
-msgid "Validity"
-msgstr ""
-
-msgid "Valid"
-msgstr ""
-
-msgid "Questionable"
-msgstr ""
-
-msgid "Invalid"
-msgstr ""
-
-msgid "Subtests"
-msgstr ""
-
-msgid "Top"
-msgstr ""
-
-msgid "Behavioural Data"
-msgstr ""
-
-msgid "Completion"
-msgstr ""
-
-msgid "Conflicts?"
-msgstr ""
-
-msgid "Visit has no registered instruments in test battery."
-msgstr ""
-
 msgid "Date of Administration"
-msgstr ""
+msgstr "Date d'administration"
 
 msgid "Date of Administration is required"
-msgstr ""
+msgstr "La date d'administration est requise"
 
 msgid "Candidate Age (Months)"
-msgstr ""
+msgstr "Âge du candidat (mois)"
 
 msgid "Candidate Age at Death (Months)"
-msgstr ""
+msgstr "Âge du candidat au moment du décès (mois)"
 
 msgid "Window Difference (+/- Days)"
-msgstr ""
+msgstr "Marge de Différence (+/- jours)"
 
 msgid "Examiner"
-msgstr ""
+msgstr "Examinateur•trice"
 
 msgid "Examiner is required"
-msgstr ""
+msgstr "Un examinateur est requis"
+

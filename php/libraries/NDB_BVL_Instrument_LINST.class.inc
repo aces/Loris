@@ -63,7 +63,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->commentID = $commentID;
         $this->page      = $page;
 
-        $this->form = new \LorisForm();
+        //$this->form = new \LorisForm();
+        //$this->form->textdomain = $this->testName;
     }
 
     /**
@@ -419,7 +420,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $pageName         = "page_$subtestCount";
                     $this->subtests[] = [
                         'Name'        => $pageName,
-                        'Description' => $pageDescription
+                        'Description' => dgettext($this->name, $pageDescription)
                     ];
 
                     if ($currentPage == $pageName) {
@@ -440,11 +441,12 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'title':
                     $this->fullName = trim($pieces[1]);
+
                     if ($addElements) {
                         $this->form->addElement(
                             'header',
                             'instrument_title',
-                            $pieces[1]
+                            dgettext($this->name, $this->fullName)
                         );
                     }
                     // The sequence of if statements below building the data dict
@@ -457,7 +459,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             [
                                 new DictionaryItem(
                                     $this->testName.'_Date_taken',
-                                    'Date of Administration',
+                                    dgettext(
+                                        "instruments",
+                                        'Date of Administration'
+                                    ),
                                     $scope,
                                     new \LORIS\Data\Types\DateType(),
                                     new Cardinality(Cardinality::SINGLE),
@@ -472,7 +477,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     [
                                         new DictionaryItem(
                                             $this->testName.'_Candidate_Age',
-                                            'Candidate Age (Months)',
+                                            dgettext(
+                                                "instruments",
+                                                'Candidate Age (Months)'
+                                            ),
                                             $scope,
                                             new \LORIS\Data\Types\Duration(),
                                             new Cardinality(Cardinality::SINGLE),
@@ -486,7 +494,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     [
                                         new DictionaryItem(
                                             $this->testName.'_Candidate_Age',
-                                            'Candidate Age at Death (Months)',
+                                            dgettext(
+                                                "instruments",
+                                                'Candidate Age at Death (Months)'
+                                            ),
                                             $scope,
                                             new \LORIS\Data\Types\Duration(),
                                             new Cardinality(Cardinality::SINGLE),
@@ -500,7 +511,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 [
                                     new DictionaryItem(
                                         $this->testName.'_Window_Difference',
-                                        'Window difference from test battery (days)',
+                                        dgettext(
+                                            "instruments",
+                                            'Window difference from test " .
+					    "battery (days)'
+                                        ),
                                         $scope,
                                         new \LORIS\Data\Types\Duration(),
                                         new Cardinality(Cardinality::SINGLE),
@@ -514,7 +529,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             [
                                 new DictionaryItem(
                                     $this->testName.'_Examiner',
-                                    'Examiner',
+                                    dgettext("instruments", 'Examiner'),
                                     $scope,
                                     new Enumeration(
                                         ...array_values($this->_getExaminerNames())
@@ -581,7 +596,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $this->testName."_".$pieces[1],
-                        $pieces[2],
+                        dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new StringType(255),
                         new Cardinality(Cardinality::SINGLE),
@@ -607,7 +622,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $this->testName."_".$pieces[1],
-                        $pieces[2],
+                        dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new StringType(),
                         new Cardinality(Cardinality::SINGLE),
@@ -696,7 +711,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $this->testName."_".$pieces[1],
-                        $pieces[2],
+                        dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new DateType(),
                         new Cardinality(Cardinality::SINGLE),
@@ -709,11 +724,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'numeric':
                     if ($addElements) {
-                        $this->addNumericElement($pieces[1], $pieces[2]);
+                        $this->addNumericElement($pieces[1], trim($pieces[2]));
                     }
                     $this->dictionary[] = new DictionaryItem(
                         $this->testName."_".$pieces[1],
-                        $pieces[2],
+                        dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new IntegerType(),
                         new Cardinality(Cardinality::SINGLE),
@@ -771,7 +786,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     = $this->form->createElement(
                                         'select',
                                         $pieces[1],
-                                        $pieces[2],
+                                        dgettext($this->name, trim($pieces[2])),
                                         $opt,
                                         [ "multiple" => "multiple" ]
                                     );
@@ -780,7 +795,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     = $this->form->createElement(
                                         'select',
                                         $pieces[1],
-                                        $pieces[2],
+                                        dgettext($this->name, trim($pieces[2])),
                                         $opt
                                     );
                             }
@@ -789,7 +804,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 $this->form->addElement(
                                     'select',
                                     $pieces[1],
-                                    $pieces[2],
+                                    dgettext($this->name, trim($pieces[2])),
                                     $opt,
                                     ["multiple" => "multiple"]
                                 );
@@ -797,7 +812,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 $this->form->addElement(
                                     'select',
                                     $pieces[1],
-                                    $pieces[2],
+                                    dgettext($this->name, trim($pieces[2])),
                                     $opt
                                 );
                             }
@@ -819,7 +834,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $t  = $t->withLabels(...$dictlabels);
                     $it = new DictionaryItem(
                         $this->testName."_".$pieces[1],
-                        $pieces[2],
+                        dgettext($this->name, trim($pieces[2])),
                         $scope,
                         $t,
                         $cardinality,
@@ -830,7 +845,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'header':
                     if ($addElements) {
-                        $this->form->addElement('header', '', "$pieces[2]");
+                        $this->form->addElement(
+                            'header',
+                            '',
+                            dgettext($this->name, $pieces[2]),
+                        );
                     }
                     break;
                 case 'static':
@@ -842,13 +861,13 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     'static',
                                     $pieces[1],
                                     '',
-                                    $pieces[2]
+                                    dgettext($this->name, trim($pieces[2]))
                                 );
                         } else {
                             $this->form->addElement(
                                 'static',
                                 $pieces[1],
-                                $pieces[2]
+                                dgettext($this->name, trim($pieces[2]))
                             );
                         }
                     }
@@ -858,7 +877,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                         $this->dictionary[] = new DictionaryItem(
                             $this->testName."_".$pieces[1],
-                            $pieces[2],
+                            dgettext($this->name, trim($pieces[2])),
                             $scope,
                             new StringType(255),
                             new Cardinality(Cardinality::SINGLE),
