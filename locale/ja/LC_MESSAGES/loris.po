@@ -129,14 +129,14 @@ msgstr "ブラウズ"
 msgid "Upload"
 msgstr "アップロード"
 
-msgid "Create"
-msgstr "作成する"
-
 msgid "N/A"
 msgstr "適用できない"
 
 msgid "Back"
 msgstr "戻る"
+
+msgid "Create"
+msgstr "作成する"
 
 # Filters
 msgid "Selection Filter"
@@ -156,6 +156,30 @@ msgstr "フィルターをクリア"
 
 msgid "Load Filter Preset"
 msgstr "フィルタープリセットを読み込む"
+
+msgid "Show Advanced Filters"
+msgstr "詳細フィルターを表示"
+
+msgid "Hide Advanced Filters"
+msgstr "詳細フィルターを非表示"
+
+msgid "Pass"
+msgstr "合格"
+
+msgid "Fail"
+msgstr "失敗"
+
+msgid "True"
+msgstr "真実"
+
+msgid "False"
+msgstr "間違い"
+
+msgid "Selected"
+msgstr "選択済み"
+
+msgid "selected"
+msgstr "選択済み"
 
 # Common swal labels
 msgid "OK"
@@ -228,13 +252,19 @@ msgstr "フィードバック"
 msgid "Scans"
 msgstr "スキャン"
 
+msgid "Date"
+msgstr "日付"
+
+msgid "Time"
+msgstr "時間"
+
 msgid "Stage"
 msgstr "ステージ"
 
-msgid "Sent To DCC"
+msgid "Send To DCC"
 msgstr "DCCに送信"
 
-msgid "Send To DCC"
+msgid "Sent To DCC"
 msgstr "DCCに送信"
 
 msgid "Reverse Send To DCC"
@@ -261,20 +291,32 @@ msgstr "エンティティタイプ"
 msgid "Scan Done"
 msgstr "スキャン完了"
 
-msgid "Show Advanced Filters"
-msgstr "詳細フィルターを表示"
-
-msgid "Hide Advanced Filters"
-msgstr "詳細フィルターを非表示"
-
 msgid "Language"
 msgstr "言語"
 
 msgid "Ethnicity"
 msgstr "民族"
 
+msgid "Are You Sure?"
+msgstr "本気ですか？"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "フォームを離れると、入力した情報はすべて失われます。"
+
+msgid "Proceed"
+msgstr "進む"
+
+msgid "Previous"
+msgstr "前の"
+
+msgid "Next"
+msgstr "次"
+
 msgid "Save"
 msgstr "保存"
+
+msgid "Saving"
+msgstr "節約"
 
 msgid "Reset"
 msgstr "リセット"
@@ -319,11 +361,66 @@ msgstr "無効なメールアドレス"
 msgid "NEW"
 msgstr "新しい"
 
+msgid "New"
+msgstr "新しい"
+
 msgid "Updated"
 msgstr "更新"
 
 msgid "Uploaded"
 msgstr "アップロード済み"
+
+# User Account related
+msgid "Password Rules"
+msgstr "パスワードルール"
+
+msgid "Username"
+msgstr "ユーザー名"
+
+msgid "First name"
+msgstr "ファーストネーム"
+
+msgid "First name is required and should not exceed 120 characters"
+msgstr "名は必須で、120文字以内で入力してください。"
+
+msgid "Last name"
+msgstr "苗字"
+
+msgid "Last name is required and should not exceed 120 characters"
+msgstr "姓は必須で、120文字以内で入力してください。"
+
+msgid "Email address"
+msgstr "電子メールアドレス"
+
+msgid "New Password"
+msgstr "新しいパスワード"
+
+msgid "Password"
+msgstr "パスワード"
+
+msgid "Confirm Password"
+msgstr "パスワードを認証する"
+
+msgid "Email address is required"
+msgstr "メールアドレスは必須です"
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "メールアドレスには、<、>、&、\" の文字を含めることはできません。"
+
+msgid "The password must be at least 8 characters long."
+msgstr "パスワードは8文字以上である必要があります"
+
+msgid "The password cannot be your username or email address."
+msgstr "パスワードにはユーザー名やメールアドレスは使用できません。"
+
+msgid "Please choose a unique password."
+msgstr "固有のパスワードを選択してください。"
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr "特殊文字は必要ありませんが、パスワードは受け入れられるほど複雑である必要があります。"
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr "パスワード マネージャーを使用してパスワードを生成することをお勧めします。"
 
 msgid "Total"
 msgstr "合計"
@@ -334,8 +431,8 @@ msgstr "エラー！"
 msgid "Status"
 msgstr "状態"
 
-msgid "Date"
-msgstr "日付"
+msgid "Incorrect username or password."
+msgstr "ユーザー名またはパスワードが正しくありません。"
 
 # Common timepoint and vist terms
 msgid "Not Started"
@@ -355,9 +452,6 @@ msgstr "候補者"
 
 msgid "Recycling Bin"
 msgstr "リサイクルビン"
-
-msgid "Pass"
-msgstr "合格"
 
 msgid "Failure"
 msgstr "失敗"
@@ -422,57 +516,5 @@ msgstr "{{years}}歳"
 msgid "Loading..."
 msgstr "読み込み中..."
 
-# User Account related
-msgid "Password Rules"
-msgstr "パスワードルール"
-
-msgid "Username"
-msgstr "ユーザー名"
-
-msgid "First name"
-msgstr "ファーストネーム"
-
-msgid "First name is required and should not exceed 120 characters"
-msgstr "名は必須で、120文字以内で入力してください。"
-
-msgid "Last name"
-msgstr "苗字"
-
-msgid "Last name is required and should not exceed 120 characters"
-msgstr "姓は必須で、120文字以内で入力してください。"
-
-msgid "Email address"
-msgstr "電子メールアドレス"
-
-msgid "Password"
-msgstr "パスワード"
-
-msgid "New Password"
-msgstr "新しいパスワード"
-
-msgid "Confirm Password"
-msgstr "パスワードを認証する"
-
-msgid "Email address is required"
-msgstr "メールアドレスは必須です"
-
-msgid "Email address cannot contain any of the following characters: <, >, &, and \""
-msgstr "メールアドレスには、<、>、&、\" の文字を含めることはできません。"
-
-msgid "The password must be at least 8 characters long."
-msgstr "パスワードは8文字以上である必要があります"
-
-msgid "The password cannot be your username or email address."
-msgstr "パスワードにはユーザー名やメールアドレスは使用できません。"
-
-msgid "Please choose a unique password."
-msgstr "固有のパスワードを選択してください。"
-
-msgid "No special characters are required but your password must be sufficiently complex to be accepted."
-msgstr "特殊文字は必要ありませんが、パスワードは受け入れられるほど複雑である必要があります。"
-
-msgid "We suggest using a password manager to generate one for you."
-msgstr "パスワード マネージャーを使用してパスワードを生成することをお勧めします。"
-
-msgid "Incorrect username or password."
-msgstr "ユーザー名またはパスワードが正しくありません。"
+msgid "Permission denied"
+msgstr "許可が拒否されました"
