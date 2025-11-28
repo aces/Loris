@@ -67,7 +67,8 @@ if ($config->getSetting('useExternalID') !== 'true') {
 $cands = $DB->pselect(
     "SELECT CandID, ExternalID, RegistrationCenterID as site,
     RegistrationProjectID as project
-    FROM candidate",
+    FROM candidate
+    WHERE Entity_type<>'Scanner'",
     []
 );
 
@@ -78,8 +79,8 @@ foreach ($cands as $cand) {
         continue;
     }
 
-    $site    = \Site::singleton($cand['site']);
-    $project = \Project::getProjectFromID($cand['project']);
+    $site    = \Site::singleton(new \CenterID($cand['site']));
+    $project = \Project::getProjectFromID(new \ProjectID($cand['project']));
 
     $externalID = (new \ExternalIDGenerator(
         $site->getSiteAlias(),
