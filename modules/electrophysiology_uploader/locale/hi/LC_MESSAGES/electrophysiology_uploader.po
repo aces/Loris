@@ -19,13 +19,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Electrophysiology Uploader"
-msgstr ""
+msgstr "इलेक्ट्रोफिजियोलॉजी अपलोडर"
 
 msgid "LORIS 26 Beta Note:"
-msgstr ""
+msgstr "LORIS 26 बीटा नोट:"
 
 msgid "Files uploaded in this module will not be viewable in the Electrophysiology Browser module. This feature is under construction for the next release. Please get in touch with the LORIS team to configure this for your project."
-msgstr ""
+msgstr "इस मॉड्यूल में अपलोड की गई फ़ाइलें Electrophysiology Browser मॉड्यूल में अभी दिखाई नहीं देंगी। यह सुविधा अगली रिलीज़ के लिए निर्माणाधीन है। कृपया अपने प्रोजेक्ट के लिए इसे कॉन्फ़िगर कराने के लिए LORIS टीम से संपर्क करें।"
 
 msgid "Upload an electrophysiology recording session"
 msgstr ""
@@ -34,6 +34,12 @@ msgid "File to Upload"
 msgstr ""
 
 msgid "Notes"
+msgstr ""
+
+msgid "File cannot exceed {{maxFileSize}}"
+msgstr "फ़ाइल {{maxFileSize}} से अधिक नहीं हो सकती"
+
+msgid "File name must match the following convention:"
 msgstr ""
 
 msgid "Invalid extension for the uploaded file!"
@@ -46,10 +52,7 @@ msgid "OK"
 msgstr ""
 
 msgid "The file {{filename}} must be of type .tar.gz."
-msgstr ""
-
-msgid "File name must match the following convention:"
-msgstr ""
+msgstr "फ़ाइल {{filename}} का प्रकार .tar.gz होना चाहिए।"
 
 msgid "Invalid filename!"
 msgstr ""
@@ -67,9 +70,6 @@ msgid "Processing of this file by the EEG pipeline has started"
 msgstr ""
 
 msgid "Upload failed: a network error occured"
-msgstr ""
-
-msgid "File cannot exceed {{maxFileSize}}"
 msgstr ""
 
 msgid "Upload failed: received HTTP response code"
