@@ -101,6 +101,8 @@ locales:
 	msgfmt -o modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po
 	npx i18next-conv -l hi -s modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.json
 	msgfmt -o modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.mo modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.po
+	msgfmt -o modules/candidate_parameters/locale/es/LC_MESSAGES/candidate_parameters.mo modules/candidate_parameters/locale/es/LC_MESSAGES/candidate_parameters.po
+	npx i18next-conv -l es -s modules/candidate_parameters/locale/es/LC_MESSAGES/candidate_parameters.po -t modules/candidate_parameters/locale/es/LC_MESSAGES/candidate_parameters.json
 	npx i18next-conv -l ja -s modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.po -t modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.json
 	msgfmt -o modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.mo modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.po
 	msgfmt -o modules/candidate_profile/locale/fr/LC_MESSAGES/candidate_profile.mo modules/candidate_profile/locale/fr/LC_MESSAGES/candidate_profile.po

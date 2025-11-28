@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
 import {
@@ -75,8 +77,11 @@ class CandidateDOD extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return (
+        <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>
+      );
     }
 
     if (!this.state.isLoaded) {
@@ -88,7 +93,7 @@ class CandidateDOD extends Component {
     let updateButton = null;
     if (loris.userHasPermission('candidate_dod_edit')) {
       disabled = false;
-      updateButton = <ButtonElement label="Update"/>;
+      updateButton = <ButtonElement label={t('Update', {ns: 'loris'})}/>;
     }
 
     return (
@@ -99,21 +104,25 @@ class CandidateDOD extends Component {
           ref='form'
           class='col-md-6'>
           <StaticElement
-            label='PSCID'
+            label={t('PSCID', {ns: 'loris'})}
             text={this.state.data.pscid}
           />
           <StaticElement
-            label='DCCID'
+            label={t('DCCID', {ns: 'loris'})}
             text={this.state.data.candID}
           />
           <StaticElement
-            label='Disclaimer:'
-            text='Any changes to the date of death requires an
-            administrator to run the fix_candidate_age script.'
+            label={t('Disclaimer:', {ns: 'candidate_parameters'})}
+            text={
+              t('Any changes to the date of death requires an administrator '
+                 + 'to run the fix_candidate_age script.',
+              {ns: 'candidate_parameters'}
+              )
+            }
             class='form-control-static text-danger bg-danger col-sm-10'
           />
           <DateElement
-            label='Date Of Death:'
+            label={t('Date Of Death:', {ns: 'candidate_parameters'})}
             name='dod'
             dateFormat={dateFormat}
             value={this.state.formData.dod}
@@ -133,6 +142,7 @@ class CandidateDOD extends Component {
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
 
     let today = new Date();
@@ -148,20 +158,26 @@ class CandidateDOD extends Component {
 
     if (dod > today) {
       swal.fire({
-        title: 'Invalid date',
-        text: 'Date of death cannot be later than today!',
+        title: t('Invalid date', {ns: 'candidate_parameters'}),
+        text:
+          t('Date of death cannot be later than today!',
+            {ns: 'candidate_parameters'}
+          ),
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       return;
     }
 
     if (dob > dod) {
       swal.fire({
-        title: 'Invalid date',
-        text: 'Date of death must be after date of birth!',
+        title: t('Invalid date', {ns: 'candidate_parameters'}),
+        text:
+          t('Date of death must be after date of birth!',
+            {ns: 'candidate_parameters'}
+          ),
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       return;
     }
@@ -188,10 +204,10 @@ class CandidateDOD extends Component {
     ).then((resp) => resp.text()
     ).then((result) => {
       swal.fire({
-        title: 'Success!',
-        text: 'Date of death updated!',
+        title: t('Success!', {ns: 'loris'}),
+        text: t('Date of death updated!', {ns: 'candidate_parameters'}),
         type: 'success',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       if (result.value) {
         this.fetchData();
@@ -199,10 +215,10 @@ class CandidateDOD extends Component {
     }).catch((error) => {
       console.error(error);
       swal.fire({
-        title: 'Error!',
-        text: 'Something went wrong.',
+        title: t('Error!', {ns: 'loris'}),
+        text: t('Something went wrong.', {ns: 'candidate_parameters'}),
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
     });
   }
@@ -211,5 +227,6 @@ CandidateDOD.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
+  t: PropTypes.string.isRequired,
 };
-export default CandidateDOD;
+export default withTranslation(['candidate_parameters', 'loris'])(CandidateDOD);

@@ -120,8 +120,14 @@ msgstr "Detalles del Punto en el Tiempo %s"
 msgid "Yes"
 msgstr "Sí"
 
+msgid "True"
+msgstr "Cierto"
+
 msgid "No"
 msgstr "No"
+
+msgid "False"
+msgstr "Falso"
 
 msgid "Create"
 msgstr "Crear"
@@ -160,7 +166,7 @@ msgstr "Exitoso!"
 
 # Common candidate terms
 msgid "PSCID"
-msgstr "PSCID"
+msgstr "SCPID"
 
 msgid "DCCID"
 msgstr "CCDID"
@@ -198,7 +204,10 @@ msgid "Participant Status"
 msgstr ""
 
 msgid "DoB"
-msgstr ""
+msgstr "Fecha de nacimiento"
+
+msgid "DoD"
+msgstr "Fecha de defunción"
 
 msgid "Sex"
 msgstr "Sexo"
@@ -256,6 +265,15 @@ msgstr "Vistas"
 # Common strings on widgets
 msgid "NEW"
 msgstr "Nuevo"
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Update Successful!"
+msgstr "Actualización Exitosa!"
+
+msgid "Failed to update!"
+msgstr "Actualización Fallida!"
 
 msgid "Updated"
 msgstr "Actualizado"
