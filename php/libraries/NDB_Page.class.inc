@@ -192,7 +192,8 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $this->form->addElement(
             'file',
             $name,
-            dgettext($this->name, $label)[],
+            dgettext($this->name, $label),
+            [],
             array_merge(['class' => 'fileUpload'], $attribs)
         );
     }
