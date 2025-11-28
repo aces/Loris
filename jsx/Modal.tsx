@@ -47,14 +47,14 @@ const Modal = ({
   const handleClose = () => {
     if (throwWarning) { // Display warning if enabled
       Swal.fire({
-        title: t('Are You Sure?'),
-        text:
-        t('Leaving the form will result in the'
-          +' loss of any information entered.'),
+        title: t('Are You Sure?', {ns: 'loris'}),
+        text: t('Leaving the form will result in the loss '
+          +'of any information entered.',
+        {ns: 'loris'}),
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: t('Proceed'),
-        cancelButtonText: t('Cancel'),
+        confirmButtonText: t('Proceed', {ns: 'loris'}),
+        cancelButtonText: t('Cancel', {ns: 'loris'}),
       }).then((result) => result.value && onClose());
     } else {
       onClose(); // Close immediately if no warning
@@ -178,7 +178,7 @@ const Modal = ({
   const loader = loading && (
     <div style={processStyle}>
       <Loader size={20}/>
-      <h5 className='animate-flicker'>{t('Saving')}</h5>
+      <h5 className='animate-flicker'>{t('Saving', {ns: 'loris'})}</h5>
     </div>
   );
 
@@ -191,7 +191,7 @@ const Modal = ({
         style={{color: 'green', marginBottom: '2px'}}
         className='glyphicon glyphicon-ok-circle'
       />
-      <h5>{t('Success!')}</h5>
+      <h5>{t('Success!', {ns: 'loris'})}</h5>
     </div>
   );
 

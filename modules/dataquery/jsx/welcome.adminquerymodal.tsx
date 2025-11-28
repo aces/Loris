@@ -2,6 +2,7 @@ import Modal from 'jsx/Modal';
 import swal from 'sweetalert2';
 import {useState} from 'react';
 import {CheckboxElement, TextboxElement, FieldsetElement} from 'jsx/Form';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Render a modal window for naming a query
@@ -25,6 +26,7 @@ function AdminQueryModal(props: {
     )
         => void,
 }) {
+  const {t} = useTranslation('dataquery');
   const [queryName, setQueryName] = useState(props.defaultName || '');
   const [topQuery, setTopQuery] = useState(true);
   const [dashboardQuery, setDashboardQuery] = useState(true);
@@ -40,7 +42,8 @@ function AdminQueryModal(props: {
       if (queryName.trim() == '') {
         swal.fire({
           type: 'error',
-          text: 'Must provide a query name to pin query as.',
+          text: t('Must provide a query name to pin query as.',
+            {ns: 'dataquery'}),
         });
         reject();
         return;
@@ -48,7 +51,8 @@ function AdminQueryModal(props: {
       if (!topQuery && !dashboardQuery && !loginQuery) {
         swal.fire({
           type: 'error',
-          text: 'Must pin as study query, to dashboard, or to the login page.',
+          text: t('Must pin as study query, to dashboard, or to the '
+            +'login page.', {ns: 'dataquery'}),
         });
         reject();
         return;
@@ -63,16 +67,16 @@ function AdminQueryModal(props: {
     }
     return sbmt;
   };
-  return <Modal title="Pin Top Query"
+  return <Modal title={t('Pin Top Query', {ns: 'dataquery'})}
     show={true}
     throwWarning={true}
     onClose={props.closeModal}
     onSubmit={submitPromise}>
     <FieldsetElement
-      legend='Study Query'>
+      legend={t('Study Query', {ns: 'dataquery', count: 1})}>
       <TextboxElement name='queryname'
         value={queryName}
-        placeholder="Query name"
+        placeholder={t('Query name', {ns: 'dataquery'})}
         onUserInput={
           (name: string, value: string) => setQueryName(value)
         }
@@ -82,11 +86,11 @@ function AdminQueryModal(props: {
         onUserInput={
           (name: string, value: boolean) => setTopQuery(value)
         }
-        label='Pin Study Query'
+        label={t('Pin Study Query', {ns: 'dataquery'})}
       />
       <CheckboxElement name='dashboardquery'
         value={dashboardQuery}
-        label='Pin Dashboard Summary'
+        label={t('Pin Dashboard Summary', {ns: 'dataquery'})}
         onUserInput={
           (name: string, value: boolean) =>
             setDashboardQuery(value)
@@ -94,7 +98,7 @@ function AdminQueryModal(props: {
       />
       <CheckboxElement name='loginpage'
         value={loginQuery}
-        label='Pin To Login Page'
+        label={t('Pin To Login Page', {ns: 'dataquery'})}
         onUserInput={
           (name: string, value: boolean) =>
             setLoginQuery(value)
