@@ -64,7 +64,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->page      = $page;
 
         //$this->form = new \LorisForm();
-	//$this->form->textdomain = $this->testName;
+        //$this->form->textdomain = $this->testName;
     }
 
     /**
@@ -459,7 +459,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             [
                                 new DictionaryItem(
                                     $this->testName.'_Date_taken',
-                                    dgettext("instruments", 'Date of Administration'),
+                                    dgettext(
+                                        "instruments",
+                                        'Date of Administration'
+                                    ),
                                     $scope,
                                     new \LORIS\Data\Types\DateType(),
                                     new Cardinality(Cardinality::SINGLE),
@@ -474,7 +477,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     [
                                         new DictionaryItem(
                                             $this->testName.'_Candidate_Age',
-                                            dgettext("instruments", 'Candidate Age (Months)'),
+                                            dgettext(
+                                                "instruments",
+                                                'Candidate Age (Months)'
+                                            ),
                                             $scope,
                                             new \LORIS\Data\Types\Duration(),
                                             new Cardinality(Cardinality::SINGLE),
@@ -488,7 +494,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     [
                                         new DictionaryItem(
                                             $this->testName.'_Candidate_Age',
-                                            dgettext("instruments", 'Candidate Age at Death (Months)'),
+                                            dgettext(
+                                                "instruments",
+                                                'Candidate Age at Death (Months)'
+                                            ),
                                             $scope,
                                             new \LORIS\Data\Types\Duration(),
                                             new Cardinality(Cardinality::SINGLE),
@@ -502,7 +511,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                 [
                                     new DictionaryItem(
                                         $this->testName.'_Window_Difference',
-                                        dgettext("instruments", 'Window difference from test battery (days)'),
+                                        dgettext(
+                                            "instruments",
+                                            'Window difference from test " .
+					    "battery (days)'
+                                        ),
                                         $scope,
                                         new \LORIS\Data\Types\Duration(),
                                         new Cardinality(Cardinality::SINGLE),
@@ -832,7 +845,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     break;
                 case 'header':
                     if ($addElements) {
-                        $this->form->addElement('header', '', dgettext($this->name, $pieces[2]));
+                        $this->form->addElement(
+                            'header',
+                            '',
+                            dgettext($this->name, $pieces[2]),
+                        );
                     }
                     break;
                 case 'static':
