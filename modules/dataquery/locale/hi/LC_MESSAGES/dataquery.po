@@ -72,11 +72,15 @@ msgstr "हेडर प्रदर्शन प्रारूप"
 msgid "Display visits as"
 msgstr "विज़िट प्रदर्शित करें इस प्रकार"
 
-msgid "Labels"
-msgstr "लेबल्स"
+msgid "Label"
+msgid_plural "Labels"
+msgstr[0] "लेबल"
+msgstr[1] "लेबल्स"
 
-msgid "Values"
-msgstr "मान"
+msgid "Value"
+msgid_plural "Values"
+msgstr[0] "कीमत"
+msgstr[1] "मान"
 
 msgid "Display options as"
 msgstr "विकल्प प्रदर्शित करें इस प्रकार"
@@ -219,6 +223,15 @@ msgstr "निम्नलिखित में से कम से कम ए
 msgid "This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <italic>at least one</italic> of the data points."
 msgstr "यह फ़ील्ड एक {{scope}} के लिए कई बार हो सकती है। इस पर आधारित मानदंड जोड़ने का मतलब है कि यह <italic>कम से कम एक</italic> डेटा बिंदु के लिए मेल खाना चाहिए।"
 
+msgid "This field may exist multiple times for a single {{scope}} and must match for *any* of the data points"
+msgstr "यह फ़ील्ड एक ही {{scope}} के लिए कई बार मौजूद हो सकती है और *किसी भी* डेटा पॉइंट से मैच होनी चाहिए"
+
+msgid "<italic>at visit</italic> {{visits}}"
+msgstr "<italic>विज़िट</italic> {{visits}} <italic>पर</italic>"
+
+msgid "or"
+msgstr "वा"
+
 msgid "Invalid field"
 msgstr "अमान्य फ़ील्ड"
 
@@ -247,7 +260,9 @@ msgid "Add criteria"
 msgstr "मानदंड जोड़ें"
 
 msgid "Field"
-msgstr "फ़ील्ड"
+msgid_plural "Fields"
+msgstr[0] "फ़ील्ड"
+msgstr[1] "फ़ील्ड्स"
 
 msgid "Select a field"
 msgstr "फ़ील्ड चुनें"
@@ -309,6 +324,18 @@ msgstr "अमान्य CSV"
 msgid "Could not parse CSV file"
 msgstr "CSV फ़ाइल पार्स नहीं की जा सकी"
 
+msgid "No CSV Uploaded"
+msgstr "कोई CSV अपलोड नहीं किया गया"
+
+msgid "Please upload a CSV file before submitting."
+msgstr "सबमिट करने से पहले कृपया एक CSV फ़ाइल अपलोड करें।"
+
+msgid "Empty CSV"
+msgstr "खाली CSV"
+
+msgid "The uploaded CSV file is empty."
+msgstr "अपलोड की गई CSV फ़ाइल खाली है।"
+
 msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
 msgstr "CSV में {{expectedLength}} कॉलम अपेक्षित थे। पंक्ति {{line}} पर {{gotLength}} मिले।"
 
@@ -321,8 +348,10 @@ msgstr "अमान्य DCC ID ({{id}}) पंक्ति {{line}} पर।
 msgid "Welcome to the Data Query Tool"
 msgstr "डेटा क्वेरी टूल में आपका स्वागत है"
 
-msgid "Study Queries"
-msgstr "अध्ययन क्वेरीज़"
+msgid "Study Query"
+msgid_plural "Study Queries"
+msgstr[0] "अध्ययन क्वेरीज़"
+msgstr[1] "अध्ययन संबंधी प्रश्न"
 
 msgid "Instructions"
 msgstr "निर्देश"
@@ -392,14 +421,35 @@ msgstr "(साझा किया गया {{sharedBy}} द्वारा)"
 msgid "Query shared by {{sharedBy}}"
 msgstr "क्वेरी {{sharedBy}} द्वारा साझा की गई"
 
-msgid "Name query"
-msgstr "क्वेरी का नाम दें"
+msgid "Name Query"
+msgstr "नाम क्वेरी"
 
-msgid "Fields"
-msgstr "फ़ील्ड्स"
+msgid "Enter your query name"
+msgstr "अपनी क्वेरी का नाम डालें"
 
-msgid "{{columnName}} fields"
-msgstr "{{columnName}} फ़ील्ड्स"
+msgid "Query name"
+msgstr "क्वेरी का नाम"
+
+msgid "Must provide a query name."
+msgstr "क्वेरी का नाम देना होगा।"
+
+msgid "Pin Top Query"
+msgstr "पिन टॉप क्वेरी"
+
+msgid "Pin Study Query"
+msgstr "पिन अध्ययन क्वेरी"
+
+msgid "Pin Dashboard Summary"
+msgstr "पिन डैशबोर्ड सारांश"
+
+msgid "Pin To Login Page"
+msgstr "लॉगिन पेज पर पिन करें"
+
+msgid "Must pin as study query, to dashboard, or to the login page."
+msgstr "स्टडी क्वेरी के तौर पर, डैशबोर्ड पर, या लॉगिन पेज पर पिन करना होगा।"
+
+msgid "Must provide a query name to pin query as."
+msgstr "क्वेरी को पिन करने के लिए क्वेरी नाम देना होगा।"
 
 msgid "Define Filters"
 msgstr "फ़िल्टर निर्धारित करें"
@@ -466,3 +516,7 @@ msgstr "एक फ़ील्ड चुनें"
 
 msgid "Invalid response"
 msgstr "अमान्य उत्तर"
+
+msgid "Invalid tab"
+msgstr "अमान्य टैब"
+

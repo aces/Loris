@@ -307,6 +307,7 @@ function useDataOrganization(
  * The View Data tab
  *
  * @param {object} props - React props
+ * @param {any} props.t - useTranslation
  * @param {APIQueryField[]} props.fields - The selected fields
  * @param {QueryGroup} props.filters - The selected filters
  * @param {object} props.fulldictionary - the data dictionary
@@ -314,12 +315,13 @@ function useDataOrganization(
  * @returns {React.ReactElement} - The ViewData tab
  */
 function ViewData(props: {
+    t: any
     fields: APIQueryField[],
     filters: QueryGroup,
     onRun: () => void
     fulldictionary: FullDictionary,
 }) {
-  const {t} = useTranslation('dataquery');
+  const {t} = props;
   const [visitOrganization, setVisitOrganization]
         = useState<VisitOrgType>('inline');
   const [headerDisplay, setHeaderDisplay]
@@ -383,6 +385,7 @@ function ViewData(props: {
               props.fulldictionary,
               emptyVisits,
               enumDisplay,
+              props.t
             )
           }
           hide={
@@ -396,7 +399,7 @@ function ViewData(props: {
       } catch (e) {
         // OrganizedMapper/Formatter can throw an error
         // before the loading is complete
-        return <div>Loading..</div>;
+        return <div>{t('Loading...', {ns: 'loris'})}</div>;
       }
       break;
     default:
@@ -454,8 +457,8 @@ function ViewData(props: {
     <SelectElement
       name='enumdisplay'
       options={{
-        'labels': t('Labels', {ns: 'dataquery'}),
-        'values': t('Values', {ns: 'dataquery'}),
+        'labels': t('Label', {ns: 'dataquery', count: 99}),
+        'values': t('Value', {ns: 'dataquery', count: 99}),
       }}
       label={t('Display options as', {ns: 'dataquery'})}
       value={enumDisplay == EnumDisplayTypes.EnumLabel
@@ -793,10 +796,12 @@ function expandLongitudinalCells(
  *                                     option selected
  * @param {array} fields - The fields selected
  * @param {array} dict - The full dictionary
- * @param {boolean} displayEmptyVisits - Whether visits with
-                                 no data should be displayed
- * @param {EnumDisplayTypes} enumDisplay - The format to display
-                                           enum values
+ * @param {boolean} displayEmptyVisits -  Whether visits with
+ *                                        no data should be displayed
+ * @param {EnumDisplayTypes} enumDisplay -  The format to display
+ *                                          enum values
+ * @param {any} t - useTranslation
+
  * @returns {function} - the appropriate column formatter for
                          this data organization
  */
@@ -807,8 +812,8 @@ function organizedFormatter(
   dict: FullDictionary,
   displayEmptyVisits: boolean,
   enumDisplay: EnumDisplayTypes,
+  t: any,
 ) {
-  const {t} = useTranslation('dataquery');
   let callback;
   switch (visitOrganization) {
   case 'raw':

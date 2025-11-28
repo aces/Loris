@@ -94,21 +94,22 @@ function QueryField(props: {
 
     if (props.selected) {
       visits = <div onClick={(e) => e.stopPropagation()}>
-        <h4>{t('Visits')}</h4>
-        <Select options={selectOptions.map((visit: string): VisitOption => {
-          return {value: visit, label: visit};
-        })
-        }
-        isMulti
-        onChange={selected}
-        placeholder={t('Select Visits', {ns: 'dataquery'})}
-        value={selectedVisits.map( (visit: string): VisitOption => {
-          return {value: visit, label: visit};
-        })
-        }
-        menuPortalTarget={document.body}
-        styles={
-          {menuPortal:
+        <h4>{t('Visits', {ns: 'loris'})}</h4>
+        <Select noOptionsMessage={() => t('No options', {ns: 'loris'})}
+          options={selectOptions.map((visit: string): VisitOption => {
+            return {value: visit, label: visit};
+          })
+          }
+          isMulti
+          onChange={selected}
+          placeholder={t('Select Visits', {ns: 'dataquery'})}
+          value={selectedVisits.map( (visit: string): VisitOption => {
+            return {value: visit, label: visit};
+          })
+          }
+          menuPortalTarget={document.body}
+          styles={
+            {menuPortal:
                         /**
                          * Adds appropriate zIndex to the react select's base CSS
                          *
@@ -116,9 +117,9 @@ function QueryField(props: {
                          * @returns {object} New CSS with z-index added
                          */
                         (base) => ({...base, zIndex: 9999}),
+            }
           }
-        }
-        closeMenuOnSelect={false}
+          closeMenuOnSelect={false}
         />
       </div>;
     }
@@ -346,6 +347,7 @@ function DefineFields(props: {
           isMulti
           onChange={props.onChangeDefaultVisits}
           placeholder={t('Select Visits', {ns: 'dataquery'})}
+          noOptionsMessage={() => t('No options', {ns: 'loris'})}
           menuPortalTarget={document.body}
           styles={
             {menuPortal:

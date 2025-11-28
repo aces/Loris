@@ -73,7 +73,7 @@ function AdminQueryModal(props: {
     onClose={props.closeModal}
     onSubmit={submitPromise}>
     <FieldsetElement
-      legend={t('Study Query', {ns: 'dataquery'})}>
+      legend={t('Study Query', {ns: 'dataquery', count: 1})}>
       <TextboxElement name='queryname'
         value={queryName}
         placeholder={t('Query name', {ns: 'dataquery'})}

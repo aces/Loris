@@ -348,6 +348,7 @@ function DefineFilters(props: {
   }
   const modal = addModal ? (
     <AddFilterModal
+      t={t}
       query={modalQueryGroup}
       closeModal={() => setAddModal(false)}
       addQueryGroupItem={(querygroup, condition) => {

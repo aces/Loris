@@ -28,9 +28,10 @@ function FilterableSelectGroup(props: {
     groups: object,
     mapGroupName?: (module: string) => string,
 }) {
-  const {t} = useTranslation('dataquery');
+  const {t} = useTranslation();
   const groups: SelectGroup[] = [];
-  const placeholder = props.placeholder || t('Select a category');
+  const placeholder = props.placeholder ||
+    t('Select a category', {ns: 'dataquery'});
   for (const [module, subcategories]
     of Object.entries(props.groups)) {
     const options: SelectOption[] = [];
@@ -73,6 +74,7 @@ function FilterableSelectGroup(props: {
   return (
     <div>
       <Select options={groups} onChange={selected}
+        noOptionsMessage={() => t('No options', {ns: 'loris'})}
         menuPortalTarget={document.body}
         styles={{menuPortal:
                     /**
