@@ -238,7 +238,7 @@ mapColumn(column, cell) {
 deleteConfirm(id) {
   const {t} = this.props;
   swal.fire({
-    title: t('Are you sure?', {ns: 'schedule_module'}),
+    title: t('Are you sure?', {ns: 'loris'}),
     text: t('You won\'t be able to revert this!',
       {ns: 'schedule_module'}),
     type: 'warning',
@@ -246,7 +246,7 @@ deleteConfirm(id) {
     confirmButtonText: t('Yes, delete it!',
       {ns: 'schedule_module'}),
     cancelButtonText: t('No, cancel it!',
-      {ns: 'schedule_module'}),
+      {ns: 'loris'}),
   }).then((result) => {
     if (result.value) {
       swal.fire(

@@ -137,17 +137,8 @@ msgstr "ファイル名が無効です。"
 msgid "File name should begin with:"
 msgstr "ファイル名は次の文字で始まる必要があります:"
 
-msgid "Are you sure?"
-msgstr "本気ですか？"
-
 msgid "A file with this name already exists!\n Would you like to override existing file?"
 msgstr "この名前のファイルは既に存在します!\n既存のファイルを上書きしますか?"
-
-msgid "Yes, I am sure!"
-msgstr "はい、間違いないです！"
-
-msgid "No, cancel it!"
-msgstr "いや、キャンセルします！"
 
 msgid "Cancelled"
 msgstr "キャンセル"

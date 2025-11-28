@@ -219,16 +219,16 @@ class UploadForm extends Component {
     // File uploaded but failed during mri pipeline
     if (mriFile.status === 'Failure') {
       swal.fire({
-        title: t('Are you sure?', {ns: 'imaging_uploader'}),
+        title: t('Are you sure?', {ns: 'loris'}),
         text: t('A file with this name already exists! '
           + 'Would you like to overwrite the existing file?',
         {ns: 'imaging_uploader'}),
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: t('Yes, I am sure!',
-          {ns: 'imaging_uploader'}),
+          {ns: 'loris'}),
         cancelButtonText: t('No, cancel it!',
-          {ns: 'imaging_uploader'}),
+          {ns: 'loris'}),
       }).then((result) => {
         if (result.value) {
           this.uploadFile(true);
@@ -246,7 +246,7 @@ class UploadForm extends Component {
     // Pipeline has not been triggered yet
     if (mriFile.status === 'Not Started') {
       swal.fire({
-        title: t('Are you sure?', {ns: 'imaging_uploader'}),
+        title: t('Are you sure?', {ns: 'loris'}),
         text: t('A file with this name has been uploaded but has'+
           ' not yet been processed by the MRI pipeline.' +
           ' Would you like to overwrite the existing file?',
@@ -254,9 +254,9 @@ class UploadForm extends Component {
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: t('Yes, I am sure!',
-          {ns: 'imaging_uploader'}),
+          {ns: 'loris'}),
         cancelButtonText: t('No, cancel it!',
-          {ns: 'imaging_uploader'}),
+          {ns: 'loris'}),
       }).then((result) => {
         if (result.value) {
           this.uploadFile(true);

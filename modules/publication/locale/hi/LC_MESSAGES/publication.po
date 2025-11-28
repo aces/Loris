@@ -24,9 +24,6 @@ msgstr "प्रकाशन"
 msgid "File to upload"
 msgstr "अपलोड करने के लिए फ़ाइल"
 
-msgid "Are you sure?"
-msgstr "क्या आप सुनिश्चित हैं?"
-
 msgid "Submit"
 msgstr "जमा करें"
 

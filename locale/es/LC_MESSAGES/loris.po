@@ -239,6 +239,15 @@ msgstr "Scan hecho"
 msgid "Language"
 msgstr "Lenguaje"
 
+msgid "Are you sure?"
+msgstr "Estas seguro"
+
+msgid "Yes, I am sure!"
+msgstr "Si estoy seguro"
+
+msgid "No, cancel it!"
+msgstr "¡No, cancélalo!"
+
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{pageCount}} filas mostradas de {{totalCount}}."
