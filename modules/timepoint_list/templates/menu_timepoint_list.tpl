@@ -76,6 +76,7 @@
             <th>{dgettext("timepoint_list", "BVL QC")}</th>
             <th>{dgettext("timepoint_list", "BVL Exclusion")}</th>
             <th>{dgettext("timepoint_list", "Registered By")}</th>
+            <th>{dgettext("loris", "Language")}</th>
         </tr>
     </thead>
     <tbody>
@@ -154,6 +155,9 @@
             <td>
                 {$timePoints[timepoint].Real_name}
             </td>
+<td>
+                {$timePoints[timepoint].language->label}
+</td>
         </tr>
     {sectionelse}
         <tr><td colspan="10">{dgettext("timepoint_list", "You do not have access to any timepoints registered for this candidate.")}</td></tr>
