@@ -75,11 +75,15 @@ msgstr ""
 msgid "Display visits as"
 msgstr ""
 
-msgid "Labels"
-msgstr ""
+msgid "Label"
+msgid_plural "Labels"
+msgstr[0] ""
+msgstr[1] ""
 
-msgid "Values"
-msgstr ""
+msgid "Value"
+msgid_plural "Values"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Display options as"
 msgstr ""
@@ -189,7 +193,7 @@ msgstr ""
 msgid "Delete Item"
 msgstr ""
 
-msgid "Query matches <b>{{count}}</b> candidates"
+msgid "Query matches <bold>{{count}}</bold> candidates"
 msgstr ""
 
 msgid "Current Query"
@@ -216,7 +220,13 @@ msgstr ""
 msgid "for at least one of the following visits"
 msgstr ""
 
-msgid "This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <i>at least one</i> of the data points."
+msgid "This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <italic>at least one</italic> of the data points."
+msgstr ""
+
+msgid "This field may exist multiple times for a single {{scope}} and must match for *any* of the data points"
+msgstr ""
+
+msgid "<italic>at visit</italic> {{visits}}"
 msgstr ""
 
 msgid "Invalid field"
@@ -247,7 +257,9 @@ msgid "Add criteria"
 msgstr ""
 
 msgid "Field"
-msgstr ""
+msgid_plural "Fields"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Select a field"
 msgstr ""
@@ -303,6 +315,18 @@ msgstr ""
 msgid "Could not parse CSV file"
 msgstr ""
 
+msgid "No CSV Uploaded"
+msgstr ""
+
+msgid "Please upload a CSV file before submitting."
+msgstr ""
+
+msgid "Empty CSV"
+msgstr ""
+
+msgid "The uploaded CSV file is empty."
+msgstr ""
+
 msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
 msgstr ""
 
@@ -315,8 +339,10 @@ msgstr ""
 msgid "Welcome to the Data Query Tool"
 msgstr ""
 
-msgid "Study Queries"
-msgstr ""
+msgid "Study Query"
+msgid_plural "Study Queries"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Candidate matches:"
 msgstr ""
@@ -343,7 +369,9 @@ msgid "No run times (eliminate duplicates)"
 msgstr ""
 
 msgid "Filter"
-msgstr ""
+msgid_plural "Filters"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Named Only"
 msgstr ""
@@ -390,7 +418,37 @@ msgstr ""
 msgid "Query shared by {{sharedBy}}"
 msgstr ""
 
-msgid "Name query"
+msgid "Name Query"
+msgstr ""
+
+msgid "Enter your query name"
+msgstr ""
+
+msgid "Query name"
+msgstr ""
+
+msgid "Must provide a query name."
+msgstr ""
+
+msgid "Pin Top Query"
+msgstr ""
+
+msgid "Pin Study Query"
+msgstr ""
+
+msgid "Pin Dashboard Summary"
+msgstr ""
+
+msgid "Pin To Login Page"
+msgstr ""
+
+msgid "Must pin as study query, to dashboard, or to the login page."
+msgstr ""
+
+msgid "Must provide a query name to pin query as."
+msgstr ""
+
+msgid "{{columnName}} fields"
 msgstr ""
 
 msgid "Define Filters"
@@ -460,4 +518,7 @@ msgid "Select a category"
 msgstr ""
 
 msgid "Invalid response"
+msgstr ""
+
+msgid "Invalid tab"
 msgstr ""

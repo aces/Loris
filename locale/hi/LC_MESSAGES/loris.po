@@ -92,7 +92,9 @@ msgstr "इमेजिंग"
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr "उम्मीदवार"
+msgid_plural "Candidates"
+msgstr[0] "उम्मीदवार"
+msgstr[1] "उम्मीदवारों"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
@@ -267,7 +269,9 @@ msgid_plural "Cohorts"
 msgstr[0] "समूह"
 
 msgid "Session"
-msgstr "सत्र"
+msgid_plural "Sessions"
+msgstr[0] "सत्र"
+msgstr[1] "सत्र"
 
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
@@ -521,3 +525,13 @@ msgstr "लोड हो रहा है..."
 
 msgid "Permission denied"
 msgstr "अनुमति अस्वीकृत"
+
+msgid "and"
+msgstr "तथा"
+
+msgid "or"
+msgstr "वा"
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr "कोई विकल्प नहीं"

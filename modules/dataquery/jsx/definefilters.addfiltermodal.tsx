@@ -18,23 +18,26 @@ import {
   VisitOption,
 } from './types';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
-import {Trans, useTranslation} from 'react-i18next';
+import {Trans} from 'react-i18next';
 
 /**
  * Renders a selectable list of visits
  *
  * @param {object} props - React props
+ * @param {any} props.t - useTranslation
  * @param {string[]} props.selected - The currently selected visits
  * @param {string[]} props.options - The valid options
  * @param {function} props.onChange - callback when the value selected changes
+ *
  * @returns {React.ReactElement} - The visit list dropdown
  */
 function VisitList(props: {
+    t: any,
     selected: string[],
     options: string[],
     onChange: (newvals: string[]) => void,
 }) {
-  const {t} = useTranslation('dataquery');
+  const {t} = props;
   const selectOptions: VisitOption[] = props.options.map(
     (vl) => {
       return {value: vl, label: vl};
@@ -53,6 +56,7 @@ function VisitList(props: {
       );
     }}
     placeholder={t('Select Visits', {ns: 'dataquery'})}
+    noOptionsMessage={() => t('No options', {ns: 'loris'})}
     value={selectedVisits}
     menuPortalTarget={document.body}
     styles={{menuPortal:
@@ -72,6 +76,7 @@ function VisitList(props: {
  * Render a modal window for adding a filter
  *
  * @param {object} props - React props
+ * @param {any} props.t - useTranslation
  * @param {QueryGroup} props.query - The current query
  * @param {function} props.closeModal - Callback to close the modal
  * @param {function} props.addQueryGroupItem - Callback to add criteria to a querygroup
@@ -83,6 +88,7 @@ function VisitList(props: {
  * @returns {React.ReactElement} - The modal window
  */
 function AddFilterModal(props: {
+    t: any,
     query: QueryGroup,
     closeModal: () => void,
     addQueryGroupItem: (group: QueryGroup, condition: QueryTerm) => void,
@@ -94,23 +100,26 @@ function AddFilterModal(props: {
     module: string,
     category: string,
 }) {
-  const {t} = useTranslation('dataquery');
+  const {t} = props;
   let fieldSelect;
   let criteriaSelect;
   let visitSelect;
   let cardinalityWarning;
   const [fieldDictionary, setFieldDictionary]
-        = useState<FieldDictionary|null>(null);
+    = useState<FieldDictionary|null>(null);
   const [fieldname, setFieldname] = useState<string|null>(null);
   const [op, setOp] = useState<Operators|null>(null);
   const [value, setValue] = useState<string|string[]>('');
   const [selectedVisits, setSelectedVisits] = useState<string[]|null>(null);
 
+  const dropdownTitle = t('Field', {ns: 'dataquery', count: 99});
   if (props.displayedFields) {
-    const options: { Fields: {[key: string]: string}} = {'Fields': {}};
+    const options: { [dropdown: string]: {[key: string]: string}}
+      = {[dropdownTitle]: {}};
     for (const [key, value] of Object.entries(props.displayedFields)) {
-      options['Fields'][key] = value.description;
+      options[dropdownTitle][key] = value.description;
     }
+
     fieldSelect = <FilterableSelectGroup
       key={props.category}
       groups={options}
@@ -140,7 +149,7 @@ function AddFilterModal(props: {
       <div style={{display: 'flex'}}>
         <div style={{width: '20%'}}>
           <FilterableSelectGroup groups={
-            {'Operators': getOperatorOptions(fieldDictionary)}
+            {'Operators': getOperatorOptions(fieldDictionary, t)}
           }
           onChange={(value: string, operator: string) => {
             setOp(operator as Operators);
@@ -156,7 +165,9 @@ function AddFilterModal(props: {
       visitSelect = <div onClick={(e) => e.stopPropagation()}>
         <h3>{t('for at least one of the following visits',
           {ns: 'dataquery'})}</h3>
-        <VisitList options={fieldDictionary.visits}
+        <VisitList
+          t={t}
+          options={fieldDictionary.visits}
           selected={selectedVisits || []}
           onChange={setSelectedVisits}
         />
@@ -277,7 +288,7 @@ function AddFilterModal(props: {
       onClose={props.closeModal}
       onSubmit={submitPromise}>
       <div style={{width: '100%', padding: '1em'}}>
-        <h3>{t('Field', {ns: 'dataquery'})}</h3>
+        <h3>{t('Field', {ns: 'dataquery', count: 1})}</h3>
         <div style={{display: 'flex', width: '100%'}}>
           <div style={{width: '40%'}}>
             <FilterableSelectGroup
@@ -310,11 +321,12 @@ function AddFilterModal(props: {
  * Get a list of possible query operators based on a field's dictionary
  *
  * @param {object} dict - the field dictionary
+ * @param {any} t useTranslation
+ *
  * @returns {object} - list of options for this dictionary
  */
-function getOperatorOptions(dict: FieldDictionary) {
+function getOperatorOptions(dict: FieldDictionary, t: any) {
   let options: {[operator: string]: string};
-  const {t} = useTranslation('dataquery');
   if (dict.type == 'integer' || dict.type == 'date' ||
             dict.type == 'interval' || dict.type == 'time' ||
             dict.type == 'decimal') {
@@ -400,6 +412,8 @@ function valueInput(fielddict: FieldDictionary,
       onUserInput={(name: string, value: string) => setValue(value)} />;
   }
 
+  const dropdownTitle = t('Value', {ns: 'dataquery'});
+
   switch (fielddict.type) {
   case 'date':
     return <DateElement
@@ -430,9 +444,9 @@ function valueInput(fielddict: FieldDictionary,
       onUserInput={(name: string, value: string) => setValue(value)} />;
   case 'boolean':
     return <FilterableSelectGroup groups={
-      {'Value': {
+      {[dropdownTitle]: {
         'true': t('True', {ns: 'loris'}).toLocaleString().toLowerCase(),
-        'false': t('Talse', {ns: 'loris'}).toLocaleString().toLowerCase(),
+        'false': t('False', {ns: 'loris'}).toLocaleString().toLowerCase(),
       },
       }}
     onChange={(_: string, value: string) => {
@@ -465,7 +479,7 @@ function valueInput(fielddict: FieldDictionary,
       />;
     }
     return <FilterableSelectGroup
-      groups={{'Value': opts}}
+      groups={{[dropdownTitle]: opts}}
       onChange={(_: string, value: string) => {
         setValue(value);
       }}

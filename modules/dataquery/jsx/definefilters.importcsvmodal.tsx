@@ -33,15 +33,17 @@ function ImportCSVModal(props: {
       if (!csvFile) {
         swal.fire({
           type: 'error',
-          title: 'No CSV Uploaded',
-          text: 'Please upload a CSV file before submitting.',
+          title: t('No CSV Uploaded', {ns: 'dataquery'}),
+          text: t(
+            'Please upload a CSV file before submitting.',
+            {ns: 'dataquery'}
+          ),
         });
         reject();
         return;
       }
       resolve(null);
-    }
-    );
+    });
 
   const candIDRegex = new RegExp('^[1-9][0-9]{5}$');
 
@@ -67,8 +69,8 @@ function ImportCSVModal(props: {
     if (!value.data || value.data.length <= startLine) {
       swal.fire({
         type: 'error',
-        title: 'Empty CSV',
-        text: 'The uploaded CSV file is empty.',
+        title: t('Empty CSV', {ns: 'dataquery'}),
+        text: t('The uploaded CSV file is empty.', {ns: 'dataquery'}),
       });
       setCSVFile(null);
       return;
@@ -164,12 +166,12 @@ function ImportCSVModal(props: {
             <input type="radio" name="csvtype"
               checked={csvType == 'candidate'}
               onChange={() => setCSVType('candidate')}
-            /> {t('Candidates', {ns: 'dataquery'})}
+            /> {t('Candidate', {ns: 'loris', count: 99})}
             <input type="radio" name="csvtype"
               style={{marginLeft: '1.5em'}}
               checked={csvType == 'session'}
               onChange={() => setCSVType('session')}
-            /> {t('Sessions', {ns: 'dataquery'})}
+            /> {t('Session', {ns: 'loris', count: 99})}
           </dd>
           <dt style={dtstyle}>{t('Candidate identifier type',
             {ns: 'dataquery'})}</dt>
@@ -181,7 +183,7 @@ function ImportCSVModal(props: {
             style={{marginLeft: '1.5em'}}
             checked={idType == 'PSCID'}
             onChange={() => setIdType('PSCID')}
-          /> {t('PSCID', {ns: 'dataquery'})}
+          /> {t('PSCID', {ns: 'loris'})}
           </dd>
           <dt style={dtstyle}>
             {t('Does CSV contain a header line?', {ns: 'dataquery'})}

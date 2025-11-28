@@ -65,7 +65,10 @@ function Welcome(props: {
     }[] = [];
   if (props.topQueries.length > 0) {
     panels.push({
-      title: t('Study Queries', {ns: 'dataquery'}),
+      title: t(
+        'Study Query',
+        {ns: 'dataquery', count: props.topQueries.length}
+      ),
       content: (
         <div>
           <QueryList
@@ -523,7 +526,7 @@ function QueryList(props: {
       paddingBottom: '1ex',
     }}>
       <TextboxElement name='filter'
-        label={t('Filter', {ns: 'dataquery'})}
+        label={t('Filter', {ns: 'dataquery', count: 1})}
         value={queryFilter}
         onUserInput={
           (name: string, value: string) => setQueryFilter(value)
@@ -646,7 +649,6 @@ function QueryListCriteria(props: {
 function Pager(props: {
     children: React.ReactElement[],
 }) {
-  const {t} = useTranslation('dataquery');
   const [pageNum, setPageNum] = useState<number>(1);
   const rowsPerPage = 5;
 
@@ -843,6 +845,7 @@ function SingleQueryDisplay(props: {
     }
 
     const nameIcon = <NameIcon
+      t={t}
       onClick={() => {
         props.setDefaultModalQueryName(query.Name || '');
         props.setNameModalID(query.QueryID);
@@ -865,7 +868,7 @@ function SingleQueryDisplay(props: {
   } else if (query.Name || query.AdminName) {
     const name = props.useAdminName ? query.AdminName : query.Name;
     const unpinIcon = props.queryAdmin
-      ? <span title={t('Name query', {ns: 'dataquery'})}
+      ? <span title={t('Name Query', {ns: 'dataquery'})}
         style={{cursor: 'pointer'}}
         className="fa-stack"
         onClick={() => {
@@ -884,7 +887,7 @@ function SingleQueryDisplay(props: {
   const queryDisplay = !showFullQuery ? <div /> :
     <div style={{display: 'flex', flexWrap: 'wrap'}}>
       <div>
-        <h3>{t('Fields', {ns: 'dataquery'})}</h3>
+        <h3>{t('Field', {ns: 'dataquery', count: 99})}</h3>
         {query.fields.map(
           (fieldobj, fidx) =>
             <FieldDisplay
@@ -1051,13 +1054,16 @@ function ShareIcon(props: {
  * An icon to name a query
  *
  * @param {object} props - React props
+ * @param {function} props.t - useTranslation
  * @param {function} props.onClick - Handler to call when icon clicked
+ *
  * @returns {React.ReactElement} - The React element
  */
 function NameIcon(props: {
-    onClick?: () => void
+  t: () => string,
+  onClick?: () => void
 }): React.ReactElement {
-  return (<span title="Name query"
+  return (<span title={props.t('Name Query', {ns: 'dataquery'})}
     style={{cursor: 'pointer'}}
     className="fa-stack"
     onClick={props.onClick}
