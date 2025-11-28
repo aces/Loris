@@ -11,10 +11,8 @@ class Language
     /**
      * Construct a Language object
      *
-     * @param public readonly string $label The display label for the language
-     * @param public readonly string $code  The language code for the language.
-     *
-     * @return \Language
+     * @param string $label The display label for the language
+     * @param string $code  The language code for the language.
      */
     public function __construct(
         public readonly string $label,
