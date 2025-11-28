@@ -70,7 +70,9 @@ class LorisForm
      */
     protected function &createBase($name, $label, $attribs=[])
     {
-        $el = ['label' => dgettext($this->textdomain, $label)];
+        $el = [
+            'label' => !empty($label) ? dgettext($this->textdomain, $label) : null
+        ];
 
         if (!empty($name)) {
             $el['name'] = $name;
