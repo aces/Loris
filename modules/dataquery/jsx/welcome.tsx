@@ -1060,7 +1060,7 @@ function ShareIcon(props: {
  * @returns {React.ReactElement} - The React element
  */
 function NameIcon(props: {
-  t: () => string,
+  t: (str: string, obj: object) => string,
   onClick?: () => void
 }): React.ReactElement {
   return (<span title={props.t('Name Query', {ns: 'dataquery'})}
