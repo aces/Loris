@@ -24,9 +24,6 @@ msgstr "出版物"
 msgid "File to upload"
 msgstr "アップロードするファイル"
 
-msgid "Are you sure?"
-msgstr "本気ですか？"
-
 msgid "Submit"
 msgstr "提出する"
 

@@ -24,9 +24,6 @@ msgstr ""
 msgid "File to upload"
 msgstr ""
 
-msgid "Are you sure?"
-msgstr ""
-
 msgid "Submit"
 msgstr ""
 

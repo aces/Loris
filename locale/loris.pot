@@ -300,6 +300,15 @@ msgstr ""
 msgid "Are You Sure?"
 msgstr ""
 
+msgid "Are you sure?"
+msgstr ""
+
+msgid "Yes, I am sure!"
+msgstr ""
+
+msgid "No, cancel it!"
+msgstr ""
+
 msgid "Leaving the form will result in the loss of any information entered."
 msgstr ""
 

@@ -85,17 +85,11 @@ msgstr "成功！"
 msgid "No changes were made!"
 msgstr "変更は行われませんでした。"
 
-msgid "Are you sure?"
-msgstr "本気ですか？"
-
 msgid "You won't be able to revert this!"
 msgstr "これを元に戻すことはできません!"
 
 msgid "Yes, delete it!"
 msgstr "はい、削除します！"
-
-msgid "No, cancel it!"
-msgstr "いいえ、キャンセルします！"
 
 msgid "Deleted!"
 msgstr "削除されました!"
