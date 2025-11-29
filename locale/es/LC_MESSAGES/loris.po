@@ -240,10 +240,10 @@ msgid "Language"
 msgstr "Lenguaje"
 
 msgid "Are you sure?"
-msgstr "Estas seguro"
+msgstr "Estás seguro?"
 
 msgid "Yes, I am sure!"
-msgstr "Si estoy seguro"
+msgstr "¡Sí, estoy seguro!"
 
 msgid "No, cancel it!"
 msgstr "¡No, cancélalo!"

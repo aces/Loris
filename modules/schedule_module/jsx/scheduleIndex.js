@@ -244,7 +244,7 @@ deleteConfirm(id) {
     type: 'warning',
     showCancelButton: true,
     confirmButtonText: t('Yes, delete it!',
-      {ns: 'schedule_module'}),
+      {ns: 'loris'}),
     cancelButtonText: t('No, cancel it!',
       {ns: 'loris'}),
   }).then((result) => {
