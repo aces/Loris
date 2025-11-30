@@ -29,6 +29,21 @@ session_cache_limiter("");
 // See: https://www.php.net/manual/en/session.configuration.php#ini.session.use-strict-mode
 ini_set('session.use_strict_mode', '1');
 
+// TODO: Remove this code once PHP 8.4 becomes the minimal PHP version in LORIS.
+if (version_compare(PHP_VERSION, '8.4', '<')) {
+    // @phan-file-suppress PhanRedefineFunctionInternal
+
+    // phpcs:ignore
+    function array_all(array $array, callable $callable): bool {
+        foreach ($array as $key => $value) {
+            if (!$callable($value, $key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 // FIXME: The code in NDB_Client should mostly be replaced by middleware.
 $client = new \NDB_Client;
 $client->initialize();
