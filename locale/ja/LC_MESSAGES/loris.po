@@ -300,6 +300,15 @@ msgstr "民族"
 msgid "Are You Sure?"
 msgstr "本気ですか？"
 
+msgid "Are you sure?"
+msgstr "本気ですか？"
+
+msgid "Yes, I am sure!"
+msgstr "はい、間違いないです！"
+
+msgid "No, cancel it!"
+msgstr "いや、キャンセルしろ！"
+
 msgid "Leaving the form will result in the loss of any information entered."
 msgstr "フォームを離れると、入力した情報はすべて失われます。"
 

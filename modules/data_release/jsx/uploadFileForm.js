@@ -190,7 +190,7 @@ class UploadFileForm extends Component {
     }).then(async (response) => {
       if (response.status === 409) {
         swal.fire({
-          title: t('Are you sure?', {ns: 'data_release'}),
+          title: t('Are you sure?', {ns: 'loris'}),
           text: t('A file with this name already exists!',
             {ns: 'data_release'}) + '\n ' +
                 t('Would you like to overwrite existing file?',
@@ -200,8 +200,8 @@ class UploadFileForm extends Component {
                 {ns: 'data_release'}),
           type: 'warning',
           showCancelButton: true,
-          confirmButtonText: t('Yes, I am sure!', {ns: 'data_release'}),
-          cancelButtonText: t('No, cancel it!', {ns: 'data_release'}),
+          confirmButtonText: t('Yes, I am sure!', {ns: 'loris'}),
+          cancelButtonText: t('No, cancel it!', {ns: 'loris'}),
         }).then((isConfirm) => {
           if (isConfirm && isConfirm.value) {
             this.uploadFile(true);

@@ -134,17 +134,8 @@ msgstr "¡Nombre de archivo no válido!"
 msgid "File name should begin with:"
 msgstr "El nombre del archivo debe comenzar con:"
 
-msgid "Are you sure?"
-msgstr "Estas seguro"
-
 msgid "A file with this name already exists!\n Would you like to override existing file?"
 msgstr "¡Ya existe un archivo con este nombre! ¿Desea sobrescribir el archivo existente?"
-
-msgid "Yes, I am sure!"
-msgstr "Si estoy seguro"
-
-msgid "No, cancel it!"
-msgstr "¡No, cancélalo!"
 
 msgid "Cancelled"
 msgstr "Cancelado"

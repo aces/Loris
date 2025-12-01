@@ -134,17 +134,8 @@ msgstr "अमान्य फ़ाइल नाम!"
 msgid "File name should begin with:"
 msgstr "फ़ाइल नाम इससे शुरू होना चाहिए:"
 
-msgid "Are you sure?"
-msgstr "क्या आप सुनिश्चित हैं?"
-
 msgid "A file with this name already exists!\n Would you like to override existing file?"
 msgstr "इस नाम की एक फ़ाइल पहले से मौजूद है!\n क्या आप मौजूदा फ़ाइल को अधिलेखित करना चाहेंगे?"
-
-msgid "Yes, I am sure!"
-msgstr "हाँ, मैं सुनिश्चित हूँ!"
-
-msgid "No, cancel it!"
-msgstr "नहीं, इसे रद्द करें!"
 
 msgid "Cancelled"
 msgstr "रद्द कर दिया गया"

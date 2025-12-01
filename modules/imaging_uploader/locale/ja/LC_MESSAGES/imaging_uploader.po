@@ -72,17 +72,8 @@ msgstr "ファイルは現在処理中です。"
 msgid "A file with this name is currently going through the MRI pipeline!"
 msgstr "この名前のファイルは現在 MRI パイプラインを通過しています。"
 
-msgid "Are you sure?"
-msgstr "本気ですか？"
-
 msgid "A file with this name already exists! Would you like to overwrite the existing file?"
 msgstr "この名前のファイルは既に存在します。既存のファイルを上書きしますか?"
-
-msgid "Yes, I am sure!"
-msgstr "はい、間違いないです！"
-
-msgid "No, cancel it!"
-msgstr "いいえ、キャンセルします！"
 
 msgid "Cancelled"
 msgstr "キャンセル"
