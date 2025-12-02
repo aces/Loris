@@ -157,31 +157,36 @@ class ExaminerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const {t} = this.props;
+    const labelExaminer = t('Examiner', {ns: 'examiner'});
+    const labelRadiologist = t('Radiologist', {ns: 'examiner'});
+    const labelCertification = t('Certification', {ns: 'examiner'});
+    const labelSite = t('Site', {ns: 'loris', count: 1});
+    const labelID = t('ID', {ns: 'examiner'});
+
     let result = <td>{cell}</td>;
 
-    switch (column) {
-    case 'Examiner':
+    if (column === 'Examiner' || column === labelExaminer) {
       if (this.state.data.fieldOptions.useCertification) {
         const url = loris.BaseURL + '/examiner/editExaminer/?identifier=' +
-                    row.ID;
+                    (row.ID || row[labelID]);
         result = <td><a href={url}>{cell}</a></td>;
       } else {
         result = <td>{cell}</td>;
       }
-      break;
-    case 'Radiologist':
-      if (row.Radiologist === '1') {
-        result = <td>{this.props.t('Yes', {ns: 'loris'})}</td>;
-      } else if (row.Radiologist === '0') {
-        result = <td>{this.props.t('No', {ns: 'loris'})}</td>;
+    } else if (column === 'Radiologist' || column === labelRadiologist) {
+      const radiologistValue = row.Radiologist || row[labelRadiologist];
+      if (radiologistValue === '1') {
+        result = <td>{t('Yes', {ns: 'loris'})}</td>;
+      } else if (radiologistValue === '0') {
+        result = <td>{t('No', {ns: 'loris'})}</td>;
       }
-      break;
-    case 'Certification':
-      if (row.Certification === null) {
-        result = <td>{this.props.t('None', {ns: 'loris'})}</td>;
+    } else if (column === 'Certification' || column === labelCertification) {
+      const certValue = row.Certification || row[labelCertification];
+      if (certValue === null) {
+        result = <td>{t('None', {ns: 'loris'})}</td>;
       }
-      break;
-    case 'Site':
+    } else if (column === 'Site' || column === labelSite) {
       // If user has multiple sites, join array of sites into string
       result = (
         <td>{cell
@@ -193,13 +198,12 @@ class ExaminerIndex extends Component {
       );
       if (cell.length === 0) {
         result = (
-          <td>{this.props.t(
+          <td>{t(
             'This user has no site affiliations',
             {ns: 'examiner'}
           )}</td>
         );
       }
-      break;
     }
     return result;
   }

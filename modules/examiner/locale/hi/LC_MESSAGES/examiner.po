@@ -18,6 +18,9 @@ msgstr ""
 msgid "Examiner"
 msgstr "परीक्षक"
 
+msgid "Edit Examiner"
+msgstr "परीक्षक संपादित करें"
+
 msgid "Examiner added."
 msgstr "परीक्षक जोड़ा गया।"
 
@@ -41,3 +44,39 @@ msgstr "प्रमाणन"
 
 msgid "This user has no site affiliations"
 msgstr "इस उपयोगकर्ता की कोई साइट संबद्धता नहीं है।"
+
+msgid "Edit Certification for"
+msgstr "के लिए प्रमाणन संपादित करें"
+
+msgid "Certification Status"
+msgstr "प्रमाणन स्थिति"
+
+msgid "Certification Date"
+msgstr "प्रमाणन तिथि"
+
+msgid "Comments"
+msgstr "टिप्पणियाँ"
+
+msgid "Change Log"
+msgstr "परिवर्तन लॉग"
+
+msgid "User"
+msgstr "उपयोगकर्ता"
+
+msgid "Measure"
+msgstr "माप"
+
+msgid "Old Value"
+msgstr "पुराना मान"
+
+msgid "Old Date"
+msgstr "पुरानी तिथि"
+
+msgid "New Value"
+msgstr "नया मान"
+
+msgid "New Date"
+msgstr "नई तिथि"
+
+msgid "No changes have been made"
+msgstr "कोई बदलाव नहीं किया गया है"
