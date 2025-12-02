@@ -159,7 +159,6 @@ class ExaminerIndex extends Component {
   formatColumn(column, cell, row) {
     const {t} = this.props;
     const labelExaminer = t('Examiner', {ns: 'examiner'});
-    const labelRadiologist = t('Radiologist', {ns: 'examiner'});
     const labelCertification = t('Certification', {ns: 'examiner'});
     const labelSite = t('Site', {ns: 'loris', count: 1});
     const labelID = t('ID', {ns: 'examiner'});
