@@ -174,13 +174,6 @@ class ExaminerIndex extends Component {
       } else {
         result = <td>{cell}</td>;
       }
-    } else if (column === 'Radiologist' || column === labelRadiologist) {
-      const radiologistValue = row.Radiologist || row[labelRadiologist];
-      if (radiologistValue === '1') {
-        result = <td>{t('Yes', {ns: 'loris'})}</td>;
-      } else if (radiologistValue === '0') {
-        result = <td>{t('No', {ns: 'loris'})}</td>;
-      }
     } else if (column === 'Certification' || column === labelCertification) {
       const certValue = row.Certification || row[labelCertification];
       if (certValue === null) {
@@ -327,8 +320,8 @@ class ExaminerIndex extends Component {
         name: 'radiologist',
         type: 'select',
         options: {
-          '1': t('Yes', {ns: 'loris'}),
-          '0': t('No', {ns: 'loris'}),
+          [t('Yes', {ns: 'loris'})]: t('Yes', {ns: 'loris'}),
+          [t('No', {ns: 'loris'})]: t('No', {ns: 'loris'}),
         },
       }},
       {label: t('Certification', {ns: 'examiner'}),

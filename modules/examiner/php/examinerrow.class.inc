@@ -70,6 +70,13 @@ class ExaminerRow implements
      */
     public function jsonSerialize() : array
     {
-        return $this->DBRow;
+        $row = $this->DBRow;
+        // Convert radiologist 1/0 to Yes/No for display
+        if (isset($row['Radiologist'])) {
+            $row['Radiologist'] = ($row['Radiologist'] === '1' || $row['Radiologist'] === 1) 
+                ? dgettext('loris', 'Yes') 
+                : dgettext('loris', 'No');
+        }
+        return $row;
     }
 }
