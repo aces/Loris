@@ -84,16 +84,10 @@ msgstr ""
 msgid "No changes were made!"
 msgstr ""
 
-msgid "Are you sure?"
-msgstr ""
-
 msgid "You won't be able to revert this!"
 msgstr ""
 
 msgid "Yes, delete it!"
-msgstr ""
-
-msgid "No, cancel it!"
 msgstr ""
 
 msgid "Deleted!"

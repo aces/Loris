@@ -87,6 +87,7 @@ locales:
 	msgfmt -o modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po
 	msgfmt -o modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.mo modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po
 	npx i18next-conv -l hi -s modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po -t modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.json --compatibilityJSON v4
+	npx i18next-conv -l ja -s modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po -t modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.json --compatibilityJSON v4
 	msgfmt -o modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po
 	msgfmt -o modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po
 	npx i18next-conv -l hi -s modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po -t modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.json
@@ -126,6 +127,7 @@ locales:
 	msgfmt -o modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.mo modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po
 	msgfmt -o modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.mo modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.po
 	npx i18next-conv -l hi -s modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.po -t modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.json
+	npx i18next-conv -l ja -s modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po -t modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.json
 	msgfmt -o modules/dictionary/locale/ja/LC_MESSAGES/dictionary.mo modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po
 	npx i18next-conv -l ja -s modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po -t modules/dictionary/locale/ja/LC_MESSAGES/dictionary.json
 	msgfmt -o modules/dictionary/locale/hi/LC_MESSAGES/dictionary.mo modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po
@@ -148,9 +150,11 @@ locales:
 	msgfmt -o modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.mo modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po
 	msgfmt -o modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.mo modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.po
 	npx i18next-conv -l hi -s modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.po -t modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.json
+	npx i18next-conv -l ja -s modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po -t modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.json
 	msgfmt -o modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po
 	msgfmt -o modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.mo modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po
 	npx i18next-conv -l hi -s modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po -t modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.json --compatibilityJSON v4
+	npx i18next-conv -l ja -s modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po -t modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.json --compatibilityJSON v4
 	msgfmt -o modules/instrument_list/locale/ja/LC_MESSAGES/instrument_list.mo modules/instrument_list/locale/ja/LC_MESSAGES/instrument_list.po
 	msgfmt -o modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.mo modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.po
 	msgfmt -o modules/instrument_list/locale/fr/LC_MESSAGES/instrument_list.mo modules/instrument_list/locale/fr/LC_MESSAGES/instrument_list.po
@@ -200,6 +204,7 @@ locales:
 	msgfmt -o modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.mo modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.po
 	msgfmt -o modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.mo modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po
 	npx i18next-conv -l hi -s modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po -t modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.json	
+	npx i18next-conv -l ja -s modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.po -t modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.json	
 	msgfmt -o modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.po
 	msgfmt -o modules/statistics/locale/ja/LC_MESSAGES/statistics.mo modules/statistics/locale/ja/LC_MESSAGES/statistics.po
 	npx i18next-conv -l ja -s modules/statistics/locale/ja/LC_MESSAGES/statistics.po -t modules/statistics/locale/ja/LC_MESSAGES/statistics.json

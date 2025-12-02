@@ -201,9 +201,6 @@ msgstr ""
 msgid "DCCID"
 msgstr ""
 
-msgid "Visit"
-msgstr ""
-
 msgid "Visit Label"
 msgstr ""
 
@@ -307,6 +304,15 @@ msgid "Ethnicity"
 msgstr ""
 
 msgid "Are You Sure?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "Yes, I am sure!"
+msgstr ""
+
+msgid "No, cancel it!"
 msgstr ""
 
 msgid "Leaving the form will result in the loss of any information entered."
@@ -438,6 +444,9 @@ msgid "Error!"
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Incorrect username or password."
 msgstr ""
 
 # Common timepoint and vist terms
