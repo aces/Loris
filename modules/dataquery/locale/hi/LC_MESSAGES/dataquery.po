@@ -285,6 +285,18 @@ msgstr "डेटा है"
 msgid "has no data"
 msgstr "कोई डेटा नहीं है"
 
+msgid "(No data)"
+msgstr "(कोई डेटा नहीं)"
+
+msgid "(Not implemented)"
+msgstr "(लागू नहीं किया गया)"
+
+msgid "(Internal Error. Unhandled cardinality: {{cardinality}})"
+msgstr "(इंटरनल एरर. अनहैंडल्ड कार्डिनैलिटी: {{cardinality}}"
+
+msgid "(Internal error)"
+msgstr "(आंतरिक त्रुटि)"
+
 msgid "exists"
 msgstr "मौजूद है"
 

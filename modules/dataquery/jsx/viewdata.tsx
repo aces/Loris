@@ -268,6 +268,8 @@ function useDataOrganization(
         = useState<'headers'|'data'|'done'|null>(null);
   const [progress, setProgress] = useState<number>(0);
   const [headers, setHeaders] = useState<string[]>([]);
+  const {t} = useTranslation();
+
   useEffect( () => {
     if (queryData.loading == true) {
       return;
@@ -277,6 +279,7 @@ function useDataOrganization(
       visitOrganization,
       headerDisplay,
       fulldictionary,
+      t,
       (i) => setProgress(i),
     ).then( (headers: string[]) => {
       setHeaders(headers);
@@ -947,7 +950,7 @@ function organizedFormatter(
                 return null;
               } catch (e) {
                 console.error(e);
-                return <i>{t('(Internal error)', {ns: 'dataquery'})}</i>;
+                return <i>({t('Internal error', {ns: 'dataquery'})})</i>;
               }
             };
             let theval = visitval(visit, cell);
@@ -1012,7 +1015,7 @@ function organizedFormatter(
                   }
                 }
               } catch (e) {
-                return <i>{t('(Internal error)', {ns: 'dataquery'})}</i>;
+                return <i>({t('Internal error', {ns: 'dataquery'})})</i>;
               }
               return null;
             };
@@ -1172,6 +1175,7 @@ type HeaderDisplayType = 'fieldname' | 'fielddesc' | 'fieldnamedesc';
  * @param {string} org - the visit organization
  * @param {string} display - the header display format
  * @param {object} fulldict - the data dictionary
+ * @param {any} t - useTranslation
  * @param {function} onProgress - Callback to indicate progress in processing
  * @returns {array} - A promise which resolves to the array of headers to display
  *                    in the frontend table
@@ -1181,6 +1185,7 @@ function organizeHeaders(
   org: VisitOrgType,
   display: HeaderDisplayType,
   fulldict: FullDictionary,
+  t: any,
   onProgress: (i: number) => void): Promise<string[]> {
   /**
    * Format a header according to the selected display type
@@ -1227,7 +1232,7 @@ function organizeHeaders(
       const dict = getDictionary(field, fulldict);
 
       if (dict === null) {
-        headers.push('Internal Error');
+        headers.push(t('Internal error', {ns: 'dataquery'}));
       } else if (dict.scope == 'candidate') {
         headers.push(formatHeader(field));
       } else {

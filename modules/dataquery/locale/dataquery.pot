@@ -282,6 +282,18 @@ msgstr ""
 msgid "has no data"
 msgstr ""
 
+msgid "(No data)"
+msgstr ""
+
+msgid "(Not implemented)"
+msgstr ""
+
+msgid "(Internal Error. Unhandled cardinality: {{cardinality}})"
+msgstr ""
+
+msgid "Internal error"
+msgstr ""
+
 msgid "exists"
 msgstr ""
 
