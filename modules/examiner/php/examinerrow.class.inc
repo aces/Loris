@@ -73,7 +73,7 @@ class ExaminerRow implements
         $row = $this->DBRow;
         // Convert radiologist 1/0 to Yes/No for display
         if (isset($row['Radiologist'])) {
-            $isRadiologist = $row['Radiologist'] === '1'
+            $isRadiologist      = $row['Radiologist'] === '1'
                 || $row['Radiologist'] === 1;
             $row['Radiologist'] = $isRadiologist
                 ? dgettext('loris', 'Yes')
