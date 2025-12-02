@@ -490,7 +490,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $buttons[] = $this->form->createElement(
                 'submit',
                 'fire_away',
-                'Save Data',
+                dgettext('loris', 'Save'),
                 ['class' => 'button']
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
