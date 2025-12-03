@@ -69,9 +69,6 @@ msgstr ""
 msgid "Could not upload file"
 msgstr ""
 
-msgid "Permission denied"
-msgstr ""
-
 msgid "Something went wrong"
 msgstr ""
 
@@ -144,9 +141,6 @@ msgstr ""
 msgid "Delete Successful!"
 msgstr ""
 
-msgid "Browse"
-msgstr ""
-
 msgid "Upload"
 msgstr ""
 
@@ -174,17 +168,8 @@ msgstr ""
 msgid "Filter globally"
 msgstr ""
 
-msgid "Are you sure?"
-msgstr ""
-
 msgid "You won't be able to revert this!"
 msgstr ""
 
 msgid "Yes, delete it!"
-msgstr ""
-
-msgid "Cancel"
-msgstr ""
-
-msgid "Delete"
 msgstr ""

@@ -143,12 +143,6 @@ msgstr "हटाने में त्रुटि!"
 msgid "Delete Successful!"
 msgstr "हटाना सफल रहा!"
 
-msgid "Browse"
-msgstr "ब्राउज़ करें"
-
-msgid "Upload"
-msgstr "अपलोड"
-
 msgid "File Name"
 msgstr "फ़ाइल का नाम"
 
@@ -173,17 +167,8 @@ msgstr "फ़ाइल हटाएँ"
 msgid "Filter globally"
 msgstr "वैश्विक रूप से फ़िल्टर करें"
 
-msgid "Are you sure?"
-msgstr "क्या आप निश्चित हैं?"
-
 msgid "You won't be able to revert this!"
 msgstr "आप इसे वापस नहीं कर पाएंगे!"
 
 msgid "Yes, delete it!"
 msgstr "हाँ, इसे हटा दो!"
-
-msgid "Cancel"
-msgstr "रद्द करें"
-
-msgid "Delete"
-msgstr "मिटायें"

@@ -271,7 +271,7 @@ class DocUploadForm extends Component {
             }
             if (resp.status == 403) {
               swal.fire(
-                this.props.t('Permission denied', {ns: 'document_repository'}),
+                this.props.t('Permission denied', {ns: 'loris'}),
                 this.props.t('Could not upload file',
                   {ns: 'document_repository'}),
                 'error'

@@ -211,14 +211,14 @@ class DocIndex extends React.Component {
        */
       function click() {
         swal.fire({
-          title: t('Are you sure?', {ns: 'document_repository'}),
+          title: t('Are you sure?', {ns: 'loris'}),
           text: t('You won\'t be able to revert this!',
-            {ns: 'document_repository'}),
+            {ns: 'loris'}),
           type: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          cancelButtonText: t('Cancel', {ns: 'document_repository'}),
+          cancelButtonText: t('Cancel', {ns: 'loris'}),
           confirmButtonText: t('Yes, delete it!',
             {ns: 'document_repository'}),
         }).then((result) => {
@@ -287,7 +287,7 @@ class DocIndex extends React.Component {
         options: options.fileTypes,
       }},
       {label: t('Instrument',
-        {ns: 'document_repository', count: 1}), show: false},
+        {ns: 'loris', count: 1}), show: false},
       {label: t('Uploaded By',
         {ns: 'document_repository'}), show: true, filter: {
         name: 'uploadedBy',
@@ -322,7 +322,7 @@ class DocIndex extends React.Component {
     ];
 
     let tabList = [
-      {id: 'browse', label: t('Browse', {ns: 'document_repository'})},
+      {id: 'browse', label: t('Browse', {ns: 'loris'})},
     ];
     let uploadDoc;
     let uploadCategory;
@@ -332,7 +332,7 @@ class DocIndex extends React.Component {
       tabList.push(
         {
           id: 'upload',
-          label: t('Upload', {ns: 'document_repository'}),
+          label: t('Upload', {ns: 'loris'}),
         },
       );
 
