@@ -46,3 +46,60 @@ msgstr "他の"
 # the test set value on demo translated looks better
 msgid "Feedback description"
 msgstr "フィードバックの説明"
+
+msgid "Feedback for PSCID: {{PSCID}}"
+msgstr "プロジェクト識別子へのフィードバック: {{PSCID}}"
+
+msgid "Type"
+msgstr "タイプ"
+
+msgid "Author"
+msgstr "著者"
+
+msgid "Status"
+msgstr "状態"
+
+msgid "There are no threads for this user!"
+msgstr "このユーザーのスレッドはありません。"
+
+msgid "Open"
+msgstr "開ける"
+
+msgid "Comment added!"
+msgstr "コメントを追加しました！"
+
+msgid "Add a comment:"
+msgstr "コメントを追加:"
+
+msgid "Update comment:"
+msgstr "コメントを更新:"
+
+msgid "Submit"
+msgstr "提出する"
+
+msgid "Create thread"
+msgstr "スレッドを作成"
+
+msgid "The new thread has been submitted!"
+msgstr "新しいスレッドが送信されました!"
+
+msgid "Across All Fields"
+msgstr "あらゆる分野にわたって"
+
+msgid "QC Class"
+msgstr "品質管理クラス"
+
+msgid "# Threads"
+msgstr "スレッド数"
+
+msgid "This candidate has no behavioural feedback."
+msgstr "この候補者には行動フィードバックがありません。"
+
+msgid "New {{feedbacklevel}} level feedback"
+msgstr "新しい {{feedbacklevel}} レベルのフィードバック"
+
+msgid "Open Thread Summary"
+msgstr "オープンスレッドの概要"
+
+msgid "Feedback Threads"
+msgstr "フィードバックスレッド"
