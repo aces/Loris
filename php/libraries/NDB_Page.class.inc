@@ -694,7 +694,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "advcheckbox",
             $field,
-            dgettext($this->name, $label),
+            !empty($label) ? dgettext($this->name, $label) : '',
             [],
             $attribs
         );
