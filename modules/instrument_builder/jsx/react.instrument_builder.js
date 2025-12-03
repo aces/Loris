@@ -4,6 +4,7 @@ import {Tabs, TabPane} from 'Tabs';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/instrument_builder.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/instrument_builder.json';
 /* global Instrument */
 /* exported RInstrumentBuilderApp */
 
@@ -941,6 +942,7 @@ InstrumentBuilderApp.propTypes = {
 
 // Add resource bundle for Hindi translations at module load time
 i18n.addResourceBundle('hi', 'instrument_builder', hiStrings);
+i18n.addResourceBundle('ja', 'instrument_builder', jaStrings);
 
 const TranslatedInstrumentBuilderApp = withTranslation(
   ['instrument_builder', 'loris']

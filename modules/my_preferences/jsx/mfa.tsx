@@ -9,6 +9,7 @@ import {useTranslation, Trans} from 'react-i18next';
 import i18n from 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/my_preferences.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/my_preferences.json';
+import frStrings from '../locale/fr/LC_MESSAGES/my_preferences.json';
 
 declare const loris: any;
 
@@ -120,6 +121,7 @@ function MFAIndex(): React.ReactElement {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'my_preferences', jaStrings);
   i18n.addResourceBundle('hi', 'my_preferences', hiStrings);
+  i18n.addResourceBundle('fr', 'my_preferences', frStrings);
 
   const element = document.getElementById('lorisworkspace');
   if (!element) {

@@ -6,6 +6,10 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/imaging_browser.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
 
 /**
  * Image panel header component
@@ -17,6 +21,8 @@ class ImagePanelHeader extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -25,14 +31,15 @@ class ImagePanelHeader extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let QCStatusLabel;
-    if (this.props.QCStatus === 'Pass') {
+    if (this.props.QCStatus === t('Pass', {ns: 'loris'})) {
       QCStatusLabel = <span className="label label-success">
-        {this.props.QCStatus}
+        {t('Pass', {ns: 'loris'})}
       </span>;
-    } else if (this.props.QCStatus === 'Fail') {
+    } else if (this.props.QCStatus === t('Fail', {ns: 'loris'})) {
       QCStatusLabel = <span className="label label-danger">
-        {this.props.QCStatus}
+        {t('Fail', {ns: 'loris'})}
       </span>;
     }
 
@@ -65,7 +72,7 @@ class ImagePanelHeader extends Component {
           className="btn btn-default btn-xs dropdown-toggle"
           onClick={this.props.onToggleHeaders}
           aria-expanded={this.props.HeadersExpanded}>
-          Header Info
+          {t('Header Info', {ns: 'imaging_browser'})}
         </button>
         <span className="caret"></span>
       </div>
@@ -97,7 +104,11 @@ ImagePanelHeader.propTypes = {
   FileID: PropTypes.string,
   Filename: PropTypes.string,
   Expanded: PropTypes.bool,
+  t: PropTypes.func,
 };
+
+const TranslatedImagePanelHeader = withTranslation(
+  ['imaging_browser'])(ImagePanelHeader);
 
 /**
  * Image panel headers table component
@@ -109,6 +120,8 @@ class ImagePanelHeadersTable extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -117,6 +130,7 @@ class ImagePanelHeadersTable extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let inversionTime = null;
     if (this.props.HeaderInfo.InversionTime !== '0.00') {
       inversionTime = this.props.HeaderInfo.InversionTime + ' ms';
@@ -137,13 +151,15 @@ class ImagePanelHeadersTable extends Component {
       ">
         <tbody>
           <tr>
-            <th className="col-xs-2 info">Series Instance UID</th>
+            <th className="col-xs-2 info">{t('Series Instance UID',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-10" colSpan="5">
               {this.props.HeaderInfo.SeriesUID}
             </td>
           </tr>
           <tr>
-            <th className="col-xs-2 info">Voxel Size</th>
+            <th className="col-xs-2 info">{t('Voxel Size',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-6" colSpan="3">
               {this.props.HeaderInfo.XStep === '' ? ' ' : 'X: ' +
               this.props.HeaderInfo.XStep + ' mm, '}
@@ -152,74 +168,89 @@ class ImagePanelHeadersTable extends Component {
               {this.props.HeaderInfo.ZStep === '' ? ' ' : 'Z: ' +
               this.props.HeaderInfo.ZStep + ' mm '}
             </td>
-            <th className="col-xs-2 info">Output Type</th>
+            <th className="col-xs-2 info">{t('Output Type',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.OutputType}
             </td>
           </tr>
           <tr>
-            <th className="col-xs-2 info">Protocol</th>
+            <th className="col-xs-2 info">{t('Protocol',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.AcquisitionProtocol}
             </td>
-            <th className="col-xs-2 info">Acquisition Date</th>
+            <th className="col-xs-2 info">{t('Acquisition Date',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.AcquisitionDate}
             </td>
-            <th className="col-xs-2 info">Inserted Date</th>
+            <th className="col-xs-2 info">{t('Inserted Date',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.InsertedDate}
             </td>
           </tr>
           <tr>
-            <th className="col-xs-2 info">Series Number</th>
+            <th className="col-xs-2 info">{t('Series Number',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.SeriesNumber}
             </td>
-            <th className="col-xs-2 info">Series Description</th>
+            <th className="col-xs-2 info">{t('Series Description',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.SeriesDescription}
             </td>
-            <th className="col-xs-2 info">Slice Thick</th>
+            <th className="col-xs-2 info">{t('Slice Thick',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.SliceThickness} mm
             </td>
           </tr>
           <tr>
-            <th className="col-xs-2 info">TR</th>
+            <th className="col-xs-2 info">{t('TR',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.RepetitionTime} ms
             </td>
-            <th className="col-xs-2 info">TE</th>
+            <th className="col-xs-2 info">{t('TE',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.EchoTime} ms
             </td>
-            <th className="col-xs-2 info">TI</th>
+            <th className="col-xs-2 info">{t('TI',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {inversionTime}
             </td>
           </tr>
           <tr>
-            <th className="col-xs-2 info">Phase Encoding Direction</th>
+            <th className="col-xs-2 info">{t('Phase Encoding Direction',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.PhaseEncodingDirection}
             </td>
-            <th className="col-xs-2 info">Image Type</th>
+            <th className="col-xs-2 info">{t('Image Type',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.ImageType}
             </td>
-            <th className="col-xs-2 info">Echo Number</th>
+            <th className="col-xs-2 info">{t('Echo Number',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {this.props.HeaderInfo.EchoNumber}
             </td>
           </tr>
           <tr>
-            <th className="col-xs-2 info">Number of volumes</th>
+            <th className="col-xs-2 info">{t('Number of volumes',
+              {ns: 'imaging_browser'})}</th>
             <td className="col-xs-2">
               {numVolumes}
             </td>
             {this.props.HeaderInfo.ProcessingPipeline ?
-              <th className="col-xs-2 info">Processing Pipeline</th>
+              <th className="col-xs-2 info">{t('Processing Pipeline',
+                {ns: 'imaging_browser'})}</th>
               : null}
             {this.props.HeaderInfo.ProcessingPipeline ?
               <td className="col-xs-2">
@@ -227,7 +258,8 @@ class ImagePanelHeadersTable extends Component {
               </td>
               : null}
             {this.props.HeaderInfo.ProcDate ?
-              <th className="col-xs-2 info">Processing Pipeline Date</th>
+              <th className="col-xs-2 info">{t('Processing Pipeline Date',
+                {ns: 'imaging_browser'})}</th>
               : null }
             {this.props.HeaderInfo.ProcDate ?
               <td className="col-xs-2">
@@ -237,18 +269,21 @@ class ImagePanelHeadersTable extends Component {
           </tr>
           {this.props.HeaderInfo.ProcessingPipeline === 'DTIPrepPipeline' ?
             <tr>
-              <th className="col-xs-2 info">Number of rejected directions</th>
+              <th className="col-xs-2 info">{t('Number of rejected directions',
+                {ns: 'imaging_browser'})}</th>
               <td className="col-xs-2">
                 {this.props.HeaderInfo.TotalRejected}
               </td>
               <th className="col-xs-2 info">
-                Number of Interlace correlations
+                {t('Number of Interlace correlations',
+                  {ns: 'imaging_browser'})}
               </th>
               <td className="col-xs-2">
                 {this.props.HeaderInfo.InterlaceRejected}
               </td>
               <th className="col-xs-2 info">
-            Number of Gradient-wise correlations
+                {t('Number of Gradient-wise correlations',
+                  {ns: 'imaging_browser'})}
               </th>
               <td className="col-xs-2">
                 {this.props.HeaderInfo.IntergradientRejected}
@@ -258,7 +293,8 @@ class ImagePanelHeadersTable extends Component {
           {this.props.HeaderInfo.ProcessingPipeline === 'DTIPrepPipeline' ?
             <tr>
               <th className="col-xs-2 info">
-                Number of Slicewise correlations
+                {t('Number of Slicewise correlations',
+                  {ns: 'imaging_browser'})}
               </th>
               <td className="col-xs-2">
                 {this.props.HeaderInfo.SlicewiseRejected}
@@ -272,8 +308,11 @@ class ImagePanelHeadersTable extends Component {
 }
 ImagePanelHeadersTable.propTypes = {
   HeaderInfo: PropTypes.object,
+  t: PropTypes.func,
 };
 
+const TranslatedImagePanelHeadersTable = withTranslation(
+  ['imaging_browser'])(ImagePanelHeadersTable);
 
 /**
  * Image quality control dropdown component
@@ -285,6 +324,8 @@ class ImageQCDropdown extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -344,8 +385,11 @@ ImageQCDropdown.propTypes = {
   FileID: PropTypes.string,
   FormName: PropTypes.string,
   defaultValue: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedImageQCDropdown = withTranslation(
+  ['imaging_browser'])(ImageQCDropdown);
 
 /**
  * Image quality control static component
@@ -357,6 +401,8 @@ class ImageQCStatic extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -382,8 +428,11 @@ class ImageQCStatic extends Component {
 ImageQCStatic.propTypes = {
   defaultValue: PropTypes.string,
   Label: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedImageQCStatic = withTranslation(
+  ['imaging_browser'])(ImageQCStatic);
 
 /**
  * Image panel quality control
@@ -396,6 +445,8 @@ class ImagePanelQCStatusSelector extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -404,26 +455,28 @@ class ImagePanelQCStatusSelector extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let qcStatusLabel;
     if (this.props.HasQCPerm && this.props.FileNew) {
       qcStatusLabel = <span>
-                        QC Status <span className="text-info">
+        {t('QC Status', {ns: 'imaging_browser'})} <span className="text-info">
                              ( <span className="glyphicon glyphicon-star">
-          </span> New )
+          </span> {t('New', {ns: 'loris'})} )
         </span>
       </span>;
     } else {
-      qcStatusLabel = 'QC Status';
+      qcStatusLabel = t('QC Status', {ns: 'imaging_browser'});
     }
 
     return (
-      <ImageQCDropdown
+      <TranslatedImageQCDropdown
         Label={qcStatusLabel}
         FormName="status"
         FileID={this.props.FileID}
         editable={this.props.HasQCPerm}
         defaultValue={this.props.QCStatus}
-        options={{'': '', 'Pass': 'Pass', 'Fail': 'Fail'}}
+        options={{'': '', 'Pass': t('Pass', {ns: 'loris'}),
+          'Fail': t('Fail', {ns: 'loris'})}}
       />
     );
   }
@@ -433,8 +486,11 @@ ImagePanelQCStatusSelector.propTypes = {
   HasQCPerm: PropTypes.bool,
   QCStatus: PropTypes.string,
   FileID: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedImagePanelQCStatusSelector = withTranslation(
+  ['imaging_browser'])(ImagePanelQCStatusSelector);
 
 /**
  * Image panel quality control
@@ -447,6 +503,7 @@ class ImagePanelQCSelectedSelector extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   }
 
   /**
@@ -455,13 +512,15 @@ class ImagePanelQCSelectedSelector extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     return (
-      <ImageQCDropdown
-        Label="Selected"
+      <TranslatedImageQCDropdown
+        Label={t('Selected', {ns: 'loris'})}
         FormName="selectedvol"
         FileID={this.props.FileID}
         editable={this.props.HasQCPerm}
-        options={{'': '', 'true': 'True', 'false': 'False'}}
+        options={{'': '', 'true': t('True', {ns: 'loris'}),
+          'false': t('False', {ns: 'loris'})}}
         defaultValue={this.props.Selected}
       />
     );
@@ -471,8 +530,11 @@ ImagePanelQCSelectedSelector.propTypes = {
   FileID: PropTypes.string,
   HasQCPerm: PropTypes.bool,
   Selected: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedImagePanelQCSelectedSelector = withTranslation(
+  ['imaging_browser'])(ImagePanelQCSelectedSelector);
 
 /**
  * Image panel quality control
@@ -485,6 +547,8 @@ class ImagePanelQCCaveatSelector extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -493,6 +557,7 @@ class ImagePanelQCCaveatSelector extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Link caveat to MRI Violations if set true
     let mriViolationsLink = null;
     if (this.props.FullName && this.props.Caveat === '1') {
@@ -502,16 +567,16 @@ class ImagePanelQCCaveatSelector extends Component {
     }
 
     return (
-      <ImageQCDropdown
-        Label="Caveat"
+      <TranslatedImageQCDropdown
+        Label={t('Caveat', {ns: 'imaging_browser'})}
         FormName="caveat"
         FileID={this.props.FileID}
         editable={this.props.HasQCPerm && this.props.EditableCaveat}
         options={
           {
             '': '',
-            '1': 'True',
-            '0': 'False',
+            '1': t('True', {ns: 'loris'}),
+            '0': t('False', {ns: 'loris'}),
           }
         }
         defaultValue={this.props.Caveat}
@@ -527,8 +592,11 @@ ImagePanelQCCaveatSelector.propTypes = {
   Caveat: PropTypes.string,
   EditableCaveat: PropTypes.bool,
   FullName: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedImagePanelQCCaveatSelector = withTranslation(
+  ['imaging_browser'])(ImagePanelQCCaveatSelector);
 
 /**
  * Image panel quality control SNR value component
@@ -540,6 +608,8 @@ class ImagePanelQCSNRValue extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -548,12 +618,13 @@ class ImagePanelQCSNRValue extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let label = null;
     if (this.props.SNR) {
-      label = 'SNR';
+      label = t('SNR', {ns: 'imaging_browser'});
     }
     return (
-      <ImageQCStatic
+      <TranslatedImageQCStatic
         Label={label}
         FormName="snr"
         FileID={this.props.FileID}
@@ -565,8 +636,11 @@ class ImagePanelQCSNRValue extends Component {
 ImagePanelQCSNRValue.propTypes = {
   FileID: PropTypes.string,
   SNR: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedImagePanelQCSNRValue = withTranslation(
+  ['imaging_browser'])(ImagePanelQCSNRValue);
 
 /**
  * Image panel quality control panel component
@@ -578,6 +652,8 @@ class ImagePanelQCPanel extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -588,18 +664,18 @@ class ImagePanelQCPanel extends Component {
   render() {
     return (
       <div className="form-group">
-        <ImagePanelQCStatusSelector
+        <TranslatedImagePanelQCStatusSelector
           FileID={this.props.FileID}
           HasQCPerm={this.props.HasQCPerm}
           QCStatus={this.props.QCStatus}
           FileNew={this.props.FileNew}
         />
-        <ImagePanelQCSelectedSelector
+        <TranslatedImagePanelQCSelectedSelector
           FileID={this.props.FileID}
           HasQCPerm={this.props.HasQCPerm}
           Selected={this.props.Selected}
         />
-        <ImagePanelQCCaveatSelector
+        <TranslatedImagePanelQCCaveatSelector
           FileID={this.props.FileID}
           HasQCPerm={this.props.HasQCPerm}
           Caveat={this.props.Caveat}
@@ -607,7 +683,7 @@ class ImagePanelQCPanel extends Component {
           EditableCaveat={this.props.EditableCaveat}
           FullName={this.props.FullName}
         />
-        <ImagePanelQCSNRValue
+        <TranslatedImagePanelQCSNRValue
           FileID={this.props.FileID}
           SNR={this.props.SNR}
         />
@@ -626,8 +702,11 @@ ImagePanelQCPanel.propTypes = {
   SNR: PropTypes.string,
   EditableCaveat: PropTypes.bool,
   FullName: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedImagePanelQCPanel = withTranslation(
+  ['imaging_browser'])(ImagePanelQCPanel);
 
 /**
  * Download button component
@@ -639,6 +718,8 @@ class DownloadButton extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -647,6 +728,7 @@ class DownloadButton extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     const empty = (prop) => {
       return !prop || prop == '';
     };
@@ -663,7 +745,8 @@ class DownloadButton extends Component {
       <a href={url}
         className="btn btn-default" style={style}>
         <span className="glyphicon glyphicon-download-alt"></span>
-        <span className="hidden-xs">{this.props.Label}</span>
+        <span className="hidden-xs">{t('Download Image',
+          {ns: 'imaging_browser'})}</span>
       </a>
     );
   }
@@ -673,8 +756,11 @@ DownloadButton.propTypes = {
   BaseURL: PropTypes.string,
   Label: PropTypes.string,
   URL: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedDownloadButton = withTranslation(
+  ['imaging_browser'])(DownloadButton);
 
 /**
  * Image quality control comments button component
@@ -687,6 +773,8 @@ class ImageQCCommentsButton extends Component {
   constructor(props) {
     super(props);
     this.openWindowHandler = this.openWindowHandler.bind(this);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -712,6 +800,7 @@ class ImageQCCommentsButton extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.props.FileID || this.props.FileID === '') {
       return <span/>;
     }
@@ -722,7 +811,9 @@ class ImageQCCommentsButton extends Component {
       >
         <span className="text-default">
           <span className="glyphicon glyphicon-pencil"></span>
-          <span className="hidden-xs">QC Comments</span>
+          <span className="hidden-xs">
+            {t('QC Comments', {ns: 'imaging_browser'})}
+          </span>
         </span>
       </a>
     );
@@ -731,8 +822,11 @@ class ImageQCCommentsButton extends Component {
 ImageQCCommentsButton.propTypes = {
   FileID: PropTypes.string,
   BaseURL: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedImageQCCommentsButton = withTranslation(
+  ['imaging_browser'])(ImageQCCommentsButton);
 
 /**
  * Longitudinal view button component
@@ -745,6 +839,8 @@ class LongitudinalViewButton extends Component {
   constructor(props) {
     super(props);
     this.openWindowHandler = this.openWindowHandler.bind(this);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -768,6 +864,7 @@ class LongitudinalViewButton extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.props.FileID || this.props.FileID === '') {
       return <span/>;
     }
@@ -778,7 +875,8 @@ class LongitudinalViewButton extends Component {
       >
         <span className="text-default">
           <span className="glyphicon glyphicon-eye-open"></span>
-          <span className="hidden-xs">Longitudinal View</span>
+          <span className="hidden-xs">{t('Longitudinal View',
+            {ns: 'imaging_browser'})}</span>
         </span>
       </a>
     );
@@ -788,8 +886,11 @@ LongitudinalViewButton.propTypes = {
   FileID: PropTypes.string,
   BaseURL: PropTypes.string,
   OtherTimepoints: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedLongitudinalViewButton = withTranslation(
+  ['imaging_browser'])(LongitudinalViewButton);
 
 /**
  * Image download buttons component
@@ -801,6 +902,8 @@ class ImageDownloadButtons extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -809,52 +912,54 @@ class ImageDownloadButtons extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     return (
       <div className="row mri-second-row-panel col-xs-12">
-        <ImageQCCommentsButton FileID={this.props.FileID}
+        <TranslatedImageQCCommentsButton FileID={this.props.FileID}
           BaseURL={this.props.BaseURL}
         />
-        <DownloadButton URL={this.props.APIFile}
-          Label='Download Image'
+        <TranslatedDownloadButton URL={this.props.APIFile}
+          Label={t('Download Image', {ns: 'imaging_browser'})}
           BaseURL={this.props.BaseURL}
         />
-        <DownloadButton FileName={this.props.XMLProtocol}
+        <TranslatedDownloadButton FileName={this.props.XMLProtocol}
           BaseURL={this.props.BaseURL}
-          Label="Download XML Protocol"
+          Label={t('Download XML Protocol', {ns: 'imaging_browser'})}
         />
-        <DownloadButton FileName={this.props.XMLReport}
+        <TranslatedDownloadButton FileName={this.props.XMLReport}
           BaseURL={this.props.BaseURL}
-          Label="Download XML Report"
+          Label={t('Download XML Report', {ns: 'imaging_browser'})}
         />
-        <DownloadButton FileName={this.props.NrrdFile}
+        <TranslatedDownloadButton FileName={this.props.NrrdFile}
           BaseURL={this.props.BaseURL}
-          Label="Download NRRD"
+          Label={t('Download NRRD', {ns: 'imaging_browser'})}
         />
         { this.props.NiiFile ?
-          <DownloadButton URL={this.props.APIFile + '/format/nifti'}
-            Label="Download NIfTI"
+          <TranslatedDownloadButton URL={this.props.APIFile + '/format/nifti'}
+            Label={t('Download NIfTI', {ns: 'imaging_browser'})}
           /> :
           null
         }
         {this.props.BvalFile ?
-          <DownloadButton URL={this.props.APIFile + '/format/bval'}
-            Label="Download BVAL"
+          <TranslatedDownloadButton URL={this.props.APIFile + '/format/bval'}
+            Label={t('Download BVAL', {ns: 'imaging_browser'})}
           /> :
           null
         }
         {this.props.BvecFile ?
-          <DownloadButton URL={this.props.APIFile + '/format/bvec'}
-            Label="Download BVEC"
+          <TranslatedDownloadButton URL={this.props.APIFile + '/format/bvec'}
+            Label={t('Download BVEC', {ns: 'imaging_browser'})}
           /> :
           null
         }
         {this.props.JsonFile ?
-          <DownloadButton URL={this.props.APIFile + '/format/bidsjson'}
-            Label="Download BIDS JSON"
+          <TranslatedDownloadButton URL=
+            {this.props.APIFile + '/format/bidsjson'}
+          Label={t('Download BIDS JSON', {ns: 'imaging_browser'})}
           /> :
           null
         }
-        <LongitudinalViewButton FileID={this.props.FileID}
+        <TranslatedLongitudinalViewButton FileID={this.props.FileID}
           BaseURL={this.props.BaseURL}
           OtherTimepoints={this.props.OtherTimepoints}
         />
@@ -875,8 +980,11 @@ ImageDownloadButtons.propTypes = {
   BvecFile: PropTypes.string,
   JsonFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
+  t: PropTypes.func,
 };
 
+const TranslatedImageDownloadButtons = withTranslation(
+  ['imaging_browser'])(ImageDownloadButtons);
 
 /**
  * Image panel body component
@@ -889,6 +997,8 @@ class ImagePanelBody extends Component {
   constructor(props) {
     super(props);
     this.openWindowHandler = this.openWindowHandler.bind(this);
+    i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   }
 
   /**
@@ -919,7 +1029,7 @@ class ImagePanelBody extends Component {
             </a>
           </div>
           <div className="col-xs-3 mri-right-panel">
-            <ImagePanelQCPanel
+            <TranslatedImagePanelQCPanel
               FileID={this.props.FileID}
               FileNew={this.props.FileNew}
               HasQCPerm={this.props.HasQCPerm}
@@ -933,7 +1043,7 @@ class ImagePanelBody extends Component {
             />
           </div>
         </div>
-        <ImageDownloadButtons
+        <TranslatedImageDownloadButtons
           BaseURL={this.props.BaseURL}
           FileID={this.props.FileID}
           APIFile={this.props.APIFile}
@@ -946,7 +1056,7 @@ class ImagePanelBody extends Component {
           JsonFile={this.props.JsonFile}
           OtherTimepoints={this.props.OtherTimepoints}
         />
-        {this.props.HeadersExpanded ? <ImagePanelHeadersTable
+        {this.props.HeadersExpanded ? <TranslatedImagePanelHeadersTable
           HeaderInfo={this.props.HeaderInfo}/> : ''}
       </div>
     );
@@ -975,8 +1085,11 @@ ImagePanelBody.propTypes = {
   HeadersExpanded: PropTypes.bool,
   HeaderInfo: PropTypes.object,
   EditableCaveat: PropTypes.bool,
+  t: PropTypes.func,
 };
 
+const TranslatedImagePanelBody = withTranslation(
+  ['imaging_browser'])(ImagePanelBody);
 
 /**
  * Image panel component
@@ -1027,7 +1140,7 @@ class ImagePanel extends Component {
     return (
       <div className="col-xs-12 col-md-6">
         <div className="panel panel-default">
-          <ImagePanelHeader
+          <TranslatedImagePanelHeader
             FileID={this.props.FileID}
             Filename={this.props.Filename}
             QCStatus={this.props.QCStatus}
@@ -1037,7 +1150,7 @@ class ImagePanel extends Component {
             HeadersExpanded={!this.state.HeadersCollapsed}
           />
           {this.state.BodyCollapsed ? '' :
-            <ImagePanelBody
+            <TranslatedImagePanelBody
               BaseURL={this.props.BaseURL}
 
               FileID={this.props.FileID}
@@ -1095,40 +1208,41 @@ ImagePanel.propTypes = {
   HeadersExpanded: PropTypes.string,
   APIFile: PropTypes.string,
   EditableCaveat: PropTypes.bool,
+  t: PropTypes.func,
 };
 
 let RImagePanel = React.createFactory(ImagePanel);
 
-window.ImagePanelHeader = ImagePanelHeader;
-window.ImagePanelHeadersTable = ImagePanelHeadersTable;
-window.ImageQCDropdown = ImageQCDropdown;
-window.ImageQCStatic = ImageQCStatic;
-window.ImagePanelQCStatusSelector = ImagePanelQCStatusSelector;
-window.ImagePanelQCSelectedSelector = ImagePanelQCSelectedSelector;
-window.ImagePanelQCCaveatSelector = ImagePanelQCCaveatSelector;
-window.ImagePanelQCSNRValue = ImagePanelQCSNRValue;
-window.ImagePanelQCPanel = ImagePanelQCPanel;
-window.DownloadButton = DownloadButton;
-window.ImageQCCommentsButton = ImageQCCommentsButton;
-window.LongitudinalViewButton = LongitudinalViewButton;
-window.ImageDownloadButtons = ImageDownloadButtons;
-window.ImagePanelBody = ImagePanelBody;
+window.ImagePanelHeader = TranslatedImagePanelHeader;
+window.ImagePanelHeadersTable = TranslatedImagePanelHeadersTable;
+window.ImageQCDropdown = TranslatedImageQCDropdown;
+window.ImageQCStatic = TranslatedImageQCStatic;
+window.ImagePanelQCStatusSelector = TranslatedImagePanelQCStatusSelector;
+window.ImagePanelQCSelectedSelector = TranslatedImagePanelQCSelectedSelector;
+window.ImagePanelQCCaveatSelector = TranslatedImagePanelQCCaveatSelector;
+window.ImagePanelQCSNRValue = TranslatedImagePanelQCSNRValue;
+window.ImagePanelQCPanel = TranslatedImagePanelQCPanel;
+window.DownloadButton = TranslatedDownloadButton;
+window.ImageQCCommentsButton = TranslatedImageQCCommentsButton;
+window.LongitudinalViewButton = TranslatedLongitudinalViewButton;
+window.ImageDownloadButtons = TranslatedImageDownloadButtons;
+window.ImagePanelBody = TranslatedImagePanelBody;
 window.RImagePanel = RImagePanel;
 
 export default {
-  ImagePanelHeader,
-  ImagePanelHeadersTable,
-  ImageQCDropdown,
-  ImageQCStatic,
-  ImagePanelQCStatusSelector,
-  ImagePanelQCSelectedSelector,
-  ImagePanelQCCaveatSelector,
-  ImagePanelQCSNRValue,
-  ImagePanelQCPanel,
-  DownloadButton,
-  ImageQCCommentsButton,
-  LongitudinalViewButton,
-  ImageDownloadButtons,
-  ImagePanelBody,
+  ImagePanelHeader: TranslatedImagePanelHeader,
+  ImagePanelHeadersTable: TranslatedImagePanelHeadersTable,
+  ImageQCDropdown: TranslatedImageQCDropdown,
+  ImageQCStatic: TranslatedImageQCStatic,
+  ImagePanelQCStatusSelector: TranslatedImagePanelQCStatusSelector,
+  ImagePanelQCSelectedSelector: TranslatedImagePanelQCSelectedSelector,
+  ImagePanelQCCaveatSelector: TranslatedImagePanelQCCaveatSelector,
+  ImagePanelQCSNRValue: TranslatedImagePanelQCSNRValue,
+  ImagePanelQCPanel: TranslatedImagePanelQCPanel,
+  DownloadButton: TranslatedDownloadButton,
+  ImageQCCommentsButton: TranslatedImageQCCommentsButton,
+  LongitudinalViewButton: TranslatedLongitudinalViewButton,
+  ImageDownloadButtons: TranslatedImageDownloadButtons,
+  ImagePanelBody: TranslatedImagePanelBody,
   RImagePanel,
 };

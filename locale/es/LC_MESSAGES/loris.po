@@ -160,7 +160,7 @@ msgstr "Exitoso!"
 
 # Common candidate terms
 msgid "PSCID"
-msgstr ""
+msgstr "PSCID"
 
 msgid "DCCID"
 msgstr "CCDID"
@@ -238,6 +238,21 @@ msgstr "Scan hecho"
 
 msgid "Language"
 msgstr "Lenguaje"
+
+msgid "Access denied"
+msgstr "Acceso denegado"
+
+msgid "No."
+msgstr "número"
+
+msgid "Are you sure?"
+msgstr "Estás seguro?"
+
+msgid "Yes, I am sure!"
+msgstr "¡Sí, estoy seguro!"
+
+msgid "No, cancel it!"
+msgstr "¡No, cancélalo!"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."

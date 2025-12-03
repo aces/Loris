@@ -1,4 +1,4 @@
-# Default LORIS strings to be translated (English).
+# Default LORIS strings to be translated (English)
 # Copy this to a language specific file and add translations to the
 # new file.
 # Copyright (C) 2025
@@ -123,6 +123,12 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+msgid "Browse"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
 msgid "N/A"
 msgstr ""
 
@@ -136,6 +142,9 @@ msgstr ""
 msgid "Selection Filter"
 msgstr ""
 
+msgid "Filters"
+msgstr ""
+
 msgid "Show Filters"
 msgstr ""
 
@@ -145,10 +154,31 @@ msgstr ""
 msgid "Clear Filters"
 msgstr ""
 
+msgid "Load Filter Preset"
+msgstr ""
+
 msgid "Show Advanced Filters"
 msgstr ""
 
 msgid "Hide Advanced Filters"
+msgstr ""
+
+msgid "Pass"
+msgstr ""
+
+msgid "Fail"
+msgstr ""
+
+msgid "True"
+msgstr ""
+
+msgid "False"
+msgstr ""
+
+msgid "Selected"
+msgstr ""
+
+msgid "selected"
 msgstr ""
 
 # Common swal labels
@@ -164,17 +194,11 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-msgid "Close"
-msgstr ""
-
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
 
 msgid "DCCID"
-msgstr ""
-
-msgid "Visit"
 msgstr ""
 
 msgid "Visit Label"
@@ -258,6 +282,9 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+msgid "Pending"
+msgstr ""
+
 msgid "Entity Type"
 msgstr ""
 
@@ -267,13 +294,52 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid "Access denied"
+msgstr ""
+
+msgid "No."
+msgstr ""
+
 msgid "Ethnicity"
+msgstr ""
+
+msgid "Are You Sure?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "Yes, I am sure!"
+msgstr ""
+
+msgid "No, cancel it!"
+msgstr ""
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr ""
+
+msgid "Proceed"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
 msgstr ""
 
 msgid "Save"
 msgstr ""
 
+msgid "Saving"
+msgstr ""
+
 msgid "Reset"
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "View details"
 msgstr ""
 
 # Data table strings
@@ -308,6 +374,9 @@ msgstr ""
 
 # Common strings on widgets
 msgid "NEW"
+msgstr ""
+
+msgid "New"
 msgstr ""
 
 msgid "Updated"
@@ -377,6 +446,9 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Incorrect username or password."
+msgstr ""
+
 # Common timepoint and vist terms
 msgid "Not Started"
 msgstr ""
@@ -396,9 +468,6 @@ msgstr ""
 msgid "Recycling Bin"
 msgstr ""
 
-msgid "Pass"
-msgstr ""
-
 msgid "Failure"
 msgstr ""
 
@@ -409,6 +478,12 @@ msgid "Withdrawn"
 msgstr ""
 
 msgid "In Progress"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Success"
 msgstr ""
 
 msgid "Complete"

@@ -21,3 +21,66 @@ msgstr ""
 msgid "Examiner"
 msgstr "審査官"
 
+msgid "Edit Examiner"
+msgstr "編集審査官"
+
+msgid "Examiner added."
+msgstr "審査官が追加されました。"
+
+msgid "Add Examiner"
+msgstr "審査官を追加します"
+
+msgid "Name"
+msgstr "名前"
+
+msgid "Radiologist"
+msgstr "放射線科医"
+
+msgid "Add"
+msgstr "追加"
+
+msgid "ID"
+msgstr "識別子"
+
+msgid "Certification"
+msgstr "認証"
+
+msgid "This user has no site affiliations"
+msgstr "このユーザーにはサイト所属がありません。"
+
+msgid "Edit Certification for"
+msgstr "認定を編集:"
+
+msgid "Certification Status"
+msgstr "認定ステータス"
+
+msgid "Certification Date"
+msgstr "認定日"
+
+msgid "Comments"
+msgstr "コメント"
+
+msgid "Change Log"
+msgstr "変更ログ"
+
+msgid "User"
+msgstr "ユーザー"
+
+msgid "Measure"
+msgstr "測定"
+
+msgid "Old Value"
+msgstr "古い値"
+
+msgid "Old Date"
+msgstr "古い日付"
+
+msgid "New Value"
+msgstr "新しい価値"
+
+msgid "New Date"
+msgstr "新しい日付"
+
+msgid "No changes have been made"
+msgstr "変更はありません"
+

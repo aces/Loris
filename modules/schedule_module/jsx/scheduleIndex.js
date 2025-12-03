@@ -19,6 +19,7 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/schedule_module.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/schedule_module.json';
 
 /**
  * Schedule Module
@@ -237,15 +238,15 @@ mapColumn(column, cell) {
 deleteConfirm(id) {
   const {t} = this.props;
   swal.fire({
-    title: t('Are you sure?', {ns: 'schedule_module'}),
+    title: t('Are you sure?', {ns: 'loris'}),
     text: t('You won\'t be able to revert this!',
       {ns: 'schedule_module'}),
     type: 'warning',
     showCancelButton: true,
     confirmButtonText: t('Yes, delete it!',
-      {ns: 'schedule_module'}),
+      {ns: 'loris'}),
     cancelButtonText: t('No, cancel it!',
-      {ns: 'schedule_module'}),
+      {ns: 'loris'}),
   }).then((result) => {
     if (result.value) {
       swal.fire(
@@ -619,6 +620,7 @@ ScheduleIndex.propTypes = {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'schedule_module', hiStrings);
+  i18n.addResourceBundle('ja', 'schedule_module', jaStrings);
   const Index = withTranslation(
     ['schedule_module', 'loris']
   )(ScheduleIndex);

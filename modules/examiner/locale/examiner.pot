@@ -21,3 +21,66 @@ msgstr ""
 msgid "Examiner"
 msgstr ""
 
+msgid "Edit Examiner"
+msgstr ""
+
+msgid "Examiner added."
+msgstr ""
+
+msgid "Add Examiner"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Radiologist"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "Certification"
+msgstr ""
+
+msgid "This user has no site affiliations"
+msgstr ""
+
+msgid "Edit Certification for"
+msgstr ""
+
+msgid "Certification Status"
+msgstr ""
+
+msgid "Certification Date"
+msgstr ""
+
+msgid "Comments"
+msgstr ""
+
+msgid "Change Log"
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "Measure"
+msgstr ""
+
+msgid "Old Value"
+msgstr ""
+
+msgid "Old Date"
+msgstr ""
+
+msgid "New Value"
+msgstr ""
+
+msgid "New Date"
+msgstr ""
+
+msgid "No changes have been made"
+msgstr ""
+

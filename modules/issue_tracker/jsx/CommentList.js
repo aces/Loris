@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Markdown from 'jsx/Markdown';
-import {withTranslation} from 'react-i18next';
+import {withTranslation, Trans} from 'react-i18next';
 
 /**
  * React component used to display a button and a collapsible list
@@ -47,7 +47,7 @@ class CommentList extends Component {
       'PSCID': t('PSCID', {ns: 'loris'}),
       'Visit Label': t('Visit Label', {ns: 'loris'}),
       'module': t('Module', {ns: 'loris'}),
-      'instrument': t('Instrument', {ns: 'issue_tracker'}),
+      'instrument': t('Instrument', {ns: 'loris', count: 1}),
       'description': t('Description', {ns: 'issue_tracker'}),
     };
     return fieldLabelMap[fieldName] || fieldName;
@@ -95,34 +95,50 @@ class CommentList extends Component {
 
       let now = new Date();
       const datediffSec = (now.getTime() - item.date.getTime()) / 1000;
-      let timestr;
+      let headerstr;
       if (datediffSec < 60) {
-        timestr = <span> {Math.round(datediffSec)} {t('seconds ago',
-          {ns: 'issue_tracker'})}</span>;
+        headerstr = <Trans
+          ns="issue_tracker"
+          defaults="Updated by <0>{{user}}</0> {{seconds}} seconds ago"
+          components={[<span className='history-item-user' />]}
+          values={{user: item.user, seconds: Math.round(datediffSec)}}
+        />;
       } else if (datediffSec < 60*60) {
-        timestr = <span> {Math.round(datediffSec / 60)} {t('minutes ago',
-          {ns: 'issue_tracker'})}</span>;
+        headerstr = <Trans
+          ns="issue_tracker"
+          defaults="Updated by <0>{{user}}</0> {{minutes}} minutes ago"
+          components={[<span className='history-item-user' />]}
+          values={{user: item.user, minutes: Math.round(datediffSec / 60)}}
+        />;
       } else if (datediffSec < 60*60*24) {
-        timestr = <span> {Math.round(datediffSec / (60*60))} {t('hours ago',
-          {ns: 'issue_tracker'})}</span>;
+        headerstr = <Trans
+          ns="issue_tracker"
+          defaults="Updated by <0>{{user}}</0> {{hours}} hours ago"
+          components={[<span className='history-item-user' />]}
+          values={{user: item.user, hours: Math.round(datediffSec / (60*60))}}
+        />;
       } else {
-        timestr = <span>
-          {t('on', {ns: 'issue_tracker'})} {item.date.toLocaleDateString()}
-          {t('at', {ns: 'issue_tracker'})} {item.date.toTimeString()}
-        </span>;
+        const dateFormatter = new Intl.DateTimeFormat(
+          loris.user.langpref.replace('_', '-'),
+          {
+            dateStyle: 'full',
+            timeStyle: 'long',
+          }
+        );
+
+        headerstr = <Trans
+          ns="issue_tracker"
+          defaults="Updated by <0>{{user}}</0> on {{date}}"
+          components={[<span className='history-item-user' />]}
+          values={{user: item.user, date: dateFormatter.format(item.date)}}
+        />;
       }
 
       return (
         <div key={i}>
           <hr/>
-          <div className='history-item-label'>
-            {t('Updated by', {ns: 'issue_tracker'})}{' '}
-            <span className="history-item-user">{item.user}</span>
-            {' '}{timestr}:
-          </div>
-          <ul className='history-item-changes'>
-            {textItems}
-          </ul>
+          <div className='history-item-label'>{headerstr}</div>
+          <ul className='history-item-changes'>{textItems}</ul>
           {comment}
         </div>
       );

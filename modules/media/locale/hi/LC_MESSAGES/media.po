@@ -1,0 +1,160 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Media"
+msgstr "मीडिया"
+
+msgid "File Name"
+msgstr "फ़ाइल नाम"
+
+msgid "Instrument"
+msgstr "इंस्ट्रूमेंट"
+
+msgid "Uploaded By"
+msgstr "अपलोड किया गया"
+
+msgid "Date Taken"
+msgstr "तारीख ली गई"
+
+msgid "Comments"
+msgstr "टिप्पणियाँ"
+
+msgid "Last Modified"
+msgstr "अंतिम संशोधित"
+
+msgid "File Type"
+msgstr "फ़ाइल प्रकार"
+
+msgid "CandID"
+msgstr "कैंडआईडी"
+
+msgid "SessionID"
+msgstr "सेशनआईडी"
+
+msgid "File Visibility"
+msgstr "फ़ाइल दृश्यता"
+
+msgid "Edit Metadata"
+msgstr "मेटाडेटा संपादित करें"
+
+msgid "Edit Media File"
+msgstr "मीडिया फ़ाइल संपादित करें"
+
+msgid "Edit"
+msgstr "संपादित करें"
+
+msgid "Browse"
+msgstr "ब्राउज़ करें"
+
+msgid "Upload"
+msgstr "अपलोड करें"
+
+msgid "An error occured while loading the page."
+msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
+
+msgid "Language"
+msgstr "भाषा"
+
+# New strings from uploadForm.js
+
+msgid "An error occurred when loading the form!"
+msgstr "फॉर्म लोड करते समय एक त्रुटि हुई!"
+
+msgid "File name must begin with"
+msgstr "फ़ाइल नाम इससे शुरू होना चाहिए"
+
+msgid "For example, for candidate"
+msgstr "उदाहरण के लिए, उम्मीदवार"
+
+msgid "visit"
+msgstr "विज़िट"
+
+msgid "for"
+msgstr "के लिए"
+
+msgid "the file name should be prefixed by"
+msgstr "फ़ाइल नाम के पहले यह होना चाहिए"
+
+msgid "File cannot exceed"
+msgstr "फ़ाइल इससे अधिक नहीं हो सकती"
+
+msgid "No visits available for this candidate"
+msgstr "इस उम्मीदवार के लिए कोई विज़िट उपलब्ध नहीं है"
+
+msgid "No instruments available for this visit"
+msgstr "इस विज़िट के लिए कोई इंस्ट्रूमेंट उपलब्ध नहीं है"
+
+msgid "Upload a media file"
+msgstr "मीडिया फ़ाइल अपलोड करें"
+
+msgid "Note"
+msgstr "नोट"
+
+msgid "Date of Administration"
+msgstr "प्रशासन की तारीख"
+
+msgid "Document's Language"
+msgstr "दस्तावेज़ की भाषा"
+
+msgid "File to upload"
+msgstr "अपलोड करने के लिए फ़ाइल"
+
+msgid "Upload File"
+msgstr "फ़ाइल अपलोड करें"
+
+msgid "Update File"
+msgstr "अद्यतन फ़ाइल"
+
+msgid "Uploaded file"
+msgstr "फ़ाइल अपलोड की गई"
+
+msgid "Hide File"
+msgstr "फ़ाइल छिपाएँ"
+
+msgid "Invalid file name!"
+msgstr "अमान्य फ़ाइल नाम!"
+
+msgid "File name should begin with:"
+msgstr "फ़ाइल नाम इससे शुरू होना चाहिए:"
+
+msgid "A file with this name already exists!\n Would you like to override existing file?"
+msgstr "इस नाम की एक फ़ाइल पहले से मौजूद है!\n क्या आप मौजूदा फ़ाइल को अधिलेखित करना चाहेंगे?"
+
+msgid "Cancelled"
+msgstr "रद्द कर दिया गया"
+
+msgid "Your imaginary file is safe :"
+msgstr "आपकी काल्पनिक फ़ाइल सुरक्षित है :"
+
+msgid "Success!"
+msgstr "सफलता!"
+
+msgid "Upload of media file completed."
+msgstr "मीडिया फ़ाइल का अपलोड पूरा हुआ।"
+
+msgid "Upload error!"
+msgstr "अपलोड त्रुटि!"
+
+msgid "File too large!"
+msgstr "फ़ाइल बहुत बड़ी है!"
+
+msgid "This field is required."
+msgstr "यह फ़ील्ड आवश्यक है."
+
