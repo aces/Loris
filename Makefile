@@ -91,6 +91,8 @@ locales:
 	msgfmt -o modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po
 	npx i18next-conv -l hi -s modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po -t modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.json
 	npx i18next-conv -l ja -s modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po -t modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.json
+	msgfmt -o modules/biobank/locale/fr/LC_MESSAGES/biobank.mo modules/biobank/locale/fr/LC_MESSAGES/biobank.po
+	npx i18next-conv -l hi -s modules/biobank/locale/fr/LC_MESSAGES/biobank.po -t modules/biobank/locale/fr/LC_MESSAGES/biobank.json
 	msgfmt -o modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po
 	msgfmt -o modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.mo modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po
 	msgfmt -o modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.po
@@ -207,6 +209,10 @@ locales:
 
 acknowledgements: modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo
 	target=acknowledgements npm run compile
+
+biobank: 	msgfmt -o modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.mo modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po
+	npx i18next-conv -l hi -s modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po -t modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.json
+	target=biobank npm run compile
 
 create_timepoint:
 	target=data_release npm run compile
