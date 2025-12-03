@@ -9,9 +9,14 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/media/locale/ja/LC_MESSAGES/media.po \
 	modules/media/locale/hi/LC_MESSAGES/media.po \
 	modules/media/locale/es/LC_MESSAGES/media.po \
+	modules/datadict/locale/fr/LC_MESSAGES/datadict.po \
 	modules/datadict/locale/ja/LC_MESSAGES/datadict.po \
 	modules/datadict/locale/hi/LC_MESSAGES/datadict.po \
+	modules/mri_violations/locale/fr/LC_MESSAGES/mri_violations.po \
 	modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.po \
+	modules/mri_violations/locale/hi/LC_MESSAGES/mri_violations.po \
+	modules/mri_violations/locale/es/LC_MESSAGES/mri_violations.po \
+	modules/statistics/locale/fr/LC_MESSAGES/statistics.po \
 	modules/statistics/locale/ja/LC_MESSAGES/statistics.po \
 	modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.po \
 	modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po \
@@ -21,6 +26,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/instrument_list/locale/fr/LC_MESSAGES/instrument_list.po \
 	modules/instrument_list/locale/ja/LC_MESSAGES/instrument_list.po \
 	modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.po \
+	modules/my_preferences/locale/fr/LC_MESSAGES/my_preferences.po \
 	modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.po \
 	modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.po \
 	modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po \
@@ -32,8 +38,10 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/dqt/locale/ja/LC_MESSAGES/dqt.po \
 	modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po \
 	modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.po \
+	modules/instruments/locale/fr/LC_MESSAGES/instruments.po \
 	modules/instruments/locale/ja/LC_MESSAGES/instruments.po \
 	modules/instruments/locale/es/LC_MESSAGES/instruments.po \
+	modules/dictionary/locale/fr/LC_MESSAGES/dictionary.po \
 	modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po \
 	modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po \
 	modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.po \
@@ -41,24 +49,29 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.po \
 	modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po \
 	modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po \
+	modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.po \
 	modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po \
 	modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po \
 	modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.po \
 	modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po \
 	modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po \
 	modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.po \
+	modules/next_stage/locale/fr/LC_MESSAGES/next_stage.po \
 	modules/next_stage/locale/ja/LC_MESSAGES/next_stage.po \
 	modules/next_stage/locale/es/LC_MESSAGES/next_stage.po \
 	modules/examiner/locale/ja/LC_MESSAGES/examiner.po \
+	modules/examiner/locale/hi/LC_MESSAGES/examiner.po \
 	modules/login/locale/ja/LC_MESSAGES/login.po \
 	modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po \
 	modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po \
 	modules/document_repository/locale/ja/LC_MESSAGES/document_repository.po \
+	modules/document_repository/locale/hi/LC_MESSAGES/document_repository.po \
 	modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po \
 	modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po \
 	modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.po \
 	modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po \
 	modules/candidate_list/locale/hi/LC_MESSAGES/candidate_list.po \
+	modules/create_timepoint/locale/fr/LC_MESSAGES/create_timepoint.po \
 	modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po \
 	modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po \
 	modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po \
@@ -68,6 +81,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/timepoint_list/locale/fr/LC_MESSAGES/timepoint_list.po \
 	modules/timepoint_list/locale/ja/LC_MESSAGES/timepoint_list.po \
 	modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.po \
+	modules/data_release/locale/fr/LC_MESSAGES/data_release.po \
 	modules/data_release/locale/ja/LC_MESSAGES/data_release.po \
 	modules/data_release/locale/hi/LC_MESSAGES/data_release.po \
 	modules/electrophysiology_uploader/locale/ja/LC_MESSAGES/electrophysiology_uploader.po \
