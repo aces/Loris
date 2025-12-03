@@ -279,9 +279,6 @@ msgstr ""
 msgid "Visit"
 msgstr ""
 
-msgid "Instrument"
-msgstr ""
-
 msgid "Created"
 msgstr ""
 
@@ -474,9 +471,6 @@ msgstr ""
 msgid "Screening"
 msgstr ""
 
-msgid "Visit"
-msgstr ""
-
 msgid "Approval"
 msgstr ""
 
@@ -495,16 +489,10 @@ msgstr ""
 msgid "Withdrawn"
 msgstr ""
 
-msgid "In Progress"
-msgstr ""
-
 msgid "Progress"
 msgstr ""
 
 msgid "Success"
-msgstr ""
-
-msgid "Complete"
 msgstr ""
 
 msgid "Instrument"
