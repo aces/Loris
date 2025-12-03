@@ -112,16 +112,22 @@ locales:
 	npx i18next-conv -l ja -s modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po -t modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.json
 	msgfmt -o modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po
 	npx i18next-conv -l ja -s modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po -t modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.json
+	msgfmt -o modules/create_timepoint/locale/fr/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/fr/LC_MESSAGES/create_timepoint.po
+	npx i18next-conv -l fr -s modules/create_timepoint/locale/fr/LC_MESSAGES/create_timepoint.po -t modules/create_timepoint/locale/fr/LC_MESSAGES/create_timepoint.json
 	msgfmt -o modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.mo modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po
 	npx i18next-conv -l es -s modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po -t modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.json
 	msgfmt -o modules/dashboard/locale/ja/LC_MESSAGES/dashboard.mo modules/dashboard/locale/ja/LC_MESSAGES/dashboard.po
 	msgfmt -o modules/datadict/locale/ja/LC_MESSAGES/datadict.mo modules/datadict/locale/ja/LC_MESSAGES/datadict.po
+	msgfmt -o modules/datadict/locale/fr/LC_MESSAGES/datadict.mo modules/datadict/locale/fr/LC_MESSAGES/datadict.po
 	msgfmt -o modules/datadict/locale/hi/LC_MESSAGES/datadict.mo modules/datadict/locale/hi/LC_MESSAGES/datadict.po
 	npx i18next-conv -l hi -s modules/datadict/locale/hi/LC_MESSAGES/datadict.po -t modules/datadict/locale/hi/LC_MESSAGES/datadict.json
 	npx i18next-conv -l ja -s modules/datadict/locale/ja/LC_MESSAGES/datadict.po -t modules/datadict/locale/ja/LC_MESSAGES/datadict.json
+	npx i18next-conv -l fr -s modules/datadict/locale/fr/LC_MESSAGES/datadict.po -t modules/datadict/locale/fr/LC_MESSAGES/datadict.json
 	msgfmt -o modules/dataquery/locale/ja/LC_MESSAGES/dataquery.mo modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po
 	msgfmt -o modules/data_release/locale/ja/LC_MESSAGES/data_release.mo modules/data_release/locale/ja/LC_MESSAGES/data_release.po
 	npx i18next-conv -l ja -s modules/data_release/locale/ja/LC_MESSAGES/data_release.po -t modules/data_release/locale/ja/LC_MESSAGES/data_release.json
+	msgfmt -o modules/data_release/locale/fr/LC_MESSAGES/data_release.mo modules/data_release/locale/fr/LC_MESSAGES/data_release.po
+	npx i18next-conv -l fr -s modules/data_release/locale/fr/LC_MESSAGES/data_release.po -t modules/data_release/locale/fr/LC_MESSAGES/data_release.json
 	msgfmt -o modules/data_release/locale/hi/LC_MESSAGES/data_release.mo modules/data_release/locale/hi/LC_MESSAGES/data_release.po
 	npx i18next-conv -l hi -s modules/data_release/locale/hi/LC_MESSAGES/data_release.po -t modules/data_release/locale/hi/LC_MESSAGES/data_release.json
 	msgfmt -o modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.mo modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po
@@ -130,6 +136,8 @@ locales:
 	npx i18next-conv -l ja -s modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po -t modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.json
 	msgfmt -o modules/dictionary/locale/ja/LC_MESSAGES/dictionary.mo modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po
 	npx i18next-conv -l ja -s modules/dictionary/locale/ja/LC_MESSAGES/dictionary.po -t modules/dictionary/locale/ja/LC_MESSAGES/dictionary.json
+	msgfmt -o modules/dictionary/locale/fr/LC_MESSAGES/dictionary.mo modules/dictionary/locale/fr/LC_MESSAGES/dictionary.po
+	npx i18next-conv -l fr -s modules/dictionary/locale/fr/LC_MESSAGES/dictionary.po -t modules/dictionary/locale/fr/LC_MESSAGES/dictionary.json
 	msgfmt -o modules/dictionary/locale/hi/LC_MESSAGES/dictionary.mo modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po
 	npx i18next-conv -l hi -s modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po -t modules/dictionary/locale/hi/LC_MESSAGES/dictionary.json
 	msgfmt -o modules/document_repository/locale/ja/LC_MESSAGES/document_repository.mo modules/document_repository/locale/ja/LC_MESSAGES/document_repository.po
@@ -164,6 +172,8 @@ locales:
 	msgfmt -o modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.mo modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.po
 	msgfmt -o modules/instruments/locale/ja/LC_MESSAGES/instruments.mo modules/instruments/locale/ja/LC_MESSAGES/instruments.po
 	npx i18next-conv -l ja -s modules/instruments/locale/ja/LC_MESSAGES/instruments.po -t modules/instruments/locale/ja/LC_MESSAGES/instruments.json --compatibilityJSON v4
+	msgfmt -o modules/instruments/locale/fr/LC_MESSAGES/instruments.mo modules/instruments/locale/fr/LC_MESSAGES/instruments.po
+	npx i18next-conv -l fr -s modules/instruments/locale/fr/LC_MESSAGES/instruments.po -t modules/instruments/locale/fr/LC_MESSAGES/instruments.json --compatibilityJSON v4
 	msgfmt -o modules/instruments/locale/es/LC_MESSAGES/instruments.mo modules/instruments/locale/es/LC_MESSAGES/instruments.po
 	msgfmt -o modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po
 	msgfmt -o modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.mo modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po
@@ -185,10 +195,13 @@ locales:
 	npx i18next-conv -l ja -s modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po -t modules/module_manager/locale/ja/LC_MESSAGES/module_manager.json
 	msgfmt -o modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.mo modules/mri_violations/locale/ja/LC_MESSAGES/mri_violations.po
 	msgfmt -o modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.mo modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.po
+	msgfmt -o modules/my_preferences/locale/fr/LC_MESSAGES/my_preferences.mo modules/my_preferences/locale/fr/LC_MESSAGES/my_preferences.po
 	npx i18next-conv -l ja -s modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.po -t modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.json --compatibilityJSON v4
 	npx i18next-conv -l hi -s modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.po -t modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.json --compatibilityJSON v4
+	npx i18next-conv -l fr -s modules/my_preferences/locale/fr/LC_MESSAGES/my_preferences.po -t modules/my_preferences/locale/fr/LC_MESSAGES/my_preferences.json --compatibilityJSON v4
 	msgfmt -o modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.mo modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.po
 	msgfmt -o modules/next_stage/locale/ja/LC_MESSAGES/next_stage.mo modules/next_stage/locale/ja/LC_MESSAGES/next_stage.po
+	msgfmt -o modules/next_stage/locale/fr/LC_MESSAGES/next_stage.mo modules/next_stage/locale/fr/LC_MESSAGES/next_stage.po
 	msgfmt -o modules/next_stage/locale/es/LC_MESSAGES/next_stage.mo modules/next_stage/locale/es/LC_MESSAGES/next_stage.po
 	msgfmt -o modules/oidc/locale/ja/LC_MESSAGES/oidc.mo modules/oidc/locale/ja/LC_MESSAGES/oidc.po
 	msgfmt -o modules/publication/locale/ja/LC_MESSAGES/publication.mo modules/publication/locale/ja/LC_MESSAGES/publication.po
@@ -204,14 +217,18 @@ locales:
 	msgfmt -o modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.mo modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.po
 	msgfmt -o modules/statistics/locale/ja/LC_MESSAGES/statistics.mo modules/statistics/locale/ja/LC_MESSAGES/statistics.po
 	npx i18next-conv -l ja -s modules/statistics/locale/ja/LC_MESSAGES/statistics.po -t modules/statistics/locale/ja/LC_MESSAGES/statistics.json
+	msgfmt -o modules/statistics/locale/fr/LC_MESSAGES/statistics.mo modules/statistics/locale/fr/LC_MESSAGES/statistics.po
+	npx i18next-conv -l fr -s modules/statistics/locale/fr/LC_MESSAGES/statistics.po -t modules/statistics/locale/fr/LC_MESSAGES/statistics.json
 	msgfmt -o modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.mo modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.po
 	msgfmt -o modules/timepoint_list/locale/ja/LC_MESSAGES/timepoint_list.mo modules/timepoint_list/locale/ja/LC_MESSAGES/timepoint_list.po
 	msgfmt -o modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.mo modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.po
 	msgfmt -o modules/timepoint_list/locale/fr/LC_MESSAGES/timepoint_list.mo modules/timepoint_list/locale/fr/LC_MESSAGES/timepoint_list.po
 	msgfmt -o modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po
 	msgfmt -o modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po
+	msgfmt -o modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.po
 	npx i18next-conv -l hi -s modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
 	npx i18next-conv -l ja -s modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
+	npx i18next-conv -l fr -s modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
 
 acknowledgements: modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.mo
 	target=acknowledgements npm run compile
