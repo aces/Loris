@@ -297,7 +297,7 @@ function ProtocolCheckViolationModal(props) {
     <h2>{t('Scan Problems', {ns: 'mri_violations'})}</h2>
     <StaticDataTable Headers={[
       t('Patient Name', {ns: 'mri_violations'}),
-      t('CandID', {ns: 'loris'}),
+      t('DCCID', {ns: 'loris'}),
       t('Visit', {ns: 'loris'}),
       t('Scan Type', {ns: 'mri_violations'}),
       t('Protocol Group', {ns: 'mri_violations'}),

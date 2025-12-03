@@ -420,7 +420,7 @@ function MRIViolationsIndex(props) {
       {label: t('hash', {ns: 'mri_violations'}), show: false},
       {label: t('JoinID', {ns: 'mri_violations'}), show: false},
       {label: t('TarchiveID', {ns: 'mri_violations'}), show: false},
-      {label: t('CandID', {ns: 'loris'}), show: false},
+      {label: t('DCCID', {ns: 'loris'}), show: false},
       {label: t('PSCID', {ns: 'loris'}), show: false},
 
       // Add fake column for resolution dropdown
@@ -436,7 +436,7 @@ function MRIViolationsIndex(props) {
       ) : isError ? (
         <h3>
           {t('An error occurred while loading the page.', {
-            ns: 'mri_violations',
+            ns: 'loris',
           })}
         </h3>
       ) : (
