@@ -84,17 +84,11 @@ msgstr "सफलता!"
 msgid "No changes were made!"
 msgstr "कोई परिवर्तन नहीं किया गया!"
 
-msgid "Are you sure?"
-msgstr "क्या आप सुनिश्चित हैं?"
-
 msgid "You won't be able to revert this!"
 msgstr "आप इसे वापस नहीं कर पाएंगे!"
 
 msgid "Yes, delete it!"
 msgstr "हाँ, हटाएँ!"
-
-msgid "No, cancel it!"
-msgstr "नहीं, रद्द करें!"
 
 msgid "Deleted!"
 msgstr "हटा दिया गया!"

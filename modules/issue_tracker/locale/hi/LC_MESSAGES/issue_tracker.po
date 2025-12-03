@@ -163,9 +163,6 @@ msgstr[1] "({{count}} समस्याएँ)"
 msgid "Last Updated By"
 msgstr "अंतिम अपडेट किया गया"
 
-msgid "Instrument"
-msgstr "उपकरण"
-
 msgid "Unassigned"
 msgstr "असाइन नहीं किया गया"
 

@@ -21,23 +21,8 @@ msgstr ""
 msgid "Publications"
 msgstr "प्रकाशन"
 
-msgid "Loading"
-msgstr "लोड हो रहा है"
-
-msgid "Browse"
-msgstr "ब्राउज़ करें"
-
 msgid "File to upload"
 msgstr "अपलोड करने के लिए फ़ाइल"
-
-msgid "Upload"
-msgstr "अपलोड करें"
-
-msgid "Are you sure?"
-msgstr "क्या आप सुनिश्चित हैं?"
-
-msgid "Cancel"
-msgstr "रद्द करें"
 
 msgid "Submit"
 msgstr "जमा करें"
@@ -123,17 +108,11 @@ msgstr "स्थिति"
 msgid "Reason for rejection"
 msgstr "अस्वीकृति का कारण"
 
-msgid "Pending"
-msgstr "लंबित"
-
 msgid "Approved"
 msgstr "स्वीकृत"
 
 msgid "Rejected"
 msgstr "अस्वीकृत"
-
-msgid "For help finding variables of interest, consult"
-msgstr "रुचि वाले वेरिएबल खोजने में सहायता के लिए, परामर्श करें"
 
 msgid "Date Proposed"
 msgstr "प्रस्तावित तिथि"
@@ -149,9 +128,6 @@ msgstr "परियोजना प्रस्ताव निर्मात�
 
 msgid "Published"
 msgstr "प्रकाशित"
-
-msgid "In Progress"
-msgstr "प्रगति पर"
 
 msgid "View Project"
 msgstr "परियोजना देखें"

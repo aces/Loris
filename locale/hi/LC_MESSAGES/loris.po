@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
@@ -141,6 +141,9 @@ msgstr "सहेजें"
 msgid "Reset"
 msgstr "रीसेट करें"
 
+msgid "Note"
+msgstr "नोट"
+
 msgid "Back"
 msgstr "वापस"
 
@@ -180,6 +183,24 @@ msgstr "उन्नत फ़िल्टर दिखाएँ"
 
 msgid "Hide Advanced Filters"
 msgstr "उन्नत फ़िल्टर छिपाएँ"
+
+msgid "Pass"
+msgstr "पास"
+
+msgid "Fail"
+msgstr "फेल"
+
+msgid "True"
+msgstr "सत्य"
+
+msgid "False"
+msgstr "असत्य"
+
+msgid "Selected"
+msgstr "चयनित"
+
+msgid "selected"
+msgstr "चयनित"
 
 # Common swal labels
 msgid "Cancel"
@@ -290,6 +311,9 @@ msgstr "पृष्ठ लोड करते समय एक त्रुट�
 msgid "Active"
 msgstr "सक्रिय"
 
+msgid "Pending"
+msgstr "लंबित"
+
 msgid "Entity Type"
 msgstr "इकाई प्रकार"
 
@@ -304,6 +328,15 @@ msgstr "विवरण देखें"
 
 msgid "Ethnicity"
 msgstr "जातीयता"
+
+msgid "Access denied"
+msgstr "पहुँच अस्वीकृत"
+
+msgid "Previous"
+msgstr "पिछला"
+
+msgid "Next"
+msgstr "अगला"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -337,6 +370,9 @@ msgstr "दृश्य"
 
 # Common strings on widgets
 msgid "NEW"
+msgstr "नया"
+
+msgid "New"
 msgstr "नया"
 
 msgid "Updated"
@@ -397,9 +433,6 @@ msgstr "कोई विशेष अक्षर आवश्यक नही�
 msgid "We suggest using a password manager to generate one for you."
 msgstr "हम सुझाव देते हैं कि आपके लिए पासवर्ड बनाने हेतु पासवर्ड मैनेजर का उपयोग करें।"
 
-msgid "Total"
-msgstr "कुल"
-
 msgid "Error!"
 msgstr "त्रुटि!"
 
@@ -409,6 +442,9 @@ msgstr "दिनांक"
 # Common timepoint and visit terms
 msgid "Not Started"
 msgstr "शुरू नहीं हुआ"
+
+msgid "Total"
+msgstr "कुल"
 
 msgid "Screening"
 msgstr "जांच"
@@ -421,9 +457,6 @@ msgstr "विषय"
 
 msgid "Recycling Bin"
 msgstr "रिसाइक्लिंग बिन"
-
-msgid "Pass"
-msgstr "उत्तीर्ण"
 
 msgid "Failure"
 msgstr "विफलता"
@@ -479,3 +512,24 @@ msgstr "लोड हो रहा है..."
 
 msgid "Permission denied"
 msgstr "अनुमति अस्वीकृत"
+
+msgid "Are You Sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "Are you sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "Yes, I am sure!"
+msgstr "हाँ, मैं सुनिश्चित हूँ!"
+
+msgid "No, cancel it!"
+msgstr "नहीं, रद्द करें!"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "फ़ॉर्म छोड़ने से दर्ज की गई सभी जानकारी खो जाएगी।"
+
+msgid "Proceed"
+msgstr "आगे बढ़ें"
+
+msgid "Saving"
+msgstr "सहेजा जा रहा है"

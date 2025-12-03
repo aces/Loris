@@ -55,3 +55,126 @@ msgstr "異なる色合いは異なるモダリティを表します。結果に
 
 msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
 msgstr "訪問の上にマウスを移動すると、訪問の詳細なモダリティの内訳が表示されます。クリックすると、イメージング ブラウザーに移動します。"
+
+msgid "%1 file(s) displayed."
+msgstr "%1 ファイルが表示されました"
+
+msgid "Visit QC Status"
+msgstr "訪問品質管理ステータス"
+
+msgid "First Acquisition"
+msgstr "最初の買収"
+
+msgid "First Insertion"
+msgstr "最初の挿入"
+
+msgid "Last QC"
+msgstr "最後の品質管理"
+
+msgid "New Data"
+msgstr "新しいデータ"
+
+msgid "Links"
+msgstr "リンク"
+
+msgid "SessionID"
+msgstr "SessionID"
+
+msgid "Sequence Type"
+msgstr "シーケンスタイプ"
+
+msgid "Pending New"
+msgstr "新規保留中"
+
+msgid "QC Status"
+msgstr "品質管理状況"
+
+msgid "Caveat"
+msgstr "警告"
+
+msgid "SNR"
+msgstr "信号対雑音比"
+
+msgid "all types"
+msgstr "すべてのタイプ"
+
+msgid "Header Info"
+msgstr "ヘッダー情報"
+
+msgid "Download Image"
+msgstr "ダウンロード情報"
+
+msgid "Longitudinal View"
+msgstr "縦断ビュー"
+
+msgid "QC Comments"
+msgstr "品質管理コメント"
+
+msgid "Series Instance UID"
+msgstr "シリーズインスタンスの一意の識別子"
+
+msgid "No data available"
+msgstr "データなし"
+
+msgid "Patient Name"
+msgstr "患者名"
+
+msgid "QC Pending"
+msgstr "品質管理保留中"
+
+msgid "Output Type"
+msgstr "出力タイプ"
+
+msgid "Scanner"
+msgstr "スキャナー"
+
+msgid "Human"
+msgstr "人間"
+
+msgid "EDC"
+msgstr "出産予定日"
+
+msgid "Navigation"
+msgstr "ナビゲーション"
+
+msgid "Back to list"
+msgstr "リストに戻る"
+
+msgid "Volume Viewer"
+msgstr "ボリュームビューア"
+
+msgid "3D Only"
+msgstr "3Dのみ"
+
+msgid "3D + Overlay"
+msgstr "3D + オーバーレイ"
+
+msgid "Report a Bug (Mantis)"
+msgstr "バグを報告する（Mantis）"
+
+msgid "Visit Level QC"
+msgstr "訪問レベルの品質管理"
+
+msgid "Visit Level Feedback"
+msgstr "訪問レベルのフィードバック"
+
+msgid "Visit Level Caveat"
+msgstr "訪問レベルの注意事項"
+
+msgid "DCC MRI Quality Control"
+msgstr "DCC MRI品質管理"
+
+msgid "Click here to close this window"
+msgstr "このウィンドウを閉じるにはここをクリックしてください。"
+
+msgid "Comments saved."
+msgstr "コメントを保存しました。"
+
+msgid "Feedback MRI Popup"
+msgstr "フィードバックMRIポップアップ"
+
+msgid "Subject"
+msgstr "主題"
+
+msgid "Download DICOM"
+msgstr "DICOMをダウンロード"

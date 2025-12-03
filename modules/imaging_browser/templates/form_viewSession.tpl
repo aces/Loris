@@ -6,7 +6,7 @@
 <div class="panel panel-default">
     <div class="panel-heading" id="panel-main-heading">
 {if $files|@count}
-        <h3 class="panel-title">{$files|@count} file(s) displayed.</h3>
+        <h3 class="panel-title">{dgettext("imaging_browser","%1 file(s) displayed.")|replace:"%1":$files|@count}</h3>
         <span class="pull-right clickable mri-arrow glyphicon glyphicon-chevron-up"></span>
     </div> <!-- closing panel-heading div-->
     <div class="panel-body">
@@ -74,7 +74,7 @@
        {/section}
    </div> <!-- closing panel-body div-->
 {else}
-    <h3 class="panel-title">No data available</h3>
+    <h3 class="panel-title">{dgettext("imaging_browser","No data available")}</h3>
    </div> <!-- closing panel-heading div-->
 {/if}
 </div>

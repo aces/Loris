@@ -134,16 +134,7 @@ msgstr ""
 msgid "File name should begin with:"
 msgstr ""
 
-msgid "Are you sure?"
-msgstr ""
-
 msgid "A file with this name already exists!\n Would you like to override existing file?"
-msgstr ""
-
-msgid "Yes, I am sure!"
-msgstr ""
-
-msgid "No, cancel it!"
 msgstr ""
 
 msgid "Cancelled"
