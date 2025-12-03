@@ -314,6 +314,9 @@ msgstr "विवरण देखें"
 msgid "Ethnicity"
 msgstr "जातीयता"
 
+msgid "Access denied"
+msgstr "पहुँच अस्वीकृत"
+
 msgid "Previous"
 msgstr "पिछला"
 

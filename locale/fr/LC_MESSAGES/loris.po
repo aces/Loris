@@ -241,6 +241,12 @@ msgstr "Scan complété"
 msgid "Language"
 msgstr "Langue"
 
+msgid "Access denied"
+msgstr "Accès refusé"
+
+msgid "No."
+msgstr "Nombre"
+
 msgid "Are you sure?"
 msgstr "Es-tu sûr?"
 

@@ -58,6 +58,7 @@ msgstr "私の好み"
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr "行政上の"
+
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -296,6 +297,12 @@ msgstr "言語"
 
 msgid "Ethnicity"
 msgstr "民族"
+
+msgid "Access denied"
+msgstr "アクセスが拒否されました"
+
+msgid "No."
+msgstr "番号"
 
 msgid "Are You Sure?"
 msgstr "本気ですか？"
