@@ -139,6 +139,7 @@ locales:
 	msgfmt -o modules/examiner/locale/ja/LC_MESSAGES/examiner.mo modules/examiner/locale/ja/LC_MESSAGES/examiner.po
 	msgfmt -o modules/examiner/locale/hi/LC_MESSAGES/examiner.mo modules/examiner/locale/hi/LC_MESSAGES/examiner.po
 	npx i18next-conv -l hi -s modules/examiner/locale/hi/LC_MESSAGES/examiner.po -t modules/examiner/locale/hi/LC_MESSAGES/examiner.json
+	npx i18next-conv -l ja -s modules/examiner/locale/ja/LC_MESSAGES/examiner.po -t modules/examiner/locale/ja/LC_MESSAGES/examiner.json
 	msgfmt -o modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.mo modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.po
 	msgfmt -o modules/help_editor/locale/ja/LC_MESSAGES/help_editor.mo modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po
 	msgfmt -o modules/help_editor/locale/hi/LC_MESSAGES/help_editor.mo modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po
