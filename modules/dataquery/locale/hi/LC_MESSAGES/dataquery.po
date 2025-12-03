@@ -532,3 +532,5 @@ msgstr "अमान्य उत्तर"
 msgid "Invalid tab"
 msgstr "अमान्य टैब"
 
+msgid "or"
+msgstr "वा"

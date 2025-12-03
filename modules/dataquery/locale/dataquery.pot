@@ -534,3 +534,6 @@ msgstr ""
 
 msgid "Invalid tab"
 msgstr ""
+
+msgid "or"
+msgstr ""

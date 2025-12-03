@@ -546,12 +546,6 @@ msgstr ""
 msgid "Permission denied"
 msgstr ""
 
-msgid "and"
-msgstr ""
-
-msgid "or"
-msgstr ""
-
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr ""

@@ -535,12 +535,6 @@ msgstr "हाँ, मैं सुनिश्चित हूँ!"
 msgid "No, cancel it!"
 msgstr "नहीं, रद्द करें!"
 
-msgid "and"
-msgstr "तथा"
-
-msgid "or"
-msgstr "वा"
-
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr "कोई विकल्प नहीं"

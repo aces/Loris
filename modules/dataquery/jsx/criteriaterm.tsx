@@ -96,7 +96,7 @@ export function CriteriaTerm(props: {
   if (props.term.visits) {
     let visitList = props.term.visits.slice(0, -1).join(', ');
     if (props.term.visits.length > 1) {
-      visitList += ` ${t('or', {ns: 'loris'})} `;
+      visitList += ` ${t('or', {ns: 'dataquery'})} `;
     }
     visitList += props.term.visits.at(-1);
     visits = <div>
