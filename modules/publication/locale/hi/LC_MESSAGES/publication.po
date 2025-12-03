@@ -1,0 +1,166 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Publications"
+msgstr "प्रकाशन"
+
+msgid "File to upload"
+msgstr "अपलोड करने के लिए फ़ाइल"
+
+msgid "Submit"
+msgstr "जमा करें"
+
+msgid "Title"
+msgstr "शीर्षक"
+
+msgid "Year"
+msgstr "वर्ष"
+
+msgid "Authors"
+msgstr "लेखक"
+
+msgid "Journal"
+msgstr "जर्नल"
+
+msgid "DOI"
+msgstr "डीओआई"
+
+msgid "Action"
+msgstr "क्रिया"
+
+msgid "Please fix any remaining form errors before submission"
+msgstr "कृपया सबमिट करने से पहले शेष फॉर्म त्रुटियों को ठीक करें"
+
+msgid "Something went wrong!"
+msgstr "कुछ गलत हो गया!"
+
+msgid "Submission Successful!"
+msgstr "सबमिशन सफल रहा!"
+
+msgid "Propose a Project"
+msgstr "एक प्रोजेक्ट प्रस्तावित करें"
+
+msgid "Propose a new project"
+msgstr "एक नया प्रोजेक्ट प्रस्तावित करें"
+
+msgid "Edit failed!"
+msgstr "संपादन विफल रहा!"
+
+msgid "Edit Successful!"
+msgstr "संपादन सफल रहा!"
+
+msgid "Download"
+msgstr "डाउनलोड करें"
+
+msgid "Citation"
+msgstr "उद्धरण"
+
+msgid "Version"
+msgstr "संस्करण"
+
+msgid "Collaborators"
+msgstr "सहयोगी"
+
+msgid "Keywords"
+msgstr "कुंजीशब्द"
+
+msgid "Variables Of Interest"
+msgstr "रुचि के चर"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "Publishing Status"
+msgstr "प्रकाशन स्थिति"
+
+msgid "Date Published"
+msgstr "प्रकाशित तिथि"
+
+msgid "Link"
+msgstr "लिंक"
+
+msgid "Lead Investigator"
+msgstr "मुख्य अन्वेषक"
+
+msgid "Lead Investigator Email"
+msgstr "मुख्य अन्वेषक ईमेल"
+
+msgid "Status"
+msgstr "स्थिति"
+
+msgid "Reason for rejection"
+msgstr "अस्वीकृति का कारण"
+
+msgid "Approved"
+msgstr "स्वीकृत"
+
+msgid "Rejected"
+msgstr "अस्वीकृत"
+
+msgid "Date Proposed"
+msgstr "प्रस्तावित तिथि"
+
+msgid "Approval Status"
+msgstr "स्वीकृति स्थिति"
+
+msgid "Project"
+msgstr "परियोजना"
+
+msgid "Project Proposal Creator"
+msgstr "परियोजना प्रस्ताव निर्माता"
+
+msgid "Published"
+msgstr "प्रकाशित"
+
+msgid "View Project"
+msgstr "परियोजना देखें"
+
+msgid "LORIS Users with Edit Permission"
+msgstr "संपादन अनुमति वाले LORIS उपयोगकर्ता"
+
+msgid "Type of Variables of Interest"
+msgstr "रुचि वाले वेरिएबल का प्रकार"
+
+msgid "Propose Project"
+msgstr "परियोजना प्रस्तावित करें"
+
+msgid "Send email notification?"
+msgstr "ईमेल अधिसूचना भेजें?"
+
+msgid "Add User"
+msgstr "उपयोगकर्ता जोड़ें"
+
+msgid "Add Collaborator"
+msgstr "सहयोगी जोड़ें"
+
+msgid "Add Keyword"
+msgstr "कीवर्ड जोड़ें"
+
+msgid "Publication Type"
+msgstr "प्रकाशन प्रकार"
+
+msgid "Publication Version"
+msgstr "प्रकाशन संस्करण"
+
+msgid "helpFindingVariables"
+msgstr "रुचि वाले वेरिएबल खोजने में सहायता के लिए <ddLink>डेटा डिक्शनरी</ddLink> देखें।"
+
+msgid "Add Variable of Interest"
+msgstr "रुचि वाला वेरिएबल जोड़ें"

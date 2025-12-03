@@ -8,6 +8,9 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+import hiStrings from '../locale/hi/LC_MESSAGES/imaging_browser.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
+
 /**
  * Imaging browser index component
  */
@@ -26,6 +29,7 @@ class ImagingBrowserIndex extends Component {
     };
 
     this.fetchData = this.fetchData.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   /**
@@ -63,21 +67,24 @@ class ImagingBrowserIndex extends Component {
     // Set class to 'bg-danger' if file is hidden.
     const style = '';
     let result = <td className={style}>{cell}</td>;
+    const {t} = this.props;
+    const sessionIDKey = t('SessionID', {ns: 'imaging_browser'});
+    const sessionID = row[sessionIDKey];
     switch (column) {
-    case 'New Data':
+    case t('New Data', {ns: 'imaging_browser'}):
       if (cell === 'new') {
         result = (
-          <td className="newdata">NEW</td>
+          <td className="newdata">{t('NEW', {ns: 'loris'})}</td>
         );
       }
       break;
-    case 'Links':
+    case t('Links', {ns: 'imaging_browser'}):
       let cellTypes = cell.split(',');
       let cellLinks = [];
       for (let i = 0; i < cellTypes.length; i += 1) {
         cellLinks.push(<a key={i} href={loris.BaseURL +
           '/imaging_browser/viewSession/?sessionID=' +
-          row.SessionID + '&outputType=' +
+          sessionID + '&outputType=' +
           cellTypes[i] + '&backURL=/imaging_browser/'}>
           {cellTypes[i]}
         </a>);
@@ -85,17 +92,17 @@ class ImagingBrowserIndex extends Component {
       }
       cellLinks.push(<a key="selected" href={loris.BaseURL +
         '/imaging_browser/viewSession/?sessionID=' +
-        row.SessionID +
+        sessionID +
         '&selectedOnly=1&backURL=/imaging_browser/'}>
-          selected
+        {t('selected', {ns: 'loris'})}
       </a>);
 
       cellLinks.push(' | ');
       cellLinks.push(<a key="all" href={loris.BaseURL +
         '/imaging_browser/viewSession/?sessionID=' +
-        row.SessionID +
+        sessionID +
         '&backURL=/imaging_browser/'}>
-          all types
+        {t('all types', {ns: 'imaging_browser'})}
       </a>);
       result = (<td>{cellLinks}</td>);
       break;
@@ -110,10 +117,12 @@ class ImagingBrowserIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -128,61 +137,66 @@ class ImagingBrowserIndex extends Component {
     const options = this.state.data.fieldOptions;
     const configLabels = options.configLabels;
     const fields = [
-      {label: 'Site', show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
-      {label: 'PSCID', show: true, filter: {
+      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'PSCID',
         type: 'text',
       }},
-      {label: 'DCCID', show: true, filter: {
+      {label: t('DCCID', {ns: 'loris'}), show: true, filter: {
         name: 'DCCID',
         type: 'text',
       }},
-      {label: 'Project', show: true, filter: {
+      {label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'project',
         type: 'select',
         options: options.projects,
       }},
-      {label: 'Visit Label', show: true, filter: {
+      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'text',
       }},
-      {label: 'Visit QC Status', show: true, filter: {
-        name: 'visitQCStatus',
-        type: 'select',
-        options: options.visitQCStatus,
-      }},
-      {label: 'First Acquisition', show: true},
-      {label: 'First Insertion', show: true},
-      {label: 'Last QC', show: true},
-      {label: 'New Data', show: true},
-      {label: 'Links', show: true},
-      {label: 'SessionID', show: false},
-      {label: 'Sequence Type', show: false, filter: {
-        name: 'sequenceType',
-        type: 'multiselect',
-        options: options.sequenceTypes,
-      }},
-      {label: 'Pending New', show: false, filter: {
-        name: 'pendingNew',
-        type: 'multiselect',
-        options: options.pendingNew,
-      }},
-      {label: 'Entity Type', show: false, filter: {
-        name: 'entityType',
-        type: 'multiselect',
-        options: options.entityType,
-      }},
+      {label: t('Visit QC Status', {ns: 'imaging_browser'}),
+        show: true, filter: {
+          name: 'visitQCStatus',
+          type: 'select',
+          options: options.visitQCStatus,
+        }},
+      {label: t('First Acquisition', {ns: 'imaging_browser'}), show: true},
+      {label: t('First Insertion', {ns: 'imaging_browser'}), show: true},
+      {label: t('Last QC', {ns: 'imaging_browser'}), show: true},
+      {label: t('New Data', {ns: 'imaging_browser'}), show: true},
+      {label: t('Links', {ns: 'imaging_browser'}), show: true},
+      {label: t('SessionID', {ns: 'imaging_browser'}), show: false},
+      {label: t('Sequence Type', {ns: 'imaging_browser'}),
+        show: false, filter: {
+          name: 'sequenceType',
+          type: 'multiselect',
+          options: options.sequenceTypes,
+        }},
+      {label: t('Pending New', {ns: 'imaging_browser'}),
+        show: false, filter: {
+          name: 'pendingNew',
+          type: 'multiselect',
+          options: options.pendingNew,
+        }},
+      {label: t('Entity Type', {ns: 'loris'}),
+        show: false, filter: {
+          name: 'entityType',
+          type: 'multiselect',
+          options: options.entityType,
+        }},
     ];
     /**
      * Adding columns based on the Imaging Browser Tabulated Scan Types
      * configured and stored in database
      */
     Object.values(configLabels).forEach((label)=> {
-      fields.push({label: label + ' QC Status', show: true}
+      fields.push({label: label + ' ' + t('QC Status', {ns: 'imaging_browser'}),
+        show: true}
       );
     });
 
@@ -200,10 +214,12 @@ class ImagingBrowserIndex extends Component {
 
 ImagingBrowserIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'imaging_browser', {});
+  i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+  i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   const Index = withTranslation(
     ['imaging_browser', 'loris']
   )(ImagingBrowserIndex);

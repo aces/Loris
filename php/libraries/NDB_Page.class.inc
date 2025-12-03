@@ -192,7 +192,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $this->form->addElement(
             'file',
             $name,
-            $label,
+            dgettext($this->name, $label),
             [],
             array_merge(['class' => 'fileUpload'], $attribs)
         );
@@ -207,7 +207,8 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addHeader($header)
     {
-        $this->form->addElement('header', '', $header);
+        $this->form->addElement('header', '', dgettext($this->name, $header));
+
     }
 
     /**
@@ -232,7 +233,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('select', $name, $label, $options, $attribs);
+        $this->form->addElement(
+            'select',
+            $name,
+            dgettext($this->name, $label),
+            $options,
+            $attribs
+        );
     }
 
     /**
@@ -244,7 +251,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addLabel($label)
     {
-        $this->form->addElement('static', '', $label);
+        $this->form->addElement(
+            'static',
+            '',
+            dgettext($this->name, $label)
+        );
     }
 
     /**
@@ -257,7 +268,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addScoreColumn($name, $label)
     {
-        $this->form->addElement('static', $name, $label);
+        $this->form->addElement(
+            'static',
+            $name,
+            dgettext($this->name, $label)
+        );
     }
 
     /**
@@ -274,7 +289,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     function addBasicText($field, $label, $options=[], $attribs=[])
     {
         $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
-        $this->form->addElement('text', $field, $label, $options, $attribs);
+        $this->form->addElement(
+            'text',
+            $field,
+            dgettext($this->name, $label),
+            $options,
+            $attribs
+        );
     }
 
     /**
@@ -296,7 +317,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('textarea', $field, $label, [], $attribs);
+        $this->form->addElement(
+            'textarea',
+            $field,
+            dgettext($this->name, $label),
+            [],
+            $attribs
+        );
     }
 
     /**
@@ -323,7 +350,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         ]
     ) {
         $options = ($options ?? []) + $this->dateOptions;
-        $this->form->addElement('date', $field, $label, $options, $attribs);
+        $this->form->addElement(
+            'date',
+            $field,
+            dgettext($this->name, $label),
+            $options,
+            $attribs
+        );
     }
 
     /**
@@ -342,7 +375,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('advcheckbox', $name, $label, [], $attribs);
+        $this->form->addElement(
+            'advcheckbox',
+            $name,
+            dgettext($this->name, $label),
+            [],
+            $attribs
+        );
     }
 
     /**
@@ -367,7 +406,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         foreach ($radios as $radElement) {
             $radGroup[] = $this->createRadio(
                 $name,
-                $radElement['label'],
+                dgettext($this->name, $radElement['label']),
                 $options,
                 [
                     'class' => 'form-control input-sm',
@@ -421,7 +460,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm not-answered']
         );
 
-        $this->addGroup($group, $field . '_group', $label, '');
+        $this->addGroup(
+            $group,
+            $field . '_group',
+            dgettext($this->name,  $label),
+            ''
+        );
 
     }
 
@@ -440,7 +484,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $attribs=[]
     ) {
         $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
-        $this->form->addElement('password', $field, $label, [], $attribs);
+        $this->form->addElement(
+            'password',
+            $field,
+            dgettext($this->name,  $label),
+            [],
+            $attribs
+        );
     }
 
     /**
@@ -461,7 +511,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addRule($element, $message, $type, $format=null)
     {
-        $this->form->addRule($element, $message, $type, $format);
+        $this->form->addRule(
+            $element,
+            dgettext($this->name, $message),
+            $type,
+            $format
+        );
     }
 
     /**
@@ -500,7 +555,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addGroup($elements, $name, $label, $delimiter, $options=null)
     {
-        $this->form->addGroup($elements, $name, $label, $delimiter, $options);
+        $this->form->addGroup(
+            $elements,
+            $name,
+            !empty($label) ? dgettext($this->name, $label) : null,
+            $delimiter,
+            $options
+        );
     }
 
     /**
@@ -522,7 +583,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "select",
             $field,
-            $label,
+            dgettext($this->name, $label),
             $options,
             $attribs
         );
@@ -540,7 +601,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "static",
             '',
-            $labelString
+            dgettext($this->name, $labelString),
         );
     }
 
@@ -559,7 +620,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $attribs=[]
     ) {
         $attr = array_merge(['class' => 'form-control input-sm'], $attribs);
-        return $this->form->createElement("text", $field, $label, [], $attr);
+        return $this->form->createElement(
+            "text",
+            $field,
+            dgettext($this->name, $label),
+            [],
+            $attr
+        );
     }
 
     /**
@@ -575,7 +642,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "textarea",
             $field,
-            $label,
+            dgettext($this->name, $label),
             [],
             ['class' => 'form-control input-sm']
         );
@@ -607,7 +674,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "date",
             $field,
-            $label,
+            dgettext($this->name, $label),
             ($dateOptions ?? []) + $this->dateOptions,
             $attribs
         );
@@ -627,7 +694,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "advcheckbox",
             $field,
-            $label,
+            dgettext($this->name, $label),
             [],
             $attribs
         );
@@ -649,7 +716,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "radio",
             $field,
-            $label,
+            dgettext($this->name, $label),
             $options,
             $attribs
         );
@@ -672,7 +739,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             'password',
             $field,
-            $label,
+            dgettext($this->name, $label),
             [],
             $attribs
         );

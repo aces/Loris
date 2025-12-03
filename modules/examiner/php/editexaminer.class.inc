@@ -461,11 +461,11 @@ class EditExaminer extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
+        $label = dgettext('examiner', ucwords(str_replace('_', ' ', $this->name)));
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'Edit Examiner',
+                dgettext('examiner', 'Edit Examiner'),
                 "/examiner/editExaminer/?identifier=$this->identifier"
             )
         );

@@ -52,6 +52,7 @@ class LorisForm
     ];
     public $validOperators;
     public $encrypt;
+    public $textdomain = "loris";
 
     /**
      * Creates and returns an element that can be added
@@ -69,7 +70,9 @@ class LorisForm
      */
     protected function &createBase($name, $label, $attribs=[])
     {
-        $el = ['label' => $label];
+        $el = [
+            'label' => !empty($label) ? dgettext($this->textdomain, $label) : null
+        ];
 
         if (!empty($name)) {
             $el['name'] = $name;

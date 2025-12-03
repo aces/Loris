@@ -1,0 +1,184 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "DICOM Archive"
+msgstr "डीआईसीओएम संग्रह"
+
+msgid "Patient ID"
+msgstr "रोगी आईडी"
+
+msgid "Patient Name"
+msgstr "रोगी का नाम"
+
+msgid "Acquisition Date"
+msgstr "अर्जन तिथि"
+
+msgid "Archive Location"
+msgstr "संग्रह स्थान"
+
+msgid "Metadata"
+msgstr "मेटाडाटा"
+
+msgid "MRI Browser"
+msgstr "एमआरआई ब्राउज़र"
+
+msgid "Series UID"
+msgstr "सीरीज़ यूआईडी"
+
+msgid "TarchiveID"
+msgstr "टीआर्काइवआईडी"
+
+msgid "SessionID"
+msgstr "सत्र आईडी"
+
+msgid "CenterID"
+msgstr "केंद्र आईडी"
+
+msgid "IsPhantom"
+msgstr "क्या फैंटम है"
+
+msgid "Tarchive Metadata"
+msgstr "टीआर्काइव मेटाडाटा"
+
+msgid "Acquisition ID"
+msgstr "अर्जन आईडी"
+
+msgid "Patient Birthdate"
+msgstr "रोगी जन्म तिथि"
+
+msgid "Patient Biological Sex"
+msgstr "रोगी जैविक लिंग"
+
+msgid "Date acquired"
+msgstr "अर्जन तिथि"
+
+msgid "Scanner Model"
+msgstr "स्कैनर मॉडल"
+
+msgid "Serial Number"
+msgstr "सीरियल नंबर"
+
+msgid "Scanner Software Version"
+msgstr "स्कैनर सॉफ़्टवेयर संस्करण"
+
+msgid "Acquired at"
+msgstr "अर्जित स्थान"
+
+msgid "Number of Acquisitions"
+msgstr "अर्जनों की संख्या"
+
+msgid "Archived by"
+msgstr "द्वारा संग्रहित"
+
+msgid "Last update"
+msgstr "अंतिम अपडेट"
+
+msgid "Never"
+msgstr "कभी नहीं"
+
+msgid "Summary type version"
+msgstr "सारांश प्रकार संस्करण"
+
+msgid "Source location"
+msgstr "स्रोत स्थान"
+
+msgid "Archive type version"
+msgstr "संग्रह प्रकार संस्करण"
+
+msgid "Archive location"
+msgstr "संग्रह स्थान"
+
+msgid "Archiving log"
+msgstr "संग्रह लॉग"
+
+msgid "md5sum of Archive"
+msgstr "संग्रह का md5sum"
+
+msgid "md5sum of Dicom unzipped"
+msgstr "अनज़िप किए गए डिकॉम का md5sum"
+
+msgid "Series"
+msgstr "सीरीज़"
+
+msgid "Show/Hide series"
+msgstr "सीरीज़ दिखाएँ/छुपाएँ"
+
+msgid "Series Number"
+msgstr "सीरीज़ नंबर"
+
+msgid "Series Description"
+msgstr "सीरीज़ विवरण"
+
+msgid "Protocol Name"
+msgstr "प्रोटोकॉल नाम"
+
+msgid "Sequence Name"
+msgstr "अनुक्रम नाम"
+
+msgid "Echo Time"
+msgstr "इको समय"
+
+msgid "Repetition Time"
+msgstr "पुनरावृत्ति समय"
+
+msgid "Inversion Time"
+msgstr "इनवर्शन समय"
+
+msgid "Slice Thickness"
+msgstr "स्लाइस मोटाई"
+
+msgid "Phase Encoding"
+msgstr "फेज एन्कोडिंग"
+
+msgid "Number of Files"
+msgstr "फ़ाइलों की संख्या"
+
+msgid "SeriesUID"
+msgstr "सीरीज़यूआईडी"
+
+msgid "Files"
+msgstr "फ़ाइलें"
+
+msgid "Show/Hide files"
+msgstr "फ़ाइलें दिखाएँ/छुपाएँ"
+
+msgid "SeriesNumber"
+msgstr "सीरीज़नंबर"
+
+msgid "FileNumber"
+msgstr "फ़ाइल नंबर"
+
+msgid "EchoNumber"
+msgstr "इको नंबर"
+
+msgid "Md5Sum"
+msgstr "Md5Sum"
+
+msgid "FileName"
+msgstr "फ़ाइल नाम"
+
+msgid "INVALID - HIDDEN"
+msgstr "अमान्य - छुपा हुआ"
+
+msgid "View Details"
+msgstr "विवरण देखें"
+
+msgid "View Images"
+msgstr "छवियाँ देखें"

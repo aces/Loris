@@ -1,0 +1,160 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Media"
+msgstr "Medios de comunicación"
+
+msgid "File Name"
+msgstr "Nombre del archivo"
+
+msgid "Instrument"
+msgstr "Instrumento"
+
+msgid "Uploaded By"
+msgstr "Subido por"
+
+msgid "Date Taken"
+msgstr "Fecha de toma"
+
+msgid "Comments"
+msgstr "Comentarios"
+
+msgid "Last Modified"
+msgstr "Última modificación"
+
+msgid "File Type"
+msgstr "Tipo de archivo"
+
+msgid "CandID"
+msgstr "Sincero"
+
+msgid "SessionID"
+msgstr "ID de sesión"
+
+msgid "File Visibility"
+msgstr "Visibilidad de archivos"
+
+msgid "Edit Metadata"
+msgstr "Editar metadatos"
+
+msgid "Edit Media File"
+msgstr "Editar archivo multimedia"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Browse"
+msgstr "Navegar"
+
+msgid "Upload"
+msgstr "Subir"
+
+msgid "An error occured while loading the page."
+msgstr "Se ha producido un error al cargar la página."
+
+msgid "Language"
+msgstr "Idioma"
+
+# New strings from uploadForm.js
+
+msgid "An error occurred when loading the form!"
+msgstr "¡Se ha producido un error al cargar el formulario!"
+
+msgid "File name must begin with"
+msgstr "El nombre del archivo debe comenzar con"
+
+msgid "For example, for candidate"
+msgstr "Por ejemplo, para el candidato"
+
+msgid "visit"
+msgstr "visita"
+
+msgid "for"
+msgstr "para"
+
+msgid "the file name should be prefixed by"
+msgstr "El nombre del archivo debe ir precedido de"
+
+msgid "File cannot exceed"
+msgstr "El archivo no puede exceder"
+
+msgid "No visits available for this candidate"
+msgstr "No hay visitas disponibles para este candidato"
+
+msgid "No instruments available for this visit"
+msgstr "No hay instrumentos disponibles para esta visita."
+
+msgid "Upload a media file"
+msgstr "Subir un archivo multimedia"
+
+msgid "Note"
+msgstr "Nota"
+
+msgid "Date of Administration"
+msgstr "Fecha de administración"
+
+msgid "Document's Language"
+msgstr "Idioma del documento"
+
+msgid "File to upload"
+msgstr "Archivo para subir"
+
+msgid "Upload File"
+msgstr "Cargar archivo"
+
+msgid "Update File"
+msgstr "Actualizar archivo"
+
+msgid "Uploaded file"
+msgstr "archivo subido"
+
+msgid "Hide File"
+msgstr "Ocultar archivo"
+
+msgid "Invalid file name!"
+msgstr "¡Nombre de archivo no válido!"
+
+msgid "File name should begin with:"
+msgstr "El nombre del archivo debe comenzar con:"
+
+msgid "A file with this name already exists!\n Would you like to override existing file?"
+msgstr "¡Ya existe un archivo con este nombre! ¿Desea sobrescribir el archivo existente?"
+
+msgid "Cancelled"
+msgstr "Cancelado"
+
+msgid "Your imaginary file is safe :"
+msgstr "Tu archivo imaginario está a salvo:"
+
+msgid "Success!"
+msgstr "¡Éxito!"
+
+msgid "Upload of media file completed."
+msgstr "Carga del archivo multimedia completada."
+
+msgid "Upload error!"
+msgstr "¡Error al subir!"
+
+msgid "File too large!"
+msgstr "¡Archivo demasiado grande!"
+
+msgid "This field is required."
+msgstr "Este campo es obligatorio."
+
