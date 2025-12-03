@@ -121,7 +121,7 @@ class FeedbackPanelContent extends Component {
     let headers = [t('Type'), t('Author'), t('Status')];
 
     if (this.props.feedbackLevel === 'instrument') {
-      headers[0] = 'Fieldname';
+      headers[0] = this.props.t('Field Name', {ns: 'bvl_feedback'});
     }
 
     let tableHeaders = (
@@ -771,7 +771,10 @@ class NewThreadPanel extends Component {
       fieldnameSelect = (
         <div className='form-group'>
           <div className='row'>
-            <label className='col-xs-4'>Field Name</label>
+            <label className='col-xs-4'>{this.props.t(
+              'Field Name',
+              {ns: 'bvl_feedback'}
+            )}</label>
             <div className='col-xs-8'>
               <select
                 className='form-control'
@@ -813,7 +816,10 @@ class NewThreadPanel extends Component {
         {fieldnameSelect}
         <div className='form-group'>
           <div className='row'>
-            <label className='col-xs-4'>Feedback Type</label>
+            <label className='col-xs-4'>{this.props.t(
+              'Feedback Type',
+              {ns: 'bvl_feedback'}
+            )}</label>
             <div className='col-xs-8'>
               <select
                 name='input'
