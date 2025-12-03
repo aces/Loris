@@ -236,7 +236,7 @@ locales:
 	msgfmt -o modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.mo modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.po
 	npx i18next-conv -l hi -s modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
 	npx i18next-conv -l ja -s modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
-    npx i18next-conv -l fr -s modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
+	npx i18next-conv -l fr -s modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.po -t modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.json --compatibilityJSON v4
 	msgfmt -o modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po
 	npx i18next-conv -l hi -s modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po -t modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.json
 
