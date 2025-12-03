@@ -12,6 +12,7 @@ import {
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
 
 /**
  * Document Edit Form
@@ -29,6 +30,8 @@ class DocEditForm extends React.Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'document_repository', hiStrings);
+    i18n.addResourceBundle('ja', 'document_repository', jaStrings);
 
     this.state = {
       data: {},
@@ -46,7 +49,6 @@ class DocEditForm extends React.Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    i18n.addResourceBundle('hi', 'document_repository', hiStrings);
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }

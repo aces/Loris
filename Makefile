@@ -143,6 +143,7 @@ locales:
 	msgfmt -o modules/document_repository/locale/ja/LC_MESSAGES/document_repository.mo modules/document_repository/locale/ja/LC_MESSAGES/document_repository.po
 	msgfmt -o modules/document_repository/locale/hi/LC_MESSAGES/document_repository.mo modules/document_repository/locale/hi/LC_MESSAGES/document_repository.po
 	npx i18next-conv -l hi -s modules/document_repository/locale/hi/LC_MESSAGES/document_repository.po -t modules/document_repository/locale/hi/LC_MESSAGES/document_repository.json
+	npx i18next-conv -l ja -s modules/document_repository/locale/ja/LC_MESSAGES/document_repository.po -t modules/document_repository/locale/ja/LC_MESSAGES/document_repository.json
 	msgfmt -o modules/dqt/locale/ja/LC_MESSAGES/dqt.mo modules/dqt/locale/ja/LC_MESSAGES/dqt.po
 	msgfmt -o modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.mo modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.po
 	msgfmt -o modules/electrophysiology_uploader/locale/ja/LC_MESSAGES/electrophysiology_uploader.mo modules/electrophysiology_uploader/locale/ja/LC_MESSAGES/electrophysiology_uploader.po
