@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 
 import {clone, mapFormOptions} from './helpers.js';
 import FilterableDataTable from 'FilterableDataTable';
@@ -322,7 +323,7 @@ class SpecimenTab extends Component {
         name: 'containerBarcode',
         type: 'text',
       }},
-      {label: 'Coordinate', show: true},
+      {label: t('Coordinate', {ns: 'loris'}), show: true},
       ...specimenAttributeFields,
     ];
 
@@ -334,14 +335,14 @@ class SpecimenTab extends Component {
     const actions = [
       {
         name: 'goToSpecimen',
-        label: 'Go To Specimen',
+        label: t('Go To Specimen', {ns: 'biobank'}),
         action: openSearchSpecimen,
       },
       {name: 'addSpecimen', label: 'Add Specimen', action: openSpecimenForm},
       {name: 'poolSpecimen', label: 'Pool Specimens', action: openPoolForm},
       {
         name: 'batchProcess',
-        label: 'Process Specimens',
+        label: t('Process Specimens', {ns: 'biobank'}),
         action: openBatchProcessForm,
       },
       {name: 'batchEdit', label: 'Edit Specimens', action: openBatchEditForm},
@@ -527,4 +528,4 @@ SpecimenTab.propTypes = {
   loading: PropTypes.bool.isRequired,
 };
 
-export default SpecimenTab;
+export default withTranslation()(SpecimenTab);
