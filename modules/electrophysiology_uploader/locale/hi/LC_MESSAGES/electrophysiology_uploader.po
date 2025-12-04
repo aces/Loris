@@ -28,67 +28,61 @@ msgid "Files uploaded in this module will not be viewable in the Electrophysiolo
 msgstr "इस मॉड्यूल में अपलोड की गई फ़ाइलें Electrophysiology Browser मॉड्यूल में अभी दिखाई नहीं देंगी। यह सुविधा अगली रिलीज़ के लिए निर्माणाधीन है। कृपया अपने प्रोजेक्ट के लिए इसे कॉन्फ़िगर कराने के लिए LORIS टीम से संपर्क करें।"
 
 msgid "Upload an electrophysiology recording session"
-msgstr ""
+msgstr "इलेक्ट्रोफिजियोलॉजी रिकॉर्डिंग सत्र अपलोड करें"
 
 msgid "File to Upload"
-msgstr ""
+msgstr "अपलोड करने के लिए फ़ाइल"
 
-msgid "Notes"
-msgstr ""
+msgid "File name must match the following convention:"
+msgstr "फ़ाइल का नाम निम्नलिखित परंपरा से मेल खाना चाहिए:"
 
 msgid "File cannot exceed {{maxFileSize}}"
 msgstr "फ़ाइल {{maxFileSize}} से अधिक नहीं हो सकती"
 
-msgid "File name must match the following convention:"
-msgstr ""
-
 msgid "Invalid extension for the uploaded file!"
-msgstr ""
+msgstr "अपलोड की गई फ़ाइल के लिए अमान्य एक्सटेंशन!"
 
 msgid "Filename extension does not match .tar.gz "
-msgstr ""
-
-msgid "OK"
-msgstr ""
+msgstr "फ़ाइलनाम एक्सटेंशन .tar.gz से मेल नहीं खाता "
 
 msgid "The file {{filename}} must be of type .tar.gz."
 msgstr "फ़ाइल {{filename}} का प्रकार .tar.gz होना चाहिए।"
 
 msgid "Invalid filename!"
-msgstr ""
+msgstr "अमान्य फ़ाइलनाम!"
 
 msgid "Filename should be of the form"
-msgstr ""
+msgstr "फ़ाइलनाम इस रूप में होना चाहिए"
 
 msgid "The file does not respect name convention"
-msgstr ""
+msgstr "फ़ाइल नाम परंपरा का पालन नहीं करती है"
 
 msgid "Upload Successful!"
-msgstr ""
+msgstr "अपलोड सफल!"
 
 msgid "Processing of this file by the EEG pipeline has started"
-msgstr ""
+msgstr "EEG पाइपलाइन द्वारा इस फ़ाइल की प्रोसेसिंग शुरू हो गई है"
 
 msgid "Upload failed: a network error occured"
-msgstr ""
+msgstr "अपलोड विफल: नेटवर्क त्रुटि हुई"
 
 msgid "Upload failed: received HTTP response code"
-msgstr ""
+msgstr "अपलोड विफल: HTTP प्रतिक्रिया कोड प्राप्त हुआ"
 
 msgid "Submission error!"
-msgstr ""
+msgstr "सबमिशन त्रुटि!"
 
 msgid "Upload Location"
-msgstr ""
+msgstr "अपलोड स्थान"
 
 msgid "Upload ID"
-msgstr ""
+msgstr "अपलोड आईडी"
 
 msgid "Upload Time"
-msgstr ""
+msgstr "अपलोड समय"
 
 msgid "Status"
-msgstr ""
+msgstr "स्थिति"
 
 msgid "Uploaded By"
-msgstr ""
+msgstr "द्वारा अपलोड किया गया"

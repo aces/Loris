@@ -33,7 +33,10 @@ msgstr ""
 msgid "File to Upload"
 msgstr ""
 
-msgid "Notes"
+msgid "File name must match the following convention:"
+msgstr ""
+
+msgid "File cannot exceed {{maxFileSize}}"
 msgstr ""
 
 msgid "Invalid extension for the uploaded file!"
@@ -42,13 +45,7 @@ msgstr ""
 msgid "Filename extension does not match .tar.gz "
 msgstr ""
 
-msgid "OK"
-msgstr ""
-
 msgid "The file {{filename}} must be of type .tar.gz."
-msgstr ""
-
-msgid "File name must match the following convention:"
 msgstr ""
 
 msgid "Invalid filename!"
@@ -67,9 +64,6 @@ msgid "Processing of this file by the EEG pipeline has started"
 msgstr ""
 
 msgid "Upload failed: a network error occured"
-msgstr ""
-
-msgid "File cannot exceed {{maxFileSize}}"
 msgstr ""
 
 msgid "Upload failed: received HTTP response code"

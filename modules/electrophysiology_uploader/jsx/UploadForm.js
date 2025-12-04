@@ -271,7 +271,7 @@ export default function UploadForm(props) {
             value={formData.visit}
           />
           <StaticElement
-            label={t('Notes', {ns: 'electrophysiology_uploader'})}
+            label={t('Note', {ns: 'loris'})}
             text={
               <span>
                 {props.maxUploadSize && (
@@ -295,6 +295,7 @@ export default function UploadForm(props) {
             </div>
           </div>
           <ButtonElement
+            label={t('Submit', {ns: 'loris'})}
             onUserInput={submitForm}
             buttonClass={
               'btn btn-primary' + (uploadProgress > -1 ? ' hide' : '')
