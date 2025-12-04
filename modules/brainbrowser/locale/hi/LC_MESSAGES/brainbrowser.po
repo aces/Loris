@@ -62,3 +62,27 @@ msgstr "नीला"
 
 msgid "Green"
 msgstr "हरा"
+
+msgid "Voxel Coordinates"
+msgstr "वॉक्सेल निर्देशांक"
+
+msgid "Intensity Value"
+msgstr "तीव्रता मान"
+
+msgid "Contrast (0.0 to 2.0):"
+msgstr "कॉन्ट्रास्ट (0.0 से 2.0):"
+
+msgid "Brightness (-1 to 1):"
+msgstr "चमक (-1 से 1):"
+
+msgid "View Slices"
+msgstr "स्लाइस देखें"
+
+msgid "Sagittal"
+msgstr "सैजिटल"
+
+msgid "Coronal"
+msgstr "कोरोनल"
+
+msgid "Transverse"
+msgstr "ट्रांसवर्स"
