@@ -3,8 +3,13 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Swal from 'sweetalert2';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import BiobankFilter from './filter';
 import BarcodePage from './barcodePage';
+
+import frStrings from '../locale/fr/LC_MESSAGES/biobank.json';
 
 import {clone, isEmpty, get, getStream, post} from './helpers.js';
 
@@ -335,10 +340,10 @@ class BiobankIndex extends Component {
       return new Promise((resolve) => {
         if (print) {
           Swal.fire({
-            title: 'Print Barcodes?',
+            title: this.props.t('Print Barcodes?', {ns: 'biobank'}),
             type: 'question',
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
+            confirmButtonText: this.props.t('Yes', {ns: 'loris'}),
+            cancelButtonText: this.props.t('No', {ns: 'loris'}),
             showCancelButton: true,
           })
             .then((result) => {
@@ -498,19 +503,19 @@ class BiobankIndex extends Component {
     required.map((field) => {
       // TODO: seems like for certain cases it needs to be !== null
       if (!specimen[field]) {
-        errors[field] = 'This field is required! ';
+        errors[field] = 'This field is required.';
       }
     });
 
     float.map((field) => {
       if (isNaN(parseInt(specimen[field])) || !isFinite(specimen[field])) {
-        errors[field] = 'This field must be a number! ';
+        errors[field] = 'This field must be a number. ';
       }
     });
 
     positive.map((field) => {
       if (specimen[field] != null && specimen[field] < 0) {
-        errors[field] = 'This field must not be negative!';
+        errors[field] = 'This field must not be negative.';
       }
     });
 
@@ -518,7 +523,7 @@ class BiobankIndex extends Component {
       if (specimen[field] != null
           && !/^\+?(0|[1-9]\d*)$/.test(specimen[field])
       ) {
-        errors[field] = 'This field must be an integer!';
+        errors[field] = 'This field must be an integer.';
       }
     });
 
@@ -822,14 +827,19 @@ BiobankIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('fr', 'biobank', frStrings);
   const biobank = `${loris.BaseURL}/biobank/`;
-  ReactDOM.render(
-    <BiobankIndex
+  const Index = withTranslation(
+  )(BiobankIndex);
+  createRoot(
+    documen.getElementById('lorisworkspace')
+  ).render(
+    <Index
       specimenAPI={`${biobank}specimenendpoint/`}
       containerAPI={`${biobank}containerendpoint/`}
       poolAPI={`${biobank}poolendpoint/`}
       optionsAPI={`${biobank}optionsendpoint/`}
       labelAPI={`${loris.BaseURL}${loris.config('printEndpoint')}`}
-    />,
-    document.getElementById('lorisworkspace'));
+    />
+  );
 });
