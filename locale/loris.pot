@@ -68,7 +68,7 @@ msgid "Data Dictionary"
 msgstr ""
 
 #: modules/document_repository/php/module.class.inc:56
-#: modules/instrument_builder/php/module.class.inc:48
+#: modules/instrument_builderr/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
@@ -532,4 +532,19 @@ msgid "Loading..."
 msgstr ""
 
 msgid "Permission denied"
+msgstr ""
+
+msgid "Unauthorized"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Dataset"
 msgstr ""

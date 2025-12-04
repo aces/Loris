@@ -428,7 +428,7 @@ class ElectrophysiologySessionView extends Component {
                           ? ` [${
                             t('split {{splitNum}}', {
                               ns: 'electrophysiology_browser',
-                              splitNum: file.splitData?.splitIndex + 1
+                              splitNum: file.splitData?.splitIndex + 1,
                             })
                           }]`
                           : ''
@@ -445,10 +445,10 @@ class ElectrophysiologySessionView extends Component {
                           paddingRight: '15px',
                         }}
                       >
-                      {t(
-                        'Viewing signal split file:',
-                        {ns: 'electrophysiology_browser'}
-                      )}
+                        {t(
+                          'Viewing signal split file:',
+                          {ns: 'electrophysiology_browser'}
+                        )}
                       </span>
                       <a
                         className={
@@ -564,6 +564,7 @@ ElectrophysiologySessionView.defaultProps = {
  * Render EEGSession on page load.
  */
 window.onload = function() {
+  i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
   const i18nNamespaces = ['electrophysiology_browser', 'loris'];
   const SideContent = withTranslation(i18nNamespaces)(SidebarContent);
   const sidebarContent = <SideContent
@@ -589,8 +590,8 @@ window.onload = function() {
 
   const pathparts = window.location.pathname.split('/');
 
-  const EegSessionView = withTranslation(i18nNamespaces)
-    (ElectrophysiologySessionView);
+  const EegSessionView =
+    withTranslation(i18nNamespaces)(ElectrophysiologySessionView);
 
   // Create a wrapper div in which react component will be loaded.
   const EEGSessionViewAppDOM = document.createElement('div');

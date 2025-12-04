@@ -147,6 +147,21 @@ msgstr "Afficher les filtres avancés"
 msgid "Hide Advanced Filters"
 msgstr "Masquer les filtres avancés"
 
+msgid "Fail"
+msgstr "Échec"
+
+msgid "True"
+msgstr "Vrai"
+
+msgid "False"
+msgstr "Faux"
+
+msgid "Selected"
+msgstr "Sélectionné"
+
+msgid "selected"
+msgstr "sélectionné"
+
 # Common swal labels
 msgid "Cancel"
 msgstr "Annuler"
@@ -160,12 +175,6 @@ msgstr "PSCID"
 
 msgid "DCCID"
 msgstr "DCCID"
-
-msgid "Previous"
-msgstr "Précédent"
-
-msgid "Next"
-msgstr "Suivant"
 
 #, fuzzy
 msgid "Visit Label"
@@ -261,6 +270,33 @@ msgstr "Oui, j'en suis sûr!"
 
 msgid "No, cancel it!"
 msgstr "Non, annulez-le !"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "Quitter le formulaire entraînera la perte de toutes les informations saisies."
+
+msgid "Proceed"
+msgstr "Procéder"
+
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Next"
+msgstr "Suivant"
+
+msgid "Save"
+msgstr "Sauvegarder"
+
+msgid "Saving"
+msgstr "Sauvegarde"
+
+msgid "Reset"
+msgstr "Réinitialiser"
+
+msgid "Note"
+msgstr "Note"
+
+msgid "View details"
+msgstr "Voir détails"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -368,3 +404,25 @@ msgstr "{{months}} mois"
 
 msgid "{{years}} years old"
 msgstr "{{years}} ans"
+
+# Other generic terms
+msgid "Chargement..."
+msgstr ""
+
+msgid "Permission denied"
+msgstr "Permission refusée"
+
+msgid "Unauthorized"
+msgstr "Non-autorisé"
+
+msgid "Soumettre"
+msgstr ""
+
+msgid "Clear"
+msgstr "Effacer"
+
+msgid "Add"
+msgstr "Ajouter"
+
+msgid "Dataset"
+msgstr "Ensemble de données"

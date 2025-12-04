@@ -46,7 +46,7 @@ class FilePanel extends Component {
               ? t(
                 'Acquisition Details for Recording {{recording}}', {
                   ns: 'electrophysiology_browser',
-                  recording: this.props.title.split('.').slice(0, -1).join('.')
+                  recording: this.props.title.split('.').slice(0, -1).join('.'),
                 })
               : t('Loading...', {ns: 'loris'})
             }

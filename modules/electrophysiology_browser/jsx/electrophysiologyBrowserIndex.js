@@ -155,14 +155,14 @@ class ElectrophysiologyBrowserIndex extends Component {
       }},
       {label: t('Has HED Tags', {ns: 'electrophysiology_browser'}),
         show: true, filter: {
-        name: 'HasHEDTags',
-        type: 'select',
-        hide: false,
-        options: {
-          'yes': 'Yes',
-          'no': 'No',
-        },
-      }},
+          name: 'HasHEDTags',
+          type: 'select',
+          hide: false,
+          options: {
+            'yes': 'Yes',
+            'no': 'No',
+          },
+        }},
       {label: t('Acquisition Time', {ns: 'electrophysiology_browser'}),
         show: true},
       {label: t('Insertion Time', {ns: 'electrophysiology_browser'}),
@@ -171,10 +171,10 @@ class ElectrophysiologyBrowserIndex extends Component {
         show: true},
       {label: t('Output Type', {ns: 'electrophysiology_browser'}),
         show: false, filter: {
-        name: 'type',
-        type: 'multiselect',
-        options: options.types,
-      }},
+          name: 'type',
+          type: 'multiselect',
+          options: options.types,
+        }},
       {label: t('SessionID', {ns: 'electrophysiology_browser'}), show: false},
     ];
 

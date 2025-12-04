@@ -392,15 +392,15 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
                     width: '440px',
                   }}
                 >
-                  <div>
+                  <div id='dtm-title'>
                     <a href='https://www.hedtags.org' target='_blank'>
                       {hedTagLogo}
                     </a>
                     <span style={{marginLeft: '15px'}}>
-                    {t(
-                      'Dataset Tag Manager',
-                      {ns: 'electrophysiology_browser'}
-                    )}
+                      {t(
+                        'Dataset Tag Manager',
+                        {ns: 'electrophysiology_browser'}
+                      )}
                     </span>
                   </div>
                   <div style={{fontSize: '12px'}}>

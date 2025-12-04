@@ -1,6 +1,5 @@
 import {Component} from 'react';
-import Sidebar from "./Sidebar";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 /**
  * HED Icon for data table column
@@ -54,7 +53,7 @@ class HasHEDIcon extends Component {
   }
 }
 
-Sidebar.propTypes = {
+HasHEDIcon.propTypes = {
   t: PropTypes.func,
-}
+};
 export default HasHEDIcon;

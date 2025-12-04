@@ -9,6 +9,7 @@ import {setAddedTags, setDatasetTags, setDeletedTags, setRelOverrides, setDatase
 import swal from "sweetalert2";
 import {buildHEDString, getNthMemberTrailingBadgeIndex, getRootTags} from "../store/logic/filterEpochs";
 import {colorOrder} from "../../color";
+import {useTranslation} from "react-i18next";
 
 const TagAction = {
   'Select': {
@@ -94,6 +95,7 @@ const DatasetTagger = ({
   filenamePrefix,
 }: CProps) => {
   const tagListID = 'searchable-hed-tags';
+  const {t} = useTranslation();
   const [searchText, setSearchText] = useState('');
   const [searchTextValid, setSearchTextValid] = useState(false);
   const [showLongFormHED, setShowLongFormHED] = useState(false);
@@ -138,12 +140,22 @@ const DatasetTagger = ({
     if ([...addedTags, ...deletedTags].length > 0) {
       event.stopPropagation();
       swal.fire({
-        title: 'Are you sure?',
-        text: 'Leaving this window will result in the loss of any information entered.',
+        title: t(
+          'Are you sure?', {ns: 'loris'}
+        ),
+        text: t(
+          'Leaving this window will result in the loss of any ' +
+          'information entered.',
+          {ns: 'loris'}
+        ),
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Proceed',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: t(
+          'Proceed', {ns: 'loris'}
+        ),
+        cancelButtonText: t(
+          'Cancel', {ns: 'loris'}
+        ),
       }).then((result) => {
         if (result.value) {
           resetAllChanges();
@@ -209,13 +221,20 @@ const DatasetTagger = ({
 
   const handleResetAllChanges = () => {
     swal.fire({
-      title: 'Are you sure?',
-      text: "This will undo all changes since your latest submission. You won't be able to revert this!",
+      title: t(
+        'Are you sure?', {ns: 'loris'}
+      ),
+      text: t('This will undo all changes since your latest submission. ' +
+        'You won\'t be able to revert this!', {
+        ns: 'electrophysiology_browser'
+      }),
       type: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, reset all changes!'
+      confirmButtonText: t('Yes, reset all changes!', {
+        ns: 'electrophysiology_browser'
+      })
     }).then((result) => {
       if (result.value) {
         resetAllChanges();
@@ -359,8 +378,15 @@ const DatasetTagger = ({
           }
         } else {
           swal.fire(
-            'Error',
-            'There was an error with the response. Please report this incident.',
+            t(
+              'Error!', {ns: 'loris'}
+            ),
+            t(
+              'There was an error with the response. ' +
+              'Please report this incident.', {
+                ns: 'electrophysiology_browser'
+              }
+            ),
             'error'
           );
           return;
@@ -410,22 +436,40 @@ const DatasetTagger = ({
       setRelOverrides([]);
 
       swal.fire(
-        'Success',
-        'Tags updated successfully',
+        t(
+          'Success', {ns: 'loris'}
+        ),
+        t(
+          'Tags updated successfully', {
+            ns: 'electrophysiology_browser'
+          }
+        ),
         'success'
       );
     }).catch((error) => {
       console.error(error);
       if (error.status === 401) {
         swal.fire(
-          'Unauthorized',
-          'This action is not permitted.',
+          t(
+            'Unauthorized', {ns: 'loris'}
+          ),
+          t(
+            'This action is not permitted.', {
+              ns: 'electrophysiology_browser'
+            }
+          ),
           'error'
         );
       } else {
         swal.fire(
-          'Error',
-          'There was an error with the request! Please report this incident.',
+          t(
+            'Error', {ns: 'loris'}
+          ),
+          t(
+            'There was an error with the request! Please report this incident.', {
+              ns: 'electrophysiology_browser'
+            }
+          ),
           'error'
         );
       }
@@ -509,7 +553,11 @@ const DatasetTagger = ({
           PairRelID: null,
           AdditionalMembers: 0,
           TaggedBy: 0,
-          TaggerName: 'You',
+          TaggerName: t(
+            'You', {
+              ns: 'electrophysiology_browser'
+            }
+          ),
           Endorsements: [],
         }
       ]);
@@ -704,7 +752,9 @@ const DatasetTagger = ({
             color: valueIsDirty ? '#F0AD4E' : 'black',
           }} // Color instead of background due to unexpected behaviour
         >
-          {fieldValue + (valueIsDirty ? ' (edited)' : '')}
+          {fieldValue + (valueIsDirty ? ` (${
+            t('edited', {ns: 'electrophysiology_browser'})
+          })` : '')}
         </option>
       )
     })
@@ -828,7 +878,7 @@ const DatasetTagger = ({
                 if (groupTag.HEDTagID !== null) {
                   tagBadgeGroup.splice(0, 0, buildHEDBadge(
                     groupTag.schemaElement.longName, groupTag.ID,
-                    true, tag.TaggerName ===  'Data Authors'
+                    true, tag.TaggerName === 'Data Authors'
                   ));
                 }
                 tagBadgeGroup.splice(0, 0, buildGroupSpan('(', groupColorIndex));
@@ -866,7 +916,7 @@ const DatasetTagger = ({
               }
               tagBadgeSubgroup.splice(0, tagBadgeSubgroup.length,
                 buildHEDBadge(groupTag.schemaElement.longName, groupTag.ID,
-                true, tag.TaggerName ===  'Data Authors'
+                true, tag.TaggerName === 'Data Authors'
               ));
             }
           }
@@ -1074,7 +1124,7 @@ const DatasetTagger = ({
       PairRelID: updatedGroupTags[0].ID,
       AdditionalMembers: updatedGroupTags.length - 1,
       TaggedBy: 0,
-      TaggerName: 'You',
+      TaggerName: t('You', {ns: 'electrophysiology_browser'}),
       Endorsements: [],
     }
     newTags.push(newTag);
@@ -1162,7 +1212,11 @@ const DatasetTagger = ({
     // Add channel delimiter
     if (channelDelimiter.length > 0) {
       assembledHEDTags['channel'] = {
-        'Description': 'Channel(s) associated with the event',
+        'Description': t(
+          'Channel(s) associated with the event', {
+            ns: 'electrophysiology_browser'
+          }
+        ),
         'Delimiter': channelDelimiter,
       };
     }
@@ -1265,22 +1319,27 @@ const DatasetTagger = ({
         commentText: '',
       });
       swal.fire(
-        'Success',
-        'Endorsement successful',
+        t('Success', {ns: 'loris'}),
+        t('Endorsement successful', {ns: 'electrophysiology_browser'}),
         'success'
       );
     }).catch((error) => {
       console.error(error);
       if (error.status === 401) {
         swal.fire(
-          'Unauthorized',
-          'This action is not permitted.',
+          t('Unauthorized', {ns: 'loris'}),
+          t('This action is not permitted.', {
+            ns: 'electrophysiology_browser'
+          }),
           'error'
         );
       } else {
         swal.fire(
-          'Error',
-          'There was an error with the request! Please report this incident.',
+          t('Error', {ns: 'loris'}),
+          t('There was an error with the request! ' +
+            'Please report this incident.', {
+            ns: 'electrophysiology_browser'
+          }),
           'error'
         );
       }
@@ -1321,7 +1380,7 @@ const DatasetTagger = ({
               download={`${filenamePrefix}_events.json`}
             >
               <span className="glyphicon glyphicon-download-alt"/>
-              &nbsp;&nbsp;Download
+              &nbsp;&nbsp;{t('Download', {ns: 'electrophysiology_browser'})}
             </a>
           </div>
         </div>
@@ -1376,7 +1435,9 @@ const DatasetTagger = ({
             {/*}}>*/}
             {/*  <span className='code-mimic'>trial_type</span> values*/}
             <div style={{ width: '90%', }}>
-              <label htmlFor={'select_column'}>Column Name</label>
+              <label htmlFor={'select_column'}>
+                {t('Column Name', {ns: 'electrophysiology_browser'})}
+              </label>
             </div>
             <div style={{ width: '90%', }}>
               <select
@@ -1394,7 +1455,7 @@ const DatasetTagger = ({
                   key={`column-name-placeholder`}
                   value={''}
                 >
-                  Select a column
+                  {t('Select a column', {ns: 'electrophysiology_browser'})}
                 </option>
                 {buildColumnNames()}
               </select>
@@ -1403,9 +1464,17 @@ const DatasetTagger = ({
               {
                 activeColumnName.length > 0
                   ? <span className='code-mimic'>{activeColumnName}</span>
-                  : 'Column'
+                  : t('Column', {
+                    ns: 'electrophysiology_browser',
+                    count: 1,
+                  })
               }
-              &nbsp;Values
+              &nbsp;{
+                t('Value', {
+                  ns: 'electrophysiology_browser',
+                  count: 99,
+                })
+              }
             </div>
             <select
               id='field-levels'
@@ -1443,7 +1512,10 @@ const DatasetTagger = ({
                       flexBasis: '40%',
                       textAlign: 'right',
                     }}>
-                      Tagged By:
+                      {t('Tagged By', {
+                        ns: 'electrophysiology_browser',
+                        count: 99,
+                      })}:
                     </div>
                     <div style={{
                       flexBasis: '60%',
@@ -1462,7 +1534,10 @@ const DatasetTagger = ({
                     flexBasis: '40%',
                     textAlign: 'right',
                   }}>
-                    Endorsed By:
+                    {t('Endorsed By', {
+                      ns: 'electrophysiology_browser',
+                      count: 99,
+                    })}:
                   </div>
                   <div style={{
                       flexBasis: '60%',
@@ -1516,7 +1591,9 @@ const DatasetTagger = ({
                     fontStyle: 'italic',
                   }}
                 >
-                  Select a Column Name and Value to Manage HED Tags
+                  {t('Select a Column Name and Value to Manage HED Tags', {
+                    ns: 'electrophysiology_browser',
+                  })}
                   {/*Select a <span className='code-mimic'>trial_type</span> value to Manage HED Tags*/}
                 </div>
               )
@@ -1546,7 +1623,7 @@ const DatasetTagger = ({
                           {activeFieldValue}
                         </span>
                         <br/>
-                        Description
+                        {t('Description', {ns: 'electrophysiology_browser',})}
                       </div>
                       <div
                         style={{
@@ -1554,7 +1631,11 @@ const DatasetTagger = ({
                           flexGrow: 1,
                         }}>
                         <textarea
-                          placeholder='No Description Available'
+                          placeholder={t(
+                            'No Description Available', {
+                              ns: 'electrophysiology_browser',
+                            }
+                          )}
                           style={{
                             // minWidth: '47vw',
                             // maxWidth: '47vw',
@@ -1587,7 +1668,7 @@ const DatasetTagger = ({
                         overflowY: 'scroll',
                       }}
                     >
-                      <legend>HED Tags</legend>
+                      <legend>{t('HED Tags', {ns: 'electrophysiology_browser',})}</legend>
                       {
                         buildHEDBadges(
                           activeMenuTab === 'TAG_MODE'
@@ -1626,7 +1707,10 @@ const DatasetTagger = ({
                       margin: '5px 15px',
                       paddingBottom: '1.15em',
                     }}>
-                      <legend>Add Tag from HED Schemas</legend>
+                      <legend>{t(
+                        'Add Tag from HED Schemas', {
+                        ns: 'electrophysiology_browser',
+                      })}</legend>
                       <form
                         autoComplete="off"
                         onSubmit={(e) => {e.preventDefault()}}
@@ -1655,7 +1739,11 @@ const DatasetTagger = ({
                           name='hed-tag-input'
                           type='text'
                           list={tagListID}
-                          placeholder='Type to search or select from dropdown'
+                          placeholder={t(
+                            'Type to search or select from dropdown', {
+                              ns: 'electrophysiology_browser',
+                            }
+                          )}
                           style={{
                             width: 'calc(100% - 50px)',
                           }}
@@ -1675,7 +1763,7 @@ const DatasetTagger = ({
                           onClick={handleAddTag}
                           disabled={!searchTextValid || activeMenuTab !== 'TAG_MODE'}
                         >
-                          Add
+                          {t('Add', {ns: 'loris'})}
                         </button>
                         {buildDataList(searchText.length === 0)}
                       </form>
@@ -1693,7 +1781,11 @@ const DatasetTagger = ({
                           class={'panel-primary dataset-tagged-by-panel'}
                           title={
                             <>
-                              Tagged By:&nbsp;
+                              {t(
+                                'Tagged By', {
+                                  ns: 'electrophysiology_browser'
+                                }
+                              )}:&nbsp;
                               {
                                 datasetTags[activeColumnName][activeFieldValue]
                                   .map(tag => tag.TaggerName)
@@ -1833,14 +1925,18 @@ const DatasetTagger = ({
                                     }
                                   </ul>
                                 )
-                                : 'No comment'
+                                : t(
+                                  'No comment', {
+                                    ns: 'electrophysiology_browser'
+                                  }
+                                )
                             }
                           </div>
                         </Panel>
                       )
                     }
                   </div>
-                  </div>
+                </div>
               )
             }
           </div>
@@ -1864,7 +1960,11 @@ const DatasetTagger = ({
                   <CheckboxElement
                     name='toggle-long-hed'
                     offset=''
-                    label={<span>Show long-form HED tags</span>}
+                    label={t(
+                      'Show long-form HED tags', {
+                        ns: 'electrophysiology_browser'
+                      }
+                    )}
                     value={showLongFormHED}
                     onUserInput={() => {
                       setShowLongFormHED(!showLongFormHED);
@@ -1883,7 +1983,11 @@ const DatasetTagger = ({
                     alignItems: 'end',
                     paddingLeft: '15px',
                   }}>
-                    ※ = Not tagged by Data Authors
+                    {t(
+                      '※ = Not tagged by Data Authors', {
+                        ns: 'electrophysiology_browser'
+                      }
+                    )}
                   </div>
                   {
                     groupedTags.length > 0 && (
@@ -1941,9 +2045,11 @@ const DatasetTagger = ({
 
                       }}
                     >
-                      {
-                        (groupMode ? 'Tag' : 'Group') + ' Mode'
-                      }
+                      {t(
+                        groupMode ? 'Tag Mode' : 'Group Mode', {
+                          ns: 'electrophysiology_browser'
+                        }
+                      )}
                     </button>
                     {
                       groupedTags.length > 0 && (
@@ -1951,7 +2057,11 @@ const DatasetTagger = ({
                           className='btn btn-primary'
                           onClick={handleConfirmGroup}
                         >
-                          Confirm Group
+                          {t(
+                            'Confirm Group', {
+                              ns: 'electrophysiology_browser'
+                            }
+                          )}
                         </button>
                       )
                     }
@@ -1963,7 +2073,11 @@ const DatasetTagger = ({
                           className='btn btn-primary'
                           onClick={handleUndoGroup}
                         >
-                          Ungroup
+                          {t(
+                            'Ungroup', {
+                              ns: 'electrophysiology_browser'
+                            }
+                          )}
                         </button>
                       )
                     }
@@ -2000,7 +2114,11 @@ const DatasetTagger = ({
                           />
                         )
                       }
-                      &nbsp;{TagAction[activeEndorsementMenuItem.action].text}&nbsp;
+                      &nbsp;{t(
+                        TagAction[activeEndorsementMenuItem.action].text, {
+                          ns: 'electrophysiology_browser'
+                        }
+                      )}&nbsp;
                       <span
                         className="glyphicon glyphicon-menu-down"
                         style={{ float: 'right', marginTop: '2px', }}
@@ -2039,7 +2157,11 @@ const DatasetTagger = ({
                                   />
                                 )
                               }
-                              &nbsp;{TagAction[tagAction].text}
+                              &nbsp;{t(
+                                TagAction[tagAction].text, {
+                                  ns: 'electrophysiology_browser'
+                                }
+                              )}
                             </li>
                           );
                         })
@@ -2069,7 +2191,13 @@ const DatasetTagger = ({
                             relOverrides.length === 0
                           )}
                         >
-                          Submit Changes
+                          {
+                            t(
+                              'Submit Changes', {
+                                ns: 'electrophysiology_browser'
+                              }
+                            )
+                          }
                         </button>
                         <button
                           className='btn btn-warning'
@@ -2092,7 +2220,11 @@ const DatasetTagger = ({
                             )
                           }
                         >
-                          Reset Column Changes
+                          {t(
+                            'Reset Column Changes', {
+                              ns: 'electrophysiology_browser'
+                            }
+                          )}
                         </button>
                         <button
                           className='btn btn-danger'
@@ -2102,7 +2234,11 @@ const DatasetTagger = ({
                             relOverrides.length === 0
                           }
                         >
-                          Reset All Columns
+                          {t(
+                            'Reset All Columns', {
+                              ns: 'electrophysiology_browser'
+                            }
+                          )}
                         </button>
                       </>
                     )
@@ -2148,7 +2284,7 @@ const DatasetTagger = ({
                                 activeEndorsementMenuItem.commentText.length === 0
                               )}
                             >
-                              Submit
+                              {t('Submit', {ns: 'loris'})}
                             </button>
                           )
                         }

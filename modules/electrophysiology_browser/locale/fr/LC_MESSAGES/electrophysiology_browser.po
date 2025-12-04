@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Electrophysiology Browser"
-msgstr "Navigateur d'Électrophysiologie"
+msgstr "Navigateur d'électrophysiologie"
 
 msgid "Links"
 msgstr "Liens"
@@ -31,10 +31,10 @@ msgid "Has HED Tags"
 msgstr "A des balises HED"
 
 msgid "Acquisition Time"
-msgstr "Temps d'Acquisition"
+msgstr "Temps d'acquisition"
 
 msgid "Insertion Time"
-msgstr "Temps d'Insertion"
+msgstr "Temps d'insertion"
 
 msgid "Type"
 msgstr "Type"
@@ -49,7 +49,7 @@ msgid "split {{splitNum}}"
 msgstr "division {{splitNum}}"
 
 msgid "Viewing signal split file:"
-msgstr "Visualisation du signal du fichier divisé:"
+msgstr "Visualisation du signal du fichier divisé :"
 
 msgid "Output Type"
 msgstr "Type du fichier"
@@ -81,6 +81,19 @@ msgstr "Êtes-vous certain de vouloir laisser des modifications non enregistrée
 msgid "Data Authors"
 msgstr "Auteurs de données"
 
+# Filters
+msgid "No High Pass Filter"
+msgstr "Pas de filtre passe-haut"
+
+msgid "High Pass {{frequency}}Hz"
+msgstr "Passe-haut {{frequency}}Hz"
+
+msgid "No Low Pass Filter"
+msgstr "Pas de filtre passe-bas"
+
+msgid "Low Pass {{frequency}}Hz"
+msgstr "Passe-bas {{frequency}}Hz"
+
 # Series Renderer
 msgid "Close Panel"
 msgstr "Fermer panneau"
@@ -89,12 +102,207 @@ msgid "Display Events"
 msgstr "Afficher les événements"
 
 msgid "Add Event"
-msgstr "Ajouter évenement"
+msgstr "Ajouter événement"
 
 msgid "Zoom"
 msgstr "Zoom"
 
-# Dataset Tag Manager
+msgid "Fit to Window"
+msgstr "Adapter à la fenêtre"
+
+msgid "Reset Amplitude"
+msgstr "Réinitialiser l'amplitude"
+
+msgid "Hide Overflow"
+msgstr "Afficher débordement"
+
+msgid "Show Overflow"
+msgstr "Masquer débordement"
+
+msgid "{{numChannels}} channel"
+msgid_plural "{{numChannels}} channels"
+msgstr[0] "{{numChannels}} electrode"
+msgstr[1] "{{numChannels}} electrodes"
+
+msgid "Showing:"
+msgstr "Affichage :"
+
+msgid "to {{channelsInView}} of {{totalChannels}}"
+msgstr "à {{channelsInView}} de {{totalChannels}}"
+
+msgid "Time (s)"
+msgstr "Temps (s)"
+
+msgid "Spread"
+msgstr "Disperser"
+
+msgid "Stack"
+msgstr "Superposer"
+
+msgid "Standard"
+msgstr "Standard"
+
+msgid "Isolate"
+msgstr "Isoler"
+
+msgid "Events"
+msgstr "Évenements"
+
+msgid "HED Endorsements"
+msgstr "Approbations HED"
+
+msgid "Displaying:"
+msgstr "Affichage :"
+
+# SeriesCursor
+msgid "{{seconds}} s"
+msgstr "{{seconds}} s"
+
+# IntervalSelect
+msgid "Timeline Range View"
+msgstr "Vue de l'écart chronologique"
+
+msgid "Show All"
+msgstr "Afficher tout"
+
+# HEDEndorsement
+msgid "No Filter"
+msgstr "Aucun filtre"
+
+msgid "With Comment"
+msgstr "Avec commentaire"
+
+msgid "Tagged By"
+msgstr "Créé par"
+
+msgid "Endorsed By"
+msgstr "Approuvé par"
+
+msgid "Endorse"
+msgstr "Approuver"
+
+msgid "Endorsed"
+msgstr "Approuvé"
+
+msgid "Caveat"
+msgstr "Caveat"
+
+msgid "Comment"
+msgstr "Commentaire"
+
+msgid "Select Action"
+msgstr "Choisir action"
+
+msgid "showing {{numShowing}}/{{numTotal}}"
+msgstr "affichage de {{numShowing}}/{{numTotal}}"
+
+msgid "Empty list"
+msgstr "Liste vide"
+
+msgid "Tag search..."
+msgstr "Recherche..."
+
+msgid "Scroll to Selected"
+msgstr "Défiler à la sélection"
+
+msgid "Jump to Selected"
+msgstr "Sauter à la sélection"
+
+msgid "Select Previous"
+msgstr "Sélectionner précédent"
+
+msgid "Select Next"
+msgstr "Sélectionner suivant"
+
+msgid "Select and Jump to Previous"
+msgstr "Sélectionner et sauter au précédent"
+
+msgid "Select and Jump to Next"
+msgstr "Sélectionner et sauter au suivant"
+
+msgid "There are no event-level HED tags to endorse."
+msgstr "Il n'y a pas de balises HED au niveau \"événement\" à approuver."
+
+msgid "Edit (Selected) Event"
+msgstr "Modifier (Événement sélectionné)"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "No comment"
+msgstr "Aucun commentaires"
+
+msgid "For selected tag:"
+msgstr "Pour balise selectionnée :"
+
+msgid "Updated!"
+msgstr "Mis à jour!"
+
+# EventManager
+msgid "Total events in recording {{total}}"
+msgstr "Nombre total d'événements {{total}}"
+
+msgid "Display by:"
+msgstr "Afficher par :"
+
+msgid "{{label}} search..."
+msgstr "Recherche {{label}}..."
+
+msgid "Ignore {{bidsNA}}"
+msgstr "Ignorer {{bidsNA}}"
+
+msgid "Exclude"
+msgstr "Exclure <text>{{searchText}}</text>"
+
+msgid "Too many events to plot for this timeline range"
+msgstr "Trop d'événements à afficher pour cette période."
+
+msgid "No events in timeline range."
+msgstr "Aucun événement dans l'écart chronologique."
+
+msgid "Try selecting a different time range."
+msgstr "Essayez de sélectionner un autre écart chronologique."
+
+msgid "Channel"
+msgid_plural "Channels"
+msgstr[0] "Electrode"
+msgstr[1] "Electrodes"
+
+# EEGMontage
+msgid "Saved successfully"
+msgstr "Sauvegarde réussie"
+
+msgid "No electrode changes"
+msgstr "Aucun changement d'électrode"
+
+msgid "Duplicates are not allowed"
+msgstr "Les doublons ne sont pas autorisés"
+
+msgid "Invalid string format. Expected channel names delimited by \"{{channelDelimiter}}\""
+msgstr "Format de chaîne invalide. Les noms de electrodes attendus doivent être délimités par «{{channelDelimiter}}»"
+
+msgid "String contains one or more unrecognized channels"
+msgstr "Le texte contient un ou plusieurs electrodes non reconnus"
+
+msgid "Montage"
+msgstr "Montage"
+
+msgid "Hold shift to enable electrode selection"
+msgstr "Maintenez la touche Maj enfoncée pour activer la sélection des électrodes."
+
+msgid "Select None"
+msgstr "Ne rien sélectionner"
+
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+msgid "Carte des électrodes"
+msgstr ""
+
+msgid "Show indices"
+msgstr "Afficher les indices"
+
+# DatasetTagger / EEGLabSeriesProvider
 msgid "Dataset Tag Manager"
 msgstr "Gestionnaire de balises"
 
@@ -116,15 +324,91 @@ msgstr "Approbation de balises"
 msgid "View JSON"
 msgstr "Afficher JSON"
 
-msgid "Approuvé"
-msgstr ""
+msgid "This will undo all changes since your latest submission. You won't be able to revert this!"
+msgstr "Cette action annulera toutes les modifications apportées depuis votre dernière soumission. Vous ne pourrez pas revenir en arrière!"
 
-msgid "Caveat"
-msgstr "Caveat"
+msgid "Yes, reset all changes!"
+msgstr "Oui, annulez tous les changements !"
 
-msgid "Comment"
-msgstr "Commentaire"
+msgid "There was an error with the response. Please report this incident."
+msgstr "Une erreur s'est produite lors de la réponse. Veuillez signaler cet incident."
 
-msgid "ChangeMe"
-msgstr ""
+msgid "Tags updated successfully"
+msgstr "Balises mises à jour avec succès"
 
+msgid "This action is not permitted."
+msgstr "Cette action n'est pas autorisée."
+
+msgid "There was an error with the request! Please report this incident."
+msgstr "Une erreur s'est produite lors du traitement de la requête! Veuillez signaler cet incident."
+
+msgid "You"
+msgstr "Moi"
+
+msgid "edited"
+msgstr "modifié"
+
+msgid "Channel(s) associated with the event"
+msgstr "Electrode(s) associé(s) avec l'évenement"
+
+msgid "Endorsement successful"
+msgstr "Approbation réussie"
+
+msgid "Column Name"
+msgstr "Nom de la colonne"
+
+msgid "Column"
+msgid_plural "Columns"
+msgstr[0] "Colonne"
+msgstr[1] "Colonnes"
+
+msgid "Select a column"
+msgstr "Selectionner une colonne"
+
+msgid "Value"
+msgid_plural "Values"
+msgstr[0] "Valeur"
+msgstr[1] "Valeurs"
+
+msgid "Select a Column Name and Value to Manage HED Tags"
+msgstr "Sélectionnez un nom de colonne et une valeur pour gérer ses balises HED"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "No Description Available"
+msgstr "Aucune description disponible"
+
+msgid "HED Tags"
+msgstr "Balises HED"
+
+msgid "Type to search or select from dropdown"
+msgstr "Entrez votre recherche ou sélectionnez une option dans le menu déroulant."
+
+msgid "Show long-form HED tags"
+msgstr "Afficher les balises HED en format long"
+
+
+msgid "※ = Not tagged by Data Authors"
+msgstr "Non étiqueté par les auteurs de données"
+
+msgid "Tag Mode"
+msgstr "Mode balise"
+
+msgid "Group Mode"
+msgstr "Mode groupe"
+
+msgid "Confirm Group"
+msgstr "Confirmer le groupe"
+
+msgid "Ungroup"
+msgstr "Dégrouper"
+
+msgid "Submit Changes"
+msgstr "Soumettre changements"
+
+msgid "Reset Column Changes"
+msgstr "Réinitialiser les modifications de colonne"
+
+msgid "Reset All Columns"
+msgstr "Réinitialiser toutes les colonnes"

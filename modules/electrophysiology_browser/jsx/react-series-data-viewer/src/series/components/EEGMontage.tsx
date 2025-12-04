@@ -9,6 +9,7 @@ import {setHidden} from '../store/state/montage';
 import React, {useState, useEffect, SetStateAction, Dispatch} from 'react';
 import Panel from './Panel';
 import {RootState} from '../store';
+import {useTranslation} from "react-i18next";
 
 type CProps = {
   electrodes: Electrode[],
@@ -53,7 +54,7 @@ const EEGMontage = (
     eegMontageName,
   }: CProps) => {
   // if (electrodes.length === 0 || coordinateSystem === null) return null;
-
+  const {t} = useTranslation();
   const [angleX, setAngleX] = useState(0);
   const [angleZ, setAngleZ] = useState(0);
   const [drag, setDrag] = useState(false);
@@ -358,13 +359,21 @@ const EEGMontage = (
 
     const result = {
       success: true,
-      message: 'Saved successfully',
+      message: t(
+        'Saved successfully', {
+          ns: 'electrophysiology_browser',
+        }
+      ),
     }
 
     if (validatingForSave) {
       if (textSameAsInitial()) {
         result.success = false;
-        result.message = 'No electrode changes';
+        result.message = t(
+          'No electrode changes', {
+            ns: 'electrophysiology_browser',
+          }
+        );
         return result;
       }
       if (
@@ -372,7 +381,11 @@ const EEGMontage = (
         parsedChannels.filter(pc => pc.length > 0).length
       ) {
         result.success = false;
-        result.message = 'Duplicates are not allowed';
+        result.message = t(
+          'Duplicates are not allowed', {
+            ns: 'electrophysiology_browser',
+          }
+        );
         return result;
       }
     }
@@ -380,7 +393,13 @@ const EEGMontage = (
     const validPattern = new RegExp(`^\\s*(\\w+)?(${channelDelimiter}\\s*\\w+)*\\s*$`); // /^\s*(\w+)?(,\s*\w+)*\s*$/;
     if (!validPattern.test(trimmedString)) {
       result.success = false;
-      result.message = `Invalid string format. Expected channel names delimited by "${channelDelimiter}"`;
+      result.message = t(
+        'Invalid string format. ' +
+        'Expected channel names delimited by "{{channelDelimiter}}"', {
+          ns: 'electrophysiology_browser',
+          channelDelimiter: channelDelimiter,
+        }
+      );
       return result;
     }
 
@@ -390,7 +409,11 @@ const EEGMontage = (
         .every((channel) => getChannelIndex(channel) !== -1)
     ) {
       result.success = false;
-      result.message = `String contains one or more unrecognized channels`;
+      result.message = t(
+        'String contains one or more unrecognized channels', {
+          ns: 'electrophysiology_browser',
+        }
+      );
       return result;
     }
 
@@ -652,7 +675,11 @@ const EEGMontage = (
               (eegMontageName && eegMontageName.length > 0) && (
                 <>
                   <label htmlFor='channel-montage-name'>
-                    Montage
+                    {t(
+                      'Montage', {
+                        ns: 'electrophysiology_browser'
+                      }
+                    )}
                   </label>
                   &nbsp;
                   <span
@@ -683,7 +710,11 @@ const EEGMontage = (
                 <CheckboxElement
                   name='toggle-channel-indices'
                   offset=''
-                  label={<span>Show indices</span>}
+                  label={t(
+                    'Show indices', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}
                   value={showChannelIndices}
                   onUserInput={() => {
                     setShowChannelIndices(!showChannelIndices);
@@ -695,7 +726,11 @@ const EEGMontage = (
             {
               view3D && (
                 <>
-                  Hold shift to enable electrode selection
+                  {t(
+                    'Hold shift to enable electrode selection', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}
                 </>
               )
             }
@@ -718,13 +753,21 @@ const EEGMontage = (
                 className={'btn btn-xs btn-default'}
                 onClick={handleSelectNone}
               >
-                Select None
+                {t(
+                  'Select None', {
+                    ns: 'electrophysiology_browser'
+                  }
+                )}
               </button>
               <button
                 className={'btn btn-xs btn-default'}
                 onClick={handleSelectAll}
               >
-                Select All
+                {t(
+                  'Select All', {
+                    ns: 'electrophysiology_browser'
+                  }
+                )}
               </button>
             </div>
           </div>
@@ -753,7 +796,7 @@ const EEGMontage = (
               onClick={handleReset}
               className="btn btn-primary float-right"
             >
-              Reset
+              {t('Reset', {ns: 'loris'})}
             </button>
             <button
               type="button"
@@ -761,7 +804,7 @@ const EEGMontage = (
               onClick={handleSubmit}
               className="btn btn-primary float-right"
             >
-              Save
+              {t('Save', {ns: 'loris'})}
             </button>
           </div>
         )
@@ -775,7 +818,11 @@ const EEGMontage = (
       id='electrode-montage'
       title={
        <>
-         Electrode Map
+         {t(
+           'Electrode Map', {
+             ns: 'electrophysiology_browser'
+           }
+         )}
          {
            (eegMontageName && eegMontageName.length > 0) && (
              <>

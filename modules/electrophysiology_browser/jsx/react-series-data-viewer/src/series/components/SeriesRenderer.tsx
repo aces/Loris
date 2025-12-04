@@ -1070,7 +1070,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       (interval[1] - interval[0]) ===
                       (DEFAULT_TIME_INTERVAL[1] - DEFAULT_TIME_INTERVAL[0])
                     }
-                    value={{t('Reset', {ns: 'loris'})}}
+                    value={t('Reset', {ns: 'loris'})}
                   />
                   <br/>
                   <input
@@ -1152,7 +1152,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         className="btn btn-xs btn-primary dropdown-toggle"
                         data-toggle='dropdown'
                       >
-                        {HIGH_PASS_FILTERS[highPass].label}
+                        {t(
+                          HIGH_PASS_FILTERS[highPass].label, {
+                            ns: 'electrophysiology_browser',
+                            frequency: HIGH_PASS_FILTERS[highPass].frequency,
+                          }
+                        )}
                         <div
                           style={{paddingLeft: '5px'}}
                           className="pull-right"
@@ -1170,7 +1175,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                               setHighPassFilter(key);
                               setHighPass(key);
                             }}
-                          >{HIGH_PASS_FILTERS[key].label}</li>
+                          >{t(
+                            HIGH_PASS_FILTERS[key].label, {
+                              ns: 'electrophysiology_browser',
+                              frequency: HIGH_PASS_FILTERS[key].frequency,
+                            }
+                          )}</li>
                         )}
                       </ul>
                     </div>
@@ -1184,7 +1194,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         className="btn btn-xs btn-primary dropdown-toggle"
                         data-toggle='dropdown'
                       >
-                        {LOW_PASS_FILTERS[lowPass].label}
+                        {t(
+                          LOW_PASS_FILTERS[lowPass].label, {
+                            ns: 'electrophysiology_browser',
+                            frequency: LOW_PASS_FILTERS[lowPass].frequency,
+                          }
+                        )}
                         <div
                           style={{paddingLeft: '5px'}}
                           className="pull-right"
@@ -1202,16 +1217,25 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                               setLowPassFilter(key);
                               setLowPass(key);
                             }}
-                          >{LOW_PASS_FILTERS[key].label}</li>
+                          >{t(
+                            LOW_PASS_FILTERS[key].label, {
+                              ns: 'electrophysiology_browser',
+                              frequency: LOW_PASS_FILTERS[key].frequency,
+                            }
+                          )}</li>
                         )}
                       </ul>
                     </div>
                     <input
                       type='button'
                       className='btn btn-primary btn-xs'
-                      style={{width: '100px'}}
                       onClick={toggleShowOverflow}
-                      value={`${showOverflow ? 'Hide' : 'Show'} Overflow`}
+                      value={t(
+                        showOverflow
+                          ? 'Hide Overflow'
+                          : 'Show Overflow',
+                        {ns: 'electrophysiology_browser'}
+                      )}
                     />
                   </div>
 
@@ -1225,7 +1249,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     }}
                   >
                     <small style={{marginRight: '3px',}}>
-                      Displaying:&nbsp;
+                      {t('Displaying:', {
+                        ns: 'electrophysiology_browser',
+                      })}&nbsp;
                       <select
                         value={numDisplayedChannels}
                         onChange={handleChannelChange}
@@ -1235,11 +1261,17 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                             key={`${numChannels}`}
                             value={numChannels}
                           >
-                            {numChannels} channels
+                            {t('{{numChannels}} channels', {
+                              ns: 'electrophysiology_browser',
+                              numChannels: numChannels,
+                              count: numChannels,
+                            })}
                           </option>;
                         })};
                       </select>
-                      &nbsp;Showing:&nbsp;
+                      &nbsp;
+                      {t('Showing:', {ns: 'electrophysiology_browser'})}
+                      &nbsp;
                       <input
                         type='number'
                         style={{width: '45px'}}
@@ -1250,7 +1282,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         }}
                       />
                       &nbsp;
-                      to {hardLimit} of {channelMetadata.length}
+                      {t('to {{channelsInView}} of {{totalChannels}}', {
+                        ns: 'electrophysiology_browser',
+                        channelsInView: hardLimit,
+                        totalChannels: channelMetadata.length
+                      })}
                     </small>
                     <div
                       className='btn-group'
@@ -1388,7 +1424,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       position: 'absolute',
                     }}
                   >
-                    Time (s)
+                    {t('Time (s)', {ns: 'electrophysiology_browser'})}
                   </div>
                   <SeriesCursor
                     cursorRef={cursorRef}
@@ -1455,8 +1491,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   type='button'
                   className='btn btn-primary btn-xs'
                   style={{
-                    width: '65px',
+                    width: '80px',
                     marginTop: '3px',
+                    textOverflow: 'ellipsis',
                   }}
                   onClick={toggleDCOffsetView}
                   value={`${DCOffsetView ? 'No' : 'DC'} Offset`}
@@ -1466,11 +1503,16 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   type='button'
                   className='btn btn-primary btn-xs'
                   style={{
-                    width: '65px',
+                    width: '80px',
                     marginTop: '3px',
+                    textOverflow: 'ellipsis',
                   }}
                   onClick={toggleStackedView}
-                  value={stackedView ? 'Spread' : 'Stack'}
+                  value={t(
+                    stackedView ? 'Spread' : 'Stack',{
+                      ns: 'electrophysiology_browser',
+                    }
+                  )}
                 />
                 <br/>
                 <input
@@ -1482,7 +1524,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     visibility: stackedView ? 'visible' : 'hidden',
                   }}
                   onClick={toggleSingleMode}
-                  value={`${singleMode ? 'Standard' : 'Isolate'}`}
+                  value={t(
+                    singleMode ? 'Standard' : 'Isolate',{
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}
                 />
               </div>
             </div>
@@ -1550,7 +1596,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                               event.preventDefault();
                             }}
                           >
-                            {MenuOption[menuOption]}
+                            {t(MenuOption[menuOption], {
+                              ns: 'electrophysiology_browser'
+                            })}
                           </a>
                         </li>
                       );
@@ -1638,7 +1686,7 @@ export default connect(
     interval: state.bounds.interval,
     amplitudeScale: state.bounds.amplitudeScale,
     rightPanel: state.rightPanel,
-    timeSelection: state.timeSelection,
+    timexSelection: state.timeSelection,
     chunksURL: state.dataset.chunksURL,
     channels: state.channels,
     epochs: state.dataset.epochs,

@@ -86,7 +86,9 @@ class DownloadPanel extends Component {
                               margin: 0,
                             }}
                           >
-                            {t('Not Available', {ns: 'electrophysiology_browser'})}
+                            {t('Not Available', {
+                              ns: 'electrophysiology_browser',
+                            })}
                           </a>
                           : <a
                             className='btn btn-primary download col-xs-6'

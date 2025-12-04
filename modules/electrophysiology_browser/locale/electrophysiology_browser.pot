@@ -94,7 +94,7 @@ msgstr ""
 msgid "Low Pass {{frequency}}Hz"
 msgstr ""
 
-# Series Renderer
+# SeriesRenderer
 msgid "Close Panel"
 msgstr ""
 
@@ -113,10 +113,194 @@ msgstr ""
 msgid "Reset Amplitude"
 msgstr ""
 
-msgid "Fit to Window"
+msgid "Hide Overflow"
 msgstr ""
 
-# Dataset Tag Manager
+msgid "Show Overflow"
+msgstr ""
+
+msgid "{{numChannels}} channel"
+msgid_plural "{{numChannels}} channels"
+msgstr[0] ""
+
+msgid "Showing:"
+msgstr ""
+
+msgid "to {{channelsInView}} of {{totalChannels}}"
+msgstr ""
+
+msgid "Time (s)"  # s stands for seconds
+msgstr ""
+
+msgid "Spread"
+msgstr ""
+
+msgid "Stack"
+msgstr ""
+
+msgid "Standard"
+msgstr ""
+
+msgid "Isolate"
+msgstr ""
+
+msgid "Events"
+msgstr ""
+
+msgid "HED Endorsements"
+msgstr ""
+
+msgid "Displaying:"
+msgstr ""
+
+# SeriesCursor
+msgid "{{seconds}} s"
+msgstr ""
+
+# IntervalSelect
+msgid "Timeline Range View"
+msgstr ""
+
+msgid "Show All"
+msgstr ""
+
+# HEDEndorsement
+msgid "No Filter"
+msgstr ""
+
+msgid "With Comment"
+msgstr ""
+
+msgid "Tagged By"
+msgstr ""
+
+msgid "Endorsed By"
+msgstr ""
+
+msgid "Endorse"
+msgstr ""
+
+msgid "Endorsed"
+msgstr ""
+
+msgid "Caveat"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
+msgid "Select Action"
+msgstr ""
+
+msgid "showing {{numShowing}}/{{numTotal}}"
+msgstr ""
+
+msgid "Empty list"
+msgstr ""
+
+msgid "Tag search..."
+msgstr ""
+
+msgid "Scroll to Selected"
+msgstr ""
+
+msgid "Jump to Selected"
+msgstr ""
+
+msgid "Select Previous"
+msgstr ""
+
+msgid "Select Next"
+msgstr ""
+
+msgid "Select and Jump to Previous"
+msgstr ""
+
+msgid "Select and Jump to Next"
+msgstr ""
+
+msgid "There are no event-level HED tags to endorse."
+msgstr ""
+
+msgid "Edit (Selected) Event"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "No comment"
+msgstr ""
+
+msgid "For selected tag:"
+msgstr ""
+
+msgid "Updated!"
+msgstr ""
+
+# EventManager
+msgid "Total events in recording {{total}}"
+msgstr ""
+
+msgid "Display by:"
+msgstr ""
+
+msgid "{{label}} search..."
+msgstr ""
+
+msgid "Ignore {{bidsNA}}"   # The BIDS value: n/a
+msgstr ""
+
+msgid "Exclude <text>{{searchText}}</text>"
+msgstr ""
+
+msgid "Too many events to plot for this timeline range"
+msgstr ""
+
+msgid "No events in timeline range."
+msgstr ""
+
+msgid "Try selecting a different time range."
+msgstr ""
+
+msgid "Channel"
+msgid_plural "Channels"
+msgstr[0] ""
+
+# EEGMontage
+msgid "Saved successfully"
+msgstr ""
+
+msgid "No electrode changes"
+msgstr ""
+
+msgid "Duplicates are not allowed"
+msgstr ""
+
+msgid "Invalid string format. Expected channel names delimited by \"{{channelDelimiter}}\""
+msgstr ""
+
+msgid "String contains one or more unrecognized channels"
+msgstr ""
+
+msgid "Montage"
+msgstr ""
+
+msgid "Hold shift to enable electrode selection"
+msgstr ""
+
+msgid "Select None"
+msgstr ""
+
+msgid "Select All"
+msgstr ""
+
+msgid "Electrode Map"
+msgstr ""
+
+msgid "Show indices"
+msgstr ""
+
+# DatasetTagger / EEGLabSeriesProvider
 msgid "Dataset Tag Manager"
 msgstr ""
 
@@ -138,14 +322,155 @@ msgstr ""
 msgid "View JSON"
 msgstr ""
 
-msgid "Endorsed"
+msgid "This will undo all changes since your latest submission. You won't be able to revert this!"
 msgstr ""
 
-msgid "Caveat"
+msgid "Yes, reset all changes!"
 msgstr ""
 
-msgid "Comment"
+msgid "There was an error with the response. Please report this incident."
 msgstr ""
 
-msgid "ChangeMe"
+msgid "Tags updated successfully"
+msgstr ""
+
+msgid "This action is not permitted."
+msgstr ""
+
+msgid "There was an error with the request! Please report this incident."
+msgstr ""
+
+msgid "You"
+msgstr ""
+
+msgid "edited"
+msgstr ""
+
+msgid "Channel(s) associated with the event"
+msgstr ""
+
+msgid "Endorsement successful"
+msgstr ""
+
+msgid "Column Name"
+msgstr ""
+
+msgid "Column"
+msgid_plural "Columns"
+msgstr[0] ""
+
+msgid "Select a column"
+msgstr ""
+
+msgid "Value"
+msgid_plural "Values"
+msgstr[0] ""
+
+msgid "Select a Column Name and Value to Manage HED Tags"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "No Description Available"
+msgstr ""
+
+msgid "HED Tags"
+msgstr ""
+
+msgid "Type to search or select from dropdown"
+msgstr ""
+
+msgid "Show long-form HED tags"
+msgstr ""
+
+msgid "※ = Not tagged by Data Authors"
+msgstr ""
+
+msgid "Tag Mode"
+msgstr ""
+
+msgid "Group Mode"
+msgstr ""
+
+msgid "Confirm Group"
+msgstr ""
+
+msgid "Ungroup"
+msgstr ""
+
+msgid "Submit Changes"
+msgstr ""
+
+msgid "Reset Column Changes"
+msgstr ""
+
+msgid "Reset All Columns"
+msgstr ""
+
+# AnnotationForm
+msgid "Fill other tags first"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "Please fill out all required fields"
+msgstr ""
+
+msgid "Event Updated!"
+msgstr ""
+
+msgid "Event Added!"
+msgstr ""
+
+msgid "Something went wrong!"
+msgstr ""
+
+msgid "You won't be able to revert this!"
+msgstr ""
+
+msgid "Event Deleted!"
+msgstr ""
+
+msgid "Tag in current dataset"
+msgid_plural "Tags in current dataset"
+msgstr[0] ""
+
+msgid "HED {{hedVersion}} Artifact"
+msgid_plural "HED {{hedVersion}} Artifacts"
+msgstr[0] ""
+
+msgid "Edit Event"
+msgstr ""
+
+msgid "Select from Montage"
+msgstr ""
+
+msgid "Select Channels"
+msgstr ""
+
+msgid "Additional Columns"
+msgstr ""
+
+msgid "Click this icon to view the latest HED schema"
+msgstr ""
+
+msgid "Instance"
+msgstr ""
+
+msgid "Add tag from:"
+msgstr ""
+
+msgid "Select Category"
+msgstr ""
+
+msgid "Select {{tagType}}"
+msgstr ""
+
+# sessions.class.inc
+msgid "Sampling Frequency"
+msgstr ""
+
+msgid "%s Channel Count"  # Channel Type (ex: EEG, ECG)
 msgstr ""
