@@ -27,10 +27,10 @@ msgstr ""
 msgid "Full Name"
 msgstr ""
 
-msgid "Could not update"
+msgid "Could not update {{name}}."
 msgstr ""
 
-msgid "status!"
+msgid "Updated {{name}} status!"
 msgstr ""
 
 msgid "To apply changes the interface must be reloaded. Proceed?"
@@ -42,6 +42,6 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-msgid "Could not find module"
+msgid "Could not find module {{id}}"
 msgstr ""
 

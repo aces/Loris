@@ -142,6 +142,9 @@ msgstr ""
 msgid "Selection Filter"
 msgstr ""
 
+msgid "Filters"
+msgstr ""
+
 msgid "Show Filters"
 msgstr ""
 
@@ -149,6 +152,9 @@ msgid "Hide Filters"
 msgstr ""
 
 msgid "Clear Filters"
+msgstr ""
+
+msgid "Load Filter Preset"
 msgstr ""
 
 msgid "Show Advanced Filters"
@@ -188,17 +194,11 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-msgid "Close"
-msgstr ""
-
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
 
 msgid "DCCID"
-msgstr ""
-
-msgid "Visit"
 msgstr ""
 
 msgid "Visit Label"
@@ -294,7 +294,31 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid "Access denied"
+msgstr ""
+
+msgid "No."
+msgstr ""
+
 msgid "Ethnicity"
+msgstr ""
+
+msgid "Are You Sure?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "Yes, I am sure!"
+msgstr ""
+
+msgid "No, cancel it!"
+msgstr ""
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr ""
+
+msgid "Proceed"
 msgstr ""
 
 msgid "Previous"
@@ -306,7 +330,13 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+msgid "Saving"
+msgstr ""
+
 msgid "Reset"
+msgstr ""
+
+msgid "Note"
 msgstr ""
 
 msgid "View details"
@@ -414,6 +444,9 @@ msgid "Error!"
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Incorrect username or password."
 msgstr ""
 
 # Common timepoint and vist terms

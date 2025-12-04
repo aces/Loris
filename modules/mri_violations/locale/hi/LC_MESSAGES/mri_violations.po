@@ -1,0 +1,214 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "MRI Violated Scans"
+msgstr "एमआरआई उल्लंघन स्कैन"
+
+msgid "Violations for SeriesUID"
+msgstr "सीरीज़UID के लिए उल्लंघन"
+
+msgid "Violations for"
+msgstr "के लिए उल्लंघन"
+
+msgid "Time Run"
+msgstr "चलने का समय"
+
+msgid "Series Description"
+msgstr "श्रृंखला विवरण"
+
+msgid "Image Location"
+msgstr "छवि स्थान"
+
+msgid "Patient Name"
+msgstr "मरीज़ का नाम"
+
+msgid "Series UID"
+msgstr "श्रृंखला UID"
+
+msgid "Echo Time"
+msgstr "इको समय"
+
+msgid "Protocol Group"
+msgstr "प्रोटोकॉल समूह"
+
+msgid "TR"
+msgstr "टीआर"
+
+msgid "TE"
+msgstr "टीई"
+
+msgid "TI"
+msgstr "टीआई"
+
+msgid "Slice Thickness"
+msgstr "स्लाइस की मोटाई"
+
+msgid "Xspace"
+msgstr "एक्स स्पेस"
+
+msgid "Yspace"
+msgstr "वाई स्पेस"
+
+msgid "Zspace"
+msgstr "ज़ेड स्पेस"
+
+msgid "Xstep"
+msgstr "एक्स स्टेप"
+
+msgid "Ystep"
+msgstr "वाई स्टेप"
+
+msgid "Zstep"
+msgstr "ज़ेड स्टेप"
+
+msgid "Time"
+msgstr "समय"
+
+msgid "Image Type"
+msgstr "छवि प्रकार"
+
+msgid "Phase Encoding Direction"
+msgstr "फेज एन्कोडिंग दिशा"
+
+msgid "Echo Number"
+msgstr "इको संख्या"
+
+msgid "Image Protocol"
+msgstr "छवि प्रोटोकॉल"
+
+msgid "Study Protocols"
+msgstr "अध्ययन प्रोटोकॉल"
+
+msgid "Scan Problems"
+msgstr "स्कैन समस्याएँ"
+
+msgid "Scan Type"
+msgstr "स्कैन प्रकार"
+
+msgid "Severity"
+msgstr "गंभीरता"
+
+msgid "Header"
+msgstr "शीर्षक"
+
+msgid "Value"
+msgstr "मान"
+
+msgid "Valid Values"
+msgstr "मान्य मान"
+
+msgid "Protocol Violation"
+msgstr "प्रोटोकॉल उल्लंघन"
+
+msgid "Could not identify scan type"
+msgstr "स्कैन प्रकार की पहचान नहीं हो सकी"
+
+msgid "Series Description or Scan Type"
+msgstr "श्रृंखला विवरण या स्कैन प्रकार"
+
+msgid "Resolution Status"
+msgstr "समाधान स्थिति"
+
+msgid "Unresolved"
+msgstr "अनसुलझा"
+
+msgid "Reran"
+msgstr "पुनः चलाया गया"
+
+msgid "Emailed site/pending"
+msgstr "साइट को ईमेल किया/लंबित"
+
+msgid "Inserted"
+msgstr "डाला गया"
+
+msgid "Rejected"
+msgstr "अस्वीकृत"
+
+msgid "Inserted with flag"
+msgstr "फ्लैग के साथ डाला गया"
+
+msgid "Other"
+msgstr "अन्य"
+
+msgid "Type of Problem"
+msgstr "समस्या का प्रकार"
+
+msgid "Select Resolution"
+msgstr "समाधान चुनें"
+
+msgid "Image File"
+msgstr "छवि फ़ाइल"
+
+msgid "Must submit data in JSON format"
+msgstr "डेटा JSON प्रारूप में जमा करना आवश्यक है"
+
+msgid "Can not implement filter on a resource type that has no centers."
+msgstr "ऐसे संसाधन प्रकार पर फ़िल्टर लागू नहीं किया जा सकता जिसमें कोई केंद्र नहीं हैं।"
+
+msgid "hash"
+msgstr "हैश"
+
+msgid "JoinID"
+msgstr "जॉइनआईडी"
+
+msgid "TarchiveID"
+msgstr "टार्चिवआईडी"
+
+msgid "Center Name"
+msgstr "केंद्र का नाम"
+
+msgid "Scanner ID"
+msgstr "स्कैनर आईडी"
+
+msgid "TR Range"
+msgstr "टीआर रेंज"
+
+msgid "TE Range"
+msgstr "सीमा"
+
+msgid "TI Range"
+msgstr "टीआई रेंज"
+
+msgid "Slice Thickness Range"
+msgstr "स्लाइस मोटाई रेंज"
+
+msgid "Xspace Range"
+msgstr "एक्सस्पेस रेंज"
+
+msgid "Yspace Range"
+msgstr "वाईस्पेस रेंज"
+
+msgid "Zspace Range"
+msgstr "ज़ेडस्पेस रेंज"
+
+msgid "Xstep Range"
+msgstr "एक्सस्टेप रेंज"
+
+msgid "Ystep Range"
+msgstr "यस्टेप रेंज"
+
+msgid "Zstep Range"
+msgstr "ज़स्टेप रेंज"
+
+msgid "Time Range"
+msgstr "समय सीमा"
+
+msgid "Can not implement filter on a resource type that has no projects."
+msgstr "ऐसे संसाधन प्रकार पर फ़िल्टर लागू नहीं किया जा सकता जिसमें कोई परियोजना नहीं है."

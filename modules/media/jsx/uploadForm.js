@@ -301,15 +301,15 @@ class MediaUploadForm extends Component {
     let isDuplicate = mediaFiles.indexOf(fileName);
     if (isDuplicate >= 0) {
       swal.fire({
-        title: this.props.t('Are you sure?', {ns: 'media'}),
+        title: this.props.t('Are you sure?', {ns: 'loris'}),
         text: this.props.t(
           'A file with this name already exists!\n'
           +' Would you like to override existing file?',
           {ns: 'media'}),
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: this.props.t('Yes, I am sure!', {ns: 'media'}),
-        cancelButtonText: this.props.t('No, cancel it!', {ns: 'media'}),
+        confirmButtonText: this.props.t('Yes, I am sure!', {ns: 'loris'}),
+        cancelButtonText: this.props.t('No, cancel it!', {ns: 'loris'}),
       }).then(function(isConfirm) {
         if (isConfirm) {
           this.uploadFile();
