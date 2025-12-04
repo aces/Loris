@@ -791,8 +791,11 @@ export class SelectDropdown extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let parentDivClass = 'btn-group col-xs-12';
-    let selectLabel = '0 Selected';
+    let selectLabel = t("{{numSelected}} Selected", {
+      ns: 'electrophysiology_browser', numSelected: 0,
+    });
     let selectCount = 0;
     let sizeCount = 0;
     let options = [];
@@ -826,7 +829,7 @@ export class SelectDropdown extends Component {
         options.unshift(
           <SelectField
             key="selectAll"
-            label="Select All"
+            label={t("Select All", {ns: 'electrophysiology_browser'})}
             checked={true}
             toggleCheckbox={this.deselectAll}
             multi={this.props.multi}
@@ -836,7 +839,7 @@ export class SelectDropdown extends Component {
         options.unshift(
           <SelectField
             key="selectAll"
-            label="Select All"
+            label={t("Select All", {ns: 'electrophysiology_browser'})}
             checked={false}
             toggleCheckbox={this.selectAll}
             multi={this.props.multi}
@@ -844,7 +847,9 @@ export class SelectDropdown extends Component {
         );
       }
       if (selectCount > 0) {
-        selectLabel = selectCount + ' Selected';
+        selectLabel = t("{{numSelected}} Selected", {
+          ns: 'electrophysiology_browser', numSelected: selectCount,
+        });
       }
     } else {
       for (key in this.props.options) {
@@ -874,7 +879,9 @@ export class SelectDropdown extends Component {
         />
       );
       if (this.props.selectedCategory === '') {
-        selectLabel = 'Select One';
+        selectLabel = t('Select One', {
+          ns: 'electrophysiology_browser',
+        });
       } else {
         selectLabel = this.props.selectedCategory;
       }
@@ -920,4 +927,5 @@ SelectDropdown.propTypes = {
   onFieldClick: PropTypes.func,
   onToggleAll: PropTypes.func,
   selectedCategory: PropTypes.string,
+  t: PropTypes.func,
 };

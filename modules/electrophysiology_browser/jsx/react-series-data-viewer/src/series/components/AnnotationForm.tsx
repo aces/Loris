@@ -704,14 +704,14 @@ const AnnotationForm = ({
   const addHedTagOptions = [
     {
       type: 'DATASET',
-      value: t('Tags in current dataset', {
+      value: t('Tag in current dataset', {
         ns: 'electrophysiology_browser',
         count: 99,
       }),
     },
     {
       type: 'ARTIFACTS',
-      value: t('HED {{hedVersion}} Artifacts', {
+      value: t('HED {{hedVersion}} Artifact', {
         ns: 'electrophysiology_browser',
         hedVersion: '8.3.0',
         count: 99,
@@ -1049,7 +1049,11 @@ const AnnotationForm = ({
         )}
       </div>
       <div className="panel-body">
-        <label style={{ fontSize: '16px', }}>Event Details</label>
+        <label style={{ fontSize: '16px', }}>{t(
+          'Event Details', {
+            ns: 'electrophysiology_browser'
+          }
+        )}</label>
         <div className="form-row">
           <TextboxElement
             name="event-name"

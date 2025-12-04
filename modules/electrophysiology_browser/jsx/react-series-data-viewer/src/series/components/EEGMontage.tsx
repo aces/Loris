@@ -647,7 +647,12 @@ const EEGMontage = (
                 bottom: '10px',
               }}
             >
-              channels
+              {t(
+                'Channel', {
+                  ns: 'electrophysiology_browser',
+                  count: 99,
+                }
+              ).toString().toLowerCase()}
             </label>
             <textarea
               id='edit-channels'

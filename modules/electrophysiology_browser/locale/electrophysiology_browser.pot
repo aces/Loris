@@ -186,6 +186,9 @@ msgstr ""
 msgid "Caveat"
 msgstr ""
 
+msgid "Caveat By"
+msgstr ""
+
 msgid "Comment"
 msgstr ""
 
@@ -223,6 +226,9 @@ msgid "There are no event-level HED tags to endorse."
 msgstr ""
 
 msgid "Edit (Selected) Event"
+msgstr ""
+
+msgid "Jump to (Selected) Event"
 msgstr ""
 
 msgid "Edit"
@@ -362,9 +368,8 @@ msgstr[0] ""
 msgid "Select a column"
 msgstr ""
 
-msgid "Value"
-msgid_plural "Values"
-msgstr[0] ""
+msgid "<s>{{columnName}}</s> Values"
+msgstr ""
 
 msgid "Select a Column Name and Value to Manage HED Tags"
 msgstr ""
@@ -378,6 +383,9 @@ msgstr ""
 msgid "HED Tags"
 msgstr ""
 
+msgid "Add Tag from HED Schemas"
+msgstr ""
+
 msgid "Type to search or select from dropdown"
 msgstr ""
 
@@ -385,6 +393,9 @@ msgid "Show long-form HED tags"
 msgstr ""
 
 msgid "※ = Not tagged by Data Authors"
+msgstr ""
+
+msgid "Preview"
 msgstr ""
 
 msgid "Tag Mode"
@@ -406,6 +417,15 @@ msgid "Reset Column Changes"
 msgstr ""
 
 msgid "Reset All Columns"
+msgstr ""
+
+msgid "{{numSelected}} Selected"
+msgstr ""
+
+msgid "Select One"
+msgstr ""
+
+msgid "Below is the resulting events.json file"
 msgstr ""
 
 # AnnotationForm
@@ -468,9 +488,133 @@ msgstr ""
 msgid "Select {{tagType}}"
 msgstr ""
 
+msgid "Event Details"
+msgstr ""
+
+
 # sessions.class.inc
 msgid "Sampling Frequency"
 msgstr ""
 
 msgid "%s Channel Count"  # Channel Type (ex: EEG, ECG)
+msgstr ""
+
+msgid "Reference"
+msgstr ""
+
+msgid "Sampling Frequency"
+msgstr ""
+
+msgid "Reference"
+msgstr ""
+
+msgid "Powerline Frequency"
+msgstr ""
+
+msgid "Task Name"
+msgstr ""
+
+msgid "Task Description"
+msgstr ""
+
+msgid "Instructions"
+msgstr ""
+
+msgid "Recording Type"
+msgstr ""
+
+msgid "Recording Split Count"
+msgstr ""
+
+msgid "Recording Duration"
+msgstr ""
+
+msgid "Epoch Length"
+msgstr ""
+
+msgid "Subject Artefact Description"
+msgstr ""
+
+msgid "Head Circumference"
+msgstr ""
+
+msgid "Placement Scheme"
+msgstr ""
+
+msgid "Ground"
+msgstr ""
+
+msgid "Trigger Channel Count"
+msgstr ""
+
+msgid "Misc Channel Count"
+msgstr ""
+
+msgid "CogAtlas ID"
+msgstr ""
+
+msgid "CogPO ID"
+msgstr ""
+
+msgid "Institution Name"
+msgstr ""
+
+msgid "Institution Address"
+msgstr ""
+
+msgid "Manufacturer"
+msgstr ""
+
+msgid "Manufacturers Model Name"
+msgstr ""
+
+msgid "%s Manufacturer"
+msgstr ""
+
+msgid "%s Manufacturer's Model Name"
+msgstr ""
+
+msgid "Device Serial Number"
+msgstr ""
+
+msgid "Hardware Filters"
+msgstr ""
+
+msgid "Software Versions"
+msgstr ""
+
+msgid "Software Filters"
+msgstr ""
+
+msgid "DC Offset Correction"
+msgstr ""
+
+msgid "Electrode Groups"
+msgstr ""
+
+msgid "Electrical Stimulation"
+msgstr ""
+
+msgid "Electrical Stimulation Parameters"
+msgstr ""
+
+msgid "EEG File(s)"
+msgstr ""
+
+msgid "Electrodes"
+msgstr ""
+
+msgid "Coordinate System"
+msgstr ""
+
+msgid "Channels"
+msgstr ""
+
+msgid "Events"
+msgstr ""
+
+msgid "All Files"
+msgstr ""
+
+msgid "View Session"
 msgstr ""

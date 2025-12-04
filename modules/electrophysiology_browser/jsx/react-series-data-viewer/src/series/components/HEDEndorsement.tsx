@@ -1407,7 +1407,11 @@ const HEDEndorsement = ({
                             itemRef={`jumpToSelected-${i}`}
                             tooltipText={
                               <>
-                                Jump to (Selected) Event&nbsp;
+                                {t(
+                                  'Jump to (Selected) Event', {
+                                    ns: 'electrophysiology_browser'
+                                  }
+                                )}&nbsp;
                                 <span style={{ fontWeight: 'bold', }}>
                                   (&#8679; +) J
                                 </span>

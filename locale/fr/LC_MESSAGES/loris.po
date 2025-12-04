@@ -169,6 +169,9 @@ msgstr "Annuler"
 msgid "Success!"
 msgstr "Réussi!"
 
+msgid "Success"
+msgstr "Réussi"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "PSCID"
@@ -261,6 +264,9 @@ msgstr "Accès refusé"
 
 msgid "No."
 msgstr "Nombre"
+
+msgid "Are you Sure?"
+msgstr "Es-tu sûr?"
 
 msgid "Are you sure?"
 msgstr "Es-tu sûr?"
@@ -415,8 +421,8 @@ msgstr "Permission refusée"
 msgid "Unauthorized"
 msgstr "Non-autorisé"
 
-msgid "Soumettre"
-msgstr ""
+msgid "Submit"
+msgstr "Soumettre"
 
 msgid "Clear"
 msgstr "Effacer"

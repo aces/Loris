@@ -9,7 +9,7 @@ import {setAddedTags, setDatasetTags, setDeletedTags, setRelOverrides, setDatase
 import swal from "sweetalert2";
 import {buildHEDString, getNthMemberTrailingBadgeIndex, getRootTags} from "../store/logic/filterEpochs";
 import {colorOrder} from "../../color";
-import {useTranslation} from "react-i18next";
+import {Trans, useTranslation} from "react-i18next";
 
 const TagAction = {
   'Select': {
@@ -1367,7 +1367,11 @@ const DatasetTagger = ({
             marginLeft: '2.5%',
             flex: 1,
           }}>
-            Below is the resulting events.json file
+            {t(
+              'Below is the resulting events.json file', {
+                ns: 'electrophysiology_browser'
+              }
+            )}
           </div>
           <div style={{
             marginRight: '2.5%',
@@ -1461,20 +1465,24 @@ const DatasetTagger = ({
               </select>
             </div>
             <div style={{ fontWeight: 'bold', }}>
-              {
-                activeColumnName.length > 0
-                  ? <span className='code-mimic'>{activeColumnName}</span>
-                  : t('Column', {
-                    ns: 'electrophysiology_browser',
-                    count: 1,
-                  })
-              }
-              &nbsp;{
-                t('Value', {
-                  ns: 'electrophysiology_browser',
-                  count: 99,
-                })
-              }
+              <Trans
+                i18nKey="<s>{{columnName}}</s> Values"
+                ns="electrophysiology_browser"
+                values={{
+                  columnName: activeColumnName.length > 0
+                    ? activeColumnName
+                    : t('Column', {
+                      ns: 'electrophysiology_browser',
+                      count: 1,
+                    }).toString(),
+                }}
+                components={{
+                  s: <span className={
+                    activeColumnName.length > 0
+                      ? 'code-mimic' : ''
+                  }/>
+                }}
+              />
             </div>
             <select
               id='field-levels'
@@ -1727,6 +1735,7 @@ const DatasetTagger = ({
                           }}
                         >
                           <SelectDropdown
+                            t={t}
                             multi={true}
                             options={activeHEDSchemas}
                             onFieldClick={handleSchemaFieldClick}
@@ -1754,10 +1763,9 @@ const DatasetTagger = ({
                         <button
                           className='btn btn-primary'
                           style={{
-                            width: '40px',
                             marginLeft: '5px',
                             height: '26.5px',
-                            padding: 'unset',
+                            padding: '0 5px',
                             verticalAlign: 'unset'
                           }}
                           onClick={handleAddTag}
@@ -1997,7 +2005,11 @@ const DatasetTagger = ({
                           textAlign: 'left',
                           marginTop: '10px',
                         }}>
-                          <span style={{ fontWeight: 'bold', }}>Preview</span>: <span>(</span>
+                          <span style={{ fontWeight: 'bold', }}> {t(
+                            'Preview', {
+                              ns: 'electrophysiology_browser'
+                            }
+                          )}</span>: <span>(</span>
                           {
                             buildHEDString(
                               [...applyOverrides(groupedTags), ...getGroupedTagPairings(applyOverrides(groupedTags))],

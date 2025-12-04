@@ -121,8 +121,8 @@ msgstr "Masquer débordement"
 
 msgid "{{numChannels}} channel"
 msgid_plural "{{numChannels}} channels"
-msgstr[0] "{{numChannels}} electrode"
-msgstr[1] "{{numChannels}} electrodes"
+msgstr[0] "{{numChannels}} canal"
+msgstr[1] "{{numChannels}} canaux"
 
 msgid "Showing:"
 msgstr "Affichage :"
@@ -187,6 +187,9 @@ msgstr "Approuvé"
 msgid "Caveat"
 msgstr "Caveat"
 
+msgid "Caveat By"
+msgstr "Caveat par"
+
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -225,6 +228,9 @@ msgstr "Il n'y a pas de balises HED au niveau \"événement\" à approuver."
 
 msgid "Edit (Selected) Event"
 msgstr "Modifier (Événement sélectionné)"
+
+msgid "Jump to (Selected) Event"
+msgstr "Sauter (Événement sélectionné)"
 
 msgid "Edit"
 msgstr "Modifier"
@@ -265,8 +271,8 @@ msgstr "Essayez de sélectionner un autre écart chronologique."
 
 msgid "Channel"
 msgid_plural "Channels"
-msgstr[0] "Electrode"
-msgstr[1] "Electrodes"
+msgstr[0] "Canal"
+msgstr[1] "Canaux"
 
 # EEGMontage
 msgid "Saved successfully"
@@ -279,10 +285,10 @@ msgid "Duplicates are not allowed"
 msgstr "Les doublons ne sont pas autorisés"
 
 msgid "Invalid string format. Expected channel names delimited by \"{{channelDelimiter}}\""
-msgstr "Format de chaîne invalide. Les noms de electrodes attendus doivent être délimités par «{{channelDelimiter}}»"
+msgstr "Format de chaîne invalide. Les noms de canaux attendus doivent être délimités par «{{channelDelimiter}}»"
 
 msgid "String contains one or more unrecognized channels"
-msgstr "Le texte contient un ou plusieurs electrodes non reconnus"
+msgstr "Le texte contient un ou plusieurs canaux non reconnus"
 
 msgid "Montage"
 msgstr "Montage"
@@ -296,8 +302,8 @@ msgstr "Ne rien sélectionner"
 msgid "Select All"
 msgstr "Tout sélectionner"
 
-msgid "Carte des électrodes"
-msgstr ""
+msgid "Electrode Map"
+msgstr "Carte des électrodes"
 
 msgid "Show indices"
 msgstr "Afficher les indices"
@@ -349,7 +355,7 @@ msgid "edited"
 msgstr "modifié"
 
 msgid "Channel(s) associated with the event"
-msgstr "Electrode(s) associé(s) avec l'évenement"
+msgstr "Canal(aux) associé(s) à l'évenement"
 
 msgid "Endorsement successful"
 msgstr "Approbation réussie"
@@ -365,10 +371,8 @@ msgstr[1] "Colonnes"
 msgid "Select a column"
 msgstr "Selectionner une colonne"
 
-msgid "Value"
-msgid_plural "Values"
-msgstr[0] "Valeur"
-msgstr[1] "Valeurs"
+msgid "<s>{{columnName}}</s> Values"
+msgstr "Valeurs <s>{{columnName}}</s>"
 
 msgid "Select a Column Name and Value to Manage HED Tags"
 msgstr "Sélectionnez un nom de colonne et une valeur pour gérer ses balises HED"
@@ -382,15 +386,20 @@ msgstr "Aucune description disponible"
 msgid "HED Tags"
 msgstr "Balises HED"
 
+msgid "Add Tag from HED Schemas"
+msgstr "Ajouter balises à partir des schémas HED"
+
 msgid "Type to search or select from dropdown"
 msgstr "Entrez votre recherche ou sélectionnez une option dans le menu déroulant."
 
 msgid "Show long-form HED tags"
 msgstr "Afficher les balises HED en format long"
 
-
 msgid "※ = Not tagged by Data Authors"
 msgstr "Non étiqueté par les auteurs de données"
+
+msgid "Preview"
+msgstr "Aperçu"
 
 msgid "Tag Mode"
 msgstr "Mode balise"
@@ -412,3 +421,192 @@ msgstr "Réinitialiser les modifications de colonne"
 
 msgid "Reset All Columns"
 msgstr "Réinitialiser toutes les colonnes"
+
+msgid "{{numSelected}} Selected"
+msgstr "Selectionné : {{numSelected}}"
+
+msgid "Select One"
+msgstr "Sélectionnez-en un"
+
+msgid "Below is the resulting events.json file"
+msgstr "Ci-dessous se trouve le fichier events.json résultant"
+
+# AnnotationForm
+msgid "Fill other tags first"
+msgstr "Remplissez d'abord les autres balises"
+
+msgid "Warning"
+msgstr "Avertissement"
+
+msgid "Please fill out all required fields"
+msgstr "Veuillez remplir tous les champs obligatoires."
+
+msgid "Event Updated!"
+msgstr "Événement mis à jour !"
+
+msgid "Event Added!"
+msgstr "Événement ajouté !"
+
+msgid "Something went wrong!"
+msgstr "Quelque chose a mal fonctionné !"
+
+msgid "You won't be able to revert this!"
+msgstr "Vous ne pourrez pas revenir en arrière !"
+
+msgid "Event Deleted!"
+msgstr "Événement éffacé !"
+
+msgid "Tag in current dataset"
+msgid_plural "Tags in current dataset"
+msgstr[0] "Étiquette dans l'ensemble actuel"
+msgstr[1] "Étiquettes dans l'ensemble actuel"
+
+msgid "HED {{hedVersion}} Artifact"
+msgid_plural "HED {{hedVersion}} Artifacts"
+msgstr[0] "Artefact HED {{hedVersion}}"
+msgstr[1] "Artefacts HED {{hedVersion}}"
+
+msgid "Edit Event"
+msgstr "Modifier événement"
+
+msgid "Select from Montage"
+msgstr "Sélectionnez dans le montage"
+
+msgid "Select Channels"
+msgstr "Sélectionner canaux"
+
+msgid "Additional Columns"
+msgstr "Colonnes supplémentaires"
+
+msgid "Click this icon to view the latest HED schema"
+msgstr "Cliquez sur cette icône pour voir le schéma HED le plus récent"
+
+msgid "Instance"
+msgstr "Instance"
+
+msgid "Add tag from:"
+msgstr "Ajouter une balise depuis :"
+
+msgid "Select Category"
+msgstr "Sélectionner une catégorie"
+
+msgid "Select {{tagType}}"
+msgstr "Sélectionnez {{tagType}}"
+
+msgid "Event Details"
+msgstr "Détails de l'événement"
+
+# sessions.class.inc
+msgid "Sampling Frequency"
+msgstr "Fréquence d'échantillonnage"
+
+msgid "%s Channel Count"
+msgstr "Nombre de canaux %s"
+
+msgid "Reference"
+msgstr "Référence"
+
+msgid "Powerline Frequency"
+msgstr "Fréquence du réseau électrique"
+
+msgid "Task Name"
+msgstr "Nom de la tâche"
+
+msgid "Task Description"
+msgstr "Description de la tâche"
+
+msgid "Instructions"
+msgstr "Instructions"
+
+msgid "Recording Type"
+msgstr "Type d'enregistrement"
+
+msgid "Recording Split Count"
+msgstr "Nombre de division d'enregistrement"
+
+msgid "Recording Duration"
+msgstr "Durée d'enregistrement"
+
+msgid "Epoch Length"
+msgstr "Durée de l'époque"
+
+msgid "Subject Artefact Description"
+msgstr "Description de l'artefact"
+
+msgid "Head Circumference"
+msgstr "Tour de tête"
+
+msgid "Placement Scheme"
+msgstr "Schéma de placement"
+
+msgid "Ground"
+msgstr "Mise à la terre"
+
+msgid "Trigger Channel Count"
+msgstr "Nombre de canaux \"Trigger\""
+
+msgid "Misc Channel Count"
+msgstr "Nombre de canaux diverses"
+
+msgid "CogAtlas ID"
+msgstr "Identifiant CogAtlas"
+
+msgid "CogPO ID"
+msgstr "Identifiant CogPO"
+
+msgid "Institution Name"
+msgstr "Nom de l'établissement"
+
+msgid "Institution Address"
+msgstr "Adresse de l'établissement"
+
+msgid "Manufacturer"
+msgstr "Fabricant"
+
+msgid "Manufacturers Model Name"
+msgstr "Nom du modèle du fabricant"
+
+msgid "%s Manufacturer"
+msgstr "Fabricant %s"
+
+msgid "%s Manufacturer's Model Name"
+msgstr "Nom du modèle du fabricant %s"
+
+msgid "Device Serial Number"
+msgstr "Numéro de série de l'appareil"
+
+msgid "Hardware Filters"
+msgstr "Filtres matériels"
+
+msgid "Software Versions"
+msgstr "Versions logicielles"
+
+msgid "Software Filters"
+msgstr "Filtres logiciels"
+
+msgid "DC Offset Correction"
+msgstr "Correction du décalage CC"
+
+msgid "Electrode Groups"
+msgstr "Groupes d'électrodes"
+
+msgid "Electrical Stimulation"
+msgstr "Stimulation électrique"
+
+msgid "Electrical Stimulation Parameters"
+msgstr "Paramètres de stimulation électrique"
+
+msgid "EEG File(s)"
+msgstr "Fichier(s) EEG"
+
+msgid "Electrodes"
+msgstr "Électrodes"
+
+msgid "Coordinate System"
+msgstr "Système de coordonnées"
+
+msgid "All Files"
+msgstr "Tous les fichiers"
+
+msgid "View Session"
+msgstr "Afficher la session"
