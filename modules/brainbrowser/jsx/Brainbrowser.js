@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/brainbrowser.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/brainbrowser.json';
 
 /**
  * Brainbrowser Page.
@@ -122,12 +123,12 @@ class BrainBrowser extends Component {
 // i18next Configuration and Export
 if (typeof i18n !== 'undefined') {
   i18n.addResourceBundle('hi', 'brainbrowser', hiStrings);
-//  i18n.addResourceBundle('jp', 'brainbrowser', jpStrings);
+  i18n.addResourceBundle('ja', 'brainbrowser', jaStrings);
 }
 
 const strings = {
   hi: hiStrings,
-//  jp: jpStrings
+  ja: jaStrings,
 };
 const activeLang = (loris?.user?.langpref || 'en').slice(0, 2);
 const t = strings[activeLang] || strings['en'];
