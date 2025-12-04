@@ -21,3 +21,32 @@ msgstr ""
 msgid "Brainbrowser"
 msgstr "ブレインブラウザ"
 
+msgid "Sync Volumes"
+msgstr "ボリュームを同期する"
+
+msgid "Reset View"
+msgstr "ビューをリセット"
+
+msgid "Auto"
+msgstr "自動"
+
+msgid "300 Pixels (Default)"
+msgstr "300ピクセル（デフォルト）"
+
+msgid "{{count}} Pixels"
+msgstr "{{count}} ピクセル"
+
+msgid "Gray"
+msgstr "グレー"
+
+msgid "Spectral"
+msgstr "スペクトル"
+
+msgid "Thermal"
+msgstr "サーマル"
+
+msgid "Blue"
+msgstr "青"
+
+msgid "Green"
+msgstr "緑"
