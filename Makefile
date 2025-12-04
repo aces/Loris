@@ -212,8 +212,6 @@ dashboard: $(filter modules/dashboard/%,$(MOFILES)) $(filter modules/dashboard/%
 	target=dashboard npm run compile
 
 brainbrowser: $(filter modules/brainbrowser/%,$(MOFILES)) $(filter modules/brainbrowser/%,$(I18NJSONFILES))
-	msgfmt -o modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po
-	npx i18next-conv -l hi -s modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po -t modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.json
 	target=brainbrowser npm run compile
 
 schedule_module: $(filter modules/schedule_module/%,$(MOFILES)) $(filter modules/schedule_module/%,$(I18NJSONFILES))
