@@ -25,7 +25,6 @@
             </div>
 
             <hr/>
-
             <div class="filename-overlay-additional-info">
               <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
                 World Coordinates
@@ -73,8 +72,11 @@
       <div class="panel-body">
         <div class="volume-viewer-controls volume-controls">
           <div class="coords">
-            <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
-              World Coordinates
+            <div data-t="World Coordinates" class="control-heading" id="world-coordinates-heading-{{VOLID}}">
+
+            {/literal}
+               {$world_coordinates}
+            {literal}
             </div>
             <div class="world-coords" data-volume-id="{{VOLID}}">
               X<input id="world-x-{{VOLID}}" class="control-inputs">
@@ -85,16 +87,20 @@
             <hr/>
 
             <div id="color-map-{{VOLID}}">
-              <span class="control-heading" id="color-map-heading-{{VOLID}}">
-                  Color Map
+              <span data-t="Color Map" class="control-heading" id="color-map-heading-{{VOLID}}">
+                {/literal}
+                   {$color_map}
+                {literal}
               </span>
             </div>
 
             <hr/>
 
             <div class="threshold-div" data-volume-id="{{VOLID}}">
-              <div class="control-heading">
-                Threshold
+              <div class="control-heading" data-t="Threshold">
+               {/literal}
+                 {$threshold}
+               {literal}
               </div>
               <div class="thresh-inputs">
                 <input id="min-threshold-{{VOLID}}" class="control-inputs thresh-input-left" value="0"/>
@@ -107,7 +113,9 @@
 
             <div class="filename-additional-info" id="filename-additional-info-{{VOLID}}">
               <div class="control-heading" id="voxel-coordinates-heading-{{VOLID}}">
-                Voxel Coordinates
+               {/literal}
+                 {$voxel}
+               {literal}
               </div>
               <div class="voxel-coords" data-volume-id="{{VOLID}}">
                 X<input id="voxel-i-{{VOLID}}" class="control-inputs">
@@ -119,7 +127,9 @@
 
               <div id="intensity-value-div-{{VOLID}}">
                 <span class="control-heading intensity-heading" data-volume-id="{{VOLID}}">
-                  Intensity Value:
+               {/literal}
+                 {$intensity}
+               {literal}:
                 </span>
                 <span id="intensity-value-{{VOLID}}" class="control-inputs intensity-value"></span>
               </div>
@@ -134,7 +144,10 @@
               </div>
 
               <div class="contrast-div" data-volume-id="{{VOLID}}">
-                <span class="control-heading" id="contrast-heading{{VOLID}}">Contrast (0.0 to 2.0):
+                <span class="control-heading" id="contrast-heading{{VOLID}}">
+               {/literal}
+                 {$contrast}
+               {literal}
                   <input class="control-inputs intensity-value" value="1.0" id="contrast-val" />
                 </span>
                 <div id="contrast-slider" class="slider volume-viewer-contrast"></div>
@@ -142,7 +155,9 @@
 
               <div class="brightness-div" data-volume-id="{{VOLID}}">
                 <span class="control-heading" id="brightness-heading{{VOLID}}">
-                  Brightness (-1 to 1):
+               {/literal}
+                 {$brightness}
+               {literal}
                   <input class="control-inputs intensity-value" value="0" id="brightness-val" />
                 </span>
                 <div id="brightness-slider" class="slider volume-viewer-brightness"></div>
@@ -152,15 +167,29 @@
 
               <div id="slice-series-{{VOLID}}" class="slice-series-div" data-volume-id="{{VOLID}}">
                 <div class="control-heading" id="slice-series-heading-{{VOLID}}">
-                  View Slices
+              {/literal}
+                 {$view_slices}
+               {literal}
                 </div>
                 <div class="slice-series-buttons">
                   <span class="slice-series-button button btn btn-sm btn-primary"
-                        data-axis="xspace">Sagittal</span>
+                        data-axis="xspace">
+               {/literal}
+                 {$sagittal}
+               {literal}
+                  </span>
                   <span class="slice-series-button button btn btn-sm btn-primary"
-                        data-axis="yspace">Coronal</span>
+                        data-axis="yspace">
+               {/literal}
+                 {$coronal}
+               {literal}
+                  </span>
                   <span class="slice-series-button button btn btn-sm btn-primary"
-                        data-axis="zspace">Transverse</span>
+                        data-axis="zspace">
+               {/literal}
+                 {$transverse}
+               {literal}
+                  </span>
                 </div>
               </div>
             </div>
@@ -184,3 +213,4 @@
     document.getElementById('brainbrowserPage')
   ).render(RBrainBrowser());
 </script>
+
