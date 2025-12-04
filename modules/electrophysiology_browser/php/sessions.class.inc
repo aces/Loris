@@ -494,19 +494,31 @@ class Sessions extends \NDB_Page
                 ),
             ],
             [
-                'name'  => dgettext('electrophysiology_browser', 'Device Serial Number'),
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Device Serial Number'
+                ),
                 'value' => $physioFileObj->getParameter('DeviceSerialNumber'),
             ],
             [
-                'name'  => dgettext('electrophysiology_browser', 'Hardware Filters'),
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Hardware Filters'
+                ),
                 'value' => $physioFileObj->getParameter('HardwareFilters'),
             ],
             [
-                'name'  => dgettext('electrophysiology_browser', 'Software Versions'),
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Software Versions'
+                ),
                 'value' => $physioFileObj->getParameter('SoftwareVersions'),
             ],
             [
-                'name'  => dgettext('electrophysiology_browser', 'Software Filters'),
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Software Filters'
+                ),
                 'value' => $physioFileObj->getParameter('SoftwareFilters'),
             ],
         ];
