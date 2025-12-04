@@ -9,6 +9,10 @@ import {
   SelectElement,
   ButtonElement,
 } from 'jsx/Form';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
 
 /**
  * Document Edit Form
@@ -26,6 +30,8 @@ class DocEditForm extends React.Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'document_repository', hiStrings);
+    i18n.addResourceBundle('ja', 'document_repository', jaStrings);
 
     this.state = {
       data: {},
@@ -74,9 +80,11 @@ class DocEditForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -94,11 +102,12 @@ class DocEditForm extends React.Component {
           name="docEdit"
           onSubmit={this.handleSubmit}
         >
-          <h3>Edit Document Repository File</h3>
+          <h3>{t('Edit Document Repository File',
+            {ns: 'document_repository'})}</h3>
           <br />
           <SelectElement
             name="category"
-            label="Category"
+            label={t('Category', {ns: 'document_repository'})}
             options={this.state.data.categories}
             onUserInput={this.setFormData}
             required={true}
@@ -107,7 +116,7 @@ class DocEditForm extends React.Component {
           />
           <SelectElement
             name="forSite"
-            label="Site"
+            label={t('Site', {ns: 'loris', count: 1})}
             options={this.state.data.sites}
             onUserInput={this.setFormData}
             required={true}
@@ -116,27 +125,27 @@ class DocEditForm extends React.Component {
           />
           <SelectElement
             name="instrument"
-            label="Instrument"
+            label={t('Instrument', {ns: 'loris', count: 1})}
             options={this.state.data.instruments}
             onUserInput={this.setFormData}
             value={this.state.docData.instrument}
           />
           <TextboxElement
             name="pscid"
-            label="PSCID"
+            label={t('PSCID', {ns: 'loris'})}
             onUserInput={this.setFormData}
             disable = {true}
             value={this.state.docData.pscid}
           />
           <TextboxElement
             name="visitLabel"
-            label="Visit Label"
+            label={t('Visit Label', {ns: 'loris'})}
             onUserInput={this.setFormData}
             value={this.state.docData.visitLabel}
           />
           <TextareaElement
             name="comments"
-            label="Comments"
+            label={t('Comments', {ns: 'document_repository'})}
             onUserInput={this.setFormData}
             value={this.state.docData.comments}
           />
@@ -144,7 +153,8 @@ class DocEditForm extends React.Component {
             loris.userHasPermission('document_repository_hidden') &&
                 (<SelectElement
                   name="hiddenFile"
-                  label="Restrict access to the file?"
+                  label={t('Restrict access to the file?',
+                    {ns: 'document_repository'})}
                   options={this.state.data.hiddenVideo}
                   sortByValue={false}
                   onUserInput={this.setFormData}
@@ -153,11 +163,11 @@ class DocEditForm extends React.Component {
           }
           <TextboxElement
             name="version"
-            label="Version"
+            label={t('Version', {ns: 'document_repository'})}
             onUserInput={this.setFormData}
             value={this.state.docData.version}
           />
-          <ButtonElement label="Update File"/>
+          <ButtonElement label={t('Update File', {ns: 'document_repository'})}/>
         </FormElement>
       </div>
     );
@@ -203,6 +213,7 @@ class DocEditForm extends React.Component {
 DocEditForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default DocEditForm;
+export default withTranslation(['document_repository', 'loris'])(DocEditForm);

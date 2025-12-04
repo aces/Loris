@@ -94,6 +94,7 @@ locales:
 	npx i18next-conv -l ja -s modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po -t modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.json
 	msgfmt -o modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.mo modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po
 	msgfmt -o modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.mo modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po
+	npx i18next-conv -l ja -s modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po -t modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.json
 	msgfmt -o modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.po
 	msgfmt -o modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.mo modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po
 	npx i18next-conv -l fr -s modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.po -t modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.json
@@ -141,6 +142,9 @@ locales:
 	msgfmt -o modules/dictionary/locale/hi/LC_MESSAGES/dictionary.mo modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po
 	npx i18next-conv -l hi -s modules/dictionary/locale/hi/LC_MESSAGES/dictionary.po -t modules/dictionary/locale/hi/LC_MESSAGES/dictionary.json
 	msgfmt -o modules/document_repository/locale/ja/LC_MESSAGES/document_repository.mo modules/document_repository/locale/ja/LC_MESSAGES/document_repository.po
+	msgfmt -o modules/document_repository/locale/hi/LC_MESSAGES/document_repository.mo modules/document_repository/locale/hi/LC_MESSAGES/document_repository.po
+	npx i18next-conv -l hi -s modules/document_repository/locale/hi/LC_MESSAGES/document_repository.po -t modules/document_repository/locale/hi/LC_MESSAGES/document_repository.json
+	npx i18next-conv -l ja -s modules/document_repository/locale/ja/LC_MESSAGES/document_repository.po -t modules/document_repository/locale/ja/LC_MESSAGES/document_repository.json
 	msgfmt -o modules/dqt/locale/ja/LC_MESSAGES/dqt.mo modules/dqt/locale/ja/LC_MESSAGES/dqt.po
 	msgfmt -o modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.mo modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.po
 	msgfmt -o modules/electrophysiology_uploader/locale/ja/LC_MESSAGES/electrophysiology_uploader.mo modules/electrophysiology_uploader/locale/ja/LC_MESSAGES/electrophysiology_uploader.po
