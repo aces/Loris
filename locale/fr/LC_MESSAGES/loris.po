@@ -412,8 +412,8 @@ msgid "{{years}} years old"
 msgstr "{{years}} ans"
 
 # Other generic terms
-msgid "Chargement..."
-msgstr ""
+msgid "Loading..."
+msgstr "Chargement..."
 
 msgid "Permission denied"
 msgstr "Permission refusée"
