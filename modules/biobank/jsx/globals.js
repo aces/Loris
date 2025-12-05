@@ -270,7 +270,7 @@ function Globals(props) {
 
     return (
       <InlineField
-        label={this.props.t("Parent Specimen", {ns: 'biobank'})}
+        label={this.props.t('Parent Specimen', {ns: 'biobank'})}
         value={value}
       />
     );
@@ -391,6 +391,7 @@ function Globals(props) {
 
 // Globals.propTypes
 Globals.propTypes = {
+  t: PropTypes.func.isRequired,
   current: PropTypes.shape({
     container: PropTypes.shape({
       parentContainerId: PropTypes.number,
@@ -618,7 +619,7 @@ function InlineField(props) {
     <React.Fragment>
       <div style={{flex: '0 1 15%', margin: '0 1%'}}>
         <CTA
-          label={this.props.t("Update", {ns: 'biobank'})}
+          label={this.props.t('Update', {ns: 'biobank'})}
           onUserInput={props.updateValue}
         />
       </div>

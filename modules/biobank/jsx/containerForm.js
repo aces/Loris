@@ -88,7 +88,7 @@ class ContainerForm extends Component {
           <div className="col-xs-11">
             <SelectElement
               name="centerId"
-              label={this.props.t("Site", {ns: 'loris'})}
+              label={this.props.t('Site', {ns: 'loris'})}
               options={options.centers}
               onUserInput={this.setCurrent}
               required={true}
@@ -112,6 +112,7 @@ class ContainerForm extends Component {
 
 // ContainerForm.propTypes
 ContainerForm.propTypes = {
+  t: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   options: PropTypes.shape({
     centers: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -199,6 +200,7 @@ class ContainerSubForm extends Component {
 
 // ContainerSubForm.propTypes
 ContainerSubForm.propTypes = {
+  t: PropTypes.func.isRequired,
   setListItem: PropTypes.func.isRequired,
   itemKey: PropTypes.string.isRequired,
   item: PropTypes.shape({

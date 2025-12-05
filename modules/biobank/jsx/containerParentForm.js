@@ -108,7 +108,7 @@ function ContainerParentForm(props) {
       <div className="col-lg-11">
         <SearchableDropdown
           name="parentContainerId"
-          label={this.props.t("Parent Container Barcode", {ns: 'biobank'})}
+          label={this.props.t('Parent Container Barcode', {ns: 'biobank'})}
           options={containerBarcodesNonPrimary}
           onUserInput={setInheritedProperties}
           value={current.container.parentContainerId}
@@ -120,6 +120,7 @@ function ContainerParentForm(props) {
 }
 
 ContainerParentForm.propTypes = {
+  t: PropTypes.func.isRequired,
   setContainer: PropTypes.func.isRequired,
   data: PropTypes.object,
   container: PropTypes.object.isRequired,

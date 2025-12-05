@@ -17,6 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "Biobank"
+msgstr ""
+
+msgid "Biospecimens"
+msgstr ""
+
 #: jsx/poolSpecimenForm.js:157 jsx/batchEditForm.js:213
 #: jsx/batchProcessForm.js:129
 msgid "Oops!"
@@ -79,6 +85,11 @@ msgstr ""
 
 #: jsx/containerDisplay.js:132 jsx/search.js:48
 msgid "Please Scan or Type Barcode"
+msgstr ""
+
+#: jsx/containerDisplay.js:142 jsx/containerDisplay.js:199
+#: jsx/specimenForm.js:188 jsx/specimenForm.js:198
+msgid "Note"
 msgstr ""
 
 #: jsx/containerDisplay.js:143
@@ -351,20 +362,12 @@ msgstr ""
 msgid "Shipment"
 msgstr ""
 
-#: jsx/globals.js:266
-msgid "None"
-msgstr ""
-
 #: jsx/batchProcessForm.js:130
 msgid "Specimens must be of the same Type"
 msgstr ""
 
 #: jsx/batchProcessForm.js:153
 msgid "Warning!"
-msgstr ""
-
-#: jsx/batchProcessForm.js:159
-msgid "Proceed"
 msgstr ""
 
 #: jsx/batchProcessForm.js:255

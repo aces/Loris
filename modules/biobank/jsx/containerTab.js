@@ -57,7 +57,7 @@ class ContainerTab extends Component {
       return this.props.options.container.types[value].label;
     case this.props.t('Status', {ns: 'biobank'}):
       return this.props.options.container.stati[value].label;
-      case this.props.t('Site', {ns: 'loris', count: 1}):
+    case this.props.t('Site', {ns: 'loris', count: 1}):
       return this.props.options.centers[value];
     default:
       return value;
@@ -219,6 +219,7 @@ class ContainerTab extends Component {
 
 // ContainerTab.propTypes
 ContainerTab.propTypes = {
+  t: PropTypes.func.isRequired,
   options: PropTypes.shape({
     container: PropTypes.shape({
       types: PropTypes.arrayOf(

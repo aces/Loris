@@ -59,7 +59,7 @@ const SpecimenProcessForm = (props) => {
 
   const updateButton = specimen && (
     <ButtonElement
-      label={this.props.t("Update", {ns: 'biobank'})}
+      label={this.props.t('Update', {ns: 'biobank'})}
       onUserInput={() => props.updateSpecimen(specimen)}
     />
   );
@@ -103,7 +103,7 @@ const SpecimenProcessForm = (props) => {
   const collectionFields = processStage === 'collection' && [
     <TextboxElement
       name="quantity"
-      label={this.props.t("Quantity", {ns: 'biobank'})}
+      label={this.props.t('Quantity', {ns: 'biobank'})}
       onUserInput={setProcess}
       required={true}
       value={process.quantity}
@@ -111,7 +111,7 @@ const SpecimenProcessForm = (props) => {
     />,
     <SelectElement
       name="unitId"
-      label={this.props.t("Unit", {ns: 'biobank'})}
+      label={this.props.t('Unit', {ns: 'biobank'})}
       options={specimenTypeUnits}
       onUserInput={setProcess}
       required={true}
@@ -124,7 +124,7 @@ const SpecimenProcessForm = (props) => {
   const protocolField = !props.hideProtocol && (
     <SelectElement
       name="protocolId"
-      label={this.props.t("Protocol", {ns: 'biobank'})}
+      label={this.props.t('Protocol', {ns: 'biobank'})}
       options={specimenProtocols}
       onUserInput={setProtocol}
       required={true}
@@ -140,7 +140,7 @@ const SpecimenProcessForm = (props) => {
       protocolField,
       <SelectElement
         name="examinerId"
-        label={this.props.t("Done By", {ns: 'biobank'})}
+        label={this.props.t('Done By', {ns: 'biobank'})}
         options={examiners}
         onUserInput={setProcess}
         required={true}
@@ -169,7 +169,7 @@ const SpecimenProcessForm = (props) => {
       renderProtocolFields(),
       <TextareaElement
         name="comments"
-        label={this.props.t("Comments", {ns: 'biobank'})}
+        label={this.props.t('Comments', {ns: 'biobank'})}
         onUserInput={setProcess}
         value={process.comments}
         errorMessage={errors.comments}

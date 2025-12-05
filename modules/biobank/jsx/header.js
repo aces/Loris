@@ -188,6 +188,7 @@ class Header extends Component {
 
 // Header.propTypes
 Header.propTypes = {
+  t: PropTypes.func.isRequired,
   options: PropTypes.shape({
     container: PropTypes.shape({
       stati: PropTypes.arrayOf(
@@ -284,6 +285,7 @@ function ContainerCheckout(props) {
 
 // ContainerCheckout.propTypes
 ContainerCheckout.propTypes = {
+  t: PropTypes.func.isRequired,
   editContainer: PropTypes.func.isRequired,
   container: PropTypes.shape({
     parentContainerId: PropTypes.number,

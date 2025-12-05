@@ -183,9 +183,6 @@ msgstr ""
 msgid "selected"
 msgstr ""
 
-msgid "Actions"
-msgstr ""
-
 # Common swal labels
 msgid "OK"
 msgstr ""
@@ -346,14 +343,6 @@ msgid "Note"
 msgstr ""
 
 msgid "View details"
-msgstr ""
-
-# Common site terms
-
-msgid "Origin Site"
-msgstr ""
-
-msgid "Destination Site"
 msgstr ""
 
 # Data table strings
@@ -551,7 +540,6 @@ msgstr ""
 msgid "Permission denied"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Unauthorized"
 msgstr ""
 

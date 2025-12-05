@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 
@@ -36,7 +36,7 @@ function ShipmentTab({
   setData,
   options,
 }) {
-  const { t } = useTranslation(['biobank', 'loris']);
+  const {t} = useTranslation(['biobank', 'loris']);
   const [show, setShow] = useState(false);
   const [shipments, setShipments] = useState({});
   const users = {};
@@ -66,12 +66,12 @@ function ShipmentTab({
 
   const mapShipmentColumns = (column, value) => {
     switch (column) {
-      case t('biobank:Origin Site'):
-        return options.centers[value];
-      case t('biobank:Destination Site'):
-        return options.centers[value];
-      default:
-        return value;
+    case t('biobank:Origin Site'):
+      return options.centers[value];
+    case t('biobank:Destination Site'):
+      return options.centers[value];
+    default:
+      return value;
     }
   };
 
@@ -92,7 +92,7 @@ function ShipmentTab({
           </TriggerableModal>
         </td>
       );
-      case t('biobank:Actions'):
+    case t('biobank:Actions'):
       if (row[t('biobank:Status')] !== 'received') {
         return (
           <td>
@@ -276,7 +276,7 @@ function ShipmentInformation({
   shipment,
   centers,
 }) {
-  const { t } = useTranslation(['biobank', 'loris']);
+  const {t} = useTranslation(['biobank', 'loris']);
   const logs = shipment.logs.map((log, i) => {
     return (
       <>
@@ -394,7 +394,7 @@ function CreateShipment({
   updateShipments,
   setData,
 }) {
-  const { t } = useTranslation('biobank');
+  const {t} = useTranslation('biobank');
   const logIndex = 0;
   const handler = new UseShipment();
   const shipment = handler.getShipment();
@@ -542,7 +542,7 @@ function ReceiveShipment({
   updateShipments,
   setData,
 }) {
-  const { t } = useTranslation('biobank');
+  const {t} = useTranslation('biobank');
   const handler = new UseShipment(shipment);
   const logIndex = handler.getShipment().logs.length-1;
   const onSuccess = ({shipments, containers}) => {
@@ -619,7 +619,7 @@ function ShipmentLogForm({
   errors = {},
   users,
 }) {
-  const { t } = useTranslation(['biobank', 'loris']);
+  const {t} = useTranslation(['biobank', 'loris']);
   return (
     <>
       <TextboxElement
@@ -701,8 +701,8 @@ ShipmentLogForm.propTypes = {
  * Renders a header (h1-h6) with a horizontal rule below it.
  *
  * @param {object} props - The parameters for the FormHeader component.
- * @param {number} [props.level=4] - The heading level (1-6) for the header tag (e.g., 1 for <h1>). Defaults to 4.
- * @param {string} [props.header=''] - The text content to display within the header tag. Defaults to an empty string.
+ * @param {number} [props.level] - The heading level (1-6) for the header tag (e.g., 1 for <h1>). Defaults to 4.
+ * @param {string} [props.header] - The text content to display within the header tag. Defaults to an empty string.
  * @return {JSX.Element} The rendered header and horizontal rule.
  */
 function FormHeader({level = 4, header = ''}) {
@@ -875,8 +875,8 @@ InputList.propTypes = {
  *
  * @param {object} props - The parameters for the InlineField component.
  * @param {React.ReactNode} props.children - The child React elements to be rendered inline.
- * @param {string} [props.label=''] - An optional label for the inline field (though not directly rendered by this component). Defaults to an empty string.
- * @param {Array<number>} [props.weights=[]] - An optional array of numbers specifying the flex-grow weights for each child element. The index of the weight corresponds to the child's index. Defaults to an empty array (meaning children will not grow by default).
+ * @param {string} [props.label] - An optional label for the inline field (though not directly rendered by this component). Defaults to an empty string.
+ * @param {Array<number>} [props.weights] - An optional array of numbers specifying the flex-grow weights for each child element. The index of the weight corresponds to the child's index. Defaults to an empty array (meaning children will not grow by default).
  * @return {JSX.Element} The rendered container with inline fields.
  */
 function InlineField({children, label = '', weights = []}) {
@@ -906,4 +906,4 @@ InlineField.propTypes = {
   weights: PropTypes.arrayOf(PropTypes.number),
 };
 
-export default withTranslation()(ShipmentTab);
+export default ShipmentTab;

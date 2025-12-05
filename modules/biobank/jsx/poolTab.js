@@ -241,6 +241,7 @@ class PoolTab extends Component {
 
 // PoolTab.propTypes
 PoolTab.propTypes = {
+  t: PropTypes.func.isRequired,
   data: PropTypes.shape({
     containers: PropTypes.arrayOf(
       PropTypes.shape({
