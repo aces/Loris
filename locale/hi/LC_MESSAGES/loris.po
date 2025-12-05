@@ -250,6 +250,7 @@ msgstr "समय बिंदु परियोजना"
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] "समूह"
+msgstr[1] "समूह"
 
 msgid "Session"
 msgstr "सत्र"
