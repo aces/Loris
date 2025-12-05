@@ -77,6 +77,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po \
 	modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po \
 	modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po \
+	modules/dataquery/locale/hi/LC_MESSAGES/dataquery.po \
 	modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po \
 	modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po \
 	modules/timepoint_list/locale/fr/LC_MESSAGES/timepoint_list.po \
@@ -102,6 +103,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.po \
 	modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po \
 	modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po
+
 MOFILES=$(patsubst %.po,%.mo,$(POFILES))
 I18NJSONFILES=$(patsubst %.po,%.json,$(POFILES))
 
