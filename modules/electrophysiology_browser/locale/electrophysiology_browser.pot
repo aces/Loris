@@ -132,6 +132,12 @@ msgstr ""
 msgid "Time (s)"  # s stands for seconds
 msgstr ""
 
+msgid "No Offset"
+msgstr ""
+
+msgid "DC Offset"
+msgstr ""
+
 msgid "Spread"
 msgstr ""
 

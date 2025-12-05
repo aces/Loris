@@ -1494,7 +1494,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     textOverflow: 'ellipsis',
                   }}
                   onClick={toggleDCOffsetView}
-                  value={`${DCOffsetView ? 'No' : 'DC'} Offset`}
+                  value={t(
+                    DCOffsetView ? 'No Offset' : 'DC Offset', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}
                 />
                 <br/>
                 <input
@@ -1517,9 +1521,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   type='button'
                   className='btn btn-primary btn-xs'
                   style={{
-                    width: '65px',
+                    width: '80px',
                     marginTop: '3px',
                     visibility: stackedView ? 'visible' : 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                   onClick={toggleSingleMode}
                   value={t(
