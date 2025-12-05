@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 import Swal from 'sweetalert2';
 
 import {
@@ -125,10 +126,10 @@ function ContainerDisplay(props) {
     barcodeField = (
       <TextboxElement
         name='barcode'
-        label='Barcode'
+        label={this.props.t('Barcode', {ns: 'biobank'})}
         onUserInput={setBarcode}
         value={current.barcode}
-        placeHolder='Please Scan or Type Barcode'
+        placeHolder={this.props.t('Please Scan or Type Barcode', {ns: 'biobank'})}
         autoFocus={true}
       />
     );
@@ -138,19 +139,19 @@ function ContainerDisplay(props) {
     <div className={((editable||{}).loadContainer) ? 'open' : 'closed'}>
       <FormElement>
         <StaticElement
-          label='Note'
-          text='Scan Containers to be Loaded. If Sequential is checked,
-           the Coordinate will Auto-Increment after each Load.'
+          label={this.props.t('Note', {ns: 'biobank'})}
+          text={t(`Scan Containers to be Loaded. If Sequential is checked,
+           the Coordinate will Auto-Increment after each Load.`)}
         />
         <CheckboxElement
           name='sequential'
-          label='Sequential'
+          label={this.props.t('Sequential', {ns: 'biobank'})}
           value={current.sequential}
           onUserInput={setCurrent}
         />
         {barcodeField}
         <ButtonElement
-          label='Load'
+          label={this.props.t('Load', {ns: 'biobank'})}
           onUserInput={loadContainer}
         />
         <StaticElement
@@ -179,13 +180,13 @@ function ContainerDisplay(props) {
     barcodeField = (
       <SearchableDropdown
         name='barcode'
-        label='Barcode'
+        label={this.props.t('Barcode', {ns: 'biobank'})}
         options={barcodes}
         onUserInput={(name, value) => {
           value && setCheckoutList(children[value]);
         }}
         value={current.containerId}
-        placeHolder='Please Scan or Select Barcode'
+        placeHolder={this.props.t('Please Scan or Select Barcode', {ns: 'biobank'})}
         autoFocus={true}
       />
     );
@@ -195,13 +196,13 @@ function ContainerDisplay(props) {
     <div className={((editable||{}).containerCheckout) ? 'open' : 'closed'}>
       <FormElement>
         <StaticElement
-          label='Note'
-          text="Click, Select or Scan Containers to be
-                Unloaded and Press 'Confirm'"
+          label={this.props.t('Note', {ns: 'biobank'})}
+          text={t(`Click, Select or Scan Containers to be
+                Unloaded and Press 'Confirm'`)}
         />
         {barcodeField}
         <ButtonElement
-          label='Confirm'
+          label={this.props.t('Confirm', {ns: 'biobank'})}
           type='button'
           onUserInput={checkoutContainers}
         />
@@ -452,4 +453,4 @@ ContainerDisplay.propTypes = {
   getBarcodePathDisplay: PropTypes.func.isRequired,
 };
 
-export default ContainerDisplay;
+export default withTranslation(['biobank', 'loris'])(ContainerDisplay);

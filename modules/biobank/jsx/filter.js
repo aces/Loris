@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import {Tabs, TabPane} from 'Tabs';
@@ -65,18 +66,18 @@ class BiobankFilter extends Component {
     const tabList = [];
     if (loris.userHasPermission('biobank_specimen_view')) {
       tabInfo.push({id: 'specimens', content: specimenTab});
-      tabList.push({id: 'specimens', label: 'Specimens'});
+      tabList.push({id: 'specimens', label: this.props.t('Specimens', {ns: 'biobank'})});
     }
     if (loris.userHasPermission('biobank_container_view')) {
       tabInfo.push({id: 'containers', content: containerTab});
-      tabList.push({id: 'containers', label: 'Containers'});
+      tabList.push({id: 'containers', label: this.props.t('Containers', {ns: 'biobank'})});
     }
     if (loris.userHasPermission('biobank_pool_view')) {
       tabInfo.push({id: 'pools', content: poolTab});
-      tabList.push({id: 'pools', label: 'Pools'});
+      tabList.push({id: 'pools', label: this.props.t('Pools', {ns: 'biobank'})});
     }
     tabInfo.push({id: 'shipments', content: shipmentTab});
-    tabList.push({id: 'shipments', label: 'Shipments'});
+    tabList.push({id: 'shipments', label: this.props.t('Shipments', {ns: 'biobank'})});
 
     const tabContent = Object.keys(tabInfo).map((key) => {
       return (
@@ -111,4 +112,4 @@ BiobankFilter.propTypes = {
   setData: PropTypes.func,
 };
 
-export default BiobankFilter;
+export default withTranslation(['biobank', 'loris'])(BiobankFilter);

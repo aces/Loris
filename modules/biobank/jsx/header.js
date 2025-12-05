@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import {
   TextboxElement,
@@ -47,11 +48,11 @@ class Header extends Component {
       if (specimen && loris.userHasPermission('biobank_specimen_create')) {
         return (
           <div>
-            <div className='action' title='Make Aliquots'>
+            <div className='action' title={this.props.t('Make Aliquots', {ns: 'biobank'})}>
               {renderActionButton()}
             </div>
             <SpecimenForm
-              title='Add Aliquots'
+              title={this.props.t('Add Aliquots', {ns: 'biobank'})}
               parent={[{specimen: specimen, container: container}]}
               options={this.props.options}
               data={this.props.data}
@@ -70,7 +71,7 @@ class Header extends Component {
     const alterLotNumber = () => {
       if (loris.userHasPermission('biobank_specimen_alter')) {
         return (
-          <div className='action' title='Alter Lot Number'>
+          <div className='action' title={this.props.t('Alter Lot Number', {ns: 'biobank'})}>
             <span
               style={{color: 'grey'}}
               className='glyphicon glyphicon-pencil'
@@ -87,7 +88,7 @@ class Header extends Component {
     const alterExpirationDate = () => {
       if (loris.userHasPermission('biobank_specimen_alter')) {
         return (
-          <div className='action' title='Alter Expiration Date'>
+          <div className='action' title={this.props.t('Alter Expiration Date', {ns: 'biobank'})}>
             <span
               style={{color: 'grey'}}
               className='glyphicon glyphicon-pencil'
@@ -103,14 +104,14 @@ class Header extends Component {
 
     const lotForm = (
       <Modal
-        title='Edit Lot Number'
+        title={this.props.t('Edit Lot Number', {ns: 'biobank'})}
         onClose={this.props.clearAll}
         show={editable.lotForm}
         onSubmit={updateContainer}
       >
         <TextboxElement
           name='lotNumber'
-          label='Lot Number'
+          label={this.props.t('Lot Number', {ns: 'biobank'})}
           onUserInput={this.props.setContainer}
           value={current.container.lotNumber}
         />
@@ -119,14 +120,14 @@ class Header extends Component {
 
     const expirationForm = (
       <Modal
-        title='Edit Expiration Date'
+        title={this.props.t('Edit Expiration Date', {ns: 'biobank'})}
         onClose={this.props.clearAll}
         show={editable.expirationForm}
         onSubmit={updateContainer}
       >
         <DateElement
           name='expirationDate'
-          label='Expiration Date'
+          label={this.props.t('Expiration Date', {ns: 'biobank'})}
           onUserInput={this.props.setContainer}
           value={current.container.expirationDate}
         />
@@ -143,7 +144,7 @@ class Header extends Component {
         sampleNumber: specimen.sampleNumber,
       }];
       this.props.printLabel(labelParams)
-        .then(() => (Swal.fire('Print Barcode Number: ' + container.barcode)));
+        .then(() => (Swal.fire(this.props.t('Print Barcode Number', {ns: 'biobank'})+': ' + container.barcode)));
     };
 
     return (
@@ -162,7 +163,7 @@ class Header extends Component {
             {lotForm}
             {expirationForm}
           </div>
-          <div className='action' title='Print Barcode'>
+          <div className='action' title={this.props.t('Print Barcode', {ns: 'biobank'})}>
             <div className='action-button update' onClick={printBarcode}>
               <span className='glyphicon glyphicon-print'/>
             </div>
@@ -272,7 +273,7 @@ function ContainerCheckout(props) {
       <div className='action'>
         <div
           className='action-button update'
-          title='Checkout Container'
+          title={this.props.t('Checkout Container', {ns: 'biobank'})}
           onClick={checkoutContainer}
         >
           <span className='glyphicon glyphicon-share'/>
@@ -291,4 +292,4 @@ ContainerCheckout.propTypes = {
   updateContainer: PropTypes.func.isRequired,
 };
 
-export default Header;
+export default withTranslation(['biobank', 'loris'])(Header);

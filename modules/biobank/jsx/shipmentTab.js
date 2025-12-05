@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
+import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 
@@ -34,8 +35,8 @@ function ShipmentTab({
   data,
   setData,
   options,
-  t,
 }) {
+  const { t } = useTranslation(['biobank', 'loris']);
   const [show, setShow] = useState(false);
   const [shipments, setShipments] = useState({});
   const users = {};
@@ -65,19 +66,19 @@ function ShipmentTab({
 
   const mapShipmentColumns = (column, value) => {
     switch (column) {
-    case t('Origin Site', {ns: 'biobank'}):
-      return options.centers[value];
-    case t('Destination Site', {ns: 'biobank'}):
-      return options.centers[value];
-    default:
-      return value;
+      case t('biobank:Origin Site'):
+        return options.centers[value];
+      case t('biobank:Destination Site'):
+        return options.centers[value];
+      default:
+        return value;
     }
   };
 
   const formatShipmentColumns = (column, value, row) => {
     value = mapShipmentColumns(column, value);
     switch (column) {
-    case t('Barcode', {ns: 'biobank', count: 1}):
+    case t('biobank:Barcode', {count: 1}):
       return (
         <td>
           <TriggerableModal
@@ -91,12 +92,12 @@ function ShipmentTab({
           </TriggerableModal>
         </td>
       );
-    case t('Actions', {ns: 'biobank'}):
-      if (row['Status'] !== 'received') {
+      case t('biobank:Actions'):
+      if (row[t('biobank:Status')] !== 'received') {
         return (
           <td>
             <ReceiveShipment
-              shipment={shipments[row['Barcode']]}
+              shipment={shipments[row[t('biobank:Barcode')]]}
               users={users}
               updateShipments={updateShipments}
               setData={setData}
@@ -123,37 +124,37 @@ function ShipmentTab({
 
   const fields = [
     {label: 'ID', show: false},
-    {label: t('Barcode', {ns: 'biobank', count: 1}), show: true, filter: {
+    {label: t('biobank:Barcode', {count: 1}), show: true, filter: {
       name: 'barcode',
       type: 'text',
     }},
-    {label: t('Type', {ns: 'biobank'}), show: true, filter: {
+    {label: t('biobank:Type'), show: true, filter: {
       name: 'type',
       type: 'select',
       options: options.shipment.types,
     }},
-    {label: t('Status', {ns: 'biobank'}), show: true, filter: {
+    {label: t('biobank:Status'), show: true, filter: {
       name: 'status',
       type: 'select',
       options: options.shipment.statuses,
     }},
-    {label: t('Origin Site', {ns: 'biobank'}), show: true, filter: {
+    {label: t('biobank:Origin Site'), show: true, filter: {
       name: 'originCenterId',
       type: 'select',
       options: options.centers,
     }},
-    {label: t('Destination Site', {ns: 'biobank'}), show: true, filter: {
+    {label: t('biobank:Destination Site'), show: true, filter: {
       name: 'destinationCenterId',
       type: 'select',
       options: options.centers,
     }},
-    {label: t('Actions', {ns: 'biobank'}), show: true},
+    {label: t('biobank:Actions'), show: true},
   ];
 
   const actions = [
     {
       name: 'addShipment',
-      label: t('Add Shipment', {ns: 'biobank'}),
+      label: t('biobank:Add Shipment'),
       action: () => setShow(true),
     },
   ];
@@ -275,33 +276,34 @@ function ShipmentInformation({
   shipment,
   centers,
 }) {
+  const { t } = useTranslation(['biobank', 'loris']);
   const logs = shipment.logs.map((log, i) => {
     return (
       <>
         <h4>Shipment Log {i+1}</h4>
         <HorizontalRule/>
         <StaticElement
-          label={t('Site', {ns: 'biobank'})}
+          label={t('loris:Site')}
           text={centers[log.centerId]}
         />
         <StaticElement
-          label={t('Status', {ns: 'biobank'})}
+          label={t('biobank:Status')}
           text={log.status}
         />
         <StaticElement
-          label={t('Temperature', {ns: 'biobank'})}
+          label={t('biobank:Temperature')}
           text={log.temperature}
         />
         <StaticElement
-          label={t('Date & Time', {ns: 'biobank'})}
+          label={t('biobank:Date & Time')}
           text={log.time.date.substring[0, 15]}
         />
         <StaticElement
-          label={t('User', {ns: 'loris'})}
+          label={t('biobank:User')}
           text={log.user}
         />
         <StaticElement
-          label={t('Comments', {ns: 'loris'})}
+          label={t('biobank:Comments')}
           text={log.comments}
         />
       </>
@@ -392,6 +394,7 @@ function CreateShipment({
   updateShipments,
   setData,
 }) {
+  const { t } = useTranslation('biobank');
   const logIndex = 0;
   const handler = new UseShipment();
   const shipment = handler.getShipment();
@@ -432,19 +435,19 @@ function CreateShipment({
   return (
     <Modal
       show={show}
-      title={t('Create Shipment', {ns: 'biobank'})}
+      title={t('biobank:Create Shipment')}
       onSubmit={onSubmit}
       onClose={onClose}
     >
       <StaticElement
-        label={t('Note', {ns: 'biobank'})}
-        text={t(`Any container or specimen added to this form will be
+        label={t('biobank:Note')}
+        text={t(`biobank:Any container or specimen added to this form will be
         dissassociated from its parent. Any children of the containers listed
-        will also be added to the shipment.`, {ns: 'biobank'})}
+        will also be added to the shipment.`)}
       />
       <TextboxElement
         name='barcode'
-        label={t('Barcode', {ns: 'biobank'})}
+        label={t('biobank:Barcode')}
         onUserInput={handler.set}
         value={shipment.barcode}
         errorMessage={errors.barcode}
@@ -452,7 +455,7 @@ function CreateShipment({
       />
       <SelectElement
         name='type'
-        label={t('Container Type', {ns: 'biobank'})}
+        label={t('biobank:Container Type')}
         onUserInput={handler.set}
         value={shipment.type}
         options={types}
@@ -461,7 +464,7 @@ function CreateShipment({
       />
       <InputList
         name='barcode'
-        label={t('Container', {ns: 'biobank'})}
+        label={t('biobank:Container')}
         items={shipment.containerIds}
         setItems={handler.setContainerIds}
         options={data.containers}
@@ -469,7 +472,7 @@ function CreateShipment({
       />
       <SelectElement
         name='destinationCenterId'
-        label={t('Destination Center', {ns: 'biobank'})}
+        label={t('biobank:Destination Center')}
         onUserInput={handler.set}
         value={shipment.destinationCenterId}
         options={centers}
@@ -539,6 +542,7 @@ function ReceiveShipment({
   updateShipments,
   setData,
 }) {
+  const { t } = useTranslation('biobank');
   const handler = new UseShipment(shipment);
   const logIndex = handler.getShipment().logs.length-1;
   const onSuccess = ({shipments, containers}) => {
@@ -556,8 +560,8 @@ function ReceiveShipment({
   // to display the pertinent information from the shipment!
   return (
     <TriggerableModal
-      label={t('Receive Shipment', {ns: 'biobank'})}
-      title={t('Receive Shipment ', {ns: 'biobank'})+shipment.barcode}
+      label={t('biobank:Receive Shipment')}
+      title={t('biobank:Receive Shipment')+' '+shipment.barcode}
       onUserInput={onOpen}
       onSubmit={handler.post}
       onSuccess={onSuccess}
@@ -615,11 +619,12 @@ function ShipmentLogForm({
   errors = {},
   users,
 }) {
+  const { t } = useTranslation(['biobank', 'loris']);
   return (
     <>
       <TextboxElement
         name='temperature'
-        label={t('Temperature', {ns: 'biobank'})}
+        label={t('biobank:Temperature')}
         onUserInput={setLog}
         value={log.temperature}
         errorMessage={errors.temperature}
@@ -627,7 +632,7 @@ function ShipmentLogForm({
       />
       <DateElement
         name='date'
-        label={t('Date', {ns: 'biobank'})}
+        label={t('loris:Date')}
         onUserInput={setLog}
         value={log.date}
         errorMessage={errors.date}
@@ -635,7 +640,7 @@ function ShipmentLogForm({
       />
       <TimeElement
         name='time'
-        label={t('Time', {ns: 'biobank'})}
+        label={t('loris:Time')}
         onUserInput={setLog}
         value={log.time}
         errorMessage={errors.time}
@@ -643,7 +648,7 @@ function ShipmentLogForm({
       />
       <SelectElement
         name='user'
-        label={t('Done by', {ns: 'biobank'})}
+        label={t('biobank:Done by')}
         onUserInput={setLog}
         value={log.user}
         options={users}
@@ -652,7 +657,7 @@ function ShipmentLogForm({
       />
       <TextareaElement
         name='comments'
-        label={t('Comments', {ns: 'biobank'})}
+        label={t('biobank:Comments')}
         onUserInput={setLog}
         value={log.comments}
         errorMessage={errors.comments}

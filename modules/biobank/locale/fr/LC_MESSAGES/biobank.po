@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-03 08:34-0500\n"
+"POT-Creation-Date: 2025-12-05 08:40-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,58 +17,473 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: jsx/poolSpecimenForm.js:157 jsx/batchEditForm.js:213
+#: jsx/batchProcessForm.js:129
+msgid "Oops!"
+msgstr "Oups !"
+
+#: jsx/poolSpecimenForm.js:158
+msgid ""
+"Specimens must be of the same PSCID,\n"
+"Visit Label, Type and Site"
+msgstr ""
+"Les échantillons doivent avoir le même PSCID,\n"
+"Label de visite, Type et Site"
+
+#: jsx/poolSpecimenForm.js:207
+msgid "Pooling Note"
+msgstr "Remarque sur le regroupement"
+
+#: jsx/poolSpecimenForm.js:208
+msgid ""
+"Select or Scan the specimens to be pooled. Specimens must\n"
+"have a Status of 'Available', have a Quantity of greater\n"
+"than 0, and share the same Type, PSCID, Visit Label\n"
+"and Current Site. Pooled specimens cannot already belong "
+"to a pool. Once pooled, the Status of specimen will be changed\n"
+"to 'Dispensed' and there Quantity set to '0'"
+msgstr ""
+"Sélectionnez ou scannez les échantillons à regrouper. Les échantillons doivent\n"
+"avoir un statut 'Disponible', une quantité > 0 et partager le même Type, PSCID, Label de visite\n"
+"et Site actuel. Les échantillons regroupés ne peuvent pas déjà appartenir à\n"
+"un pool. Une fois regroupés, le statut de l'échantillon sera\n"
+"changé en 'Distribué' et sa quantité mise à '0'"
+
+#: jsx/poolSpecimenForm.js:217 jsx/globals.js:30 jsx/batchProcessForm.js:262
+#: jsx/specimenForm.js:601
+msgid "Specimen Type"
+msgstr "Type d'échantillon"
+
+#: jsx/poolSpecimenForm.js:268
+msgid "Label"
+msgstr "Label"
+
+#: jsx/poolSpecimenForm.js:276 jsx/processForm.js:106 jsx/processForm.js:210
+#: jsx/batchEditForm.js:258 jsx/globals.js:80
+msgid "Quantity"
+msgstr "Quantité"
+
+#: jsx/poolSpecimenForm.js:284 jsx/processForm.js:114 jsx/batchEditForm.js:265
+#: jsx/specimenForm.js:294
+msgid "Unit"
+msgstr "Unité"
+
+#: jsx/poolSpecimenForm.js:324
+msgid "Pool Specimens"
+msgstr "Regrouper les échantillons"
+
+#: jsx/poolSpecimenForm.js:417 jsx/batchEditForm.js:624
+#: jsx/batchProcessForm.js:403
+#: jsx/filter.js:69
+msgid "Specimen"
+msgid_plural "Specimens"
+msgstr[0] "Échantillon"
+msgstr[1] "Échantillons"
+
+
+#: jsx/containerDisplay.js:129 jsx/containerDisplay.js:183 jsx/search.js:44
+#: jsx/specimenTab.js:99 jsx/containerTab.js:78 jsx/containerForm.js:166
+#: jsx/specimenForm.js:593
+msgid "Barcode"
+msgstr "Code-barres"
+
+#: jsx/containerDisplay.js:132 jsx/search.js:48
+msgid "Please Scan or Type Barcode"
+msgstr "Veuillez scanner ou saisir le code-barres"
+
+#: jsx/containerDisplay.js:142 jsx/containerDisplay.js:199
+#: jsx/specimenForm.js:188 jsx/specimenForm.js:198
+msgid "Note"
+msgstr "Remarque"
+
+#: jsx/containerDisplay.js:143
+msgid ""
+"Scan Containers to be Loaded. If Sequential is checked,\n"
+"the Coordinate will Auto-Increment after each Load."
+msgstr ""
+"Scannez les conteneurs à charger. Si 'Séquentiel' est coché,\n"
+"la coordonnée s'incrémente automatiquement après chaque chargement."
+
+#: jsx/containerDisplay.js:148
+msgid "Sequential"
+msgstr "Séquentiel"
+
+#: jsx/containerDisplay.js:154
+msgid "Load"
+msgstr "Charger"
+
+#: jsx/containerDisplay.js:189
+msgid "Please Scan or Select Barcode"
+msgstr "Veuillez scanner ou sélectionner le code-barres"
+
+#: jsx/containerDisplay.js:200
+msgid ""
+"Click, Select or Scan Containers to be\n"
+"Unloaded and Press 'Confirm'"
+msgstr ""
+"Cliquez, sélectionnez ou scannez les conteneurs à\n"
+"décharger et appuyez sur 'Confirmer'"
+
+#: jsx/containerDisplay.js:205
+msgid "Confirm"
+msgstr "Confirmer"
+
+#: jsx/header.js:51
+msgid "Make Aliquots"
+msgstr "Créer des aliquotes"
+
+#: jsx/header.js:55
+msgid "Add Aliquots"
+msgstr "Ajouter des aliquotes"
+
+#: jsx/header.js:74
+msgid "Alter Lot Number"
+msgstr "Modifier le numéro de lot"
+
+#: jsx/header.js:91
+msgid "Alter Expiration Date"
+msgstr "Modifier la date d'expiration"
+
+#: jsx/header.js:107
+msgid "Edit Lot Number"
+msgstr "Modifier le numéro de lot"
+
+#: jsx/header.js:114 jsx/containerForm.js:183 jsx/batchEditForm.js:291
+#: jsx/specimenForm.js:620
+msgid "Lot Number"
+msgstr "Numéro de lot"
+
+#: jsx/header.js:123
+msgid "Edit Expiration Date"
+msgstr "Modifier la date d'expiration"
+
+#: jsx/header.js:130 jsx/containerForm.js:190 jsx/specimenForm.js:627
+msgid "Expiration Date"
+msgstr "Date d'expiration"
+
+#: jsx/header.js:147
+msgid "Print Barcode Number"
+msgstr "Imprimer le numéro de code-barres"
+
+#: jsx/header.js:166
+msgid "Print Barcode"
+msgstr "Imprimer le code-barres"
+
+#: jsx/header.js:276
+msgid "Checkout Container"
+msgstr "Vérifier le conteneur"
+
+#: jsx/processForm.js:62
+msgid "Update"
+msgstr "Mettre à jour"
+
+#: jsx/processForm.js:127 jsx/processForm.js:217 jsx/batchEditForm.js:310
+#: jsx/batchEditForm.js:335
+msgid "Protocol"
+msgstr "Protocole"
+
+#: jsx/processForm.js:143 jsx/processForm.js:225
+msgid "Done By"
+msgstr "Réalisé par"
+
+#: jsx/processForm.js:172 jsx/processForm.js:239
+msgid "Comments"
+msgstr "Commentaires"
+
+#: jsx/specimenTab.js:60 jsx/containerTab.js:56 jsx/poolTab.js:68
+msgid "Type"
+msgstr "Type"
+
+#: jsx/specimenTab.js:62 jsx/containerForm.js:174 jsx/batchEditForm.js:283
+#: jsx/globals.js:49 jsx/specimenForm.js:610
+msgid "Container Type"
+msgstr "Type de conteneur"
+
+#: jsx/specimenTab.js:64
+msgid "Diagnosis"
+msgstr "Diagnostic"
+
+#: jsx/specimenTab.js:71 jsx/containerTab.js:58 jsx/batchEditForm.js:298
+#: jsx/globals.js:205
+msgid "Status"
+msgstr "Statut"
+
+#: jsx/specimenTab.js:73 jsx/globals.js:243
+msgid "Current Site"
+msgstr "Site actuel"
+
+#: jsx/specimenTab.js:75 jsx/globals.js:234
+msgid "Draw Site"
+msgstr "Site de prélèvement"
+
+#: jsx/container.js:54
+msgid "Checkout Child Containers"
+msgstr "Vérifier les conteneurs enfants"
+
+#: jsx/containerForm.js:81
+msgid "Add New Container"
+msgstr "Ajouter un nouveau conteneur"
+
 #: jsx/biobankIndex.js:343
 msgid "Print Barcodes?"
-msgstr ""
+msgstr "Imprimer les codes-barres ?"
 
-#: jsx/biobankIndex.js:345
-msgid "Yes"
-msgstr "Oui"
+#: jsx/biobankIndex.js:479
+msgid "Batch Preparation Successful!"
+msgstr "Préparation du lot réussie !"
 
-#: jsx/biobankIndex.js:346
-msgid "No"
-msgstr "Non"
+#: jsx/biobankIndex.js:506
+msgid "This field is required."
+msgstr "Ce champ est obligatoire."
 
-#: jsx/shipmentTab.js:68 jsx/shipmentTab.js:140
+#: jsx/biobankIndex.js:512
+msgid "This field must be a number."
+msgstr "Ce champ doit être un nombre."
+
+#: jsx/biobankIndex.js:518
+msgid "This field must not be negative."
+msgstr "Ce champ ne doit pas être négatif."
+
+#: jsx/biobankIndex.js:526
+msgid "This field must be an integer."
+msgstr "Ce champ doit être un entier."
+
+#: jsx/biobankIndex.js:597 jsx/biobankIndex.js:699 jsx/biobankIndex.js:736
+msgid "This field is required!"
+msgstr "Ce champ est obligatoire !"
+
+#: jsx/biobankIndex.js:604 jsx/biobankIndex.js:705 jsx/biobankIndex.js:741
+msgid "This field must be a number!"
+msgstr "Ce champ doit être un nombre !"
+
+#: jsx/biobankIndex.js:611 jsx/biobankIndex.js:652 jsx/biobankIndex.js:747
+msgid "This field must be a valid date!"
+msgstr "Ce champ doit être une date valide !"
+
+#: jsx/biobankIndex.js:617 jsx/biobankIndex.js:660 jsx/biobankIndex.js:753
+msgid "This field must be a valid time!"
+msgstr "Ce champ doit être une heure valide !"
+
+#: jsx/biobankIndex.js:636
+msgid "This field is required!"
+msgstr "Ce champ est obligatoire !"
+
+#: jsx/biobankIndex.js:644
+msgid "This field must be a number!"
+msgstr "Ce champ doit être un nombre !"
+
+#: jsx/biobankIndex.js:711
+msgid "Barcode must be unique."
+msgstr "Le code-barres doit être unique."
+
+#: jsx/biobankIndex.js:757
+msgid "Pooling requires at least 2 specimens"
+msgstr "La mise en pool nécessite au moins 2 échantillons"
+
+#: jsx/filter.js:73
+msgid "Container"
+msgid_plural "Containers"
+msgstr[0] "Conteneur"
+msgstr[1] "Conteneurs"
+
+#: jsx/shipmentTab.js:69 jsx/shipmentTab.js:141
 msgid "Origin Site"
-msgstr ""
+msgstr "Site d'origine"
 
-#: jsx/shipmentTab.js:70 jsx/shipmentTab.js:145
+#: jsx/shipmentTab.js:71 jsx/shipmentTab.js:146
 msgid "Destination Site"
-msgstr ""
+msgstr "Site de destination"
 
-#: jsx/shipmentTab.js:80 jsx/shipmentTab.js:126
+#: jsx/shipmentTab.js:81 jsx/shipmentTab.js:100 jsx/shipmentTab.js:127
 msgid "Barcode"
-msgstr ""
+msgstr "Code-barres"
 
-#: jsx/shipmentTab.js:94 jsx/shipmentTab.js:150
+#: jsx/shipmentTab.js:95 jsx/shipmentTab.js:151
 msgid "Actions"
-msgstr ""
+msgstr "Actions"
 
-#: jsx/shipmentTab.js:135 jsx/shipmentTab.js:288
+#: jsx/shipmentTab.js:96 jsx/shipmentTab.js:136 jsx/shipmentTab.js:290
 msgid "Status"
-msgstr ""
+msgstr "Statut"
 
-#: jsx/shipmentTab.js:156
+#: jsx/shipmentTab.js:131
+msgid "Type"
+msgstr "Type"
+
+#: jsx/shipmentTab.js:157
 msgid "Add Shipment"
-msgstr ""
+msgstr "Ajouter un envoi"
 
-#: jsx/shipmentTab.js:284
-msgid "Site"
-msgstr ""
-
-#: jsx/shipmentTab.js:292
+#: jsx/shipmentTab.js:294
 msgid "Temperature"
-msgstr ""
+msgstr "Température"
 
-#: jsx/shipmentTab.js:296
+#: jsx/shipmentTab.js:298
 msgid "Date & Time"
-msgstr ""
+msgstr "Date et heure"
 
-#: jsx/shipmentTab.js:300
+#: jsx/shipmentTab.js:302
 msgid "User"
-msgstr ""
+msgstr "Utilisateur"
 
-#: jsx/shipmentTab.js:304
+#: jsx/shipmentTab.js:306
 msgid "Comments"
+msgstr "Commentaires"
+
+#: jsx/batchEditForm.js:214
+msgid "Specimens must be of the same Type and Site"
+msgstr "Les échantillons doivent être du même type et du même site"
+
+#: jsx/batchEditForm.js:274 jsx/globals.js:144
+msgid "Freeze-Thaw Cycle"
+msgstr "Cycle de congélation-dégel"
+
+#: jsx/batchEditForm.js:380
+msgid "Global"
+msgstr "Global"
+
+#: jsx/batchEditForm.js:387
+msgid "Collection"
+msgstr "Collection"
+
+#: jsx/batchEditForm.js:395
+msgid "Preparation"
+msgstr "Préparation"
+
+#: jsx/batchEditForm.js:469 jsx/batchEditForm.js:496
+msgid "Editing Note"
+msgstr "Note d'édition"
+
+#: jsx/batchEditForm.js:470
+msgid ""
+"Select a form for the list to\n"
+"edit the specimen values. Any previous value associated\n"
+"with a Specimen for a given field will be\n"
+"overwritten if one is added on this form."
 msgstr ""
+"Sélectionnez un formulaire pour la liste afin de\n"
+"modifier les valeurs des échantillons. Toute valeur précédente associée\n"
+"à un échantillon pour un champ donné sera\n"
+"écrasée si une nouvelle valeur est ajoutée dans ce formulaire."
+
+#: jsx/batchEditForm.js:487
+msgid "Edit Specimens"
+msgstr "Modifier les échantillons"
+
+#: jsx/batchEditForm.js:497
+msgid ""
+"Select or Scan the specimens to be edited. Specimens\n"
+"must share the same Type."
+msgstr ""
+"Sélectionnez ou scannez les échantillons à modifier. Les échantillons\n"
+"doivent partager le même type."
+
+#: jsx/batchEditForm.js:517 jsx/globals.js:69
+#: jsx/filter.js:77
+msgid "Pool"
+msgid_plural "Pools"
+msgstr[0] "Regroupement"
+msgstr[1] "Regroupements"
+
+#: jsx/containerParentForm.js:59
+msgid "Available Spots"
+msgstr "Places disponibles"
+
+#: jsx/containerParentForm.js:111
+msgid "Parent Container Barcode"
+msgstr "Code-barres du conteneur parent"
+
+#: jsx/globals.js:153
+msgid "fTCycle"
+msgstr "Cycle fT"
+
+#: jsx/globals.js:167
+msgid "Temperature"
+msgstr "Température"
+
+#: jsx/globals.js:252
+#: jsx/filter.js:80
+msgid "Shipment"
+msgid_plural "Shipment"
+msgstr[0] "Expédition"
+msgstr[1] "Expéditions"
+
+#: jsx/globals.js:266
+msgid "None"
+msgstr "Aucun"
+
+#: jsx/batchProcessForm.js:130
+msgid "Specimens must be of the same Type"
+msgstr "Les échantillons doivent être du même type"
+
+#: jsx/batchProcessForm.js:153
+msgid "Warning!"
+msgstr "Attention !"
+
+#: jsx/batchProcessForm.js:159
+msgid "Proceed"
+msgstr "Continuer"
+
+#: jsx/batchProcessForm.js:255
+msgid "Processing Note"
+msgstr "Note de traitement"
+
+#: jsx/batchProcessForm.js:256
+msgid ""
+"Select or scan the specimens to be prepared. Specimens must have a Status of 'Available'\n"
+"and share the same Type. Any previous value associated with a specimen will be\n"
+"overwritten if a new value is added on this form."
+msgstr ""
+"Sélectionnez ou scannez les échantillons à préparer. Les échantillons doivent avoir un statut 'Disponible'\n"
+"et être du même type. Toute valeur précédente associée à un échantillon sera\n"
+"écrasée si une nouvelle valeur est ajoutée sur ce formulaire."
+
+#: jsx/batchProcessForm.js:315
+msgid "Process Specimens"
+msgstr "Traiter les échantillons"
+
+#: jsx/poolTab.js:95
+msgid "Pooled Specimens"
+msgstr "Échantillons regroupés"
+
+#: jsx/specimenForm.js:189
+msgid ""
+"To create new aliquots, enter a Barcode, fill out the corresponding sub-form and press Submit.\n"
+"Press the \"New Entry\" button to add another barcode field, or use the \"Copy\" button\n"
+"to duplicate the previous entry."
+msgstr ""
+"Pour créer de nouveaux aliquots, entrez un code-barres, remplissez le sous-formulaire correspondant et appuyez sur Soumettre.\n"
+"Appuyez sur le bouton \"Nouvelle entrée\" pour ajouter un autre champ de code-barres, ou utilisez le bouton \"Copier\"\n"
+"pour dupliquer l'entrée précédente."
+
+#: jsx/specimenForm.js:199
+msgid ""
+"To create new specimens, first select a PSCID and Visit Label.\n"
+"Then, enter a Barcode, fill out the corresponding sub-form and\n"
+"press submit. Press \"New Entry\" button to add another barcode field, or\n"
+"use the \"Copy\" button to duplicate the previous entry."
+msgstr ""
+"Pour créer de nouveaux échantillons, sélectionnez d'abord un PSCID et un Label de visite.\n"
+"Ensuite, entrez un code-barres, remplissez le sous-formulaire correspondant et\n"
+"appuyez sur soumettre. Appuyez sur le bouton \"Nouvelle entrée\" pour ajouter un autre\n"
+"champ de code-barres, ou utilisez le bouton \"Copier\" pour dupliquer l'entrée précédente."
+
+#: jsx/specimenForm.js:219
+msgid "Parent Specimen(s)"
+msgstr "Échantillons parent(s)"
+
+#: jsx/specimenForm.js:255
+msgid "Search for a PSCID"
+msgstr "Rechercher un PSCID"
+
+#: jsx/specimenForm.js:287
+msgid "Remaining Quantity"
+msgstr "Quantité restante"
+
+#: jsx/specimenForm.js:366
+msgid "Generate Barcodes"
+msgstr "Générer des codes-barres"
+
+#: jsx/specimenForm.js:373
+msgid "Print Barcodes"
+msgstr "Imprimer les codes-barres"
