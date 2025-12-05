@@ -150,7 +150,7 @@ const SpecimenProcessForm = (props) => {
       />,
       <DateElement
         name="date"
-        label={this.props.t("Date", {ns: 'biobank'})}
+        label={this.props.t('Date', {ns: 'loris'})}
         onUserInput={setProcess}
         required={true}
         value={process.date}
@@ -158,7 +158,7 @@ const SpecimenProcessForm = (props) => {
       />,
       <TimeElement
         name="time"
-        label={this.props.t("Time", {ns: 'biobank'})}
+        label={this.props.t('Time', {ns: 'loris'})}
         onUserInput={setProcess}
         required={true}
         value={process.time}
@@ -191,9 +191,9 @@ const SpecimenProcessForm = (props) => {
 
       // Convert boolean values to "Yes" or "No"
       if (value === true) {
-        value = this.props.t('Yes', {ns: 'biobank'});
+        value = this.props.t('Yes', {ns: 'loris'});
       } else if (value === false) {
-        value = this.props.t('No', {ns: 'biobank'});
+        value = this.props.t('No', {ns: 'loris'});
       }
 
       return (
@@ -218,7 +218,7 @@ const SpecimenProcessForm = (props) => {
         text={options.specimen.protocols[process.protocolId].label}
       />,
       <StaticElement
-        label={this.props.t('Site', {ns: 'biobank'})}
+        label={this.props.t('Site', {ns: 'loris', count: 1})}
         text={options.centers[process.centerId]}
       />,
       <StaticElement
@@ -226,11 +226,11 @@ const SpecimenProcessForm = (props) => {
         text={options.examiners[process.examinerId].label}
       />,
       <StaticElement
-        label={this.props.t('Date', {ns: 'biobank'})}
+        label={this.props.t('Date', {ns: 'loris'})}
         text={process.date}
       />,
       <StaticElement
-        label={this.props.t('Time', {ns: 'biobank'})}
+        label={this.props.t('Time', {ns: 'loris'})}
         text={process.time}
       />,
       collectionStaticFields,

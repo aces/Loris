@@ -222,7 +222,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <SearchableDropdown
             name='candidateId'
-            label={this.props.t('PSCID', {ns: 'biobank'})}
+            label={this.props.t('PSCID', {ns: 'loris'})}
             onUserInput={this.setFilter}
             disabled={!isEmpty(list)}
             value={filter.candidateId}
@@ -230,7 +230,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <SearchableDropdown
             name='sessionId'
-            label={this.props.t('Visit Label', {ns: 'biobank'})}
+            label={this.props.t('Visit Label', {ns: 'loris'})}
             onUserInput={this.setFilter}
             disabled={!isEmpty(list) || !filter.candidateId}
             value={filter.sessionId}
@@ -290,7 +290,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <DateElement
             name='date'
-            label={this.props.t('Date', {ns: 'biobank'})}
+            label={this.props.t('Date', {ns: 'loris'})}
             onUserInput={this.setPool}
             required={true}
             value={pool.date}
@@ -298,7 +298,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <TimeElement
             name='time'
-            label={this.props.t('Time', {ns: 'biobank'})}
+            label={this.props.t('Time', {ns: 'loris'})}
             onUserInput={this.setPool}
             required={true}
             value={pool.time}

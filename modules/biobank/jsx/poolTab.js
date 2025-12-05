@@ -67,7 +67,7 @@ class PoolTab extends Component {
     switch (column) {
     case this.props.t('Type', {ns: 'biobank'}):
       return options.specimen.types[value].label;
-    case this.props.t('Site', {ns: 'biobank'}):
+    case this.props.t('Site', {ns: 'loris', count: 1}):
       return options.centers[value];
     default:
       return value;
@@ -86,7 +86,7 @@ class PoolTab extends Component {
     const {options} = this.props;
     value = this.mapPoolColumns(column, value);
     const candId = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row[this.props.t('PSCID', {ns: 'biobank'})])?.id;
+      .find((cand) => cand?.pscid == row[this.props.t('PSCID', {ns: 'loris'})])?.id;
 
     // If candId is defined, then the user has access to the candidate and a
     // hyperlink can be established.
@@ -99,12 +99,12 @@ class PoolTab extends Component {
         })
         .reduce((prev, curr) => [prev, ', ', curr]);
       return <td>{barcodes}</td>;
-    case this.props.t('PSCID', {ns: 'biobank'}):
+    case this.props.t('PSCID', {ns: 'loris'}):
       if (candidatePermission) {
         return <td><a href={loris.BaseURL + '/' + candId}>{value}</a></td>;
       }
       return <td>{value}</td>;
-    case this.props.t('Visit Label', {ns: 'biobank'}):
+    case this.props.t('Visit Label', {ns: 'loris'}):
       if (candidatePermission) {
         const sessId = Object.values(options.candidates[candId]).find(
           (sess) => sess.label == value
@@ -200,11 +200,11 @@ class PoolTab extends Component {
       }},
       {label: this.props.t('Quantity', {ns: 'biobank'}), show: true},
       {label: this.props.t('Pooled Specimens', {ns: 'biobank'}), show: true},
-      {label: this.props.t('PSCID', {ns: 'biobank'}), show: true, filter: {
+      {label: this.props.t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'pscid',
         type: 'text',
       }},
-      {label: this.props.t('Visit Label', {ns: 'biobank'}), show: true, filter: {
+      {label: this.props.t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'session',
         type: 'text',
       }},
@@ -213,13 +213,13 @@ class PoolTab extends Component {
         type: 'select',
         options: specimenTypes,
       }},
-      {label: this.props.t('Site', {ns: 'biobank'}), show: true, filter: {
+      {label: this.props.t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.centers,
       }},
-      {label: this.props.t('Date', {ns: 'biobank'}), show: true},
-      {label: this.props.t('Time', {ns: 'biobank'}), show: true},
+      {label: this.props.t('Date', {ns: 'loris'}), show: true},
+      {label: this.props.t('Time', {ns: 'loris'}), show: true},
       {label: this.props.t('Aliquot', {ns: 'biobank'}), show: true},
     ];
 
