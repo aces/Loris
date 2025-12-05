@@ -10,6 +10,8 @@ import {useTranslation} from 'react-i18next';
 
 import hiStrings from
   '../locale/hi/LC_MESSAGES/electrophysiology_uploader.json';
+import jaStrings from
+  '../locale/ja/LC_MESSAGES/electrophysiology_uploader.json';
 
 /**
  * UploadViewer
@@ -111,6 +113,7 @@ export default ElectrophysiologyUploader;
 
 document.addEventListener('DOMContentLoaded', function() {
   i18n.addResourceBundle('hi', 'electrophysiology_uploader', hiStrings);
+  i18n.addResourceBundle('ja', 'electrophysiology_uploader', jaStrings);
 
   createRoot(
     document.getElementById('lorisworkspace')
