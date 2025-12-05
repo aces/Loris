@@ -1326,6 +1326,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 visibility: loadingBarVisibility ? 'visible' : 'hidden',
               }}>
                 <LoadingBar
+                  t={t}
                   progress={
                       100 * loadedChannels / Math.min(channels.length, limit)
                   }
