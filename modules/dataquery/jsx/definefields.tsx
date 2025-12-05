@@ -6,7 +6,7 @@ import {CheckboxElement} from 'jsx/Form';
 import {FullDictionary, FieldDictionary, DictionaryCategory} from './types';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import {APIQueryField, VisitOption} from './types';
-
+import {useTranslation} from 'react-i18next';
 
 /**
  * Displays a single field to be selected for querying
@@ -46,6 +46,7 @@ function QueryField(props: {
     ) => void,
     defaultVisits: string[],
 }) {
+  const {t} = useTranslation('dataquery');
   const item=props.item;
   const className = props.selected ?
     'list-group-item active' :
@@ -93,21 +94,22 @@ function QueryField(props: {
 
     if (props.selected) {
       visits = <div onClick={(e) => e.stopPropagation()}>
-        <h4>Visits</h4>
-        <Select options={selectOptions.map((visit: string): VisitOption => {
-          return {value: visit, label: visit};
-        })
-        }
-        isMulti
-        onChange={selected}
-        placeholder='Select Visits'
-        value={selectedVisits.map( (visit: string): VisitOption => {
-          return {value: visit, label: visit};
-        })
-        }
-        menuPortalTarget={document.body}
-        styles={
-          {menuPortal:
+        <h4>{t('Visits', {ns: 'loris'})}</h4>
+        <Select noOptionsMessage={() => t('No options', {ns: 'loris'})}
+          options={selectOptions.map((visit: string): VisitOption => {
+            return {value: visit, label: visit};
+          })
+          }
+          isMulti
+          onChange={selected}
+          placeholder={t('Select Visits', {ns: 'dataquery'})}
+          value={selectedVisits.map( (visit: string): VisitOption => {
+            return {value: visit, label: visit};
+          })
+          }
+          menuPortalTarget={document.body}
+          styles={
+            {menuPortal:
                         /**
                          * Adds appropriate zIndex to the react select's base CSS
                          *
@@ -115,9 +117,9 @@ function QueryField(props: {
                          * @returns {object} New CSS with z-index added
                          */
                         (base) => ({...base, zIndex: 9999}),
+            }
           }
-        }
-        closeMenuOnSelect={false}
+          closeMenuOnSelect={false}
         />
       </div>;
     }
@@ -198,6 +200,7 @@ function DefineFields(props: {
         visits: string[]
     ) => void,
 }) {
+  const {t} = useTranslation('dataquery');
   const [activeFilter, setActiveFilter] = useState('');
   const [syncVisits, setSyncVisits] = useState<boolean>(false);
   const [zoomTo, setZoomTo] = useState<string|null>(null);
@@ -338,11 +341,13 @@ function DefineFields(props: {
         return {value: el, label: el};
       });
       defaultVisits = <div style={{paddingBottom: '1em', display: 'flex'}}>
-        <h4 style={{paddingRight: '1ex'}}>Default Visits</h4>
+        <h4 style={{paddingRight: '1ex'}}>{t('Default Visits',
+          {ns: 'dataquery'})}</h4>
         <Select options={allVisits}
           isMulti
           onChange={props.onChangeDefaultVisits}
-          placeholder='Select Visits'
+          placeholder={t('Select Visits', {ns: 'dataquery'})}
+          noOptionsMessage={() => t('No options', {ns: 'loris'})}
           menuPortalTarget={document.body}
           styles={
             {menuPortal:
@@ -359,12 +364,13 @@ function DefineFields(props: {
           closeMenuOnSelect={false}
         />
         <div>
-          <CheckboxElement label='Sync with selected fields'
-            name="syncVisits"
-            value={syncVisits}
-            onUserInput={
-              (name: string, value: boolean) => setSyncVisits(value)
-            } />
+          <CheckboxElement label={t('Sync with selected fields',
+            {ns: 'dataquery'})}
+          name="syncVisits"
+          value={syncVisits}
+          onUserInput={
+            (name: string, value: boolean) => setSyncVisits(value)
+          } />
         </div>
       </div>;
     }
@@ -372,7 +378,9 @@ function DefineFields(props: {
     fieldList = (<div>
       <div style={{display: 'flex', flexWrap: 'wrap',
         justifyContent: 'space-between'}}>
-        <h2>{cname} fields</h2>
+        <h2>{
+          t('{{columnName}} fields', {ns: 'dataquery', columnName: cname})
+        }</h2>
         <div style={{marginTop: '1em',
           display: 'flex',
           flexWrap: 'nowrap',
@@ -383,7 +391,7 @@ function DefineFields(props: {
             <input onChange={setFilter}
               className='form-control'
               type="text"
-              placeholder="Filter within category"
+              placeholder={t('Filter within category', {ns: 'dataquery'})}
               aria-describedby="input-filter-addon"
               value={activeFilter} />
             <span className="input-group-addon">
@@ -398,11 +406,11 @@ function DefineFields(props: {
           }}>
             <button type="button" className="btn btn-primary"
               onClick={addAll}>
-                            Add all
+              {t('Add all', {ns: 'dataquery'})}
             </button>
             <button type="button" className="btn btn-primary"
               onClick={removeAll}>
-                            Remove all
+              {t('Remove all', {ns: 'dataquery'})}
             </button>
           </div>
         </div>
@@ -415,7 +423,7 @@ function DefineFields(props: {
     <div>
       <div style={{display: 'flex', flexWrap: 'nowrap'}}>
         <div style={{width: '80vw', padding: '1em'}}>
-          <h1>Available Fields</h1>
+          <h1>{t('Available Fields', {ns: 'dataquery'})}</h1>
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
             onChange={props.onCategoryChange}
@@ -437,11 +445,13 @@ function DefineFields(props: {
               alignItems: 'flex-end',
               marginBottom: '1em',
             }}>
-              <h2>Selected Fields</h2>
+              <h2>{t('Selected Fields', {ns: 'dataquery'})}</h2>
               <div>
                 <button type="button" className="btn btn-primary"
                   style={{marginBottom: 7}}
-                  onClick={props.onClearAll}>Clear</button>
+                  onClick={props.onClearAll}>
+                  {t('Clear', {ns: 'loris'})}
+                </button>
               </div>
             </div>
             <SelectedFieldList
@@ -480,7 +490,6 @@ function SelectedFieldList(props: {
     setSelected: (newselected: APIQueryField[]) => void,
 }) {
   const [removingIdx, setRemovingIdx] = useState<number|null>(null);
-
   const [draggingIdx, setDraggingIdx] = useState<number|null>(null);
   const [droppingIdx, setDroppingIdx] = useState<number|null>(null);
 

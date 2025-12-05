@@ -91,8 +91,10 @@ msgstr ""
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
+#: modules/dataquery/jsx/definefilters.importcsvmodal.tsx:167
 msgid "Candidate"
-msgstr ""
+msgid_plural "Candidates"
+msgstr[0] ""
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
@@ -194,6 +196,15 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Saving"
+msgstr ""
+
+msgid "Are You Sure?"
+msgstr ""
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
@@ -229,7 +240,8 @@ msgid_plural "Cohorts"
 msgstr[0] ""
 
 msgid "Session"
-msgstr ""
+msgid_plural "Sessions"
+msgstr[0] ""
 
 msgid "Date of registration"
 msgstr ""
@@ -547,4 +559,8 @@ msgid "Add"
 msgstr ""
 
 msgid "Dataset"
+msgstr ""
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
 msgstr ""
