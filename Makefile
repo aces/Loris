@@ -94,6 +94,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po \
 	modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.po \
 	modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.po \
+	modules/electrophysiology_browser/locale/fr/LC_MESSAGES/electrophysiology_browser.po \
 	modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po \
 	modules/publication/locale/ja/LC_MESSAGES/publication.po \
 	modules/publication/locale/hi/LC_MESSAGES/publication.po \
@@ -234,3 +235,6 @@ conflict_resolver: $(filter modules/conflict_resolver/%,$(MOFILES)) $(filter mod
 
 my_preferences: $(filter modules/my_preferences/%,$(MOFILES)) $(filter modules/my_preferences/%,$(I18NJSONFILES))
 	target=my_preferences npm run compile
+
+electrophysiology_browser: $(filter modules/electrophysiology_browser/%,$(MOFILES)) $(filter modules/electrophysiology_browser/%,$(I18NJSONFILES))
+    target=electrophysiology_browser npm run compile

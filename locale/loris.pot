@@ -68,7 +68,7 @@ msgid "Data Dictionary"
 msgstr ""
 
 #: modules/document_repository/php/module.class.inc:56
-#: modules/instrument_builder/php/module.class.inc:48
+#: modules/instrument_builderr/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
@@ -194,15 +194,6 @@ msgid "Success!"
 msgstr ""
 
 msgid "Close"
-msgstr ""
-
-msgid "Saving"
-msgstr ""
-
-msgid "Are You Sure?"
-msgstr ""
-
-msgid "Leaving the form will result in the loss of any information entered."
 msgstr ""
 
 # Common candidate terms
@@ -355,6 +346,9 @@ msgid "View details"
 msgstr ""
 
 # Data table strings
+msgid "No result found."
+msgstr ""
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
 
@@ -549,10 +543,20 @@ msgstr ""
 msgid "Unauthorized"
 msgstr ""
 
+
 msgid "Please make sure files are not larger than {{maxFileSize}}"
 msgstr ""
 
 msgid "Submit"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Dataset"
 msgstr ""
 
 # For react-select <Select> noOptionsMessage prop

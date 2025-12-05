@@ -1,0 +1,617 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Electrophysiology Browser"
+msgstr "Navigateur d'électrophysiologie"
+
+msgid "Links"
+msgstr "Liens"
+
+msgid "all types"
+msgstr "tous types"
+
+msgid "Has HED Tags"
+msgstr "A des balises HED"
+
+msgid "Acquisition Time"
+msgstr "Temps d'acquisition"
+
+msgid "Insertion Time"
+msgstr "Temps d'insertion"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Signal Viewer"
+msgstr "Visualiseur de signaux"
+
+msgid "SessionID"
+msgstr "SessionID"
+
+msgid "split {{splitNum}}"
+msgstr "division {{splitNum}}"
+
+msgid "Viewing signal split file:"
+msgstr "Visualisation du signal du fichier divisé :"
+
+msgid "Output Type"
+msgstr "Type du fichier"
+
+msgid "File Download"
+msgstr "Téléchargements"
+
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "Not Available"
+msgstr "Non disponible"
+
+msgid "Acquisition Details for Recording {{recording}}"
+msgstr "Détails d'acquisition pour l'enregistrement {{recording}}"
+
+msgid "Summary"
+msgstr "Sommaire"
+
+msgid "HED tags in recording metadata (click for info)"
+msgstr "Balises HED dans les métadonnées d'enregistrement (cliquez pour plus d'informations)"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "Are you sure you want to leave unsaved changes behind?"
+msgstr "Êtes-vous certain de vouloir laisser des modifications non enregistrées?"
+
+msgid "Data Authors"
+msgstr "Auteurs de données"
+
+# Filters
+msgid "No High Pass Filter"
+msgstr "Pas de filtre passe-haut"
+
+msgid "High Pass {{frequency}}Hz"
+msgstr "Passe-haut {{frequency}}Hz"
+
+msgid "No Low Pass Filter"
+msgstr "Pas de filtre passe-bas"
+
+msgid "Low Pass {{frequency}}Hz"
+msgstr "Passe-bas {{frequency}}Hz"
+
+# Series Renderer
+msgid "Close Panel"
+msgstr "Fermer panneau"
+
+msgid "Display Events"
+msgstr "Afficher les événements"
+
+msgid "Add Event"
+msgstr "Ajouter événement"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+msgid "Fit to Window"
+msgstr "Adapter à la fenêtre"
+
+msgid "Reset Amplitude"
+msgstr "Réinitialiser l'amplitude"
+
+msgid "Hide Overflow"
+msgstr "Afficher débordement"
+
+msgid "Show Overflow"
+msgstr "Masquer débordement"
+
+msgid "{{numChannels}} channels"
+msgstr "{{numChannels}} canaux"
+
+msgid "Showing:"
+msgstr "Affichage :"
+
+msgid "to {{channelsInView}} of {{totalChannels}}"
+msgstr "à {{channelsInView}} de {{totalChannels}}"
+
+msgid "Time (s)"
+msgstr "Temps (s)"
+
+msgid "No Offset"
+msgstr "Aucun décalage"
+
+msgid "DC Offset"
+msgstr "Décalage CC"
+
+msgid "Spread"
+msgstr "Disperser"
+
+msgid "Stack"
+msgstr "Superposer"
+
+msgid "Standard"
+msgstr "Standard"
+
+msgid "Isolate"
+msgstr "Isoler"
+
+msgid "Events"
+msgstr "Évenements"
+
+msgid "HED Endorsements"
+msgstr "Approbations HED"
+
+msgid "Displaying: "
+msgstr "Affichage : "
+
+# SeriesCursor
+msgid "{{seconds}} s"
+msgstr "{{seconds}} s"
+
+# IntervalSelect
+msgid "Timeline Range View"
+msgstr "Vue de l'écart chronologique"
+
+msgid "Show All"
+msgstr "Afficher tout"
+
+# HEDEndorsement
+msgid "No Filter"
+msgstr "Aucun filtre"
+
+msgid "With Comment"
+msgstr "Avec commentaire"
+
+msgid "Tagged By"
+msgstr "Créé par"
+
+msgid "Endorsed By"
+msgstr "Approuvé par"
+
+msgid "Endorse"
+msgstr "Approuver"
+
+msgid "Endorsed"
+msgstr "Approuvé"
+
+msgid "Caveat"
+msgstr "Caveat"
+
+msgid "Caveat By"
+msgstr "Caveat par"
+
+msgid "Comment"
+msgstr "Commentaire"
+
+msgid "Select Action"
+msgstr "Choisir action"
+
+msgid "showing {{numShowing}}/{{numTotal}}"
+msgstr "affichage de {{numShowing}}/{{numTotal}}"
+
+msgid "Empty list"
+msgstr "Liste vide"
+
+msgid "Tag search..."
+msgstr "Recherche..."
+
+msgid "Scroll to Selected"
+msgstr "Défiler à la sélection"
+
+msgid "Jump to Selected"
+msgstr "Sauter à la sélection"
+
+msgid "Select Previous"
+msgstr "Sélectionner précédent"
+
+msgid "Select Next"
+msgstr "Sélectionner suivant"
+
+msgid "Select and Jump to Previous"
+msgstr "Sélectionner et sauter au précédent"
+
+msgid "Select and Jump to Next"
+msgstr "Sélectionner et sauter au suivant"
+
+msgid "There are no event-level HED tags to endorse."
+msgstr "Il n'y a pas de balises HED au niveau \"événement\" à approuver."
+
+msgid "Edit (Selected) Event"
+msgstr "Modifier (Événement sélectionné)"
+
+msgid "Jump to (Selected) Event"
+msgstr "Sauter (Événement sélectionné)"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "No comment"
+msgstr "Aucun commentaires"
+
+msgid "For selected tag:"
+msgstr "Pour balise selectionnée :"
+
+msgid "Updated!"
+msgstr "Mis à jour!"
+
+# EventManager
+msgid "Total events in recording {{total}}"
+msgstr "Nombre total d'événements {{total}}"
+
+msgid "Display by:"
+msgstr "Afficher par :"
+
+msgid "{{label}} search..."
+msgstr "Recherche {{label}}..."
+
+msgid "Ignore {{bidsNA}}"
+msgstr "Ignorer {{bidsNA}}"
+
+msgid "Exclude"
+msgstr "Exclure <text>{{searchText}}</text>"
+
+msgid "Too many events to plot for this timeline range"
+msgstr "Trop d'événements à afficher pour cette période."
+
+msgid "No events in timeline range."
+msgstr "Aucun événement dans l'écart chronologique."
+
+msgid "Try selecting a different time range."
+msgstr "Essayez de sélectionner un autre écart chronologique."
+
+msgid "Channel"
+msgid_plural "Channels"
+msgstr[0] "Canal"
+msgstr[1] "Canaux"
+
+# EEGMontage
+msgid "Saved successfully"
+msgstr "Sauvegarde réussie"
+
+msgid "No electrode changes"
+msgstr "Aucun changement d'électrode"
+
+msgid "Duplicates are not allowed"
+msgstr "Les doublons ne sont pas autorisés"
+
+msgid "Invalid string format. Expected channel names delimited by \"{{channelDelimiter}}\""
+msgstr "Format de chaîne invalide. Les noms de canaux attendus doivent être délimités par «{{channelDelimiter}}»"
+
+msgid "String contains one or more unrecognized channels"
+msgstr "Le texte contient un ou plusieurs canaux non reconnus"
+
+msgid "Montage"
+msgstr "Montage"
+
+msgid "Hold shift to enable electrode selection"
+msgstr "Maintenez la touche Maj enfoncée pour activer la sélection des électrodes."
+
+msgid "Select None"
+msgstr "Ne rien sélectionner"
+
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+msgid "Electrode Map"
+msgstr "Carte des électrodes"
+
+msgid "Show indices"
+msgstr "Afficher les indices"
+
+# DatasetTagger / EEGLabSeriesProvider
+msgid "Dataset Tag Manager"
+msgstr "Gestionnaire de balises"
+
+msgid "More about HED"
+msgstr "plus d'infos sur HED"
+
+msgid "Click to view the HED schema"
+msgstr "Cliquez pour afficher le schéma HED"
+
+msgid "Open Dataset Tag Manager"
+msgstr "Ouvrir gestionnaire de balises"
+
+msgid "View/Edit Tags"
+msgstr "Afficher/Modifier les balises"
+
+msgid "Endorse Tags"
+msgstr "Approbation de balises"
+
+msgid "View JSON"
+msgstr "Afficher JSON"
+
+msgid "This will undo all changes since your latest submission. You won't be able to revert this!"
+msgstr "Cette action annulera toutes les modifications apportées depuis votre dernière soumission. Vous ne pourrez pas revenir en arrière!"
+
+msgid "Yes, reset all changes!"
+msgstr "Oui, annulez tous les changements !"
+
+msgid "There was an error with the response. Please report this incident."
+msgstr "Une erreur s'est produite lors de la réponse. Veuillez signaler cet incident."
+
+msgid "Tags updated successfully"
+msgstr "Balises mises à jour avec succès"
+
+msgid "This action is not permitted."
+msgstr "Cette action n'est pas autorisée."
+
+msgid "There was an error with the request! Please report this incident."
+msgstr "Une erreur s'est produite lors du traitement de la requête! Veuillez signaler cet incident."
+
+msgid "You"
+msgstr "Moi"
+
+msgid "edited"
+msgstr "modifié"
+
+msgid "Channel(s) associated with the event"
+msgstr "Canal(aux) associé(s) à l'évenement"
+
+msgid "Endorsement successful"
+msgstr "Approbation réussie"
+
+msgid "Column Name"
+msgstr "Nom de la colonne"
+
+msgid "Column"
+msgid_plural "Columns"
+msgstr[0] "Colonne"
+msgstr[1] "Colonnes"
+
+msgid "Select a column"
+msgstr "Selectionner une colonne"
+
+msgid "<s>{{columnName}}</s> Values"
+msgstr "Valeurs <s>{{columnName}}</s>"
+
+msgid "Select a Column Name and Value to Manage HED Tags"
+msgstr "Sélectionnez un nom de colonne et une valeur pour gérer ses balises HED"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "No Description Available"
+msgstr "Aucune description disponible"
+
+msgid "HED Tags"
+msgstr "Balises HED"
+
+msgid "Add Tag from HED Schemas"
+msgstr "Ajouter balises à partir des schémas HED"
+
+msgid "Type to search or select from dropdown"
+msgstr "Entrez votre recherche ou sélectionnez une option dans le menu déroulant."
+
+msgid "Show long-form HED tags"
+msgstr "Afficher les balises HED en format long"
+
+msgid "※ = Not tagged by Data Authors"
+msgstr "Non étiqueté par les auteurs de données"
+
+msgid "Preview"
+msgstr "Aperçu"
+
+msgid "Tag Mode"
+msgstr "Mode balise"
+
+msgid "Group Mode"
+msgstr "Mode groupe"
+
+msgid "Confirm Group"
+msgstr "Confirmer le groupe"
+
+msgid "Ungroup"
+msgstr "Dégrouper"
+
+msgid "Submit Changes"
+msgstr "Soumettre changements"
+
+msgid "Reset Column Changes"
+msgstr "Réinitialiser les modifications de colonne"
+
+msgid "Reset All Columns"
+msgstr "Réinitialiser toutes les colonnes"
+
+msgid "{{numSelected}} Selected"
+msgstr "Selectionné : {{numSelected}}"
+
+msgid "Select One"
+msgstr "Sélectionnez-en un"
+
+msgid "Below is the resulting events.json file"
+msgstr "Ci-dessous se trouve le fichier events.json résultant"
+
+# AnnotationForm
+msgid "Fill other tags first"
+msgstr "Remplissez d'abord les autres balises"
+
+msgid "Warning"
+msgstr "Avertissement"
+
+msgid "Please fill out all required fields"
+msgstr "Veuillez remplir tous les champs obligatoires."
+
+msgid "Event Updated!"
+msgstr "Événement mis à jour !"
+
+msgid "Event Added!"
+msgstr "Événement ajouté !"
+
+msgid "Something went wrong!"
+msgstr "Quelque chose a mal fonctionné !"
+
+msgid "You won't be able to revert this!"
+msgstr "Vous ne pourrez pas revenir en arrière !"
+
+msgid "Event Deleted!"
+msgstr "Événement éffacé !"
+
+msgid "Tag in current dataset"
+msgid_plural "Tags in current dataset"
+msgstr[0] "Étiquette dans l'ensemble actuel"
+msgstr[1] "Étiquettes dans l'ensemble actuel"
+
+msgid "HED {{hedVersion}} Artifact"
+msgid_plural "HED {{hedVersion}} Artifacts"
+msgstr[0] "Artefact HED {{hedVersion}}"
+msgstr[1] "Artefacts HED {{hedVersion}}"
+
+msgid "Edit Event"
+msgstr "Modifier événement"
+
+msgid "Select from Montage"
+msgstr "Sélectionnez dans le montage"
+
+msgid "Select Channels"
+msgstr "Sélectionner canaux"
+
+msgid "Additional Columns"
+msgstr "Colonnes supplémentaires"
+
+msgid "Click this icon to view the latest HED schema"
+msgstr "Cliquez sur cette icône pour voir le schéma HED le plus récent"
+
+msgid "Instance"
+msgstr "Instance"
+
+msgid "Add tag from:"
+msgstr "Ajouter une balise depuis :"
+
+msgid "Select Category"
+msgstr "Sélectionner une catégorie"
+
+msgid "Select {{tagType}}"
+msgstr "Sélectionnez {{tagType}}"
+
+msgid "Event Details"
+msgstr "Détails de l'événement"
+
+# sessions.class.inc
+msgid "Sampling Frequency"
+msgstr "Fréquence d'échantillonnage"
+
+msgid "%s Channel Count"
+msgstr "Nombre de canaux %s"
+
+msgid "Reference"
+msgstr "Référence"
+
+msgid "Powerline Frequency"
+msgstr "Fréquence du réseau électrique"
+
+msgid "Task Name"
+msgstr "Nom de la tâche"
+
+msgid "Task Description"
+msgstr "Description de la tâche"
+
+msgid "Instructions"
+msgstr "Instructions"
+
+msgid "Recording Type"
+msgstr "Type d'enregistrement"
+
+msgid "Recording Split Count"
+msgstr "Nombre de division d'enregistrement"
+
+msgid "Recording Duration"
+msgstr "Durée d'enregistrement"
+
+msgid "Epoch Length"
+msgstr "Durée de l'époque"
+
+msgid "Subject Artefact Description"
+msgstr "Description de l'artefact"
+
+msgid "Head Circumference"
+msgstr "Tour de tête"
+
+msgid "Placement Scheme"
+msgstr "Schéma de placement"
+
+msgid "Ground"
+msgstr "Mise à la terre"
+
+msgid "Trigger Channel Count"
+msgstr "Nombre de canaux \"Trigger\""
+
+msgid "Misc Channel Count"
+msgstr "Nombre de canaux diverses"
+
+msgid "CogAtlas ID"
+msgstr "Identifiant CogAtlas"
+
+msgid "CogPO ID"
+msgstr "Identifiant CogPO"
+
+msgid "Institution Name"
+msgstr "Nom de l'établissement"
+
+msgid "Institution Address"
+msgstr "Adresse de l'établissement"
+
+msgid "Manufacturer"
+msgstr "Fabricant"
+
+msgid "Manufacturers Model Name"
+msgstr "Nom du modèle du fabricant"
+
+msgid "%s Manufacturer"
+msgstr "Fabricant %s"
+
+msgid "%s Manufacturer's Model Name"
+msgstr "Nom du modèle du fabricant %s"
+
+msgid "Device Serial Number"
+msgstr "Numéro de série de l'appareil"
+
+msgid "Hardware Filters"
+msgstr "Filtres matériels"
+
+msgid "Software Versions"
+msgstr "Versions logicielles"
+
+msgid "Software Filters"
+msgstr "Filtres logiciels"
+
+msgid "DC Offset Correction"
+msgstr "Correction du décalage CC"
+
+msgid "Electrode Groups"
+msgstr "Groupes d'électrodes"
+
+msgid "Electrical Stimulation"
+msgstr "Stimulation électrique"
+
+msgid "Electrical Stimulation Parameters"
+msgstr "Paramètres de stimulation électrique"
+
+msgid "EEG File(s)"
+msgstr "Fichier(s) EEG"
+
+msgid "Electrodes"
+msgstr "Électrodes"
+
+msgid "Coordinate System"
+msgstr "Système de coordonnées"
+
+msgid "All Files"
+msgstr "Tous les fichiers"
+
+msgid "View Session"
+msgstr "Afficher la session"
