@@ -77,33 +77,35 @@ class ElectrophysiologyBrowserIndex extends Component {
     let result = <td className={style}>{cell}</td>;
     const {t} = this.props;
     switch (column) {
-    case t('Links', {ns: 'electrophysiology_browser'}):
-      let cellTypes = cell.split(',');
-      let cellLinks = [];
-      cellTypes.reverse();
-      for (let i = 0; i < cellTypes.length; i += 1) {
-        cellLinks.push(<a key={i} href={loris.BaseURL +
-            '/electrophysiology_browser/sessions/' +
-            row.SessionID + '?outputType=' +
-            cellTypes[i]}>
-          {cellTypes[i]}
-        </a>);
+      case t('Links', {ns: 'electrophysiology_browser'}):
+        let cellTypes = cell.split(',');
+        let cellLinks = [];
+        cellTypes.reverse();
+        for (let i = 0; i < cellTypes.length; i += 1) {
+          cellLinks.push(<a key={i} href={loris.BaseURL +
+              '/electrophysiology_browser/sessions/' +
+              row.SessionID + '?outputType=' +
+              cellTypes[i]}>
+            {cellTypes[i]}
+          </a>);
 
-        if (cellTypes.length > 1) {
-          cellLinks.push(' | ');
+          if (cellTypes.length > 1) {
+            cellLinks.push(' | ');
+          }
         }
-      }
-      if (cellTypes.length > 1) {
-        cellLinks.push(<a key="all" href={loris.BaseURL +
-          '/electrophysiology_browser/sessions/' +
-          row.SessionID}>
-          {t('all types', {ns: 'electrophysiology_browser'})}
-        </a>);
-      }
-      result = (<td>{cellLinks}</td>);
-      break;
+        if (cellTypes.length > 1) {
+          cellLinks.push(<a key="all" href={loris.BaseURL +
+            '/electrophysiology_browser/sessions/' +
+            row.SessionID}>
+            {t('all types', {ns: 'electrophysiology_browser'})}
+          </a>);
+        }
+        result = (<td>{cellLinks}</td>);
+        break;
+      case t('HasHEDTags', {ns: 'electrophysiology_browser'}):
+        result = t(cell, {ns: 'loris'});
+        break;
     }
-
     return result;
   }
 
@@ -159,8 +161,8 @@ class ElectrophysiologyBrowserIndex extends Component {
           type: 'select',
           hide: false,
           options: {
-            'yes': 'Yes',
-            'no': 'No',
+            'yes': t('Yes', {ns: 'loris'}),
+            'no': t('No', {ns: 'loris'}),
           },
         }},
       {label: t('Acquisition Time', {ns: 'electrophysiology_browser'}),
