@@ -429,7 +429,7 @@ function ViewData(props: {
         'fielddesc': t('Field Description'),
         'fieldnamedesc': t('Field Name: Field Description'),
       }}
-      label='Header Display Format'
+      label={t('Header Display Format')}
       value={headerDisplay}
       multiple={false}
       emptyOption={false}
