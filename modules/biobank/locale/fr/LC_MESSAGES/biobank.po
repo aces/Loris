@@ -17,6 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "Biobank"
+msgstr "Biobanque"
+
+msgid "Biospecimens"
+msgstr "Échantillons biologiques"
+
 #: jsx/poolSpecimenForm.js:157 jsx/batchEditForm.js:213
 #: jsx/batchProcessForm.js:129
 msgid "Oops!"
@@ -404,13 +410,9 @@ msgstr "Température"
 #: jsx/globals.js:252
 #: jsx/filter.js:80
 msgid "Shipment"
-msgid_plural "Shipment"
+msgid_plural "Shipments"
 msgstr[0] "Expédition"
 msgstr[1] "Expéditions"
-
-#: jsx/globals.js:266
-msgid "None"
-msgstr "Aucun"
 
 #: jsx/batchProcessForm.js:130
 msgid "Specimens must be of the same Type"
@@ -419,10 +421,6 @@ msgstr "Les échantillons doivent être du même type"
 #: jsx/batchProcessForm.js:153
 msgid "Warning!"
 msgstr "Attention !"
-
-#: jsx/batchProcessForm.js:159
-msgid "Proceed"
-msgstr "Continuer"
 
 #: jsx/batchProcessForm.js:255
 msgid "Processing Note"

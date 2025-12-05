@@ -139,7 +139,7 @@ function ContainerDisplay(props) {
     <div className={((editable||{}).loadContainer) ? 'open' : 'closed'}>
       <FormElement>
         <StaticElement
-          label={this.props.t('Note', {ns: 'biobank'})}
+          label={this.props.t('Note', {ns: 'loris'})}
           text={t(`Scan Containers to be Loaded. If Sequential is checked,
            the Coordinate will Auto-Increment after each Load.`)}
         />
@@ -196,7 +196,7 @@ function ContainerDisplay(props) {
     <div className={((editable||{}).containerCheckout) ? 'open' : 'closed'}>
       <FormElement>
         <StaticElement
-          label={this.props.t('Note', {ns: 'biobank'})}
+          label={this.props.t('Note', {ns: 'loris'})}
           text={t(`Click, Select or Scan Containers to be
                 Unloaded and Press 'Confirm'`)}
         />

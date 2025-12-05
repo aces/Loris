@@ -156,7 +156,7 @@ class BatchProcessForm extends React.PureComponent {
             + `preparation will be overwritten.`,
           type: 'warning',
           showCancelButton: true,
-          confirmButtonText: t('Proceed', {ns: 'biobank'})})
+          confirmButtonText: t('Proceed', {ns: 'loris'})})
           .then((result) => result.value ? resolve(list) : reject());
       } else {
         return resolve(list);
