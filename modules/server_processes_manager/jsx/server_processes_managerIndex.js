@@ -103,14 +103,30 @@ class ServerProcessesManagerIndex extends Component {
         name: 'type',
         type: 'text',
       }},
-      {label: t('Stdout File', {ns: 'server_processes_manager'}), show: true},
-      {label: t('Stderr File', {ns: 'server_processes_manager'}), show: true},
-      {label: t('Exit Code File', {ns: 'server_processes_manager'}), show: true},
-      {label: t('Exit Code', {ns: 'server_processes_manager'}), show: true},
-      {label: t('User ID', {ns: 'server_processes_manager'}), show: true, filter: {
-        name: 'userid',
-        type: 'text',
-      }},
+      {
+        label: t('Stdout File', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('Stderr File', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('Exit Code File', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('Exit Code', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('User ID', {ns: 'server_processes_manager'}),
+        show: true,
+        filter: {
+          name: 'userid',
+          type: 'text',
+        },
+      },
       {label: t('Start Time', {ns: 'server_processes_manager'}), show: true},
       {label: t('End Time', {ns: 'server_processes_manager'}), show: true},
       {label: t('Exit Text', {ns: 'server_processes_manager'}), show: true},
