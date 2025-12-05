@@ -263,7 +263,7 @@ function Globals(props) {
 
     const {parentSpecimenIds, parentSpecimenBarcodes} = specimen;
     const value = parentSpecimenIds.length === 0
-      ? this.props.t('None', {ns: 'biobank'})
+      ? this.props.t('None', {ns: 'loris'})
       : parentSpecimenBarcodes
         .map((barcode) => <Link to={`/barcode=${barcode}`}>{barcode}</Link>)
         .reduce((prev, curr, index) => [prev, index == 0 ? '' : ', ', curr]);

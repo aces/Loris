@@ -440,7 +440,7 @@ function CreateShipment({
       onClose={onClose}
     >
       <StaticElement
-        label={t('biobank:Note')}
+        label={t('loris:Note')}
         text={t(`biobank:Any container or specimen added to this form will be
         dissassociated from its parent. Any children of the containers listed
         will also be added to the shipment.`)}

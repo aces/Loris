@@ -25,7 +25,7 @@ msgstr ""
 #: jsx/poolSpecimenForm.js:158
 msgid ""
 "Specimens must be of the same PSCID,\n"
-"                    Visit Label, Type and Center"
+"Visit Label, Type and Center"
 msgstr ""
 
 #: jsx/poolSpecimenForm.js:207
@@ -35,13 +35,11 @@ msgstr ""
 #: jsx/poolSpecimenForm.js:208
 msgid ""
 "Select or Scan the specimens to be pooled. Specimens must\n"
-"                  have a Status of 'Available', have a Quantity of greater\n"
-"                  than 0, and share the same Type, PSCID, Visit Label\n"
-"                  and Current Site. Pooled specimens cannot already belong "
-"to\n"
-"                  a pool. Once pooled, the Status of specimen will be "
-"changed\n"
-"                  to 'Dispensed' and there Quantity set to '0'"
+"have a Status of 'Available', have a Quantity of greater\n"
+"than 0, and share the same Type, PSCID, Visit Label\n"
+"and Current Site. Pooled specimens cannot already belong "
+"to a pool. Once pooled, the Status of specimen will be changed\n"
+"to 'Dispensed' and there Quantity set to '0'"
 msgstr ""
 
 #: jsx/poolSpecimenForm.js:217 jsx/globals.js:30 jsx/batchProcessForm.js:262
@@ -75,6 +73,7 @@ msgstr ""
 #: jsx/containerDisplay.js:129 jsx/containerDisplay.js:183 jsx/search.js:44
 #: jsx/specimenTab.js:99 jsx/containerTab.js:78 jsx/containerForm.js:166
 #: jsx/specimenForm.js:593
+#: jsx/shipmentTab.js:81 jsx/shipmentTab.js:100 jsx/shipmentTab.js:127
 msgid "Barcode"
 msgstr ""
 
@@ -82,15 +81,10 @@ msgstr ""
 msgid "Please Scan or Type Barcode"
 msgstr ""
 
-#: jsx/containerDisplay.js:142 jsx/containerDisplay.js:199
-#: jsx/specimenForm.js:188 jsx/specimenForm.js:198
-msgid "Note"
-msgstr ""
-
 #: jsx/containerDisplay.js:143
 msgid ""
 "Scan Containers to be Loaded. If Sequential is checked,\n"
-"           the Coordinate will Auto-Increment after each Load."
+"the Coordinate will Auto-Increment after each Load."
 msgstr ""
 
 #: jsx/containerDisplay.js:148
@@ -108,7 +102,7 @@ msgstr ""
 #: jsx/containerDisplay.js:200
 msgid ""
 "Click, Select or Scan Containers to be\n"
-"                Unloaded and Press 'Confirm'"
+"Unloaded and Press 'Confirm'"
 msgstr ""
 
 #: jsx/containerDisplay.js:205
@@ -174,10 +168,12 @@ msgid "Done By"
 msgstr ""
 
 #: jsx/processForm.js:172 jsx/processForm.js:239
+#: jsx/shipmentTab.js:306
 msgid "Comments"
 msgstr ""
 
 #: jsx/specimenTab.js:60 jsx/containerTab.js:56 jsx/poolTab.js:68
+#: jsx/shipmentTab.js:131
 msgid "Type"
 msgstr ""
 
@@ -192,6 +188,7 @@ msgstr ""
 
 #: jsx/specimenTab.js:71 jsx/containerTab.js:58 jsx/batchEditForm.js:298
 #: jsx/globals.js:205
+#: jsx/shipmentTab.js:96 jsx/shipmentTab.js:136 jsx/shipmentTab.js:290
 msgid "Status"
 msgstr ""
 
@@ -263,68 +260,28 @@ msgstr ""
 msgid "Pooling requires at least 2 specimens"
 msgstr ""
 
-#: jsx/filter.js:69
-msgid "Specimens"
-msgstr ""
-
-#: jsx/filter.js:73
-msgid "Containers"
-msgstr ""
-
-#: jsx/filter.js:77
-msgid "Pools"
-msgstr ""
-
-#: jsx/filter.js:80
-msgid "Shipments"
-msgstr ""
-
 #: jsx/shipmentTab.js:69 jsx/shipmentTab.js:141
-msgid "biobank:Origin Site"
+msgid "Origin Site"
 msgstr ""
 
 #: jsx/shipmentTab.js:71 jsx/shipmentTab.js:146
-msgid "biobank:Destination Site"
-msgstr ""
-
-#: jsx/shipmentTab.js:81 jsx/shipmentTab.js:100 jsx/shipmentTab.js:127
-msgid "biobank:Barcode"
+msgid "Destination Site"
 msgstr ""
 
 #: jsx/shipmentTab.js:95 jsx/shipmentTab.js:151
-msgid "biobank:Actions"
-msgstr ""
-
-#: jsx/shipmentTab.js:96 jsx/shipmentTab.js:136 jsx/shipmentTab.js:290
-msgid "biobank:Status"
-msgstr ""
-
-#: jsx/shipmentTab.js:131
-msgid "biobank:Type"
+msgid "Actions"
 msgstr ""
 
 #: jsx/shipmentTab.js:157
-msgid "biobank:Add Shipment"
-msgstr ""
-
-#: jsx/shipmentTab.js:286
-msgid "loris:Site"
-msgstr ""
-
-#: jsx/shipmentTab.js:294
-msgid "biobank:Temperature"
+msgid "Add Shipment"
 msgstr ""
 
 #: jsx/shipmentTab.js:298
-msgid "biobank:Date & Time"
+msgid "Date & Time"
 msgstr ""
 
 #: jsx/shipmentTab.js:302
-msgid "biobank:User"
-msgstr ""
-
-#: jsx/shipmentTab.js:306
-msgid "biobank:Comments"
+msgid "User"
 msgstr ""
 
 #: jsx/batchEditForm.js:214
@@ -354,9 +311,9 @@ msgstr ""
 #: jsx/batchEditForm.js:470
 msgid ""
 "Select a form for the list to\n"
-"                edit the specimen values. Any previous value associated\n"
-"                with a Specimen for a given field will be\n"
-"                overwritten if one is added on this form."
+"edit the specimen values. Any previous value associated\n"
+"with a Specimen for a given field will be\n"
+"overwritten if one is added on this form."
 msgstr ""
 
 #: jsx/batchEditForm.js:487
@@ -386,6 +343,7 @@ msgid "fTCycle"
 msgstr ""
 
 #: jsx/globals.js:167
+#: jsx/shipmentTab.js:294
 msgid "Temperature"
 msgstr ""
 
@@ -416,9 +374,9 @@ msgstr ""
 #: jsx/batchProcessForm.js:256
 msgid ""
 "Select or Scan the specimens to be prepared. Specimens must\n"
-"                  have a Status of 'Available', and share the same Type.\n"
-"                  Any previous value associated with a Specimen will be\n"
-"                  overwritten if one is added on this form."
+"have a Status of 'Available', and share the same Type.\n"
+"Any previous value associated with a Specimen will be\n"
+"overwritten if one is added on this form."
 msgstr ""
 
 #: jsx/batchProcessForm.js:315
@@ -432,22 +390,22 @@ msgstr ""
 #: jsx/specimenForm.js:189
 msgid ""
 "To create new aliquots, enter a Barcode, fill out the\n"
-"                coresponding sub-form and press Submit. Press \"New Entry\" "
+"coresponding sub-form and press Submit. Press \"New Entry\" "
 "button\n"
-"                to add another barcode field, or press for the \"Copy\" "
+"to add another barcode field, or press for the \"Copy\" "
 "button to\n"
-"                  duplicate the previous entry."
+"duplicate the previous entry."
 msgstr ""
 
 #: jsx/specimenForm.js:199
 msgid ""
 "To create new specimens, first select a PSCID and Visit Label.\n"
-"                  Then, enter a Barcode, fill out the coresponding sub-form "
+"Then, enter a Barcode, fill out the coresponding sub-form "
 "and\n"
-"                  press submit. Press \"New Entry\" button to add another "
+"press submit. Press \"New Entry\" button to add another "
 "barcode\n"
-"                  field, or press for the \"Copy\" button to duplicate the\n"
-"                  previous entry."
+"field, or press for the \"Copy\" button to duplicate the\n"
+"previous entry."
 msgstr ""
 
 #: jsx/specimenForm.js:219
