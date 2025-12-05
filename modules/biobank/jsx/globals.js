@@ -224,7 +224,7 @@ function Globals(props) {
 
   const projectField = () => specimen && (
     <InlineField
-      label={this.props.t('Project', {ns: 'biobank'})}
+      label={this.props.t('Project', {ns: 'loris'})}
       value={options.projects[specimen.projectId]}
     />
   );
@@ -351,12 +351,12 @@ function Globals(props) {
   const candidateSessionField = specimen ? (
     <div>
       <InlineField
-        label={this.props.t('PSCID', {ns: 'biobank'})}
+        label={this.props.t('PSCID', {ns: 'loris'})}
         value={options.candidates[specimen.candidateId].pscid}
         link={loris.BaseURL+'/'+specimen.candidateId}
       />
       <InlineField
-        label={this.props.t('Visit Label', {ns: 'biobank'})}
+        label={this.props.t('Visit Label', {ns: 'loris'})}
         value={options.sessions[specimen.sessionId].label}
         link={
           loris.BaseURL+'/instrument_list/?candID='+

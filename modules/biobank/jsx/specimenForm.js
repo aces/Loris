@@ -216,15 +216,15 @@ class SpecimenForm extends React.Component {
         return (
           <>
             <StaticElement
-              label={this.props.t("Parent Specimen(s, {ns: 'biobank'})")}
+              label={this.props.t('Parent Specimen(s)', {ns: 'biobank'})}
               text={parentBarcodesString}
             />
             <StaticElement
-              label={this.props.t("PSCID", {ns: 'biobank'})}
+              label={this.props.t('PSCID', {ns: 'loris'})}
               text={options.candidates[candidateId].pscid}
             />
             <StaticElement
-              label={this.props.t("Visit Label", {ns: 'biobank'})}
+              label={this.props.t('Visit Label', {ns: 'loris'})}
               text={options.sessions[sessionId].label}
             />
           </>
@@ -247,7 +247,7 @@ class SpecimenForm extends React.Component {
           <>
             <SearchableDropdown
               name="candidateId"
-              label={this.props.t("PSCID", {ns: 'biobank'})}
+              label={this.props.t('PSCID', {ns: 'loris'})}
               options={candidates}
               onUserInput={this.setCurrent}
               required={true}
@@ -257,7 +257,7 @@ class SpecimenForm extends React.Component {
             />
             <SelectElement
               name='sessionId'
-              label={this.props.t('Visit Label', {ns: 'biobank'})}
+              label={this.props.t('Visit Label', {ns: 'loris'})}
               options={mappedSessions}
               onUserInput={this.setSession}
               required={true}

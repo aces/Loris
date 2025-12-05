@@ -66,7 +66,7 @@ class SpecimenTab extends Component {
         return value.map((id) => options.diagnoses[id].label);
       }
       break;
-    case this.props.t('Visit Label', {ns: 'biobank'}):
+    case this.props.t('Visit Label', {ns: 'loris'}):
       return options.sessions[value].label;
     case this.props.t('Status', {ns: 'biobank'}):
       return options.container.stati[value].label;
@@ -74,7 +74,7 @@ class SpecimenTab extends Component {
       return options.centers[value];
     case this.props.t('Draw Site', {ns: 'biobank'}):
       return options.centers[value];
-    case this.props.t('Project', {ns: 'biobank'}):
+    case this.props.t('Project', {ns: 'loris'}):
       return options.projects[value];
     default:
       return value;
@@ -93,7 +93,7 @@ class SpecimenTab extends Component {
     const {data, options} = this.props;
     const display = this.mapSpecimenColumns(column, value);
     const candidate = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row[this.props.t('PSCID', {ns: 'biobank'})]);
+      .find((cand) => cand?.pscid == row[this.props.t('PSCID', {ns: 'loris'})]);
     const candidatePermission = candidate !== undefined;
     switch (column) {
     case this.props.t('Barcode', {ns: 'biobank'}):
@@ -104,7 +104,7 @@ class SpecimenTab extends Component {
         return <Link key={key} to={`/barcode=${display}`}>{display}</Link>;
       }).reduce((prev, curr) => [prev, ', ', curr]);
       return <td>{barcodes}</td>;
-    case this.props.t('PSCID', {ns: 'biobank'}):
+    case this.props.t('PSCID', {ns: 'loris'}):
       if (candidatePermission) {
         return (
           <td>
@@ -113,7 +113,7 @@ class SpecimenTab extends Component {
         );
       }
       return <td>{display}</td>;
-    case this.props.t('Visit Label', {ns: 'biobank'}):
+    case this.props.t('Visit Label', {ns: 'loris'}):
       if (candidatePermission) {
         const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
           candidate.id+'&sessionID='+value;
@@ -260,11 +260,11 @@ class SpecimenTab extends Component {
         type: 'text',
         hide: true,
       }},
-      {label: this.props.t('PSCID', {ns: 'biobank'}), show: true, filter: {
+      {label: this.props.t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'pscid',
         type: 'text',
       }},
-      {label: this.props.t('Sex', {ns: 'biobank'}), show: true, filter: {
+      {label: this.props.t('Sex', {ns: 'loris'}), show: true, filter: {
         name: 'sex',
         type: 'select',
         options: {Male: this.props.t('Male', {ns: 'biobank'}), Female: this.props.t('Female', {ns: 'biobank'})},
@@ -278,7 +278,7 @@ class SpecimenTab extends Component {
         type: 'multiselect',
         options: diagnoses,
       }},
-      {label: this.props.t('Visit Label', {ns: 'biobank'}), show: true, filter: {
+      {label: this.props.t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'session',
         type: 'text',
       }},
@@ -292,7 +292,7 @@ class SpecimenTab extends Component {
         type: 'select',
         options: stati,
       }},
-      {label: this.props.t('Project', {ns: 'biobank'}), show: true, filter: {
+      {label: this.props.t('Project', {ns: 'loris'}), show: true, filter: {
         name: 'project',
         type: 'multiselect',
         options: options.projects,

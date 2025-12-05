@@ -57,7 +57,7 @@ class ContainerTab extends Component {
       return this.props.options.container.types[value].label;
     case this.props.t('Status', {ns: 'biobank'}):
       return this.props.options.container.stati[value].label;
-    case this.props.t('Site', {ns: 'biobank'}):
+      case this.props.t('Site', {ns: 'loris', count: 1}):
       return this.props.options.centers[value];
     default:
       return value;
@@ -160,7 +160,7 @@ class ContainerTab extends Component {
         type: 'select',
         options: stati,
       }},
-      {label: this.props.t('Site', {ns: 'biobank'}), show: true, filter: {
+      {label: this.props.t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'currentSite',
         type: 'select',
         options: this.props.options.centers,
