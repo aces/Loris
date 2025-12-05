@@ -406,6 +406,7 @@ class SpecimenTab extends Component {
 }
 
 SpecimenTab.propTypes = {
+  t: PropTypes.func.isRequired,
   options: PropTypes.shape({
     specimen: PropTypes.shape({
       attributes: PropTypes.arrayOf(

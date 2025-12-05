@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import {Component} from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -237,13 +238,13 @@ class BiobankIndex extends Component {
     const increment = (coord) => {
       coord++;
       if (childCoordinates.hasOwnProperty(coord)) {
-        coord = incrementhis.props.t(coord, {ns: 'biobank'});
+        coord = increment(coord);
       }
 
       return coord;
     };
 
-    return incrementhis.props.t(coordinate, {ns: 'biobank'});
+    return increment(coordinate);
   }
 
   /**
@@ -297,7 +298,7 @@ class BiobankIndex extends Component {
           current.container.parentContainerId
         );
         if (coord <= capacity) {
-          container.coordinate = parseInthis.props.t(coord, {ns: 'biobank'});
+          container.coordinate = parseInt(coord);
         } else {
           container.coordinate = null;
         }
@@ -508,7 +509,7 @@ class BiobankIndex extends Component {
     });
 
     float.map((field) => {
-      if (isNaN(parseInthis.props.t(specimen[field], {ns: 'biobank'})) || !isFinite(specimen[field])) {
+      if (isNaN(parseInt(specimen[field])) || !isFinite(specimen[field])) {
         errors[field] = this.props.t('This field must be a number. ', {ns: 'biobank'});
       }
     });
@@ -600,7 +601,7 @@ class BiobankIndex extends Component {
 
     // validate floats
     number && number.map((field) => {
-      if (isNaN(parseInthis.props.t(process[field], {ns: 'biobank'})) || !isFinite(process[field])) {
+      if (isNaN(parseInt(process[field])) || !isFinite(process[field])) {
         errors[field] = this.props.t('This field must be a number! ', {ns: 'biobank'});
       }
     });
@@ -639,7 +640,7 @@ class BiobankIndex extends Component {
             const dataTypeId= attribute.datatypeId;
             // validate number
             if (datatypes[dataTypeId].datatype === 'number') {
-              if (isNaN(parseInthis.props.t(process.data[attribute.id], {ns: 'biobank'})) ||
+              if (isNaN(parseInt(process.data[attribute.id])) ||
                 !isFinite(process.data[attribute.id])) {
                 errors.data[attribute.id] = this.props.t('This field must be a number!', {ns: 'biobank'});
               }
@@ -701,7 +702,7 @@ class BiobankIndex extends Component {
     });
 
     float.map((field) => {
-      if (isNaN(parseInthis.props.t(container[field], {ns: 'biobank'})) || !isFinite(container[field])) {
+      if (isNaN(parseInt(container[field])) || !isFinite(container[field])) {
         errors[field] = this.props.t('This field must be a number! ', {ns: 'biobank'});
       }
     });
@@ -737,7 +738,7 @@ class BiobankIndex extends Component {
       }
     });
 
-    if (isNaN(parseInthis.props.t(pool.quantity, {ns: 'biobank'})) || !isFinite(pool.quantity)) {
+    if (isNaN(parseInt(pool.quantity)) || !isFinite(pool.quantity)) {
       errors.quantity = this.props.t('This field must be a number! ', {ns: 'biobank'});
     }
 
@@ -824,6 +825,7 @@ BiobankIndex.propTypes = {
   poolAPI: PropTypes.object.isRequired,
   optionsAPI: PropTypes.object.isRequired,
   labelAPI: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
@@ -832,7 +834,7 @@ window.addEventListener('load', () => {
   const Index = withTranslation(
   )(BiobankIndex);
   createRoot(
-    documen.getElementById('lorisworkspace')
+    document.getElementById('lorisworkspace')
   ).render(
     <Index
       specimenAPI={`${biobank}specimenendpoint/`}

@@ -98,6 +98,7 @@ class BiobankFilter extends Component {
 }
 
 BiobankFilter.propTypes = {
+  t: PropTypes.func.isRequired,
   data: PropTypes.object,
   options: PropTypes.object,
   saveBatchEdit: PropTypes.func,

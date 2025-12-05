@@ -284,14 +284,14 @@ class SpecimenForm extends React.Component {
             <>
               <TextboxElement
                 name="quantity"
-                label={this.props.t("Remaining Quantity", {ns: 'biobank'})}
+                label={this.props.t('Remaining Quantity', {ns: 'biobank'})}
                 onUserInput={this.props.setSpecimen}
                 required={true}
                 value={this.props.current.specimen.quantity}
               />
               <SelectElement
                 name="unitId"
-                label={this.props.t("Unit", {ns: 'biobank'})}
+                label={this.props.t('Unit', {ns: 'biobank'})}
                 options={specimenUnits}
                 onUserInput={this.props.setSpecimen}
                 required={true}
@@ -346,6 +346,7 @@ class SpecimenForm extends React.Component {
           listItem={{container: {}, collection: {}}}
         >
           <SpecimenBarcodeForm
+            t={this.props.t}
             typeId={current.typeId}
             options={options}
           />
@@ -381,6 +382,7 @@ class SpecimenForm extends React.Component {
 
 // SpecimenForm.propTypes
 SpecimenForm.propTypes = {
+  t: PropTypes.func.isRequired,
   // Parent prop: Array of parent objects containing specimen and container
   parent: PropTypes.arrayOf(
     PropTypes.shape({
@@ -598,7 +600,7 @@ class SpecimenBarcodeForm extends React.Component {
         />
         <SelectElement
           name="typeId"
-          label={this.props.t("Specimen Type", {ns: 'biobank'})}
+          label={this.props.t('Specimen Type', {ns: 'biobank'})}
           options={renderSpecimenTypes()}
           onUserInput={this.setSpecimen}
           required={true}
@@ -607,7 +609,7 @@ class SpecimenBarcodeForm extends React.Component {
         />
         <SelectElement
           name="typeId"
-          label={this.props.t("Container Type", {ns: 'biobank'})}
+          label={this.props.t('Container Type', {ns: 'biobank'})}
           options={item.typeId ? validContainers : containerTypesPrimary}
           onUserInput={this.setContainer}
           required={true}
@@ -645,6 +647,7 @@ class SpecimenBarcodeForm extends React.Component {
 
 // SpecimenBarcodeForm.propTypes
 SpecimenBarcodeForm.propTypes = {
+  t: PropTypes.func.isRequired,
   typeId: PropTypes.number,
   // Item prop: Contains container and specimen information
   item: PropTypes.shape({

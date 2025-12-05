@@ -155,7 +155,7 @@ class PoolSpecimenForm extends React.Component {
       Swal.fire(
         {
           title: this.props.t('Oops!', {ns: 'biobank'}),
-          text: t(`Specimens must be of the same PSCID,
+          text: this.props.t(`Specimens must be of the same PSCID,
                     Visit Label, Type and Center`),
           type: 'warning',
         }
@@ -205,7 +205,7 @@ class PoolSpecimenForm extends React.Component {
         <div className='col-sm-10 col-sm-offset-1'>
           <StaticElement
             label={this.props.t('Pooling Note', {ns: 'biobank'})}
-            text={t(`Select or Scan the specimens to be pooled. Specimens must
+            text={this.props.t(`Select or Scan the specimens to be pooled. Specimens must
                   have a Status of 'Available', have a Quantity of greater
                   than 0, and share the same Type, PSCID, Visit Label
                   and Current Site. Pooled specimens cannot already belong to
@@ -335,6 +335,7 @@ class PoolSpecimenForm extends React.Component {
 
 // PoolSpecimenForm.propTypes
 PoolSpecimenForm.propTypes = {
+  t: PropTypes.func.isRequired,
   data: PropTypes.shape({
     containers: PropTypes.arrayOf(
       PropTypes.shape({
@@ -426,6 +427,7 @@ class BarcodeInput extends PureComponent {
 
 // BarcodeInput.propTypes
 BarcodeInput.propTypes = {
+  t: PropTypes.func.isRequired,
   list: PropTypes.array.isRequired,
   data: PropTypes.shape({
     containers: PropTypes.arrayOf(

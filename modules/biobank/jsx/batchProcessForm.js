@@ -126,8 +126,8 @@ class BatchProcessForm extends React.PureComponent {
       (specimen.typeId !== current.typeId)
     ) {
       Swal.fire(
-        t('Oops!', {ns: 'biobank'}),
-        t('Specimens must be of the same Type', {ns: 'biobank'}),
+        this.props.t('Oops!', {ns: 'biobank'}),
+        this.props.t('Specimens must be of the same Type', {ns: 'biobank'}),
         'warning'
       );
       return Promise.reject();
@@ -150,13 +150,13 @@ class BatchProcessForm extends React.PureComponent {
 
       if (barcodes.length > 0) {
         return Swal.fire({
-          title: t('Warning!', {ns: 'biobank'}),
+          title: this.props.t('Warning!', {ns: 'biobank'}),
           html: `Preparation for specimen(s) <b>${barcodes.join(', ')}</b> ` +
             `already exists. By completing this form, the previous `
             + `preparation will be overwritten.`,
           type: 'warning',
           showCancelButton: true,
-          confirmButtonText: t('Proceed', {ns: 'loris'})})
+          confirmButtonText: this.props.t('Proceed', {ns: 'loris'})})
           .then((result) => result.value ? resolve(list) : reject());
       } else {
         return resolve(list);
@@ -252,14 +252,14 @@ class BatchProcessForm extends React.PureComponent {
       <div className='row'>
         <div className='col-sm-10 col-sm-offset-1'>
           <StaticElement
-            label={t('Processing Note', {ns: 'biobank'})}
-            text={t(`Select or Scan the specimens to be prepared. Specimens must
+            label={this.props.t('Processing Note', {ns: 'biobank'})}
+            text={this.props.t(`Select or Scan the specimens to be prepared. Specimens must
                   have a Status of 'Available', and share the same Type.
                   Any previous value associated with a Specimen will be
                   overwritten if one is added on this form.`)}
           />
           <StaticElement
-            label={t('Specimen Type', {ns: 'biobank'})}
+            label={this.props.t('Specimen Type', {ns: 'biobank'})}
             text={(options.specimen.types[current.typeId]||{}).label || '—'}
           />
           <div className='row'>
@@ -306,13 +306,19 @@ class BatchProcessForm extends React.PureComponent {
 
       return new Promise((resolve, reject) => {
         this.validateList(list, {ns: 'biobank'})
-          .then(() => this.props.onSubmit(prepList, {ns: 'biobank'}), () => reject())
-          .then(() => resolve(), (errors) => this.setState({errors}, reject()));
+          .then(
+            () => this.props.onSubmit(prepList, {ns: 'biobank'}),
+            () => reject()
+          )
+          .then(
+            () => resolve(),
+            (errors) => this.setState({errors}, reject)
+          );
       });
     };
     return (
       <Modal
-        title={t('Process Specimens', {ns: 'biobank'})}
+        title={this.props.t('Process Specimens', {ns: 'biobank'})}
         show={this.props.show}
         onClose={handleClose}
         onSubmit={handleSubmit}
@@ -326,6 +332,7 @@ class BatchProcessForm extends React.PureComponent {
 
 // BatchProcessForm.propTypes
 BatchProcessForm.propTypes = {
+  t: PropTypes.func.isRequired,
   data: PropTypes.shape({
     containers: PropTypes.arrayOf(
       PropTypes.shape({
@@ -400,7 +407,7 @@ class BarcodeInput extends PureComponent {
     return (
       <SearchableDropdown
         name={'containerId'}
-        label={t('Specimen', {ns: 'biobank'})}
+        label={this.props.t('Specimen', {ns: 'biobank'})}
         onUserInput={handleInput}
         options={barcodesPrimary}
         value={containerId}
@@ -411,6 +418,7 @@ class BarcodeInput extends PureComponent {
 
 // BarcodeInput.propTypes
 BarcodeInput.propTypes = {
+  t: PropTypes.func.isRequired,
   data: PropTypes.shape({
     containers: PropTypes.arrayOf(
       PropTypes.shape({

@@ -185,6 +185,7 @@ class BiobankContainer extends Component {
 }
 
 BiobankContainer.propTypes = {
+  t: PropTypes.func.isRequired,
   data: PropTypes.shape({
     containers: PropTypes.arrayOf(
       PropTypes.shape({

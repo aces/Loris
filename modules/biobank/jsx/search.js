@@ -41,11 +41,11 @@ class Search extends PureComponent {
         <FormElement>
           <TextboxElement
             name='barcode'
-            label={t('Barcode')}
+            label={this.props.t('Barcode')}
             value={this.state.barcode}
             options={this.props.barcodes}
             onUserInput={onInput}
-            placeHolder={t('Please Scan or Type Barcode')}
+            placeHolder={this.props.t('Please Scan or Type Barcode')}
             autoFocus={true}
           />
         </FormElement>
@@ -56,6 +56,7 @@ class Search extends PureComponent {
 
 // Search.propTypes
 Search.propTypes = {
+  t: PropTypes.func.isRequired,
   barcodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,

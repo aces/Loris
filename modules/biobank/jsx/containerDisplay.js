@@ -140,7 +140,7 @@ function ContainerDisplay(props) {
       <FormElement>
         <StaticElement
           label={this.props.t('Note', {ns: 'loris'})}
-          text={t(`Scan Containers to be Loaded. If Sequential is checked,
+          text={this.props.t(`Scan Containers to be Loaded. If Sequential is checked,
            the Coordinate will Auto-Increment after each Load.`)}
         />
         <CheckboxElement
@@ -197,7 +197,7 @@ function ContainerDisplay(props) {
       <FormElement>
         <StaticElement
           label={this.props.t('Note', {ns: 'loris'})}
-          text={t(`Click, Select or Scan Containers to be
+          text={this.props.t(`Click, Select or Scan Containers to be
                 Unloaded and Press 'Confirm'`)}
         />
         {barcodeField}
@@ -385,6 +385,7 @@ function ContainerDisplay(props) {
 
 // containerDisplay.propTypes
 ContainerDisplay.propTypes = {
+  t: PropTypes.func.isRequired,
   barcodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   coordinates: PropTypes.arrayOf(PropTypes.string).isRequired,
   current: PropTypes.shape({
