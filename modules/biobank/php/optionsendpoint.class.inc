@@ -138,18 +138,25 @@ class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
         // TODO: This should eventually be replaced by a call directly to a
         // Candidate endpoint or Candidate controller that will be able to
         // provide Candidate Objects.
-        $query      = "SELECT c.CandID as id,
-                            PSCID as pscid,
-                            Sex as sex,
-                            GROUP_CONCAT(DISTINCT DiagnosisID) as diagnosisIds,
-                            GROUP_CONCAT(DISTINCT s.ID) as sessionIds
-                       FROM candidate c
-                            LEFT JOIN session s USING (CandID)
-                            LEFT JOIN candidate_diagnosis_rel USING (CandID)
-                       WHERE s.CenterID IN ($userCenters)
-                            AND s.ProjectID IN ($userProjects)
-                       GROUP BY
-                          CandID";
+        $query      = "
+            SELECT
+                c.CandID as id,
+                PSCID as pscid,
+                Sex as sex,
+                GROUP_CONCAT(DISTINCT DxEvolutionID) as diagnosisIds,
+                GROUP_CONCAT(DISTINCT s.ID) as sessionIds
+            FROM
+                candidate c
+                LEFT JOIN session s
+                  ON s.CandidateID=c.ID
+                LEFT JOIN candidate_diagnosis_evolution_rel cder
+                  ON cder.CandidateID=c.ID
+            WHERE
+                s.CenterID IN ($userCenters)
+                AND s.ProjectID IN ($userProjects)
+            GROUP BY
+                CandID
+        ";
         $candidates = $db->pselectWithIndexKey($query, [], 'id');
         foreach ($candidates as $id => $candidate) {
             $candidates[$id]['diagnosisIds'] = $candidate['diagnosisIds']
@@ -163,7 +170,13 @@ class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
         // XXX: This should eventually be replaced by a call directly to a
         // Candidate endpoint or Candidate controller that will be able to
         // provide Diagnosis Options.
-        $query     = 'SELECT DiagnosisID as id, Name as label FROM diagnosis';
+        $query     = '
+            SELECT
+                DxEvolutionID as id,
+                Name as label
+            FROM
+                diagnosis_evolution
+        ';
         $diagnoses = $db->pselectWithIndexKey($query, [], 'id');
 
         $sessionQuery = "SELECT

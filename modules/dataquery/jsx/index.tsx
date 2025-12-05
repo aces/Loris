@@ -13,9 +13,13 @@ import useBreadcrumbs from './hooks/usebreadcrumbs';
 import useVisits from './hooks/usevisits';
 import useQuery from './hooks/usequery';
 import {useSharedQueries, useLoadQueryFromURL} from './hooks/usesharedqueries';
-
 import {useDataDictionary, useCategories} from './hooks/usedatadictionary';
 import {ModuleDictionary, DictionaryCategory} from './types';
+// @ts-ignore
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+import hiStrings from '../locale/hi/LC_MESSAGES/dataquery.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/dataquery.json';
 
 type ActiveCategoryType = {
     module: string,
@@ -64,11 +68,14 @@ function useActiveCategory(
  * Return the main page for the DQT
  *
  * @param {object} props - React props
+ * @param {any} props.t - useTranslation
  * @param {boolean} props.queryAdmin - true if the current user has permission to administer study queries
  * @param {string} props.username - The user accessing the app
+ *
  * @returns {React.ReactElement} - The main page of the app
  */
 function DataQueryApp(props: {
+    t: any,
     queryAdmin: boolean,
     username: string
 }) {
@@ -99,8 +106,9 @@ function DataQueryApp(props: {
 
   useLoadQueryFromURL(loadQuery);
 
+  const {t} = props;
   if (!categories) {
-    return <div>Loading...</div>;
+    return <div>{t('Loading...', {ns: 'loris'})}</div>;
   }
   let content;
 
@@ -221,16 +229,15 @@ function DataQueryApp(props: {
     break;
   case 'ViewData':
     content = <ViewData
+      t={props.t}
       fields={selectedFields}
       filters={query}
-
       fulldictionary={fulldictionary}
-
       onRun={reloadQueries}
     />;
     break;
   default:
-    content = <div>Invalid tab</div>;
+    content = <div>{t('Invalid tab', {ns: 'dataquery'})}</div>;
   }
   return <div>
     <div>{content}</div>
@@ -244,14 +251,18 @@ function DataQueryApp(props: {
 
 declare const loris: any;
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'dataquery', jaStrings);
+  i18n.addResourceBundle('hi', 'dataquery', hiStrings);
+  const Index = withTranslation(
+    ['dataquery', 'loris']
+  )(DataQueryApp);
   const element = document.getElementById('lorisworkspace');
   if (!element) {
     throw new Error('Missing lorisworkspace');
   }
   const root = createRoot(element);
-
   root.render(
-    <DataQueryApp
+    <Index
       queryAdmin={loris.userHasPermission('dataquery_admin')}
       username={loris.user.username}
     />,

@@ -68,7 +68,7 @@ msgid "Data Dictionary"
 msgstr ""
 
 #: modules/document_repository/php/module.class.inc:56
-#: modules/instrument_builder/php/module.class.inc:48
+#: modules/instrument_builderr/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
@@ -91,8 +91,10 @@ msgstr ""
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
+#: modules/dataquery/jsx/definefilters.importcsvmodal.tsx:167
 msgid "Candidate"
-msgstr ""
+msgid_plural "Candidates"
+msgstr[0] ""
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
@@ -201,9 +203,6 @@ msgstr ""
 msgid "DCCID"
 msgstr ""
 
-msgid "Visit"
-msgstr ""
-
 msgid "Visit Label"
 msgstr ""
 
@@ -232,7 +231,8 @@ msgid_plural "Cohorts"
 msgstr[0] ""
 
 msgid "Session"
-msgstr ""
+msgid_plural "Sessions"
+msgstr[0] ""
 
 msgid "Date of registration"
 msgstr ""
@@ -300,10 +300,25 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid "Access denied"
+msgstr ""
+
+msgid "No."
+msgstr ""
+
 msgid "Ethnicity"
 msgstr ""
 
 msgid "Are You Sure?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "Yes, I am sure!"
+msgstr ""
+
+msgid "No, cancel it!"
 msgstr ""
 
 msgid "Leaving the form will result in the loss of any information entered."
@@ -334,6 +349,9 @@ msgid "View details"
 msgstr ""
 
 # Data table strings
+msgid "No result found."
+msgstr ""
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
 
@@ -437,6 +455,9 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Incorrect username or password."
+msgstr ""
+
 # Common timepoint and vist terms
 msgid "Not Started"
 msgstr ""
@@ -520,4 +541,23 @@ msgid "Loading..."
 msgstr ""
 
 msgid "Permission denied"
+msgstr ""
+
+msgid "Unauthorized"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Dataset"
+msgstr ""
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
 msgstr ""

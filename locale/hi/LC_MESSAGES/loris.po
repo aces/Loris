@@ -92,7 +92,9 @@ msgstr "इमेजिंग"
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr "उम्मीदवार"
+msgid_plural "Candidates"
+msgstr[0] "उम्मीदवार"
+msgstr[1] "उम्मीदवारों"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
@@ -206,11 +208,26 @@ msgstr "चयनित"
 msgid "Cancel"
 msgstr "रद्द करें"
 
+msgid "Clear"
+msgstr "हटाना"
+
+msgid "Proceed"
+msgstr "आगे बढ़ना"
+
 msgid "Success!"
 msgstr "सफलता!"
 
 msgid "Close"
 msgstr "बंद करें"
+
+msgid "Saving"
+msgstr "सहेजा जा रहा है"
+
+msgid "Are You Sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "फॉर्म छोड़ने पर दर्ज की गई सभी जानकारी खो जाएगी।"
 
 # Common candidate terms
 msgid "PSCID"
@@ -252,7 +269,9 @@ msgid_plural "Cohorts"
 msgstr[0] "समूह"
 
 msgid "Session"
-msgstr "सत्र"
+msgid_plural "Sessions"
+msgstr[0] "सत्र"
+msgstr[1] "सत्र"
 
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
@@ -313,6 +332,9 @@ msgstr "विवरण देखें"
 
 msgid "Ethnicity"
 msgstr "जातीयता"
+
+msgid "Access denied"
+msgstr "पहुँच अस्वीकृत"
 
 msgid "Previous"
 msgstr "पिछला"
@@ -504,14 +526,15 @@ msgstr "लोड हो रहा है..."
 msgid "Permission denied"
 msgstr "अनुमति अस्वीकृत"
 
-msgid "Are You Sure?"
+msgid "Are you sure?"
 msgstr "क्या आप सुनिश्चित हैं?"
 
-msgid "Leaving the form will result in the loss of any information entered."
-msgstr "फ़ॉर्म छोड़ने से दर्ज की गई सभी जानकारी खो जाएगी।"
+msgid "Yes, I am sure!"
+msgstr "हाँ, मैं सुनिश्चित हूँ!"
 
-msgid "Proceed"
-msgstr "आगे बढ़ें"
+msgid "No, cancel it!"
+msgstr "नहीं, रद्द करें!"
 
-msgid "Saving"
-msgstr "सहेजा जा रहा है"
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr "कोई विकल्प नहीं"

@@ -1,0 +1,174 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Document Repository"
+msgstr "दस्तावेज़ भंडार"
+
+# --- Strings not in loris.pot, add below ---
+
+msgid "Upload files"
+msgstr "फ़ाइलें अपलोड करें"
+
+msgid "Category"
+msgstr "श्रेणी"
+
+msgid "Search for site"
+msgstr "साइट खोजें"
+
+msgid "Version"
+msgstr "संस्करण"
+
+msgid "Comments"
+msgstr "टिप्पणियाँ"
+
+msgid "Restrict access to the file?"
+msgstr "फ़ाइल की पहुँच सीमित करें?"
+
+msgid "File(s) to upload"
+msgstr "अपलोड करने के लिए फ़ाइल(ें)"
+
+msgid "Upload File(s)"
+msgstr "फ़ाइल(ें) अपलोड करें"
+
+msgid "Uploading..."
+msgstr "अपलोड हो रहा है..."
+
+msgid "Upload Successful!"
+msgstr "अपलोड सफल रहा!"
+
+msgid "Upload Incomplete"
+msgstr "अपलोड अधूरा है"
+
+msgid "Error reading response"
+msgstr "प्रतिक्रिया पढ़ने में त्रुटि"
+
+msgid "Please report the issue or contact your administrator"
+msgstr "कृपया समस्या की रिपोर्ट करें या अपने व्यवस्थापक से संपर्क करें"
+
+msgid "File too large"
+msgstr "फ़ाइल बहुत बड़ी है"
+
+msgid "Could not upload file"
+msgstr "फ़ाइल अपलोड नहीं हो सकी"
+
+msgid "Permission denied"
+msgstr "अनुमति अस्वीकृत"
+
+msgid "Something went wrong"
+msgstr "कुछ गलत हो गया"
+
+msgid "Add Category"
+msgstr "श्रेणी जोड़ें"
+
+msgid "Add a category"
+msgstr "एक श्रेणी जोड़ें"
+
+msgid "Category Name"
+msgstr "श्रेणी का नाम"
+
+msgid "Parent"
+msgstr "मूल"
+
+msgid "Category added successfully!"
+msgstr "श्रेणी सफलतापूर्वक जोड़ी गई!"
+
+msgid "Error"
+msgstr "त्रुटि"
+
+msgid "Edit Document Repository File"
+msgstr "दस्तावेज़ भंडार फ़ाइल संपादित करें"
+
+msgid "File updated successfully!"
+msgstr "फ़ाइल सफलतापूर्वक अपडेट की गई!"
+
+msgid "Update File"
+msgstr "फ़ाइल अपडेट करें"
+
+msgid "Edit Category"
+msgstr "श्रेणी संपादित करें"
+
+msgid "Update Category"
+msgstr "श्रेणी अपडेट करें"
+
+msgid "Change Name of a category"
+msgstr "श्रेणी का नाम बदलें"
+
+msgid "Category Name:"
+msgstr "श्रेणी का नाम:"
+
+msgid "New Name for Category"
+msgstr "श्रेणी के लिए नया नाम"
+
+msgid "New Parent:"
+msgstr "नया मूल:"
+
+msgid "Cannot be equal to itself"
+msgstr "स्वयं के बराबर नहीं हो सकता"
+
+msgid "New parent cannot be equal to itself"
+msgstr "नया मूल स्वयं के बराबर नहीं हो सकता"
+
+msgid "Edit error!"
+msgstr "संपादन में त्रुटि!"
+
+msgid "Edited Successful!"
+msgstr "संपादन सफल रहा!"
+
+msgid "Delete Category"
+msgstr "श्रेणी हटाएँ"
+
+msgid "Delete a category"
+msgstr "एक श्रेणी हटाएँ"
+
+msgid "Delete error!"
+msgstr "हटाने में त्रुटि!"
+
+msgid "Delete Successful!"
+msgstr "हटाना सफल रहा!"
+
+msgid "File Name"
+msgstr "फ़ाइल का नाम"
+
+msgid "Uploaded By"
+msgstr "द्वारा अपलोड किया गया"
+
+msgid "For Site"
+msgstr "साइट के लिए"
+
+msgid "File Type"
+msgstr "फ़ाइल का प्रकार"
+
+msgid "Date Uploaded"
+msgstr "अपलोड की तारीख"
+
+msgid "Edit"
+msgstr "संपादित करें"
+
+msgid "Delete File"
+msgstr "फ़ाइल हटाएँ"
+
+msgid "Filter globally"
+msgstr "वैश्विक रूप से फ़िल्टर करें"
+
+msgid "You won't be able to revert this!"
+msgstr "आप इसे वापस नहीं कर पाएंगे!"
+
+msgid "Yes, delete it!"
+msgstr "हाँ, इसे हटा दो!"

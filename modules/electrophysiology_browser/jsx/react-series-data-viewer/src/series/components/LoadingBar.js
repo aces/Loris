@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 function LoadingBar(props) {
-  const {progress, onTransitionEnd} = props;
+  const {progress, onTransitionEnd, t} = props;
 
   const wrapperStyle = props.wrapperStyle ?? {
     margin: 50,
@@ -25,7 +26,9 @@ function LoadingBar(props) {
 
   return (
     <div style={wrapperStyle}>
-      <h5 className='animate-flicker'>Loading...</h5>
+      <h5 className='animate-flicker'>
+        {t('Loading...', {ns: 'loris'})}
+      </h5>
       <div style={containerStyles}>
         <div
           id='chunk-progress-bar'
@@ -36,5 +39,7 @@ function LoadingBar(props) {
     </div>
   );
 }
-
+LoadingBar.propTypes = {
+  t: PropTypes.func,
+}
 export default LoadingBar;
