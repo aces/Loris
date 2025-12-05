@@ -355,6 +355,9 @@ msgid "View details"
 msgstr ""
 
 # Data table strings
+msgid "No result found."
+msgstr ""
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
 

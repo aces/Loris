@@ -344,6 +344,9 @@ msgid "View details"
 msgstr "詳細を表示"
 
 # Data table strings
+msgid "No result found."
+msgstr "結果が見つかりませんでした。"
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}}行中{{pageCount}}行を表示"
 
