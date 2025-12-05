@@ -144,9 +144,6 @@ msgstr ""
 msgid "Isolate"
 msgstr ""
 
-msgid "Events"
-msgstr ""
-
 msgid "HED Endorsements"
 msgstr ""
 
@@ -497,12 +494,6 @@ msgid "Sampling Frequency"
 msgstr ""
 
 msgid "%s Channel Count"  # Channel Type (ex: EEG, ECG)
-msgstr ""
-
-msgid "Reference"
-msgstr ""
-
-msgid "Sampling Frequency"
 msgstr ""
 
 msgid "Reference"

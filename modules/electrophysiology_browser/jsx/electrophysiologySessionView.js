@@ -34,6 +34,7 @@ if (EEG_VIS_ENABLED) {
   ).default;
 }
 import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/electrophysiology_browser.json';
 
 
 /**
@@ -564,6 +565,7 @@ ElectrophysiologySessionView.defaultProps = {
  * Render EEGSession on page load.
  */
 window.onload = function() {
+  i18n.addResourceBundle('ja', 'electrophysiology_browser', jaStrings);
   i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
   const i18nNamespaces = ['electrophysiology_browser', 'loris'];
   const SideContent = withTranslation(i18nNamespaces)(SidebarContent);
