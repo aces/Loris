@@ -8,6 +8,11 @@ import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+import jaStrings
+  from '../locale/ja/LC_MESSAGES/server_processes_manager.json';
+import hiStrings
+  from '../locale/hi/LC_MESSAGES/server_processes_manager.json';
+
 /**
  * ServerProcessesManagerIndex is the main entry point of the
  * server_processes_manager module. It contains a filterable
@@ -73,6 +78,7 @@ class ServerProcessesManagerIndex extends Component {
    * @return {object} - Rendered React component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
@@ -89,25 +95,41 @@ class ServerProcessesManagerIndex extends Component {
      * queried columns in _setupVariables() in server_processes_manager.class.inc
      */
     const fields = [
-      {label: 'PID', show: true, filter: {
+      {label: t('PID', {ns: 'server_processes_manager'}), show: true, filter: {
         name: 'pid',
         type: 'text',
       }},
-      {label: 'Type', show: true, filter: {
+      {label: t('Type', {ns: 'server_processes_manager'}), show: true, filter: {
         name: 'type',
         type: 'text',
       }},
-      {label: 'Stdout File', show: true},
-      {label: 'Stderr File', show: true},
-      {label: 'Exit Code File', show: true},
-      {label: 'Exit Code', show: true},
-      {label: 'User ID', show: true, filter: {
-        name: 'userid',
-        type: 'text',
-      }},
-      {label: 'Start Time', show: true},
-      {label: 'End Time', show: true},
-      {label: 'Exit Text', show: true},
+      {
+        label: t('Stdout File', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('Stderr File', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('Exit Code File', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('Exit Code', {ns: 'server_processes_manager'}),
+        show: true,
+      },
+      {
+        label: t('User ID', {ns: 'server_processes_manager'}),
+        show: true,
+        filter: {
+          name: 'userid',
+          type: 'text',
+        },
+      },
+      {label: t('Start Time', {ns: 'server_processes_manager'}), show: true},
+      {label: t('End Time', {ns: 'server_processes_manager'}), show: true},
+      {label: t('Exit Text', {ns: 'server_processes_manager'}), show: true},
     ];
 
     return (
@@ -123,12 +145,12 @@ class ServerProcessesManagerIndex extends Component {
 
 ServerProcessesManagerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
-  // FIXME: This is adding an empty object so that eslint doesn't complain about
-  // i18n being unused. Translate the module
-  i18n.addResourceBundle('ja', 'server_processes_manager', {});
+  i18n.addResourceBundle('ja', 'server_processes_manager', jaStrings);
+  i18n.addResourceBundle('hi', 'server_processes_manager', hiStrings);
   const SPMIndex = withTranslation(
     ['server_processes_manager', 'loris']
   )(ServerProcessesManagerIndex);

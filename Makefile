@@ -19,6 +19,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/statistics/locale/fr/LC_MESSAGES/statistics.po \
 	modules/statistics/locale/ja/LC_MESSAGES/statistics.po \
 	modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.po \
+	modules/server_processes_manager/locale/hi/LC_MESSAGES/server_processes_manager.po \
 	modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po \
 	modules/module_manager/locale/hi/LC_MESSAGES/module_manager.po \
 	modules/configuration/locale/ja/LC_MESSAGES/configuration.po \
