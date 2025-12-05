@@ -405,10 +405,10 @@ msgstr "クエリが読み込まれました"
 msgid "Successfully loaded query."
 msgstr "クエリが正常に読み込まれました。"
 
-msgid "(Run at {{runTime}})"
+msgid "(Run on {{runTime}})"
 msgstr "({{runTime}} に実行)"
 
-msgid "You ran this query at {{runTime}}"
+msgid "You ran this query on {{runTime}}"
 msgstr "このクエリは {{runTime}} に実行されました"
 
 msgid "You ran this query"

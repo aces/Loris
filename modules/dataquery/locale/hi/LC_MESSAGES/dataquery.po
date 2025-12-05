@@ -418,10 +418,10 @@ msgstr "क्वेरी लोड हो गई"
 msgid "Successfully loaded query."
 msgstr "क्वेरी सफलतापूर्वक लोड हो गई।"
 
-msgid "(Run at {{runTime}})"
+msgid "(Run on {{runTime}})"
 msgstr "(चलाया गया {{runTime}} पर)"
 
-msgid "You ran this query at {{runTime}}"
+msgid "You ran this query on {{runTime}}"
 msgstr "आपने यह क्वेरी {{runTime}} पर चलाई"
 
 msgid "You ran this query"
