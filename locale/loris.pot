@@ -246,6 +246,9 @@ msgstr ""
 msgid "DoB"
 msgstr ""
 
+msgid "DoD"
+msgstr ""
+
 msgid "Sex"
 msgstr ""
 
