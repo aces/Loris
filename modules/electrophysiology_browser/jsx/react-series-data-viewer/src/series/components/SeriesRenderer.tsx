@@ -1521,9 +1521,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   type='button'
                   className='btn btn-primary btn-xs'
                   style={{
-                    width: '65px',
+                    width: '80px',
                     marginTop: '3px',
                     visibility: stackedView ? 'visible' : 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                   onClick={toggleSingleMode}
                   value={t(
