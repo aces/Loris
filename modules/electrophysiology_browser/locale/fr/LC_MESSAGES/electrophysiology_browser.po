@@ -132,6 +132,12 @@ msgstr "à {{channelsInView}} de {{totalChannels}}"
 msgid "Time (s)"
 msgstr "Temps (s)"
 
+msgid "No Offset"
+msgstr "Aucun décalage"
+
+msgid "DC Offset"
+msgstr "Décalage CC"
+
 msgid "Spread"
 msgstr "Disperser"
 

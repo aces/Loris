@@ -1494,7 +1494,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     textOverflow: 'ellipsis',
                   }}
                   onClick={toggleDCOffsetView}
-                  value={`${DCOffsetView ? 'No' : 'DC'} Offset`}
+                  value={t(
+                    DCOffsetView ? 'No Offset' : 'DC Offset', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}
                 />
                 <br/>
                 <input
