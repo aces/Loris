@@ -17,7 +17,604 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Electrophysiology Browser"
 msgstr "電気生理学ブラウザ"
 
+msgid "Links"
+msgstr "リンク"
+
+msgid "all types"
+msgstr "すべてのタイプ"
+
+msgid "Has HED Tags"
+msgstr "HEDタグ付き"
+
+msgid "Acquisition Time"
+msgstr "取得時間"
+
+msgid "Insertion Time"
+msgstr "挿入時間"
+
+msgid "Type"
+msgstr "タイプ"
+
+msgid "Signal Viewer"
+msgstr "シグナルビューアー"
+
+msgid "SessionID"
+msgstr "SessionID"
+
+msgid "split {{splitNum}}"
+msgstr "{{splitNum}} を分割"
+
+msgid "Viewing signal split file:"
+msgstr "信号分割ファイルを表示しています:"
+
+msgid "Output Type"
+msgstr "出力タイプ"
+
+msgid "File Download"
+msgstr "ファイルのダウンロード"
+
+msgid "Download"
+msgstr "ダウンロード"
+
+msgid "Not Available"
+msgstr "利用不可"
+
+msgid "Acquisition Details for Recording {{recording}}"
+msgstr "録画 {{recording}} の取得詳細"
+
+msgid "Summary"
+msgstr "まとめ"
+
+msgid "HED tags in recording metadata (click for info)"
+msgstr "録画メタデータ内の HED タグ (クリックして詳細を表示)"
+
+msgid "Navigation"
+msgstr "ナビゲーション"
+
+msgid "Are you sure you want to leave unsaved changes behind?"
+msgstr "保存していない変更を残してもよろしいですか?"
+
+msgid "Data Authors"
+msgstr "データ作成者"
+
+# Filters
+msgid "No High Pass Filter"
+msgstr "ハイパスフィルターなし"
+
+msgid "High Pass {{frequency}}Hz"
+msgstr "ハイパス {{frequenency}}Hz"
+
+msgid "No Low Pass Filter"
+msgstr "ローパスフィルターなし"
+
+msgid "Low Pass {{frequency}}Hz"
+msgstr "ローパス {{frequenency}}Hz"
+
+# SeriesRenderer
+msgid "Close Panel"
+msgstr "パネルを閉じる"
+
+msgid "Display Events"
+msgstr "表示イベント"
+
+msgid "Add Event"
+msgstr "イベントを追加"
+
+msgid "Zoom"
+msgstr "ズーム"
+
+msgid "Fit to Window"
+msgstr "ウィンドウに合わせる"
+
+msgid "Reset Amplitude"
+msgstr "振幅をリセット"
+
+msgid "Hide Overflow"
+msgstr "オーバーフローを非表示"
+
+msgid "Show Overflow"
+msgstr "オーバーフローを表示"
+
+msgid "{{numChannels}} channels"
+msgstr "{{numChannels}} チャンネル"
+
+msgid "Showing:"
+msgstr "表示中:"
+
+msgid "to {{channelsInView}} of {{totalChannels}}"
+msgstr "{{totalChannels}} のうち {{channelsInView}} まで"
+
+# s stands for seconds
+msgid "Time (s)"
+msgstr "時間（秒）"
+
+msgid "No Offset"
+msgstr "オフセットなし"
+
+msgid "DC Offset"
+msgstr "直流オフセット"
+
+msgid "Spread"
+msgstr "広める"
+
+msgid "Stack"
+msgstr "スタック"
+
+msgid "Standard"
+msgstr "標準"
+
+msgid "Isolate"
+msgstr "隔離する"
+
+msgid "HED Endorsements"
+msgstr "HEDの推薦"
+
+msgid "Displaying: "
+msgstr "表示中: "
+
+# SeriesCursor
+msgid "{{seconds}} s"
+msgstr "{{seconds}}秒"
+
+# IntervalSelect
+msgid "Timeline Range View"
+msgstr "タイムライン範囲ビュー"
+
+msgid "Show All"
+msgstr "すべて表示"
+
+# HEDEndorsement
+msgid "No Filter"
+msgstr "フィルターなし"
+
+msgid "With Comment"
+msgstr "コメント付き"
+
+msgid "Tagged By"
+msgstr "タグ付け者"
+
+msgid "Endorsed By"
+msgstr "推薦者"
+
+msgid "Endorse"
+msgstr "支持する"
+
+msgid "Endorsed"
+msgstr "承認された"
+
+msgid "Caveat"
+msgstr "警告"
+
+msgid "Caveat By"
+msgstr "注意"
+
+msgid "Comment"
+msgstr "コメント"
+
+msgid "Select Action"
+msgstr "アクションを選択"
+
+msgid "showing {{numShowing}}/{{numTotal}}"
+msgstr "{{numShowing}}/{{numTotal}}件を表示中"
+
+msgid "Empty list"
+msgstr "空のリスト"
+
+msgid "Tag search..."
+msgstr "タグ検索..."
+
+msgid "Scroll to Selected"
+msgstr "選択した場所までスクロール"
+
+msgid "Jump to Selected"
+msgstr "選択した項目へジャンプ"
+
+msgid "Select Previous"
+msgstr "前を選択"
+
+msgid "Select Next"
+msgstr "次を選択"
+
+msgid "Select and Jump to Previous"
+msgstr "選択して前のページへジャンプ"
+
+msgid "Select and Jump to Next"
+msgstr "選択して次へジャンプ"
+
+msgid "There are no event-level HED tags to endorse."
+msgstr "承認するイベントレベルの HED タグはありません。"
+
+msgid "Edit (Selected) Event"
+msgstr "（選択した）イベントを編集"
+
+msgid "Jump to (Selected) Event"
+msgstr "（選択した）イベントにジャンプ"
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "No comment"
+msgstr "ノーコメント"
+
+msgid "For selected tag:"
+msgstr "選択したタグの場合:"
+
+msgid "Updated!"
+msgstr "更新しました！"
+
+# EventManager
+msgid "Total events in recording {{total}}"
+msgstr "記録中のイベントの合計数 {{total}}"
+
+msgid "Display by:"
+msgstr "表示順:"
+
+msgid "{{label}} search..."
+msgstr "{{label}} 検索..."
+
+# The BIDS value: n/a
+msgid "Ignore {{bidsNA}}"
+msgstr "{{bidsNA}}を無視"
+
+msgid "Exclude <text>{{searchText}}</text>"
+msgstr "<text>{{searchText}}</text>を除外する"
+
+msgid "Too many events to plot for this timeline range"
+msgstr "このタイムライン範囲にプロットするイベントが多すぎます。"
+
+msgid "No events in timeline range."
+msgstr "タイムライン範囲内にイベントがありません。"
+
+msgid "Try selecting a different time range."
+msgstr "別の時間範囲を選択してみてください。"
+
+msgid "Channel"
+msgid_plural "Channels"
+msgstr[0] "チャネル"
+
+# EEGMontage
+msgid "Saved successfully"
+msgstr "保存に成功しました"
+
+msgid "No electrode changes"
+msgstr "電極交換なし"
+
+msgid "Duplicates are not allowed"
+msgstr "重複は許可されません"
+
+msgid "Invalid string format. Expected channel names delimited by \"{{channelDelimiter}}\""
+msgstr "文字列形式が無効です。チャンネル名は「{{channelDelimiter}}」で区切られる必要があります。"
+
+msgid "String contains one or more unrecognized channels"
+msgstr "文字列に認識されないチャネルが 1 つ以上含まれています"
+
+msgid "Montage"
+msgstr "モンタージュ"
+
+msgid "Hold shift to enable electrode selection"
+msgstr "Shiftキーを押したままにすると電極の選択が有効になります"
+
+msgid "Select None"
+msgstr "何も選択しない"
+
+msgid "Select All"
+msgstr "すべて選択"
+
+msgid "Electrode Map"
+msgstr "電極マップ"
+
+msgid "Show indices"
+msgstr "インデックスを表示"
+
+# DatasetTagger / EEGLabSeriesProvider
+msgid "Dataset Tag Manager"
+msgstr "データセットタグマネージャー"
+
+msgid "More about HED"
+msgstr "HEDについてもっと詳しく"
+
+msgid "Click to view the HED schema"
+msgstr "HEDスキーマを表示するにはクリックしてください"
+
+msgid "Open Dataset Tag Manager"
+msgstr "オープンデータセットタグマネージャー"
+
+msgid "View/Edit Tags"
+msgstr "タグの表示/編集"
+
+msgid "Endorse Tags"
+msgstr "タグを推奨する"
+
+msgid "View JSON"
+msgstr "JSONを表示"
+
+msgid "This will undo all changes since your latest submission. You won't be able to revert this!"
+msgstr "最新の送信以降のすべての変更が元に戻されます。元に戻すことはできません。"
+
+msgid "Yes, reset all changes!"
+msgstr "はい、すべての変更をリセットします。"
+
+msgid "There was an error with the response. Please report this incident."
+msgstr "応答にエラーが発生しました。このインシデントを報告してください。"
+
+msgid "Tags updated successfully"
+msgstr "タグが正常に更新されました"
+
+msgid "This action is not permitted."
+msgstr "このアクションは許可されていません。"
+
+msgid "There was an error with the request! Please report this incident."
+msgstr "リクエストにエラーが発生しました。このインシデントを報告してください。"
+
+msgid "You"
+msgstr "自分"
+
+msgid "edited"
+msgstr "編集済み"
+
+msgid "Channel(s) associated with the event"
+msgstr "イベントに関連付けられたチャンネル"
+
+msgid "Endorsement successful"
+msgstr "承認成功"
+
+msgid "Column Name"
+msgstr "列名"
+
+msgid "Column"
+msgid_plural "Columns"
+msgstr[0] "列"
+
+msgid "Select a column"
+msgstr "列を選択"
+
+msgid "<s>{{columnName}}</s> Values"
+msgstr "<s>{{columnName}}</s> 個の値"
+
+msgid "Select a Column Name and Value to Manage HED Tags"
+msgstr "HEDタグを管理するには、列名と値を選択します"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "No Description Available"
+msgstr "説明はありません"
+
+msgid "HED Tags"
+msgstr "HEDタグ"
+
+msgid "Add Tag from HED Schemas"
+msgstr "HEDスキーマからタグを追加する"
+
+msgid "Type to search or select from dropdown"
+msgstr "検索するには入力するか、ドロップダウンから選択してください"
+
+msgid "Show long-form HED tags"
+msgstr "長い形式のHEDタグを表示する"
+
+msgid "※ = Not tagged by Data Authors"
+msgstr "※ = データ作成者によってタグ付けされていない"
+
+msgid "Preview"
+msgstr "プレビュー"
+
+msgid "Tag Mode"
+msgstr "タグモード"
+
+msgid "Group Mode"
+msgstr "グループモード"
+
+msgid "Confirm Group"
+msgstr "グループの確認"
+
+msgid "Ungroup"
+msgstr "グループ解除"
+
+msgid "Submit Changes"
+msgstr "変更を送信"
+
+msgid "Reset Column Changes"
+msgstr "列の変更をリセット"
+
+msgid "Reset All Columns"
+msgstr "すべての列をリセット"
+
+msgid "{{numSelected}} Selected"
+msgstr "{{numSelected}} 個選択済み"
+
+msgid "Select One"
+msgstr "1つ選択"
+
+msgid "Below is the resulting events.json file"
+msgstr "以下は結果として得られる events.json ファイルです。"
+
+# AnnotationForm
+msgid "Fill other tags first"
+msgstr "最初に他のタグを入力してください"
+
+msgid "Warning"
+msgstr "警告"
+
+msgid "Please fill out all required fields"
+msgstr "必須項目をすべてご記入ください"
+
+msgid "Event Updated!"
+msgstr "イベントが更新されました！"
+
+msgid "Event Added!"
+msgstr "イベントを追加しました！"
+
+msgid "Something went wrong!"
+msgstr "問題が発生しました。"
+
+msgid "You won't be able to revert this!"
+msgstr "これを元に戻すことはできません!"
+
+msgid "Event Deleted!"
+msgstr "イベントが削除されました!"
+
+msgid "Tag in current dataset"
+msgid_plural "Tags in current dataset"
+msgstr[0] "現在のデータセットのタグ"
+
+msgid "HED {{hedVersion}} Artifact"
+msgid_plural "HED {{hedVersion}} Artifacts"
+msgstr[0] "現在のデータセットのタグ"
+
+msgid "Edit Event"
+msgstr "イベントを編集"
+
+msgid "Select from Montage"
+msgstr "モンタージュから選択"
+
+msgid "Select Channels"
+msgstr "チャンネルを選択"
+
+msgid "Additional Columns"
+msgstr "追加の列"
+
+msgid "Click this icon to view the latest HED schema"
+msgstr "最新のHEDスキーマを表示するには、このアイコンをクリックしてください"
+
+msgid "Instance"
+msgstr "実例"
+
+msgid "Add tag from:"
+msgstr "タグの追加元:"
+
+msgid "Select Category"
+msgstr "カテゴリーを選択"
+
+msgid "Select {{tagType}}"
+msgstr "{{tagType}}を選択"
+
+msgid "Event Details"
+msgstr "イベントの詳細"
+
+
+# sessions.class.inc
+msgid "Sampling Frequency"
+msgstr "サンプリング周波数"
+
+# Channel Type (ex: EEG, ECG)
+msgid "%s Channel Count"
+msgstr "%s チャンネル数"
+
+msgid "Reference"
+msgstr "参照"
+
+msgid "Powerline Frequency"
+msgstr "電力線周波数"
+
+msgid "Task Name"
+msgstr "タスク名"
+
+msgid "Task Description"
+msgstr "タスクの説明"
+
+msgid "Instructions"
+msgstr "説明書"
+
+msgid "Recording Type"
+msgstr "録音タイプ"
+
+msgid "Recording Split Count"
+msgstr "記録分割数"
+
+msgid "Recording Duration"
+msgstr "録音時間"
+
+msgid "Epoch Length"
+msgstr "エポックの長さ"
+
+msgid "Subject Artefact Description"
+msgstr "主題アーティファクト"
+
+msgid "Head Circumference"
+msgstr "頭囲"
+
+msgid "Placement Scheme"
+msgstr "配置スキーム"
+
+msgid "Ground"
+msgstr "地面"
+
+msgid "Trigger Channel Count"
+msgstr "トリガーチャンネル数"
+
+msgid "Misc Channel Count"
+msgstr "その他のチャンネル数"
+
+msgid "CogAtlas ID"
+msgstr "コグアトラスID"
+
+msgid "CogPO ID"
+msgstr "CogPO ID"
+
+msgid "Institution Name"
+msgstr "機関名"
+
+msgid "Institution Address"
+msgstr "機関の住所"
+
+msgid "Manufacturer"
+msgstr "メーカー"
+
+msgid "Manufacturers Model Name"
+msgstr "メーカー モデル名"
+
+msgid "%s Manufacturer"
+msgstr "%s メーカー"
+
+msgid "%s Manufacturer's Model Name"
+msgstr "%s メーカーモデル名"
+
+msgid "Device Serial Number"
+msgstr "デバイスのシリアル番号"
+
+msgid "Hardware Filters"
+msgstr "ハードウェアフィルター"
+
+msgid "Software Versions"
+msgstr "ソフトウェアバージョン"
+
+msgid "Software Filters"
+msgstr "ソフトウェアフィルター"
+
+msgid "DC Offset Correction"
+msgstr "直流オフセット補正"
+
+msgid "Electrode Groups"
+msgstr "電極グループ"
+
+msgid "Electrical Stimulation"
+msgstr "電気刺激"
+
+msgid "Electrical Stimulation Parameters"
+msgstr "電気刺激パラメータ"
+
+msgid "EEG File(s)"
+msgstr "脳波計ファイル"
+
+msgid "Electrodes"
+msgstr "電極"
+
+msgid "Coordinate System"
+msgstr "座標系"
+
+msgid "Channels"
+msgstr "チャンネル"
+
+msgid "Events"
+msgstr "イベント"
+
+msgid "All Files"
+msgstr "すべてのファイル"
+
+msgid "View Session"
+msgstr "セッションを見る"
