@@ -87,6 +87,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/data_release/locale/ja/LC_MESSAGES/data_release.po \
 	modules/data_release/locale/hi/LC_MESSAGES/data_release.po \
 	modules/electrophysiology_uploader/locale/ja/LC_MESSAGES/electrophysiology_uploader.po \
+  modules/electrophysiology_uploader/locale/hi/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po \
 	modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.po \
 	modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po \

@@ -223,9 +223,6 @@ msgstr "बंद करें"
 msgid "Saving"
 msgstr "सहेजा जा रहा है"
 
-msgid "Are You Sure?"
-msgstr "क्या आप सुनिश्चित हैं?"
-
 msgid "Leaving the form will result in the loss of any information entered."
 msgstr "फॉर्म छोड़ने पर दर्ज की गई सभी जानकारी खो जाएगी।"
 
@@ -267,6 +264,7 @@ msgstr "समय बिंदु परियोजना"
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] "समूह"
+msgstr[1] "समूह"
 
 msgid "Session"
 msgid_plural "Sessions"
@@ -525,6 +523,12 @@ msgstr "लोड हो रहा है..."
 
 msgid "Permission denied"
 msgstr "अनुमति अस्वीकृत"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "कृपया सुनिश्चित करें कि फ़ाइलें {{maxFileSize}} से बड़ी न हों"
+
+msgid "Are You Sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
 
 msgid "Are you sure?"
 msgstr "क्या आप सुनिश्चित हैं?"
