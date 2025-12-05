@@ -92,7 +92,9 @@ msgstr "इमेजिंग"
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr "उम्मीदवार"
+msgid_plural "Candidates"
+msgstr[0] "उम्मीदवार"
+msgstr[1] "उम्मीदवारों"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
@@ -206,11 +208,26 @@ msgstr "चयनित"
 msgid "Cancel"
 msgstr "रद्द करें"
 
+msgid "Clear"
+msgstr "हटाना"
+
+msgid "Proceed"
+msgstr "आगे बढ़ना"
+
 msgid "Success!"
 msgstr "सफलता!"
 
 msgid "Close"
 msgstr "बंद करें"
+
+msgid "Saving"
+msgstr "सहेजा जा रहा है"
+
+msgid "Are You Sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "फॉर्म छोड़ने पर दर्ज की गई सभी जानकारी खो जाएगी।"
 
 # Common candidate terms
 msgid "PSCID"
@@ -253,7 +270,9 @@ msgstr[0] "समूह"
 msgstr[1] "समूह"
 
 msgid "Session"
-msgstr "सत्र"
+msgid_plural "Sessions"
+msgstr[0] "सत्र"
+msgstr[1] "सत्र"
 
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
@@ -510,6 +529,7 @@ msgstr "अनुमति अस्वीकृत"
 
 msgid "Please make sure files are not larger than {{maxFileSize}}"
 msgstr "कृपया सुनिश्चित करें कि फ़ाइलें {{maxFileSize}} से बड़ी न हों"
+
 msgid "Are You Sure?"
 msgstr "क्या आप सुनिश्चित हैं?"
 
@@ -522,11 +542,6 @@ msgstr "हाँ, मैं सुनिश्चित हूँ!"
 msgid "No, cancel it!"
 msgstr "नहीं, रद्द करें!"
 
-msgid "Leaving the form will result in the loss of any information entered."
-msgstr "फ़ॉर्म छोड़ने से दर्ज की गई सभी जानकारी खो जाएगी।"
-
-msgid "Proceed"
-msgstr "आगे बढ़ें"
-
-msgid "Saving"
-msgstr "सहेजा जा रहा है"
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr "कोई विकल्प नहीं"

@@ -115,7 +115,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                         as ParentSpecimenIDs,
                       GROUP_CONCAT(DISTINCT bc2.Barcode)
                         as ParentSpecimenBarcodes,
-                      s.CandID as CandidateID,
+                      s.CandidateID,
                       c.PSCID as CandidatePSCID,
                       bs.SessionID,
                       s.CenterID as SessionCenterID,
@@ -154,7 +154,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
                LEFT JOIN session s
                  ON bs.SessionID=s.ID
                LEFT JOIN candidate c
-                 ON s.CandID=c.CandID
+                 ON s.CandidateID=c.ID
                LEFT JOIN biobank_specimen_pool_rel bspor
                  ON bs.SpecimenID=bspor.SpecimenID
                LEFT JOIN biobank_specimen_collection bsc
@@ -561,7 +561,7 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
             SELECT IFNULL(MAX(bs.SampleNumber), 0) AS max_sample_number
             FROM biobank_specimen bs
             JOIN session s ON bs.SessionID = s.ID
-            WHERE s.CandID = :candId
+            WHERE s.CandidateID = :candId
         ";
 
         $sampleNumber = $this->db->pselectOneInt($query, ['candId' => $candId]);
