@@ -68,6 +68,7 @@ class Card extends Component {
           style={{overflow: 'auto'}}
           panelSize={this.props.cardSize}
           collapsing={this.props.collapsing}
+          maxHeight={this.props?.maxHeight}
         >
           <div
             onClick={this.handleClick}
@@ -94,6 +95,7 @@ Card.propTypes = {
   cardSize: PropTypes.string,
   children: PropTypes.node,
   collapsing: PropTypes.bool,
+  maxHeight: PropTypes.string,
 };
 
 Card.defaultProps = {

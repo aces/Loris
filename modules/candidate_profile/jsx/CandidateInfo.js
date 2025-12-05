@@ -165,7 +165,7 @@ class CandidateInfo extends Component {
 
     const renderTerm = (label, value, info) => {
       const cardStyle = {
-        width: info.width || '6em',
+        width: info.width || 'unset',
         padding: '1rem 0',
         marginLeft: '0.5rem',
         marginRight: '0.5rem',

@@ -163,7 +163,6 @@ Panel.defaultProps = {
   height: '100%',
   class: 'panel-primary',
   collapsing: true,
-  maxHeight: '85vh',
 };
 
 export default Panel;
