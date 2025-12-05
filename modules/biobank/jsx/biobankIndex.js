@@ -156,7 +156,7 @@ class BiobankIndex extends Component {
   updateSpecimen(specimen) {
     const errors = this.validateSpecimen(specimen);
     if (!isEmpty(errors)) {
-      return Promise.reject({specimen: errors});
+      return Promise.rejecthis.props.t({specimen: errors}, {ns: 'biobank'});
     }
 
     return post(specimen, this.props.specimenAPI, 'PUT')
@@ -187,7 +187,7 @@ class BiobankIndex extends Component {
     errors.specimen = this.validateSpecimen(list[0].specimen);
     errors.container = this.validateContainer(list[0].container);
     if (!isEmpty(errors.specimen) || !isEmpty(errors.container)) {
-      return Promise.reject(errors);
+      return Promise.rejecthis.props.t(errors, {ns: 'biobank'});
     }
 
     const specimenList = list
@@ -208,7 +208,7 @@ class BiobankIndex extends Component {
   updateContainer(container) {
     const errors = this.validateContainer(container);
     if (!isEmpty(errors)) {
-      return Promise.reject({container: errors});
+      return Promise.rejecthis.props.t({container: errors}, {ns: 'biobank'});
     }
 
     return post(container, this.props.containerAPI, 'PUT')
@@ -237,13 +237,13 @@ class BiobankIndex extends Component {
     const increment = (coord) => {
       coord++;
       if (childCoordinates.hasOwnProperty(coord)) {
-        coord = increment(coord);
+        coord = incrementhis.props.t(coord, {ns: 'biobank'});
       }
 
       return coord;
     };
 
-    return increment(coordinate);
+    return incrementhis.props.t(coordinate, {ns: 'biobank'});
   }
 
   /**
@@ -297,7 +297,7 @@ class BiobankIndex extends Component {
           current.container.parentContainerId
         );
         if (coord <= capacity) {
-          container.coordinate = parseInt(coord);
+          container.coordinate = parseInthis.props.t(coord, {ns: 'biobank'});
         } else {
           container.coordinate = null;
         }
@@ -333,7 +333,7 @@ class BiobankIndex extends Component {
     }, 0);
 
     if (isError) {
-      return Promise.reject(errors);
+      return Promise.rejecthis.props.t(errors, {ns: 'biobank'});
     }
 
     const printBarcodes = (entities) => {
@@ -411,7 +411,7 @@ class BiobankIndex extends Component {
     });
 
     if (isError) {
-      return Promise.reject(errors);
+      return Promise.rejecthis.props.t(errors, {ns: 'biobank'});
     }
 
     return post(list, this.props.containerAPI, 'POST')
@@ -448,7 +448,7 @@ class BiobankIndex extends Component {
 
     const errors = this.validatePool(pool);
     if (!isEmpty(errors)) {
-      return Promise.reject(errors);
+      return Promise.rejecthis.props.t(errors, {ns: 'biobank'});
     }
 
     return post(pool, this.props.poolAPI, 'POST')
@@ -468,7 +468,7 @@ class BiobankIndex extends Component {
 
     const errors = this.validateSpecimen(list[0]);
     if (!isEmpty(errors)) {
-      return Promise.reject(errors);
+      return Promise.rejecthis.props.t(errors, {ns: 'biobank'});
     }
 
     return Promise.all(saveList.map((item) => item()))
@@ -476,7 +476,7 @@ class BiobankIndex extends Component {
         (data) => Promise.all(
           data.map((item) => this.setData('specimens', item))
         )
-      ).then(() => Swal.fire('Batch Preparation Successful!', '', 'success'));
+      ).then(() => Swal.fire(this.props.t('Batch Preparation Successful!', {ns: 'biobank'}), '', 'success'));
   }
 
   /**
@@ -503,27 +503,27 @@ class BiobankIndex extends Component {
     required.map((field) => {
       // TODO: seems like for certain cases it needs to be !== null
       if (!specimen[field]) {
-        errors[field] = 'This field is required.';
+        errors[field] = this.props.t('This field is required.', {ns: 'biobank'});
       }
     });
 
     float.map((field) => {
-      if (isNaN(parseInt(specimen[field])) || !isFinite(specimen[field])) {
-        errors[field] = 'This field must be a number. ';
+      if (isNaN(parseInthis.props.t(specimen[field], {ns: 'biobank'})) || !isFinite(specimen[field])) {
+        errors[field] = this.props.t('This field must be a number. ', {ns: 'biobank'});
       }
     });
 
     positive.map((field) => {
       if (specimen[field] != null && specimen[field] < 0) {
-        errors[field] = 'This field must not be negative.';
+        errors[field] = this.props.t('This field must not be negative.', {ns: 'biobank'});
       }
     });
 
     integer.map((field) => {
       if (specimen[field] != null
-          && !/^\+?(0|[1-9]\d*)$/.test(specimen[field])
+          && !/^\+?(0|[1-9]\d*)$/.testhis.props.t(specimen[field], {ns: 'biobank'})
       ) {
-        errors[field] = 'This field must be an integer.';
+        errors[field] = this.props.t('This field must be an integer.', {ns: 'biobank'});
       }
     });
 
@@ -594,27 +594,27 @@ class BiobankIndex extends Component {
     // validate required fields
     required && required.map((field) => {
       if (!process[field]) {
-        errors[field] = 'This field is required! ';
+        errors[field] = this.props.t('This field is required! ', {ns: 'biobank'});
       }
     });
 
     // validate floats
     number && number.map((field) => {
-      if (isNaN(parseInt(process[field])) || !isFinite(process[field])) {
-        errors[field] = 'This field must be a number! ';
+      if (isNaN(parseInthis.props.t(process[field], {ns: 'biobank'})) || !isFinite(process[field])) {
+        errors[field] = this.props.t('This field must be a number! ', {ns: 'biobank'});
       }
     });
 
     // validate date
     regex = /^[12]\d{3}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
-    if (regex.test(process.date) === false ) {
-      errors.date = 'This field must be a valid date! ';
+    if (regex.testhis.props.t(process.date, {ns: 'biobank'}) === false ) {
+      errors.date = this.props.t('This field must be a valid date! ', {ns: 'biobank'});
     }
 
     // validate time
     regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-    if (regex.test(process.time) === false) {
-      errors.time = 'This field must be a valid time! ';
+    if (regex.testhis.props.t(process.time, {ns: 'biobank'}) === false) {
+      errors.time = this.props.t('This field must be a valid time! ', {ns: 'biobank'});
     }
 
     // validate custom attributes
@@ -633,31 +633,31 @@ class BiobankIndex extends Component {
           // validate required
             if (attribute.required == 1
               && !process.data[attribute.id]) {
-              errors.data[attribute.id] = 'This field is required!';
+              errors.data[attribute.id] = this.props.t('This field is required!', {ns: 'biobank'});
             }
 
             const dataTypeId= attribute.datatypeId;
             // validate number
             if (datatypes[dataTypeId].datatype === 'number') {
-              if (isNaN(parseInt(process.data[attribute.id])) ||
+              if (isNaN(parseInthis.props.t(process.data[attribute.id], {ns: 'biobank'})) ||
                 !isFinite(process.data[attribute.id])) {
-                errors.data[attribute.id] = 'This field must be a number!';
+                errors.data[attribute.id] = this.props.t('This field must be a number!', {ns: 'biobank'});
               }
             }
 
             // validate date
             if (datatypes[dataTypeId].datatype === 'date') {
               regex = /^[12]\d{3}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
-              if (regex.test(process.data[attribute.id]) === false ) {
-                errors.data[attribute.id] = 'This field must be a valid date! ';
+              if (regex.testhis.props.t(process.data[attribute.id], {ns: 'biobank'}) === false ) {
+                errors.data[attribute.id] = this.props.t('This field must be a valid date! ', {ns: 'biobank'});
               }
             }
 
             // validate time
             if (datatypes[dataTypeId].datatype === 'time') {
               regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-              if (regex.test(process.data[attribute.id]) === false) {
-                errors.data[attribute.id] = 'This field must be a valid time! ';
+              if (regex.testhis.props.t(process.data[attribute.id], {ns: 'biobank'}) === false) {
+                errors.data[attribute.id] = this.props.t('This field must be a valid time! ', {ns: 'biobank'});
               }
             }
 
@@ -696,19 +696,19 @@ class BiobankIndex extends Component {
 
     required.map((field) => {
       if (!container[field]) {
-        errors[field] = 'This field is required! ';
+        errors[field] = this.props.t('This field is required! ', {ns: 'biobank'});
       }
     });
 
     float.map((field) => {
-      if (isNaN(parseInt(container[field])) || !isFinite(container[field])) {
-        errors[field] = 'This field must be a number! ';
+      if (isNaN(parseInthis.props.t(container[field], {ns: 'biobank'})) || !isFinite(container[field])) {
+        errors[field] = this.props.t('This field must be a number! ', {ns: 'biobank'});
       }
     });
 
     Object.values(this.state.data.containers).map((c) => {
       if (container.barcode === c.barcode && container.id !== c.id) {
-        errors.barcode = 'Barcode must be unique.';
+        errors.barcode = this.props.t('Barcode must be unique.', {ns: 'biobank'});
       }
     });
 
@@ -733,28 +733,28 @@ class BiobankIndex extends Component {
 
     required.forEach((field) => {
       if (!pool[field]) {
-        errors[field] = 'This field is required! ';
+        errors[field] = this.props.t('This field is required! ', {ns: 'biobank'});
       }
     });
 
-    if (isNaN(parseInt(pool.quantity)) || !isFinite(pool.quantity)) {
-      errors.quantity = 'This field must be a number! ';
+    if (isNaN(parseInthis.props.t(pool.quantity, {ns: 'biobank'})) || !isFinite(pool.quantity)) {
+      errors.quantity = this.props.t('This field must be a number! ', {ns: 'biobank'});
     }
 
     // validate date
     regex = /^[12]\d{3}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
-    if (regex.test(pool.date) === false ) {
-      errors.date = 'This field must be a valid date! ';
+    if (regex.testhis.props.t(pool.date, {ns: 'biobank'}) === false ) {
+      errors.date = this.props.t('This field must be a valid date! ', {ns: 'biobank'});
     }
 
     // validate time
     regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-    if (regex.test(pool.time) === false) {
-      errors.time = 'This field must be a valid time! ';
+    if (regex.testhis.props.t(pool.time, {ns: 'biobank'}) === false) {
+      errors.time = this.props.t('This field must be a valid time! ', {ns: 'biobank'});
     }
 
     if (pool.specimenIds == null || pool.specimenIds.length < 2) {
-      errors.total = 'Pooling requires at least 2 specimens';
+      errors.total = this.props.t('Pooling requires at least 2 specimens', {ns: 'biobank'});
     }
 
     return errors;

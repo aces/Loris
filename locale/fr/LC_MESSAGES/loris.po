@@ -147,6 +147,11 @@ msgstr "Afficher les filtres avancés"
 msgid "Hide Advanced Filters"
 msgstr "Masquer les filtres avancés"
 
+msgid "Action"
+msgid_plural "Actions"
+msgstr[0] "Action"
+msgstr[1] "Actions"
+
 # Common swal labels
 msgid "Cancel"
 msgstr "Annuler"

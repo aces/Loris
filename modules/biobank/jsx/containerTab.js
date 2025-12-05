@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -52,11 +53,11 @@ class ContainerTab extends Component {
    */
   mapContainerColumns(column, value) {
     switch (column) {
-    case 'Type':
+    case this.props.t('Type', {ns: 'biobank'}):
       return this.props.options.container.types[value].label;
-    case 'Status':
+    case this.props.t('Status', {ns: 'biobank'}):
       return this.props.options.container.stati[value].label;
-    case 'Site':
+    case this.props.t('Site', {ns: 'biobank'}):
       return this.props.options.centers[value];
     default:
       return value;
@@ -74,9 +75,9 @@ class ContainerTab extends Component {
   formatContainerColumns(column, value, row) {
     value = this.mapContainerColumns(column, value);
     switch (column) {
-    case 'Barcode':
+    case this.props.t('Barcode', {ns: 'biobank'}):
       return <td><Link to={`/barcode=${value}`}>{value}</Link></td>;
-    case 'Status':
+    case this.props.t('Status', {ns: 'biobank'}):
       const style = {};
       switch (value) {
       case 'Available':
@@ -93,7 +94,7 @@ class ContainerTab extends Component {
         break;
       }
       return <td style={style}>{value}</td>;
-    case 'Parent Barcode':
+    case this.props.t('Parent Barcode', {ns: 'biobank'}):
       return <td><Link to={`/barcode=${value}`}>{value}</Link></td>;
     default:
       return <td>{value}</td>;
@@ -145,26 +146,26 @@ class ContainerTab extends Component {
     );
 
     const fields = [
-      {label: 'Barcode', show: true, filter: {
+      {label: this.props.t('Barcode', {ns: 'biobank'}), show: true, filter: {
         name: 'barcode',
         type: 'text',
       }},
-      {label: 'Type', show: true, filter: {
+      {label: this.props.t('Type', {ns: 'biobank'}), show: true, filter: {
         name: 'type',
         type: 'select',
         options: containerTypesNonPrimary,
       }},
-      {label: 'Status', show: true, filter: {
+      {label: this.props.t('Status', {ns: 'biobank'}), show: true, filter: {
         name: 'status',
         type: 'select',
         options: stati,
       }},
-      {label: 'Site', show: true, filter: {
+      {label: this.props.t('Site', {ns: 'biobank'}), show: true, filter: {
         name: 'currentSite',
         type: 'select',
         options: this.props.options.centers,
       }},
-      {label: 'Parent Barcode', show: true, filter: {
+      {label: this.props.t('Parent Barcode', {ns: 'biobank'}), show: true, filter: {
         name: 'parentBarcode',
         type: 'text',
       }},
@@ -175,12 +176,12 @@ class ContainerTab extends Component {
     const actions = [
       {
         name: 'goToContainer',
-        label: 'Go To Container',
+        label: this.props.t('Go To Container', {ns: 'biobank'}),
         action: openSearchContainer,
       },
       {
         name: 'addContainer',
-        label: 'Add Container',
+        label: this.props.t('Add Container', {ns: 'biobank'}),
         action: openContainerForm,
         show: loris.userHasPermission('biobank_container_create'),
       },
@@ -198,7 +199,7 @@ class ContainerTab extends Component {
           progress={this.props.loading}
         />
         <Search
-          title='Go To Container'
+          title={this.props.t('Go To Container', {ns: 'biobank'})}
           show={editable.searchContainer}
           onClose={this.clearEditable}
           barcodes={barcodesNonPrimary}
@@ -242,4 +243,4 @@ ContainerTab.propTypes = {
   createContainers: PropTypes.func.isRequired,
 };
 
-export default ContainerTab;
+export default withTranslation(['biobank', 'loris'])(ContainerTab);

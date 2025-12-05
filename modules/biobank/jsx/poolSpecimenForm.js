@@ -1,4 +1,5 @@
 import Modal from 'Modal';
+import {withTranslation} from 'react-i18next';
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {mapFormOptions, clone, isEmpty} from './helpers.js';
@@ -153,9 +154,9 @@ class PoolSpecimenForm extends React.Component {
     ) {
       Swal.fire(
         {
-          title: 'Oops!',
-          text: 'Specimens must be of the same PSCID, ' +
-                    'Visit Label, Type and Center',
+          title: this.props.t('Oops!', {ns: 'biobank'}),
+          text: t(`Specimens must be of the same PSCID,
+                    Visit Label, Type and Center`),
           type: 'warning',
         }
       );
@@ -203,17 +204,17 @@ class PoolSpecimenForm extends React.Component {
       <div className='row'>
         <div className='col-sm-10 col-sm-offset-1'>
           <StaticElement
-            label='Pooling Note'
-            text="Select or Scan the specimens to be pooled. Specimens must
+            label={this.props.t('Pooling Note', {ns: 'biobank'})}
+            text={t(`Select or Scan the specimens to be pooled. Specimens must
                   have a Status of 'Available', have a Quantity of greater
                   than 0, and share the same Type, PSCID, Visit Label
                   and Current Site. Pooled specimens cannot already belong to
                   a pool. Once pooled, the Status of specimen will be changed
-                  to 'Dispensed' and there Quantity set to '0'"
+                  to 'Dispensed' and there Quantity set to '0'`)}
           />
           <SearchableDropdown
             name='typeId'
-            label='Specimen Type'
+            label={this.props.t('Specimen Type', {ns: 'biobank'})}
             onUserInput={this.setFilter}
             disabled={!isEmpty(list)}
             value={filter.typeId}
@@ -221,7 +222,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <SearchableDropdown
             name='candidateId'
-            label='PSCID'
+            label={this.props.t('PSCID', {ns: 'biobank'})}
             onUserInput={this.setFilter}
             disabled={!isEmpty(list)}
             value={filter.candidateId}
@@ -229,7 +230,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <SearchableDropdown
             name='sessionId'
-            label='Visit Label'
+            label={this.props.t('Visit Label', {ns: 'biobank'})}
             onUserInput={this.setFilter}
             disabled={!isEmpty(list) || !filter.candidateId}
             value={filter.sessionId}
@@ -264,7 +265,7 @@ class PoolSpecimenForm extends React.Component {
           <div className='form-top'/>
           <TextboxElement
             name='label'
-            label='Label'
+            label={this.props.t('Label', {ns: 'biobank'})}
             onUserInput={this.setPool}
             required={true}
             value={pool.label}
@@ -272,7 +273,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <TextboxElement
             name='quantity'
-            label='Quantity'
+            label={this.props.t('Quantity', {ns: 'biobank'})}
             onUserInput={this.setPool}
             required={true}
             value={pool.quantity}
@@ -280,7 +281,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <SelectElement
             name='unitId'
-            label='Unit'
+            label={this.props.t('Unit', {ns: 'biobank'})}
             options={specimenUnits}
             onUserInput={this.setPool}
             required={true}
@@ -289,7 +290,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <DateElement
             name='date'
-            label='Date'
+            label={this.props.t('Date', {ns: 'biobank'})}
             onUserInput={this.setPool}
             required={true}
             value={pool.date}
@@ -297,7 +298,7 @@ class PoolSpecimenForm extends React.Component {
           />
           <TimeElement
             name='time'
-            label='Time'
+            label={this.props.t('Time', {ns: 'biobank'})}
             onUserInput={this.setPool}
             required={true}
             value={pool.time}
@@ -320,7 +321,7 @@ class PoolSpecimenForm extends React.Component {
     };
     return (
       <Modal
-        title='Pool Specimens'
+        title={this.props.t('Pool Specimens', {ns: 'biobank'})}
         show={this.props.show}
         onClose={handleClose}
         onSubmit={handleSubmit}
@@ -413,7 +414,7 @@ class BarcodeInput extends PureComponent {
     return (
       <SearchableDropdown
         name={'containerId'}
-        label={'Specimen'}
+        label={this.props.t('Specimen', {ns: 'biobank'})}
         onUserInput={handleInput}
         options={barcodesPrimary}
         value={containerId}
@@ -465,4 +466,4 @@ BarcodeInput.propTypes = {
   setPoolList: PropTypes.func.isRequired,
 };
 
-export default PoolSpecimenForm;
+export default withTranslation(['biobank', 'loris'])(PoolSpecimenForm);
