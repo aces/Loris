@@ -133,6 +133,12 @@ msgstr "{{totalChannels}} のうち {{channelsInView}} まで"
 msgid "Time (s)"
 msgstr "時間（秒）"
 
+msgid "No Offset"
+msgstr "オフセットなし"
+
+msgid "DC Offset"
+msgstr "直流オフセット"
+
 msgid "Spread"
 msgstr "広める"
 
