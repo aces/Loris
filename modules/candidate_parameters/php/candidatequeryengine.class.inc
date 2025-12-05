@@ -28,43 +28,43 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         $sesscope  = new Scope(Scope::SESSION);
 
         $ids = new \LORIS\Data\Dictionary\Category(
-            dgettext("candidate_parameters", "Identifiers"),
-            dgettext("candidate_parameters", "Candidate Identifiers")
+            "Identifiers",
+            "Candidate Identifiers"
         );
 
         $ids = $ids->withItems(
             [
                 new DictionaryItem(
-                    dgettext("loris", "DCCID"),
-                    dgettext("candidate_parameters", "LORIS Candidate Identifier"),
+                    "CandID",
+                    "LORIS Candidate Identifier",
                     $candscope,
                     new \LORIS\Data\Types\IntegerType(999999),
                     new Cardinality(Cardinality::UNIQUE),
                 ),
                 new DictionaryItem(
-                    dgettext("loris", "PSCID"),
-                    dgettext("candidate_parameters", "Project Candidate Identifier"),
+                    "PSCID",
+                    "Project Candidate Identifier",
                     $candscope,
                     new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::UNIQUE),
                 ),
                 new DictionaryItem(
                     "flagged_caveatemptor",
-                    dgettext("candidate_parameters", "Caveat Emptor Flag for Candidate"),
+                    "Caveat Emptor Flag for Candidate",
                     $candscope,
                     new \LORIS\Data\Types\Enumeration("true", "false"),
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "flagged_reason",
-                    dgettext("candidate_parameters", "Reason for Caveat Emptor Flag Candidate"),
+                    "Reason for Caveat Emptor Flag Candidate",
                     $candscope,
                     new \LORIS\Data\Types\StringType(255), // FIXME: Make an enum
                     new Cardinality(Cardinality::SINGLE),
                 ),
                 new DictionaryItem(
                     "flagged_other",
-                    dgettext("candidate_parameters", "Other reason for Caveat Emptor Flag Candidate, please specify"),
+                    "Other reason for Caveat Emptor Flag Candidate, please specify",
                     $candscope,
                     new \LORIS\Data\Types\StringType(255),
                     new Cardinality(Cardinality::SINGLE),
@@ -73,16 +73,16 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         );
 
         $demographics = new \LORIS\Data\Dictionary\Category(
-            dgettext("candidate_parameters", "Demographics"),
-            dgettext("candidate_parameters", "Candidate Demographics"),
+            "Demographics",
+            "Candidate Demographics",
         );
         $sexList      = array_keys(\Utility::getSexList());
         $t            = new Enumeration(...$sexList);
         $demographics = $demographics->withItems(
             [
                 new DictionaryItem(
-                    dgettext("loris", "DoB"),
-                    dgettext("loris", "Date of Birth"),
+                    "DoB",
+                    "Date of Birth",
                     $candscope,
                     new \LORIS\Data\Types\DateType(),
                     new Cardinality(Cardinality::SINGLE),
