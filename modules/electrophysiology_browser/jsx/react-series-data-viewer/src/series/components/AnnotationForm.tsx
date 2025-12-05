@@ -20,6 +20,7 @@ import EEGMontage from "./EEGMontage";
 import swal from 'sweetalert2';
 import {InfoIcon} from "./components";
 import {colorOrder} from "../../color";
+import {useTranslation} from "react-i18next";
 
 
 type CProps = {
@@ -92,6 +93,7 @@ const AnnotationForm = ({
   eventChannels,
   setEventChannels,
 }: CProps) => {
+  const {t} = useTranslation();
   const [eventInterval, setEventInterval] = useState<(number | string)[]>(
     timeSelection ?? ['', '']
   );
@@ -272,7 +274,11 @@ const AnnotationForm = ({
     if (newTags.find((tag) => {
       return tag.value === '';
     })) {
-      setAnnoMessage('Fill other tags first');
+      setAnnoMessage(t(
+        'Fill other tags first', {
+          ns: 'electrophysiology_browser'
+        }
+      ));
       setTimeout(() => {
         setAnnoMessage('');
       }, 2000);
@@ -381,8 +387,16 @@ const AnnotationForm = ({
     // Validate inputs
     if (!label || !validateTimeRange(eventInterval)) {
       swal.fire(
-        'Warning',
-        'Please fill out all required fields',
+        t(
+          'Warning', {
+            ns: 'electrophysiology_browser'
+          }
+        ),
+        t(
+          'Please fill out all required fields', {
+            ns: 'electrophysiology_browser'
+          }
+        ),
         'warning'
       );
       setIsSubmitted(false);
@@ -509,7 +523,11 @@ const AnnotationForm = ({
           AdditionalMembers: hedTag.AdditionalMembers,
           TaggedBy: hedTag.TaggedBy,
           TaggerName: hedTag.TaggerName === 'Origin'
-            ? 'Data Authors'
+            ? t(
+              'Data Authors', {
+                ns: 'electrophysiology_browser'
+              }
+            )
             : hedTag.TaggerName,
           Endorsements: data.hed_endorsements
             .filter((endorsement) => {
@@ -557,9 +575,14 @@ const AnnotationForm = ({
       }
 
       // Display success message
-      setAnnoMessage(currentAnnotation ?
-        'Event Updated!' :
-        'Event Added!');
+      setAnnoMessage(
+        t(currentAnnotation
+          ? 'Event Updated!'
+          : 'Event Added!', {
+            ns: 'electrophysiology_browser'
+          }
+        )
+      );
       setCurrentAnnotation(newAnnotation);
 
       // handleReset();
@@ -575,14 +598,20 @@ const AnnotationForm = ({
       // Display error message
       if (error.status === 401) {
         swal.fire(
-          'Unauthorized',
-          'This action is not permitted.',
+          t('Unauthorized', {ns: 'loris'}),
+          t(
+            'This action is not permitted.', {
+              ns: 'electrophysiology_browser'
+            }
+          ),
           'error'
         );
       } else {
         swal.fire(
-          'Error',
-          'Something went wrong!',
+          t('Error!', {ns: 'loris'}),
+          t('Something went wrong!', {
+            ns: 'electrophysiology_browser'
+          }),
           'error'
         );
       }
@@ -602,8 +631,10 @@ const AnnotationForm = ({
       };
 
       swal.fire({
-        title: 'Are you sure?',
-        text: 'You won\'t be able to revert this!',
+        title: t('Are you sure?', {ns: 'loris'}),
+        text: t('You won\'t be able to revert this!', {
+          ns: 'electrophysiology_browser'
+        }),
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -633,8 +664,10 @@ const AnnotationForm = ({
 
               // Display success message
               swal.fire(
-                'Success',
-                'Event Deleted!',
+                t('Success', {ns: 'loris'}),
+                t('Event Deleted!', {
+                  ns: 'electrophysiology_browser'
+                }),
                 'success'
               );
 
@@ -648,8 +681,10 @@ const AnnotationForm = ({
             console.error(error);
             // Display error message
             swal.fire(
-              'Error',
-              'Something went wrong!',
+              t('Error!', {ns: 'loris'}),
+              t('Something went wrong!', {
+                ns: 'electrophysiology_browser'
+              }),
               'error'
             );
           });
@@ -669,11 +704,18 @@ const AnnotationForm = ({
   const addHedTagOptions = [
     {
       type: 'DATASET',
-      value: 'Tags in current dataset',
+      value: t('Tag in current dataset', {
+        ns: 'electrophysiology_browser',
+        count: 99,
+      }),
     },
     {
       type: 'ARTIFACTS',
-      value: 'HED 8.3.0 Artifacts',
+      value: t('HED {{hedVersion}} Artifact', {
+        ns: 'electrophysiology_browser',
+        hedVersion: '8.3.0',
+        count: 99,
+      }),
     },
   ]
 
@@ -812,7 +854,11 @@ const AnnotationForm = ({
                 flexBasis: '40%',
                 textAlign: 'right',
               }}>
-                Tagged By:
+                {t(
+                  'Tagged By', {
+                    ns: 'electrophysiology_browser'
+                  }
+                )}:
               </div>
               <div style={{
                 flexBasis: '60%',
@@ -831,7 +877,11 @@ const AnnotationForm = ({
                 flexBasis: '40%',
                 textAlign: 'right',
               }}>
-                Endorsed By:
+                {t(
+                  'Endorsed By', {
+                    ns: 'electrophysiology_browser'
+                  }
+                )}:
               </div>
               <div style={{
                 flexBasis: '60%',
@@ -992,10 +1042,18 @@ const AnnotationForm = ({
           borderTopLeftRadius: 0,
           }}
       >
-        {currentAnnotation ? 'Edit Event' : 'Add Event'}
+        {t(
+          currentAnnotation ? 'Edit Event' : 'Add Event', {
+            ns: 'electrophysiology_browser'
+          }
+        )}
       </div>
       <div className="panel-body">
-        <label style={{ fontSize: '16px', }}>Event Details</label>
+        <label style={{ fontSize: '16px', }}>{t(
+          'Event Details', {
+            ns: 'electrophysiology_browser'
+          }
+        )}</label>
         <div className="form-row">
           <TextboxElement
             name="event-name"
@@ -1104,7 +1162,14 @@ const AnnotationForm = ({
                 }}
                 >
                 <div className='flex-basis-40'>
-                  <label className="control-label">channels</label>
+                  <label className="control-label">
+                    {t(
+                      'Channel', {
+                        ns: 'electrophysiology_browser',
+                        count: 99,
+                      }
+                    ).toString().toLowerCase()}
+                  </label>
                 </div>
                 <div
                   id='channel-selector-montage'
@@ -1119,10 +1184,18 @@ const AnnotationForm = ({
                     className="btn btn-primary btn-sm"
                     style={{ whiteSpace: 'normal', }}
                   >
-                    Select from Montage
+                    {t(
+                      'Select from Montage', {
+                        ns: 'electrophysiology_browser'
+                      }
+                    )}
                   </button>
                   <Modal
-                    title='Select Channels'
+                    title={t(
+                      'Select Channels', {
+                        ns: 'electrophysiology_browser'
+                      }
+                    )}
                     throwWarning={throwChannelEditWarning}
                     onClose={() => { setChannelSelectorVisible(false); }}
                     show={channelSelectorVisible}
@@ -1218,7 +1291,10 @@ const AnnotationForm = ({
                     class={'panel-primary additional-columns-panel'}
                     title={
                       <span style={{ fontWeight: 'bold', }}>
-                      Additional Columns
+                        {t('Additional Columns', {
+                            ns: 'electrophysiology_browser'
+                          }
+                        )}
                     </span>
                     }
                     initCollapsed={true}
@@ -1283,7 +1359,10 @@ const AnnotationForm = ({
               >
               HED
               <InfoIcon
-                title='Click this icon to view the latest HED schema'
+                title={t('Click this icon to view the latest HED schema', {
+                    ns: 'electrophysiology_browser'
+                  }
+                )}
                 url='https://www.hedtags.org/display_hed.html'
               />
             </label>
@@ -1295,7 +1374,10 @@ const AnnotationForm = ({
                     .some(hedTag => hedTag.TaggerName !==  'Data Authors')
                 ) && (
                   <>
-                    ※ = Not tagged by Data Authors
+                    {t('※ = Not tagged by Data Authors', {
+                        ns: 'electrophysiology_browser'
+                      }
+                    )}
                   </>
                 )
               }
@@ -1308,7 +1390,12 @@ const AnnotationForm = ({
                 currentAnnotation && currentAnnotation.hed &&
                 getTagsForEpoch(currentAnnotation, datasetTags, hedSchema).length > 0 && (
                   <>
-                    <div style={{clear: 'both'}}>Dataset</div>
+                    <div style={{clear: 'both'}}>
+                      {t('Dataset', {
+                          ns: 'electrophysiology_browser'
+                        }
+                      )}
+                    </div>
                     {
                       buildHEDBadges(
                         getTagsForEpoch(currentAnnotation, datasetTags, hedSchema),
@@ -1328,7 +1415,12 @@ const AnnotationForm = ({
                     && currentAnnotation.hed.length > 0
                   ) || newTags.length > 0
                 ) && (
-                    <div style={{clear: 'both'}}>Instance</div>
+                    <div style={{clear: 'both'}}>
+                      {t('Instance', {
+                          ns: 'electrophysiology_browser'
+                        }
+                      )}
+                    </div>
                 )
               }
               {
@@ -1342,7 +1434,10 @@ const AnnotationForm = ({
               }
               <div style={{ marginLeft: '5px', }}>
                 <div style={{ fontWeight: 'bold' }}>
-                  Add tag from:
+                  {t('Add tag from:', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}
                 </div>
                 <SelectElement
                   name='select-add-hed'
@@ -1350,7 +1445,9 @@ const AnnotationForm = ({
                   value={''}
                   options={addHedTagOptions}
                   emptyOption={true}
-                  emptyText={`Select Category`}
+                  emptyText={t('Select Category', {
+                    ns: 'electrophysiology_browser'
+                  })}
                   emptyTextClass={'select-tag-text'}
                   required={false}
                   sortByValue={false}
@@ -1368,15 +1465,18 @@ const AnnotationForm = ({
               }}>
                 {
                   newTags.map((tag, tagIndex) => {
-                    const emptyText = `Select ${
-                      addHedTagOptions.find((option) => {
-                        return option.type === newTags[tagIndex].type;
-                      })
-                        .value  // Plural -- make singular
-                        .split(' ')
-                        .map((s, i) => s.slice(-1) === 's' ? s.slice(0, -1) : s)
-                        .join(' ')
-                    }`;
+                    const emptyText = t('Select {{tagType}}', {
+                      ns: 'electrophysiology_browser',
+                      tagType: t(
+                        addHedTagOptions.find((option) => {
+                          return option.type === newTags[tagIndex].type;
+                        }).value,
+                        {
+                          ns: 'electrophysiology_browser',
+                          count: 1,
+                        }
+                      )
+                    });
 
                     return (
                       <React.Fragment key={`select-${tag}-${tagIndex}`}>
@@ -1435,7 +1535,7 @@ const AnnotationForm = ({
                 onClick={handleSubmit}
                 className="btn btn-primary"
               >
-                Submit
+                {t('Submit', {ns: 'loris'})}
               </button>
               <button
                 type="reset"
@@ -1457,7 +1557,7 @@ const AnnotationForm = ({
                 onClick={handleReset}
                 className="btn btn-primary"
               >
-                Reset
+                {t('Reset', {ns: 'loris'})}
               </button>
             </div>
 
@@ -1466,8 +1566,13 @@ const AnnotationForm = ({
               onClick={() => {
                 if (panelIsDirty) {
                   swal.fire({
-                    title: 'Are you sure?',
-                    text: 'Leaving the form will result in the loss of any information entered.',
+                    title: t('Are you sure?', {ns: 'loris'}),
+                    text: t(
+                      'Leaving the form will result in the ' +
+                      'loss of any information entered.', {
+                        ns: 'loris'
+                      }
+                    ),
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Proceed',
@@ -1483,7 +1588,7 @@ const AnnotationForm = ({
               }}
               className="btn btn-primary"
             >
-              Cancel
+              {t('Cancel', {ns: 'loris'})}
             </button>
           </div>
 

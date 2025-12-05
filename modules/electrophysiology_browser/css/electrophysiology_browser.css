@@ -1,5 +1,5 @@
 .react-series-data-viewer-scoped .dropdown-menu {
-  width: calc(100% - 5px);
+  width: max-content;
 }
 
 .react-series-data-viewer-scoped .dropdown-menu li {
@@ -423,6 +423,11 @@ svg:not(:root) {
   z-index: 9;
 }
 
+#dtm-title {
+  display: flex;
+  align-items: center;
+}
+
 .filter-tag-name {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -746,6 +751,7 @@ li.hed-comment::before {
   width: 55px;
   text-align: center;
   text-wrap: unset;
+  text-overflow: ellipsis;
 }
 
 .col-xs-title {

@@ -10,6 +10,7 @@ import {RootState} from '../store';
 import {setInterval} from '../store/state/bounds';
 import Panel from './Panel';
 import {setEpochs} from "../store/state/dataset";
+import {useTranslation} from "react-i18next";
 
 type CProps = {
   timeSelection?: [number, number],
@@ -77,7 +78,7 @@ const HEDEndorsement = ({
     ENDORSED_BY: 2,
     CAVEAT_BY: 3,
   }
-
+  const {t} = useTranslation();
   const [activeFilter, setActiveFilter] = useState(HEDFilter.NO_FILTER);
   const [filteredHEDEpochs, setFilteredHEDEpochs] = useState([]);
   const [numTags, setNumTags] = useState(0);
@@ -728,7 +729,13 @@ const HEDEndorsement = ({
         >
           <p style={{margin: '0px'}}>
             <span style={{fontSize: '14px', verticalAlign: 'middle',}}>
-            showing {totalHEDTags}/{numTags}
+            {t(
+              'showing {{numShowing}}/{{numTotal}}', {
+                ns: 'electrophysiology_browser',
+                numShowing: totalHEDTags,
+                numTotal: numTags,
+              }
+            )}
             </span>
             <br/>
           </p>
@@ -769,9 +776,10 @@ const HEDEndorsement = ({
                 height: '25px',
               }}
             >
-              {/*Filter: {activeFilter}*/}
               {getFilterDecoration(activeFilter)}&nbsp;
-              {activeFilter}
+              {t(activeFilter, {
+                ns: 'electrophysiology_browser'
+              })}
               {
                 [HEDFilter.TAGGED_BY, HEDFilter.ENDORSED_BY].includes(activeFilter)
                   ? ':'
@@ -802,7 +810,7 @@ const HEDEndorsement = ({
                 Object.values(HEDFilter).map((filterName, filterIndex, filters) => {
                   let filterItem = <React.Fragment key={`filter-item-${filterName}-${filterIndex}`}>
                     {getFilterDecoration(filterName)}&nbsp;
-                    {filterName}
+                    {t(filterName, {ns: 'electrophysiology_browser'})}
                   </React.Fragment>;
                   if ([HEDFilter.TAGGED_BY, HEDFilter.ENDORSED_BY, HEDFilter.CAVEAT_BY].includes(filterName)) {
 
@@ -877,7 +885,7 @@ const HEDEndorsement = ({
                     filterItem = (
                       <>
                         {getFilterDecoration(filterName)}&nbsp;
-                        {filterName}&nbsp;
+                        {t(filterName, {ns: 'electrophysiology_browser'})}&nbsp;
                         <span
                           className="glyphicon glyphicon-menu-right"
                           style={{ float: 'right', }}
@@ -921,7 +929,7 @@ const HEDEndorsement = ({
                                       color: 'lightgray',
                                       fontStyle: 'italic',
                                     }}>
-                                    Empty list
+                                    {t('Empty list', {ns: 'electrophysiology_browser'})}
                                   </span>
                                 </li>
                               )
@@ -984,7 +992,9 @@ const HEDEndorsement = ({
             <input
               id='hed-search'
               type='search'
-              placeholder='Tag search...'
+              placeholder={
+                t('Tag search...', {ns: 'electrophysiology_browser'})
+              }
               value={searchText}
               onChange={handleTextChange}
               style={{
@@ -1012,11 +1022,11 @@ const HEDEndorsement = ({
             <span style={{
               alignSelf: 'center',
             }}>
-              Selected:
+              {t('Selected', {ns: 'loris'})}
               {
                 totalHEDTags > 0
-                  ? ` [#${(activeItemIndex + 1)}]  `
-                  : ''
+                  ? `: [#${(activeItemIndex + 1)}]  `
+                  : ':'
               }
             </span>
             <div
@@ -1040,7 +1050,11 @@ const HEDEndorsement = ({
                 itemRef={'jumpToSelected'}
                 tooltipText={
                   <>
-                    Scroll to Selected&nbsp;
+                    {t(
+                      'Scroll to Selected', {
+                        ns: 'electrophysiology_browser'
+                      }
+                    )}&nbsp;
                     <span style={{ fontWeight: 'bold', }}>
                       (&#8679; +) I
                     </span>
@@ -1066,7 +1080,11 @@ const HEDEndorsement = ({
                 itemRef={'jumpToSelected'}
                 tooltipText={
                   <>
-                    Jump to Selected&nbsp;
+                    {t(
+                      'Jump to Selected', {
+                        ns: 'electrophysiology_browser'
+                      }
+                    )}&nbsp;
                     <span style={{ fontWeight: 'bold', }}>
                       (&#8679; +) J
                     </span>
@@ -1124,7 +1142,11 @@ const HEDEndorsement = ({
               itemRef={'selectPrevious'}
               tooltipText={
                 <>
-                  Select Previous&nbsp;
+                  {t(
+                    'Select Previous', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}&nbsp;
                   <span style={{ fontWeight: 'bold', }}>
                     (&#8679; +) &uarr;
                   </span>
@@ -1150,7 +1172,11 @@ const HEDEndorsement = ({
               itemRef={'selectNext'}
               tooltipText={
                 <>
-                  Select Next&nbsp;
+                  {t(
+                    'Select Next', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}&nbsp;
                   <span style={{ fontWeight: 'bold', }}>
                     (&#8679; +) &darr;
                   </span>
@@ -1195,7 +1221,11 @@ const HEDEndorsement = ({
               itemRef={'jumpSelectPrevious'}
               tooltipText={
                 <>
-                  Select and Jump to Previous&nbsp;
+                  {t(
+                    'Select and Jump to Previous', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}&nbsp;
                   <span style={{ fontWeight: 'bold', }}>
                     (&#8679; +) &larr;
                   </span>
@@ -1221,7 +1251,11 @@ const HEDEndorsement = ({
               itemRef={'jumpSelectNext'}
               tooltipText={
                 <>
-                  Select and Jump to Next&nbsp;
+                  {t(
+                    'Select and Jump to Next', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}&nbsp;
                   <span style={{ fontWeight: 'bold', }}>
                     (&#8679; +) &rarr;
                   </span>
@@ -1278,7 +1312,11 @@ const HEDEndorsement = ({
         >
           {filteredHEDEpochs.length === 0 &&
             <div className='event-panel-message'>
-              There are no event-level HED tags to endorse.
+              {t(
+                'There are no event-level HED tags to endorse.', {
+                  ns: 'electrophysiology_browser'
+                }
+              )}
             </div>
           }
           {
@@ -1369,7 +1407,11 @@ const HEDEndorsement = ({
                             itemRef={`jumpToSelected-${i}`}
                             tooltipText={
                               <>
-                                Jump to (Selected) Event&nbsp;
+                                {t(
+                                  'Jump to (Selected) Event', {
+                                    ns: 'electrophysiology_browser'
+                                  }
+                                )}&nbsp;
                                 <span style={{ fontWeight: 'bold', }}>
                                   (&#8679; +) J
                                 </span>
@@ -1395,7 +1437,11 @@ const HEDEndorsement = ({
                             itemRef={`editSelected-${i}`}
                             tooltipText={
                               <>
-                                Edit (Selected) Event&nbsp;
+                                {t(
+                                  'Edit (Selected) Event', {
+                                    ns: 'electrophysiology_browser'
+                                  }
+                                )}&nbsp;
                                 <span style={{ fontWeight: 'bold', }}>
                                   (&#8679; +) K
                                 </span>
@@ -1430,7 +1476,11 @@ const HEDEndorsement = ({
                         <i
                           className='glyphicon glyphicon-edit'
                         />
-                        &nbsp;Edit
+                        &nbsp;{t(
+                          'Edit', {
+                            ns: 'electrophysiology_browser'
+                          }
+                        )}
                       </button>
                     </div>
                     <Panel
@@ -1443,7 +1493,11 @@ const HEDEndorsement = ({
                       )}
                       title={
                         <>
-                          Tagged By:&nbsp;
+                          {t(
+                            'Tagged By', {
+                              ns: 'electrophysiology_browser'
+                            }
+                          )}:&nbsp;
                           {
                             event.tagGroup
                               .map(tag => tag.TaggerName)
@@ -1545,7 +1599,11 @@ const HEDEndorsement = ({
                               }
                             </ul>
                           )
-                          : 'No comment'
+                          : t(
+                              'No comment', {
+                                ns: 'electrophysiology_browser'
+                              }
+                            )
                         }
                       </div>
                     </Panel>
@@ -1567,7 +1625,11 @@ const HEDEndorsement = ({
                                 itemRef={`endorseActions-${i}`}
                                 tooltipText={
                                   <>
-                                    For selected tag:
+                                    {t(
+                                      'For selected tag:', {
+                                        ns: 'electrophysiology_browser'
+                                      }
+                                    )}
                                     <div
                                       style={{
                                         display: 'flex',
@@ -1576,13 +1638,25 @@ const HEDEndorsement = ({
                                       }}
                                     >
                                       <div>
-                                        Endorse
+                                        {t(
+                                          'Endorse', {
+                                            ns: 'electrophysiology_browser'
+                                          }
+                                        )}
                                         <br/>
-                                        Caveat
+                                        {t(
+                                          'Caveat', {
+                                            ns: 'electrophysiology_browser'
+                                          }
+                                        )}
                                         <br/>
-                                        Comment
+                                        {t(
+                                          'Comment', {
+                                            ns: 'electrophysiology_browser'
+                                          }
+                                        )}
                                         <br/>
-                                        Submit
+                                        {t('Submit', {ns: 'loris'})}
                                       </div>
                                       <div>
                                       <span style={{ fontWeight: 'bold', }}>
@@ -1666,16 +1740,22 @@ const HEDEndorsement = ({
                                         )
                                       }
                                       {
-                                        TagAction[
+                                        t(TagAction[
                                           openCommentPanels
                                             .find(panel => panel.ID === event.tagGroup[0].ID).tagAction
-                                          ].text
+                                          ].text, {
+                                          ns: 'electrophysiology_browser'
+                                        })
                                       }
                                     </>
                                   )
                                   : (
                                     <>
-                                      {TagAction['Select'].text}
+                                      {t(
+                                        TagAction['Select'].text, {
+                                          ns: 'electrophysiology_browser'
+                                        }
+                                      )}
                                     </>
                                   )
                               }
@@ -1724,7 +1804,10 @@ const HEDEndorsement = ({
                                           />
                                         )
                                       }
-                                      &nbsp;{TagAction[tagAction].text}
+                                      &nbsp;{t(
+                                        TagAction[tagAction].text, {
+                                        ns: 'electrophysiology_browser'
+                                      })}
                                     </li>
                                   );
                                 })
@@ -1742,7 +1825,9 @@ const HEDEndorsement = ({
                                 visibility: 'hidden',
                               }}
                             >
-                              Updated!
+                              {t(
+                                'Updated!', {ns: 'electrophysiology_browser'}
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1816,7 +1901,7 @@ const HEDEndorsement = ({
                                 //   maxWidth: '33%',
                                 // }}
                               >
-                                Submit
+                                {t('Submit', {ns: 'loris'})}
                               </button>
                               {
                                 openCommentPanels
@@ -1835,7 +1920,7 @@ const HEDEndorsement = ({
                                     }}
                                     className="btn btn-xs btn-primary"
                                   >
-                                    Clear
+                                    {t('Clear', {ns: 'loris'})}
                                   </button>
                                 )
                               }
@@ -1847,7 +1932,7 @@ const HEDEndorsement = ({
                                 }}
                                 className="btn btn-xs btn-primary"
                               >
-                                Cancel
+                                {t('Cancel', {ns: 'loris'})}
                               </button>
                             </div>
                           </div>
