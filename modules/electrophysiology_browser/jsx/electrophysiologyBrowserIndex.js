@@ -77,34 +77,34 @@ class ElectrophysiologyBrowserIndex extends Component {
     let result = <td className={style}>{cell}</td>;
     const {t} = this.props;
     switch (column) {
-      case t('Links', {ns: 'electrophysiology_browser'}):
-        let cellTypes = cell.split(',');
-        let cellLinks = [];
-        cellTypes.reverse();
-        for (let i = 0; i < cellTypes.length; i += 1) {
-          cellLinks.push(<a key={i} href={loris.BaseURL +
+    case t('Links', {ns: 'electrophysiology_browser'}):
+      let cellTypes = cell.split(',');
+      let cellLinks = [];
+      cellTypes.reverse();
+      for (let i = 0; i < cellTypes.length; i += 1) {
+        cellLinks.push(<a key={i} href={loris.BaseURL +
               '/electrophysiology_browser/sessions/' +
               row.SessionID + '?outputType=' +
               cellTypes[i]}>
-            {cellTypes[i]}
-          </a>);
+          {cellTypes[i]}
+        </a>);
 
-          if (cellTypes.length > 1) {
-            cellLinks.push(' | ');
-          }
-        }
         if (cellTypes.length > 1) {
-          cellLinks.push(<a key="all" href={loris.BaseURL +
+          cellLinks.push(' | ');
+        }
+      }
+      if (cellTypes.length > 1) {
+        cellLinks.push(<a key="all" href={loris.BaseURL +
             '/electrophysiology_browser/sessions/' +
             row.SessionID}>
-            {t('all types', {ns: 'electrophysiology_browser'})}
-          </a>);
-        }
-        result = (<td>{cellLinks}</td>);
-        break;
-      case t('HasHEDTags', {ns: 'electrophysiology_browser'}):
-        result = t(cell, {ns: 'loris'});
-        break;
+          {t('all types', {ns: 'electrophysiology_browser'})}
+        </a>);
+      }
+      result = (<td>{cellLinks}</td>);
+      break;
+    case t('Has HED Tags', {ns: 'electrophysiology_browser'}):
+      result = <td className={style}>{t(cell, {ns: 'loris'})}</td>;
+      break;
     }
     return result;
   }

@@ -1249,9 +1249,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     }}
                   >
                     <small style={{marginRight: '3px',}}>
-                      {t('Displaying:', {
-                        ns: 'electrophysiology_browser',
-                      })}&nbsp;
+                        {t('Displaying: ', {ns: 'electrophysiology_browser'})}
                       <select
                         value={numDisplayedChannels}
                         onChange={handleChannelChange}
@@ -1264,7 +1262,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                             {t('{{numChannels}} channels', {
                               ns: 'electrophysiology_browser',
                               numChannels: numChannels,
-                              count: numChannels,
                             })}
                           </option>;
                         })};

@@ -16,6 +16,7 @@ msgstr ""
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Electrophysiology Browser"
@@ -119,10 +120,8 @@ msgstr "Afficher débordement"
 msgid "Show Overflow"
 msgstr "Masquer débordement"
 
-msgid "{{numChannels}} channel"
-msgid_plural "{{numChannels}} channels"
-msgstr[0] "{{numChannels}} canal"
-msgstr[1] "{{numChannels}} canaux"
+msgid "{{numChannels}} channels"
+msgstr "{{numChannels}} canaux"
 
 msgid "Showing:"
 msgstr "Affichage :"
@@ -151,8 +150,8 @@ msgstr "Évenements"
 msgid "HED Endorsements"
 msgstr "Approbations HED"
 
-msgid "Displaying:"
-msgstr "Affichage :"
+msgid "Displaying: "
+msgstr "Affichage : "
 
 # SeriesCursor
 msgid "{{seconds}} s"
