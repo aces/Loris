@@ -99,7 +99,7 @@ foreach ($instrument_list as $instrument) {
     if ($_REQUEST['TN'] == $instrument['Test_name']) {
         echo json_encode(
             [
-                'error_msg' => dcngettext('loris', 'Instrument').' '. $_REQUEST['TN']
+                'error_msg' => dgettext('loris', 'Instrument').' '. $_REQUEST['TN']
                 .' ' .dgettext(
                     'survey_accounts',
                     'already exists for given candidate for visit'

@@ -138,7 +138,7 @@ class AddSurvey extends \NDB_Form
 
         if ($numSessions != 1) {
             return [
-                'VL' => dcngettext('loris', "Visit")." ".
+                'VL' => dgettext('loris', "Visit")." ".
                             $values['VL']." ".
             dgettext(
                 'survey_accounts',
