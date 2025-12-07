@@ -7,6 +7,7 @@ import {MAX_RENDERED_EPOCHS, SIGNAL_SCALE, SIGNAL_UNIT} from '../../vector';
 import {MutableRefObject, useEffect} from 'react';
 import {RootState} from '../store';
 import {getEpochsInRange} from '../store/logic/filterEpochs';
+import {useTranslation} from "react-i18next";
 
 type CursorContentProps = {
   time: number,
@@ -61,6 +62,7 @@ const SeriesCursor = (
     channelMetadata,
   }: CProps
 ) => {
+  const {t} = useTranslation();
   let reversedEpochs = [...filteredEpochs].reverse();
   useEffect(() => {
     reversedEpochs = [...filteredEpochs].reverse();
@@ -135,7 +137,10 @@ const SeriesCursor = (
         borderRadius: '3px',
       }}
     >
-      {Math.round(time * 1000) / 1000}s
+      {t('{{seconds}} s', {
+        ns: 'electrophysiology_browser',
+        seconds: Math.round(time * 1000) / 1000
+      })}
       <div
         style={{
           display: 'flex',

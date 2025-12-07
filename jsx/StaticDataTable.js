@@ -496,7 +496,7 @@ class StaticDataTable extends Component {
     if (this.props.Data === null || this.props.Data.length === 0) {
       return (
         <div className='alert alert-info no-result-found-panel'>
-          <strong>No result found.</strong>
+          <strong>{this.props.t('No result found.', {ns: 'loris'})}</strong>
         </div>
       );
     }

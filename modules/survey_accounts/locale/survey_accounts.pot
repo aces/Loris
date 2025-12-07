@@ -68,3 +68,36 @@ msgstr ""
 
 msgid "Status"
 msgstr ""
+
+msgid "PSCID and DCCID do not match or candidate does not exist."
+msgstr ""
+
+msgid "does not exist for given candidate"
+msgstr ""
+
+msgid "Please choose an instrument."
+msgstr ""
+
+msgid "already exists for given candidate for visit"
+msgstr ""
+
+msgid "The email address is not valid."
+msgstr ""
+
+msgid "Please confirm the email address."
+msgstr ""
+
+msgid "The email addresses do not match."
+msgstr ""
+
+msgid "You must specify a valid Visit Label."
+msgstr ""
+
+msgid "You are not affiliated with this session's project"
+msgstr ""
+
+msgid "Email is not valid."
+msgstr ""
+
+msgid "Confirm Email address"
+msgstr ""

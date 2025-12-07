@@ -40,6 +40,7 @@ const applyFilter = (coefficients, input) => {
 export const LOW_PASS_FILTERS = {
   'none': {
     label: 'No Low Pass Filter',
+    frequency: 0,
     coefficients: {
       '500': null,
       '512': null,
@@ -50,7 +51,8 @@ export const LOW_PASS_FILTERS = {
     },
   },
   'lopass15': {
-    label: 'Low Pass 15Hz',
+    label: 'Low Pass {{frequency}}Hz',
+    frequency: 15,
     coefficients: {
       '500': {
         b: [0.0021, 0.0042, 0.0021],
@@ -79,7 +81,8 @@ export const LOW_PASS_FILTERS = {
     },
   },
   'lopass20': {
-    label: 'Low Pass 20Hz',
+    label: 'Low Pass {{frequency}}Hz',
+    frequency: 20,
     coefficients: {
       '500': {
         b: [0.0036, 0.0072, 0.0036],
@@ -108,7 +111,8 @@ export const LOW_PASS_FILTERS = {
     },
   },
   'lopass30': {
-    label: 'Low Pass 30Hz',
+    label: 'Low Pass {{frequency}}Hz',
+    frequency: 30,
     coefficients: {
       '500': {
         b: [0.0078, 0.0156, 0.0078],
@@ -137,7 +141,8 @@ export const LOW_PASS_FILTERS = {
     },
   },
   'lopass40': {
-    label: 'Low Pass 40Hz',
+    label: 'Low Pass {{frequency}}Hz',
+    frequency: 40,
     coefficients: {
       '500': {
         b: [0.0134, 0.0267, 0.0134],
@@ -166,7 +171,8 @@ export const LOW_PASS_FILTERS = {
     },
   },
   'lopass60': {
-    label: 'Low Pass 60Hz',
+    label: 'Low Pass {{frequency}}Hz',
+    frequency: 60,
     coefficients: {
       '500': {
         b: [0.0279, 0.0557, 0.0279],
@@ -224,6 +230,7 @@ export const createLowPassFilterEpic = () => (
 export const HIGH_PASS_FILTERS = {
   'none': {
     label: 'No High Pass Filter',
+    frequency: 0,
     coefficients: {
       '500': null,
       '512': null,
@@ -234,7 +241,8 @@ export const HIGH_PASS_FILTERS = {
     },
   },
   'hipass0_5': {
-    label: 'High Pass 0.5Hz',
+    label: 'High Pass {{frequency}}Hz',
+    frequency: 0.5,
     coefficients: {
       '500': {
         b: [0.9978, -1.9956, 0.9978],
@@ -263,7 +271,8 @@ export const HIGH_PASS_FILTERS = {
     },
   },
   'hipass1': {
-    label: 'High Pass 1Hz',
+    label: 'High Pass {{frequency}}Hz',
+    frequency: 1,
     coefficients: {
       '500': {
         b: [0.9956, -1.9911, 0.9956],
@@ -292,7 +301,8 @@ export const HIGH_PASS_FILTERS = {
     },
   },
   'hipass5': {
-    label: 'High Pass 5Hz',
+    label: 'High Pass {{frequency}}Hz',
+    frequency: 5,
     coefficients: {
       '500': {
         b: [0.9780, -1.9561, 0.9780],
@@ -321,7 +331,8 @@ export const HIGH_PASS_FILTERS = {
     },
   },
   'hipass10': {
-    label: 'High Pass 10Hz',
+    label: 'High Pass {{frequency}}Hz',
+    frequency: 10,
     coefficients: {
       '500': {
         b: [0.9565, -1.9131, 0.9565],

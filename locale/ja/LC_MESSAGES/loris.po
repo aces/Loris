@@ -93,7 +93,8 @@ msgstr "イメージング"
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr "為り手"
+msgid_plural "Candidates"
+msgstr[0] "為り手"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
@@ -230,7 +231,8 @@ msgid_plural "Cohorts"
 msgstr[0] "コホート"
 
 msgid "Session"
-msgstr "セッション"
+msgid_plural "Sessions"
+msgstr[0] "セッション"
 
 msgid "Date of registration"
 msgstr "入学日"
@@ -295,14 +297,14 @@ msgstr "スキャン完了"
 msgid "Language"
 msgstr "言語"
 
-msgid "Ethnicity"
-msgstr "民族"
-
 msgid "Access denied"
 msgstr "アクセスが拒否されました"
 
 msgid "No."
 msgstr "番号"
+
+msgid "Ethnicity"
+msgstr "民族"
 
 msgid "Are You Sure?"
 msgstr "本気ですか？"
@@ -344,6 +346,9 @@ msgid "View details"
 msgstr "詳細を表示"
 
 # Data table strings
+msgid "No result found."
+msgstr "結果が見つかりませんでした。"
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{totalCount}}行中{{pageCount}}行を表示"
 
@@ -534,3 +539,23 @@ msgstr "読み込み中..."
 
 msgid "Permission denied"
 msgstr "許可が拒否されました"
+
+msgid "Unauthorized"
+msgstr "不正な"
+
+msgid "Submit"
+msgstr "提出する"
+
+msgid "Clear"
+msgstr "クリア"
+
+msgid "Add"
+msgstr "追加"
+
+msgid "Dataset"
+msgstr "データセット"
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr "オプションなし"
+
