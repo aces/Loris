@@ -43,8 +43,8 @@ $numCandidates = $db->pselectOne(
     ]
 );
 $error_msg     = dgettext(
-    'survey_accounts', 'PSCID and DCCID do not match or '.
-    'candidate does not exist.'
+    'survey_accounts',
+    'PSCID and DCCID do not match or candidate does not exist.'
 );
 if ($numCandidates != 1) {
     echo json_encode(
@@ -99,11 +99,11 @@ foreach ($instrument_list as $instrument) {
     if ($_REQUEST['TN'] == $instrument['Test_name']) {
         echo json_encode(
             [
-                'error_msg' => dcngettext('loris', 'Instrument').' '. $_REQUEST['TN'].
-            ' ' .dgettext(
-                'survey_accounts', 'already exists for given '.
-                'candidate for visit'
-            ).' '. $_REQUEST['VL'],
+                'error_msg' => dcngettext('loris', 'Instrument').' '. $_REQUEST['TN']
+                .' ' .dgettext(
+                    'survey_accounts',
+                    'already exists for given candidate for visit'
+                ).' '. $_REQUEST['VL'],
             ]
         );
         exit(0);
@@ -114,9 +114,10 @@ if (!empty($_REQUEST['Email']) ) {
     if (!filter_var($_REQUEST['Email'], FILTER_VALIDATE_EMAIL) ) {
         echo json_encode(
             ['error_msg' => dgettext(
-                'survey_accounts', 'The email address '.
-                'is not valid.'
-            )]
+                'survey_accounts',
+                'The email address is not valid.'
+            )
+            ]
         );
         exit(0);
     }

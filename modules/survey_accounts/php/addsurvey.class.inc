@@ -68,7 +68,8 @@ class AddSurvey extends \NDB_Form
                 return ['Email' => dgettext(
                     'survey_accounts',
                     'The email address is not valid.'
-                )];
+                )
+                ];
             }
         }
         if (!empty($values['Email']) && !empty($values['Email2'])) {
@@ -76,7 +77,8 @@ class AddSurvey extends \NDB_Form
                 return ['Email2' => dgettext(
                     'survey_accounts',
                     'The email addresses do not match.'
-                )];
+                )
+                ];
             }
         }
 
@@ -84,14 +86,16 @@ class AddSurvey extends \NDB_Form
             return ['Email2' => dgettext(
                 'survey_accounts',
                 'Please confirm the email address.'
-            )];
+            )
+            ];
         }
 
         if (empty($values['Test_name'])) {
             return ['Test_name' => dgettext(
                 'survey_accounts',
                 'Please choose an instrument.'
-            )];
+            )
+            ];
         }
 
         $numCandidates = $db->pselectOne(
@@ -104,8 +108,8 @@ class AddSurvey extends \NDB_Form
             ]
         );
         $error         = dgettext(
-            'survey_accounts', 'PSCID and DCCID do not match '
-            .'or candidate does not exist.'
+            'survey_accounts', 
+            'PSCID and DCCID do not match or candidate does not exist.'
         );
         if ($numCandidates != 1) {
             return
@@ -116,7 +120,8 @@ class AddSurvey extends \NDB_Form
             return ['VL' => dgettext(
                 'survey_accounts',
                 'You must specify a valid Visit Label.'
-            )];
+            )
+            ];
         }
 
         $numSessions = $db->pselectOne(
@@ -156,10 +161,10 @@ class AddSurvey extends \NDB_Form
         $user = \NDB_Factory::singleton()->user();
         if (!$user->hasProject(\ProjectID::singleton($projectID))) {
             return [
-            'Project' => dgettext(
-                'survey_accounts',
-                'You are not affiliated with this session\'s project'
-            )
+                'Project' => dgettext(
+                    'survey_accounts',
+                    'You are not affiliated with this session\'s project'
+                )
             ];
         }
 
@@ -204,7 +209,8 @@ class AddSurvey extends \NDB_Form
                 return ['Email' => dgettext(
                     'survey_accounts',
                     'Email is not valid.'
-                )];
+                )
+                ];
 
             }
         }
@@ -332,10 +338,8 @@ class AddSurvey extends \NDB_Form
         );
         $this->addBasicText("Email", "Email address");
         $this->addBasicText(
-            "Email2", dgettext(
-                'survey_accounts',
-                'Confirm Email address'
-            )
+            "Email2", 
+            dgettext('survey_accounts', 'Confirm Email address')
         );
 
         $this->form->addFormRule([&$this, '_validateAddSurvey']);
