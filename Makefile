@@ -238,7 +238,7 @@ my_preferences: $(filter modules/my_preferences/%,$(MOFILES)) $(filter modules/m
 	target=my_preferences npm run compile
 
 electrophysiology_browser: $(filter modules/electrophysiology_browser/%,$(MOFILES)) $(filter modules/electrophysiology_browser/%,$(I18NJSONFILES))
-        target=electrophysiology_browser npm run compile
+	target=electrophysiology_browser npm run compile
 
 survey_accounts: $(filter modules/survey_accounts/%,$(MOFILES)) $(filter modules/survey_accounts/%,$(I18NJSONFILES))
-        target=survey_accounts npm run compile
+	target=survey_accounts npm run compile

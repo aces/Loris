@@ -108,7 +108,7 @@ class AddSurvey extends \NDB_Form
             ]
         );
         $error         = dgettext(
-            'survey_accounts', 
+            'survey_accounts',
             'PSCID and DCCID do not match or candidate does not exist.'
         );
         if ($numCandidates != 1) {
@@ -338,7 +338,7 @@ class AddSurvey extends \NDB_Form
         );
         $this->addBasicText("Email", "Email address");
         $this->addBasicText(
-            "Email2", 
+            "Email2",
             dgettext('survey_accounts', 'Confirm Email address')
         );
 
