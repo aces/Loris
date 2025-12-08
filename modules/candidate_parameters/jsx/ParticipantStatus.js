@@ -182,17 +182,17 @@ class ParticipantStatus extends Component {
                 line += ' ';
                 break;
               case 'status':
-                line += ' Status: ';
+                line += t(' Status: ', {ns: 'candidate_parameters'});
                 line += current;
                 line += ' ';
                 break;
               case 'suboption':
-                line += 'Details: ';
+                line += t('Details: ', {ns: 'candidate_parameters'});
                 line += current;
                 line += ' ';
                 break;
               case 'reason_specify':
-                line += 'Comments: ';
+                line += t('Comments: ', {ns: 'candidate_parameters'});
                 line += current;
                 line += ' ';
                 break;

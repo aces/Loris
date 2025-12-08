@@ -218,3 +218,12 @@ msgstr "actualizado para {{label}}:"
 
 msgid "Status to "
 msgstr "Estado a "
+
+msgid " Status: "
+msgstr " Estado: "
+
+msgid "Details: "
+msgstr "Detalles: "
+
+msgid "Comments: "
+msgstr "Comentarios: "

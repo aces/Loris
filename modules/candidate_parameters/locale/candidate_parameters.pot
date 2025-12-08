@@ -218,3 +218,12 @@ msgstr ""
 
 msgid "Status to "
 msgstr ""
+
+msgid " Status: "
+msgstr ""
+
+msgid "Details: "
+msgstr ""
+
+msgid "Comments: "
+msgstr ""
