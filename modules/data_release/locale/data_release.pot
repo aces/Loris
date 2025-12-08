@@ -57,9 +57,6 @@ msgstr ""
 msgid "Version names will be saved as lowercase."
 msgstr ""
 
-msgid "File to upload"
-msgstr ""
-
 msgid "You must select a file to upload"
 msgstr ""
 

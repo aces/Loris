@@ -113,9 +113,6 @@ msgstr ""
 msgid "Document's Language"
 msgstr ""
 
-msgid "File to upload"
-msgstr ""
-
 msgid "Upload File"
 msgstr ""
 

@@ -354,3 +354,7 @@ msgstr "{{months}} meses"
 
 msgid "{{years}} years old"
 msgstr "{{years}} años"
+
+msgid "File to upload"
+msgstr "Archivo para subir"
+

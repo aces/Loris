@@ -260,3 +260,5 @@ msgstr ""
 msgid "Last 3 Comments"
 msgstr ""
 
+msgid "Submit Attachment"
+msgstr ""

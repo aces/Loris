@@ -543,6 +543,12 @@ msgstr "許可が拒否されました"
 msgid "Unauthorized"
 msgstr "不正な"
 
+msgid "File to upload"
+msgstr "アップロードするファイル"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "ファイルが {{maxFileSize}} を超えていないことを確認してください"
+
 msgid "Submit"
 msgstr "提出する"
 
