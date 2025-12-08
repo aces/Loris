@@ -216,3 +216,6 @@ msgstr ""
 msgid "Browse"
 msgstr ""
 
+msgid "Delete"
+msgstr ""
+
