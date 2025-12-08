@@ -361,9 +361,8 @@ function DefineFields(props: {
         marginBottom: '16px'}}>
         <div style={{marginBottom: '8px'}}>
           <CheckboxElement
-            label={t('Sync with selected fields',
+            label={t('Sync visit selection across selected fields',
               {ns: 'dataquery'})}
-            // label='Sync visit selection across selected fields'
             name="syncVisits"
             class="checkbox-flex"
             offset=""
@@ -430,7 +429,6 @@ function DefineFields(props: {
                 className='form-control'
                 type="text"
                 placeholder={t(`Filter within ${cname}`, {ns: 'dataquery'})}
-                // placeholder={t('Filter within category', {ns: 'dataquery'})}
                 aria-describedby="input-filter-addon"
                 value={activeFilter}
                 style={{borderRadius: '32px 0 0 32px'}}/>
@@ -474,12 +472,11 @@ function DefineFields(props: {
     <div>
       <div style={{display: 'flex', flexWrap: 'nowrap'}}>
         <div style={{width: '80vw', padding: '1em'}}>
-          {/* <h1>{t('Available Fields', {ns: 'dataquery'})}</h1> */}
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
             onChange={props.onCategoryChange}
-            label="Select a Field"
-            placeholder='Available options'
+            label={t('Select a field', {ns: 'dataquery'})}
+            placeholder={t('Available options', {ns: 'dataquery'})}
           />
           {fieldList}
         </div>

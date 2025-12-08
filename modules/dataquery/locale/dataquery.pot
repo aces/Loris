@@ -509,19 +509,22 @@ msgstr ""
 msgid "Available Fields"
 msgstr ""
 
+msgid "Available options"
+msgstr ""
+
 msgid "Add all"
 msgstr ""
 
 msgid "Remove all"
 msgstr ""
 
-msgid "Filter within category"
+msgid "Filter within ${cname}"
 msgstr ""
 
 msgid "Default Visits"
 msgstr ""
 
-msgid "Sync with selected fields"
+msgid "Sync visit selection across selected fields"
 msgstr ""
 
 msgid "Select a category"
