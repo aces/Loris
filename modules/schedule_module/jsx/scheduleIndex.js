@@ -208,8 +208,12 @@ handleSubmit(e) {
         const msg = this.state.editModal ? t('Appointment modified.',
           {ns: 'schedule_module'}) : t('Appointment added.',
           {ns: 'schedule_module'});
-        swal.fire(t('Success!',
-          {ns: 'loris'}), msg, 'success').then((result) => {
+        swal.fire({
+          title: t('Success!', {ns: 'loris'}),
+          text: msg,
+          type: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
+        }).then((result) => {
           if (result.value) {
             this.fetchData();
             this.closeModal();
@@ -249,12 +253,13 @@ deleteConfirm(id) {
       {ns: 'loris'}),
   }).then((result) => {
     if (result.value) {
-      swal.fire(
-        t('Deleted!', {ns: 'schedule_module'}),
-        t('Your appointment has been deleted.',
+      swal.fire({
+        title: t('Deleted!', {ns: 'schedule_module'}),
+        text: t('Your appointment has been deleted.',
           {ns: 'schedule_module'}),
-        'success',
-      );
+        type: 'success',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
       this.deleteid(id);
     }
   });
