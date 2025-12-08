@@ -24,11 +24,514 @@ msgstr ""
 msgid "Starred Queries"
 msgstr ""
 
-msgid "Study Queries"
+msgid "Query not yet run"
 msgstr ""
+
+msgid "Loading data:"
+msgstr ""
+
+msgid "{{value}} of {{max}} candidates"
+msgstr ""
+
+msgid "Organizing headers:"
+msgstr ""
+
+msgid "{{value}} of {{max}} columns"
+msgstr ""
+
+msgid "Organizing data:"
+msgstr ""
+
+msgid "Invalid progress type: {{type}}"
+msgstr ""
+
+msgid "No data for visit"
+msgstr ""
+
+msgid "Field Name"
+msgstr ""
+
+msgid "Field Description"
+msgstr ""
+
+msgid "Field Name: Field Description"
+msgstr ""
+
+msgid "Rows (Cross-sectional)"
+msgstr ""
+
+msgid "Columns (Longitudinal)"
+msgstr ""
+
+msgid "Inline values (no download)"
+msgstr ""
+
+msgid "Raw JSON (debugging only)"
+msgstr ""
+
+msgid "Header Display Format"
+msgstr ""
+
+msgid "Display visits as"
+msgstr ""
+
+msgid "Label"
+msgid_plural "Labels"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Value"
+msgid_plural "Values"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Display options as"
+msgstr ""
+
+msgid "Display empty visits?"
+msgstr ""
+
+msgid "Row Number"
+msgstr ""
+
+msgid "Modify Fields"
+msgstr ""
+
+msgid "Choose Fields"
+msgstr ""
+
+msgid "Modify Filters"
+msgstr ""
+
+msgid "Add Filters"
+msgstr ""
+
+msgid "Run Query"
+msgstr ""
+
+msgid "Next Steps"
+msgstr ""
+
+msgid "Delete item"
+msgstr ""
+
+msgid "Delete Group"
+msgstr ""
+
+msgid "Group does not have any items."
+msgstr ""
+
+msgid "Group only has 1 item. A group with only 1 item is equivalent to not having the group."
+msgstr ""
+
+msgid "Add \"{{operator}}\" condition to group"
+msgstr ""
+
+msgid "New \"{{antiOperator}}\" subgroup"
+msgstr ""
+
+msgid "Hide Advanced"
+msgstr ""
+
+msgid "Show Advanced"
+msgstr ""
+
+msgid "The \"nested groups\" options are advanced options for queries that do not have any specific condition at the base of the query. Use Add nested \"or\" condition groups if you need to build a query of the form. (a or b) and (c or d) [or (e and f)..]"
+msgstr ""
+
+msgid "Add nested \"or\" condition groups"
+msgstr ""
+
+msgid "Use Add nested \"and\" condition groups if you need to build a query of the form (a and b) or (c and d) [or (e and f)..]"
+msgstr ""
+
+msgid "Add nested \"and\" condition groups"
+msgstr ""
+
+msgid "Currently querying for ALL candidates."
+msgstr ""
+
+msgid "You can add conditions by clicking one of the buttons below."
+msgstr ""
+
+msgid "Click Add Condition to add one or more conditions to your filters (ie. \"Date Of Birth < 2015-02-15\"). This is most likely where you want to start your filters."
+msgstr ""
+
+msgid "You can also import a population from a CSV by clicking the Import from CSV button."
+msgstr ""
+
+msgid "The advanced options are for queries that do not have a condition to add at the base of the query."
+msgstr ""
+
+msgid "Add Condition"
+msgstr ""
+
+msgid "Import from CSV"
+msgstr ""
+
+msgid "Use New \"and\" subgroup if the rest of the query you need to write is a subgroup consisting of \"and\" conditions. ie your query is of the form: (your condition above) or (c and d [and e and f..])"
+msgstr ""
+
+msgid "New \"and\" subgroup"
+msgstr ""
+
+msgid "Use New \"or\" subgroup if the rest of the query you need to write is a subgroup consisting of \"or\" conditions. ie your query is of the form: (your condition above) and (c or d [or e or f..])"
+msgstr ""
+
+msgid "New \"or\" subgroup"
+msgstr ""
+
+msgid "Currently querying for any candidates with:"
+msgstr ""
+
+msgid "Add \"and\" condition"
+msgstr ""
+
+msgid "Add \"or\" condition"
+msgstr ""
+
+msgid "Delete Item"
+msgstr ""
+
+msgid "Query matches <bold>{{count}}</bold> candidates"
+msgstr ""
+
+msgid "Current Query"
+msgstr ""
+
+msgid "Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query."
+msgstr ""
+
+msgid "Note: matches count only includes candidates that you have access to. Results may vary from other users due to permissions."
+msgstr ""
+
+msgid "Select Visits"
+msgstr ""
+
+msgid "Criteria"
+msgstr ""
+
+msgid "Select an operator"
+msgstr ""
+
+msgid "for at least one of the following visits"
+msgstr ""
+
+msgid "This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <italic>at least one</italic> of the data points."
+msgstr ""
+
+msgid "This field may exist multiple times for a single {{scope}} and must match for *any* of the data points"
+msgstr ""
+
+msgid "<italic>at visit</italic> {{visits}}"
+msgstr ""
+
+msgid "Invalid field"
+msgstr ""
+
+msgid "You must select a field for the criteria."
+msgstr ""
+
+msgid "Invalid operator"
+msgstr ""
+
+msgid "You must select an operator for the criteria."
+msgstr ""
+
+msgid "Invalid value"
+msgstr ""
+
+msgid "You must enter a value to compare the field against."
+msgstr ""
+
+msgid "Invalid visits"
+msgstr ""
+
+msgid "No visits selected for criteria."
+msgstr ""
+
+msgid "Add criteria"
+msgstr ""
+
+msgid "Field"
+msgid_plural "Fields"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Select a field"
+msgstr ""
+
+msgid "in"
+msgstr ""
+
+msgid "starts with"
+msgstr ""
+
+msgid "contains"
+msgstr ""
+
+msgid "ends with"
+msgstr ""
+
+msgid "has data"
+msgstr ""
+
+msgid "has no data"
+msgstr ""
+
+msgid "(No data)"
+msgstr ""
+
+msgid "(Not implemented)"
+msgstr ""
+
+msgid "(Internal Error. Unhandled cardinality: {{cardinality}})"
+msgstr ""
+
+msgid "Internal error"
+msgstr ""
+
+msgid "exists"
+msgstr ""
+
+msgid "does not exist"
+msgstr ""
+
+msgid "number of"
+msgstr ""
+
+msgid "Select a value"
+msgstr ""
+
+msgid "Import Population From CSV"
+msgstr ""
+
+msgid "CSV containing list of"
+msgstr ""
+
+msgid "Candidate identifier type"
+msgstr ""
+
+msgid "Does CSV contain a header line?"
+msgstr ""
+
+msgid "CSV File"
+msgstr ""
+
+msgid "Invalid CSV"
+msgstr ""
+
+msgid "Could not parse CSV file"
+msgstr ""
+
+msgid "No CSV Uploaded"
+msgstr ""
+
+msgid "Please upload a CSV file before submitting."
+msgstr ""
+
+msgid "Empty CSV"
+msgstr ""
+
+msgid "The uploaded CSV file is empty."
+msgstr ""
+
+msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
+msgstr ""
+
+msgid "Invalid DCCID"
+msgstr ""
+
+msgid "Invalid DCCID ({{id}}) on line {{line}}."
+msgstr ""
+
+msgid "Welcome to the Data Query Tool"
+msgstr ""
+
+msgid "Study Query"
+msgid_plural "Study Queries"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Candidate matches:"
 msgstr ""
 
-msgid "Note: matches count only includes candidates that you have access to. Results may vary from other users due to permissions."
+
+msgid "Instructions"
+msgstr ""
+
+msgid "Recent Queries"
+msgstr ""
+
+msgid "Shared Queries"
+msgstr ""
+
+msgid "Starred Only"
+msgstr ""
+
+msgid "Shared Only"
+msgstr ""
+
+msgid "No run times (eliminate duplicates)"
+msgstr ""
+
+msgid "Filter"
+msgid_plural "Filters"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Named Only"
+msgstr ""
+
+msgid "Collapse queries"
+msgstr ""
+
+msgid "(No filters for query)"
+msgstr ""
+
+msgid "Page"
+msgstr ""
+
+msgid "Unstar"
+msgstr ""
+
+msgid "Star"
+msgstr ""
+
+msgid "Unshare"
+msgstr ""
+
+msgid "Share"
+msgstr ""
+
+msgid "Query Loaded"
+msgstr ""
+
+msgid "Successfully loaded query."
+msgstr ""
+
+msgid "(Run on {{runTime}})"
+msgstr ""
+
+msgid "You ran this query on {{runTime}}"
+msgstr ""
+
+msgid "You ran this query"
+msgstr ""
+
+msgid "(Shared by {{sharedBy}})"
+msgstr ""
+
+msgid "Query shared by {{sharedBy}}"
+msgstr ""
+
+msgid "Name Query"
+msgstr ""
+
+msgid "Enter your query name"
+msgstr ""
+
+msgid "Query name"
+msgstr ""
+
+msgid "Must provide a query name."
+msgstr ""
+
+msgid "Pin Top Query"
+msgstr ""
+
+msgid "Pin Study Query"
+msgstr ""
+
+msgid "Pin Dashboard Summary"
+msgstr ""
+
+msgid "Pin To Login Page"
+msgstr ""
+
+msgid "Must pin as study query, to dashboard, or to the login page."
+msgstr ""
+
+msgid "Must provide a query name to pin query as."
+msgstr ""
+
+msgid "{{columnName}} fields"
+msgstr ""
+
+msgid "Define Filters"
+msgstr ""
+
+msgid "Define Fields"
+msgstr ""
+
+msgid "View Data"
+msgstr ""
+
+msgid "Reload query"
+msgstr ""
+
+msgid "Continue to Define Fields"
+msgstr ""
+
+msgid "Above, there is also a Study Queries panel. This are a special type of shared queries that have been pinned by a study administer to always display at the top of this page."
+msgstr ""
+
+msgid "The data query tool allows you to query data within LORIS. There are three steps to defining a query:"
+msgstr ""
+
+msgid "First, you must select the fields that you're interested in on the Define Fields page."
+msgstr ""
+
+msgid "Next, you can optionally define filters on the Define Filters page to restrict the population that is returned."
+msgstr ""
+
+msgid "Finally, you view your query results on the View Data page"
+msgstr ""
+
+msgid "The Next Steps on the bottom right of your screen always the context-sensitive next steps that you can do to build your query."
+msgstr ""
+
+msgid "Your recently run queries will be displayed in the Recent Queries panel below. Instead of building a new query, you can reload a query that you've recently run by clicking on the icon next to the query."
+msgstr ""
+
+msgid "Queries can be shared with others by clicking the icon. This will cause the query to be shared with all users who have access to the fields used by the query. It will display in a Shared Queries panel below the Recent Queries."
+msgstr ""
+
+msgid "You may also give a query a name at any time by clicking the icon. This makes it easier to find queries you care about by giving them an easier to remember name that can be used for filtering. When you share a query, the name will be shared along with it."
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Selected Fields"
+msgstr ""
+
+msgid "Available Fields"
+msgstr ""
+
+msgid "Add all"
+msgstr ""
+
+msgid "Remove all"
+msgstr ""
+
+msgid "Filter within category"
+msgstr ""
+
+msgid "Default Visits"
+msgstr ""
+
+msgid "Sync with selected fields"
+msgstr ""
+
+msgid "Select a category"
+msgstr ""
+
+msgid "Invalid response"
+msgstr ""
+
+msgid "Invalid tab"
+msgstr ""
+
+msgid "or"
 msgstr ""

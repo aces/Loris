@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="{$baseurl}/css/public_layout.css">
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
+  <script>
+  const loris = { user: { langpref: "{$language}" }};
+  </script>
   {section name=jsfile loop=$jsfiles}
     <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
   {/section}
@@ -48,6 +51,20 @@
             <img src="{$logo_right}" alt="Right Logo"/>
           {/if}
         </div>
+
+	{if count($languages) > 1}
+	<div style="padding: 2ex">
+	<form method="get" >
+           <div class="form-group">
+		<select class="form-control" name="lang" onChange="this.form.submit()">
+		{foreach from=$languages key=langcode item=lang}
+			<option value={$langcode} {if $langcode==$language}selected="selected"{/if}>{$lang}</option>
+		{/foreach}
+		</select>
+            </div>
+	</form>
+	</div>
+        {/if}
       </div>
     </div>
   </header>

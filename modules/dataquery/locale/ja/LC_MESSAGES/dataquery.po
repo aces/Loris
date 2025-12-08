@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Data Query Tool (Beta)"
 msgstr "データ辞書（レガシー）"
@@ -24,11 +25,511 @@ msgstr "データ辞書（レガシー）"
 msgid "Starred Queries"
 msgstr "スター付きクエリ"
 
-msgid "Study Queries"
-msgstr "研究クエリ"
+msgid "Study Query"
+msgid_plural "Study Queries"
+msgstr[0] "研究クエリ"
 
 msgid "Candidate matches:"
 msgstr "候補の一致:"
 
 msgid "Note: matches count only includes candidates that you have access to. Results may vary from other users due to permissions."
 msgstr "注: 一致数には、アクセス権を持つ候補者のみが含まれます。権限によっては、他のユーザーと結果が異なる場合があります。"
+
+msgid "Query not yet run"
+msgstr "クエリはまだ実行されていません"
+
+msgid "Loading data:"
+msgstr "データの読み込み中:"
+
+msgid "{{value}} of {{max}} candidates"
+msgstr "{{max}} 件中 {{value}} 件の候補"
+
+msgid "Organizing headers:"
+msgstr "ヘッダーの整理:"
+
+msgid "{{value}} of {{max}} columns"
+msgstr "{{max}}列中{{value}} 列"
+
+msgid "Organizing data:"
+msgstr "データの整理:"
+
+msgid "Invalid progress type: {{type}}"
+msgstr "無効な進捗タイプ: {{type}}"
+
+msgid "No data for visit"
+msgstr "訪問データがありません"
+
+msgid "Field Name"
+msgstr "フィールド名"
+
+msgid "Field Description"
+msgstr "フィールドの説明"
+
+msgid "Field Name: Field Description"
+msgstr "フィールド名: フィールドの説明"
+
+msgid "Rows (Cross-sectional)"
+msgstr "列（断面）"
+
+msgid "Columns (Longitudinal)"
+msgstr "柱（縦方向）"
+
+msgid "Inline values (no download)"
+msgstr "インライン値（ダウンロードなし）"
+
+msgid "Raw JSON (debugging only)"
+msgstr "生の JSON (デバッグのみ)"
+
+msgid "Header Display Format"
+msgstr "ヘッダー表示形式"
+
+msgid "Display visits as"
+msgstr "訪問の表示方法"
+
+msgid "Label"
+msgid_plural "Labels"
+msgstr[0] "ラベル"
+
+msgid "Value"
+msgid_plural "Values"
+msgstr[0] "価値観"
+
+msgid "Display options as"
+msgstr "表示オプション"
+
+msgid "Display empty visits?"
+msgstr "空の訪問を表示しますか?"
+
+msgid "Row Number"
+msgstr "行番号"
+
+msgid "Modify Fields"
+msgstr "フィールドの変更"
+
+msgid "Choose Fields"
+msgstr "フィールドを選択"
+
+msgid "Modify Filters"
+msgstr "フィルターを変更する"
+
+msgid "Add Filters"
+msgstr "フィルターを追加する"
+
+msgid "Run Query"
+msgstr "クエリを実行"
+
+msgid "Next Steps"
+msgstr "次のステップ"
+
+msgid "Delete item"
+msgstr "アイテムを削除"
+
+msgid "Delete Group"
+msgstr "グループを削除"
+
+msgid "Group does not have any items."
+msgstr "グループにはアイテムがありません。"
+
+msgid "Group only has 1 item. A group with only 1 item is equivalent to not having the group."
+msgstr "グループにはアイテムが 1 つしかありません。グループにアイテムが 1 つしかない場合、グループが存在しないことと同じです。"
+
+msgid "Add \"{{operator}}\" condition to group"
+msgstr "{{operator}} 条件をグループに追加"
+
+msgid "New \"{{antiOperator}}\" subgroup"
+msgstr "新しい {{antiOperator}} サブグループ"
+
+msgid "Hide Advanced"
+msgstr "詳細を非表示"
+
+msgid "Show Advanced"
+msgstr "詳細を表示"
+
+msgid "The \"nested groups\" options are advanced options for queries that do not have any specific condition at the base of the query. Use Add nested \"or\" condition groups if you need to build a query of the form. (a or b) and (c or d) [or (e and f)..]"
+msgstr "「ネストされたグループ」オプションは、クエリのベースに特定の条件がないクエリ向けの高度なオプションです。「(a または b) かつ (c または d) [または (e かつ f)...]」という形式のクエリを作成する必要がある場合は、「ネストされた「または」条件グループを追加」を使用してください。"
+
+msgid "Add nested \"or\" condition groups"
+msgstr "ネストされた「または」条件グループを追加する"
+
+msgid "Use Add nested \"and\" condition groups if you need to build a query of the form (a and b) or (c and d) [or (e and f)..]"
+msgstr "(a および b) または (c および d) [または (e および f)] という形式のクエリを作成する必要がある場合は、ネストされた「and」条件グループの追加を使用します。"
+
+msgid "Add nested \"and\" condition groups"
+msgstr "ネストされた「and」条件グループを追加する"
+
+msgid "Currently querying for ALL candidates."
+msgstr "現在、すべての候補者を照会中です。"
+
+msgid "You can add conditions by clicking one of the buttons below."
+msgstr "以下のいずれかのボタンをクリックすると条件を追加できます。"
+
+msgid "Click Add Condition to add one or more conditions to your filters (ie. \"Date Of Birth < 2015-02-15\"). This is most likely where you want to start your filters."
+msgstr "「条件を追加」をクリックすると、フィルターに1つ以上の条件（例：「生年月日 < 2015-02-15」）を追加できます。フィルターはここから始めるのが一般的です。"
+
+msgid "You can also import a population from a CSV by clicking the Import from CSV button."
+msgstr "また、「CSV からインポート」ボタンをクリックして、CSV から人口をインポートすることもできます。"
+
+msgid "The advanced options are for queries that do not have a condition to add at the base of the query."
+msgstr "詳細オプションは、クエリのベースに条件がないクエリ用です。"
+
+msgid "Add Condition"
+msgstr "条件を追加"
+
+msgid "Import from CSV"
+msgstr "CSVからのインポート"
+
+msgid "Use New \"and\" subgroup if the rest of the query you need to write is a subgroup consisting of \"and\" conditions. ie your query is of the form: (your condition above) or (c and d [and e and f..])"
+msgstr "記述する必要があるクエリの残りの部分が「and」条件で構成されるサブグループである場合は、新しい「and」サブグループを使用します。つまり、クエリが次の形式である場合です: (上記の条件) または (c および d [および e および f..])"
+
+msgid "New \"and\" subgroup"
+msgstr "新しい「and」サブグループ"
+
+msgid "Use New \"or\" subgroup if the rest of the query you need to write is a subgroup consisting of \"or\" conditions. ie your query is of the form: (your condition above) and (c or d [or e or f..])"
+msgstr "記述する必要があるクエリの残りの部分が「または」条件で構成されるグループである場合は、新しい「または」サブグループを使用します。つまり、クエリが次の形式になります: 上記の条件) and (c または d [または e または f..])"
+
+msgid "New \"or\" subgroup"
+msgstr "新しい「または」サブグループ"
+
+msgid "Currently querying for any candidates with:"
+msgstr "現在、以下の候補者を募集しています:"
+
+msgid "Add \"and\" condition"
+msgstr "「and」条件を追加する"
+
+msgid "Add \"or\" condition"
+msgstr "「または」条件を追加する"
+
+msgid "Delete Item"
+msgstr "アイテムを削除"
+
+msgid "Query matches <bold>{{count}}</bold> candidates"
+msgstr "クエリは <bold>{{count}}個</bold> 件の候補に一致しました"
+
+msgid "Current Query"
+msgstr "現在のクエリ"
+
+msgid "Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query."
+msgstr "ロリスでアクセス権限を持つ候補のみが結果に含まれることにご注意ください。結果の数は、同じクエリを実行する他のユーザーによって異なる場合があります。"
+
+msgid "Candidate matches"
+msgstr "候補者の一致"
+
+msgid "Select Visits"
+msgstr "選択した訪問"
+
+msgid "Criteria"
+msgstr "基準"
+
+msgid "Select an operator"
+msgstr "オペレーターを選択"
+
+msgid "for at least one of the following visits"
+msgstr "以下の訪問のうち少なくとも1回"
+
+msgid "This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <italic>at least one</italic> of the data points."
+msgstr "このフィールドは、単一の{{scope}}に対して複数回存在する場合があります。これに基づく条件を追加する場合、データポイントの<italic>少なくとも1つ</italic>に一致する必要があります。"
+
+msgid "This field may exist multiple times for a single {{scope}} and must match for *any* of the data points"
+msgstr "このフィールドは単一の {{scope}} に対して複数回存在することができ、データポイントのいずれかと一致する必要があります。"
+
+msgid "<italic>at visit</italic> {{visits}}"
+msgstr "<italic>訪問時</italic> {{visits}}"
+
+msgid "Invalid field"
+msgstr "無効なフィールド"
+
+msgid "You must select a field for the criteria."
+msgstr "条件のフィールドを選択する必要があります。"
+
+msgid "Invalid operator"
+msgstr "無効な演算子"
+
+msgid "You must select an operator for the criteria."
+msgstr "条件に応じて演算子を選択する必要があります。"
+
+msgid "Invalid value"
+msgstr "無効な値"
+
+msgid "You must enter a value to compare the field against."
+msgstr "フィールドと比較する値を入力する必要があります。"
+
+msgid "Invalid visits"
+msgstr "無効な訪問"
+
+msgid "No visits selected for criteria."
+msgstr "基準に該当する訪問が選択されていません。"
+
+msgid "Add criteria"
+msgstr "条件を追加する"
+
+msgid "Field"
+msgid_plural "Fields"
+msgstr[0] "分野"
+
+msgid "in"
+msgstr "で"
+
+msgid "starts with"
+msgstr "で始まる"
+
+msgid "contains"
+msgstr "含む"
+
+msgid "ends with"
+msgstr "終わりは"
+
+msgid "has data"
+msgstr "データがある"
+
+msgid "has no data"
+msgstr "データがありません"
+
+msgid "(No data)"
+msgstr "（データなし）"
+
+msgid "(Not implemented)"
+msgstr "（未実装）"
+
+msgid "(Internal Error. Unhandled cardinality: {{cardinality}})"
+msgstr "(内部エラー。処理されていないカーディナリティ: {{cardinality}})"
+
+msgid "Internal error"
+msgstr "内部エラー"
+
+msgid "exists"
+msgstr "存在する"
+
+msgid "does not exist"
+msgstr "存在しない"
+
+msgid "number of"
+msgstr "の数"
+
+msgid "Select a value"
+msgstr "値を選択"
+
+msgid "Import Population From CSV"
+msgstr "CSVから人口をインポート"
+
+msgid "CSV containing list of"
+msgstr "CSVに含まれるリスト"
+
+msgid "Candidate identifier type"
+msgstr "候補識別子の種類"
+
+msgid "Does CSV contain a header line?"
+msgstr "CSV にはヘッダー行が含まれていますか?"
+
+msgid "CSV File"
+msgstr "CSVファイル"
+
+msgid "Invalid CSV"
+msgstr "無効なCSV"
+
+msgid "Could not parse CSV file"
+msgstr "CSVファイルを解析できませんでした"
+
+msgid "No CSV Uploaded"
+msgstr "CSVがアップロードされていません"
+
+msgid "Please upload a CSV file before submitting."
+msgstr "送信する前にCSVファイルをアップロードしてください。"
+
+msgid "Empty CSV"
+msgstr "空のCSV"
+
+msgid "The uploaded CSV file is empty."
+msgstr "アップロードされた CSV ファイルは空です。"
+
+msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
+msgstr "CSV には {{expectedLength}} 列が必要です。{{line}} 行目に {{gotLength}} 列が取得されました。"
+
+msgid "Invalid DCCID"
+msgstr "無効なDCCID"
+
+msgid "Invalid DCCID ({{id}}) on line {{line}}."
+msgstr "行 {{line}} の DCCID ({{id}}) が無効です。"
+
+msgid "Welcome to the Data Query Tool"
+msgstr "データクエリツールへようこそ"
+
+msgid "Instructions"
+msgstr "説明書"
+
+msgid "Recent Queries"
+msgstr "最近のクエリ"
+
+msgid "Shared Queries"
+msgstr "共有クエリ"
+
+msgid "Starred Only"
+msgstr "スター付きのみ"
+
+msgid "Shared Only"
+msgstr "共有のみ"
+
+msgid "No run times (eliminate duplicates)"
+msgstr "実行時間なし（重複を排除）"
+
+msgid "Filter"
+msgid_plural "Filters"
+msgstr[0] "フィルター"
+
+msgid "Named Only"
+msgstr "名前のみ"
+
+msgid "Collapse queries"
+msgstr "クエリを折りたたむ"
+
+msgid "(No filters for query)"
+msgstr "(クエリにフィルターはありません)"
+
+msgid "Page"
+msgstr "ページ"
+
+msgid "Unstar"
+msgstr "スターを外す"
+
+msgid "Star"
+msgstr "星"
+
+msgid "Unshare"
+msgstr "共有解除"
+
+msgid "Share"
+msgstr "共有"
+
+msgid "Query Loaded"
+msgstr "クエリが読み込まれました"
+
+msgid "Successfully loaded query."
+msgstr "クエリが正常に読み込まれました。"
+
+msgid "(Run on {{runTime}})"
+msgstr "({{runTime}} に実行)"
+
+msgid "You ran this query on {{runTime}}"
+msgstr "このクエリは {{runTime}} に実行されました"
+
+msgid "You ran this query"
+msgstr "このクエリを実行しました"
+
+msgid "(Shared by {{sharedBy}})"
+msgstr "（{{sharedBy}}によって共有）"
+
+msgid "Query shared by {{sharedBy}}"
+msgstr "{{sharedBy}} によって共有されたクエリ"
+
+msgid "Name Query"
+msgstr "名前クエリ"
+
+msgid "Enter your query name"
+msgstr "クエリ名を入力してください"
+
+msgid "Query name"
+msgstr "クエリ名"
+
+msgid "Must provide a query name."
+msgstr "クエリ名を指定する必要があります。"
+
+msgid "Pin Top Query"
+msgstr "ピントップクエリ"
+
+msgid "Pin Study Query"
+msgstr "ピンスタディクエリ"
+
+msgid "Pin Dashboard Summary"
+msgstr "ピンダッシュボードの概要"
+
+msgid "Pin To Login Page"
+msgstr "ログインページにピン留めする"
+
+msgid "Must pin as study query, to dashboard, or to the login page."
+msgstr "調査クエリとしてダッシュボードまたはログイン ページにピン留めする必要があります。"
+
+msgid "Must provide a query name to pin query as."
+msgstr "クエリをピン留めするにはクエリ名を指定する必要があります。"
+
+msgid "{{columnName}} fields"
+msgstr "{{columnName}} フィールド"
+
+msgid "Define Filters"
+msgstr "フィルターを定義する"
+
+msgid "Define Fields"
+msgstr "フィールドを定義する"
+
+msgid "View Data"
+msgstr "データを表示"
+
+msgid "Reload query"
+msgstr "クエリを再読み込み"
+
+msgid "Continue to Define Fields"
+msgstr "フィールドの定義を続行"
+
+msgid "Above, there is also a Study Queries panel. This are a special type of shared queries that have been pinned by a study administer to always display at the top of this page."
+msgstr "上部には「スタディクエリ」パネルもあります。これは、スタディ管理者が固定してページ上部に常に表示される特別な共有クエリです。"
+
+msgid "The data query tool allows you to query data within LORIS. There are three steps to defining a query:"
+msgstr "データクエリツールを使用すると、ロリス内のデータをクエリできます。クエリの定義には3つの手順があります:"
+
+msgid "First, you must select the fields that you're interested in on the Define Fields page."
+msgstr "まず、「フィールドの定義」ページで、関心のあるフィールドを選択する必要があります。"
+
+msgid "Next, you can optionally define filters on the Define Filters page to restrict the population that is returned."
+msgstr "次に、オプションで「フィルターの定義」ページでフィルターを定義して、返される母集団を制限することができます。"
+
+msgid "The Next Steps on the bottom right of your screen always the context-sensitive next steps that you can do to build your query."
+msgstr "画面の右下にある「次のステップ」には、クエリを作成するために実行できる状況に応じた次のステップが常に表示されます。"
+
+msgid "Finally, you view your query results on the View Data page"
+msgstr "最後に、「データの表示」ページでクエリ結果を表示します。"
+
+msgid "Your recently run queries will be displayed in the Recent Queries panel below. Instead of building a new query, you can reload a query that you've recently run by clicking on the icon next to the query."
+msgstr "最近実行したクエリは、下の「最近のクエリ」パネルに表示されます。新しいクエリを作成する代わりに、クエリの横にあるアイコンをクリックして、最近実行したクエリを再読み込みすることもできます。"
+
+msgid "Queries can be shared with others by clicking the icon. This will cause the query to be shared with all users who have access to the fields used by the query. It will display in a Shared Queries panel below the Recent Queries."
+msgstr "アイコンをクリックすると、クエリを他のユーザーと共有できます。これにより、クエリが使用するフィールドにアクセスできるすべてのユーザーとクエリが共有されます。共有されたクエリは、「最近のクエリ」の下の「共有クエリ」パネルに表示されます。"
+
+msgid "You may also give a query a name at any time by clicking the icon. This makes it easier to find queries you care about by giving them an easier to remember name that can be used for filtering. When you share a query, the name will be shared along with it."
+msgstr "アイコンをクリックすることで、いつでもクエリに名前を付けることができます。覚えやすい名前を付けることで、フィルタリング時にも使いやすくなり、重要なクエリを見つけやすくなります。クエリを共有すると、クエリ名も一緒に共有されます。"
+
+msgid "Category"
+msgstr "カテゴリ"
+
+msgid "Selected Fields"
+msgstr "選択したフィールド"
+
+msgid "Available Fields"
+msgstr "利用可能なフィールド"
+
+msgid "Add all"
+msgstr "すべて追加"
+
+msgid "Remove all"
+msgstr "すべて削除"
+
+msgid "Filter within category"
+msgstr "カテゴリ内でフィルタリング"
+
+msgid "Default Visits"
+msgstr "デフォルトの訪問"
+
+msgid "Sync with selected fields"
+msgstr "選択したフィールドと同期"
+
+msgid "Select a field"
+msgstr "フィールドを選択"
+
+msgid "Select a category"
+msgstr "カテゴリーを選択"
+
+msgid "Invalid response"
+msgstr "無効な応答"
+
+msgid "Invalid tab"
+msgstr "無効なタブ"
+
+msgid "or"
+msgstr "または"

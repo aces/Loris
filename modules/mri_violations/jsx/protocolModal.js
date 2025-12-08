@@ -3,7 +3,7 @@ import StaticDataTable from 'StaticDataTable';
 
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-
+import {withTranslation} from 'react-i18next';
 
 /**
  * A Modal popup to display a protocol violation of any
@@ -13,16 +13,18 @@ import PropTypes from 'prop-types';
  * @return {JSX}
  */
 function ProtocolModal(props) {
+  const {t} = props;
   switch (props.Type) {
   case 'protocolviolation':
-    return <ProtocolViolationModal {...props} />;
+    return <ProtocolViolationModal {...props} t={t} />;
   case 'protocolcheck':
-    return <ProtocolCheckViolationModal {...props} />;
+    return <ProtocolCheckViolationModal {...props} t={t} />;
   default: return null;
   }
 }
 ProtocolModal.propTypes = {
   Type: PropTypes.string,
+  t: PropTypes.func,
 };
 
 /**
@@ -38,6 +40,7 @@ ProtocolModal.propTypes = {
 function ProtocolViolationModal(props) {
   const [data, setData] = useState([]);
   const [protocols, setMRIProtocols] = useState([]);
+  const {t} = props;
 
   useEffect(() => {
     fetch(props.URL + '?format=json' +
@@ -57,42 +60,43 @@ function ProtocolViolationModal(props) {
 
   let violations = [];
 
-  let title = 'Violations for SeriesUID ' + props.SeriesUID;
+  let title = t('Violations for SeriesUID', {ns: 'mri_violations'}) +
+  ' ' + props.SeriesUID;
   for (const violation of data) {
-    title = 'Violations for ' + violation[4];
+    title = t('Violations for', {ns: 'mri_violations'}) + ' ' + violation[4];
     violations.push(
       <div key={violation[4]}>
         <dl className="violation-description-list">
           <div>
-            <dt>CandID</dt>
+            <dt>{t('DCCID', {ns: 'loris'})}</dt>
             <dd>{violation[0]}</dd>
           </div>
           <div>
-            <dt>PSCID</dt>
+            <dt>{t('PSCID', {ns: 'loris'})}</dt>
             <dd>{violation[1]}</dd>
           </div>
           <div>
-            <dt>Time Run</dt>
+            <dt>{t('Time Run', {ns: 'mri_violations'})}</dt>
             <dd>{violation[2]}</dd>
           </div>
           <div>
-            <dt>Series Description</dt>
+            <dt>{t('Series Description', {ns: 'mri_violations'})}</dt>
             <dd>{violation[3]}</dd>
           </div>
           <div>
-            <dt>Image Location</dt>
+            <dt>{t('Image Location', {ns: 'mri_violations'})}</dt>
             <dd>{violation[4]}</dd>
           </div>
           <div>
-            <dt>Patient Name</dt>
+            <dt>{t('Patient Name', {ns: 'mri_violations'})}</dt>
             <dd>{violation[5]}</dd>
           </div>
           <div>
-            <dt>Series UID</dt>
+            <dt>{t('Series UID', {ns: 'mri_violations'})}</dt>
             <dd>{props.SeriesUID}</dd>
           </div>
           <div>
-            <dt>Echo Time</dt>
+            <dt>{t('Echo Time', {ns: 'mri_violations'})}</dt>
             <dd>{violation[8]}</dd>
           </div>
         </dl>
@@ -100,21 +104,21 @@ function ProtocolViolationModal(props) {
         <table className="table table-hover table-primary table-bordered">
           <thead>
             <tr>
-              <th>Protocol Group</th>
-              <th>TR</th>
-              <th>TE</th>
-              <th>TI</th>
-              <th>Slice Thickness</th>
-              <th>Xspace</th>
-              <th>Yspace</th>
-              <th>Zspace</th>
-              <th>Xstep</th>
-              <th>Ystep</th>
-              <th>Zstep</th>
-              <th>Time</th>
-              <th>Image Type</th>
-              <th>Phase Encoding Direction</th>
-              <th>Echo Number</th>
+              <th>{t('Protocol Group', {ns: 'mri_violations'})}</th>
+              <th>{t('TR', {ns: 'mri_violations'})}</th>
+              <th>{t('TE', {ns: 'mri_violations'})}</th>
+              <th>{t('TI', {ns: 'mri_violations'})}</th>
+              <th>{t('Slice Thickness', {ns: 'mri_violations'})}</th>
+              <th>{t('Xspace', {ns: 'mri_violations'})}</th>
+              <th>{t('Yspace', {ns: 'mri_violations'})}</th>
+              <th>{t('Zspace', {ns: 'mri_violations'})}</th>
+              <th>{t('Xstep', {ns: 'mri_violations'})}</th>
+              <th>{t('Ystep', {ns: 'mri_violations'})}</th>
+              <th>{t('Zstep', {ns: 'mri_violations'})}</th>
+              <th>{t('Time', {ns: 'mri_violations'})}</th>
+              <th>{t('Image Type', {ns: 'mri_violations'})}</th>
+              <th>{t('Phase Encoding Direction', {ns: 'mri_violations'})}</th>
+              <th>{t('Echo Number', {ns: 'mri_violations'})}</th>
             </tr>
           </thead>
           <tbody>
@@ -166,23 +170,23 @@ function ProtocolViolationModal(props) {
       <table className="table table-hover table-primary table-bordered">
         <thead>
           <tr>
-            <th>Center Name</th>
-            <th>Scanner ID</th>
-            <th>Scan Type</th>
-            <th>TR Range</th>
-            <th>TE Range</th>
-            <th>TI Range</th>
-            <th>Slice Thickness Range</th>
-            <th>Xspace Range</th>
-            <th>Yspace Range</th>
-            <th>Zspace Range</th>
-            <th>Xstep Range</th>
-            <th>Ystep Range</th>
-            <th>Zstep Range</th>
-            <th>Time Range</th>
-            <th>Image Type</th>
-            <th>Phase Encoding Direction</th>
-            <th>Echo Number</th>
+            <th>{t('Center Name', {ns: 'mri_violations'})}</th>
+            <th>{t('Scanner ID', {ns: 'mri_violations'})}</th>
+            <th>{t('Scan Type', {ns: 'mri_violations'})}</th>
+            <th>{t('TR Range', {ns: 'mri_violations'})}</th>
+            <th>{t('TE Range', {ns: 'mri_violations'})}</th>
+            <th>{t('TI Range', {ns: 'mri_violations'})}</th>
+            <th>{t('Slice Thickness Range', {ns: 'mri_violations'})}</th>
+            <th>{t('Xspace Range', {ns: 'mri_violations'})}</th>
+            <th>{t('Yspace Range', {ns: 'mri_violations'})}</th>
+            <th>{t('Zspace Range', {ns: 'mri_violations'})}</th>
+            <th>{t('Xstep Range', {ns: 'mri_violations'})}</th>
+            <th>{t('Ystep Range', {ns: 'mri_violations'})}</th>
+            <th>{t('Zstep Range', {ns: 'mri_violations'})}</th>
+            <th>{t('Time Range', {ns: 'mri_violations'})}</th>
+            <th>{t('Image Type', {ns: 'mri_violations'})}</th>
+            <th>{t('Phase Encoding Direction', {ns: 'mri_violations'})}</th>
+            <th>{t('Echo Number', {ns: 'mri_violations'})}</th>
           </tr>
         </thead>
         <tbody>
@@ -204,7 +208,7 @@ function ProtocolViolationModal(props) {
         <td>{protocol['ScannerID']}</td>
         <td>{protocol['ScanType']}</td>
         <td colSpan="11">
-                Series Description Regex:
+          {t('Series Description Regex:', {ns: 'mri_violations'})}
           <span style={{fontWeight: 'bold'}}>
             {protocol['series_description_regex']}
           </span>
@@ -244,9 +248,9 @@ function ProtocolViolationModal(props) {
     show={true}
     width="90%"
     title={title}>
-    <h2>Image Protocol</h2>
+    <h2>{t('Image Protocol', {ns: 'mri_violations'})}</h2>
     {violations}
-    <h2>Study Protocols</h2>
+    <h2>{t('Study Protocols', {ns: 'mri_violations'})}</h2>
     {protocolgroups}
   </Modal>;
 }
@@ -254,6 +258,7 @@ ProtocolViolationModal.propTypes = {
   URL: PropTypes.string,
   SeriesUID: PropTypes.string,
   onClose: PropTypes.func,
+  t: PropTypes.func,
 };
 
 /**
@@ -268,6 +273,7 @@ ProtocolViolationModal.propTypes = {
  */
 function ProtocolCheckViolationModal(props) {
   const [data, setData] = useState([]);
+  const {t} = props;
   useEffect(() => {
     fetch(props.URL + '?format=json' +
                   '&violationtype=protocolcheck' +
@@ -286,12 +292,20 @@ function ProtocolCheckViolationModal(props) {
   return <Modal onClose={props.onClose}
     show={true}
     width="90%"
-    title={'Violations for SeriesUID ' + props.SeriesUID}>
-    <h2>Scan Problems</h2>
-    <StaticDataTable Headers={
-      ['Patient Name', 'CandID', 'Visit', 'Scan Type',
-        'Protocol Group', 'Severity', 'Header', 'Value',
-        'Valid Values'] }
+    title={t('Violations for SeriesUID', {ns: 'mri_violations'})
+    + ' ' + props.SeriesUID}>
+    <h2>{t('Scan Problems', {ns: 'mri_violations'})}</h2>
+    <StaticDataTable Headers={[
+      t('Patient Name', {ns: 'mri_violations'}),
+      t('DCCID', {ns: 'loris'}),
+      t('Visit', {ns: 'loris'}),
+      t('Scan Type', {ns: 'mri_violations'}),
+      t('Protocol Group', {ns: 'mri_violations'}),
+      t('Severity', {ns: 'mri_violations'}),
+      t('Header', {ns: 'mri_violations'}),
+      t('Value', {ns: 'mri_violations'}),
+      t('Valid Values', {ns: 'mri_violations'}),
+    ]}
     Hide={{rowsPerPage: true, defaultColumn: true}}
     NoDynamicTable={true}
     Data={data} />
@@ -301,5 +315,7 @@ ProtocolCheckViolationModal.propTypes = {
   URL: PropTypes.string,
   SeriesUID: PropTypes.string,
   onClose: PropTypes.func,
+  t: PropTypes.func,
 };
-export default ProtocolModal;
+
+export default withTranslation(['mri_violations', 'loris'])(ProtocolModal);

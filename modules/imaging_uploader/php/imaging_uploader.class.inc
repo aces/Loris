@@ -115,7 +115,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->columns      = [
             'UploadID AS Upload_ID',
             $progressSelectPart,
-            'c.CandID',
+            'c.CandID as ' . dgettext("loris", "DCCID"),
             'c.PSCID',
             's.Visit_label',
             'UploadLocation AS Upload_Location',
@@ -156,15 +156,15 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        $phantomOtions = [
-            'N' => 'No',
-            'Y' => 'Yes',
+        $phantomOptions = [
+            'N' => dgettext("loris", "No"),
+            'Y' => dgettext("loris", "Yes"),
         ];
-        $user          = \NDB_Factory::singleton()->user();
-        $visitlabels   = $user->getVisits();
+        $user           = \NDB_Factory::singleton()->user();
+        $visitlabels    = $user->getVisits();
         // Fields used for selection filter and upload form
-        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
-        $this->addBasicText('candID', 'CandID');
+        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOptions);
+        $this->addBasicText('candID', dgettext('loris', 'DCCID'));
         $this->addBasicText('pSCID', 'PSCID');
         $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
         $this->addFile('mriFile', 'File to Upload');

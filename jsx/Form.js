@@ -8,6 +8,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputLabel from 'jsx/form/InputLabel';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Form Component.
@@ -1832,7 +1833,7 @@ NumericElement.defaultProps = {
  * File Component
  * React wrapper for a simple or 'multiple' <input type="file"> element.
  */
-export class FileElement extends Component {
+class FileElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1945,7 +1946,8 @@ export class FileElement extends Component {
             </div>
             <div className="input-group-btn">
               <div className="btn btn-primary btn-file">
-                <i className="glyphicon glyphicon-folder-open"></i> Browse
+                <i className="glyphicon glyphicon-folder-open"></i>
+                {' ' + this.props.t('Browse', {ns: 'loris'})}
                 <input
                   type="file"
                   className="fileUpload"
@@ -1977,6 +1979,9 @@ FileElement.propTypes = {
   allowMultiple: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
 FileElement.defaultProps = {
@@ -1992,6 +1997,10 @@ FileElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
 };
+
+// Wrap FileElement with translation HOC
+const FileElementWithTranslation = withTranslation('loris')(FileElement);
+export {FileElementWithTranslation as FileElement};
 
 /**
  * Static element component.
@@ -2775,7 +2784,7 @@ export default {
   TimeElement,
   DateTimeElement,
   NumericElement,
-  FileElement,
+  FileElement: FileElementWithTranslation,
   StaticElement,
   HeaderElement,
   LinkElement,

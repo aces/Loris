@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 # Smarty template main.tpl strings
 msgid "LORIS"
@@ -27,19 +27,19 @@ msgid "DEV"
 msgstr "डेव"
 
 msgid "Affiliations"
-msgstr "संबद्धता"
+msgstr "अफिलिएशन्स"
 
 msgid "Site Affiliation"
-msgstr "साइट संबद्धता"
+msgstr "साइट अफिलिएशन"
 
 msgid "Site Affiliations"
-msgstr "साइट संबद्धताएँ"
+msgstr "साइट अफिलिएशन्स"
 
 msgid "Project Affiliation"
-msgstr "परियोजना संबद्धता"
+msgstr "प्रोजेक्ट अफिलिएशन"
 
 msgid "Project Affiliations"
-msgstr "परियोजना संबद्धताएँ"
+msgstr "प्रोजेक्ट अफिलिएशन्स"
 
 msgid "Log Out"
 msgstr "लॉग आउट"
@@ -58,7 +58,6 @@ msgstr "मेरी पसंद"
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr "प्रशासन"
-
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -93,7 +92,9 @@ msgstr "इमेजिंग"
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr "उम्मीदवार"
+msgid_plural "Candidates"
+msgstr[0] "उम्मीदवार"
+msgstr[1] "उम्मीदवारों"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
@@ -112,7 +113,7 @@ msgstr "रिपोर्ट्स"
 
 # Common loris terms. Consider moving these to their own textdomain?
 msgid "TimePoint"
-msgstr "समय बिंदु"
+msgstr "टाइमपॉइंट"
 
 msgid "Module"
 msgstr "मॉड्यूल"
@@ -124,6 +125,15 @@ msgstr "हाँ"
 msgid "No"
 msgstr "नहीं"
 
+msgid "Browse"
+msgstr "ब्राउज़ करें"
+
+msgid "Submit"
+msgstr "सबमिट करें"
+
+msgid "Upload"
+msgstr "अपलोड करें"
+
 msgid "N/A"
 msgstr "लागू नहीं"
 
@@ -132,6 +142,9 @@ msgstr "सहेजें"
 
 msgid "Reset"
 msgstr "रीसेट करें"
+
+msgid "Note"
+msgstr "नोट"
 
 msgid "Back"
 msgstr "वापस"
@@ -152,6 +165,9 @@ msgstr "बनाएँ"
 msgid "Selection Filter"
 msgstr "चयन फ़िल्टर"
 
+msgid "Filters"
+msgstr "फ़िल्टर"
+
 msgid "Show Filters"
 msgstr "फ़िल्टर दिखाएँ"
 
@@ -161,18 +177,54 @@ msgstr "फ़िल्टर छिपाएँ"
 msgid "Clear Filters"
 msgstr "फ़िल्टर साफ़ करें"
 
+msgid "Load Filter Preset"
+msgstr "फ़िल्टर प्रीसेट लोड करें"
+
 msgid "Show Advanced Filters"
 msgstr "उन्नत फ़िल्टर दिखाएँ"
 
 msgid "Hide Advanced Filters"
 msgstr "उन्नत फ़िल्टर छिपाएँ"
 
+msgid "Pass"
+msgstr "पास"
+
+msgid "Fail"
+msgstr "फेल"
+
+msgid "True"
+msgstr "सत्य"
+
+msgid "False"
+msgstr "असत्य"
+
+msgid "Selected"
+msgstr "चयनित"
+
+msgid "selected"
+msgstr "चयनित"
+
 # Common swal labels
 msgid "Cancel"
 msgstr "रद्द करें"
 
+msgid "Clear"
+msgstr "हटाना"
+
+msgid "Proceed"
+msgstr "आगे बढ़ना"
+
 msgid "Success!"
 msgstr "सफलता!"
+
+msgid "Close"
+msgstr "बंद करें"
+
+msgid "Saving"
+msgstr "सहेजा जा रहा है"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "फॉर्म छोड़ने पर दर्ज की गई सभी जानकारी खो जाएगी।"
 
 # Common candidate terms
 msgid "PSCID"
@@ -182,7 +234,13 @@ msgid "DCCID"
 msgstr "डीसीसीआईडी"
 
 msgid "Visit Label"
-msgstr "दौरे का लेबल"
+msgstr "भेंट लेबल"
+
+msgid "Status"
+msgstr "स्थिति"
+
+msgid "No."
+msgstr "संख्या"
 
 msgid "Email"
 msgstr "ईमेल"
@@ -206,9 +264,12 @@ msgstr "समय बिंदु परियोजना"
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] "समूह"
+msgstr[1] "समूह"
 
 msgid "Session"
-msgstr "सत्र"
+msgid_plural "Sessions"
+msgstr[0] "सत्र"
+msgstr[1] "सत्र"
 
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
@@ -252,6 +313,9 @@ msgstr "पृष्ठ लोड करते समय एक त्रुट�
 msgid "Active"
 msgstr "सक्रिय"
 
+msgid "Pending"
+msgstr "लंबित"
+
 msgid "Entity Type"
 msgstr "इकाई प्रकार"
 
@@ -261,8 +325,20 @@ msgstr "स्कैन पूरा हुआ"
 msgid "Language"
 msgstr "भाषा"
 
+msgid "View details"
+msgstr "विवरण देखें"
+
 msgid "Ethnicity"
 msgstr "जातीयता"
+
+msgid "Access denied"
+msgstr "पहुँच अस्वीकृत"
+
+msgid "Previous"
+msgstr "पिछला"
+
+msgid "Next"
+msgstr "अगला"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -272,7 +348,7 @@ msgid "Maximum rows per page:"
 msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
 
 msgid "Download Data as CSV"
-msgstr "डेटा को CSV के रूप में डाउनलोड करें"
+msgstr "तालिका को CSV के रूप में डाउनलोड करें"
 
 #: php/libraries/Password.class.inc
 msgid "The password is too short"
@@ -296,6 +372,9 @@ msgstr "दृश्य"
 
 # Common strings on widgets
 msgid "NEW"
+msgstr "नया"
+
+msgid "New"
 msgstr "नया"
 
 msgid "Updated"
@@ -356,15 +435,18 @@ msgstr "कोई विशेष अक्षर आवश्यक नही�
 msgid "We suggest using a password manager to generate one for you."
 msgstr "हम सुझाव देते हैं कि आपके लिए पासवर्ड बनाने हेतु पासवर्ड मैनेजर का उपयोग करें।"
 
-msgid "Total"
-msgstr "कुल"
-
 msgid "Error!"
 msgstr "त्रुटि!"
+
+msgid "Date"
+msgstr "दिनांक"
 
 # Common timepoint and visit terms
 msgid "Not Started"
 msgstr "शुरू नहीं हुआ"
+
+msgid "Total"
+msgstr "कुल"
 
 msgid "Screening"
 msgstr "जांच"
@@ -381,9 +463,6 @@ msgstr "विषय"
 msgid "Recycling Bin"
 msgstr "रिसाइक्लिंग बिन"
 
-msgid "Pass"
-msgstr "उत्तीर्ण"
-
 msgid "Failure"
 msgstr "विफलता"
 
@@ -392,6 +471,12 @@ msgstr "निकासी"
 
 msgid "In Progress"
 msgstr "प्रगति पर"
+
+msgid "Progress"
+msgstr "प्रगति"
+
+msgid "Success"
+msgstr "सफलता"
 
 msgid "Complete"
 msgstr "पूर्ण"
@@ -427,7 +512,7 @@ msgid "Age"
 msgstr "आयु"
 
 msgid "{{months}} months old"
-msgstr "{{months}} महीने का"
+msgstr "{{months}} महीने का/की"
 
 msgid "{{years}} years old"
 msgstr "{{years}} वर्ष का"
@@ -435,3 +520,25 @@ msgstr "{{years}} वर्ष का"
 # Other generic terms
 msgid "Loading..."
 msgstr "लोड हो रहा है..."
+
+msgid "Permission denied"
+msgstr "अनुमति अस्वीकृत"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "कृपया सुनिश्चित करें कि फ़ाइलें {{maxFileSize}} से बड़ी न हों"
+
+msgid "Are You Sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "Are you sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "Yes, I am sure!"
+msgstr "हाँ, मैं सुनिश्चित हूँ!"
+
+msgid "No, cancel it!"
+msgstr "नहीं, रद्द करें!"
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr "कोई विकल्प नहीं"

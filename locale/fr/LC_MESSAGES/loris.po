@@ -147,12 +147,30 @@ msgstr "Afficher les filtres avancés"
 msgid "Hide Advanced Filters"
 msgstr "Masquer les filtres avancés"
 
+msgid "Fail"
+msgstr "Échec"
+
+msgid "True"
+msgstr "Vrai"
+
+msgid "False"
+msgstr "Faux"
+
+msgid "Selected"
+msgstr "Sélectionné"
+
+msgid "selected"
+msgstr "sélectionné"
+
 # Common swal labels
 msgid "Cancel"
 msgstr "Annuler"
 
 msgid "Success!"
 msgstr "Réussi!"
+
+msgid "Success"
+msgstr "Réussi"
 
 # Common candidate terms
 msgid "PSCID"
@@ -240,6 +258,51 @@ msgstr "Scan complété"
 
 msgid "Language"
 msgstr "Langue"
+
+msgid "Access denied"
+msgstr "Accès refusé"
+
+msgid "No."
+msgstr "Nombre"
+
+msgid "Are you Sure?"
+msgstr "Es-tu sûr?"
+
+msgid "Are you sure?"
+msgstr "Es-tu sûr?"
+
+msgid "Yes, I am sure!"
+msgstr "Oui, j'en suis sûr!"
+
+msgid "No, cancel it!"
+msgstr "Non, annulez-le !"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "Quitter le formulaire entraînera la perte de toutes les informations saisies."
+
+msgid "Proceed"
+msgstr "Procéder"
+
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Next"
+msgstr "Suivant"
+
+msgid "Save"
+msgstr "Sauvegarder"
+
+msgid "Saving"
+msgstr "Sauvegarde"
+
+msgid "Reset"
+msgstr "Réinitialiser"
+
+msgid "Note"
+msgstr "Note"
+
+msgid "View details"
+msgstr "Voir détails"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -347,3 +410,25 @@ msgstr "{{months}} mois"
 
 msgid "{{years}} years old"
 msgstr "{{years}} ans"
+
+# Other generic terms
+msgid "Loading..."
+msgstr "Chargement..."
+
+msgid "Permission denied"
+msgstr "Permission refusée"
+
+msgid "Unauthorized"
+msgstr "Non-autorisé"
+
+msgid "Submit"
+msgstr "Soumettre"
+
+msgid "Clear"
+msgstr "Effacer"
+
+msgid "Add"
+msgstr "Ajouter"
+
+msgid "Dataset"
+msgstr "Ensemble de données"

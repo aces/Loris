@@ -212,7 +212,7 @@ class ViewDetails extends \NDB_Form
 
     /**
      * Validates PatientName and PatientID,
-     * sets INVALID-HIDDEN if not validated.
+     * sets INVALID - HIDDEN if not validated.
      *
      * @return null
      */
@@ -288,7 +288,8 @@ class ViewDetails extends \NDB_Form
 
         $this->tpl_data['archive']['patientNameValid'] = $isValid ? 1 : 0;
         if (!$isValid) {
-            $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
+            $this->tpl_data['archive']['PatientName']
+                = dgettext('dicom_archive', 'INVALID - HIDDEN');
         }
 
         if (isset($this->tpl_data['archive']['PatientID'])
@@ -302,7 +303,9 @@ class ViewDetails extends \NDB_Form
                 $this->tpl_data['archive']['patientIDValid'] = 1;
             } else {
                 $this->tpl_data['archive']['patientIDValid'] = 0;
-                $this->tpl_data['archive']['PatientID']      = "INVALID - HIDDEN";
+
+                $this->tpl_data['archive']['PatientID']
+                    = dgettext('dicom_archive', 'INVALID - HIDDEN');
             }
         }
     }
@@ -429,11 +432,13 @@ class ViewDetails extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'View Details',
+                dgettext('dicom_archive', "DICOM Archive"),
+                "/$this->name",
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext('dicom_archive', 'View Details'),
                 "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
             )
         );

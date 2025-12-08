@@ -1,4 +1,5 @@
 import Select, {SingleValue} from 'react-select';
+import {useTranslation} from 'react-i18next';
 
 type SelectOption = {
     label: string,
@@ -29,8 +30,10 @@ function FilterableSelectGroup(props: {
     mapGroupName?: (module: string) => string,
     label?: string,
 }) {
+  const {t} = useTranslation();
   const groups: SelectGroup[] = [];
-  const placeholder = props.placeholder || 'Select a category';
+  const placeholder = props.placeholder ||
+    t('Select a category', {ns: 'dataquery'});
   for (const [module, subcategories]
     of Object.entries(props.groups)) {
     const options: SelectOption[] = [];
@@ -76,6 +79,7 @@ function FilterableSelectGroup(props: {
         <label style={{width: '100%', fontSize: '24px'}}>
           {props.label}
           <Select options={groups} onChange={selected}
+            noOptionsMessage={() => t('No options', {ns: 'loris'})}
             menuPortalTarget={document.body}
             styles={{menuPortal:
                         /**
@@ -103,6 +107,7 @@ function FilterableSelectGroup(props: {
         </label>
         :
         <Select options={groups} onChange={selected}
+          noOptionsMessage={() => t('No options', {ns: 'loris'})}
           menuPortalTarget={document.body}
           styles={{menuPortal:
                       /**

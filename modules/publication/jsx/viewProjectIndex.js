@@ -1,8 +1,15 @@
 import {createRoot} from 'react-dom/client';
 import ViewProject from './viewProject';
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/publication.json';
+import enStrings from '../locale/en/LC_MESSAGES/publication.json';
 const args = QueryString.get(document.currentScript.src);
 
 document.addEventListener('DOMContentLoaded', () => {
+  i18n.addResourceBundle('hi', 'publication', hiStrings);
+  i18n.addResourceBundle('ja', 'publication', jaStrings);
+  i18n.addResourceBundle('en', 'publication', enStrings);
   const viewProject = (
     <div className="page-edit-form">
       <div className="row">

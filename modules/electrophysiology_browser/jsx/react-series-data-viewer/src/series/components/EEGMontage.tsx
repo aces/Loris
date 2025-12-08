@@ -3,44 +3,58 @@ import {connect} from 'react-redux';
 import {_3d} from 'd3-3d';
 import {Group} from '@visx/group';
 import ResponsiveViewer from './ResponsiveViewer';
-import {Electrode} from '../../series/store/types';
-import {setHidden} from '../../series/store/state/montage';
-import React, {useState} from 'react';
-import Panel from 'Panel';
+import {CheckboxElement} from './Form';
+import {CoordinateSystem, Electrode} from '../store/types';
+import {setHidden} from '../store/state/montage';
+import React, {useState, useEffect, SetStateAction, Dispatch} from 'react';
+import Panel from './Panel';
 import {RootState} from '../store';
+import {useTranslation} from "react-i18next";
 
 type CProps = {
   electrodes: Electrode[],
   hidden: number[],
-  drag: boolean,
-  mx: number,
-  my: number,
-  mouseX: number,
-  mouseY: number,
+  coordinateSystem: CoordinateSystem,
   setHidden: (_: number[]) => void,
-  physioFileID: number,
   chunksURL: string,
   colorMap?: {
     color: string,
-    ids: Number[]
+    mode: 'fill' | 'outline'
+    ids: Number[],
   },
+  withPanel: boolean,
+  contentHeight: string,
+  cssClass: string,
+  editChannels: boolean,
+  channelDelimiter: string,
+  setCancelWarning?: Dispatch<SetStateAction<boolean>>,
+  setEventChannels?: Dispatch<SetStateAction<string[]>>,
+  eventChannels?: string[],
+  setChannelSelectorVisible?: Dispatch<SetStateAction<boolean>>,
+  eegMontageName: string,
 };
 
-/**
- *
- * @param root0
- * @param root0.electrodes
- * @param root0.physioFileID
- */
 const EEGMontage = (
   {
     electrodes,
-    physioFileID,
+    hidden,
+    coordinateSystem,
+    setHidden,
     chunksURL,
     colorMap,
+    withPanel,
+    contentHeight,
+    cssClass,
+    editChannels,
+    channelDelimiter,
+    setCancelWarning,
+    setEventChannels,
+    eventChannels,
+    setChannelSelectorVisible,
+    eegMontageName,
   }: CProps) => {
-  if (electrodes.length === 0) return null;
-
+  // if (electrodes.length === 0 || coordinateSystem === null) return null;
+  const {t} = useTranslation();
   const [angleX, setAngleX] = useState(0);
   const [angleZ, setAngleZ] = useState(0);
   const [drag, setDrag] = useState(false);
@@ -49,32 +63,43 @@ const EEGMontage = (
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
   const [view3D, setView3D] = useState(false);
+  const [showChannelIndices, setShowChannelIndices] = useState(false);
+  const [selectedElectrodes, setSelectedElectrodes] = useState(
+    electrodes.map((e, i) => colorMap?.ids?.includes(i))
+  );
+  const [clicked3DElectrode, setClicked3DElectrode] = useState(-1);
+  const [holdingShift, setHoldingShift] = useState(false);
 
-  const scatter3D = [];
-  const scatter2D = [];
+  const getChannelName = (channelIndex: number) => {
+    return electrodes[channelIndex].name;
+  }
+  const [selectedElectrodesText, setSelectedElectrodesText] = useState(
+    selectedElectrodes.map((electrode, index) => {
+      return electrode ? index : undefined;
+    }).filter(e => e !== undefined).map(getChannelName).join(channelDelimiter)
+  );
+
+  let infoMessageTimeout = null;
+
+  const scale = 1200;
+  let scatter3D = [];
+  let scatter2D = [];
   const startAngle = 0;
-      
-  const point3D = _3d()
+
+  let point3D = _3d()
     .x((d) => d.x)
     .y((d) => d.y)
     .z((d) => d.z)
     .rotateZ( startAngle)
-    .rotateX(-startAngle);
+    .rotateX(-startAngle)
+    .scale(scale);
 
-  /**
-   *
-   * @param v
-   */
   const dragStart = (v: any) => {
     setDrag(true);
     setMx(v[0]);
     setMy(v[1]);
   };
 
-  /**
-   *
-   * @param v
-   */
   const dragged = (v: any) => {
     if (!drag) return;
     const beta = (v[0] - mx + mouseX) * -2 * Math.PI;
@@ -87,37 +112,58 @@ const EEGMontage = (
     setAngleZ(angleZ);
   };
 
-  /**
-   *
-   * @param v
-   */
   const dragEnd = (v: any) => {
-    setDrag(false);
-    setMouseX(v[0] - mx + mouseX);
+    setDrag( false);
+    setMouseX( v[0] - mx + mouseX);
     setMouseY(v[1] - my + mouseY);
   };
 
   /**
    * Compute the stereographic projection.
    *
-   * Given a unit sphere with radius r = 1 and center at the origin.
+   * Given a unit sphere with radius r = 1 and center at The origin.
    * Project the point p = (x, y, z) from the sphere's South pole (0, 0, -1)
    * on a plane on the sphere's North pole (0, 0, 1).
    *
    * P' = P * (2r / (r + z))
    *
    * @param {number} x - x coordinate of electrodes on a unit sphere scale
-   * @param {number} y - y coordinate of electrodes on a unit sphere scale
-   * @param {number} z - z coordinate of electrodes on a unit sphere scale
-   * @param {number} scale - Scale to change the projection point.
-   *                         Defaults to 1, which is on the sphere
-   * @return {number[]} : x, y positions of electrodes
-   *                      as projected onto a unit circle.
+   * @param {number} y - x coordinate of electrodes on a unit sphere scale
+   * @param {number} z - x coordinate of electrodes on a unit sphere scale
+   * @param {number} scale - Scale to change the projection point.Defaults to 1, which is on the sphere
+   *
+   * @return {number[]} : x, y positions of electrodes as projected onto a unit circle.
    */
   const stereographicProjection = (x, y, z, scale=1.0) => {
-    const mu = (2 * scale) / (scale + z);
+    const mu = 1.0 / (scale + z);
     return [x * mu, y * mu];
   };
+
+  const get2DMultiplier = (unit: string) => {
+    switch (unit) {
+      case 'cm':
+        return 0.07;
+      case 'mm':
+        return 0.007;
+      case 'm':
+      case 'n/a':
+      default:
+        return 11;
+    }
+  }
+
+  const get3DMultiplier = (unit: string) => {
+    switch (unit) {
+      case 'cm':
+        return 0.01;
+      case 'mm':
+        return 0.001;
+      case 'm':
+      case 'n/a':
+      default:
+        return 1;
+    }
+  }
 
   /**
    * Computes an axis aligned bounding box for a set of points
@@ -141,11 +187,8 @@ const EEGMontage = (
     );
   };
 
-  // Remove points with no data
   electrodes = electrodes.filter(e => e.position[0] && e.position[1]);
 
-  // Determine if the points are in an ALS or RAS coordinate system
-  // and the head ratio
   let ALSOrientation = false;
   let headRatio = 1;
   let montageRadius = 100;
@@ -177,45 +220,253 @@ const EEGMontage = (
   const scale3D = montageRadius / headRadius;
   const scale2D = montageRadius / stereographicProjection(headRadius, 0, 0, headRadius)[0];
 
+  const multiplier2D = get2DMultiplier(coordinateSystem?.units);
+  const multiplier3D = get3DMultiplier(coordinateSystem?.units);
+
   electrodes.map((electrode, i) => {
     let electrodeCoords = electrode.position.slice();
 
     // SVG Y axis points toward bottom
     // Rotate the points to have the nose up
-    electrodeCoords[1] *= -1;
+    // electrodeCoords[1] *= -1;
 
     // We want the electrodes in the RAS orientation
     // Convert from ALS if necessary
-    if (ALSOrientation) {
-      electrodeCoords = [
-        electrodeCoords[1],
-        -electrodeCoords[0],
-        electrodeCoords[2],
-      ];
-    }
-
-    scatter3D.push({
-      x: electrodeCoords[0] * scale3D,
-      y: electrodeCoords[1] * scale3D,
-      z: electrodeCoords[2] * scale3D,
-    });
-
-    const [x, y] = stereographicProjection(
-      electrodeCoords[0] * headRatio,
+    electrodeCoords = [
       electrodeCoords[1],
+      -electrodeCoords[0],
       electrodeCoords[2],
-      headRadius
-    );
-    scatter2D.push({x: x * scale2D, y: y * scale2D});
+    ];
+
+    if (ALSOrientation) {
+      const [x, y] = stereographicProjection(
+        electrode.position[0] * multiplier2D,
+        electrode.position[1] * multiplier2D,
+        electrode.position[2] * multiplier2D,
+      );
+      scatter2D.push({x: x * 135, y: y * 145 / 0.8});
+      scatter3D.push({
+        x: electrodeCoords[0] * multiplier3D,
+        y: electrodeCoords[1] * multiplier3D,
+        z: electrodeCoords[2] * multiplier3D,
+      });
+    } else {
+      const [x, y] = stereographicProjection(
+        electrodeCoords[0] * multiplier2D,
+        -electrodeCoords[1] * multiplier2D,
+        electrodeCoords[2] * multiplier2D,
+      );
+      scatter2D.push({x: x * 150, y: y * 150 / 0.8});
+      scatter3D.push({
+        x: electrode.position[0] * multiplier3D,
+        y: -electrode.position[1] * multiplier3D,
+        z: electrode.position[2] * multiplier3D,
+      });
+    }
   });
 
-  /**
-   *
-   */
+  const getChannelIndex = (channelName: string) => {
+    return electrodes.findIndex((electrode) => {
+      return electrode.name === channelName;
+    });
+  }
+
+  const toggleElectrodeSelection = (index: number) => {
+    const newElectrodeSelection = [
+      ...selectedElectrodes.slice(0, index),
+      !selectedElectrodes[index],
+      ...selectedElectrodes.slice(index + 1)
+    ];
+    setSelectedElectrodes(newElectrodeSelection);
+    setSelectedElectrodesText(
+      newElectrodeSelection.map((electrode, index) => {
+        return electrode ? index : undefined;
+      }).filter(e => e !== undefined).map(getChannelName).join(channelDelimiter)
+    );
+  }
+
+  const handleSelectAll = () => {
+    const allElectrodes = electrodes.map((_) => true);
+    setSelectedElectrodes(allElectrodes);
+    setSelectedElectrodesText(
+      allElectrodes.map((electrode, index) => {
+        return electrode ? index : undefined;
+      }).filter(e => e !== undefined).map(getChannelName).join(channelDelimiter)
+    );
+  }
+
+  const handleSelectNone = () => {
+    const allElectrodes = electrodes.map((_) => false);
+    setSelectedElectrodes(allElectrodes);
+    setSelectedElectrodesText(
+      allElectrodes.map((electrode, index) => {
+        return electrode ? index : undefined;
+      }).filter(e => e !== undefined).map(getChannelName).join(channelDelimiter)
+    );
+  }
+
+  const setInfoMessage = (message: string, success: boolean) => {
+    const footerRef = document.querySelector<HTMLElement>(
+      '#channel-selector-montage #info-message'
+    );
+
+    footerRef.classList.remove(success ? 'alert-danger' : 'alert-success');
+    footerRef.classList.add(success ? 'alert-success' : 'alert-danger');
+
+    clearTimeout(infoMessageTimeout);
+    footerRef.style.display = 'block';
+    footerRef.innerHTML = message;
+
+    infoMessageTimeout = setTimeout(() => {
+      footerRef.style.display = 'none';
+      footerRef.innerHTML = '';
+    }, 3000);
+  }
+
+  const handleReset = () => {
+    const initialElectrodes = electrodes.map((e, i) => colorMap?.ids?.includes(i))
+    setSelectedElectrodes(initialElectrodes);
+    setSelectedElectrodesText(
+      initialElectrodes.map((electrode, index) => {
+        return electrode ? index : undefined;
+      }).filter(e => e !== undefined).map(getChannelName).join(channelDelimiter)
+    );
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const validChannels = validateChannels(selectedElectrodesText, true);
+    if (validChannels.success) {
+      setEventChannels(
+        selectedElectrodesText.length > 0
+          ? selectedElectrodesText.split(channelDelimiter)
+          : []
+      );
+      setInfoMessage(validChannels.message, validChannels.success);
+    } else {
+      setInfoMessage(validChannels.message, validChannels.success);
+    }
+  }
+
+  const textSameAsInitial = () => {
+    return JSON.stringify(eventChannels.sort().join(channelDelimiter)) ===
+      JSON.stringify(selectedElectrodesText.split(channelDelimiter).sort().join(channelDelimiter));
+  }
+
+  const validateChannels = (channelString: string, validatingForSave: boolean = false) => {
+    let trimmedString = channelString.trim();
+    const parsedChannels = trimmedString.split(channelDelimiter).map(c => c.trim());
+
+    const result = {
+      success: true,
+      message: t(
+        'Saved successfully', {
+          ns: 'electrophysiology_browser',
+        }
+      ),
+    }
+
+    if (validatingForSave) {
+      if (textSameAsInitial()) {
+        result.success = false;
+        result.message = t(
+          'No electrode changes', {
+            ns: 'electrophysiology_browser',
+          }
+        );
+        return result;
+      }
+      if (
+        (new Set(parsedChannels.filter(pc => pc.length > 0))).size !==
+        parsedChannels.filter(pc => pc.length > 0).length
+      ) {
+        result.success = false;
+        result.message = t(
+          'Duplicates are not allowed', {
+            ns: 'electrophysiology_browser',
+          }
+        );
+        return result;
+      }
+    }
+
+    const validPattern = new RegExp(`^\\s*(\\w+)?(${channelDelimiter}\\s*\\w+)*\\s*$`); // /^\s*(\w+)?(,\s*\w+)*\s*$/;
+    if (!validPattern.test(trimmedString)) {
+      result.success = false;
+      result.message = t(
+        'Invalid string format. ' +
+        'Expected channel names delimited by "{{channelDelimiter}}"', {
+          ns: 'electrophysiology_browser',
+          channelDelimiter: channelDelimiter,
+        }
+      );
+      return result;
+    }
+
+    if (
+      !parsedChannels
+        .filter((channel) => channel.length > 0)
+        .every((channel) => getChannelIndex(channel) !== -1)
+    ) {
+      result.success = false;
+      result.message = t(
+        'String contains one or more unrecognized channels', {
+          ns: 'electrophysiology_browser',
+        }
+      );
+      return result;
+    }
+
+    return result;
+  }
+
+  useEffect(() => {
+    if (!setCancelWarning)
+      return;
+    setCancelWarning(!textSameAsInitial());
+  }, [selectedElectrodesText, eventChannels])
+
+  useEffect(() => {
+    if (!editChannels) {
+      return;
+    }
+
+    function handleKeyDown(e) {
+      if (e.key === 'Shift' && !drag) {
+        setHoldingShift(true);
+      }
+    }
+
+    function handleKeyUp(e) {
+      if (e.key === 'Shift' && !drag) {
+        setHoldingShift(false);
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown, true);
+    document.addEventListener("keyup", handleKeyUp, true);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown, true);
+      document.removeEventListener("keyup", handleKeyUp, true);
+    }
+  }, []);
+
+  const handle3DMouseDown = (electrodeIndex: number) => {
+    setClicked3DElectrode(electrodeIndex);
+  }
+
+  const handle3DMouseUp = (electrodeIndex: number) => {
+    if (electrodeIndex === clicked3DElectrode) {
+      toggleElectrodeSelection(electrodeIndex);
+    }
+    setClicked3DElectrode(-1);
+  }
+
   const Montage3D = () => (
-    <Group>
+    <Group className={cssClass + (holdingShift ? ' cursor-pointer' : '')}>
       {point3D.rotateZ(angleZ).rotateX(angleX)(scatter3D).map((point, i) => {
-        const color = colorMap?.ids?.includes(i) ? colorMap?.color : '#000';
+        const color = selectedElectrodes[i] ? colorMap?.color : '#000';
         return (
           <circle
             key={i}
@@ -223,136 +474,382 @@ const EEGMontage = (
             cy={point.projected.y}
             r='4'
             fill={color}
-            fillOpacity='0.3'
+            fillOpacity={color === '#000' ? '0.3' : '1'}
             opacity='1'
-          >
-            <title>{electrodes[i].name}</title>
-          </circle>
+            onMouseDown={() => {
+              if (holdingShift) {
+                handle3DMouseDown(i);
+              }
+            }}
+            onMouseUp={() => {
+              if (holdingShift) {
+                handle3DMouseUp(i);
+              }
+            }}
+          />
         );
       })}
     </Group>
   );
 
-  /**
-   *
-   */
   const Montage2D = () => (
-    <Group>
+    <Group className={cssClass}>
       <line
-        x1="20" y1={-montageRadius+5}
-        x2="0" y2={-montageRadius-10}
+        x1="25" y1="-135"
+        x2="0" y2="-150"
         stroke="black"
       />
       <line
-        x1="-20" y1={-montageRadius+5}
-        x2="0" y2={-montageRadius-10}
+        x1="-25" y1="-135"
+        x2="0" y2="-150"
         stroke="black"
       />
       <ellipse
-        cx={montageRadius} cy="0"
-        rx="10" ry={montageRadius*0.3}
+        cx="135" cy="0"
+        rx="15" ry="40"
         stroke="black"
         fillOpacity='0'
       />
       <ellipse
-        cx={-montageRadius} cy="0"
-        rx="10" ry={montageRadius*0.3}
+        cx="-135" cy="0"
+        rx="15" ry="40"
         stroke="black"
         fillOpacity='0'
       />
       <circle
-        r={montageRadius}
+        r='138'
         stroke="black"
         fill='white'
       />
-      <Group>
-        {scatter2D.map((point, i) => {
-          const color = colorMap?.ids?.includes(i) ? colorMap?.color : '#000';
-          return (
-            <Group
-              className='electrode'
-              key={i}
+      {scatter2D.map((point, i) => {
+        const textColor = (
+          colorMap?.mode === 'outline' && selectedElectrodes[i]
+        ) ? colorMap?.color : '#000';
+
+        const fillColor = (
+          colorMap?.mode === 'fill' && selectedElectrodes[i]
+        ) ? colorMap?.color : 'white';
+
+        return (
+          <Group
+            className={'electrode ' + (editChannels ? ' cursor-pointer' : 'cursor-default')}
+            key={i}
+            onClick={() => {
+              toggleElectrodeSelection(i);
+            }}
+          >
+            <circle
+              transform='rotate(-90)'
+              cx={point.x}
+              cy={point.y}
+              r='8'
+              fill={fillColor}
+              stroke={textColor}
             >
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r='8'
-                fill='white'
-                stroke={color}
-              >
-                <title>{electrodes[i].name}</title>
-              </circle>
-              <text
-                x={point.x}
-                y={point.y}
-                dominantBaseline="central"
-                textAnchor="middle"
-                fontSize="8px"
-                fill={color}
-              >
-                {i + 1}
-                <title>{electrodes[i].name}</title>
-              </text>
-            </Group>
-          );
-        })}
-      </Group>
+              <title>{showChannelIndices ? electrodes[i].name : (i + 1)}</title>
+            </circle>
+            <text
+              transform={
+                'rotate(-90) rotate(90, '
+                + point.x
+                + ', '
+                + point.y
+                + ')'
+              }
+              x={point.x}
+              y={point.y}
+              dominantBaseline="central"
+              textAnchor="middle"
+              fontSize="8px"
+              fill={textColor}
+            >
+              {showChannelIndices ? (i + 1) : electrodes[i].name}
+              <title>{showChannelIndices ? electrodes[i].name : (i + 1)}</title>
+            </text>
+          </Group>
+        );
+      })}
     </Group>
   );
 
-  return (
-    <div className='col-lg-4 col-md-6'>
-      <Panel
-        id={'electrode-montage-' + physioFileID}
-        title={'Electrode Map'}
-      >
-        <div
-          className="row"
-          style={{
-            padding: 0,
-            height: '300px',
-          }}
+  const panelContent = <div
+    className="row"
+    style={{
+      padding: 0,
+      height: contentHeight,
+    }}
+  >
+    <div style={{height: '100%', position: 'relative'}}>
+      {view3D ?
+        <ResponsiveViewer
+          // @ts-ignore
+          mouseMove={!holdingShift ? dragged : undefined}
+          mouseDown={dragStart}
+          mouseUp={dragEnd}
+          mouseLeave={dragEnd}
+          chunksURL={chunksURL}
+          cssClass={
+            holdingShift
+              ? 'cursor-default'
+              : drag
+                ? 'cursor-grabbing'
+                : 'cursor-grab'
+          }
         >
-          <div style={{height: '100%', position: 'relative'}}>
-            {view3D ?
-              <ResponsiveViewer
-                mouseMove={dragged}
-                mouseDown={dragStart}
-                mouseUp={dragEnd}
-                mouseLeave={dragEnd}
-                chunksURL={chunksURL}
-              >
-                <Montage3D />
-              </ResponsiveViewer>
-            :
-              <ResponsiveViewer
-                chunksURL={chunksURL}
-              >
-                <Montage2D />
-              </ResponsiveViewer>
+          <Montage3D />
+        </ResponsiveViewer>
+        :
+        <ResponsiveViewer
+          // @ts-ignore
+          chunksURL={chunksURL}
+          parentHeight={withPanel ? 300 : 550}
+          cssClass={''}
+        >
+          <Montage2D />
+        </ResponsiveViewer>
+      }
+      <div
+        className="btn-group"
+        style={{
+          top: '0',
+          left: '15px',
+          position: 'absolute',
+          zIndex: 1,
+        }}
+      >
+        <div>
+          <button
+            className={
+              'btn btn-xs btn-default' + (!view3D ? ' active' : '')
             }
-            <div
-              className="btn-group"
+            onClick={() =>setView3D(false)}
+          >2D</button>
+          <button
+            className={'btn btn-xs btn-default' + (view3D ? ' active' : '')}
+            onClick={() => setView3D(true)}
+          >3D</button>
+        </div>
+      </div>
+      {
+        editChannels && (
+          <div
+            style={{
+              top: '0',
+              left: '15px',
+              width: '100%',
+              position: 'absolute',
+            }}
+          >
+            <label
+              htmlFor='edit-channels'
               style={{
-                top: '0',
-                left: '15px',
-                position: 'absolute',
+                position: 'relative',
+                bottom: '10px',
               }}
             >
-              <button
-                className={
-                  'btn btn-xs btn-default' + (!view3D ? ' active' : '')
+              {t(
+                'Channel', {
+                  ns: 'electrophysiology_browser',
+                  count: 99,
                 }
-                onClick={() =>setView3D(false)}
-              >2D</button>
+              ).toString().toLowerCase()}
+            </label>
+            <textarea
+              id='edit-channels'
+              value={selectedElectrodesText}
+              onChange={(event) => {
+                setSelectedElectrodesText(event.target.value);
+                // Improves responsiveness on electrode deletion
+                const channelString = event.target.value.endsWith(',')
+                  ? event.target.value.slice(0, -1) : event.target.value
+                if (validateChannels(channelString).success) {
+                  const parsedChannels = event.target.value.trim().split(channelDelimiter).map(c => c.trim());
+                  const inferredIndices = parsedChannels.map(getChannelIndex);
+                  setSelectedElectrodes(electrodes.map((e, i) => inferredIndices.includes(i)))
+                }
+              }}
+              style={{
+                marginLeft: '10px',
+                height: '50px',
+                resize: 'none',
+                padding: '5px',
+                width: '86%',
+              }}
+            />
+            {
+              (eegMontageName && eegMontageName.length > 0) && (
+                <>
+                  <label htmlFor='channel-montage-name'>
+                    {t(
+                      'Montage', {
+                        ns: 'electrophysiology_browser'
+                      }
+                    )}
+                  </label>
+                  &nbsp;
+                  <span
+                    id={'channel-montage-name'}
+                    className='code-mimic'
+                    style={{ backgroundColor: '#eff1f2', color: '#1f2329', marginLeft: '5px', }}
+                  >
+                   {eegMontageName}
+                  </span>
+                </>
+              )
+            }
+          </div>
+        )
+      }
+      {
+        editChannels && (
+          <div
+            className="btn-group"
+            style={{
+              bottom: '30px',
+              left: '15px',
+              position: 'absolute',
+            }}
+          >
+            {
+              !view3D && (
+                <CheckboxElement
+                  name='toggle-channel-indices'
+                  offset=''
+                  label={t(
+                    'Show indices', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}
+                  value={showChannelIndices}
+                  onUserInput={() => {
+                    setShowChannelIndices(!showChannelIndices);
+                  }}
+                  outerStyles={{}}
+                />
+              )
+            }
+            {
+              view3D && (
+                <>
+                  {t(
+                    'Hold shift to enable electrode selection', {
+                      ns: 'electrophysiology_browser'
+                    }
+                  )}
+                </>
+              )
+            }
+          </div>
+        )
+      }
+      {
+        editChannels && (
+          <div
+            className=""
+            style={{
+              bottom: '0',
+              left: '15px',
+              position: 'absolute',
+              zIndex: 1,
+            }}
+          >
+            <div>
               <button
-                className={'btn btn-xs btn-default' + (view3D ? ' active' : '')}
-                onClick={() => setView3D(true)}
-              >3D</button>
+                className={'btn btn-xs btn-default'}
+                onClick={handleSelectNone}
+              >
+                {t(
+                  'Select None', {
+                    ns: 'electrophysiology_browser'
+                  }
+                )}
+              </button>
+              <button
+                className={'btn btn-xs btn-default'}
+                onClick={handleSelectAll}
+              >
+                {t(
+                  'Select All', {
+                    ns: 'electrophysiology_browser'
+                  }
+                )}
+              </button>
             </div>
           </div>
-        </div>
-      </Panel>
+        )
+      }
+      {
+        editChannels && (
+          <div
+            className=""
+            style={{
+              bottom: '0',
+              right: '15px',
+              position: 'absolute',
+              zIndex: 1,
+            }}
+          >
+            <div
+              id="info-message"
+              className="alert text-center"
+              role="alert"
+              style={{display: 'none'}}
+            ></div>
+            <button
+              type="reset"
+              disabled={textSameAsInitial()}
+              onClick={handleReset}
+              className="btn btn-primary float-right"
+            >
+              {t('Reset', {ns: 'loris'})}
+            </button>
+            <button
+              type="button"
+              disabled={textSameAsInitial()}
+              onClick={handleSubmit}
+              className="btn btn-primary float-right"
+            >
+              {t('Save', {ns: 'loris'})}
+            </button>
+          </div>
+        )
+      }
+    </div>
+  </div>;
+
+  return withPanel ? (
+    <div className='col-lg-4 col-md-6'>
+     <Panel
+      id='electrode-montage'
+      title={
+       <>
+         {t(
+           'Electrode Map', {
+             ns: 'electrophysiology_browser'
+           }
+         )}
+         {
+           (eegMontageName && eegMontageName.length > 0) && (
+             <>
+               &nbsp;&nbsp;
+               <span
+                 className='code-mimic'
+                 style={{ backgroundColor: '#eff1f2', color: '#1f2329', }}
+               >
+                 {eegMontageName}
+               </span>
+             </>
+           )
+         }
+      </>
+     }
+    >
+      {panelContent}
+    </Panel>
+    </div>
+  ) : (
+    <div>
+      {panelContent}
     </div>
   );
 };
@@ -360,15 +857,22 @@ const EEGMontage = (
 EEGMontage.defaultProps = {
   montage: [],
   hidden: [],
+  coordinateSystem: null,
   chunksURL: '',
+  withPanel: true,
+  contentHeight: '300px',
+  modifiable: false,
+  cssClass: '',
 };
 
 export default connect(
   (state: RootState) => ({
     hidden: state.montage.hidden,
     electrodes: state.montage.electrodes,
-    physioFileID: state.dataset.physioFileID,
+    coordinateSystem: state.montage.coordinateSystem,
     chunksURL: state.dataset.chunksURL,
+    channelDelimiter: state.dataset.channelDelimiter,
+    eegMontageName: state.dataset.eegMontageName,
   }),
   (dispatch: (_: any) => void) => ({
     setHidden: R.compose(

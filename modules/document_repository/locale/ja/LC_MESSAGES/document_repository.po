@@ -24,3 +24,152 @@ msgstr "ドキュメントリポジトリ"
 msgid "Document Repository Notifications"
 msgstr "ドキュメントリポジトリ通知"
 
+msgid "Upload files"
+msgstr "ファイルをアップロードする"
+
+msgid "Category"
+msgstr "カテゴリ"
+
+msgid "Search for site"
+msgstr "サイトを検索"
+
+msgid "Version"
+msgstr "バージョン"
+
+msgid "Comments"
+msgstr "コメント"
+
+msgid "Restrict access to the file?"
+msgstr "ファイルへのアクセスを制限しますか?"
+
+msgid "File(s) to upload"
+msgstr "アップロードするファイル"
+
+msgid "Upload File(s)"
+msgstr "ファイルをアップロード"
+
+msgid "Uploading..."
+msgstr "アップロード中..."
+
+msgid "Upload Successful!"
+msgstr "アップロード成功しました!"
+
+msgid "Upload Incomplete"
+msgstr "アップロードが不完全です"
+
+msgid "Error reading response"
+msgstr "応答の読み取りエラー"
+
+msgid "Please report the issue or contact your administrator"
+msgstr "問題を報告するか、管理者に連絡してください"
+
+msgid "File too large"
+msgstr "ファイルが大きすぎます"
+
+msgid "Could not upload file"
+msgstr "ファイルをアップロードできませんでした"
+
+msgid "Something went wrong"
+msgstr "問題が発生しました"
+
+msgid "Add Category"
+msgstr "カテゴリを追加"
+
+msgid "Add a category"
+msgstr "カテゴリを追加する"
+
+msgid "Category Name"
+msgstr "カテゴリ名"
+
+msgid "Parent"
+msgstr "親"
+
+msgid "Category added successfully!"
+msgstr "カテゴリが正常に追加されました。"
+
+msgid "Error"
+msgstr "エラー"
+
+msgid "Edit Document Repository File"
+msgstr "ドキュメントリポジトリファイルの編集"
+
+msgid "File updated successfully!"
+msgstr "ファイルが正常に更新されました。"
+
+msgid "Update File"
+msgstr "ファイルを更新"
+
+msgid "Edit Category"
+msgstr "カテゴリを編集"
+
+msgid "Update Category"
+msgstr "更新カテゴリ"
+
+msgid "Change Name of a category"
+msgstr "カテゴリ名を変更する"
+
+msgid "Category Name:"
+msgstr "カテゴリ名:"
+
+msgid "New Name for Category"
+msgstr "カテゴリーの新しい名前"
+
+msgid "New Parent:"
+msgstr "新しい親:"
+
+msgid "Cannot be equal to itself"
+msgstr "自身と等しくならない"
+
+msgid "New parent cannot be equal to itself"
+msgstr "新しい親はそれ自身と等しくすることはできません"
+
+msgid "Edit error!"
+msgstr "編集エラー!"
+
+msgid "Edited Successful!"
+msgstr "編集に成功しました!"
+
+msgid "Delete Category"
+msgstr "カテゴリを削除"
+
+msgid "Delete a category"
+msgstr "カテゴリを削除する"
+
+msgid "Delete error!"
+msgstr "削除エラー!"
+
+msgid "Delete Successful!"
+msgstr "削除に成功しました!"
+
+msgid "Upload"
+msgstr "アップロード"
+
+msgid "File Name"
+msgstr "ファイル名"
+
+msgid "Uploaded By"
+msgstr "アップロード者"
+
+msgid "For Site"
+msgstr "サイト向け"
+
+msgid "File Type"
+msgstr "ファイルタイプ"
+
+msgid "Date Uploaded"
+msgstr "アップロード日"
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "Delete File"
+msgstr "ファイルを削除"
+
+msgid "Filter globally"
+msgstr "グローバルにフィルタリング"
+
+msgid "You won't be able to revert this!"
+msgstr "これを元に戻すことはできません!"
+
+msgid "Yes, delete it!"
+msgstr "はい、削除します！"

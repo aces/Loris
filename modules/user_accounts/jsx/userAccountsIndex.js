@@ -6,6 +6,7 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/user_accounts.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/user_accounts.json';
+import frStrings from '../locale/fr/LC_MESSAGES/user_accounts.json';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -270,6 +271,7 @@ UserAccountsIndex.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'user_accounts', jaStrings);
   i18n.addResourceBundle('hi', 'user_accounts', hiStrings);
+  i18n.addResourceBundle('fr', 'user_accounts', frStrings);
   const Index = withTranslation(
     ['user_accounts', 'loris']
   )(UserAccountsIndex);
