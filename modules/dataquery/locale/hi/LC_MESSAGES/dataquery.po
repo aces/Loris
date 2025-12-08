@@ -508,10 +508,6 @@ msgstr "चयनित फ़ील्ड"
 msgid "Available Fields"
 msgstr "उपलब्ध फ़ील्ड"
 
-# NEEDS TO BE DEFINED
-msgid "Available options"
-msgstr ""
-
 msgid "Add all"
 msgstr "सभी जोड़ें"
 

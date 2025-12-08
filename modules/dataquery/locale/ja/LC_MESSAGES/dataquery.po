@@ -504,10 +504,6 @@ msgstr "選択したフィールド"
 msgid "Available Fields"
 msgstr "利用可能なフィールド"
 
-# NEEDS TO BE DEFINED
-msgid "Available options"
-msgstr ""
-
 msgid "Add all"
 msgstr "すべて追加"
 

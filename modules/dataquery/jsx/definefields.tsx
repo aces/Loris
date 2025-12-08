@@ -476,7 +476,7 @@ function DefineFields(props: {
             mapGroupName={(key) => props.allCategories.modules[key]}
             onChange={props.onCategoryChange}
             label={t('Select a field', {ns: 'dataquery'})}
-            placeholder={t('Available options', {ns: 'dataquery'})}
+            placeholder={t('Available Fields', {ns: 'dataquery'})}
           />
           {fieldList}
         </div>

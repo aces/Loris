@@ -509,9 +509,6 @@ msgstr ""
 msgid "Available Fields"
 msgstr ""
 
-msgid "Available options"
-msgstr ""
-
 msgid "Add all"
 msgstr ""
 
