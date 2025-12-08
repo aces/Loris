@@ -3,6 +3,7 @@ import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/instruments.json';
+import frStrings from '../locale/fr/LC_MESSAGES/instruments.json';
 
 /**
  * A VisitInstrumentList is a type of React component which displays
@@ -21,6 +22,7 @@ class VisitInstrumentList extends Component {
   constructor(props) {
     super(props);
     i18n.addResourceBundle('ja', 'instruments', jaStrings);
+    i18n.addResourceBundle('fr', 'instruments', frStrings);
     this.state = {
       expanded: false,
       hover: false,

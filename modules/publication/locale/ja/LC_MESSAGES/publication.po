@@ -20,3 +20,147 @@ msgstr ""
 
 msgid "Publications"
 msgstr "出版物"
+
+msgid "File to upload"
+msgstr "アップロードするファイル"
+
+msgid "Submit"
+msgstr "提出する"
+
+msgid "Title"
+msgstr "タイトル"
+
+msgid "Year"
+msgstr "年"
+
+msgid "Authors"
+msgstr "著者"
+
+msgid "Journal"
+msgstr "ジャーナル"
+
+msgid "DOI"
+msgstr "デジタルオブジェクト識別子"
+
+msgid "Action"
+msgstr "アクション"
+
+msgid "Please fix any remaining form errors before submission"
+msgstr "提出前に残っているエラーを修正してください"
+
+msgid "Something went wrong!"
+msgstr "問題が発生しました。"
+
+msgid "Submission Successful!"
+msgstr "送信成功しました!"
+
+msgid "Propose a Project"
+msgstr "プロジェクトを提案する"
+
+msgid "Propose a new project"
+msgstr "新しいプロジェクトを提案する"
+
+msgid "Edit failed!"
+msgstr "編集に失敗しました!"
+
+msgid "Edit Successful!"
+msgstr "編集に成功しました!"
+
+msgid "Download"
+msgstr "ダウンロード"
+
+msgid "Citation"
+msgstr "引用"
+
+msgid "Version"
+msgstr "バージョン"
+
+msgid "Collaborators"
+msgstr "協力者"
+
+msgid "Keywords"
+msgstr "キーワード"
+
+msgid "Variables Of Interest"
+msgstr "関心のある変数"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Publishing Status"
+msgstr "出版状況"
+
+msgid "Date Published"
+msgstr "公開日"
+
+msgid "Link"
+msgstr "リンク"
+
+msgid "Lead Investigator"
+msgstr "主任研究者"
+
+msgid "Lead Investigator Email"
+msgstr "主任研究者のメールアドレス"
+
+msgid "Status"
+msgstr "状態"
+
+msgid "Reason for rejection"
+msgstr "拒否理由"
+
+msgid "Approved"
+msgstr "承認された"
+
+msgid "Rejected"
+msgstr "拒否されました"
+
+msgid "Date Proposed"
+msgstr "提案日"
+
+msgid "Approval Status"
+msgstr "承認ステータス"
+
+msgid "Project"
+msgstr "プロジェクト"
+
+msgid "Project Proposal Creator"
+msgstr "プロジェクト提案作成者"
+
+msgid "Published"
+msgstr "出版"
+
+msgid "View Project"
+msgstr "プロジェクトを見る"
+
+msgid "LORIS Users with Edit Permission"
+msgstr "編集権限を持つロリスユーザー"
+
+msgid "Type of Variables of Interest"
+msgstr "関心のある変数の種類"
+
+msgid "Propose Project"
+msgstr "プロジェクトを提案する"
+
+msgid "Send email notification?"
+msgstr "メール通知を送信しますか?"
+
+msgid "Add User"
+msgstr "ユーザーを追加"
+
+msgid "Add Collaborator"
+msgstr "共同編集者を追加"
+
+msgid "Add Keyword"
+msgstr "キーワードを追加"
+
+msgid "Add Variable of Interest"
+msgstr "関心のある変数を追加する"
+
+msgid "Publication Type"
+msgstr "出版の種類"
+
+msgid "Publication Version"
+msgstr "出版版"
+
+msgid "helpFindingVariables"
+msgstr "興味のある変数を見つけるには、<ddLink>データ辞書</ddLink>を参照してください。"

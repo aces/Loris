@@ -1,4 +1,4 @@
-# Default LORIS strings to be translated (English).
+# Default LORIS strings to be translated (English)
 # Copy this to a language specific file and add translations to the
 # new file.
 # Copyright (C) 2025
@@ -57,6 +57,7 @@ msgstr ""
 #: modules/user_accounts/php/module.class.inc:53
 msgid "Admin"
 msgstr ""
+
 #: modules/acknowledgements/php/module.class.inc:54
 #: modules/api_docs/php/module.class.inc:66
 #: modules/battery_manager/php/module.class.inc:55
@@ -67,7 +68,7 @@ msgid "Data Dictionary"
 msgstr ""
 
 #: modules/document_repository/php/module.class.inc:56
-#: modules/instrument_builder/php/module.class.inc:48
+#: modules/instrument_builderr/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
@@ -90,8 +91,10 @@ msgstr ""
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
+#: modules/dataquery/jsx/definefilters.importcsvmodal.tsx:167
 msgid "Candidate"
-msgstr ""
+msgid_plural "Candidates"
+msgstr[0] ""
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
@@ -108,7 +111,7 @@ msgstr ""
 msgid "Reports"
 msgstr ""
 
-# Common loris terms. Consider moving these to their own textdomain?
+# Common loris terms.
 msgid "TimePoint"
 msgstr ""
 
@@ -120,6 +123,12 @@ msgid "Yes"
 msgstr ""
 
 msgid "No"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Upload"
 msgstr ""
 
 msgid "N/A"
@@ -135,6 +144,9 @@ msgstr ""
 msgid "Selection Filter"
 msgstr ""
 
+msgid "Filters"
+msgstr ""
+
 msgid "Show Filters"
 msgstr ""
 
@@ -144,10 +156,31 @@ msgstr ""
 msgid "Clear Filters"
 msgstr ""
 
+msgid "Load Filter Preset"
+msgstr ""
+
 msgid "Show Advanced Filters"
 msgstr ""
 
 msgid "Hide Advanced Filters"
+msgstr ""
+
+msgid "Pass"
+msgstr ""
+
+msgid "Fail"
+msgstr ""
+
+msgid "True"
+msgstr ""
+
+msgid "False"
+msgstr ""
+
+msgid "Selected"
+msgstr ""
+
+msgid "selected"
 msgstr ""
 
 # Common swal labels
@@ -158,6 +191,9 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Success!"
+msgstr ""
+
+msgid "Close"
 msgstr ""
 
 # Common candidate terms
@@ -193,9 +229,10 @@ msgstr ""
 msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] ""
- 
+
 msgid "Session"
-msgstr ""
+msgid_plural "Sessions"
+msgstr[0] ""
 
 msgid "Date of registration"
 msgstr ""
@@ -216,6 +253,12 @@ msgid "Feedback"
 msgstr ""
 
 msgid "Scans"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Time"
 msgstr ""
 
 msgid "Stage"
@@ -242,6 +285,9 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+msgid "Pending"
+msgstr ""
+
 msgid "Entity Type"
 msgstr ""
 
@@ -251,16 +297,58 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid "Access denied"
+msgstr ""
+
+msgid "No."
+msgstr ""
+
 msgid "Ethnicity"
+msgstr ""
+
+msgid "Are You Sure?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "Yes, I am sure!"
+msgstr ""
+
+msgid "No, cancel it!"
+msgstr ""
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr ""
+
+msgid "Proceed"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
 msgstr ""
 
 msgid "Save"
 msgstr ""
 
+msgid "Saving"
+msgstr ""
+
 msgid "Reset"
 msgstr ""
 
+msgid "Note"
+msgstr ""
+
+msgid "View details"
+msgstr ""
+
 # Data table strings
+msgid "No result found."
+msgstr ""
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
 
@@ -292,6 +380,9 @@ msgstr ""
 
 # Common strings on widgets
 msgid "NEW"
+msgstr ""
+
+msgid "New"
 msgstr ""
 
 msgid "Updated"
@@ -361,7 +452,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-msgid "Date"
+msgid "Incorrect username or password."
 msgstr ""
 
 # Common timepoint and vist terms
@@ -383,9 +474,6 @@ msgstr ""
 msgid "Recycling Bin"
 msgstr ""
 
-msgid "Pass"
-msgstr ""
-
 msgid "Failure"
 msgstr ""
 
@@ -396,6 +484,12 @@ msgid "Withdrawn"
 msgstr ""
 
 msgid "In Progress"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Success"
 msgstr ""
 
 msgid "Complete"
@@ -443,3 +537,28 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
+msgid "Permission denied"
+msgstr ""
+
+msgid "Unauthorized"
+msgstr ""
+
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Dataset"
+msgstr ""
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr ""

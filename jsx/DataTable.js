@@ -443,7 +443,7 @@ class DataTable extends Component {
             </div>
           </div>
           <div className='alert alert-info no-result-found-panel'>
-            <strong>No result found.</strong>
+            <strong>{this.props.t('No result found.', {ns: 'loris'})}</strong>
           </div>
         </div>
       );

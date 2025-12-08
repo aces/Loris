@@ -182,7 +182,9 @@ CREATE TABLE `biobank_specimen_protocol_attribute_rel` (
   `SpecimenAttributeID` int(10) unsigned NOT NULL,
   `Required` tinyint(1) DEFAULT NULL,
   `showInDataTable` tinyint(1) DEFAULT NULL,
+  `OrderIndex` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`SpecimenProtocolID`,`SpecimenAttributeID`),
+  UNIQUE KEY `UK_SpecimenProtocolId_OrderIndex` (`SpecimenProtocolID`, `OrderIndex`),
   KEY `FK_biobank_specimen_protocol_attribute_rel_SpecimenAttributeID` (`SpecimenAttributeID`),
   CONSTRAINT `FK_biobank_specimen_protocol_attribute__rel_SpecimenProtocolID` FOREIGN KEY (`SpecimenProtocolID`) REFERENCES `biobank_specimen_protocol` (`SpecimenProtocolID`),
   CONSTRAINT `FK_biobank_specimen_protocol_attribute_rel_SpecimenAttributeID` FOREIGN KEY (`SpecimenAttributeID`) REFERENCES `biobank_specimen_attribute` (`SpecimenAttributeID`)
@@ -399,6 +401,7 @@ VALUES (1,'Blood Collection',1,1),
 INSERT INTO `biobank_specimen_type_unit_rel` VALUES (1,1),(2,2);
 INSERT INTO `biobank_specimen_type_parent` VALUES (2,1);
 INSERT INTO `biobank_specimen_type_container_type_rel` VALUES (1,1),(2,1);
+INSERT INTO `shipment_type` VALUES (1, 'Gel Pack Container'),(2, 'Insulated Foam Box'),(3, 'Dry Shipper');
 
 -- Insert ConfigSettings for label printing endpoint
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('biobank', 'Settings related to the biobank module', 1, 0, 'Biobank', 16);

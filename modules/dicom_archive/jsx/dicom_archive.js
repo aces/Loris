@@ -8,6 +8,8 @@ import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+import hiStrings from '../locale/hi/LC_MESSAGES/dicom_archive.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/dicom_archive.json';
 /**
  * DICOM Archive Page.
  *
@@ -70,11 +72,12 @@ class DicomArchive extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const {t} = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'Archive Location': {
+    case t('Archive Location', {ns: 'dicom_archive'}): {
       const downloadURL = '/mri/jiv/get_file.php?file=' + cell
-            + '&patientName=' + row['Patient Name'];
+            + '&patientName=' + row[t('Patient Name', {ns: 'dicom_archive'})];
       result =
           <td>
             <a href={downloadURL}>
@@ -83,28 +86,30 @@ class DicomArchive extends Component {
               {cell}
             </a>
           </td>;
-    }
       break;
-    case 'Metadata': {
-      const metadataURL = loris.BaseURL +
-          '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
-      result = <td><a href={metadataURL}>{cell}</a></td>;
     }
+    case t('Metadata', {ns: 'dicom_archive'}): {
+      const metaURL = loris.BaseURL
+          + '/dicom_archive/viewDetails/?tarchiveID='
+          + row[t('TarchiveID', {ns: 'dicom_archive'})];
+      result=<td><a href={metaURL}>{t(cell, {ns: 'dicom_archive'})}</a></td>;
       break;
-    case 'MRI Browser': {
-      if (row.SessionID === null || row.SessionID === '') {
+    }
+    case t('MRI Browser', {ns: 'dicom_archive'}): {
+      const sessionID = row[t('SessionID', {ns: 'dicom_archive'})];
+      if (sessionID === null || sessionID === '') {
         result = <td>&nbsp;</td>;
       } else {
         let mrlURL = loris.BaseURL
                        + '/imaging_browser/viewSession/?sessionID='
-                       + row.SessionID;
-        result = <td><a href={mrlURL}>{cell}</a></td>;
+                       + sessionID;
+        result=<td><a href={mrlURL}>{t(cell, {ns: 'dicom_archive'})}</a></td>;
       }
       break;
     }
-    case 'INVALID - HIDDEN':
-      result = <td className="text-danger">{cell}</td>;
-      break;
+    }
+    if (cell == 'INVALID - HIDDEN') {
+      result=<td className="text-danger">{t(cell, {ns: 'dicom_archive'})}</td>;
     }
 
     return result;
@@ -116,10 +121,12 @@ class DicomArchive extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -133,52 +140,54 @@ class DicomArchive extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'Patient ID', show: true, filter: {
+      {label: t('Patient ID', {ns: 'dicom_archive'}), show: true, filter: {
         name: 'patientID',
         type: 'text',
       }},
-      {label: 'Patient Name', show: true, filter: {
+      {label: t('Patient Name', {ns: 'dicom_archive'}), show: true, filter: {
         name: 'patientName',
         type: 'text',
       }},
-      {label: 'Sex', show: true, filter: {
+      {label: t('Sex', {ns: 'loris'}), show: true, filter: {
         name: 'sex',
         type: 'select',
         options: {M: 'M', F: 'F', O: 'O'},
       }},
-      {label: 'Date of Birth', show: true, filter: {
+      {label: t('Date of Birth', {ns: 'loris'}), show: true, filter: {
         name: 'dateOfBirth',
         type: 'date',
       }},
-      {label: 'Acquisition Date', show: true, filter: {
-        name: 'acquisitionDate',
-        type: 'date',
-      }},
-      {label: 'Archive Location', show: true, filter: {
-        name: 'archiveLocation',
-        type: 'text',
-      }},
-      {label: 'Metadata', show: true},
-      {label: 'MRI Browser', show: true},
-      {label: 'Series UID', show: false, filter: {
+      {label: t('Acquisition Date', {ns: 'dicom_archive'}),
+        show: true, filter: {
+          name: 'acquisitionDate',
+          type: 'date',
+        }},
+      {label: t('Archive Location', {ns: 'dicom_archive'}),
+        show: true, filter: {
+          name: 'archiveLocation',
+          type: 'text',
+        }},
+      {label: t('Metadata', {ns: 'dicom_archive'}), show: true},
+      {label: t('MRI Browser', {ns: 'dicom_archive'}), show: true},
+      {label: t('Series UID', {ns: 'dicom_archive'}), show: false, filter: {
         name: 'seriesUID',
         type: 'text',
       }},
-      {label: 'Site', show: false, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: false, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
-      {label: 'TarchiveID', show: false},
-      {label: 'SessionID', show: false},
-      {label: 'CenterID', show: false},
-      {label: 'IsPhantom', show: false},
+      {label: t('TarchiveID', {ns: 'dicom_archive'}), show: false},
+      {label: t('SessionID', {ns: 'dicom_archive'}), show: false},
+      {label: t('CenterID', {ns: 'dicom_archive'}), show: false},
+      {label: t('IsPhantom', {ns: 'dicom_archive'}), show: false},
     ];
 
     return (
       <FilterableDataTable
         name="dicom_filter"
-        title='Dicom Archive'
+        title={t('DICOM Archive', {ns: 'dicom_archive'})}
         data={this.state.data.Data}
         fields={fields}
         getFormattedCell={this.formatColumn}
@@ -189,10 +198,12 @@ class DicomArchive extends Component {
 
 DicomArchive.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'dicom_archive', {});
+  i18n.addResourceBundle('hi', 'dicom_archive', hiStrings);
+  i18n.addResourceBundle('ja', 'dicom_archive', jaStrings);
   const Index = withTranslation(
     ['dicom_archive', 'loris']
   )(DicomArchive);

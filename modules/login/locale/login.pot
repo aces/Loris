@@ -21,3 +21,101 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+msgid "Login to LORIS"
+msgstr ""
+
+msgid "Forgot your password?"
+msgstr ""
+
+msgid "Request Account"
+msgstr ""
+
+
+msgid "Multifactor authentication required"
+msgstr ""
+
+msgid "Enter the code from your authenticator app below to proceed."
+msgstr ""
+
+msgid "Data in LORIS:"
+msgstr ""
+
+msgid "Please enter your username below, and a new password will be sent to you."
+msgstr ""
+
+msgid "Back to login page"
+msgstr ""
+
+msgid "Reset Password"
+msgstr ""
+
+msgid "Thank you!"
+msgstr ""
+
+msgid "Password reset. You should receive an email within a few minutes."
+msgstr ""
+
+msgid "Return to Login Page"
+msgstr ""
+
+msgid "Choose your site:"
+msgstr ""
+
+msgid "Choose your project:"
+msgstr ""
+
+msgid "Radiologist"
+msgstr ""
+
+msgid "Examiner role"
+msgstr ""
+
+msgid "Please fill in the form below to request a LORIS account. We will contact you once your account has been approved."
+msgstr ""
+
+msgid "Your request for an account has been received successfully."
+msgstr ""
+
+msgid "Please contact your project administrator to activate this account."
+msgstr ""
+
+msgid "View {{policy}}"
+msgstr ""
+
+msgid "{{title}} not accepted"
+msgstr ""
+
+msgid "You must accept the {{title}} before requesting an account."
+msgstr ""
+
+# Hack for the login page.
+# These strings come from the database and are
+# the defaults in the login_summary_statistics table
+
+msgid "EEG Recording"
+msgid_plural "EEG Recordings"
+msgstr[0] ""
+
+msgid "Female Participant"
+msgid_plural "Female Participants"
+msgstr[0] ""
+
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] ""
+
+msgid "Male Participant"
+msgid_plural "Male Participants"
+msgstr[0] ""
+
+msgid "Scan"
+msgid_plural "Scans"
+msgstr[0] ""
+
+msgid "Site"
+msgid_plural "Sites"
+msgstr[0] ""
+
+msgid "Visit"
+msgid_plural "Visits"
+msgstr[0] ""

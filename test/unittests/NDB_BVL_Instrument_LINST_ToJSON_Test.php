@@ -197,6 +197,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 
         $i->form     = new \LorisForm();
         $i->testName = "Test";
+        $i->name     = "test";
 
         $this->i = $i;
     }

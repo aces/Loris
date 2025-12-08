@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import PropTypes from 'prop-types';
 
 /**
  * Filterable Datatable for resolved conflicts.
@@ -109,11 +110,13 @@ class ResolvedFilterableDataTable extends Component {
    * @return {JSX}
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     if (this.state.error) {
       return (
         <div className="alert alert-danger" role="alert">
-          <h4>An error occured while loading the page.</h4>
+          <h4>{t('An error occured while loading the page.',
+            {ns: 'loris'})}</h4>
           {this.state.error.message}
         </div>
       );
@@ -127,62 +130,70 @@ class ResolvedFilterableDataTable extends Component {
     const options = this.state.data.fieldOptions;
 
     const fields = [
-      {label: 'Resolved ID', show: false},
-      {label: 'Project', show: true, filter: {
+      {label: t('Resolved ID',
+        {ns: 'conflict_resolver'}), show: false},
+      {label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'Project',
         type: 'select',
         options: options.project,
       }},
-      {label: 'Cohort', show: true, filter: {
+      {label: t('Cohort',
+        {ns: 'loris', count: 1}), show: true, filter: {
         name: 'Cohort',
         type: 'select',
         options: options.cohort,
       }},
-      {label: 'Site', show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'Site',
         type: 'select',
         options: options.site,
       }},
-      {label: 'CandID', show: true, filter: {
+      {label: t('DCCID', {ns: 'loris'}), show: true, filter: {
         name: 'candidateID',
         type: 'text',
         value: '300001',
       }},
-      {label: 'PSCID', show: true, filter: {
+      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'PSCID',
         type: 'text',
       }},
-      {label: 'Visit Label', show: true, filter: {
+      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'select',
         options: options.visitLabel,
       }},
-      {label: 'Instrument', show: true, filter: {
+      {label: t('Instrument', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'instrument',
         type: 'select',
         options: options.instrument,
       }},
-      {label: 'Question', show: true, filter: {
+      {label: t('Question',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Question',
         type: 'text',
       }},
-      {label: 'Description', show: true, filter: {
+      {label: t('Description',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Description',
         type: 'text',
       }},
-      {label: 'Incorrect Answer', show: true, filter: {
+      {label: t('Incorrect Answer',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'OldValue',
         type: 'text',
       }},
-      {label: 'Correct Answer', show: true, filter: {
+      {label: t('Correct Answer',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'CorrectAnswer',
         type: 'text',
       }},
-      {label: 'Resolver', show: true, filter: {
+      {label: t('Resolver',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Resolver',
         type: 'text',
       }},
-      {label: 'Resolution Timestamp', show: true, filter: {
+      {label: t('Resolution Timestamp',
+        {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'ResolutionTimestamp',
         type: 'text',
       }},
@@ -198,6 +209,10 @@ class ResolvedFilterableDataTable extends Component {
     );
   }
 }
+
+ResolvedFilterableDataTable.propTypes = {
+  t: PropTypes.func.isRequired,
+};
 
 export default withTranslation(
   ['conflict_resolver', 'loris']
