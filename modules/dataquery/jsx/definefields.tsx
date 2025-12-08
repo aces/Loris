@@ -443,7 +443,6 @@ function DefineFields(props: {
             flexWrap: 'wrap',
           }}>
             <h2>{t('Selected Fields', {ns: 'dataquery'})}</h2>
-            {/* <h2>Field Selection</h2> */}
             <div>
               <button type="button" className="btn btn-primary"
                 style={{marginBottom: 7}}
