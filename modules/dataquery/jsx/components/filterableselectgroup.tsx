@@ -75,7 +75,7 @@ function FilterableSelectGroup(props: {
   };
   return (
     <div>
-      {props.label ?
+      {props?.label ?
         <label style={{width: '100%', fontSize: '24px'}}>
           {props.label}
           <Select options={groups} onChange={selected}
@@ -105,22 +105,22 @@ function FilterableSelectGroup(props: {
             placeholder={placeholder}
           />
         </label>
-        :
-        <Select options={groups} onChange={selected}
-          noOptionsMessage={() => t('No options', {ns: 'loris'})}
-          menuPortalTarget={document.body}
-          styles={{menuPortal:
-                      /**
-                       * Add a z-index to ensure the element stays visible
-                       *
-                       * @param {object} base - the base CSS
-                       * @returns {object} - the new CSS with z-index added
-                       */
-                      (base) => ({...base, zIndex: 9999})}
-          }
-          placeholder={placeholder}
-        />
-      }
+        : (
+          <Select options={groups} onChange={selected}
+            noOptionsMessage={() => t('No options', {ns: 'loris'})}
+            menuPortalTarget={document.body}
+            styles={{menuPortal:
+                        /**
+                         * Add a z-index to ensure the element stays visible
+                         *
+                         * @param {object} base - the base CSS
+                         * @returns {object} - the new CSS with z-index added
+                         */
+                        (base) => ({...base, zIndex: 9999})}
+            }
+            placeholder={placeholder}
+          />
+        )}
     </div>
   );
 }
