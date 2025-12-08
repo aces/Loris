@@ -510,13 +510,15 @@ msgstr "すべて追加"
 msgid "Remove all"
 msgstr "すべて削除"
 
-msgid "Filter within category"
+# NEEDS UPDATE
+msgid "Filter within ${cname}"
 msgstr "カテゴリ内でフィルタリング"
 
 msgid "Default Visits"
 msgstr "デフォルトの訪問"
 
-msgid "Sync with selected fields"
+# NEEDS UPDATE
+msgid "Sync visit selection across selected fields"
 msgstr "選択したフィールドと同期"
 
 msgid "Select a field"
