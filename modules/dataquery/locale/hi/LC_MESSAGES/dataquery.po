@@ -508,8 +508,8 @@ msgstr "चयनित फ़ील्ड"
 msgid "Available Fields"
 msgstr "उपलब्ध फ़ील्ड"
 
-msgid "Available options"
 # NEEDS TO BE DEFINED
+msgid "Available options"
 msgstr ""
 
 msgid "Add all"
@@ -518,15 +518,15 @@ msgstr "सभी जोड़ें"
 msgid "Remove all"
 msgstr "सभी हटाएँ"
 
-msgid "Filter within ${cname}"
 # NEEDS UPDATE
+msgid "Filter within ${cname}"
 msgstr "श्रेणी के भीतर फ़िल्टर करें"
 
 msgid "Default Visits"
 msgstr "डिफ़ॉल्ट विज़िट"
 
-msgid "Sync visit selection across selected fields"
 # NEEDS UPDATE
+msgid "Sync visit selection across selected fields"
 msgstr "चयनित फ़ील्ड के साथ समन्वय करें"
 
 msgid "Select a category"

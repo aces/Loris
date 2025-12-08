@@ -504,8 +504,8 @@ msgstr "選択したフィールド"
 msgid "Available Fields"
 msgstr "利用可能なフィールド"
 
-msgid "Available options"
 # NEEDS TO BE DEFINED
+msgid "Available options"
 msgstr ""
 
 msgid "Add all"
@@ -514,15 +514,15 @@ msgstr "すべて追加"
 msgid "Remove all"
 msgstr "すべて削除"
 
-msgid "Filter within ${cname}"
 # NEEDS UPDATE
+msgid "Filter within ${cname}"
 msgstr "カテゴリ内でフィルタリング"
 
 msgid "Default Visits"
 msgstr "デフォルトの訪問"
 
-msgid "Sync visit selection across selected fields"
 # NEEDS UPDATE
+msgid "Sync visit selection across selected fields"
 msgstr "選択したフィールドと同期"
 
 msgid "Select a field"
