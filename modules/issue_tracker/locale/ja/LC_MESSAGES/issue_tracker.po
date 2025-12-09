@@ -264,3 +264,8 @@ msgstr "ユーザーアカウント"
 msgid "Last 3 Comments"
 msgstr "最後の3つのコメント"
 
+msgid "The server is not configured for attachments."
+msgstr "サーバーは添付ファイルに対応するように設定されていません。"
+
+msgid "The server is not configured to receive a file this large."
+msgstr "サーバーはこれほど大きなファイルを受信するように設定されていません。"
