@@ -121,7 +121,8 @@ $records_failed_count   = 0;
 foreach ($records as $record) {
     fprintf(
         STDOUT,
-        "Importing record {$record->unique_event_name} {$record->record_id}...\n",
+        "Importing record {$record->record_id} {$record->unique_event_name}"
+        . " {$record->getFormName()}...\n",
     );
 
     // Do not actually import REDCap records into LORIS in simulation mode.
