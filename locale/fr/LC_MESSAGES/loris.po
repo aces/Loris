@@ -1,4 +1,4 @@
-# Default LORIS strings to be translated (English).
+# Default LORIS strings to be translated (English)
 # Copy this to a language specific file and add translations to the
 # new file.
 # Copyright (C) 2025
@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: LORIS 27\n"
 "Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
 "POT-Creation-Date: 2025-04-08 14:37-0400\n"
-"PO-Revision-Date: 2025-10-23 20:11-0400\n"
+"PO-Revision-Date: 2025-12-09 09:58-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -34,13 +34,13 @@ msgid "Site Affiliation"
 msgstr "Affiliation du site"
 
 msgid "Site Affiliations"
-msgstr "Sites affiliés"
+msgstr "Affiliations du site"
 
 msgid "Project Affiliation"
 msgstr "Affiliation du projet"
 
 msgid "Project Affiliations"
-msgstr "Projets affiliés"
+msgstr "Affiliations du projet"
 
 msgid "Log Out"
 msgstr "Se déconnecter"
@@ -111,9 +111,12 @@ msgstr "Électrophysiologie"
 msgid "Reports"
 msgstr "Rapports"
 
-# Common loris terms. Consider moving these to their own textdomain?
+# Common loris terms.
 msgid "TimePoint"
 msgstr "Temps d'acquisition"
+
+msgid "TimePoint %s Details"
+msgstr "Temps d'acquisition %s Détails"
 
 # Common select option labels
 msgid "Yes"
@@ -122,15 +125,27 @@ msgstr "Oui"
 msgid "No"
 msgstr "Non"
 
-msgid "Create"
-msgstr "Créer"
+msgid "Browse"
+msgstr "Parcourir"
+
+msgid "Upload"
+msgstr "Téléverser"
 
 msgid "N/A"
 msgstr "N/A"
 
+msgid "Back"
+msgstr "Retour"
+
+msgid "Create"
+msgstr "Créer"
+
 # Filters
 msgid "Selection Filter"
 msgstr "Filtre de sélection"
+
+msgid "Filters"
+msgstr "Filtres"
 
 msgid "Show Filters"
 msgstr "Afficher les filtres"
@@ -141,14 +156,22 @@ msgstr "Masquer les filtres"
 msgid "Clear Filters"
 msgstr "Effacer les filtres"
 
+#, fuzzy
+msgid "Load Filter Preset"
+msgstr "Préréglage du filtre de charge"
+
 msgid "Show Advanced Filters"
 msgstr "Afficher les filtres avancés"
 
 msgid "Hide Advanced Filters"
 msgstr "Masquer les filtres avancés"
 
+#, fuzzy
+msgid "Pass"
+msgstr "Approuver"
+
 msgid "Fail"
-msgstr "Échec"
+msgstr "Echec"
 
 msgid "True"
 msgstr "Vrai"
@@ -163,14 +186,17 @@ msgid "selected"
 msgstr "sélectionné"
 
 # Common swal labels
+msgid "OK"
+msgstr "OK"
+
 msgid "Cancel"
 msgstr "Annuler"
 
 msgid "Success!"
 msgstr "Réussi!"
 
-msgid "Success"
-msgstr "Réussi"
+msgid "Close"
+msgstr "Fermer"
 
 # Common candidate terms
 msgid "PSCID"
@@ -181,16 +207,24 @@ msgstr "DCCID"
 
 #, fuzzy
 msgid "Visit Label"
-msgstr "Nom de visite"
+msgstr "Libellé de visite"
+
+#, fuzzy
+msgid "Email"
+msgstr "Adresse E-mail"
 
 msgid "Site"
-msgstr "Site"
+msgid_plural "Sites"
+msgstr[0] "Site"
+msgstr[1] "Sites"
 
 msgid "Module"
 msgstr "Module"
 
 msgid "Project"
-msgstr "Projet"
+msgid_plural "Projects"
+msgstr[0] "Projet"
+msgstr[1] "Projets"
 
 #, fuzzy
 msgid "Candidate Registration Project"
@@ -198,7 +232,7 @@ msgstr "Projet d'inscription des candidats"
 
 #, fuzzy
 msgid "Timepoint Project"
-msgstr "Temps d’acquisition du projet"
+msgstr "Moment du projet"
 
 msgid "Cohort"
 msgid_plural "Cohorts"
@@ -210,6 +244,10 @@ msgstr "Session"
 
 msgid "Date of registration"
 msgstr "Date d'inscription"
+
+#, fuzzy
+msgid "Date Of Visit"
+msgstr "Date de la visite"
 
 msgid "Participant Status"
 msgstr "Statut du participant"
@@ -226,7 +264,12 @@ msgstr "Commentaires"
 msgid "Scans"
 msgstr "Scans"
 
-#, fuzzy
+msgid "Date"
+msgstr "Date"
+
+msgid "Time"
+msgstr "Heure"
+
 msgid "Stage"
 msgstr "Stade"
 
@@ -237,7 +280,7 @@ msgid "Sent To DCC"
 msgstr "Envoyé au CCD"
 
 msgid "Reverse Send To DCC"
-msgstr "Annuler l'envoi vers la CCD"
+msgstr "Envoi inversé vers CCD"
 
 msgid "Date of Birth"
 msgstr "Date de naissance"
@@ -248,37 +291,40 @@ msgstr "Visites"
 msgid "An error occured while loading the page."
 msgstr "Une erreur s'est produite lors du chargement de la page."
 
-#, fuzzy
+msgid "Active"
+msgstr "Actif"
+
+msgid "Pending"
+msgstr "En attente"
+
 msgid "Entity Type"
-msgstr "Type d'entité"
+msgstr "Type d’entité"
 
 #, fuzzy
 msgid "Scan Done"
-msgstr "Scan complété"
+msgstr "Scan terminé"
 
 msgid "Language"
-msgstr "Langue"
+msgstr "Langage"
 
-msgid "Access denied"
-msgstr "Accès refusé"
+msgid "Ethnicity"
+msgstr "Ethnicité"
 
-msgid "No."
-msgstr "Nombre"
-
-msgid "Are you Sure?"
-msgstr "Es-tu sûr?"
+msgid "Are You Sure?"
+msgstr "Êtes-vous sûr?"
 
 msgid "Are you sure?"
-msgstr "Es-tu sûr?"
+msgstr "Êtes-vous sûr?"
 
 msgid "Yes, I am sure!"
 msgstr "Oui, j'en suis sûr!"
 
 msgid "No, cancel it!"
-msgstr "Non, annulez-le !"
+msgstr "Non, Annuler le"
 
+#, fuzzy
 msgid "Leaving the form will result in the loss of any information entered."
-msgstr "Quitter le formulaire entraînera la perte de toutes les informations saisies."
+msgstr "Quitter le formulaire causera la perte de toutes les informations saisies."
 
 msgid "Proceed"
 msgstr "Procéder"
@@ -286,14 +332,15 @@ msgstr "Procéder"
 msgid "Previous"
 msgstr "Précédent"
 
+#, fuzzy
 msgid "Next"
-msgstr "Suivant"
+msgstr "La prochaine étape a commencé."
 
 msgid "Save"
 msgstr "Sauvegarder"
 
 msgid "Saving"
-msgstr "Sauvegarde"
+msgstr "Sauvegarde en cours"
 
 msgid "Reset"
 msgstr "Réinitialiser"
@@ -302,14 +349,14 @@ msgid "Note"
 msgstr "Note"
 
 msgid "View details"
-msgstr "Voir détails"
+msgstr "Voir les détails"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
-msgstr "{{pageCount}} lignes affichées de {{totalCount}}."
+msgstr "{{pageCount}} lignes affichées sur {{totalCount}}."
 
 msgid "Maximum rows per page:"
-msgstr "Nombre maximal de lignes par page :"
+msgstr "Nombre maximal de lignes par page:"
 
 msgid "Download Data as CSV"
 msgstr "Télécharger les données au format CSV"
@@ -318,16 +365,97 @@ msgstr "Télécharger les données au format CSV"
 msgid "Views"
 msgstr "Vues"
 
+#: php/libraries/Password.class.inc
+msgid "The password is too short"
+msgstr "Le mot de passe est trop court"
+
+#, fuzzy
+msgid "The password is not complex enough."
+msgstr "Le mot de passe n'est pas assez complexe."
+
+#, fuzzy
+msgid "This password is known to be exposed in online data breaches."
+msgstr "Ce mot de passe est connu pour avoir été exposé lors de violations de données en ligne."
+
+#, fuzzy
+msgid "Data Supervisors to Email"
+msgstr "Superviseurs des données à contacter par e-mail"
+
+msgid "Invalid email address"
+msgstr "Adresse email non valide"
+
 # Common strings on widgets
 msgid "NEW"
 msgstr "Nouveau"
 
-# Might need to be modified to “Mise à jour” depending on the context
+msgid "New"
+msgstr "Nouveau"
+
 msgid "Updated"
 msgstr "Mis à jour"
 
 msgid "Uploaded"
 msgstr "Téléversé"
+
+# User Account related
+msgid "Password Rules"
+msgstr "Règles de mot de passe"
+
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+msgid "First name"
+msgstr "Prénom"
+
+#, fuzzy
+msgid "First name is required and should not exceed 120 characters"
+msgstr "Le prénom est obligatoire et ne doit pas dépasser 120 caractères."
+
+msgid "Last name"
+msgstr "Nom"
+
+#, fuzzy
+msgid "Last name is required and should not exceed 120 characters"
+msgstr "Le nom de famille est obligatoire et ne doit pas dépasser 120 caractères."
+
+msgid "Email address"
+msgstr "Adresse email"
+
+msgid "New Password"
+msgstr "Nouveau mot de passe"
+
+msgid "Password"
+msgstr "Mot de passe"
+
+msgid "Confirm Password"
+msgstr "Confirmer le mot de passe"
+
+msgid "Email address is required"
+msgstr "Une adresse e-mail est nécessaire"
+
+#, fuzzy
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "L'adresse e-mail ne peut contenir aucun des caractères suivants : <, >, & et \""
+
+#, fuzzy
+msgid "The password must be at least 8 characters long."
+msgstr "Le mot de passe doit comporter au moins 8 caractères."
+
+#, fuzzy
+msgid "The password cannot be your username or email address."
+msgstr "Le mot de passe ne peut pas être votre nom d'utilisateur ou votre adresse e-mail."
+
+#, fuzzy
+msgid "Please choose a unique password."
+msgstr "Veuillez choisir un mot de passe unique."
+
+#, fuzzy
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr "Aucun caractère spécial n'est requis, mais votre mot de passe doit être suffisamment complexe pour être accepté."
+
+#, fuzzy
+msgid "We suggest using a password manager to generate one for you."
+msgstr "Nous vous suggérons d'utiliser un gestionnaire de mots de passe pour en générer un pour vous."
 
 msgid "Total"
 msgstr "Total"
@@ -335,10 +463,15 @@ msgstr "Total"
 msgid "Error!"
 msgstr "Erreur!"
 
+msgid "Status"
+msgstr "Statut"
+
+msgid "Incorrect username or password."
+msgstr "Identifiant ou mot de passe incorrect."
+
 # Common timepoint and vist terms
-# - might need to be modified to “non commencée” when we talk about a visit
 msgid "Not Started"
-msgstr "Non commencée"
+msgstr "Non commencé"
 
 msgid "Screening"
 msgstr "Dépistage"
@@ -349,16 +482,11 @@ msgstr "Visite"
 msgid "Approval"
 msgstr "Approbation"
 
-# I think this should be right, but I would need to context in which it is presented.
-#, fuzzy
 msgid "Subject"
 msgstr "Sujet"
 
 msgid "Recycling Bin"
-msgstr "Poubelle de recyclage"
-
-msgid "Pass"
-msgstr "Approuver"
+msgstr "Corbeille"
 
 msgid "Failure"
 msgstr "Échec"
@@ -366,23 +494,32 @@ msgstr "Échec"
 msgid "Withdrawal"
 msgstr "Retrait"
 
+msgid "Withdrawn"
+msgstr "Retiré"
+
 msgid "In Progress"
 msgstr "En cours"
+
+msgid "Progress"
+msgstr "Progression"
+
+msgid "Success"
+msgstr "Succès"
 
 msgid "Complete"
 msgstr "Complète"
 
-msgid "Instruments"
-msgstr "Instruments"
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "Instrument"
+msgstr[1] "Instruments"
 
 msgid "None"
 msgstr "Aucun"
 
-# feminine in the case of “entrée de donnée partielle”
 msgid "Partial"
 msgstr "Partielle"
 
-#, fuzzy
 msgid "All"
 msgstr "Tout"
 
@@ -413,25 +550,7 @@ msgstr "{{years}} ans"
 
 # Other generic terms
 msgid "Loading..."
-msgstr "Chargement..."
+msgstr "Chargement en cours..."
 
 msgid "Permission denied"
 msgstr "Permission refusée"
-
-msgid "Unauthorized"
-msgstr "Non-autorisé"
-
-msgid "File to upload"
-msgstr "Sélectionner un fichier à téléverser"
-
-msgid "Submit"
-msgstr "Soumettre"
-
-msgid "Clear"
-msgstr "Effacer"
-
-msgid "Add"
-msgstr "Ajouter"
-
-msgid "Dataset"
-msgstr "Ensemble de données"

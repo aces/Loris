@@ -48,6 +48,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.po \
 	modules/candidate_profile/locale/fr/LC_MESSAGES/candidate_profile.po \
 	modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.po \
+	modules/behavioural_qc/locale/fr/LC_MESSAGES/behavioural_qc.po \
 	modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po \
 	modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po \
 	modules/user_accounts/locale/fr/LC_MESSAGES/user_accounts.po \
@@ -101,6 +102,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/electrophysiology_browser/locale/fr/LC_MESSAGES/electrophysiology_browser.po \
 	modules/electrophysiology_browser/locale/ja/LC_MESSAGES/electrophysiology_browser.po \
 	modules/api_docs/locale/ja/LC_MESSAGES/api_docs.po \
+	modules/publication/locale/fr/LC_MESSAGES/publication.po \
 	modules/publication/locale/ja/LC_MESSAGES/publication.po \
 	modules/publication/locale/hi/LC_MESSAGES/publication.po \
 	modules/publication/locale/en/LC_MESSAGES/publication.po \
