@@ -264,3 +264,6 @@ msgstr "ユーザーアカウント"
 msgid "Last 3 Comments"
 msgstr "最後の3つのコメント"
 
+msgid "Submit Attachment"
+msgstr "添付ファイルを送信"
+

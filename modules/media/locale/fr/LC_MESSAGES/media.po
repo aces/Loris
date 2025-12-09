@@ -113,9 +113,6 @@ msgstr "Date d'administration"
 msgid "Document's Language"
 msgstr "Langue du document"
 
-msgid "File to upload"
-msgstr "Fichier à télécharger"
-
 msgid "Upload File"
 msgstr "Télécharger le fichier"
 

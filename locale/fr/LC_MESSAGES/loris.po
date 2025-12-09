@@ -421,6 +421,9 @@ msgstr "Permission refusée"
 msgid "Unauthorized"
 msgstr "Non-autorisé"
 
+msgid "File to upload"
+msgstr "Sélectionner un fichier à téléverser"
+
 msgid "Submit"
 msgstr "Soumettre"
 
