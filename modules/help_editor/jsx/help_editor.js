@@ -6,6 +6,7 @@ import React from 'react';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/help_editor.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/help_editor.json';
+import frStrings from '../locale/fr/LC_MESSAGES/help_editor.json';
 import {withTranslation} from 'react-i18next';
 
 
@@ -151,6 +152,7 @@ const TranslatedHelpEditor = withTranslation(
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'help_editor', hiStrings);
   i18n.addResourceBundle('ja', 'help_editor', jaStrings);
+  i18n.addResourceBundle('fr', 'help_editor', frStrings);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
