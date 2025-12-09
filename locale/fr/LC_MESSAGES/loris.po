@@ -207,7 +207,7 @@ msgstr "DCCID"
 
 #, fuzzy
 msgid "Visit Label"
-msgstr "Visitez Label"
+msgstr "Libellé de visite"
 
 #, fuzzy
 msgid "Email"
@@ -232,7 +232,7 @@ msgstr "Projet d'inscription des candidats"
 
 #, fuzzy
 msgid "Timepoint Project"
-msgstr "Projet Timepoint"
+msgstr "Moment du projet"
 
 msgid "Cohort"
 msgid_plural "Cohorts"
@@ -486,7 +486,7 @@ msgid "Subject"
 msgstr "Sujet"
 
 msgid "Recycling Bin"
-msgstr "Poubelle de recyclage"
+msgstr "Corbeille"
 
 msgid "Failure"
 msgstr "Échec"
