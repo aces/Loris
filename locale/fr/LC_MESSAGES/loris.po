@@ -193,7 +193,7 @@ msgid "Cancel"
 msgstr "Annuler"
 
 msgid "Success!"
-msgstr "Réussi !"
+msgstr "Réussi!"
 
 msgid "Close"
 msgstr "Fermer"
