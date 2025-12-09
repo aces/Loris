@@ -147,7 +147,6 @@ const resolve: webpack.ResolveOptions = {
     PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
     Panel: path.resolve(__dirname, './jsx/Panel'),
     ProgressBar: path.resolve(__dirname, './jsx/ProgressBar'),
-    StaticDataTable: path.resolve(__dirname, './jsx/StaticDataTable'),
     Tabs: path.resolve(__dirname, './jsx/Tabs'),
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
@@ -347,7 +346,6 @@ const configs: webpack.Configuration[] = [];
 configs.push({
   entry: {
     PaginationLinks: './jsx/PaginationLinks.js',
-    StaticDataTable: './jsx/StaticDataTable.js',
     MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
     Breadcrumbs: './jsx/Breadcrumbs.js',
     PolicyButton: './jsx/PolicyButton.js',
