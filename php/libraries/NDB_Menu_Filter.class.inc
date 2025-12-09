@@ -858,7 +858,6 @@ class NDB_Menu_Filter extends NDB_Menu
         return array_merge(
             $depends,
             [
-                $baseURL . '/js/components/PaginationLinks.js',
                 $baseURL . '/js/components/StaticDataTable.js',
             ]
         );
