@@ -35,7 +35,7 @@ msgstr "Site : Tous les sites utilisateurs"
 
 #, fuzzy
 msgid "...never. Welcome!"
-msgstr "...jamais. Bienvenue !"
+msgstr "...jamais. Bienvenue!"
 
 msgid "Welcome, %s!"
 msgstr "Bienvenue, %s!"
