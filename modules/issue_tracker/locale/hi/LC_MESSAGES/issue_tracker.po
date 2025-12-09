@@ -353,3 +353,9 @@ msgstr "शीर्षक"
 
 msgid "Category"
 msgstr "श्रेणी"
+
+msgid "The server is not configured for attachments."
+msgstr "सर्वर को संलग्नकों के लिए कॉन्फ़िगर नहीं किया गया है।"
+
+msgid "The server is not configured to receive a file this large."
+msgstr "सर्वर इतने बड़े फ़ाइल को प्राप्त करने के लिए कॉन्फ़िगर नहीं किया गया है।"
