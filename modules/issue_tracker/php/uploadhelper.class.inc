@@ -100,7 +100,9 @@ class UploadHelper
 
         if (!$this->setFullPath($this->_fileToUpload)) {
             $this->errorMessage
-            = dgettext('issue_tracker', 'The server is not configured for attachments.'
+            = dgettext(
+                'issue_tracker',
+                'The server is not configured for attachments.'
             );
             return false;
         }
