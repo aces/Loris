@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
+import frStrings from '../locale/fr/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Renders a representation of the candidate conflicts as a React
