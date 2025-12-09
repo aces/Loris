@@ -8,6 +8,7 @@ import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
+import hiStrings from '../locale/hi/LC_MESSAGES/survey_accounts.json';
 /**
  * Survey Account React Component
  */
@@ -63,13 +64,14 @@ class SurveyAccountsIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const {t} = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'URL':
+    case t('URL', {ns: 'survey_accounts'}):
       const url = loris.BaseURL + '/survey.php?key=' + row.URL;
       result = <td><a href={url}>{cell}</a></td>;
       break;
-    case 'Instrument':
+    case t('Instrument', {ns: 'loris', count: 1}):
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
     }
@@ -83,10 +85,13 @@ class SurveyAccountsIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
+
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -100,22 +105,22 @@ class SurveyAccountsIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'PSCID', show: true, filter: {
+      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'pscid',
         type: 'text',
       }},
-      {label: 'Visit', show: true, filter: {
+      {label: t('Visit', {ns: 'loris'}), show: true, filter: {
         name: 'visit',
         type: 'select',
         options: options.visits,
       }},
-      {label: 'Instrument', show: true, filter: {
+      {label: t('Instrument', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'instrument',
         type: 'select',
         options: options.instruments,
       }},
-      {label: 'URL', show: true},
-      {label: 'Status', show: true, filter: {
+      {label: t('URL', {ns: 'survey_accounts'}), show: true},
+      {label: t('Status', {ns: 'survey_accounts'}), show: true, filter: {
         name: 'Status',
         type: 'select',
         options: options.statusOptions,
@@ -125,13 +130,13 @@ class SurveyAccountsIndex extends Component {
       location.href='/survey_accounts/addSurvey/';
     };
     const actions = [
-      {label: 'Add Survey', action: addSurvey},
+      {label: t('Add Survey', {ns: 'survey_accounts'}), action: addSurvey},
     ];
 
     return (
       <FilterableDataTable
         name="surveyAccounts"
-        title="Survey Accounts"
+        title={t('Survey Accounts', {ns: 'survey_accounts'})}
         data={this.state.data.Data}
         fields={fields}
         getFormattedCell={this.formatColumn}
@@ -144,12 +149,13 @@ class SurveyAccountsIndex extends Component {
 SurveyAccountsIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'survey_accounts', {});
+  i18n.addResourceBundle('hi', 'survey_accounts', hiStrings);
   const Index = withTranslation(
-    ['survey_accounts', 'loris']
+    ['survey_accounts']
   )(SurveyAccountsIndex);
   createRoot(
     document.getElementById('lorisworkspace')

@@ -65,21 +65,37 @@ class AddSurvey extends \NDB_Form
         // Check that all required fields are present.
         if (!empty($values['Email']) ) {
             if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
-                return ['Email' => 'The email address is not valid.'];
+                return ['Email' => dgettext(
+                    'survey_accounts',
+                    'The email address is not valid.'
+                )
+                ];
             }
         }
         if (!empty($values['Email']) && !empty($values['Email2'])) {
             if ($values['Email'] != $values['Email2']) {
-                return ['Email2' => 'The email addresses do not match.'];
+                return ['Email2' => dgettext(
+                    'survey_accounts',
+                    'The email addresses do not match.'
+                )
+                ];
             }
         }
 
         if (!empty($values['Email']) && empty($values['Email2'])) {
-            return ['Email2' => 'Please confirm the email address.'];
+            return ['Email2' => dgettext(
+                'survey_accounts',
+                'Please confirm the email address.'
+            )
+            ];
         }
 
         if (empty($values['Test_name'])) {
-            return ['Test_name' => 'Please choose an instrument.'];
+            return ['Test_name' => dgettext(
+                'survey_accounts',
+                'Please choose an instrument.'
+            )
+            ];
         }
 
         $numCandidates = $db->pselectOne(
@@ -91,15 +107,21 @@ class AddSurvey extends \NDB_Form
                 'v_CandID' => $values['CandID'],
             ]
         );
-        $error         = "PSCID and CandID do not match "
-                ."or candidate does not exist.";
+        $error         = dgettext(
+            'survey_accounts',
+            'PSCID and DCCID do not match or candidate does not exist.'
+        );
         if ($numCandidates != 1) {
             return
               ['CandID' => $error];
         }
 
         if (! in_array($values['VL'], \Utility::getVisitList(), true)) {
-            return ['VL' => "You must specify a valid Visit Label."];
+            return ['VL' => dgettext(
+                'survey_accounts',
+                'You must specify a valid Visit Label.'
+            )
+            ];
         }
 
         $numSessions = $db->pselectOne(
@@ -116,9 +138,12 @@ class AddSurvey extends \NDB_Form
 
         if ($numSessions != 1) {
             return [
-                'VL' => "Visit ".
-                            $values['VL'].
-                            " does not exist for given candidate",
+                'VL' => dgettext('loris', "Visit")." ".
+                            $values['VL']." ".
+            dgettext(
+                'survey_accounts',
+                'does not exist for given candidate'
+            ),
             ];
         }
 
@@ -136,7 +161,10 @@ class AddSurvey extends \NDB_Form
         $user = \NDB_Factory::singleton()->user();
         if (!$user->hasProject(\ProjectID::singleton($projectID))) {
             return [
-                'Project' => "You are not affiliated with this session's project"
+                'Project' => dgettext(
+                    'survey_accounts',
+                    'You are not affiliated with this session\'s project'
+                )
             ];
         }
 
@@ -153,7 +181,10 @@ class AddSurvey extends \NDB_Form
                 'v_VL'     => $values['VL'],
             ]
         );
-        $reminder        = " already exists for given candidate for visit ";
+        $reminder        = dgettext(
+            'survey_accounts',
+            'already exists for given candidate for visit'
+        );
         foreach ($instrument_list as $instrument) {
             if ($values['Test_name'] == $instrument['Test_name']) {
                 $instrument_instance = \NDB_BVL_Instrument::factory(
@@ -175,7 +206,11 @@ class AddSurvey extends \NDB_Form
                 FILTER_VALIDATE_EMAIL
             )
             ) {
-                return ['Email' => 'Email is not valid.'];
+                return ['Email' => dgettext(
+                    'survey_accounts',
+                    'Email is not valid.'
+                )
+                ];
 
             }
         }
@@ -302,7 +337,10 @@ class AddSurvey extends \NDB_Form
             )
         );
         $this->addBasicText("Email", "Email address");
-        $this->addBasicText("Email2", "Confirm Email address");
+        $this->addBasicText(
+            "Email2",
+            dgettext('survey_accounts', 'Confirm Email address')
+        );
 
         $this->form->addFormRule([&$this, '_validateAddSurvey']);
     }

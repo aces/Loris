@@ -307,6 +307,21 @@ msgstr "जन्म तिथि"
 msgid "Visits"
 msgstr "भ्रमण"
 
+msgid "Visit"
+msgstr "भेंट"
+
+msgid "Created"
+msgstr "बनाया गया"
+
+msgid "Sent"
+msgstr "भेजा गया"
+
+msgid "In Progress"
+msgstr "प्रगति पर"
+
+msgid "Complete"
+msgstr "पूर्ण"
+
 msgid "An error occured while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
@@ -451,9 +466,6 @@ msgstr "कुल"
 msgid "Screening"
 msgstr "जांच"
 
-msgid "Visit"
-msgstr "भेंट"
-
 msgid "Approval"
 msgstr "स्वीकृति"
 
@@ -469,17 +481,11 @@ msgstr "विफलता"
 msgid "Withdrawal"
 msgstr "निकासी"
 
-msgid "In Progress"
-msgstr "प्रगति पर"
-
 msgid "Progress"
 msgstr "प्रगति"
 
 msgid "Success"
 msgstr "सफलता"
-
-msgid "Complete"
-msgstr "पूर्ण"
 
 msgid "Instrument"
 msgid_plural "Instruments"
