@@ -54,9 +54,6 @@ msgstr "नोट"
 msgid "Version names will be saved as lowercase."
 msgstr "संस्करण नाम छोटे अक्षरों में सहेजे जाएंगे।"
 
-msgid "File to upload"
-msgstr "अपलोड करने के लिए फ़ाइल"
-
 msgid "You must select a file to upload"
 msgstr "आपको अपलोड करने के लिए एक फ़ाइल चुननी होगी"
 

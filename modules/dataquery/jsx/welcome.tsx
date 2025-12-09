@@ -15,6 +15,7 @@ import {FlattenedField, FlattenedQuery, VisitOption} from './types';
 import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 
+declare const loris: any;
 /**
  * Return the welcome tab for the DQT
  *
@@ -828,14 +829,24 @@ function SingleQueryDisplay(props: {
 
   let msg: React.ReactNode = null;
   if (query.RunTime) {
+    const dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        dateStyle: 'long',
+        timeStyle: 'medium',
+      }
+    );
+    const runTime = dateFormatter.format(new Date(query.RunTime));
+
+
     let desc = query.Name
       ? <span>
         <b>{query.Name}</b>
-             &nbsp;<i>{t('(Run at {{runTime}})', {ns: 'dataquery',
-          runTime: query.RunTime})}</i>
+             &nbsp;<i>{t('(Run on {{runTime}})', {ns: 'dataquery',
+          runTime: runTime})}</i>
       </span>
-      : <i>{t('You ran this query at {{runTime}}', {ns: 'dataquery',
-        runTime: query.RunTime})}</i>;
+      : <i>{t('You ran this query on {{runTime}}', {ns: 'dataquery',
+        runTime: runTime})}</i>;
     if (!props.includeRuns) {
       desc = query.Name
         ? <span>

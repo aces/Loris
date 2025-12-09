@@ -70,7 +70,7 @@ class UploadFileForm extends Component {
         />
         <FileElement
           name='file'
-          label={t('File to upload', {ns: 'data_release'})}
+          label={t('File to upload', {ns: 'loris'})}
           onUserInput={this.updateFormElement}
           required={true}
           value={this.state.formData.file}

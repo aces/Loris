@@ -25,6 +25,7 @@ import * as R from 'ramda';
 import {RootState} from '../store';
 import {setFilteredEpochs} from '../store/state/dataset';
 import {CheckboxElement} from './Form';
+import {useTranslation, Trans} from "react-i18next";
 
 type CProps = {
   timeSelection?: [number, number],
@@ -95,7 +96,7 @@ const EventManager = ({
   canEdit,
   tagsHaveChanges,
 }: CProps) => {
-
+  const {t} = useTranslation();
   const [epochsInRange, setEpochsInRange] = useState(getEpochsInRange(epochs, interval));
   const [allEpochsVisible, setAllEpochsVisibility] = useState(() => {
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
@@ -293,12 +294,17 @@ const EventManager = ({
           }}
         >
           <p style={{margin: '0px'}}>
-              {` showing ${
-                filteredEpochs
+            &nbsp;
+            {t(
+              'showing {{numShowing}}/{{numTotal}}', {
+                ns: 'electrophysiology_browser',
+                numShowing: filteredEpochs
                   .searchVisibility
                   .filter((i) => filteredEpochs.plotVisibility.includes(i))
-                  .length
-              }/${epochsInRange.length}`}
+                  .length,
+                numTotal: epochsInRange.length,
+              }
+            )}
           </p>
           <div style={{display: 'flex', flexDirection: 'row'}}>
             <i
@@ -322,7 +328,12 @@ const EventManager = ({
         </div>
         <div>
           <span style={{fontSize: '0.75em',}}>
-              Total events in recording {epochs.length}
+            {t(
+              'Total events in recording {{total}}', {
+                ns: 'electrophysiology_browser',
+                total: epochs.length
+              }
+            )}
           </span>
         </div>
         <div
@@ -334,7 +345,12 @@ const EventManager = ({
           }}
         >
           <div style={{ fontSize: '12px', minWidth: 'fit-content', }}>
-            Display by:&nbsp;
+            {t(
+              'Display by:', {
+                ns: 'electrophysiology_browser',
+              }
+            )}
+            &nbsp;
           </div>
           <div>
             <button
@@ -373,7 +389,12 @@ const EventManager = ({
           <input
             id='label-search'
             type='search'
-            placeholder={`${activeLabel} search...`}
+            placeholder={t(
+              '{{label}} search...', {
+                ns: 'electrophysiology_browser',
+                label: activeLabel,
+              }
+            )}
             value={searchText}
             onChange={handleTextChange}
             style={{
@@ -394,7 +415,12 @@ const EventManager = ({
             id='toggle-ignore_na'
             name='toggle-ignore_na'
             offset=''
-            label={<React.Fragment>Ignore 'n/a'</React.Fragment>}
+            label={<React.Fragment>{t(
+              'Ignore {{bidsNA}}', {
+                ns: 'electrophysiology_browser',
+                bidsNA: 'n/a',
+              }
+            )}</React.Fragment>}
             value={ignoreNA}
             onUserInput={() => {
               setIgnoreNA(!ignoreNA);
@@ -412,16 +438,12 @@ const EventManager = ({
               name='toggle-invert-search'
               offset=''
               label={
-                <>
-                  Exclude
-                  <span className='label-ellipsis'>
-                {
-                  searchText.length > 0
-                    ? searchText
-                    : ''
-                }
-                </span>
-                </>
+                <Trans
+                  i18nKey="Exclude <text>{{searchText}}</text>"
+                  ns="electrophysiology_browser"
+                  values={{searchText: searchText}}
+                  components={{text: <span className='label-ellipsis'/>}}
+                />
               }
               value={invertSearchResults}
               onUserInput={() => {
@@ -451,12 +473,24 @@ const EventManager = ({
         >
           {epochsInRange.length >= MAX_RENDERED_EPOCHS &&
             <div className='event-panel-message'>
-              Too many events to plot for this timeline range
+              {t(
+                'Too many events to plot for this timeline range', {
+                  ns: 'electrophysiology_browser',
+                }
+              )}
             </div>
           }
           {epochsInRange.length === 0 &&
             <div className='event-panel-message'>
-              No events in timeline range.<br/>Try selecting a different time range.
+              {t('No events in timeline range.', {
+                  ns: 'electrophysiology_browser'
+                }
+              )}
+              <br/>
+              {t('Try selecting a different time range.', {
+                  ns: 'electrophysiology_browser'
+                }
+              )}
             </div>
           }
           {
@@ -655,7 +689,11 @@ const EventManager = ({
                       </div>
                       <div>
                         <code className='event-label'>
-                          channel
+                          {t('Channel'.toString().toLowerCase(), {
+                              ns: 'electrophysiology_browser',
+                              count: 1,
+                            }
+                          )}
                         </code>
                         &nbsp;
                         <span>

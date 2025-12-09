@@ -266,3 +266,5 @@ msgstr ""
 msgid "The server is not configured for attachments."
 msgstr ""
 
+msgid "Submit Attachment"
+msgstr ""

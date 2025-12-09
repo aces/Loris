@@ -60,9 +60,6 @@ msgstr "Note"
 msgid "Version names will be saved as lowercase."
 msgstr "Les noms des versions seront enregistrés en minuscules."
 
-msgid "File to upload"
-msgstr "Sélectionner un fichier à téléverser"
-
 msgid "You must select a file to upload"
 msgstr "Vous devez sélectionner un fichier à téléverser."
 

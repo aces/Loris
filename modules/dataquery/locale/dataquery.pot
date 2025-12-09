@@ -410,10 +410,10 @@ msgstr ""
 msgid "Successfully loaded query."
 msgstr ""
 
-msgid "(Run at {{runTime}})"
+msgid "(Run on {{runTime}})"
 msgstr ""
 
-msgid "You ran this query at {{runTime}}"
+msgid "You ran this query on {{runTime}}"
 msgstr ""
 
 msgid "You ran this query"

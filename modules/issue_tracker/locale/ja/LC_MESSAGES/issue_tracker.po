@@ -269,3 +269,7 @@ msgstr "サーバーは添付ファイルに対応するように設定されて
 
 msgid "The server is not configured to receive a file this large."
 msgstr "サーバーはこれほど大きなファイルを受信するように設定されていません。"
+
+msgid "Submit Attachment"
+msgstr "添付ファイルを送信"
+

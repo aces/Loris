@@ -223,7 +223,7 @@ class MediaUploadForm extends Component {
               id='mediaUploadEl'
               onUserInput={this.setFormData}
               ref='file'
-              label={t('File to upload', {ns: 'media'})}
+              label={t('File to upload', {ns: 'loris'})}
               required={true}
               value={this.state.formData.file}
             />

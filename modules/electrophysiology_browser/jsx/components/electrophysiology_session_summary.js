@@ -27,11 +27,12 @@ class SummaryPanel extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     return (
       <div className="summary-panel">
         <Panel
           id={this.props.id}
-          title="Summary"
+          title={t('Summary', {ns: 'electrophysiology_browser'})}
         >
           <div
             style={{
@@ -78,6 +79,7 @@ class SummaryPanel extends Component {
 SummaryPanel.propTypes = {
   data: PropTypes.array,
   id: PropTypes.string,
+  t: PropTypes.func,
 };
 
 SummaryPanel.defaultProps = {

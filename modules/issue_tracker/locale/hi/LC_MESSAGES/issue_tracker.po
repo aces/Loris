@@ -333,9 +333,6 @@ msgstr "अपलोड सफल!"
 msgid "Upload error!"
 msgstr "अपलोड त्रुटि!"
 
-msgid "File to upload"
-msgstr "अपलोड करने के लिए फ़ाइल"
-
 msgid "Submit Attachment"
 msgstr "संलग्नक सबमिट करें"
 

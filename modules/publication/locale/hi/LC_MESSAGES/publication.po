@@ -21,9 +21,6 @@ msgstr ""
 msgid "Publications"
 msgstr "प्रकाशन"
 
-msgid "File to upload"
-msgstr "अपलोड करने के लिए फ़ाइल"
-
 msgid "Submit"
 msgstr "जमा करें"
 
