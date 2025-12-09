@@ -346,7 +346,6 @@ const configs: webpack.Configuration[] = [];
 
 configs.push({
   entry: {
-    PaginationLinks: './jsx/PaginationLinks.js',
     StaticDataTable: './jsx/StaticDataTable.js',
     MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
     Breadcrumbs: './jsx/Breadcrumbs.js',
