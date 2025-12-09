@@ -30,6 +30,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.po \
 	modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.po \
 	modules/dicom_archive/locale/ja/LC_MESSAGES/dicom_archive.po \
+	modules/dicom_archive/locale/fr/LC_MESSAGES/dicom_archive.po \
 	modules/dicom_archive/locale/hi/LC_MESSAGES/dicom_archive.po \
 	modules/new_profile/locale/fr/LC_MESSAGES/new_profile.po \
 	modules/new_profile/locale/ja/LC_MESSAGES/new_profile.po \
@@ -53,6 +54,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/user_accounts/locale/ja/LC_MESSAGES/user_accounts.po \
 	modules/user_accounts/locale/hi/LC_MESSAGES/user_accounts.po \
 	modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.po \
+	modules/schedule_module/locale/fr/LC_MESSAGES/schedule_module.po \
 	modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po \
 	modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po \
 	modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.po \
@@ -63,10 +65,12 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/examiner/locale/hi/LC_MESSAGES/examiner.po \
 	modules/login/locale/ja/LC_MESSAGES/login.po \
 	modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po \
+	modules/instrument_builder/locale/fr/LC_MESSAGES/instrument_builder.po \
 	modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po \
 	modules/document_repository/locale/ja/LC_MESSAGES/document_repository.po \
 	modules/document_repository/locale/hi/LC_MESSAGES/document_repository.po \
 	modules/conflict_resolver/locale/ja/LC_MESSAGES/conflict_resolver.po \
+	modules/conflict_resolver/locale/fr/LC_MESSAGES/conflict_resolver.po \
 	modules/conflict_resolver/locale/hi/LC_MESSAGES/conflict_resolver.po \
 	modules/candidate_list/locale/fr/LC_MESSAGES/candidate_list.po \
 	modules/candidate_list/locale/ja/LC_MESSAGES/candidate_list.po \
@@ -79,6 +83,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po \
 	modules/dataquery/locale/hi/LC_MESSAGES/dataquery.po \
 	modules/issue_tracker/locale/ja/LC_MESSAGES/issue_tracker.po \
+	modules/issue_tracker/locale/fr/LC_MESSAGES/issue_tracker.po \
 	modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po \
 	modules/timepoint_list/locale/fr/LC_MESSAGES/timepoint_list.po \
 	modules/timepoint_list/locale/ja/LC_MESSAGES/timepoint_list.po \
@@ -104,6 +109,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po \
 	modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.po \
 	modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po \
+	modules/help_editor/locale/fr/LC_MESSAGES/help_editor.po \
 	modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po
 
 MOFILES=$(patsubst %.po,%.mo,$(POFILES))
@@ -238,3 +244,6 @@ my_preferences: $(filter modules/my_preferences/%,$(MOFILES)) $(filter modules/m
 
 electrophysiology_browser: $(filter modules/electrophysiology_browser/%,$(MOFILES)) $(filter modules/electrophysiology_browser/%,$(I18NJSONFILES))
     target=electrophysiology_browser npm run compile
+
+dicom_archive: $(filter modules/dicom_archive/%,$(MOFILES)) $(filter modules/dicom_archive/%,$(I18NJSONFILES))
+    target=dicom_archive npm run compile

@@ -20,6 +20,7 @@ function CandidateConflictsWidget(props) {
     const visits = getVisits(props.Conflicts);
     const instruments = getInstruments(props.Conflicts);
     i18n.addResourceBundle('ja', 'conflict_resolver', jaStrings);
+    i18n.addResourceBundle('fr', 'conflict_resolver', frStrings);
     c3.generate({
       bindto: '#conflictschart',
       data: {
