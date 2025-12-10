@@ -188,7 +188,7 @@ class BiobankIndex extends Component {
     errors.specimen = this.validateSpecimen(list[0].specimen);
     errors.container = this.validateContainer(list[0].container);
     if (!isEmpty(errors.specimen) || !isEmpty(errors.container)) {
-      return Promise.rejecthis.props.t(errors, {ns: 'biobank'});
+      return Promise.reject(errors);
     }
 
     const specimenList = list
@@ -209,7 +209,7 @@ class BiobankIndex extends Component {
   updateContainer(container) {
     const errors = this.validateContainer(container);
     if (!isEmpty(errors)) {
-      return Promise.rejecthis.props.t({container: errors}, {ns: 'biobank'});
+      return Promise.reject({container: errors});
     }
 
     return post(container, this.props.containerAPI, 'PUT')
