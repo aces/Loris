@@ -151,7 +151,7 @@ msgstr[1] "Scans"
 msgid "Site"
 msgid_plural "Sites"
 msgstr[0] "Site"
-msgstr[1] ""
+msgstr[1] "Sites"
 
 msgid "Visit"
 msgid_plural "Visits"
