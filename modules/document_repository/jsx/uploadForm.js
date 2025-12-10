@@ -14,8 +14,10 @@ import {
 } from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
+
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
+import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
 
 /**
  * Media Upload Form
@@ -331,6 +333,7 @@ export default withTranslation(['document_repository', 'loris'])(DocUploadForm);
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'document_repository', hiStrings);
   i18n.addResourceBundle('ja', 'document_repository', jaStrings);
+  i18n.addResourceBundle('fr', 'document_repository', frStrings);
 
   const element = document.getElementById('lorisworkspace');
   if (!element) {

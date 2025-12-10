@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import StaticDataTable from 'jsx/StaticDataTable';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import frStrings from '../locale/fr/LC_MESSAGES/publication.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/publication.json';
 import enStrings from '../locale/en/LC_MESSAGES/publication.json';
@@ -251,6 +252,7 @@ PublicationIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('fr', 'publication', frStrings);
   i18n.addResourceBundle('hi', 'publication', hiStrings);
   i18n.addResourceBundle('ja', 'publication', jaStrings);
   i18n.addResourceBundle('en', 'publication', enStrings);

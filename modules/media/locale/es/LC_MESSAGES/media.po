@@ -113,9 +113,6 @@ msgstr "Fecha de administración"
 msgid "Document's Language"
 msgstr "Idioma del documento"
 
-msgid "File to upload"
-msgstr "Archivo para subir"
-
 msgid "Upload File"
 msgstr "Cargar archivo"
 
