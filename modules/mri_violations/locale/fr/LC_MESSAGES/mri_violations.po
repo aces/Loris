@@ -5,105 +5,136 @@
 # This file is distributed under the same license as the LORIS package.
 # Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: LORIS 27\n"
 "Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
 "POT-Creation-Date: 2025-04-08 14:37-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2025-12-09 17:07-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
 
+#, fuzzy
 msgid "MRI Violated Scans"
-msgstr "MRI Scans violés"
+msgstr "Scans IRM non conformes"
 
+#, fuzzy
+msgid "Violated scan"
+msgstr "Scan violé"
+
+#, fuzzy
+msgid "Violated scans"
+msgstr "Scans violés"
+
+#, fuzzy
 msgid "Violations for SeriesUID"
 msgstr "Violations pour SeriesUID"
 
+#, fuzzy
 msgid "Violations for"
-msgstr "Violations pour"
+msgstr "Infractions pour"
 
+#, fuzzy
 msgid "Time Run"
-msgstr "Temps d'exécution"
+msgstr "Course contre le temps"
 
+#, fuzzy
 msgid "Series Description"
 msgstr "Description de la série"
 
 msgid "Image Location"
-msgstr "Emplacement de l'image"
+msgstr "Position de l'image"
 
 msgid "Patient Name"
 msgstr "Nom du patient"
 
+#, fuzzy
 msgid "Series UID"
-msgstr "UID de la série"
+msgstr "Série UID"
 
+#, fuzzy
 msgid "Echo Time"
 msgstr "Temps d'écho"
 
+#, fuzzy
 msgid "Protocol Group"
 msgstr "Groupe de protocole"
 
 msgid "TR"
 msgstr "TR"
 
+#, fuzzy
 msgid "TE"
 msgstr "TE"
 
+#, fuzzy
 msgid "TI"
 msgstr "TI"
 
 msgid "Slice Thickness"
-msgstr "Épaisseur de tranche"
+msgstr "Épaisseur de coupe"
 
+#, fuzzy
 msgid "Xspace"
-msgstr "Xespace"
+msgstr "Xspace"
 
+#, fuzzy
 msgid "Yspace"
 msgstr "Yspace"
 
+#, fuzzy
 msgid "Zspace"
-msgstr "EspaceZ"
+msgstr "Zspace"
 
+#, fuzzy
 msgid "Xstep"
-msgstr "Xétape"
+msgstr "Xstep"
 
+#, fuzzy
 msgid "Ystep"
-msgstr "Étape Y"
+msgstr "Ystep"
 
+#, fuzzy
 msgid "Zstep"
-msgstr "Zétape"
+msgstr "Zstep"
 
 msgid "Time"
-msgstr "Temps"
+msgstr "Heure"
 
 msgid "Image Type"
-msgstr "Type d'image"
+msgstr "Type d’Image"
 
+#, fuzzy
 msgid "Phase Encoding Direction"
 msgstr "Direction de codage de phase"
 
+#, fuzzy
 msgid "Echo Number"
 msgstr "Numéro d'écho"
 
+#, fuzzy
 msgid "Image Protocol"
 msgstr "Protocole d'image"
 
+#, fuzzy
 msgid "Study Protocols"
 msgstr "Protocoles d'étude"
 
+#, fuzzy
 msgid "Scan Problems"
 msgstr "Problèmes de numérisation"
 
 msgid "Scan Type"
-msgstr "Type de numérisation"
+msgstr "Type de scan"
 
 msgid "Severity"
-msgstr "Gravité"
+msgstr "Sévérité"
 
 msgid "Header"
 msgstr "En-tête"
@@ -111,63 +142,80 @@ msgstr "En-tête"
 msgid "Value"
 msgstr "Valeur"
 
+#, fuzzy
 msgid "Valid Values"
 msgstr "Valeurs valides"
 
+#, fuzzy
 msgid "Protocol Violation"
 msgstr "Violation du protocole"
 
+#, fuzzy
 msgid "Could not identify scan type"
-msgstr "Type de numérisation non identifié"
+msgstr "Impossible d'identifier le type d'analyse"
 
+#, fuzzy
 msgid "Series Description or Scan Type"
-msgstr "Description de la série ou type de numérisation"
+msgstr "Description de la série ou type de scan"
 
+#, fuzzy
 msgid "Resolution Status"
-msgstr "Statut de résolution"
+msgstr "Statut de la résolution"
 
 msgid "Unresolved"
 msgstr "Non résolu"
 
+#, fuzzy
 msgid "Reran"
-msgstr "Réexécuter"
+msgstr "Reran"
 
+#, fuzzy
 msgid "Emailed site/pending"
-msgstr "Site envoyé par courriel/en attente"
+msgstr "Site envoyé par e-mail/en attente"
 
 msgid "Inserted"
-msgstr "Inséré"
+msgstr "Insérer"
 
 msgid "Rejected"
 msgstr "Rejeté"
 
+#, fuzzy
 msgid "Inserted with flag"
-msgstr "Inséré avec un drapeau"
+msgstr "Inséré avec drapeau"
 
 msgid "Other"
 msgstr "Autre"
 
+#, fuzzy
 msgid "Type of Problem"
 msgstr "Type de problème"
 
 msgid "Select Resolution"
-msgstr "Sélectionnez la résolution"
+msgstr "Sélectionner la résolution"
 
 msgid "Image File"
-msgstr "Fichier image"
+msgstr "Fichier Image"
 
+#, fuzzy
 msgid "Must submit data in JSON format"
 msgstr "Les données doivent être soumises au format JSON."
 
+#, fuzzy
 msgid "Can not implement filter on a resource type that has no centers."
-msgstr "Impossible d'appliquer un filtre à un type de ressource sans centre."
+msgstr "Impossible d'appliquer un filtre à un type de ressource qui ne comporte aucun centre."
+
+#, fuzzy
+msgid "Can not implement filter on a resource type that has no projects."
+msgstr "Impossible d'appliquer un filtre à un type de ressource qui ne comporte aucun projet."
 
 msgid "hash"
-msgstr "hacher"
+msgstr "hachage"
 
+#, fuzzy
 msgid "JoinID"
-msgstr "ID de jointure"
+msgstr "JoinID"
 
+#, fuzzy
 msgid "TarchiveID"
 msgstr "TarchiveID"
 
@@ -177,38 +225,45 @@ msgstr "Nom du centre"
 msgid "Scanner ID"
 msgstr "ID du scanner"
 
+#, fuzzy
 msgid "TR Range"
 msgstr "Gamme TR"
 
+#, fuzzy
 msgid "TE Range"
-msgstr "LA GAMME"
+msgstr "Gamme TE"
 
+#, fuzzy
 msgid "TI Range"
 msgstr "Gamme TI"
 
+#, fuzzy
 msgid "Slice Thickness Range"
-msgstr "Plage d'épaisseur de tranche"
+msgstr "Plage d'épaisseur des tranches"
 
+#, fuzzy
 msgid "Xspace Range"
 msgstr "Gamme Xspace"
 
+#, fuzzy
 msgid "Yspace Range"
 msgstr "Gamme Yspace"
 
+#, fuzzy
 msgid "Zspace Range"
 msgstr "Gamme Zspace"
 
+#, fuzzy
 msgid "Xstep Range"
 msgstr "Gamme Xstep"
 
+#, fuzzy
 msgid "Ystep Range"
-msgstr "Plage Ystep"
+msgstr "Gamme Ystep"
 
+#, fuzzy
 msgid "Zstep Range"
-msgstr "Plage de pas Z"
+msgstr "Gamme Zstep"
 
 msgid "Time Range"
-msgstr "Plage de temps"
-
-msgid "Can not implement filter on a resource type that has no projects."
-msgstr "Impossible d'appliquer un filtre à un type de ressource qui ne comporte aucun projet."
+msgstr "Intervalle de temps"

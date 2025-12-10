@@ -1,0 +1,194 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 11:09-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Imaging Uploader"
+msgstr "Téléverseur d'images"
+
+msgid "Upload an imaging scan"
+msgstr "Téléverser un scan d'imagerie"
+
+#, fuzzy
+msgid "Phantom Scans"
+msgstr "Scans fantômes"
+
+#, fuzzy
+msgid "File to Upload"
+msgstr "Sélectionner un fichier à téléverser"
+
+msgid "Notes"
+msgstr "Notes"
+
+#, fuzzy
+msgid "File cannot exceed {{maxUploadSize}}"
+msgstr "Le fichier ne peut pas dépasser {{maxUploadSize}}"
+
+#, fuzzy
+msgid "File must be of type .tgz or tar.gz or .zip"
+msgstr "Le fichier doit être au format .tgz, tar.gz ou .zip."
+
+#, fuzzy
+msgid "For files that are not Phantom Scans, file name must begin with"
+msgstr ""
+"Pour les fichiers qui ne sont pas des scans fantômes, le nom du fichier doit "
+"commencer par"
+
+#, fuzzy
+msgid ""
+"For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label "
+"{{visitLabel}} the file name should be prefixed by: {{prefix}}"
+msgstr ""
+"Par exemple, pour DCCID {{dccid}}, PSCID {{pscid}} et Visit Label "
+"{{visitLabel}}, le nom du fichier doit être préfixé par : {{prefix}}"
+
+#, fuzzy
+msgid "The file {{fileName}} must be of type .tgz, .tar.gz or .zip."
+msgstr "Le fichier {{fileName}} doit être au format .tgz, .tar.gz ou .zip."
+
+msgid "Invalid extension for the uploaded file!"
+msgstr "Extension non valide pour le fichier téléversé !"
+
+#, fuzzy
+msgid "Filename extension does not match .zip, .tgz or .tar.gz "
+msgstr ""
+"L'extension du nom de fichier ne correspond pas à .zip, .tgz ou .tar.gz. "
+
+#, fuzzy
+msgid "Incorrect file name!"
+msgstr "Nom de fichier incorrect !"
+
+msgid "Could not determine PSCID, DCCID and Visit Label based on the filename!"
+msgstr ""
+"Impossible de déterminer le PSCID, le DCCID et le nom de la visite à partir "
+"du nom du fichier !"
+
+#, fuzzy
+msgid "File already exists!"
+msgstr "Le fichier existe déjà !"
+
+msgid "A file with this name has already successfully passed the MRI pipeline!"
+msgstr "Un fichier portant ce nom a déjà passé avec succès le pipeline IRM !"
+
+#, fuzzy
+msgid "File is currently processing!"
+msgstr "Le fichier est en cours de traitement !"
+
+msgid "A file with this name is currently going through the MRI pipeline!"
+msgstr ""
+"Un fichier portant ce nom est actuellement en cours de traitement dans le "
+"pipeline IRM !"
+
+#, fuzzy
+msgid ""
+"A file with this name already exists! Would you like to overwrite the "
+"existing file?"
+msgstr ""
+"Un fichier portant ce nom existe déjà ! Voulez-vous remplacer le fichier "
+"existant ?"
+
+msgid "Cancelled"
+msgstr "Annulée"
+
+msgid "Your upload has been cancelled."
+msgstr "Votre téléversement a été annulé."
+
+msgid ""
+"A file with this name has been uploaded but has not yet been processed by "
+"the MRI pipeline. Would you like to overwrite the existing file?"
+msgstr ""
+"Un fichier portant ce nom a été téléversé, mais n'a pas encore été traité "
+"par le pipeline IRM. Souhaitez-vous remplacer le fichier existant ?"
+
+#, fuzzy
+msgid "Upload Successful!"
+msgstr "Téléversement réussi!"
+
+#, fuzzy
+msgid "Processing of this file by the MRI pipeline has started"
+msgstr "Le traitement de ce fichier par le pipeline IRM a commencé."
+
+msgid "Select this upload in the result table to view the processing progress"
+msgstr ""
+"Sélectionnez ce téléversement dans le tableau des résultats pour afficher la "
+"progression du traitement."
+
+msgid "Upload failed: a network error occured"
+msgstr "Échec du téléversement : une erreur réseau s'est produite."
+
+#, fuzzy
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr ""
+"Veuillez vous assurer que les fichiers ne dépassent pas {{maxFileSize}}"
+
+msgid "Upload failed: received HTTP response code {{code}}"
+msgstr "Échec du téléversement : code de réponse HTTP reçu {{code}}"
+
+#, fuzzy
+msgid "Submission error!"
+msgstr "Erreur de soumission!"
+
+msgid "Log Viewer"
+msgstr "Afficheur de journaux"
+
+#, fuzzy
+msgid "Logs to display"
+msgstr "Journaux à afficher"
+
+msgid "Summary"
+msgstr "Résumé"
+
+msgid "Detailed"
+msgstr "Détaillé"
+
+#, fuzzy
+msgid "<select a row in the table below to view the upload logs>"
+msgstr "<select a row in the table below to view the upload logs>"
+
+#, fuzzy
+msgid "Number Of Files Created"
+msgstr "Nombre de fichiers créés"
+
+#, fuzzy
+msgid "Number Of Files Inserted"
+msgstr "Nombre de fichiers insérés"
+
+#, fuzzy
+msgid "{{successText}} ({{inserted}} out of {{created}})"
+msgstr "{{successText}} ({{inserted}} sur {{created}})"
+
+#, fuzzy
+msgid "{{numViolatedScans}} violated scans"
+msgstr "{{numViolatedScans}} scans violés"
+
+#, fuzzy
+msgid "Tarchive Info"
+msgstr "Informations sur Tarchive"
+
+msgid "Upload ID"
+msgstr "ID de téléversement"
+
+msgid "Upload Location"
+msgstr "Emplacement de téléversement"
+
+msgid "Upload Date"
+msgstr "Date d'importation"
+
+msgid "Uploaded By"
+msgstr "Chargé par"
