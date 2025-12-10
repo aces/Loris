@@ -1,0 +1,118 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 10:55-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Schedule Appointment"
+msgstr "Planifier un Rendez-vous"
+
+msgid "Appointment Date"
+msgstr "Date de rendez-vous"
+
+msgid "Appointment Time"
+msgstr "Temps de rendez-vous"
+
+msgid "Appointment Type"
+msgstr "Type de rendez vous"
+
+#, fuzzy
+msgid "AppointmentTypeName"
+msgstr "Nom du type de rendez-vous"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+#, fuzzy
+msgid "Data Entry Status"
+msgstr "Statut de double entrée des données"
+
+msgid "Complete"
+msgstr "Complète"
+
+msgid "No Data Found"
+msgstr "Aucune donnée trouvée"
+
+msgid "Not Started"
+msgstr "Non commencé"
+
+msgid "Edit Appointment"
+msgstr "Éditer le rendez-vous"
+
+msgid "Create Appointment"
+msgstr "Créer un rendez-vous"
+
+msgid "Add Appointment"
+msgstr "Ajouter un rendez-vous"
+
+msgid "All"
+msgstr "Tout"
+
+msgid "Past"
+msgstr "Passé"
+
+msgid "Next 30 Days"
+msgstr "Prochain 30 jours"
+
+msgid "Today"
+msgstr "Aujourd’hui"
+
+#, fuzzy
+msgid "Appointment modified."
+msgstr "Rendez-vous modifié."
+
+#, fuzzy
+msgid "Appointment added."
+msgstr "Rendez-vous ajouté."
+
+msgid "Success!"
+msgstr "Réussi !"
+
+#, fuzzy
+msgid "No changes were made!"
+msgstr "Aucune modification n'a été apportée !"
+
+msgid "You won't be able to revert this!"
+msgstr "Vous ne pourrez pas revenir en arrière !"
+
+msgid "Yes, delete it!"
+msgstr "Oui, supprimer !"
+
+msgid "Deleted!"
+msgstr "Supprimés!"
+
+#, fuzzy
+msgid "Your appointment has been deleted."
+msgstr "Votre rendez-vous a été supprimé."
+
+#, fuzzy
+msgid "Starts At"
+msgstr "Commence à"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Time"
+msgstr "Heure"
+
+#, fuzzy
+msgid "Appointment Type Name"
+msgstr "Nom du type de rendez-vous"

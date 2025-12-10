@@ -113,9 +113,6 @@ msgstr "प्रशासन की तारीख"
 msgid "Document's Language"
 msgstr "दस्तावेज़ की भाषा"
 
-msgid "File to upload"
-msgstr "अपलोड करने के लिए फ़ाइल"
-
 msgid "Upload File"
 msgstr "फ़ाइल अपलोड करें"
 

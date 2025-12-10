@@ -152,16 +152,18 @@ class CandidateListIndex extends Component {
       default: return <td>None</td>;
       }
     }
-    if (
-      column === this.props.t('Scan Done', {ns: 'candidate_list'})
-      && cell === 'Y'
-    ) {
-      const pscid = row[this.props.t('PSCID', {ns: 'loris'})];
-      let url = this.props.baseURL + '/imaging_browser/?PSCID=' + pscid;
-      return (
-        <td className="scanDoneLink">
-          <a href={url}>{cell}</a></td>
-      );
+    if (column === this.props.t('Scan Done', {ns: 'loris'})) {
+      if (cell === 'Y') {
+        const pscid = row[this.props.t('PSCID', {ns: 'loris'})];
+        let url = this.props.baseURL + '/imaging_browser/?PSCID=' + pscid;
+        return (
+          <td className="scanDoneLink">
+            <a href={url}>{this.props.t('Yes', {ns: 'loris'})}</a>
+          </td>
+        );
+      } else if (cell === 'N') {
+        return <td>{this.props.t('No', {ns: 'loris'})}</td>;
+      }
     }
 
     if (column === this.props.t('Cohort', {ns: 'loris', count: 1})) {
@@ -259,8 +261,8 @@ class CandidateListIndex extends Component {
           type: 'select',
           hide: this.state.hideFilter,
           options: {
-            'Y': 'Yes',
-            'N': 'No',
+            'Y': this.props.t('Yes', {ns: 'loris'}),
+            'N': this.props.t('No', {ns: 'loris'}),
           },
         },
       },

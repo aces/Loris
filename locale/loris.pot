@@ -546,6 +546,12 @@ msgstr ""
 msgid "Unauthorized"
 msgstr ""
 
+msgid "File to upload"
+msgstr ""
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr ""
+
 msgid "Submit"
 msgstr ""
 
