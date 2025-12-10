@@ -19,6 +19,9 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
 
+$opts = getopt("", ["stdout::"]);
+$stdout = isset($opts['stdout']);
+
 $instrumentsToSkip = [];
 $instruments       = getExcludedInstruments();
 foreach ($instruments as $instrument) {
@@ -31,7 +34,7 @@ foreach ($instruments as $instrument) {
 while ($file=fgets(STDIN)) {
     $file    =trim($file);
     $files[] =$file;
-    echo $file;
+    fwrite(STDERR, $file);
 }
 
 //Process the files
@@ -42,42 +45,33 @@ foreach ($files as $file) {
     fclose($fp);
     preg_match("/class (.+) extends NDB_BVL_Instrument/", $data, $matches);
     if (empty($matches[1])) {
-        echo "File '$file' does not contain an instrument.\n";
+        fwrite(STDERR, "File '$file' does not contain an instrument.\n");
         continue;
     }
-    echo "Reading file $file\n";
+    fwrite(STDERR, "Reading file $file\n");
     $className =$matches[1];
-    echo "Instrument found: $matches[1]\n";
-    echo "Requiring file...\n";
-    include_once $file;
-    echo "Instantiating new object...\n";
-    $obj =new $className(
-        $lorisInstance,
-        new NullModule($lorisInstance),
-        "",
-        "",
-        "",
-        ""
-    );
-    echo "Initializing instrument object...\n";
-    $obj->setup(null, null);
+    fwrite(STDERR, "Instrument found: $matches[1]\n");
+    fwrite(STDERR, "Instantiating new object...\n");
+    
+    $testname = preg_replace("/NDB_BVL_Instrument_/", "", $className);
+    $obj = \NDB_BVL_Instrument::factory($lorisInstance, $testname);
 
     //Some instruments ought not be parsed with the lorisform_parser
     if ((in_array($obj->testName, $instrumentsToSkip))) {
-        echo "lorisform_parser will    skip file {$file}\n";
+        fwrite(STDERR, "lorisform_parser will skip file {$file}\n");
         continue;
     }
 
     $subtests =$obj->getSubtestList();
     foreach ($subtests as $subtest) {
         $obj->page =$subtest['Name'];
-        echo "Building instrument page '$subtest[Name]'...\n";
+        fwrite(STDERR, "Building instrument page '$subtest[Name]'...\n");
         $obj->_setupForm();
     }
 
     if (is_array($obj->getFullName())) {
-        echo "Could not find row for $matches[1] in table test_names,
-        please populate test_names, instrument_subtests\n";
+        fwrite(STDERR, "Could not find row for $matches[1] in table test_names,
+        please populate test_names, instrument_subtests\n");
         continue;
     }
 
@@ -87,7 +81,7 @@ foreach ($files as $file) {
         $output = '';
     }
 
-    echo "Parsing instrument object...\n";
+    fwrite(STDERR, "Parsing instrument object...\n");
 
     $output .="testname{@}".$obj->testName."\n";
     $output .="table{@}".$obj->table."\n";
@@ -96,14 +90,18 @@ foreach ($files as $file) {
 
     $formElements = $obj->form->toElementArray();
     $output      .=parseElements($formElements["elements"]);
-    echo "Parsing complete\n---------------------------------------------------\n\n";
+    fwrite(STDERR, "Parsing complete\n---------------------------------------------------\n\n");
 }
 if (empty($output)) {
-    echo "Nothing to output, 'ip_output.txt' not created\n";
+    fwrite(STDERR, "Nothing to output, 'ip_output.txt' not created\n");
 } else {
-    $fp =fopen("ip_output.txt", "w");
-    fwrite($fp, $output);
-    fclose($fp);
+    if($stdout) {
+        fwrite(STDOUT, $output);
+    } else {
+        $fp =fopen("ip_output.txt", "w");
+        fwrite($fp, $output);
+        fclose($fp);
+    }
 }
 
 /**
@@ -225,11 +223,11 @@ function parseElements($elements, $groupLabel = "")
         case "file":
         case "hidden":
             // skip because it's useless
-            echo "SKIP: skipping quickform element type: ".$element['type']."\n";
+            fwrite(STDERR, "SKIP: skipping quickform element type: ".$element['type']."\n");
             break;
 
         default:
-            echo "WARNING:  Unknown form element type: ".$element['type']."\n";
+            fwrite(STDERR, "WARNING:  Unknown form element type: ".$element['type']."\n");
             break;
         }
     }
