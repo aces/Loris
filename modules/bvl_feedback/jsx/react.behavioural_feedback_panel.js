@@ -7,6 +7,8 @@ import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/bvl_feedback.json';
+import frStrings from '../locale/fr/LC_MESSAGES/bvl_feedback.json';
+
 import '../css/bvl_feedback_panel.css';
 
 /**
@@ -20,6 +22,7 @@ class SliderPanel extends Component {
   constructor(props) {
     super(props);
     i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
   }
 
   /**
@@ -65,6 +68,7 @@ class FeedbackPanelContent extends Component {
   constructor(props) {
     super(props);
     i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       currentEntryToggled: null,
     };
@@ -213,6 +217,7 @@ class FeedbackPanelRow extends Component {
   constructor(props) {
     super(props);
     i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       threadEntriesToggled: this.props.status === 'opened' ? true : false,
       threadEntriesLoaded: [],
@@ -499,6 +504,7 @@ class CommentEntryForm extends Component {
   constructor(props) {
     super(props);
     i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       value: props.value ? props.value : '',
       entryID: -1,
@@ -673,6 +679,7 @@ class NewThreadPanel extends Component {
   constructor(props) {
     super(props);
     i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       textValue: '',
       message: '',
@@ -879,6 +886,7 @@ class FeedbackSummaryPanel extends Component {
   constructor(props) {
     super(props);
     i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       summary: null,
     };
@@ -973,6 +981,7 @@ class FeedbackPanel extends Component {
   constructor(props) {
     super(props);
     i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       threads: [],
       summary: null,
