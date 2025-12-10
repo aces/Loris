@@ -201,14 +201,13 @@ class RedcapMapper
     }
 
     /**
-     * Get the REDCap event associated with the arm and event names of a  REDCap
-     * visit mapping configuration node.
+     * Get the REDCap event associated with a REDCap visit mapping configuration
+     * node.
      *
      * @param RedcapConfigVisit $visit_config A REDCap visit mapping configuration
      *                                        node.
      *
-     * @return RedcapEvent The REDCap event associated with the REDCap visit
-     *                     mapping configuration node.
+     * @return RedcapEvent The associated REDCap event.
      */
     public function getVisitConfigEvent(
         RedcapConfigVisit $visit_config,
