@@ -38,6 +38,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/new_profile/locale/hi/LC_MESSAGES/new_profile.po \
 	modules/new_profile/locale/es/LC_MESSAGES/new_profile.po \
 	modules/dqt/locale/ja/LC_MESSAGES/dqt.po \
+	modules/bvl_feedback/locale/fr/LC_MESSAGES/bvl_feedback.po \
 	modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po \
 	modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.po \
 	modules/instruments/locale/fr/LC_MESSAGES/instruments.po \
@@ -72,6 +73,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/instrument_builder/locale/fr/LC_MESSAGES/instrument_builder.po \
 	modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po \
 	modules/instrument_builder/locale/hi/LC_MESSAGES/instrument_builder.po \
+	modules/document_repository/locale/fr/LC_MESSAGES/document_repository.po \
 	modules/document_repository/locale/ja/LC_MESSAGES/document_repository.po \
 	modules/document_repository/locale/hi/LC_MESSAGES/document_repository.po \
 	modules/conflict_resolver/locale/fr/LC_MESSAGES/conflict_resolver.po \
@@ -83,8 +85,10 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/create_timepoint/locale/fr/LC_MESSAGES/create_timepoint.po \
 	modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po \
 	modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po \
+	modules/brainbrowser/locale/fr/LC_MESSAGES/brainbrowser.po \
 	modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po \
 	modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po \
+	modules/dataquery/locale/fr/LC_MESSAGES/dataquery.po \
 	modules/dataquery/locale/ja/LC_MESSAGES/dataquery.po \
 	modules/dataquery/locale/hi/LC_MESSAGES/dataquery.po \
 	modules/issue_tracker/locale/fr/LC_MESSAGES/issue_tracker.po \
@@ -96,6 +100,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/data_release/locale/fr/LC_MESSAGES/data_release.po \
 	modules/data_release/locale/ja/LC_MESSAGES/data_release.po \
 	modules/data_release/locale/hi/LC_MESSAGES/data_release.po \
+	modules/electrophysiology_uploader/locale/fr/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/electrophysiology_uploader/locale/ja/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/electrophysiology_uploader/locale/hi/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po \
