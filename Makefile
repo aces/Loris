@@ -19,6 +19,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/statistics/locale/fr/LC_MESSAGES/statistics.po \
 	modules/statistics/locale/ja/LC_MESSAGES/statistics.po \
 	modules/server_processes_manager/locale/ja/LC_MESSAGES/server_processes_manager.po \
+	modules/module_manager/locale/fr/LC_MESSAGES/module_manager.po \
 	modules/module_manager/locale/ja/LC_MESSAGES/module_manager.po \
 	modules/module_manager/locale/hi/LC_MESSAGES/module_manager.po \
 	modules/configuration/locale/ja/LC_MESSAGES/configuration.po \
@@ -57,13 +58,16 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/schedule_module/locale/fr/LC_MESSAGES/schedule_module.po \
 	modules/schedule_module/locale/ja/LC_MESSAGES/schedule_module.po \
 	modules/schedule_module/locale/hi/LC_MESSAGES/schedule_module.po \
+	modules/imaging_uploader/locale/fr/LC_MESSAGES/imaging_uploader.po \
 	modules/imaging_uploader/locale/ja/LC_MESSAGES/imaging_uploader.po \
 	modules/imaging_uploader/locale/hi/LC_MESSAGES/imaging_uploader.po \
 	modules/next_stage/locale/fr/LC_MESSAGES/next_stage.po \
 	modules/next_stage/locale/ja/LC_MESSAGES/next_stage.po \
 	modules/next_stage/locale/es/LC_MESSAGES/next_stage.po \
+	modules/examiner/locale/fr/LC_MESSAGES/examiner.po \
 	modules/examiner/locale/ja/LC_MESSAGES/examiner.po \
 	modules/examiner/locale/hi/LC_MESSAGES/examiner.po \
+	modules/login/locale/fr/LC_MESSAGES/login.po \
 	modules/login/locale/ja/LC_MESSAGES/login.po \
 	modules/instrument_builder/locale/fr/LC_MESSAGES/instrument_builder.po \
 	modules/instrument_builder/locale/ja/LC_MESSAGES/instrument_builder.po \
@@ -96,6 +100,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/electrophysiology_uploader/locale/hi/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po \
 	modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.po \
+	modules/battery_manager/locale/fr/LC_MESSAGES/battery_manager.po \
 	modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po \
 	modules/battery_manager/locale/hi/LC_MESSAGES/battery_manager.po \
 	modules/imaging_qc/locale/ja/LC_MESSAGES/imaging_qc.po \
@@ -106,8 +111,10 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/publication/locale/ja/LC_MESSAGES/publication.po \
 	modules/publication/locale/hi/LC_MESSAGES/publication.po \
 	modules/publication/locale/en/LC_MESSAGES/publication.po \
+	modules/dashboard/locale/fr/LC_MESSAGES/dashboard.po \
 	modules/dashboard/locale/ja/LC_MESSAGES/dashboard.po \
 	modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.po \
+	modules/imaging_browser/locale/fr/LC_MESSAGES/imaging_browser.po \
 	modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po \
 	modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.po \
 	modules/help_editor/locale/fr/LC_MESSAGES/help_editor.po \
@@ -121,7 +128,7 @@ all: node_modules locales VERSION vendor
 	npm run build
 
 %.mo: %.po
-	msgfmt -o $@ $<
+	msgfmt --use-fuzzy -o $@ $<
 
 %.json: %.po
 	npx i18next-conv -l UNUSED -t $@ -s $< --compatibilityJSON v4

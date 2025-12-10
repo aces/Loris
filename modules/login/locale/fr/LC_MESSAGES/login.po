@@ -1,0 +1,159 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 16:40-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Login"
+msgstr "Connexion"
+
+#, fuzzy
+msgid "Login to LORIS"
+msgstr "Connectez-vous à LORIS"
+
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié ?"
+
+msgid "Request Account"
+msgstr "Demander un compte"
+
+#, fuzzy
+msgid "Multifactor authentication required"
+msgstr "Authentification multifactorielle requise"
+
+#, fuzzy
+msgid "Enter the code from your authenticator app below to proceed."
+msgstr ""
+"Entrez le code de votre application d'authentification ci-dessous pour "
+"continuer."
+
+#, fuzzy
+msgid "Data in LORIS:"
+msgstr "Données dans LORIS :"
+
+#, fuzzy
+msgid ""
+"Please enter your username below, and a new password will be sent to you."
+msgstr ""
+"Veuillez saisir votre nom d'utilisateur ci-dessous, et un nouveau mot de "
+"passe vous sera envoyé."
+
+msgid "Back to login page"
+msgstr "Retour à la page de connexion"
+
+msgid "Reset Password"
+msgstr "Réinitialiser le mot de passe"
+
+msgid "Thank you!"
+msgstr "Merci !"
+
+#, fuzzy
+msgid "Password reset. You should receive an email within a few minutes."
+msgstr ""
+"Réinitialisation du mot de passe. Vous devriez recevoir un e-mail dans "
+"quelques minutes."
+
+#, fuzzy
+msgid "Return to Login Page"
+msgstr "Retour à la page de connexion"
+
+#, fuzzy
+msgid "Choose your site:"
+msgstr "Choisissez votre site :"
+
+#, fuzzy
+msgid "Choose your project:"
+msgstr "Choisissez votre projet :"
+
+msgid "Radiologist"
+msgstr "Radiologue"
+
+#, fuzzy
+msgid "Examiner role"
+msgstr "Rôle de l'examinateur"
+
+#, fuzzy
+msgid ""
+"Please fill in the form below to request a LORIS account. We will contact "
+"you once your account has been approved."
+msgstr ""
+"Veuillez remplir le formulaire ci-dessous pour demander un compte LORIS. "
+"Nous vous contacterons dès que votre compte aura été approuvé."
+
+#, fuzzy
+msgid "Your request for an account has been received successfully."
+msgstr "Votre demande d'ouverture de compte a bien été reçue."
+
+#, fuzzy
+msgid "Please contact your project administrator to activate this account."
+msgstr ""
+"Veuillez contacter votre administrateur de projet pour activer ce compte."
+
+#, fuzzy
+msgid "View {{policy}}"
+msgstr "Afficher {{policy}}"
+
+#, fuzzy
+msgid "{{title}} not accepted"
+msgstr "{{title}} non accepté"
+
+#, fuzzy
+msgid "You must accept the {{title}} before requesting an account."
+msgstr "Vous devez accepter le {{title}} avant de demander un compte."
+
+# Hack for the login page.
+# These strings come from the database and are
+# the defaults in the login_summary_statistics table
+#, fuzzy
+msgid "EEG Recording"
+msgid_plural "EEG Recordings"
+msgstr[0] "Enregistrement EEG"
+msgstr[1] "Enregistrements EEG"
+
+#, fuzzy
+msgid "Female Participant"
+msgid_plural "Female Participants"
+msgstr[0] "Participante"
+msgstr[1] "Participantes"
+
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "Instrument"
+msgstr[1] "Instruments"
+
+#, fuzzy
+msgid "Male Participant"
+msgid_plural "Male Participants"
+msgstr[0] "Participant masculin"
+msgstr[1] "Participants masculins"
+
+msgid "Scan"
+msgid_plural "Scans"
+msgstr[0] "Scanner"
+msgstr[1] "Scans"
+
+msgid "Site"
+msgid_plural "Sites"
+msgstr[0] "Site"
+msgstr[1] "Sites"
+
+msgid "Visit"
+msgid_plural "Visits"
+msgstr[0] "Visite"
+msgstr[1] "Visites"
