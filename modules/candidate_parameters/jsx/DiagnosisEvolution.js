@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
-import StaticDataTable from 'jsx/StaticDataTable';
+import DataTable from 'jsx/DataTable';
 import {
   FormElement,
   StaticElement,
@@ -222,20 +222,20 @@ class DiagnosisEvolution extends Component {
           {latestDiagnosis}
           {latestConfirmedDiagnosis}
           <h3>Diagnosis Evolution</h3>
-          <StaticDataTable
-            Headers={[
-              'Trajectory Name',
-              'Project',
-              'Configured Order',
-              'Visit',
-              'Instrument',
-              'Source Field(s)',
-              'Diagnosis',
-              'Confirmed',
-              'Last Update',
+          <DataTable
+            fields={[
+              {label: 'Trajectory Name', show: true},
+              {label: 'Project', show: true},
+              {label: 'Configured Order', show: true},
+              {label: 'Visit', show: true},
+              {label: 'Instrument', show: true},
+              {label: 'Source Field(s)', show: true},
+              {label: 'Diagnosis', show: true},
+              {label: 'Confirmed', show: true},
+              {label: 'Last Update', show: true},
             ]}
-            Data={this.formattedDiagnosisEvolution()}
-            Hide={{rowsPerPage: true, downloadCSV: true}}
+            data={this.formattedDiagnosisEvolution()}
+            hide={{rowsPerPage: true, downloadCSV: true}}
           />
         </FormElement>
       </div>

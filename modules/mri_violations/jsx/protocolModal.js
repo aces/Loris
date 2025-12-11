@@ -1,5 +1,5 @@
 import Modal from 'Modal';
-import StaticDataTable from 'StaticDataTable';
+import DataTable from 'DataTable';
 
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
@@ -295,20 +295,20 @@ function ProtocolCheckViolationModal(props) {
     title={t('Violations for SeriesUID', {ns: 'mri_violations'})
     + ' ' + props.SeriesUID}>
     <h2>{t('Scan Problems', {ns: 'mri_violations'})}</h2>
-    <StaticDataTable Headers={[
-      t('Patient Name', {ns: 'mri_violations'}),
-      t('DCCID', {ns: 'loris'}),
-      t('Visit', {ns: 'loris'}),
-      t('Scan Type', {ns: 'mri_violations'}),
-      t('Protocol Group', {ns: 'mri_violations'}),
-      t('Severity', {ns: 'mri_violations'}),
-      t('Header', {ns: 'mri_violations'}),
-      t('Value', {ns: 'mri_violations'}),
-      t('Valid Values', {ns: 'mri_violations'}),
+    <DataTable fields={[
+      {label: t('Patient Name', {ns: 'mri_violations'}), show: true},
+      {label: t('DCCID', {ns: 'loris'}), show: true},
+      {label: t('Visit', {ns: 'loris'}), show: true},
+      {label: t('Scan Type', {ns: 'mri_violations'}), show: true},
+      {label: t('Protocol Group', {ns: 'mri_violations'}), show: true},
+      {label: t('Severity', {ns: 'mri_violations'}), show: true},
+      {label: t('Header', {ns: 'mri_violations'}), show: true},
+      {label: t('Value', {ns: 'mri_violations'}), show: true},
+      {label: t('Valid Values', {ns: 'mri_violations'}), show: true},
     ]}
-    Hide={{rowsPerPage: true, defaultColumn: true}}
+    hide={{rowsPerPage: true, defaultColumn: true}}
     NoDynamicTable={true}
-    Data={data} />
+    data={data} />
   </Modal>;
 }
 ProtocolCheckViolationModal.propTypes = {
