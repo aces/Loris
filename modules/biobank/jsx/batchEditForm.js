@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 import SpecimenProcessForm from './processForm';
 import {VerticalTabs, TabPane} from 'Tabs';
 import Modal from 'Modal';
@@ -209,8 +210,8 @@ class BatchEditForm extends React.PureComponent {
     if (!isEmpty(list) &&
       (specimen.typeId !== current.typeId)) {
       Swal.fire(
-        'Oops!',
-        'Specimens must be of the same Type and Center',
+        this.props.t('Oops!', {ns: 'biobank'}),
+        this.props.t('Specimens must be of the same Type and Center', {ns: 'biobank'}),
         'warning'
       );
       return Promise.reject();
@@ -254,14 +255,14 @@ class BatchEditForm extends React.PureComponent {
       <EditForm>
         <TextboxElement
           name='quantity'
-          label='Quantity'
+          label={this.props.t('Quantity', {ns: 'biobank'})}
           value={this.state.specimen.quantity || null}
           errorMessage={errors.specimen.quantity}
           onUserInput={this.setSpecimen}
         />
         <SelectElement
           name='unitId'
-          label='Unit'
+          label={this.props.t('Unit', {ns: 'biobank'})}
           value={this.state.specimen.unitId || null}
           options={units}
           errorMessage={errors.specimen.unitId}
@@ -270,7 +271,7 @@ class BatchEditForm extends React.PureComponent {
         {options.specimen.types[current.typeId].freezeThaw == 1 ? (
           <TextboxElement
             name='fTCycle'
-            label='Freeze-Thaw Cycle'
+            label={this.props.t('Freeze-Thaw Cycle', {ns: 'biobank'})}
             value={this.state.specimen.fTCycle}
             onUserInput={this.setSpecimen}
             errorMessage={errors.specimen.fTCycle}
@@ -279,7 +280,7 @@ class BatchEditForm extends React.PureComponent {
         ) : null}
         <SelectElement
           name='typeId'
-          label='Container Type'
+          label={this.props.t('Container Type', {ns: 'biobank'})}
           value={this.state.container.typeId}
           options={containerTypes}
           errorMessage={errors.container.typeId}
@@ -287,14 +288,14 @@ class BatchEditForm extends React.PureComponent {
         />
         <TextboxElement
           name='lotNumber'
-          label='Lot Number'
+          label={this.props.t('Lot Number', {ns: 'biobank'})}
           value={this.state.container.lotNumber}
           errorMessage={errors.container.lotNumber}
           onUserInput={this.setContainer}
         />
         <SelectElement
           name='statusId'
-          label='Status'
+          label={this.props.t('Status', {ns: 'biobank'})}
           value={this.state.container.statusId}
           options={stati}
           errorMessage={errors.container.statusId}
@@ -306,7 +307,7 @@ class BatchEditForm extends React.PureComponent {
     const collectionForm = this.state.editable.collection ? (
       <div>
         <StaticElement
-          label='Protocol'
+          label={this.props.t('Protocol', {ns: 'biobank'})}
           text={options.specimen.protocols[collection.protocolId].label}
         />
         <SpecimenProcessForm
@@ -331,7 +332,7 @@ class BatchEditForm extends React.PureComponent {
     const preparationForm = this.state.editable.preparation ? (
       <div>
         <StaticElement
-          label='Protocol'
+          label={this.props.t('Protocol', {ns: 'biobank'})}
           text={options.specimen.protocols[preparation.protocolId].label}
         />
         <EditForm>
@@ -376,14 +377,14 @@ class BatchEditForm extends React.PureComponent {
 
     const tabList = [{
       id: 'global',
-      label: 'Global',
+      label: this.props.t('Global', {ns: 'biobank'}),
       error: !isEmpty(errors.specimen) || !isEmpty(errors.container),
       content: globalForm,
     }];
     if (this.state.show.collection) {
       tabList.push({
         id: 'collection',
-        label: 'Collection',
+        label: this.props.t('Collection', {ns: 'biobank'}),
         error: !isEmpty(errors.specimen.collection),
         content: collectionForm,
       });
@@ -391,7 +392,7 @@ class BatchEditForm extends React.PureComponent {
     if (this.state.show.preparation) {
       tabList.push({
         id: 'preparation',
-        label: 'Preparation',
+        label: this.props.t('Preparation', {ns: 'biobank'}),
         content: preparationForm,
       });
     }
@@ -465,11 +466,11 @@ class BatchEditForm extends React.PureComponent {
     const editForms = Object.keys(list).length > 1 ? (
       <div className='form-top'>
         <StaticElement
-          label='Editing Note'
-          text="Select a form for the list to
+          label={this.props.t('Editing Note', {ns: 'biobank'})}
+          text={this.props.t(`Select a form for the list to
                 edit the specimen values. Any previous value associated
                 with a Specimen for a given field will be
-                overwritten if one is added on this form."
+                overwritten if one is added on this form.`, {ns: 'biobank'})}
         />
         <VerticalTabs
           tabs={tabList}
@@ -483,7 +484,7 @@ class BatchEditForm extends React.PureComponent {
 
     return (
       <Modal
-        title='Edit Specimens'
+        title={this.props.t('Edit Specimens', {ns: 'biobank'})}
         show={this.props.show}
         onClose={handleClose}
         onSubmit={Object.keys(list).length > 1 && handleSubmit}
@@ -492,9 +493,9 @@ class BatchEditForm extends React.PureComponent {
         <div className='row'>
           <div className='col-sm-10 col-sm-offset-1'>
             <StaticElement
-              label='Editing Note'
-              text="Select or Scan the specimens to be edited. Specimens
-                    must share the same Type."
+              label={this.props.t('Editing Note', {ns: 'biobank'})}
+              text={this.props.t(`Select or Scan the specimens to be edited. Specimens
+                    must share the same Type.`, {ns: 'biobank'})}
             />
             <StaticElement
               label='Specimen Type'
@@ -513,7 +514,7 @@ class BatchEditForm extends React.PureComponent {
                 />
                 <SearchableDropdown
                   name={'poolId'}
-                  label={'Pool'}
+                  label={this.props.t('Pool', {ns: 'biobank'})}
                   onUserInput={handlePoolInput}
                   options={pools}
                   value={poolId}
@@ -536,6 +537,7 @@ class BatchEditForm extends React.PureComponent {
 }
 
 BatchEditForm.propTypes = {
+  t: PropTypes.func.isRequired,
   data: PropTypes.shape({
     containers: PropTypes.arrayOf(
       PropTypes.shape({
@@ -620,7 +622,7 @@ class BarcodeInput extends React.PureComponent {
     return (
       <TextboxElement
         name={'barcode'}
-        label={'Specimen'}
+        label={this.props.t('Specimen', {ns: 'biobank'})}
         value={this.state.barcode}
         onUserInput={handleInput}
       />
@@ -636,6 +638,7 @@ class BarcodeInput extends React.PureComponent {
 }
 
 BarcodeInput.propTypes = {
+  t: PropTypes.func.isRequired,
   data: PropTypes.shape({
     containers: PropTypes.arrayOf(
       PropTypes.shape({
@@ -701,4 +704,4 @@ function EditForm({children}) {
   });
 }
 
-export default BatchEditForm;
+export default withTranslation(['biobank', 'loris'])(BatchEditForm);
