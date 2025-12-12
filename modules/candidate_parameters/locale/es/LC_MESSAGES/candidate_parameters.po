@@ -13,217 +13,217 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Candidate Parameters"
-msgstr ""
+msgstr "Parámetros del Candidato"
 
 msgid "Caveat"
-msgstr ""
+msgstr "Advertencia"
 
 msgid "Return to timepoint list"
-msgstr ""
+msgstr "Volver a la lista the Puntos en el Tiempo"
 
-# tabs
+# tabs 
 msgid "Candidate Information"
-msgstr ""
+msgstr "Información del Candidato"
 
 msgid "Participant Status"
-msgstr ""
+msgstr "Estado del Participante"
 
 msgid "Diagnosis Evolution"
-msgstr ""
+msgstr "Evolución del Diagnóstico"
 
 msgid "Proband Information"
-msgstr ""
+msgstr "Información de la Probanda"
 
 msgid "Family Information"
-msgstr ""
+msgstr "Información Familiar"
 
 msgid "Consent Status"
-msgstr ""
+msgstr "Estado del consentimiento"
 
 # Candidate Information tab
 msgid "Caveat Emptor Flag for Candidate"
-msgstr ""
+msgstr "Alerta sobre el Candidato"
 
 msgid "Reason for Caveat Emptor Flag"
-msgstr ""
+msgstr "Razón de la Alerta sobre el Candidato"
 
 msgid "If Other, please specify"
-msgstr ""
+msgstr "Si otra, por favor especifique"
 
 # Participant Status tab
 msgid "Specify Reason"
-msgstr ""
+msgstr "Especifique la razón"
 
 msgid "Comments"
-msgstr ""
+msgstr "Comentarios"
 
 # DoB tab
 msgid "Disclaimer:"
-msgstr ""
+msgstr "Descargo de responsabilidad:"
 
 msgid "Any changes to the date of birth requires an administrator to run the fix_candidate_age script."
-msgstr ""
+msgstr "Todo cambio en la Fecha de Nacimiento requiere que un administrador corra el script fix_candidate_age."
 
 msgid "Date of birth cannot be later than today!"
-msgstr ""
+msgstr "La Fecha de Nacimiento no puede ser posterior al día de hoy!"
 
 msgid "Date of birth updated!"
-msgstr ""
+msgstr "Fecha de Nacimiento actualizada!"
 
 msgid "Something went wrong."
-msgstr ""
+msgstr "Algo salió mal."
 
 # DoD tab
 msgid "Any changes to the date of death requires an administrator to run the fix_candidate_age script."
-msgstr ""
+msgstr "Todo cambio en la Fecha de Defunción requiere que un administrador corra el script fix_candidate_age."
 
 msgid "Date Of Death:"
-msgstr ""
+msgstr "Fecha de Defunción"
 
 msgid "Invalid date"
-msgstr ""
+msgstr "Fecha no válida"
 
 msgid "Date of death cannot be later than today!"
-msgstr ""
+msgstr "La fecha de fallecimiento no puder ser major que la fecha de hoy en día!"
 
 msgid "Date of death must be after date of birth!"
-msgstr ""
+msgstr "La fecha de fallecimiento debe ser posterior a la fecha de nacimiento!"
 
 msgid "Date of death updated!"
-msgstr ""
+msgstr "Fecha de fallecimiento actualizada!"
 
 # Diagnosis Evolution tab
 msgid "Trajectory Name"
-msgstr ""
+msgstr "Nombre de la trajectoria"
 
 msgid "Configured Order"
-msgstr ""
+msgstr "Orden configurado"
 
 msgid "Source Fields"
-msgstr ""
+msgstr "Campos Fuente"
 
 msgid "Diagnosis"
-msgstr ""
+msgstr "Diagnóstico"
 
 msgid "Confirmed"
-msgstr ""
+msgstr "Confirmado"
 
 msgid "Last Update"
-msgstr ""
+msgstr "Última actualización"
 
 # ProbandInfo Evolution tab
-msgid "'An error occurred when loading the form!'"
-msgstr ""
+msgid "An error occurred when loading the form!"
+msgstr "Un error ocurrió mientras se cargaba el formulario!"
 
 msgid "DOB do not match!"
-msgstr ""
+msgstr "Las fechas de nacimiento no son iguales!"
 
 msgid "Proband date of birth cannot be later than today!"
-msgstr ""
+msgstr "La fecha de nacimiento de la Probanda no puede ser posterior a hoy!"
 
 msgid "Update Successful!"
-msgstr ""
+msgstr "Actualización exitosa!"
 
 msgid "Failed to update!"
-msgstr ""
+msgstr "Actualización fallida!"
 
 msgid "Proband Sex"
-msgstr ""
+msgstr "Sexo del probanda"
 
 msgid "DoB Proband"
-msgstr ""
+msgstr "Fecha de nacimiento del probanda"
 
 msgid "Confirm DoB Proband"
-msgstr ""
+msgstr "Confirme la fecha de nacimiento del probanda"
 
 msgid "Age Difference (months)"
-msgstr ""
+msgstr "Diferencia de Edad (meses)"
 
 # FamilyInfo tab
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 msgid "Family Member ID (DCCID)"
-msgstr ""
+msgstr "Identificador del miembro Familiar (CCDID)"
 
 msgid "Relation Type"
-msgstr ""
+msgstr "Tipo de relación"
 
 msgid "Full Sibling"
-msgstr ""
+msgstr "Hermano"
 
 msgid "Half Sibling"
-msgstr ""
+msgstr "Medio hermano"
 
 msgid "First Cousin"
-msgstr ""
+msgstr "Primo hermano"
 
 msgid "Delete"
-msgstr ""
+msgstr "Borrar"
 
 # ConsentStatus tab
 msgid "Response"
-msgstr ""
+msgstr "Respuesta"
 
 msgid "Date of Response"
-msgstr ""
+msgstr "Fecha de la respuesta"
 
 msgid "Confirmation Date of Response"
-msgstr ""
+msgstr "Confirmación de la Fecha de la respuesta"
 
 msgid "Date of Withdrawal of Consent"
-msgstr ""
+msgstr "Fecha de revocación del consentimiento"
 
 msgid "Confirmation Date of Withdrawal of Consent"
-msgstr ""
+msgstr "Confirmación de la Fecha de revocación del consentimiento"
 
 msgid "Update successful."
-msgstr ""
+msgstr "Actualización exitosa."
 
 msgid "{{label}} dates do not match!"
-msgstr ""
+msgstr "Las fechas en {{label}} no coinciden!"
 
 msgid "{{label}} date cannot be later than today!"
-msgstr ""
+msgstr "La fecha en {{label}} no puede ser posterior a hoy!"
 
 msgid "{{label}} withdrawal dates do not match!"
-msgstr ""
+msgstr "Las fechas de revocación de {{label}} no coinciden!"
 
 msgid "{{label}} withdrawal date cannot be later than today!"
-msgstr ""
+msgstr "La fecha de revocación de {{label}} no puede ser posterior a hoy!"
 
 msgid "{{label}} withdrawal date cannot be earlier than response date!"
-msgstr ""
+msgstr "La fecha de revocación de {{label}} no puede ser anterior a la fecha del consentimiento!"
 
 msgid "Hide Consent History"
-msgstr ""
+msgstr "Ocultar Histórico de Consentimiento"
 
 msgid "Show Consent History"
-msgstr ""
+msgstr "Mostrar Histórico de Consentimiento"
 
 msgid "Date of Consent to {{consentDate}}"
-msgstr ""
+msgstr "Fecha del consentimiento a {{consentDate}}"
 
 msgid "Date of Consent Withdrawal to {{withdrawal}}"
-msgstr ""
+msgstr "Fecha de la revocación del consentimiento a {{withdrawal}}"
 
 msgid "updated for {{label}}:"
-msgstr ""
+msgstr "actualizado para {{label}}:"
 
 msgid "Status to "
-msgstr ""
+msgstr "Estado a "
 
 msgid " Status: "
-msgstr ""
+msgstr " Estado: "
 
 msgid "Details: "
-msgstr ""
+msgstr "Detalles: "
 
 msgid "Comments: "
-msgstr ""
+msgstr "Comentarios: "
