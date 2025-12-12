@@ -13,6 +13,7 @@
 namespace LORIS\redcap;
 
 use \LORIS\LorisInstance;
+use LORIS\redcap\client\models\RedcapDictionaryRecord;
 use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
@@ -350,5 +351,116 @@ class RedcapQueries
     public function releaseNotificationLock()
     {
         $this->_db->run("UNLOCK TABLES");
+    }
+
+    /**
+     * Tells if the instrument name is registered in the REDCap dictionary.
+     *
+     * @param string $instrument_name the instrument name to search
+     *
+     * @return bool true if the instrument name exists, else false.
+     */
+    public function instrumentExistsInREDCapDictionary(string $instrument_name): bool
+    {
+        $dictionary_entry = $this->_db->pselectOne(
+            "SELECT DISTINCT FormName
+            FROM redcap_dictionary
+            WHERE FormName = :fn
+            ",
+            ["fn" => $instrument_name]
+        );
+        return $dictionary_entry !== null;
+    }
+
+    /**
+     * Get a specific REDCap Dictionary entry.
+     *
+     * @param string $form_name  the searched form name.
+     * @param string $field_name the searched field name.
+     *
+     * @return client\models\RedcapDictionaryRecord|null
+     */
+    public function getDictionaryEntry(
+        string $form_name,
+        string $field_name
+    ): ?client\models\RedcapDictionaryRecord {
+        $dictionary_entry = $this->_db->pselectRow(
+            "SELECT
+                FieldName,
+                FormName,
+                SectionHeader,
+                FieldType,
+                FieldLabel,
+                Choices,
+                FieldNote,
+                TextValidationType,
+                TextValidationMin,
+                TextValidationMax,
+                Identifier,
+                BranchingLogic,
+                FieldRequired,
+                CustomAlignment,
+                QuestionNumber,
+                MatrixGroupName,
+                MatrixRanking,
+                FieldAnnotation
+            FROM redcap_dictionary
+            WHERE FormName = :form_name
+                AND FieldName = :field_name
+            ",
+            [
+                "form_name"  => $form_name,
+                "field_name" => $field_name
+            ]
+        );
+
+        if ($dictionary_entry === null) {
+            return null;
+        }
+
+        // dictionary props
+        $clean_props = array_combine(
+            RedcapDictionaryRecord::getHeaders(),
+            array_values($dictionary_entry)
+        );
+
+        // build the object based on props
+        return new RedcapDictionaryRecord($clean_props, false);
+    }
+
+    /**
+     * Insert a REDCap dictionary entry.
+     *
+     * @param RedcapDictionaryRecord $dictionary_entry the dicitonary entry to insert
+     *
+     * @return void
+     */
+    public function insertREDCapDictionaryEntry(
+        RedcapDictionaryRecord $dictionary_entry
+    ): void {
+        $this->_db->insert(
+            'redcap_dictionary',
+            $dictionary_entry->toDatabaseArray()
+        );
+    }
+
+    /**
+     * Update a REDCap dictionary entry.
+     *
+     * @param RedcapDictionaryRecord $dictionary_entry the dicitonary entry to insert
+     *
+     * @return void
+     */
+    public function updateREDCapDictionaryEntry(
+        RedcapDictionaryRecord $dictionary_entry
+    ): void {
+        $this->_db->update(
+            'redcap_dictionary',
+            $dictionary_entry->toDatabaseArray(),
+            [
+                "FormName"  => $dictionary_entry->form_name,
+                "FieldName" => $dictionary_entry->field_name
+            ]
+        );
     }
 }

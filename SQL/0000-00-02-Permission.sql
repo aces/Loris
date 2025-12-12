@@ -166,6 +166,7 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('dicom_archive_nosessionid', 'DICOMs with no session ID', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
     ('dicom_archive_view_ownsites', 'DICOMs - Own Sites', (SELECT ID FROM modules WHERE Name='dicom_archive'),2),
     ('view_instrument_data', 'Data', (SELECT ID FROM modules WHERE Name = 'instruments'),2),
+    ('redcap_ui_view','REDCap GUI - View',(SELECT ID FROM modules WHERE Name ='redcap'),2),
     ('biobank_specimen_view','View Specimen Data',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
     ('biobank_specimen_create','Create Specimens',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
     ('biobank_specimen_update','Process Specimens',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
@@ -289,7 +290,8 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1),
   ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1),
   ((SELECT permID FROM permissions WHERE code = 'dqt_view'),1),
-  ((SELECT permID FROM permissions WHERE code = 'dqt_view'),8);
+  ((SELECT permID FROM permissions WHERE code = 'dqt_view'),8),
+  ((SELECT permID FROM permissions WHERE code = 'redcap_ui_view'),1);
 
 
 -- permissions for each notification module
