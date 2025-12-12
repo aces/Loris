@@ -277,11 +277,6 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'imaging_uploader_nosessionid'),1),
   ((SELECT permID FROM permissions WHERE code = 'dicom_archive_nosessionid'),1),
   ((SELECT permID FROM permissions WHERE code = 'dicom_archive_view_ownsites'),1),
-<<<<<<< HEAD
-  ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1),
-  ((SELECT permID FROM permissions WHERE code = 'redcap_ui_view'),1)
-  ;
-=======
   ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_view'),1),
   ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_create'),2),
   ((SELECT permID FROM permissions WHERE code = 'biobank_specimen_update'),3),
@@ -295,8 +290,8 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1),
   ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1),
   ((SELECT permID FROM permissions WHERE code = 'dqt_view'),1),
-  ((SELECT permID FROM permissions WHERE code = 'dqt_view'),8);
->>>>>>> main
+  ((SELECT permID FROM permissions WHERE code = 'dqt_view'),8),
+  ((SELECT permID FROM permissions WHERE code = 'redcap_ui_view'),1);
 
 
 -- permissions for each notification module
