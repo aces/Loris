@@ -63,7 +63,7 @@ class Dictionary extends \DataFrameworkMenu
             $cohort_options[$name] = $name;
         }
         $visit_options = [];
-        foreach (\Utility::getVisitList() as $visit) {
+        foreach ($user->getVisits() as $visit) {
             $visit_options[$visit] = $visit;
         }
         return [
@@ -114,7 +114,10 @@ class Dictionary extends \DataFrameworkMenu
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Data Dictionary', "/$this->name")
+            new \LORIS\Breadcrumb(
+                dgettext('dictionary', 'Data Dictionary'),
+                "/$this->name"
+            )
         );
     }
 

@@ -21,3 +21,155 @@ msgstr ""
 msgid "Document Repository"
 msgstr ""
 
+msgid "Document Repository Notifications"
+msgstr ""
+
+msgid "Upload files"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Search for site"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Comments"
+msgstr ""
+
+msgid "Restrict access to the file?"
+msgstr ""
+
+msgid "File(s) to upload"
+msgstr ""
+
+msgid "Upload File(s)"
+msgstr ""
+
+msgid "Uploading..."
+msgstr ""
+
+msgid "Upload Successful!"
+msgstr ""
+
+msgid "Upload Incomplete"
+msgstr ""
+
+msgid "Error reading response"
+msgstr ""
+
+msgid "Please report the issue or contact your administrator"
+msgstr ""
+
+msgid "File too large"
+msgstr ""
+
+msgid "Could not upload file"
+msgstr ""
+
+msgid "Something went wrong"
+msgstr ""
+
+msgid "Add Category"
+msgstr ""
+
+msgid "Add a category"
+msgstr ""
+
+msgid "Category Name"
+msgstr ""
+
+msgid "Parent"
+msgstr ""
+
+msgid "Category added successfully!"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Edit Document Repository File"
+msgstr ""
+
+msgid "File updated successfully!"
+msgstr ""
+
+msgid "Update File"
+msgstr ""
+
+msgid "Edit Category"
+msgstr ""
+
+msgid "Update Category"
+msgstr ""
+
+msgid "Change Name of a category"
+msgstr ""
+
+msgid "Category Name:"
+msgstr ""
+
+msgid "New Name for Category"
+msgstr ""
+
+msgid "New Parent:"
+msgstr ""
+
+msgid "Cannot be equal to itself"
+msgstr ""
+
+msgid "New parent cannot be equal to itself"
+msgstr ""
+
+msgid "Edit error!"
+msgstr ""
+
+msgid "Edited Successful!"
+msgstr ""
+
+msgid "Delete Category"
+msgstr ""
+
+msgid "Delete a category"
+msgstr ""
+
+msgid "Delete error!"
+msgstr ""
+
+msgid "Delete Successful!"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "File Name"
+msgstr ""
+
+msgid "Uploaded By"
+msgstr ""
+
+msgid "For Site"
+msgstr ""
+
+msgid "File Type"
+msgstr ""
+
+msgid "Date Uploaded"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete File"
+msgstr ""
+
+msgid "Filter globally"
+msgstr ""
+
+msgid "You won't be able to revert this!"
+msgstr ""
+
+msgid "Yes, delete it!"
+msgstr ""

@@ -50,6 +50,11 @@ INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (47,'electrophysiology_upl
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (48,'schedule_module','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (49,'dataquery','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (50,'oidc','N');
+<<<<<<< HEAD
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (51,'redcap','N');
+=======
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (51,'policy_tracker','Y');
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (52,'biobank','Y');
+>>>>>>> main
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

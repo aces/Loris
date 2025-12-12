@@ -21,3 +21,33 @@ msgstr ""
 msgid "Instrument List"
 msgstr "楽器リスト"
 
+msgid "Visit to Site"
+msgstr "現場訪問"
+
+msgid "Within Optimal"
+msgstr "最適な範囲内で"
+
+msgid "Within Permitted"
+msgstr "許可された範囲内"
+
+msgid "Behavioural Battery of Instruments"
+msgstr "行動測定機器"
+
+msgid "The battery has no registered instruments"
+msgstr "バッテリーには登録された機器がありません"
+
+msgid "View Imaging data"
+msgstr "画像データを表示"
+
+msgid "Send TimePoint"
+msgstr "送信タイムポイント"
+
+msgid "No actions"
+msgstr "アクションなし"
+
+msgid "Stage: %s"
+msgstr "ステージ: %s"
+
+msgid "Start %s Stage"
+msgstr "%s ステージを開始"
+

@@ -3,7 +3,7 @@
 /**
  * This file contains code for editing context help section
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -16,7 +16,7 @@ namespace LORIS\help_editor;
 /**
  * This file contains code for editing context help section
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

@@ -15,7 +15,7 @@
  * "Usage: php normalize_mri_protocol_range_data.php [tosql]";
  * "Example: php normalize_mri_protocol_range_data.php tosql";
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

@@ -13,7 +13,7 @@
  *  - Non-unique `Name` values for instrument fields.
  *  - Empty `Name` values for instrument fields.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Main

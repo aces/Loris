@@ -155,16 +155,16 @@ class Imaging_Session_ControlPanel
         $subjectData['has_permission']  = $this->_hasAccess();
         $subjectData['status_options']  = [
             'Unrated' => '',
-            'Pass'    => 'Pass',
-            'Fail'    => 'Fail',
+            'Pass'    => dgettext('loris', 'Pass'),
+            'Fail'    => dgettext('loris', 'Fail'),
         ];
         $subjectData['pending_options'] = [
-            'Y' => 'Yes',
-            'N' => 'No',
+            'Y' => dgettext('loris', 'Yes'),
+            'N' => dgettext('loris', 'No'),
         ];
         $subjectData['caveat_options']  = [
-            'true'  => 'True',
-            'false' => 'False',
+            'true'  => dgettext('loris', 'True'),
+            'false' => dgettext('loris', 'False'),
         ];
 
         $qcstatus = $timePoint->getImagingQC();
@@ -184,6 +184,7 @@ class Imaging_Session_ControlPanel
         $subjectData['prevTimepoint']['URL'] = $NavBar->prevLink();
         return $subjectData;
     }
+
     /**
      * Generates the HTML to display the set of buttons
      * for the timepoint status flags

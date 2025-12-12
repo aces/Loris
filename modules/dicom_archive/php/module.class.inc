@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -60,7 +60,7 @@ class Module extends \Module
         try {
             $this->validateConfig();
         } catch (\ConfigurationException $e) {
-            error_log($e);
+            error_log($e->getMessage());
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
             ))->process(

@@ -4,7 +4,7 @@
  * This class implements a data Instance which represents a single
  * row in the dicom archive menu table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -30,7 +30,6 @@ class DICOMArchiveRowWithoutSession implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
     protected $CreatedBy;
-
 
     /**
      * Create a new DICOMArchiveRow without a session.
@@ -77,6 +76,4 @@ class DICOMArchiveRowWithoutSession implements \LORIS\Data\DataInstance
     {
         return $this->DBRow;
     }
-
-
 }

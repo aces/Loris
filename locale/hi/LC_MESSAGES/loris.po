@@ -1,0 +1,547 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+# Smarty template main.tpl strings
+msgid "LORIS"
+msgstr "लोरिस"
+
+msgid "DEV"
+msgstr "डेव"
+
+msgid "Affiliations"
+msgstr "अफिलिएशन्स"
+
+msgid "Site Affiliation"
+msgstr "साइट अफिलिएशन"
+
+msgid "Site Affiliations"
+msgstr "साइट अफिलिएशन्स"
+
+msgid "Project Affiliation"
+msgstr "प्रोजेक्ट अफिलिएशन"
+
+msgid "Project Affiliations"
+msgstr "प्रोजेक्ट अफिलिएशन्स"
+
+msgid "Log Out"
+msgstr "लॉग आउट"
+
+msgid "My Preferences"
+msgstr "मेरी पसंद"
+
+# Auto extracted strings from PHP
+# Menu categories
+#: modules/configuration/php/module.class.inc:50
+#: modules/help_editor/php/module.class.inc:47
+#: modules/instrument_manager/php/module.class.inc:53
+#: modules/module_manager/php/module.class.inc:50
+#: modules/server_processes_manager/php/module.class.inc:104
+#: modules/survey_accounts/php/module.class.inc:48
+#: modules/user_accounts/php/module.class.inc:53
+msgid "Admin"
+msgstr "प्रशासन"
+#: modules/acknowledgements/php/module.class.inc:54
+#: modules/api_docs/php/module.class.inc:66
+#: modules/battery_manager/php/module.class.inc:55
+#: modules/datadict/php/module.class.inc:49
+#: modules/data_release/php/module.class.inc:56
+#: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr "डेटा शब्दकोश"
+
+#: modules/document_repository/php/module.class.inc:56
+#: modules/instrument_builder/php/module.class.inc:48
+#: modules/issue_tracker/php/module.class.inc:54
+#: modules/schedule_module/php/module.class.inc:49
+msgid "Tools"
+msgstr "उपकरण"
+
+#: modules/behavioural_qc/php/module.class.inc:51
+#: modules/conflict_resolver/php/module.class.inc:83
+#: modules/examiner/php/module.class.inc:50
+#: modules/media/php/module.class.inc:33
+msgid "Clinical"
+msgstr "नैदानिक"
+
+#: modules/dicom_archive/php/module.class.inc:115
+#: modules/imaging_browser/php/module.class.inc:40
+#: modules/imaging_qc/php/module.class.inc:50
+#: modules/imaging_uploader/php/module.class.inc:54
+#: modules/mri_violations/php/module.class.inc:53
+msgid "Imaging"
+msgstr "इमेजिंग"
+
+#: modules/candidate_list/php/module.class.inc:76
+#: modules/new_profile/php/module.class.inc:50
+msgid "Candidate"
+msgid_plural "Candidates"
+msgstr[0] "उम्मीदवार"
+msgstr[1] "उम्मीदवारों"
+
+#: modules/genomic_browser/php/module.class.inc:53
+msgid "Genomics"
+msgstr "जीनोमिक्स"
+
+#: modules/electrophysiology_browser/php/module.class.inc:54
+msgid "Electrophysiology"
+msgstr "इलेक्ट्रोफिजियोलॉजी"
+
+#: modules/dataquery/php/module.class.inc:33
+#: modules/dqt/php/module.class.inc:49
+#: modules/publication/php/module.class.inc:55
+#: modules/statistics/php/module.class.inc:49
+msgid "Reports"
+msgstr "रिपोर्ट्स"
+
+# Common loris terms. Consider moving these to their own textdomain?
+msgid "TimePoint"
+msgstr "टाइमपॉइंट"
+
+msgid "Module"
+msgstr "मॉड्यूल"
+
+# Common select option labels
+msgid "Yes"
+msgstr "हाँ"
+
+msgid "No"
+msgstr "नहीं"
+
+msgid "Browse"
+msgstr "ब्राउज़ करें"
+
+msgid "Submit"
+msgstr "सबमिट करें"
+
+msgid "Upload"
+msgstr "अपलोड करें"
+
+msgid "N/A"
+msgstr "लागू नहीं"
+
+msgid "Save"
+msgstr "सहेजें"
+
+msgid "Reset"
+msgstr "रीसेट करें"
+
+msgid "Note"
+msgstr "नोट"
+
+msgid "Back"
+msgstr "वापस"
+
+msgid "None"
+msgstr "कोई नहीं"
+
+msgid "Y"
+msgstr "हाँ"
+
+msgid "N"
+msgstr "नहीं"
+
+msgid "Create"
+msgstr "बनाएँ"
+
+# Filters
+msgid "Selection Filter"
+msgstr "चयन फ़िल्टर"
+
+msgid "Filters"
+msgstr "फ़िल्टर"
+
+msgid "Show Filters"
+msgstr "फ़िल्टर दिखाएँ"
+
+msgid "Hide Filters"
+msgstr "फ़िल्टर छिपाएँ"
+
+msgid "Clear Filters"
+msgstr "फ़िल्टर साफ़ करें"
+
+msgid "Load Filter Preset"
+msgstr "फ़िल्टर प्रीसेट लोड करें"
+
+msgid "Show Advanced Filters"
+msgstr "उन्नत फ़िल्टर दिखाएँ"
+
+msgid "Hide Advanced Filters"
+msgstr "उन्नत फ़िल्टर छिपाएँ"
+
+msgid "Pass"
+msgstr "पास"
+
+msgid "Fail"
+msgstr "फेल"
+
+msgid "True"
+msgstr "सत्य"
+
+msgid "False"
+msgstr "असत्य"
+
+msgid "Selected"
+msgstr "चयनित"
+
+msgid "selected"
+msgstr "चयनित"
+
+# Common swal labels
+msgid "Cancel"
+msgstr "रद्द करें"
+
+msgid "Clear"
+msgstr "हटाना"
+
+msgid "Proceed"
+msgstr "आगे बढ़ना"
+
+msgid "Success!"
+msgstr "सफलता!"
+
+msgid "Close"
+msgstr "बंद करें"
+
+msgid "Saving"
+msgstr "सहेजा जा रहा है"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "फॉर्म छोड़ने पर दर्ज की गई सभी जानकारी खो जाएगी।"
+
+# Common candidate terms
+msgid "PSCID"
+msgstr "पीएससीआईडी"
+
+msgid "DCCID"
+msgstr "डीसीसीआईडी"
+
+msgid "Visit Label"
+msgstr "भेंट लेबल"
+
+msgid "Status"
+msgstr "स्थिति"
+
+msgid "No."
+msgstr "संख्या"
+
+msgid "Email"
+msgstr "ईमेल"
+
+msgid "Site"
+msgid_plural "Sites"
+msgstr[0] "साइट"
+msgstr[1] "साइट्स"
+
+msgid "Project"
+msgid_plural "Projects"
+msgstr[0] "परियोजना"
+msgstr[1] "प्रोजेक्ट्"
+
+msgid "Candidate Registration Project"
+msgstr "उम्मीदवार पंजीकरण परियोजना"
+
+msgid "Timepoint Project"
+msgstr "समय बिंदु परियोजना"
+
+msgid "Cohort"
+msgid_plural "Cohorts"
+msgstr[0] "समूह"
+msgstr[1] "समूह"
+
+msgid "Session"
+msgid_plural "Sessions"
+msgstr[0] "सत्र"
+msgstr[1] "सत्र"
+
+msgid "Date of registration"
+msgstr "पंजीकरण की तिथि"
+
+msgid "Participant Status"
+msgstr "प्रतिभागी की स्थिति"
+
+msgid "DoB"
+msgstr "जन्म तिथि"
+
+msgid "Sex"
+msgstr "लिंग"
+
+msgid "Feedback"
+msgstr "प्रतिक्रिया"
+
+msgid "Scans"
+msgstr "स्कैन"
+
+msgid "Stage"
+msgstr "चरण"
+
+msgid "Send To DCC"
+msgstr "डीसीसी को भेजें"
+
+msgid "Sent To DCC"
+msgstr "डीसीसी को भेजा गया"
+
+msgid "Reverse Send To DCC"
+msgstr "डीसीसी को भेजना रद्द करें"
+
+msgid "Date of Birth"
+msgstr "जन्म तिथि"
+
+msgid "Visits"
+msgstr "भ्रमण"
+
+msgid "An error occured while loading the page."
+msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
+
+msgid "Active"
+msgstr "सक्रिय"
+
+msgid "Pending"
+msgstr "लंबित"
+
+msgid "Entity Type"
+msgstr "इकाई प्रकार"
+
+msgid "Scan Done"
+msgstr "स्कैन पूरा हुआ"
+
+msgid "Language"
+msgstr "भाषा"
+
+msgid "View details"
+msgstr "विवरण देखें"
+
+msgid "Ethnicity"
+msgstr "जातीयता"
+
+msgid "Access denied"
+msgstr "पहुँच अस्वीकृत"
+
+msgid "Previous"
+msgstr "पिछला"
+
+msgid "Next"
+msgstr "अगला"
+
+# Data table strings
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgstr "{{totalCount}} में से {{pageCount}} पंक्तियाँ प्रदर्शित"
+
+msgid "Maximum rows per page:"
+msgstr "प्रति पृष्ठ अधिकतम पंक्तियाँ:"
+
+msgid "Download Data as CSV"
+msgstr "तालिका को CSV के रूप में डाउनलोड करें"
+
+#: php/libraries/Password.class.inc
+msgid "The password is too short"
+msgstr "पासवर्ड बहुत छोटा है"
+
+msgid "The password is not complex enough."
+msgstr "पासवर्ड पर्याप्त जटिल नहीं है।"
+
+msgid "This password is known to be exposed in online data breaches."
+msgstr "यह पासवर्ड ऑनलाइन डेटा उल्लंघनों में उजागर होने के लिए जाना जाता है।"
+
+msgid "Data Supervisors to Email"
+msgstr "ईमेल करने के लिए डेटा पर्यवेक्षक"
+
+msgid "Invalid email address"
+msgstr "अमान्य ईमेल पता"
+
+# Dashboard panel strings
+msgid "Views"
+msgstr "दृश्य"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "नया"
+
+msgid "New"
+msgstr "नया"
+
+msgid "Updated"
+msgstr "अद्यतन किया गया"
+
+msgid "Uploaded"
+msgstr "अपलोड किया गया"
+
+# User Account related
+msgid "Password Rules"
+msgstr "पासवर्ड नियम"
+
+msgid "Username"
+msgstr "उपयोगकर्ता नाम"
+
+msgid "First name"
+msgstr "पहला नाम"
+
+msgid "First name is required and should not exceed 120 characters"
+msgstr "पहला नाम आवश्यक है और 120 अक्षरों से अधिक नहीं होना चाहिए।"
+
+msgid "Last name"
+msgstr "अंतिम नाम"
+
+msgid "Last name is required and should not exceed 120 characters"
+msgstr "अंतिम नाम आवश्यक है और 120 अक्षरों से अधिक नहीं होना चाहिए।"
+
+msgid "Email address"
+msgstr "ईमेल पता"
+
+msgid "New Password"
+msgstr "नया पासवर्ड"
+
+msgid "Password"
+msgstr "पासवर्ड"
+
+msgid "Confirm Password"
+msgstr "पासवर्ड की पुष्टि करें"
+
+msgid "Email address is required"
+msgstr "ईमेल पता आवश्यक है"
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "ईमेल पता निम्नलिखित किसी भी वर्ण को नहीं शामिल कर सकता: <, >, &, और \""
+
+msgid "The password must be at least 8 characters long."
+msgstr "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।"
+
+msgid "The password cannot be your username or email address."
+msgstr "पासवर्ड आपका उपयोगकर्ता नाम या ईमेल पता नहीं हो सकता।"
+
+msgid "Please choose a unique password."
+msgstr "कृपया एक अद्वितीय पासवर्ड चुनें।"
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr "कोई विशेष अक्षर आवश्यक नहीं हैं, लेकिन पासवर्ड पर्याप्त जटिल होना चाहिए ताकि उसे स्वीकार किया जा सके।"
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr "हम सुझाव देते हैं कि आपके लिए पासवर्ड बनाने हेतु पासवर्ड मैनेजर का उपयोग करें।"
+
+msgid "Error!"
+msgstr "त्रुटि!"
+
+msgid "Date"
+msgstr "दिनांक"
+
+# Common timepoint and visit terms
+msgid "Not Started"
+msgstr "शुरू नहीं हुआ"
+
+msgid "Total"
+msgstr "कुल"
+
+msgid "Screening"
+msgstr "जांच"
+
+msgid "Visit"
+msgstr "भेंट"
+
+msgid "Approval"
+msgstr "स्वीकृति"
+
+msgid "Subject"
+msgstr "विषय"
+
+msgid "Recycling Bin"
+msgstr "रिसाइक्लिंग बिन"
+
+msgid "Failure"
+msgstr "विफलता"
+
+msgid "Withdrawal"
+msgstr "निकासी"
+
+msgid "In Progress"
+msgstr "प्रगति पर"
+
+msgid "Progress"
+msgstr "प्रगति"
+
+msgid "Success"
+msgstr "सफलता"
+
+msgid "Complete"
+msgstr "पूर्ण"
+
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "उपकरण"
+msgstr[1] "उपकरण"
+
+msgid "Partial"
+msgstr "आंशिक"
+
+msgid "All"
+msgstr "सभी"
+
+msgid "Data Entry"
+msgstr "डेटा प्रविष्टि"
+
+msgid "Administration"
+msgstr "प्रशासन"
+
+msgid "Double Data Entry Form"
+msgstr "दोहरी डेटा प्रविष्टि फ़ॉर्म"
+
+msgid "Double Data Entry Status"
+msgstr "दोहरी डेटा प्रविष्टि स्थिति"
+
+msgid "Double Data Entry"
+msgstr "दोहरी डेटा प्रविष्टि"
+
+# Age related terms
+msgid "Age"
+msgstr "आयु"
+
+msgid "{{months}} months old"
+msgstr "{{months}} महीने का/की"
+
+msgid "{{years}} years old"
+msgstr "{{years}} वर्ष का"
+
+# Other generic terms
+msgid "Loading..."
+msgstr "लोड हो रहा है..."
+
+msgid "Permission denied"
+msgstr "अनुमति अस्वीकृत"
+
+msgid "File to upload"
+msgstr "अपलोड करने के लिए फ़ाइल"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "कृपया सुनिश्चित करें कि फ़ाइलें {{maxFileSize}} से बड़ी न हों"
+
+msgid "Are You Sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "Are you sure?"
+msgstr "क्या आप सुनिश्चित हैं?"
+
+msgid "Yes, I am sure!"
+msgstr "हाँ, मैं सुनिश्चित हूँ!"
+
+msgid "No, cancel it!"
+msgstr "नहीं, रद्द करें!"
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr "कोई विकल्प नहीं"

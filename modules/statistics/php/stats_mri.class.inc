@@ -3,7 +3,7 @@
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -16,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -646,6 +646,7 @@ class Stats_MRI extends \NDB_Form
             ]
         );
     }
+
     /**
      * Include additional CSS files:
      *
@@ -661,6 +662,5 @@ class Stats_MRI extends \NDB_Form
             [$baseURL . "/statistics/css/statistics.css"]
         );
     }
-
 }
 

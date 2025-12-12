@@ -9,6 +9,7 @@ import {
   TextareaElement,
   FileElement,
 } from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Issue Upload Attachment Form
@@ -99,20 +100,29 @@ class IssueUploadAttachmentForm extends Component {
             },
             uploadProgress: -1,
           });
-          swal.fire('Upload Successful!', '', 'success');
-          window.location.href = this.props.baseURL
-            + '/issue_tracker/issue/'
-            + this.props.issue;
+          swal.fire(
+            this.props.t('Upload Successful!',
+              {ns: 'issue_tracker'}),
+            '',
+            'success'
+          );
+          window.location.href = this.props.baseURL +
+            '/issue_tracker/issue/' +
+            this.props.issue;
         } else if (data.error) {
           swal.fire(data.error, '', 'error');
         } else {
-          swal.fire('Permission denied', '', 'error');
+          swal.fire(
+            this.props.t('Permission denied', {ns: 'loris'}),
+            '',
+            'error'
+          );
         }
       }).catch((error) => {
         console.error(error);
         const msg = error.responseJSON ?
           error.responseJSON.message
-          : 'Upload error!';
+          : this.props.t('Upload error!', {ns: 'issue_tracker'});
         this.setState({
           errorMessage: msg,
           uploadProgress: -1,
@@ -127,6 +137,7 @@ class IssueUploadAttachmentForm extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     return (
       <div className='row'>
         <div className='col-md-8 col-lg-7'>
@@ -137,14 +148,15 @@ class IssueUploadAttachmentForm extends Component {
           >
             <FileElement
               name='file'
-              label='File to upload'
+              label={t('File to upload', {ns: 'loris'})}
               value={this.state.formData.file}
               onUserInput={this.setFileUploadFormData}
               required={true}
             />
             <TextareaElement
               name='fileDescription'
-              label='Description'
+              label={t('Description',
+                {ns: 'issue_tracker'})}
               value={this.state.formData.fileDescription}
               onUserInput={this.setFileUploadFormData}
               required={false}
@@ -154,7 +166,9 @@ class IssueUploadAttachmentForm extends Component {
                 <ProgressBar value={this.state.uploadProgress}/>
               </div>
             </div>
-            <ButtonElement label='Submit Attachment'/>
+            <ButtonElement
+              label={t('Submit Attachment', {ns: 'issue_tracker'})}
+            />
           </FormElement>
         </div>
       </div>
@@ -165,6 +179,7 @@ class IssueUploadAttachmentForm extends Component {
 IssueUploadAttachmentForm.propTypes = {
   issue: PropTypes.string.isRequired,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default IssueUploadAttachmentForm;
+export default withTranslation()(IssueUploadAttachmentForm);

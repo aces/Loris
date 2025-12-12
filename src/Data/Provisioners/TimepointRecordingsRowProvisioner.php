@@ -4,7 +4,7 @@
  * This file implements a data provisioner to get all images
  * of a visit.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  LORIS
@@ -18,7 +18,7 @@ namespace LORIS\Data\Provisioners;
  * This class implements a data provisioner to get all possible rows
  * for the /candidates/$candid/$visit_label/images endpoint.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  LORIS

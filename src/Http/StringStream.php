@@ -5,7 +5,7 @@
  * a PHP string into a PSR7 StreamInterface compatible with other PSR7
  * interfaces.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category PSR7
  * @package  Http

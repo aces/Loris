@@ -21,3 +21,108 @@ msgstr ""
 msgid "Data Release"
 msgstr ""
 
+msgid "File Name"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Upload Date"
+msgstr ""
+
+msgid "Project Name"
+msgstr ""
+
+msgid "Data Release ID"
+msgstr ""
+
+msgid "Upload File"
+msgstr ""
+
+msgid "Upload a New File"
+msgstr ""
+
+msgid "Add Permission"
+msgstr ""
+
+msgid "Manage Permissions"
+msgstr ""
+
+msgid "An error occured while loading the page."
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "Version names will be saved as lowercase."
+msgstr ""
+
+msgid "You must select a file to upload"
+msgstr ""
+
+msgid "You must select a project"
+msgstr ""
+
+msgid "File size exceeds the maximum allowed"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Upload error!"
+msgstr ""
+
+msgid "Upload Successful!"
+msgstr ""
+
+msgid "A file with this name already exists!"
+msgstr ""
+
+msgid "Would you like to overwrite existing file?"
+msgstr ""
+
+msgid "Note that the version associated with the file will also be overwritten."
+msgstr ""
+
+msgid "Choose a specific file or an entire release below"
+msgstr ""
+
+msgid "Data Release File"
+msgstr ""
+
+msgid "OR"
+msgstr ""
+
+msgid "Data Release Version"
+msgstr ""
+
+msgid "Permission Update Success!"
+msgstr ""
+
+msgid "Submission Error!"
+msgstr ""
+
+msgid "You must select a user!"
+msgstr ""
+
+msgid "You must select a file OR a version to grant permission on!"
+msgstr ""
+
+msgid "Manage Versions a User has access to"
+msgstr ""
+
+msgid "Search for a User"
+msgstr ""
+
+msgid "Versions"
+msgstr ""
+
+msgid "Manage Users with access to a Version"
+msgstr ""
+
+msgid "Search for a Version"
+msgstr ""
+
+msgid "An error occurred when loading the form!"
+msgstr ""
+

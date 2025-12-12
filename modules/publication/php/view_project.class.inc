@@ -3,7 +3,7 @@
 /**
  * This file contains the NDB_Form_media class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Publication
@@ -56,6 +56,7 @@ class View_Project extends \NDB_Form
             || $nProjects > 0
         );
     }
+
     /**
      * Entry point for /publications/view_project
      * Checks if project id is provided and otherwise
@@ -107,11 +108,13 @@ class View_Project extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'View Project',
+                dgettext("publication", "Publications"),
+                "/publication"
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("publication", 'View Project'),
                 "/publication/view_project?id=" . $_GET['id']
             )
         );
@@ -133,5 +136,4 @@ class View_Project extends \NDB_Form
             [$baseURL . "/publication/js/viewProjectIndex.js"]
         );
     }
-
 }

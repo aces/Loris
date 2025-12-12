@@ -3,7 +3,7 @@
 /**
  * SinglePointLogin tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Test
@@ -48,34 +48,32 @@ class SinglePointLoginTest extends TestCase
      */
     protected function setUp(): void
     {
-        $Factory    = NDB_Factory::singleton();
+        $factory    = NDB_Factory::singleton();
         $mockdb     = $this->getMockBuilder("\Database")->getMock();
         $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
-        $this->_configMap = [
-            [
-                'JWTKey',
-                "example_key"
-            ],
-        ];
-
-         $mockconfig->method('getSetting')
-             ->will($this->returnValueMap($this->_configMap));
+        $mockconfig->method('getSetting')
+            ->willReturnMap(
+                [
+                    ['JWTKey', 'example_key'],
+                ]
+            );
 
         '@phan-var \Database $mockdb';
         '@phan-var \NDB_Config $mockconfig';
-        $Factory->setConfig($mockconfig);
-        $Factory->setDatabase($mockdb);
+        $factory->setConfig($mockconfig);
+        $factory->setDatabase($mockdb);
 
-        $method       = ['JWTAuthenticate', 'PasswordAuthenticate', 'authenticate'];
-        $AllMethods   = get_class_methods('SinglePointLogin');
-        $exceptMethod = array_diff($AllMethods, $method);
-        $login        = $this->getMockBuilder('SinglePointLogin')
-            ->onlyMethods($exceptMethod)->getMock();
+        $methodsToKeep = ['JWTAuthenticate', 'PasswordAuthenticate', 'authenticate'];
+        $allMethods    = get_class_methods('SinglePointLogin');
+        $exceptMethods = array_values(array_diff($allMethods, $methodsToKeep));
+
+        $login = $this->getMockBuilder('SinglePointLogin')
+            ->onlyMethods($exceptMethods)
+            ->getMock();
 
         '@phan-var \SinglePointLogin $login';
         $this->_login = $login;
-
     }
 
     /**

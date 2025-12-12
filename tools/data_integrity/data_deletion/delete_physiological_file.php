@@ -8,7 +8,7 @@
  * "Usage: php delete_physiological_file.php PhysiologicalFileID";
  * "Example: php delete_physiological_file.php 25";
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

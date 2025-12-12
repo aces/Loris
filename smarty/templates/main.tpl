@@ -73,6 +73,19 @@
                 toggleIcon.classList.add('glyphicon-chevron-down');
               }
             });
+
+            const policyButtonEl = document.getElementById("header-policy-button");
+            if (policyButtonEl) {
+                headerPolicyRoot = ReactDOM.createRoot(
+                    policyButtonEl
+                );
+                headerPolicyRoot.render(
+                    React.createElement(PolicyButton, {
+                        onClickPolicy: {$header_policy|json_encode},
+                        popUpPolicy: {$pop_up_policy|json_encode},
+                })
+                );
+            }
           });
         </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
@@ -143,6 +156,9 @@
                                 </a>
                             </li>
                             {/if}
+                            {if $header_policy}
+                                <li class="hidden-xs hidden-sm" id="header-policy-button"></li>
+                            {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>
 
@@ -185,7 +201,7 @@
                                     </li>
                                     {/if}
                                     <li>
-                                        <a href="{$baseurl}/?logout=true">
+                                        <a href="{$baseurl}/login/logout">
                                             {dgettext("loris", "Log Out")}
                                         </a>
                                     </li>

@@ -21,3 +21,104 @@ msgstr ""
 msgid "Data Release"
 msgstr "データリリース"
 
+msgid "File Name"
+msgstr "ファイル名"
+
+msgid "Version"
+msgstr "バージョン"
+
+msgid "Upload Date"
+msgstr "アップロード日"
+
+msgid "Project Name"
+msgstr "プロジェクト名"
+
+msgid "Data Release ID"
+msgstr "データリリースID"
+
+msgid "Upload File"
+msgstr "ファイルをアップロード"
+
+msgid "Upload a New File"
+msgstr "新しいファイルをアップロードする"
+
+msgid "Add Permission"
+msgstr "権限の追加"
+
+msgid "Manage Permissions"
+msgstr "権限の管理"
+
+msgid "Note"
+msgstr "注記"
+
+msgid "Version names will be saved as lowercase."
+msgstr "バージョン名は小文字で保存されます"
+
+msgid "You must select a file to upload"
+msgstr "アップロードするファイルを選択する必要があります"
+
+msgid "You must select a project"
+msgstr "プロジェクトを選択する必要があります"
+
+msgid "File size exceeds the maximum allowed"
+msgstr "ファイルサイズが最大許容サイズを超えています"
+
+msgid "Error"
+msgstr "エラー"
+
+msgid "Upload error!"
+msgstr "アップロードエラー"
+
+msgid "Upload Successful!"
+msgstr "アップロード成功しました!"
+
+msgid "A file with this name already exists!"
+msgstr "この名前のファイルは既に存在します。"
+
+msgid "Would you like to overwrite existing file?"
+msgstr "既存のファイルを上書きしますか?"
+
+msgid "Note that the version associated with the file will also be overwritten."
+msgstr "ファイルに関連付けられたバージョンも上書きされることに注意してください。"
+
+msgid "Choose a specific file or an entire release below"
+msgstr "以下の特定のファイルまたはリリース全体を選択してください"
+
+msgid "Data Release File"
+msgstr "データリリースファイル"
+
+msgid "OR"
+msgstr "それとも"
+
+msgid "Data Release Version"
+msgstr "データリリースバージョン"
+
+msgid "Permission Update Success!"
+msgstr "権限の更新に成功しました!"
+
+msgid "Submission Error!"
+msgstr "送信エラー!"
+
+msgid "You must select a user!"
+msgstr "ユーザーを選択する必要があります。"
+
+msgid "You must select a file OR a version to grant permission on!"
+msgstr "権限を付与するには、ファイルまたはバージョンを選択する必要があります"
+
+msgid "Manage Versions a User has access to"
+msgstr "ユーザーがアクセスできるバージョンを管理する"
+
+msgid "Search for a User"
+msgstr "ユーザーを検索"
+
+msgid "Versions"
+msgstr "バージョン"
+
+msgid "Manage Users with access to a Version"
+msgstr "バージョンへのアクセス権を持つユーザーを管理する"
+
+msgid "Search for a Version"
+msgstr "バージョンを検索"
+
+msgid "An error occurred when loading the form!"
+msgstr "フォームの読み込み中にエラーが発生しました"

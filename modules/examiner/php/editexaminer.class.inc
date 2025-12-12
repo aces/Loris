@@ -3,7 +3,7 @@
 /**
  * Examiner module: Form used to update examiner certification status
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Loris
@@ -16,7 +16,7 @@ namespace LORIS\examiner;
 /**
  * Examiner module: Form used to update examiner certification status
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Loris
@@ -377,7 +377,6 @@ class EditExaminer extends \NDB_Form
         $this->form->addFormRule([&$this, '_validateEditExaminer']);
     }
 
-
     /**
      * Validates the certification form values.
      *
@@ -454,6 +453,7 @@ class EditExaminer extends \NDB_Form
 
         return $instruments;
     }
+
     /**
      * Generate a breadcrumb trail for this page.
      *
@@ -461,11 +461,11 @@ class EditExaminer extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
+        $label = dgettext('examiner', ucwords(str_replace('_', ' ', $this->name)));
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'Edit Examiner',
+                dgettext('examiner', 'Edit Examiner'),
                 "/examiner/editExaminer/?identifier=$this->identifier"
             )
         );

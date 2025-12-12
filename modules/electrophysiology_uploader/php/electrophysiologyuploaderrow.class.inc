@@ -6,7 +6,7 @@ namespace LORIS\electrophysiology_uploader;
  * This class implements a data Instance which represents a single
  * row in the electrophysiology uploader menu table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main

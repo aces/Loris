@@ -5,7 +5,7 @@
  * script under htdocs. It's put in a class for testability (even if there
  * aren't currently any tests for it.) and to keep installdb.php neat.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Installer
  * @package  Installer
@@ -34,7 +34,8 @@ class Installer
         '02-Permission.sql',
         '03-ConfigTables.sql',
         '04-Help.sql',
-        '05-ElectrophysiologyTables.sql'
+        '05-ElectrophysiologyTables.sql',
+        '06-BiobankTables.sql'
     ];
 
     /**
@@ -285,6 +286,7 @@ class Installer
         }
 
     }
+
     /**
      * Updates the basic config files required by LORIS.
      *

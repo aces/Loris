@@ -3,7 +3,7 @@
 /**
  * Contains the base code to use for all NeuroDB forms
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -60,7 +60,6 @@ class NDB_Form extends NDB_Page
         $this->form->applyFilter('__ALL__', 'trim');
     }
 
-
     /**
      * Saves the form
      *
@@ -76,7 +75,6 @@ class NDB_Form extends NDB_Page
             $this->form->process([&$this, "_save"]);
         }
     }
-
 
     /**
      * Preprocesses the array of values to be saved into the database
@@ -104,7 +102,6 @@ class NDB_Form extends NDB_Page
 
         $this->_process($values);
     }
-
 
     /**
      * Processes the values and saves to database. Usually overridden

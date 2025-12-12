@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Document_Repository
  * @package    Main
@@ -97,18 +97,30 @@ class Module extends \Module
                 )
             );
             $numberOfDocs = sizeof($docs);
+
+            $dateformatter = new \IntlDateFormatter(
+                "",
+                \IntlDateFormatter::SHORT,
+                \IntlDateFormatter::SHORT
+            );
             for ($i=0; $i < $numberOfDocs; $i++) {
-                if (new \DateTime($docs[$i]['Date_uploaded']) > $last_login) {
+                $uploaddate = new \DateTime($docs[$i]['Date_uploaded']);
+                if ($uploaddate > $last_login) {
                     $docs[$i]['new'] = true;
                 } else {
                     $docs[$i]['new'] = false;
                 }
+
+                $docs[$i]['Date_uploaded'] = $dateformatter->format($uploaddate);
             }
 
             return [
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
-                        "Document Repository Notifications",
+                        dgettext(
+                            "document_repository",
+                            "Document Repository Notifications"
+                        ),
                         $this->renderTemplate(
                             "docnotifications.tpl",
                             [
@@ -124,5 +136,4 @@ class Module extends \Module
         }
         return [];
     }
-
 }

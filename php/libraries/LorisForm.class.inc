@@ -10,7 +10,7 @@
  * PHP warnings that QuickForm1 generates since QuickForm1 was written
  * for PHP4.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -52,6 +52,7 @@ class LorisForm
     ];
     public $validOperators;
     public $encrypt;
+    public $textdomain = "loris";
 
     /**
      * Creates and returns an element that can be added
@@ -69,7 +70,9 @@ class LorisForm
      */
     protected function &createBase($name, $label, $attribs=[])
     {
-        $el = ['label' => $label];
+        $el = [
+            'label' => !empty($label) ? dgettext($this->textdomain, $label) : null
+        ];
 
         if (!empty($name)) {
             $el['name'] = $name;
@@ -111,6 +114,7 @@ class LorisForm
 
         return $el;
     }
+
     /**
      * Adds an element to the $this->form array. Handles the creation
      * of any shared attributes that are shared between different
@@ -248,6 +252,7 @@ class LorisForm
         }
         return $el;
     }
+
     /**
      * Reimplementation of HTML_QuickForm's "addDate" API. The behaviour
      * of this varies slightly from QuickForm in that this will use an
@@ -557,7 +562,6 @@ class LorisForm
         return $el;
     }
 
-
     /**
      * Retrives the default value to populate for a form element.
      * If it was POSTed by the user, use that value, otherwise use
@@ -832,6 +836,7 @@ class LorisForm
         $val = $this->getValue($el['name']);
         return $val;
     }
+
     /**
      * Generates the HTML to add to the page when rendered for a date
      * element.
@@ -1189,8 +1194,6 @@ class LorisForm
             ."</textarea>";
     }
 
-
-
     /**
      * Reimplements the HTML_QuickForm setDefaults API.
      *
@@ -1213,6 +1216,7 @@ class LorisForm
     {
         return (!empty($_FILES) || !empty($_POST));
     }
+
     /**
      * Reimplements the HTML_QuickForm validate API.
      *
@@ -1974,6 +1978,7 @@ class LorisForm
         $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'page';
     }
+
     /**
      * Reimplementation of QuickForm API.
      *

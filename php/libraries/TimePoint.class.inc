@@ -4,7 +4,7 @@
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -119,7 +119,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         return $timePointList["$sessionID"];
     }
 
-
     /**
      * Loads the data from the given sessionID into the current TimePoint class.
      *
@@ -147,12 +146,15 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
                          s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
                          pr.Name as ProjectName, p.Alias as SiteAlias,
-                         s.ProjectID as ProjectID
+			 s.ProjectID as ProjectID,
+                         l.language_code as LanguageCode,
+                         l.language_label as LanguageLabel
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                         LEFT JOIN Project AS pr USING(ProjectID)
                         LEFT JOIN candidate AS c ON (s.CandidateID=c.ID)
+                        LEFT JOIN language l ON (s.languageID=l.language_id)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
         $row   = $db->pselectRow(
             $query,
@@ -172,10 +174,17 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $cohortSettings       = $config->getCohortSettings(
+            if (isset($row['LanguageCode'])) {
+                $this->_timePointInfo['Language'] = new \Language(
+                    $row['LanguageLabel'],
+                    $row['LanguageCode']
+                );
+            }
+            unset($row['language_code'], $row['language_label']);
+            $cohortSettings = $config->getCohortSettings(
                 intval($row['CohortID'] ?? null)
             );
-            $title = $cohortSettings['title'] ?? '';
+            $title          = $cohortSettings['title'] ?? '';
             $this->_timePointInfo['CohortTitle'] = $title;
 
             $this->_timePointInfo['CandID']
@@ -222,7 +231,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         }
 
     }
-
 
     /**
      * Registers a new timepoint into the session table
@@ -352,7 +360,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         foreach ($timePointArray AS $used_name) {
             if (strcasecmp($visitName, $used_name) == 0) {
                 throw new \LorisException(
-                    'This visit label is not unique.'
+                    dgettext("create_timepoint", "This visit label is not unique.")
                 );
             }
         }
@@ -581,7 +589,6 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     {
         return $this->_timePointInfo["Active"] == 'Y';
     }
-
 
     /**
      * Gets whether or not a scan was done for this TimePoint
@@ -1388,6 +1395,20 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
         $centerMatch = in_array($this->getCenterID(), $centers);
         return $projMatch && $centerMatch;
+    }
+
+    /**
+     * Get the language for this timepoint.
+     *
+     * @return \Language
+     */
+    public function getLanguage() : \Language
+    {
+        $lang = $this->getData('Language');
+        if ($lang === null) {
+            return new \Language("Unknown", "en_CA");
+        }
+        return $lang;
     }
 }
 

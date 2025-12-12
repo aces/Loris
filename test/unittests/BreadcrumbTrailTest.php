@@ -3,7 +3,7 @@
 /**
  * BreadcrumbTrail class tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Test
@@ -11,8 +11,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-use \LORIS\BreadcrumbTrail;
-use \LORIS\Breadcrumb;
+use LORIS\BreadcrumbTrail;
+use LORIS\Breadcrumb;
 use PHPUnit\Framework\TestCase;
 /**
  * Unit test for Breadcrumb class
@@ -30,7 +30,7 @@ class BreadcrumbTrailTest extends TestCase
      *
      * @var BreadcrumbTrail
      */
-    protected $breadcrumbTrail;
+    protected ?BreadcrumbTrail $breadcrumbTrail = null;
 
     /**
      * This method is called before each test is executed.
@@ -40,50 +40,45 @@ class BreadcrumbTrailTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->breadcrumbTrail = new BreadcrumbTrail();
     }
 
     /**
      * Test __toString() returns correct string
-     * TODO: Add potential edge cases (such as white space)
      *
-     * @param []     $data1 A label/link pair
-     * @param []     $data2 A label/link pair
-     * @param string $c     The value to compare
-     *
-     * @dataProvider toStringProvider
-     * @covers       Breadcrumb::__toString
-     * @return       void
+     * @return void
      */
-    public function testToString($data1, $data2, $c)
+    public function testToString(): void
     {
-        $this->breadcrumbTrail = new BreadcrumbTrail(
-            new Breadcrumb($data1[0], $data1[1]),
-            new Breadcrumb($data2[0], $data2[1])
-        );
-        $this->assertEquals($c, $this->breadcrumbTrail);
-    }
-
-    /**
-     * ToString Provider
-     *
-     * @return []
-     */
-    public function toStringProvider()
-    {
-        return [
+        $testCases = [
             [
-                ["testLabel", "testLink"],
-                ["testLabel2", "testLink2"],
-                '{"text":"testLabel","query":"testLink"},'
-                . '{"text":"testLabel2","query":"testLink2"}'
+                'crumbs'   => [
+                    ['testLabel', 'testLink'],
+                    ['testLabel2', 'testLink2'],
+                ],
+                'expected' => '{"text":"testLabel","query":"testLink"},'
+                            . '{"text":"testLabel2","query":"testLink2"}'
             ],
             [
-                ["aLabel", "aLink"],
-                ["anotherLabel", "anotherLink"],
-                '{"text":"aLabel","query":"aLink"},'
-                . '{"text":"anotherLabel","query":"anotherLink"}'
+                'crumbs'   => [
+                    ['aLabel', 'aLink'],
+                    ['anotherLabel', 'anotherLink'],
+                ],
+                'expected' => '{"text":"aLabel","query":"aLink"},'
+                            . '{"text":"anotherLabel","query":"anotherLink"}'
             ]
         ];
+
+        foreach ($testCases as $case) {
+            $crumbs = array_map(
+                fn($c) => new Breadcrumb($c[0], $c[1]),
+                $case['crumbs']
+            );
+
+            $this->breadcrumbTrail = new BreadcrumbTrail(...$crumbs);
+
+            $this->assertSame($case['expected'], (string)$this->breadcrumbTrail);
+        }
     }
 }
 

@@ -27,12 +27,13 @@ require_once __DIR__ .
  * @link     https://github.com/aces/Loris
  */
 
-class PublicaitonTest extends LorisIntegrationTest
+class PublicationTest extends LorisIntegrationTest
 {
     private $_loadingBrowseUI  = [
         [
             "label"    => "Title",
-            "selector" => "#publications_filter_form>div>div:nth-child(1)>div>label",
+            "selector" => "#publication_filter>div>div>fieldset>".
+                "div:nth-child(3)>div>label",
         ],
     ];
     private $_loadingproposeUI = [
@@ -115,6 +116,7 @@ class PublicaitonTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that publicaiton loads with permission
      *
@@ -138,6 +140,7 @@ class PublicaitonTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that publicaiton loads with permission
      *
@@ -161,6 +164,7 @@ class PublicaitonTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * This function could test UI elements in each Tabs.
      *
@@ -173,6 +177,7 @@ class PublicaitonTest extends LorisIntegrationTest
         $this->_testPageUIs("/publication/view_project?id=1", $this->_loadingViewUI);
 
     }
+
     /**
      * This function could test UI elements in each Tabs.
      *

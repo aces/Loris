@@ -41,6 +41,7 @@ class OutputWrapper
      * @var string
      */
     private $_loggingFileName;
+
     /**
      * Create a new command line helper.
      *

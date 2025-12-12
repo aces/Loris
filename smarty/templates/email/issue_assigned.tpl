@@ -1,5 +1,4 @@
-Subject: Issue Assigned - # {$issueID} [{$study}]
-
+Subject: Issue Assigned - #{$issueID} [{$study}]
 {$firstname},
 
 {$currentUser} has assigned you to an issue "{$title}".

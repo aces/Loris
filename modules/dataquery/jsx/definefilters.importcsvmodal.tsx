@@ -4,6 +4,7 @@ import {useState} from 'react';
 import Papa from 'papaparse';
 import swal from 'sweetalert2';
 import {FileElement} from 'jsx/Form';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Render a modal window for adding a filter
@@ -17,6 +18,7 @@ function ImportCSVModal(props: {
     setQuery: (root: QueryGroup) => void,
     closeModal: () => void,
 }) {
+  const {t} = useTranslation('dataquery');
   const [csvFile, setCSVFile] = useState<string|null>(null);
   const [csvHeader, setCSVHeader] = useState<boolean>(false);
   const [csvType, setCSVType] = useState<string>('candidate');
@@ -27,10 +29,21 @@ function ImportCSVModal(props: {
    * @returns {Promise} - a stub promise
    */
   const submitPromise = () =>
-    new Promise((resolve) => {
+    new Promise((resolve, reject) => {
+      if (!csvFile) {
+        swal.fire({
+          type: 'error',
+          title: t('No CSV Uploaded', {ns: 'dataquery'}),
+          text: t(
+            'Please upload a CSV file before submitting.',
+            {ns: 'dataquery'}
+          ),
+        });
+        reject();
+        return;
+      }
       resolve(null);
-    }
-    );
+    });
 
   const candIDRegex = new RegExp('^[1-9][0-9]{5}$');
 
@@ -44,36 +57,50 @@ function ImportCSVModal(props: {
       console.error(value.errors);
       swal.fire({
         type: 'error',
-        title: 'Invalid CSV',
-        text: 'Could not parse CSV file',
+        title: t('Invalid CSV', {ns: 'dataquery'}),
+        text: t('Could not parse CSV file', {ns: 'dataquery'}),
       });
+      setCSVFile(null);
+      return;
+    }
+
+    // Check for empty CSV file
+    const startLine = csvHeader ? 1 : 0;
+    if (!value.data || value.data.length <= startLine) {
+      swal.fire({
+        type: 'error',
+        title: t('Empty CSV', {ns: 'dataquery'}),
+        text: t('The uploaded CSV file is empty.', {ns: 'dataquery'}),
+      });
+      setCSVFile(null);
+      return;
     }
 
     // If candidates: validate 1 column
     // If sessions: validate 2 columns
     const expectedLength = (csvType === 'session' ? 2 : 1);
-    const startLine = csvHeader ? 1 : 0;
 
     for (let i = startLine; i < value.data.length; i++) {
       if (value.data[i].length != expectedLength) {
         swal.fire({
           type: 'error',
-          title: 'Invalid CSV',
-          text: 'Expected ' + expectedLength + ' columns in CSV.'
-                        + ' Got ' + value.data[i].length + ' on line ' +
-                        (i+1) + '.',
+          title: t('Invalid CSV', {ns: 'dataquery'}),
+          text: t('Expected {{expectedLength}} columns in CSV. '
+            +'Got {{gotLength}} on line {{line}}.', {ns: 'dataquery',
+            expectedLength, gotLength: value.data[i].length, line: i+1}),
         });
+        setCSVFile(null);
         return;
       }
       if (idType === 'CandID') {
         if (candIDRegex.test(value.data[i][0]) !== true) {
           swal.fire({
             type: 'error',
-            title: 'Invalid DCC ID',
-            text: 'Invalid DCC ID (' + value.data[i][0]
-                            + ') on line '
-                            + (i+1) + '.',
+            title: t('Invalid DCCID', {ns: 'dataquery'}),
+            text: t('Invalid DCCID ({{id}}) on line {{line}}.',
+              {ns: 'dataquery', id: value.data[i][0], line: i+1}),
           });
+          setCSVFile(null);
           return;
         }
       }
@@ -125,7 +152,7 @@ function ImportCSVModal(props: {
     marginTop: '1em',
   };
 
-  return <Modal title="Import Population From CSV"
+  return <Modal title={t('Import Population From CSV', {ns: 'dataquery'})}
     show={true}
     throwWarning={true}
     onClose={props.closeModal}
@@ -133,43 +160,45 @@ function ImportCSVModal(props: {
     <fieldset>
       <div>
         <dl>
-          <dt style={dtstyle}>CSV containing list of</dt>
+          <dt style={dtstyle}>{t('CSV containing list of',
+            {ns: 'dataquery'})}</dt>
           <dd>
             <input type="radio" name="csvtype"
               checked={csvType == 'candidate'}
               onChange={() => setCSVType('candidate')}
-            /> Candidates
+            /> {t('Candidate', {ns: 'loris', count: 99})}
             <input type="radio" name="csvtype"
               style={{marginLeft: '1.5em'}}
               checked={csvType == 'session'}
               onChange={() => setCSVType('session')}
-            /> Sessions
+            /> {t('Session', {ns: 'loris', count: 99})}
           </dd>
-          <dt style={dtstyle}>Candidate identifier type</dt>
+          <dt style={dtstyle}>{t('Candidate identifier type',
+            {ns: 'dataquery'})}</dt>
           <dd><input type="radio" name="candidtype"
             checked={idType == 'CandID'}
             onChange={() => setIdType('CandID')}
-          /> DCC ID
+          /> {t('DCCID', {ns: 'loris'})}
           <input type="radio" name="candidtype"
             style={{marginLeft: '1.5em'}}
             checked={idType == 'PSCID'}
             onChange={() => setIdType('PSCID')}
-          /> PSCID
+          /> {t('PSCID', {ns: 'loris'})}
           </dd>
           <dt style={dtstyle}>
-                            Does CSV contain a header line?
+            {t('Does CSV contain a header line?', {ns: 'dataquery'})}
           </dt>
           <dd><input type="radio" name="header"
             checked={csvHeader == true}
             onChange={() => setCSVHeader(true)}
-          /> Yes
+          /> {t('Yes', {ns: 'loris'})}
           <input type="radio" name="header"
             style={{marginLeft: '1.5em'}}
             checked={csvHeader == false}
             onChange={() => setCSVHeader(false)}
-          /> No
+          /> {t('No', {ns: 'loris'})}
           </dd>
-          <dt style={dtstyle}>CSV File</dt>
+          <dt style={dtstyle}>{t('CSV File', {ns: 'dataquery'})}</dt>
           <dd><FileElement label='' name="csvfile"
             value={csvFile}
             onUserInput={
@@ -190,7 +219,7 @@ function ImportCSVModal(props: {
                 // Only 1 column, papaparse can't detect
                 // the delimiter if it's not explicitly
                 // specified.
-                if (csvType == 'candidate') {
+                if (csvType == 'candidate' || csvType == 'session') {
                   papaparseConfig.delimiter = ',';
                 }
                 Papa.parse(file, papaparseConfig);

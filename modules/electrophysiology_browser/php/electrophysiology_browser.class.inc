@@ -96,8 +96,6 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
         return new ElectrophysiologyBrowserRowProvisioner($this->loris);
     }
 
-
-
     /**
      * Include additional JS files
      *
@@ -116,4 +114,22 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
         );
     }
 
+    /**
+     * Include additional CSS files
+     *
+     * @return array of css to be included
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL .
+                '/electrophysiology_browser/css/electrophysiology_browser_index.css'
+            ],
+        );
+    }
 }

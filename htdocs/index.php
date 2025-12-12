@@ -8,7 +8,7 @@
  *
  * The this entry point then prints the resulting value to the user.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -39,27 +39,30 @@ if (version_compare(PHP_VERSION, '8.4', '<')) {
     // @phan-file-suppress PhanRedefineFunctionInternal
 
     // phpcs:ignore
-    function array_any(array $array, callable $callback): bool
-    {
-        foreach ($array as $key => $value) {
-            if ($callback($value, $key)) {
-                return true;
+    if (!function_exists('array_any')) {
+        // phpcs:ignore
+        function array_any(array $array, callable $callback): bool
+        {
+            foreach ($array as $key => $value) {
+                if ($callback($value, $key)) {
+                    return true;
+                }
             }
+            return false;
         }
-
-        return false;
     }
-
     // phpcs:ignore
-    function array_find(array $array, callable $callback)
-    {
-        foreach ($array as $key => $value) {
-            if ($callback($value, $key)) {
-                return $value;
+    if (!function_exists('array_find')) {
+        // phpcs:ignore
+        function array_find(array $array, callable $callback)
+        {
+            foreach ($array as $key => $value) {
+                if ($callback($value, $key)) {
+                    return $value;
+                }
             }
+            return null;
         }
-
-        return null;
     }
 }
 
@@ -76,6 +79,8 @@ $middlewarechain = (new \LORIS\Middleware\Language())
     ->withMiddleware(new \LORIS\Middleware\LorisMenu())
     ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\AWS())
+    ->withMiddleware(new \LORIS\Middleware\ContentSecurityPolicy())
+    ->withMiddleware(new \LORIS\Middleware\MFA())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
 $serverrequest = \Laminas\Diactoros\ServerRequestFactory::fromGlobals();
@@ -106,7 +111,7 @@ $lorisInstance = new \LORIS\LorisInstance(
     $factory->database(),
     $factory->config(),
     [
-        __DIR__ . "/../project/",
+        __DIR__ . "/../project/modules",
         __DIR__ . "/../modules/"
     ]
 );

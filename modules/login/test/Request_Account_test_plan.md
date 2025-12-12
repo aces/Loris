@@ -6,6 +6,7 @@
 3. Verify that verification code is enforced (if and only if re-captcha has been activated by the project)
 4. Verify that clicking "Submit" button with valid form data will load page acknowledging receipt (Thank you page)
 5. Verify "Return to Loris login page" link on Thank you page works
+6. Verify that if a policy is added to the project for module `login`, the policy is displayed on the Request Account form page, and it is required that the policy has been viewed to request an account.
 	
 ### Approving new User Account Request:
 6. Log in as another user who has permission: `user_accounts` (User Management) and does not have permission: `user_accounts_multisite` (Across all sites create and edit users). Verify that new account request notification is counted in Dashboard (count has incremented).

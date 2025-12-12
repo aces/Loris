@@ -82,7 +82,7 @@ class Module extends \Module
             if (count($starredqueries) > 0) {
                 $widgets[] = new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
-                        "Starred Queries",
+                        dgettext("dataquery", "Starred Queries"),
                         $this->renderTemplate(
                             "starredwidget.tpl",
                             [
@@ -111,7 +111,7 @@ class Module extends \Module
             if (count($studyqueries) > 0) {
                 $widgets[] = new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
-                        "Study Queries",
+                        dgettext("dataquery", "Study Queries"),
                         $this->renderTemplate(
                             "studyquerieswidget.tpl",
                             [

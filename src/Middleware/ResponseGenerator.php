@@ -3,7 +3,7 @@
 /**
  * Implements the ResponseGenerator middleware class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Router
  * @package  Middleware

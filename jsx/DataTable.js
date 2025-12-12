@@ -122,7 +122,7 @@ class DataTable extends Component {
     if (this.props.getMappedCell) {
       csvData = csvData
         .map((row, i) => this.props.fields
-          .flatMap((field, j) => this.props.getMappedCell(
+          .map((field, j) => this.props.getMappedCell(
             field.label,
             row[j],
             row,
@@ -355,7 +355,9 @@ class DataTable extends Component {
         }
         break;
       default:
-        searchString = data ? data.toString().toLowerCase() : '';
+        searchString = (data !== null && data !== undefined) ?
+          data.toString().toLowerCase() : '';
+
         if (exactMatch) {
           result = (searchString === searchKey);
         } else if (opposite) {
@@ -377,7 +379,8 @@ class DataTable extends Component {
       let match = false;
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();
-        searchString = data ? data.toString().toLowerCase() : '';
+        searchString = (data !== null && data !== undefined) ?
+          data.toString().toLowerCase() : '';
 
         let searchArray = searchString.split(',');
         match = (searchArray.includes(searchKey));
@@ -440,7 +443,7 @@ class DataTable extends Component {
             </div>
           </div>
           <div className='alert alert-info no-result-found-panel'>
-            <strong>No result found.</strong>
+            <strong>{this.props.t('No result found.', {ns: 'loris'})}</strong>
           </div>
         </div>
       );
@@ -601,7 +604,7 @@ class DataTable extends Component {
                   className="btn btn-primary"
                   onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
                 >
-                  {this.props.t('Download Table as CSV')}
+                  {this.props.t('Download Data as CSV')}
                 </button>)
               }
               <PaginationLinks

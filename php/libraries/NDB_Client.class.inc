@@ -3,7 +3,7 @@
 /**
  * This file contains the NDB_Client class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -52,9 +52,8 @@ class NDB_Client
         // Load the config file.
         $factory = NDB_Factory::singleton();
 
-        $config = $factory->config($configFile);
-
-        $DB = $factory->database();
+        // Load config file into factory as a side-effect
+        $factory->config($configFile);
 
         // stop here if this is a command line client
         if (!$this->_isWebClient) {
@@ -69,46 +68,6 @@ class NDB_Client
             return true;
         }
 
-        $config_additions = $DB->pselectOne(
-            "SELECT c.Value
-            FROM Config c
-            JOIN ConfigSettings cs ON (c.ConfigID=cs.ID)
-            WHERE cs.Name=:nm",
-            ["nm" => "CSPAdditionalHeaders"]
-        );
-        if (empty($config_additions)) {
-            $config_additions = "";
-        }
-        $CaptchaDomains ="";
-        // Get reCATPCHA keys
-        $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
-        $reCAPTCHAPublic  = $config->getSetting('reCAPTCHAPublic');
-        // Display reCAPTCHA if both private and public keys are set
-        if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
-            $CaptchaDomains ="www.google.com  www.gstatic.com";
-        }
-
-        // Content-Security policy for LORIS
-        // 1. By default, only allow things that are self-hosted
-        // 2. Allow inline CSS and JS (inline JS is required for
-        //    the Loris base class to load smarty variables
-        // 3. Allow unsafe-eval because jQuery requires it to load
-        //    our menus. It will be fixed in jQuery 3.0.0.
-        //    See: https://github.com/jquery/jquery/issues/2012
-        // 4. Allow data URLs for fonts, because our bootstrap theme
-        //    seems to load a font that way.
-        // 5. Allow reCAPTCHA domains only if the CAPTCHA keys were set
-        //    up by the project
-        header(
-            "Content-Security-Policy: "
-            . "default-src 'self' 'unsafe-inline'; "
-            . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
-            . "font-src 'self' data:; "
-            . "img-src 'self' https://images.loris.ca data:; "
-            . "frame-ancestors 'none'; "
-            . "form-action 'self'; "
-            . $config_additions
-        );
         // start php session
         $sessionOptions = ['cookie_httponly' => true];
 
@@ -178,24 +137,6 @@ class NDB_Client
         session_write_close();
         // finished initializing
         return true;
-    }
-
-    /**
-     * Returns true if the user is logged in
-     *
-     * @return true only if user is logged in
-     */
-    function isLoggedIn()
-    {
-        if (!isset($_SESSION['State'])) {
-            $_SESSION['State'] =& State::singleton();
-            $login = new SinglePointLogin();
-            $_SESSION['State']->setProperty('login', $login);
-        } else {
-            $login = $_SESSION['State']->getProperty('login');
-        }
-
-        return $login->isLoggedIn();
     }
 }
 

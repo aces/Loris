@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import hiStrings from '../locale/hi/LC_MESSAGES/user_accounts.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/user_accounts.json';
+import frStrings from '../locale/fr/LC_MESSAGES/user_accounts.json';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -16,13 +19,17 @@ import FilterableDataTable from 'FilterableDataTable';
  *
  * When clicking on the Add User button or a Username, this component redirects
  * the user to a form that allows them to add or edit a user.
+ *
+ * @param {object} props - React component properties
  */
 class UserAccountsIndex extends Component {
   /**
    * {@inheritdoc}
+   *
+   * @param props
    */
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       data: {},
@@ -69,53 +76,61 @@ class UserAccountsIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const {t} = this.props;
     let url;
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'Site':
-      // If user has multiple sites, join array of sites into string
+    case t('Site', {ns: 'loris', count: 1}):
       result = (
-        <td>{cell
-          .map((centerId) => this.state.data.fieldOptions.sites[centerId])
-          .join(', ')}
+        <td>
+          {cell
+            .map((centerId) => this.state.data.fieldOptions.sites[centerId])
+            .join(', ')}
         </td>
       );
       if (cell.length === 0) {
         result = (
-          <td>This user has no site affiliations</td>
+          <td>
+            {t('This user has no site affiliations', {ns: 'user_accounts'})}
+          </td>
         );
       }
       break;
-    case 'Project':
-      // If user has multiple projects, join array of sites into string
+    case t('Project', {ns: 'loris', count: 1}):
       result = (
-        <td>{cell.map(
-          (projectId) => this.state.data.fieldOptions.projects[projectId]
-        ).join(', ')}
+        <td>
+          {cell.map(
+            (projectId) => this.state.data.fieldOptions.projects[projectId]
+          ).join(', ')}
         </td>
       );
       if (cell.length === 0) {
         result = (
-          <td>This user has no project affiliations</td>
+          <td>
+            {t('This user has no project affiliations', {ns: 'user_accounts'})}
+          </td>
         );
       }
       break;
-    case 'Username':
-      url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
-      result = <td><a href ={url}>{cell}</a></td>;
+    case t('Username', {ns: 'loris'}):
+      const username = row[t('Username', {ns: 'loris'})];
+      url = loris.BaseURL + '/user_accounts/edit_user/' + username;
+      result = <td><a href={url}>{cell}</a></td>;
       break;
-    case 'Active':
-      if (row.Active === 'Y') {
-        result = <td>Yes</td>;
-      } else if (row.Active === 'N') {
-        result = <td>No</td>;
+    case t('Active', {ns: 'loris'}):
+      const activeKey = t('Active', {ns: 'loris'});
+      if (row[activeKey] === 'Y') {
+        result = <td>{t('Yes', {ns: 'loris'})}</td>;
+      } else if (row[activeKey] === 'N') {
+        result = <td>{t('No', {ns: 'loris'})}</td>;
       }
       break;
-    case 'Pending Approval':
-      if (row['Pending Approval'] === 'Y') {
-        result = <td>Yes</td>;
-      } else if (row['Pending Approval'] === 'N') {
-        result = <td>No</td>;
+    case t('Pending Approval', {ns: 'user_accounts'}):
+      const pendingKey = t('Pending Approval', {ns: 'user_accounts'});
+      if (row[pendingKey] === 'Y') {
+        result = <td>{t('Yes', {ns: 'loris'})}</td>;
+      } else if (row[pendingKey] === 'N') {
+        result = <td>{t('No', {ns: 'loris'})}</td>;
       }
       break;
     }
@@ -126,7 +141,7 @@ class UserAccountsIndex extends Component {
    * Changes url to be able to add or edit a User.
    */
   addUser() {
-    location.href='/user_accounts/edit_user/';
+    location.href = '/user_accounts/edit_user/';
   }
 
   /**
@@ -135,10 +150,15 @@ class UserAccountsIndex extends Component {
    * @return {object}
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return (
+        <h3>
+          {t('An error occured while loading the page.', {ns: 'loris'})}
+        </h3>
+      );
     }
 
     // Waiting for async data to load
@@ -152,52 +172,87 @@ class UserAccountsIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'Site', show: true, filter: {
-        name: 'site',
-        type: 'multiselect',
-        options: options.sites,
-      }},
-      {label: 'Project', show: true, filter: {
-        name: 'project',
-        type: 'select',
-        options: options.projects,
-      }},
-      {label: 'Username', show: true, filter: {
-        name: 'username',
-        type: 'text',
-      }},
-      {label: 'Full Name', show: true, filter: {
-        name: 'fullName',
-        type: 'text',
-      }},
-      {label: 'Email', show: true, filter: {
-        name: 'email',
-        type: 'text',
-      }},
-      {label: 'Active', show: true, filter: {
-        name: 'active',
-        type: 'select',
-        options: options.actives,
-      }},
-      {label: 'Pending Approval', show: true, filter: {
-        name: 'pendingApproval',
-        type: 'select',
-        options: options.pendingApprovals,
-      }},
-      {label: 'Account Request Date', show: true, filter: {
-        name: 'accountRequestDate',
-        type: 'date',
-        hide: true,
-      }},
+      {
+        label: t('Site', {ns: 'loris', count: 1}),
+        show: true,
+        filter: {
+          name: 'site',
+          type: 'multiselect',
+          options: options.sites,
+        },
+      },
+      {
+        label: t('Project', {ns: 'loris', count: 1}),
+        show: true,
+        filter: {
+          name: 'project',
+          type: 'select',
+          options: options.projects,
+        },
+      },
+      {
+        label: t('Username', {ns: 'loris'}),
+        show: true,
+        filter: {
+          name: 'username',
+          type: 'text',
+        },
+      },
+      {
+        label: t('Full Name', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'fullName',
+          type: 'text',
+        },
+      },
+      {
+        label: t('Email', {ns: 'loris'}),
+        show: true,
+        filter: {
+          name: 'email',
+          type: 'text',
+        },
+      },
+      {
+        label: t('Active', {ns: 'loris'}),
+        show: true,
+        filter: {
+          name: 'active',
+          type: 'select',
+          options: options.actives,
+        },
+      },
+      {
+        label: t('Pending Approval', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'pendingApproval',
+          type: 'select',
+          options: options.pendingApprovals,
+        },
+      },
+      {
+        label: t('Account Request Date', {ns: 'user_accounts'}),
+        show: true,
+        filter: {
+          name: 'accountRequestDate',
+          type: 'date',
+          hide: true,
+        },
+      },
     ];
     const actions = [
-      {label: 'Add User', action: this.addUser},
+      {
+        label: t('Add User', {ns: 'user_accounts'}),
+        action: this.addUser,
+      },
     ];
 
     return (
       <FilterableDataTable
         name="userAccounts"
-        title='User Accounts'
+        title={t('User Accounts', {ns: 'user_accounts'})}
         data={this.state.data.Data}
         fields={fields}
         getFormattedCell={this.formatColumn}
@@ -210,10 +265,13 @@ class UserAccountsIndex extends Component {
 UserAccountsIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'user_accounts', {});
+  i18n.addResourceBundle('ja', 'user_accounts', jaStrings);
+  i18n.addResourceBundle('hi', 'user_accounts', hiStrings);
+  i18n.addResourceBundle('fr', 'user_accounts', frStrings);
   const Index = withTranslation(
     ['user_accounts', 'loris']
   )(UserAccountsIndex);
@@ -226,3 +284,5 @@ window.addEventListener('load', () => {
     />
   );
 });
+
+export default withTranslation(['user_accounts', 'loris'])(UserAccountsIndex);

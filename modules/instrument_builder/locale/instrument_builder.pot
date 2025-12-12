@@ -21,3 +21,200 @@ msgstr ""
 msgid "Instrument Builder"
 msgstr ""
 
+msgid "Instrument Loaded"
+msgstr ""
+
+msgid "Load Instrument"
+msgstr ""
+
+msgid "Save Instrument"
+msgstr ""
+
+msgid "Build Instrument"
+msgstr ""
+
+msgid "Filename:"
+msgstr ""
+
+msgid "Instrument Name:"
+msgstr ""
+
+msgid "Load"
+msgstr ""
+
+msgid "Build"
+msgstr ""
+
+msgid "Database Name"
+msgstr ""
+
+msgid "Question Display (Front End)"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Page:"
+msgstr ""
+
+msgid "Drop here"
+msgstr ""
+
+msgid "Question Text"
+msgstr ""
+
+msgid "Question Name:"
+msgstr ""
+
+msgid "Dropdown Option:"
+msgstr ""
+
+msgid "Add option"
+msgstr ""
+
+msgid "Preview:"
+msgstr ""
+
+msgid "Start year:"
+msgstr ""
+
+msgid "End year:"
+msgstr ""
+
+msgid "Date Format:"
+msgstr ""
+
+msgid "Min:"
+msgstr ""
+
+msgid "Max:"
+msgstr ""
+
+msgid "Question Type:"
+msgstr ""
+
+msgid "Information"
+msgstr ""
+
+msgid "Header"
+msgstr ""
+
+msgid "Label"
+msgstr ""
+
+msgid "Scored Field"
+msgstr ""
+
+msgid "Data entry"
+msgstr ""
+
+msgid "Textbox"
+msgstr ""
+
+msgid "Textarea"
+msgstr ""
+
+msgid "Dropdown"
+msgstr ""
+
+msgid "Multiselect"
+msgstr ""
+
+msgid "Numeric"
+msgstr ""
+
+msgid "Formatting"
+msgstr ""
+
+msgid "Blank Line"
+msgstr ""
+
+msgid "Page Break"
+msgstr ""
+
+msgid "Select One"
+msgstr ""
+
+msgid "Add Question"
+msgstr ""
+
+msgid "Add Row"
+msgstr ""
+
+msgid "Edit Row"
+msgstr ""
+
+msgid "Page Name"
+msgstr ""
+
+msgid "Standard Date"
+msgstr ""
+
+msgid "Basic Date (does not include 'Not Answered' option)"
+msgstr ""
+
+msgid "Month Year (does not include day of the month)"
+msgstr ""
+
+msgid "Invalid extension. Only .linst files are allowed."
+msgstr ""
+
+msgid "Spaces are not allowed in the file name."
+msgstr ""
+
+msgid "Multiple periods in the file name are not allowed."
+msgstr ""
+
+msgid "Special characters are not allowed (only letters, numbers, and _)."
+msgstr ""
+
+msgid "File name cannot end with a special character."
+msgstr ""
+
+msgid "Question name can't contain 'status' as part of the name!"
+msgstr ""
+
+msgid "Dropdown options cannot be empty!"
+msgstr ""
+
+msgid "No element type selected"
+msgstr ""
+
+msgid "Invalid date provided"
+msgstr ""
+
+msgid "End year happened before start year"
+msgstr ""
+
+msgid "The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999."
+msgstr ""
+
+msgid "Max value must be larger than min value"
+msgstr ""
+
+msgid "Must use question text as page header"
+msgstr ""
+
+msgid "No question text specified"
+msgstr ""
+
+msgid "Please shorten to 64 characters maximum"
+msgstr ""
+
+msgid "Please shorten to 57 characters maximum"
+msgstr ""
+
+msgid "Must specify name for database to save value into"
+msgstr ""
+
+msgid "Duplicate question name"
+msgstr ""
+
+msgid "Top"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Delete"
+msgstr ""

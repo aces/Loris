@@ -3,7 +3,7 @@
 /**
  * Examiner module menu filter form
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Clinical
  * @package  Loris
@@ -16,7 +16,7 @@ namespace LORIS\examiner;
 /**
  * Examiner module menu filter form
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Clinical
  * @package  Loris
@@ -46,6 +46,7 @@ class Examiner extends \DataFrameworkMenu
             ]
         );
     }
+
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -56,6 +57,7 @@ class Examiner extends \DataFrameworkMenu
     {
                 return ['examiner_multisite'];
     }
+
     /**
      * {@inheritDoc}
      *
@@ -89,6 +91,7 @@ class Examiner extends \DataFrameworkMenu
         ];
 
     }
+
     /**
      * {@inheritDoc}
      *
@@ -98,6 +101,7 @@ class Examiner extends \DataFrameworkMenu
     {
         return false;
     }
+
     /**
      * {@inheritDoc}
      *
@@ -107,6 +111,7 @@ class Examiner extends \DataFrameworkMenu
     {
         return new ExaminerProvisioner($this->loris);
     }
+
     /**
      * Include the index examiner javascript dependency
      *

@@ -111,6 +111,4 @@ class ModuleDict extends \NDB_Page
         }
         return new \LORIS\Http\Response\JSON\OK($organized);
     }
-
-
 }

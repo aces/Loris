@@ -47,8 +47,16 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
             // csv version for exporting to clipboard
             $reusable_response = iterator_to_array($response);
             $csv = "Project,Statistic,Value\n";
-            foreach ($reusable_response as $row) {
+            foreach ($reusable_response as &$row) {
                 $csv .= $row['Project'].",".$row['Title'].",".$row['Value'] . "\n";
+                // we just add an "s" for the plural form since the final
+                // string will come from dngettext anyways
+                $row['Title'] = dngettext(
+                    "login",
+                    $row['Title'],
+                    $row['Title'] . 's',
+                    $row['Value']
+                );
             }
 
             return new \LORIS\Http\Response\JsonResponse(
@@ -102,5 +110,4 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
     {
         return true;
     }
-
 }

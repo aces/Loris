@@ -26,12 +26,11 @@ use LORIS\redcap\client\RedcapProps;
 class RedcapRepeatingInstrumentEvent implements IRedcapInstrumentEvent
 {
     /**
-     * Redcap Event name.
-     * This is linked to a UNIQUE event name.
+     * A REDCap unique event name.
      *
      * @var string
      */
-    public readonly string $event_name;
+    public readonly string $unique_event_name;
 
     /**
      * Redcap Form name.
@@ -47,7 +46,6 @@ class RedcapRepeatingInstrumentEvent implements IRedcapInstrumentEvent
      */
     public readonly ?string $custom_label;
 
-
     /**
      * Constructor
      *
@@ -57,19 +55,19 @@ class RedcapRepeatingInstrumentEvent implements IRedcapInstrumentEvent
     {
         $props = new RedcapProps('repeating_instrument', $props);
 
-        $this->event_name   = $props->getString('event_name');
-        $this->form_name    = $props->getString('form_name');
-        $this->custom_label = $props->getStringNullable('custom_form_label');
+        $this->unique_event_name = $props->getString('event_name');
+        $this->form_name         = $props->getString('form_name');
+        $this->custom_label      = $props->getStringNullable('custom_form_label');
     }
 
     /**
-     * Get the REDCap event name.
+     * Get the REDCap unique event name.
      *
      * @return string
      */
-    public function getEventName(): string
+    public function getUniqueEventName(): string
     {
-        return $this->event_name;
+        return $this->unique_event_name;
     }
 
     /**
@@ -91,7 +89,7 @@ class RedcapRepeatingInstrumentEvent implements IRedcapInstrumentEvent
     {
         return [
             'form_name'         => $this->form_name,
-            'event_name'        => $this->event_name,
+            'event_name'        => $this->unique_event_name,
             'custom_form_label' => $this->custom_label
         ];
     }

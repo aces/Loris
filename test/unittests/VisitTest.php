@@ -3,7 +3,7 @@
 /**
  * Unit test for Visit class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Test
@@ -187,7 +187,6 @@ class VisitTest extends TestCase
             $visits
         );
     }
-
 
     /**
      * Tears down the fixture, for example, close a network connection.

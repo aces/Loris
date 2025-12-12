@@ -350,6 +350,8 @@ function writeLINSTFile(
             fwrite($fp, "$field\n");
         }
     }
+
+    fwrite($fp, "{-@-}\n");
     fclose($fp);
 
     // META file
@@ -501,7 +503,7 @@ function checkOptions(\LORIS\LorisInstance $loris, array &$options): array
     $config = $config_parser->parse();
 
     $redcap_client = new RedcapHttpClient(
-        "{$config->redcap_instance_url}/api/",
+        $config->redcap_instance_url,
         $config->redcap_api_token,
     );
 

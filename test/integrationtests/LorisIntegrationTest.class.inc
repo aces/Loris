@@ -7,7 +7,7 @@
  * the module being tested and not the overhead of logging in
  * to Loris.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Test
@@ -259,7 +259,6 @@ abstract class LorisIntegrationTest extends TestCase
             ["ConfigID" => $configID]
         );
     }
-
 
     /**
      * Restores a config to its saved (previous) value.

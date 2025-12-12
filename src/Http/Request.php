@@ -4,7 +4,7 @@
 * File contains the PSR15 RequestInterface implementation that
 * can be constructed with the "new" keyword.
 *
-* PHP Version 7
+* PHP Version 8
 *
 * @category PSR15
 * @package  Http

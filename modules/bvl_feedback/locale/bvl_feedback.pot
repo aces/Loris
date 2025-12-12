@@ -24,3 +24,88 @@ msgstr ""
 msgid "Behavioural Feedback Notifications"
 msgstr ""
 
+# Default strings from feedback_bvl_type in raisinbread
+
+# Comments from dashboard widget on raisinbread.
+# These are dynamically entered user data, but having
+# the test set value on demo translated looks better
+msgid "Input"
+msgstr ""
+
+msgid "Input Errors"
+msgstr ""
+
+msgid "Scoring"
+msgstr ""
+
+msgid "Scoring Errors"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Feedback Type"
+msgstr ""
+
+msgid "Feedback description"
+msgstr ""
+
+msgid "Feedback for PSCID: {{PSCID}}"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "There are no threads for this user!"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Comment added!"
+msgstr ""
+
+msgid "Add a comment:"
+msgstr ""
+
+msgid "Update comment:"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Create thread"
+msgstr ""
+
+msgid "The new thread has been submitted!"
+msgstr ""
+
+msgid "Across All Fields"
+msgstr ""
+
+msgid "QC Class"
+msgstr ""
+
+msgid "# Threads"
+msgstr ""
+
+msgid "This candidate has no behavioural feedback."
+msgstr ""
+
+msgid "New {{feedbacklevel}} level feedback"
+msgstr ""
+
+msgid "Open Thread Summary"
+msgstr ""
+
+msgid "Feedback Threads"
+msgstr ""
+
+msgid "Field Name"
+msgstr ""

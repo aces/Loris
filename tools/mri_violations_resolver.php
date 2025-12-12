@@ -9,7 +9,7 @@
  *
  * Usage: php mri_violations_resolver.php [confirm]
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category MRI
  * @package  Main
@@ -17,24 +17,12 @@
  * @license  Loris License
  * @link     https://www.github.com/aces/Loris/
  */
-
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
-
-// path to config file
-$configFile = "../project/config.xml";
-
 require_once __DIR__ . "/generic_includes.php";
 
 $confirm = false;
 if (isset($argv[1]) && $argv[1] === "confirm") {
     $confirm = true;
 }
-
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize($configFile);
-
-$DB = $lorisInstance->getDatabaseConnection();
 
 // Query as it is in the mri violation module
 // It is complete as it apears in the module for two reasons:

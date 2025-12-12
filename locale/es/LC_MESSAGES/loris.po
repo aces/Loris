@@ -1,0 +1,360 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+# Smarty template main.tpl strings
+msgid "LORIS"
+msgstr ""
+
+msgid "DEV"
+msgstr ""
+
+msgid "Affiliations"
+msgstr ""
+
+msgid "Site Affiliation"
+msgstr ""
+
+msgid "Site Affiliations"
+msgstr ""
+
+msgid "Project Affiliation"
+msgstr ""
+
+msgid "Project Affiliations"
+msgstr ""
+
+msgid "Log Out"
+msgstr ""
+
+msgid "My Preferences"
+msgstr ""
+
+# Auto extracted strings from PHP
+# Menu categories
+#: modules/configuration/php/module.class.inc:50
+#: modules/help_editor/php/module.class.inc:47
+#: modules/instrument_manager/php/module.class.inc:53
+#: modules/module_manager/php/module.class.inc:50
+#: modules/server_processes_manager/php/module.class.inc:104
+#: modules/survey_accounts/php/module.class.inc:48
+#: modules/user_accounts/php/module.class.inc:53
+msgid "Admin"
+msgstr ""
+#: modules/acknowledgements/php/module.class.inc:54
+#: modules/api_docs/php/module.class.inc:66
+#: modules/battery_manager/php/module.class.inc:55
+#: modules/datadict/php/module.class.inc:49
+#: modules/data_release/php/module.class.inc:56
+#: modules/dictionary/php/module.class.inc:49
+msgid "Data Dictionary"
+msgstr ""
+
+#: modules/document_repository/php/module.class.inc:56
+#: modules/instrument_builder/php/module.class.inc:48
+#: modules/issue_tracker/php/module.class.inc:54
+#: modules/schedule_module/php/module.class.inc:49
+msgid "Tools"
+msgstr ""
+
+#: modules/behavioural_qc/php/module.class.inc:51
+#: modules/conflict_resolver/php/module.class.inc:83
+#: modules/examiner/php/module.class.inc:50
+#: modules/media/php/module.class.inc:33
+msgid "Clinical"
+msgstr ""
+
+#: modules/dicom_archive/php/module.class.inc:115
+#: modules/imaging_browser/php/module.class.inc:40
+#: modules/imaging_qc/php/module.class.inc:50
+#: modules/imaging_uploader/php/module.class.inc:54
+#: modules/mri_violations/php/module.class.inc:53
+msgid "Imaging"
+msgstr "Imágenes"
+
+#: modules/candidate_list/php/module.class.inc:76
+#: modules/new_profile/php/module.class.inc:50
+msgid "Candidate"
+msgstr ""
+
+#: modules/genomic_browser/php/module.class.inc:53
+msgid "Genomics"
+msgstr ""
+
+#: modules/electrophysiology_browser/php/module.class.inc:54
+msgid "Electrophysiology"
+msgstr ""
+
+#: modules/dataquery/php/module.class.inc:33
+#: modules/dqt/php/module.class.inc:49
+#: modules/publication/php/module.class.inc:55
+#: modules/statistics/php/module.class.inc:49
+msgid "Reports"
+msgstr ""
+
+# Common loris terms. Consider moving these to their own textdomain?
+msgid "TimePoint"
+msgstr "Punto en el tiempo"
+
+msgid "TimePoint %s Details"
+msgstr "Detalles del Punto en el Tiempo %s"
+
+# Common select option labels
+msgid "Yes"
+msgstr "Sí"
+
+msgid "No"
+msgstr "No"
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "N/A"
+msgstr "N/A"
+
+# Filters
+msgid "Selection Filter"
+msgstr "Selección de Filtros"
+
+msgid "Show Filters"
+msgstr "Mostrar Filtros"
+
+msgid "Hide Filters"
+msgstr "Ocultar Filtros"
+
+msgid "Clear Filters"
+msgstr "Limpiar Filtros"
+
+msgid "Show Advanced Filters"
+msgstr "Mostras filtros avanzados"
+
+msgid "Hide Advanced Filters"
+msgstr "Ocultar filtros avanzados"
+
+# Common swal labels
+msgid "OK"
+msgstr "Aceptar"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Success!"
+msgstr "Exitoso!"
+
+# Common candidate terms
+msgid "PSCID"
+msgstr "PSCID"
+
+msgid "DCCID"
+msgstr "CCDID"
+
+msgid "Visit Label"
+msgstr "Etiqueta de Visita"
+
+msgid "Site"
+msgstr "Sitio"
+
+msgid "Module"
+msgstr ""
+
+msgid "Project"
+msgstr "Projecto"
+
+msgid "Candidate Registration Project"
+msgstr "Projecto donde se registró al Candidato"
+
+msgid "Timepoint Project"
+msgstr "Punto en el tiempo del Projecto"
+
+msgid "Cohort"
+msgid_plural "Cohorts"
+msgstr[0] "Cohorte"
+msgstr[1] "Cohortes"
+
+msgid "Session"
+msgstr ""
+
+msgid "Date of registration"
+msgstr ""
+
+msgid "Participant Status"
+msgstr ""
+
+msgid "DoB"
+msgstr ""
+
+msgid "Sex"
+msgstr "Sexo"
+
+msgid "Feedback"
+msgstr "Retroalimentación"
+
+msgid "Scans"
+msgstr ""
+
+msgid "Stage"
+msgstr "Etapa"
+
+msgid "Send To DCC"
+msgstr "Enviar a CCD"
+
+msgid "Sent To DCC"
+msgstr "Enviado a CCD"
+
+msgid "Reverse Send To DCC"
+msgstr "Revertir Enviar al CCD"
+
+msgid "Date of Birth"
+msgstr "Fecha de Nacimiento"
+
+msgid "Visits"
+msgstr "Visitas"
+
+msgid "An error occured while loading the page."
+msgstr "Un error ocurrió minstras cargaba la página"
+
+msgid "Entity Type"
+msgstr "Tipo de Entidad"
+
+msgid "Scan Done"
+msgstr "Scan hecho"
+
+msgid "Language"
+msgstr "Lenguaje"
+
+msgid "Access denied"
+msgstr "Acceso denegado"
+
+msgid "No."
+msgstr "número"
+
+msgid "Are you sure?"
+msgstr "Estás seguro?"
+
+msgid "Yes, I am sure!"
+msgstr "¡Sí, estoy seguro!"
+
+msgid "No, cancel it!"
+msgstr "¡No, cancélalo!"
+
+# Data table strings
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgstr "{{pageCount}} filas mostradas de {{totalCount}}."
+
+msgid "Maximum rows per page:"
+msgstr "Máximo de filasa por página"
+
+msgid "Download Data as CSV"
+msgstr "Descargar Datos como CSV"
+
+# Dashboard panel strings
+msgid "Views"
+msgstr "Vistas"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "Nuevo"
+
+msgid "Updated"
+msgstr "Actualizado"
+
+msgid "Uploaded"
+msgstr "Subido"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Error!"
+msgstr "Error!"
+
+# Common timepoint and vist terms
+msgid "Not Started"
+msgstr "No Iniciado"
+
+msgid "Screening"
+msgstr "Cribado"
+
+msgid "Visit"
+msgstr "Visita"
+
+msgid "Approval"
+msgstr "Aprobación"
+
+msgid "Subject"
+msgstr "Sujeto"
+
+msgid "Recycling Bin"
+msgstr "Papelera de Reciclage"
+
+msgid "Pass"
+msgstr "Aprobado"
+
+msgid "Failure"
+msgstr "Fallido"
+
+msgid "Withdrawal"
+msgstr "Retirado"
+
+msgid "In Progress"
+msgstr "En Progreso"
+
+msgid "Complete"
+msgstr "Completo"
+
+msgid "Instruments"
+msgstr "Instrumentos"
+
+msgid "None"
+msgstr "Ninguna"
+
+msgid "Partial"
+msgstr "Parcial"
+
+msgid "All"
+msgstr "Completa"
+
+msgid "Data Entry"
+msgstr "Entrada de datos"
+
+msgid "Administration"
+msgstr "Administración"
+
+msgid "Double Data Entry Form"
+msgstr "Formulario de entrada de datos duplicado"
+
+msgid "Double Data Entry Status"
+msgstr "Estado del formulario de entrada de datos duplicado"
+
+msgid "Double Data Entry"
+msgstr "Entrada de datos duplicada"
+
+# Age related terms
+msgid "Age"
+msgstr "Edad"
+
+msgid "{{months}} months old"
+msgstr "{{months}} meses"
+
+msgid "{{years}} years old"
+msgstr "{{years}} años"
+
+msgid "File to upload"
+msgstr "Archivo para subir"
+

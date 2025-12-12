@@ -3,7 +3,7 @@
 /**
  * This file contains the NDB_Form_media class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Loris
  * @package  Media
@@ -101,5 +101,4 @@ class Edit extends \NDB_Form
     {
         return $user->hasPermission('media_write');
     }
-
 }

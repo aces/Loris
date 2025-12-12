@@ -23,7 +23,6 @@ use \LORIS\Middleware\ETagCalculator;
  */
 class Conflicts extends \NDB_Page implements ETagCalculator
 {
-
     /**
      * This function will return a json response.
      *
@@ -149,5 +148,4 @@ class Conflicts extends \NDB_Page implements ETagCalculator
     {
         return ['GET'];
     }
-
 }

@@ -5,7 +5,7 @@
  * contain ALL of the references to HTML_QuickForm (or any library
  * used to render HTML.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -147,6 +147,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
 
     }
+
     /**
      * Safely sets a smarty template variable.
      *
@@ -191,7 +192,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $this->form->addElement(
             'file',
             $name,
-            $label,
+            dgettext($this->name, $label),
             [],
             array_merge(['class' => 'fileUpload'], $attribs)
         );
@@ -206,7 +207,8 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addHeader($header)
     {
-        $this->form->addElement('header', '', $header);
+        $this->form->addElement('header', '', dgettext($this->name, $header));
+
     }
 
     /**
@@ -231,7 +233,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('select', $name, $label, $options, $attribs);
+        $this->form->addElement(
+            'select',
+            $name,
+            dgettext($this->name, $label),
+            $options,
+            $attribs
+        );
     }
 
     /**
@@ -243,7 +251,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addLabel($label)
     {
-        $this->form->addElement('static', '', $label);
+        $this->form->addElement(
+            'static',
+            '',
+            dgettext($this->name, $label)
+        );
     }
 
     /**
@@ -256,9 +268,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addScoreColumn($name, $label)
     {
-        $this->form->addElement('static', $name, $label);
+        $this->form->addElement(
+            'static',
+            $name,
+            dgettext($this->name, $label)
+        );
     }
-
 
     /**
      * Adds a text element to the current page with no accompanying
@@ -274,7 +289,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     function addBasicText($field, $label, $options=[], $attribs=[])
     {
         $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
-        $this->form->addElement('text', $field, $label, $options, $attribs);
+        $this->form->addElement(
+            'text',
+            $field,
+            dgettext($this->name, $label),
+            $options,
+            $attribs
+        );
     }
 
     /**
@@ -296,7 +317,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('textarea', $field, $label, [], $attribs);
+        $this->form->addElement(
+            'textarea',
+            $field,
+            dgettext($this->name, $label),
+            [],
+            $attribs
+        );
     }
 
     /**
@@ -323,7 +350,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         ]
     ) {
         $options = ($options ?? []) + $this->dateOptions;
-        $this->form->addElement('date', $field, $label, $options, $attribs);
+        $this->form->addElement(
+            'date',
+            $field,
+            dgettext($this->name, $label),
+            $options,
+            $attribs
+        );
     }
 
     /**
@@ -342,7 +375,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('advcheckbox', $name, $label, [], $attribs);
+        $this->form->addElement(
+            'advcheckbox',
+            $name,
+            dgettext($this->name, $label),
+            [],
+            $attribs
+        );
     }
 
     /**
@@ -367,7 +406,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         foreach ($radios as $radElement) {
             $radGroup[] = $this->createRadio(
                 $name,
-                $radElement['label'],
+                dgettext($this->name, $radElement['label']),
                 $options,
                 [
                     'class' => 'form-control input-sm',
@@ -421,7 +460,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm not-answered']
         );
 
-        $this->addGroup($group, $field . '_group', $label, '');
+        $this->addGroup(
+            $group,
+            $field . '_group',
+            dgettext($this->name,  $label),
+            ''
+        );
 
     }
 
@@ -440,7 +484,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $attribs=[]
     ) {
         $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
-        $this->form->addElement('password', $field, $label, [], $attribs);
+        $this->form->addElement(
+            'password',
+            $field,
+            dgettext($this->name,  $label),
+            [],
+            $attribs
+        );
     }
 
     /**
@@ -461,7 +511,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addRule($element, $message, $type, $format=null)
     {
-        $this->form->addRule($element, $message, $type, $format);
+        $this->form->addRule(
+            $element,
+            dgettext($this->name, $message),
+            $type,
+            $format
+        );
     }
 
     /**
@@ -500,7 +555,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addGroup($elements, $name, $label, $delimiter, $options=null)
     {
-        $this->form->addGroup($elements, $name, $label, $delimiter, $options);
+        $this->form->addGroup(
+            $elements,
+            $name,
+            !empty($label) ? dgettext($this->name, $label) : null,
+            $delimiter,
+            $options
+        );
     }
 
     /**
@@ -522,7 +583,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "select",
             $field,
-            $label,
+            dgettext($this->name, $label),
             $options,
             $attribs
         );
@@ -540,9 +601,10 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "static",
             '',
-            $labelString
+            dgettext($this->name, $labelString),
         );
     }
+
     /**
      * Creates a QuickForm text element but does not add it to the form
      *
@@ -558,7 +620,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $attribs=[]
     ) {
         $attr = array_merge(['class' => 'form-control input-sm'], $attribs);
-        return $this->form->createElement("text", $field, $label, [], $attr);
+        return $this->form->createElement(
+            "text",
+            $field,
+            dgettext($this->name, $label),
+            [],
+            $attr
+        );
     }
 
     /**
@@ -574,7 +642,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "textarea",
             $field,
-            $label,
+            dgettext($this->name, $label),
             [],
             ['class' => 'form-control input-sm']
         );
@@ -606,7 +674,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "date",
             $field,
-            $label,
+            dgettext($this->name, $label),
             ($dateOptions ?? []) + $this->dateOptions,
             $attribs
         );
@@ -626,7 +694,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "advcheckbox",
             $field,
-            $label,
+            !empty($label) ? dgettext($this->name, $label) : '',
             [],
             $attribs
         );
@@ -648,7 +716,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "radio",
             $field,
-            $label,
+            dgettext($this->name, $label),
             $options,
             $attribs
         );
@@ -671,7 +739,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             'password',
             $field,
-            $label,
+            dgettext($this->name, $label),
             [],
             $attribs
         );
@@ -797,7 +865,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $html;
     }
 
-
     /**
      * Returns the form-specific defaults
      *
@@ -861,12 +928,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             $baseurl . '/js/jquery.fileupload.js',
             $baseurl . '/bootstrap/js/bootstrap.min.js',
             $baseurl . '/js/components/Breadcrumbs.js',
+            $baseurl . '/js/components/PolicyButton.js',
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Help.js',
         ];
         return $files;
     }
-
 
     /**
      * Returns an ordered list of CSS dependencies that this page depends
@@ -933,6 +1000,171 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($this->Module->getLongName(), "/$this->name"),
             new \LORIS\Breadcrumb($sublabel, "/$this->name/$this->page")
+        );
+    }
+
+    /**
+     * Get latest Policy for this module with an optional Policy Name
+     *
+     * @param \LORIS\LorisInstance $loris        The LORIS instance
+     * @param string               $policyName   The policy name
+     * @param bool                 $headerButton If true, only return policies that
+     *                                           have HeaderButton = 'Y'
+     *
+     * @return array The policy details
+     * @throws \DatabaseException
+     */
+    function getPolicy(
+        \LORIS\LorisInstance $loris,
+        string $policyName ='',
+        bool $headerButton = false
+    ) {
+        $moduleName = $this->Module->getName();
+        $DB         = $loris->getDatabaseConnection();
+        // If no policy name is given, we return the latest policy for the module
+        if (!empty($policyName)) {
+            $policyName = 'AND p.Name = '. $DB->quote($policyName);
+        }
+        // If we want just a policy that goes in the header,
+        // then we need HeaderButton = 'Y'
+        if ($headerButton == true) {
+            $headerWhere = "('Y')";
+        } else {
+            $headerWhere = "('Y', 'N')";
+        }
+        return iterator_to_array(
+            $DB->pselect(
+                "SELECT
+                    p.Name as PolicyName,
+                    Version,
+                    Content,
+                    SwalTitle,
+                    HeaderButtonText,
+                    AcceptButtonText,
+                    DeclineButtonText,
+                    m.Name as ModuleName,
+                    PolicyID,
+                    PolicyRenewalTime,
+                    PolicyRenewalTimeUnit
+                FROM policies p
+                JOIN modules m ON m.ID = p.ModuleID
+                WHERE m.Name = :moduleName
+                    $policyName
+                    AND p.Active = 'Y'
+                    AND p.HeaderButton IN $headerWhere
+                ORDER BY p.Version DESC
+                LIMIT 1
+                ",
+                [
+                    'moduleName' => $moduleName
+                ]
+            )
+        )[0] ?? [];
+    }
+
+    /**
+     * Returns the latest Policy for this page with a HeaderButton
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance
+     *
+     * @return array
+     */
+    public function getHeaderPolicy(
+        \LORIS\LorisInstance $loris
+    ): array {
+        return $this->getPolicy(
+            $loris,
+            '',
+            true
+        ) ?? [];
+    }
+
+    /**
+     * Get a User's latest policy decision, and whether or not they need to renew.
+     *
+     * @param \LORIS\LorisInstance $loris      The LORIS instance
+     * @param string               $policyName The policy name
+     * @param int|null             $userID     The user ID, or current user if null
+     *
+     * @return array The decision details
+     * @throws \DatabaseException
+     * @access public
+     */
+    public function getLatestPolicyDecision(
+        \LORIS\LorisInstance $loris,
+        string $policyName,
+        int|null $userID
+    ) {
+        $userID = $userID ?? User::singleton()->getID();
+        $DB     = $loris->getDatabaseConnection();
+
+        $policyInfo = $this->getPolicy($loris, $policyName, false) ?? [];
+        if (empty($policyInfo)) {
+            return [];
+        }
+        $decision     = iterator_to_array(
+            $DB->pselect(
+                "SELECT Decision, DecisionDate
+                FROM user_policy_decision
+                WHERE
+                    UserID = :uid
+                    AND PolicyID=:policyID
+                ORDER BY DecisionDate DESC
+                LIMIT 1
+                ",
+                [
+                    'uid'      => $userID,
+                    'policyID' => $policyInfo['PolicyID']
+                ]
+            )
+        )[0] ?? [];
+        $needsRenewal = true;
+        if ($decision
+            && $decision['Decision'] == 'Accepted'
+            && $policyInfo['PolicyRenewalTime'] > 0
+        ) {
+            $decisionDate = new \DateTime($decision['DecisionDate']);
+            $interval     = new \DateInterval(
+                "P{$policyInfo['PolicyRenewalTime']}".
+                "{$policyInfo['PolicyRenewalTimeUnit']}"
+            );
+            $renewalDate  = $decisionDate->add($interval);
+            if ($renewalDate > new \DateTime()) {
+                $needsRenewal = false;
+            }
+        }
+        return [
+            ...$policyInfo,
+            'needsRenewal' => $needsRenewal,
+        ];
+    }
+
+    /**
+     * Save a User's Policy decision
+     *
+     * @param \LORIS\LorisInstance $loris      The LORIS instance
+     * @param string               $PolicyName The Policy Name
+     * @param string               $decision   The decision made by the current user
+     *
+     * @return void
+     * @throws \DatabaseException
+     */
+    function saveUserPolicyDecision(
+        \LORIS\LorisInstance $loris,
+        string $PolicyName,
+        string $decision
+    ) {
+        $user = User::singleton();
+        $DB   = $this->loris->getDatabaseConnection();
+
+        $policy = $this->getPolicy($loris, $PolicyName, false);
+        $DB->insert(
+            'user_policy_decision',
+            [
+                'UserID'   => $user->getId(),
+                'PolicyID' => $policy['PolicyID'],
+                'Decision' => $decision,
+            ]
         );
     }
 

@@ -21,3 +21,30 @@ msgstr ""
 msgid "Data Dictionary (Legacy)"
 msgstr ""
 
+msgid "Source From"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Source Field"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Description Status"
+msgstr ""
+
+msgid "Empty"
+msgstr ""
+
+msgid "Modified"
+msgstr ""
+
+msgid "Unchanged"
+msgstr ""
+
+msgid "Cohorts"
+msgstr ""
+

@@ -24,3 +24,17 @@ msgstr ""
 msgid "My Tasks"
 msgstr ""
 
+msgid "Site: All"
+msgstr ""
+
+msgid "Site: All User Sites"
+msgstr ""
+
+msgid "...never. Welcome!"
+msgstr ""
+
+msgid "Welcome, %s!"
+msgstr ""
+
+msgid "Last login:"
+msgstr ""

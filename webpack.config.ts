@@ -15,7 +15,7 @@ const target = process.env.target;
 const lorisModules: Record<string, string[]> = {
   media: ['CandidateMediaWidget', 'mediaIndex'],
   issue_tracker: ['issueTrackerIndex', 'index', 'CandidateIssuesWidget'],
-  login: ['loginIndex'],
+  login: ['loginIndex', 'mfaPrompt'],
   publication: ['publicationIndex', 'viewProjectIndex'],
   document_repository: ['docIndex', 'editFormIndex'],
   candidate_parameters: ['CandidateParameters', 'ConsentWidget', 'DiagnosisEvolution'],
@@ -28,6 +28,7 @@ const lorisModules: Record<string, string[]> = {
   battery_manager: ['batteryManagerIndex'],
   bvl_feedback: ['react.behavioural_feedback_panel'],
   behavioural_qc: ['behaviouralQCIndex'],
+  biobank: ['biobankIndex'],
   create_timepoint: ['createTimepointIndex'],
   candidate_list: ['openProfileForm', 'candidateListIndex'],
   datadict: ['dataDictIndex'],
@@ -83,6 +84,7 @@ const lorisModules: Record<string, string[]> = {
   schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
+  my_preferences: ['mfa'],
   redcap: [
     'redcapIndex',
     'tabs/dictionaryViewer',
@@ -262,7 +264,7 @@ function addProjectModules(
 
   // Copy the record of LORIS modules
   const allModules: Record<string, string[]> = modules;
-  
+
   // Add project-specific modules and overrides to the record of modules
   for (const [moduleName, moduleEntryPoints] of
     Object.entries(projectModules)
@@ -354,6 +356,7 @@ configs.push({
     StaticDataTable: './jsx/StaticDataTable.js',
     MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
     Breadcrumbs: './jsx/Breadcrumbs.js',
+    PolicyButton: './jsx/PolicyButton.js',
     CSSGrid: './jsx/CSSGrid.js',
     Help: './jsx/Help.js',
     ...getModulesEntries(),

@@ -1,0 +1,283 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 10:23-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Issue Tracker"
+msgstr "Suivi des incidents"
+
+msgid "Issue"
+msgstr "Incident"
+
+msgid "Your assigned issue"
+msgid_plural "Your assigned issues"
+msgstr[0] "Incident assigné à vous"
+msgstr[1] "Les incidents qui vous ont été assignés"
+
+msgid "Open Issues"
+msgstr "Incidents ouverts"
+
+msgid "Issue ID"
+msgstr "Identifiant de l’incident"
+
+msgid "Reporter"
+msgstr "Représentant"
+
+msgid "Assignee"
+msgstr "Assigné"
+
+msgid "Priority"
+msgstr "Priorité"
+
+msgid "Title"
+msgstr "Titre"
+
+msgid "Category"
+msgstr "Catégorie"
+
+msgid "Date Created"
+msgstr "Date de création"
+
+msgid "Last Update"
+msgstr "Dernière mise à jour"
+
+#, fuzzy
+msgid "SessionID"
+msgstr "ID de session"
+
+msgid "Watching"
+msgstr "En train de regarder"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "High"
+msgstr "Élevé"
+
+msgid "Urgent"
+msgstr "Urgent"
+
+msgid "Immediate"
+msgstr "Immédiat"
+
+msgid "Low"
+msgstr "Basse"
+
+msgid "All Sites"
+msgstr "Tous les sites"
+
+msgid "All Issues"
+msgstr "Toutes les incidents"
+
+msgid "Active Issues"
+msgstr "Incidents actifs"
+
+msgid "Closed Issues"
+msgstr "Incidents fermées"
+
+msgid "My Issues"
+msgstr "Mes incidents"
+
+msgid "New Issue"
+msgstr "Nouvel incident"
+
+msgid "Browse Issues"
+msgstr "Parcourir les incidents"
+
+msgid "Batch Edit"
+msgstr "Édition par lot"
+
+msgid "Add Comment"
+msgstr "Ajouter un commentaire"
+
+msgid "Create New Issue"
+msgstr "Créer un nouvel incident"
+
+msgid "Never!"
+msgstr "Jamais !"
+
+#, fuzzy
+msgid "No-one!"
+msgstr "Personne !"
+
+#, fuzzy
+msgid "Sometime Soon!"
+msgstr "Bientôt !"
+
+msgid "Submit Issue"
+msgstr "Soumettre un incident"
+
+msgid "Edit Issue"
+msgstr "Modifier l’incident"
+
+msgid "Update Issue"
+msgstr "Mettre à jour l’incident"
+
+msgid "Add Attachment"
+msgstr "Ajouter une pièce jointe"
+
+msgid "Attachment for issue"
+msgstr "Pièce jointe pour l’incident"
+
+msgid "Attachment for Issue"
+msgstr "Pièce jointe pour l’incident"
+
+msgid "Description"
+msgstr "Description"
+
+#, fuzzy
+msgid "Watching?"
+msgstr "Tu regardes ?"
+
+#, fuzzy
+msgid "Add others to watching?"
+msgstr "Ajouter d'autres personnes à la liste des spectateurs ?"
+
+msgid "New Comment"
+msgstr "Nouveau commentaire"
+
+msgid "This field is required"
+msgstr "Ce champ est requis"
+
+#, fuzzy
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr "Vous serez redirigé vers la page principale dans 2 secondes !"
+
+msgid "Failed to submit issue :("
+msgstr "Échec de la soumission de l’incident :("
+
+msgid "Issue updated!"
+msgstr "Incident mis à jour !"
+
+msgid "Issue created!"
+msgstr "Incident créé !"
+
+#, fuzzy
+msgid "Comments and History"
+msgstr "Commentaires et historique"
+
+#, fuzzy
+msgid "Last Updated By"
+msgstr "Dernière mise à jour par"
+
+msgid "Created"
+msgstr "Créé"
+
+msgid "Last Updated"
+msgstr "Dernière mise à jour"
+
+msgid "({{count}} issue)"
+msgid_plural "({{count}} issues)"
+msgstr[0] "({{count}} incident)"
+msgstr[1] "({{count}} incidents)"
+
+msgid "{{count}} issues displayed of {{total}}"
+msgstr "{{count}} incidents affichés sur {{total}}"
+
+msgid "Maximum issues per page: {{total}}"
+msgstr "Nombre maximal d’incidents par page : {{total}}"
+
+msgid "Failed to fetch issues. Please try again later."
+msgstr "Échec de la récupération des incidents. Veuillez réessayer plus tard."
+
+msgid "No issues match the selected filters."
+msgstr "Aucun incident ne correspond aux filtres sélectionnés."
+
+#, fuzzy
+msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
+msgstr "Veuillez confirmer la demande de suppression de la pièce jointe « {{fileName}} »."
+
+msgid "Title cannot be empty"
+msgstr "Le titre ne peut pas être vide"
+
+#, fuzzy
+msgid "No changes were made"
+msgstr "Aucune modification n'a été apportée."
+
+msgid "Issue updated successfully"
+msgstr "Incident mis à jour avec succès"
+
+msgid "Information"
+msgstr "Information"
+
+#, fuzzy
+msgid "Updated by <0>{{user}}</0> on {{date}}"
+msgstr "Mis à jour par <0>{{user}}</0> le {{date}}"
+
+#, fuzzy
+msgid "Updated by <0>{{user}}</0> {{seconds}} seconds ago"
+msgstr "Mis à jour il y a <0>{{user}}</0> {{seconds}} seconde(s)"
+
+#, fuzzy
+msgid "Updated by <0>{{user}}</0> {{minutes}} minutes ago"
+msgstr "Mis à jour il y a <0>{{user}}</0> {{minutes}} minute(s)"
+
+#, fuzzy
+msgid "Updated by <0>{{user}}</0> {{hours}} hours ago"
+msgstr "Mis à jour il y a <0>{{user}}</0> {{hours}} heure(s)"
+
+msgid "New"
+msgstr "Nouveau"
+
+msgid "Acknowledged"
+msgstr "Constaté"
+
+msgid "Feedback"
+msgstr "Commentaires"
+
+msgid "Assigned"
+msgstr "Assigné"
+
+msgid "Resolved"
+msgstr "Résolu"
+
+msgid "Closed"
+msgstr "Fermé"
+
+#, fuzzy
+msgid "Behavioural Battery"
+msgstr "Batterie comportementale"
+
+#, fuzzy
+msgid "Behavioural Instruments"
+msgstr "Instruments comportementaux"
+
+msgid "Data Entry"
+msgstr "Entrée de données"
+
+#, fuzzy
+msgid "Examiners"
+msgstr "Examinateurs"
+
+msgid "Imaging"
+msgstr "Imagerie"
+
+msgid "Other"
+msgstr "Autre"
+
+msgid "Technical Issue"
+msgstr "Problème technique"
+
+msgid "User Accounts"
+msgstr "Comptes utilisateur"
+
+#, fuzzy
+msgid "Last 3 Comments"
+msgstr "3 derniers commentaires"

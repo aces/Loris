@@ -4,7 +4,7 @@
  * This class provides a single point to deal with user authentication
  * and validation of login, displaying the login page if necessary.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -29,7 +29,7 @@
 class SinglePointLogin
 {
     /**
-     * Defines whether a user is currently logged in
+     * Whether the user has already provided the an MFA token
      */
     var $_isLoggedIn = false;
 
@@ -89,7 +89,6 @@ class SinglePointLogin
     {
         return $this->_passwordChangeRequired;
     }
-
 
     /**
      * Checks whether anyone is currently logged in
@@ -185,10 +184,11 @@ class SinglePointLogin
      * @param string $password The password to validate
      * @param bool   $redirect If this flag is true, this
      *                         function may instead print
-     *                         out a login or password expiry
-     *                         page. when trying to authenticate.
-     *                         If false, it won't provide any output
-     *                         in those situation.
+     *                         out a login or password
+     *                         expiry page. when trying
+     *                         to authenticate. If false,
+     *                         it won't provide any
+     *                         output in those situation.
      *
      * @return bool False unless account is valid and password correct.
      * @access public
@@ -261,7 +261,6 @@ class SinglePointLogin
                         Password_hash,
 			active_from,
 			active_to
-
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
@@ -272,15 +271,18 @@ class SinglePointLogin
              * attacker will have a harder time knowing the difference
              * between a bad username and a bad password.
              */
-            $this->_lastError = "Incorrect username or password.";
+            $this->_lastError = dgettext("loris", "Incorrect username or password.");
             return false;
         }
         /* Check whether a user's account is locked due to too many bad login
          * attempts before actually trying to authenticate their credentials.
          */
         if ($this->accountLocked($username)) {
-            $this->_lastError = 'This account is currently suspended due '
-                . 'to too many bad login attempts.';
+            $this->_lastError = dgettext(
+                "loris",
+                'This account is currently suspended due '
+                . 'to too many bad login attempts.'
+            );
             $this->insertFailedDetail('Account locked', $setArray);
             return false;
         }
@@ -291,9 +293,7 @@ class SinglePointLogin
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                 try {
                     $newHash = new \Password($password);
-                    \User::factory($username)->updatePassword(
-                        $newHash
-                    );
+                    \User::factory($username)->updatePassword($newHash);
                 } catch (\InvalidArgumentException $e) {
                     // Edge-case: if a user has a password based on old LORIS
                     // password standards and it needs rehashing, it will
@@ -310,16 +310,18 @@ class SinglePointLogin
                         ['UserID' => $username]
                     );
                 }
-
             }
 
             if ($row['Active'] == 'N'
                 || (!empty($maxDaysInactive)
                 && $this->disabledDueToInactivity($username, $maxDaysInactive))
             ) {
-                $this->_lastError = "Your account has been deactivated."
+                $this->_lastError = dgettext(
+                    "loris",
+                    "Your account has been deactivated."
                     . " Please contact your project administrator to"
-                    . " reactivate this account.";
+                    . " reactivate this account."
+                );
                 $this->insertFailedDetail(
                     "user account not active",
                     $setArray
@@ -335,11 +337,13 @@ class SinglePointLogin
             if (($row['active_to'] != null)
                 && ($currentDay > strtotime($row['active_to']))
             ) {
-                $this->_lastError = "Your account has expired."
+                $this->_lastError = dgettext(
+                    "loris",
+                    "Your account has expired."
                     . " Please contact your project administrator to re-activate"
-                    . " this account.";
+                    . " this account."
+                );
                 return false;
-
             }
 
             // Check whether the account is expired.
@@ -349,9 +353,12 @@ class SinglePointLogin
             if (($row['active_to'] != null)
                 && ($currentDay > strtotime($row['active_to']))
             ) {
-                $this->_lastError = "Your account has expired."
+                $this->_lastError = dgettext(
+                    "loris",
+                    "Your account has expired."
                     . " Please contact your project administrator to re-activate"
-                    . " this account.";
+                    . " this account."
+                );
                 return false;
             }
 
@@ -368,19 +375,26 @@ class SinglePointLogin
 
             // Check whether account needs to be approved by an admin
             if ($row['Pending_approval'] == 'Y') {
-                $this->_lastError = "Your account has not yet been activated."
+                $this->_lastError = dgettext(
+                    "loris",
+                    "Your account has not yet been activated."
                     . " Please contact your project administrator to activate"
-                    . " this account.";
+                    . " this account."
+                );
                 $this->insertFailedDetail("user account pending", $setArray);
                 return false;
             }
+
             if ($row['Active'] == 'N'
                 || (!empty($maxDaysInactive)
                 && $this->disabledDueToInactivity($username, $maxDaysInactive))
             ) {
-                $this->_lastError = "Your account has been deactivated."
+                $this->_lastError = dgettext(
+                    "loris",
+                    "Your account has been deactivated."
                     . " Please contact your project administrator to"
-                    . " reactivate this account.";
+                    . " reactivate this account."
+                );
                 $this->insertFailedDetail(
                     "user account not active",
                     $setArray
@@ -402,6 +416,8 @@ class SinglePointLogin
             $this->_username = $row['UserID'];
 
             $DB->insert('user_login_history', $setArray);
+            unset($_SESSION['language']);
+
             return true;
         }
         /* When the password is wrong, log this detail for rate-limiting
@@ -413,7 +429,7 @@ class SinglePointLogin
         );
 
         // Fail by default with a generic error message
-        $this->_lastError = "Incorrect username or password.";
+        $this->_lastError = dgettext("loris", "Incorrect username or password.");
         return false;
     }
 
@@ -600,5 +616,31 @@ class SinglePointLogin
         $this->_username = $user->getUsername();
         $this->setState();
         $_SESSION['State']->setProperty('login', $this);
+    }
+
+    /**
+     * Returns true if this login session has already passed a 2 factor
+     * authentication check
+     *
+     * @return bool
+     */
+    public function passedMFA(): bool
+    {
+        return $_SESSION['PassedMFA'] ?? false === true;
+    }
+
+    /**
+     * Declare this session as having passed a 2 factor authentication
+     * check
+     *
+     * @return void
+     */
+    public function setPassedMFA()
+    {
+        // NDB_Client called session_write_close, we need to re-start it
+        // to edit a session variable.
+        session_start();
+        $_SESSION['PassedMFA'] = true;
+        session_write_close();
     }
 }

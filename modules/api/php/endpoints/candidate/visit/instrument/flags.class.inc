@@ -3,7 +3,7 @@
 /**
  * This implements the Visit specific instrument flags  endpoint class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -272,7 +272,6 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
         return (new \LORIS\Http\Response())
             ->withStatus(204);
     }
-
 
     /**
      * Implements the ETagCalculator interface

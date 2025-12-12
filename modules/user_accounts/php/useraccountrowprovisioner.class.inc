@@ -6,7 +6,7 @@ namespace LORIS\user_accounts;
   * This class implements a data provisioner to get all modules
   * for the User Accounts menu page.
   *
-  * PHP Version 7
+  * PHP Version 8
   *
   * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
   */

@@ -1,0 +1,72 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 10:28-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#, fuzzy
+msgid "Help Editor"
+msgstr "Aide Éditeur"
+
+msgid "Edit Help Content"
+msgstr "Modifier le contenu d’aide"
+
+#, fuzzy
+msgid "Help ID"
+msgstr "Aide ID"
+
+msgid "Topic"
+msgstr "Sujet"
+
+msgid "Content"
+msgstr "Contenu"
+
+msgid "Title"
+msgstr "Titre"
+
+#, fuzzy
+msgid "Open the help dialog to preview the changes."
+msgstr ""
+"Ouvrez la boîte de dialogue d'aide pour prévisualiser les "
+"modifications."
+
+#, fuzzy
+msgid "Content update successful!"
+msgstr "Mise à jour du contenu réussie !"
+
+#, fuzzy
+msgid "Content update unsuccessful."
+msgstr "Mise à jour du contenu échouée."
+
+msgid "Something went wrong"
+msgstr "Un problème est survenu"
+
+msgid "Try again"
+msgstr "Réessayer"
+
+#, fuzzy
+msgid ""
+"Help content cannot be added to an instrument that has already been "
+"registered."
+msgstr ""
+"Il n'est pas possible d'ajouter du contenu d'aide à un instrument "
+"déjà enregistré."
+
+#, fuzzy
+msgid "Adding help content for a specific instrument"
+msgstr "Ajouter du contenu d'aide pour un instrument spécifique"

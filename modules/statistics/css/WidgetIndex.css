@@ -1,3 +1,209 @@
 .c3-tooltip-container {
     top: 0px !important;
 }
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  width: 100%;
+}
+
+.c3-chart-line.c3-target.c3-target-Total{
+    display: none !important;
+}
+
+/* ===== Chart Header (Title + Toggle) ===== */
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 15px 10px 15px;
+}
+
+.chart-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  flex: 1;
+}
+
+/* ===== Chart Toggle Buttons ===== */
+.chart-toggle-wrapper {
+  display: flex;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.chart-toggle-btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border: 1px solid #ddd;
+  background-color: #f8f9fa;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.chart-toggle-btn:first-child {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.chart-toggle-btn:last-child {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.chart-toggle-btn:not(:first-child) {
+  border-left: none;
+}
+
+.chart-toggle-btn:hover {
+  background-color: #246EB6;
+  border-color: #246EB6;
+  color: white;
+}
+
+.chart-toggle-btn.active {
+  background-color:  #064785;
+  color: white;
+  border-color:  #064785;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.25);
+}
+
+.chart-toggle-btn.active:hover {
+  background-color: #043867;
+  border-color:  #043867;
+}
+
+
+.chart-visual-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.chart-visual-wrapper svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+/* Mobile view: stack title and toggle vertically */
+@media (max-width: 600px) {
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px 10px 10px 10px;
+  }
+
+  .chart-title {
+    font-size: 1.3rem;
+  }
+
+  .chart-toggle-wrapper {
+    align-self: stretch;
+  }
+
+  .chart-toggle-btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    flex: 1;
+  }
+}
+
+/* ===== Grid Wrapper for Chart Cards + Filters ===== */
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#charts-one-column {
+  grid-template-columns: 1fr;
+}
+
+/* Chart Card */
+.chart-card {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+  transform: translateY(-10px);
+  background-color: #f9fdff;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  border: 1px solid #acacac;
+}
+
+@media (max-width: 768px) {
+
+  body,
+  html {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .charts-grid,
+  .chart-card,
+  .charts-grid>[class*="col-"] {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .chart-card svg,
+  .chart-card .c3 {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .chart-card .c3 {
+    display: flex;
+    justify-content: center;
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .charts-grid>[class*="col-"] {
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .site-breakdown-card {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+}

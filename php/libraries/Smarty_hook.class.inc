@@ -3,7 +3,7 @@
 /**
  * This provides the implementation of the Smarty_NeuroDB class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main

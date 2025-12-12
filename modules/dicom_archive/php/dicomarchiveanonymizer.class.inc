@@ -4,7 +4,7 @@
  * This class implements a data mapper which anonymizes Patient Name
  * or patient ID in the DICOM Archive based on the LORIS configuration.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -92,10 +92,10 @@ class DICOMArchiveAnonymizer implements Mapper
         }
 
         if (!$isValid) {
-            $newrow['patientName'] = 'INVALID - HIDDEN';
+            $newrow['patientName'] = dgettext('dicom_archive', 'INVALID - HIDDEN');
         }
         if (!preg_match("/$pIDRegex/", $newrow['patientID'] ?? '')) {
-            $newrow['patientID'] = 'INVALID - HIDDEN';
+            $newrow['patientID'] = dgettext('dicom_archive', 'INVALID - HIDDEN');
         }
 
         if (!$resource instanceof \LORIS\StudyEntities\SiteHaver) {

@@ -3,7 +3,7 @@
 /**
  * File implements the ModuleAuthenticator class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Router
  * @package  Authentication

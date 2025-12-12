@@ -26,6 +26,7 @@ class Publication extends \NDB_Menu_Filter_Form
 {
     public $AjaxModule   = true;
     public $skipTemplate = true;
+
     /**
      * Returns true if user has access to this page.
      *
@@ -77,10 +78,6 @@ class Publication extends \NDB_Menu_Filter_Form
             "ON pcr.PublicationID=p.PublicationID ".
             "LEFT JOIN publication_collaborator pc ".
             "ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID ".
-            // make separate join for getting LeadInvestigator from collaborator
-            // table (pcli)
-            "LEFT JOIN publication_collaborator pcli ".
-            "ON pcli.PublicationCollaboratorID=p.LeadInvestigatorID ".
             "LEFT JOIN publication_keyword_rel pkr ".
             "ON p.PublicationID=pkr.PublicationID ".
             "LEFT JOIN publication_keyword pk ".
@@ -91,7 +88,7 @@ class Publication extends \NDB_Menu_Filter_Form
             "ON u.ID=p.UserID ".
             "LEFT JOIN Project pr ".
             "ON p.project=pr.ProjectID ";
-        $query .= " WHERE 1=1 ";
+        $query  .= " WHERE 1=1 ";
         // allow user access to module if they have edit
         // access to any project proposal
         // but only those that they do have access to
@@ -106,7 +103,7 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->columns = [
             'p.Title',
-            'pcli.Name as LeadInvestigator',
+            'p.LeadInvestigator',
             'p.DateProposed',
             'ps.Label', // Status (Approved, Pending, Rejected, etc.)
             'pr.Name as project',
@@ -148,20 +145,11 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->validFilters = [
             'p.Title',
+            'p.LeadInvestigator',
             'p.ApprovalStatus',
             'pc.Name',
             'pk.Label',
-            'pcli.Name', // Lead Investigator's name
             'pt.Name',
-        ];
-
-        $this->formToFilter = [
-            'titleOrDescription'  => 'p.Title',
-            'approvalStatus'      => 'ps.Label',
-            'collaborators'       => 'pc.Name',
-            'keywords'            => 'pk.Label',
-            'variablesOfInterest' => 'pt.Name',
-            'leadInvestigator'    => 'pcli.Name',
         ];
     }
 
@@ -197,62 +185,64 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->addBasicText(
             'title',
-            'Title'
+            "Title"
         );
         $this->addSelect(
             'approvalStatus',
-            'Approval Status',
+            "Approval Status",
             $statusOptions
         );
 
         // filters by name
         $this->addBasicText(
             'leadInvestigator',
-            'Lead Investigator'
+            "Lead Investigator"
         );
 
         //also filters by name
         $this->addBasicText(
             'collaborators',
-            'Collaborators'
+            "Collaborators"
         );
 
         $this->addBasicText(
             'keywords',
-            'Keywords'
+            "Keywords"
         );
 
         $this->addBasicText(
             'variablesOfInterest',
-            'Variables of Interest'
+            "Variables of Interest"
         );
 
         $this->addBasicText(
             'journal',
-            'Journal'
+            "Journal"
         );
 
         $this->addSelect(
             'project',
-            'Project',
+            "Project",
             $projectOptions
         );
 
         $this->addBasicText(
             'link',
-            'Link'
+            "Link"
         );
+
+        $pubPublished  = "Published";
+        $pubInProgress = "In Progress";
 
         $this->addSelect(
             'publishingStatus',
-            'Publishing Status',
+            "Publishing Status",
             [
-                'Published'   => 'Published',
-                'In Progress' => 'In Progress'
+                $pubPublished  => $pubPublished,
+                $pubInProgress => $pubInProgress,
             ]
         );
     }
-
 
     /**
      * Include the column formatter required to display the feedback link colours

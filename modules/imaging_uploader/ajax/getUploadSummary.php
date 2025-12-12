@@ -9,7 +9,7 @@
  *     argument summary is true, only those with verbose == 'N' are returned,
  *     otherwise they are all returned).
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Documentation
  * @package  Main
@@ -18,10 +18,25 @@
  * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
 
-if (!\User::singleton()->hasPermission('imaging_uploader')) {
+// Base access check - user must have either of these permissions
+// more access validation after request validation
+if (!$user->hasAnyPermission(
+    [
+        'imaging_uploader_allsites',
+        'imaging_uploader_ownsites',
+    ]
+)
+) {
     http_response_code(403);
     return;
 }
+$config        = \NDB_Factory::singleton()->config();
+$advancedperms = $config->getSetting('useAdvancedPermissions');
+$user          = \NDB_Factory::singleton()->user();
+$centerString  = implode("','", $user->getCenterIDs());
+$projectString = implode("','", $user->getProjectIDs());
+$username      = $user->getUsername();
+
 if (!validRequest()) {
     http_response_code(400);
     return;
@@ -29,11 +44,64 @@ if (!validRequest()) {
 
 $uploadId = $_POST['uploadId'];
 $summary  = $_POST['summary'] === 'true';
+$DB       = \NDB_Factory::singleton()->database();
+
+// Access Control - mimic menu filter behaviour
+// MySQL order of operations dictates that ANDs get computed before ORs which
+// means this where clause can take the follwoing forms
+// 1. WHERE mu.UploadedBy='$username' OR 1=1
+//      -> returns all records
+// 2. WHERE mu.UploadedBy='$username' OR (1=1 AND s.CenterID IN ...)
+//      -> returns records for user's sites
+// 3. WHERE mu.UploadedBy='$username' OR (1=1 AND s.ProjectID IN ...)
+//      -> returns records for user's projects
+// 4. WHERE mu.UploadedBy='$username'
+//        OR (1=1 AND s.CenterID IN ... AND s.ProjectID IN ...)
+//      -> returns records for user's sites and projects
+// 5. WHERE mu.UploadedBy='$username'
+//        OR (1=1 AND s.CenterID IN ... AND s.ProjectID IN ...)
+//        OR mu.SessionID IS NULL
+//     -> returns records for user's sites and projects and null session data
+// Other combinations are possible but order of operations still applies
+$accessQuery = "SELECT * 
+     FROM mri_upload mu 
+     LEFT JOIN session s ON (s.ID = mu.SessionID)
+     ";
+$accessWhere = " WHERE (mu.UploadedBy='$username' OR 1=1 ";
+if (!$user->hasPermission('imaging_uploader_allsites')) {
+    // Create where clause for sites
+    $accessWhere = $accessWhere . " AND s.CenterID IN ('$centerString') ";
+}
+
+if ($advancedperms === 'true') {
+    // If config setting is enabled, check the user's sites and projects
+    // site/project match + user's own uploads
+    $accessWhere = $accessWhere . " AND s.ProjectID IN ('$projectString')";
+}
+
+if ($user->hasPermission('imaging_uploader_nosessionid')) {
+    // clause for accessing null session data
+    $accessWhere = $accessWhere . " OR mu.SessionID IS NULL ";
+}
+
+// Wrap entire access logic in parentheses and add AND clause for specific upload ID
+$accessWhere = $accessWhere . ") AND UploadId =:uploadId";
+
+$accessData = $DB->pselectRow(
+    $accessQuery.$accessWhere,
+    ['uploadId' => $uploadId]
+);
+
+
+if (empty($accessData)) {
+    http_response_code(403);
+    return;
+}
+
 
 /* Fetch columns Inserting and InsertionComplete from table mri_upload
  * create Database object
  */
-$DB    = \NDB_Factory::singleton()->database();
 $query = "SELECT Inserting, InsertionComplete 
           FROM mri_upload
           WHERE UploadId =:uploadId";

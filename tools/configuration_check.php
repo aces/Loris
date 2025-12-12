@@ -183,8 +183,6 @@ $success ?
     $helper->printSuccess('Email sent successfully.')
     : $helper->printError('Sending email failed.');
 
-
-
 /**
  * Evaluate version requirement. Print result.
  *

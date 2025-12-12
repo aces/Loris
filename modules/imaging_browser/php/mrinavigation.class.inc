@@ -64,6 +64,7 @@ class MRINavigation
 
         $this->urlParams = $this->_splitURL();
     }
+
     /**
      * Parses the request into hostname/params, so that it can be
      * reconstructed into a link which has the same parameters
@@ -78,6 +79,7 @@ class MRINavigation
         parse_str($this->_bits[1], $urlParams);
         return $urlParams;
     }
+
     /**
      * Gets next or previous link
      *
@@ -98,6 +100,7 @@ class MRINavigation
             return implode('?', $this->_bits);
         }
     }
+
     /**
      * Sets the offset for the next link and gets the next link
      *
@@ -107,6 +110,7 @@ class MRINavigation
     {
         return $this->_otherLink(1);
     }
+
     /**
      * Sets the offset for the prev link and gets the prev link
      *

@@ -22,7 +22,6 @@ use \LORIS\Middleware\ETagCalculator;
  */
 class FileManager extends \NDB_Page implements ETagCalculator
 {
-
     /**
      * This function will return a json response.
      *
@@ -44,6 +43,7 @@ class FileManager extends \NDB_Page implements ETagCalculator
             );
         }
     }
+
     /**
      * Initialize setup, the extra values for the
      * create timepoint form. (psc & errors)
@@ -185,5 +185,4 @@ class FileManager extends \NDB_Page implements ETagCalculator
             'POST',
         ];
     }
-
 }

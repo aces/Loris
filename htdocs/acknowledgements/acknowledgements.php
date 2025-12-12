@@ -3,7 +3,7 @@
 /**
  * Publicly available generator for acknowledgements
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Loris
  * @package  Behavioural

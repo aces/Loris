@@ -18,7 +18,7 @@
  * allowing to dump data using only the database name. The functionality to input
  * credentials interactively should be added.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

@@ -21,20 +21,9 @@ msgstr ""
 msgid "Access Profile"
 msgstr "アクセスプロファイル"
 
-msgid "Entity Type"
-msgstr "エンティティタイプ"
-
-msgid "Scan Done"
-msgstr "スキャン完了"
-
 msgid "Visit Count"
 msgstr "訪問回数"
 
 msgid "Open Profile"
 msgstr "プロフィールを開く"
 
-msgid "Show Advanced Filters"
-msgstr "詳細フィルターを表示"
-
-msgid "Hide Advanced Filters"
-msgstr "詳細フィルターを非表示"

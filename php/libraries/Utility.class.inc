@@ -14,7 +14,6 @@ use \Loris\StudyEntities\Candidate\CandID;
  */
 class Utility
 {
-
     /**
      * Stops anyone from instantiating an instance of Utility
      */
@@ -87,6 +86,7 @@ class Utility
 
         return $age;
     }
+
     /**
      * Returns list of consent groups in the database
      *
@@ -106,6 +106,7 @@ class Utility
 
         return $result;
     }
+
     /**
      * Returns list of consents in the database
      *
@@ -405,8 +406,6 @@ class Utility
 
         return $result;
     }
-
-
 
     /**
      * Returns a list of bvl instruments
@@ -738,7 +737,6 @@ class Utility
         return iterator_to_array($sourcefields);
     }
 
-
     /**
      * Returns a list of study Visit Labels that are being used by this study.
      *
@@ -882,6 +880,31 @@ class Utility
             $languages[$language['language_id']] = $language['language_label'];
         }
         return $languages;
+    }
+
+    /**
+     * Get the list of language available in the database with the array key being
+     * the language code (ie. en_CA)
+     *
+     * @return array Array of language which exist in the database table 'language'
+     *               array is of the form
+     *               array($language_code => $language_label)
+     */
+    static function getLanguageListByCode(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        return array_column(
+            iterator_to_array(
+                $DB->pselect(
+                    "SELECT language_code, language_label FROM language",
+                    [],
+                ),
+            ),
+            "language_label",
+            "language_code",
+        );
     }
 
     /**

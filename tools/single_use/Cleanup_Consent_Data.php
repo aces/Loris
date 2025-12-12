@@ -2,7 +2,7 @@
 /**
  * This script is written for a one time use only to clean up existing data in the 'candidate_consent_rel' table to conform to the new front-end validation for entering consent.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

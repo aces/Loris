@@ -24,7 +24,6 @@ use \LORIS\Middleware\ETagCalculator;
  */
 class Profiles extends \DataFrameworkMenu implements ETagCalculator
 {
-
     /**
      * This function will return a json response.
      *
@@ -44,6 +43,7 @@ class Profiles extends \DataFrameworkMenu implements ETagCalculator
             );
         }
     }
+
     /**
      * Initialize setup, the extra values for the
      * create timepoint form. (psc & errors)

@@ -70,7 +70,11 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "New and pending imaging session",
+                    new \LORIS\GUI\LocalizableString(
+                        "imaging_browser",
+                        "New and pending imaging session",
+                        "New and pending imaging sessions",
+                    ),
                     $DB,
                     "SELECT COUNT(DISTINCT s.ID)
                      FROM files f
@@ -109,17 +113,43 @@ class Module extends \Module
             if (count($scansummary) === 0) {
                 return [];
             }
-            foreach ($scansummary as $summary) {
-                $summary['nfiles'] = (int )$summary['nfiles'];
-            }
             return [
                 new CandidateWidget(
-                    "Imaging QC Summary",
+                    dgettext("imaging_browser", "Imaging QC Summary"),
                     $baseURL. "/imaging_browser/js/CandidateScanQCSummaryWidget.js",
                     "lorisjs.imaging_browser.CandidateScanQCSummaryWidget.default",
                     [ 'Files' => iterator_to_array($scansummary)],
                     2,
                     1,
+                )
+            ];
+        case 'study-progression':
+            $DB   = $factory->database();
+            $data = $DB->pselectWithIndexKey(
+                "SELECT 
+                    p.ProjectID,
+                    p.Name AS ProjectName,
+                    COUNT(s.ID) AS count,
+                    '".$baseURL."/imaging_browser' as url
+                FROM session s
+                JOIN Project p ON p.ProjectID = s.ProjectID
+                JOIN mri_upload mu ON mu.SessionID = s.ID
+                WHERE s.Active <> 'N' 
+                AND s.CenterID <> 1
+                GROUP BY p.Name",
+                [],
+                'ProjectID'
+            );
+            return [
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        "imaging_browser",
+                        "Imaging Session",
+                        "Imaging Sessions"
+                    ),
+                    $data,
+                    "",
+                    'rgb(235, 255, 254)',
                 )
             ];
         }

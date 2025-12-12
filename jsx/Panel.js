@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Panel - a collapsible panel component with optional multiple views.
@@ -12,6 +13,7 @@ import PropTypes from 'prop-types';
 const Panel = (props) => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeView, setActiveView] = useState(0);
+  const {t} = useTranslation();
 
   /**
    * Similar to componentDidMount and componentDidUpdate.
@@ -70,7 +72,7 @@ const Panel = (props) => {
         <button type='button'
           className='btn btn-default btn-xs dropdown-toggle'
           data-toggle='dropdown'>
-          Views<span className='caret'/>
+          {t('Views', {ns: 'loris'})}<span className='caret'/>
         </button>
         <ul className='dropdown-menu pull-right'
           role='menu'>
@@ -91,6 +93,14 @@ const Panel = (props) => {
         {props.views && props.views[activeView]['title']
           ? props.views[activeView]['title']
           : props.title}
+        {props.views && props.views[activeView]['subtitle']
+          && <span>
+            {!props.views[activeView]['subtitle'].endsWith('-1')
+              ? ' | ' + `${props.views[activeView]['subtitle']}`
+              : ' | ' + 'Loading...'
+            }
+          </span>
+        }
       </h3>
       {panelViews}
       {props.collapsing

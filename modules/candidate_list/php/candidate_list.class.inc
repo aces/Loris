@@ -3,7 +3,7 @@
 /**
  * The candidate list menu
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Candidate_List
@@ -70,58 +70,9 @@ class Candidate_List extends \DataFrameworkMenu
      */
     function getFieldOptions() : array
     {
-        $this->loris->getModule('candidate_parameters')->registerAutoloader();
-
-        // create user object
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $config  = $factory->config();
-
-        // get the list of visit labels
-        $visit_label_options = \Utility::getVisitList();
-
-        // get the list of sites available for the user
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-        } else {
-            $list_of_sites = $user->getStudySites();
-        }
-        $site_options = [];
-        foreach (array_values($list_of_sites) as $name) {
-            $site_options[$name] = $name;
-        }
-
-        // get the list of projects
-        $list_of_projects = \Utility::getProjectList();
-        $project_options  = [];
-        foreach (array_values($list_of_projects) as $name) {
-            $project_options[$name] = $name;
-        }
-
-        // get the list of cohorts
-        $list_of_cohorts = \Utility::getCohortList();
-        $cohort_options  = [];
-        foreach (array_values($list_of_cohorts) as $name) {
-            $cohort_options[$name] = $name;
-        }
-
-        // get the list participant status options
-        $list_of_participant_status
-            = \Candidate::getParticipantStatusOptions();
-        $participant_status_options = [];
-        foreach (array_values($list_of_participant_status) as $name) {
-            $participant_status_options[$name] = $name;
-        }
-
-        return [
-            'visitlabel'        => $visit_label_options,
-            'site'              => $site_options,
-            'project'           => $project_options,
-            'cohort'            => $cohort_options,
-            'participantstatus' => $participant_status_options,
-            'useedc'            => $config->getSetting("useEDC"),
-            'Sex'               => \Utility::getSexList(),
-        ];
+        // To modify the field options,
+        // you must edit getFieldOptions in options.class.inc
+        return [];
     }
 
     /**

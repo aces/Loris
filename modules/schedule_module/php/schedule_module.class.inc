@@ -3,7 +3,7 @@
 /**
  * File contains the Schedule Module class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -36,6 +36,7 @@ class Schedule_Module extends \DataFrameworkMenu
     {
         return true;
     }
+
     /**
      * Tells the base class that this page's provisioner can support
      * the UserProjectMatch filter.
@@ -46,6 +47,7 @@ class Schedule_Module extends \DataFrameworkMenu
     {
         return true;
     }
+
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -89,6 +91,7 @@ class Schedule_Module extends \DataFrameworkMenu
             'next30days'      => date("Y-m-d", strtotime("+30 days")),
         ];
     }
+
     /**
      * {@inheritDoc}
      *

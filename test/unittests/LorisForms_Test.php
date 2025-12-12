@@ -4,7 +4,7 @@
  * This tests the LorisForm replacement for HTML_QuickForm used by
  * Loris.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -133,7 +133,6 @@ class LorisForms_Test extends TestCase
         );
     }
 
-
     /**
      * Test that the addSelect wrapper adds an element of the appropriate
      * type to the page
@@ -232,7 +231,6 @@ class LorisForms_Test extends TestCase
         $this->assertTrue(isset($this->form->form["abc"]["options"]));
     }
 
-
     /**
      * Test that the addFile wrapper adds an element of the appropriate
      * type to the page
@@ -246,7 +244,6 @@ class LorisForms_Test extends TestCase
         $this->assertType("abc", "file");
         $this->assertLabel("abc", "Hello");
     }
-
 
     /**
      * Test that the addPassword wrapper adds an element of the appropriate

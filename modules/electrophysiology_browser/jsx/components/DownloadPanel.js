@@ -33,10 +33,11 @@ class DownloadPanel extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     return (
       <Panel
         id={this.props.id}
-        title={'File Download'}
+        title={t('File Download', {ns: 'electrophysiology_browser'})}
       >
         <div
           style={{minHeight: '300px'}}
@@ -84,7 +85,11 @@ class DownloadPanel extends Component {
                               border: '1px solid #b3b3b3',
                               margin: 0,
                             }}
-                          >Not Available</a>
+                          >
+                            {t('Not Available', {
+                              ns: 'electrophysiology_browser',
+                            })}
+                          </a>
                           : <a
                             className='btn btn-primary download col-xs-6'
                             href={
@@ -101,7 +106,7 @@ class DownloadPanel extends Component {
                               margin: 0,
                             }}
                           >
-                            Download
+                            {t('Download', {ns: 'electrophysiology_browser'})}
                           </a>
                         }
                       </div>
@@ -139,6 +144,7 @@ DownloadPanel.propTypes = {
   physioFileID: PropTypes.number,
   outputType: PropTypes.string,
   id: PropTypes.string,
+  t: PropTypes.func,
 };
 
 DownloadPanel.defaultProps = {

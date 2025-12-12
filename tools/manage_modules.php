@@ -15,7 +15,7 @@
  * If the -n flag is provided, it will not actually add/delete from the
  * table, but only tell you what it would otherwise do.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Data
  * @package    Main

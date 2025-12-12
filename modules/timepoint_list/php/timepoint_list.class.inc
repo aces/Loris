@@ -3,7 +3,7 @@
 /**
  * The timepoint list menu
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Timepoint_List
@@ -21,7 +21,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 /**
  * The timepoint list menu
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Timepoint_List
@@ -89,7 +89,8 @@ class Timepoint_List extends \NDB_Menu
                 $current_date = new \DateTime();
                 $dob_year     = abs($current_date->diff($dob_date)->y);
                 $dob_month    = abs($current_date->diff($dob_date)->m);
-                $dob_age      = $dob_year . " y / " . $dob_month . " m";
+                $dob_age      = $dob_year . dgettext("timepoint_list", " y / ")
+                    . $dob_month . dgettext("timepoint_list", " m");
                 $this->tpl_data['dob_age'] = $dob_age;
             }
 
@@ -102,7 +103,8 @@ class Timepoint_List extends \NDB_Menu
                 $current_date = new \DateTime();
                 $edc_year     = abs($current_date->diff($edc_date)->y);
                 $edc_month    = abs($current_date->diff($edc_date)->m);
-                $edc_age      = $edc_year . " y / " . $edc_month . " m";
+                $edc_age      = $edc_year . dgettext("timepoint_list", " y / ")
+                    . $edc_month . dgettext("timepoint_list", " m");
                 $this->tpl_data['edc_age'] = $edc_age;
             }
         }
@@ -132,10 +134,17 @@ class Timepoint_List extends \NDB_Menu
             }
         );
 
+        $dateFormatter = new \IntlDateFormatter(
+            "",
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::NONE
+        );
+
         /*
          * List of visits
          */
         $x = 0;
+
         foreach ($listOfTimePoints as $timePoint) {
             $sessionID = $timePoint->getSessionID();
 
@@ -156,8 +165,12 @@ class Timepoint_List extends \NDB_Menu
             $this->tpl_data['timePoints'][$x]['currentStatus']
                 = $timePoint->getCurrentStatus();
             // get current date
+            $curDate = $timePoint->getCurrentDate();
+            if ($curDate != null) {
+                $curDate = new \DateTimeImmutable($curDate);
+            }
             $this->tpl_data['timePoints'][$x]['currentDate']
-                =   $timePoint->getCurrentDate();
+                = $curDate != null ? $dateFormatter->format($curDate) : null;
 
             // create feedback object for the time point
             $feedback = \NDB_BVL_Feedback::singleton(
@@ -217,6 +230,9 @@ class Timepoint_List extends \NDB_Menu
                         = $timePoint->$getDateMethod();
                 }
             }
+
+            $this->tpl_data['timePoints'][$x]['language']
+                = $timePoint->getLanguage();
             $x++;
         } // end list
 
@@ -234,6 +250,7 @@ class Timepoint_List extends \NDB_Menu
 
         $this->tpl_data['actions'] = $this->getActionButtons();
     }
+
     /**
      * Determining Previous Stage
      *
@@ -258,6 +275,7 @@ class Timepoint_List extends \NDB_Menu
         }
         return  'Not Started';
     }
+
     /**
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
@@ -270,6 +288,7 @@ class Timepoint_List extends \NDB_Menu
     {
         return (new \BVL_Feedback_Panel($candID))->display();
     }
+
     /**
      * Get Action Buttons
      *
@@ -303,4 +322,3 @@ class Timepoint_List extends \NDB_Menu
         );
     }
 }
-

@@ -54,5 +54,4 @@ class ConflictsProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             '\LORIS\behavioural_qc\Models\ConflictsDTO'
         );
     }
-
 }

@@ -5,7 +5,7 @@
  * module. Since BrainBrowser is implemented in Javascript on the
  * front end, it does nothing but check permissions.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category BrainBrowser
  * @package  LorisModules
@@ -48,6 +48,45 @@ class Brainbrowser extends \NDB_Page
             $user->hasStudySite()
             && $user->hasPermission('imaging_browser_view_site')
         );
+    }
+
+    /**
+     * Determine setup
+     *
+     * @return null
+     */
+    function setup()
+    {
+        parent::setup();
+        $this->setTemplateVar(
+            'world_coordinates',
+            dgettext("brainbrowser", "World Coordinates")
+        );
+        $this->setTemplateVar('color_map', dgettext("brainbrowser", "Color Map"));
+        $this->setTemplateVar('threshold', dgettext("brainbrowser", "Threshold"));
+        $this->setTemplateVar(
+            'voxel',
+            dgettext("brainbrowser", "Voxel Coordinates")
+        );
+        $this->setTemplateVar(
+            'intensity',
+            dgettext("brainbrowser", "Intensity Value")
+        );
+        $this->setTemplateVar(
+            'contrast',
+            dgettext("brainbrowser", "Contrast (0.0 to 2.0):")
+        );
+        $this->setTemplateVar(
+            'brightness',
+            dgettext("brainbrowser", "Brightness (-1 to 1):")
+        );
+        $this->setTemplateVar(
+            'view_slices',
+            dgettext("brainbrowser", "View Slices")
+        );
+        $this->setTemplateVar('sagittal', dgettext("brainbrowser", "Sagittal"));
+        $this->setTemplateVar('coronal', dgettext("brainbrowser", "Coronal"));
+        $this->setTemplateVar('transverse', dgettext("brainbrowser", "Transverse"));
     }
 
     /**

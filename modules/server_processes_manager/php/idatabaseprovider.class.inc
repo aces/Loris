@@ -4,7 +4,7 @@
  * Provides a way to obtain access to the database for
  * the classes related to the ServerProcessLauncher
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category ServerProcessLauncher
  * @package  Loris

@@ -3,7 +3,7 @@
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -16,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -61,6 +61,7 @@ class Stats_Demographic extends \NDB_Form
         }
         return false;
     }
+
     /**
      * RenderStatsTable function
      *
@@ -212,7 +213,8 @@ class Stats_Demographic extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $visits = \Utility::getVisitList();
+        $user   = \NDB_Factory::singleton()->user();
+        $visits = $user->getVisits();
         $db     = $this->loris->getDatabaseConnection();
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table
@@ -666,6 +668,7 @@ class Stats_Demographic extends \NDB_Form
             ]
         );
     }
+
     /**
      * Include additional CSS files:
      *
@@ -681,6 +684,5 @@ class Stats_Demographic extends \NDB_Form
             [$baseURL . '/statistics/css/statistics.css']
         );
     }
-
 }
 

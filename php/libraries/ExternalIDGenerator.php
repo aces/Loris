@@ -3,7 +3,7 @@
 /**
  * This file contains a class used to generate PSCIDs for use in LORIS.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS
@@ -15,7 +15,7 @@
  * This class is a simple extension of SiteIDGenerator and is used by calling
  * code to generate PSCIDs.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS

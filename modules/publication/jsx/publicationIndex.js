@@ -1,11 +1,18 @@
+/* eslint-disable */
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import PublicationUploadForm from './uploadForm.js';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
-import {ButtonElement} from 'jsx/Form';
 import StaticDataTable from 'jsx/StaticDataTable';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+import frStrings from '../locale/fr/LC_MESSAGES/publication.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/publication.json';
+import enStrings from '../locale/en/LC_MESSAGES/publication.json';
+import FilterableDataTable from 'FilterableDataTable';
 
 /**
  * Publication index component
@@ -14,7 +21,7 @@ class PublicationIndex extends React.Component {
   /**
    * @constructor
    */
-  constructor() {
+   constructor() {
     super();
     loris.hiddenHeaders = [
       'Description',
@@ -24,7 +31,6 @@ class PublicationIndex extends React.Component {
       isLoaded: false,
       filter: {},
     };
-
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
@@ -42,22 +48,20 @@ class PublicationIndex extends React.Component {
    * Fetch data
    */
   fetchData() {
-    fetch(this.props.DataURL, {
-      method: 'GET',
-    }).then(
-      (response) => {
+    fetch(this.props.DataURL, {method: 'GET'})
+      .then((response) => {
         if (!response.ok) {
           console.error(response.status);
           return;
         }
-
-        response.json().then(
-          (data) => this.setState({
+        response.json().then((data) =>
+          this.setState({
             Data: data,
             isLoaded: true,
           })
         );
-      }).catch((error) => console.error(error));
+      })
+      .catch((error) => console.error(error));
   }
 
   /**
@@ -75,77 +79,141 @@ class PublicationIndex extends React.Component {
   resetFilters() {
     this.publicationsFilter.clearFilter();
   }
-
   /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
+
     if (!this.state.isLoaded) {
       return (
         <button className="btn-info has-spinner">
-          Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
+          {t('Loading...', {ns: 'loris'})}
+          <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
         </button>
       );
     }
-    let tabList = [
-      {
-        id: 'browse',
-        label: 'Browse',
-      },
-    ];
+
+    let tabList = [{id: 'browse', label: t('Browse', {ns: 'loris'})}];
     let proposalTab;
+
     if (loris.userHasPermission('publication_propose')) {
-      tabList.push({
-        id: 'propose',
-        label: 'Propose a Project',
-      });
+      tabList.push({id: 'propose', label: t('Propose a Project', {ns: 'publication'})});
 
       proposalTab = (
         <TabPane TabId={tabList[1].id}>
           <PublicationUploadForm
-            DataURL={loris.BaseURL
-                    +'/publication/ajax/getData.php?action=getData'}
-            action={loris.BaseURL
-                   + '/publication/ajax/FileUpload.php?action=upload'}
+            DataURL={`${loris.BaseURL}/publication/ajax/getData.php?action=getData`}
+            action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=upload`}
             editMode={false}
           />
         </TabPane>
       );
     }
 
-    const filterRef = function(f) {
-      this.publicationsFilter = f;
-    }.bind(this);
+    const filterRef = (f) => (this.publicationsFilter = f);
+
+    const fields = [
+      {
+        label: t('Title', {ns: 'publication'}),
+        show: true,
+        filter: {name: 'Title', type: 'text'},
+      },
+      {
+        label: t('Lead Investigator', {ns: 'publication'}),
+        show: true,
+        filter: {name: 'leadInvestigator', type: 'text'},
+      },
+      {
+        label: t('Date Proposed', {ns: 'publication'}),
+        show: true,
+        filter: {hide: true},
+      },
+      {
+        label: t('Approval Status', {ns: 'publication'}),
+        show: true,
+        filter: {
+          name: 'approvalStatus',
+          type: 'select',
+          options: this.state.Data.form.approvalStatus.options,
+        },
+      },
+      {
+        label: t('Project', {ns: 'loris', count: 1}),
+        show: true,
+        filter: {
+          name: 'project',
+          type: 'select',
+          options: this.state.Data.form.project.options,
+        },
+      },
+      {
+        label: t('Journal', {ns: 'publication'}),
+        show: true,
+        filter: {name: 'journal', type: 'text'},
+      },
+      {
+        label: t('Link', {ns: 'publication'}),
+        show: true,
+        filter: {name: 'link', type: 'text'},
+      },
+      {
+        label: t('Publishing Status', {ns: 'publication'}),
+        show: true,
+        filter: {
+          name: 'publishingStatus',
+          type: 'select',
+          options: this.state.Data.form.publishingStatus.options,
+        },
+      },
+      {
+        label: t('Date Published', {ns: 'publication'}),
+        show: true,
+        filter: {name: 'datePublished', type: 'date', hide: true},
+      },
+      {
+        label: t('Project Proposal Creator', {ns: 'publication'}),
+        show: true,
+        filter: {name: 'projectProposalCreator', type: 'text'},
+      },
+      {
+        label: 'Description',
+        show: false,
+        filter: {name: 'description', hide: true},
+      },
+      {
+        label: t('Collaborators', {ns: 'publication'}),
+        show: true,
+        filter: {name: 'collaborators', hide: true},
+      },
+      {
+        label: t('Variables Of Interest', {ns: 'publication'}),
+        show: true,
+        filter: {name: 'variablesOfInterest', type: 'text'},
+      },
+      {
+        label: t('Keywords', {ns: 'publication'}),
+        show: true,
+        filter: {name: 'keywords', type: 'text'},
+      },
+      {
+        label: 'Publication ID',
+        show: false,
+        filter: {name: 'PublicationID', hide: true},
+      },
+    ];
 
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
-          <FilterForm
-            Module="publication"
-            name="publications_filter"
-            id="publications_filter_form"
+          <FilterableDataTable
             ref={filterRef}
-            columns={3}
-            formElements={this.state.Data.form}
-            onUpdate={this.updateFilter}
-            filter={this.state.filter}
-          >
-            <br/>
-            <ButtonElement
-              label="Clear Filters"
-              type="reset"
-              onUserInput={this.resetFilters}
-            />
-          </FilterForm>
-          <StaticDataTable
-            Data={this.state.Data.Data}
-            Headers={this.state.Data.Headers}
-            Filter={this.state.filter}
+            name="publication"
+            title={t('Publications', {ns: 'publication'})}
+            data={this.state.Data.Data}
+            fields={fields}
             getFormattedCell={this.formatColumn}
           />
         </TabPane>
@@ -153,7 +221,6 @@ class PublicationIndex extends React.Component {
       </Tabs>
     );
   }
-
   /**
    * Format column
    *
@@ -168,37 +235,34 @@ class PublicationIndex extends React.Component {
     if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
     }
-    // Create the mapping between rowHeaders and rowData in a row object.
-    let row = {};
-    rowHeaders.forEach(function(header, index) {
-      row[header] = rowData[index];
-    }, this);
-    let classes = [];
-    if (column === 'Title') {
-      let pubID = row['Publication ID'];
-      let viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
-
+    if (rowHeaders[0] === column) {
+      const pubID = rowData['Publication ID'];
+      const viewURL = `${loris.BaseURL}/publication/view_project?id=${pubID}`;
       return (
         <td>
-          <a href={viewURL}>
-            {cell}
-          </a>
+          <a href={viewURL}>{cell}</a>
         </td>
       );
     }
-    return <td className={classes}>{cell}</td>;
+    return <td>{cell}</td>;
   }
 }
 PublicationIndex.propTypes = {
   DataURL: PropTypes.string,
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  createRoot(
-    document.getElementById('lorisworkspace')
-  ).render(
+window.addEventListener('load', () => {
+  i18n.addResourceBundle('fr', 'publication', frStrings);
+  i18n.addResourceBundle('hi', 'publication', hiStrings);
+  i18n.addResourceBundle('ja', 'publication', jaStrings);
+  i18n.addResourceBundle('en', 'publication', enStrings);
+
+  const PubIndex = withTranslation(['publication'])(PublicationIndex);
+
+  createRoot(document.getElementById('lorisworkspace')).render(
     <div className="page-publications">
-      <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
+      <PubIndex DataURL={`${loris.BaseURL}/publication/?format=json`} />
     </div>
   );
 });
+

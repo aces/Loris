@@ -7,7 +7,7 @@
  * This is intended to stress test the candidate_list module with large numbers
  * of candidates and is not intended to produce realistic data.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

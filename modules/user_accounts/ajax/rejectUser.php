@@ -10,7 +10,7 @@
  * can be removed (no password hash => has never had an activity on
  * Loris, and is pending).
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  User_Accounts

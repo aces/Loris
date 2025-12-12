@@ -3,7 +3,7 @@
 /**
  * Setting class tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Test
@@ -92,24 +92,26 @@ class SettingsTest extends TestCase
 
     /**
      * Test isSandbox() returns true when config value is
-     *  - string 'TRUE'
-     *  - number 1
-     *  - string '5'
-     *
-     * @param mixed $sandboxVal sandbox config value to be returned
-     *                          by getSetting() mock
      *
      * @dataProvider getTrueValue
      *
      * @covers Settings::isSandbox
      * @return void
      */
-    public function testIsSandboxReturnsTrue($sandboxVal)
+    public function testIsSandboxReturnsTrue(): void
     {
-        $this->_configMock->method('getSetting')
-            ->willReturn($sandboxVal);
+        $valuesToTest = [true, 1, 'yes'];
 
-        $this->assertTrue($this->_settings->isSandbox());
+        foreach ($valuesToTest as $sandboxVal) {
+            $this->_configMock->method('getSetting')
+                ->willReturn($sandboxVal);
+
+            $this->assertTrue(
+                $this->_settings->isSandbox(),
+                "Failed asserting that isSandbox() returns true for value: " .
+                var_export($sandboxVal, true)
+            );
+        }
     }
 
     /**
@@ -130,28 +132,28 @@ class SettingsTest extends TestCase
         ];
     }
 
-
     /**
      * Test isSandbox() returns false when config value is
-     *  - string 'FAlse'
-     *  - number 0
-     *  - string '0'
-     *  - an empty string
-     *
-     * @param mixed $sandboxVal sandbox config value to be returned
-     *                          by getSetting() mock
      *
      * @dataProvider getFalseValue
      *
      * @covers Settings::isSandbox
      * @return void
      */
-    public function testIsSandboxReturnsFalse($sandboxVal)
+    public function testIsSandboxReturnsFalse(): void
     {
-        $this->_configMock->method('getSetting')
-            ->willReturn($sandboxVal);
+        $valuesToTest = [false, 0, null, 'no'];
 
-        $this->assertFalse($this->_settings->isSandbox());
+        foreach ($valuesToTest as $sandboxVal) {
+            $this->_configMock->method('getSetting')
+                ->willReturn($sandboxVal);
+
+            $this->assertFalse(
+                $this->_settings->isSandbox(),
+                "Failed asserting that isSandbox() returns false for value: " .
+                var_export($sandboxVal, true)
+            );
+        }
     }
 
     /**

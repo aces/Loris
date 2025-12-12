@@ -1,0 +1,158 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 16:34-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#, fuzzy
+msgid "Battery Manager"
+msgstr "Gestionnaire de batterie"
+
+#, fuzzy
+msgid "Submission successful!"
+msgstr "Soumission réussie !"
+
+msgid "Instrument"
+msgstr "Instrument"
+
+msgid "Minimum Age"
+msgstr "Âge minimum"
+
+#, fuzzy
+msgid "Maximum Age"
+msgstr "Âge maximum"
+
+msgid "Stage"
+msgstr "Stade"
+
+msgid "First Visit"
+msgstr "Première visite"
+
+msgid "Instrument Order"
+msgstr "Ordre des instruments"
+
+#, fuzzy
+msgid "Double Data Entry Enabled"
+msgstr "Double saisie des données activée"
+
+msgid "Change Status"
+msgstr "Modifier le statut"
+
+msgid "Edit Metadata"
+msgstr "Éditer les métadonnées"
+
+msgid "Deactivate"
+msgstr "Désactiver"
+
+msgid "Activate"
+msgstr "Activer"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "New Test"
+msgstr "Nouveau test"
+
+msgid "Edit Test"
+msgstr "Test d'édition"
+
+#, fuzzy
+msgid "Add New Test"
+msgstr "Ajouter un nouveau test"
+
+msgid "This field is required"
+msgstr "Ce champ est requis"
+
+#, fuzzy
+msgid "This field must be 0 or greater"
+msgstr "Ce champ doit être égal à 0 ou supérieur."
+
+#, fuzzy
+msgid "Minimum age must be lesser than maximum age."
+msgstr "L'âge minimum doit être inférieur à l'âge maximum."
+
+#, fuzzy
+msgid "Maximum age must be greater than minimum age."
+msgstr "L'âge maximum doit être supérieur à l'âge minimum."
+
+#, fuzzy
+msgid "Test Duplicate"
+msgstr "Test en double"
+
+#, fuzzy
+msgid ""
+"The information provided corresponds with a deactivated test that already "
+"exists in the system."
+msgstr ""
+"Les informations fournies correspondent à un test désactivé qui existe déjà "
+"dans le système."
+
+#, fuzzy
+msgid "Would you to like activate that test?"
+msgstr "Souhaitez-vous activer ce test ?"
+
+#, fuzzy
+msgid "You cannot duplicate an active test"
+msgstr "Vous ne pouvez pas dupliquer un test actif."
+
+#, fuzzy
+msgid ""
+"You cannot add an entry if it has a duplicate entry in the test battery."
+msgstr ""
+"Vous ne pouvez pas ajouter une entrée si elle existe déjà dans la batterie "
+"de tests."
+
+#, fuzzy
+msgid ""
+"If the duplicate entry is inactive, you will be given the option to activate "
+"it."
+msgstr ""
+"Si l'entrée en double est inactive, vous aurez la possibilité de l'activer."
+
+#, fuzzy
+msgid "Editing an entry will alter the current entry."
+msgstr "La modification d'une entrée modifiera l'entrée actuelle."
+
+#, fuzzy
+msgid ""
+"You cannot edit an entry to have the same values as another active entry."
+msgstr ""
+"Vous ne pouvez pas modifier une entrée pour lui attribuer les mêmes valeurs "
+"qu'une autre entrée active."
+
+#, fuzzy
+msgid "Search for instrument"
+msgstr "Rechercher un instrument"
+
+msgid "Search for site"
+msgstr "Rechercher un site"
+
+#, fuzzy
+msgid "Enable Double Data Entry"
+msgstr "Activer la double saisie des données"
+
+msgid "Submit"
+msgstr "Envoyer"
+
+#, fuzzy
+msgid "Maximum Age (days)"
+msgstr "Âge maximal (jours)"
+
+#, fuzzy
+msgid "Minimum Age (days)"
+msgstr "Âge minimum (jours)"

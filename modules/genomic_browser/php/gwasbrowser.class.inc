@@ -22,7 +22,6 @@ use \LORIS\Middleware\ETagCalculator;
  */
 class GwasBrowser extends \NDB_Page implements ETagCalculator
 {
-
     /**
      * This function will return a json response.
      *
@@ -42,6 +41,7 @@ class GwasBrowser extends \NDB_Page implements ETagCalculator
             );
         }
     }
+
     /**
      * Initialize setup, the extra values for the
      * create timepoint form. (psc & errors)
@@ -104,5 +104,4 @@ class GwasBrowser extends \NDB_Page implements ETagCalculator
     {
         return ['GET'];
     }
-
 }

@@ -3,7 +3,7 @@
 /**
  * Unit tests for the User and UserPermissions class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -60,6 +60,7 @@ class UserTest extends TestCase
             'Active'                 => 'Y',
             'Password_hash'          => null,
             'PasswordChangeRequired' => 0,
+            'TOTPSecret'             => null,
             'Pending_approval'       => 'Y',
             'Doc_Repo_Notifications' => 'Y',
             'language_preference'    => 2,
@@ -302,6 +303,7 @@ class UserTest extends TestCase
      * @var array config name => value
      */
     private $_configMap = [];
+
     /**
      * This method is called before each test is executed.
      *
@@ -1188,9 +1190,9 @@ class UserTest extends TestCase
                     'code'        => 'test_permission3',
                     'description' => 'description 3',
                     'type'        => null,
-                    'action'      => 'View/Create',
+                    'action'      => 'Create/View',
                     'moduleID'    => '5',
-                    'label'       => 'Timepoint List: View/Create description 3'
+                    'label'       => 'Timepoint List: Create/View description 3'
                 ]
             ]
         );

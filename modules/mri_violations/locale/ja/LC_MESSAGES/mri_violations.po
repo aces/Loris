@@ -21,3 +21,198 @@ msgstr ""
 msgid "MRI Violated Scans"
 msgstr "MRI違反スキャン"
 
+msgid "Violated scan"
+msgstr "違反スキャン"
+
+msgid "Violations for SeriesUID"
+msgstr "SeriesUIDの違反"
+
+msgid "Violations for"
+msgstr "違反行為"
+
+msgid "Time Run"
+msgstr "タイムラン"
+
+msgid "Series Description"
+msgstr "シリーズ説明"
+
+msgid "Image Location"
+msgstr "画像の場所"
+
+msgid "Patient Name"
+msgstr "患者名"
+
+msgid "Series UID"
+msgstr "シリーズUID"
+
+msgid "Echo Time"
+msgstr "エコータイム"
+
+msgid "Protocol Group"
+msgstr "プロトコルグループ"
+
+msgid "TR"
+msgstr "TR"
+
+msgid "TE"
+msgstr "TE"
+
+msgid "TI"
+msgstr "TI"
+
+msgid "Slice Thickness"
+msgstr "スライスの厚さ"
+
+msgid "Xspace"
+msgstr "エックススペース"
+
+msgid "Yspace"
+msgstr "ワイスペース"
+
+msgid "Zspace"
+msgstr "Zspace"
+
+msgid "Xstep"
+msgstr "エクスステップ"
+
+msgid "Ystep"
+msgstr "ワイステップ"
+
+msgid "Zstep"
+msgstr "ゼットステップ"
+
+msgid "Time"
+msgstr "時間"
+
+msgid "Image Type"
+msgstr "画像の種類"
+
+msgid "Phase Encoding Direction"
+msgstr "位相エンコード方向"
+
+msgid "Echo Number"
+msgstr "エコー番号"
+
+msgid "Image Protocol"
+msgstr "画像プロトコル"
+
+msgid "Study Protocols"
+msgstr "研究プロトコル"
+
+msgid "Scan Problems"
+msgstr "スキャンの問題"
+
+msgid "Scan Type"
+msgstr "スキャンタイプ"
+
+msgid "Severity"
+msgstr "重大度"
+
+msgid "Header"
+msgstr "ヘッダ"
+
+msgid "Value"
+msgstr "価値"
+
+msgid "Valid Values"
+msgstr "有効な値"
+
+msgid "Protocol Violation"
+msgstr "プロトコル違反"
+
+msgid "Could not identify scan type"
+msgstr "スキャンの種類を識別できませんでした"
+
+msgid "Series Description or Scan Type"
+msgstr "シリーズの説明またはスキャンタイプ"
+
+msgid "Resolution Status"
+msgstr "解決ステータス"
+
+msgid "Unresolved"
+msgstr "未解決"
+
+msgid "Reran"
+msgstr "リラン"
+
+msgid "Emailed site/pending"
+msgstr "メールを送信したサイト/保留中"
+
+msgid "Inserted"
+msgstr "挿入された"
+
+msgid "Rejected"
+msgstr "拒否されました"
+
+msgid "Inserted with flag"
+msgstr "フラグ付きで挿入"
+
+msgid "Other"
+msgstr "他の"
+
+msgid "Type of Problem"
+msgstr "問題の種類"
+
+msgid "Select Resolution"
+msgstr "解像度の選択"
+
+msgid "Image File"
+msgstr "画像ファイル"
+
+msgid "Must submit data in JSON format"
+msgstr "データはJSON形式で送信する必要があります"
+
+msgid "Can not implement filter on a resource type that has no centers."
+msgstr "センターのないリソース タイプにフィルターを実装することはできません."
+
+msgid "hash"
+msgstr "ハッシュ"
+
+msgid "JoinID"
+msgstr "参加ID"
+
+msgid "TarchiveID"
+msgstr "アーカイブID"
+
+msgid "Center Name"
+msgstr "センター名"
+
+msgid "Scanner ID"
+msgstr "スキャナID"
+
+msgid "TR Range"
+msgstr "TR範囲"
+
+msgid "TE Range"
+msgstr "THE レンジ"
+
+msgid "TI Range"
+msgstr "TI 範囲"
+
+msgid "Slice Thickness Range"
+msgstr "スライス厚さ範囲"
+
+msgid "Xspace Range"
+msgstr "Xspace 範囲"
+
+msgid "Yspace Range"
+msgstr "Yspace 範囲"
+
+msgid "Zspace Range"
+msgstr "Zspace 範囲"
+
+msgid "Xstep Range"
+msgstr "Xstep 範囲"
+
+msgid "Ystep Range"
+msgstr "Yステップ範囲"
+
+msgid "Zstep Range"
+msgstr "Zstep 範囲"
+
+msgid "Time Range"
+msgstr "時間範囲"
+
+msgid "Can not implement filter on a resource type that has no projects."
+msgstr "プロジェクトがないリソース タイプにフィルターを実装することはできません。"
+

@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import Modal from 'Modal';
@@ -9,6 +12,10 @@ import Modal from 'Modal';
 import UploadFileForm from './uploadFileForm';
 import AddPermissionForm from './addPermissionForm';
 import ManagePermissionsForm from './managePermissionsForm';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/data_release.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/data_release.json';
+import frStrings from '../locale/fr/LC_MESSAGES/data_release.json';
 
 /**
  * Data Release
@@ -18,10 +25,6 @@ import ManagePermissionsForm from './managePermissionsForm';
  * @author Cécile Madjar
  */
 class DataReleaseIndex extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
   constructor(props) {
     super(props);
 
@@ -38,45 +41,27 @@ class DataReleaseIndex extends Component {
 
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.show = this.show.bind(this);
+    this.hide = this.hide.bind(this);
   }
 
-  /**
-   * Show
-   *
-   * @param {string} state
-   */
   show(state) {
-    let show = this.state.show;
+    let show = {...this.state.show};
     show[state] = true;
     this.setState({show});
   }
 
-  /**
-   * Hide
-   *
-   * @param {string} state
-   */
   hide(state) {
-    let show = this.state.show;
+    let show = {...this.state.show};
     show[state] = false;
     this.setState({show});
   }
 
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
-  /**
-   * Retrieve data from the provided URL and save it in state
-   * Additionally add hiddenHeaders to global loris variable
-   * for easy access by columnFormatter.
-   *
-   * @return {object}
-   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -87,32 +72,25 @@ class DataReleaseIndex extends Component {
       });
   }
 
-  /**
-   * Modify behaviour of specified column cells in the Data Table component
-   *
-   * @param {string} column - column name
-   * @param {string} cell - cell content
-   * @param {object} row - row content indexed by column
-   * @return {*} a formated table cell for a given column
-   */
   formatColumn(column, cell, row) {
-    // Set class to 'bg-danger' if file is hidden.
+    const {t} = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'File Name':
+    case t('File Name', {ns: 'data_release'}):
       if (this.props.hasPermission('superuser')
             || this.props.hasPermission('data_release_view')
             || this.props.hasPermission('data_release_upload')
             || this.props.hasPermission('data_release_edit_file_access')) {
         const downloadURL = loris.BaseURL
             + '/data_release/files/'
-            + encodeURIComponent(row['Data Release ID']);
+            + encodeURIComponent(row[t('Data Release ID',
+              {ns: 'data_release'})]);
         result = (
           <td>
             <a
               href = {downloadURL}
               target = "_blank"
-              download = {row['File Name']} >
+              download = {row[t('File Name', {ns: 'data_release'})]} >
               {cell}
             </a>
           </td>
@@ -123,54 +101,44 @@ class DataReleaseIndex extends Component {
     return result;
   }
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
   render() {
-    // If error occurs, return a message.
-    // XXX: Replace this with a UI component for 500 errors.
+    const {t} = this.props;
+
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
-    // Waiting for async data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
 
-    /**
-     * XXX: Currently, the order of these fields MUST match the order of the
-     * queried columns in _setupVariables() in media.class.inc
-     */
     const fields = [
-      {label: 'File Name', show: true, filter: {
+      {label: t('File Name', {ns: 'data_release'}), show: true, filter: {
         name: 'fileName',
         type: 'text',
       }},
-      {label: 'Version', show: true, filter: {
+      {label: t('Version', {ns: 'data_release'}), show: true, filter: {
         name: 'version',
         type: 'text',
       }},
-      {label: 'Upload Date', show: true, filter: {
+      {label: t('Upload Date', {ns: 'data_release'}), show: true, filter: {
         name: 'uploadDate',
         type: 'text',
       }},
-      {label: 'Project Name', show: true, filter: {
+      {label: t('Project Name', {ns: 'data_release'}), show: true, filter: {
         name: 'Project',
         type: 'select',
         options: this.state.data.fieldOptions.projects,
       }},
-      {label: 'Data Release ID', show: false,
-      },
+      {label: t('Data Release ID', {ns: 'data_release'}), show: false},
     ];
 
     // Upload File modal window
     const uploadFileForm = (
       <Modal
-        title='Upload File'
-        label='Upload a New File'
+        title={t('Upload File', {ns: 'data_release'})}
+        label={t('Upload a New File', {ns: 'data_release'})}
         show={this.state.show.uploadFileForm}
         onClose={() => {
           this.hide('uploadFileForm');
@@ -191,8 +159,8 @@ class DataReleaseIndex extends Component {
     // Add Permission modal window
     const addPermissionForm = (
       <Modal
-        title="Add Permission"
-        label="Add Permission"
+        title={t('Add Permission', {ns: 'data_release'})}
+        label={t('Add Permission', {ns: 'data_release'})}
         show={this.state.show.addPermissionForm}
         onClose={() => {
           this.hide('addPermissionForm');
@@ -234,19 +202,19 @@ class DataReleaseIndex extends Component {
 
     const actions = [
       {
-        label: 'Upload File',
+        label: t('Upload File', {ns: 'data_release'}),
         action: () => this.show('uploadFileForm'),
         name: 'uploadFile',
         show: this.props.hasPermission('data_release_upload'),
       },
       {
-        label: 'Add Permission',
+        label: t('Add Permission', {ns: 'data_release'}),
         action: () => this.show('addPermissionForm'),
         name: 'addPermission',
         show: this.props.hasPermission('data_release_edit_file_access'),
       },
       {
-        label: 'Manage Permissions',
+        label: t('Manage Permissions', {ns: 'data_release'}),
         action: () => this.show('managePermissionsForm'),
         name: 'managePermissions',
         show: this.props.hasPermission('data_release_edit_file_access'),
@@ -273,13 +241,20 @@ class DataReleaseIndex extends Component {
 DataReleaseIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'data_release', jaStrings);
+  i18n.addResourceBundle('hi', 'data_release', hiStrings);
+  i18n.addResourceBundle('fr', 'data_release', frStrings);
+  const Index = withTranslation(
+    ['data_release', 'loris']
+  )(DataReleaseIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <DataReleaseIndex
+    <Index
       dataURL={`${loris.BaseURL}/data_release/?format=json`}
       hasPermission={loris.userHasPermission}
     />

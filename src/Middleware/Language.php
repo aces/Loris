@@ -27,7 +27,7 @@ class Language implements MiddlewareInterface, MiddlewareChainer
 {
     use MiddlewareChainerMixin;
 
-    public static function detectLocale(\LORIS\LorisInstance $loris, ServerRequestInterface $request) : ?string
+    public static function detectLocale(\LORIS\LorisInstance $loris, ServerRequestInterface $request) : string
     {
         $DB = $request->getAttribute("loris")->getDatabaseConnection();
 
@@ -36,10 +36,19 @@ class Language implements MiddlewareInterface, MiddlewareChainer
             [],
         );
 
+        if (count($validLocales) == 1) {
+            return $validLocales[0];
+        }
+
         $params = $request->getQueryParams();
         if (isset($params['lang'])
             && in_array($params['lang'], $validLocales)) {
+            $_SESSION['language'] = $params['lang'];
             return $params['lang'];
+        }
+
+        if (!empty($_SESSION['language'])) {
+            return $_SESSION['language'];
         }
 
         $user     = $request->getAttribute("user");
@@ -60,8 +69,9 @@ class Language implements MiddlewareInterface, MiddlewareChainer
                 return $fromheader;
             }
         }
-        return null;
+        return 'en_CA';
     }
+
     /**
      * {@inheritDoc}
      *
@@ -79,6 +89,14 @@ class Language implements MiddlewareInterface, MiddlewareChainer
         $lang  = self::detectLocale($loris, $request);
         if ($lang !== null) {
             \setlocale(LC_MESSAGES, $lang . '.utf8');
+             putenv("LANG=$lang");
+             putenv("LANGUAGE=$lang");
+            // Set the default_locale for intl to match the user preference,
+            // so that date formatting works correctly.
+            // PHPCS complains about ini_set not being allowed, but there
+            // does not seem to be any other way to do this.
+            //phpcs:ignore
+            ini_set('intl.default_locale', $lang);
             return $this->next->process(
                 $request->withAttribute("locale", $lang),
                 $handler

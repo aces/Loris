@@ -7,6 +7,12 @@ import {
   SelectElement,
   TextboxElement,
 } from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
+import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
 
 /**
  * Document Edit Category Form
@@ -66,9 +72,11 @@ class EditDocCategoryForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -79,7 +87,8 @@ class EditDocCategoryForm extends React.Component {
     let updateButton = null;
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
-      updateButton = <ButtonElement label="Edit Category"/>;
+      updateButton = <ButtonElement label={t('Edit Category',
+        {ns: 'document_repository'})}/>;
     }
 
     let errorSameParent = null;
@@ -88,7 +97,8 @@ class EditDocCategoryForm extends React.Component {
       this.state.formData.categoryID==this.state.formData.newParentID
       && this.state.formData.categoryID!=null
     ) {
-      errorSameParent = 'Cannot be equal to itself';
+      errorSameParent = t('Cannot be equal to itself',
+        {ns: 'document_repository'});
     }
 
     return (
@@ -98,10 +108,11 @@ class EditDocCategoryForm extends React.Component {
             name="categoryEdit"
             onSubmit={this.handleSubmit}
           >
-            <h3>Change Name of a category</h3><br/>
+            <h3>{t('Change Name of a category',
+              {ns: 'document_repository'})}</h3><br/>
             <SelectElement
               name="categoryID"
-              label="Category Name:"
+              label={t('Category Name:', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               required={true}
@@ -110,7 +121,8 @@ class EditDocCategoryForm extends React.Component {
             />
             <TextboxElement
               name="categoryNameChange"
-              label="New Name for Category"
+              label={t('New Name for Category',
+                {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               required={true}
               disabled={disabled}
@@ -118,7 +130,7 @@ class EditDocCategoryForm extends React.Component {
             />
             <SelectElement
               name="newParentID"
-              label="New Parent:"
+              label={t('New Parent:', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               required={false}
@@ -146,11 +158,13 @@ class EditDocCategoryForm extends React.Component {
    */
   handleSubmit(e) {
     e.preventDefault();
+    const {t} = this.props;
     if (
       this.state.formData.categoryID==this.state.formData.newParentID
       && this.state.formData.categoryID!=null
     ) {
-      swal.fire('New parent cannot be equal to itself', '', 'error');
+      swal.fire(t('New parent cannot be equal to itself',
+        {ns: 'document_repository'}), '', 'error');
     } else {
       this.editCategory();
     }
@@ -167,7 +181,8 @@ class EditDocCategoryForm extends React.Component {
       formData.categoryID==formData.newParentID
       && formData.categoryID!=null
     ) {
-      swal.fire('New parent cannot be equal to itself', '', 'error');
+      swal.fire(this.props.t('New parent cannot be equal to itself',
+        {ns: 'document_repository'}), '', 'error');
     }
 
     for (let key in formData) {
@@ -189,7 +204,8 @@ class EditDocCategoryForm extends React.Component {
         } else if (response.statusText) {
           msg = response.statusText;
         } else {
-          msg = 'Edit error!';
+          msg = this.props.t('Edit error!',
+            {ns: 'document_repository'});
         }
         this.setState({
           errorMessage: msg,
@@ -198,7 +214,8 @@ class EditDocCategoryForm extends React.Component {
         console.error(msg);
       } else {
         swal.fire({
-          text: 'Edited Successful!',
+          text: this.props.t('Edited Successful!',
+            {ns: 'document_repository'}),
           title: '',
           type: 'success',
         }).then(function() {
@@ -206,7 +223,8 @@ class EditDocCategoryForm extends React.Component {
         });
       }
     }).catch( (error) => {
-      let msg = error.message ? error.message : 'Edit error!';
+      let msg = error.message ? error.message :
+        this.props.t('Edit error!', {ns: 'document_repository'});
       this.setState({
         errorMessage: msg,
         uploadProgress: -1,
@@ -232,6 +250,19 @@ class EditDocCategoryForm extends React.Component {
 EditDocCategoryForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
-export default EditDocCategoryForm;
+export default withTranslation(
+  ['document_repository', 'loris'])(EditDocCategoryForm);
+
+window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'document_repository', hiStrings);
+  i18n.addResourceBundle('ja', 'document_repository', jaStrings);
+  i18n.addResourceBundle('fr', 'document_repository', frStrings);
+
+  const element = document.getElementById('lorisworkspace');
+  if (!element) {
+    throw new Error('Missing lorisworkspace');
+  }
+});

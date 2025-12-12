@@ -4,7 +4,7 @@
  * This implements a menu filter to be used for viewing the Loris survey
  * keys that have been created
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Survey
  * @package  Loris

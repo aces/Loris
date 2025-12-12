@@ -4,7 +4,7 @@
  * File contains the PSR7 ResponseInterface implementation for
  * Created responses.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category PSR15
  * @package  Http

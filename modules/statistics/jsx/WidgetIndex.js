@@ -6,11 +6,14 @@ import StudyProgression from './widgets/studyprogression';
 import {fetchData} from './Fetch';
 import Modal from 'Modal';
 import Loader from 'Loader';
-import {SelectElement} from 'jsx/Form';
+
+import {useTranslation} from 'react-i18next';
 
 import '../css/WidgetIndex.css';
 
-import {setupCharts} from './widgets/helpers/chartBuilder';
+import {setupCharts, unloadCharts} from './widgets/helpers/chartBuilder';
+import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
+import frStrings from '../locale/fr/LC_MESSAGES/statistics.json';
 
 /**
  * WidgetIndex - the main window.
@@ -22,50 +25,61 @@ const WidgetIndex = (props) => {
   const [recruitmentData, setRecruitmentData] = useState({});
   const [studyProgressionData, setStudyProgressionData] = useState({});
   const [modalChart, setModalChart] = useState(null);
+  const {t, i18n} = useTranslation();
+  useEffect( () => {
+    i18n.addResourceBundle('ja', 'statistics', jaStrings);
+    i18n.addResourceBundle('fr', 'statistics', frStrings);
+  }, []);
 
   // used by recruitment.js and studyprogression.js to display each chart.
   const showChart = (section, chartID, chartDetails, setChartDetails) => {
     let {title, chartType, options} = chartDetails[section][chartID];
     return (
       <div
-        className ="site-breakdown-card"
+        className ="chart-card"
       >
-        {/* Chart Title and Dropdown */}
+        {/* Chart Title and Toggle */}
         <div className ='chart-header'>
           <h5 className ='chart-title'>{title}</h5>
           {Object.keys(chartDetails[section][chartID].options).length > 1 && (
-            <div className ="chart-dropdown-wrapper">
-              <SelectElement
-                className ='chart-dropdown'
-                emptyOption ={false}
-                options ={options}
-                value ={options[chartType]}
-                onUserInput ={(name, value) => {
-                  setChartDetails(
-                    {
-                      ...chartDetails,
-                      [section]: {
-                        ...chartDetails[section],
-                        [chartID]: {
-                          ...chartDetails[section][chartID],
-                          chartType: options[value],
+            <div className ="chart-toggle-wrapper">
+              {Object.entries(options).map(([key, value]) => (
+                <button
+                  key={key}
+                  className={`chart-toggle-btn ${
+                    chartType === value ? 'active' : ''
+                  }`}
+                  onClick={() => {
+                    setChartDetails(
+                      {
+                        ...chartDetails,
+                        [section]: {
+                          ...chartDetails[section],
+                          [chartID]: {
+                            ...chartDetails[section][chartID],
+                            chartType: value,
+                          },
+                        },
+                      }
+                    );
+                    setupCharts(
+                      t,
+                      false,
+                      {
+                        [section]: {
+                          [chartID]: {
+                            ...chartDetails[section][chartID],
+                            chartType: value,
+                          },
                         },
                       },
-                    }
-                  );
-                  setupCharts(
-                    false,
-                    {
-                      [section]: {
-                        [chartID]: {
-                          ...chartDetails[section][chartID],
-                          chartType: options[value],
-                        },
-                      },
-                    }
-                  );
-                }}
-              />
+                      t('Total', {ns: 'loris'}),
+                    );
+                  }}
+                >
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </button>
+              ))}
             </div>
           )}
         </div>
@@ -75,11 +89,13 @@ const WidgetIndex = (props) => {
             onClick ={() => {
               setModalChart(chartDetails[section][chartID]);
               setupCharts(
+                t,
                 true,
                 {
                   [section]:
                   {[chartID]: chartDetails[section][chartID]},
-                }
+                },
+                t('Total', {ns: 'loris'}),
               );
             }}
             id ={chartID}
@@ -91,11 +107,11 @@ const WidgetIndex = (props) => {
     );
   };
 
-  const downloadAsCSV = (data, filename, dataType) => {
+  const downloadAsCSV = (data, filename, dataType, labelsLabel) => {
     const convertBarToCSV = (data) => {
       const csvRows = [];
       // Adding headers row
-      const headers = ['Labels', ...Object.keys(data.datasets)];
+      const headers = [labelsLabel, ...Object.keys(data.datasets)];
       csvRows.push(headers.join(','));
       // Adding data rows
       const maxDatasetLength = Math.max(
@@ -132,7 +148,7 @@ const WidgetIndex = (props) => {
       const csvRows = [];
       // Adding headers row
       const headers = [
-        'Labels',
+        t('Labels', {ns: 'statistics'}),
         ...data.datasets.map((dataset) => dataset.name),
       ];
       csvRows.push(headers.join(','));
@@ -172,6 +188,20 @@ const WidgetIndex = (props) => {
     chartDetails,
     setChartDetails
   ) => {
+    // Unload all charts in the section first
+    unloadCharts(t, chartDetails, section);
+
+    // Clear cached data from chartDetails to prevent old data from showing
+    let clearedChartDetails = {...chartDetails};
+    Object.keys(chartDetails[section]).forEach((chartID) => {
+      clearedChartDetails[section][chartID] = {
+        ...chartDetails[section][chartID],
+        data: null,
+        chartObject: null,
+      };
+    });
+    setChartDetails(clearedChartDetails);
+
     let formObject = new FormData();
     for (const key in formDataObj) {
       if (formDataObj[key] != '' && formDataObj[key] != ['']) {
@@ -179,21 +209,34 @@ const WidgetIndex = (props) => {
       }
     }
     const queryString = '?' + new URLSearchParams(formObject).toString();
-    let newChartDetails = {...chartDetails};
+    let newChartDetails = {...clearedChartDetails};
+
+    const chartPromises = [];
     Object.keys(chartDetails[section]).forEach(
       (chart) => {
         // update filters
-        let newChart = {...chartDetails[section][chart], filters: queryString};
-        setupCharts(false,
-          {[section]: {[chart]: newChart}}).then(
+        let newChart = {
+          ...clearedChartDetails[section][chart],
+          filters: queryString,
+        };
+        const chartPromise = setupCharts(
+          t,
+          false,
+          {[section]: {[chart]: newChart}},
+          t('Total', {ns: 'loris'}),
+        ).then(
           (data) => {
             // update chart data
             newChartDetails[section][chart] = data[section][chart];
           }
         );
+        chartPromises.push(chartPromise);
       }
     );
-    setChartDetails(newChartDetails);
+
+    Promise.all(chartPromises).then(() => {
+      setChartDetails(newChartDetails);
+    });
   };
 
   /**
@@ -263,14 +306,15 @@ const WidgetIndex = (props) => {
                 downloadAsCSV(
                   modalChart.data,
                   modalChart.title,
-                  modalChart.dataType
+                  modalChart.dataType,
+                  t('Labels', {ns: 'statistics'}),
                 );
               }}
               className ='btn btn-info'>
               <span
                 className ='glyphicon glyphicon-download'
                 aria-hidden='true'/>
-              {' '}Download data as csv
+              {' '}{t('Download Data as CSV', {ns: 'loris'})}
             </a>
         }
         {modalChart
@@ -290,7 +334,7 @@ const WidgetIndex = (props) => {
                 className ='glyphicon glyphicon-download'
                 aria-hidden ='true'
               />
-              {' '}Download as image(png)
+              {' '}{t('Download as PNG', {ns: 'statistics'})}
             </a>
         }
       </Modal>

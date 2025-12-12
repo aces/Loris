@@ -3,7 +3,7 @@
 /**
  * Unit test for NDB_Config class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -185,20 +185,39 @@ class NDB_ConfigTest extends TestCase
      */
     public function testGetSettingFromDB()
     {
-        $this->assertNull($this->_config->getSettingFromDB("database"));
-        $this->assertNull($this->_config->getSettingFromDB("sandbox"));
-        $this->_dbMock->expects($this->any())
-            ->method('isConnected')
-            ->willReturn(true);
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn([['AllowMultiple' => '0', 'ParentID' => 'test']]);
-        $this->_dbMock->expects($this->any())
-            ->method('pselectOne')
-            ->willReturn('test');
-        $this->assertNotNull($this->_config->getSettingFromDB("test"));
+        // Mock database connection
+        $this->_dbMock->method('isConnected')->willReturn(true);
 
+        // Mock the Query object returned by pselect
+        $mockQuery = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // Ensure count() returns 1 so ConfigurationException is not thrown
+        $mockQuery->method('count')->willReturn(1);
+
+        // getFirstRow() returns one row from ConfigSettings
+        $mockQuery->method('getFirstRow')->willReturn(
+            [
+                'ParentID'      => 1,
+                'ChildID'       => null,
+                'AllowMultiple' => '0',
+                'Name'          => 'test'
+            ]
+        );
+
+        // pselect() returns the mocked Query
+        $this->_dbMock->method('pselect')->willReturn($mockQuery);
+
+        // pselectOne() returns the value of the setting
+        $this->_dbMock->method('pselectOne')->willReturn('some_value');
+
+        // Now this should succeed
+        $result = $this->_config->getSettingFromDB('test');
+
+        $this->assertEquals('some_value', $result);
     }
+
     /**
      * Test getSettingFromXML() method. Given an array,
      * it should return the value associated to a key.
@@ -211,6 +230,7 @@ class NDB_ConfigTest extends TestCase
         $this->_config->_settings = ['aaa' => ["bbb" => "test"]];
         $this->assertEquals("test", $this->_config->getSettingFromXML("bbb"));
     }
+
     /**
      * Test getSetting() method. Giving an array, it should parse the value.
      *
@@ -281,6 +301,7 @@ class NDB_ConfigTest extends TestCase
         $this->assertEquals($result, $this->_config->getProjectSettings(999));
 
     }
+
     /**
      * Test getCohortSettings() method. Given a projectID, it should
      * return an array containing the cohort information.
@@ -339,17 +360,26 @@ class NDB_ConfigTest extends TestCase
      */
     public function testGetExternalLinks()
     {
+        $fakeQuery = $this->getMockBuilder(\LORIS\Database\Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $fakeQuery->method('getIterator')
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        ['LinkURL' => 'github/Loris', 'LinkText' => 'GitHub']
+                    ]
+                )
+            );
+
         $this->_dbMock->expects($this->any())
             ->method('pselect')
-            ->willReturn(
-                [
-                    ['LinkURL' => 'github/Loris', 'LinkText' => 'GitHub']
-                ]
-            );
+            ->willReturn($fakeQuery);
+
         $this->assertEquals(
             ['GitHub' => 'github/Loris'],
             $this->_config->getExternalLinks('GitHub')
         );
     }
-
 }

@@ -27,6 +27,7 @@ class Module extends \Module
             ]
         );
     }
+
     /**
      * {@inheritDoc}
      *
@@ -80,7 +81,7 @@ class Module extends \Module
 
             return [
                 new CandidateWidget(
-                    "Consent Summary",
+                    dgettext("candidate_parameters", "Consent Summary"),
                     $baseurl . "/candidate_parameters/js/ConsentWidget.js",
                     "lorisjs.candidate_parameters.ConsentWidget.default",
                     [
@@ -115,8 +116,9 @@ class Module extends \Module
             // Participant Status
             $entries = [
                 new CandidateInfo(
-                    "Participant Status",
-                    $candidate->getParticipantStatusDescription($db) ?: 'N/A',
+                    dgettext("loris", "Participant Status"),
+                    $candidate->getParticipantStatusDescription($db)
+                    ?: dgettext("loris", 'N/A'),
                 ),
             ];
 
@@ -163,10 +165,11 @@ class Module extends \Module
             return null;
         }
 
+        $title = dgettext("candidate_parameters", "Caveat");
         if ($caveat['Description'] == 'Other') {
-            return new CandidateInfo("Caveat", $caveat['flagged_other']);
+            return new CandidateInfo($title, $caveat['flagged_other']);
         }
-        return new CandidateInfo("Caveat", $caveat['Description']);
+        return new CandidateInfo($title, $caveat['Description']);
     }
 
     /**

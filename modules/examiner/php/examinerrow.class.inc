@@ -4,7 +4,7 @@
  * This class implements a data Instance which represents a single
  * module in the acknowledgements menu table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -38,6 +38,7 @@ class ExaminerRow implements
     protected $DBRow;
 
     private array $_centerIDs;
+
     /**
      * Create a new HelpRow
      *
@@ -51,6 +52,7 @@ class ExaminerRow implements
         $this->_centerIDs = $cids;
         $this->DBRow      = $row;
     }
+
     /**
      * Returns the CenterIDs for this row.
      *
@@ -60,6 +62,7 @@ class ExaminerRow implements
     {
         return $this->_centerIDs;
     }
+
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
@@ -67,6 +70,15 @@ class ExaminerRow implements
      */
     public function jsonSerialize() : array
     {
-        return $this->DBRow;
+        $row = $this->DBRow;
+        // Convert radiologist 1/0 to Yes/No for display
+        if (isset($row['Radiologist'])) {
+            $isRadiologist      = $row['Radiologist'] === '1'
+                || $row['Radiologist'] === 1;
+            $row['Radiologist'] = $isRadiologist
+                ? dgettext('loris', 'Yes')
+                : dgettext('loris', 'No');
+        }
+        return $row;
     }
 }

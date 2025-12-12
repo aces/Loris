@@ -1,0 +1,49 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Create Timepoint"
+msgstr "Crear Punto en el Tiempo"
+
+msgid "No cohorts defined for project: {{project}}"
+msgstr "No existen cohortes definidos en el projecto: {{project}}"
+
+msgid "No visit labels defined for the combination project: {{project}} and cohort: {{cohort}}"
+msgstr "No existen Etiquetas de Visita definidas para la combinación projecto: {{project}} y cohorte: {{cohort}}"
+
+msgid "Timepoint created."
+msgstr "Punto en el Tiempo creado."
+
+msgid "This visit label is not unique."
+msgstr "Esta etiqueta de Visita no es única"
+
+msgid "You must be affiliated with a site to create a timepoint."
+msgstr "Debe estar affiliado a un Sitio para poder crear un Punto en el Tiempo."
+
+msgid "Site must be selected from the available dropdown."
+msgstr "Un Sitio debe ser seleccionado de la siguiente lista."
+
+msgid "You must be affiliated with a project to create a timepoint."
+msgstr "Debe estar affiliado a un Projecto para poder crear un Punto en el Tiempo."
+
+msgid "A project must be selected from the available dropdown."
+msgstr "Un projecto debe ser seleccionado de la siguiente lista."
+
+msgid "A language must be selected."
+msgstr "Un lenguage debe ser seleccionado."

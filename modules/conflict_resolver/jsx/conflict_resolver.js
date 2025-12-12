@@ -3,9 +3,14 @@ import React, {Component} from 'react';
 import {Tabs, TabPane} from 'Tabs';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import PropTypes from 'prop-types';
 
 import UnresolvedFilterableDataTable from './unresolved_filterabledatatable';
 import ResolvedFilterableDataTable from './resolved_filterabledatatable';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
+import frStrings from '../locale/fr/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Conflict Resolver class.
@@ -41,9 +46,10 @@ class ConflictResolver extends Component {
    * @return {JSX}
    */
   render() {
+    const {t} = this.props;
     const tabs = [
-      {id: 'unresolved', label: 'Unresolved'},
-      {id: 'resolved', label: 'Resolved'},
+      {id: 'unresolved', label: t('Unresolved', {ns: 'conflict_resolver'})},
+      {id: 'resolved', label: t('Resolved', {ns: 'conflict_resolver'})},
     ];
 
     let filtertable;
@@ -75,7 +81,9 @@ class ConflictResolver extends Component {
 }
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'conflict_resolver', {});
+  i18n.addResourceBundle('ja', 'conflict_resolver', jaStrings);
+  i18n.addResourceBundle('hi', 'conflict_resolver', hiStrings);
+  i18n.addResourceBundle('fr', 'conflict_resolver', frStrings);
   const Index = withTranslation(
     ['conflict_resolver', 'loris']
   )(ConflictResolver);
@@ -83,4 +91,11 @@ window.addEventListener('load', () => {
     document.getElementById('lorisworkspace')
   ).render(<Index />);
 });
+
+ConflictResolver.propTypes = {
+  t: PropTypes.func,
+};
+
+export default withTranslation(
+  ['conflict_resolver', 'loris'])(ConflictResolver);
 

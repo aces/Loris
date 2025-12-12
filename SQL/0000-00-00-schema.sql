@@ -51,7 +51,7 @@ CREATE TABLE `psc` (
   `Phone2` varchar(12) DEFAULT NULL,
   `Contact1` varchar(150) DEFAULT NULL,
   `Contact2` varchar(150) DEFAULT NULL,
-  `Alias` char(3) NOT NULL DEFAULT '',
+  `Alias` char(4) NOT NULL DEFAULT '',
   `MRI_alias` varchar(4) NOT NULL DEFAULT '',
   `Account` varchar(8) DEFAULT NULL,
   `Study_site` enum('N','Y') DEFAULT 'Y',
@@ -105,6 +105,7 @@ CREATE TABLE `users` (
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Password_hash` varchar(255) default NULL,
   `PasswordChangeRequired` tinyint(1) NOT NULL default 0,
+  `TOTPSecret` binary(64) DEFAULT NULL,
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
@@ -293,13 +294,12 @@ CREATE TABLE `flag` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `SessionID` int(10) unsigned NOT NULL,
   `TestID` int(10) unsigned NOT NULL,
-  `CommentID` varchar(255) NOT NULL default '',
+  `CommentID` varchar(255) NOT NULL,
   `Data_entry` enum('In Progress','Complete') default NULL,
   `Required_elements_completed` enum('Y','N') NOT NULL default 'N',
   `Administration` enum('None','Partial','All') default NULL,
   `Validity` enum('Questionable','Invalid','Valid') default NULL,
   `Exclusion` enum('Fail','Pass') default NULL,
-  `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `DataID` int(10) unsigned default NULL,
   PRIMARY KEY  (`CommentID`),
@@ -309,10 +309,27 @@ CREATE TABLE `flag` (
   KEY `flag_Data_entry` (`Data_entry`),
   KEY `flag_Validity` (`Validity`),
   KEY `flag_Administration` (`Administration`),
-  KEY `flag_UserID` (`UserID`),
   CONSTRAINT `FK_flag_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_flag_3` FOREIGN KEY (`DataID`) REFERENCES `instrument_data` (`ID`),
   CONSTRAINT `FK_ibfk_1` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `flag_editors` (
+  `userID` int(10) unsigned NOT NULL,
+  `CommentID` VARCHAR(255) NOT NULL,
+  `editDate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`userID`,`CommentID`),
+  KEY `FK_flag_editors_2` (`CommentID`),
+  CONSTRAINT `FK_flag_editors_2`
+  FOREIGN KEY (`CommentID`)
+    REFERENCES `flag` (`CommentID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_flag_editors_1`
+  FOREIGN KEY (`userID`)
+    REFERENCES `users` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `history` (
@@ -1204,10 +1221,12 @@ INSERT INTO notification_modules (module_name, operation_type, as_admin, templat
   ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited'),
   ('publication', 'submission', 'N', 'notifier_publication_submission.tpl', 'Publication: Submission Received'),
   ('publication', 'review', 'N', 'notifier_publication_review.tpl', 'Publication: Proposal has been reviewed'),
-  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited');
+  ('publication', 'edit', 'N', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited'),
+  ('issue_tracker', 'create/edit', 'N', 'issue_change.tpl', 'Issue Tracker: All issues created or edited');
 
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text';
 INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='publication' AND ns.service='email_text';
+INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='issue_tracker' AND ns.service='email_text';
 
 -- Transfer Document repository notifications to new system
 INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text' AND u.Doc_Repo_Notifications='Y';
@@ -1425,6 +1444,38 @@ CREATE TABLE `user_account_history` (
   `ChangeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ********************************
+-- tables for policies
+-- ********************************
+
+CREATE TABLE policies (
+    PolicyID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Version INT NOT NULL,
+    ModuleID INT NOT NULL,
+    PolicyRenewalTime INT DEFAULT 7,
+    PolicyRenewalTimeUnit enum('D','Y','M','H') DEFAULT 'D',
+    Content TEXT NULL,
+    SwalTitle VARCHAR(255) DEFAULT 'Terms of Use',
+    HeaderButton enum('Y','N') DEFAULT 'Y',
+    HeaderButtonText VARCHAR(255) DEFAULT 'Terms of Use',
+    Active enum('Y','N') DEFAULT 'Y',
+    AcceptButtonText VARCHAR(255) DEFAULT 'Accept',
+    DeclineButtonText VARCHAR(255) DEFAULT 'Decline',
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_policy_decision (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    PolicyID INT NOT NULL,
+    Decision enum('Accepted','Declined') NOT NULL,
+    DecisionDate DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- ********************************
 -- user_login_history tables
@@ -2421,7 +2472,6 @@ CREATE TABLE `publication_collaborator` (
 CREATE TABLE `publication` (
     `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `PublicationStatusID` int(2) unsigned NOT NULL default 1,
-    `LeadInvestigatorID` int(10) unsigned NOT NULL,
     `UserID` int(10) unsigned NOT NULL,
     `RatedBy` int(10) unsigned,
     `DateProposed` date NOT NULL,
@@ -2435,12 +2485,13 @@ CREATE TABLE `publication` (
     `link` varchar(255) DEFAULT NULL,
     `publishingStatus` enum('In Progress','Published') DEFAULT NULL,
     `project` int(10) unsigned DEFAULT NULL,
+    `LeadInvestigator` VARCHAR(255) DEFAULT NULL,
+    `LeadInvestigatorEmail` VARCHAR(255) DEFAULT NULL,
     CONSTRAINT `FK_publication_project` FOREIGN KEY (project) REFERENCES Project(ProjectID),
     CONSTRAINT `PK_publication` PRIMARY KEY(`PublicationID`),
     CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_PublicationStatusID` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`),
-    CONSTRAINT `FK_publication_LeadInvestigatorID` FOREIGN KEY(`LeadInvestigatorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`),
     CONSTRAINT `UK_publication_Title` UNIQUE (`Title`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
@@ -2657,7 +2708,6 @@ CREATE TABLE `redcap_notification` (
   PRIMARY KEY (`id`),
   KEY `i_redcap_notif_received_dt` (`received_dt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE `redcap_dictionary` (
     ID int(10) unsigned NOT NULL auto_increment,
