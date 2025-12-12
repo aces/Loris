@@ -281,15 +281,6 @@ msgstr "Vistas"
 msgid "NEW"
 msgstr "Nuevo"
 
-msgid "Update"
-msgstr "Actualizar"
-
-msgid "Update Successful!"
-msgstr "Actualización Exitosa!"
-
-msgid "Failed to update!"
-msgstr "Actualización Fallida!"
-
 msgid "Updated"
 msgstr "Actualizado"
 
@@ -376,3 +367,37 @@ msgstr "{{years}} años"
 msgid "File to upload"
 msgstr "Archivo para subir"
 
+# Other generic terms
+msgid "Loading..."
+msgstr ""
+
+msgid "Permission denied"
+msgstr ""
+
+msgid "Unauthorized"
+msgstr ""
+
+msgid "File to upload"
+msgstr ""
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Dataset"
+msgstr ""
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr ""

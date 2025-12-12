@@ -210,13 +210,13 @@ class ParticipantStatus extends Component {
     if (this.state.updateResult) {
       if (this.state.updateResult === 'success') {
         alertClass = 'alert alert-success text-center';
-        alertMessage = t('Update Successful!', {ns: 'loris'});
+        alertMessage = t('Update Successful!', {ns: 'candidate_parameters'});
       } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
         alertMessage = errorMessage ?
           errorMessage :
-          t('Failed to update!', {ns: 'loris'});
+          t('Failed to update!', {ns: 'candidate_parameters'});
       }
     }
 
