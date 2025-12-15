@@ -5,6 +5,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	locale/hi/LC_MESSAGES/loris.po \
 	locale/es/LC_MESSAGES/loris.po \
 	locale/en/LC_MESSAGES/loris.po \
+	modules/biobank/locale/fr/LC_MESSAGES/biobank.po \
 	modules/media/locale/fr/LC_MESSAGES/media.po \
 	modules/media/locale/ja/LC_MESSAGES/media.po \
 	modules/media/locale/hi/LC_MESSAGES/media.po \
