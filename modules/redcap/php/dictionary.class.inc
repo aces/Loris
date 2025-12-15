@@ -66,7 +66,7 @@ class Dictionary extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         return match ($request->getMethod()) {
-            'GET' => $this->_handleGET($request),
+            'GET' => $this->_handleGET(),
             default => new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             ),
@@ -76,11 +76,9 @@ class Dictionary extends \NDB_Page
     /**
      * Handle an incoming HTTP GET request.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET() : ResponseInterface
     {
         $db         = $this->loris->getDatabaseConnection();
         $dictionary = $db->pselect(

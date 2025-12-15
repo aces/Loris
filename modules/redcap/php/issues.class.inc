@@ -68,7 +68,7 @@ class Issues extends \NDB_Page
         // Ensure GET or POST request.
         switch ($request->getMethod()) {
         case 'GET':
-            return $this->_handleGET($request);
+            return $this->_handleGET();
         default:
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
@@ -79,11 +79,9 @@ class Issues extends \NDB_Page
     /**
      * Handle an incoming HTTP GET request.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
-     *
      * @return ResponseInterface
      */
-    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    private function _handleGET(): ResponseInterface
     {
         $db     = $this->loris->getDatabaseConnection();
         $issues = $db->pselect(
