@@ -186,21 +186,21 @@ class SpecimenForm extends React.Component {
         return (
           <StaticElement
             label={this.props.t('Note', {ns: 'loris'})}
-            text={this.props.t(`To create new aliquots, enter a Barcode, fill out the
-                coresponding sub-form and press Submit. Press "New Entry" button
-                to add another barcode field, or press for the "Copy" button to
-                  duplicate the previous entry.`, {ns: 'biobank'})}
+            text={this.props.t(`To create new aliquots, enter a Barcode, fill
+              out the coresponding sub-form and press Submit. Press "New
+              Entry" button to add another barcode field, or press for the
+              "Copy" button to duplicate the previous entry.`, {ns: 'biobank'})}
           />
         );
       } else {
         return (
           <StaticElement
             label={this.props.t('Note', {ns: 'loris'})}
-            text={this.props.t(`To create new specimens, first select a PSCID and Visit Label.
-                  Then, enter a Barcode, fill out the coresponding sub-form and
-                  press submit. Press "New Entry" button to add another barcode
-                  field, or press for the "Copy" button to duplicate the
-                  previous entry.`, {ns: 'biobank'})}
+            text={this.props.t(`To create new specimens, first select a PSCID
+              and Visit Label. Then, enter a Barcode, fill out the coresponding
+              sub-form and press submit. Press "New Entry" button to add
+              another barcode field, or press for the "Copy" button to
+              duplicate the previous entry.`, {ns: 'biobank'})}
           />
         );
       }

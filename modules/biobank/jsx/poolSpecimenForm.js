@@ -205,12 +205,12 @@ class PoolSpecimenForm extends React.Component {
         <div className='col-sm-10 col-sm-offset-1'>
           <StaticElement
             label={this.props.t('Pooling Note', {ns: 'biobank'})}
-            text={this.props.t(`Select or Scan the specimens to be pooled. Specimens must
-                  have a Status of 'Available', have a Quantity of greater
-                  than 0, and share the same Type, PSCID, Visit Label
-                  and Current Site. Pooled specimens cannot already belong to
-                  a pool. Once pooled, the Status of specimen will be changed
-                  to 'Dispensed' and there Quantity set to '0'`)}
+            text={this.props.t(`Select or Scan the specimens to be pooled.
+                  Specimens must have a Status of 'Available', have a Quantity
+                  of greater than 0, and share the same Type, PSCID, Visit
+                  Label and Current Site. Pooled specimens cannot already
+                  belong to a pool. Once pooled, the Status of specimen will be
+                  changed to 'Dispensed' and there Quantity set to '0'`)}
           />
           <SearchableDropdown
             name='typeId'

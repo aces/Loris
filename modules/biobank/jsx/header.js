@@ -22,7 +22,7 @@ class Header extends Component {
    * @return {JSX}
    */
   render() {
-    const {options, container, specimen, editable, current} = this.props;
+    const {t, options, container, specimen, editable, current} = this.props;
     const updateContainer = () =>
       Promise.resolve(
         this.props.updateContainer(current.container)
@@ -48,11 +48,11 @@ class Header extends Component {
       if (specimen && loris.userHasPermission('biobank_specimen_create')) {
         return (
           <div>
-            <div className='action' title={this.props.t('Make Aliquots', {ns: 'biobank'})}>
+            <div className='action' title={t('Make Aliquots', {ns: 'biobank'})}>
               {renderActionButton()}
             </div>
             <SpecimenForm
-              title={this.props.t('Add Aliquots', {ns: 'biobank'})}
+              title={t('Add Aliquots', {ns: 'biobank'})}
               parent={[{specimen: specimen, container: container}]}
               options={this.props.options}
               data={this.props.data}
@@ -71,7 +71,10 @@ class Header extends Component {
     const alterLotNumber = () => {
       if (loris.userHasPermission('biobank_specimen_alter')) {
         return (
-          <div className='action' title={this.props.t('Alter Lot Number', {ns: 'biobank'})}>
+          <div
+            className='action'
+            title={t('Alter Lot Number', {ns: 'biobank'})}
+          >
             <span
               style={{color: 'grey'}}
               className='glyphicon glyphicon-pencil'
@@ -88,7 +91,10 @@ class Header extends Component {
     const alterExpirationDate = () => {
       if (loris.userHasPermission('biobank_specimen_alter')) {
         return (
-          <div className='action' title={this.props.t('Alter Expiration Date', {ns: 'biobank'})}>
+          <div
+            className='action'
+            title={t('Alter Expiration Date', {ns: 'biobank'})}
+          >
             <span
               style={{color: 'grey'}}
               className='glyphicon glyphicon-pencil'
@@ -144,7 +150,9 @@ class Header extends Component {
         sampleNumber: specimen.sampleNumber,
       }];
       this.props.printLabel(labelParams)
-        .then(() => (Swal.fire(this.props.t('Print Barcode Number', {ns: 'biobank'})+': ' + container.barcode)));
+        .then(() => (Swal.fire(
+          t('Print Barcode Number', {ns: 'biobank'})+': ' + container.barcode)
+        ));
     };
 
     return (
@@ -163,7 +171,7 @@ class Header extends Component {
             {lotForm}
             {expirationForm}
           </div>
-          <div className='action' title={this.props.t('Print Barcode', {ns: 'biobank'})}>
+          <div className='action' title={t('Print Barcode', {ns: 'biobank'})}>
             <div className='action-button update' onClick={printBarcode}>
               <span className='glyphicon glyphicon-print'/>
             </div>

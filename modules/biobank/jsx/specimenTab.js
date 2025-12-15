@@ -90,10 +90,10 @@ class SpecimenTab extends Component {
    * @return {JSX}
    */
   formatSpecimenColumns(column, value, row) {
-    const {data, options} = this.props;
+    const {t, data, options} = this.props;
     const display = this.mapSpecimenColumns(column, value);
     const candidate = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row[this.props.t('PSCID', {ns: 'loris'})]);
+      .find((cand) => cand?.pscid == row[t('PSCID', {ns: 'loris'})]);
     const candidatePermission = candidate !== undefined;
     switch (column) {
     case this.props.t('Barcode', {ns: 'biobank'}):
@@ -158,7 +158,7 @@ class SpecimenTab extends Component {
    */
   render() {
     const {editable} = this.state;
-    const {data, options} = this.props;
+    const {t, data, options} = this.props;
     const barcodesPrimary = Object.values(data.containers)
       .reduce((result, container) => {
         if (options.container.types[container.typeId].primary == 1) {
@@ -235,7 +235,7 @@ class SpecimenTab extends Component {
           });
       });
     const fields = [
-      {label: this.props.t('Barcode', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Barcode', {ns: 'biobank'}), show: true, filter: {
         name: 'barcode',
         type: 'text',
       }},
@@ -244,18 +244,18 @@ class SpecimenTab extends Component {
         type: 'select',
         options: specimenTypes,
       }},
-      {label: this.props.t('Container Type', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Container Type', {ns: 'biobank'}), show: true, filter: {
         name: 'containerType',
         type: 'select',
         options: containerTypesPrimary,
       }},
       {label: this.props.t('Quantity', {ns: 'biobank'}), show: true},
-      {label: this.props.t('F/T Cycle', {ns: 'biobank'}), show: false, filter: {
+      {label: t('F/T Cycle', {ns: 'biobank'}), show: false, filter: {
         name: 'fTCycle',
         type: 'text',
         hide: true,
       }},
-      {label: this.props.t('Parent Specimen(s)', {ns: 'biobank'}), show: false, filter: {
+      {label: t('Parent Specimen(s)', {ns: 'biobank'}), show: false, filter: {
         name: 'parentSpecimens',
         type: 'text',
         hide: true,
@@ -267,9 +267,12 @@ class SpecimenTab extends Component {
       {label: this.props.t('Sex', {ns: 'loris'}), show: true, filter: {
         name: 'sex',
         type: 'select',
-        options: {Male: this.props.t('Male', {ns: 'biobank'}), Female: this.props.t('Female', {ns: 'biobank'})},
+        options: {
+          Male: t('Male', {ns: 'biobank'}),
+          Female: t('Female', {ns: 'biobank'}),
+        },
       }},
-      {label: this.props.t('Age at Collection', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Age at Collection', {ns: 'biobank'}), show: true, filter: {
         name: 'age',
         type: 'number',
       }},
@@ -297,7 +300,7 @@ class SpecimenTab extends Component {
         type: 'multiselect',
         options: options.projects,
       }},
-      {label: this.props.t('Current Site', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Current Site', {ns: 'biobank'}), show: true, filter: {
         name: 'currentSite',
         type: 'select',
         options: options.centers,
@@ -307,19 +310,19 @@ class SpecimenTab extends Component {
         type: 'select',
         options: options.centers,
       }},
-      {label: this.props.t('Collection Date', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Collection Date', {ns: 'biobank'}), show: true, filter: {
         name: 'collectionDate',
         type: 'date',
       }},
-      {label: this.props.t('Collection Time', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Collection Time', {ns: 'biobank'}), show: true, filter: {
         name: 'collectionTime',
         type: 'text',
       }},
-      {label: this.props.t('Preparation Time', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Preparation Time', {ns: 'biobank'}), show: true, filter: {
         name: 'preparationTime',
         type: 'text',
       }},
-      {label: this.props.t('Container Barcode', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Container Barcode', {ns: 'biobank'}), show: true, filter: {
         name: 'containerBarcode',
         type: 'text',
       }},
@@ -338,14 +341,26 @@ class SpecimenTab extends Component {
         label: this.props.t('Go To Specimen', {ns: 'biobank'}),
         action: openSearchSpecimen,
       },
-      {name: 'addSpecimen', label: this.props.t('Add Specimen', {ns: 'biobank'}), action: openSpecimenForm},
-      {name: 'poolSpecimen', label: this.props.t('Pool Specimens', {ns: 'biobank'}), action: openPoolForm},
+      {
+        name: 'addSpecimen',
+        label: t('Add Specimen', {ns: 'biobank'}),
+        action: openSpecimenForm,
+      },
+      {
+        name: 'poolSpecimen',
+        label: t('Pool Specimens', {ns: 'biobank'}),
+        action: openPoolForm,
+      },
       {
         name: 'batchProcess',
         label: this.props.t('Process Specimens', {ns: 'biobank'}),
         action: openBatchProcessForm,
       },
-      {name: 'batchEdit', label: this.props.t('Edit Specimens', {ns: 'biobank'}), action: openBatchEditForm},
+      {
+        name: 'batchEdit',
+        label: t('Edit Specimens', {ns: 'biobank'}),
+        action: openBatchEditForm,
+      },
     ];
 
     return (

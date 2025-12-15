@@ -204,14 +204,15 @@ class BatchEditForm extends React.PureComponent {
    * @return {Promise}
    */
   validateListItem(containerId) {
+    const {t} = this.props;
     const {current, list} = clone(this.state);
     const container = this.props.data.containers[containerId];
     const specimen = this.props.data.specimens[container.specimenId];
     if (!isEmpty(list) &&
       (specimen.typeId !== current.typeId)) {
       Swal.fire(
-        this.props.t('Oops!', {ns: 'biobank'}),
-        this.props.t('Specimens must be of the same Type and Center', {ns: 'biobank'}),
+        t('Oops!', {ns: 'biobank'}),
+        t('Specimens must be of the same Type and Center', {ns: 'biobank'}),
         'warning'
       );
       return Promise.reject();
@@ -229,7 +230,7 @@ class BatchEditForm extends React.PureComponent {
       return <Loader/>;
     }
 
-    const {data, options} = this.props;
+    const {t, data, options} = this.props;
     const {poolId, collection, preparation, list, current, errors} = this.state;
 
     const units = current.typeId ? mapFormOptions(
@@ -494,7 +495,7 @@ class BatchEditForm extends React.PureComponent {
           <div className='col-sm-10 col-sm-offset-1'>
             <StaticElement
               label={this.props.t('Editing Note', {ns: 'biobank'})}
-              text={this.props.t(`Select or Scan the specimens to be edited. Specimens
+              text={t(`Select or Scan the specimens to be edited. Specimens
                     must share the same Type.`, {ns: 'biobank'})}
             />
             <StaticElement

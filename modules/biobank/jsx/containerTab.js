@@ -108,6 +108,7 @@ class ContainerTab extends Component {
    */
   render() {
     const {editable} = this.state;
+    const {t} = this.props;
 
     const stati = mapFormOptions(
       this.props.options.container.stati, 'label'
@@ -146,26 +147,26 @@ class ContainerTab extends Component {
     );
 
     const fields = [
-      {label: this.props.t('Barcode', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Barcode', {ns: 'biobank'}), show: true, filter: {
         name: 'barcode',
         type: 'text',
       }},
-      {label: this.props.t('Type', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Type', {ns: 'biobank'}), show: true, filter: {
         name: 'type',
         type: 'select',
         options: containerTypesNonPrimary,
       }},
-      {label: this.props.t('Status', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Status', {ns: 'biobank'}), show: true, filter: {
         name: 'status',
         type: 'select',
         options: stati,
       }},
-      {label: this.props.t('Site', {ns: 'loris', count: 1}), show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'currentSite',
         type: 'select',
         options: this.props.options.centers,
       }},
-      {label: this.props.t('Parent Barcode', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Parent Barcode', {ns: 'biobank'}), show: true, filter: {
         name: 'parentBarcode',
         type: 'text',
       }},
@@ -176,12 +177,12 @@ class ContainerTab extends Component {
     const actions = [
       {
         name: 'goToContainer',
-        label: this.props.t('Go To Container', {ns: 'biobank'}),
+        label: t('Go To Container', {ns: 'biobank'}),
         action: openSearchContainer,
       },
       {
         name: 'addContainer',
-        label: this.props.t('Add Container', {ns: 'biobank'}),
+        label: t('Add Container', {ns: 'biobank'}),
         action: openContainerForm,
         show: loris.userHasPermission('biobank_container_create'),
       },
@@ -199,7 +200,7 @@ class ContainerTab extends Component {
           progress={this.props.loading}
         />
         <Search
-          title={this.props.t('Go To Container', {ns: 'biobank'})}
+          title={t('Go To Container', {ns: 'biobank'})}
           show={editable.searchContainer}
           onClose={this.clearEditable}
           barcodes={barcodesNonPrimary}

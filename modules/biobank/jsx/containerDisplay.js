@@ -30,6 +30,7 @@ function ContainerDisplay(props) {
   } = props;
   const {history, select, container, selectedCoordinate} = props;
   const {
+    t,
     clearAll,
     editContainer,
     setContainer,
@@ -126,10 +127,10 @@ function ContainerDisplay(props) {
     barcodeField = (
       <TextboxElement
         name='barcode'
-        label={this.props.t('Barcode', {ns: 'biobank'})}
+        label={t('Barcode', {ns: 'biobank'})}
         onUserInput={setBarcode}
         value={current.barcode}
-        placeHolder={this.props.t('Please Scan or Type Barcode', {ns: 'biobank'})}
+        placeHolder={t('Please Scan or Type Barcode', {ns: 'biobank'})}
         autoFocus={true}
       />
     );
@@ -139,19 +140,19 @@ function ContainerDisplay(props) {
     <div className={((editable||{}).loadContainer) ? 'open' : 'closed'}>
       <FormElement>
         <StaticElement
-          label={this.props.t('Note', {ns: 'loris'})}
-          text={this.props.t(`Scan Containers to be Loaded. If Sequential is checked,
+          label={t('Note', {ns: 'loris'})}
+          text={t(`Scan Containers to be Loaded. If Sequential is checked,
            the Coordinate will Auto-Increment after each Load.`)}
         />
         <CheckboxElement
           name='sequential'
-          label={this.props.t('Sequential', {ns: 'biobank'})}
+          label={t('Sequential', {ns: 'biobank'})}
           value={current.sequential}
           onUserInput={setCurrent}
         />
         {barcodeField}
         <ButtonElement
-          label={this.props.t('Load', {ns: 'biobank'})}
+          label={t('Load', {ns: 'biobank'})}
           onUserInput={loadContainer}
         />
         <StaticElement
@@ -180,13 +181,13 @@ function ContainerDisplay(props) {
     barcodeField = (
       <SearchableDropdown
         name='barcode'
-        label={this.props.t('Barcode', {ns: 'biobank'})}
+        label={t('Barcode', {ns: 'biobank'})}
         options={barcodes}
         onUserInput={(name, value) => {
           value && setCheckoutList(children[value]);
         }}
         value={current.containerId}
-        placeHolder={this.props.t('Please Scan or Select Barcode', {ns: 'biobank'})}
+        placeHolder={t('Please Scan or Select Barcode', {ns: 'biobank'})}
         autoFocus={true}
       />
     );
@@ -196,13 +197,13 @@ function ContainerDisplay(props) {
     <div className={((editable||{}).containerCheckout) ? 'open' : 'closed'}>
       <FormElement>
         <StaticElement
-          label={this.props.t('Note', {ns: 'loris'})}
-          text={this.props.t(`Click, Select or Scan Containers to be
+          label={t('Note', {ns: 'loris'})}
+          text={t(`Click, Select or Scan Containers to be
                 Unloaded and Press 'Confirm'`)}
         />
         {barcodeField}
         <ButtonElement
-          label={this.props.t('Confirm', {ns: 'biobank'})}
+          label={t('Confirm', {ns: 'biobank'})}
           type='button'
           onUserInput={checkoutContainers}
         />

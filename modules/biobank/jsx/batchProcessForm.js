@@ -253,10 +253,10 @@ class BatchProcessForm extends React.PureComponent {
         <div className='col-sm-10 col-sm-offset-1'>
           <StaticElement
             label={this.props.t('Processing Note', {ns: 'biobank'})}
-            text={this.props.t(`Select or Scan the specimens to be prepared. Specimens must
-                  have a Status of 'Available', and share the same Type.
-                  Any previous value associated with a Specimen will be
-                  overwritten if one is added on this form.`)}
+            text={this.props.t(`Select or Scan the specimens to be prepared.
+                  Specimens must have a Status of 'Available', and share the
+                  same Type. Any previous value associated with a Specimen will
+                  be overwritten if one is added on this form.`)}
           />
           <StaticElement
             label={this.props.t('Specimen Type', {ns: 'biobank'})}

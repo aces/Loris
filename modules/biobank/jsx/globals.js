@@ -21,7 +21,7 @@ import ContainerParentForm from './containerParentForm';
  * @param {object} props - The component's props
  */
 function Globals(props) {
-  const {current, data, editable, options, specimen, container} = props;
+  const {t, current, data, editable, options, specimen, container} = props;
   const updateContainer = () => props.updateContainer(current.container);
   const editContainer = () => props.editContainer(container);
 
@@ -293,7 +293,10 @@ function Globals(props) {
         if (loris.userHasPermission('biobank_container_update')) {
           return (
             <div>
-              <div className='action' title={this.props.t('Move Container', {ns: 'biobank'})}>
+              <div className='action' title={t(
+                'Move Container',
+                {ns: 'biobank'}
+              )}>
                 <span
                   className='action-button update'
                   onClick={() => {
@@ -306,7 +309,7 @@ function Globals(props) {
               </div>
               <div>
                 <Modal
-                  title={this.props.t('Update Parent Container', {ns: 'biobank'})}
+                  title={t('Update Parent Container', {ns: 'biobank'})}
                   onClose={props.clearAll}
                   show={editable.containerParentForm}
                   onSubmit={props.uC}
@@ -337,10 +340,10 @@ function Globals(props) {
           <div className='field'>
             Parent Container
             <div className='value'>
-              {parentContainerBarcodeValue() || this.props.t('None', {ns: 'biobank'})}
+              {parentContainerBarcodeValue() || t('None', {ns: 'biobank'})}
             </div>
             {(parentContainerBarcodeValue && container.coordinate) ?
-              this.props.t('Coordinate', {ns: 'biobank'}) + ' ' + coordinate : null}
+              t('Coordinate', {ns: 'biobank'}) + ' ' + coordinate : null}
           </div>
           {updateParentContainer()}
         </div>
@@ -574,6 +577,7 @@ Item.propTypes = {
  * @return {JSX}
  */
 function InlineField(props) {
+  const {t} = this.props;
   const fields = React.Children.map(
     props.children, (child) => {
       return (
@@ -587,7 +591,10 @@ function InlineField(props) {
   // loris.userHasPermission('biobank_container_update') should determine if 'edit'
   // can be passed in the first place.
   const editButton = props.edit instanceof Function && !props.editable && (
-    <div className='action' title={this.props.t('Update', {ns: 'biobank'})+' '+props.label}>
+    <div
+      className='action'
+      title={t('Update', {ns: 'biobank'})+' '+props.label}
+    >
       <span
         className={
           props.pencil

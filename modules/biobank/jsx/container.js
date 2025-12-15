@@ -37,7 +37,7 @@ class BiobankContainer extends Component {
    * @return {JSX}
    */
   render() {
-    const {current, data, editable, options, container} = this.props;
+    const {t, current, data, editable, options, container} = this.props;
 
     const checkoutButton = () => {
       if (!(loris.userHasPermission('biobank_container_update'))
@@ -158,7 +158,10 @@ class BiobankContainer extends Component {
       return (
         <div>
           <div className='title'>
-            {listAssigned.length !== 0 ? this.props.t('Assigned Containers', {ns: 'biobank'}) : null}
+            {listAssigned.length !== 0 ? t(
+              'Assigned Containers',
+              {ns: 'biobank'}
+            ) : null}
           </div>
           <div className='container-coordinate'>
             <div>{listAssigned}</div>
@@ -166,7 +169,10 @@ class BiobankContainer extends Component {
           </div>
           {listAssigned.length !==0 ? <br/> : null}
           <div className='title'>
-            {listUnassigned.length !== 0 ? this.props.t('Unassigned Containers', {ns: 'biobank'}) : null}
+            {listUnassigned.length !== 0 ? t(
+              'Unassigned Containers',
+              {ns: 'biobank'}
+            ) : null}
           </div>
           {listUnassigned}
         </div>

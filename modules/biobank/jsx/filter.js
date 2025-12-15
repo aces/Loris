@@ -19,6 +19,7 @@ class BiobankFilter extends Component {
    * @return {JSX}
    */
   render() {
+    const {t} = this.props;
     const specimenTab = (
       <SpecimenTab
         data={this.props.data}
@@ -66,18 +67,18 @@ class BiobankFilter extends Component {
     const tabList = [];
     if (loris.userHasPermission('biobank_specimen_view')) {
       tabInfo.push({id: 'specimens', content: specimenTab});
-      tabList.push({id: 'specimens', label: this.props.t('Specimens', {ns: 'biobank'})});
+      tabList.push({id: 'specimens', label: t('Specimens', {ns: 'biobank'})});
     }
     if (loris.userHasPermission('biobank_container_view')) {
       tabInfo.push({id: 'containers', content: containerTab});
-      tabList.push({id: 'containers', label: this.props.t('Containers', {ns: 'biobank'})});
+      tabList.push({id: 'containers', label: t('Containers', {ns: 'biobank'})});
     }
     if (loris.userHasPermission('biobank_pool_view')) {
       tabInfo.push({id: 'pools', content: poolTab});
-      tabList.push({id: 'pools', label: this.props.t('Pools', {ns: 'biobank'})});
+      tabList.push({id: 'pools', label: t('Pools', {ns: 'biobank'})});
     }
     tabInfo.push({id: 'shipments', content: shipmentTab});
-    tabList.push({id: 'shipments', label: this.props.t('Shipments', {ns: 'biobank'})});
+    tabList.push({id: 'shipments', label: t('Shipments', {ns: 'biobank'})});
 
     const tabContent = Object.keys(tabInfo).map((key) => {
       return (

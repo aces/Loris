@@ -83,10 +83,10 @@ class PoolTab extends Component {
    * @return {JSX}
    */
   formatPoolColumns(column, value, row) {
-    const {options} = this.props;
+    const {t, options} = this.props;
     value = this.mapPoolColumns(column, value);
     const candId = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row[this.props.t('PSCID', {ns: 'loris'})])?.id;
+      .find((cand) => cand?.pscid == row[t('PSCID', {ns: 'loris'})])?.id;
 
     // If candId is defined, then the user has access to the candidate and a
     // hyperlink can be established.
@@ -119,7 +119,8 @@ class PoolTab extends Component {
       return <td>{value}</td>;
     case this.props.t('Aliquot', {ns: 'biobank'}):
       const onClick = () => this.openAliquotForm(row['ID']);
-      return <td><CTA label={this.props.t('Aliquot', {ns: 'biobank'})} onUserInput={onClick}/></td>;
+      const label = t('Aliquot', {ns: 'biobank'});
+      return <td><CTA label={label} onUserInput={onClick}/></td>;
     default:
       return <td>{value}</td>;
     }
@@ -171,7 +172,7 @@ class PoolTab extends Component {
    * @return {JSX}
    */
   render() {
-    const {data, options} = this.props;
+    const {t, data, options} = this.props;
     const specimenTypes = mapFormOptions(
       options.specimen.types, 'label'
     );
@@ -194,33 +195,33 @@ class PoolTab extends Component {
 
     const fields = [
       {label: 'ID', show: false},
-      {label: this.props.t('Label', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Label', {ns: 'biobank'}), show: true, filter: {
         name: 'barcode',
         type: 'text',
       }},
-      {label: this.props.t('Quantity', {ns: 'biobank'}), show: true},
-      {label: this.props.t('Pooled Specimens', {ns: 'biobank'}), show: true},
-      {label: this.props.t('PSCID', {ns: 'loris'}), show: true, filter: {
+      {label: t('Quantity', {ns: 'biobank'}), show: true},
+      {label: t('Pooled Specimens', {ns: 'biobank'}), show: true},
+      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'pscid',
         type: 'text',
       }},
-      {label: this.props.t('Visit Label', {ns: 'loris'}), show: true, filter: {
+      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'session',
         type: 'text',
       }},
-      {label: this.props.t('Type', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Type', {ns: 'biobank'}), show: true, filter: {
         name: 'type',
         type: 'select',
         options: specimenTypes,
       }},
-      {label: this.props.t('Site', {ns: 'loris', count: 1}), show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.centers,
       }},
-      {label: this.props.t('Date', {ns: 'loris'}), show: true},
-      {label: this.props.t('Time', {ns: 'loris'}), show: true},
-      {label: this.props.t('Aliquot', {ns: 'biobank'}), show: true},
+      {label: t('Date', {ns: 'loris'}), show: true},
+      {label: t('Time', {ns: 'loris'}), show: true},
+      {label: t('Aliquot', {ns: 'biobank'}), show: true},
     ];
 
     return (
