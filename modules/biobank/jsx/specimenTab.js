@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 
 import {clone, mapFormOptions} from './helpers.js';
 import FilterableDataTable from 'FilterableDataTable';
@@ -56,24 +57,24 @@ class SpecimenTab extends Component {
   mapSpecimenColumns(column, value) {
     const {options} = this.props;
     switch (column) {
-    case 'Type':
+    case this.props.t('Type', {ns: 'biobank'}):
       return options.specimen.types[value].label;
-    case 'Container Type':
+    case this.props.t('Container Type', {ns: 'biobank'}):
       return options.container.typesPrimary[value].label;
-    case 'Diagnosis':
+    case this.props.t('Diagnosis', {ns: 'biobank'}):
       if (Array.isArray(value) && value.length > 0) {
         return value.map((id) => options.diagnoses[id].label);
       }
       break;
-    case 'Visit Label':
+    case this.props.t('Visit Label', {ns: 'loris'}):
       return options.sessions[value].label;
-    case 'Status':
+    case this.props.t('Status', {ns: 'biobank'}):
       return options.container.stati[value].label;
-    case 'Current Site':
+    case this.props.t('Current Site', {ns: 'biobank'}):
       return options.centers[value];
-    case 'Draw Site':
+    case this.props.t('Draw Site', {ns: 'biobank'}):
       return options.centers[value];
-    case 'Project':
+    case this.props.t('Project', {ns: 'loris'}):
       return options.projects[value];
     default:
       return value;
@@ -89,21 +90,21 @@ class SpecimenTab extends Component {
    * @return {JSX}
    */
   formatSpecimenColumns(column, value, row) {
-    const {data, options} = this.props;
+    const {t, data, options} = this.props;
     const display = this.mapSpecimenColumns(column, value);
     const candidate = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row['PSCID']);
+      .find((cand) => cand?.pscid == row[t('PSCID', {ns: 'loris'})]);
     const candidatePermission = candidate !== undefined;
     switch (column) {
-    case 'Barcode':
+    case this.props.t('Barcode', {ns: 'biobank'}):
       return <td><Link to={`/barcode=${display}`}>{display}</Link></td>;
-    case 'Parent Specimens':
+    case this.props.t('Parent Specimens', {ns: 'biobank'}):
       // TODO: if the user doesn't have access then these shouldn't be hyperlinked
       const barcodes = display && display.map((id, key) => {
         return <Link key={key} to={`/barcode=${display}`}>{display}</Link>;
       }).reduce((prev, curr) => [prev, ', ', curr]);
       return <td>{barcodes}</td>;
-    case 'PSCID':
+    case this.props.t('PSCID', {ns: 'loris'}):
       if (candidatePermission) {
         return (
           <td>
@@ -112,14 +113,14 @@ class SpecimenTab extends Component {
         );
       }
       return <td>{display}</td>;
-    case 'Visit Label':
+    case this.props.t('Visit Label', {ns: 'loris'}):
       if (candidatePermission) {
         const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
           candidate.id+'&sessionID='+value;
         return <td><a href={visitLabelURL}>{display}</a></td>;
       }
       return <td>{display}</td>;
-    case 'Status':
+    case this.props.t('Status', {ns: 'biobank'}):
       const style = {};
       switch (display) {
       case 'Available':
@@ -136,7 +137,7 @@ class SpecimenTab extends Component {
         break;
       }
       return <td style={style}>{display}</td>;
-    case 'Container Barcode':
+    case this.props.t('Container Barcode', {ns: 'biobank'}):
       // check if container has be queried
       if (
         Object.values(data.containers)
@@ -157,7 +158,7 @@ class SpecimenTab extends Component {
    */
   render() {
     const {editable} = this.state;
-    const {data, options} = this.props;
+    const {t, data, options} = this.props;
     const barcodesPrimary = Object.values(data.containers)
       .reduce((result, container) => {
         if (options.container.types[container.typeId].primary == 1) {
@@ -234,95 +235,98 @@ class SpecimenTab extends Component {
           });
       });
     const fields = [
-      {label: 'Barcode', show: true, filter: {
+      {label: t('Barcode', {ns: 'biobank'}), show: true, filter: {
         name: 'barcode',
         type: 'text',
       }},
-      {label: 'Type', show: true, filter: {
+      {label: this.props.t('Type', {ns: 'biobank'}), show: true, filter: {
         name: 'type',
         type: 'select',
         options: specimenTypes,
       }},
-      {label: 'Container Type', show: true, filter: {
+      {label: t('Container Type', {ns: 'biobank'}), show: true, filter: {
         name: 'containerType',
         type: 'select',
         options: containerTypesPrimary,
       }},
-      {label: 'Quantity', show: true},
-      {label: 'F/T Cycle', show: false, filter: {
+      {label: this.props.t('Quantity', {ns: 'biobank'}), show: true},
+      {label: t('F/T Cycle', {ns: 'biobank'}), show: false, filter: {
         name: 'fTCycle',
         type: 'text',
         hide: true,
       }},
-      {label: 'Parent Specimen(s)', show: false, filter: {
+      {label: t('Parent Specimen(s)', {ns: 'biobank'}), show: false, filter: {
         name: 'parentSpecimens',
         type: 'text',
         hide: true,
       }},
-      {label: 'PSCID', show: true, filter: {
+      {label: this.props.t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'pscid',
         type: 'text',
       }},
-      {label: 'Sex', show: true, filter: {
+      {label: this.props.t('Sex', {ns: 'loris'}), show: true, filter: {
         name: 'sex',
         type: 'select',
-        options: {Male: 'Male', Female: 'Female'},
+        options: {
+          Male: t('Male', {ns: 'biobank'}),
+          Female: t('Female', {ns: 'biobank'}),
+        },
       }},
-      {label: 'Age at Collection', show: true, filter: {
+      {label: t('Age at Collection', {ns: 'biobank'}), show: true, filter: {
         name: 'age',
         type: 'number',
       }},
-      {label: 'Diagnosis', show: true, filter: {
+      {label: this.props.t('Diagnosis', {ns: 'biobank'}), show: true, filter: {
         name: 'diagnosis',
         type: 'multiselect',
         options: diagnoses,
       }},
-      {label: 'Visit Label', show: true, filter: {
+      {label: this.props.t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'session',
         type: 'text',
       }},
-      {label: 'Pool', show: false, filter: {
+      {label: this.props.t('Pool', {ns: 'biobank'}), show: false, filter: {
         name: 'pool',
         type: 'text',
         hide: true,
       }},
-      {label: 'Status', show: true, filter: {
+      {label: this.props.t('Status', {ns: 'biobank'}), show: true, filter: {
         name: 'status',
         type: 'select',
         options: stati,
       }},
-      {label: 'Project', show: true, filter: {
+      {label: this.props.t('Project', {ns: 'loris'}), show: true, filter: {
         name: 'project',
         type: 'multiselect',
         options: options.projects,
       }},
-      {label: 'Current Site', show: true, filter: {
+      {label: t('Current Site', {ns: 'biobank'}), show: true, filter: {
         name: 'currentSite',
         type: 'select',
         options: options.centers,
       }},
-      {label: 'Draw Site', show: true, filter: {
+      {label: this.props.t('Draw Site', {ns: 'biobank'}), show: true, filter: {
         name: 'drawSite',
         type: 'select',
         options: options.centers,
       }},
-      {label: 'Collection Date', show: true, filter: {
+      {label: t('Collection Date', {ns: 'biobank'}), show: true, filter: {
         name: 'collectionDate',
         type: 'date',
       }},
-      {label: 'Collection Time', show: true, filter: {
+      {label: t('Collection Time', {ns: 'biobank'}), show: true, filter: {
         name: 'collectionTime',
         type: 'text',
       }},
-      {label: 'Preparation Time', show: true, filter: {
+      {label: t('Preparation Time', {ns: 'biobank'}), show: true, filter: {
         name: 'preparationTime',
         type: 'text',
       }},
-      {label: 'Container Barcode', show: true, filter: {
+      {label: t('Container Barcode', {ns: 'biobank'}), show: true, filter: {
         name: 'containerBarcode',
         type: 'text',
       }},
-      {label: 'Coordinate', show: true},
+      {label: this.props.t('Coordinate', {ns: 'biobank'}), show: true},
       ...specimenAttributeFields,
     ];
 
@@ -334,17 +338,29 @@ class SpecimenTab extends Component {
     const actions = [
       {
         name: 'goToSpecimen',
-        label: 'Go To Specimen',
+        label: this.props.t('Go To Specimen', {ns: 'biobank'}),
         action: openSearchSpecimen,
       },
-      {name: 'addSpecimen', label: 'Add Specimen', action: openSpecimenForm},
-      {name: 'poolSpecimen', label: 'Pool Specimens', action: openPoolForm},
+      {
+        name: 'addSpecimen',
+        label: t('Add Specimen', {ns: 'biobank'}),
+        action: openSpecimenForm,
+      },
+      {
+        name: 'poolSpecimen',
+        label: t('Pool Specimens', {ns: 'biobank'}),
+        action: openPoolForm,
+      },
       {
         name: 'batchProcess',
-        label: 'Process Specimens',
+        label: this.props.t('Process Specimens', {ns: 'biobank'}),
         action: openBatchProcessForm,
       },
-      {name: 'batchEdit', label: 'Edit Specimens', action: openBatchEditForm},
+      {
+        name: 'batchEdit',
+        label: t('Edit Specimens', {ns: 'biobank'}),
+        action: openBatchEditForm,
+      },
     ];
 
     return (
@@ -359,7 +375,7 @@ class SpecimenTab extends Component {
           progress={this.props.loading}
         />
         <Search
-          title='Go To Specimen'
+          title={this.props.t('Go To Specimen', {ns: 'biobank'})}
           show={editable.searchSpecimen}
           onClose={this.clearEditable}
           barcodes={barcodesPrimary}
@@ -367,7 +383,7 @@ class SpecimenTab extends Component {
         />
         {loris.userHasPermission('biobank_specimen_create') ?
           <SpecimenForm
-            title='Add New Specimen'
+            title={this.props.t('Add New Specimen', {ns: 'biobank'})}
             options={options}
             data={data}
             increaseCoordinate={this.props.increaseCoordinate}
@@ -405,6 +421,7 @@ class SpecimenTab extends Component {
 }
 
 SpecimenTab.propTypes = {
+  t: PropTypes.func.isRequired,
   options: PropTypes.shape({
     specimen: PropTypes.shape({
       attributes: PropTypes.arrayOf(
@@ -527,4 +544,4 @@ SpecimenTab.propTypes = {
   loading: PropTypes.bool.isRequired,
 };
 
-export default SpecimenTab;
+export default withTranslation(['biobank', 'loris'])(SpecimenTab);
