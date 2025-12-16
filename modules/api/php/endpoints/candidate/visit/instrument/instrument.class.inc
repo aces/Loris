@@ -198,7 +198,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePATCHAndPUT(
         ServerRequestInterface $request
     ): ResponseInterface {
-        // request type
         $requestType = $request->getMethod();
         if ($requestType !== "PATCH" && $requestType !== "PUT") {
             return new \LORIS\Http\Response\JSON\BadRequest(
