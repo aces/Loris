@@ -264,3 +264,6 @@ electrophysiology_browser: $(filter modules/electrophysiology_browser/%,$(MOFILE
 
 dicom_archive: $(filter modules/dicom_archive/%,$(MOFILES)) $(filter modules/dicom_archive/%,$(I18NJSONFILES))
     target=dicom_archive npm run compile
+
+redcap: $(filter modules/redcap/%,$(MOFILES)) $(filter modules/redcap/%,$(I18NJSONFILES))
+    target=redcap npm run compile
