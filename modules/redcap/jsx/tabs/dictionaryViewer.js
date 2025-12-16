@@ -1,4 +1,4 @@
-import React, {Component} from 'reac';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import FilterableDataTable from 'jsx/FilterableDataTable';
