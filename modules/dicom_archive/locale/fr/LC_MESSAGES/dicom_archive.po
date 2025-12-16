@@ -62,7 +62,7 @@ msgstr "Site ID"
 
 #, fuzzy
 msgid "IsPhantom"
-msgstr "Is Phantom"
+msgstr "Fantôme data?"
 
 #, fuzzy
 msgid "Tarchive Metadata"
