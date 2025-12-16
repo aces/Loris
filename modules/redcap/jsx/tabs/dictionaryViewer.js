@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component} from 'reac';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import FilterableDataTable from 'jsx/FilterableDataTable';
@@ -7,7 +7,6 @@ import FilterableDataTable from 'jsx/FilterableDataTable';
  * Dictionary viewer component
  */
 class DictionaryViewer extends Component {
-
   /**
    * Constructor of component
    *
@@ -60,7 +59,6 @@ class DictionaryViewer extends Component {
             isLoaded: true,
           });
         });
-
     }).catch((error) => {
       this.setState({error: true});
       console.error(error);
@@ -79,23 +77,22 @@ class DictionaryViewer extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let result = (<td>{cell}</td>);
 
-        // background color
-        let bgGreen = {textAlign: "center", backgroundColor: "#EDF7E5"};
-        let bgRed = {textAlign: "center", backgroundColor: "#F7D6E0"};
-        let bgYellow = {textAlign: "center", backgroundColor: "#FFF696"};
+    // background color
+    let bgGreen = {textAlign: 'center', backgroundColor: '#EDF7E5'};
+    let bgYellow = {textAlign: 'center', backgroundColor: '#FFF696'};
 
-        switch (column) {
-            case 'Required':
-                // yes/no answers
-                result = (cell === '1')
-                    ? (<td style={bgGreen}>&#9989;</td>)
-                    : (<td style={bgYellow}>&#129000;</td>);
-                break;
-            default:
-                result = (<td>{cell}</td>);
-                break;
-        }
-        return result;
+    switch (column) {
+    case 'Required':
+      // yes/no answers
+      result = (cell === '1')
+        ? (<td style={bgGreen}>&#9989;</td>)
+        : (<td style={bgYellow}>&#129000;</td>);
+      break;
+    default:
+      result = (<td>{cell}</td>);
+      break;
+    }
+    return result;
   }
 
   /**
@@ -104,126 +101,126 @@ class DictionaryViewer extends Component {
   render() {
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     // The fields configured for display/hide.
     let fields = [
       {
-        label: "Instrument",
+        label: 'Instrument',
         show: true,
         type: 'text',
         filter: {
           name: 'Instrument',
           type: 'text',
-        }
+        },
       },
       {
-        label: "Field",
+        label: 'Field',
         show: true,
         type: 'text',
         filter: {
           name: 'Field',
           type: 'text',
-        }
+        },
       },
       {
-        label: "Required",
+        label: 'Required',
         show: true,
         type: 'text',
       },
       {
-        label: "Type",
+        label: 'Type',
         show: true,
         type: 'text',
         filter: {
           name: 'Type',
           type: 'text',
-        }
+        },
       },
       {
-        label: "Label",
+        label: 'Label',
         show: true,
         type: 'text',
         filter: {
           name: 'Label',
           type: 'text',
-        }
+        },
       },
       {
-        label: "Section Header",
+        label: 'Section Header',
         show: false,
         type: 'text',
         filter: {
           name: 'Section Header',
           type: 'text',
-        }
+        },
       },
       {
-        label: "Choices",
+        label: 'Choices',
         show: true,
         type: 'text',
         filter: {
           name: 'Choices',
           type: 'text',
-        }
+        },
       },
       {
-        label: "Note",
+        label: 'Note',
         show: true,
         type: 'text',
         filter: {
           name: 'Project ID',
           type: 'text',
-        }
+        },
       },
       {
-        label: "Validation Type",
+        label: 'Validation Type',
         show: true,
         type: 'text',
       },
       {
-        label: "Validation Min",
+        label: 'Validation Min',
         show: true,
         type: 'text',
       },
       {
-        label: "Validation Max",
+        label: 'Validation Max',
         show: true,
         type: 'text',
       },
       {
-        label: "Identifier",
+        label: 'Identifier',
         show: true,
         type: 'text',
       },
       {
-        label: "Branching Logic",
+        label: 'Branching Logic',
         show: true,
         type: 'text',
       },
       {
-        label: "Custom Alignment",
+        label: 'Custom Alignment',
         show: true,
         type: 'text',
       },
       {
-        label: "Question Number",
+        label: 'Question Number',
         show: true,
         type: 'text',
       },
       {
-        label: "Matrix Group",
+        label: 'Matrix Group',
         show: true,
         type: 'text',
       },
       {
-        label: "Matrix Ranking",
+        label: 'Matrix Ranking',
         show: true,
         type: 'text',
       },
       {
-        label: "Annotation",
+        label: 'Annotation',
         show: true,
         type: 'text',
       },
@@ -233,14 +230,14 @@ class DictionaryViewer extends Component {
       <div>
         {this.state.data == null
           ? (<div className="alert alert-warning" role="alert">
-              <strong>Error:</strong> no Data Dictionary entry found.
-            </div>)
+            <strong>Error:</strong> no Data Dictionary entry found.
+          </div>)
           : <FilterableDataTable
-              name='redcapDictionaryTable'
-              data={this.state.data}
-              fields={fields}
-              getFormattedCell={this.formatColumn}
-            />
+            name='redcapDictionaryTable'
+            data={this.state.data}
+            fields={fields}
+            getFormattedCell={this.formatColumn}
+          />
         }
       </div>
     );
