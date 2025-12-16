@@ -120,6 +120,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/dashboard/locale/fr/LC_MESSAGES/dashboard.po \
 	modules/dashboard/locale/ja/LC_MESSAGES/dashboard.po \
 	modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.po \
+	modules/candidate_parameters/locale/es/LC_MESSAGES/candidate_parameters.po \
 	modules/imaging_browser/locale/fr/LC_MESSAGES/imaging_browser.po \
 	modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po \
 	modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.po \

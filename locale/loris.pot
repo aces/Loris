@@ -246,6 +246,9 @@ msgstr ""
 msgid "DoB"
 msgstr ""
 
+msgid "DoD"
+msgstr ""
+
 msgid "Sex"
 msgstr ""
 
@@ -556,6 +559,9 @@ msgid "Clear"
 msgstr ""
 
 msgid "Add"
+msgstr ""
+
+msgid "Update"
 msgstr ""
 
 msgid "Dataset"
