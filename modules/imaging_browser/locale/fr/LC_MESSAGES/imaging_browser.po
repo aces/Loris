@@ -196,7 +196,7 @@ msgstr "Avertissement sur la visite"
 
 #, fuzzy
 msgid "DCC MRI Quality Control"
-msgstr "Contrôle qualité IRM du DCC"
+msgstr "Contrôle qualité IRM du CCD"
 
 #, fuzzy
 msgid "Click here to close this window"
