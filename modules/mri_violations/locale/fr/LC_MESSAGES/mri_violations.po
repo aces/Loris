@@ -26,11 +26,11 @@ msgstr "Scans IRM non conformes"
 
 #, fuzzy
 msgid "Violated scan"
-msgstr "Scan violé"
+msgstr "Scan non conforme"
 
 #, fuzzy
 msgid "Violated scans"
-msgstr "Scans violés"
+msgstr "Scans non conformes"
 
 #, fuzzy
 msgid "Violations for SeriesUID"
@@ -38,11 +38,11 @@ msgstr "Violations pour SeriesUID"
 
 #, fuzzy
 msgid "Violations for"
-msgstr "Infractions pour"
+msgstr "Violations pour"
 
 #, fuzzy
 msgid "Time Run"
-msgstr "Course contre le temps"
+msgstr "Heure d'exécution"
 
 #, fuzzy
 msgid "Series Description"
@@ -56,7 +56,7 @@ msgstr "Nom du patient"
 
 #, fuzzy
 msgid "Series UID"
-msgstr "Série UID"
+msgstr "Identifiant unique de la série"
 
 #, fuzzy
 msgid "Echo Time"
@@ -82,27 +82,27 @@ msgstr "Épaisseur de coupe"
 
 #, fuzzy
 msgid "Xspace"
-msgstr "Xspace"
+msgstr "Espace X"
 
 #, fuzzy
 msgid "Yspace"
-msgstr "Yspace"
+msgstr "Espace Y"
 
 #, fuzzy
 msgid "Zspace"
-msgstr "Zspace"
+msgstr "Espace Z"
 
 #, fuzzy
 msgid "Xstep"
-msgstr "Xstep"
+msgstr "Pas en X"
 
 #, fuzzy
 msgid "Ystep"
-msgstr "Ystep"
+msgstr "Pas en Y"
 
 #, fuzzy
 msgid "Zstep"
-msgstr "Zstep"
+msgstr "Pas en Z"
 
 msgid "Time"
 msgstr "Heure"
@@ -112,7 +112,7 @@ msgstr "Type d’Image"
 
 #, fuzzy
 msgid "Phase Encoding Direction"
-msgstr "Direction de codage de phase"
+msgstr "Direction du codage de phase"
 
 #, fuzzy
 msgid "Echo Number"
@@ -128,7 +128,7 @@ msgstr "Protocoles d'étude"
 
 #, fuzzy
 msgid "Scan Problems"
-msgstr "Problèmes de numérisation"
+msgstr "Problèmes avec l'acquisition"
 
 msgid "Scan Type"
 msgstr "Type de scan"
@@ -152,7 +152,7 @@ msgstr "Violation du protocole"
 
 #, fuzzy
 msgid "Could not identify scan type"
-msgstr "Impossible d'identifier le type d'analyse"
+msgstr "Impossible d'identifier le type de scan"
 
 #, fuzzy
 msgid "Series Description or Scan Type"
@@ -167,21 +167,21 @@ msgstr "Non résolu"
 
 #, fuzzy
 msgid "Reran"
-msgstr "Reran"
+msgstr "Réingestion"
 
 #, fuzzy
 msgid "Emailed site/pending"
-msgstr "Site envoyé par e-mail/en attente"
+msgstr "Site contacté par e-mail/en attente"
 
 msgid "Inserted"
-msgstr "Insérer"
+msgstr "Inséré"
 
 msgid "Rejected"
 msgstr "Rejeté"
 
 #, fuzzy
 msgid "Inserted with flag"
-msgstr "Inséré avec drapeau"
+msgstr "Inséré avec annotation"
 
 msgid "Other"
 msgstr "Autre"
@@ -191,25 +191,25 @@ msgid "Type of Problem"
 msgstr "Type de problème"
 
 msgid "Select Resolution"
-msgstr "Sélectionner la résolution"
+msgstr "Choisir la résolution"
 
 msgid "Image File"
-msgstr "Fichier Image"
+msgstr "Fichier de l'Image"
 
 #, fuzzy
 msgid "Must submit data in JSON format"
-msgstr "Les données doivent être soumises au format JSON."
+msgstr "Les données doivent être soumises en format JSON."
 
 #, fuzzy
 msgid "Can not implement filter on a resource type that has no centers."
-msgstr "Impossible d'appliquer un filtre à un type de ressource qui ne comporte aucun centre."
+msgstr "Impossible d'appliquer un filtre à un type de ressource n'appartenant à aucun site."
 
 #, fuzzy
 msgid "Can not implement filter on a resource type that has no projects."
-msgstr "Impossible d'appliquer un filtre à un type de ressource qui ne comporte aucun projet."
+msgstr "Impossible d'appliquer un filtre à un type de ressource n'appartenant à aucun projet."
 
 msgid "hash"
-msgstr "hachage"
+msgstr "Empreinte numérique"
 
 #, fuzzy
 msgid "JoinID"
@@ -220,50 +220,50 @@ msgid "TarchiveID"
 msgstr "TarchiveID"
 
 msgid "Center Name"
-msgstr "Nom du centre"
+msgstr "Nom du site"
 
 msgid "Scanner ID"
 msgstr "ID du scanner"
 
 #, fuzzy
 msgid "TR Range"
-msgstr "Gamme TR"
+msgstr "Intervalle de TR"
 
 #, fuzzy
 msgid "TE Range"
-msgstr "Gamme TE"
+msgstr "Intervalle de TE"
 
 #, fuzzy
 msgid "TI Range"
-msgstr "Gamme TI"
+msgstr "Intervalle de TI"
 
 #, fuzzy
 msgid "Slice Thickness Range"
-msgstr "Plage d'épaisseur des tranches"
+msgstr "Intervalle d'épaisseur des tranches"
 
 #, fuzzy
 msgid "Xspace Range"
-msgstr "Gamme Xspace"
+msgstr "Intervalle de l'espace X"
 
 #, fuzzy
 msgid "Yspace Range"
-msgstr "Gamme Yspace"
+msgstr "Intervalle de l'espace Y"
 
 #, fuzzy
 msgid "Zspace Range"
-msgstr "Gamme Zspace"
+msgstr "Intervalle de l'espace Z"
 
 #, fuzzy
 msgid "Xstep Range"
-msgstr "Gamme Xstep"
+msgstr "Intervalle du pas en X"
 
 #, fuzzy
 msgid "Ystep Range"
-msgstr "Gamme Ystep"
+msgstr "Intervalle du pas en Y"
 
 #, fuzzy
 msgid "Zstep Range"
-msgstr "Gamme Zstep"
+msgstr "Intervalle du pas en Z"
 
 msgid "Time Range"
 msgstr "Intervalle de temps"
