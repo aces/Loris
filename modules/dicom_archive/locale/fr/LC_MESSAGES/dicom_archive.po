@@ -21,10 +21,10 @@ msgstr ""
 
 #, fuzzy
 msgid "DICOM Archive"
-msgstr "Archive DICOM"
+msgstr "Archive de DICOM"
 
 msgid "Patient ID"
-msgstr "ID Patient"
+msgstr "ID du Patient"
 
 msgid "Patient Name"
 msgstr "Nom du patient"
@@ -46,7 +46,7 @@ msgstr "Navigateur IRM"
 
 #, fuzzy
 msgid "Series UID"
-msgstr "Série UID"
+msgstr "Identifiant unique de la série"
 
 #, fuzzy
 msgid "TarchiveID"
@@ -58,7 +58,7 @@ msgstr "ID de session"
 
 #, fuzzy
 msgid "CenterID"
-msgstr "CentreID"
+msgstr "SiteID"
 
 #, fuzzy
 msgid "IsPhantom"
@@ -66,7 +66,7 @@ msgstr "IsPhantom"
 
 #, fuzzy
 msgid "Tarchive Metadata"
-msgstr "Métadonnées Tarchive"
+msgstr "Métadonnées de l'archive"
 
 msgid "Acquisition ID"
 msgstr "ID d'acquisition"
@@ -84,7 +84,7 @@ msgstr "Date d’acquisition"
 
 #, fuzzy
 msgid "Scanner Model"
-msgstr "Modèle de scanner"
+msgstr "Modèle du scanner"
 
 msgid "Serial Number"
 msgstr "Numéro de série"
@@ -116,15 +116,15 @@ msgid "Summary type version"
 msgstr "Version résumée"
 
 msgid "Source location"
-msgstr "Emplacement Actuel"
+msgstr "Emplacement Original"
 
 #, fuzzy
 msgid "Archive type version"
-msgstr "Version de type archive"
+msgstr "Version du type d'archive"
 
 #, fuzzy
 msgid "Archive location"
-msgstr "Emplacement des archives"
+msgstr "Emplacement de l'archive"
 
 #, fuzzy
 msgid "Archiving log"
@@ -136,7 +136,7 @@ msgstr "md5sum de l'archive"
 
 #, fuzzy
 msgid "md5sum of Dicom unzipped"
-msgstr "md5sum de Dicom décompressé"
+msgstr "md5sum des DICOMs décompressés"
 
 msgid "Series"
 msgstr "Séries"
@@ -177,7 +177,7 @@ msgstr "Épaisseur de coupe"
 
 #, fuzzy
 msgid "Phase Encoding"
-msgstr "Codage de phase"
+msgstr "Direction du codage de phase"
 
 msgid "Number of Files"
 msgstr "Nombre de fichiers"
