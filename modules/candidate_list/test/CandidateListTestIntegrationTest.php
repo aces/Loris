@@ -357,7 +357,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     }
 
     /**
-     * Tests that, click the scan_done ="y" link,
+     * Tests that, click the scanUploaded ="y" link,
      * and it will goto the imaging browser page.
      *
      * @return void
