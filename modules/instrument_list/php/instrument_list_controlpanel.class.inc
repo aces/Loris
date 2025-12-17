@@ -636,7 +636,6 @@ class Instrument_List_ControlPanel extends \TimePoint
     {
         // create user object
         $user   = \User::singleton();
-        $config = \NDB_Config::singleton();
 
         if (!$user->hasPermission('send_to_dcc')) {
             return "User does not have permission to send to DCC";
@@ -726,7 +725,6 @@ class Instrument_List_ControlPanel extends \TimePoint
     {
         // create user object
         $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
 
         // make the option available is the Stage/Status is Sendable to DCC
         // or if its Superuser and option was Sent (to unsend i.e. set to N)
