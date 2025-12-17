@@ -377,8 +377,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         if ($item->getName() == 'ScanUploaded') {
             $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
             $this->addTable('LEFT JOIN files f ON (f.SessionID=s.ID)');
-                return "CASE WHEN COUNT(f.FileID) > 0 THEN TRUE
-                             ELSE FALSE END";
+            return "EXISTS (
+                SELECT 1
+                FROM files f
+                WHERE f.SessionID = s.ID
+            )";
         }
 
         if (!($item instanceof ImagingDictionaryItem)) {

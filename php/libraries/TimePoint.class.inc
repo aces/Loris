@@ -164,7 +164,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $this->data = new TimePointData(
             $sessionID,
             isset($row['ProjectID'])
-                ? ProjectID::singleton($row['ProjectID'])
+                ? ProjectID::singleton((int) $row['ProjectID'])
                 : null,
             isset($row['CenterID'])
                 ? \CenterID::singleton($row['CenterID'])

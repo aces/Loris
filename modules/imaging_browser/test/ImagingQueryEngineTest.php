@@ -391,8 +391,7 @@ class ImagingQueryEngineTest extends TestCase
             )
         );
 
-        // 123458 had no files, but has a session, so still has the ScanUploaded
-        $this->assertEquals(count($results), 2);
+        $this->assertEquals(count($results), 1);
         $this->assertEquals(
             $results,
             [
