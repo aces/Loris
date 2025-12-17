@@ -123,7 +123,6 @@ if ($mode === VISIT_EXPORT) {
         'BVLQCType',
         'BVLQCExclusion',
         'QCd',
-        'Scan_done',
         'MRIQCStatus',
         'MRIQCPending',
         'MRICaveat'

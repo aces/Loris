@@ -36,12 +36,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $cohort         = 'select[name="cohort"]';
     static $advancedFilter = ".panel-body .btn-primary:nth-child(1)";
     // advanced filter
-    static $scanDone    = 'select[name="scanDone"]';
-    static $Participant = 'select[name="participantStatus"]';
-    static $dob         = 'input[name="DoB"]';
-    static $visitCount  = 'input[name="visitCount"]';
-    static $feedback    = 'select[name="feedback"]';
-    static $edc         = 'input[name="edc"]';
+    static $scanUploaded = 'select[name="scanUploaded"]';
+    static $Participant  = 'select[name="participantStatus"]';
+    static $dob          = 'input[name="DoB"]';
+    static $visitCount   = 'input[name="visitCount"]';
+    static $feedback     = 'select[name="feedback"]';
+    static $edc          = 'input[name="edc"]';
 
 
 
@@ -136,10 +136,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeClick(WebDriverBy::cssSelector($btn));
            // Go through each element and ensure it's on the page after clicking
            // advanced
-        $scanDoneOptions = $this->safeFindElement(
-            WebDriverBy::Name("scanDone")
+        $scanUploadedOptions = $this->safeFindElement(
+            WebDriverBy::Name("scanUploaded")
         );
-           $this->assertEquals("select", $scanDoneOptions->getTagName());
+           $this->assertEquals("select", $scanUploadedOptions->getTagName());
         $participantsStatusOptions = $this->safeFindElement(
             WebDriverBy::Name("participantStatus")
         );
@@ -252,7 +252,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             '210'
         );
         $this->_filterTest(
-            self::$scanDone,
+            self::$scanUploaded,
             self::$display,
             self::$clearFilter,
             "Yes",
@@ -362,18 +362,22 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      *
      * @return void
      */
-    function testScanDoneLink()
+    function testScanUploadedLink()
     {
         $this->safeGet($this->url . "/candidate_list/?pscid=MTL022");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr > td.scanUploadedLink"
+            )
         )->getText();
         $this->assertStringContainsString(
             "Y",
             $bodyText
         );
         $this->safeClick(
-            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr > td.scanUploadedLink"
+            )
         );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(self::$pscidLink)

@@ -107,8 +107,7 @@ class ImagingQueryEngineTest extends TestCase
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
                     'Active'      => 'Y',
-                    'Visit_Label' => 'TestMRIVisit',
-                    'Scan_Done'   => 'Y'
+                    'Visit_Label' => 'TestMRIVisit'
                 ],
                 [
                     'ID'          => 2,
@@ -117,8 +116,7 @@ class ImagingQueryEngineTest extends TestCase
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
                     'Active'      => 'Y',
-                    'Visit_Label' => 'TestBvlVisit',
-                    'Scan_Done'   => 'N'
+                    'Visit_Label' => 'TestBvlVisit'
                 ],
                 // Candidate 123457 has 1 visit with different MRI data
                 // It contains multiple ScanType1 and no ScanType2
@@ -129,8 +127,7 @@ class ImagingQueryEngineTest extends TestCase
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
                     'Active'      => 'Y',
-                    'Visit_Label' => 'TestMRIVisit',
-                    'Scan_Done'   => 'Y'
+                    'Visit_Label' => 'TestMRIVisit'
                 ],
             ]
         );
@@ -225,13 +222,13 @@ class ImagingQueryEngineTest extends TestCase
     }
 
     /**
-     * Test that matching ScanDone matches the correct CandIDs.
+     * Test that matching ScanUploaded matches the correct CandIDs.
      *
      * @return void
      */
-    public function testScanDoneMatches()
+    public function testScanUploadedMatches()
     {
-        $dict = $this->_getDictItem("ScanDone");
+        $dict = $this->_getDictItem("ScanUploaded");
 
         $result = iterator_to_array(
             $this->engine->getCandidateMatches(
@@ -239,15 +236,15 @@ class ImagingQueryEngineTest extends TestCase
             )
         );
 
-        // 123456 has a ScanDone = true result for visit TestMRIVisit
+        // 123456 has a ScanUploaded = true result for visit TestMRIVisit
         // So does 123457.
         $this->assertTrue(is_array($result));
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
 
-        // 123456 has a ScanDone = false result for visit TestBvlVisit
-        // No other candidate has a ScanDone=false session.
+        // 123456 has a ScanUploaded = false result for visit TestBvlVisit
+        // No other candidate has a ScanUploaded=false session.
         $result = iterator_to_array(
             $this->engine->getCandidateMatches(
                 new QueryTerm($dict, new NotEqual(true))
@@ -385,7 +382,7 @@ class ImagingQueryEngineTest extends TestCase
         $results = iterator_to_array(
             $this->engine->getCandidateData(
                 [
-                    $this->_getDictItem("ScanDone"),
+                    $this->_getDictItem("ScanUploaded"),
                     $this->_getDictItem("ScanType1_file"),
                     $this->_getDictItem("ScanType1_QCStatus"),
                 ],
@@ -394,13 +391,13 @@ class ImagingQueryEngineTest extends TestCase
             )
         );
 
-        // 123458 had no files, but has a session, so still has the ScanDone
+        // 123458 had no files, but has a session, so still has the ScanUploaded
         $this->assertEquals(count($results), 3);
         $this->assertEquals(
             $results,
             [
                 "123456" => [
-                    "ScanDone"           => [
+                    "ScanUploaded"       => [
                         "1" => [
                             'VisitLabel' => 'TestMRIVisit',
                             'SessionID'  => 1,
@@ -430,7 +427,7 @@ class ImagingQueryEngineTest extends TestCase
                     ],
                 ],
                 "123457" => [
-                    "ScanDone"           => [
+                    "ScanUploaded"       => [
                         "3" => [
                             'VisitLabel' => 'TestMRIVisit',
                             'SessionID'  => 3,
@@ -461,7 +458,7 @@ class ImagingQueryEngineTest extends TestCase
                     ],
                 ],
                 "123458" => [
-                    'ScanDone'           => [],
+                    'ScanUploaded'       => [],
                     'ScanType1_file'     => [],
                     'ScanType1_QCStatus' => [],
                 ],

@@ -144,7 +144,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
-                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
+                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion,
                          pr.Name as ProjectName, p.Alias as SiteAlias,
 			 s.ProjectID as ProjectID,
                          l.language_code as LanguageCode,
@@ -189,6 +189,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
             $this->_timePointInfo['CandID']
                 = new CandID(strval($row['CandID']));
+
+            $this->_timePointInfo['scanUploaded']
+                = $this->isScanUploaded() ? 'Y' : 'N';
+
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
@@ -591,13 +595,26 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Gets whether or not a scan was done for this TimePoint
+     * Returns whether a scan has been uploaded for this session
      *
-     * @return string 'Y' if a scan was done 'N' if not.
+     * @return bool
      */
-    function getScanDone(): string
+    public function isScanUploaded() : bool
     {
-        return $this->_timePointInfo["Scan_done"];
+        $db     = \NDB_Factory::singleton()->database();
+        $result = $db->pselectOne(
+            '
+             SELECT COUNT(f.FileID)
+             FROM
+                files f
+             JOIN
+                session s ON s.ID=f.SessionID
+             WHERE
+                f.SessionID = :v_sessionid
+            ',
+            ['v_sessionid' => $this->getSessionID()]
+        );
+        return $result > 0;
     }
 
     /**
