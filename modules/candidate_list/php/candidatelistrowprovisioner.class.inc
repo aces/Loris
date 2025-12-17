@@ -60,7 +60,10 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 psc.Name AS RegistrationSite,
                 GROUP_CONCAT(DISTINCT sp.title) AS Cohort,
                 c.Entity_type AS EntityType,
-                MAX(s.Scan_done) AS scanDone,
+                CASE
+                    WHEN COUNT(f.FileID) > 0 THEN 'Y'
+                    ELSE 'N'
+                END AS scanUploaded,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
                 DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
                 DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
@@ -81,6 +84,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                         ON (ps.participant_status=pso.ID)
                     LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
                     LEFT JOIN cohort sp ON (s.CohortID=sp.CohortID)
+                    LEFT JOIN files f ON f.SessionID=s.ID
                 WHERE c.Active = 'Y'
                 AND c.RegistrationProjectID IS NOT NULL
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex, c.Entity_type,
