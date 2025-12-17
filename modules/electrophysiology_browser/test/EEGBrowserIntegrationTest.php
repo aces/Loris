@@ -84,7 +84,6 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
                 'Visit_label'   => 'Test0',
                 'CenterID'      => 253,
                 'ProjectID'     => 2,
-                'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
             ]

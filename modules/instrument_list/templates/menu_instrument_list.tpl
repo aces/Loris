@@ -45,7 +45,7 @@
         {dgettext("loris", "Cohort")}
       </th>
       <th>
-        {dgettext("timepoint_list", "Imaging Scan Done")}
+        {dgettext("timepoint_list", "Imaging Scan Uploaded")}
       </th>
       <th>
         {dgettext("instrument_list", "Within Optimal")}
@@ -109,17 +109,17 @@
         {$display.CohortTitle}
       </td>
       <td>
-        {if $display.Scan_done != ""}
-            {if $display.Scan_done == 'Y'}
-                {assign var="scan_done" value=dgettext("loris", "Yes")}
+        {if $display.scanUploaded != ""}
+            {if $display.scanUploaded == 'Y'}
+                {assign var="scanUploaded" value=dgettext("loris", "Yes")}
                 <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$sessionID}" class="timepoint_list">
-                {$scan_done}</a>
+                {$scanUploaded}</a>
             {else}
-                {assign var="scan_done" value={dgettext("loris", "No")}}
-                {$scan_done}
+                {assign var="scanUploaded" value={dgettext("loris", "No")}}
+                {$scanUploaded}
             {/if}
         {else}
-            <img alt="Data Missing" src="{$baseurl|default}/images/help2.gif" border=0>
+            <img alt="Data Missing" src="{$baseurl|default}/images/delete.gif" border=0>
         {/if}
       </td>
       <td>

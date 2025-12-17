@@ -32,7 +32,10 @@ $project_statistics            = [];
 $project_statistics['Project'] = $projectname;
 // Number of Scanning - Visits
 $project_statistics['Number of Scanning - Visits'] = $DB->pselectOne(
-    "select count(*) from session where Scan_done='Y'",
+    "SELECT COUNT(DISTINCT s.ID)
+    FROM session s
+    JOIN files f
+        ON f.SessionID = s.ID;",
     []
 );
 // Number of Sites
