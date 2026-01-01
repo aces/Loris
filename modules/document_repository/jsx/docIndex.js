@@ -86,7 +86,7 @@ class DocIndex extends React.Component {
         });
         let filterData = this.state.data.Data;
         let fillData = filterData.filter((data) => {
-          return Object.values(nodesArray).includes(data[10]);
+          return Object.values(nodesArray).includes(data[10].toString());
         });
         this.setState({
           global: true,
