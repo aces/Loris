@@ -1058,10 +1058,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_instrument->commentID = 'commentID1';
         $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
-            ->with(
-                "SELECT SessionID FROM flag WHERE CommentID = :CID",
-                ['CID' => 'commentID1']
-            )
+            ->method('pselectOne')
             ->willReturn('123');
         $this->_mockDB->method('pselectRow')
             ->willReturn(

@@ -196,8 +196,8 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         );
         $items  = [
             new DictionaryItem(
-                "ScanUploaded",
-                "Does the session have any imaging scan uploaded?",
+                "ScanDone",
+                "Does the session have any imaging scan done?",
                 $scope,
                 new \LORIS\Data\Types\BooleanType(),
                 new Cardinality(Cardinality::SINGLE),
@@ -374,13 +374,12 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     protected function getFieldNameFromDict(
         \LORIS\Data\Dictionary\DictionaryItem $item
     ): string {
-        if ($item->getName() == 'ScanUploaded') {
+        if ($item->getName() == 'ScanDone') {
             $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
-            $this->addTable('LEFT JOIN files f ON (f.SessionID=s.ID)');
-            return "EXISTS (
-                SELECT 1
-                FROM files f
-                WHERE f.SessionID = s.ID
+            return "(
+                EXISTS (SELECT 1 FROM files      f2 WHERE f2.SessionID = s.ID)
+             OR EXISTS (SELECT 1 FROM mri_upload m2 WHERE m2.SessionID = s.ID)
+             OR EXISTS (SELECT 1 FROM tarchive   t2 WHERE t2.SessionID = s.ID)
             )";
         }
 
