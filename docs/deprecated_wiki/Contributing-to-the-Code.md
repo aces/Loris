@@ -1,0 +1,1 @@
+This page is deprecated. Please see the [CONTRIBUTING.md file](https://github.com/aces/Loris/blob/major/CONTRIBUTING.md) file instead for instructions on contributing to LORIS development. 
