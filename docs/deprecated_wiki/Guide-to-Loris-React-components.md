@@ -1,6 +1,6 @@
 <!-- Last updated: 2017/02/05 // Loris 17.1 -->
 
-_Under construction_
+_This page is deprecated - contact the LORIS team for more information_
 
 >**Note**: this guide assumes a basic understanding of React concepts and lifecycle.  
 >For React documentation **[click here](https://facebook.github.io/react/docs/hello-world.html)**.
@@ -483,5 +483,8 @@ This should be enough to write help documents in Markdown, even without the more
 ### MultiSelectDropdown
 Used uniquely by Data Query Tool. 
 - For generic `<select/>` and multiselect dropdown, use `SelectElement` from `Form.js`
-- To investigate functionality of `MultiSelectDropdown`, see [Jordan](https://github.com/jstirling91)
+- To investigate functionality of `MultiSelectDropdown` or any other questions contact the LORIS team
+
+This page is deprecated. 
+
 
