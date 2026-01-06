@@ -277,6 +277,12 @@ jobs:
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
         protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
+    - name: Select composer.lock
+      run: |
+        if [ "${{ matrix.php }}" = "8.3" ]; then
+          cp composer.lock.php83 composer.lock
+        fi
+
     - name: Install composer dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
