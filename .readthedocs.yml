@@ -10,8 +10,12 @@ mkdocs:
   configuration: readthedocs/mkdocs.yml
   fail_on_warning: false
 
+build:
+  os: ubuntu-24.04
+  tools:
+    python: 3.7
+
 python:
-  version: 3.7
   install:
       - requirements: readthedocs/requirements.txt
 
