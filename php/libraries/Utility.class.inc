@@ -211,7 +211,6 @@ class Utility
         );
     }
 
-
     /**
      * Returns a list of study Visit Labels that are being used by this study.
      *
