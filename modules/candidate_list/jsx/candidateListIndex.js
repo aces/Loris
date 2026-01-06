@@ -152,12 +152,12 @@ class CandidateListIndex extends Component {
       default: return <td>None</td>;
       }
     }
-    if (column === this.props.t('Scan Uploaded', {ns: 'loris'})) {
+    if (column === this.props.t('Scan Done', {ns: 'loris'})) {
       if (cell === 'Y') {
         const pscid = row[this.props.t('PSCID', {ns: 'loris'})];
         let url = this.props.baseURL + '/imaging_browser/?PSCID=' + pscid;
         return (
-          <td className="scanUploadedLink">
+          <td className="scanDoneLink">
             <a href={url}>{this.props.t('Yes', {ns: 'loris'})}</a>
           </td>
         );
@@ -254,10 +254,10 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': this.props.t('Scan Uploaded', {ns: 'loris'}),
+        'label': this.props.t('Scan Done', {ns: 'loris'}),
         'show': true,
         'filter': {
-          name: 'scanUploaded',
+          name: 'scanDone',
           type: 'select',
           hide: this.state.hideFilter,
           options: {

@@ -71,7 +71,7 @@
             <th>{dgettext("timepoint_list", "Stage Status")}</th>
             <th>{dgettext("timepoint_list", "Date of Stage")}</th>
             <th>{dgettext("loris", "Sent To DCC")}</th>
-            <th>{dgettext("timepoint_list", "Imaging Scan Uploaded")}</th>
+            <th>{dgettext("timepoint_list", "Imaging Scan Done")}</th>
             <th>{dgettext("loris", "Feedback")}</th>
             <th>{dgettext("timepoint_list", "BVL QC")}</th>
             <th>{dgettext("timepoint_list", "BVL Exclusion")}</th>
@@ -108,14 +108,14 @@
             {/if}
             </td>
             <td>
-            {if $timePoints[timepoint].scanUploaded != ""}
-                    {if $timePoints[timepoint].scanUploaded}
-                        {assign var="scanUploaded" value={dgettext("loris", "Yes")}}
+            {if $timePoints[timepoint].scanDone != ""}
+                    {if $timePoints[timepoint].scanDone}
+                        {assign var="scanDone" value={dgettext("loris", "Yes")}}
                         <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$timePoints[timepoint].SessionID}" class="timepoint_list">
-                        {dgettext('loris', $scanUploaded)}</a>
+                        {dgettext('loris', $scanDone)}</a>
                     {else}
-                        {assign var="scanUploaded" value={dgettext("loris", "No")}}
-                        {$scanUploaded}
+                        {assign var="scanDone" value={dgettext("loris", "No")}}
+                        {$scanDone}
                     {/if}
             {else}
                 <img alt="Data Missing" src="{$baseurl|default}/images/delete.gif" border=0>

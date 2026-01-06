@@ -80,18 +80,6 @@ class ImagingQueryEngineTest extends TestCase
                     'EDC'                   => '1930-04-01',
                     'Entity_type'           => 'Human',
                 ],
-                [
-                    'ID'                    => 3,
-                    'CandID'                => "123458",
-                    'PSCID'                 => "test3",
-                    'RegistrationProjectID' => '1',
-                    'RegistrationCenterID'  => '3',
-                    'Active'                => 'N',
-                    'DoB'                   => '1940-01-01',
-                    'Sex'                   => 'Other',
-                    'EDC'                   => '1930-04-01',
-                    'Entity_type'           => 'Human',
-                ],
             ]
         );
 
@@ -222,13 +210,13 @@ class ImagingQueryEngineTest extends TestCase
     }
 
     /**
-     * Test that matching ScanUploaded matches the correct CandIDs.
+     * Test that matching ScanDone matches the correct CandIDs.
      *
      * @return void
      */
-    public function testScanUploadedMatches()
+    public function testScanDoneMatches()
     {
-        $dict = $this->_getDictItem("ScanUploaded");
+        $dict = $this->_getDictItem("ScanDone");
 
         $result = iterator_to_array(
             $this->engine->getCandidateMatches(
@@ -236,15 +224,15 @@ class ImagingQueryEngineTest extends TestCase
             )
         );
 
-        // 123456 has a ScanUploaded = true result for visit TestMRIVisit
+        // 123456 has a ScanDone = true result for visit TestMRIVisit
         // So does 123457.
         $this->assertTrue(is_array($result));
         $this->assertEquals(2, count($result));
         $this->assertEquals($result[0], new CandID("123456"));
         $this->assertEquals($result[1], new CandID("123457"));
 
-        // 123456 has a ScanUploaded = false result for visit TestBvlVisit
-        // No other candidate has a ScanUploaded=false session.
+        // 123456 has a ScanDone = false result for visit TestBvlVisit
+        // No other candidate has a ScanDone=false session.
         $result = iterator_to_array(
             $this->engine->getCandidateMatches(
                 new QueryTerm($dict, new NotEqual(true))
@@ -382,21 +370,21 @@ class ImagingQueryEngineTest extends TestCase
         $results = iterator_to_array(
             $this->engine->getCandidateData(
                 [
-                    $this->_getDictItem("ScanUploaded"),
+                    $this->_getDictItem("ScanDone"),
                     $this->_getDictItem("ScanType1_file"),
                     $this->_getDictItem("ScanType1_QCStatus"),
                 ],
-                [new CandID("123456"), new CandID("123457"), new CandID("123458")],
+                [new CandID("123456"), new CandID("123457")],
                 null
             )
         );
 
-        $this->assertEquals(count($results), 1);
+        $this->assertEquals(count($results), 2);
         $this->assertEquals(
             $results,
             [
                 "123456" => [
-                    "ScanUploaded"       => [
+                    "ScanDone"           => [
                         "1" => [
                             'VisitLabel' => 'TestMRIVisit',
                             'SessionID'  => 1,
@@ -426,7 +414,7 @@ class ImagingQueryEngineTest extends TestCase
                     ],
                 ],
                 "123457" => [
-                    "ScanUploaded"       => [
+                    "ScanDone"           => [
                         "3" => [
                             'VisitLabel' => 'TestMRIVisit',
                             'SessionID'  => 3,
@@ -455,11 +443,6 @@ class ImagingQueryEngineTest extends TestCase
                             ],
                         ],
                     ],
-                ],
-                "123458" => [
-                    'ScanUploaded'       => [],
-                    'ScanType1_file'     => [],
-                    'ScanType1_QCStatus' => [],
                 ],
             ]
         );

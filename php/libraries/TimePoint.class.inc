@@ -190,8 +190,8 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             $this->_timePointInfo['CandID']
                 = new CandID(strval($row['CandID']));
 
-            $this->_timePointInfo['scanUploaded']
-                = $this->isScanUploaded() ? 'Y' : 'N';
+            $this->_timePointInfo['scanDone']
+                = $this->isScanDone() ? 'Y' : 'N';
 
         } else {
             // return error when 0 rows to prevent creation of an empty object
@@ -595,26 +595,26 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Returns whether a scan has been uploaded for this session
+     * Returns whether a scan has been done for this session
      *
      * @return bool
      */
-    public function isScanUploaded() : bool
+    public function isScanDone() : bool
     {
         $db     = \NDB_Factory::singleton()->database();
         $result = $db->pselectOne(
-            '
-             SELECT COUNT(f.FileID)
-             FROM
-                files f
-             JOIN
-                session s ON s.ID=f.SessionID
-             WHERE
-                f.SessionID = :v_sessionid
-            ',
+            "SELECT DISTINCT 'Y' AS ScanDone
+            FROM session s
+            LEFT JOIN files       f  ON f.SessionID  = s.ID
+            LEFT JOIN mri_upload mu ON mu.SessionID = s.ID
+            LEFT JOIN tarchive    t  ON t.SessionID  = s.ID
+            WHERE s.ID = :v_sessionid
+              AND (f.FileID IS NOT NULL
+                   OR mu.UploadID IS NOT NULL
+                   OR t.TarchiveID IS NOT NULL)",
             ['v_sessionid' => $this->getSessionID()]
         );
-        return $result > 0;
+        return $result == 'Y';
     }
 
     /**

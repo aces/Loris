@@ -234,8 +234,8 @@ class Timepoint_List extends \NDB_Menu
             $this->tpl_data['timePoints'][$x]['language']
                 = $timePoint->getLanguage();
 
-            $this->tpl_data['timePoints'][$x]['scanUploaded']
-                =   $timePoint->isScanUploaded();
+            $this->tpl_data['timePoints'][$x]['scanDone']
+                =   $timePoint->isScanDone();
 
             $x++;
         } // end list

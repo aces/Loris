@@ -34,8 +34,12 @@ $project_statistics['Project'] = $projectname;
 $project_statistics['Number of Scanning - Visits'] = $DB->pselectOne(
     "SELECT COUNT(DISTINCT s.ID)
     FROM session s
-    JOIN files f
-        ON f.SessionID = s.ID;",
+        LEFT JOIN files f ON f.SessionID = s.ID
+        LEFT JOIN mri_uploads mu ON mu.SessionID=s.ID
+        LEFT JOIN tarchive t ON t.SessionID=s.ID
+    WHERE f.FileID IS NOT NULL
+       OR mu.UploadID IS NOT NULL
+       OR t.TarchiveID IS NOT NULL;",
     []
 );
 // Number of Sites
