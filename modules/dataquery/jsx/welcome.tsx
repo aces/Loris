@@ -1070,7 +1070,7 @@ function ShareIcon(props: {
     }}
     title={props.title}
     onClick={props.onClick}>
-    <ShareIconA />
+    <ShareIconA isShared={props.isShared} />
   </span>;
 }
 
