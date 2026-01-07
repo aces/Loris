@@ -145,6 +145,7 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $instrument->form     = $this->quickForm;
         $instrument->testName = "Test";
+        $instrument->name     = "Test";
 
         // Use reflection to set the internal
         // loris object that should have been

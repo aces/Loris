@@ -1,0 +1,139 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-11-13 21:50-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#, fuzzy
+msgid "Data Release"
+msgstr "Publication des données"
+
+msgid "File Name"
+msgstr "Nom du fichier"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Upload Date"
+msgstr "Date d'importation"
+
+msgid "Project Name"
+msgstr "Nom du projet"
+
+#, fuzzy
+msgid "Data Release ID"
+msgstr "Identifiant de publication des données"
+
+msgid "Upload File"
+msgstr "Téléverser un fichier"
+
+msgid "Upload a New File"
+msgstr "Téléverser un nouveau fichier"
+
+msgid "Add Permission"
+msgstr "Ajouter une permission"
+
+msgid "Manage Permissions"
+msgstr "Gérer les permissions"
+
+msgid "An error occured while loading the page."
+msgstr "Une erreur s'est produite lors du chargement de la page."
+
+msgid "Note"
+msgstr "Note"
+
+msgid "Version names will be saved as lowercase."
+msgstr "Les noms des versions seront enregistrés en minuscules."
+
+msgid "You must select a file to upload"
+msgstr "Vous devez sélectionner un fichier à téléverser."
+
+msgid "You must select a project"
+msgstr "Vous devez sélectionner un projet."
+
+msgid "File size exceeds the maximum allowed"
+msgstr "La taille du fichier dépasse la taille maximale autorisée."
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "Upload error!"
+msgstr "Erreur de téléversement!"
+
+msgid "Upload Successful!"
+msgstr "Téléversement réussi!"
+
+msgid "Are you sure?"
+msgstr "Êtes-vous sûr?"
+
+msgid "A file with this name already exists!"
+msgstr "Un fichier portant ce nom existe déjà!"
+
+msgid "Would you like to overwrite existing file?"
+msgstr "Voulez-vous remplacer le fichier existant?"
+
+msgid "Note that the version associated with the file will also be overwritten."
+msgstr "Notez que la version associée au fichier sera également remplacée."
+
+msgid "Yes, I am sure!"
+msgstr "Oui, j'en suis sûr!"
+
+msgid "No, cancel it!"
+msgstr "Non, Annuler le"
+
+msgid "Choose a specific file or an entire release below"
+msgstr "Choisissez un fichier spécifique ou une version ci-dessous"
+
+msgid "Data Release File"
+msgstr "Fichier de publication des données"
+
+msgid "OR"
+msgstr "OU"
+
+msgid "Data Release Version"
+msgstr "Version de publication des données"
+
+msgid "Permission Update Success!"
+msgstr "Mise à jour des permissions réussie!"
+
+msgid "Submission Error!"
+msgstr "Erreur de soumission!"
+
+msgid "You must select a user!"
+msgstr "Vous devez sélectionner un utilisateur!"
+
+msgid "You must select a file OR a version to grant permission on!"
+msgstr "Vous devez sélectionner un fichier OU une version pour accorder la permission!"
+
+msgid "Manage Versions a User has access to"
+msgstr "Gérer les versions auxquelles un utilisateur a accès"
+
+msgid "Search for a User"
+msgstr "Chercher un utilisateur"
+
+msgid "Versions"
+msgstr "Versions"
+
+msgid "Manage Users with access to a Version"
+msgstr "Gérer les utilisateurs ayant accès à une version"
+
+msgid "Search for a Version"
+msgstr "Rechercher une version"
+
+msgid "An error occurred when loading the form!"
+msgstr "Une erreur s'est produite lors du chargement du formulaire!"

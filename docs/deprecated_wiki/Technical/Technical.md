@@ -5,7 +5,7 @@ _Under construction_
 #### Key Information and guidelines for developers 
 * [[How to contribute|Development]]
 * Repo [Contributing.md](https://github.com/aces/Loris/blob/master/CONTRIBUTING.md)
-* [Coding Standards (docs/)](https://github.com/aces/Loris/blob/master/docs/CodingStandards)
+* [Coding Standards (docs/)](https://github.com/aces/Loris/blob/master/docs/CodingStandards.md)
 * [[Code Review Checklist]]
 * [Pull Request template](https://github.com/aces/Loris/blob/master/PULL_REQUEST_TEMPLATE.md)
 * [[Updating your Loris]]
@@ -18,13 +18,14 @@ Module specs and configuration Readmes are included (or in progress) in the repo
 
 #### Other How-to guides and further documentation
 * [[LORIS Dictionary/Glossary|LORIS-Dictionary]]
-* [Front-End Developer Guide to LORIS](https://github.com/aces/Loris/blob/master/LORIS_react.README.md)
+* [Front-End Developer Guide to LORIS](https://github.com/aces/Loris/blob/master/docs/React.README.md)
 * [[Guide to Loris React components]]
 * [[How to make a LORIS module]]
 * [[How LORIS URLs work]]
 * [[About superuser]]
 * [[Developer's Instrument Guide]]
 * [[LORIS module testing]]
+* [SQL Modeling Standard](https://github.com/aces/Loris/blob/master/docs/SQLModelingStandard.md)
 * Some [Developer Workshops](https://github.com/aces/Loris/wiki/Developer-Workshops) given in 2015
 
 Please also see the [LORIS website](http://www.loris.ca) for more information.

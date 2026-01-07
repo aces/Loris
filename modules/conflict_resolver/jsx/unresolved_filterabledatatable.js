@@ -3,6 +3,7 @@ import Loader from 'Loader';
 import {withTranslation} from 'react-i18next';
 import FilterableDataTable from 'FilterableDataTable';
 import FixConflictForm from './fix_conflict_form';
+import PropTypes from 'prop-types';
 
 /**
  * Filterable database for unresolved conflicts.
@@ -46,11 +47,14 @@ class UnresolvedFilterableDataTable extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+    const {t} = this.props;
+    const keyValue1 = t('Value 1', {ns: 'conflict_resolver'});
+    const keyValue2 = t('Value 2', {ns: 'conflict_resolver'});
     switch (column) {
-    case 'Correct Answer':
+    case this.props.t('Correct Answer', {ns: 'conflict_resolver'}):
       const options = {
-        1: rowData['Value 1'],
-        2: rowData['Value 2'],
+        1: rowData[keyValue1],
+        2: rowData[keyValue2],
       };
       return (
         <FixConflictForm
@@ -122,10 +126,12 @@ class UnresolvedFilterableDataTable extends Component {
    */
   render() {
     // If error occurs, return a message.
+    const {t} = this.props;
     if (this.state.error) {
       return (
         <div className="alert alert-danger" role="alert">
-          <h4>An error occured while loading the page.</h4>
+          <h4>{t('An error occured while loading the page.',
+            {ns: 'loris'})}</h4>
           {this.state.error.toString()}
         </div>
       );
@@ -140,51 +146,51 @@ class UnresolvedFilterableDataTable extends Component {
 
     const fields = [
       {label: 'Conflict ID', show: false},
-      {label: 'Project', show: true, filter: {
+      {label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'Project',
         type: 'select',
         options: options.project,
       }},
-      {label: 'Cohort', show: true, filter: {
+      {label: t('Cohort', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'cohort',
         type: 'select',
         options: options.cohort,
       }},
-      {label: 'Site', show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'Site',
         type: 'select',
         options: options.site,
       }},
-      {label: 'CandID', show: true, filter: {
+      {label: t('DCCID', {ns: 'loris'}), show: true, filter: {
         name: 'candidateID',
         type: 'text',
         value: '300001',
       }},
-      {label: 'PSCID', show: true, filter: {
+      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'PSCID',
         type: 'text',
       }},
-      {label: 'Visit Label', show: true, filter: {
+      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'select',
         options: options.visitLabel,
       }},
-      {label: 'Instrument', show: true, filter: {
+      {label: t('Instrument', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'instrument',
         type: 'select',
         options: options.instrument,
       }},
-      {label: 'Question', show: true, filter: {
+      {label: t('Question', {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Question',
         type: 'text',
       }},
-      {label: 'Description', show: true, filter: {
+      {label: t('Description', {ns: 'conflict_resolver'}), show: true, filter: {
         name: 'Description',
         type: 'text',
       }},
-      {label: 'Value 1', show: false},
-      {label: 'Value 2', show: false},
-      {label: 'Correct Answer', show: true},
+      {label: t('Value 1', {ns: 'conflict_resolver'}), show: false},
+      {label: t('Value 2', {ns: 'conflict_resolver'}), show: false},
+      {label: t('Correct Answer', {ns: 'conflict_resolver'}), show: true},
     ];
 
     return (
@@ -197,6 +203,10 @@ class UnresolvedFilterableDataTable extends Component {
     );
   }
 }
+
+UnresolvedFilterableDataTable.propTypes = {
+  t: PropTypes.func.isRequired,
+};
 
 export default withTranslation(
   ['conflict_resolver', 'loris']

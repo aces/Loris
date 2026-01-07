@@ -63,31 +63,29 @@
     '" target="_blank">mris_convert</a> ' +
     'to convert your binary surface files into .asc format.'
   );
-
-  // Color maps
   BrainBrowser.config.set('color_maps', [
     {
-      name: 'Gray',
+      name: window.tStrings?.['Gray'] ?? 'Gray',
       url: loris.BaseURL + '/brainbrowser/static/color_maps/gray_scale.txt',
       cursor_color: '#FF0000',
     },
     {
-      name: 'Spectral',
+      name: window.tStrings?.['Spectral'] ?? 'Spectral',
       url: loris.BaseURL + '/brainbrowser/static/color_maps/spectral.txt',
       cursor_color: '#FFFFFF',
     },
     {
-      name: 'Thermal',
+      name: window.tStrings?.['Thermal'] ?? 'Thermal',
       url: loris.BaseURL + '/brainbrowser/static/color_maps/thermal.txt',
       cursor_color: '#FFFFFF',
     },
     {
-      name: 'Blue',
+      name: window.tStrings?.['Blue'] ?? 'Blue',
       url: loris.BaseURL + '/brainbrowser/static/color_maps/blue.txt',
       cursor_color: '#FFFFFF',
     },
     {
-      name: 'Green',
+      name: window.tStrings?.['Green'] ?? 'Green',
       url: loris.BaseURL + '/brainbrowser/static/color_maps/green.txt',
       cursor_color: '#FF0000',
     },

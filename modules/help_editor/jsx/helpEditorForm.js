@@ -6,6 +6,11 @@ import Help from 'jsx/Help';
 import swal from 'sweetalert2';
 import {TextboxElement, TextareaElement} from 'jsx/Form';
 import {SelectElement} from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/help_editor.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/help_editor.json';
+import frStrings from '../locale/fr/LC_MESSAGES/help_editor.json';
 
 /**
  * Help Editor Form Page.
@@ -20,6 +25,7 @@ import {SelectElement} from 'jsx/Form';
  */
 
 const HelpEditorForm = (props) => {
+  const {t} = props;
   const [title, setTitle] = useState(props.title ?? '');
   const [content, setContent] = useState(props.content ?? '');
   const [instrument, setInstrument] = useState(props.instrument ?? '');
@@ -72,31 +78,33 @@ const HelpEditorForm = (props) => {
       method: 'POST',
       body: formData,
     }).then((response) => {
-      console.log(response);
-
       if (response.status !== 200) {
         swal.fire({
-          title: 'Content update unsuccessful.',
-          text: 'Help content cannot be added to an instrument '
+          title: t('Content update unsuccessful.',
+            {ns: 'help_editor'}),
+          text: t('Help content cannot be added to an instrument '
            + 'that has already been registered.',
+          {ns: 'help_editor'}),
           type: 'error',
-          confirmButtonText: 'Try again',
+          confirmButtonText: t('Try again', {ns: 'help_editor'}),
         });
         console.error(response.status);
         return;
       }
       swal.fire({
-        title: 'Content update successful!',
+        title: t('Content update successful!',
+          {ns: 'help_editor'}),
         type: 'success',
-        confirmButtonText: 'Close',
+        confirmButtonText: t('Close', {ns: 'loris'}),
       });
     }).catch((error) => {
       console.error(error);
       swal.fire({
-        title: 'Content update unsuccessful.',
-        text: 'Something went wrong',
+        title: t('Content update unsuccessful.',
+          {ns: 'help_editor'}),
+        text: t('Something went wrong', {ns: 'help_editor'}),
         type: 'error',
-        confirmButtonText: 'Try again',
+        confirmButtonText: t('Try again', {ns: 'help_editor'}),
       });
     });
   };
@@ -114,7 +122,7 @@ const HelpEditorForm = (props) => {
 
             <SelectElement
               name='instrument'
-              label='Instrument'
+              label={t('Instrument', {ns: 'loris', count: 1})}
               emptyOption={true}
               options={props.instrumentslist}
               onUserInput={onUserInput}
@@ -122,13 +130,13 @@ const HelpEditorForm = (props) => {
               disabled={props.helpid !== null}
             />
             <TextboxElement
-              label='Title'
+              label={t('Title', {ns: 'help_editor'})}
               name='title'
               value={title}
               onUserInput={onUserInput}
             />
             <TextareaElement
-              label='Content'
+              label={t('Content', {ns: 'help_editor'})}
               rows={15}
               name='content'
               value={content}
@@ -136,13 +144,14 @@ const HelpEditorForm = (props) => {
             />
             <div className="col-sm-9 col-sm-offset-3">
               <p><small>
-                Open the help dialog to preview the changes.
+                {t('Open the help dialog to preview the changes.',
+                  {ns: 'help_editor'})}
               </small></p>
               <input
                 className="btn btn-sm btn-primary"
                 id="save-help"
                 name="fire_away"
-                value="Save"
+                value={t('Save', {ns: 'loris'})}
                 type="submit"
                 onClick={save}
               />
@@ -160,10 +169,18 @@ HelpEditorForm.propTypes = {
   content: PropTypes.string,
   section: PropTypes.string,
   subsection: PropTypes.string,
-  helpid: PropTypes.string,
+  helpid: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   url: PropTypes.string,
   instrument: PropTypes.string,
   instrumentslist: PropTypes.objectOf(PropTypes.string),
+  t: PropTypes.func,
 };
 
-window.RHelpEditorForm = React.createFactory(HelpEditorForm);
+window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'help_editor', hiStrings);
+  i18n.addResourceBundle('ja', 'help_editor', jaStrings);
+  i18n.addResourceBundle('fr', 'help_editor', frStrings);
+  i18n.changeLanguage(i18n.language || 'en');
+});
+window.RHelpEditorForm = React.createFactory(
+  withTranslation(['help_editor'])(HelpEditorForm));

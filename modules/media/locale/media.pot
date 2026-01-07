@@ -21,5 +21,139 @@ msgstr ""
 msgid "Media"
 msgstr ""
 
+msgid "File Name"
+msgstr ""
+
+msgid "Instrument"
+msgstr ""
+
+msgid "Uploaded By"
+msgstr ""
+
+msgid "Date Taken"
+msgstr ""
+
+msgid "Comments"
+msgstr ""
+
+msgid "Last Modified"
+msgstr ""
+
+msgid "File Type"
+msgstr ""
+
+msgid "CandID"
+msgstr ""
+
+msgid "SessionID"
+msgstr ""
+
+msgid "File Visibility"
+msgstr ""
+
+msgid "Edit Metadata"
+msgstr ""
+
+msgid "Edit Media File"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Browse"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "An error occured while loading the page."
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+# New strings from uploadForm.js
+
+msgid "An error occurred when loading the form!"
+msgstr ""
+
+msgid "File name must begin with"
+msgstr ""
+
+msgid "For example, for candidate"
+msgstr ""
+
+msgid "visit"
+msgstr ""
+
+msgid "for"
+msgstr ""
+
+msgid "the file name should be prefixed by"
+msgstr ""
+
+msgid "File cannot exceed"
+msgstr ""
+
+msgid "No visits available for this candidate"
+msgstr ""
+
+msgid "No instruments available for this visit"
+msgstr ""
+
+msgid "Upload a media file"
+msgstr ""
+
+msgid "Note"
+msgstr ""
+
+msgid "Date of Administration"
+msgstr ""
+
+msgid "Document's Language"
+msgstr ""
+
+msgid "Upload File"
+msgstr ""
+
+msgid "Update File"
+msgstr ""
+
+msgid "Uploaded file"
+msgstr ""
+
+msgid "Hide File"
+msgstr ""
+
+msgid "Invalid file name!"
+msgstr ""
+
+msgid "File name should begin with:"
+msgstr ""
+
+msgid "A file with this name already exists!\n Would you like to override existing file?"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Your imaginary file is safe :)"
+msgstr ""
+
+msgid "Success!"
+msgstr ""
+
+msgid "Upload of media file completed."
+msgstr ""
+
+msgid "Upload error!"
+msgstr ""
+
+msgid "File too large!"
+msgstr ""
+
+msgid "This field is required."
+msgstr ""
+
 msgid "Candidate Media"
 msgstr ""

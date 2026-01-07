@@ -27,9 +27,50 @@ msgstr "データ入力の競合"
 msgid "Unresolved Conflicts"
 msgstr "未解決の紛争"
 
-
 msgid "Number of Conflicts"
 msgstr "競合の数"
+
+msgid "Unresolved"
+msgstr "未解決"
+
+msgid "Resolved"
+msgstr "解決済み"
+
+msgid "Correct Answer"
+msgstr "正解"
+
+msgid "Conflict ID"
+msgstr "競合識別子"
+
+msgid "Question"
+msgstr "質問"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Value 1"
+msgstr "値1"
+
+msgid "Value 2"
+msgstr "値2"
+
+msgid "Resolved ID"
+msgstr "解決された識別子"
+
+msgid "Incorrect Answer"
+msgstr "不正解"
+
+msgid "User 1"
+msgstr "ユーザー1"
+
+msgid "User 2"
+msgstr "ユーザー2"
+
+msgid "Resolver"
+msgstr "リゾルバ"
+
+msgid "Resolution Timestamp"
+msgstr "解決タイムスタンプ"
 
 msgid "Click on instrument in legend to visit conflict resolver for that instrument across all visits."
 msgstr "凡例の機器をクリックすると、すべての訪問にわたってその機器の競合解決ツールにアクセスできます。"

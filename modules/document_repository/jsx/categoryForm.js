@@ -8,6 +8,12 @@ import {
   SelectElement,
   ButtonElement,
 } from 'jsx/Form';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
+import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
 
 /**
  * Category Creation Form
@@ -68,9 +74,11 @@ class DocCategoryForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
@@ -81,7 +89,8 @@ class DocCategoryForm extends React.Component {
     let addButton = null;
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
-      addButton = <ButtonElement label="Add Category"/>;
+      addButton = <ButtonElement label={t('Add Category',
+        {ns: 'document_repository'})}/>;
     }
 
     return (
@@ -92,10 +101,12 @@ class DocCategoryForm extends React.Component {
             fileUpload={true}
             onSubmit={this.handleSubmit}
           >
-            <h3>Add a category</h3><br/>
+            <h3>{t('Add a category',
+              {ns: 'document_repository'})}</h3><br/>
             <TextboxElement
               name="categoryName"
-              label="Category Name"
+              label={t('Category Name',
+                {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               required={true}
               disabled={disabled}
@@ -103,7 +114,7 @@ class DocCategoryForm extends React.Component {
             />
             <SelectElement
               name="parentId"
-              label="Parent"
+              label={t('Parent', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               disabled={disabled}
@@ -111,7 +122,7 @@ class DocCategoryForm extends React.Component {
             />
             <TextareaElement
               name="comments"
-              label="Comments"
+              label={t('Comments', {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               disabled={disabled}
               value={this.state.formData.comments}
@@ -167,10 +178,12 @@ class DocCategoryForm extends React.Component {
           this.setState({
             formData: {}, // reset form data after successful file upload
           });
-          swal.fire('Category Successfully Added!', '', 'success');
+          swal.fire('Category Successfully Added!',
+            '', 'success');
         } else {
           resp.json().then((data) => {
-            swal.fire('Could not add category!', data.error, 'error');
+            swal.fire('Could not add category!',
+              data.error, 'error');
           }).catch((error) => {
             console.error(error);
             swal.fire(
@@ -202,6 +215,19 @@ DocCategoryForm.propTypes = {
   action: PropTypes.string.isRequired,
   refreshPage: PropTypes.func,
   newCategoryState: PropTypes.func,
+  t: PropTypes.func,
 };
 
-export default DocCategoryForm;
+export default withTranslation(
+  ['document_repository', 'loris'])(DocCategoryForm);
+
+window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'document_repository', hiStrings);
+  i18n.addResourceBundle('ja', 'document_repository', jaStrings);
+  i18n.addResourceBundle('fr', 'document_repository', frStrings);
+
+  const element = document.getElementById('lorisworkspace');
+  if (!element) {
+    throw new Error('Missing lorisworkspace');
+  }
+});

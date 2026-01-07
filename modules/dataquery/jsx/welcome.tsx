@@ -14,6 +14,10 @@ import {FullDictionary} from './types';
 import {FlattenedField, FlattenedQuery, VisitOption} from './types';
 import ReplayIcon from './ReplayIcon';
 import ShareIconA from './ShareIconA';
+import {useTranslation} from 'react-i18next';
+import 'I18nSetup';
+
+declare const loris: any;
 /**
  * Return the welcome tab for the DQT
  *
@@ -54,6 +58,7 @@ function Welcome(props: {
     mapCategoryName: (module: string, category: string) => string,
     fulldictionary:FullDictionary,
 }) {
+  const {t} = useTranslation('dataquery');
   const panels: {
         title: string,
         content: React.ReactElement,
@@ -63,21 +68,21 @@ function Welcome(props: {
     }[] = [];
   if (props.topQueries.length > 0) {
     panels.push({
-      title: 'Study Queries',
+      title: t(
+        'Study Query',
+        {ns: 'dataquery', count: props.topQueries.length}
+      ),
       content: (
         <div>
           <QueryList
             useAdminName={true}
-
             queries={props.topQueries}
             loadQuery={props.loadQuery}
             defaultCollapsed={true}
-
             getModuleFields={props.getModuleFields}
             mapModuleName={props.mapModuleName}
             mapCategoryName={props.mapCategoryName}
             fulldictionary={props.fulldictionary}
-
             queryAdmin={props.queryAdmin}
             reloadQueries={props.reloadQueries}
           />
@@ -89,7 +94,7 @@ function Welcome(props: {
     });
   }
   panels.push({
-    title: 'Instructions',
+    title: t('Instructions', {ns: 'dataquery'}),
     content: <IntroductionMessage
       hasStudyQueries={props.topQueries.length > 0}
       onContinue={props.onContinue}
@@ -99,22 +104,18 @@ function Welcome(props: {
     id: 'p2',
   });
   panels.push({
-    title: 'Recent Queries',
+    title: t('Recent Queries', {ns: 'dataquery'}),
     content: (
       <div>
         <QueryRunList
           queryruns={props.recentQueries}
           loadQuery={props.loadQuery}
           defaultCollapsed={false}
-
           starQuery={props.starQuery}
           unstarQuery={props.unstarQuery}
-
           shareQuery={props.shareQuery}
           unshareQuery={props.unshareQuery}
-
           reloadQueries={props.reloadQueries}
-
           getModuleFields={props.getModuleFields}
           mapModuleName={props.mapModuleName}
           mapCategoryName={props.mapCategoryName}
@@ -130,21 +131,18 @@ function Welcome(props: {
 
   if (props.sharedQueries.length > 0) {
     panels.push({
-      title: 'Shared Queries',
+      title: t('Shared Queries', {ns: 'dataquery'}),
       content: (
         <div>
           <QueryList
             useAdminName={false}
-
             queries={props.sharedQueries}
             loadQuery={props.loadQuery}
             defaultCollapsed={true}
-
             getModuleFields={props.getModuleFields}
             mapModuleName={props.mapModuleName}
             mapCategoryName={props.mapCategoryName}
             fulldictionary={props.fulldictionary}
-
             queryAdmin={props.queryAdmin}
           />
         </div>
@@ -162,7 +160,7 @@ function Welcome(props: {
         textAlign: 'center',
         padding: '30px 0 0 0',
       }}>
-               Welcome to the Data Query Tool
+        {t('Welcome to the Data Query Tool', {ns: 'dataquery'})}
       </h1>
       <ExpansionPanels panels={panels} />
     </div>
@@ -209,6 +207,7 @@ function QueryList(props: {
     mapCategoryName: (module: string, category: string) => string,
     fulldictionary:FullDictionary,
 }) {
+  const {t} = useTranslation('dataquery');
   const [nameModalID, setNameModalID] = useState<number|null>(null);
   const [adminModalID, setAdminModalID] = useState<number|null>(null);
   const [queryName, setQueryName] = useState<string|null>(null);
@@ -493,26 +492,28 @@ function QueryList(props: {
       });
   }
   const starFilter = props.starQuery ?
-    <CheckboxElement name='onlystar' label='Starred Only'
-      value={onlyStarred}
-      offset=''
-      onUserInput={
-        (name: string, value: boolean) => setOnlyStarred(value)
-      }/> : <span />;
+    <CheckboxElement name='onlystar' label={t('Starred Only',
+      {ns: 'dataquery'})}
+    value={onlyStarred}
+    offset=''
+    onUserInput={
+      (name: string, value: boolean) => setOnlyStarred(value)
+    }/> : <span />;
   const shareFilter = props.shareQuery ?
-    <CheckboxElement name='onlyshare' label='Shared Only'
-      value={onlyShared}
-      offset=''
-      onUserInput={
-        (name: string, value: boolean) => setOnlyShared(value)
-      }/>
+    <CheckboxElement name='onlyshare' label={t('Shared Only',
+      {ns: 'dataquery'})}
+    value={onlyShared}
+    offset=''
+    onUserInput={
+      (name: string, value: boolean) => setOnlyShared(value)
+    }/>
     : <span />;
     // Use whether shareQuery prop is defined as proxy
     // to determine if this is a shared query or a recent
     // query list
   const duplicateFilter = props.shareQuery ?
     <CheckboxElement name='noduplicate'
-      label='No run times (eliminate duplicates)'
+      label={t('No run times (eliminate duplicates)', {ns: 'dataquery'})}
       value={noDuplicates}
       offset=''
       onUserInput={
@@ -528,7 +529,7 @@ function QueryList(props: {
       paddingBottom: '1ex',
     }}>
       <TextboxElement name='filter'
-        label='Filter'
+        label={t('Filter', {ns: 'dataquery', count: 1})}
         value={queryFilter}
         onUserInput={
           (name: string, value: string) => setQueryFilter(value)
@@ -540,20 +541,22 @@ function QueryList(props: {
       }}>
         {starFilter}
         {shareFilter}
-        <CheckboxElement name='onlynamed' label='Named Only'
-          value={onlyNamed}
-          offset=''
-          onUserInput={
-            (name: string, value: boolean) => setOnlyNamed(value)
-          }/>
+        <CheckboxElement name='onlynamed' label={t('Named Only',
+          {ns: 'dataquery'})}
+        value={onlyNamed}
+        offset=''
+        onUserInput={
+          (name: string, value: boolean) => setOnlyNamed(value)
+        }/>
         {duplicateFilter}
-        <CheckboxElement name='fullquery' label='Collapse queries'
-          value={!fullQuery}
-          offset=''
-          onUserInput={
-            (name: string, value: boolean) =>
-              setFullQuery(!value)
-          }/>
+        <CheckboxElement name='fullquery' label={t('Collapse queries',
+          {ns: 'dataquery'})}
+        value={!fullQuery}
+        offset=''
+        onUserInput={
+          (name: string, value: boolean) =>
+            setFullQuery(!value)
+        }/>
       </div>
     </div>
     <Pager>
@@ -624,9 +627,10 @@ function QueryListCriteria(props: {
     fulldictionary: FullDictionary,
     criteria: QueryGroup
 }) {
+  const {t} = useTranslation('dataquery');
   if (!props.criteria || !props.criteria.group
             || props.criteria.group.length == 0) {
-    return <i>(No filters for query)</i>;
+    return <i>{t('(No filters for query)', {ns: 'dataquery'})}</i>;
   }
   return (<QueryTree
     items={props.criteria}
@@ -660,6 +664,7 @@ function Pager(props: {
       onChangePage={setPageNum}
       RowsPerPage={rowsPerPage}
       Active={pageNum}
+      // label={t('Page', {ns: 'dataquery'})}
     />
     {displayedRange}
     <PaginationLinks
@@ -667,6 +672,7 @@ function Pager(props: {
       onChangePage={setPageNum}
       RowsPerPage={rowsPerPage}
       Active={pageNum}
+      // label={t('Page', {ns: 'dataquery'})}
     />
   </div>;
 }
@@ -717,6 +723,7 @@ function SingleQueryDisplay(props: {
     mapCategoryName: (module: string, category: string) => string,
     fulldictionary:FullDictionary,
 }) {
+  const {t} = useTranslation('dataquery');
   const [showFullQuery, setShowFullQuery] =
         useState(props.showFullQueryDefault);
     // Reset the collapsed state if the checkbox gets toggled
@@ -734,7 +741,7 @@ function SingleQueryDisplay(props: {
       onClick={
         () => props.unstarQuery(query.QueryID)
       }
-      title="Unstar"
+      title={t('Unstar', {ns: 'dataquery'})}
       className="fa-stack">
       <i style={
         {color: 'yellow'}}
@@ -748,7 +755,7 @@ function SingleQueryDisplay(props: {
   } else {
     starredIcon = <span
       style={{cursor: 'pointer'}}
-      title="Star"
+      title={t('Star', {ns: 'dataquery'})}
       onClick={
         () => props.starQuery(query.QueryID)
       }
@@ -760,7 +767,7 @@ function SingleQueryDisplay(props: {
   if (query.Public) {
     sharedIcon = <ShareIcon
       isShared={query.Public}
-      title='Unshare'
+      title={t('Unshare', {ns: 'dataquery'})}
       onClick={
         () =>
           props.unshareQuery(query.QueryID)
@@ -769,7 +776,7 @@ function SingleQueryDisplay(props: {
   } else {
     sharedIcon = <ShareIcon
       isShared={query.Public}
-      title='Share'
+      title={t('Share', {ns: 'dataquery'})}
       onClick={
         () =>
           props.shareQuery(query.QueryID)
@@ -802,15 +809,15 @@ function SingleQueryDisplay(props: {
     );
     swal.fire({
       type: 'success',
-      title: 'Query Loaded',
-      text: 'Successfully loaded query.',
+      title: t('Query Loaded', {ns: 'dataquery'}),
+      text: t('Successfully loaded query.', {ns: 'dataquery'}),
     });
   };
 
   const loadIcon = <LoadIcon onClick={loadQuery} />;
 
   const pinIcon = props.queryAdmin
-    ? <span title="Pin Study Query"
+    ? <span title={t('Pin Study Query', {ns: 'dataquery'})}
       style={{cursor: 'pointer'}}
       className="fa-stack"
       onClick={() => {
@@ -824,21 +831,34 @@ function SingleQueryDisplay(props: {
 
   let msg: React.ReactNode = null;
   if (query.RunTime) {
+    const dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        dateStyle: 'long',
+        timeStyle: 'medium',
+      }
+    );
+    const runTime = dateFormatter.format(new Date(query.RunTime));
+
+
     let desc = query.Name
       ? <span>
         <b>{query.Name}</b>
-             &nbsp;<i>(Run at {query.RunTime})</i>
+             &nbsp;<i>{t('(Run on {{runTime}})', {ns: 'dataquery',
+          runTime: runTime})}</i>
       </span>
-      : <i>You ran this query at {query.RunTime}</i>;
+      : <i>{t('You ran this query on {{runTime}}', {ns: 'dataquery',
+        runTime: runTime})}</i>;
     if (!props.includeRuns) {
       desc = query.Name
         ? <span>
           <b>{query.Name}</b>
         </span>
-        : <i>You ran this query</i>;
+        : <i>{t('You ran this query', {ns: 'dataquery'})}</i>;
     }
 
     const nameIcon = <NameIcon
+      t={t}
       onClick={() => {
         props.setDefaultModalQueryName(query.Name || '');
         props.setNameModalID(query.QueryID);
@@ -850,16 +870,18 @@ function SingleQueryDisplay(props: {
     const desc = query.Name
       ? <span>
         <b>{query.Name}</b>
-                &nbsp;<i>(Shared by {query.SharedBy.join(', ')})</i>
+                &nbsp;<i>{t('(Shared by {{sharedBy}})', {ns: 'dataquery',
+          sharedBy: query.SharedBy.join(', ')})}</i>
       </span>
-      : <i>Query shared by {query.SharedBy.join(', ')}</i>;
+      : <i>{t('Query shared by {{sharedBy}}', {ns: 'dataquery',
+        sharedBy: query.SharedBy.join(', ')})}</i>;
     msg = <div>{desc}
              &nbsp;{loadIcon}{pinIcon}
     </div>;
   } else if (query.Name || query.AdminName) {
     const name = props.useAdminName ? query.AdminName : query.Name;
     const unpinIcon = props.queryAdmin
-      ? <span title="Name query"
+      ? <span title={t('Name Query', {ns: 'dataquery'})}
         style={{cursor: 'pointer'}}
         className="fa-stack"
         onClick={() => {
@@ -878,7 +900,7 @@ function SingleQueryDisplay(props: {
   const queryDisplay = !showFullQuery ? <div /> :
     <div style={{display: 'flex', flexWrap: 'wrap'}}>
       <div>
-        <h3>Fields</h3>
+        <h3>{t('Field', {ns: 'dataquery', count: 99})}</h3>
         {query.fields.map(
           (fieldobj, fidx) =>
             <FieldDisplay
@@ -894,7 +916,9 @@ function SingleQueryDisplay(props: {
       </div>
       {query.criteria ?
         <div>
-          <h3>Filters</h3>
+          <h3>{
+            t('Filter', {ns: 'dataquery', count: query.criteria.group.length})
+          }</h3>
           <QueryListCriteria
             criteria={query.criteria}
             fulldictionary={props.fulldictionary}
@@ -1007,8 +1031,8 @@ function QueryRunList(props:{
 function LoadIcon(props: {
     onClick?: () => void,
 }) {
+  const {t} = useTranslation('dataquery');
   return <span onClick={props.onClick}
-    title="Reload query"
     style={{
       cursor: 'pointer',
       textAlign: 'center',
@@ -1016,6 +1040,7 @@ function LoadIcon(props: {
       width: '35px',
       height: '28px',
     }}
+    title={t('Reload query', {ns: 'dataquery'})}
     className="fa-stack">
     <ReplayIcon />
   </span>;
@@ -1053,13 +1078,16 @@ function ShareIcon(props: {
  * An icon to name a query
  *
  * @param {object} props - React props
+ * @param {any} props.t - useTranslation
  * @param {function} props.onClick - Handler to call when icon clicked
+ *
  * @returns {React.ReactElement} - The React element
  */
 function NameIcon(props: {
-    onClick?: () => void
+  t: any,
+  onClick?: () => void
 }): React.ReactElement {
-  return (<span title="Name query"
+  return (<span title={props.t('Name Query', {ns: 'dataquery'})}
     style={{cursor: 'pointer'}}
     className="fa-stack"
     onClick={props.onClick}
@@ -1080,45 +1108,44 @@ function IntroductionMessage(props: {
     onContinue: () => void,
     hasStudyQueries: boolean,
 }): React.ReactElement {
+  const {t} = useTranslation('dataquery');
   const studyQueriesParagraph = props.hasStudyQueries ? (
-    <p>Above, there is also a <code>Study Queries</code> panel. This
-        are a special type of shared queries that have been pinned
-        by a study administer to always display at the top of this
-        page.</p>
+    <p>
+      {t('Above, there is also a Study Queries panel. This are a'
+        +' special type of shared queries that have been pinned by a study'
+        +' administer to always display at the top of this page.',
+      {ns: 'dataquery'})}
+    </p>
   ) : '';
   return (
     <div>
-      <p>The data query tool allows you to query data
-          within LORIS. There are three steps to defining
-          a query:
-      </p>
+      <p>{t('The data query tool allows you to query data within LORIS. '
+        +'There are three steps to defining a query:', {ns: 'dataquery'})}</p>
       <ol>
-        <li>First, you must select the fields that you're
-                interested in on the <code>Define Fields</code>
-                page.</li>
-        <li>Next, you can optionally define filters on the
-          <code>Define Filters</code> page to restrict
-                the population that is returned.</li>
-        <li>Finally, you view your query results on
-                the <code>View Data</code> page</li>
+        <li>{t('First, you must select the fields that you\'re interested in'
+          +' on the Define Fields page.', {ns: 'dataquery'})}</li>
+        <li>{t('Next, you can optionally define filters on the Define '
+          +'Filters page to restrict the population that is returned.',
+        {ns: 'dataquery'})}</li>
+        <li>{t('Finally, you view your query results on the View Data page',
+          {ns: 'dataquery'})}</li>
       </ol>
-      <p>The <code>Next Steps</code> on the bottom right of your
-             screen always the context-sensitive next steps that you
-             can do to build your query.</p>
-      <p>Your recently run queries will be displayed in the
-        <code>Recent Queries</code> panel below. Instead of building
-             a new query, you can reload a query that you've recently run
-             by clicking on the <LoadIcon /> icon next to the query.</p>
-      <p>Queries can be shared with others by clicking the <ShareIcon />
-             icon. This will cause the query to be shared with all users who
-             have access to the fields used by the query. It will display
-             in a <code>Shared Queries</code> panel below the
-        <code>Recent Queries</code>.</p>
-      <p>You may also give a query a name at any time by clicking the
-        <NameIcon /> icon. This makes it easier to find queries you care
-             about by giving them an easier to remember name that can be used
-             for filtering. When you share a query, the name will be shared
-             along with it.</p>
+      <p>{t('The Next Steps on the bottom right of your screen always the '
+        +'context-sensitive next steps that you can do to build your query.',
+      {ns: 'dataquery'})}</p>
+      <p>{t('Your recently run queries will be displayed in the Recent '
+        +'Queries panel below. Instead of building a new query, you can '
+        +'reload a query that you\'ve recently run by clicking on the icon'
+        +' next to the query.', {ns: 'dataquery'})}</p>
+      <p>{t('Queries can be shared with others by clicking the icon. This will'
+        +' cause the query to be shared with all users who have access to the '
+        +'fields used by the query. It will display in a Shared Queries panel '
+        +'below the Recent Queries.', {ns: 'dataquery'})}</p>
+      <p>{t('You may also give a query a name at any time by clicking the icon.'
+      +' This makes it easier to find queries you care about by giving them an'
+        +' easier to remember name that can be used for filtering. When you '
+        +'share a query, the name will be shared along with it.',
+      {ns: 'dataquery'})}</p>
       {studyQueriesParagraph}
       <div style={{
         display: 'flex',
@@ -1128,9 +1155,10 @@ function IntroductionMessage(props: {
         <ButtonElement
           columnSize="col-sm-12"
           onUserInput={props.onContinue}
-          label="Continue to Define Fields" />
+          label={t('Continue to Define Fields', {ns: 'dataquery'})} />
       </div>
     </div>
   );
 }
+
 export default Welcome;
