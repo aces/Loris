@@ -1,0 +1,218 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 11:41-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+#, fuzzy
+msgid "Imaging Browser"
+msgstr "Navigateur d'images"
+
+msgid "View Session"
+msgstr "Voir la session"
+
+#, fuzzy
+msgid "New and pending imaging session"
+msgstr "Nouvelle session d'imagerie et session en attente"
+
+msgid "New and pending imaging sessions"
+msgstr "Nouvelles séances d'imagerie et séances en attente"
+
+#, fuzzy
+msgid "Imaging Session"
+msgid_plural "Imaging Sessions"
+msgstr[0] "Séance d'imagerie"
+msgstr[1] "Séances d'imagerie"
+
+msgid "Visit QC Status"
+msgstr "Consulter le statut CQ"
+
+#, fuzzy
+msgid "First Acquisition"
+msgstr "Première acquisition"
+
+#, fuzzy
+msgid "First Insertion"
+msgstr "Première insertion"
+
+#, fuzzy
+msgid "Last QC"
+msgstr "Dernier contrôle qualité"
+
+#, fuzzy
+msgid "New Data"
+msgstr "Nouvelles données"
+
+msgid "Links"
+msgstr "Liens"
+
+#, fuzzy
+msgid "SessionID"
+msgstr "ID de session"
+
+#, fuzzy
+msgid "Sequence Type"
+msgstr "Type de séquence"
+
+#, fuzzy
+msgid "Pending New"
+msgstr "En attente Nouveau"
+
+msgid "QC Status"
+msgstr "Statut CQ"
+
+#, fuzzy
+msgid "Caveat"
+msgstr "Avertissement"
+
+msgid "SNR"
+msgstr "SNR"
+
+msgid "all types"
+msgstr "tous les types"
+
+msgid "Header Info"
+msgstr "Info de l’en-tête"
+
+msgid "Download Image"
+msgstr "Télécharger l'image"
+
+#, fuzzy
+msgid "Longitudinal View"
+msgstr "Vue longitudinale"
+
+msgid "QC Comments"
+msgstr "Commentaires CQ"
+
+#, fuzzy
+msgid "Series Instance UID"
+msgstr "Identifiant unique de l'instance de série"
+
+#, fuzzy
+msgid "Number of Scans"
+msgstr "Nombre de scans"
+
+msgid "Red bar denotes number of failed QC scans."
+msgstr "La barre rouge indique le nombre d'analyses CQ ayant échoué."
+
+msgid "Green bar denotes number of passed QC scans."
+msgstr "La barre verte indique le nombre de scans CQ réussis."
+
+#, fuzzy
+msgid "Grey bar denotes other QC statuses."
+msgstr "La barre grise indique d'autres statuts de contrôle qualité."
+
+#, fuzzy
+msgid ""
+"Different shades represent different modalities. Only native modalities are "
+"displayed in results."
+msgstr ""
+"Les différentes nuances représentent différentes modalités. Seules les "
+"modalités natives sont affichées dans les résultats."
+
+#, fuzzy
+msgid ""
+"Hover over any visit to see detailed modality breakdown for visit, click to "
+"go to imaging browser."
+msgstr ""
+"Passez la souris sur n'importe quelle visite pour voir le détail des "
+"modalités utilisées, cliquez pour accéder au navigateur d'imagerie."
+
+#, fuzzy
+msgid "%1 file(s) displayed."
+msgstr "%1 f fichier(s) affiché(s)."
+
+msgid "No data available"
+msgstr "Pas de données disponibles"
+
+msgid "Patient Name"
+msgstr "Nom du patient"
+
+msgid "QC Pending"
+msgstr "CQ en attente"
+
+msgid "Output Type"
+msgstr "Type de sortie"
+
+msgid "Scanner"
+msgstr "Scanner"
+
+msgid "Human"
+msgstr "Humain"
+
+#, fuzzy
+msgid "EDC"
+msgstr "Les champs DPA doivent correspondre"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "Back to list"
+msgstr "Retour à la liste"
+
+#, fuzzy
+msgid "Volume Viewer"
+msgstr "Visualiseur de volume"
+
+#, fuzzy
+msgid "3D Only"
+msgstr "3D uniquement"
+
+#, fuzzy
+msgid "3D + Overlay"
+msgstr "3D + Superposition"
+
+#, fuzzy
+msgid "Report a Bug (Mantis)"
+msgstr "Signaler un bug (Mantis)"
+
+msgid "Visit Level QC"
+msgstr "Visitez le niveau CQ"
+
+#, fuzzy
+msgid "Visit Level Feedback"
+msgstr "Visite Niveau Commentaires"
+
+#, fuzzy
+msgid "Visit Level Caveat"
+msgstr "Visite Niveau Avertissement"
+
+#, fuzzy
+msgid "DCC MRI Quality Control"
+msgstr "Contrôle qualité IRM DCC"
+
+#, fuzzy
+msgid "Click here to close this window"
+msgstr "Cliquez ici pour fermer cette fenêtre."
+
+#, fuzzy
+msgid "Comments saved."
+msgstr "Commentaires enregistrés."
+
+#, fuzzy
+msgid "Feedback MRI Popup"
+msgstr "Fenêtre contextuelle de commentaires sur l'IRM"
+
+msgid "Subject"
+msgstr "Sujet"
+
+#, fuzzy
+msgid "Download DICOM"
+msgstr "Télécharger DICOM"

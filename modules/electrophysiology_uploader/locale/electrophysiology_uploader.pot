@@ -21,3 +21,68 @@ msgstr ""
 msgid "Electrophysiology Uploader"
 msgstr ""
 
+msgid "LORIS 26 Beta Note:"
+msgstr ""
+
+msgid "Files uploaded in this module will not be viewable in the Electrophysiology Browser module. This feature is under construction for the next release. Please get in touch with the LORIS team to configure this for your project."
+msgstr ""
+
+msgid "Upload an electrophysiology recording session"
+msgstr ""
+
+msgid "File to Upload"
+msgstr ""
+
+msgid "File name must match the following convention:"
+msgstr ""
+
+msgid "File cannot exceed {{maxFileSize}}"
+msgstr ""
+
+msgid "Invalid extension for the uploaded file!"
+msgstr ""
+
+msgid "Filename extension does not match .tar.gz "
+msgstr ""
+
+msgid "The file {{filename}} must be of type .tar.gz."
+msgstr ""
+
+msgid "Invalid filename!"
+msgstr ""
+
+msgid "Filename should be of the form"
+msgstr ""
+
+msgid "The file does not respect name convention"
+msgstr ""
+
+msgid "Upload Successful!"
+msgstr ""
+
+msgid "Processing of this file by the EEG pipeline has started"
+msgstr ""
+
+msgid "Upload failed: a network error occured"
+msgstr ""
+
+msgid "Upload failed: received HTTP response code"
+msgstr ""
+
+msgid "Submission error!"
+msgstr ""
+
+msgid "Upload Location"
+msgstr ""
+
+msgid "Upload ID"
+msgstr ""
+
+msgid "Upload Time"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Uploaded By"
+msgstr ""

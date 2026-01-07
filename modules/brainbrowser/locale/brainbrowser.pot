@@ -21,3 +21,69 @@ msgstr ""
 msgid "Brainbrowser"
 msgstr ""
 
+msgid "Sync Volumes"
+msgstr ""
+
+msgid "Reset View"
+msgstr ""
+
+msgid "Auto"
+msgstr ""
+
+msgid "300 Pixels (Default)"
+msgstr ""
+
+msgid "{{count}} Pixels"
+msgstr ""
+
+msgid "Gray"
+msgstr ""
+
+msgid "Spectral"
+msgstr ""
+
+msgid "Thermal"
+msgstr ""
+
+msgid "Blue"
+msgstr ""
+
+msgid "Green"
+msgstr ""
+
+msgid "Overlay"
+msgstr ""
+
+msgid "World Coordinates"
+msgstr ""
+
+msgid "Threshold"
+msgstr ""
+
+msgid "Color Map"
+msgstr ""
+
+msgid "Voxel Coordinates"
+msgstr ""
+
+msgid "Intensity Value"
+msgstr ""
+
+msgid "Contrast (0.0 to 2.0):"
+msgstr ""
+
+msgid "Brightness (-1 to 1):"
+msgstr ""
+
+msgid "View Slices"
+msgstr ""
+
+msgid "Sagittal"
+msgstr ""
+
+msgid "Coronal"
+msgstr ""
+
+msgid "Transverse"
+msgstr ""
+

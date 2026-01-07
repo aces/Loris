@@ -1,0 +1,361 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Issue Tracker"
+msgstr "समस्या ट्रैकर"
+
+msgid "Issue"
+msgstr "समस्या"
+
+msgid "Your assigned issue"
+msgid_plural "Your assigned issues"
+msgstr[0] "आपकी असाइन की गई समस्या"
+msgstr[1] "आपकी असाइन की गई समस्याएँ"
+
+msgid "Open Issues"
+msgstr "खुली समस्याएँ"
+
+msgid "Issue ID"
+msgstr "समस्या आईडी"
+
+msgid "Reporter"
+msgstr "रिपोर्टर"
+
+msgid "Assignee"
+msgstr "असाइन किए गए"
+
+msgid "Priority"
+msgstr "प्राथमिकता"
+
+msgid "Date Created"
+msgstr "निर्माण तिथि"
+
+msgid "Last Update"
+msgstr "अंतिम अपडेट"
+
+msgid "SessionID"
+msgstr "सत्र आईडी"
+
+msgid "Watching"
+msgstr "देख रहे हैं"
+
+msgid "Normal"
+msgstr "सामान्य"
+
+msgid "High"
+msgstr "उच्च"
+
+msgid "Urgent"
+msgstr "अत्यावश्यक"
+
+msgid "Immediate"
+msgstr "तत्काल"
+
+msgid "Low"
+msgstr "निम्न"
+
+msgid "All Sites"
+msgstr "सभी साइटें"
+
+msgid "All Issues"
+msgstr "सभी समस्याएँ"
+
+msgid "Active Issues"
+msgstr "सक्रिय समस्याएँ"
+
+msgid "Closed Issues"
+msgstr "बंद समस्याएँ"
+
+msgid "My Issues"
+msgstr "मेरी समस्याएँ"
+
+msgid "New Issue"
+msgstr "नई समस्या"
+
+msgid "Browse Issues"
+msgstr "समस्याएँ ब्राउज़ करें"
+
+msgid "Batch Edit"
+msgstr "बैच संपादन"
+
+msgid "Add Comment"
+msgstr "टिप्पणी जोड़ें"
+
+msgid "Create New Issue"
+msgstr "नई समस्या बनाएँ"
+
+msgid "Never!"
+msgstr "कभी नहीं!"
+
+msgid "No-one!"
+msgstr "कोई नहीं!"
+
+msgid "Sometime Soon!"
+msgstr "जल्द ही!"
+
+msgid "Submit Issue"
+msgstr "समस्या सबमिट करें"
+
+msgid "Edit Issue"
+msgstr "समस्या संपादित करें"
+
+msgid "Update Issue"
+msgstr "समस्या अपडेट करें"
+
+msgid "Add Attachment"
+msgstr "संलग्नक जोड़ें"
+
+msgid "Attachment for issue"
+msgstr "समस्या के लिए संलग्नक"
+
+msgid "Attachment for Issue"
+msgstr "समस्या के लिए संलग्नक"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "Watching?"
+msgstr "देख रहे हैं?"
+
+msgid "Add others to watching?"
+msgstr "अन्य को देखने में जोड़ें?"
+
+msgid "New Comment"
+msgstr "नई टिप्पणी"
+
+msgid "This field is required"
+msgstr "यह फ़ील्ड आवश्यक है"
+
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr "आपको 2 सेकंड में मुख्य पृष्ठ पर भेज दिया जाएगा!"
+
+msgid "Failed to submit issue :("
+msgstr "समस्या सबमिट करने में विफल :("
+
+msgid "Issue updated!"
+msgstr "समस्या अपडेट की गई!"
+
+msgid "Issue created!"
+msgstr "समस्या बनाई गई!"
+
+msgid "({{count}} issue)"
+msgid_plural "({{count}} issues)"
+msgstr[0] "({{count}} समस्या)"
+msgstr[1] "({{count}} समस्याएँ)"
+
+msgid "Last Updated By"
+msgstr "अंतिम अपडेट किया गया"
+
+msgid "Unassigned"
+msgstr "असाइन नहीं किया गया"
+
+msgid "Watchers"
+msgstr "दर्शक"
+
+msgid "Submitting..."
+msgstr "सबमिट कर रहे हैं..."
+
+msgid "Submit Comment"
+msgstr "टिप्पणी सबमिट करें"
+
+msgid "Created"
+msgstr "बनाया गया"
+
+msgid "Last Updated"
+msgstr "अंतिम अपडेट"
+
+msgid "None"
+msgstr "कोई नहीं"
+
+msgid "Uncategorized"
+msgstr "अवर्गीकृत"
+
+msgid "Comments and History"
+msgstr "टिप्पणियाँ और इतिहास"
+
+msgid "on"
+msgstr "पर"
+
+msgid "at"
+msgstr "पर"
+
+msgid "seconds ago"
+msgstr "सेकंड पहले"
+
+msgid "minutes ago"
+msgstr "मिनट पहले"
+
+msgid "hours ago"
+msgstr "घंटे पहले"
+
+msgid "Title cannot be empty"
+msgstr "शीर्षक खाली नहीं हो सकता"
+
+msgid "No changes were made"
+msgstr "कोई परिवर्तन नहीं किए गए"
+
+msgid "Issue updated successfully"
+msgstr "समस्या सफलतापूर्वक अपडेट की गई"
+
+msgid "Failed to update issue"
+msgstr "समस्या अपडेट करने में विफल"
+
+msgid "Information"
+msgstr "जानकारी"
+
+msgid "Add New Comment"
+msgstr "नई टिप्पणी जोड़ें"
+
+msgid "Comment"
+msgstr "टिप्पणी"
+
+msgid "Failed to add comment"
+msgstr "टिप्पणी जोड़ने में विफल"
+
+msgid "of"
+msgstr "का"
+
+msgid "Maximum issues per page"
+msgstr "प्रति पृष्ठ अधिकतम समस्याएँ"
+
+msgid "Failed to fetch issues. Please try again later."
+msgstr "समस्याएँ प्राप्त करने में विफल। कृपया बाद में पुनः प्रयास करें।"
+
+msgid "No issues match the selected filters."
+msgstr "कोई समस्या चयनित फ़िल्टर से मेल नहीं खाती।"
+
+msgid "issues displayed"
+msgstr "समस्याएँ प्रदर्शित"
+
+msgid "({{count}} comment)"
+msgid_plural "({{count}} comments)"
+msgstr[0] "({{count}} टिप्पणी)"
+msgstr[1] "({{count}} टिप्पणियाँ)"
+
+msgid "New"
+msgstr "नया"
+
+msgid "Acknowledged"
+msgstr "स्वीकृत"
+
+msgid "Feedback"
+msgstr "प्रतिक्रिया"
+
+msgid "Assigned"
+msgstr "असाइन किया गया"
+
+msgid "Resolved"
+msgstr "हल किया गया"
+
+msgid "Closed"
+msgstr "बंद"
+
+msgid "Behavioural Battery"
+msgstr "व्यवहारिक बैटरी"
+
+msgid "Behavioural Instruments"
+msgstr "व्यवहारिक उपकरण"
+
+msgid "Data Entry"
+msgstr "डेटा प्रविष्टि"
+
+msgid "Examiners"
+msgstr "परीक्षक"
+
+msgid "Imaging"
+msgstr "इमेजिंग"
+
+msgid "Other"
+msgstr "अन्य"
+
+msgid "Technical Issue"
+msgstr "तकनीकी समस्या"
+
+msgid "User Accounts"
+msgstr "उपयोगकर्ता खाते"
+
+msgid "Last 3 Comments"
+msgstr "अंतिम 3 टिप्पणियाँ"
+
+msgid "Confirmation"
+msgstr "पुष्टिकरण"
+
+msgid "Delete attachment"
+msgstr "संलग्नक हटाएँ"
+
+msgid "Attachment options: "
+msgstr "संलग्नक विकल्प: "
+
+msgid "Delete"
+msgstr "हटाएँ"
+
+msgid "Download"
+msgstr "डाउनलोड"
+
+msgid "Date of attachment: "
+msgstr "संलग्नक की तिथि: "
+
+msgid "File: "
+msgstr "फ़ाइल: "
+
+msgid "User: "
+msgstr "उपयोगकर्ता: "
+
+msgid "Description: "
+msgstr "विवरण: "
+
+msgid "Attachment History"
+msgstr "संलग्नक इतिहास"
+
+msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
+msgstr "कृपया \"{{fileName}}\" संलग्नक को हटाने के अनुरोध की पुष्टि करें"
+
+msgid "Upload Successful!"
+msgstr "अपलोड सफल!"
+
+msgid "Upload error!"
+msgstr "अपलोड त्रुटि!"
+
+msgid "Submit Attachment"
+msgstr "संलग्नक सबमिट करें"
+
+msgid "An error occurred when loading the form!"
+msgstr "फ़ॉर्म लोड करते समय एक त्रुटि हुई!"
+
+msgid "Please add a comment or make changes"
+msgstr "कृपया एक टिप्पणी जोड़ें या परिवर्तन करें"
+
+msgid "Updated by"
+msgstr "द्वारा अपडेट किया गया"
+
+msgid " to "
+msgstr " से "
+
+msgid "Title"
+msgstr "शीर्षक"
+
+msgid "Category"
+msgstr "श्रेणी"
+
+msgid "The server is not configured for attachments."
+msgstr "सर्वर को संलग्नकों के लिए कॉन्फ़िगर नहीं किया गया है।"
+
+msgid "The server is not configured to receive a file this large."
+msgstr "सर्वर इतने बड़े फ़ाइल को प्राप्त करने के लिए कॉन्फ़िगर नहीं किया गया है।"

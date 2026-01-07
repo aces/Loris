@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Tabs, TabPane} from 'Tabs';
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/instrument_builder.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/instrument_builder.json';
+import frStrings from '../locale/fr/LC_MESSAGES/instrument_builder.json';
 /* global Instrument */
 /* exported RInstrumentBuilderApp */
 
@@ -40,6 +45,7 @@ class LoadPane extends Component {
    * @param {object} e - Event object
    */
   chooseFile(e) {
+    const {t} = this.props;
     let value = e.target.files[0];
 
     if (value) {
@@ -59,16 +65,22 @@ class LoadPane extends Component {
       let errorMessage = '';
 
       if (fileExtension !== allowedExtension) {
-        errorMessage = 'Invalid extension. Only .linst files are allowed.';
+        errorMessage = t('Invalid extension. Only .linst files are allowed.',
+          {ns: 'instrument_builder'});
       } else if (/\s/.test(nameWithoutExtension)) {
-        errorMessage = 'Spaces are not allowed in the file name.';
+        errorMessage = t('Spaces are not allowed in the file name.',
+          {ns: 'instrument_builder'});
       } else if ((nameWithoutExtension.match(/\./g) || []).length > 0) {
-        errorMessage = 'Multiple periods in the file name are not allowed.';
+        errorMessage = t('Multiple periods in the file name are not allowed.',
+          {ns: 'instrument_builder'});
       } else if (!validNamePattern.test(nameWithoutExtension)) {
-        errorMessage =
-        'Special characters are not allowed (only letters, numbers, and _).';
+        errorMessage = t(
+          'Special characters are not allowed (only letters, numbers, and _).',
+          {ns: 'instrument_builder'}
+        );
       } else if (invalidTrailingChars.test(nameWithoutExtension)) {
-        errorMessage = 'File name cannot end with a special character.';
+        errorMessage = t('File name cannot end with a special character.',
+          {ns: 'instrument_builder'});
       }
 
       if (errorMessage) {
@@ -127,6 +139,7 @@ class LoadPane extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let alert = {
       message: '',
       details: '',
@@ -136,15 +149,15 @@ class LoadPane extends Component {
     switch (this.state.alert) {
     case 'success':
       alert = {
-        message: 'Success!',
-        details: 'Instrument Loaded',
+        message: t('Success!', {ns: 'loris'}),
+        details: t('Instrument Loaded', {ns: 'instrument_builder'}),
         display: 'block',
         class: 'alert alert-success alert-dismissible',
       };
       break;
     case 'typeError':
       alert = {
-        message: 'Error!',
+        message: t('Error!', {ns: 'loris'}),
         details: this.state.alertMessage,
         display: 'block',
         class: 'alert alert-danger alert-dismissible',
@@ -152,7 +165,7 @@ class LoadPane extends Component {
       break;
     case 'duplicateEntry':
       alert = {
-        message: 'Error!',
+        message: t('Error!', {ns: 'loris'}),
         details: this.state.alertMessage,
         display: 'block',
         class: 'alert alert-danger alert-dismissible',
@@ -162,7 +175,10 @@ class LoadPane extends Component {
       break;
     }
     return (
-      <TabPane Title='Load Instrument' {...this.props}>
+      <TabPane
+        Title={t('Load Instrument', {ns: 'instrument_builder'})}
+        {...this.props}
+      >
         <div className='col-sm-6 col-xs-12'>
           <div id='load_alert'
             style={{display: alert.display}}
@@ -183,7 +199,7 @@ class LoadPane extends Component {
           <input
             className='btn btn-primary spacingTop'
             type='button' id='load'
-            value='Load Instrument'
+            value={t('Load Instrument', {ns: 'instrument_builder'})}
             disabled={this.state.disabled}
             onClick={this.loadFile}
           />
@@ -194,6 +210,7 @@ class LoadPane extends Component {
 }
 LoadPane.propTypes = {
   loadCallback: PropTypes.func,
+  t: PropTypes.func,
 };
 
 /**
@@ -261,12 +278,18 @@ class SavePane extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let value = this.state.fileName;
     return (
-      <TabPane Title='Save Instrument' {...this.props}>
+      <TabPane
+        Title={t('Save Instrument', {ns: 'instrument_builder'})}
+        {...this.props}
+      >
         <div className='form-group'>
           <div className='col-xs-12'>
-            <label className='col-sm-2 control-label'>Filename: </label>
+            <label className='col-sm-2 control-label'>
+              {t('Filename:', {ns: 'instrument_builder'})}{' '}
+            </label>
             <div className='col-sm-4'>
               <input className='form-control'
                 type='text' id='filename'
@@ -276,7 +299,9 @@ class SavePane extends Component {
             </div>
           </div>
           <div className='col-xs-12 spacingTop'>
-            <label className='col-sm-2 control-label'>Instrument Name: </label>
+            <label className='col-sm-2 control-label'>
+              {t('Instrument Name:', {ns: 'instrument_builder'})}{' '}
+            </label>
             <div className='col-sm-4'>
               <input className='form-control'
                 type='text' id='longname'
@@ -288,7 +313,7 @@ class SavePane extends Component {
           <div className='col-xs-12 spacingTop'>
             <div className='col-xs-12 col-sm-4 col-sm-offset-2'>
               <input className='btn btn-primary col-xs-12'
-                type='submit' value='Save'
+                type='submit' value={t('Save', {ns: 'loris'})}
                 onClick={this.props.save}
               />
             </div>
@@ -300,6 +325,7 @@ class SavePane extends Component {
 }
 SavePane.propTypes = {
   save: PropTypes.func,
+  t: PropTypes.func,
 };
 
 /**
@@ -335,7 +361,10 @@ class DisplayElements extends Component {
       tr.className = 'placeholder';
       let td = document.createElement('td');
       td.colSpan = 2;
-      td.appendChild(document.createTextNode('Drop here'));
+      const {t} = this.props;
+      td.appendChild(
+        document.createTextNode(t('Drop here', {ns: 'instrument_builder'}))
+      );
       tr.appendChild(td);
       this.placeholder = tr;
     }
@@ -464,12 +493,12 @@ class DisplayElements extends Component {
               <button onClick={this.props.editElement.bind(null, i)}
                 className="button"
               >
-                Edit
+                {this.props.t('Edit', {ns: 'instrument_builder'})}
               </button>
               <button onClick={this.props.deleteElement.bind(null, i)}
                 className="button"
               >
-                Delete
+                {this.props.t('Delete', {ns: 'instrument_builder'})}
               </button>
             </td>
           </tr>
@@ -485,6 +514,7 @@ class DisplayElements extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Set fixed layout to force column widths to be based on first row
     const tableStyles = {
       tableLayout: 'fixed',
@@ -496,9 +526,15 @@ class DisplayElements extends Component {
       <table id='sortable' className='table table-hover' style={tableStyles}>
         <thead>
           <tr>
-            <th className='col-xs-2'>Database Name</th>
-            <th className='col-xs-6'>Question Display (Front End)</th>
-            <th className='col-xs-4'>Edit</th>
+            <th className='col-xs-2'>
+              {t('Database Name', {ns: 'instrument_builder'})}
+            </th>
+            <th className='col-xs-6'>
+              {t('Question Display (Front End)', {ns: 'instrument_builder'})}
+            </th>
+            <th className='col-xs-4'>
+              {t('Edit', {ns: 'instrument_builder'})}
+            </th>
           </tr>
         </thead>
         <tbody onDragOver={this.dragOver}>
@@ -514,6 +550,7 @@ DisplayElements.propTypes = {
   editElement: PropTypes.func,
   deleteElement: PropTypes.func,
   elements: PropTypes.array,
+  t: PropTypes.func,
 };
 
 /**
@@ -729,20 +766,28 @@ class BuildPane extends Component {
   render() {
     let draggable = this.state.amountEditing === 0;
     // List the pages
+    const {t} = this.props;
     let pages = this.state.Elements.map(function(element, i) {
+      const description = this.state.Elements[i].Description;
+      const translatedDescription = description === 'Top' ?
+        t('Top', {ns: 'instrument_builder'}) :
+        description;
       return (
         <li key={i} onClick={this.selectPage.bind(null, i)}>
-          <a>{this.state.Elements[i].Description}</a>
+          <a>{translatedDescription}</a>
         </li>
       );
     }.bind(this));
 
     return (
-      <TabPane Title='Build Instrument' {...this.props}>
+      <TabPane
+        Title={t('Build Instrument', {ns: 'instrument_builder'})}
+        {...this.props}
+      >
         <div className='form-group col-xs-12'>
           <label htmlFor='selected-input'
             className='col-xs-2 col-sm-1 control-label'
-          >Page:</label>
+          >{t('Page:', {ns: 'instrument_builder'})}</label>
           <div className='col-sm-4'>
             <div className='btn-group'>
               <button id='selected-input'
@@ -751,7 +796,10 @@ class BuildPane extends Component {
                 data-toggle='dropdown'
               >
                 <span id='search_concept'>
-                  {this.state.Elements[this.state.currentPage].Description}
+                  {this.state.Elements[this.state.currentPage].Description ===
+                    'Top' ?
+                    t('Top', {ns: 'instrument_builder'}) :
+                    this.state.Elements[this.state.currentPage].Description}
                 </span>
                 <span className='caret'/>
               </button>
@@ -761,7 +809,7 @@ class BuildPane extends Component {
             </div>
           </div>
         </div>
-        <DisplayElements
+        <TranslatedDisplayElements
           elements={this.state.Elements[this.state.currentPage].Elements}
           editElement={this.editElement}
           deleteElement={this.deleteElement}
@@ -779,7 +827,12 @@ class BuildPane extends Component {
   }
 }
 BuildPane.propTypes = {
+  t: PropTypes.func,
 };
+
+const TranslatedDisplayElements = withTranslation(
+  ['instrument_builder', 'loris']
+)(DisplayElements);
 
 /**
  * This is the React class for the instrument builder
@@ -831,12 +884,14 @@ class InstrumentBuilderApp extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let tabs = [];
     tabs.push(
       <LoadPane
         TabId='Load'
         ref='loadPane'
         loadCallback={this.loadCallback}
+        t={t}
         key={1}
       />
     );
@@ -844,6 +899,7 @@ class InstrumentBuilderApp extends Component {
       <BuildPane
         TabId='Build'
         ref='buildPane'
+        t={t}
         key={2}
       />
     );
@@ -852,6 +908,7 @@ class InstrumentBuilderApp extends Component {
         TabId='Save'
         ref='savePane'
         save={this.saveInstrument}
+        t={t}
         key={3}
       />
     );
@@ -859,15 +916,15 @@ class InstrumentBuilderApp extends Component {
     let tabList = [
       {
         id: 'Load',
-        label: 'Load',
+        label: t('Load', {ns: 'instrument_builder'}),
       },
       {
         id: 'Build',
-        label: 'Build',
+        label: t('Build', {ns: 'instrument_builder'}),
       },
       {
         id: 'Save',
-        label: 'Save',
+        label: t('Save', {ns: 'loris'}),
       },
     ];
 
@@ -881,10 +938,20 @@ class InstrumentBuilderApp extends Component {
   }
 }
 InstrumentBuilderApp.propTypes = {
+  t: PropTypes.func,
 };
 
-let RInstrumentBuilderApp = React.createFactory(InstrumentBuilderApp);
+// Add resource bundle for Hindi translations at module load time
+i18n.addResourceBundle('hi', 'instrument_builder', hiStrings);
+i18n.addResourceBundle('ja', 'instrument_builder', jaStrings);
+i18n.addResourceBundle('fr', 'instrument_builder', frStrings);
+
+const TranslatedInstrumentBuilderApp = withTranslation(
+  ['instrument_builder', 'loris']
+)(InstrumentBuilderApp);
+
+let RInstrumentBuilderApp = React.createFactory(TranslatedInstrumentBuilderApp);
 
 window.RInstrumentBuilderApp = RInstrumentBuilderApp;
 
-export default InstrumentBuilderApp;
+export default TranslatedInstrumentBuilderApp;

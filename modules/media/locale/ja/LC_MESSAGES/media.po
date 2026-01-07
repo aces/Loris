@@ -23,3 +23,138 @@ msgstr "メディア"
 
 msgid "Candidate Media"
 msgstr "候補者メディア"
+
+msgid "File Name"
+msgstr "ファイル名"
+
+msgid "Instrument"
+msgstr "楽器"
+
+msgid "Uploaded By"
+msgstr "アップロード者"
+
+msgid "Date Taken"
+msgstr "撮影日"
+
+msgid "Comments"
+msgstr "コメント"
+
+msgid "Last Modified"
+msgstr "最終更新日"
+
+msgid "File Type"
+msgstr "ファイルの種類"
+
+msgid "CandID"
+msgstr "候補者ID"
+
+msgid "SessionID"
+msgstr "セッションID"
+
+msgid "File Visibility"
+msgstr "ファイルの可視性"
+
+msgid "Edit Metadata"
+msgstr "メタデータの編集"
+
+msgid "Edit Media File"
+msgstr "メディアファイルの編集"
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "Browse"
+msgstr "ブラウズ"
+
+msgid "Upload"
+msgstr "アップロード"
+
+msgid "An error occured while loading the page."
+msgstr "ページの読み込み中にエラーが発生しました。"
+
+msgid "Language"
+msgstr "言語"
+
+# New strings from uploadForm.js
+
+msgid "An error occurred when loading the form!"
+msgstr "フォームの読み込み中にエラーが発生しました。"
+
+msgid "File name must begin with"
+msgstr "ファイル名は"
+
+msgid "For example, for candidate"
+msgstr "例えば、候補者の場合"
+
+msgid "visit"
+msgstr "訪問"
+
+msgid "for"
+msgstr "のために"
+
+msgid "the file name should be prefixed by"
+msgstr "ファイル名の先頭に"
+
+msgid "File cannot exceed"
+msgstr "ファイルは次の値を超えることはできません"
+
+msgid "No visits available for this candidate"
+msgstr "この候補者には訪問機会がありません"
+
+msgid "No instruments available for this visit"
+msgstr "この訪問では利用できる機器はありません"
+
+msgid "Upload a media file"
+msgstr "メディアファイルをアップロードする"
+
+msgid "Note"
+msgstr "注記"
+
+msgid "Date of Administration"
+msgstr "投与日"
+
+msgid "Document's Language"
+msgstr "ドキュメントの言語"
+
+msgid "Upload File"
+msgstr "ファイルをアップロードする"
+
+msgid "Update File"
+msgstr "アップデートファイル"
+
+msgid "Uploaded file"
+msgstr "アップロードされたファイル"
+
+msgid "Hide File"
+msgstr "ファイルを隠す"
+
+msgid "Invalid file name!"
+msgstr "ファイル名が無効です。"
+
+msgid "File name should begin with:"
+msgstr "ファイル名は次の文字で始まる必要があります:"
+
+msgid "A file with this name already exists!\n Would you like to override existing file?"
+msgstr "この名前のファイルは既に存在します!\n既存のファイルを上書きしますか?"
+
+msgid "Cancelled"
+msgstr "キャンセル"
+
+msgid "Your imaginary file is safe :)"
+msgstr "あなたの想像上のファイルは安全です :)"
+
+msgid "Success!"
+msgstr "成功！"
+
+msgid "Upload of media file completed."
+msgstr "メディアファイルのアップロードが完了しました。"
+
+msgid "Upload error!"
+msgstr "アップロードエラー！"
+
+msgid "File too large!"
+msgstr "ファイルが大きすぎます!"
+
+msgid "This field is required."
+msgstr "この項目は必須です。"
+

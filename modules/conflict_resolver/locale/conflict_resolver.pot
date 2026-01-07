@@ -30,6 +30,48 @@ msgstr ""
 msgid "Number of Conflicts"
 msgstr ""
 
+msgid "Unresolved"
+msgstr ""
+
+msgid "Resolved"
+msgstr ""
+
+msgid "Correct Answer"
+msgstr ""
+
+msgid "Conflict ID"
+msgstr ""
+
+msgid "Question"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Value 1"
+msgstr ""
+
+msgid "Value 2"
+msgstr ""
+
+msgid "Resolved ID"
+msgstr ""
+
+msgid "Incorrect Answer"
+msgstr ""
+
+msgid "User 1"
+msgstr ""
+
+msgid "User 2"
+msgstr ""
+
+msgid "Resolver"
+msgstr ""
+
+msgid "Resolution Timestamp"
+msgstr ""
+
 msgid "Click on instrument in legend to visit conflict resolver for that instrument across all visits."
 msgstr ""
 

@@ -21,3 +21,68 @@ msgstr ""
 msgid "Electrophysiology Uploader"
 msgstr "電気生理学アップローダー"
 
+msgid "LORIS 26 Beta Note:"
+msgstr "ロリス 26 ベータ 注記:"
+
+msgid "Files uploaded in this module will not be viewable in the Electrophysiology Browser module. This feature is under construction for the next release. Please get in touch with the LORIS team to configure this for your project."
+msgstr "このモジュールにアップロードされたファイルは、電気生理学ブラウザモジュールでは表示できません。この機能は次期リリースに向けて開発中です。プロジェクトに合わせて設定するには、ロリスチームまでご連絡ください。"
+
+msgid "Upload an electrophysiology recording session"
+msgstr "電気生理学の記録セッションをアップロードする"
+
+msgid "File to Upload"
+msgstr "アップロードするファイル"
+
+msgid "File name must match the following convention:"
+msgstr "ファイル名は次の規則に一致する必要があります:"
+
+msgid "File cannot exceed {{maxFileSize}}"
+msgstr "ファイルは {{maxFileSize}} を超えることはできません"
+
+msgid "Invalid extension for the uploaded file!"
+msgstr "アップロードされたファイルの拡張子が無効です。"
+
+msgid "Filename extension does not match .tar.gz "
+msgstr "ファイル名の拡張子が .tar.gz と一致しません"
+
+msgid "The file {{filename}} must be of type .tar.gz."
+msgstr "ファイル {{filename}} は .tar.gz 形式である必要があります。"
+
+msgid "Invalid filename!"
+msgstr "ファイル名が無効です。"
+
+msgid "Filename should be of the form"
+msgstr "ファイル名は次の形式である必要があります"
+
+msgid "The file does not respect name convention"
+msgstr "ファイルは命名規則に従っていません"
+
+msgid "Upload Successful!"
+msgstr "アップロード成功しました!"
+
+msgid "Processing of this file by the EEG pipeline has started"
+msgstr "電気生理学パイプラインによるこのファイルの処理が開始されました。"
+
+msgid "Upload failed: a network error occured"
+msgstr "アップロードに失敗しました: ネットワーク エラーが発生しました。"
+
+msgid "Upload failed: received HTTP response code"
+msgstr "アップロードに失敗しました: HTTP 応答コードを受信しました"
+
+msgid "Submission error!"
+msgstr "送信エラー!"
+
+msgid "Upload Location"
+msgstr "アップロード場所"
+
+msgid "Upload ID"
+msgstr "アップロードID"
+
+msgid "Upload Time"
+msgstr "アップロード時間"
+
+msgid "Status"
+msgstr "状態"
+
+msgid "Uploaded By"
+msgstr "アップロード者"

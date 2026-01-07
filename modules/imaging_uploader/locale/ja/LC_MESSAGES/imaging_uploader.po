@@ -21,3 +21,129 @@ msgstr ""
 msgid "Imaging Uploader"
 msgstr "画像アップローダー"
 
+msgid "Upload an imaging scan"
+msgstr "画像スキャンをアップロードする"
+
+msgid "Phantom Scans"
+msgstr "ファントムスキャン"
+
+msgid "File to Upload"
+msgstr "アップロードするファイル"
+
+msgid "Notes"
+msgstr "注記"
+
+msgid "File cannot exceed {{maxUploadSize}}"
+msgstr "ファイルは {{maxUploadSize}} を超えることはできません"
+
+msgid "File must be of type .tgz or tar.gz or .zip"
+msgstr "ファイルの形式は .tgz、.tar.gz、または .zip である必要があります"
+
+msgid "For files that are not Phantom Scans, file name must begin with <0>{{prefix}}</0>"
+msgstr "ファントムスキャンではないファイルの場合、ファイル名は<0>{{prefix}}</0>で始まる必要があります"
+
+msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
+msgstr "たとえば、DCCID {{dccid}}、PSCID {{pscid}}、および訪問ラベル {{visitLabel}} の場合、ファイル名の先頭に {{prefix}} を付ける必要があります。"
+
+msgid "The file {{fileName}} must be of type .tgz, .tar.gz or .zip."
+msgstr "ファイル {{fileName}} は .tgz、.tar.gz、または .zip 形式である必要があります"
+
+msgid "Invalid extension for the uploaded file!"
+msgstr "アップロードされたファイルの拡張子が無効です。"
+
+msgid "Filename extension does not match .zip, .tgz or .tar.gz "
+msgstr "ファイル名拡張子が .zip、.tar.gz、または .tgz と一致しません。"
+
+msgid "Incorrect file name!"
+msgstr "ファイル名が正しくありません。"
+
+msgid "Could not determine PSCID, DCCID and Visit Label based on the filename!"
+msgstr "ファイル名に基づいて PSCID、DCCID、および訪問ラベルを特定できませんでした。"
+
+msgid "File already exists!"
+msgstr "ファイルは既に存在します。"
+
+msgid "A file with this name has already successfully passed the MRI pipeline!"
+msgstr "この名前のファイルは既に MRI パイプラインを通過しています。"
+
+msgid "File is currently processing!"
+msgstr "ファイルは現在処理中です。"
+
+msgid "A file with this name is currently going through the MRI pipeline!"
+msgstr "この名前のファイルは現在 MRI パイプラインを通過しています。"
+
+msgid "A file with this name already exists! Would you like to overwrite the existing file?"
+msgstr "この名前のファイルは既に存在します。既存のファイルを上書きしますか?"
+
+msgid "Cancelled"
+msgstr "キャンセル"
+
+msgid "Your upload has been cancelled."
+msgstr "アップロードはキャンセルされました。"
+
+msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
+msgstr "この名前のファイルはアップロードされていますが、MRIパイプラインでまだ処理されていません。既存のファイルを上書きしますか？"
+
+msgid "Upload Successful!"
+msgstr "アップロード成功しました!"
+
+msgid "Processing of this file by the MRI pipeline has started"
+msgstr "MRIパイプラインによるこのファイルの処理が開始されました"
+
+msgid "Select this upload in the result table to view the processing progress"
+msgstr "処理の進行状況を表示するには、結果テーブルでこのアップロードを選択してください"
+
+msgid "Upload failed: a network error occured"
+msgstr "アップロードに失敗しました: ネットワーク エラーが発生しました。"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "ファイルが {{maxFileSize}} を超えていないことを確認してください"
+
+msgid "Upload failed: received HTTP response code {{code}}"
+msgstr "アップロードに失敗しました: HTTP 応答コード {{code}} を受信しました"
+
+msgid "Submission error!"
+msgstr "送信エラー!"
+
+msgid "Log Viewer"
+msgstr "ログビューア"
+
+msgid "Logs to display"
+msgstr "表示する"
+
+msgid "Summary"
+msgstr "まとめ"
+
+msgid "Detailed"
+msgstr "詳細"
+
+msgid "<select a row in the table below to view the upload logs>"
+msgstr "<アップロード ログを表示するには、下の表の行を選択してください>"
+
+msgid "Number Of Files Created"
+msgstr "作成されたファイルの数"
+
+msgid "Number Of Files Inserted"
+msgstr "挿入されたファイルの数"
+
+msgid "{{successText}} ({{inserted}} out of {{created}})"
+msgstr "{{successText}} ({{inserted}} / {{created}})"
+
+msgid "{{numViolatedScans}} violated scans"
+msgstr "{{numViolatedScans}} 件の違反スキャン"
+
+msgid "Tarchive Info"
+msgstr "アーカイブ情報"
+
+msgid "Upload ID"
+msgstr "アップロード識別子"
+
+msgid "Upload Location"
+msgstr "アップロード場所"
+
+msgid "Upload Date"
+msgstr "アップロード日"
+
+msgid "Uploaded By"
+msgstr "アップロード者"
+

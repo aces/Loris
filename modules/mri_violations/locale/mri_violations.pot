@@ -27,3 +27,207 @@ msgstr ""
 msgid "Violated scans"
 msgstr ""
 
+msgid "Violations for SeriesUID"
+msgstr ""
+
+msgid "Violations for"
+msgstr ""
+
+msgid "Time Run"
+msgstr ""
+
+msgid "Series Description"
+msgstr ""
+
+msgid "Image Location"
+msgstr ""
+
+msgid "Patient Name"
+msgstr ""
+
+msgid "Series UID"
+msgstr ""
+
+msgid "Echo Time"
+msgstr ""
+
+msgid "Protocol Group"
+msgstr ""
+
+msgid "TR"
+msgstr ""
+
+msgid "TE"
+msgstr ""
+
+msgid "TI"
+msgstr ""
+
+msgid "Slice Thickness"
+msgstr ""
+
+msgid "Xspace"
+msgstr ""
+
+msgid "Yspace"
+msgstr ""
+
+msgid "Zspace"
+msgstr ""
+
+msgid "Xstep"
+msgstr ""
+
+msgid "Ystep"
+msgstr ""
+
+msgid "Zstep"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Image Type"
+msgstr ""
+
+msgid "Phase Encoding Direction"
+msgstr ""
+
+msgid "Echo Number"
+msgstr ""
+
+msgid "Image Protocol"
+msgstr ""
+
+msgid "Study Protocols"
+msgstr ""
+
+msgid "Scan Problems"
+msgstr ""
+
+msgid "Scan Type"
+msgstr ""
+
+msgid "Severity"
+msgstr ""
+
+msgid "Header"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Valid Values"
+msgstr ""
+
+msgid "Protocol Violation"
+msgstr ""
+
+msgid "Could not identify scan type"
+msgstr ""
+
+msgid "Series Description or Scan Type"
+msgstr ""
+
+msgid "Resolution Status"
+msgstr ""
+
+msgid "Unresolved"
+msgstr ""
+
+msgid "Reran"
+msgstr ""
+
+msgid "Emailed site/pending"
+msgstr ""
+
+msgid "Inserted"
+msgstr ""
+
+msgid "Rejected"
+msgstr ""
+
+msgid "Inserted with flag"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Type of Problem"
+msgstr ""
+
+msgid "Select Resolution"
+msgstr ""
+
+msgid "Image File"
+msgstr ""
+
+msgid "Must submit data in JSON format"
+msgstr ""
+
+msgid "Can not implement filter on a resource type that has no centers."
+msgstr ""
+
+msgid "Can not implement filter on a resource type that has no projects."
+msgstr ""
+
+msgid "hash"
+msgstr ""
+
+msgid "JoinID"
+msgstr ""
+
+msgid "TarchiveID"
+msgstr ""
+
+msgid "Center Name"
+msgstr ""
+
+msgid "Scanner ID"
+msgstr ""
+
+msgid "Scan Type"
+msgstr ""
+
+msgid "TR Range"
+msgstr ""
+
+msgid "TE Range"
+msgstr ""
+
+msgid "TI Range"
+msgstr ""
+
+msgid "Slice Thickness Range"
+msgstr ""
+
+msgid "Xspace Range"
+msgstr ""
+
+msgid "Yspace Range"
+msgstr ""
+
+msgid "Zspace Range"
+msgstr ""
+
+msgid "Xstep Range"
+msgstr ""
+
+msgid "Ystep Range"
+msgstr ""
+
+msgid "Zstep Range"
+msgstr ""
+
+msgid "Time Range"
+msgstr ""
+
+msgid "Image Type"
+msgstr ""
+
+msgid "Phase Encoding Direction"
+msgstr ""
+
+msgid "Echo Number"
+msgstr ""
+

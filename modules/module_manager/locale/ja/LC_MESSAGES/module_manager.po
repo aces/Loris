@@ -21,3 +21,27 @@ msgstr ""
 msgid "Module Manager"
 msgstr "モジュールマネージャー"
 
+msgid "Name"
+msgstr "モジュール名"
+
+msgid "Full Name"
+msgstr "フルネーム"
+
+msgid "Could not update {{name}}"
+msgstr "{{name}} を更新できませんでした。"
+
+msgid "Updated {{name}} status!"
+msgstr ""
+
+msgid "To apply changes the interface must be reloaded. Proceed?"
+msgstr "変更を適用するには、インターフェースを再読み込みする必要があります。続行しますか?"
+
+msgid "Reload the page"
+msgstr "ページを再読み込みする"
+
+msgid "Continue"
+msgstr "続く"
+
+msgid "Could not find module {{id}}."
+msgstr "モジュール {{id}} が見つかりませんでした。"
+

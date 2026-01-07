@@ -138,7 +138,9 @@ class Sessions extends \NDB_Page
                 'Invalid output type'
             ));
         }
-        return $this->getSessionData($outputType);
+        // Header fixes tab re-open bug (json payload)
+        return $this->getSessionData($outputType)
+            ->withHeader("Cache-Control", "no-store");
     }
 
     /**
@@ -283,7 +285,10 @@ class Sessions extends \NDB_Page
 
         $fileSummary['summary'] = [
             [
-                'name'  => 'Sampling Frequency',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Sampling Frequency'
+                ),
                 'value' => $physioFileObj->getParameter('SamplingFrequency'),
             ],
         ];
@@ -292,7 +297,10 @@ class Sessions extends \NDB_Page
             array_map(
                 fn($channel) =>
                 [
-                    'name'  => $channel.' Channel Count',
+                    'name'  => sprintf(
+                        dgettext('electrophysiology_browser', '%s Channel Count'),
+                        $channel,
+                    ),
                     'value' => $physioFileObj->getParameter(
                         $channel.'ChannelCount'
                     ),
@@ -304,13 +312,19 @@ class Sessions extends \NDB_Page
             $fileSummary['summary'],
             [
                 [
-                    'name'  => 'Reference',
+                    'name'  => dgettext(
+                        'electrophysiology_browser',
+                        'Reference'
+                    ),
                     'value' => $physioFileObj->getParameter(
                         $modalityPrefix.'Reference'
                     ),
                 ],
                 [
-                    'name'  => 'Powerline Frequency',
+                    'name'  => dgettext(
+                        'electrophysiology_browser',
+                        'Powerline Frequency'
+                    ),
                     'value' => $physioFileObj->getParameter('PowerLineFrequency'),
                 ],
             ]
@@ -320,135 +334,225 @@ class Sessions extends \NDB_Page
 
         $fileSummary['details'] = [
             [
-                'name'  => 'Task Name',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Task Name',
+                ),
                 'value' => $physioFileObj->getParameter('TaskName'),
             ],
             [
-                'name'  => 'Task Description',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Task Description',
+                ),
                 'value' => $physioFileObj->getParameter('TaskDescription'),
             ],
             [
-                'name'  => 'Instructions',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Instructions',
+                ),
                 'value' => $physioFileObj->getParameter('Instructions'),
             ],
             [
-                'name'  => 'Recording Type',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Recording Type',
+                ),
                 'value' => $physioFileObj->getParameter('RecordingType'),
             ],
             [
-                'name'  => 'Recording Split Count',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Recording Split Count',
+                ),
                 'value' => $physioFileObj->getParameter('SplitCount'),
             ],
             [
-                'name'  => 'Recording Duration',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Recording Duration',
+                ),
                 'value' => $physioFileObj->getParameter('RecordingDuration'),
             ],
             [
-                'name'  => 'Epoch Length',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Epoch Length',
+                ),
                 'value' => $physioFileObj->getParameter('EpochLength'),
             ],
             [
-                'name'  => 'Subject Artefact Description',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Subject Artefact Description',
+                ),
                 'value' => $physioFileObj->getParameter(
                     'SubjectArtefactDescription'
                 ),
             ],
             [
-                'name'  => 'Head Circumference',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Head Circumference',
+                ),
                 'value' => $physioFileObj->getParameter('HeadCircumference'),
             ],
             [
-                'name'  => 'Placement Scheme',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Placement Scheme',
+                ),
                 'value' =>  $physioFileObj->getParameter(
                     $modalityPrefix.'PlacementScheme'
                 ),
             ],
             [
-                'name'  => 'Ground',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Ground',
+                ),
                 'value' => $physioFileObj->getParameter($modalityPrefix.'Ground'),
             ],
             [
-                'name'  => 'Trigger Channel Count',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Trigger Channel Count',
+                ),
                 'value' => $physioFileObj->getParameter('TriggerChannelCount'),
             ],
             [
-                'name'  => 'Misc Channel Count',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Misc Channel Count',
+                ),
                 'value' => $physioFileObj->getParameter('MiscChannelCount'),
             ],
             [
-                'name'  => 'CogAtlas ID',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'CogAtlas ID',
+                ),
                 'value' => $physioFileObj->getParameter('CogAtlasID'),
             ],
             [
-                'name'  => 'CogPO ID',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'CogPO ID',
+                ),
                 'value' => $physioFileObj->getParameter('CogPOID'),
             ],
             [
-                'name'  => 'Institution Name',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Institution Name',
+                ),
                 'value' => $physioFileObj->getParameter('InstitutionName'),
             ],
             [
-                'name'  => 'Institution Address',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Institution Address',
+                ),
                 'value' => $physioFileObj->getParameter('InstitutionAddress'),
             ],
             [
-                'name'  => 'Manufacturer',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Manufacturer',
+                ),
                 'value' => $physioFileObj->getParameter('Manufacturer'),
             ],
             [
-                'name'  => 'Manufacturers Model Name',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Manufacturers Model Name',
+                ),
                 'value' => $physioFileObj->getParameter(
                     'ManufacturersModelName'
                 ),
             ],
             [
-                'name'  => $modalityCapName.' Manufacturer',
+                'name'  => sprintf(
+                    dgettext('electrophysiology_browser', '%s Manufacturer'),
+                    $modalityCapName,
+                ),
                 'value' => $physioFileObj->getParameter(
                     $modalityCapName.'Manufacturer'
                 ),
             ],
             [
-                'name'  => $modalityCapName.' Manufacturer\'s Model Name',
+                'name'  => sprintf(
+                    dgettext(
+                        'electrophysiology_browser',
+                        '%s Manufacturer\'s Model Name',
+                    ),
+                    $modalityCapName,
+                ),
                 'value' => $physioFileObj->getParameter(
                     $modalityCapName.'ManufacturersModelName'
                 ),
             ],
             [
-                'name'  => 'Device Serial Number',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Device Serial Number'
+                ),
                 'value' => $physioFileObj->getParameter('DeviceSerialNumber'),
             ],
             [
-                'name'  => 'Hardware Filters',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Hardware Filters'
+                ),
                 'value' => $physioFileObj->getParameter('HardwareFilters'),
             ],
             [
-                'name'  => 'Software Versions',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Software Versions'
+                ),
                 'value' => $physioFileObj->getParameter('SoftwareVersions'),
             ],
             [
-                'name'  => 'Software Filters',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Software Filters'
+                ),
                 'value' => $physioFileObj->getParameter('SoftwareFilters'),
             ],
         ];
 
         if ($modality == 'ieeg') {
             $fileSummary['details'][] = [
-                'name'  => 'DC Offset Correction',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'DC Offset Correction'
+                ),
                 'value' => $physioFileObj->getParameter('DCOffsetCorrection'),
             ];
 
             $fileSummary['details'][] = [
-                'name'  => 'Electrode Groups',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Electrode Groups'
+                ),
                 'value' => $physioFileObj->getParameter('ElectrodeGroups'),
             ];
 
             $fileSummary['details'][] = [
-                'name'  => 'Electrical Stimulation',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Electrical Stimulation'
+                ),
                 'value' => $physioFileObj->getParameter('ElectricalStimulation'),
             ];
 
             $fileSummary['details'][] = [
-                'name'  => 'Electrical Stimulation Parameters',
+                'name'  => dgettext(
+                    'electrophysiology_browser',
+                    'Electrical Stimulation Parameters'
+                ),
                 'value' => $physioFileObj->getParameter(
                     'ElectricalStimulationParameters'
                 ),
@@ -480,7 +584,8 @@ class Sessions extends \NDB_Page
             $this->loris,
             $physioFileID
         );
-        $fileSummary['datasetTags'] = $datasetTags->getData();
+        $fileSummary['datasetTags']            = $datasetTags->getData();
+        $fileSummary['datasetTagEndorsements'] = $datasetTags->getHEDEndorsements();
 
         $fileSummary['epochsURL'] = $db->pselectOne(
             "SELECT FilePath
@@ -540,7 +645,10 @@ class Sessions extends \NDB_Page
                 $splitPhysioFile = $splitData['splitPhysioFile'];
 
                 $downloadLinks[] = [
-                    'groupName' => 'Split '.($i+1),
+                    'groupName' => sprintf(
+                        dgettext('electrophysiology_browser', 'Split %s'),
+                        $i + 1,
+                    ),
                     'links'     => $this->getPhysioFileDownloadlinks(
                         $splitPhysioFile
                     ),
@@ -569,7 +677,7 @@ class Sessions extends \NDB_Page
         $downloadLinks[] = [
             'type'  => 'physiological_file',
             'file'  => $physioFile,
-            'label' => 'EEG File(s)',
+            'label' => dgettext('electrophysiology_browser', 'EEG File(s)'),
         ];
 
         $queryFDT = "SELECT
@@ -601,11 +709,28 @@ class Sessions extends \NDB_Page
         ];
 
         $labels = [
-            'physiological_electrode_file'    => 'Electrodes',
-            'physiological_coord_system_file' => 'Coordinate System',
-            'physiological_channel_file'      => 'Channels',
-            'physiological_event_files'       => 'Events',
-            'all_files'                       => 'All Files',
+            'physiological_electrode_file'    => dgettext(
+                'electrophysiology_browser',
+                'Electrodes'
+            ),
+            'physiological_coord_system_file' => dgettext(
+                'electrophysiology_browser',
+                'Coordinate System'
+            ),
+            'physiological_channel_file'      => dngettext(
+                'electrophysiology_browser',
+                'Channel',
+                'Channels',
+                99,
+            ),
+            'physiological_event_files'       => dgettext(
+                'electrophysiology_browser',
+                'Events'
+            ),
+            'all_files'                       => dgettext(
+                'electrophysiology_browser',
+                'All Files'
+            ),
         ];
 
         foreach ($queries as $query_key => $query_value) {
@@ -699,11 +824,11 @@ class Sessions extends \NDB_Page
     {
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Electrophysiology Browser',
+                dgettext('electrophysiology_browser', 'Electrophysiology Browser'),
                 '/electrophysiology_browser'
             ),
             new \LORIS\Breadcrumb(
-                'View Session',
+                dgettext('electrophysiology_browser', 'View Session'),
                 "/electrophysiology_browser/sessions/$this->sessionID"
             )
         );
