@@ -14,6 +14,12 @@ changes in the following format: PR #1234***
 - Minor release after v27 release
 #### Updates and Improvements
 - [docs] Update login page Setup Guide link to readthedocs (PR #7071)
+
+### Modules
+#### Issue Tracker
+- Add External Issue ID field to link LORIS issues to external trackers (e.g., GitHub, Jira) (PR #9795)
+- Add `issue_tracker_external_id` permission to control visibility and editing of External Issue ID field (PR #9795)
+
 ### Notes For Existing Projects
 
 Upgrading LORIS requires following the upgrade process each major and minor release (bug fix releases can be script) to ensure the schema is up to date.
