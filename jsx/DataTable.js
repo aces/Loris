@@ -7,6 +7,23 @@ import {useTranslation} from 'react-i18next';
 /**
  * Data Table component
  * Displays a set of data that it receives via props.
+ *
+ * @param root0
+ * @param root0.data
+ * @param root0.rowNumLabel
+ * @param root0.getFormattedCell
+ * @param root0.onSort
+ * @param root0.actions
+ * @param root0.hide
+ * @param root0.nullTableShow
+ * @param root0.noDynamicTable
+ * @param root0.getMappedCell
+ * @param root0.fields
+ * @param root0.RowNameMap
+ * @param root0.filters
+ * @param root0.freezeColumn
+ * @param root0.loading
+ * @param root0.folder
  */
 const DataTable = ({
   data,
@@ -23,9 +40,9 @@ const DataTable = ({
   filters,
   freezeColumn,
   loading,
-  folder
+  folder,
 }) => {
-  const { t } = useTranslation(['loris']);
+  const {t} = useTranslation(['loris']);
 
   const [page, setPage] = useState({
     number: 1,
@@ -38,22 +55,12 @@ const DataTable = ({
   });
 
   /**
-   * Set the component page variable
-   * to a new value
-   *
-   * @param {number} i - Page index
-   */
-  const changePage = (i) => {
-    setPage(prev => ({ ...prev, number: i }));
-  };
-
-  /**
    * Updates page state
    *
    * @param {number} number - Number of page
    */
   const updatePageNumber = (number) => {
-    setPage(prev => ({ ...prev, number }));
+    setPage((prev) => ({...prev, number}));
   };
 
   /**
@@ -64,7 +71,7 @@ const DataTable = ({
   const updatePageRows = (e) => {
     setPage({
       rows: e.target.value,
-      number: 1 // Reset to first page when changing row count
+      number: 1, // Reset to first page when changing row count
     });
   };
 
@@ -72,7 +79,7 @@ const DataTable = ({
    * Toggle sort.ascending
    */
   const toggleSortOrder = () => {
-    setSort(prev => ({ ...prev, ascending: !prev.ascending }));
+    setSort((prev) => ({...prev, ascending: !prev.ascending}));
   };
 
   /**
@@ -81,7 +88,7 @@ const DataTable = ({
    * @param {number} column - The column index
    */
   const updateSortColumn = (column) => {
-    setSort(prev => ({ ...prev, column }));
+    setSort((prev) => ({...prev, column}));
   };
 
   /**
@@ -101,6 +108,7 @@ const DataTable = ({
 
   /**
    * Export the filtered rows and columns into a csv
+   *
    * @param {number[]} filteredRowIndexes - The filtered Row Indexes
    */
   const downloadCSV = useCallback((filteredRowIndexes) => {
@@ -188,7 +196,7 @@ const DataTable = ({
     // Handle string inputs
     if (typeof filterData === 'string') {
       const searchKey = filterData.toLowerCase();
-      
+
       if (Array.isArray(data)) {
         let searchArray = data.map((e) => e.toLowerCase());
         if (exactMatch) {
@@ -197,7 +205,7 @@ const DataTable = ({
         return searchArray.some((e) => e.indexOf(searchKey) > -1);
       }
 
-      const searchString = (data !== null && data !== undefined) ? 
+      const searchString = (data !== null && data !== undefined) ?
         data.toString().toLowerCase() : '';
 
       if (exactMatch) {
@@ -217,15 +225,15 @@ const DataTable = ({
 
     // Handle array inputs for multiselects
     if (typeof filterData === 'object' && Array.isArray(filterData)) {
-      const searchString = (data !== null && data !== undefined) ? 
+      const searchString = (data !== null && data !== undefined) ?
         data.toString().toLowerCase() : '';
       let searchArray = searchString.split(',');
-      
-      return filterData.some(val => searchArray.includes(val.toLowerCase()));
+
+      return filterData.some((val) => searchArray.includes(val.toLowerCase()));
     }
 
     return result;
-  }
+  };
 
 
   /**
@@ -236,7 +244,7 @@ const DataTable = ({
     let useKeyword = !!filters.keyword;
     const filterKeys = Object.keys(filters);
     let filterValuesCount = filterKeys.length;
-    
+
     const filteredIndexes = [];
 
     // If there are no filters set, use all the data.
@@ -254,18 +262,19 @@ const DataTable = ({
 
       fields.forEach((field, j) => {
         const cellData = row ? row[j] : null;
-        
+
         if (hasFilterKeyword((field.filter || {}).name, cellData)) {
           headerCount++;
         }
-        
+
         if (useKeyword && hasFilterKeyword('keyword', cellData)) {
           keywordMatch++;
         }
       });
 
-      const satisfiesKeyword = useKeyword ? keywordMatch > 0 : keywordMatch === 0;
-      
+      const satisfiesKeyword = useKeyword
+        ? keywordMatch > 0 : keywordMatch === 0;
+
       if (headerCount === filterValuesCount && satisfiesKeyword) {
         filteredIndexes.push(i);
       }
@@ -277,11 +286,12 @@ const DataTable = ({
   /**
    * Sort the given rows according to the sort configuration
    * Memoized to avoid re-sorting unless data, filters, or sort state changes
+   *
    * @param {number[]} rowIndexes - The row indexes
    * @return {object[]}
    */
   const sortedRows = useMemo(() => {
-    const rowIndexes = filteredRowIndexes; 
+    const rowIndexes = filteredRowIndexes;
     const index = [];
 
     for (let i = 0; i < rowIndexes.length; i++) {
@@ -292,10 +302,10 @@ const DataTable = ({
         val = idx + 1;
       } else {
         val = data[idx][sort.column] || undefined;
-      }      
+      }
 
       const isString = (typeof val === 'string' || val instanceof String);
-      const isNumber = val !== '' && !isNaN(val) && typeof val !== 'object' && val !== null;
+      const isNumber = !isNaN(parseFloat(val)) && isFinite(val);
 
       if (val === '.') {
         val = null;
@@ -318,31 +328,31 @@ const DataTable = ({
 
     index.sort((a, b) => {
       const isAsc = sort.ascending;
-      
+
       if (a.Value === b.Value) {
         // If values are equal, sort by original row index
         return isAsc ? (a.RowIdx - b.RowIdx) : (b.RowIdx - a.RowIdx);
       }
 
       // Handle null/undefined values (push to end/top depending on direction)
-      if (a.Value === null || typeof a.Value === 'undefined') return isAsc ? -1 : 1;
-      if (b.Value === null || typeof b.Value === 'undefined') return isAsc ? 1 : -1;
+      if (a.Value == null) return isAsc ? -1 : 1;
+      if (b.Value == null) return isAsc ? 1 : -1;
 
       // Primary sort
       if (a.Value < b.Value) return isAsc ? -1 : 1;
       if (a.Value > b.Value) return isAsc ? 1 : -1;
-      
+
       return 0;
     });
 
     return index;
-  }, [filteredRowIndexes, data, RowNameMap, sort]);  
+  }, [filteredRowIndexes, data, RowNameMap, sort]);
 
   useEffect(() => {
     if (!noDynamicTable) {
       $('.dynamictable').DynamicTable();
     }
-  
+
     // Cleanup function
     return () => {
     };
@@ -369,59 +379,83 @@ const DataTable = ({
       });
     }
     return null;
-  };  
+  };
 
   // 1. Calculate the slice for the current page
   const rowsPerPage = page.rows;
   const currentPageStart = rowsPerPage * (page.number - 1);
-  const paginatedRows = sortedRows.slice(currentPageStart, currentPageStart + rowsPerPage);
-  
+  const currentPageEnd = currentPageStart + rowsPerPage;
+  const paginatedRows = sortedRows.slice(currentPageStart, currentPageEnd);
+
   // 2. Early Return for Empty Data
   if ((!data || data.length === 0) && !nullTableShow) {
     return (
       <div>
         <div className="row">
           <div className="col-xs-12">
-            <div className="pull-right" style={{ marginRight: '10px' }}>
+            <div className="pull-right" style={{marginRight: '10px'}}>
               {renderActions()}
             </div>
           </div>
         </div>
         <div className='alert alert-info no-result-found-panel'>
-          <strong>{t('No result found.', { ns: 'loris' })}</strong>
+          <strong>{t('No result found.', {ns: 'loris'})}</strong>
         </div>
       </div>
     );
   }
-  
-  // 3. Helper for the Header/Footer UI (to avoid repeating code)
+
+  // 3. Helper for the Header/Footer UI
+  const tableControlStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    padding: '5px 15px',
+  };
+  const tableActionsStyle = {
+    order: '2',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    padding: '5px 0',
+    marginLeft: 'auto',
+  };
   const renderTableControls = () => (
     <div className="row">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', padding: '5px 15px' }}>
-        <div style={{ order: '1', padding: '5px 0' }}>
+      <div style={tableControlStyle}>
+        <div style={{order: '1', padding: '5px 0'}}>
           {t('{{pageCount}} rows displayed of {{totalCount}}.', {
             pageCount: paginatedRows.length,
             totalCount: filteredRowIndexes.length,
           })}
           <span>
             ({t('Maximum rows per page:')}
-            <select className="input-sm perPage" onChange={updatePageRows} value={page.rows}>
-              {[20, 50, 100, 1000, 5000, 10000].map(num => (
+            <select
+              className="input-sm perPage"
+              onChange={updatePageRows}
+              value={page.rows}
+            >
+              {[20, 50, 100, 1000, 5000, 10000].map((num) => (
                 <option key={num} value={num}>{num}</option>
               ))}
-            </select>              
+            </select>
           </span>
         </div>
-        <div style={{ order: '2', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'wrap', padding: '5px 0', marginLeft: 'auto' }}>
+        <div style={tableActionsStyle}>
           {renderActions()}
           {!hide.downloadCSV && (
-            <button className="btn btn-primary" onClick={() => downloadCSV(filteredRowIndexes)}>
+            <button
+              className="btn btn-primary"
+              onClick={() => downloadCSV(filteredRowIndexes)}
+            >
               {t('Download Data as CSV')}
             </button>
           )}
           <PaginationLinks
             Total={filteredRowIndexes.length}
-            onChangePage={changePage}
+            onChangePage={updatePageNumber}
             RowsPerPage={rowsPerPage}
             Active={page.number}
           />
@@ -429,18 +463,30 @@ const DataTable = ({
       </div>
     </div>
   );
-  
+
   return (
-    <div style={{ margin: '14px' }}>
-      {!hide.rowsPerPage && <div className="table-header">{renderTableControls()}</div>}
-  
-      <table className="table table-hover table-primary table-bordered dynamictable" id="dynamictable">
+    <div style={{margin: '14px'}}>
+      {!hide.rowsPerPage && (
+        <div className="table-header">
+          {renderTableControls()}
+        </div>
+      )}
+
+      <table
+        className="table table-hover table-primary table-bordered dynamictable"
+        id="dynamictable"
+      >
         <thead>
           <tr className="info">
             {!hide.defaultColumn && (
-              <th key='th_col_0' onClick={() => setSortColumn(-1)}>{rowNumLabel}</th>
+              <th
+                key='th_col_0'
+                onClick={() => setSortColumn(-1)}
+              >
+                {rowNumLabel}
+              </th>
             )}
-            {fields.filter(f => f.show).map((field, i) => (
+            {fields.filter((f) => f.show).map((field, i) => (
               <th
                 key={`th_col_${i+1}`}
                 id={field.freezeColumn ? freezeColumn : undefined}
@@ -455,22 +501,27 @@ const DataTable = ({
         <tbody>
           {paginatedRows.map((item, i) => {
             const rowData = data[item.RowIdx];
-  
+
             // Construct the 'row' object for the formatter
             const rowObj = {};
             fields.forEach((f, k) => rowObj[f.label] = rowData[k]);
-            const fieldLabels = fields.map(f => f.label);
-  
+            const fieldLabels = fields.map((f) => f.label);
+
             return (
               <tr key={`tr_${item.RowIdx}`}>
                 {!hide.defaultColumn && <td>{item.Content}</td>}
                 {fields.map((field, j) => {
                   if (!field.show) return null;
-  
+
                   if (getFormattedCell) {
                     return React.cloneElement(
-                      getFormattedCell(field.label, rowData[j], rowObj, fieldLabels, j),
-                      { key: `td_col_${j}` }
+                      getFormattedCell(
+                        field.label, rowData[j],
+                        rowObj,
+                        fieldLabels,
+                        j
+                      ),
+                      {key: `td_col_${j}`}
                     );
                   }
                   return <td key={`td_col_${j}`}>{rowData[j]}</td>;
@@ -480,11 +531,11 @@ const DataTable = ({
           })}
         </tbody>
       </table>
-  
+
       <div className="table-footer">{renderTableControls()}</div>
     </div>
   );
-}
+};
 
 DataTable.propTypes = {
   data: PropTypes.array.isRequired,
