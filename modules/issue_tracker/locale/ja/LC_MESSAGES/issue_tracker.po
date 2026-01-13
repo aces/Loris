@@ -107,6 +107,12 @@ msgstr "一括編集"
 msgid "Add Comment"
 msgstr "コメントを追加"
 
+msgid "Add New Comment"
+msgstr "新しいコメントを追加"
+
+msgid "Comment"
+msgstr "コメント"
+
 msgid "Create New Issue"
 msgstr "新しい問題を作成"
 
@@ -142,6 +148,9 @@ msgstr "説明"
 
 msgid "Watching?"
 msgstr "見ている"
+
+msgid "Watchers"
+msgstr "ウォッチャー"
 
 msgid "Add others to watching?"
 msgstr "他の人をウォッチリストに追加する"
@@ -272,4 +281,7 @@ msgstr "サーバーはこれほど大きなファイルを受信するように
 
 msgid "Submit Attachment"
 msgstr "添付ファイルを送信"
+
+msgid "Submit Comment"
+msgstr "コメントを送信"
 
