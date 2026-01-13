@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
-  ButtonElement,
-  FormElement,
   StaticElement,
   SelectElement,
   NumericElement,
@@ -17,13 +15,47 @@ import {withTranslation} from 'react-i18next';
  * @author Victoria Foing
  */
 class BatteryManagerForm extends Component {
+
+  /**
+   * Constructor
+   *
+   * @param {object} props
+   */
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      test: props.test || {},
+    };
+
+    this.setTest = this.setTest.bind(this);
+  }
+
+  /**                                                                           
+   * Set the form data based on state values of child elements/components       
+   *                                                                            
+   * @param {string} name - name of the selected element                        
+   * @param {string} value - selected value for corresponding form element      
+   */                                                                           
+  setTest(name, value) {                                                        
+    const test = {...this.state.test};                                          
+    // Convert numeric fields to number, keep 0                                 
+    if (['ageMinDays', 'ageMaxDays', 'instrumentOrder'].includes(name)) {       
+      test[name] = value !== '' ? Number(value) : null;                         
+    } else {                                                                    
+      test[name] = value;                                                       
+    }                                                                           
+    this.setState({test});                                                      
+  }      
+
   /**
    * Render function
    *
    * @return {*}
    */
   render() {
-    const {test, options, setTest, add, errors, handleSubmit, t} = this.props;
+    const {test} = this.state;
+    const {options, add, errors, t} = this.props;
 
     // Inform users about duplicate entries
     const renderHelpText = () => {
@@ -67,10 +99,7 @@ class BatteryManagerForm extends Component {
     };
 
     return (
-      <FormElement
-        name="battery_manager_form"
-        onSubmit={handleSubmit}
-      >
+      <>
         <StaticElement
           label={t('Note', {ns: 'loris'})}
           text={renderHelpText()}
@@ -80,15 +109,15 @@ class BatteryManagerForm extends Component {
           label={t('Instrument', {ns: 'battery_manager'})}
           placeHolder={t('Search for instrument', {ns: 'battery_manager'})}
           options={options.instruments}
-          onUserInput={setTest}
-          required={true}
+          onUserInput={this.setTest}
+          required={false}
           value={test.testName}
           errorMessage={errors.testName}
         />
         <NumericElement
           name="ageMinDays"
           label={t('Minimum Age (days)', {ns: 'battery_manager'})}
-          onUserInput={setTest}
+          onUserInput={this.setTest}
           min={0}
           max={99999}
           required={true}
@@ -98,7 +127,7 @@ class BatteryManagerForm extends Component {
         <NumericElement
           name="ageMaxDays"
           label={t('Maximum Age (days)', {ns: 'battery_manager'})}
-          onUserInput={setTest}
+          onUserInput={this.setTest}
           min={0}
           max={99999}
           required={true}
@@ -109,7 +138,7 @@ class BatteryManagerForm extends Component {
           name="stage"
           label={t('Stage', {ns: 'battery_manager'})}
           options={options.stages}
-          onUserInput={setTest}
+          onUserInput={this.setTest}
           required={true}
           value={test.stage}
           errorMessage={errors.stage}
@@ -118,7 +147,7 @@ class BatteryManagerForm extends Component {
           name="cohort"
           label={t('Cohort', {ns: 'loris', count: 1})}
           options={options.cohorts}
-          onUserInput={setTest}
+          onUserInput={this.setTest}
           required={false}
           value={test.cohort}
         />
@@ -126,7 +155,7 @@ class BatteryManagerForm extends Component {
           name="visitLabel"
           label={t('Visit Label', {ns: 'loris'})}
           options={options.visits}
-          onUserInput={setTest}
+          onUserInput={this.setTest}
           required={false}
           value={test.visitLabel}
         />
@@ -136,7 +165,7 @@ class BatteryManagerForm extends Component {
           placeHolder={t('Search for site', {ns: 'battery_manager'})}
           options={options.sites}
           strictSearch={true}
-          onUserInput={setTest}
+          onUserInput={this.setTest}
           required={false}
           value={test.centerId}
         />
@@ -147,14 +176,14 @@ class BatteryManagerForm extends Component {
             'Y': t('Yes', {ns: 'loris'}),
             'N': t('No', {ns: 'loris'}),
           }}
-          onUserInput={setTest}
+          onUserInput={this.setTest}
           required={false}
           value={test.firstVisit}
         />
         <NumericElement
           name="instrumentOrder"
           label={t('Instrument Order', {ns: 'battery_manager'})}
-          onUserInput={setTest}
+          onUserInput={this.setTest}
           required={false}
           min={0}
           max={127} // max value allowed by default column type of instr_order
@@ -167,27 +196,22 @@ class BatteryManagerForm extends Component {
             'Y': t('Yes', {ns: 'loris'}),
             'N': t('No', {ns: 'loris'}),
           }}
-          onUserInput={setTest}
+          onUserInput={this.setTest}
           required={true}
           value={test.DoubleDataEntryEnabled}
           errorMessage={errors.DoubleDataEntryEnabled}
           emptyOption={false}
         />
-        <ButtonElement
-          label={t('Submit', {ns: 'battery_manager'})}
-        />
-      </FormElement>
+      </>
     );
   }
 }
 
 BatteryManagerForm.propTypes = {
   test: PropTypes.object.isRequired,
-  setTest: PropTypes.func.isRequired,
   options: PropTypes.object.isRequired,
   add: PropTypes.bool,
   errors: PropTypes.object,
-  handleSubmit: PropTypes.func.isRequired,
   t: PropTypes.func,
 };
 

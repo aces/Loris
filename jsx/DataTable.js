@@ -2,6 +2,7 @@ import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import {CTA} from 'jsx/Form';
+import TriggerableModal from './TriggerableModal';
 import {useTranslation} from 'react-i18next';
 
 /**
@@ -31,6 +32,7 @@ const DataTable = ({
   getFormattedCell,
   onSort,
   actions,
+  rowActions,
   hide,
   nullTableShow,
   noDynamicTable,
@@ -54,6 +56,31 @@ const DataTable = ({
     ascending: true,
   });
 
+  const [selectedRows, setSelectedRows] = useState(new Set());
+
+  const toggleRow = (idx) => {
+    const newSelection = new Set(selectedRows);
+    if (newSelection.has(idx)) {
+      newSelection.delete(idx);
+    } else {
+      newSelection.add(idx);
+    }
+    setSelectedRows(newSelection);
+  };
+
+  const toggleAllPageRows = () => {
+    const allSelected = paginatedRows.every(r => selectedRows.has(r.RowIdx));
+    const newSelection = new Set(selectedRows);
+    
+    paginatedRows.forEach(r => {
+      if (allSelected) {
+        newSelection.delete(r.RowIdx);
+      } else {
+        newSelection.add(r.RowIdx);
+      }
+    });
+    setSelectedRows(newSelection);
+  };
   /**
    * Updates page state
    *
@@ -422,6 +449,39 @@ const DataTable = ({
     padding: '5px 0',
     marginLeft: 'auto',
   };
+
+  const renderRowActions = () => {
+    if (!rowActions) return null;
+  
+    const selectedCount = selectedRows.size;
+    const selectedData = Array.from(selectedRows).map(idx => data[idx]);
+  
+    return rowActions.map((action, index) => {
+      let isDisabled = false;
+      let tooltip = "";
+  
+        // logic for disabling
+      if (selectedCount === 0) {
+        isDisabled = true;
+        tooltip = t("Please select at least one row.");
+      } else if (!action.isMulti && selectedCount > 1) {
+        isDisabled = true;
+        tooltip = t("This action only supports a single row.");
+      }
+  
+      return (
+        <TriggerableModal
+          key={index}
+          label={action.label + (selectedCount > 0 ? ` (${selectedCount})` : "")}
+          title={action.title}
+          onSubmit={action.onSubmit}
+          onSuccess={() => setSelectedRows(new Set())}
+          renderBody={() => action.renderForm(selectedData)}
+        />
+      );
+    });    
+  };
+
   const renderTableControls = () => (
     <div className="row">
       <div style={tableControlStyle}>
@@ -444,6 +504,7 @@ const DataTable = ({
           </span>
         </div>
         <div style={tableActionsStyle}>
+          {renderRowActions()}
           {renderActions()}
           {!hide.downloadCSV && (
             <button
@@ -478,11 +539,17 @@ const DataTable = ({
       >
         <thead>
           <tr className="info">
+            {rowActions && (
+              <th style={{ width: '40px', textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  onChange={toggleAllPageRows}
+                  checked={paginatedRows.length > 0 && paginatedRows.every(r => selectedRows.has(r.RowIdx))}
+                />
+              </th>
+            )}    
             {!hide.defaultColumn && (
-              <th
-                key='th_col_0'
-                onClick={() => setSortColumn(-1)}
-              >
+              <th key='th_col_0' onClick={() => setSortColumn(-1)}>
                 {rowNumLabel}
               </th>
             )}
@@ -509,6 +576,17 @@ const DataTable = ({
 
             return (
               <tr key={`tr_${item.RowIdx}`}>
+                {/* Row Checkbox */}
+                {rowActions && (
+                  <td style={{ textAlign: 'center' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={selectedRows.has(item.RowIdx)}
+                      onChange={() => toggleRow(item.RowIdx)}
+                    />
+                  </td>
+                )}
+              
                 {!hide.defaultColumn && <td>{item.Content}</td>}
                 {fields.map((field, j) => {
                   if (!field.show) return null;
@@ -543,6 +621,7 @@ DataTable.propTypes = {
   getFormattedCell: PropTypes.func,
   onSort: PropTypes.func,
   actions: PropTypes.array,
+  rowActions: PropTypes.array,
   hide: PropTypes.object,
   nullTableShow: PropTypes.bool,
   noDynamicTable: PropTypes.bool,
