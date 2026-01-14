@@ -322,8 +322,15 @@ jobs:
             mysql ${DB_DATABASE} -uroot -proot < "$f"
           done
 
-      - name: Assert database is empty after running 9999-9999-99
+      - name: Assert database is empty after running 9999-99-99
         run: |
+          set -e
+
+          echo "--------------------------------------------------"
+          echo "Running final drop tables migration (9999-99-99)..."
+          mysql ${DB_DATABASE} -uroot -proot < SQL/9999-99-99-drop_tables.sql
+
+          echo "--------------------------------------------------"
           echo "Checking remaining tables in database..."
 
           TABLE_COUNT=$(mysql ${DB_DATABASE} -uroot -proot -N -e "
@@ -335,7 +342,7 @@ jobs:
           echo "Remaining tables: $TABLE_COUNT"
 
           if [ "$TABLE_COUNT" -ne 0 ]; then
-            echo "❌ ERROR: Database is NOT empty after migrations!"
+            echo "❌ ERROR: Database is NOT empty after final migration!"
             echo "Remaining tables:"
             mysql ${DB_DATABASE} -uroot -proot -e "
               SELECT table_name
