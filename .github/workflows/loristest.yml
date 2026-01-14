@@ -295,3 +295,39 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           # Use the index from matrix as an environment variable
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+  sql-migrations:
+    name: SQL migration test
+    runs-on: ubuntu-latest
+
+    env:
+      DB_DATABASE: LorisMigrationTest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1️⃣ 启动 MySQL
+      - name: Start MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -uroot -proot -e "CREATE DATABASE ${DB_DATABASE};"
+
+      # 2️⃣ 导入 LORIS 基础 schema（必须）
+      - name: Load base schema
+        run: |
+          mysql ${DB_DATABASE} -uroot -proot < SQL/0000-00-00-schema.sql
+          mysql ${DB_DATABASE} -uroot -proot < SQL/0000-00-01-Modules.sql
+          mysql ${DB_DATABASE} -uroot -proot < SQL/0000-00-02-Permission.sql
+          mysql ${DB_DATABASE} -uroot -proot < SQL/0000-00-03-ConfigTables.sql
+          mysql ${DB_DATABASE} -uroot -proot < SQL/0000-00-04-Help.sql
+          mysql ${DB_DATABASE} -uroot -proot < SQL/0000-00-05-ElectrophysiologyTables.sql
+
+      # 3️⃣ 执行所有升级 SQL（核心）
+      - name: Run DB upgrade scripts
+        run: |
+          set -e
+          echo "Running SQL migrations..."
+          for f in SQL/[0-9][0-9][0-9][0-9]-*.sql; do
+            echo "--------------------------------------------------"
+            echo "Running migration: $f"
+            mysql ${DB_DATABASE} -uroot -proot < "$f"
+          done
