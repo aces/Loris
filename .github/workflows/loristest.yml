@@ -321,3 +321,28 @@ jobs:
             echo "Running migration: $f"
             mysql ${DB_DATABASE} -uroot -proot < "$f"
           done
+
+      - name: Assert database is empty after running 9999-9999-99
+        run: |
+          echo "Checking remaining tables in database..."
+
+          TABLE_COUNT=$(mysql ${DB_DATABASE} -uroot -proot -N -e "
+            SELECT COUNT(*)
+            FROM information_schema.tables
+            WHERE table_schema = '${DB_DATABASE}';
+          ")
+
+          echo "Remaining tables: $TABLE_COUNT"
+
+          if [ "$TABLE_COUNT" -ne 0 ]; then
+            echo "❌ ERROR: Database is NOT empty after migrations!"
+            echo "Remaining tables:"
+            mysql ${DB_DATABASE} -uroot -proot -e "
+              SELECT table_name
+              FROM information_schema.tables
+              WHERE table_schema = '${DB_DATABASE}';
+            "
+            exit 1
+          fi
+
+          echo "✅ Database is empty after final migration"
