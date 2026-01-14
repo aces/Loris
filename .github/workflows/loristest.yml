@@ -311,17 +311,6 @@ jobs:
           sudo /etc/init.d/mysql start
           mysql -uroot -proot -e "CREATE DATABASE ${DB_DATABASE};"
 
-      # 2️⃣ 导入 LORIS 基础 schema（必须）
-      - name: Load base schema
-		  run: |
-		    set -e
-		    echo "Running SQL migrations..."
-		    for f in SQL/[1-9][0-9][0-9][0-9]-*.sql; do
-		      echo "--------------------------------------------------"
-		      echo "Running migration: $f"
-		      mysql ${DB_DATABASE} -uroot -proot < "$f"
-		    done  
-
       # 3️⃣ 执行所有升级 SQL（核心）
       - name: Run DB upgrade scripts
         run: |
