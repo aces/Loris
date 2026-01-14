@@ -295,6 +295,7 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           # Use the index from matrix as an environment variable
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+
   sql-migrations:
     name: SQL migration test
     runs-on: ubuntu-latest
@@ -305,20 +306,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1️⃣ 启动 MySQL
       - name: Start MySQL
         run: |
           sudo /etc/init.d/mysql start
           mysql -uroot -proot -e "CREATE DATABASE ${DB_DATABASE};"
 
-      # 3️⃣ 执行所有升级 SQL（核心）
-      - name: Run DB upgrade scripts
+      - name: Run DB default schema sql files
         run: |
           set -e
           echo "Running SQL migrations..."
           for f in SQL/[0-0][0-9][0-9][0-9]-*.sql; do
             echo "--------------------------------------------------"
-            echo "Running migration: $f"
+            echo "Running schema: $f"
+            mysql ${DB_DATABASE} -uroot -proot < "$f"
+          done
+
+      # Run New_patches (user / PR SQLs)
+      - name: Run SQL New_patches
+        run: |
+          set -e
+          echo "Running SQL New_patches..."
+          for f in SQL/New_patches/*.sql; do
+            echo "--------------------------------------------------"
+            echo "Running patch: $f"
             mysql ${DB_DATABASE} -uroot -proot < "$f"
           done
 
@@ -342,7 +352,7 @@ jobs:
           echo "Remaining tables: $TABLE_COUNT"
 
           if [ "$TABLE_COUNT" -ne 0 ]; then
-            echo "❌ ERROR: Database is NOT empty after final migration!"
+            echo "ERROR: Database is NOT empty after final migration!"
             echo "Remaining tables:"
             mysql ${DB_DATABASE} -uroot -proot -e "
               SELECT table_name
@@ -352,4 +362,4 @@ jobs:
             exit 1
           fi
 
-          echo "✅ Database is empty after final migration"
+          echo "Database is empty after final migration"
