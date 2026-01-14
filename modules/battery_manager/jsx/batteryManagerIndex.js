@@ -47,6 +47,8 @@ class BatteryManagerIndex extends Component {
     this.postData = this.postData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.saveTest = this.saveTest.bind(this);
+    this.setTest = this.setTest.bind(this);
+    this.closeForm = this.closeForm.bind(this);
     this.validateTest = this.validateTest.bind(this);
   }
 
@@ -121,8 +123,7 @@ class BatteryManagerIndex extends Component {
    * Modify value of specified column cells in the Data Table component
    *
    * @param {string} column - column name
-   * @param {string} value - cell value
-   * @param cell
+   * @param {string} cell - cell value
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, cell) {
@@ -166,6 +167,41 @@ class BatteryManagerIndex extends Component {
 
     return result;
   }
+
+  /**
+   * Set the form data based on state values of child elements/components
+   *
+   * @param {string} name - name of the selected element
+   * @param {string} value - selected value for corresponding form element
+   */
+  setTest(name, value) {
+    const test = {...this.state.test};
+    // Convert numeric fields to number, keep 0
+    if (['ageMinDays', 'ageMaxDays', 'instrumentOrder'].includes(name)) {
+      test[name] = value !== '' ? Number(value) : null;
+    } else {
+      test[name] = value;
+    }
+    this.setState({test});
+  }
+
+  /**
+   * Loads a test into the current state based on the testId
+   *
+   * @param {string} testId
+   */
+  loadTest(testId) {
+    const test = JSON.parse(JSON.stringify(this.state.tests
+      .find((test) => test.id === testId)));
+    this.setState({test});
+  }
+
+  /**
+   * Close the Form
+   */
+  closeForm() {
+    this.setState({add: false, edit: false, test: {}, errors: {}});
+  }  
 
   /**
    * Activate Test
@@ -255,7 +291,7 @@ class BatteryManagerIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in battery_manager.class.inc
      */
-    const {options, tests, errors, add, edit} = this.state;
+    const {options, test, tests, errors, add, edit} = this.state;
     const {hasPermission} = this.props;
     const fields = [
       {label: 'ID', show: false},
@@ -380,18 +416,20 @@ class BatteryManagerIndex extends Component {
     const rowActions = [
       {
         label: t('Edit Metadata', {ns: 'battery_manager'}),
-        show: hasPermission('battery_manager_edit'),
         title: 'Edit Test',
         isMulti: false,
         validation: (rows) => {},
         show: hasPermission('battery_manager_edit'),
         onSubmit: () => this.saveTest(test, 'PUT'),
+        onClose: this.closeForm,
         renderForm: (rows) => {
           const test = JSON.parse(JSON.stringify(this.state.tests
             .find((test) => test.id === rows[0][0])));
           return (
             <BatteryManagerForm
               test={test}
+              setTest={this.setTest}
+              add={add}
               options={options}
               errors={errors}
             />
@@ -399,18 +437,16 @@ class BatteryManagerIndex extends Component {
         }
       },
       {
-        label: t('Change Status', {ns: 'battery_manager'}),
-        title: 'Edit Test',
-        isMulti: false,
+        label: t('Activate', {ns: 'battery_manager'}),
+        isMulti: true,
         validation: (rows) => {},
-        onSubmit: () => this.saveTest(test, 'PUT'),
-        renderForm: (rows) => (
-          <BatteryManagerForm
-            test={rows[0][0]}
-            options={options}
-            errors={errors}
-          />
-        )
+        onClick: (rows) => rows.forEach(row => this.activateTest(row[0])),
+      },
+      {
+        label: t('Deactivate', {ns: 'battery_manager'}),
+        isMulti: true,
+        validation: (rows) => {},
+        onClick: (rows) => rows.forEach(row => this.deactivateTest(row[0])),
       }
     ];
 
@@ -509,6 +545,7 @@ class BatteryManagerIndex extends Component {
               if (test.id && (test.id !== duplicate.id)) {
                 this.deactivateTest(test.id);
               }
+              this.closeForm();
             }
           });
         } else if (duplicate.active === 'Y') {

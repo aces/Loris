@@ -5,9 +5,10 @@ import Form from 'jsx/Form';
 interface TriggerableModalProps extends Omit<ModalProps, 'show' | 'onClose'> {
   label: string; // Label for the default CTA trigger button
   onClose?: ModalProps['onClose'];
-  renderBody?: () => React.ReactNode;
   onUserInput?: () => void; // Optional callback when the trigger is activated
   TriggerTag?: ElementType; // Custom component for the modal trigger
+  disabled?: boolean; // New prop
+  tooltip?: string;   // New prop
 }
 
 /**
@@ -24,8 +25,9 @@ interface TriggerableModalProps extends Omit<ModalProps, 'show' | 'onClose'> {
 const TriggerableModal = ({
   label,
   onUserInput,
-  renderBody,
   TriggerTag = Form.CTA, // Default trigger component is CTA
+  disabled = false, // Destructure with default
+  tooltip = "",     // Destructure with default
   ...modalProps // Spread other modal-related props to pass to Modal
 }: TriggerableModalProps) => {
   const [open, setOpen] = useState(false);
@@ -46,6 +48,8 @@ const TriggerableModal = ({
   const trigger = (
     <TriggerTag
       label={label}
+      title={tooltip}
+      disabled={disabled}
       onUserInput={() => {
         onUserInput?.(); // Call onUserInput if it exists
         setOpen(true); // Open the modal
@@ -56,9 +60,7 @@ const TriggerableModal = ({
   return (
     <>
       {trigger}
-      <Modal {...modalProps} show={open} onClose={handleClose}>
-        {open && typeof renderBody === 'function' ? renderBody() : null}
-      </Modal>
+      <Modal {...modalProps} show={open} onClose={handleClose} />
     </>
   );
 };

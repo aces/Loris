@@ -450,37 +450,71 @@ const DataTable = ({
     marginLeft: 'auto',
   };
 
-  const renderRowActions = () => {
-    if (!rowActions) return null;
-  
-    const selectedCount = selectedRows.size;
-    const selectedData = Array.from(selectedRows).map(idx => data[idx]);
-  
-    return rowActions.map((action, index) => {
-      let isDisabled = false;
-      let tooltip = "";
-  
-        // logic for disabling
-      if (selectedCount === 0) {
-        isDisabled = true;
-        tooltip = t("Please select at least one row.");
-      } else if (!action.isMulti && selectedCount > 1) {
-        isDisabled = true;
-        tooltip = t("This action only supports a single row.");
+  const renderRowActions = () => {                                               
+    if (!rowActions) return null;                                                
+                                                                                 
+    const selectedCount = selectedRows.size;                                    
+    const selectedData = Array.from(selectedRows).map(idx => data[idx]);        
+                                                                                 
+    return rowActions.map((action, index) => {                                  
+      let isDisabled = false;                                                    
+      let tooltip = "";                                                          
+                                                                                 
+      // 1. Engine Validation (Selection counts)
+      if (selectedCount === 0) {                                                 
+        isDisabled = true;                                                       
+        tooltip = t("Please select at least one row.");                         
+      } else if (!action.isMulti && selectedCount > 1) {                         
+        isDisabled = true;                                                       
+        tooltip = t("This action only supports a single row.");                 
+      }                                                                          
+
+      // 2. Custom Validation (Business logic from config)
+      if (!isDisabled && action.validate) {
+        const result = action.validate(selectedData);
+        if (result.disabled) {
+          isDisabled = true;
+          tooltip = result.reason;
+        }
       }
-  
-      return (
-        <TriggerableModal
-          key={index}
+                                                                                 
+      // 3. Case 1: Functional Action (onClick)
+      if (action.onClick) {
+        return (
+          <span title={tooltip} key={index}>
+            <CTA
+              label={action.label + (selectedCount > 0 ? ` (${selectedCount})` : "")}
+              disabled={isDisabled}
+              onUserInput={() => {
+                action.onClick(selectedData);
+                if (action.onSuccess) action.onSuccess();
+                setSelectedRows(new Set()); // Clear selection after direct action
+          }}
+            />
+          </span>
+        );
+      }
+
+      // 4. Case 2: Form Action (renderForm as children)
+      return (                                                                   
+        <TriggerableModal                                                        
+          key={index}                                                            
           label={action.label + (selectedCount > 0 ? ` (${selectedCount})` : "")}
-          title={action.title}
-          onSubmit={action.onSubmit}
-          onSuccess={() => setSelectedRows(new Set())}
-          renderBody={() => action.renderForm(selectedData)}
-        />
-      );
-    });    
-  };
+          title={action.title}                                                   
+          disabled={isDisabled}
+          tooltip={tooltip}
+          onSubmit={action.onSubmit}                                             
+          onClose={action.onClose}                                               
+          onSuccess={(data) => {
+            if (action.onSuccess) action.onSuccess(data);
+            setSelectedRows(new Set()); 
+          }}
+        >
+          {selectedCount > 0 ? action.renderForm(selectedData) : null}
+        </TriggerableModal>                                                        
+      );                                                                         
+    });                                                                          
+  };  
 
   const renderTableControls = () => (
     <div className="row">
