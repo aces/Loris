@@ -247,6 +247,7 @@ DROP TABLE IF EXISTS `diagnosis_evolution`;
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `Visit_Windows`;
 DROP TABLE IF EXISTS `test_battery`;
+DROP TABLE IF EXISTS `flag_editors`;
 DROP TABLE IF EXISTS `flag`;
 DROP TABLE IF EXISTS `instrument_data`;
 DROP TABLE IF EXISTS `instrument_subtests`;
