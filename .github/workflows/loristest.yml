@@ -316,7 +316,7 @@ jobs:
         run: |
           set -e
           echo "Running SQL migrations..."
-          for f in SQL/[0-9][0-9][0-9][0-9]-*.sql; do
+          for f in SQL/[0-0][0-9][0-9][0-9]-*.sql; do
             echo "--------------------------------------------------"
             echo "Running migration: $f"
             mysql ${DB_DATABASE} -uroot -proot < "$f"
