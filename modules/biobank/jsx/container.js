@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 
@@ -36,7 +37,7 @@ class BiobankContainer extends Component {
    * @return {JSX}
    */
   render() {
-    const {current, data, editable, options, container} = this.props;
+    const {t, current, data, editable, options, container} = this.props;
 
     const checkoutButton = () => {
       if (!(loris.userHasPermission('biobank_container_update'))
@@ -50,7 +51,7 @@ class BiobankContainer extends Component {
           <div
             className={!editable.containerCheckout && !editable.loadContainer ?
               'action-button update open' : 'action-button update closed'}
-            title='Checkout Child Containers'
+            title={this.props.t('Checkout Child Containers', {ns: 'biobank'})}
             onClick={()=> this.props.edit('containerCheckout')}
           >
             <span className='glyphicon glyphicon-share'/>
@@ -157,7 +158,10 @@ class BiobankContainer extends Component {
       return (
         <div>
           <div className='title'>
-            {listAssigned.length !== 0 ? 'Assigned Containers' : null}
+            {listAssigned.length !== 0 ? t(
+              'Assigned Containers',
+              {ns: 'biobank'}
+            ) : null}
           </div>
           <div className='container-coordinate'>
             <div>{listAssigned}</div>
@@ -165,7 +169,10 @@ class BiobankContainer extends Component {
           </div>
           {listAssigned.length !==0 ? <br/> : null}
           <div className='title'>
-            {listUnassigned.length !== 0 ? 'Unassigned Containers' : null}
+            {listUnassigned.length !== 0 ? t(
+              'Unassigned Containers',
+              {ns: 'biobank'}
+            ) : null}
           </div>
           {listUnassigned}
         </div>
@@ -184,6 +191,7 @@ class BiobankContainer extends Component {
 }
 
 BiobankContainer.propTypes = {
+  t: PropTypes.func.isRequired,
   data: PropTypes.shape({
     containers: PropTypes.arrayOf(
       PropTypes.shape({
@@ -233,4 +241,4 @@ BiobankContainer.propTypes = {
   getCoordinateLabel: PropTypes.func.isRequired,
 };
 
-export default BiobankContainer;
+export default withTranslation(['biobank', 'loris'])(BiobankContainer);

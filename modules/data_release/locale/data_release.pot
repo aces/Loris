@@ -57,9 +57,6 @@ msgstr ""
 msgid "Version names will be saved as lowercase."
 msgstr ""
 
-msgid "File to upload"
-msgstr ""
-
 msgid "You must select a file to upload"
 msgstr ""
 
@@ -78,9 +75,6 @@ msgstr ""
 msgid "Upload Successful!"
 msgstr ""
 
-msgid "Are you sure?"
-msgstr ""
-
 msgid "A file with this name already exists!"
 msgstr ""
 
@@ -88,12 +82,6 @@ msgid "Would you like to overwrite existing file?"
 msgstr ""
 
 msgid "Note that the version associated with the file will also be overwritten."
-msgstr ""
-
-msgid "Yes, I am sure!"
-msgstr ""
-
-msgid "No, cancel it!"
 msgstr ""
 
 msgid "Choose a specific file or an entire release below"

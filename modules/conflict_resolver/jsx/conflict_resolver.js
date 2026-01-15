@@ -7,7 +7,10 @@ import PropTypes from 'prop-types';
 
 import UnresolvedFilterableDataTable from './unresolved_filterabledatatable';
 import ResolvedFilterableDataTable from './resolved_filterabledatatable';
+
 import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
+import frStrings from '../locale/fr/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Conflict Resolver class.
@@ -78,8 +81,9 @@ class ConflictResolver extends Component {
 }
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'conflict_resolver', {});
+  i18n.addResourceBundle('ja', 'conflict_resolver', jaStrings);
   i18n.addResourceBundle('hi', 'conflict_resolver', hiStrings);
+  i18n.addResourceBundle('fr', 'conflict_resolver', frStrings);
   const Index = withTranslation(
     ['conflict_resolver', 'loris']
   )(ConflictResolver);

@@ -1,4 +1,4 @@
-# Default LORIS strings to be translated (English).
+# Default LORIS strings to be translated (English)
 # Copy this to a language specific file and add translations to the
 # new file.
 # Copyright (C) 2025
@@ -68,7 +68,7 @@ msgid "Data Dictionary"
 msgstr ""
 
 #: modules/document_repository/php/module.class.inc:56
-#: modules/instrument_builder/php/module.class.inc:48
+#: modules/instrument_builderr/php/module.class.inc:48
 #: modules/issue_tracker/php/module.class.inc:54
 #: modules/schedule_module/php/module.class.inc:49
 msgid "Tools"
@@ -91,8 +91,10 @@ msgstr ""
 
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
+#: modules/dataquery/jsx/definefilters.importcsvmodal.tsx:167
 msgid "Candidate"
-msgstr ""
+msgid_plural "Candidates"
+msgstr[0] ""
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
@@ -142,6 +144,9 @@ msgstr ""
 msgid "Selection Filter"
 msgstr ""
 
+msgid "Filters"
+msgstr ""
+
 msgid "Show Filters"
 msgstr ""
 
@@ -151,10 +156,31 @@ msgstr ""
 msgid "Clear Filters"
 msgstr ""
 
+msgid "Load Filter Preset"
+msgstr ""
+
 msgid "Show Advanced Filters"
 msgstr ""
 
 msgid "Hide Advanced Filters"
+msgstr ""
+
+msgid "Pass"
+msgstr ""
+
+msgid "Fail"
+msgstr ""
+
+msgid "True"
+msgstr ""
+
+msgid "False"
+msgstr ""
+
+msgid "Selected"
+msgstr ""
+
+msgid "selected"
 msgstr ""
 
 # Common swal labels
@@ -170,17 +196,11 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-msgid "Close"
-msgstr ""
-
 # Common candidate terms
 msgid "PSCID"
 msgstr ""
 
 msgid "DCCID"
-msgstr ""
-
-msgid "Visit"
 msgstr ""
 
 msgid "Visit Label"
@@ -211,7 +231,8 @@ msgid_plural "Cohorts"
 msgstr[0] ""
 
 msgid "Session"
-msgstr ""
+msgid_plural "Sessions"
+msgstr[0] ""
 
 msgid "Date of registration"
 msgstr ""
@@ -223,6 +244,9 @@ msgid "Participant Status"
 msgstr ""
 
 msgid "DoB"
+msgstr ""
+
+msgid "DoD"
 msgstr ""
 
 msgid "Sex"
@@ -264,6 +288,9 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
+msgid "Pending"
+msgstr ""
+
 msgid "Entity Type"
 msgstr ""
 
@@ -273,19 +300,58 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid "Access denied"
+msgstr ""
+
+msgid "No."
+msgstr ""
+
 msgid "Ethnicity"
+msgstr ""
+
+msgid "Are You Sure?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "Yes, I am sure!"
+msgstr ""
+
+msgid "No, cancel it!"
+msgstr ""
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr ""
+
+msgid "Proceed"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
 msgstr ""
 
 msgid "Save"
 msgstr ""
 
+msgid "Saving"
+msgstr ""
+
 msgid "Reset"
+msgstr ""
+
+msgid "Note"
 msgstr ""
 
 msgid "View details"
 msgstr ""
 
 # Data table strings
+msgid "No result found."
+msgstr ""
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr ""
 
@@ -317,6 +383,9 @@ msgstr ""
 
 # Common strings on widgets
 msgid "NEW"
+msgstr ""
+
+msgid "New"
 msgstr ""
 
 msgid "Updated"
@@ -386,6 +455,9 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Incorrect username or password."
+msgstr ""
+
 # Common timepoint and vist terms
 msgid "Not Started"
 msgstr ""
@@ -403,9 +475,6 @@ msgid "Subject"
 msgstr ""
 
 msgid "Recycling Bin"
-msgstr ""
-
-msgid "Pass"
 msgstr ""
 
 msgid "Failure"
@@ -478,4 +547,32 @@ msgid "GB"
 msgstr ""
 
 msgid "Month"
+msgstr ""
+
+msgid "Unauthorized"
+msgstr ""
+
+msgid "File to upload"
+msgstr ""
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Dataset"
+msgstr ""
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
 msgstr ""

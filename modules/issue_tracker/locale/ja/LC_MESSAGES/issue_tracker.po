@@ -24,6 +24,10 @@ msgstr "問題トラッカー"
 
 # Google Translate is giving me completely different translations for
 # singular and plural. Might be worth investigating.
+
+msgid "Issue"
+msgstr "問題"
+
 msgid "Your assigned issue"
 msgid_plural "Your assigned issues"
 msgstr[0] "担当する問題"
@@ -31,6 +35,241 @@ msgstr[0] "担当する問題"
 msgid "Open Issues"
 msgstr "未解決の問題"
 
-msgid "({{count}} comment)"
-msgid_plural "({{count}} comments)"
+msgid "Issue ID"
+msgstr "問題識別子"
+
+msgid "Reporter"
+msgstr "記者"
+
+msgid "Assignee"
+msgstr "譲受人"
+
+msgid "Priority"
+msgstr "優先度"
+
+msgid "Title"
+msgstr "タイトル"
+
+msgid "Category"
+msgstr "カテゴリ"
+
+msgid "Date Created"
+msgstr "作成日"
+
+msgid "Last Update"
+msgstr "最終更新日"
+
+msgid "SessionID"
+msgstr "SessionID"
+
+msgid "Watching"
+msgstr "ウォッチン"
+
+msgid "Normal"
+msgstr "普通"
+
+msgid "High"
+msgstr "高い"
+
+msgid "Urgent"
+msgstr "緊急"
+
+msgid "Immediate"
+msgstr "すぐに"
+
+msgid "Low"
+msgstr "低い"
+
+msgid "All Sites"
+msgstr "すべてのサイト"
+
+msgid "All Issues"
+msgstr "すべての問題"
+
+msgid "Active Issues"
+msgstr "進行中の問題"
+
+msgid "Closed Issues"
+msgstr "解決済みの問題"
+
+msgid "My Issues"
+msgstr "私の問題"
+
+msgid "New Issue"
+msgstr "新刊"
+
+msgid "Browse Issues"
+msgstr "問題を閲覧する"
+
+msgid "Batch Edit"
+msgstr "一括編集"
+
+msgid "Add Comment"
+msgstr "コメントを追加"
+
+msgid "Create New Issue"
+msgstr "新しい問題を作成"
+
+msgid "Never!"
+msgstr "一度もない！"
+
+msgid "No-one!"
+msgstr "誰も！"
+
+msgid "Sometime Soon!"
+msgstr "近いうちに！"
+
+msgid "Submit Issue"
+msgstr "問題を送信"
+
+msgid "Edit Issue"
+msgstr "問題を編集"
+
+msgid "Update Issue"
+msgstr "アップデートの問題"
+
+msgid "Add Attachment"
+msgstr "添付ファイルを追加"
+
+msgid "Attachment for issue"
+msgstr "問題の添付ファイル"
+
+msgid "Attachment for Issue"
+msgstr "問題の添付ファイル"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Watching?"
+msgstr "見ている"
+
+msgid "Add others to watching?"
+msgstr "他の人をウォッチリストに追加する"
+
+msgid "New Comment"
+msgstr "新しいコメント"
+
+msgid "This field is required"
+msgstr "この項目は必須です"
+
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr "2 秒以内にメイン ページにリダイレクトされます。"
+
+msgid "Failed to submit issue :("
+msgstr "問題の送信に失敗しました :("
+
+msgid "Issue updated!"
+msgstr "号が更新されました！"
+
+msgid "Issue created!"
+msgstr "問題が作成されました!"
+
+msgid "Comments and History"
+msgstr "コメントと履歴"
+
+msgid "Last Updated By"
+msgstr "最終更新者"
+
+msgid "Created"
+msgstr "作成日"
+
+msgid "Last Updated"
+msgstr "最終更新日"
+
+msgid "({{count}} issue)"
+msgid_plural "({{count}} issues)"
 msgstr[0] "（{{count}}件のコメント）"
+
+msgid "{{count}} issues displayed of {{total}}"
+msgstr "{{count}} 個のうち {{total}} 個が表示されています"
+
+msgid "Maximum issues per page: {{total}}"
+msgstr "ページあたりの最大発行数: {{total}}"
+
+msgid "Failed to fetch issues. Please try again later."
+msgstr "問題を取得できませんでした。しばらくしてからもう一度お試しください。"
+
+msgid "No issues match the selected filters."
+msgstr "選択したフィルターに一致する問題はありません。"
+
+msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
+msgstr "添付ファイル「{{fileName}}」の削除リクエストを確認してください。"
+
+msgid "Title cannot be empty"
+msgstr "タイトルは空欄にできません"
+
+msgid "No changes were made"
+msgstr "変更は行われませんでした。"
+
+msgid "Issue updated successfully"
+msgstr "問題が正常に更新されました"
+
+msgid "Information"
+msgstr "情報"
+
+msgid "Updated by <0>{{user}}</0> on {{date}}"
+msgstr "<0>{{user}}</0>によって{{date}}に更新されました"
+
+msgid "Updated by <0>{{user}}</0> {{seconds}} seconds ago"
+msgstr "<0>{{user}}</0>が{{seconds}}秒前に更新しました"
+
+msgid "Updated by <0>{{user}}</0> {{minutes}} minutes ago"
+msgstr "<0>{{user}}</0>が{{minutes}}分前に更新しました"
+
+msgid "Updated by <0>{{user}}</0> {{hours}} hours ago"
+msgstr "<0>{{user}}</0>が{{hours}}時間前に更新しました"
+
+msgid "New"
+msgstr "新しい"
+
+msgid "Acknowledged"
+msgstr "承認済み"
+
+msgid "Feedback"
+msgstr "フィードバック"
+
+msgid "Assigned"
+msgstr "割り当て済み"
+
+msgid "Resolved"
+msgstr "解決済み"
+
+msgid "Closed"
+msgstr "閉鎖"
+
+msgid "Behavioural Battery"
+msgstr "行動バッテリー"
+
+msgid "Behavioural Instruments"
+msgstr "行動測定機器"
+
+msgid "Data Entry"
+msgstr "データ入力"
+
+msgid "Examiners"
+msgstr "審査官"
+
+msgid "Imaging"
+msgstr "イメージング"
+
+msgid "Other"
+msgstr "他の"
+
+msgid "Technical Issue"
+msgstr "技術的な問題"
+
+msgid "User Accounts"
+msgstr "ユーザーアカウント"
+
+msgid "Last 3 Comments"
+msgstr "最後の3つのコメント"
+
+msgid "The server is not configured for attachments."
+msgstr "サーバーは添付ファイルに対応するように設定されていません。"
+
+msgid "The server is not configured to receive a file this large."
+msgstr "サーバーはこれほど大きなファイルを受信するように設定されていません。"
+
+msgid "Submit Attachment"
+msgstr "添付ファイルを送信"
+

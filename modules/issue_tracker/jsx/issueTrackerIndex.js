@@ -10,6 +10,8 @@ import FilterableDataTable from 'FilterableDataTable';
 import IssueTrackerBatchMode from './IssueTrackerBatchMode';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/issue_tracker.json';
+import frStrings from '../locale/fr/LC_MESSAGES/issue_tracker.json';
 
 /**
  * Issue Tracker Index component
@@ -132,22 +134,32 @@ class IssueTrackerIndex extends Component {
     case priorityKey:
       switch (cell) {
       case 'normal':
-        result = <td style={{background: '#CCFFCC'}}>Normal</td>;
+        result = <td style={{background: '#CCFFCC'}}>{
+          t('Normal', {ns: 'issue_tracker'})
+        }</td>;
         break;
       case 'high':
-        result = <td style={{background: '#EEEEAA'}}>High</td>;
+        result = <td style={{background: '#EEEEAA'}}>{
+          t('High', {ns: 'issue_tracker'})
+        }</td>;
         break;
       case 'urgent':
-        result = <td style={{background: '#CC6600'}}>Urgent</td>;
+        result = <td style={{background: '#CC6600'}}>{
+          t('Urgent', {ns: 'issue_tracker'})
+        }</td>;
         break;
       case 'immediate':
-        result = <td style={{background: '#E4A09E'}}>Immediate</td>;
+        result = <td style={{background: '#E4A09E'}}>{
+          t('Immediate', {ns: 'issue_tracker'})
+        }</td>;
         break;
       case 'low':
-        result = <td style={{background: '#99CCFF'}}>Low</td>;
+        result = <td style={{background: '#99CCFF'}}>{
+          t('Low', {ns: 'issue_tracker'})
+        }</td>;
         break;
       default:
-        result = <td>None</td>;
+        result = <td>{t('None', {ns: 'loris'})}</td>;
       }
       break;
     case statusKey:
@@ -382,6 +394,8 @@ IssueTrackerIndex.propTypes = {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'issue_tracker', hiStrings);
+  i18n.addResourceBundle('ja', 'issue_tracker', jaStrings);
+  i18n.addResourceBundle('fr', 'issue_tracker', frStrings);
 
   const IssueTrackerIndexWithTranslation = withTranslation(
     ['issue_tracker', 'loris']

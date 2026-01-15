@@ -3,6 +3,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
+
+import jaStrings from '../locale/ja/LC_MESSAGES/bvl_feedback.json';
+import frStrings from '../locale/fr/LC_MESSAGES/bvl_feedback.json';
+
 import '../css/bvl_feedback_panel.css';
 
 /**
@@ -15,6 +21,8 @@ class SliderPanel extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
   }
 
   /**
@@ -26,8 +34,10 @@ class SliderPanel extends Component {
     return (
       <div className='panel-group' id='bvl_feedback_menu'>
         <div className='breadcrumb-panel'>
-          <a className='info'>
-            Feedback for PSCID: {this.props.pscid}
+          <a className='info'>{this.props.t(
+            'Feedback for PSCID: {{PSCID}}',
+            {ns: 'bvl_feedback', PSCID: this.props.pscid}
+          )}
           </a>
         </div>
         {this.props.children}
@@ -38,8 +48,14 @@ class SliderPanel extends Component {
 SliderPanel.propTypes = {
   pscid: PropTypes.string,
   children: PropTypes.node,
+
+  // provided by withTranslation HoC
+  t: PropTypes.func,
 };
 
+const TSliderPanel = withTranslation(
+  ['bvl_feedback', 'loris']
+)(SliderPanel);
 
 /**
  * Feedback panel content component
@@ -51,6 +67,8 @@ class FeedbackPanelContent extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       currentEntryToggled: null,
     };
@@ -103,16 +121,17 @@ class FeedbackPanelContent extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    let headers = ['Type', 'Author', 'Status'];
+    const t = (s) => this.props.t(s, {ns: 'bvl_feedback'});
+    let headers = [t('Type'), t('Author'), t('Status')];
 
     if (this.props.feedbackLevel === 'instrument') {
-      headers[0] = 'Fieldname';
+      headers[0] = this.props.t('Field Name', {ns: 'bvl_feedback'});
     }
 
     let tableHeaders = (
       <tr className='info'>
         {headers.map(function(header, key) {
-          return (<td key={key}>{header}</td>);
+          return (<td key={key}>{t(header)}</td>);
         })}
       </tr>
     );
@@ -122,7 +141,7 @@ class FeedbackPanelContent extends Component {
       let feedbackRows = this.props.threads.map(function(row, index) {
         let thisRowCommentToggled = (currentEntryToggled === index);
         return (
-          <FeedbackPanelRow
+          <TFeedbackPanelRow
             key={row.FeedbackID}
             commentToggled={thisRowCommentToggled}
             feedbackID={row.FeedbackID}
@@ -163,7 +182,9 @@ class FeedbackPanelContent extends Component {
     }
 
     return (
-      <div className='panel-body'>There are no threads for this user!</div>
+      <div className='panel-body'>{t(
+        'There are no threads for this user!'
+      )}</div>
     );
   }
 }
@@ -176,8 +197,14 @@ FeedbackPanelContent.propTypes = {
   commentID: PropTypes.string,
   sessionID: PropTypes.string,
   commentToggled: PropTypes.bool,
+
+  // provided by withTranslation HoC
+  t: PropTypes.func,
 };
 
+const TFeedbackPanelContent = withTranslation(
+  ['bvl_feedback', 'loris']
+)(FeedbackPanelContent);
 
 /**
  * Feedback panel row component
@@ -189,6 +216,8 @@ class FeedbackPanelRow extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       threadEntriesToggled: this.props.status === 'opened' ? true : false,
       threadEntriesLoaded: [],
@@ -329,7 +358,10 @@ class FeedbackPanelRow extends Component {
 
     let buttonText = 'closed';
     let buttonClass = 'btn btn-success dropdown-toggle btn-sm';
-    let dropdown = (<li><a onClick={this.props.onClickOpen}>Open</a></li>);
+    let dropdown = (<li><a onClick={this.props.onClickOpen}>{this.props.t(
+      'Open',
+      {ns: 'bvl_feedback'}
+    )}</a></li>);
     let commentButton;
 
     if (this.state.threadEntriesToggled) {
@@ -373,7 +405,7 @@ class FeedbackPanelRow extends Component {
               </td>
             </tr>
             {entry.editComment ?
-              <CommentEntryForm
+              <TCommentEntryForm
                 entryID={entry.EntryID}
                 onCommentSend={this.updateThreadEntry}
                 toggleThisThread={toggleEditComment}
@@ -389,7 +421,10 @@ class FeedbackPanelRow extends Component {
     if (this.props.status === 'opened') {
       buttonText = 'opened';
       buttonClass = 'btn btn-danger dropdown-toggle btn-sm';
-      dropdown = (<li><a onClick={this.props.onClickClose}>Close</a></li>);
+      dropdown = (<li><a onClick={this.props.onClickClose}>{this.props.t(
+        'Close',
+        {ns: 'loris'}
+      )}</a></li>);
       commentButton = (
         <span
           className='glyphicon glyphicon-comment'
@@ -425,7 +460,7 @@ class FeedbackPanelRow extends Component {
 
         {threadEntries}
         {this.props.commentToggled ?
-          (<CommentEntryForm
+          (<TCommentEntryForm
             user={this.props.user}
             onCommentSend={this.newThreadEntry}
             toggleThisThread={this.toggleEntries.bind(this, true)}
@@ -450,8 +485,14 @@ FeedbackPanelRow.propTypes = {
   commentToggle: PropTypes.func,
   user: PropTypes.string,
   commentToggled: PropTypes.bool,
+
+  // provided by withTranslation HoC
+  t: PropTypes.func,
 };
 
+const TFeedbackPanelRow = withTranslation(
+  ['bvl_feedback', 'loris']
+)(FeedbackPanelRow);
 /**
  * Comment entry form component
  */
@@ -462,6 +503,8 @@ class CommentEntryForm extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       value: props.value ? props.value : '',
       entryID: -1,
@@ -490,7 +533,7 @@ class CommentEntryForm extends Component {
     }
     this.setState({
       value: '',
-      message: 'Comment added!',
+      message: this.props.t('Comment added!', {ns: 'bvl_feedback'}),
     });
     this.props.toggleThisThread();
   }
@@ -515,8 +558,14 @@ class CommentEntryForm extends Component {
         <td colSpan='100%'>
           {
             this.state.entryID < 0 ?
-              <span> Add a comment: </span> :
-              <span> Update comment: </span>
+              <span> {this.props.t(
+                'Add a comment:',
+                {ns: 'bvl_feedback'}
+              )} </span> :
+              <span> {this.props.t(
+                'Update comment:',
+                {ns: 'bvl_feedback'})
+              } </span>
           }
           <div className='input-group' style={{width: '100%'}}>
             <textarea
@@ -531,7 +580,7 @@ class CommentEntryForm extends Component {
               className='input-group-addon btn btn-primary'
               onClick={this.sendComment}
             >
-              Submit
+              {this.props.t('Submit', {ns: 'bvl_feedback'})}
             </span>
           </div>
           {this.state.message}
@@ -547,11 +596,18 @@ CommentEntryForm.propTypes = {
   value: PropTypes.string,
   entryID: PropTypes.int,
   date: PropTypes.string,
+
+  // provided by withTranslation HoC
+  t: PropTypes.func,
 };
 
+const TCommentEntryForm = withTranslation(
+  ['bvl_feedback', 'loris']
+)(CommentEntryForm);
 /**
  * Accordion panel component
  */
+
 class AccordionPanel extends Component {
   /**
    * @constructor
@@ -622,10 +678,12 @@ class NewThreadPanel extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       textValue: '',
       message: '',
-      selectValue: 'Across All Fields',
+      selectValue: this.props.t('Across All Fields', {ns: 'bvl_feedback'}),
       inputValue: Object.keys(this.props.feedbackTypes)[0],
     };
     this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -685,7 +743,10 @@ class NewThreadPanel extends Component {
 
         response.json().then((data) => {
           this.setState({
-            message: 'The new thread has been submitted!',
+            message: this.props.t(
+              'The new thread has been submitted!',
+              {ns: 'bvl_feedback'},
+            ),
             textValue: '',
           });
           this.props.addThread(data);
@@ -717,7 +778,10 @@ class NewThreadPanel extends Component {
       fieldnameSelect = (
         <div className='form-group'>
           <div className='row'>
-            <label className='col-xs-4'>Field Name</label>
+            <label className='col-xs-4'>{this.props.t(
+              'Field Name',
+              {ns: 'bvl_feedback'}
+            )}</label>
             <div className='col-xs-8'>
               <select
                 className='form-control'
@@ -759,7 +823,10 @@ class NewThreadPanel extends Component {
         {fieldnameSelect}
         <div className='form-group'>
           <div className='row'>
-            <label className='col-xs-4'>Feedback Type</label>
+            <label className='col-xs-4'>{this.props.t(
+              'Feedback Type',
+              {ns: 'bvl_feedback'}
+            )}</label>
             <div className='col-xs-8'>
               <select
                 name='input'
@@ -779,7 +846,7 @@ class NewThreadPanel extends Component {
             onClick={this.createNewThread}
             className='btn btn-default pull-right btn-sm'
           >
-            Create thread
+            {this.props.t('Create thread', {ns: 'bvl_feedback'})}
           </button>
         </div>
       </div>
@@ -799,9 +866,15 @@ NewThreadPanel.propTypes = {
   sessionID: PropTypes.string,
   commentID: PropTypes.string,
   user: PropTypes.string,
+
+  // provided by withTranslation HoC
+  t: PropTypes.func,
 };
 
 
+const TNewThreadPanel = withTranslation(
+  ['bvl_feedback', 'loris']
+)(NewThreadPanel);
 /**
  * Feedback summary panel component
  */
@@ -812,6 +885,8 @@ class FeedbackSummaryPanel extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       summary: null,
     };
@@ -856,7 +931,10 @@ class FeedbackSummaryPanel extends Component {
     if (summaryRows === undefined || summaryRows.length === 0) {
       return (
         <div className='panel-body'>
-          This candidate has no behavioural feedback.
+          {this.props.t(
+            'This candidate has no behavioural feedback.',
+            {ns: 'bvl_feedback'},
+          )}
         </div>
       );
     }
@@ -867,10 +945,10 @@ class FeedbackSummaryPanel extends Component {
           className='table table-hover table-bordered dynamictable'>
           <thead>
             <tr className='info' key='info'>
-              <th>QC Class</th>
-              <th>Instrument</th>
-              <th>Visit</th>
-              <th># Threads</th>
+              <th>{this.props.t('QC Class', {ns: 'bvl_feedback'})}</th>
+              <th>{this.props.t('Instrument', {ns: 'loris', count: 1})}</th>
+              <th>{this.props.t('Visit', {ns: 'loris', count: 1})}</th>
+              <th>{this.props.t('# Threads', {ns: 'bvl_feedback'})}</th>
             </tr>
           </thead>
           <tbody>
@@ -883,7 +961,13 @@ class FeedbackSummaryPanel extends Component {
 }
 FeedbackSummaryPanel.propTypes = {
   summary_data: PropTypes.array,
+
+  // provided by withTranslation HoC
+  t: PropTypes.func,
 };
+const TFeedbackSummaryPanel= withTranslation(
+  ['bvl_feedback', 'loris']
+)(FeedbackSummaryPanel);
 
 
 /**
@@ -896,6 +980,8 @@ class FeedbackPanel extends Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
+    i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
     this.state = {
       threads: [],
       summary: null,
@@ -1050,14 +1136,21 @@ class FeedbackPanel extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    let title = 'New ' + this.props.feedbackLevel + ' level feedback';
+    let title = this.props.t(
+      'New {{feedbacklevel}} level feedback',
+      {ns: 'bvl_feedback', feedbacklevel: this.props.feedbackLevel}
+    );
+
     return (
-      <SliderPanel pscid={this.props.pscid}>
-        <AccordionPanel title='Open Thread Summary'>
-          <FeedbackSummaryPanel summary_data={this.state.summary} />
+      <TSliderPanel pscid={this.props.pscid}>
+        <AccordionPanel title={this.props.t(
+          'Open Thread Summary',
+          {ns: 'bvl_feedback'},
+        )}>
+          <TFeedbackSummaryPanel summary_data={this.state.summary} />
         </AccordionPanel>
         <AccordionPanel title={title}>
-          <NewThreadPanel
+          <TNewThreadPanel
             selectOptions={this.props.selectOptions}
             feedbackLevel={this.props.feedbackLevel}
             candID={this.props.candID}
@@ -1067,8 +1160,11 @@ class FeedbackPanel extends Component {
             feedbackTypes={this.props.feedbackTypes}
           />
         </AccordionPanel>
-        <AccordionPanel title='Feedback Threads'>
-          <FeedbackPanelContent
+        <AccordionPanel title={this.props.t(
+          'Feedback Threads',
+          {ns: 'bvl_feedback'},
+        )}>
+          <TFeedbackPanelContent
             threads={this.state.threads}
             close_thread={this.markThreadClosed}
             open_thread={this.markThreadOpened}
@@ -1078,7 +1174,7 @@ class FeedbackPanel extends Component {
             commentID={this.props.commentID}
           />
         </AccordionPanel>
-      </SliderPanel>
+      </TSliderPanel>
     );
   }
 }
@@ -1090,11 +1186,18 @@ FeedbackPanel.propTypes = {
   commentID: PropTypes.string,
   pscid: PropTypes.string,
   feedbackTypes: PropTypes.object,
+
+  // provided by withTranslation HoC
+  t: PropTypes.func,
 };
 
-let RBehaviouralFeedbackPanel = React.createFactory(FeedbackPanel);
+const TFeedbackPanel = withTranslation(
+  ['bvl_feedback', 'loris']
+)(FeedbackPanel);
+let RBehaviouralFeedbackPanel = React.createFactory(TFeedbackPanel);
 
 window.FeedbackPanel = FeedbackPanel;
 window.RBehaviouralFeedbackPanel = RBehaviouralFeedbackPanel;
 
-export default FeedbackPanel;
+
+export default TFeedbackPanel;

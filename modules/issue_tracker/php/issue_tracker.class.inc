@@ -172,20 +172,20 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         );
 
         $priorities = [
-            'low'       => 'Low',
-            'normal'    => 'Normal',
-            'high'      => 'High',
-            'urgent'    => 'Urgent',
-            'immediate' => 'Immediate',
+            'low'       => dgettext('issue_tracker', 'Low'),
+            'normal'    => dgettext('issue_tracker', 'Normal'),
+            'high'      => dgettext('issue_tracker', 'High'),
+            'urgent'    => dgettext('issue_tracker', 'Urgent'),
+            'immediate' => dgettext('issue_tracker', 'Immediate'),
         ];
 
         $statuses = [
-            'new'          => 'New',
-            'acknowledged' => 'Acknowledged',
-            'feedback'     => 'Feedback',
-            'assigned'     => 'Assigned',
-            'resolved'     => 'Resolved',
-            'closed'       => 'Closed',
+            'new'          => dgettext('issue_tracker', 'New'),
+            'acknowledged' => dgettext('issue_tracker', 'Acknowledged'),
+            'feedback'     => dgettext('issue_tracker', 'Feedback'),
+            'assigned'     => dgettext('issue_tracker', 'Assigned'),
+            'resolved'     => dgettext('issue_tracker', 'Resolved'),
+            'closed'       => dgettext('issue_tracker', 'Closed'),
         ];
 
         $unorgCategories = $db -> pselect(
@@ -197,7 +197,10 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
-                $categories[$categoryName] = $categoryName;
+                $categories[$categoryName] = dgettext(
+                    "issue_tracker",
+                    $categoryName,
+                );
             }
         }
 

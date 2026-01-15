@@ -3,13 +3,16 @@ import {createRoot} from 'react-dom/client';
 import React from 'react';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/issue_tracker.json';
+import frStrings from '../locale/fr/LC_MESSAGES/issue_tracker.json';
 
 /**
  * Render IssueForm on page load
  */
 window.addEventListener('load', () => {
-  // Load Hindi translations for issue_tracker
   i18n.addResourceBundle('hi', 'issue_tracker', hiStrings);
+  i18n.addResourceBundle('ja', 'issue_tracker', jaStrings);
+  i18n.addResourceBundle('fr', 'issue_tracker', frStrings);
 
   const id = location.href.split('/issue/')[1];
   createRoot(

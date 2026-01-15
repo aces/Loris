@@ -327,9 +327,9 @@ function IssueTrackerBatchMode({options = {}, t}) {
             total: filteredIssues.length,
           })}
           {' ('}
-          {t('Maximum issues per page: {{count}}', {
+          {t('Maximum issues per page: {{total}}', {
             ns: 'issue_tracker',
-            count: paginatedIssues.length,
+            total: paginatedIssues.length,
           })}
           <select
             className="input-sm perPage"
@@ -381,7 +381,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
             total: filteredIssues.length,
           })}.
           {' ('}
-          {t('Maximum issues per page: {{count}}', {
+          {t('Maximum issues per page: {{total}}', {
             ns: 'issue_tracker',
             count: paginatedIssues.length,
           })}

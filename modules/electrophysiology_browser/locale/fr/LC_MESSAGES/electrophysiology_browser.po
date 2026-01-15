@@ -1,0 +1,767 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-10 10:46-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+#, fuzzy
+msgid "Electrophysiology Browser"
+msgstr "Navigateur d'électrophysiologie"
+
+msgid "Links"
+msgstr "Liens"
+
+msgid "all types"
+msgstr "tous les types"
+
+#, fuzzy
+msgid "Has HED Tags"
+msgstr "A des balises HED"
+
+#, fuzzy
+msgid "Acquisition Time"
+msgstr "Temps d'acquisition"
+
+#, fuzzy
+msgid "Insertion Time"
+msgstr "Temps d'insertion"
+
+msgid "Type"
+msgstr "Type"
+
+#, fuzzy
+msgid "Signal Viewer"
+msgstr "Visualiseur de signaux"
+
+#, fuzzy
+msgid "SessionID"
+msgstr "ID de session"
+
+#, fuzzy
+msgid "split {{splitNum}}"
+msgstr "diviser {{splitNum}}"
+
+#, fuzzy
+msgid "Viewing signal split file:"
+msgstr "Affichage du fichier de séparation du signal :"
+
+msgid "Output Type"
+msgstr "Type de sortie"
+
+msgid "File Download"
+msgstr "Téléchargement du Fichier"
+
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "Not Available"
+msgstr "Non disponible"
+
+#, fuzzy
+msgid "Acquisition Details for Recording {{recording}}"
+msgstr "Détails de l'acquisition pour l'enregistrement {{recording}}"
+
+msgid "Summary"
+msgstr "Résumé"
+
+#, fuzzy
+msgid "HED tags in recording metadata (click for info)"
+msgstr ""
+"Balises HED dans les métadonnées d'enregistrement (cliquez pour plus "
+"d'informations)"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+#, fuzzy
+msgid "Are you sure you want to leave unsaved changes behind?"
+msgstr ""
+"Êtes-vous sûr de vouloir abandonner les modifications non enregistrées ?"
+
+#, fuzzy
+msgid "Data Authors"
+msgstr "Auteurs des données"
+
+# Filters
+#, fuzzy
+msgid "No High Pass Filter"
+msgstr "Pas de filtre passe-haut"
+
+#, fuzzy
+msgid "High Pass {{frequency}}Hz"
+msgstr "Passe-haut {{frequency}} Hz"
+
+#, fuzzy
+msgid "No Low Pass Filter"
+msgstr "Pas de filtre passe-bas"
+
+#, fuzzy
+msgid "Low Pass {{frequency}}Hz"
+msgstr "Passe-bas {{frequency}} Hz"
+
+# SeriesRenderer
+msgid "Close Panel"
+msgstr "Fermer le panneau"
+
+msgid "Display Events"
+msgstr "Affichage des événements"
+
+msgid "Add Event"
+msgstr "Ajouter un événement"
+
+msgid "Zoom"
+msgstr "Zoom"
+
+#, fuzzy
+msgid "Fit to Window"
+msgstr "Ajuster à la fenêtre"
+
+#, fuzzy
+msgid "Reset Amplitude"
+msgstr "Réinitialiser l'amplitude"
+
+#, fuzzy
+msgid "Hide Overflow"
+msgstr "Masquer le débordement"
+
+#, fuzzy
+msgid "Show Overflow"
+msgstr "Afficher le débordement"
+
+#, fuzzy
+msgid "{{numChannels}} channels"
+msgstr "{{numChannels}} chaînes"
+
+msgid "Showing:"
+msgstr "Afficher :"
+
+#, fuzzy
+msgid "to {{channelsInView}} of {{totalChannels}}"
+msgstr "à {{channelsInView}} de {{totalChannels}}"
+
+#, fuzzy
+msgid "Time (s)\"  # s stands for second"
+msgstr "Temps (s) » # s signifie seconde"
+
+msgid "No Offset"
+msgstr "Pas de décalage"
+
+#, fuzzy
+msgid "DC Offset"
+msgstr "Décalage CC"
+
+msgid "Spread"
+msgstr "Diffusion"
+
+msgid "Stack"
+msgstr "Empiler"
+
+msgid "Standard"
+msgstr "Standard"
+
+msgid "Isolate"
+msgstr "Isoler"
+
+#, fuzzy
+msgid "HED Endorsements"
+msgstr "Recommandations HED"
+
+#, fuzzy
+msgid "Displaying: "
+msgstr "Affichage : "
+
+# SeriesCursor
+#, fuzzy
+msgid "{{seconds}} s"
+msgstr "{{seconds}} s"
+
+# IntervalSelect
+#, fuzzy
+msgid "Timeline Range View"
+msgstr "Affichage de la plage temporelle"
+
+msgid "Show All"
+msgstr "Afficher tout"
+
+# HEDEndorsement
+msgid "No Filter"
+msgstr "Aucun filtre"
+
+#, fuzzy
+msgid "With Comment"
+msgstr "Avec commentaire"
+
+#, fuzzy
+msgid "Tagged By"
+msgstr "Marqué par"
+
+#, fuzzy
+msgid "Endorsed By"
+msgstr "Approuvé par"
+
+#, fuzzy
+msgid "Endorse"
+msgstr "Approuver"
+
+#, fuzzy
+msgid "Endorsed"
+msgstr "Approuvé"
+
+#, fuzzy
+msgid "Caveat"
+msgstr "Avertissement"
+
+#, fuzzy
+msgid "Caveat By"
+msgstr "Avertissement par"
+
+msgid "Comment"
+msgstr "Commentaire"
+
+msgid "Select Action"
+msgstr "Sélectionner l'action"
+
+#, fuzzy
+msgid "showing {{numShowing}}/{{numTotal}}"
+msgstr "affichage {{numShowing}}/{{numTotal}}"
+
+msgid "Empty list"
+msgstr "Liste vide"
+
+#, fuzzy
+msgid "Tag search..."
+msgstr "Recherche par mot-clé..."
+
+#, fuzzy
+msgid "Scroll to Selected"
+msgstr "Faire défiler jusqu'à la sélection"
+
+#, fuzzy
+msgid "Jump to Selected"
+msgstr "Aller à la sélection"
+
+#, fuzzy
+msgid "Select Previous"
+msgstr "Sélectionner Précédent"
+
+#, fuzzy
+msgid "Select Next"
+msgstr "Sélectionnez Suivant"
+
+#, fuzzy
+msgid "Select and Jump to Previous"
+msgstr "Sélectionner et passer à la précédente"
+
+#, fuzzy
+msgid "Select and Jump to Next"
+msgstr "Sélectionner et passer au suivant"
+
+#, fuzzy
+msgid "There are no event-level HED tags to endorse."
+msgstr "Il n'y a pas de balises HED au niveau de l'événement à approuver."
+
+#, fuzzy
+msgid "Edit (Selected) Event"
+msgstr "Modifier l'événement (sélectionné)"
+
+#, fuzzy
+msgid "Jump to (Selected) Event"
+msgstr "Aller à l'événement (sélectionné)"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "No comment"
+msgstr "Aucun commentaire"
+
+#, fuzzy
+msgid "For selected tag:"
+msgstr "Pour le tag sélectionné :"
+
+msgid "Updated!"
+msgstr "Mis à jour !"
+
+# EventManager
+#, fuzzy
+msgid "Total events in recording {{total}}"
+msgstr "Nombre total d'événements enregistrés {{total}}"
+
+#, fuzzy
+msgid "Display by:"
+msgstr "Afficher par :"
+
+#, fuzzy
+msgid "{{label}} search..."
+msgstr "{{label}} recherche..."
+
+#, fuzzy
+msgid "Ignore {{bidsNA}}\"   # The BIDS value: n/"
+msgstr "Ignorer {{bidsNA}} » # Valeur BIDS : n/"
+
+#, fuzzy
+msgid "Exclude <text>{{searchText}}</text>"
+msgstr "Exclure <text>{{searchText}}</text>"
+
+#, fuzzy
+msgid "Too many events to plot for this timeline range"
+msgstr "Trop d'événements à représenter pour cette période"
+
+#, fuzzy
+msgid "No events in timeline range."
+msgstr "Aucun événement dans la période sélectionnée."
+
+#, fuzzy
+msgid "Try selecting a different time range."
+msgstr "Essayez de sélectionner une autre période."
+
+msgid "Channel"
+msgid_plural "Channels"
+msgstr[0] "Chaîne"
+msgstr[1] "Chaînes"
+
+# EEGMontage
+msgid "Saved successfully"
+msgstr "Enregistré avec succès"
+
+#, fuzzy
+msgid "No electrode changes"
+msgstr "Aucun changement d'électrode"
+
+#, fuzzy
+msgid "Duplicates are not allowed"
+msgstr "Les doublons ne sont pas autorisés."
+
+#, fuzzy
+msgid ""
+"Invalid string format. Expected channel names delimited by "
+"\"{{channelDelimiter}}\""
+msgstr ""
+"Format de chaîne invalide. Les noms de chaînes attendus doivent être "
+"délimités par « {{channelDelimiter}} »."
+
+#, fuzzy
+msgid "String contains one or more unrecognized channels"
+msgstr "La chaîne contient un ou plusieurs canaux non reconnus."
+
+#, fuzzy
+msgid "Montage"
+msgstr "Montage"
+
+#, fuzzy
+msgid "Hold shift to enable electrode selection"
+msgstr ""
+"Maintenez la touche Maj enfoncée pour activer la sélection des électrodes."
+
+msgid "Select None"
+msgstr "Ne rien sélectionner"
+
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+#, fuzzy
+msgid "Electrode Map"
+msgstr "Carte des électrodes"
+
+#, fuzzy
+msgid "Show indices"
+msgstr "Afficher les index"
+
+# DatasetTagger / EEGLabSeriesProvider
+#, fuzzy
+msgid "Dataset Tag Manager"
+msgstr "Gestionnaire de balises de jeux de données"
+
+#, fuzzy
+msgid "More about HED"
+msgstr "En savoir plus sur HED"
+
+#, fuzzy
+msgid "Click to view the HED schema"
+msgstr "Cliquez pour afficher le schéma HED"
+
+#, fuzzy
+msgid "Open Dataset Tag Manager"
+msgstr "Gestionnaire de balises pour ensembles de données ouverts"
+
+#, fuzzy
+msgid "View/Edit Tags"
+msgstr "Afficher/Modifier les balises"
+
+#, fuzzy
+msgid "Endorse Tags"
+msgstr "Approuver les balises"
+
+#, fuzzy
+msgid "View JSON"
+msgstr "Afficher JSON"
+
+#, fuzzy
+msgid ""
+"This will undo all changes since your latest submission. You won't be able "
+"to revert this!"
+msgstr ""
+"Cela annulera toutes les modifications apportées depuis votre dernière "
+"soumission. Vous ne pourrez pas revenir en arrière !"
+
+#, fuzzy
+msgid "Yes, reset all changes!"
+msgstr "Oui, réinitialisez toutes les modifications !"
+
+#, fuzzy
+msgid "There was an error with the response. Please report this incident."
+msgstr ""
+"Une erreur s'est produite lors de la réponse. Veuillez signaler cet "
+"incident."
+
+#, fuzzy
+msgid "Tags updated successfully"
+msgstr "Balises mises à jour avec succès"
+
+#, fuzzy
+msgid "This action is not permitted."
+msgstr "Cette action n'est pas autorisée."
+
+#, fuzzy
+msgid "There was an error with the request! Please report this incident."
+msgstr ""
+"Une erreur s'est produite lors de la requête ! Veuillez signaler cet "
+"incident."
+
+msgid "You"
+msgstr "Vous"
+
+msgid "edited"
+msgstr "édité le"
+
+#, fuzzy
+msgid "Channel(s) associated with the event"
+msgstr "Canal(aux) associé(s) à l'événement"
+
+#, fuzzy
+msgid "Endorsement successful"
+msgstr "Approbation réussie"
+
+msgid "Column Name"
+msgstr "Nom de la colonne"
+
+msgid "Column"
+msgid_plural "Columns"
+msgstr[0] "Colonne"
+msgstr[1] "Colonnes"
+
+msgid "Select a column"
+msgstr "Sélectionnez une colonne"
+
+#, fuzzy
+msgid "<s>{{columnName}}</s> Values"
+msgstr "<s>{{columnName}}</s> Valeurs"
+
+#, fuzzy
+msgid "Select a Column Name and Value to Manage HED Tags"
+msgstr ""
+"Sélectionnez un nom de colonne et une valeur pour gérer les balises HED."
+
+msgid "Description"
+msgstr "Description"
+
+msgid "No Description Available"
+msgstr "Aucune description disponible"
+
+#, fuzzy
+msgid "HED Tags"
+msgstr "Balises HED"
+
+#, fuzzy
+msgid "Add Tag from HED Schemas"
+msgstr "Ajouter une balise à partir des schémas HED"
+
+#, fuzzy
+msgid "Type to search or select from dropdown"
+msgstr "Tapez pour rechercher ou sélectionnez dans la liste déroulante"
+
+#, fuzzy
+msgid "Show long-form HED tags"
+msgstr "Afficher les balises HED longues"
+
+#, fuzzy
+msgid "※ = Not tagged by Data Authors"
+msgstr "※ = Non marqué par les auteurs des données"
+
+msgid "Preview"
+msgstr "Aperçu"
+
+#, fuzzy
+msgid "Tag Mode"
+msgstr "Mode balise"
+
+#, fuzzy
+msgid "Group Mode"
+msgstr "Mode groupe"
+
+#, fuzzy
+msgid "Confirm Group"
+msgstr "Confirmer le groupe"
+
+msgid "Ungroup"
+msgstr "Dégrouper"
+
+msgid "Submit Changes"
+msgstr "Soumettre les modifications"
+
+#, fuzzy
+msgid "Reset Column Changes"
+msgstr "Réinitialiser les modifications apportées aux colonnes"
+
+#, fuzzy
+msgid "Reset All Columns"
+msgstr "Réinitialiser toutes les colonnes"
+
+#, fuzzy
+msgid "{{numSelected}} Selected"
+msgstr "{{numSelected}} Sélectionné"
+
+msgid "Select One"
+msgstr "Sélectionnez un seul choix"
+
+#, fuzzy
+msgid "Below is the resulting events.json file"
+msgstr "Vous trouverez ci-dessous le fichier events.json obtenu."
+
+# AnnotationForm
+#, fuzzy
+msgid "Fill other tags first"
+msgstr "Remplissez d'abord les autres balises."
+
+msgid "Warning"
+msgstr "Avertissement"
+
+msgid "Please fill out all required fields"
+msgstr "Veuillez compléter tous les champs obligatoires"
+
+#, fuzzy
+msgid "Event Updated!"
+msgstr "Événement mis à jour !"
+
+#, fuzzy
+msgid "Event Added!"
+msgstr "Événement ajouté !"
+
+msgid "Something went wrong!"
+msgstr "Un problème est survenu !"
+
+msgid "You won't be able to revert this!"
+msgstr "Vous ne pourrez pas revenir en arrière !"
+
+#, fuzzy
+msgid "Event Deleted!"
+msgstr "Événement supprimé !"
+
+#, fuzzy
+msgid "Tag in current dataset"
+msgid_plural "Tags in current dataset"
+msgstr[0] "Balise dans l'ensemble de données actuel"
+msgstr[1] "Balises dans l'ensemble de données actuel"
+
+#, fuzzy
+msgid "HED {{hedVersion}} Artifact"
+msgid_plural "HED {{hedVersion}} Artifacts"
+msgstr[0] "HED {{hedVersion}} Artefact"
+msgstr[1] "HED {{hedVersion}} Artefacts"
+
+msgid "Edit Event"
+msgstr "Modifier l'événement"
+
+#, fuzzy
+msgid "Select from Montage"
+msgstr "Sélectionner parmi Montage"
+
+#, fuzzy
+msgid "Select Channels"
+msgstr "Sélectionner les chaînes"
+
+msgid "Additional Columns"
+msgstr "Colonnes complémentaires"
+
+#, fuzzy
+msgid "Click this icon to view the latest HED schema"
+msgstr "Cliquez sur cette icône pour afficher le dernier schéma HED."
+
+msgid "Instance"
+msgstr "Instance"
+
+#, fuzzy
+msgid "Add tag from:"
+msgstr "Ajouter une balise à partir de :"
+
+msgid "Select Category"
+msgstr "Sélectionner une catégorie"
+
+#, fuzzy
+msgid "Select {{tagType}}"
+msgstr "Sélectionnez {{tagType}}"
+
+msgid "Event Details"
+msgstr "Détails de l’événement"
+
+# sessions.class.inc
+#, fuzzy
+msgid "Sampling Frequency"
+msgstr "Fréquence d'échantillonnage"
+
+#, fuzzy
+msgid "%s Channel Count\"  # Channel Type (ex: EEG, ECG"
+msgstr "%s Nombre de canaux » # Type de canal (ex. : EEG, ECG"
+
+msgid "Reference"
+msgstr "Référence"
+
+#, fuzzy
+msgid "Powerline Frequency"
+msgstr "Fréquence du réseau électrique"
+
+msgid "Task Name"
+msgstr "Nom de la tâche"
+
+msgid "Task Description"
+msgstr "Description de tâche"
+
+msgid "Instructions"
+msgstr "Instructions"
+
+msgid "Recording Type"
+msgstr "Type d’enregistrement"
+
+#, fuzzy
+msgid "Recording Split Count"
+msgstr "Enregistrement du nombre de divisions"
+
+#, fuzzy
+msgid "Recording Duration"
+msgstr "Durée d'enregistrement"
+
+#, fuzzy
+msgid "Epoch Length"
+msgstr "Durée de l'époque"
+
+#, fuzzy
+msgid "Subject Artefact Description"
+msgstr "Sujet Description de l'artefact"
+
+msgid "Head Circumference"
+msgstr "Tour de tête"
+
+#, fuzzy
+msgid "Placement Scheme"
+msgstr "Programme de placement"
+
+msgid "Ground"
+msgstr "Territoire"
+
+#, fuzzy
+msgid "Trigger Channel Count"
+msgstr "Nombre de canaux de déclenchement"
+
+#, fuzzy
+msgid "Misc Channel Count"
+msgstr "Nombre de canaux divers"
+
+#, fuzzy
+msgid "CogAtlas ID"
+msgstr "Identifiant CogAtlas"
+
+#, fuzzy
+msgid "CogPO ID"
+msgstr "Identifiant CogPO"
+
+msgid "Institution Name"
+msgstr "Nom de l’Institution"
+
+#, fuzzy
+msgid "Institution Address"
+msgstr "Adresse de l'établissement"
+
+msgid "Manufacturer"
+msgstr "Fabricant"
+
+#, fuzzy
+msgid "Manufacturers Model Name"
+msgstr "Nom du modèle du fabricant"
+
+#, fuzzy
+msgid "%s Manufacturer"
+msgstr "%s Fabricant"
+
+#, fuzzy
+msgid "%s Manufacturer's Model Name"
+msgstr "%s Nom du modèle du fabricant"
+
+#, fuzzy
+msgid "Device Serial Number"
+msgstr "Numéro de série de l'appareil"
+
+#, fuzzy
+msgid "Hardware Filters"
+msgstr "Filtres matériels"
+
+#, fuzzy
+msgid "Software Versions"
+msgstr "Versions logicielles"
+
+#, fuzzy
+msgid "Software Filters"
+msgstr "Filtres logiciels"
+
+#, fuzzy
+msgid "DC Offset Correction"
+msgstr "Correction du décalage CC"
+
+#, fuzzy
+msgid "Electrode Groups"
+msgstr "Groupes d'électrodes"
+
+#, fuzzy
+msgid "Electrical Stimulation"
+msgstr "Stimulation électrique"
+
+#, fuzzy
+msgid "Electrical Stimulation Parameters"
+msgstr "Paramètres de stimulation électrique"
+
+#, fuzzy
+msgid "EEG File(s)"
+msgstr "Fichier(s) EEG"
+
+#, fuzzy
+msgid "Electrodes"
+msgstr "Électrodes"
+
+msgid "Coordinate System"
+msgstr "Repère"
+
+msgid "Channels"
+msgstr "Chaînes"
+
+msgid "Events"
+msgstr "Événements"
+
+msgid "All Files"
+msgstr "Tous les fichiers"
+
+msgid "View Session"
+msgstr "Voir la session"

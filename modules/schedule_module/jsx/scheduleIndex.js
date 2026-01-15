@@ -19,6 +19,8 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/schedule_module.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/schedule_module.json';
+import frStrings from '../locale/fr/LC_MESSAGES/schedule_module.json';
 
 /**
  * Schedule Module
@@ -207,8 +209,12 @@ handleSubmit(e) {
         const msg = this.state.editModal ? t('Appointment modified.',
           {ns: 'schedule_module'}) : t('Appointment added.',
           {ns: 'schedule_module'});
-        swal.fire(t('Success!',
-          {ns: 'loris'}), msg, 'success').then((result) => {
+        swal.fire({
+          title: t('Success!', {ns: 'loris'}),
+          text: msg,
+          type: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
+        }).then((result) => {
           if (result.value) {
             this.fetchData();
             this.closeModal();
@@ -237,7 +243,7 @@ mapColumn(column, cell) {
 deleteConfirm(id) {
   const {t} = this.props;
   swal.fire({
-    title: t('Are you sure?', {ns: 'schedule_module'}),
+    title: t('Are you sure?', {ns: 'loris'}),
     text: t('You won\'t be able to revert this!',
       {ns: 'schedule_module'}),
     type: 'warning',
@@ -245,15 +251,16 @@ deleteConfirm(id) {
     confirmButtonText: t('Yes, delete it!',
       {ns: 'schedule_module'}),
     cancelButtonText: t('No, cancel it!',
-      {ns: 'schedule_module'}),
+      {ns: 'loris'}),
   }).then((result) => {
     if (result.value) {
-      swal.fire(
-        t('Deleted!', {ns: 'schedule_module'}),
-        t('Your appointment has been deleted.',
+      swal.fire({
+        title: t('Deleted!', {ns: 'schedule_module'}),
+        text: t('Your appointment has been deleted.',
           {ns: 'schedule_module'}),
-        'success',
-      );
+        type: 'success',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
       this.deleteid(id);
     }
   });
@@ -619,6 +626,8 @@ ScheduleIndex.propTypes = {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'schedule_module', hiStrings);
+  i18n.addResourceBundle('fr', 'schedule_module', frStrings);
+  i18n.addResourceBundle('ja', 'schedule_module', jaStrings);
   const Index = withTranslation(
     ['schedule_module', 'loris']
   )(ScheduleIndex);

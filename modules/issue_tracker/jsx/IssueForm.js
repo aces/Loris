@@ -290,7 +290,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='instrument'
-            label={t('Instrument', {ns: 'issue_tracker'})}
+            label={t('Instrument', {ns: 'loris', count: 1})}
             emptyOption={true}
             options={this.state.Data.instruments}
             onUserInput={this.setFormData}
