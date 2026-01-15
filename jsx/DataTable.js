@@ -25,6 +25,7 @@ import {useTranslation} from 'react-i18next';
  * @param root0.freezeColumn
  * @param root0.loading
  * @param root0.folder
+ * @param root0.rowActions
  */
 const DataTable = ({
   data,
@@ -69,10 +70,10 @@ const DataTable = ({
   };
 
   const toggleAllPageRows = () => {
-    const allSelected = paginatedRows.every(r => selectedRows.has(r.RowIdx));
+    const allSelected = paginatedRows.every((r) => selectedRows.has(r.RowIdx));
     const newSelection = new Set(selectedRows);
-    
-    paginatedRows.forEach(r => {
+
+    paginatedRows.forEach((r) => {
       if (allSelected) {
         newSelection.delete(r.RowIdx);
       } else {
@@ -450,24 +451,24 @@ const DataTable = ({
     marginLeft: 'auto',
   };
 
-  const renderRowActions = () => {                                               
-    if (!rowActions) return null;                                                
-                                                                                 
-    const selectedCount = selectedRows.size;                                    
-    const selectedData = Array.from(selectedRows).map(idx => data[idx]);        
-                                                                                 
-    return rowActions.map((action, index) => {                                  
-      let isDisabled = false;                                                    
-      let tooltip = "";                                                          
-                                                                                 
+  const renderRowActions = () => {
+    if (!rowActions) return null;
+
+    const selectedCount = selectedRows.size;
+    const selectedData = Array.from(selectedRows).map((idx) => data[idx]);
+
+    return rowActions.map((action, index) => {
+      let isDisabled = false;
+      let tooltip = '';
+
       // 1. Engine Validation (Selection counts)
-      if (selectedCount === 0) {                                                 
-        isDisabled = true;                                                       
-        tooltip = t("Please select at least one row.");                         
-      } else if (!action.isMulti && selectedCount > 1) {                         
-        isDisabled = true;                                                       
-        tooltip = t("This action only supports a single row.");                 
-      }                                                                          
+      if (selectedCount === 0) {
+        isDisabled = true;
+        tooltip = t('Please select at least one row.');
+      } else if (!action.isMulti && selectedCount > 1) {
+        isDisabled = true;
+        tooltip = t('This action only supports a single row.');
+      }
 
       // 2. Custom Validation (Business logic from config)
       if (!isDisabled && action.validate) {
@@ -477,44 +478,49 @@ const DataTable = ({
           tooltip = result.reason;
         }
       }
-                                                                                 
-      // 3. Case 1: Functional Action (onClick)
-      if (action.onClick) {
+
+      const sharedProps = {
+        key: index,
+        label: action.label + (selectedCount > 0 ? ` (${selectedCount})` : ''),
+        disabled: isDisabled,
+        tooltip: tooltip,
+        // Unified event: either runs the immediate logic OR the pre-modal logic
+        onUserInput: () => action.onUserInput?.(selectedData),
+      };
+
+      // IF it has a form, wrap it in the Modal Logic
+      if (action.renderForm) {
         return (
-          <span title={tooltip} key={index}>
-            <CTA
-              label={action.label + (selectedCount > 0 ? ` (${selectedCount})` : "")}
-              disabled={isDisabled}
-              onUserInput={() => {
-                action.onClick(selectedData);
-                if (action.onSuccess) action.onSuccess();
-                setSelectedRows(new Set()); // Clear selection after direct action
-          }}
-            />
-          </span>
+          <TriggerableModal
+            {...sharedProps}
+            tite={action.title}
+            onSubmit={action.onSubmit}
+            onClose={action.onClose}
+            onSuccess={(data) => {
+              if (action.onSuccess) action.onSuccess(data);
+              setSelectedRows(new Set());
+            }}
+          >
+            {selectedCount > 0 ? action.renderForm(selectedData) : null}
+          </TriggerableModal>
         );
       }
 
-      // 4. Case 2: Form Action (renderForm as children)
-      return (                                                                   
-        <TriggerableModal                                                        
-          key={index}                                                            
-          label={action.label + (selectedCount > 0 ? ` (${selectedCount})` : "")}
-          title={action.title}                                                   
-          disabled={isDisabled}
-          tooltip={tooltip}
-          onSubmit={action.onSubmit}                                             
-          onClose={action.onClose}                                               
-          onSuccess={(data) => {
-            if (action.onSuccess) action.onSuccess(data);
-            setSelectedRows(new Set()); 
-          }}
-        >
-          {selectedCount > 0 ? action.renderForm(selectedData) : null}
-        </TriggerableModal>                                                        
-      );                                                                         
-    });                                                                          
-  };  
+      // OTHERWISE, it's just a button (Immediate Action)
+      return (
+        <span title={tooltip} key={index}>
+          <CTA
+            {...sharedProps}
+            onUserInput={() => {
+              sharedProps.onUserInput();
+              if (action.onSuccess) action.onSuccess();
+              setSelectedRows(new Set()); // Clear selection
+            }}
+          />
+        </span>
+      );
+    });
+  };
 
   const renderTableControls = () => (
     <div className="row">
@@ -574,14 +580,17 @@ const DataTable = ({
         <thead>
           <tr className="info">
             {rowActions && (
-              <th style={{ width: '40px', textAlign: 'center' }}>
-                <input 
-                  type="checkbox" 
+              <th style={{width: '40px', textAlign: 'center'}}>
+                <input
+                  type="checkbox"
                   onChange={toggleAllPageRows}
-                  checked={paginatedRows.length > 0 && paginatedRows.every(r => selectedRows.has(r.RowIdx))}
+                  checked={
+                    paginatedRows.length > 0 && paginatedRows
+                      .every((r) => selectedRows.has(r.RowIdx))
+                  }
                 />
               </th>
-            )}    
+            )}
             {!hide.defaultColumn && (
               <th key='th_col_0' onClick={() => setSortColumn(-1)}>
                 {rowNumLabel}
@@ -612,15 +621,15 @@ const DataTable = ({
               <tr key={`tr_${item.RowIdx}`}>
                 {/* Row Checkbox */}
                 {rowActions && (
-                  <td style={{ textAlign: 'center' }}>
-                    <input 
-                      type="checkbox" 
+                  <td style={{textAlign: 'center'}}>
+                    <input
+                      type="checkbox"
                       checked={selectedRows.has(item.RowIdx)}
                       onChange={() => toggleRow(item.RowIdx)}
                     />
                   </td>
                 )}
-              
+
                 {!hide.defaultColumn && <td>{item.Content}</td>}
                 {fields.map((field, j) => {
                   if (!field.show) return null;

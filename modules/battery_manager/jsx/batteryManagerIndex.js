@@ -7,9 +7,7 @@ import {withTranslation} from 'react-i18next';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-import Modal from 'Modal';
 import swal from 'sweetalert2';
-import {CTA} from 'jsx/Form';
 
 import BatteryManagerForm from './batteryManagerForm';
 import hiStrings from '../locale/hi/LC_MESSAGES/battery_manager.json';
@@ -37,7 +35,6 @@ class BatteryManagerIndex extends Component {
       tests: {},
       test: {},
       add: false,
-      edit: false,
       error: false,
       errors: {},
       isLoaded: false,
@@ -148,13 +145,11 @@ class BatteryManagerIndex extends Component {
     const {t} = this.props;
     cell = this.mapColumn(column, cell);
     let result = <td>{cell}</td>;
-    const testId = row['ID'];
 
     // Get translated column names for comparison
     const labelInstrument = t('Instrument', {ns: 'battery_manager'});
     const labelCohort = t('Cohort', {ns: 'loris', count: 1});
     const labelSite = t('Site', {ns: 'loris', count: 1});
-    const labelActive = t('Active', {ns: 'loris'});
 
     // Check both English and translated column names
     if (column === 'Instrument' || column === labelInstrument) {
@@ -200,8 +195,8 @@ class BatteryManagerIndex extends Component {
    * Close the Form
    */
   closeForm() {
-    this.setState({add: false, edit: false, test: {}, errors: {}});
-  }  
+    this.setState({add: false, test: {}, errors: {}});
+  }
 
   /**
    * Activate Test
@@ -291,7 +286,7 @@ class BatteryManagerIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in battery_manager.class.inc
      */
-    const {options, test, tests, errors, add, edit} = this.state;
+    const {options, test, tests, errors, add} = this.state;
     const {hasPermission} = this.props;
     const fields = [
       {label: 'ID', show: false},
@@ -416,15 +411,13 @@ class BatteryManagerIndex extends Component {
     const rowActions = [
       {
         label: t('Edit Metadata', {ns: 'battery_manager'}),
-        title: 'Edit Test',
+        title: t('Edit Test', {ns: 'battery_manager'}),
         isMulti: false,
-        validation: (rows) => {},
         show: hasPermission('battery_manager_edit'),
         onSubmit: () => this.saveTest(test, 'PUT'),
         onClose: this.closeForm,
+        onUserInput: (rows) => this.loadTest(rows[0][0]),
         renderForm: (rows) => {
-          const test = JSON.parse(JSON.stringify(this.state.tests
-            .find((test) => test.id === rows[0][0])));
           return (
             <BatteryManagerForm
               test={test}
@@ -434,20 +427,18 @@ class BatteryManagerIndex extends Component {
               errors={errors}
             />
           );
-        }
+        },
       },
       {
         label: t('Activate', {ns: 'battery_manager'}),
         isMulti: true,
-        validation: (rows) => {},
-        onClick: (rows) => rows.forEach(row => this.activateTest(row[0])),
+        onClick: (rows) => rows.forEach((row) => this.activateTest(row[0])),
       },
       {
         label: t('Deactivate', {ns: 'battery_manager'}),
         isMulti: true,
-        validation: (rows) => {},
-        onClick: (rows) => rows.forEach(row => this.deactivateTest(row[0])),
-      }
+        onClick: (rows) => rows.forEach((row) => this.deactivateTest(row[0])),
+      },
     ];
 
     const testsArray = tests.map((test) => {
@@ -466,12 +457,6 @@ class BatteryManagerIndex extends Component {
         test.active,
       ];
     });
-
-    const modalTitle = edit
-      ? t('Edit Test', {ns: 'battery_manager'})
-      : t('Add New Test', {ns: 'battery_manager'});
-    const request = edit ? 'PUT' : 'POST';
-    const handleSubmit = () => this.saveTest(test, request);
 
     return (
       <div>

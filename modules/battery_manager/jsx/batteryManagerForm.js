@@ -15,7 +15,6 @@ import {withTranslation} from 'react-i18next';
  * @author Victoria Foing
  */
 class BatteryManagerForm extends Component {
-
   /**
    * Render function
    *
