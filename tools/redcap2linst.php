@@ -26,15 +26,11 @@ try {
     exit(1);
 }
 
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-
 use LORIS\redcap\client\RedcapHttpClient;
 use LORIS\redcap\client\models\RedcapDictionaryRecord;
 use LORIS\redcap\client\models\RedcapInstrument;
 use LORIS\redcap\config\RedcapConfigParser;
-use LORIS\redcap\Queries;
+use LORIS\redcap\RedcapQueries;
 
 // options
 $opts = getopt(
@@ -90,21 +86,26 @@ foreach ($dict as $dict_record) {
 $output_dir = $options['outputDir'];
 
 // back-end name/title instrument mapping
-$redcap_intruments_map = ($options['redcapConnection'])->getInstruments(true);
+$redcap_intruments_map = ($options['redcapConnection'])->getInstruments();
 
 // write instrument
 fwrite(STDOUT, "\n-- Writing LINST/META files.\n\n");
 foreach ($instruments as $instrument_name => $fields) {
+    $instrument = array_find(
+        $redcap_intruments_map,
+        fn($instrument) => $instrument->name === $instrument_name
+    );
+
     writeLINSTFile(
         $options['outputDir'],
-        $redcap_intruments_map[$instrument_name],
+        $instrument,
         $fields
     );
 }
 
 // update the db redcap_dictionary table per instrument
 fwrite(STDOUT, "\n-- Writing entries to database 'redcap_dictionary' table.\n\n");
-$queries        = new Queries($lorisInstance);
+$queries        = new RedcapQueries($lorisInstance);
 $nbEntriesCount = [
     'created'   => 0,
     'updated'   => 0,
@@ -137,14 +138,15 @@ fwrite(STDOUT, "\n-- end\n");
 /**
  * Updates the redcap_diciotnary table in db.
  *
- * @param LORIS\redcap\Queries     $queries           queries object
- * @param string                   $instrument_name   the instrument name to update
- * @param RedcapDictionaryRecord[] $redcap_dictionary the redcap dictionary
+ * @param LORIS\redcap\RedcapQueries $queries           queries object
+ * @param string                     $instrument_name   the instrument name to
+ *                                                      update
+ * @param RedcapDictionaryRecord[]   $redcap_dictionary the redcap dictionary
  *
  * @return int[] an array of #created and #updated entries for this instrument
  */
 function updateREDCapDictionaryInstrumentEntries(
-    Queries $queries,
+    RedcapQueries $queries,
     string $instrument_name,
     array $redcap_dictionary
 ): array {

@@ -258,7 +258,7 @@ class RedcapDictionaryRecord
     {
         return [
             'FieldName'          => $this->field_name,
-            'FormName'           => $this->form_name,
+            'InstrumentName'     => $this->form_name,
             'SectionHeader'      => $this->section_header,
             'FieldType'          => $this->field_type,
             'FieldLabel'         => $this->field_label,
@@ -269,7 +269,7 @@ class RedcapDictionaryRecord
             'TextValidationMax'  => $this->text_validation_max,
             'Identifier'         => $this->identifier,
             'BranchingLogic'     => $this->branching_logic,
-            'FieldRequired'      => $this->required_field,
+            'FieldRequired'      => (int) $this->required_field,
             'CustomAlignment'    => $this->custom_alignment,
             'QuestionNumber'     => $this->question_number,
             'MatrixGroupName'    => $this->matrix_group_name,

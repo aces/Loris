@@ -10,7 +10,7 @@ INSERT INTO permissions (code, description, moduleID, categoryID)
 INSERT INTO perm_perm_action_rel (permID, actionID)
     VALUES (
         (SELECT permID FROM permissions WHERE code = 'redcap_ui_view'),
-        (SELECT ID FROM permisssions_action WHERE name = 'View')
+        (SELECT ID FROM permissions_action WHERE name = 'View')
     );
 
 -- adds the redcap dictionary table
