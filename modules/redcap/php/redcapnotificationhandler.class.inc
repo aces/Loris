@@ -126,7 +126,7 @@ class RedcapNotificationHandler
             $this->_acquireNotificationLock();
 
             // get data from redcap
-            $records = $this->_redcap_client->getInstrumentRecord(
+            $records = $this->_redcap_client->getInstrumentRecords(
                 $this->_redcap_notif->instrument_name,
                 $this->_redcap_notif->unique_event_name,
                 $this->_redcap_notif->record_id,
