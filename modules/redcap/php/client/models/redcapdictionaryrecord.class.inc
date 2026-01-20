@@ -231,6 +231,54 @@ class RedcapDictionaryRecord
     }
 
     /**
+     * Used to insert the diciotnary entry in the db redcap_dictionary.
+     *
+     * @return array{
+     *   branching_logic: string|null,
+     *   custom_alignment: string|null,
+     *   field_annotation: string|null,
+     *   field_label: string,
+     *   field_name: string,
+     *   field_note: string|null,
+     *   field_type: string,
+     *   form_name: string,
+     *   identifier: string|null,
+     *   matrix_group_name: string|null,
+     *   matrix_ranking: string|null,
+     *   question_number: string|null,
+     *   required_field: bool,
+     *   section_header: string|null,
+     *   select_choices_or_calculations: string|null,
+     *   text_validation_max: string|null,
+     *   text_validation_min: string|null,
+     *   text_validation_type_or_show_slider_number: string|null
+     * }
+     */
+    public function toDatabaseArray(): array
+    {
+        return [
+            'FieldName'          => $this->field_name,
+            'FormName'           => $this->form_name,
+            'SectionHeader'      => $this->section_header,
+            'FieldType'          => $this->field_type,
+            'FieldLabel'         => $this->field_label,
+            'Choices'            => $this->select_choices,
+            'FieldNote'          => $this->field_note,
+            'TextValidationType' => $this->text_validation_type,
+            'TextValidationMin'  => $this->text_validation_min,
+            'TextValidationMax'  => $this->text_validation_max,
+            'Identifier'         => $this->identifier,
+            'BranchingLogic'     => $this->branching_logic,
+            'FieldRequired'      => $this->required_field,
+            'CustomAlignment'    => $this->custom_alignment,
+            'QuestionNumber'     => $this->question_number,
+            'MatrixGroupName'    => $this->matrix_group_name,
+            'MatrixRanking'      => $this->matrix_ranking,
+            'FieldAnnotation'    => $this->field_annotation,
+        ];
+    }
+
+    /**
      * Get the LINST version of that dicitonary record
      *
      * @throws \LorisException

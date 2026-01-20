@@ -103,6 +103,7 @@ DROP TABLE IF EXISTS `modules`;
 
 -- 0000-00-00-schema.sql
 DROP TABLE IF EXISTS `redcap_notification`;
+DROP TABLE IF EXISTS `redcap_dictionary`;
 
 DROP TABLE IF EXISTS `candidate_consent_rel`;
 DROP TABLE IF EXISTS `consent`;

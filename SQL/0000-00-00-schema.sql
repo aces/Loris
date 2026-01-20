@@ -2708,3 +2708,26 @@ CREATE TABLE `redcap_notification` (
   PRIMARY KEY (`id`),
   KEY `i_redcap_notif_received_dt` (`received_dt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `redcap_dictionary` (
+    ID int(10) unsigned NOT NULL auto_increment,
+    InstrumentName varchar(255),
+    FieldName varchar(255) NOT NULL,
+    FieldRequired boolean NOT NULL,
+    FieldType varchar(20) NOT NULL,
+    FieldLabel text NOT NULL,
+    SectionHeader text,
+    Choices text,
+    FieldNote text,
+    TextValidationType varchar(50),
+    TextValidationMin varchar(50),
+    TextValidationMax varchar(50),
+    Identifier text,
+    BranchingLogic text,
+    CustomAlignment varchar(10),
+    QuestionNumber text,
+    MatrixGroupName varchar(100),
+    MatrixRanking varchar(50),
+    FieldAnnotation text,
+    PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='All REDCap instrument fields and variables';
