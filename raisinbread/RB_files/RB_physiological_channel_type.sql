@@ -14,7 +14,7 @@ INSERT INTO `physiological_channel_type` (`PhysiologicalChannelTypeID`, `Channel
 INSERT INTO `physiological_channel_type` (`PhysiologicalChannelTypeID`, `ChannelTypeName`, `ChannelDescription`) VALUES (11,'MEGMAG','MEG magnetometer');
 INSERT INTO `physiological_channel_type` (`PhysiologicalChannelTypeID`, `ChannelTypeName`, `ChannelDescription`) VALUES (12,'MEGGRADAXIAL','MEG axial gradiometer');
 INSERT INTO `physiological_channel_type` (`PhysiologicalChannelTypeID`, `ChannelTypeName`, `ChannelDescription`) VALUES (13,'MEGGRADPLANAR','MEG planar gradiometer');
-INSERT INTO `physiological_channel_type` (`PhysiologicalChannelTypeID`, `ChannelTypeName`, `ChannelDescription`) VALUES (14,'MEGGREFMAG','MEG reference magnetometer');
+INSERT INTO `physiological_channel_type` (`PhysiologicalChannelTypeID`, `ChannelTypeName`, `ChannelDescription`) VALUES (14,'MEGREFMAG','MEG reference magnetometer');
 INSERT INTO `physiological_channel_type` (`PhysiologicalChannelTypeID`, `ChannelTypeName`, `ChannelDescription`) VALUES (15,'MEGREFGRADAXIAL','MEG reference axial gradiometer');
 INSERT INTO `physiological_channel_type` (`PhysiologicalChannelTypeID`, `ChannelTypeName`, `ChannelDescription`) VALUES (16,'MEGREFGRADPLANAR','MEG reference planar gradiometer');
 INSERT INTO `physiological_channel_type` (`PhysiologicalChannelTypeID`, `ChannelTypeName`, `ChannelDescription`) VALUES (17,'MEGOTHER','Any other type of MEG sensor');

@@ -432,7 +432,7 @@ INSERT INTO physiological_channel_type
   ('MEGMAG',           'MEG magnetometer'                                    ),
   ('MEGGRADAXIAL',     'MEG axial gradiometer'                               ),
   ('MEGGRADPLANAR',    'MEG planar gradiometer'                              ),
-  ('MEGGREFMAG',       'MEG reference magnetometer'                          ),
+  ('MEGREFMAG',        'MEG reference magnetometer'                          ),
   ('MEGREFGRADAXIAL',  'MEG reference axial gradiometer'                     ),
   ('MEGREFGRADPLANAR', 'MEG reference planar gradiometer'                    ),
   ('MEGOTHER',         'Any other type of MEG sensor'                        ),
@@ -762,4 +762,3 @@ CREATE TABLE `physiological_task_event_history` (
   CONSTRAINT `FK_physiological_task_event_modified_by_history`
     FOREIGN KEY (`ModifiedBy`) REFERENCES `users` (`ID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
