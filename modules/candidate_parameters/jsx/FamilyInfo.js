@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  FormElement,
+  StaticElement,
+  ButtonElement,
+  SelectElement,
+} from 'jsx/Form';
+
 
 /**
  * Family info component
