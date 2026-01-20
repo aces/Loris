@@ -111,10 +111,10 @@ class Signup extends \NDB_Page implements ETagCalculator
             'UTF-8',
             false
         );
-        $site                = $values['site'];
-        $project             = $values['project'];
+        $site     = $values['site'];
+        $project  = $values['project'];
         $language_preference = $values['language_preference'] ?? null;
-        $fullname            = $name . ' ' . $lastname;
+        $fullname = $name . ' ' . $lastname;
 
         $vals = [
             'UserID'               => $from,
