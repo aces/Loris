@@ -4,7 +4,7 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
   SelectElement,
@@ -15,7 +15,7 @@ import {
   TextareaElement,
   FileElement,
 } from 'jsx/Form';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Issue add/edit form
@@ -70,7 +70,7 @@ class IssueForm extends Component {
    */
   openAttachmentUploadModal(e) {
     e.preventDefault();
-    this.setState({ showAttachmentUploadModal: true });
+    this.setState({showAttachmentUploadModal: true});
   }
 
   /**
@@ -94,13 +94,13 @@ class IssueForm extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t('An error occurred while loading the page.',
-        { ns: 'loris' })}</h3>;
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for data to load
@@ -129,31 +129,31 @@ class IssueForm extends Component {
     siteOptions['all'] = 'All Sites';
 
     if (this.state.isNewIssue) {
-      headerText = t('Create New Issue', { ns: 'issue_tracker' });
-      lastUpdateValue = t('Never!', { ns: 'issue_tracker' });
-      lastUpdatedByValue = t('No-one!', { ns: 'issue_tracker' });
-      dateCreated = t('Sometime Soon!', { ns: 'issue_tracker' });
-      submitButtonValue = t('Submit Issue', { ns: 'issue_tracker' });
+      headerText = t('Create New Issue', {ns: 'issue_tracker'});
+      lastUpdateValue = t('Never!', {ns: 'issue_tracker'});
+      lastUpdatedByValue = t('No-one!', {ns: 'issue_tracker'});
+      dateCreated = t('Sometime Soon!', {ns: 'issue_tracker'});
+      submitButtonValue = t('Submit Issue', {ns: 'issue_tracker'});
       attachmentFileElement = (
         <FileElement
           name='file'
-          label={t('Attachment for issue', { ns: 'issue_tracker' })}
+          label={t('Attachment for issue', {ns: 'issue_tracker'})}
           onUserInput={this.setFormData}
           errorMessage={this.state.errorMessage}
           value={this.state.formData.file}
         />
       );
     } else {
-      headerText = t('Edit Issue', { ns: 'issue_tracker' })
+      headerText = t('Edit Issue', {ns: 'issue_tracker'})
         + ' #' + this.state.issueData.issueID;
       lastUpdateValue = this.state.issueData.lastUpdate;
       lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
       dateCreated = this.state.issueData.dateCreated;
-      submitButtonValue = t('Update Issue', { ns: 'issue_tracker' });
+      submitButtonValue = t('Update Issue', {ns: 'issue_tracker'});
       attachmentUploadBtn = (
         <ButtonElement
           onUserInput={this.openAttachmentUploadModal}
-          label={t('Add Attachment', { ns: 'issue_tracker' })}
+          label={t('Add Attachment', {ns: 'issue_tracker'})}
         />
       );
     }
@@ -178,7 +178,7 @@ class IssueForm extends Component {
           <div className='col-md-6'>
             <StaticElement
               name='lastUpdate'
-              label={t('Last Update', { ns: 'issue_tracker' }) + ': '}
+              label={t('Last Update', {ns: 'issue_tracker'}) + ': '}
               ref='lastUpdate'
               text={lastUpdateValue}
             />
@@ -186,7 +186,7 @@ class IssueForm extends Component {
           <div className='col-md-6'>
             <StaticElement
               name='lastUpdatedBy'
-              label={t('Last Updated By', { ns: 'issue_tracker' }) + ': '}
+              label={t('Last Updated By', {ns: 'issue_tracker'}) + ': '}
               ref='lastUpdatedBy'
               text={lastUpdatedByValue}
             />
@@ -194,7 +194,7 @@ class IssueForm extends Component {
           <div className='col-md-6'>
             <StaticElement
               name='dateCreated'
-              label={t('Date Created', { ns: 'issue_tracker' }) + ': '}
+              label={t('Date Created', {ns: 'issue_tracker'}) + ': '}
               ref='dateCreated'
               text={dateCreated}
             />
@@ -202,7 +202,7 @@ class IssueForm extends Component {
           <div className='col-md-6'>
             <StaticElement
               name='reporter'
-              label={t('Reporter', { ns: 'issue_tracker' }) + ': '}
+              label={t('Reporter', {ns: 'issue_tracker'}) + ': '}
               ref='reporter'
               text={this.state.issueData.reporter}
             />
@@ -214,7 +214,7 @@ class IssueForm extends Component {
     return (
       <div>
         <Modal
-          title={t('Attachment for Issue', { ns: 'issue_tracker' })}
+          title={t('Attachment for Issue', {ns: 'issue_tracker'})}
           onClose={this.closeAttachmentUploadModal}
           show={this.state.showAttachmentUploadModal}
         >
@@ -231,7 +231,7 @@ class IssueForm extends Component {
           {header}
           <TextboxElement
             name='title'
-            label={t('Title', { ns: 'issue_tracker' })}
+            label={t('Title', {ns: 'issue_tracker'})}
             onUserInput={this.setFormData}
             value={this.state.formData.title}
             disabled={!hasEditPermission}
@@ -239,7 +239,7 @@ class IssueForm extends Component {
           />
           <TextareaElement
             name='description'
-            label={t('Description', { ns: 'issue_tracker' })}
+            label={t('Description', {ns: 'issue_tracker'})}
             onUserInput={this.setFormData}
             value={this.state.formData.description}
             disabled={!hasEditPermission}
@@ -247,7 +247,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='assignee'
-            label={t('Assignee', { ns: 'issue_tracker' })}
+            label={t('Assignee', {ns: 'issue_tracker'})}
             emptyOption={true}
             options={this.state.Data.assignees}
             disabledOptions={this.state.Data.inactiveUsers}
@@ -258,7 +258,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='centerID'
-            label={t('Site', { ns: 'loris', count: 1 })}
+            label={t('Site', {ns: 'loris', count: 1})}
             emptyOption={true}
             options={siteOptions}
             onUserInput={this.setFormData}
@@ -268,7 +268,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='status'
-            label={t('Status', { ns: 'loris' })}
+            label={t('Status', {ns: 'loris'})}
             emptyOption={false}
             options={this.state.Data.statuses}
             onUserInput={this.setFormData}
@@ -279,7 +279,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='priority'
-            label={t('Priority', { ns: 'issue_tracker' })}
+            label={t('Priority', {ns: 'issue_tracker'})}
             emptyOption={false}
             options={this.state.Data.priorities}
             onUserInput={this.setFormData}
@@ -290,7 +290,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='instrument'
-            label={t('Instrument', { ns: 'loris', count: 1 })}
+            label={t('Instrument', {ns: 'loris', count: 1})}
             emptyOption={true}
             options={this.state.Data.instruments}
             onUserInput={this.setFormData}
@@ -299,7 +299,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='category'
-            label={t('Category', { ns: 'issue_tracker' })}
+            label={t('Category', {ns: 'issue_tracker'})}
             emptyOption={true}
             options={this.state.Data.categories}
             onUserInput={this.setFormData}
@@ -308,7 +308,7 @@ class IssueForm extends Component {
           />
           <SelectElement
             name='module'
-            label={t('Module', { ns: 'loris' })}
+            label={t('Module', {ns: 'loris'})}
             emptyOption={true}
             options={this.state.Data.modules}
             onUserInput={this.setFormData}
@@ -317,14 +317,14 @@ class IssueForm extends Component {
           />
           <TextboxElement
             name='PSCID'
-            label={t('PSCID', { ns: 'loris' })}
+            label={t('PSCID', {ns: 'loris'})}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.PSCID}
           />
           <TextboxElement
             name='visitLabel'
-            label={t('Visit Label', { ns: 'loris' })}
+            label={t('Visit Label', {ns: 'loris'})}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.visitLabel}
@@ -332,7 +332,7 @@ class IssueForm extends Component {
           {this.state.Data.hasExternalIdPermission &&
             <TextboxElement
               name='externalIssueID'
-              label={t('External Issue ID', { ns: 'issue_tracker' })}
+              label={t('External Issue ID', {ns: 'issue_tracker'})}
               onUserInput={this.setFormData}
               disabled={!this.state.Data.hasExternalIdPermission}
               value={this.state.formData.externalIssueID}
@@ -340,18 +340,18 @@ class IssueForm extends Component {
           }
           <SelectElement
             name='watching'
-            label={t('Watching?', { ns: 'issue_tracker' })}
+            label={t('Watching?', {ns: 'issue_tracker'})}
             emptyOption={false}
             options={{
-              No: t('No', { ns: 'loris' }),
-              Yes: t('Yes', { ns: 'loris' }),
+              No: t('No', {ns: 'loris'}),
+              Yes: t('Yes', {ns: 'loris'}),
             }}
             onUserInput={this.setFormData}
             value={isWatching}
           />
           <SelectElement
             name='othersWatching'
-            label={t('Add others to watching?', { ns: 'issue_tracker' })}
+            label={t('Add others to watching?', {ns: 'issue_tracker'})}
             emptyOption={true}
             autoSelect={false}
             options={this.state.Data.otherWatchers}
@@ -363,7 +363,7 @@ class IssueForm extends Component {
             <TextareaElement
               name='comment'
               hidden={true}
-              label={t('New Comment', { ns: 'issue_tracker' })}
+              label={t('New Comment', {ns: 'issue_tracker'})}
               onUserInput={this.setFormData}
               value={this.state.formData.comment}
             />
@@ -390,7 +390,7 @@ class IssueForm extends Component {
         console.error(response.status);
         this.setState({
           error: this.props.t('An error occurred when loading the form!',
-            { ns: 'issue_tracker' }) + '\n Error: ' +
+            {ns: 'issue_tracker'}) + '\n Error: ' +
             response.status + ' (' + response.statusText + ')',
         });
         return;
@@ -436,7 +436,7 @@ class IssueForm extends Component {
       console.error(error);
       this.setState({
         loadError: this.props.t('An error occurred when loading the form!',
-          { ns: 'issue_tracker' }),
+          {ns: 'issue_tracker'}),
       });
     });
   }
@@ -447,7 +447,7 @@ class IssueForm extends Component {
    * @param {event} e form submit event
    */
   handleSubmit(e) {
-    const { t } = this.props;
+    const {t} = this.props;
     e.preventDefault();
 
     const state = Object.assign({}, this.state);
@@ -465,7 +465,7 @@ class IssueForm extends Component {
     }
 
     // Prevent multiple submissions
-    this.setState({ submissionResult: 'pending' });
+    this.setState({submissionResult: 'pending'});
 
     for (let key in myFormData) {
       if (myFormData[key] !== '') {
@@ -484,7 +484,7 @@ class IssueForm extends Component {
       if (!response.ok) {
         console.error(response.status);
         response.json().then((data) => {
-          this.setState({ submissionResult: 'error' });
+          this.setState({submissionResult: 'error'});
           let msgType = 'error';
           const message = data.error ?? data.message;
           this.showAlertMessage(msgType, message);
@@ -496,7 +496,7 @@ class IssueForm extends Component {
         let msgType = 'success';
         let message = this.state.isNewIssue ?
           t('You will be redirected to main page in 2 seconds!',
-            { ns: 'issue_tracker' }) :
+            {ns: 'issue_tracker'}) :
           '';
         this.showAlertMessage(msgType, message);
         this.setState({
@@ -507,10 +507,10 @@ class IssueForm extends Component {
     }).catch((error) => {
       // Network error
       console.error(error);
-      this.setState({ submissionResult: 'error' });
+      this.setState({submissionResult: 'error'});
       let msgType = 'error';
       let message = t('Failed to submit issue :(',
-        { ns: 'issue_tracker' });
+        {ns: 'issue_tracker'});
       this.showAlertMessage(msgType, message);
     });
   }
@@ -540,19 +540,19 @@ class IssueForm extends Component {
    * @return {boolean} - true if all required fields are filled, false otherwise
    */
   isValidForm(formRefs, formDataToCheck) {
-    const { t } = this.props;
+    const {t} = this.props;
     let isValidForm = true;
     const requiredFields = {
       title: null,
       assignee: null,
     };
 
-    Object.keys(requiredFields).map(function (field) {
+    Object.keys(requiredFields).map(function(field) {
       if (formDataToCheck[field]) {
         requiredFields[field] = formDataToCheck[field];
       } else if (formRefs[field]) {
         formRefs[field].props.errorMessage = t('This field is required',
-          { ns: 'issue_tracker' });
+          {ns: 'issue_tracker'});
         isValidForm = false;
       }
     });
@@ -568,21 +568,21 @@ class IssueForm extends Component {
    * @param {string} message - message content
    */
   showAlertMessage(msgType, message) {
-    const { t } = this.props;
+    const {t} = this.props;
     let type = 'success';
-    let title = t('Issue updated!', { ns: 'issue_tracker' });
+    let title = t('Issue updated!', {ns: 'issue_tracker'});
     let text = message || '';
     let timer = null;
     let confirmation = true;
-    let callback = function () {
-      this.setState({ submissionResult: null });
+    let callback = function() {
+      this.setState({submissionResult: null});
     };
 
     if (msgType === 'success' && this.state.isNewIssue) {
-      title = t('Issue created!', { ns: 'issue_tracker' });
+      title = t('Issue created!', {ns: 'issue_tracker'});
       timer = 2000;
       confirmation = false;
-      callback = function () {
+      callback = function() {
         this.setState({
           formData: {},
           submissionResult: null,
@@ -591,10 +591,10 @@ class IssueForm extends Component {
       };
     } else if (msgType === 'error') {
       type = 'error';
-      title = t('Error!', { ns: 'loris' });
+      title = t('Error!', {ns: 'loris'});
     } else if (msgType === 'success' && !this.state.isNewIssue) {
-      callback = function () {
-        this.setState({ submissionResult: null });
+      callback = function() {
+        this.setState({submissionResult: null});
         this.getFormData();
       };
     }
