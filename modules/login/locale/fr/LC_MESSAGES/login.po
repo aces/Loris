@@ -81,6 +81,9 @@ msgstr "Choisissez votre site :"
 msgid "Choose your project:"
 msgstr "Choisissez votre projet :"
 
+msgid "Preferred language:"
+msgstr "Langue préférée :"
+
 msgid "Radiologist"
 msgstr "Radiologue"
 
