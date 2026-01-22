@@ -423,8 +423,8 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                         }
                     }
                 }
-                yield "$iCandID" => $candData;
             }
+            yield "$iCandID" => $candData;
         }
     }
 }
