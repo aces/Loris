@@ -98,11 +98,25 @@ $records = [];
 
 foreach ($unique_event_names as $unique_event_name) {
     foreach ($importable_instruments as $importable_instrument) {
-        $instrument_records = $redcap_client->getInstrumentRecords(
-            $importable_instrument,
-            $unique_event_name,
-            null,
+        fprintf(
+            STDOUT,
+            "Fetching records for unique event name '{$unique_event_name}' and "
+            . "instrument '{$importable_instrument}'...\n",
         );
+
+        try {
+            $instrument_records = $redcap_client->getInstrumentRecords(
+                $importable_instrument,
+                $unique_event_name,
+                null,
+            );
+        } catch (\LorisException $exception) {
+            fprintf(
+                STDERR,
+                "Failed to fetch instrument records:\n{$exception->getMessage()}\n",
+            );
+            continue;
+        }
 
         $records = array_merge($records, $instrument_records);
     }
@@ -133,14 +147,14 @@ foreach ($records as $record) {
 
     try {
         if ($record_importer->import($record)) {
-            $records_imported_count += 1;
             fprintf(STDOUT, "Successfully imported record.\n");
+            $records_imported_count += 1;
         } else {
             fprintf(STDOUT, "Skipped record import.\n");
             $records_ignored_count += 1;
         }
     } catch (\LorisException $exception) {
-        fprintf(STDOUT, "Failed record import:\n{$exception->getMessage()}.\n");
+        fprintf(STDOUT, "Failed to import record:\n{$exception->getMessage()}\n");
         $records_failed_count += 1;
     }
 }
