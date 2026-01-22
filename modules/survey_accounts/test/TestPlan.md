@@ -20,7 +20,7 @@
     * Once you hit “Email Survey” you should get a blank page where you can customize an email to go along with the URL –
     enter in a message and make sure it sends (also try the "Close" button on this page).
     The email can be pre-populated for each instrument using participant_emails table.
-    * Ensure that the instrument being sent is what you get (and that the URL brings you to the correct survey).
+    * Ensure that the instruments being sent are what you get (and that the URL brings you to the correct survey).
     * Use the `Create Survey` button (no email address should be specified).
     * Use the `Email survey` button by specifying email address.
     * Check that the survey list shows the newly created survey with all the correct information.
@@ -28,6 +28,7 @@
     * Try mismatched PSCID and DCCID and should get an error message.
     * Try creating duplicate instrument for a candidate for a visit, should get an error message.
     * Try creating instrument for a candidate in a non-existing visit, should get an error message.
+    * Try creating a batch of surveys by selecting multiple instruments
     [Manual Testing]
 7.  Enable a new instrument for Survey module and verify survey can be created. (IsDirectEntry set to 1 in test_names table).
     [Manual Testing]
