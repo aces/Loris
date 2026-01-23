@@ -170,41 +170,7 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
-        if (!$this->_instrument->determineDataEntryAllowed()) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Can not update instruments that are flagged as complete.'
-            );
-        }
-
-        $data = json_decode((string) $request->getBody(), true);
-        if (!is_array($data)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
-            );
-        }
-
-        if (!$this->_instrument->validate($data)) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
-            );
-        }
-
-        try {
-            $this->_instrument->clearInstrument();
-            $version = $request->getAttribute('LORIS-API-Version');
-            if ($version == 'v0.0.3') {
-                $instrumentname = $this->_instrument->testName;
-                $this->_instrument->_saveValues($data[$instrumentname]);
-            } else {
-                $this->_instrument->_saveValues($data['Data']);
-            }
-            $this->_instrument->score();
-            $this->_instrument->updateRequiredElementsCompletedFlag();
-        } catch (\Throwable $e) {
-            error_log($e->getMessage());
-            return new \LORIS\Http\Response\JSON\InternalServerError();
-        }
-        return (new \LORIS\Http\Response\JSON\NoContent());
+        return $this->_handlePATCHAndPUT($request);
     }
 
     /**
@@ -217,12 +183,37 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
+        return $this->_handlePATCHAndPUT($request);
+    }
+
+    /**
+     * Handles a PUT and PATCH request.
+     * Mainly serves as a quick PATCH/PUT selection to validate all (PUT) or
+     * part (PATCH) of the sent payload.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handlePATCHAndPUT(
+        ServerRequestInterface $request
+    ): ResponseInterface {
+        $requestType = $request->getMethod();
+        if ($requestType !== "PATCH" && $requestType !== "PUT") {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
+        $isRequestPUT = $requestType === "PUT";
+
+        // data entry allowed?
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
             );
         }
 
+        // get payload
         $data = json_decode((string) $request->getBody(), true);
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
@@ -230,27 +221,48 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if (!$this->_instrument->validate($data)) {
+        // validate given data against the instrument
+        $instrumentName = $this->_instrument->testName;
+        try {
+            $version = $request->getAttribute('LORIS-API-Version');
+
+            // extract data according to LORIS API version
+            $instrumentData = $version == 'v0.0.3'
+                ? ($data[$instrumentName] ?? [])
+                : ($data['Data'] ?? []);
+
+            // validate
+            $this->_instrument->validate(
+                $instrumentData,
+                $isRequestPUT
+            );
+        } catch (\LorisException $th) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                "Could not update. {$th->getMessage()}"
+            );
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+                "Could not update."
             );
         }
 
+        // update values
         try {
-            $version = $request->getAttribute('LORIS-API-Version');
-            if ($version == 'v0.0.3') {
-                $instrumentname = $this->_instrument->testName;
-                $this->_instrument->_saveValues($data[$instrumentname]);
-            } else {
-                $this->_instrument->_saveValues($data['Data']);
+            // only clear if PUT
+            if ($isRequestPUT) {
+                $this->_instrument->clearInstrument();
             }
+
+            // save/score data
+            $this->_instrument->_saveValues($instrumentData);
             $this->_instrument->score();
             $this->_instrument->updateRequiredElementsCompletedFlag();
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError();
         }
-        return (new \LORIS\Http\Response\JSON\NoContent());
+        return new \LORIS\Http\Response\JSON\NoContent();
     }
 
     /**

@@ -37,7 +37,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     /**
      * The instrument (or instrument mock) being tested.
      *
-     * @var \NDB_BVL_Instrument
+     * @var \PHPUnit\Framework\MockObject\MockObject&\NDB_BVL_Instrument
      */
     private $_instrument;
 
@@ -1692,24 +1692,256 @@ class NDB_BVL_Instrument_Test extends TestCase
 
     /**
      * Test that determineDataEntryAllowed returns true if the Data_entry is anything
-     * but 'Complete' and returns false if Data_entry is 'Complete. Test that
-     * validate simply calls determineDataEntryAllowed and has the same output.
+     * but 'Complete' and returns false if Data_entry is 'Complete.
      *
      * @covers NDB_BVL_Instrument::determineDataEntryAllowed
-     * @covers NDB_BVL_Instrument::validate
+     *
      * @return void
      */
-    function testDetermineDataEntryAllowed()
+    public function testDetermineDataEntryAllowed()
     {
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertTrue($this->_instrument->determineDataEntryAllowed());
-        $this->assertTrue($this->_instrument->validate(['value1']));
         $this->_instrument->commentID = 'commentID2';
         $this->assertFalse($this->_instrument->determineDataEntryAllowed());
-        $this->assertFalse($this->_instrument->validate(['value1']));
+    }
+
+    /**
+     * Test that check validation method with received data.
+     * Empty array parameter case.
+     *
+     * @covers NDB_BVL_Instrument::validate
+     *
+     * @return void
+     */
+    public function testValidateEmptyParameter(): void
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->table     = 'medical_history';
+        $this->_instrument->commentID = 'commentID1';
+        $this->expectException("LorisException");
+        $this->expectExceptionMessage("No data provided.");
+        $this->_instrument->validate([]);
+    }
+    /**
+     * Test that check validation method with received data.
+     * Keys validation case - missing keys
+     *
+     * @covers NDB_BVL_Instrument::validate
+     *
+     * @phan-suppress PhanUndeclaredProperty
+     * @phan-suppress PhanUndeclaredMethod
+     *
+     * @return void
+     */
+    public function testValidateMissingRequiredKeys(): void
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+
+        /**
+          * Phan-var
+          *
+          * @phan-var \NDB_BVL_Instrument $instrument
+          */
+
+        $instrument = $this->getMockBuilder(
+            \NDB_BVL_Instrument::class
+        )->disableOriginalConstructor()
+            ->onlyMethods(
+                ["getFullName",
+                    "getSubtestList",
+                    "getDataDictionary"
+                ]
+            )->getMock();
+
+        $instrument->method('getDataDictionary')->willReturn(
+            [
+                (object)['fieldname' => 'arthritis'],
+                (object)['fieldname' => 'hypertension'],
+                (object)['fieldname' => 'concussion_or_head_trauma'],
+            ]
+        );
+
+        // Stub abstract methods so PHPUnit can instantiate the mock
+        $instrument->method('getFullName')->willReturn('Test Instrument');
+        $instrument->method('getSubtestList')->willReturn([]);
+        // phan-suppress-next-line PhanUndeclaredProperty
+        $instrument->_requiredElements = ['arthritis', 'hypertension'];
+
+        // Now call validate with data missing required fields
+        $this->expectException(\LorisException::class);
+        $this->expectExceptionMessageMatches(
+            '/arthritis.*hypertension|hypertension.*arthritis/'
+        );
+
+        // phan-suppress-next-line PhanUndeclaredMethod
+        $instrument->validate(
+            [
+                'concussion_or_head_trauma' => null,
+            ]
+        );
+    }
+
+    /**
+     * Test that check validation method with received data.
+     * Keys validation case - additional keys.
+     *
+     * @covers NDB_BVL_Instrument::validate
+     *
+     * @return void
+     */
+    public function testValidateAdditionalKeys(): void
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+        $this->_instrument->table     = 'medical_history';
+        $this->_instrument->commentID = 'commentID1';
+
+        // using factory to init the instrument
+        // not doing doe snot pass the comparison
+        // (not the full list of fields)
+
+        // data - complete keys + empty values
+        $instrumentQuestions = [
+            // p1
+            "arthritis"                       => null, // required
+            "arthritis_age"                   => null,
+            "pulmonary_issues"                => null,
+            "pulmonary_issues_specific"       => null,
+            // p2
+            "hypertension"                    => null, // required
+            "hypertension_while_pregnant"     => null,
+            "hypertension_while_pregnant_age" => null,
+            // p3
+            "concussion_or_head_trauma"       => null, // required
+            "concussion_1_description"        => null,
+            "concussion_1_hospitalized"       => null,
+            "concussion_1_age"                => null,
+            "concussion_2_description"        => null,
+            "concussion_2_hospitalized"       => null,
+            "concussion_2_age"                => null,
+            "concussion_3_description"        => null,
+            "concussion_3_hospitalized"       => null,
+            "concussion_3_age"                => null,
+            "current_concussion_symptoms"     => null,
+        ];
+
+        // additional keys, adding two new unexpected keys
+        $instrumentQuestions["aaa"] = 123;
+        $instrumentQuestions["bbb"] = "a text";
+
+        // expect error on these 2 additional fields
+        $this->expectException("LorisException");
+        $this->expectExceptionMessageMatches(
+            '/Additional field\(s\) not permitted:.*aaa,bbb/'
+        );
+        // phan-suppress-next-line PhanUndeclaredMethod
+        $this->_instrument->validate($instrumentQuestions);
+    }
+
+    /**
+     * Test that check validation method with received data.
+     * Values validation case.
+     *
+     * @covers NDB_BVL_Instrument::validate
+     *
+     * @phan-suppress PhanUndeclaredProperty
+     * @phan-suppress PhanUndeclaredMethod
+     * @return        void
+     */
+    public function testValidateValues(): void
+    {
+        $this->_setUpMockDB();
+        $this->_setTableData();
+
+        $this->_instrument = $this->getMockBuilder(
+            \NDB_BVL_Instrument::class
+        )
+            ->disableOriginalConstructor()
+            ->onlyMethods(["getFullName", "getSubtestList", "getDataDictionary"])
+            ->getMock();
+        // phan-suppress-next-line PhanUndeclaredProperty
+        $this->_instrument->_requiredElements = [
+            'arthritis', 'hypertension', 'concussion_or_head_trauma'
+        ];
+
+        $instrumentQuestions = [
+        // p1
+            "arthritis"                       => 'string', // required
+            "arthritis_age"                   => 'string',
+            "pulmonary_issues"                => 'string',
+            "pulmonary_issues_specific"       => 'string',
+        // p2
+            "hypertension"                    => 'string', // required
+            "hypertension_while_pregnant"     => 'string',
+            "hypertension_while_pregnant_age" => 'string',
+        // p3
+            "concussion_or_head_trauma"       => 'string', // required
+            "concussion_1_description"        => 'string',
+            "concussion_1_hospitalized"       => 'string',
+            "concussion_1_age"                => 'string',
+            "concussion_2_description"        => 'string',
+            "concussion_2_hospitalized"       => 'string',
+            "concussion_2_age"                => 'string',
+            "concussion_3_description"        => 'string',
+            "concussion_3_hospitalized"       => 'string',
+            "concussion_3_age"                => 'string',
+            "current_concussion_symptoms"     => 'string',
+        ];
+
+        $this->_instrument->method('getDataDictionary')->willReturn(
+            array_map(
+                fn($field) => new class($field) {
+                public string $fieldname;
+                /**
+                 * Constructor.
+                 *
+                 * @param {string} $field field
+                 *
+                 * @return void
+                 */
+                public function __construct($field)
+                {
+                                $this->fieldname = $field;
+                }
+                /**
+                 * GetDataType.
+                 *
+                 * @return \LORIS\Data\Types\StringType
+                 */
+                public function getDataType()
+                {
+                                return new \LORIS\Data\Types\StringType();
+
+                }
+                },
+                array_keys($instrumentQuestions)
+            )
+        );
+        // phan-suppress-next-line PhanUndeclaredProperty
+        $this->_instrument->table = 'medical_history';
+        // phan-suppress-next-line PhanUndeclaredProperty
+        $this->_instrument->commentID = 'commentID1';
+
+        $mockConfig = $this->createMock(\NDB_Config::class);
+        $mockConfig->method('getSetting')->with(
+            'dateDisplayFormat'
+        )->willReturn('Y-m-d');
+
+        $mockLoris = $this->createMock(\LORIS\LorisInstance::class);
+        $mockLoris->method('getConfiguration')->willReturn($mockConfig);
+
+        $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
+        $ref->setAccessible(true);
+        $ref->setValue($this->_instrument, $mockLoris);
+        // phan-suppress-next-line PhanUndeclaredMethod
+        $this->_instrument->validate($instrumentQuestions);
+
     }
 
     /**
