@@ -1,14 +1,14 @@
-# Data Query
+# Data Query Tool (Beta)
 
 This module allows you to query data within LORIS.
 There are three steps to defining a query:
 
-- First, you must select the fields that you're
-  interested in on the **Define Fields** page.
-- Next, you can optionally define filters on the
-  **Define Filters** page to restrict the population
-  that is returned.
-- Finally, you view your query results on the **View Data** page
+1. First, you must select the fields that you're
+   interested in on the **Define Fields** page.
+2. Next, you can optionally define filters on the
+   **Define Filters** page to restrict the population
+   that is returned.
+3. Finally, you view your query results on the **View Data** page.
 
 The **Next Steps** on the bottom right of your screen always the
 context-sensitive next steps that you can do to build your query.
