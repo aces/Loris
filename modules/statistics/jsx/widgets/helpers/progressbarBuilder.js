@@ -24,7 +24,11 @@ const progressBarBuilder = (t, data) => {
                 data-placement ='bottom'
                 title ={`${data['female_full_percent']}% female`}>
                 <p>
-                  {data['female_total']}<br/>Females
+                  {data['female_total']}<br/>
+                  {t(
+                    'Female',
+                    {'ns': 'loris', 'count': parseInt(data['female_total'] ?? '0')}
+                  )}
                 </p>
               </div>
           }
@@ -37,7 +41,11 @@ const progressBarBuilder = (t, data) => {
                 style ={{width: `${data['male_full_percent']}%`}}
                 title ={`${data['male_full_percent']}% male`}>
                 <p>
-                  {data['male_total']}<br/>Males
+                  {data['male_total']}<br/>
+                  {t(
+                    'Male',
+                    {'ns': 'loris', 'count': parseInt(data['male_total'] ?? '0')}
+                  )}
                 </p>
               </div>
           }
@@ -50,7 +58,11 @@ const progressBarBuilder = (t, data) => {
                 style ={{width: `${data['non_binary_percent']}%`}}
                 title ={`${data['non_binary_percent']}% other`}>
                 <p>
-                  {data['non_binary_total']}<br/>Other
+                  {data['non_binary_total']}<br/>
+                  {t(
+                    'Other',
+                    {'ns': 'loris', 'count': parseInt(data['non_binary_total'] ?? '0')}
+                  )}
                 </p>
               </div>
           }
@@ -89,7 +101,11 @@ const progressBarBuilder = (t, data) => {
                 data-placement ='bottom'
                 title ={`${data['female_percent']}% female`}>
                 <p>
-                  {data['female_total']}<br/>Females
+                  {data['female_total']}<br/>
+                  {t(
+                    'Female',
+                    {'ns': 'loris', 'count': parseInt(data['female_total'] ?? '0')}
+                  )}
                 </p>
               </div>
           }
@@ -102,7 +118,11 @@ const progressBarBuilder = (t, data) => {
                 style ={{width: `${data['male_percent']}%`}}
                 title ={`${data['male_percent']}% male`}>
                 <p>
-                  {data['male_total']}<br/>Males
+                  {data['male_total']}<br/>
+                  {t(
+                    'Male',
+                    {'ns': 'loris', 'count': parseInt(data['male_total'] ?? '0')}
+                  )}
                 </p>
               </div>
           }
@@ -115,7 +135,11 @@ const progressBarBuilder = (t, data) => {
                   style ={{width: `${data['non_binary_percent']}%`}}
                   title ={`${data['non_binary_percent']}% other`}>
                   <p>
-                    {data['non_binary_total']}<br/>Other
+                    {data['non_binary_total']}<br/>
+                    {t(
+                      'Other',
+                      {'ns': 'loris', 'count': parseInt(data['non_binary_total'] ?? '0')}
+                    )}
                   </p>
                 </div>
           }

@@ -38,7 +38,7 @@ msgid "Modified"
 msgstr "Modifié"
 
 msgid "edited"
-msgstr "édité le"
+msgstr "modifié"
 
 msgid "Empty"
 msgstr "Vide"

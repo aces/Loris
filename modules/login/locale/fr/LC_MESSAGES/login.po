@@ -86,7 +86,7 @@ msgstr "Radiologue"
 
 #, fuzzy
 msgid "Examiner role"
-msgstr "Rôle de l'examinateur"
+msgstr "Examinateur"
 
 #, fuzzy
 msgid ""
