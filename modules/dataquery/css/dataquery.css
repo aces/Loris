@@ -1,0 +1,30 @@
+/**
+ * Data Query Tool (Beta) - Module Specific Styles
+ *
+ * Customizes the help panel to be wider and center-aligned
+ * for better readability of the query instructions.
+ */
+
+/* Override help panel width - make it 2x wider for dataquery module */
+.help-content {
+    width: 640px;
+    /* Center the panel below the ? button by shifting right edge alignment to center */
+    left: auto;
+    right: 0;
+    transform: translateX(0);
+}
+
+/* On smaller screens, make it responsive */
+@media (max-width: 768px) {
+    .help-content {
+        width: 100%;
+        max-width: calc(100vw - 20px);
+    }
+}
+
+/* Custom size for the Welcome page CTA button */
+.dqt-welcome-cta {
+    padding: 15px 40px !important;
+    font-size: 16px !important;
+    border-radius: 4px !important;
+}
