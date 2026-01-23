@@ -5,7 +5,6 @@ import PublicationUploadForm from './uploadForm.js';
 import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
-import StaticDataTable from 'jsx/StaticDataTable';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import frStrings from '../locale/fr/LC_MESSAGES/publication.json';

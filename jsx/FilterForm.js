@@ -107,7 +107,7 @@ class FilterForm extends Component {
           value: filterValue ? filterValue : '',
           key: key,
         }));
-        // Initialize filter for StaticDataTable
+        // Initialize filter for DataTable
         this.setFilter(elementName, child.props.name, filterValue);
       } else {
         formChildren.push(React.cloneElement(child, {key: key}));
@@ -122,7 +122,7 @@ class FilterForm extends Component {
    * empty.
    *
    * Sets exactMatch to true for all SelectElements (i.e dropdowns)
-   * in order to force StaticDataTable to do exact comparaison
+   * in order to force DataTable to do exact comparaison
    *
    * @param {string} type - form element type (i.e component name)
    * @param {string} key - the name of the form element
