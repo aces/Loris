@@ -432,12 +432,16 @@ class BatteryManagerIndex extends Component {
       {
         label: t('Activate', {ns: 'battery_manager'}),
         isMulti: true,
-        onUserInput: (rows) => rows.forEach((row) => this.activateTest(row[0])),
+        onUserInput: (rows) => rows.forEach(
+          (row) => this.activateTest(row[0])
+        ),
       },
       {
         label: t('Deactivate', {ns: 'battery_manager'}),
         isMulti: true,
-        onUserInput: (rows) => rows.forEach((row) => this.deactivateTest(row[0])),
+        onUserInput: (rows) => rows.forEach(
+          (row) => this.deactivateTest(row[0])
+        ),
       },
     ];
 

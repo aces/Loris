@@ -261,7 +261,7 @@ table th {
 }
 
 .table-row-selected {
-    background-color: rgba(255, 165, 0, 0.1) !important; /* Light orange tint */
+    background-color: rgb(255 165 0 / 10%) !important; /* Light orange tint */
 }
 
 /* Ensure the actions column stays at the end and doesn't wrap */
@@ -584,27 +584,6 @@ a.btn.btn-primary:hover:not(.download, .split-nav) {
   background-color: white;
   -webkit-transition: background-color 0.2s ease-in; /* Safari */
   transition: background-color 0.2s ease-in;
-}
-
-/** Secondary button (Orange Theme) **/
-.btn-secondary {
-    color: #E89A0C;
-    background-color: white;
-    border-color: #E89A0C;
-    transition: all 0.2s ease-in;
-}
-
-.btn-secondary:hover:not([disabled]),
-.btn-secondary:focus {
-    background-color: #E89A0C;
-    color: white;
-}
-
-.btn-secondary[disabled] {
-    background-color: #fffaf0; /* Light cream */
-    border-color: #ccc;
-    color: #ccc;
-    cursor: not-allowed;
 }
 
 .btn-success {

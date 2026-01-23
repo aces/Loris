@@ -451,93 +451,81 @@ const DataTable = ({
     marginLeft: 'auto',
   };
 
-  const renderAction = (action, targetData, isMulti = false) => {
-    const count = targetData.length;
-    let isDisabled = false;
-    let tooltip = '';
-  
-    // 1. Validation Logic
-    if (isMulti && count === 0) {
-      isDisabled = true;
-      tooltip = t('Please select at least one row.');
-    } else if (!action.isMulti && count > 1) {
-      isDisabled = true;
-      tooltip = t('This action only supports a single row.');
-    }
-  
-    if (!isDisabled && action.validate) {
-      const result = action.validate(targetData);
-      if (result.disabled) {
-        isDisabled = true;
-        tooltip = result.reason;
-      }
-    }
-  
-    // 2. Props Assembly
-    const sharedProps = {
-      label: action.label,
-      disabled: isDisabled,
-      tooltip: tooltip,
-      type: action.type || 'secondary',
-      onUserInput: () => action.onUserInput?.(targetData),
-    };
-  
-    // 3. Render Wrapper (Modal vs CTA)
-    const content = action.renderForm ? (
-      <TriggerableModal
-        {...sharedProps}
-        title={action.title}
-        onSubmit={action.onSubmit}
-        onSuccess={(res) => {
-          action.onSuccess?.(res);
-          if (isMulti) setSelectedRows(new Set()); // Only clear selection for bulk
-        }}
-      >
-        {count > 0 ? action.renderForm(targetData) : null}
-      </TriggerableModal>
-    ) : (
-      <CTA
-        {...sharedProps}
-        onUserInput={() => {
-          sharedProps.onUserInput();
-          action.onSuccess?.();
-          if (isMulti) setSelectedRows(new Set());
-        }}
-      />
-    );
-  
-    return <span key={action.label} title={tooltip}>{content}</span>;
-  };  
-
-  const renderMultiActions = () => {
+  const renderRowActions = () => {
     if (!rowActions) return null;
-    const selectedData = Array.from(selectedRows).map(idx => data[idx]);
-  
-    return rowActions
-      .map(action => renderAction(action, selectedData, true));
-  };  
+    const selectedData = Array.from(selectedRows).map((idx) => data[idx]);
 
-  const renderRowActions = (rowItem) => {
-    return (
-      <td className="row-quick-actions">
-        {rowActions
-          .map(action => renderAction(action, [rowItem], false))
+    return rowActions.map((action) => {
+      const count = selectedData.length;
+      let isDisabled = false;
+      let tooltip = '';
+
+      // 1. Validation Logic
+      if (count === 0) {
+        isDisabled = true;
+        tooltip = t('Please select at least one row.');
+      } else if (!action.isMulti && count > 1) {
+        isDisabled = true;
+        tooltip = t('This action only supports a single row.');
+      }
+
+      if (!isDisabled && action.validate) {
+        const result = action.validate(selectedData);
+        if (result.disabled) {
+          isDisabled = true;
+          tooltip = result.reason;
         }
-      </td>
-    );
-  };  
+      }
+
+      // 2. Props Assembly
+      const sharedProps = {
+        label: action.label,
+        disabled: isDisabled,
+        tooltip: tooltip,
+        onUserInput: () => action.onUserInput?.(selectedData),
+      };
+
+      // 3. Render Wrapper (Modal vs CTA)
+      const content = action.renderForm ? (
+        <TriggerableModal
+          {...sharedProps}
+          title={action.title}
+          onSubmit={action.onSubmit}
+          onSuccess={(res) => {
+            action.onSuccess?.(res);
+            if (action.isMulti) setSelectedRows(new Set()); // Only clear selection for bulk
+          }}
+        >
+          {count > 0 ? action.renderForm(selectedData) : null}
+        </TriggerableModal>
+      ) : (
+        <CTA
+          {...sharedProps}
+          onUserInput={() => {
+            sharedProps.onUserInput();
+            action.onSuccess?.();
+            if (action.isMulti) setSelectedRows(new Set());
+          }}
+        />
+      );
+
+      return <span key={action.label} title={tooltip}>{content}</span>;
+    });
+  };
 
   const renderHeader = () => (
     <div className="row">
       <div style={tableControlStyle}>
         <div style={{order: '1', padding: '5px 0'}}>
-          {renderMultiActions()}
-          {selectedRows.size > 0 && (                                          
-            <span style={{ fontSize: '12px' }}>                                             
-              <strong style={{ color: '#E89A0C' }}>{selectedRows.size}</strong>
-              <span style={{ color: '#666', marginLeft: '4px' }}>{t('selected')}</span>
-            </span>                                                             
-          )} 
+          {renderRowActions()}
+          {selectedRows.size > 0 && (
+            <span style={{fontSize: '12px'}}>
+              <strong style={{color: '#E89A0C'}}>{selectedRows.size}</strong>
+              <span style={{color: '#666', marginLeft: '4px'}}>
+                {t('selected')}
+              </span>
+            </span>
+          )}
         </div>
         <div style={tableActionsStyle}>
           {renderActions()}
@@ -563,18 +551,18 @@ const DataTable = ({
   const renderFooter = () => (
     <div className="row">
       <div style={tableControlStyle}>
-          <select
-            className="input-sm perPage"
-            onChange={updatePageRows}
-            value={page.rows}
-          >
-            {[20, 50, 100, 1000, 5000, 10000].map((num) => (
-              <option key={num} value={num}>{num}</option>
-            ))}
-          </select>
-          {t(' of {{totalCount}}.', {
-            totalCount: filteredRowIndexes.length,
-          })}
+        <select
+          className="input-sm perPage"
+          onChange={updatePageRows}
+          value={page.rows}
+        >
+          {[20, 50, 100, 1000, 5000, 10000].map((num) => (
+            <option key={num} value={num}>{num}</option>
+          ))}
+        </select>
+        {t(' of {{totalCount}}.', {
+          totalCount: filteredRowIndexes.length,
+        })}
       </div>
     </div>
   );
@@ -632,7 +620,7 @@ const DataTable = ({
               <tr
                 key={`tr_${item.RowIdx}`}
                 className={isSelected ? 'table-row-selected' : ''
-              }>
+                }>
                 {/* Row Checkbox */}
                 {rowActions && (
                   <td style={{textAlign: 'center'}}>

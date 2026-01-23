@@ -2342,31 +2342,13 @@ export class CTA extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { type, buttonClass, onUserInput, disabled, label } = this.props;
-    console.log(type);
-    console.log(buttonClass);
-
-    // 1. If buttonClass exists, it's a total override
-    let finalClass = buttonClass;
-
-    // 2. Otherwise, determine class based on type
-    if (!finalClass) {
-      const typeMap = {
-        'primary':   'btn btn-primary',
-        'secondary': 'btn btn-secondary',
-      };
-
-      // Default to primary if type is missing or not in map
-      finalClass = typeMap[type] || typeMap['primary'];
-    }    
-
     return (
       <button
-        className={finalClass}
-        onClick={onUserInput}
-        disabled={disabled}
+        className={this.props.buttonClass}
+        onClick={this.props.onUserInput}
+        disabled={this.props.disabled}
       >
-        {label}
+        {this.props.label}
       </button>
     );
   }
@@ -2374,15 +2356,14 @@ export class CTA extends Component {
 
 CTA.propTypes = {
   label: PropTypes.string,
+  buttonClass: PropTypes.string,
   disabled: PropTypes.bool,
-  buttonClass: PropTypes.string, // TODO: deprecate a replace with type prop
-  type: PropTypes.oneOf(['primary', 'secondary', 'success']),
   onUserInput: PropTypes.func,
 };
 
 CTA.defaultProps = {
   disabled: false,
-  type: 'primary',
+  buttonClass: 'btn btn-primary',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
