@@ -27,7 +27,10 @@ const progressBarBuilder = (t, data) => {
                   {data['female_total']}<br/>
                   {t(
                     'Female',
-                    {'ns': 'loris', 'count': parseInt(data['female_total'] ?? '0')}
+                    {
+                      'ns': 'loris',
+                      'count': parseInt(data['female_total'] ?? '0'),
+                    }
                   )}
                 </p>
               </div>
@@ -44,7 +47,10 @@ const progressBarBuilder = (t, data) => {
                   {data['male_total']}<br/>
                   {t(
                     'Male',
-                    {'ns': 'loris', 'count': parseInt(data['male_total'] ?? '0')}
+                    {
+                      'ns': 'loris',
+                      'count': parseInt(data['male_total'] ?? '0'),
+                    }
                   )}
                 </p>
               </div>
@@ -61,7 +67,10 @@ const progressBarBuilder = (t, data) => {
                   {data['non_binary_total']}<br/>
                   {t(
                     'Other',
-                    {'ns': 'loris', 'count': parseInt(data['non_binary_total'] ?? '0')}
+                    {
+                      'ns': 'loris',
+                      'count': parseInt(data['non_binary_total'] ?? '0'),
+                    }
                   )}
                 </p>
               </div>
@@ -104,7 +113,10 @@ const progressBarBuilder = (t, data) => {
                   {data['female_total']}<br/>
                   {t(
                     'Female',
-                    {'ns': 'loris', 'count': parseInt(data['female_total'] ?? '0')}
+                    {
+                      'ns': 'loris',
+                      'count': parseInt(data['female_total'] ?? '0'),
+                    }
                   )}
                 </p>
               </div>
@@ -121,7 +133,10 @@ const progressBarBuilder = (t, data) => {
                   {data['male_total']}<br/>
                   {t(
                     'Male',
-                    {'ns': 'loris', 'count': parseInt(data['male_total'] ?? '0')}
+                    {
+                      'ns': 'loris',
+                      'count': parseInt(data['male_total'] ?? '0'),
+                    }
                   )}
                 </p>
               </div>
@@ -138,7 +153,10 @@ const progressBarBuilder = (t, data) => {
                     {data['non_binary_total']}<br/>
                     {t(
                       'Other',
-                      {'ns': 'loris', 'count': parseInt(data['non_binary_total'] ?? '0')}
+                      {
+                        'ns': 'loris',
+                        'count': parseInt(data['non_binary_total'] ?? '0'),
+                      }
                     )}
                   </p>
                 </div>

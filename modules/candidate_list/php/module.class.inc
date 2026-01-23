@@ -61,8 +61,8 @@ class Module extends \Module
             new \LORIS\GUI\MenuItem(
                 $category,
                 sprintf(
-                  dgettext("candidate_list", "New %s (Beta)"),
-                  $name,
+                    dgettext("candidate_list", "New %s (Beta)"),
+                    $name,
                 ),
                 $url . "?betaprofile=1"
             ),
@@ -142,11 +142,11 @@ class Module extends \Module
             );
             return [
                 new \LORIS\dashboard\DataWidget(
-                    (new \LORIS\GUI\LocalizableString(
+                    new \LORIS\GUI\LocalizableString(
                         "loris",
                         "Candidate",
                         "Candidates",
-                    )),
+                    ),
                     $data,
                     "",
                     'rgb(255, 252, 199)',

@@ -78,7 +78,10 @@ const WidgetIndex = (props) => {
                   }}
                 >
                   {/* [Pie|Bar] toggle */}
-                  {t(key.charAt(0).toUpperCase() + key.slice(1), {ns: 'statistics'})}
+                  {t(
+                    key.charAt(0).toUpperCase() + key.slice(1),
+                    {ns: 'statistics'},
+                  )}
                 </button>
               ))}
             </div>
