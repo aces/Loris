@@ -771,7 +771,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
-                    new \LORIS\Http\StringStream("Permission Denied")
+                    new \LORIS\Http\StringStream(dgettext("loris", "Permission Denied"))
                 )->withStatus(403);
         }
 

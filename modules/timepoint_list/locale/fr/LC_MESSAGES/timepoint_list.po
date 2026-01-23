@@ -85,7 +85,7 @@ msgid "Visual"
 msgstr "Visuel"
 
 msgid "Hardcopy"
-msgstr "copie papier"
+msgstr "Copie papier"
 
 msgid "Complete"
 msgstr "Compléter"

@@ -125,3 +125,9 @@ msgstr ""
 
 msgid "Unknown"
 msgstr ""
+
+msgid "Pie"
+msgstr ""
+
+msgid "Bar"
+msgstr ""
