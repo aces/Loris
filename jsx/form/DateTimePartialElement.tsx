@@ -192,7 +192,14 @@ const DateTimePartialElement: React.FC<DateTimePartialElementProps> = (
   const wrapperClass =
     props.label && !props.labelPlacementTop ? 'col-sm-9' : 'col-sm-12';
   return (
-    <div className={elementClass}>
+    <div
+      className={elementClass}
+      style={props.labelPlacementTop ? {
+        display: 'flex',
+        flexDirection: 'column',
+        fontFamily: 'monospace',
+      } : {}}
+    >
       {props.label && (
         <InputLabel
           label={props.label}
@@ -210,11 +217,7 @@ const DateTimePartialElement: React.FC<DateTimePartialElementProps> = (
             value={value}
             required={props.required}
             disabled={props.disabled}
-            style={props.labelPlacementTop ? {
-              display: 'flex',
-              flexDirection: 'column',
-              fontFamily: 'monospace',
-            } : {fontFamily: 'monospace'}}
+            style={{fontFamily: 'monospace'}}
           />
         </Mask>
         {errorMessage}
