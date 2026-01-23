@@ -20,3 +20,33 @@ msgstr ""
 
 msgid "Server Processes Manager"
 msgstr ""
+
+msgid "PID"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Stdout File"
+msgstr ""
+
+msgid "Stderr File"
+msgstr ""
+
+msgid "Exit Code File"
+msgstr ""
+
+msgid "Exit Code"
+msgstr ""
+
+msgid "User ID"
+msgstr ""
+
+msgid "Start Time"
+msgstr ""
+
+msgid "End Time"
+msgstr ""
+
+msgid "Exit Text"
+msgstr ""

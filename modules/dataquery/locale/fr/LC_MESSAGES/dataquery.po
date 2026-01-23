@@ -1,0 +1,771 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-10 10:43-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+#, fuzzy
+msgid "Data Query Tool (Beta)"
+msgstr "Outil de requête de données (version bêta)"
+
+#, fuzzy
+msgid "Starred Queries"
+msgstr "Requêtes marquées d'une étoile"
+
+msgid "Query not yet run"
+msgstr "Requête non exécutée"
+
+#, fuzzy
+msgid "Loading data:"
+msgstr "Chargement des données :"
+
+#, fuzzy
+msgid "{{value}} of {{max}} candidates"
+msgstr "{{value}} des {{max}} candidats"
+
+#, fuzzy
+msgid "Organizing headers:"
+msgstr "Organisation des en-têtes :"
+
+#, fuzzy
+msgid "{{value}} of {{max}} columns"
+msgstr "{{value}} sur {{max}} colonnes"
+
+#, fuzzy
+msgid "Organizing data:"
+msgstr "Organisation des données :"
+
+#, fuzzy
+msgid "Invalid progress type: {{type}}"
+msgstr "Type de progression non valide : {{type}}"
+
+#, fuzzy
+msgid "No data for visit"
+msgstr "Aucune donnée pour cette visite"
+
+msgid "Field Name"
+msgstr "Nom du champ"
+
+msgid "Field Description"
+msgstr "Description du champ"
+
+#, fuzzy
+msgid "Field Name: Field Description"
+msgstr "Nom du champ : Description du champ"
+
+#, fuzzy
+msgid "Rows (Cross-sectional)"
+msgstr "Lignes (transversales)"
+
+#, fuzzy
+msgid "Columns (Longitudinal)"
+msgstr "Colonnes (longitudinales)"
+
+#, fuzzy
+msgid "Inline values (no download)"
+msgstr "Valeurs en ligne (sans téléchargement)"
+
+#, fuzzy
+msgid "Raw JSON (debugging only)"
+msgstr "JSON brut (débogage uniquement)"
+
+#, fuzzy
+msgid "Header Display Format"
+msgstr "Format d'affichage de l'en-tête"
+
+#, fuzzy
+msgid "Display visits as"
+msgstr "Afficher les visites comme"
+
+msgid "Label"
+msgid_plural "Labels"
+msgstr[0] "Étiquette"
+msgstr[1] ""
+
+msgid "Value"
+msgid_plural "Values"
+msgstr[0] "Valeur"
+msgstr[1] "Valeurs"
+
+#, fuzzy
+msgid "Display options as"
+msgstr "Afficher les options sous forme de"
+
+#, fuzzy
+msgid "Display empty visits?"
+msgstr "Afficher les visites vides ?"
+
+msgid "Row Number"
+msgstr "N° de ligne"
+
+#, fuzzy
+msgid "Modify Fields"
+msgstr "Modifier les champs"
+
+msgid "Choose Fields"
+msgstr "Choisissez des champs"
+
+#, fuzzy
+msgid "Modify Filters"
+msgstr "Modifier les filtres"
+
+msgid "Add Filters"
+msgstr "Ajouter des filtres"
+
+msgid "Run Query"
+msgstr "Exécuter une requête"
+
+msgid "Next Steps"
+msgstr "Étapes suivantes"
+
+msgid "Delete item"
+msgstr "Supprimer l'(les)article(s)"
+
+msgid "Delete Group"
+msgstr "Supprimer le groupe"
+
+#, fuzzy
+msgid "Group does not have any items."
+msgstr "Le groupe ne contient aucun élément."
+
+#, fuzzy
+msgid ""
+"Group only has 1 item. A group with only 1 item is equivalent to not having "
+"the group."
+msgstr ""
+"Le groupe ne contient qu'un seul élément. Un groupe ne contenant qu'un seul "
+"élément équivaut à ne pas avoir de groupe."
+
+#, fuzzy
+msgid "Add \"{{operator}}\" condition to group"
+msgstr "Ajouter la condition « {{operator}} » au groupe"
+
+#, fuzzy
+msgid "New \"{{antiOperator}}\" subgroup"
+msgstr "Nouveau sous-groupe « {{antiOperator}} »"
+
+msgid "Hide Advanced"
+msgstr "Masquer les paramètres avancées"
+
+msgid "Show Advanced"
+msgstr "Afficher les paramètres avancés"
+
+#, fuzzy
+msgid ""
+"The \"nested groups\" options are advanced options for queries that do not "
+"have any specific condition at the base of the query. Use Add nested \"or\" "
+"condition groups if you need to build a query of the form. (a or b) and (c "
+"or d) [or (e and f)..]"
+msgstr ""
+"Les options « groupes imbriqués » sont des options avancées pour les "
+"requêtes qui ne comportent aucune condition spécifique à la base de la "
+"requête. Utilisez Ajouter des groupes de conditions « ou » imbriqués si vous "
+"devez créer une requête de la forme (a ou b) et (c ou d) [ou (e et f)..]."
+
+msgid "Add nested \"or\" condition groups"
+msgstr "Ajouter des groupes imbriqués de conditions « ou »"
+
+#, fuzzy
+msgid ""
+"Use Add nested \"and\" condition groups if you need to build a query of the "
+"form (a and b) or (c and d) [or (e and f)..]"
+msgstr ""
+"Utilisez Ajouter des groupes de conditions imbriquées « et » si vous devez "
+"créer une requête sous la forme (a et b) ou (c et d) [ou (e et f)..]."
+
+msgid "Add nested \"and\" condition groups"
+msgstr "Ajouter des groupes imbriqués de conditions « et »"
+
+#, fuzzy
+msgid "Currently querying for ALL candidates."
+msgstr "Recherche actuellement TOUS les candidats."
+
+#, fuzzy
+msgid "You can add conditions by clicking one of the buttons below."
+msgstr ""
+"Vous pouvez ajouter des conditions en cliquant sur l'un des boutons ci-"
+"dessous."
+
+#, fuzzy
+msgid ""
+"Click Add Condition to add one or more conditions to your filters (ie. "
+"\"Date Of Birth < 2015-02-15\"). This is most likely where you want to start "
+"your filters."
+msgstr ""
+"Cliquez sur Ajouter une condition pour ajouter une ou plusieurs conditions à "
+"vos filtres (par exemple, « Date de naissance < 15/02/2015 »). C'est "
+"probablement par là que vous souhaitez commencer vos filtres."
+
+#, fuzzy
+msgid ""
+"You can also import a population from a CSV by clicking the Import from CSV "
+"button."
+msgstr ""
+"Vous pouvez également importer une population à partir d'un fichier CSV en "
+"cliquant sur le bouton Importer à partir d'un fichier CSV."
+
+#, fuzzy
+msgid ""
+"The advanced options are for queries that do not have a condition to add at "
+"the base of the query."
+msgstr ""
+"Les options avancées sont destinées aux requêtes qui ne comportent pas de "
+"condition à ajouter à la base de la requête."
+
+msgid "Add Condition"
+msgstr "Ajouter une condition"
+
+msgid "Import from CSV"
+msgstr "Importer depuis un fichier CSV"
+
+msgid ""
+"Use New \"and\" subgroup if the rest of the query you need to write is a "
+"subgroup consisting of \"and\" conditions. ie your query is of the form: "
+"(your condition above) or (c and d [and e and f..])"
+msgstr ""
+"Utilisez le nouveau sous-groupe « et » si le reste de la requête que vous "
+"devez écrire est un sous-groupe composé de conditions « et ». Autrement dit, "
+"votre requête est de la forme suivante : (votre condition ci-dessus) ou (c "
+"et d [et e et f..])"
+
+#, fuzzy
+msgid "New \"and\" subgroup"
+msgstr "Nouveau sous-groupe « et »"
+
+#, fuzzy
+msgid ""
+"Use New \"or\" subgroup if the rest of the query you need to write is a "
+"subgroup consisting of \"or\" conditions. ie your query is of the form: "
+"(your condition above) and (c or d [or e or f..])"
+msgstr ""
+"Utilisez le nouveau sous-groupe « ou » si le reste de la requête que vous "
+"devez écrire est un sous-groupe composé de conditions « ou ». Autrement dit, "
+"votre requête est de la forme suivante : (votre condition ci-dessus) et (c "
+"ou d [ou e ou f..])."
+
+#, fuzzy
+msgid "New \"or\" subgroup"
+msgstr "Nouveau sous-groupe « ou »"
+
+#, fuzzy
+msgid "Currently querying for any candidates with:"
+msgstr ""
+"Recherche actuellement des candidats présentant les caractéristiques "
+"suivantes :"
+
+#, fuzzy
+msgid "Add \"and\" condition"
+msgstr "Ajouter la condition « et »"
+
+#, fuzzy
+msgid "Add \"or\" condition"
+msgstr "Ajouter la condition « ou »"
+
+msgid "Delete Item"
+msgstr "Supprimer l'élément"
+
+#, fuzzy
+msgid "Query matches <bold>{{count}}</bold> candidates"
+msgstr "La requête correspond à <bold>{{count}}</bold> candidats"
+
+msgid "Current Query"
+msgstr "Requête en cours"
+
+#, fuzzy
+msgid ""
+"Note that only candidates which you have permission to access in LORIS are "
+"included in results. Number of results may vary from other users running the "
+"same query."
+msgstr ""
+"Veuillez noter que seuls les candidats auxquels vous avez accès dans LORIS "
+"sont inclus dans les résultats. Le nombre de résultats peut varier par "
+"rapport à celui obtenu par d'autres utilisateurs effectuant la même "
+"recherche."
+
+#, fuzzy
+msgid ""
+"Note: matches count only includes candidates that you have access to. "
+"Results may vary from other users due to permissions."
+msgstr ""
+"Remarque : le nombre de correspondances ne comprend que les candidats "
+"auxquels vous avez accès. Les résultats peuvent varier d'un utilisateur à "
+"l'autre en fonction des autorisations."
+
+#, fuzzy
+msgid "Select Visits"
+msgstr "Sélectionner les visites"
+
+msgid "Criteria"
+msgstr "Critère"
+
+msgid "Select an operator"
+msgstr "Sélectionner un opérateur"
+
+#, fuzzy
+msgid "for at least one of the following visits"
+msgstr "pour au moins l'une des visites suivantes"
+
+#, fuzzy
+msgid ""
+"This field may exist multiple times for a single {{scope}}. Adding a "
+"criteria based on it means that it must match for <italic>at least one</"
+"italic> of the data points."
+msgstr ""
+"Ce champ peut exister plusieurs fois pour un seul {{scope}}. L'ajout d'un "
+"critère basé sur celui-ci signifie qu'il doit correspondre à <italic>au "
+"moins un</italic> des points de données."
+
+#, fuzzy
+msgid ""
+"This field may exist multiple times for a single {{scope}} and must match "
+"for *any* of the data points"
+msgstr ""
+"Ce champ peut exister plusieurs fois pour un seul {{scope}} et doit "
+"correspondre à *n'importe quel* point de données."
+
+#, fuzzy
+msgid "<italic>at visit</italic> {{visits}}"
+msgstr "<italic>lors de la visite</italic> {{visits}}"
+
+msgid "Invalid field"
+msgstr "Champ invalide"
+
+#, fuzzy
+msgid "You must select a field for the criteria."
+msgstr "Vous devez sélectionner un champ pour les critères."
+
+#, fuzzy
+msgid "Invalid operator"
+msgstr "Opérateur non valide"
+
+#, fuzzy
+msgid "You must select an operator for the criteria."
+msgstr "Vous devez sélectionner un opérateur pour les critères."
+
+msgid "Invalid value"
+msgstr "Valeur non valide"
+
+#, fuzzy
+msgid "You must enter a value to compare the field against."
+msgstr "Vous devez saisir une valeur à comparer au champ."
+
+#, fuzzy
+msgid "Invalid visits"
+msgstr "Visites non valides"
+
+#, fuzzy
+msgid "No visits selected for criteria."
+msgstr "Aucune visite sélectionnée pour ces critères."
+
+msgid "Add criteria"
+msgstr "Ajouter critère"
+
+msgid "Field"
+msgid_plural "Fields"
+msgstr[0] "Champ"
+msgstr[1] "Champs"
+
+msgid "Select a field"
+msgstr "Choisir un champ"
+
+msgid "in"
+msgstr "en"
+
+msgid "starts with"
+msgstr "commence par"
+
+msgid "contains"
+msgstr "contient"
+
+msgid "ends with"
+msgstr "se termine par"
+
+#, fuzzy
+msgid "has data"
+msgstr "dispose de données"
+
+#, fuzzy
+msgid "has no data"
+msgstr "n'a pas de données"
+
+#, fuzzy
+msgid "(No data)"
+msgstr "Entrée de données"
+
+#, fuzzy
+msgid "(Not implemented)"
+msgstr "(Non implémenté)"
+
+#, fuzzy
+msgid "(Internal Error. Unhandled cardinality: {{cardinality}})"
+msgstr "(Erreur interne. Cardinalité non gérée : {{cardinality}})"
+
+msgid "Internal error"
+msgstr "Erreur interne"
+
+msgid "exists"
+msgstr "existe"
+
+msgid "does not exist"
+msgstr "n’existent pas"
+
+#, fuzzy
+msgid "number of"
+msgstr "nombre de"
+
+msgid "Select a value"
+msgstr "Sélectionner une valeur"
+
+#, fuzzy
+msgid "Import Population From CSV"
+msgstr "Importer la population à partir d'un fichier CSV"
+
+#, fuzzy
+msgid "CSV containing list of"
+msgstr "Fichier CSV contenant la liste des"
+
+#, fuzzy
+msgid "Candidate identifier type"
+msgstr "Type d'identifiant du candidat"
+
+#, fuzzy
+msgid "Does CSV contain a header line?"
+msgstr "Le fichier CSV contient-il une ligne d'en-tête ?"
+
+msgid "CSV File"
+msgstr "Fichier CSV"
+
+msgid "Invalid CSV"
+msgstr "CSV non valable"
+
+#, fuzzy
+msgid "Could not parse CSV file"
+msgstr "Impossible d'analyser le fichier CSV"
+
+msgid "No CSV Uploaded"
+msgstr "Aucun fichier CSV téléversé"
+
+msgid "Please upload a CSV file before submitting."
+msgstr "Veuillez téléverser un fichier CSV avant de soumettre."
+
+#, fuzzy
+msgid "Empty CSV"
+msgstr "CSV vide"
+
+msgid "The uploaded CSV file is empty."
+msgstr "Le fichier CSV téléversé est vide."
+
+#, fuzzy
+msgid ""
+"Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line "
+"{{line}}."
+msgstr ""
+"{{expectedLength}} colonnes attendues dans le fichier CSV. {{gotLength}} "
+"colonne trouvée à la ligne {{line}}."
+
+#, fuzzy
+msgid "Invalid DCCID"
+msgstr "DCCID invalide"
+
+#, fuzzy
+msgid "Invalid DCCID ({{id}}) on line {{line}}."
+msgstr "DCCID invalide ({{id}}) sur la ligne {{line}}."
+
+#, fuzzy
+msgid "Welcome to the Data Query Tool"
+msgstr "Bienvenue dans l'outil de requête de données"
+
+#, fuzzy
+msgid "Study Query"
+msgid_plural "Study Queries"
+msgstr[0] "Requête d'étude"
+msgstr[1] "Questions d'étude"
+
+#, fuzzy
+msgid "Candidate matches:"
+msgstr "Candidats correspondants :"
+
+msgid "Instructions"
+msgstr "Instructions"
+
+#, fuzzy
+msgid "Recent Queries"
+msgstr "Recherches récentes"
+
+#, fuzzy
+msgid "Shared Queries"
+msgstr "Requêtes partagées"
+
+#, fuzzy
+msgid "Starred Only"
+msgstr "Uniquement les favoris"
+
+#, fuzzy
+msgid "Shared Only"
+msgstr "Partagé uniquement"
+
+#, fuzzy
+msgid "No run times (eliminate duplicates)"
+msgstr "Pas de temps de course (éliminer les doublons)"
+
+msgid "Filter"
+msgid_plural "Filters"
+msgstr[0] "Filtre"
+msgstr[1] "Filtres"
+
+#, fuzzy
+msgid "Named Only"
+msgstr "Nommé uniquement"
+
+#, fuzzy
+msgid "Collapse queries"
+msgstr "Réduire les requêtes"
+
+#, fuzzy
+msgid "(No filters for query)"
+msgstr "(Aucun filtre pour la requête)"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "Unstar"
+msgstr "Ne plus suivre"
+
+msgid "Star"
+msgstr "Étoile"
+
+msgid "Unshare"
+msgstr "Désactiver le partage"
+
+msgid "Share"
+msgstr "Partager"
+
+#, fuzzy
+msgid "Query Loaded"
+msgstr "Requête chargée"
+
+#, fuzzy
+msgid "Successfully loaded query."
+msgstr "Requête chargée avec succès."
+
+#, fuzzy
+msgid "(Run on {{runTime}})"
+msgstr "(Exécuter sur {{runTime}})"
+
+#, fuzzy
+msgid "You ran this query on {{runTime}}"
+msgstr "Vous avez exécuté cette requête sur {{runTime}}"
+
+#, fuzzy
+msgid "You ran this query"
+msgstr "Vous avez exécuté cette requête"
+
+#, fuzzy
+msgid "(Shared by {{sharedBy}})"
+msgstr "(Partagé par {{sharedBy}})"
+
+#, fuzzy
+msgid "Query shared by {{sharedBy}}"
+msgstr "Requête partagée par {{sharedBy}}"
+
+#, fuzzy
+msgid "Name Query"
+msgstr "Requête de nom"
+
+#, fuzzy
+msgid "Enter your query name"
+msgstr "Entrez le nom de votre requête"
+
+msgid "Query name"
+msgstr "Nom de la requête"
+
+#, fuzzy
+msgid "Must provide a query name."
+msgstr "Vous devez fournir un nom de requête."
+
+msgid "Pin Top Query"
+msgstr "Requête épinglée au sommet"
+
+msgid "Pin Study Query"
+msgstr "Épingler la requête d'étude"
+
+#, fuzzy
+msgid "Pin Dashboard Summary"
+msgstr "Résumé du tableau de bord des épingles"
+
+#, fuzzy
+msgid "Pin To Login Page"
+msgstr "Épingler à la page de connexion"
+
+#, fuzzy
+msgid "Must pin as study query, to dashboard, or to the login page."
+msgstr ""
+"Doit être épinglé comme requête d'étude, au tableau de bord ou à la page de "
+"connexion."
+
+#, fuzzy
+msgid "Must provide a query name to pin query as."
+msgstr "Vous devez fournir un nom de requête pour épingler la requête."
+
+#, fuzzy
+msgid "{{columnName}} fields"
+msgstr "{{columnName}} champs"
+
+#, fuzzy
+msgid "Define Filters"
+msgstr "Définir les filtres"
+
+#, fuzzy
+msgid "Define Fields"
+msgstr "Définir les champs"
+
+msgid "View Data"
+msgstr "Voir les données"
+
+#, fuzzy
+msgid "Reload query"
+msgstr "Recharger la requête"
+
+#, fuzzy
+msgid "Continue to Define Fields"
+msgstr "Continuer à définir les champs"
+
+#, fuzzy
+msgid ""
+"Above, there is also a Study Queries panel. This are a special type of "
+"shared queries that have been pinned by a study administer to always display "
+"at the top of this page."
+msgstr ""
+"Au-dessus, vous trouverez également un panneau « Requêtes d'étude ». Il "
+"s'agit d'un type particulier de requêtes partagées qui ont été épinglées par "
+"un administrateur d'étude afin d'être toujours affichées en haut de cette "
+"page."
+
+msgid ""
+"The data query tool allows you to query data within LORIS. There are three "
+"steps to defining a query:"
+msgstr ""
+"L'outil de requête de données vous permet de télécharger les données "
+"contenues dans LORIS. La définition d'une requête se fait en trois étapes :"
+
+#, fuzzy
+msgid ""
+"First, you must select the fields that you're interested in on the Define "
+"Fields page."
+msgstr ""
+"Tout d'abord, vous devez sélectionner les champs qui vous intéressent sur la "
+"page Définir les champs."
+
+#, fuzzy
+msgid ""
+"Next, you can optionally define filters on the Define Filters page to "
+"restrict the population that is returned."
+msgstr ""
+"Ensuite, vous pouvez éventuellement définir des filtres sur la page Définir "
+"les filtres afin de restreindre la population renvoyée."
+
+#, fuzzy
+msgid "Finally, you view your query results on the View Data page"
+msgstr ""
+"Enfin, vous pouvez consulter les résultats de votre requête sur la page "
+"Afficher les données."
+
+#, fuzzy
+msgid ""
+"The Next Steps on the bottom right of your screen always the context-"
+"sensitive next steps that you can do to build your query."
+msgstr ""
+"Les étapes suivantes, en bas à droite de votre écran, sont toujours les "
+"étapes contextuelles suivantes que vous pouvez suivre pour créer votre "
+"requête."
+
+#, fuzzy
+msgid ""
+"Your recently run queries will be displayed in the Recent Queries panel "
+"below. Instead of building a new query, you can reload a query that you've "
+"recently run by clicking on the icon next to the query."
+msgstr ""
+"Vos requêtes récentes s'affichent dans le panneau Requêtes récentes ci-"
+"dessous. Au lieu de créer une nouvelle requête, vous pouvez recharger une "
+"requête que vous avez récemment exécutée en cliquant sur l'icône à côté de "
+"la requête."
+
+#, fuzzy
+msgid ""
+"Queries can be shared with others by clicking the icon. This will cause the "
+"query to be shared with all users who have access to the fields used by the "
+"query. It will display in a Shared Queries panel below the Recent Queries."
+msgstr ""
+"Les requêtes peuvent être partagées avec d'autres utilisateurs en cliquant "
+"sur l'icône. La requête sera alors partagée avec tous les utilisateurs ayant "
+"accès aux champs utilisés par la requête. Elle s'affichera dans le panneau "
+"Requêtes partagées situé sous les Requêtes récentes."
+
+#, fuzzy
+msgid ""
+"You may also give a query a name at any time by clicking the icon. This "
+"makes it easier to find queries you care about by giving them an easier to "
+"remember name that can be used for filtering. When you share a query, the "
+"name will be shared along with it."
+msgstr ""
+"Vous pouvez également attribuer un nom à une requête à tout moment en "
+"cliquant sur l'icône. Cela facilite la recherche des requêtes qui vous "
+"intéressent en leur donnant un nom plus facile à mémoriser qui peut être "
+"utilisé pour le filtrage. Lorsque vous partagez une requête, son nom est "
+"également partagé."
+
+msgid "Category"
+msgstr "Catégorie"
+
+msgid "Selected Fields"
+msgstr "Champs sélectionnés"
+
+msgid "Available Fields"
+msgstr "Champs disponibles"
+
+msgid "Add all"
+msgstr "Ajouter tous"
+
+msgid "Remove all"
+msgstr "Tout supprimer"
+
+#, fuzzy
+msgid "Filter within category"
+msgstr "Filtrer dans la catégorie"
+
+#, fuzzy
+msgid "Default Visits"
+msgstr "Visites par défaut"
+
+#, fuzzy
+msgid "Sync with selected fields"
+msgstr "Synchronisation avec les champs sélectionnés"
+
+msgid "Select a category"
+msgstr "Sélectionner une catégorie"
+
+msgid "Invalid response"
+msgstr "Réponse invalide"
+
+#, fuzzy
+msgid "Invalid tab"
+msgstr "Onglet invalide"
+
+msgid "or"
+msgstr "ou"

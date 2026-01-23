@@ -246,6 +246,9 @@ msgstr ""
 msgid "DoB"
 msgstr ""
 
+msgid "DoD"
+msgstr ""
+
 msgid "Sex"
 msgstr ""
 
@@ -543,6 +546,8 @@ msgstr ""
 msgid "Unauthorized"
 msgstr ""
 
+msgid "File to upload"
+msgstr ""
 
 msgid "Please make sure files are not larger than {{maxFileSize}}"
 msgstr ""
@@ -554,6 +559,9 @@ msgid "Clear"
 msgstr ""
 
 msgid "Add"
+msgstr ""
+
+msgid "Update"
 msgstr ""
 
 msgid "Dataset"

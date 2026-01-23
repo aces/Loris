@@ -1,0 +1,223 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 10:49-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#, fuzzy
+msgid "DICOM Archive"
+msgstr "Archive de DICOM"
+
+msgid "Patient ID"
+msgstr "ID du Patient"
+
+msgid "Patient Name"
+msgstr "Nom du patient"
+
+#, fuzzy
+msgid "Acquisition Date"
+msgstr "Date d'acquisition"
+
+#, fuzzy
+msgid "Archive Location"
+msgstr "Emplacement des archives"
+
+msgid "Metadata"
+msgstr "Métadonnées"
+
+#, fuzzy
+msgid "MRI Browser"
+msgstr "Navigateur IRM"
+
+#, fuzzy
+msgid "Series UID"
+msgstr "Identifiant unique de la série"
+
+#, fuzzy
+msgid "TarchiveID"
+msgstr "ID de tarchive"
+
+#, fuzzy
+msgid "SessionID"
+msgstr "ID de session"
+
+#, fuzzy
+msgid "CenterID"
+msgstr "Site ID"
+
+#, fuzzy
+msgid "IsPhantom"
+msgstr "Fantôme data?"
+
+#, fuzzy
+msgid "Tarchive Metadata"
+msgstr "Métadonnées de l'archive"
+
+msgid "Acquisition ID"
+msgstr "ID d'acquisition"
+
+#, fuzzy
+msgid "Patient Birthdate"
+msgstr "Date de naissance du patient"
+
+#, fuzzy
+msgid "Patient Biological Sex"
+msgstr "Sexe biologique du patient"
+
+msgid "Date acquired"
+msgstr "Date d’acquisition"
+
+#, fuzzy
+msgid "Scanner Model"
+msgstr "Modèle du scanner"
+
+msgid "Serial Number"
+msgstr "Numéro de série"
+
+#, fuzzy
+msgid "Scanner Software Version"
+msgstr "Version du logiciel du scanner"
+
+#, fuzzy
+msgid "Acquired at"
+msgstr "Acquis à"
+
+#, fuzzy
+msgid "Number of Acquisitions"
+msgstr "Nombre d'acquisitions"
+
+#, fuzzy
+msgid "Archived by"
+msgstr "Archivé par"
+
+msgid "Last update"
+msgstr "Dernière mise à jour"
+
+msgid "Never"
+msgstr "Jamais"
+
+#, fuzzy
+msgid "Summary type version"
+msgstr "Version résumée"
+
+msgid "Source location"
+msgstr "Emplacement Original"
+
+#, fuzzy
+msgid "Archive type version"
+msgstr "Version du type d'archive"
+
+#, fuzzy
+msgid "Archive location"
+msgstr "Emplacement de l'archive"
+
+#, fuzzy
+msgid "Archiving log"
+msgstr "Journal d'archivage"
+
+#, fuzzy
+msgid "md5sum of Archive"
+msgstr "md5sum de l'archive"
+
+#, fuzzy
+msgid "md5sum of Dicom unzipped"
+msgstr "md5sum des DICOMs décompressés"
+
+msgid "Series"
+msgstr "Séries"
+
+#, fuzzy
+msgid "Show/Hide series"
+msgstr "Afficher/Masquer la série"
+
+#, fuzzy
+msgid "Series Number"
+msgstr "Numéro de série"
+
+#, fuzzy
+msgid "Series Description"
+msgstr "Description de la série"
+
+#, fuzzy
+msgid "Protocol Name"
+msgstr "Nom du protocole"
+
+msgid "Sequence Name"
+msgstr "Nom de la séquence"
+
+#, fuzzy
+msgid "Echo Time"
+msgstr "Temps d'écho"
+
+#, fuzzy
+msgid "Repetition Time"
+msgstr "Temps de répétition"
+
+#, fuzzy
+msgid "Inversion Time"
+msgstr "Temps d'inversion"
+
+msgid "Slice Thickness"
+msgstr "Épaisseur de coupe"
+
+#, fuzzy
+msgid "Phase Encoding"
+msgstr "Direction du codage de phase"
+
+msgid "Number of Files"
+msgstr "Nombre de fichiers"
+
+#, fuzzy
+msgid "SeriesUID"
+msgstr "SeriesUID"
+
+msgid "Files"
+msgstr "Fichiers"
+
+#, fuzzy
+msgid "Show/Hide files"
+msgstr "Afficher/Masquer les fichiers"
+
+#, fuzzy
+msgid "SeriesNumber"
+msgstr "Numéro de série"
+
+#, fuzzy
+msgid "FileNumber"
+msgstr "Numéro de dossier"
+
+#, fuzzy
+msgid "EchoNumber"
+msgstr "Numéro d'écho"
+
+#, fuzzy
+msgid "Md5Sum"
+msgstr "Md5Sum"
+
+msgid "FileName"
+msgstr "Nom de fichier"
+
+#, fuzzy
+msgid "INVALID - HIDDEN"
+msgstr "INVALIDE - CACHÉ"
+
+msgid "View Details"
+msgstr "Voir les détails"
+
+msgid "View Images"
+msgstr "Afficher les images"

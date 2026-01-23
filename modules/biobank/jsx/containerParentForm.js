@@ -1,4 +1,5 @@
 import React from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import {
@@ -18,7 +19,7 @@ import {clone} from './helpers';
  * @param {object} props The component's props
  */
 function ContainerParentForm(props) {
-  const {data, current, options} = props;
+  const {t, data, current, options} = props;
 
   const setInheritedProperties = (name, containerId) => {
     if (!containerId) {
@@ -55,7 +56,7 @@ function ContainerParentForm(props) {
         const capacity = dimensions.x * dimensions.y * dimensions.z;
         const available = capacity - container.childContainerIds.length;
         result[container.id] = container.barcode +
-           ' (' +available + ' Available Spots)';
+           ' (' + available + ' ' + t('Available Spots', {ns: 'biobank'});
       }
       return result;
     }, {});
@@ -107,7 +108,7 @@ function ContainerParentForm(props) {
       <div className="col-lg-11">
         <SearchableDropdown
           name="parentContainerId"
-          label="Parent Container Barcode"
+          label={t('Parent Container Barcode', {ns: 'biobank'})}
           options={containerBarcodesNonPrimary}
           onUserInput={setInheritedProperties}
           value={current.container.parentContainerId}
@@ -119,6 +120,7 @@ function ContainerParentForm(props) {
 }
 
 ContainerParentForm.propTypes = {
+  t: PropTypes.func.isRequired,
   setContainer: PropTypes.func.isRequired,
   data: PropTypes.object,
   container: PropTypes.object.isRequired,
@@ -134,4 +136,4 @@ ContainerParentForm.propTypes = {
   display: PropTypes.string.isRequired,
 };
 
-export default ContainerParentForm;
+export default withTranslation(['biobank', 'loris'])(ContainerParentForm);
