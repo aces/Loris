@@ -808,12 +808,10 @@ function SingleQueryDisplay(props: {
     swal.fire({
       type: 'success',
       title: t('Query Loaded', {ns: 'dataquery'}),
-      text: t(
-        'Return to the previous page to run or modify your query.',
-        {ns: 'dataquery'}
-      ),
+      text: t('Return to the previous page to run or modify your query.',
+        {ns: 'dataquery'}),
       confirmButtonText: t('Return', {ns: 'dataquery'}),
-});
+    });
   };
 
   const loadIcon = <LoadIcon onClick={loadQuery} />;
