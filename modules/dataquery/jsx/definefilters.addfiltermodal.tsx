@@ -282,15 +282,15 @@ function AddFilterModal(props: {
     }
     );
   return (
-    <Modal title={t('Add criteria', {ns: 'dataquery'})}
+    <Modal title={t('Add Condition', {ns: 'dataquery'})}
       show={true}
       throwWarning={true}
       onClose={props.closeModal}
       onSubmit={submitPromise}>
       <div style={{width: '100%', padding: '1em'}}>
-        <h3>{t('Field', {ns: 'dataquery', count: 1})}</h3>
         <div style={{display: 'flex', width: '100%'}}>
           <div style={{width: '40%'}}>
+            <h3>{t('Category', {ns: 'dataquery', count: 1})}</h3>
             <FilterableSelectGroup
               groups={props.categories.categories}
               mapGroupName={(key) => props.categories.modules[key]}
@@ -305,6 +305,7 @@ function AddFilterModal(props: {
             />
           </div>
           <div style={{width: '100%'}}>
+            <h3>{t('Field', {ns: 'dataquery', count: 1})}</h3>
             {fieldSelect}
           </div>
         </div>
