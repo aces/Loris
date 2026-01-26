@@ -1,0 +1,14 @@
+.CSSGrid {
+    display: grid; 
+    grid-template-columns: 33% 33% 33%;
+    grid-auto-flow: row dense; 
+    gap: 1rem;
+}
+
+@media (max-width: 576px) {
+    .CSSGrid {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+}
