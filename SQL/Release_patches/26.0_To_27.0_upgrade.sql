@@ -1,4 +1,5 @@
 SET FOREIGN_KEY_CHECKS = 0;
+
 -- create new permissions to upload and to hide files
 INSERT INTO permissions (code, description, moduleID, action, categoryID) VALUES
     (
@@ -24,10 +25,12 @@ INSERT INTO user_perm_rel (userID, permID) VALUES
 	((SELECT ID FROM users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='document_repository_categories')),
 	((SELECT ID FROM users WHERE UserID='admin'), (SELECT permID FROM permissions WHERE code='document_repository_hidden'));
 
-
 -- create column to hide files
 ALTER TABLE document_repository
-    ADD COLUMN hidden_file enum('yes','no') DEFAULT NULL;INSERT INTO notification_modules
+    ALGORITHM=INPLACE,
+    ADD COLUMN hidden_file enum('yes','no') DEFAULT NULL;
+
+INSERT INTO notification_modules
 (module_name, operation_type, as_admin, template_file, description)
 VALUES
 ('media', 'digest', 'N', 'media_upload_digest.tpl', 'Media: Email Digest of Recently Uploaded Files');
@@ -54,14 +57,20 @@ INSERT INTO notification_modules_perm_rel (notification_module_id, perm_id) VALU
 (
     (SELECT id from notification_modules where description = 'Media: Email Digest of Recently Uploaded Files'),
     (SELECT permID FROM permissions WHERE code='media_upload_digest')
-);INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useDoB', 'Use DoB (Date of Birth)', 1, 0, 'boolean', ID, 'Use DoB', 31 FROM ConfigSettings WHERE Name="study";
+);
+
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useDoB', 'Use DoB (Date of Birth)', 1, 0, 'boolean', ID, 'Use DoB', 31 FROM ConfigSettings WHERE Name="study";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useDoB";
+
 ALTER TABLE `issues`
+    ALGORITHM=INPLACE,
     ADD `description` longtext DEFAULT NULL
     AFTER `category`;
 
 ALTER TABLE `issues_history`
+    ALGORITHM=INPLACE,
     MODIFY `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description') NOT NULL DEFAULT 'comment';
+
 CREATE TABLE `instrument_data` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`Data`)),
@@ -73,8 +82,13 @@ CREATE TABLE `instrument_data` (
 -- though they're different primary keys
 INSERT INTO instrument_data SELECT ID, Data FROM flag WHERE Data IS NOT NULL;
 
-ALTER TABLE flag ADD COLUMN DataID int(10) unsigned;
-ALTER TABLE flag ADD FOREIGN KEY (DataID) REFERENCES instrument_data(ID);
+ALTER TABLE flag 
+    ALGORITHM=INPLACE,
+    ADD COLUMN DataID int(10) unsigned;
+    
+ALTER TABLE flag 
+    ALGORITHM=INPLACE,
+    ADD FOREIGN KEY (DataID) REFERENCES instrument_data(ID);
 
 -- from this point forward they won't necessarily be the same id, but we don't
 -- care anymore now that the data is migrated and foreign keys were enforced
@@ -84,7 +98,10 @@ UPDATE flag SET DataID=ID WHERE Data IS NOT NULL;
 -- ALTER TABLE flag DROP COLUMN Data;
 -- Reclaim the space that was used by the column
 -- OPTIMIZE TABLE flag;
-ALTER TABLE test_battery ADD COLUMN DoubleDataEntryEnabled enum("Y", "N") DEFAULT "N";
+
+ALTER TABLE test_battery 
+    ALGORITHM=INPLACE,
+    ADD COLUMN DoubleDataEntryEnabled enum("Y", "N") DEFAULT "N";
 
 UPDATE test_battery SET DoubleDataEntryEnabled = 'Y' WHERE Test_name IN (
     SELECT Value from Config WHERE ConfigID = (SELECT ID FROM ConfigSettings WHERE Name = 'DoubleDataEntryInstruments')
@@ -93,240 +110,314 @@ UPDATE test_battery SET DoubleDataEntryEnabled = 'Y' WHERE Test_name IN (
 DELETE FROM Config WHERE ConfigID IN (SELECT ID FROM ConfigSettings WHERE Name = 'DoubleDataEntryInstruments');
 
 DELETE FROM ConfigSettings WHERE Name = 'DoubleDataEntryInstruments';
+
 -- Rename foreign key fields for consistency
+ALTER TABLE `mri_scan_type`
+    ALGORITHM=INPLACE,
+    CHANGE `ID` `MriScanTypeID` int(11) unsigned NOT NULL auto_increment;
 
 ALTER TABLE `mri_scan_type`
-  CHANGE `ID` `MriScanTypeID` int(11) unsigned NOT NULL auto_increment;
-
-ALTER TABLE `mri_scan_type`
-  CHANGE `Scan_type` `MriScanTypeName` VARCHAR(255) NOT NULL;
+    ALGORITHM=INPLACE,
+    CHANGE `Scan_type` `MriScanTypeName` VARCHAR(255) NOT NULL;
 
 ALTER TABLE `mri_protocol`
-  CHANGE `Scan_type` `MriScanTypeID` int(10) unsigned NOT NULL;
+    ALGORITHM=INPLACE,
+    CHANGE `Scan_type` `MriScanTypeID` int(10) unsigned NOT NULL;
 
 ALTER TABLE `mri_protocol_checks`
-  CHANGE `Scan_type` `MriScanTypeID` int(11) unsigned DEFAULT NULL;
+    ALGORITHM=INPLACE,
+    CHANGE `Scan_type` `MriScanTypeID` int(11) unsigned DEFAULT NULL;
 
 ALTER TABLE `mri_violations_log`
-  CHANGE `Scan_type` `MriScanTypeID` int(11) unsigned DEFAULT NULL;
+    ALGORITHM=INPLACE,
+    CHANGE `Scan_type` `MriScanTypeID` int(11) unsigned DEFAULT NULL;
 
 ALTER TABLE `files`
-  CHANGE `AcquisitionProtocolID` `MriScanTypeID` int(10) unsigned default NULL;
+    ALGORITHM=INPLACE,
+    CHANGE `AcquisitionProtocolID` `MriScanTypeID` int(10) unsigned default NULL;
 
 -- Add unique constraints on table that benefit from them
-
 ALTER TABLE `mri_protocol_group_target`
-  ADD CONSTRAINT `UK_mri_protocol_group_target`
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT `UK_mri_protocol_group_target`
     UNIQUE (`ProjectID`, `CohortID`, `Visit_label`);
 
 ALTER TABLE `mri_scan_type`
-  ADD CONSTRAINT `UK_mri_scan_type_name`
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT `UK_mri_scan_type_name`
     UNIQUE KEY `MriScanTypeName` (`MriScanTypeName`);
 
 -- Drop wrong default
-
 ALTER TABLE `mri_protocol`
-  ALTER `MriScanTypeID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `MriScanTypeID` DROP DEFAULT;
 
 -- Add missing foreign key constraints
-
 ALTER TABLE `mri_protocol`
-  ADD CONSTRAINT `FK_mri_protocol_scan_type`
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT `FK_mri_protocol_scan_type`
     FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`);
 
 ALTER TABLE `mri_violations_log`
-  ADD CONSTRAINT `FK_mri_violations_log_scan_type`
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT `FK_mri_violations_log_scan_type`
     FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`);
 
 -- Rename the existing constraints for consistency
-
 ALTER TABLE `mri_protocol_checks`
-  DROP FOREIGN KEY `FK_mriProtocolChecks_ScanType`,
-  ADD CONSTRAINT `FK_mri_protocol_checks_scan_type`
+    ALGORITHM=INPLACE,
+    DROP FOREIGN KEY `FK_mriProtocolChecks_ScanType`,
+    ADD CONSTRAINT `FK_mri_protocol_checks_scan_type`
     FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`);
+
 -- Drop nonsensical defaults and put use right type for others.
-
 ALTER TABLE `users`
-  ALTER `Privilege` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `Privilege` SET DEFAULT 0;
 
 ALTER TABLE `candidate`
-  ALTER `CandID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `CandID` DROP DEFAULT;
 
 ALTER TABLE `candidate`
-  ALTER `RegistrationCenterID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `RegistrationCenterID` DROP DEFAULT;
 
 ALTER TABLE `session`
-  ALTER `CandID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `CandID` DROP DEFAULT;
 
 ALTER TABLE `instrument_subtests`
-  ALTER `Order_number` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `Order_number` SET DEFAULT 0;
 
 ALTER TABLE `flag`
-  ALTER `SessionID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `SessionID` DROP DEFAULT;
 
 ALTER TABLE `tarchive`
-  ALTER `AcquisitionCount` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `AcquisitionCount` SET DEFAULT 0;
 
 ALTER TABLE `tarchive`
-  ALTER `NonDicomFileCount` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `NonDicomFileCount` SET DEFAULT 0;
 
 ALTER TABLE `tarchive`
-  ALTER `DicomFileCount` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `DicomFileCount` SET DEFAULT 0;
 
 ALTER TABLE `tarchive`
-  ALTER `sumTypeVersion` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `sumTypeVersion` SET DEFAULT 0;
 
 ALTER TABLE `tarchive`
-  ALTER `uploadAttempt` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `uploadAttempt` SET DEFAULT 0;
 
 ALTER TABLE `tarchive`
-  ALTER `PendingTransfer` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `PendingTransfer` SET DEFAULT 0;
 
 ALTER TABLE `tarchive_series`
-  ALTER `TarchiveID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `TarchiveID` DROP DEFAULT;
 
 ALTER TABLE `tarchive_series`
-  ALTER `SeriesNumber` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `SeriesNumber` SET DEFAULT 0;
 
 ALTER TABLE `tarchive_series`
-  ALTER `NumberOfFiles` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `NumberOfFiles` SET DEFAULT 0;
 
 ALTER TABLE `tarchive_files`
-  ALTER `TarchiveID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `TarchiveID` DROP DEFAULT;
 
 ALTER TABLE `hrrt_archive`
-  ALTER `EcatFileCount` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `EcatFileCount` SET DEFAULT 0;
 
 ALTER TABLE `hrrt_archive`
-  ALTER `NonEcatFileCount` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `NonEcatFileCount` SET DEFAULT 0;
 
 ALTER TABLE `hrrt_archive_files`
-  ALTER `HrrtArchiveID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `HrrtArchiveID` DROP DEFAULT;
 
 ALTER TABLE `mri_processing_protocol`
-  ALTER `InsertTime` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `InsertTime` SET DEFAULT 0;
 
 ALTER TABLE `files`
-  ALTER `SessionID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `SessionID` DROP DEFAULT;
 
 ALTER TABLE `files`
-  ALTER `InsertTime` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `InsertTime` SET DEFAULT 0;
 
 ALTER TABLE `files`
-  ALTER `SourceFileID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `SourceFileID` DROP DEFAULT;
 
 ALTER TABLE `mri_upload`
-  ALTER `InsertionComplete` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `InsertionComplete` SET DEFAULT 0;
 
 ALTER TABLE `mri_upload`
-  ALTER `IsTarchiveValidated` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `IsTarchiveValidated` SET DEFAULT 0;
 
 ALTER TABLE `document_repository_categories`
-  ALTER `parent_id` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `parent_id` DROP DEFAULT;
 
 ALTER TABLE `document_repository`
-  ALTER `EARLI` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `EARLI` SET DEFAULT 0;
 
 ALTER TABLE `document_repository`
-  ALTER `hide_video` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `hide_video` SET DEFAULT 0;
 
 ALTER TABLE `notification_types`
-  ALTER `private` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `private` SET DEFAULT 0;
 
 ALTER TABLE `notification_spool`
-  ALTER `NotificationTypeID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `NotificationTypeID` DROP DEFAULT;
 
 ALTER TABLE `notification_spool`
-  CHANGE `ProcessID` `ProcessID` int(11) DEFAULT NULL;
+    ALGORITHM=INPLACE,
+    CHANGE `ProcessID` `ProcessID` int(11) DEFAULT NULL;
 
 ALTER TABLE `participant_status`
-  ALTER `CandID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `CandID` DROP DEFAULT;
 
 ALTER TABLE `participant_status_history`
-  ALTER `CandID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `CandID` DROP DEFAULT;
 
 ALTER TABLE `certification`
-  ALTER `examinerID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `examinerID` DROP DEFAULT;
 
 ALTER TABLE `media`
-  ALTER `hide_file` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `hide_file` SET DEFAULT 0;
 
 ALTER TABLE `parameter_type`
-  ALTER `Queryable` SET DEFAULT 1;
+    ALGORITHM=INPLACE,
+    ALTER `Queryable` SET DEFAULT 1;
 
 ALTER TABLE `parameter_type`
-  ALTER `IsFile` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `IsFile` SET DEFAULT 0;
 
 ALTER TABLE `parameter_type_category_rel`
-  ALTER `ParameterTypeID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `ParameterTypeID` DROP DEFAULT;
 
 ALTER TABLE `parameter_type_category_rel`
-  ALTER `ParameterTypeCategoryID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `ParameterTypeCategoryID` DROP DEFAULT;
 
 ALTER TABLE `parameter_candidate`
-  ALTER `CandID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `CandID` DROP DEFAULT;
 
 ALTER TABLE `parameter_candidate`
-  ALTER `ParameterTypeID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `ParameterTypeID` DROP DEFAULT;
 
 ALTER TABLE `parameter_candidate`
-  ALTER `InsertTime` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `InsertTime` SET DEFAULT 0;
 
 ALTER TABLE `parameter_session`
-  ALTER `SessionID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `SessionID` DROP DEFAULT;
 
 ALTER TABLE `parameter_session`
-  ALTER `ParameterTypeID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `ParameterTypeID` DROP DEFAULT;
 
 ALTER TABLE `parameter_session`
-  ALTER `InsertTime` SET DEFAULT 0;
+    ALGORITHM=INPLACE,
+    ALTER `InsertTime` SET DEFAULT 0;
 
 ALTER TABLE `SNP_candidate_rel`
-  ALTER `SNPID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `SNPID` DROP DEFAULT;
 
 ALTER TABLE `SNP_candidate_rel`
-  ALTER `CandID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `CandID` DROP DEFAULT;
 
 ALTER TABLE `feedback_mri_predefined_comments`
-  ALTER `CommentTypeID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `CommentTypeID` DROP DEFAULT;
 
 ALTER TABLE `feedback_mri_comments`
-  ALTER `CommentTypeID` DROP DEFAULT;
+    ALGORITHM=INPLACE,
+    ALTER `CommentTypeID` DROP DEFAULT;
+
 ALTER TABLE `issues`
+    ALGORITHM=INPLACE,
     ADD `instrument` int(10) unsigned DEFAULT NULL
     AFTER `description`;
 
 ALTER TABLE `issues`
+    ALGORITHM=INPLACE,
     ADD CONSTRAINT `fk_issues_instrument`
     FOREIGN KEY (`instrument`) REFERENCES `test_names` (`ID`)
     ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE `issues_history`
+    ALGORITHM=INPLACE,
     MODIFY `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description','watching','instrument') NOT NULL DEFAULT 'comment';
+
 ALTER TABLE `issues_history`
+    ALGORITHM=INPLACE,
     MODIFY `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description', 'watching') NOT NULL DEFAULT 'comment';
-ALTER TABLE flag ADD COLUMN TestID int(10) unsigned AFTER test_name;
-ALTER TABLE flag ADD CONSTRAINT FOREIGN KEY (TestID) REFERENCES test_names(ID);
+
+ALTER TABLE flag 
+    ALGORITHM=INPLACE,
+    ADD COLUMN TestID int(10) unsigned AFTER test_name;
+    
+ALTER TABLE flag 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FOREIGN KEY (TestID) REFERENCES test_names(ID);
 
 UPDATE flag f SET TestID=(SELECT ID FROM test_names tn WHERE f.test_name=tn.test_name);
 
-ALTER TABLE flag MODIFY COLUMN TestID int(10) unsigned NOT NULL;
+ALTER TABLE flag 
+    ALGORITHM=INPLACE,
+    MODIFY COLUMN TestID int(10) unsigned NOT NULL;
+
 ALTER TABLE data_release
-ADD COLUMN ProjectID INT(10) UNSIGNED NULL DEFAULT NULL,
-ADD CONSTRAINT FK_ProjectID
-FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID);INSERT INTO notification_modules (module_name, operation_type, as_admin, template_file, description) VALUES
+    ALGORITHM=INPLACE,
+    ADD COLUMN ProjectID INT(10) UNSIGNED NULL DEFAULT NULL,
+    ADD CONSTRAINT FK_ProjectID
+    FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID);
+
+INSERT INTO notification_modules (module_name, operation_type, as_admin, template_file, description) VALUES
     ('issue_tracker', 'create/edit', 'N', 'issue_change.tpl', 'Notify for all issues created or edited');
 
 INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES
     ((SELECT id FROM notification_modules WHERE module_name='issue_tracker' AND operation_type='create/edit'), (SELECT id FROM notification_services WHERE service='email_text'));
+
 -- --------------------------------------------------------------
 -- redcap module
-
 INSERT IGNORE INTO modules (Name, Active) VALUES ('redcap', 'N');
 
 -- --------------------------------------------------------------
 -- redcap notifications table
-
 CREATE TABLE `redcap_notification` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `complete` char(1) NOT NULL,
@@ -345,21 +436,18 @@ CREATE TABLE `redcap_notification` (
 
 -- --------------------------------------------------------------
 -- redcap examiner
-
 INSERT INTO examiners (full_name) VALUES ('REDCap');
 INSERT IGNORE INTO examiners_psc_rel (examinerID, centerID, active, pending_approval)
     SELECT e.examinerID, p.CenterID, "Y", "N" from psc p JOIN examiners e WHERE e.Full_name = "REDCap";
 
 -- --------------------------------------------------------------
 -- redcap importable instrument list in config module
-
 INSERT IGNORE INTO ConfigSettings (Name, Description, Visible, Label, OrderNumber)
   SELECT 'redcap', 'Settings related to REDCap interoperability', 1, 'REDCap', MAX(OrderNumber) + 1
   FROM ConfigSettings
   WHERE Parent IS NULL;
 
 -- add a main assignee to all redcap created issue
-
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
   SELECT
     'redcap_issue_assignee',
@@ -375,7 +463,6 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
   WHERE parent_config.Name = 'redcap';
 
 -- instruments must be added to this list before they can be imported, else they wil be ignored.
-
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
   SELECT
     'redcap_importable_instrument',
@@ -388,7 +475,9 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
     COALESCE(MAX(child_config.OrderNumber), 0) +1
   FROM ConfigSettings parent_config
   LEFT JOIN ConfigSettings child_config ON (parent_config.ID = child_config.Parent)
-  WHERE parent_config.Name = 'redcap';CREATE TABLE Login_Summary_Statistics (
+  WHERE parent_config.Name = 'redcap';
+
+CREATE TABLE Login_Summary_Statistics (
     Title VARCHAR(255),
     Project VARCHAR(255),
     Value INT,
@@ -397,160 +486,314 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 );
 
 ALTER TABLE dataquery_study_queries_rel
-MODIFY COLUMN PinType enum('topquery','dashboard', 'loginpage') DEFAULT NULL;
+    ALGORITHM=INPLACE,
+    MODIFY COLUMN PinType enum('topquery','dashboard', 'loginpage') DEFAULT NULL;
 
 ALTER TABLE Project
-ADD COLUMN showSummaryOnLogin BOOLEAN DEFAULT TRUE;UPDATE permissions SET code = 'imaging_uploader_allsites', description='Imaging Scans - All Sites' WHERE code='imaging_uploader';
+    ALGORITHM=INPLACE,
+    ADD COLUMN showSummaryOnLogin BOOLEAN DEFAULT TRUE;
+
+UPDATE permissions SET code = 'imaging_uploader_allsites', description='Imaging Scans - All Sites' WHERE code='imaging_uploader';
+
 INSERT INTO permissions (code, description, moduleID, `action`, categoryID)
 SELECT 'imaging_uploader_ownsites', 'Imaging Scans - Own Sites', ID, 'View/Upload', 2 FROM modules WHERE Name='imaging_uploader';
+
 INSERT INTO permissions (code, description, moduleID, `action`, categoryID)
 SELECT 'imaging_uploader_nosessionid', 'Uploads with No Session Information', ID, 'View', 2 FROM modules WHERE Name='imaging_uploader';
 
 INSERT IGNORE INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) 
 SELECT 'useAdvancedPermissions', 'Restricts access to data based on both sites and projects and require a special permission to access data not affiliated to a session (SessionID null). Keeping this setting to NO should ensure backwards compatibility (access to all data when module loads)', 1, 0, 'boolean', ID, 'Use Advanced Permissions', 6 FROM ConfigSettings WHERE Name='imaging_modules';
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useAdvancedPermissions";
+
 INSERT INTO permissions (code, description, moduleID, `action`, categoryID)
 SELECT 'dicom_archive_nosessionid', 'DICOMs with no session ID', ID, 'View', 2 FROM modules WHERE Name='dicom_archive';
 
 INSERT INTO permissions (code, description, moduleID, `action`, categoryID)
-SELECT 'dicom_archive_view_ownsites', 'DICOMs - Own Sites', ID, 'View', 2 FROM modules WHERE Name='dicom_archive';UPDATE permissions
+SELECT 'dicom_archive_view_ownsites', 'DICOMs - Own Sites', ID, 'View', 2 FROM modules WHERE Name='dicom_archive';
+
+UPDATE permissions
     SET description = 'Create/Edit/Close Own Issues and Comment on All Issues'
     WHERE code = 'issue_tracker_reporter';
+
 -- Change FKs from CandID to CandidateID which is now candidate.ID
-ALTER TABLE CNV DROP constraint CNV_ibfk_3;
+ALTER TABLE CNV 
+    ALGORITHM=INPLACE,
+    DROP constraint CNV_ibfk_3;
+    
 UPDATE CNV
 JOIN candidate c ON c.CandID = CNV.CandID
 SET CNV.CandID = c.ID;
-ALTER TABLE CNV CHANGE CandID CandidateID int(10) unsigned DEFAULT NULL;
-ALTER TABLE CNV ADD CONSTRAINT CNV_ibfk_3 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
-ALTER TABLE candidate_consent_rel DROP CONSTRAINT `FK_candidate_consent_rel_CandidateID`;
+ALTER TABLE CNV 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned DEFAULT NULL;
+    
+ALTER TABLE CNV 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT CNV_ibfk_3 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
+
+ALTER TABLE candidate_consent_rel 
+    ALGORITHM=INPLACE,
+    DROP CONSTRAINT `FK_candidate_consent_rel_CandidateID`;
+    
 UPDATE candidate_consent_rel rel
 JOIN candidate c
   ON c.CandID = rel.CandidateID
 SET rel.CandidateID = c.ID;
-ALTER TABLE candidate_consent_rel CHANGE CandidateID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE candidate_consent_rel ADD CONSTRAINT FK_candidate_consent_rel_CandidateID FOREIGN KEY (CandidateID) REFERENCES candidate(ID) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
-ALTER TABLE participant_status DROP CONSTRAINT `fk_participant_status_3`;
+ALTER TABLE candidate_consent_rel 
+    ALGORITHM=INPLACE,
+    CHANGE CandidateID CandidateID int(10) unsigned NOT NULL;
+    
+ALTER TABLE candidate_consent_rel 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FK_candidate_consent_rel_CandidateID FOREIGN KEY (CandidateID) REFERENCES candidate(ID) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE participant_status 
+    ALGORITHM=INPLACE,
+    DROP CONSTRAINT `fk_participant_status_3`;
+    
 UPDATE participant_status ps
 JOIN candidate c ON c.CandID = ps.CandID
 SET ps.CandID = c.ID;
-ALTER TABLE participant_status CHANGE CandID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE participant_status ADD CONSTRAINT FK_participant_status_3 FOREIGN KEY (CandidateID) REFERENCES candidate(ID) ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE dataquery_run_results DROP CONSTRAINT `dataquery_run_results_ibfk_1`;
+ALTER TABLE participant_status 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned NOT NULL;
+    
+ALTER TABLE participant_status 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FK_participant_status_3 FOREIGN KEY (CandidateID) REFERENCES candidate(ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE dataquery_run_results 
+    ALGORITHM=INPLACE,
+    DROP CONSTRAINT `dataquery_run_results_ibfk_1`;
+    
 UPDATE dataquery_run_results d
 JOIN candidate c ON c.CandID = d.CandID
 SET d.CandID = c.ID;
-ALTER TABLE dataquery_run_results CHANGE CandID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE dataquery_run_results ADD CONSTRAINT dataquery_run_results_ibfk_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
-ALTER TABLE issues DROP CONSTRAINT `fk_issues_3`;
+ALTER TABLE dataquery_run_results 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned NOT NULL;
+    
+ALTER TABLE dataquery_run_results 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT dataquery_run_results_ibfk_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
+
+ALTER TABLE issues 
+    ALGORITHM=INPLACE,
+    DROP CONSTRAINT `fk_issues_3`;
+    
 UPDATE issues i
 JOIN candidate c ON c.CandID = i.CandID
 SET i.CandID = c.ID;
-ALTER TABLE issues CHANGE CandID CandidateID int(10) unsigned DEFAULT NULL;
-ALTER TABLE issues ADD CONSTRAINT fk_issues_3 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
-ALTER TABLE session DROP CONSTRAINT `fk_session_1`;
+ALTER TABLE issues 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned DEFAULT NULL;
+    
+ALTER TABLE issues 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT fk_issues_3 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
+
+ALTER TABLE session 
+    ALGORITHM=INPLACE,
+    DROP CONSTRAINT `fk_session_1`;
+    
 UPDATE session s
 JOIN candidate c ON c.CandID = s.CandID
 SET s.CandID = c.ID;
-ALTER TABLE session CHANGE CandID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE session ADD CONSTRAINT fk_session_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
-ALTER TABLE genomic_candidate_files_rel DROP CONSTRAINT `genomic_candidate_files_rel_ibfk_1`;
+ALTER TABLE session 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned NOT NULL;
+    
+ALTER TABLE session 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT fk_session_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
+
+ALTER TABLE genomic_candidate_files_rel 
+    ALGORITHM=INPLACE,
+    DROP CONSTRAINT `genomic_candidate_files_rel_ibfk_1`;
+    
 UPDATE genomic_candidate_files_rel g
 JOIN candidate c ON c.CandID = g.CandID
 SET g.CandID = c.ID;
-ALTER TABLE genomic_candidate_files_rel CHANGE CandID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE genomic_candidate_files_rel ADD CONSTRAINT genomic_candidate_files_rel_ibfk_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
-ALTER TABLE mri_scanner DROP CONSTRAINT `FK_mri_scanner_1`;
+ALTER TABLE genomic_candidate_files_rel 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned NOT NULL;
+    
+ALTER TABLE genomic_candidate_files_rel 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT genomic_candidate_files_rel_ibfk_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
+
+ALTER TABLE mri_scanner 
+    ALGORITHM=INPLACE,
+    DROP CONSTRAINT `FK_mri_scanner_1`;
+    
 UPDATE mri_scanner m
 JOIN candidate c ON c.CandID = m.CandID
 SET m.CandID = c.ID;
-ALTER TABLE mri_scanner CHANGE CandID CandidateID int(10) unsigned DEFAULT NULL;
-ALTER TABLE mri_scanner ADD CONSTRAINT FK_mri_scanner_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
-ALTER TABLE genomic_sample_candidate_rel DROP CONSTRAINT `genomic_sample_candidate_rel_ibfk_1`;
+ALTER TABLE mri_scanner 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned DEFAULT NULL;
+    
+ALTER TABLE mri_scanner 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FK_mri_scanner_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
+
+ALTER TABLE genomic_sample_candidate_rel 
+    ALGORITHM=INPLACE,
+    DROP CONSTRAINT `genomic_sample_candidate_rel_ibfk_1`;
+    
 UPDATE genomic_sample_candidate_rel g
 JOIN candidate c ON c.CandID = g.CandID
 SET g.CandID = c.ID;
-ALTER TABLE genomic_sample_candidate_rel CHANGE CandID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE genomic_sample_candidate_rel ADD CONSTRAINT `genomic_sample_candidate_rel_ibfk_1` FOREIGN KEY (CandidateID) REFERENCES `candidate`(`ID`);
 
-ALTER TABLE SNP_candidate_rel DROP CONSTRAINT `fk_SNP_candidate_rel_2`;
+ALTER TABLE genomic_sample_candidate_rel 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned NOT NULL;
+    
+ALTER TABLE genomic_sample_candidate_rel 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT `genomic_sample_candidate_rel_ibfk_1` FOREIGN KEY (CandidateID) REFERENCES `candidate`(`ID`);
+
+ALTER TABLE SNP_candidate_rel 
+    ALGORITHM=INPLACE,
+    DROP CONSTRAINT `fk_SNP_candidate_rel_2`;
+    
 UPDATE SNP_candidate_rel s
 JOIN candidate c
   ON c.CandID = s.CandID
 SET s.CandID = c.ID;
-ALTER TABLE SNP_candidate_rel CHANGE CandID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE SNP_candidate_rel ADD CONSTRAINT `fk_SNP_candidate_rel_2` FOREIGN KEY (CandidateID) REFERENCES candidate(ID) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
-ALTER TABLE parameter_candidate DROP CONSTRAINT `FK_parameter_candidate_2`;
+ALTER TABLE SNP_candidate_rel 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned NOT NULL;
+    
+ALTER TABLE SNP_candidate_rel 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT `fk_SNP_candidate_rel_2` FOREIGN KEY (CandidateID) REFERENCES candidate(ID) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE parameter_candidate 
+    ALGORITHM=INPLACE,
+    DROP CONSTRAINT `FK_parameter_candidate_2`;
+    
 UPDATE parameter_candidate p
 JOIN candidate c
   ON c.CandID = p.CandID
 SET p.CandID = c.ID;
-ALTER TABLE parameter_candidate CHANGE CandID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE parameter_candidate ADD CONSTRAINT FK_parameter_candidate_2 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
+ALTER TABLE parameter_candidate 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned NOT NULL;
+    
+ALTER TABLE parameter_candidate 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FK_parameter_candidate_2 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
-ALTER TABLE candidate_diagnosis_evolution_rel DROP FOREIGN KEY FK_candidate_diagnosis_evolution_rel_CandID;
-ALTER TABLE candidate_diagnosis_evolution_rel DROP PRIMARY KEY;
+ALTER TABLE candidate_diagnosis_evolution_rel 
+    ALGORITHM=INPLACE,
+    DROP FOREIGN KEY FK_candidate_diagnosis_evolution_rel_CandID;
+    
+ALTER TABLE candidate_diagnosis_evolution_rel 
+    ALGORITHM=INPLACE,
+    DROP PRIMARY KEY;
+    
 UPDATE candidate_diagnosis_evolution_rel AS rel
 JOIN candidate AS c ON rel.CandID = c.CandID
 SET rel.CandID = c.ID;
-ALTER TABLE candidate_diagnosis_evolution_rel
-CHANGE CandID CandidateID INT(10) UNSIGNED NOT NULL;
-ALTER TABLE candidate_diagnosis_evolution_rel
-ADD CONSTRAINT PK_candidate_diagnosis_evolution_rel PRIMARY KEY (CandidateID, DxEvolutionID);
-ALTER TABLE candidate_diagnosis_evolution_rel
-ADD CONSTRAINT FK_candidate_diagnosis_evolution_rel_CandID
-FOREIGN KEY (CandidateID) REFERENCES candidate(ID)
-ON DELETE RESTRICT ON UPDATE RESTRICT;
 
+ALTER TABLE candidate_diagnosis_evolution_rel
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID INT(10) UNSIGNED NOT NULL;
+    
+ALTER TABLE candidate_diagnosis_evolution_rel
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT PK_candidate_diagnosis_evolution_rel PRIMARY KEY (CandidateID, DxEvolutionID);
+    
+ALTER TABLE candidate_diagnosis_evolution_rel
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FK_candidate_diagnosis_evolution_rel_CandID
+    FOREIGN KEY (CandidateID) REFERENCES candidate(ID)
+    ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 -- Changes references to candidate.CandID that were NOT FK. Add FK
 UPDATE feedback_bvl_thread f
 JOIN candidate c ON c.CandID = f.CandID
 SET f.CandID = c.ID;
-ALTER TABLE feedback_bvl_thread CHANGE CandID CandidateID int(10) unsigned DEFAULT NULL;
-ALTER TABLE feedback_bvl_thread ADD CONSTRAINT FK_feedback_bvl_thread_candidate_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
+
+ALTER TABLE feedback_bvl_thread 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned DEFAULT NULL;
+    
+ALTER TABLE feedback_bvl_thread 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FK_feedback_bvl_thread_candidate_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
 UPDATE mri_violations_log m
 JOIN candidate c ON c.CandID = m.CandID
 SET m.CandID = c.ID;
-ALTER TABLE mri_violations_log CHANGE CandID CandidateID int(10) unsigned DEFAULT NULL;
-ALTER TABLE mri_violations_log ADD CONSTRAINT FK_mri_violations_log_candidate_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
+
+ALTER TABLE mri_violations_log 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned DEFAULT NULL;
+    
+ALTER TABLE mri_violations_log 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FK_mri_violations_log_candidate_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
 UPDATE mri_protocol_violated_scans m
 JOIN candidate c
   ON c.CandID = m.CandID
 SET m.CandID = c.ID;
-ALTER TABLE mri_protocol_violated_scans CHANGE CandID CandidateID int(10) unsigned;
-ALTER TABLE mri_protocol_violated_scans ADD CONSTRAINT FK_mri_protocol_violated_scans_candidate_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
+
+ALTER TABLE mri_protocol_violated_scans 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned;
+    
+ALTER TABLE mri_protocol_violated_scans 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FK_mri_protocol_violated_scans_candidate_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
 UPDATE participant_status_history p
 JOIN candidate c
   ON c.CandID = p.CandID
 SET p.CandID = c.ID;
-ALTER TABLE participant_status_history CHANGE CandID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE participant_status_history ADD CONSTRAINT FK_participant_status_history_candidate_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
+
+ALTER TABLE participant_status_history 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned NOT NULL;
+    
+ALTER TABLE participant_status_history 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FK_participant_status_history_candidate_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
 UPDATE family f
 JOIN candidate c
   ON c.CandID = f.CandID
 SET f.CandID = c.ID;
-ALTER TABLE family CHANGE CandID CandidateID int(10) unsigned NOT NULL;
-ALTER TABLE family ADD CONSTRAINT FK_family_candidate_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
+ALTER TABLE family 
+    ALGORITHM=INPLACE,
+    CHANGE CandID CandidateID int(10) unsigned NOT NULL;
+    
+ALTER TABLE family 
+    ALGORITHM=INPLACE,
+    ADD CONSTRAINT FK_family_candidate_1 FOREIGN KEY (CandidateID) REFERENCES candidate(ID);
 
 -- Change candidate's PK to ID
-ALTER TABLE candidate DROP PRIMARY KEY, ADD PRIMARY KEY(ID);
-ALTER TABLE permissions CHANGE `action` `action` enum (
+ALTER TABLE candidate 
+    ALGORITHM=INPLACE,
+    DROP PRIMARY KEY, ADD PRIMARY KEY(ID);
+
+ALTER TABLE permissions 
+    ALGORITHM=INPLACE,
+    CHANGE `action` `action` enum (
       'Close',
       'Create',
       'Create/Edit',
@@ -573,6 +816,7 @@ ALTER TABLE permissions CHANGE `action` `action` enum (
 
 UPDATE permissions SET code = 'issue_tracker_own_issue', description = 'Issues - Own', action = 'View/Edit/Comment/Close'
 WHERE code = 'issue_tracker_reporter';
+
 UPDATE permissions SET code = 'issue_tracker_all_issue', description = 'Issues - All Sites', action = 'View/Edit/Comment'
 WHERE code = 'issue_tracker_developer';
 
@@ -580,19 +824,29 @@ INSERT INTO permissions (code, description, moduleID, action, categoryID) VALUES
 ('issue_tracker_site_issue','Issues - Own Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'View/Edit/Comment',2),
 ('issue_tracker_close_site_issue','Issues - Own Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'Close',2),
 ('issue_tracker_close_all_issue','Issues - All Sites',(SELECT ID FROM modules WHERE Name = 'issue_tracker'),'Close',2);
-ALTER TABLE issues_history CHANGE `fieldChanged` `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','CandidateID','candID','description','watching','instrument') NOT NULL DEFAULT 'comment';
+
+ALTER TABLE issues_history 
+    ALGORITHM=INPLACE,
+    CHANGE `fieldChanged` `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','CandidateID','candID','description','watching','instrument') NOT NULL DEFAULT 'comment';
 
 UPDATE issues_history SET `fieldChanged` = 'CandidateID' WHERE `fieldChanged` = 'candID';
 
-ALTER TABLE issues_history CHANGE `fieldChanged` `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','CandidateID', 'description','watching','instrument') NOT NULL DEFAULT 'comment';
+ALTER TABLE issues_history 
+    ALGORITHM=INPLACE,
+    CHANGE `fieldChanged` `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','CandidateID', 'description','watching','instrument') NOT NULL DEFAULT 'comment';
 
 UPDATE issues_history
 JOIN candidate ON issues_history.newValue = candidate.CandID
 SET issues_history.newValue = candidate.ID WHERE issues_history.fieldChanged = 'CandidateID';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'profiler_log_level', 'Verbosity of performance profiler logging', 1, 0, 'log_level', ID, 'Profiler Log Level', 3 FROM ConfigSettings WHERE Name='logs';
 
 UPDATE `test_battery` SET `DoubleDataEntryEnabled`='N' WHERE `DoubleDataEntryEnabled` IS NULL;
-ALTER TABLE `test_battery` MODIFY `DoubleDataEntryEnabled` enum('Y','N') NOT NULL DEFAULT 'N';
+
+ALTER TABLE `test_battery` 
+    ALGORITHM=INPLACE,
+    MODIFY `DoubleDataEntryEnabled` enum('Y','N') NOT NULL DEFAULT 'N';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
   SELECT 'use_legacy_dicom_study_importer', 'Use the legacy DICOM study importer instead of the new one', 1, 0, 'boolean', ID, 'Use legacy DICOM study importer', 15
   FROM ConfigSettings
@@ -602,12 +856,16 @@ INSERT INTO Config (ConfigID, Value)
   SELECT ID, 1
   FROM ConfigSettings cs
   WHERE cs.Name='use_legacy_dicom_study_importer';
+
 INSERT INTO permissions (code, description, ModuleID, action, categoryID)
 VALUES ('view_instrument_data', 'Data', 
 (SELECT ID FROM modules WHERE Name = 'instruments'), 'View', 2);
+
 INSERT IGNORE INTO user_perm_rel (userID, permID) 
 SELECT users.ID, permissions.permID FROM users 
-CROSS JOIN permissions WHERE users.userID='admin';CREATE TABLE `openid_connect_providers` (
+CROSS JOIN permissions WHERE users.userID='admin';
+
+CREATE TABLE `openid_connect_providers` (
     `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `Name` varchar(255) NOT NULL,
     `BaseURI` text NOT NULL, -- the provider's base uri that hosts .well-known/openid-configuration
@@ -626,4 +884,5 @@ CREATE TABLE `openid_connect_csrf` (
     PRIMARY KEY (`State`),
     CONSTRAINT `FK_openid_provider` FOREIGN KEY (`OpenIDProviderID`) REFERENCES `openid_connect_providers` (`OpenIDProviderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 SET FOREIGN_KEY_CHECKS = 1;
