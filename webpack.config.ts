@@ -232,14 +232,6 @@ plugins.push(new DefinePlugin({
   EEG_VIS_ENABLED: EEGVisEnabled,
 }));
 
-if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
-  plugins.push(
-    new IgnorePlugin({
-      resourceRegExp: /react-series-data-viewer/,
-    })
-  );
-}
-
 /**
  * Add the project-specific modules and entry points to the record of main
  * LORIS modules.
