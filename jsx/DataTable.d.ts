@@ -1,38 +1,5 @@
-
 import {ReactNode} from 'react';
-
-type TableRow = (string|null)[]
-
-type Field = {
-    show: boolean
-    label: string
-}
-
-type hideOptions = {
-    rowsPerPage: boolean
-    downloadCSV: boolean
-    defaultColumn: boolean
-}
-type DataTableProps = {
-    data: TableRow[]
-    rowNumLabel?: string
-    getFormattedCell: (label: string,
-        data: string,
-        row: TableRow,
-        headers: string[],
-        fieldNo: number) => ReactNode
-    onSort?: () => void
-    hide?: hideOptions
-    fields: Field[]
-    nullTableShow?: boolean
-    noDynamicTable?: boolean
-    getMappedCell?: (
-        label: string,
-        data: string|null,
-        row: TableRow,
-        headers: string[],
-        fieldNo: number) => string|(string|null)[]|null
-}
+import {DataTableProps} from './types';
 
 /**
  * The DataTable class. See DataTable.js
