@@ -117,6 +117,18 @@ function QueryField(props: {
                          * @returns {object} New CSS with z-index added
                          */
                         (base) => ({...base, zIndex: 9999}),
+            valueContainer:
+                            /**
+                             * Adds appropriate zIndex to the react select's base CSS
+                             *
+                             * @param {object} base - The current CSS
+                             * @returns {object} New CSS with z-index added
+                             */
+                            (base) => ({
+                              ...base,
+                              maxHeight: '150px',
+                              overflowY: 'auto',
+                            }),
             }
           }
           closeMenuOnSelect={false}
@@ -132,7 +144,8 @@ function QueryField(props: {
       style={{
         cursor: 'pointer',
         display: 'flex',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        marginBottom: '4px',
       }}
       onClick={() => props.onFieldToggle(
         props.module,
@@ -141,8 +154,10 @@ function QueryField(props: {
         selectedVisits,
       )}>
       <dl>
-        <dt>{item}</dt>
-        <dd>{value.description} {download}</dd>
+        <dt style={{fontSize: '18px', wordBreak: 'break-word'}}>{item}</dt>
+        <dd
+          style={{wordBreak: 'break-word'}}
+        >{value.description} {download}</dd>
       </dl>
       {visits}
     </div>);
@@ -340,78 +355,112 @@ function DefineFields(props: {
       const selectedVisits = props.defaultVisits.map((el) => {
         return {value: el, label: el};
       });
-      defaultVisits = <div style={{paddingBottom: '1em', display: 'flex'}}>
-        <h4 style={{paddingRight: '1ex'}}>{t('Default Visits',
-          {ns: 'dataquery'})}</h4>
-        <Select options={allVisits}
-          isMulti
-          onChange={props.onChangeDefaultVisits}
-          placeholder={t('Select Visits', {ns: 'dataquery'})}
-          noOptionsMessage={() => t('No options', {ns: 'loris'})}
-          menuPortalTarget={document.body}
-          styles={
-            {menuPortal:
-                            /**
-                             * Adds appropriate zIndex to the react select's base CSS
-                             *
-                             * @param {object} base - The current CSS
-                             * @returns {object} New CSS with z-index added
-                             */
-                            (base) => ({...base, zIndex: 9999}),
-            }
-          }
-          value={selectedVisits}
-          closeMenuOnSelect={false}
-        />
-        <div>
-          <CheckboxElement label={t('Sync with selected fields',
+      defaultVisits = <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: '16px'}}>
+        <CheckboxElement
+          label={t('Sync selected visits across all fields',
             {ns: 'dataquery'})}
           name="syncVisits"
+          class="checkbox-flex"
+          offset=""
           value={syncVisits}
+          style={{}}
           onUserInput={
             (name: string, value: boolean) => setSyncVisits(value)
           } />
+        <div style={{margin: '0 16px 16px'}}>
+          <Select options={allVisits}
+            isMulti
+            onChange={props.onChangeDefaultVisits}
+            placeholder={t('Select Visits', {ns: 'dataquery'})}
+            noOptionsMessage={() => t('No options', {ns: 'loris'})}
+            menuPortalTarget={document.body}
+            styles={
+              {menuPortal:
+                              /**
+                               * Adds appropriate zIndex to the react select's base CSS
+                               *
+                               * @param {object} base - The current CSS
+                               * @returns {object} New CSS with z-index added
+                               */
+                              (base) => ({...base, zIndex: 9999}),
+              valueContainer:
+                              /**
+                               * Adds appropriate zIndex to the react select's base CSS
+                               *
+                               * @param {object} base - The current CSS
+                               * @returns {object} New CSS with z-index added
+                               */
+                              (base) => ({
+                                ...base,
+                                maxHeight: '200px',
+                                overflowY: 'auto',
+                                padding: '0 16px',
+                              }),
+              }
+            }
+            value={selectedVisits}
+            closeMenuOnSelect={false}
+          />
         </div>
       </div>;
     }
 
     fieldList = (<div>
-      <div style={{display: 'flex', flexWrap: 'wrap',
-        justifyContent: 'space-between'}}>
-        <h2>{
-          t('{{columnName}} fields', {ns: 'dataquery', columnName: cname})
-        }</h2>
-        <div style={{marginTop: '1em',
+      <div style={{display: 'flex', flexDirection: 'column',
+        marginTop: '32px'}}>
+        <div style={{
           display: 'flex',
           flexWrap: 'nowrap',
           flexDirection: 'column',
         }}>
           {defaultVisits}
-          <div className="input-group">
-            <input onChange={setFilter}
-              className='form-control'
-              type="text"
-              placeholder={t('Filter within category', {ns: 'dataquery'})}
-              aria-describedby="input-filter-addon"
-              value={activeFilter} />
-            <span className="input-group-addon">
-              <span className="glyphicon glyphicon-search"/>
-            </span>
-          </div>
-          <div style={{margin: '1ex',
+          <div style={{
+            width: '100%',
             display: 'flex',
-            flexWrap: 'wrap',
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-          }}>
-            <button type="button" className="btn btn-primary"
-              onClick={addAll}>
-              {t('Add all', {ns: 'dataquery'})}
-            </button>
-            <button type="button" className="btn btn-primary"
-              onClick={removeAll}>
-              {t('Remove all', {ns: 'dataquery'})}
-            </button>
+            marginBottom: '8px',
+            alignItems: 'center',
+            justifyContent: 'space-between'}}>
+            <div className="input-group"
+              style={{width: '50%', display: 'flex'}}>
+              <input onChange={setFilter}
+                className='form-control'
+                type="text"
+                placeholder={t(`Filter within ${cname}`, {ns: 'dataquery'})}
+                aria-describedby="input-filter-addon"
+                value={activeFilter}
+                style={{borderRadius: '32px 0 0 32px'}}/>
+              <span className="input-group-addon"
+                style={{
+                  borderRadius: '0 32px 32px 0',
+                  height: '34px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: '0 20px',
+                  cursor: 'pointer',
+                }}
+                id="input-filter-addon">
+                <span className="glyphicon glyphicon-search"/>
+              </span>
+            </div>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+            }}>
+              <button type="button" className="btn btn-primary"
+                onClick={addAll}>
+                {t('Add all', {ns: 'dataquery'})}
+              </button>
+              <button type="button" className="btn btn-primary"
+                onClick={removeAll}>
+                {t('Remove all', {ns: 'dataquery'})}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -423,13 +472,15 @@ function DefineFields(props: {
     <div>
       <div style={{display: 'flex', gap: '2rem', width: '100%'}}>
         <div style={{width: 'calc(70% - 2rem/2)'}}>
-          <h1>{t('Available Fields', {ns: 'dataquery'})}</h1>
+          <h2>{t('Select a field', {ns: 'dataquery'})}</h2>
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
             onChange={props.onCategoryChange}
+            placeholder={t('Available Fields', {ns: 'dataquery'})}
           />
           {fieldList}
         </div>
+        <div style={{borderRight: '2px solid #d3d3d3', height: '80vh'}} />
         <div style={{
           width: 'calc(30% - 2rem/2)',
           position: 'sticky',

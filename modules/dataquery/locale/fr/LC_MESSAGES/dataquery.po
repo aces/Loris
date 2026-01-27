@@ -749,9 +749,15 @@ msgstr "Tout supprimer"
 msgid "Filter within category"
 msgstr "Filtrer dans la catégorie"
 
+msgid "Filter within ${cname}"
+msgstr "Filtrer dans ${cname}"
+
 #, fuzzy
 msgid "Default Visits"
 msgstr "Visites par défaut"
+
+msgid "Sync selected visits across all fields"
+msgstr "Synchroniser les visites sélectionnées dans tous les champs"
 
 #, fuzzy
 msgid "Sync with selected fields"
