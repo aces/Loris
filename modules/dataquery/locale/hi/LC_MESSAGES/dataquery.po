@@ -514,16 +514,14 @@ msgstr "सभी जोड़ें"
 msgid "Remove all"
 msgstr "सभी हटाएँ"
 
-# NEEDS UPDATE
 msgid "Filter within ${cname}"
-msgstr "श्रेणी के भीतर फ़िल्टर करें"
+msgstr "${cname} के भीतर फ़िल्टर करें"
 
 msgid "Default Visits"
 msgstr "डिफ़ॉल्ट विज़िट"
 
-# NEEDS UPDATE
-msgid "Sync visit selection across selected fields"
-msgstr "चयनित फ़ील्ड के साथ समन्वय करें"
+msgid "Sync selected visits across all fields"
+msgstr "चयनित विज़िट को सभी फ़ील्ड्स में सिंक करें"
 
 msgid "Select a category"
 msgstr "एक फ़ील्ड चुनें"

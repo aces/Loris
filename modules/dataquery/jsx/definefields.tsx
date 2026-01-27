@@ -359,20 +359,18 @@ function DefineFields(props: {
         display: 'flex',
         flexDirection: 'column',
         marginBottom: '16px'}}>
-        <div style={{marginBottom: '8px'}}>
-          <CheckboxElement
-            label={t('Sync visit selection across selected fields',
-              {ns: 'dataquery'})}
-            name="syncVisits"
-            class="checkbox-flex"
-            offset=""
-            value={syncVisits}
-            style={{}}
-            onUserInput={
-              (name: string, value: boolean) => setSyncVisits(value)
-            } />
-        </div>
-        {syncVisits && <div style={{marginBottom: '16px'}}>
+        <CheckboxElement
+          label={t('Sync selected visits across all fields',
+            {ns: 'dataquery'})}
+          name="syncVisits"
+          class="checkbox-flex"
+          offset=""
+          value={syncVisits}
+          style={{}}
+          onUserInput={
+            (name: string, value: boolean) => setSyncVisits(value)
+          } />
+        <div style={{margin: '0 16px 16px'}}>
           <Select options={allVisits}
             isMulti
             onChange={props.onChangeDefaultVisits}
@@ -399,12 +397,14 @@ function DefineFields(props: {
                                 ...base,
                                 maxHeight: '200px',
                                 overflowY: 'auto',
+                                padding: '0 16px',
                               }),
               }
             }
             value={selectedVisits}
             closeMenuOnSelect={false}
-          /></div>}
+          />
+        </div>
       </div>;
     }
 
@@ -472,15 +472,15 @@ function DefineFields(props: {
     <div>
       <div style={{display: 'flex', gap: '2rem', width: '100%'}}>
         <div style={{width: 'calc(70% - 2rem/2)'}}>
-          <h1>{t('Available Fields', {ns: 'dataquery'})}</h1>
+          <h2>{t('Select a field', {ns: 'dataquery'})}</h2>
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
             onChange={props.onCategoryChange}
-            label={t('Select a field', {ns: 'dataquery'})}
             placeholder={t('Available Fields', {ns: 'dataquery'})}
           />
           {fieldList}
         </div>
+        <div style={{borderRight: '2px solid #d3d3d3', height: '80vh'}} />
         <div style={{
           width: 'calc(30% - 2rem/2)',
           position: 'sticky',
