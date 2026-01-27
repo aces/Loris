@@ -108,17 +108,17 @@
             {/if}
             </td>
             <td>
-            {if $timePoints[timepoint].Scan_done != ""}
-                    {if $timePoints[timepoint].Scan_done == 'Y'}
-                        {assign var="scan_done" value={dgettext("loris", "Yes")}}
+            {if $timePoints[timepoint].scanDone != ""}
+                    {if $timePoints[timepoint].scanDone}
+                        {assign var="scanDone" value={dgettext("loris", "Yes")}}
                         <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$timePoints[timepoint].SessionID}" class="timepoint_list">
-                        {dgettext('loris', $scan_done)}</a>
+                        {dgettext('loris', $scanDone)}</a>
                     {else}
-                        {assign var="scan_done" value={dgettext("loris", "No")}}
-                        {$scan_done}
+                        {assign var="scanDone" value={dgettext("loris", "No")}}
+                        {$scanDone}
                     {/if}
             {else}
-                <img alt="Data Missing" src="{$baseurl|default}/images/help2.gif" border=0>
+                <img alt="Data Missing" src="{$baseurl|default}/images/delete.gif" border=0>
             {/if}
             </td>
 

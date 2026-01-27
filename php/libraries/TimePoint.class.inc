@@ -144,7 +144,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
-                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
+                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion,
                          pr.Name as ProjectName, p.Alias as SiteAlias,
 			 s.ProjectID as ProjectID,
                          l.language_code as LanguageCode,
@@ -164,7 +164,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $this->data = new TimePointData(
             $sessionID,
             isset($row['ProjectID'])
-                ? ProjectID::singleton($row['ProjectID'])
+                ? ProjectID::singleton((int) $row['ProjectID'])
                 : null,
             isset($row['CenterID'])
                 ? \CenterID::singleton($row['CenterID'])
@@ -189,6 +189,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
             $this->_timePointInfo['CandID']
                 = new CandID(strval($row['CandID']));
+
+            $this->_timePointInfo['scanDone']
+                = $this->isScanDone() ? 'Y' : 'N';
+
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new LorisException(
@@ -591,13 +595,26 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Gets whether or not a scan was done for this TimePoint
+     * Returns whether a scan has been done for this session
      *
-     * @return string 'Y' if a scan was done 'N' if not.
+     * @return bool
      */
-    function getScanDone(): string
+    public function isScanDone() : bool
     {
-        return $this->_timePointInfo["Scan_done"];
+        $db     = \NDB_Factory::singleton()->database();
+        $result = $db->pselectOne(
+            "SELECT DISTINCT 'Y' AS ScanDone
+            FROM session s
+            LEFT JOIN files       f  ON f.SessionID  = s.ID
+            LEFT JOIN mri_upload mu ON mu.SessionID = s.ID
+            LEFT JOIN tarchive    t  ON t.SessionID  = s.ID
+            WHERE s.ID = :v_sessionid
+              AND (f.FileID IS NOT NULL
+                   OR mu.UploadID IS NOT NULL
+                   OR t.TarchiveID IS NOT NULL)",
+            ['v_sessionid' => $this->getSessionID()]
+        );
+        return $result == 'Y';
     }
 
     /**

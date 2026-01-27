@@ -1058,11 +1058,8 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetVisitLabel()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
-            ->with(
-                "SELECT SessionID FROM flag WHERE CommentID = :CID",
-                ['CID' => 'commentID1']
-            )
+        $this->_mockDB->expects($this->any())
+            ->method('pselectOne')
             ->willReturn('123');
         $this->_mockDB->expects($this->any())->method('pselectRow')
             ->willReturn(
