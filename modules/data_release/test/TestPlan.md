@@ -48,17 +48,27 @@ associated to that data release version.
 8. Repeat steps 2 to 5 but this time select both a 'Data Release File' and a
 'Data Release Version'. An data entry error should be shown.
 
-9. Click on the 'Manage Permissions' button.
+9. Select the 'pencil' icon next to a file name and try to add permissions for the file for a user. Ensure that the user can see the file now that the permission was added for him/her.
 
-10. Try adding/removing permissions to specific release versions for specific users.
+10. Select the 'pencil' icon next to a file name and try to remove permissions for the file for a user. Ensure that the user can no longer see the file now that the permission was removed for him/her.
 
-11. Ensure that an unmodified checkbox does not give or revoke any access permissions 
+11. Select the 'pencil' icon next to a file name and try to hide the file. Ensure that the file is no longer visible to other non-admin users.
+
+12. Select the 'pencil' icon next to a file name and try to unhide the file. Ensure that the file is visible to other non-admin users.
+
+13. Select the 'pencil' icon next to a file name and try to delete the file. Ensure that the file is no longer visible.
+
+14. Click on the 'Manage Permissions' button.
+
+15. Try adding/removing permissions to specific release versions for specific users.
+
+16. Ensure that an unmodified checkbox does not give or revoke any access permissions 
 from the user.
 
-12. Ensure that when a box is unchecked, the user's access to any of the released 
+17. Ensure that when a box is unchecked, the user's access to any of the released 
 files with that version is revoked.
 
-13. Ensure that when a box is checked, the user is granted access to all files within 
+18. Ensure that when a box is checked, the user is granted access to all files within 
 that release version.
 
 

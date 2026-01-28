@@ -7,7 +7,7 @@ import {
   FormElement,
   StaticElement,
   FileElement,
-  TextboxElement,
+  SearchableDropdown,
   ButtonElement,
   SelectElement,
 } from 'jsx/Form';
@@ -75,12 +75,14 @@ class UploadFileForm extends Component {
           required={true}
           value={this.state.formData.file}
         />
-        <TextboxElement
+        <SearchableDropdown
           name='version'
           label={t('Version', {ns: 'data_release'})}
           onUserInput={this.updateFormElement}
           required={false}
           value={this.state.formData.version}
+          strictSearch={false}
+          options={this.props.versions}
         />
         <SelectElement
           name='project'
@@ -249,6 +251,7 @@ UploadFileForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   projects: PropTypes.array.isRequired,
+  versions: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
 };
 
