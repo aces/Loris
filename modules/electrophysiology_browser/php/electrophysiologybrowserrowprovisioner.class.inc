@@ -41,6 +41,7 @@ class ElectrophysiologyBrowserRowProvisioner
      */
     function __construct(protected \LORIS\LorisInstance $loris)
     {
+        $file_types_string = \Utility::stringsToSqlList(BROWSER_FILE_TYPES);
 
         parent::__construct(
             $loris,
@@ -82,12 +83,7 @@ class ElectrophysiologyBrowserRowProvisioner
                 USING (PhysiologicalOutputTypeID)
             WHERE c.Active='Y'
               AND s.Active='Y'
-              AND pf.FileType IN (
-                SELECT type FROM ImagingFileTypes
-                WHERE
-                  description LIKE '%(EEG)'
-                  OR type = 'archive'
-              )
+              AND pf.FileType IN $file_types_string
             GROUP BY SessionID",
             []
         );

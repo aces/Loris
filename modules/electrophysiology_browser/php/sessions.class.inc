@@ -155,7 +155,9 @@ class Sessions extends \NDB_Page
 
         $db = $this->loris->getDatabaseConnection();
 
-        $query = 'SELECT
+        $file_types_string = \Utility::stringsToSqlList(BROWSER_FILE_TYPES);
+
+        $query = "SELECT
                 DISTINCT(pf.SessionID)
               FROM physiological_file pf
                 LEFT JOIN session s ON (s.ID=pf.SessionID)
@@ -164,10 +166,9 @@ class Sessions extends \NDB_Page
                 LEFT JOIN physiological_output_type pot
                   USING (PhysiologicalOutputTypeID)
               WHERE
-                s.Active = "Y"
-                AND pf.FileType IN ('.
-            '"bdf", "cnt", "edf", "set", "vhdr", "vsm", "archive"'.
-            ') ORDER BY pf.SessionID';
+                s.Active = 'Y'
+                AND pf.FileType IN $file_types_string
+                ORDER BY pf.SessionID";
 
         $response = [];
 
