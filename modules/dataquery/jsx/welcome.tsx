@@ -12,6 +12,8 @@ import {ButtonElement, CheckboxElement, TextboxElement} from 'jsx/Form';
 import {APIQueryField} from './types';
 import {FullDictionary} from './types';
 import {FlattenedField, FlattenedQuery, VisitOption} from './types';
+import ReplayIcon from './ReplayIcon';
+import ShareIconA from './ShareIconA';
 import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 
@@ -862,7 +864,7 @@ function SingleQueryDisplay(props: {
         props.setNameModalID(query.QueryID);
       }} />;
     msg = <div>{desc}
-            &nbsp;{starredIcon}{sharedIcon}{loadIcon}{nameIcon}{pinIcon}
+            &nbsp;{loadIcon}{nameIcon}{starredIcon}{pinIcon}{sharedIcon}
     </div>;
   } else if (query.SharedBy) {
     const desc = query.Name
@@ -1031,10 +1033,16 @@ function LoadIcon(props: {
 }) {
   const {t} = useTranslation('dataquery');
   return <span onClick={props.onClick}
+    style={{
+      cursor: 'pointer',
+      textAlign: 'center',
+      verticalAlign: 'text-top',
+      width: '35px',
+      height: '28px',
+    }}
     title={t('Reload query', {ns: 'dataquery'})}
-    style={{cursor: 'pointer'}}
     className="fa-stack">
-    <i className="fas fa-sync fa-stack-1x"></i>
+    <ReplayIcon />
   </span>;
 }
 
@@ -1053,11 +1061,16 @@ function ShareIcon(props: {
     isShared?: boolean,
 }) {
   return <span className="fa-stack"
-    style={{cursor: 'pointer'}}
+    style={{
+      cursor: 'pointer',
+      textAlign: 'center',
+      verticalAlign: 'text-top',
+      width: '35px',
+      height: '28px',
+    }}
     title={props.title}
     onClick={props.onClick}>
-    <i style={props.isShared ? {color: 'blue'} : {}}
-      className="fas fa-globe fa-stack-1x" />
+    <ShareIconA isShared={props.isShared} />
   </span>;
 }
 
