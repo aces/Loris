@@ -994,7 +994,7 @@ class Utility
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
             "SELECT MriScanTypeID, MriScanTypeName
-             FROM mri_scan_type 
+             FROM mri_scan_type
              JOIN files USING (MriScanTypeID)",
             []
         );
@@ -1103,5 +1103,23 @@ class Utility
                 ]
             );
         }
+    }
+
+    /**
+     * Convert a list of strings to an SQL list of string. Quotes are properly
+     * escaped but the input strings should nonetheless not contain user input.
+     *
+     * @param string[] $strings The list of string.
+     *
+     * @return string The SQL list of string (example: `"('str1', 'str2')"`)
+     */
+    static function stringsToSqlList(array $strings): string
+    {
+        $quoted_strings = array_map(
+            fn($value) => "'" . addslashes((string) $value) . "'",
+            $strings
+        );
+
+        return '(' . implode(', ', $quoted_strings) . ')';
     }
 }

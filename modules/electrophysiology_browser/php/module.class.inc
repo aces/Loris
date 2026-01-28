@@ -14,6 +14,15 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\electrophysiology_browser;
+
+/**
+ * The file types of the files that should be displayed in the electrophysiology
+ * browser.
+ */
+const BROWSER_FILE_TYPES = [
+    'bdf', 'cnt', 'ctf', 'edf', 'set', 'vhdr', 'vsm', 'archive'
+];
+
 /**
  * Class module implements the basic LORIS module functionality
  *
