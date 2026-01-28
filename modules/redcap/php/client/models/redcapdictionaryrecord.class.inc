@@ -241,7 +241,7 @@ class RedcapDictionaryRecord
     {
         $field_type  = $this->field_type;
         $field_name  = $this->field_name;
-        $field_label = str_replace("\n", "<br /><br />", $this->field_label);
+        $field_label = str_replace(["\r\n", "\r", "\n"], '', $this->field_label);
         $field_desc  = "$field_name{@}$field_label";
 
         //
