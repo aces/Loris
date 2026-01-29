@@ -703,7 +703,7 @@ class NDB_PageTest extends TestCase
         $smarty = $this->getMockBuilder(Smarty_NeuroDB::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $smarty->expects($this->any())->method('fetch')
+        $smarty->expects($this->anything())->method('fetch')
             ->willReturn("fetch was called!");
         $this->_page->form->freeze();
         $this->assertEquals("fetch was called!", $this->_page->display());
