@@ -357,7 +357,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     }
 
     /**
-     * Tests that, click the scan_done ="y" link,
+     * Tests that, click the scanDone ="y" link,
      * and it will goto the imaging browser page.
      *
      * @return void
@@ -366,14 +366,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/?pscid=MTL022");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr > td.scanDoneLink"
+            )
         )->getText();
         $this->assertStringContainsString(
             "Y",
             $bodyText
         );
         $this->safeClick(
-            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr > td.scanDoneLink"
+            )
         );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(self::$pscidLink)

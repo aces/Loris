@@ -80,18 +80,6 @@ class ImagingQueryEngineTest extends TestCase
                     'EDC'                   => '1930-04-01',
                     'Entity_type'           => 'Human',
                 ],
-                [
-                    'ID'                    => 3,
-                    'CandID'                => "123458",
-                    'PSCID'                 => "test3",
-                    'RegistrationProjectID' => '1',
-                    'RegistrationCenterID'  => '3',
-                    'Active'                => 'N',
-                    'DoB'                   => '1940-01-01',
-                    'Sex'                   => 'Other',
-                    'EDC'                   => '1930-04-01',
-                    'Entity_type'           => 'Human',
-                ],
             ]
         );
 
@@ -107,8 +95,7 @@ class ImagingQueryEngineTest extends TestCase
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
                     'Active'      => 'Y',
-                    'Visit_Label' => 'TestMRIVisit',
-                    'Scan_Done'   => 'Y'
+                    'Visit_Label' => 'TestMRIVisit'
                 ],
                 [
                     'ID'          => 2,
@@ -117,8 +104,7 @@ class ImagingQueryEngineTest extends TestCase
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
                     'Active'      => 'Y',
-                    'Visit_Label' => 'TestBvlVisit',
-                    'Scan_Done'   => 'N'
+                    'Visit_Label' => 'TestBvlVisit'
                 ],
                 // Candidate 123457 has 1 visit with different MRI data
                 // It contains multiple ScanType1 and no ScanType2
@@ -129,8 +115,7 @@ class ImagingQueryEngineTest extends TestCase
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
                     'Active'      => 'Y',
-                    'Visit_Label' => 'TestMRIVisit',
-                    'Scan_Done'   => 'Y'
+                    'Visit_Label' => 'TestMRIVisit'
                 ],
             ]
         );
@@ -389,13 +374,12 @@ class ImagingQueryEngineTest extends TestCase
                     $this->_getDictItem("ScanType1_file"),
                     $this->_getDictItem("ScanType1_QCStatus"),
                 ],
-                [new CandID("123456"), new CandID("123457"), new CandID("123458")],
+                [new CandID("123456"), new CandID("123457")],
                 null
             )
         );
 
-        // 123458 had no files, but has a session, so still has the ScanDone
-        $this->assertEquals(count($results), 3);
+        $this->assertEquals(count($results), 2);
         $this->assertEquals(
             $results,
             [
@@ -459,11 +443,6 @@ class ImagingQueryEngineTest extends TestCase
                             ],
                         ],
                     ],
-                ],
-                "123458" => [
-                    'ScanDone'           => [],
-                    'ScanType1_file'     => [],
-                    'ScanType1_QCStatus' => [],
                 ],
             ]
         );

@@ -635,11 +635,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     function _getSendToDCCStatusMessage()
     {
         // create user object
-        $user   = \User::singleton();
-        $config = \NDB_Config::singleton();
-
-        // get the value of the session.Scan_done field
-        $scanDone = $this->getData('Scan_done');
+        $user = \User::singleton();
 
         if (!$user->hasPermission('send_to_dcc')) {
             return "User does not have permission to send to DCC";
@@ -673,12 +669,6 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             return "The status of this stage is either"
                 . " In Progress or has not been set.";
-        }
-        if (! $config->settingEnabled("useScanDone")
-            || ($this->getData('Current_stage') != 'Screening'
-            && empty($scanDone))
-        ) {
-            return "The Scan done field must be entered for the Visit stage";
         }
 
         $battery = new \NDB_BVL_Battery();
@@ -734,11 +724,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     function _hasAccessSendToDCC()
     {
         // create user object
-        $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
-
-        // get the value of the session.Scan_done field
-        $scanDone = $this->getData('Scan_done');
+        $user =& \User::singleton();
 
         // make the option available is the Stage/Status is Sendable to DCC
         // or if its Superuser and option was Sent (to unsend i.e. set to N)
@@ -764,9 +750,6 @@ class Instrument_List_ControlPanel extends \TimePoint
                     'In Progress',
                 ]
             )
-            && (!$config->settingEnabled("useScanDone")
-            || $this->getData('Current_stage') == 'Screening'
-            || !empty($scanDone))
         ) {
             return true;
         }
