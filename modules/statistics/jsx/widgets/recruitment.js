@@ -33,6 +33,7 @@ const Recruitment = (props) => {
           dataType: 'pie',
           label: 'Age (Years)',
           options: {pie: 'pie', bar: 'bar'},
+          yLabel: t('Candidates registered', {ns: 'statistics'}),
           legend: 'under',
           chartObject: null,
         },
@@ -43,6 +44,7 @@ const Recruitment = (props) => {
           dataType: 'pie',
           label: 'Ethnicity',
           options: {pie: 'pie', bar: 'bar'},
+          yLabel: t('Candidates registered', {ns: 'statistics'}),
           legend: 'under',
           chartObject: null,
         },
@@ -56,6 +58,7 @@ const Recruitment = (props) => {
           label: 'Participants',
           legend: '',
           options: {pie: 'pie', bar: 'bar'},
+          yLabel: t('Candidates registered', {ns: 'statistics'}),
           chartObject: null,
         },
         'siterecruitment_bysex': {
@@ -65,6 +68,7 @@ const Recruitment = (props) => {
           dataType: 'bar',
           legend: 'under',
           options: {bar: 'bar', pie: 'pie'},
+          yLabel: t('Candidates registered', {ns: 'statistics'}),
           chartObject: null,
         },
       },
@@ -76,6 +80,7 @@ const Recruitment = (props) => {
           dataType: 'line',
           legend: '',
           options: {line: 'line'},
+          yLabel: t('Candidates registered', {ns: 'statistics'}),
           chartObject: null,
         },
       },
@@ -151,6 +156,7 @@ const Recruitment = (props) => {
       setChartDetails);
   };
 
+  // Helper functions to calculate totals for each view
   const getTotalProjectsCount = () => {
     return Object.keys(json['recruitment'] || {})
       .filter((key) => key !== 'overall').length;
