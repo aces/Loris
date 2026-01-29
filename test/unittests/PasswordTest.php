@@ -126,7 +126,7 @@ class PasswordTest extends TestCase
 
         foreach ($invalidValues as $invalidValue) {
             $this->expectException(\TypeError::class);
-            $this->_configMock->expects($this->anything())
+            $this->_configMock
                 ->method('getSetting')
                 ->willReturn('false');
 

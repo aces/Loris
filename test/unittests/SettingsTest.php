@@ -240,7 +240,7 @@ class SettingsTest extends TestCase
      */
     private function _setUpConfigDatabaseTestDouble()
     {
-        $this->_configMock->expects($this->anything())
+        $this->_configMock
             ->method('getSetting')
             ->with($this->equalTo('database'))
             ->willReturn($this->_databaseConfigValues);
