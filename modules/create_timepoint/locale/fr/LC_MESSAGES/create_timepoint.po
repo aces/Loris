@@ -35,8 +35,8 @@ msgstr ""
 msgid "Timepoint created."
 msgstr "Temps d'acquisition créé."
 
-msgid "This visit label is not unique."
-msgstr "Cette visite n'est pas unique."
+msgid "A timepoint with these conditions (%s, %s, %s, %s) already exists."
+msgstr "Un temps d'acquisition avec ces conditions (%s, %s, %s, %s) existe déjà."
 
 msgid "You must be affiliated with a site to create a timepoint."
 msgstr "Vous devez être affilié à un site pour créer un temps d'acquisition."

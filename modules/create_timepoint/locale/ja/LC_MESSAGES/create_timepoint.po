@@ -30,8 +30,8 @@ msgstr "プロジェクト {{project}} とコホート {{cohort}} の組み合�
 msgid "Timepoint created."
 msgstr "タイムポイント作成"
 
-msgid "This visit label is not unique."
-msgstr "この訪問ラベルは一意ではありません。"
+msgid "A timepoint with these conditions (%s, %s, %s, %s) already exists."
+msgstr "これらの条件 (%s, %s, %s, %s) を持つタイムポイントは既に存在します。"
 
 msgid "You must be affiliated with a site to create a timepoint."
 msgstr "タイムポイントを作成するには、サイトに所属している必要があります。"

@@ -30,7 +30,7 @@ msgstr ""
 msgid "Timepoint created."
 msgstr ""
 
-msgid "This visit label is not unique."
+msgid "A timepoint with these conditions (%s, %s, %s, %s) already exists."
 msgstr ""
 
 msgid "You must be affiliated with a site to create a timepoint."
