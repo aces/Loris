@@ -1058,7 +1058,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetVisitLabel()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
+        $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
@@ -1083,7 +1083,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetCohortID()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
+        $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
