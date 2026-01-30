@@ -708,7 +708,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 as $engine
             ) {
                 $fulldict = $this->getFlattenedDictionary($engine);
-		$dictitem = $fulldict[$crit['fieldname']];
+                $dictitem = $fulldict[$crit['fieldname']];
 
                 // Get a new engine for each term to reset the internal state
                 switch ($crit['op']) {
