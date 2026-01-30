@@ -101,9 +101,9 @@ function ImportCSVModal(props: {
         if (!props.visitLabels.includes(visitLabelVal)) {
           swal.fire({
             type: 'error',
-            title: 'Invalid Value',
-            text: 'Invalid visit label ' + visitLabelVal
-                        + ' on line ' + (i + 1) + '.',
+            title: t('Invalid value', {ns: 'dataquery'}),
+            text: t('Invalid visit label {{visitLabelVal}} on line {{line}}.',
+              {ns: 'dataquery', visitLabelVal, line: i+1}),
           });
           return;
         }

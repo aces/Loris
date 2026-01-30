@@ -480,6 +480,10 @@ msgstr ""
 "colonne trouvée à la ligne {{line}}."
 
 #, fuzzy
+msgid "Invalid visit label {{visitLabelVal}} on line {{line}}."
+msgstr "Label de visite invalide {{visitLabelVal}} à la ligne {{line}}."
+
+#, fuzzy
 msgid "Invalid DCCID"
 msgstr "DCCID invalide"
 
