@@ -596,10 +596,7 @@ function organizeData(
                         } else {
                         const mappedVals = Object.keys(thevalues)
                           .map((key) => {
-                            console.log('please just do something');
                             // If it's a URI, don't prepend the key/label
-                            console.log(dictionary);
-                            console.log(thevalues);
                             if (dictionary.type === 'URI') {
                               return thevalues[key];
                             }
