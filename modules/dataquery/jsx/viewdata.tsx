@@ -94,10 +94,17 @@ function DisplayValue(props: {
   }
 
   if (props.dictionary.type == 'URI') {
+    // Split the string and map to multiple <a> tags
+    const urls = String(props.value).split(';');
     display = (
-      <a href={props.value}>
-        {display}
-      </a>
+        <>
+           {urls.map((url, i) => (
+               <React.Fragment key={i}>
+                   <a href={url.trim()}>{url.trim()}</a>
+                   {i < urls.length - 1 && '; '}
+               </React.Fragment>
+           ))}
+        </>
     );
   }
   return display;
@@ -587,11 +594,19 @@ function organizeData(
                         if (!thevalues) {
                           dataRow.push(null);
                         } else {
-                          const mappedVals = Object.keys(thevalues)
-                            .map(
-                              (key) => key + '=' + thevalues[key]
-                            )
-                            .join(';');
+                        const mappedVals = Object.keys(thevalues)
+                          .map((key) => {
+                            console.log('please just do something');
+                            // If it's a URI, don't prepend the key/label
+                            console.log(dictionary);
+                            console.log(thevalues);
+                            if (dictionary.type === 'URI') {
+                              return thevalues[key];
+                            }
+                            // Otherwise, concatenate key and value
+                            return key + '=' + thevalues[key];
+                          })
+                          .join(';');                          
                           dataRow.push(mappedVals);
                         }
                       }
@@ -772,7 +787,14 @@ function expandLongitudinalCells(
             }
             const thevalues = thissession.values;
             return {value: Object.keys(thevalues)
-              .map( (key) => key + '=' + thevalues[key])
+              .map( (key) => {
+                // If it's a URI, don't prepend the key/label
+                if (fielddict.type === 'URI') {
+                  return thevalues[key];
+                }
+                // Otherwise concatenate key with value.
+                return key + '=' + thevalues[key];
+              })
               .join(';'), dictionary: fielddict};
           default:
             if (thissession.value !== undefined) {
