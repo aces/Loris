@@ -99,10 +99,10 @@ function DisplayValue(props: {
     display = (
         <>
            {urls.map((url, i) => (
-               <React.Fragment key={i}>
+               <span key={i}>
                    <a href={url.trim()}>{url.trim()}</a>
                    {i < urls.length - 1 && '; '}
-               </React.Fragment>
+               </span>
            ))}
         </>
     );
