@@ -8,26 +8,26 @@ import {FilterableDataTableProps, FiltersState, Field} from './types';
 
 /**
  * FilterableDataTable component.
- * A wrapper for all datatables that handles filtering logic and URL state synchronization.
+ * A wrapper for all datatables that handles filtering logic
+ * and URL state synchronization.
  *
  * @param props - Component properties
- *
- * @param props.name
- * @param props.title
- * @param props.data
- * @param props.filterPresets
- * @param props.fields
- * @param props.columns
- * @param props.getFormattedCell
- * @param props.actions
- * @param props.updateFilterCallback
- * @param props.noDynamicTable
- * @param props.loading
- * @param props.progress
- * @param props.getMappedCell
- * @param props.folder
- * @param props.nullTableShow
- * @param props.children
+ * @param props.name - Unique identifier for the table instance
+ * @param props.title - Title displayed in the Panel header
+ * @param props.data - Array of data objects to be displayed
+ * @param props.filterPresets - Pre-defined filter configurations
+ * @param props.fields - Configuration for data fields and filters
+ * @param props.columns - Number of columns in the filter grid
+ * @param props.getFormattedCell - Function to format cell values
+ * @param props.actions - Action buttons or menu items for rows
+ * @param props.updateFilterCallback - External listener for filter changes
+ * @param props.noDynamicTable - Disables dynamic features if true
+ * @param props.loading - Loading state boolean
+ * @param props.progress - Progress percentage (0-100)
+ * @param props.getMappedCell - Function to map raw data to cell values
+ * @param props.folder - Folder context for data retrieval
+ * @param props.nullTableShow - Content to show if table is empty
+ * @param props.children - Additional elements rendered inside the Panel
  */
 const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
   name,
@@ -84,7 +84,11 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
     Object.entries(newFilters).forEach(([key, filter]) => {
       if (Array.isArray(filter.value)) {
         filter.value.forEach((v) => url.searchParams.append(key, String(v)));
-      } else if (filter.value !== undefined && filter.value !== null && filter.value !== '') {
+      } else if (
+        filter.value !== undefined &&
+        filter.value !== null &&
+      filter.value !== ''
+      ) {
         url.searchParams.set(key, String(filter.value));
       }
     });
@@ -123,10 +127,13 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
    * @param value - Value to filter by
    * @param exactMatch - Whether to perform an exact match
    */
-  const addFilter = useCallback((filterName: string, value: any, exactMatch: boolean): void => {
-    const nextFilters = {...filters, [filterName]: {value, exactMatch}};
-    handleUpdateFilters(nextFilters);
-  }, [filters, handleUpdateFilters]);
+  const addFilter = useCallback(
+    (filterName: string, value: any, exactMatch: boolean): void => {
+      const nextFilters = {...filters, [filterName]: {value, exactMatch}};
+      handleUpdateFilters(nextFilters);
+    },
+    [filters, handleUpdateFilters]
+  );
 
   /**
    * Removes a specific filter by name.
@@ -147,7 +154,7 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
   }, [handleUpdateFilters]);
 
   /**
-   * Derived state that filters out invalid selections (e.g., values not in options).
+   * Derived state that filters out invalid selections
    * Memoized to prevent recalculation on every render.
    */
   const validFilters = useMemo((): FiltersState => {
