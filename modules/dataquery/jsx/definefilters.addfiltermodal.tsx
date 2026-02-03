@@ -166,7 +166,7 @@ function AddFilterModal(props: {
     if (fieldDictionary.scope == 'session' && fieldDictionary.visits) {
       visitSelect = <div onClick={(e) => e.stopPropagation()}>
         <h4 style={{color: '#003d68', fontWeight: 'normal'}}>
-            {t('Visits', {ns: 'dataquery'})}
+          {t('Visits', {ns: 'dataquery'})}
         </h4>
         <VisitList
           t={t}
@@ -288,10 +288,10 @@ function AddFilterModal(props: {
     <Modal title={<span style={{color: '#003d68'}}>
       {t('Add Condition', {ns: 'dataquery'})}
     </span>}
-      show={true}
-      throwWarning={true}
-      onClose={props.closeModal}
-      onSubmit={submitPromise}>
+    show={true}
+    throwWarning={true}
+    onClose={props.closeModal}
+    onSubmit={submitPromise}>
       <div style={{width: '100%', padding: '1em'}}>
         <div style={{display: 'flex', width: '100%'}}>
           <div style={{width: '40%'}}>
