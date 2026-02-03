@@ -108,24 +108,28 @@ class Module extends \Module
                 continue;
             }
 
-            $mdict = $module->getQueryEngine()->getDataDictionary();
-            $mname = $module->getName();
+            foreach ($module->getQueryEngines() as $qe) {
+                $mdict = $qe->getDataDictionary();
+                $mname = $module->getName();
 
-            if (count($mdict) > 0) {
-                $usermodules[]      = $module;
-                $categories[$mname] = [];
+                if (count($mdict) > 0) {
+                    $usermodules[]      = $module;
+                    $categories[$mname] = [];
 
-                foreach ($mdict as $cat) {
-                    if ($mname === 'instruments'
-                        && !isset($instruments[$cat->getName()])
-                    ) {
-                        continue;
+                    foreach ($mdict as $cat) {
+                        if ($mname === 'instruments'
+                            && !isset($instruments[$cat->getName()])
+                        ) {
+                            continue;
+                        }
+                        $categories[$mname][$cat->getName()]
+                            = $cat->getDescription();
+
+                        $categoryitems[] = [
+                            'Module'   => $module,
+                            'Category' => $cat,
+                        ];
                     }
-                    $categories[$mname][$cat->getName()] = $cat->getDescription();
-                    $categoryitems[] = [
-                        'Module'   => $module,
-                        'Category' => $cat,
-                    ];
                 }
             }
         }

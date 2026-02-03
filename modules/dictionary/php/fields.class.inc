@@ -86,12 +86,14 @@ class Fields extends \NDB_Page
         // Brute force finding the name since we don't know what module
         // the dictionary item came from.
         foreach ($modules as $module) {
-            $mdict = $module->getQueryEngine()->getDataDictionary();
-            foreach ($mdict as $cat) {
-                foreach ($cat->getItems() as $item) {
-                    $iname = $cat->getName() . '_' . $item->getName();
-                    if ($name === $iname) {
-                        return $item->getDescription();
+            foreach ($module->getQueryEngines() as $qe) {
+                $qdict = $qe->getDataDictionary();
+                foreach ($qdict as $cat) {
+                    foreach ($cat->getItems() as $item) {
+                            $iname = $cat->getName() . '_' . $item->getName();
+                        if ($name === $iname) {
+                            return $item->getDescription();
+                        }
                     }
                 }
             }

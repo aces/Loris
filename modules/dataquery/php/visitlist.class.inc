@@ -27,26 +27,9 @@ class VisitList extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if ($this->dictionaryitem === null) {
             return new \LORIS\Http\Response\JSON\OK(
                 ['Visits' => array_values($this->user->getVisits())],
             );
-        }
-
-        if ($this->dictionaryitem->getScope()->__toString() !== 'session') {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'Visit list only applicable to session scoped variables'
-            );
-        }
-
-        return new \LORIS\Http\Response\JSON\OK(
-            [
-                'Visits' =>
-                    $this->itemmodule
-                        ->getQueryEngine()
-                        ->getVisitList($this->itemcategory, $this->dictionaryitem),
-            ],
-        );
     }
 
     /**
@@ -61,35 +44,6 @@ class VisitList extends \NDB_Page
         \User $user,
         ServerRequestInterface $request,
     ) : void {
-        $this->user  = $user;
-        $queryparams = $request->getQueryParams();
-        if (!isset($queryparams['module']) || !isset($queryparams['item'])) {
-            return;
-        }
-
-        $modules = $this->loris->getActiveModules();
-
-        foreach ($modules as $module) {
-            if ($module->getName() !== $queryparams['module']) {
-                continue;
-            }
-            if (!$module->hasAccess($user)) {
-                continue;
-            }
-
-            $this->itemmodule = $module;
-            $mdict            = $module->getQueryEngine()->getDataDictionary();
-
-            if (count($mdict) > 0) {
-                foreach ($mdict as $cat) {
-                    foreach ($cat->getItems() as $dictitem) {
-                        if ($dictitem->getName() === $queryparams['item']) {
-                            $this->dictionaryitem = $dictitem;
-                            $this->itemcategory   = $cat;
-                        }
-                    }
-                }
-            }
-        }
+        $this->user = $user;
     }
 }

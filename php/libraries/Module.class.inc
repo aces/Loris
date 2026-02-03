@@ -456,10 +456,10 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * Gets the QueryEngine to be used for querying against this module's
      * data.
      *
-     * @return \LORIS\Data\Query\QueryEngine
+     * @return \LORIS\Data\Query\QueryEngine[]
      */
-    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    public function getQueryEngines() : iterable
     {
-        return new \LORIS\Data\Query\NullQueryEngine();
+        return [];
     }
 }
