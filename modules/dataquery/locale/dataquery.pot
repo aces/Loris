@@ -339,6 +339,9 @@ msgstr ""
 msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
 msgstr ""
 
+msgid "Invalid visit label {{visitLabelVal}} on line {{line}}."
+msgstr ""
+
 msgid "Invalid DCCID"
 msgstr ""
 

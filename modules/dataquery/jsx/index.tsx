@@ -227,6 +227,7 @@ function DataQueryApp(props: {
 
       mapModuleName={mapModuleName}
       mapCategoryName={mapCategoryName}
+      visitLabels={visits.all}
     />;
     break;
   case 'ViewData':
