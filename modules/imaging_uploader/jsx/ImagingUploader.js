@@ -289,7 +289,7 @@ class ImagingUploader extends Component {
                   } else if (index === 3) {
                     filter = {name: 'pSCID'};
                   } else if (index === 4) { // Visit_label
-                    filter = {name: 'visitLabel', type: 'select'};
+                    filter = {name: 'visitLabel'};
                   }
                   return {
                     label: t(header, {ns: ['imaging_uploader', 'loris']}),
