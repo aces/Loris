@@ -145,9 +145,11 @@ function AddFilterModal(props: {
     }
 
     criteriaSelect = <div>
-      <h3>{t('Criteria', {ns: 'dataquery'})}</h3>
+      <h4 style={{color: '#003d68', fontWeight: 'normal'}}>
+        {t('Criteria', {ns: 'dataquery'})}
+      </h4>
       <div style={{display: 'flex'}}>
-        <div style={{width: '20%'}}>
+        <div style={{width: '40%'}}>
           <FilterableSelectGroup groups={
             {'Operators': getOperatorOptions(fieldDictionary, t)}
           }
@@ -157,14 +159,15 @@ function AddFilterModal(props: {
           placeholder={t('Select an operator', {ns: 'dataquery'})}
           />
         </div>
-        <div style={{width: '80%'}}>{valueSelect}</div>
+        <div style={{width: '60%'}}>{valueSelect}</div>
       </div>
     </div>;
 
     if (fieldDictionary.scope == 'session' && fieldDictionary.visits) {
       visitSelect = <div onClick={(e) => e.stopPropagation()}>
-        <h3>{t('for at least one of the following visits',
-          {ns: 'dataquery'})}</h3>
+        <h4 style={{color: '#003d68', fontWeight: 'normal'}}>
+            {t('Visits', {ns: 'dataquery'})}
+        </h4>
         <VisitList
           t={t}
           options={fieldDictionary.visits}
@@ -282,7 +285,9 @@ function AddFilterModal(props: {
     }
     );
   return (
-    <Modal title={t('Add Condition', {ns: 'dataquery'})}
+    <Modal title={<span style={{color: '#003d68'}}>
+      {t('Add Condition', {ns: 'dataquery'})}
+    </span>}
       show={true}
       throwWarning={true}
       onClose={props.closeModal}
@@ -290,7 +295,6 @@ function AddFilterModal(props: {
       <div style={{width: '100%', padding: '1em'}}>
         <div style={{display: 'flex', width: '100%'}}>
           <div style={{width: '40%'}}>
-            <h3>{t('Category', {ns: 'dataquery', count: 1})}</h3>
             <FilterableSelectGroup
               groups={props.categories.categories}
               mapGroupName={(key) => props.categories.modules[key]}
@@ -304,8 +308,7 @@ function AddFilterModal(props: {
               }}
             />
           </div>
-          <div style={{width: '100%'}}>
-            <h3>{t('Field', {ns: 'dataquery', count: 1})}</h3>
+          <div style={{width: '60%'}}>
             {fieldSelect}
           </div>
         </div>
@@ -356,9 +359,9 @@ function getOperatorOptions(dict: FieldDictionary, t: any) {
     options = {
       'eq': '=',
       'neq': '≠',
-      'startsWith': t('starts with', {ns: 'dataquery'}),
-      'contains': t('contains', {ns: 'dataquery'}),
-      'endsWith': t('ends with', {ns: 'dataquery'}),
+      'startsWith': t('Starts With', {ns: 'dataquery'}),
+      'contains': t('Contains', {ns: 'dataquery'}),
+      'endsWith': t('Ends With', {ns: 'dataquery'}),
     };
   } else {
     // fall back to == and !=, valid for any type.
