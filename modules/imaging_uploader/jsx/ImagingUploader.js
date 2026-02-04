@@ -283,12 +283,12 @@ class ImagingUploader extends Component {
               data={this.state.data.Data}
               fields={this.state.data.Headers.map(
                 (header, index) => {
-                  let filter = undefined;
-                  if (index === 2) {
+                  let filter = {};
+                  if (header === 'DCCID') {
                     filter = {name: 'candID'};
-                  } else if (index === 3) {
+                  } else if (header === 'PSCID') {
                     filter = {name: 'pSCID'};
-                  } else if (index === 4) { // Visit_label
+                  } else if (header === 'Visit Label') {
                     filter = {name: 'visitLabel'};
                   }
                   return {
