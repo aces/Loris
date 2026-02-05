@@ -17,6 +17,7 @@ import SavedQueriesList from './react.savedqueries';
 import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
 import {getSessions} from '../js/arrayintersect';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * DataQueryApp component
@@ -137,11 +138,10 @@ class DataQueryApp extends Component {
       if (this.state.queryIDs.hasOwnProperty(key)) {
         for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
           let curRequest;
-          curRequest = fetch(
+          curRequest = lorisFetch(
             loris.BaseURL
               + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
-              + encodeURIComponent(this.state.queryIDs[key][i]),
-            {credentials: 'same-origin'}
+              + encodeURIComponent(this.state.queryIDs[key][i])
           )
             .then((response) => {
               if (!response.ok) {
@@ -169,9 +169,9 @@ class DataQueryApp extends Component {
    * @param {function} callback
    */
   async handleProgressBarSetup(callback) {
-    const response = await fetch(
+    const response = await lorisFetch(
       `${loris.BaseURL}/dqt/dqt_setup/?format=json`,
-      {credentials: 'same-origin', method: 'GET'}
+      {method: 'GET'}
     );
     const reader = await response.body.getReader();
     const contentLength = await response.headers.get('Content-Length');
@@ -256,9 +256,9 @@ class DataQueryApp extends Component {
    * @param {function} callback
    */
   async requestSessions(callback) {
-    const response = await fetch(
+    const response = await lorisFetch(
       `${loris.BaseURL}/dqt/sessions/?format=json`,
-      {credentials: 'same-origin', method: 'GET'}
+      {method: 'GET'}
     );
     const reader = await response.body.getReader();
     let chunks = ''; // array of received binary chunks (comprises the body)
@@ -457,11 +457,10 @@ class DataQueryApp extends Component {
     // Get given fields of the instrument for the rule.
     rule.fields = [];
     try {
-      const response = await fetch(
+      const response = await lorisFetch(
         loris.BaseURL
           + '/AjaxHelper.php?Module=dqt&script=datadictionary.php&'
-          + new URLSearchParams({category: rule.instrument}),
-        {credentials: 'same-origin'}
+          + new URLSearchParams({category: rule.instrument})
       );
       if (response.ok) {
         rule.fields = await response.json();
@@ -506,14 +505,13 @@ class DataQueryApp extends Component {
     }
     if (script) {
       try {
-        const response = await fetch(
+        const response = await lorisFetch(
           loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script + '&' +
             new URLSearchParams({
               category: rule.instrument,
               field: rule.field,
               value: rule.value,
-            }),
-          {credentials: 'same-origin'}
+            })
         );
         if (response.ok) {
           const data = await response.json();
@@ -703,10 +701,9 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
-    fetch(
+    lorisFetch(
       loris.BaseURL + '/dqt/ajax/datadictionary.php?' +
-        new URLSearchParams({keys: JSON.stringify(fieldsList)}),
-      {credentials: 'same-origin'}
+        new URLSearchParams({keys: JSON.stringify(fieldsList)})
     )
       .then((response) => {
         if (!response.ok) {
@@ -927,20 +924,20 @@ class DataQueryApp extends Component {
         // keep track of the number of requests waiting for a response
         semaphore++;
         sectionedSessions = JSON.stringify(sessionInfo);
-        fetch(
+        lorisFetch(
           loris.BaseURL
             + '/AjaxHelper.php?Module=dqt&script='
             + 'retrieveCategoryDocs.php',
           {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+              'Content-Type':
+                'application/x-www-form-urlencoded; charset=UTF-8',
             },
             body: new URLSearchParams({
               DocType: category,
               Sessions: sectionedSessions,
             }),
-            credentials: 'same-origin',
           }
         )
           .then((response) => {

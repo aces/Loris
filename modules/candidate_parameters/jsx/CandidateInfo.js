@@ -11,6 +11,7 @@ import {
   ButtonElement,
   TextareaElement,
 } from 'jsx/Form';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Candiate info component
@@ -46,7 +47,7 @@ class CandidateInfo extends Component {
    */
   componentDidMount() {
     const {t} = this.props;
-    fetch(this.props.dataURL, {credentials: 'same-origin'})
+    lorisFetch(this.props.dataURL)
       .then((response) => {
         if (!response.ok) {
           throw new Error('request_failed');
@@ -334,10 +335,9 @@ class CandidateInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    fetch(self.props.action, {
+    lorisFetch(self.props.action, {
       method: 'POST',
       body: formData,
-      credentials: 'same-origin',
     })
       .then(async (response) => {
         if (!response.ok) {

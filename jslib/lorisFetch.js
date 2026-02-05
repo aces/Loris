@@ -1,10 +1,12 @@
-/* eslint new-cap: ["error", {capIsNewExceptions: ["DynamicTable", "FileUpload"]}]*/
-
 function handleUnauthorized() {
+  if (typeof window === 'undefined') {
+    return;
+  }
   if (!window.$ || !window.loris) {
     return;
   }
 
+  const $ = window.$;
   if (!$('#login-modal').length) {
     return;
   }
@@ -25,12 +27,13 @@ function handleUnauthorized() {
         login: 'Login',
       };
 
-      window.lorisFetch(window.loris.BaseURL, {
+      fetch(window.loris.BaseURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         },
         body: new URLSearchParams(data),
+        credentials: 'same-origin',
       })
         .then((response) => {
           if (!response.ok) {
@@ -45,28 +48,24 @@ function handleUnauthorized() {
     });
 }
 
-if (!window.lorisFetch) {
-  window.lorisFetch = function(input, init) {
-    const options = Object.assign(
-      {
-        credentials: 'same-origin',
-      },
-      init || {}
-    );
-    return fetch(input, options).then((response) => {
-      if (response.status === 401) {
-        handleUnauthorized();
-      }
-      return response;
-    });
-  };
+function lorisFetch(input, init) {
+  const options = Object.assign(
+    {
+      credentials: 'same-origin',
+    },
+    init || {}
+  );
+
+  return fetch(input, options).then((response) => {
+    if (response.status === 401) {
+      handleUnauthorized();
+    }
+    return response;
+  });
 }
 
-$(document).ready(function() {
-  $('#menu-toggle').click(function(e) {
-    e.preventDefault();
-    $('.wrapper').toggleClass('active');
-  });
-  $('.dynamictable').DynamicTable();
-  $('.fileUpload').FileUpload();
-});
+if (typeof window !== 'undefined') {
+  window.lorisFetch = lorisFetch;
+}
+
+export default lorisFetch;

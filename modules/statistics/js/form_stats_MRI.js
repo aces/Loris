@@ -1,4 +1,5 @@
 /*global document, $*/
+var lorisFetch = window.lorisFetch || fetch;
 $('#selectall').click(
     function(event) {
         if(this.checked) {
@@ -45,7 +46,7 @@ function updateMRITab() {
         }
     );
 
-    fetch(
+    lorisFetch(
         loris.BaseURL + '/statistics/stats_MRI/?dynamictabs=dynamictabs&MRIProject=' +
         (MRIProject==null ? "" : MRIProject.value) + '&MRIsite=' + MRIsite.value +
         '&Scans=' + scanArray,

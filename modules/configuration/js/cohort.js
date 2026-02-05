@@ -1,5 +1,6 @@
 $(document).ready(function() {
     "use strict";
+    var lorisFetch = window.lorisFetch || fetch;
     $('div').tooltip();
     $(".savecohort").click(function(e) {
         var form = $(e.currentTarget).closest('form');
@@ -11,7 +12,7 @@ $(document).ready(function() {
         var recruitmentTarget = $(form.find(".cohortRecruitmentTarget")).val();
         e.preventDefault();
 
-        fetch(loris.BaseURL + "/configuration/ajax/updateCohort.php", {
+        lorisFetch(loris.BaseURL + "/configuration/ajax/updateCohort.php", {
                     method: "post",
                     headers: {
                       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -26,17 +27,18 @@ $(document).ready(function() {
                     credentials: "same-origin",
                 })
                 .then(async function(response) {
+                    var text = await response.text();
                     var data = null;
                     try {
-                      data = await response.json();
+                      data = JSON.parse(text);
                     } catch (err) {
                       data = null;
                     }
                     if (!response.ok) {
-                      throw data || {};
+                      throw {error: (data && data.error) ? data.error : text};
                     }
                     $(form.find(".saveStatus"))
-                    .text(data.ok)
+                    .text(data && data.ok ? data.ok : "Saved")
                     .css({ 'color': 'green'})
                     .fadeIn(500)
                     .delay(1000);
@@ -55,8 +57,9 @@ $(document).ready(function() {
                   }
                 })
                 .catch(function(data) {
+                    var message = data && data.error ? data.error : 'Request failed.';
                     $(form.find(".saveStatus"))
-                    .text(data.error)
+                    .text(message)
                     .css({ 'color': 'red'})
                     .fadeIn(500)
                     .delay(1000);

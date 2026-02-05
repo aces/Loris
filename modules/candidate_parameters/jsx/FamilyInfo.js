@@ -8,6 +8,7 @@ import {
   ButtonElement,
   SelectElement,
 } from 'jsx/Form';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Family info component
@@ -41,7 +42,7 @@ class FamilyInfo extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    fetch(this.props.dataURL, {credentials: 'same-origin'})
+    lorisFetch(this.props.dataURL)
       .then((response) => {
         if (!response.ok) {
           throw new Error('request_failed');
@@ -271,10 +272,9 @@ class FamilyInfo extends Component {
       familyMembers: familyMembers,
     });
 
-    fetch(this.props.action, {
+    lorisFetch(this.props.action, {
       method: 'POST',
       body: formData,
-      credentials: 'same-origin',
     })
       .then(async (response) => {
         if (!response.ok) {
@@ -373,10 +373,9 @@ class FamilyInfo extends Component {
     formData.append('candID', this.state.Data.candID);
     formData.append('familyDCCID', candID);
 
-    fetch(this.props.action, {
+    lorisFetch(this.props.action, {
       method: 'POST',
       body: formData,
-      credentials: 'same-origin',
     })
       .then(async (response) => {
         if (!response.ok) {

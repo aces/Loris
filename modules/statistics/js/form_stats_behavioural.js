@@ -1,7 +1,8 @@
 /*global document, $, window, scrollContent*/
+var lorisFetch = window.lorisFetch || fetch;
 function updateBehaviouralTab() {
     var BehaviouralProject = document.getElementById("BehaviouralProject");
-    fetch(
+    lorisFetch(
         loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' +
         (BehaviouralProject==null ? "" : BehaviouralProject.value),
         {credentials: 'same-origin'}

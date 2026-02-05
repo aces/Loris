@@ -6,6 +6,7 @@ import swal from 'sweetalert2';
 
 import {VerticalTabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
+import lorisFetch from 'jslib/lorisFetch';
 import {
   FormElement,
   StaticElement,
@@ -59,7 +60,7 @@ class ConsentStatus extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    fetch(this.props.dataURL, {credentials: 'same-origin'})
+    lorisFetch(this.props.dataURL)
       .then((response) => {
         if (!response.ok) {
           throw new Error('request_failed');
@@ -268,10 +269,9 @@ class ConsentStatus extends Component {
     // Disable submit button to prevent form resubmission
     this.setState({submitDisabled: true});
 
-    fetch(this.props.action, {
+    lorisFetch(this.props.action, {
       method: 'POST',
       body: formData,
-      credentials: 'same-origin',
     })
       .then(async (response) => {
         if (!response.ok) {

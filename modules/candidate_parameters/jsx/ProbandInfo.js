@@ -12,6 +12,7 @@ import {
   DateElement,
   TextareaElement,
 } from 'jsx/Form';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Proband Info Component.
@@ -57,7 +58,7 @@ class ProbandInfo extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    fetch(this.props.dataURL, {credentials: 'same-origin'})
+    lorisFetch(this.props.dataURL)
       .then((response) => {
         if (!response.ok) {
           throw new Error('request_failed');
@@ -161,10 +162,9 @@ class ProbandInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    fetch(this.props.action, {
+    lorisFetch(this.props.action, {
       method: 'POST',
       body: formData,
-      credentials: 'same-origin',
     })
       .then(async (response) => {
         if (!response.ok) {

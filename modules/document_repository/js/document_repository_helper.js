@@ -1,4 +1,5 @@
 /*global $, document, window, location */
+var lorisFetch = window.lorisFetch || fetch;
 
 function editCategory() {
   "use strict";
@@ -10,7 +11,7 @@ function editCategory() {
     id = event.target.id;
     value = $("#" + id).text();
     id = id.replace("categorycomment", "");
-    fetch(
+    lorisFetch(
       loris.BaseURL + "/document_repository/ajax/categoryEdit.php?" +
       new URLSearchParams({id: id, comments: value}),
       {credentials: 'same-origin'}
@@ -56,7 +57,7 @@ function selectElement(element, valueToSelect) {
 function postDelete(id) {
   "use strict";
 
-  fetch(loris.BaseURL + "/document_repository/ajax/documentDelete.php", {
+  lorisFetch(loris.BaseURL + "/document_repository/ajax/documentDelete.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -94,7 +95,7 @@ function deleteModal() {
 function postCategory() {
   "use strict";
 
-  fetch(loris.BaseURL + "/document_repository/ajax/addCategory.php", {
+  lorisFetch(loris.BaseURL + "/document_repository/ajax/addCategory.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -141,7 +142,7 @@ function postEdit(id) {
     submit: 'yeah!!!!'
   };
 
-  fetch(loris.BaseURL + "/document_repository/ajax/documentEditUpload.php", {
+  lorisFetch(loris.BaseURL + "/document_repository/ajax/documentEditUpload.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -173,7 +174,7 @@ function editModal() {
   var id = this.id;
   $("#editModal").modal();
 
-  fetch(
+  lorisFetch(
     loris.BaseURL + "/document_repository/ajax/getFileData.php?" +
       new URLSearchParams({id: id}),
     {credentials: "same-origin"}

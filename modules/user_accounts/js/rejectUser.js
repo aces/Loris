@@ -2,8 +2,9 @@ $(document).ready(function() {
     $("#btn_reject").click(function() {
     const userID = document.getElementById("UserID").value;
     const baseurl = loris.BaseURL;
+    const lorisFetch = window.lorisFetch || fetch;
 
-    fetch(baseurl + '/user_accounts/ajax/rejectUser.php', {
+    lorisFetch(baseurl + '/user_accounts/ajax/rejectUser.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',

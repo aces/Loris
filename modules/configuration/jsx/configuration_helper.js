@@ -1,4 +1,5 @@
 import swal from 'sweetalert2';
+import lorisFetch from 'jslib/lorisFetch';
 
 $(function() {
   'use strict';
@@ -59,13 +60,12 @@ $(function() {
         let id = $(this).attr('name');
         let button = this;
 
-        fetch(loris.BaseURL + '/configuration/ajax/process.php', {
+        lorisFetch(loris.BaseURL + '/configuration/ajax/process.php', {
           method: 'post',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
           },
           body: new URLSearchParams({remove: id}),
-          credentials: 'same-origin',
         })
           .then((response) => {
             if (!response.ok) {
@@ -107,13 +107,12 @@ $(function() {
     // Clear previous feedback
     $('.submit-area > label').remove();
 
-    fetch(loris.BaseURL + '/configuration/ajax/process.php', {
+    lorisFetch(loris.BaseURL + '/configuration/ajax/process.php', {
       method: 'post',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       },
       body: form,
-      credentials: 'same-origin',
     })
       .then(async (response) => {
         if (!response.ok) {

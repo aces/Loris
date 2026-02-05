@@ -1,4 +1,5 @@
 /*global document, $*/
+var lorisFetch = window.lorisFetch || fetch;
 $('#showVL').click(
     function(event) {
         if(this.checked) {
@@ -21,7 +22,7 @@ function updateDemographicInstrument() {
     var DemographicSite       = document.getElementById("DemographicSite");
     var DemographicInstrument = document.getElementById("DemographicInstrument");
 
-    fetch(
+    lorisFetch(
         loris.BaseURL + '/statistics/stats_demographic/?dynamictabs=dynamictabs&DemographicSite=' +
         DemographicSite.value + '&DemographicInstrument=' + DemographicInstrument.value,
         {credentials: 'same-origin'}
@@ -42,7 +43,7 @@ function updateBehaviouralInstrument() {
     var BehaviouralSite       = document.getElementById("BehaviouralSite");
     var BehaviouralInstrument = document.getElementById("BehaviouralInstrument");
     var BehaviouralProject    = document.getElementById("BehaviouralProject");
-    fetch(
+    lorisFetch(
         loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralSite=' +
         BehaviouralSite.value + '&BehaviouralInstrument=' +
         (BehaviouralProject==null ? "" : BehaviouralProject.value) +
@@ -63,7 +64,7 @@ function updateBehaviouralInstrument() {
 function updateMRITable() {
     var selectedMRI_TYPE = document.getElementById("mri_type");
     var MRIProject       = document.getElementById("MRIProject");
-    fetch(
+    lorisFetch(
         loris.BaseURL + '/statistics/stats_MRI/?dynamictabs=dynamictabs&mri_type=' +
         selectedMRI_TYPE.value + '&MRIProject=' + (MRIProject==null ? "" : MRIProject.value),
         {credentials: 'same-origin'}
