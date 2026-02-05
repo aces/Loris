@@ -39,8 +39,6 @@
         "@babel/plugin-transform-modules-commonjs": "^7.24.1",
         "@babel/preset-env": "^7.9.6",
         "@babel/preset-react": "^7.6.3",
-        "@types/c3": "^0.7.8",
-        "@types/d3": "^7.4.0",
         "@types/node": "^20.12.7",
         "@types/papaparse": "^5.3.11",
         "@types/react": "^18.0.26",
