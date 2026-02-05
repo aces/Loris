@@ -543,6 +543,12 @@ msgstr ""
 msgid "Permission denied"
 msgstr ""
 
+msgid "GB"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
 msgid "Unauthorized"
 msgstr ""
 
