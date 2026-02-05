@@ -230,6 +230,9 @@ class Timepoint_List extends \NDB_Menu
                         = $timePoint->$getDateMethod();
                 }
             }
+
+            $this->tpl_data['timePoints'][$x]['language']
+                = $timePoint->getLanguage();
             $x++;
         } // end list
 

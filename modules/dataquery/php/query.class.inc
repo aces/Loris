@@ -401,19 +401,25 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         if (isset(self::$moduleDictCache[$mname])) {
             return;
         }
-        $module = $this->loris->getModule($mname);
 
-        $moduleDict = $module->getQueryEngine()->getDataDictionary();
-        foreach ($moduleDict as $category) {
-            $cname = $category->getName();
-            foreach ($category->getItems() as $cfield) {
-                if (!isset(self::$moduleDictCache[$mname])) {
-                    self::$moduleDictCache[$mname] = [];
+        $module  = $this->loris->getModule($mname);
+        $engines = $module->getQueryEngines();
+
+        foreach ($engines as $engine) {
+            $moduleDict = $engine->getDataDictionary();
+            foreach ($moduleDict as $category) {
+
+                $cname = $category->getName();
+                foreach ($category->getItems() as $cfield) {
+                    if (!isset(self::$moduleDictCache[$mname])) {
+                        self::$moduleDictCache[$mname] = [];
+                    }
+                    if (!isset(self::$moduleDictCache[$mname][$cname])) {
+                        self::$moduleDictCache[$mname][$cname] = [];
+                    }
+                    self::$moduleDictCache[$mname][$cname][$cfield->getName()]
+                        = $cfield;
                 }
-                if (!isset(self::$moduleDictCache[$mname][$cname])) {
-                    self::$moduleDictCache[$mname][$cname] = [];
-                }
-                self::$moduleDictCache[$mname][$cname][$cfield->getName()] = $cfield;
             }
         }
     }
@@ -698,73 +704,78 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 continue;
             }
             $modulename = $crit['module'];
-            $engine     = $this->loris->getModule($modulename)->getQueryEngine();
+            foreach ($this->loris->getModule($modulename)->getQueryEngines()
+                as $engine
+            ) {
+                $fulldict = $this->getFlattenedDictionary($engine);
+                $dictitem = $fulldict[$crit['fieldname']];
 
-            $fulldict = $this->getFlattenedDictionary($engine);
-            $dictitem = $fulldict[$crit['fieldname']];
+                // Get a new engine for each term to reset the internal state
+                switch ($crit['op']) {
+                case 'lt':
+                    $term = new QueryTerm($dictitem, new LessThan($crit['value']));
+                    break;
+                case 'lte':
+                    $term = new QueryTerm(
+                        $dictitem,
+                        new LessThanOrEqual($crit['value'])
+                    );
+                    break;
+                case 'eq':
+                    $term = new QueryTerm($dictitem, new Equal($crit['value']));
+                    break;
+                case 'neq':
+                    $term = new QueryTerm($dictitem, new NotEqual($crit['value']));
+                    break;
+                case 'gte':
+                    $term = new QueryTerm(
+                        $dictitem,
+                        new GreaterThanOrEqual($crit['value']),
+                    );
+                    break;
+                case 'gt':
+                    $term = new QueryTerm(
+                        $dictitem,
+                        new GreaterThan($crit['value'])
+                    );
+                    break;
+                case 'startsWith':
+                    $term = new QueryTerm($dictitem, new StartsWith($crit['value']));
+                    break;
+                case 'endsWith':
+                    $term = new QueryTerm($dictitem, new EndsWith($crit['value']));
+                    break;
+                case 'contains':
+                    $term = new QueryTerm($dictitem, new Substring($crit['value']));
+                    break;
+                case 'isnotnull':
+                    $term = new QueryTerm($dictitem, new NotNull());
+                    break;
+                case 'isnull':
+                    $term = new QueryTerm($dictitem, new IsNull());
+                    break;
+                case 'in':
+                    $term = new QueryTerm($dictitem, new In(...$crit['value']));
+                    break;
+                default:
+                    throw new \Exception("Unhandled operator: " . $crit['op']);
+                }
 
-            // Get a new engine for each term to reset the internal state
-            switch ($crit['op']) {
-            case 'lt':
-                $term = new QueryTerm($dictitem, new LessThan($crit['value']));
-                break;
-            case 'lte':
-                $term = new QueryTerm(
-                    $dictitem,
-                    new LessThanOrEqual($crit['value'])
-                );
-                break;
-            case 'eq':
-                $term = new QueryTerm($dictitem, new Equal($crit['value']));
-                break;
-            case 'neq':
-                $term = new QueryTerm($dictitem, new NotEqual($crit['value']));
-                break;
-            case 'gte':
-                $term = new QueryTerm(
-                    $dictitem,
-                    new GreaterThanOrEqual($crit['value']),
-                );
-                break;
-            case 'gt':
-                $term = new QueryTerm($dictitem, new GreaterThan($crit['value']));
-                break;
-            case 'startsWith':
-                $term = new QueryTerm($dictitem, new StartsWith($crit['value']));
-                break;
-            case 'endsWith':
-                $term = new QueryTerm($dictitem, new EndsWith($crit['value']));
-                break;
-            case 'contains':
-                $term = new QueryTerm($dictitem, new Substring($crit['value']));
-                break;
-            case 'isnotnull':
-                $term = new QueryTerm($dictitem, new NotNull());
-                break;
-            case 'isnull':
-                $term = new QueryTerm($dictitem, new IsNull());
-                break;
-            case 'in':
-                $term = new QueryTerm($dictitem, new In(...$crit['value']));
-                break;
-            default:
-                throw new \Exception("Unhandled operator: " . $crit['op']);
+                // FIXME: Verify visits, test was done with candidate scope data
+                $visitlist = null;
+                if (isset($crit['visits'])) {
+                    $visitlist = $crit['visits'];
+                }
+
+                \Profiler::checkpoint("Calling engine get matches");
+                $matches = $engine->getCandidateMatches($term, $visitlist);
+                if (is_array($matches)) {
+                    $results[] = $matches;
+                } else {
+                    $results[] = iterator_to_array($matches);
+                }
+                \Profiler::checkpoint("Done group");
             }
-
-            // FIXME: Verify visits, test was done with candidate scope data
-            $visitlist = null;
-            if (isset($crit['visits'])) {
-                $visitlist = $crit['visits'];
-            }
-
-            \Profiler::checkpoint("Calling engine get matches");
-            $matches = $engine->getCandidateMatches($term, $visitlist);
-            if (is_array($matches)) {
-                $results[] = $matches;
-            } else {
-                $results[] = iterator_to_array($matches);
-            }
-            \Profiler::checkpoint("Done group");
         }
         $combinedresult = [];
         switch (count($results)) {

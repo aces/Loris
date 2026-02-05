@@ -76,12 +76,15 @@ class ModuleFileRouter implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $uri  = $request->getAttribute("unhandledURI");
+        $path = !empty($uri) ? $uri->getPath() : $request->getURI()->getPath();
+
         $fullpath = (
             $this->moduledir .
             "/" .
             $this->subdir .
             "/"
-            . $request->getURI()->getPath()
+            . $path
         );
 
         if (is_file($fullpath)) {

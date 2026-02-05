@@ -207,7 +207,7 @@ class ImagingQueryEngineTest extends TestCase
 
         $this->engine = $lorisinstance->getModule(
             'imaging_browser'
-        )->getQueryEngine();
+        )->getQueryEngines()[0];
     }
 
     /**

@@ -174,6 +174,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                                     'useConsent'  => $this->Config->getSetting(
                                         'useConsent'
                                     ),
+                                    'studyTitle'  => $this->Config->getSetting(
+                                        'Title'
+                                    ),
                                    );
         $tpl_data['jsonParams']  = json_encode(
             array(

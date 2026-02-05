@@ -69,21 +69,22 @@ class QueryDataProvisioner extends ProvisionerInstance
         // Run the query against each module and store the resulting
         // iterators in the $dataiterators array.
         foreach ($fields as $modulename => $mfields) {
-            $engine = $this->loris->getModule($modulename)->getQueryEngine();
+            foreach ($this->loris->getModule($modulename)->getQueryEngines()
+               as $engine) {
+                $flatdict = $this->getFlattenedDictionary($engine);
 
-            $flatdict = $this->getFlattenedDictionary($engine);
+                $fielddict = [];
 
-            $fielddict = [];
+                foreach ($mfields as $fieldname) {
+                    $fielddict[] = $flatdict[$fieldname];
+                }
 
-            foreach ($mfields as $fieldname) {
-                $fielddict[] = $flatdict[$fieldname];
+                $dataiterators[$modulename] = $engine->getCandidateData(
+                    $fielddict,
+                    $candidates,
+                    null,
+                );
             }
-
-            $dataiterators[$modulename] = $engine->getCandidateData(
-                $fielddict,
-                $candidates,
-                null,
-            );
         }
         return $this->_mergeIterators($candidates, $dataiterators, $fieldsarray);
     }

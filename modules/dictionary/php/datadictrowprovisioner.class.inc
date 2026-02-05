@@ -53,41 +53,42 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
             $module = $row['Module'];
             $cat    = $row['Category'];
 
-            $qe = $module->getQueryEngine();
+            foreach ($module->getQueryEngines() as $qe) {
 
-            foreach ($cat->getItems() as $item) {
-                $name   = $item->getName();
-                $status = dgettext('dictionary', 'Unchanged');
-                if (isset($overrides[$name])) {
-                    $desc   = $overrides[$name]['Description'];
-                    $status = dgettext('dictionary', 'Modified');
-                } else {
-                    $desc = $item->getDescription();
-                }
+                foreach ($cat->getItems() as $item) {
+                    $name   = $item->getName();
+                    $status = dgettext('dictionary', 'Unchanged');
+                    if (isset($overrides[$name])) {
+                        $desc   = $overrides[$name]['Description'];
+                        $status = dgettext('dictionary', 'Modified');
+                    } else {
+                        $desc = $item->getDescription();
+                    }
 
-                if ($desc == '') {
-                    $status = dgettext('dictionary', 'Empty');
-                }
+                    if ($desc == '') {
+                        $status = dgettext('dictionary', 'Empty');
+                    }
 
-                $cohorts = $DB->pselectCol(
-                    "SELECT DISTINCT c.title FROM test_names tn
+                    $cohorts = $DB->pselectCol(
+                        "SELECT DISTINCT c.title FROM test_names tn
                         JOIN test_battery tb ON tn.Test_name=tb.Test_name
                         JOIN cohort c ON tb.CohortID=c.CohortID
                         WHERE tn.Test_name=:tn
                     ORDER BY c.title",
-                    ['tn' => $cat->getName()]
-                );
+                        ['tn' => $cat->getName()]
+                    );
 
-                $visits = $qe->getVisitList($cat, $item);
-                $dict[] = $this->getInstance(
-                    $module,
-                    $cat,
-                    $item,
-                    $desc,
-                    $status,
-                    $visits,
-                    $cohorts,
-                );
+                    $visits = $qe->getVisitList($cat, $item);
+                    $dict[] = $this->getInstance(
+                        $module,
+                        $cat,
+                        $item,
+                        $desc,
+                        $status,
+                        $visits,
+                        $cohorts,
+                    );
+                }
             }
         }
         return new \ArrayIterator($dict);

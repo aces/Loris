@@ -233,6 +233,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         ) {
             return null;
         }
+
+        \bind_textdomain_codeset($instrument, 'UTF-8');
+        \bindtextdomain($instrument, __DIR__ . "/../../project/locale");
         if (file_exists($base."project/instruments/$instrument.linst")
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
@@ -268,9 +271,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
+        $origlang = \getenv("LANG");
+        $obj->form->textdomain = $instrument;
         // if a script is loading this form without a commentID, display all fields
-        if (!isset($commentID)) {
+        if (empty($commentID)) {
             $obj->displayAllFields = true;
+        } else {
+            $obj->commentID = $commentID;
+            $timepoint      = \TimePoint::singleton($obj->getSessionID());
+            $ilang          = $timepoint->getLanguage();
+            \putenv("LANG=" . $ilang->code . ".utf8");
+            \putenv("LANGUAGE=" . $ilang->code . ".utf8");
         }
 
         // Set page name to testName
@@ -302,6 +313,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $base . "project/instruments/$instrument.rules"
         );
 
+        \putenv("LANG=$origlang");
+        \putenv("LANGUAGE=$origlang");
         return $obj;
     }
 
@@ -384,7 +397,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $current_date = new \DateTime();
             $dob_year     = abs($current_date->diff($dob_date)->y);
             $dob_month    = abs($current_date->diff($dob_date)->m);
-            $dob_age      = $dob_year . " y / " . $dob_month . " m";
+            $dob_age      = $dob_year . dgettext("timepoint_list", " y / ")
+                . $dob_month . dgettext("timepoint_list", " m");
             $this->tpl_data['dob_age'] = $dob_age;
         }
         // EDC to EDC Age
@@ -394,7 +408,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $current_date = new DateTime();
             $edc_year     = abs($current_date->diff($edc_date)->y);
             $edc_month    = abs($current_date->diff($edc_date)->m);
-            $edc_age      = $edc_year . " y / " . $edc_month . " m";
+            $edc_age      = $edc_year . dgettext("timepoint_list", " y / ")
+                . $edc_month . dgettext("timepoint_list", " m");
             $this->tpl_data['edc_age'] = $edc_age;
         }
     }
@@ -475,7 +490,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $buttons[] = $this->form->createElement(
                 'submit',
                 'fire_away',
-                'Save Data',
+                dgettext('loris', 'Save'),
                 ['class' => 'button']
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
@@ -827,6 +842,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // don't overwrite data from other pages.
         $newData = array_merge($this->getInstanceData() ?? [], $values);
 
+        $userID = $db->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:uid",
+            ['uid' => $newData['UserID'] ?? ""]
+        );
+        if (($userID ?? "") != "") {
+            $db->insertOnDuplicateUpdate(
+                "flag_editors",
+                [
+                    'userID'    => $userID,
+                    'CommentID' => $this->getCommentID(),
+                ],
+            );
+        }
         // If there's already a row with the same data, re-use the DataID.
         // Otherwise, insert it, then update the DataID on flag.
         $jsonencoded = json_encode($newData);
@@ -876,27 +904,35 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->dateOptions = $dateOptions;
 
-        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
+        $this->addBasicDate(
+            'Date_taken',
+            dgettext('instruments', 'Date of Administration'),
+            $dateOptions
+        );
 
         if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age (Months)'
+                    dgettext("instruments", 'Candidate Age (Months)')
                 );
             } else {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age at Death (Months)'
+                    dgettext("instruments", 'Candidate Age at Death (Months)')
                 );
             }
             $this->addScoreColumn(
                 'Window_Difference',
-                'Window Difference (+/- Days)'
+                dgettext("instruments", 'Window Difference (+/- Days)')
             );
         }
         $examiners = $this->_getExaminerNames();
-        $this->addSelect('Examiner', 'Examiner', $examiners);
+        $this->addSelect(
+            'Examiner',
+            dgettext("instruments", 'Examiner'),
+            array_merge(['' => ''], $examiners)
+        );
 
         $this->addRule(
             'Date_taken',
@@ -984,11 +1020,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames(): array
     {
-        if (empty($this->getCommentID())) {
-            return [];
-        }
+        $db = \NDB_Factory::singleton()->database();
 
-        $db = $this->loris->getDatabaseConnection();
+        if (empty($this->getCommentID())) {
+            $results =  $db->pselectWithIndexKey(
+                "SELECT DISTINCT e.examinerID, e.full_name, u.Email
+               FROM examiners e
+               JOIN users u ON u.ID=e.userID
+               WHERE u.Active = 'Y'
+               ORDER BY full_name",
+                [],
+                'examinerID'
+            );
+            return $this->_buildExaminers($results);
+        }
 
         $centerID = $db->pselectOne(
             "SELECT session.CenterID FROM session, flag
@@ -1012,7 +1057,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        $curr_examinerID = $this->getFieldValue("Examiner");
+        $allValues       = $this->getInstanceData();
+        $curr_examinerID = $allValues['Examiner'];
 
         list(
             $CertificationEnabled,
@@ -1064,30 +1110,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 'examinerID'
             );
         }
-        $examiners = [
-            '' => ''
-        ];
-        if (is_array($results) && !empty($results)) {
-            foreach ($results AS $eid => $row) {
-                $name = $row['full_name'];
-                if (in_array($name, $examiners)) {
-                    // If name already in examiners, set first case of name
-                    // with email (if exists)
-                    $duplicateID    = array_search($name, $examiners);
-                    $duplicateEmail = $results[$duplicateID]['Email'];
-                    $emailString    = empty($duplicateEmail) ? "" :
-                        " ({$duplicateEmail})";
-                    $examiners[$duplicateID] = $name . $emailString;
-                    // Set new case of name with email as well
-                    $emailString     = empty($row['Email']) ? "" :
-                        " ({$row['Email']})";
-                    $examiners[$eid] = $name . $emailString;
-                } else {
-                    $examiners[$eid] = $name;
-                }
-            }
-        }
-        return $examiners;
+        return $this->_buildExaminers($results);
     }
 
     /**
@@ -1617,9 +1640,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $label,
             [
                 ''             => '',
-                'yes'          => 'Yes',
-                'no'           => 'No',
-                'not_answered' => 'Not Answered',
+                'yes'          => dgettext('loris', 'Yes'),
+                'no'           => dgettext('loris', 'No'),
+                'not_answered' => dgettext('loris', 'Not Answered'),
             ]
         );
 
@@ -3208,15 +3231,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candid / $pscid",
                 "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                "TimePoint $visitlabel Details",
+                sprintf(dgettext("loris", "TimePoint %s Details"), $visitlabel),
                 "/instrument_list/?candID=$candid&sessionID=$sessionid"
             ),
             new \LORIS\Breadcrumb(
@@ -3509,5 +3533,38 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public function getSelectMultipleElements(): array
     {
         return $this->selectMultipleElements;
+    }
+
+    /**
+     * Builds examiner array from DB results
+     *
+     * @param array $results Results from DB
+     *
+     * @return string[]
+     */
+    function _buildExaminers(array $results): array
+    {
+        $examiners = [];
+        if (is_array($results) && !empty($results)) {
+            foreach ($results as $eid => $row) {
+                $name = $row['full_name'];
+                if (in_array($name, $examiners)) {
+                    // If name already in examiners, set first case of name
+                    // with email (if exists)
+                    $duplicateID    = array_search($name, $examiners);
+                    $duplicateEmail = $results[$duplicateID]['Email'];
+                    $emailString    = empty($duplicateEmail) ? "" :
+                    " ({$duplicateEmail})";
+                    $examiners[$duplicateID] = $name . $emailString;
+                    // Set new case of name with email as well
+                    $emailString     = empty($row['Email']) ? "" :
+                    " ({$row['Email']})";
+                    $examiners[$eid] = $name . $emailString;
+                } else {
+                    $examiners[$eid] = $name;
+                }
+            }
+        }
+        return $examiners;
     }
 }

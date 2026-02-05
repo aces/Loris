@@ -25,6 +25,9 @@ It also does not manage surveys in any way.
 Accessing instruments requires the `data_entry` permission. Individual 
 instruments may require their own additional access permissions.
 
+Deleting instrument data requires the `Send to DCC` permission, in addition
+to the `InstrumentResetting` configuration being enabled (see Configurations).
+
 ## Configurations
 
 The `NDB_BVL_Instrument` class must be coded and put in the
@@ -33,6 +36,12 @@ and put in the `project/instruments`.
 
 Individual instruments may contain their own configurations (such
 as requiring tables to be created or lookup tables.)
+
+The `InstrumentResetting` configuration in the Configuration module
+controls whether the 'Delete instrument data' button is visible on
+the left pane. When set to 'Yes', and the user has the `Send to DCC`
+permission, the button will be displayed allowing users to clear
+an instrument's data.
 
 If the instrument is administered after the candidate's death,
 the `postMortem` variable can be set to true within the

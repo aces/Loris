@@ -8,6 +8,42 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+## LORIS 27.x (Release Date: TBD)
+### Core
+#### Summary
+- Minor release after v27 release
+#### Updates and Improvements
+- [docs] Update login page Setup Guide link to readthedocs (PR #7071)
+### Notes For Existing Projects
+
+Upgrading LORIS requires following the upgrade process each major and minor release (bug fix releases can be script) to ensure the schema is up to date.
+
+For upgrading to 27.x from 27:
+- Run the `tools/single_use/27_Publication_Collaborators_Into_New_Entries.php` to move publication collaborators into their own database entries rather than relying on eachother.
+
+## LORIS 27.0 (Release Date: 2025-06-20)
+### Core
+#### Summary
+The LORIS 27 release adds many new features and optimizations detailed below such as:
+- Optimizations for the new dataquery tool which also optimize various components throughout LORIS
+- Improvements to permission handling through different modules
+- A new "Batch Mode" for the issue tracker
+- The CandID in LORIS is now 10 digits instead of 6 to support larger projects
+- Foreign Key references to the `candidate` table are now standardized: `CandidateID` which refers to `candidate`.`ID`
+- Instrument's `flag`.`data` moved to `instrument_data` table
+- LORIS now has the ability to display summary statistics of the LORIS instance (either from an SQL query or a query built with the new data query tool) on the login page.
+- A new redcap module allows to importing of data from redcap into LORIS
+- Various other bug fixes and features detailed below
+
+### Notes For Existing Projects
+
+Upgrading LORIS requires following the upgrade process each major and minor release (bug fix releases can be script) to ensure the schema is up to date.
+
+For upgrading to 27 from 26:
+- Source the `SQL/Release_patches/26.0_To_27.0_upgrade.sql`
+- Run the `tools/update_issues_with_description.php` to back-populate the new issue tracker description column. (The description was previously based on the first comment.)
+
+
 ## LORIS 26.0 (Release Date: 2024-06-13)
 ### Core
 #### Features

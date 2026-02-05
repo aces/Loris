@@ -15,7 +15,7 @@ const target = process.env.target;
 const lorisModules: Record<string, string[]> = {
   media: ['CandidateMediaWidget', 'mediaIndex'],
   issue_tracker: ['issueTrackerIndex', 'index', 'CandidateIssuesWidget'],
-  login: ['loginIndex'],
+  login: ['loginIndex', 'mfaPrompt'],
   publication: ['publicationIndex', 'viewProjectIndex'],
   document_repository: ['docIndex', 'editFormIndex'],
   candidate_parameters: ['CandidateParameters', 'ConsentWidget', 'DiagnosisEvolution'],
@@ -84,6 +84,7 @@ const lorisModules: Record<string, string[]> = {
   schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
+  my_preferences: ['mfa'],
 };
 
 /*
@@ -146,7 +147,6 @@ const resolve: webpack.ResolveOptions = {
     PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
     Panel: path.resolve(__dirname, './jsx/Panel'),
     ProgressBar: path.resolve(__dirname, './jsx/ProgressBar'),
-    StaticDataTable: path.resolve(__dirname, './jsx/StaticDataTable'),
     Tabs: path.resolve(__dirname, './jsx/Tabs'),
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
@@ -346,7 +346,6 @@ const configs: webpack.Configuration[] = [];
 configs.push({
   entry: {
     PaginationLinks: './jsx/PaginationLinks.js',
-    StaticDataTable: './jsx/StaticDataTable.js',
     MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
     Breadcrumbs: './jsx/Breadcrumbs.js',
     PolicyButton: './jsx/PolicyButton.js',

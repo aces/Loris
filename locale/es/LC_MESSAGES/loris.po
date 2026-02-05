@@ -113,12 +113,21 @@ msgstr ""
 msgid "TimePoint"
 msgstr "Punto en el tiempo"
 
+msgid "TimePoint %s Details"
+msgstr "Detalles del Punto en el Tiempo %s"
+
 # Common select option labels
 msgid "Yes"
 msgstr "Sí"
 
+msgid "True"
+msgstr "Cierto"
+
 msgid "No"
 msgstr "No"
+
+msgid "False"
+msgstr "Falso"
 
 msgid "Create"
 msgstr "Crear"
@@ -146,6 +155,9 @@ msgid "Hide Advanced Filters"
 msgstr "Ocultar filtros avanzados"
 
 # Common swal labels
+msgid "OK"
+msgstr "Aceptar"
+
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -154,7 +166,7 @@ msgstr "Exitoso!"
 
 # Common candidate terms
 msgid "PSCID"
-msgstr ""
+msgstr "SCPID"
 
 msgid "DCCID"
 msgstr "CCDID"
@@ -192,10 +204,13 @@ msgid "Participant Status"
 msgstr ""
 
 msgid "DoB"
-msgstr ""
+msgstr "Fecha de nacimiento"
+
+msgid "DoD"
+msgstr "Fecha de defunción"
 
 msgid "Sex"
-msgstr ""
+msgstr "Sexo"
 
 msgid "Feedback"
 msgstr "Retroalimentación"
@@ -232,6 +247,21 @@ msgstr "Scan hecho"
 
 msgid "Language"
 msgstr "Lenguaje"
+
+msgid "Access denied"
+msgstr "Acceso denegado"
+
+msgid "No."
+msgstr "número"
+
+msgid "Are you sure?"
+msgstr "Estás seguro?"
+
+msgid "Yes, I am sure!"
+msgstr "¡Sí, estoy seguro!"
+
+msgid "No, cancel it!"
+msgstr "¡No, cancélalo!"
 
 # Data table strings
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
@@ -333,3 +363,38 @@ msgstr "{{months}} meses"
 
 msgid "{{years}} years old"
 msgstr "{{years}} años"
+
+# Other generic terms
+msgid "Loading..."
+msgstr ""
+
+msgid "Permission denied"
+msgstr ""
+
+msgid "Unauthorized"
+msgstr ""
+
+msgid "File to upload"
+msgstr "Archivo para subir"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Dataset"
+msgstr ""
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr ""

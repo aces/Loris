@@ -15,7 +15,9 @@
         "laminas/laminas-diactoros" : "^3.5",
         "ext-json": "*",
         "bjeavons/zxcvbn-php": "^1.0",
-        "aws/aws-sdk-php": "^3.209"
+        "aws/aws-sdk-php": "^3.209",
+        "selective/base32": "^2.0",
+        "chillerlan/php-qrcode": "^5.0"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "^3.5",

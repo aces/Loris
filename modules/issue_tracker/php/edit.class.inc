@@ -143,11 +143,11 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         $priorities = [
-            'low'       => 'Low',
-            'normal'    => 'Normal',
-            'high'      => 'High',
-            'urgent'    => 'Urgent',
-            'immediate' => 'Immediate',
+            'low'       => dgettext('issue_tracker', 'Low'),
+            'normal'    => dgettext('issue_tracker', 'Normal'),
+            'high'      => dgettext('issue_tracker', 'High'),
+            'urgent'    => dgettext('issue_tracker', 'Urgent'),
+            'immediate' => dgettext('issue_tracker', 'Immediate'),
         ];
 
         $unorgCategories = $db->pselect(
@@ -250,26 +250,28 @@ class Edit extends \NDB_Page implements ETagCalculator
         $issueData['comment'] = null;
 
         $statuses = [
-            'new'          => 'New',
-            'acknowledged' => 'Acknowledged',
-            'assigned'     => 'Assigned',
-            'feedback'     => 'Feedback',
-            'resolved'     => 'Resolved',
+            'new'          => dgettext('issue_tracker', 'New'),
+            'acknowledged' => dgettext('issue_tracker', 'Acknowledged'),
+            'assigned'     => dgettext('issue_tracker', 'Assigned'),
+            'feedback'     => dgettext('issue_tracker', 'Feedback'),
+            'resolved'     => dgettext('issue_tracker', 'Resolved'),
         ];
 
         // Give "close" option if user has site close permissions and the issue
         // is at a user site, or if the user has close permissions for all sites,
         // or it is the user's own permission
-        $userHasSite = $user->hasPermission('issue_tracker_close_site_issue') &&
+        if ($values['issueID'] != "new") {
+            $userHasSite = $user->hasPermission('issue_tracker_close_site_issue') &&
             $issueData['centerID'] ?
                 $user->hasCenter(new \CenterID((string)$issueData['centerID'])) :
                 false;
-        if ($user->hasPermission('issue_tracker_close_all_issue')
-            || $userHasSite
-            || ($user->hasPermission('issue_tracker_own_issue')
-            && $isOwnIssue)
-        ) {
-            $statuses['closed'] = 'Closed';
+            if ($user->hasPermission('issue_tracker_close_all_issue')
+                || $userHasSite
+                || ($user->hasPermission('issue_tracker_own_issue')
+                && $isOwnIssue)
+            ) {
+                $statuses['closed'] = dgettext('issue_tracker', 'Closed');
+            }
         }
 
         // Give edit permission if they are able to see all issues, site issues,

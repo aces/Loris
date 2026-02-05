@@ -33,3 +33,150 @@ msgstr ""
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"
 msgstr[0] ""
+
+msgid "Visit QC Status"
+msgstr ""
+
+msgid "First Acquisition"
+msgstr ""
+
+msgid "First Insertion"
+msgstr ""
+
+msgid "Last QC"
+msgstr ""
+
+msgid "New Data"
+msgstr ""
+
+msgid "Links"
+msgstr ""
+
+msgid "SessionID"
+msgstr ""
+
+msgid "Sequence Type"
+msgstr ""
+
+msgid "Pending New"
+msgstr ""
+
+msgid "QC Status"
+msgstr ""
+
+msgid "Caveat"
+msgstr ""
+
+msgid "SNR"
+msgstr ""
+
+msgid "Caveat"
+msgstr ""
+
+msgid "SNR"
+msgstr ""
+
+msgid "all types"
+msgstr ""
+
+msgid "Header Info"
+msgstr ""
+
+msgid "Download Image"
+msgstr ""
+
+msgid "Longitudinal View"
+msgstr ""
+
+msgid "QC Comments"
+msgstr ""
+
+msgid "Series Instance UID"
+msgstr ""
+
+msgid "Number of Scans"
+msgstr ""
+
+msgid "Red bar denotes number of failed QC scans."
+msgstr ""
+
+msgid "Green bar denotes number of passed QC scans."
+msgstr ""
+
+msgid "Grey bar denotes other QC statuses."
+msgstr ""
+
+msgid "Different shades represent different modalities. Only native modalities are displayed in results."
+msgstr ""
+
+msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
+msgstr ""
+
+msgid "%1 file(s) displayed."
+msgstr ""
+
+msgid "No data available"
+msgstr ""
+
+msgid "Patient Name"
+msgstr ""
+
+msgid "QC Pending"
+msgstr ""
+
+msgid "Output Type"
+msgstr ""
+
+msgid "Scanner"
+msgstr ""
+
+msgid "Human"
+msgstr ""
+
+msgid "EDC"
+msgstr ""
+
+msgid "Navigation"
+msgstr ""
+
+msgid "Back to list"
+msgstr ""
+
+msgid "Volume Viewer"
+msgstr ""
+
+msgid "3D Only"
+msgstr ""
+
+msgid "3D + Overlay"
+msgstr ""
+
+msgid "Report a Bug (Mantis)"
+msgstr ""
+
+msgid "Visit Level QC"
+msgstr ""
+
+msgid "Visit Level Feedback"
+msgstr ""
+
+msgid "Visit Level Caveat"
+msgstr ""
+
+msgid "DCC MRI Quality Control"
+msgstr ""
+
+msgid "Click here to close this window"
+msgstr ""
+
+msgid "Comments saved."
+msgstr ""
+
+msgid "Feedback MRI Popup"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Download DICOM"
+msgstr ""

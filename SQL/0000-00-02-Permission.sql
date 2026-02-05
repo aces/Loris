@@ -133,6 +133,8 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('data_release_view', 'Release Files',(SELECT ID FROM modules WHERE Name='data_release'),2),
     ('data_release_upload', 'Release Files',(SELECT ID FROM modules WHERE Name='data_release'),2),
     ('data_release_edit_file_access', 'Grant Other Users Access to Releases',(SELECT ID FROM modules WHERE Name='data_release'),2),
+    ('data_release_hide', 'Hide data release files',(SELECT ID FROM modules WHERE Name='data_release'), 2),
+    ('data_release_delete', 'Delete data release files',(SELECT ID FROM modules WHERE Name='data_release'), 2),
     ('instrument_manager_read', 'Installed Instruments',(SELECT ID FROM modules WHERE Name='instrument_manager'),2),
     ('instrument_manager_write', 'Upload and Install Instruments',(SELECT ID FROM modules WHERE Name='instrument_manager'),2),
     ('publication_view', 'Publication Projects',(SELECT ID FROM modules WHERE Name='publication'),2),

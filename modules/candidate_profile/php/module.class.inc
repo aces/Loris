@@ -23,7 +23,7 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $candIDStr = ltrim($request->getURI()->getPath(), '/');
+        $candIDStr = ltrim($request->getAttribute("unhandledURI")->getPath(), '/');
         try {
             $candID    = new CandID($candIDStr);
             $candidate = \Candidate::singleton($candID);

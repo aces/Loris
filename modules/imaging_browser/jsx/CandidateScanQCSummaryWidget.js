@@ -1,7 +1,11 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import {useTranslation} from 'react-i18next';
+import 'I18nSetup';
+import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
+import frStrings from '../locale/fr/LC_MESSAGES/imaging_browser.json';
 
 /**
  * A CandidateScanQCSummaryWidget is a type of React widget
@@ -12,10 +16,14 @@ import PropTypes from 'prop-types';
  * @return {*} - rendered React component
  */
 function CandidateScanQCSummaryWidget(props) {
+  const {t, i18n} = useTranslation();
+  const [reload, setReload] = useState(0);
   useEffect(() => {
     const modalities = getModalities(props.Files);
     const data = getDataObject(modalities, props.Files);
     const visits = getVisits(props.Files);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
     c3.generate({
       bindto: '#imagebreakdownchart',
       data: {
@@ -35,14 +43,14 @@ function CandidateScanQCSummaryWidget(props) {
           type: 'category',
           categories: visits,
           label: {
-            text: 'Visit',
+            text: t('Visit', {ns: 'loris'}),
             position: 'outer-center',
           },
         },
         y: {
           label: {
             position: 'outer-middle',
-            text: 'Number of Scans',
+            text: t('Number of Scans', {ns: 'imaging_browser'}),
           },
         },
       },
@@ -50,29 +58,34 @@ function CandidateScanQCSummaryWidget(props) {
         show: false,
       },
     });
-  });
+    setReload(reload+1);
+  }, [t]);
 
   return <div>
     <div id='imagebreakdownchart' />
     <ul>
-      <li>Red bar denotes number of failed QC scans.</li>
-      <li>Green bar denotes number of passed QC scans.</li>
-      <li>Grey bar denotes other QC statuses.</li>
+      <li>{t('Red bar denotes number of failed QC scans.',
+        {ns: 'imaging_browser'})}</li>
+      <li>{t('Green bar denotes number of passed QC scans.',
+        {ns: 'imaging_browser'})}</li>
+      <li>{t('Grey bar denotes other QC statuses.',
+        {ns: 'imaging_browser'})}</li>
     </ul>
     <p>
-              Different shades represent different modalities.
-              Only native modalities are displayed in results.
+      {t('Different shades represent different modalities.'+
+        ' Only native modalities are displayed in results.',
+      {ns: 'imaging_browser'})}
     </p>
     <p>
-              Hover over any visit to see detailed modality breakdown for visit,
-              click to go to imaging browser.
+      {t('Hover over any visit to see detailed modality breakdown for visit,'+
+        ' click to go to imaging browser.', {ns: 'imaging_browser'})}
     </p>
   </div>;
 }
 CandidateScanQCSummaryWidget.propTypes = {
   Files: PropTypes.array,
   BaseURL: PropTypes.string,
-  VisitMap: PropTypes.array,
+  VisitMap: PropTypes.object,
 };
 
 /**

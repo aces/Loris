@@ -4,7 +4,7 @@ TRUNCATE TABLE `Config`;
 LOCK TABLES `Config` WRITE;
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (1,2,'1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (2,3,'LORIS Demonstration Database');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (3,42,'<h3>Example Study Description</h3>\r\n <p>This is a sample description for this study, because it is a new LORIS install that has not yet customized this text.</p>\r\n <p>A LORIS administrator can customize this text in the configuration module, under the configuration option labeled \"Study Description\"</p>\r\n <h3>Useful Links</h3>\r\n <ul>\r\n <li><a href=\"https://github.com/aces/Loris\" >LORIS GitHub Repository</a></li>\r\n <li><a href=\"https://github.com/aces/Loris/wiki/Setup\" >LORIS Setup Guide</a></li>\r\n <li><a href=\"https://www.youtube.com/watch?v=2Syd_BUbl5A\" >A video of a loris on YouTube</a></li>\r\n </ul>');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (3,42,'<h3>Example Study Description</h3>\r\n <p>This is a sample description for this study, because it is a new LORIS install that has not yet customized this text.</p>\r\n <p>A LORIS administrator can customize this text in the configuration module, under the configuration option labeled \"Study Description\"</p>\r\n <h3>Useful Links</h3>\r\n <ul>\r\n <li><a href=\"https://github.com/aces/Loris\" >LORIS GitHub Repository</a></li>\r\n <li><a href=\"https://acesloris.readthedocs.io/en/latest\" >LORIS Setup Guide</a></li>\r\n <li><a href=\"https://www.youtube.com/watch?v=2Syd_BUbl5A\" >A video of a loris on YouTube</a></li>\r\n </ul>');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (4,4,'images/LORIS_logo.png');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (5,5,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (6,6,'5');
@@ -93,7 +93,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (107,106,'/data/issue_tr
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (108,107,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (113,112,'warning');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (114,113,'warning');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (115,114,'none');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (115,114,'warning');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (116,116,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (117,117,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (118,118,'');
@@ -107,5 +107,9 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (128,131,'/data/EEGUploa
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (129,132,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (130,133,'EEGS3DataPath');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (131,134,'false');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (132,137,'/images/LORIS_logo_white.svg');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (133,138,'/images/github-mark.svg');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (134,139,'/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (135,140,'https://github.com/aces/Loris');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

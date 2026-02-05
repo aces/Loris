@@ -26,3 +26,57 @@ msgstr ""
 
 msgid "Incomplete forms"
 msgstr ""
+
+msgid "Clear Instrument"
+msgstr ""
+
+msgid "Validity"
+msgstr ""
+
+msgid "Valid"
+msgstr ""
+
+msgid "Questionable"
+msgstr ""
+
+msgid "Invalid"
+msgstr ""
+
+msgid "Subtests"
+msgstr ""
+
+msgid "Top"
+msgstr ""
+
+msgid "Behavioural Data"
+msgstr ""
+
+msgid "Completion"
+msgstr ""
+
+msgid "Conflicts?"
+msgstr ""
+
+msgid "Visit has no registered instruments in test battery."
+msgstr ""
+
+msgid "Date of Administration"
+msgstr ""
+
+msgid "Date of Administration is required"
+msgstr ""
+
+msgid "Candidate Age (Months)"
+msgstr ""
+
+msgid "Candidate Age at Death (Months)"
+msgstr ""
+
+msgid "Window Difference (+/- Days)"
+msgstr ""
+
+msgid "Examiner"
+msgstr ""
+
+msgid "Examiner is required"
+msgstr ""

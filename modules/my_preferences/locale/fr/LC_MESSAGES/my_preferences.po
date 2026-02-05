@@ -1,0 +1,91 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-11-13 21:15-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Edit My Information"
+msgstr "Modifier mes informations"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Your email address must be less than 255 characters long"
+msgstr "Votre adresse courriel doit comporter moins de 255 caractères."
+
+msgid "Language preference"
+msgstr "Préférence linguistique"
+
+msgid "Operation"
+msgstr "Opération"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "The email address already exists"
+msgstr "L'adresse courriel existe déjà."
+
+msgid "Your password cannot be your email"
+msgstr "Votre mot de passe ne peut pas être votre adresse courriel."
+
+msgid "Your password cannot be your username"
+msgstr "Votre mot de passe ne peut pas être votre nom d'utilisateur."
+
+msgid "The passwords do not match"
+msgstr "Non trouvé"
+
+msgid "New and old passwords are identical"
+msgstr "Les nouveaux et anciens mots de passe sont identiques."
+
+msgid "Configure multi-factor authentication (MFA)"
+msgstr "Configurer l'authentification multifactorielle (AMF)"
+
+msgid "Configure MFA"
+msgstr "Configurer l'AMF"
+
+msgid "Manual MFA Setup"
+msgstr "Configuration manuelle de l'authentification multifactorielle (AMF)"
+
+msgid "Use the following key in your authenticator app: <0>{{code}}</0>"
+msgstr ""
+"Utilisez la clé suivante dans votre application d'authentification : "
+"<0>{{code}}</0>"
+
+msgid ""
+"Scan the following QR code below in your MFA authenticator and enter the "
+"code to validate."
+msgstr ""
+"Scannez le code QR ci-dessous dans votre authentificateur AMF et entrez le "
+"code pour valider."
+
+#, fuzzy
+msgid "Note that this will <0>overwrite</0> any previously setup MFA in LORIS!"
+msgstr ""
+"Notez que cela <0>remplacera</0> toute configuration AMF précédemment "
+"définie dans LORIS !"
+
+msgid "Can't scan the QR code? <0>Setup manually.</0>"
+msgstr ""
+"Vous ne parvenez pas à scanner le code QR ? <0>Procédez à une configuration "
+"manuelle.</0>"
+
+msgid "Validate Code"
+msgstr "Valider le code"
+
+msgid "Successfully registered multifactor authenticator"
+msgstr "Authentificateur multifactoriel enregistré avec succès"

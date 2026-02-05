@@ -647,19 +647,19 @@ class RedcapHttpClient
     /**
      * Get all records for an single instrument.
      *
-     * @param string $instrument_name        A REDCap instrument name.
-     * @param string $unique_event_name      A REDCap unique event name.
-     * @param string $record_id              A REDCap record ID.
-     * @param bool   $completed_records_only Only return completed records.
+     * @param string  $instrument_name        A REDCap instrument name.
+     * @param string  $unique_event_name      A REDCap unique event name.
+     * @param ?string $record_id              A REDCap record ID.
+     * @param bool    $completed_records_only Only return completed records.
      *
      * @throws \LorisException
      *
      * @return RedcapRecord[] an array of records
      */
-    public function getInstrumentRecord(
-        string $instrument_name,
-        string $unique_event_name,
-        string $record_id,
+    public function getInstrumentRecords(
+        string  $instrument_name,
+        string  $unique_event_name,
+        ?string $record_id,
         bool $completed_records_only = true
     ): array {
         if (empty($instrument_name)) {
@@ -672,10 +672,6 @@ class RedcapHttpClient
             throw new \LorisException(
                 "[redcap] Error: required 'unique_event_name'."
             );
-        }
-
-        if (empty($record_id)) {
-            throw new \LorisException("[redcap] Error: required 'record_id'.");
         }
 
         // mapping check
@@ -692,65 +688,98 @@ class RedcapHttpClient
         }
 
         // request
-        $records = $this->_getRecords(
+        $record_dicts = $this->_getRecords(
             [$instrument_name],
             [$unique_event_name],
-            [$record_id]
+            $record_id !== null ? [$record_id] : [],
         );
 
-        if (empty($records)) {
+        if (empty($record_dicts)) {
             throw new \LorisException("[redcap] Error: no data found.");
         }
 
         // Only keep complete records
         if ($completed_records_only) {
-            $completed = array_filter(
-                $records,
+            $record_dicts = array_filter(
+                $record_dicts,
                 fn ($record) => $record["{$instrument_name}_complete"] == 2
             );
 
-            if (count($completed) === 0) {
+            if (empty($record_dicts)) {
                 throw new \LorisException(
                     "[redcap] Error: no complete record found."
                 );
             }
-        } else {
-            // if not only completed records
-            $completed = $records;
         }
 
-        // Order the records by ${instrument_name}_dtt field value
-        usort(
-            $completed,
-            function ($a, $b) use ($instrument_name) {
-                $dttField = "{$instrument_name}_dtt";
-                $a_date   = new \DateTimeImmutable($a[$dttField]);
-                $b_date   = new \DateTimeImmutable($b[$dttField]);
-                return $a_date <=> $b_date;
-            }
-        );
+        $records = [];
 
         // is a repeating instrument?
-        $final = [];
         if ($this->getProjectInfo()->has_repeating_instruments
             && $this->hasRepeatingInstrumentEvent(
                 $instrument_name,
                 $unique_event_name
             )
         ) {
-            foreach ($completed as $index => $record) {
-                $final[] = new RedcapRepeatingRecord(
+            // TODO: ${instrument_name}_dtt seems to be HBCD-specific. The code
+            // could probably be cleaner with a single timestamp abstraction. The
+            // problem is that the repeating index depends on the order in which the
+            // records were filled. However, this index might also be obtainable
+            // from a field in the record. Investigation needed.
+            // Order the records by ${instrument_name}_dtt field value
+            usort(
+                $record_dicts,
+                function ($a, $b) use ($instrument_name) {
+                    $dttField = "{$instrument_name}_dtt";
+                    $a_date   = new \DateTimeImmutable($a[$dttField]);
+                    $b_date   = new \DateTimeImmutable($b[$dttField]);
+                    return $a_date <=> $b_date;
+                }
+            );
+
+            foreach ($record_dicts as $index => $record) {
+                $records[] = new RedcapRepeatingRecord(
                     $instrument_name,
                     $record,
                     $index + 1
                 );
             }
         } else {
-            // return the only record
-            $final[] = new RedcapRecord($instrument_name, $completed[0]);
+            // Transform the record dictionaries into record objects.
+            $records = array_map(
+                fn ($record_dict) => new RedcapRecord(
+                    $instrument_name,
+                    $record_dict,
+                ),
+                $record_dicts,
+            );
+
+            // Sort the records by datetime.
+            usort(
+                $records,
+                function ($a, $b) {
+                    // If both records have a datetime, compare them.
+                    if ($a->datetime !== null && $b->datetime !== null) {
+                        return $a->datetime <=> $b->datetime;
+                    }
+
+                    // If only record $a has datetime, it comes first.
+                    if ($a->datetime !== null) {
+                        return -1;
+                    }
+
+                    // If only record $b has datetime, it comes first.
+                    if ($b->datetime !== null) {
+                        return 1;
+                    }
+
+                    // If both records have no datetime, maintain the original order.
+                    return 0;
+                },
+            );
         }
 
-        return $final;
+        return $records;
     }
 
     /**

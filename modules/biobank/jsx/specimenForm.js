@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 import SpecimenProcessForm from './processForm';
 import ContainerParentForm from './containerParentForm';
 import {ListForm, ListItem} from './listForm';
@@ -184,22 +185,22 @@ class SpecimenForm extends React.Component {
       if (parent) {
         return (
           <StaticElement
-            label='Note'
-            text='To create new aliquots, enter a Barcode, fill out the
-                coresponding sub-form and press Submit. Press "New Entry" button
-                to add another barcode field, or press for the "Copy" button to
-                  duplicate the previous entry.'
+            label={this.props.t('Note', {ns: 'loris'})}
+            text={this.props.t(`To create new aliquots, enter a Barcode, fill
+              out the coresponding sub-form and press Submit. Press "New
+              Entry" button to add another barcode field, or press for the
+              "Copy" button to duplicate the previous entry.`, {ns: 'biobank'})}
           />
         );
       } else {
         return (
           <StaticElement
-            label='Note'
-            text='To create new specimens, first select a PSCID and Visit Label.
-                  Then, enter a Barcode, fill out the coresponding sub-form and
-                  press submit. Press "New Entry" button to add another barcode
-                  field, or press for the "Copy" button to duplicate the
-                  previous entry.'
+            label={this.props.t('Note', {ns: 'loris'})}
+            text={this.props.t(`To create new specimens, first select a PSCID
+              and Visit Label. Then, enter a Barcode, fill out the coresponding
+              sub-form and press submit. Press "New Entry" button to add
+              another barcode field, or press for the "Copy" button to
+              duplicate the previous entry.`, {ns: 'biobank'})}
           />
         );
       }
@@ -215,15 +216,15 @@ class SpecimenForm extends React.Component {
         return (
           <>
             <StaticElement
-              label="Parent Specimen(s)"
+              label={this.props.t('Parent Specimen(s)', {ns: 'biobank'})}
               text={parentBarcodesString}
             />
             <StaticElement
-              label="PSCID"
+              label={this.props.t('PSCID', {ns: 'loris'})}
               text={options.candidates[candidateId].pscid}
             />
             <StaticElement
-              label="Visit Label"
+              label={this.props.t('Visit Label', {ns: 'loris'})}
               text={options.sessions[sessionId].label}
             />
           </>
@@ -246,17 +247,17 @@ class SpecimenForm extends React.Component {
           <>
             <SearchableDropdown
               name="candidateId"
-              label="PSCID"
+              label={this.props.t('PSCID', {ns: 'loris'})}
               options={candidates}
               onUserInput={this.setCurrent}
               required={true}
               value={candidateId}
-              placeHolder='Search for a PSCID'
+              placeHolder={this.props.t('Search for a PSCID', {ns: 'biobank'})}
               errorMessage={errors.specimen.candidateId}
             />
             <SelectElement
               name='sessionId'
-              label='Visit Label'
+              label={this.props.t('Visit Label', {ns: 'loris'})}
               options={mappedSessions}
               onUserInput={this.setSession}
               required={true}
@@ -283,14 +284,14 @@ class SpecimenForm extends React.Component {
             <>
               <TextboxElement
                 name="quantity"
-                label="Remaining Quantity"
+                label={this.props.t('Remaining Quantity', {ns: 'biobank'})}
                 onUserInput={this.props.setSpecimen}
                 required={true}
                 value={this.props.current.specimen.quantity}
               />
               <SelectElement
                 name="unitId"
-                label="Unit"
+                label={this.props.t('Unit', {ns: 'biobank'})}
                 options={specimenUnits}
                 onUserInput={this.props.setSpecimen}
                 required={true}
@@ -345,6 +346,7 @@ class SpecimenForm extends React.Component {
           listItem={{container: {}, collection: {}}}
         >
           <SpecimenBarcodeForm
+            t={this.props.t}
             typeId={current.typeId}
             options={options}
           />
@@ -362,14 +364,14 @@ class SpecimenForm extends React.Component {
         <div className='form-top'/>
         <ButtonElement
           name='generate'
-          label='Generate Barcodes'
+          label={this.props.t('Generate Barcodes', {ns: 'biobank'})}
           type='button'
           onUserInput={this.generateBarcodes}
           disabled={current.candidateId ? false : true}
         />
         <CheckboxElement
           name='printBarcodes'
-          label='Print Barcodes'
+          label={this.props.t('Print Barcodes', {ns: 'biobank'})}
           onUserInput={(name, value) => this.setState({[name]: value})}
           value={this.state.printBarcodes}
         />
@@ -380,6 +382,7 @@ class SpecimenForm extends React.Component {
 
 // SpecimenForm.propTypes
 SpecimenForm.propTypes = {
+  t: PropTypes.func.isRequired,
   // Parent prop: Array of parent objects containing specimen and container
   parent: PropTypes.arrayOf(
     PropTypes.shape({
@@ -589,7 +592,7 @@ class SpecimenBarcodeForm extends React.Component {
       <ListItem {...this.props}>
         <TextboxElement
           name='barcode'
-          label='Barcode'
+          label={this.props.t('Barcode', {ns: 'biobank'})}
           onUserInput={this.setContainer}
           required={true}
           value={item.container.barcode}
@@ -597,7 +600,7 @@ class SpecimenBarcodeForm extends React.Component {
         />
         <SelectElement
           name="typeId"
-          label="Specimen Type"
+          label={this.props.t('Specimen Type', {ns: 'biobank'})}
           options={renderSpecimenTypes()}
           onUserInput={this.setSpecimen}
           required={true}
@@ -606,7 +609,7 @@ class SpecimenBarcodeForm extends React.Component {
         />
         <SelectElement
           name="typeId"
-          label="Container Type"
+          label={this.props.t('Container Type', {ns: 'biobank'})}
           options={item.typeId ? validContainers : containerTypesPrimary}
           onUserInput={this.setContainer}
           required={true}
@@ -616,14 +619,14 @@ class SpecimenBarcodeForm extends React.Component {
         />
         <TextboxElement
           name='lotNumber'
-          label='Lot Number'
+          label={this.props.t('Lot Number', {ns: 'biobank'})}
           onUserInput={this.setContainer}
           value={item.container.lotNumber}
           errorMessage={(errors.container||{}).lotNumber}
         />
         <DateElement
           name='expirationDate'
-          label='Expiration Date'
+          label={this.props.t('Expiration Date', {ns: 'biobank'})}
           onUserInput={this.setContainer}
           value={item.container.expirationDate}
           errorMessage={(errors.container||{}).expirationDate}
@@ -644,6 +647,7 @@ class SpecimenBarcodeForm extends React.Component {
 
 // SpecimenBarcodeForm.propTypes
 SpecimenBarcodeForm.propTypes = {
+  t: PropTypes.func.isRequired,
   typeId: PropTypes.number,
   // Item prop: Contains container and specimen information
   item: PropTypes.shape({
@@ -688,4 +692,4 @@ SpecimenBarcodeForm.propTypes = {
   }).isRequired,
 };
 
-export default SpecimenForm;
+export default withTranslation(['biobank', 'loris'])(SpecimenForm);

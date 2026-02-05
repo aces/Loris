@@ -13,6 +13,12 @@ import {createRoot} from 'react-dom/client';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {CheckboxElement} from 'jsx/Form';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
+import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
 
 /**
  * Doc index component
@@ -171,44 +177,53 @@ class DocIndex extends React.Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const {t} = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'File Name':
+    case t('File Name', {ns: 'document_repository'}):
       let downloadURL = loris.BaseURL
                           + '/document_repository/Files/'
-                          + encodeURIComponent(row['Uploaded By'])
+                          + encodeURIComponent(row[t('Uploaded By',
+                            {ns: 'document_repository'})])
                           + '/'
-                          + encodeURIComponent(row['File Name']);
+                          + encodeURIComponent(row[t('File Name',
+                            {ns: 'document_repository'})]);
       result = <td>
         <a
           href={downloadURL}
           target="_blank"
-          download={encodeURIComponent(row['File Name'])}
+          download={encodeURIComponent(row[t('File Name',
+            {ns: 'document_repository'})])}
         >
           {cell}
         </a>
       </td>;
       break;
-    case 'Edit':
+    case t('Edit', {ns: 'document_repository'}):
       let editURL = loris.BaseURL
-                      + '/document_repository/edit/' + row['Edit'];
-      result = <td><a href={editURL}>Edit</a></td>;
+                      + '/document_repository/edit/'
+                      + row[t('Edit', {ns: 'document_repository'})];
+      result = <td><a href={editURL}>{t('Edit',
+        {ns: 'document_repository'})}</a></td>;
       break;
-    case 'Delete File':
-      let id = row['Edit'];
+    case t('Delete File', {ns: 'document_repository'}):
+      let id = row[t('Edit', {ns: 'document_repository'})];
 
       /**
        * Click
        */
       function click() {
         swal.fire({
-          title: 'Are you sure?',
-          text: 'You won\'t be able to revert this!',
+          title: t('Are you sure?', {ns: 'loris'}),
+          text: t('You won\'t be able to revert this!',
+            {ns: 'loris'}),
           type: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: t('Cancel', {ns: 'loris'}),
+          confirmButtonText: t('Yes, delete it!',
+            {ns: 'document_repository'}),
         }).then((result) => {
           if (result.value) {
             let deleteurl = loris.BaseURL + '/document_repository/Files/' + id;
@@ -219,14 +234,17 @@ class DocIndex extends React.Component {
             }).then((resp) => resp.json())
               .then(()=>{
                 location.reload();
-                swal.fire('delete Successful!', '', 'success');
+                swal.fire(t('Delete Successful!',
+                  {ns: 'document_repository'}), '', 'success');
               });
           }
         });
       }
 
       result = <td>
-        <a style={{cursor: 'pointer'}} onClick={click}>Delete</a>
+        <a style={{cursor: 'pointer'}} onClick={click}>
+          {t('Delete', {ns: 'document_repository'})}
+        </a>
       </td>;
       break;
     }
@@ -239,10 +257,12 @@ class DocIndex extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -253,51 +273,59 @@ class DocIndex extends React.Component {
       this.props.hasPermission('document_repository_upload_edit');
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'File Name', show: true, filter: {
+      {label: t('File Name',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'fileName',
         type: 'text',
       }},
-      {label: 'Version', show: true, filter: {
+      {label: t('Version',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'version',
         type: 'text',
       }},
-      {label: 'File Type', show: true, filter: {
+      {label: t('File Type',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'fileTypes',
         type: 'select',
         options: options.fileTypes,
       }},
-      {label: 'Instrument', show: false},
-      {label: 'Uploaded By', show: true, filter: {
+      {label: t('Instrument',
+        {ns: 'loris', count: 1}), show: false},
+      {label: t('Uploaded By',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
       }},
-      {label: 'For Site', show: true, filter: {
+      {label: t('For Site',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
-      {label: 'Comments', show: true, filter: {
+      {label: t('Comments',
+        {ns: 'document_repository'}), show: true, filter: {
         name: 'Comments',
         type: 'text',
       }},
-      {label: 'Date Uploaded', show: true},
+      {label: t('Date Uploaded',
+        {ns: 'document_repository'}), show: true},
       {
-        label: 'Edit',
+        label: t('Edit', {ns: 'document_repository'}),
         show: this.props.hasPermission('superUser')
         || uploadEditPerm,
       },
       {
-        label: 'Delete File',
+        label: t('Delete File', {ns: 'document_repository'}),
         show: this.props.hasPermission('superUser')
           || this.props.hasPermission('document_repository_delete'),
       },
-      {label: 'File Category', show: false},
-      {label: 'Category', show: false},
-      {label: 'Data Dir', show: false},
+      {label: t('File Category', {ns: 'document_repository'}), show: false},
+      {label: t('Category', {ns: 'document_repository'}), show: false},
+      {label: t('Data Dir', {ns: 'document_repository'}), show: false},
     ];
 
     let tabList = [
-      {id: 'browse', label: 'Browse'},
+      {id: 'browse', label: t('Browse', {ns: 'loris'})},
     ];
     let uploadDoc;
     let uploadCategory;
@@ -307,7 +335,7 @@ class DocIndex extends React.Component {
       tabList.push(
         {
           id: 'upload',
-          label: 'Upload',
+          label: t('Upload', {ns: 'loris'}),
         },
       );
 
@@ -327,15 +355,15 @@ class DocIndex extends React.Component {
       tabList.push(
         {
           id: 'addCategory',
-          label: 'Add Category',
+          label: t('Add Category', {ns: 'document_repository'}),
         },
         {
           id: 'editCategory',
-          label: 'Edit Category',
+          label: t('Edit Category', {ns: 'document_repository'}),
         },
         {
           id: 'deleteCategory',
-          label: 'Delete Category',
+          label: t('Delete Category', {ns: 'document_repository'}),
         },
       );
 
@@ -388,7 +416,7 @@ class DocIndex extends React.Component {
           <div>
             <CheckboxElement
               name="globalSelection"
-              label="Filter globally"
+              label={t('Filter globally', {ns: 'document_repository'})}
               id="globalSelection"
               value={this.state.global}
               offset=''
@@ -415,7 +443,7 @@ class DocIndex extends React.Component {
         <div>
           <CheckboxElement
             name="globalSelection"
-            label="Filter globally"
+            label={t('Filter globally', {ns: 'document_repository'})}
             id="globalSelection"
             value={this.state.global}
             offset=''
@@ -455,14 +483,22 @@ class DocIndex extends React.Component {
 DocIndex.propTypes = {
   dataURL: PropTypes.string,
   hasPermission: PropTypes.func,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'document_repository', hiStrings);
+  i18n.addResourceBundle('ja', 'document_repository', jaStrings);
+  i18n.addResourceBundle('fr', 'document_repository', frStrings);
+
+  const TranslatedDocIndex = withTranslation(
+    ['document_repository', 'loris'])(DocIndex);
+
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
     <div className="page-document">
-      <DocIndex
+      <TranslatedDocIndex
         dataURL={`${loris.BaseURL}/document_repository/?format=json`}
         hasPermission={loris.userHasPermission}
       />

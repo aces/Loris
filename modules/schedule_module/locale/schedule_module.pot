@@ -20,3 +20,90 @@ msgstr ""
 
 msgid "Schedule Appointment"
 msgstr ""
+
+msgid "Appointment Date"
+msgstr ""
+
+msgid "Appointment Time"
+msgstr ""
+
+msgid "Appointment Type"
+msgstr ""
+
+msgid "AppointmentTypeName"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Data Entry Status"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "No Data Found"
+msgstr ""
+
+msgid "Not Started"
+msgstr ""
+
+msgid "Edit Appointment"
+msgstr ""
+
+msgid "Create Appointment"
+msgstr ""
+
+msgid "Add Appointment"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Past"
+msgstr ""
+
+msgid "Next 30 Days"
+msgstr ""
+
+msgid "Today"
+msgstr ""
+
+msgid "Appointment modified."
+msgstr ""
+
+msgid "Appointment added."
+msgstr ""
+
+msgid "Success!"
+msgstr ""
+
+msgid "No changes were made!"
+msgstr ""
+
+msgid "You won't be able to revert this!"
+msgstr ""
+
+msgid "Yes, delete it!"
+msgstr ""
+
+msgid "Deleted!"
+msgstr ""
+
+msgid "Your appointment has been deleted."
+msgstr ""
+
+msgid "Starts At"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Appointment Type Name"
+msgstr ""

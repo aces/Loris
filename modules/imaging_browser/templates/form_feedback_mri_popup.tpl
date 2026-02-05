@@ -6,25 +6,25 @@
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="{$baseurl|default}/images/mni_icon.ico" type="image/ico" />
 
-<title>DCC MRI Quality Control</title>
+<title>{dgettext("imaging_browser","DCC MRI Quality Control")}</title>
 </head>
 <body>
 {section name=error loop=$error_message}
 {$error_message[error]}<br />
 {/section}
 
-<p><a href="javascript:window.close()">Click here to close this window</a></p>
+<p><a href="javascript:window.close()">{dgettext("imaging_browser","Click here to close this window")}</a></p>
 
 <div>
 
 {if $saved|default}
-<p>Comments saved.</p>
+<p>{dgettext("imaging_browser","Comments saved")}</p>
 {/if}
 
 <table cellpadding="2" class="table table-hover table-bordered dynamictable">
 {section name=data loop=$identifier}
     <tr>
-        <th style="text-align:left">{$identifier[data].name}:</th>
+        <th style="text-align:left">{dgettext("loris",$identifier[data].name)}:</th>
         <td style="text-align:left">{$identifier[data].value}</td>
     </tr>
 {/section}
@@ -82,7 +82,7 @@
 {/foreach}
 
 {if $has_permission}
-<input type="submit" name="fire_away" value="Save">
+<input type="submit" name="fire_away" value="{dgettext('loris','Save')}">
 </form>
 {/if}
 

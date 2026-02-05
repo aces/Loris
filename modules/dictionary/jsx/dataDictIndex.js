@@ -11,6 +11,7 @@ import swal from 'sweetalert2';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/dictionary.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dictionary.json';
+import frStrings from '../locale/fr/LC_MESSAGES/dictionary.json';
 
 /**
  * Data Dictionary Page.
@@ -292,9 +293,9 @@ class DataDictIndex extends Component {
           name: 'datascope',
           type: 'select',
           options: {
-            'candidate': t('Candidate', {ns: 'loris'}),
-            'session': t('Session', {ns: 'loris'}),
-            'project': t('Project', {ns: 'loris'}),
+            'candidate': t('Candidate', {ns: 'loris', count: 1}),
+            'session': t('Session', {ns: 'loris', count: 1}),
+            'project': t('Project', {ns: 'loris', count: 1}),
           },
         },
       },
@@ -359,6 +360,7 @@ DataDictIndex.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'dictionary', jaStrings);
   i18n.addResourceBundle('hi', 'dictionary', hiStrings);
+  i18n.addResourceBundle('fr', 'dictionary', frStrings);
   const Index = withTranslation(
     ['dictionary', 'loris']
   )(DataDictIndex);

@@ -7,6 +7,7 @@ import {
   SelectElement,
   NumericElement,
 } from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Battery Manager Form
@@ -22,27 +23,42 @@ class BatteryManagerForm extends Component {
    * @return {*}
    */
   render() {
-    const {test, options, setTest, add, errors, handleSubmit} = this.props;
+    const {test, options, setTest, add, errors, handleSubmit, t} = this.props;
 
     // Inform users about duplicate entries
     const renderHelpText = () => {
       if (add) {
         return (
           <span>
-            You cannot add an entry if it has a duplicate entry in the test
-            battery.<br/>
-            If the duplicate entry is inactive, you will be given the option
-            to activate it.
+            {t(
+              'You cannot add an entry if it has a duplicate entry in the ' +
+              'test battery.',
+              {ns: 'battery_manager'}
+            )}<br/>
+            {t(
+              'If the duplicate entry is inactive, you will be given the ' +
+              'option to activate it.',
+              {ns: 'battery_manager'}
+            )}
           </span>
         );
       } else {
         return (
           <span>
-             Editing an entry will alter the current entry.<br/>
-             You cannot edit an entry to have the same values as another active
-             entry.<br/>
-             If the duplicate entry is inactive, you will be given the option
-             to active it.
+            {t(
+              'Editing an entry will alter the current entry.',
+              {ns: 'battery_manager'}
+            )}<br/>
+            {t(
+              'You cannot edit an entry to have the same values as another ' +
+              'active entry.',
+              {ns: 'battery_manager'}
+            )}<br/>
+            {t(
+              'If the duplicate entry is inactive, you will be given the ' +
+              'option to activate it.',
+              {ns: 'battery_manager'}
+            )}
             <br/>
             <br/>
           </span>
@@ -56,13 +72,13 @@ class BatteryManagerForm extends Component {
         onSubmit={handleSubmit}
       >
         <StaticElement
-          label="Note"
+          label={t('Note', {ns: 'loris'})}
           text={renderHelpText()}
         />
         <SelectElement
           name="testName"
-          label="Instrument"
-          placeHolder="Search for instrument"
+          label={t('Instrument', {ns: 'battery_manager'})}
+          placeHolder={t('Search for instrument', {ns: 'battery_manager'})}
           options={options.instruments}
           onUserInput={setTest}
           required={true}
@@ -71,27 +87,27 @@ class BatteryManagerForm extends Component {
         />
         <NumericElement
           name="ageMinDays"
-          label="Minimum age (days)"
+          label={t('Minimum Age (days)', {ns: 'battery_manager'})}
           onUserInput={setTest}
           min={0}
           max={99999}
           required={true}
-          value={test.ageMinDays}
+          value={test.ageMinDays != null ? String(test.ageMinDays) : ''}
           errorMessage={errors.ageMinDays}
         />
         <NumericElement
           name="ageMaxDays"
-          label="Maximum age (days)"
+          label={t('Maximum Age (days)', {ns: 'battery_manager'})}
           onUserInput={setTest}
           min={0}
           max={99999}
           required={true}
-          value={test.ageMaxDays}
+          value={test.ageMaxDays != null ? String(test.ageMaxDays) : ''}
           errorMessage={errors.ageMaxDays}
         />
         <SelectElement
           name="stage"
-          label="Stage"
+          label={t('Stage', {ns: 'battery_manager'})}
           options={options.stages}
           onUserInput={setTest}
           required={true}
@@ -100,7 +116,7 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="cohort"
-          label="Cohort"
+          label={t('Cohort', {ns: 'loris', count: 1})}
           options={options.cohorts}
           onUserInput={setTest}
           required={false}
@@ -108,7 +124,7 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="visitLabel"
-          label="Visit Label"
+          label={t('Visit Label', {ns: 'loris'})}
           options={options.visits}
           onUserInput={setTest}
           required={false}
@@ -116,8 +132,8 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="centerId"
-          label="Site"
-          placeHolder="Search for site"
+          label={t('Site', {ns: 'loris', count: 1})}
+          placeHolder={t('Search for site', {ns: 'battery_manager'})}
           options={options.sites}
           strictSearch={true}
           onUserInput={setTest}
@@ -126,15 +142,18 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="firstVisit"
-          label="First Visit"
-          options={options.firstVisit}
+          label={t('First Visit', {ns: 'battery_manager'})}
+          options={{
+            'Y': t('Yes', {ns: 'loris'}),
+            'N': t('No', {ns: 'loris'}),
+          }}
           onUserInput={setTest}
           required={false}
           value={test.firstVisit}
         />
         <NumericElement
           name="instrumentOrder"
-          label="Instrument Order"
+          label={t('Instrument Order', {ns: 'battery_manager'})}
           onUserInput={setTest}
           required={false}
           min={0}
@@ -143,15 +162,19 @@ class BatteryManagerForm extends Component {
         />
         <SelectElement
           name="DoubleDataEntryEnabled"
-          label="Enable Double Data Entry"
-          options={options.DoubleDataEntryEnabled}
+          label={t('Enable Double Data Entry', {ns: 'battery_manager'})}
+          options={{
+            'Y': t('Yes', {ns: 'loris'}),
+            'N': t('No', {ns: 'loris'}),
+          }}
           onUserInput={setTest}
           required={true}
           value={test.DoubleDataEntryEnabled}
+          errorMessage={errors.DoubleDataEntryEnabled}
           emptyOption={false}
         />
         <ButtonElement
-          label="Submit"
+          label={t('Submit', {ns: 'battery_manager'})}
         />
       </FormElement>
     );
@@ -165,6 +188,8 @@ BatteryManagerForm.propTypes = {
   add: PropTypes.bool,
   errors: PropTypes.object,
   handleSubmit: PropTypes.func.isRequired,
+  t: PropTypes.func,
 };
 
-export default BatteryManagerForm;
+export default withTranslation(
+  ['battery_manager', 'loris'])(BatteryManagerForm);

@@ -1,0 +1,148 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Imaging Uploader"
+msgstr "इमेजिंग अपलोडर"
+
+msgid "Upload an imaging scan"
+msgstr "इमेजिंग स्कैन अपलोड करें"
+
+msgid "Phantom Scans"
+msgstr "फैंटम स्कैन"
+
+msgid "File to Upload"
+msgstr "अपलोड करने के लिए फ़ाइल"
+
+msgid "Notes"
+msgstr "नोट्स"
+
+msgid "File cannot exceed {{maxUploadSize}}"
+msgstr "फ़ाइल इससे अधिक नहीं हो सकती {{maxUploadSize}}"
+
+msgid "File must be of type .tgz or tar.gz or .zip"
+msgstr "फ़ाइल का प्रकार .tgz, .tar.gz या .zip होना चाहिए"
+
+msgid "For files that are not Phantom Scans, file name must begin with"
+msgstr "जो फाइलें फैंटम स्कैन नहीं हैं, उनका नाम इससे शुरू होना चाहिए"
+
+msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
+msgstr "उदाहरण के लिए, DCCID {{dccid}}, PSCID {{pscid}}, और विजिट लेबल {{visitLabel}} के लिए फ़ाइल नाम की शुरुआत इससे होनी चाहिए: {{prefix}}"
+
+msgid "The file {{fileName}} must be of type .tgz, .tar.gz or .zip."
+msgstr "फ़ाइल {{fileName}} का प्रकार .tgz, .tar.gz या .zip होना चाहिए।"
+
+msgid "Invalid extension for the uploaded file!"
+msgstr "अपलोड की गई फ़ाइल के लिए एक्सटेंशन अमान्य है!"
+
+msgid "Filename extension does not match .zip, .tgz or .tar.gz "
+msgstr "फ़ाइल नाम एक्सटेंशन .zip, .tgz या .tar.gz से मेल नहीं खाता"
+
+msgid "Incorrect file name!"
+msgstr "अमान्य फ़ाइल नाम!"
+
+msgid "Could not determine PSCID, DCCID and Visit Label based on the filename!"
+msgstr "फ़ाइल नाम के आधार पर PSCID, DCCID और Visit Label निर्धारित नहीं किया जा सका!"
+
+msgid "File already exists!"
+msgstr "फ़ाइल पहले से मौजूद है!"
+
+msgid "A file with this name has already successfully passed the MRI pipeline!"
+msgstr "इस नाम की फ़ाइल पहले ही MRI पाइपलाइन से सफलतापूर्वक गुजर चुकी है!"
+
+msgid "File is currently processing!"
+msgstr "फ़ाइल वर्तमान में प्रोसेस हो रही है!"
+
+msgid "A file with this name is currently going through the MRI pipeline!"
+msgstr "इस नाम की फ़ाइल वर्तमान में MRI पाइपलाइन से गुजर रही है!"
+
+msgid "A file with this name already exists! Would you like to overwrite the existing file?"
+msgstr "इस नाम की फ़ाइल पहले से मौजूद है! क्या आप मौजूदा फ़ाइल को अधिलेखित करना चाहेंगे?"
+
+msgid "Cancelled"
+msgstr "रद्द किया गया"
+
+msgid "Your upload has been cancelled."
+msgstr "आपका अपलोड रद्द कर दिया गया है।"
+
+msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
+msgstr "इस नाम की फ़ाइल अपलोड की गई है लेकिन अभी MRI पाइपलाइन द्वारा प्रोसेस नहीं हुई है। क्या आप मौजूदा फ़ाइल को अधिलेखित करना चाहेंगे?"
+
+msgid "Upload Successful!"
+msgstr "अपलोड सफल!"
+
+msgid "Processing of this file by the MRI pipeline has started"
+msgstr "इस फ़ाइल का MRI पाइपलाइन द्वारा प्रोसेसिंग शुरू हो गई है"
+
+msgid "Select this upload in the result table to view the processing progress"
+msgstr "प्रोसेसिंग प्रगति देखने के लिए परिणाम तालिका में इस अपलोड का चयन करें"
+
+msgid "Upload failed: a network error occured"
+msgstr "अपलोड विफल: नेटवर्क त्रुटि हुई"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "कृपया सुनिश्चित करें कि फ़ाइलें {{maxFileSize}} से बड़ी न हों"
+
+msgid "Upload failed: received HTTP response code"
+msgstr "अपलोड विफल: HTTP प्रतिक्रिया कोड प्राप्त हुआ"
+
+msgid "Submission error!"
+msgstr "सबमिशन त्रुटि!"
+
+msgid "Log Viewer"
+msgstr "लॉग व्यूअर"
+
+msgid "Logs to display"
+msgstr "दिखाने के लिए लॉग्स"
+
+msgid "Summary"
+msgstr "सारांश"
+
+msgid "Detailed"
+msgstr "विस्तृत"
+
+msgid "<select a row in the table below to view the upload logs>"
+msgstr "<अपलोड लॉग देखने के लिए नीचे तालिका में एक पंक्ति चुनें>"
+
+msgid "Number Of Files Created"
+msgstr "बनाई गई फ़ाइलों की संख्या"
+
+msgid "Number Of Files Inserted"
+msgstr "डाली गई फ़ाइलों की संख्या"
+
+msgid "{{successText}} ({{inserted}} out of {{created}})"
+msgstr "{{successText}} ({{created}} में से {{inserted}})"
+
+msgid "{{numViolatedScans}} violated scans"
+msgstr "{{numViolatedScans}} उल्लंघन स्कैन"
+
+msgid "Tarchive Info"
+msgstr "टीआर्काइव जानकारी"
+
+msgid "Upload ID"
+msgstr "अपलोड आईडी"
+
+msgid "Upload Location"
+msgstr "अपलोड स्थान"
+
+msgid "Upload Date"
+msgstr "अपलोड की तिथि"
+
+msgid "Uploaded By"
+msgstr "द्वारा अपलोड किया गया"

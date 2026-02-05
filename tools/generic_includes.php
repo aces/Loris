@@ -21,27 +21,30 @@ set_include_path(
 // TODO: Remove this code once PHP 8.4 becomes the minimal PHP version in LORIS.
 if (version_compare(PHP_VERSION, '8.4', '<')) {
     // phpcs:ignore
-    function array_any(array $array, callable $callback): bool
-    {
-        foreach ($array as $key => $value) {
-            if ($callback($value, $key)) {
-                return true;
+    if (!function_exists('array_any')) {
+        // phpcs:ignore
+        function array_any(array $array, callable $callback): bool
+        {
+            foreach ($array as $key => $value) {
+                if ($callback($value, $key)) {
+                    return true;
+                }
             }
+            return false;
         }
-
-        return false;
     }
-
     // phpcs:ignore
-    function array_find(array $array, callable $callback)
-    {
-        foreach ($array as $key => $value) {
-            if ($callback($value, $key)) {
-                return $value;
+    if (!function_exists('array_find')) {
+        // phpcs:ignore
+        function array_find(array $array, callable $callback)
+        {
+            foreach ($array as $key => $value) {
+                if ($callback($value, $key)) {
+                    return $value;
+                }
             }
+            return null;
         }
-
-        return null;
     }
 }
 

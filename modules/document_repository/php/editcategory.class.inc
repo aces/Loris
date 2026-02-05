@@ -40,7 +40,7 @@ class EditCategory extends \NDB_Page
         return ($user->hasPermission('document_repository_categories')
             && $user->hasAnyPermission(
                 [
-                    'document_repository_upload',
+                    'document_repository_upload_edit',
                     'document_repository_delete',
                 ]
             )

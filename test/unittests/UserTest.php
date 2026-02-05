@@ -60,6 +60,7 @@ class UserTest extends TestCase
             'Active'                 => 'Y',
             'Password_hash'          => null,
             'PasswordChangeRequired' => 0,
+            'TOTPSecret'             => null,
             'Pending_approval'       => 'Y',
             'Doc_Repo_Notifications' => 'Y',
             'language_preference'    => 2,
@@ -1169,7 +1170,15 @@ class UserTest extends TestCase
         $this->assertEquals(
             $this->_user->getPermissionsVerbose($loris),
             [
-                0 => ['permID' => '2',
+                0 => ['permID' => '1',
+                    'code'        => "superuser",
+                    'description' => "superuser description",
+                    'type'        => "superuser category",
+                    'action'      => null,
+                    'moduleID'    => null,
+                    'label'       => "superuser description"
+                ],
+                1 => ['permID' => '2',
                     'code'        => "test_permission",
                     'description' => "description 1",
                     'type'        => "category 1",
@@ -1177,7 +1186,7 @@ class UserTest extends TestCase
                     'moduleID'    => '2',
                     'label'       => "Access Profile: View description 1"
                 ],
-                1 => ['permID' => '3',
+                2 => ['permID' => '3',
                     'code'        => "test_permission2",
                     'description' => "description 2",
                     'type'        => "category 2",
@@ -1185,7 +1194,7 @@ class UserTest extends TestCase
                     'moduleID'    => '5',
                     'label'       => "Timepoint List: Edit description 2"
                 ],
-                2 => ['permID' => '4',
+                3 => ['permID' => '4',
                     'code'        => 'test_permission3',
                     'description' => 'description 3',
                     'type'        => null,

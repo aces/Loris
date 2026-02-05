@@ -17,6 +17,7 @@ import {
 
 import esStrings from '../locale/es/LC_MESSAGES/create_timepoint.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/create_timepoint.json';
+import frStrings from '../locale/fr/LC_MESSAGES/create_timepoint.json';
 
 /**
  * Create Timepoint.
@@ -374,7 +375,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'cohort'}
         name={'cohort'}
-        label={t('Cohort', {ns: 'loris'})}
+        label={t('Cohort', {ns: 'loris', count: 1})}
         value={this.state.form.value.cohort}
         options={this.state.form.options.cohort}
         onUserInput={this.setForm}
@@ -389,7 +390,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'psc'}
         name={'psc'}
-        label={t('Site', {ns: 'loris'})}
+        label={t('Site', {ns: 'loris', count: 1})}
         value={this.state.form.value.psc}
         options={this.state.form.options.psc}
         onUserInput={this.setForm}
@@ -404,7 +405,7 @@ class CreateTimepoint extends React.Component {
       <SelectElement
         id={'project'}
         name={'project'}
-        label={t('Project', {ns: 'loris'})}
+        label={t('Project', {ns: 'loris', count: 1})}
         value={this.state.form.value.project}
         options={this.state.form.options.project}
         onUserInput={this.setForm}
@@ -485,6 +486,7 @@ CreateTimepoint.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('es', 'create_timepoint', esStrings);
   i18n.addResourceBundle('ja', 'create_timepoint', jaStrings);
+  i18n.addResourceBundle('fr', 'create_timepoint', frStrings);
 
   const TranslatedCreateTimepoint = withTranslation(
     ['create_timepoint', 'loris']

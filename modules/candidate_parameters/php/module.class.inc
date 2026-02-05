@@ -81,7 +81,7 @@ class Module extends \Module
 
             return [
                 new CandidateWidget(
-                    "Consent Summary",
+                    dgettext("candidate_parameters", "Consent Summary"),
                     $baseurl . "/candidate_parameters/js/ConsentWidget.js",
                     "lorisjs.candidate_parameters.ConsentWidget.default",
                     [
@@ -210,10 +210,10 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return \LORIS\Data\Query\QueryEngine
+     * @return \LORIS\Data\Query\QueryEngine[]
      */
-    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    public function getQueryEngines() : iterable
     {
-        return new CandidateQueryEngine($this->loris);
+        return [new CandidateQueryEngine($this->loris)];
     }
 }

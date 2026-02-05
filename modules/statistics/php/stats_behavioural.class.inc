@@ -167,7 +167,7 @@ class Stats_Behavioural extends \NDB_Form
             }
             $Visits = \Utility::getVisitList($currentProject);
         } else {
-            $Visits = \Utility::getVisitList();
+            $Visits = $user->getVisits();
         }
 
         $this->tpl_data['Visits'] = $Visits ?? '';

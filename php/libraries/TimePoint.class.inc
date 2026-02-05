@@ -146,12 +146,15 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
                          s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
                          pr.Name as ProjectName, p.Alias as SiteAlias,
-                         s.ProjectID as ProjectID
+			 s.ProjectID as ProjectID,
+                         l.language_code as LanguageCode,
+                         l.language_label as LanguageLabel
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                         LEFT JOIN Project AS pr USING(ProjectID)
                         LEFT JOIN candidate AS c ON (s.CandidateID=c.ID)
+                        LEFT JOIN language l ON (s.languageID=l.language_id)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
         $row   = $db->pselectRow(
             $query,
@@ -171,10 +174,17 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         // store user data in object property
         if (is_array($row) && count($row) > 0) {
             $this->_timePointInfo = $row;
-            $cohortSettings       = $config->getCohortSettings(
+            if (isset($row['LanguageCode'])) {
+                $this->_timePointInfo['Language'] = new \Language(
+                    $row['LanguageLabel'],
+                    $row['LanguageCode']
+                );
+            }
+            unset($row['language_code'], $row['language_label']);
+            $cohortSettings = $config->getCohortSettings(
                 intval($row['CohortID'] ?? null)
             );
-            $title = $cohortSettings['title'] ?? '';
+            $title          = $cohortSettings['title'] ?? '';
             $this->_timePointInfo['CohortTitle'] = $title;
 
             $this->_timePointInfo['CandID']
@@ -349,9 +359,32 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         //If the visitLabel is already in use then let the user pick another
         foreach ($timePointArray AS $used_name) {
             if (strcasecmp($visitName, $used_name) == 0) {
-                throw new \LorisException(
-                    dgettext("create_timepoint", "This visit label is not unique.")
+                // Get project name
+                $project     = \Project::getProjectFromID($projectID);
+                $projectName = $project->getName();
+
+                // Get cohort title
+                $factory        = \NDB_Factory::singleton();
+                $config         = $factory->config();
+                $cohortSettings = $config->getCohortSettings($cohortID);
+                $cohortTitle    = $cohortSettings['title'] ?? 'Unknown';
+
+                // Get participant PSCID
+                $pscid = $candidate->getPSCID();
+
+                $message = sprintf(
+                    dgettext(
+                        "create_timepoint",
+                        "A timepoint with these conditions (%s, %s, %s, %s) "
+                            . "already exists."
+                    ),
+                    $pscid,
+                    $projectName,
+                    $cohortTitle,
+                    $visitName
                 );
+
+                throw new \LorisException($message);
             }
         }
     }
@@ -1385,6 +1418,20 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
         $centerMatch = in_array($this->getCenterID(), $centers);
         return $projMatch && $centerMatch;
+    }
+
+    /**
+     * Get the language for this timepoint.
+     *
+     * @return \Language
+     */
+    public function getLanguage() : \Language
+    {
+        $lang = $this->getData('Language');
+        if ($lang === null) {
+            return new \Language("Unknown", "en_CA");
+        }
+        return $lang;
     }
 }
 

@@ -2,6 +2,7 @@ import ProgressBar from 'ProgressBar';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
+import {withTranslation, Trans} from 'react-i18next';
 import {
   FormElement,
   SelectElement,
@@ -39,6 +40,7 @@ class UploadForm extends Component {
     this.onFormChange = this.onFormChange.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
+    this.processError = this.processError.bind(this);
   }
 
   /**
@@ -129,6 +131,7 @@ class UploadForm extends Component {
    * Submit form
    */
   submitForm() {
+    const {t} = this.props;
     // Validate required fields
     const data = this.state.formData;
 
@@ -141,16 +144,19 @@ class UploadForm extends Component {
     const properExt = new RegExp('\.(zip|tgz|tar\.gz)$');
     if (!fileName.match(properExt)) {
       swal.fire({
-        title: 'Invalid extension for the uploaded file!',
-        text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
+        title: t('Invalid extension for the uploaded file!',
+          {ns: 'imaging_uploader'}),
+        text: t('Filename extension does not match .zip, .tgz or .tar.gz ',
+          {ns: 'imaging_uploader'}),
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
 
       let errorMessage = {
-        mriFile: 'The file '
-                 + fileName
-                 + ' must be of type .tgz, .tar.gz or .zip.',
+        mriFile: t(
+          'The file {{fileName}} must be of type .tgz, .tar.gz or .zip.',
+          {ns: 'imaging_uploader', fileName: fileName}
+        ),
         candID: undefined,
         pSCID: undefined,
         visitLabel: undefined,
@@ -163,11 +169,11 @@ class UploadForm extends Component {
     if (data.IsPhantom === 'N') {
       if (!data.candID || !data.pSCID || !data.visitLabel) {
         swal.fire({
-          title: 'Incorrect file name!',
-          text: 'Could not determine PSCID, CandID and Visit Label '
-                + 'based on the filename!\n',
+          title: t('Incorrect file name!', {ns: 'imaging_uploader'}),
+          text: t('Could not determine PSCID, DCCID and Visit Label'
+            +' based on the filename!', {ns: 'imaging_uploader'}),
           type: 'error',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('OK', {ns: 'loris'}),
         });
         return;
       }
@@ -187,11 +193,12 @@ class UploadForm extends Component {
     // File uploaded and completed mri pipeline
     if (mriFile.status === 'Success') {
       swal.fire({
-        title: 'File already exists!',
-        text: 'A file with this name has already successfully passed '
-              + 'the MRI pipeline!\n',
+        title: t('File already exists!', {ns: 'imaging_uploader'}),
+        text: t('A file with this name has already successfully'
+          +' passed the MRI pipeline!',
+        {ns: 'imaging_uploader'}),
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       return;
     }
@@ -199,11 +206,12 @@ class UploadForm extends Component {
     // File in the middle of insertion pipeline
     if (mriFile.status === 'In Progress...') {
       swal.fire({
-        title: 'File is currently processing!',
-        text: 'A file with this name is currently going through '
-              + 'the MRI pipeline!\n',
+        title: t('File is currently processing!', {ns: 'imaging_uploader'}),
+        text: t('A file with this name is currently going'
+          +' through the MRI pipeline!',
+        {ns: 'imaging_uploader'}),
         type: 'error',
-        confirmButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       return;
     }
@@ -211,18 +219,26 @@ class UploadForm extends Component {
     // File uploaded but failed during mri pipeline
     if (mriFile.status === 'Failure') {
       swal.fire({
-        title: 'Are you sure?',
-        text: 'A file with this name already exists!\n '
-              + 'Would you like to overwrite the existing file?',
+        title: t('Are you sure?', {ns: 'loris'}),
+        text: t('A file with this name already exists! '
+          + 'Would you like to overwrite the existing file?',
+        {ns: 'imaging_uploader'}),
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes, I am sure!',
-        cancelButtonText: 'No, cancel it!',
+        confirmButtonText: t('Yes, I am sure!',
+          {ns: 'loris'}),
+        cancelButtonText: t('No, cancel it!',
+          {ns: 'loris'}),
       }).then((result) => {
         if (result.value) {
           this.uploadFile(true);
         } else {
-          swal.fire('Cancelled', 'Your upload has been cancelled.', 'error');
+          swal.fire(
+            t('Cancelled', {ns: 'imaging_uploader'}),
+            t('Your upload has been cancelled.',
+              {ns: 'imaging_uploader'}),
+            'error'
+          );
         }
       });
     }
@@ -230,19 +246,27 @@ class UploadForm extends Component {
     // Pipeline has not been triggered yet
     if (mriFile.status === 'Not Started') {
       swal.fire({
-        title: 'Are you sure?',
-        text: 'A file with this name has been uploaded '
-              + 'but has not yet been processed by the MRI pipeline.\n '
-              + 'Would you like to overwrite the existing file?',
+        title: t('Are you sure?', {ns: 'loris'}),
+        text: t('A file with this name has been uploaded but has'+
+          ' not yet been processed by the MRI pipeline.' +
+          ' Would you like to overwrite the existing file?',
+        {ns: 'imaging_uploader'}),
         type: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes, I am sure!',
-        cancelButtonText: 'No, cancel it!',
+        confirmButtonText: t('Yes, I am sure!',
+          {ns: 'loris'}),
+        cancelButtonText: t('No, cancel it!',
+          {ns: 'loris'}),
       }).then((result) => {
         if (result.value) {
           this.uploadFile(true);
         } else {
-          swal.fire('Cancelled', 'Your upload has been cancelled.', 'error');
+          swal.fire(
+            t('Cancelled', {ns: 'imaging_uploader'}),
+            t('Your upload has been cancelled.',
+              {ns: 'imaging_uploader'}),
+            'error'
+          );
         }
       });
     }
@@ -257,6 +281,7 @@ class UploadForm extends Component {
    * @param {boolean} overwriteFile
    */
   uploadFile(overwriteFile) {
+    const {t} = this.props;
     const formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
@@ -294,15 +319,18 @@ class UploadForm extends Component {
         if (this.props.imagingUploaderAutoLaunch === 'true' ||
             this.props.imagingUploaderAutoLaunch === '1'
         ) {
-          text = 'Processing of this file by the MRI pipeline has started\n'
-                + 'Select this upload in the result table '
-                + 'to view the processing progress';
+          text =
+          t('Processing of this file by the MRI pipeline has started',
+            {ns: 'imaging_uploader'}) + '\n'
+                + t('Select this upload in the result table'+
+                  ' to view the processing progress',
+                {ns: 'imaging_uploader'});
         }
         swal.fire({
-          title: 'Upload Successful!',
+          title: t('Upload Successful!', {ns: 'imaging_uploader'}),
           text: text,
           type: 'success',
-          confirmButtonText: 'OK',
+          confirmButtonText: t('OK', {ns: 'loris'}),
         }).then((result) => {
           window.location.assign(loris.BaseURL + '/imaging_uploader/');
         });
@@ -325,6 +353,7 @@ class UploadForm extends Component {
    * @param {XMLHttpRequest} xhr - XMLHttpRequest
    */
   processError(xhr) {
+    const {t} = this.props;
     // Upon errors in upload:
     // - Displays pop up window with submission error message
     // - Updates errorMessage so relevant errors are displayed on form
@@ -341,20 +370,23 @@ class UploadForm extends Component {
       }
     } else if (xhr.status == 0) {
       errorMessage = {
-        'mriFile': ['Upload failed: a network error occured'],
+        'mriFile': [t('Upload failed: a network error occured',
+          {ns: 'imaging_uploader'})],
       };
     } else if (xhr.status == 413) {
       errorMessage = {
         'mriFile': [
-          'Please make sure files are not larger than '
-          + this.props.maxUploadSize,
+          t(
+            'Please make sure files are not larger than {{maxFileSize}}',
+            {ns: 'imaging_uploader', maxFileSize: this.props.maxUploadSize}
+          ),
         ],
       };
     } else {
       errorMessage = {
         'mriFile': [
-          'Upload failed: received HTTP response code '
-          + xhr.status,
+          t('Upload failed: received HTTP response code {{code}}',
+            {ns: 'imaging_uploader', code: xhr.status}),
         ],
       };
     }
@@ -367,7 +399,7 @@ class UploadForm extends Component {
       }
     }
     swal.fire({
-      title: 'Submission error!',
+      title: t('Submission error!', {ns: 'imaging_uploader'}),
       text: messageToPrint,
       type: 'error',
     });
@@ -383,6 +415,7 @@ class UploadForm extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Bind form elements to formData
     const form = this.state.form;
     form.IsPhantom.value = this.state.formData.IsPhantom;
@@ -398,13 +431,30 @@ class UploadForm extends Component {
 
     const notes = (
       <span>
-          File cannot exceed {this.props.maxUploadSize}<br/>
-          File must be of type .tgz or tar.gz or .zip<br/>
-          For files that are not Phantom Scans, file name must begin with
-        <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
-          For example, for CandID <i>100000</i>, PSCID <i>ABC123</i>, and
-          Visit Label <i>V1</i> the file name should be prefixed by:
-        <b> ABC123_100000_V1</b><br/>
+        {t('File cannot exceed {{maxUploadSize}}',
+          {ns: 'imaging_uploader', maxUploadSize: this.props.maxUploadSize}
+        )}<br/>
+        {t('File must be of type .tgz or tar.gz or .zip',
+          {ns: 'imaging_uploader'})}<br/>
+        <Trans
+          ns="imaging_uploader"
+          defaults={'For files that are not Phantom Scans, '
+            + 'file name must begin with <0>{{prefix}}</0>'}
+          components={[<b/>]}
+          values={{prefix: '[PSCID]_[CandID]_[Visit Label]'}}
+        /><br/>
+        {t(
+          `For example, for DCCID {{dccid}}, PSCID {{pscid}}, ` +
+          `and Visit Label {{visitLabel}} ` +
+          `the file name should be prefixed by: {{prefix}}`,
+          {
+            ns: 'imaging_uploader',
+            dccid: '100000',
+            pscid: 'ABC123',
+            visitLabel: 'V1',
+            prefix: 'ABC123_100000_V1',
+          }
+        )}<br/>
       </span>
     );
 
@@ -416,7 +466,7 @@ class UploadForm extends Component {
     return (
       <div className='row'>
         <div className='col-md-7'>
-          <h3>Upload an imaging scan</h3>
+          <h3>{t('Upload an imaging scan', {ns: 'imaging_uploader'})}</h3>
           <br/>
           <FormElement
             name='upload_form'
@@ -424,7 +474,7 @@ class UploadForm extends Component {
           >
             <SelectElement
               name='IsPhantom'
-              label='Phantom Scans'
+              label={t('Phantom Scans', {ns: 'imaging_uploader'})}
               options={this.props.form.IsPhantom.options}
               onUserInput={this.onFormChange}
               required={true}
@@ -433,7 +483,7 @@ class UploadForm extends Component {
             />
             <TextboxElement
               name='candID'
-              label='CandID'
+              label={t('DCCID', {ns: 'loris'})}
               disabled={true}
               required={false}
               errorMessage={this.state.errorMessage.candID}
@@ -441,7 +491,7 @@ class UploadForm extends Component {
             />
             <TextboxElement
               name='pSCID'
-              label='PSCID'
+              label={t('PSCID', {ns: 'loris'})}
               disabled={true}
               required={false}
               errorMessage={this.state.errorMessage.pSCID}
@@ -449,7 +499,7 @@ class UploadForm extends Component {
             />
             <TextboxElement
               name='visitLabel'
-              label='Visit Label'
+              label={t('Visit Label', {ns: 'loris'})}
               disabled={true}
               required={false}
               errorMessage={this.state.errorMessage.visitLabel}
@@ -457,14 +507,14 @@ class UploadForm extends Component {
             />
             <FileElement
               name='mriFile'
-              label='File to Upload'
+              label={t('File to Upload', {ns: 'imaging_uploader'})}
               onUserInput={this.onFormChange}
               required={true}
               errorMessage={this.state.errorMessage.mriFile}
               value={this.state.formData.mriFile}
             />
             <StaticElement
-              label='Notes'
+              label={t('Notes', {ns: 'imaging_uploader'})}
               text={notes}
             />
             <div className='row'>
@@ -475,6 +525,7 @@ class UploadForm extends Component {
             <ButtonElement
               onUserInput={this.submitForm}
               buttonClass={btnClass}
+              label={t('Submit', {ns: 'loris'})}
             />
           </FormElement>
         </div>
@@ -483,11 +534,11 @@ class UploadForm extends Component {
   }
 }
 UploadForm.propTypes = {
-  form: PropTypes.func,
+  form: PropTypes.object,
   mriList: PropTypes.array,
   imagingUploaderAutoLaunch: PropTypes.string,
   maxUploadSize: PropTypes.string,
+  t: PropTypes.func,
 };
-UploadForm.defaultProps = {};
 
-export default UploadForm;
+export default withTranslation(['imaging_uploader', 'loris'])(UploadForm);
