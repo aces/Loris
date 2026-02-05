@@ -12,6 +12,7 @@ import {
   DateElement,
   TextareaElement,
 } from 'jsx/Form';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Proband Info Component.
@@ -57,10 +58,14 @@ class ProbandInfo extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    $.ajax(this.props.dataURL, {
-      method: 'GET',
-      dataType: 'json',
-      success: (data) => {
+    lorisFetch(this.props.dataURL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('request_failed');
+        }
+        return response.json();
+      })
+      .then((data) => {
         const formData = {
           ProbandSex: data.ProbandSex,
           ProbandDoB: data.ProbandDoB,
@@ -76,15 +81,14 @@ class ProbandInfo extends Component {
           isLoaded: true,
           sexOptions: data.sexOptions,
         });
-      },
-      error: (error) => {
+      })
+      .catch(() => {
         this.setState({
           error: t('An error occurred when loading the form!',
             {ns: 'candidate_parameters'}
           ),
         });
-      },
-    });
+      });
   }
 
   /**
@@ -158,31 +162,40 @@ class ProbandInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: (data) => {
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
         this.setState({
           updateResult: 'success',
         });
         this.showAlertMessage();
         this.fetchData();
-      },
-      error: (error) => {
-        if (error.responseText !== '') {
-          let errorMessage = JSON.parse(error.responseText).message;
+      })
+      .catch((error) => {
+        if (error.lorisMessage !== undefined && error.lorisMessage !== '') {
           this.setState({
             updateResult: 'error',
-            errorMessage: errorMessage,
+            errorMessage: error.lorisMessage,
           });
           this.showAlertMessage();
         }
-      },
-    });
+      });
   }
 
   /**

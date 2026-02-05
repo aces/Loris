@@ -6,6 +6,7 @@ import swal from 'sweetalert2';
 
 import {VerticalTabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
+import lorisFetch from 'jslib/lorisFetch';
 import {
   FormElement,
   StaticElement,
@@ -59,10 +60,14 @@ class ConsentStatus extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    $.ajax(this.props.dataURL, {
-      method: 'GET',
-      dataType: 'json',
-      success: (data) => {
+    lorisFetch(this.props.dataURL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('request_failed');
+        }
+        return response.json();
+      })
+      .then((data) => {
         let formData = {};
         let consents = data.consents;
         for (let cStatus in consents) {
@@ -98,14 +103,13 @@ class ConsentStatus extends Component {
           formData: formData,
           isLoaded: true,
         });
-      },
-      error: (error) => {
+      })
+      .catch((error) => {
         console.error(error);
         this.setState({
           error: true,
         });
-      },
-    });
+      });
   }
 
   /**
@@ -265,14 +269,20 @@ class ConsentStatus extends Component {
     // Disable submit button to prevent form resubmission
     this.setState({submitDisabled: true});
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: (data) => {
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = await response.text();
+          if (!errorMessage) {
+            errorMessage = t('Failed to update!', {ns: 'candidate_parameters'});
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
         swal.fire({
           title: t('Success!', {ns: 'loris'}),
           text: t('Update successful.', {ns: 'candidate_parameters'}),
@@ -287,12 +297,12 @@ class ConsentStatus extends Component {
           }
           );
         this.fetchData();
-      },
-      error: (error) => {
+      })
+      .catch((error) => {
         console.error(error);
         // Enable submit button for form resubmission
         this.setState({submitDisabled: false});
-        let errorMessage = error.responseText ||
+        let errorMessage = error.lorisMessage ||
           t('Failed to update!', {ns: 'candidate_parameters'});
         swal.fire({
           title: t('Error!', {ns: 'loris'}),
@@ -300,8 +310,7 @@ class ConsentStatus extends Component {
           type: 'error',
           confirmButtonText: t('OK', {ns: 'loris'}),
         });
-      },
-    });
+      });
   }
 
   /**
