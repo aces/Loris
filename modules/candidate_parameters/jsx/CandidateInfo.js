@@ -11,6 +11,7 @@ import {
   ButtonElement,
   TextareaElement,
 } from 'jsx/Form';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Candiate info component
@@ -46,34 +47,34 @@ class CandidateInfo extends Component {
    */
   componentDidMount() {
     const {t} = this.props;
-    let that = this;
-    $.ajax(
-      this.props.dataURL,
-      {
-        dataType: 'json',
-        success: function(data) {
-          let formData = {
-            flaggedCaveatemptor: data.flagged_caveatemptor,
-            flaggedOther: data.flagged_other,
-            flaggedReason: data.flagged_reason,
-          };
+    lorisFetch(this.props.dataURL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('request_failed');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        let formData = {
+          flaggedCaveatemptor: data.flagged_caveatemptor,
+          flaggedOther: data.flagged_other,
+          flaggedReason: data.flagged_reason,
+        };
 
-          // Add parameter values to formData
-          Object.assign(formData, data.parameter_values);
+        // Add parameter values to formData
+        Object.assign(formData, data.parameter_values);
 
-          that.setState({
-            Data: data,
-            isLoaded: true,
-            formData: formData,
-          });
-        },
-        error: function(data, errorCode, errorMsg) {
-          that.setState({
-            error: t('An error occured while loading the page.', {ns: 'loris'}),
-          });
-        },
-      }
-    );
+        this.setState({
+          Data: data,
+          isLoaded: true,
+          formData: formData,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          error: t('An error occured while loading the page.', {ns: 'loris'}),
+        });
+      });
   }
 
   /**
@@ -334,37 +335,43 @@ class CandidateInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    $.ajax(
-      {
-        type: 'POST',
-        url: self.props.action,
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(data) {
+    lorisFetch(self.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
+        self.setState(
+          {
+            updateResult: 'success',
+          }
+        );
+        self.showAlertMessage();
+      })
+      .catch((err) => {
+        if (err.lorisMessage !== undefined && err.lorisMessage !== '') {
           self.setState(
             {
-              updateResult: 'success',
+              updateResult: 'error',
+              errorMessage: err.lorisMessage,
             }
           );
           self.showAlertMessage();
-        },
-        error: function(err) {
-          if (err.responseText !== '') {
-            let errorMessage = JSON.parse(err.responseText).message;
-            self.setState(
-              {
-                updateResult: 'error',
-                errorMessage: errorMessage,
-              }
-            );
-            self.showAlertMessage();
-          }
-        },
-
-      }
-    );
+        }
+      });
   }
 
   /**
