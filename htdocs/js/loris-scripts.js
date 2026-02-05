@@ -1,5 +1,8 @@
 /* eslint new-cap: ["error", {capIsNewExceptions: ["DynamicTable", "FileUpload"]}]*/
 
+/**
+ * Display the login modal when a request returns a 401 response.
+ */
 function handleUnauthorized() {
   if (!window.$ || !window.loris) {
     return;

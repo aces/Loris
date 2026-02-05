@@ -1,3 +1,6 @@
+/**
+ * Display the login modal when a request returns a 401 response.
+ */
 function handleUnauthorized() {
   if (typeof window === 'undefined') {
     return;
@@ -48,6 +51,13 @@ function handleUnauthorized() {
     });
 }
 
+/**
+ * Wrapper around fetch that keeps credentials and handles 401s.
+ *
+ * @param {*} input
+ * @param {object=} init
+ * @return {Promise<Response>}
+ */
 function lorisFetch(input, init) {
   const options = Object.assign(
     {

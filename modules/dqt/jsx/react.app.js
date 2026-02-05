@@ -381,52 +381,74 @@ class DataQueryApp extends Component {
     let filter = this.saveFilterGroup(this.state.filter);
     const fields = JSON.stringify(this.state.selectedFields);
 
-    $.post(loris.BaseURL
-      + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
-      Fields: fields,
-      Filters: filter,
-      QueryName: name,
-      SharedQuery: shared,
-      OverwriteQuery: override,
-    }, (data) => {
-      // Once saved, add the query to the list of saved queries
-      const id = JSON.parse(data).id;
-      const queryIDs = this.state.queryIDs;
-      if (!override) {
-        if (shared === true) {
-          queryIDs.Shared.push(id);
-        } else {
-          queryIDs.User.push(id);
+    lorisFetch(
+      loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=saveQuery.php',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: new URLSearchParams({
+          Fields: fields,
+          Filters: filter,
+          QueryName: name,
+          SharedQuery: shared,
+          OverwriteQuery: override,
+        }),
+      }
+    )
+      .then(async (response) => {
+        const text = await response.text();
+        if (!response.ok) {
+          let error = new Error('request_failed');
+          error.status = response.status;
+          error.body = text;
+          throw error;
         }
-      }
-      $.get(loris.BaseURL
-        + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
-        + id,
-      (value) => {
-        let queries = this.state.savedQueries;
-
-        queries[value._id] = value;
-        this.setState({
-          savedQueries: queries,
-          queryIDs: queryIDs,
-          alertLoaded: false,
-          alertSaved: true,
-          alertConflict: {
-            show: false,
-          },
+        // Once saved, add the query to the list of saved queries
+        const id = JSON.parse(text).id;
+        const queryIDs = this.state.queryIDs;
+        if (!override) {
+          if (shared === true) {
+            queryIDs.Shared.push(id);
+          } else {
+            queryIDs.User.push(id);
+          }
+        }
+        return lorisFetch(
+          loris.BaseURL
+            + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
+            + id
+        ).then((docResponse) => {
+          if (!docResponse.ok) {
+            throw new Error('request_failed');
+          }
+          return docResponse.json();
+        }).then((value) => {
+          let queries = this.state.savedQueries;
+          queries[value._id] = value;
+          this.setState({
+            savedQueries: queries,
+            queryIDs: queryIDs,
+            alertLoaded: false,
+            alertSaved: true,
+            alertConflict: {
+              show: false,
+            },
+          });
         });
+      })
+      .catch((error) => {
+        if (error.status === 409) {
+          this.setState({
+            alertConflict: {
+              show: true,
+              QueryName: name,
+              SharedQuery: shared,
+            },
+          });
+        }
       });
-    }).fail((data) => {
-      if (data.status === 409) {
-        this.setState({
-          alertConflict: {
-            show: true,
-            QueryName: name,
-            SharedQuery: shared,
-          },
-        });
-      }
-    });
   }
 
   /**

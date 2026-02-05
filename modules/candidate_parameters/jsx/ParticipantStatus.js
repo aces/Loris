@@ -334,16 +334,20 @@ class ParticipantStatus extends Component {
     }
 
     let alertMsg = this.refs['alert-message'];
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-      500,
-      function() {
+    alertMsg.style.display = 'block';
+    alertMsg.style.opacity = '1';
+    alertMsg.style.transition = 'opacity 0.5s ease';
+    setTimeout(() => {
+      alertMsg.style.opacity = '0';
+      setTimeout(() => {
+        alertMsg.style.display = 'none';
         self.setState(
           {
             updateResult: null,
           }
         );
-      }
-    );
+      }, 500);
+    }, 3000);
   }
 }
 ParticipantStatus.propTypes = {
