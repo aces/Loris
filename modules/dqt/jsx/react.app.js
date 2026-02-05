@@ -137,19 +137,23 @@ class DataQueryApp extends Component {
       if (this.state.queryIDs.hasOwnProperty(key)) {
         for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
           let curRequest;
-          curRequest = Promise.resolve(
-            $.ajax(loris.BaseURL
+          curRequest = fetch(
+            loris.BaseURL
               + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
-              + encodeURIComponent(this.state.queryIDs[key][i])), {
-              data: {
-                DocID: this.state.queryIDs[key][i],
-              },
-              dataType: 'json',
-            }).then((value) => {
-            let queries = this.state.savedQueries;
-            queries[value._id] = value;
-            this.setState({savedQueries: queries});
-          });
+              + encodeURIComponent(this.state.queryIDs[key][i]),
+            {credentials: 'same-origin'}
+          )
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('request_failed');
+              }
+              return response.json();
+            })
+            .then((value) => {
+              let queries = this.state.savedQueries;
+              queries[value._id] = value;
+              this.setState({savedQueries: queries});
+            });
           promises.push(curRequest);
         }
       }
@@ -442,7 +446,7 @@ class DataQueryApp extends Component {
    * @param {object} rule
    * @return {object} rule
    */
-  loadFilterRule(rule) {
+  async loadFilterRule(rule) {
     // Used to load in a filter rule
 
     let script;
@@ -451,17 +455,20 @@ class DataQueryApp extends Component {
     }
 
     // Get given fields of the instrument for the rule.
-    // This call is made synchronously
-    $.ajax({
-      url: loris.BaseURL
-        + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
-      success: (data) => {
-        rule.fields = data;
-      },
-      async: false,
-      data: {category: rule.instrument},
-      dataType: 'json',
-    });
+    rule.fields = [];
+    try {
+      const response = await fetch(
+        loris.BaseURL
+          + '/AjaxHelper.php?Module=dqt&script=datadictionary.php&'
+          + new URLSearchParams({category: rule.instrument}),
+        {credentials: 'same-origin'}
+      );
+      if (response.ok) {
+        rule.fields = await response.json();
+      }
+    } catch (error) {
+      rule.fields = [];
+    }
 
     // Find the rules selected field's data type
     for (let i = 0; i < rule.fields.length; i++) {
@@ -497,46 +504,52 @@ class DataQueryApp extends Component {
     default:
       break;
     }
-    $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script,
-      success: (data) => {
-        let i;
-        let allSessions = {};
-        let allCandiates = {};
-        // Loop through data and divide into individual visits with unique PSCIDs
-        // storing a master list of unique PSCIDs
-        for (i = 0; i < data.length; i++) {
-          if (!allSessions[data[i][1]]) {
-            allSessions[data[i][1]] = [];
+    if (script) {
+      try {
+        const response = await fetch(
+          loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script + '&' +
+            new URLSearchParams({
+              category: rule.instrument,
+              field: rule.field,
+              value: rule.value,
+            }),
+          {credentials: 'same-origin'}
+        );
+        if (response.ok) {
+          const data = await response.json();
+          let i;
+          let allSessions = {};
+          let allCandiates = {};
+          // Loop through data and divide into individual visits with unique PSCIDs
+          // storing a master list of unique PSCIDs
+          for (i = 0; i < data.length; i++) {
+            if (!allSessions[data[i][1]]) {
+              allSessions[data[i][1]] = [];
+            }
+            allSessions[data[i][1]].push(data[i][0]);
+            if (!allCandiates[data[i][0]]) {
+              allCandiates[data[i][0]] = [];
+            }
+            allCandiates[data[i][0]].push(data[i][1]);
           }
-          allSessions[data[i][1]].push(data[i][0]);
-          if (!allCandiates[data[i][0]]) {
-            allCandiates[data[i][0]] = [];
-          }
-          allCandiates[data[i][0]].push(data[i][1]);
-        }
-        rule.candidates = {
-          allCandiates: allCandiates,
-          allSessions: allSessions,
-        };
-        if (rule.visit === 'All') {
-          rule.session = Object.keys(allCandiates);
-        } else {
-          if (allSessions[rule.visit]) {
-            rule.session = allSessions[rule.visit];
+          rule.candidates = {
+            allCandiates: allCandiates,
+            allSessions: allSessions,
+          };
+          if (rule.visit === 'All') {
+            rule.session = Object.keys(allCandiates);
           } else {
-            rule.session = [];
+            if (allSessions[rule.visit]) {
+              rule.session = allSessions[rule.visit];
+            } else {
+              rule.session = [];
+            }
           }
         }
-      },
-      async: false,
-      data: {
-        category: rule.instrument,
-        field: rule.field,
-        value: rule.value,
-      },
-      dataType: 'json',
-    });
+      } catch (error) {
+        // Leave rule unchanged if request fails.
+      }
+    }
 
     return rule;
   }
@@ -547,7 +560,7 @@ class DataQueryApp extends Component {
    * @param {object} group
    * @return {object} group
    */
-  loadFilterGroup(group) {
+  async loadFilterGroup(group) {
     // Used to load in a filter group
 
     // Recursively load the children on the group
@@ -556,9 +569,9 @@ class DataQueryApp extends Component {
         if (!group.children[i].type) {
           group.children[i].type = 'group';
         }
-        group.children[i] = this.loadFilterGroup(group.children[i]);
+        group.children[i] = await this.loadFilterGroup(group.children[i]);
       } else {
-        group.children[i] = this.loadFilterRule(group.children[i]);
+        group.children[i] = await this.loadFilterRule(group.children[i]);
       }
     }
     group.session = getSessions(group);
@@ -590,7 +603,7 @@ class DataQueryApp extends Component {
    * @param {string[]|object} fields
    * @param {object[]|object} criteria
    */
-  loadSavedQuery(fields, criteria) {
+  async loadSavedQuery(fields, criteria) {
     let filterState = {};
     let selectedFields = {};
     let fieldsList = [];
@@ -673,7 +686,7 @@ class DataQueryApp extends Component {
       }
     }
     if (filterState.children && filterState.children.length > 0) {
-      filterState = this.loadFilterGroup(filterState);
+      filterState = await this.loadFilterGroup(filterState);
     } else {
       filterState.children = [
         {
@@ -690,9 +703,18 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
-    $.ajax({
-      url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
-      success: (data) => {
+    fetch(
+      loris.BaseURL + '/dqt/ajax/datadictionary.php?' +
+        new URLSearchParams({keys: JSON.stringify(fieldsList)}),
+      {credentials: 'same-origin'}
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('request_failed');
+        }
+        return response.json();
+      })
+      .then((data) => {
         for (let i = 0; i < fieldsList.length; i++) {
           if (data[i] && data[i].value.IsFile) {
             let key = data[i].key[0] + ',' + data[i].key[1];
@@ -703,10 +725,7 @@ class DataQueryApp extends Component {
             });
           }
         }
-      },
-      data: {keys: JSON.stringify(fieldsList)},
-      dataType: 'json',
-    });
+      });
   }
 
   /**
@@ -908,17 +927,29 @@ class DataQueryApp extends Component {
         // keep track of the number of requests waiting for a response
         semaphore++;
         sectionedSessions = JSON.stringify(sessionInfo);
-        $.ajax({
-          type: 'POST',
-          url: loris.BaseURL
+        fetch(
+          loris.BaseURL
             + '/AjaxHelper.php?Module=dqt&script='
             + 'retrieveCategoryDocs.php',
-          data: {
-            DocType: category,
-            Sessions: sectionedSessions,
-          },
-          dataType: 'text',
-          success: (data) => {
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            },
+            body: new URLSearchParams({
+              DocType: category,
+              Sessions: sectionedSessions,
+            }),
+            credentials: 'same-origin',
+          }
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('request_failed');
+            }
+            return response.text();
+          })
+          .then((data) => {
             if (data) {
               let i;
               let row;
@@ -948,10 +979,11 @@ class DataQueryApp extends Component {
               }
               this.setState({'sessiondata': sessiondata});
             }
+          })
+          .finally(() => {
             semaphore--;
             ajaxComplete();
-          },
-        });
+          });
       }
     }
   }

@@ -45,14 +45,19 @@ function updateMRITab() {
         }
     );
 
-    var request = $.ajax(
-        {
-            url: loris.BaseURL + '/statistics/stats_MRI/?dynamictabs=dynamictabs&MRIProject=' + (MRIProject==null ? "" : MRIProject.value) + '&MRIsite=' + MRIsite.value + '&Scans=' + scanArray,
-            type: 'GET',
-            data: 'html',
-            success: function(response) {
-                $('#mri').html(response);
+    fetch(
+        loris.BaseURL + '/statistics/stats_MRI/?dynamictabs=dynamictabs&MRIProject=' +
+        (MRIProject==null ? "" : MRIProject.value) + '&MRIsite=' + MRIsite.value +
+        '&Scans=' + scanArray,
+        {credentials: 'same-origin'}
+    )
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('request_failed');
             }
-        }
-    );
+            return response.text();
+        })
+        .then(function(response) {
+            $('#mri').html(response);
+        });
 }

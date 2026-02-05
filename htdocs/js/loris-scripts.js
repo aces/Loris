@@ -22,15 +22,21 @@ $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
           password: $('#modal-password').val(),
           login: 'Login',
         };
-        $.ajax({
-          type: 'post',
-          url: loris.BaseURL,
-          data: data,
-          success: function() {
+        fetch(loris.BaseURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          },
+          body: new URLSearchParams(data),
+          credentials: 'same-origin',
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('request_failed');
+            }
             $('#login-modal-error').hide();
             $('#login-modal').modal('hide');
-          },
-        });
+          });
       });
     }
   }
