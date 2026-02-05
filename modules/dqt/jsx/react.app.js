@@ -17,6 +17,7 @@ import SavedQueriesList from './react.savedqueries';
 import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
 import {getSessions} from '../js/arrayintersect';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * DataQueryApp component
@@ -137,19 +138,22 @@ class DataQueryApp extends Component {
       if (this.state.queryIDs.hasOwnProperty(key)) {
         for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
           let curRequest;
-          curRequest = Promise.resolve(
-            $.ajax(loris.BaseURL
+          curRequest = lorisFetch(
+            loris.BaseURL
               + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
-              + encodeURIComponent(this.state.queryIDs[key][i])), {
-              data: {
-                DocID: this.state.queryIDs[key][i],
-              },
-              dataType: 'json',
-            }).then((value) => {
-            let queries = this.state.savedQueries;
-            queries[value._id] = value;
-            this.setState({savedQueries: queries});
-          });
+              + encodeURIComponent(this.state.queryIDs[key][i])
+          )
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('request_failed');
+              }
+              return response.json();
+            })
+            .then((value) => {
+              let queries = this.state.savedQueries;
+              queries[value._id] = value;
+              this.setState({savedQueries: queries});
+            });
           promises.push(curRequest);
         }
       }
@@ -165,9 +169,9 @@ class DataQueryApp extends Component {
    * @param {function} callback
    */
   async handleProgressBarSetup(callback) {
-    const response = await fetch(
+    const response = await lorisFetch(
       `${loris.BaseURL}/dqt/dqt_setup/?format=json`,
-      {credentials: 'same-origin', method: 'GET'}
+      {method: 'GET'}
     );
     const reader = await response.body.getReader();
     const contentLength = await response.headers.get('Content-Length');
@@ -252,9 +256,9 @@ class DataQueryApp extends Component {
    * @param {function} callback
    */
   async requestSessions(callback) {
-    const response = await fetch(
+    const response = await lorisFetch(
       `${loris.BaseURL}/dqt/sessions/?format=json`,
-      {credentials: 'same-origin', method: 'GET'}
+      {method: 'GET'}
     );
     const reader = await response.body.getReader();
     let chunks = ''; // array of received binary chunks (comprises the body)
@@ -377,52 +381,74 @@ class DataQueryApp extends Component {
     let filter = this.saveFilterGroup(this.state.filter);
     const fields = JSON.stringify(this.state.selectedFields);
 
-    $.post(loris.BaseURL
-      + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
-      Fields: fields,
-      Filters: filter,
-      QueryName: name,
-      SharedQuery: shared,
-      OverwriteQuery: override,
-    }, (data) => {
-      // Once saved, add the query to the list of saved queries
-      const id = JSON.parse(data).id;
-      const queryIDs = this.state.queryIDs;
-      if (!override) {
-        if (shared === true) {
-          queryIDs.Shared.push(id);
-        } else {
-          queryIDs.User.push(id);
+    lorisFetch(
+      loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=saveQuery.php',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: new URLSearchParams({
+          Fields: fields,
+          Filters: filter,
+          QueryName: name,
+          SharedQuery: shared,
+          OverwriteQuery: override,
+        }),
+      }
+    )
+      .then(async (response) => {
+        const text = await response.text();
+        if (!response.ok) {
+          let error = new Error('request_failed');
+          error.status = response.status;
+          error.body = text;
+          throw error;
         }
-      }
-      $.get(loris.BaseURL
-        + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
-        + id,
-      (value) => {
-        let queries = this.state.savedQueries;
-
-        queries[value._id] = value;
-        this.setState({
-          savedQueries: queries,
-          queryIDs: queryIDs,
-          alertLoaded: false,
-          alertSaved: true,
-          alertConflict: {
-            show: false,
-          },
+        // Once saved, add the query to the list of saved queries
+        const id = JSON.parse(text).id;
+        const queryIDs = this.state.queryIDs;
+        if (!override) {
+          if (shared === true) {
+            queryIDs.Shared.push(id);
+          } else {
+            queryIDs.User.push(id);
+          }
+        }
+        return lorisFetch(
+          loris.BaseURL
+            + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
+            + id
+        ).then((docResponse) => {
+          if (!docResponse.ok) {
+            throw new Error('request_failed');
+          }
+          return docResponse.json();
+        }).then((value) => {
+          let queries = this.state.savedQueries;
+          queries[value._id] = value;
+          this.setState({
+            savedQueries: queries,
+            queryIDs: queryIDs,
+            alertLoaded: false,
+            alertSaved: true,
+            alertConflict: {
+              show: false,
+            },
+          });
         });
+      })
+      .catch((error) => {
+        if (error.status === 409) {
+          this.setState({
+            alertConflict: {
+              show: true,
+              QueryName: name,
+              SharedQuery: shared,
+            },
+          });
+        }
       });
-    }).fail((data) => {
-      if (data.status === 409) {
-        this.setState({
-          alertConflict: {
-            show: true,
-            QueryName: name,
-            SharedQuery: shared,
-          },
-        });
-      }
-    });
   }
 
   /**
@@ -442,7 +468,7 @@ class DataQueryApp extends Component {
    * @param {object} rule
    * @return {object} rule
    */
-  loadFilterRule(rule) {
+  async loadFilterRule(rule) {
     // Used to load in a filter rule
 
     let script;
@@ -451,17 +477,19 @@ class DataQueryApp extends Component {
     }
 
     // Get given fields of the instrument for the rule.
-    // This call is made synchronously
-    $.ajax({
-      url: loris.BaseURL
-        + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
-      success: (data) => {
-        rule.fields = data;
-      },
-      async: false,
-      data: {category: rule.instrument},
-      dataType: 'json',
-    });
+    rule.fields = [];
+    try {
+      const response = await lorisFetch(
+        loris.BaseURL
+          + '/AjaxHelper.php?Module=dqt&script=datadictionary.php&'
+          + new URLSearchParams({category: rule.instrument})
+      );
+      if (response.ok) {
+        rule.fields = await response.json();
+      }
+    } catch (error) {
+      rule.fields = [];
+    }
 
     // Find the rules selected field's data type
     for (let i = 0; i < rule.fields.length; i++) {
@@ -497,46 +525,51 @@ class DataQueryApp extends Component {
     default:
       break;
     }
-    $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script,
-      success: (data) => {
-        let i;
-        let allSessions = {};
-        let allCandiates = {};
-        // Loop through data and divide into individual visits with unique PSCIDs
-        // storing a master list of unique PSCIDs
-        for (i = 0; i < data.length; i++) {
-          if (!allSessions[data[i][1]]) {
-            allSessions[data[i][1]] = [];
+    if (script) {
+      try {
+        const response = await lorisFetch(
+          loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script + '&' +
+            new URLSearchParams({
+              category: rule.instrument,
+              field: rule.field,
+              value: rule.value,
+            })
+        );
+        if (response.ok) {
+          const data = await response.json();
+          let i;
+          let allSessions = {};
+          let allCandiates = {};
+          // Loop through data and divide into individual visits with unique PSCIDs
+          // storing a master list of unique PSCIDs
+          for (i = 0; i < data.length; i++) {
+            if (!allSessions[data[i][1]]) {
+              allSessions[data[i][1]] = [];
+            }
+            allSessions[data[i][1]].push(data[i][0]);
+            if (!allCandiates[data[i][0]]) {
+              allCandiates[data[i][0]] = [];
+            }
+            allCandiates[data[i][0]].push(data[i][1]);
           }
-          allSessions[data[i][1]].push(data[i][0]);
-          if (!allCandiates[data[i][0]]) {
-            allCandiates[data[i][0]] = [];
-          }
-          allCandiates[data[i][0]].push(data[i][1]);
-        }
-        rule.candidates = {
-          allCandiates: allCandiates,
-          allSessions: allSessions,
-        };
-        if (rule.visit === 'All') {
-          rule.session = Object.keys(allCandiates);
-        } else {
-          if (allSessions[rule.visit]) {
-            rule.session = allSessions[rule.visit];
+          rule.candidates = {
+            allCandiates: allCandiates,
+            allSessions: allSessions,
+          };
+          if (rule.visit === 'All') {
+            rule.session = Object.keys(allCandiates);
           } else {
-            rule.session = [];
+            if (allSessions[rule.visit]) {
+              rule.session = allSessions[rule.visit];
+            } else {
+              rule.session = [];
+            }
           }
         }
-      },
-      async: false,
-      data: {
-        category: rule.instrument,
-        field: rule.field,
-        value: rule.value,
-      },
-      dataType: 'json',
-    });
+      } catch (error) {
+        // Leave rule unchanged if request fails.
+      }
+    }
 
     return rule;
   }
@@ -547,7 +580,7 @@ class DataQueryApp extends Component {
    * @param {object} group
    * @return {object} group
    */
-  loadFilterGroup(group) {
+  async loadFilterGroup(group) {
     // Used to load in a filter group
 
     // Recursively load the children on the group
@@ -556,9 +589,9 @@ class DataQueryApp extends Component {
         if (!group.children[i].type) {
           group.children[i].type = 'group';
         }
-        group.children[i] = this.loadFilterGroup(group.children[i]);
+        group.children[i] = await this.loadFilterGroup(group.children[i]);
       } else {
-        group.children[i] = this.loadFilterRule(group.children[i]);
+        group.children[i] = await this.loadFilterRule(group.children[i]);
       }
     }
     group.session = getSessions(group);
@@ -590,7 +623,7 @@ class DataQueryApp extends Component {
    * @param {string[]|object} fields
    * @param {object[]|object} criteria
    */
-  loadSavedQuery(fields, criteria) {
+  async loadSavedQuery(fields, criteria) {
     let filterState = {};
     let selectedFields = {};
     let fieldsList = [];
@@ -673,7 +706,7 @@ class DataQueryApp extends Component {
       }
     }
     if (filterState.children && filterState.children.length > 0) {
-      filterState = this.loadFilterGroup(filterState);
+      filterState = await this.loadFilterGroup(filterState);
     } else {
       filterState.children = [
         {
@@ -690,9 +723,17 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
-    $.ajax({
-      url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
-      success: (data) => {
+    lorisFetch(
+      loris.BaseURL + '/dqt/ajax/datadictionary.php?' +
+        new URLSearchParams({keys: JSON.stringify(fieldsList)})
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('request_failed');
+        }
+        return response.json();
+      })
+      .then((data) => {
         for (let i = 0; i < fieldsList.length; i++) {
           if (data[i] && data[i].value.IsFile) {
             let key = data[i].key[0] + ',' + data[i].key[1];
@@ -703,10 +744,7 @@ class DataQueryApp extends Component {
             });
           }
         }
-      },
-      data: {keys: JSON.stringify(fieldsList)},
-      dataType: 'json',
-    });
+      });
   }
 
   /**
@@ -908,17 +946,29 @@ class DataQueryApp extends Component {
         // keep track of the number of requests waiting for a response
         semaphore++;
         sectionedSessions = JSON.stringify(sessionInfo);
-        $.ajax({
-          type: 'POST',
-          url: loris.BaseURL
+        lorisFetch(
+          loris.BaseURL
             + '/AjaxHelper.php?Module=dqt&script='
             + 'retrieveCategoryDocs.php',
-          data: {
-            DocType: category,
-            Sessions: sectionedSessions,
-          },
-          dataType: 'text',
-          success: (data) => {
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type':
+                'application/x-www-form-urlencoded; charset=UTF-8',
+            },
+            body: new URLSearchParams({
+              DocType: category,
+              Sessions: sectionedSessions,
+            }),
+          }
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('request_failed');
+            }
+            return response.text();
+          })
+          .then((data) => {
             if (data) {
               let i;
               let row;
@@ -948,10 +998,11 @@ class DataQueryApp extends Component {
               }
               this.setState({'sessiondata': sessiondata});
             }
+          })
+          .finally(() => {
             semaphore--;
             ajaxComplete();
-          },
-        });
+          });
       }
     }
   }
