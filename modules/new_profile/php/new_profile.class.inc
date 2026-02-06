@@ -20,7 +20,8 @@ class New_Profile extends \NDB_Form
      *
      * @return bool true if they have access to this page
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         if ($user->hasStudySite() || $user->hasCenter(\CenterID::singleton(1))) {
             return $user->hasPermission('data_entry');

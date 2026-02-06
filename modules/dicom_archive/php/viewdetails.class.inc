@@ -50,7 +50,8 @@ class ViewDetails extends \NDB_Form
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         // Permission of access to this page needs to match the module's filters
         $config           = \NDB_Factory::singleton()->config();
@@ -120,7 +121,7 @@ class ViewDetails extends \NDB_Form
         $this->DB = $this->loris->getDatabaseConnection();
 
         $user = \User::singleton();
-        if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess($user))) {
+        if ((!empty($_REQUEST['tarchiveID'])) && ($this->isAccessibleBy($user))) {
             $this->tarchiveID          = intval($_REQUEST['tarchiveID']);
             $this->tpl_data['archive'] = $this->_getTarchiveData(
                 $this->tarchiveID,

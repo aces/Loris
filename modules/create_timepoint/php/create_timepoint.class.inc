@@ -42,7 +42,8 @@ class Create_Timepoint extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $this->candidate = \Candidate::singleton(new CandID($this->identifier));
 

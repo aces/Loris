@@ -333,7 +333,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $DB = $this->loris->getDatabaseConnection();
 

@@ -30,7 +30,7 @@ class VisitSummary extends \NDB_Page
                 "No valid user"
             );
         }
-        if (!($this->_hasAccess($user))) {
+        if (!($this->isAccessibleBy($user))) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 

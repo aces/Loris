@@ -32,7 +32,8 @@ class Brainbrowser extends \NDB_Page
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.

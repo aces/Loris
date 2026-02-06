@@ -309,7 +309,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         }
 
         $page->loadResources($user, $request);
-        if ($page->_hasAccess($user) !== true) {
+        if ($page->isAccessibleBy($user) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $user
             ))->process(
