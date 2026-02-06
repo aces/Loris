@@ -86,4 +86,3 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categor
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (92,'issue_tracker_external_id','Issues - View External Issue ID',27,2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
-
