@@ -43,16 +43,19 @@ class Edit extends \NDB_Page
      * @return \LORIS\BreadcrumbTrail
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
-    {
-        $label = ucwords(str_replace('_', ' ', $this->name));
-        return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
-            new \LORIS\Breadcrumb(
-                'Edit',
-                "/" . $_GET['lorispath']
-            )
-        );
-    }
+{
+    return new \LORIS\BreadcrumbTrail(
+        new \LORIS\Breadcrumb(
+            _t('Document Repository'),
+            "/$this->name"
+        ),
+        new \LORIS\Breadcrumb(
+            _t('Edit'),
+            "/" . $_GET['lorispath']
+        )
+    );
+}
+
 
     /**
      * Include additional JS files:
