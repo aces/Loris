@@ -4,7 +4,26 @@ import Panel from 'jsx/Panel';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
 import ProgressBar from 'jsx/ProgressBar';
-import {FilterableDataTableProps, FiltersState, Field} from './types';
+import type {DataTableProps, Filters} from './DataTable.d';
+
+// Export this so Filter.tsx can use it
+export interface FilterPreset {
+    label: string;
+    filter: Filters;
+}
+
+export type FilterableDataTableProps = DataTableProps & {
+    name: string;
+    title: string;
+    filterPresets?: FilterPreset[];
+    columns?: number;
+    updateFilterCallback?: (filters: Filters) => void;
+    progress?: number;
+    loading?: boolean;
+    folder?: string;
+    actions?: (row: TableRow) => ReactNode;;
+    children?: ReactNode;
+};
 
 /**
  * FilterableDataTable component.
