@@ -34,6 +34,10 @@ electrophysiology_browser_view_site
 electrophysiology_browser_edit_annotations
  - This permission allows the user to add, edit, and delete annotations for raw or derived datasets
 
+## Configuration
+
+The electrophysiology browser displays the imaging file types present in the `ephys_browser_file_type` table.
+
 ## Download
 
 You can download all the files related to a recording (channel information,
