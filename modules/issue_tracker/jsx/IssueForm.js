@@ -105,7 +105,7 @@ class IssueForm extends Component {
 
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     const hasEditPermission = (
@@ -145,7 +145,7 @@ class IssueForm extends Component {
       );
     } else {
       headerText = t('Edit Issue', {ns: 'issue_tracker'})
-        + ' #' + this.state.issueData.issueID;
+      + ' #' + this.state.issueData.issueID;
       lastUpdateValue = this.state.issueData.lastUpdate;
       lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
       dateCreated = this.state.issueData.dateCreated;
@@ -274,8 +274,8 @@ class IssueForm extends Component {
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.status} // todo: edit this so the options are
-          // different if the user doesn't have
-          // permission
+            // different if the user doesn't have
+            // permission
           />
           <SelectElement
             name='priority'
@@ -367,10 +367,10 @@ class IssueForm extends Component {
               onUserInput={this.setFormData}
               value={this.state.formData.comment}
             />
-            : null
+            :null
           }
           {attachmentFileElement}
-          <ButtonElement label={submitButtonValue} />
+          <ButtonElement label={submitButtonValue}/>
           {attachmentUploadBtn}
         </FormElement>
         {fileCollection}
@@ -391,7 +391,7 @@ class IssueForm extends Component {
         this.setState({
           error: this.props.t('An error occurred when loading the form!',
             {ns: 'issue_tracker'}) + '\n Error: ' +
-            response.status + ' (' + response.statusText + ')',
+          response.status + ' (' + response.statusText + ')',
         });
         return;
       }
