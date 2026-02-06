@@ -8,7 +8,7 @@ import NameQueryModal from './welcome.namequerymodal';
 import AdminQueryModal from './welcome.adminquerymodal';
 import getDictionaryDescription from './getdictionarydescription';
 import PaginationLinks from 'jsx/PaginationLinks';
-import {ButtonElement, CheckboxElement, TextboxElement} from 'jsx/Form';
+import {CheckboxElement, TextboxElement, CTA} from 'jsx/Form';
 import {APIQueryField} from './types';
 import {FullDictionary} from './types';
 import {FlattenedField, FlattenedQuery, VisitOption} from './types';
@@ -94,16 +94,6 @@ function Welcome(props: {
     });
   }
   panels.push({
-    title: t('Instructions', {ns: 'dataquery'}),
-    content: <IntroductionMessage
-      hasStudyQueries={props.topQueries.length > 0}
-      onContinue={props.onContinue}
-    />,
-    alwaysOpen: false,
-    defaultOpen: true,
-    id: 'p2',
-  });
-  panels.push({
     title: t('Recent Queries', {ns: 'dataquery'}),
     content: (
       <div>
@@ -162,6 +152,17 @@ function Welcome(props: {
       }}>
         {t('Welcome to the Data Query Tool', {ns: 'dataquery'})}
       </h1>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        margin: '30px 0',
+      }}>
+        <CTA
+          label={t('Continue to Define Fields', {ns: 'dataquery'})}
+          onUserInput={props.onContinue}
+          buttonClass="btn btn-primary dqt-welcome-cta"
+        />
+      </div>
       <ExpansionPanels panels={panels} />
     </div>
   );
@@ -1094,71 +1095,6 @@ function NameIcon(props: {
   >
     <i className="fas fa-pencil-alt fa-stack-1x"> </i>
   </span>);
-}
-
-/**
- * Displays the message for the introduction panel
- *
- * @param {object} props - React props
- * @param {function} props.onContinue - Action to take when "Continue" button is pressed
- * @param {boolean} props.hasStudyQueries - Whether or not study queries exist
- * @returns {React.ReactElement} - The React element
- */
-function IntroductionMessage(props: {
-    onContinue: () => void,
-    hasStudyQueries: boolean,
-}): React.ReactElement {
-  const {t} = useTranslation('dataquery');
-  const studyQueriesParagraph = props.hasStudyQueries ? (
-    <p>
-      {t('Above, there is also a Study Queries panel. This are a'
-        +' special type of shared queries that have been pinned by a study'
-        +' administer to always display at the top of this page.',
-      {ns: 'dataquery'})}
-    </p>
-  ) : '';
-  return (
-    <div>
-      <p>{t('The data query tool allows you to query data within LORIS. '
-        +'There are three steps to defining a query:', {ns: 'dataquery'})}</p>
-      <ol>
-        <li>{t('First, you must select the fields that you\'re interested in'
-          +' on the Define Fields page.', {ns: 'dataquery'})}</li>
-        <li>{t('Next, you can optionally define filters on the Define '
-          +'Filters page to restrict the population that is returned.',
-        {ns: 'dataquery'})}</li>
-        <li>{t('Finally, you view your query results on the View Data page',
-          {ns: 'dataquery'})}</li>
-      </ol>
-      <p>{t('The Next Steps on the bottom right of your screen always the '
-        +'context-sensitive next steps that you can do to build your query.',
-      {ns: 'dataquery'})}</p>
-      <p>{t('Your recently run queries will be displayed in the Recent '
-        +'Queries panel below. Instead of building a new query, you can '
-        +'reload a query that you\'ve recently run by clicking on the icon'
-        +' next to the query.', {ns: 'dataquery'})}</p>
-      <p>{t('Queries can be shared with others by clicking the icon. This will'
-        +' cause the query to be shared with all users who have access to the '
-        +'fields used by the query. It will display in a Shared Queries panel '
-        +'below the Recent Queries.', {ns: 'dataquery'})}</p>
-      <p>{t('You may also give a query a name at any time by clicking the icon.'
-      +' This makes it easier to find queries you care about by giving them an'
-        +' easier to remember name that can be used for filtering. When you '
-        +'share a query, the name will be shared along with it.',
-      {ns: 'dataquery'})}</p>
-      {studyQueriesParagraph}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}>
-        <ButtonElement
-          columnSize="col-sm-12"
-          onUserInput={props.onContinue}
-          label={t('Continue to Define Fields', {ns: 'dataquery'})} />
-      </div>
-    </div>
-  );
 }
 
 export default Welcome;
