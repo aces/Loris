@@ -27,7 +27,9 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
+class NDB_Page extends \LORIS\Http\Endpoint implements
+    RequestHandlerInterface,
+    \LORIS\StudyEntities\AccessibleResource
 {
     use Psr\Log\LoggerAwareTrait;
 
@@ -767,7 +769,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     ) : ResponseInterface {
         $this->logger->debug("NDB_Page middleware called");
         $user = $request->getAttribute("user");
-        if ($this->_hasAccess($user ?? new \LORIS\AnonymousUser()) !== true) {
+        if ($this->isAccessibleBy($user ?? new \LORIS\AnonymousUser()) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
@@ -966,17 +968,33 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     }
 
     /**
+     * Implements the AccessibleResourceInterface.
+     *
+     * @param \User $user The user accessing the Page @unused-param
+     *
+     * @return bool
+     */
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
+    {
+        return true;
+    }
+
+    /**
      * Returns true if user has access to this page.
      *
      * You do not need to overload hasAccess() if there are no access restrictions.
      *
-     * @param \User $user The user whose access is being checked
+     * @param \User $user @unused-param
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    final function _hasAccess(\User $user) : bool
     {
-        return true;
+        throw new \LorisException(
+            "_hasAccess have no effect. "
+            . "Pages should implement AccessibleResource interface instead."
+        );
     }
 
     /**

@@ -98,7 +98,8 @@ class Issue extends \NDB_Form
      *
      * @throws \ConfigurationException
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $issueID = $this->issueID;
         if (!$issueID) {

@@ -128,7 +128,8 @@ class Feedback_MRI_Popup extends \NDB_Page
      *
      * @return bool whether the user hass access
      */
-    function _hasAccess(\User $user): bool
+    #[\Override]
+    public function isAccessibleBy(\User $user): bool
     {
         return $user->hasAnyPermission(
             [

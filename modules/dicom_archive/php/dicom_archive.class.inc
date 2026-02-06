@@ -44,7 +44,8 @@ class Dicom_Archive extends \DataFrameworkMenu
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [

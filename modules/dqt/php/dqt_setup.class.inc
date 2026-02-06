@@ -43,7 +43,8 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('dqt_view');
     }

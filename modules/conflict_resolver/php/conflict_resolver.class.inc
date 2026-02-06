@@ -37,7 +37,8 @@ class Conflict_Resolver extends \NDB_Page
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $hasConflictPerm = $user->hasPermission('conflict_resolver');
         $dictPerms       = ['data_dict_edit', 'data_dict_view'];

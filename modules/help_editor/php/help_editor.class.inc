@@ -36,7 +36,8 @@ class Help_Editor extends \NDB_Menu_Filter
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('context_help');
     }

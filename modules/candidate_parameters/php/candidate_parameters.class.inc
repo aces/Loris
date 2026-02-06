@@ -39,7 +39,8 @@ class Candidate_Parameters extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $candidate =& \Candidate::singleton(new CandID($this->identifier));
 

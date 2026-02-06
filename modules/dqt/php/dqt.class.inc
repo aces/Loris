@@ -37,7 +37,8 @@ class Dqt extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         // check user permissions
         return $user->hasPermission('dqt_view');
