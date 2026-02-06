@@ -294,19 +294,19 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         $result = [
-            'assignees'         => $assignees,
-            'inactiveUsers'     => $inactive_users,
-            'sites'             => $sites,
-            'statuses'          => $statuses,
-            'priorities'        => $priorities,
-            'categories'        => $categories,
-            'modules'           => $modules,
-            'instruments'       => $instruments,
-            'otherWatchers'     => $otherWatchers,
-            'issueData'         => $issueData,
-            'hasEditPermission' => $hasEditPermission,
-            'isOwnIssue'        => $isOwnIssue,
-            'hasExternalIdPermission' => $hasExternalIdPermission,
+            'assignees'                => $assignees,
+            'inactiveUsers'            => $inactive_users,
+            'sites'                    => $sites,
+            'statuses'                 => $statuses,
+            'priorities'               => $priorities,
+            'categories'               => $categories,
+            'modules'                  => $modules,
+            'instruments'              => $instruments,
+            'otherWatchers'            => $otherWatchers,
+            'issueData'                => $issueData,
+            'hasEditPermission'        => $hasEditPermission,
+            'isOwnIssue'               => $isOwnIssue,
+            'hasExternalIdPermission'  => $hasExternalIdPermission,
         ];
 
         return new \LORIS\Http\Response\JsonResponse(
