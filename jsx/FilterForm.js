@@ -82,24 +82,22 @@ class FilterForm extends Component {
     React.Children.forEach(this.props.children, function(child, key) {
       // If child is a React component (i.e not a simple DOM element)
       if (React.isValidElement(child) &&
-        typeof child.type === 'function' &&
-        child.props.onUserInput
+        typeof child.type === 'function'
       ) {
         let callbackFunc = child.props.onUserInput;
-        let callbackName = callbackFunc.name;
-        let elementName = child.type.displayName;
+        let callbackName = callbackFunc ? callbackFunc.name : 'onUserInput';
+        let elementName = child.type.displayName || child.type.name;
         let queryFieldName = (child.props.name === 'candID') ?
           'candidateID' :
           child.props.name;
         let filterValue = this.queryString[queryFieldName];
         // If callback function was not set, set it to onElementUpdate() for form
         // elements and to clearFilter() for <ButtonElement type='reset'/>.
-        if (callbackName === 'onUserInput') {
-          if (elementName === 'ButtonElement' && child.props.type === 'reset') {
-            callbackFunc = this.clearFilter;
-          } else {
-            callbackFunc = this.onElementUpdate.bind(null, elementName);
-          }
+        // Always use clearFilter for reset buttons, regardless of passed callback
+        if (elementName === 'ButtonElement' && child.props.type === 'reset') {
+          callbackFunc = this.clearFilter;
+        } else if (callbackName === 'onUserInput') {
+          callbackFunc = this.onElementUpdate.bind(null, elementName);
         }
         // Pass onUserInput and value props to all children
         formChildren.push(React.cloneElement(child, {
@@ -107,7 +105,7 @@ class FilterForm extends Component {
           value: filterValue ? filterValue : '',
           key: key,
         }));
-        // Initialize filter for StaticDataTable
+        // Initialize filter for DataTable
         this.setFilter(elementName, child.props.name, filterValue);
       } else {
         formChildren.push(React.cloneElement(child, {key: key}));
@@ -122,7 +120,7 @@ class FilterForm extends Component {
    * empty.
    *
    * Sets exactMatch to true for all SelectElements (i.e dropdowns)
-   * in order to force StaticDataTable to do exact comparaison
+   * in order to force DataTable to do exact comparaison
    *
    * @param {string} type - form element type (i.e component name)
    * @param {string} key - the name of the form element

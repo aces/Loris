@@ -210,10 +210,10 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return \LORIS\Data\Query\QueryEngine
+     * @return \LORIS\Data\Query\QueryEngine[]
      */
-    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    public function getQueryEngines() : iterable
     {
-        return new CandidateQueryEngine($this->loris);
+        return [new CandidateQueryEngine($this->loris)];
     }
 }

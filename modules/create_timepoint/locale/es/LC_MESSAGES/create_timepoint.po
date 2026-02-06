@@ -30,8 +30,8 @@ msgstr "No existen Etiquetas de Visita definidas para la combinación projecto: 
 msgid "Timepoint created."
 msgstr "Punto en el Tiempo creado."
 
-msgid "This visit label is not unique."
-msgstr "Esta etiqueta de Visita no es única"
+msgid "A timepoint with these conditions (%s, %s, %s, %s) already exists."
+msgstr "Ya existe un Punto en el Tiempo con estas condiciones (%s, %s, %s, %s)."
 
 msgid "You must be affiliated with a site to create a timepoint."
 msgstr "Debe estar affiliado a un Sitio para poder crear un Punto en el Tiempo."

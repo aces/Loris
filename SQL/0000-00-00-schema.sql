@@ -2180,8 +2180,10 @@ CREATE TABLE `data_release` (
  `version` varchar(255),
  `upload_date` date,
  `ProjectID` INT(10) UNSIGNED NULL,
+ `hidden_by_userid` INT(10) UNSIGNED NULL,
  PRIMARY KEY (`id`),
- FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID)
+ FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID),
+ FOREIGN KEY (hidden_by_userid) REFERENCES users (ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data_release_permissions` (

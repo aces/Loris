@@ -17,7 +17,7 @@ import {withTranslation} from 'react-i18next';
  * component page on load.
  *
  * Renders Help Editor main page consisting of FilterForm and
- * StaticDataTable components.
+ * DataTable components.
  *
  * @author LORIS Team
  * @version 1.0.0
