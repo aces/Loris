@@ -1,2 +1,2 @@
-export * as Core from './core';
-export * as Entities from './entities';
+export * as Errors from './errors';
+export * as Http from './http';
