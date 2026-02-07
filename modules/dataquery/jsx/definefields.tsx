@@ -234,7 +234,8 @@ function DefineFields(props: {
   // When viewing a category, only show visits where that category has data
   const availableVisits = useMemo(() => {
     // If no category is displayed, show all visits
-    if (!props.displayedFields || Object.keys(props.displayedFields).length === 0) {
+    if (!props.displayedFields ||
+        Object.keys(props.displayedFields).length === 0) {
       return props.allVisits;
     }
 
