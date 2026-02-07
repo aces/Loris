@@ -343,14 +343,49 @@ function DefineFields(props: {
       defaultVisits = <div style={{paddingBottom: '1em', display: 'flex'}}>
         <h4 style={{paddingRight: '1ex'}}>{t('Default Visits',
           {ns: 'dataquery'})}</h4>
-        <Select options={allVisits}
-          isMulti
-          onChange={props.onChangeDefaultVisits}
-          placeholder={t('Select Visits', {ns: 'dataquery'})}
-          noOptionsMessage={() => t('No options', {ns: 'loris'})}
-          menuPortalTarget={document.body}
-          styles={
-            {menuPortal:
+        <Select options={(() => {
+          const options = [...allVisits];
+          // Only add "Select All" if not all visits are already selected
+          if (selectedVisits.length < allVisits.length) {
+            options.push({value: 'ALL', label: 'Select All'});
+          }
+          return options;
+        })()}
+        isMulti
+        onChange={(
+          newValue: readonly (VisitOption | {value: 'ALL', label: string})[],
+        ) => {
+          if (newValue === null) {
+            props.onChangeDefaultVisits([]);
+            return;
+          }
+          // Check if "Select All" was toggled
+          const isSelectAllSelected = newValue.some(
+            (option) => option.value === 'ALL'
+          );
+          const wasSelectAllSelected = selectedVisits.some(
+            (option) => option.value === 'ALL'
+          );
+
+          if (isSelectAllSelected && !wasSelectAllSelected) {
+            // "Select All" was just selected
+            props.onChangeDefaultVisits(allVisits);
+          } else if (!isSelectAllSelected && wasSelectAllSelected) {
+            // "Select All" was just deselected
+            props.onChangeDefaultVisits([]);
+          } else {
+            // Normal selection change - filter out "Select All" from the values
+            const newVisits = newValue.filter(
+              (option): option is VisitOption => option.value !== 'ALL'
+            );
+            props.onChangeDefaultVisits(newVisits);
+          }
+        }}
+        placeholder={t('Select Visits', {ns: 'dataquery'})}
+        noOptionsMessage={() => t('No options', {ns: 'loris'})}
+        menuPortalTarget={document.body}
+        styles={
+          {menuPortal:
                             /**
                              * Adds appropriate zIndex to the react select's base CSS
                              *
