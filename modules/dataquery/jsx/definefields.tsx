@@ -397,7 +397,7 @@ function DefineFields(props: {
         }
         value={selectedVisits}
         closeMenuOnSelect={false}
-      />
+        />
         <div>
           <CheckboxElement label={t('Sync with selected fields',
             {ns: 'dataquery'})}
