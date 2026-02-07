@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
 import Select from 'react-select';
 import FilterableSelectGroup from './components/filterableselectgroup';
 import getDictionaryDescription from './getdictionarydescription';
@@ -229,6 +229,53 @@ function DefineFields(props: {
       props.setSelected([...props.selected]);
     }
   }, [syncVisits, props.defaultVisits]);
+
+  // Compute available visits based on the currently displayed category
+  // When viewing a category, only show visits where that category has data
+  const availableVisits = useMemo(() => {
+    // If no category is displayed, show all visits
+    if (!props.displayedFields || Object.keys(props.displayedFields).length === 0) {
+      return props.allVisits;
+    }
+
+    // Collect all visits from the displayed category's fields
+    const visitSet = new Set<string>();
+    let hasSessionFields = false;
+
+    Object.values(props.displayedFields).forEach((fieldDict) => {
+      if (fieldDict?.scope === 'session' && fieldDict.visits) {
+        hasSessionFields = true;
+        fieldDict.visits.forEach((visit) => visitSet.add(visit));
+      }
+    });
+
+    // If no session fields in category, show all visits
+    if (!hasSessionFields) {
+      return props.allVisits;
+    }
+
+    return props.allVisits.filter((visit) => visitSet.has(visit));
+  }, [props.displayedFields, props.allVisits]);
+
+  // Auto-update defaultVisits when availableVisits changes
+  // Remove visits that are no longer available based on displayed category
+  useEffect(() => {
+    if (availableVisits.length === 0) {
+      return;
+    }
+    // Filter defaultVisits to only include visits that are still available
+    const availableSet = new Set(availableVisits);
+    const filteredDefaults = props.defaultVisits.filter(
+      (visit) => availableSet.has(visit)
+    );
+    // Only update if there's a difference
+    if (filteredDefaults.length !== props.defaultVisits.length) {
+      props.onChangeDefaultVisits(
+        filteredDefaults.map((v) => ({value: v, label: v}))
+      );
+    }
+  }, [availableVisits]);
+
   const displayed: string[] = Object.keys(
     props.displayedFields || {}
   ).filter((value) => {
@@ -334,7 +381,7 @@ function DefineFields(props: {
     const cname = mCategories[props.category];
     let defaultVisits;
     if (props.defaultVisits) {
-      const allVisits = props.allVisits.map((el) => {
+      const allVisits = availableVisits.map((el) => {
         return {value: el, label: el};
       });
       const selectedVisits = props.defaultVisits.map((el) => {
