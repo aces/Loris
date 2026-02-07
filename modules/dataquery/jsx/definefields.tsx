@@ -393,10 +393,10 @@ function DefineFields(props: {
                              * @returns {object} New CSS with z-index added
                              */
                             (base) => ({...base, zIndex: 9999}),
+              }
             }
-          }
-          value={selectedVisits}
-          closeMenuOnSelect={false}
+            value={selectedVisits}
+            closeMenuOnSelect={false}
         />
         <div>
           <CheckboxElement label={t('Sync with selected fields',
