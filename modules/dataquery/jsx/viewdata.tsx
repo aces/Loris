@@ -1402,4 +1402,3 @@ function organizeHeaders(
 }
 
 export default ViewData;
-
