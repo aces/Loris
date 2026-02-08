@@ -366,8 +366,12 @@ function ViewData(props: {
       break;
     case 'done':
       try {
-        // Helper function to check if a row has any instrument data
-        // (not just candidate metadata like PSCID)
+        /**
+         * Helper function to check if a row has any instrument data
+         * (not just candidate metadata like PSCID)
+         * @param {TableRow} row - The row to check
+         * @returns {boolean} - true if row has data
+         */
         const rowHasData = (row: TableRow): boolean => {
           // Cross-sectional mode prepends a 'Visit' column, so field indices are offset by 1
           const offset = visitOrganization === 'crosssection' ? 1 : 0;
@@ -375,38 +379,42 @@ function ViewData(props: {
           for (let i = 0; i < props.fields.length; i++) {
             const field = props.fields[i];
             const dict = getDictionary(field, props.fulldictionary);
-            
+
             // Skip candidate metadata fields (use scope instead of hardcoded names)
             if (dict && dict.scope === 'candidate') {
               continue;
             }
-            
+
             // Check if this field has any data (accounting for offset)
             const rowIndex = i + offset;
             if (rowIndex < row.length) {
               const cellValue = row[rowIndex];
-              
+
               // Basic null/empty check
               if (cellValue === null || cellValue === '') {
                 continue;
               }
-              
+
               // For session-scoped fields in longitudinal/inline/raw modes,
               // the data is JSON-encoded. Need to parse and check if it contains actual visit data
-              if (dict && dict.scope === 'session' && 
-                  (visitOrganization === 'longitudinal' || visitOrganization === 'inline' || visitOrganization === 'raw')) {
+              if (dict && dict.scope === 'session' &&
+                  (visitOrganization === 'longitudinal'
+                   || visitOrganization === 'inline'
+                   || visitOrganization === 'raw')) {
                 try {
                   const parsed = JSON.parse(cellValue);
                   // Iterate over the parsed object values (session cells)
                   const hasData = Object.values(parsed).some((cell: any) => {
                     // unexpected types (like verify that it is an object)
                     if (typeof cell !== 'object' || cell === null) return false;
-                    
+
                     // Check for standard 'value' property
-                    if (cell.value !== undefined && cell.value !== null && cell.value !== '') {
+                    if (cell.value !== undefined
+                        && cell.value !== null
+                        && cell.value !== '') {
                       return true;
                     }
-                    
+
                     // Check for 'values' property (cardinality: many)
                     if (cell.values !== undefined && cell.values !== null) {
                       const valueKeys = Object.keys(cell.values);
@@ -414,7 +422,7 @@ function ViewData(props: {
                         return true;
                       }
                     }
-                    
+
                     return false;
                   });
 
@@ -453,7 +461,7 @@ function ViewData(props: {
                 if (fieldIndex >= 0 && fieldIndex < props.fields.length) {
                   const field = props.fields[fieldIndex];
                   const dict = getDictionary(field, props.fulldictionary);
-                  
+
                   // Only count session-scoped fields
                   if (dict && dict.scope === 'session') {
                     return true; // This visit has session data
@@ -464,7 +472,7 @@ function ViewData(props: {
             return false; // No session data for this visit
           });
         }
-        
+
         // If all data is filtered out, show "No result found" message directly
         // This avoids potential React reconciliation errors in DataTable when switching from populated table to empty
         if (filteredData.length === 0) {
@@ -475,40 +483,40 @@ function ViewData(props: {
           );
         } else {
           queryTable = <DataTable
-          rowNumLabel={t('Row Number')}
-          fields={organizedData.headers.map(
-            (val: string) => {
-              return {show: true, label: val};
-            })
-          }
-          data={filteredData}
-          getMappedCell={
-            organizedMapper(
-              visitOrganization,
-              props.fields,
-              props.fulldictionary,
-            )
-          }
-          getFormattedCell={
-            organizedFormatter(
-              queryData.data,
-              visitOrganization,
-              props.fields,
-              props.fulldictionary,
-              emptyVisits,
-              emptyCandidates,
-              enumDisplay,
-              props.t
-            )
-          }
-          hide={
-            {
-              rowsPerPage: false,
-              defaultColumn: true,
-              downloadCSV: visitOrganization == 'inline',
+            rowNumLabel={t('Row Number')}
+            fields={organizedData.headers.map(
+              (val: string) => {
+                return {show: true, label: val};
+              })
             }
-          }
-        />;
+            data={filteredData}
+            getMappedCell={
+              organizedMapper(
+                visitOrganization,
+                props.fields,
+                props.fulldictionary,
+              )
+            }
+            getFormattedCell={
+              organizedFormatter(
+                queryData.data,
+                visitOrganization,
+                props.fields,
+                props.fulldictionary,
+                emptyVisits,
+                emptyCandidates,
+                enumDisplay,
+                props.t
+              )
+            }
+            hide={
+              {
+                rowsPerPage: false,
+                defaultColumn: true,
+                downloadCSV: visitOrganization == 'inline',
+              }
+            }
+          />;
         }
       } catch (e) {
         // OrganizedMapper/Formatter can throw an error
@@ -524,7 +532,7 @@ function ViewData(props: {
   // Only show empty visits toggle for modes where it works
   // (Inline only, as Cross-sectional is handled by 'empty candidates')
   const showEmptyVisitsToggle = ['inline'].includes(visitOrganization);
-  
+
   const emptyVisitsCheckbox = showEmptyVisitsToggle ? (
     <CheckboxElement
       name="emptyvisits"
@@ -536,7 +544,7 @@ function ViewData(props: {
       }
     />
   ) : null;
-  
+
   const emptyCandidatesCheckbox = (
     <CheckboxElement
       name="emptycandidates"
@@ -934,7 +942,7 @@ function expandLongitudinalCells(
  * @param {EnumDisplayTypes} enumDisplay -  The format to display
  *                                          enum values
  * @param {any} t - useTranslation
-
+ *
  * @returns {function} - the appropriate column formatter for
                          this data organization
  */
