@@ -163,28 +163,6 @@ class QueryDataProvisioner extends ProvisionerInstance
                 }
             }
 
-            // Skip candidates with no instrument data.
-            // This mimics the old DQT's CouchDB behavior where only candidates with
-            // actual instrument data documents are returned.
-            // We check if there's at least one field with data, excluding candidate
-            // metadata fields that always have values (PSCID, CandID, etc.)
-            $hasInstrumentData = false;
-            foreach ($fields as $idx => $field) {
-                $fieldName = $field['field'];
-                // Skip candidate metadata fields
-                if (in_array($fieldName, ['PSCID', 'CandID', 'DoB', 'Sex'])) {
-                    continue;
-                }
-                if ($val[$idx] !== '') {
-                    $hasInstrumentData = true;
-                    break;
-                }
-            }
-
-            if (!$hasInstrumentData) {
-                continue;
-            }
-
             // We've went through all the module iterators and can
             // now yield the value for this CandID's row.
             yield "$candID" => $val;

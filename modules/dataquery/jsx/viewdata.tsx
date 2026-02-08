@@ -340,6 +340,7 @@ function ViewData(props: {
     props.fulldictionary
   );
   const [emptyVisits, setEmptyVisits] = useState<boolean>(true);
+  const [emptyCandidates, setEmptyCandidates] = useState<boolean>(true);
 
   let queryTable;
   if (queryData.loading) {
@@ -365,14 +366,122 @@ function ViewData(props: {
       break;
     case 'done':
       try {
-        queryTable = <DataTable
+        // Helper function to check if a row has any instrument data
+        // (not just candidate metadata like PSCID)
+        const rowHasData = (row: TableRow): boolean => {
+          // Cross-sectional mode prepends a 'Visit' column, so field indices are offset by 1
+          const offset = visitOrganization === 'crosssection' ? 1 : 0;
+
+          for (let i = 0; i < props.fields.length; i++) {
+            const field = props.fields[i];
+            const dict = getDictionary(field, props.fulldictionary);
+            
+            // Skip candidate metadata fields (use scope instead of hardcoded names)
+            if (dict && dict.scope === 'candidate') {
+              continue;
+            }
+            
+            // Check if this field has any data (accounting for offset)
+            const rowIndex = i + offset;
+            if (rowIndex < row.length) {
+              const cellValue = row[rowIndex];
+              
+              // Basic null/empty check
+              if (cellValue === null || cellValue === '') {
+                continue;
+              }
+              
+              // For session-scoped fields in longitudinal/inline/raw modes,
+              // the data is JSON-encoded. Need to parse and check if it contains actual visit data
+              if (dict && dict.scope === 'session' && 
+                  (visitOrganization === 'longitudinal' || visitOrganization === 'inline' || visitOrganization === 'raw')) {
+                try {
+                  const parsed = JSON.parse(cellValue);
+                  // Iterate over the parsed object values (session cells)
+                  const hasData = Object.values(parsed).some((cell: any) => {
+                    // unexpected types (like verify that it is an object)
+                    if (typeof cell !== 'object' || cell === null) return false;
+                    
+                    // Check for standard 'value' property
+                    if (cell.value !== undefined && cell.value !== null && cell.value !== '') {
+                      return true;
+                    }
+                    
+                    // Check for 'values' property (cardinality: many)
+                    if (cell.values !== undefined && cell.values !== null) {
+                      const valueKeys = Object.keys(cell.values);
+                      if (valueKeys.length > 0) {
+                        return true;
+                      }
+                    }
+                    
+                    return false;
+                  });
+
+                  if (hasData) {
+                    return true; // Has actual session data
+                  }
+                } catch (e) {
+                  // If parsing fails, treat as no data
+                  continue;
+                }
+              } else {
+                // For non-session fields or cross-sectional/raw modes, non-null/non-empty means has data
+                return true;
+              }
+            }
+          }
+          return false;
+        };
+
+        // Filter out empty candidates if toggle is off
+        let filteredData = emptyCandidates
+          ? organizedData.data
+          : organizedData.data.filter(rowHasData);
+
+        // For Cross-sectional mode, also filter out empty visits if toggle is off
+        // In this mode, each visit is a separate row with Visit column at index 0
+        if (visitOrganization === 'crosssection' && !emptyVisits) {
+          filteredData = filteredData.filter((row) => {
+            // In Cross-sectional, each row represents ONE visit
+            // Check if this specific visit row has any session data
+            // Start at index 1 to skip the Visit column itself
+            for (let i = 1; i < row.length; i++) {
+              if (row[i] !== null && row[i] !== '') {
+                // This column has data - verify it's a session field
+                const fieldIndex = i - 1; // Adjust for Visit column offset
+                if (fieldIndex >= 0 && fieldIndex < props.fields.length) {
+                  const field = props.fields[fieldIndex];
+                  const dict = getDictionary(field, props.fulldictionary);
+                  
+                  // Only count session-scoped fields
+                  if (dict && dict.scope === 'session') {
+                    return true; // This visit has session data
+                  }
+                }
+              }
+            }
+            return false; // No session data for this visit
+          });
+        }
+        
+        // If all data is filtered out, show "No result found" message directly
+        // This avoids potential React reconciliation errors in DataTable when switching from populated table to empty
+        if (filteredData.length === 0) {
+          queryTable = (
+            <div className='alert alert-info no-result-found-panel'>
+              <strong>{t('No result found.', {ns: 'loris'})}</strong>
+            </div>
+          );
+        } else {
+          queryTable = <DataTable
           rowNumLabel={t('Row Number')}
           fields={organizedData.headers.map(
             (val: string) => {
               return {show: true, label: val};
             })
           }
-          data={organizedData.data}
+          data={filteredData}
           getMappedCell={
             organizedMapper(
               visitOrganization,
@@ -387,6 +496,7 @@ function ViewData(props: {
               props.fields,
               props.fulldictionary,
               emptyVisits,
+              emptyCandidates,
               enumDisplay,
               props.t
             )
@@ -399,6 +509,7 @@ function ViewData(props: {
             }
           }
         />;
+        }
       } catch (e) {
         // OrganizedMapper/Formatter can throw an error
         // before the loading is complete
@@ -410,7 +521,11 @@ function ViewData(props: {
     }
   }
 
-  const emptyCheckbox = (visitOrganization === 'inline' ?
+  // Only show empty visits toggle for modes where it works
+  // (Inline only, as Cross-sectional is handled by 'empty candidates')
+  const showEmptyVisitsToggle = ['inline'].includes(visitOrganization);
+  
+  const emptyVisitsCheckbox = showEmptyVisitsToggle ? (
     <CheckboxElement
       name="emptyvisits"
       value={emptyVisits}
@@ -420,7 +535,19 @@ function ViewData(props: {
           setEmptyVisits(value)
       }
     />
-    : <div />);
+  ) : null;
+  
+  const emptyCandidatesCheckbox = (
+    <CheckboxElement
+      name="emptycandidates"
+      value={emptyCandidates}
+      label={t('Display candidates with no data?', {ns: 'dataquery'})}
+      onUserInput={
+        (name: string, value: boolean) =>
+          setEmptyCandidates(value)
+      }
+    />
+  );
   return <div>
     <SelectElement
       name='headerdisplay'
@@ -480,7 +607,8 @@ function ViewData(props: {
       }
       sortByValue={false}
     />
-    {emptyCheckbox}
+    {emptyVisitsCheckbox}
+    {emptyCandidatesCheckbox}
     {queryTable}
   </div>;
 }
@@ -801,6 +929,8 @@ function expandLongitudinalCells(
  * @param {array} dict - The full dictionary
  * @param {boolean} displayEmptyVisits -  Whether visits with
  *                                        no data should be displayed
+ * @param {boolean} displayEmptyCandidates - Whether candidates with
+ *                                           no data should be displayed
  * @param {EnumDisplayTypes} enumDisplay -  The format to display
  *                                          enum values
  * @param {any} t - useTranslation
@@ -814,6 +944,7 @@ function organizedFormatter(
   fields: APIQueryField[],
   dict: FullDictionary,
   displayEmptyVisits: boolean,
+  displayEmptyCandidates: boolean,
   enumDisplay: EnumDisplayTypes,
   t: any,
 ) {
