@@ -42,7 +42,7 @@ class Document_Repository extends \DataFrameworkMenu
      * @return bool
      */
     #[\Override]
-    public function isAccessible(\User $user) : bool
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(self::PERMISSIONS);
     }
