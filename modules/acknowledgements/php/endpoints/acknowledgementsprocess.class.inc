@@ -107,12 +107,12 @@ class Acknowledgementsprocess extends \NDB_Page
             $DB->insert('acknowledgements', $results);
             unset($values);
                 $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
-            return (new \LORIS\Http\Response())
-                ->withStatus(200)
-                ->withHeader(
-                    "Location",
-                    "{$baseURL}/acknowledgements/"
-                );
+
+            // Replace the old redirect response with a JSON Success response
+            return new \LORIS\Http\Response\JSON\Success([
+                "message" => "Acknowledgement added.",
+                "id"      => $DB->insert_id()
+            ]);            
         }
     }
 

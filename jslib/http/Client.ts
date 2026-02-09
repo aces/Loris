@@ -107,7 +107,11 @@ export class Client<T> {
    */
   async create<U = T>(data: T, mapper?: (data: T) => U): Promise<T> {
     const payload = mapper ? mapper(data) : data;
-    return this.fetchJSON<T>(this.baseURL, {
+    const relativePath = this.subEndpoint ? this.subEndpoint : '';
+    const url = new URL(relativePath, this.baseURL);
+    console.log(this.baseURL);
+    console.log(relativePath);
+    return this.fetchJSON<T>(url, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(payload),
