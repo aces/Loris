@@ -2,15 +2,13 @@ import {ReactNode} from 'react';
 
 export type TableRow = (string | null)[];
 
-export type SelectOption = { value: string | number; label: string } | string;
-
 export type Field = {
     show: boolean;
     label: string;
     filter?: {
         name: string;
         type: string;
-        options?: SelectOption[];
+        options?: any[];
     };
 };
 
@@ -20,12 +18,12 @@ export type hideOptions = {
     defaultColumn: boolean;
 };
 
-export type FilterValue = {
+export type Filter = {
     value: string | number | boolean | (string | number)[] | null;
     exactMatch: boolean;
 };
 
-export type Filters = Record<string, FilterValue>;
+export type Filters = Record<string, Filter>;
 
 export interface DataTableProps {
     data: TableRow[];
@@ -49,8 +47,8 @@ export interface DataTableProps {
         headers: string[],
         fieldNo: number
     ) => string | (string | null)[] | null;
-    filters?: Filters; // Kept generic to avoid circularity
-    actions?: (row: TableRow) => ReactNode;;
+    filters?: Filters;
+    actions?: (row: TableRow) => ReactNode;
     loading?: boolean;
 }
 

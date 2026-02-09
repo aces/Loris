@@ -11,12 +11,17 @@ import {
 } from 'jsx/Form';
 import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
 import { useTranslation } from 'react-i18next';
-import type { Filters, FilterPreset } from './FilterableDataTable';
+import type { Filter, Filters } from './DataTable.d';
+
+export interface FilterPreset {
+    label: string;
+    filter: Filters;
+}
 
 interface FilterConfig {
   name: string;
   type: 'text' | 'select' | 'multiselect' | 'numeric' | 'date' | 'datetime' | 'checkbox' | 'time';
-  options?: SelectOption[];
+  options?: any[];
   sortByValue?: boolean;
   hide?: boolean;
 }
@@ -33,7 +38,7 @@ interface FilterProps {
     title?: string;
     fields: FieldConfig[];
     filters: Filters;
-    addFilter: (name: string, value: FilterValue['value'], exactMatch: boolean) => void;
+    addFilter: (name: string, value: Filter['value'], exactMatch: boolean) => void;
     removeFilter: (name: string) => void;
     updateFilters: (filters: Filters) => void;
     clearFilters: () => void;

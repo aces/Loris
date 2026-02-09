@@ -1,16 +1,12 @@
-import React, {useState, useEffect, useCallback, useMemo} from 'react';
+import React, {useState, useEffect, useCallback, useMemo, ReactNode} from 'react';
 import {useTranslation} from 'react-i18next';
 import Panel from 'jsx/Panel';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
 import ProgressBar from 'jsx/ProgressBar';
-import type {DataTableProps, Filters} from './DataTable.d';
+import type {DataTableProps, Filters, TableRow} from './DataTable.d';
+import type {FilterPreset} from 'jsx/Filter'
 
-// Export this so Filter.tsx can use it
-export interface FilterPreset {
-    label: string;
-    filter: Filters;
-}
 
 export type FilterableDataTableProps = DataTableProps & {
     name: string;
@@ -21,7 +17,7 @@ export type FilterableDataTableProps = DataTableProps & {
     progress?: number;
     loading?: boolean;
     folder?: string;
-    actions?: (row: TableRow) => ReactNode;;
+    actions?: (row: TableRow) => ReactNode;
     children?: ReactNode;
 };
 
@@ -69,9 +65,9 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
   const {t} = useTranslation(['loris']);
 
   // Hydrate state from URL on load
-  const [filters, setFilters] = useState<FiltersState>(() => {
+  const [filters, setFilters] = useState<Filters>(() => {
     const params = new URLSearchParams(window.location.search);
-    const initialFilters: FiltersState = {};
+    const initialFilters: Filters = {};
 
     // Iterate over the URL params to populate our starting state
     params.forEach((value, key) => {
@@ -94,7 +90,7 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
    *
    * @param newFilters - The updated filters object
    */
-  const updateQueryParams = useCallback((newFilters: FiltersState): void => {
+  const updateQueryParams = useCallback((newFilters: Filters): void => {
     const url = new URL(window.location.href);
 
     // Clear existing params to ensure only current filters exist
@@ -132,7 +128,7 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
    *
    * @param newFilters - The next state of filters
    */
-  const handleUpdateFilters = useCallback((newFilters: FiltersState): void => {
+  const handleUpdateFilters = useCallback((newFilters: Filters): void => {
     setFilters(newFilters);
     if (updateFilterCallback) {
       updateFilterCallback(newFilters);
@@ -176,8 +172,8 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
    * Derived state that filters out invalid selections
    * Memoized to prevent recalculation on every render.
    */
-  const validFilters = useMemo((): FiltersState => {
-    const validated: FiltersState = {};
+  const validFilters = useMemo((): Filters => {
+    const validated: Filters = {};
     fields.forEach((field: Field) => {
       if (!field.filter) return;
       const filterName = field.filter.name;
