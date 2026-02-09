@@ -25,7 +25,8 @@ class Mri_Violations extends \DataFrameworkMenu
      *
      * @return boolean true if the user is permitted to see violated scans
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [

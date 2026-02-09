@@ -34,7 +34,8 @@ class Datadict extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return ($user->hasPermission('data_dict_view') ||
                 $user->hasPermission('data_dict_edit'));
@@ -73,7 +74,7 @@ class Datadict extends \DataFrameworkMenu
                     '',
                     ''
                 );
-                if ($iObj->_hasAccess($user)) {
+                if ($iObj->isAccessibleBy($user)) {
                     $this->logger->debug(
                         "Skipping $instrument in field options"
                         . " because user does not have permission"

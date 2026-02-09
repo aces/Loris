@@ -38,7 +38,8 @@ class Biobank extends \NDB_Menu_Filter
      *
      * @return bool True if the user has access, false otherwise.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('biobank_specimen_view')
                 || $user->hasPermission('biobank_container_view')

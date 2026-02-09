@@ -41,7 +41,8 @@ class User_Accounts extends \DataFrameworkMenu
      *
      * @return boolean
      */
-    function _hasAccess(\User $user): bool
+    #[\Override]
+    function isAccessibleBy(\User $user): bool
     {
         return $user->hasAnyPermission(self::PERMISSIONS);
     }
