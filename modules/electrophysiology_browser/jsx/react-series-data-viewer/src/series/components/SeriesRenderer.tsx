@@ -116,44 +116,6 @@ type CProps = {
 
 /**
  *
- * @param root0
- * @param root0.viewerHeight
- * @param root0.viewerWidth
- * @param root0.interval
- * @param root0.setInterval
- * @param root0.domain
- * @param root0.amplitudeScale
- * @param root0.rightPanel
- * @param root0.timeSelection
- * @param root0.setCursor
- * @param root0.setRightPanel
- * @param root0.chunksURL
- * @param root0.channels
- * @param root0.channelMetadata
- * @param root0.hidden
- * @param root0.epochs
- * @param root0.filteredEpochs
- * @param root0.activeEpoch
- * @param root0.offsetIndex
- * @param root0.setOffsetIndex
- * @param root0.setAmplitudesScale
- * @param root0.resetAmplitudesScale
- * @param root0.setLowPassFilter
- * @param root0.setHighPassFilter
- * @param root0.setViewerWidth
- * @param root0.setViewerHeight
- * @param root0.setDatasetMetadata
- * @param root0.dragStart
- * @param root0.dragContinue
- * @param root0.dragEnd
- * @param root0.limit
- * @param root0.loadedChannels
- * @param root0.setCurrentAnnotation
- * @param root0.physioFileID
- * @param root0.hoveredChannels
- * @param root0.setHoveredChannels
- * @param root0.updateActiveEpoch
- * @param root0.setTimeSelection
  */
 const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
@@ -338,7 +300,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   useEffect(() => { // Keypress handler
     /**
      *
-     * @param e
      */
     const keydownHandler = (e) => {
       const hedSearchIsFocus = document.activeElement.id === 'hed-search';
@@ -499,8 +460,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param channelIndex
-   * @param colored
    */
   const setLineColor = (channelIndex: number, colored: boolean) => {
     const classString = `.visx-linepath.channel-${channelIndex}`;
@@ -572,10 +531,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param root0
-   * @param root0.viewerWidth
-   * @param root0.viewerHeight
-   * @param root0.interval
    */
   const XAxisLayer = ({viewerWidth, viewerHeight, interval}) => {
     return (
@@ -667,9 +622,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param root0
-   * @param root0.viewerWidth
-   * @param root0.viewerHeight
    */
   const ChannelAxesLayer = ({viewerWidth, viewerHeight}) => {
     const axisHeight = viewerHeight / numDisplayedChannels;
@@ -697,8 +649,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param root0
-   * @param root0.viewerWidth
    */
   const ChannelsLayer = ({viewerWidth}) => {
     useEffect(() => {
@@ -821,7 +771,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
               /**
                *
-               * @param values
                */
               const getScaledMean = (values) => {
                 let numValues = values.length;
@@ -874,7 +823,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param v
    */
   const onMouseMove = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
@@ -887,7 +835,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param v
    */
   const onMouseUp = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
@@ -899,7 +846,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param e
    */
   const handleChannelChange = (e) => {
     const numChannels = parseInt(e.target.value, 10);
@@ -915,7 +861,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param channelIndex
    */
   const onChannelClick = (channelIndex : number) => {
     if (rightPanel !== 'annotationForm') {
@@ -941,7 +886,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param channelIndex
    */
   const onChannelHover = (channelIndex : number) => {
     setHoveredChannels(channelIndex === -1 ? [] : [channelIndex]);
