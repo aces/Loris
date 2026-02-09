@@ -1058,13 +1058,13 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetVisitLabel()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
+        $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
             )
             ->willReturn('123');
-        $this->_mockDB->expects($this->any())->method('pselectRow')
+        $this->_mockDB->method('pselectRow')
             ->willReturn(
                 ['CohortID' => '2', 'ProjectID' => 1,
                     'Visit_label' => 'V1', 'CandID' => '300123'
@@ -1083,13 +1083,13 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetCohortID()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
+        $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
             )
             ->willReturn('123');
-        $this->_mockDB->expects($this->any())->method('pselectRow')
+        $this->_mockDB->method('pselectRow')
             ->willReturn(['CohortID' => '2','ProjectID' => '1']);
         $this->assertEquals(2, $this->_instrument->getCohortID());
     }

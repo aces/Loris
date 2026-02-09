@@ -342,7 +342,7 @@ class CandidateTest extends TestCase
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselectColWithIndexKey')
             ->willReturn(["1"=>'testProject']);
 
@@ -592,7 +592,7 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselectOne')
             ->with($this->stringContains("AND VisitNo = 1"))
             ->willReturn('V01');
@@ -611,7 +611,7 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselectOne')
             ->with($this->stringContains("AND VisitNo = 1"))
             ->willReturn('');
@@ -630,7 +630,7 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselectOne')
             ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
             ->willReturn('2');
@@ -649,7 +649,7 @@ class CandidateTest extends TestCase
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselectOne')
             ->with($this->stringContains("SELECT MAX(s.VisitNo)+1"))
             ->willReturn(null);

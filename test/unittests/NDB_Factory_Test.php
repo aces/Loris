@@ -237,7 +237,7 @@ class NDB_Factory_Test extends TestCase
     function testCandidate()
     {
         $mockdb = $this->getMockBuilder("\Database")->getMock();
-        $mockdb->expects($this->any())
+        $mockdb
             ->method('pselectRow')
             ->willReturn(['DCCID'=>'300001', 'RegistrationProjectID' => 1]);
 
@@ -286,7 +286,7 @@ class NDB_Factory_Test extends TestCase
         $mockdb     = $this->getMockBuilder("\Database")->getMock();
         $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
-        $mockdb->expects($this->any())
+        $mockdb
             ->method('pselectRow')
             ->willReturn(
                 [
