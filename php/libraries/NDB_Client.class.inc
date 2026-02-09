@@ -107,7 +107,7 @@ class NDB_Client
             $auth = $login->authenticate();
             if ($auth === true) {
                 if ($login->passwordExpired()) {
-			return false;
+                    return false;
                 }
                 $login->setState();
             } elseif ($auth === false) {
