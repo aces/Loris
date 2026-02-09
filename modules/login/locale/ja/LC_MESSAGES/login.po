@@ -65,6 +65,9 @@ msgstr "サイトを選択してください:"
 msgid "Choose your project:"
 msgstr "プロジェクトを選択してください:"
 
+msgid "Preferred language:"
+msgstr "優先言語:"
+
 msgid "Radiologist"
 msgstr "放射線科医"
 

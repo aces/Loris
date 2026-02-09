@@ -64,6 +64,9 @@ msgstr ""
 msgid "Choose your project:"
 msgstr ""
 
+msgid "Preferred language:"
+msgstr ""
+
 msgid "Radiologist"
 msgstr ""
 
