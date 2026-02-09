@@ -41,7 +41,7 @@ class Candidate_Profile extends \NDB_Page
     }
 
     /**
-     * Ensure $this->candidate is set so that _hasAccess is valid
+     * Ensure $this->candidate is set so that isAccessibleBy is valid
      * before calling the parent middleware.
      *
      * @param ServerRequestInterface  $request The PSR7 request being processed.

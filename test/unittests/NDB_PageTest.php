@@ -738,7 +738,7 @@ class NDB_PageTest extends TestCase
     /**
      * Test that isAccessibleByreturns true
      *
-     * @covers NDB_Page::_hasAccess
+     * @covers NDB_Page::isAccessibleBy
      * @return void
      */
     public function testIsAccessibleBy()
