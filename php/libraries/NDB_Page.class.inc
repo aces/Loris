@@ -981,23 +981,6 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
     }
 
     /**
-     * Returns true if user has access to this page.
-     *
-     * You do not need to overload hasAccess() if there are no access restrictions.
-     *
-     * @param \User $user @unused-param
-     *
-     * @return bool
-     */
-    final function _hasAccess(\User $user) : bool
-    {
-        throw new \LorisException(
-            "_hasAccess have no effect. "
-            . "Pages should implement AccessibleResource interface instead."
-        );
-    }
-
-    /**
      * Generate a breadcrumb trail for this page.
      *
      * @return \LORIS\BreadcrumbTrail

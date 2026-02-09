@@ -191,7 +191,7 @@ use \Psr\Http\Message\ResponseInterface;
  * it.
  */
 class some_api extends \LORIS\Http\Endpoint {
-    public function _hasAccess(\User \$user) : bool {
+    public function isAccessibleBy(\User \$user) : bool {
         // XXX: Add permission checks here if necessary.
         return true;
     }
