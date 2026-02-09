@@ -14,7 +14,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\acknowledgements;
+namespace LORIS\acknowledgements_manager;
 
 /**
  * AcknowledgementRow represents a row in the acknowledgements menu table.

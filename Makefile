@@ -106,7 +106,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/electrophysiology_uploader/locale/fr/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/electrophysiology_uploader/locale/ja/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/electrophysiology_uploader/locale/hi/LC_MESSAGES/electrophysiology_uploader.po \
-	modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po \
+	modules/acknowledgements_manager/locale/ja/LC_MESSAGES/acknowledgements_manager.po \
 	modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.po \
 	modules/battery_manager/locale/fr/LC_MESSAGES/battery_manager.po \
 	modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po \
@@ -200,8 +200,8 @@ testdata:
 
 locales: $(MOFILES) $(I18NJSONFILES)
 
-acknowledgements: $(filter modules/acknowledgements/%,$(MOFILES)) $(filter modules/acknowledgements/%,$(I18NJSONFILES))
-	target=acknowledgements npm run compile
+acknowledgements_manager: $(filter modules/acknowledgements_manager/%,$(MOFILES)) $(filter modules/acknowledgements_manager/%,$(I18NJSONFILES))
+	target=acknowledgements_manager npm run compile
 
 create_timepoint: $(filter modules/create_timepoint/%,$(MOFILES)) $(filter modules/create_timepoint/%,$(I18NJSONFILES))
 	target=data_release npm run compile

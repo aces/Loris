@@ -73,7 +73,7 @@ const lorisModules: Record<string, string[]> = {
   help_editor: ['help_editor', 'helpEditorForm'],
   brainbrowser: ['Brainbrowser'],
   imaging_uploader: ['index'],
-  acknowledgements: ['acknowledgementsIndex'],
+  acknowledgements_manager: ['acknowledgementsIndex'],
   new_profile: ['NewProfileIndex'],
   module_manager: ['modulemanager'],
   imaging_qc: ['imagingQCIndex'],
