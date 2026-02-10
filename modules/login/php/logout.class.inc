@@ -39,6 +39,7 @@ class Logout extends \LORIS\Http\Endpoint
         $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
         $uri     = \GuzzleHttp\Psr7\Utils::uriFor($baseURL);
 
+        setcookie('loris_language', '', time() - 3600, '/');
         // NDB_Client called session_write_close, so we need to re-start
         // the session in order to destroy it.
         session_start();
