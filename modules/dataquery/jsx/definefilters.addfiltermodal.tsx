@@ -111,6 +111,7 @@ function AddFilterModal(props: {
   const [op, setOp] = useState<Operators|null>(null);
   const [value, setValue] = useState<string|string[]>('');
   const [selectedVisits, setSelectedVisits] = useState<string[]|null>(null);
+  const [hasUserMadeSelection, setHasUserMadeSelection] = useState(false);
 
   const dropdownTitle = t('Field', {ns: 'dataquery', count: 99});
   if (props.displayedFields) {
@@ -129,6 +130,7 @@ function AddFilterModal(props: {
         setFieldname(fieldname);
         setOp(null);
         setValue('');
+        setHasUserMadeSelection(true);
         if (dict.visits) {
           setSelectedVisits(dict.visits);
         } else {
@@ -284,7 +286,7 @@ function AddFilterModal(props: {
   return (
     <Modal title={t('Add criteria', {ns: 'dataquery'})}
       show={true}
-      throwWarning={true}
+      throwWarning={hasUserMadeSelection}
       onClose={props.closeModal}
       onSubmit={submitPromise}>
       <div style={{width: '100%', padding: '1em'}}>
@@ -300,6 +302,7 @@ function AddFilterModal(props: {
                 setOp(null);
                 setValue('');
                 setSelectedVisits(null);
+                setHasUserMadeSelection(true);
                 props.onCategoryChange(module, category);
               }}
             />
