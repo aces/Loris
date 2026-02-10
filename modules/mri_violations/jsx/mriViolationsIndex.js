@@ -82,7 +82,7 @@ function MRIViolationsIndex(props) {
             filter.label === t('Resolution Status', {ns: 'mri_violations'}),
         );
         const hashfilterIndex = filtersData.findIndex(
-          (filter) => filter.label === 'hash',
+          (filter) => filter.label === t('hash', {ns: 'mri_violations'}),
         );
         const dataIndex = data.findIndex(
           (row) => row[hashfilterIndex] === hashname,
@@ -115,7 +115,7 @@ function MRIViolationsIndex(props) {
   const formatColumn = (mapper, setPage) => {
     const Mapper = function(column, cell, rowData) {
       cell = mapper(column, cell);
-      const hashname = rowData.hash;
+      const hashname = rowData[t('hash', {ns: 'mri_violations'})];
       const labelTypeOfProblem = t('Type of Problem', {ns: 'mri_violations'});
       const labelProtocolViolation = t('Protocol Violation', {
         ns: 'mri_violations',
