@@ -63,7 +63,7 @@ class Acknowledgementsprocess extends \NDB_Page
         $affiliations = "";
         $degrees      = "";
         $roles        = "";
-        $values       = $req->getParsedBody();
+        $values       = json_decode($req->getBody()->getContents(), true);
         if (isset($values) && !is_null($values)) {
             if (isset($values['addPresent']) && $values['addPresent'] === 'Yes') {
                 $values['addEndDate'] = null;
@@ -106,13 +106,19 @@ class Acknowledgementsprocess extends \NDB_Page
 
             $DB->insert('acknowledgements', $results);
             unset($values);
-                $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
 
-            // Replace the old redirect response with a JSON Success response
-            return new \LORIS\Http\Response\JSON\Success([
-                "message" => "Acknowledgement added.",
-                "id"      => $DB->insert_id()
-            ]);            
+            // 2. Access the public property (no parentheses!)
+            $newId = $DB->lastInsertID;
+
+            // 4. Return the Created response
+            return new \LORIS\Http\Response\JSON\Created(
+                [
+                    "message" => "Acknowledgement added.",
+                    "id"      => $newId
+                ],
+                ["Location" => "{$baseURL}/api/v1/acknowledgements/{$newId}"]
+            );
         }
     }
 

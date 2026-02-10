@@ -109,8 +109,7 @@ export class Client<T> {
     const payload = mapper ? mapper(data) : data;
     const relativePath = this.subEndpoint ? this.subEndpoint : '';
     const url = new URL(relativePath, this.baseURL);
-    console.log(this.baseURL);
-    console.log(relativePath);
+    console.log(payload);
     return this.fetchJSON<T>(url, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},

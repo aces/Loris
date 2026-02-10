@@ -162,20 +162,20 @@ class AcknowledgementsIndex extends Component {
     this.setState({submitting: true}); // set submitting to true
 
     try {
-      const client = new Acknowledgement.Client().setSubEndpoint('acknowledgementsprocess');
+      const client = new Acknowledgement.Client()
+        .setSubEndpoint('AcknowledgementsProcess');
       await client.create(formData);
 
       await swal.fire('Success!', 'Acknowledgement added.', 'success');
       this.closeModalForm();
       this.fetchData();
-
     } catch (error) {
       const message = error.message || 'An unexpected error occurred.';
       swal.fire('Error!', message, 'error');
       console.error(error);
     } finally {
       this.setState({submitting: false});
-    }    
+    }
   }
 
   /**
