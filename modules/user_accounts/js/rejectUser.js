@@ -1,29 +1,25 @@
+import UserAccountsClient from '../jsx/UserAccountsClient';
+
 $(document).ready(function() {
     $("#btn_reject").click(function() {
     const userID = document.getElementById("UserID").value;
     const baseurl = loris.BaseURL;
-    const lorisFetch = window.lorisFetch || fetch;
+    const client = new UserAccountsClient();
 
-    lorisFetch(baseurl + '/user_accounts/ajax/rejectUser.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      },
-      body: new URLSearchParams({identifier: userID}),
-      credentials: 'same-origin',
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.text().then((text) => {
-            let error = new Error('request_failed');
-            error.lorisMessage = text;
-            throw error;
-          });
-        }
+    client.rejectUser(userID)
+      .then(() => {
         location.href = baseurl + '/user_accounts/';
       })
-      .catch((error) => {
-        alert(error.lorisMessage || '');
+      .catch(async (error) => {
+        let errorMessage = '';
+        if (error && error.response) {
+          try {
+            errorMessage = await error.response.text();
+          } catch (responseError) {
+            errorMessage = '';
+          }
+        }
+        alert(errorMessage);
       });
   }); 
 });
