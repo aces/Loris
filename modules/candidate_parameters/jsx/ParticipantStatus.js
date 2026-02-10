@@ -10,7 +10,7 @@ import {
   TextareaElement,
   ButtonElement,
 } from 'jsx/Form';
-import lorisFetch from 'jslib/lorisFetch';
+import CandidateParametersClient from './CandidateParametersClient';
 
 /**
  * Participant status component
@@ -30,6 +30,7 @@ class ParticipantStatus extends Component {
       isLoaded: false,
       loadedData: 0,
     };
+    this.client = new CandidateParametersClient();
     this.fetchData = this.fetchData.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -49,13 +50,7 @@ class ParticipantStatus extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    lorisFetch(this.props.dataURL)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('request_failed');
-        }
-        return response.json();
-      })
+    this.client.getJSON(this.props.dataURL)
       .then((data) => {
         let formData = {};
         formData.participantStatus = data.participantStatus;
@@ -284,25 +279,8 @@ class ParticipantStatus extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    lorisFetch(self.props.action, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          let errorMessage = '';
-          let text = await response.text();
-          if (text) {
-            try {
-              errorMessage = JSON.parse(text).message || '';
-            } catch (err) {
-              errorMessage = '';
-            }
-          }
-          let error = new Error('request_failed');
-          error.lorisMessage = errorMessage;
-          throw error;
-        }
+    this.client.postForm(self.props.action, formData)
+      .then(() => {
         self.setState(
           {
             updateResult: 'success',
@@ -311,12 +289,23 @@ class ParticipantStatus extends Component {
         self.showAlertMessage();
         self.fetchData();
       })
-      .catch((err) => {
-        if (err.lorisMessage !== undefined && err.lorisMessage !== '') {
+      .catch(async (err) => {
+        let errorMessage = '';
+        if (err && err.response) {
+          try {
+            const text = await err.response.text();
+            if (text) {
+              errorMessage = JSON.parse(text).message || '';
+            }
+          } catch (parseError) {
+            errorMessage = '';
+          }
+        }
+        if (errorMessage !== '') {
           self.setState(
             {
               updateResult: 'error',
-              errorMessage: err.lorisMessage,
+              errorMessage: errorMessage,
             }
           );
           self.showAlertMessage();

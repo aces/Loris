@@ -6,7 +6,7 @@ import swal from 'sweetalert2';
 
 import {VerticalTabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
-import lorisFetch from 'jslib/lorisFetch';
+import CandidateParametersClient from './CandidateParametersClient';
 import {
   FormElement,
   StaticElement,
@@ -36,6 +36,7 @@ class ConsentStatus extends Component {
       submitDisabled: false,
       showHistory: false,
     };
+    this.client = new CandidateParametersClient();
 
     /**
      * Bind component instance to custom methods
@@ -60,13 +61,7 @@ class ConsentStatus extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    lorisFetch(this.props.dataURL)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('request_failed');
-        }
-        return response.json();
-      })
+    this.client.getJSON(this.props.dataURL)
       .then((data) => {
         let formData = {};
         let consents = data.consents;
@@ -269,20 +264,8 @@ class ConsentStatus extends Component {
     // Disable submit button to prevent form resubmission
     this.setState({submitDisabled: true});
 
-    lorisFetch(this.props.action, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          let errorMessage = await response.text();
-          if (!errorMessage) {
-            errorMessage = t('Failed to update!', {ns: 'candidate_parameters'});
-          }
-          let error = new Error('request_failed');
-          error.lorisMessage = errorMessage;
-          throw error;
-        }
+    this.client.postForm(this.props.action, formData)
+      .then(() => {
         swal.fire({
           title: t('Success!', {ns: 'loris'}),
           text: t('Update successful.', {ns: 'candidate_parameters'}),
@@ -298,12 +281,21 @@ class ConsentStatus extends Component {
           );
         this.fetchData();
       })
-      .catch((error) => {
+      .catch(async (error) => {
         console.error(error);
         // Enable submit button for form resubmission
         this.setState({submitDisabled: false});
-        let errorMessage = error.lorisMessage ||
-          t('Failed to update!', {ns: 'candidate_parameters'});
+        let errorMessage = '';
+        if (error && error.response) {
+          try {
+            errorMessage = await error.response.text();
+          } catch (responseError) {
+            errorMessage = '';
+          }
+        }
+        if (!errorMessage) {
+          errorMessage = t('Failed to update!', {ns: 'candidate_parameters'});
+        }
         swal.fire({
           title: t('Error!', {ns: 'loris'}),
           text: errorMessage,

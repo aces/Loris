@@ -12,7 +12,7 @@ import {
   DateElement,
   TextareaElement,
 } from 'jsx/Form';
-import lorisFetch from 'jslib/lorisFetch';
+import CandidateParametersClient from './CandidateParametersClient';
 
 /**
  * Proband Info Component.
@@ -36,6 +36,7 @@ class ProbandInfo extends Component {
       isLoaded: false,
       loadedData: 0,
     };
+    this.client = new CandidateParametersClient();
 
     /**
      * Bind component instance to custom methods
@@ -58,13 +59,7 @@ class ProbandInfo extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    lorisFetch(this.props.dataURL)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('request_failed');
-        }
-        return response.json();
-      })
+    this.client.getJSON(this.props.dataURL)
       .then((data) => {
         const formData = {
           ProbandSex: data.ProbandSex,
@@ -162,36 +157,30 @@ class ProbandInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    lorisFetch(this.props.action, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          let errorMessage = '';
-          let text = await response.text();
-          if (text) {
-            try {
-              errorMessage = JSON.parse(text).message || '';
-            } catch (err) {
-              errorMessage = '';
-            }
-          }
-          let error = new Error('request_failed');
-          error.lorisMessage = errorMessage;
-          throw error;
-        }
+    this.client.postForm(this.props.action, formData)
+      .then(() => {
         this.setState({
           updateResult: 'success',
         });
         this.showAlertMessage();
         this.fetchData();
       })
-      .catch((error) => {
-        if (error.lorisMessage !== undefined && error.lorisMessage !== '') {
+      .catch(async (error) => {
+        let errorMessage = '';
+        if (error && error.response) {
+          try {
+            const text = await error.response.text();
+            if (text) {
+              errorMessage = JSON.parse(text).message || '';
+            }
+          } catch (parseError) {
+            errorMessage = '';
+          }
+        }
+        if (errorMessage !== '') {
           this.setState({
             updateResult: 'error',
-            errorMessage: error.lorisMessage,
+            errorMessage: errorMessage,
           });
           this.showAlertMessage();
         }

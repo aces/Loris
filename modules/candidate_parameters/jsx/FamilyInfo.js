@@ -8,7 +8,7 @@ import {
   ButtonElement,
   SelectElement,
 } from 'jsx/Form';
-import lorisFetch from 'jslib/lorisFetch';
+import CandidateParametersClient from './CandidateParametersClient';
 
 /**
  * Family info component
@@ -29,6 +29,7 @@ class FamilyInfo extends Component {
       isLoaded: false,
       loadedData: 0,
     };
+    this.client = new CandidateParametersClient();
     this.setFormData = this.setFormData.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -42,13 +43,7 @@ class FamilyInfo extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    lorisFetch(this.props.dataURL)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('request_failed');
-        }
-        return response.json();
-      })
+    this.client.getJSON(this.props.dataURL)
       .then((data) => {
         this.setState({
           Data: data,
@@ -272,25 +267,8 @@ class FamilyInfo extends Component {
       familyMembers: familyMembers,
     });
 
-    lorisFetch(this.props.action, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          let errorMessage = '';
-          let text = await response.text();
-          if (text) {
-            try {
-              errorMessage = JSON.parse(text).message || '';
-            } catch (err) {
-              errorMessage = '';
-            }
-          }
-          let error = new Error('request_failed');
-          error.lorisMessage = errorMessage;
-          throw error;
-        }
+    this.client.postForm(this.props.action, formData)
+      .then(() => {
         self.setState({
           updateResult: 'success',
           formData: {},
@@ -307,8 +285,18 @@ class FamilyInfo extends Component {
         // rerender components
         self.forceUpdate();
       })
-      .catch((err) => {
-        let errorMessage = err.lorisMessage || '';
+      .catch(async (err) => {
+        let errorMessage = '';
+        if (err && err.response) {
+          try {
+            const text = await err.response.text();
+            if (text) {
+              errorMessage = JSON.parse(text).message || '';
+            }
+          } catch (parseError) {
+            errorMessage = '';
+          }
+        }
         self.setState(
           {
             updateResult: 'error',
@@ -373,37 +361,31 @@ class FamilyInfo extends Component {
     formData.append('candID', this.state.Data.candID);
     formData.append('familyDCCID', candID);
 
-    lorisFetch(this.props.action, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          let errorMessage = '';
-          let text = await response.text();
-          if (text) {
-            try {
-              errorMessage = JSON.parse(text).message || '';
-            } catch (err) {
-              errorMessage = '';
-            }
-          }
-          let error = new Error('request_failed');
-          error.lorisMessage = errorMessage;
-          throw error;
-        }
+    this.client.postForm(this.props.action, formData)
+      .then(() => {
         self.setState(
           {
             updateResult: 'success',
           });
         self.showAlertMessage();
       })
-      .catch((err) => {
-        if (err.lorisMessage !== undefined && err.lorisMessage !== '') {
+      .catch(async (err) => {
+        let errorMessage = '';
+        if (err && err.response) {
+          try {
+            const text = await err.response.text();
+            if (text) {
+              errorMessage = JSON.parse(text).message || '';
+            }
+          } catch (parseError) {
+            errorMessage = '';
+          }
+        }
+        if (errorMessage !== '') {
           self.setState(
             {
               updateResult: 'error',
-              errorMessage: err.lorisMessage,
+              errorMessage: errorMessage,
             });
           self.showAlertMessage();
         }
