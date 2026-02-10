@@ -87,7 +87,7 @@ export class Query {
    * Builds and returns the final URL search string.
    */
   build(): string {
-    const finalParams = { ...this.params };
+    const finalParams = {...this.params};
 
     if (this.selectedFields.length > 0) {
       finalParams['fields'] = this.selectedFields.join(',');

@@ -156,7 +156,6 @@ export class Client<T> {
         const message = this.getErrorMessage('JsonParseError', request);
         throw new Errors.JsonParse(request, message);
       }
-
     } catch (error) {
       // 5. Re-throw custom errors; wrap native network errors
       if (error instanceof Errors.Http || error instanceof Errors.ApiResponse) {
@@ -167,14 +166,23 @@ export class Client<T> {
     }
   }
 
-  private buildURL(path: string = '', query?: Query): URL {
+  /**
+   * Constructs a full URL by combining the base URL, sub-endpoint, 
+   * and an optional path or resource ID, then appends query parameters.
+   *
+   * @param path  - An optional sub-path or resource ID (e.g., '123' or 'details'). 
+   * Defaults to an empty string.
+   * @param query - An optional Query object used to build the URL's search parameters.
+   * @returns A fully constructed URL object.
+   */  
+  private buildURL(path = '', query?: Query): URL {
     // 1. Resolve segments (this.baseURL + subEndpoint + id/path)
     const segments = [this.subEndpoint, path].filter(Boolean).join('/');
     const url = new URL(segments, this.baseURL);
 
-    // 2. Just append the pre-built query string
+    // 2. Append the pre-built query string
     if (query) {
-        url.search = query.build();
+      url.search = query.build();
     }
 
     return url;
