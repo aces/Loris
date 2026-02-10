@@ -1,5 +1,7 @@
 import swal from 'sweetalert2';
-import lorisFetch from 'jslib/lorisFetch';
+import ConfigurationClient from './ConfigurationClient';
+
+const configurationClient = new ConfigurationClient();
 
 $(function() {
   'use strict';
@@ -60,17 +62,11 @@ $(function() {
         let id = $(this).attr('name');
         let button = this;
 
-        lorisFetch(loris.BaseURL + '/configuration/ajax/process.php', {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          },
-          body: new URLSearchParams({remove: id}),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error('request_failed');
-            }
+        configurationClient.postForm(
+          'process.php',
+          new URLSearchParams({remove: id})
+        )
+          .then(() => {
             if ($(button)
               .parent().parent().parent().children()
               .length > 1
@@ -107,20 +103,8 @@ $(function() {
     // Clear previous feedback
     $('.submit-area > label').remove();
 
-    lorisFetch(loris.BaseURL + '/configuration/ajax/process.php', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      },
-      body: form,
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          let text = await response.text();
-          let error = new Error('request_failed');
-          error.lorisMessage = text;
-          throw error;
-        }
+    configurationClient.postForm('process.php', form)
+      .then(() => {
         let html = '<label>Submitted</label>';
         $(html)
           .hide()
@@ -128,8 +112,16 @@ $(function() {
           .fadeIn(500).delay(1000).fadeOut(500);
         location.reload();
       })
-      .catch((error) => {
-        let html = '<label>' + (error.lorisMessage || '') + '</label>';
+      .catch(async (error) => {
+        let errorMessage = '';
+        if (error && error.response) {
+          try {
+            errorMessage = await error.response.text();
+          } catch (responseError) {
+            errorMessage = '';
+          }
+        }
+        let html = '<label>' + errorMessage + '</label>';
         $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000);
       });
   });
