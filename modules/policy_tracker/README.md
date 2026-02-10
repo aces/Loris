@@ -12,10 +12,6 @@ The scope of this module includes:
 -   **Renewal**: enforcing policy re-acceptance after a configurable time period (e.g., monthly).
 -   **Audit Trail**: maintaining a log of user user acceptances and declinations.
 
-## Permissions
-
-Access to the `policy_tracker` module is generally available to all logged-in users, as its primary function is to allow users to view and consent to policies.
-
 ## Configurations
 
 This module does not use the standard Config module. Instead, policies are "configured" by inserting records into the `policies` table.
