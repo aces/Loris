@@ -194,7 +194,6 @@ class BatteryManagerTest extends LorisIntegrationTest
         return $resultText;
     }
 
-
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -391,5 +390,4 @@ class BatteryManagerTest extends LorisIntegrationTest
             $bodyText
         );
     }
-
 }
