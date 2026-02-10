@@ -107,9 +107,7 @@ class NDB_Client
             $auth = $login->authenticate();
             if ($auth === true) {
                 if ($login->passwordExpired()) {
-                    header("HTTP/1.1 302 Found");
-                    header("Location: /login/password-expiry");
-
+                    return false;
                 }
                 $login->setState();
             } elseif ($auth === false) {
