@@ -28,6 +28,9 @@
 11. Check that all values are propagated and saved correctly.
 12. Add an attachment to the new issue and make sure that it is successfully uploaded.
 13. Check that watching options are working - turn it off and on for your current user, and for other watchers on the issue, and check that values are saved.
+14. **External Issue ID field**: Check that the field is only visible if user has `Issue Tracker: View External Issue ID` permission.
+15. **External Issue ID field**: Check that the field is only editable if user has `Issue Tracker: View External Issue ID` permission.
+16. **External Issue ID field**: Submit an issue with an External Issue ID (e.g., "GH-9795") and verify it saves correctly.
 
 ## Issue Tracker Edit Existing Issue [Manual Testing]
 1. User can access the page if they fulfill all the following conditions:
@@ -43,6 +46,10 @@
 10. Test if users can delete their own uploaded attachments.
 11. Test if user assigned to issue cannot delete attachments of issue owner.
 12. Test that emails are sent to users that are watching the issue.
+13. **External Issue ID field**: Verify that users without `Issue Tracker: View External Issue ID` permission cannot see the field.
+14. **External Issue ID field**: Verify that users with the permission can see and edit the field.
+15. **External Issue ID field**: Edit an existing issue's External Issue ID and verify the change is saved and appears in the comment history.
+16. **External Issue ID security**: Attempt to bypass frontend by sending a POST request with externalIssueID without the permission - verify it's rejected.
 
 ## Permissions [Automation Testing]
 1. Remove `Issue Tracker: View/Edit/Comment Issues - All Sites` permission.
@@ -50,7 +57,9 @@
 3. Remove `Issue Tracker: View/Edit/Comment/Close Issues - Own` permission.
 4. Remove `Issue Tracker: Close Issues - All Sites` permission.
 5. Remove `Issue Tracker: Close Issues - Own Sites` permission.
-6. Test that the module behaves correctly as described above. 
+6. Remove `Issue Tracker: View External Issue ID` permission.
+7. Test that the module behaves correctly as described above.
+ 
 
 **Test the Issue Tracker Dashboard widget**
 1. The dashboard widget named My Tasks, should display the correct number of assigned issues.

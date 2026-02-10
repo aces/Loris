@@ -285,19 +285,28 @@ class Edit extends \NDB_Page implements ETagCalculator
             || ($user->hasPermission('issue_tracker_own_issue')
             && $isOwnIssue);
 
+        // Check if user has permission to view external issue ID
+        $hasExternalIdPermission = $user->hasPermission('issue_tracker_external_id');
+
+        // Remove externalIssueID from issueData if user doesn't have permission
+        if (!$hasExternalIdPermission && isset($issueData['externalIssueID'])) {
+            unset($issueData['externalIssueID']);
+        }
+
         $result = [
-            'assignees'         => $assignees,
-            'inactiveUsers'     => $inactive_users,
-            'sites'             => $sites,
-            'statuses'          => $statuses,
-            'priorities'        => $priorities,
-            'categories'        => $categories,
-            'modules'           => $modules,
-            'instruments'       => $instruments,
-            'otherWatchers'     => $otherWatchers,
-            'issueData'         => $issueData,
-            'hasEditPermission' => $hasEditPermission,
-            'isOwnIssue'        => $isOwnIssue,
+            'assignees'               => $assignees,
+            'inactiveUsers'           => $inactive_users,
+            'sites'                   => $sites,
+            'statuses'                => $statuses,
+            'priorities'              => $priorities,
+            'categories'              => $categories,
+            'modules'                 => $modules,
+            'instruments'             => $instruments,
+            'otherWatchers'           => $otherWatchers,
+            'issueData'               => $issueData,
+            'hasEditPermission'       => $hasEditPermission,
+            'isOwnIssue'              => $isOwnIssue,
+            'hasExternalIdPermission' => $hasExternalIdPermission,
         ];
 
         return new \LORIS\Http\Response\JsonResponse(
@@ -757,6 +766,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'category',
             'module',
             'instrument',
+            'externalIssueID',
         ];
         $fieldsToValidateFirst = [
             'PSCID',
@@ -789,6 +799,13 @@ class Edit extends \NDB_Page implements ETagCalculator
             if (isset($values[$vField]) && $values[$vField] !== "null") {
                 $validateValues[$vField] = $values[$vField];
             }
+        }
+
+        // Remove externalIssueID if user lacks permission to edit it
+        if (!$user->hasPermission('issue_tracker_external_id')
+            && isset($issueValues['externalIssueID'])
+        ) {
+            unset($issueValues['externalIssueID']);
         }
 
         $issueID = intval($values['issueID']);
