@@ -212,30 +212,6 @@ class Utility
     }
 
     /**
-     * Get the list of sites as an associative array
-     *
-     * @param boolean $study_site if true only return study sites from psc
-     *                            table
-     * @param boolean $DCC        Whether the DCC should be included or not
-     *
-     * @return array of the form CenterID => Site Name.
-     *         Note that even though CenterID is numeric, the array
-     *         should be interpreted as an associative array since the keys
-     *         refer to the centerID, not the array index.
-     *
-     * @deprecated
-     */
-    static function getAssociativeSiteList(
-        bool $study_site = true,
-        bool $DCC = true
-    ): array {
-        throw new \DeprecatedException(
-            ' This function is deprecated. Please use \Utility::getSiteList()'
-            . ' instead.'
-        );
-    }
-
-    /**
      * Returns a list of study Visit Labels that are being used by this study.
      *
      * @param ?ProjectID $projectID Limit visit labels to labels used by this
@@ -469,30 +445,6 @@ class Utility
     }
 
     /**
-     * Ensures that $var is a collection of $var elements, not just a
-     * single element. This is useful for using config->getSetting for an element
-     * that may be in the config multiple times or may be in the config file a
-     * single time. By calling toArray, you ensure that the value you're working
-     * with is an array and don't need to determine if it's an array or a scalar.
-     * Note: This does not change a string into an array with one string element
-     * Note: This function should be used for tags with attributes
-     *
-     * @param mixed $var The variable to be converted to an array.
-     *
-     * @return array If $var is an array, var, otherwise an array containing $var
-     *
-     * @deprecated
-     */
-    static function toArray($var)
-    {
-        throw new \DeprecatedException(
-            'Utility::toArray() is deprecated and should not be used. ' .
-            'Instead use Utility::associativeToNumericArray() for converting ' .
-            'arrays. Scalar values cannot be passed to this function.'
-        );
-    }
-
-    /**
      * Takes a scalar value and returns an array containing that value as its
      * only element.
      * Note: This function should be used for tags without attributes
@@ -535,96 +487,6 @@ class Utility
             $arr[$field] = null;
         }
         return $arr;
-    }
-
-    /**
-     * Get a list of instruments installed in Loris.
-     *
-     * @return array of the form Test_name => Full Description
-     */
-    static function getAllInstruments(): array
-    {
-        error_log(
-            "LORIS Deprecation Warning: The getAllInstruments() function of ".
-            "the Utility class has been deprecated. This function does not load ".
-            "the most accurate Full_name value and should be replaced by ".
-            "getInstrumentNamesList() of the NDB_BVL_Instrument class."
-        );
-        $Factory       = \NDB_Factory::singleton();
-        $DB            = $Factory->Database();
-        $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names ORDER BY Full_name",
-            []
-        );
-        $instruments   = [];
-        foreach ($instruments_q as $row) {
-            if (isset($row['Test_name']) && isset($row['Full_name'])) {
-                $instruments[$row['Test_name']] =$row['Full_name'];
-            }
-        }
-
-        return $instruments;
-    }
-
-    /**
-     * Get a list of DDE instruments installed in Loris.
-     *
-     * @return array of the form Test_name => Full Description
-     */
-    static function getAllDDEInstruments(): array
-    {
-        error_log(
-            "LORIS Deprecation Warning: The getAllDDEInstruments() function of
-            the Utility class has been deprecated. This function does not load the
-            most accurate Full_name value and should be replaced by
-            getDDEInstrumentNamesList() of the NDB_BVL_Instrument class."
-        );
-        $Factory = \NDB_Factory::singleton();
-        $DB      = $Factory->Database();
-        $ddeInstruments = $DB->pselect(
-            "SELECT DISTINCT test_battery.Test_name, Full_name
-            FROM test_battery
-            JOIN test_names ON test_battery.Test_name = test_names.Test_name
-            WHERE DoubleDataEntryEnabled = 'Y'",
-            []
-        );
-        $instruments    = [];
-        foreach ($ddeInstruments as $instrument) {
-            $instruments[$instrument['Test_name']] = $instrument['Full_name'];
-        }
-        return $instruments;
-    }
-
-    /**
-     * Gets a list of all instruments where are administered as direct data
-     * entry from subjects.
-     * This should return an array in a format suitable for addSelect() from
-     * NDB_Page
-     *
-     * @return array of test_names in a Test_Name => "Full Name"
-     */
-    static function getDirectInstruments(): array
-    {
-        error_log(
-            "LORIS Deprecation Warning: The getDirectInstruments() function of
-            the Utility class has been deprecated. This function does not load the
-            most accurate Full_name value and should be replaced by
-            getDirectEntryInstrumentNamesList() of the NDB_BVL_Instrument class."
-        );
-        $factory = NDB_Factory::singleton();
-        $DB      = $factory->database();
-
-        $instruments   = [];
-        $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true
-             ORDER BY Full_name",
-            []
-        );
-        foreach ($instruments_q as $key) {
-            $instruments[$key['Test_name']] =$key['Full_name'];
-        }
-
-        return $instruments;
     }
 
     /**
@@ -735,25 +597,6 @@ class Utility
             return [];
         }
         return iterator_to_array($sourcefields);
-    }
-
-    /**
-     * Returns a list of study Visit Labels that are being used by this study.
-     *
-     * @param integer|null $projectID Limit visit labels to labels used by this
-     *                                project.
-     *
-     * @return array<string,string> Study visits in the format array('VL' => 'VL')
-     *         where VL is the visit label
-     *
-     * @deprecated
-     */
-    static function getExistingVisitLabels(?int $projectID = null): array
-    {
-        throw new \DeprecatedException(
-            'This function is deprecated. Please use Utility::getVisitList() '
-            . 'instead.'
-        );
     }
 
     /**
