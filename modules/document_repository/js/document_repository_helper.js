@@ -1,5 +1,8 @@
 /*global $, document, window, location */
+import DocumentRepositoryClient from '../jsx/DocumentRepositoryClient';
+
 var lorisFetch = window.lorisFetch || fetch;
+var documentRepositoryClient = new DocumentRepositoryClient();
 
 function editCategory() {
   "use strict";
@@ -174,18 +177,11 @@ function editModal() {
   var id = this.id;
   $("#editModal").modal();
 
-  lorisFetch(
-    loris.BaseURL + "/document_repository/ajax/getFileData.php?" +
-      new URLSearchParams({id: id}),
-    {credentials: "same-origin"}
-  )
-    .then(function(response) {
-      if (!response.ok) {
-        throw new Error("request_failed");
-      }
-      return response.json();
-    })
+  documentRepositoryClient.getFileData(id)
     .then(function(data) {
+      if (Array.isArray(data)) {
+        data = data[0] || {};
+      }
       //Pre-populate the form with the existing values
       selectElement("categoryEdit", data.File_category);
       selectElement("siteEdit", data.For_site);
