@@ -9,7 +9,7 @@ The Policy Tracker module is intended to provide infrastructure for managing and
 The scope of this module includes:
 -   **Forced Acceptance**: blocking access to specific modules until the user accepts the defined policy.
 -   **Versioning**: requiring users to re-accept policies when a new version is released.
--   **Renewal**: enforcing policy re-acceptance after a configurable time period (e.g., annually).
+-   **Renewal**: enforcing policy re-acceptance after a configurable time period (e.g., monthly).
 -   **Audit Trail**: maintaining a log of user user acceptances and declinations.
 
 ## Permissions
@@ -27,8 +27,8 @@ Administrators can configure:
 
 ## Interactions with LORIS
 
--   **Module Access Control**: The `NDB_Page` core library checks this module's records when loading any LORIS page. If a policy is active for the requested module and the user hasn't accepted it (or it has expired), the user is redirected to the policy acceptance modal.
--   **Global Header**: If configured, the `PolicyButton` component in the header interacts with this module to display active policies on demand.
+-   **Module Access Control**: The `NDB_Page` core library checks this module's records when loading any LORIS page. If a policy is active for the requested module and the user hasn't accepted it (or it has expired), the policy acceptance modal is shown to the user.
+-   **Header Button**: If configured, the `PolicyButton` component in the header appears to display the active policy for the current page.
 
 ## Technical Implementation
 
@@ -40,7 +40,7 @@ Two tables manage the policy tracking:
     -   `PolicyID`: Unique ID.
     -   `Name`: Internal name of the policy.
     -   `Version`: Integer version number. Incrementing this forces re-acceptance.
-    -   `ModuleID`: FK to the `modules` table. logic ties a policy to a specific module.
+    -   `ModuleID`: FK to the `modules` table, each Policy is assigned to a module which determines when and how it is shown.
     -   `Content`: HTML content of the policy text.
     -   `SwalTitle`: Title displayed in the modal window.
     -   `PolicyRenewalTime`: Number of units (e.g., 365) for renewal.
