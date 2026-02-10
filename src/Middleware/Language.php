@@ -92,7 +92,7 @@ class Language implements MiddlewareInterface, MiddlewareChainer
         // Set language cookie if explicitly selected via query parameter
         $params = $request->getQueryParams();
         if (isset($params['lang'])) {
-            $DB = $loris->getDatabaseConnection();
+            $DB           = $loris->getDatabaseConnection();
             $validLocales = $DB->pselectCol(
                 "SELECT language_code FROM language",
                 [],
@@ -111,12 +111,8 @@ class Language implements MiddlewareInterface, MiddlewareChainer
                 setcookie(
                     'loris_language',
                     $params['lang'],
-                    [
-                        'expires' => time() + (24 * 60 * 60),
-                        'path' => '/',
-                        'httponly' => false,
-                        'samesite' => 'Lax'
-                    ]
+                    time() + (24 * 60 * 60),
+                    '/',
                 );
             }
         }
