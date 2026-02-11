@@ -58,12 +58,14 @@
       <th>
         {dgettext("timepoint_list", "Imaging Scan Done")}
       </th>
+      {if $display.WindowInfo.WindowDefined|default}
       <th>
         {dgettext("instrument_list", "Within Optimal")}
       </th>
       <th>
         {dgettext("instrument_list", "Within Permitted")}
       </th>
+      {/if}
       {if $SupplementalSessionStatuses }
         {foreach from=$timePoint.status item=status key=name}
           <th>
@@ -123,6 +125,7 @@
             <img alt="Data Missing" src="{$baseurl|default}/images/help2.gif" border=0>
         {/if}
       </td>
+      {if $display.WindowInfo.WindowDefined|default}
       <td>
         {if $display.WindowInfo.Optimum|default}
           {dgettext("loris", "Yes")}
@@ -137,6 +140,7 @@
           {dgettext("loris", "No")}
         {/if}
       </td>
+      {/if}
       {if $SupplementalSessionStatuses|default}
         {foreach from=$timePoint.status item=status}
           <td>
