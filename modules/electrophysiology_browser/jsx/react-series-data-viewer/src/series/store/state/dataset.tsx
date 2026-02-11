@@ -1,6 +1,7 @@
 import * as R from 'ramda';
 import {createAction} from 'redux-actions';
 import {
+  ChannelInfo,
   ChannelMetadata,
   Epoch,
   EpochFilter,
@@ -52,6 +53,7 @@ export type Action =
   | {
       type: 'SET_DATASET_METADATA',
       payload: {
+        channelInfos: ChannelInfo[] | null,
         chunksURL: string,
         channelNames: string[],
         shapes: number[][],
@@ -70,6 +72,7 @@ export type Action =
     };
 
 export type State = {
+  channelInfos: ChannelInfo[] | null,
   chunksURL: string,
   channelMetadata: ChannelMetadata[],
   offsetIndex: number,
@@ -104,6 +107,7 @@ export type State = {
  */
 export const datasetReducer = (
   state: State = {
+    channelInfos: [],
     chunksURL: '',
     channelMetadata: [],
     epochs: [],
