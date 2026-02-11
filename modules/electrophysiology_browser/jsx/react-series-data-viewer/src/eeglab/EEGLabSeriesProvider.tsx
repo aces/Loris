@@ -22,7 +22,9 @@ import {setDomain, setInterval} from '../series/store/state/bounds';
 import {
   setCoordinateSystem, setElectrodes,
 } from '../series/store/state/montage';
-import {EventMetadata, HEDSchemaElement} from '../series/store/types';
+import {
+  ChannelInfos, EventMetadata, HEDSchemaElement,
+} from '../series/store/types';
 import TriggerableModal from 'jsx/TriggerableModal';
 import DatasetTagger from '../series/components/DatasetTagger';
 import {InfoIcon} from '../series/components/components';
@@ -35,6 +37,7 @@ declare global {
 
 
 type CProps = {
+  channelsURL: string,
   chunksURL: string,
   epochsURL: string,
   electrodesURL: string,
@@ -177,6 +180,12 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
         return [Promise.resolve()];
       }
     };
+
+    fetchJSON(props.channelsURL).then((json: ChannelInfos) => {
+      this.store.dispatch(setDatasetMetadata({
+        channelInfos: json.Channels,
+      }));
+    });
 
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
