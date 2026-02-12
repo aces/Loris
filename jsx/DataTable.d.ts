@@ -1,71 +1,56 @@
-
 import {ReactNode} from 'react';
 
-type TableRow = (string|null)[]
+type TableRow = (string | number | null | any)[];
 
 type Field = {
-    show: boolean
-    label: string
-}
+    show: boolean;
+    label: string;
+    filter?: { name: string };
+    freezeColumn?: boolean;
+};
+
+type Action = {
+    label: string;
+    action: (event: any) => void;
+    show?: boolean;
+};
 
 type hideOptions = {
-    rowsPerPage: boolean
-    downloadCSV: boolean
-    defaultColumn: boolean
-}
-type DataTableProps = {
-    data: TableRow[]
-    rowNumLabel?: string
-    getFormattedCell: (label: string,
-        data: string,
+    rowsPerPage?: boolean;
+    downloadCSV?: boolean;
+    defaultColumn?: boolean;
+};
+
+export type DataTableProps = {
+    data?: TableRow[];
+    rowNumLabel?: string;
+    getFormattedCell?: (
+        label: string,
+        data: any,
         row: TableRow,
         headers: string[],
-        fieldNo: number) => ReactNode
-    onSort?: () => void
-    hide?: hideOptions
-    fields: Field[]
-    nullTableShow?: boolean
-    noDynamicTable?: boolean
+        fieldNo: number
+    ) => ReactNode;
+    actions?: Action[];
+    hide?: hideOptions;
+    nullTableShow?: boolean;
+    noDynamicTable?: boolean;
     getMappedCell?: (
         label: string,
-        data: string|null,
+        data: any,
         row: TableRow,
         headers: string[],
-        fieldNo: number) => string|(string|null)[]|null
-}
+        fieldNo: number
+    ) => string | any;
+    fields: Field[];
+    RowNameMap?: Record<number, string | number>;
+    filters?: Record<string, any>;
+    freezeColumn?: string;
+    loading?: boolean;
+    folder?: ReactNode;
+};
 
-/**
- * The DataTable class. See DataTable.js
- */
-class DataTable {
-    props: DataTableProps
-    state: any
-    context: object
-    refs: {[key: string]: ReactInstance}
-
-    /**
-     * Construct a new modal
-     */
-    constructor(props: DataTableProps)
-
-    /**
-     * React lifecycle method
-     *
-     * @returns {ReactNode}
-     */
-    render(): ReactNode
-
-    /**
-     * React lifecycle method
-     *
-     * @param {object} newstate - the state to overwrite
-     */
-    setState(newstate: object): void
-
-    /**
-     * React lifecycle method
-     */
-    forceUpdate(): void
-}
+// Define it as a Functional Component, not a Class
+declare const DataTable: (props: DataTableProps) => JSX.Element;
 
 export default DataTable;

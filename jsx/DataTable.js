@@ -1,56 +1,147 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
-import createFragment from 'react-addons-create-fragment';
 import {CTA} from 'jsx/Form';
-import {withTranslation} from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+
+/**
+ * Searches for the filter keyword in the column cell.
+ *
+ * Note: Search is case-insensitive.
+ *
+ * @param {string} name field name
+ * @param {string|number|boolean|Array} data the cell value to search within
+ * @param {object} filters the filters object
+ * @return {boolean} true if it matches the filter criteria, false otherwise.
+ */
+const hasFilterKeyword = (name, data, filters) => {
+  const filter = filters[name];
+  if (!filter) return true; // Safety fallback
+
+  const {value: filterData, exactMatch, opposite} = filter;
+
+  // If the cell is empty but we have an active filter, it's not a match
+  if (data === null || data === undefined) return false;
+
+  // Numbers
+  if (typeof filterData === 'number') {
+    return filterData === Number.parseInt(data, 10);
+  }
+
+  // Strings & Arrays
+  if (typeof filterData === 'string') {
+    const searchKey = filterData.toLowerCase();
+    const cellValues = Array.isArray(data)
+      ? data.map((e) => String(e).toLowerCase())
+      : [String(data).toLowerCase()];
+
+    if (exactMatch) return cellValues.includes(searchKey);
+    if (opposite) return !cellValues.includes(searchKey);
+    return cellValues.some((val) => val.includes(searchKey));
+  }
+
+  // Booleans (Checkboxes)
+  if (typeof filterData === 'boolean') {
+    return filterData === data;
+  }
+
+  // Multi-select (filterData is an array)
+  if (Array.isArray(filterData)) {
+    const cellValues = String(data).toLowerCase().split(',');
+    return filterData.some((val) =>
+      cellValues.includes(String(val).toLowerCase())
+    );
+  }
+
+  return false;
+};
 
 /**
  * Data Table component
- * Displays a set of data that is receives via props.
+ * Displays a set of data that it receives via props.
+ *
+ * @param {object} props - The component props
+ * @param {Array} props.data - The table data to be displayed
+ * @param {string} props.rowNumLabel - Label for the row number column
+ * @param {Function} props.getFormattedCell - Custom cell formatter function
+ * @param {Array} props.actions - List of actions for the table
+ * @param {object} props.hide - Visibility configuration for columns/controls
+ * @param {boolean} props.nullTableShow - Whether to show table if data is null
+ * @param {boolean} props.noDynamicTable - Flag to disable dynamic features
+ * @param {Function} props.getMappedCell - Mapper for cell values
+ * @param {Array} props.fields - Column definitions and configurations
+ * @param {object} props.RowNameMap - Mapping for row identifiers
+ * @param {object} props.filters - Current active filters
+ * @param {string} props.freezeColumn - The ID/Name of the column to freeze
+ * @param {React.ReactNode} props.folder - Folder or nested element to display
  */
-class DataTable extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  constructor(props) {
-    super(props);
-    this.state = {
-      page: {
-        number: 1,
-        rows: 20,
-      },
-      sort: {
-        column: -1,
-        ascending: true,
-      },
-    };
+const DataTable = ({
+  data = [],
+  rowNumLabel = 'No.',
+  getFormattedCell,
+  actions,
+  hide = {
+    rowsPerPage: false,
+    downloadCSV: false,
+    defaultColumn: false,
+  },
+  nullTableShow = false,
+  noDynamicTable,
+  getMappedCell,
+  fields,
+  RowNameMap,
+  filters = {},
+  freezeColumn,
+  folder,
+}) => {
+  const {t} = useTranslation(['loris']);
 
-    this.changePage = this.changePage.bind(this);
-    this.setSortColumn = this.setSortColumn.bind(this);
-    this.updateSortColumn = this.updateSortColumn.bind(this);
-    this.toggleSortOrder = this.toggleSortOrder.bind(this);
-    this.updatePageNumber = this.updatePageNumber.bind(this);
-    this.updatePageRows = this.updatePageRows.bind(this);
-    this.downloadCSV = this.downloadCSV.bind(this);
-    this.getFilteredRowIndexes = this.getFilteredRowIndexes.bind(this);
-    this.sortRows = this.sortRows.bind(this);
-    this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
-    this.renderActions = this.renderActions.bind(this);
-  }
+  const [page, setPage] = useState({
+    number: 1,
+    rows: 20,
+  });
+
+  const [sort, setSort] = useState({
+    column: -1,
+    ascending: true,
+  });
 
   /**
-   * Set the component page variable
-   * to a new value
+   * Updates page state
    *
-   * @param {number} i - Page index
+   * @param {number} number - Number of page
    */
-  changePage(i) {
-    const page = this.state.page;
-    page.number = i;
-    this.setState({page});
-  }
+  const updatePageNumber = (number) => {
+    setPage((prev) => ({...prev, number}));
+  };
+
+  /**
+   * Update number of rows per page
+   *
+   * @param {object} e - Event from which to abstract value
+   */
+  const updatePageRows = (e) => {
+    setPage({
+      rows: e.target.value,
+      number: 1, // Reset to first page when changing row count
+    });
+  };
+
+  /**
+   * Toggle sort.ascending
+   */
+  const toggleSortOrder = () => {
+    setSort((prev) => ({...prev, ascending: !prev.ascending}));
+  };
+
+  /**
+   * Update the sort column
+   *
+   * @param {number} column - The column index
+   */
+  const updateSortColumn = (column) => {
+    setSort((prev) => ({...prev, column}));
+  };
 
   /**
    * Update the sort column
@@ -59,191 +150,132 @@ class DataTable extends Component {
    *
    * @param {number} column - The column index
    */
-  setSortColumn(column) {
-    if (this.state.sort.column === column) {
-      this.toggleSortOrder();
+  const setSortColumn = (column) => {
+    if (sort.column === column) {
+      toggleSortOrder();
     } else {
-      this.updateSortColumn(column);
+      updateSortColumn(column);
     }
-  }
-
-  /**
-   * Update the sort column
-   *
-   * @param {number} column - The column index
-   */
-  updateSortColumn(column) {
-    const sort = this.state.sort;
-    sort.column = column;
-    this.setState({sort});
-  }
-
-  /**
-   * Toggle sort.ascending
-   */
-  toggleSortOrder() {
-    const sort = this.state.sort;
-    sort.ascending = !sort.ascending;
-    this.setState({sort});
-  }
-
-  /**
-   * Updates page state
-   *
-   * @param {number} number - Number of page
-   */
-  updatePageNumber(number) {
-    const page = this.state.page;
-    page.number = number;
-    this.setState({page});
-  }
-
-  /**
-   * Update number of rows per page
-   *
-   * @param {object} e - Event from which to abstract value
-   */
-  updatePageRows(e) {
-    const page = Object.assign({}, this.state.page);
-    page.rows = e.target.value;
-    page.number = 1;
-    this.setState({page});
-  }
+  };
 
   /**
    * Export the filtered rows and columns into a csv
    *
    * @param {number[]} filteredRowIndexes - The filtered Row Indexes
    */
+  const downloadCSV = useCallback((filteredRowIndexes) => {
+    let csvData = filteredRowIndexes.map((id) => data[id]);
 
-  downloadCSV(filteredRowIndexes) {
-    let csvData = filteredRowIndexes.map((id) => this.props.data[id]);
-    // Map cell data to proper values if applicable.
-    if (this.props.getMappedCell) {
-      csvData = csvData
-        .map((row, i) => this.props.fields
-          .map((field, j) => this.props.getMappedCell(
+    // Map cell data if the getter exists
+    if (getMappedCell) {
+      csvData = csvData.map((row) =>
+        fields.map((field, j) =>
+          getMappedCell(
             field.label,
             row[j],
             row,
-            this.props.fields.map(
-              (val) => val.label,
-            ),
+            fields.map((val) => val.label),
             j
-          ))
-        );
+          )
+        )
+      );
     }
 
-    let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
+    const csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
-    csvworker.addEventListener('message', function(e) {
-      let dataURL;
-      let dataDate;
-      let link;
+    csvworker.addEventListener('message', (e) => {
       if (e.data.cmd === 'SaveCSV') {
-        dataDate = new Date().toISOString();
-        dataURL = window.URL.createObjectURL(e.data.message);
-        link = document.createElement('a');
-        link.download = 'data-' + dataDate + '.csv';
+        const dataDate = new Date().toISOString();
+        const dataURL = window.URL.createObjectURL(e.data.message);
+        const link = document.createElement('a');
+
+        link.download = `data-${dataDate}.csv`;
         link.type = 'text/csv';
         link.href = dataURL;
+
         document.body.appendChild(link);
-        $(link)[0].click();
+        link.click();
         document.body.removeChild(link);
+        window.URL.revokeObjectURL(dataURL); // Cleanup memory
+        csvworker.terminate();
       }
     });
-    const headerList = this.props.fields.map((field) => field.label);
+
+    const headerList = fields.map((field) => field.label);
+
     csvworker.postMessage({
       cmd: 'SaveFile',
       data: csvData,
       headers: headerList,
-      identifiers: this.props.RowNameMap,
+      identifiers: RowNameMap,
     });
-  }
+  }, [data, fields, getMappedCell, RowNameMap]);
 
   /**
    * Get the Filtered Row Indexes
+   * Memoized to prevent heavy re-calculation on every render
    */
-  getFilteredRowIndexes() {
-    let useKeyword = false;
-    let filterValuesCount = Object.keys(this.props.filters).length;
-    let tableData = this.props.data;
-    let fieldData = this.props.fields;
+  const filteredRowIndexes = useMemo(() => {
+    // Get the filter keys.
+    const filterKeys = Object.keys(filters);
 
-    let filteredIndexes = [];
+    // If no filters are active, return all data indexes
+    if (filterKeys.length === 0) {
+      return data.map((_, i) => i);
+    }
 
-    // If there are no filters set, use all the data.
-    let hasFilters = (filterValuesCount !== 0);
-    if (hasFilters === false) {
-      for (let i = 0; i < tableData.length; i++) {
+    // 3. Filter the data
+    return data.reduce((filteredIndexes, row, i) => {
+      const matchesAll = filterKeys.every((filterName) => {
+        // Find the field definition that matches this filter name
+        const fieldIndex = fields.findIndex(
+          (f) => f.filter && f.filter.name === filterName
+        );
+
+        // If no field is found or the row is missing data at that index,
+        // we can't filter it, so we skip (return true)
+        if (fieldIndex === -1 || !row) return true;
+
+        const cellData = row[fieldIndex];
+        return hasFilterKeyword(filterName, cellData, filters);
+      });
+
+      if (matchesAll) {
         filteredIndexes.push(i);
       }
       return filteredIndexes;
-    }
-
-    if (this.props.filters.keyword) {
-      useKeyword = true;
-    }
-
-    if (useKeyword) {
-      filterValuesCount -= 1;
-    }
-
-    for (let i = 0; i < tableData.length; i++) {
-      let headerCount = 0;
-      let keywordMatch = 0;
-      for (let j = 0; j < fieldData.length; j++) {
-        let data = tableData[i] ? tableData[i][j] : null;
-        if (this.hasFilterKeyword((fieldData[j].filter || {}).name, data)) {
-          headerCount++;
-        }
-        if (useKeyword) {
-          if (this.hasFilterKeyword('keyword', data)) {
-            keywordMatch++;
-          }
-        }
-      }
-
-      if (headerCount === filterValuesCount &&
-        ((useKeyword === true && keywordMatch > 0) ||
-          (useKeyword === false && keywordMatch === 0))) {
-        filteredIndexes.push(i);
-      }
-    }
-
-    return filteredIndexes;
-  }
+    }, []);
+  }, [data, fields, filters]);
 
   /**
    * Sort the given rows according to the sort configuration
+   * Memoized to avoid re-sorting unless data, filters, or sort state changes
    *
    * @param {number[]} rowIndexes - The row indexes
    * @return {object[]}
    */
-  sortRows(rowIndexes) {
+  const sortedRows = useMemo(() => {
+    const rowIndexes = filteredRowIndexes;
     const index = [];
 
     for (let i = 0; i < rowIndexes.length; i++) {
       let idx = rowIndexes[i];
-      let val = this.props.data[idx][this.state.sort.column] || undefined;
 
-      // If sortColumn is equal to default No. column, set value to be
-      // index + 1
-      if (this.state.sort.column === -1) {
+      let val;
+      if (sort.column === -1) {
         val = idx + 1;
+      } else {
+        val = data[idx][sort.column] || undefined;
       }
 
       const isString = (typeof val === 'string' || val instanceof String);
-      const isNumber = !isNaN(val) && typeof val !== 'object';
+      const isNumber = !isNaN(parseFloat(val)) && isFinite(val);
 
       if (val === '.') {
-        // hack to handle non-existent items in DQT
         val = null;
       } else if (isNumber) {
-        // perform type conversion (from string to int/float)
         val = Number(val);
       } else if (isString) {
-        // if string with text convert to lowercase
         val = val.toLowerCase();
       } else if (Array.isArray(val)) {
         val = val.join(', ');
@@ -251,469 +283,237 @@ class DataTable extends Component {
         val = undefined;
       }
 
-      if (this.props.RowNameMap) {
-        index.push({
-          RowIdx: idx,
-          Value: val,
-          Content: this.props.RowNameMap[idx],
-        });
-      } else {
-        index.push({
-          RowIdx: idx,
-          Value: val,
-          Content: idx + 1,
-        });
-      }
+      index.push({
+        RowIdx: idx,
+        Value: val,
+        Content: RowNameMap ? RowNameMap[idx] : idx + 1,
+      });
     }
 
     index.sort((a, b) => {
-      if (this.state.sort.ascending) {
-        if (a.Value === b.Value) {
-          // If all values are equal, sort by rownum
-          if (a.RowIdx < b.RowIdx) return -1;
-          if (a.RowIdx > b.RowIdx) return 1;
-        }
-        // Check if null values
-        if (a.Value === null || typeof a.Value === 'undefined') return -1;
-        if (b.Value === null || typeof b.Value === 'undefined') return 1;
+      const isAsc = sort.ascending;
 
-        // Sort by value
-        if (a.Value < b.Value) return -1;
-        if (a.Value > b.Value) return 1;
-      } else {
-        if (a.Value === b.Value) {
-          // If all values are equal, sort by rownum
-          if (a.RowIdx < b.RowIdx) return 1;
-          if (a.RowIdx > b.RowIdx) return -1;
-        }
-        // Check if null values
-        if (a.Value === null || typeof a.Value === 'undefined') return 1;
-        if (b.Value === null || typeof b.Value === 'undefined') return -1;
-
-        // Sort by value
-        if (a.Value < b.Value) return 1;
-        if (a.Value > b.Value) return -1;
+      if (a.Value === b.Value) {
+        // If values are equal, sort by original row index
+        return isAsc ? (a.RowIdx - b.RowIdx) : (b.RowIdx - a.RowIdx);
       }
-      // They're equal..
+
+      // Handle null/undefined values (push to end/top depending on direction)
+      if (a.Value == null) return isAsc ? -1 : 1;
+      if (b.Value == null) return isAsc ? 1 : -1;
+
+      // Primary sort
+      if (a.Value < b.Value) return isAsc ? -1 : 1;
+      if (a.Value > b.Value) return isAsc ? 1 : -1;
+
       return 0;
     });
+
     return index;
-  }
+  }, [filteredRowIndexes, data, RowNameMap, sort]);
 
-  /**
-   * Searches for the filter keyword in the column cell
-   *
-   * Note: Search is case-insensitive.
-   *
-   * @param {string} name field name
-   * @param {string} data search string
-   * @return {boolean} true, if filter value is found to be a substring
-   * of one of the column values, false otherwise.
-   */
-  hasFilterKeyword(name, data) {
-    let filterData = null;
-    let exactMatch = false;
-    let opposite = false;
-    let result = false;
-    let searchKey = null;
-    let searchString = null;
-
-    if (this.props.filters[name]) {
-      filterData = this.props.filters[name].value;
-      exactMatch = this.props.filters[name].exactMatch;
-      opposite = this.props.filters[name].opposite;
-    }
-
-    // Handle null inputs
-    if (filterData === null || data === null) {
-      return false;
-    }
-
-    // Handle numeric inputs
-    if (typeof filterData === 'number') {
-      let intData = Number.parseInt(data, 10);
-      result = (filterData === intData);
-    }
-
-    // Handle string inputs
-    if (typeof filterData === 'string') {
-      searchKey = filterData.toLowerCase();
-      switch (typeof data) {
-      case 'object':
-        // Handles the case where the data is an array (typeof 'object')
-        // and you want to search through it for
-        // the string you are filtering by
-        let searchArray = data.map((e) => e.toLowerCase());
-        if (exactMatch) {
-          result = searchArray.includes(searchKey);
-        } else {
-          result = (
-            searchArray.find(
-              (e) => (e.indexOf(searchKey) > -1)
-            )
-          ) !== undefined;
-        }
-        break;
-      default:
-        searchString = (data !== null && data !== undefined) ?
-          data.toString().toLowerCase() : '';
-
-        if (exactMatch) {
-          result = (searchString === searchKey);
-        } else if (opposite) {
-          result = searchString !== searchKey;
-        } else {
-          result = (searchString.indexOf(searchKey) > -1);
-        }
-        break;
-      }
-    }
-
-    // Handle boolean inputs
-    if (typeof filterData === 'boolean') {
-      result = (filterData === data);
-    }
-
-    // Handle array inputs for multiselects
-    if (typeof filterData === 'object') {
-      let match = false;
-      for (let i = 0; i < filterData.length; i += 1) {
-        searchKey = filterData[i].toLowerCase();
-        searchString = (data !== null && data !== undefined) ?
-          data.toString().toLowerCase() : '';
-
-        let searchArray = searchString.split(',');
-        match = (searchArray.includes(searchKey));
-        if (match) {
-          result = true;
-        }
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
-  componentDidMount() {
-    if (!this.props.noDynamicTable) {
+  useEffect(() => {
+    if (!noDynamicTable) {
       $('.dynamictable').DynamicTable();
     }
-  }
+  }, [noDynamicTable]);
 
   /**
    * Renders the Actions buttons.
    *
    * @return {string[]|void} - Array of React Elements
    */
-  renderActions() {
-    if (this.props.actions) {
-      return this.props.actions.map((action, key) => {
+  const renderActions = () => {
+    if (actions) {
+      return actions.map((action, key) => {
         if (action.show !== false) {
           return (
             <CTA
-              key = {key}
-              label = {action.label}
-              onUserInput = {action.action}
+              key={key}
+              label={action.label}
+              onUserInput={action.action}
             />
           );
         }
+        return null;
       });
     }
-  }
+    return null;
+  };
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
-  render() {
-    if (
-      (this.props.data === null || this.props.data.length === 0)
-      && !this.props.nullTableShow
-    ) {
-      return (
-        <div>
-          <div className="row">
-            <div className="col-xs-12">
-              <div className="pull-right" style={{marginRight: '10px'}}>
-                {this.renderActions()}
-              </div>
-            </div>
-          </div>
-          <div className='alert alert-info no-result-found-panel'>
-            <strong>{this.props.t('No result found.', {ns: 'loris'})}</strong>
-          </div>
-        </div>
-      );
-    }
-    let rowsPerPage = this.state.page.rows;
-    let headers = this.props.hide.defaultColumn === true ? [] : [
-      <th key='th_col_0' onClick={() => {
-        this.setSortColumn(-1);
-      }}>
-        {this.props.rowNumLabel}
-      </th>,
-    ];
+  // 1. Calculate the slice for the current page
+  const rowsPerPage = Number(page.rows);
+  const paginatedRows = useMemo(() => {
+    const start = page.rows * (page.number - 1);
+    const end = start + page.rows;
+    return sortedRows.slice(start, end);
+  }, [sortedRows, page.rows, page.number]);
 
-    for (let i = 0; i < this.props.fields.length; i += 1) {
-      if (this.props.fields[i].show === true) {
-        let colIndex = i + 1;
-        if (this.props.fields[i].freezeColumn === true) {
-          headers.push(
-            <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
-              onClick={() => {
-                this.setSortColumn(i);
-              }}>
-              {this.props.fields[i].label}
-            </th>
-          );
-        } else {
-          headers.push(
-            <th key={'th_col_' + colIndex} onClick={() => {
-              this.setSortColumn(i);
-            }}>
-              {this.props.fields[i].label}
-            </th>
-          );
-        }
-      }
-    }
-
-    let rows = [];
-    let filteredRowIndexes = this.getFilteredRowIndexes();
-    let filteredCount = filteredRowIndexes.length;
-    let index = this.sortRows(filteredRowIndexes);
-    let currentPageRow = (rowsPerPage * (this.state.page.number - 1));
-
-    // Format each cell for the data table.
-    for (let i = currentPageRow;
-      (i < filteredCount) && (rows.length < rowsPerPage);
-      i++
-    ) {
-      let rowIndex = index[i].RowIdx;
-      let rowData = this.props.data[rowIndex];
-      let curRow = [];
-
-      // Iterates through headers to populate row columns
-      // with corresponding data
-      for (let j = 0; j < this.props.fields.length; j += 1) {
-        if (this.props.fields[j].show === false) {
-          continue;
-        }
-
-        let celldata = rowData[j];
-        let cell = null;
-
-        let row = {};
-        this.props.fields
-          .forEach((field, k) => row[field.label] = rowData[k]);
-
-        const headers = this.props.fields.map(
-          (val) => val.label
-        );
-
-        // Get custom cell formatting if available
-        if (this.props.getFormattedCell) {
-          cell = this.props.getFormattedCell(
-            this.props.fields[j].label,
-            celldata,
-            row,
-            headers,
-            j
-          );
-        } else {
-          cell = <td>{celldata}</td>;
-        }
-        if (cell !== null) {
-          curRow.push(React.cloneElement(cell, {key: 'td_col_' + j}));
-        } else {
-          curRow.push(createFragment({celldata}));
-        }
-      }
-
-      const rowIndexDisplay = index[i].Content;
-      rows.push(
-        <tr key={'tr_' + rowIndex} colSpan={headers.length}>
-          {this.props.hide.defaultColumn === true ? null : (
-            <td key={'td_' + rowIndex}>{rowIndexDisplay}</td>
-          )}
-          {curRow}
-        </tr>
-      );
-    }
-
-    let rowsPerPageDropdown = (
-      <select
-        className="input-sm perPage"
-        onChange={this.updatePageRows}
-        value={this.state.page.rows}
-      >
-        <option>20</option>
-        <option>50</option>
-        <option>100</option>
-        <option>1000</option>
-        <option>5000</option>
-        <option>10000</option>
-      </select>
-    );
-
-    // This doesn't feel like a very robust way to handle the dropdown.
-    // It's not clear if there's any good way to structure this for locales that
-    // use RTL languages or prefer a different kind of parenthesis.
-    let changeRowsDropdown = <span>
-       ({this.props.t('Maximum rows per page:')} {rowsPerPageDropdown})
-    </span>;
-
-    let header = this.props.hide.rowsPerPage === true ? '' : (
-      <div className="table-header">
-        <div className="row">
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            padding: '5px 15px',
-          }}>
-            <div style={{
-              order: '1',
-              padding: '5px 0',
-            }}>
-              {this.props.t(
-                '{{pageCount}} rows displayed of {{totalCount}}.',
-                {
-                  pageCount: rows.length,
-                  totalCount: filteredCount,
-                }
-              )}
-              {changeRowsDropdown}
-            </div>
-            <div style={{
-              order: '2',
-              display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              padding: '5px 0',
-              marginLeft: 'auto',
-            }}>
-              {this.renderActions()}
-              {this.props.hide.downloadCSV === true ? '' : (
-                <button
-                  className="btn btn-primary"
-                  onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
-                >
-                  {this.props.t('Download Data as CSV')}
-                </button>)
-              }
-              <PaginationLinks
-                Total={filteredCount}
-                onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.page.number}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-
-    let footer = (
+  // 2. Early Return for Empty Data
+  if ((!data || data.length === 0) && !nullTableShow) {
+    return (
       <div>
         <div className="row">
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            padding: '5px 15px',
-          }}>
-            <div style={{
-              order: '1',
-              padding: '5px 0',
-            }}>
-              {this.props.t(
-                '{{pageCount}} rows displayed of {{totalCount}}.',
-                {
-                  pageCount: rows.length,
-                  totalCount: filteredCount,
-                }
-              )}
-              {changeRowsDropdown}
-            </div>
-            <div style={{
-              order: '2',
-              padding: '5px 0',
-              marginLeft: 'auto',
-            }}>
-              <PaginationLinks
-                Total={filteredCount}
-                onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.page.number}
-              />
+          <div className="col-xs-12">
+            <div className="pull-right" style={{marginRight: '10px'}}>
+              {renderActions()}
             </div>
           </div>
         </div>
-      </div>
-    );
-
-    return (
-      <div style={{margin: '14px'}}>
-        {header}
-        <table
-          className="table table-hover table-primary
-            table-bordered dynamictable"
-          id="dynamictable"
-        >
-          <thead>
-            <tr className="info">{headers}</tr>
-          </thead>
-          {this.props.folder}
-          <tbody>
-            {rows}
-          </tbody>
-        </table>
-        {footer}
+        <div className='alert alert-info no-result-found-panel'>
+          <strong>{t('No result found.', {ns: 'loris'})}</strong>
+        </div>
       </div>
     );
   }
-}
+
+  // 3. Helper for the Header/Footer UI
+  const tableControlStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    padding: '5px 15px',
+  };
+  const tableActionsStyle = {
+    order: '2',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    padding: '5px 0',
+    marginLeft: 'auto',
+  };
+  const renderTableControls = () => (
+    <div className="row">
+      <div style={tableControlStyle}>
+        <div style={{order: '1', padding: '5px 0'}}>
+          {t('{{pageCount}} rows displayed of {{totalCount}}.', {
+            pageCount: paginatedRows.length,
+            totalCount: filteredRowIndexes.length,
+          })}
+          <span>
+            ({t('Maximum rows per page:')}
+            <select
+              className="input-sm perPage"
+              onChange={updatePageRows}
+              value={page.rows}
+            >
+              {[20, 50, 100, 1000, 5000, 10000].map((num) => (
+                <option key={num} value={num}>{num}</option>
+              ))}
+            </select>
+            )
+          </span>
+        </div>
+        <div style={tableActionsStyle}>
+          {renderActions()}
+          {!hide.downloadCSV && (
+            <button
+              className="btn btn-primary"
+              onClick={() => downloadCSV(filteredRowIndexes)}
+            >
+              {t('Download Data as CSV')}
+            </button>
+          )}
+          <PaginationLinks
+            Total={filteredRowIndexes.length}
+            onChangePage={updatePageNumber}
+            RowsPerPage={rowsPerPage}
+            Active={page.number}
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{margin: '14px'}}>
+      {!hide.rowsPerPage && (
+        <div className="table-header">
+          {renderTableControls()}
+        </div>
+      )}
+
+      <table
+        className="table table-hover table-primary table-bordered dynamictable"
+        id="dynamictable"
+      >
+        <thead>
+          <tr className="info">
+            {!hide.defaultColumn && (
+              <th
+                key='th_col_0'
+                onClick={() => setSortColumn(-1)}
+              >
+                {rowNumLabel}
+              </th>
+            )}
+            {fields.map((field, index) => {
+              if (!field.show) return null;
+              return (
+                <th
+                  key={`th_col_${index + 1}`}
+                  id={field.freezeColumn ? freezeColumn : undefined}
+                  onClick={() => setSortColumn(index)}
+                >
+                  {field.label}
+                </th>
+              );
+            })}
+          </tr>
+        </thead>
+        {folder}
+        <tbody>
+          {paginatedRows.map((item, i) => {
+            const rowData = data[item.RowIdx];
+            const fieldLabels = fields.map((f) => f.label);
+
+            return (
+              <tr key={`tr_${item.RowIdx}`}>
+                {!hide.defaultColumn && <td>{item.Content}</td>}
+                {fields.map((field, j) => {
+                  if (!field.show) return null;
+
+                  if (getFormattedCell) {
+                    return React.cloneElement(
+                      getFormattedCell(
+                        field.label,
+                        rowData[j],
+                        rowData,
+                        fieldLabels,
+                        j
+                      ),
+                      {key: `td_col_${j}`}
+                    );
+                  }
+                  return <td key={`td_col_${j}`}>{rowData[j]}</td>;
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+
+      <div className="table-footer">{renderTableControls()}</div>
+    </div>
+  );
+};
+
 DataTable.propTypes = {
   data: PropTypes.array.isRequired,
   rowNumLabel: PropTypes.string,
-  // Function of which returns a JSX element for a table cell, takes
-  // parameters of the form: func(ColumnName, CellData, EntireRowData)
   getFormattedCell: PropTypes.func,
-  onSort: PropTypes.func,
   actions: PropTypes.array,
   hide: PropTypes.object,
   nullTableShow: PropTypes.bool,
   noDynamicTable: PropTypes.bool,
   getMappedCell: PropTypes.func,
-  fields: PropTypes.array,
-  RowNameMap: PropTypes.array,
+  fields: PropTypes.array.isRequired,
+  RowNameMap: PropTypes.object,
   filters: PropTypes.object,
   freezeColumn: PropTypes.string,
-  loading: PropTypes.element,
-  folder: PropTypes.element,
-
-  // Provided by withTranslation HOC
-  t: PropTypes.func,
-};
-DataTable.defaultProps = {
-  headers: [],
-  data: {},
-  rowNumLabel: 'No.',
-  filters: {},
-  hide: {
-    rowsPerPage: false,
-    downloadCSV: false,
-    defaultColumn: false,
-  },
-  nullTableShow: false,
-  noDynamicTable: false,
+  folder: PropTypes.node,
 };
 
-export default withTranslation(['loris'])(DataTable);
+export default DataTable;
