@@ -1,4 +1,3 @@
-declare const loris: any;
 import {Query, QueryParam} from './Query';
 import {Errors} from '../';
 
@@ -167,14 +166,14 @@ export class Client<T> {
   }
 
   /**
-   * Constructs a full URL by combining the base URL, sub-endpoint, 
+   * Constructs a full URL by combining the base URL, sub-endpoint,
    * and an optional path or resource ID, then appends query parameters.
    *
-   * @param path  - An optional sub-path or resource ID (e.g., '123' or 'details'). 
+   * @param path  - An optional sub-path or resource ID (e.g., '123' or 'details').
    * Defaults to an empty string.
    * @param query - An optional Query object used to build the URL's search parameters.
    * @returns A fully constructed URL object.
-   */  
+   */
   private buildURL(path = '', query?: Query): URL {
     // 1. Resolve segments (this.baseURL + subEndpoint + id/path)
     const segments = [this.subEndpoint, path].filter(Boolean).join('/');
