@@ -17,6 +17,8 @@ import hiStrings from '../locale/hi/LC_MESSAGES/media.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/media.json';
 import frStrings from '../locale/fr/LC_MESSAGES/media.json';
 import esStrings from '../locale/es/LC_MESSAGES/media.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/media.json';
+
 
 /**
  * Media Index component
@@ -304,6 +306,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('fr', 'media', frStrings);
   i18n.addResourceBundle('ja', 'media', jaStrings);
   i18n.addResourceBundle('hi', 'media', hiStrings);
+  i18n.addResourceBundle('zh', 'media', zhStrings);	
   const Index = withTranslation(
     ['media', 'loris']
   )(MediaIndex);

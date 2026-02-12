@@ -1,0 +1,159 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-04-09 10:00+0800\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Chinese <zh@li.org>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Media"
+msgstr "媒体"
+
+msgid "Candidate Media"
+msgstr "候选人媒体"
+
+msgid "File Name"
+msgstr "文件名"
+
+msgid "Instrument"
+msgstr "仪器"
+
+msgid "Uploaded By"
+msgstr "上传者"
+
+msgid "Date Taken"
+msgstr "拍摄日期"
+
+msgid "Comments"
+msgstr "备注"
+
+msgid "Last Modified"
+msgstr "最后修改"
+
+msgid "File Type"
+msgstr "文件类型"
+
+msgid "CandID"
+msgstr "候选人ID"
+
+msgid "SessionID"
+msgstr "会话ID"
+
+msgid "File Visibility"
+msgstr "文件可见性"
+
+msgid "Edit Metadata"
+msgstr "编辑元数据"
+
+msgid "Edit Media File"
+msgstr "编辑媒体文件"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Browse"
+msgstr "浏览"
+
+msgid "Upload"
+msgstr "上传"
+
+msgid "An error occured while loading the page."
+msgstr "加载页面时发生错误。"
+
+msgid "Language"
+msgstr "语言"
+
+# New strings from uploadForm.js
+
+msgid "An error occurred when loading the form!"
+msgstr "加载表单时发生错误！"
+
+msgid "File name must begin with"
+msgstr "文件名必须以"
+
+msgid "For example, for candidate"
+msgstr "例如，对于候选人"
+
+msgid "visit"
+msgstr "访视"
+
+msgid "for"
+msgstr "针对"
+
+msgid "the file name should be prefixed by"
+msgstr "文件名应以"
+
+msgid "File cannot exceed"
+msgstr "文件大小不能超过"
+
+msgid "No visits available for this candidate"
+msgstr "该候选人没有可用的访视"
+
+msgid "No instruments available for this visit"
+msgstr "该访视没有可用的仪器"
+
+msgid "Upload a media file"
+msgstr "上传媒体文件"
+
+msgid "Note"
+msgstr "注意"
+
+msgid "Date of Administration"
+msgstr "管理日期"
+
+msgid "Document's Language"
+msgstr "文档语言"
+
+msgid "Upload File"
+msgstr "上传文件"
+
+msgid "Update File"
+msgstr "更新文件"
+
+msgid "Uploaded file"
+msgstr "已上传的文件"
+
+msgid "Hide File"
+msgstr "隐藏文件"
+
+msgid "Invalid file name!"
+msgstr "无效的文件名！"
+
+msgid "File name should begin with:"
+msgstr "文件名应以以下内容开头："
+
+msgid "A file with this name already exists!\n Would you like to override existing file?"
+msgstr "已存在同名文件！\n是否覆盖现有文件？"
+
+msgid "Cancelled"
+msgstr "已取消"
+
+msgid "Your imaginary file is safe :)"
+msgstr "您的虚拟文件是安全的 :)"
+
+msgid "Success!"
+msgstr "成功！"
+
+msgid "Upload of media file completed."
+msgstr "媒体文件上传完成。"
+
+msgid "Upload error!"
+msgstr "上传错误！"
+
+msgid "File too large!"
+msgstr "文件过大！"
+
+msgid "This field is required."
+msgstr "此字段为必填项。"

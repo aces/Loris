@@ -1,0 +1,229 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2026-02-12 00:00+0000\n"
+"Last-Translator: Shen Wang\n"
+"Language-Team: zh\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+# Smarty template main.tpl strings
+msgid "LORIS"
+msgstr "LORIS"
+
+msgid "DEV"
+msgstr "开发环境"
+
+msgid "Affiliations"
+msgstr "隶属关系"
+
+msgid "Site Affiliation"
+msgstr "中心隶属"
+
+msgid "Site Affiliations"
+msgstr "中心隶属"
+
+msgid "Project Affiliation"
+msgstr "项目隶属"
+
+msgid "Project Affiliations"
+msgstr "项目隶属"
+
+msgid "Log Out"
+msgstr "退出登录"
+
+msgid "My Preferences"
+msgstr "我的设置"
+
+# Menu categories
+msgid "Admin"
+msgstr "管理"
+
+msgid "Data Dictionary"
+msgstr "数据字典"
+
+msgid "Tools"
+msgstr "工具"
+
+msgid "Clinical"
+msgstr "临床"
+
+msgid "Imaging"
+msgstr "影像"
+
+msgid "Candidate"
+msgstr "受试者"
+
+msgid "Genomics"
+msgstr "基因组学"
+
+msgid "Electrophysiology"
+msgstr "电生理"
+
+msgid "Reports"
+msgstr "报告"
+
+# Common loris terms
+msgid "TimePoint"
+msgstr "时间点"
+
+# Common select option labels
+msgid "Yes"
+msgstr "是"
+
+msgid "No"
+msgstr "否"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Clear"
+msgstr "清除"
+
+msgid "Submit"
+msgstr "提交"
+
+msgid "Proceed"
+msgstr "继续"
+
+# Common candidate terms
+msgid "PSCID"
+msgstr "PSCID"
+
+msgid "DCCID"
+msgstr "DCCID"
+
+msgid "Visit Label"
+msgstr "访视标签"
+
+msgid "Site"
+msgstr "中心"
+
+msgid "Module"
+msgstr "模块"
+
+msgid "Project"
+msgstr "项目"
+
+msgid "Cohort"
+msgid_plural "Cohorts"
+msgstr[0] "队列"
+
+msgid "Session"
+msgstr "会话"
+
+msgid "Date of registration"
+msgstr "注册日期"
+
+msgid "Participant Status"
+msgstr "受试者状态"
+
+msgid "DoB"
+msgstr "出生日期"
+
+msgid "Sex"
+msgstr "性别"
+
+msgid "Feedback"
+msgstr "反馈"
+
+msgid "Scans"
+msgstr "扫描"
+
+msgid "Stage"
+msgstr "阶段"
+
+msgid "Sent To DCC"
+msgstr "已发送至数据中心"
+
+msgid "Date of Birth"
+msgstr "出生日期"
+
+msgid "Visits"
+msgstr "访视"
+
+msgid "An error occured while loading the page."
+msgstr "页面加载时发生错误。"
+
+msgid "Entity Type"
+msgstr "实体类型"
+
+msgid "Scan Done"
+msgstr "扫描完成"
+
+msgid "Show Advanced Filters"
+msgstr "显示高级筛选"
+
+msgid "Hide Advanced Filters"
+msgstr "隐藏高级筛选"
+
+# Data table strings
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgstr "显示 {{pageCount}} 行，共 {{totalCount}} 行。"
+
+msgid "Maximum rows per page:"
+msgstr "每页最大行数："
+
+msgid "Download Data as CSV"
+msgstr "下载为 CSV 文件"
+
+# Dashboard panel strings
+msgid "Views"
+msgstr "浏览量"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "新增"
+
+msgid "Updated"
+msgstr "已更新"
+
+msgid "Uploaded"
+msgstr "已上传"
+
+msgid "Total"
+msgstr "总计"
+
+# Common timepoint and visit terms
+msgid "Not Started"
+msgstr "未开始"
+
+msgid "Screening"
+msgstr "筛查"
+
+msgid "Visit"
+msgstr "访视"
+
+msgid "Approval"
+msgstr "批准"
+
+msgid "Subject"
+msgstr "受试者"
+
+msgid "Recycling Bin"
+msgstr "回收站"
+
+msgid "Pass"
+msgstr "通过"
+
+msgid "Failure"
+msgstr "失败"
+
+msgid "Withdrawal"
+msgstr "退出"
+
+msgid "In Progress"
+msgstr "进行中"
+

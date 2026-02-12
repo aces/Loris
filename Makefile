@@ -5,11 +5,13 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	locale/hi/LC_MESSAGES/loris.po \
 	locale/es/LC_MESSAGES/loris.po \
 	locale/en/LC_MESSAGES/loris.po \
+	locale/zh/LC_MESSAGES/loris.po \
 	modules/biobank/locale/fr/LC_MESSAGES/biobank.po \
 	modules/media/locale/fr/LC_MESSAGES/media.po \
 	modules/media/locale/ja/LC_MESSAGES/media.po \
 	modules/media/locale/hi/LC_MESSAGES/media.po \
 	modules/media/locale/es/LC_MESSAGES/media.po \
+	modules/media/locale/zh/LC_MESSAGES/media.po \
 	modules/datadict/locale/fr/LC_MESSAGES/datadict.po \
 	modules/datadict/locale/ja/LC_MESSAGES/datadict.po \
 	modules/datadict/locale/hi/LC_MESSAGES/datadict.po \
