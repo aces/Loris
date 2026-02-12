@@ -5,100 +5,75 @@ import {CTA} from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
 
 /**
- * Searches for the filter keyword in the column cell
+ * Searches for the filter keyword in the column cell.
  *
  * Note: Search is case-insensitive.
  *
  * @param {string} name field name
- * @param {string} data search string
- * @return {boolean} true, if filter value is found to be a substring
- * of one of the column values, false otherwise.
+ * @param {string|number|boolean|Array} data the cell value to search within
+ * @param {object} filters the filters object
+ * @return {boolean} true if it matches the filter criteria, false otherwise.
  */
 const hasFilterKeyword = (name, data, filters) => {
-  let filterData = null;
-  let exactMatch = false;
-  let opposite = false;
-  let result = false;
+  const filter = filters[name];
+  if (!filter) return true; // Safety fallback
 
-  // Accessing filters directly from props
-  if (filters[name]) {
-    filterData = filters[name].value;
-    exactMatch = filters[name].exactMatch;
-    opposite = filters[name].opposite;
-  }
+  const {value: filterData, exactMatch, opposite} = filter;
 
-  // Handle null inputs
-  if (filterData === null || data === null) {
-    return false;
-  }
+  // If the cell is empty but we have an active filter, it's not a match
+  if (data === null || data === undefined) return false;
 
-  // Handle numeric inputs
+  // Numbers
   if (typeof filterData === 'number') {
-    let intData = Number.parseInt(data, 10);
-    return (filterData === intData);
+    return filterData === Number.parseInt(data, 10);
   }
 
-  // Handle string inputs
+  // Strings & Arrays
   if (typeof filterData === 'string') {
     const searchKey = filterData.toLowerCase();
+    const cellValues = Array.isArray(data)
+      ? data.map((e) => String(e).toLowerCase())
+      : [String(data).toLowerCase()];
 
-    if (Array.isArray(data)) {
-      let searchArray = data.map((e) => e.toLowerCase());
-      if (exactMatch) {
-        return searchArray.includes(searchKey);
-      }
-      return searchArray.some((e) => e.indexOf(searchKey) > -1);
-    }
-
-    const searchString = (data !== null && data !== undefined) ?
-      data.toString().toLowerCase() : '';
-
-    if (exactMatch) {
-      result = (searchString === searchKey);
-    } else if (opposite) {
-      result = (searchString !== searchKey);
-    } else {
-      result = (searchString.indexOf(searchKey) > -1);
-    }
-    return result;
+    if (exactMatch) return cellValues.includes(searchKey);
+    if (opposite) return !cellValues.includes(searchKey);
+    return cellValues.some((val) => val.includes(searchKey));
   }
 
-  // Handle boolean inputs
+  // Booleans (Checkboxes)
   if (typeof filterData === 'boolean') {
-    return (filterData === data);
+    return filterData === data;
   }
 
-  // Handle array inputs for multiselects
-  if (typeof filterData === 'object' && Array.isArray(filterData)) {
-    const searchString = (data !== null && data !== undefined) ?
-      data.toString().toLowerCase() : '';
-    let searchArray = searchString.split(',');
-
-    return filterData.some((val) => searchArray.includes(val.toLowerCase()));
+  // Multi-select (filterData is an array)
+  if (Array.isArray(filterData)) {
+    const cellValues = String(data).toLowerCase().split(',');
+    return filterData.some((val) =>
+      cellValues.includes(String(val).toLowerCase())
+    );
   }
 
-  return result;
+  return false;
 };
-
 
 /**
  * Data Table component
  * Displays a set of data that it receives via props.
  *
- * @param root0
- * @param root0.data
- * @param root0.rowNumLabel
- * @param root0.getFormattedCell
- * @param root0.actions
- * @param root0.hide
- * @param root0.nullTableShow
- * @param root0.noDynamicTable
- * @param root0.getMappedCell
- * @param root0.fields
- * @param root0.RowNameMap
- * @param root0.filters
- * @param root0.freezeColumn
- * @param root0.folder
+ * @param {object} props - The component props
+ * @param {Array} props.data - The table data to be displayed
+ * @param {string} props.rowNumLabel - Label for the row number column
+ * @param {Function} props.getFormattedCell - Custom cell formatter function
+ * @param {Array} props.actions - List of actions for the table
+ * @param {object} props.hide - Visibility configuration for columns/controls
+ * @param {boolean} props.nullTableShow - Whether to show table if data is null
+ * @param {boolean} props.noDynamicTable - Flag to disable dynamic features
+ * @param {Function} props.getMappedCell - Mapper for cell values
+ * @param {Array} props.fields - Column definitions and configurations
+ * @param {object} props.RowNameMap - Mapping for row identifiers
+ * @param {object} props.filters - Current active filters
+ * @param {string} props.freezeColumn - The ID/Name of the column to freeze
+ * @param {React.ReactNode} props.folder - Folder or nested element to display
  */
 const DataTable = ({
   data = [],
@@ -147,7 +122,7 @@ const DataTable = ({
    */
   const updatePageRows = (e) => {
     setPage({
-      rows: Number(e.target.value),
+      rows: e.target.value,
       number: 1, // Reset to first page when changing row count
     });
   };
@@ -241,39 +216,36 @@ const DataTable = ({
    * Memoized to prevent heavy re-calculation on every render
    */
   const filteredRowIndexes = useMemo(() => {
-    // 1. Identify which filters actually have values typed in them
-    const activeFilterKeys = Object.keys(filters).filter(key => 
-      filters[key] !== undefined && filters[key] !== null && filters[key] !== ''
-    );
-  
-    // 2. If no filters are active, return all data indexes
-    if (activeFilterKeys.length === 0) {
+    // Get the filter keys.
+    const filterKeys = Object.keys(filters);
+
+    // If no filters are active, return all data indexes
+    if (filterKeys.length === 0) {
       return data.map((_, i) => i);
     }
-  
+
     // 3. Filter the data
     return data.reduce((filteredIndexes, row, i) => {
-      // A row is a match only if every active filter key matches its column
-      const matchesAll = activeFilterKeys.every(filterName => {
-        // Find the column index for this filter
-        const fieldIndex = fields.findIndex(f => (f.filter || {}).name === filterName);
-        
-        // If a filter exists but has no column, we ignore it (return true)
-        if (fieldIndex === -1) return true;
-  
-        const cellData = row ? row[fieldIndex] : null;
-        
-        // Check the match using the external helper
+      const matchesAll = filterKeys.every((filterName) => {
+        // Find the field definition that matches this filter name
+        const fieldIndex = fields.findIndex(
+          (f) => f.filter && f.filter.name === filterName
+        );
+
+        // If no field is found or the row is missing data at that index,
+        // we can't filter it, so we skip (return true)
+        if (fieldIndex === -1 || !row) return true;
+
+        const cellData = row[fieldIndex];
         return hasFilterKeyword(filterName, cellData, filters);
       });
-  
+
       if (matchesAll) {
         filteredIndexes.push(i);
       }
-      
       return filteredIndexes;
     }, []);
-  }, [data, fields, filters]);  
+  }, [data, fields, filters]);
 
   /**
    * Sort the given rows according to the sort configuration
@@ -370,9 +342,7 @@ const DataTable = ({
   };
 
   // 1. Calculate the slice for the current page
-  const rowsPerPage = page.rows;
-  const currentPageStart = rowsPerPage * (page.number - 1);
-  const currentPageEnd = currentPageStart + rowsPerPage;
+  const rowsPerPage = Number(page.rows);
   const paginatedRows = useMemo(() => {
     const start = page.rows * (page.number - 1);
     const end = start + page.rows;
@@ -479,15 +449,18 @@ const DataTable = ({
                 {rowNumLabel}
               </th>
             )}
-            {fields.filter((f) => f.show).map((field, i) => (
-              <th
-                key={`th_col_${i+1}`}
-                id={field.freezeColumn ? freezeColumn : undefined}
-                onClick={() => setSortColumn(i)}
-              >
-                {field.label}
-              </th>
-            ))}
+            {fields.map((field, index) => {
+              if (!field.show) return null;
+              return (
+                <th
+                  key={`th_col_${index + 1}`}
+                  id={field.freezeColumn ? freezeColumn : undefined}
+                  onClick={() => setSortColumn(index)}
+                >
+                  {field.label}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         {folder}
@@ -525,6 +498,22 @@ const DataTable = ({
       <div className="table-footer">{renderTableControls()}</div>
     </div>
   );
+};
+
+DataTable.propTypes = {
+  data: PropTypes.array.isRequired,
+  rowNumLabel: PropTypes.string,
+  getFormattedCell: PropTypes.func,
+  actions: PropTypes.array,
+  hide: PropTypes.object,
+  nullTableShow: PropTypes.bool,
+  noDynamicTable: PropTypes.bool,
+  getMappedCell: PropTypes.func,
+  fields: PropTypes.array.isRequired,
+  RowNameMap: PropTypes.object,
+  filters: PropTypes.object,
+  freezeColumn: PropTypes.string,
+  folder: PropTypes.node,
 };
 
 export default DataTable;
