@@ -5,6 +5,83 @@ import {CTA} from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
 
 /**
+ * Searches for the filter keyword in the column cell
+ *
+ * Note: Search is case-insensitive.
+ *
+ * @param {string} name field name
+ * @param {string} data search string
+ * @return {boolean} true, if filter value is found to be a substring
+ * of one of the column values, false otherwise.
+ */
+const hasFilterKeyword = (name, data, filters) => {
+  let filterData = null;
+  let exactMatch = false;
+  let opposite = false;
+  let result = false;
+
+  // Accessing filters directly from props
+  if (filters[name]) {
+    filterData = filters[name].value;
+    exactMatch = filters[name].exactMatch;
+    opposite = filters[name].opposite;
+  }
+
+  // Handle null inputs
+  if (filterData === null || data === null) {
+    return false;
+  }
+
+  // Handle numeric inputs
+  if (typeof filterData === 'number') {
+    let intData = Number.parseInt(data, 10);
+    return (filterData === intData);
+  }
+
+  // Handle string inputs
+  if (typeof filterData === 'string') {
+    const searchKey = filterData.toLowerCase();
+
+    if (Array.isArray(data)) {
+      let searchArray = data.map((e) => e.toLowerCase());
+      if (exactMatch) {
+        return searchArray.includes(searchKey);
+      }
+      return searchArray.some((e) => e.indexOf(searchKey) > -1);
+    }
+
+    const searchString = (data !== null && data !== undefined) ?
+      data.toString().toLowerCase() : '';
+
+    if (exactMatch) {
+      result = (searchString === searchKey);
+    } else if (opposite) {
+      result = (searchString !== searchKey);
+    } else {
+      result = (searchString.indexOf(searchKey) > -1);
+    }
+    return result;
+  }
+
+  // Handle boolean inputs
+  if (typeof filterData === 'boolean') {
+    return (filterData === data);
+  }
+
+  // Handle array inputs for multiselects
+  if (typeof filterData === 'object' && Array.isArray(filterData)) {
+    const searchString = (data !== null && data !== undefined) ?
+      data.toString().toLowerCase() : '';
+    let searchArray = searchString.split(',');
+
+    return filterData.some((val) => searchArray.includes(val.toLowerCase()));
+  }
+
+  return result;
+};
+
+
+/**
  * Data Table component
  * Displays a set of data that it receives via props.
  *
@@ -12,7 +89,6 @@ import {useTranslation} from 'react-i18next';
  * @param root0.data
  * @param root0.rowNumLabel
  * @param root0.getFormattedCell
- * @param root0.onSort
  * @param root0.actions
  * @param root0.hide
  * @param root0.nullTableShow
@@ -22,24 +98,25 @@ import {useTranslation} from 'react-i18next';
  * @param root0.RowNameMap
  * @param root0.filters
  * @param root0.freezeColumn
- * @param root0.loading
  * @param root0.folder
  */
 const DataTable = ({
-  data,
-  rowNumLabel,
+  data = [],
+  rowNumLabel = 'No.',
   getFormattedCell,
-  onSort,
   actions,
-  hide,
-  nullTableShow,
+  hide = {
+    rowsPerPage: false,
+    downloadCSV: false,
+    defaultColumn: false,
+  },
+  nullTableShow = false,
   noDynamicTable,
   getMappedCell,
   fields,
   RowNameMap,
-  filters,
+  filters = {},
   freezeColumn,
-  loading,
   folder,
 }) => {
   const {t} = useTranslation(['loris']);
@@ -70,7 +147,7 @@ const DataTable = ({
    */
   const updatePageRows = (e) => {
     setPage({
-      rows: e.target.value,
+      rows: Number(e.target.value),
       number: 1, // Reset to first page when changing row count
     });
   };
@@ -160,128 +237,43 @@ const DataTable = ({
   }, [data, fields, getMappedCell, RowNameMap]);
 
   /**
-   * Searches for the filter keyword in the column cell
-   *
-   * Note: Search is case-insensitive.
-   *
-   * @param {string} name field name
-   * @param {string} data search string
-   * @return {boolean} true, if filter value is found to be a substring
-   * of one of the column values, false otherwise.
-   */
-  const hasFilterKeyword = (name, data) => {
-    let filterData = null;
-    let exactMatch = false;
-    let opposite = false;
-    let result = false;
-
-    // Accessing filters directly from props
-    if (filters[name]) {
-      filterData = filters[name].value;
-      exactMatch = filters[name].exactMatch;
-      opposite = filters[name].opposite;
-    }
-
-    // Handle null inputs
-    if (filterData === null || data === null) {
-      return false;
-    }
-
-    // Handle numeric inputs
-    if (typeof filterData === 'number') {
-      let intData = Number.parseInt(data, 10);
-      return (filterData === intData);
-    }
-
-    // Handle string inputs
-    if (typeof filterData === 'string') {
-      const searchKey = filterData.toLowerCase();
-
-      if (Array.isArray(data)) {
-        let searchArray = data.map((e) => e.toLowerCase());
-        if (exactMatch) {
-          return searchArray.includes(searchKey);
-        }
-        return searchArray.some((e) => e.indexOf(searchKey) > -1);
-      }
-
-      const searchString = (data !== null && data !== undefined) ?
-        data.toString().toLowerCase() : '';
-
-      if (exactMatch) {
-        result = (searchString === searchKey);
-      } else if (opposite) {
-        result = (searchString !== searchKey);
-      } else {
-        result = (searchString.indexOf(searchKey) > -1);
-      }
-      return result;
-    }
-
-    // Handle boolean inputs
-    if (typeof filterData === 'boolean') {
-      return (filterData === data);
-    }
-
-    // Handle array inputs for multiselects
-    if (typeof filterData === 'object' && Array.isArray(filterData)) {
-      const searchString = (data !== null && data !== undefined) ?
-        data.toString().toLowerCase() : '';
-      let searchArray = searchString.split(',');
-
-      return filterData.some((val) => searchArray.includes(val.toLowerCase()));
-    }
-
-    return result;
-  };
-
-
-  /**
    * Get the Filtered Row Indexes
    * Memoized to prevent heavy re-calculation on every render
    */
   const filteredRowIndexes = useMemo(() => {
-    let useKeyword = !!filters.keyword;
-    const filterKeys = Object.keys(filters);
-    let filterValuesCount = filterKeys.length;
-
-    const filteredIndexes = [];
-
-    // If there are no filters set, use all the data.
-    if (filterValuesCount === 0) {
+    // 1. Identify which filters actually have values typed in them
+    const activeFilterKeys = Object.keys(filters).filter(key => 
+      filters[key] !== undefined && filters[key] !== null && filters[key] !== ''
+    );
+  
+    // 2. If no filters are active, return all data indexes
+    if (activeFilterKeys.length === 0) {
       return data.map((_, i) => i);
     }
-
-    if (useKeyword) {
-      filterValuesCount -= 1;
-    }
-
-    data.forEach((row, i) => {
-      let headerCount = 0;
-      let keywordMatch = 0;
-
-      fields.forEach((field, j) => {
-        const cellData = row ? row[j] : null;
-
-        if (hasFilterKeyword((field.filter || {}).name, cellData)) {
-          headerCount++;
-        }
-
-        if (useKeyword && hasFilterKeyword('keyword', cellData)) {
-          keywordMatch++;
-        }
+  
+    // 3. Filter the data
+    return data.reduce((filteredIndexes, row, i) => {
+      // A row is a match only if every active filter key matches its column
+      const matchesAll = activeFilterKeys.every(filterName => {
+        // Find the column index for this filter
+        const fieldIndex = fields.findIndex(f => (f.filter || {}).name === filterName);
+        
+        // If a filter exists but has no column, we ignore it (return true)
+        if (fieldIndex === -1) return true;
+  
+        const cellData = row ? row[fieldIndex] : null;
+        
+        // Check the match using the external helper
+        return hasFilterKeyword(filterName, cellData, filters);
       });
-
-      const satisfiesKeyword = useKeyword
-        ? keywordMatch > 0 : keywordMatch === 0;
-
-      if (headerCount === filterValuesCount && satisfiesKeyword) {
+  
+      if (matchesAll) {
         filteredIndexes.push(i);
       }
-    });
-
-    return filteredIndexes;
-  }, [data, fields, filters, hasFilterKeyword]);
+      
+      return filteredIndexes;
+    }, []);
+  }, [data, fields, filters]);  
 
   /**
    * Sort the given rows according to the sort configuration
@@ -352,11 +344,7 @@ const DataTable = ({
     if (!noDynamicTable) {
       $('.dynamictable').DynamicTable();
     }
-
-    // Cleanup function
-    return () => {
-    };
-  }, [noDynamicTable, paginatedRows]);
+  }, [noDynamicTable]);
 
   /**
    * Renders the Actions buttons.
@@ -385,7 +373,11 @@ const DataTable = ({
   const rowsPerPage = page.rows;
   const currentPageStart = rowsPerPage * (page.number - 1);
   const currentPageEnd = currentPageStart + rowsPerPage;
-  const paginatedRows = sortedRows.slice(currentPageStart, currentPageEnd);
+  const paginatedRows = useMemo(() => {
+    const start = page.rows * (page.number - 1);
+    const end = start + page.rows;
+    return sortedRows.slice(start, end);
+  }, [sortedRows, page.rows, page.number]);
 
   // 2. Early Return for Empty Data
   if ((!data || data.length === 0) && !nullTableShow) {
@@ -441,6 +433,7 @@ const DataTable = ({
                 <option key={num} value={num}>{num}</option>
               ))}
             </select>
+            )
           </span>
         </div>
         <div style={tableActionsStyle}>
@@ -501,10 +494,6 @@ const DataTable = ({
         <tbody>
           {paginatedRows.map((item, i) => {
             const rowData = data[item.RowIdx];
-
-            // Construct the 'row' object for the formatter
-            const rowObj = {};
-            fields.forEach((f, k) => rowObj[f.label] = rowData[k]);
             const fieldLabels = fields.map((f) => f.label);
 
             return (
@@ -516,8 +505,9 @@ const DataTable = ({
                   if (getFormattedCell) {
                     return React.cloneElement(
                       getFormattedCell(
-                        field.label, rowData[j],
-                        rowObj,
+                        field.label,
+                        rowData[j],
+                        rowData,
                         fieldLabels,
                         j
                       ),
@@ -535,38 +525,6 @@ const DataTable = ({
       <div className="table-footer">{renderTableControls()}</div>
     </div>
   );
-};
-
-DataTable.propTypes = {
-  data: PropTypes.array.isRequired,
-  rowNumLabel: PropTypes.string,
-  getFormattedCell: PropTypes.func,
-  onSort: PropTypes.func,
-  actions: PropTypes.array,
-  hide: PropTypes.object,
-  nullTableShow: PropTypes.bool,
-  noDynamicTable: PropTypes.bool,
-  getMappedCell: PropTypes.func,
-  fields: PropTypes.array,
-  RowNameMap: PropTypes.array,
-  filters: PropTypes.object,
-  freezeColumn: PropTypes.string,
-  loading: PropTypes.element,
-  folder: PropTypes.element,
-};
-
-DataTable.defaultProps = {
-  headers: [],
-  data: {},
-  rowNumLabel: 'No.',
-  filters: {},
-  hide: {
-    rowsPerPage: false,
-    downloadCSV: false,
-    defaultColumn: false,
-  },
-  nullTableShow: false,
-  noDynamicTable: false,
 };
 
 export default DataTable;
