@@ -140,10 +140,8 @@ class DataQueryApp extends Component {
       if (this.state.queryIDs.hasOwnProperty(key)) {
         for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
           let curRequest;
-          curRequest = this.client.getJSON(
-            loris.BaseURL
-              + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
-              + encodeURIComponent(this.state.queryIDs[key][i])
+          curRequest = this.client.getDoc(
+            this.state.queryIDs[key][i]
           )
             .then((value) => {
               let queries = this.state.savedQueries;
@@ -165,84 +163,47 @@ class DataQueryApp extends Component {
    * @param {function} callback
    */
   async handleProgressBarSetup(callback) {
-    const response = await lorisFetch(
-      `${loris.BaseURL}/dqt/dqt_setup/?format=json`,
-      {method: 'GET'}
-    );
-    const reader = await response.body.getReader();
-    const contentLength = await response.headers.get('Content-Length');
-    let receivedLength = 0; // received that many bytes at the moment
-    let chunks = ''; // array of received binary chunks (comprises the body)
-    for (;;) {
-      const {done, value} = await reader.read();
-      if (done) {
-        // finished reading chunks from stream reader.
-        this.setState((prevState) => {
-          return {
-            ...prevState,
-            progressbar: {
-              message: 'Data Query Tool is configuring data!',
-              hidden: prevState.progressbar.hidden,
-              percentage: 100,
-            },
-          };
-        });
-        reader.closed.then(() => {
-          let data;
-          try {
-            data = JSON.parse(chunks);
-          } catch (exception) {
-            return callback(false);
-          }
-          let categories = [];
-          for (const [key, value] of Object.entries(data.categories)) {
-            categories.push({
-              category: key,
-              numFields: value,
-            });
-          }
-          data.categories = categories;
-          setTimeout(async () => {
-            await this.setState((prevState) => {
-              return {
-                ...prevState,
-                progressbar: {
-                  message: prevState.progressbar.message,
-                  hidden: true,
-                  percentage: prevState.progressbar.percentage,
-                },
-                queryIDs: data.savedqueries,
-                categories: data.categories,
-                UpdatedTime: `Data was last updated on ${data.updatetime}`,
-                SavedQueries: data.savedqueries,
-                Visits: data.visits,
-              };
-            }, () => {
-              return callback(true);
-            });
-          }, 1200); // wait 1.2 seconds
-        }).catch((error) => {
-          if (error) {
-            return callback(false);
-          }
-        });
-        break;
-      } else {
-        // Continue reading chunks from stream reader.
-        const decode = new TextDecoder('utf-8').decode(value);
-        chunks += decode;
-        receivedLength += value.length;
-        this.setState((prevState) => {
-          return {
-            ...prevState,
-            progressbar: {
-              hidden: prevState.progressbar.hidden,
-              percentage: Math.round((receivedLength / contentLength) * 100),
-              message: prevState.progressbar.message,
-            },
-          };
+    try {
+      const data = await this.client.getSetup();
+      this.setState((prevState) => {
+        return {
+          ...prevState,
+          progressbar: {
+            message: 'Data Query Tool is configuring data!',
+            hidden: prevState.progressbar.hidden,
+            percentage: 100,
+          },
+        };
+      });
+      let categories = [];
+      for (const [key, value] of Object.entries(data.categories)) {
+        categories.push({
+          category: key,
+          numFields: value,
         });
       }
+      data.categories = categories;
+      setTimeout(async () => {
+        await this.setState((prevState) => {
+          return {
+            ...prevState,
+            progressbar: {
+              message: prevState.progressbar.message,
+              hidden: true,
+              percentage: prevState.progressbar.percentage,
+            },
+            queryIDs: data.savedqueries,
+            categories: data.categories,
+            UpdatedTime: `Data was last updated on ${data.updatetime}`,
+            SavedQueries: data.savedqueries,
+            Visits: data.visits,
+          };
+        }, () => {
+          return callback(true);
+        });
+      }, 1200);
+    } catch (error) {
+      return callback(false);
     }
   }
 
@@ -252,46 +213,22 @@ class DataQueryApp extends Component {
    * @param {function} callback
    */
   async requestSessions(callback) {
-    const response = await lorisFetch(
-      `${loris.BaseURL}/dqt/sessions/?format=json`,
-      {method: 'GET'}
-    );
-    const reader = await response.body.getReader();
-    let chunks = ''; // array of received binary chunks (comprises the body)
-    for (;;) {
-      const {done, value} = await reader.read();
-      if (done) {
-        // finished reading chunks from stream reader.
-        reader.closed.then(async () => {
-          let data;
-          try {
-            data = JSON.parse(chunks);
-          } catch (exception) {
-            return callback(false);
-          }
-          await this.setState((prevState) => {
-            return {
-              ...prevState,
-              filter: {
-                ...prevState.filter,
-                session: data.sessions,
-              },
-              allSessions: data.sessions,
-            };
-          }, () => {
-            return callback(true);
-          });
-        }).catch((error) => {
-          if (error) {
-            return callback(false);
-          }
-        });
-        break;
-      } else {
-        // Continue reading chunks from stream reader.
-        const decode = new TextDecoder('utf-8').decode(value);
-        chunks += decode;
-      }
+    try {
+      const data = await this.client.getSessions();
+      await this.setState((prevState) => {
+        return {
+          ...prevState,
+          filter: {
+            ...prevState.filter,
+            session: data.sessions,
+          },
+          allSessions: data.sessions,
+        };
+      }, () => {
+        return callback(true);
+      });
+    } catch (error) {
+      return callback(false);
     }
   }
 
@@ -377,17 +314,31 @@ class DataQueryApp extends Component {
     let filter = this.saveFilterGroup(this.state.filter);
     const fields = JSON.stringify(this.state.selectedFields);
 
-    this.client.postURLEncodedJSON(
+    lorisFetch(
       loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=saveQuery.php',
-      new URLSearchParams({
-        Fields: fields,
-        Filters: filter,
-        QueryName: name,
-        SharedQuery: shared,
-        OverwriteQuery: override,
-      })
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: new URLSearchParams({
+          Fields: fields,
+          Filters: filter,
+          QueryName: name,
+          SharedQuery: shared,
+          OverwriteQuery: override,
+        }),
+      }
     )
-      .then((saved) => {
+      .then(async (response) => {
+        const text = await response.text();
+        if (!response.ok) {
+          let error = new Error('request_failed');
+          error.status = response.status;
+          error.body = text;
+          throw error;
+        }
+        const saved = JSON.parse(text);
         // Once saved, add the query to the list of saved queries
         const id = saved.id;
         const queryIDs = this.state.queryIDs;
@@ -398,10 +349,8 @@ class DataQueryApp extends Component {
             queryIDs.User.push(id);
           }
         }
-        return this.client.getJSON(
-          loris.BaseURL
-            + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
-            + id
+        return this.client.getDoc(
+          id
         ).then((value) => {
           let queries = this.state.savedQueries;
           queries[value._id] = value;
@@ -457,10 +406,8 @@ class DataQueryApp extends Component {
     // Get given fields of the instrument for the rule.
     rule.fields = [];
     try {
-      const data = await this.client.getJSON(
-        loris.BaseURL
-          + '/AjaxHelper.php?Module=dqt&script=datadictionary.php&'
-          + new URLSearchParams({category: rule.instrument})
+      const data = await this.client.getDataDictionaryByCategory(
+        rule.instrument
       );
       rule.fields = data;
     } catch (error) {
@@ -503,13 +450,11 @@ class DataQueryApp extends Component {
     }
     if (script) {
       try {
-        const data = await this.client.getJSON(
-          loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script + '&' +
-            new URLSearchParams({
-              category: rule.instrument,
-              field: rule.field,
-              value: rule.value,
-            })
+        const data = await this.client.getMatches(
+          script,
+          rule.instrument,
+          rule.field,
+          rule.value
         );
         let i;
         let allSessions = {};
@@ -696,10 +641,7 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
-    this.client.getJSON(
-      loris.BaseURL + '/dqt/ajax/datadictionary.php?' +
-        new URLSearchParams({keys: JSON.stringify(fieldsList)})
-    )
+    this.client.getDataDictionaryByKeys(fieldsList)
       .then((data) => {
         for (let i = 0; i < fieldsList.length; i++) {
           if (data[i] && data[i].value.IsFile) {
@@ -913,15 +855,28 @@ class DataQueryApp extends Component {
         // keep track of the number of requests waiting for a response
         semaphore++;
         sectionedSessions = JSON.stringify(sessionInfo);
-        this.client.postURLEncodedText(
+        lorisFetch(
           loris.BaseURL
             + '/AjaxHelper.php?Module=dqt&script='
             + 'retrieveCategoryDocs.php',
-          new URLSearchParams({
-            DocType: category,
-            Sessions: sectionedSessions,
-          })
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type':
+                'application/x-www-form-urlencoded; charset=UTF-8',
+            },
+            body: new URLSearchParams({
+              DocType: category,
+              Sessions: sectionedSessions,
+            }),
+          }
         )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('request_failed');
+            }
+            return response.text();
+          })
           .then((data) => {
             if (data) {
               let i;

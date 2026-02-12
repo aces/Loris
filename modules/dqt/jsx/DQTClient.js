@@ -12,58 +12,82 @@ class DQTClient extends Http.Client {
   }
 
   /**
-   * Fetch JSON from an absolute or relative URL.
+   * Get DQT setup payload.
    *
-   * @param {string} url
    * @return {Promise<any>}
    */
-  getJSON(url) {
-    return this.fetchJSON(new URL(url, window.location.origin), {
-      method: 'GET',
-      headers: {'Accept': 'application/json'},
-    });
+  getSetup() {
+    const query = new Http.Query().addParam({field: 'format', value: 'json'});
+    return this.setSubEndpoint('dqt_setup/').get(query);
   }
 
   /**
-   * POST URL-encoded form data and parse JSON response.
+   * Get DQT sessions payload.
    *
-   * @param {string} url
-   * @param {URLSearchParams} body
    * @return {Promise<any>}
    */
-  postURLEncodedJSON(url, body) {
-    return this.fetchJSON(new URL(url, window.location.origin), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      },
-      body: body,
-    });
+  getSessions() {
+    const query = new Http.Query().addParam({field: 'format', value: 'json'});
+    return this.setSubEndpoint('sessions/').get(query);
   }
 
   /**
-   * POST URL-encoded form data and return text response.
+   * Get a saved query document by id.
    *
-   * @param {string} url
-   * @param {URLSearchParams} body
-   * @return {Promise<string>}
+   * @param {string} docID
+   * @return {Promise<any>}
    */
-  async postURLEncodedText(url, body) {
-    const response = await fetch(new URL(url, window.location.origin), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      },
-      body: body,
-      credentials: 'same-origin',
-    });
-    if (!response.ok) {
-      const error = new Error('request_failed');
-      error.status = response.status;
-      error.response = response;
-      throw error;
-    }
-    return response.text();
+  getDoc(docID) {
+    const query = new Http.Query()
+      .addParam({field: 'Module', value: 'dqt'})
+      .addParam({field: 'script', value: 'GetDoc.php'})
+      .addParam({field: 'DocID', value: docID});
+    return this.setSubEndpoint('../AjaxHelper.php').get(query);
+  }
+
+  /**
+   * Get data dictionary for an instrument category.
+   *
+   * @param {string} category
+   * @return {Promise<any>}
+   */
+  getDataDictionaryByCategory(category) {
+    const query = new Http.Query()
+      .addParam({field: 'Module', value: 'dqt'})
+      .addParam({field: 'script', value: 'datadictionary.php'})
+      .addParam({field: 'category', value: category});
+    return this.setSubEndpoint('../AjaxHelper.php').get(query);
+  }
+
+  /**
+   * Get query matches for a condition operator script.
+   *
+   * @param {string} script
+   * @param {string} category
+   * @param {string} field
+   * @param {string} value
+   * @return {Promise<any>}
+   */
+  getMatches(script, category, field, value) {
+    const query = new Http.Query()
+      .addParam({field: 'Module', value: 'dqt'})
+      .addParam({field: 'script', value: script})
+      .addParam({field: 'category', value: category})
+      .addParam({field: 'field', value: field})
+      .addParam({field: 'value', value: value});
+    return this.setSubEndpoint('../AjaxHelper.php').get(query);
+  }
+
+  /**
+   * Get datadictionary entries by key list.
+   *
+   * @param {string[]} keys
+   * @return {Promise<any>}
+   */
+  getDataDictionaryByKeys(keys) {
+    const query = new Http.Query()
+      .addParam({field: 'keys', value: JSON.stringify(keys)});
+    return this.setSubEndpoint('ajax/datadictionary.php').get(query);
   }
 }
 
