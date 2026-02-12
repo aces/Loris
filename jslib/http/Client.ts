@@ -1,4 +1,3 @@
-declare const loris: any;
 import {Query, QueryParam} from './Query';
 import {Errors} from '../';
 
@@ -51,22 +50,7 @@ export class Client<T> {
    * @param query A Query object to build the URL query string.
    */
   async get<U = T>(query?: Query): Promise<U[]> {
-    // 1. Determine the path to resolve
-    const relativePath = this.subEndpoint ? this.subEndpoint : '';
-
-    // 2. Create the full URL object by resolving the path against this.baseURL.
-    const url = new URL(relativePath, this.baseURL);
-
-    // 3. Add Query Parameters using the URL object's searchParams
-    if (query) {
-      const params = new URLSearchParams(query.build());
-      params.forEach((value, key) => {
-        url.searchParams.append(key, value);
-      });
-    }
-
-    // 4. Use the final URL object for the fetch request.
-    return this.fetchJSON<U[]>(url, {
+    return this.fetchJSON<U[]>(this.buildURL('', query), {
       method: 'GET',
       headers: {'Accept': 'application/json'},
     });
@@ -89,11 +73,7 @@ export class Client<T> {
    * @param id The unique identifier of the resource to fetch.
    */
   async getById(id: string): Promise<T> {
-    // 1. Resolve the ID as a path segment against the this.baseURL object.
-    const url = new URL(id, this.baseURL);
-
-    // 2. Pass the final URL string to fetchJSON
-    return this.fetchJSON<T>(url, {
+    return this.fetchJSON<T>(this.buildURL(id), {
       method: 'GET',
       headers: {'Accept': 'application/json'},
     });
@@ -107,7 +87,7 @@ export class Client<T> {
    */
   async create<U = T>(data: T, mapper?: (data: T) => U): Promise<T> {
     const payload = mapper ? mapper(data) : data;
-    return this.fetchJSON<T>(this.baseURL, {
+    return this.fetchJSON<T>(this.buildURL(), {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(payload),
@@ -121,11 +101,7 @@ export class Client<T> {
    * @param data The new resource data.
    */
   async update(id: string, data: T): Promise<T> {
-    // 1. Resolve the ID as a path segment against the this.baseURL object.
-    const url = new URL(id, this.baseURL);
-
-    // 2. Pass the final URL string to fetchJSON
-    return this.fetchJSON<T>(url, {
+    return this.fetchJSON<T>(this.buildURL(id), {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data),
@@ -143,6 +119,7 @@ export class Client<T> {
     options: RequestInit
   ): Promise<U> {
     const request = new Request(url, options);
+
     try {
       const response = await fetch(request);
 
@@ -155,7 +132,12 @@ export class Client<T> {
         );
       }
 
-      // Handle responses with no content or non-JSON content
+      // 2. Handle HTTP 204 No Content (Success, but nothing to parse)
+      if (response.status === 204) {
+        return {} as U;
+      }
+
+      // 3. Validate JSON Content-Type
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         throw new Errors.NoContent(
@@ -165,7 +147,7 @@ export class Client<T> {
         );
       }
 
-      // 2. Handle JSON parsing errors
+      // 4. Parse JSON
       try {
         const data = await response.json();
         return data as U;
@@ -174,12 +156,34 @@ export class Client<T> {
         throw new Errors.JsonParse(request, message);
       }
     } catch (error) {
-      // 3. Handle network errors (e.g., no internet)
-      if (error instanceof Errors.Http) {
+      // 5. Re-throw custom errors; wrap native network errors
+      if (error instanceof Errors.Http || error instanceof Errors.ApiResponse) {
         throw error; // Re-throw our custom errors
       }
       const message = this.getErrorMessage('ApiNetworkError', request);
       throw new Errors.ApiNetwork(request, message);
     }
+  }
+
+  /**
+   * Constructs a full URL by combining the base URL, sub-endpoint,
+   * and an optional path or resource ID, then appends query parameters.
+   *
+   * @param path  - An optional sub-path or resource ID (e.g., '123' or 'details').
+   * Defaults to an empty string.
+   * @param query - An optional Query object used to build the URL's search parameters.
+   * @returns A fully constructed URL object.
+   */
+  private buildURL(path = '', query?: Query): URL {
+    // 1. Resolve segments (this.baseURL + subEndpoint + id/path)
+    const segments = [this.subEndpoint, path].filter(Boolean).join('/');
+    const url = new URL(segments, this.baseURL);
+
+    // 2. Append the pre-built query string
+    if (query) {
+      url.search = query.build();
+    }
+
+    return url;
   }
 }
