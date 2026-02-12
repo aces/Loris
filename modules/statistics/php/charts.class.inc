@@ -107,6 +107,8 @@ class Charts extends \NDB_Page
             return $this->_handleSiteLineData($request);
         case 'agedistribution_line':
             return $this->_handleAgeDistributionByProject($request);
+        case 'size_byproject':
+            return $this->_handleProjectSizeBreakdown();
         default:
             return new \LORIS\Http\Response\JSON\NotFound();
         }
@@ -835,5 +837,45 @@ class Charts extends \NDB_Page
             $data[] = intval($recruitmentdata[$siteID][$year][$month] ?? "0");
         }
         return $data;
+    }
+
+    /**
+     * Handle an incoming request for project size breakdown.
+     *
+     * @return ResponseInterface
+     */
+    private function _handleProjectSizeBreakdown()
+    {
+        $DB       = \NDB_Factory::singleton()->database();
+        $user     = \NDB_Factory::singleton()->user();
+        $projects = $user->getProjects();
+
+        $cachedSizeData = json_decode(
+            html_entity_decode(
+                $DB->pselectOne(
+                    "SELECT Value
+                  FROM cached_data
+                  JOIN cached_data_type USING (CachedDataTypeID)
+                  WHERE Name='projects_disk_space'",
+                    []
+                ) ?? ''
+            ),
+            true
+        );
+
+        $projectData = [];
+        if (!is_null($cachedSizeData)) {
+            foreach ($projects as $project) {
+                $projectName = $project->getName();
+                if (in_array($projectName, array_keys($cachedSizeData))) {
+                    $projectData[] = [
+                        'label' => $projectName,
+                        ...$cachedSizeData[$projectName],
+                    ];
+                }
+            }
+        }
+
+        return (new \LORIS\Http\Response\JsonResponse($projectData));
     }
 }
