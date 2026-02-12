@@ -12,6 +12,7 @@ import {
   TextareaElement,
 } from 'jsx/Form';
 import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Candiate info component
@@ -330,8 +331,25 @@ class CandidateInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    this.client.postForm(self.props.action, formData)
-      .then(() => {
+    lorisFetch(self.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
         self.setState(
           {
             updateResult: 'success',
@@ -339,23 +357,12 @@ class CandidateInfo extends Component {
         );
         self.showAlertMessage();
       })
-      .catch(async (err) => {
-        let errorMessage = '';
-        if (err && err.response) {
-          try {
-            const text = await err.response.text();
-            if (text) {
-              errorMessage = JSON.parse(text).message || '';
-            }
-          } catch (parseError) {
-            errorMessage = '';
-          }
-        }
-        if (errorMessage !== '') {
+      .catch((err) => {
+        if (err.lorisMessage !== undefined && err.lorisMessage !== '') {
           self.setState(
             {
               updateResult: 'error',
-              errorMessage: errorMessage,
+              errorMessage: err.lorisMessage,
             }
           );
           self.showAlertMessage();

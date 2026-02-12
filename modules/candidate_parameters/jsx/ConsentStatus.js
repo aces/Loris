@@ -7,6 +7,7 @@ import swal from 'sweetalert2';
 import {VerticalTabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
 import {
   FormElement,
   StaticElement,
@@ -264,8 +265,20 @@ class ConsentStatus extends Component {
     // Disable submit button to prevent form resubmission
     this.setState({submitDisabled: true});
 
-    this.client.postForm(this.props.action, formData)
-      .then(() => {
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = await response.text();
+          if (!errorMessage) {
+            errorMessage = t('Failed to update!', {ns: 'candidate_parameters'});
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
         swal.fire({
           title: t('Success!', {ns: 'loris'}),
           text: t('Update successful.', {ns: 'candidate_parameters'}),
@@ -281,21 +294,12 @@ class ConsentStatus extends Component {
           );
         this.fetchData();
       })
-      .catch(async (error) => {
+      .catch((error) => {
         console.error(error);
         // Enable submit button for form resubmission
         this.setState({submitDisabled: false});
-        let errorMessage = '';
-        if (error && error.response) {
-          try {
-            errorMessage = await error.response.text();
-          } catch (responseError) {
-            errorMessage = '';
-          }
-        }
-        if (!errorMessage) {
-          errorMessage = t('Failed to update!', {ns: 'candidate_parameters'});
-        }
+        let errorMessage = error.lorisMessage ||
+          t('Failed to update!', {ns: 'candidate_parameters'});
         swal.fire({
           title: t('Error!', {ns: 'loris'}),
           text: errorMessage,

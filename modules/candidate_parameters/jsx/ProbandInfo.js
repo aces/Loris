@@ -13,6 +13,7 @@ import {
   TextareaElement,
 } from 'jsx/Form';
 import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Proband Info Component.
@@ -157,30 +158,36 @@ class ProbandInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    this.client.postForm(this.props.action, formData)
-      .then(() => {
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
         this.setState({
           updateResult: 'success',
         });
         this.showAlertMessage();
         this.fetchData();
       })
-      .catch(async (error) => {
-        let errorMessage = '';
-        if (error && error.response) {
-          try {
-            const text = await error.response.text();
-            if (text) {
-              errorMessage = JSON.parse(text).message || '';
-            }
-          } catch (parseError) {
-            errorMessage = '';
-          }
-        }
-        if (errorMessage !== '') {
+      .catch((error) => {
+        if (error.lorisMessage !== undefined && error.lorisMessage !== '') {
           this.setState({
             updateResult: 'error',
-            errorMessage: errorMessage,
+            errorMessage: error.lorisMessage,
           });
           this.showAlertMessage();
         }

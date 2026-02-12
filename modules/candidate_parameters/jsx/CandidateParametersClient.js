@@ -8,35 +8,26 @@ class CandidateParametersClient extends Http.Client {
    * @constructor
    */
   constructor() {
-    // Base path is required by the shared Client, but this module uses full URLs.
     super('/candidate_parameters');
   }
 
   /**
-   * Fetch JSON data from a module URL.
+   * Fetch JSON data from a module URL using Client#get.
    *
    * @param {string} url
    * @return {Promise<any>}
    */
   getJSON(url) {
-    return this.fetchJSON(new URL(url, window.location.origin), {
-      method: 'GET',
-      headers: {'Accept': 'application/json'},
+    const parsedURL = new URL(url, window.location.origin);
+    const prefix = '/candidate_parameters/';
+    const subEndpoint = parsedURL.pathname.startsWith(prefix)
+      ? parsedURL.pathname.slice(prefix.length)
+      : parsedURL.pathname.replace(/^\/+/, '');
+    const query = new Http.Query();
+    parsedURL.searchParams.forEach((value, key) => {
+      query.addParam({field: key, value: value});
     });
-  }
-
-  /**
-   * Submit form data and parse JSON response.
-   *
-   * @param {string} url
-   * @param {FormData} formData
-   * @return {Promise<any>}
-   */
-  postForm(url, formData) {
-    return this.fetchJSON(new URL(url, window.location.origin), {
-      method: 'POST',
-      body: formData,
-    });
+    return this.setSubEndpoint(subEndpoint).get(query);
   }
 }
 
