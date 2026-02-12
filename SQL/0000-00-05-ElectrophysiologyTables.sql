@@ -302,7 +302,7 @@ CREATE TABLE `physiological_task_event` (
   `Channel`                  TEXT             DEFAULT NULL,
   `EventCode`                INT(10)          DEFAULT NULL,
   `EventValue`               varchar(255)     DEFAULT NULL,
-  `EventSample`              decimal(11,6)    DEFAULT NULL,
+  `EventSample`              INT(10)          DEFAULT NULL,
   `EventType`                VARCHAR(50)      DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
   `ResponseTime`             TIME             DEFAULT NULL,
