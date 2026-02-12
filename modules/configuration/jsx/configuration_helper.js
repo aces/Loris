@@ -1,7 +1,5 @@
 import swal from 'sweetalert2';
-import ConfigurationClient from './ConfigurationClient';
-
-const configurationClient = new ConfigurationClient();
+import lorisFetch from 'jslib/lorisFetch';
 
 $(function() {
   'use strict';
@@ -62,11 +60,17 @@ $(function() {
         let id = $(this).attr('name');
         let button = this;
 
-        configurationClient.postForm(
-          'process.php',
-          new URLSearchParams({remove: id})
-        )
-          .then(() => {
+        lorisFetch(loris.BaseURL + '/configuration/ajax/process.php', {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          },
+          body: new URLSearchParams({remove: id}),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('request_failed');
+            }
             if ($(button)
               .parent().parent().parent().children()
               .length > 1
@@ -103,8 +107,20 @@ $(function() {
     // Clear previous feedback
     $('.submit-area > label').remove();
 
-    configurationClient.postForm('process.php', form)
-      .then(() => {
+    lorisFetch(loris.BaseURL + '/configuration/ajax/process.php', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      },
+      body: form,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let text = await response.text();
+          let error = new Error('request_failed');
+          error.lorisMessage = text;
+          throw error;
+        }
         let html = '<label>Submitted</label>';
         $(html)
           .hide()
@@ -112,16 +128,8 @@ $(function() {
           .fadeIn(500).delay(1000).fadeOut(500);
         location.reload();
       })
-      .catch(async (error) => {
-        let errorMessage = '';
-        if (error && error.response) {
-          try {
-            errorMessage = await error.response.text();
-          } catch (responseError) {
-            errorMessage = '';
-          }
-        }
-        let html = '<label>' + errorMessage + '</label>';
+      .catch((error) => {
+        let html = '<label>' + (error.lorisMessage || '') + '</label>';
         $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000);
       });
   });
