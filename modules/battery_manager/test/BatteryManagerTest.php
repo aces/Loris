@@ -326,7 +326,7 @@ echo $bodyText;
             self::$minimumAge,
             self::$display,
             self::$clearFilter,
-            '4300',
+            '1',
             '1 row'
         );
         $this->_filterTest(
