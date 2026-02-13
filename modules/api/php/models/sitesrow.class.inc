@@ -57,6 +57,13 @@ class SitesRow implements DataInstance, SiteHaver
         return \CenterID::singleton($this->_id);
     }
 
+    /**
+     * Check whether a user can access this data instance.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
     public function isAccessibleBy(\User $user): bool
     {
         return \LORIS\StudyEntities\DataInstanceAccess::centerMatch(

@@ -114,6 +114,13 @@ class DICOMArchiveRowWithSession implements \LORIS\Data\DataInstance,
         return $this->CreatedBy;
     }
 
+    /**
+     * Check whether a user can access this data instance.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
     public function isAccessibleBy(\User $user): bool
     {
         return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(

@@ -96,6 +96,13 @@ class FilesDTO implements DataInstance
         ];
     }
 
+    /**
+     * Check whether a user can access this data instance.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
     public function isAccessibleBy(\User $user): bool
     {
         return $user->hasAnyPermission(

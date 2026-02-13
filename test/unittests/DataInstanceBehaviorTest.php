@@ -1,8 +1,11 @@
 <?php declare(strict_types=1);
 
-require_once __DIR__ . '/../../modules/mri_violations/php/mriviolation.class.inc';
-require_once __DIR__ . '/../../modules/mri_violations/php/protocolcheckviolation.class.inc';
-require_once __DIR__ . '/../../modules/dicom_archive/php/dicomarchiverowwithoutsession.class.inc';
+require_once __DIR__
+    . '/../../modules/mri_violations/php/mriviolation.class.inc';
+require_once __DIR__
+    . '/../../modules/mri_violations/php/protocolcheckviolation.class.inc';
+require_once __DIR__
+    . '/../../modules/dicom_archive/php/dicomarchiverowwithoutsession.class.inc';
 
 use LORIS\dicom_archive\DICOMArchiveRowWithoutSession;
 use LORIS\mri_violations\MRIViolation;
@@ -11,10 +14,14 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Targeted behaviour tests for custom DataInstance access implementations.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class DataInstanceBehaviorTest extends TestCase
 {
     /**
+     * Verify MRI violations allow matching center/project access.
+     *
      * @return void
      */
     public function testMRIViolationAccessibleWithMatchingCenterAndProject(): void
@@ -38,6 +45,8 @@ class DataInstanceBehaviorTest extends TestCase
     }
 
     /**
+     * Verify MRI violations deny center mismatch without all-sites permission.
+     *
      * @return void
      */
     public function testMRIViolationDeniedOnCenterMismatchWithoutAllSites(): void
@@ -61,6 +70,8 @@ class DataInstanceBehaviorTest extends TestCase
     }
 
     /**
+     * Verify protocol check violations allow rows with null center.
+     *
      * @return void
      */
     public function testProtocolCheckViolationAllowsNullCenter(): void
@@ -78,6 +89,8 @@ class DataInstanceBehaviorTest extends TestCase
     }
 
     /**
+     * Verify DICOM no-session rows are accessible by their creator.
+     *
      * @return void
      */
     public function testDicomWithoutSessionAccessibleByCreator(): void
@@ -101,6 +114,8 @@ class DataInstanceBehaviorTest extends TestCase
     }
 
     /**
+     * Verify DICOM no-session rows are accessible via explicit permissions.
+     *
      * @return void
      */
     public function testDicomWithoutSessionAccessibleByPermission(): void
@@ -129,6 +144,8 @@ class DataInstanceBehaviorTest extends TestCase
     }
 
     /**
+     * Verify DICOM no-session rows are denied without creator/permission.
+     *
      * @return void
      */
     public function testDicomWithoutSessionDeniedWithoutCreatorOrPermissions(): void

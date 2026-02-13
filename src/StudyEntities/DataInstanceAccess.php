@@ -26,7 +26,12 @@ final class DataInstanceAccess
     {
         $centerData = self::getMethodValue(
             $resource,
-            ['getCenterIDs', 'getCenterIds', 'getCenterID', 'getCenterId']
+            [
+             'getCenterIDs',
+             'getCenterIds',
+             'getCenterID',
+             'getCenterId',
+            ]
         );
         if (!$centerData['found']) {
             return false;
@@ -61,7 +66,12 @@ final class DataInstanceAccess
     ): bool {
         $projectData = self::getMethodValue(
             $resource,
-            ['getProjectIDs', 'getProjectIds', 'getProjectID', 'getProjectId']
+            [
+             'getProjectIDs',
+             'getProjectIds',
+             'getProjectID',
+             'getProjectId',
+            ]
         );
         if (!$projectData['found']) {
             return false;
@@ -130,13 +140,22 @@ final class DataInstanceAccess
         foreach ($methods as $method) {
             if (method_exists($resource, $method)) {
                 try {
-                    return ['found' => true, 'value' => $resource->$method()];
+                    return [
+                            'found' => true,
+                            'value' => $resource->$method(),
+                           ];
                 } catch (\Throwable) {
-                    return ['found' => false, 'value' => null];
+                    return [
+                            'found' => false,
+                            'value' => null,
+                           ];
                 }
             }
         }
-        return ['found' => false, 'value' => null];
+        return [
+                'found' => false,
+                'value' => null,
+               ];
     }
 
     /**

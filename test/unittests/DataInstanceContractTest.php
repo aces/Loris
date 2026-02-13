@@ -4,6 +4,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Validates the DataInstance contract is consistently implemented.
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class DataInstanceContractTest extends TestCase
 {
@@ -28,10 +30,11 @@ class DataInstanceContractTest extends TestCase
      */
     public function testAllDataInstancesDeclareIsAccessibleBy(): void
     {
-        $files = $this->getDataInstanceFiles();
+        $files = $this->_getDataInstanceFiles();
         $this->assertNotEmpty($files, 'No DataInstance classes found');
 
-        $pattern = '/public\\s+function\\s+isAccessibleBy\\s*\\(\\s*\\\\User\\s+\\$user\\s*\\)\\s*:\\s*bool/s';
+        $pattern = '/public\\s+function\\s+isAccessibleBy\\s*\\('
+            . '\\s*\\\\User\\s+\\$user\\s*\\)\\s*:\\s*bool/s';
         foreach ($files as $file) {
             $contents = file_get_contents($file);
             $this->assertNotFalse($contents, "Unable to read file: $file");
@@ -48,7 +51,7 @@ class DataInstanceContractTest extends TestCase
      *
      * @return string[]
      */
-    private function getDataInstanceFiles(): array
+    private function _getDataInstanceFiles(): array
     {
         $roots = [
             __DIR__ . '/../../src',
@@ -56,8 +59,9 @@ class DataInstanceContractTest extends TestCase
             __DIR__ . '/../../modules',
         ];
 
-        $matches = [];
-        $classPattern = '/class\\s+\\w+(?:\\s+extends\\s+[\\w\\\\]+)?\\s+implements[\\s\\S]{0,250}?DataInstance[\\s\\S]{0,120}?\\{/s';
+        $matches      = [];
+        $classPattern = '/class\\s+\\w+(?:\\s+extends\\s+[\\w\\\\]+)?\\s+'
+            . 'implements[\\s\\S]{0,250}?DataInstance[\\s\\S]{0,120}?\\{/s';
 
         foreach ($roots as $root) {
             $iterator = new RecursiveIteratorIterator(
@@ -65,14 +69,13 @@ class DataInstanceContractTest extends TestCase
             );
             foreach ($iterator as $file) {
                 $extension = strtolower($file->getExtension());
-                if (
-                    !$file->isFile()
+                if (!$file->isFile()
                     || !in_array($extension, ['php', 'inc'], true)
                 ) {
                     continue;
                 }
 
-                $path = $file->getPathname();
+                $path     = $file->getPathname();
                 $contents = file_get_contents($path);
                 if ($contents === false) {
                     continue;

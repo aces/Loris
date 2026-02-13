@@ -47,14 +47,14 @@ class RecordingDTO implements
     /**
      * Constructor
      *
-     * @param ?int    $fileid              The FileID
-     * @param ?string $filename            The image filename
-     * @param ?string $filelocation        The image location
-     * @param ?string $outputtype          The output type
-     * @param ?string $acquisitionmodality The aquisition modality
-     * @param ?string $filetype            The file type
+     * @param ?int      $fileid              The FileID
+     * @param ?string   $filename            The image filename
+     * @param ?string   $filelocation        The image location
+     * @param ?string   $outputtype          The output type
+     * @param ?string   $acquisitionmodality The aquisition modality
+     * @param ?string   $filetype            The file type
      * @param \CenterID $centerid            The image session's centerid
-     * @param ?string $entitytype          The image candidate's entity_type
+     * @param ?string   $entitytype          The image candidate's entity_type
      */
     public function __construct(
         ?int $fileid,
@@ -164,6 +164,13 @@ class RecordingDTO implements
         return $this->centerid;
     }
 
+    /**
+     * Check whether a user can access this data instance.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
     public function isAccessibleBy(\User $user): bool
     {
         return \LORIS\StudyEntities\DataInstanceAccess::centerMatch(
