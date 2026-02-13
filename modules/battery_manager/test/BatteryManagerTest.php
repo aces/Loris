@@ -316,7 +316,11 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testFilter()
     {
-        $this->safeGet($this->url . "/battery_manager/");
+        $this->safeGet($this->url . "/battery_manager/?minimumAge=4300");
+        $this->assertStringContainsString(
+            "Submission successful!",
+            $bodyText
+        );
         //testing data from RBdata.sql
         $this->_filterTest(
             self::$minimumAge,
