@@ -692,11 +692,12 @@ abstract class LorisIntegrationTest extends TestCase
     /**
      * Testing filter function and clear button
      *
-     * @param string $element        The input element location (css selector)
-     * @param string $row            React Table row number
-     * @param string $btn            clear filter button
-     * @param string $test_value     The test value
-     * @param string $expect_records The records number in the table
+     * @param string $elt        The input element location (css selector)
+     * @param string $row        React Table row number
+     * @param string $btn        clear filter button
+     * @param string $value      The test value
+     * @param string $expect     The records number in the table
+     * @param int $s             Second
      *
      * @return void
      */
