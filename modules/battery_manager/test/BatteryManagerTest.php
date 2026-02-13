@@ -322,15 +322,17 @@ class BatteryManagerTest extends LorisIntegrationTest
             self::$instrument,
             self::$display,
             self::$clearFilter,
-            'AOSI',
-            '2 rows'
+            'BMI Calculator',
+            '2 rows',
+            1
         );
         $this->_filterTest(
             self::$maximumAge,
             self::$display,
             self::$clearFilter,
-            '4299',
-            '1 row'
+            '1',
+            '2 row',
+             1
         );
     }
 }

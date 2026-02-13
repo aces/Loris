@@ -700,25 +700,40 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function _filterTest($element,$row,$btn,$test_value, $expect_records): void
+    function _filterTest($element,$row,$btn,$test_value, $expect_records,
+        int $sleepTime = 0
+    ) : void
     {
         // get element from the page
         if (strpos($element, "select") === false) {
-            $el = $this->safeFindElement(WebDriverBy::cssSelector("$element"));
+            $el = $this->safeFindElement(WebDriverBy::cssSelector($element));
             $el->sendKeys($test_value);
         } else {
             $el_dropdown = new WebDriverSelect(
-                $this->safeFindElement(WebDriverBy::cssSelector("$element"))
+                $this->safeFindElement(WebDriverBy::cssSelector($element))
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
+
+        if ($sleepTime > 0) {
+            sleep($sleepTime);
+        }
+
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("$row")
+            WebDriverBy::cssSelector($row)
         )->getText();
-        // 4 means there are 4 records under this site.
+
+        if ($sleepTime > 0) {
+            sleep($sleepTime);
+        }
+
         $this->assertStringContainsString($expect_records, $bodyText);
-        //test clear filter
-        $this->safeClick(WebDriverBy::cssSelector("$btn"));
+
+        $this->safeClick(WebDriverBy::cssSelector($btn));
+
+        if ($sleepTime > 0) {
+            sleep($sleepTime);
+        }
     }
 
     /**
