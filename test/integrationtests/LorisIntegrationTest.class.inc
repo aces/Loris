@@ -700,19 +700,17 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function _filterTest($element,$row,$btn,$test_value, $expect_records,
-        int $sleepTime = 0
-    ) : void
+    function _filterTest($elt,$row,$btn,$value,$expect,int $s = 0) : void
     {
         // get element from the page
-        if (strpos($element, "select") === false) {
-            $el = $this->safeFindElement(WebDriverBy::cssSelector($element));
-            $el->sendKeys($test_value);
+        if (strpos($elt, "select") === false) {
+            $el = $this->safeFindElement(WebDriverBy::cssSelector($elt));
+            $el->sendKeys($value);
         } else {
             $el_dropdown = new WebDriverSelect(
-                $this->safeFindElement(WebDriverBy::cssSelector($element))
+                $this->safeFindElement(WebDriverBy::cssSelector($elt))
             );
-            $el_dropdown->selectByVisibleText($test_value);
+            $el_dropdown->selectByVisibleText($value);
         }
 
         if ($sleepTime > 0) {
@@ -727,7 +725,7 @@ abstract class LorisIntegrationTest extends TestCase
             sleep($sleepTime);
         }
 
-        $this->assertStringContainsString($expect_records, $bodyText);
+        $this->assertStringContainsString($expect, $bodyText);
 
         $this->safeClick(WebDriverBy::cssSelector($btn));
 
