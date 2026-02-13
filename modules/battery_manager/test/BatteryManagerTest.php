@@ -316,7 +316,7 @@ class BatteryManagerTest extends LorisIntegrationTest
      */
     function testFilter()
     {
-        $this->safeGet($this->url . "/battery_manager/?minimumAge=4300");
+        $this->safeGet($this->url . "/battery_manager/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#default-panel > div > div > div.table-header")
         )->getText();
