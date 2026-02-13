@@ -35,7 +35,7 @@ class BatteryManagerTest extends LorisIntegrationTest
     static $maximumAge = 'input[name="maximumAge"]';
     //General locations
     static $display     = '.table-header > div > div > div:nth-child(1)';
-    static $clearFilter = '.nav-tabs a';
+    static $clearFilter = 'a[name="reset"]';
 
     /**
      * Tests that, when loading the BatteryManager module, some
