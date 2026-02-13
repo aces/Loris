@@ -319,18 +319,18 @@ class BatteryManagerTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/battery_manager/");
         //testing data from RBdata.sql
         $this->_filterTest(
-            self::$instrument,
-            self::$display,
-            self::$clearFilter,
-            'AOSI',
-            '2 rows'
-        );
-        $this->_filterTest(
             self::$minimumAge,
             self::$display,
             self::$clearFilter,
             '4300',
             '1 row'
+        );
+        $this->_filterTest(
+            self::$instrument,
+            self::$display,
+            self::$clearFilter,
+            'AOSI',
+            '2 rows'
         );
         $this->_filterTest(
             self::$maximumAge,
