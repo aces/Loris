@@ -324,7 +324,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             self::$clearFilter,
             '4300',
             '1 row',
-            1
+            3
         );
         $this->_filterTest(
             self::$instrument,
