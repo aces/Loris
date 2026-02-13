@@ -323,7 +323,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             'BMI Calculator',
-            '4 rows',
+            '6 rows',
             1
         );
         $this->_filterTest(
