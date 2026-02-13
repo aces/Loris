@@ -97,4 +97,12 @@ class ResolvedDTO implements DataInstance, SiteHaver
     {
         return \ProjectID::singleton($this->projectid);
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

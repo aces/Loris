@@ -50,4 +50,9 @@ class HelpRow implements \LORIS\Data\DataInstance
     {
         return $this->DBRow;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return $user->hasPermission('context_help');
+    }
 }

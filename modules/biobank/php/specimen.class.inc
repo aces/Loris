@@ -713,4 +713,12 @@ class Specimen implements
     {
         return json_encode($this);
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

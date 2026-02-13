@@ -91,4 +91,12 @@ class ProjectRecordingsRow implements \LORIS\Data\DataInstance
     {
         return intval($this->_centerid);
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerMatch(
+            $user,
+            $this
+        );
+    }
 }

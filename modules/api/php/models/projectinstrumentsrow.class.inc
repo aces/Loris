@@ -119,4 +119,9 @@ class ProjectInstrumentsRow implements \LORIS\Data\DataInstance
         }
         return $obj;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return true;
+    }
 }

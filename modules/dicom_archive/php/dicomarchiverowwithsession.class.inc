@@ -113,4 +113,12 @@ class DICOMArchiveRowWithSession implements \LORIS\Data\DataInstance,
     {
         return $this->CreatedBy;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

@@ -67,4 +67,12 @@ class IssueRow implements
     {
         return $this->Module;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerMatch(
+            $user,
+            $this
+        );
+    }
 }

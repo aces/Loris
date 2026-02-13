@@ -31,4 +31,14 @@ class ProtocolViolation implements \LORIS\Data\DataInstance
     {
         return $this->DBRow;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return $user->hasAnyPermission(
+            [
+                'violated_scans_view_allsites',
+                'violated_scans_view_ownsite',
+            ]
+        );
+    }
 }

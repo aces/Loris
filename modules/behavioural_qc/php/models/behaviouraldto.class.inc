@@ -164,4 +164,12 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
             'feedback_status' => $this->_feedback_status,
         ];
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

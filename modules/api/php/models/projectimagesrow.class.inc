@@ -106,4 +106,12 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance,
     {
         return $this->_entitytype === 'Scanner';
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerMatch(
+            $user,
+            $this
+        );
+    }
 }

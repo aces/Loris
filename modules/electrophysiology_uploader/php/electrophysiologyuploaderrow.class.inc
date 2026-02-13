@@ -67,4 +67,12 @@ class ElectrophysiologyUploaderRow
     {
         return $this->ProjectID;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

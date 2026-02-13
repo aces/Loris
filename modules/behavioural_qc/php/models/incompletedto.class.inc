@@ -156,4 +156,12 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
             'commentID'       => $this->_commentID,
         ];
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

@@ -88,4 +88,12 @@ class MediaFile implements \LORIS\Data\DataInstance,
         }
         return 0;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

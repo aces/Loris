@@ -88,4 +88,12 @@ class ImagingBrowserRow implements \LORIS\Data\DataInstance,
     {
         return $this->DBRow['entityType'] === 'Scanner';
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

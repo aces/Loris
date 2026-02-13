@@ -114,4 +114,14 @@ class GwasDTO implements DataInstance
             'Pvalue'       => $this->_Pvalue,
         ];
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return $user->hasAnyPermission(
+            [
+                'genomic_browser_view_allsites',
+                'genomic_browser_view_site',
+            ]
+        );
+    }
 }

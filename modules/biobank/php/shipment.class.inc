@@ -267,5 +267,12 @@ class Shipment implements
     {
         return json_encode($this);
     }
-}
 
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerMatch(
+            $user,
+            $this
+        );
+    }
+}

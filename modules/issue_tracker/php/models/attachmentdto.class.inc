@@ -59,4 +59,15 @@ class AttachmentDTO implements \LORIS\Data\DataInstance
             'mime_type'   => $this->mime_type,
         ];
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return $user->hasAnyPermission(
+            [
+                'issue_tracker_all_issue',
+                'issue_tracker_own_issue',
+                'issue_tracker_site_issue',
+            ]
+        );
+    }
 }

@@ -44,4 +44,14 @@ class ProtocolCheckViolation implements \LORIS\Data\DataInstance
         }
         return \CenterID::singleton($this->DBRow['CenterID']);
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        if ($user->hasPermission('violated_scans_view_allsites')) {
+            return true;
+        }
+
+        $center = $this->getCenterID();
+        return $center === null || $user->hasCenter($center);
+    }
 }

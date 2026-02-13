@@ -49,4 +49,9 @@ class AcknowledgementRow implements \LORIS\Data\DataInstance
     {
         return $this->DBRow;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return true;
+    }
 }

@@ -192,4 +192,28 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
     {
         return '';
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        $sessionID = $this->getParameter('SessionID');
+        if ($sessionID === '') {
+            return false;
+        }
+
+        try {
+            $timepoint = \NDB_Factory::singleton()->timepoint(
+                new \SessionID($sessionID)
+            );
+        } catch (\Throwable) {
+            return false;
+        }
+
+        return (
+            $user->hasPermission('electrophysiology_browser_view_allsites')
+            || (
+                $user->hasCenter($timepoint->getCenterID())
+                && $user->hasPermission('electrophysiology_browser_view_site')
+            )
+        ) && $user->hasProject($timepoint->getProject()->getId());
+    }
 }

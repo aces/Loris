@@ -105,4 +105,12 @@ class Test implements
             'Active'                 => $this->row['active']          ?? null,
         ];
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerMatch(
+            $user,
+            $this
+        );
+    }
 }

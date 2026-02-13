@@ -76,4 +76,14 @@ class DICOMArchiveRowWithoutSession implements \LORIS\Data\DataInstance
     {
         return $this->DBRow;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        if ($this->createdBy()->getId() === $user->getId()) {
+            return true;
+        }
+
+        return $user->hasPermission('dicom_archive_view_allsites')
+            || $user->hasPermission('dicom_archive_nosessionid');
+    }
 }

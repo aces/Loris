@@ -258,4 +258,12 @@ class CnvDTO implements DataInstance, SiteHaver
     {
         return \ProjectID::singleton($this->_projectID);
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

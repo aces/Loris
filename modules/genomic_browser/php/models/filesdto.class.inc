@@ -95,4 +95,14 @@ class FilesDTO implements DataInstance
             'Notes'            => $this->_Notes,
         ];
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return $user->hasAnyPermission(
+            [
+                'genomic_browser_view_allsites',
+                'genomic_browser_view_site',
+            ]
+        );
+    }
 }

@@ -62,4 +62,9 @@ class ModuleRow implements \LORIS\Data\DataInstance
             'Active'   => $this->Active,
         ];
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return $user->hasPermission('module_manager_edit');
+    }
 }

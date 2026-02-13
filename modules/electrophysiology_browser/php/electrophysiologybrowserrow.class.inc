@@ -79,4 +79,12 @@ class ElectrophysiologyBrowserRow implements \LORIS\Data\DataInstance,
     {
         return $this->ProjectID;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

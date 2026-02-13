@@ -62,4 +62,12 @@ class UserAccountRow implements
     {
         return $this->DBRow;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

@@ -101,4 +101,12 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
         }
         return $this->_projectid;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }

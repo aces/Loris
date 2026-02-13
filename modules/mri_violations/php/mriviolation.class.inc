@@ -59,4 +59,23 @@ class MRIViolation implements \LORIS\Data\DataInstance
         }
         return \ProjectID::singleton(intval($this->DBRow['Project']));
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        if ($user->hasPermission('violated_scans_view_allsites')) {
+            return true;
+        }
+
+        $center = $this->getCenterID();
+        if ($center !== null && !$user->hasCenter($center)) {
+            return false;
+        }
+
+        $project = $this->getProjectID();
+        if ($project !== null && !$user->hasProject($project)) {
+            return false;
+        }
+
+        return true;
+    }
 }

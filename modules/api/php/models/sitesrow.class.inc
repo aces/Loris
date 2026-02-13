@@ -56,4 +56,12 @@ class SitesRow implements DataInstance, SiteHaver
     {
         return \CenterID::singleton($this->_id);
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerMatch(
+            $user,
+            $this
+        );
+    }
 }
