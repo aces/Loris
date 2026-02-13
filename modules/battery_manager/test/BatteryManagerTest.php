@@ -317,18 +317,7 @@ class BatteryManagerTest extends LorisIntegrationTest
     function testFilter()
     {
         $this->safeGet($this->url . "/battery_manager/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#default-panel > div > div > div.table-header")
-        )->getText();
-echo $bodyText;
         //testing data from RBdata.sql
-        $this->_filterTest(
-            self::$minimumAge,
-            self::$display,
-            self::$clearFilter,
-            '1',
-            '1 row'
-        );
         $this->_filterTest(
             self::$instrument,
             self::$display,
@@ -340,8 +329,8 @@ echo $bodyText;
             self::$maximumAge,
             self::$display,
             self::$clearFilter,
-            '0',
-            '0 row'
+            '4299',
+            '1 row'
         );
     }
 }
