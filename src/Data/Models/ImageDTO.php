@@ -173,4 +173,12 @@ class ImageDTO implements
     {
         return $this->entitytype === 'Scanner';
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerMatch(
+            $user,
+            $this
+        );
+    }
 }

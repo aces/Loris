@@ -72,4 +72,9 @@ class CohortData implements DataInstance
             "RecruitmentTarget" => $this->recruitmentTarget
         ];
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return $user->hasPermission('config');
+    }
 }

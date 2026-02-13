@@ -167,4 +167,9 @@ class MRIUploadDTO implements \LORIS\Data\DataInstance
     {
         return $this->toJSON();
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return true;
+    }
 }

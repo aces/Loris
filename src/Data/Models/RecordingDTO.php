@@ -163,4 +163,12 @@ class RecordingDTO implements
     {
         return $this->centerid;
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerMatch(
+            $user,
+            $this
+        );
+    }
 }

@@ -119,4 +119,9 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
                 'series'      => $series,
                ];
     }
+
+    public function isAccessibleBy(\User $user): bool
+    {
+        return true;
+    }
 }
