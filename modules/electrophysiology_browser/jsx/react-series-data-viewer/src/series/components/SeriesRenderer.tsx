@@ -32,6 +32,7 @@ import SeriesCursor from './SeriesCursor';
 import LoadingBar from './LoadingBar';
 import {setRightPanel} from '../store/state/rightPanel';
 import {setDatasetMetadata} from '../store/state/dataset';
+import {createVisibleChannelsDict, filterVisibleChannelTypes} from '../store/logic/channelTypes';
 import {setOffsetIndex} from '../store/logic/pagination';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
@@ -64,6 +65,7 @@ import {
   Channel,
   Epoch as EpochType,
   RightPanel, EpochFilter,
+  ChannelInfo,
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {setCursorInteraction} from '../store/logic/cursorInteraction';
@@ -72,6 +74,7 @@ import {getEpochsInRange, updateActiveEpoch} from '../store/logic/filterEpochs';
 import HEDEndorsement from "./HEDEndorsement";
 import {setTimeSelection} from "../store/state/timeSelection";
 import {useTranslation} from "react-i18next";
+import ChannelTypesSelector from './ChannelTypesSelector';
 
 type CProps = {
   ref: MutableRefObject<any>,
@@ -93,6 +96,7 @@ type CProps = {
   activeEpoch: number,
   offsetIndex: number,
   setOffsetIndex: (_: number) => void,
+  channelInfos: ChannelInfo[] | null,
   setAmplitudesScale: (_: number) => void,
   resetAmplitudesScale: (_: void) => void,
   setLowPassFilter: (_: string) => void,
@@ -135,6 +139,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   epochs,
   filteredEpochs,
   activeEpoch,
+  channelInfos,
   offsetIndex,
   setOffsetIndex,
   setAmplitudesScale,
@@ -160,6 +165,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         numDisplayedChannels,
         setNumDisplayedChannels,
     ] = useState<number>(DEFAULT_MAX_CHANNELS);
+    const [visibleChannelTypes, setVisibleChannelTypes] = useState({});
     const [cursorEnabled, setCursorEnabled] = useState(false);
     const toggleCursor = () => setCursorEnabled((value) => !value);
     const [DCOffsetView, setDCOffsetView] = useState(true);
@@ -184,6 +190,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [panelIsDirty, setPanelIsDirty] = useState(false);
     const [eventChannels, setEventChannels] = useState([]);
     const {t} = useTranslation();
+
+    useEffect(() => {
+      if (channelInfos === null) {
+        return;
+      }
+
+      setVisibleChannelTypes(createVisibleChannelsDict(channelInfos));
+    }, [channelInfos]);
 
     window.onbeforeunload = function() {
       if (panelIsDirty) {
@@ -526,7 +540,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       .range([topLeft[1], bottomRight[1]]),
   ];
 
-  const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
+  const filteredChannels1 = channels.filter((_, i) => !hidden.includes(i));
+
+  const filteredChannels = channelInfos !== null
+    ? filterVisibleChannelTypes(filteredChannels1, channelMetadata, channelInfos, visibleChannelTypes)
+    : filteredChannels1;
+
   const showAxisScaleLines = false; // Visibility state of y-axis scale lines
 
   /**
@@ -959,6 +978,15 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             >
               {t('Add Event', {ns: 'electrophysiology_browser'})}
             </button>
+            {
+              channelInfos !== null && (
+                <ChannelTypesSelector
+                  channels={channelInfos}
+                  visibleChannelTypes={visibleChannelTypes}
+                  setVisibleChannelTypes={setVisibleChannelTypes}
+                />
+              )
+            }
             {
               rightPanel === null && (
                 <button
@@ -1636,6 +1664,7 @@ export default connect(
     timexSelection: state.timeSelection,
     chunksURL: state.dataset.chunksURL,
     channels: state.channels,
+    channelInfos: state.dataset.channelInfos,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
     activeEpoch: state.dataset.activeEpoch,
