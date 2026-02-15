@@ -1,4 +1,4 @@
-/*M!999999\- enable the sandbox mode */ 
+/*M!999999\- enable the sandbox mode */
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `Config`;
 LOCK TABLES `Config` WRITE;
@@ -98,7 +98,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (116,116,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (117,117,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (118,118,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (119,119,'');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (120,120,'database_config.py');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (120,120,'config.py');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (121,125,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (122,126,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (126,129,'365');
