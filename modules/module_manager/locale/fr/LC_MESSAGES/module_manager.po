@@ -37,7 +37,7 @@ msgstr "Statut du module {{name}} mis à jour !"
 
 #, fuzzy
 msgid "To apply changes the interface must be reloaded. Proceed?"
-msgstr "Pour appliquer les modifications, l'interface doit être rechargée."
+msgstr "Pour appliquer les modifications, l'interface doit être actualisée."
 
 msgid "Reload the page"
 msgstr "Recharger la page actuelle"
