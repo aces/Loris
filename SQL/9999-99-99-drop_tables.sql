@@ -149,7 +149,7 @@ DROP TABLE IF EXISTS `publication`;
 DROP TABLE IF EXISTS `publication_status`;
 DROP TABLE IF EXISTS `publication_collaborator`;
 
-DROP TABLE IF EXISTS `login_summary_statistics`;
+DROP TABLE IF EXISTS `Login_Summary_Statistics`;
 
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
