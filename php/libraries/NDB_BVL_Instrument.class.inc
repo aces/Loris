@@ -2101,25 +2101,27 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Load other instance data
         $otherData = $otherInstrument->getInstanceData();
 
+        $instrumentFields = array_keys($thisData + $otherData);
+
         // Create the return object data structure
         $diff = [];
 
         // Loop over this instance data
-        foreach ($thisData AS $key=>$value) {
-            if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
-                if (($otherData[$key] ?? null) != $value) {
-                    $diff[] = [
-                        'TestName'       => $this->testName,
-                        'ExtraKeyColumn' => null,
-                        'ExtraKey1'      => ' ',
-                        'ExtraKey2'      => ' ',
-                        'FieldName'      => $key,
-                        'CommentId1'     => $this->getCommentID(),
-                        'Value1'         => $value,
-                        'CommentId2'     => $otherInstrument->getCommentID(),
-                        'Value2'         => $otherData[$key] ?? null,
-                    ];
-                }
+        foreach ($instrumentFields AS $key) {
+            if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)
+                && ($otherData[$key] ?? null) != ($thisData[$key] ?? null)
+            ) {
+                $diff[] = [
+                    'TestName'       => $this->testName,
+                    'ExtraKeyColumn' => null,
+                    'ExtraKey1'      => ' ',
+                    'ExtraKey2'      => ' ',
+                    'FieldName'      => $key,
+                    'CommentId1'     => $this->getCommentID(),
+                    'Value1'         => $thisData[$key] ?? null,
+                    'CommentId2'     => $otherInstrument->getCommentID(),
+                    'Value2'         => $otherData[$key] ?? null,
+                ];
             }
         }
 
