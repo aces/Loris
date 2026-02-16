@@ -96,7 +96,7 @@ function uploadFile()
     // Validate media path and destination folder
     $mediaPath = $config->getSetting('mediaPath');
 
-    if (!isset($mediaPath)) {
+    if (!isset($mediaPath) || empty($mediaPath)) {
         showMediaError(
             "Media path not set in LORIS settings! "
             . "Please contact your LORIS administrator",
@@ -186,8 +186,8 @@ function uploadFile()
         "SELECT ProjectID FROM session WHERE ID=:sid",
         ['sid' => $sessionID]
     );
-
-    if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
+    $dstfile = \Utility::appendForwardSlash($mediaPath) . \Utility::resolvePath($fileName);
+    if (move_uploaded_file($_FILES["file"]["tmp_name"], $dstfile)) {
         try {
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);

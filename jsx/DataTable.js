@@ -121,8 +121,8 @@ class DataTable extends Component {
     // Map cell data to proper values if applicable.
     if (this.props.getMappedCell) {
       csvData = csvData
-        .map((row, i) => this.props.fields
-          .map((field, j) => this.props.getMappedCell(
+      .map((row, i) => this.props.fields
+        .map((field, j) => this.props.getMappedCell(
             field.label,
             row[j],
             row,
