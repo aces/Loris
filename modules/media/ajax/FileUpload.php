@@ -186,7 +186,8 @@ function uploadFile()
         "SELECT ProjectID FROM session WHERE ID=:sid",
         ['sid' => $sessionID]
     );
-    $dstfile = \Utility::appendForwardSlash($mediaPath) . \Utility::resolvePath($fileName);
+    $dstfile   = \Utility::appendForwardSlash($mediaPath)
+        . \Utility::resolvePath($fileName);
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $dstfile)) {
         try {
             // Insert or override db record if file_name already exists

@@ -74,7 +74,7 @@ class Events extends \NDB_Page
                 $config->getSetting("dataDirBasepath")
             );
 
-            $file     = $parameters['filePath'] ?? null;
+            $file = $parameters['filePath'] ?? null;
 
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo($downloadpath)
