@@ -272,7 +272,7 @@ msgstr[1] "Femmes"
 msgid "Male"
 msgid_plural "Males"
 msgstr[0] "Homme"
-msgstr[1] "Mâles"
+msgstr[1] "Hommes"
 
 msgid "Other"
 msgid_plural "Others"
