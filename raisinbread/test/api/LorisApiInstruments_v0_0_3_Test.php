@@ -137,7 +137,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
     {
         $json = [
             $this->instrumentTest => [
-                'UserID' => "2"
+                'consent' => "yes"
             ]
         ];
         $response = $this->client->request(
@@ -164,7 +164,9 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
     {
         $json = [
             $this->instrumentTest => [
-                'UserID' => "2"
+                'consent' => "yes",
+                'testText' => 'test',
+                'testCheckbox' => 'true'
             ]
         ];
         $response   = $this->client->request(
@@ -248,7 +250,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         // Test that it should be forbidden to modify an instrument that is flagged as Complete
         $json = [
             $this->instrumentTest => [
-                'UserID' => "2"
+                'consent' => "2"
             ]
         ];
         $response   = $this->client->request(
@@ -268,7 +270,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         // This will test that it should be forbidden to modify an instrument that is flagged as Complete
         $json = [
             $this->instrumentTest => [
-                'UserID' => "2"
+                'consent' => "2"
             ]
         ];
         $response   = $this->client->request(
@@ -323,7 +325,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         // This will test that it should be forbidden to modify an instrument that is flagged as Complete
         $json = [
             $this->instrumentTest => [
-                'UserID' => "2"
+                'consent' => "2"
             ]
         ];
         $response   = $this->client->request(
@@ -387,7 +389,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 'Instrument' => $this->instrumentTest
             ],
             $this->instrumentTest => [
-                'UserID' => "2"
+                'testText' => "test Text"
             ]
         ];
         $response   = $this->client->request(
@@ -420,7 +422,9 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 'Instrument' => $this->instrumentTest
             ],
             $this->instrumentTest => [
-                'UserID' => "2"
+                'consent' => "yes",
+                'testText' => 'test text',
+                'testCheckbox' => 'true'
             ]
         ];
         $response   = $this->client->request(

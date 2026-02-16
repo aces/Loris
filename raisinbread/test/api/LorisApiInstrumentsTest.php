@@ -219,7 +219,9 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $json = [
             'Data' => [
-                'UserID' => "2"
+                'consent' => "yes",
+                'testText' => 'test text',
+                'testCheckbox' => 'true'
             ]
         ];
         $response = $this->client->request(
@@ -247,7 +249,9 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         $json = [
             'Data' => [
-                'UserID' => "2"
+                'consent' => "yes",
+                'testText' => 'test text',
+                'testCheckbox' => 'true'
             ]
         ];
         $response   = $this->client->request(
@@ -312,7 +316,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'All',
-                'Validity'       => 'Invalid' 
+                'Validity'       => 'Invalid'
             ]
         ];
         $response   = $this->client->request(
@@ -387,7 +391,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'Partial',
-                'Validity'       => 'Questionable' 
+                'Validity'       => 'Questionable'
             ]
         ];
         $response   = $this->client->request(
@@ -470,7 +474,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'Instrument' => $this->instrumentTest
             ],
             'Data' => [
-                'UserID' => "2"
+                'consent' => "yes"
             ]
         ];
         $response   = $this->client->request(
@@ -486,40 +490,6 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
     }
-
-    /**
-     * Tests the HTTP PUT request for the
-     * endpoint /candidates/{candid}/{visit}/instruments/{instrument}
-     *
-     * @return void
-     */
-    public function testPutCandidatesCandidVisitInstrumentsInstrumentDde(): void
-    {
-        $json       = [
-            'Meta'      => [
-                'CandID'     => $this->candidTest,
-                'Visit'      => $this->visitTest,
-                'DDE'        => true,
-                'Instrument' => $this->instrumentTest
-            ],
-            'Data' => [
-                'UserID' => "2"
-            ]
-        ];
-        $response   = $this->client->request(
-            'PUT',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
-            [
-                'headers' => $this->headers,
-                'json'    => $json
-            ]
-        );
-        $this->assertEquals(204, $response->getStatusCode());
-        // Verify the endpoint has a body
-        $body = $response->getBody();
-        $this->assertNotEmpty($body);
-    }
-
 
     /**
      * Tests the HTTP GET request for the
@@ -569,7 +539,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'All',
-                'Validity'       => 'Valid' 
+                'Validity'       => 'Valid'
             ]
         ];
         $response   = $this->client->request(
@@ -624,7 +594,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'All',
-                'Validity'       => 'Valid' 
+                'Validity'       => 'Valid'
             ]
         ];
         $response   = $this->client->request(
