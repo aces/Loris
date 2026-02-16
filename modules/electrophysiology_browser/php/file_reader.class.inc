@@ -35,14 +35,12 @@ class File_Reader extends \NDB_Page
         switch ($request->getMethod()) {
         case "GET":
             $file     = $request->getQueryParams()['file'] ?? null;
-            $filename = urldecode(basename($file));
-            $path     = dirname($file);
 
             $downloader = new \LORIS\FilesDownloadHandler(
-                new \SPLFileInfo($downloadpath . $path)
+                new \SPLFileInfo($downloadpath)
             );
             return $downloader->handle(
-                $request->withAttribute('filename', $filename)
+                $request->withAttribute('filename', $file)
             );
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(

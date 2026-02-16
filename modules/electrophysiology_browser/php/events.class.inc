@@ -74,15 +74,13 @@ class Events extends \NDB_Page
             );
 
             $file     = $parameters['filePath'] ?? null;
-            $filename = urldecode(basename($file));
-            $path     = dirname($file);
 
             $downloader = new \LORIS\FilesDownloadHandler(
-                new \SPLFileInfo($downloadpath . $path)
+                new \SPLFileInfo($downloadpath)
             );
 
             return $downloader->handle(
-                $request->withAttribute('filename', $filename)
+                $request->withAttribute('filename', $file)
             );
         case 'DELETE':
             $parameters = json_decode((string)$request->getBody(), true);
