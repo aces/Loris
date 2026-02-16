@@ -584,7 +584,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $pieces[2],
                         $scope,
                         new StringType(255),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -610,7 +610,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $pieces[2],
                         $scope,
                         new StringType(),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -699,7 +699,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $pieces[2],
                         $scope,
                         new DateType(),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -716,7 +716,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         $pieces[2],
                         $scope,
                         new IntegerType(),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -812,7 +812,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($type == 'multiple') {
                         $cardinality = new Cardinality(Cardinality::MANY);
                     } else {
-                        $cardinality = new Cardinality(Cardinality::SINGLE);
+                        $cardinality = new Cardinality(Cardinality::OPTIONAL);
                     }
 
                     $t  = new Enumeration(...$dictopts);
