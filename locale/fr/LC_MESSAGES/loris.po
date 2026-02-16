@@ -266,7 +266,7 @@ msgstr "Sexe"
 
 msgid "Female"
 msgid_plural "Females"
-msgstr[0] "Femelle"
+msgstr[0] "Femme"
 msgstr[1] "Femelles"
 
 msgid "Male"
