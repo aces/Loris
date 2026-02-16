@@ -43,7 +43,7 @@ msgid "Reload the page"
 msgstr "Recharger la page actuelle"
 
 msgid "Continue"
-msgstr "Continuer sans recharger"
+msgstr "Continuer sans actualiser"
 
 #, fuzzy
 msgid "Could not find module {{id}}"
