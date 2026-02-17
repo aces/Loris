@@ -1,48 +1,41 @@
-import { ChannelInfo } from "../store/types";
+import {ChannelTypeState} from "./SeriesRenderer";
 
 /**
  * Component that displays the list of channel types present in the acquisition and
  * allows to configure which ones should be displayed or not.
  */
-const ChannelTypesSelector = ({channels, visibleChannelTypes, setVisibleChannelTypes}: {
-  channels: ChannelInfo[],
-  visibleChannelTypes: Record<string, boolean>,
-  setVisibleChannelTypes: (_: Record<string, boolean>) => void,
+const ChannelTypesSelector = ({channelTypes, setChannelTypes}: {
+  channelTypes: Record<string, ChannelTypeState>,
+  setChannelTypes: React.Dispatch<React.SetStateAction<Record<string, ChannelTypeState>>>,
 }) => {
-  const channelTypes: Record<string, ChannelInfo[]> = {};
-  channels.forEach((channel) => {
-    if (channelTypes[channel.ChannelType]) {
-      channelTypes[channel.ChannelType].push(channel);
-    } else {
-      channelTypes[channel.ChannelType] = [channel];
-    }
-  });
-
   return (
     <div style={{position: 'relative'}}>
       <button className="btn btn-primary dropdown" data-toggle="dropdown">
         Channel types
       </button>
       <ul className="dropdown-menu">
-        {Object.entries(channelTypes).map(([type, channels]) => (
-          <li key={type} style={{
+        {Object.entries(channelTypes).map(([name, {visible, channelsCount}]) => (
+          <li key={name} style={{
             display: 'flex',
             justifyContent: 'space-between',
             padding: '0.75rem 1.5rem',
           }}>
-            <span>{type} ({channels.length})</span>
+            <span>{name} ({channelsCount})</span>
             <input
               type="checkbox"
-              checked={visibleChannelTypes[type] || false}
+              checked={visible || false}
               onClick={
                 // Do not collapse the dropdown on click.
                 (e) => e.stopPropagation()
               }
               onChange={(e) => {
-                setVisibleChannelTypes({
-                  ...visibleChannelTypes,
-                  [type]: e.target.checked,
-                });
+                setChannelTypes((channelTypes) => ({
+                  ...channelTypes,
+                  [name]: {
+                    ...channelTypes[name],
+                    visible: e.target.checked,
+                  },
+                }));
               }}
             />
           </li>

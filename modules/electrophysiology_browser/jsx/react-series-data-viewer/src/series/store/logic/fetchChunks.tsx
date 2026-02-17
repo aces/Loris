@@ -32,7 +32,8 @@ export const loadChunks = (chunksData: FetchedChunks[]) => {
     const channels : Channel[] = [];
 
     const filters: Filter[] = chunksData[0] !== undefined
-      ? window.EEGLabSeriesProviderStore[chunksData[0].chunksURL].getState().filters
+      ? window.EEGLabSeriesProviderStore[chunksData[0].chunksURL]
+        .getState().filters
       : [];
 
     for (let index = 0; index < chunksData.length; index++) {

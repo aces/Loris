@@ -5,6 +5,7 @@ import React, {
   useRef,
   FunctionComponent,
   MutableRefObject,
+  useMemo,
 } from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
@@ -30,8 +31,8 @@ import Epoch from './Epoch';
 import SeriesCursor from './SeriesCursor';
 import LoadingBar from './LoadingBar';
 import {setRightPanel} from '../store/state/rightPanel';
-import {setDatasetMetadata} from '../store/state/dataset';
-import {createVisibleChannelsDict, filterDisplayedChannels, filterSelectedChannels} from '../store/logic/channelTypes';
+import {SET_DATASET_METADATA, setDatasetMetadata} from '../store/state/dataset';
+import {createChannelTypesDict, filterDisplayedChannels, filterSelectedChannels} from '../store/logic/channels';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
 import AnnotationForm from './AnnotationForm';
@@ -75,8 +76,17 @@ import {setTimeSelection} from "../store/state/timeSelection";
 import {useTranslation} from "react-i18next";
 import ChannelTypesSelector from './ChannelTypesSelector';
 import Pagination from './Pagination';
-import { SET_CHANNELS } from '../store/state/channels';
-import { UPDATE_VIEWED_CHUNKS } from '../store/logic/fetchChunks';
+import {SET_CHANNELS} from '../store/state/channels';
+import {UPDATE_VIEWED_CHUNKS} from '../store/logic/fetchChunks';
+
+/**
+ * The state of a channel type.
+ */
+export type ChannelTypeState = {
+  visible: boolean,
+  channelsCount: number,
+}
+
 
 type CProps = {
   ref: MutableRefObject<any>,
@@ -163,7 +173,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         numDisplayedChannels,
         setNumDisplayedChannels,
     ] = useState<number>(DEFAULT_MAX_CHANNELS);
-    const [visibleChannelTypes, setVisibleChannelTypes] = useState({});
+
+    // The channel types are indexed by channel type name.
+    const [channelTypes, setChannelTypes] = useState<Record<string, ChannelTypeState>>({});
+
     const [cursorEnabled, setCursorEnabled] = useState(false);
     const toggleCursor = () => setCursorEnabled((value) => !value);
     const [DCOffsetView, setDCOffsetView] = useState(true);
@@ -190,12 +203,13 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [eventChannels, setEventChannels] = useState([]);
     const {t} = useTranslation();
 
+    // Initialize the channel types mapping once channels information is loaded.
     useEffect(() => {
       if (channelInfos === null) {
         return;
       }
 
-      setVisibleChannelTypes(createVisibleChannelsDict(channelInfos));
+      setChannelTypes(createChannelTypesDict(channelInfos));
     }, [channelInfos]);
 
     window.onbeforeunload = function() {
@@ -538,28 +552,38 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       .domain([-viewerHeight/2, viewerHeight/2])
       .range([topLeft[1], bottomRight[1]]),
   ];
-  // Selected channels are all the channels that should be displayed in the viewer, including
-  // those not currently visible because of pagination.
-  const selectedChannels = channelInfos !== null
-    ? filterSelectedChannels(channelMetadata, channelInfos, visibleChannelTypes)
-    : channelMetadata;
 
-  // Visible channels are all the selected channels that are currently displayed on screen.
-  channels = channelInfos !== null
+  // Selected channels are all the channels that should be currently available in the viewer,
+  // including those not currently displayed because of pagination.
+  const selectedChannels = useMemo(() => (
+    channelInfos !== null
+    ? filterSelectedChannels(channelMetadata, channelInfos, channelTypes)
+    : channelMetadata
+  ), [channelInfos, channelMetadata, channelTypes]);
+
+  // Indexes of the selected channel indexes for comparison with previous renders.
+  const selectedChannelIndexes = JSON.stringify(selectedChannels.map((channel) => channel.index));
+
+  // Displayed channels are all the selected channels that are currently displayed on screen.
+  channels = useMemo(() => (
+    channelInfos !== null
     ? filterDisplayedChannels(selectedChannels, offsetIndex, limit, channels)
-    : channels;
+    : channels
+  ), [channelInfos, selectedChannelIndexes, offsetIndex, limit, channels]);
 
-  const channelIndexes = channels.map((channel) => channel.index);
+  // Indexes of the displayed channel indexes for comparison with previous renders.
+  const displayedChannelIndexes = JSON.stringify(channels.map((channel) => channel.index));
 
+  // Hack to update the global store whenever displayed channels are updated.
   useEffect(() => {
     const store = window.EEGLabSeriesProviderStore[chunksURL];
     if (store === undefined) {
-      return
+      return;
     }
 
     store.dispatch(createAction(SET_CHANNELS)(channels));
     store.dispatch(createAction(UPDATE_VIEWED_CHUNKS)());
-  }, [JSON.stringify(channelIndexes)]);
+  }, [displayedChannelIndexes]);
 
   const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
 
@@ -995,9 +1019,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             {
               channelInfos !== null && (
                 <ChannelTypesSelector
-                  channels={channelInfos}
-                  visibleChannelTypes={visibleChannelTypes}
-                  setVisibleChannelTypes={setVisibleChannelTypes}
+                  channelTypes={channelTypes}
+                  setChannelTypes={setChannelTypes}
                 />
               )
             }
