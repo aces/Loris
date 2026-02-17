@@ -515,13 +515,13 @@ msgstr ""
 msgid "Remove all"
 msgstr ""
 
-msgid "Filter within category"
+msgid "Filter within ${cname}"
 msgstr ""
 
 msgid "Default Visits"
 msgstr ""
 
-msgid "Sync with selected fields"
+msgid "Sync selected visits across all fields"
 msgstr ""
 
 msgid "Select a category"
