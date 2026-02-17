@@ -49,7 +49,7 @@ class CandidateInfo extends Component {
    */
   componentDidMount() {
     const {t} = this.props;
-    this.client.getJSON(this.props.dataURL)
+    this.client.getData(this.props.candID, this.props.tabName)
       .then((data) => {
         let formData = {
           flaggedCaveatemptor: data.flagged_caveatemptor,
@@ -393,8 +393,8 @@ class CandidateInfo extends Component {
   }
 }
 CandidateInfo.propTypes = {
-  dataURL: PropTypes.string,
-  tabName: PropTypes.string,
+  candID: PropTypes.string.isRequired,
+  tabName: PropTypes.string.isRequired,
   action: PropTypes.string,
   t: PropTypes.string.isRequired,
 };

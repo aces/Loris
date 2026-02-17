@@ -12,22 +12,19 @@ class CandidateParametersClient extends Http.Client {
   }
 
   /**
-   * Fetch JSON data from a module URL using Client#get.
+   * Fetch candidate tab JSON data.
    *
-   * @param {string} url
+   * @param {string} candID
+   * @param {string} tabName
    * @return {Promise<any>}
    */
-  getJSON(url) {
-    const parsedURL = new URL(url, window.location.origin);
-    const prefix = '/candidate_parameters/';
-    const subEndpoint = parsedURL.pathname.startsWith(prefix)
-      ? parsedURL.pathname.slice(prefix.length)
-      : parsedURL.pathname.replace(/^\/+/, '');
-    const query = new Http.Query();
-    parsedURL.searchParams.forEach((value, key) => {
-      query.addParam({field: key, value: value});
-    });
-    return this.setSubEndpoint(subEndpoint).get(query);
+  getData(candID, tabName) {
+    const query = new Http.Query()
+      .addParam({field: 'candID', value: candID})
+      .addParam({field: 'data', value: tabName});
+    return this
+      .setSubEndpoint('ajax/getData.php')
+      .get(query);
   }
 }
 

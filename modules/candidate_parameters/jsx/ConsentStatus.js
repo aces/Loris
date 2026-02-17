@@ -58,11 +58,11 @@ class ConsentStatus extends Component {
   }
 
   /**
-   * Retrieve data from the provided URL and save it in state
+   * Retrieve data and save it in state.
    */
   fetchData() {
     const {t} = this.props;
-    this.client.getJSON(this.props.dataURL)
+    this.client.getData(this.props.candID, this.props.tabName)
       .then((data) => {
         let formData = {};
         let consents = data.consents;
@@ -579,9 +579,9 @@ class ConsentStatus extends Component {
 }
 
 ConsentStatus.propTypes = {
-  dataURL: PropTypes.string.isRequired,
+  candID: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
-  tabName: PropTypes.string,
+  tabName: PropTypes.string.isRequired,
   t: PropTypes.string.isRequired,
 };
 

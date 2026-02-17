@@ -44,7 +44,7 @@ class FamilyInfo extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    this.client.getJSON(this.props.dataURL)
+    this.client.getData(this.props.candID, this.props.tabName)
       .then((data) => {
         this.setState({
           Data: data,
@@ -407,9 +407,8 @@ class FamilyInfo extends Component {
   }
 }
 FamilyInfo.propTypes = {
-  dataURL: PropTypes.string,
-  tabName: PropTypes.string,
-  candID: PropTypes.string,
+  tabName: PropTypes.string.isRequired,
+  candID: PropTypes.string.isRequired,
   action: PropTypes.string,
   t: PropTypes.string.isRequired,
 };

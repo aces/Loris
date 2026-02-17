@@ -60,7 +60,7 @@ class ProbandInfo extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    this.client.getJSON(this.props.dataURL)
+    this.client.getData(this.props.candID, this.props.tabName)
       .then((data) => {
         const formData = {
           ProbandSex: data.ProbandSex,
@@ -377,9 +377,9 @@ class ProbandInfo extends Component {
 }
 
 ProbandInfo.propTypes = {
-  dataURL: PropTypes.string.isRequired,
+  candID: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
-  tabName: PropTypes.string,
+  tabName: PropTypes.string.isRequired,
   t: PropTypes.string.isRequired,
 };
 

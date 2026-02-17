@@ -51,7 +51,7 @@ class ParticipantStatus extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    this.client.getJSON(this.props.dataURL)
+    this.client.getData(this.props.candID, this.props.tabName)
       .then((data) => {
         let formData = {};
         formData.participantStatus = data.participantStatus;
@@ -343,8 +343,8 @@ class ParticipantStatus extends Component {
   }
 }
 ParticipantStatus.propTypes = {
-  dataURL: PropTypes.string,
-  tabName: PropTypes.string,
+  candID: PropTypes.string.isRequired,
+  tabName: PropTypes.string.isRequired,
   action: PropTypes.string,
   t: PropTypes.string.isRequired,
 };
