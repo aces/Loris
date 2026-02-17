@@ -14,6 +14,27 @@ export function createVisibleChannelsDict(
 
   return visibleChannels;
 }
+/**
+ * Filter the list of channel metadatas to only keep channels whose types are visible.
+ */
+export function filterSelectedChannelTypes(
+  channelMetadatas: ChannelMetadata[],
+  channelInfos: ChannelInfo[],
+  visibleChannelTypes: Record<string, boolean>,
+): ChannelMetadata[] {
+  return channelMetadatas.filter((channelMeta) => {
+    const channelInfo = channelInfos.find((channelInfo) =>
+      // TODO: Why do channels have different names im the electrophysiology browser and API?
+      channelInfo.ChannelName.slice(1) === channelMeta.name.slice(1)
+    );
+
+    if (channelInfo === undefined) {
+      return false;
+    }
+
+    return visibleChannelTypes[channelInfo.ChannelType];
+  });
+}
 
 /**
  * Filter the list of channels to only keep channels whose types are visible.

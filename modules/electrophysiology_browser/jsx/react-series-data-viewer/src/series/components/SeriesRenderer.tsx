@@ -16,7 +16,6 @@ import {colorOrder} from '../../color';
 import {
   MAX_RENDERED_EPOCHS,
   DEFAULT_MAX_CHANNELS,
-  CHANNEL_DISPLAY_OPTIONS,
   SIGNAL_UNIT,
   Vector2,
   DEFAULT_TIME_INTERVAL,
@@ -32,7 +31,7 @@ import SeriesCursor from './SeriesCursor';
 import LoadingBar from './LoadingBar';
 import {setRightPanel} from '../store/state/rightPanel';
 import {setDatasetMetadata} from '../store/state/dataset';
-import {createVisibleChannelsDict, filterVisibleChannelTypes} from '../store/logic/channelTypes';
+import {createVisibleChannelsDict, filterVisibleChannelTypes as filterVisibleChannels, filterSelectedChannelTypes as filterSelectedChannels} from '../store/logic/channelTypes';
 import {setOffsetIndex} from '../store/logic/pagination';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
@@ -75,6 +74,7 @@ import HEDEndorsement from "./HEDEndorsement";
 import {setTimeSelection} from "../store/state/timeSelection";
 import {useTranslation} from "react-i18next";
 import ChannelTypesSelector from './ChannelTypesSelector';
+import Pagination from './Pagination';
 
 type CProps = {
   ref: MutableRefObject<any>,
@@ -540,11 +540,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       .range([topLeft[1], bottomRight[1]]),
   ];
 
-  const filteredChannels1 = channels.filter((_, i) => !hidden.includes(i));
+  const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
 
-  const filteredChannels = channelInfos !== null
-    ? filterVisibleChannelTypes(filteredChannels1, channelMetadata, channelInfos, visibleChannelTypes)
-    : filteredChannels1;
+  // Selected channels are all the channels that should be displayed in the viewer, including
+  // those not currently visible because of pagination.
+  const selectedChannels = channelInfos !== null
+    ? filterSelectedChannels(channelMetadata, channelInfos, visibleChannelTypes)
+    : channelMetadata;
+
+  // Visible channels are all the selected channels that are currently displayed on screen.
+  const visibleChannels = channelInfos !== null
+    ? filterVisibleChannels(filteredChannels, channelMetadata, channelInfos, visibleChannelTypes)
+    : filteredChannels;
 
   const showAxisScaleLines = false; // Visibility state of y-axis scale lines
 
@@ -647,7 +654,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     return (
       <Group top={-viewerHeight/2} left={-viewerWidth/2}>
         <line y1="0" y2={viewerHeight} stroke="black" />
-        {filteredChannels.map((channel, i) => {
+        {visibleChannels.map((channel, i) => {
           const seriesRange = channelMetadata[channel.index]?.seriesRange;
           if (!seriesRange || !showAxisScaleLines) return null;
           return (
@@ -678,10 +685,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       !cursorRef.current && stackedView &&
       singleMode && hoveredChannels.length > 0
     )
-      ? filteredChannels.filter(
+      ? visibleChannels.filter(
         (channel) => hoveredChannels.includes(channel.index)
       )
-      : filteredChannels;
+      : visibleChannels;
 
     return (
       <>
@@ -838,8 +845,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
-  const hardLimit = Math.min(offsetIndex + limit - 1, channelMetadata.length);
-
   /**
    *
    */
@@ -864,10 +869,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   };
 
   /**
-   *
+   * Handle a change to the limit of the number of displayed channels.
    */
-  const handleChannelChange = (e) => {
-    const numChannels = parseInt(e.target.value, 10);
+  const handleChannelChange = (numChannels: number) => {
     setNumDisplayedChannels(numChannels); // This one is the frontend controller
     setDatasetMetadata({limit: numChannels}); // Will trigger re-render to the store
     setOffsetIndex(offsetIndex); // Will include new channels on limit increase
@@ -1210,83 +1214,16 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       )}
                     />
                   </div>
-
-                  <div
-                    className={
-                      (rightPanel ? '' : 'pull-right-lg col-lg-5 ')
-                      + 'pagination-nav'
-                    }
-                    style={{
-                      padding: '5px 15px',
-                    }}
-                  >
-                    <small style={{marginRight: '3px',}}>
-                        {t('Displaying: ', {ns: 'electrophysiology_browser'})}
-                      <select
-                        value={numDisplayedChannels}
-                        onChange={handleChannelChange}
-                      >
-                        {CHANNEL_DISPLAY_OPTIONS.map((numChannels) => {
-                          return <option
-                            key={`${numChannels}`}
-                            value={numChannels}
-                          >
-                            {t('{{numChannels}} channels', {
-                              ns: 'electrophysiology_browser',
-                              numChannels: numChannels,
-                            })}
-                          </option>;
-                        })};
-                      </select>
-                      &nbsp;
-                      {t('Showing:', {ns: 'electrophysiology_browser'})}
-                      &nbsp;
-                      <input
-                        type='number'
-                        style={{width: '45px'}}
-                        value={offsetIndex}
-                        onChange={(e) => {
-                          const value = parseInt(e.target.value);
-                          !isNaN(value) && setOffsetIndex(value);
-                        }}
-                      />
-                      &nbsp;
-                      {t('to {{channelsInView}} of {{totalChannels}}', {
-                        ns: 'electrophysiology_browser',
-                        channelsInView: hardLimit,
-                        totalChannels: channelMetadata.length
-                      })}
-                    </small>
-                    <div
-                      className='btn-group'
-                      style={{marginRight: 0}}
-                    >
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex - limit)}
-                        value='<<'
-                      />
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex - 1)}
-                        value='<'
-                      />
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex + 1)}
-                        value='>'
-                      />
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex + limit)}
-                        value='>>'
-                      />
-                    </div>
-                  </div>
+                  <Pagination
+                    limit={limit}
+                    selectedChannelsCount={selectedChannels.length}
+                    visibleChannelsCount={visibleChannels.length}
+                    offsetIndex={offsetIndex}
+                    setOffsetIndex={setOffsetIndex}
+                    displayedChannelsLimit={numDisplayedChannels}
+                    setDisplayedChannelsLimit={handleChannelChange}
+                    rightPanel={rightPanel}
+                  />
                 </div>
               </div>
             </div>
@@ -1329,7 +1266,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   userSelect: 'none',
                 }}
               >{/* Below slice changes labels to be subset of channel choice */}
-                {filteredChannels
+                {visibleChannels
                   .slice(0, numDisplayedChannels)
                   .map((channel) => (
                   <div
