@@ -17,7 +17,7 @@ export function createVisibleChannelsDict(
 /**
  * Filter the list of channel metadatas to only keep channels whose types are visible.
  */
-export function filterSelectedChannelTypes(
+export function filterSelectedChannels(
   channelMetadatas: ChannelMetadata[],
   channelInfos: ChannelInfo[],
   visibleChannelTypes: Record<string, boolean>,
@@ -25,7 +25,7 @@ export function filterSelectedChannelTypes(
   return channelMetadatas.filter((channelMeta) => {
     const channelInfo = channelInfos.find((channelInfo) =>
       // TODO: Why do channels have different names im the electrophysiology browser and API?
-      channelInfo.ChannelName.slice(1) === channelMeta.name.slice(1)
+      channelMeta.name.includes(channelInfo.ChannelName)
     );
 
     if (channelInfo === undefined) {
@@ -39,23 +39,32 @@ export function filterSelectedChannelTypes(
 /**
  * Filter the list of channels to only keep channels whose types are visible.
  */
-export function filterVisibleChannelTypes(
-  channels: Channel[],
-  channelMetadatas: ChannelMetadata[],
-  channelInfos: ChannelInfo[],
-  visibleChannelTypes: Record<string, boolean>,
+export function filterDisplayedChannels(
+  selectedChannels: ChannelMetadata[],
+  offsetIndex: number,
+  limit: number,
+  pastChannels: Channel[],
 ): Channel[] {
-  return channels.filter((channel) => {
-    const channelMeta = channelMetadatas[channel.index];
-    // TODO: Why do channels have different names im the electrophysiology browser and API?
-    const channelInfo = channelInfos.find((channelInfo) =>
-      channelInfo.ChannelName.slice(1) === channelMeta.name.slice(1)
-    );
+  let channelIndex = offsetIndex - 1;
 
-    if (channelInfo === undefined) {
-      return false;
-    }
+  const newChannels = [];
+  const hardLimit = Math.min(
+    offsetIndex + limit - 1,
+    selectedChannels.length
+  );
 
-    return visibleChannelTypes[channelInfo.ChannelType];
-  });
+  while (channelIndex < hardLimit) {
+    // TODO: need to handle multiple traces using shapes
+    const channel =
+      pastChannels.find((pastChannel) => pastChannel.index === channelIndex)
+      || {
+        index: channelIndex,
+        traces: [{chunks: [], type: 'line'}],
+      };
+
+    newChannels.push(channel);
+    channelIndex++;
+  }
+
+  return newChannels;
 }

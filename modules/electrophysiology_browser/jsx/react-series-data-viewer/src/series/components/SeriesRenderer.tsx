@@ -31,8 +31,7 @@ import SeriesCursor from './SeriesCursor';
 import LoadingBar from './LoadingBar';
 import {setRightPanel} from '../store/state/rightPanel';
 import {setDatasetMetadata} from '../store/state/dataset';
-import {createVisibleChannelsDict, filterVisibleChannelTypes as filterVisibleChannels, filterSelectedChannelTypes as filterSelectedChannels} from '../store/logic/channelTypes';
-import {SET_OFFSET_INDEX} from '../store/logic/pagination';
+import {createVisibleChannelsDict, filterDisplayedChannels, filterSelectedChannels} from '../store/logic/channelTypes';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
 import AnnotationForm from './AnnotationForm';
@@ -76,6 +75,8 @@ import {setTimeSelection} from "../store/state/timeSelection";
 import {useTranslation} from "react-i18next";
 import ChannelTypesSelector from './ChannelTypesSelector';
 import Pagination from './Pagination';
+import { SET_CHANNELS } from '../store/state/channels';
+import { UPDATE_VIEWED_CHUNKS } from '../store/logic/fetchChunks';
 
 type CProps = {
   ref: MutableRefObject<any>,
@@ -188,16 +189,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [panelIsDirty, setPanelIsDirty] = useState(false);
     const [eventChannels, setEventChannels] = useState([]);
     const {t} = useTranslation();
-
-    // This is a hack to make the global store react to visualizer state changes.
-    useEffect(() => {
-      const store = window.EEGLabSeriesProviderStore[chunksURL];
-      if (store === undefined) {
-        return
-      }
-
-      store.dispatch(createAction(SET_OFFSET_INDEX)(offsetIndex));
-    }, [offsetIndex]);
 
     useEffect(() => {
       if (channelInfos === null) {
@@ -547,9 +538,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       .domain([-viewerHeight/2, viewerHeight/2])
       .range([topLeft[1], bottomRight[1]]),
   ];
-
-  const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
-
   // Selected channels are all the channels that should be displayed in the viewer, including
   // those not currently visible because of pagination.
   const selectedChannels = channelInfos !== null
@@ -557,9 +545,23 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     : channelMetadata;
 
   // Visible channels are all the selected channels that are currently displayed on screen.
-  const visibleChannels = channelInfos !== null
-    ? filterVisibleChannels(filteredChannels, channelMetadata, channelInfos, visibleChannelTypes)
-    : filteredChannels;
+  channels = channelInfos !== null
+    ? filterDisplayedChannels(selectedChannels, offsetIndex, limit, channels)
+    : channels;
+
+  const channelIndexes = channels.map((channel) => channel.index);
+
+  useEffect(() => {
+    const store = window.EEGLabSeriesProviderStore[chunksURL];
+    if (store === undefined) {
+      return
+    }
+
+    store.dispatch(createAction(SET_CHANNELS)(channels));
+    store.dispatch(createAction(UPDATE_VIEWED_CHUNKS)());
+  }, [JSON.stringify(channelIndexes)]);
+
+  const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
 
   const showAxisScaleLines = false; // Visibility state of y-axis scale lines
 
@@ -662,7 +664,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     return (
       <Group top={-viewerHeight/2} left={-viewerWidth/2}>
         <line y1="0" y2={viewerHeight} stroke="black" />
-        {visibleChannels.map((channel, i) => {
+        {filteredChannels.map((channel, i) => {
           const seriesRange = channelMetadata[channel.index]?.seriesRange;
           if (!seriesRange || !showAxisScaleLines) return null;
           return (
@@ -693,10 +695,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       !cursorRef.current && stackedView &&
       singleMode && hoveredChannels.length > 0
     )
-      ? visibleChannels.filter(
+      ? filteredChannels.filter(
         (channel) => hoveredChannels.includes(channel.index)
       )
-      : visibleChannels;
+      : filteredChannels;
 
     return (
       <>
@@ -1225,7 +1227,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   <Pagination
                     limit={limit}
                     selectedChannelsCount={selectedChannels.length}
-                    visibleChannelsCount={visibleChannels.length}
+                    visibleChannelsCount={filteredChannels.length}
                     offsetIndex={offsetIndex}
                     setOffsetIndex={setOffsetIndex}
                     displayedChannelsLimit={numDisplayedChannels}
@@ -1274,7 +1276,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   userSelect: 'none',
                 }}
               >{/* Below slice changes labels to be subset of channel choice */}
-                {visibleChannels
+                {filteredChannels
                   .slice(0, numDisplayedChannels)
                   .map((channel) => (
                   <div
