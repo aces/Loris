@@ -558,6 +558,7 @@ export class SelectElement extends Component {
             value={newOptions[option]}
             key={newOptions[option]}
             disabled={isDisabled}
+            title={option}
           >
             {option}
           </option>
@@ -571,6 +572,7 @@ export class SelectElement extends Component {
             value={option}
             key={option}
             disabled={isDisabled}
+            title={options[option]}
           >
             {options[option]}
           </option>
@@ -593,15 +595,22 @@ export class SelectElement extends Component {
     // element will take up the whole row.
     let inputClass = this.props.noMargins ? '' : 'col-sm-12';
     if (this.props.label) {
-      inputClass = 'col-sm-9';
+      inputClass = `col-sm-${this.props.labelPlacementTop ? '12': '9'}`;
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={inputClass}>
@@ -614,6 +623,7 @@ export class SelectElement extends Component {
             onChange={this.handleChange}
             required={this.props.required}
             disabled={this.props.disabled}
+            style={{overflow: 'auto'}}
           >
             {emptyOptionHTML}
             {optionList}
@@ -645,6 +655,7 @@ SelectElement.propTypes = {
   noMargins: PropTypes.bool,
   placeholder: PropTypes.string,
   sortByValue: PropTypes.bool,
+  labelPlacementTop: PropTypes.bool,
 };
 
 SelectElement.defaultProps = {
@@ -665,6 +676,7 @@ SelectElement.defaultProps = {
   },
   noMargins: false,
   placeholder: '',
+  labelPlacementTop: false,
 };
 
 /**
@@ -1102,15 +1114,22 @@ export class TextboxElement extends Component {
     // element will take up the whole row.
     let inputClass = this.props.class;
     if (this.props.label || this.props.label == '') {
-      inputClass = 'col-sm-9';
+      inputClass = `col-sm-${this.props.labelPlacementTop ? '12' : '9'}`;
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {(this.props.label || this.props.label == '') && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={inputClass}>
@@ -1147,6 +1166,7 @@ TextboxElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 TextboxElement.defaultProps = {
@@ -1164,6 +1184,7 @@ TextboxElement.defaultProps = {
   },
   onUserBlur: function() {
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1511,13 +1532,22 @@ export class DateElement extends Component {
       maxFullDate = maxYear + '-' + currentMonth;
     }
 
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1552,6 +1582,7 @@ DateElement.propTypes = {
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 DateElement.defaultProps = {
@@ -1568,6 +1599,7 @@ DateElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1600,13 +1632,22 @@ export class TimeElement extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
     return (
-      <div className="row form-group">
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1637,6 +1678,7 @@ TimeElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 TimeElement.defaultProps = {
@@ -1649,6 +1691,7 @@ TimeElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1763,7 +1806,9 @@ export class NumericElement extends Component {
   render() {
     let errorMessage = null;
     let elementClass = 'row form-group';
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
 
     // Add error message
     if (this.props.errorMessage) {
@@ -1772,11 +1817,15 @@ export class NumericElement extends Component {
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ?
+          {display: 'flex', flexDirection: 'column'} : {}}>
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1812,6 +1861,7 @@ NumericElement.propTypes = {
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
   errorMessage: PropTypes.string,
+  labelPlacementTop: PropTypes.bool,
 };
 
 NumericElement.defaultProps = {
@@ -1827,6 +1877,7 @@ NumericElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
 
 /**
