@@ -102,6 +102,8 @@ confusing or lacking.
 PHP error log.
 
 ## AI Policy
+### Governance and confidentiality
+Contributors must not input confidential LORIS data, credentials, PHI, or unpublished datasets or metadata into third-party AI systems.
 
 ### Code
 Reviewing, testing and triaging pull requests takes a large amount of
