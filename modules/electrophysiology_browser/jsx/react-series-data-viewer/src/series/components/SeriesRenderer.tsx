@@ -32,11 +32,12 @@ import LoadingBar from './LoadingBar';
 import {setRightPanel} from '../store/state/rightPanel';
 import {setDatasetMetadata} from '../store/state/dataset';
 import {createVisibleChannelsDict, filterVisibleChannelTypes as filterVisibleChannels, filterSelectedChannelTypes as filterSelectedChannels} from '../store/logic/channelTypes';
-import {setOffsetIndex} from '../store/logic/pagination';
+import {SET_OFFSET_INDEX} from '../store/logic/pagination';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
 import AnnotationForm from './AnnotationForm';
 import {RootState} from '../store';
+import {createAction} from 'redux-actions';
 
 import {
   setAmplitudesScale,
@@ -94,8 +95,6 @@ type CProps = {
   epochs: EpochType[],
   filteredEpochs: EpochFilter,
   activeEpoch: number,
-  offsetIndex: number,
-  setOffsetIndex: (_: number) => void,
   channelInfos: ChannelInfo[] | null,
   setAmplitudesScale: (_: number) => void,
   resetAmplitudesScale: (_: void) => void,
@@ -140,8 +139,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   filteredEpochs,
   activeEpoch,
   channelInfos,
-  offsetIndex,
-  setOffsetIndex,
   setAmplitudesScale,
   resetAmplitudesScale,
   setLowPassFilter,
@@ -180,6 +177,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [lowPass, setLowPass] = useState('none');
     const [refNode, setRefNode] = useState<HTMLDivElement>(null);
     const [bounds, setBounds] = useState<ClientRect>(null);
+    const [offsetIndex, setOffsetIndex] = useState(1);
     const getBounds = useCallback((domNode) => {
         if (domNode) {
             setRefNode(domNode);
@@ -190,6 +188,16 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [panelIsDirty, setPanelIsDirty] = useState(false);
     const [eventChannels, setEventChannels] = useState([]);
     const {t} = useTranslation();
+
+    // This is a hack to make the global store react to visualizer state changes.
+    useEffect(() => {
+      const store = window.EEGLabSeriesProviderStore[chunksURL];
+      if (store === undefined) {
+        return
+      }
+
+      store.dispatch(createAction(SET_OFFSET_INDEX)(offsetIndex));
+    }, [offsetIndex]);
 
     useEffect(() => {
       if (channelInfos === null) {
@@ -1587,7 +1595,6 @@ SeriesRenderer.defaultProps = {
   epochs: [],
   hidden: [],
   channelMetadata: [],
-  offsetIndex: 1,
   limit: DEFAULT_MAX_CHANNELS,
 };
 
@@ -1607,7 +1614,6 @@ export default connect(
     activeEpoch: state.dataset.activeEpoch,
     hidden: state.montage.hidden,
     channelMetadata: state.dataset.channelMetadata,
-    offsetIndex: state.dataset.offsetIndex,
     limit: state.dataset.limit,
     loadedChannels: state.dataset.loadedChannels,
     domain: state.bounds.domain,
@@ -1615,10 +1621,6 @@ export default connect(
     hoveredChannels: state.cursor.hoveredChannels,
   }),
   (dispatch: (_: any) => void) => ({
-    setOffsetIndex: R.compose(
-      dispatch,
-      setOffsetIndex
-    ),
     setInterval: R.compose(
       dispatch,
       setInterval
