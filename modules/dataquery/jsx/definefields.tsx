@@ -347,7 +347,10 @@ function DefineFields(props: {
           const options = [...allVisits];
           // Only add "Select All" if not all visits are already selected
           if (selectedVisits.length < allVisits.length) {
-            options.push({value: 'ALL', label: 'Select All'});
+            options.unshift({
+              value: 'ALL',
+              label: t('Select All', {ns: 'dataquery'}),
+            });
           }
           return options;
         })()}
