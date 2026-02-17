@@ -17,6 +17,7 @@ export type Trace = {
 
 export type ChannelMetadata = {
   name: string,
+  index: number,
   seriesRange: [number, number]
 };
 

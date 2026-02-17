@@ -23,11 +23,7 @@ export function filterSelectedChannels(
   visibleChannelTypes: Record<string, boolean>,
 ): ChannelMetadata[] {
   return channelMetadatas.filter((channelMeta) => {
-    const channelInfo = channelInfos.find((channelInfo) =>
-      // TODO: Why do channels have different names im the electrophysiology browser and API?
-      channelMeta.name.includes(channelInfo.ChannelName)
-    );
-
+    const channelInfo = channelInfos.find((_, channelIndex) => channelMeta.index === channelIndex);
     if (channelInfo === undefined) {
       return false;
     }
