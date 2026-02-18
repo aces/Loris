@@ -1,0 +1,570 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-04-09 12:00+0800\n"
+"Last-Translator: LORIS Translation Team <translations@loris.ca>\n"
+"Language-Team: Chinese <zh@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+# Smarty template main.tpl strings
+msgid "LORIS"
+msgstr "LORIS"
+
+msgid "DEV"
+msgstr "开发环境"
+
+msgid "Affiliations"
+msgstr "所属机构"
+
+msgid "Site Affiliation"
+msgstr "站点所属"
+
+msgid "Site Affiliations"
+msgstr "站点所属"
+
+msgid "Project Affiliation"
+msgstr "项目所属"
+
+msgid "Project Affiliations"
+msgstr "项目所属"
+
+msgid "Log Out"
+msgstr "退出登录"
+
+msgid "My Preferences"
+msgstr "我的偏好"
+
+# Auto extracted strings from PHP
+# Menu categories
+#: modules/configuration/php/module.class.inc:50
+#: modules/help_editor/php/module.class.inc:47
+#: modules/instrument_manager/php/module.class.inc:53
+#: modules/module_manager/php/module.class.inc:50
+#: modules/server_processes_manager/php/module.class.inc:104
+#: modules/survey_accounts/php/module.class.inc:48
+#: modules/user_accounts/php/module.class.inc:53
+msgid "Admin"
+msgstr "管理"
+
+#: modules/acknowledgements/php/module.class.inc:54
+#: modules/api_docs/php/module.class.inc:66
+#: modules/battery_manager/php/module.class.inc:55
+#: modules/datadict/php/module.class.inc:49
+#: modules/data_release/php/module.class.inc:56
+#: modules/dictionary/php/module.class.inc:49
+#: modules/document_repository/php/module.class.inc:56
+msgid "Data Dictionary"
+msgstr "数据字典"
+
+#: modules/instrument_builder/php/module.class.inc:48
+#: modules/issue_tracker/php/module.class.inc:54
+#: modules/schedule_module/php/module.class.inc:49
+msgid "Tools"
+msgstr "工具"
+
+msgid "Acknowledgements"
+msgstr "致谢"
+
+
+#: modules/behavioural_qc/php/module.class.inc:51
+#: modules/conflict_resolver/php/module.class.inc:83
+#: modules/examiner/php/module.class.inc:50
+#: modules/media/php/module.class.inc:33
+msgid "Clinical"
+msgstr "临床"
+
+#: modules/dicom_archive/php/module.class.inc:115
+#: modules/imaging_browser/php/module.class.inc:40
+#: modules/imaging_qc/php/module.class.inc:50
+#: modules/imaging_uploader/php/module.class.inc:54
+#: modules/mri_violations/php/module.class.inc:53
+msgid "Imaging"
+msgstr "影像"
+
+#: modules/candidate_list/php/module.class.inc:76
+#: modules/new_profile/php/module.class.inc:50
+msgid "Candidate"
+msgid_plural "Candidates"
+msgstr[0] "候选人"
+
+#: modules/genomic_browser/php/module.class.inc:53
+msgid "Genomics"
+msgstr "基因组学"
+
+#: modules/electrophysiology_browser/php/module.class.inc:54
+msgid "Electrophysiology"
+msgstr "电生理学"
+
+#: modules/dataquery/php/module.class.inc:33
+#: modules/dqt/php/module.class.inc:49
+#: modules/publication/php/module.class.inc:55
+#: modules/statistics/php/module.class.inc:49
+msgid "Reports"
+msgstr "报告"
+
+# Common loris terms. Consider moving these to their own textdomain?
+msgid "TimePoint"
+msgstr "时间点"
+
+msgid "TimePoint %s Details"
+msgstr "时间点 %s 详细信息"
+
+# Common select option labels
+msgid "Yes"
+msgstr "是"
+
+msgid "No"
+msgstr "否"
+
+msgid "Browse"
+msgstr "浏览"
+
+msgid "Upload"
+msgstr "上传"
+
+msgid "N/A"
+msgstr "不适用"
+
+msgid "Back"
+msgstr "返回"
+
+msgid "Create"
+msgstr "创建"
+
+# Filters
+msgid "Selection Filter"
+msgstr "筛选条件"
+
+msgid "Filters"
+msgstr "筛选器"
+
+msgid "Show Filters"
+msgstr "显示筛选器"
+
+msgid "Hide Filters"
+msgstr "隐藏筛选器"
+
+msgid "Clear Filters"
+msgstr "清除筛选"
+
+msgid "Load Filter Preset"
+msgstr "加载筛选预设"
+
+msgid "Show Advanced Filters"
+msgstr "显示高级筛选"
+
+msgid "Hide Advanced Filters"
+msgstr "隐藏高级筛选"
+
+msgid "Pass"
+msgstr "通过"
+
+msgid "Fail"
+msgstr "失败"
+
+msgid "True"
+msgstr "真"
+
+msgid "False"
+msgstr "假"
+
+msgid "Selected"
+msgstr "已选"
+
+msgid "selected"
+msgstr "已选"
+
+# Common swal labels
+msgid "OK"
+msgstr "确定"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Success!"
+msgstr "成功！"
+
+msgid "Close"
+msgstr "关闭"
+
+# Common candidate terms
+msgid "PSCID"
+msgstr "PSCID"
+
+msgid "DCCID"
+msgstr "DCCID"
+
+msgid "Visit Label"
+msgstr "访视标签"
+
+msgid "Email"
+msgstr "电子邮件"
+
+msgid "Site"
+msgid_plural "Sites"
+msgstr[0] "站点"
+
+msgid "Module"
+msgstr "模块"
+
+msgid "Project"
+msgid_plural "Projects"
+msgstr[0] "项目"
+
+msgid "Candidate Registration Project"
+msgstr "候选人注册项目"
+
+msgid "Timepoint Project"
+msgstr "时间点项目"
+
+msgid "Cohort"
+msgid_plural "Cohorts"
+msgstr[0] "队列"
+
+msgid "Session"
+msgid_plural "Sessions"
+msgstr[0] "会话"
+
+msgid "Date of registration"
+msgstr "注册日期"
+
+msgid "Date Of Visit"
+msgstr "访视日期"
+
+msgid "Participant Status"
+msgstr "参与者状态"
+
+msgid "DoB"
+msgstr "出生日期"
+
+msgid "Sex"
+msgstr "性别"
+
+msgid "Feedback"
+msgstr "反馈"
+
+msgid "Scans"
+msgstr "扫描"
+
+msgid "Date"
+msgstr "日期"
+
+msgid "Time"
+msgstr "时间"
+
+msgid "Stage"
+msgstr "阶段"
+
+msgid "Send To DCC"
+msgstr "发送至DCC"
+
+msgid "Sent To DCC"
+msgstr "已发送至DCC"
+
+msgid "Reverse Send To DCC"
+msgstr "撤销发送至DCC"
+
+msgid "Date of Birth"
+msgstr "出生日期"
+
+msgid "Visits"
+msgstr "访视"
+
+msgid "An error occured while loading the page."
+msgstr "加载页面时发生错误。"
+
+msgid "Active"
+msgstr "活跃"
+
+msgid "Pending"
+msgstr "待处理"
+
+msgid "Entity Type"
+msgstr "实体类型"
+
+msgid "Scan Done"
+msgstr "扫描完成"
+
+msgid "Language"
+msgstr "语言"
+
+msgid "Access denied"
+msgstr "访问被拒绝"
+
+msgid "No."
+msgstr "编号"
+
+msgid "Ethnicity"
+msgstr "民族"
+
+msgid "Are You Sure?"
+msgstr "您确定吗？"
+
+msgid "Are you sure?"
+msgstr "您确定吗？"
+
+msgid "Yes, I am sure!"
+msgstr "是的，我确定！"
+
+msgid "No, cancel it!"
+msgstr "不，取消！"
+
+msgid "Leaving the form will result in the loss of any information entered."
+msgstr "离开表单将导致已输入的任何信息丢失。"
+
+msgid "Proceed"
+msgstr "继续"
+
+msgid "Previous"
+msgstr "上一个"
+
+msgid "Next"
+msgstr "下一个"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Saving"
+msgstr "保存中"
+
+msgid "Reset"
+msgstr "重置"
+
+msgid "Note"
+msgstr "注意"
+
+msgid "View details"
+msgstr "查看详情"
+
+# Data table strings
+msgid "No result found."
+msgstr "未找到结果。"
+
+msgid "{{pageCount}} rows displayed of {{totalCount}}."
+msgstr "显示 {{totalCount}} 行中的 {{pageCount}} 行。"
+
+msgid "Maximum rows per page:"
+msgstr "每页最大行数："
+
+msgid "Download Data as CSV"
+msgstr "下载数据为CSV"
+
+# Dashboard panel strings
+msgid "Views"
+msgstr "视图"
+
+#: php/libraries/Password.class.inc
+msgid "The password is too short"
+msgstr "密码太短"
+
+msgid "The password is not complex enough."
+msgstr "密码复杂度不足。"
+
+msgid "This password is known to be exposed in online data breaches."
+msgstr "此密码已知曾在在线数据泄露中被暴露。"
+
+msgid "Data Supervisors to Email"
+msgstr "发送邮件给数据主管"
+
+msgid "Invalid email address"
+msgstr "无效的电子邮件地址"
+
+# Common strings on widgets
+msgid "NEW"
+msgstr "新"
+
+msgid "New"
+msgstr "新建"
+
+msgid "Updated"
+msgstr "已更新"
+
+msgid "Uploaded"
+msgstr "已上传"
+
+# User Account related
+msgid "Password Rules"
+msgstr "密码规则"
+
+msgid "Username"
+msgstr "用户名"
+
+msgid "First name"
+msgstr "名"
+
+msgid "First name is required and should not exceed 120 characters"
+msgstr "名为必填项，且不得超过120个字符"
+
+msgid "Last name"
+msgstr "姓"
+
+msgid "Last name is required and should not exceed 120 characters"
+msgstr "姓为必填项，且不得超过120个字符"
+
+msgid "Email address"
+msgstr "电子邮件地址"
+
+msgid "New Password"
+msgstr "新密码"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Confirm Password"
+msgstr "确认密码"
+
+msgid "Email address is required"
+msgstr "电子邮件地址为必填项"
+
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "电子邮件地址不能包含以下任何字符：<、>、& 和 \""
+
+msgid "The password must be at least 8 characters long."
+msgstr "密码长度至少为8个字符。"
+
+msgid "The password cannot be your username or email address."
+msgstr "密码不能是您的用户名或电子邮件地址。"
+
+msgid "Please choose a unique password."
+msgstr "请选择唯一的密码。"
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr "不要求特殊字符，但您的密码必须足够复杂才能被接受。"
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr "我们建议使用密码管理器为您生成一个密码。"
+
+msgid "Total"
+msgstr "总计"
+
+msgid "Error!"
+msgstr "错误！"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Incorrect username or password."
+msgstr "用户名或密码不正确。"
+
+# Common timepoint and vist terms
+msgid "Not Started"
+msgstr "未开始"
+
+msgid "Screening"
+msgstr "筛选"
+
+msgid "Visit"
+msgstr "访视"
+
+msgid "Approval"
+msgstr "批准"
+
+msgid "Subject"
+msgstr "受试者"
+
+msgid "Recycling Bin"
+msgstr "回收站"
+
+msgid "Failure"
+msgstr "失败"
+
+msgid "Withdrawal"
+msgstr "退出"
+
+msgid "Withdrawn"
+msgstr "已退出"
+
+msgid "In Progress"
+msgstr "进行中"
+
+msgid "Progress"
+msgstr "进度"
+
+msgid "Success"
+msgstr "成功"
+
+msgid "Complete"
+msgstr "完成"
+
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "研究工具"
+
+msgid "None"
+msgstr "无"
+
+msgid "Partial"
+msgstr "部分"
+
+msgid "All"
+msgstr "全部"
+
+msgid "Data Entry"
+msgstr "数据录入"
+
+msgid "Administration"
+msgstr "管理"
+
+msgid "Double Data Entry Form"
+msgstr "双数据录入表单"
+
+msgid "Double Data Entry Status"
+msgstr "双数据录入状态"
+
+msgid "Double Data Entry"
+msgstr "双数据录入"
+
+# Age related terms
+msgid "Age"
+msgstr "年龄"
+
+msgid "{{months}} months old"
+msgstr "{{months}}个月"
+
+msgid "{{years}} years old"
+msgstr "{{years}}岁"
+
+# Other generic terms
+msgid "Loading..."
+msgstr "加载中..."
+
+msgid "Permission denied"
+msgstr "权限被拒绝"
+
+msgid "Unauthorized"
+msgstr "未授权"
+
+msgid "File to upload"
+msgstr "要上传的文件"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "请确保文件不超过 {{maxFileSize}}"
+
+msgid "Submit"
+msgstr "提交"
+
+msgid "Clear"
+msgstr "清除"
+
+msgid "Add"
+msgstr "添加"
+
+msgid "Dataset"
+msgstr "数据集"
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr "无选项"

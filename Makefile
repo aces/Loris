@@ -5,6 +5,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	locale/hi/LC_MESSAGES/loris.po \
 	locale/es/LC_MESSAGES/loris.po \
 	locale/en/LC_MESSAGES/loris.po \
+	locale/zh/LC_MESSAGES/loris.po \
 	modules/biobank/locale/fr/LC_MESSAGES/biobank.po \
 	modules/media/locale/fr/LC_MESSAGES/media.po \
 	modules/media/locale/ja/LC_MESSAGES/media.po \
@@ -106,6 +107,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/electrophysiology_uploader/locale/ja/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/electrophysiology_uploader/locale/hi/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po \
+	modules/acknowledgements/locale/zh/LC_MESSAGES/acknowledgements.po \
 	modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.po \
 	modules/battery_manager/locale/fr/LC_MESSAGES/battery_manager.po \
 	modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po \
