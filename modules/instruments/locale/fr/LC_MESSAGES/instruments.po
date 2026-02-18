@@ -23,10 +23,9 @@ msgid "Instruments"
 msgstr "Instruments"
 
 msgid "Incomplete form"
-msgstr "Formulaire incomplet"
-
-msgid "Incomplete forms"
-msgstr "Formulaires incomplets"
+msgid_plural "Incomplete forms"
+msgstr[0] "Formulaire incomplet"
+msgstr[1] "Formulaires incomplets"
 
 #, fuzzy
 msgid "Clear Instrument"

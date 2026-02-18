@@ -23,27 +23,27 @@ msgid "Module Manager"
 msgstr "Gestionnaire de modules"
 
 msgid "Name"
-msgstr "Nom"
+msgstr "Nom du module"
 
 msgid "Full Name"
-msgstr "Nom complet"
+msgstr "Titre"
 
 #, fuzzy
 msgid "Could not update {{name}}."
 msgstr "Impossible de mettre à jour {{name}}."
 
 msgid "Updated {{name}} status!"
-msgstr "Statut mis à jour {{name}} !"
+msgstr "Statut du module {{name}} mis à jour !"
 
 #, fuzzy
 msgid "To apply changes the interface must be reloaded. Proceed?"
-msgstr "Pour appliquer les modifications, l'interface doit être rechargée. Continuer ?"
+msgstr "Pour appliquer les modifications, l'interface doit être actualisée."
 
 msgid "Reload the page"
 msgstr "Recharger la page actuelle"
 
 msgid "Continue"
-msgstr "Continuer"
+msgstr "Continuer sans actualiser"
 
 #, fuzzy
 msgid "Could not find module {{id}}"

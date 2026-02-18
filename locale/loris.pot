@@ -100,6 +100,10 @@ msgstr[0] ""
 msgid "Genomics"
 msgstr ""
 
+#: modules/biobank/php/module.class.inc:140
+msgid "Biobank"
+msgstr ""
+
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
 msgstr ""
@@ -251,6 +255,18 @@ msgstr ""
 
 msgid "Sex"
 msgstr ""
+
+msgid "Female"
+msgid_plural "Females"
+msgstr[0] ""
+
+msgid "Male"
+msgid_plural "Males"
+msgstr[0] ""
+
+msgid "Other"
+msgid_plural "Others"
+msgstr[0] ""
 
 msgid "Feedback"
 msgstr ""
@@ -541,6 +557,9 @@ msgid "Loading..."
 msgstr ""
 
 msgid "Permission denied"
+msgstr ""
+
+msgid "Permission Denied" # Expected by tests
 msgstr ""
 
 msgid "Unauthorized"

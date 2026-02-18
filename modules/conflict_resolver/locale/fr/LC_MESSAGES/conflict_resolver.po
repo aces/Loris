@@ -25,7 +25,9 @@ msgstr "Résolution des conflits"
 
 #, fuzzy
 msgid "Data entry conflict"
-msgstr "Conflit de saisie des données"
+msgid_plural "Data entry conflicts"
+msgstr[0] "Conflit de saisie des données"
+msgstr[1] "Conflits de saisie des données"
 
 #, fuzzy
 msgid "Unresolved Conflicts"

@@ -22,7 +22,8 @@ msgid "Conflict Resolver"
 msgstr ""
 
 msgid "Data entry conflict"
-msgstr ""
+msgid_plural "Data entry conflicts"
+msgstr[0] ""
 
 msgid "Unresolved Conflicts"
 msgstr ""

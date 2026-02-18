@@ -108,6 +108,12 @@ class Notifications extends Endpoint
             $data = json_decode((string) $request->getBody(), true);
         }
 
+        // Handle empty data gracefully (e.g., REDCap DET "Test" button sends
+        // empty data).
+        if ($data === null || $data === []) {
+            return new \LORIS\Http\Response();
+        }
+
         try {
             $received_datetime = new \DateTimeImmutable();
 

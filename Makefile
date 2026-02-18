@@ -42,6 +42,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/dqt/locale/ja/LC_MESSAGES/dqt.po \
 	modules/bvl_feedback/locale/fr/LC_MESSAGES/bvl_feedback.po \
 	modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po \
+	modules/genomic_browser/locale/fr/LC_MESSAGES/genomic_browser.po \
 	modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.po \
 	modules/instruments/locale/fr/LC_MESSAGES/instruments.po \
 	modules/instruments/locale/ja/LC_MESSAGES/instruments.po \
