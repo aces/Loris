@@ -225,7 +225,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Do not show menu item if module not active
         $tpl_data['my_preferences'] = $loris->hasModule('my_preferences');
-        $tpl_data['userjson']       = json_encode(
+        $lang = \LORIS\Middleware\Language::detectLocale($request->getAttribute("loris"), $request);
+        $tpl_data['language']  = $lang;
+        $tpl_data['languages'] = \Utility::getLanguageListByCode();
+        $tpl_data['userjson']  = json_encode(
             [
              'username' => $user->getUsername(),
              'id'       => $user->getId(),
