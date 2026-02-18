@@ -102,9 +102,6 @@ confusing or lacking.
 PHP error log.
 
 ## AI Policy
-### Governance and confidentiality
-Contributors must not input confidential LORIS data, credentials, PHI, or unpublished datasets or metadata into third-party AI systems.
-
 ### Code
 Reviewing, testing and triaging pull requests takes a large amount of
 maintainers' time. Any use of generative AI tools used for any pull request
@@ -123,11 +120,21 @@ language and what you've done to ensure it is correct if it is not your native
 tongue.
 
 ### Discussions
-Usage of any large language model to reply to any user's issue, GitHub discussion,
-or pull request comment is considered abusive and strictly forbidden.
+Any use of large language models or generative AI tools in areas intended for
+human communications or feedback can be highly disruptive to collaborative
+interaction with the community and is strongly discouraged.
+
+Examples include but are not limited to: comments on GitHub issues, replies to
+feedback on pull requests, or GitHub Discussion forum contributions.
+
+### Governance and Confidentiality
+Contributors must ensure that confidential data, credentials, protected health
+information (PHI), or unpublished datasets do not get entered into third-party
+AI systems or training sets.
+
+This includes data accessed by agentic AI systems.
 
 ## Licensing
-
 When contributing content to LORIS, you give us permission to use
 it as-is and you must make sure you are allowed to distribute it to us. By
 submitting a change to us, you agree that the changes can and should be
