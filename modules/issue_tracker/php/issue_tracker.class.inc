@@ -37,7 +37,8 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [

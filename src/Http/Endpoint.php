@@ -14,7 +14,9 @@ use \Psr\Log\LoggerAwareTrait;
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-abstract class Endpoint implements RequestHandlerInterface
+abstract class Endpoint implements
+    RequestHandlerInterface,
+    \LORIS\StudyEntities\AccessibleResource
 {
     use LoggerAwareTrait;
 
@@ -80,5 +82,35 @@ abstract class Endpoint implements RequestHandlerInterface
         \User $user,
         ServerRequestInterface $request
     ) : void {
+    }
+
+    /**
+     * Returns true if user has access to this page.
+     *
+     * You do not need to overload hasAccess() if there are no access restrictions.
+     *
+     * @param \User $user @unused-param
+     *
+     * @return bool
+     */
+    final public function _hasAccess(\User $user) : bool //phpcs:ignore 
+    {
+        throw new \LorisException(
+            "_hasAccess have no effect. "
+            . "Endpoints should implement AccessibleResource interface instead."
+        );
+    }
+
+    /**
+     * Implements the AccessibleResourceInterface.
+     *
+     * @param \User $user The user accessing the Page @unused-param
+     *
+     * @return bool
+     */
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
+    {
+        return true;
     }
 }

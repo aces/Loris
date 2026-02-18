@@ -305,7 +305,7 @@ CREATE TABLE `physiological_task_event` (
   `EventSample`              decimal(11,6)    DEFAULT NULL,
   `EventType`                VARCHAR(50)      DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
-  `ResponseTime`             TIME             DEFAULT NULL,
+  `ResponseTime`             decimal(11,6)    DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalTaskEventID`),
   KEY `FK_event_file` (`EventFileID`),
   INDEX idx_pte_EventValue (`EventValue`),

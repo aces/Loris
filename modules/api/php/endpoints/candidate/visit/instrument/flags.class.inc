@@ -147,7 +147,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
         $user = $request->getAttribute('user');
-        if (!$this->_instrument->_hasAccess($user)) {
+        if (!$this->_instrument->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'This user can not update this instrument'
             );
@@ -220,7 +220,7 @@ class Flags extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
         $user = $request->getAttribute('user');
-        if (!$this->_instrument->_hasAccess($user)) {
+        if (!$this->_instrument->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'This user can not update this instrument'
             );

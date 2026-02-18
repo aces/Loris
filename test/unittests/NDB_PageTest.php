@@ -736,16 +736,16 @@ class NDB_PageTest extends TestCase
     }
 
     /**
-     * Test that _hasAccess returns true
+     * Test that isAccessibleByreturns true
      *
-     * @covers NDB_Page::_hasAccess
+     * @covers NDB_Page::isAccessibleBy
      * @return void
      */
-    public function testHasAccess()
+    public function testIsAccessibleBy()
     {
         $user = $this->getMockBuilder('\User')->getMock();
         '@phan-var \User $user';
-        $this->assertTrue($this->_page->_hasAccess($user));
+        $this->assertTrue($this->_page->isAccessibleBy($user));
     }
 
     /**

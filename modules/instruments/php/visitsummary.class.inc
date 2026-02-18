@@ -30,7 +30,7 @@ class VisitSummary extends \NDB_Page
                 "No valid user"
             );
         }
-        if (!($this->_hasAccess($user))) {
+        if (!($this->isAccessibleBy($user))) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
@@ -115,7 +115,7 @@ class VisitSummary extends \NDB_Page
                 '',
                 false
             );
-            if ($instrument->_hasAccess($user) == false) {
+            if ($instrument->isAccessibleBy($user) == false) {
                 $this->logger->debug(
                     "Skipping $testName"
                     . " because user does not have permission"

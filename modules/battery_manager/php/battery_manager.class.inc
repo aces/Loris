@@ -31,7 +31,8 @@ class Battery_Manager extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('battery_manager_view') ||
                $user->hasPermission('battery_manager_edit');

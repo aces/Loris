@@ -37,7 +37,8 @@ class Data_Release extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         // check user permissions
         return $user->hasAnyPermission(

@@ -56,7 +56,8 @@ class Edit_User extends \NDB_Form
      *
      * @return bool true if user has access, false otherwise.
      */
-    function _hasAccess(\User $editor): bool
+    #[\Override]
+    public function isAccessibleBy(\User $editor): bool
     {
         if ($editor->hasPermission('user_accounts_multisite')) {
             return true;

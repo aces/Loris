@@ -30,7 +30,8 @@ class Candidate_Profile extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         if ($this->candidate === null) {
             // If we don't know what to do, assume no permissions.
@@ -40,7 +41,7 @@ class Candidate_Profile extends \NDB_Page
     }
 
     /**
-     * Ensure $this->candidate is set so that _hasAccess is valid
+     * Ensure $this->candidate is set so that isAccessibleBy is valid
      * before calling the parent middleware.
      *
      * @param ServerRequestInterface  $request The PSR7 request being processed.

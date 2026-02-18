@@ -39,7 +39,8 @@ class Charts extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }

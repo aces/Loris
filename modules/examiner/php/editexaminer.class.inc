@@ -35,7 +35,8 @@ class EditExaminer extends \NDB_Form
      * @throws \LorisException
      * @throws \ConfigurationException
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         if (empty($_REQUEST['identifier'])) {
             throw new \LorisException(

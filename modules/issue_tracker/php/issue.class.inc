@@ -98,7 +98,8 @@ class Issue extends \NDB_Form
      *
      * @throws \ConfigurationException
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $issueID = $this->issueID;
         if (!$issueID) {
@@ -126,7 +127,7 @@ class Issue extends \NDB_Form
     }
 
     /**
-     * Ensure $this->issueID is set so that _hasAccess is valid
+     * Ensure $this->issueID is set so that isAccessibleBy is valid
      * before calling the parent middleware.
      *
      * @param ServerRequestInterface  $request The PSR7 request being processed.

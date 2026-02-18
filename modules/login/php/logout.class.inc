@@ -21,7 +21,8 @@ class Logout extends \LORIS\Http\Endpoint
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         // Logged out users can not further log out
         return !($user instanceof \LORIS\AnonymousUser);

@@ -35,7 +35,8 @@ class View_Project extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();

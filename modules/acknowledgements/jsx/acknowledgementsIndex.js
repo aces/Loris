@@ -19,6 +19,8 @@ import {
 } from 'jsx/Form';
 import zhStrings from '../locale/zh/LC_MESSAGES/acknowledgements.json';
 
+import {Acknowledgement} from './entities';
+import {Query} from 'jslib/http';
 
 /**
  * Acknowledgements Module page.
@@ -105,14 +107,16 @@ class AcknowledgementsIndex extends Component {
    *
    * @return {object}
    */
-  fetchData() {
-    return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+  async fetchData() {
+    const query = new Query().addParam({field: 'format', value: 'json'});
+    const client = new Acknowledgement.Client();
+    try {
+      const acknowledgements = await client.get(query);
+      this.setState({data: {...acknowledgements}});
+    } catch (error) {
+      this.setState({error: true});
+      console.error(error);
+    }
   }
 
   /**
@@ -479,7 +483,6 @@ class AcknowledgementsIndex extends Component {
 }
 
 AcknowledgementsIndex.propTypes = {
-  dataURL: PropTypes.string.isRequired,
   submitURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
 };
@@ -495,7 +498,6 @@ window.addEventListener('load', () => {
     document.getElementById('lorisworkspace')
   ).render(
     <Index
-      dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
       submitURL={`${loris.BaseURL}/acknowledgements/AcknowledgementsProcess`}
       hasPermission={loris.userHasPermission}
     />

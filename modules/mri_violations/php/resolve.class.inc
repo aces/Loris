@@ -20,7 +20,8 @@ class Resolve extends \NDB_Page
      *
      * @return boolean true if the user is permitted to see violated scans
      */
-    function _hasAccess(\User $user): bool
+    #[\Override]
+    public function isAccessibleBy(\User $user): bool
     {
         return $user->hasAnyPermission(
             [
@@ -41,7 +42,7 @@ class Resolve extends \NDB_Page
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $user = $request->getAttribute("user");
-        if (!$this->_hasAccess($user)) {
+        if (!$this->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 dgettext(
                     'loris',

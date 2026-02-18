@@ -38,7 +38,8 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
      *
      * @return bool true if the user has access, false otherwise
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('server_processes_manager');
     }
