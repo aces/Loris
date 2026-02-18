@@ -712,9 +712,18 @@ abstract class LorisIntegrationTest extends TestCase
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("$row")
-        )->getText();
+        $wait = new WebDriverWait($this->webDriver, 15, 500);
+
+        $wait->until(
+            WebDriverExpectedCondition::textToBePresentInElementLocated(
+            WebDriverBy::cssSelector($row),
+            $expect_records
+            )
+        );
+
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector($row))
+            ->getText();
         // 4 means there are 4 records under this site.
         $this->assertStringContainsString($expect_records, $bodyText);
         //test clear filter
