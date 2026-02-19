@@ -55,6 +55,10 @@ const Modal = ({
         showCancelButton: true,
         confirmButtonText: t('Proceed', {ns: 'loris'}),
         cancelButtonText: t('Cancel', {ns: 'loris'}),
+        reverseButtons: true,
+        focusCancel: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#888888',
       }).then((result) => result.value && onClose());
     } else {
       onClose(); // Close immediately if no warning
