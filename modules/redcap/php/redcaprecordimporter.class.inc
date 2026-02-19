@@ -15,6 +15,7 @@ namespace LORIS\redcap;
 use \LORIS\LorisInstance;
 use \LORIS\redcap\RedcapQueries;
 use \LORIS\redcap\client\RedcapHttpClient;
+use \LORIS\redcap\client\models\RedcapDictionaryRecord;
 use \LORIS\redcap\config\RedcapConfig;
 use \LORIS\redcap\client\models\records\RedcapRecord;
 
@@ -75,6 +76,13 @@ class RedcapRecordImporter
      * @var RedcapQueries
      */
     private RedcapQueries $_queries;
+
+    /**
+     * Cache of REDCap yes/no fields by instrument.
+     *
+     * @var array<string, array<string>>
+     */
+    private array $_yesno_fields_by_instrument = [];
 
     /**
      * The visit label of the REDCap record being imported.
@@ -317,6 +325,96 @@ class RedcapRecordImporter
     }
 
     /**
+     * Get the REDCap yes/no field names for an instrument.
+     *
+     * @param string $instrument_name The REDCap instrument name.
+     *
+     * @return array<string> The yes/no field names.
+     */
+    private function _getYesNoFieldNames(string $instrument_name): array
+    {
+        if (array_key_exists(
+            $instrument_name,
+            $this->_yesno_fields_by_instrument
+        )) {
+            return $this->_yesno_fields_by_instrument[$instrument_name];
+        }
+
+        $dictionary = $this->_redcap_client->getDataDictionary(
+            [$instrument_name]
+        );
+
+        $yesno_fields = array_map(
+            fn(RedcapDictionaryRecord $record) => $record->field_name,
+            array_filter(
+                $dictionary,
+                fn(RedcapDictionaryRecord $record) => (
+                    $record->field_type === 'yesno'
+                )
+            )
+        );
+
+        // Remove instrument name from REDCap variable names if configured.
+        if ($this->_config->prefix_instrument_variable) {
+            $yesno_fields = array_values(
+                array_map(
+                    function ($field_name) use ($instrument_name) {
+                        $retval = str_replace(
+                            "{$instrument_name}",
+                            '',
+                            $field_name
+                        );
+                        $retval = ltrim($retval, '_');
+                        return $retval;
+                    },
+                    $yesno_fields
+                )
+            );
+        }
+
+        $this->_yesno_fields_by_instrument[$instrument_name]
+            = array_values(array_unique($yesno_fields));
+
+        return $this->_yesno_fields_by_instrument[$instrument_name];
+    }
+
+    /**
+     * Normalize raw REDCap values for yes/no fields to LORIS select values.
+     *
+     * REDCap `yesno` exports as raw 1/0 values. LORIS yes/no elements use
+     * `yes`/`no` option keys.
+     *
+     * @param array  $instrument_values Instrument values.
+     * @param string $instrument_name   REDCap instrument name.
+     *
+     * @return array The normalized values.
+     */
+    private function _normalizeYesNoFieldValues(
+        array $instrument_values,
+        string $instrument_name
+    ): array {
+        $yesno_fields = $this->_getYesNoFieldNames($instrument_name);
+
+        foreach ($yesno_fields as $field_name) {
+            if (!array_key_exists($field_name, $instrument_values)) {
+                continue;
+            }
+
+            if ($instrument_values[$field_name] === '1'
+                || $instrument_values[$field_name] === 1
+            ) {
+                $instrument_values[$field_name] = 'yes';
+            } elseif ($instrument_values[$field_name] === '0'
+                || $instrument_values[$field_name] === 0
+            ) {
+                $instrument_values[$field_name] = 'no';
+            }
+        }
+
+        return $instrument_values;
+    }
+
+    /**
      * Update a LORIS instrument data with a REDCap record data.
      *
      * @param \NDB_BVL_Instrument $instrument a LORIS instrument instance
@@ -345,6 +443,12 @@ class RedcapRecordImporter
                 unset($instrument_values[$key]);
             }
         }
+
+        // REDCap yes/no is exported as raw 1/0 values.
+        $instrument_values = $this->_normalizeYesNoFieldValues(
+            $instrument_values,
+            $instrument_name,
+        );
 
         // -- Define/Add Date_taken
         // First, try based on 'dtt'
