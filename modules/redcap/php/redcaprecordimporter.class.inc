@@ -333,10 +333,12 @@ class RedcapRecordImporter
      */
     private function _getYesNoFieldNames(string $instrument_name): array
     {
-        if (array_key_exists(
-            $instrument_name,
-            $this->_yesno_fields_by_instrument
-        )) {
+        if (
+            array_key_exists(
+                $instrument_name,
+                $this->_yesno_fields_by_instrument
+            )
+        ) {
             return $this->_yesno_fields_by_instrument[$instrument_name];
         }
 
