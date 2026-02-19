@@ -32,7 +32,12 @@ class SinglePointLoginTest extends TestCase
      * @var \SinglePointLogin
      */
     private $_login;
-
+    /**
+     * JWT key used for testing
+     *
+     * @var string
+     */
+    private $_jwtKey;
     /**
      * Maps config names to values
      * Used to set behaviour of NDB_Config test double
