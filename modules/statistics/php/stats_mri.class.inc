@@ -398,30 +398,32 @@ class Stats_MRI extends \NDB_Form
         $scanDoneExists = false;
         if ($DB->columnExists('mri_parameter_form', $MRI_Type . "_Scan_Done")) {
             $scanDoneExists = true;
-            $result         = $DB->pselect(
-                "SELECT s.CohortID,
-                    s.CenterID,
-                    s.Visit_label as VLabel,
-                    $CaseStatement as Subcat,
-                    COUNT(*) as val
-                FROM mri_parameter_form m
-                    JOIN flag f USING (CommentID)
-                    JOIN session s ON (f.SessionID=s.ID)
-                    JOIN candidate c ON (c.ID=s.CandidateID)
-                WHERE s.Current_stage <> 'Recycling Bin'
-                    AND f.Administration <> 'None'
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND f.CommentID NOT LIKE 'DDE%'
-                    AND s.CenterID <> '1'
+            $result         = iterator_to_array(
+                $DB->pselect(
+                    "SELECT s.CohortID,
+                        s.CenterID,
+                        s.Visit_label as VLabel,
+                        $CaseStatement as Subcat,
+                        COUNT(*) as val
+                    FROM mri_parameter_form m
+                        JOIN flag f USING (CommentID)
+                        JOIN session s ON (f.SessionID=s.ID)
+                        JOIN candidate c ON (c.ID=s.CandidateID)
+                    WHERE s.Current_stage <> 'Recycling Bin'
+                        AND f.Administration <> 'None'
+                        AND s.Active='Y'
+                        AND c.Active='Y'
+                        AND f.CommentID NOT LIKE 'DDE%'
+                        AND s.CenterID <> '1'
 		    AND s.CenterID IN (" . $sitesString . ")
-                    $suproject_query
-                    $Param_Project
-                GROUP BY Subcat,
-                    s.CohortID,
-                    s.CenterID,
-                    s.Visit_label",
-                $bigTable_params
+                        $suproject_query
+                        $Param_Project
+                    GROUP BY Subcat,
+                        s.CohortID,
+                        s.CenterID,
+                        s.Visit_label",
+                    $bigTable_params
+                )
             );
         }
 
@@ -664,4 +666,3 @@ class Stats_MRI extends \NDB_Form
         );
     }
 }
-
