@@ -162,6 +162,7 @@ class FilterableDataTable extends Component {
         fields={this.props.fields}
         filters={filters}
         actions={this.props.actions}
+        rowActions={this.props.rowActions}
         loading={this.props.loading}
         getFormattedCell={this.props.getFormattedCell}
         getMappedCell={this.props.getMappedCell}
@@ -195,6 +196,7 @@ FilterableDataTable.propTypes = {
   columns: PropTypes.number,
   getFormattedCell: PropTypes.func,
   actions: PropTypes.array,
+  rowActions: PropTypes.array,
   updateFilterCallback: PropTypes.func,
   noDynamicTable: PropTypes.bool,
   loading: PropTypes.element,

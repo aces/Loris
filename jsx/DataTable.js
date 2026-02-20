@@ -1,56 +1,123 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
-import createFragment from 'react-addons-create-fragment';
 import {CTA} from 'jsx/Form';
-import {withTranslation} from 'react-i18next';
+import TriggerableModal from './TriggerableModal';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Data Table component
- * Displays a set of data that is receives via props.
+ * Displays a set of data that it receives via props.
+ *
+ * @param root0
+ * @param root0.data
+ * @param root0.rowNumLabel
+ * @param root0.getFormattedCell
+ * @param root0.onSort
+ * @param root0.actions
+ * @param root0.hide
+ * @param root0.nullTableShow
+ * @param root0.noDynamicTable
+ * @param root0.getMappedCell
+ * @param root0.fields
+ * @param root0.RowNameMap
+ * @param root0.filters
+ * @param root0.freezeColumn
+ * @param root0.loading
+ * @param root0.folder
+ * @param root0.rowActions
  */
-class DataTable extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  constructor(props) {
-    super(props);
-    this.state = {
-      page: {
-        number: 1,
-        rows: 20,
-      },
-      sort: {
-        column: -1,
-        ascending: true,
-      },
-    };
+const DataTable = ({
+  data,
+  rowNumLabel,
+  getFormattedCell,
+  onSort,
+  actions,
+  rowActions,
+  hide,
+  nullTableShow,
+  noDynamicTable,
+  getMappedCell,
+  fields,
+  RowNameMap,
+  filters,
+  freezeColumn,
+  loading,
+  folder,
+}) => {
+  const {t} = useTranslation(['loris']);
 
-    this.changePage = this.changePage.bind(this);
-    this.setSortColumn = this.setSortColumn.bind(this);
-    this.updateSortColumn = this.updateSortColumn.bind(this);
-    this.toggleSortOrder = this.toggleSortOrder.bind(this);
-    this.updatePageNumber = this.updatePageNumber.bind(this);
-    this.updatePageRows = this.updatePageRows.bind(this);
-    this.downloadCSV = this.downloadCSV.bind(this);
-    this.getFilteredRowIndexes = this.getFilteredRowIndexes.bind(this);
-    this.sortRows = this.sortRows.bind(this);
-    this.hasFilterKeyword = this.hasFilterKeyword.bind(this);
-    this.renderActions = this.renderActions.bind(this);
-  }
+  const [page, setPage] = useState({
+    number: 1,
+    rows: 20,
+  });
 
+  const [sort, setSort] = useState({
+    column: -1,
+    ascending: true,
+  });
+
+  const [selectedRows, setSelectedRows] = useState(new Set());
+
+  const toggleRow = (idx) => {
+    const newSelection = new Set(selectedRows);
+    if (newSelection.has(idx)) {
+      newSelection.delete(idx);
+    } else {
+      newSelection.add(idx);
+    }
+    setSelectedRows(newSelection);
+  };
+
+  const toggleAllPageRows = () => {
+    const allSelected = paginatedRows.every((r) => selectedRows.has(r.RowIdx));
+    const newSelection = new Set(selectedRows);
+
+    paginatedRows.forEach((r) => {
+      if (allSelected) {
+        newSelection.delete(r.RowIdx);
+      } else {
+        newSelection.add(r.RowIdx);
+      }
+    });
+    setSelectedRows(newSelection);
+  };
   /**
-   * Set the component page variable
-   * to a new value
+   * Updates page state
    *
-   * @param {number} i - Page index
+   * @param {number} number - Number of page
    */
-  changePage(i) {
-    const page = this.state.page;
-    page.number = i;
-    this.setState({page});
-  }
+  const updatePageNumber = (number) => {
+    setPage((prev) => ({...prev, number}));
+  };
+
+  /**
+   * Update number of rows per page
+   *
+   * @param {object} e - Event from which to abstract value
+   */
+  const updatePageRows = (e) => {
+    setPage({
+      rows: e.target.value,
+      number: 1, // Reset to first page when changing row count
+    });
+  };
+
+  /**
+   * Toggle sort.ascending
+   */
+  const toggleSortOrder = () => {
+    setSort((prev) => ({...prev, ascending: !prev.ascending}));
+  };
+
+  /**
+   * Update the sort column
+   *
+   * @param {number} column - The column index
+   */
+  const updateSortColumn = (column) => {
+    setSort((prev) => ({...prev, column}));
+  };
 
   /**
    * Update the sort column
@@ -59,246 +126,66 @@ class DataTable extends Component {
    *
    * @param {number} column - The column index
    */
-  setSortColumn(column) {
-    if (this.state.sort.column === column) {
-      this.toggleSortOrder();
+  const setSortColumn = (column) => {
+    if (sort.column === column) {
+      toggleSortOrder();
     } else {
-      this.updateSortColumn(column);
+      updateSortColumn(column);
     }
-  }
-
-  /**
-   * Update the sort column
-   *
-   * @param {number} column - The column index
-   */
-  updateSortColumn(column) {
-    const sort = this.state.sort;
-    sort.column = column;
-    this.setState({sort});
-  }
-
-  /**
-   * Toggle sort.ascending
-   */
-  toggleSortOrder() {
-    const sort = this.state.sort;
-    sort.ascending = !sort.ascending;
-    this.setState({sort});
-  }
-
-  /**
-   * Updates page state
-   *
-   * @param {number} number - Number of page
-   */
-  updatePageNumber(number) {
-    const page = this.state.page;
-    page.number = number;
-    this.setState({page});
-  }
-
-  /**
-   * Update number of rows per page
-   *
-   * @param {object} e - Event from which to abstract value
-   */
-  updatePageRows(e) {
-    const page = Object.assign({}, this.state.page);
-    page.rows = e.target.value;
-    page.number = 1;
-    this.setState({page});
-  }
+  };
 
   /**
    * Export the filtered rows and columns into a csv
    *
    * @param {number[]} filteredRowIndexes - The filtered Row Indexes
    */
+  const downloadCSV = useCallback((filteredRowIndexes) => {
+    let csvData = filteredRowIndexes.map((id) => data[id]);
 
-  downloadCSV(filteredRowIndexes) {
-    let csvData = filteredRowIndexes.map((id) => this.props.data[id]);
-    // Map cell data to proper values if applicable.
-    if (this.props.getMappedCell) {
-      csvData = csvData
-        .map((row, i) => this.props.fields
-          .map((field, j) => this.props.getMappedCell(
+    // Map cell data if the getter exists
+    if (getMappedCell) {
+      csvData = csvData.map((row) =>
+        fields.map((field, j) =>
+          getMappedCell(
             field.label,
             row[j],
             row,
-            this.props.fields.map(
-              (val) => val.label,
-            ),
+            fields.map((val) => val.label),
             j
-          ))
-        );
+          )
+        )
+      );
     }
 
-    let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
+    const csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
-    csvworker.addEventListener('message', function(e) {
-      let dataURL;
-      let dataDate;
-      let link;
+    csvworker.addEventListener('message', (e) => {
       if (e.data.cmd === 'SaveCSV') {
-        dataDate = new Date().toISOString();
-        dataURL = window.URL.createObjectURL(e.data.message);
-        link = document.createElement('a');
-        link.download = 'data-' + dataDate + '.csv';
+        const dataDate = new Date().toISOString();
+        const dataURL = window.URL.createObjectURL(e.data.message);
+        const link = document.createElement('a');
+
+        link.download = `data-${dataDate}.csv`;
         link.type = 'text/csv';
         link.href = dataURL;
+
         document.body.appendChild(link);
-        $(link)[0].click();
+        link.click();
         document.body.removeChild(link);
+        window.URL.revokeObjectURL(dataURL); // Cleanup memory
+        csvworker.terminate();
       }
     });
-    const headerList = this.props.fields.map((field) => field.label);
+
+    const headerList = fields.map((field) => field.label);
+
     csvworker.postMessage({
       cmd: 'SaveFile',
       data: csvData,
       headers: headerList,
-      identifiers: this.props.RowNameMap,
+      identifiers: RowNameMap,
     });
-  }
-
-  /**
-   * Get the Filtered Row Indexes
-   */
-  getFilteredRowIndexes() {
-    let useKeyword = false;
-    let filterValuesCount = Object.keys(this.props.filters).length;
-    let tableData = this.props.data;
-    let fieldData = this.props.fields;
-
-    let filteredIndexes = [];
-
-    // If there are no filters set, use all the data.
-    let hasFilters = (filterValuesCount !== 0);
-    if (hasFilters === false) {
-      for (let i = 0; i < tableData.length; i++) {
-        filteredIndexes.push(i);
-      }
-      return filteredIndexes;
-    }
-
-    if (this.props.filters.keyword) {
-      useKeyword = true;
-    }
-
-    if (useKeyword) {
-      filterValuesCount -= 1;
-    }
-
-    for (let i = 0; i < tableData.length; i++) {
-      let headerCount = 0;
-      let keywordMatch = 0;
-      for (let j = 0; j < fieldData.length; j++) {
-        let data = tableData[i] ? tableData[i][j] : null;
-        if (this.hasFilterKeyword((fieldData[j].filter || {}).name, data)) {
-          headerCount++;
-        }
-        if (useKeyword) {
-          if (this.hasFilterKeyword('keyword', data)) {
-            keywordMatch++;
-          }
-        }
-      }
-
-      if (headerCount === filterValuesCount &&
-        ((useKeyword === true && keywordMatch > 0) ||
-          (useKeyword === false && keywordMatch === 0))) {
-        filteredIndexes.push(i);
-      }
-    }
-
-    return filteredIndexes;
-  }
-
-  /**
-   * Sort the given rows according to the sort configuration
-   *
-   * @param {number[]} rowIndexes - The row indexes
-   * @return {object[]}
-   */
-  sortRows(rowIndexes) {
-    const index = [];
-
-    for (let i = 0; i < rowIndexes.length; i++) {
-      let idx = rowIndexes[i];
-      let val = this.props.data[idx][this.state.sort.column] || undefined;
-
-      // If sortColumn is equal to default No. column, set value to be
-      // index + 1
-      if (this.state.sort.column === -1) {
-        val = idx + 1;
-      }
-
-      const isString = (typeof val === 'string' || val instanceof String);
-      const isNumber = !isNaN(val) && typeof val !== 'object';
-
-      if (val === '.') {
-        // hack to handle non-existent items in DQT
-        val = null;
-      } else if (isNumber) {
-        // perform type conversion (from string to int/float)
-        val = Number(val);
-      } else if (isString) {
-        // if string with text convert to lowercase
-        val = val.toLowerCase();
-      } else if (Array.isArray(val)) {
-        val = val.join(', ');
-      } else {
-        val = undefined;
-      }
-
-      if (this.props.RowNameMap) {
-        index.push({
-          RowIdx: idx,
-          Value: val,
-          Content: this.props.RowNameMap[idx],
-        });
-      } else {
-        index.push({
-          RowIdx: idx,
-          Value: val,
-          Content: idx + 1,
-        });
-      }
-    }
-
-    index.sort((a, b) => {
-      if (this.state.sort.ascending) {
-        if (a.Value === b.Value) {
-          // If all values are equal, sort by rownum
-          if (a.RowIdx < b.RowIdx) return -1;
-          if (a.RowIdx > b.RowIdx) return 1;
-        }
-        // Check if null values
-        if (a.Value === null || typeof a.Value === 'undefined') return -1;
-        if (b.Value === null || typeof b.Value === 'undefined') return 1;
-
-        // Sort by value
-        if (a.Value < b.Value) return -1;
-        if (a.Value > b.Value) return 1;
-      } else {
-        if (a.Value === b.Value) {
-          // If all values are equal, sort by rownum
-          if (a.RowIdx < b.RowIdx) return 1;
-          if (a.RowIdx > b.RowIdx) return -1;
-        }
-        // Check if null values
-        if (a.Value === null || typeof a.Value === 'undefined') return 1;
-        if (b.Value === null || typeof b.Value === 'undefined') return -1;
-
-        // Sort by value
-        if (a.Value < b.Value) return 1;
-        if (a.Value > b.Value) return -1;
-      }
-      // They're equal..
-      return 0;
-    });
-    return index;
-  }
+  }, [data, fields, getMappedCell, RowNameMap]);
 
   /**
    * Searches for the filter keyword in the column cell
@@ -310,18 +197,17 @@ class DataTable extends Component {
    * @return {boolean} true, if filter value is found to be a substring
    * of one of the column values, false otherwise.
    */
-  hasFilterKeyword(name, data) {
+  const hasFilterKeyword = (name, data) => {
     let filterData = null;
     let exactMatch = false;
     let opposite = false;
     let result = false;
-    let searchKey = null;
-    let searchString = null;
 
-    if (this.props.filters[name]) {
-      filterData = this.props.filters[name].value;
-      exactMatch = this.props.filters[name].exactMatch;
-      opposite = this.props.filters[name].opposite;
+    // Accessing filters directly from props
+    if (filters[name]) {
+      filterData = filters[name].value;
+      exactMatch = filters[name].exactMatch;
+      opposite = filters[name].opposite;
     }
 
     // Handle null inputs
@@ -332,362 +218,455 @@ class DataTable extends Component {
     // Handle numeric inputs
     if (typeof filterData === 'number') {
       let intData = Number.parseInt(data, 10);
-      result = (filterData === intData);
+      return (filterData === intData);
     }
 
     // Handle string inputs
     if (typeof filterData === 'string') {
-      searchKey = filterData.toLowerCase();
-      switch (typeof data) {
-      case 'object':
-        // Handles the case where the data is an array (typeof 'object')
-        // and you want to search through it for
-        // the string you are filtering by
+      const searchKey = filterData.toLowerCase();
+
+      if (Array.isArray(data)) {
         let searchArray = data.map((e) => e.toLowerCase());
         if (exactMatch) {
-          result = searchArray.includes(searchKey);
-        } else {
-          result = (
-            searchArray.find(
-              (e) => (e.indexOf(searchKey) > -1)
-            )
-          ) !== undefined;
+          return searchArray.includes(searchKey);
         }
-        break;
-      default:
-        searchString = (data !== null && data !== undefined) ?
-          data.toString().toLowerCase() : '';
-
-        if (exactMatch) {
-          result = (searchString === searchKey);
-        } else if (opposite) {
-          result = searchString !== searchKey;
-        } else {
-          result = (searchString.indexOf(searchKey) > -1);
-        }
-        break;
+        return searchArray.some((e) => e.indexOf(searchKey) > -1);
       }
+
+      const searchString = (data !== null && data !== undefined) ?
+        data.toString().toLowerCase() : '';
+
+      if (exactMatch) {
+        result = (searchString === searchKey);
+      } else if (opposite) {
+        result = (searchString !== searchKey);
+      } else {
+        result = (searchString.indexOf(searchKey) > -1);
+      }
+      return result;
     }
 
     // Handle boolean inputs
     if (typeof filterData === 'boolean') {
-      result = (filterData === data);
+      return (filterData === data);
     }
 
     // Handle array inputs for multiselects
-    if (typeof filterData === 'object') {
-      let match = false;
-      for (let i = 0; i < filterData.length; i += 1) {
-        searchKey = filterData[i].toLowerCase();
-        searchString = (data !== null && data !== undefined) ?
-          data.toString().toLowerCase() : '';
+    if (typeof filterData === 'object' && Array.isArray(filterData)) {
+      const searchString = (data !== null && data !== undefined) ?
+        data.toString().toLowerCase() : '';
+      let searchArray = searchString.split(',');
 
-        let searchArray = searchString.split(',');
-        match = (searchArray.includes(searchKey));
-        if (match) {
-          result = true;
-        }
-      }
+      return filterData.some((val) => searchArray.includes(val.toLowerCase()));
     }
 
     return result;
-  }
+  };
+
 
   /**
-   * Called by React when the component has been rendered on the page.
+   * Get the Filtered Row Indexes
+   * Memoized to prevent heavy re-calculation on every render
    */
-  componentDidMount() {
-    if (!this.props.noDynamicTable) {
+  const filteredRowIndexes = useMemo(() => {
+    let useKeyword = !!filters.keyword;
+    const filterKeys = Object.keys(filters);
+    let filterValuesCount = filterKeys.length;
+
+    const filteredIndexes = [];
+
+    // If there are no filters set, use all the data.
+    if (filterValuesCount === 0) {
+      return data.map((_, i) => i);
+    }
+
+    if (useKeyword) {
+      filterValuesCount -= 1;
+    }
+
+    data.forEach((row, i) => {
+      let headerCount = 0;
+      let keywordMatch = 0;
+
+      fields.forEach((field, j) => {
+        const cellData = row ? row[j] : null;
+
+        if (hasFilterKeyword((field.filter || {}).name, cellData)) {
+          headerCount++;
+        }
+
+        if (useKeyword && hasFilterKeyword('keyword', cellData)) {
+          keywordMatch++;
+        }
+      });
+
+      const satisfiesKeyword = useKeyword
+        ? keywordMatch > 0 : keywordMatch === 0;
+
+      if (headerCount === filterValuesCount && satisfiesKeyword) {
+        filteredIndexes.push(i);
+      }
+    });
+
+    return filteredIndexes;
+  }, [data, fields, filters, hasFilterKeyword]);
+
+  /**
+   * Sort the given rows according to the sort configuration
+   * Memoized to avoid re-sorting unless data, filters, or sort state changes
+   *
+   * @param {number[]} rowIndexes - The row indexes
+   * @return {object[]}
+   */
+  const sortedRows = useMemo(() => {
+    const rowIndexes = filteredRowIndexes;
+    const index = [];
+
+    for (let i = 0; i < rowIndexes.length; i++) {
+      let idx = rowIndexes[i];
+
+      let val;
+      if (sort.column === -1) {
+        val = idx + 1;
+      } else {
+        val = data[idx][sort.column] || undefined;
+      }
+
+      const isString = (typeof val === 'string' || val instanceof String);
+      const isNumber = !isNaN(parseFloat(val)) && isFinite(val);
+
+      if (val === '.') {
+        val = null;
+      } else if (isNumber) {
+        val = Number(val);
+      } else if (isString) {
+        val = val.toLowerCase();
+      } else if (Array.isArray(val)) {
+        val = val.join(', ');
+      } else {
+        val = undefined;
+      }
+
+      index.push({
+        RowIdx: idx,
+        Value: val,
+        Content: RowNameMap ? RowNameMap[idx] : idx + 1,
+      });
+    }
+
+    index.sort((a, b) => {
+      const isAsc = sort.ascending;
+
+      if (a.Value === b.Value) {
+        // If values are equal, sort by original row index
+        return isAsc ? (a.RowIdx - b.RowIdx) : (b.RowIdx - a.RowIdx);
+      }
+
+      // Handle null/undefined values (push to end/top depending on direction)
+      if (a.Value == null) return isAsc ? -1 : 1;
+      if (b.Value == null) return isAsc ? 1 : -1;
+
+      // Primary sort
+      if (a.Value < b.Value) return isAsc ? -1 : 1;
+      if (a.Value > b.Value) return isAsc ? 1 : -1;
+
+      return 0;
+    });
+
+    return index;
+  }, [filteredRowIndexes, data, RowNameMap, sort]);
+
+  useEffect(() => {
+    if (!noDynamicTable) {
       $('.dynamictable').DynamicTable();
     }
-  }
+
+    // Cleanup function
+    return () => {
+    };
+  }, [noDynamicTable, paginatedRows]);
 
   /**
    * Renders the Actions buttons.
    *
    * @return {string[]|void} - Array of React Elements
    */
-  renderActions() {
-    if (this.props.actions) {
-      return this.props.actions.map((action, key) => {
+  const renderActions = () => {
+    if (actions) {
+      return actions.map((action, key) => {
         if (action.show !== false) {
           return (
             <CTA
-              key = {key}
-              label = {action.label}
-              onUserInput = {action.action}
+              key={key}
+              label={action.label}
+              onUserInput={action.action}
             />
           );
         }
+        return null;
       });
     }
-  }
+    return null;
+  };
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
-  render() {
-    if (
-      (this.props.data === null || this.props.data.length === 0)
-      && !this.props.nullTableShow
-    ) {
-      return (
-        <div>
-          <div className="row">
-            <div className="col-xs-12">
-              <div className="pull-right" style={{marginRight: '10px'}}>
-                {this.renderActions()}
-              </div>
-            </div>
-          </div>
-          <div className='alert alert-info no-result-found-panel'>
-            <strong>{this.props.t('No result found.', {ns: 'loris'})}</strong>
-          </div>
-        </div>
-      );
-    }
-    let rowsPerPage = this.state.page.rows;
-    let headers = this.props.hide.defaultColumn === true ? [] : [
-      <th key='th_col_0' onClick={() => {
-        this.setSortColumn(-1);
-      }}>
-        {this.props.rowNumLabel}
-      </th>,
-    ];
+  // 1. Calculate the slice for the current page
+  const rowsPerPage = page.rows;
+  const currentPageStart = rowsPerPage * (page.number - 1);
+  const currentPageEnd = currentPageStart + rowsPerPage;
+  const paginatedRows = sortedRows.slice(currentPageStart, currentPageEnd);
 
-    for (let i = 0; i < this.props.fields.length; i += 1) {
-      if (this.props.fields[i].show === true) {
-        let colIndex = i + 1;
-        if (this.props.fields[i].freezeColumn === true) {
-          headers.push(
-            <th key={'th_col_' + colIndex} id={this.props.freezeColumn}
-              onClick={() => {
-                this.setSortColumn(i);
-              }}>
-              {this.props.fields[i].label}
-            </th>
-          );
-        } else {
-          headers.push(
-            <th key={'th_col_' + colIndex} onClick={() => {
-              this.setSortColumn(i);
-            }}>
-              {this.props.fields[i].label}
-            </th>
-          );
-        }
-      }
-    }
-
-    let rows = [];
-    let filteredRowIndexes = this.getFilteredRowIndexes();
-    let filteredCount = filteredRowIndexes.length;
-    let index = this.sortRows(filteredRowIndexes);
-    let currentPageRow = (rowsPerPage * (this.state.page.number - 1));
-
-    // Format each cell for the data table.
-    for (let i = currentPageRow;
-      (i < filteredCount) && (rows.length < rowsPerPage);
-      i++
-    ) {
-      let rowIndex = index[i].RowIdx;
-      let rowData = this.props.data[rowIndex];
-      let curRow = [];
-
-      // Iterates through headers to populate row columns
-      // with corresponding data
-      for (let j = 0; j < this.props.fields.length; j += 1) {
-        if (this.props.fields[j].show === false) {
-          continue;
-        }
-
-        let celldata = rowData[j];
-        let cell = null;
-
-        let row = {};
-        this.props.fields
-          .forEach((field, k) => row[field.label] = rowData[k]);
-
-        const headers = this.props.fields.map(
-          (val) => val.label
-        );
-
-        // Get custom cell formatting if available
-        if (this.props.getFormattedCell) {
-          cell = this.props.getFormattedCell(
-            this.props.fields[j].label,
-            celldata,
-            row,
-            headers,
-            j
-          );
-        } else {
-          cell = <td>{celldata}</td>;
-        }
-        if (cell !== null) {
-          curRow.push(React.cloneElement(cell, {key: 'td_col_' + j}));
-        } else {
-          curRow.push(createFragment({celldata}));
-        }
-      }
-
-      const rowIndexDisplay = index[i].Content;
-      rows.push(
-        <tr key={'tr_' + rowIndex} colSpan={headers.length}>
-          {this.props.hide.defaultColumn === true ? null : (
-            <td key={'td_' + rowIndex}>{rowIndexDisplay}</td>
-          )}
-          {curRow}
-        </tr>
-      );
-    }
-
-    let rowsPerPageDropdown = (
-      <select
-        className="input-sm perPage"
-        onChange={this.updatePageRows}
-        value={this.state.page.rows}
-      >
-        <option>20</option>
-        <option>50</option>
-        <option>100</option>
-        <option>1000</option>
-        <option>5000</option>
-        <option>10000</option>
-      </select>
-    );
-
-    // This doesn't feel like a very robust way to handle the dropdown.
-    // It's not clear if there's any good way to structure this for locales that
-    // use RTL languages or prefer a different kind of parenthesis.
-    let changeRowsDropdown = <span>
-       ({this.props.t('Maximum rows per page:')} {rowsPerPageDropdown})
-    </span>;
-
-    let header = this.props.hide.rowsPerPage === true ? '' : (
-      <div className="table-header">
-        <div className="row">
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            padding: '5px 15px',
-          }}>
-            <div style={{
-              order: '1',
-              padding: '5px 0',
-            }}>
-              {this.props.t(
-                '{{pageCount}} rows displayed of {{totalCount}}.',
-                {
-                  pageCount: rows.length,
-                  totalCount: filteredCount,
-                }
-              )}
-              {changeRowsDropdown}
-            </div>
-            <div style={{
-              order: '2',
-              display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              padding: '5px 0',
-              marginLeft: 'auto',
-            }}>
-              {this.renderActions()}
-              {this.props.hide.downloadCSV === true ? '' : (
-                <button
-                  className="btn btn-primary"
-                  onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
-                >
-                  {this.props.t('Download Data as CSV')}
-                </button>)
-              }
-              <PaginationLinks
-                Total={filteredCount}
-                onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.page.number}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-
-    let footer = (
+  // 2. Early Return for Empty Data
+  if ((!data || data.length === 0) && !nullTableShow) {
+    return (
       <div>
         <div className="row">
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            padding: '5px 15px',
-          }}>
-            <div style={{
-              order: '1',
-              padding: '5px 0',
-            }}>
-              {this.props.t(
-                '{{pageCount}} rows displayed of {{totalCount}}.',
-                {
-                  pageCount: rows.length,
-                  totalCount: filteredCount,
-                }
-              )}
-              {changeRowsDropdown}
-            </div>
-            <div style={{
-              order: '2',
-              padding: '5px 0',
-              marginLeft: 'auto',
-            }}>
-              <PaginationLinks
-                Total={filteredCount}
-                onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.page.number}
-              />
+          <div className="col-xs-12">
+            <div className="pull-right" style={{marginRight: '10px'}}>
+              {renderActions()}
             </div>
           </div>
         </div>
-      </div>
-    );
-
-    return (
-      <div style={{margin: '14px'}}>
-        {header}
-        <table
-          className="table table-hover table-primary
-            table-bordered dynamictable"
-          id="dynamictable"
-        >
-          <thead>
-            <tr className="info">{headers}</tr>
-          </thead>
-          {this.props.folder}
-          <tbody>
-            {rows}
-          </tbody>
-        </table>
-        {footer}
+        <div className='alert alert-info no-result-found-panel'>
+          <strong>{t('No result found.', {ns: 'loris'})}</strong>
+        </div>
       </div>
     );
   }
-}
+
+  // 3. Helper for the Header/Footer UI
+  const tableControlStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    padding: '5px 15px',
+  };
+  const tableActionsStyle = {
+    order: '2',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    padding: '5px 0',
+    marginLeft: 'auto',
+  };
+
+  const renderRowActions = () => {
+    if (!rowActions) return null;
+    const selectedData = Array.from(selectedRows).map((idx) => data[idx]);
+
+    return rowActions.map((action) => {
+      const count = selectedData.length;
+      let isDisabled = false;
+      let tooltip = '';
+
+      // 1. Validation Logic
+      if (count === 0) {
+        isDisabled = true;
+        tooltip = t('Please select at least one row.');
+      } else if (!action.isMulti && count > 1) {
+        isDisabled = true;
+        tooltip = t('This action only supports a single row.');
+      }
+
+      if (!isDisabled && action.validate) {
+        const result = action.validate(selectedData);
+        if (result.disabled) {
+          isDisabled = true;
+          tooltip = result.reason;
+        }
+      }
+
+      // 2. Props Assembly
+      const sharedProps = {
+        label: action.label,
+        disabled: isDisabled,
+        tooltip: tooltip,
+        onUserInput: () => action.onUserInput?.(selectedData),
+      };
+
+      // 3. Render Wrapper (Modal vs CTA)
+      const content = action.renderForm ? (
+        <TriggerableModal
+          {...sharedProps}
+          title={action.title}
+          onSubmit={action.onSubmit}
+          onSuccess={(res) => {
+            action.onSuccess?.(res);
+            if (action.isMulti) setSelectedRows(new Set()); // Only clear selection for bulk
+          }}
+        >
+          {count > 0 ? action.renderForm(selectedData) : null}
+        </TriggerableModal>
+      ) : (
+        <CTA
+          {...sharedProps}
+          onUserInput={() => {
+            sharedProps.onUserInput();
+            action.onSuccess?.();
+            if (action.isMulti) setSelectedRows(new Set());
+          }}
+        />
+      );
+
+      return <span key={action.label} title={tooltip}>{content}</span>;
+    });
+  };
+
+  const renderHeader = () => (
+    <div className="row">
+      <div style={tableControlStyle}>
+        <div style={{order: '1', padding: '5px 0'}}>
+          {renderRowActions()}
+          {selectedRows.size > 0 && (
+            <span style={{fontSize: '12px'}}>
+              <strong style={{color: '#E89A0C'}}>{selectedRows.size}</strong>
+              <span style={{color: '#666', marginLeft: '4px'}}>
+                {t('selected')}
+              </span>
+            </span>
+          )}
+        </div>
+        <div style={tableActionsStyle}>
+          {renderActions()}
+          {!hide.downloadCSV && (
+            <button
+              className="btn btn-primary"
+              onClick={() => downloadCSV(filteredRowIndexes)}
+            >
+              {t('Download Data as CSV')}
+            </button>
+          )}
+          <PaginationLinks
+            Total={filteredRowIndexes.length}
+            onChangePage={updatePageNumber}
+            RowsPerPage={rowsPerPage}
+            Active={page.number}
+          />
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderFooter = () => (
+    <div className="row">
+      <div style={tableControlStyle}>
+        <select
+          className="input-sm perPage"
+          onChange={updatePageRows}
+          value={page.rows}
+        >
+          {[20, 50, 100, 1000, 5000, 10000].map((num) => (
+            <option key={num} value={num}>{num}</option>
+          ))}
+        </select>
+        {t(' of {{totalCount}}.', {
+          totalCount: filteredRowIndexes.length,
+        })}
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{margin: '14px'}}>
+      <div className="table-header">{renderHeader()}</div>
+
+      <table
+        className="table table-hover table-primary table-bordered dynamictable"
+        id="dynamictable"
+      >
+        <thead>
+          <tr className="info">
+            {rowActions && (
+              <th style={{width: '40px', textAlign: 'center'}}>
+                <input
+                  type="checkbox"
+                  onChange={toggleAllPageRows}
+                  checked={
+                    paginatedRows.length > 0 && paginatedRows
+                      .every((r) => selectedRows.has(r.RowIdx))
+                  }
+                />
+              </th>
+            )}
+            {!hide.defaultColumn && (
+              <th key='th_col_0' onClick={() => setSortColumn(-1)}>
+                {rowNumLabel}
+              </th>
+            )}
+            {fields.filter((f) => f.show).map((field, i) => (
+              <th
+                key={`th_col_${i+1}`}
+                id={field.freezeColumn ? freezeColumn : undefined}
+                onClick={() => setSortColumn(i)}
+              >
+                {field.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        {folder}
+        <tbody>
+          {paginatedRows.map((item, i) => {
+            const rowData = data[item.RowIdx];
+
+            // Construct the 'row' object for the formatter
+            const rowObj = {};
+            fields.forEach((f, k) => rowObj[f.label] = rowData[k]);
+            const fieldLabels = fields.map((f) => f.label);
+            const isSelected = selectedRows.has(item.RowIdx);
+
+            return (
+              <tr
+                key={`tr_${item.RowIdx}`}
+                className={isSelected ? 'table-row-selected' : ''
+                }>
+                {/* Row Checkbox */}
+                {rowActions && (
+                  <td style={{textAlign: 'center'}}>
+                    <input
+                      type="checkbox"
+                      checked={selectedRows.has(item.RowIdx)}
+                      onChange={() => toggleRow(item.RowIdx)}
+                    />
+                  </td>
+                )}
+
+                {!hide.defaultColumn && <td>{item.Content}</td>}
+                {fields.map((field, j) => {
+                  if (!field.show) return null;
+
+                  if (getFormattedCell) {
+                    return React.cloneElement(
+                      getFormattedCell(
+                        field.label, rowData[j],
+                        rowObj,
+                        fieldLabels,
+                        j
+                      ),
+                      {key: `td_col_${j}`}
+                    );
+                  }
+                  return <td key={`td_col_${j}`}>{rowData[j]}</td>;
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+
+      <div className="table-footer">{renderFooter()}</div>
+    </div>
+  );
+};
+
 DataTable.propTypes = {
   data: PropTypes.array.isRequired,
   rowNumLabel: PropTypes.string,
-  // Function of which returns a JSX element for a table cell, takes
-  // parameters of the form: func(ColumnName, CellData, EntireRowData)
   getFormattedCell: PropTypes.func,
   onSort: PropTypes.func,
   actions: PropTypes.array,
+  rowActions: PropTypes.array,
   hide: PropTypes.object,
   nullTableShow: PropTypes.bool,
   noDynamicTable: PropTypes.bool,
@@ -698,10 +677,8 @@ DataTable.propTypes = {
   freezeColumn: PropTypes.string,
   loading: PropTypes.element,
   folder: PropTypes.element,
-
-  // Provided by withTranslation HOC
-  t: PropTypes.func,
 };
+
 DataTable.defaultProps = {
   headers: [],
   data: {},
@@ -716,4 +693,4 @@ DataTable.defaultProps = {
   noDynamicTable: false,
 };
 
-export default withTranslation(['loris'])(DataTable);
+export default DataTable;
