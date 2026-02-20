@@ -20,9 +20,11 @@ export interface QueryParam {
  */
 export class Query {
   private params: Record<string, string> = {};
+  private selectedFields: string[] = [];
 
   /**
    * Adds a filter parameter to the query string.
+   * TODO: Add support for multiple values for same field
    *
    * @param root0          The destructured QueryParam object.
    * @param root0.field    The field to filter on.
@@ -34,9 +36,7 @@ export class Query {
     value,
     operator = Operator.Equals,
   }: QueryParam): this {
-    const encodedField = encodeURIComponent(field);
-    const encodedValue = encodeURIComponent(value);
-    this.params[`${encodedField}${operator}`] = encodedValue;
+    this.params[`${field}${operator}`] = value;
     return this;
   }
 
@@ -46,11 +46,8 @@ export class Query {
    * @param field The field to include in the response payload.
    */
   addField(field: string): this {
-    const encodedField = encodeURIComponent(field);
-    if (this.params['fields']) {
-      this.params['fields'] = `${this.params['fields']},${encodedField}`;
-    } else {
-      this.params['fields'] = encodedField;
+    if (!this.selectedFields.includes(field)) {
+      this.selectedFields.push(field);
     }
     return this;
   }
@@ -82,8 +79,7 @@ export class Query {
    * @param direction The sort direction.
    */
   addSort(field: string, direction: 'asc' | 'desc'): this {
-    const encodedField = encodeURIComponent(field);
-    this.params['sort'] = `${encodedField}:${direction}`;
+    this.params['sort'] = `${field}:${direction}`;
     return this;
   }
 
@@ -91,6 +87,12 @@ export class Query {
    * Builds and returns the final URL search string.
    */
   build(): string {
-    return new URLSearchParams(this.params).toString();
+    const finalParams = {...this.params};
+
+    if (this.selectedFields.length > 0) {
+      finalParams['fields'] = this.selectedFields.join(',');
+    }
+
+    return new URLSearchParams(finalParams).toString();
   }
 }
