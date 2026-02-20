@@ -33,7 +33,9 @@ self.addEventListener('message', function(e) {
     );
     content += '"' + row.join('","') + '"\r\n';
   }
-  contentBlob = new Blob([content], {type: 'text/csv'});
+  contentBlob = new Blob(['\uFEFF' + content], {
+    type: 'text/csv;charset=utf-8;',
+  });
   // fs = saveAs(contentBlob, "data.csv");
   // fs = new FileSaverSync(contentBlob, "data.csv");
   self.postMessage({cmd: 'SaveCSV', message: contentBlob});
