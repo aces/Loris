@@ -5,6 +5,7 @@ import React, {
   useRef,
   FunctionComponent,
   MutableRefObject,
+  useMemo,
 } from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
@@ -16,7 +17,6 @@ import {colorOrder} from '../../color';
 import {
   MAX_RENDERED_EPOCHS,
   DEFAULT_MAX_CHANNELS,
-  CHANNEL_DISPLAY_OPTIONS,
   SIGNAL_UNIT,
   Vector2,
   DEFAULT_TIME_INTERVAL,
@@ -31,12 +31,13 @@ import Epoch from './Epoch';
 import SeriesCursor from './SeriesCursor';
 import LoadingBar from './LoadingBar';
 import {setRightPanel} from '../store/state/rightPanel';
-import {setDatasetMetadata} from '../store/state/dataset';
-import {setOffsetIndex} from '../store/logic/pagination';
+import {SET_DATASET_METADATA, setDatasetMetadata} from '../store/state/dataset';
+import {createChannelTypesDict, filterDisplayedChannels, filterSelectedChannels} from '../store/logic/channels';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
 import AnnotationForm from './AnnotationForm';
 import {RootState} from '../store';
+import {createAction} from 'redux-actions';
 
 import {
   setAmplitudesScale,
@@ -64,6 +65,7 @@ import {
   Channel,
   Epoch as EpochType,
   RightPanel, EpochFilter,
+  ChannelInfo,
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {setCursorInteraction} from '../store/logic/cursorInteraction';
@@ -72,6 +74,19 @@ import {getEpochsInRange, updateActiveEpoch} from '../store/logic/filterEpochs';
 import HEDEndorsement from "./HEDEndorsement";
 import {setTimeSelection} from "../store/state/timeSelection";
 import {useTranslation} from "react-i18next";
+import ChannelTypesSelector from './ChannelTypesSelector';
+import Pagination from './Pagination';
+import {SET_CHANNELS} from '../store/state/channels';
+import {UPDATE_VIEWED_CHUNKS} from '../store/logic/fetchChunks';
+
+/**
+ * The state of a channel type.
+ */
+export type ChannelTypeState = {
+  visible: boolean,
+  channelsCount: number,
+}
+
 
 type CProps = {
   ref: MutableRefObject<any>,
@@ -91,8 +106,7 @@ type CProps = {
   epochs: EpochType[],
   filteredEpochs: EpochFilter,
   activeEpoch: number,
-  offsetIndex: number,
-  setOffsetIndex: (_: number) => void,
+  channelInfos: ChannelInfo[] | null,
   setAmplitudesScale: (_: number) => void,
   resetAmplitudesScale: (_: void) => void,
   setLowPassFilter: (_: string) => void,
@@ -135,8 +149,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   epochs,
   filteredEpochs,
   activeEpoch,
-  offsetIndex,
-  setOffsetIndex,
+  channelInfos,
   setAmplitudesScale,
   resetAmplitudesScale,
   setLowPassFilter,
@@ -160,6 +173,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         numDisplayedChannels,
         setNumDisplayedChannels,
     ] = useState<number>(DEFAULT_MAX_CHANNELS);
+
+    // The channel types are indexed by channel type name.
+    const [channelTypes, setChannelTypes] = useState<Record<string, ChannelTypeState>>({});
+
     const [cursorEnabled, setCursorEnabled] = useState(false);
     const toggleCursor = () => setCursorEnabled((value) => !value);
     const [DCOffsetView, setDCOffsetView] = useState(true);
@@ -174,6 +191,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [lowPass, setLowPass] = useState('none');
     const [refNode, setRefNode] = useState<HTMLDivElement>(null);
     const [bounds, setBounds] = useState<ClientRect>(null);
+    const [offsetIndex, setOffsetIndex] = useState(1);
     const getBounds = useCallback((domNode) => {
         if (domNode) {
             setRefNode(domNode);
@@ -184,6 +202,15 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [panelIsDirty, setPanelIsDirty] = useState(false);
     const [eventChannels, setEventChannels] = useState([]);
     const {t} = useTranslation();
+
+    // Initialize the channel types mapping once channels information is loaded.
+    useEffect(() => {
+      if (channelInfos === null) {
+        return;
+      }
+
+      setChannelTypes(createChannelTypesDict(channelInfos));
+    }, [channelInfos]);
 
     window.onbeforeunload = function() {
       if (panelIsDirty) {
@@ -526,7 +553,40 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       .range([topLeft[1], bottomRight[1]]),
   ];
 
+  // Selected channels are all the channels that should be currently available in the viewer,
+  // including those not currently displayed because of pagination.
+  const selectedChannels = useMemo(() => (
+    channelInfos !== null
+    ? filterSelectedChannels(channelMetadata, channelInfos, channelTypes)
+    : channelMetadata
+  ), [channelInfos, channelMetadata, channelTypes]);
+
+  // Indexes of the selected channel indexes for comparison with previous renders.
+  const selectedChannelIndexes = JSON.stringify(selectedChannels.map((channel) => channel.index));
+
+  // Displayed channels are all the selected channels that are currently displayed on screen.
+  channels = useMemo(() => (
+    channelInfos !== null
+    ? filterDisplayedChannels(selectedChannels, offsetIndex, limit, channels)
+    : channels
+  ), [channelInfos, selectedChannelIndexes, offsetIndex, limit, channels]);
+
+  // Indexes of the displayed channel indexes for comparison with previous renders.
+  const displayedChannelIndexes = JSON.stringify(channels.map((channel) => channel.index));
+
+  // Hack to update the global store whenever displayed channels are updated.
+  useEffect(() => {
+    const store = window.EEGLabSeriesProviderStore[chunksURL];
+    if (store === undefined) {
+      return;
+    }
+
+    store.dispatch(createAction(SET_CHANNELS)(channels));
+    store.dispatch(createAction(UPDATE_VIEWED_CHUNKS)());
+  }, [displayedChannelIndexes]);
+
   const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
+
   const showAxisScaleLines = false; // Visibility state of y-axis scale lines
 
   /**
@@ -819,8 +879,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
-  const hardLimit = Math.min(offsetIndex + limit - 1, channelMetadata.length);
-
   /**
    *
    */
@@ -845,10 +903,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   };
 
   /**
-   *
+   * Handle a change to the limit of the number of displayed channels.
    */
-  const handleChannelChange = (e) => {
-    const numChannels = parseInt(e.target.value, 10);
+  const handleChannelChange = (numChannels: number) => {
     setNumDisplayedChannels(numChannels); // This one is the frontend controller
     setDatasetMetadata({limit: numChannels}); // Will trigger re-render to the store
     setOffsetIndex(offsetIndex); // Will include new channels on limit increase
@@ -959,6 +1016,14 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             >
               {t('Add Event', {ns: 'electrophysiology_browser'})}
             </button>
+            {
+              channelInfos !== null && (
+                <ChannelTypesSelector
+                  channelTypes={channelTypes}
+                  setChannelTypes={setChannelTypes}
+                />
+              )
+            }
             {
               rightPanel === null && (
                 <button
@@ -1182,83 +1247,16 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       )}
                     />
                   </div>
-
-                  <div
-                    className={
-                      (rightPanel ? '' : 'pull-right-lg col-lg-5 ')
-                      + 'pagination-nav'
-                    }
-                    style={{
-                      padding: '5px 15px',
-                    }}
-                  >
-                    <small style={{marginRight: '3px',}}>
-                        {t('Displaying: ', {ns: 'electrophysiology_browser'})}
-                      <select
-                        value={numDisplayedChannels}
-                        onChange={handleChannelChange}
-                      >
-                        {CHANNEL_DISPLAY_OPTIONS.map((numChannels) => {
-                          return <option
-                            key={`${numChannels}`}
-                            value={numChannels}
-                          >
-                            {t('{{numChannels}} channels', {
-                              ns: 'electrophysiology_browser',
-                              numChannels: numChannels,
-                            })}
-                          </option>;
-                        })};
-                      </select>
-                      &nbsp;
-                      {t('Showing:', {ns: 'electrophysiology_browser'})}
-                      &nbsp;
-                      <input
-                        type='number'
-                        style={{width: '45px'}}
-                        value={offsetIndex}
-                        onChange={(e) => {
-                          const value = parseInt(e.target.value);
-                          !isNaN(value) && setOffsetIndex(value);
-                        }}
-                      />
-                      &nbsp;
-                      {t('to {{channelsInView}} of {{totalChannels}}', {
-                        ns: 'electrophysiology_browser',
-                        channelsInView: hardLimit,
-                        totalChannels: channelMetadata.length
-                      })}
-                    </small>
-                    <div
-                      className='btn-group'
-                      style={{marginRight: 0}}
-                    >
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex - limit)}
-                        value='<<'
-                      />
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex - 1)}
-                        value='<'
-                      />
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex + 1)}
-                        value='>'
-                      />
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex + limit)}
-                        value='>>'
-                      />
-                    </div>
-                  </div>
+                  <Pagination
+                    limit={limit}
+                    selectedChannelsCount={selectedChannels.length}
+                    visibleChannelsCount={filteredChannels.length}
+                    offsetIndex={offsetIndex}
+                    setOffsetIndex={setOffsetIndex}
+                    displayedChannelsLimit={numDisplayedChannels}
+                    setDisplayedChannelsLimit={handleChannelChange}
+                    rightPanel={rightPanel}
+                  />
                 </div>
               </div>
             </div>
@@ -1622,7 +1620,6 @@ SeriesRenderer.defaultProps = {
   epochs: [],
   hidden: [],
   channelMetadata: [],
-  offsetIndex: 1,
   limit: DEFAULT_MAX_CHANNELS,
 };
 
@@ -1636,12 +1633,12 @@ export default connect(
     timexSelection: state.timeSelection,
     chunksURL: state.dataset.chunksURL,
     channels: state.channels,
+    channelInfos: state.dataset.channelInfos,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
     activeEpoch: state.dataset.activeEpoch,
     hidden: state.montage.hidden,
     channelMetadata: state.dataset.channelMetadata,
-    offsetIndex: state.dataset.offsetIndex,
     limit: state.dataset.limit,
     loadedChannels: state.dataset.loadedChannels,
     domain: state.bounds.domain,
@@ -1649,10 +1646,6 @@ export default connect(
     hoveredChannels: state.cursor.hoveredChannels,
   }),
   (dispatch: (_: any) => void) => ({
-    setOffsetIndex: R.compose(
-      dispatch,
-      setOffsetIndex
-    ),
     setInterval: R.compose(
       dispatch,
       setInterval

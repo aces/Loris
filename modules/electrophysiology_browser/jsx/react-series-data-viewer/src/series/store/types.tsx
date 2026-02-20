@@ -17,6 +17,7 @@ export type Trace = {
 
 export type ChannelMetadata = {
   name: string,
+  index: number,
   seriesRange: [number, number]
 };
 
@@ -113,4 +114,41 @@ export type HEDEndorsement = {
   EndorsementComment: string | null,
   EndorsementStatus: EndorsementStatus,
   EndorsementTime: string,
+}
+
+/**
+ * LORIS API EEG acquisition metadata.
+ */
+export type ChannelInfosMetadata = {
+  CandID: string;
+  Visit: string;
+  File: string;
+}
+
+/**
+ * LORIS API EEG acquisition channel data.
+ */
+export type ChannelInfo = {
+  ChannelName: string;
+  ChannelDescription: string;
+  ChannelType: string;
+  ChannelTypeDescription: string;
+  ChannelStatus: string;
+  StatusDescription: string;
+  SamplingFrequency: number;
+  LowCutoff: string;
+  HighCutoff: string;
+  ManualFlag: string;
+  Notch: string;
+  Reference: string;
+  Unit: string;
+  ChannelFilePath: string;
+}
+
+/**
+ * LORIS API EEG acquisition data.
+ */
+export type ChannelInfos = {
+  Meta: ChannelInfosMetadata;
+  Channels: ChannelInfo[]; // Array of channels instead of single object
 }
