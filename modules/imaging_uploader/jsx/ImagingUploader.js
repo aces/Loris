@@ -282,15 +282,24 @@ class ImagingUploader extends Component {
             <DataTable
               data={this.state.data.Data}
               fields={this.state.data.Headers.map(
-                (header) => {
+                (header, index) => {
+                  let filter = {};
+                  if (header === 'DCCID') {
+                    filter = {name: 'candID'};
+                  } else if (header === 'PSCID') {
+                    filter = {name: 'pSCID'};
+                  } else if (header === 'Visit Label') {
+                    filter = {name: 'visitLabel'};
+                  }
                   return {
                     label: t(header, {ns: ['imaging_uploader', 'loris']}),
                     show: true,
+                    filter: filter,
                   };
                 }
               )}
               getFormattedCell={this.formatColumn}
-              Filter={this.state.filter}
+              filters={this.state.filter}
               hiddenHeaders={this.state.hiddenHeaders}
             />
           </div>
