@@ -329,6 +329,15 @@ class IssueForm extends Component {
             disabled={!hasEditPermission}
             value={this.state.formData.visitLabel}
           />
+          {this.state.Data.hasExternalIdPermission &&
+            <TextboxElement
+              name='externalIssueID'
+              label={t('External Issue ID', {ns: 'issue_tracker'})}
+              onUserInput={this.setFormData}
+              disabled={!this.state.Data.hasExternalIdPermission}
+              value={this.state.formData.externalIssueID}
+            />
+          }
           <SelectElement
             name='watching'
             label={t('Watching?', {ns: 'issue_tracker'})}
