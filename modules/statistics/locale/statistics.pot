@@ -126,6 +126,22 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+msgid "Total Scans: {{count}}"
+msgstr ""
+
+msgid "There have been no scans yet."
+msgstr ""
+
+msgid "There have been no candidates registered yet."
+msgstr ""
+
+msgid "There is no data yet."
+msgstr ""
+
+# Project sizes
+msgid "Project Dataset Sizes"
+msgstr ""
+
 msgid "Dataset size breakdown by project"
 msgstr ""
 
@@ -140,16 +156,4 @@ msgid "%s GB"
 msgstr ""
 
 msgid "Total Size: {{count}} GB"
-msgstr ""
-
-msgid "Total Scans: {{count}}"
-msgstr ""
-
-msgid "There have been no scans yet."
-msgstr ""
-
-msgid "There have been no candidates registered yet."
-msgstr ""
-
-msgid "There is no data yet."
 msgstr ""

@@ -30,6 +30,16 @@ const StudyProgression = (props) => {
       = t('Scan sessions per site', {ns: 'statistics'});
     newdetails['total_recruitment']['siterecruitment_bymonth']['title']
       = t('Recruitment per site', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['title']
+      = t('Dataset size breakdown by project', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['label']
+      = t('Size (GB)', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['units']
+      = t('GB', {ns: 'loris'});
+    newdetails['project_sizes']['size_byproject']['yLabel']
+      = t('Size (GB)', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['titlePrefix']
+      = t('Project', {ns: 'loris'});
     setChartDetails(newdetails);
   }, []);
 

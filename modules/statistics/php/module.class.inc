@@ -141,7 +141,7 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\DataWidget(
                     new \LORIS\GUI\LocalizableString(
-                        "dqt",
+                        "statistics",
                         "Dataset Size",
                         "Dataset Size",
                     ),
