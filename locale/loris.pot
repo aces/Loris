@@ -559,7 +559,7 @@ msgstr ""
 msgid "Permission denied"
 msgstr ""
 
-msgid "Permission Denied" # Expected by tests
+msgid "Permission Denied"
 msgstr ""
 
 msgid "Unauthorized"
