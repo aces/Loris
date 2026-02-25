@@ -50,3 +50,6 @@ msgstr "पासवर्ड मेल नहीं खाते।"
 
 msgid "New and old passwords are identical"
 msgstr "नया और पुराना पासवर्ड समान हैं।"
+
+msgid "Configure MFA"
+msgstr "नया और पुराना पासवर्ड समान हैं।"

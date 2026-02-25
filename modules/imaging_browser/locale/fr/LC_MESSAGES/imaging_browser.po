@@ -30,10 +30,9 @@ msgstr "Voir la session"
 
 #, fuzzy
 msgid "New and pending imaging session"
-msgstr "Nouvelle session d'imagerie et session en attente"
-
-msgid "New and pending imaging sessions"
-msgstr "Nouvelles sessions d'imagerie et sessions en attente"
+msgid_plural "New and pending imaging sessions"
+msgstr[0] "Nouvelle session d'imagerie et session en attente"
+msgstr[1] "Nouvelles sessions d'imagerie et sessions en attente"
 
 #, fuzzy
 msgid "Imaging Session"

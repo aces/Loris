@@ -147,6 +147,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Biospecimens";
+        return dgettext("biobank", "Biospecimens");
     }
 }

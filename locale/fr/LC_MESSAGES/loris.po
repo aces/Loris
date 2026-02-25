@@ -94,11 +94,17 @@ msgstr "Imagerie"
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr "Candidat"
+msgid_plural "Candidates"
+msgstr[0] "Candidat"
+msgstr[1] "Candidats"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
 msgstr "Génomique"
+
+#: modules/biobank/php/module.class.inc:140
+msgid "Biobank"
+msgstr "Biobanque"
 
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
@@ -257,6 +263,21 @@ msgstr "DdN"
 
 msgid "Sex"
 msgstr "Sexe"
+
+msgid "Female"
+msgid_plural "Females"
+msgstr[0] "Femme"
+msgstr[1] "Femmes"
+
+msgid "Male"
+msgid_plural "Males"
+msgstr[0] "Homme"
+msgstr[1] "Hommes"
+
+msgid "Other"
+msgid_plural "Others"
+msgstr[0] "Autre"
+msgstr[1] "Autres"
 
 msgid "Feedback"
 msgstr "Commentaires"
@@ -554,3 +575,34 @@ msgstr "Chargement en cours..."
 
 msgid "Permission denied"
 msgstr "Permission refusée"
+
+msgid "Permission Denied"
+msgstr "Permission refusée"
+
+msgid "Unauthorized"
+msgstr "Non autorisé"
+
+msgid "File to upload"
+msgstr "Fichier à téléverser"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "Veuillez vous assurer que les fichiers ne dépassent pas la taille de {{maxFileSize}}"
+
+msgid "Submit"
+msgstr "Soumettre"
+
+msgid "Clear"
+msgstr "Effacer"
+
+msgid "Add"
+msgstr "Ajouter"
+
+msgid "Update"
+msgstr "Actualiser"
+
+msgid "Dataset"
+msgstr "Ensemble de données"
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr "Aucune option"

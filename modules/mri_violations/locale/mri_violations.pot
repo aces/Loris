@@ -22,10 +22,8 @@ msgid "MRI Violated Scans"
 msgstr ""
 
 msgid "Violated scan"
-msgstr ""
-
-msgid "Violated scans"
-msgstr ""
+msgid_plural "Violated scans"
+msgstr[0] ""
 
 msgid "Violations for SeriesUID"
 msgstr ""
