@@ -8,16 +8,12 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-## LORIS 27.x (Release Date: TBD)
+## LORIS 28.0 (Release Date: 2026-02-26)
 ### Core
 #### Summary
-- Minor release after v27 release
+The LORIS 28 release adds multilingual support for LORIS. 
+
 ### Notes For Existing Projects
-
-Upgrading LORIS requires following the upgrade process each major and minor release (bug fix releases can be script) to ensure the schema is up to date.
-
-For upgrading to 27.x from 27:
-- Run the `tools/single_use/27_Publication_Collaborators_Into_New_Entries.php` to move publication collaborators into their own database entries rather than relying on eachother.
 
 ## LORIS 27.0 (Release Date: 2025-06-20)
 ### Core
