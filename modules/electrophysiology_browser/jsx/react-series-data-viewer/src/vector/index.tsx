@@ -24,7 +24,7 @@ export const DEFAULT_MAX_CHANNELS = 16;
 
 export const CHANNEL_DISPLAY_OPTIONS = [4, 8, 16, 32, 64];
 
-export const STATIC_SERIES_RANGE: [number, number] = [-0.05, 0.05];
+export const STATIC_SERIES_RANGE: [number, number] = [-0.00000005, 0.00000005];
 
 export const DEFAULT_TIME_INTERVAL: [number, number] = [0, 5];
 
