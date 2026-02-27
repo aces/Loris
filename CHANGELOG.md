@@ -8,17 +8,22 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-## LORIS 27.x (Release Date: TBD)
+## LORIS 28.0 (Release Date: 2026-02-27)
 ### Core
 #### Summary
-- Minor release after v27 release
-#### Updates and Improvements
-- [docs] Update login page Setup Guide link to readthedocs (PR #7071)
+The LORIS 28 release primarily adds multilingual support, although is also includes
+other improvements such as
+- Add dicom upload to API
+- New biobank module
+- Add infrastructure to track user decisions to policies 
+- Add Support for TOTP / 2FA
+
 ### Notes For Existing Projects
 
 Upgrading LORIS requires following the upgrade process each major and minor release (bug fix releases can be script) to ensure the schema is up to date.
 
-For upgrading to 27.x from 27:
+For upgrading to 28 from 27:
+- Source the `SQL/Release_patches/27.0_To_28.0_upgrade.sql`
 - Run the `tools/single_use/27_Publication_Collaborators_Into_New_Entries.php` to move publication collaborators into their own database entries rather than relying on eachother.
 
 ## LORIS 27.0 (Release Date: 2025-06-20)
