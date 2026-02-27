@@ -13,10 +13,10 @@ use \Psr\Http\Server\RequestHandlerInterface;
  *
  * By priority:
  *  1. First it will check if a "lang" get attribute is passed so
- *         that it can be overridden on a page dropdown
- *      2. Next, it will check the user's preference and use their preferred
- *         language if they haven't chosen another for this page load
- *      3. Finally, a best attempt based on the request Accept-Language header
+ *         that it can be overridden on a page dropdown (sets a cookie)
+ *  2. Next, it will check the language cookie
+ *  3. Next, it will check the user's preference
+ *  4. Finally, a best attempt based on the request Accept-Language header
  *         is made
  *
  * Otherwise, the request will fall back on the default locale.
@@ -43,12 +43,13 @@ class Language implements MiddlewareInterface, MiddlewareChainer
         $params = $request->getQueryParams();
         if (isset($params['lang'])
             && in_array($params['lang'], $validLocales)) {
-            $_SESSION['language'] = $params['lang'];
             return $params['lang'];
         }
 
-        if (!empty($_SESSION['language'])) {
-            return $_SESSION['language'];
+        // Check for language cookie
+        if (!empty($_COOKIE['loris_language'])
+            && in_array($_COOKIE['loris_language'], $validLocales)) {
+            return $_COOKIE['loris_language'];
         }
 
         $user     = $request->getAttribute("user");
@@ -87,6 +88,35 @@ class Language implements MiddlewareInterface, MiddlewareChainer
     ) : ResponseInterface {
         $loris = $request->getAttribute("loris");
         $lang  = self::detectLocale($loris, $request);
+        
+        // Set language cookie if explicitly selected via query parameter
+        $params = $request->getQueryParams();
+        if (isset($params['lang'])) {
+            $DB           = $loris->getDatabaseConnection();
+            $validLocales = $DB->pselectCol(
+                "SELECT language_code FROM language",
+                [],
+            );
+            if (in_array($params['lang'], $validLocales)) {
+                // Update user's language preference if logged in
+                $user = $request->getAttribute("user");
+                if ($user !== null) {
+                    $langID = $DB->pselectOne(
+                        "SELECT language_id FROM language WHERE language_code = :code",
+                        ['code' => $params['lang']]
+                    );
+                    $user->update(['language_preference' => $langID]);
+                }
+
+                setcookie(
+                    'loris_language',
+                    $params['lang'],
+                    time() + (24 * 60 * 60),
+                    '/',
+                );
+            }
+        }
+        
         if ($lang !== null) {
             \setlocale(LC_MESSAGES, $lang . '.utf8');
              putenv("LANG=$lang");

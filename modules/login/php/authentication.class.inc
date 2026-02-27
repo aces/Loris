@@ -131,8 +131,9 @@ class Authentication extends \NDB_Page implements ETagCalculator
         if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
             $requestAccountData['captcha'] = $reCAPTCHAPublic; // captcha key.
         }
-        $requestAccountData['site']    = \Utility::getSiteList();
-        $requestAccountData['project'] = \Utility::getProjectList();
+        $requestAccountData['site']     = \Utility::getSiteList();
+        $requestAccountData['project']  = \Utility::getProjectList();
+        $requestAccountData['language'] = \Utility::getLanguageList();
         $loris = $request->getAttribute("loris");
         $requestAccountData['policy'] = $this->getHeaderPolicy($loris);
         $values['requestAccount']     = $requestAccountData;
