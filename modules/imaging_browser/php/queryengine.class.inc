@@ -376,9 +376,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     ): string {
         if ($item->getName() == 'ScanDone') {
             $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
-                return "CASE WHEN s.Scan_Done='Y' THEN true
-                             WHEN s.Scan_Done='N' THEN false
-                             ELSE NULL END";
+            return "(
+                EXISTS (SELECT 1 FROM files      f2 WHERE f2.SessionID = s.ID)
+             OR EXISTS (SELECT 1 FROM mri_upload m2 WHERE m2.SessionID = s.ID)
+             OR EXISTS (SELECT 1 FROM tarchive   t2 WHERE t2.SessionID = s.ID)
+            )";
         }
 
         if (!($item instanceof ImagingDictionaryItem)) {
