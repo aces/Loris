@@ -211,25 +211,27 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
                 }
                 $this->_timePointInfo['status'][$row['Name']] = $row['Value'];
             }
-            $this->_timePointInfo['WindowInfo'] = $db->pSelectRow(
-                "SELECT DATEDIFF(s.Date_visit, c.DoB) as AgeDays,
-                        DATEDIFF(s.Date_visit, c.DoB) BETWEEN
-                            w.OptimumMinDays
-                            AND w.OptimumMaxDays as Optimum,
-                        (DATEDIFF(s.Date_visit, c.DoB) BETWEEN
-                            w.WindowMinDays AND w.WindowMaxDays
-                        ) as Permitted
-                    FROM session s
-                        JOIN candidate c ON c.ID=s.CandidateID
-                        JOIN Visit_Windows w ON (
-                            LOWER(w.Visit_label)=LOWER(s.Visit_label)
-                        )
-                    WHERE s.ID=:sessionID",
-                [":sessionID" => $sessionID]
-            );
-
         }
 
+        $this->_timePointInfo['WindowInfo'] = $db->pSelectRow(
+            "SELECT (w.WindowMinDays IS NOT NULL
+                     OR w.OptimumMinDays IS NOT NULL)
+                        as WindowDefined,
+                    DATEDIFF(s.Date_visit, c.DoB) as AgeDays,
+                    DATEDIFF(s.Date_visit, c.DoB) BETWEEN
+                        w.OptimumMinDays
+                        AND w.OptimumMaxDays as Optimum,
+                    (DATEDIFF(s.Date_visit, c.DoB) BETWEEN
+                        w.WindowMinDays AND w.WindowMaxDays
+                    ) as Permitted
+                FROM session s
+                    JOIN candidate c ON c.ID=s.CandidateID
+                    JOIN Visit_Windows w ON (
+                        LOWER(w.Visit_label)=LOWER(s.Visit_label)
+                    )
+                WHERE s.ID=:sessionID",
+            [":sessionID" => $sessionID]
+        );
     }
 
     /**
