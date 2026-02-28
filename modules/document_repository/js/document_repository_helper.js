@@ -1,4 +1,8 @@
 /*global $, document, window, location */
+import DocumentRepositoryClient from '../jsx/DocumentRepositoryClient';
+
+var lorisFetch = window.lorisFetch || fetch;
+var documentRepositoryClient = new DocumentRepositoryClient();
 
 function editCategory() {
   "use strict";
@@ -10,7 +14,11 @@ function editCategory() {
     id = event.target.id;
     value = $("#" + id).text();
     id = id.replace("categorycomment", "");
-    $.get(loris.BaseURL + "/document_repository/ajax/categoryEdit.php?id=" + id + "&comments=" + value);
+    lorisFetch(
+      loris.BaseURL + "/document_repository/ajax/categoryEdit.php?" +
+      new URLSearchParams({id: id, comments: value}),
+      {credentials: 'same-origin'}
+    );
   }).keypress(function(e) {
     if (e.which === 13) { // Determine if the user pressed the enter button
       $(this).blur();
@@ -52,23 +60,27 @@ function selectElement(element, valueToSelect) {
 function postDelete(id) {
   "use strict";
 
-  $.ajax({
-    url: loris.BaseURL + "/document_repository/ajax/documentDelete.php",
-    type: "POST",
-    data: {id: id},
-    success: function() {
+  lorisFetch(loris.BaseURL + "/document_repository/ajax/documentDelete.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    },
+    body: new URLSearchParams({id: id}),
+    credentials: "same-origin",
+  })
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error("request_failed");
+      }
       $("#" + id).parent().parent().remove();
       $('.delete-success').show();
       setTimeout(function() {
         $('.delete-success').hide();
       }, 3000);
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      if (jqXHR) {
-        console.log("Error: " + textStatus + " " + errorThrown);
-      }
-    }
-  });
+    })
+    .catch(function(error) {
+      console.log("Error: " + error);
+    });
 }
 
 function deleteModal() {
@@ -86,11 +98,20 @@ function deleteModal() {
 function postCategory() {
   "use strict";
 
-  $.ajax({
-    url: loris.BaseURL + "/document_repository/ajax/addCategory.php",
-    type: "POST",
-    data: $("#addCategoryForm").serialize(),
-    success: function() {
+  lorisFetch(loris.BaseURL + "/document_repository/ajax/addCategory.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    },
+    body: $("#addCategoryForm").serialize(),
+    credentials: "same-origin",
+  })
+    .then(function(response) {
+      if (!response.ok) {
+        let error = new Error("request_failed");
+        error.status = response.status;
+        throw error;
+      }
       $("#addCategoryModal").modal('hide');
       $("#addCategoryCategory").removeClass("has-error");
       $("#categoryAddError").hide();
@@ -101,14 +122,13 @@ function postCategory() {
       setTimeout(function() {
         location.reload();
       }, 3000);
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      if (jqXHR.status === 400) {
+    })
+    .catch(function(error) {
+      if (error.status === 400) {
         $("#addCategoryCategory").addClass("has-error");
-        $("#categoryAddError").show()
+        $("#categoryAddError").show();
       }
-    }
-  });
+    });
 }
 
 function postEdit(id) {
@@ -125,11 +145,18 @@ function postEdit(id) {
     submit: 'yeah!!!!'
   };
 
-  $.ajax({
-    type: "POST",
-    url: loris.BaseURL + "/document_repository/ajax/documentEditUpload.php",
-    data: data,
-    success: function() {
+  lorisFetch(loris.BaseURL + "/document_repository/ajax/documentEditUpload.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    },
+    body: new URLSearchParams(data),
+    credentials: "same-origin",
+  })
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error("request_failed");
+      }
       $('.edit-success').show();
       $("#editModal").modal('hide');
       $("#editFileCategory").removeClass("has-error");
@@ -137,12 +164,11 @@ function postEdit(id) {
       setTimeout(function() {
         location.reload()
       }, 3000);
-    },
-    error: function() {
+    })
+    .catch(function() {
       $("#editFileCategory").addClass("has-error");
       $("#categoryEditError").show();
-    }
-  });
+    });
 }
 
 function editModal() {
@@ -151,14 +177,11 @@ function editModal() {
   var id = this.id;
   $("#editModal").modal();
 
-  $.ajax({
-    type: "GET",
-    url: loris.BaseURL + "/document_repository/ajax/getFileData.php",
-    data: {id: id},
-    async: false,
-    dataType: "json",
-    success: function(data) {
-
+  documentRepositoryClient.getFileData(id)
+    .then(function(data) {
+      if (Array.isArray(data)) {
+        data = data[0] || {};
+      }
       //Pre-populate the form with the existing values
       selectElement("categoryEdit", data.File_category);
       selectElement("siteEdit", data.For_site);
@@ -167,9 +190,7 @@ function editModal() {
       selectElement("visitEdit", data.visitLabel);
       selectElement("commentsEdit", data.comments);
       selectElement("versionEdit", data.version);
-
-    }
-  });
+    });
 
   $("#postEdit").click(function(e) {
     e.preventDefault();
