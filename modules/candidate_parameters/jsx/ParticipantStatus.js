@@ -10,6 +10,8 @@ import {
   TextareaElement,
   ButtonElement,
 } from 'jsx/Form';
+import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Participant status component
@@ -29,6 +31,7 @@ class ParticipantStatus extends Component {
       isLoaded: false,
       loadedData: 0,
     };
+    this.client = new CandidateParametersClient();
     this.fetchData = this.fetchData.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -48,50 +51,30 @@ class ParticipantStatus extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    let that = this;
-    $.ajax(
-      this.props.dataURL,
-      {
-        dataType: 'json',
-        xhr: function() {
-          let xhr = new window.XMLHttpRequest();
-          xhr.addEventListener(
-            'progress',
-            function(evt) {
-              that.setState(
-                {
-                  loadedData: evt.loaded,
-                }
-              );
-            }
-          );
-          return xhr;
-        },
-        success: function(data) {
-          let formData = {};
-          formData.participantStatus = data.participantStatus;
-          formData.participantSuboptions = data.participantSuboptions;
-          formData.reasonSpecify = data.reasonSpecify;
+    this.client.getData(this.props.candID, this.props.tabName)
+      .then((data) => {
+        let formData = {};
+        formData.participantStatus = data.participantStatus;
+        formData.participantSuboptions = data.participantSuboptions;
+        formData.reasonSpecify = data.reasonSpecify;
 
-          that.setState(
-            {
-              Data: data,
-              formData: formData,
-              isLoaded: true,
-            }
-          );
-        },
-        error: function(data, errorCode, errorMsg) {
-          that.setState(
-            {
-              error: t('An error occured while loading the page.',
-                {ns: 'loris'}
-              ),
-            }
-          );
-        },
-      }
-    );
+        this.setState(
+          {
+            Data: data,
+            formData: formData,
+            isLoaded: true,
+          }
+        );
+      })
+      .catch(() => {
+        this.setState(
+          {
+            error: t('An error occured while loading the page.',
+              {ns: 'loris'}
+            ),
+          }
+        );
+      });
   }
 
   /**
@@ -297,37 +280,44 @@ class ParticipantStatus extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    $.ajax(
-      {
-        type: 'POST',
-        url: self.props.action,
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(data) {
+    lorisFetch(self.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
+        self.setState(
+          {
+            updateResult: 'success',
+          }
+        );
+        self.showAlertMessage();
+        self.fetchData();
+      })
+      .catch((err) => {
+        if (err.lorisMessage !== undefined && err.lorisMessage !== '') {
           self.setState(
             {
-              updateResult: 'success',
+              updateResult: 'error',
+              errorMessage: err.lorisMessage,
             }
           );
           self.showAlertMessage();
-          self.fetchData();
-        },
-        error: function(err) {
-          if (err.responseText !== '') {
-            let errorMessage = JSON.parse(err.responseText).message;
-            self.setState(
-              {
-                updateResult: 'error',
-                errorMessage: errorMessage,
-              }
-            );
-            self.showAlertMessage();
-          }
-        },
-      }
-    );
+        }
+      });
   }
 
   /**
@@ -353,8 +343,8 @@ class ParticipantStatus extends Component {
   }
 }
 ParticipantStatus.propTypes = {
-  dataURL: PropTypes.string,
-  tabName: PropTypes.string,
+  candID: PropTypes.string.isRequired,
+  tabName: PropTypes.string.isRequired,
   action: PropTypes.string,
   t: PropTypes.string.isRequired,
 };
