@@ -62,4 +62,19 @@ class UserAccountRow implements
     {
         return $this->DBRow;
     }
+
+    /**
+     * Check whether a user can access this data instance.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool
+    {
+        return \LORIS\StudyEntities\DataInstanceAccess::centerAndProjectMatch(
+            $user,
+            $this
+        );
+    }
 }
