@@ -22,7 +22,9 @@ import {setDomain, setInterval} from '../series/store/state/bounds';
 import {
   setCoordinateSystem, setElectrodes,
 } from '../series/store/state/montage';
-import {EventMetadata, HEDSchemaElement} from '../series/store/types';
+import {
+  ChannelInfos, EventMetadata, HEDSchemaElement,
+} from '../series/store/types';
 import TriggerableModal from 'jsx/TriggerableModal';
 import DatasetTagger from '../series/components/DatasetTagger';
 import {InfoIcon} from '../series/components/components';
@@ -35,10 +37,13 @@ declare global {
 
 
 type CProps = {
+  channelsURL: string,
   chunksURL: string,
   epochsURL: string,
   electrodesURL: string,
   coordSystemURL: string,
+  megChannelsURL: string,
+  megHeadshapeURL: string,
   hedSchema: HEDSchemaElement[],
   datasetTags: any,
   datasetTagEndorsements: any,
@@ -89,6 +94,8 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       epochsURL,
       electrodesURL,
       coordSystemURL,
+      megChannelsURL,
+      megHeadshapeURL,
       hedSchema,
       datasetTags,
       datasetTagEndorsements,
@@ -177,6 +184,12 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
         return [Promise.resolve()];
       }
     };
+
+    fetchJSON(props.channelsURL).then((json: ChannelInfos) => {
+      this.store.dispatch(setDatasetMetadata({
+        channelInfos: json.Channels,
+      }));
+    });
 
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
@@ -322,24 +335,60 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       }));
     });
 
+    fetchJSON(megChannelsURL)
+      .then((json) => {
+        console.debug(`Received ${json['channels'].length} channels`);
+        console.debug(json['channels']);
+        const channels = json['channels']
+          .map((channel, i) => ({
+            name: channel['ch_name'],
+            channelIndex: i,
+            position: [channel['loc'][0], channel['loc'][1], channel['loc'][2]],
+          }))
+          .filter((channel) =>
+            !isNaN(channel.position[0])
+            && !isNaN(channel.position[1])
+            && !isNaN(channel.position[2])
+          );
 
-    Promise.race(racers(fetchText, electrodesURL))
-      .then((text) => {
-        if (!(typeof text.json === 'string'
-          || text.json instanceof String)) return;
-        this.store.dispatch(
-          setElectrodes(
-            tsvParse(text.json).map(({name, x, y, z}) => ({
-              name: name,
-              channelIndex: null,
-              position: [parseFloat(x), parseFloat(y), parseFloat(z)],
-            }))
-          )
-        );
-      })
-      .catch((error) => {
-        console.error(error);
+        console.debug(`Set ${channels.length} channels`);
+        console.debug(channels);
+        this.store.dispatch(setElectrodes(channels));
       });
+
+    fetchJSON(megHeadshapeURL)
+      .then((json) => {
+        console.debug(`Received ${json['points'].length} head shape points`);
+        console.debug(json['points']);
+        const points = json['points']
+          .map((point, i) => ({
+            name: i,
+            channelIndex: null,
+            position: [point[0] / 100.0, point[1] / 100.0, point[2] / 100.0],
+          }));
+
+        console.debug(`Set ${points.length} head shape points`);
+        console.debug(points);
+        this.store.dispatch(setElectrodes(points));
+      });
+
+    // Promise.race(racers(fetchText, electrodesURL))
+    //   .then((text) => {
+    //     if (!(typeof text.json === 'string'
+    //       || text.json instanceof String)) return;
+    //     this.store.dispatch(
+    //       setElectrodes(
+    //         tsvParse(text.json).map(({name, x, y, z}) => ({
+    //           name: name,
+    //           channelIndex: null,
+    //           position: [parseFloat(x), parseFloat(y), parseFloat(z)],
+    //         }))
+    //       )
+    //     );
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
 
     Promise.race(racers(fetchJSON, coordSystemURL))
       .then( ({json}) => {

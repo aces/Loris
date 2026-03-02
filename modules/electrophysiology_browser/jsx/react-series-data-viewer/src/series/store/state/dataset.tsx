@@ -1,6 +1,7 @@
 import * as R from 'ramda';
 import {createAction} from 'redux-actions';
 import {
+  ChannelInfo,
   ChannelMetadata,
   Epoch,
   EpochFilter,
@@ -52,6 +53,7 @@ export type Action =
   | {
       type: 'SET_DATASET_METADATA',
       payload: {
+        channelInfos: ChannelInfo[] | null,
         chunksURL: string,
         channelNames: string[],
         shapes: number[][],
@@ -62,7 +64,6 @@ export type Action =
         loadedChannels: number,
         samplingFrequency: string,
         eegMontageName: string,
-        offsetIndex: number,
         channelDelimiter: string,
         tagsHaveChanges: boolean,
         recordingHasHED: boolean,
@@ -70,9 +71,9 @@ export type Action =
     };
 
 export type State = {
+  channelInfos: ChannelInfo[] | null,
   chunksURL: string,
   channelMetadata: ChannelMetadata[],
-  offsetIndex: number,
   channelDelimiter: string,
   limit: number,
   loadedChannels: number,
@@ -104,6 +105,7 @@ export type State = {
  */
 export const datasetReducer = (
   state: State = {
+    channelInfos: [],
     chunksURL: '',
     channelMetadata: [],
     epochs: [],
@@ -114,7 +116,6 @@ export const datasetReducer = (
     },
     activeEpoch: null,
     physioFileID: null,
-    offsetIndex: 1,
     channelDelimiter: '',
     limit: DEFAULT_MAX_CHANNELS,
     loadedChannels: 0,
