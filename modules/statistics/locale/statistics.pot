@@ -157,3 +157,9 @@ msgstr ""
 
 msgid "Total Size: {{count}} GB"
 msgstr ""
+
+msgid "Pie"
+msgstr ""
+
+msgid "Bar"
+msgstr ""

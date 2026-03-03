@@ -160,3 +160,9 @@ msgstr "%s Go"
 
 msgid "Total Size: {{count}} GB"
 msgstr "Taille totale: {{count}} Go"
+
+msgid "Pie"
+msgstr "Circulaire"
+
+msgid "Bar"
+msgstr "Barre"

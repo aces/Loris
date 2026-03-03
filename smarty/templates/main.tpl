@@ -193,6 +193,23 @@
                                     {$user.Real_name|escape} <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
+                                    {if count($languages) > 1}
+                                        <div style="padding: 2ex">
+                                            <form method="get" >
+                                                    <select
+                                                        class="form-control"
+                                                        name="lang"
+                                                        onChange="this.form.submit()"
+                                                    >
+                                                        {foreach from=$languages key=langcode item=lang}
+                                                            <option value={$langcode}
+                                                                {if $langcode==$language}selected="selected"{/if}>{$lang}
+                                                            </option>
+                                                        {/foreach}
+                                                    </select>
+                                            </form>
+                                        </div>
+                                    {/if}
                                     {if $my_preferences|default}
                                     <li>
                                         <a href="{$baseurl}/my_preferences/">
