@@ -39,7 +39,7 @@ Two tables manage the policy tracking:
     -   `ModuleID`: FK to the `modules` table, each Policy is assigned to a module which determines when and how it is shown.
     -   `Content`: HTML content of the policy text.
     -   `SwalTitle`: Title displayed in the modal window.
-    -   `PolicyRenewalTime`: Number of units (e.g., 365) for renewal.
+    -   `PolicyRenewalTime`: Number of units (e.g., 7) for renewal.
     -   `PolicyRenewalTimeUnit`: Unit of time ('D', 'M', 'Y', 'H') for renewal.
     -   `HeaderButton`: ('Y'/'N') Whether to show a button in the page header.
     -   `HeaderButtonText`: Text to display on the header button (e.g., "Terms of Use").
