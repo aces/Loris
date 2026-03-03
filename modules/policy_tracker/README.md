@@ -10,7 +10,7 @@ The scope of this module includes:
 -   **Forced Acceptance**: blocking access to specific modules until the user accepts the defined policy.
 -   **Versioning**: requiring users to re-accept policies when a new version is released.
 -   **Renewal**: enforcing policy re-acceptance after a configurable time period (e.g., monthly).
--   **Audit Trail**: maintaining a log of user user acceptances and declinations.
+-   **Audit Trail**: maintaining a log of user acceptances and declinations.
 
 ## Configurations
 
