@@ -1282,19 +1282,20 @@ CREATE TABLE `participant_status_options` (
   `Description` varchar(255) DEFAULT NULL,
   `Required` tinyint(1) DEFAULT NULL,
   `parentID` int(10) DEFAULT NULL,
+  `commentRequired` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `participant_status_options` (Description, Required) VALUES
-  ('Active',0),
-  ('Refused/Not Enrolled',0),
-  ('Ineligible',0),
-  ('Excluded',0),
-  ('Inactive',1),
-  ('Incomplete',1),
-  ('Complete',0);
+INSERT INTO `participant_status_options` (Description, Required, commentRequired) VALUES
+  ('Active',0,0),
+  ('Refused/Not Enrolled',0,1),
+  ('Ineligible',0,1),
+  ('Excluded',0,1),
+  ('Inactive',1,1),
+  ('Incomplete',1,1),
+  ('Complete',0,0);
 
 INSERT INTO `participant_status_options` (Description, Required, parentID) VALUES
   ('Unsure',NULL,@tmp_val),
