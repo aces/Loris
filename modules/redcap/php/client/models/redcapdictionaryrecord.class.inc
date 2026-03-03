@@ -242,9 +242,12 @@ class RedcapDictionaryRecord
         $field_type  = $this->field_type;
         $field_name  = $this->field_name;
         $field_label = str_replace(["\r\n", "\r", "\n"], '', $this->field_label);
+        $field_label = strip_tags($this->field_label);
+        $field_label = str_replace("\xc2\xa0", ' ', $field_label);
+        $field_label = preg_replace('/\s+/', ' ', $field_label);
+        $field_label = trim($field_label);
         $field_desc  = "$field_name{@}$field_label";
 
-        //
         switch ($field_type) {
         case 'text':
             // text maps directly to LORIS
