@@ -345,7 +345,6 @@ const configs: webpack.Configuration[] = [];
 
 configs.push({
   entry: {
-    PaginationLinks: './jsx/PaginationLinks.js',
     MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
     Breadcrumbs: './jsx/Breadcrumbs.js',
     PolicyButton: './jsx/PolicyButton.js',
