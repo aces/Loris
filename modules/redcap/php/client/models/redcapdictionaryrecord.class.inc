@@ -268,7 +268,7 @@ class RedcapDictionaryRecord
                 . $this->_optionsToLINST();
         case 'yesno':
             // Map yes/no fields to dropdowns with yes and no options.
-            return "select{@}$field_desc{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
+            return "select{@}$field_desc{@}NULL=>''{-}'1'=>'Yes'{-}'0'=>'No'";
         case 'calc':
             // Calc maps to a score field. We create the DB field but don't do
             // the score.
