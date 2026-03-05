@@ -196,6 +196,25 @@ msgstr "成功！"
 msgid "Close"
 msgstr "近い"
 
+# Policy text
+msgid "Terms of Use"
+msgstr "利用規約"
+
+msgid "Yes, I accept"
+msgstr "はい、同意します"
+
+msgid "Decline"
+msgstr "拒否する"
+
+msgid "Accept"
+msgstr "同意する"
+
+msgid "By using this Data Query Tool, you acknowledge that you know it is in beta and may not work as expected. You also agree to use it responsibly and not to misuse the data."
+msgstr "このデータクエリツールを使用することで、あなたはこれがベータ版であり、期待どおりに動作しない可能性があることを認めます。また、データを責任を持って使用し、不適切に利用しないことに同意します。"
+
+msgid "By using this LORIS instance you acknowledge that you know it is filled with test data, and not real user data."
+msgstr "このLORISインスタンスを使用することで、これには実データではなくテストデータが含まれていることを認めます。"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "プロジェクト識別子"
@@ -564,4 +583,3 @@ msgstr "データセット"
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr "オプションなし"
-

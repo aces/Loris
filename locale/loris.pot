@@ -200,6 +200,25 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+# Policy text
+msgid "Terms of Use"
+msgstr ""
+
+msgid "Yes, I accept"
+msgstr ""
+
+msgid "Decline"
+msgstr ""
+
+msgid "Accept"
+msgstr ""
+
+msgid "By using this Data Query Tool, you acknowledge that you know it is in beta and may not work as expected. You also agree to use it responsibly and not to misuse the data."
+msgstr ""
+
+msgid "By using this LORIS instance you acknowledge that you know it is filled with test data, and not real user data."
+msgstr ""
+
 # Common candidate terms
 msgid "PSCID"
 msgstr ""

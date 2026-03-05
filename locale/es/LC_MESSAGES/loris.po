@@ -164,6 +164,25 @@ msgstr "Cancelar"
 msgid "Success!"
 msgstr "Exitoso!"
 
+# Policy text
+msgid "Terms of Use"
+msgstr "Términos de uso"
+
+msgid "Yes, I accept"
+msgstr "Sí, acepto"
+
+msgid "Decline"
+msgstr "Rechazar"
+
+msgid "Accept"
+msgstr "Aceptar"
+
+msgid "By using this Data Query Tool, you acknowledge that you know it is in beta and may not work as expected. You also agree to use it responsibly and not to misuse the data."
+msgstr "Al utilizar esta herramienta de consulta de datos, usted reconoce que está en versión beta y que puede no funcionar como se espera. También acepta usarla de manera responsable y no hacer un uso indebido de los datos."
+
+msgid "By using this LORIS instance you acknowledge that you know it is filled with test data, and not real user data."
+msgstr "Al utilizar esta instancia de LORIS, usted reconoce que contiene datos de prueba y no datos reales de usuarios."
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "SCPID"
