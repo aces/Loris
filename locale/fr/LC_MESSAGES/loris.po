@@ -576,12 +576,6 @@ msgstr "Chargement en cours..."
 msgid "Permission denied"
 msgstr "Permission refusée"
 
-msgid "GB"
-msgstr "Go"
-
-msgid "Month"
-msgstr "Mois"
-
 msgid "Permission Denied"
 msgstr "Permission refusée"
 
@@ -608,6 +602,12 @@ msgstr "Actualiser"
 
 msgid "Dataset"
 msgstr "Ensemble de données"
+
+msgid "GB"
+msgstr "Go"
+
+msgid "Month"
+msgstr "Mois"
 
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
