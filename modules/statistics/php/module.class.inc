@@ -133,7 +133,7 @@ class Module extends \Module
                         'ProjectID'   => $project->getId(),
                         'ProjectName' => $projectName,
                         'count'       => $datasetSize,
-                        'url'         => "$baseURL/dqt",
+                        'url'         => '#',
                     ];
                 }
             }
