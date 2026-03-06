@@ -87,6 +87,12 @@ msgstr ""
 msgid "Category added successfully!"
 msgstr ""
 
+msgid "Could not add category!"
+msgstr ""
+
+msgid "Duplicate category name under same parent folder."
+msgstr ""
+
 msgid "Error"
 msgstr ""
 
@@ -138,6 +144,9 @@ msgstr ""
 msgid "Delete error!"
 msgstr ""
 
+msgid "Can not delete non-empty category"
+msgstr ""
+
 msgid "Delete Successful!"
 msgstr ""
 
@@ -160,6 +169,9 @@ msgid "Date Uploaded"
 msgstr ""
 
 msgid "Edit"
+msgstr ""
+
+msgid "Delete"
 msgstr ""
 
 msgid "Delete File"

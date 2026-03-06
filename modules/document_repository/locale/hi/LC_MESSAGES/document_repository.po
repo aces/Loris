@@ -89,6 +89,12 @@ msgstr "मूल"
 msgid "Category added successfully!"
 msgstr "श्रेणी सफलतापूर्वक जोड़ी गई!"
 
+msgid "Could not add category!"
+msgstr "श्रेणी नहीं जोड़ी जा सकी!"
+
+msgid "Duplicate category name under same parent folder."
+msgstr "एक ही मूल फ़ोल्डर के अंतर्गत श्रेणी का नाम डुप्लिकेट है।"
+
 msgid "Error"
 msgstr "त्रुटि"
 
@@ -140,6 +146,9 @@ msgstr "एक श्रेणी हटाएँ"
 msgid "Delete error!"
 msgstr "हटाने में त्रुटि!"
 
+msgid "Can not delete non-empty category"
+msgstr "रिक्त न होने वाली श्रेणी को हटाया नहीं जा सकता"
+
 msgid "Delete Successful!"
 msgstr "हटाना सफल रहा!"
 
@@ -160,6 +169,9 @@ msgstr "अपलोड की तारीख"
 
 msgid "Edit"
 msgstr "संपादित करें"
+
+msgid "Delete"
+msgstr "हटाएँ"
 
 msgid "Delete File"
 msgstr "फ़ाइल हटाएँ"

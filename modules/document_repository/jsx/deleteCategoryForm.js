@@ -8,6 +8,7 @@ import {
 } from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
+import translateKnownBackendError from './translateKnownBackendError';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
@@ -159,16 +160,23 @@ class DeleteDocCategoryForm extends React.Component {
         } else {
           msg = t('Delete error!', {ns: 'document_repository'});
         }
+        const translatedMsg = translateKnownBackendError(msg, t);
         this.setState({
-          errorMessage: msg,
+          errorMessage: translatedMsg,
         });
-        swal.fire(msg, '', 'error');
+        swal.fire({
+          title: translatedMsg,
+          text: '',
+          type: 'error',
+          confirmButtonText: t('OK', {ns: 'loris'}),
+        });
         console.error(msg);
       } else {
         swal.fire({
           text: t('Delete Successful!', {ns: 'document_repository'}),
           title: '',
           type: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
         }).then(function() {
           window.location.assign('/document_repository');
         });
@@ -176,11 +184,17 @@ class DeleteDocCategoryForm extends React.Component {
     }).catch( (error) => {
       let msg = error.message ? error.message : t('Delete error!',
         {ns: 'document_repository'});
+      const translatedMsg = translateKnownBackendError(msg, t);
       this.setState({
-        errorMessage: msg,
+        errorMessage: translatedMsg,
         uploadProgress: -1,
       });
-      swal.fire(msg, '', 'error');
+      swal.fire({
+        title: translatedMsg,
+        text: '',
+        type: 'error',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
       console.error(error);
     });
   }
