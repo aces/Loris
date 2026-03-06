@@ -331,7 +331,7 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: t('Cohorts', {ns: 'loris'}),
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Cohorts',
