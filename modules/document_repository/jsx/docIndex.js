@@ -216,7 +216,7 @@ class DocIndex extends React.Component {
         swal.fire({
           title: t('Are you sure?', {ns: 'loris'}),
           text: t('You won\'t be able to revert this!',
-            {ns: 'loris'}),
+            {ns: 'document_repository'}),
           type: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
@@ -234,8 +234,13 @@ class DocIndex extends React.Component {
             }).then((resp) => resp.json())
               .then(()=>{
                 location.reload();
-                swal.fire(t('Delete Successful!',
-                  {ns: 'document_repository'}), '', 'success');
+                swal.fire({
+                  title: t('Delete Successful!',
+                    {ns: 'document_repository'}),
+                  text: '',
+                  type: 'success',
+                  confirmButtonText: t('OK', {ns: 'loris'}),
+                });
               });
           }
         });

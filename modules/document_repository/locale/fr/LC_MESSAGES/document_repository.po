@@ -93,6 +93,12 @@ msgstr "Parent"
 msgid "Category added successfully!"
 msgstr "Catégorie ajoutée avec succès !"
 
+msgid "Could not add category!"
+msgstr "Impossible d'ajouter la catégorie !"
+
+msgid "Duplicate category name under same parent folder."
+msgstr "Nom de catégorie en double sous le même dossier parent."
+
 msgid "Error"
 msgstr "Erreur"
 
@@ -154,6 +160,9 @@ msgstr "Supprimer une catégorie"
 msgid "Delete error!"
 msgstr "Supprimer l'erreur !"
 
+msgid "Can not delete non-empty category"
+msgstr "Impossible de supprimer une catégorie non vide"
+
 #, fuzzy
 msgid "Delete Successful!"
 msgstr "Suppression réussie !"
@@ -179,6 +188,9 @@ msgstr "Date de téléversement"
 
 msgid "Edit"
 msgstr "Modifier"
+
+msgid "Delete"
+msgstr "Supprimer"
 
 msgid "Delete File"
 msgstr "Supprimer le fichier"

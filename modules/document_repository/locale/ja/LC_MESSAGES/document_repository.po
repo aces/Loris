@@ -87,6 +87,12 @@ msgstr "親"
 msgid "Category added successfully!"
 msgstr "カテゴリが正常に追加されました。"
 
+msgid "Could not add category!"
+msgstr "カテゴリを追加できませんでした!"
+
+msgid "Duplicate category name under same parent folder."
+msgstr "同じ親フォルダ内に同じカテゴリ名があります。"
+
 msgid "Error"
 msgstr "エラー"
 
@@ -138,6 +144,9 @@ msgstr "カテゴリを削除する"
 msgid "Delete error!"
 msgstr "削除エラー!"
 
+msgid "Can not delete non-empty category"
+msgstr "空でないカテゴリは削除できません"
+
 msgid "Delete Successful!"
 msgstr "削除に成功しました!"
 
@@ -161,6 +170,9 @@ msgstr "アップロード日"
 
 msgid "Edit"
 msgstr "編集"
+
+msgid "Delete"
+msgstr "削除"
 
 msgid "Delete File"
 msgstr "ファイルを削除"

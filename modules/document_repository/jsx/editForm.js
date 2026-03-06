@@ -193,7 +193,15 @@ class DocEditForm extends React.Component {
     })
       .then((resp) => resp.json())
       .then(()=>{
-        swal.fire('Updated Successful!', '', 'success');
+        swal.fire({
+          title: this.props.t(
+            'File updated successfully!',
+            {ns: 'document_repository'}
+          ),
+          text: '',
+          type: 'success',
+          confirmButtonText: this.props.t('OK', {ns: 'loris'}),
+        });
         this.fetchData();
       });
   }
