@@ -10,6 +10,7 @@ import {
 } from 'jsx/Form';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import translateKnownBackendError from './translateKnownBackendError';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
@@ -154,6 +155,7 @@ class DocCategoryForm extends React.Component {
    * Uploads the file to the server
    */
   uploadFile() {
+    const {t} = this.props;
     // Set form data and upload the media file
     let formData = this.state.formData;
     let formObj = new FormData();
@@ -178,19 +180,41 @@ class DocCategoryForm extends React.Component {
           this.setState({
             formData: {}, // reset form data after successful file upload
           });
-          swal.fire('Category Successfully Added!',
-            '', 'success');
+          swal.fire({
+            title: t(
+              'Category added successfully!',
+              {ns: 'document_repository'}
+            ),
+            text: '',
+            type: 'success',
+            confirmButtonText: t('OK', {ns: 'loris'}),
+          });
         } else {
           resp.json().then((data) => {
-            swal.fire('Could not add category!',
-              data.error, 'error');
+            const backendError = data && data.error ? data.error : '';
+            const errorMessage = backendError
+              ? translateKnownBackendError(backendError, t)
+              : t(
+                'Please report the issue or contact your administrator',
+                {ns: 'document_repository'}
+              );
+            swal.fire({
+              title: t('Could not add category!', {ns: 'document_repository'}),
+              text: errorMessage,
+              type: 'error',
+              confirmButtonText: t('OK', {ns: 'loris'}),
+            });
           }).catch((error) => {
             console.error(error);
-            swal.fire(
-              'Unknown Error!',
-              'Please report the issue or contact your administrator.',
-              'error'
-            );
+            swal.fire({
+              title: t('Error', {ns: 'document_repository'}),
+              text: t(
+                'Please report the issue or contact your administrator',
+                {ns: 'document_repository'}
+              ),
+              type: 'error',
+              confirmButtonText: t('OK', {ns: 'loris'}),
+            });
           });
         }
       });
