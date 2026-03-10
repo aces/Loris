@@ -226,6 +226,25 @@ msgstr "सहेजा जा रहा है"
 msgid "Leaving the form will result in the loss of any information entered."
 msgstr "फॉर्म छोड़ने पर दर्ज की गई सभी जानकारी खो जाएगी।"
 
+# Policy text
+msgid "Terms of Use"
+msgstr "उपयोग की शर्तें"
+
+msgid "Yes, I accept"
+msgstr "हाँ, मैं स्वीकार करता/करती हूँ"
+
+msgid "Decline"
+msgstr "अस्वीकार करें"
+
+msgid "Accept"
+msgstr "स्वीकार करें"
+
+msgid "By using this Data Query Tool, you acknowledge that you know it is in beta and may not work as expected. You also agree to use it responsibly and not to misuse the data."
+msgstr "इस डेटा क्वेरी टूल का उपयोग करके, आप स्वीकार करते हैं कि यह बीटा संस्करण में है और संभव है कि अपेक्षित रूप से काम न करे। आप यह भी सहमत हैं कि आप इसका जिम्मेदारी से उपयोग करेंगे और डेटा का दुरुपयोग नहीं करेंगे।"
+
+msgid "By using this LORIS instance you acknowledge that you know it is filled with test data, and not real user data."
+msgstr "इस LORIS इंस्टेंस का उपयोग करके, आप स्वीकार करते हैं कि इसमें वास्तविक उपयोगकर्ता डेटा नहीं बल्कि परीक्षण डेटा भरा हुआ है।"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "पीएससीआईडी"
