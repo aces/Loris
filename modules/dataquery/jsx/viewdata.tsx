@@ -1,5 +1,5 @@
 import swal from 'sweetalert2';
-import React, {useState, useEffect, ReactNode} from 'react';
+import {useState, useEffect, ReactNode} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import fetchDataStream from 'jslib/fetchDataStream';
@@ -95,23 +95,24 @@ function DisplayValue(props: {
 
   if (props.dictionary.type == 'URI') {
     switch (props.dictionary.cardinality) {
-      case 'many':
-        // Split the string and map to multiple <a> tags
-        const urls = String(props.value).split(';');
-        display = (
-          urls.map((url, i) => (
-            <React.Fragment key={i}>
-              <a href={url.trim()}>{url.trim()}</a>
-              {i < urls.length - 1 && '; '}
-            </React.Fragment>
-          ))
-        );
-      default:
-        display  = (
-          <a href={props.value}>
-            {display}
-          </a>
-         );
+    case 'many':
+      // Split the string and map to multiple <a> tags
+      const urls = String(props.value).split(';');
+      display = (
+        urls.map((url, i) => (
+          <span key={i}>
+            <a href={url.trim()}>{url.trim()}</a>
+            {i < urls.length - 1 && '; '}
+          </span>
+        ))
+      );
+      break;
+    default:
+      display = (
+        <a href={props.value}>
+          {display}
+        </a>
+      );
     }
   }
   return display;
