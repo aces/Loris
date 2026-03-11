@@ -22,7 +22,9 @@ import {setDomain, setInterval} from '../series/store/state/bounds';
 import {
   setCoordinateSystem, setElectrodes,
 } from '../series/store/state/montage';
-import {EventMetadata, HEDSchemaElement} from '../series/store/types';
+import {
+  ChannelInfos, EventMetadata, HEDSchemaElement,
+} from '../series/store/types';
 import TriggerableModal from 'jsx/TriggerableModal';
 import DatasetTagger from '../series/components/DatasetTagger';
 import {InfoIcon} from '../series/components/components';
@@ -35,10 +37,12 @@ declare global {
 
 
 type CProps = {
+  channelsURL: string,
   chunksURL: string,
   epochsURL: string,
   electrodesURL: string,
   coordSystemURL: string,
+  megChannelsURL: string,
   hedSchema: HEDSchemaElement[],
   datasetTags: any,
   datasetTagEndorsements: any,
@@ -89,6 +93,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       epochsURL,
       electrodesURL,
       coordSystemURL,
+      megChannelsURL,
       hedSchema,
       datasetTags,
       datasetTagEndorsements,
@@ -177,6 +182,12 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
         return [Promise.resolve()];
       }
     };
+
+    fetchJSON(props.channelsURL).then((json: ChannelInfos) => {
+      this.store.dispatch(setDatasetMetadata({
+        bidsChannels: json.Channels,
+      }));
+    });
 
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
@@ -322,24 +333,40 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       }));
     });
 
+    fetchJSON(megChannelsURL)
+      .then((json) => {
+        console.debug(`Received ${json["channels"].length} channels`);
+        console.debug(json["channels"]);
+        const channels = json["channels"]
+          .filter((channel) => !isNaN(channel["loc"][0]) && !isNaN(channel["loc"][1]) && !isNaN(channel["loc"][2]))
+          .map((channel, i) => ({
+            name: channel['ch_name'],
+            channelIndex: i,
+            position: [channel["loc"][0], channel["loc"][1], channel["loc"][2]],
+          }));
 
-    Promise.race(racers(fetchText, electrodesURL))
-      .then((text) => {
-        if (!(typeof text.json === 'string'
-          || text.json instanceof String)) return;
-        this.store.dispatch(
-          setElectrodes(
-            tsvParse(text.json).map(({name, x, y, z}) => ({
-              name: name,
-              channelIndex: null,
-              position: [parseFloat(x), parseFloat(y), parseFloat(z)],
-            }))
-          )
-        );
+        console.debug(`Set ${channels.length} channels`);
+        console.debug(channels);
+        setElectrodes(channels);
       })
-      .catch((error) => {
-        console.error(error);
-      });
+
+    // Promise.race(racers(fetchText, electrodesURL))
+    //   .then((text) => {
+    //     if (!(typeof text.json === 'string'
+    //       || text.json instanceof String)) return;
+    //     this.store.dispatch(
+    //       setElectrodes(
+    //         tsvParse(text.json).map(({name, x, y, z}) => ({
+    //           name: name,
+    //           channelIndex: null,
+    //           position: [parseFloat(x), parseFloat(y), parseFloat(z)],
+    //         }))
+    //       )
+    //     );
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
 
     Promise.race(racers(fetchJSON, coordSystemURL))
       .then( ({json}) => {

@@ -358,6 +358,11 @@ class ElectrophysiologySessionView extends Component {
           eegMontage,
         } = this.state.database[i];
         const file = this.state.database[i].file;
+        const megChannelsURL = `${loris.BaseURL}/meg/${file.id}/channels`
+        const channelsURL = `${loris.BaseURL}/api/v0.0.4-dev/candidates`
+          + `/${this.state.patient.info.pscid}`
+          + `/${this.state.patient.info.visit_label}/recordings/${file.name}`
+          + `/channels`;
         const splitPagination = [];
         for (const j of Array(file.splitData?.splitCount).keys()) {
           splitPagination.push(
@@ -403,6 +408,7 @@ class ElectrophysiologySessionView extends Component {
               {EEG_VIS_ENABLED &&
               <div className="react-series-data-viewer-scoped col-xs-12">
                 <EEGLabSeriesProvider
+                  channelsURL={channelsURL}
                   chunksURL={
                     chunksURLs?.[file.splitData?.splitIndex] || chunksURLs
                   }
@@ -410,6 +416,7 @@ class ElectrophysiologySessionView extends Component {
                   events={events}
                   electrodesURL={electrodesURL}
                   coordSystemURL={coordSystemURL}
+                  megChannelsURL={megChannelsURL}
                   hedSchema={hedSchema}
                   datasetTags={datasetTags}
                   datasetTagEndorsements={datasetTagEndorsements}
