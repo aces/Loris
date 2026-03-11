@@ -21,11 +21,11 @@ function PaginationLinks(props: {
 }): React.ReactElement {
   const prevTotal = useRef<number>(props.Total);
   useEffect( () => {
-     if(props.Total < prevTotal.current) {
-	     props.onChangePage(1);
-     }
-     prevTotal.current = props.Total;
-  }, [props.Total, props.onChangePage])
+    if (props.Total < prevTotal.current) {
+      props.onChangePage(1);
+    }
+    prevTotal.current = props.Total;
+  }, [props.Total, props.onChangePage]);
   const pageLinks = [];
   let classList = '';
   const rowsPerPage = props.RowsPerPage || 10;
