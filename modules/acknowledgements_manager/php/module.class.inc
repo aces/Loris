@@ -61,6 +61,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return dgettext("acknowledgements", "Acknowledgements");
+        return dgettext("acknowledgements_manager", "Acknowledgements");
     }
 }
