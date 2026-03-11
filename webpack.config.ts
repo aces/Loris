@@ -349,7 +349,7 @@ configs.push({
     MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
     Breadcrumbs: './jsx/Breadcrumbs.js',
     PolicyButton: './jsx/PolicyButton.js',
-    CSSGrid: './jsx/CSSGrid.js',
+    CSSGrid: './jsx/CSSGrid',
     Help: './jsx/Help.js',
     ...getModulesEntries(),
   },
