@@ -107,6 +107,12 @@ msgstr "Édition par lot"
 msgid "Add Comment"
 msgstr "Ajouter un commentaire"
 
+msgid "Add New Comment"
+msgstr "Ajouter un nouveau commentaire"
+
+msgid "Comment"
+msgstr "Commentaire"
+
 msgid "Create New Issue"
 msgstr "Créer un nouvel incident"
 
@@ -145,6 +151,9 @@ msgstr "Description"
 #, fuzzy
 msgid "Watching?"
 msgstr "Tu regardes ?"
+
+msgid "Watchers"
+msgstr "Observateurs"
 
 #, fuzzy
 msgid "Add others to watching?"
@@ -281,3 +290,15 @@ msgstr "Comptes utilisateur"
 #, fuzzy
 msgid "Last 3 Comments"
 msgstr "3 derniers commentaires"
+
+msgid "The server is not configured for attachments."
+msgstr "Le serveur n'est pas configuré pour les pièces jointes."
+
+msgid "The server is not configured to receive a file this large."
+msgstr "Le serveur n'est pas configuré pour recevoir un fichier de cette taille."
+
+msgid "Submit Attachment"
+msgstr "Soumettre la pièce jointe"
+
+msgid "Submit Comment"
+msgstr "Soumettre le commentaire"
