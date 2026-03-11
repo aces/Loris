@@ -14,7 +14,7 @@ use \LORIS\Http\Client;
 use \LORIS\Http\Request;
 
 // XXX These must be updated manually in future releases.
-define('MINIMUM_PHP_VERSION', '8.3');
+define('MINIMUM_PHP_VERSION', '8.4');
 define('MINIMUM_APACHE_VERSION', '2.4');
 define('MINIMUM_MYSQL_VERSION', '5.7');
 define('MINIMUM_MARIADB_VERSION', '10.3');
