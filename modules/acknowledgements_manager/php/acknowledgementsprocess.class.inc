@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace LORIS\acknowledgements;
+namespace LORIS\acknowledgements_manager;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 

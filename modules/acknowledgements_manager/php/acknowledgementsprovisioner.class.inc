@@ -14,7 +14,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 
-namespace LORIS\acknowledgements;
+namespace LORIS\acknowledgements_manager;
 
 /**
  * This class implements a data provisioner to get all modules
