@@ -671,7 +671,7 @@ class Sessions extends \NDB_Page
     function getPhysioFileDownloadlinks(ElectrophysioFile $physioFileObj): array
     {
         $physioFileID  = $physioFileObj->getParameter('PhysiologicalFileID');
-        $physioFile    = $physioFileObj->getParameter('FilePath');
+        $physioFile    = $physioFileObj->getParameter('DownloadPath');
         $db            = $this->loris->getDatabaseConnection();
         $downloadLinks = [];
 
