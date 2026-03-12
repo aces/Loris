@@ -52,7 +52,8 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
                        FileType,
                        AcquisitionTime,
                        InsertedByUser,
-                       FilePath
+                       FilePath,
+                       DownloadPath
                      FROM physiological_file
                        LEFT JOIN physiological_modality as pm
                        USING (PhysiologicalModalityID)

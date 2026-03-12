@@ -54,6 +54,7 @@ CREATE TABLE `physiological_file` (
   `AcquisitionTime`           DATETIME             DEFAULT NULL,
   `InsertedByUser`            VARCHAR(50)          NOT NULL,
   `FilePath`                  VARCHAR(255)         NOT NULL,
+  `DownloadPath`              VARCHAR(255)         NOT NULL,
   `Index`                     INT(5)               DEFAULT NULL,
   `ParentID`                  INT(10) unsigned     DEFAULT NULL,
   `HeadShapeFileID`           INT(10) unsigned     DEFAULT NULL,
