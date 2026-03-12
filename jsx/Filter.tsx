@@ -11,6 +11,7 @@ import {
 } from 'jsx/Form';
 import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
 import { useTranslation } from 'react-i18next';
+import './Filter.css';
 import type { Filter, Filters } from './DataTable.d';
 
 export interface FilterPreset {
@@ -125,6 +126,7 @@ function Filter({
           label: field.label,
           value: filters[filter.name]?.value ?? null,
           onUserInput: onFieldUpdate,
+          labelPlacementTop: true,
         };
 
         let element: ReactElement;
@@ -215,7 +217,9 @@ function Filter({
             </a>
           </li>
         </ul>
-        {renderFilterFields()}
+        <div className='filter-container'>
+          {renderFilterFields()}
+        </div>
       </FieldsetElement>
     </FormElement>
   );
