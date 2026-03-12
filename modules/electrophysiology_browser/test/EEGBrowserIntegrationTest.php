@@ -124,6 +124,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
                 'PhysiologicalOutputTypeID' => 22,
                 'InsertedByUser'            => 'Unit Tester',
                 'FilePath'                  => '/path/to/test/file',
+                'DownloadPath'              => '/path/to/test/file',
                 'FileType'                  => 'testType'
             ]
         );
@@ -134,6 +135,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
                 'PhysiologicalOutputTypeID' => 23,
                 'InsertedByUser'            => 'Unit Tester',
                 'FilePath'                  => '/path/to/test/file2',
+                'DownloadPath'              => '/path/to/test/file2.tar',
                 'FileType'                  => 'testType2'
             ]
         );

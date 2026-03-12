@@ -32,6 +32,7 @@ CREATE TABLE `physiological_file` (
   `AcquisitionTime`           DATETIME             DEFAULT '1970-01-01 00:00:01',
   `InsertedByUser`            VARCHAR(50)          NOT NULL,
   `FilePath`                  VARCHAR(255)         NOT NULL,
+  `DownloadPath`              VARCHAR(255)         NOT NULL,
   `Index`                     INT(5)               DEFAULT NULL,
   `ParentID`                  INT(10) unsigned     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalFileID`),
