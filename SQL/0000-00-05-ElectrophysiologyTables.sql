@@ -29,7 +29,7 @@ CREATE TABLE `physiological_file` (
   `SessionID`                 INT(10)    UNSIGNED  NOT NULL,
   `InsertTime`                TIMESTAMP            NOT NULL      DEFAULT CURRENT_TIMESTAMP,
   `FileType`                  VARCHAR(12)          DEFAULT NULL,
-  `AcquisitionTime`           DATETIME             DEFAULT '1970-01-01 00:00:01',
+  `AcquisitionTime`           DATETIME             DEFAULT NULL,
   `InsertedByUser`            VARCHAR(50)          NOT NULL,
   `FilePath`                  VARCHAR(255)         NOT NULL,
   `Index`                     INT(5)               DEFAULT NULL,
