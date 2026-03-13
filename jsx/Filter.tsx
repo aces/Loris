@@ -47,7 +47,7 @@ interface FilterProps {
  *
  * Alters the filter object and sends it to parent on every update.
  *
- * @param {props} props - properties received
+ * @param {props} props - Component properties
  * @return {JSX}
  */
 function Filter({

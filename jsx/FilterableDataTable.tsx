@@ -86,7 +86,7 @@ function FilterableDataTable({
 
   /**
    * Updates the URL search parameters to reflect the current filter state.
-   * Uses the native URL object for robust path and query handling.
+   * Uses the native URL object for path and query handling.
    *
    * @param newFilters - The updated filters object
    */
@@ -210,9 +210,7 @@ function FilterableDataTable({
         removeFilter={removeFilter}
         clearFilters={clearFilters}
       />
-
       {children}
-
       {showProgressBar ? (
         <ProgressBar value={progress} />
       ) : (
