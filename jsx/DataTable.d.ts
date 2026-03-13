@@ -2,15 +2,41 @@ import {ReactNode} from 'react';
 
 export type TableRow = (string | null)[];
 
-export type Field = {
+export type FilterType = 'text' | 'select' | 'multiselect' |
+  'numeric' | 'date' | 'datetime' | 'checkbox' | 'time';
+
+// 1. Define the specific variants
+type BaseFilter = {
+    name: string;
+    hide?: boolean;
+};
+
+export type SelectFilterConfig = BaseFilter & {
+    type: 'select' | 'multiselect';
+    options: { [name: string]: string };
+    sortByValue?: boolean;
+};
+
+export type OtherFilterConfig = BaseFilter & {
+    type: 'text' | 'numeric' | 'date' | 'datetime' | 'checkbox' | 'time';
+    options?: never; // Ensures you don't accidentally put options on a text field
+};
+
+// 2. Combine them
+export type FilterConfig = SelectFilterConfig | OtherFilterConfig;
+
+export interface Field {
     show: boolean;
     label: string;
-    filter?: {
-        name: string;
-        type: string;
-        options?: any[];
-    };
+    filter?: FilterConfig; // Optional here because not every column is a filter
+}
+
+export type Filter = {
+    value: any; // left as any because of the breadth of potential value types
+    exactMatch: boolean;
 };
+
+export type Filters = Record<string, Filter>;
 
 export type hideOptions = {
     rowsPerPage: boolean;
@@ -18,12 +44,6 @@ export type hideOptions = {
     defaultColumn: boolean;
 };
 
-export type Filter = {
-    value: string | number | boolean | (string | number)[] | null;
-    exactMatch: boolean;
-};
-
-export type Filters = Record<string, Filter>;
 
 export interface DataTableProps {
     data: TableRow[];
@@ -37,6 +57,7 @@ export interface DataTableProps {
     ) => ReactNode;
     onSort?: () => void;
     hide?: hideOptions;
+    folder?: ReactNode;
     fields: Field[];
     nullTableShow?: boolean;
     noDynamicTable?: boolean;

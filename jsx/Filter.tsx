@@ -1,4 +1,4 @@
-import React, { useEffect, ReactElement } from 'react';
+import React, {useEffect} from 'react';
 import {
   CheckboxElement,
   DateElement,
@@ -10,36 +10,29 @@ import {
   TextboxElement,
 } from 'jsx/Form';
 import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import './Filter.css';
-import type { Filter, Filters } from './DataTable.d';
+import type {Filter, Filters, Field, FilterConfig} from './DataTable.d';
+
+export type FieldWithFilter = Field & { filter: FilterConfig };
 
 export interface FilterPreset {
     label: string;
     filter: Filters;
 }
 
-interface FilterConfig {
-  name: string;
-  type: 'text' | 'select' | 'multiselect' | 'numeric' | 'date' | 'datetime' | 'checkbox' | 'time';
-  options?: any[];
-  sortByValue?: boolean;
-  hide?: boolean;
-}
-
-interface FieldConfig {
-  label: string;
-  filter: FilterConfig;
-}
-
 interface FilterProps {
-    id?: string | null;
+    id?: string;
     name?: string;
     columns?: number;
     title?: string;
-    fields: FieldConfig[];
+    fields: FieldWithFilter[];
     filters: Filters;
-    addFilter: (name: string, value: Filter['value'], exactMatch: boolean) => void;
+    addFilter: (
+      name: string,
+      value: Filter['value'],
+      exactMatch: boolean
+    ) => void;
     removeFilter: (name: string) => void;
     updateFilters: (filters: Filters) => void;
     clearFilters: () => void;
@@ -54,7 +47,7 @@ interface FilterProps {
  *
  * Alters the filter object and sends it to parent on every update.
  *
- * @param {props} props
+ * @param {props} props - properties received
  * @return {JSX}
  */
 function Filter({
@@ -64,13 +57,13 @@ function Filter({
   removeFilter,
   updateFilters,
   clearFilters,
-  id = null,
-  name,
+  id = '',
+  name = '',
   columns = 1,
-  title,
+  title = '',
   filterPresets,
-}: FilterProps) {  
-  const { t } = useTranslation(['loris']);
+}: FilterProps) {
+  const {t} = useTranslation(['loris']);
   /**
    * Takes query params from url and triggers an update of the fields that are
    * associated with those params, if they exist.
@@ -82,7 +75,7 @@ function Filter({
         onFieldUpdate(name, searchParams.getAll(name));
       }
     });
-  }, []);  
+  }, []);
 
   /**
    * Sets filter object to reflect values of input fields.
@@ -95,7 +88,8 @@ function Filter({
     if (!field) return;
 
     const type = field.filter.type;
-    const exactMatch = !['text', 'date', 'datetime', 'multiselect'].includes(type);
+    const exactMatch = !['text', 'date', 'datetime', 'multiselect']
+      .includes(type);
 
     const isEmpty =
       value === null ||
@@ -108,7 +102,7 @@ function Filter({
     } else {
       addFilter(name, value, exactMatch);
     }
-  };  
+  };
 
   /**
    * Renders the filters based on the defined fields.
@@ -116,70 +110,55 @@ function Filter({
    * @return {array}
    */
   const renderFilterFields = () => {
-    return fields.reduce((result: ReactElement[], field) => {
+    return fields .map((field) => {
       const filter = field.filter;
-      if (filter && filter.hide !== true) {
-        // Shared props for all elements
-        const commonProps = {
-          key: filter.name,
-          name: filter.name,
-          label: field.label,
-          value: filters[filter.name]?.value ?? null,
-          onUserInput: onFieldUpdate,
-          labelPlacementTop: true,
-        };
 
-        let element: ReactElement;
+      if (filter.hide) return;
 
-        switch (filter.type) {
-          case 'text':
-            element = <TextboxElement {...commonProps} />;
-            break;
-          case 'select':
-            element = (
-              <SelectElement
-                {...commonProps}
-                options={filter.options}
-                sortByValue={filter.sortByValue}
-                autoSelect={false}
-              />
-            );
-            break;
-          case 'multiselect':
-            element = (
-              <SelectElement
-                {...commonProps}
-                options={filter.options}
-                sortByValue={filter.sortByValue}
-                multiple={true}
-                emptyOption={false}
-              />
-            );
-            break;
-          case 'numeric':
-            element = <NumericElement {...commonProps} options={filter.options} />;
-            break;
-          case 'date':
-            element = <DateElement {...commonProps} />;
-            break;
-          case 'datetime':
-            element = <DateTimePartialElement {...commonProps} />;
-            break;
-          case 'checkbox':
-            element = <CheckboxElement {...commonProps} />;
-            break;
-          case 'time':
-            element = <TimeElement {...commonProps} />;
-            break;
-          default:
-            element = <TextboxElement {...commonProps} />;
-        }
-        result.push(element);
+      // Shared props for all elements
+      const commonProps = {
+        key: filter.name,
+        name: filter.name,
+        label: field.label,
+        value: filters[filter.name]?.value ?? undefined,
+        onUserInput: onFieldUpdate,
+        labelPlacementTop: true,
+      };
+
+      switch (filter.type) {
+      case 'text':
+        return <TextboxElement {...commonProps} />;
+      case 'select':
+      case 'multiselect':
+        return (
+          <SelectElement
+            {...commonProps}
+            options={filter.options}
+            sortByValue={filter.sortByValue}
+            multiple={filter.type === 'multiselect'}
+            emptyOption={false}
+            autoSelect={false}
+          />
+        );
+      case 'numeric':
+        return <NumericElement {...commonProps} />;
+      case 'date':
+        return <DateElement {...commonProps} />;
+      case 'datetime':
+        return <DateTimePartialElement {...commonProps} />;
+      case 'checkbox':
+        return <CheckboxElement {...commonProps} />;
+      case 'time':
+        return <TimeElement {...commonProps} />;
+      default:
+        return <TextboxElement {...commonProps} />;
       }
-      return result;
-    }, []);
+    });
   };
 
+  /**
+   *
+   */
   const renderPresets = () => {
     if (!filterPresets) return null;
 
@@ -189,14 +168,17 @@ function Filter({
           className="dropdown-toggle"
           data-toggle="dropdown"
           role="button"
-          style={{ cursor: 'pointer' }}
+          style={{cursor: 'pointer'}}
         >
           {t('Load Filter Preset')} <span className="caret" />
         </a>
         <ul className="dropdown-menu" role="menu">
           {filterPresets.map((preset) => (
             <li key={preset.label}>
-              <a onClick={() => updateFilters(preset.filter)} style={{ cursor: 'pointer' }}>
+              <a
+                onClick={() => updateFilters(preset.filter)}
+                style={{cursor: 'pointer'}}
+              >
                 {preset.label}
               </a>
             </li>
@@ -207,12 +189,19 @@ function Filter({
   };
 
   return (
-    <FormElement id={id} name={name}>
+    <FormElement
+      id={id}
+      name={name}
+      onSubmit={(e) => e.preventDefault()}
+    >
       <FieldsetElement columns={columns} legend={title}>
-        <ul className="nav nav-tabs navbar-right" style={{ borderBottom: 'none' }}>
+        <ul
+          className="nav nav-tabs navbar-right"
+          style={{borderBottom: 'none'}}
+        >
           {renderPresets()}
           <li>
-            <a role="button" name="reset" onClick={clearFilters} style={{ cursor: 'pointer' }}>
+            <a role="button" onClick={clearFilters} style={{cursor: 'pointer'}}>
               {t('Clear Filters')}
             </a>
           </li>
@@ -223,6 +212,6 @@ function Filter({
       </FieldsetElement>
     </FormElement>
   );
-}  
+}
 
 export default Filter;
