@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, {CSSProperties} from 'react';
 
 /**
  * Props for the ProgressBar component.
@@ -15,8 +15,11 @@ interface ProgressBarProps {
  *
  * Note: This component relies on Bootstrap 3 progress-bar classes
  * (http://getbootstrap.com/components/#progress)
+ *
+ * @param {object} props - The component props.
+ * @param {number} props.value - The progress percentage (0-100), or -1 to hide.
  */
-function ProgressBar({ value = 0 }: ProgressBarProps) {  
+function ProgressBar({value = 0}: ProgressBarProps) {
   const progressStyle: CSSProperties = {
     display: value < 0 ? 'none' : 'block',
     backgroundColor: '#d3d3d3',
@@ -44,11 +47,11 @@ function ProgressBar({ value = 0 }: ProgressBarProps) {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={value}
-        style={{ width: `${value}%` }}
+        style={{width: `${value}%`}}
       />
       <span style={labelStyle}>{value}%</span>
     </div>
   );
-};
+}
 
 export default ProgressBar;

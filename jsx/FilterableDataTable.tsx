@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useCallback, useMemo, ReactNode} from 'react';
+import {useState, useEffect, useCallback, useMemo, ReactNode} from 'react';
 import {useTranslation} from 'react-i18next';
 import Panel from 'jsx/Panel';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
 import ProgressBar from 'jsx/ProgressBar';
-import type {DataTableProps, Filters, TableRow} from './DataTable.d';
-import type {FilterPreset} from 'jsx/Filter'
+import type {DataTableProps, Filters, TableRow, Field} from './DataTable.d';
+import type {FieldWithFilter, FilterPreset} from 'jsx/Filter';
 
 
 export type FilterableDataTableProps = DataTableProps & {
@@ -44,7 +44,7 @@ export type FilterableDataTableProps = DataTableProps & {
  * @param props.nullTableShow - Content to show if table is empty
  * @param props.children - Additional elements rendered inside the Panel
  */
-const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
+function FilterableDataTable({
   name,
   title,
   data,
@@ -61,7 +61,7 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
   folder,
   nullTableShow,
   children,
-}) => {
+}: FilterableDataTableProps) {
   const {t} = useTranslation(['loris']);
 
   // Hydrate state from URL on load
@@ -198,13 +198,13 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
   return (
     <Panel title={title}>
       <Filter
-        name={`${name}_filter`}
-        id={`${name}_filter`}
+        name={name+'_filter'}
+        id={name+'_filter'}
         columns={columns}
         filters={validFilters}
         title={t('Selection Filter')}
         filterPresets={filterPresets}
-        fields={fields}
+        fields={fields.filter((f) => !!f.filter) as FieldWithFilter[]} // only pass filter fields
         addFilter={addFilter}
         updateFilters={handleUpdateFilters}
         removeFilter={removeFilter}
@@ -214,7 +214,7 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
       {children}
 
       {showProgressBar ? (
-        <ProgressBar value={progress!} />
+        <ProgressBar value={progress} />
       ) : (
         <DataTable
           data={data}
@@ -231,6 +231,6 @@ const FilterableDataTable: React.FC<FilterableDataTableProps> = ({
       )}
     </Panel>
   );
-};
+}
 
 export default FilterableDataTable;
