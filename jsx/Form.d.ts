@@ -112,7 +112,7 @@ type selectElementProps = {
     onUserInput: (name: string, value: any) => void
     noMargins?: boolean
     placeholder?: string
-    sortByValue: boolean
+    sortByValue?: boolean
 }
 
 /**
