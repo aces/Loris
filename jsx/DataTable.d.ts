@@ -5,7 +5,6 @@ export type TableRow = (string | null)[];
 export type FilterType = 'text' | 'select' | 'multiselect' |
   'numeric' | 'date' | 'datetime' | 'checkbox' | 'time';
 
-// 1. Define the specific variants
 type BaseFilter = {
     name: string;
     hide?: boolean;
@@ -22,7 +21,6 @@ export type OtherFilterConfig = BaseFilter & {
     options?: never; // Ensures you don't accidentally put options on a text field
 };
 
-// 2. Combine them
 export type FilterConfig = SelectFilterConfig | OtherFilterConfig;
 
 export interface Field {
