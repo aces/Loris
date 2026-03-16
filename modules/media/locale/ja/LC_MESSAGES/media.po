@@ -116,9 +116,6 @@ msgstr "投与日"
 msgid "Document's Language"
 msgstr "ドキュメントの言語"
 
-msgid "File to upload"
-msgstr "アップロードするファイル"
-
 msgid "Upload File"
 msgstr "ファイルをアップロードする"
 

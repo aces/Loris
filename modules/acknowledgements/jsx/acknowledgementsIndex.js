@@ -17,6 +17,8 @@ import {
   DateElement,
   ButtonElement,
 } from 'jsx/Form';
+import {Acknowledgement} from './entities';
+import {Query} from 'jslib/http';
 
 /**
  * Acknowledgements Module page.
@@ -103,14 +105,16 @@ class AcknowledgementsIndex extends Component {
    *
    * @return {object}
    */
-  fetchData() {
-    return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
-      .catch((error) => {
-        this.setState({error: true});
-        console.error(error);
-      });
+  async fetchData() {
+    const query = new Query().addParam({field: 'format', value: 'json'});
+    const client = new Acknowledgement.Client();
+    try {
+      const acknowledgements = await client.get(query);
+      this.setState({data: {...acknowledgements}});
+    } catch (error) {
+      this.setState({error: true});
+      console.error(error);
+    }
   }
 
   /**
@@ -149,7 +153,7 @@ class AcknowledgementsIndex extends Component {
    *
    * @param {event} e - event of the form
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault(); // prevent default form submission
     const {formData, submitting} = this.state;
 
@@ -157,42 +161,21 @@ class AcknowledgementsIndex extends Component {
 
     this.setState({submitting: true}); // set submitting to true
 
-    let formObject = new FormData();
-    for (let key in formData) {
-      if (formData[key] !== '') {
-        formObject.append(key, formData[key]);
-      }
-    }
-    formObject.append('fire_away', 'Add');
+    try {
+      const client = new Acknowledgement.Client()
+        .setSubEndpoint('AcknowledgementsProcess');
+      await client.create(formData);
 
-    fetch(this.props.submitURL, {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      body: formObject,
-    })
-      .then((resp) => {
-        if (resp.ok && resp.status === 200) {
-          swal
-            .fire('Success!', 'Acknowledgement added.', 'success')
-            .then((result) => {
-              if (result.value) {
-                this.closeModalForm();
-                this.fetchData();
-              }
-            });
-        } else {
-          resp.text().then((message) => {
-            swal.fire('Error!', message, 'error');
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        this.setState({submitting: false}); // reset submitting state
-      });
+      await swal.fire('Success!', 'Acknowledgement added.', 'success');
+      this.closeModalForm();
+      this.fetchData();
+    } catch (error) {
+      const message = error.message || 'An unexpected error occurred.';
+      swal.fire('Error!', message, 'error');
+      console.error(error);
+    } finally {
+      this.setState({submitting: false});
+    }
   }
 
   /**
@@ -477,8 +460,6 @@ class AcknowledgementsIndex extends Component {
 }
 
 AcknowledgementsIndex.propTypes = {
-  dataURL: PropTypes.string.isRequired,
-  submitURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
 };
 
@@ -491,8 +472,6 @@ window.addEventListener('load', () => {
     document.getElementById('lorisworkspace')
   ).render(
     <Index
-      dataURL={`${loris.BaseURL}/acknowledgements/?format=json`}
-      submitURL={`${loris.BaseURL}/acknowledgements/AcknowledgementsProcess`}
       hasPermission={loris.userHasPermission}
     />
   );

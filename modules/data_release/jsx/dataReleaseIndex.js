@@ -12,6 +12,7 @@ import Modal from 'Modal';
 import UploadFileForm from './uploadFileForm';
 import AddPermissionForm from './addPermissionForm';
 import ManagePermissionsForm from './managePermissionsForm';
+import ManageFileForm from './manageFileForm';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/data_release.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/data_release.json';
@@ -36,7 +37,9 @@ class DataReleaseIndex extends Component {
         uploadFileForm: false,
         addPermissionForm: false,
         managePermissionsForm: false,
+        manageFileForm: false,
       },
+      managingFile: null,
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -65,7 +68,9 @@ class DataReleaseIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
+      .then((data) => {
+        this.setState({data});
+      })
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -74,7 +79,12 @@ class DataReleaseIndex extends Component {
 
   formatColumn(column, cell, row) {
     const {t} = this.props;
-    let result = <td>{cell}</td>;
+    // Set class to 'bg-danger' if file is hidden.
+    let hidden = row['Hidden By ID']
+      && this.props.hasPermission('data_release_hide');
+    let result = <td
+      className={hidden ? 'bg-danger' : ''}
+    >{cell}</td>;
     switch (column) {
     case t('File Name', {ns: 'data_release'}):
       if (this.props.hasPermission('superuser')
@@ -86,16 +96,49 @@ class DataReleaseIndex extends Component {
             + encodeURIComponent(row[t('Data Release ID',
               {ns: 'data_release'})]);
         result = (
-          <td>
+          <td
+            className={hidden ? 'bg-danger' : ''}
+            style={{display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
             <a
               href = {downloadURL}
               target = "_blank"
               download = {row[t('File Name', {ns: 'data_release'})]} >
               {cell}
             </a>
+            {
+              (this.props.hasPermission('data_release_edit_file_access')
+                || this.props.hasPermission('data_release_delete')
+                || this.props.hasPermission('data_release_hide')
+              ) &&
+                <a
+                  style={{marginLeft: 'auto'}}
+                  onClick={() => {
+                    this.setState({
+                      managingFile: {
+                        fileName: row['File Name'],
+                        version: row['Version'],
+                        hiddenById: row['Hidden By ID'],
+                        dataReleaseID: row['Data Release ID'],
+                      },
+                    });
+                    this.show('manageFileForm');
+                  }}
+                >
+                  <span className='glyphicon glyphicon-pencil' />
+                </a>
+            }
           </td>
         );
       }
+      break;
+    case 'Version':
+      result = <td
+        className={hidden ? 'bg-danger' : ''}>
+        {cell}
+      </td>;
       break;
     }
     return result;
@@ -120,7 +163,8 @@ class DataReleaseIndex extends Component {
       }},
       {label: t('Version', {ns: 'data_release'}), show: true, filter: {
         name: 'version',
-        type: 'text',
+        type: 'select',
+        options: this.state.data.fieldOptions.versions,
       }},
       {label: t('Upload Date', {ns: 'data_release'}), show: true, filter: {
         name: 'uploadDate',
@@ -131,7 +175,11 @@ class DataReleaseIndex extends Component {
         type: 'select',
         options: this.state.data.fieldOptions.projects,
       }},
-      {label: t('Data Release ID', {ns: 'data_release'}), show: false},
+      {label: t('Data Release ID', {ns: 'data_release'}),
+        show: false,
+        name: 'dataReleaseID',
+      },
+      {label: t('Hidden By ID', {ns: 'data_release'}), show: false},
     ];
 
     // Upload File modal window
@@ -152,6 +200,7 @@ class DataReleaseIndex extends Component {
           }
           action={loris.BaseURL + '/data_release/files'}
           projects={this.state.data.fieldOptions.projects}
+          versions={this.state.data.fieldOptions.versions}
         />
       </Modal>
     );
@@ -199,6 +248,26 @@ class DataReleaseIndex extends Component {
           onClose={() => this.hide('managePermissionsForm')}
         />
       );
+    // Manage File modal window
+    const manageFileForm = (
+      <Modal
+        title="Manage File"
+        label="Manage File"
+        show={this.state.show.manageFileForm}
+        onClose={() => {
+          this.hide('manageFileForm');
+        }}
+        onClick={this.manageFile}
+      >
+        <ManageFileForm
+          DataURL={`${loris.BaseURL}/data_release/?format=json`}
+          manageFileActions={`${loris.BaseURL}/data_release/files/`}
+          managePermissionActions={`${loris.BaseURL}/data_release/permissions`}
+          fetchData={this.fetchData}
+          managingFile={this.state.managingFile}
+        />
+      </Modal>
+    );
 
     const actions = [
       {
@@ -225,6 +294,7 @@ class DataReleaseIndex extends Component {
       <div>
         {uploadFileForm}
         {addPermissionForm}
+        {manageFileForm}
         {managePermissionsForm}
         <FilterableDataTable
           name="data_release"

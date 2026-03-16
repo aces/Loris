@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
+
 import {
   FormElement,
   StaticElement,
@@ -44,6 +47,7 @@ class ParticipantStatus extends Component {
    * Fetch data
    */
   fetchData() {
+    const {t} = this.props;
     let that = this;
     $.ajax(
       this.props.dataURL,
@@ -80,7 +84,9 @@ class ParticipantStatus extends Component {
         error: function(data, errorCode, errorMsg) {
           that.setState(
             {
-              error: 'An error occurred when loading the form!',
+              error: t('An error occured while loading the page.',
+                {ns: 'loris'}
+              ),
             }
           );
         },
@@ -119,6 +125,7 @@ class ParticipantStatus extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return (
@@ -133,7 +140,7 @@ class ParticipantStatus extends Component {
     let updateButton = null;
     if (loris.userHasPermission('candidate_parameter_edit')) {
       disabled = false;
-      updateButton = <ButtonElement label="Update"/>;
+      updateButton = <ButtonElement label={t('Update', {ns: 'loris'})}/>;
     }
 
     let required = this.state.Data.required;
@@ -175,17 +182,17 @@ class ParticipantStatus extends Component {
                 line += ' ';
                 break;
               case 'status':
-                line += ' Status: ';
+                line += t(' Status: ', {ns: 'candidate_parameters'});
                 line += current;
                 line += ' ';
                 break;
               case 'suboption':
-                line += 'Details: ';
+                line += t('Details: ', {ns: 'candidate_parameters'});
                 line += current;
                 line += ' ';
                 break;
               case 'reason_specify':
-                line += 'Comments: ';
+                line += t('Comments: ', {ns: 'candidate_parameters'});
                 line += current;
                 line += ' ';
                 break;
@@ -203,13 +210,13 @@ class ParticipantStatus extends Component {
     if (this.state.updateResult) {
       if (this.state.updateResult === 'success') {
         alertClass = 'alert alert-success text-center';
-        alertMessage = 'Update Successful!';
+        alertMessage = t('Update Successful!', {ns: 'candidate_parameters'});
       } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
         alertMessage = errorMessage ?
           errorMessage :
-          'Failed to update!';
+          t('Failed to update!', {ns: 'candidate_parameters'});
       }
     }
 
@@ -224,10 +231,16 @@ class ParticipantStatus extends Component {
           ref="form"
           class="col-md-6"
         >
-          <StaticElement label="PSCID" text={this.state.Data.pscid}/>
-          <StaticElement label="DCCID" text={this.state.Data.candID}/>
+          <StaticElement
+            label={t('PSCID', {ns: 'loris'})}
+            text={this.state.Data.pscid}
+          />
+          <StaticElement
+            label={t('DCCID', {ns: 'loris'})}
+            text={this.state.Data.candID}
+          />
           <SelectElement
-            label="Participant Status"
+            label={t('Participant Status', {ns: 'candidate_parameters'})}
             name="participantStatus"
             options={this.state.Data.statusOptions}
             value={this.state.formData.participantStatus}
@@ -237,7 +250,7 @@ class ParticipantStatus extends Component {
             required={true}
           />
           <SelectElement
-            label="Specify Reason"
+            label={t('Specify Reason', {ns: 'candidate_parameters'})}
             name="participantSuboptions"
             options={subOptions}
             value={this.state.formData.participantSuboptions}
@@ -247,7 +260,7 @@ class ParticipantStatus extends Component {
             required={suboptionsRequired}
           />
           <TextareaElement
-            label="Comments"
+            label={t('Comments', {ns: 'candidate_parameters'})}
             name="reasonSpecify"
             value={this.state.formData.reasonSpecify}
             onUserInput={this.setFormData}
@@ -343,6 +356,9 @@ ParticipantStatus.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
+  t: PropTypes.string.isRequired,
 };
 
-export default ParticipantStatus;
+export default withTranslation(
+  ['candidate_parameters', 'loris']
+)(ParticipantStatus);

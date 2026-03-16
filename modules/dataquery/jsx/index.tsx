@@ -18,8 +18,10 @@ import {ModuleDictionary, DictionaryCategory} from './types';
 // @ts-ignore
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+
 import hiStrings from '../locale/hi/LC_MESSAGES/dataquery.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dataquery.json';
+import frStrings from '../locale/fr/LC_MESSAGES/dataquery.json';
 
 type ActiveCategoryType = {
     module: string,
@@ -253,6 +255,7 @@ declare const loris: any;
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'dataquery', jaStrings);
   i18n.addResourceBundle('hi', 'dataquery', hiStrings);
+  i18n.addResourceBundle('fr', 'dataquery', frStrings);
   const Index = withTranslation(
     ['dataquery', 'loris']
   )(DataQueryApp);

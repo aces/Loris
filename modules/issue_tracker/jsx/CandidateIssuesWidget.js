@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/issue_tracker.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
+import frStrings from '../locale/fr/LC_MESSAGES/issue_tracker.json';
 
 /**
  * CandidateIssuesWidget represents a list of open issues to be displayed
@@ -20,6 +21,7 @@ function CandidateIssuesWidget(props) {
   useEffect( () => {
     i18n.addResourceBundle('ja', 'issue_tracker', jaStrings);
     i18n.addResourceBundle('hi', 'issue_tracker', hiStrings);
+    i18n.addResourceBundle('fr', 'issue_tracker', frStrings);
     setReload(reload+1);
   }, [t]);
   const issues = props.Issues.map(function(issue) {

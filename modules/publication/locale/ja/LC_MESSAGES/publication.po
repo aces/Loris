@@ -21,9 +21,6 @@ msgstr ""
 msgid "Publications"
 msgstr "出版物"
 
-msgid "File to upload"
-msgstr "アップロードするファイル"
-
 msgid "Submit"
 msgstr "提出する"
 

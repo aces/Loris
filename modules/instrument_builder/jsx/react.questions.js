@@ -23,6 +23,7 @@ import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/instrument_builder.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/instrument_builder.json';
+import frStrings from '../locale/fr/LC_MESSAGES/instrument_builder.json';
 
 /**
  * Note: This is a wrapper for Form.js (Only used in instrument builder)
@@ -1480,6 +1481,7 @@ AddElement.propTypes = {
 
 i18n.addResourceBundle('hi', 'instrument_builder', hiStrings);
 i18n.addResourceBundle('ja', 'instrument_builder', jaStrings);
+i18n.addResourceBundle('fr', 'instrument_builder', frStrings);
 
 TranslatedBasicOptions = withTranslation(
   ['instrument_builder', 'loris']

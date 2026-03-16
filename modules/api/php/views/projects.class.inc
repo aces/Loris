@@ -51,7 +51,9 @@ class Projects
 
         $PSCIDFormat = \Candidate::structureToPCRE($PSCID['structure'], "SITE");
 
-        $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
+        $type = in_array($PSCID['generation'], ['sequential', 'random'], true)
+            ? 'auto'
+            : 'prompt';
 
         $settings = [
             "useEDC" => $useEDC,

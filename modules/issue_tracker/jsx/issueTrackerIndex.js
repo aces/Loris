@@ -11,6 +11,7 @@ import IssueTrackerBatchMode from './IssueTrackerBatchMode';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/issue_tracker.json';
+import frStrings from '../locale/fr/LC_MESSAGES/issue_tracker.json';
 
 /**
  * Issue Tracker Index component
@@ -394,6 +395,7 @@ IssueTrackerIndex.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'issue_tracker', hiStrings);
   i18n.addResourceBundle('ja', 'issue_tracker', jaStrings);
+  i18n.addResourceBundle('fr', 'issue_tracker', frStrings);
 
   const IssueTrackerIndexWithTranslation = withTranslation(
     ['issue_tracker', 'loris']

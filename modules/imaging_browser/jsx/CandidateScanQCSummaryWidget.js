@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
+import frStrings from '../locale/fr/LC_MESSAGES/imaging_browser.json';
 
 /**
  * A CandidateScanQCSummaryWidget is a type of React widget
@@ -22,6 +23,7 @@ function CandidateScanQCSummaryWidget(props) {
     const data = getDataObject(modalities, props.Files);
     const visits = getVisits(props.Files);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
     c3.generate({
       bindto: '#imagebreakdownchart',
       data: {

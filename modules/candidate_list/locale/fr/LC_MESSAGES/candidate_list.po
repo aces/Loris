@@ -25,7 +25,8 @@ msgstr "Accès aux profils candidats"
 msgid "Visit Count"
 msgstr "Nombre de visites"
 
-# I am not sure on top of my head where this one is, so the translation shouldbe doubled check.
-#, fuzzy
 msgid "Open Profile"
 msgstr "Ouvrir le profil"
+
+msgid "New %s (Beta)"
+msgstr "%s (Nouveau/Bêta)"

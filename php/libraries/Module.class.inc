@@ -309,7 +309,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         }
 
         $page->loadResources($user, $request);
-        if ($page->_hasAccess($user) !== true) {
+        if ($page->isAccessibleBy($user) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $user
             ))->process(
@@ -456,10 +456,10 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * Gets the QueryEngine to be used for querying against this module's
      * data.
      *
-     * @return \LORIS\Data\Query\QueryEngine
+     * @return \LORIS\Data\Query\QueryEngine[]
      */
-    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    public function getQueryEngines() : iterable
     {
-        return new \LORIS\Data\Query\NullQueryEngine();
+        return [];
     }
 }

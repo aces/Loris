@@ -127,3 +127,9 @@ msgstr "Participants"
 
 msgid "Unknown"
 msgstr "Inconnu"
+
+msgid "Pie"
+msgstr "Circulaire"
+
+msgid "Bar"
+msgstr "Barre"

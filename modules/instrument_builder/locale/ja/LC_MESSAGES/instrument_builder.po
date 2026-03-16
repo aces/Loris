@@ -212,3 +212,9 @@ msgstr "質問名が重複しています"
 
 msgid "Top"
 msgstr "トップ"
+
+msgid "Browse"
+msgstr "ブラウズ"
+
+msgid "Delete"
+msgstr "消去"

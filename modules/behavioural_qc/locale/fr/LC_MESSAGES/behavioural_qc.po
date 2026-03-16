@@ -1,0 +1,68 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 10:00-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.8\n"
+
+#, fuzzy
+msgid "Behavioural Quality Control"
+msgstr "Contrôle qualité comportemental"
+
+#, fuzzy
+msgid "Behavioural Session"
+msgid_plural "Behavioural Sessions"
+msgstr[0] "Séance comportementale"
+msgstr[1] "Séances comportementales"
+
+#, fuzzy
+msgid "Incomplete Forms"
+msgstr "Formulaires incomplets"
+
+#, fuzzy
+msgid "Data Conflicts"
+msgstr "Conflits de données"
+
+#, fuzzy
+msgid "Behavioural Feedback"
+msgstr "Rétroaction comportementale"
+
+#, fuzzy
+msgid "Data Entry Type"
+msgstr "Type de saisie des données"
+
+#, fuzzy
+msgid "Initial Data Entry (IDE)"
+msgstr "Saisie initiale des données (IDE)"
+
+#, fuzzy
+msgid "Double Data Entry (DDE)"
+msgstr "Double saisie des données (DDE)"
+
+msgid "Field Name"
+msgstr "Nom du champ"
+
+#, fuzzy
+msgid "Feedback Level"
+msgstr "Niveau de rétroaction"
+
+msgid "Test Name"
+msgstr "Nom du test"
+
+msgid "Feedback Status"
+msgstr "État de la rétroaction"

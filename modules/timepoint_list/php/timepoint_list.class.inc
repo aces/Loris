@@ -40,7 +40,8 @@ class Timepoint_List extends \NDB_Menu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         $candidate = \Candidate::singleton($this->candID);
 

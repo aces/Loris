@@ -359,9 +359,32 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         //If the visitLabel is already in use then let the user pick another
         foreach ($timePointArray AS $used_name) {
             if (strcasecmp($visitName, $used_name) == 0) {
-                throw new \LorisException(
-                    dgettext("create_timepoint", "This visit label is not unique.")
+                // Get project name
+                $project     = \Project::getProjectFromID($projectID);
+                $projectName = $project->getName();
+
+                // Get cohort title
+                $factory        = \NDB_Factory::singleton();
+                $config         = $factory->config();
+                $cohortSettings = $config->getCohortSettings($cohortID);
+                $cohortTitle    = $cohortSettings['title'] ?? 'Unknown';
+
+                // Get participant PSCID
+                $pscid = $candidate->getPSCID();
+
+                $message = sprintf(
+                    dgettext(
+                        "create_timepoint",
+                        "A timepoint with these conditions (%s, %s, %s, %s) "
+                            . "already exists."
+                    ),
+                    $pscid,
+                    $projectName,
+                    $cohortTitle,
+                    $visitName
                 );
+
+                throw new \LorisException($message);
             }
         }
     }

@@ -50,3 +50,39 @@ msgstr "青"
 
 msgid "Green"
 msgstr "緑"
+
+msgid "Overlay"
+msgstr "オーバーレイ"
+
+msgid "World Coordinates"
+msgstr "ワールド座標"
+
+msgid "Threshold"
+msgstr "しきい値"
+
+msgid "Color Map"
+msgstr "カラーマップ"
+
+msgid "Voxel Coordinates"
+msgstr "ボクセル座標"
+
+msgid "Intensity Value"
+msgstr "強度値"
+
+msgid "Contrast (0.0 to 2.0):"
+msgstr "コントラスト (0.0 ～ 2.0):"
+
+msgid "Brightness (-1 to 1):"
+msgstr "明るさ (-1 ～ 1):"
+
+msgid "View Slices"
+msgstr "スライスを見る"
+
+msgid "Sagittal"
+msgstr "矢状断"
+
+msgid "Coronal"
+msgstr "冠状断"
+
+msgid "Transverse"
+msgstr "横断"

@@ -10,29 +10,31 @@ msgstr ""
 "Project-Id-Version: LORIS 27\n"
 "Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
 "POT-Creation-Date: 2025-04-08 14:37-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2025-12-09 11:20-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
 
 msgid "Media"
-msgstr "Médias"
+msgstr "Média"
 
 msgid "File Name"
-msgstr "Nom de fichier"
+msgstr "Nom du fichier"
 
 msgid "Instrument"
 msgstr "Instrument"
 
 msgid "Uploaded By"
-msgstr "Téléchargé par"
+msgstr "Téléverser par"
 
 msgid "Date Taken"
-msgstr "Date de prise"
+msgstr "Date de passage"
 
+#, fuzzy
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -42,20 +44,23 @@ msgstr "Dernière modification"
 msgid "File Type"
 msgstr "Type de fichier"
 
+#, fuzzy
 msgid "CandID"
-msgstr "Candide"
+msgstr "CandID"
 
+#, fuzzy
 msgid "SessionID"
 msgstr "ID de session"
 
+#, fuzzy
 msgid "File Visibility"
 msgstr "Visibilité des fichiers"
 
 msgid "Edit Metadata"
-msgstr "Modifier les métadonnées"
+msgstr "Éditer les métadonnées"
 
 msgid "Edit Media File"
-msgstr "Modifier le fichier multimédia"
+msgstr "Modifier le fichier média"
 
 msgid "Edit"
 msgstr "Modifier"
@@ -64,42 +69,47 @@ msgid "Browse"
 msgstr "Parcourir"
 
 msgid "Upload"
-msgstr "Télécharger"
+msgstr "Téléverser"
 
 msgid "An error occured while loading the page."
 msgstr "Une erreur s'est produite lors du chargement de la page."
 
 msgid "Language"
-msgstr "Langue"
+msgstr "Langage"
 
 # New strings from uploadForm.js
-
 msgid "An error occurred when loading the form!"
 msgstr "Une erreur s'est produite lors du chargement du formulaire!"
 
+#, fuzzy
 msgid "File name must begin with"
 msgstr "Le nom du fichier doit commencer par"
 
+#, fuzzy
 msgid "For example, for candidate"
-msgstr "Par exemple, pour un candidat"
+msgstr "Par exemple, pour le candidat"
 
 msgid "visit"
-msgstr "visite"
+msgstr "visiter"
 
 msgid "for"
 msgstr "pour"
 
+#, fuzzy
 msgid "the file name should be prefixed by"
-msgstr "le nom du fichier doit être préfixé par"
+msgstr "le nom du fichier doit être précédé du préfixe"
 
+#, fuzzy
 msgid "File cannot exceed"
 msgstr "Le fichier ne peut pas dépasser"
 
+#, fuzzy
 msgid "No visits available for this candidate"
-msgstr "Aucune visite n'est disponible pour ce candidat."
+msgstr "Aucune visite disponible pour ce candidat"
 
+#, fuzzy
 msgid "No instruments available for this visit"
-msgstr "Aucun instrument n'est disponible pour cette visite."
+msgstr "Aucun instrument disponible pour cette visite"
 
 msgid "Upload a media file"
 msgstr "Téléverser un fichier multimédia"
@@ -107,54 +117,63 @@ msgstr "Téléverser un fichier multimédia"
 msgid "Note"
 msgstr "Note"
 
+#, fuzzy
 msgid "Date of Administration"
 msgstr "Date d'administration"
 
+#, fuzzy
 msgid "Document's Language"
 msgstr "Langue du document"
 
-msgid "File to upload"
-msgstr "Fichier à télécharger"
-
 msgid "Upload File"
-msgstr "Télécharger le fichier"
+msgstr "Téléverser un fichier"
 
 msgid "Update File"
 msgstr "Mettre à jour le fichier"
 
 msgid "Uploaded file"
-msgstr "Fichier téléchargé"
+msgstr "Fichier téléversé"
 
 msgid "Hide File"
 msgstr "Masquer le fichier"
 
 msgid "Invalid file name!"
-msgstr "Nom de fichier invalide!"
+msgstr "Le nom de fichier spécifié n'est pas valide.  "
 
+#, fuzzy
 msgid "File name should begin with:"
-msgstr "Le nom du fichier doit commencer par:"
+msgstr "Le nom du fichier doit commencer par :"
 
-msgid "A file with this name already exists!\n Would you like to override existing file?"
-msgstr "Un fichier portant ce nom existe déjà !\n Voulez-vous remplacer le fichier existant?"
+#, fuzzy
+msgid ""
+"A file with this name already exists!\n"
+" Would you like to override existing file?"
+msgstr "Un fichier portant ce nom existe déjà ! Voulez-vous remplacer le fichier existant ?"
 
 msgid "Cancelled"
-msgstr "Annulé"
+msgstr "Annulée"
 
-msgid "Your imaginary file is safe :"
-msgstr "Votre fichier imaginaire est en sécurité:"
+#, fuzzy
+msgid "Your imaginary file is safe :)"
+msgstr "Votre fichier imaginaire est en sécurité :)"
 
 msgid "Success!"
-msgstr "Succès!"
+msgstr "Réussi !"
 
 msgid "Upload of media file completed."
-msgstr "Téléchargement du fichier multimédia terminé."
+msgstr "Téléversement du fichier multimédia terminé."
 
+#, fuzzy
 msgid "Upload error!"
-msgstr "Erreur de téléchargement!"
+msgstr "Erreur de téléversement!"
 
+#, fuzzy
 msgid "File too large!"
-msgstr "Fichier trop volumineux!"
+msgstr "Fichier trop volumineux !"
 
 msgid "This field is required."
-msgstr "Ce champ est obligatoire."
+msgstr "Ce champ est requis."
 
+#, fuzzy
+msgid "Candidate Media"
+msgstr "Médias candidats"

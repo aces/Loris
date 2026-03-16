@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 
 import Modal from 'Modal';
 import {ListForm, ListItem} from './listForm.js';
@@ -77,7 +78,7 @@ class ContainerForm extends Component {
     const handleClose = () => this.setState(initialState, this.props.onClose);
     return (
       <Modal
-        title='Add New Container'
+        title={this.props.t('Add New Container')}
         show={show}
         onClose={handleClose}
         onSubmit={this.handleSubmit}
@@ -87,7 +88,7 @@ class ContainerForm extends Component {
           <div className="col-xs-11">
             <SelectElement
               name="centerId"
-              label="Site"
+              label={this.props.t('Site', {ns: 'loris'})}
               options={options.centers}
               onUserInput={this.setCurrent}
               required={true}
@@ -111,6 +112,7 @@ class ContainerForm extends Component {
 
 // ContainerForm.propTypes
 ContainerForm.propTypes = {
+  t: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   options: PropTypes.shape({
     centers: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -162,7 +164,7 @@ class ContainerSubForm extends Component {
       <ListItem {...this.props}>
         <TextboxElement
           name='barcode'
-          label='Barcode'
+          label={this.props.t('Barcode', {ns: 'biobank'})}
           onUserInput={this.setContainer}
           required={true}
           value={item.barcode}
@@ -170,7 +172,7 @@ class ContainerSubForm extends Component {
         />
         <SelectElement
           name='typeId'
-          label='Container Type'
+          label={this.props.t('Container Type', {ns: 'biobank'})}
           options={containerTypesNonPrimary}
           onUserInput={this.setContainer}
           required={true}
@@ -179,14 +181,14 @@ class ContainerSubForm extends Component {
         />
         <TextboxElement
           name='lotNumber'
-          label='Lot Number'
+          label={this.props.t('Lot Number', {ns: 'biobank'})}
           onUserInput={this.setContainer}
           value={item.lotNumber}
           errorMessage={errors.lotNumber}
         />
         <DateElement
           name='expirationDate'
-          label='Expiration Date'
+          label={this.props.t('Expiration Date', {ns: 'biobank'})}
           onUserInput={this.setContainer}
           value={item.expirationDate}
           errorMessage={errors.expirationDate}
@@ -198,6 +200,7 @@ class ContainerSubForm extends Component {
 
 // ContainerSubForm.propTypes
 ContainerSubForm.propTypes = {
+  t: PropTypes.func.isRequired,
   setListItem: PropTypes.func.isRequired,
   itemKey: PropTypes.string.isRequired,
   item: PropTypes.shape({
@@ -219,4 +222,4 @@ ContainerSubForm.propTypes = {
   }).isRequired,
 };
 
-export default ContainerForm;
+export default withTranslation(['biobank', 'loris'])(ContainerForm);

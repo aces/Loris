@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
+
 import hiStrings from '../locale/hi/LC_MESSAGES/brainbrowser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/brainbrowser.json';
+import frStrings from '../locale/fr/LC_MESSAGES/brainbrowser.json';
 
 /**
  * Brainbrowser Page.
@@ -124,11 +126,13 @@ class BrainBrowser extends Component {
 if (typeof i18n !== 'undefined') {
   i18n.addResourceBundle('hi', 'brainbrowser', hiStrings);
   i18n.addResourceBundle('ja', 'brainbrowser', jaStrings);
+  i18n.addResourceBundle('fr', 'brainbrowser', frStrings);
 }
 
 const strings = {
   hi: hiStrings,
   ja: jaStrings,
+  fr: frStrings,
 };
 const activeLang = (loris?.user?.langpref || 'en').slice(0, 2);
 const t = strings[activeLang] || strings['en'];

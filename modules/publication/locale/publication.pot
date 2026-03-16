@@ -21,9 +21,6 @@ msgstr ""
 msgid "Publications"
 msgstr ""
 
-msgid "File to upload"
-msgstr ""
-
 msgid "Submit"
 msgstr ""
 

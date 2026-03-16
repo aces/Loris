@@ -10,6 +10,7 @@ import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/imaging_browser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
+import frStrings from '../locale/fr/LC_MESSAGES/imaging_browser.json';
 
 /**
  * Image panel header component
@@ -23,6 +24,7 @@ class ImagePanelHeader extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -122,6 +124,7 @@ class ImagePanelHeadersTable extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -326,6 +329,7 @@ class ImageQCDropdown extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -403,6 +407,7 @@ class ImageQCStatic extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -447,6 +452,7 @@ class ImagePanelQCStatusSelector extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -504,6 +510,8 @@ class ImagePanelQCSelectedSelector extends Component {
   constructor(props) {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -549,6 +557,7 @@ class ImagePanelQCCaveatSelector extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -610,6 +619,7 @@ class ImagePanelQCSNRValue extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -654,6 +664,7 @@ class ImagePanelQCPanel extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -720,6 +731,7 @@ class DownloadButton extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -775,6 +787,7 @@ class ImageQCCommentsButton extends Component {
     this.openWindowHandler = this.openWindowHandler.bind(this);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -841,6 +854,7 @@ class LongitudinalViewButton extends Component {
     this.openWindowHandler = this.openWindowHandler.bind(this);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -904,6 +918,7 @@ class ImageDownloadButtons extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**
@@ -999,6 +1014,7 @@ class ImagePanelBody extends Component {
     this.openWindowHandler = this.openWindowHandler.bind(this);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
   /**

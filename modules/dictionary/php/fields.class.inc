@@ -20,7 +20,8 @@ class Fields extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_dict_edit');
     }
@@ -41,7 +42,7 @@ class Fields extends \NDB_Page
                 "No valid user"
             );
         }
-        if (!($this->_hasAccess($user))) {
+        if (!($this->isAccessibleBy($user))) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
@@ -86,12 +87,14 @@ class Fields extends \NDB_Page
         // Brute force finding the name since we don't know what module
         // the dictionary item came from.
         foreach ($modules as $module) {
-            $mdict = $module->getQueryEngine()->getDataDictionary();
-            foreach ($mdict as $cat) {
-                foreach ($cat->getItems() as $item) {
-                    $iname = $cat->getName() . '_' . $item->getName();
-                    if ($name === $iname) {
-                        return $item->getDescription();
+            foreach ($module->getQueryEngines() as $qe) {
+                $qdict = $qe->getDataDictionary();
+                foreach ($qdict as $cat) {
+                    foreach ($cat->getItems() as $item) {
+                            $iname = $cat->getName() . '_' . $item->getName();
+                        if ($name === $iname) {
+                            return $item->getDescription();
+                        }
                     }
                 }
             }

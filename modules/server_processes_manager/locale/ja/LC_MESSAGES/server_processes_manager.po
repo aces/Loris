@@ -20,3 +20,33 @@ msgstr ""
 
 msgid "Server Processes Manager"
 msgstr "サーバープロセスマネージャー"
+
+msgid "PID"
+msgstr "PID"
+
+msgid "Type"
+msgstr "タイプ"
+
+msgid "Stdout File"
+msgstr "標準出力ファイル"
+
+msgid "Stderr File"
+msgstr "標準エラーファイル"
+
+msgid "Exit Code File"
+msgstr "終了コードファイル"
+
+msgid "Exit Code"
+msgstr "終了コード"
+
+msgid "User ID"
+msgstr "ユーザー識別子"
+
+msgid "Start Time"
+msgstr "開始時間"
+
+msgid "End Time"
+msgstr "終了時間"
+
+msgid "Exit Text"
+msgstr "終了テキスト"

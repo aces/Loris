@@ -301,7 +301,7 @@ class UserPermissions
                 LEFT JOIN permissions_category pc ON (pc.ID = p.categoryID)
                 LEFT JOIN modules m ON (p.moduleID = m.ID)
         ";
-        $where      = " WHERE m.Active='Y'";
+        $where      = " WHERE (m.Active='Y' OR m.Active IS NULL)";
         $groupBy    = " GROUP BY p.permID, p.code, pc.Description, p.moduleID";
         $orderBy    = " ORDER BY p.categoryID, m.Name, p.description";
         $conditions = [];

@@ -258,7 +258,7 @@ class ProjectFormFields extends React.Component {
             name={fileName}
             id={'publicationUploadEl_' + i}
             onUserInput={this.props.setFileData}
-            label={t('File to upload', {ns: 'publication'})}
+            label={t('File to upload', {ns: 'loris'})}
             value={this.props.formData[fileName]}
           />
         </div>

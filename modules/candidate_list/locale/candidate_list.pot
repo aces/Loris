@@ -27,4 +27,5 @@ msgstr ""
 msgid "Open Profile"
 msgstr ""
 
-
+msgid "New %s (Beta)"
+msgstr ""

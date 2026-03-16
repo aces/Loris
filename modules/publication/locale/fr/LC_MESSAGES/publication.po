@@ -1,0 +1,192 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 10:01-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Publications"
+msgstr "Publications"
+
+msgid "File to upload"
+msgstr "Sélectionner un fichier à téléverser"
+
+msgid "Submit"
+msgstr "Soummettre"
+
+msgid "Title"
+msgstr "Titre"
+
+msgid "Year"
+msgstr "Année"
+
+msgid "Authors"
+msgstr "Auteurs"
+
+msgid "Journal"
+msgstr "Journal"
+
+msgid "DOI"
+msgstr "DOI"
+
+msgid "Action"
+msgstr "Action"
+
+#, fuzzy
+msgid "Please fix any remaining form errors before submission"
+msgstr "Veuillez corriger les erreurs restantes dans le formulaire avant de le soumettre."
+
+msgid "Something went wrong!"
+msgstr "Un problème est survenu!"
+
+#, fuzzy
+msgid "Submission Successful!"
+msgstr "Soumission réussie!"
+
+#, fuzzy
+msgid "Propose a Project"
+msgstr "Proposer un projet"
+
+#, fuzzy
+msgid "Propose a new project"
+msgstr "Proposer un nouveau projet"
+
+#, fuzzy
+msgid "Edit failed!"
+msgstr "Échec de la modification!"
+
+#, fuzzy
+msgid "Edit Successful!"
+msgstr "Modification réussie!"
+
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "Citation"
+msgstr "Citations"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Collaborators"
+msgstr "Collaborateurs"
+
+msgid "Keywords"
+msgstr "Mots clés"
+
+#, fuzzy
+msgid "Variables Of Interest"
+msgstr "Variables d'intérêt"
+
+msgid "Description"
+msgstr "Description"
+
+#, fuzzy
+msgid "Publishing Status"
+msgstr "Statut de publication"
+
+msgid "Date Published"
+msgstr "Date de publication"
+
+msgid "Link"
+msgstr "Lien"
+
+#, fuzzy
+msgid "Lead Investigator"
+msgstr "Chercheur principal"
+
+#, fuzzy
+msgid "Lead Investigator Email"
+msgstr "Courriel du chercheur principal"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Reason for rejection"
+msgstr "Motif du rejet"
+
+msgid "Approved"
+msgstr "Approuvé"
+
+msgid "Rejected"
+msgstr "Rejeté"
+
+#, fuzzy
+msgid "For help finding variables of interest, consult"
+msgstr "Pour obtenir de l'aide afin de trouver les variables qui vous intéressent, consultez"
+
+#, fuzzy
+msgid "Date Proposed"
+msgstr "Date proposée"
+
+msgid "Approval Status"
+msgstr "Statut d'Approbation"
+
+msgid "Project"
+msgstr "Projet"
+
+#, fuzzy
+msgid "Project Proposal Creator"
+msgstr "Créateur de propositions de projet"
+
+msgid "Published"
+msgstr "Publié"
+
+msgid "View Project"
+msgstr "Voir le projet"
+
+#, fuzzy
+msgid "LORIS Users with Edit Permission"
+msgstr "Utilisateurs LORIS permis de modifier"
+
+#, fuzzy
+msgid "Type of Variables of Interest"
+msgstr "Type de variables d'intérêt"
+
+#, fuzzy
+msgid "Propose Project"
+msgstr "Proposer un projet"
+
+#, fuzzy
+msgid "Send email notification?"
+msgstr "Envoyer une notification par e-mail?"
+
+msgid "Add User"
+msgstr "Ajouter un utilisateur"
+
+#, fuzzy
+msgid "Add Collaborator"
+msgstr "Ajouter un collaborateur"
+
+msgid "Add Keyword"
+msgstr "Ajouter un mot-clé"
+
+#, fuzzy
+msgid "Add Variable of Interest"
+msgstr "Ajouter une variable d'intérêt"
+
+#, fuzzy
+msgid "Publication Type"
+msgstr "Type de publication"
+
+#, fuzzy
+msgid "Publication Version"
+msgstr "Version publiée"
+
+#, fuzzy
+msgid "helpFindingVariables"
+msgstr "aideRechercheDeVariables"

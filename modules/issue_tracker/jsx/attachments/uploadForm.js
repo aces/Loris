@@ -148,7 +148,7 @@ class IssueUploadAttachmentForm extends Component {
           >
             <FileElement
               name='file'
-              label={t('File to upload', {ns: 'issue_tracker'})}
+              label={t('File to upload', {ns: 'loris'})}
               value={this.state.formData.file}
               onUserInput={this.setFileUploadFormData}
               required={true}

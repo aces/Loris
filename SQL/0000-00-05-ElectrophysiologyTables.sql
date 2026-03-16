@@ -302,10 +302,10 @@ CREATE TABLE `physiological_task_event` (
   `Channel`                  TEXT             DEFAULT NULL,
   `EventCode`                INT(10)          DEFAULT NULL,
   `EventValue`               varchar(255)     DEFAULT NULL,
-  `EventSample`              decimal(11,6)    DEFAULT NULL,
+  `EventSample`              INT(10)          DEFAULT NULL,
   `EventType`                VARCHAR(50)      DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
-  `ResponseTime`             TIME             DEFAULT NULL,
+  `ResponseTime`             decimal(11,6)    DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalTaskEventID`),
   KEY `FK_event_file` (`EventFileID`),
   INDEX idx_pte_EventValue (`EventValue`),
@@ -432,7 +432,7 @@ INSERT INTO physiological_channel_type
   ('MEGMAG',           'MEG magnetometer'                                    ),
   ('MEGGRADAXIAL',     'MEG axial gradiometer'                               ),
   ('MEGGRADPLANAR',    'MEG planar gradiometer'                              ),
-  ('MEGGREFMAG',       'MEG reference magnetometer'                          ),
+  ('MEGREFMAG',        'MEG reference magnetometer'                          ),
   ('MEGREFGRADAXIAL',  'MEG reference axial gradiometer'                     ),
   ('MEGREFGRADPLANAR', 'MEG reference planar gradiometer'                    ),
   ('MEGOTHER',         'Any other type of MEG sensor'                        ),
@@ -762,4 +762,3 @@ CREATE TABLE `physiological_task_event_history` (
   CONSTRAINT `FK_physiological_task_event_modified_by_history`
     FOREIGN KEY (`ModifiedBy`) REFERENCES `users` (`ID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-

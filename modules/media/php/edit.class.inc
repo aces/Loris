@@ -97,7 +97,8 @@ class Edit extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('media_write');
     }

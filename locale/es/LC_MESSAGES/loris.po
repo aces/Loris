@@ -120,8 +120,14 @@ msgstr "Detalles del Punto en el Tiempo %s"
 msgid "Yes"
 msgstr "Sí"
 
+msgid "True"
+msgstr "Cierto"
+
 msgid "No"
 msgstr "No"
+
+msgid "False"
+msgstr "Falso"
 
 msgid "Create"
 msgstr "Crear"
@@ -160,7 +166,7 @@ msgstr "Exitoso!"
 
 # Common candidate terms
 msgid "PSCID"
-msgstr "PSCID"
+msgstr "SCPID"
 
 msgid "DCCID"
 msgstr "CCDID"
@@ -198,7 +204,10 @@ msgid "Participant Status"
 msgstr ""
 
 msgid "DoB"
-msgstr ""
+msgstr "Fecha de nacimiento"
+
+msgid "DoD"
+msgstr "Fecha de defunción"
 
 msgid "Sex"
 msgstr "Sexo"
@@ -354,3 +363,38 @@ msgstr "{{months}} meses"
 
 msgid "{{years}} years old"
 msgstr "{{years}} años"
+
+# Other generic terms
+msgid "Loading..."
+msgstr ""
+
+msgid "Permission denied"
+msgstr ""
+
+msgid "Unauthorized"
+msgstr ""
+
+msgid "File to upload"
+msgstr "Archivo para subir"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Dataset"
+msgstr ""
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr ""

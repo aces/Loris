@@ -54,9 +54,6 @@ msgstr "注記"
 msgid "Version names will be saved as lowercase."
 msgstr "バージョン名は小文字で保存されます"
 
-msgid "File to upload"
-msgstr "アップロードするファイル"
-
 msgid "You must select a file to upload"
 msgstr "アップロードするファイルを選択する必要があります"
 

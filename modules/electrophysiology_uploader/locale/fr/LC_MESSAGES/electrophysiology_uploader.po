@@ -1,0 +1,108 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-10 10:50-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Electrophysiology Uploader"
+msgstr "Téléverseur d'électrophysiologie"
+
+#, fuzzy
+msgid "LORIS 26 Beta Note:"
+msgstr "LORIS 26 Beta Remarque :"
+
+msgid ""
+"Files uploaded in this module will not be viewable in the Electrophysiology "
+"Browser module. This feature is under construction for the next release. "
+"Please get in touch with the LORIS team to configure this for your project."
+msgstr ""
+"Les fichiers téléversés dans ce module ne seront pas visibles dans le "
+"module Navigateur Electrophysiologie. Cette fonctionnalité est en cours de "
+"développement pour la prochaine version. Veuillez contacter l'équipe LORIS "
+"pour la configurer pour votre projet."
+
+msgid "Upload an electrophysiology recording session"
+msgstr "Téléverser une session d'enregistrement électrophysiologique"
+
+#, fuzzy
+msgid "File to Upload"
+msgstr "Sélectionner un fichier à téléverser"
+
+#, fuzzy
+msgid "File name must match the following convention:"
+msgstr "Le nom du fichier doit respecter la convention suivante :"
+
+#, fuzzy
+msgid "File cannot exceed {{maxFileSize}}"
+msgstr "Le fichier ne peut pas dépasser {{maxFileSize}}"
+
+msgid "Invalid extension for the uploaded file!"
+msgstr "Extension non valide pour le fichier téléversé !"
+
+#, fuzzy
+msgid "Filename extension does not match .tar.gz "
+msgstr "L'extension du nom de fichier ne correspond pas à .tar.gz. "
+
+#, fuzzy
+msgid "The file {{filename}} must be of type .tar.gz."
+msgstr "Le fichier {{filename}} doit être de type .tar.gz."
+
+#, fuzzy
+msgid "Invalid filename!"
+msgstr "Nom de fichier invalide !"
+
+#, fuzzy
+msgid "Filename should be of the form"
+msgstr "Le nom du fichier doit être au format"
+
+msgid "The file does not respect name convention"
+msgstr "Le fichier ne respecte pas la convention de nomenclature."
+
+#, fuzzy
+msgid "Upload Successful!"
+msgstr "Téléversement réussi!"
+
+#, fuzzy
+msgid "Processing of this file by the EEG pipeline has started"
+msgstr "Le traitement de ce fichier par le pipeline EEG a commencé."
+
+msgid "Upload failed: a network error occured"
+msgstr "Échec du téléversement : une erreur réseau s'est produite."
+
+#, fuzzy
+msgid "Upload failed: received HTTP response code"
+msgstr "Échec du téléversement : code de réponse HTTP reçu {{code}}"
+
+#, fuzzy
+msgid "Submission error!"
+msgstr "Erreur de soumission!"
+
+msgid "Upload Location"
+msgstr "Emplacement de téléversement"
+
+msgid "Upload ID"
+msgstr "ID de téléversement"
+
+msgid "Upload Time"
+msgstr "Temps de téléversement"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Uploaded By"
+msgstr "Téléverser par"

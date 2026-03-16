@@ -12,6 +12,7 @@ import {
 } from 'jsx/Form';
 import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
 import {withTranslation} from 'react-i18next';
+import './Filter.css';
 
 /**
  * Filter component
@@ -72,7 +73,7 @@ function Filter(props) {
         let element;
         switch (filter.type) {
         case 'text':
-          element = <TextboxElement/>;
+          element = <TextboxElement labelPlacementTop/>;
           break;
         case 'select':
           element = (
@@ -80,6 +81,7 @@ function Filter(props) {
               options={filter.options}
               sortByValue={filter.sortByValue}
               autoSelect={false}
+              labelPlacementTop
             />
           );
           break;
@@ -90,28 +92,30 @@ function Filter(props) {
               sortByValue={filter.sortByValue}
               multiple={true}
               emptyOption={false}
+              labelPlacementTop
             />
           );
           break;
         case 'numeric':
           element = <NumericElement
             options={filter.options}
+            labelPlacementTop
           />;
           break;
         case 'date':
-          element = <DateElement/>;
+          element = <DateElement labelPlacementTop />;
           break;
         case 'datetime':
-          element = <DateTimePartialElement />;
+          element = <DateTimePartialElement labelPlacementTop />;
           break;
         case 'checkbox':
           element = <CheckboxElement/>;
           break;
         case 'time':
-          element = <TimeElement/>;
+          element = <TimeElement labelPlacementTop />;
           break;
         default:
-          element = <TextboxElement/>;
+          element = <TextboxElement labelPlacementTop />;
         }
 
         // The value prop has to default to false if the first two options
@@ -177,7 +181,9 @@ function Filter(props) {
         legend={props.title}
       >
         {filterActions}
-        {renderFilterFields()}
+        <div className='filter-container'>
+          {renderFilterFields()}
+        </div>
       </FieldsetElement>
     </FormElement>
   );
