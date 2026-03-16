@@ -17,6 +17,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . "/../php/libraries/Profiler.php";
 
 // We don't want PHP to automatically add cache control headers unless
 // we explicitly generate them in the request response. (This needs
