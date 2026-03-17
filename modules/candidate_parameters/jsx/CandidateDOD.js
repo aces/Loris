@@ -9,6 +9,7 @@ import {
   StaticElement,
   DateElement,
   ButtonElement,
+  SelectElement,
 } from 'jsx/Form';
 
 /**
@@ -95,6 +96,12 @@ class CandidateDOD extends Component {
       disabled = false;
       updateButton = <ButtonElement label={t('Update', {ns: 'loris'})}/>;
     }
+    let precisionOptions = {
+      'known_year_month' : t('Known year and month'),
+      'known_year' : t('Known year'),
+      'unknown' : t('Unknown date'),
+    };
+    let required = this.state.formData.dod_precision != 'unknown';
 
     return (
       <div className='row'>
@@ -121,14 +128,23 @@ class CandidateDOD extends Component {
             }
             class='form-control-static text-danger bg-danger col-sm-10'
           />
+          <SelectElement
+            label={t('Precision of date:')}
+            name='dod_precision'
+            options={precisionOptions}
+            value={this.state.formData.dod_precision}
+            onUserInput={this.setFormData}
+            disabled={disabled}
+            required={true}
+          />
           <DateElement
             label={t('Date Of Death:', {ns: 'candidate_parameters'})}
             name='dod'
             dateFormat={dateFormat}
             value={this.state.formData.dod}
             onUserInput={this.setFormData}
-            disabled={disabled}
-            required={true}
+            disabled={disabled || !required}
+            required={required}
           />
           {updateButton}
         </FormElement>
@@ -194,7 +210,6 @@ class CandidateDOD extends Component {
     }
 
     formObject.append('tab', this.props.tabName);
-
     fetch(this.props.action, {
       method: 'POST',
       cache: 'no-cache',
