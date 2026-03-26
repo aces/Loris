@@ -145,11 +145,16 @@ class FeedbackMRI
         $DB = \NDB_Factory::singleton()->database();
 
         // start building the query
-        $query = "SELECT CommentTypeID, PredefinedCommentID, Comment
-                      FROM feedback_mri_comments
-                  WHERE ".$this->_buildWhere();
 
-        $result = $DB->pselect($query, []);
+        $query = "SELECT CommentTypeID, PredefinedCommentID, Comment
+                      FROM feedback_mri_comments";
+
+        $query .= match ($this->objectType) {
+            'volume' => " WHERE FileID=:FileID",
+            'visit'  => " WHERE SessionID=:SessionID",
+        };
+
+        $result = $DB->pselect($query, $this->_buildWhereAssoc());
 
         $comments = [];
         // build the output array
@@ -474,25 +479,6 @@ class FeedbackMRI
         $DB->insert('feedback_mri_comments', $set);
 
         return true;
-    }
-
-    /**
-     * Constructs an appropriate where expression to limit selects to the
-     * current object
-     *
-     * @return string where string to limit selects to current object
-     * @access private
-     */
-    function _buildWhere(): string
-    {
-        // build the where depending on object and subject type
-        if ($this->objectType == 'volume') {
-            // per-volume
-            return "FileID='$this->fileID'";
-        } else {
-            // per-visit
-            return "SessionID='$this->sessionID'";
-        }
     }
 
     /**
