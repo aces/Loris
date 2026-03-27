@@ -76,13 +76,20 @@ class ModuleFileRouter implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $fullpath = (
-            $this->moduledir .
-            "/" .
-            $this->subdir .
-            "/"
-            . $request->getURI()->getPath()
-        );
+        $fullpath =
+            realpath(\Utility::pathJoin($this->moduledir, $this->subdir, $request->getURI()->getPath()));
+
+        $basedir = realpath(\Utility::pathJoin($this->moduledir, $this->subdir));
+
+        // The moduledir and subdir come from the code, while the url comes from the user and should not be trusted.
+        if ($fullpath == false || $basedir == false || str_starts_with($fullpath, $basedir) == false) {
+            return (new \LORIS\Http\Error(
+                $request,
+                404,
+                htmlspecialchars($request->getURI()->getPath()) . ": File not found"
+            ))
+            ->withHeader("Content-Type", "text/html");
+        }
 
         if (is_file($fullpath)) {
             $resp = (new \LORIS\Http\Response)
@@ -96,7 +103,7 @@ class ModuleFileRouter implements RequestHandlerInterface
         return (new \LORIS\Http\Error(
             $request,
             404,
-            $fullpath . ": File not found"
+            htmlspecialchars($request->getURI()->getPath()) . ": File not found"
         ))
             ->withHeader("Content-Type", "text/html");
     }
