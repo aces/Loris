@@ -242,7 +242,10 @@ class RedcapDictionaryRecord
         $field_type  = $this->field_type;
         $field_name  = $this->field_name;
         $field_label = str_replace(["\r\n", "\r", "\n"], '', $this->field_label);
-        $field_label = strip_tags($this->field_label);
+        // strip HTML-related content
+        $field_label = strip_tags($field_label);
+        // replace the non-breaking space \xao
+        // and \xc2, the first byte of its UTF-8 encoding
         $field_label = str_replace("\xc2\xa0", ' ', $field_label);
         $field_label = preg_replace('/\s+/', ' ', $field_label);
         $field_label = trim($field_label);
