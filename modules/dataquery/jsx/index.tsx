@@ -72,20 +72,18 @@ function useActiveCategory(
  * @param {object} props - React props
  * @param {any} props.t - useTranslation
  * @param {boolean} props.queryAdmin - true if the current user has permission to administer study queries
- * @param {string} props.username - The user accessing the app
  *
  * @returns {React.ReactElement} - The main page of the app
  */
 function DataQueryApp(props: {
     t: any,
     queryAdmin: boolean,
-    username: string
 }) {
   const [activeTab, setActiveTab] = useState('Info');
   useBreadcrumbs(activeTab, setActiveTab);
 
   const [queries, reloadQueries, queryActions]
-        = useSharedQueries(props.username);
+        = useSharedQueries();
 
   const visits = useVisits();
 
@@ -267,7 +265,6 @@ window.addEventListener('load', () => {
   root.render(
     <Index
       queryAdmin={loris.userHasPermission('dataquery_admin')}
-      username={loris.user.username}
     />,
   );
 });
