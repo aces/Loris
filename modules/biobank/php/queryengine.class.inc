@@ -2,39 +2,52 @@
 
 namespace LORIS\biobank;
 
+use \LORIS\Data\Query\SQLQueryEngine;
+use \LORIS\LorisInstance;
 use \LORIS\Data\Dictionary\DictionaryItem;
+use \LORIS\Data\Dictionary\Category;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
+use \LORIS\Data\Types\Enumeration;
+use \LORIS\Data\Types\BooleanType;
+use \LORIS\Data\Types\StringType;
+use \LORIS\Data\Types\DecimalType;
+use \LORIS\Data\Types\IntegerType;
+use \LORIS\Data\Types\DateType;
 
 /**
  * Biospecimen Query Engine for Data Query Tool
  *
  * Provides queryable fields for biospecimen/biobank data including
  * specimen collection status, availability, and specimen characteristics.
- * 
+ *
  * This implementation provides fixed/static fields only. Dynamic protocol
  * attributes (stored in the Data JSON column) are not yet exposed.
  *
- * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @category Main
+ * @package  Loris
+ * @author   Henri Rabalais <henri.j.rabalais@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
-class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
+class QueryEngine extends SQLQueryEngine
 {
     // Reusable JOIN clauses - defined once to ensure exact string matching
-    const JOIN_SESSION = 'LEFT JOIN session s ON (s.CandidateID=c.ID)';
-    const JOIN_SPECIMEN = 'LEFT JOIN biobank_specimen bs '
+    const JOIN_SESSION        = 'LEFT JOIN session s ON (s.CandidateID=c.ID)';
+    const JOIN_SPECIMEN       = 'LEFT JOIN biobank_specimen bs '
         . 'ON (s.ID=bs.SessionID)';
-    const JOIN_CONTAINER = 'LEFT JOIN biobank_container bc '
+    const JOIN_CONTAINER      = 'LEFT JOIN biobank_container bc '
         . 'ON (bs.ContainerID=bc.ContainerID)';
-    const JOIN_TYPE = 'LEFT JOIN biobank_specimen_type bst '
+    const JOIN_TYPE           = 'LEFT JOIN biobank_specimen_type bst '
         . 'ON (bs.SpecimenTypeID=bst.SpecimenTypeID)';
-    const JOIN_UNIT = 'LEFT JOIN biobank_unit bu '
+    const JOIN_UNIT           = 'LEFT JOIN biobank_unit bu '
         . 'ON (bs.UnitID=bu.UnitID)';
-    const JOIN_COLLECTION = 'LEFT JOIN biobank_specimen_collection bsc '
+    const JOIN_COLLECTION     = 'LEFT JOIN biobank_specimen_collection bsc '
         . 'ON (bs.SpecimenID=bsc.SpecimenID)';
-    const JOIN_PROTOCOL = 'LEFT JOIN biobank_specimen_protocol bsp '
+    const JOIN_PROTOCOL       = 'LEFT JOIN biobank_specimen_protocol bsp '
         . 'ON (bsc.SpecimenProtocolID=bsp.SpecimenProtocolID)';
-    const JOIN_CENTER = 'LEFT JOIN psc ON (bsc.CenterID=psc.CenterID)';
-    const JOIN_FREEZETHAW = 'LEFT JOIN biobank_specimen_freezethaw bsf '
+    const JOIN_CENTER         = 'LEFT JOIN psc ON (bsc.CenterID=psc.CenterID)';
+    const JOIN_FREEZETHAW     = 'LEFT JOIN biobank_specimen_freezethaw bsf '
         . 'ON (bs.SpecimenID=bsf.SpecimenID)';
     const JOIN_CONTAINER_TYPE = 'LEFT JOIN biobank_container_type bct '
         . 'ON (bc.ContainerTypeID=bct.ContainerTypeID)';
@@ -44,12 +57,12 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     /**
      * Constructor
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance being queried
+     * @param LorisInstance $loris The LORIS instance being queried
      */
-    public function __construct(protected \LORIS\LorisInstance $loris)
+    public function __construct(protected LorisInstance $loris)
     {
         parent::__construct($loris);
-        $factory = \NDB_Factory::singleton();
+        $factory       = \NDB_Factory::singleton();
         $this->baseURL = $factory->settings()->getBaseURL();
     }
 
@@ -60,12 +73,12 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
      * - Session-level summary fields (collection done, specimens available)
      * - Specimen-level fields (barcode, quantity, type, etc.)
      *
-     * @return \LORIS\Data\Dictionary\Category[]
+     * @return Category[]
      */
     public function getDataDictionary(): iterable
     {
-        $scope = new Scope(Scope::SESSION);
-        $specimen = new \LORIS\Data\Dictionary\Category(
+        $scope    = new Scope(Scope::SESSION);
+        $specimen = new Category(
             "Specimen",
             "Specimen Collection and Availability",
         );
@@ -74,57 +87,53 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         $specimenTypes = $this->getSpecimenTypes();
 
         $items = [
-            // Summary field: Any specimen collected at this session
             new DictionaryItem(
                 "SpecimenCollectionDone",
                 "Does the session have any specimen collected?",
                 $scope,
-                new \LORIS\Data\Types\BooleanType(),
+                new BooleanType(),
                 new Cardinality(Cardinality::SINGLE),
             ),
-            // Summary field: Any specimen still available
             new DictionaryItem(
                 "SpecimenAvailable",
                 "Does the session have any specimen currently available?",
                 $scope,
-                new \LORIS\Data\Types\BooleanType(),
+                new BooleanType(),
                 new Cardinality(Cardinality::SINGLE),
             ),
-            
-            // Specimen-level fields (Cardinality::MANY - multiple specimens per session)
             new DictionaryItem(
                 "SpecimenType",
                 "Type of specimen",
                 $scope,
-                new \LORIS\Data\Types\Enumeration(...$specimenTypes),
+                new Enumeration(...$specimenTypes),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenBarcode",
                 "Container barcode for specimen",
                 $scope,
-                new \LORIS\Data\Types\StringType(40),
+                new StringType(40),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenQuantity",
                 "Current quantity of specimen",
                 $scope,
-                new \LORIS\Data\Types\DecimalType(),
+                new DecimalType(),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenUnit",
                 "Unit of measurement for specimen quantity",
                 $scope,
-                new \LORIS\Data\Types\StringType(20),
+                new StringType(20),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenAvailabilityStatus",
                 "Whether specimen is available or used/discarded",
                 $scope,
-                new \LORIS\Data\Types\Enumeration(
+                new Enumeration(
                     "Available",
                     "Used/Discarded"
                 ),
@@ -134,49 +143,49 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 "SpecimenFreezeThawCycle",
                 "Number of freeze-thaw cycles for specimen",
                 $scope,
-                new \LORIS\Data\Types\IntegerType(),
+                new IntegerType(),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenCollectionDate",
                 "Date specimen was collected",
                 $scope,
-                new \LORIS\Data\Types\DateType(),
+                new DateType(),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenCollectionTime",
                 "Time specimen was collected",
                 $scope,
-                new \LORIS\Data\Types\StringType(8),
+                new StringType(8),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenCollectionProtocol",
                 "Collection protocol used for specimen",
                 $scope,
-                new \LORIS\Data\Types\StringType(100),
+                new StringType(100),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenCollectionCenter",
                 "Center where specimen was collected",
                 $scope,
-                new \LORIS\Data\Types\StringType(255),
+                new StringType(255),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenContainerType",
                 "Type of container holding specimen",
                 $scope,
-                new \LORIS\Data\Types\StringType(40),
+                new StringType(40),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenTemperature",
                 "Storage temperature for specimen",
                 $scope,
-                new \LORIS\Data\Types\DecimalType(),
+                new DecimalType(),
                 new Cardinality(Cardinality::MANY),
             ),
         ];
@@ -194,7 +203,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     protected function getSpecimenTypes(): array
     {
         $DB = \NDB_Factory::singleton()->database();
-        
+
         $types = $DB->pselectCol(
             "SELECT DISTINCT Label 
              FROM biobank_specimen_type 
@@ -208,22 +217,22 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     /**
      * Get list of visits that have biospecimen data
      *
-     * @param \LORIS\Data\Dictionary\Category       $inst The item category
-     * @param \LORIS\Data\Dictionary\DictionaryItem $item The item itself
+     * @param Category       $inst The item category
+     * @param DictionaryItem $item The item itself
      *
      * @return string[]
      */
     public function getVisitList(
-        \LORIS\Data\Dictionary\Category $inst,
-        \LORIS\Data\Dictionary\DictionaryItem $item
+        Category $inst,
+        DictionaryItem $item
     ): iterable {
         if ($item->getScope()->__toString() !== 'session') {
             return [];
         }
-        
-        $user = \NDB_Factory::singleton()->user();
+
+        $user       = \NDB_Factory::singleton()->user();
         $userVisits = array_keys($user->getVisits());
-        
+
         // Get visits that actually have specimens
         $DB = \NDB_Factory::singleton()->database();
         $visitsWithSpecimens = $DB->pselectCol(
@@ -235,19 +244,19 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
              ORDER BY s.Visit_label",
             []
         );
-        
-        return $visitsWithSpecimens;        
-    }    
+
+        return $visitsWithSpecimens;
+    }
 
     /**
      * Generate SQL field expression for a dictionary item
      *
-     * @param \LORIS\Data\Dictionary\DictionaryItem $item The field
+     * @param DictionaryItem $item The field
      *
      * @return string SQL expression for the field
      */
     protected function getFieldNameFromDict(
-        \LORIS\Data\Dictionary\DictionaryItem $item
+        DictionaryItem $item
     ): string {
         switch ($item->getName()) {
         case 'SpecimenCollectionDone':
@@ -343,17 +352,17 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 "Invalid field " . $item->getName()
             );
         }
-    }    
+    }
 
     /**
      * Get the type description for the corresponding key field
      *
-     * @param \LORIS\Data\Dictionary\DictionaryItem $item The field
+     * @param DictionaryItem $item The field
      *
      * @return string Description of key field type
      */
     public function getCorrespondingKeyFieldType(
-        \LORIS\Data\Dictionary\DictionaryItem $item
+        DictionaryItem $item
     ): string {
         return "Specimen Container Barcode";
     }
@@ -361,12 +370,12 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     /**
      * Get the SQL for the corresponding key field (for MANY cardinality)
      *
-     * @param \LORIS\Data\Dictionary\DictionaryItem $item The field
+     * @param DictionaryItem $item The field
      *
      * @return string SQL expression for key field
      */
     public function getCorrespondingKeyField(
-        \LORIS\Data\Dictionary\DictionaryItem $item
+        DictionaryItem $item
     ) {
         if ($item->getCardinality()->__toString() === 'many') {
             $this->addTable(self::JOIN_SESSION);
@@ -378,6 +387,5 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         throw new \Exception(
             "Unhandled Cardinality::MANY field " . $item->getName()
         );
-    }    
+    }
 }
-

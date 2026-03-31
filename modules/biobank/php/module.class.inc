@@ -150,7 +150,6 @@ class Module extends \Module
         return dgettext("biobank", "Biospecimens");
     }
 
-
     /**
      * {@inheritDoc}
      *
