@@ -35,7 +35,7 @@ class File_Reader extends \NDB_Page
         );
         switch ($request->getMethod()) {
         case "GET":
-            $file     = $request->getQueryParams()['file'] ?? null;
+            $file = $request->getQueryParams()['file'] ?? null;
 
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo($downloadpath)
