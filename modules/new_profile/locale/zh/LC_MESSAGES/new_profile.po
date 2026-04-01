@@ -21,7 +21,7 @@ msgstr ""
 
 #: modules/new_profile/php/module.class.inc:60
 msgid "New Profile"
-msgstr "新档案"
+msgstr "新建受试者"
 
 msgid "Create a New Profile"
 msgstr "创建新的个人资料"
@@ -48,4 +48,4 @@ msgid "Recruit another candidate"
 msgstr "招募另一名候选人"
 
 msgid "Access Profile"
-msgstr "访问配置文件"
+msgstr "访问受试者列表"
