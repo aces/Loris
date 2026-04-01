@@ -51,6 +51,8 @@ class QueryEngine extends SQLQueryEngine
         . 'ON (bs.SpecimenID=bsf.SpecimenID)';
     const JOIN_CONTAINER_TYPE = 'LEFT JOIN biobank_container_type bct '
         . 'ON (bc.ContainerTypeID=bct.ContainerTypeID)';
+    const JOIN_CONTAINER_STATUS = 'LEFT JOIN biobank_container_status bcs '
+        . 'ON (bc.ContainerStatusID=bcs.ContainerStatusID)';
 
     protected $baseURL;
 
@@ -83,20 +85,20 @@ class QueryEngine extends SQLQueryEngine
             "Specimen Collection and Availability",
         );
 
-        // Get specimen types for the enumeration
-        $specimenTypes = $this->getSpecimenTypes();
+        $specimenTypes      = $this->_getSpecimenTypes();
+        $containerStatuses  = $this->_getContainerStatuses();
 
         $items = [
             new DictionaryItem(
                 "SpecimenCollectionDone",
-                "Does the session have any specimen collected?",
+                "Whether the session has any specimen collected",
                 $scope,
                 new BooleanType(),
                 new Cardinality(Cardinality::SINGLE),
             ),
             new DictionaryItem(
                 "SpecimenAvailable",
-                "Does the session have any specimen currently available?",
+                "Whether the session has any specimen currently available",
                 $scope,
                 new BooleanType(),
                 new Cardinality(Cardinality::SINGLE),
@@ -110,7 +112,7 @@ class QueryEngine extends SQLQueryEngine
             ),
             new DictionaryItem(
                 "SpecimenBarcode",
-                "Container barcode for specimen",
+                "Barcode for specimen",
                 $scope,
                 new StringType(40),
                 new Cardinality(Cardinality::MANY),
@@ -130,15 +132,12 @@ class QueryEngine extends SQLQueryEngine
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
-                "SpecimenAvailabilityStatus",
+                "SpecimenStatus",
                 "Whether specimen is available or used/discarded",
                 $scope,
-                new Enumeration(
-                    "Available",
-                    "Used/Discarded"
-                ),
-                new Cardinality(Cardinality::MANY),
-            ),
+                new Enumeration(...$containerStatuses),
+                new Cardinality(Cardinality::MANY)
+            ),            
             new DictionaryItem(
                 "SpecimenFreezeThawCycle",
                 "Number of freeze-thaw cycles for specimen",
@@ -200,7 +199,7 @@ class QueryEngine extends SQLQueryEngine
      *
      * @return string[] Array of specimen type labels
      */
-    protected function getSpecimenTypes(): array
+    private function _getSpecimenTypes(): array
     {
         $DB = \NDB_Factory::singleton()->database();
 
@@ -212,6 +211,26 @@ class QueryEngine extends SQLQueryEngine
         );
 
         return $types;
+    }
+
+
+    /**
+     * Get list of container statuses from the database
+     *
+     * @return string[] Array of container status labels
+     */
+    private function _getContainerStatuses(): array
+    {
+        $DB = \NDB_Factory::singleton()->database();
+    
+        $statuses = $DB->pselectCol(
+            "SELECT DISTINCT Label
+             FROM biobank_container_status
+             ORDER BY Label",
+            []
+        );
+    
+        return $statuses;
     }
 
     /**
@@ -261,22 +280,29 @@ class QueryEngine extends SQLQueryEngine
         switch ($item->getName()) {
         case 'SpecimenCollectionDone':
             $this->addTable(self::JOIN_SESSION);
-            $this->addTable(self::JOIN_SPECIMEN);
-            return "CASE WHEN COUNT(DISTINCT bs.SpecimenID) > 0 "
-                . "THEN true ELSE false END";
+            return "EXISTS ("
+                . "SELECT 1 FROM biobank_specimen bs2 "
+                . "WHERE bs2.SessionID = s.ID"
+                . ")";            
 
         case 'SpecimenAvailable':
             $this->addTable(self::JOIN_SESSION);
-            $this->addTable(self::JOIN_SPECIMEN);
-            return "CASE WHEN COUNT("
-                . "CASE WHEN bs.Quantity > 0 THEN 1 END"
-                . ") > 0 THEN true ELSE false END";
+            return "EXISTS ("
+                . "SELECT 1 FROM biobank_specimen bs2 "
+                . "JOIN biobank_container bc2 "
+                . "ON bs2.ContainerID = bc2.ContainerID "
+                . "JOIN biobank_container_status bcs2 "
+                . "ON bc2.ContainerStatusID = bcs2.ContainerStatusID "
+                . "WHERE bs2.SessionID = s.ID "
+                . "AND bs2.Quantity > 0 "
+                . "AND bcs2.Label = 'Available'"
+                . ")";            
 
-        case 'SpecimenType':
-            $this->addTable(self::JOIN_SESSION);
-            $this->addTable(self::JOIN_SPECIMEN);
-            $this->addTable(self::JOIN_TYPE);
-            return 'bst.Label';
+        case 'SpecimenType':                                                    
+            $this->addTable(self::JOIN_SESSION);                                
+            $this->addTable(self::JOIN_SPECIMEN);                               
+            $this->addTable(self::JOIN_TYPE);                                   
+            return 'bst.Label';                                  
 
         case 'SpecimenBarcode':
             $this->addTable(self::JOIN_SESSION);
@@ -295,12 +321,12 @@ class QueryEngine extends SQLQueryEngine
             $this->addTable(self::JOIN_UNIT);
             return 'bu.Label';
 
-        case 'SpecimenAvailabilityStatus':
+        case 'SpecimenStatus':
             $this->addTable(self::JOIN_SESSION);
             $this->addTable(self::JOIN_SPECIMEN);
-            return 'CASE WHEN bs.Quantity > 0 '
-                . 'THEN "Available" '
-                . 'ELSE "Used/Discarded" END';
+            $this->addTable(self::JOIN_CONTAINER);
+            $this->addTable(self::JOIN_CONTAINER_STATUS);
+            return 'bcs.Label';
 
         case 'SpecimenFreezeThawCycle':
             $this->addTable(self::JOIN_SESSION);
