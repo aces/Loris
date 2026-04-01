@@ -5,6 +5,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	locale/hi/LC_MESSAGES/loris.po \
 	locale/es/LC_MESSAGES/loris.po \
 	locale/en/LC_MESSAGES/loris.po \
+	locale/zh/LC_MESSAGES/loris.po \
 	modules/biobank/locale/fr/LC_MESSAGES/biobank.po \
 	modules/media/locale/fr/LC_MESSAGES/media.po \
 	modules/media/locale/ja/LC_MESSAGES/media.po \
@@ -88,7 +89,6 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/create_timepoint/locale/fr/LC_MESSAGES/create_timepoint.po \
 	modules/create_timepoint/locale/ja/LC_MESSAGES/create_timepoint.po \
 	modules/create_timepoint/locale/es/LC_MESSAGES/create_timepoint.po \
-	modules/create_timepoint/locale/zh/LC_MESSAGES/create_timepoint.po \	
 	modules/brainbrowser/locale/fr/LC_MESSAGES/brainbrowser.po \
 	modules/brainbrowser/locale/ja/LC_MESSAGES/brainbrowser.po \
 	modules/brainbrowser/locale/hi/LC_MESSAGES/brainbrowser.po \
@@ -129,59 +129,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.po \
 	modules/help_editor/locale/fr/LC_MESSAGES/help_editor.po \
 	modules/help_editor/locale/ja/LC_MESSAGES/help_editor.po \
-	modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po
-
-	locale/zh/LC_MESSAGES/loris.po \
-	modules/acknowledgements/locale/zh/LC_MESSAGES/acknowledgements.po \
-	modules/api_docs/locale/zh/LC_MESSAGES/api_docs.po \
-	modules/battery_manager/locale/zh/LC_MESSAGES/battery_manager.po \
-	modules/behavioural_qc/locale/zh/LC_MESSAGES/behavioural_qc.po \
-	modules/brainbrowser/locale/zh/LC_MESSAGES/brainbrowser.po \
-	modules/bvl_feedback/locale/zh/LC_MESSAGES/bvl_feedback.po \
-	modules/candidate_list/locale/zh/LC_MESSAGES/candidate_list.po \
-	modules/candidate_parameters/locale/zh/LC_MESSAGES/candidate_parameters.po \
-	modules/candidate_profile/locale/zh/LC_MESSAGES/candidate_profile.po \
-	modules/configuration/locale/zh/LC_MESSAGES/configuration.po \
-	modules/conflict_resolver/locale/zh/LC_MESSAGES/conflict_resolver.po \
-	modules/create_timepoint/locale/zh/LC_MESSAGES/create_timepoint.po \
-	modules/dashboard/locale/zh/LC_MESSAGES/dashboard.po \
-	modules/data_release/locale/zh/LC_MESSAGES/data_release.po \
-	modules/datadict/locale/zh/LC_MESSAGES/datadict.po \
-	modules/dataquery/locale/zh/LC_MESSAGES/dataquery.po \
-	modules/dicom_archive/locale/zh/LC_MESSAGES/dicom_archive.po \
-	modules/dictionary/locale/zh/LC_MESSAGES/dictionary.po \
-	modules/document_repository/locale/zh/LC_MESSAGES/document_repository.po \
-	modules/dqt/locale/zh/LC_MESSAGES/dqt.po \
-	modules/electrophysiology_browser/locale/zh/LC_MESSAGES/electrophysiology_browser.po \
-	modules/electrophysiology_uploader/locale/zh/LC_MESSAGES/electrophysiology_uploader.po \
-	modules/examiner/locale/zh/LC_MESSAGES/examiner.po \
-	modules/genomic_browser/locale/zh/LC_MESSAGES/genomic_browser.po \
-	modules/help_editor/locale/zh/LC_MESSAGES/help_editor.po \
-	modules/imaging_browser/locale/zh/LC_MESSAGES/imaging_browser.po \
-	modules/imaging_qc/locale/zh/LC_MESSAGES/imaging_qc.po \
-	modules/imaging_uploader/locale/zh/LC_MESSAGES/imaging_uploader.po \
-	modules/instrument_builder/locale/zh/LC_MESSAGES/instrument_builder.po \
-	modules/instrument_list/locale/zh/LC_MESSAGES/instrument_list.po \
-	modules/instrument_manager/locale/zh/LC_MESSAGES/instrument_manager.po \
-	modules/instruments/locale/zh/LC_MESSAGES/instruments.po \
-	modules/issue_tracker/locale/zh/LC_MESSAGES/issue_tracker.po \
-	modules/login/locale/zh/LC_MESSAGES/login.po \
-	modules/media/locale/zh/LC_MESSAGES/media.po \
-	modules/module_manager/locale/zh/LC_MESSAGES/module_manager.po \
-	modules/mri_violations/locale/zh/LC_MESSAGES/mri_violations.po \
-	modules/my_preferences/locale/zh/LC_MESSAGES/my_preferences.po \
-	modules/new_profile/locale/zh/LC_MESSAGES/new_profile.po \
-	modules/next_stage/locale/zh/LC_MESSAGES/next_stage.po \
-	modules/oidc/locale/zh/LC_MESSAGES/oidc.po \
-	modules/publication/locale/zh/LC_MESSAGES/publication.po \
-	modules/schedule_module/locale/zh/LC_MESSAGES/schedule_module.po \
-	modules/server_processes_manager/locale/zh/LC_MESSAGES/server_processes_manager.po \
-	modules/statistics/locale/zh/LC_MESSAGES/statistics.po \
-	modules/survey_accounts/locale/zh/LC_MESSAGES/survey_accounts.po \
-	modules/timepoint_list/locale/zh/LC_MESSAGES/timepoint_list.po \
-	modules/user_accounts/locale/zh/LC_MESSAGES/user_accounts.po
-
-	locale/zh/LC_MESSAGES/loris.po \
+	modules/help_editor/locale/hi/LC_MESSAGES/help_editor.po \
 	modules/acknowledgements/locale/zh/LC_MESSAGES/acknowledgements.po \
 	modules/api_docs/locale/zh/LC_MESSAGES/api_docs.po \
 	modules/battery_manager/locale/zh/LC_MESSAGES/battery_manager.po \
