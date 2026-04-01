@@ -60,6 +60,29 @@ class Files extends \NDB_Page
         $downloadpath = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")
         );
+
+        if ($request->getMethod() != "POST") {
+            $factory = \NDB_Factory::singleton();
+            $user    = $factory->user();
+            $db      = $factory->database();
+
+            $filename = explode(
+                'Files',
+                urldecode($request->getUri()->getPath())
+            )[1];
+
+            $forSite = $db->pselectOne(
+                "SELECT For_site
+                 FROM document_repository
+                 WHERE Data_dir = :file_dir",
+                ['file_dir' => mb_substr($filename, 1)]
+            );
+
+            if (! $user->hasCenter(\CenterID::singleton((int)$forSite))) {
+                return (new \LORIS\Http\Response\JSON\Forbidden());
+            }
+        }
+
         switch ($request->getMethod()) {
         case "POST":
             return $this->uploadDocFile($request);
@@ -103,6 +126,7 @@ class Files extends \NDB_Page
             ));
         }
     }
+
     /**
      * Handles the document editing process
      *
@@ -158,6 +182,7 @@ class Files extends \NDB_Page
             );
         }
     }
+
     /**
      * Handles the document deleting process
      *
@@ -207,6 +232,7 @@ class Files extends \NDB_Page
             unlink($path);
         }
     }
+
     /**
      * Returns a list of categories fields from database
      *
@@ -261,6 +287,7 @@ class Files extends \NDB_Page
 
         return $result;
     }
+
     /**
      * Handler of parsing category
      *
@@ -449,6 +476,7 @@ class Files extends \NDB_Page
             ]
         ));
     }
+
     /**
      * Check the find name in the database, if exists return false
      *
