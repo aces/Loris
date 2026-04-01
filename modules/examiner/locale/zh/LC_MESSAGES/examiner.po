@@ -29,7 +29,7 @@ msgid "Examiner added."
 msgstr "检查员已经添加。"
 
 msgid "Add Examiner"
-msgstr "添加考官"
+msgstr "添加检查员"
 
 msgid "Name"
 msgstr "姓名"

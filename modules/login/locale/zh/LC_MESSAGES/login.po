@@ -23,7 +23,7 @@ msgid "Login"
 msgstr "登录"
 
 msgid "Login to LORIS"
-msgstr "登录洛里斯"
+msgstr "登录到Loris"
 
 msgid "Forgot your password?"
 msgstr "忘记密码了吗？"

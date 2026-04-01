@@ -134,7 +134,7 @@ msgid "Unresolved"
 msgstr "未解决"
 
 msgid "Reran"
-msgstr "瑞兰"
+msgstr "重跑"
 
 msgid "Emailed site/pending"
 msgstr "通过电子邮件发送网站/待处理"

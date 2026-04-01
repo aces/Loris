@@ -360,7 +360,7 @@ msgstr "将数据下载为 CSV"
 
 # Dashboard panel strings
 msgid "Views"
-msgstr "意见"
+msgstr "视图"
 
 #: php/libraries/Password.class.inc
 msgid "The password is too short"

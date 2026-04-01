@@ -122,7 +122,7 @@ msgid "Confirm Email"
 msgstr "确认电子邮件"
 
 msgid "Examiner At:"
-msgstr "考官在："
+msgstr "审查员在："
 
 msgid "Examiner Status"
 msgstr "审查员状态"
@@ -131,10 +131,10 @@ msgid "Pending approval"
 msgstr "待批准"
 
 msgid "Active from"
-msgstr "活跃于"
+msgstr "开始激活日期"
 
 msgid "Active to"
-msgstr "活跃于"
+msgstr "停止激活日期"
 
 msgid "Permissions"
 msgstr "权限"

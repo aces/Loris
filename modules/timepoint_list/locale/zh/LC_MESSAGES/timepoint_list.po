@@ -62,7 +62,7 @@ msgid "Derived Age"
 msgstr "衍生年龄"
 
 msgid "EDC Age"
-msgstr "EDC时代"
+msgstr "EDC 年龄"
 
 msgid "Biological Sex"
 msgstr "生物性别"
@@ -72,10 +72,10 @@ msgid ""
 msgstr "您无权访问为此候选人注册的任何时间点。"
 
 msgid " y / "
-msgstr "y /"
+msgstr "年 /"
 
 msgid " m"
-msgstr "米"
+msgstr "月"
 
 msgid "Not Done"
 msgstr "未完成"

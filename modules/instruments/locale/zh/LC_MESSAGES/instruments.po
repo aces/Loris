@@ -62,10 +62,10 @@ msgid "Visit has no registered instruments in test battery."
 msgstr "访问测试电池中没有注册仪器。"
 
 msgid "Date of Administration"
-msgstr "给药日期"
+msgstr "管理日期"
 
 msgid "Date of Administration is required"
-msgstr "给药日期为必填项"
+msgstr "管理日期为必填项"
 
 msgid "Candidate Age (Months)"
 msgstr "候选人年龄（月）"
@@ -77,7 +77,7 @@ msgid "Window Difference (+/- Days)"
 msgstr "窗口差异（+/- 天）"
 
 msgid "Examiner"
-msgstr "考官"
+msgstr "检查员"
 
 msgid "Examiner is required"
-msgstr "需要考官"
+msgstr "需要检查员"

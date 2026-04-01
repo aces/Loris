@@ -111,7 +111,7 @@ msgid "Note"
 msgstr "笔记"
 
 msgid "Date of Administration"
-msgstr "给药日期"
+msgstr "管理日期"
 
 msgid "Document's Language"
 msgstr "文档的语言"
