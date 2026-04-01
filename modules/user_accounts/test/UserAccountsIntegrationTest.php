@@ -39,10 +39,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private const UNITTESTER_EMAIL     = 'tester@example.com';
     private const UNITTESTER_EMAIL_NEW = 'newemail@example.com';
     // Admin user details
-    private const ADMIN_USERNAME  = 'admin';
-    private const ADMIN_REALNAME  = 'Admin account';
-    private const ADMIN_EMAIL     = 'admin@example.com';
-    private const ADMIN_EMAIL_NEW = 'tester@example.com';
+    private const ADMIN_USERNAME         = 'admin';
+    private const ADMIN_REALNAME         = 'Admin account';
+    private const ADMIN_EMAIL            = 'admin@example.com';
+    private const ADMIN_EMAIL_NEW        = 'tester@example.com';
     private const UNITTESTERTWO_USERNAME = 'UnitTesterTwo';
     private const UNITTESTERTWO_EMAIL    = 'tester2@example.com';
 
