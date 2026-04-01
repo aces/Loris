@@ -17,6 +17,8 @@ $factory  = \NDB_Factory::singleton();
 $user     = $factory->user();
 $editable = $user->hasPermission('context_help');
 
+header('Content-Type: application/json; charset=utf-8');
+
 try {
     $moduleName  = $_REQUEST['testName'] ?? null;
     $subpageName = $_REQUEST['subtest'] ?? null;
