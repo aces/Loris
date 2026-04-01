@@ -24,6 +24,17 @@
         </div>
     </div>
     <h3>{dgettext("user_accounts", "Add/Edit User")}</h3>
+
+    {if $isSelfEdit}
+    <div class="alert alert-warning" role="alert">
+        {dgettext("user_accounts", "You cannot edit your own account settings.")}
+        {dgettext("user_accounts", "To change your email or password, go to \"My Preferences\".")}
+        {dgettext("user_accounts", "For any other changes, contact an administrator.")}
+    </div>
+    {/if}
+
+    <fieldset {if $isSelfEdit}disabled="disabled"{/if}>
+
 	    {if $form.errors.UserID_Group|default}
         <div class="row form-group has-error">
         {else}
@@ -494,9 +505,11 @@
     </div>
 </div>
 </div>
+    </fieldset>
+
 <div class="row form-group form-inline">
    <div class="col-sm-2">
-      <input class="btn btn-sm btn-primary" name="fire_away" value="{dgettext("loris", "Save")}" type="submit" />
+      <input class="btn btn-sm btn-primary" name="fire_away" value="{dgettext("loris", "Save")}" type="submit" {if $isSelfEdit}disabled="disabled"{/if}/>
   </div>
   <div class="col-sm-2">
     <input class="btn btn-sm btn-primary" value="{dgettext("loris", "Reset")}" type="reset"/>
