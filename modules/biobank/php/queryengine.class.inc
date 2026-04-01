@@ -85,8 +85,8 @@ class QueryEngine extends SQLQueryEngine
             "Specimen Collection and Availability",
         );
 
-        $specimenTypes      = $this->_getSpecimenTypes();
-        $containerStatuses  = $this->_getContainerStatuses();
+        $specimenTypes     = $this->_getSpecimenTypes();
+        $containerStatuses = $this->_getContainerStatuses();
 
         $items = [
             new DictionaryItem(
@@ -137,7 +137,7 @@ class QueryEngine extends SQLQueryEngine
                 $scope,
                 new Enumeration(...$containerStatuses),
                 new Cardinality(Cardinality::MANY)
-            ),            
+            ),
             new DictionaryItem(
                 "SpecimenFreezeThawCycle",
                 "Number of freeze-thaw cycles for specimen",
@@ -213,7 +213,6 @@ class QueryEngine extends SQLQueryEngine
         return $types;
     }
 
-
     /**
      * Get list of container statuses from the database
      *
@@ -222,14 +221,14 @@ class QueryEngine extends SQLQueryEngine
     private function _getContainerStatuses(): array
     {
         $DB = \NDB_Factory::singleton()->database();
-    
+
         $statuses = $DB->pselectCol(
             "SELECT DISTINCT Label
              FROM biobank_container_status
              ORDER BY Label",
             []
         );
-    
+
         return $statuses;
     }
 
@@ -283,7 +282,7 @@ class QueryEngine extends SQLQueryEngine
             return "EXISTS ("
                 . "SELECT 1 FROM biobank_specimen bs2 "
                 . "WHERE bs2.SessionID = s.ID"
-                . ")";            
+                . ")";
 
         case 'SpecimenAvailable':
             $this->addTable(self::JOIN_SESSION);
@@ -296,13 +295,13 @@ class QueryEngine extends SQLQueryEngine
                 . "WHERE bs2.SessionID = s.ID "
                 . "AND bs2.Quantity > 0 "
                 . "AND bcs2.Label = 'Available'"
-                . ")";            
+                . ")";
 
-        case 'SpecimenType':                                                    
-            $this->addTable(self::JOIN_SESSION);                                
-            $this->addTable(self::JOIN_SPECIMEN);                               
-            $this->addTable(self::JOIN_TYPE);                                   
-            return 'bst.Label';                                  
+        case 'SpecimenType':
+            $this->addTable(self::JOIN_SESSION);
+            $this->addTable(self::JOIN_SPECIMEN);
+            $this->addTable(self::JOIN_TYPE);
+            return 'bst.Label';
 
         case 'SpecimenBarcode':
             $this->addTable(self::JOIN_SESSION);
