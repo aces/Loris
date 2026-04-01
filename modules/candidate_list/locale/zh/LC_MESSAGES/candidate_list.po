@@ -20,10 +20,10 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Access Profile"
-msgstr "访问配置文件"
+msgstr "受试者资料"
 
 msgid "Visit Count"
 msgstr "访问次数"
 
 msgid "Open Profile"
-msgstr "公开资料"
+msgstr "打开资料"

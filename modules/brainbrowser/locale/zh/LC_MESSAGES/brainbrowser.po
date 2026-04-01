@@ -71,10 +71,10 @@ msgid "Intensity Value"
 msgstr "强度值"
 
 msgid "Contrast (0.0 to 2.0):"
-msgstr "对比度（0.0–2.0）："
+msgstr "对比度（0.0 到 2.0）："
 
 msgid "Brightness (-1 to 1):"
-msgstr "亮度（-1–1）："
+msgstr "亮度（-1 到 1）："
 
 msgid "View Slices"
 msgstr "查看切片"
