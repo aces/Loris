@@ -47,7 +47,8 @@ class Sessions extends \NDB_Page
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return (($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ($user->hasCenter($this->timepoint->getCenterID())
@@ -103,7 +104,7 @@ class Sessions extends \NDB_Page
         $parameters = $request->getQueryParams();
         $user       = $request->getAttribute('user');
 
-        if (!$this->_hasAccess($user)) {
+        if (!$this->isAccessibleBy($user)) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,

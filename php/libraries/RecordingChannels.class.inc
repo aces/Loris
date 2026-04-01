@@ -28,7 +28,7 @@ class RecordingChannels
     private ?string $_channeltypedescription;
     private ?string $_channelstatus;
     private ?string $_statusdescription;
-    private ?string $_samplingfrequency;
+    private ?int    $_samplingfrequency;
     private ?string $_lowcutoff;
     private ?string $_highcutoff;
     private ?string $_manualflag;
@@ -46,7 +46,7 @@ class RecordingChannels
      * @param ?string $channeltypedescription Channel Type Description
      * @param ?string $channelstatus          Channel Status
      * @param ?string $statusdescription      Status Description
-     * @param ?string $samplingfrequency      Sampling Frequency
+     * @param ?int    $samplingfrequency      Sampling Frequency
      * @param ?string $lowcutoff              Low Cutoff
      * @param ?string $highcutoff             High Cutoff
      * @param ?string $manualflag             Manual Flag
@@ -62,7 +62,7 @@ class RecordingChannels
         ?string $channeltypedescription,
         ?string $channelstatus,
         ?string $statusdescription,
-        ?string $samplingfrequency,
+        ?int    $samplingfrequency,
         ?string $lowcutoff,
         ?string $highcutoff,
         ?string $manualflag,
@@ -150,9 +150,9 @@ class RecordingChannels
     /**
      * Accessor for sampling frequency
      *
-     * @return ?string
+     * @return ?int
      */
-    public function getSamplingFrequency(): ?string
+    public function getSamplingFrequency(): ?int
     {
         return $this->_samplingfrequency;
     }

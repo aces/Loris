@@ -52,19 +52,19 @@
           {/if}
         </div>
 
-	{if count($languages) > 1}
-	<div style="padding: 2ex">
-	<form method="get" >
-           <div class="form-group">
-		<select class="form-control" name="lang" onChange="this.form.submit()">
-		{foreach from=$languages key=langcode item=lang}
-			<option value={$langcode} {if $langcode==$language}selected="selected"{/if}>{$lang}</option>
-		{/foreach}
-		</select>
-            </div>
-	</form>
-	</div>
-        {/if}
+      {if count($languages) > 1}
+        <div style="padding: 2ex">
+        <form method="get" >
+          <div class="form-group">
+            <select class="form-control" name="lang" onChange="this.form.submit()">
+              {foreach from=$languages key=langcode item=lang}
+                <option value={$langcode} {if $langcode==$language}selected="selected"{/if}>{$lang}</option>
+              {/foreach}
+            </select>
+          </div>
+        </form>
+        </div>
+      {/if}
       </div>
     </div>
   </header>

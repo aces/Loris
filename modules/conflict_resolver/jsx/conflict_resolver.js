@@ -11,6 +11,7 @@ import ResolvedFilterableDataTable from './resolved_filterabledatatable';
 import hiStrings from '../locale/hi/LC_MESSAGES/conflict_resolver.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
 import frStrings from '../locale/fr/LC_MESSAGES/conflict_resolver.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Conflict Resolver class.
@@ -84,6 +85,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'conflict_resolver', jaStrings);
   i18n.addResourceBundle('hi', 'conflict_resolver', hiStrings);
   i18n.addResourceBundle('fr', 'conflict_resolver', frStrings);
+  i18n.addResourceBundle('zh', 'conflict_resolver', zhStrings);
   const Index = withTranslation(
     ['conflict_resolver', 'loris']
   )(ConflictResolver);

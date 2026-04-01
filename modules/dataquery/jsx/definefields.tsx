@@ -600,7 +600,8 @@ function SelectedFieldList(props: {
         onMouseEnter={() => setRemovingIdx(i)}
         onMouseLeave={() => setRemovingIdx(null)}>
         <i
-          className="fas fa-trash-alt" onClick={() => {
+          className="fas fa-trash-alt" onClick={(e) => {
+            e.stopPropagation();
             removeField(item);
             setRemovingIdx(null);
           }}

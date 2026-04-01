@@ -24,7 +24,8 @@ class Queries extends \LORIS\Http\Endpoint
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return true;
     }

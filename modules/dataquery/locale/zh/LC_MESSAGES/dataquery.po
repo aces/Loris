@@ -1,0 +1,535 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Data Query Tool (Beta)"
+msgstr "数据查询工具 (测试版)"
+
+msgid "Starred Queries"
+msgstr "星标查询"
+
+msgid "Study Query"
+msgid_plural "Study Queries"
+msgstr[0] "研究查询"
+
+msgid "Candidate matches:"
+msgstr "受试者匹配项："
+
+msgid "Note: matches count only includes candidates that you have access to. Results may vary from other users due to permissions."
+msgstr "注意：匹配计数仅包含您有权访问的受试者。由于权限差异，结果可能与其他用户不同。"
+
+msgid "Query not yet run"
+msgstr "查询尚未运行"
+
+msgid "Loading data:"
+msgstr "正在加载数据："
+
+msgid "{{value}} of {{max}} candidates"
+msgstr "{{max}} 名受试者中的 {{value}} 名"
+
+msgid "Organizing headers:"
+msgstr "正在组织表头："
+
+msgid "{{value}} of {{max}} columns"
+msgstr "{{max}} 列中的 {{value}} 列"
+
+msgid "Organizing data:"
+msgstr "正在整理数据："
+
+msgid "Invalid progress type: {{type}}"
+msgstr "无效的进度类型：{{type}}"
+
+msgid "No data for visit"
+msgstr "无访视数据"
+
+msgid "Field Name"
+msgstr "字段名称"
+
+msgid "Field Description"
+msgstr "字段说明"
+
+msgid "Field Name: Field Description"
+msgstr "字段名称：字段说明"
+
+msgid "Rows (Cross-sectional)"
+msgstr "行 (横截面)"
+
+msgid "Columns (Longitudinal)"
+msgstr "列 (纵向)"
+
+msgid "Inline values (no download)"
+msgstr "内联值 (直接显示，不下载)"
+
+msgid "Raw JSON (debugging only)"
+msgstr "原始 JSON (仅限调试)"
+
+msgid "Header Display Format"
+msgstr "表头显示格式"
+
+msgid "Display visits as"
+msgstr "访视显示方式"
+
+msgid "Label"
+msgid_plural "Labels"
+msgstr[0] "标签"
+
+msgid "Value"
+msgid_plural "Values"
+msgstr[0] "值"
+
+msgid "Display options as"
+msgstr "选项显示方式"
+
+msgid "Display empty visits?"
+msgstr "是否显示空访视？"
+
+msgid "Row Number"
+msgstr "行号"
+
+msgid "Modify Fields"
+msgstr "修改字段"
+
+msgid "Choose Fields"
+msgstr "选择字段"
+
+msgid "Modify Filters"
+msgstr "修改过滤器"
+
+msgid "Add Filters"
+msgstr "添加过滤器"
+
+msgid "Run Query"
+msgstr "运行查询"
+
+msgid "Next Steps"
+msgstr "下一步操作"
+
+msgid "Delete item"
+msgstr "删除项目"
+
+msgid "Delete Group"
+msgstr "删除组"
+
+msgid "Group does not have any items."
+msgstr "该组中没有任何项目。"
+
+msgid "Group only has 1 item. A group with only 1 item is equivalent to not having the group."
+msgstr "该组仅包含 1 个项目。仅包含 1 个项目的组等同于未建组。"
+
+msgid "Add \"{{operator}}\" condition to group"
+msgstr "将“{{operator}}”条件添加到组"
+
+msgid "New \"{{antiOperator}}\" subgroup"
+msgstr "新建“{{antiOperator}}”子组"
+
+msgid "Hide Advanced"
+msgstr "隐藏高级选项"
+
+msgid "Show Advanced"
+msgstr "显示高级选项"
+
+msgid "The \"nested groups\" options are advanced options for queries that do not have any specific condition at the base of the query. Use Add nested \"or\" condition groups if you need to build a query of the form. (a or b) and (c or d) [or (e and f)..]"
+msgstr "“嵌套组”选项是针对基础条件为空的高级查询选项。如果需要构建类似 (a 或 b) 且 (c 或 d) [或 (e 且 f)..] 的查询，请使用“添加嵌套【或】条件组”。"
+
+msgid "Add nested \"or\" condition groups"
+msgstr "添加嵌套的“或”条件组"
+
+msgid "Use Add nested \"and\" condition groups if you need to build a query of the form (a and b) or (c and d) [or (e and f)..]"
+msgstr "如果需要构建类似 (a 且 b) 或 (c 且 d) [或 (e 且 f)..] 的查询，请使用“添加嵌套【且】条件组”。"
+
+msgid "Add nested \"and\" condition groups"
+msgstr "添加嵌套的“与”条件组"
+
+msgid "Currently querying for ALL candidates."
+msgstr "当前正在查询所有受试者。"
+
+msgid "You can add conditions by clicking one of the buttons below."
+msgstr "您可以通过单击下方的按钮之一来添加条件。"
+
+msgid "Click Add Condition to add one or more conditions to your filters (ie. \"Date Of Birth < 2015-02-15\"). This is most likely where you want to start your filters."
+msgstr "单击“添加条件”可向过滤器添加一个或多个条件（例如 “出生日期 < 2015-02-15”）。这通常是您开始设置过滤器的地方。"
+
+msgid "You can also import a population from a CSV by clicking the Import from CSV button."
+msgstr "您还可以通过单击“从 CSV 导入”按钮从 CSV 文件导入受试群体。"
+
+msgid "The advanced options are for queries that do not have a condition to add at the base of the query."
+msgstr "高级选项适用于在查询基础层级无需添加任何条件的查询。"
+
+msgid "Add Condition"
+msgstr "添加条件"
+
+msgid "Import from CSV"
+msgstr "从 CSV 导入"
+
+msgid "Use New \"and\" subgroup if the rest of the query you need to write is a subgroup consisting of \"and\" conditions. ie your query is of the form: (your condition above) or (c and d [and e and f..])"
+msgstr "如果查询的其余部分是由“与 (And)”条件组成的子组，请使用“新建【与】子组”。即您的查询形式为：(上述条件) 或 (c 且 d [且 e 且 f..])"
+
+msgid "New \"and\" subgroup"
+msgstr "新建“与”子组"
+
+msgid "Use New \"or\" subgroup if the rest of the query you need to write is a subgroup consisting of \"or\" conditions. ie your query is of the form: (your condition above) and (c or d [or e or f..])"
+msgstr "如果查询的其余部分是由“或 (Or)”条件组成的子组，请使用“新建【或】子组”。即您的查询形式为：(上述条件) 且 (c 或 d [或 e 或 f..])"
+
+msgid "New \"or\" subgroup"
+msgstr "新建“或”子组"
+
+msgid "Currently querying for any candidates with:"
+msgstr "当前正在查询符合以下条件的受试者："
+
+msgid "Add \"and\" condition"
+msgstr "添加“与”条件"
+
+msgid "Add \"or\" condition"
+msgstr "添加“或”条件"
+
+msgid "Delete Item"
+msgstr "删除项目"
+
+msgid "Query matches <bold>{{count}}</bold> candidates"
+msgstr "查询匹配到 <bold>{{count}}</bold> 名受试者"
+
+msgid "Current Query"
+msgstr "当前查询"
+
+msgid "Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query."
+msgstr "请注意，结果中仅包含您有权在 LORIS 中访问的受试者。结果数量可能会因其他用户运行相同查询的权限差异而有所不同。"
+
+msgid "Candidate matches"
+msgstr "受试者匹配项"
+
+msgid "Select Visits"
+msgstr "选择访视"
+
+msgid "Criteria"
+msgstr "标准"
+
+msgid "Select an operator"
+msgstr "选择运算符"
+
+msgid "for at least one of the following visits"
+msgstr "在以下至少一次访视中"
+
+msgid "This field may exist multiple times for a single {{scope}}. Adding a criteria based on it means that it must match for <italic>at least one</italic> of the data points."
+msgstr "此字段在单个 {{scope}} 中可能存在多次。基于其添加标准意味着它必须匹配<斜体>至少一个</斜体>数据点。"
+
+msgid "This field may exist multiple times for a single {{scope}} and must match for *any* of the data points"
+msgstr "此字段在单个 {{scope}} 中可能存在多次，并且必须与*所有*数据点匹配"
+
+msgid "<italic>at visit</italic> {{visits}}"
+msgstr "<italic>于访视</italic> {{visits}}"
+
+msgid "Invalid field"
+msgstr "无效字段"
+
+msgid "You must select a field for the criteria."
+msgstr "您必须为标准选择一个字段。"
+
+msgid "Invalid operator"
+msgstr "无效的运算符"
+
+msgid "You must select an operator for the criteria."
+msgstr "您必须为标准选择一个运算符。"
+
+msgid "Invalid value"
+msgstr "无效值"
+
+msgid "You must enter a value to compare the field against."
+msgstr "您必须输入一个值来与该字段进行比对。"
+
+msgid "Invalid visits"
+msgstr "无效访视"
+
+msgid "No visits selected for criteria."
+msgstr "未为标准选择访视。"
+
+msgid "Add criteria"
+msgstr "添加标准"
+
+msgid "Field"
+msgid_plural "Fields"
+msgstr[0] "字段"
+
+msgid "in"
+msgstr "属于"
+
+msgid "starts with"
+msgstr "始于"
+
+msgid "contains"
+msgstr "包含"
+
+msgid "ends with"
+msgstr "结于"
+
+msgid "has data"
+msgstr "有数据"
+
+msgid "has no data"
+msgstr "无数据"
+
+msgid "(No data)"
+msgstr "(无数据)"
+
+msgid "(Not implemented)"
+msgstr "(未实现)"
+
+msgid "(Internal Error. Unhandled cardinality: {{cardinality}})"
+msgstr "(内部错误：未处理的基数 {{cardinality}})"
+
+msgid "Internal error"
+msgstr "内部错误"
+
+msgid "exists"
+msgstr "存在"
+
+msgid "does not exist"
+msgstr "不存在"
+
+msgid "number of"
+msgstr "数量"
+
+msgid "Select a value"
+msgstr "选择一个值"
+
+msgid "Import Population From CSV"
+msgstr "从 CSV 导入群体受试者"
+
+msgid "CSV containing list of"
+msgstr "包含列表的 CSV 文件"
+
+msgid "Candidate identifier type"
+msgstr "受试者标识符类型"
+
+msgid "Does CSV contain a header line?"
+msgstr "CSV 是否包含表头行？"
+
+msgid "CSV File"
+msgstr "CSV 文件"
+
+msgid "Invalid CSV"
+msgstr "CSV 无效"
+
+msgid "Could not parse CSV file"
+msgstr "无法解析 CSV 文件"
+
+msgid "No CSV Uploaded"
+msgstr "未上传 CSV 文件"
+
+msgid "Please upload a CSV file before submitting."
+msgstr "请在提交前上传 CSV 文件。"
+
+msgid "Empty CSV"
+msgstr "空白 CSV"
+
+msgid "The uploaded CSV file is empty."
+msgstr "上传的 CSV 文件为空。"
+
+msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
+msgstr "CSV 预期有 {{expectedLength}} 列。第 {{line}} 行实际有 {{gotLength}} 列。"
+
+msgid "Invalid DCCID"
+msgstr "DCCID 无效"
+
+msgid "Invalid DCCID ({{id}}) on line {{line}}."
+msgstr "第 {{line}} 行的 DCCID ({{id}}) 无效。"
+
+msgid "Welcome to the Data Query Tool"
+msgstr "欢迎使用数据查询工具"
+
+msgid "Instructions"
+msgstr "说明"
+
+msgid "Recent Queries"
+msgstr "最近查询"
+
+msgid "Shared Queries"
+msgstr "共享查询"
+
+msgid "Starred Only"
+msgstr "仅星标"
+
+msgid "Shared Only"
+msgstr "仅限共享"
+
+msgid "No run times (eliminate duplicates)"
+msgstr "不限运行时间 (消除重复项)"
+
+msgid "Filter"
+msgid_plural "Filters"
+msgstr[0] "过滤器"
+
+msgid "Named Only"
+msgstr "仅限已命名"
+
+msgid "Collapse queries"
+msgstr "折叠查询"
+
+msgid "(No filters for query)"
+msgstr "(该查询没有过滤器)"
+
+msgid "Page"
+msgstr "页"
+
+msgid "Unstar"
+msgstr "取消星标"
+
+msgid "Star"
+msgstr "星标"
+
+msgid "Unshare"
+msgstr "取消分享"
+
+msgid "Share"
+msgstr "分享"
+
+msgid "Query Loaded"
+msgstr "查询已加载"
+
+msgid "Successfully loaded query."
+msgstr "成功加载查询。"
+
+msgid "(Run on {{runTime}})"
+msgstr "(于 {{runTime}} 运行)"
+
+msgid "You ran this query on {{runTime}}"
+msgstr "您在 {{runTime}} 运行了该查询"
+
+msgid "You ran this query"
+msgstr "您运行了该查询"
+
+msgid "(Shared by {{sharedBy}})"
+msgstr "(由 {{sharedBy}} 共享)"
+
+msgid "Query shared by {{sharedBy}}"
+msgstr "{{sharedBy}} 共享的查询"
+
+msgid "Name Query"
+msgstr "命名查询"
+
+msgid "Enter your query name"
+msgstr "输入您的查询名称"
+
+msgid "Query name"
+msgstr "查询名称"
+
+msgid "Must provide a query name."
+msgstr "必须提供查询名称。"
+
+msgid "Pin Top Query"
+msgstr "置顶查询"
+
+msgid "Pin Study Query"
+msgstr "固定研究查询"
+
+msgid "Pin Dashboard Summary"
+msgstr "固定仪表盘摘要"
+
+msgid "Pin To Login Page"
+msgstr "固定到登录页面"
+
+msgid "Must pin as study query, to dashboard, or to the login page."
+msgstr "必须固定为研究查询、固定到仪表盘或登录页面。"
+
+msgid "Must provide a query name to pin query as."
+msgstr "必须提供查询名称以固定该查询。"
+
+msgid "{{columnName}} fields"
+msgstr "{{columnName}} 字段"
+
+msgid "Define Filters"
+msgstr "定义过滤器"
+
+msgid "Define Fields"
+msgstr "定义字段"
+
+msgid "View Data"
+msgstr "查看数据"
+
+msgid "Reload query"
+msgstr "重新加载查询"
+
+msgid "Continue to Define Fields"
+msgstr "继续定义字段"
+
+msgid "Above, there is also a Study Queries panel. This are a special type of shared queries that have been pinned by a study administer to always display at the top of this page."
+msgstr "上方还有一个“研究查询”面板。这是一种特殊类型的共享查询，研究管理员已将其固定，以便始终显示在此页面的顶部。"
+
+msgid "The data query tool allows you to query data within LORIS. There are three steps to defining a query:"
+msgstr "数据查询工具允许您在 LORIS 中查询数据。定义查询分为三个步骤："
+
+msgid "First, you must select the fields that you're interested in on the Define Fields page."
+msgstr "首先，您必须在“定义字段”页面上选择您感兴趣的字段。"
+
+msgid "Next, you can optionally define filters on the Define Filters page to restrict the population that is returned."
+msgstr "接下来，您可以选择在“定义过滤器”页面上定义过滤器，以限制返回的人群群体。"
+
+msgid "The Next Steps on the bottom right of your screen always the context-sensitive next steps that you can do to build your query."
+msgstr "屏幕右下角的“下一步”始终是您构建查询时可采取的上下文相关操作。"
+
+msgid "Finally, you view your query results on the View Data page"
+msgstr "最后，您可以在“查看数据”页面上查看查询结果"
+
+msgid "Your recently run queries will be displayed in the Recent Queries panel below. Instead of building a new query, you can reload a query that you've recently run by clicking on the icon next to the query."
+msgstr "您最近运行的查询将显示在下方的“最近查询”面板中。您无需构建新查询，只需单击查询旁边的图标即可重新加载最近运行的查询。"
+
+msgid "Queries can be shared with others by clicking the icon. This will cause the query to be shared with all users who have access to the fields used by the query. It will display in a Shared Queries panel below the Recent Queries."
+msgstr "通过单击图标可以与其他人共享查询。这将使该查询与所有有权访问该查询所用字段的用户共享。它将显示在“最近查询”下方的“共享查询”面板中。"
+
+msgid "You may also give a query a name at any time by clicking the icon. This makes it easier to find queries you care about by giving them an easier to remember name that can be used for filtering. When you share a query, the name will be shared along with it."
+msgstr "您还可以随时通过单击图标来命名查询。这通过赋予其易于记忆的名称来进行过滤，从而更容易找到您关心的查询。当您分享查询时，其名称也会一并分享。"
+
+msgid "Category"
+msgstr "类别"
+
+msgid "Selected Fields"
+msgstr "选定字段"
+
+msgid "Available Fields"
+msgstr "可用字段"
+
+msgid "Add all"
+msgstr "全部添加"
+
+msgid "Remove all"
+msgstr "全部移除"
+
+msgid "Filter within category"
+msgstr "在类别内过滤"
+
+msgid "Default Visits"
+msgstr "默认访视"
+
+msgid "Sync with selected fields"
+msgstr "与选定字段同步"
+
+msgid "Select a field"
+msgstr "选择一个字段"
+
+msgid "Select a category"
+msgstr "选择一个类别"
+
+msgid "Invalid response"
+msgstr "无效响应"
+
+msgid "Invalid tab"
+msgstr "无效标签"
+
+msgid "or"
+msgstr "或者"

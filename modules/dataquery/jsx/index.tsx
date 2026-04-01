@@ -22,6 +22,7 @@ import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/dataquery.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dataquery.json';
 import frStrings from '../locale/fr/LC_MESSAGES/dataquery.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/dataquery.json';
 
 type ActiveCategoryType = {
     module: string,
@@ -256,6 +257,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'dataquery', jaStrings);
   i18n.addResourceBundle('hi', 'dataquery', hiStrings);
   i18n.addResourceBundle('fr', 'dataquery', frStrings);
+  i18n.addResourceBundle('zh', 'dataquery', zhStrings);
   const Index = withTranslation(
     ['dataquery', 'loris']
   )(DataQueryApp);

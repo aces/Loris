@@ -1,0 +1,86 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Examiner"
+msgstr "检查员"
+
+msgid "Edit Examiner"
+msgstr "编辑检查员"
+
+msgid "Examiner added."
+msgstr "检查员已经添加。"
+
+msgid "Add Examiner"
+msgstr "添加考官"
+
+msgid "Name"
+msgstr "姓名"
+
+msgid "Radiologist"
+msgstr "放射科医生"
+
+msgid "Add"
+msgstr "添加"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Certification"
+msgstr "认证"
+
+msgid "This user has no site affiliations"
+msgstr "该用户没有站点隶属关系"
+
+msgid "Edit Certification for"
+msgstr "编辑认证"
+
+msgid "Certification Status"
+msgstr "认证状态"
+
+msgid "Certification Date"
+msgstr "认证日期"
+
+msgid "Comments"
+msgstr "评论"
+
+msgid "Change Log"
+msgstr "变更日志"
+
+msgid "User"
+msgstr "用户"
+
+msgid "Measure"
+msgstr "措施"
+
+msgid "Old Value"
+msgstr "旧值"
+
+msgid "Old Date"
+msgstr "旧日期"
+
+msgid "New Value"
+msgstr "新价值"
+
+msgid "New Date"
+msgstr "新日期"
+
+msgid "No changes have been made"
+msgstr "没有做出任何改变"

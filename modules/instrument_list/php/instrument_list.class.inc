@@ -84,7 +84,8 @@ class Instrument_List extends \NDB_Menu_Filter
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $timePoint = $this->timePoint;
         if ($timePoint === null) {

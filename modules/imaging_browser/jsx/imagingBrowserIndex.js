@@ -11,6 +11,7 @@ import FilterableDataTable from 'FilterableDataTable';
 import hiStrings from '../locale/hi/LC_MESSAGES/imaging_browser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
 import frStrings from '../locale/fr/LC_MESSAGES/imaging_browser.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/imaging_browser.json';
 
 /**
  * Imaging browser index component
@@ -222,6 +223,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
   i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
   i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
+  i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
   const Index = withTranslation(
     ['imaging_browser', 'loris']
   )(ImagingBrowserIndex);

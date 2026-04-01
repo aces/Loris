@@ -54,7 +54,8 @@ class ViewSession extends \NDB_Form
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.
@@ -107,7 +108,7 @@ class ViewSession extends \NDB_Form
 
         if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
             $user = \User::singleton();
-            if ($this->_hasAccess($user) && isset($_POST['save_changes'])) {
+            if ($this->isAccessibleBy($user) && isset($_POST['save_changes'])) {
                 $this->_updateStatus($_POST);
                 $this->_updateSelected();
                 $this->_updateVisitStatus();
@@ -129,8 +130,7 @@ class ViewSession extends \NDB_Form
                 'true'  => 'True',
                 'false' => 'False',
             ];
-            $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
-                                                 true : false;
+            $this->tpl_data['has_permission']    = $this->isAccessibleBy($user);
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ?
                                                     true : false;
             if ($this->_hasQCPerm()) {

@@ -10,6 +10,7 @@ import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/module_manager.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/module_manager.json';
 import frStrings from '../locale/fr/LC_MESSAGES/module_manager.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/module_manager.json';
 
 /**
  * Module Manager React Component
@@ -260,6 +261,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'module_manager', hiStrings);
   i18n.addResourceBundle('ja', 'module_manager', jaStrings);
   i18n.addResourceBundle('fr', 'module_manager', frStrings);
+  i18n.addResourceBundle('zh', 'module_manager', zhStrings);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(

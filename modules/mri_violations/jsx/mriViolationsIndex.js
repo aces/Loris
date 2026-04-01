@@ -10,6 +10,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/mri_violations.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/mri_violations.json';
 import frStrings from '../locale/fr/LC_MESSAGES/mri_violations.json';
 import esStrings from '../locale/es/LC_MESSAGES/mri_violations.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/mri_violations.json';
 
 /**
  * Entry point for the MRI Violatons module.
@@ -494,6 +495,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'mri_violations', jaStrings);
   i18n.addResourceBundle('fr', 'mri_violations', frStrings);
   i18n.addResourceBundle('es', 'mri_violations', esStrings);
+  i18n.addResourceBundle('zh', 'mri_violations', zhStrings);
 
   const ViolationsIndex = withTranslation(['mri_violations', 'loris'])(
     MRIViolationsIndex,

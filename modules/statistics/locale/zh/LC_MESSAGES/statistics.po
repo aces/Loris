@@ -1,0 +1,128 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Statistics"
+msgstr "统计数据"
+
+msgid "Study Progression"
+msgstr "学习进展"
+
+msgid "Summary"
+msgstr "概括"
+
+msgid "Site Scans"
+msgstr "站点扫描"
+
+msgid "Site Recruitment"
+msgstr "现场招聘"
+
+msgid "-- Clear Selection --"
+msgstr "-- 清除选择 --"
+
+msgid "Scan sessions per site"
+msgstr "扫描每个站点的会话"
+
+msgid "Recruitment per site"
+msgstr "每个站点的招聘"
+
+msgid "Download as PNG"
+msgstr "下载为 PNG"
+
+msgid "Labels"
+msgstr "标签"
+
+msgid "Date Registered"
+msgstr "注册日期"
+
+msgid "Range Start"
+msgstr "范围起始"
+
+msgid "Range End"
+msgstr "范围结束"
+
+msgid "Total recruitment by Age"
+msgstr "按年龄划分的总招聘人数"
+
+msgid "Ethnicity at Screening"
+msgstr "筛选时的种族"
+
+msgid "Total Recruitment per Site"
+msgstr "每个站点的总招聘人数"
+
+msgid "Biological sex breakdown by site"
+msgstr "按地点划分的生物性别细分"
+
+msgid "Candidate Age at Registration"
+msgstr "候选人注册时的年龄"
+
+msgid "Candidates registered"
+msgstr "候选人已登记"
+
+msgid "Target: {{target}}"
+msgstr "目标：{{target}}"
+
+msgid "Recruitment target of {{target}} was reached."
+msgstr "已达到{{target}}的招募目标。"
+
+msgid "Recruitment target of {{target}} was not reached."
+msgstr "未达到{{target}}的招募目标。"
+
+msgid "No target set"
+msgstr "没有设定目标"
+
+msgid "{{total}} total participants."
+msgstr "{{total}} 参与者总数。"
+
+msgid "Overall Recruitment"
+msgstr "整体招聘"
+
+msgid "Recruitment"
+msgstr "招聘"
+
+msgid "Overall"
+msgstr "全面的"
+
+msgid "Site Breakdown"
+msgstr "网站细分"
+
+msgid "Project Breakdown"
+msgstr "项目分解"
+
+msgid "Cohort Breakdown"
+msgstr "群组细分"
+
+msgid "Total Participants: {{count}}"
+msgstr "参与者总数：{{count}}"
+
+msgid "Projects: {{count}}"
+msgstr "项目：{{count}}"
+
+msgid "Cohorts: {{count}}"
+msgstr "群组：{{count}}"
+
+msgid "Age (Years)"
+msgstr "年龄（岁）"
+
+msgid "Participants"
+msgstr "参加者"
+
+msgid "Unknown"
+msgstr "未知"

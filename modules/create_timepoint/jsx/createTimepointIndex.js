@@ -198,10 +198,12 @@ class CreateTimepoint extends React.Component {
       // Display error message to user.
       const errorMessage = t(
         'No cohorts defined for project: {{project}}',
-        {ns: 'create_timepoint',
+        {
+          ns: 'create_timepoint',
           project: this.state.form.options.project[
             this.state.form.value.project
-          ]});
+          ],
+        });
       state.messages = [errorMessage];
       state.messages = [errorMessage];
       swal.fire(errorMessage, '', 'error');
@@ -239,8 +241,9 @@ class CreateTimepoint extends React.Component {
       ) {
         const errorMessage = t(
           'No visit labels defined for the combination'
-            + ' project: {{project}} and cohort: {{cohort}}',
-          {ns: 'create_timepoint',
+          + ' project: {{project}} and cohort: {{cohort}}',
+          {
+            ns: 'create_timepoint',
             project: this.state.form.options.project[
               this.state.form.value.project
             ],
@@ -343,7 +346,7 @@ class CreateTimepoint extends React.Component {
 
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     /**

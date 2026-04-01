@@ -10,6 +10,7 @@ import FilterableDataTable from 'FilterableDataTable';
 
 import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/electrophysiology_browser.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/electrophysiology_browser.json';
 
 /**
  * Electrophysiology Browser page.
@@ -200,6 +201,7 @@ ElectrophysiologyBrowserIndex.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'electrophysiology_browser', jaStrings);
   i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
+  i18n.addResourceBundle('zh', 'electrophysiology_browser', zhStrings);
   const Index = withTranslation(
     ['electrophysiology_browser', 'loris']
   )(ElectrophysiologyBrowserIndex);

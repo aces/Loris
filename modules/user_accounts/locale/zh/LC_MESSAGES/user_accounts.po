@@ -1,0 +1,213 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "User Accounts"
+msgstr "用户帐户"
+
+msgid "Edit User"
+msgstr "编辑用户"
+
+msgid "Pending account approval"
+msgstr "待批准账户"
+
+msgid "Pending account approvals"
+msgstr "待批准账户"
+
+msgid "This user has no site affiliations"
+msgstr "该用户没有网站隶属关系"
+
+msgid "This user has no project affiliations"
+msgstr "该用户没有项目隶属关系"
+
+msgid "Full Name"
+msgstr "姓名"
+
+msgid "Pending Approval"
+msgstr "待批准"
+
+msgid "Radiologist"
+msgstr "放射科医生"
+
+msgid "Account Request Date"
+msgstr "帐户申请日期"
+
+msgid "Add User"
+msgstr "添加用户"
+
+msgid "The form you submitted contains data entry errors"
+msgstr "您提交的表格包含数据输入错误"
+
+msgid "Notes"
+msgstr "笔记"
+
+msgid ""
+"It is recommended to use an email address as the username, for clarity and "
+"uniqueness."
+msgstr "为了清晰和唯一性，建议使用电子邮件地址作为用户名。"
+
+msgid ""
+"When generating a new password, please notify the user by checking 'Send "
+"email to user' box below!"
+msgstr "生成新密码时，请选中下面的“向用户发送电子邮件”框来通知用户！"
+
+msgid ""
+"You must leave the password field empty if you want the system to generate "
+"one for you"
+msgstr "如果您希望系统为您生成密码，则必须将密码字段留空"
+
+msgid "Add/Edit User"
+msgstr "添加/编辑用户"
+
+msgid "Reject User"
+msgstr "拒绝用户"
+
+msgid "Make user name match email address"
+msgstr "使用户名与电子邮件地址匹配"
+
+msgid "Generate new password"
+msgstr "生成新密码"
+
+msgid "Degree"
+msgstr "程度"
+
+msgid "Academic Position"
+msgstr "学术职务"
+
+msgid "Institution"
+msgstr "机构"
+
+msgid "Department"
+msgstr "部门"
+
+msgid "Street Address"
+msgstr "街道地址"
+
+msgid "City"
+msgstr "城市"
+
+msgid "State/Province"
+msgstr "州/省"
+
+msgid "Zip/Postal Code"
+msgstr "邮编/邮政编码"
+
+msgid "Country"
+msgstr "国家"
+
+msgid "FAX"
+msgstr "传真"
+
+msgid "Send email to user"
+msgstr "发送电子邮件给用户"
+
+msgid "Confirm Email"
+msgstr "确认电子邮件"
+
+msgid "Examiner At:"
+msgstr "考官在："
+
+msgid "Examiner Status"
+msgstr "审查员状态"
+
+msgid "Pending approval"
+msgstr "待批准"
+
+msgid "Active from"
+msgstr "活跃于"
+
+msgid "Active to"
+msgstr "活跃于"
+
+msgid "Permissions"
+msgstr "权限"
+
+msgid "Supervisors"
+msgstr "监事"
+
+msgid "You cannot enter a user name if you want it to match the email address"
+msgstr "如果您希望用户名与电子邮件地址匹配，则无法输入用户名"
+
+msgid ""
+"You must enter a user name or choose to make it match the email address"
+msgstr "您必须输入用户名或选择使其与电子邮件地址匹配"
+
+msgid "The user name already exists"
+msgstr "用户名已存在"
+
+msgid "The user name must not exceed 255 characters"
+msgstr "用户名不得超过 255 个字符"
+
+msgid ""
+"You cannot have the user name match an email address that contains a "
+"whitespace character"
+msgstr "您不能让用户名与包含空格字符的电子邮件地址匹配"
+
+msgid "Whitespace characters are not allowed in user names"
+msgstr "用户名中不允许出现空格字符"
+
+msgid "Please specify password or click Generate new password"
+msgstr "请指定密码或单击“生成新密码”"
+
+msgid "Password is required"
+msgstr "需要密码"
+
+msgid "You must enter an email address"
+msgstr "您必须输入电子邮件地址"
+
+msgid "Email and confirmed email do not match"
+msgstr "电子邮件和已确认的电子邮件不匹配"
+
+msgid "You must select at least one site/affiliation"
+msgstr "您必须至少选择一个站点/隶属关系"
+
+msgid "You must select at least one project/affiliation"
+msgstr "您必须至少选择一个项目/隶属关系"
+
+msgid "Please specify if examiner is a radiologist"
+msgstr "请注明检查者是否是放射科医生"
+
+msgid "Please set pending approval Yes or No"
+msgstr "请设置待批准是或否"
+
+msgid ""
+"Please select at least one examiner site or clear the 'Examiner status' "
+"fields below (i.e. 'Radiologist' and 'Pending Approval')."
+msgstr "请至少选择一个检查员站点或清除下面的“检查员状态”字段（即“放射科医生”和“待批准”）。"
+
+msgid ""
+"Please notice that the \"Active from\" date should be lesser or equal to the"
+" \"Active to\" date."
+msgstr "请注意，“生效日期”应小于或等于“生效日期”。"
+
+msgid "Your password cannot be your email."
+msgstr "您的密码不能是您的电子邮件。"
+
+msgid "Your password cannot be your user name."
+msgstr "您的密码不能是您的用户名。"
+
+msgid "The passwords do not match."
+msgstr "密码不匹配。"
+
+msgid "New and old passwords are identical"
+msgstr "新旧密码相同"
+
+msgid "This email address is already in use"
+msgstr "该电子邮件地址已被使用"

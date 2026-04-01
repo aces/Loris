@@ -26,11 +26,9 @@ msgstr "Scans IRM non conformes"
 
 #, fuzzy
 msgid "Violated scan"
-msgstr "Scan non conforme"
-
-#, fuzzy
-msgid "Violated scans"
-msgstr "Scans non conformes"
+msgid_plural "Violated scans"
+msgstr[0] "Scan non conforme"
+msgstr[1] "Scans non conformes"
 
 #, fuzzy
 msgid "Violations for SeriesUID"

@@ -19,6 +19,7 @@ import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
 import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/document_repository.json';
 
 /**
  * Doc index component
@@ -490,6 +491,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'document_repository', hiStrings);
   i18n.addResourceBundle('ja', 'document_repository', jaStrings);
   i18n.addResourceBundle('fr', 'document_repository', frStrings);
+  i18n.addResourceBundle('zh', 'document_repository', zhStrings);
 
   const TranslatedDocIndex = withTranslation(
     ['document_repository', 'loris'])(DocIndex);

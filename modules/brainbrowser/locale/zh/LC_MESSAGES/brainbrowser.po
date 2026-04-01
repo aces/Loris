@@ -1,0 +1,89 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Brainbrowser"
+msgstr "脑影像浏览器"
+
+msgid "Sync Volumes"
+msgstr "同步体积"
+
+msgid "Reset View"
+msgstr "重置视图"
+
+msgid "Auto"
+msgstr "自动"
+
+msgid "300 Pixels (Default)"
+msgstr "300 像素（默认）"
+
+msgid "{{count}} Pixels"
+msgstr "{{count}} 像素"
+
+msgid "Gray"
+msgstr "灰度"
+
+msgid "Spectral"
+msgstr "光谱"
+
+msgid "Thermal"
+msgstr "热力图"
+
+msgid "Blue"
+msgstr "蓝色"
+
+msgid "Green"
+msgstr "绿色"
+
+msgid "Overlay"
+msgstr "叠加"
+
+msgid "World Coordinates"
+msgstr "世界坐标"
+
+msgid "Threshold"
+msgstr "阈值"
+
+msgid "Color Map"
+msgstr "颜色映射"
+
+msgid "Voxel Coordinates"
+msgstr "体素坐标"
+
+msgid "Intensity Value"
+msgstr "强度值"
+
+msgid "Contrast (0.0 to 2.0):"
+msgstr "对比度（0.0–2.0）："
+
+msgid "Brightness (-1 to 1):"
+msgstr "亮度（-1–1）："
+
+msgid "View Slices"
+msgstr "查看切片"
+
+msgid "Sagittal"
+msgstr "矢状面"
+
+msgid "Coronal"
+msgstr "冠状面"
+
+msgid "Transverse"
+msgstr "横断面"

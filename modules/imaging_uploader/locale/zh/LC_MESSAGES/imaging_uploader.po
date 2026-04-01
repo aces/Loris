@@ -1,0 +1,149 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Imaging Uploader"
+msgstr "图像上传器"
+
+msgid "Upload an imaging scan"
+msgstr "上传影像扫描"
+
+msgid "Phantom Scans"
+msgstr "幻影扫描"
+
+msgid "File to Upload"
+msgstr "要上传的文件"
+
+msgid "Notes"
+msgstr "笔记"
+
+msgid "File cannot exceed {{maxUploadSize}}"
+msgstr "文件不能超过{{maxUploadSize}}"
+
+msgid "File must be of type .tgz or tar.gz or .zip"
+msgstr "文件必须是 .tgz 或 tar.gz 或 .zip 类型"
+
+msgid "For files that are not Phantom Scans, file name must begin with <0>{{prefix}}</0>"
+msgstr "对于非 Phantom Scan 的文件，文件名必须以 <0> {{prefix}} </0> 开头"
+
+msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
+msgstr "例如，对于 DCCID {{dccid}} 、 PSCID {{pscid}} 和访问标签 {{visitLabel}} ，文件名应带有前缀： {{prefix}}"
+
+msgid "The file {{fileName}} must be of type .tgz, .tar.gz or .zip."
+msgstr "文件 {{fileName}} 的类型必须为 .tgz、.tar.gz 或 .zip。"
+
+msgid "Invalid extension for the uploaded file!"
+msgstr "上传文件的扩展名无效！"
+
+msgid "Filename extension does not match .zip, .tgz or .tar.gz "
+msgstr "文件扩展名与 .zip、.tgz 或 .tar.gz 不匹配"
+
+msgid "Incorrect file name!"
+msgstr "文件名不正确！"
+
+msgid "Could not determine PSCID, DCCID and Visit Label based on the filename!"
+msgstr "无法根据文件名确定 PSCID、DCCID 和访问标签！"
+
+msgid "File already exists!"
+msgstr "文件已经存在！"
+
+msgid "A file with this name has already successfully passed the MRI pipeline!"
+msgstr "具有此名称的文件已成功通过 MRI 管道！"
+
+msgid "File is currently processing!"
+msgstr "文件当前正在处理！"
+
+msgid "A file with this name is currently going through the MRI pipeline!"
+msgstr "具有此名称的文件当前正在通过 MRI 管道！"
+
+msgid "A file with this name already exists! Would you like to overwrite the existing file?"
+msgstr "同名的文件已存在！您想覆盖现有文件吗？"
+
+msgid "Cancelled"
+msgstr "取消"
+
+msgid "Your upload has been cancelled."
+msgstr "您的上传已被取消。"
+
+msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
+msgstr "具有此名称的文件已上传，但尚未由 MRI 管道处理。您想覆盖现有文件吗？"
+
+msgid "Upload Successful!"
+msgstr "上传成功！"
+
+msgid "Processing of this file by the MRI pipeline has started"
+msgstr "MRI 管道已开始处理此文件"
+
+msgid "Select this upload in the result table to view the processing progress"
+msgstr "在结果表中选择本次上传即可查看处理进度"
+
+msgid "Upload failed: a network error occured"
+msgstr "上传失败：出现网络错误"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "请确保文件不大于 {{maxFileSize}}"
+
+msgid "Upload failed: received HTTP response code {{code}}"
+msgstr "上传失败：收到 HTTP 响应代码 {{code}}"
+
+msgid "Submission error!"
+msgstr "提交错误！"
+
+msgid "Log Viewer"
+msgstr "日志查看器"
+
+msgid "Logs to display"
+msgstr "要显示的日志"
+
+msgid "Summary"
+msgstr "概括"
+
+msgid "Detailed"
+msgstr "详细的"
+
+msgid "<select a row in the table below to view the upload logs>"
+msgstr "<在下表中选择一行查看上传日志>"
+
+msgid "Number Of Files Created"
+msgstr "创建的文件数"
+
+msgid "Number Of Files Inserted"
+msgstr "插入的文件数"
+
+msgid "{{successText}} ({{inserted}} out of {{created}})"
+msgstr "{{successText}}（{{created}} 中的 {{inserted}}）"
+
+msgid "{{numViolatedScans}} violated scans"
+msgstr "{{numViolatedScans}} 扫描违规"
+
+msgid "Tarchive Info"
+msgstr "档案信息"
+
+msgid "Upload ID"
+msgstr "上传身份证件"
+
+msgid "Upload Location"
+msgstr "上传位置"
+
+msgid "Upload Date"
+msgstr "上传日期"
+
+msgid "Uploaded By"
+msgstr "上传者"

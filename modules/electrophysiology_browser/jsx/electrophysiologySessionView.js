@@ -35,6 +35,7 @@ if (EEG_VIS_ENABLED) {
 }
 import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/electrophysiology_browser.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/electrophysiology_browser.json';
 
 
 /**
@@ -204,28 +205,28 @@ class ElectrophysiologySessionView extends Component {
         ...dbEntry,
         // EEG Visualization urls
         chunksURLs:
-            dbEntry
-            && dbEntry.file.chunks_urls.map(
-              (url) =>
-                loris.BaseURL
-                + '/electrophysiology_browser/file_reader/?file='
-                + url
-            ),
-        epochsURL:
-            dbEntry
-            && dbEntry.file?.epochsURL
-            && [loris.BaseURL
+          dbEntry
+          && dbEntry.file.chunks_urls.map(
+            (url) =>
+              loris.BaseURL
               + '/electrophysiology_browser/file_reader/?file='
-              + dbEntry.file.epochsURL],
+              + url
+          ),
+        epochsURL:
+          dbEntry
+          && dbEntry.file?.epochsURL
+          && [loris.BaseURL
+            + '/electrophysiology_browser/file_reader/?file='
+            + dbEntry.file.epochsURL],
         electrodesURL:
-            dbEntry
-            && dbEntry.file.downloads.map(
-              (group) =>
-                group.links['physiological_electrode_file']?.file
-                && loris.BaseURL
-                  + '/electrophysiology_browser/file_reader/?file='
-                  + group.links['physiological_electrode_file'].file
-            ),
+          dbEntry
+          && dbEntry.file.downloads.map(
+            (group) =>
+              group.links['physiological_electrode_file']?.file
+              && loris.BaseURL
+              + '/electrophysiology_browser/file_reader/?file='
+              + group.links['physiological_electrode_file'].file
+          ),
         coordSystemURL:
           dbEntry
           && dbEntry.file.downloads.map(
@@ -300,7 +301,7 @@ class ElectrophysiologySessionView extends Component {
    */
   getSplitData(physioFileID, fileIndex, splitIndex) {
     const dataURL = loris.BaseURL
-        + '/electrophysiology_browser/split_data';
+      + '/electrophysiology_browser/split_data';
     const formData = new FormData();
     formData.append('physioFileID', physioFileID);
     formData.append('splitIndex', splitIndex);
@@ -365,10 +366,10 @@ class ElectrophysiologySessionView extends Component {
               key={j}
               className={
                 'btn btn-xs btn-primary split-nav'
-                  + (file.splitData?.splitIndex === j ? ' active' : '')
+                + (file.splitData?.splitIndex === j ? ' active' : '')
               }
               onClick={() => this.getSplitData(file.id, i, j)}
-            >{j+1}</a>
+            >{j + 1}</a>
           );
         }
         const recordingHasHED = events.hed_tags.length > 0 ||
@@ -401,117 +402,116 @@ class ElectrophysiologySessionView extends Component {
               t={t}
             >
               {EEG_VIS_ENABLED &&
-              <div className="react-series-data-viewer-scoped col-xs-12">
-                <EEGLabSeriesProvider
-                  chunksURL={
-                    chunksURLs?.[file.splitData?.splitIndex] || chunksURLs
-                  }
-                  epochsURL={epochsURL}
-                  events={events}
-                  electrodesURL={electrodesURL}
-                  coordSystemURL={coordSystemURL}
-                  hedSchema={hedSchema}
-                  datasetTags={datasetTags}
-                  datasetTagEndorsements={datasetTagEndorsements}
-                  physioFileID={this.state.database[i].file.id}
-                  samplingFrequency={
-                    this.state.database[i].file.summary[0].value
-                  }
-                  eegMontageName={eegMontage}
-                  recordingHasHED={recordingHasHED}
-                  t={t}
-                >
-                  <Panel
-                    id='channel-viewer'
-                    title={
-                      t('Signal Viewer', {ns: 'electrophysiology_browser'}) + (
-                        file.splitData
-                          ? ` [${
-                            t('split {{splitNum}}', {
+                <div className="react-series-data-viewer-scoped col-xs-12">
+                  <EEGLabSeriesProvider
+                    chunksURL={
+                      chunksURLs?.[file.splitData?.splitIndex] || chunksURLs
+                    }
+                    epochsURL={epochsURL}
+                    events={events}
+                    electrodesURL={electrodesURL}
+                    coordSystemURL={coordSystemURL}
+                    hedSchema={hedSchema}
+                    datasetTags={datasetTags}
+                    datasetTagEndorsements={datasetTagEndorsements}
+                    physioFileID={this.state.database[i].file.id}
+                    samplingFrequency={
+                      this.state.database[i].file.summary[0].value
+                    }
+                    eegMontageName={eegMontage}
+                    recordingHasHED={recordingHasHED}
+                    t={t}
+                  >
+                    <Panel
+                      id='channel-viewer'
+                      title={
+                        t('Signal Viewer', {ns: 'electrophysiology_browser'}) + (
+                          file.splitData
+                            ? ` [${t('split {{splitNum}}', {
                               ns: 'electrophysiology_browser',
                               splitNum: file.splitData?.splitIndex + 1,
                             })
-                          }]`
-                          : ''
-                      )
-                    }
-                  >
-                    {file.splitData &&
-                    <>
-                      <span
-                        style={{
-                          color: '#064785',
-                          fontWeight: 'bold',
-                          fontSize: '14px',
-                          paddingRight: '15px',
-                        }}
-                      >
-                        {t(
-                          'Viewing signal split file:',
-                          {ns: 'electrophysiology_browser'}
-                        )}
-                      </span>
-                      <a
-                        className={
-                          'btn btn-xs btn-default split-nav'
-                          + (file.splitData.splitIndex === 0
-                            ? ' disabled'
-                            : '')
-                        }
-                        onClick={() => this.getSplitData(
-                          file.id,
-                          i,
-                          file.splitData.splitIndex-1
-                        )}
-                      >
-                        {'<'}
-                      </a>
-                      {splitPagination}
-                      <a
-                        className={
-                          'btn btn-xs btn-default split-nav'
-                            + (file.splitData.splitIndex
-                            === (file.splitData.splitCount-1)
-                              ? ' disabled'
-                              : '')
-                        }
-                        onClick={
-                          () => this.getSplitData(
-                            file.id,
-                            i,
-                            file.splitData.splitIndex+1
-                          )
-                        }
-                      >
-                        {'>'}
-                      </a>
-                    </>
-                    }
-                    <SeriesRenderer
-                      physioFileID={this.state.database[i].file.id}
-                    />
-                  </Panel>
-                  <div className='row'>
-                    <div className='col-md-6 col-lg-4'>
-                      <SummaryPanel
-                        id={'filename_summary_' + i}
-                        data={this.state.database[i].file.summary}
-                        t={t}
-                      />
-                    </div>
-                    <EEGMontage />
-                    <div className='col-md-6 col-lg-4'>
-                      <DownloadPanel
-                        id={'file_download_' + i}
-                        downloads={this.state.database[i].file.downloads}
+                            }]`
+                            : ''
+                        )
+                      }
+                    >
+                      {file.splitData &&
+                        <>
+                          <span
+                            style={{
+                              color: '#064785',
+                              fontWeight: 'bold',
+                              fontSize: '14px',
+                              paddingRight: '15px',
+                            }}
+                          >
+                            {t(
+                              'Viewing signal split file:',
+                              {ns: 'electrophysiology_browser'}
+                            )}
+                          </span>
+                          <a
+                            className={
+                              'btn btn-xs btn-default split-nav'
+                              + (file.splitData.splitIndex === 0
+                                ? ' disabled'
+                                : '')
+                            }
+                            onClick={() => this.getSplitData(
+                              file.id,
+                              i,
+                              file.splitData.splitIndex - 1
+                            )}
+                          >
+                            {'<'}
+                          </a>
+                          {splitPagination}
+                          <a
+                            className={
+                              'btn btn-xs btn-default split-nav'
+                              + (file.splitData.splitIndex
+                                === (file.splitData.splitCount - 1)
+                                ? ' disabled'
+                                : '')
+                            }
+                            onClick={
+                              () => this.getSplitData(
+                                file.id,
+                                i,
+                                file.splitData.splitIndex + 1
+                              )
+                            }
+                          >
+                            {'>'}
+                          </a>
+                        </>
+                      }
+                      <SeriesRenderer
                         physioFileID={this.state.database[i].file.id}
-                        outputType={this.state.database[i].file.output_type}
-                        t={t}
                       />
+                    </Panel>
+                    <div className='row'>
+                      <div className='col-md-6 col-lg-4'>
+                        <SummaryPanel
+                          id={'filename_summary_' + i}
+                          data={this.state.database[i].file.summary}
+                          t={t}
+                        />
+                      </div>
+                      <EEGMontage />
+                      <div className='col-md-6 col-lg-4'>
+                        <DownloadPanel
+                          id={'file_download_' + i}
+                          downloads={this.state.database[i].file.downloads}
+                          physioFileID={this.state.database[i].file.id}
+                          outputType={this.state.database[i].file.output_type}
+                          t={t}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </EEGLabSeriesProvider>
-              </div>}
+                  </EEGLabSeriesProvider>
+                </div>}
             </FilePanel>
           </div>
         );
@@ -570,6 +570,7 @@ ElectrophysiologySessionView.defaultProps = {
 window.onload = function() {
   i18n.addResourceBundle('ja', 'electrophysiology_browser', jaStrings);
   i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
+  i18n.addResourceBundle('zh', 'electrophysiology_browser', zhStrings);
   const i18nNamespaces = ['electrophysiology_browser', 'loris'];
   const SideContent = withTranslation(i18nNamespaces)(SidebarContent);
   const sidebarContent = <SideContent

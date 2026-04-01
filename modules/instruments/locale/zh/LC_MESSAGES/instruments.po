@@ -1,0 +1,83 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Instruments"
+msgstr "量表/评估工具"
+
+msgid "Incomplete form"
+msgstr "表格不完整"
+
+msgid "Incomplete forms"
+msgstr "表格不完整"
+
+msgid "Clear Instrument"
+msgstr "清除仪器"
+
+msgid "Validity"
+msgstr "有效性"
+
+msgid "Valid"
+msgstr "有效的"
+
+msgid "Questionable"
+msgstr "有疑问"
+
+msgid "Invalid"
+msgstr "无效的"
+
+msgid "Subtests"
+msgstr "子测试"
+
+msgid "Top"
+msgstr "顶部"
+
+msgid "Behavioural Data"
+msgstr "行为数据"
+
+msgid "Completion"
+msgstr "完成"
+
+msgid "Conflicts?"
+msgstr "冲突？"
+
+msgid "Visit has no registered instruments in test battery."
+msgstr "访问测试电池中没有注册仪器。"
+
+msgid "Date of Administration"
+msgstr "给药日期"
+
+msgid "Date of Administration is required"
+msgstr "给药日期为必填项"
+
+msgid "Candidate Age (Months)"
+msgstr "候选人年龄（月）"
+
+msgid "Candidate Age at Death (Months)"
+msgstr "候选人死亡年龄（月）"
+
+msgid "Window Difference (+/- Days)"
+msgstr "窗口差异（+/- 天）"
+
+msgid "Examiner"
+msgstr "考官"
+
+msgid "Examiner is required"
+msgstr "需要考官"

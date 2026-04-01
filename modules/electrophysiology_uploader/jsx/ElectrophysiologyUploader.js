@@ -14,6 +14,7 @@ import jaStrings from
   '../locale/ja/LC_MESSAGES/electrophysiology_uploader.json';
 import frStrings from
   '../locale/fr/LC_MESSAGES/electrophysiology_uploader.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/electrophysiology_uploader.json';
 
 /**
  * UploadViewer
@@ -117,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
   i18n.addResourceBundle('hi', 'electrophysiology_uploader', hiStrings);
   i18n.addResourceBundle('ja', 'electrophysiology_uploader', jaStrings);
   i18n.addResourceBundle('fr', 'electrophysiology_uploader', frStrings);
+  i18n.addResourceBundle('zh', 'electrophysiology_uploader', zhStrings);
 
   createRoot(
     document.getElementById('lorisworkspace')

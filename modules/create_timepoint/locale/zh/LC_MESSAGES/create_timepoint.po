@@ -22,6 +22,7 @@ msgid "Create Timepoint"
 msgstr "创建时间点"
 
 msgid "No cohorts defined for project: {{project}}"
+<<<<<<< HEAD
 msgstr "项目 {{project}} 未定义任何队列"
 
 msgid "No visit labels defined for the combination project: {{project}} and cohort: {{cohort}}"
@@ -47,3 +48,32 @@ msgstr "必须从可用下拉菜单中选择项目"
 
 msgid "A language must be selected."
 msgstr "必须选择语言"
+=======
+msgstr "没有为项目定义群组：{{project}}"
+
+msgid ""
+"No visit labels defined for the combination project: {{project}} and cohort:"
+" {{cohort}}"
+msgstr "没有为组合项目定义访问标签：{{project}} 和队列：{{cohort}}"
+
+msgid "Timepoint created."
+msgstr "时间点已创建。"
+
+msgid "A timepoint with these conditions (%s, %s, %s, %s) already exists."
+msgstr "具有这些条件的时间点（ %s 、 %s 、 %s 、 %s ）已存在。"
+
+msgid "You must be affiliated with a site to create a timepoint."
+msgstr "您必须隶属于某个网站才能创建时间点。"
+
+msgid "Site must be selected from the available dropdown."
+msgstr "必须从可用下拉列表中选择站点。"
+
+msgid "You must be affiliated with a project to create a timepoint."
+msgstr "您必须隶属于某个项目才能创建时间点。"
+
+msgid "A project must be selected from the available dropdown."
+msgstr "必须从可用下拉列表中选择一个项目。"
+
+msgid "A language must be selected."
+msgstr "必须选择一种语言。"
+>>>>>>> 5b008eb4196b1c334dccc2d0b7d4748f6290d14f

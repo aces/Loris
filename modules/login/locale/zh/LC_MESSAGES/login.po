@@ -1,0 +1,126 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Login"
+msgstr "登录"
+
+msgid "Login to LORIS"
+msgstr "登录洛里斯"
+
+msgid "Forgot your password?"
+msgstr "忘记密码了吗？"
+
+msgid "Request Account"
+msgstr "请求帐户"
+
+msgid "Multifactor authentication required"
+msgstr "需要多重身份验证"
+
+msgid "Enter the code from your authenticator app below to proceed."
+msgstr "输入下面验证器应用程序中的代码以继续。"
+
+msgid "Data in LORIS:"
+msgstr "LORIS 中的数据："
+
+msgid ""
+"Please enter your username below, and a new password will be sent to you."
+msgstr "请在下面输入您的用户名，新密码将发送给您。"
+
+msgid "Back to login page"
+msgstr "返回登录页面"
+
+msgid "Reset Password"
+msgstr "重置密码"
+
+msgid "Thank you!"
+msgstr "谢谢你！"
+
+msgid "Password reset. You should receive an email within a few minutes."
+msgstr "密码重置。您应该会在几分钟内收到一封电子邮件。"
+
+msgid "Return to Login Page"
+msgstr "返回登录页面"
+
+msgid "Choose your site:"
+msgstr "选择您的网站："
+
+msgid "Choose your project:"
+msgstr "选择您的项目："
+
+msgid "Preferred language:"
+msgstr "首选语言："
+
+msgid "Radiologist"
+msgstr "放射科医生"
+
+msgid "Examiner role"
+msgstr "考官角色"
+
+msgid ""
+"Please fill in the form below to request a LORIS account. We will contact "
+"you once your account has been approved."
+msgstr "请填写下面的表格来申请 LORIS 帐户。您的帐户获得批准后，我们​​将与您联系。"
+
+msgid "Your request for an account has been received successfully."
+msgstr "您的帐户请求已成功收到。"
+
+msgid "Please contact your project administrator to activate this account."
+msgstr "请联系您的项目管理员激活此帐户。"
+
+msgid "View {{policy}}"
+msgstr "查看{{policy}}"
+
+msgid "{{title}} not accepted"
+msgstr "{{title}} 不被接受"
+
+msgid "You must accept the {{title}} before requesting an account."
+msgstr "在请求帐户之前，您必须接受 {{title}}。"
+
+# Hack for the login page.
+# These strings come from the database and are
+# the defaults in the login_summary_statistics table
+msgid "EEG Recording"
+msgid_plural "EEG Recordings"
+msgstr[0] "脑电图记录"
+
+msgid "Female Participant"
+msgid_plural "Female Participants"
+msgstr[0] "女性参与者"
+
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "量表/评估工具"
+
+msgid "Male Participant"
+msgid_plural "Male Participants"
+msgstr[0] "男性参与者"
+
+msgid "Scan"
+msgid_plural "Scans"
+msgstr[0] "扫描序列/影像"
+
+msgid "Site"
+msgid_plural "Sites"
+msgstr[0] "中心"
+
+msgid "Visit"
+msgid_plural "Visits"
+msgstr[0] "访视"

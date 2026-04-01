@@ -15,6 +15,7 @@ import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
 import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/document_repository.json';
 
 /**
  * Document Edit Form
@@ -35,6 +36,7 @@ class DocEditForm extends React.Component {
     i18n.addResourceBundle('hi', 'document_repository', hiStrings);
     i18n.addResourceBundle('ja', 'document_repository', jaStrings);
     i18n.addResourceBundle('fr', 'document_repository', frStrings);
+    i18n.addResourceBundle('zh', 'document_repository', zhStrings);
 
     this.state = {
       data: {},
@@ -92,7 +94,7 @@ class DocEditForm extends React.Component {
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <Loader/>
+        <Loader />
       );
     }
 
@@ -137,7 +139,7 @@ class DocEditForm extends React.Component {
             name="pscid"
             label={t('PSCID', {ns: 'loris'})}
             onUserInput={this.setFormData}
-            disable = {true}
+            disable={true}
             value={this.state.docData.pscid}
           />
           <TextboxElement
@@ -154,15 +156,15 @@ class DocEditForm extends React.Component {
           />
           {
             loris.userHasPermission('document_repository_hidden') &&
-                (<SelectElement
-                  name="hiddenFile"
-                  label={t('Restrict access to the file?',
-                    {ns: 'document_repository'})}
-                  options={this.state.data.hiddenVideo}
-                  sortByValue={false}
-                  onUserInput={this.setFormData}
-                  value={this.state.docData.hiddenVideo}
-                />)
+            (<SelectElement
+              name="hiddenFile"
+              label={t('Restrict access to the file?',
+                {ns: 'document_repository'})}
+              options={this.state.data.hiddenVideo}
+              sortByValue={false}
+              onUserInput={this.setFormData}
+              value={this.state.docData.hiddenVideo}
+            />)
           }
           <TextboxElement
             name="version"
@@ -170,7 +172,7 @@ class DocEditForm extends React.Component {
             onUserInput={this.setFormData}
             value={this.state.docData.version}
           />
-          <ButtonElement label={t('Update File', {ns: 'document_repository'})}/>
+          <ButtonElement label={t('Update File', {ns: 'document_repository'})} />
         </FormElement>
       </div>
     );
@@ -192,7 +194,7 @@ class DocEditForm extends React.Component {
       body: JSON.stringify(formData),
     })
       .then((resp) => resp.json())
-      .then(()=>{
+      .then(() => {
         swal.fire('Updated Successful!', '', 'success');
         this.fetchData();
       });

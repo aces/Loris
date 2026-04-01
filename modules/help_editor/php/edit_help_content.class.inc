@@ -35,7 +35,8 @@ class Edit_Help_Content extends \NDB_Form
      *
      * @return bool true if access is permitted
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('context_help');
     }
@@ -57,7 +58,7 @@ class Edit_Help_Content extends \NDB_Form
                 "No valid user"
             );
         }
-        if (!($this->_hasAccess($user))) {
+        if (!($this->isAccessibleBy($user))) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 

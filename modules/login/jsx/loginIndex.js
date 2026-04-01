@@ -20,6 +20,7 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import jaStrings from '../locale/ja/LC_MESSAGES/login.json';
 import frStrings from '../locale/fr/LC_MESSAGES/login.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/login.json';
 
 /**
  * Login form.
@@ -421,6 +422,7 @@ window.addEventListener('load', () => {
   };
   i18n.addResourceBundle('ja', 'login', jaStrings);
   i18n.addResourceBundle('fr', 'login', frStrings);
+  i18n.addResourceBundle('zh', 'login', zhStrings);
   const TLogin = withTranslation(['login', 'loris'])(Login);
 
   createRoot(

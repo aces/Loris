@@ -113,7 +113,7 @@ class DirectDataEntryMainPage
         );
 
         $user = \User::singleton();
-        if ($instrumentObj->_hasAccess($user) !== true) {
+        if ($instrumentObj->isAccessibleBy($user) !== true) {
             throw new \Exception("Permission denied", 403);
         }
 

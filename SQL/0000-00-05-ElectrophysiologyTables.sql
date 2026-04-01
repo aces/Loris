@@ -2,6 +2,29 @@
 -- Table structure for the electrophysiology component of LORIS
 --
 
+-- Create a meg_ctf_head_shape_file table
+CREATE TABLE `meg_ctf_head_shape_file` (
+    `ID`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Path`        VARCHAR(255)     NOT NULL,
+    `Blake2bHash` VARCHAR(128)     NOT NULL,
+    PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create a meg_ctf_head_shape_point table
+CREATE TABLE `meg_ctf_head_shape_point` (
+    `ID`     INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `FileID` INT(10) UNSIGNED NOT NULL,
+    `Name`   VARCHAR(255)     NOT NULL,
+    `X`      DECIMAL(10, 6)   NOT NULL,
+    `Y`      DECIMAL(10, 6)   NOT NULL,
+    `Z`      DECIMAL(10, 6)   NOT NULL,
+    PRIMARY KEY (`ID`),
+    CONSTRAINT `FK_meg_ctf_head_shape_FileID`
+      FOREIGN KEY (`FileID`)
+      REFERENCES `meg_ctf_head_shape_file`(`ID`)
+      ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Create a physiological_modality table
 CREATE TABLE `physiological_modality` (
   `PhysiologicalModalityID` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -18,7 +41,6 @@ CREATE TABLE `physiological_output_type` (
   PRIMARY KEY (`PhysiologicalOutputTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- Create a physiological_file table
 -- Note that the field InsertedByUser refers to the Linux User that ran the script
 -- and not a LORIS user
@@ -34,6 +56,7 @@ CREATE TABLE `physiological_file` (
   `FilePath`                  VARCHAR(255)         NOT NULL,
   `Index`                     INT(5)               DEFAULT NULL,
   `ParentID`                  INT(10) unsigned     DEFAULT NULL,
+  `HeadShapeFileID`           INT(10) unsigned     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalFileID`),
   CONSTRAINT `FK_session_ID`
     FOREIGN KEY (`SessionID`)
@@ -49,7 +72,10 @@ CREATE TABLE `physiological_file` (
     REFERENCES `physiological_output_type` (`PhysiologicalOutputTypeID`),
   CONSTRAINT `FK_ParentID`
     FOREIGN KEY (`ParentID`)
-    REFERENCES `physiological_file` (`PhysiologicalFileID`)
+    REFERENCES `physiological_file` (`PhysiologicalFileID`),
+  CONSTRAINT `FK_head_shape_HeadShapeFileID`
+    FOREIGN KEY (`HeadShapeFileID`)
+    REFERENCES `meg_ctf_head_shape_file` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -302,10 +328,10 @@ CREATE TABLE `physiological_task_event` (
   `Channel`                  TEXT             DEFAULT NULL,
   `EventCode`                INT(10)          DEFAULT NULL,
   `EventValue`               varchar(255)     DEFAULT NULL,
-  `EventSample`              decimal(11,6)    DEFAULT NULL,
+  `EventSample`              INT(10)          DEFAULT NULL,
   `EventType`                VARCHAR(50)      DEFAULT NULL,
   `TrialType`                VARCHAR(255)     DEFAULT NULL,
-  `ResponseTime`             TIME             DEFAULT NULL,
+  `ResponseTime`             decimal(11,6)    DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalTaskEventID`),
   KEY `FK_event_file` (`EventFileID`),
   INDEX idx_pte_EventValue (`EventValue`),

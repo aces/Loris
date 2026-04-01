@@ -14,6 +14,11 @@ interface TriggerableModalProps extends Omit<ModalProps, 'show' | 'onClose'> {
  *
  * Renders a modal triggered by a custom or default CTA component, with `show`
  * controlled internally.
+ *
+ * @param root0
+ * @param root0.label
+ * @param root0.onUserInput
+ * @param root0.TriggerTag
  */
 const TriggerableModal = ({
   label,
