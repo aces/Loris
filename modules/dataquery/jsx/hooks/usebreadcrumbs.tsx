@@ -21,7 +21,7 @@ function useBreadcrumbs(
   useEffect(() => {
     const breadcrumbs = [
       {
-        text: t('Data Query Tool (Beta)', {ns: 'dataquery'}),
+        text: t('Dave\'s Query Tool (Beta)', {ns: 'dataquery'}),
         /**
          * OnClick handler for the main breadcrumb
          *

@@ -154,14 +154,27 @@ function Welcome(props: {
   }
 
   return (
-    <div>
+    <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '5px',
+        alignItems: 'center',
+    }}>
       <h1 style={{
         color: '#0a3572',
         textAlign: 'center',
         padding: '30px 0 0 0',
       }}>
-        {t('Welcome to the Data Query Tool', {ns: 'dataquery'})}
+          Welcome to&nbsp;
+          <span style={{ fontWeight: 'bold' }}>D</span>
+          ave's&nbsp;
+          <span style={{ fontWeight: 'bold' }}>Q</span>
+          uery&nbsp;
+          <span style={{ fontWeight: 'bold' }}>T</span>
+          ool
       </h1>
+        <h3>Written and actively maintained by Dave MacFarlane <span style={{ fontWeight: 'bold' }}>and only Dave MacFarlane</span></h3>
+        <h3>Questions? Contact Dave directly: (514) 512-0707 or in person at <a href='#' style={{ textDecoration: 'underline', }}>Dave's Residence</a></h3>
       <ExpansionPanels panels={panels} />
     </div>
   );
@@ -1119,7 +1132,7 @@ function IntroductionMessage(props: {
   ) : '';
   return (
     <div>
-      <p>{t('The data query tool allows you to query data within LORIS. '
+      <p>{t('Dave\'s query tool allows you to query data within LORIS. '
         +'There are three steps to defining a query:', {ns: 'dataquery'})}</p>
       <ol>
         <li>{t('First, you must select the fields that you\'re interested in'
@@ -1127,8 +1140,10 @@ function IntroductionMessage(props: {
         <li>{t('Next, you can optionally define filters on the Define '
           +'Filters page to restrict the population that is returned.',
         {ns: 'dataquery'})}</li>
-        <li>{t('Finally, you view your query results on the View Data page',
+        <li>{t('Then, you view your query results on the View Data page',
           {ns: 'dataquery'})}</li>
+        <li>{t('Finally, call Dave to review your query.',
+              {ns: 'dataquery'})}</li>
       </ol>
       <p>{t('The Next Steps on the bottom right of your screen always the '
         +'context-sensitive next steps that you can do to build your query.',
