@@ -177,6 +177,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/statistics/locale/zh/LC_MESSAGES/statistics.po \
 	modules/survey_accounts/locale/zh/LC_MESSAGES/survey_accounts.po \
 	modules/timepoint_list/locale/zh/LC_MESSAGES/timepoint_list.po \
+	modules/biobank/locale/zh/LC_MESSAGES/biobank.po \
 	modules/user_accounts/locale/zh/LC_MESSAGES/user_accounts.po
 
 MOFILES=$(patsubst %.po,%.mo,$(POFILES))
