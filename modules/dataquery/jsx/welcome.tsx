@@ -174,7 +174,7 @@ function Welcome(props: {
           ool
       </h1>
         <h3>Written and actively maintained by Dave MacFarlane <span style={{ fontWeight: 'bold' }}>and only Dave MacFarlane</span></h3>
-        <h3>Questions? Contact Dave directly: (514) 512-0707 or in person at <a href='#' style={{ textDecoration: 'underline', }}>Dave's Residence</a></h3>
+        <h3>Questions? Contact Dave directly: +1 (514) 512-0707 or in person at <a href='#' style={{ textDecoration: 'underline', }}>Dave's Residence</a></h3>
       <ExpansionPanels panels={panels} />
     </div>
   );
