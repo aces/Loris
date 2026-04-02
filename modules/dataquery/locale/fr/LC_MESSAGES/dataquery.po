@@ -373,9 +373,6 @@ msgstr "Visites non valides"
 msgid "No visits selected for criteria."
 msgstr "Aucune visite sélectionnée pour ces critères."
 
-msgid "Add criteria"
-msgstr "Ajouter critère"
-
 msgid "Field"
 msgid_plural "Fields"
 msgstr[0] "Champ"

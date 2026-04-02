@@ -259,9 +259,6 @@ msgstr "無効な訪問"
 msgid "No visits selected for criteria."
 msgstr "基準に該当する訪問が選択されていません。"
 
-msgid "Add criteria"
-msgstr "条件を追加する"
-
 msgid "Field"
 msgid_plural "Fields"
 msgstr[0] "分野"
