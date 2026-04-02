@@ -165,9 +165,8 @@ function AddFilterModal(props: {
 
     if (fieldDictionary.scope == 'session' && fieldDictionary.visits) {
       visitSelect = <div onClick={(e) => e.stopPropagation()}>
-        <h4 style={{color: '#003d68', fontWeight: 'normal'}}>
-          {t('Visits', {ns: 'dataquery'})}
-        </h4>
+        <h3>{t('for at least one of the following visits',
+          {ns: 'dataquery'})}</h3>
         <VisitList
           t={t}
           options={fieldDictionary.visits}
@@ -359,9 +358,9 @@ function getOperatorOptions(dict: FieldDictionary, t: any) {
     options = {
       'eq': '=',
       'neq': '≠',
-      'startsWith': t('Starts With', {ns: 'dataquery'}),
-      'contains': t('Contains', {ns: 'dataquery'}),
-      'endsWith': t('Ends With', {ns: 'dataquery'}),
+      'startsWith': t('starts with', {ns: 'dataquery'}),
+      'contains': t('contains', {ns: 'dataquery'}),
+      'endsWith': t('ends with', {ns: 'dataquery'}),
     };
   } else {
     // fall back to == and !=, valid for any type.

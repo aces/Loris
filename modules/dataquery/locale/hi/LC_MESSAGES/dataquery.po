@@ -256,9 +256,6 @@ msgstr "अमान्य विज़िट"
 msgid "No visits selected for criteria."
 msgstr "मानदंड के लिए कोई विज़िट चयनित नहीं है।"
 
-msgid "Add criteria"
-msgstr "मानदंड जोड़ें"
-
 msgid "Field"
 msgid_plural "Fields"
 msgstr[0] "फ़ील्ड"
