@@ -7,8 +7,7 @@
 
 /* Override help panel width - make it 2x wider for dataquery module */
 .help-content {
-    width: 640px;
-    /* Center the panel below the ? button by shifting right edge alignment to center */
+    width: 380px;
     left: auto;
     right: 0;
     transform: translateX(0);
