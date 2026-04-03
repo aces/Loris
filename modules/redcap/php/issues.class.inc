@@ -29,6 +29,19 @@ use Psr\Http\Message\ServerRequestInterface;
 class Issues extends \NDB_Page
 {
     /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
+    {
+        return $user->hasPermission('redcap_ui_view');
+    }
+
+    /**
      * Return an array of valid HTTP methods for this endpoint
      *
      * @return string[] Valid versions
@@ -49,19 +62,6 @@ class Issues extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        // check user
-        $user = $request->getAttribute("user");
-        if ($user === null && !($user instanceof \User)) {
-            return new \LORIS\Http\Response\JSON\InternalServerError(
-                "No valid user"
-            );
-        }
-        $hasAccess = $this->_hasAccess($user)
-            && $user->hasAnyPermission(["redcap_ui_view"]);
-        if (!$hasAccess) {
-            return new \LORIS\Http\Response\JSON\Forbidden();
-        }
-
         // handle request
         switch ($request->getMethod()) {
         case 'GET':
