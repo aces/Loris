@@ -81,6 +81,7 @@ $middlewarechain = (new \LORIS\Middleware\RequestAttributeBuilder())
     ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\AWS())
     ->withMiddleware(new \LORIS\Middleware\ContentSecurityPolicy())
+    ->withMiddleware(new \LORIS\Middleware\RedirectControl())
     ->withMiddleware(new \LORIS\Middleware\MFA())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
