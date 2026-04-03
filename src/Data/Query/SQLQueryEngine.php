@@ -582,7 +582,6 @@ abstract class SQLQueryEngine implements QueryEngine
         );
 
         if ($visitlist != null) {
-            $this->addTable("LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')");
             $inset = [];
             $i     = count($prepbindings);
             foreach ($visitlist as $vl) {
