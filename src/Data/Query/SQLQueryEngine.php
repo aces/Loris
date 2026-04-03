@@ -116,7 +116,7 @@ abstract class SQLQueryEngine implements QueryEngine
         $this->addWhereClause("c.Active='Y'");
         $prepbindings = [];
 
-        $this->buildQueryFromCriteria($term, $prepbindings);
+        $this->buildQueryFromCriteria($term, $prepbindings, $visitList);
 
         $query = 'SELECT DISTINCT c.CandID FROM';
 
