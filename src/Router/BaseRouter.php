@@ -106,7 +106,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             } else {
                 $baseurl = '';
             }
-            $baseurl = $request->getAttribute("baseurl");
+            $baseurl = $uri->withPath($baseurl)->withQuery("");
             $factory->setBaseURL((string) $baseurl);
 
             $module = $loris->getModule($modulename);
