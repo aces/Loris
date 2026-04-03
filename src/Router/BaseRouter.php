@@ -34,7 +34,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
     /**
      * Construct a BaseRouter
      */
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     /**
      * Handle delegates to an appropriate sub-router to do the real handling of a

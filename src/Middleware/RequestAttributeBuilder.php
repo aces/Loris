@@ -42,11 +42,11 @@ class RequestAttributeBuilder implements MiddlewareInterface, MiddlewareChainer
             $factory->database(),
             $factory->config(),
             [
-                __DIR__ . "/../../project/modules",
-                __DIR__ . "/../../modules/"
+             __DIR__ . "/../../project/modules",
+             __DIR__ . "/../../modules/",
             ]
         );
-        $request = $request->withAttribute("loris", $lorisInstance);
+        $request       = $request->withAttribute("loris", $lorisInstance);
 
         // add baseurl to request attributes
         $uri     = $request->getURI();
