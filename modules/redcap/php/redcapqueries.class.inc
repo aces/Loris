@@ -363,11 +363,11 @@ class RedcapQueries
     public function instrumentExistsInREDCapDictionary(string $instrument_name): bool
     {
         $dictionary_entry = $this->_db->pselectOne(
-            "SELECT DISTINCT FormName
+            "SELECT DISTINCT InstrumentName
             FROM redcap_dictionary
-            WHERE FormName = :fn
+            WHERE InstrumentName = :instrument_name
             ",
-            ["fn" => $instrument_name]
+            ["instrument_name" => $instrument_name]
         );
         return $dictionary_entry !== null;
     }
@@ -387,7 +387,7 @@ class RedcapQueries
         $dictionary_entry = $this->_db->pselectRow(
             "SELECT
                 FieldName,
-                FormName,
+                InstrumentName,
                 SectionHeader,
                 FieldType,
                 FieldLabel,
@@ -405,12 +405,12 @@ class RedcapQueries
                 MatrixRanking,
                 FieldAnnotation
             FROM redcap_dictionary
-            WHERE FormName = :form_name
+            WHERE InstrumentName = :instrument_name
                 AND FieldName = :field_name
             ",
             [
-                "form_name"  => $form_name,
-                "field_name" => $field_name
+                "instrument_name" => $form_name,
+                "field_name"      => $field_name
             ]
         );
 
@@ -458,8 +458,8 @@ class RedcapQueries
             'redcap_dictionary',
             $dictionary_entry->toDatabaseArray(),
             [
-                "FormName"  => $dictionary_entry->form_name,
-                "FieldName" => $dictionary_entry->field_name
+                "InstrumentName" => $dictionary_entry->form_name,
+                "FieldName"      => $dictionary_entry->field_name
             ]
         );
     }
