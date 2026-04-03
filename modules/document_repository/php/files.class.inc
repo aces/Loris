@@ -32,7 +32,8 @@ class Files extends \NDB_Page
      *
      * @return bool true only if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -60,6 +61,29 @@ class Files extends \NDB_Page
         $downloadpath = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")
         );
+
+        if ($request->getMethod() != "POST") {
+            $factory = \NDB_Factory::singleton();
+            $user    = $factory->user();
+            $db      = $factory->database();
+
+            $filename = explode(
+                'Files',
+                urldecode($request->getUri()->getPath())
+            )[1];
+
+            $forSite = $db->pselectOne(
+                "SELECT For_site
+                 FROM document_repository
+                 WHERE Data_dir = :file_dir",
+                ['file_dir' => mb_substr($filename, 1)]
+            );
+
+            if (! $user->hasCenter(\CenterID::singleton((int)$forSite))) {
+                return (new \LORIS\Http\Response\JSON\Forbidden());
+            }
+        }
+
         switch ($request->getMethod()) {
         case "POST":
             return $this->uploadDocFile($request);

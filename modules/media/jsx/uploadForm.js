@@ -289,9 +289,10 @@ class MediaUploadForm extends Component {
     );
     if (!this.isValidFileName(requiredFileName, fileName)) {
       swal.fire(
-        this.props.t('Invalid file name!', {ns: 'media'}),
-        this.props.t('File name should begin with:', {ns: 'media'})
-        + ' ' + requiredFileName,
+        'Invalid file name!',
+        'Your file\'s base name should be: <code>'
+        + requiredFileName +'</code>'
+        + '<br>followed by the file extension.',
         'error'
       );
       return;
@@ -301,11 +302,9 @@ class MediaUploadForm extends Component {
     let isDuplicate = mediaFiles.indexOf(fileName);
     if (isDuplicate >= 0) {
       swal.fire({
-        title: this.props.t('Are you sure?', {ns: 'loris'}),
-        text: this.props.t(
-          'A file with this name already exists!\n'
-          +' Would you like to override existing file?',
-          {ns: 'media'}),
+        title: 'Are you sure?',
+        text: 'A file with this name already exists!' + '\n'
+              + 'Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: this.props.t('Yes, I am sure!', {ns: 'loris'}),
@@ -314,9 +313,7 @@ class MediaUploadForm extends Component {
         if (isConfirm) {
           this.uploadFile();
         } else {
-          swal.fire(this.props.t('Cancelled', {ns: 'media'}),
-            this.props.t('Your imaginary file is safe :)',
-              {ns: 'media'}), 'error');
+          swal.fire('Cancelled', 'Your file was not overwritten', 'error');
         }
       }.bind(this));
     } else {

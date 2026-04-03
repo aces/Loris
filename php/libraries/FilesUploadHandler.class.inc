@@ -157,11 +157,21 @@ class FilesUploadHandler implements RequestHandlerInterface
                 );
             }
 
+            $filename = $file->getClientFilename();
+
+            if (str_contains($filename, "/") === true
+                || str_contains($filename, "..") === true
+            ) {
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    'Path traversal not allowed'
+                );
+            }
+
             /* basename() is used here to prevent path traversal characters
              * from being used.
              */
             $targetPath = $this->uploadDirectory->getPathname() . '/' . basename(
-                $file->getClientFilename()
+                $filename
             );
 
             /* If file exists, set response code to 'Conflict' unless the

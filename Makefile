@@ -5,6 +5,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	locale/hi/LC_MESSAGES/loris.po \
 	locale/es/LC_MESSAGES/loris.po \
 	locale/en/LC_MESSAGES/loris.po \
+	modules/biobank/locale/fr/LC_MESSAGES/biobank.po \
 	modules/media/locale/fr/LC_MESSAGES/media.po \
 	modules/media/locale/ja/LC_MESSAGES/media.po \
 	modules/media/locale/hi/LC_MESSAGES/media.po \
@@ -41,6 +42,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/dqt/locale/ja/LC_MESSAGES/dqt.po \
 	modules/bvl_feedback/locale/fr/LC_MESSAGES/bvl_feedback.po \
 	modules/bvl_feedback/locale/ja/LC_MESSAGES/bvl_feedback.po \
+	modules/genomic_browser/locale/fr/LC_MESSAGES/genomic_browser.po \
 	modules/genomic_browser/locale/ja/LC_MESSAGES/genomic_browser.po \
 	modules/instruments/locale/fr/LC_MESSAGES/instruments.po \
 	modules/instruments/locale/ja/LC_MESSAGES/instruments.po \
@@ -120,6 +122,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/dashboard/locale/fr/LC_MESSAGES/dashboard.po \
 	modules/dashboard/locale/ja/LC_MESSAGES/dashboard.po \
 	modules/candidate_parameters/locale/ja/LC_MESSAGES/candidate_parameters.po \
+	modules/candidate_parameters/locale/es/LC_MESSAGES/candidate_parameters.po \
 	modules/imaging_browser/locale/fr/LC_MESSAGES/imaging_browser.po \
 	modules/imaging_browser/locale/ja/LC_MESSAGES/imaging_browser.po \
 	modules/imaging_browser/locale/hi/LC_MESSAGES/imaging_browser.po \

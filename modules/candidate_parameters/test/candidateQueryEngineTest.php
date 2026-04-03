@@ -114,7 +114,7 @@ class CandidateQueryEngineTest extends TestCase
 
         $this->engine = $lorisinstance->getModule(
             'candidate_parameters'
-        )->getQueryEngine();
+        )->getQueryEngines()[0];
     }
 
     /**

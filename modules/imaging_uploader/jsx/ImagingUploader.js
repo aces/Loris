@@ -7,7 +7,7 @@ import {withTranslation} from 'react-i18next';
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 import {TextboxElement, SelectElement, ButtonElement} from 'jsx/Form';
-import StaticDataTable from 'jsx/StaticDataTable';
+import DataTable from 'jsx/DataTable';
 
 /**
  * Imaging uploader component
@@ -279,12 +279,27 @@ class ImagingUploader extends Component {
             </div>
           </div>
           <div id='mri_upload_table'>
-            <StaticDataTable
-              Data={this.state.data.Data}
-              Headers={this.state.data.Headers.map((header) => t(header,
-                {ns: ['imaging_uploader', 'loris']}))}
+            <DataTable
+              data={this.state.data.Data}
+              fields={this.state.data.Headers.map(
+                (header, index) => {
+                  let filter = {};
+                  if (header === 'DCCID') {
+                    filter = {name: 'candID'};
+                  } else if (header === 'PSCID') {
+                    filter = {name: 'pSCID'};
+                  } else if (header === 'Visit Label') {
+                    filter = {name: 'visitLabel'};
+                  }
+                  return {
+                    label: t(header, {ns: ['imaging_uploader', 'loris']}),
+                    show: true,
+                    filter: filter,
+                  };
+                }
+              )}
               getFormattedCell={this.formatColumn}
-              Filter={this.state.filter}
+              filters={this.state.filter}
               hiddenHeaders={this.state.hiddenHeaders}
             />
           </div>

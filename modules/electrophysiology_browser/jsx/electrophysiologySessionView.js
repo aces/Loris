@@ -12,7 +12,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
-import StaticDataTable from 'jsx/StaticDataTable';
+import DataTable from 'jsx/DataTable';
 import Panel from 'jsx/Panel';
 import {FilePanel} from './components/electrophysiology_session_panels';
 import {SummaryPanel} from './components/electrophysiology_session_summary';
@@ -519,18 +519,21 @@ class ElectrophysiologySessionView extends Component {
 
       return (
         <div id='lorisworkspace'>
-          <StaticDataTable
-            Headers={[
-              t('PSCID', {ns: 'loris'}),
-              t('DCCID', {ns: 'loris'}),
-              t('Visit Label', {ns: 'loris'}),
-              t('Site', {ns: 'loris', count: 1}),
-              t('DoB', {ns: 'loris'}),
-              t('Sex', {ns: 'loris'}),
-              t('Output Type', {ns: 'electrophysiology_browser'}),
-              t('Cohort', {ns: 'loris', count: 1}),
+          <DataTable
+            fields={[
+              {label: t('PSCID', {ns: 'loris'}), show: true},
+              {label: t('DCCID', {ns: 'loris'}), show: true},
+              {label: t('Visit Label', {ns: 'loris'}), show: true},
+              {label: t('Site', {ns: 'loris', count: 1}), show: true},
+              {label: t('DoB', {ns: 'loris'}), show: true},
+              {label: t('Sex', {ns: 'loris'}), show: true},
+              {
+                label: t('Output Type', {ns: 'electrophysiology_browser'}),
+                show: true,
+              },
+              {label: t('Cohort', {ns: 'loris', count: 1}), show: true},
             ]}
-            Data={[
+            data={[
               [
                 this.state.patient.info.pscid,
                 this.state.patient.info.dccid,

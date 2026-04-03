@@ -138,6 +138,7 @@ type DateTimePartialElementProps = {
   disabled?: boolean;
   errorMessage?: string;
   onUserInput: (name: string, value: string) => void;
+  labelPlacementTop: boolean;
 }
 
 /**
@@ -188,11 +189,23 @@ const DateTimePartialElement: React.FC<DateTimePartialElementProps> = (
     elementClass += ' has-error';
   }
 
-  const wrapperClass = props.label ? 'col-sm-9' : 'col-sm-12';
+  const wrapperClass =
+    props.label && !props.labelPlacementTop ? 'col-sm-9' : 'col-sm-12';
   return (
-    <div className={elementClass}>
+    <div
+      className={elementClass}
+      style={props.labelPlacementTop ? {
+        display: 'flex',
+        flexDirection: 'column',
+        fontFamily: 'monospace',
+      } : {}}
+    >
       {props.label && (
-        <InputLabel label={props.label} required={props.required} />
+        <InputLabel
+          label={props.label}
+          required={props.required}
+          fullWidth={props.labelPlacementTop}
+        />
       )}
       <div className={wrapperClass}>
         <Mask value={value}>

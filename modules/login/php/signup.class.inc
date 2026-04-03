@@ -113,7 +113,8 @@ class Signup extends \NDB_Page implements ETagCalculator
         );
         $site     = $values['site'];
         $project  = $values['project'];
-        $fullname = $name . ' ' . $lastname;
+        $language_preference = $values['language_preference'] ?? null;
+        $fullname            = $name . ' ' . $lastname;
 
         $vals = [
             'UserID'               => $from,
@@ -124,6 +125,14 @@ class Signup extends \NDB_Page implements ETagCalculator
             'Email'                => $from,
             'account_request_date' => date('Y-m-d'),
         ];
+
+        // Add language_preference if provided and valid
+        if (!is_null($language_preference) && !empty($language_preference)) {
+            $languageList = \Utility::getLanguageList();
+            if (array_key_exists($language_preference, $languageList)) {
+                $vals['language_preference'] = $language_preference;
+            }
+        }
 
         // Check if email address is valid.
         if (preg_match('/(<|>|"|&)/', $from)) {
@@ -303,7 +312,8 @@ class Signup extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return true;
     }

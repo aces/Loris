@@ -42,7 +42,7 @@ msgstr "Le fichier ne peut pas dépasser {{maxUploadSize}}"
 
 #, fuzzy
 msgid "File must be of type .tgz or tar.gz or .zip"
-msgstr "Le fichier doit être au format .tgz, tar.gz ou .zip."
+msgstr "Le fichier doit être en format .tgz, tar.gz ou .zip."
 
 #, fuzzy
 msgid "For files that are not Phantom Scans, file name must begin with"
@@ -55,12 +55,12 @@ msgid ""
 "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label "
 "{{visitLabel}} the file name should be prefixed by: {{prefix}}"
 msgstr ""
-"Par exemple, pour DCCID {{dccid}}, PSCID {{pscid}} et Visit Label "
+"Par exemple, pour DCCID {{dccid}}, PSCID {{pscid}} et Libellé de visite "
 "{{visitLabel}}, le nom du fichier doit être préfixé par : {{prefix}}"
 
 #, fuzzy
 msgid "The file {{fileName}} must be of type .tgz, .tar.gz or .zip."
-msgstr "Le fichier {{fileName}} doit être au format .tgz, .tar.gz ou .zip."
+msgstr "Le fichier {{fileName}} doit être en format .tgz, .tar.gz ou .zip."
 
 msgid "Invalid extension for the uploaded file!"
 msgstr "Extension non valide pour le fichier téléversé !"
@@ -68,7 +68,7 @@ msgstr "Extension non valide pour le fichier téléversé !"
 #, fuzzy
 msgid "Filename extension does not match .zip, .tgz or .tar.gz "
 msgstr ""
-"L'extension du nom de fichier ne correspond pas à .zip, .tgz ou .tar.gz. "
+"L'extension du fichier ne correspond pas à .zip, .tgz ou .tar.gz. "
 
 #, fuzzy
 msgid "Incorrect file name!"
@@ -84,7 +84,7 @@ msgid "File already exists!"
 msgstr "Le fichier existe déjà !"
 
 msgid "A file with this name has already successfully passed the MRI pipeline!"
-msgstr "Un fichier portant ce nom a déjà passé avec succès le pipeline IRM !"
+msgstr "Un fichier portant ce nom a déjà été inséré avec succès par le pipeline IRM !"
 
 #, fuzzy
 msgid "File is currently processing!"
@@ -92,7 +92,7 @@ msgstr "Le fichier est en cours de traitement !"
 
 msgid "A file with this name is currently going through the MRI pipeline!"
 msgstr ""
-"Un fichier portant ce nom est actuellement en cours de traitement dans le "
+"Un fichier portant ce nom est actuellement en cours de traitement par le "
 "pipeline IRM !"
 
 #, fuzzy
@@ -104,7 +104,7 @@ msgstr ""
 "existant ?"
 
 msgid "Cancelled"
-msgstr "Annulée"
+msgstr "Annulé"
 
 msgid "Your upload has been cancelled."
 msgstr "Votre téléversement a été annulé."
@@ -118,7 +118,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Upload Successful!"
-msgstr "Téléversement réussi!"
+msgstr "Téléversement réussi !"
 
 #, fuzzy
 msgid "Processing of this file by the MRI pipeline has started"
@@ -142,7 +142,7 @@ msgstr "Échec du téléversement : code de réponse HTTP reçu {{code}}"
 
 #, fuzzy
 msgid "Submission error!"
-msgstr "Erreur de soumission!"
+msgstr "Erreur de soumission !"
 
 msgid "Log Viewer"
 msgstr "Afficheur de journaux"
@@ -175,11 +175,11 @@ msgstr "{{successText}} ({{inserted}} sur {{created}})"
 
 #, fuzzy
 msgid "{{numViolatedScans}} violated scans"
-msgstr "{{numViolatedScans}} scans violés"
+msgstr "{{numViolatedScans}} scans non conformes"
 
 #, fuzzy
 msgid "Tarchive Info"
-msgstr "Informations sur Tarchive"
+msgstr "Informations sur le Tarchive"
 
 msgid "Upload ID"
 msgstr "ID de téléversement"
@@ -191,4 +191,4 @@ msgid "Upload Date"
 msgstr "Date d'importation"
 
 msgid "Uploaded By"
-msgstr "Chargé par"
+msgstr "Téléversé par"

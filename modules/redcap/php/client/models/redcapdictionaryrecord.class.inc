@@ -289,7 +289,7 @@ class RedcapDictionaryRecord
     {
         $field_type  = $this->field_type;
         $field_name  = $this->field_name;
-        $field_label = str_replace("\n", "<br /><br />", $this->field_label);
+        $field_label = str_replace(["\r\n", "\r", "\n"], '', $this->field_label);
         $field_desc  = "$field_name{@}$field_label";
 
         //
@@ -316,7 +316,7 @@ class RedcapDictionaryRecord
                 . $this->_optionsToLINST();
         case 'yesno':
             // Map yes/no fields to dropdowns with yes and no options.
-            return "select{@}$field_desc{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
+            return "select{@}$field_desc{@}NULL=>''{-}'1'=>'Yes'{-}'0'=>'No'";
         case 'calc':
             // Calc maps to a score field. We create the DB field but don't do
             // the score.

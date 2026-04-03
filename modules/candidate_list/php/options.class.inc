@@ -23,7 +23,8 @@ class Options extends \LORIS\Http\Endpoint
      *
      * @return bool true if user has access, false otherwise
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return (
             $user->hasPermission('access_all_profiles')

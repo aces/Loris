@@ -32,7 +32,8 @@ class Survey_Accounts extends \DataFrameworkMenu
      *
      * @return boolean true if access is permitted
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('survey_accounts_view');
     }

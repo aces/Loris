@@ -25,10 +25,8 @@ msgid "View Session"
 msgstr ""
 
 msgid "New and pending imaging session"
-msgstr ""
-
-msgid "New and pending imaging sessions"
-msgstr ""
+msgid_plural "New and pending imaging sessions"
+msgstr[0] ""
 
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"

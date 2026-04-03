@@ -94,11 +94,26 @@ function DisplayValue(props: {
   }
 
   if (props.dictionary.type == 'URI') {
-    display = (
-      <a href={props.value}>
-        {display}
-      </a>
-    );
+    switch (props.dictionary.cardinality) {
+    case 'many':
+      // Split the string and map to multiple <a> tags
+      const urls = String(props.value).split(';');
+      display = (
+        urls.map((url, i) => (
+          <span key={i}>
+            <a href={url.trim()}>{url.trim()}</a>
+            {i < urls.length - 1 && '; '}
+          </span>
+        ))
+      );
+      break;
+    default:
+      display = (
+        <a href={props.value}>
+          {display}
+        </a>
+      );
+    }
   }
   return display;
 }
@@ -588,9 +603,14 @@ function organizeData(
                           dataRow.push(null);
                         } else {
                           const mappedVals = Object.keys(thevalues)
-                            .map(
-                              (key) => key + '=' + thevalues[key]
-                            )
+                            .map((key) => {
+                            // If it's a URI, don't prepend the key/label
+                              if (dictionary.type === 'URI') {
+                                return thevalues[key];
+                              }
+                              // Otherwise, concatenate key and value
+                              return key + '=' + thevalues[key];
+                            })
                             .join(';');
                           dataRow.push(mappedVals);
                         }
@@ -772,7 +792,14 @@ function expandLongitudinalCells(
             }
             const thevalues = thissession.values;
             return {value: Object.keys(thevalues)
-              .map( (key) => key + '=' + thevalues[key])
+              .map( (key) => {
+                // If it's a URI, don't prepend the key/label
+                if (fielddict.type === 'URI') {
+                  return thevalues[key];
+                }
+                // Otherwise concatenate key with value.
+                return key + '=' + thevalues[key];
+              })
               .join(';'), dictionary: fielddict};
           default:
             if (thissession.value !== undefined) {

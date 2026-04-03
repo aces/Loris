@@ -38,7 +38,8 @@ class Imaging_Browser extends \DataFrameworkMenu
      *
      * @return bool whether the user hass access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.

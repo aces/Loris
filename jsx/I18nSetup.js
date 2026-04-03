@@ -26,13 +26,28 @@ const resources = {
 
 };
 
+/**
+ * Get language from cookie, session, or default
+ *
+ * @return {string} language code
+ */
+const getLanguagePreference = () => {
+  // Check for language cookie first (persists across session regeneration)
+  const cookieMatch = document.cookie.match(/(?:^|; )loris_language=([^;]*)/);
+  if (cookieMatch) {
+    return cookieMatch[1];
+  }
+  // Fall back to langpref from PHP
+  return loris.user.langpref ?? 'en';
+};
+
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources,
     // debug: true,
     partialBundledLanguages: true,
-    lng: loris.user.langpref ?? 'en',
+    lng: getLanguagePreference(),
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
