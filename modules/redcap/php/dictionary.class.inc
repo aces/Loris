@@ -29,22 +29,6 @@ use Psr\Http\Message\ServerRequestInterface;
 class Dictionary extends \NDB_Page
 {
     /**
-     * Check if user should be allowed to see this page.
-     *
-     * @param \User $user The user whose access is being checked
-     *
-     * @return bool true if the user is permitted to see violated scans
-     */
-    function _hasAccess(\User $user) : bool
-    {
-        return $user->hasAnyPermission(
-            [
-                'redcap_ui_view',
-            ]
-        );
-    }
-
-    /**
      * Return an array of valid HTTP methods for this endpoint
      *
      * @return string[] Valid versions
@@ -65,6 +49,20 @@ class Dictionary extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        // check user
+        $user = $request->getAttribute("user");
+        if ($user === null && !($user instanceof \User)) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                "No valid user"
+            );
+        }
+        $hasAccess = $this->_hasAccess($user)
+            && $user->hasAnyPermission(["redcap_ui_view"]);
+        if (!$hasAccess) {
+            return new \LORIS\Http\Response\JSON\Forbidden();
+        }
+
+        // handle request
         return match ($request->getMethod()) {
             'GET' => $this->_handleGET(),
             default => new \LORIS\Http\Response\JSON\MethodNotAllowed(

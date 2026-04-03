@@ -24,19 +24,16 @@ namespace LORIS\redcap;
 class REDCap extends \DataFrameworkMenu
 {
     /**
-     * Check if user should be allowed to see this page.
+     * {@inheritDoc}
      *
      * @param \User $user The user whose access is being checked
      *
-     * @return bool true if the user is permitted to see violated scans
+     * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            [
-                'redcap_ui_view',
-            ]
-        );
+        return $user->hasPermission('redcap_ui_view');
     }
 
     /**
