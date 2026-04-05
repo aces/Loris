@@ -1,5 +1,41 @@
+import {useContext} from 'react';
 import {ChannelTypeState} from '../../components/SeriesRenderer';
 import {Channel, ChannelInfo, ChannelMetadata} from '../types';
+import {DEFAULT_SIGNAL_UNIT} from '../../../vector';
+import {
+  ChannelInfosContext,
+  ChannelMetasContext,
+} from '../../../eeglab/EEGLabSeriesProvider';
+
+/**
+ * Get the information about a channel from the context.
+ */
+export function useChannelMetadata(channel: Channel): ChannelMetadata | null {
+  const channelMetadatas = useContext(ChannelMetasContext);
+  return channelMetadatas[channel.index] ?? null;
+}
+
+/**
+ * Get the BIDS metadata of a channel from the context.
+ */
+export function useChannelInfo(channel: Channel): ChannelInfo | null {
+  const channelMetadata = useChannelMetadata(channel);
+  const channelInfos = useContext(ChannelInfosContext);
+
+  if (channelMetadata === null) {
+    return null;
+  }
+
+  return findBidsChannel(channelMetadata, channelInfos) ?? null;
+}
+
+/**
+ * Get the unit of a channel from its BIDS metadata, or fall back to the default
+ * unit if that metadata or unit is not available.
+ */
+export function getChannelUnit(channelInfo: ChannelInfo | null): string {
+  return channelInfo?.Unit ?? DEFAULT_SIGNAL_UNIT;
+}
 
 /**
  * Create the channel types dictionary that maps each channel type found in the dataset
@@ -9,6 +45,7 @@ export function createChannelTypesDict(
   rawChannels: ChannelMetadata[],
   bidsChannels: ChannelInfo[],
 ): Record<string, ChannelTypeState> {
+  // A mapping of channel types indexed by their names.
   const channelTypes: Record<string, ChannelTypeState> = {};
 
   for (const rawChannel of rawChannels) {
@@ -26,6 +63,7 @@ export function createChannelTypesDict(
 
   return channelTypes;
 }
+
 /**
  * Filter the list of all channels to keep only those whose channel types are visible.
  */
@@ -60,7 +98,7 @@ export function filterSelectedChannels(
 /**
  * Find the BIDS channel corresponding to a raw channel among a list of BIDS channels.
  */
-function findBidsChannel(
+export function findBidsChannel(
   rawChannel: ChannelMetadata,
   bidsChannels: ChannelInfo[]
 ): ChannelInfo | undefined {

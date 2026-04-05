@@ -1,8 +1,6 @@
 import * as R from 'ramda';
 import {createAction} from 'redux-actions';
 import {
-  ChannelInfo,
-  ChannelMetadata,
   Epoch,
   EpochFilter,
   HEDSchemaElement,
@@ -53,7 +51,6 @@ export type Action =
   | {
       type: 'SET_DATASET_METADATA',
       payload: {
-        bidsChannels: ChannelInfo[],
         chunksURL: string,
         channelNames: string[],
         shapes: number[][],
@@ -71,9 +68,7 @@ export type Action =
     };
 
 export type State = {
-  bidsChannels: ChannelInfo[],
   chunksURL: string,
-  channelMetadata: ChannelMetadata[],
   channelDelimiter: string,
   limit: number,
   loadedChannels: number,
@@ -105,9 +100,7 @@ export type State = {
  */
 export const datasetReducer = (
   state: State = {
-    bidsChannels: [],
     chunksURL: '',
-    channelMetadata: [],
     epochs: [],
     filteredEpochs: {
       plotVisibility: [],

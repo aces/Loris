@@ -6,6 +6,7 @@ import React, {
   FunctionComponent,
   MutableRefObject,
   useMemo,
+  useContext,
 } from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
@@ -17,10 +18,9 @@ import {colorOrder} from '../../color';
 import {
   MAX_RENDERED_EPOCHS,
   DEFAULT_MAX_CHANNELS,
-  SIGNAL_UNIT,
+  DEFAULT_SIGNAL_UNIT,
   Vector2,
   DEFAULT_TIME_INTERVAL,
-  STATIC_SERIES_RANGE,
   DEFAULT_VIEWER_HEIGHT,
   MIN_EPOCH_WIDTH,
 } from '../../vector';
@@ -32,7 +32,7 @@ import SeriesCursor from './SeriesCursor';
 import LoadingBar from './LoadingBar';
 import {setRightPanel} from '../store/state/rightPanel';
 import {setDatasetMetadata} from '../store/state/dataset';
-import {createChannelTypesDict, filterDisplayedChannels, filterSelectedChannels} from '../store/logic/channels';
+import {createChannelTypesDict, filterDisplayedChannels, filterSelectedChannels, findBidsChannel} from '../store/logic/channels';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
 import AnnotationForm from './AnnotationForm';
@@ -61,11 +61,10 @@ import {
 } from '../store/logic/timeSelection';
 
 import {
-  ChannelMetadata,
   Channel,
   Epoch as EpochType,
   RightPanel, EpochFilter,
-  ChannelInfo,
+  Trace,
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {setCursorInteraction} from '../store/logic/cursorInteraction';
@@ -78,6 +77,9 @@ import ChannelTypesSelector from './ChannelTypesSelector';
 import Pagination from './Pagination';
 import {SET_CHANNELS} from '../store/state/channels';
 import {UPDATE_VIEWED_CHUNKS} from '../store/logic/fetchChunks';
+import {ChannelInfosContext, ChannelMetasContext} from '../../eeglab/EEGLabSeriesProvider';
+import {computePercentileRange, computeMean} from '../../utils';
+import MutableKeyDepCache from '../../MutableDepCache';
 
 /**
  * The state of a channel type.
@@ -85,6 +87,47 @@ import {UPDATE_VIEWED_CHUNKS} from '../store/logic/fetchChunks';
 export type ChannelTypeState = {
   visible: boolean,
   channelsCount: number,
+};
+
+/**
+ * The specific cache type used to cache channel ranges.
+ */
+type ChannelRangeCache = MutableKeyDepCache<
+  // The channel index.
+  number,
+  // The dependencies upon which the range depends.
+  ChannelRangeCacheDeps,
+  // The computed range.
+  [number, number]
+>
+
+/**
+ * The dependencies upon which a channel range depends.
+ */
+type ChannelRangeCacheDeps = {
+  interval: [number, number],
+  chunkIds: number[],
+}
+
+/**
+ * Check whethere two channel range cache dependencies are equal.
+ */
+function compareChannelRangeDeps(a: ChannelRangeCacheDeps, b: ChannelRangeCacheDeps): boolean {
+  if (a.interval[0] !== b.interval[0] || a.interval[1] !== b.interval[1]) {
+    return false;
+  }
+
+  if (a.chunkIds.length !== b.chunkIds.length) {
+    return false;
+  }
+
+  for (let i = 0; i < a.chunkIds.length; i += 1) {
+    if (a.chunkIds[i] !== b.chunkIds[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 type CProps = {
@@ -100,12 +143,10 @@ type CProps = {
   setRightPanel: (_: RightPanel | void) => void,
   chunksURL: string,
   channels: Channel[],
-  channelMetadata: ChannelMetadata[],
   hidden: number[],
   epochs: EpochType[],
   filteredEpochs: EpochFilter,
   activeEpoch: number,
-  bidsChannels: ChannelInfo[],
   setAmplitudesScale: (_: number) => void,
   resetAmplitudesScale: (_: void) => void,
   setLowPassFilter: (_: string) => void,
@@ -143,12 +184,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setRightPanel,
   chunksURL,
   channels,
-  channelMetadata,
   hidden,
   epochs,
   filteredEpochs,
   activeEpoch,
-  bidsChannels: bidsChannels,
   setAmplitudesScale,
   resetAmplitudesScale,
   setLowPassFilter,
@@ -175,6 +214,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
     // The channel types are indexed by channel type name.
     const [channelTypes, setChannelTypes] = useState<Record<string, ChannelTypeState>>({});
+    const channelMetadata = useContext(ChannelMetasContext);
 
     const [cursorEnabled, setCursorEnabled] = useState(false);
     const toggleCursor = () => setCursorEnabled((value) => !value);
@@ -201,6 +241,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [panelIsDirty, setPanelIsDirty] = useState(false);
     const [eventChannels, setEventChannels] = useState([]);
     const {t} = useTranslation();
+
+    const bidsChannels = useContext(ChannelInfosContext);
 
     // Initialize the channel types mapping once channels information is loaded.
     useEffect(() => {
@@ -579,6 +621,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   vec2.add(center, topLeft, bottomRight);
   vec2.scale(center, center, 1 / 2);
 
+  // A mutable cache for the visible range of the values each channel.
+  const channelRangeCache: MutableRefObject<ChannelRangeCache> = useRef(
+    new MutableKeyDepCache(compareChannelRangeDeps)
+  );
+
   const scales: [
       ScaleLinear<number, number, never>,
       ScaleLinear<number, number, never>
@@ -728,6 +775,31 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       )
       : filteredChannels;
 
+    // Get the maximum range for each channel type based on the ranges of
+    // the visible values of each visible channel of that type.
+    const channelTypeRanges: Record<string, number> = {};
+    channelList.forEach((channel) => {
+      const bidsChannel = findBidsChannel(channelMetadata[channel.index], bidsChannels);
+      const type = bidsChannel?.ChannelType ?? 'Unknown';
+
+      // Get the visible values range of that channel, from the cache if possible.
+      const [min, max] = channelRangeCache.current.get(
+        channel.index,
+        {
+          interval,
+          chunkIds: channel.traces.flatMap((trace) => trace.chunks.map((chunk) => chunk.index)).sort(),
+        },
+        () => {console.log("RECOMPUTE"); return getChannelVisibleRange(channel, interval) }
+      );
+
+      const range = max - min;
+      if (!channelTypeRanges[type]) {
+        channelTypeRanges[type] = range;
+      } else {
+        channelTypeRanges[type] = Math.max(channelTypeRanges[type], range);
+      }
+    });
+
     return (
       <>
         <clipPath
@@ -785,30 +857,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 (chunk) => chunk.values.length > 0
               ).length;
 
-              const valuesInView = trace.chunks.map((chunk) => {
-                let includedIndices = [0, chunk.values.length];
-                if (chunk.interval[0] < interval[0]) {
-                  const startIndex = chunk.values.length *
-                    (interval[0] - chunk.interval[0]) /
-                    (chunk.interval[1] - chunk.interval[0]);
-                  includedIndices = [startIndex, includedIndices[1]];
-                }
-                if (chunk.interval[1] > interval[1]) {
-                  const endIndex = chunk.values.length *
-                    (interval[1] - chunk.interval[0]) /
-                    (chunk.interval[1] - chunk.interval[0]);
-                  includedIndices = [includedIndices[0], endIndex];
-                }
-                return chunk.values.slice(
-                  includedIndices[0], includedIndices[1]
-                );
-              }).flat();
+              const valuesInView = getTraceVisibleValues(trace, interval);
 
               if (valuesInView.length === 0) {
                 return;
               }
 
-              const seriesRange: [number, number] = STATIC_SERIES_RANGE;
+              // Get the range centered on the average for channels of the same type
+              const average = computeMean(valuesInView);
+              const bidsChannel = findBidsChannel(channelMetadata[channel.index], bidsChannels);
+              const type = bidsChannel?.ChannelType ?? 'Unknown';
+              const overallRange = channelTypeRanges[type] || 0;
+              const seriesRange: [number, number] = [average - overallRange / 2, average + overallRange / 2];
 
               const scales: [
                 ScaleLinear<number, number, never>,
@@ -1351,7 +1411,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         position: 'absolute',
                       }}
                     >
-                      ({SIGNAL_UNIT})
+                      ({DEFAULT_SIGNAL_UNIT})
                     </div>
                     : null
                   }
@@ -1618,9 +1678,70 @@ SeriesRenderer.defaultProps = {
   channels: [],
   epochs: [],
   hidden: [],
-  channelMetadata: [],
   limit: DEFAULT_MAX_CHANNELS,
 };
+
+/**
+ * Get the range of the visible values of a channel across all its traces.
+ */
+function getChannelVisibleRange(channel: Channel, interval: [number, number]): [number, number] {
+  let channelMin = Infinity;
+  let channelMax = -Infinity;
+
+  channel.traces.forEach((trace) => {
+    const values = getTraceVisibleValues(trace, interval);
+    if (values.length === 0) {
+      return;
+    }
+
+    const [traceMin, traceMax] = computePercentileRange(values);
+    console.log(traceMin, traceMax);
+    channelMin = Math.min(channelMin, traceMin);
+    channelMax = Math.max(channelMax, traceMax);
+  });
+
+  return [channelMin, channelMax];
+}
+
+/**
+ * Get the values of a trace that fall within the visible interval.
+ */
+function getTraceVisibleValues(trace: Trace, interval: [number, number]): number[] {
+  const [start, end] = interval;
+  const values = [];
+
+  for (const chunk of trace.chunks) {
+    const [chunkStart, chunkEnd] = chunk.interval;
+
+    // No overlap, skip this chunk.
+    if (chunkEnd <= start || chunkStart >= end) {
+      continue;
+    }
+
+    // Calculate overlap with view window.
+    const overlapStart = Math.max(start, chunkStart);
+    const overlapEnd   = Math.min(end, chunkEnd);
+
+    const chunkDuration = chunkEnd - chunkStart;
+    const numSamples = chunk.values.length;
+
+    // Convert time to sample indices.
+    const startIndex = Math.max(0, Math.floor(
+      (overlapStart - chunkStart) / chunkDuration * numSamples
+    ));
+
+    const endIdx = Math.min(numSamples, Math.ceil(
+      (overlapEnd - chunkStart) / chunkDuration * numSamples
+    ));
+
+    // Push individual values.
+    for (let i = startIndex; i < endIdx; i++) {
+      values.push(chunk.values[i]);
+    }
+  }
+
+  return values;
+}
 
 export default connect(
   (state: RootState)=> ({
@@ -1632,12 +1753,10 @@ export default connect(
     timexSelection: state.timeSelection,
     chunksURL: state.dataset.chunksURL,
     channels: state.channels,
-    bidsChannels: state.dataset.bidsChannels,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
     activeEpoch: state.dataset.activeEpoch,
     hidden: state.montage.hidden,
-    channelMetadata: state.dataset.channelMetadata,
     limit: state.dataset.limit,
     loadedChannels: state.dataset.loadedChannels,
     domain: state.bounds.domain,

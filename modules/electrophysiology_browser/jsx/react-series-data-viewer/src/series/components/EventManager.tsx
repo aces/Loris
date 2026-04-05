@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {MAX_RENDERED_EPOCHS} from '../../vector';
 import {
@@ -15,7 +15,6 @@ import {
   HEDTag,
   HEDSchemaElement,
   RightPanel,
-  ChannelMetadata,
   Channel
 } from '../store/types';
 import {connect} from 'react-redux';
@@ -26,6 +25,7 @@ import {RootState} from '../store';
 import {setFilteredEpochs} from '../store/state/dataset';
 import {CheckboxElement} from './Form';
 import {useTranslation, Trans} from "react-i18next";
+import {ChannelMetasContext} from '../../eeglab/EEGLabSeriesProvider';
 
 type CProps = {
   timeSelection?: [number, number],
@@ -46,7 +46,6 @@ type CProps = {
   datasetTags: any,
   channelDelimiter: string,
   channels: Channel[],
-  channelMetadata: ChannelMetadata[],
   canEdit: boolean,
   tagsHaveChanges: boolean,
 };
@@ -70,7 +69,6 @@ type CProps = {
  * @param root0.hedSchema
  * @param root0.channelDelimiter
  * @param root0.channels
- * @param root0.channelMetadata
  * @param root0.datasetTags
  * @param root0.tagsHaveChanges
  */
@@ -92,11 +90,11 @@ const EventManager = ({
   datasetTags,
   channelDelimiter,
   channels,
-  channelMetadata,
   canEdit,
   tagsHaveChanges,
 }: CProps) => {
   const {t} = useTranslation();
+  const channelMetadata = useContext(ChannelMetasContext);
   const [epochsInRange, setEpochsInRange] = useState(getEpochsInRange(epochs, interval));
   const [allEpochsVisible, setAllEpochsVisibility] = useState(() => {
     if (epochsInRange.length < MAX_RENDERED_EPOCHS) {
@@ -769,7 +767,6 @@ export default connect(
     datasetTags: state.dataset.datasetTags,
     channelDelimiter: state.dataset.channelDelimiter,
     channels: state.channels, // TODO: merge with below and pass?
-    channelMetadata: state.dataset.channelMetadata,
     tagsHaveChanges: state.dataset.tagsHaveChanges,
   }),
   (dispatch: (_: any) => void) => ({

@@ -1,4 +1,6 @@
-import React, {Component, createRef} from 'react';
+import React, {
+  Component, createContext, createRef, useState, useEffect,
+} from 'react';
 import {tsvParse} from 'd3-dsv';
 import {applyMiddleware, createStore, Store} from 'redux';
 import {Provider} from 'react-redux';
@@ -23,7 +25,7 @@ import {
   setCoordinateSystem, setElectrodes,
 } from '../series/store/state/montage';
 import {
-  ChannelInfos, EventMetadata, HEDSchemaElement,
+  ChannelInfo, ChannelInfos, ChannelMetadata, EventMetadata, HEDSchemaElement,
 } from '../series/store/types';
 import TriggerableModal from 'jsx/TriggerableModal';
 import DatasetTagger from '../series/components/DatasetTagger';
@@ -62,16 +64,66 @@ const MenuOption = {
 };
 
 /**
- * EEGLabSeriesProvider component
+ * The channel informaton context, which provides the BIDS information about\
+ * the channels present in the acquisition, if available.
  */
-class EEGLabSeriesProvider extends Component<CProps, any> {
+export const ChannelInfosContext = createContext<ChannelInfo[]>([]);
+
+/**
+ * The channel metadata context, which provides the metadata about the channels
+ * present in the acquisition.
+ */
+export const ChannelMetasContext = createContext<ChannelMetadata[]>([]);
+
+/**
+ * Function wrapper around the older `EEGLabSeriesProviderClass` class
+ * component.
+ */
+function EEGLabSeriesProvider(props: CProps) {
+  const [channelInfos, setChannelInfos] = useState<ChannelInfo[]>([]);
+  const [channelMetas, setChannelMetas] = useState<ChannelMetadata[]>([]);
+
+  // Fetch the channel BIDS information from the API.
+  useEffect(() => {
+    fetchJSON(props.channelsURL).then((json: ChannelInfos) => {
+      setChannelInfos(json.Channels);
+    });
+  }, [props.channelsURL]);
+
+  return (
+    <ChannelInfosContext.Provider value={channelInfos}>
+      <ChannelMetasContext.Provider value={channelMetas}>
+        <EEGLabSeriesProviderClass
+          {...props}
+          setChannelMetas={setChannelMetas}
+        />
+      </ChannelMetasContext.Provider>
+    </ChannelInfosContext.Provider>
+  );
+}
+
+/**
+ * Props for the `EEGLabSeriesProviderClass` component, which extend the props
+ * of the functional component.
+ */
+type CClassProps = CProps & {
+  /**
+   * Setter for the channel metadata context lifted to the functional component.
+   */
+  setChannelMetas: (_: ChannelMetadata[]) => void,
+};
+
+/**
+ * EEGLabSeriesProviderClass component
+ */
+class EEGLabSeriesProviderClass extends Component<CClassProps, any> {
   private store: Store;
 
   /**
    * @class
    * @param {object} props - React Component properties
    */
-  constructor(props: CProps) {
+  constructor(props: CClassProps) {
     super(props);
     const epicMiddleware = createEpicMiddleware();
 
@@ -102,6 +154,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       eegMontageName,
       recordingHasHED,
       t,
+      setChannelMetas,
     } = props;
 
     if (!window.EEGLabSeriesProviderStore) {
@@ -181,18 +234,13 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       }
     };
 
-    fetchJSON(props.channelsURL).then((json: ChannelInfos) => {
-      this.store.dispatch(setDatasetMetadata({
-        bidsChannels: json.Channels,
-      }));
-    });
-
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
         if (json) {
           const {
             channelMetadata, shapes, timeInterval, seriesRange, validSamples,
           } = json;
+          setChannelMetas(channelMetadata);
           this.store.dispatch(
             setDatasetMetadata({
               chunksURL: url,
