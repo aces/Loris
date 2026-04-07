@@ -126,7 +126,6 @@ class BatteryManagerIndex extends Component {
    *
    * @param {string} column - column name
    * @param {string} value - cell value
-   * @param cell
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, cell) {
