@@ -4,7 +4,6 @@ import {ReactElement, ReactNode} from 'react';
  * Display a message in an information panel.
  *
  * @param {object} props - React props
- * @param props.children
  * @returns {ReactNode} - the InfoPanel
  */
 function InfoPanel(props: {children: ReactNode}): ReactElement {
