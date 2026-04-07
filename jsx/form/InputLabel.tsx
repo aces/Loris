@@ -12,9 +12,6 @@ type InputLabelProps = {
  * Input label React component
  *
  * @param props The props of the component
- * @param props.label
- * @param props.required
- * @param props.fullWidth
  * @returns The corresponding React element
  */
 const InputLabel: React.FC<InputLabelProps> = ({
