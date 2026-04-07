@@ -14,7 +14,8 @@ import jaStrings from
   '../locale/ja/LC_MESSAGES/electrophysiology_uploader.json';
 import frStrings from
   '../locale/fr/LC_MESSAGES/electrophysiology_uploader.json';
-import zhStrings from '../locale/zh/LC_MESSAGES/electrophysiology_uploader.json';
+import zhStrings from
+  '../locale/zh/LC_MESSAGES/electrophysiology_uploader.json';
 
 /**
  * UploadViewer

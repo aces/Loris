@@ -172,7 +172,7 @@ class DocEditForm extends React.Component {
             onUserInput={this.setFormData}
             value={this.state.docData.version}
           />
-          <ButtonElement label={t('Update File', {ns: 'document_repository'})} />
+          <ButtonElement label={t('Update File', {ns: 'document_repository'})}/>
         </FormElement>
       </div>
     );
