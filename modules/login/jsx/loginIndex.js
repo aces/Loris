@@ -149,9 +149,35 @@ class Login extends Component {
         if (response.ok) {
           response.json().then(() => {
             // Redirect if there is a "redirect" param, refresh the page otherwise
-            window.location.href = this.props.redirect !== null
-              ? this.props.redirect
-              : window.location.origin;
+            const redirectUrl = this.props.redirect;
+            if (redirectUrl) {
+              // test URL as string
+              if (typeof redirectUrl !== 'string') {
+                window.location.href = window.location.origin;
+              };
+
+              // parse URL
+              try {
+                // relative and absolute url parsing
+                const url = new URL(redirectUrl.trim(), window.location.origin);
+
+                if (url.origin === window.location.origin) {
+                  // same origin, load
+                  window.location.href = url.href;
+                } else {
+                  // different origin
+                  // TODO: add a sweet alert here to mention the tentative of
+                  // redirection outside of LORIS.
+                  window.location.href = window.location.origin;
+                }
+              } catch (e) {
+                // Invalid URL, fallback
+                window.location.href = window.location.origin;
+              }
+            } else {
+              // no redirection
+              window.location.href = window.location.origin;
+            }
           });
         } else {
           response.json().then((data) => {
