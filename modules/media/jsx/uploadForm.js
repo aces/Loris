@@ -342,6 +342,7 @@ class MediaUploadForm extends Component {
         });
       } else {
         let msg = this.props.t('Upload error!', {ns: 'media'});
+
         if (xhr.response) {
           if (xhr.statusText) {
             msg = JSON.parse(xhr.response).message;

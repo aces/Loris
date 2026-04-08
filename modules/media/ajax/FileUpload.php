@@ -455,25 +455,6 @@ function toSelect($options, $item, $item2)
 }
 
 /**
- * Returns an array of (id, file_name) pairs from media table
- *
- * @return array
- * @throws DatabaseException
- */
-function getFilesList()
-{
-    $db       = \NDB_Factory::singleton()->database();
-    $fileList = $db->pselect("SELECT id, file_name FROM media", []);
-
-    $mediaFiles = [];
-    foreach ($fileList as $row) {
-        $mediaFiles[$row['id']] = $row['file_name'];
-    }
-
-    return $mediaFiles;
-}
-
-/**
  * Checks that a date is not in the future.
  *
  * @param string $dateTaken The date (in YYYY-MM-DD
