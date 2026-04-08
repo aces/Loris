@@ -167,6 +167,9 @@ msgstr "Téléversement du fichier multimédia terminé."
 msgid "Upload error!"
 msgstr "Erreur de téléversement!"
 
+msgid "A file with the same name already exists!"
+msgstr "Un fichier portant le même nom existe déjà !"
+
 #, fuzzy
 msgid "File too large!"
 msgstr "Fichier trop volumineux !"

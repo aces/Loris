@@ -110,7 +110,7 @@ class Files extends \NDB_Page
 
             $filename = explode(
                 'Files',
-                urldecode($request->getUri()->getPath())
+                $request->getUri()->getPath()
             )[1];
 
             $downloader = new \LORIS\FilesDownloadHandler(
