@@ -26,6 +26,45 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
     /**
      * {@inheritDoc}
      *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    #[\Override]
+    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
+    {
+        $user = \User::singleton();
+        if (!$this->isAccessibleBy($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden("Permission Denied");
+        }
+
+        $url    = $request->getUri()->getPath();
+        $prefix = $this->getEndpointPrefix();
+        $idx    = strpos($url, $prefix);
+        $file   = substr($url, $idx + strlen($prefix));
+
+        $db = $this->loris->getDatabaseConnection();
+        $row = $db->pselectRow(
+            "SELECT s.CenterID FROM media m
+             JOIN session s ON m.session_id = s.ID
+             WHERE m.file_name = :file",
+            ['file' => $file]
+        );
+
+        if (!$row) {
+            return new \LORIS\Http\Response\JSON\NotFound("File not found");
+        }
+
+        if (!$user->hasPermission('access_all_profiles') && !$user->hasCenter(new \CenterID(strval($row['CenterID'])))) {
+            return new \LORIS\Http\Response\JSON\Forbidden("Permission Denied for this site");
+        }
+
+        return parent::handle($request);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param \NDB_Config $config the LORIS configuration object to retrieve
      *                            settings from.
      *
