@@ -18,6 +18,7 @@ if (!$user->hasPermission('survey_accounts_view')) {
     header("HTTP/1.1 403 Forbidden");
     exit(0);
 }
+header("Content-Type: application/json; charset=utf-8");
 
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
