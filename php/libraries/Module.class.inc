@@ -247,8 +247,8 @@ abstract class Module extends \LORIS\Router\PrefixRouter
     public function getHelp(string $page): string
     {
         $helpFile = realpath($this->dir . "/help/$page.md");
-        if ($helpFile && file_exists($helpFile) &&
-            str_starts_with($helpFile, realpath($this->dir))
+        if ($helpFile && file_exists($helpFile)
+            && str_starts_with($helpFile, realpath($this->dir))
         ) {
             return file_get_contents($helpFile);
         }

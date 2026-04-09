@@ -25,15 +25,17 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
     /**
      * {@inheritDoc}
      *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The PSR15 Request being handled
+     * @param \Psr\Http\Message\ServerRequestInterface $request The PSR15 Request
+     *                                                          being handled
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
     #[\Override]
-    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
+    public function handle(\Psr\Http\Message\ServerRequestInterface $request)
+           : \Psr\Http\Message\ResponseInterface
     {
         $user = \User::singleton();
-        if (!$this->isAccessibleBy($user)) {
+        if (!$this->_hasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden("Permission Denied");
         }
 
@@ -42,7 +44,7 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
         $idx    = strpos($url, $prefix);
         $file   = substr($url, $idx + strlen($prefix));
 
-        $db = $this->loris->getDatabaseConnection();
+        $db  = $this->loris->getDatabaseConnection();
         $row = $db->pselectRow(
             "SELECT s.CenterID FROM media m
              JOIN session s ON m.session_id = s.ID
@@ -54,8 +56,12 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
             return new \LORIS\Http\Response\JSON\NotFound("File not found");
         }
 
-        if (!$user->hasPermission('access_all_profiles') && !$user->hasCenter(new \CenterID(strval($row['CenterID'])))) {
-            return new \LORIS\Http\Response\JSON\Forbidden("Permission Denied for this site");
+        if (!$user->hasPermission('access_all_profiles')
+            && !$user->hasCenter(new \CenterID(strval($row['CenterID'])))
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                "Permission Denied for this site"
+            );
         }
 
         return parent::handle($request);
