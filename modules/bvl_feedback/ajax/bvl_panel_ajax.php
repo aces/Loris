@@ -19,7 +19,21 @@
 namespace LORIS\bvl_feedback;
 use \LORIS\StudyEntities\Candidate\CandID;
 
-$username = \User::singleton()->getUsername();
+//----------------------------------------//
+// Ensure user is allowed to issue any of //
+// the bvl_feedback AJAX calls            //
+//----------------------------------------//
+$user = \User::singleton();
+if (!$user->hasPermission('bvl_feedback')) {
+    header("HTTP/1.1 403 Forbidden");
+    header("Content-Type: text/plain");
+    exit(
+        "You do not have valid permissions for this
+         operation."
+    );
+}
+
+$username = $user->getUsername();
 $data     = \Utility::parseFormData($_POST);
 
 if (isset($data['candID']) && !empty($data['candID'])) {
