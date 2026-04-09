@@ -51,11 +51,11 @@ function editFile()
     }
 
         $row = $db->pselectRow(
-        "SELECT s.CenterID FROM media m
+            "SELECT s.CenterID FROM media m
          JOIN session s ON m.session_id = s.ID
          WHERE m.id = :id",
-        ['id' => $idMediaFile]
-    );
+            ['id' => $idMediaFile]
+        );
 
     if (!$row) {
         showMediaError("Media ID $idMediaFile not found", 404);
@@ -63,7 +63,8 @@ function editFile()
     }
 
     if (!$user->hasPermission('media_write')
-        || (!$user->hasPermission('access_all_profiles') && !$user->hasCenter(new \CenterID(strval($row['CenterID']))))
+        || (!$user->hasPermission('access_all_profiles')
+        && !$user->hasCenter(new \CenterID(strval($row['CenterID']))))
     ) {
         showMediaError("Permission Denied", 403);
         exit(0);

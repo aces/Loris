@@ -154,7 +154,7 @@ class Login extends Component {
               // test URL as string
               if (typeof redirectUrl !== 'string') {
                 window.location.href = window.location.origin;
-              };
+              }
 
               // parse URL
               try {
