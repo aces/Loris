@@ -72,9 +72,9 @@ class NDB_Form extends NDB_Page
     {
         if (!$this->form->validate()) {
             return false;
-	}
+        }
         $this->form->process([&$this, "_save"]);
-	return true;
+        return true;
     }
 
     /**
@@ -131,7 +131,7 @@ class NDB_Form extends NDB_Page
         $this->setup();
         if ($request->getMethod() === "POST") {
             if ($this->save()) {
-		    return new \LORIS\Http\Response\JSON\SeeOther($request->getURI());
+                return new \LORIS\Http\Response\JSON\SeeOther($request->getURI());
             }
         }
 
