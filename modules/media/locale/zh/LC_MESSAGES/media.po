@@ -156,6 +156,9 @@ msgstr "媒体文件上传完成。"
 msgid "Upload error!"
 msgstr "上传错误！"
 
+msgid "A file with the same name already exists!"
+msgstr "同名的文件已存在！"
+
 msgid "File too large!"
 msgstr "文件太大！"
 
