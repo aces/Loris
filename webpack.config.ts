@@ -5,9 +5,6 @@ import webpack, {DefinePlugin, IgnorePlugin} from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
-// Build mode (development or production)
-const isDev = process.env.NODE_ENV === 'development';
-
 // Target module to build (if there is one)
 const target = process.env.target;
 
@@ -212,16 +209,22 @@ const plugins: webpack.WebpackPluginInstance[] = [];
 plugins.push(new CopyPlugin({
   patterns: [
     {
-      from: `node_modules/react/umd/${
-        isDev ? 'react.development.js' : 'react.production.min.js'
-      }`,
+      from: 'node_modules/react/umd/react.development.js',
       to: 'htdocs/vendor/js/react',
       force: true,
     },
     {
-      from: `node_modules/react-dom/umd/${
-        isDev ? 'react-dom.development.js' : 'react-dom.production.min.js'
-      }`,
+      from: 'node_modules/react/umd/react.production.min.js',
+      to: 'htdocs/vendor/js/react',
+      force: true,
+    },
+    {
+      from: 'node_modules/react-dom/umd/react-dom.development.js',
+      to: 'htdocs/vendor/js/react',
+      force: true,
+    },
+    {
+      from: 'node_modules/react-dom/umd/react-dom.production.min.js',
       to: 'htdocs/vendor/js/react',
       force: true,
     },

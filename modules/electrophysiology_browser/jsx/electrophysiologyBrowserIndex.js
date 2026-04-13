@@ -78,6 +78,8 @@ class ElectrophysiologyBrowserIndex extends Component {
     const style = '';
     let result = <td className={style}>{cell}</td>;
     const {t} = this.props;
+    const sessionIDKey = t('SessionID', {ns: 'electrophysiology_browser'});
+    const sessionID = row[sessionIDKey] || row.SessionID;
     switch (column) {
     case t('Links', {ns: 'electrophysiology_browser'}):
       let cellTypes = cell.split(',');
@@ -86,7 +88,7 @@ class ElectrophysiologyBrowserIndex extends Component {
       for (let i = 0; i < cellTypes.length; i += 1) {
         cellLinks.push(<a key={i} href={loris.BaseURL +
               '/electrophysiology_browser/sessions/' +
-              row.SessionID + '?outputType=' +
+              sessionID + '?outputType=' +
               cellTypes[i]}>
           {cellTypes[i]}
         </a>);
@@ -98,7 +100,7 @@ class ElectrophysiologyBrowserIndex extends Component {
       if (cellTypes.length > 1) {
         cellLinks.push(<a key="all" href={loris.BaseURL +
             '/electrophysiology_browser/sessions/' +
-            row.SessionID}>
+            sessionID}>
           {t('all types', {ns: 'electrophysiology_browser'})}
         </a>);
       }

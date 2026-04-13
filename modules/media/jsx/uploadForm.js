@@ -272,9 +272,6 @@ class MediaUploadForm extends Component {
 
     let formData = this.state.formData;
     let formRefs = this.refs;
-    let mediaFiles = this.state.Data.mediaFiles ?
-      this.state.Data.mediaFiles :
-      [];
 
     // Validate the form
     if (!this.isValidForm(formRefs, formData)) {
@@ -299,28 +296,7 @@ class MediaUploadForm extends Component {
       );
       return;
     }
-
-    // Check for duplicate file names
-    let isDuplicate = mediaFiles.indexOf(fileName);
-    if (isDuplicate >= 0) {
-      swal.fire({
-        title: 'Are you sure?',
-        text: 'A file with this name already exists!' + '\n'
-          + 'Would you like to overwrite the existing file?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: this.props.t('Yes, I am sure!', {ns: 'loris'}),
-        cancelButtonText: this.props.t('No, cancel it!', {ns: 'loris'}),
-      }).then(function(isConfirm) {
-        if (isConfirm) {
-          this.uploadFile();
-        } else {
-          swal.fire('Cancelled', 'Your file was not overwritten', 'error');
-        }
-      }.bind(this));
-    } else {
-      this.uploadFile();
-    }
+    this.uploadFile();
   }
 
   /**
@@ -348,16 +324,12 @@ class MediaUploadForm extends Component {
       if (xhr.status < 400) {
         // Update data "row" into table
         this.props.insertRow(JSON.parse(xhr.response));
-        // Add git pfile to the list of exiting files
-        let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
-        mediaFiles.push(formData.file.name);
 
         // Trigger an update event to update all observers (i.e DataTable)
         let event = new CustomEvent('update-datatable');
         window.dispatchEvent(event);
 
         this.setState({
-          mediaFiles: mediaFiles,
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
@@ -371,14 +343,17 @@ class MediaUploadForm extends Component {
           }
         });
       } else {
-        console.error(xhr.status + ': ' + xhr.statusText);
         let msg = this.props.t('Upload error!', {ns: 'media'});
+
         if (xhr.response) {
           if (xhr.statusText) {
             msg = JSON.parse(xhr.response).message;
           }
         }
-        if (xhr.status === 413) {
+        if (xhr.status === 409) {
+          msg = this.props.t('A file with the same name already exists!',
+            {ns: 'media'});
+        } else if (xhr.status === 413) {
           msg = this.props.t('File too large!', {ns: 'media'});
         }
 
