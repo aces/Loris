@@ -12,7 +12,7 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-namespace LORIS\acknowledgements;
+namespace LORIS\acknowledgements_manager;
 
 /**
  * The acknowledgements provides the menu filter for the acknowledgements module.
@@ -24,7 +24,7 @@ namespace LORIS\acknowledgements;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class Acknowledgements extends \DataFrameworkMenu
+class Acknowledgements_Manager extends \DataFrameworkMenu
 {
     /**
      * Tells the base class that this page's provisioner can support the
@@ -120,7 +120,7 @@ class Acknowledgements extends \DataFrameworkMenu
         return array_merge(
             $deps,
             [
-                $baseURL . "/acknowledgements/js/acknowledgementsIndex.js",
+                $baseURL . "/acknowledgements_manager/js/acknowledgementsIndex.js",
             ]
         );
     }
