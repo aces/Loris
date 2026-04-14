@@ -8,7 +8,7 @@
  * be maintained by LORIS as it's project specific.
  *
  * Database table .po files go in project/locale/ rather than
- * the LORIS locale/. 
+ * the LORIS locale/.
  *
  * This script checks if the template exists and refuses to overwrite
  * it, but otherwise does little validation.
@@ -30,52 +30,66 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
 
-function usage() {
-	global $argv;
-	fprintf(STDERR, "usage: %s --columns=column1,column2 tablename\n", $argv[0]);
-	exit(1);
-}
-$lastidx = 0;
-$opts = getopt("", [ "columns::" ], $lastidx);
-$columns= $opts['columns'];
-if(empty($opts['columns'])) {
-	usage();
+/**
+ * Prints usage info to stderr and exists
+ *
+ * @return void
+ */
+function usage()
+{
+    global $argv;
+    fprintf(STDERR, "usage: %s --columns=column1,column2 tablename\n", $argv[0]);
+    exit(1);
 }
 
-if($lastidx !== $argc-1) {
-	usage();
+$lastidx = 0;
+$opts    = getopt("", [ "columns::" ], $lastidx);
+$columns = $opts['columns'];
+if (empty($opts['columns'])) {
+    usage();
+}
+
+if ($lastidx !== $argc-1) {
+    usage();
 }
 $table = $argv[$lastidx];
 
 $outputfile = __DIR__ . "/../project/locale/$table.pot";
 
-if(file_exists($outputfile)) {
-	fprintf(STDERR, "Will not overwrite existing template file %s. Backup and remove the file if you want to overwrite it.", realpath($outputfile));
-	exit(2);
+if (file_exists($outputfile)) {
+    fprintf(
+        STDERR,
+        "Will not overwrite existing template file %s. '
+	.'Backup and remove the file if you want to overwrite it.",
+        realpath($outputfile)
+    );
+    exit(2);
 }
 
-// This is not particularly robust or secure, but this script is only run by trusted users
-// on the backend.
+// This is not particularly robust or secure, but this script is only run by
+// trusted users on the backend.
 $rows = $DB->pselect("SELECT $columns from $table", []);
 
 $values = [];
 foreach ($rows as $row) {
-	foreach($row as $val) {
-		$values[$val] = '';
-	}
+    foreach ($row as $val) {
+        $values[$val] = '';
+    }
 }
 
 $values = array_keys($values);
 
-if(count($values) == 0) {
-	fprintf(STDERR, "No translateable values found\n");
-	exit(3);
+if (count($values) == 0) {
+    fprintf(STDERR, "No translateable values found\n");
+    exit(3);
 }
 
 
 $fd = fopen($outputfile, "w");
 
-fwrite($fd, <<<EOF
+fwrite(
+    $fd,
+    <<<EOF
 msgid ""
 msgstr ""
 
@@ -91,11 +105,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\\n"
 
 
-EOF);
+EOF
+);
 
-foreach($values as $val)  {
-	if(!empty($val)) {
-		fprintf($fd, "msgid \"%s\"\n", $val);
-		fprintf($fd, "msgstr \"\"\n\n");
-	}
+foreach ($values as $val) {
+    if (!empty($val)) {
+        fprintf($fd, "msgid \"%s\"\n", $val);
+        fprintf($fd, "msgstr \"\"\n\n");
+    }
 }
