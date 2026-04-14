@@ -461,7 +461,10 @@ class User extends UserPermissions implements
     {
         $sites = [];
         foreach ($this->getSites() as $site) {
-            $sites[$site->getCenterID()->__toString()] = $site->getCenterName();
+            $sites[$site->getCenterID()->__toString()] = dgettext(
+                "psc",
+                $site->getCenterName()
+            );
         }
         return $sites;
     }
@@ -480,7 +483,7 @@ class User extends UserPermissions implements
             $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
                 $user_study_sites[$val->__toString()]
-                    = $site[$key]->getCenterName();
+                    = dgettext("psc", $site[$key]->getCenterName());
             }
         }
         natcasesort($user_study_sites);
