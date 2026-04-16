@@ -342,8 +342,8 @@ function getUploadFields()
         $visit = $record["Visit_label"];
         $pscid = $record["PSCID"];
 
-        if (!isset($sessionData[$pscid]['instruments'][$visit])) {
-            $sessionData[$pscid]['instruments'][$visit] = [];
+        if (!isset($sessionData[$pscid]['instruments'][$visit ?? ''])) {
+            $sessionData[$pscid]['instruments'][$visit ?? ''] = [];
         }
         if (!isset($sessionData[$pscid]['instruments']['all'])) {
             $sessionData[$pscid]['instruments']['all'] = [];
@@ -449,7 +449,7 @@ function toSelect($options, $item, $item2)
     }
 
     foreach (array_keys($options) as $key) {
-        $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
+        $selectOptions[$options[$key][$optionsValue] ?? ''] = $options[$key][$item];
     }
 
     return $selectOptions;
