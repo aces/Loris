@@ -314,8 +314,14 @@ class UserTest extends TestCase
         parent::setUp();
         $this->_factory = \NDB_Factory::singleton();
         $this->_factory->reset();
-        $this->_configMock = $this->_factory->Config(CONFIG_XML);
-        $this->_dbMock     = $this->_factory->database();
+
+        $mockdb     = $this->_factory->database();
+        $mockconfig = $this->_factory->Config(CONFIG_XML);
+        '@phan-var \Database&PHPUnit\Framework\MockObject\MockObject $mockdb';
+        '@phan-var \NDB_Config&PHPUnit\Framework\MockObject\MockObject $mockconfig';
+
+        $this->_configMock = $mockconfig;
+        $this->_dbMock     = $mockdb;
 
         $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
         $mockdb     = $this->getMockBuilder('Database')->getMock();

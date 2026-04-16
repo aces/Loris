@@ -173,7 +173,7 @@ class UtilityTest extends TestCase
         parent::setUp();
 
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        '@phan-var \NDB_Config $configMock';
+        '@phan-var \NDB_Config \NDB_Config&PHPUnit\Framework\MockObject\MockObject $configMock';
         $this->_configMock = $configMock;
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
 
