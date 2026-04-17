@@ -142,7 +142,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             );
         }
         foreach ($reporter_expanded as $r_row) {
-            $reporters[$r_row['Real_name']] = $r_row['Real_name'];
+            $reporters[$r_row['Real_name'] ?? ''] = $r_row['Real_name'] ?? 'Unknown';
         }
 
         //assignees
@@ -156,7 +156,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             []
         );
         foreach ($assignee_expanded as $a_row) {
-            $assignees[$a_row['Real_name']] = $a_row['Real_name'];
+            $assignees[$a_row['Real_name'] ?? ''] = $a_row['Real_name'] ?? 'Unknown';
         }
 
         $modules = array_reduce(
