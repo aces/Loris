@@ -152,7 +152,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         // set by the instrument constructor,
         // if PHPunit hadn't disabled the constructor
         $ref = new \ReflectionProperty(get_class($instrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $instrument,
             new \LORIS\LorisInstance(
@@ -1621,7 +1620,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         // set by the instrument constructor,
         // if PHPunit hadn't disabled the constructor
         $ref = new \ReflectionProperty(get_class($otherInstrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $otherInstrument,
             new \LORIS\LorisInstance(
@@ -2018,7 +2016,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_factoryForDB->setConfig($this->_config);
 
         $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $this->_instrument,
             new \LORIS\LorisInstance(

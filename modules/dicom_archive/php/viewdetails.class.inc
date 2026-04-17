@@ -259,6 +259,9 @@ class ViewDetails extends \NDB_Form
             ['tid' => $this->tpl_data['archive']['TarchiveID']]
         )['IsPhantom'] ?? null;
 
+        // This shouldn't happen, but without it phan doesn't realize
+        // that patientname is part of the array
+        assert(isset($this->tpl_data['archive']['PatientName']));
         if ($isPhantom === 'Y') {
             $isValid = preg_match(
                 "/$legoPhanRegex/",

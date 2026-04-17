@@ -43,15 +43,11 @@ return [
         "test"
     ],
     'exclude_file_list' => [
-        'vendor/squizlabs/php_codesniffer/tests/Core/Tokenizer/DoubleQuotedStringTest.inc'
+        'vendor/squizlabs/php_codesniffer/tests/Core/Tokenizer/DoubleQuotedStringTest.inc',
+	'vendor/squizlabs/php_codesniffer/tests/Core/Tokenizers/PHP/OtherContextSensitiveKeywordsTest.inc',
     ],
     "exclude_analysis_directory_list" => [
         "vendor"
-    ],
-    "autoload_internal_extension_signatures" => [
-        // Xdebug stubs are bundled with Phan 0.10.1+/0.8.9+ for usage,
-        // because Phan disables xdebug by default.
-        "xdebug"     => "vendor/phan/phan/.phan/internal_stubs/xdebug.phan_php",
     ],
     "plugins" => [
         "UnreachableCodePlugin",

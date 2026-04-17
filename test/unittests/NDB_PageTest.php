@@ -696,6 +696,7 @@ class NDB_PageTest extends TestCase
     public function testDisplayWithFormFrozen()
     {
         $this->markTestIncomplete("This test is incomplete!");
+        /*
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
         '@phan-var \NDB_Config $configMock';
         $factory = NDB_Factory::singleton();
@@ -707,6 +708,7 @@ class NDB_PageTest extends TestCase
             ->willReturn("fetch was called!");
         $this->_page->form->freeze();
         $this->assertEquals("fetch was called!", $this->_page->display());
+        */
     }
 
     /**

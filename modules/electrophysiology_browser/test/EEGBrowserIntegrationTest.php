@@ -538,6 +538,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->markTestSkipped(
             'rewrite later'
         );
+        /*
         $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
         $link = self::$nextLink;
         $this->safeClick(WebDriverBy::cssSelector($link));
@@ -553,6 +554,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
 
         $this->safeClick(WebDriverBy::cssSelector(self::$prevLink));
         $this->assertStringContainsString("166", $this->webDriver->getCurrentURL());
+        */
     }
 
     /**

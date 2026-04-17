@@ -35,7 +35,7 @@ class PoolController
      *
      * @var \Database $db
      * @var \User     $user
-     * @var PoolDAO   $dao
+     * @var PoolDAO $dao
      * @var \LORIS\LorisInstance $loris
      */
     private $db, $user, $dao, $loris;
@@ -51,7 +51,7 @@ class PoolController
         $this->loris = $loris;
         $this->db    = $loris->getDatabaseConnection();
         $this->user  = $user;
-        $this->dao   = $this->_getDataProvisioner();
+        $this->dao   = new PoolDAO($this->loris);
     }
 
     /**
@@ -63,7 +63,10 @@ class PoolController
     {
         $this->_validatePermission('view');
         $pools  = [];
-        $poolIt = $this->dao->execute($this->user);
+        $poolIt = $this->dao
+            ->filter(new \LORIS\Data\Filters\UserSiteMatch())
+            ->filter(new \LORIS\Data\Filters\UserProjectMatch())
+            ->execute($this->user);
         foreach ($poolIt as $id => $pool) {
             $pools[$id] = $pool;
         }
@@ -88,21 +91,6 @@ class PoolController
         $pool = (new Pool())->fromArray($poolArray);
         $this->validateInstance($pool);
         return $this->dao->saveInstance($pool);
-    }
-
-    /**
-     * Treats the Pool DAO as a Provisioner that can be iterated through to
-     * provide the permissible Pool Objects for the current User
-     *
-     * @return \LORIS\Data\Provisioner
-     */
-    private function _getDataProvisioner() : \LORIS\Data\Provisioner
-    {
-        $dao = new PoolDAO($this->loris);
-        $dao = $dao
-            ->filter(new \LORIS\Data\Filters\UserSiteMatch())
-            ->filter(new \LORIS\Data\Filters\UserProjectMatch());
-        return $dao;
     }
 
     /**
