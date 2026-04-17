@@ -53,6 +53,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
                 'UserID'     => 'TestUser',
                 'First_name' => 'Test',
                 'Last_name'  => 'User',
+		'Real_name'  => 'Test User'
             ]
         );
         $this->DB->insert(
