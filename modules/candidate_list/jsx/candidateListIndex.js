@@ -15,6 +15,7 @@ import {withTranslation} from 'react-i18next';
 import jaStrings from '../locale/ja/LC_MESSAGES/candidate_list.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/candidate_list.json';
 import frStrings from '../locale/fr/LC_MESSAGES/candidate_list.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/candidate_list.json';
 
 /**
  * Candidate List
@@ -413,6 +414,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'candidate_list', jaStrings);
   i18n.addResourceBundle('hi', 'candidate_list', hiStrings);
   i18n.addResourceBundle('fr', 'candidate_list', frStrings);
+  i18n.addResourceBundle('zh', 'candidate_list', zhStrings);
 
 
   const CLIndex = withTranslation(

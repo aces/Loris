@@ -91,7 +91,7 @@ class SurveyAccountsIndex extends Component {
 
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     /**
@@ -100,29 +100,37 @@ class SurveyAccountsIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'PSCID', show: true, filter: {
-        name: 'pscid',
-        type: 'text',
-      }},
-      {label: 'Visit', show: true, filter: {
-        name: 'visit',
-        type: 'select',
-        options: options.visits,
-      }},
-      {label: 'Instrument', show: true, filter: {
-        name: 'instrument',
-        type: 'select',
-        options: options.instruments,
-      }},
+      {
+        label: 'PSCID', show: true, filter: {
+          name: 'pscid',
+          type: 'text',
+        },
+      },
+      {
+        label: 'Visit', show: true, filter: {
+          name: 'visit',
+          type: 'select',
+          options: options.visits,
+        },
+      },
+      {
+        label: 'Instrument', show: true, filter: {
+          name: 'instrument',
+          type: 'select',
+          options: options.instruments,
+        },
+      },
       {label: 'URL', show: true},
-      {label: 'Status', show: true, filter: {
-        name: 'Status',
-        type: 'select',
-        options: options.statusOptions,
-      }},
+      {
+        label: 'Status', show: true, filter: {
+          name: 'Status',
+          type: 'select',
+          options: options.statusOptions,
+        },
+      },
     ];
     const addSurvey = () => {
-      location.href='/survey_accounts/addSurvey/';
+      location.href = '/survey_accounts/addSurvey/';
     };
     const actions = [
       {label: 'Add Survey', action: addSurvey},
@@ -148,6 +156,7 @@ SurveyAccountsIndex.propTypes = {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'survey_accounts', {});
+  i18n.addResourceBundle('zh', 'survey_accounts', {});
   const Index = withTranslation(
     ['survey_accounts', 'loris']
   )(SurveyAccountsIndex);

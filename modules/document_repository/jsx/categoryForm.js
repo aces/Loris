@@ -14,6 +14,7 @@ import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
 import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/document_repository.json';
 
 /**
  * Category Creation Form
@@ -82,7 +83,7 @@ class DocCategoryForm extends React.Component {
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (<Loader/>);
+      return (<Loader />);
     }
 
     let disabled = true;
@@ -90,7 +91,7 @@ class DocCategoryForm extends React.Component {
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
       addButton = <ButtonElement label={t('Add Category',
-        {ns: 'document_repository'})}/>;
+        {ns: 'document_repository'})} />;
     }
 
     return (
@@ -102,7 +103,7 @@ class DocCategoryForm extends React.Component {
             onSubmit={this.handleSubmit}
           >
             <h3>{t('Add a category',
-              {ns: 'document_repository'})}</h3><br/>
+              {ns: 'document_repository'})}</h3><br />
             <TextboxElement
               name="categoryName"
               label={t('Category Name',
@@ -225,6 +226,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'document_repository', hiStrings);
   i18n.addResourceBundle('ja', 'document_repository', jaStrings);
   i18n.addResourceBundle('fr', 'document_repository', frStrings);
+  i18n.addResourceBundle('zh', 'document_repository', zhStrings);
 
   const element = document.getElementById('lorisworkspace');
   if (!element) {

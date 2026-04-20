@@ -465,6 +465,7 @@ AcknowledgementsIndex.propTypes = {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'acknowledgements', {});
+  i18n.addResourceBundle('zh', 'acknowledgements', {});
   const Index = withTranslation(
     ['acknowledgements', 'loris']
   )(AcknowledgementsIndex);
