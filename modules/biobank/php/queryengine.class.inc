@@ -33,7 +33,8 @@ use \LORIS\Data\Types\DateType;
 class QueryEngine extends SQLQueryEngine
 {
     // Reusable JOIN clauses - defined once to ensure exact string matching
-    const JOIN_SESSION        = 'LEFT JOIN session s ON (s.CandidateID=c.ID)';
+    const JOIN_SESSION        = "LEFT JOIN session s "
+        . "ON (s.CandidateID=c.ID AND s.Active='Y')";
     const JOIN_SPECIMEN       = 'LEFT JOIN biobank_specimen bs '
         . 'ON (s.ID=bs.SessionID)';
     const JOIN_CONTAINER      = 'LEFT JOIN biobank_container bc '
