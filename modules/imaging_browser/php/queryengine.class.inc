@@ -375,7 +375,8 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         \LORIS\Data\Dictionary\DictionaryItem $item
     ): string {
         if ($item->getName() == 'ScanDone') {
-            $this->addTable("LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')");
+            $this->addTable("LEFT JOIN session s "
+                . "ON (s.CandidateID=c.ID AND s.Active='Y')");
                 return "CASE WHEN s.Scan_Done='Y' THEN true
                              WHEN s.Scan_Done='N' THEN false
                              ELSE NULL END";
@@ -392,7 +393,8 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         // $field = whatever's after the first underscore
         $field = substr($item->getName(), strpos($item->getName(), '_') + 1);
 
-        $this->addTable("LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')");
+        $this->addTable("LEFT JOIN session s "
+            . "ON (s.CandidateID=c.ID AND s.Active='Y')");
         $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
 
         if ($item instanceof LocationDictionaryItem) {
@@ -544,7 +546,8 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             || $item instanceof MRICommentDictionaryItem
             || $item instanceof MRIPredefinedCommentDictionaryItem
         ) {
-            $this->addTable("LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')");
+            $this->addTable("LEFT JOIN session s "
+                . "ON (s.CandidateID=c.ID AND s.Active='Y')");
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
             return "SUBSTRING_INDEX(files.File, '/', -1)";
         }
