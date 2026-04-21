@@ -24,7 +24,7 @@ msgstr "Téléverseur d'électrophysiologie"
 
 #, fuzzy
 msgid "LORIS 26 Beta Note:"
-msgstr "LORIS 26 Beta Remarque:"
+msgstr "LORIS 26 Beta Remarque :"
 
 msgid ""
 "Files uploaded in this module will not be viewable in the Electrophysiology "
