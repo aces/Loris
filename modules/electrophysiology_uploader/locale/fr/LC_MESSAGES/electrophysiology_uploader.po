@@ -24,7 +24,7 @@ msgstr "Téléverseur d'électrophysiologie"
 
 #, fuzzy
 msgid "LORIS 26 Beta Note:"
-msgstr "LORIS 26 Beta Remarque :"
+msgstr "LORIS 26 Beta Remarque:"
 
 msgid ""
 "Files uploaded in this module will not be viewable in the Electrophysiology "
@@ -93,7 +93,7 @@ msgid "Submission error!"
 msgstr "Erreur de soumission!"
 
 msgid "Upload Location"
-msgstr "Emplacement de téléversement"
+msgstr "Emplacement du téléversement"
 
 msgid "Upload ID"
 msgstr "ID de téléversement"
@@ -106,3 +106,7 @@ msgstr "Statut"
 
 msgid "Uploaded By"
 msgstr "Téléverser par"
+
+# upload.class.inc
+msgid "File not found."
+msgstr "Fichier introuvable."
