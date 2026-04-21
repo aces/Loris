@@ -116,7 +116,7 @@ abstract class SQLQueryEngine implements QueryEngine
         $this->addWhereClause("c.Active='Y'");
         $prepbindings = [];
 
-        $this->buildQueryFromCriteria($term, $prepbindings, $visitlist);
+        $this->buildQueryFromCriteria($term, $prepbindings);
 
         $query = 'SELECT DISTINCT c.CandID FROM';
 
@@ -125,7 +125,6 @@ abstract class SQLQueryEngine implements QueryEngine
         $query .= ' WHERE ';
         $query .= $this->getWhereConditions();
         $query .= ' ORDER BY c.CandID';
-        error_log(print_r($query, true));
 
         $DB   = $this->loris->getDatabaseConnection();
         $rows = $DB->pselectCol($query, $prepbindings);
@@ -583,6 +582,7 @@ abstract class SQLQueryEngine implements QueryEngine
         );
 
         if ($visitlist != null) {
+            $this->addTable("LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')");
             $inset = [];
             $i     = count($prepbindings);
             foreach ($visitlist as $vl) {
