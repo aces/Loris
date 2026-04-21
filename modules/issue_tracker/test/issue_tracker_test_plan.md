@@ -28,6 +28,7 @@
 11. Check that all values are propagated and saved correctly.
 12. Add an attachment to the new issue and make sure that it is successfully uploaded.
 13. Check that watching options are working - turn it off and on for your current user, and for other watchers on the issue, and check that values are saved.
+14. **External Issue ID**: With the `Issue Tracker: External Issue ID` permission, submit an issue with a value (e.g., `GH-9795`) and verify it saves. Without the permission, the field must not render, and a forged POST carrying `externalIssueID` must not persist.
 
 ## Issue Tracker Edit Existing Issue [Manual Testing]
 1. User can access the page if they fulfill all the following conditions:
@@ -43,6 +44,7 @@
 10. Test if users can delete their own uploaded attachments.
 11. Test if user assigned to issue cannot delete attachments of issue owner.
 12. Test that emails are sent to users that are watching the issue.
+13. **External Issue ID**: With the permission, edit the value and verify it saves and appears in the comment history. Without the permission, both the field and any `externalIssueID` rows in the comment history must be hidden.
 
 ## Permissions [Automation Testing]
 1. Remove `Issue Tracker: View/Edit/Comment Issues - All Sites` permission.
@@ -50,7 +52,9 @@
 3. Remove `Issue Tracker: View/Edit/Comment/Close Issues - Own` permission.
 4. Remove `Issue Tracker: Close Issues - All Sites` permission.
 5. Remove `Issue Tracker: Close Issues - Own Sites` permission.
-6. Test that the module behaves correctly as described above. 
+6. Remove `Issue Tracker: External Issue ID` permission.
+7. Test that the module behaves correctly as described above.
+
 
 **Test the Issue Tracker Dashboard widget**
 1. The dashboard widget named My Tasks, should display the correct number of assigned issues.
