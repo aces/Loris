@@ -525,10 +525,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
     private function _removeUrlsFromWidgetData(array $widgetData): array
     {
         foreach ($widgetData as $key => $value) {
-            if (!is_array($value)) {
-                continue;
-            }
-            if (isset($value['url'])) {
+            if (is_array($value) && isset($value['url'])) {
                 $widgetData[$key]['url'] = null;
             }
         }
