@@ -45,6 +45,15 @@ class CandidateListIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.toggleFilters = this.toggleFilters.bind(this);
+
+    this.dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        style: 'short',
+        timeZone: 'UTC',
+
+      }
+    );
   }
 
   /**
@@ -143,6 +152,11 @@ class CandidateListIndex extends Component {
       }
 
       return <td><a href ={url}>{cell}</a></td>;
+    }
+    if (column === this.props.t('DoB', {ns: 'loris'})
+      || column === this.props.t('Date of registration', {ns: 'loris'})) {
+      const date = new Date(cell);
+      return <td>{this.dateFormatter.format(date)}</td>;
     }
     if (column === this.props.t('Feedback', {ns: 'loris'})) {
       switch (cell) {
