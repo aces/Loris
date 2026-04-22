@@ -52,5 +52,6 @@ INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (49,'dataquery','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (50,'oidc','N');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (51,'policy_tracker','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (52,'biobank','Y');
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (53,'redcap','N');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

@@ -83,5 +83,6 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categor
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (89,'dqt_view','Cross-Modality Data (legacy)',44,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (90,'data_release_hide','Hide data release files',12,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (91,'data_release_delete','Delete data release files',12,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (92,'redcap_ui_view','Access REDCap module front-end',53,2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

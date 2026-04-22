@@ -82,6 +82,12 @@ const lorisModules: Record<string, string[]> = {
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
   my_preferences: ['mfa'],
+  redcap: [
+    'redcapIndex',
+    'tabs/dictionaryViewer',
+    'tabs/notificationViewer',
+    'tabs/issuesViewer',
+  ],
 };
 
 /*
@@ -260,7 +266,7 @@ function addProjectModules(
 
   // Copy the record of LORIS modules
   const allModules: Record<string, string[]> = modules;
-  
+
   // Add project-specific modules and overrides to the record of modules
   for (const [moduleName, moduleEntryPoints] of
     Object.entries(projectModules)
