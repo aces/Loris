@@ -91,6 +91,12 @@ class Options extends \LORIS\Http\Endpoint
         // work.
         $sexes = \Utility::getSexList();
         $sexes = array_combine($sexes, $sexes);
+
+        $entityTypes = [
+            dgettext("candidate", 'Human')   => dgettext("candidate", 'Human'),
+            dgettext("candidate", 'Scanner') => dgettext("candidate", 'Scanner'),
+        ];
+
         return [
             'visitlabel'        => $visit_label_options,
             'site'              => $site_options,
@@ -99,6 +105,7 @@ class Options extends \LORIS\Http\Endpoint
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
             'Sex'               => $sexes,
+            'entitytype'        => $entityTypes,
         ];
     }
 
