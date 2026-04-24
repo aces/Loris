@@ -92,10 +92,12 @@ class Options extends \LORIS\Http\Endpoint
             dgettext("candidate", 'Scanner') => dgettext("candidate", 'Scanner'),
         ];
 
+        $projects = array_combine($list_of_projects, $list_of_projects);
+
         return [
             'visitlabel'        => $visit_label_options,
             'site'              => $site_options,
-            'project'           => array_combine($list_of_projects, $list_of_projects),
+            'project'           => $projects,
             'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
