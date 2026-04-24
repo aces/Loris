@@ -155,8 +155,8 @@ class CandidateListIndex extends Component {
     }
     if (column === this.props.t('DoB', {ns: 'loris'})
       || column === this.props.t('Date of registration', {ns: 'loris'})) {
-      if(cell) {
-        const date = new Date(cell)
+      if (cell) {
+        const date = new Date(cell);
         return <td>{this.dateFormatter.format(date)}</td>;
       }
       return <td></td>;
