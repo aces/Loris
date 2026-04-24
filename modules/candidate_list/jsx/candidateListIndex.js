@@ -239,6 +239,7 @@ class CandidateListIndex extends Component {
           name: 'visitLabel',
           type: 'multiselect',
           options: options.visitlabel,
+          sortByValue: false,
         },
       },
       {
