@@ -123,6 +123,9 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
             }
         }
         $row['Sex'] = isset($row['Sex']) ? dgettext("sex", $row['Sex']) : '';
+
+        $row['EntityType'] = dgettext("candidate", $row['EntityType']);
+
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
         return new CandidateListRow($row, $cid, $pid);
