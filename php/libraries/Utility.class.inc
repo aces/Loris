@@ -141,7 +141,11 @@ class Utility
 
         $result = $DB->pselectCol($query, []);
 
-        return array_combine($result, $result);
+        $translated = [];
+        foreach ($result as $val) {
+            $translated[$val] = dgettext("sex", $val);
+        }
+        return $translated;
     }
 
     /**

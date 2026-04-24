@@ -85,6 +85,12 @@ class Options extends \LORIS\Http\Endpoint
             $participant_status_options[$name] = $name;
         }
 
+        // Data is translated in the table, while the keys are not,
+        // so we need to convert the array format to
+        // $translated => $translated in order for filtering to
+        // work.
+        $sexes = \Utility::getSexList();
+        $sexes = array_combine($sexes, $sexes);
         return [
             'visitlabel'        => $visit_label_options,
             'site'              => $site_options,
@@ -92,7 +98,7 @@ class Options extends \LORIS\Http\Endpoint
             'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
-            'Sex'               => \Utility::getSexList(),
+            'Sex'               => $sexes,
         ];
     }
 
