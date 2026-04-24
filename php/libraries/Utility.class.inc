@@ -327,7 +327,7 @@ class Utility
 
         $subprojs = [];
         foreach ($cohorts as $row) {
-            $subprojs[$row['CohortID']] = $row['title'];
+            $subprojs[$row['CohortID']] = dgettext('cohort', $row['title']);
         }
         return $subprojs;
     }
