@@ -1021,7 +1021,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         );
         $option_array = [];
         foreach ($options as $option) {
-            $option_array[$option['ID']] = $option['Description'];
+            $option_array[$option['ID']] = dgettext('participant_status_options', $option['Description']);
         }
         return $option_array;
     }
