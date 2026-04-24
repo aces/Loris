@@ -63,12 +63,7 @@ class Options extends \LORIS\Http\Endpoint
         }
 
         // get the list of projects
-        // $list_of_projects = \Utility::getProjectList();
         $list_of_projects = $user->getProjectNames();
-        $project_options  = [];
-        foreach (array_values($list_of_projects) as $name) {
-            $project_options[$name] = $name;
-        }
 
         // get the list of cohorts
         $list_of_cohorts = \Utility::getCohortList();
@@ -100,7 +95,7 @@ class Options extends \LORIS\Http\Endpoint
         return [
             'visitlabel'        => $visit_label_options,
             'site'              => $site_options,
-            'project'           => $project_options,
+            'project'           => array_combine($list_of_projects, $list_of_projects),
             'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
