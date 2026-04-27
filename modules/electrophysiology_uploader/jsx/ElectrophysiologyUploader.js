@@ -77,7 +77,7 @@ function ElectrophysiologyUploader(props) {
     <>
       <div className="alert alert-warning" role="alert">
         <strong>{t('LORIS 26 Beta Note:',
-          {ns: 'electrophysiology_uploader'})}</strong>
+          {ns: 'electrophysiology_uploader'})}</strong>{' '}
         {t('Files uploaded in this module will not be viewable'+
           ' in the Electrophysiology Browser module. ' +
            'This feature is under construction for the next release. ' +
