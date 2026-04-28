@@ -1269,8 +1269,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             return "AnonymousUser";
         }
 
-        //
-        $db = $this->loris->getdatabaseConnection();
+        // get real name
+        $db       = $this->loris->getdatabaseConnection();
         $realName = $db->pselectOne(
             "SELECT Real_name
             FROM users
@@ -1278,10 +1278,14 @@ class Edit extends \NDB_Page implements ETagCalculator
             ",
             ["uid" => $userid]
         );
+
+        // not found => Anonymous
         if ($realName === null) {
             // same as the real name for AnonymousUser object
             return "AnonymousUser";
         }
+
+        // else full name + username
         return "{$realName} ({$userid})";
     }
 
