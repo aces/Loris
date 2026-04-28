@@ -1264,14 +1264,21 @@ class Edit extends \NDB_Page implements ETagCalculator
      */
     function formatUserInformation(string $userid)
     {
-        $user = \User::factory($userid);
-        $un   = $user->getUsername();
-        if (empty($un)) {
-            // e.g. in case of anonymous user
-            return $user->getFullname();
-        } else {
-            return $user->getFullname() . " (" . $un . ")";
+        if ($userid === null) {
+            // same as the real name for AnonymousUser object
+            return "AnonymousUser";
         }
+
+        //
+        $db = $this->loris->getdatabaseConnection();
+        $realName = $db->pselectOne(
+            "SELECT Real_name
+            FROM users
+            WHERE userid = :uid
+            ",
+            ["uid" => $userid]
+        );
+        return "{$realName} ({$userid})";
     }
 
     /**
