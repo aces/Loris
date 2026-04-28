@@ -1258,11 +1258,11 @@ class Edit extends \NDB_Page implements ETagCalculator
     /**
      * Get a formatted string from user information.
      *
-     * @param string $userid a username/userid
+     * @param string|null $userid a username/userid, or null
      *
      * @return string a formatted string "fullname (userid)"
      */
-    function formatUserInformation(string $userid)
+    function formatUserInformation(?string $userid)
     {
         if ($userid === null) {
             // same as the real name for AnonymousUser object
@@ -1278,6 +1278,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             ",
             ["uid" => $userid]
         );
+        if ($realName === null) {
+            // same as the real name for AnonymousUser object
+            return "AnonymousUser";
+        }
         return "{$realName} ({$userid})";
     }
 
