@@ -379,6 +379,7 @@ class IssueTrackerIndex extends Component {
               statuses: this.state.data.fieldOptions.statuses,
               categories: this.state.data.fieldOptions.categories,
               sites: this.state.data.fieldOptions.sites,
+              assigneesList: this.state.data.fieldOptions.assignees,
             }}
           />
         </TabPane>

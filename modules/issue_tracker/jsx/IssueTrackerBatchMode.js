@@ -21,6 +21,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
   const [selectedPriorities, setSelectedPriorities] = useState([]);
   const [selectedStatuses, setSelectedStatuses] = useState([]);
   const [selectedSites, setSelectedSites] = useState([]);
+  const [selectedAssignees, setSelectedAssignees] = useState([]);
   const [filteredIssues, setFilteredIssues] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -37,6 +38,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
   const statuses = options.statuses || {};
   const categories = options.categories || {};
   const sites = options.sites || {};
+  const assigneesPossible = options.assigneesList || {};
 
   useEffect(() => {
     fetchIssues();
@@ -49,6 +51,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
     selectedPriorities,
     selectedStatuses,
     selectedSites,
+    selectedAssignees,
     issues,
   ]);
 
@@ -102,7 +105,9 @@ function IssueTrackerBatchMode({options = {}, t}) {
       (selectedStatuses.length === 0 ||
         selectedStatuses.includes(issue.status)) &&
       (selectedSites.length === 0 ||
-        selectedSites.includes(String(issue.centerID)))
+        selectedSites.includes(String(issue.centerID))) &&
+      (selectedAssignees.length === 0 ||
+        selectedAssignees.includes(String(issue.assignee)))
     ));
   }
 
@@ -129,6 +134,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
     setSelectedPriorities([]);
     setSelectedStatuses([]);
     setSelectedSites([]);
+    setSelectedAssignees([]);
   }
 
   /**
@@ -203,6 +209,15 @@ function IssueTrackerBatchMode({options = {}, t}) {
         <span>
           {t('Site', {ns: 'loris', count: 1})}{' '}
           <span className="badge bg-primary">{selectedSites.length}</span>
+        </span>
+      ),
+    },
+    {
+      id: 'assignee', // Added assignee tab
+      label: (
+        <span>
+          Assignee{' '}
+          <span className="badge bg-primary">{selectedAssignees.length}</span>
         </span>
       ),
     },
@@ -316,6 +331,23 @@ function IssueTrackerBatchMode({options = {}, t}) {
               ))}
             </div>
           </TabPane>
+          <TabPane TabId="assignee">
+            <div className="filter-list">
+              {Object.entries(assigneesPossible).map(([value, label]) => (
+                <label key={label.match(/\(([^)]+)\)/)?.[1]} className="d-block">
+                  <input
+                    type="checkbox"
+                    checked={selectedAssignees.includes(label.match(/\(([^)]+)\)/)?.[1])}
+                    onChange={() =>
+                      toggleFilter(selectedAssignees, setSelectedAssignees, label.match(/\(([^)]+)\)/)?.[1])
+                    }
+                    className="checkbox me-2"
+                  />
+                  <span>{value}</span>
+                </label>
+              ))}
+            </div>
+          </TabPane>
         </Tabs>
       </Panel>
       <br/>
@@ -415,6 +447,7 @@ IssueTrackerBatchMode.propTypes = {
     statuses: PropTypes.object,
     categories: PropTypes.object,
     sites: PropTypes.object,
+    assigneesList: PropTypes.object,
   }).isRequired,
   t: PropTypes.func.isRequired,
 };
