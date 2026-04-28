@@ -38,7 +38,6 @@ function IssueTrackerBatchMode({options = {}, t}) {
   const statuses = options.statuses || {};
   const categories = options.categories || {};
   const sites = options.sites || {};
-  const assigneesPossible = options.assigneesList || {};
 
   useEffect(() => {
     fetchIssues();
@@ -333,17 +332,17 @@ function IssueTrackerBatchMode({options = {}, t}) {
           </TabPane>
           <TabPane TabId="assignee">
             <div className="filter-list">
-              {Object.entries(assigneesPossible).map(([value, label]) => (
-                <label key={label.match(/\(([^)]+)\)/)?.[1]} className="d-block">
+              {Object.entries(assignees).map(([value, label]) => (
+                <label key={value} className="d-block">
                   <input
                     type="checkbox"
-                    checked={selectedAssignees.includes(label.match(/\(([^)]+)\)/)?.[1])}
+                    checked={selectedAssignees.includes(value)}
                     onChange={() =>
-                      toggleFilter(selectedAssignees, setSelectedAssignees, label.match(/\(([^)]+)\)/)?.[1])
+                      toggleFilter(selectedAssignees, setSelectedAssignees, value)
                     }
                     className="checkbox me-2"
                   />
-                  <span>{value}</span>
+                  <span>{label}</span>
                 </label>
               ))}
             </div>
@@ -447,7 +446,7 @@ IssueTrackerBatchMode.propTypes = {
     statuses: PropTypes.object,
     categories: PropTypes.object,
     sites: PropTypes.object,
-    assigneesList: PropTypes.object,
+    assignees: PropTypes.object,
   }).isRequired,
   t: PropTypes.func.isRequired,
 };
