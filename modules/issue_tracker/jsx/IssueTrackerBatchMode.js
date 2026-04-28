@@ -338,7 +338,11 @@ function IssueTrackerBatchMode({options = {}, t}) {
                     type="checkbox"
                     checked={selectedAssignees.includes(value)}
                     onChange={() =>
-                      toggleFilter(selectedAssignees, setSelectedAssignees, value)
+                      toggleFilter(
+                        selectedAssignees,
+                        setSelectedAssignees,
+                        value
+                      )
                     }
                     className="checkbox me-2"
                   />
