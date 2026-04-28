@@ -12,6 +12,7 @@ import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
 import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/document_repository.json';
 
 /**
  * Document Delete category Form
@@ -79,7 +80,7 @@ class DeleteDocCategoryForm extends React.Component {
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (<Loader/>);
+      return (<Loader />);
     }
 
     let disabled = true;
@@ -87,7 +88,7 @@ class DeleteDocCategoryForm extends React.Component {
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
       deleteButton = <ButtonElement label={t('Delete Category',
-        {ns: 'document_repository'})}/>;
+        {ns: 'document_repository'})} />;
     }
 
     return (
@@ -97,7 +98,7 @@ class DeleteDocCategoryForm extends React.Component {
             name="categoryEdit"
             onSubmit={this.handleSubmit}
           >
-            <h3>{t('Delete a category', {ns: 'document_repository'})}</h3><br/>
+            <h3>{t('Delete a category', {ns: 'document_repository'})}</h3><br />
             <SelectElement
               name="categoryID"
               label={t('Category Name:', {ns: 'document_repository'})}
@@ -173,7 +174,7 @@ class DeleteDocCategoryForm extends React.Component {
           window.location.assign('/document_repository');
         });
       }
-    }).catch( (error) => {
+    }).catch((error) => {
       let msg = error.message ? error.message : t('Delete error!',
         {ns: 'document_repository'});
       this.setState({
@@ -211,6 +212,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'document_repository', hiStrings);
   i18n.addResourceBundle('ja', 'document_repository', jaStrings);
   i18n.addResourceBundle('fr', 'document_repository', frStrings);
+  i18n.addResourceBundle('zh', 'document_repository', zhStrings);
 
   const element = document.getElementById('lorisworkspace');
   if (!element) {

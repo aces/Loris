@@ -11,6 +11,7 @@ import BiobankFilter from './filter';
 import BarcodePage from './barcodePage';
 
 import frStrings from '../locale/fr/LC_MESSAGES/biobank.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/biobank.json';
 
 import {clone, isEmpty, get, getStream, post} from './helpers.js';
 
@@ -852,6 +853,7 @@ BiobankIndex.propTypes = {
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('fr', 'biobank', frStrings);
+  i18n.addResourceBundle('zh', 'biobank', zhStrings);
   const biobank = `${loris.BaseURL}/biobank/`;
   const Index = withTranslation(
   )(BiobankIndex);

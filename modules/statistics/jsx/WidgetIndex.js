@@ -14,6 +14,7 @@ import '../css/WidgetIndex.css';
 import {setupCharts, unloadCharts} from './widgets/helpers/chartBuilder';
 import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
 import frStrings from '../locale/fr/LC_MESSAGES/statistics.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
 
 /**
  * WidgetIndex - the main window.
@@ -29,6 +30,7 @@ const WidgetIndex = (props) => {
   useEffect( () => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
     i18n.addResourceBundle('fr', 'statistics', frStrings);
+    i18n.addResourceBundle('zh', 'statistics', zhStrings);
   }, []);
 
   // used by recruitment.js and studyprogression.js to display each chart.

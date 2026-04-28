@@ -14,6 +14,8 @@ import jaStrings from
   '../locale/ja/LC_MESSAGES/electrophysiology_uploader.json';
 import frStrings from
   '../locale/fr/LC_MESSAGES/electrophysiology_uploader.json';
+import zhStrings from
+  '../locale/zh/LC_MESSAGES/electrophysiology_uploader.json';
 
 /**
  * UploadViewer
@@ -75,7 +77,7 @@ function ElectrophysiologyUploader(props) {
     <>
       <div className="alert alert-warning" role="alert">
         <strong>{t('LORIS 26 Beta Note:',
-          {ns: 'electrophysiology_uploader'})}</strong>
+          {ns: 'electrophysiology_uploader'})}</strong>{' '}
         {t('Files uploaded in this module will not be viewable'+
           ' in the Electrophysiology Browser module. ' +
            'This feature is under construction for the next release. ' +
@@ -117,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
   i18n.addResourceBundle('hi', 'electrophysiology_uploader', hiStrings);
   i18n.addResourceBundle('ja', 'electrophysiology_uploader', jaStrings);
   i18n.addResourceBundle('fr', 'electrophysiology_uploader', frStrings);
+  i18n.addResourceBundle('zh', 'electrophysiology_uploader', zhStrings);
 
   createRoot(
     document.getElementById('lorisworkspace')

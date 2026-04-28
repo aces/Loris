@@ -52,6 +52,6 @@ class HOTP
     public function getCode(int $counter, int $len) : string
     {
         $dec = $this->getTruncatedDecimal($counter);
-        return str_pad(strval($dec % pow(10, $len)), $len, "0", STR_PAD_LEFT);
+        return str_pad(strval($dec % ( int)pow(10, $len)), $len, "0", STR_PAD_LEFT);
     }
 }

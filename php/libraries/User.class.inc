@@ -362,7 +362,7 @@ class User extends UserPermissions implements
             if (in_array(\ProjectID::singleton($projectID), $userProjectIDs)) {
                 $visitLabel = $visit->getName();
                 if (!in_array($visitLabel, $visit_labels)) {
-                    $visit_labels[$visitLabel] = $visitLabel;
+                    $visit_labels[$visitLabel] = dgettext('visit', $visitLabel);
                 }
             }
         }

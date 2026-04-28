@@ -1,0 +1,452 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-12-05 08:40-0500\n"
+"PO-Revision-Date: 2026-04-01 11:30+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Chinese (Simplified) <zh@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Biobank"
+msgstr "生物样本库"
+
+msgid "Biospecimens"
+msgstr "生物样本"
+
+#: jsx/poolSpecimenForm.js:157 jsx/batchEditForm.js:213
+#: jsx/batchProcessForm.js:129
+msgid "Oops!"
+msgstr "哎呀！"
+
+#: jsx/poolSpecimenForm.js:158
+msgid ""
+"Specimens must be of the same PSCID,\n"
+"Visit Label, Type and Site"
+msgstr ""
+"样本必须具有相同的 PSCID、\n"
+"访视标签、类型和站点"
+
+#: jsx/poolSpecimenForm.js:207
+msgid "Pooling Note"
+msgstr "样本合并说明"
+
+#: jsx/poolSpecimenForm.js:208
+msgid ""
+"Select or Scan the specimens to be pooled. Specimens must\n"
+"have a Status of 'Available', have a Quantity of greater\n"
+"than 0, and share the same Type, PSCID, Visit Label\n"
+"and Current Site. Pooled specimens cannot already belong "
+"to a pool. Once pooled, the Status of specimen will be changed\n"
+"to 'Dispensed' and there Quantity set to '0'"
+msgstr ""
+"选择或扫描要合并的样本。样本必须满足：\n"
+"状态为“可用”、数量大于 0，且具有相同的类型、\n"
+"PSCID、访视标签和当前站点。已合并的样本不能再次合并。\n"
+"合并后，样本状态将更改为“已分发”，其数量将设为“0”。"
+
+#: jsx/poolSpecimenForm.js:217 jsx/globals.js:30 jsx/batchProcessForm.js:262
+#: jsx/specimenForm.js:601
+msgid "Specimen Type"
+msgstr "样本类型"
+
+#: jsx/poolSpecimenForm.js:268
+msgid "Label"
+msgstr "标签"
+
+#: jsx/poolSpecimenForm.js:276 jsx/processForm.js:106 jsx/processForm.js:210
+#: jsx/batchEditForm.js:258 jsx/globals.js:80
+msgid "Quantity"
+msgstr "数量"
+
+#: jsx/poolSpecimenForm.js:284 jsx/processForm.js:114 jsx/batchEditForm.js:265
+#: jsx/specimenForm.js:294
+msgid "Unit"
+msgstr "单位"
+
+#: jsx/poolSpecimenForm.js:324
+msgid "Pool Specimens"
+msgstr "合并样本"
+
+#: jsx/poolSpecimenForm.js:417 jsx/batchEditForm.js:624
+#: jsx/batchProcessForm.js:403
+#: jsx/filter.js:69
+msgid "Specimen"
+msgid_plural "Specimens"
+msgstr[0] "样本"
+
+#: jsx/containerDisplay.js:129 jsx/containerDisplay.js:183 jsx/search.js:44
+#: jsx/specimenTab.js:99 jsx/containerTab.js:78 jsx/containerForm.js:166
+#: jsx/specimenForm.js:593
+msgid "Barcode"
+msgstr "条形码"
+
+#: jsx/containerDisplay.js:132 jsx/search.js:48
+msgid "Please Scan or Type Barcode"
+msgstr "请扫描或输入条形码"
+
+#: jsx/containerDisplay.js:142 jsx/containerDisplay.js:199
+#: jsx/specimenForm.js:188 jsx/specimenForm.js:198
+msgid "Note"
+msgstr "备注"
+
+#: jsx/containerDisplay.js:143
+msgid ""
+"Scan Containers to be Loaded. If Sequential is checked,\n"
+"the Coordinate will Auto-Increment after each Load."
+msgstr ""
+"扫描要装载的容器。如果勾选了“顺序”，\n"
+"每次装载后坐标将自动递增。"
+
+#: jsx/containerDisplay.js:148
+msgid "Sequential"
+msgstr "顺序"
+
+#: jsx/containerDisplay.js:154
+msgid "Load"
+msgstr "装载"
+
+#: jsx/containerDisplay.js:189
+msgid "Please Scan or Select Barcode"
+msgstr "请扫描或选择条形码"
+
+#: jsx/containerDisplay.js:200
+msgid ""
+"Click, Select or Scan Containers to be\n"
+"Unloaded and Press 'Confirm'"
+msgstr ""
+"点击、选择或扫描要卸载的容器，\n"
+"然后按“确认”"
+
+#: jsx/containerDisplay.js:205
+msgid "Confirm"
+msgstr "确认"
+
+#: jsx/header.js:51
+msgid "Make Aliquots"
+msgstr "制作分装样本"
+
+#: jsx/header.js:55
+msgid "Add Aliquots"
+msgstr "添加分装样本"
+
+#: jsx/header.js:74
+msgid "Alter Lot Number"
+msgstr "更改批号"
+
+#: jsx/header.js:91
+msgid "Alter Expiration Date"
+msgstr "更改有效期"
+
+#: jsx/header.js:107
+msgid "Edit Lot Number"
+msgstr "编辑批号"
+
+#: jsx/header.js:114 jsx/containerForm.js:183 jsx/batchEditForm.js:291
+#: jsx/specimenForm.js:620
+msgid "Lot Number"
+msgstr "批号"
+
+#: jsx/header.js:123
+msgid "Edit Expiration Date"
+msgstr "编辑有效期"
+
+#: jsx/header.js:130 jsx/containerForm.js:190 jsx/specimenForm.js:627
+msgid "Expiration Date"
+msgstr "有效期"
+
+#: jsx/header.js:147
+msgid "Print Barcode Number"
+msgstr "打印条形码编号"
+
+#: jsx/header.js:166
+msgid "Print Barcode"
+msgstr "打印条形码"
+
+#: jsx/header.js:276
+msgid "Checkout Container"
+msgstr "容器检出 (Checkout)"
+
+#: jsx/processForm.js:62
+msgid "Update"
+msgstr "更新"
+
+#: jsx/processForm.js:127 jsx/processForm.js:217 jsx/batchEditForm.js:310
+#: jsx/batchEditForm.js:335
+msgid "Protocol"
+msgstr "方案"
+
+#: jsx/processForm.js:143 jsx/processForm.js:225
+msgid "Done By"
+msgstr "执行人"
+
+#: jsx/processForm.js:172 jsx/processForm.js:239
+msgid "Comments"
+msgstr "评注"
+
+#: jsx/specimenTab.js:60 jsx/containerTab.js:56 jsx/poolTab.js:68
+msgid "Type"
+msgstr "类型"
+
+#: jsx/specimenTab.js:62 jsx/containerForm.js:174 jsx/batchEditForm.js:283
+#: jsx/globals.js:49 jsx/specimenForm.js:610
+msgid "Container Type"
+msgstr "容器类型"
+
+#: jsx/specimenTab.js:64
+msgid "Diagnosis"
+msgstr "诊断"
+
+#: jsx/specimenTab.js:71 jsx/containerTab.js:58 jsx/batchEditForm.js:298
+#: jsx/globals.js:205
+msgid "Status"
+msgstr "状态"
+
+#: jsx/specimenTab.js:73 jsx/globals.js:243
+msgid "Current Site"
+msgstr "当前站点"
+
+#: jsx/specimenTab.js:75 jsx/globals.js:234
+msgid "Draw Site"
+msgstr "采样站点"
+
+#: jsx/container.js:54
+msgid "Checkout Child Containers"
+msgstr "检出子容器"
+
+#: jsx/containerForm.js:81
+msgid "Add New Container"
+msgstr "添加新容器"
+
+#: jsx/biobankIndex.js:343
+msgid "Print Barcodes?"
+msgstr "是否打印条形码？"
+
+#: jsx/biobankIndex.js:479
+msgid "Batch Preparation Successful!"
+msgstr "批量准备成功！"
+
+#: jsx/biobankIndex.js:506
+msgid "This field is required."
+msgstr "此项必填。"
+
+#: jsx/biobankIndex.js:512
+msgid "This field must be a number."
+msgstr "此项必须为数字。"
+
+#: jsx/biobankIndex.js:518
+msgid "This field must not be negative."
+msgstr "此项不能为负数。"
+
+#: jsx/biobankIndex.js:526
+msgid "This field must be an integer."
+msgstr "此项必须为整数。"
+
+#: jsx/biobankIndex.js:597 jsx/biobankIndex.js:699 jsx/biobankIndex.js:736
+msgid "This field is required!"
+msgstr "此项必填！"
+
+#: jsx/biobankIndex.js:604 jsx/biobankIndex.js:705 jsx/biobankIndex.js:741
+msgid "This field must be a number!"
+msgstr "此项必须为数字！"
+
+#: jsx/biobankIndex.js:611 jsx/biobankIndex.js:652 jsx/biobankIndex.js:747
+msgid "This field must be a valid date!"
+msgstr "此项必须为有效日期！"
+
+#: jsx/biobankIndex.js:617 jsx/biobankIndex.js:660 jsx/biobankIndex.js:753
+msgid "This field must be a valid time!"
+msgstr "此项必须为有效时间！"
+
+#: jsx/biobankIndex.js:711
+msgid "Barcode must be unique."
+msgstr "条形码必须唯一。"
+
+#: jsx/biobankIndex.js:757
+msgid "Pooling requires at least 2 specimens"
+msgstr "样本合并至少需要 2 个样本"
+
+#: jsx/filter.js:73
+msgid "Container"
+msgid_plural "Containers"
+msgstr[0] "容器"
+
+#: jsx/shipmentTab.js:69 jsx/shipmentTab.js:141
+msgid "Origin Site"
+msgstr "起始站点"
+
+#: jsx/shipmentTab.js:71 jsx/shipmentTab.js:146
+msgid "Destination Site"
+msgstr "目标站点"
+
+#: jsx/shipmentTab.js:95 jsx/shipmentTab.js:151
+msgid "Actions"
+msgstr "操作"
+
+#: jsx/shipmentTab.js:157
+msgid "Add Shipment"
+msgstr "添加运输件"
+
+#: jsx/shipmentTab.js:294
+msgid "Temperature"
+msgstr "温度"
+
+#: jsx/shipmentTab.js:298
+msgid "Date & Time"
+msgstr "日期与时间"
+
+#: jsx/shipmentTab.js:302
+msgid "User"
+msgstr "用户"
+
+#: jsx/batchEditForm.js:214
+msgid "Specimens must be of the same Type and Site"
+msgstr "样本必须具有相同的类型和站点"
+
+#: jsx/batchEditForm.js:274 jsx/globals.js:144
+msgid "Freeze-Thaw Cycle"
+msgstr "冻融循环"
+
+#: jsx/batchEditForm.js:380
+msgid "Global"
+msgstr "全局"
+
+#: jsx/batchEditForm.js:387
+msgid "Collection"
+msgstr "采集"
+
+#: jsx/batchEditForm.js:395
+msgid "Preparation"
+msgstr "制备"
+
+#: jsx/batchEditForm.js:469 jsx/batchEditForm.js:496
+msgid "Editing Note"
+msgstr "编辑说明"
+
+#: jsx/batchEditForm.js:470
+msgid ""
+"Select a form for the list to\n"
+"edit the specimen values. Any previous value associated\n"
+"with a Specimen for a given field will be\n"
+"overwritten if one is added on this form."
+msgstr ""
+"从列表中选择一个表单以编辑样本值。\n"
+"如果在此表单中添加了新值，则样本中\n"
+"对应的任何原有值都将被覆盖。"
+
+#: jsx/batchEditForm.js:487
+msgid "Edit Specimens"
+msgstr "编辑样本"
+
+#: jsx/batchEditForm.js:497
+msgid ""
+"Select or Scan the specimens to be edited. Specimens\n"
+"must share the same Type."
+msgstr ""
+"选择或扫描要编辑的样本。\n"
+"样本必须具有相同的类型。"
+
+#: jsx/batchEditForm.js:517 jsx/globals.js:69
+#: jsx/filter.js:77
+msgid "Pool"
+msgid_plural "Pools"
+msgstr[0] "样本池/合并"
+
+#: jsx/containerParentForm.js:59
+msgid "Available Spots"
+msgstr "可用位置"
+
+#: jsx/containerParentForm.js:111
+msgid "Parent Container Barcode"
+msgstr "父容器条形码"
+
+#: jsx/globals.js:153
+msgid "fTCycle"
+msgstr "冻融循环次数"
+
+#: jsx/globals.js:252
+#: jsx/filter.js:80
+msgid "Shipment"
+msgid_plural "Shipments"
+msgstr[0] "运输件"
+
+#: jsx/batchProcessForm.js:130
+msgid "Specimens must be of the same Type"
+msgstr "样本必须具有相同的类型"
+
+#: jsx/batchProcessForm.js:153
+msgid "Warning!"
+msgstr "警告！"
+
+#: jsx/batchProcessForm.js:255
+msgid "Processing Note"
+msgstr "处理说明"
+
+#: jsx/batchProcessForm.js:256
+msgid ""
+"Select or scan the specimens to be prepared. Specimens must have a Status of 'Available'\n"
+"and share the same Type. Any previous value associated with a specimen will be\n"
+"overwritten if a new value is added on this form."
+msgstr ""
+"选择或扫描要准备的样本。样本状态必须为“可用”\n"
+"且类型相同。如果在此表单中添加了新值，则样本中\n"
+"对应的任何原有值都将被覆盖。"
+
+#: jsx/batchProcessForm.js:315
+msgid "Process Specimens"
+msgstr "处理样本"
+
+#: jsx/poolTab.js:95
+msgid "Pooled Specimens"
+msgstr "已合并的样本"
+
+#: jsx/specimenForm.js:189
+msgid ""
+"To create new aliquots, enter a Barcode, fill out the corresponding sub-form and press Submit.\n"
+"Press the \"New Entry\" button to add another barcode field, or use the \"Copy\" button\n"
+"to duplicate the previous entry."
+msgstr ""
+"要创建新的分装样本，请输入条形码，填写对应的子表单并按“提交”。\n"
+"点击“新建条目”按钮添加另一个条形码字段，或使用“复制”按钮\n"
+"以重复上一条目。"
+
+#: jsx/specimenForm.js:199
+msgid ""
+"To create new specimens, first select a PSCID and Visit Label.\n"
+"Then, enter a Barcode, fill out the corresponding sub-form and\n"
+"press submit. Press \"New Entry\" button to add another barcode field, or\n"
+"use the \"Copy\" button to duplicate the previous entry."
+msgstr ""
+"要创建新样本，请先选择 PSCID 和访视标签。\n"
+"然后输入条形码，填写对应的子表单并按“提交”。\n"
+"点击“新建条目”按钮添加另一个条形码字段，或使用“复制”按钮\n"
+"以重复上一条目。"
+
+#: jsx/specimenForm.js:219
+msgid "Parent Specimen(s)"
+msgstr "父样本"
+
+#: jsx/specimenForm.js:255
+msgid "Search for a PSCID"
+msgstr "搜索 PSCID"
+
+#: jsx/specimenForm.js:287
+msgid "Remaining Quantity"
+msgstr "剩余数量"
+
+#: jsx/specimenForm.js:366
+msgid "Generate Barcodes"
+msgstr "生成条形码"
+
+#: jsx/specimenForm.js:373
+msgid "Print Barcodes"
+msgstr "打印条形码"

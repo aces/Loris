@@ -1,0 +1,623 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Electrophysiology Browser"
+msgstr "电生理学浏览器"
+
+msgid "Links"
+msgstr "链接"
+
+msgid "all types"
+msgstr "所有类型"
+
+msgid "Has HED Tags"
+msgstr "有 HED 标签"
+
+msgid "Acquisition Time"
+msgstr "采集时间"
+
+msgid "Insertion Time"
+msgstr "插入时间"
+
+msgid "Type"
+msgstr "类型"
+
+msgid "Signal Viewer"
+msgstr "信号查看器"
+
+msgid "SessionID"
+msgstr "会话ID"
+
+msgid "split {{splitNum}}"
+msgstr "分割{{splitNum}}"
+
+msgid "Viewing signal split file:"
+msgstr "查看信号分割文件："
+
+msgid "Output Type"
+msgstr "输出类型"
+
+msgid "File Download"
+msgstr "文件下载"
+
+msgid "Download"
+msgstr "下载"
+
+msgid "Not Available"
+msgstr "无法使用"
+
+msgid "Acquisition Details for Recording {{recording}}"
+msgstr "记录 {{recording}} 的采集详细信息"
+
+msgid "Summary"
+msgstr "概括"
+
+msgid "HED tags in recording metadata (click for info)"
+msgstr "记录元数据中的 HED 标签（点击查看信息）"
+
+msgid "Navigation"
+msgstr "导航"
+
+msgid "Are you sure you want to leave unsaved changes behind?"
+msgstr "您确定要保留未保存的更改吗？"
+
+msgid "Data Authors"
+msgstr "数据作者"
+
+# Filters
+msgid "No High Pass Filter"
+msgstr "无高通滤波器"
+
+msgid "High Pass {{frequency}}Hz"
+msgstr "高通 {{frequency}} Hz"
+
+msgid "No Low Pass Filter"
+msgstr "无低通滤波器"
+
+msgid "Low Pass {{frequency}}Hz"
+msgstr "低通 {{frequency}} Hz"
+
+# SeriesRenderer
+msgid "Close Panel"
+msgstr "关闭面板"
+
+msgid "Display Events"
+msgstr "显示事件"
+
+msgid "Add Event"
+msgstr "添加事件"
+
+msgid "Zoom"
+msgstr "缩放"
+
+msgid "Fit to Window"
+msgstr "适合窗户"
+
+msgid "Reset Amplitude"
+msgstr "复位幅度"
+
+msgid "Hide Overflow"
+msgstr "隐藏溢出"
+
+msgid "Show Overflow"
+msgstr "显示溢出"
+
+msgid "{{numChannels}} channels"
+msgstr "{{numChannels}} 通道"
+
+msgid "Showing:"
+msgstr "显示："
+
+msgid "to {{channelsInView}} of {{totalChannels}}"
+msgstr "至 {{channelsInView}} 或 {{totalChannels}}"
+
+# s stands for seconds
+msgid "Time (s)"
+msgstr "时间（秒）"
+
+msgid "No Offset"
+msgstr "无偏移"
+
+msgid "DC Offset"
+msgstr "直流偏移"
+
+msgid "Spread"
+msgstr "传播"
+
+msgid "Stack"
+msgstr "堆"
+
+msgid "Standard"
+msgstr "标准"
+
+msgid "Isolate"
+msgstr "隔离"
+
+msgid "HED Endorsements"
+msgstr "HED 认可"
+
+msgid "Displaying: "
+msgstr "显示："
+
+# SeriesCursor
+msgid "{{seconds}} s"
+msgstr "{{seconds}} s"
+
+# IntervalSelect
+msgid "Timeline Range View"
+msgstr "时间轴范围视图"
+
+msgid "Show All"
+msgstr "显示全部"
+
+# HEDEndorsement
+msgid "No Filter"
+msgstr "无过滤器"
+
+msgid "With Comment"
+msgstr "有评论"
+
+msgid "Tagged By"
+msgstr "标记者"
+
+msgid "Endorsed By"
+msgstr "认可者"
+
+msgid "Endorse"
+msgstr "赞同"
+
+msgid "Endorsed"
+msgstr "认可"
+
+msgid "Caveat"
+msgstr "警告"
+
+msgid "Caveat By"
+msgstr "警告"
+
+msgid "Comment"
+msgstr "评论"
+
+msgid "Select Action"
+msgstr "选择操作"
+
+msgid "showing {{numShowing}}/{{numTotal}}"
+msgstr "显示 {{numShowing}} / {{numTotal}}"
+
+msgid "Empty list"
+msgstr "空列表"
+
+msgid "Tag search..."
+msgstr "标签搜索..."
+
+msgid "Scroll to Selected"
+msgstr "滚动到选定的"
+
+msgid "Jump to Selected"
+msgstr "跳转至所选内容"
+
+msgid "Select Previous"
+msgstr "选择上一个"
+
+msgid "Select Next"
+msgstr "选择下一步"
+
+msgid "Select and Jump to Previous"
+msgstr "选择并跳转到上一个"
+
+msgid "Select and Jump to Next"
+msgstr "选择并跳转到下一个"
+
+msgid "There are no event-level HED tags to endorse."
+msgstr "没有需要认可的事件级 HED 标签。"
+
+msgid "Edit (Selected) Event"
+msgstr "编辑（选定的）事件"
+
+msgid "Jump to (Selected) Event"
+msgstr "跳转到（选定的）事件"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "No comment"
+msgstr "没有意见"
+
+msgid "For selected tag:"
+msgstr "对于选定的标签："
+
+msgid "Updated!"
+msgstr "更新了！"
+
+# EventManager
+msgid "Total events in recording {{total}}"
+msgstr "记录中的事件总数 {{total}}"
+
+msgid "Display by:"
+msgstr "显示方式："
+
+msgid "{{label}} search..."
+msgstr "{{label}} 搜索..."
+
+# The BIDS value: n/a
+msgid "Ignore {{bidsNA}}"
+msgstr "忽略{{bidsNA}}"
+
+msgid "Exclude <text>{{searchText}}</text>"
+msgstr "排除<文本> {{searchText}} </文本>"
+
+msgid "Too many events to plot for this timeline range"
+msgstr "在此时间线范围内发生的事件太多，无法绘制"
+
+msgid "No events in timeline range."
+msgstr "时间线范围内没有事件。"
+
+msgid "Try selecting a different time range."
+msgstr "尝试选择不同的时间范围。"
+
+msgid "Channel"
+msgid_plural "Channels"
+msgstr[0] "渠道"
+
+# EEGMontage
+msgid "Saved successfully"
+msgstr "保存成功"
+
+msgid "No electrode changes"
+msgstr "无需更换电极"
+
+msgid "Duplicates are not allowed"
+msgstr "不允许重复"
+
+msgid ""
+"Invalid string format. Expected channel names delimited by "
+"\"{{channelDelimiter}}\""
+msgstr "字符串格式无效。预期的通道名称由“ {{channelDelimiter}} ”分隔"
+
+msgid "String contains one or more unrecognized channels"
+msgstr "字符串包含一个或多个无法识别的通道"
+
+msgid "Montage"
+msgstr "剪辑"
+
+msgid "Hold shift to enable electrode selection"
+msgstr "按住 Shift 键以启用电极选择"
+
+msgid "Select None"
+msgstr "选择无"
+
+msgid "Select All"
+msgstr "选择全部"
+
+msgid "Electrode Map"
+msgstr "电极图"
+
+msgid "Show indices"
+msgstr "显示索引"
+
+# DatasetTagger / EEGLabSeriesProvider
+msgid "Dataset Tag Manager"
+msgstr "数据集标签管理器"
+
+msgid "More about HED"
+msgstr "关于HED的更多信息"
+
+msgid "Click to view the HED schema"
+msgstr "单击查看 HED 架构"
+
+msgid "Open Dataset Tag Manager"
+msgstr "打开数据集标签管理器"
+
+msgid "View/Edit Tags"
+msgstr "查看/编辑标签"
+
+msgid "Endorse Tags"
+msgstr "认可标签"
+
+msgid "View JSON"
+msgstr "查看 JSON"
+
+msgid ""
+"This will undo all changes since your latest submission. You won't be able "
+"to revert this!"
+msgstr "这将撤消自您上次提交以来的所有更改。您将无法恢复此状态！"
+
+msgid "Yes, reset all changes!"
+msgstr "是的，重置所有更改！"
+
+msgid "There was an error with the response. Please report this incident."
+msgstr "响应有错误。请报告此事件。"
+
+msgid "Tags updated successfully"
+msgstr "标签更新成功"
+
+msgid "This action is not permitted."
+msgstr "不允许执行此操作。"
+
+msgid "There was an error with the request! Please report this incident."
+msgstr "请求有错误！请报告此事件。"
+
+msgid "You"
+msgstr "你"
+
+msgid "edited"
+msgstr "已编辑"
+
+msgid "Channel(s) associated with the event"
+msgstr "与事件关联的频道"
+
+msgid "Endorsement successful"
+msgstr "认可成功"
+
+msgid "Column Name"
+msgstr "列名称"
+
+msgid "Column"
+msgid_plural "Columns"
+msgstr[0] "柱子"
+
+msgid "Select a column"
+msgstr "选择一列"
+
+msgid "<s>{{columnName}}</s> Values"
+msgstr "<s> {{columnName}} </s> 值"
+
+msgid "Select a Column Name and Value to Manage HED Tags"
+msgstr "选择列名称和值来管理 HED 标签"
+
+msgid "Description"
+msgstr "描述"
+
+msgid "No Description Available"
+msgstr "无可用描述"
+
+msgid "HED Tags"
+msgstr "HED标签"
+
+msgid "Add Tag from HED Schemas"
+msgstr "从 HED 架构添加标签"
+
+msgid "Type to search or select from dropdown"
+msgstr "键入进行搜索或从下拉列表中选择"
+
+msgid "Show long-form HED tags"
+msgstr "显示长格式 HED 标签"
+
+msgid "※ = Not tagged by Data Authors"
+msgstr "※ = 未由数据作者标记"
+
+msgid "Preview"
+msgstr "预览"
+
+msgid "Tag Mode"
+msgstr "标签模式"
+
+msgid "Group Mode"
+msgstr "团体模式"
+
+msgid "Confirm Group"
+msgstr "确认组"
+
+msgid "Ungroup"
+msgstr "取消分组"
+
+msgid "Submit Changes"
+msgstr "提交更改"
+
+msgid "Reset Column Changes"
+msgstr "重置列更改"
+
+msgid "Reset All Columns"
+msgstr "重置所有列"
+
+msgid "{{numSelected}} Selected"
+msgstr "{{numSelected}} 已选择"
+
+msgid "Select One"
+msgstr "选择一项"
+
+msgid "Below is the resulting events.json file"
+msgstr "下面是生成的 events.json 文件"
+
+# AnnotationForm
+msgid "Fill other tags first"
+msgstr "先填写其他标签"
+
+msgid "Warning"
+msgstr "警告"
+
+msgid "Please fill out all required fields"
+msgstr "请填写所有必填字段"
+
+msgid "Event Updated!"
+msgstr "活动已更新！"
+
+msgid "Event Added!"
+msgstr "活动已添加！"
+
+msgid "Something went wrong!"
+msgstr "出了问题！"
+
+msgid "You won't be able to revert this!"
+msgstr "您将无法恢复此状态！"
+
+msgid "Event Deleted!"
+msgstr "活动已删除！"
+
+msgid "Tag in current dataset"
+msgid_plural "Tags in current dataset"
+msgstr[0] "当前数据集中的标签"
+
+msgid "HED {{hedVersion}} Artifact"
+msgid_plural "HED {{hedVersion}} Artifacts"
+msgstr[0] "HED {{hedVersion}} 神器"
+
+msgid "Edit Event"
+msgstr "编辑事件"
+
+msgid "Select from Montage"
+msgstr "选择电极布局"
+
+msgid "Select Channels"
+msgstr "选择通道"
+
+msgid "Additional Columns"
+msgstr "附加栏"
+
+msgid "Click this icon to view the latest HED schema"
+msgstr "单击此图标可查看最新的 HED 架构"
+
+msgid "Instance"
+msgstr "实例"
+
+msgid "Add tag from:"
+msgstr "添加标签来自："
+
+msgid "Select Category"
+msgstr "选择类别"
+
+msgid "Select {{tagType}}"
+msgstr "选择{{tagType}}"
+
+msgid "Event Details"
+msgstr "活动详情"
+
+# sessions.class.inc
+msgid "Sampling Frequency"
+msgstr "采样频率"
+
+# Channel Type (ex: EEG, ECG)
+msgid "%s Channel Count"
+msgstr "%s 通道数"
+
+msgid "Reference"
+msgstr "参考"
+
+msgid "Powerline Frequency"
+msgstr "电力线频率"
+
+msgid "Task Name"
+msgstr "任务名称"
+
+msgid "Task Description"
+msgstr "任务描述"
+
+msgid "Instructions"
+msgstr "指示"
+
+msgid "Recording Type"
+msgstr "录音类型"
+
+msgid "Recording Split Count"
+msgstr "记录分割计数"
+
+msgid "Recording Duration"
+msgstr "录音时长"
+
+msgid "Epoch Length"
+msgstr "历元长度"
+
+msgid "Subject Artefact Description"
+msgstr "主题文物描述"
+
+msgid "Head Circumference"
+msgstr "头围"
+
+msgid "Placement Scheme"
+msgstr "安置计划"
+
+msgid "Ground"
+msgstr "地面"
+
+msgid "Trigger Channel Count"
+msgstr "触发通道数"
+
+msgid "Misc Channel Count"
+msgstr "其他通道数"
+
+msgid "CogAtlas ID"
+msgstr "CogAtlas ID（认知地图ID）"
+
+msgid "CogPO ID"
+msgstr "CogPO ID（认知过程本体ID）"
+
+msgid "Institution Name"
+msgstr "机构名称"
+
+msgid "Institution Address"
+msgstr "机构地址"
+
+msgid "Manufacturer"
+msgstr "制造商"
+
+msgid "Manufacturers Model Name"
+msgstr "制造商型号名称"
+
+msgid "%s Manufacturer"
+msgstr "%s 制造商"
+
+msgid "%s Manufacturer's Model Name"
+msgstr "%s 制造商型号名称"
+
+msgid "Device Serial Number"
+msgstr "设备序列号"
+
+msgid "Hardware Filters"
+msgstr "硬件过滤器"
+
+msgid "Software Versions"
+msgstr "软件版本"
+
+msgid "Software Filters"
+msgstr "软件过滤器"
+
+msgid "DC Offset Correction"
+msgstr "直流偏移校正"
+
+msgid "Electrode Groups"
+msgstr "电极组"
+
+msgid "Electrical Stimulation"
+msgstr "电刺激"
+
+msgid "Electrical Stimulation Parameters"
+msgstr "电刺激参数"
+
+msgid "EEG File(s)"
+msgstr "脑电图文件"
+
+msgid "Electrodes"
+msgstr "电极"
+
+msgid "Coordinate System"
+msgstr "坐标系"
+
+msgid "Channels"
+msgstr "渠道"
+
+msgid "Events"
+msgstr "活动"
+
+msgid "All Files"
+msgstr "所有文件"
+
+msgid "View Session"
+msgstr "查看会话"

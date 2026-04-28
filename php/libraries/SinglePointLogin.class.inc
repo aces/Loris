@@ -54,32 +54,6 @@ class SinglePointLogin
     var $_passwordChangeRequired = false;
 
     /**
-     * Dumps the password expiry form
-     *
-     * @return void
-     * @access public
-     */
-    function showPasswordExpiryScreen(): void
-    {
-        // FIXME: This is a temporary hack until the password reset logic is
-        // refactored to be sane and keep a token that can be authenticated.
-        //
-        // We store the username requesting the the password reset on the
-        // PHP session superglobal so that the password expiry page can
-        // trust it.
-        if ($_SERVER['REQUEST_URI'] == "/login/password-expiry/") {
-            // Prevent a loop to the same page if we got here
-            // while on the password expiry page, which can prevent
-            // error messages from being seen.
-            return;
-        }
-        $_SESSION['PasswordExpiredForUser'] = $_POST['username'];
-        header("HTTP/1.1 303 See Other");
-        header("Location: /login/password-expiry/");
-        exit(0);
-    }
-
-    /**
      * Checks whether password change is required
      *
      * @return bool
@@ -407,9 +381,6 @@ class SinglePointLogin
             if ($row['Expired']) {
                 $this->_passwordChangeRequired      = true;
                 $_SESSION['PasswordExpiredForUser'] = $username;
-                if ($redirect) {
-                    $this->showPasswordExpiryScreen();
-                }
                 return false;
             }
             // Allow a user to login if none of the previous cases have occurred

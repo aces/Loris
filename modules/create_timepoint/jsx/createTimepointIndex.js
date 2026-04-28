@@ -18,7 +18,7 @@ import {
 import esStrings from '../locale/es/LC_MESSAGES/create_timepoint.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/create_timepoint.json';
 import frStrings from '../locale/fr/LC_MESSAGES/create_timepoint.json';
-
+import zhStrings from '../locale/zh/LC_MESSAGES/create_timepoint.json';
 /**
  * Create Timepoint.
  *
@@ -198,10 +198,12 @@ class CreateTimepoint extends React.Component {
       // Display error message to user.
       const errorMessage = t(
         'No cohorts defined for project: {{project}}',
-        {ns: 'create_timepoint',
+        {
+          ns: 'create_timepoint',
           project: this.state.form.options.project[
             this.state.form.value.project
-          ]});
+          ],
+        });
       state.messages = [errorMessage];
       state.messages = [errorMessage];
       swal.fire(errorMessage, '', 'error');
@@ -239,8 +241,9 @@ class CreateTimepoint extends React.Component {
       ) {
         const errorMessage = t(
           'No visit labels defined for the combination'
-            + ' project: {{project}} and cohort: {{cohort}}',
-          {ns: 'create_timepoint',
+          + ' project: {{project}} and cohort: {{cohort}}',
+          {
+            ns: 'create_timepoint',
             project: this.state.form.options.project[
               this.state.form.value.project
             ],
@@ -343,7 +346,7 @@ class CreateTimepoint extends React.Component {
 
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     /**
@@ -487,6 +490,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('es', 'create_timepoint', esStrings);
   i18n.addResourceBundle('ja', 'create_timepoint', jaStrings);
   i18n.addResourceBundle('fr', 'create_timepoint', frStrings);
+  i18n.addResourceBundle('zh', 'create_timepoint', zhStrings);
 
   const TranslatedCreateTimepoint = withTranslation(
     ['create_timepoint', 'loris']
