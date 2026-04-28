@@ -1,9 +1,9 @@
-import { createRoot } from 'react-dom/client';
-import React, { Component } from 'react';
+import {createRoot} from 'react-dom/client';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import i18n from 'I18nSetup';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -35,7 +35,7 @@ class SurveyAccountsIndex extends Component {
    */
   componentDidMount() {
     this.fetchData()
-      .then(() => this.setState({ isLoaded: true }));
+      .then(() => this.setState({isLoaded: true}));
   }
 
   /**
@@ -46,12 +46,12 @@ class SurveyAccountsIndex extends Component {
    * @return {object}
    */
   fetchData() {
-    return fetch(this.props.dataURL, { credentials: 'same-origin' })
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({ data }))
+      .then((data) => this.setState({data}))
       .catch(
         (error) => {
-          this.setState({ error: true });
+          this.setState({error: true});
           console.error(error);
         }
       );
@@ -66,16 +66,16 @@ class SurveyAccountsIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    const { t } = this.props;
+    const {t} = this.props;
     let result = <td>{cell}</td>;
     switch (column) {
-      case t('URL', { ns: 'survey_accounts' }):
-        const url = loris.BaseURL + '/survey.php?key=' + row.URL;
-        result = <td><a href={url}>{cell}</a></td>;
-        break;
-      case t('Instrument', { ns: 'loris', count: 1 }):
-        result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
-        break;
+    case t('URL', {ns: 'survey_accounts'}):
+      const url = loris.BaseURL + '/survey.php?key=' + row.URL;
+      result = <td><a href={url}>{cell}</a></td>;
+      break;
+    case t('Instrument', {ns: 'loris', count: 1}):
+      result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
+      break;
     }
 
     return result;
@@ -87,14 +87,14 @@ class SurveyAccountsIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const { t } = this.props;
+    const {t} = this.props;
 
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t(
         'An error occured while loading the page.',
-        { ns: 'loris' }
+        {ns: 'loris'}
       )}</h3>;
     }
 
@@ -110,45 +110,45 @@ class SurveyAccountsIndex extends Component {
     const options = this.state.data.fieldOptions;
     const fields = [
       {
-        label: t('PSCID', { ns: 'loris' }), show: true, filter: {
+        label: t('PSCID', {ns: 'loris'}), show: true, filter: {
           name: 'pscid',
           type: 'text',
-        }
+        },
       },
       {
-        label: t('Visit', { ns: 'loris' }), show: true, filter: {
+        label: t('Visit', {ns: 'loris'}), show: true, filter: {
           name: 'visit',
           type: 'select',
           options: options.visits,
-        }
+        },
       },
       {
-        label: t('Instrument', { ns: 'loris', count: 1 }), show: true, filter: {
+        label: t('Instrument', {ns: 'loris', count: 1}), show: true, filter: {
           name: 'instrument',
           type: 'select',
           options: options.instruments,
-        }
+        },
       },
-      { label: t('URL', { ns: 'survey_accounts' }), show: true },
+      {label: t('URL', {ns: 'survey_accounts'}), show: true},
       {
-        label: t('Status', { ns: 'survey_accounts' }), show: true, filter: {
+        label: t('Status', {ns: 'survey_accounts'}), show: true, filter: {
           name: 'Status',
           type: 'select',
           options: options.statusOptions,
-        }
+        },
       },
     ];
     const addSurvey = () => {
       location.href = '/survey_accounts/addSurvey/';
     };
     const actions = [
-      { label: t('Add Survey', { ns: 'survey_accounts' }), action: addSurvey },
+      {label: t('Add Survey', {ns: 'survey_accounts'}), action: addSurvey},
     ];
 
     return (
       <FilterableDataTable
         name="surveyAccounts"
-        title={t('Survey Accounts', { ns: 'survey_accounts' })}
+        title={t('Survey Accounts', {ns: 'survey_accounts'})}
         data={this.state.data.Data}
         fields={fields}
         getFormattedCell={this.formatColumn}
