@@ -28,7 +28,7 @@ All elements are required if no rule is specified, unless it is part of a group.
     ```
 - PHP (with grouping)
     
-    ```php
+    ```
     $this->XINRegisterRule(
         "field_name", // field name on which the rule is applied
         array("field_name{@}=={@}"), // rule
