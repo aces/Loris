@@ -49,6 +49,7 @@ class CandidateParameters extends Component {
           <TabContent
             action={actionURL}
             dataURL={`${dataURL}&data=${tabList[key].id}`}
+            candID={this.props.candID}
             tabName={tabList[key].id}
           />
         </TabPane>
@@ -163,4 +164,3 @@ window.addEventListener('load', () => {
     </div>
   );
 });
-

@@ -12,6 +12,8 @@ import {
   DateElement,
   TextareaElement,
 } from 'jsx/Form';
+import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Proband Info Component.
@@ -35,6 +37,7 @@ class ProbandInfo extends Component {
       isLoaded: false,
       loadedData: 0,
     };
+    this.client = new CandidateParametersClient();
 
     /**
      * Bind component instance to custom methods
@@ -57,10 +60,8 @@ class ProbandInfo extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    $.ajax(this.props.dataURL, {
-      method: 'GET',
-      dataType: 'json',
-      success: (data) => {
+    this.client.getData(this.props.candID, this.props.tabName)
+      .then((data) => {
         const formData = {
           ProbandSex: data.ProbandSex,
           ProbandDoB: data.ProbandDoB,
@@ -76,15 +77,14 @@ class ProbandInfo extends Component {
           isLoaded: true,
           sexOptions: data.sexOptions,
         });
-      },
-      error: (error) => {
+      })
+      .catch(() => {
         this.setState({
           error: t('An error occurred when loading the form!',
             {ns: 'candidate_parameters'}
           ),
         });
-      },
-    });
+      });
   }
 
   /**
@@ -158,31 +158,40 @@ class ProbandInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: (data) => {
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
         this.setState({
           updateResult: 'success',
         });
         this.showAlertMessage();
         this.fetchData();
-      },
-      error: (error) => {
-        if (error.responseText !== '') {
-          let errorMessage = JSON.parse(error.responseText).message;
+      })
+      .catch((error) => {
+        if (error.lorisMessage !== undefined && error.lorisMessage !== '') {
           this.setState({
             updateResult: 'error',
-            errorMessage: errorMessage,
+            errorMessage: error.lorisMessage,
           });
           this.showAlertMessage();
         }
-      },
-    });
+      });
   }
 
   /**
@@ -368,9 +377,9 @@ class ProbandInfo extends Component {
 }
 
 ProbandInfo.propTypes = {
-  dataURL: PropTypes.string.isRequired,
+  candID: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
-  tabName: PropTypes.string,
+  tabName: PropTypes.string.isRequired,
   t: PropTypes.string.isRequired,
 };
 
