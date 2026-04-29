@@ -19,7 +19,7 @@ All elements are required if no rule is specified, unless it is part of a group.
 
 - PHP
 
-    ```php
+    ```
         $this->XINRegisterRule(
             "field_name1",
             array("field_name2{@}=={@}yes|maybe|sure"),
@@ -40,7 +40,7 @@ All elements are required if no rule is specified, unless it is part of a group.
     
 - LINST
 
-   ```php
+   ```
        field_name1{-}Required.{-}field_name2{@}=={@}yes|maybe|sure
    ```
 
