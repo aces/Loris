@@ -111,5 +111,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (132,137,'/images/LORIS_
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (133,138,'/images/github-mark.svg');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (134,139,'/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (135,140,'https://github.com/aces/Loris');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (136,142,'/data-raisinbread/');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
