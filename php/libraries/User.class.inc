@@ -453,20 +453,6 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Returns all user's sites in an associative array (CenterID => CenterName)
-     *
-     * @return array
-     */
-    function getSiteNamesList(): array
-    {
-        $sites = [];
-        foreach ($this->getSites() as $site) {
-            $sites[$site->getCenterID()->__toString()] = $site->getCenterName();
-        }
-        return $sites;
-    }
-
-    /**
      * Returns all user's sites that are StudySites
      *
      * @return array

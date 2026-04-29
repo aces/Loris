@@ -204,7 +204,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // Retrieve site and project names for tooltips
         $tpl_data['user']['SitesTooltip']    = implode(
             "<br/>",
-            $this->user->getSiteNames()
+            array_map(
+                fn($site) => $site->getCenterName(),
+                $this->user->getSites(),
+            )
         );
         $tpl_data['user']['ProjectsTooltip'] = implode(
             "<br/>",
