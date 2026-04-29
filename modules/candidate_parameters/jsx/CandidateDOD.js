@@ -65,7 +65,13 @@ class CandidateDOD extends Component {
    * @param {*} value
    */
   setFormData(formElement, value) {
-    let formData = this.state.formData;
+    let formData = {...this.state.formData};
+
+    // Clear the DOD if indicated as unknown
+    if (formElement === 'dod_precision' && value === 'unknown') {
+      formData.dod = '';
+    }
+
     formData[formElement] = value;
     this.setState({
       formData: formData,
@@ -89,19 +95,29 @@ class CandidateDOD extends Component {
       return <Loader/>;
     }
 
-    let dateFormat = this.state.data.dodFormat;
     let disabled = true;
     let updateButton = null;
     if (loris.userHasPermission('candidate_dod_edit')) {
       disabled = false;
       updateButton = <ButtonElement label={t('Update', {ns: 'loris'})}/>;
     }
+
     let precisionOptions = {
-      'known_year_month' : t('Known year and month'),
-      'known_year' : t('Known year'),
-      'unknown' : t('Unknown date'),
+      'known_year_month': t('I know the year and month of death'),
+      'known_year': t('I know the year of death'),
+      'unknown': t('I do not know the date of death'),
     };
+
     let required = this.state.formData.dod_precision != 'unknown';
+
+    let dateFormat = this.state.data.dodFormat;
+
+    let dodValue = this.state.formData.dod || '';
+    if (dateFormat == 'Ymd') {
+      precisionOptions['known_full'] = t('I know the full date of death');
+    } else if (dateFormat == 'Ym' && this.state.formData.dod) {
+      dodValue = dodValue.slice(0, 7);
+    }
 
     return (
       <div className='row'>
