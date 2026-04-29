@@ -13,30 +13,30 @@ All elements are required if no rule is specified, unless it is part of a group.
 
 - PHP
 
-    ```
-        $this->XINRegisterRule(
-            "field_name1",
-            array("field_name2{@}=={@}yes|maybe|sure"),
-            "Required." 
-        );
-    ```
+```
+    $this->XINRegisterRule(
+        "field_name1",
+        array("field_name2{@}=={@}yes|maybe|sure"),
+        "Required." 
+    );
+```
     
 - PHP (with grouping)
     
-    ```
-        $this->XINRegisterRule(
-            "field_name", // field name on which the rule is applied
-            array("field_name{@}=={@}"), // rule
-            "Required.", // message
-            "group_1" // group [if field is a part of a group]
-        );
-    ```
+```
+    $this->XINRegisterRule(
+        "field_name", // field name on which the rule is applied
+        array("field_name{@}=={@}"), // rule
+        "Required.", // message
+        "group_1" // group [if field is a part of a group]
+    );
+```
     
 - LINST
 
-   ```
-       field_name1{-}Required.{-}field_name2{@}=={@}yes|maybe|sure
-   ```
+```
+   field_name1{-}Required.{-}field_name2{@}=={@}yes|maybe|sure
+```
 
 > _**NOTE:** When adding XIN rules some elements are implicitly added to a group in NDB_BVL_Instrument.class.inc. In consequence, a group name needs to be specified when registering a rule. A group name is necessary for the following elements:_
 
