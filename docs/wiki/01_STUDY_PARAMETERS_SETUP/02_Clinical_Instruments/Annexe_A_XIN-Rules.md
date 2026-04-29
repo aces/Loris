@@ -3,13 +3,7 @@
 ### What are XIN Rules
 XIN Rules validate your input and prevent you from moving forward if you forget to fill in a required field. They can also be used to enforce dependencies between fields. (i.e. If  A1 is selected in question A and if A2 is selected in question B, then give examiner a break and skip question 3 and 4.)
 
-For example: 
-> A. Do you smoke?
-> 
->  - A1: Yes   
->  - A2: No
-> 
-> B: How often do you smoke?  #Skip question B if A2 "No" response was given for question A
+For example:
 
 ### How to use XIN Rules
 
