@@ -26,6 +26,7 @@ All elements are required if no rule is specified, unless it is part of a group.
         "Required." 
     );
     ```
+    
 - PHP (with grouping)
     
     ```
@@ -36,6 +37,7 @@ All elements are required if no rule is specified, unless it is part of a group.
         "group_1" // group [if field is a part of a group]
     );
     ```
+    
 - LINST
 
    ```php
@@ -43,6 +45,7 @@ All elements are required if no rule is specified, unless it is part of a group.
    ```
 
 > _**NOTE:** When adding XIN rules some elements are implicitly added to a group in NDB_BVL_Instrument.class.inc. In consequence, a group name needs to be specified when registering a rule. A group name is necessary for the following elements:_
+
 > ```php
 > $this->addHourMinElement();  // Group name: {$fieldName}_group
 > $this->addTextElement();  // Group name: {$fieldName}_group
