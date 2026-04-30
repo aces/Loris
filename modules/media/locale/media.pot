@@ -149,6 +149,9 @@ msgstr ""
 msgid "Upload error!"
 msgstr ""
 
+msgid "A file with the same name already exists!"
+msgstr ""
+
 msgid "File too large!"
 msgstr ""
 

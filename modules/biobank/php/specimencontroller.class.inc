@@ -65,11 +65,12 @@ class SpecimenController
     public function getInstances() : array
     {
         $this->_validatePermission('view');
-        $specimens  = [];
-        $this->dao  = $this->dao
+        $specimens = [];
+
+        $dao        = $this->dao
             ->filter(new \LORIS\Data\Filters\UserSiteMatch())
             ->filter(new \LORIS\Data\Filters\UserProjectMatch());
-        $specimenIt = $this->dao->execute($this->user);
+        $specimenIt = $dao->execute($this->user);
         foreach ($specimenIt as $id => $specimen) {
             $specimens[$id] = $specimen;
         }

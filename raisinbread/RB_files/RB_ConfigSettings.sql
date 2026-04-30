@@ -1,4 +1,4 @@
-/*M!999999\- enable the sandbox mode */ 
+/*M!999999\- enable the sandbox mode */
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `ConfigSettings`;
 LOCK TABLES `ConfigSettings` WRITE;
@@ -131,5 +131,6 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (139,'login_logo_left_link','Optional link to redirect when clicking on top left logo',1,0,'text', 1,'Login Top Left Logo Link',4,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (140,'login_logo_right_link','Optional link to redirect when clicking on top right logo',1,0,'text',1,'Login Top Right Logo Link',4,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (141,'partner_logos','Logos for partners to be displayed in the homepage',1,1,'text',1,'Partner Logos',4,0);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (142,'EEGChunksPath', 'Path to store the EEG chunks for Visualization', 1, 0, 'text', 45, 'EEG chunks path', 16, 0);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

@@ -149,6 +149,9 @@ msgstr "Carga del archivo multimedia completada."
 msgid "Upload error!"
 msgstr "¡Error al subir!"
 
+msgid "A file with the same name already exists!"
+msgstr "¡Un archivo con el mismo nombre ya existe!"
+
 msgid "File too large!"
 msgstr "¡Archivo demasiado grande!"
 

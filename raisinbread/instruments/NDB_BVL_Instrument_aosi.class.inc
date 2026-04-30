@@ -122,7 +122,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "examiner_location",
             "Examiner location",
             array(
-                null               => '',
+                "" => '',
                 "examiner"         => "Examiner",
                 "in_room_observer" => "In-Room Observer",
                 "behind_mirror"    => "Behind Mirror",
@@ -172,7 +172,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         );
 
         $q1_opts = array(
-            null           => "",
+            "" 	           => "",
             0              => "0 = Pass",
             1              => "1 = Delayed/Interupted",
             2              => "2 = Partial or No Tracking",
@@ -190,7 +190,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         }
 
         $q1_opts_2 = array(
-            null => '',
+            ""   => '',
             0    => "0 = Smoothly tracks",
             1    => "1 = Delayed or interrupted",
             2    => "2 = Partial",
@@ -219,7 +219,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
                 "q2_disengagement_of_attention_press_$press",
                 "Press #$press",
                 array(
-                    null           => "",
+                    ""             => "",
                     0              => "0 = Pass (<1 sec)",
                     1              => "1 = Delayed (1-2 sec)",
                     2              => "2 = Stuck (>2 sec)",
@@ -232,7 +232,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "q2_disengagement_of_attention_score_override",
             "Override score (required):",
             array(
-                null => '',
+                ""   => '',
                 0    => "0 = Immediately moves attention",
                 1    => "1 = Delayed movement of attention",
                 2    => "2 = Fails to move attention",
@@ -264,7 +264,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
                     "q3_orients_to_name_press_{$press}_trial_{$trial}",
                     "Press #$press, Trial #$trial $parents",
                     array(
-                        null                          => "",
+                        ""                            => "",
                         "orients_with_eye_contact"    => "Orients with eye contact",
                         "orients_without_eye_contact" => "Orients without eye contact",
                         "fail_to_orient"              => "Fail to orient",
@@ -277,7 +277,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "q3_orients_to_name_score_override",
             "Override score (required):",
             array(
-                null => '',
+                ""   => '',
                 0    => "0 = Orients",
                 1    => "1 = Inconsistent orienting",
                 2    => "2 = Does not orient",
@@ -302,7 +302,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "q4_differential_response_to_facial_emotion",
             "Score: ",
             array(
-                null           => "",
+                ""             => "",
                 0              => "0 = Clear change",
                 1              => "1 = Questionable change",
                 2              => "2 = Does not show change",
@@ -327,7 +327,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "q5_anticipatory_response",
             "Score: ",
             array(
-                null           => "",
+                ""             => "",
                 0              => "0 = Clear anticipatory response",
                 1              => "1 = Subtle/Questionable response",
                 2              => "2 = Only during game or routine",
@@ -372,7 +372,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
                     "q6_imitation_of_actions_act_{$activity}_att_{$attempt}",
                     "",
                     array(
-                        null           => "",
+                        ""             => "",
                         0              => "0 = Clear imitation",
                         1              => "1 = Equivocal imitation",
                         2              => "2 = Does not imitate",
@@ -406,7 +406,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "q6_imitation_of_actions_score_override",
             "Override score (required):",
             array(
-                null => '',
+                ""   => '',
                 0    => "0 = Clear imitation",
                 1    => "1 = Equivocal imitation",
                 2    => "2 = Does not imitate",
@@ -454,7 +454,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         );
         //answer arrays
         $zeroOneTwoThree = array(
-            null           => "",
+            ""             => "",
             0              => "0",
             1              => "1",
             2              => "2",
@@ -463,14 +463,14 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
             "not_answered" => "Not Answered",
         );
         $zeroTwo         = array(
-            null           => "",
+            ""             => "",
             0              => "0",
             2              => "2",
             8              => "8 = Not Applicable",
             "not_answered" => "Not Answered",
         );
         $zeroOneTwo      = array(
-            null           => "",
+            ""             => "",
             0              => "0",
             1              => "1",
             2              => "2",

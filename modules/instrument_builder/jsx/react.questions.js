@@ -24,6 +24,7 @@ import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/instrument_builder.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/instrument_builder.json';
 import frStrings from '../locale/fr/LC_MESSAGES/instrument_builder.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/instrument_builder.json';
 
 /**
  * Note: This is a wrapper for Form.js (Only used in instrument builder)
@@ -66,9 +67,9 @@ class LorisElement extends Component {
       break;
     case 'text':
       if (element.Options.Type === 'small') {
-        elementHtml = <TextboxElement label={element.Description}/>;
+        elementHtml = <TextboxElement label={element.Description} />;
       } else {
-        elementHtml = <TextareaElement label={element.Description}/>;
+        elementHtml = <TextareaElement label={element.Description} />;
       }
       break;
     case 'select':
@@ -77,12 +78,12 @@ class LorisElement extends Component {
           options={element.Options.Values}
           emptyOption={false}
           sortByValue={false}
-          multiple={true}/>;
+          multiple={true} />;
       } else {
         elementHtml = <SelectElement label={element.Description}
           emptyOption={false}
           sortByValue={false}
-          options={element.Options.Values}/>;
+          options={element.Options.Values} />;
       }
       break;
     case 'date':
@@ -582,7 +583,7 @@ class DateOptions extends Component {
                     {dateFormatOptions[option]}
                   </option>
                 );
-              }) }
+              })}
             </select>
           </div>
         </div>
@@ -869,7 +870,7 @@ class ListElements extends Component {
                 <a id="dropdown"
                   className="option"
                   title={'Dropdown menu for users to select '
-                                     + 'data from'}
+                    + 'data from'}
                 >{t('Dropdown', {ns: 'instrument_builder'})}</a>
               </li>
               <li onClick={this.selectType.bind(
@@ -880,7 +881,7 @@ class ListElements extends Component {
                 <a id="multiselect"
                   className="option"
                   title={'Data entry where multiple options '
-                                     + 'may be selected'}
+                    + 'may be selected'}
                 >{t('Multiselect', {ns: 'instrument_builder'})}</a>
               </li>
               <li onClick={this.selectType.bind(
@@ -1048,13 +1049,14 @@ class AddElement extends Component {
 
     // Validate Dropdown Options only when the type is 'dropdown' or 'multiselect'
     if ((selected === 'dropdown'
-        || selected === 'multiselect')
-        && this.state.Options.Values) {
+      || selected === 'multiselect')
+      && this.state.Options.Values) {
       let optionsCount = Object.keys(this.state.Options.Values).length;
 
       if (optionsCount === 0) {
         this.setState((state) => ({
-          error: {...state.error,
+          error: {
+            ...state.error,
             dropdownOptions: t('Dropdown options cannot be empty!',
               {ns: 'instrument_builder'}),
           },
@@ -1190,8 +1192,8 @@ class AddElement extends Component {
     }
 
     if (questionName.length > 64 && selected !== 'textbox'
-        && selected !== 'textarea' && selected !== 'date'
-        && selected !== 'numeric') {
+      && selected !== 'textarea' && selected !== 'date'
+      && selected !== 'numeric') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
@@ -1482,6 +1484,7 @@ AddElement.propTypes = {
 i18n.addResourceBundle('hi', 'instrument_builder', hiStrings);
 i18n.addResourceBundle('ja', 'instrument_builder', jaStrings);
 i18n.addResourceBundle('fr', 'instrument_builder', frStrings);
+i18n.addResourceBundle('zh', 'instrument_builder', zhStrings);
 
 TranslatedBasicOptions = withTranslation(
   ['instrument_builder', 'loris']

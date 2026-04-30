@@ -21,7 +21,6 @@ use LORIS\Data\Query\Criteria\Substring;
  */
 class ImagingQueryEngineTest extends TestCase
 {
-
     protected \LORIS\imaging_browser\QueryEngine $engine;
     protected $factory;
     protected $config;
@@ -205,9 +204,11 @@ class ImagingQueryEngineTest extends TestCase
             [__DIR__ . "/../../"]
         );
 
-        $this->engine = $lorisinstance->getModule(
+        $engine = $lorisinstance->getModule(
             'imaging_browser'
         )->getQueryEngines()[0];
+        assert($engine instanceof \LORIS\imaging_browser\QueryEngine);
+        $this->engine = $engine;
     }
 
     /**

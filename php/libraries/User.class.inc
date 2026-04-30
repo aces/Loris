@@ -362,7 +362,7 @@ class User extends UserPermissions implements
             if (in_array(\ProjectID::singleton($projectID), $userProjectIDs)) {
                 $visitLabel = $visit->getName();
                 if (!in_array($visitLabel, $visit_labels)) {
-                    $visit_labels[$visitLabel] = $visitLabel;
+                    $visit_labels[$visitLabel] = dgettext('visit', $visitLabel);
                 }
             }
         }
@@ -450,20 +450,6 @@ class User extends UserPermissions implements
             },
             $this->getCenterIDs()
         );
-    }
-
-    /**
-     * Returns all user's sites in an associative array (CenterID => CenterName)
-     *
-     * @return array
-     */
-    function getSiteNamesList(): array
-    {
-        $sites = [];
-        foreach ($this->getSites() as $site) {
-            $sites[$site->getCenterID()->__toString()] = $site->getCenterName();
-        }
-        return $sites;
     }
 
     /**

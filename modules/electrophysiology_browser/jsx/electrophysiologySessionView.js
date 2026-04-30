@@ -35,7 +35,7 @@ if (EEG_VIS_ENABLED) {
 }
 import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/electrophysiology_browser.json';
-
+import zhStrings from '../locale/zh/LC_MESSAGES/electrophysiology_browser.json';
 
 /**
  * Electrophysiology Session View page
@@ -570,6 +570,7 @@ ElectrophysiologySessionView.defaultProps = {
 window.onload = function() {
   i18n.addResourceBundle('ja', 'electrophysiology_browser', jaStrings);
   i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
+  i18n.addResourceBundle('zh', 'electrophysiology_browser', zhStrings);
   const i18nNamespaces = ['electrophysiology_browser', 'loris'];
   const SideContent = withTranslation(i18nNamespaces)(SidebarContent);
   const sidebarContent = <SideContent

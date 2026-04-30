@@ -4,6 +4,7 @@ import i18n from 'I18nSetup';
 import {useTranslation} from 'react-i18next';
 import jaStrings from '../locale/ja/LC_MESSAGES/login.json';
 import frStrings from '../locale/fr/LC_MESSAGES/login.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/login.json';
 
 type errorCallback = (msg: string) => void;
 /**
@@ -28,13 +29,13 @@ function LoginMFAPrompt() {
           console.warn('invalid response');
         }
         return resp.json();
-      }).then( (json) => {
+      }).then((json) => {
         if (json['success']) {
           window.location.reload();
         } else if (json['error']) {
           onError(json['error']);
         }
-      }).catch( () => {
+      }).catch(() => {
         onError('Error validating code');
         console.error('error validating code');
       });
@@ -45,6 +46,7 @@ function LoginMFAPrompt() {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'login', jaStrings);
   i18n.addResourceBundle('fr', 'login', frStrings);
+  i18n.addResourceBundle('zh', 'login', zhStrings);
   createRoot(
     document.getElementsByClassName('main-content')[0]
   ).render(

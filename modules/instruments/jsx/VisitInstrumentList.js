@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/instruments.json';
 import frStrings from '../locale/fr/LC_MESSAGES/instruments.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/instruments.json';
 
 /**
  * A VisitInstrumentList is a type of React component which displays
@@ -23,6 +24,7 @@ class VisitInstrumentList extends Component {
     super(props);
     i18n.addResourceBundle('ja', 'instruments', jaStrings);
     i18n.addResourceBundle('fr', 'instruments', frStrings);
+    i18n.addResourceBundle('zh', 'instruments', zhStrings);
     this.state = {
       expanded: false,
       hover: false,

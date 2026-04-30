@@ -1,0 +1,185 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "DICOM Archive"
+msgstr "DICOM 档案"
+
+msgid "Patient ID"
+msgstr "患者 ID"
+
+msgid "Patient Name"
+msgstr "患者姓名"
+
+msgid "Acquisition Date"
+msgstr "采集日期"
+
+msgid "Archive Location"
+msgstr "存档位置"
+
+msgid "Metadata"
+msgstr "元数据"
+
+msgid "MRI Browser"
+msgstr "MRI 浏览器"
+
+msgid "Series UID"
+msgstr "系列唯一标识"
+
+msgid "TarchiveID"
+msgstr "档案ID"
+
+msgid "SessionID"
+msgstr "会话ID"
+
+msgid "CenterID"
+msgstr "中心ID"
+
+msgid "IsPhantom"
+msgstr "是否为幻影"
+
+msgid "Tarchive Metadata"
+msgstr "归档元数据"
+
+msgid "Acquisition ID"
+msgstr "采集ID"
+
+msgid "Patient Birthdate"
+msgstr "患者出生日期"
+
+msgid "Patient Biological Sex"
+msgstr "患者生物性别"
+
+msgid "Date acquired"
+msgstr "采集日期"
+
+msgid "Scanner Model"
+msgstr "扫描仪型号"
+
+msgid "Serial Number"
+msgstr "序列号"
+
+msgid "Scanner Software Version"
+msgstr "扫描仪软件版本"
+
+msgid "Acquired at"
+msgstr "采集于"
+
+msgid "Number of Acquisitions"
+msgstr "采集数量"
+
+msgid "Archived by"
+msgstr "存档者"
+
+msgid "Last update"
+msgstr "最后更新"
+
+msgid "Never"
+msgstr "从不"
+
+msgid "Summary type version"
+msgstr "摘要类型版本"
+
+msgid "Source location"
+msgstr "源位置"
+
+msgid "Archive type version"
+msgstr "存档类型版本"
+
+msgid "Archive location"
+msgstr "存档位置"
+
+msgid "Archiving log"
+msgstr "归档日志"
+
+msgid "md5sum of Archive"
+msgstr "存档的 MD5 校验值"
+
+msgid "md5sum of Dicom unzipped"
+msgstr "解压 DICOM 的 MD5 校验值"
+
+msgid "Series"
+msgstr "系列"
+
+msgid "Show/Hide series"
+msgstr "显示/隐藏系列"
+
+msgid "Series Number"
+msgstr "系列号"
+
+msgid "Series Description"
+msgstr "系列说明"
+
+msgid "Protocol Name"
+msgstr "协议名称"
+
+msgid "Sequence Name"
+msgstr "序列名称"
+
+msgid "Echo Time"
+msgstr "回波时间"
+
+msgid "Repetition Time"
+msgstr "重复时间"
+
+msgid "Inversion Time"
+msgstr "反转时间"
+
+msgid "Slice Thickness"
+msgstr "切片厚度"
+
+msgid "Phase Encoding"
+msgstr "相位编码"
+
+msgid "Number of Files"
+msgstr "文件数量"
+
+msgid "SeriesUID"
+msgstr "系列 UID"
+
+msgid "Files"
+msgstr "文件"
+
+msgid "Show/Hide files"
+msgstr "显示/隐藏文件"
+
+msgid "SeriesNumber"
+msgstr "系列号"
+
+msgid "FileNumber"
+msgstr "文件号"
+
+msgid "EchoNumber"
+msgstr "回波号"
+
+msgid "Md5Sum"
+msgstr "MD5 校验值"
+
+msgid "FileName"
+msgstr "文件名"
+
+msgid "INVALID - HIDDEN"
+msgstr "无效 - 隐藏"
+
+msgid "View Details"
+msgstr "查看详情"
+
+msgid "View Images"
+msgstr "查看图像"

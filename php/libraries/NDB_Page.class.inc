@@ -541,13 +541,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
      * Adds a group (array of elements created by $this->create*
      * wrappers) to the current page.
      *
-     * @param array  $elements  The group of elements to add to the page
-     * @param string $name      The name to give this group
-     * @param string $label     A label to attach to the group
-     * @param string $delimiter The separator to use between group elements
-     * @param ?array $options   An optional array to include prefix_wrapper and
-     *                          postfix_wrapper strings - html that will be
-     *                          placed before and after the group html
+     * @param array   $elements  The group of elements to add to the page
+     * @param string  $name      The name to give this group
+     * @param ?string $label     A label to attach to the group
+     * @param string  $delimiter The separator to use between group elements
+     * @param ?array  $options   An optional array to include prefix_wrapper and
+     *                           postfix_wrapper strings - html that will be
+     *                           placed before and after the group html
      *
      * @return void
      *
@@ -560,7 +560,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
         $this->form->addGroup(
             $elements,
             $name,
-            !empty($label) ? dgettext($this->name, $label) : null,
+            !empty($label) ? dgettext($this->name, $label) : '',
             $delimiter,
             $options
         );
