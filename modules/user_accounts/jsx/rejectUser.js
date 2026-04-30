@@ -1,30 +1,46 @@
 import swal from 'sweetalert2';
 
-$(document).ready(function() {
-    $('#btn_reject').click(function() {
-        const userID = document.getElementById('UserID').value;
-        const baseurl = loris.BaseURL;
+window.addEventListener('load', () => {
+  const btn = document.getElementById('btn_reject');
 
-        swal.fire({
-            title: 'Are you sure?',
-            text: 'Do you really want to reject user "' + userID + '"? This action cannot be undone.',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, reject user!',
-            cancelButtonText: 'Cancel',
-        }).then(function(result) {
-            if (result.value === true) {
-                $.ajax(baseurl + '/user_accounts/ajax/rejectUser.php', {
-                    type: 'POST',
-                    data: {identifier: userID},
-                    success: function(data, textStatus) {
-                        location.href = baseurl + '/user_accounts/';
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        swal.fire('Error', jqXHR.responseText, 'error');
-                    }
-                });
+  if (!btn) return;
+
+  btn.addEventListener('click', () => {
+    const userID = document.getElementById('UserID').value;
+    const baseurl = loris.BaseURL;
+
+    swal.fire({
+      title: 'Are you sure?',
+      text: `Do you really want to reject user "${userID}"?\n` +
+            'This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, reject user!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`${baseurl}/user_accounts/ajax/rejectUser.php`, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            identifier: userID,
+          }),
+        })
+          .then((resp) => {
+            if (!resp.ok) {
+              return resp.text().then((text) => {
+                throw new Error(text);
+              });
             }
-        });
+            window.location.href = `${baseurl}/user_accounts/`;
+          })
+          .catch((error) => {
+            swal.fire('Error', error.message, 'error');
+          });
+      }
     });
+  });
 });
