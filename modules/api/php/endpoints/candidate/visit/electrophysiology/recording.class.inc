@@ -170,12 +170,9 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
 
-        $mimetype = substr($recording->getMetadata('header'), 0, 4) === 'hdf5' ?
-            'application/x.minc2' : 'application/octet-stream';
-
         $info = $recording->getFileInfo();
 
-        if (!$info->isFile()) {
+        if (!$info->isFile() && !$info->isDir()) {
             error_log('file in database but not in file system');
             return new \LORIS\Http\Response\JSON\NotFound();
         }
@@ -185,13 +182,45 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        $body = new \LORIS\Http\FileStream($info->getRealPath(), 'r');
+        // Tar the acquisition file if it is actually a directory (such as for MEG
+        // CTF acquisitions).
+        if ($info->isDir()) {
+            $filename = $this->_filename . '.tar';
+            $mimetype = 'application/x-tar';
+
+            $tarfile = sys_get_temp_dir() . '/recording_' . uniqid() . '.tar';
+
+            try {
+                $phar = new \PharData($tarfile);
+                $phar->buildFromDirectory($info->getRealPath());
+            } catch (\Exception $e) {
+                $this->logger->error(
+                    'Failed to create tar archive: ' . $e->getMessage()
+                );
+
+                if (file_exists($tarfile)) {
+                    unlink($tarfile);
+                }
+
+                return new \LORIS\Http\Response\JSON\InternalServerError();
+            }
+
+            $filepath = $tarfile;
+        } else {
+            $filename = $this->_filename;
+            $filepath = $info->getRealPath();
+            $mimetype = substr($recording->getMetadata('header'), 0, 4) === 'hdf5'
+                ? 'application/x.minc2'
+                : 'application/octet-stream';
+        }
+
+        $body = new \LORIS\Http\FileStream($filepath, 'r', true);
 
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', $mimetype)
             ->withHeader(
                 'Content-Disposition',
-                'attachment; filename=' . $this->_filename
+                'attachment; filename=' . $filename
             )
             ->withBody($body);
     }
