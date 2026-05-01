@@ -397,8 +397,31 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                 $type      = $pieces[0];
                 $fieldname = isset($pieces[1]) ? $pieces[1] : null;
+
+                // over complicated not generalized logic to handle 
+                // fields with substring '_status'
                 if (strpos($fieldname, "_status") !== false) {
-                    continue;
+// ############ CBIGR OVERRIDE START ############ 
+                    $is_allowed = false;
+                    $allowed_fields = ['change_status', 'ev_status', 
+                    'ev_status_p3', 'participant_status_checklist_phase_2'];
+
+                    // check the current field containing '_status' against the list
+                    // str_contains is used rather than in_array because of 
+                    // change_status_1, _2, _3 etc
+                    // if current $fieldname is one of these, exit the forloop
+                    foreach($allowed_fields as $allow){
+                        if(str_contains($fieldname, $allow)){
+                            $is_allowed = true;
+                            break;
+                            }
+                        }
+                    // if the current $fieldname is not in the array, 
+                    // is_allowed remains false: next iteration of while loop
+                    if (!$is_allowed) {
+                        continue;
+                    }
+// ############ CBIGR OVERRIDE END ############ 
                 }
                 if ($fieldname == 'Date_taken'
                     || $fieldname == "Candidate_Age"
