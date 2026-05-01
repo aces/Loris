@@ -398,37 +398,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 $type      = $pieces[0];
                 $fieldname = isset($pieces[1]) ? $pieces[1] : null;
                 if (strpos($fieldname, "_status") !== false) {
-// Q1K OVERRIDE 
-                    // if (!in_array($this->testName, [
-                    //     'introduction_to_questionnaires', 
-                    //     'family_background_questionnaires',
-                    //     'developmental_history_questionnaires',
-                    //     'parents_siblings_and_children_in_family_quest',
-                    //     'srs_school_age_418',
-                    //     'scq_418',
-                    //     'aseba_cbcl_618',
-                    //     'abasiii_521',
-                    //     'aseba_asr_1859',
-                    //     ], true) 
-                    $allowed_fields = ['change_status', 'ev_status', 
-                    'ev_status_p3', 'participant_status_checklist_phase_2'];
-
-                    $is_allowed = false;
-                    foreach($allowed_fields as $allow){
-                        if(str_contains($fieldname, $allow)){
-                            $is_allowed = true;
-                            break;
-                            }
-                        }
-
-                    if (!$is_allowed) {
-                        continue;
-                    }
-                    // if(!str_contains($fieldname, 'change_status')) {
-                    // continue;
-                    // }
+                    continue;
                 }
-// Q1K OVERRIDE 
                 if ($fieldname == 'Date_taken'
                     || $fieldname == "Candidate_Age"
                     || $fieldname == "Window_Difference"
@@ -767,13 +738,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $dictlabels = [];
 
                     foreach ($options as $o) {
-
                         $arr = explode("=>", $o);
-
                         $key = $arr[0];
                         $val = $arr[1];
                         if ($key[0] == "'" && $key[strlen($key)-1] == "'") {
-                            //error_log("INSTRUMENT " . $this->testName);
                             $key = substr($key, 1, -1);
                         } else if ($key == 'NULL') {
                             $key ='';
@@ -971,16 +939,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 // Rules Uses {-} as delimiter, unlike linst files, because {@}
                 // is part of the rules themselves
                 $pieces   = explode("{-}", trim($line));
-                if (count($pieces) < 3) {
-
-                    error_log("Malformed rules line in: " . $filename . " line: " . trim($line));
-                    // }
-                    // if (trim($line) !== '') {
-                    //     error_log("Malformed rules line in: " . $filename . " line: " . trim($line));
-                    // }
-                    continue;
-                }
-                
                 $question = $pieces[0];
                 $message  = $pieces[1];
                 $rules    = array_slice($pieces, 2);
