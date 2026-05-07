@@ -11,8 +11,10 @@ phpdev:
 	composer install
 
 javascript:
-	npm ci
-	npm run compile
+	# Use OpenSSL legacy provider for Node versions that require it (fixes
+	# ERR_OSSL_EVP_UNSUPPORTED when building with older webpack)
+	@NODE_OPTIONS=--openssl-legacy-provider npm ci
+	@NODE_OPTIONS=--openssl-legacy-provider npm run compile
 
 dev: VERSION phpdev javascript
 
