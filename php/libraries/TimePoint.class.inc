@@ -325,14 +325,15 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
             );
         }
 
-        // Check if visit label exists for this subproject
-        if (!array_key_exists(
-            $visitName,
-            \Utility::getVisitsForSubproject(
-                $subprojectID
-            )
-        )
-        ) {
+        $validVisits = \Utility::getVisitsForSubproject($subprojectID);
+        $visitLabel  = null;
+
+        // Accept either VisitName (array key) or VisitLabel (array value)
+        if (array_key_exists($visitName, $validVisits)) {
+            $visitLabel = $validVisits[$visitName];
+        } else if (in_array($visitName, $validVisits, true)) {
+            $visitLabel = $visitName;
+        } else {
             throw new \LorisException(
                 'This visit label is not valid for this subproject.'
             );
@@ -340,12 +341,10 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
 
         $candidate =& \Candidate::singleton($candid);
 
-        // The function below gets a list of VisitNames from the DB, not real labels
         $timePointArray = $candidate->getListOfVisitLabels();
 
-        //If the visitLabel is already in use then let the user pick another
-        foreach ($timePointArray AS $used_name) {
-            if (strcasecmp($visitName, $used_name) == 0) {
+        foreach ($timePointArray as $used_name) {
+            if (strcasecmp($visitLabel, $used_name) == 0) {
                 throw new \LorisException(
                     'This visit label is not unique.'
                 );
