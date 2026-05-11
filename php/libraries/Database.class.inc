@@ -335,7 +335,13 @@ class Database implements LoggerAwareInterface
             // Use ENT_COMPAT, to ensure the same behaviour between PHP 8.1 and
             // earlier versions, since the default flags changed in PHP 8.1.
             $retVal[$key] = is_string($val)
-                ? htmlspecialchars($val, ENT_COMPAT) : $val;
+                ? htmlspecialchars(
+                    $val,
+                    ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    : $val;
         }
         return $retVal;
     }
@@ -416,10 +422,20 @@ class Database implements LoggerAwareInterface
             );
         }
 
+        $operation = 'I'; // Default to an insert
+
+        // If it was an 'ON DUPLICATE KEY UPDATE' query, check the PDO rowCount()
+        if ($onDuplicateUpdate) {
+            $rowsAffected = $prep->rowCount();
+            if ($rowsAffected !== 2) {
+                $operation = 'U'; // It was an update
+            }
+        }
+
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $this->trackChanges($table, $set, '2=1', 'I');
+        $this->trackChanges($table, $set, '2=1', $operation);
         return true;
     }
 
@@ -725,6 +741,7 @@ class Database implements LoggerAwareInterface
         }
         return $rows;
     }
+
     /**
      * Runs an SQL select statement as a prepared query
      *
@@ -732,17 +749,11 @@ class Database implements LoggerAwareInterface
      * @param array<string,mixed> $params Values to use for binding to the
      *                                    prepared statement
      *
-     * @return array<int,array<string,string>> An array of arrays containing
-     *                                          the data.
-     *               The outside (non-associative array contains 1 element per
-     *               row returned by the query, and each element is an associative
-     *               array representing the row in the format ColumnName => Value
+     * @return \LORIS\Database\Query
      */
-    function pselect(string $query, array $params): array
+    function pselect(string $query, array $params): \LORIS\Database\Query
     {
-        $this->_printQuery($query, $params);
-        $stmt = $this->prepare($query);
-        return $this->execute($stmt, $params);
+        return new \LORIS\Database\Query($this->_PDO, $query, $params);
     }
 
     /**
@@ -838,13 +849,17 @@ class Database implements LoggerAwareInterface
      */
     function pselectRow(string $query, array $params): ?array
     {
-        $rows = $this->pselect($query . " LIMIT 2", $params);
-        if (count($rows) > 1) {
+        $query = $this->pselect($query . " LIMIT 2", $params);
+        switch (count($query)) {
+        case 0:
+            return null;
+        case 1:
+            return $query->getFirstRow();
+        default:
             throw new \DomainException(
                 "Attempt to use pselectRow on a query that returns multiple rows"
             );
         }
-        return $rows[0] ?? null;
     }
 
     /**
@@ -1608,7 +1623,7 @@ class Database implements LoggerAwareInterface
     public function setBuffering(bool $buffered): void
     {
         if ($this->_PDO->setAttribute(
-            \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
+            \PDO\Mysql::ATTR_USE_BUFFERED_QUERY,
             $buffered
         ) == false
         ) {

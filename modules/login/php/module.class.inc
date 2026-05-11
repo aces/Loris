@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace LORIS\login;
 
@@ -31,6 +31,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return 'Login';
+        return dgettext('login', 'Login');
     }
 }

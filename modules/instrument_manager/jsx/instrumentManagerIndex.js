@@ -32,7 +32,7 @@ class InstrumentManagerIndex extends Component {
       modifyPermissions: false,
     };
 
-   this.fetchData = this.fetchData.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
   }
 
@@ -173,69 +173,69 @@ class InstrumentManagerIndex extends Component {
 
     let permsModal = null;
     if (this.state.modifyPermissions !== false) {
-        const submitPromise = () => {
-          return new Promise(
-            (resolve, reject) => {
-              fetch(
-                this.props.BaseURL + '/instrument_manager/permissions',
-                {
-                  method: 'POST',
-                  body: JSON.stringify(this.state.modifyPermissions),
-                }).then((response) => {
-                  if (!response.ok) {
-                  console.error(response.status);
-                  throw new Error('Could not modify permissions');
-                }
-                return response.json();
-              }).then( (data) => {
-                resolve();
-                this.fetchData();
-              }).catch((message) => {
-                swal.fire({
-                    title: 'Oops..',
-                    text: 'Something went wrong!',
-                    type: 'error',
-                });
-                reject();
+      const submitPromise = () => {
+        return new Promise(
+          (resolve, reject) => {
+            fetch(
+              this.props.BaseURL + '/instrument_manager/permissions',
+              {
+                method: 'POST',
+                body: JSON.stringify(this.state.modifyPermissions),
+              }).then((response) => {
+              if (!response.ok) {
+                console.error(response.status);
+                throw new Error('Could not modify permissions');
+              }
+              return response.json();
+            }).then( (data) => {
+              resolve();
+              this.fetchData();
+            }).catch((message) => {
+              swal.fire({
+                title: 'Oops..',
+                text: 'Something went wrong!',
+                type: 'error',
               });
-        });
-        };
+              reject();
+            });
+          });
+      };
 
-        permsModal = (<Modal
-            title={'Edit Permissions for '
+      permsModal = (<Modal
+        title={'Edit Permissions for '
                 + this.state.modifyPermissions.instrument}
-            show={true}
-            onSubmit={submitPromise}
-            onClose={
-                () => {
-                    this.setState({'modifyPermissions': false});
-                }
-            }>
-            <p>Select the permissions required for accessing&nbsp;
-            {this.state.modifyPermissions.instrument} in the dropdown below.
-            </p>
-            <p>Any user accessing the instrument (either for viewing the data
+        show={true}
+        onSubmit={submitPromise}
+        onClose={
+          () => {
+            this.setState({'modifyPermissions': false});
+          }
+        }>
+        <p>Select the permissions required for accessing&nbsp;
+          {this.state.modifyPermissions.instrument} in the dropdown below.
+        </p>
+        <p>Any user accessing the instrument (either for viewing the data
                or data entry) must have one of the access permissions selected.
-            </p>
-            <InfoPanel>
+        </p>
+        <InfoPanel>
                 A user with <em>any</em> of the selected permissions will
                 be able to access&nbsp;
-                {this.state.modifyPermissions.instrument}.
+          {this.state.modifyPermissions.instrument}.
                 If no permissions are selected, the default LORIS permissions
                 will be enforced for this instrument.
-            </InfoPanel>
+        </InfoPanel>
 
-            <PermissionSelect
-                codes={this.state.data.fieldOptions.allPermissionCodes}
-                selected={this.state.modifyPermissions.permissions}
-                instrument={this.state.modifyPermissions.instrument}
-                modifySelected={(newselected) => {
-                    let modifyPermissions = {...this.state.modifyPermissions};
-                    modifyPermissions.permissions = newselected;
-                    this.setState({modifyPermissions});
-                }}
-            />
-        </Modal>);
+        <PermissionSelect
+          codes={this.state.data.fieldOptions.allPermissionCodes}
+          selected={this.state.modifyPermissions.permissions}
+          instrument={this.state.modifyPermissions.instrument}
+          modifySelected={(newselected) => {
+            let modifyPermissions = {...this.state.modifyPermissions};
+            modifyPermissions.permissions = newselected;
+            this.setState({modifyPermissions});
+          }}
+        />
+      </Modal>);
     }
     if (this.props.hasPermission('instrument_manager_write')) {
       tabs.push({id: 'upload', label: 'Upload'});
@@ -300,9 +300,9 @@ class InstrumentManagerIndex extends Component {
 }
 
 InstrumentManagerIndex.propTypes = {
-    BaseURL: PropTypes.string,
-    dataURL: PropTypes.string.isRequired,
-    hasPermission: PropTypes.func.isRequired,
+  BaseURL: PropTypes.string,
+  dataURL: PropTypes.string.isRequired,
+  hasPermission: PropTypes.func.isRequired,
 };
 
 /**
@@ -313,30 +313,30 @@ InstrumentManagerIndex.propTypes = {
  * @return {JSX}
  */
 function PermissionSelect(props) {
-    const options = props.codes.map((val) => {
-        return {value: val, label: val};
-    });
-    const values = options.filter((row) => {
-        if (props.selected == null) {
-            // nothing selected, filter everything
-            return false;
-        }
-        return props.selected.includes(row.value);
-    });
-    return <Select
-                isMulti={true}
-                options={options}
-                value={values}
-                onChange={(newValue) => {
-                    props.modifySelected(newValue.map((row) => row.value));
-                }}
-           />;
+  const options = props.codes.map((val) => {
+    return {value: val, label: val};
+  });
+  const values = options.filter((row) => {
+    if (props.selected == null) {
+      // nothing selected, filter everything
+      return false;
+    }
+    return props.selected.includes(row.value);
+  });
+  return <Select
+    isMulti={true}
+    options={options}
+    value={values}
+    onChange={(newValue) => {
+      props.modifySelected(newValue.map((row) => row.value));
+    }}
+  />;
 }
 
 PermissionSelect.propTypes = {
-    codes: PropTypes.array,
-    selected: PropTypes.array,
-    modifySelected: PropTypes.func,
+  codes: PropTypes.array,
+  selected: PropTypes.array,
+  modifySelected: PropTypes.func,
 };
 
 window.addEventListener('load', () => {

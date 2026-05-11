@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Examiner module menu filter form
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Clinical
  * @package  Loris
@@ -15,7 +16,7 @@ namespace LORIS\examiner;
 /**
  * Examiner module menu filter form
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Clinical
  * @package  Loris
@@ -36,7 +37,8 @@ class Examiner extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -45,6 +47,7 @@ class Examiner extends \DataFrameworkMenu
             ]
         );
     }
+
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -55,6 +58,7 @@ class Examiner extends \DataFrameworkMenu
     {
                 return ['examiner_multisite'];
     }
+
     /**
      * {@inheritDoc}
      *
@@ -75,13 +79,20 @@ class Examiner extends \DataFrameworkMenu
 
           $useCertification = ($this->useCertification == 1) ? true : false;
 
+        $user = \User::singleton();
+        if ($user->hasPermission('examiner_multisite')) {
+            $sites = \Utility::getSiteList(false);
+        } else {
+            $sites = $user->getStudySites();
+        }
         return [
-            'sites'            => \Utility::getSiteList(false),
+            'sites'            => $sites,
             'radiologists'     => $yesNoOptions,
-            'useCertification' =>  $useCertification,
+            'useCertification' => $useCertification,
         ];
 
     }
+
     /**
      * {@inheritDoc}
      *
@@ -91,6 +102,7 @@ class Examiner extends \DataFrameworkMenu
     {
         return false;
     }
+
     /**
      * {@inheritDoc}
      *
@@ -98,8 +110,9 @@ class Examiner extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new ExaminerProvisioner();
+        return new ExaminerProvisioner($this->loris);
     }
+
     /**
      * Include the index examiner javascript dependency
      *

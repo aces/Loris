@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Invokes a module's helper scripts, which should be contained in said
  * module's php directory.
@@ -8,7 +9,7 @@
  *
  * Note that right now only PHP ajax helper's are supported.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Loris
  * @package  MRI

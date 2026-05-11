@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Imaging browser control panel class file
@@ -85,8 +85,8 @@ class Imaging_Session_ControlPanel
         foreach ($linkedInstruments as $v) {
             $qresult = $DB->pselectRow(
                 "SELECT f.CommentID, tn.Full_name FROM flag f
-            JOIN test_names tn ON f.Test_name = tn.Test_name
-            WHERE f.Test_name = :tname AND f.SessionID = :v_sessions_id
+            JOIN test_names tn ON f.TestID = tn.ID
+            WHERE tn.Test_name = :tname AND f.SessionID = :v_sessions_id
             AND f.CommentID NOT LIKE 'DDE_%'",
                 [
                     'tname'         => $v,
@@ -100,7 +100,7 @@ class Imaging_Session_ControlPanel
                     "CommentID" => $qresult['CommentID'],
                 ];
             }
-            // else 'Could not find linked instruments';
+                   // else 'Could not find linked instruments';
         }
         $subjectData['links'] = $links;
 
@@ -155,16 +155,16 @@ class Imaging_Session_ControlPanel
         $subjectData['has_permission']  = $this->_hasAccess();
         $subjectData['status_options']  = [
             'Unrated' => '',
-            'Pass'    => 'Pass',
-            'Fail'    => 'Fail',
+            'Pass'    => dgettext('loris', 'Pass'),
+            'Fail'    => dgettext('loris', 'Fail'),
         ];
         $subjectData['pending_options'] = [
-            'Y' => 'Yes',
-            'N' => 'No',
+            'Y' => dgettext('loris', 'Yes'),
+            'N' => dgettext('loris', 'No'),
         ];
         $subjectData['caveat_options']  = [
-            'true'  => 'True',
-            'false' => 'False',
+            'true'  => dgettext('loris', 'True'),
+            'false' => dgettext('loris', 'False'),
         ];
 
         $qcstatus = $timePoint->getImagingQC();
@@ -184,6 +184,7 @@ class Imaging_Session_ControlPanel
         $subjectData['prevTimepoint']['URL'] = $NavBar->prevLink();
         return $subjectData;
     }
+
     /**
      * Generates the HTML to display the set of buttons
      * for the timepoint status flags

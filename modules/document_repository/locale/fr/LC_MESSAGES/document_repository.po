@@ -1,0 +1,194 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 18:12-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Document Repository"
+msgstr "Répertoire de documents"
+
+msgid "Document Repository Notifications"
+msgstr "Notifications relatives au répertoire de documents"
+
+msgid "Upload files"
+msgstr "Envoyer des fichiers"
+
+msgid "Category"
+msgstr "Catégorie"
+
+msgid "Search for site"
+msgstr "Rechercher un site"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Comments"
+msgstr "Commentaires"
+
+#, fuzzy
+msgid "Restrict access to the file?"
+msgstr "Restriction d'accès au fichier ?"
+
+msgid "File(s) to upload"
+msgstr "Fichier(s) à téléverser"
+
+msgid "Upload File(s)"
+msgstr "Téléverser fichier(s)"
+
+msgid "Uploading..."
+msgstr "Téléversement..."
+
+#, fuzzy
+msgid "Upload Successful!"
+msgstr "Téléversement réussi!"
+
+msgid "Upload Incomplete"
+msgstr "Téléversement incomplet"
+
+#, fuzzy
+msgid "Error reading response"
+msgstr "Erreur lors de la lecture de la réponse"
+
+#, fuzzy
+msgid "Please report the issue or contact your administrator"
+msgstr "Veuillez signaler le problème ou contacter votre administrateur."
+
+msgid "File too large"
+msgstr "Fichier trop volumineux"
+
+msgid "Could not upload file"
+msgstr "Impossible de téléverser le fichier"
+
+msgid "Something went wrong"
+msgstr "Un problème est survenu"
+
+msgid "Add Category"
+msgstr "Ajouter une catégorie"
+
+msgid "Add a category"
+msgstr "Ajouter une catégorie"
+
+msgid "Category Name"
+msgstr "Nom de la catégorie"
+
+msgid "Parent"
+msgstr "Parent"
+
+#, fuzzy
+msgid "Category added successfully!"
+msgstr "Catégorie ajoutée avec succès !"
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "Edit Document Repository File"
+msgstr "Modifier le fichier du répertoire de documents"
+
+#, fuzzy
+msgid "File updated successfully!"
+msgstr "Fichier mis à jour avec succès !"
+
+msgid "Update File"
+msgstr "Mettre à jour le fichier"
+
+msgid "Edit Category"
+msgstr "Modifier la catégorie"
+
+msgid "Update Category"
+msgstr "Mettre à jour la catégorie"
+
+#, fuzzy
+msgid "Change Name of a category"
+msgstr "Modifier le nom d'une catégorie"
+
+msgid "Category Name:"
+msgstr "Nom de la catégorie:"
+
+#, fuzzy
+msgid "New Name for Category"
+msgstr "Nouveau nom pour la catégorie"
+
+#, fuzzy
+msgid "New Parent:"
+msgstr "Nouveau parent :"
+
+#, fuzzy
+msgid "Cannot be equal to itself"
+msgstr "Ne peut être égal à lui-même"
+
+#, fuzzy
+msgid "New parent cannot be equal to itself"
+msgstr "Un nouveau parent ne peut pas être égal à lui-même."
+
+#, fuzzy
+msgid "Edit error!"
+msgstr "Erreur d'édition !"
+
+#, fuzzy
+msgid "Edited Successful!"
+msgstr "Modification réussie !"
+
+msgid "Delete Category"
+msgstr "Supprimer la catégorie"
+
+#, fuzzy
+msgid "Delete a category"
+msgstr "Supprimer une catégorie"
+
+#, fuzzy
+msgid "Delete error!"
+msgstr "Supprimer l'erreur !"
+
+#, fuzzy
+msgid "Delete Successful!"
+msgstr "Suppression réussie !"
+
+msgid "Upload"
+msgstr "Téléverser"
+
+msgid "File Name"
+msgstr "Nom du fichier"
+
+msgid "Uploaded By"
+msgstr "Téléverser par"
+
+#, fuzzy
+msgid "For Site"
+msgstr "Pour le site"
+
+msgid "File Type"
+msgstr "Type de fichier"
+
+msgid "Date Uploaded"
+msgstr "Date de téléversement"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "Delete File"
+msgstr "Supprimer le fichier"
+
+#, fuzzy
+msgid "Filter globally"
+msgstr "Filtrer globalement"
+
+msgid "You won't be able to revert this!"
+msgstr "Vous ne pourrez pas revenir en arrière !"
+
+msgid "Yes, delete it!"
+msgstr "Oui, supprimer !"

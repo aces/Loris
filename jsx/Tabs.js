@@ -103,10 +103,10 @@ class Tabs extends Component {
           key={tab.id}
         >
           <a id={tabID}
-             href={href}
-             role="tab"
-             data-toggle="tab"
-             onClick={this.handleClick.bind(null, tab.id)}
+            href={href}
+            role="tab"
+            data-toggle="tab"
+            onClick={this.handleClick.bind(null, tab.id)}
           >
             {tab.label}
           </a>
@@ -253,10 +253,10 @@ class VerticalTabs extends Component {
           key={tab.id}
         >
           <a id={tabID}
-             href={href}
-             role="tab"
-             data-toggle="tab"
-             onClick={this.handleClick.bind(null, tab.id)}
+            href={href}
+            role="tab"
+            data-toggle="tab"
+            onClick={this.handleClick.bind(null, tab.id)}
           >
             {tab.label}
           </a>
@@ -282,7 +282,7 @@ class VerticalTabs extends Component {
             key: key,
           });
         }
-    }.bind(this));
+      }.bind(this));
 
     return tabPanes;
   }
@@ -304,9 +304,9 @@ class VerticalTabs extends Component {
       <div>
         <div className="tabbable col-md-3 col-sm-3">
           <ul
-              className="nav nav-pills nav-stacked"
-              role="tablist"
-              style={tabStyle}>
+            className="nav nav-pills nav-stacked"
+            role="tablist"
+            style={tabStyle}>
             {tabs}
           </ul>
         </div>
@@ -336,11 +336,11 @@ VerticalTabs.defaultProps = {
  * Used to wrap content for every tab.
  */
 class TabPane extends Component {
-    /**
-     * React lifecycle method
-     *
-     * @return {object}
-     */
+  /**
+   * React lifecycle method
+   *
+   * @return {object}
+   */
   render() {
     let classList = 'tab-pane';
     let title;

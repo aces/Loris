@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace LORIS\electrophysiology_uploader;
 
@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * used to process the EEG files sent over HTTP to
  * the electrophysiology uploader
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -84,27 +84,21 @@ class Upload extends \NDB_Page
 
         if (empty($file)) {
             return new \LORIS\Http\Response\JSON\NotFound(
-                "File not found."
+                dgettext('electrophysiology_uploader', 'File not found.')
             );
         }
 
-        $filename      = urldecode(basename($file));
-        $pos           = strrpos($file, '/');
-        $file_rel_path = $pos === false ? '' : substr($file, 0, $pos);
-        $config        = \NDB_Config::singleton();
-        $upload_dir    = new \SplFileInfo(
-            $config->getSetting('EEGUploadIncomingPath')
-        );
+        $config     = \NDB_Config::singleton();
+        $upload_dir = $config->getSetting('EEGUploadIncomingPath');
 
         $downloader = new \LORIS\FilesDownloadHandler(
-            new \SPLFileInfo($upload_dir . '/' . $file_rel_path)
+            new \SPLFileInfo($upload_dir)
         );
 
         return $downloader->handle(
-            $request->withAttribute('filename', $filename)
+            $request->withAttribute('filename', $file)
         );
     }
-
 
     /**
      * Processes the values & saves to database and return a json response.
@@ -164,10 +158,11 @@ class Upload extends \NDB_Page
 
         $session = $db->pselectRow(
             "
-            SELECT ID, Active
-            FROM session
-            WHERE Visit_label = :visit
-            AND CandID = :candID
+            SELECT s.ID, s.Active
+            FROM session s
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE s.Visit_label = :visit
+            AND c.CandID = :candID
             ",
             [
                 'visit'  => $visitLabel,
@@ -261,7 +256,7 @@ class Upload extends \NDB_Page
               WHERE p.code='monitor_eeg_uploads'",
             []
         );
-        $timepoint = \TimePoint::singleton(new \SessionID($session['ID']));
+        $timepoint = \TimePoint::singleton(new \SessionID(strval($session['ID'])));
         $msg_data  = [
             'Site'           => $timepoint->getPSC(),
             'PSCID'          => $pscid,

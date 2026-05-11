@@ -1,6 +1,4 @@
-<?php
-
-
+<?php declare(strict_types=1);
 
 /**
  * This script is written for a one time use only to update the hashes
@@ -15,7 +13,7 @@
  * affected table:
  * - violations_resolved
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

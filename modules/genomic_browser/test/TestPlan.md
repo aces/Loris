@@ -9,297 +9,215 @@
 #### [Datatable](#datatable_link)
 #### [Download](#data_download_link)  
 #### [Upload](#data_upload_link)  
-#### [Help content](#help_content_link)
+#### [Help Content](#help_content_link)
 <br>
 
-<a name="permissions_link">
-</a>
+<a name="permissions_link"></a>
 
 ## Permissions
 
-The following permissions should be available in the database
+The following permissions should be available in the database:
 
 | code | description |
 | :---: | --- |
 | genomic_browser_view_site | View Genomic Browser data from own site |
 | genomic_browser_view_allsites | View Genomic Browser data across all sites |
-| genomic_data_manager | Manage the genomic files |
+| genomic_data_manager | Upload genomic files |
 
-
-#### For a user without neither genomic_browser_view_allsites nor genomic_browser_view_site
+#### For a user with neither `genomic_browser_view_allsites` nor `genomic_browser_view_site`:
 
 - The Loris menu should not contain a *Genomic Browser* item.
-- Accessing the http://your-base-url/genomic_browser/ should present the following error message: 
+- Accessing `http://your-base-url/genomic_browser/` should present the following error message:
 
-> **You do not have access to this page.**  
-
-***
-#### For a user with genomic_browser_view_allsites only
-
-- There should be a *Genomic Browser* item in the Loris Menu under tools.
-- Accessing the http://your-base-url/genomic_browser/ should load the Genomic Browser Profile tab.  
+> **You do not have access to this page.**
 
 ***
-#### For a user with genomic_browser_view_site only
 
-- There should be a *Genomic Browser* item in the Loris Menu under tools.
-- Accessing the http://your-base-url/genomic_browser/ should load the Genomic Browser Profile tab.
-- The only candidate's data that should appear in the Datatable of the Profile, CNV,  SNP and Methylation tabs should be those of the same site as this user's site.  
+#### For a user with `genomic_browser_view_allsites` only:
+
+- There should be a *Genomic Browser* item in the Loris Menu under Tools.
+- Accessing `http://your-base-url/genomic_browser/` should load the Genomic Browser Profile tab.
 
 ***
-#### For a user with genomic_data_manager and one of genomic_data_manager or genomic_browser_view_allsites
 
-- In the File tab of the Genomic Browser, there should be a *Upload File* button  
+#### For a user with `genomic_browser_view_site` only:
 
-*** 
+- There should be a *Genomic Browser* item in the Loris Menu under Tools.
+- Accessing `http://your-base-url/genomic_browser/` should load the Genomic Browser Profile tab.
+- The datatable that appears in the Profiles, CNV, SNP, and Methylation tabs should only contain data from the same site(s) as the user.
 
-<a name="navigation_link">
-</a>
+***
+
+#### For a user with `genomic_data_manager` and one of `genomic_browser_view_site` or `genomic_browser_view_allsites`:
+
+- In the Files tab of the Genomic Browser, there should be an *Upload File* button.
+  - For users with the `genomic_data_manager` permission, this button allows file upload.
+  - For users without this permission, a message indicating insufficient privileges is shown when the button is clicked.
+
+***
+
+<a name="navigation_link"></a>
 
 ## Page Navigation and Display
 
-- There should be 6 tabs under the breadcrumbs: Profile, GWAS, SNP, CNV, Methylation and Files
-- Clicking each tab should present it as active and the 5 other tabs should remain in the same order.
+- There should be 6 tabs under the breadcrumbs: Profile, GWAS, SNP, CNV, Methylation, and Files.
+- Clicking each tab should activate it, while the other 5 tabs remain in the same order.
 
-<a name="features_link">
-</a>
+<a name="features_link"></a>
 
-## Features 
+## Features
 ***
-<a name="data_filtering_link">
-</a>
+
+<a name="data_filtering_link"></a>
 
 ### Data Filtering
 
 #### Profile tab
-- Clicking on the *Candidate filters* block header should hide its content.
-- Clicking on the *Genomic filters* block header should hide its content.
-- Filters should filter data presented in the Datatable according to the selected values after clicking on the *Show Data* button.
-    - Candidate filters
-        - *Site* dropdown should present all sites for a user with the genomic_browser_view_allsites permission
-        - *Site* dropdown should present only the user's own site for a user with the genomic_browser_view_site permission
-        - *DCCID* filter is an exact filter (Shows only the record with this exact value)
-        - *External ID* and *PSCID* are contains filters (Shows all records that contains this value)
-    - Genomic filters
-        * For the four filters, selecting 'Any' should only present record that have at least one, and selecting 'None' should present only record that don't have Files, SNP, CNV or CPG accordingly.
 
-- The datatable should display the following columns (Summary fields)
+- Filters should update data in the datatable on the fly (i.e., as values are selected or characters are typed).
+  - *Site* dropdown should list all sites for users with `genomic_browser_view_allsites`.
+  - *Site* dropdown should show only the user's site for users with `genomic_browser_view_site`.
+
+- The datatable should display the following columns:
 
 | No. | PSCID | Sex | Cohort | Files | SNPs | CNVs | CPGs |
 | ---| --- | ---| --- | ---| --- | ---| ---|
 | | | | | | | | |
 
-- Setting the Display filter to All fields and click in the *Show Data* button should present the following columns in the Datatable
+- Clicking the *Clear Form* button should reset the filter.
+- Clicking on column headers should sort data in ascending order on the first click and descending order on the second.
 
-No.|PSC|DCCID|PSCID|Sex|Cohort|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
-| ---| --- | --- | ---| --- | ---| --- | ---| ---| --- | ---| ---|
-| | | | | | | | | | | |
-
-- Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
-- Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
-
-
-*** 
+***
 
 #### GWAS tab
 
-- Clicking on the *GWAS filters* block header should hide its content.
-- Filters should filter data presented in the Datatable according to the selected values after clicking on the *Show Data* button.
-    - GWAS filters
-        - *Chromosome* filter is an exact filter (Shows only the record with this exact value)
-        - All other filters are contains filters (Shows all records that contains this value)
-
+- Filters should update data in the datatable on the fly.
 - Clicking the *Clear Form* button should reset the filters.
-- Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
+- Column headers should toggle sort order on click.
 
-*** 
+***
 
 #### SNP tab
-- Clicking on the *Candidate filters* block header should hide its content.
-- Clicking on the *Genomic Range filters* block header should hide its content.
-- Clicking on the *SNP filters* block header should hide its content.
-- Filters should filter data presented in the Datatable according to the selected values after clicking on the *Show Data* button.
-    - Candidate filters
-        - *Site* dropdown should present all sites for a user with the genomic_browser_view_allsites permission
-        - *Site* dropdown should present only the user's own site for a user with the genomic_browser_view_site permission
-        - *DCCID* filter is an exact filter (Shows only the record with this exact value)
-        - *External ID* and *PSCID* are contains filters (Shows all records that contains this value)
-    - Genomic Range filters
-        - *Genomic Range* filter should filter SNP to prensent only SNP that *StartLoc* is contain within the range (i.e. chr14:100000-200000 should prensent all the SNP on the chromosome 14 between position 1000000 and 2000000 inclusively.
-        - By entering only the chromosome name in the *Genomic Range*, all the SNP on that chromosome should appear.
-    - SNP filters
-        - All the filters are contains filters (Shows all records that contains this value)
-- The datatable should display the following columns (Summary fields)
 
-|No.|PSCID|Sex|RsID|Allele A|Allele B|Reference Base|Minor Allele|Function Prediction|Damaging|Exonic Function|
-| ---| --- | ---| --- | ---| --- | ---| ---| ---| ---| ---|
-| | | | | | | | | | | | |
+- Filters should update data in the datatable on the fly.
+  - Candidate filters:
+    - *Site* dropdown behavior follows the same rules as above.
+  - Genomic Range filters:
+    - *Genomic Range* filter should show SNPs whose *StartLoc* is within the specified range (e.g., `chr14:100000-200000` includes SNPs on chromosome 14 between 100000 and 200000 inclusive).
+    - Entering only a chromosome name should display all SNPs on that chromosome.
 
-- Setting the Display filter to All fields and click in the *Show Data* button should present the following columns in the Datatable
+- The datatable should display:
 
-|No.|PSC|DCCID|PSCID|Sex|Cohort|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Gene Symbol|Gene Name|Platform|RsID|SNP Name|SNP Description|External Source|Allele A|Allele B|Reference Base|Minor Allele|Array Report|Markers|Validation Method|Validated|Function Prediction|Damaging|Genotype Quality|Exonic Function|
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+| No.|PSCID|Sex|Cohort|Build|Platform|Allele A|Allele B|Reference Base|Minor Allele|Function Prediction|Damaging|Genotype Quality|
+| ---|---|---|---|---|---|---|---|---|---|---|---|--- |
+| | | | | | | | | | | | | |
 
-- Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
-- Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
+- *Clear Form* resets filters.
+- Column sorting works as above.
 
-*** 
+***
 
 #### CNV tab
 
-- Clicking on the *Candidate Filters* block header should hide its content.
-- Clicking on the *Genomic Range Filters* block header should hide its content.
-- Clicking on the *CNV Filters* block header should hide its content.
-- Filters should filter data presented in the Datatable according to the selected values after clicking on the *Show Data* button.
-    - Candidate filters
-        - *Site* dropdown should present all sites for a user with the genomic_browser_view_allsites permission
-        - *Site* dropdown should present only the user's own site for a user with the genomic_browser_view_site permission
-        - *DCCID* filter is an exact filter (Shows only the record with this exact value)
-        - *External ID* and *PSCID* are contains filters (Shows all records that contains this value)
-    - Genomic Range filters
-        - *Genomic Range* filter should filter SNP to prensent only SNP that *StartLoc* is contain within the range (i.e. chr14:100000-200000 should prensent all the SNP on the chromosome 14 between position 1000000 and 2000000 inclusively.
-        - By entering only the chromosome name in the *Genomic Range*, all the SNP on that chromosome should appear.
-    - CNV filters
-        - All the filters are contains filters (Shows all records that contains this value)
-- The datatable should display the following columns (Summary fields)
+- Filters should update data in the datatable on the fly.
+  - *Site* and *Genomic Range* filters behave as previously described.
+  - Entering only the chromosome name should display all CNVs on that chromosome.
 
-|No.|PSCID|Sex|Location|CNV Description|CNV Type|Copy Num Change|Common CNV|Characteristics|Inheritance|
+- Datatable columns:
+
+| No.|PSCID|Sex|Cohort|Location|Type|Common|Characteristics|Inheritance|Platform |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | | | | | | | | | | |
 
-- Setting the Display filter to All fields and click in the *Show Data* button should present the following columns in the Datatable
+- *Clear Form* resets filters.
+- Sorting applies to column headers.
 
-|No.|PSC|DCCID|PSCID|Sex|Cohort|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Size|Location|Gene Symbol|Gene Name|CNV Description|CNV Type|Copy Num Change|Event Name|Common CNV|Characteristics|Inheritance|Array Report|Markers|Validation Method|Platform|
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | 
-| | | | | | | | | | | | | | | | | | | | | | | | | | | | 
-
-- Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
-- Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
-
-*** 
+***
 
 #### Methylation tab
 
-- Clicking on the *Candidate filters* block header should hide its content.
-- Clicking on the *Genomic Range filters* block header should hide its content.
-- Clicking on the *CpG filters* block header should hide its content.
-- Filters should filter data presented in the Datatable according to the selected values after clicking on the *Show Data* button.
-    - Candidate filters
-        - *Site* dropdown should present all sites for a user with the genomic_browser_view_allsites permission
-        - *Site* dropdown should present only the user's own site for a user with the genomic_browser_view_site permission
-        - *DCCID* filter is an exact filter (Shows only the record with this exact value)
-        - *External ID* and *PSCID* are contains filters (Shows all records that contains this value)
-    - Genomic Range filters
-        - *Genomic Range* filter should filter SNP to prensent only SNP that *StartLoc* is contain within the range (i.e. chr14:100000-200000 should prensent all the SNP on the chromosome 14 between position 1000000 and 2000000 inclusively.
-        - By entering only the chromosome name in the *Genomic Range*, all the SNP on that chromosome should appear.
-    - CpG filters
-        - *CPG namer* filter is an exact filter (Shows only the record with this exact value)
-        - All other filters are contains filters (Shows all records that contains this value)
-- The datatable should display the following columns (Summary fields)
+- Filters should update data in the datatable on the fly.
+  - *Site* and *Genomic Range* filters behave as previously described.
+  - *Genomic Range* filter should show SNPs with *StartLoc* within range (e.g., `chr14:100000-200000`).  
 
-|No.|PSCID|Sex|Cpg Name|Beta Value|Chromosome|Strand|Gene|
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| | | | | | | | |
+> Fixed typo: "prensent" → "present", "contain" → "contained"
 
-- Setting the Display filter to All fields and click in the *Show Data* button should present the following columns in the Datatable
+- Datatable columns:
 
-|No.|PSC|DCCID|PSCID|Sex|Cohort|DoB|Sample|Cpg Name|Beta Value|Chromosome|Strand|StartLoc|Probe Loc A|Probe Seq A|Probe Loc B|Probe Seq B|Design|Color|Assembly|SNP 10|Gene|Accession Number|Gene Grp|Island Loc|Context|Fantom Prom|DMR|Enhancer|HMM Island|Reg Feature Loc|Reg Feature Grp|DHS|Platform|
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+|No.|PSCID|Sex|Sample|Probe Seq A|Probe Loc B|Probe Seq B|Infinium Design|Color|Gene|Accession Number|Position|DMR|DHS|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|     |     |     |     |     |     |     |     |     |     |     |     |     |     |
 
-- Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
+- *Clear Form* resets filters.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
 
 ***
 
 #### Files tab
 
-- *Type* filter is an exact filter (Shows only the record with this exact value)
-- All other filters are contains filters (Shows all records that contains this value)
+- Filters should filter data presented in the Datatable on the fly (i.e as values are selected or characters are typed).
 
-The following columns should be presented
+Datatable columns:
 
-|No.|GenomicFileID|FileName|Description|FileType|Date Inserted|InsertedByUserID|Caveat|Notes|
+| No. | GenomicFileID | FileName | Description | FileType | Date Inserted | InsertedByUserID | Caveat | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | | | | | | | | | |
 
-- Clicking the *Clear Form* button should reset the filters
-
-*** 
-
-##### Across tab filters
-
+- *Clear Form* resets filters.
 
 ***
-<a name="datatable_link"> 
-</a>
+
+<a name="datatable_link"></a>  
 
 ## Datatable
 
- - For each of the 6 tabs, the Datatable should present the total of records found.
- - For each of the 6 tabs, the Datatable should present the number of row  displayed.
- - For each of the 6 tabs, the Datatable should present a pagination if there is more records to display then the actual *row per page* value.
- - Changing the *row per page* drop-down value should be reflected on the pagination and on the number of row displayed.
+- Each tab should display:
+  - Total records found  
+  - Number of rows displayed  
+  - Pagination (if total records exceed *rows per page*)
+  - Changing *rows per page* should update pagination and visible rows
 
-### Special formated columns
+### Special formatted columns
 
 #### Profile tab
- - The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
- - If there is at least one file for a candidate, the *Files* column should provide links to the **viewGenomicFile** submenu filtered for all files concerning this candidate. There can be multiple files displayed. 
- - If there is at least one SNP for this candidate, the SNPs column should provide links to the SNP tab filtered for this candidate.
- - If there is at least one CNV for this candidate, the CNVs column should provide links to the CNV tab filtered for this candidate.
- - If there is at least one CPG for this candidate, the CPGs column should provide links to the Methylation tab filtered for this candidate.
+- *PSCID* links to `timepoint_list` filtered to the candidate  
+- *Files*, *SNPs*, *CNVs*, *CPGs* columns link to corresponding filtered tabs  
 
 #### GWAS tab
- - None
+- None
+
 ***
+
 #### SNP tab
-- The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
-- The *RsID* column should provide link to the [dbSNP](http://www.ncbi.nlm.nih.gov/SNP/) http://www.ncbi.nlm.nih.gov/SNP/
+- *PSCID* links to `timepoint_list`  
+- *RsID* links to [dbSNP](http://www.ncbi.nlm.nih.gov/SNP/)
+
 ***
+
 #### CNV tab
-- The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
+- *PSCID* links to `timepoint_list`
+
 ***
+
 #### Methylation tab
-- The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
-- The *Cpg Name* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that cpg 1000bp wide. 
-- The *Gene* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that gene. There can be many gene name. The links should open new window. 
-- The *Accession Number* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that gene. There can be many gene name. The links should open new window. 
-- The *Island Loc* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that cPG island.
+- *PSCID* links to `timepoint_list`  
+- *Cpg Name*, *Gene*, *Accession Number*, *Island Loc* link to [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks)  
+- Multiple gene names should open in new tabs/windows  
+
 ***
+
 #### Files tab
+- *FileName* links to **viewGenomicFile** page for that file only
 
-- The FileName column should provide links to the **viewGenomicFile** page showing this file only.
+<a name="data_download_link"></a>  
 
+## Data Download
 
-<a name="data_download_link"> 
-</a>
-
-## Data Download 
 ### CSV
-- The 6 tab Datatables should provide a *Download as CSV* button.
-- Clicking on the *Download as CSV* button should trigger a file download.
-- The file content should follow the filtered values of the tab.
+- All 6 tab datatables should provide a *Download as CSV* button  
+- Clicking it triggers file download  
+- Downloaded file should reflect current filtered values
 
 ### View Genomic File
-- The "Files" tab (or Genomic File Uploader subpage) should provide a *Download* button for each file.
-- Clicking on the *Download* button should trigger a file download.
-
-<a name="data_upload_link">
-</a>
-
-## Data Upload
-
-Files may be uploaded under the Files tab (Genomic File Uploader subpage) IFF the Genomic Browser back-end is properly customized/configured and sample files of the appropriate format are available for upload testing.
-. 
-Currently this will only work for methylation beta-values files formatted for the Illumina 450k platform, and only once certain probe metadata is already loaded into the database.  
-
-<a name="help_content_link">
-</a>
-
-## Help section content
-
-- The help panel should appear when clicking on the question mark in the LORIS menu bar.  
-- The help text should be accurate at formatted properly.
-- Help text should be appropriate to each subpage (tab) displayed, e.g SNP tab. 
+- The "Files" tab (or Genomic File Uploader subpage) should provide a *Download* button per file  
+- Clicking it triggers a download

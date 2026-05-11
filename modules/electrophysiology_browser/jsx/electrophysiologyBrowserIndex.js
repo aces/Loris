@@ -1,8 +1,16 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+
+import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/electrophysiology_browser.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/electrophysiology_browser.json';
 
 /**
  * Electrophysiology Browser page.
@@ -32,6 +40,7 @@ class ElectrophysiologyBrowserIndex extends Component {
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
   }
 
   /**
@@ -68,34 +77,39 @@ class ElectrophysiologyBrowserIndex extends Component {
   formatColumn(column, cell, row) {
     const style = '';
     let result = <td className={style}>{cell}</td>;
+    const {t} = this.props;
+    const sessionIDKey = t('SessionID', {ns: 'electrophysiology_browser'});
+    const sessionID = row[sessionIDKey] || row.SessionID;
     switch (column) {
-      case 'Links':
-        let cellTypes = cell.split(',');
-        let cellLinks = [];
-        cellTypes.reverse();
-        for (let i = 0; i < cellTypes.length; i += 1) {
-          cellLinks.push(<a key={i} href={loris.BaseURL +
-            '/electrophysiology_browser/sessions/' +
-            row.SessionID + '?outputType=' +
-            cellTypes[i]}>
-              {cellTypes[i]}
-            </a>);
+    case t('Links', {ns: 'electrophysiology_browser'}):
+      let cellTypes = cell.split(',');
+      let cellLinks = [];
+      cellTypes.reverse();
+      for (let i = 0; i < cellTypes.length; i += 1) {
+        cellLinks.push(<a key={i} href={loris.BaseURL +
+              '/electrophysiology_browser/sessions/' +
+              sessionID + '?outputType=' +
+              cellTypes[i]}>
+          {cellTypes[i]}
+        </a>);
 
-            if (cellTypes.length > 1) {
-              cellLinks.push(' | ');
-            }
-        }
         if (cellTypes.length > 1) {
-          cellLinks.push(<a key="all" href={loris.BaseURL +
-          '/electrophysiology_browser/sessions/' +
-          row.SessionID}>
-            all types
-          </a>);
+          cellLinks.push(' | ');
         }
-        result = (<td>{cellLinks}</td>);
-        break;
+      }
+      if (cellTypes.length > 1) {
+        cellLinks.push(<a key="all" href={loris.BaseURL +
+            '/electrophysiology_browser/sessions/' +
+            sessionID}>
+          {t('all types', {ns: 'electrophysiology_browser'})}
+        </a>);
+      }
+      result = (<td>{cellLinks}</td>);
+      break;
+    case t('Has HED Tags', {ns: 'electrophysiology_browser'}):
+      result = <td className={style}>{t(cell, {ns: 'loris'})}</td>;
+      break;
     }
-
     return result;
   }
 
@@ -105,9 +119,11 @@ class ElectrophysiologyBrowserIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -121,37 +137,51 @@ class ElectrophysiologyBrowserIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'Site', show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
-      {label: 'PSCID', show: true, filter: {
+      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'PSCID',
         type: 'text',
       }},
-      {label: 'DCCID', show: true, filter: {
+      {label: t('DCCID', {ns: 'loris'}), show: true, filter: {
         name: 'DCCID',
         type: 'text',
       }},
-      {label: 'Project', show: true, filter: {
+      {label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'project',
         type: 'select',
         options: options.projects,
       }},
-      {label: 'Visit Label', show: true, filter: {
+      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'text',
       }},
-      {label: 'Acquisition Time', show: true},
-      {label: 'Insertion Time', show: true},
-      {label: 'Links', show: true},
-      {label: 'Type', show: false, filter: {
-        name: 'type',
-        type: 'multiselect',
-        options: options.types,
-      }},
-      {label: 'SessionID', show: false},
+      {label: t('Has HED Tags', {ns: 'electrophysiology_browser'}),
+        show: true, filter: {
+          name: 'HasHEDTags',
+          type: 'select',
+          hide: false,
+          options: {
+            'yes': t('Yes', {ns: 'loris'}),
+            'no': t('No', {ns: 'loris'}),
+          },
+        }},
+      {label: t('Acquisition Time', {ns: 'electrophysiology_browser'}),
+        show: true},
+      {label: t('Insertion Time', {ns: 'electrophysiology_browser'}),
+        show: true},
+      {label: t('Links', {ns: 'electrophysiology_browser'}),
+        show: true},
+      {label: t('Output Type', {ns: 'electrophysiology_browser'}),
+        show: false, filter: {
+          name: 'type',
+          type: 'multiselect',
+          options: options.types,
+        }},
+      {label: t('SessionID', {ns: 'electrophysiology_browser'}), show: false},
     ];
 
     return (
@@ -167,13 +197,20 @@ class ElectrophysiologyBrowserIndex extends Component {
 
 ElectrophysiologyBrowserIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'electrophysiology_browser', jaStrings);
+  i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
+  i18n.addResourceBundle('zh', 'electrophysiology_browser', zhStrings);
+  const Index = withTranslation(
+    ['electrophysiology_browser', 'loris']
+  )(ElectrophysiologyBrowserIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <ElectrophysiologyBrowserIndex
+    <Index
       dataURL={`${loris.BaseURL}/electrophysiology_browser/?format=json`}
     />
   );

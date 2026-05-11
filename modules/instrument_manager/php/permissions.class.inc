@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\instrument_manager;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -55,7 +56,8 @@ class Permissions extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(self::PERMISSIONS);
     }

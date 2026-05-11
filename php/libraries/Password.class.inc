@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a class defining a well-formed (i.e. sufficiently complex)
  * password for LORIS.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -104,11 +105,19 @@ class Password
         // Check length and complexity separately in order to return a precise
         // error message upon failure.
         if (!$this->_hasSufficientLength($value)) {
-            throw new \InvalidArgumentException('The password is too short');
+            throw new \InvalidArgumentException(
+                dgettext(
+                    'loris',
+                    'The password is too short'
+                )
+            );
         }
         if (!$this->_hasSufficientComplexity($value)) {
             throw new \InvalidArgumentException(
-                'The password is not complex enough.'
+                dgettext(
+                    'loris',
+                    'The password is not complex enough.'
+                )
             );
         }
         if (\NDB_Factory::singleton()->config()->settingEnabled(
@@ -117,8 +126,11 @@ class Password
         ) {
             if ($this->_pwned($value)) {
                 throw new \InvalidArgumentException(
-                    'This password is known to be exposed in online data '
-                    . 'breaches.'
+                    dgettext(
+                        'loris',
+                        'This password is known to be exposed in online data'
+                        . ' breaches.'
+                    )
                 );
             }
         }

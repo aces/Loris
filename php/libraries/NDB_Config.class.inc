@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * Provides an interface to the NeuroDB configuration
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -47,6 +48,7 @@ class NDB_Config
     var $configFilePath;
 
     static $configInstance = null;
+
     /**
      * The singleton design pattern - autoloads config file
      *
@@ -144,7 +146,6 @@ class NDB_Config
 
         return $file;
     }
-
 
     /**
      * Converts a SimpleXMLElement to an array.
@@ -321,7 +322,7 @@ class NDB_Config
         // with what would have come from the config.xml.
         if (count($configSetting) === 1) {
             // Trying to get a single value from the database.
-            $configSetting = $configSetting[0];
+            $configSetting = $configSetting->getFirstRow();
             if ($configSetting['AllowMultiple'] == '0') {
                 $val = $db->pselectOne(
                     "SELECT Value FROM Config WHERE ConfigID=:CID",
@@ -387,6 +388,18 @@ class NDB_Config
         throw new ConfigurationException("No setting $name in config.xml");
     }
 
+    protected $settingCache = [];
+
+    /**
+     * Clears the settings cache.
+     *
+     * @return void
+     */
+    public function clearCache()
+    {
+        $this->settingCache = [];
+    }
+
     /**
      * Gets a setting by name
      *
@@ -396,10 +409,14 @@ class NDB_Config
      */
     function getSetting(string $name)
     {
+        if (isset($this->settingCache[$name])) {
+            return $this->settingCache[$name];
+        }
         try {
             $XMLValue = $this->getSettingFromXML($name);
 
             if ($XMLValue !== null) {
+                $this->settingCache[$name] = $XMLValue;
                 return $XMLValue;
             }
         } catch (ConfigurationException $e) {
@@ -411,7 +428,73 @@ class NDB_Config
         // nothing in the config file, so get the value from the DB
         // This will throw a ConfigurationException if it does not
         // exist.
-        return $this->getSettingFromDB($name);
+        $DBVal = $this->getSettingFromDB($name);
+        $this->settingCache[$name] = $DBVal;
+        return $DBVal;
+
+    }
+
+    /**
+     * Gets a config setting which may have variations in different languages.
+     *
+     * Translated strings have some restrictions that do not apply to
+     * getConfig()
+     *
+     * 1. The config name must be a direct setting and not a hierarchical one
+     * 2. The return type must be a string (otherwise what are you translating?)
+     * 3. The value must come from the database, and not config.xml
+     *
+     * If a config setting value does not exist in a localized format for
+     * $langcode, this function will fall back on the "default" (generally
+     * English) getSetting() value for $name.
+     *
+     * @param string $langcode The language of the setting to retrieve
+     * @param string $name     The config setting name
+     *
+     * @return string
+     */
+    function getMultilingualSetting(string $langcode, string $name): string
+    {
+        if (isset($this->settingCache[$name][$langcode])) {
+            return $this->settingCache[$name][$langcode];
+        }
+
+        $factory = NDB_Factory::singleton();
+
+        $db = $factory->database();
+        // Verify that it's really a multilingual setting.
+        $configSetting = $db->pselect(
+            "SELECT ID, AllowMultiple
+	     FROM ConfigSettings cs
+             WHERE cs.Name=:nm AND Multilingual=true",
+            ["nm" => $name]
+        );
+
+        if (count($configSetting) !== 1) {
+            throw new ConfigurationException(
+                "Config setting $name does not exist in database "
+                . "as a multilingual setting"
+            );
+        }
+
+        $localizedVal = $db->pselectOne(
+            "SELECT Value FROM ConfigI18n i18n
+                   JOIN language l ON (l.language_id=i18n.LanguageID)
+            WHERE l.language_code=:lc AND i18n.ConfigID=:cid",
+            [
+                'lc'  => $langcode,
+                'cid' => $configSetting->getFirstRow()['ID'],
+            ]
+        );
+
+        if ($localizedVal !== null) {
+            $this->settingCache[$name] = [$langcode => $localizedVal];
+            return $localizedVal;
+        }
+
+        // Fallback on the unlocalized setting value.
+        $this->settingCache[$name] = [$langcode => $this->getSetting($name)];
+        return $this->settingCache[$name][$langcode];
     }
 
     /**
@@ -497,7 +580,6 @@ class NDB_Config
         }
         return [];
     }
-
 
     /**
      * Retrieve a set of links to display to the user

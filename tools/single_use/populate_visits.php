@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script populates the visits table based on the config.xml.
  * This should usually be run on a one time basis, and then the visits
@@ -7,7 +8,7 @@
  *
  * The script also populates the visits_cohort_project_rel table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -30,6 +31,7 @@ class VisitsPopulator
 {
     var $DB;
     var $Config;
+
     /**
      * Constructor function. Instantiates references to database and
      * config class.
@@ -117,8 +119,6 @@ class VisitsPopulator
             }
         }
     }
-
-
 
     /**
      * Runs the logic of the script.

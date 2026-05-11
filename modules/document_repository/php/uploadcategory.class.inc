@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class handles a post request to upload a new category.
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository
@@ -15,7 +16,7 @@ use \Psr\Http\Message\ResponseInterface;
 
 /**
  * This class handles a post request to upload a new category.
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository
@@ -34,11 +35,18 @@ class UploadCategory extends \NDB_Page
      *
      * @return bool true if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
-        return $user->hasPermission('document_repository_view');
+        return ($user->hasPermission('document_repository_categories')
+            && $user->hasAnyPermission(
+                [
+                    'document_repository_upload_edit',
+                    'document_repository_delete',
+                ]
+            )
+        );
     }
-
 
     /**
      * Handle a post form
@@ -70,6 +78,7 @@ class UploadCategory extends \NDB_Page
                 ->withHeader("Allow", "POST");
         }
     }
+
     /**
      * Handles the upload category process
      *
@@ -85,10 +94,10 @@ class UploadCategory extends \NDB_Page
             throw new \LorisException("Invalid JSON");
         }
         $category_name = $req['categoryName']; // required
-        $parent_id     = isset($req['parentId']) ? $req['parentId'] : '0';
+        $parent_id     = isset($req['parentId']) ? $req['parentId'] : 0;
         $comments      = isset($req['comments']) ? $req['comments'] : null;
         //check duplicate name category
-        if ($this->existCategoryName($category_name, $parent_id)) {
+        if ($this->existCategoryName($category_name, intval($parent_id))) {
             return false;
         }
         $DB->insert(
@@ -112,6 +121,7 @@ class UploadCategory extends \NDB_Page
         $Notifier->notify($msg_data);
         return true;
     }
+
     /**
      * Check the category name under the same parent folder in the database,
      * if exists return true

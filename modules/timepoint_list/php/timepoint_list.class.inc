@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The timepoint list menu
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Timepoint_List
@@ -20,7 +21,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 /**
  * The timepoint list menu
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Timepoint_List
@@ -39,7 +40,8 @@ class Timepoint_List extends \NDB_Menu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         $candidate = \Candidate::singleton($this->candID);
 
@@ -80,8 +82,33 @@ class Timepoint_List extends \NDB_Menu
         $this->tpl_data['candID']    = $this->candID;
         $this->tpl_data['PSCID']     = $candidate->getPSCID();
         $this->tpl_data['candidate'] = $candidate->getData();
-        $this->tpl_data['cand']      = $candidate;
+        // convert DoB date to age and months and rename it to Derived Age
+        $dob = $candidate->getData();
+        if (isset($dob['DoB']) && is_string($dob['DoB'])) {
+            $dob_date = date_create_from_format('Y-m-d', $dob['DoB']);
+            if ($dob_date !== false) {
+                $current_date = new \DateTime();
+                $dob_year     = abs($current_date->diff($dob_date)->y);
+                $dob_month    = abs($current_date->diff($dob_date)->m);
+                $dob_age      = $dob_year . dgettext("timepoint_list", " y / ")
+                    . $dob_month . dgettext("timepoint_list", " m");
+                $this->tpl_data['dob_age'] = $dob_age;
+            }
 
+        }
+        // convert EDC date to age and months and rename it to EDC Age
+        $edc = $candidate->getData();
+        if (isset($edc['EDC']) && is_string($edc['EDC'])) {
+            $edc_date = date_create_from_format('Y-m-d', $edc['EDC']);
+            if ($edc_date !== false) {
+                $current_date = new \DateTime();
+                $edc_year     = abs($current_date->diff($edc_date)->y);
+                $edc_month    = abs($current_date->diff($edc_date)->m);
+                $edc_age      = $edc_year . dgettext("timepoint_list", " y / ")
+                    . $edc_month . dgettext("timepoint_list", " m");
+                $this->tpl_data['edc_age'] = $edc_age;
+            }
+        }
         $listOfSessionIDs = $candidate->getListOfTimePoints();
 
         $user     = \User::singleton();
@@ -95,7 +122,7 @@ class Timepoint_List extends \NDB_Menu
         $listOfTimePoints = array_map(
             function ($sessionID) {
                 return \TimePoint::singleton(
-                    new \SessionID($sessionID),
+                    new \SessionID(strval($sessionID)),
                 );
             },
             $listOfSessionIDs,
@@ -103,14 +130,22 @@ class Timepoint_List extends \NDB_Menu
         $listOfTimePoints = array_filter(
             $listOfTimePoints,
             function ($timePoint) use ($user) {
-                return $timePoint->isAccessibleBy($user);
+                return $timePoint->isAccessibleBy($user)
+                    || $user->hasPermission('access_all_profiles');
             }
+        );
+
+        $dateFormatter = new \IntlDateFormatter(
+            "",
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::NONE
         );
 
         /*
          * List of visits
          */
         $x = 0;
+
         foreach ($listOfTimePoints as $timePoint) {
             $sessionID = $timePoint->getSessionID();
 
@@ -131,8 +166,12 @@ class Timepoint_List extends \NDB_Menu
             $this->tpl_data['timePoints'][$x]['currentStatus']
                 = $timePoint->getCurrentStatus();
             // get current date
+            $curDate = $timePoint->getCurrentDate();
+            if ($curDate != null) {
+                $curDate = new \DateTimeImmutable($curDate);
+            }
             $this->tpl_data['timePoints'][$x]['currentDate']
-                =   $timePoint->getCurrentDate();
+                = $curDate != null ? $dateFormatter->format($curDate) : null;
 
             // create feedback object for the time point
             $feedback = \NDB_BVL_Feedback::singleton(
@@ -192,6 +231,9 @@ class Timepoint_List extends \NDB_Menu
                         = $timePoint->$getDateMethod();
                 }
             }
+
+            $this->tpl_data['timePoints'][$x]['language']
+                = $timePoint->getLanguage();
             $x++;
         } // end list
 
@@ -200,7 +242,7 @@ class Timepoint_List extends \NDB_Menu
          */
         if (isset($firstDateOfVisit)) {
             $timePoint = \TimePoint::singleton(
-                new \SessionID($listOfSessionIDs[0])
+                new \SessionID(strval($listOfSessionIDs[0]))
             );
 
             $this->tpl_data['CohortID'] = $timePoint->getCohortID();
@@ -209,6 +251,7 @@ class Timepoint_List extends \NDB_Menu
 
         $this->tpl_data['actions'] = $this->getActionButtons();
     }
+
     /**
      * Determining Previous Stage
      *
@@ -233,6 +276,7 @@ class Timepoint_List extends \NDB_Menu
         }
         return  'Not Started';
     }
+
     /**
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
@@ -245,6 +289,7 @@ class Timepoint_List extends \NDB_Menu
     {
         return (new \BVL_Feedback_Panel($candID))->display();
     }
+
     /**
      * Get Action Buttons
      *
@@ -267,14 +312,14 @@ class Timepoint_List extends \NDB_Menu
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Profile $candid / $pscid",
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candid / $pscid",
                 "/$candid"
             )
         );
     }
 }
-

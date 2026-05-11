@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is written to clean up duplicate userIDs in the examiners table
  * This is a result of name changes in user accounts, where a new examiner
@@ -6,7 +7,7 @@
  * Since examinerIDs are used elsewhere in the codebase
  * (certification), This should be fixed.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

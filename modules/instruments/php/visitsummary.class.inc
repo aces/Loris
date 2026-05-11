@@ -30,7 +30,7 @@ class VisitSummary extends \NDB_Page
                 "No valid user"
             );
         }
-        if (!($this->_hasAccess($user))) {
+        if (!($this->isAccessibleBy($user))) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
@@ -77,31 +77,33 @@ class VisitSummary extends \NDB_Page
 
         $bvl_result = $DB->pselect(
             "SELECT
-                f.Test_name,
+                tn.Test_name,
                 f.CommentID,
                 COUNT(cu.ConflictID) AS NumOfConflict
             FROM session s
                 LEFT JOIN flag f ON (s.ID = f.SessionID)
+                	JOIN test_names tn ON (tn.ID = f.TestID)
                 LEFT JOIN conflicts_unresolved cu
                     ON (cu.CommentId1=f.CommentID OR cu.CommentID2=f.CommentID)
-                LEFT JOIN candidate c USING (CandID)
-            WHERE c.Active='Y' AND s.Active='Y' AND 
-                c.CandID=:candid AND s.Visit_Label=:vl
+                LEFT JOIN candidate c ON (c.ID=s.CandidateID)
+            WHERE c.Active='Y' AND s.Active='Y' AND
+                c.CandID=:candid AND s.Visit_label=:vl
                 AND f.CommentID NOT LIKE 'DDE%'
             GROUP BY
                 s.Visit_label,
                 s.ID,
                 s.Date_visit,
-                f.Test_name,
+                tn.Test_name,
                 f.CommentID,
                 s.Current_stage,
                 s.Screening,
                 s.Visit,
                 s.Approval
-            ORDER BY s.Visit_label, f.Test_name, f.CommentID",
+            ORDER BY s.Visit_label, tn.Test_name, f.CommentID",
             ['candid' => $candid, 'vl' => $visitLabel]
         );
 
+        $rslt = [];
         foreach ($bvl_result as $key => $row) {
             $testName  = $row['Test_name'];
             $commentID = $row['CommentID'];
@@ -113,21 +115,27 @@ class VisitSummary extends \NDB_Page
                 '',
                 false
             );
-            if ($instrument->_hasAccess($user) == false) {
+            if ($instrument->isAccessibleBy($user) == false) {
                 $this->logger->debug(
                     "Skipping $testName"
                     . " because user does not have permission"
                 );
                 continue;
             }
+
+            $rslt[$key] = [
+                'Test_name'     => $row['Test_name'],
+                'CommentID'     => $row['CommentID'],
+                'NumOfConflict' => $row['NumOfConflict'],
+            ];
             if ($instrument === null) {
-                $bvl_result[$key]['Completion'] = 0;
+                $rslt[$key]['Completion'] = 0;
             } else {
                 $completion = $instrument->determineDataEntryCompletionProgress();
-                $bvl_result[$key]['Completion'] = $completion;
+                $rslt[$key]['Completion'] = $completion;
             }
         }
 
-        return new \LORIS\Http\Response\JSON\OK($bvl_result);
+        return new \LORIS\Http\Response\JSON\OK($rslt);
     }
 }

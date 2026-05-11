@@ -1,0 +1,77 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Data Dictionary"
+msgstr "データ辞書"
+
+msgid "Edit Description"
+msgstr "説明を編集"
+
+msgid "Modify"
+msgstr "修正する"
+
+msgid "Missing description"
+msgstr "説明がありません"
+
+msgid "Description Status"
+msgstr "説明 ステータス"
+
+msgid "Modified"
+msgstr "修正済み"
+
+msgid "edited"
+msgstr "編集済み"
+
+msgid "Empty"
+msgstr "空の"
+
+msgid "Unchanged"
+msgstr "変更なし"
+
+msgid "Category"
+msgstr "カテゴリ"
+
+msgid "Field Name"
+msgstr "フィールド名"
+
+msgid "Data Scope"
+msgstr "データ範囲"
+
+msgid "Data Type"
+msgstr "データ型"
+
+msgid "Data Cardinality"
+msgstr "データのカーディナリティ"
+
+msgid "Unique"
+msgstr "個性的"
+
+msgid "Single"
+msgstr "単"
+
+msgid "Optional"
+msgstr "オプション"
+
+msgid "Many"
+msgstr "多くの"
+
+msgid "Description"
+msgstr "説明"
+

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\Data\Query;
 
 use LORIS\Data\Dictionary\DictionaryItem;

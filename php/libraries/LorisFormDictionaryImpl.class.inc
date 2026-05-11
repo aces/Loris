@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 use \LORIS\instruments\DictionaryItem;
 use \LORIS\Data\Dictionary\Category;
 use \LORIS\Data\Scope;
@@ -60,7 +61,7 @@ trait LorisFormDictionaryImpl
         $items = [];
         $scope = new Scope(Scope::SESSION);
         foreach ($elements AS $element) {
-            $card = new Cardinality(Cardinality::SINGLE);
+            $card = new Cardinality(Cardinality::OPTIONAL);
             if (!empty($element['label'])) {
                 $label = str_replace("&nbsp;", "", $element['label']);
                 $label = trim(preg_replace('/\s+/', ' ', $label));
@@ -94,20 +95,23 @@ trait LorisFormDictionaryImpl
                 // "1" array_keys turns it into an int and we want to
                 // ignore null/empty, so instead we just walk through
                 // the array and coerce things to a string.
-                $keys = [];
-                foreach (array_keys($element['options']) as $key) {
+                $keys   = [];
+                $labels = [];
+                foreach ($element['options'] as $key => $olabel) {
                     if ($key === '' || $key === null) {
                         continue;
                     }
 
                     // Coerce it to a string
-                    $keys[] = "$key";
+                    $keys[]   = "$key";
+                    $labels[] = "$olabel";
                 }
                 if (array_key_exists('multiple', $element)) {
                     $card = new Cardinality(Cardinality::MANY);
                 }
 
                 $t = new \LORIS\Data\Types\Enumeration(...$keys);
+                $t = $t->withLabels(...$labels);
                 break;
             case 'text':
                 $t = new \LORIS\Data\Types\StringType(255);

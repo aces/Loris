@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import Panel from 'jsx/Panel';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
+import ProgressBar from 'jsx/ProgressBar';
+
+import {withTranslation} from 'react-i18next';
 
 /**
  * FilterableDataTable component.
@@ -103,28 +106,28 @@ class FilterableDataTable extends Component {
    * @return {object}
    */
   validFilters() {
-      let filters = {};
-      this.props.fields.forEach((field) => {
-        if (!field.filter) {
-            return;
-        }
-        const filtername = field.filter.name;
-        const filterval = this.state.filters[filtername];
-        if (!filterval) {
-            return;
-        }
+    let filters = {};
+    this.props.fields.forEach((field) => {
+      if (!field.filter) {
+        return;
+      }
+      const filtername = field.filter.name;
+      const filterval = this.state.filters[filtername];
+      if (!filterval) {
+        return;
+      }
 
-        if (field.filter.type !== 'select') {
-            filters[filtername] = filterval;
-            return;
-        }
-
-        if (!(filterval.value in field.filter.options)) {
-            return;
-        }
+      if (field.filter.type !== 'select') {
         filters[filtername] = filterval;
-      });
-      return filters;
+        return;
+      }
+
+      if (!(filterval.value in field.filter.options)) {
+        return;
+      }
+      filters[filtername] = filterval;
+    });
+    return filters;
   }
 
   /**
@@ -140,6 +143,7 @@ class FilterableDataTable extends Component {
         id={this.props.name + '_filter'}
         columns={this.props.columns}
         filters={filters}
+        title={this.props.t('Selection Filter')}
         filterPresets={this.props.filterPresets}
         fields={this.props.fields}
         addFilter={this.addFilter}
@@ -149,7 +153,10 @@ class FilterableDataTable extends Component {
       />
     );
 
-    const dataTable = (
+    const {progress} = this.props;
+    const dataTable = !isNaN(progress) && progress < 100 ? (
+      <ProgressBar value={progress}/>
+    ) : (
       <DataTable
         data={this.props.data}
         fields={this.props.fields}
@@ -191,10 +198,14 @@ FilterableDataTable.propTypes = {
   updateFilterCallback: PropTypes.func,
   noDynamicTable: PropTypes.bool,
   loading: PropTypes.element,
+  progress: PropTypes.number,
   getMappedCell: PropTypes.func,
   folder: PropTypes.element,
   nullTableShow: PropTypes.element,
   children: PropTypes.node,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
-export default FilterableDataTable;
+export default withTranslation(['loris'])(FilterableDataTable);

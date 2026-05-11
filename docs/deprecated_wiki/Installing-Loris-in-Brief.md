@@ -1,4 +1,10 @@
-This page details steps for **Ubuntu 16.04**, for Loris 18.*
+# This document is out of date!
+
+For install instructions, please visit our new guides for [Ubuntu](https://acesloris.readthedocs.io/en/latest/docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/Ubuntu/README.html) and [CentOS](https://acesloris.readthedocs.io/en/latest/docs/wiki/00_SERVER_INSTALL_AND_CONFIGURATION/01_LORIS_Install/CentOS/README.html).
+
+---
+
+> Last tested on Ubuntu 16.04, LORIS 21.0.1
 
 The following instructions must be executed in sequence. If you get an error at any of the steps, troubleshoot them before continuing.
 > [Click here for Detailed installation instructions](https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth)
@@ -8,6 +14,11 @@ When you're done, don't forget to continue following the rest of the [[Setup Gui
 # Assumptions
 1. You are on Ubuntu 16.04; `lsb_release -a` should say Ubuntu 16.04
 1. You'll be ssh'ing into a remote machine. If you are not, just ignore the steps that tell you to `ssh`
+
+## RaisinBread
+If you are a **LORIS team developer** installing **RaisinBread** (new for LORIS 21): 
+* See also the Readme in the `raisinbread/` directory in this repo (choose your branch wisely)
+* Use your MCIN login to view [this beta install doc](https://docs.google.com/document/d/1c5y9KHCTpBkc2H_hHbvPp4jkA0jlOyjprNBa27Kj1Kg/edit?usp=sharing)
 
 # Getting Prerequisites
 
@@ -43,13 +54,13 @@ Make sure you're ssh'd as `lorisadmin`
 > Note that the path is assumed to be var/www/loris however your own path may be var/www/`<project-name>`, depending on your setup. 
 
 1. `cd /var/www`
-1. [[Get the latest release URL|https://github.com/aces/Loris/wiki/Getting-the-Release]] and then (e.g.) `sudo wget https://github.com/aces/Loris/archive/v18.0.4.zip -O release.zip`
+1. [[Get the latest release URL|https://github.com/aces/Loris/wiki/Getting-the-Release]] and then (e.g.) `sudo wget https://github.com/aces/Loris/archive/v21.0.1.zip -O release.zip`
 1. `sudo unzip release.zip`
 1. `ls`, you should see a directory named `Loris-_XX-X-X_`
 1. `sudo mv Loris* loris`
 1. `ls`, you should see a `loris` directory
 1. `sudo rm release.zip`
-1. `sudo chown lorisadmin.lorisadmin loris`
+1. `sudo chown -R lorisadmin.lorisadmin loris`
 
 # Running the Install Script
 
@@ -58,16 +69,17 @@ Make sure you're ssh'd as `lorisadmin`
 > Note that the path is assumed to be var/www/loris however your own path may be var/www/`<project-name>`, depending on your setup. 
 
 1. `cd /var/www/loris/tools`
-1. `sudo ./install.sh`
+1. `./install.sh`
 1. Fill in your `<project-name>` (You get to choose what it is)
 1. When `install.sh` asks to configure apache2 for you, accept
 1. Key in `lorisadmin`'s password
 1. Wait
 1. Installation complete
+1. Run `make` (for production instances) or `make dev` (for development sandboxes)
 
 # Configuring Apache2
 
-Assuming you let the install script configure apache2 for you but it didn't work out for some reason.
+After running the install script, if your apache configuration isn't working, try: 
 
 1. `sudo a2enmod rewrite`
 1. `sudo a2ensite <project-name>`
@@ -118,7 +130,8 @@ You now have the basic LORIS features installed and are [ready to set up](https:
 
 Check the following:
 
-1. That the `base` path setting in your Config table is correct.  If your front-end is not loading: [Back-end troubleshooting instructions here](https://github.com/aces/Loris/wiki/Project-Customization#troubleshooting-configuration-settings)
+1. Verify the `host` and `base` path settings in your Config table.  
+If your front-end is not loading: [Back-end troubleshooting instructions here](https://github.com/aces/Loris/wiki/Project-Customization#troubleshooting-configuration-settings)
 
 1. That `/var/www/loris/smarty/templates_c` exists; if it doesn't,
     1. `cd /var/www/loris/smarty`

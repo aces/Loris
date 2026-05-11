@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace LORIS\oidc;
 
@@ -26,6 +26,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return 'OpenID Connect';
+        return dgettext("oidc", 'OpenID Connect');
     }
 }

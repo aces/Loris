@@ -26,8 +26,8 @@
       $(element).change(function() {
         let filename = $(this).val().split('\\').pop();
         let placeHolder = $(this)
-                          .parent().parent().parent()
-                          .find('.file-caption-name');
+          .parent().parent().parent()
+          .find('.file-caption-name');
         $(placeHolder).html(filename);
       });
     });

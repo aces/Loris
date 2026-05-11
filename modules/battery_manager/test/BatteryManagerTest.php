@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Battery Manager module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -11,6 +12,8 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverWait;
+use Facebook\WebDriver\WebDriverSelect;
 
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
@@ -18,7 +21,7 @@ require_once __DIR__ .
 /**
  * Battery Manager module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -28,6 +31,14 @@ require_once __DIR__ .
  */
 class BatteryManagerTest extends LorisIntegrationTest
 {
+    //Filter locations
+    static $instrument = 'select[name="testName"]';
+    static $minimumAge = 'input[name="minimumAge"]';
+    static $maximumAge = 'input[name="maximumAge"]';
+    //General locations
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';
+
     /**
      * Tests that, when loading the BatteryManager module, some
      * text appears in the body.
@@ -68,8 +79,20 @@ class BatteryManagerTest extends LorisIntegrationTest
             "You do not have access to this page.",
             $bodyText
         );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#dynamictable > thead > tr")
+        )->getText();
+        $this->assertStringNotContainsString(
+            "Change Status",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "Edit Metadata",
+            $bodyText
+        );
         $this->resetPermissions();
     }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -90,4 +113,281 @@ class BatteryManagerTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
 
+    /**
+     * Tests filter in the form.
+     * Uses explicit waits to handle React re-render timing.
+     *
+     * @return void
+     */
+    function testFilter()
+    {
+        $this->safeGet($this->url . "/battery_manager/");
+
+        // Wait for data to load before filtering
+        $this->_waitForFilterResult(self::$display, 'rows displayed');
+
+        // Test instrument filter (select dropdown)
+        $el = new WebDriverSelect(
+            $this->safeFindElement(
+                WebDriverBy::cssSelector(self::$instrument)
+            )
+        );
+        $el->selectByVisibleText('AOSI');
+        $text = $this->_waitForFilterResult(
+            self::$display,
+            '3 rows'
+        );
+        $this->assertStringContainsString('3 rows', $text);
+        $this->safeClick(WebDriverBy::cssSelector(self::$clearFilter));
+        $this->_waitForFilterResult(self::$display, 'rows displayed');
+
+        // Test minimumAge filter (text input)
+        $el = $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$minimumAge)
+        );
+        $el->sendKeys('4300');
+        $text = $this->_waitForFilterResult(
+            self::$display,
+            '1 row'
+        );
+        $this->assertStringContainsString('1 row', $text);
+        $this->safeClick(WebDriverBy::cssSelector(self::$clearFilter));
+        $this->_waitForFilterResult(self::$display, 'rows displayed');
+
+        // Test maximumAge filter (text input)
+        $el = $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$maximumAge)
+        );
+        $el->sendKeys('0');
+        $text = $this->_waitForFilterResult(
+            self::$display,
+            '0 rows'
+        );
+        $this->assertStringContainsString('0 rows', $text);
+        $this->safeClick(WebDriverBy::cssSelector(self::$clearFilter));
+    }
+
+    /**
+     * Waits for the display element to contain the expected text.
+     * Polls every 500ms for up to 10 seconds.
+     *
+     * @param string $selector CSS selector for display element
+     * @param string $expected Expected substring in display text
+     *
+     * @return string The display text once it contains the expected string
+     */
+    private function _waitForFilterResult(
+        string $selector,
+        string $expected
+    ): string {
+        $resultText = '';
+        $wait       = new WebDriverWait($this->webDriver, 10, 500);
+        $wait->until(
+            function () use ($selector, $expected, &$resultText) {
+                $resultText = $this->webDriver->findElement(
+                    WebDriverBy::cssSelector($selector)
+                )->getText();
+                return strpos($resultText, $expected) !== false;
+            },
+            "Timed out waiting for '$expected' in '$selector'"
+        );
+        return $resultText;
+    }
+
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testLoadsWithPermissionEdit()
+    {
+        $this->setupPermissions(["battery_manager_edit"]);
+        $this->safeGet($this->url . "/battery_manager/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#dynamictable > thead > tr")
+        )->getText();
+        $this->assertStringContainsString(
+            "Change Status",
+            $bodyText
+        );
+        $this->assertStringContainsString(
+            "Edit Metadata",
+            $bodyText
+        );
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(14) > button"
+            )
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#lorisworkspace > div >".
+                " div:nth-child(2) > div > div:nth-child(1)"
+            )
+        )->getText();
+        $this->assertStringContainsString(
+            "Edit Test",
+            $bodyText
+        );
+
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testEditform()
+    {
+        $this->safeGet($this->url . "/battery_manager/");
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr > td:nth-child(14) > button"
+            )
+        );
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#lorisworkspace > div:nth-child(1) > div:nth-child(2) > ".
+                "div:nth-child(1) > div:nth-child(2) > div:nth-child(1) >".
+                " form:nth-child(1) > div:nth-child(1) >div:nth-child(2) >".
+                " div:nth-child(1) > div:nth-child(2) > select:nth-child(1) >" .
+                " option:nth-child(3)"
+            ),
+            5
+        );
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "div:nth-child(3) > div:nth-child(1) >".
+                " div:nth-child(2) > input:nth-child(1)",
+                1
+            )
+        )->clear()->sendKeys('0');
+
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "div.col-sm-12:nth-child(4)>div:nth-child(1)".
+                ">div:nth-child(2)>input:nth-child(1)"
+            ),
+            1
+        )->clear()->sendKeys('1');
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "div:nth-child(5) > div:nth-child(1) > div:nth-child(2) > ".
+                "select:nth-child(1) > option:nth-child(2)"
+            ),
+            1
+        );
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "div.col-sm-9:nth-child(1) > button:nth-child(1)"
+            ),
+            1
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#swal2-title"),
+            1
+        )->getText();
+        $this->assertStringContainsString(
+            "Submission successful!",
+            $bodyText
+        );
+    }
+
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testAddNew()
+    {
+        $this->safeGet($this->url . "/battery_manager/");
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#default-panel > div > div > div.table-header >".
+                " div > div > div:nth-child(2) > button:nth-child(1)"
+            )
+        );
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#lorisworkspace > div:nth-child(1) > div:nth-child(2) >".
+                " div:nth-child(1) > div:nth-child(2) > div:nth-child(1) >".
+                " form:nth-child(1) > div:nth-child(1) >div:nth-child(2) > ".
+                "div:nth-child(1) > div:nth-child(2) > select:nth-child(1) >".
+                " option:nth-child(3)"
+            ),
+            5
+        );
+
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "div:nth-child(3) > div:nth-child(1) > ".
+                "div:nth-child(2) > input:nth-child(1)",
+                1
+            )
+        )->clear()->sendKeys('0');
+
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "div.col-sm-12:nth-child(4)>div:nth-child(1)>".
+                "div:nth-child(2) >input:nth-child(1)"
+            ),
+            1
+        )->clear()->sendKeys('1');
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "div:nth-child(5) > div:nth-child(1) > div:nth-child(2) >".
+                " select:nth-child(1) > option:nth-child(2)
+"
+            ),
+            1
+        );
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "div.col-sm-9:nth-child(1) > button:nth-child(1)"
+            ),
+            1
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#swal2-title"),
+            1
+        )->getText();
+        $this->assertStringContainsString(
+            "Submission successful!",
+            $bodyText
+        );
+    }
+
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testActivebtn()
+    {
+        $this->safeGet($this->url . "/battery_manager/");
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(13) > button"
+            )
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#swal2-title")
+        )->getText();
+        $this->assertStringContainsString(
+            "Submission successful!",
+            $bodyText
+        );
+    }
 }

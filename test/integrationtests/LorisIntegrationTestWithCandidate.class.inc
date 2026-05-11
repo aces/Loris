@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 require_once __DIR__ . "/LorisIntegrationTest.class.inc";
 /**
  * This contains an abstract class for Loris tests to extend.
@@ -15,7 +16,6 @@ require_once __DIR__ . "/LorisIntegrationTest.class.inc";
  */
 abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
 {
-
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
@@ -31,6 +31,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             [
+                'ID'                    => 1,
                 'CandID'                => '900000',
                 'PSCID'                 => 'TST0001',
                 'RegistrationCenterID'  => 1,
@@ -46,7 +47,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
             'session',
             [
                 'ID'            => '999999',
-                'CandID'        => '900000',
+                'CandidateID'   => 1,
                 'Visit_label'   => 'Test',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
@@ -63,7 +64,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
      */
     public function tearDown(): void
     {
-        $this->DB->delete("session", ['CandID' => '900000']);
+        $this->DB->delete("session", ['CandidateID' => 1]);
         $this->DB->delete("candidate", ['CandID' => '900000']);
         parent::tearDown();
     }

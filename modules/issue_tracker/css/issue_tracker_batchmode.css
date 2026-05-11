@@ -1,0 +1,205 @@
+.issue-tracker-batch-mode {
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.filter-tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.filter-tabs button {
+  padding: 10px 20px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.filter-tabs button.active {
+  border-bottom: 2px solid #074785;
+  color: #074785;
+}
+
+.filter-section {
+  margin-bottom: 20px;
+}
+
+.filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filter-list label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  font-weight: normal;
+}
+
+.filter-list label span {
+  margin-left: 3px;
+}
+
+.issues-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.issue-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.issue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.issue-title-section {
+  display: flex;
+  align-items: center;
+}
+
+.issue-header h3 {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  font-size: 1.5em;
+}
+
+.issue-header a {
+  color: #074785;
+  text-decoration: none;
+  display: flex;
+  align-items: baseline;
+}
+
+.issue-id {
+  font-size: 0.8em;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-right: 8px;
+}
+
+.issue-dates {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.8em;
+  color: #666;
+}
+
+.issue-controls {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.issue-controls select {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+}
+
+.issue-description {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.issue-metadata {
+  margin-top: 15px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.issue-actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.issue-card a {
+  color: #074785;
+  text-decoration: none;
+}
+
+.issue-card a:hover {
+  text-decoration: underline;
+}
+
+.issue-card input[type="text"], .issue-card textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.title-input {
+  font-size: 1em;
+  width: calc(100% - 40px);
+  margin-left: 8px;
+}
+
+.checkbox {
+  margin-right: 8px;
+}
+
+.no-results-message {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2em;
+  color: #666;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.pagination-controls {
+  margin-left: auto;
+}
+
+.perPage {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.panel-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.filter-reset-button {
+  margin-left: auto;
+  margin-right: 10px;
+}

@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -60,7 +61,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Timepoint List";
+        return dgettext("timepoint_list", "Timepoint List");
     }
 
     /**
@@ -72,5 +73,4 @@ class Module extends \Module
     {
         return true;
     }
-
 }

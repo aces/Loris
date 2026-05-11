@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Breadcrumb class tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Test
@@ -71,12 +72,11 @@ class BreadcrumbTest extends TestCase
      * @covers Breadcrumb::__toString
      * @return void
      */
-    public function testToString()
+    public function testToString(): void
     {
         $this->assertEquals(
             '{"text":"testLabel","query":"testLink"}',
-            $this->_breadcrumb->__toString()
+            (string)$this->_breadcrumb
         );
     }
-
 }

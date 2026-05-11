@@ -1,11 +1,12 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The Installer Database class is like the LORIS database class, except it
  * at the time of the installer the config.xml doesn't exist, so it can't
  * connect using the connection info from there, so this class does the
  * minimal amount that's necessary to bootstrap the installation.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Installer
  * @package  Installer

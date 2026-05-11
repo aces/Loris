@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file creates a new bvl feedback thread via the feedback panel.
  *
@@ -71,4 +72,4 @@ if (isset($data['comment']) && isset($data['candID'])
     print json_encode($newEntryValues);
 }
 
-    exit();
+    exit(0);

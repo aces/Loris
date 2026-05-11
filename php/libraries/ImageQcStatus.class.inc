@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * File that describe the Image QC Status class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  *  @category Imaging
  *  @package  Main

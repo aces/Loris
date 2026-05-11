@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
  * Note this is only used in DQT
  * For generic SelectDropdown, see Select in Form.js
  */
-class SelectField extends Component {
+export class SelectField extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -64,7 +64,7 @@ SelectField.propTypes = {
 /**
  * Search Field React component
  */
-class SearchField extends Component {
+export class SearchField extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -127,7 +127,7 @@ SearchField.propTypes = {
 /**
  * Select Dropdown React component
  */
-class SelectDropdown extends Component {
+export class SelectDropdown extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -310,26 +310,26 @@ class SelectDropdown extends Component {
       }
     }
     const overlay = this.state.open ? (
-       <div style={{
-         top: 0,
-         left: 0,
-         zIndex: 100,
-         position: 'fixed',
-         width: 'calc(100vw)',
-         height: 'calc(100vh)',
-        }} onClick={this.overlayClickHandler}
-       />
-     ) : null;
+      <div style={{
+        top: 0,
+        left: 0,
+        zIndex: 100,
+        position: 'fixed',
+        width: 'calc(100vw)',
+        height: 'calc(100vh)',
+      }} onClick={this.overlayClickHandler}
+      />
+    ) : null;
     return (
       <>
         <div className={parentDivClass}>
           <button type="button"
-                  className="btn btn-default dropdown-toggle col-xs-12"
-                  onClick={this.toggleDropdown}>
+            className="btn btn-default dropdown-toggle col-xs-12"
+            onClick={this.toggleDropdown}>
             <div className="col-xs-10">
-                <span className="pull-left">
-                  {selectLabel}
-                </span>
+              <span className="pull-left">
+                {selectLabel}
+              </span>
             </div>
             <div className="pull-right">
               <span className="glyphicon glyphicon-menu-down"></span>

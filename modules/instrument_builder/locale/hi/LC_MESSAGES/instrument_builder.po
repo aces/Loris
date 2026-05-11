@@ -1,0 +1,221 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# George Murad <george.murad@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Instrument Builder"
+msgstr "इंस्ट्रूमेंट बिल्डर"
+
+msgid "Instrument Loaded"
+msgstr "इंस्ट्रूमेंट लोड किया गया"
+
+msgid "Load Instrument"
+msgstr "इंस्ट्रूमेंट लोड करें"
+
+msgid "Save Instrument"
+msgstr "इंस्ट्रूमेंट सहेजें"
+
+msgid "Build Instrument"
+msgstr "इंस्ट्रूमेंट बनाएं"
+
+msgid "Filename:"
+msgstr "फ़ाइल नाम:"
+
+msgid "Instrument Name:"
+msgstr "इंस्ट्रूमेंट नाम:"
+
+msgid "Load"
+msgstr "लोड"
+
+msgid "Build"
+msgstr "बनाएं"
+
+msgid "Database Name"
+msgstr "डेटाबेस नाम"
+
+msgid "Question Display (Front End)"
+msgstr "प्रश्न प्रदर्शन (फ्रंट एंड)"
+
+msgid "Edit"
+msgstr "संपादित करें"
+
+msgid "Page:"
+msgstr "पृष्ठ:"
+
+msgid "Drop here"
+msgstr "यहाँ छोड़ें"
+
+msgid "Question Text"
+msgstr "प्रश्न पाठ"
+
+msgid "Question Name:"
+msgstr "प्रश्न नाम:"
+
+msgid "Dropdown Option:"
+msgstr "ड्रॉपडाउन विकल्प:"
+
+msgid "Add option"
+msgstr "विकल्प जोड़ें"
+
+msgid "Preview:"
+msgstr "पूर्वावलोकन:"
+
+msgid "Start year:"
+msgstr "प्रारंभ वर्ष:"
+
+msgid "End year:"
+msgstr "समाप्ति वर्ष:"
+
+msgid "Date Format:"
+msgstr "दिनांक प्रारूप:"
+
+msgid "Min:"
+msgstr "न्यूनतम:"
+
+msgid "Max:"
+msgstr "अधिकतम:"
+
+msgid "Question Type:"
+msgstr "प्रश्न प्रकार:"
+
+msgid "Information"
+msgstr "जानकारी"
+
+msgid "Header"
+msgstr "शीर्षक"
+
+msgid "Label"
+msgstr "लेबल"
+
+msgid "Scored Field"
+msgstr "स्कोर फ़ील्ड"
+
+msgid "Data entry"
+msgstr "डेटा प्रविष्टि"
+
+msgid "Textbox"
+msgstr "टेक्स्टबॉक्स"
+
+msgid "Textarea"
+msgstr "टेक्स्ट एरिया"
+
+msgid "Dropdown"
+msgstr "ड्रॉपडाउन"
+
+msgid "Multiselect"
+msgstr "मल्टीसेलेक्ट"
+
+msgid "Numeric"
+msgstr "संख्यात्मक"
+
+msgid "Formatting"
+msgstr "फ़ॉर्मेटिंग"
+
+msgid "Blank Line"
+msgstr "रिक्त पंक्ति"
+
+msgid "Page Break"
+msgstr "पृष्ठ विराम"
+
+msgid "Select One"
+msgstr "एक चुनें"
+
+msgid "Add Question"
+msgstr "प्रश्न जोड़ें"
+
+msgid "Add Row"
+msgstr "पंक्ति जोड़ें"
+
+msgid "Edit Row"
+msgstr "पंक्ति संपादित करें"
+
+msgid "Page Name"
+msgstr "पृष्ठ नाम"
+
+msgid "Standard Date"
+msgstr "मानक दिनांक"
+
+msgid "Basic Date (does not include 'Not Answered' option)"
+msgstr "मूल दिनांक ('उत्तर नहीं दिया' विकल्प शामिल नहीं)"
+
+msgid "Month Year (does not include day of the month)"
+msgstr "महीना वर्ष (महीने का दिन शामिल नहीं)"
+
+msgid "Invalid extension. Only .linst files are allowed."
+msgstr "अमान्य एक्सटेंशन। केवल .linst फ़ाइलें अनुमत हैं।"
+
+msgid "Spaces are not allowed in the file name."
+msgstr "फ़ाइल नाम में रिक्त स्थान की अनुमति नहीं है।"
+
+msgid "Multiple periods in the file name are not allowed."
+msgstr "फ़ाइल नाम में कई अवधि की अनुमति नहीं है।"
+
+msgid "Special characters are not allowed (only letters, numbers, and _)."
+msgstr "विशेष वर्णों की अनुमति नहीं है (केवल अक्षर, संख्याएँ और _)।"
+
+msgid "File name cannot end with a special character."
+msgstr "फ़ाइल नाम विशेष वर्ण के साथ समाप्त नहीं हो सकता।"
+
+msgid "Question name can't contain 'status' as part of the name!"
+msgstr "प्रश्न नाम में 'status' नाम के भाग के रूप में शामिल नहीं हो सकता!"
+
+msgid "Dropdown options cannot be empty!"
+msgstr "ड्रॉपडाउन विकल्प खाली नहीं हो सकते!"
+
+msgid "No element type selected"
+msgstr "कोई तत्व प्रकार चयनित नहीं"
+
+msgid "Invalid date provided"
+msgstr "अमान्य दिनांक प्रदान किया गया"
+
+msgid "End year happened before start year"
+msgstr "समाप्ति वर्ष प्रारंभ वर्ष से पहले हुआ"
+
+msgid "The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999."
+msgstr "वर्ष में बिल्कुल 4 अंक होने चाहिए। कृपया 1000 और 9999 के बीच एक पूर्णांक संख्या चुनें।"
+
+msgid "Max value must be larger than min value"
+msgstr "अधिकतम मान न्यूनतम मान से बड़ा होना चाहिए"
+
+msgid "Must use question text as page header"
+msgstr "पृष्ठ शीर्षक के रूप में प्रश्न पाठ का उपयोग करना होगा"
+
+msgid "No question text specified"
+msgstr "कोई प्रश्न पाठ निर्दिष्ट नहीं"
+
+msgid "Please shorten to 64 characters maximum"
+msgstr "कृपया अधिकतम 64 वर्णों तक छोटा करें"
+
+msgid "Please shorten to 57 characters maximum"
+msgstr "कृपया अधिकतम 57 वर्णों तक छोटा करें"
+
+msgid "Must specify name for database to save value into"
+msgstr "मान सहेजने के लिए डेटाबेस के लिए नाम निर्दिष्ट करना होगा"
+
+msgid "Duplicate question name"
+msgstr "डुप्लिकेट प्रश्न नाम"
+
+msgid "Top"
+msgstr "शीर्ष"
+
+msgid "Browse"
+msgstr "ब्राउज़ करें"
+
+msgid "Delete"
+msgstr "हटाएं"
+

@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script contains useful generic stuff to include
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -24,6 +24,7 @@ $client     = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 $config        = NDB_Config::singleton();
+$DB            = NDB_Factory::singleton()->database();
 $lorisInstance = new \LORIS\LorisInstance(
     $DB,
     $config,
@@ -32,4 +33,7 @@ $lorisInstance = new \LORIS\LorisInstance(
         __DIR__ . "/../modules/",
     ],
 );
-$DB            = $lorisInstance->getDatabaseConnection();
+// Register S3 stream wrapper if configured
+if (getenv('AWS_ACCESS_KEY_ID') !== false) {
+    (new \LORIS\AWS\Client($lorisInstance))->registerStreamWrapper();
+}

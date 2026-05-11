@@ -1,14 +1,18 @@
 import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {
-    CheckboxElement,
-    DateElement,
-    FieldsetElement,
-    FormElement,
-    NumericElement,
-    SelectElement,
-    TextboxElement,
+  CheckboxElement,
+  DateElement,
+  FieldsetElement,
+  TimeElement,
+  FormElement,
+  NumericElement,
+  SelectElement,
+  TextboxElement,
 } from 'jsx/Form';
+import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
+import {withTranslation} from 'react-i18next';
+import './Filter.css';
 
 /**
  * Filter component
@@ -46,8 +50,8 @@ function Filter(props) {
     const {fields} = JSON.parse(JSON.stringify(props));
     const type = fields
       .find((field) => (field.filter||{}).name == name).filter.type;
-    const exactMatch = (!(type === 'text' || type === 'date'));
-
+    const exactMatch = (!(type === 'text' || type === 'date'
+      || type === 'datetime' || type === 'multiselect'));
     if (value === null || value === '' ||
       (value.constructor === Array && value.length === 0) ||
       (type === 'checkbox' && value === false)) {
@@ -68,41 +72,50 @@ function Filter(props) {
       if (filter && filter.hide !== true) {
         let element;
         switch (filter.type) {
-          case 'text':
-            element = <TextboxElement/>;
-            break;
-          case 'select':
-            element = (
-              <SelectElement
-                options={filter.options}
-                sortByValue={filter.sortByValue}
-                autoSelect={false}
-              />
-            );
-            break;
-          case 'multiselect':
-            element = (
-              <SelectElement
-                options={filter.options}
-                sortByValue={filter.sortByValue}
-                multiple={true}
-                emptyOption={false}
-              />
-            );
-            break;
-          case 'numeric':
-            element = <NumericElement
+        case 'text':
+          element = <TextboxElement labelPlacementTop/>;
+          break;
+        case 'select':
+          element = (
+            <SelectElement
               options={filter.options}
-            />;
-            break;
-          case 'date':
-            element = <DateElement/>;
-            break;
-          case 'checkbox':
-            element = <CheckboxElement/>;
-            break;
-          default:
-            element = <TextboxElement/>;
+              sortByValue={filter.sortByValue}
+              autoSelect={false}
+              labelPlacementTop
+            />
+          );
+          break;
+        case 'multiselect':
+          element = (
+            <SelectElement
+              options={filter.options}
+              sortByValue={filter.sortByValue}
+              multiple={true}
+              emptyOption={false}
+              labelPlacementTop
+            />
+          );
+          break;
+        case 'numeric':
+          element = <NumericElement
+            options={filter.options}
+            labelPlacementTop
+          />;
+          break;
+        case 'date':
+          element = <DateElement labelPlacementTop />;
+          break;
+        case 'datetime':
+          element = <DateTimePartialElement labelPlacementTop />;
+          break;
+        case 'checkbox':
+          element = <CheckboxElement/>;
+          break;
+        case 'time':
+          element = <TimeElement labelPlacementTop />;
+          break;
+        default:
+          element = <TextboxElement labelPlacementTop />;
         }
 
         // The value prop has to default to false if the first two options
@@ -137,7 +150,7 @@ function Filter(props) {
             data-toggle='dropdown'
             role='button'
           >
-            Load Filter Preset <span className='caret'/>
+            {props.t('Load Filter Preset')} <span className='caret'/>
           </a>
           <ul className='dropdown-menu' role='menu'>
             {presets}
@@ -152,7 +165,7 @@ function Filter(props) {
       {filterPresets()}
       <li>
         <a role='button' name='reset' onClick={props.clearFilters}>
-          Clear Filter
+          {props.t('Clear Filters')}
         </a>
       </li>
     </ul>
@@ -168,7 +181,9 @@ function Filter(props) {
         legend={props.title}
       >
         {filterActions}
-        {renderFilterFields()}
+        <div className='filter-container'>
+          {renderFilterFields()}
+        </div>
       </FieldsetElement>
     </FormElement>
   );
@@ -194,6 +209,8 @@ Filter.propTypes = {
   filterPresets: PropTypes.array,
   updateFilters: PropTypes.func,
   clearFilters: PropTypes.func,
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
-export default Filter;
+export default withTranslation(['loris'])(Filter);

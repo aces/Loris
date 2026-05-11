@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\candidate_profile;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -29,7 +30,8 @@ class Candidate_Profile extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         if ($this->candidate === null) {
             // If we don't know what to do, assume no permissions.
@@ -39,7 +41,7 @@ class Candidate_Profile extends \NDB_Page
     }
 
     /**
-     * Ensure $this->candidate is set so that _hasAccess is valid
+     * Ensure $this->candidate is set so that isAccessibleBy is valid
      * before calling the parent middleware.
      *
      * @param ServerRequestInterface  $request The PSR7 request being processed.
@@ -128,7 +130,7 @@ class Candidate_Profile extends \NDB_Page
         if ($this->candidate === null) {
             return new \LORIS\BreadcrumbTrail(
                 new \LORIS\Breadcrumb(
-                    'Access Profile',
+                    dgettext("candidate_list", 'Access Profile'),
                     '/candidate_list/?betaprofile=1'
                 ),
             );
@@ -138,11 +140,12 @@ class Candidate_Profile extends \NDB_Page
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Access Profile',
+                dgettext("candidate_list", 'Access Profile'),
                 '/candidate_list/?betaprofile=1'
             ),
             new \LORIS\Breadcrumb(
-                "Candidate Dashboard $candid / $pscid",
+                dgettext("candidate_profile", 'Candidate Dashboard')
+                . " $candid / $pscid",
                 "/candidate_profile/$candid"
             )
         );

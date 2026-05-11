@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class is an Exception extention created to distinguish any
  * Exception from the case when a class function has been deprecated
  * and is no longer supported
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Errors
  * @package  Loris

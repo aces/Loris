@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class features the code for the Menu Filter.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Main
@@ -374,6 +375,7 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         return;
     }
+
     /**
      * Gets the base query
      *
@@ -391,6 +393,7 @@ class NDB_Menu_Filter extends NDB_Menu
         return $query;
 
     }
+
     /**
      * Adds filters
      *
@@ -461,7 +464,7 @@ class NDB_Menu_Filter extends NDB_Menu
                           ." OFFSET " . (($pageNum-1)*$resultsPerPage);
         $result         = $DB->pselect($query . $limit, $qparams);
 
-        return $result;
+        return iterator_to_array($result);
     }
 
     /**
@@ -599,7 +602,6 @@ class NDB_Menu_Filter extends NDB_Menu
             $this->_setDataTableRows($rowsPerPage*($pageID-1)+1);
         }
     }
-
 
     /**
      * Sets the template data for the data table's rows
@@ -773,6 +775,7 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         return json_encode($this->toArray());
     }
+
     /**
      * Returns the full list of candidates, users, etc.
      *
@@ -803,7 +806,23 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the list
         $result = $DB->pselect($query, $qparams);
 
-        return $result;
+        // DataTable makes assumptions about values being strings,
+        // so convert all values to strings.
+        return array_map(
+            function ($row) {
+                    return array_map(
+                        function ($cell) {
+                            if ($cell === null) {
+                                return $cell;
+                            }
+                            return strval($cell);
+
+                        },
+                        $row
+                    );
+            },
+            iterator_to_array($result)
+        );
     }
 
     /**
@@ -823,26 +842,6 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
         return $FilterValues;
-    }
-
-    /**
-     * Adds React table related dependencies to menu filters, since forms don't
-     * usually have tables or pagination
-     *
-     * @return array of javascript files to be sourced
-     */
-    function getJSDependencies()
-    {
-        $factory = NDB_Factory::singleton();
-        $depends = parent::getJSDependencies();
-        $baseURL = $factory->settings()->getBaseURL();
-        return array_merge(
-            $depends,
-            [
-                $baseURL . '/js/components/PaginationLinks.js',
-                $baseURL . '/js/components/StaticDataTable.js',
-            ]
-        );
     }
 }
 

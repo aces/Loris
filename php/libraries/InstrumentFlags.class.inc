@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains the intrument flags class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Loris

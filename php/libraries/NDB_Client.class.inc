@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the NDB_Client class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -51,86 +52,22 @@ class NDB_Client
         // Load the config file.
         $factory = NDB_Factory::singleton();
 
-        $config = $factory->config($configFile);
-
-        $DB = $factory->database();
-
-        // Register S3 stream wrapper if configured
-        if (getenv('AWS_ACCESS_KEY_ID') !== false) {
-            // AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
-            // should both be set as environment variables
-            $s3config = [
-                'version' => '2006-03-01',
-            ];
-            $endpoint = $config->getSetting('AWS_S3_Endpoint');
-            if (!empty($endpoint)) {
-                $s3config['region']   = '';
-                $s3config['endpoint'] = $endpoint;
-            } else {
-                $s3config['region'] = $config->getSetting('AWS_S3_Region');
-            }
-
-            $s3client = new Aws\S3\S3Client($s3config);
-
-            // Register the stream wrapper so that s3:// urls can be
-            // treated as regular files.
-            $s3client->registerStreamWrapper();
-        }
-
-        // This must be done after the extra includes, as those may
-        // include Smarty
-        include_once "Smarty_hook.class.inc";
-
-        $GLOBALS['DB'] =& $DB;
+        // Load config file into factory as a side-effect
+        $factory->config($configFile);
 
         // stop here if this is a command line client
         if (!$this->_isWebClient) {
             // Set user as unix username.
             // Requires Loris to have user with this username
-            User::singleton(getenv('USER'));
+            $username = getenv('USER');
+            if ($username === false) {
+                // happens under GitHub actions tests
+                $username = '';
+            }
+            User::singleton($username);
             return true;
         }
 
-        $config_additions = $DB->pselectOne(
-            "SELECT c.Value
-            FROM Config c
-            JOIN ConfigSettings cs ON (c.ConfigID=cs.ID)
-            WHERE cs.Name=:nm",
-            ["nm" => "CSPAdditionalHeaders"]
-        );
-        if (empty($config_additions)) {
-            $config_additions = "";
-        }
-        $CaptchaDomains ="";
-        // Get reCATPCHA keys
-        $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
-        $reCAPTCHAPublic  = $config->getSetting('reCAPTCHAPublic');
-        // Display reCAPTCHA if both private and public keys are set
-        if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
-            $CaptchaDomains ="www.google.com  www.gstatic.com";
-        }
-
-        // Content-Security policy for LORIS
-        // 1. By default, only allow things that are self-hosted
-        // 2. Allow inline CSS and JS (inline JS is required for
-        //    the Loris base class to load smarty variables
-        // 3. Allow unsafe-eval because jQuery requires it to load
-        //    our menus. It will be fixed in jQuery 3.0.0.
-        //    See: https://github.com/jquery/jquery/issues/2012
-        // 4. Allow data URLs for fonts, because our bootstrap theme
-        //    seems to load a font that way.
-        // 5. Allow reCAPTCHA domains only if the CAPTCHA keys were set
-        //    up by the project
-        header(
-            "Content-Security-Policy: "
-            . "default-src 'self' 'unsafe-inline'; "
-            . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
-            . "font-src 'self' data:; "
-            . "img-src 'self' data:; "
-            . "frame-ancestors 'none'; "
-            . "form-action 'self'; "
-            . $config_additions
-        );
         // start php session
         $sessionOptions = ['cookie_httponly' => true];
 
@@ -170,9 +107,7 @@ class NDB_Client
             $auth = $login->authenticate();
             if ($auth === true) {
                 if ($login->passwordExpired()) {
-                    header("HTTP/1.1 302 Found");
-                    header("Location: /login/password-expiry");
-
+                    return false;
                 }
                 $login->setState();
             } elseif ($auth === false) {
@@ -200,24 +135,6 @@ class NDB_Client
         session_write_close();
         // finished initializing
         return true;
-    }
-
-    /**
-     * Returns true if the user is logged in
-     *
-     * @return true only if user is logged in
-     */
-    function isLoggedIn()
-    {
-        if (!isset($_SESSION['State'])) {
-            $_SESSION['State'] =& State::singleton();
-            $login = new SinglePointLogin();
-            $_SESSION['State']->setProperty('login', $login);
-        } else {
-            $login = $_SESSION['State']->getProperty('login');
-        }
-
-        return $login->isLoggedIn();
     }
 }
 

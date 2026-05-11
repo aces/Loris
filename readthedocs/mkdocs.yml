@@ -53,6 +53,7 @@ nav:
         - 'Code Review Guide': 'docs/wiki/99_Developers/Code_Review_Guide.md'
         - 'Automated Testing': 'docs/wiki/99_Developers/Automated_Testing.md'
         - 'Style Guide (for help text)': 'docs/wiki/99_Developers/Help_Style_Guide.md'
+        - 'Translating LORIS': 'docs/wiki/99_Developers/Translating.md'
         - 'NixOS': 'docs/wiki/99_Developers/Alternative_Install/Nix.md'
 
 use_directory_urls: False

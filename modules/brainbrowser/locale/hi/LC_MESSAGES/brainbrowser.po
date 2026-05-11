@@ -1,0 +1,88 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Brainbrowser"
+msgstr "ब्रेनब्राउज़र"
+
+msgid "Sync Volumes"
+msgstr "वॉल्यूम सिंक करें"
+
+msgid "Reset View"
+msgstr "दृश्य रीसेट करें"
+
+msgid "Auto"
+msgstr "स्वतः"
+
+msgid "{{count}} Pixels"
+msgstr "{{count}} पिक्सेल"
+
+msgid "300 Pixels (Default)"
+msgstr "300 पिक्सेल (डिफ़ॉल्ट)"
+
+msgid "Overlay"
+msgstr "ओवरले"
+
+msgid "World Coordinates"
+msgstr "वर्ल्ड कोऑर्डिनेट"
+
+msgid "Threshold"
+msgstr "थ्रेशहोल्ड"
+
+msgid "Color Map"
+msgstr "कलर मैप"
+
+msgid "Gray"
+msgstr "धूसर"
+
+msgid "Spectral"
+msgstr "स्पेक्ट्रल"
+
+msgid "Thermal"
+msgstr "थर्मल"
+
+msgid "Blue"
+msgstr "नीला"
+
+msgid "Green"
+msgstr "हरा"
+
+msgid "Voxel Coordinates"
+msgstr "वॉक्सेल निर्देशांक"
+
+msgid "Intensity Value"
+msgstr "तीव्रता मान"
+
+msgid "Contrast (0.0 to 2.0):"
+msgstr "कॉन्ट्रास्ट (0.0 से 2.0):"
+
+msgid "Brightness (-1 to 1):"
+msgstr "चमक (-1 से 1):"
+
+msgid "View Slices"
+msgstr "स्लाइस देखें"
+
+msgid "Sagittal"
+msgstr "सैजिटल"
+
+msgid "Coronal"
+msgstr "कोरोनल"
+
+msgid "Transverse"
+msgstr "ट्रांसवर्स"

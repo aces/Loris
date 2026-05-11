@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements the ViewDetails subpage of the dicom_archive module.
  *
@@ -49,9 +50,65 @@ class ViewDetails extends \NDB_Form
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
-        return $user->hasPermission('dicom_archive_view_allsites');
+        // Permission of access to this page needs to match the module's filters
+        $config           = \NDB_Factory::singleton()->config();
+        $siteprojectperms = $config->getSetting(
+            'useAdvancedPermissions'
+        );
+        $DB  = $this->loris->getDatabaseConnection();
+        $row = $DB->pselectRow(
+            "SELECT CenterID, ProjectID, SessionID, CreatingUser
+            FROM tarchive t 
+                JOIN session s ON s.ID = t.SessionID 
+            WHERE TarchiveID = :ID",
+            ['ID' => $_REQUEST['tarchiveID']]
+        );
+
+        $hasCenterAccess    = false;
+        $hasNoSessionAccess = false;
+        $hasProjectAccess   = false;
+        $isCreator          = false;
+
+        if (isset($row['CenterID'])) {
+            $hasCenterAccess = $user->hasCenter(
+                \CenterID::singleton(intval($row['CenterID']))
+            );
+        }
+        if (!isset($row['SessionID'])) {
+            $hasNoSessionAccess = $user->hasPermission("dicom_archive_nosessionid");
+        }
+        if (isset($row['ProjectID'])) {
+            $hasProjectAccess = $user->hasProject(
+                \ProjectID::singleton(intval($row['ProjectID']))
+            );
+        }
+        if (isset($row['CreatingUser'])) {
+            $isCreator = $row['CreatingUser'] === $user->getUsername();
+        }
+
+        // Assume project match is turned off first (as module filter does)
+        // User site match
+        // OR resource has no session but user has the no session permission
+        // OR user has access to all sites data
+        $access = $hasCenterAccess || $hasNoSessionAccess
+            || ($user->hasPermission('dicom_archive_view_allsites'));
+
+        // If the site project permissions are enabled
+        if ($siteprojectperms === 'true') {
+            // User has basic center access
+            // AND
+            // Either User has the project
+            // OR resource has no session but user has the no session permission
+            $access = $access && ($hasProjectAccess || $hasNoSessionAccess);
+        }
+
+        // User is the creator of the data
+        $access = $access || $isCreator;
+
+        return $access;
     }
 
     /**
@@ -64,7 +121,7 @@ class ViewDetails extends \NDB_Form
         $this->DB = $this->loris->getDatabaseConnection();
 
         $user = \User::singleton();
-        if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess($user))) {
+        if ((!empty($_REQUEST['tarchiveID'])) && ($this->isAccessibleBy($user))) {
             $this->tarchiveID          = intval($_REQUEST['tarchiveID']);
             $this->tpl_data['archive'] = $this->_getTarchiveData(
                 $this->tarchiveID,
@@ -85,6 +142,7 @@ class ViewDetails extends \NDB_Form
             $this->_validateNamesIDs();
         }
     }
+
     /**
      * Retrieves data for the template from the database
      *
@@ -107,12 +165,14 @@ class ViewDetails extends \NDB_Form
         case "tarchive_series":
             $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
-            $tarchiveData = $this->DB->pselect(
-                $query,
-                [
-                    'ID'     => $tarchiveID,
-                    "OField" => $order,
-                ]
+            $tarchiveData = iterator_to_array(
+                $this->DB->pselect(
+                    $query,
+                    [
+                        'ID'     => $tarchiveID,
+                        "OField" => $order,
+                    ]
+                )
             );
 
             if ($this->_setProtocols()) {
@@ -136,21 +196,24 @@ class ViewDetails extends \NDB_Form
         case "tarchive_files":
             $query        = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
-            $tarchiveData = $this->DB->pselect(
-                $query,
-                [
-                    'ID'     => $tarchiveID,
-                    'OField' => $order,
-                ]
+            $tarchiveData = iterator_to_array(
+                $this->DB->pselect(
+                    $query,
+                    [
+                        'ID'     => $tarchiveID,
+                        'OField' => $order,
+                    ]
+                )
             );
             break;
         }
 
         return $tarchiveData ?? [];
     }
+
     /**
      * Validates PatientName and PatientID,
-     * sets INVALID-HIDDEN if not validated.
+     * sets INVALID - HIDDEN if not validated.
      *
      * @return null
      */
@@ -196,6 +259,9 @@ class ViewDetails extends \NDB_Form
             ['tid' => $this->tpl_data['archive']['TarchiveID']]
         )['IsPhantom'] ?? null;
 
+        // This shouldn't happen, but without it phan doesn't realize
+        // that patientname is part of the array
+        assert(isset($this->tpl_data['archive']['PatientName']));
         if ($isPhantom === 'Y') {
             $isValid = preg_match(
                 "/$legoPhanRegex/",
@@ -226,7 +292,8 @@ class ViewDetails extends \NDB_Form
 
         $this->tpl_data['archive']['patientNameValid'] = $isValid ? 1 : 0;
         if (!$isValid) {
-            $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
+            $this->tpl_data['archive']['PatientName']
+                = dgettext('dicom_archive', 'INVALID - HIDDEN');
         }
 
         if (isset($this->tpl_data['archive']['PatientID'])
@@ -240,7 +307,9 @@ class ViewDetails extends \NDB_Form
                 $this->tpl_data['archive']['patientIDValid'] = 1;
             } else {
                 $this->tpl_data['archive']['patientIDValid'] = 0;
-                $this->tpl_data['archive']['PatientID']      = "INVALID - HIDDEN";
+
+                $this->tpl_data['archive']['PatientID']
+                    = dgettext('dicom_archive', 'INVALID - HIDDEN');
             }
         }
     }
@@ -254,7 +323,7 @@ class ViewDetails extends \NDB_Form
     function _setProtocols()
     {
         try {
-            $query           = "SELECT Scan_type, TR_min, TR_max, TE_min, TE_max,
+            $query           = "SELECT MriScanTypeID, TR_min, TR_max, TE_min, TE_max,
                 TI_min, TI_max, slice_thickness_min, slice_thickness_max FROM
                 mri_protocol";
             $this->protocols = $this->DB->pselect($query, []);
@@ -263,6 +332,7 @@ class ViewDetails extends \NDB_Form
             return false;
         }
     }
+
     /**
      * Finds the protocol name by comparing parameters of a series.
      *
@@ -288,7 +358,7 @@ class ViewDetails extends \NDB_Form
                     $protocol['slice_thickness_max']
                 ))
             ) {
-                return $this->_getProtocolNameFromID($protocol['Scan_type']);
+                return $this->_getProtocolNameFromID($protocol['MriScanTypeID']);
             }
         }
         return "Unknown";
@@ -321,6 +391,7 @@ class ViewDetails extends \NDB_Form
             return $protocolMin <= $seriesRange && $seriesRange <= $protocolMax;
         }
     }
+
     /**
      * Retrieves the protocol name given the protocol ID
      * from mri_scan_table table
@@ -333,9 +404,10 @@ class ViewDetails extends \NDB_Form
     function _getProtocolNameFromID($id): string
     {
         try {
-            $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
+            $query = "SELECT MriScanTypeName FROM mri_scan_type
+                WHERE MriScanTypeID=:ID";
             $array = $this->DB->pselectRow($query, ['ID' => $id]);
-            return $array['Scan_type'] ?? 'Unknown';
+            return $array['MriScanTypeName'] ?? 'Unknown';
         } catch (\LorisException $e) {
             return "Unknown";
         }
@@ -358,38 +430,21 @@ class ViewDetails extends \NDB_Form
     }
 
     /**
-     * Overrides base getJSDependencies() to add additional JS files
-     *
-     * @return array of extra JS files that this page depends on
-     */
-    function getJSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            [
-                $baseURL . "/dicom_archive/js/view_details_link.js",
-            ]
-        );
-    }
-
-    /**
      * Generate a breadcrumb trail for this page.
      *
      * @return \LORIS\BreadcrumbTrail
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'View Details',
+                dgettext('dicom_archive', "DICOM Archive"),
+                "/$this->name",
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext('dicom_archive', 'View Details'),
                 "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
             )
         );
     }
 }
-

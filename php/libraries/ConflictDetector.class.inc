@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a class used for detecting conflicts for an instrument.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -23,7 +24,6 @@
  */
 class ConflictDetector
 {
-
     /**
      * Detects of there are any conflicts between 2 given CommentIDs
      *
@@ -110,7 +110,7 @@ class ConflictDetector
     function clearConflictsForField(array $diffLine): void
     {
         $deleteWhere = [
-            'TableName'      => $diffLine['TableName'],
+            'testName'       => $diffLine['TestName'],
             'ExtraKeyColumn' => $diffLine['ExtraKeyColumn'],
             'ExtraKey1'      => $diffLine['ExtraKey1'],
             'ExtraKey2'      => $diffLine['ExtraKey2'],
@@ -154,6 +154,5 @@ class ConflictDetector
         );
         return ($conflictCount != 0);
     }
-
 }
 

@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
+
 /**
  * This class is a wrapper that takes an upload error code
  * and adds the appropriate message to the exception.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Errors
  * @package  Loris

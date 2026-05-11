@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Mri_upload class file
  *
@@ -38,6 +39,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      * Path to the uploaded file (value of SourceLocation in mri_upload table).
      */
     var $uploaded_file_path;
+
     /**
      * The hasAccess function ensures that the user has the imaging_uploader
      * permission.
@@ -46,10 +48,17 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
-        return $user->hasPermission('imaging_uploader');
+        return $user->hasAnyPermission(
+            [
+                'imaging_uploader_allsites',
+                'imaging_uploader_ownsites',
+            ]
+        );
     }
+
     /**
      * Sets up the Filter Variables
      *
@@ -57,6 +66,48 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
+        $config        = \NDB_Factory::singleton()->config();
+        $advancedperms = $config->getSetting(
+            'useAdvancedPermissions'
+        );
+        $user          = \NDB_Factory::singleton()->user();
+        $centerString  = implode("','", $user->getCenterIDs());
+        $projectString = implode("','", $user->getProjectIDs());
+        $username      = $user->getUsername();
+
+        // MySQL order of operations dictates that ANDs get computed before ORs which
+        // means this where clause can take the follwoing forms
+        // 1. WHERE mu.UploadedBy='$username' OR 1=1
+        //      -> returns all records
+        // 2. WHERE mu.UploadedBy='$username' OR (1=1 AND s.CenterID IN ...)
+        //      -> returns records for user's sites
+        // 3. WHERE mu.UploadedBy='$username' OR (1=1 AND s.ProjectID IN ...)
+        //      -> returns records for user's projects
+        // 4. WHERE mu.UploadedBy='$username'
+        //        OR (1=1 AND s.CenterID IN ... AND s.ProjectID IN ...)
+        //      -> returns records for user's sites and projects
+        // 5. WHERE mu.UploadedBy='$username'
+        //        OR (1=1 AND s.CenterID IN ... AND s.ProjectID IN ...)
+        //        OR mu.SessionID IS NULL
+        //     -> returns records for user's sites and projects and null session data
+        // Other combinations are possible but order of operations still applies
+        $where = "WHERE mu.UploadedBy='$username' OR 1=1 ";
+        if (!$user->hasPermission('imaging_uploader_allsites')) {
+            // Create where clause for sites
+            $where = $where . " AND s.CenterID IN ('$centerString') ";
+        }
+
+        if ($advancedperms === 'true') {
+            // If config setting is enabled, check the user's sites and projects
+            // site/project match + user's own uploads
+            $where = $where . " AND s.ProjectID IN ('$projectString')";
+        }
+
+        if ($user->hasPermission('imaging_uploader_nosessionid')) {
+            // clause for accessing null session data
+            $where = $where . " OR mu.SessionID IS NULL ";
+        }
+
         $this->_resetFilters();
         $progressSelectPart = "IF(ISNULL(Inserting), 'Not Started',"
             . "IF(Inserting=1, 'In Progress...', "
@@ -65,7 +116,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->columns      = [
             'UploadID AS Upload_ID',
             $progressSelectPart,
-            's.CandID',
+            'c.CandID as ' . dgettext("loris", "DCCID"),
             'c.PSCID',
             's.Visit_label',
             'UploadLocation AS Upload_Location',
@@ -78,40 +129,43 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             's.ID AS SessionID',
         ];
         $this->validFilters = [
-            's.CandID',
+            'c.CandID',
             'c.PSCID',
             's.Visit_label',
             'mu.IsPhantom',
         ];
-        $this->query        = " FROM mri_upload mu LEFT JOIN session".
-                              " s ON (s.ID = mu.SessionID)".
-                              " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
+        $this->query        = " FROM mri_upload mu".
+                              " LEFT JOIN session s ON (s.ID = mu.SessionID)".
+                              " LEFT JOIN candidate c ON (c.ID = s.CandidateID)".
                               " LEFT JOIN tarchive ta ON".
-                              " (mu.TarchiveID = ta.TarchiveID)".
-                              " WHERE 1=1 ";
+                              " (mu.TarchiveID = ta.TarchiveID)";
+        $this->query       .= $where;
         $this->formToFilter = [
-            'CandID'      => 's.CandID',
+            'CandID'      => 'c.CandID',
             'PSCID'       => 'c.PSCID',
             'Visit_label' => 's.Visit_label',
             'IsPhantom'   => 'mu.IsPhantom',
         ];
+        $this->order_by     ="UploadDate DESC";
     }
-     /**
-      * Sets up the menu filter items for the imaging uploader
-      *
-      * @return void
-      */
+
+    /**
+     * Sets up the menu filter items for the imaging uploader
+     *
+     * @return void
+     */
     function setup()
     {
         parent::setup();
-        $phantomOtions = [
-            'N' => 'No',
-            'Y' => 'Yes',
+        $phantomOptions = [
+            'N' => dgettext("loris", "No"),
+            'Y' => dgettext("loris", "Yes"),
         ];
-        $visitlabels   = \Utility::getVisitList();
+        $user           = \NDB_Factory::singleton()->user();
+        $visitlabels    = $user->getVisits();
         // Fields used for selection filter and upload form
-        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
-        $this->addBasicText('candID', 'CandID');
+        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOptions);
+        $this->addBasicText('candID', dgettext('loris', 'DCCID'));
         $this->addBasicText('pSCID', 'PSCID');
         $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
         $this->addFile('mriFile', 'File to Upload');
@@ -124,7 +178,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $upload_max_size = \Utility::getMaxUploadSize();
             $error_message   = "Please make sure files are not larger than " .
                                 $upload_max_size;
-            http_response_code(400);
+            http_response_code(413);
             $errors = [
                 'IsPhantom'  => [],
                 'candID'     => [],
@@ -136,6 +190,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             exit(json_encode(['errors' => $errors]));
         }
     }
+
     /**
      * Returns true if the _saveFile has successfully
      * completed
@@ -211,6 +266,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     }
 
     // methods available to all children
+
     /**
      * Save the file to the DataBase by:
      * 1) registering the file handlers
@@ -252,6 +308,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $file->processFiles();
         return true;
     }
+
     /**
      * If file is not Phantom, validates advanced options by ensuring that:
      *  - The CandID exists in the database
@@ -274,8 +331,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     function isValid($file, $args)
     {
         //make sure the file-name is  valid
-        $temp_file = $file->fileInfo['tmp_name'];
-        $db        = $this->loris->getDatabaseConnection();
+        $temp_file     = $file->fileInfo['tmp_name'];
+        $db            = $this->loris->getDatabaseConnection();
+        $config        = \NDB_Factory::singleton()->config();
+        $advancedperms = $config->getSetting(
+            'useAdvancedPermissions'
+        );
+        $user          = \NDB_Factory::singleton()->user();
         // creates associative array to store error messages for each form element
         $errors = [
             'IsPhantom'  => [],
@@ -305,7 +367,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
         if ($args['values']['IsPhantom']=='N') {
-            $candid      = trim($args['values']['candID']);
+            $candid      = intval($args['values']['candID']);
             $pscid       = trim($args['values']['pSCID']);
             $visit_label = trim($args['values']['visitLabel']);
             ////////////////////////////////////////////////////////////////
@@ -322,12 +384,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                      c2.candid AS candid_with_pscid,
                      s.visit_label,
                      c2.active AS candidate_active,
-                     s.active AS session_active
+                     s.active AS session_active,
+                     s.ID AS SessionID
                      FROM candidate c
                      LEFT JOIN candidate c2
-                     ON (c.candid=c2.candid AND c2.pscid = :pid)
+                     ON (c.ID=c2.ID AND c2.pscid = :pid)
                      LEFT JOIN session s
-                     ON (s.candid=c.candid and s.visit_label = :vlabel)
+                     ON (s.CandidateID=c2.ID and s.visit_label = :vlabel)
                      WHERE c.candid = :cid",
                     [
                         ':cid'    => $candid,
@@ -360,6 +423,21 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                                 " Visit Label and CandID."
                             );
                     }
+                    if ($advancedperms === 'true') {
+                        // Basic fields have been validated, check user permisions
+                        // only if siteproject permissions configuration is on
+                        $session = \TimePoint::singleton(
+                            new \SessionID(strval($candidate['SessionID']))
+                        );
+                        if (!$session->isAccessibleBy($user)) {
+                            $errors["user"] = "This user does not have permission ".
+                            "to upload files for this session.";
+                            http_response_code(403);
+                            header('Content-Type: application/json; charset=UTF-8');
+                            exit(json_encode(['errors' => $errors]));
+                        }
+                    }
+
                     if ($candidate['candidate_active'] == 'N') {
                         array_push(
                             $errors["pSCID"],
@@ -406,7 +484,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //////// for "new" scans //////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         $updateFile = isset($args['values']['overwrite'])
-            ? (boolean) $args['values']['overwrite'] : false;
+            ? (bool) $args['values']['overwrite'] : false;
         $id         = $db->pselectOne(
             "SELECT
                 IF (InsertionComplete=0 AND
@@ -463,6 +541,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->setTempPath($new_temp_file);
         return true;
     }
+
     /**
      * Inserts into the mri_upload table the following information:
      *   - UploadedBy, UploadDate, UploadLocation, SessionID and
@@ -479,7 +558,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $pname      = '';
         $IsPhantom  = $args['values']['IsPhantom'];
         $updateFile = isset($args['values']['overwrite'])
-            ? (boolean) $args['values']['overwrite'] : false;
+            ? (bool) $args['values']['overwrite'] : false;
         ///////////////////////////////////////////////////////////////////////
         ///////////////If empty get it using User class////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -509,8 +588,10 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 $pscid       = $args['values']['pSCID'];
                 $pname       = $pscid. "_" . $candid . "_" . $visit_label;
                 $sessionid   = $db->pselectOne(
-                    "SELECT ID FROM  session WHERE CandID = :cid
-                     AND Visit_label =:vlabel",
+                    "SELECT s.ID FROM session s
+                        JOIN candidate c ON c.ID=s.CandidateID
+                        WHERE c.CandID = :cid
+                        AND Visit_label =:vlabel",
                     [
                         'cid'    => $candid,
                         'vlabel' => $visit_label,
@@ -573,6 +654,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->mri_upload_id = $db->getLastInsertId();
         return true;
     }
+
     /**
      * Creates a temporary directory
      *
@@ -592,6 +674,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             return $tempfile;
         }
     }
+
     /**
      * The SetTempDir sets the tempdir
      *
@@ -603,6 +686,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         $this->temp_path = $tempFilePath;
     }
+
     /**
      * The getTempPath gets the temp_path
      *
@@ -612,6 +696,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         return $this->temp_path;
     }
+
     /**
      * The getTargetDirectory retrieves info about where the file should be stored.
      *
@@ -630,6 +715,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $args['user_id'] ?? \User::singleton()->getUsername()
         );
     }
+
     /**
      * The function isCompressed returns true if the file is
      * compressed (gzip or zip) or false otherwise
@@ -642,6 +728,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         return strpos(mime_content_type($file), 'zip') !== false;
     }
+
     /**
      * The function removes the uploaded file from the /tmp directory
      * only if the file is moved from the /tmp directory to the
@@ -658,6 +745,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         }
         return $success;
     }
+
     /**
      * The function removes the directory and all its contents
      *
@@ -675,6 +763,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         }
         return rmdir($folder);
     }
+
     /**
      * The function returns an array of filenames that exist in the mri
      * upload directory.
@@ -715,6 +804,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         }
         return $files;
     }
+
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
@@ -734,6 +824,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             ]
         );
     }
+
     /**
      * Include additional CSS files:
      *  imaging_uploader.css
@@ -750,6 +841,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             [$baseURL . "/imaging_uploader/css/imaging_uploader.css"]
         );
     }
+
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json

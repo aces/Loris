@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * RUN-TIME WARNING FOR PROJECTS: It can take up to a whole day to run this script.
  * It took 14 hours to run the script on the CCNA DB during testing.
@@ -13,7 +14,7 @@
  * Example use:
  * $ php SaveUserIDToInstrumentData.php [confirm]
 
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tools
  * @package  Loris

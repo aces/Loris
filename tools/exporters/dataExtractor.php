@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This script, given a table and a column name, will grab all the cells from
  * that column and create a CSV file containing that data alongside the
@@ -141,7 +142,7 @@ if ($mode === VISIT_EXPORT) {
         "c.PSCID,$columnQuery " .
         "FROM session s " .
         "INNER JOIN candidate c " .
-        "ON c.CandID = s.CandID " .
+        "ON (c.ID = s.CandidateID) " .
         "WHERE Visit NOT IN ('Failure', 'Withdrawal') " .
         "AND Current_stage != 'Recycling Bin' " .
         "AND DATE(Date_visit) < :cutoffDate";
@@ -222,12 +223,13 @@ if ($mode === VISIT_EXPORT) {
         $query = <<<QUERY
 SELECT c.PSCID, s.Visit_label, f.Data_entry, f.Administration, $columnQuery
 FROM candidate c
-INNER JOIN session s ON c.CandID = s.CandID
+INNER JOIN session s ON (c.ID = s.CandidateID)
 INNER JOIN flag f ON f.SessionID = s.ID
 INNER JOIN $table t ON t.CommentID = f.CommentID
 WHERE DATE(t.Date_taken) < :cutoffDate
 AND f.CommentID NOT LIKE "DDE%";
 QUERY;
+
 
         $params['cutoffDate'] = $cutoffDate;
 
@@ -245,6 +247,7 @@ $result = $DB->pselect(
     $query,
     $params
 );
+$result = iterator_to_array($result);
 
 if (count($result) < 1) {
     die('No results found for the given criteria.' . PHP_EOL);

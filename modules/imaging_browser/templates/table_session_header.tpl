@@ -1,20 +1,20 @@
 <table class="table table-hover table-bordered dynamictable" id='table-header-left'>
      <thead>
         <tr class="info">
-            <th>QC Status</th>
-            <th>Patient Name</th>
-            <th>PSCID</th>
-            <th>DCCID</th>
-            <th>Visit Label</th>
-            <th>Site</th>
-            <th>QC Pending</th>
-            <th>DOB</th>
-            <th>Sex</th>
-            <th>Output Type</th>
-            <th>Scanner</th>
-            <th>Cohort</th>
+            <th>{dgettext("imaging_browser","QC Status")}</th>
+            <th>{dgettext("imaging_browser","Patient Name")}</th>
+            <th>{dgettext("loris","PSCID")}</th>
+            <th>{dgettext("loris","DCCID")}</th>
+            <th>{dgettext("loris","Visit Label")}</th>
+            <th>{dgettext("loris","Site")}</th>
+            <th>{dgettext("imaging_browser","QC Pending")}</th>
+            <th>{dgettext("loris","DOB")}</th>
+            <th>{dgettext("loris","Sex")}</th>
+            <th>{dgettext("imaging_browser","Output Type")}</th>
+            <th>{dgettext("imaging_browser","Scanner")}</th>
+            <th>{dgettext("loris","Cohort")}</th>
             {if $useEDC|default}
-            <th>EDC</th>
+            <th>{dgettext("imaging_browser","EDC")}</th>
             {/if}
         </tr>
     </thead>

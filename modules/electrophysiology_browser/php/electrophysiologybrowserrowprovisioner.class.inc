@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the electrophysiology browser menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -19,7 +20,7 @@ namespace LORIS\electrophysiology_browser;
  * This class implements a data provisioner to get all possible rows
  * for the electrophysiology browser menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -32,19 +33,39 @@ class ElectrophysiologyBrowserRowProvisioner
     extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
-     * Create an ElectrophyiologyBrowserRowProvisioner, which gets rows for the
+     * Create an ElectrophysiologyBrowserRowProvisioner, which gets rows for the
      * electrophysiology browser menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
 
         parent::__construct(
-            "SELECT 
+            $loris,
+            "SELECT
               psc.Name                                  AS Site,
               c.PSCID                                   AS PSCID,
-              c.CandID                                  AS DCCID,
+              c.CandID                                      AS DCCID,
               Project.Name                              AS Project,
               s.Visit_label                             AS Visit_Label,
+              (
+                SELECT IF((
+                  SELECT COUNT(*)
+                  FROM bids_event_dataset_mapping
+                  WHERE ProjectID = s.ProjectID
+                ) + (
+                  SELECT COUNT(*)
+                  FROM physiological_task_event_hed_rel
+                  WHERE PhysiologicalTaskEventID IN (
+                    SELECT PhysiologicalTaskEventID
+                    FROM physiological_task_event pte
+                    JOIN physiological_file pf USING (PhysiologicalFileID)
+                    WHERE pf.SessionID = s.ID
+                  )
+                ) > 0, 'Yes', 'No')
+              )                                         AS HasHEDTags,
               MIN(pf.AcquisitionTime)                   AS Acquisition_Time,
               MIN(pf.InsertTime)                        AS Insert_Time,
               GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Links,
@@ -54,13 +75,13 @@ class ElectrophysiologyBrowserRowProvisioner
               s.ProjectID                               AS ProjectID
             FROM physiological_file pf
               LEFT JOIN session s   ON (s.ID=pf.SessionID)
-              LEFT JOIN candidate c USING (CandID)
+              LEFT JOIN candidate c ON (c.ID=s.CandidateID)
               LEFT JOIN psc         ON (s.CenterID=psc.CenterID)
               LEFT JOIN Project     ON (s.ProjectID=Project.ProjectID)
-              LEFT JOIN physiological_output_type pot 
+              LEFT JOIN physiological_output_type pot
                 USING (PhysiologicalOutputTypeID)
             WHERE c.Active='Y'
-              AND s.Active='Y' 
+              AND s.Active='Y'
               AND pf.FileType IN (
                 SELECT type FROM ImagingFileTypes
                 WHERE
@@ -82,8 +103,8 @@ class ElectrophysiologyBrowserRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        $cid = new \CenterID($row['CenterID']);
-        $pid = new \ProjectID($row['ProjectID']);
+        $cid = \CenterID::singleton(intval($row['CenterID']));
+        $pid = \ProjectID::singleton(intval($row['ProjectID']));
         unset($row['CenterID']);
         unset($row['ProjectID']);
         return new ElectrophysiologyBrowserRow($row, $cid, $pid);

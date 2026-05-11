@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains code for editing help content.
  * It holds the processing of adding/updating content
  * for all modules.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -25,7 +26,7 @@ if (!$user->hasPermission('context_help')) {
 
 if (empty($_POST)) {
     header("HTTP/1.1 400 Bad Request");
-    exit;
+    exit(0);
 }
 
 $DB = (\NDB_Factory::singleton())->database();
@@ -77,4 +78,21 @@ if (!empty($_POST['helpID'])
             ),
         ]
     );
+
+}
+
+if ($_POST['new'] == true) {
+    // insert the help file
+    HelpFile::insert(
+        [
+            'hash'    => md5($_POST['instrument']),
+            'topic'   => $_POST['title'],
+            'content' => $_POST['content'],
+            'created' => date(
+                'Y-m-d h:i:s',
+                time()
+            ),
+        ]
+    );
+    echo "done";
 }

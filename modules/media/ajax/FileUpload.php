@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Media uploader.
  *
  * Handles media upload and update actions received from a front-end ajax call
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Media
@@ -35,10 +36,6 @@ function editFile()
 {
     $db   = \NDB_Factory::singleton()->database();
     $user =& User::singleton();
-    if (!$user->hasPermission('media_write')) {
-        showMediaError("Permission Denied", 403);
-        exit;
-    }
 
     // Read JSON from STDIN
     $stdin = file_get_contents('php://input');
@@ -50,6 +47,27 @@ function editFile()
 
     if (!$idMediaFile) {
         showMediaError("Media ID $idMediaFile not found", 404);
+        exit(0);
+    }
+
+    $row = $db->pselectRow(
+        "SELECT s.CenterID FROM media m
+         JOIN session s ON m.session_id = s.ID
+         WHERE m.id = :id",
+        ['id' => $idMediaFile]
+    );
+
+    if (!$row) {
+        showMediaError("Media ID $idMediaFile not found", 404);
+        exit(0);
+    }
+
+    if (!$user->hasPermission('media_write')
+        || (!$user->hasPermission('access_all_profiles')
+        && !$user->hasCenter(new \CenterID(strval($row['CenterID']))))
+    ) {
+        showMediaError("Permission Denied", 403);
+        exit(0);
     }
 
     $dateTaken = $req['dateTaken'];
@@ -70,7 +88,6 @@ function editFile()
 
 }
 
-
 /**
  * Handles the media upload process
  *
@@ -90,13 +107,13 @@ function uploadFile()
     $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         showMediaError("Permission Denied", 403);
-        exit;
+        exit(0);
     }
 
     // Validate media path and destination folder
     $mediaPath = $config->getSetting('mediaPath');
 
-    if (!isset($mediaPath)) {
+    if (!isset($mediaPath) || empty($mediaPath)) {
         showMediaError(
             "Media path not set in LORIS settings! "
             . "Please contact your LORIS administrator",
@@ -117,12 +134,9 @@ function uploadFile()
     $language   = isset($_POST['language']) ? $_POST['language'] : null;
 
     // If required fields are not set, show an error
-    if (empty($_FILES)) {
-        echo showMediaError(
-            "File could not be uploaded successfully.
-            Please contact the administrator.",
-            400
-        );
+    if (empty($_POST)) {
+        echo showMediaError("File too large!", 413);
+        return;
     }
 
     if (!isset($pscid, $visit)) {
@@ -152,7 +166,7 @@ function uploadFile()
 
     $sessionID = $db->pselectOne(
         "SELECT s.ID as session_id FROM candidate c " .
-        "LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND " .
+        "LEFT JOIN session s ON c.ID = s.CandidateID WHERE c.PSCID = :v_pscid AND " .
         "s.Visit_label = :v_visit_label",
         [
             'v_pscid'       => $pscid,
@@ -185,17 +199,32 @@ function uploadFile()
         'language_id'   => $language,
     ];
 
-    if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
+    $projectID = $db->pselectOne(
+        "SELECT ProjectID FROM session WHERE ID=:sid",
+        ['sid' => $sessionID]
+    );
+    $dstfile   = \Utility::appendForwardSlash($mediaPath)
+        . \Utility::resolvePath($fileName);
+
+    if (file_exists($dstfile)) {
+        showMediaError("Conflict", 409);
+        return;
+    }
+
+    if (move_uploaded_file($_FILES["file"]["tmp_name"], $dstfile)) {
         try {
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
-            $uploadNotifier->notify(["file" => $fileName]);
+            $uploadNotifier->notify(["file" => $fileName, "project" => $projectID]);
             $qparam = ['ID' => $sessionID];
-            $result = $db->pselect(
-                'SELECT ID, CandID, CenterID, ProjectID, Visit_label
-                            from session
-                        where ID=:ID',
-                $qparam
+            $result = iterator_to_array(
+                $db->pselect(
+                    'SELECT s.ID, c.CandID, s.CenterID, s.ProjectID, s.Visit_label
+                            FROM session s
+                            JOIN candidate c ON c.ID=s.CandidateID
+                        WHERE s.ID=:ID',
+                    $qparam
+                )
             )[0];
             echo json_encode(
                 [
@@ -220,7 +249,7 @@ function uploadFile()
             echo showMediaError("Could not upload the file. Please try again!", 500);
         }
     } else {
-        echo showMediaError("Could not upload the file. Please try again!", 500);
+        echo showMediaError("File too Large!", 500);
     }
 }
 
@@ -264,11 +293,11 @@ function getUploadFields()
     // Select only candidates that have had visit at user's sites
     $qparam       = [];
     $sessionQuery = "SELECT
-                      c.PSCID, s.Visit_label, s.CenterID, f.Test_name, tn.Full_name
+                      c.PSCID, s.Visit_label, s.CenterID, tn.Test_name, tn.Full_name
                      FROM candidate c
-                      LEFT JOIN session s USING (CandID)
+                      LEFT JOIN session s ON c.ID=s.CandidateID
                       LEFT JOIN flag f ON (s.ID=f.SessionID)
-                      LEFT JOIN test_names tn ON (f.Test_name=tn.Test_name)";
+                      LEFT JOIN test_names tn ON (f.TestID=tn.ID)";
 
     if (!$user->hasPermission('access_all_profiles')) {
         $sessionQuery .= " WHERE FIND_IN_SET(s.CenterID, :cid) ORDER BY c.PSCID ASC";
@@ -276,9 +305,11 @@ function getUploadFields()
     } else {
         $sessionQuery .= " ORDER BY c.PSCID ASC";
     }
-    $sessionRecords = $db->pselect(
-        $sessionQuery,
-        $qparam
+    $sessionRecords = iterator_to_array(
+        $db->pselect(
+            $sessionQuery,
+            $qparam
+        )
     );
 
     $instrumentsList = toSelect($sessionRecords, "Test_name", null);
@@ -311,8 +342,8 @@ function getUploadFields()
         $visit = $record["Visit_label"];
         $pscid = $record["PSCID"];
 
-        if (!isset($sessionData[$pscid]['instruments'][$visit])) {
-            $sessionData[$pscid]['instruments'][$visit] = [];
+        if (!isset($sessionData[$pscid]['instruments'][$visit ?? ''])) {
+            $sessionData[$pscid]['instruments'][$visit ?? ''] = [];
         }
         if (!isset($sessionData[$pscid]['instruments']['all'])) {
             $sessionData[$pscid]['instruments']['all'] = [];
@@ -358,8 +389,8 @@ function getUploadFields()
             "file_name as fileName, " .
             "hide_file as hideFile, " .
             "language_id as language," .
-            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID 
-                LEFT JOIN candidate c ON (c.CandID=s.CandID) " .
+            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID
+                LEFT JOIN candidate c ON (c.ID=s.CandidateID) " .
             "WHERE m.id = :mediaId",
             ['mediaId' => $idMediaFile]
         );
@@ -370,7 +401,6 @@ function getUploadFields()
         'visits'      => $visitList,
         'instruments' => $instrumentsList,
         'mediaData'   => $mediaData,
-        'mediaFiles'  => array_values(getFilesList()),
         'sessionData' => $sessionData,
         'language'    => $languageList,
         'startYear'   => $startYear,
@@ -419,29 +449,10 @@ function toSelect($options, $item, $item2)
     }
 
     foreach (array_keys($options) as $key) {
-        $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
+        $selectOptions[$options[$key][$optionsValue] ?? ''] = $options[$key][$item];
     }
 
     return $selectOptions;
-}
-
-/**
- * Returns an array of (id, file_name) pairs from media table
- *
- * @return array
- * @throws DatabaseException
- */
-function getFilesList()
-{
-    $db       = \NDB_Factory::singleton()->database();
-    $fileList = $db->pselect("SELECT id, file_name FROM media", []);
-
-    $mediaFiles = [];
-    foreach ($fileList as $row) {
-        $mediaFiles[$row['id']] = $row['file_name'];
-    }
-
-    return $mediaFiles;
 }
 
 /**

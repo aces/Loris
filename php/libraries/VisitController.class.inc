@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the VisitController class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Controller
  * @package  Visits
@@ -58,9 +59,11 @@ class VisitController
                     $row['VisitLabel']
                 );
             },
-            $this->database->pselect(
-                'SELECT VisitName, VisitLabel FROM visit ORDER BY VisitName',
-                []
+            iterator_to_array(
+                $this->database->pselect(
+                    'SELECT VisitName, VisitLabel FROM visit ORDER BY VisitName',
+                    []
+                )
             )
         );
     }
@@ -95,8 +98,9 @@ class VisitController
                     $row['ID']
                 );
             },
-            $this->database->pselect(
-                'SELECT
+            iterator_to_array(
+                $this->database->pselect(
+                    'SELECT
                  v.VisitID as "ID", v.VisitName as "name"
                 FROM
                  visit v
@@ -104,7 +108,8 @@ class VisitController
                  v.VisitName = :name
                 ORDER BY ID
                 ',
-                ['name' => $visit]
+                    ['name' => $visit]
+                )
             )
         );
     }
@@ -150,14 +155,15 @@ class VisitController
         return array_map(
             function ($row) {
                 return [
-                    new \LORIS\Visit($row['name'], $row['ID']),
+                    new \LORIS\Visit($row['name'], $row['label']),
                     $row['project'],    // will be modified to object when
                     $row['cohort'], // available
                 ];
             },
-            $this->database->pselect(
-                'SELECT
-                  v.VisitID as "ID",
+            iterator_to_array(
+                $this->database->pselect(
+                    'SELECT
+                  v.VisitLabel as "label",
                   v.VisitName as "name",
                   psr.ProjectID as "project",
                   psr.CohortID as "cohort"
@@ -169,11 +175,11 @@ class VisitController
                  JOIN
                   project_cohort_rel psr
                  ON vps.ProjectCohortRelID = psr.ProjectCohortRelID
-                ORDER BY ID, project, cohort
+                ORDER BY label, project, cohort
                 ',
-                []
+                    []
+                )
             )
         );
     }
-
 }

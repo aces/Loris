@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\examiner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -20,7 +21,8 @@ class AddExaminer extends \NDB_Page
      *
      * @return bool true only if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -50,6 +52,7 @@ class AddExaminer extends \NDB_Page
             ));
         }
     }
+
     /**
      * Handles the document editing process
      *
@@ -63,6 +66,16 @@ class AddExaminer extends \NDB_Page
         //Get centerID
         $fullName = $values['addName'] ?? '';
         $siteID   = $values['addSite'] ?? '';
+
+        // check for site permissions
+        $user = \User::singleton();
+        if (!$user->hasPermission('examiner_multisite')
+            && !in_array($siteID, $user->getCenterIDs())
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Permission denied: You cannot assign examiner to this Site.'
+            );
+        };
 
         if ($this->examinerExists($fullName, $siteID)) {
             return  new \LORIS\Http\Response\JSON\Conflict(
@@ -123,6 +136,7 @@ class AddExaminer extends \NDB_Page
                 )
             );
     }
+
     /**
      * Check the examiner name from the database
      *
@@ -149,6 +163,7 @@ class AddExaminer extends \NDB_Page
 
         return !empty($examinerID);
     }
+
     /**
      * Getter for the examinerID value from the database
      *

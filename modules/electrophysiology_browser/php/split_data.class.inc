@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\electrophysiology_browser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -7,7 +8,7 @@ use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
 /**
  * Contains the Split_Data class used for electrophysiological browser
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Electrophysiology
  * @package  Electrophysiology
@@ -48,8 +49,10 @@ class Split_Data extends \NDB_Page
             }
 
             return new \LORIS\Http\Response\JSON\OK(
-                (new ElectrophysioFile(intval($values['physioFileID'])))
-                    ->getSplitData(intval($values['splitIndex']))
+                (new ElectrophysioFile(
+                    $this->loris,
+                    intval($values['physioFileID'])
+                ))->getSplitData(intval($values['splitIndex']))
             );
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(

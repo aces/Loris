@@ -2,12 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import swal from 'sweetalert2';
+import {withTranslation} from 'react-i18next';
 import {
   FormElement,
   StaticElement,
   FileElement,
-  TextboxElement,
+  SearchableDropdown,
   ButtonElement,
+  SelectElement,
 } from 'jsx/Form';
 
 /**
@@ -28,7 +30,6 @@ class UploadFileForm extends Component {
       formData: {},
       uploadResult: null,
       errorMessage: {},
-      hasError: {},
       isLoaded: false,
       uploadProgress: -1,
     };
@@ -44,6 +45,7 @@ class UploadFileForm extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Data loading error
     if (this.state.error !== undefined) {
       return (
@@ -62,24 +64,35 @@ class UploadFileForm extends Component {
         onSubmit={this.validateAndSubmit}
       >
         <StaticElement
-          label='Note'
-          text='Version names will be saved as lowercase.'
+          label={t('Note', {ns: 'data_release'})}
+          text={t('Version names will be saved as lowercase.',
+            {ns: 'data_release'})}
         />
         <FileElement
           name='file'
-          label='File to upload'
+          label={t('File to upload', {ns: 'loris'})}
           onUserInput={this.updateFormElement}
           required={true}
           value={this.state.formData.file}
         />
-        <TextboxElement
+        <SearchableDropdown
           name='version'
-          label='Version'
+          label={t('Version', {ns: 'data_release'})}
           onUserInput={this.updateFormElement}
           required={false}
           value={this.state.formData.version}
+          strictSearch={false}
+          options={this.props.versions}
         />
-        <ButtonElement label='Upload File'/>
+        <SelectElement
+          name='project'
+          label={t('Project', {ns: 'loris'})}
+          onUserInput={this.updateFormElement}
+          required={true}
+          value={this.state.formData.project}
+          options={this.props.projects}
+        />
+        <ButtonElement label={t('Upload File', {ns: 'data_release'})}/>
         <div className='row'>
           <div className='col-sm-9 col-sm-offset-3'>
             <ProgressBar value={this.state.uploadProgress}/>
@@ -111,6 +124,7 @@ class UploadFileForm extends Component {
    * Validate and submit the upload
    */
   validateAndSubmit() {
+    const {t} = this.props;
     let formData = this.state.formData;
 
     let errorMessage = {
@@ -118,15 +132,17 @@ class UploadFileForm extends Component {
       Filesize: undefined,
     };
 
-    let hasError = {
-      Filename: undefined,
-      Filesize: undefined,
-    };
-
     if (!formData.file) {
-      errorMessage.Filename = 'You must select a file to upload';
-      hasError.Filename = true;
-      this.setState({errorMessage, hasError});
+      errorMessage.Filename = t('You must select a file to upload',
+        {ns: 'data_release'});
+      this.setState({errorMessage});
+      return;
+    }
+
+    if (!formData.project) {
+      errorMessage.Project = t('You must select a project',
+        {ns: 'data_release'});
+      this.setState({errorMessage});
       return;
     }
 
@@ -134,18 +150,17 @@ class UploadFileForm extends Component {
     let fileSize = formData.file ? Math.round((formData.file.size/1024)) : null;
     const maxSizeAllowed = this.state.data.maxUploadSize;
     if (parseInt(fileSize, 10) > parseInt(maxSizeAllowed, 10)*1024) {
-      let msg = 'File size exceeds the maximum allowed ('
-                + maxSizeAllowed
-                + ')';
+      let msg = t('File size exceeds the maximum allowed',
+        {ns: 'data_release'})
+                + ' (' + maxSizeAllowed + ')';
       errorMessage['Filesize'] = msg;
-      hasError['Filesize'] = true;
       swal.fire({
-        title: 'Error',
+        title: t('Error', {ns: 'loris'}),
         text: msg,
         type: 'error',
         showCancelButton: true,
       });
-      this.setState({errorMessage, hasError});
+      this.setState({errorMessage});
       return;
     }
 
@@ -158,6 +173,7 @@ class UploadFileForm extends Component {
    * @param {boolean} overwrite
    */
   uploadFile(overwrite) {
+    const {t} = this.props;
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
@@ -175,30 +191,33 @@ class UploadFileForm extends Component {
       cache: 'no-cache',
     }).then(async (response) => {
       if (response.status === 409) {
-          swal.fire({
-            title: 'Are you sure?',
-            text: 'A file with this name already exists!\n '
-                  + 'Would you like to overwrite existing file?\n '
-                  + 'Note that the version associated with '
-                  + 'the file will also be overwritten.',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, I am sure!',
-            cancelButtonText: 'No, cancel it!',
-          }).then((isConfirm) => {
-            if (isConfirm && isConfirm.value) {
-              this.uploadFile(true);
-            }
-          });
+        swal.fire({
+          title: t('Are you sure?', {ns: 'loris'}),
+          text: t('A file with this name already exists!',
+            {ns: 'data_release'}) + '\n ' +
+                t('Would you like to overwrite existing file?',
+                  {ns: 'data_release'}) + '\n ' +
+                t('Note that the version associated with the' +
+                  'file will also be overwritten.',
+                {ns: 'data_release'}),
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonText: t('Yes, I am sure!', {ns: 'loris'}),
+          cancelButtonText: t('No, cancel it!', {ns: 'loris'}),
+        }).then((isConfirm) => {
+          if (isConfirm && isConfirm.value) {
+            this.uploadFile(true);
+          }
+        });
       } else if (!response.ok) {
         const body = await response.json();
         let msg;
         if (body && body.error) {
-            msg = body.error;
+          msg = body.error;
         } else if (response.statusText) {
-            msg = response.statusText;
+          msg = response.statusText;
         } else {
-            msg = 'Upload error!';
+          msg = t('Upload error!', {ns: 'data_release'});
         }
         this.setState({
           errorMessage: msg,
@@ -207,16 +226,17 @@ class UploadFileForm extends Component {
         swal.fire(msg, '', 'error');
         console.error(msg);
       } else {
-          swal.fire({
-            text: 'Upload Successful!',
-            title: '',
-            type: 'success',
-          }).then(function() {
-            window.location.assign('/data_release');
-          });
+        swal.fire({
+          text: t('Upload Successful!', {ns: 'data_release'}),
+          title: '',
+          type: 'success',
+        }).then(function() {
+          window.location.assign('/data_release');
+        });
       }
     }).catch( (error) => {
-      let msg = error.message ? error.message : 'Upload error!';
+      let msg = error.message ? error.message : t('Upload error!',
+        {ns: 'data_release'});
       this.setState({
         errorMessage: msg,
         uploadProgress: -1,
@@ -230,6 +250,9 @@ class UploadFileForm extends Component {
 UploadFileForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  projects: PropTypes.array.isRequired,
+  versions: PropTypes.array.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default UploadFileForm;
+export default withTranslation(['data_release', 'loris'])(UploadFileForm);

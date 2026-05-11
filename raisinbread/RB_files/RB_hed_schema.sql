@@ -1,0 +1,7 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `hed_schema`;
+LOCK TABLES `hed_schema` WRITE;
+INSERT INTO `hed_schema` (`ID`, `Name`, `Version`, `Description`, `URL`) VALUES (1,'HED8.1.0','8.1.0','This schema includes an xsd and requires unit class, unit modifier, value class, schema attribute and property sections.\n\n','https://raw.githubusercontent.com/hed-standard/hed-schemas/main/standard_schema/hedxml/HED8.1.0.xml');
+INSERT INTO `hed_schema` (`ID`, `Name`, `Version`, `Description`, `URL`) VALUES (2,'HED_score_1.0.0','1.0.0','This schema is a Hierarchical Event Descriptors (HED) Library Schema implementation of Standardized Computer-based Organized Reporting of EEG (SCORE)[1,2] for describing events occurring during neuroimaging time series recordings.\nThe HED-SCORE library schema allows neurologists, neurophysiologists, and brain researchers to annotate electrophysiology recordings using terms from an internationally accepted set of defined terms (SCORE) compatible with the HED framework.\nThe resulting annotations are understandable to clinicians and directly usable in computer analysis.\nFuture extensions may be implemented in the HED-SCORE library schema.\nFor more information see https://hed-schema-library.readthedocs.io/en/latest/index.html.','https://raw.githubusercontent.com/hed-standard/hed-schemas/main/library_schemas/score/hedxml/HED_score_1.0.0.xml');
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

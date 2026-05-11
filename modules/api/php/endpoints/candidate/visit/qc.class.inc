@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the visit's imaging qc endpoint class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris

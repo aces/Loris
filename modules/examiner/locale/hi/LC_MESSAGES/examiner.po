@@ -1,0 +1,82 @@
+# Hindi translations for the Examiner module.
+#
+# Default LORIS strings to be translated (English).
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Examiner"
+msgstr "परीक्षक"
+
+msgid "Edit Examiner"
+msgstr "परीक्षक संपादित करें"
+
+msgid "Examiner added."
+msgstr "परीक्षक जोड़ा गया।"
+
+msgid "Add Examiner"
+msgstr "परीक्षक जोड़ें"
+
+msgid "Name"
+msgstr "नाम"
+
+msgid "Radiologist"
+msgstr "रेडियोलॉजिस्ट"
+
+msgid "Add"
+msgstr "जोड़ें"
+
+msgid "ID"
+msgstr "आईडी"
+
+msgid "Certification"
+msgstr "प्रमाणन"
+
+msgid "This user has no site affiliations"
+msgstr "इस उपयोगकर्ता की कोई साइट संबद्धता नहीं है।"
+
+msgid "Edit Certification for"
+msgstr "के लिए प्रमाणन संपादित करें"
+
+msgid "Certification Status"
+msgstr "प्रमाणन स्थिति"
+
+msgid "Certification Date"
+msgstr "प्रमाणन तिथि"
+
+msgid "Comments"
+msgstr "टिप्पणियाँ"
+
+msgid "Change Log"
+msgstr "परिवर्तन लॉग"
+
+msgid "User"
+msgstr "उपयोगकर्ता"
+
+msgid "Measure"
+msgstr "माप"
+
+msgid "Old Value"
+msgstr "पुराना मान"
+
+msgid "Old Date"
+msgstr "पुरानी तिथि"
+
+msgid "New Value"
+msgstr "नया मान"
+
+msgid "New Date"
+msgstr "नई तिथि"
+
+msgid "No changes have been made"
+msgstr "कोई बदलाव नहीं किया गया है"

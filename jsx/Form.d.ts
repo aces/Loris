@@ -5,17 +5,17 @@ type formElement = {
     type: string
 };
 type formElementProps = {
-    name: string
-    id: string
-    method: 'POST' | 'GET',
-    action: string
-    class: string
-    columns: number
-    formElements: {[elementName: string]: formElement}
+    name?: string
+    id?: string
+    method?: 'POST' | 'GET' = 'POST',
+    action?: string = '',
+    class?: string
+    columns?: number
+    formElements?: {[elementName: string]: formElement}
     onSubmit: (FormEvent) => void
-    onUserInput : (name: string, value: string) => void
+    onUserInput?: (name: string, value: string) => void
     children: ReactNode
-    fieUpload: boolean
+    fileUpload?: boolean = false
 };
 /**
  * FormElement class. See Form.js
@@ -108,8 +108,7 @@ type selectElementProps = {
     required?: boolean
     emptyOption?: boolean
     autoSelect?: boolean
-    hasError?: boolean
-    errorMessage?: boolean
+    errorMessage?: string
     onUserInput: (name: string, value: any) => void
     noMargins?: boolean
     placeholder?: string
@@ -306,7 +305,6 @@ type fileElementProps = {
     disabled?: boolean
     required?: boolean
     allowMultiple?: boolean
-    hasError?: boolean
     errorMessage?: string
     onUserInput: (name: string, value: any) => void
 };
@@ -407,7 +405,6 @@ type dateElementProps = {
     dateFormat?: string
     disabled?: boolean
     required?: boolean
-    hasError?: boolean
     errorMessage?: string
     onUserInput: (name: string, value: any) => void
 };
@@ -595,7 +592,7 @@ type radioElementProps = {
     required?: boolean
     vertical?: boolean
     checked: boolean
-    errorMessage?: boolean
+    errorMessage?: string
     elementClass?: boolean
     onUserInput: (name: string, value: any) => void
 }

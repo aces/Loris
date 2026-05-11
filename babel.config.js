@@ -9,7 +9,8 @@ module.exports = function(api) {
       {
         "regenerator": true
       }
-    ]
+    ],
+    "@babel/plugin-transform-modules-commonjs"
   ];
   return {
     presets,

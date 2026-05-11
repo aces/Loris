@@ -27,7 +27,8 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return ($user->hasPermission('electrophysiology_browser_view_allsites')
             || ($user->hasPermission('electrophysiology_browser_view_site')
@@ -66,9 +67,8 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      */
     function getFieldOptions(): array
     {
-        $factory = \NDB_Factory::singleton();
-        $user    = $factory->user();
-        $db      = $factory->database();
+        $user = \User::singleton();
+        $db   =  $this->loris->getDatabaseConnection();
 
         // get list of types
         $list_of_types = [];
@@ -94,10 +94,8 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      */
     function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new ElectrophysiologyBrowserRowProvisioner();
+        return new ElectrophysiologyBrowserRowProvisioner($this->loris);
     }
-
-
 
     /**
      * Include additional JS files
@@ -117,4 +115,22 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
         );
     }
 
+    /**
+     * Include additional CSS files
+     *
+     * @return array of css to be included
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL .
+                '/electrophysiology_browser/css/electrophysiology_browser_index.css'
+            ],
+        );
+    }
 }

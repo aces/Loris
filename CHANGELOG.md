@@ -8,20 +8,66 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
-## LORIS 26.0 (Release Date: ????-??-??)
+## LORIS 28.0 (Release Date: 2026-02-27)
+### Core
+#### Summary
+The LORIS 28 release primarily adds multilingual support, although is also includes
+other improvements such as
+- Add dicom upload to API
+- New biobank module
+- Add infrastructure to track user decisions to policies 
+- Add Support for TOTP / 2FA
+
+### Notes For Existing Projects
+
+Upgrading LORIS requires following the upgrade process each major and minor release (bug fix releases can be script) to ensure the schema is up to date.
+
+For upgrading to 28 from 27:
+- Source the `SQL/Release_patches/27.0_To_28.0_upgrade.sql`
+- Run the `tools/single_use/27_Publication_Collaborators_Into_New_Entries.php` to move publication collaborators into their own database entries rather than relying on eachother.
+
+## LORIS 27.0 (Release Date: 2025-06-20)
+### Core
+#### Summary
+The LORIS 27 release adds many new features and optimizations detailed below such as:
+- Optimizations for the new dataquery tool which also optimize various components throughout LORIS
+- Improvements to permission handling through different modules
+- A new "Batch Mode" for the issue tracker
+- The CandID in LORIS is now 10 digits instead of 6 to support larger projects
+- Foreign Key references to the `candidate` table are now standardized: `CandidateID` which refers to `candidate`.`ID`
+- Instrument's `flag`.`data` moved to `instrument_data` table
+- LORIS now has the ability to display summary statistics of the LORIS instance (either from an SQL query or a query built with the new data query tool) on the login page.
+- A new redcap module allows to importing of data from redcap into LORIS
+- Various other bug fixes and features detailed below
+
+### Notes For Existing Projects
+
+Upgrading LORIS requires following the upgrade process each major and minor release (bug fix releases can be script) to ensure the schema is up to date.
+
+For upgrading to 27 from 26:
+- Source the `SQL/Release_patches/26.0_To_27.0_upgrade.sql`
+- Run the `tools/update_issues_with_description.php` to back-populate the new issue tracker description column. (The description was previously based on the first comment.)
+
+
+## LORIS 26.0 (Release Date: 2024-06-13)
 ### Core
 #### Features
 - Add OpenID Connect authorization support to LORIS (PR #8255)
 
 #### Updates and Improvements
 - Create new `sex` table to hold candidate sex options, and change Sex and ProbandSex columns of `candidate` table to a varchar(255) datatype that is restricted by the `sex` table (PR #9025)
+- Add Project filter for "My tasks" counts in dashboard (PR #9220)
 
 #### Bug Fixes
 - Fix examiner site display (PR #8967)
 - bvl_feedback updates in real-time (PR #8966)
 - DoB and DoD format respected in candidate parameters (PR #9001)
+- Fix delete file in upload (PR #9181)
+- Fix profile level feedback display in behavioural QC module (PR #9192)
+- While proposing a project or editing a project in publications module, prevent indefinite "File to upload" fields from being added if files are browsed then cancelled (PR #9179)
+- Conflict resolver fixed when Test_name is not equal to table name. This is done be replacing the "TableName" variable with "TestName" everywhere in resolved & unresolved conflicts tables as well as modules (PR #9270)
 
-## LORIS 25.0 (Release Date: ????-??-??)
+## LORIS 25.0 (Release Date: 2023-07-17)
 ### Core
 #### Features
 - Added new interface intended to be used for querying module data from PHP (PR #8215) 
@@ -49,6 +95,7 @@ changes in the following format: PR #1234***
   - a default project (default_project) used if createVisit or createCandidate is set to true, or for phantom scans
   - a default cohort (default_cohort) used if createVisit is set to true (PR #8384)
 - Help and help editor reactification (PR #8309)
+- In document repository: Add Upload / edit permission, add "Edit Categories" tab, create category permission (PR #7103)
 
 #### Bug Fixes
 - Fix a Fatal error on the Genomic Browser tabs (PR #8468)
@@ -161,6 +208,7 @@ the `Data` key instead of `$InstrumentName` (PR #7857)
 - Fixed broken DB calls in `assign_missing_instruments` and `instruments` (PR #8162)
 - Add support for PHP 8.1 (PR #7989)
 - Fix Project tab of Configuration module to give correct errors, and prevent saving without Alias (PR #8349)
+- Fix BVL feedback summary in instruments (PR #8889)
 ### Modules
 #### API
 - Ability to use PSCID instead of the CandID in the candidates API (PR #8138)
@@ -516,3 +564,6 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
 - React Form Select Element now has the ability to set an option in the element as a disabled option. (PR #7306)
+
+#### Schedule Module
+- New module created to schedule appointment within LORIS. (PR #6150)

@@ -2,14 +2,16 @@
 
 namespace LORIS\electrophysiology_browser;
 
+use LORIS\electrophysiology_browser\Models\DatasetTags;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use LORIS\electrophysiology_browser\Models\ElectrophysioEvents;
+use \LORIS\electrophysiology_browser\Models\HEDEndorsement;
 
 /**
  * Contains the Events class used for electrophysiological browser
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Electrophysiology
  * @package  Electrophysiology
@@ -41,8 +43,8 @@ class Events extends \NDB_Page
             $parameters = $request->getQueryParams();
             $sessionID  = $db->pselectOne(
                 'SELECT SessionID
-                    FROM physiological_file
-                    WHERE PhysiologicalFileID=:PFID',
+                        FROM physiological_file
+                        WHERE PhysiologicalFileID=:PFID',
                 ['PFID' => $parameters['physioFileID']]
             );
 
@@ -65,23 +67,21 @@ class Events extends \NDB_Page
             }
 
             $physioFileID = intval($parameters['physioFileID']);
-            (new ElectrophysioEvents($physioFileID))->updateFiles();
+            (new ElectrophysioEvents($this->loris, $physioFileID))->updateFiles();
 
             $config       = \NDB_Factory::singleton()->config();
             $downloadpath = \Utility::appendForwardSlash(
                 $config->getSetting("dataDirBasepath")
             );
 
-            $file     = $parameters['filePath'] ?? null;
-            $filename = urldecode(basename($file));
-            $path     = dirname($file);
+            $file = $parameters['filePath'] ?? null;
 
             $downloader = new \LORIS\FilesDownloadHandler(
-                new \SPLFileInfo($downloadpath . $path)
+                new \SPLFileInfo($downloadpath)
             );
 
             return $downloader->handle(
-                $request->withAttribute('filename', $filename)
+                $request->withAttribute('filename', $file)
             );
         case 'DELETE':
             $parameters = json_decode((string)$request->getBody(), true);
@@ -132,7 +132,10 @@ class Events extends \NDB_Page
                     intval($parameters['instance_id']) : null;
 
                 $updated_instance = (
-                  new ElectrophysioEvents(intval($parameters['physioFileID']))
+                    new ElectrophysioEvents(
+                        $this->loris,
+                        intval($parameters['physioFileID'])
+                    )
                 )->update($instance_data, $metadata, $instance_id);
 
                 if (count($updated_instance) > 0) {
@@ -141,6 +144,78 @@ class Events extends \NDB_Page
                     ));
                 }
                 return (new \LORIS\Http\Response\JSON\Unauthorized());
+            case 'dataset_tags':
+                $added_tags   = $parameters['added_tags'];
+                $deleted_tags = $parameters['deleted_tags'];
+                $edited_tags  = $parameters['edited_tags'];
+
+                $dataset_tags = new DatasetTags(
+                    $this->loris,
+                    intval($parameters['physioFileID'])
+                );
+                $idMapping    = $dataset_tags->update(
+                    $added_tags,
+                    $deleted_tags,
+                    $edited_tags
+                );
+
+                return (new \LORIS\Http\Response\JSON\OK(
+                    ['mapping' => $idMapping]
+                ));
+            case 'endorse_dataset_tags':
+                $propertyName       = $parameters['property_name'];
+                $propertyValue      = $parameters['property_value'];
+                $endorsementStatus  = $parameters['endorsement_status'];
+                $endorsementComment = $parameters['endorsement_comment'];
+                $endorserID         = $user->getId();
+
+                $tagInsertion = HEDEndorsement::insertDatasetTagEndorsements(
+                    $parameters['physioFileID'],
+                    $propertyName,
+                    $propertyValue,
+                    $endorserID,
+                    $endorsementStatus,
+                    $endorsementStatus === 'Comment'
+                    ? $endorsementComment
+                    : null
+                );
+                $endorserName = substr($user->getData('First_name'), 0, 1) .
+                  '.' . $user->getData('Last_name');
+                return (new \LORIS\Http\Response\JSON\OK(
+                    [
+                        'endorsementID'   => $tagInsertion['endorsementID'],
+                        'endorsedBy'      => $endorserName,
+                        'endorsedByID'    => $endorserID,
+                        'endorsementTime' => $tagInsertion['endorsementTime'],
+                    ]
+                ));
+            case 'endorse_hed_instance':
+                $hedRelID           = $parameters['hed_rel_id'];
+                $endorsementStatus  = $parameters['endorsement_status'];
+                $endorsementComment = $parameters['endorsement_comment'];
+                $endorserID         = $user->getId();
+
+                $tagInsertion = HEDEndorsement::insertHEDEndorsement(
+                    $hedRelID,
+                    'physiological_task_event_hed_rel',
+                    $endorserID,
+                    $endorsementStatus,
+                    $endorsementStatus === 'Comment'
+                      ? $endorsementComment
+                      : null
+                );
+                $endorserName = substr($user->getData('First_name'), 0, 1) .
+                    '.' . $user->getData('Last_name');
+                return (new \LORIS\Http\Response\JSON\OK(
+                    [
+                        'endorsementID'   => $tagInsertion['endorsementID'],
+                        'endorsedBy'      => $endorserName,
+                        'endorsedByID'    => $endorserID,
+                        'endorsementTime' => $tagInsertion['endorsementTime'],
+                    ]
+                ));
+            default:
+                return (new \LORIS\Http\Response\JSON\BadRequest());
             }
             default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(

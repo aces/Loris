@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\new_profile;
 
 /**
@@ -19,9 +20,10 @@ class New_Profile extends \NDB_Form
      *
      * @return bool true if they have access to this page
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
-        if ($user->hasStudySite() || $user->hasCenter(new \CenterID("1"))) {
+        if ($user->hasStudySite() || $user->hasCenter(\CenterID::singleton(1))) {
             return $user->hasPermission('data_entry');
         }
 
@@ -58,11 +60,9 @@ class New_Profile extends \NDB_Form
 
         // Get projects for the select dropdown
         $projList = [];
-        $projects = \Utility::getProjectList();
-        foreach ($projects as $projectID => $projectName) {
-            $projList[$projectID] = $projectName;
+        foreach ($user->getProjects() as $project) {
+            $projList[$project->getName()] = $project->getName();
         }
-        $project = $projList ?? null;
 
         // Get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');
@@ -78,7 +78,7 @@ class New_Profile extends \NDB_Form
             'sex'       => $sex,
             'pscidSet'  => $pscidSet,
             'site'      => $site,
-            'project'   => $project,
+            'project'   => $projList,
         ];
     }
 

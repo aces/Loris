@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * File_Decompress class file
  *
@@ -125,7 +126,6 @@ class File_Decompress
            //could remove the folder later once completed...
         return $return_value;
     }
-
 
     /**
      * Unzips a file by :

@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements the AuthMiddleware middleware class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Router
  * @package  Middleware

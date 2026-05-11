@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Unit test for Visit class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Test
@@ -140,6 +141,7 @@ class VisitTest extends TestCase
     function testAllVisit()
     {
         $this->markTestSkipped("Test Will be restored after Visit class revamp");
+        /*
 
         $visits = $this->visitController->getAllVisits();
         $this->assertEquals(
@@ -147,6 +149,7 @@ class VisitTest extends TestCase
             $visits,
             "the name of the visit does not match value in DB"
         );
+        */
     }
 
     /**
@@ -159,6 +162,7 @@ class VisitTest extends TestCase
     function testVisitsProjects()
     {
         $this->markTestSkipped("Test Will be restored after Visit class revamp");
+        /*
 
         $visits = $this->visitController->getVisitsProjectCohort();
         $this->assertEquals(
@@ -166,6 +170,7 @@ class VisitTest extends TestCase
             $visits,
             "the project cohort relation does not match value in DB"
         );
+        */
     }
 
     /**
@@ -178,6 +183,7 @@ class VisitTest extends TestCase
     function testGetVisitsByName()
     {
         $this->markTestSkipped("Test Will be restored after Visit class revamp");
+        /*
 
         $visit_result = new \Loris\Visit('V1');
         $visits       = $this->visitController->getVisitsByName("V1");
@@ -185,8 +191,8 @@ class VisitTest extends TestCase
             [$visit_result],
             $visits
         );
+        */
     }
-
 
     /**
      * Tears down the fixture, for example, close a network connection.
