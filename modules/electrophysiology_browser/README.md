@@ -47,5 +47,6 @@ New events or edits to existing events made through the browser must also be upd
 
 The visualization components require Protocol Buffers v3.0.0 or higher.
 For install instructions, you can refer to the Protocol Buffers GitHub page: https://github.com/protocolbuffers/protobuf
+Note: Protocol Buffers > v3.21 does not include the javascript compiler in the main repository anymore. To install it on your system, run `npm install -g protoc-gen-js`.
 
 To enable the visualization components, set the `useEEGBrowserVisualizationComponents` config (Configuration/GUI) to true and run `make dev` or `npm install && npm run compile` from the loris root directory.

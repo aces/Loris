@@ -29,5 +29,5 @@ if (isset($_GET['feedbackID']) && !Empty($_GET['feedbackID'])) {
     print json_encode($threadEntries);
 }
 
-exit();
+exit(0);
 

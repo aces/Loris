@@ -4,7 +4,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -31,7 +31,6 @@ use LORIS\StudyEntities\Candidate\CandID;
  */
 class Module extends \Module
 {
-
     /**
      * The instrument_list module falls back to the instrument_list page regardless
      * of what the page loaded was. This ensures that routes which use the CandID
@@ -92,8 +91,20 @@ class Module extends \Module
         } catch (\LorisException $e) {
             $user    = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
             $message = 'Could not find candidate information for candidate '
-                . htmlspecialchars($gets['candID']) . ' and session '
-                . htmlspecialchars($gets['sessionID']) . '.';
+                . htmlspecialchars(
+                    $gets['candID'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    . ' and session '
+                . htmlspecialchars(
+                    $gets['sessionID'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    . '.';
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $user
             ))->process(
@@ -118,6 +129,6 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Instrument List";
+        return dgettext("instrument_list", "Instrument List");
     }
 }

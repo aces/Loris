@@ -6,7 +6,7 @@
  * run by an administer on the server and doesn't validate the
  * user's password, just blindly resets it.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tools
  * @package  Loris

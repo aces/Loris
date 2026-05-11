@@ -27,6 +27,7 @@ class FilePanel extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     const halfSize = this.state.data.length/2;
     const columns = [
       this.state.data.slice(0, halfSize),
@@ -41,8 +42,13 @@ class FilePanel extends Component {
           </div>
           <Panel
             id={this.props.id + '_details'}
-            title={'Acquisition Details for Recording '
-            + this.props.title.split('.').slice(0, -1).join('.')
+            title={this.props.title
+              ? t(
+                'Acquisition Details for Recording {{recording}}', {
+                  ns: 'electrophysiology_browser',
+                  recording: this.props.title.split('.').slice(0, -1).join('.'),
+                })
+              : t('Loading...', {ns: 'loris'})
             }
           >
             <div className={'container-fluid'}>
@@ -102,11 +108,12 @@ FilePanel.propTypes = {
   title: PropTypes.string,
   data: PropTypes.array,
   children: PropTypes.node,
+  t: PropTypes.func,
 };
 
 FilePanel.defaultProps = {
   id: 'file_panel',
-  title: 'FILENAME',
+  title: '',
   data: [],
 };
 

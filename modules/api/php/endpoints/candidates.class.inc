@@ -3,7 +3,7 @@
 /**
  * This implements the Candidates endpoint class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -44,7 +44,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return boolean true if access is permitted
      */
-    private function _hasAccess(\User $user)
+    private function _innerHasAccess(\User $user)
     {
         return (
             $user->hasPermission('access_all_profiles') ||
@@ -93,7 +93,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\Unauthorized();
         }
 
-        if (!$this->_hasAccess($user)) {
+        if (!$this->_innerHasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
@@ -160,7 +160,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
-        $endpoint = new Candidate\Candidate($candidate);
+        $endpoint = new Candidate\Candidate($this->loris, $candidate);
 
         $pathparts = array_slice($pathparts, 2);
         $request   = $request->withAttribute('pathparts', $pathparts);
@@ -186,7 +186,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ['access_all_profiles']
         );
 
-        $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner())
+        $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner(
+            $this->loris
+        )
+        )
             ->filter($filter)
             ->filter(new \LORIS\Data\Filters\UserProjectMatch());
 

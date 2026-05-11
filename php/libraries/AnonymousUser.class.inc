@@ -3,7 +3,7 @@
 /**
  * File implements the AnonymousUser class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -84,5 +84,15 @@ class AnonymousUser extends \User
     function getExaminerSites(): array
     {
         return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    function totpRequired() : bool
+    {
+        return false;
     }
 }

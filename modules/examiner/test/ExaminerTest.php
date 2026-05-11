@@ -3,7 +3,7 @@
 /**
  * Examiner module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -20,7 +20,7 @@ require_once __DIR__ .
 /**
  * Examiner module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -45,6 +45,7 @@ class ExaminerTest extends LorisIntegrationTest
     {
         parent::setUp();
     }
+
     /**
      * Delete testing data
      *
@@ -89,6 +90,7 @@ class ExaminerTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that examiner page does not load if the user does not have correct
      * permissions
@@ -112,6 +114,7 @@ class ExaminerTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that examiner page does not load if the user does not have correct
      * permissions
@@ -135,6 +138,7 @@ class ExaminerTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that examiner selection filter, search a Examiner name
      * and click clear form, the input data should disappear.
@@ -155,6 +159,7 @@ class ExaminerTest extends LorisIntegrationTest
         )->getText();
         $this->assertEquals("", $bodyText);
     }
+
     /**
      * Tests that Add examiner section, insert an Examiner and find it.
      *
@@ -189,6 +194,5 @@ class ExaminerTest extends LorisIntegrationTest
             '1 row'
         );
     }
-
 }
 

@@ -35,7 +35,8 @@ class Configuration extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('config');
     }
@@ -52,13 +53,12 @@ class Configuration extends \NDB_Form
         $DB     = $this->loris->getDatabaseConnection();
 
         $scans      = $DB->pselect(
-            "SELECT Scan_type
-             FROM mri_scan_type",
+            "SELECT MriScanTypeName FROM mri_scan_type",
             []
         );
         $scan_types = ['' => ''];
         foreach ($scans as $type) {
-            $val = $type['Scan_type'];
+            $val = $type['MriScanTypeName'];
             $scan_types[$val] = $val;
         }
 
@@ -107,8 +107,8 @@ class Configuration extends \NDB_Form
         $DB = $this->loris->getDatabaseConnection();
 
         $parentConfigItems = $DB->pselect(
-            "SELECT Label, Name 
-             FROM ConfigSettings 
+            "SELECT Label, Name
+             FROM ConfigSettings
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
             []
         );

@@ -4,7 +4,7 @@
  * File contains the PSR15 ResponseInterface implementation for
  * Internal Server Error responses.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category PSR15
  * @package  Http

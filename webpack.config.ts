@@ -5,9 +5,6 @@ import webpack, {DefinePlugin, IgnorePlugin} from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
-// Build mode (development or production)
-const isDev = process.env.NODE_ENV === 'development';
-
 // Target module to build (if there is one)
 const target = process.env.target;
 
@@ -15,10 +12,10 @@ const target = process.env.target;
 const lorisModules: Record<string, string[]> = {
   media: ['CandidateMediaWidget', 'mediaIndex'],
   issue_tracker: ['issueTrackerIndex', 'index', 'CandidateIssuesWidget'],
-  login: ['loginIndex'],
+  login: ['loginIndex', 'mfaPrompt'],
   publication: ['publicationIndex', 'viewProjectIndex'],
   document_repository: ['docIndex', 'editFormIndex'],
-  candidate_parameters: ['CandidateParameters', 'ConsentWidget'],
+  candidate_parameters: ['CandidateParameters', 'ConsentWidget', 'DiagnosisEvolution'],
   configuration: [
     'CohortRelations',
     'configuration_helper',
@@ -28,6 +25,7 @@ const lorisModules: Record<string, string[]> = {
   battery_manager: ['batteryManagerIndex'],
   bvl_feedback: ['react.behavioural_feedback_panel'],
   behavioural_qc: ['behaviouralQCIndex'],
+  biobank: ['biobankIndex'],
   create_timepoint: ['createTimepointIndex'],
   candidate_list: ['openProfileForm', 'candidateListIndex'],
   datadict: ['dataDictIndex'],
@@ -51,6 +49,7 @@ const lorisModules: Record<string, string[]> = {
   genomic_browser: ['genomicBrowserIndex'],
   electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
+    'electrophysiologySessionView',
   ],
   electrophysiology_uploader: [
     'ElectrophysiologyUploader',
@@ -82,6 +81,7 @@ const lorisModules: Record<string, string[]> = {
   schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
+  my_preferences: ['mfa'],
 };
 
 /*
@@ -144,11 +144,11 @@ const resolve: webpack.ResolveOptions = {
     PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
     Panel: path.resolve(__dirname, './jsx/Panel'),
     ProgressBar: path.resolve(__dirname, './jsx/ProgressBar'),
-    StaticDataTable: path.resolve(__dirname, './jsx/StaticDataTable'),
     Tabs: path.resolve(__dirname, './jsx/Tabs'),
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
     Help: path.resolve(__dirname, './jsx/Help'),
+    I18nSetup: path.resolve(__dirname, './jsx/I18nSetup'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
@@ -177,13 +177,30 @@ const module: webpack.ModuleOptions = {
     },
     {
       test: /\.tsx?$/,
+      exclude: [/react-series-data-viewer/],
       use: [
         {
           loader: 'ts-loader',
-          options: {onlyCompileBundledFiles: true},
+          options: {
+            onlyCompileBundledFiles: true,
+          },
         },
       ],
     },
+    {
+      test: /.*\/react-series-data-viewer\/.*\.tsx?$/,
+      use: [
+        {
+          loader: 'ts-loader',
+          options: {
+            onlyCompileBundledFiles: true,
+            compilerOptions: {
+              strict: false,
+          },
+        },
+      },
+    ],
+  },
   ],
 };
 
@@ -192,16 +209,22 @@ const plugins: webpack.WebpackPluginInstance[] = [];
 plugins.push(new CopyPlugin({
   patterns: [
     {
-      from: `node_modules/react/umd/${
-        isDev ? 'react.development.js' : 'react.production.min.js'
-      }`,
+      from: 'node_modules/react/umd/react.development.js',
       to: 'htdocs/vendor/js/react',
       force: true,
     },
     {
-      from: `node_modules/react-dom/umd/${
-        isDev ? 'react-dom.development.js' : 'react-dom.production.min.js'
-      }`,
+      from: 'node_modules/react/umd/react.production.min.js',
+      to: 'htdocs/vendor/js/react',
+      force: true,
+    },
+    {
+      from: 'node_modules/react-dom/umd/react-dom.development.js',
+      to: 'htdocs/vendor/js/react',
+      force: true,
+    },
+    {
+      from: 'node_modules/react-dom/umd/react-dom.production.min.js',
       to: 'htdocs/vendor/js/react',
       force: true,
     },
@@ -236,13 +259,8 @@ function addProjectModules(
     = require('./project/webpack-project.config.js');
 
   // Copy the record of LORIS modules
-  const allModules: Record<string, string[]> = {};
-  for (const [moduleName, moduleEntryPoints] of
-    Object.entries(projectModules)
-  ) {
-    allModules[moduleName] = [...moduleEntryPoints];
-  }
-
+  const allModules: Record<string, string[]> = modules;
+  
   // Add project-specific modules and overrides to the record of modules
   for (const [moduleName, moduleEntryPoints] of
     Object.entries(projectModules)
@@ -330,10 +348,9 @@ const configs: webpack.Configuration[] = [];
 
 configs.push({
   entry: {
-    PaginationLinks: './jsx/PaginationLinks.js',
-    StaticDataTable: './jsx/StaticDataTable.js',
     MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
     Breadcrumbs: './jsx/Breadcrumbs.js',
+    PolicyButton: './jsx/PolicyButton.js',
     CSSGrid: './jsx/CSSGrid.js',
     Help: './jsx/Help.js',
     ...getModulesEntries(),
@@ -352,41 +369,5 @@ configs.push({
   module,
   stats: 'errors-warnings',
 });
-
-// HACK: For some reason, the electrophysiology session view only compiles if
-// it uses a separate (although possibly identical) configuration.
-if (!target || target === 'electrophysiology_browser') {
-  configs.push({
-    entry: {
-      electrophysiology_browser: {
-        import: './modules/electrophysiology_browser/'
-          + 'jsx/electrophysiologySessionView',
-        filename: './modules/electrophysiology_browser/'
-          + 'js/electrophysiologySessionView.js',
-        library: {
-          name: [
-            'lorisjs',
-            'electrophysiology_browser',
-            'electrophysiologySessionView',
-          ],
-          type: 'window',
-        },
-      },
-    },
-    output: {
-      path: __dirname,
-      filename: './htdocs/js/components/[name].js',
-      library: ['lorisjs', '[name]'],
-      libraryTarget: 'window',
-    },
-    externals: {'react': 'React', 'react-dom': 'ReactDOM'},
-    devtool: 'source-map',
-    plugins,
-    optimization,
-    resolve,
-    module,
-    stats: 'errors-warnings',
-  });
-}
 
 export default configs;

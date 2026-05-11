@@ -11,6 +11,8 @@ import {
   CheckboxElement,
   ButtonElement,
 } from 'jsx/Form';
+import {PolicyButton} from 'jsx/PolicyButton';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Request account form.
@@ -38,6 +40,9 @@ class RequestAccount extends Component {
           project: this.props.data.project
             ? Object.keys(this.props.data.project)['']
             : '',
+          language_preference: this.props.data.language
+            ? Object.keys(this.props.data.language)['']
+            : '',
           examiner: false,
           radiologist: false,
         },
@@ -45,8 +50,10 @@ class RequestAccount extends Component {
           ? this.props.data.captcha
           : '',
         error: '',
+        viewedPolicy: false,
       },
       request: false,
+      policy: this.props.data.policy || null,
     };
     this.setForm = this.setForm.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -75,7 +82,22 @@ class RequestAccount extends Component {
    */
   handleSubmit(e) {
     e.preventDefault();
-
+    if (this.props.data.policy && !this.state.form.viewedPolicy) {
+      let title = this.props.data.policy.SwalTitle;
+      swal.fire({
+        title: this.props.t(
+          '{{title}} not accepted',
+          {ns: 'login', title: title},
+        ),
+        text: this.props.t(
+          'You must accept the {{title}} before requesting an account.',
+          {ns: 'login', title: title},
+        ),
+        icon: 'error',
+      });
+      e.stopPropagation();
+      return;
+    }
     const state = JSON.parse(JSON.stringify(this.state));
     fetch(
       window.location.origin + '/login/Signup', {
@@ -91,6 +113,7 @@ class RequestAccount extends Component {
           email: state.form.value.email,
           site: state.form.value.site,
           project: state.form.value.project,
+          language_preference: state.form.value.language_preference,
           examiner: state.form.value.examiner,
           radiologist: state.form.value.radiologist,
         }),
@@ -156,6 +179,26 @@ class RequestAccount extends Component {
         </span>
       </div>
     ) : null;
+    const policy = this.state.policy ? (
+      <PolicyButton
+        onClickPolicy={this.state.policy}
+        popUpPolicy={this.state.policy}
+        buttonStyle={{marginTop: '10px'}}
+        buttonText={this.props.t(
+          'View {{policy}}',
+          {ns: 'login', policy: this.state.policy.HeaderButtonText}
+        )}
+        anon={true}
+        callback={() => {
+          this.setState({
+            form: {
+              ...this.state.form,
+              viewedPolicy: true,
+            },
+          });
+        }}
+      />
+    ) : null;
     const request = !this.state.request ? (
       <div>
         <FormElement
@@ -166,8 +209,11 @@ class RequestAccount extends Component {
           onSubmit={this.handleSubmit}
         >
           <StaticElement
-            text={'Please fill in the form below to request a LORIS account. ' +
-            'We will contact you once your account has been approved.'}
+            text={this.props.t(
+              'Please fill in the form below to request a LORIS account. ' +
+              'We will contact you once your account has been approved.',
+              {ns: 'login'}
+            )}
             class={'col-sm-12'}
             textClass={'text-center'}
           />
@@ -178,7 +224,7 @@ class RequestAccount extends Component {
             class={'col-sm-12'}
             required={true}
             type={'text'}
-            placeholder={'First name'}
+            placeholder={this.props.t('First name', {ns: 'loris'})}
           />
           <TextboxElement
             name={'lastname'}
@@ -187,7 +233,7 @@ class RequestAccount extends Component {
             class={'col-sm-12'}
             required={true}
             type={'text'}
-            placeholder={'Last name'}
+            placeholder={this.props.t('Last name', {ns: 'loris'})}
           />
           <EmailElement
             name={'email'}
@@ -196,7 +242,7 @@ class RequestAccount extends Component {
             class={'col-sm-12'}
             required={true}
             type={'text'}
-            placeholder={'Email address'}
+            placeholder={this.props.t('Email address', {ns: 'loris'})}
           />
           <SelectElement
             name={'site'}
@@ -205,7 +251,7 @@ class RequestAccount extends Component {
             onUserInput={this.setForm}
             emptyOption={false}
             required={true}
-            placeholder={'Choose your site:'}
+            placeholder={this.props.t('Choose your site:', {ns: 'login'})}
           />
           <SelectElement
             name={'project'}
@@ -214,48 +260,69 @@ class RequestAccount extends Component {
             onUserInput={this.setForm}
             emptyOption={false}
             required={true}
-            placeholder={'Choose your project:'}
+            placeholder={this.props.t('Choose your project:', {ns: 'login'})}
+          />
+          <SelectElement
+            name={'language_preference'}
+            options={this.props.data.language}
+            value={this.state.form.value.language_preference}
+            onUserInput={this.setForm}
+            emptyOption={false}
+            required={false}
+            placeholder={this.props.t('Preferred language:', {ns: 'login'})}
           />
           <CheckboxElement
             name={'examiner'}
-            label={'Examiner role'}
+            label={this.props.t('Examiner role', {ns: 'login'})}
             class={'row form-group'}
             value={this.state.form.value.examiner}
             onUserInput={this.setForm}
           />
           <CheckboxElement
             name={'radiologist'}
-            label={'Radiologist'}
+            label={this.props.t('Radiologist', {ns: 'login'})}
             class={'row form-group'}
             value={this.state.form.value.radiologist}
             onUserInput={this.setForm}
             offset={'col-sm-offset-2'}
           />
+          {policy}
           {captcha}
           <ButtonElement
-            label={'Request Account'}
+            label={this.props.t('Request Account', {ns: 'login'})}
             type={'submit'}
             columnSize={'col-sm-12'}
             buttonClass={'btn btn-primary btn-block'}
           />
         </FormElement>
         <a onClick={() => this.props.setMode('login')}
-          style={{cursor: 'pointer'}}>Back to login page</a>
+          style={{cursor: 'pointer'}}>{this.props.t(
+            'Back to login page',
+            {ns: 'login'}
+          )}</a>
       </div>
     ) : (
       <div className={'success-message'}>
-        <h1>Thank you!</h1>
-        <p>Your request for an account has been received successfully.</p>
-        <p>Please contact your project administrator to activate
-          this account.</p>
+        <h1>{this.props.t('Thank you!', {ns: 'login'})}</h1>
+        <p>{this.props.t(
+          'Your request for an account has been received successfully.',
+          {ns: 'login'}
+        )}</p>
+        <p>{this.props.t(
+          'Please contact your project administrator to activate this account.',
+          {ns: 'login'}
+        )}</p>
         <a onClick={() => window.location.href = window.location.origin}
-          style={{cursor: 'pointer'}}>Return to Login Page</a>
+          style={{cursor: 'pointer'}}>{this.props.t(
+            'Return to Login Page',
+            {ns: 'login'}
+          )}</a>
       </div>
     );
     return (
       <div className={'container'}>
         <Panel
-          title={'Request Account'}
+          title={this.props.t('Request Account', {ns: 'login'})}
           class={'panel-default panel-center'}
           collapsing={false}
         >
@@ -274,6 +341,8 @@ RequestAccount.propTypes = {
   defaultFirstName: PropTypes.string,
   defaultLastName: PropTypes.string,
   defaultEmail: PropTypes.string,
+
+  t: PropTypes.func, /* from withTranslation HoC */
 };
 
-export default RequestAccount;
+export default withTranslation(['login', 'loris'])(RequestAccount);

@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  *  @category Recording
  *  @package  Main
@@ -30,6 +30,7 @@ class RecordingElectrodes
     private ?string $_z;
     private ?string $_impedance;
     private ?string $_filepath;
+
     /**
      * Contructor
      *

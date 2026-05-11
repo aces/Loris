@@ -3,7 +3,7 @@
 /**
  * Unit tests for NDB_Page class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -243,7 +243,7 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addBasicDate calls addElement from LorisForm and properly adds
      * an element to the page's form when dateOptions is not set. Since
-     * dateOptions is not set, the options array should remain empty.
+     * dateOptions is not set, the options array should have the default maxYear.
      *
      * @covers NDB_Page::addBasicDate
      * @return void
@@ -256,7 +256,9 @@ class NDB_PageTest extends TestCase
                 'label'   => 'test_label',
                 'type'    => 'date',
                 'class'   => 'form-control input-sm',
-                'options' => []
+                'options' => [
+                    'maxYear' => '9999'
+                ]
             ],
             $this->_page->form->form['test_name']
         );
@@ -265,21 +267,27 @@ class NDB_PageTest extends TestCase
     /**
      * Test that addBasicDate calls addElement from LorisForm and properly adds
      * an element to the page's form when dateOptions is set. Since
-     * dateOptions is set, the options array should have information in it.
+     * dateOptions is set, the options array should have that information in it
      *
      * @covers NDB_Page::addBasicDate
      * @return void
      */
     public function testAddBasicDateWithDateOptionsSet()
     {
-        $this->_page->dateOptions = ['someOption' => 'true'];
+        $this->_page->dateOptions = [
+            'someOption' => 'true',
+            'maxYear'    => '2028'
+        ];
         $this->_page->addBasicDate("test_name", "test_label");
         $this->assertEquals(
             ['name'    => 'test_name',
                 'label'   => 'test_label',
                 'type'    => 'date',
                 'class'   => 'form-control input-sm',
-                'options' => ['someOption' => 'true']
+                'options' => [
+                    'someOption' => 'true',
+                    'maxYear'    => '2028'
+                ]
             ],
             $this->_page->form->form['test_name']
         );
@@ -603,7 +611,9 @@ class NDB_PageTest extends TestCase
                 'label'   => 'test_label',
                 'type'    => 'date',
                 'class'   => 'form-control input-sm',
-                'options' => null
+                'options' => [
+                    'maxYear' => '9999'
+                ]
             ],
             $this->_page->createDate("test_field", "test_label")
         );
@@ -686,6 +696,7 @@ class NDB_PageTest extends TestCase
     public function testDisplayWithFormFrozen()
     {
         $this->markTestIncomplete("This test is incomplete!");
+        /*
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
         '@phan-var \NDB_Config $configMock';
         $factory = NDB_Factory::singleton();
@@ -693,10 +704,11 @@ class NDB_PageTest extends TestCase
         $smarty = $this->getMockBuilder(Smarty_NeuroDB::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $smarty->expects($this->any())->method('fetch')
+        $smarty->method('fetch')
             ->willReturn("fetch was called!");
         $this->_page->form->freeze();
         $this->assertEquals("fetch was called!", $this->_page->display());
+        */
     }
 
     /**
@@ -726,16 +738,16 @@ class NDB_PageTest extends TestCase
     }
 
     /**
-     * Test that _hasAccess returns true
+     * Test that isAccessibleByreturns true
      *
-     * @covers NDB_Page::_hasAccess
+     * @covers NDB_Page::isAccessibleBy
      * @return void
      */
-    public function testHasAccess()
+    public function testIsAccessibleBy()
     {
         $user = $this->getMockBuilder('\User')->getMock();
         '@phan-var \User $user';
-        $this->assertTrue($this->_page->_hasAccess($user));
+        $this->assertTrue($this->_page->isAccessibleBy($user));
     }
 
     /**
@@ -806,6 +818,7 @@ class NDB_PageTest extends TestCase
                 '/js/jquery.fileupload.js',
                 '/bootstrap/js/bootstrap.min.js',
                 '/js/components/Breadcrumbs.js',
+                '/js/components/PolicyButton.js',
                 '/js/util/queryString.js',
                 '/js/components/Help.js',
             ],

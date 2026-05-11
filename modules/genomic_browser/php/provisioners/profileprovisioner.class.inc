@@ -25,11 +25,10 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
             "
             SELECT
                 psc.Name AS _PSC,
-                LPAD(candidate.CandID, 6, '0') AS _DCCID,
+                LPAD(candidate.CandID, 10, '0') AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
                 subproj.title AS _Cohort,
-                DATE_FORMAT(candidate.DoB, '%Y-%m-%d') AS _DoB,
                 candidate.ExternalID AS _externalID,
                 candidate.RegistrationCenterID as _centerID,
                 candidate.RegistrationProjectID as _projectID,
@@ -37,9 +36,9 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     SELECT
                         genomicfileid
                     FROM
-                        genomic_candidate_files_rel
+                        genomic_candidate_files_rel gcfr
                     WHERE
-                        candid = candidate.candid) THEN
+                        candidate.ID = gcfr.CandidateID) THEN
                     'Y'
                 ELSE
                     'N'
@@ -47,9 +46,9 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     SELECT
                         snpid
                     FROM
-                        SNP_candidate_rel
+                        SNP_candidate_rel scr
                     WHERE
-                        candid = candidate.candid) THEN
+                        candidate.ID = scr.CandidateID) THEN
                     'Y'
                 ELSE
                     'N'
@@ -57,9 +56,9 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     SELECT
                         cnvid
                     FROM
-                        CNV
+                        CNV cnv
                     WHERE
-                        candid = candidate.candid) THEN
+                        candidate.ID = cnv.CandidateID) THEN
                     'Y'
                 ELSE
                     'N'
@@ -67,10 +66,10 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                     SELECT
                         cpg_name
                     FROM
-                        genomic_sample_candidate_rel
+                        genomic_sample_candidate_rel gscr
                     LEFT JOIN genomic_cpg USING (sample_label)
                 WHERE
-                    candid = candidate.candid) THEN
+                    candidate.ID = gscr.CandidateID) THEN
                     'Y'
                 ELSE
                     'N'
@@ -79,12 +78,12 @@ class ProfileProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisioner
                 candidate
                 LEFT JOIN (
                     SELECT
-                        s.CandID,
+                        c.CandID,
                         min(s.cohortID) AS CohortID
-                    FROM
-                        session s
+                    FROM session s
+                    JOIN candidate c ON c.ID=s.CandidateID
                     GROUP BY
-                        s.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
+                        c.CandID) AS cohort ON (cohort.CandID = candidate.CandID)
                 LEFT JOIN cohort AS subproj
                     ON (cohort.CohortID = subproj.CohortID)
                 LEFT JOIN psc ON (psc.CenterID = candidate.RegistrationCenterID)

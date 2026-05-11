@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
 import {
@@ -77,8 +79,11 @@ class CandidateDOB extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return (
+        <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>
+      );
     }
 
     if (!this.state.isLoaded) {
@@ -90,7 +95,7 @@ class CandidateDOB extends Component {
     let updateButton = null;
     if (loris.userHasPermission('candidate_dob_edit')) {
       disabled = false;
-      updateButton = <ButtonElement label='Update' />;
+      updateButton = <ButtonElement label={t('Update', {ns: 'loris'})}/>;
     }
     return (
       <div className='row'>
@@ -101,21 +106,25 @@ class CandidateDOB extends Component {
           class='col-md-6'
         >
           <StaticElement
-            label='PSCID'
+            label={t('PSCID', {ns: 'loris'})}
             text={this.state.data.pscid}
           />
           <StaticElement
-            label='DCCID'
+            label={t('DCCID', {ns: 'loris'})}
             text={this.state.data.candID}
           />
           <StaticElement
-            label='Disclaimer:'
-            text={'Any changes to the date of birth requires an administrator '
-                 + 'to run the fix_candidate_age script.'}
+            label={t('Disclaimer:', {ns: 'candidate_parameters'})}
+            text={
+              t('Any changes to the date of birth requires an administrator '
+                  + 'to run the fix_candidate_age script.',
+              {ns: 'candidate_parameters'}
+              )
+            }
             class='form-control-static text-danger bg-danger col-sm-10'
           />
           <DateElement
-            label='Date Of Birth:'
+            label={t('DoB', {ns: 'loris'})}
             name='dob'
             dateFormat={dateFormat}
             value={this.state.formData.dob}
@@ -135,6 +144,7 @@ class CandidateDOB extends Component {
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
 
     let today = new Date();
@@ -147,10 +157,13 @@ class CandidateDOB extends Component {
       this.state.formData.dob : null;
     if (dob > today) {
       swal.fire({
-        title: 'Error!',
-        text: 'Date of birth cannot be later than today!',
+        title: t('Error!', {ns: 'loris'}),
+        text:
+          t('Date of birth cannot be later than today!',
+            {ns: 'candidate_parameters'}
+          ),
         type: 'error',
-        confrimButtonText: 'OK',
+        confirmButtonText: t('OK', {ns: 'loris'}),
       });
       return;
     }
@@ -176,20 +189,20 @@ class CandidateDOB extends Component {
       .then((resp) => {
         if (resp.ok && resp.status === 200) {
           swal.fire({
-            title: 'Success!',
-            text: 'Date of birth updated!',
+            title: t('Success!', {ns: 'loris'}),
+            text: t('Date of birth updated!', {ns: 'candidate_parameters'}),
             type: 'success',
-            confrimButtonText: 'OK',
+            confirmButtonText: t('OK', {ns: 'loris'}),
           });
           if (resp.value) {
             this.fetchData();
           }
         } else {
           swal.fire({
-            title: 'Error!',
-            text: 'Something went wrong.',
+            title: t('Error!', {ns: 'loris'}),
+            text: t('Something went wrong.', {ns: 'candidate_parameters'}),
             type: 'error',
-            confrimButtonText: 'OK',
+            confirmButtonText: t('OK', {ns: 'loris'}),
           });
         }
       })
@@ -202,5 +215,6 @@ CandidateDOB.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
+  t: PropTypes.string.isRequired,
 };
-export default CandidateDOB;
+export default withTranslation(['candidate_parameters', 'loris'])(CandidateDOB);

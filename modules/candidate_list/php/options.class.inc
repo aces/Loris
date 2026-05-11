@@ -23,7 +23,8 @@ class Options extends \LORIS\Http\Endpoint
      *
      * @return bool true if user has access, false otherwise
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return (
             $user->hasPermission('access_all_profiles')
@@ -47,8 +48,8 @@ class Options extends \LORIS\Http\Endpoint
         $user    = $factory->user();
         $config  = $factory->config();
 
-        // get the list of visit labels
-        $visit_label_options = \Utility::getVisitList();
+        // get the list of visit labels that the user has access to
+        $visit_label_options = $user->getVisits();
 
         // get the list of sites available for the user
         if ($user->hasPermission('access_all_profiles')) {
@@ -62,7 +63,8 @@ class Options extends \LORIS\Http\Endpoint
         }
 
         // get the list of projects
-        $list_of_projects = \Utility::getProjectList();
+        // $list_of_projects = \Utility::getProjectList();
+        $list_of_projects = $user->getProjectNames();
         $project_options  = [];
         foreach (array_values($list_of_projects) as $name) {
             $project_options[$name] = $name;
@@ -83,6 +85,18 @@ class Options extends \LORIS\Http\Endpoint
             $participant_status_options[$name] = $name;
         }
 
+        // Data is translated in the table, while the keys are not,
+        // so we need to convert the array format to
+        // $translated => $translated in order for filtering to
+        // work.
+        $sexes = \Utility::getSexList();
+        $sexes = array_combine($sexes, $sexes);
+
+        $entityTypes = [
+            dgettext("candidate", 'Human')   => dgettext("candidate", 'Human'),
+            dgettext("candidate", 'Scanner') => dgettext("candidate", 'Scanner'),
+        ];
+
         return [
             'visitlabel'        => $visit_label_options,
             'site'              => $site_options,
@@ -90,7 +104,8 @@ class Options extends \LORIS\Http\Endpoint
             'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
-            'Sex'               => \Utility::getSexList(),
+            'Sex'               => $sexes,
+            'entitytype'        => $entityTypes,
         ];
     }
 

@@ -186,7 +186,7 @@ class DiagnosisEvolution extends Component {
                 label='Project'
                 options={this.state.formData.projects}
                 onUserInput={this.setFormData}
-                value={trajectoryData.ProjectID}
+                value={JSON.stringify(trajectoryData.ProjectID)}
                 required={true}
                 errorMessage={errorMessage.ProjectID}
               />

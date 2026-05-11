@@ -1,0 +1,102 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 18:28-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "Brainbrowser"
+msgstr "Navigateur cérébral"
+
+#, fuzzy
+msgid "Sync Volumes"
+msgstr "Synchroniser les volumes"
+
+#, fuzzy
+msgid "Reset View"
+msgstr "Réinitialiser l'affichage"
+
+msgid "Auto"
+msgstr "Auto"
+
+#, fuzzy
+msgid "300 Pixels (Default)"
+msgstr "300 pixels (par défaut)"
+
+#, fuzzy
+msgid "{{count}} Pixels"
+msgstr "{{count}} Pixels"
+
+msgid "Gray"
+msgstr "Gris"
+
+msgid "Spectral"
+msgstr "Spectral"
+
+msgid "Thermal"
+msgstr "Thermique"
+
+msgid "Blue"
+msgstr "Bleu"
+
+msgid "Green"
+msgstr "Vert"
+
+msgid "Overlay"
+msgstr "Superposition"
+
+#, fuzzy
+msgid "World Coordinates"
+msgstr "Coordonnées mondiales"
+
+msgid "Threshold"
+msgstr "Seuil"
+
+#, fuzzy
+msgid "Color Map"
+msgstr "Carte des couleurs"
+
+#, fuzzy
+msgid "Voxel Coordinates"
+msgstr "Coordonnées voxel"
+
+#, fuzzy
+msgid "Intensity Value"
+msgstr "Valeur d'intensité"
+
+#, fuzzy
+msgid "Contrast (0.0 to 2.0):"
+msgstr "Contraste (0,0 à 2,0) :"
+
+#, fuzzy
+msgid "Brightness (-1 to 1):"
+msgstr "Luminosité (-1 à 1) :"
+
+#, fuzzy
+msgid "View Slices"
+msgstr "Afficher les tranches"
+
+#, fuzzy
+msgid "Sagittal"
+msgstr "Sagittal"
+
+msgid "Coronal"
+msgstr "Coronaire"
+
+#, fuzzy
+msgid "Transverse"
+msgstr "Transversal"

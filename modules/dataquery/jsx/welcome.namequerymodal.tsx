@@ -2,6 +2,7 @@ import Modal from 'jsx/Modal';
 import swal from 'sweetalert2';
 import {useState} from 'react';
 import {TextboxElement, FieldsetElement} from 'jsx/Form';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Render a modal window for naming a query
@@ -19,6 +20,7 @@ function NameQueryModal(props: {
     closeModal: () => void,
     onSubmit: (name: string) => void,
 }) {
+  const {t} = useTranslation('dataquery');
   const [queryName, setQueryName] = useState<string>(props.defaultName || '');
   /**
    * Convert the onSubmit callback function to a promise expected by Modal
@@ -30,7 +32,7 @@ function NameQueryModal(props: {
       if (queryName == '') {
         swal.fire({
           type: 'error',
-          text: 'Must provide a query name.',
+          text: t('Must provide a query name.', {ns: 'dataquery'}),
         });
         reject();
         return;
@@ -42,23 +44,21 @@ function NameQueryModal(props: {
     }
     return sbmt;
   };
-  return <Modal title="Name Query"
+  return <Modal title={t('Name Query', {ns: 'dataquery'})}
     show={true}
     throwWarning={true}
     onClose={props.closeModal}
     onSubmit={submitPromise}>
-    <form style={{width: '100%', padding: '1em'}}>
-      <FieldsetElement
-        legend='Query name'>
-        <TextboxElement name='queryname'
-          value={queryName}
-          placeholder="Enter your query name"
-          onUserInput={
-            (name: string, value: string) => setQueryName(value)
-          }
-        />
-      </FieldsetElement>
-    </form>
+    <FieldsetElement
+      legend={t('Query name', {ns: 'dataquery'})}>
+      <TextboxElement name='queryname'
+        value={queryName}
+        placeholder={t('Enter your query name', {ns: 'dataquery'})}
+        onUserInput={
+          (name: string, value: string) => setQueryName(value)
+        }
+      />
+    </FieldsetElement>
   </Modal>;
 }
 

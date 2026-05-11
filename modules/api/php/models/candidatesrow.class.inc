@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -41,7 +41,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
      */
     public function __construct(array $row)
     {
-        $this->_candid      = $row['CandID'] ?? null;
+        $this->_candid      = strval($row['CandID']) ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
         if ($row['ProjectID'] !== null) {
             $this->_projectid = \ProjectID::singleton(intval($row['ProjectID']));

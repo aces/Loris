@@ -3,7 +3,7 @@
 /**
  * File that describe the Image class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  *  @category Imaging
  *  @package  Main
@@ -55,7 +55,7 @@ class Image
                      SELECT
                        f.File as filelocation,
                        f.OutputType as outputtype,
-                       mst.Scan_type as acquisitionprotocol,
+                       mst.MriScanTypeName as acquisitionprotocol,
                        FileType as filetype,
                        s.CenterID as centerid,
                        c.Entity_type as entitytype
@@ -64,9 +64,9 @@ class Image
                      LEFT JOIN session s
                        ON (f.SessionID = s.ID)
                      LEFT JOIN candidate c
-                       ON (s.CandID = c.CandID)
+                       ON (s.CandidateID = c.ID)
                      LEFT JOIN mri_scan_type mst
-                       ON (mst.ID = f.AcquisitionProtocolID)
+                       ON (mst.MriScanTypeID = f.MriScanTypeID)
                      WHERE f.FileID = :v_fileid
                     ',
                     ['v_fileid' => $fileid]
@@ -334,6 +334,7 @@ class Image
 
         return new \SplFileInfo($fullpath);
     }
+
     /**
      * Creates an immutable object representation of this Image
      *

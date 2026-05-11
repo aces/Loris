@@ -4,7 +4,7 @@
  * Implements ModuleRouter, a class for routing to a specific
  * module.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Router
  * @package  Router

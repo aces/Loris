@@ -3,7 +3,7 @@
 /**
  * Media module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -18,7 +18,7 @@ require_once __DIR__ .
 /**
  * Media module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -40,6 +40,7 @@ class MediaTest extends LorisIntegrationTest
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
     static $display = ".table-header > .row > div > div:nth-child(1)";
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -64,6 +65,7 @@ class MediaTest extends LorisIntegrationTest
 
         $this->resetPermissions();
     }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -87,6 +89,7 @@ class MediaTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
     /**
      * Tests that the page does not load if the user does not have correct
@@ -107,6 +110,7 @@ class MediaTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Testing React filter in this page.
      *
@@ -123,6 +127,7 @@ class MediaTest extends LorisIntegrationTest
         //$this->_testFilter(self::$Site, self::$table, "12 rows", "2");rewirte later
 
     }
+
     /**
      * Testing the link React filter in this page.
      *
@@ -157,6 +162,7 @@ class MediaTest extends LorisIntegrationTest
         $this->assertStringContainsString("Edit Media File", $text);
 
     }
+
     /**
      * Testing filter function and clear button
      *
@@ -210,6 +216,7 @@ class MediaTest extends LorisIntegrationTest
             );
         $this->assertEquals("", $inputText);
     }
+
     /**
      * Testing Browse tab and coulumn clicking
      *
@@ -227,6 +234,7 @@ class MediaTest extends LorisIntegrationTest
         $this->checkColumn(7, "Data Coordinating Center");
         $this->checkColumn(8, "Pumpernickel");
     }
+
     /**
      * Test Browse tab and coulumn clicking-middleware
      *

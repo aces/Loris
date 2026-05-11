@@ -1,59 +1,41 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
-import {SelectElement, FormElement, ButtonElement} from 'jsx/Form';
-
+import {SelectElement, FormElement, ButtonElement, DateElement} from 'jsx/Form';
+import {useTranslation} from 'react-i18next';
 
 /**
  * QueryChartForm - a form used for statistics query to modify graphs/charts.
  *
- * @param {object} props
+ * @param  {object} props
  * @return {JSX.Element}
  */
 const QueryChartForm = (props) => {
-  const [optionsProjects, setOptionsProjects] = useState({});
-  const [optionsCohorts, setOptionsCohorts] = useState({});
-  const [optionsSites, setOptionsSites] = useState({});
-  const [optionsVisits, setOptionsVisits] = useState({});
-  const [optionsStatus, setOptionsStatus] = useState({});
   const [formDataObj, setFormDataObj] = useState({});
+  const {t} = useTranslation();
+  const [options, setOptions] = useState({
+    projects: {},
+    cohorts: {},
+    sites: {},
+    visits: {},
+    participantStatus: {},
+  });
 
-  /**
-   * useEffect - modified to run when props.data updates.
-   */
-  useEffect(() => {
-    const json = props.data;
-    if (json && Object.keys(json).length !== 0) {
-      let projectOptions = {};
-      for (const [key, value] of Object.entries(json['options']['projects'])) {
-        projectOptions[key] = value;
+  // Load options from props.data when rendered
+  useEffect(
+    () => {
+      const json = props.data;
+      if (json && Object.keys(json).length !== 0) {
+        setOptions({
+          projects: json['options']['projects'] || {},
+          cohorts: json['options']['cohorts'] || {},
+          sites: json['options']['sites'] || {},
+          visits: json['options']['visits'] || {},
+          participantStatus: json['options']['participantStatus'] || {},
+        });
       }
-      setOptionsProjects(projectOptions);
-      let cohortOptions = {};
-      for (
-        const [key, value] of Object.entries(json['options']['cohorts'])
-      ) {
-        cohortOptions[key] = value;
-      }
-      setOptionsCohorts(cohortOptions);
-      let siteOptions = {};
-      for (const [key, value] of Object.entries(json['options']['sites'])) {
-        siteOptions[key] = value;
-      }
-      setOptionsSites(siteOptions);
-      let visitOptions = {};
-      for (const [key, value] of Object.entries(json['options']['visits'])) {
-        visitOptions[key] = value;
-      }
-      setOptionsVisits(visitOptions);
-      let participantStatusOptions = {};
-      for (const [key, value] of Object.entries(
-        json['options']['participantStatus']
-      )) {
-        participantStatusOptions[key] = value;
-      }
-      setOptionsStatus(participantStatusOptions);
-    }
-  }, [props.data]);
+    },
+    [props.data]
+  );
 
   /**
    * setFormData - Stores the value of the element in formDataObj state.
@@ -61,114 +43,201 @@ const QueryChartForm = (props) => {
    * @param {string} formElement - name of the form element
    * @param {string} value - value of the form element
    */
+
   const setFormData = (formElement, value) => {
-    setFormDataObj( (prevState) => ({
-      ...prevState,
-      [formElement]: value,
-    }));
+    let normalizedValue = value;
+    if (!formElement.includes('date')) {
+      normalizedValue = Array.isArray(value) ? value : [value];
+      // Handle clear selection
+      if (normalizedValue.includes('__clear__')) {
+        normalizedValue = undefined;
+      }
+    }
+
+    const newFormData = {
+      ...formDataObj,
+      [formElement]: normalizedValue,
+    };
+    if (
+      (normalizedValue !== undefined
+      || formDataObj[formElement] !== undefined)
+      && !(formElement.includes('date') && value < '1900-01-01')
+    ) {
+      props.callback(newFormData);
+      setFormDataObj(newFormData);
+    }
   };
 
   const resetFilters = () => {
     setFormDataObj({});
   };
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX.Element} - React markup for component.
-   */
+  const clearSelection = t('-- Clear Selection --', {ns: 'statistics'});
   return (
     <FormElement
-      Module={props.Module}
-      name={props.name}
-      id={props.id}
-      onSubmit={() => props.callback(formDataObj)}
-      method='GET'
+      Module ={props.Module}
+      name ={props.name}
+      id ={props.id}
+      onSubmit ={() => props.callback(formDataObj)}
+      method ='GET'
     >
-      {Object.keys(props.data['options']['projects']).length > 0
-        ? <>
-          <p>Project</p>
-          <SelectElement
-            name='selectedProjects'
-            options={optionsProjects}
-            multiple={true}
-            emptyOption={false}
-            value={formDataObj['selectedProjects']}
-            onUserInput={setFormData}
+      <div className ="filter-grid">
+        {/* Project Section */}
+        {Object.keys(props.data['options']['projects']).length > 0 && (
+          <div>
+            <label style ={{fontWeight: 'bold',
+              marginBottom: '5px', display: 'block'}}>
+              {t('Project', {ns: 'loris'})}</label>
+            <SelectElement
+              name ='selectedProjects'
+              options ={{__clear__: clearSelection,
+                ...options.projects}}
+              multiple ={true}
+              emptyOption ={false}
+              value ={formDataObj['selectedProjects'] || []}
+              onUserInput ={(name, value) => {
+                setFormData(name, value);
+              }}
+              style ={{width: '100%', padding: '8px',
+                borderRadius: '5px',
+                border: '1px solid #ccc'}}
+            />
+          </div>
+        )}
+
+        {/* Cohort Section */}
+        {Object.keys(props.data['options']['cohorts']).length > 0 && (
+          <div>
+            <label style ={{fontWeight: 'bold',
+              marginBottom: '5px',
+              display: 'block'}}>{t('Cohort', {ns: 'loris', count: 1})}</label>
+            <SelectElement
+              name ='selectedCohorts'
+              options ={{__clear__: clearSelection,
+                ...options.cohorts}}
+              multiple ={true}
+              emptyOption ={false}
+              value ={formDataObj['selectedCohorts'] || []}
+              onUserInput ={(name, value) => {
+                setFormData(name, value);
+              }}
+              style ={{width: '100%', padding: '8px',
+                borderRadius: '5px',
+                border: '1px solid #ccc'}}
+            />
+          </div>
+        )}
+
+        {/* Site Section */}
+        {Object.keys(props.data['options']['sites']).length > 0 && (
+          <div>
+            <label style ={{fontWeight: 'bold',
+              marginBottom: '5px',
+              display: 'block'}}>{t('Site', {ns: 'loris'})}</label>
+            <SelectElement
+              name ='selectedSites'
+              options ={{__clear__: clearSelection, ...options.sites}}
+              multiple ={true}
+              emptyOption ={false}
+              value ={formDataObj['selectedSites'] || []}
+              onUserInput ={(name, value) => {
+                setFormData(name, value);
+              }}
+              style ={{width: '100%', padding: '8px',
+                borderRadius: '5px',
+                border: '1px solid #ccc'}}
+            />
+          </div>
+        )}
+
+        {/* Visit Section */}
+        {Object.keys(props.data['options']['visits']).length > 0 && (
+          <div>
+            <label style ={{fontWeight: 'bold',
+              marginBottom: '5px',
+              display: 'block'}}>{t('Visit', {ns: 'loris'})}</label>
+            <SelectElement
+              name ='selectedVisits'
+              options ={{__clear__: clearSelection,
+                ...options.visits}}
+              multiple ={true}
+              emptyOption ={false}
+              value ={formDataObj['selectedVisits'] || []}
+              onUserInput ={(name, value) => {
+                setFormData(name, value);
+              }}
+              style ={{width: '100%', padding: '8px',
+                borderRadius: '5px',
+                border: '1px solid #ccc'}}
+            />
+          </div>
+        )}
+
+        {/* Status Section */}
+        {Object.keys(props.data['options']['participantStatus']).length > 0
+        && (
+          <div>
+            <label style ={{fontWeight: 'bold',
+              marginBottom: '5px',
+              display: 'block'}}>
+              {t('Participant Status', {ns: 'loris'})}
+            </label>
+            <SelectElement
+              name ='selectedParticipantStatus'
+              options ={{__clear__: clearSelection,
+                ...options.participantStatus}}
+              multiple ={true}
+              emptyOption ={false}
+              value ={formDataObj['selectedParticipantStatus'] || []}
+              onUserInput ={(name, value) => {
+                setFormData(name, value);
+              }}
+              style ={{width: '100%', padding: '8px',
+                borderRadius: '5px',
+                border: '1px solid #ccc'}}
+            />
+          </div>
+        )}
+
+        {/* DateRegistered Section */}
+        <div>
+          <label style ={{fontWeight: 'bold',
+            marginBottom: '5px',
+            display: 'block'}}>
+            {t('Date Registered', {ns: 'statistics'})}</label>
+          <DateElement
+            name='dateRegisteredStart'
+            value={formDataObj['dateRegisteredStart'] || ''}
+            onUserInput ={(name, value) => {
+              setFormData(name, value);
+            }}
+            style={{width: '100%', padding: '8px',
+              borderRadius: '5px',
+              border: '1px solid #ccc'}}
+            label={t('Range Start', {ns: 'statistics'})}
           />
-          <br/>
-        </> : null}
-      {Object.keys(props.data['options']['cohorts']).length > 0
-        ? <>
-          <p>Cohort</p>
-          <SelectElement
-            name='selectedCohorts'
-            options={optionsCohorts}
-            multiple={true}
-            emptyOption={false}
-            value={formDataObj['selectedCohorts']}
-            onUserInput={setFormData}
+          <DateElement
+            name='dateRegisteredEnd'
+            value={formDataObj['dateRegisteredEnd'] || ''}
+            onUserInput={(name, value) => {
+              setFormData(name, value);
+            }}
+            style={{width: '100%', padding: '8px',
+              borderRadius: '5px',
+              border: '1px solid #ccc'}}
+            label={t('Range End', {ns: 'statistics'})}
           />
-          <br/>
-        </>
-        : null}
-      {Object.keys(props.data['options']['sites']).length > 0
-        ? <>
-          <p>Site</p>
-          <SelectElement
-            name='selectedSites'
-            options={optionsSites}
-            multiple={true}
-            emptyOption={false}
-            value={formDataObj['selectedSites']}
-            onUserInput={setFormData}
-          />
-          <br/>
-        </>
-        : null}
-      {Object.keys(props.data['options']['visits']).length > 0
-        ? <>
-          <p>Visit</p>
-          <SelectElement
-            name='selectedVisits'
-            options={optionsVisits}
-            multiple={true}
-            emptyOption={false}
-            value={formDataObj['selectedVisits']}
-            onUserInput={setFormData}
-          />
-          <br/>
-        </>
-        : null}
-      {Object.keys(props.data['options']['participantStatus']).length > 0
-        ? <>
-          <p>Status</p>
-          <SelectElement
-            name='selectedParticipantStatus'
-            options={optionsStatus}
-            multiple={true}
-            emptyOption={false}
-            value={formDataObj['selectedParticipantStatus']}
-            onUserInput={setFormData}
-          />
-          <br/>
-        </>
-        : null}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-        }}
-      >
+        </div>
+      </div>
+
+      {/* Buttons Section */}
+      <div style ={{display: 'flex',
+        justifyContent: 'center',
+        marginTop: '20px'}}>
         <ButtonElement
-          label='Submit Query'
-          type='submit'
-          buttonClass='btn btn-sm btn-primary'
-        />
-        <ButtonElement
-          label='Clear Filters'
-          onUserInput={resetFilters}
-          buttonClass='btn btn-sm btn-primary'
+          label={t('Clear Filters', {ns: 'loris'})}
+          onUserInput ={resetFilters}
+          buttonClass ='btn btn-sm btn-primary'
         />
       </div>
     </FormElement>

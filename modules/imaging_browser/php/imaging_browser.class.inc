@@ -4,7 +4,7 @@
  * This class features the code for the menu portion of the Loris imaging
  * browser.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -30,6 +30,7 @@ class Imaging_Browser extends \DataFrameworkMenu
     var $AjaxModule      = true;
     public $skipTemplate = true;
     public $fieldOptions;
+
     /**
      * Determine whether the user has permission to view this page
      *
@@ -37,7 +38,8 @@ class Imaging_Browser extends \DataFrameworkMenu
      *
      * @return bool whether the user hass access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.
@@ -121,14 +123,14 @@ class Imaging_Browser extends \DataFrameworkMenu
 
         // get visit QC status options
         $visitQCStatus = [
-            'Pass' => 'Pass',
-            'Fail' => 'Fail',
+            'Pass' => dgettext("loris", "Pass"),
+            'Fail' => dgettext("loris", "Fail"),
         ];
 
         // get Pending/New options
         $pending = [
-            'P' => 'Pending',
-            'N' => 'New',
+            'P' => dgettext("loris", "Pending"),
+            'N' => dgettext("loris", "New"),
         ];
 
         $all_scan_types = array_values(\Utility::getScanTypeList());
@@ -139,8 +141,8 @@ class Imaging_Browser extends \DataFrameworkMenu
 
         // get entity type options
         $entityType = [
-            'Human'   => 'Human',
-            'Scanner' => 'Scanner',
+            'Human'   => dgettext("imaging_browser", "Human"),
+            'Scanner' => dgettext("imaging_browser", "Scanner"),
         ];
 
         return [
@@ -162,7 +164,7 @@ class Imaging_Browser extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new ImagingBrowserRowProvisioner();
+        return new ImagingBrowserRowProvisioner($this->loris);
     }
 
     /**
@@ -183,7 +185,6 @@ class Imaging_Browser extends \DataFrameworkMenu
         return $provisioner;
     }
 
-
     /**
      * Include additional CSS files:
      *  1. imaging_browser.css
@@ -200,8 +201,6 @@ class Imaging_Browser extends \DataFrameworkMenu
             [$baseURL . "/imaging_browser/css/imaging_browser.css"]
         );
     }
-
-
 
     /**
      * Include the column formatter

@@ -4,7 +4,7 @@
  * This class implements a data provisioner to get all data released files
  * for the data_release menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -20,7 +20,7 @@ namespace LORIS\data_release;
  * This class implements a data provisioner to get all data released files
  * for the data_release menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -35,8 +35,11 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a DataReleaseProvisioner, which gets releases for the
      * data release menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         $user  =& \User::singleton();
         $query = "
@@ -45,7 +48,8 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                 IF(version is null or version ='','Unversioned', version) AS version,
                 upload_date AS uploadDate,
                 p.Name as ProjectName,
-                dr.id as dataReleaseID
+                dr.id as dataReleaseID,
+                hidden_by_userid AS hiddenById
             FROM data_release dr
             LEFT JOIN Project p on p.ProjectID = dr.ProjectID";
 
@@ -60,12 +64,15 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                         dr.ProjectID IS NULL OR dr.ProjectID IN
                         (SELECT ProjectID FROM user_project_rel
                         WHERE UserID = ".$user->getID().")
-                    )";
+                    )
+                AND drp.UserID=" . $user->getID()
+                . " AND (dr.hidden_by_userid IS NULL OR dr.hidden_by_userid="
+                . $user->getID() . ")";
         }
 
         $query .= " ORDER BY uploadDate";
 
-        parent::__construct($query, []);
+        parent::__construct($loris, $query, []);
     }
 
     /**

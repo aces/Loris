@@ -7,7 +7,7 @@
  *
  * Mocks are injected using the setDatabase/setConfig/etc methods.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -329,6 +329,7 @@ class NDB_Factory
         self::$_settings = null;
         $this->_baseURL  = $baseURL;
     }
+
     /**
      * Returns a singleton settings object
      *

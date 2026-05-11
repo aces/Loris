@@ -222,7 +222,7 @@ class LorisApiDicomsTest extends LorisApiAuthenticatedTest
     public function testGetCandidatesCandidVisitDicomsTarname(): void
     {
         $resource        = fopen($this->tarfileTest, 'w');
-        $stream          = GuzzleHttp\Psr7\stream_for($resource);
+        $stream          = GuzzleHttp\Stream\Stream::factory($resource);
         try {
             $response_stream = $this->client->request(
                 'GET',

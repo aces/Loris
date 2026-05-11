@@ -8,6 +8,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputLabel from 'jsx/form/InputLabel';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Form Component.
@@ -557,6 +558,7 @@ export class SelectElement extends Component {
             value={newOptions[option]}
             key={newOptions[option]}
             disabled={isDisabled}
+            title={option}
           >
             {option}
           </option>
@@ -570,6 +572,7 @@ export class SelectElement extends Component {
             value={option}
             key={option}
             disabled={isDisabled}
+            title={options[option]}
           >
             {options[option]}
           </option>
@@ -592,15 +595,22 @@ export class SelectElement extends Component {
     // element will take up the whole row.
     let inputClass = this.props.noMargins ? '' : 'col-sm-12';
     if (this.props.label) {
-      inputClass = 'col-sm-9';
+      inputClass = `col-sm-${this.props.labelPlacementTop ? '12': '9'}`;
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={inputClass}>
@@ -613,6 +623,7 @@ export class SelectElement extends Component {
             onChange={this.handleChange}
             required={this.props.required}
             disabled={this.props.disabled}
+            style={{overflow: 'auto'}}
           >
             {emptyOptionHTML}
             {optionList}
@@ -644,6 +655,7 @@ SelectElement.propTypes = {
   noMargins: PropTypes.bool,
   placeholder: PropTypes.string,
   sortByValue: PropTypes.bool,
+  labelPlacementTop: PropTypes.bool,
 };
 
 SelectElement.defaultProps = {
@@ -664,6 +676,7 @@ SelectElement.defaultProps = {
   },
   noMargins: false,
   placeholder: '',
+  labelPlacementTop: false,
 };
 
 /**
@@ -1101,15 +1114,22 @@ export class TextboxElement extends Component {
     // element will take up the whole row.
     let inputClass = this.props.class;
     if (this.props.label || this.props.label == '') {
-      inputClass = 'col-sm-9';
+      inputClass = `col-sm-${this.props.labelPlacementTop ? '12' : '9'}`;
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {(this.props.label || this.props.label == '') && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={inputClass}>
@@ -1146,6 +1166,7 @@ TextboxElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 TextboxElement.defaultProps = {
@@ -1163,6 +1184,7 @@ TextboxElement.defaultProps = {
   },
   onUserBlur: function() {
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1510,13 +1532,22 @@ export class DateElement extends Component {
       maxFullDate = maxYear + '-' + currentMonth;
     }
 
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1551,6 +1582,7 @@ DateElement.propTypes = {
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 DateElement.defaultProps = {
@@ -1567,6 +1599,7 @@ DateElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1599,13 +1632,22 @@ export class TimeElement extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
     return (
-      <div className="row form-group">
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1636,6 +1678,7 @@ TimeElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 TimeElement.defaultProps = {
@@ -1648,6 +1691,7 @@ TimeElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1762,7 +1806,9 @@ export class NumericElement extends Component {
   render() {
     let errorMessage = null;
     let elementClass = 'row form-group';
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
 
     // Add error message
     if (this.props.errorMessage) {
@@ -1771,11 +1817,15 @@ export class NumericElement extends Component {
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ?
+          {display: 'flex', flexDirection: 'column'} : {}}>
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1811,6 +1861,7 @@ NumericElement.propTypes = {
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
   errorMessage: PropTypes.string,
+  labelPlacementTop: PropTypes.bool,
 };
 
 NumericElement.defaultProps = {
@@ -1826,13 +1877,14 @@ NumericElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
 
 /**
  * File Component
  * React wrapper for a simple or 'multiple' <input type="file"> element.
  */
-export class FileElement extends Component {
+class FileElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1945,7 +1997,8 @@ export class FileElement extends Component {
             </div>
             <div className="input-group-btn">
               <div className="btn btn-primary btn-file">
-                <i className="glyphicon glyphicon-folder-open"></i> Browse
+                <i className="glyphicon glyphicon-folder-open"></i>
+                {' ' + this.props.t('Browse', {ns: 'loris'})}
                 <input
                   type="file"
                   className="fileUpload"
@@ -1977,6 +2030,9 @@ FileElement.propTypes = {
   allowMultiple: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
 FileElement.defaultProps = {
@@ -1992,6 +2048,10 @@ FileElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
 };
+
+// Wrap FileElement with translation HOC
+const FileElementWithTranslation = withTranslation('loris')(FileElement);
+export {FileElementWithTranslation as FileElement};
 
 /**
  * Static element component.
@@ -2284,7 +2344,11 @@ export class ButtonElement extends Component {
             onClick={this.handleClick}
             disabled={this.props.disabled}
           >
-            {this.props.disabled ? 'Uploading...' : this.props.label}
+            {
+              this.props.disabled
+                ? (this.props.disabledLabel ?? this.props.label)
+                : this.props.label
+            }
           </button>
         </div>
       </div>
@@ -2298,6 +2362,7 @@ ButtonElement.propTypes = {
   label: PropTypes.string,
   type: PropTypes.string,
   disabled: PropTypes.bool,
+  disabledLabel: PropTypes.string,
   style: PropTypes.object,
   onUserInput: PropTypes.func,
   columnSize: PropTypes.string,
@@ -2308,6 +2373,7 @@ ButtonElement.defaultProps = {
   label: 'Submit',
   type: 'submit',
   disabled: null,
+  disabledLabel: null,
   buttonClass: 'btn btn-primary',
   columnSize: 'col-sm-9 col-sm-offset-3',
   onUserInput: function() {
@@ -2759,7 +2825,7 @@ export default {
   TimeElement,
   DateTimeElement,
   NumericElement,
-  FileElement,
+  FileElement: FileElementWithTranslation,
   StaticElement,
   HeaderElement,
   LinkElement,

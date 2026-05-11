@@ -127,7 +127,6 @@ class File_Decompress
         return $return_value;
     }
 
-
     /**
      * Unzips a file by :
      * creating a Zip archive of the file, opening it,

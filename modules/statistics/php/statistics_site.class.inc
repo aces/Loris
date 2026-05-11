@@ -3,7 +3,7 @@
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -16,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -39,7 +39,8 @@ class Statistics_Site extends \NDB_Menu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         //TODO: Create a permission specific to statistics
         $hasAccessToAllProfiles = $user->hasAllPermissions(
@@ -175,6 +176,7 @@ class Statistics_Site extends \NDB_Menu
     {
         return $this->instruments[$instrument];
     }
+
     /**
      * CompleteCount function
      *
@@ -193,12 +195,12 @@ class Statistics_Site extends \NDB_Menu
         $this->_checkCriteria($centerID, $projectID);
         $DB    = $this->loris->getDatabaseConnection();
         $count = $DB->pselectOne(
-            "SELECT COUNT(DISTINCT s.CandID)  FROM 
+            "SELECT COUNT(DISTINCT s.CandidateID)  FROM
                 flag f
                     JOIN session s ON (s.ID=f.SessionID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                     JOIN test_names tn ON tn.ID = f.TestID
-                WHERE 
+                WHERE
                     s.Active='Y' AND s.CenterID <> '1'
                     AND c.Active='Y'
                     $this->query_criteria
@@ -229,7 +231,7 @@ class Statistics_Site extends \NDB_Menu
         $this->_checkCriteria($centerID, $projectID);
         $DB     = $this->loris->getDatabaseConnection();
         $result = $DB->pselect(
-            "SELECT DISTINCT s.CandID,
+            "SELECT DISTINCT s.CandidateID,
                 f.SessionID,
                 f.CommentID,
                 c.PSCID,
@@ -237,7 +239,7 @@ class Statistics_Site extends \NDB_Menu
                 FROM flag f
                     JOIN session s ON (s.ID=f.SessionID)
                     JOIN test_names tn ON tn.ID = f.TestID
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Active='Y' AND c.Active='Y'
                     AND s.CenterID <> '1'
                     AND s.Current_stage <> 'Recycling Bin'
@@ -250,6 +252,7 @@ class Statistics_Site extends \NDB_Menu
         );
         return iterator_to_array($result);
     }
+
     /**
      * Setup function
      *

@@ -3,7 +3,7 @@
 /**
  * The menu for user accounts
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  User_Account
@@ -11,12 +11,13 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris/
  */
+
 namespace LORIS\user_accounts;
 
 /**
  * The menu for user accounts
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  User_Account
@@ -40,7 +41,8 @@ class User_Accounts extends \DataFrameworkMenu
      *
      * @return boolean
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user): bool
     {
         return $user->hasAnyPermission(self::PERMISSIONS);
     }
@@ -51,7 +53,7 @@ class User_Accounts extends \DataFrameworkMenu
      *
      * @return ?array of permissions or null
      */
-    public function allSitePermissionNames() : ?array
+    public function allSitePermissionNames(): ?array
     {
         return ['user_accounts_multisite'];
     }
@@ -62,7 +64,7 @@ class User_Accounts extends \DataFrameworkMenu
      *
      * @return bool true
      */
-    public function useProjectFilter() : bool
+    public function useProjectFilter(): bool
     {
         return true;
     }
@@ -72,11 +74,11 @@ class User_Accounts extends \DataFrameworkMenu
      *
      * @return array
      */
-    protected function getFieldOptions() : array
+    protected function getFieldOptions(): array
     {
         $yesNoOptions = [
-            'Y' => 'Yes',
-            'N' => 'No',
+            'Y' => dgettext("loris", "Yes"),
+            'N' => dgettext("loris", "No"),
         ];
 
         return [
@@ -92,9 +94,9 @@ class User_Accounts extends \DataFrameworkMenu
      *
      * @return \Loris\Data\Provisioner
      */
-    public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
+    public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new UserAccountRowProvisioner();
+        return new UserAccountRowProvisioner($this->loris);
     }
 
     /**
@@ -113,4 +115,3 @@ class User_Accounts extends \DataFrameworkMenu
         );
     }
 }
-

@@ -7,7 +7,7 @@
  * the module being tested and not the overhead of logging in
  * to Loris.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Test
@@ -150,13 +150,6 @@ abstract class LorisIntegrationTest extends TestCase
 
             $this->login("UnitTester", $this->validPassword);
         }
-
-        if (extension_loaded('xdebug')
-            && function_exists("xdebug_start_code_coverage")
-        ) {
-            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-        }
-
     }
 
     /**
@@ -171,6 +164,8 @@ abstract class LorisIntegrationTest extends TestCase
     protected function login($username, $password)
     {
         $this->safeGet($this->url);
+        // It is sometimes useful to uncomment this to debug GitHub Actions
+        // var_dump($this->webDriver->getPageSource());
         /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
@@ -257,7 +252,6 @@ abstract class LorisIntegrationTest extends TestCase
             ["ConfigID" => $configID]
         );
     }
-
 
     /**
      * Restores a config to its saved (previous) value.

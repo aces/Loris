@@ -9,7 +9,7 @@
  * Email templates should be in an email/ subdirectory of the smarty
  * template directory.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

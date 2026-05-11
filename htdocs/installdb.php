@@ -31,7 +31,7 @@
  *       writable, print the content that should go there and ask
  *       the user to manually create the file.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -177,13 +177,21 @@ case 'createmysqlaccount':
         $tpl_data['configlocation'] = $installer->getBaseDir()
                  . "project/config.xml";
         $tpl_data['configcontent']  = htmlspecialchars(
-            $installer->getConfigContent($_POST)
+            $installer->getConfigContent($_POST),
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
         );
     }
     $tpl_data['Page'] = "Done";
     break;
 }
-$tpl_data['console'] = htmlspecialchars(ob_get_contents());
+$tpl_data['console'] = htmlspecialchars(
+    ob_get_contents(),
+    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+    'UTF-8',
+    false
+);
 
 // Set up some special smarty variables that are required on different
 // pages
@@ -216,6 +224,7 @@ function tplvar($name)
         $tpl_data[$name] = '';
     }
 }
+
 tplvar('dbhost');
 tplvar('dbadminuser');
 tplvar('dbadminpassword');

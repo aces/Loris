@@ -2,6 +2,7 @@ import FieldDisplay from './fielddisplay';
 import {QueryTerm} from './querydef';
 import {Operators} from './types';
 import {FieldDictionary, FullDictionary} from './types';
+import {useTranslation, Trans} from 'react-i18next';
 
 /**
  * Convert an operator serialization back to unicode for
@@ -11,6 +12,7 @@ import {FieldDictionary, FullDictionary} from './types';
  * @returns {string} - The frontend value to display for op
  */
 function op2str(op: string): string {
+  const {t} = useTranslation();
   switch (op) {
   case 'lt': return '<';
   case 'lte': return '≤';
@@ -18,15 +20,15 @@ function op2str(op: string): string {
   case 'neq': return '≠';
   case 'gte': return '≥';
   case 'gt': return '>';
-  case 'in': return 'in';
-  case 'startsWith': return 'starts with';
-  case 'contains': return 'contains';
-  case 'endsWith': return 'ends with';
-  case 'isnotnull': return 'has data';
-  case 'isnull': return 'has no data';
-  case 'exists': return 'exists';
-  case 'notexists': return 'does not exist';
-  case 'numberof': return 'number of';
+  case 'in': return t('in', {ns: 'dataquery'});
+  case 'startsWith': return t('starts with', {ns: 'dataquery'});
+  case 'contains': return t('contains', {ns: 'dataquery'});
+  case 'endsWith': return t('ends with', {ns: 'dataquery'});
+  case 'isnotnull': return t('has data', {ns: 'dataquery'});
+  case 'isnull': return t('has no data', {ns: 'dataquery'});
+  case 'exists': return t('exists', {ns: 'dataquery'});
+  case 'notexists': return t('does not exist', {ns: 'dataquery'});
+  case 'numberof': return t('number of', {ns: 'dataquery'});
   default: console.error('Unhandle operator');
     return '';
   }
@@ -67,6 +69,7 @@ export function CriteriaTerm(props: {
     mapModuleName: (module: string) => string,
     mapCategoryName: (module: string, category: string) => string,
 }) {
+  const {t} = useTranslation();
   const containerStyle: React.CSSProperties ={
     display: 'flex' as const,
     flexWrap: 'nowrap' as const,
@@ -91,22 +94,18 @@ export function CriteriaTerm(props: {
 
   let visits;
   if (props.term.visits) {
-    visits = '';
-    if (props.term.visits.length == 1) {
-      visits += props.term.visits[0];
-    } else {
-      for (let i = 0; i < props.term.visits.length; i++) {
-        visits += props.term.visits[i];
-        if (i == props.term.visits.length-2) {
-          visits += ' or ';
-        } else if (i < props.term.visits.length-2) {
-          visits += ', ';
-        }
-      }
+    let visitList = props.term.visits.slice(0, -1).join(', ');
+    if (props.term.visits.length > 1) {
+      visitList += ` ${t('or', {ns: 'dataquery'})} `;
     }
+    visitList += props.term.visits.at(-1);
     visits = <div>
-      <span style={{fontStyle: 'italic'}}>at visit</span>
-      <span> {visits}</span>
+      <Trans
+        i18nKey="<italic>at visit</italic> {{visits}}"
+        ns="dataquery"
+        values={{visits: visitList}}
+        components={{italic: <i/>}}
+      />
     </div>;
   }
 
@@ -140,9 +139,12 @@ export function CriteriaTerm(props: {
         paddingLeft: '0.2em',
         cursor: 'help',
       }}
-      title={'This field may exist multiple times for a single '
-                + dict.scope + ' and must match for *any*'
-                + ' of the data points'}
+      title={
+        t('This field may exist multiple times for a single '
+          + '{{scope}} and must match for *any* of the data points',
+        {ns: 'dataquery', scope: dict.scope}
+        )
+      }
     ></i>;
   }
   return (

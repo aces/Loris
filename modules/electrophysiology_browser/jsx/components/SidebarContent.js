@@ -3,7 +3,6 @@
  */
 
 import PropTypes from 'prop-types';
-
 const styles = {
   sidebar: {
     width: 150,
@@ -32,6 +31,7 @@ const styles = {
 };
 
 const SidebarContent = (props) => {
+  const {t} = props;
   return (
     <div style={styles.sidebar}>
       <div style={
@@ -42,7 +42,7 @@ const SidebarContent = (props) => {
           padding: '80px 0 0 10px',
         }
       }>
-        Navigation
+        {t('Navigation', {ns: 'electrophysiology_browser'})}
       </div>
       <div style={styles.content}>
         <a id={'nav_previous'} href={props.previous} target={'_self'} style={
@@ -54,14 +54,14 @@ const SidebarContent = (props) => {
             textDecoration: 'none',
           }
         }>
-          &#171; Previous
+          &#171; {t('Previous', {ns: 'loris'})}
         </a>
         <a id={'nav_next'}
           href={props.next}
           target={'_self'}
           style={styles.sidebarLink}
         >
-          Next &#187;
+          {t('Next', {ns: 'loris'})} &#187;
         </a>
       </div>
     </div>
@@ -71,6 +71,7 @@ const SidebarContent = (props) => {
 SidebarContent.propTypes = {
   previous: PropTypes.string,
   next: PropTypes.string,
+  t: PropTypes.func,
 };
 
 export default SidebarContent;

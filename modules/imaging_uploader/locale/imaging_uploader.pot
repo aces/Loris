@@ -1,0 +1,150 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Imaging Uploader"
+msgstr ""
+
+msgid "Upload an imaging scan"
+msgstr ""
+
+msgid "Phantom Scans"
+msgstr ""
+
+msgid "File to Upload"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "File cannot exceed {{maxUploadSize}}"
+msgstr ""
+
+msgid "File must be of type .tgz or tar.gz or .zip"
+msgstr ""
+
+msgid "For files that are not Phantom Scans, file name must begin with"
+msgstr ""
+
+msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
+msgstr ""
+
+msgid "The file {{fileName}} must be of type .tgz, .tar.gz or .zip."
+msgstr ""
+
+msgid "Invalid extension for the uploaded file!"
+msgstr ""
+
+msgid "Filename extension does not match .zip, .tgz or .tar.gz "
+msgstr ""
+
+msgid "Incorrect file name!"
+msgstr ""
+
+msgid "Could not determine PSCID, DCCID and Visit Label based on the filename!"
+msgstr ""
+
+msgid "File already exists!"
+msgstr ""
+
+msgid "A file with this name has already successfully passed the MRI pipeline!"
+msgstr ""
+
+msgid "File is currently processing!"
+msgstr ""
+
+msgid "A file with this name is currently going through the MRI pipeline!"
+msgstr ""
+
+msgid "A file with this name already exists! Would you like to overwrite the existing file?"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Your upload has been cancelled."
+msgstr ""
+
+msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
+msgstr ""
+
+msgid "Upload Successful!"
+msgstr ""
+
+msgid "Processing of this file by the MRI pipeline has started"
+msgstr ""
+
+msgid "Select this upload in the result table to view the processing progress"
+msgstr ""
+
+msgid "Upload failed: a network error occured"
+msgstr ""
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr ""
+
+
+msgid "Upload failed: received HTTP response code {{code}}"
+msgstr ""
+
+msgid "Submission error!"
+msgstr ""
+
+msgid "Log Viewer"
+msgstr ""
+
+msgid "Logs to display"
+msgstr ""
+
+msgid "Summary"
+msgstr ""
+
+msgid "Detailed"
+msgstr ""
+
+msgid "<select a row in the table below to view the upload logs>"
+msgstr ""
+
+msgid "Number Of Files Created"
+msgstr ""
+
+msgid "Number Of Files Inserted"
+msgstr ""
+
+msgid "{{successText}} ({{inserted}} out of {{created}})"
+msgstr ""
+
+msgid "{{numViolatedScans}} violated scans"
+msgstr ""
+
+msgid "Tarchive Info"
+msgstr ""
+
+msgid "Upload ID"
+msgstr ""
+
+msgid "Upload Location"
+msgstr ""
+
+msgid "Upload Date"
+msgstr ""
+
+msgid "Uploaded By"
+msgstr ""
+

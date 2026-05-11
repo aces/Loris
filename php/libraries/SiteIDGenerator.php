@@ -4,7 +4,7 @@
  * This file contains a class used to generate SiteIDs i.e. both PSCIDs and
  * ExternalIDs.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS
@@ -79,7 +79,6 @@ class SiteIDGenerator extends IdentifierGenerator
             || empty($this->minValue)
             || empty($this->maxValue)
             || empty($this->prefix)
-            || !is_array($this->alphabet)
         ) {
             throw new \DomainException(
                 'Values not configured properly for ' . get_class($this) . '. '
@@ -144,6 +143,7 @@ class SiteIDGenerator extends IdentifierGenerator
         }
         return $ids;
     }
+
     /**
      * Helper function used for extracting the values from the config
      * settings relating to the PSCID structure.
@@ -228,6 +228,7 @@ class SiteIDGenerator extends IdentifierGenerator
         // null if they are not set.
         return is_null($seqValue) ? $seqValue: $seqValue;
     }
+
     /**
      * Iterate over each 'seq' value and return its setting if its value is
      * configured. Do error handling to make sure that there is exactly one
@@ -309,7 +310,7 @@ class SiteIDGenerator extends IdentifierGenerator
      *                                                 for which we want the
      *                                                 value.
      *
-     * @return array<int,mixed> The value(s) corresponding to $setting.
+     * @return array<int,string> The value(s) corresponding to $setting.
      */
     private static function _getSeqAttribute(
         array $idStructure,
@@ -375,8 +376,15 @@ class SiteIDGenerator extends IdentifierGenerator
      */
     private function _getPrefix(): string
     {
-        return strval($this->_getIDSetting('prefix'));
+        $val = $this->_getIDSetting('prefix');
+        if (is_array($val)) {
+            throw new \ConfigurationException(
+                'Did not expect prefix to be an array'
+            );
+        }
+        return strval($val);
     }
+
     /**
      * Returns the minimum value for the identifier.
      *
@@ -384,8 +392,14 @@ class SiteIDGenerator extends IdentifierGenerator
      */
     private function _getMinValue(): string
     {
+        $val = $this->_getIDSetting('min');
+        if (is_array($val)) {
+            throw new \ConfigurationException(
+                'Did not expect min to be an array'
+            );
+        }
         return strval(
-            $this->_getIDSetting('min') ??
+            $val ??
             str_repeat(strval($this->alphabet[0]), intval($this->length))
         );
     }
@@ -397,8 +411,14 @@ class SiteIDGenerator extends IdentifierGenerator
      */
     private function _getMaxValue(): string
     {
+        $val = $this->_getIDSetting('max');
+        if (is_array($val)) {
+            throw new \ConfigurationException(
+                'Did not expect max to be an array'
+            );
+        }
         return strval(
-            $this->_getIDSetting('max') ??
+            $val ??
             str_repeat(
                 strval($this->alphabet[count($this->alphabet) - 1]),
                 intval($this->length)

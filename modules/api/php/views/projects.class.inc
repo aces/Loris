@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category ApiViews
  * @package  Loris
@@ -51,7 +51,9 @@ class Projects
 
         $PSCIDFormat = \Candidate::structureToPCRE($PSCID['structure'], "SITE");
 
-        $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
+        $type = in_array($PSCID['generation'], ['sequential', 'random'], true)
+            ? 'auto'
+            : 'prompt';
 
         $settings = [
             "useEDC" => $useEDC,

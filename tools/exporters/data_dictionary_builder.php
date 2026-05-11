@@ -38,7 +38,7 @@
  * Usage:
  *    php data_dictionary_builder.php
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Main
@@ -140,7 +140,12 @@ foreach ($instruments AS $instrument) {
                     // htmlspecialchars() is necessary since data is escaped when
                     // inserted in the database but not escaped
                     // in the $title variable
-                    "name" => htmlspecialchars($title),
+                    "name" => htmlspecialchars(
+                        $title,
+                        ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                        'UTF-8',
+                        false
+                    ),
                     "type" => "Instrument",
                 ]
             );
@@ -160,8 +165,10 @@ foreach ($instruments AS $instrument) {
 
         case "header":
             break;
-
-            //for HTML_QuickForm versions of standard HTML Form Elements...
+        case "jsondata":
+        case "norules":
+            break;
+        //for HTML_QuickForm versions of standard HTML Form Elements...
         default:
             //continue; // jump straight to validity for debugging
             if (isset($bits[1]) && preg_match("/^Examiner/", $bits[1])) {
@@ -191,7 +198,12 @@ foreach ($instruments AS $instrument) {
             }
 
             print "\tInserting $testname $bits[1]\n";
-            $bits[2] = htmlspecialchars($bits[2]);
+            $bits[2] = htmlspecialchars(
+                $bits[2],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
             //find values to insert
             $Name = $testname . "_" . $bits[1];
             if (in_array($Name, $parameterNames, true)) {
@@ -309,6 +321,52 @@ foreach ($instruments AS $instrument) {
         "Type"        => $_type_enum,
         "Description" => "Administration for $testname",
         "SourceField" => "Administration",
+        "SourceFrom"  => $testname,
+        "Queryable"   => "1",
+    ];
+
+    if (array_key_exists($Name, $parameter_types)) {
+        $ParameterTypeID = $parameter_types[$Name];
+        $query_params["ParameterTypeID"] = $ParameterTypeID;
+    } else {
+        $ParameterTypeID = "";
+    }
+
+    $DB->insert(
+        "parameter_type",
+        $query_params
+    );
+
+    if ($ParameterTypeID === "") {
+        $paramId = $DB->lastInsertID;
+    } else {
+        $paramId = $ParameterTypeID;
+    }
+
+    $parameterNames[$paramId] = $query_params["Name"];
+    $DB->insert(
+        "parameter_type_category_rel",
+        [
+            "ParameterTypeID"         => $paramId,
+            "ParameterTypeCategoryID" => $catId,
+        ]
+    );
+
+    // INSTRUMENT DATA ENTRY
+    print "\tInserting data entry for $testname\n";
+    $Name = $testname . "_Data_entry";
+    if (in_array($Name, $parameterNames, true)) {
+        // this specific table_Data_entry combination
+        // was already inserted, skip.
+        continue;
+    }
+
+    $_type_enum   = "enum('Complete', 'In Progress')";
+    $query_params = [
+        "Name"        => $Name,
+        "Type"        => $_type_enum,
+        "Description" => "Data Entry for $testname",
+        "SourceField" => "Data_entry",
         "SourceFrom"  => $testname,
         "Queryable"   => "1",
     ];

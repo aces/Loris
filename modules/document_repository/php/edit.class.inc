@@ -3,7 +3,7 @@
 /**
  * This file loads the Edit file page
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Document_Repository
@@ -24,6 +24,7 @@ namespace LORIS\document_repository;
 class Edit extends \NDB_Page
 {
     public $skipTemplate = true;
+
     /**
      * Check user permissions
      *
@@ -31,7 +32,8 @@ class Edit extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('document_repository_upload_edit');
     }
@@ -69,5 +71,4 @@ class Edit extends \NDB_Page
             [$baseURL . "/document_repository/js/editFormIndex.js"]
         );
     }
-
 }

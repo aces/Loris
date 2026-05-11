@@ -3,7 +3,7 @@
 /**
  * Unit test for NDB_BVL_Instrument class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -25,7 +25,7 @@ require_once 'SessionID.php';
 /**
  * Unit test for NDB_BVL_Instrument class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -145,13 +145,13 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $instrument->form     = $this->quickForm;
         $instrument->testName = "Test";
+        $instrument->name     = "Test";
 
         // Use reflection to set the internal
         // loris object that should have been
         // set by the instrument constructor,
         // if PHPunit hadn't disabled the constructor
         $ref = new \ReflectionProperty(get_class($instrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $instrument,
             new \LORIS\LorisInstance(
@@ -307,7 +307,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         );
     }
 
-
     /**
      * Test that addTextElement and addTextAreaElement adds the correct data to
      * the instrument
@@ -458,7 +457,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                     ],
                     ['label' => '',
                         'name'    => 'hourMinField_status',
-                        'class'   => 'form-control input-sm',
+                        'class'   => 'form-control input-sm not-answered',
                         'type'    => 'select',
                         'options' => [
                             ''             => '',
@@ -472,7 +471,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 ],
                 'label'     => 'hourMinLabel',
                 'delimiter' => ' ',
-                'options'   => false,
+                'options'   => null,
                 'html'      => $this->_instrument->form->groupHTML($groupEl)
             ]
         );
@@ -546,7 +545,10 @@ class NDB_BVL_Instrument_Test extends TestCase
                         'type'    => 'date',
                         'html'    => $this->_instrument->form
                             ->renderElement($groupEl['elements'][0]),
-                        'options' => ['value' => 'Option']
+                        'options' => [
+                            'value'   => 'Option',
+                            'maxYear' => '9999'
+                        ]
                     ],
                     [
                         'label'   => null,
@@ -588,6 +590,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             ]
         );
     }
+
     /**
      * Test that addNumericElement adds the correct data to the instrument
      *
@@ -831,8 +834,12 @@ class NDB_BVL_Instrument_Test extends TestCase
         $i = $this->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
             ->onlyMethods(
-                ["getFullName", "getSubtestList", "getDataDictionary"]
-            )->addMethods(['_setupForm'])->getMock();
+                [
+                    "getFullName",
+                    "getSubtestList",
+                    "getDataDictionary"
+                ]
+            )->getMock();
         $i->method('getFullName')->willReturn("Test Instrument");
         $i->method('getSubtestList')->willReturn(
             [
@@ -849,8 +856,10 @@ class NDB_BVL_Instrument_Test extends TestCase
         $json     = $i->toJSON();
         $outArray = json_decode($json, true);
         assert(is_array($outArray));
+
         $page1 = $outArray['Elements'][0];
         $page2 = $outArray['Elements'][1];
+
         $this->assertEquals(
             $page1,
             [
@@ -860,6 +869,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Description' => 'The first page'
             ]
         );
+
         $this->assertEquals(
             $page2,
             [
@@ -1047,13 +1057,13 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetVisitLabel()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
+        $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
             )
             ->willReturn('123');
-        $this->_mockDB->expects($this->any())->method('pselectRow')
+        $this->_mockDB->method('pselectRow')
             ->willReturn(
                 ['CohortID' => '2', 'ProjectID' => 1,
                     'Visit_label' => 'V1', 'CandID' => '300123'
@@ -1072,13 +1082,13 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetCohortID()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
+        $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
             )
             ->willReturn('123');
-        $this->_mockDB->expects($this->any())->method('pselectRow')
+        $this->_mockDB->method('pselectRow')
             ->willReturn(['CohortID' => '2','ProjectID' => '1']);
         $this->assertEquals(2, $this->_instrument->getCohortID());
     }
@@ -1150,7 +1160,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Administration'              => '',
                 'Validity'                    => '',
                 'Exclusion'                   => null,
-                'UserID'                      => '456',
                 'Testdate'                    => '2020-01-01 00:00:00',
                 'DataID'                      => null,
             ]
@@ -1205,7 +1214,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_DB->run("UPDATE candidate SET DoD=null WHERE CandID=1");
+        $this->_DB->run("UPDATE candidate SET DoD=null WHERE ID=1");
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
@@ -1225,7 +1234,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_setUpMockDB();
         $this->_setTableData();
-        $this->_DB->run("UPDATE candidate SET DoD='2005-06-02' WHERE CandID=1");
+        $this->_DB->run("UPDATE candidate SET DoD='2005-06-02' WHERE ID=1");
         $this->_instrument->commentID = 'commentID1';
         $this->_instrument->table     = 'medical_history';
         $this->assertEquals(
@@ -1401,6 +1410,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         ];
         $this->assertTrue($this->_instrument->XINValidate($elements));
     }
+
     /**
      * Test that XINRegisterRule sets the values in the XINRules
      * array for the appropriate element name
@@ -1610,7 +1620,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         // set by the instrument constructor,
         // if PHPunit hadn't disabled the constructor
         $ref = new \ReflectionProperty(get_class($otherInstrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $otherInstrument,
             new \LORIS\LorisInstance(
@@ -1885,7 +1894,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'SessionID'                   => '123',
                     'CommentID'                   => 'commentID1',
                     'TestID'                      => '1000',
-                    'UserID'                      => '456',
                     'Data_entry'                  => 'Incomplete',
                     'Administration'              => 'admin1',
                     'Validity'                    => 'valid1',
@@ -1896,7 +1904,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'SessionID'                   => '234',
                     'CommentID'                   => 'commentID2',
                     'TestID'                      => '1001',
-                    'UserID'                      => '457',
                     'Data_entry'                  => 'Complete',
                     'Administration'              => 'admin2',
                     'Validity'                    => 'valid2',
@@ -1908,13 +1915,15 @@ class NDB_BVL_Instrument_Test extends TestCase
             "candidate",
             [
                 [
-                    'CandID' => 1,
+                    'ID'     => 1,
+                    'CandID' => 100000,
                     'DoB'    => '1999-01-01',
                     'DoD'    => '2016-01-01',
                     'PSCID'  => '345'
                 ],
                 [
-                    'CandID' => 2,
+                    'ID'     => 2,
+                    'CandID' => 100001,
                     'DoB'    => '1999-01-01',
                     'DoD'    => '2016-01-01',
                     'PSCID'  => '346'
@@ -1925,14 +1934,14 @@ class NDB_BVL_Instrument_Test extends TestCase
             "session",
             [
                 [
-                    'ID'       => '123',
-                    'CandID'   => 1,
-                    'CohortID' => '12'
+                    'ID'          => '123',
+                    'CandidateID' => 1,
+                    'CohortID'    => '12'
                 ],
                 [
-                    'ID'       => '234',
-                    'CandID'   => 2,
-                    'CohortID' => '12'
+                    'ID'          => '234',
+                    'CandidateID' => 2,
+                    'CohortID'    => '12'
                 ]
             ]
         );
@@ -1941,13 +1950,11 @@ class NDB_BVL_Instrument_Test extends TestCase
             [
                 [
                     'CommentID'  => 'commentID1',
-                    'UserID'     => '456',
                     'Examiner'   => 'Test Examiner1',
                     'Date_taken' => '2010-05-05'
                 ],
                 [
                     'CommentID'  => 'commentID2',
-                    'UserID'     => '457',
                     'Examiner'   => 'Test Examiner2',
                     'Date_taken' => '2010-05-05'
                 ],
@@ -2009,7 +2016,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_factoryForDB->setConfig($this->_config);
 
         $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $this->_instrument,
             new \LORIS\LorisInstance(

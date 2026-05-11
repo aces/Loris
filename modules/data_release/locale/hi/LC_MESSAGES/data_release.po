@@ -1,0 +1,125 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Data Release"
+msgstr "डेटा रिलीज़"
+
+msgid "File Name"
+msgstr "फ़ाइल नाम"
+
+msgid "Version"
+msgstr "संस्करण"
+
+msgid "Upload Date"
+msgstr "अपलोड तिथि"
+
+msgid "Project Name"
+msgstr "परियोजना नाम"
+
+msgid "Data Release ID"
+msgstr "डेटा रिलीज़ आईडी"
+
+msgid "Upload File"
+msgstr "फ़ाइल अपलोड करें"
+
+msgid "Upload a New File"
+msgstr "नई फ़ाइल अपलोड करें"
+
+msgid "Add Permission"
+msgstr "अनुमति जोड़ें"
+
+msgid "Manage Permissions"
+msgstr "अनुमतियाँ प्रबंधित करें"
+
+msgid "Note"
+msgstr "नोट"
+
+msgid "Version names will be saved as lowercase."
+msgstr "संस्करण नाम छोटे अक्षरों में सहेजे जाएंगे।"
+
+msgid "You must select a file to upload"
+msgstr "आपको अपलोड करने के लिए एक फ़ाइल चुननी होगी"
+
+msgid "You must select a project"
+msgstr "आपको एक परियोजना चुननी होगी"
+
+msgid "File size exceeds the maximum allowed"
+msgstr "फ़ाइल का आकार अनुमत अधिकतम सीमा से अधिक है"
+
+msgid "Error"
+msgstr "त्रुटि"
+
+msgid "Upload error!"
+msgstr "अपलोड त्रुटि!"
+
+msgid "Upload Successful!"
+msgstr "अपलोड सफल!"
+
+msgid "A file with this name already exists!"
+msgstr "इस नाम की फ़ाइल पहले से मौजूद है!"
+
+msgid "Would you like to overwrite existing file?"
+msgstr "क्या आप मौजूदा फ़ाइल को अधिलेखित करना चाहेंगे?"
+
+msgid "Note that the version associated with the file will also be overwritten."
+msgstr "ध्यान दें कि फ़ाइल से संबंधित संस्करण भी अधिलेखित हो जाएगा।"
+
+msgid "Choose a specific file or an entire release below"
+msgstr "नीचे एक विशिष्ट फ़ाइल या पूरी रिलीज़ चुनें"
+
+msgid "Data Release File"
+msgstr "डेटा रिलीज़ फ़ाइल"
+
+msgid "OR"
+msgstr "या"
+
+msgid "Data Release Version"
+msgstr "डेटा रिलीज़ संस्करण"
+
+msgid "Permission Update Success!"
+msgstr "अनुमति अद्यतन सफल!"
+
+msgid "Submission Error!"
+msgstr "सबमिशन त्रुटि!"
+
+msgid "You must select a user!"
+msgstr "आपको एक उपयोगकर्ता चुनना होगा!"
+
+msgid "You must select a file OR a version to grant permission on!"
+msgstr "आपको अनुमति देने के लिए एक फ़ाइल या एक संस्करण चुनना होगा!"
+
+msgid "Manage Versions a User has access to"
+msgstr "उन संस्करणों का प्रबंधन करें जिन तक उपयोगकर्ता की पहुँच है"
+
+msgid "Search for a User"
+msgstr "उपयोगकर्ता खोजें"
+
+msgid "Versions"
+msgstr "संस्करण"
+
+msgid "Manage Users with access to a Version"
+msgstr "किसी संस्करण तक पहुँच वाले उपयोगकर्ताओं का प्रबंधन करें"
+
+msgid "Search for a Version"
+msgstr "संस्करण खोजें"
+
+msgid "An error occurred when loading the form!"
+msgstr "फ़ॉर्म लोड करते समय एक त्रुटि हुई!"
+

@@ -53,31 +53,42 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
             $module = $row['Module'];
             $cat    = $row['Category'];
 
-            $qe = $module->getQueryEngine();
+            foreach ($module->getQueryEngines() as $qe) {
 
-            foreach ($cat->getItems() as $item) {
-                $name   = $item->getName();
-                $status = 'Unchanged';
-                if (isset($overrides[$name])) {
-                    $desc   = $overrides[$name]['Description'];
-                    $status = 'Modified';
-                } else {
-                    $desc = $item->getDescription();
+                foreach ($cat->getItems() as $item) {
+                    $name   = $item->getName();
+                    $status = dgettext('dictionary', 'Unchanged');
+                    if (isset($overrides[$name])) {
+                        $desc   = $overrides[$name]['Description'];
+                        $status = dgettext('dictionary', 'Modified');
+                    } else {
+                        $desc = $item->getDescription();
+                    }
+
+                    if ($desc == '') {
+                        $status = dgettext('dictionary', 'Empty');
+                    }
+
+                    $cohorts = $DB->pselectCol(
+                        "SELECT DISTINCT c.title FROM test_names tn
+                        JOIN test_battery tb ON tn.Test_name=tb.Test_name
+                        JOIN cohort c ON tb.CohortID=c.CohortID
+                        WHERE tn.Test_name=:tn
+                    ORDER BY c.title",
+                        ['tn' => $cat->getName()]
+                    );
+
+                    $visits = $qe->getVisitList($cat, $item);
+                    $dict[] = $this->getInstance(
+                        $module,
+                        $cat,
+                        $item,
+                        $desc,
+                        $status,
+                        $visits,
+                        $cohorts,
+                    );
                 }
-
-                if ($desc == '') {
-                    $status = 'Empty';
-                }
-
-                $visits = $qe->getVisitList($cat, $item);
-                $dict[] = $this->getInstance(
-                    $module,
-                    $cat,
-                    $item,
-                    $desc,
-                    $status,
-                    $visits,
-                );
             }
         }
         return new \ArrayIterator($dict);
@@ -96,6 +107,7 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
      * @param string         $desc       The overridden description of the item
      * @param string         $descstatus The status of the description override
      * @param ?[]string      $visits     The visits for session scoped variables
+     * @param ?[]string      $cohorts    The cohorts for session scoped variables
      *
      * @return \LORIS\Data\DataInstance An instance representing this row.
      */
@@ -106,7 +118,16 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
         string $desc,
         string $descstatus,
         array $visits,
+        array $cohorts,
     ) : \LORIS\Data\DataInstance {
-        return new DataDictRow($module, $cat, $item, $desc, $descstatus, $visits);
+        return new DataDictRow(
+            $module,
+            $cat,
+            $item,
+            $desc,
+            $descstatus,
+            $visits,
+            $cohorts,
+        );
     }
 }

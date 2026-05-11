@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {useTranslation} from 'react-i18next';
+import 'I18nSetup';
 
 /**
  * React component for a widget on the candidate dashboard
@@ -9,16 +11,26 @@ import PropTypes from 'prop-types';
  * @return {object} - The component
  */
 function CandidateMediaWidget(props) {
+  const {t} = useTranslation();
+  const dateFormatter = new Intl.DateTimeFormat(
+    loris.user.langpref.replace('_', '-'),
+    {
+      dateStyle: 'short',
+      timeStyle: 'short',
+    }
+  );
+
   let files = [];
   for (let i = 0; i < props.Files.length; i++) {
     const file = props.Files[i];
+    const dateStr = dateFormatter.format(new Date(file.LastModified));
     files.push(
       <a className="list-group-item" key={i}
         href={props.BaseURL
                     + '/media/files/'
                     + encodeURIComponent(file.Filename)}>
         <span className="pull-right text-muted small">
-                    Last modified : {file.LastModified}
+          {t('Updated', {ns: 'loris'})}: {dateStr}
         </span>
         <br />
         {file.Filename}

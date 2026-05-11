@@ -30,11 +30,12 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
     \LORIS\Data\DataInstance
 {
     protected $data;
+
     /**
      * Construct a Query object
      *
      * @param \LORIS\LorisInstance $loris     The LORIS Instance
-     * @param int                  $queryID   The Query ID
+     * @param ?int                 $queryID   The Query ID
      * @param ?array               $query     The serialized form of
      *                                        the query
      * @param ?string              $name      The query name
@@ -46,7 +47,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function __construct(
         protected \LORIS\LorisInstance $loris,
-        public readonly int $queryID,
+        public readonly ?int $queryID,
         ?array $query=null,
         public ?string $name=null,
         protected ?string $adminname=null,
@@ -366,7 +367,6 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 'Name'    => $name,
             ]
         );
-
     }
 
     /**
@@ -401,19 +401,25 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         if (isset(self::$moduleDictCache[$mname])) {
             return;
         }
-        $module = $this->loris->getModule($mname);
 
-        $moduleDict = $module->getQueryEngine()->getDataDictionary();
-        foreach ($moduleDict as $category) {
-            $cname = $category->getName();
-            foreach ($category->getItems() as $cfield) {
-                if (!isset(self::$moduleDictCache[$mname])) {
-                    self::$moduleDictCache[$mname] = [];
+        $module  = $this->loris->getModule($mname);
+        $engines = $module->getQueryEngines();
+
+        foreach ($engines as $engine) {
+            $moduleDict = $engine->getDataDictionary();
+            foreach ($moduleDict as $category) {
+
+                $cname = $category->getName();
+                foreach ($category->getItems() as $cfield) {
+                    if (!isset(self::$moduleDictCache[$mname])) {
+                        self::$moduleDictCache[$mname] = [];
+                    }
+                    if (!isset(self::$moduleDictCache[$mname][$cname])) {
+                        self::$moduleDictCache[$mname][$cname] = [];
+                    }
+                    self::$moduleDictCache[$mname][$cname][$cfield->getName()]
+                        = $cfield;
                 }
-                if (!isset(self::$moduleDictCache[$mname][$cname])) {
-                    self::$moduleDictCache[$mname][$cname] = [];
-                }
-                self::$moduleDictCache[$mname][$cname][$cfield->getName()] = $cfield;
             }
         }
     }
@@ -492,7 +498,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * @param string $name The name that the admin thinks should be
      *                     used for the query
      * @param string $type The type of querypin to remove. Either
-     *                     'topquery' or 'dashboard'
+     *                     'topquery' or 'dashboard' or 'loginpage'
      *
      * @return void
      */
@@ -517,7 +523,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * Remove this query from the list of queries pinned by an admin.
      *
      * @param string $type The type of querypin to remove. Either
-     *                     'topquery' or 'dashboard'
+     *                     'topquery' or 'dashboard' or 'loginpage'
      *
      * @return void
      */
@@ -545,11 +551,17 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         $criteria = $this->getCriteria();
 
         if ($criteria) {
+            \Profiler::checkpoint("Matching with criteria");
             $candidates = $this->_candidateMatches($criteria);
         } else {
+            \Profiler::checkpoint("Matching all candidates");
             $candidates = $this->_allCandidates();
         }
-        return $this->_filterInaccessibleCandidates($candidates, $user);
+        return \Candidate::filterInaccessibleCandIDs(
+            $this->loris,
+            $candidates,
+            $user
+        );
     }
 
     /**
@@ -564,6 +576,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         array $candIDs,
         \User $user,
     ) : iterable {
+        \Profiler::checkpoint("Filtering inaccessible candidates");
         if (count($candIDs) == 0) {
             return [];
         }
@@ -640,6 +653,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 yield $canddata->CandID;
             }
         }
+        \Profiler::checkpoint("Finished filtering candidates");
     }
 
     /**
@@ -678,7 +692,9 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         foreach ($criteria['group'] as $crit) {
+            \Profiler::checkpoint("Checking groups");
             if (isset($crit['group'])) {
+                \Profiler::checkpoint("Subgroup");
                 $subresults = $this->_candidateMatches($crit);
                 if (is_array($subresults)) {
                     $results[] = $subresults;
@@ -688,77 +704,91 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                 continue;
             }
             $modulename = $crit['module'];
-            $engine     = $this->loris->getModule($modulename)->getQueryEngine();
+            foreach ($this->loris->getModule($modulename)->getQueryEngines()
+                as $engine
+            ) {
+                $fulldict = $this->getFlattenedDictionary($engine);
+                $dictitem = $fulldict[$crit['fieldname']];
 
-            $fulldict = $this->getFlattenedDictionary($engine);
-            $dictitem = $fulldict[$crit['fieldname']];
+                // Get a new engine for each term to reset the internal state
+                switch ($crit['op']) {
+                case 'lt':
+                    $term = new QueryTerm($dictitem, new LessThan($crit['value']));
+                    break;
+                case 'lte':
+                    $term = new QueryTerm(
+                        $dictitem,
+                        new LessThanOrEqual($crit['value'])
+                    );
+                    break;
+                case 'eq':
+                    $term = new QueryTerm($dictitem, new Equal($crit['value']));
+                    break;
+                case 'neq':
+                    $term = new QueryTerm($dictitem, new NotEqual($crit['value']));
+                    break;
+                case 'gte':
+                    $term = new QueryTerm(
+                        $dictitem,
+                        new GreaterThanOrEqual($crit['value']),
+                    );
+                    break;
+                case 'gt':
+                    $term = new QueryTerm(
+                        $dictitem,
+                        new GreaterThan($crit['value'])
+                    );
+                    break;
+                case 'startsWith':
+                    $term = new QueryTerm($dictitem, new StartsWith($crit['value']));
+                    break;
+                case 'endsWith':
+                    $term = new QueryTerm($dictitem, new EndsWith($crit['value']));
+                    break;
+                case 'contains':
+                    $term = new QueryTerm($dictitem, new Substring($crit['value']));
+                    break;
+                case 'isnotnull':
+                    $term = new QueryTerm($dictitem, new NotNull());
+                    break;
+                case 'isnull':
+                    $term = new QueryTerm($dictitem, new IsNull());
+                    break;
+                case 'in':
+                    $term = new QueryTerm($dictitem, new In(...$crit['value']));
+                    break;
+                default:
+                    throw new \Exception("Unhandled operator: " . $crit['op']);
+                }
 
-            // Get a new engine for each term to reset the internal state
-            switch ($crit['op']) {
-            case 'lt':
-                $term = new QueryTerm($dictitem, new LessThan($crit['value']));
-                break;
-            case 'lte':
-                $term = new QueryTerm(
-                    $dictitem,
-                    new LessThanOrEqual($crit['value'])
-                );
-                break;
-            case 'eq':
-                $term = new QueryTerm($dictitem, new Equal($crit['value']));
-                break;
-            case 'neq':
-                $term = new QueryTerm($dictitem, new NotEqual($crit['value']));
-                break;
-            case 'gte':
-                $term = new QueryTerm(
-                    $dictitem,
-                    new GreaterThanOrEqual($crit['value']),
-                );
-                break;
-            case 'gt':
-                $term = new QueryTerm($dictitem, new GreaterThan($crit['value']));
-                break;
-            case 'startsWith':
-                $term = new QueryTerm($dictitem, new StartsWith($crit['value']));
-                break;
-            case 'endsWith':
-                $term = new QueryTerm($dictitem, new EndsWith($crit['value']));
-                break;
-            case 'contains':
-                $term = new QueryTerm($dictitem, new Substring($crit['value']));
-                break;
-            case 'isnotnull':
-                $term = new QueryTerm($dictitem, new NotNull());
-                break;
-            case 'isnull':
-                $term = new QueryTerm($dictitem, new IsNull());
-                break;
-            case 'in':
-                $term = new QueryTerm($dictitem, new In(...$crit['value']));
-                break;
-            default:
-                throw new \Exception("Unhandled operator: " . $crit['op']);
-            }
+                // FIXME: Verify visits, test was done with candidate scope data
+                $visitlist = null;
+                if (isset($crit['visits'])) {
+                    $visitlist = $crit['visits'];
+                }
 
-            // FIXME: Verify visits, test was done with candidate scope data
-            $visitlist = null;
-            if (isset($query['visits'])) {
-                $visitlist = $query['visits'];
-            }
-
-            $matches = $engine->getCandidateMatches($term, $visitlist);
-            if (is_array($matches)) {
-                $results[] = $matches;
-            } else {
-                $results[] = iterator_to_array($matches);
+                \Profiler::checkpoint("Calling engine get matches");
+                $matches = $engine->getCandidateMatches($term, $visitlist);
+                if (is_array($matches)) {
+                    $results[] = $matches;
+                } else {
+                    $results[] = iterator_to_array($matches);
+                }
+                \Profiler::checkpoint("Done group");
             }
         }
         $combinedresult = [];
-        if (count($results) == 1) {
+        switch (count($results)) {
+        case 0:
+            // One side has the empty set as part of the criteria. This can
+            // happen while building a query, and is better than crashing.
+            $combinedresult = [];
+            break;
+        case 1:
             // Doesn't matter if it's 'and' or 'or', there's only 1 criteria
             $combinedresult = $results[0];
-        } else {
+            break;
+        default:
             if ($criteria['operator'] == 'and') {
                 $combinedresult = array_intersect(...$results);
             } else if ($criteria['operator'] == 'or') {

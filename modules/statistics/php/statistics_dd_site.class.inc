@@ -3,7 +3,7 @@
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -16,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -86,20 +86,21 @@ class Statistics_DD_Site extends statistics_site
         $safe_instrument = $DB->escape($instrument);
 
         return $DB->pselectOne(
-            "SELECT count(s.CandID)  FROM session s, candidate c,
+            "SELECT count(s.CandidateID) FROM session s, candidate c,
                 flag f, $safe_instrument i
              WHERE
-                s.ID=f.SessionID AND f.CommentID=i.CommentID 
-                AND s.CandID=c.CandID  
-                AND s.Active='Y' 
+                s.ID=f.SessionID AND f.CommentID=i.CommentID
+                AND s.CandidateID=c.ID
+                AND s.Active='Y'
                 AND s.CenterID <> '1'
                 AND s.Current_stage <> 'Recycling Bin'
                 $this->query_criteria
-                AND f.Data_entry='Complete' AND f.Administration='All' 
+                AND f.Data_entry='Complete' AND f.Administration='All'
                 AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID",
             $this->query_vars
         );
     }
+
     /**
      * GetResults function
      *
@@ -118,11 +119,11 @@ class Statistics_DD_Site extends statistics_site
         $DB = $this->loris->getDatabaseConnection();
         $safe_instrument = $DB->escape($instrument);
         $result          = $DB->pselect(
-            "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,
-                lower(s.Visit_label) as Visit_label 
+            "SELECT s.CandidateID, f.SessionID, i.CommentID, c.PSCID,
+                lower(s.Visit_label) as Visit_label
                 FROM session s, candidate c, flag f, $safe_instrument i
-                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND 
-                s.CandID=c.CandID  AND s.Active='Y' 
+                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND
+                s.CandidateID=c.ID  AND s.Active='Y'
                 AND s.CenterID <> '1'
                 $this->query_criteria
                 AND s.Current_stage <> 'Recycling Bin'

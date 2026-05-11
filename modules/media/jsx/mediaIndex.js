@@ -2,6 +2,9 @@ import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
@@ -9,6 +12,12 @@ import TriggerableModal from 'TriggerableModal';
 
 import MediaUploadForm from './uploadForm';
 import MediaEditForm from './editForm';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/media.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/media.json';
+import frStrings from '../locale/fr/LC_MESSAGES/media.json';
+import esStrings from '../locale/es/LC_MESSAGES/media.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/media.json';
 
 /**
  * Media Index component
@@ -85,7 +94,7 @@ class MediaIndex extends Component {
    */
   mapColumn(column, value) {
     switch (column) {
-    case 'Site':
+    case this.props.t('Site', {ns: 'loris', count: 1}):
       return this.state.fieldOptions.sites[value];
     default:
       return value;
@@ -101,55 +110,60 @@ class MediaIndex extends Component {
    * @return {React.ReactElement|void} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const {t} = this.props;
     cell = this.mapColumn(column, cell);
-    // Set class to 'bg-danger' if file is hidden.
-    const style = (row['File Visibility'] === 'hidden') ? 'bg-danger' : '';
+    const style = (row[t('File Visibility',
+      {ns: 'media'})] === 'hidden') ? 'bg-danger' : '';
     let result = <td className={style}>{cell}</td>;
     switch (column) {
-    case 'File Name':
+    case t('File Name', {ns: 'media'}):
       if (this.props.hasPermission('media_read')) {
         const downloadURL = loris.BaseURL
                             + '/media/files/'
-                            + encodeURIComponent(row['File Name']);
+                            + encodeURIComponent(
+                              row[t('File Name', {ns: 'media'})]);
         result = (
           <td className={style}>
-            <a href={downloadURL} target="_blank" download={row['File Name']}>
+            <a
+              href={downloadURL}
+              target="_blank"
+              download={encodeURIComponent(row[t('File Name', {ns: 'media'})])}
+            >
               {cell}
             </a>
           </td>
         );
       }
       break;
-    case 'Visit Label':
+    case t('Visit Label', {ns: 'loris'}):
       if (row['CandID'] !== null && row['SessionID']) {
         const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
           row['CandID'] + '&sessionID=' + row['SessionID'];
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
-    case 'Site':
+    case t('Site', {ns: 'loris', count: 1}):
       result = <td className={style}>{cell}</td>;
       break;
-    case 'Project':
+    case t('Project', {ns: 'loris', count: 1}):
       result = <td className={style}>
         {this.state.fieldOptions.projects[cell]}
       </td>;
       break;
-    case 'Edit Metadata':
+    case t('Edit Metadata', {ns: 'media'}):
       if (!this.props.hasPermission('media_write')) {
         return;
       }
       const editButton = (
-        <TriggerableModal title="Edit Media File" label="Edit">
+        <TriggerableModal title={t('Edit Media File',
+          {ns: 'media'})} label={t('Edit', {ns: 'media'})}>
           <MediaEditForm
             DataURL={loris.BaseURL
                         + '/media/ajax/FileUpload.php'
                         + '?action=getData&idMediaFile='
-                        + row['Edit Metadata']}
+                        + row[t('Edit Metadata', {ns: 'media'})]}
             action={loris.BaseURL
                        + '/media/ajax/FileUpload.php?action=edit'}
-            /* this should be passed to onSubmit function
-                   upon refactoring editForm.js*/
             fetchData={this.fetchData }
           />
         </TriggerableModal>
@@ -167,10 +181,13 @@ class MediaIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
+
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -184,54 +201,54 @@ class MediaIndex extends Component {
      */
     const options = this.state.fieldOptions;
     let fields = [
-      {label: 'File Name', show: true, filter: {
+      {label: t('File Name', {ns: 'media'}), show: true, filter: {
         name: 'fileName',
         type: 'text',
       }},
-      {label: 'PSCID', show: true, filter: {
+      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'pscid',
         type: 'text',
       }},
-      {label: 'Visit Label', show: true, filter: {
+      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'select',
         options: options.visits,
       }},
-      {label: 'Language', show: true, filter: {
+      {label: t('Language', {ns: 'loris'}), show: true, filter: {
         name: 'language',
         type: 'select',
         options: options.languages,
       }},
-      {label: 'Instrument', show: true, filter: {
+      {label: t('Instrument', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'instrument',
         type: 'select',
         options: options.instruments,
       }},
-      {label: 'Site', show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.sites,
       }},
-      {label: 'Project', show: true, filter: {
+      {label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'project',
         type: 'select',
         options: options.projects,
       }},
-      {label: 'Uploaded By', show: true, filter: {
+      {label: t('Uploaded By', {ns: 'media'}), show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
       }},
-      {label: 'Date Taken', show: true},
-      {label: 'Comments', show: true},
-      {label: 'Last Modified', show: true},
-      {label: 'File Type', show: false, filter: {
+      {label: t('Date Taken', {ns: 'media'}), show: true},
+      {label: t('Comments', {ns: 'media'}), show: true},
+      {label: t('Last Modified', {ns: 'media'}), show: true},
+      {label: t('File Type', {ns: 'media'}), show: false, filter: {
         name: 'fileType',
         type: 'select',
         options: options.fileTypes,
       }},
-      {label: 'CandID', show: false},
-      {label: 'SessionID', show: false},
-      {label: 'File Visibility', show: false, filter: {
+      {label: t('CandID', {ns: 'media'}), show: false},
+      {label: t('SessionID', {ns: 'media'}), show: false},
+      {label: t('File Visibility', {ns: 'media'}), show: false, filter: {
         name: 'fileVisibility',
         type: 'select',
         options: options.hidden,
@@ -239,12 +256,12 @@ class MediaIndex extends Component {
       }},
     ];
     if (this.props.hasPermission('media_write')) {
-      fields.push({label: 'Edit Metadata', show: true});
+      fields.push({label: t('Edit Metadata', {ns: 'media'}), show: true});
     }
-    const tabs = [{id: 'browse', label: 'Browse'}];
+    const tabs = [{id: 'browse', label: t('Browse', {ns: 'media'})}];
     const uploadTab = () => {
       if (this.props.hasPermission('media_write')) {
-        tabs.push({id: 'upload', label: 'Upload'});
+        tabs.push({id: 'upload', label: t('Upload', {ns: 'media'})});
         return (
           <TabPane TabId={tabs[1].id}>
             <MediaUploadForm
@@ -280,13 +297,22 @@ class MediaIndex extends Component {
 MediaIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('es', 'media', esStrings);
+  i18n.addResourceBundle('fr', 'media', frStrings);
+  i18n.addResourceBundle('ja', 'media', jaStrings);
+  i18n.addResourceBundle('hi', 'media', hiStrings);
+  i18n.addResourceBundle('zh', 'media', zhStrings);
+  const Index = withTranslation(
+    ['media', 'loris']
+  )(MediaIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <MediaIndex
+    <Index
       dataURL={`${loris.BaseURL}/media/?format=json`}
       hasPermission={loris.userHasPermission}
     />

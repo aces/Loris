@@ -3,7 +3,7 @@
 /**
  * Battery Manager module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -12,6 +12,8 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverWait;
+use Facebook\WebDriver\WebDriverSelect;
 
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
@@ -19,7 +21,7 @@ require_once __DIR__ .
 /**
  * Battery Manager module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -36,6 +38,7 @@ class BatteryManagerTest extends LorisIntegrationTest
     //General locations
     static $display     = '.table-header > div > div > div:nth-child(1)';
     static $clearFilter = '.nav-tabs a';
+
     /**
      * Tests that, when loading the BatteryManager module, some
      * text appears in the body.
@@ -89,6 +92,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -108,6 +112,88 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
+    /**
+     * Tests filter in the form.
+     * Uses explicit waits to handle React re-render timing.
+     *
+     * @return void
+     */
+    function testFilter()
+    {
+        $this->safeGet($this->url . "/battery_manager/");
+
+        // Wait for data to load before filtering
+        $this->_waitForFilterResult(self::$display, 'rows displayed');
+
+        // Test instrument filter (select dropdown)
+        $el = new WebDriverSelect(
+            $this->safeFindElement(
+                WebDriverBy::cssSelector(self::$instrument)
+            )
+        );
+        $el->selectByVisibleText('AOSI');
+        $text = $this->_waitForFilterResult(
+            self::$display,
+            '3 rows'
+        );
+        $this->assertStringContainsString('3 rows', $text);
+        $this->safeClick(WebDriverBy::cssSelector(self::$clearFilter));
+        $this->_waitForFilterResult(self::$display, 'rows displayed');
+
+        // Test minimumAge filter (text input)
+        $el = $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$minimumAge)
+        );
+        $el->sendKeys('4300');
+        $text = $this->_waitForFilterResult(
+            self::$display,
+            '1 row'
+        );
+        $this->assertStringContainsString('1 row', $text);
+        $this->safeClick(WebDriverBy::cssSelector(self::$clearFilter));
+        $this->_waitForFilterResult(self::$display, 'rows displayed');
+
+        // Test maximumAge filter (text input)
+        $el = $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$maximumAge)
+        );
+        $el->sendKeys('0');
+        $text = $this->_waitForFilterResult(
+            self::$display,
+            '0 rows'
+        );
+        $this->assertStringContainsString('0 rows', $text);
+        $this->safeClick(WebDriverBy::cssSelector(self::$clearFilter));
+    }
+
+    /**
+     * Waits for the display element to contain the expected text.
+     * Polls every 500ms for up to 10 seconds.
+     *
+     * @param string $selector CSS selector for display element
+     * @param string $expected Expected substring in display text
+     *
+     * @return string The display text once it contains the expected string
+     */
+    private function _waitForFilterResult(
+        string $selector,
+        string $expected
+    ): string {
+        $resultText = '';
+        $wait       = new WebDriverWait($this->webDriver, 10, 500);
+        $wait->until(
+            function () use ($selector, $expected, &$resultText) {
+                $resultText = $this->webDriver->findElement(
+                    WebDriverBy::cssSelector($selector)
+                )->getText();
+                return strpos($resultText, $expected) !== false;
+            },
+            "Timed out waiting for '$expected' in '$selector'"
+        );
+        return $resultText;
+    }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -154,6 +240,7 @@ class BatteryManagerTest extends LorisIntegrationTest
 
         $this->resetPermissions();
     }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -280,6 +367,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -300,38 +388,6 @@ class BatteryManagerTest extends LorisIntegrationTest
         $this->assertStringContainsString(
             "Submission successful!",
             $bodyText
-        );
-    }
-    /**
-     * Tests filter in the form
-     * The form should refreash and the data should be gone.
-     *
-     * @return void
-     */
-    function testFilter()
-    {
-        $this->safeGet($this->url . "/battery_manager/");
-        //testing data from RBdata.sql
-        $this->_filterTest(
-            self::$instrument,
-            self::$display,
-            self::$clearFilter,
-            'AOSI',
-            '2 rows'
-        );
-        $this->_filterTest(
-            self::$minimumAge,
-            self::$display,
-            self::$clearFilter,
-            '0',
-            '2 rows'
-        );
-        $this->_filterTest(
-            self::$maximumAge,
-            self::$display,
-            self::$clearFilter,
-            '0',
-            '0 row'
         );
     }
 }

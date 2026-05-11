@@ -21,7 +21,6 @@ use LORIS\Data\Query\Criteria\Substring;
  */
 class ImagingQueryEngineTest extends TestCase
 {
-
     protected \LORIS\imaging_browser\QueryEngine $engine;
     protected $factory;
     protected $config;
@@ -102,7 +101,7 @@ class ImagingQueryEngineTest extends TestCase
                 // without.
                 [
                     'ID'          => 1,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => 1,
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
@@ -112,7 +111,7 @@ class ImagingQueryEngineTest extends TestCase
                 ],
                 [
                     'ID'          => 2,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => 1,
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
@@ -124,7 +123,7 @@ class ImagingQueryEngineTest extends TestCase
                 // It contains multiple ScanType1 and no ScanType2
                 [
                     'ID'          => 3,
-                    'CandID'      => "123457",
+                    'CandidateID' => 2,
                     'CenterID'    => 1,
                     'ProjectID'   => 1,
                     'CohortID'    => 1,
@@ -139,12 +138,12 @@ class ImagingQueryEngineTest extends TestCase
             "mri_scan_type",
             [
                 [
-                    'ID'        => 98,
-                    'Scan_type' => 'ScanType1',
+                    'MriScanTypeID'   => 98,
+                    'MriScanTypeName' => 'ScanType1',
                 ],
                 [
-                    'ID'        => 99,
-                    'Scan_type' => 'ScanType2',
+                    'MriScanTypeID'   => 99,
+                    'MriScanTypeName' => 'ScanType2',
                 ],
             ]
         );
@@ -153,28 +152,28 @@ class ImagingQueryEngineTest extends TestCase
             "files",
             [
                 [
-                    'FileID'                => 1,
-                    'SessionID'             => 1,
-                    'AcquisitionProtocolID' => 98,
-                    'File'                  => 'test/abc.file'
+                    'FileID'        => 1,
+                    'SessionID'     => 1,
+                    'MriScanTypeID' => 98,
+                    'File'          => 'test/abc.file'
                 ],
                 [
-                    'FileID'                => 2,
-                    'SessionID'             => 3,
-                    'AcquisitionProtocolID' => 98,
-                    'File'                  => 'test/abc.file1'
+                    'FileID'        => 2,
+                    'SessionID'     => 3,
+                    'MriScanTypeID' => 98,
+                    'File'          => 'test/abc.file1'
                 ],
                 [
-                    'FileID'                => 3,
-                    'SessionID'             => 3,
-                    'AcquisitionProtocolID' => 98,
-                    'File'                  => 'test/abc.file2'
+                    'FileID'        => 3,
+                    'SessionID'     => 3,
+                    'MriScanTypeID' => 98,
+                    'File'          => 'test/abc.file2'
                 ],
                 [
-                    'FileID'                => 4,
-                    'SessionID'             => 3,
-                    'AcquisitionProtocolID' => 99,
-                    'File'                  => 'test/Scantype2'
+                    'FileID'        => 4,
+                    'SessionID'     => 3,
+                    'MriScanTypeID' => 99,
+                    'File'          => 'test/Scantype2'
                 ],
             ]
         );
@@ -205,9 +204,11 @@ class ImagingQueryEngineTest extends TestCase
             [__DIR__ . "/../../"]
         );
 
-        $this->engine = $lorisinstance->getModule(
+        $engine = $lorisinstance->getModule(
             'imaging_browser'
-        )->getQueryEngine();
+        )->getQueryEngines()[0];
+        assert($engine instanceof \LORIS\imaging_browser\QueryEngine);
+        $this->engine = $engine;
     }
 
     /**
