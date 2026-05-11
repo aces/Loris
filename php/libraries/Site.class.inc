@@ -74,7 +74,7 @@ class Site implements
      */
     function getCenterName(): string
     {
-        return dgettext("psc", strval($this->_siteInfo['Name']));
+        return strval($this->_siteInfo['Name']);
     }
 
     /**
