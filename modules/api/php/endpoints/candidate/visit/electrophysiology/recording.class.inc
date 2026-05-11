@@ -170,7 +170,8 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
 
-        $info = $recording->getFileInfo();
+        $info     = $recording->getFileInfo();
+        $filepath = $info->getRealPath();
 
         if (!$info->isFile() && !$info->isDir()) {
             error_log('file in database but not in file system');
@@ -187,34 +188,14 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if ($info->isDir()) {
             $filename = $this->_filename . '.tar';
             $mimetype = 'application/x-tar';
-
-            $tarfile = sys_get_temp_dir() . '/recording_' . uniqid() . '.tar';
-
-            try {
-                $phar = new \PharData($tarfile);
-                $phar->buildFromDirectory($info->getRealPath());
-            } catch (\Exception $e) {
-                $this->logger->error(
-                    'Failed to create tar archive: ' . $e->getMessage()
-                );
-
-                if (file_exists($tarfile)) {
-                    unlink($tarfile);
-                }
-
-                return new \LORIS\Http\Response\JSON\InternalServerError();
-            }
-
-            $filepath = $tarfile;
+            $body     = new \LORIS\Http\ArchiveStream($filepath);
         } else {
             $filename = $this->_filename;
-            $filepath = $info->getRealPath();
             $mimetype = substr($recording->getMetadata('header'), 0, 4) === 'hdf5'
                 ? 'application/x.minc2'
                 : 'application/octet-stream';
+            $body     = new \LORIS\Http\FileStream($filepath, 'r');
         }
-
-        $body = new \LORIS\Http\FileStream($filepath, 'r', true);
 
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', $mimetype)

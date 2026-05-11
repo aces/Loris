@@ -27,38 +27,4 @@ namespace LORIS\Http;
  */
 class FileStream extends \Laminas\Diactoros\Stream implements \Psr\Http\Message\StreamInterface
 {
-    /**
-     * @var bool Whether the file be deleted when the stream is closed, used for
-     *           temporary files.
-     */
-    private bool $deleteOnClose;
-
-    /**
-     * Constructor
-     *
-     * @param string $stream        The path to the file or a stream resource
-     * @param string $mode          The mode to open the stream with
-     * @param bool   $deleteOnClose If true, delete the file when the stream is closed
-     */
-    public function __construct(
-        string $stream,
-        string $mode = 'r',
-        bool $deleteOnClose = false,
-    ) {
-        parent::__construct($stream, $mode);
-        $this->deleteOnClose = $deleteOnClose;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function close(): void
-    {
-        if ($this->deleteOnClose
-            && is_string($this->resource)
-            && file_exists($this->resource)
-        ) {
-            unlink($this->resource);
-        }
-    }
 }
