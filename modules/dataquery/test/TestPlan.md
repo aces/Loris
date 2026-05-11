@@ -1,12 +1,43 @@
 # Data Query - Test Plan
 
-## Welcome page
+### Table of Contents<br>
 
-1. Ensure the module loads only for a user that has the `dataquery_view` permission. They must also have access to the dictionary module.
-2. Assert that: `Instructions` panel, `Recent Queries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.
-3. Assert that: `Continue to Define Fields` button in the main panel, and `Choose Fields` button in the `Next Steps` panel are redirecting to the same page.
-4. `Recent Queries` panel
-   1. If not queries are available, make some so they will be added to this section.
+1. [Setup](#setup)
+2. [Test Data Query Permission](#test-data-query-view-permission)
+3. [Panel Tests](#panel-tests)
+      -[Test that Panels Collapse](#test-that-panels-collapse)
+      -[Test Panel Redirect](#test-panel-redirect)
+4. [Recent Queries Tests]
+
+## Setup
+
+Sign into your loris instance with an **admin** account.<br>
+
+- select Admin Accounts and click the Add User button.<br> 
+- enter all required information.<br>
+- select *ONE* site for example, "Rome".<br>
+- select *ONE* project, for example Pumpernickel.<br>
+- tick box:Roles/Access Profile: View/Create Candidates and Timepoints - Own Sites.<br>
+>This permission ensures that ONLY candidates who share the same site as your user are listed (in this case "Rome").<br>
+
+<br>
+
+## Test Data Query View Permission
+Ensure the module loads only for a user that has the `dataquery_view` permission. They must also have access to the dictionary module.<br>
+>if the test yield this, the test is successful<br>
+
+<br>
+
+## Panel Tests<br>
+
+### Test Panel Collapse
+-`Instructions` panel: click to open and click again to collapse ETCETC, `Recent Queries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.<br>
+
+### Test Panel Redirect
+Asser`Continue to Define Fields` button in the main panel, and `Choose Fields` button in the `Next Steps` panel are redirecting to the same page.
+
+### Test `Recent Queries` panel
+   - If not queries are available, make some so they will be added to this section.
    2. Assert that: queries you made have their parameters correctly displayed (i.e. fields and filters).
    3. Assert that: `text filter` immediately filter the queries.
    4. Assert that: clicking `Collapse queries` effectively collapse all queries.
