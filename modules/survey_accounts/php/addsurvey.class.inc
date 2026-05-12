@@ -250,7 +250,7 @@ class AddSurvey extends \NDB_Form
                 "SELECT 'x' FROM participant_accounts
             WHERE Test_name=:TN AND SessionID=:SID",
                 [
-                    'TN' => $testName,
+                    'TN'  => $testName,
                     'SID' => $SessionID,
                 ]
             );
@@ -263,8 +263,6 @@ class AddSurvey extends \NDB_Form
             new \SessionID($SessionID)
         );
 
-
-
         $key = $this->_generateSurveyKey();
 
         $sendEmail = false;
@@ -276,18 +274,18 @@ class AddSurvey extends \NDB_Form
         } else {
             $status = 'Created';
         }
-        
+
         foreach ($values['Test_name'] as $testName) {
             $commentID = $battery->addInstrument($this->loris, $testName);
             try {
                 $db->insert(
                     "participant_accounts",
                     [
-                        'SessionID' => $SessionID,
-                        'Test_name' => $testName,
-                        'Status' => $status,
+                        'SessionID'       => $SessionID,
+                        'Test_name'       => $testName,
+                        'Status'          => $status,
                         'OneTimePassword' => $key,
-                        'CommentID' => $commentID,
+                        'CommentID'       => $commentID,
                     ]
                 );
             } catch (\DatabaseException $e) {
