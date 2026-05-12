@@ -715,7 +715,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         $bodyText       = $this->safeFindElement(
             WebDriverBy::cssSelector("$row"),
-            $waitPeriod = 15
+            15
         )->getText();
 
         // 4 means there are 4 records under this site.
