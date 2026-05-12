@@ -161,7 +161,9 @@ class Media extends \DataFrameworkMenu
         }
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $provisioner = $provisioner->filter(new \LORIS\Data\Filters\UserSiteMatch());
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
         }
 
         return $provisioner->filter(new HideFileFilter());
