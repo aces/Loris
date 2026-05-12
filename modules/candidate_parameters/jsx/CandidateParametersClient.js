@@ -1,14 +1,17 @@
-import {Http} from 'jslib';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Candidate parameters JSON client.
  */
-class CandidateParametersClient extends Http.Client {
+class CandidateParametersClient {
   /**
    * @constructor
    */
   constructor() {
-    super('/candidate_parameters');
+    this.baseURL = new URL(
+      `${loris.BaseURL}/candidate_parameters/ajax/getData.php`,
+      window.location.origin
+    );
   }
 
   /**
@@ -19,12 +22,19 @@ class CandidateParametersClient extends Http.Client {
    * @return {Promise<any>}
    */
   getData(candID, tabName) {
-    const query = new Http.Query()
-      .addParam({field: 'candID', value: candID})
-      .addParam({field: 'data', value: tabName});
-    return this
-      .setSubEndpoint('ajax/getData.php')
-      .get(query);
+    const url = new URL(this.baseURL);
+    url.searchParams.set('candID', candID);
+    url.searchParams.set('data', tabName);
+
+    return lorisFetch(url.toString(), {
+      method: 'GET',
+      headers: {'Accept': 'application/json'},
+    }).then((response) => {
+      if (!response.ok) {
+        throw new Error('request_failed');
+      }
+      return response.json();
+    });
   }
 }
 
