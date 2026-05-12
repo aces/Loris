@@ -713,7 +713,7 @@ abstract class LorisIntegrationTest extends TestCase
             $el_dropdown->selectByVisibleText($test_value);
         }
 
-        $bodyText       = $this->safeFindElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("$row"),
             15
         )->getText();
