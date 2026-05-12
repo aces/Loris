@@ -712,6 +712,15 @@ abstract class LorisIntegrationTest extends TestCase
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
+       $wait = new WebDriverWait($this->webDriver, 15, 500);
+
+        $wait->until(
+            WebDriverExpectedCondition::textToBePresentInElementLocated(
+            WebDriverBy::cssSelector($row),
+            $expect_records
+            )
+        );
+
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("$row")
         )->getText();
