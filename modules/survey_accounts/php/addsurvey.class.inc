@@ -187,7 +187,7 @@ class AddSurvey extends \NDB_Form
             'already exists for given candidate for visit'
         );
         foreach ($instrument_list as $instrument) {
-            foreach ($values['Test_name'] as $testName){
+            foreach ($values['Test_name'] as $testName) {
                 if ($testName == $instrument['Test_name']) {
                     $instrument_instance = \NDB_BVL_Instrument::factory(
                         $this->loris,
@@ -276,6 +276,7 @@ class AddSurvey extends \NDB_Form
         } else {
             $status = 'Created';
         }
+        
         foreach ($values['Test_name'] as $testName) {
             $commentID = $battery->addInstrument($this->loris, $testName);
             try {
@@ -341,7 +342,8 @@ class AddSurvey extends \NDB_Form
             array_merge(
                 ['' => ''],
                 \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris)
-            )
+            ),
+            ["multiple"]
         );
         $this->addBasicText("Email", "Email address");
         $this->addBasicText(
