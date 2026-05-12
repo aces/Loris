@@ -717,7 +717,7 @@ abstract class LorisIntegrationTest extends TestCase
             WebDriverBy::cssSelector("$row"),
             $waitPeriod = 15
         )->getText();
-        
+
         // 4 means there are 4 records under this site.
         $this->assertStringContainsString($expect_records, $bodyText);
         //test clear filter
