@@ -144,9 +144,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Name("participantStatus")
         );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
-           $derivedAgeOptions = $this->safeFindElement(
-               WebDriverBy::Name("derivedAge")
-           );
+        $derivedAgeOptions = $this->safeFindElement(
+            WebDriverBy::Name("derivedAge")
+        );
            $this->assertEquals("input", $derivedAgeOptions->getTagName());
            // Not currently done
            //$this->assertEquals("text",$derivedAgeOptions->getAttribute("type"));
@@ -272,7 +272,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$display,
             self::$clearFilter,
             " y / ",
-            '436'
+            '435'
         );
         $this->_filterTest(
             self::$visitCount,
@@ -293,7 +293,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$display,
             self::$clearFilter,
             " y / ",
-            '436'
+            '435'
         );
         $this->_filterTest(
             self::$cohort,
