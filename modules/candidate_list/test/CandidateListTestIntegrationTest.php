@@ -293,7 +293,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$display,
             self::$clearFilter,
             " y / ",
-            '435'
+            '432'
         );
         $this->_filterTest(
             self::$cohort,
