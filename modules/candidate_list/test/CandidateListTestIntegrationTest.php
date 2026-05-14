@@ -38,10 +38,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';
     static $Participant = 'select[name="participantStatus"]';
-    static $dob         = 'input[name="DoB"]';
+    static $derivedAge  = 'input[name="derivedAge"]';
     static $visitCount  = 'input[name="visitCount"]';
     static $feedback    = 'select[name="feedback"]';
-    static $edc         = 'input[name="edc"]';
+    static $edcAge      = 'input[name="edcAge"]';
 
 
 
@@ -144,20 +144,22 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Name("participantStatus")
         );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
-           $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoB"));
-           $this->assertEquals("input", $dobOptions->getTagName());
+           $derivedAgeOptions = $this->safeFindElement(
+               WebDriverBy::Name("derivedAge")
+           );
+           $this->assertEquals("input", $derivedAgeOptions->getTagName());
            // Not currently done
-           //$this->assertEquals("date",$dobOptions->getAttribute("type"));
+           //$this->assertEquals("text",$derivedAgeOptions->getAttribute("type"));
            $sexOptions = $this->safeFindElement(WebDriverBy::Name("sex"));
            $this->assertEquals("select", $sexOptions->getTagName());
-           $this->assertEquals("input", $dobOptions->getTagName());
+           $this->assertEquals("input", $derivedAgeOptions->getTagName());
            // Not currently done in Loris.
-           //$this->assertEquals("number",$dobOptions->getAttribute("type"));
-           //$this->assertEquals("0",$dobOptions->getAttribute("min"));
-           $edcOptions = $this->safeFindElement(WebDriverBy::Name("edc"));
-           $this->assertEquals("input", $edcOptions->getTagName());
+           //$this->assertEquals("number",$derivedAgeOptions->getAttribute("type"));
+           //$this->assertEquals("0",$derivedAgeOptions->getAttribute("min"));
+           $edcAgeOptions = $this->safeFindElement(WebDriverBy::Name("edcAge"));
+           $this->assertEquals("input", $edcAgeOptions->getTagName());
            // Not currently done
-           //$this->assertEquals("date",$edcOptions->getAttribute("type"));
+           //$this->assertEquals("text",$edcAgeOptions->getAttribute("type"));
         $feedbackOptions = $this->safeFindElement(
             WebDriverBy::Name("feedback")
         );

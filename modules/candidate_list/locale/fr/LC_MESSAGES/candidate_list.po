@@ -25,6 +25,12 @@ msgstr "Accès aux profils candidats"
 msgid "Visit Count"
 msgstr "Nombre de visites"
 
+msgid "Derived Age"
+msgstr "Âge dérivé"
+
+msgid "EDC Age"
+msgstr "Âge EDC"
+
 msgid "Open Profile"
 msgstr "Ouvrir le profil"
 

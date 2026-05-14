@@ -31,8 +31,6 @@ namespace LORIS\candidate_list;
  */
 class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
-    private string $dobFormat;
-
     /**
      * Create a CandidateListRowProvisioner, which gets rows for
      * the candidate_list menu table.
@@ -42,13 +40,14 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      */
     function __construct(protected \LORIS\LorisInstance $loris)
     {
-        $factory  = \NDB_Factory::singleton();
-        $config   = $factory->config();
-        $maybeEDC = '';
+        $factory             = \NDB_Factory::singleton();
+        $config              = $factory->config();
+        $derivedAgeSQL       = self::getDerivedAgeSQL('c.DoB');
+        $maybeDerivedEDCSQL  = '';
         if ($config->getSetting("useEDC") === "true") {
-            $maybeEDC = ", DATE_FORMAT((c.EDC),'%Y-%m-%d') AS EDC";
+            $derivedEDCAgeSQL  = self::getDerivedAgeSQL('c.EDC');
+            $maybeDerivedEDCSQL = ", $derivedEDCAgeSQL AS EDCAge";
         }
-        $this->dobFormat = $config->getSetting("dobFormat");
 
         parent::__construct(
             $this->loris,
@@ -61,15 +60,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.Entity_type AS EntityType,
                 MAX(s.Scan_done) AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
-                CONCAT(
-                       (CASE
-			    WHEN YEAR(CURDATE()) < YEAR(c.DoB) THEN 0 #or some such validation
-			    ELSE  YEAR(CURDATE()) - YEAR(c.DoB) 
-			    END),' y / ',
-                        (CASE
-			    WHEN MONTH(CURDATE()) < MONTH(c.DoB) THEN MONTH(c.DoB) - MONTH(CURDATE())
-			    ELSE MONTH(CURDATE()) - MONTH(c.DoB)
-			    END),' m') as DoB2,
+                $derivedAgeSQL AS DerivedAge,
                 DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
                 c.Sex,
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
@@ -77,7 +68,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 p.Name AS RegistrationProject,
                 c.RegistrationCenterID,
                 c.RegistrationProjectID
-                $maybeEDC
+                $maybeDerivedEDCSQL
                 FROM candidate c
                     LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
                     LEFT JOIN session s ON (c.ID=s.CandidateID AND s.Active = 'Y')
@@ -91,12 +82,29 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 WHERE c.Active = 'Y'
                 AND c.RegistrationProjectID IS NOT NULL
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex, c.Entity_type,
-                    pso.Description, c.DOB, c.Date_registered, p.Name,
+                    pso.Description, c.DOB, c.EDC, c.Date_registered, p.Name,
                     c.RegistrationCenterID, c.RegistrationProjectID
                 ORDER BY c.PSCID ASC
             ",
             []
         );
+    }
+
+    /**
+     * Return SQL which converts a date into a rounded years/months age string.
+     *
+     * @param string $dateColumn SQL date column to derive the age from.
+     *
+     * @return string SQL expression.
+     */
+    private static function getDerivedAgeSQL(string $dateColumn): string
+    {
+        $roundedMonths = "CAST(ROUND(ABS(DATEDIFF(CURDATE(), $dateColumn))"
+            . " / 30.4375) AS UNSIGNED)";
+
+        return "CASE WHEN $dateColumn IS NULL THEN '' ELSE CONCAT("
+            . "FLOOR($roundedMonths / 12), ' y / ', "
+            . "MOD($roundedMonths, 12), ' m') END";
     }
 
     /**
@@ -116,19 +124,6 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // one of the user's sites.
         $cid = \CenterID::singleton($row['RegistrationCenterID']);
         $pid = \ProjectID::singleton($row['RegistrationProjectID']);
-        if ($row['DoB'] !== null) {
-            $dob = new \DateTimeImmutable($row['DoB']);
-            switch ($this->dobFormat) {
-            case 'Ym':
-                $row['DoB'] = $dob->format('Y-m');
-                break;
-            case 'Ymd':
-                $row['DoB'] = $dob->format('Y-m-d');
-                break;
-            default:
-                throw new \Exception("Unhandled DoB format: $this->dobFormat");
-            }
-        }
 
         if (isset($row['Cohort'])) {
             $cohorts    = explode(',', $row['Cohort']);
