@@ -268,11 +268,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             '436'
         );
         $this->_filterTest(
-            self::$dob,
+            self::$derivedAge,
             self::$display,
             self::$clearFilter,
-            "2003-06-30",
-            '1 row'
+            " y / ",
+            '436'
         );
         $this->_filterTest(
             self::$visitCount,
@@ -289,11 +289,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             '11 rows'
         );
         $this->_filterTest(
-            self::$edc,
+            self::$edcAge,
             self::$display,
             self::$clearFilter,
-            "2003-07-30",
-            '1 row'
+            " y / ",
+            '436'
         );
         $this->_filterTest(
             self::$cohort,

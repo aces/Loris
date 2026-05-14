@@ -40,12 +40,12 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      */
     function __construct(protected \LORIS\LorisInstance $loris)
     {
-        $factory             = \NDB_Factory::singleton();
-        $config              = $factory->config();
-        $derivedAgeSQL       = self::getDerivedAgeSQL('c.DoB');
-        $maybeDerivedEDCSQL  = '';
+        $factory       = \NDB_Factory::singleton();
+        $config        = $factory->config();
+        $derivedAgeSQL = self::_getDerivedAgeSQL('c.DoB');
+        $maybeDerivedEDCSQL = '';
         if ($config->getSetting("useEDC") === "true") {
-            $derivedEDCAgeSQL  = self::getDerivedAgeSQL('c.EDC');
+            $derivedEDCAgeSQL   = self::_getDerivedAgeSQL('c.EDC');
             $maybeDerivedEDCSQL = ", $derivedEDCAgeSQL AS EDCAge";
         }
 
@@ -97,7 +97,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      *
      * @return string SQL expression.
      */
-    private static function getDerivedAgeSQL(string $dateColumn): string
+    private static function _getDerivedAgeSQL(string $dateColumn): string
     {
         $roundedMonths = "CAST(ROUND(ABS(DATEDIFF(CURDATE(), $dateColumn))"
             . " / 30.4375) AS UNSIGNED)";
