@@ -170,6 +170,7 @@ class Notifications extends Endpoint
             $redcap_client = new RedcapHttpClient(
                 $config->redcap_instance_url,
                 $config->redcap_api_token,
+                $config->redcap_repeat_id
             );
 
             $notification_handler = new RedcapNotificationHandler(
