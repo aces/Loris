@@ -26,6 +26,7 @@ use LORIS\redcap\client\models\mappings\RedcapRepeatingInstrumentEvent;
 use LORIS\redcap\client\models\mappings\RedcapInstrumentEventMap;
 use LORIS\redcap\client\models\records\RedcapRecord;
 use LORIS\redcap\client\models\records\RedcapRepeatingRecord;
+use LORIS\redcap\config\RedcapConfigRepeatId;
 
 /**
  * A REDCap Client.
@@ -61,6 +62,11 @@ class RedcapHttpClient
     private Client $_client;
 
     /**
+     * REDCap repeated instrument field.
+     */
+    private RedcapConfigRepeatId $_repeat_index_field;
+
+    /**
      * A cache of all already done calls.
      *
      * @var array
@@ -70,13 +76,15 @@ class RedcapHttpClient
     /**
      * Create a new REDCap Client for a specific REDCap instance and project.
      *
-     * @param string $instance_url      A REDCap instance URL.
-     * @param string $project_api_token A REDCap project API token.
-     * @param bool   $verbose           Verbose mode.
+     * @param string               $instance_url      A REDCap instance URL.
+     * @param string               $project_api_token A REDCap project API token.
+     * @param RedcapConfigRepeatId $repeat_index      The REDCap repeated field.
+     * @param bool                 $verbose           Verbose mode.
      */
     public function __construct(
         string $instance_url,
         string $project_api_token,
+        RedcapConfigRepeatId $repeat_index,
         bool $verbose = false
     ) {
         $trimmed_url    = rtrim($instance_url, '/');
@@ -85,6 +93,9 @@ class RedcapHttpClient
         $this->_token   = $project_api_token;
         $this->_client  = new Client($api_url);
         $this->_verbose = $verbose;
+
+        // only useful when repeated instruments exist.
+        $this->_repeat_index_field = $repeat_index;
     }
 
     /**
@@ -722,13 +733,26 @@ class RedcapHttpClient
             )
         ) {
             // sort based on the instance index number
-            usort(
-                $record_dicts,
-                function ($a, $b) {
-                    $redcapRepeatIndex = "redcap_repeat_instance";
-                    return $a[$redcapRepeatIndex] <=> $b[$redcapRepeatIndex];
-                }
-            );
+            if ($this->_repeat_index_field === RedcapConfigRepeatId::RepeatInstance) {
+                usort(
+                    $record_dicts,
+                    function ($a, $b) {
+                        $redcapRepeatIndex = "redcap_repeat_instance";
+                        return $a[$redcapRepeatIndex] <=> $b[$redcapRepeatIndex];
+                    }
+                );
+            } else if ($this->_repeat_index_field === RedcapConfigRepeatId::Timestamp) {
+                // sort based on the record timestamp
+                usort(
+                    $record_dicts,
+                    function ($a, $b) use ($instrument_name) {
+                        $tsField = "{$instrument_name}_timestamp";
+                        $ts_a    = new \DateTimeImmutable($a[$tsField]);
+                        $ts_b    = new \DateTimeImmutable($b[$tsField]);
+                        return $ts_a <=> $ts_b;
+                    }
+                );
+            }
 
             foreach ($record_dicts as $index => $record) {
                 $records[] = new RedcapRepeatingRecord(
