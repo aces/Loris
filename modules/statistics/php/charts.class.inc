@@ -772,6 +772,26 @@ class Charts extends \NDB_Page
             $projectQuery      .= " AND c.Date_registered <= :$paramName";
             $params[$paramName] = $queryParams['dateRegisteredEnd'];
         }
+        if (is_numeric($queryParams['candidateAgeMin'] ?? null)) {
+            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
+            $paramName          = 'candidateAgeMin' . (++$paramCounter);
+            $projectQuery      .= " AND TIMESTAMPDIFF(
+                YEAR,
+                c.DoB,
+                c.Date_registered
+            ) >= :$paramName";
+            $params[$paramName] = $queryParams['candidateAgeMin'];
+        }
+        if (is_numeric($queryParams['candidateAgeMax'] ?? null)) {
+            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
+            $paramName          = 'candidateAgeMax' . (++$paramCounter);
+            $projectQuery      .= " AND TIMESTAMPDIFF(
+                YEAR,
+                c.DoB,
+                c.Date_registered
+            ) <= :$paramName";
+            $params[$paramName] = $queryParams['candidateAgeMax'];
+        }
 
         return [
             'projectQuery'           => $projectQuery,

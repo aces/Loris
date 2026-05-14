@@ -1881,6 +1881,143 @@ NumericElement.defaultProps = {
 };
 
 /**
+ * Numeric range component.
+ * React wrapper for filtering a numeric value between two bounds.
+ */
+export class NumericRangeElement extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      {
+        ...this.props.value,
+        [e.target.name]: e.target.value,
+      }
+    );
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    const value = this.props.value || {};
+    const minID = `${this.props.id || this.props.name}_min`;
+    const maxID = `${this.props.id || this.props.name}_max`;
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
+
+    return (
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ?
+          {display: 'flex', flexDirection: 'column'} : {}}
+      >
+        {this.props.label && (
+          <InputLabel
+            label={this.props.label}
+            required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
+          />
+        )}
+        <div className={wrapperClass}>
+          <div style={{display: 'flex', gap: '8px'}}>
+            <div style={{flex: 1}}>
+              <label className="sr-only" htmlFor={minID}>
+                {this.props.minLabel}
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                name="min"
+                id={minID}
+                min={this.props.min}
+                max={this.props.max}
+                step={this.props.step}
+                value={value.min || ''}
+                placeholder={this.props.minLabel}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+            <div style={{flex: 1}}>
+              <label className="sr-only" htmlFor={maxID}>
+                {this.props.maxLabel}
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                name="max"
+                id={maxID}
+                min={this.props.min}
+                max={this.props.max}
+                step={this.props.step}
+                value={value.max || ''}
+                placeholder={this.props.maxLabel}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+NumericRangeElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  min: PropTypes.number,
+  max: PropTypes.number,
+  step: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.shape({
+    min: PropTypes.string,
+    max: PropTypes.string,
+  }),
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
+  minLabel: PropTypes.string,
+  maxLabel: PropTypes.string,
+};
+
+NumericRangeElement.defaultProps = {
+  name: '',
+  min: null,
+  max: null,
+  step: '1',
+  label: '',
+  value: {},
+  id: null,
+  required: false,
+  disabled: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  labelPlacementTop: false,
+  minLabel: 'Minimum',
+  maxLabel: 'Maximum',
+};
+
+/**
  * File Component
  * React wrapper for a simple or 'multiple' <input type="file"> element.
  */
@@ -2469,6 +2606,10 @@ export class LorisElement extends Component {
     case 'numeric':
       elementHtml = (<NumericElement {...elementProps} />);
       break;
+    case 'numeric-range':
+    case 'number-range':
+      elementHtml = (<NumericRangeElement {...elementProps} />);
+      break;
     case 'textarea':
       elementHtml = (<TextareaElement {...elementProps} />);
       break;
@@ -2825,6 +2966,7 @@ export default {
   TimeElement,
   DateTimeElement,
   NumericElement,
+  NumericRangeElement,
   FileElement: FileElementWithTranslation,
   StaticElement,
   HeaderElement,

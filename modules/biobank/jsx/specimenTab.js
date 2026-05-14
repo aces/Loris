@@ -274,7 +274,7 @@ class SpecimenTab extends Component {
       }},
       {label: t('Age at Collection', {ns: 'biobank'}), show: true, filter: {
         name: 'age',
-        type: 'number',
+        type: 'number-range',
       }},
       {label: this.props.t('Diagnosis', {ns: 'biobank'}), show: true, filter: {
         name: 'diagnosis',
