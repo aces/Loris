@@ -721,19 +721,12 @@ class RedcapHttpClient
                 $unique_event_name
             )
         ) {
-            // TODO: ${instrument_name}_dtt seems to be HBCD-specific. The code
-            // could probably be cleaner with a single timestamp abstraction. The
-            // problem is that the repeating index depends on the order in which the
-            // records were filled. However, this index might also be obtainable
-            // from a field in the record. Investigation needed.
-            // Order the records by ${instrument_name}_dtt field value
+            // sort based on the instance index number
             usort(
                 $record_dicts,
-                function ($a, $b) use ($instrument_name) {
-                    $dttField = "{$instrument_name}_dtt";
-                    $a_date   = new \DateTimeImmutable($a[$dttField]);
-                    $b_date   = new \DateTimeImmutable($b[$dttField]);
-                    return $a_date <=> $b_date;
+                function ($a, $b) {
+                    $redcapRepeatIndex = "redcap_repeat_instance";
+                    return $a[$redcapRepeatIndex] <=> $b[$redcapRepeatIndex];
                 }
             );
 
