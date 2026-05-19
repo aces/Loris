@@ -1603,6 +1603,171 @@ DateElement.defaultProps = {
 };
 
 /**
+ * Date range component.
+ * React wrapper for filtering date values between two bounds.
+ */
+export class DateRangeElement extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      {
+        ...this.props.value,
+        [e.target.name]: e.target.value,
+      }
+    );
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    const value = this.props.value || {};
+    const minID = `${this.props.id || this.props.name}_min`;
+    const maxID = `${this.props.id || this.props.name}_max`;
+    const minLabel = this.props.labelPlacementTop && this.props.label ?
+      `${this.props.label} ${this.props.minLabel}` : this.props.minLabel;
+    const maxLabel = this.props.labelPlacementTop && this.props.label ?
+      `${this.props.label} ${this.props.maxLabel}` : this.props.maxLabel;
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
+
+    let minYear = this.props.minYear;
+    let maxYear = this.props.maxYear;
+    if (this.props.minYear === '' || this.props.minYear === null) {
+      minYear = '1000';
+    }
+    if (this.props.maxYear === '' || this.props.maxYear === null) {
+      maxYear = '9999';
+    }
+
+    const currentDate = new Date();
+    const currentDay = `${currentDate.getDate()}`.padStart(2, '0');
+    const currentMonth = `${currentDate.getMonth() + 1}`.padStart(2, '0');
+
+    let inputType = 'date';
+    let minFullDate = minYear + '-01-01';
+    let maxFullDate = maxYear + '-' + currentMonth + '-' + currentDay;
+    if (!this.props.dateFormat.match(/d/i)) {
+      inputType = 'month';
+      minFullDate = minYear + '-01';
+      maxFullDate = maxYear + '-' + currentMonth;
+    }
+
+    return (
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
+        {this.props.label && !this.props.labelPlacementTop && (
+          <InputLabel
+            label={this.props.label}
+            required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
+          />
+        )}
+        <div className={wrapperClass}>
+          <div style={{display: 'flex', gap: '8px'}}>
+            <div style={{flex: 1}}>
+              <label htmlFor={minID}>
+                {minLabel}
+              </label>
+              <input
+                type={inputType}
+                className="form-control"
+                name="min"
+                id={minID}
+                min={minFullDate}
+                max={maxFullDate}
+                value={value.min || ''}
+                placeholder={minLabel}
+                required={this.props.required}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+            <div style={{flex: 1}}>
+              <label htmlFor={maxID}>
+                {maxLabel}
+              </label>
+              <input
+                type={inputType}
+                className="form-control"
+                name="max"
+                id={maxID}
+                min={minFullDate}
+                max={maxFullDate}
+                value={value.max || ''}
+                placeholder={maxLabel}
+                required={this.props.required}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+DateRangeElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  value: PropTypes.shape({
+    min: PropTypes.string,
+    max: PropTypes.string,
+  }),
+  id: PropTypes.string,
+  maxYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  minYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  dateFormat: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
+  minLabel: PropTypes.string,
+  maxLabel: PropTypes.string,
+};
+
+DateRangeElement.defaultProps = {
+  name: '',
+  label: '',
+  value: {},
+  id: null,
+  maxYear: '9999',
+  minYear: '1000',
+  dateFormat: 'YMd',
+  disabled: false,
+  required: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  labelPlacementTop: false,
+  minLabel: 'Minimum',
+  maxLabel: 'Maximum',
+};
+
+/**
  * Time Component
  * React wrapper for a <input type="time"> element.
  */
@@ -2600,6 +2765,9 @@ export class LorisElement extends Component {
     case 'date':
       elementHtml = (<DateElement {...elementProps} />);
       break;
+    case 'date-range':
+      elementHtml = (<DateRangeElement {...elementProps} />);
+      break;
     case 'time':
       elementHtml = (<TimeElement {...elementProps} />);
       break;
@@ -2962,6 +3130,7 @@ export default {
   TextboxElement,
   PasswordElement,
   DateElement,
+  DateRangeElement,
   TimeElement,
   DateTimeElement,
   NumericElement,

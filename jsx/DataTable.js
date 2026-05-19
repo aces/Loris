@@ -329,6 +329,18 @@ class DataTable extends Component {
       return false;
     }
 
+    // Handle date range inputs.
+    if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+      const dateData = (data !== null && data !== undefined) ?
+        data.toString() : '';
+      const min = filterData.min || '';
+      const max = filterData.max || '';
+
+      return dateData !== '' &&
+        (min === '' || dateData >= min) &&
+        (max === '' || dateData <= max);
+    }
+
     // Handle numeric inputs
     if (typeof filterData === 'number') {
       let intData = Number.parseInt(data, 10);
