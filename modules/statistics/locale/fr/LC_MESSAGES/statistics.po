@@ -113,6 +113,9 @@ msgstr "Répartition par cohorte"
 msgid "Total Participants: {{count}}"
 msgstr "Nombre total de participants : {{count}}"
 
+msgid "No data collected yet"
+msgstr "Aucune donnée collectée pour le moment"
+
 msgid "Projects: {{count}}"
 msgstr "Projets : {{count}}"
 

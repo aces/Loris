@@ -6,6 +6,7 @@ import StudyProgression from './widgets/studyprogression';
 import {fetchData} from './Fetch';
 import Modal from 'Modal';
 import Loader from 'Loader';
+import Panel from 'Panel';
 
 import {useTranslation} from 'react-i18next';
 
@@ -15,6 +16,33 @@ import {setupCharts, unloadCharts} from './widgets/helpers/chartBuilder';
 import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
 import frStrings from '../locale/fr/LC_MESSAGES/statistics.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/statistics.json';
+
+/**
+ * Returns the total number of participants reported by the widget endpoint.
+ *
+ * @param {object} data - Widget endpoint data
+ * @return {number|null} The total participant count, or null before data loads.
+ */
+const getTotalParticipants = (data) => {
+  if (!data || !data.recruitment || !data.recruitment.overall) {
+    return null;
+  }
+
+  return Number(data.recruitment.overall.total_recruitment);
+};
+
+/**
+ * Empty panel content shown when the study has no collected data yet.
+ *
+ * @param {Function} t - Translation helper
+ * @return {JSX.Element}
+ */
+const emptyState = (t) => (
+  <div className='statistics-empty-state' role='status'>
+    {t('No data collected yet', {ns: 'statistics'})}
+  </div>
+);
 
 /**
  * WidgetIndex - the main window.
@@ -25,12 +53,17 @@ import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
 const WidgetIndex = (props) => {
   const [recruitmentData, setRecruitmentData] = useState({});
   const [studyProgressionData, setStudyProgressionData] = useState({});
+  const [widgetsLoaded, setWidgetsLoaded] = useState(false);
   const [modalChart, setModalChart] = useState(null);
   const {t, i18n} = useTranslation();
+  const totalParticipants = getTotalParticipants(recruitmentData);
+  const hasNoCollectedData = widgetsLoaded && totalParticipants === 0;
+
   useEffect( () => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
     i18n.addResourceBundle('fr', 'statistics', frStrings);
     i18n.addResourceBundle('zh', 'statistics', zhStrings);
+    i18n.addResourceBundle('hi', 'statistics', hiStrings);
   }, []);
 
   // used by recruitment.js and studyprogression.js to display each chart.
@@ -261,6 +294,7 @@ const WidgetIndex = (props) => {
         );
         setRecruitmentData(data);
         setStudyProgressionData(data);
+        setWidgetsLoaded(true);
       };
       setup().catch(
         (error) => {
@@ -344,18 +378,46 @@ const WidgetIndex = (props) => {
             </a>
         }
       </Modal>
-      <Recruitment
-        data ={recruitmentData}
-        baseURL ={props.baseURL}
-        showChart ={showChart}
-        updateFilters ={updateFilters}
-      />
-      <StudyProgression
-        data ={studyProgressionData}
-        baseURL ={props.baseURL}
-        showChart ={showChart}
-        updateFilters ={updateFilters}
-      />
+      {hasNoCollectedData ? (
+        <>
+          <Panel
+            title={
+              t('Recruitment', {ns: 'statistics'})
+              + ' — '
+              + t('Overall', {ns: 'statistics'})
+              + ' | '
+              + t(
+                'Total Participants: {{count}}',
+                {ns: 'statistics', count: totalParticipants}
+              )
+            }
+            id='statistics_recruitment'
+          >
+            {emptyState(t)}
+          </Panel>
+          <Panel
+            title={t('Study Progression', {ns: 'statistics'})}
+            id='statistics_studyprogression'
+          >
+            {emptyState(t)}
+          </Panel>
+        </>
+      ) : (
+        <>
+          <Recruitment
+            data ={recruitmentData}
+            baseURL ={props.baseURL}
+            showChart ={showChart}
+            updateFilters ={updateFilters}
+          />
+          <StudyProgression
+            data ={studyProgressionData}
+            baseURL ={props.baseURL}
+            showChart ={showChart}
+            updateFilters ={updateFilters}
+          />
+        </>
+      )}
     </>
   );
 };
