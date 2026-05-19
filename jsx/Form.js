@@ -2606,7 +2606,6 @@ export class LorisElement extends Component {
     case 'numeric':
       elementHtml = (<NumericElement {...elementProps} />);
       break;
-    case 'numeric-range':
     case 'number-range':
       elementHtml = (<NumericRangeElement {...elementProps} />);
       break;

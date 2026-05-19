@@ -39,7 +39,7 @@ function Filter(props) {
         return;
       }
 
-      if (filter.type === 'number-range' || filter.type === 'numeric-range') {
+      if (filter.type === 'number-range') {
         const min = searchParams.get(`${filter.name}Min`) || '';
         const max = searchParams.get(`${filter.name}Max`) || '';
         if (min !== '' || max !== '') {
@@ -68,7 +68,7 @@ function Filter(props) {
       .find((field) => (field.filter||{}).name == name).filter.type;
     const exactMatch = (!(type === 'text' || type === 'date'
       || type === 'datetime' || type === 'multiselect'
-      || type === 'number-range' || type === 'numeric-range'));
+      || type === 'number-range'));
     if (value === null || value === '' ||
       (typeof value === 'object' && !Array.isArray(value) &&
         (value.min || '') === '' && (value.max || '') === '') ||
@@ -122,7 +122,6 @@ function Filter(props) {
           />;
           break;
         case 'number-range':
-        case 'numeric-range':
           element = <NumericRangeElement
             min={filter.min}
             max={filter.max}
@@ -158,8 +157,7 @@ function Filter(props) {
             name: filter.name,
             label: field.label,
             value: (props.filters[filter.name] || {}).value || (
-              filter.type === 'number-range' ||
-              filter.type === 'numeric-range' ? {} : null
+              filter.type === 'number-range' ? {} : null
             ),
             onUserInput: onFieldUpdate,
           }

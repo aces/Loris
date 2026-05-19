@@ -53,7 +53,6 @@ const QueryChartForm = (props) => {
   const setFormData = (formElement, value) => {
     let normalizedValue = value;
     if (formElement === 'candidateAge') {
-      normalizedValue = value;
       if ((normalizedValue.min || '') === '' &&
         (normalizedValue.max || '') === '') {
         normalizedValue = undefined;
