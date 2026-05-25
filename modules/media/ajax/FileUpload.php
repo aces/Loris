@@ -63,7 +63,8 @@ function editFile()
     }
 
     if (!$user->hasPermission('media_write')
-        || (!$user->hasPermission('access_all_profiles') && !$user->hasCenter(new \CenterID(strval($row['CenterID']))))
+        || (!$user->hasPermission('access_all_profiles')
+        && !$user->hasCenter(new \CenterID(strval($row['CenterID']))))
     ) {
         showMediaError("Permission Denied", 403);
         exit(0);
