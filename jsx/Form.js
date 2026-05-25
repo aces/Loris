@@ -988,6 +988,7 @@ export class TextareaElement extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
   }
 
   /**
@@ -997,6 +998,15 @@ export class TextareaElement extends Component {
    */
   handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
+  }
+
+  /**
+   * Handle blur
+   *
+   * @param {object} e - Event
+   */
+  handleBlur(e) {
+    this.props.onUserBlur(this.props.name, e.target.value);
   }
 
   /**
@@ -1020,6 +1030,7 @@ export class TextareaElement extends Component {
             required={this.props.required}
             disabled={this.props.disabled}
             onChange={this.handleChange}
+            onBlur={this.handleBlur}
           >
           </textarea>
         </div>
@@ -1039,6 +1050,7 @@ TextareaElement.propTypes = {
   rows: PropTypes.number,
   cols: PropTypes.number,
   onUserInput: PropTypes.func,
+  onUserBlur: PropTypes.func,
 };
 
 TextareaElement.defaultProps = {
@@ -1054,6 +1066,7 @@ TextareaElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  onUserBlur: function() {},
 };
 
 /**
