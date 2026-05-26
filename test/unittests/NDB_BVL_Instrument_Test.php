@@ -1058,7 +1058,6 @@ class NDB_BVL_Instrument_Test extends TestCase
     {
         $this->_instrument->commentID = 'commentID1';
         $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
-            ->method('pselectOne')
             ->willReturn('123');
         $this->_mockDB->method('pselectRow')
             ->willReturn(
@@ -1086,7 +1085,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             )
             ->willReturn('123');
         $this->_mockDB->method('pselectRow')
-            ->willReturn(['CohortID' => '2','ProjectID' => '1']);
+            ->willReturn(['CohortID' => '2', 'ProjectID' => '1', 'CandID' => '300123']);
         $this->assertEquals(2, $this->_instrument->getCohortID());
     }
 
