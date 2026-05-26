@@ -245,6 +245,7 @@ class AddSurvey extends \NDB_Form
             ]
         );
 
+        $InstrumentExists = null;
         foreach ($values['Test_name'] as $testName) {
             $InstrumentExists = $db->pselectOne(
                 "SELECT 'x' FROM participant_accounts
@@ -254,8 +255,11 @@ class AddSurvey extends \NDB_Form
                     'SID' => $SessionID,
                 ]
             );
+            if ($InstrumentExists === 'x') {
+                break;
+            }
         }
-        if ($InstrumentExists == 'x') {
+        if ($InstrumentExists === 'x') {
             return;
         }
         $battery = new \NDB_BVL_Battery($this->loris);
