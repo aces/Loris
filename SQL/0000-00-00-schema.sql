@@ -1366,6 +1366,7 @@ CREATE TABLE `family` (
   `FamilyID` int(6) NOT NULL,
   `CandidateID` int(10) unsigned NOT NULL,
   `Relationship_type` enum('half_sibling','full_sibling','1st_cousin') DEFAULT NULL,
+  `RelationshipLabel` VARCHAR(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `FK_family_candidate_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
