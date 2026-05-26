@@ -271,7 +271,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         );
         $visitOption = new WebDriverSelect($visitField);
         $visitOption->selectByValue($visitLabel);
-        $instrumentField = $this->safeFindElement(
+        $instrumentField  = $this->safeFindElement(
             WebDriverBy::Name("Test_name[]")
         );
         $instrumentOption = new WebDriverSelect($instrumentField);
@@ -294,7 +294,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("PSCID")
         )->sendKeys("8889");
-        $instrumentField = $this->safeFindElement(
+        $instrumentField  = $this->safeFindElement(
             WebDriverBy::Name("Test_name[]")
         );
         $instrumentOption = new WebDriverSelect($instrumentField);
