@@ -35,13 +35,13 @@ class AllUserQueries extends \LORIS\Data\Provisioners\DBRowProvisioner
                     (dq.QueryID=name.QueryID)
                 -- Admin pinned top queries
                 LEFT JOIN dataquery_study_queries_rel dsq ON
-                    (dq.QueryID=dsq.QueryID)
+                    (dq.QueryID=dsq.QueryID AND PinType='topquery')
                 -- Public queries
                 LEFT JOIN dataquery_shared_queries_rel dshq ON
                     (dq.QueryID=dshq.QueryID)
                 LEFT JOIN users u ON (dshq.SharedBy=u.ID)
                 LEFT JOIN dataquery_starred_queries_rel starred ON
-                    (starred.QueryID=dq.QueryID)
+                    (starred.QueryID=dq.QueryID AND starred.StarredBy = :userid)
             WHERE dq.QueryID IN 
                 (SELECT QueryID FROM dataquery_run_queries WHERE UserID=:userid
                       UNION
