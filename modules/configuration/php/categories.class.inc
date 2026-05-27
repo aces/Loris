@@ -159,8 +159,9 @@ class Categories extends \NDB_Page implements RequestHandlerInterface
         $config = \NDB_Config::singleton();
         foreach ($configs as &$setting) {
             $setting['AllowMultiple'] = boolval($setting['AllowMultiple']);
+            $settingName = strval($setting['Name']);
             try {
-                $valueFromXML        = $config->getSettingFromXML($setting['Name']);
+                $valueFromXML        = $config->getSettingFromXML($settingName);
                 $setting['Disabled'] = true;
                 $setting['Value']    = $setting['AllowMultiple'] === true
                     ? (array) $valueFromXML
