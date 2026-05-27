@@ -306,20 +306,14 @@ function getFamilyInfoFields()
         ]
     );
 
-    $relationshipList = iterator_to_array(
-        $db->pselect(
-            "SELECT DISTINCT Relationship_type, RelationshipLabel
-                FROM family
-                WHERE Relationship_type IS NOT NULL
-                ORDER BY RelationshipLabel",
-            []
-        )
+    $relationshipOptions = $db->pselectWithIndexKey(
+        "SELECT DISTINCT Relationship_type, RelationshipLabel
+        FROM family
+        WHERE Relationship_type IS NOT NULL
+        ORDER BY RelationshipLabel",
+        [],
+        'Relationship_type'
     );
-
-    $relationshipOptions = [];
-    foreach ($relationshipList as $row) {
-        $relationshipOptions[$row['Relationship_type']] = $row['RelationshipLabel'];
-    }
 
     $result = [
         'pscid'                 => $pscid,
