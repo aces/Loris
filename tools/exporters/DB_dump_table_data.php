@@ -118,7 +118,7 @@ foreach ($tableNames as $tableName) {
         '--verbose '.
         '--skip-tz-utc '.
         $tableName .
-        ' | sed -E \'s/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\n'.
+        ' | sed -E \'1{/\/\*M!999999\\\\- enable the sandbox mode \*\//d}; s/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\n'.
         'TRUNCATE TABLE \1;\n'.
         'LOCK TABLES \1/g\''.
         ' > '. $filename .
