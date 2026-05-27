@@ -1046,7 +1046,11 @@ var TextareaElement = exports.TextareaElement = /*#__PURE__*/function (_Componen
   }, {
     key: "handleBlur",
     value: function handleBlur(e) {
-      this.props.onUserBlur(this.props.name, e.target.value);
+      // eslint-disable-next-line react/prop-types
+      var onUserBlur = this.props.onUserBlur;
+      if (typeof onUserBlur === 'function') {
+        onUserBlur(this.props.name, e.target.value);
+      }
     }
 
     /**
@@ -1091,8 +1095,7 @@ TextareaElement.propTypes = {
   required: _propTypes["default"].bool,
   rows: _propTypes["default"].number,
   cols: _propTypes["default"].number,
-  onUserInput: _propTypes["default"].func,
-  onUserBlur: _propTypes["default"].func
+  onUserInput: _propTypes["default"].func
 };
 TextareaElement.defaultProps = {
   name: '',
@@ -1106,8 +1109,7 @@ TextareaElement.defaultProps = {
   cols: 25,
   onUserInput: function onUserInput() {
     console.warn('onUserInput() callback is not set');
-  },
-  onUserBlur: function onUserBlur() {}
+  }
 };
 
 /**
@@ -7067,48 +7069,6 @@ module.exports = window["ReactDOM"];
 
 /***/ },
 
-/***/ "./node_modules/@babel/runtime/helpers/arrayLikeToArray.js"
-/*!*****************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/arrayLikeToArray.js ***!
-  \*****************************************************************/
-(module) {
-
-function _arrayLikeToArray(r, a) {
-  (null == a || a > r.length) && (a = r.length);
-  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
-  return n;
-}
-module.exports = _arrayLikeToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ },
-
-/***/ "./node_modules/@babel/runtime/helpers/arrayWithHoles.js"
-/*!***************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/arrayWithHoles.js ***!
-  \***************************************************************/
-(module) {
-
-function _arrayWithHoles(r) {
-  if (Array.isArray(r)) return r;
-}
-module.exports = _arrayWithHoles, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ },
-
-/***/ "./node_modules/@babel/runtime/helpers/arrayWithoutHoles.js"
-/*!******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/arrayWithoutHoles.js ***!
-  \******************************************************************/
-(module, __unused_webpack_exports, __webpack_require__) {
-
-var arrayLikeToArray = __webpack_require__(/*! ./arrayLikeToArray.js */ "./node_modules/@babel/runtime/helpers/arrayLikeToArray.js");
-function _arrayWithoutHoles(r) {
-  if (Array.isArray(r)) return arrayLikeToArray(r);
-}
-module.exports = _arrayWithoutHoles, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ },
-
 /***/ "./node_modules/@babel/runtime/helpers/assertThisInitialized.js"
 /*!**********************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/assertThisInitialized.js ***!
@@ -7230,82 +7190,6 @@ module.exports = _interopRequireDefault, module.exports.__esModule = true, modul
 
 /***/ },
 
-/***/ "./node_modules/@babel/runtime/helpers/iterableToArray.js"
-/*!****************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/iterableToArray.js ***!
-  \****************************************************************/
-(module) {
-
-function _iterableToArray(r) {
-  if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r);
-}
-module.exports = _iterableToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ },
-
-/***/ "./node_modules/@babel/runtime/helpers/iterableToArrayLimit.js"
-/*!*********************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/iterableToArrayLimit.js ***!
-  \*********************************************************************/
-(module) {
-
-function _iterableToArrayLimit(r, l) {
-  var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
-  if (null != t) {
-    var e,
-      n,
-      i,
-      u,
-      a = [],
-      f = !0,
-      o = !1;
-    try {
-      if (i = (t = t.call(r)).next, 0 === l) {
-        if (Object(t) !== t) return;
-        f = !1;
-      } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0);
-    } catch (r) {
-      o = !0, n = r;
-    } finally {
-      try {
-        if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return;
-      } finally {
-        if (o) throw n;
-      }
-    }
-    return a;
-  }
-}
-module.exports = _iterableToArrayLimit, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ },
-
-/***/ "./node_modules/@babel/runtime/helpers/nonIterableRest.js"
-/*!****************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/nonIterableRest.js ***!
-  \****************************************************************/
-(module) {
-
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-module.exports = _nonIterableRest, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ },
-
-/***/ "./node_modules/@babel/runtime/helpers/nonIterableSpread.js"
-/*!******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/nonIterableSpread.js ***!
-  \******************************************************************/
-(module) {
-
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-module.exports = _nonIterableSpread, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ },
-
 /***/ "./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js"
 /*!**************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js ***!
@@ -7335,40 +7219,6 @@ function _setPrototypeOf(t, e) {
   }, module.exports.__esModule = true, module.exports["default"] = module.exports, _setPrototypeOf(t, e);
 }
 module.exports = _setPrototypeOf, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ },
-
-/***/ "./node_modules/@babel/runtime/helpers/slicedToArray.js"
-/*!**************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/slicedToArray.js ***!
-  \**************************************************************/
-(module, __unused_webpack_exports, __webpack_require__) {
-
-var arrayWithHoles = __webpack_require__(/*! ./arrayWithHoles.js */ "./node_modules/@babel/runtime/helpers/arrayWithHoles.js");
-var iterableToArrayLimit = __webpack_require__(/*! ./iterableToArrayLimit.js */ "./node_modules/@babel/runtime/helpers/iterableToArrayLimit.js");
-var unsupportedIterableToArray = __webpack_require__(/*! ./unsupportedIterableToArray.js */ "./node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js");
-var nonIterableRest = __webpack_require__(/*! ./nonIterableRest.js */ "./node_modules/@babel/runtime/helpers/nonIterableRest.js");
-function _slicedToArray(r, e) {
-  return arrayWithHoles(r) || iterableToArrayLimit(r, e) || unsupportedIterableToArray(r, e) || nonIterableRest();
-}
-module.exports = _slicedToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ },
-
-/***/ "./node_modules/@babel/runtime/helpers/toConsumableArray.js"
-/*!******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/toConsumableArray.js ***!
-  \******************************************************************/
-(module, __unused_webpack_exports, __webpack_require__) {
-
-var arrayWithoutHoles = __webpack_require__(/*! ./arrayWithoutHoles.js */ "./node_modules/@babel/runtime/helpers/arrayWithoutHoles.js");
-var iterableToArray = __webpack_require__(/*! ./iterableToArray.js */ "./node_modules/@babel/runtime/helpers/iterableToArray.js");
-var unsupportedIterableToArray = __webpack_require__(/*! ./unsupportedIterableToArray.js */ "./node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js");
-var nonIterableSpread = __webpack_require__(/*! ./nonIterableSpread.js */ "./node_modules/@babel/runtime/helpers/nonIterableSpread.js");
-function _toConsumableArray(r) {
-  return arrayWithoutHoles(r) || iterableToArray(r) || unsupportedIterableToArray(r) || nonIterableSpread();
-}
-module.exports = _toConsumableArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ },
 
@@ -7425,24 +7275,6 @@ function _typeof(o) {
   }, module.exports.__esModule = true, module.exports["default"] = module.exports, _typeof(o);
 }
 module.exports = _typeof, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ },
-
-/***/ "./node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js"
-/*!***************************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/unsupportedIterableToArray.js ***!
-  \***************************************************************************/
-(module, __unused_webpack_exports, __webpack_require__) {
-
-var arrayLikeToArray = __webpack_require__(/*! ./arrayLikeToArray.js */ "./node_modules/@babel/runtime/helpers/arrayLikeToArray.js");
-function _unsupportedIterableToArray(r, a) {
-  if (r) {
-    if ("string" == typeof r) return arrayLikeToArray(r, a);
-    var t = {}.toString.call(r).slice(8, -1);
-    return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? arrayLikeToArray(r, a) : void 0;
-  }
-}
-module.exports = _unsupportedIterableToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ },
 
@@ -8560,25 +8392,69 @@ var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 (() => {
 "use strict";
-/*!********************************************!*\
-  !*** ./modules/configuration/jsx/index.js ***!
-  \********************************************/
+var exports = __webpack_exports__;
+/*!*********************************************!*\
+  !*** ./modules/configuration/jsx/index.tsx ***!
+  \*********************************************/
 
 
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ "./node_modules/@babel/runtime/helpers/interopRequireDefault.js");
-var _typeof = __webpack_require__(/*! @babel/runtime/helpers/typeof */ "./node_modules/@babel/runtime/helpers/typeof.js");
-var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/defineProperty.js"));
-var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ "./node_modules/@babel/runtime/helpers/toConsumableArray.js"));
-var _slicedToArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/slicedToArray.js"));
-var _react = _interopRequireWildcard(__webpack_require__(/*! react */ "react"));
-var _client = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
-var _propTypes = _interopRequireDefault(__webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js"));
-var _sweetalert = _interopRequireDefault(__webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js"));
-var _Form = __webpack_require__(/*! jsx/Form */ "./jsx/Form.js");
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != _typeof(e) && "function" != typeof e) return { "default": e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) { if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } } return n["default"] = e, t && t.set(e, n), n; }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2["default"])(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+    return t;
+  };
+  return __assign.apply(this, arguments);
+};
+var __read = void 0 && (void 0).__read || function (o, n) {
+  var m = typeof Symbol === "function" && o[Symbol.iterator];
+  if (!m) return o;
+  var i = m.call(o),
+    r,
+    ar = [],
+    e;
+  try {
+    while ((n === void 0 || n-- > 0) && !(r = i.next()).done) {
+      ar.push(r.value);
+    }
+  } catch (error) {
+    e = {
+      error: error
+    };
+  } finally {
+    try {
+      if (r && !r.done && (m = i["return"])) m.call(i);
+    } finally {
+      if (e) throw e.error;
+    }
+  }
+  return ar;
+};
+var __spreadArray = void 0 && (void 0).__spreadArray || function (to, from, pack) {
+  if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+    if (ar || !(i in from)) {
+      if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+      ar[i] = from[i];
+    }
+  }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+var react_1 = __webpack_require__(/*! react */ "react");
+var client_1 = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
+var sweetalert2_1 = __importDefault(__webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js"));
+var Form_1 = __webpack_require__(/*! jsx/Form */ "./jsx/Form.js");
 var DATA_TYPE_OPTIONS = {
   date_format: 'dateFormat',
   instrument: 'instruments',
@@ -8586,38 +8462,33 @@ var DATA_TYPE_OPTIONS = {
   lookup_center: 'lookupCenter',
   scan_type: 'scanTypes'
 };
-
 /**
  * Intro text for the configuration page.
  *
- * @param {object} props React props
+ * @param {BaseURLProps} props React props
  * @return {JSX}
  */
 function IntroText(props) {
-  return /*#__PURE__*/_react["default"].createElement("div", null, /*#__PURE__*/_react["default"].createElement("p", null, "Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide."), /*#__PURE__*/_react["default"].createElement("p", null, "To configure study cohorts\xA0", /*#__PURE__*/_react["default"].createElement("a", {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, "Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide."), /*#__PURE__*/React.createElement("p", null, "To configure study cohorts\xA0", /*#__PURE__*/React.createElement("a", {
     href: "".concat(props.baseURL, "/configuration/cohort/")
-  }, "click here"), ". \xA0To configure study projects\xA0", /*#__PURE__*/_react["default"].createElement("a", {
+  }, "click here"), ". \xA0To configure study projects\xA0", /*#__PURE__*/React.createElement("a", {
     href: "".concat(props.baseURL, "/configuration/project/")
-  }, "click here"), "."), /*#__PURE__*/_react["default"].createElement("p", null, "To configure the diagnosis trajectory of the study\xA0", /*#__PURE__*/_react["default"].createElement("a", {
+  }, "click here"), "."), /*#__PURE__*/React.createElement("p", null, "To configure the diagnosis trajectory of the study\xA0", /*#__PURE__*/React.createElement("a", {
     href: "".concat(props.baseURL, "/configuration/diagnosis_evolution/")
   }, "click here"), "."));
 }
-IntroText.propTypes = {
-  baseURL: _propTypes["default"].string.isRequired
-};
-
 /**
  * Category navigation.
  *
- * @param {object} props React props
+ * @param {CategorySelectionProps} props React props
  * @return {JSX}
  */
 function CategorySelection(props) {
   var categories = props.categories.map(function (item) {
-    return /*#__PURE__*/_react["default"].createElement("li", {
+    return /*#__PURE__*/React.createElement("li", {
       key: item.Name,
       className: item.Name === props.active ? 'active' : ''
-    }, /*#__PURE__*/_react["default"].createElement("a", {
+    }, /*#__PURE__*/React.createElement("a", {
       href: "#".concat(item.Name),
       onClick: function onClick(e) {
         e.preventDefault();
@@ -8625,47 +8496,36 @@ function CategorySelection(props) {
       }
     }, item.Label));
   });
-  return /*#__PURE__*/_react["default"].createElement("div", {
+  return /*#__PURE__*/React.createElement("div", {
     className: "col-md-3"
-  }, /*#__PURE__*/_react["default"].createElement("ul", {
+  }, /*#__PURE__*/React.createElement("ul", {
     className: "nav nav-pills nav-stacked",
     role: "tablist"
   }, categories));
 }
-CategorySelection.propTypes = {
-  active: _propTypes["default"].string.isRequired,
-  categories: _propTypes["default"].array.isRequired,
-  setActive: _propTypes["default"].func.isRequired
-};
-
 /**
  * Render the development-only config name.
  *
- * @param {object} props React props
+ * @param {DevNameProps} props React props
  * @return {?JSX}
  */
 function DevName(props) {
   if (!props.enabled) {
     return null;
   }
-  return /*#__PURE__*/_react["default"].createElement("div", {
+  return /*#__PURE__*/React.createElement("div", {
     className: "config-dev-name pull-right"
-  }, /*#__PURE__*/_react["default"].createElement("i", null, props.name));
+  }, /*#__PURE__*/React.createElement("i", null, props.name));
 }
-DevName.propTypes = {
-  enabled: _propTypes["default"].bool.isRequired,
-  name: _propTypes["default"].string.isRequired
-};
-
 /**
  * Category body.
  *
- * @param {object} props React props
+ * @param {CategoryDisplayProps} props React props
  * @return {JSX}
  */
 function CategoryDisplay(props) {
   var rows = props.items.map(function (item) {
-    return /*#__PURE__*/_react["default"].createElement(ItemDisplay, {
+    return /*#__PURE__*/React.createElement(ItemDisplay, {
       key: item.ID,
       baseURL: props.baseURL,
       item: item,
@@ -8673,66 +8533,56 @@ function CategoryDisplay(props) {
       reloadCategory: props.reloadCategory
     });
   });
-  return /*#__PURE__*/_react["default"].createElement("div", {
+  return /*#__PURE__*/React.createElement("div", {
     className: "col-md-9"
   }, rows);
 }
-CategoryDisplay.propTypes = {
-  baseURL: _propTypes["default"].string.isRequired,
-  items: _propTypes["default"].array.isRequired,
-  options: _propTypes["default"].object.isRequired,
-  reloadCategory: _propTypes["default"].func.isRequired
-};
-
 /**
  * Single configuration setting.
  *
- * @param {object} props React props
+ * @param {ItemDisplayProps} props React props
  * @return {JSX}
  */
 function ItemDisplay(props) {
   var item = props.item;
   if (item.AllowMultiple) {
-    return /*#__PURE__*/_react["default"].createElement(MultiValueInput, {
+    return /*#__PURE__*/React.createElement(MultiValueInput, {
       baseURL: props.baseURL,
       item: item,
       options: props.options,
       reloadCategory: props.reloadCategory
     });
   }
-  return /*#__PURE__*/_react["default"].createElement("div", {
+  return /*#__PURE__*/React.createElement("div", {
     title: item.Description
-  }, /*#__PURE__*/_react["default"].createElement(SingleValueInput, {
+  }, /*#__PURE__*/React.createElement(SingleValueInput, {
     baseURL: props.baseURL,
     item: item,
     options: props.options,
     reloadCategory: props.reloadCategory
-  }), /*#__PURE__*/_react["default"].createElement(DevName, {
+  }), /*#__PURE__*/React.createElement(DevName, {
     enabled: props.options.sandbox,
     name: item.Name
   }));
 }
-ItemDisplay.propTypes = {
-  baseURL: _propTypes["default"].string.isRequired,
-  item: _propTypes["default"].object.isRequired,
-  options: _propTypes["default"].object.isRequired,
-  reloadCategory: _propTypes["default"].func.isRequired
-};
-
 /**
  * Single-value configuration input.
  *
- * @param {object} props React props
+ * @param {ItemDisplayProps} props React props
  * @return {JSX}
  */
 function SingleValueInput(props) {
-  var _useState = (0, _react.useState)(props.item.Value),
-    _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
-    value = _useState2[0],
-    setValue = _useState2[1];
-  (0, _react.useEffect)(function () {
+  var _a = __read((0, react_1.useState)(props.item.Value), 2),
+    value = _a[0],
+    setValue = _a[1];
+  (0, react_1.useEffect)(function () {
     setValue(props.item.Value);
   }, [props.item.Value]);
+  /**
+   * Persist a changed setting value.
+   *
+   * @param {string} newValue New setting value
+   */
   var saveChange = function saveChange(newValue) {
     if (newValue === props.item.Value) {
       return;
@@ -8748,33 +8598,28 @@ function SingleValueInput(props) {
     disabled: props.item.Disabled,
     label: props.item.Label,
     name: props.item.Name,
-    onChange: function onChange(newValue) {
-      setValue(newValue);
-    },
+    onChange: setValue,
     onCommit: saveChange,
     options: props.options,
     value: value
   });
 }
-SingleValueInput.propTypes = {
-  baseURL: _propTypes["default"].string.isRequired,
-  item: _propTypes["default"].object.isRequired,
-  options: _propTypes["default"].object.isRequired,
-  reloadCategory: _propTypes["default"].func.isRequired
-};
-
 /**
  * Multi-value configuration input.
  *
- * @param {object} props React props
+ * @param {ItemDisplayProps} props React props
  * @return {JSX}
  */
 function MultiValueInput(props) {
-  var values = Array.isArray(props.item.Value) ? props.item.Value : [];
-  var _useState3 = (0, _react.useState)(false),
-    _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
-    isAdding = _useState4[0],
-    setIsAdding = _useState4[1];
+  var values = Array.isArray(props.item.Value) ? props.item.Value.map(String) : [];
+  var _a = __read((0, react_1.useState)(false), 2),
+    isAdding = _a[0],
+    setIsAdding = _a[1];
+  /**
+   * Persist the full list of values for a multi-value setting.
+   *
+   * @param {string[]} newValues New setting values
+   */
   var saveValues = function saveValues(newValues) {
     saveSetting(props.baseURL, props.item.Name, {
       values: newValues
@@ -8784,18 +8629,18 @@ function MultiValueInput(props) {
     })["catch"](showSaveError);
   };
   var rows = values.map(function (value, idx) {
-    return /*#__PURE__*/_react["default"].createElement(MultiValueRow, {
+    return /*#__PURE__*/React.createElement(MultiValueRow, {
       dataType: props.item.DataType,
       disabled: props.item.Disabled,
       key: "".concat(props.item.Name, "-").concat(idx),
       name: props.item.Name,
       onRemove: function onRemove() {
-        return saveValues(values.filter(function (el, i) {
+        return saveValues(values.filter(function (_el, i) {
           return i !== idx;
         }));
       },
       onSave: function onSave(newValue) {
-        var newValues = (0, _toConsumableArray2["default"])(values);
+        var newValues = __spreadArray([], __read(values), false);
         newValues[idx] = newValue;
         saveValues(newValues);
       },
@@ -8804,7 +8649,7 @@ function MultiValueInput(props) {
     });
   });
   if (isAdding) {
-    rows.push(/*#__PURE__*/_react["default"].createElement(MultiValueRow, {
+    rows.push(/*#__PURE__*/React.createElement(MultiValueRow, {
       dataType: props.item.DataType,
       disabled: props.item.Disabled,
       key: "".concat(props.item.Name, "-new"),
@@ -8813,107 +8658,96 @@ function MultiValueInput(props) {
         return setIsAdding(false);
       },
       onSave: function onSave(newValue) {
-        return saveValues([].concat((0, _toConsumableArray2["default"])(values), [newValue]));
+        return saveValues(__spreadArray(__spreadArray([], __read(values), false), [newValue], false));
       },
       options: props.options,
       value: ""
     }));
   }
-  return /*#__PURE__*/_react["default"].createElement("div", {
+  return /*#__PURE__*/React.createElement("div", {
     className: "form-group",
     title: props.item.Description
-  }, /*#__PURE__*/_react["default"].createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", {
     className: "col-sm-3"
-  }, /*#__PURE__*/_react["default"].createElement("label", {
+  }, /*#__PURE__*/React.createElement("label", {
     className: "col-sm-12 control-label config-name"
-  }, props.item.Label), /*#__PURE__*/_react["default"].createElement(DevName, {
+  }, props.item.Label), /*#__PURE__*/React.createElement(DevName, {
     enabled: props.options.sandbox,
     name: props.item.Name
-  })), /*#__PURE__*/_react["default"].createElement("div", {
+  })), /*#__PURE__*/React.createElement("div", {
     className: "col-sm-9"
-  }, rows, !isAdding && /*#__PURE__*/_react["default"].createElement("button", {
+  }, rows, !isAdding && /*#__PURE__*/React.createElement("button", {
     className: "btn btn-success add",
     disabled: props.item.Disabled,
     onClick: function onClick() {
       return setIsAdding(true);
     },
     type: "button"
-  }, /*#__PURE__*/_react["default"].createElement("span", {
+  }, /*#__PURE__*/React.createElement("span", {
     className: "glyphicon glyphicon-plus"
   }), " Add field")));
 }
-MultiValueInput.propTypes = {
-  baseURL: _propTypes["default"].string.isRequired,
-  item: _propTypes["default"].object.isRequired,
-  options: _propTypes["default"].object.isRequired,
-  reloadCategory: _propTypes["default"].func.isRequired
-};
-
 /**
  * One row in a multi-value input.
  *
- * @param {object} props React props
+ * @param {MultiValueRowProps} props React props
  * @return {JSX}
  */
-function MultiValueRow(props) {
-  var _useState5 = (0, _react.useState)(props.value),
-    _useState6 = (0, _slicedToArray2["default"])(_useState5, 2),
-    value = _useState6[0],
-    setValue = _useState6[1];
-  (0, _react.useEffect)(function () {
-    setValue(props.value);
-  }, [props.value]);
-  return /*#__PURE__*/_react["default"].createElement("div", {
+function MultiValueRow(_a) {
+  var dataType = _a.dataType,
+    disabled = _a.disabled,
+    name = _a.name,
+    onRemove = _a.onRemove,
+    onSave = _a.onSave,
+    options = _a.options,
+    _b = _a.value,
+    initialValue = _b === void 0 ? '' : _b;
+  var _c = __read((0, react_1.useState)(initialValue), 2),
+    value = _c[0],
+    setValue = _c[1];
+  (0, react_1.useEffect)(function () {
+    setValue(initialValue);
+  }, [initialValue]);
+  return /*#__PURE__*/React.createElement("div", {
     className: "input-group entry"
   }, renderInput({
-    dataType: props.dataType,
-    disabled: props.disabled,
+    dataType: dataType,
+    disabled: disabled,
     label: '',
-    name: props.name,
+    name: name,
     onChange: setValue,
-    onCommit: props.onSave,
-    options: props.options,
+    onCommit: onSave,
+    options: options,
     value: value
-  }), /*#__PURE__*/_react["default"].createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     className: "input-group-btn"
-  }, /*#__PURE__*/_react["default"].createElement("button", {
+  }, /*#__PURE__*/React.createElement("button", {
     className: "btn btn-danger btn-remove",
-    disabled: props.disabled,
-    onClick: props.onRemove,
+    disabled: disabled,
+    onClick: onRemove,
     type: "button"
-  }, /*#__PURE__*/_react["default"].createElement("span", {
+  }, /*#__PURE__*/React.createElement("span", {
     className: "glyphicon glyphicon-remove"
   }), "\xA0")));
 }
-MultiValueRow.propTypes = {
-  dataType: _propTypes["default"].string.isRequired,
-  disabled: _propTypes["default"].bool.isRequired,
-  name: _propTypes["default"].string.isRequired,
-  onRemove: _propTypes["default"].func.isRequired,
-  onSave: _propTypes["default"].func.isRequired,
-  options: _propTypes["default"].object.isRequired,
-  value: _propTypes["default"].string
-};
-MultiValueRow.defaultProps = {
-  value: ''
-};
-
 /**
  * Render the proper form element for a config data type.
  *
- * @param {object} config Render config
+ * @param {RenderInputConfig} config Render config
  * @return {JSX}
  */
 function renderInput(config) {
+  var _a;
+  var value = String((_a = config.value) !== null && _a !== void 0 ? _a : '');
   switch (config.dataType) {
     case 'boolean':
-      return /*#__PURE__*/_react["default"].createElement(_Form.RadioElement, {
+      return /*#__PURE__*/React.createElement(Form_1.RadioElement, {
         checked: booleanRadioValue(config.value),
         disabled: config.disabled,
         label: config.label,
         name: config.name,
-        onUserInput: function onUserInput(name, value) {
-          return config.onCommit(value);
+        onUserInput: function onUserInput(_name, inputValue) {
+          config.onCommit(inputValue);
         },
         options: booleanRadioOptions(config.value)
       });
@@ -8922,68 +8756,67 @@ function renderInput(config) {
     case 'log_level':
     case 'lookup_center':
     case 'scan_type':
-      return /*#__PURE__*/_react["default"].createElement(_Form.SelectElement, {
+      return /*#__PURE__*/React.createElement(Form_1.SelectElement, {
         disabled: config.disabled,
         label: config.label,
         name: config.name,
-        onUserInput: function onUserInput(name, value) {
-          return config.onCommit(value);
+        onUserInput: function onUserInput(_name, inputValue) {
+          config.onCommit(inputValue);
         },
         options: config.options[DATA_TYPE_OPTIONS[config.dataType]],
-        value: config.value
+        value: value
       });
     case 'email':
-      return /*#__PURE__*/_react["default"].createElement(_Form.EmailElement, {
+      return /*#__PURE__*/React.createElement(Form_1.EmailElement, {
         disabled: config.disabled,
         label: config.label,
         name: config.name,
-        onUserBlur: function onUserBlur(name, value) {
-          return config.onCommit(value);
+        onUserBlur: function onUserBlur(_name, inputValue) {
+          config.onCommit(inputValue);
         },
-        onUserInput: function onUserInput(name, value) {
-          return config.onChange(value);
+        onUserInput: function onUserInput(_name, inputValue) {
+          config.onChange(inputValue);
         },
-        value: config.value
+        value: value
       });
     case 'textarea':
-      return /*#__PURE__*/_react["default"].createElement(_Form.TextareaElement, {
+      return /*#__PURE__*/React.createElement(Form_1.TextareaElement, {
         disabled: config.disabled,
         label: config.label,
         name: config.name,
-        onUserBlur: function onUserBlur(name, value) {
-          return config.onCommit(value);
+        onUserBlur: function onUserBlur(_name, inputValue) {
+          config.onCommit(inputValue);
         },
-        onUserInput: function onUserInput(name, value) {
-          return config.onChange(value);
+        onUserInput: function onUserInput(_name, inputValue) {
+          config.onChange(inputValue);
         },
-        value: config.value
+        value: value
       });
     case 'path':
     case 'text':
     case 'web_path':
-      return /*#__PURE__*/_react["default"].createElement(_Form.TextboxElement, {
+      return /*#__PURE__*/React.createElement(Form_1.TextboxElement, {
         disabled: config.disabled,
         label: config.label,
         name: config.name,
-        onUserBlur: function onUserBlur(name, value) {
-          return config.onCommit(value);
+        onUserBlur: function onUserBlur(_name, inputValue) {
+          config.onCommit(inputValue);
         },
-        onUserInput: function onUserInput(name, value) {
-          return config.onChange(value);
+        onUserInput: function onUserInput(_name, inputValue) {
+          config.onChange(inputValue);
         },
-        value: config.value
+        value: value
       });
     default:
-      return /*#__PURE__*/_react["default"].createElement("div", {
+      return /*#__PURE__*/React.createElement("div", {
         className: "text-danger"
       }, "Unsupported type ", config.dataType);
   }
 }
-
 /**
  * Return the radio value matching the stored boolean representation.
  *
- * @param {*} value Stored boolean value
+ * @param {ConfigValue} value Stored boolean value
  * @return {string}
  */
 function booleanRadioValue(value) {
@@ -8998,11 +8831,10 @@ function booleanRadioValue(value) {
   }
   return 'false';
 }
-
 /**
  * Preserve legacy 1/0 boolean storage when a setting already uses it.
  *
- * @param {*} value Stored boolean value
+ * @param {ConfigValue} value Stored boolean value
  * @return {object}
  */
 function booleanRadioOptions(value) {
@@ -9017,7 +8849,6 @@ function booleanRadioOptions(value) {
     'false': 'No'
   };
 }
-
 /**
  * Save a configuration setting.
  *
@@ -9028,7 +8859,7 @@ function booleanRadioOptions(value) {
  */
 function saveSetting(baseURL, setting, payload) {
   return fetch("".concat(baseURL, "/configuration/setting/").concat(setting), {
-    body: JSON.stringify(_objectSpread({
+    body: JSON.stringify(__assign({
       setting: setting
     }, payload)),
     credentials: 'same-origin',
@@ -9039,10 +8870,9 @@ function saveSetting(baseURL, setting, payload) {
     }
     return resp.json();
   }).then(function () {
-    _sweetalert["default"].fire('Success!', "Successfully saved ".concat(setting), 'success');
+    void sweetalert2_1["default"].fire('Success!', "Successfully saved ".concat(setting), 'success');
   });
 }
-
 /**
  * Show save errors consistently.
  *
@@ -9050,44 +8880,38 @@ function saveSetting(baseURL, setting, payload) {
  * @return {void}
  */
 function showSaveError(error) {
-  _sweetalert["default"].fire('Error', error.toString(), 'error');
+  void sweetalert2_1["default"].fire('Error', error.toString(), 'error');
 }
-
 /**
  * Entrypoint for the configuration module.
  *
- * @param {object} props React props
+ * @param {BaseURLProps} props React props
  * @return {JSX}
  */
 function ConfigurationIndex(props) {
-  var _useState7 = (0, _react.useState)(''),
-    _useState8 = (0, _slicedToArray2["default"])(_useState7, 2),
-    activeCategory = _useState8[0],
-    setActiveCategory = _useState8[1];
-  var _useState9 = (0, _react.useState)([]),
-    _useState0 = (0, _slicedToArray2["default"])(_useState9, 2),
-    categories = _useState0[0],
-    setCategories = _useState0[1];
-  var _useState1 = (0, _react.useState)([]),
-    _useState10 = (0, _slicedToArray2["default"])(_useState1, 2),
-    categoryItems = _useState10[0],
-    setCategoryItems = _useState10[1];
-  var _useState11 = (0, _react.useState)({
+  var _a = __read((0, react_1.useState)(''), 2),
+    activeCategory = _a[0],
+    setActiveCategory = _a[1];
+  var _b = __read((0, react_1.useState)([]), 2),
+    categories = _b[0],
+    setCategories = _b[1];
+  var _c = __read((0, react_1.useState)([]), 2),
+    categoryItems = _c[0],
+    setCategoryItems = _c[1];
+  var _d = __read((0, react_1.useState)({
       dateFormat: {},
       instruments: {},
       logLevels: {},
       lookupCenter: {},
       sandbox: false,
       scanTypes: {}
-    }),
-    _useState12 = (0, _slicedToArray2["default"])(_useState11, 2),
-    options = _useState12[0],
-    setOptions = _useState12[1];
-  var _useState13 = (0, _react.useState)(0),
-    _useState14 = (0, _slicedToArray2["default"])(_useState13, 2),
-    reloadKey = _useState14[0],
-    setReloadKey = _useState14[1];
-  (0, _react.useEffect)(function () {
+    }), 2),
+    options = _d[0],
+    setOptions = _d[1];
+  var _e = __read((0, react_1.useState)(0), 2),
+    reloadKey = _e[0],
+    setReloadKey = _e[1];
+  (0, react_1.useEffect)(function () {
     fetch("".concat(props.baseURL, "/configuration/categories"), {
       credentials: 'same-origin'
     }).then(function (resp) {
@@ -9112,7 +8936,7 @@ function ConfigurationIndex(props) {
       showSaveError(error);
     });
   }, [props.baseURL]);
-  (0, _react.useEffect)(function () {
+  (0, react_1.useEffect)(function () {
     if (activeCategory === '') {
       return;
     }
@@ -9129,29 +8953,32 @@ function ConfigurationIndex(props) {
       showSaveError(error);
     });
   }, [activeCategory, props.baseURL, reloadKey]);
-  return /*#__PURE__*/_react["default"].createElement("div", null, /*#__PURE__*/_react["default"].createElement(IntroText, {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(IntroText, {
     baseURL: props.baseURL
-  }), /*#__PURE__*/_react["default"].createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     className: "row"
-  }, /*#__PURE__*/_react["default"].createElement(CategorySelection, {
+  }, /*#__PURE__*/React.createElement(CategorySelection, {
     active: activeCategory,
     categories: categories,
     setActive: setActiveCategory
-  }), /*#__PURE__*/_react["default"].createElement(CategoryDisplay, {
+  }), /*#__PURE__*/React.createElement(CategoryDisplay, {
     baseURL: props.baseURL,
     items: categoryItems,
     options: options,
     reloadCategory: function reloadCategory() {
-      return setReloadKey(reloadKey + 1);
+      return setReloadKey(function (current) {
+        return current + 1;
+      });
     }
   })));
 }
-ConfigurationIndex.propTypes = {
-  baseURL: _propTypes["default"].string.isRequired
-};
 window.addEventListener('load', function () {
-  var root = (0, _client.createRoot)(document.getElementById('lorisworkspace'));
-  root.render(/*#__PURE__*/_react["default"].createElement(ConfigurationIndex, {
+  var workspace = document.getElementById('lorisworkspace');
+  if (workspace === null) {
+    throw new Error('Could not find lorisworkspace root');
+  }
+  var root = (0, client_1.createRoot)(workspace);
+  root.render(/*#__PURE__*/React.createElement(ConfigurationIndex, {
     baseURL: loris.BaseURL
   }));
 });

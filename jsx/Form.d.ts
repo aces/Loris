@@ -112,7 +112,7 @@ type selectElementProps = {
     onUserInput: (name: string, value: any) => void
     noMargins?: boolean
     placeholder?: string
-    sortByValue: boolean
+    sortByValue?: boolean
 }
 
 /**
@@ -260,6 +260,43 @@ type textboxProps = {
     errorMessage?: string;
     onUserInput: (name: string, value: any) => void;
     onUserBlur?: (name: string, value: any) => void;
+}
+
+type emailProps = textboxProps
+/**
+ * EmailElement class. See Form.js
+ */
+export class EmailElement {
+    props: emailProps
+    state: any
+    context: object
+    refs: {[key: string]: ReactInstance}
+
+    /**
+     * Construct an EmailElement
+     *
+     * @param {emailProps} props - React props
+     */
+    constructor(props: emailProps)
+
+    /**
+     * React lifecycle method
+     *
+     * @returns {ReactNode} - the element
+     */
+    render(): ReactNode
+
+    /**
+     * React lifecycle method
+     *
+     * @param {object} newstate - the state to override
+     */
+    setState(newstate: object): void
+
+    /**
+     * React lifecycle method.
+     */
+    forceUpdate(): void
 }
 /**
  * TextboxElement class. See Form.js
@@ -501,6 +538,7 @@ type textareaElementProps = {
     rows?: number
     cols?: number
     onUserInput: (name: string, value: any) => void
+    onUserBlur?: (name: string, value: any) => void
 }
 /**
  * TextareaElement class. See Form.js
@@ -591,7 +629,7 @@ type radioElementProps = {
     disabled?: boolean
     required?: boolean
     vertical?: boolean
-    checked: boolean
+    checked: string|boolean
     errorMessage?: string
     elementClass?: boolean
     onUserInput: (name: string, value: any) => void
@@ -640,6 +678,7 @@ export default {
   SelectElement,
   TagsElement,
   TextboxElement,
+  EmailElement,
   SearchableDropdown,
   TextareaElement,
   PasswordElement,

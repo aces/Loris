@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import {
   EmailElement,
@@ -10,7 +9,16 @@ import {
   TextboxElement,
 } from 'jsx/Form';
 
-const DATA_TYPE_OPTIONS = {
+declare const loris: {BaseURL: string};
+
+type ConfigOptionMap = Record<string, string>;
+type ConfigOptionKey = 'dateFormat'
+  | 'instruments'
+  | 'logLevels'
+  | 'lookupCenter'
+  | 'scanTypes';
+
+const DATA_TYPE_OPTIONS: Record<string, ConfigOptionKey> = {
   date_format: 'dateFormat',
   instrument: 'instruments',
   log_level: 'logLevels',
@@ -18,13 +26,98 @@ const DATA_TYPE_OPTIONS = {
   scan_type: 'scanTypes',
 };
 
+type ConfigValue = string | number | boolean | string[] | null;
+
+type ConfigCategory = {
+  Name: string,
+  Label: string,
+};
+
+type ConfigItem = {
+  ID: string | number,
+  Name: string,
+  Label: string,
+  Description: string,
+  Value: ConfigValue,
+  DataType: string,
+  Disabled: boolean,
+  AllowMultiple: boolean,
+};
+
+type ConfigOptions = {
+  dateFormat: ConfigOptionMap,
+  instruments: ConfigOptionMap,
+  logLevels: ConfigOptionMap,
+  lookupCenter: ConfigOptionMap,
+  sandbox: boolean,
+  scanTypes: ConfigOptionMap,
+};
+
+type CategoriesResponse = ConfigOptions & {
+  categories: ConfigCategory[],
+};
+
+type CategoryResponse = {
+  category: ConfigItem[],
+};
+
+type ReloadCategory = () => void;
+
+type BaseURLProps = {
+  baseURL: string,
+};
+
+type CategorySelectionProps = {
+  active: string,
+  categories: ConfigCategory[],
+  setActive: (category: string) => void,
+};
+
+type DevNameProps = {
+  enabled: boolean,
+  name: string,
+};
+
+type CategoryDisplayProps = BaseURLProps & {
+  items: ConfigItem[],
+  options: ConfigOptions,
+  reloadCategory: ReloadCategory,
+};
+
+type ItemDisplayProps = BaseURLProps & {
+  item: ConfigItem,
+  options: ConfigOptions,
+  reloadCategory: ReloadCategory,
+};
+
+type MultiValueRowProps = {
+  dataType: string,
+  disabled: boolean,
+  name: string,
+  onRemove: () => void,
+  onSave: (newValue: string) => void,
+  options: ConfigOptions,
+  value?: string,
+};
+
+type RenderInputConfig = {
+  dataType: string,
+  disabled: boolean,
+  label: string,
+  name: string,
+  onChange: (value: string) => void,
+  onCommit: (value: string) => void,
+  options: ConfigOptions,
+  value: ConfigValue,
+};
+
 /**
  * Intro text for the configuration page.
  *
- * @param {object} props React props
+ * @param {BaseURLProps} props React props
  * @return {JSX}
  */
-function IntroText(props) {
+function IntroText(props: BaseURLProps): React.ReactElement {
   return (
     <div>
       <p>
@@ -48,17 +141,15 @@ function IntroText(props) {
   );
 }
 
-IntroText.propTypes = {
-  baseURL: PropTypes.string.isRequired,
-};
-
 /**
  * Category navigation.
  *
- * @param {object} props React props
+ * @param {CategorySelectionProps} props React props
  * @return {JSX}
  */
-function CategorySelection(props) {
+function CategorySelection(
+  props: CategorySelectionProps
+): React.ReactElement {
   const categories = props.categories.map((item) => (
     <li
       key={item.Name}
@@ -66,7 +157,7 @@ function CategorySelection(props) {
     >
       <a
         href={`#${item.Name}`}
-        onClick={(e) => {
+        onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
           e.preventDefault();
           props.setActive(item.Name);
         }}
@@ -85,37 +176,26 @@ function CategorySelection(props) {
   );
 }
 
-CategorySelection.propTypes = {
-  active: PropTypes.string.isRequired,
-  categories: PropTypes.array.isRequired,
-  setActive: PropTypes.func.isRequired,
-};
-
 /**
  * Render the development-only config name.
  *
- * @param {object} props React props
+ * @param {DevNameProps} props React props
  * @return {?JSX}
  */
-function DevName(props) {
+function DevName(props: DevNameProps): React.ReactElement | null {
   if (!props.enabled) {
     return null;
   }
   return <div className="config-dev-name pull-right"><i>{props.name}</i></div>;
 }
 
-DevName.propTypes = {
-  enabled: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired,
-};
-
 /**
  * Category body.
  *
- * @param {object} props React props
+ * @param {CategoryDisplayProps} props React props
  * @return {JSX}
  */
-function CategoryDisplay(props) {
+function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
   const rows = props.items.map((item) => (
     <ItemDisplay
       key={item.ID}
@@ -129,20 +209,13 @@ function CategoryDisplay(props) {
   return <div className="col-md-9">{rows}</div>;
 }
 
-CategoryDisplay.propTypes = {
-  baseURL: PropTypes.string.isRequired,
-  items: PropTypes.array.isRequired,
-  options: PropTypes.object.isRequired,
-  reloadCategory: PropTypes.func.isRequired,
-};
-
 /**
  * Single configuration setting.
  *
- * @param {object} props React props
+ * @param {ItemDisplayProps} props React props
  * @return {JSX}
  */
-function ItemDisplay(props) {
+function ItemDisplay(props: ItemDisplayProps): React.ReactElement {
   const item = props.item;
   if (item.AllowMultiple) {
     return (
@@ -168,27 +241,25 @@ function ItemDisplay(props) {
   );
 }
 
-ItemDisplay.propTypes = {
-  baseURL: PropTypes.string.isRequired,
-  item: PropTypes.object.isRequired,
-  options: PropTypes.object.isRequired,
-  reloadCategory: PropTypes.func.isRequired,
-};
-
 /**
  * Single-value configuration input.
  *
- * @param {object} props React props
+ * @param {ItemDisplayProps} props React props
  * @return {JSX}
  */
-function SingleValueInput(props) {
-  const [value, setValue] = useState(props.item.Value);
+function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
+  const [value, setValue] = useState<ConfigValue>(props.item.Value);
 
   useEffect(() => {
     setValue(props.item.Value);
   }, [props.item.Value]);
 
-  const saveChange = (newValue) => {
+  /**
+   * Persist a changed setting value.
+   *
+   * @param {string} newValue New setting value
+   */
+  const saveChange = (newValue: string) => {
     if (newValue === props.item.Value) {
       return;
     }
@@ -202,33 +273,31 @@ function SingleValueInput(props) {
     disabled: props.item.Disabled,
     label: props.item.Label,
     name: props.item.Name,
-    onChange: (newValue) => {
-      setValue(newValue);
-    },
+    onChange: setValue,
     onCommit: saveChange,
     options: props.options,
     value: value,
   });
 }
 
-SingleValueInput.propTypes = {
-  baseURL: PropTypes.string.isRequired,
-  item: PropTypes.object.isRequired,
-  options: PropTypes.object.isRequired,
-  reloadCategory: PropTypes.func.isRequired,
-};
-
 /**
  * Multi-value configuration input.
  *
- * @param {object} props React props
+ * @param {ItemDisplayProps} props React props
  * @return {JSX}
  */
-function MultiValueInput(props) {
-  const values = Array.isArray(props.item.Value) ? props.item.Value : [];
+function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
+  const values = Array.isArray(props.item.Value) ?
+    props.item.Value.map(String) :
+    [];
   const [isAdding, setIsAdding] = useState(false);
 
-  const saveValues = (newValues) => {
+  /**
+   * Persist the full list of values for a multi-value setting.
+   *
+   * @param {string[]} newValues New setting values
+   */
+  const saveValues = (newValues: string[]) => {
     saveSetting(props.baseURL, props.item.Name, {values: newValues})
       .then(() => {
         setIsAdding(false);
@@ -243,7 +312,7 @@ function MultiValueInput(props) {
       disabled={props.item.Disabled}
       key={`${props.item.Name}-${idx}`}
       name={props.item.Name}
-      onRemove={() => saveValues(values.filter((el, i) => i !== idx))}
+      onRemove={() => saveValues(values.filter((_el, i) => i !== idx))}
       onSave={(newValue) => {
         const newValues = [...values];
         newValues[idx] = newValue;
@@ -294,43 +363,44 @@ function MultiValueInput(props) {
   );
 }
 
-MultiValueInput.propTypes = {
-  baseURL: PropTypes.string.isRequired,
-  item: PropTypes.object.isRequired,
-  options: PropTypes.object.isRequired,
-  reloadCategory: PropTypes.func.isRequired,
-};
-
 /**
  * One row in a multi-value input.
  *
- * @param {object} props React props
+ * @param {MultiValueRowProps} props React props
  * @return {JSX}
  */
-function MultiValueRow(props) {
-  const [value, setValue] = useState(props.value);
+function MultiValueRow({
+  dataType,
+  disabled,
+  name,
+  onRemove,
+  onSave,
+  options,
+  value: initialValue = '',
+}: MultiValueRowProps): React.ReactElement {
+  const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
-    setValue(props.value);
-  }, [props.value]);
+    setValue(initialValue);
+  }, [initialValue]);
 
   return (
     <div className="input-group entry">
       {renderInput({
-        dataType: props.dataType,
-        disabled: props.disabled,
+        dataType: dataType,
+        disabled: disabled,
         label: '',
-        name: props.name,
+        name: name,
         onChange: setValue,
-        onCommit: props.onSave,
-        options: props.options,
+        onCommit: onSave,
+        options: options,
         value: value,
       })}
       <div className="input-group-btn">
         <button
           className="btn btn-danger btn-remove"
-          disabled={props.disabled}
-          onClick={props.onRemove}
+          disabled={disabled}
+          onClick={onRemove}
           type="button"
         >
           <span className="glyphicon glyphicon-remove"></span>&nbsp;
@@ -340,27 +410,15 @@ function MultiValueRow(props) {
   );
 }
 
-MultiValueRow.propTypes = {
-  dataType: PropTypes.string.isRequired,
-  disabled: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired,
-  onRemove: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
-  options: PropTypes.object.isRequired,
-  value: PropTypes.string,
-};
-
-MultiValueRow.defaultProps = {
-  value: '',
-};
-
 /**
  * Render the proper form element for a config data type.
  *
- * @param {object} config Render config
+ * @param {RenderInputConfig} config Render config
  * @return {JSX}
  */
-function renderInput(config) {
+function renderInput(config: RenderInputConfig): React.ReactElement {
+  const value = String(config.value ?? '');
+
   switch (config.dataType) {
   case 'boolean':
     return (
@@ -369,7 +427,9 @@ function renderInput(config) {
         disabled={config.disabled}
         label={config.label}
         name={config.name}
-        onUserInput={(name, value) => config.onCommit(value)}
+        onUserInput={(_name: string, inputValue: string) => {
+          config.onCommit(inputValue);
+        }}
         options={booleanRadioOptions(config.value)}
       />
     );
@@ -383,9 +443,11 @@ function renderInput(config) {
         disabled={config.disabled}
         label={config.label}
         name={config.name}
-        onUserInput={(name, value) => config.onCommit(value)}
+        onUserInput={(_name: string, inputValue: string) => {
+          config.onCommit(inputValue);
+        }}
         options={config.options[DATA_TYPE_OPTIONS[config.dataType]]}
-        value={config.value}
+        value={value}
       />
     );
   case 'email':
@@ -394,9 +456,13 @@ function renderInput(config) {
         disabled={config.disabled}
         label={config.label}
         name={config.name}
-        onUserBlur={(name, value) => config.onCommit(value)}
-        onUserInput={(name, value) => config.onChange(value)}
-        value={config.value}
+        onUserBlur={(_name: string, inputValue: string) => {
+          config.onCommit(inputValue);
+        }}
+        onUserInput={(_name: string, inputValue: string) => {
+          config.onChange(inputValue);
+        }}
+        value={value}
       />
     );
   case 'textarea':
@@ -405,9 +471,13 @@ function renderInput(config) {
         disabled={config.disabled}
         label={config.label}
         name={config.name}
-        onUserBlur={(name, value) => config.onCommit(value)}
-        onUserInput={(name, value) => config.onChange(value)}
-        value={config.value}
+        onUserBlur={(_name: string, inputValue: string) => {
+          config.onCommit(inputValue);
+        }}
+        onUserInput={(_name: string, inputValue: string) => {
+          config.onChange(inputValue);
+        }}
+        value={value}
       />
     );
   case 'path':
@@ -418,9 +488,13 @@ function renderInput(config) {
         disabled={config.disabled}
         label={config.label}
         name={config.name}
-        onUserBlur={(name, value) => config.onCommit(value)}
-        onUserInput={(name, value) => config.onChange(value)}
-        value={config.value}
+        onUserBlur={(_name: string, inputValue: string) => {
+          config.onCommit(inputValue);
+        }}
+        onUserInput={(_name: string, inputValue: string) => {
+          config.onChange(inputValue);
+        }}
+        value={value}
       />
     );
   default:
@@ -433,10 +507,10 @@ function renderInput(config) {
 /**
  * Return the radio value matching the stored boolean representation.
  *
- * @param {*} value Stored boolean value
+ * @param {ConfigValue} value Stored boolean value
  * @return {string}
  */
-function booleanRadioValue(value) {
+function booleanRadioValue(value: ConfigValue): string {
   if (value === '1' || value === 1) {
     return '1';
   }
@@ -452,10 +526,10 @@ function booleanRadioValue(value) {
 /**
  * Preserve legacy 1/0 boolean storage when a setting already uses it.
  *
- * @param {*} value Stored boolean value
+ * @param {ConfigValue} value Stored boolean value
  * @return {object}
  */
-function booleanRadioOptions(value) {
+function booleanRadioOptions(value: ConfigValue): ConfigOptionMap {
   if (value === '1' || value === '0' || value === 1 || value === 0) {
     return {'1': 'Yes', '0': 'No'};
   }
@@ -470,7 +544,11 @@ function booleanRadioOptions(value) {
  * @param {object} payload JSON payload
  * @return {Promise<void>}
  */
-function saveSetting(baseURL, setting, payload) {
+function saveSetting(
+  baseURL: string,
+  setting: string,
+  payload: Record<string, unknown>
+): Promise<void> {
   return fetch(`${baseURL}/configuration/setting/${setting}`, {
     body: JSON.stringify({
       setting: setting,
@@ -483,8 +561,8 @@ function saveSetting(baseURL, setting, payload) {
       throw new Error(`Could not save ${setting}`);
     }
     return resp.json();
-  }).then(() => {
-    swal.fire('Success!', `Successfully saved ${setting}`, 'success');
+  }).then((): void => {
+    void swal.fire('Success!', `Successfully saved ${setting}`, 'success');
   });
 }
 
@@ -494,21 +572,21 @@ function saveSetting(baseURL, setting, payload) {
  * @param {Error} error Error object
  * @return {void}
  */
-function showSaveError(error) {
-  swal.fire('Error', error.toString(), 'error');
+function showSaveError(error: Error): void {
+  void swal.fire('Error', error.toString(), 'error');
 }
 
 /**
  * Entrypoint for the configuration module.
  *
- * @param {object} props React props
+ * @param {BaseURLProps} props React props
  * @return {JSX}
  */
-function ConfigurationIndex(props) {
+function ConfigurationIndex(props: BaseURLProps): React.ReactElement {
   const [activeCategory, setActiveCategory] = useState('');
-  const [categories, setCategories] = useState([]);
-  const [categoryItems, setCategoryItems] = useState([]);
-  const [options, setOptions] = useState({
+  const [categories, setCategories] = useState<ConfigCategory[]>([]);
+  const [categoryItems, setCategoryItems] = useState<ConfigItem[]>([]);
+  const [options, setOptions] = useState<ConfigOptions>({
     dateFormat: {},
     instruments: {},
     logLevels: {},
@@ -525,7 +603,7 @@ function ConfigurationIndex(props) {
       if (!resp.ok) {
         throw new Error('Could not retrieve configuration categories');
       }
-      return resp.json();
+      return resp.json() as Promise<CategoriesResponse>;
     }).then((data) => {
       setCategories(data.categories);
       setOptions({
@@ -554,7 +632,7 @@ function ConfigurationIndex(props) {
       if (!resp.ok) {
         throw new Error(`Could not retrieve category ${activeCategory}`);
       }
-      return resp.json();
+      return resp.json() as Promise<CategoryResponse>;
     }).then((data) => {
       setCategoryItems(data.category);
     }).catch((error) => {
@@ -575,18 +653,18 @@ function ConfigurationIndex(props) {
           baseURL={props.baseURL}
           items={categoryItems}
           options={options}
-          reloadCategory={() => setReloadKey(reloadKey + 1)}
+          reloadCategory={() => setReloadKey((current) => current + 1)}
         />
       </div>
     </div>
   );
 }
 
-ConfigurationIndex.propTypes = {
-  baseURL: PropTypes.string.isRequired,
-};
-
 window.addEventListener('load', () => {
-  const root = createRoot(document.getElementById('lorisworkspace'));
+  const workspace = document.getElementById('lorisworkspace');
+  if (workspace === null) {
+    throw new Error('Could not find lorisworkspace root');
+  }
+  const root = createRoot(workspace);
   root.render(<ConfigurationIndex baseURL={loris.BaseURL} />);
 });

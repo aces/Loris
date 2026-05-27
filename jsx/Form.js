@@ -1006,7 +1006,11 @@ export class TextareaElement extends Component {
    * @param {object} e - Event
    */
   handleBlur(e) {
-    this.props.onUserBlur(this.props.name, e.target.value);
+    // eslint-disable-next-line react/prop-types
+    const onUserBlur = this.props.onUserBlur;
+    if (typeof onUserBlur === 'function') {
+      onUserBlur(this.props.name, e.target.value);
+    }
   }
 
   /**
@@ -1050,7 +1054,6 @@ TextareaElement.propTypes = {
   rows: PropTypes.number,
   cols: PropTypes.number,
   onUserInput: PropTypes.func,
-  onUserBlur: PropTypes.func,
 };
 
 TextareaElement.defaultProps = {
@@ -1066,7 +1069,6 @@ TextareaElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
-  onUserBlur: function() {},
 };
 
 /**
