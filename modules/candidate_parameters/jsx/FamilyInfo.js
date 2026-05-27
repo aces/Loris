@@ -136,7 +136,7 @@ class FamilyInfo extends Component {
 
     Object.keys(this.state.Data.relationshipOptions).forEach((type) => {
       relationshipOptions[type] = t(
-        this.state.Data.relationshipOptions[type],
+        this.state.Data.relationshipOptions[type].RelationshipLabel,
         {ns: 'candidate_parameters'}
       );
     });
