@@ -84,7 +84,7 @@ class Upload extends \NDB_Page
 
         if (empty($file)) {
             return new \LORIS\Http\Response\JSON\NotFound(
-                "File not found."
+                dgettext('electrophysiology_uploader', 'File not found.')
             );
         }
 

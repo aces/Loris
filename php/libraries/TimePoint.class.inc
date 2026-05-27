@@ -146,6 +146,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
                          s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
                          pr.Name as ProjectName, p.Alias as SiteAlias,
+                         p.Name as SiteName,
 			 s.ProjectID as ProjectID,
                          l.language_code as LanguageCode,
                          l.language_label as LanguageLabel
