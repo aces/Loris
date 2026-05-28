@@ -36,7 +36,8 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
         try {
             $selectOptions = $this->safeFindElement(
                 WebDriverBy::xpath(
-                    "//label[contains(normalize-space(.), 'servers')]/following::select[1]"
+                    "//label[contains(normalize-space(.),"
+                    ."// 'servers')]/following::select[1]"
                 )
             );
             $this->assertNotEmpty($selectOptions);
@@ -44,7 +45,7 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
             $content = $this->safeFindElement(
                 WebDriverBy::id("lorisworkspace")
             );
-            $this->fail('Can`t find servers select element. Found: ' . $content->getText());
+            $this->fail('Can`t find select element. Found: ' . $content->getText());
         }
     }
 
