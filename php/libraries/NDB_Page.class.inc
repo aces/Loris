@@ -1047,9 +1047,18 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
                     Version,
                     COALESCE(pi.Content, p.Content) AS Content,
                     COALESCE(pi.SwalTitle, p.SwalTitle) AS SwalTitle,
-                    COALESCE(pi.HeaderButtonText, p.HeaderButtonText) AS HeaderButtonText,
-                    COALESCE(pi.AcceptButtonText, p.AcceptButtonText) AS AcceptButtonText,
-                    COALESCE(pi.DeclineButtonText, p.DeclineButtonText) AS DeclineButtonText,
+                    COALESCE(
+                        pi.HeaderButtonText,
+                        p.HeaderButtonText
+                    ) AS HeaderButtonText,
+                    COALESCE(
+                        pi.AcceptButtonText,
+                        p.AcceptButtonText
+                    ) AS AcceptButtonText,
+                    COALESCE(
+                        pi.DeclineButtonText,
+                        p.DeclineButtonText
+                    ) AS DeclineButtonText,
                     m.Name as ModuleName,
                     p.PolicyID,
                     p.PolicyRenewalTime,
