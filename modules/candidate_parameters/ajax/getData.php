@@ -294,7 +294,7 @@ function getFamilyInfoFields()
 
     $familyMembers = iterator_to_array(
         $db->pselect(
-            "SELECT c1.CandID as FamilyCandidate, f1.Relationship_type
+            "SELECT c1.CandID as FamilyCandID, f1.Relationship_type
             FROM family f1
             JOIN family f2 ON f1.FamilyID=f2.FamilyID
             JOIN candidate c1 ON f1.CandidateID=c1.ID
