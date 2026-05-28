@@ -108,6 +108,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/electrophysiology_uploader/locale/ja/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/electrophysiology_uploader/locale/hi/LC_MESSAGES/electrophysiology_uploader.po \
 	modules/acknowledgements/locale/ja/LC_MESSAGES/acknowledgements.po \
+	modules/survey_accounts/locale/hi/LC_MESSAGES/survey_accounts.po \
 	modules/survey_accounts/locale/ja/LC_MESSAGES/survey_accounts.po \
 	modules/battery_manager/locale/fr/LC_MESSAGES/battery_manager.po \
 	modules/battery_manager/locale/ja/LC_MESSAGES/battery_manager.po \
@@ -311,7 +312,10 @@ my_preferences: $(filter modules/my_preferences/%,$(MOFILES)) $(filter modules/m
 	target=my_preferences npm run compile
 
 electrophysiology_browser: $(filter modules/electrophysiology_browser/%,$(MOFILES)) $(filter modules/electrophysiology_browser/%,$(I18NJSONFILES))
-    target=electrophysiology_browser npm run compile
+	target=electrophysiology_browser npm run compile
+
+survey_accounts: $(filter modules/survey_accounts/%,$(MOFILES)) $(filter modules/survey_accounts/%,$(I18NJSONFILES))
+	target=survey_accounts npm run compile
 
 dicom_archive: $(filter modules/dicom_archive/%,$(MOFILES)) $(filter modules/dicom_archive/%,$(I18NJSONFILES))
-    target=dicom_archive npm run compile
+	target=dicom_archive npm run compile

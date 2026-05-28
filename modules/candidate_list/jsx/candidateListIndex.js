@@ -239,6 +239,7 @@ class CandidateListIndex extends Component {
           name: 'visitLabel',
           type: 'multiselect',
           options: options.visitlabel,
+          sortByValue: false,
         },
       },
       {
@@ -265,10 +266,7 @@ class CandidateListIndex extends Component {
         filter: {
           name: 'entityType',
           type: 'select',
-          options: {
-            'Human': 'Human',
-            'Scanner': 'Scanner',
-          },
+          options: options.entitytype,
         },
       },
       {
