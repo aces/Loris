@@ -27,9 +27,12 @@ class Language implements MiddlewareInterface, MiddlewareChainer
 {
     use MiddlewareChainerMixin;
 
-    public static function detectLocale(\LORIS\LorisInstance $loris, ServerRequestInterface $request) : string
+    public static function detectLocale(
+        \LORIS\LorisInstance $loris,
+        ?ServerRequestInterface $request = null
+    ) : string
     {
-        $DB = $request->getAttribute("loris")->getDatabaseConnection();
+        $DB = $loris->getDatabaseConnection();
 
         $validLocales = $DB->pselectCol(
             "SELECT language_code FROM language",
@@ -40,10 +43,12 @@ class Language implements MiddlewareInterface, MiddlewareChainer
             return $validLocales[0];
         }
 
-        $params = $request->getQueryParams();
-        if (isset($params['lang'])
-            && in_array($params['lang'], $validLocales)) {
-            return $params['lang'];
+        if ($request !== null) {
+            $params = $request->getQueryParams();
+            if (isset($params['lang'])
+                && in_array($params['lang'], $validLocales)) {
+                return $params['lang'];
+            }
         }
 
         // Check for language cookie
@@ -52,8 +57,15 @@ class Language implements MiddlewareInterface, MiddlewareChainer
             return $_COOKIE['loris_language'];
         }
 
-        $user     = $request->getAttribute("user");
-        $userpref = $user->getLanguageCode();
+        $userpref = '';
+        if ($request !== null) {
+            $user = $request->getAttribute("user");
+            if ($user !== null) {
+                $userpref = $user->getLanguageCode();
+            }
+        } else {
+            $userpref = \User::singleton()->getLanguageCode();
+        }
         if ($userpref !== ""
             && in_array($userpref, $validLocales)) {
             return $userpref;
@@ -61,9 +73,9 @@ class Language implements MiddlewareInterface, MiddlewareChainer
 
         // This doesn't necessarily work if the user has multiple languages
         // accepted because the potential match is based on the system's
-    // locales, not the LORIS language table. It also may not be available
-    // depending on PHP versions
-        if (function_exists('\locale_accept_from_http')) {
+        // locales, not the LORIS language table. It also may not be available
+        // depending on PHP versions
+        if ($request !== null && function_exists('\locale_accept_from_http')) {
             $fromheader = \locale_accept_from_http($request->getHeaderLine('Accept-Language'));
             if ($fromheader !== false
             && in_array($fromheader, $validLocales)) {
