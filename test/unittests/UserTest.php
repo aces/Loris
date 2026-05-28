@@ -351,7 +351,7 @@ class UserTest extends TestCase
         $passwordHash = (new \Password(
             $this->_userInfo['Password']
         ))->__toString();
-        $this->_userInfoComplete['language_code'] = null;
+        $this->_userInfoComplete['language_code'] = 'fr_CA';
         $this->_userInfo['Password_hash']         = $passwordHash;
         $this->_userInfoComplete['Password_hash'] = $passwordHash;
 

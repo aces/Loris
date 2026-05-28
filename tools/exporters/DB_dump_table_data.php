@@ -105,7 +105,10 @@ $columnStatisticsFlag = version_compare($mysqlVersion, '8.0.0', '>=') ?
 foreach ($tableNames as $tableName) {
     $paths    = \NDB_Config::singleton()->getSetting('paths');
     $filename = $paths['base'] . "/raisinbread/RB_files/RB_$tableName.sql";
-    $setNamesSpecialChars = (str_contains($tableName, 'I18n') || $tableName === 'language') ? 'SET NAMES utf8mb4;\n' : '';
+    $setNamesSpecialChars = (
+            str_contains($tableName, 'I18n') || $tableName === 'language'
+        ) ? 'SET NAMES utf8mb4;\n'
+        : '';
     exec(
         'mysqldump -u '.escapeshellarg($adminUser).
         ' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
