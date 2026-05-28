@@ -1,6 +1,6 @@
-SET NAMES 'utf8mb4';
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `policiesI18n`;
+SET NAMES utf8mb4;
 LOCK TABLES `policiesI18n` WRITE;
 INSERT INTO `policiesI18n` (`PolicyID`, `LanguageID`, `Content`, `SwalTitle`, `HeaderButtonText`, `AcceptButtonText`, `DeclineButtonText`, `CreatedAt`, `UpdatedAt`) VALUES (1, 2, 'En utilisant cet outil de consultation des données, vous reconnaissez qu''il s''agit d''une version bêta et qu''il peut ne pas fonctionner comme prévu. Vous vous engagez également à l''utiliser de manière responsable et à ne pas faire un usage abusif des données.','Conditions d''utilisation','Conditions d''utilisation','Oui, j''accepte','Déclin','2026-05-28 10:54:21','2026-05-28 10:54:21');
 INSERT INTO `policiesI18n` (`PolicyID`, `LanguageID`, `Content`, `SwalTitle`, `HeaderButtonText`, `AcceptButtonText`, `DeclineButtonText`, `CreatedAt`, `UpdatedAt`) VALUES (2, 2, 'En utilisant cette instance de LORIS, vous reconnaissez savoir qu''elle contient des données de test et non des données réelles d''utilisateurs.','Conditions d''utilisation','Conditions d''utilisation','J''accepte','','2026-05-28 10:54:21','2026-05-28 10:54:21');

@@ -39,7 +39,7 @@ class Language implements MiddlewareInterface, MiddlewareChainer
         );
 
         if (count($validLocales) == 1) {
-            return $validLocales[0];
+            return array_values($validLocales)[0];
         }
 
         if ($request !== null) {
