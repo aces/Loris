@@ -122,11 +122,6 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 throw new \Exception("Unhandled DoB format: $this->dobFormat");
             }
         }
-TranslateParticipantStatusOptions
-        $row['ParticipantStatus'] = dgettext(
-            "participant_status_options",
-            $row['ParticipantStatus'],
-        );
 
         if (isset($row['Cohort'])) {
             $cohorts    = explode(',', $row['Cohort']);
@@ -141,6 +136,10 @@ TranslateParticipantStatusOptions
 
         $row['EntityType'] = dgettext("candidate", $row['EntityType']);
 
+        $row['ParticipantStatus'] = dgettext(
+            "participant_status_options",
+            $row['ParticipantStatus'],
+        );
 
         unset($row['RegistrationCenterID']);
         unset($row['RegistrationProjectID']);
