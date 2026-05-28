@@ -30,8 +30,7 @@ class Language implements MiddlewareInterface, MiddlewareChainer
     public static function detectLocale(
         \LORIS\LorisInstance $loris,
         ?ServerRequestInterface $request = null
-    ) : string
-    {
+    ) : string {
         $DB = $loris->getDatabaseConnection();
 
         $validLocales = $DB->pselectCol(
