@@ -320,7 +320,7 @@ function getFamilyInfoFields()
         'candID'                => $candID->__toString(),
         'candidates'            => $candidates,
         'existingFamilyMembers' => $familyMembers,
-        'relationshipOptions' => $relationshipOptions,
+        'relationshipOptions'   => $relationshipOptions,
     ];
 
     return $result;
