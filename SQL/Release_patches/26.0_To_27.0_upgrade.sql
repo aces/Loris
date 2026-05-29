@@ -61,7 +61,8 @@ ALTER TABLE `issues`
     AFTER `category`;
 
 ALTER TABLE `issues_history`
-    MODIFY `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description') NOT NULL DEFAULT 'comment';
+    MODIFY `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'watching', 'description') NOT NULL DEFAULT 'comment';
+    
 CREATE TABLE `instrument_data` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`Data`)),
