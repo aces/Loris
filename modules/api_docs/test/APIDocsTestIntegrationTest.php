@@ -36,9 +36,8 @@ class APIDocsTestIntegrationTest extends \LorisIntegrationTest
         try {
             $selectOptions = $this->safeFindElement(
                 WebDriverBy::xpath(
-                    "//label[contains(translate(normalize-space(.),"
-                    ."'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),"
-                    ." 'servers')]/following-sibling::select[1]"
+                    "//div[contains(concat(' ', normalize-space(@class), ' '),"
+                    ." ' servers ')]//label[@for='servers']/select[option]"
                 )
             );
             $this->assertNotEmpty($selectOptions);
