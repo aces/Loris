@@ -315,9 +315,12 @@ class CreateTimepoint extends React.Component {
       }
     ).then((response) => {
       if (response.ok) {
-        swal.fire(
-          t('Success!', {ns: 'loris'}),
-          t('Timepoint created.', {ns: 'create_timepoint'}), 'success')
+        swal.fire({
+          title: t('Success!', {ns: 'loris'}),
+          text: t('Timepoint created.', {ns: 'create_timepoint'}),
+          icon: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
+        })
           .then(() => {
             window.location.replace(
               `${this.props.baseURL}/${this.state.url.params.candID}`
