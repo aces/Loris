@@ -130,8 +130,8 @@ class RedcapConfigParser
             $redcap_api_token,
             $prefix_instrument_variable,
             $redcap_participant_id,
-            $candidate_id,
             $redcap_repeat_id,
+            $candidate_id,
             $visits,
         );
     }
