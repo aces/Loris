@@ -3,11 +3,13 @@ import {bisector} from 'd3-array';
 import {colorOrder} from '../../color';
 import {Channel, ChannelMetadata, Epoch} from '../store/types';
 import {connect} from 'react-redux';
-import {MAX_RENDERED_EPOCHS, SIGNAL_SCALE, SIGNAL_UNIT} from '../../vector';
+import {MAX_RENDERED_EPOCHS} from '../../vector';
 import {MutableRefObject, useEffect} from 'react';
 import {RootState} from '../store';
 import {getEpochsInRange} from '../store/logic/filterEpochs';
 import {useTranslation} from "react-i18next";
+import {getChannelUnit, useChannelInfo} from '../store/logic/channels';
+import {normalizeUnit, normalizeValueUnit} from '../../utils';
 
 type CursorContentProps = {
   time: number,
@@ -158,17 +160,17 @@ const SeriesCursor = (
               chunk.interval[1] >= time
           );
           if (!hoveredChunk) return;
+          const rawUnit = getChannelUnit(useChannelInfo(hoveredChannel));
           const chunkValue = computeValue(hoveredChunk, time);
           const channelColor = colorOrder(channelIndex.toString()).toString();
+          const unit = normalizeUnit(rawUnit);
+          const value = normalizeValueUnit(chunkValue, unit);
           return (
             <div
               key={channelIndex.toString()}
-              style={{
-                color: channelColor,
-                width: '100px',
-              }}
+              style={{color: channelColor}}
             >
-            {channelName}: {Math.round(chunkValue)} {SIGNAL_UNIT}
+              {channelName}: {value} {unit}
             </div>
           );
         })}
@@ -267,7 +269,7 @@ const computeValue = (chunk, time) => {
   const idx = bisectTime(indices, time);
   const value = chunk.values[idx-1];
 
-  return value * SIGNAL_SCALE;
+  return value;
 };
 
 /**
@@ -290,6 +292,8 @@ const CursorContent = (
     channelMetadata,
   }: CursorContentProps
 ) => {
+  const rawUnit = getChannelUnit(useChannelInfo(channel));
+  const unit = normalizeUnit(rawUnit);
   return (
     <div style={{margin: '0 5px', width: '120px'}}>
       {channel.traces.map((trace, i) => {
@@ -313,7 +317,7 @@ const CursorContent = (
             }}
           >
             {channelMetadata[channel.index].name}:&nbsp;
-            {chunk && Math.round(computeValue(chunk, time))} {SIGNAL_UNIT}
+            {chunk && normalizeValueUnit(computeValue(chunk, time), unit)} {unit}
           </div>
         );
       })}

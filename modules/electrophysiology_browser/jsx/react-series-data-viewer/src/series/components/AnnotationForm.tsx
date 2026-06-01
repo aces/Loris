@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {ChannelMetadata, Epoch as EpochType, HEDSchemaElement, HEDTag, RightPanel,} from '../store/types';
 import {connect} from 'react-redux';
 import {setTimeSelection} from '../store/state/timeSelection';
@@ -21,6 +21,7 @@ import swal from 'sweetalert2';
 import {InfoIcon} from "./components";
 import {colorOrder} from "../../color";
 import {useTranslation} from "react-i18next";
+import {ChannelMetasContext} from '../../eeglab/EEGLabSeriesProvider';
 
 
 type CProps = {
@@ -40,7 +41,6 @@ type CProps = {
   hedSchema: HEDSchemaElement[],
   datasetTags: any,
   channelDelimiter: string,
-  channelMetadata: ChannelMetadata[],
   panelIsDirty: boolean,
   setPanelIsDirty: (_: boolean) => void,
   eventChannels: string[],
@@ -65,7 +65,6 @@ type CProps = {
  * @param root0.hedSchema
  * @param root0.datasetTags
  * @param root0.channelDelimiter
- * @param root0.channelMetadata
  * @param root0.panelIsDirty
  * @param root0.setPanelIsDirty
  * @param root0.eventChannels
@@ -87,13 +86,13 @@ const AnnotationForm = ({
   hedSchema,
   datasetTags,
   channelDelimiter,
-  channelMetadata,
   panelIsDirty,
   setPanelIsDirty,
   eventChannels,
   setEventChannels,
 }: CProps) => {
   const {t} = useTranslation();
+  const channelMetadata = useContext(ChannelMetasContext);
   const [eventInterval, setEventInterval] = useState<(number | string)[]>(
     timeSelection ?? ['', '']
   );
@@ -1636,7 +1635,6 @@ export default connect(
     hedSchema: state.dataset.hedSchema,
     datasetTags: state.dataset.datasetTags,
     channelDelimiter: state.dataset.channelDelimiter,
-    channelMetadata: state.dataset.channelMetadata,
     channels: state.channels,
   }),
   (dispatch: (any) => void) => ({
