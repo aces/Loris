@@ -122,6 +122,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 throw new \Exception("Unhandled DoB format: $this->dobFormat");
             }
         }
+        $row['RegistrationSite'] = dgettext("psc", $row['RegistrationSite']);
 
         if (isset($row['Cohort'])) {
             $cohorts    = explode(',', $row['Cohort']);
@@ -139,6 +140,10 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         $row['ParticipantStatus'] = dgettext(
             "participant_status_options",
             $row['ParticipantStatus'],
+        );
+        $row['RegistrationProject'] = dgettext(
+            "Project",
+            $row['RegistrationProject']
         );
 
         unset($row['RegistrationCenterID']);
