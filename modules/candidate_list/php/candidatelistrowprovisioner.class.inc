@@ -137,6 +137,10 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
 
         $row['EntityType'] = dgettext("candidate", $row['EntityType']);
 
+        $row['ParticipantStatus']   = dgettext(
+            "participant_status_options",
+            $row['ParticipantStatus'],
+        );
         $row['RegistrationProject'] = dgettext(
             "Project",
             $row['RegistrationProject']
