@@ -2397,6 +2397,7 @@ export class CTA extends Component {
       <button
         className={this.props.buttonClass}
         onClick={this.props.onUserInput}
+        disabled={this.props.disabled}
       >
         {this.props.label}
       </button>
@@ -2407,10 +2408,12 @@ export class CTA extends Component {
 CTA.propTypes = {
   label: PropTypes.string,
   buttonClass: PropTypes.string,
+  disabled: PropTypes.bool,
   onUserInput: PropTypes.func,
 };
 
 CTA.defaultProps = {
+  disabled: false,
   buttonClass: 'btn btn-primary',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
