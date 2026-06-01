@@ -761,11 +761,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                     throw new \Exception("Unhandled operator: " . $crit['op']);
                 }
 
-                // FIXME: Verify visits, test was done with candidate scope data
-                $visitlist = null;
-                if (isset($crit['visits'])) {
-                    $visitlist = $crit['visits'];
-                }
+                $visitlist = $crit['visits'] ?? null;
 
                 \Profiler::checkpoint("Calling engine get matches");
                 $matches = $engine->getCandidateMatches($term, $visitlist);
