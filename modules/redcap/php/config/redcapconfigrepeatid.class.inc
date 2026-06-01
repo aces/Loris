@@ -12,7 +12,8 @@
 namespace LORIS\redcap\config;
 
 /**
- * Enumeration that describes which kind of index is used to order repeating instrument records.
+ * Enumeration that describes which kind of index is used to order repeating
+ * instrument records.
  *
  * @category REDCap
  * @package  Main

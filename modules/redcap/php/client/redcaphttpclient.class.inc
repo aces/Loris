@@ -733,10 +733,11 @@ class RedcapHttpClient
             )
         ) {
             // If the record_id is null then all records have been imported.
-            // We need to group them by record_id to make sense and not have thousands of
-            // overlapping repeated records.
+            // We need to group them by record_id to make sense and not have
+            // thousands of overlapping repeated records.
             if ($record_id === null) {
-                // need to be grouped by record id = possibly multiple repeated records.
+                // need to be grouped by record id = possibly multiple
+                // repeated records.
                 $record_groups = [];
                 foreach ($record_dicts as $record_dict) {
                     $record_group_id = $record_dict["record_id"];
@@ -838,7 +839,6 @@ class RedcapHttpClient
                     return $a[$redcapRepeatIndex] <=> $b[$redcapRepeatIndex];
                 }
             );
-
 
             // build records
             foreach ($raw_records as $index => $record) {

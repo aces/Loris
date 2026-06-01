@@ -64,7 +64,8 @@ class RedcapConfig
     public readonly RedcapConfigLorisId $candidate_id;
 
     /**
-     * The type of REDCap repeated identifier to match against the LORIS repeated instrument index.
+     * The type of REDCap repeated identifier to match against the LORIS repeated
+     * instrument index.
      *
      * @var RedcapConfigRepeatId
      */
@@ -93,12 +94,12 @@ class RedcapConfig
      *                                                         participant
      *                                                         identifier
      *                                                         configuration.
-     * @param RedcapConfigLorisId  $candidate_id               The REDCap LORIS
-     *                                                         candidate identifier
-     *                                                         configuration.
      * @param RedcapConfigRepeatId $redcap_repeat_id           The REDCap LORIS
      *                                                         repeat index
      *                                                         identifier.
+     * @param RedcapConfigLorisId  $candidate_id               The REDCap LORIS
+     *                                                         candidate identifier
+     *                                                         configuration.
      * @param ?array               $visits                     The REDCap visit
      *                                                         mappings.
      */
@@ -118,7 +119,7 @@ class RedcapConfig
         $this->prefix_instrument_variable = $prefix_instrument_variable;
         $this->redcap_participant_id      = $redcap_participant_id;
         $this->redcap_repeat_id           = $redcap_repeat_id;
-        $this->candidate_id               = $candidate_id;
-        $this->visits                     = $visits;
+        $this->candidate_id = $candidate_id;
+        $this->visits       = $visits;
     }
 }
