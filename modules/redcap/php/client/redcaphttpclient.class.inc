@@ -732,34 +732,41 @@ class RedcapHttpClient
                 $unique_event_name
             )
         ) {
-            // sort based on the instance index number
-            if ($this->_repeat_index_field === RedcapConfigRepeatId::RepeatInstance) {
-                usort(
-                    $record_dicts,
-                    function ($a, $b) {
-                        $redcapRepeatIndex = "redcap_repeat_instance";
-                        return $a[$redcapRepeatIndex] <=> $b[$redcapRepeatIndex];
-                    }
-                );
-            } else if ($this->_repeat_index_field === RedcapConfigRepeatId::Timestamp) {
-                // sort based on the record timestamp
-                usort(
-                    $record_dicts,
-                    function ($a, $b) use ($instrument_name) {
-                        $tsField = "{$instrument_name}_timestamp";
-                        $ts_a    = new \DateTimeImmutable($a[$tsField]);
-                        $ts_b    = new \DateTimeImmutable($b[$tsField]);
-                        return $ts_a <=> $ts_b;
-                    }
-                );
-            }
+            // If the record_id is null then all records have been imported.
+            // We need to group them by record_id to make sense and not have thousands of
+            // overlapping repeated records.
+            if ($record_id === null) {
+                // need to be grouped by record id = possibly multiple repeated records.
+                $record_groups = [];
+                foreach ($record_dicts as $record_dict) {
+                    $record_group_id = $record_dict["record_id"];
 
-            foreach ($record_dicts as $index => $record) {
-                $records[] = new RedcapRepeatingRecord(
+                    // group them by "record_id"
+                    if (array_key_exists($record_group_id, $record_groups)) {
+                        $record_groups[$record_group_id][] = $record_dict;
+                    } else {
+                        $record_groups[$record_group_id] = [$record_dict];
+                    }
+                }
+
+                // foreach group or record_id, parse them into RepeatedRecords
+                foreach ($record_groups as $record_group_id => $record_group) {
+                    $records = array_merge(
+                        $records,
+                        $this->_buildRepeatedRecords(
+                            strval($record_group_id),
+                            $instrument_name,
+                            $record_group
+                        )
+                    );
+                }
+            } else {
+                // does not neeed to group by record_id = only one RepeatedRecord
+                $records[] = $this->_buildRepeatedRecords(
+                    $record_id,
                     $instrument_name,
-                    $record,
-                    $index + 1
-                );
+                    $record_dicts
+                )[0];
             }
         } else {
             // Transform the record dictionaries into record objects.
@@ -797,6 +804,83 @@ class RedcapHttpClient
         }
 
         return $records;
+    }
+
+    /**
+     * Build a list of RepeatedRecord out of a array of record dictionaries.
+     * The build process takes the configuration::RedcapConfigRepeatId in account
+     * to either build with the redcap_repeat_instance or the timestamp field.
+     *
+     * @param string $record_id       A REDCap record_id.
+     * @param string $instrument_name A REDCap instrument name.
+     * @param array  $raw_records     An array of record dictionaries.
+     *
+     * @return RedcapRepeatingRecord[] an array of repeated records
+     */
+    private function _buildRepeatedRecords(
+        string $record_id,
+        string $instrument_name,
+        array $raw_records
+    ): array {
+        // log record_id
+        $tag = "[instrument:{$instrument_name}][record_id:{$record_id}]";
+        error_log("[redcap] {$tag} building repeated records");
+
+        $repeated_records = [];
+
+        // instrument repeat instance as the ordering point
+        if ($this->_repeat_index_field === RedcapConfigRepeatId::RepeatInstance) {
+            // sort based on the instance index number
+            usort(
+                $raw_records,
+                function ($a, $b) {
+                    $redcapRepeatIndex = "redcap_repeat_instance";
+                    return $a[$redcapRepeatIndex] <=> $b[$redcapRepeatIndex];
+                }
+            );
+
+
+            // build records
+            foreach ($raw_records as $index => $record) {
+                $repeated_records[] = new RedcapRepeatingRecord(
+                    $instrument_name,
+                    $record,
+                    $record["redcap_repeat_instance"]
+                );
+            }
+        } else if ($this->_repeat_index_field === RedcapConfigRepeatId::Timestamp) {
+            // sort based on the record timestamp
+            usort(
+                $raw_records,
+                function ($a, $b) use ($instrument_name) {
+                    $tsField = "{$instrument_name}_timestamp";
+                    $ts_a    = new \DateTimeImmutable($a[$tsField]);
+                    $ts_b    = new \DateTimeImmutable($b[$tsField]);
+                    return $ts_a <=> $ts_b;
+                }
+            );
+
+            // build records
+            foreach ($raw_records as $index => $record) {
+                $repeated_records[] = new RedcapRepeatingRecord(
+                    $instrument_name,
+                    $record,
+                    $index + 1
+                );
+            }
+        } else {
+            // default process = iterate and increment record id.
+            foreach ($raw_records as $index => $record) {
+                $repeated_records[] = new RedcapRepeatingRecord(
+                    $instrument_name,
+                    $record,
+                    $index + 1
+                );
+            }
+        }
+
+        // built repeated records
+        return $repeated_records;
     }
 
     /**
