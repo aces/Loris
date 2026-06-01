@@ -157,7 +157,7 @@ class CandidateDOD extends Component {
             label={t('Date Of Death:', {ns: 'candidate_parameters'})}
             name='dod'
             dateFormat={dateFormat}
-            value={this.state.formData.dod}
+            value={dodValue}
             onUserInput={this.setFormData}
             disabled={disabled || !required}
             required={required}
