@@ -90,20 +90,6 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             ]
         );
         $this->DB->insert(
-            "ImagingFileTypes",
-            [
-                'type'        => 'testType',
-                'description' => 'test%(EEG)'
-            ]
-        );
-        $this->DB->insert(
-            "ImagingFileTypes",
-            [
-                'type'        => 'testType2',
-                'description' => 'test2%(EEG)'
-            ]
-        );
-        $this->DB->insert(
             "physiological_output_type",
             [
                 'PhysiologicalOutputTypeID' => 22,
@@ -124,7 +110,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
                 'PhysiologicalOutputTypeID' => 22,
                 'InsertedByUser'            => 'Unit Tester',
                 'FilePath'                  => '/path/to/test/file',
-                'FileType'                  => 'testType'
+                'FileType'                  => 'set'
             ]
         );
         $this->DB->insert(
@@ -134,7 +120,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
                 'PhysiologicalOutputTypeID' => 23,
                 'InsertedByUser'            => 'Unit Tester',
                 'FilePath'                  => '/path/to/test/file2',
-                'FileType'                  => 'testType2'
+                'FileType'                  => 'ctf'
             ]
         );
     }
@@ -191,20 +177,6 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             [
                 'PhysiologicalOutputTypeID' => 23,
                 'OutputTypeName'            => 'test2'
-            ]
-        );
-        $this->DB->delete(
-            "ImagingFileTypes",
-            [
-                'type'        => 'testType',
-                'description' => 'test%(EEG)'
-            ]
-        );
-        $this->DB->delete(
-            "ImagingFileTypes",
-            [
-                'type'        => 'testType2',
-                'description' => 'test2%(EEG)'
             ]
         );
         parent::tearDown();
