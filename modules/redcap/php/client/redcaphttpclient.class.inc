@@ -841,7 +841,7 @@ class RedcapHttpClient
             );
 
             // build records
-            foreach ($raw_records as $index => $record) {
+            foreach ($raw_records as $record) {
                 $repeated_records[] = new RedcapRepeatingRecord(
                     $instrument_name,
                     $record,
