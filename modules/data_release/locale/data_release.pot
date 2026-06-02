@@ -39,10 +39,16 @@ msgstr ""
 msgid "Upload File"
 msgstr ""
 
+msgid "File to upload"
+msgstr ""
+
 msgid "Upload a New File"
 msgstr ""
 
 msgid "Add Permission"
+msgstr ""
+
+msgid "User"
 msgstr ""
 
 msgid "Manage Permissions"
@@ -75,6 +81,9 @@ msgstr ""
 msgid "Upload Successful!"
 msgstr ""
 
+msgid "Are you sure?"
+msgstr ""
+
 msgid "A file with this name already exists!"
 msgstr ""
 
@@ -82,6 +91,12 @@ msgid "Would you like to overwrite existing file?"
 msgstr ""
 
 msgid "Note that the version associated with the file will also be overwritten."
+msgstr ""
+
+msgid "Yes, I am sure!"
+msgstr ""
+
+msgid "No, cancel it!"
 msgstr ""
 
 msgid "Choose a specific file or an entire release below"
@@ -125,4 +140,3 @@ msgstr ""
 
 msgid "An error occurred when loading the form!"
 msgstr ""
-

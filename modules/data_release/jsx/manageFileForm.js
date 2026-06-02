@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import AddPermissionForm from './addPermissionForm';
 import swal from 'sweetalert2';
+import {withTranslation} from 'react-i18next';
 import {
   FormElement,
   SelectElement,
@@ -121,6 +122,7 @@ class ManageFileForm extends Component {
    * @return {boolean}
    */
   render() {
+    const {t} = this.props;
     // Data loading error
     if (this.state.error !== undefined) {
       return (
@@ -166,9 +168,11 @@ class ManageFileForm extends Component {
                   if (response.ok) {
                     swal
                       .fire({
-                        text: 'Permission Update Success!',
+                        text: t('Permission Update Success!',
+                          {ns: 'data_release'}),
                         title: '',
                         type: 'success',
+                        confirmButtonText: t('OK', {ns: 'loris'}),
                       })
                       .then(function() {
                         window.location.assign('/data_release');
@@ -185,7 +189,7 @@ class ManageFileForm extends Component {
             >
               <SelectElement
                 name='userid'
-                label='User'
+                label={t('User', {ns: 'data_release'})}
                 options={
                   this.state.fieldOptions.usersByFilePermissions[
                     this.state.specificReleaseI
@@ -263,6 +267,7 @@ ManageFileForm.propTypes = {
   manageFileActions: PropTypes.string.isRequired,
   managingFile: PropTypes.object.isRequired,
   fetchData: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default ManageFileForm;
+export default withTranslation(['data_release', 'loris'])(ManageFileForm);

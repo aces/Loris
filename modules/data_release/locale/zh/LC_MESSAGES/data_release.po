@@ -40,11 +40,17 @@ msgstr "数据发布ID"
 msgid "Upload File"
 msgstr "上传文件"
 
+msgid "File to upload"
+msgstr "要上传的文件"
+
 msgid "Upload a New File"
 msgstr "上传新文件"
 
 msgid "Add Permission"
 msgstr "添加权限"
+
+msgid "User"
+msgstr "用户"
 
 msgid "Manage Permissions"
 msgstr "管理权限"
@@ -73,6 +79,9 @@ msgstr "上传错误！"
 msgid "Upload Successful!"
 msgstr "上传成功！"
 
+msgid "Are you sure?"
+msgstr "您确定吗？"
+
 msgid "A file with this name already exists!"
 msgstr "同名的文件已存在！"
 
@@ -82,6 +91,12 @@ msgstr "您想覆盖现有文件吗？"
 msgid ""
 "Note that the version associated with the file will also be overwritten."
 msgstr "请注意，与该文件关联的版本也将被覆盖。"
+
+msgid "Yes, I am sure!"
+msgstr "是的，我确定！"
+
+msgid "No, cancel it!"
+msgstr "不，取消！"
 
 msgid "Choose a specific file or an entire release below"
 msgstr "选择下面的特定文件或整个版本"

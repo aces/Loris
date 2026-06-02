@@ -212,6 +212,7 @@ class AddPermissionForm extends Component {
           text: t('Permission Update Success!', {ns: 'data_release'}),
           title: '',
           type: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
         }).then(function() {
           window.location.assign('/data_release');
         });

@@ -42,11 +42,17 @@ msgstr "Identifiant de publication des données"
 msgid "Upload File"
 msgstr "Téléverser un fichier"
 
+msgid "File to upload"
+msgstr "Fichier à téléverser"
+
 msgid "Upload a New File"
 msgstr "Téléverser un nouveau fichier"
 
 msgid "Add Permission"
 msgstr "Ajouter une permission"
+
+msgid "User"
+msgstr "Utilisateur"
 
 msgid "Manage Permissions"
 msgstr "Gérer les permissions"
