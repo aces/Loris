@@ -17,6 +17,7 @@ import {
 
 import esStrings from '../locale/es/LC_MESSAGES/create_timepoint.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/create_timepoint.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/create_timepoint.json';
 import frStrings from '../locale/fr/LC_MESSAGES/create_timepoint.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/create_timepoint.json';
 /**
@@ -206,7 +207,11 @@ class CreateTimepoint extends React.Component {
         });
       state.messages = [errorMessage];
       state.messages = [errorMessage];
-      swal.fire(errorMessage, '', 'error');
+      swal.fire({
+        title: errorMessage,
+        icon: 'error',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
       state.form.options.cohort = {};
       state.form.options.visit = {};
     } else {
@@ -252,7 +257,11 @@ class CreateTimepoint extends React.Component {
             ],
           });
         state.messages = [errorMessage];
-        swal.fire(errorMessage, '', 'error');
+        swal.fire({
+          title: errorMessage,
+          icon: 'error',
+          confirmButtonText: t('OK', {ns: 'loris'}),
+        });
         state.form.options.visit = {};
       } else {
         state.form.options.visit = state.storage.visit[
@@ -283,6 +292,25 @@ class CreateTimepoint extends React.Component {
     } else if (formElement === 'cohort') {
       this.handleVisitLabel();
     }
+  }
+
+  translateServerMessage(message) {
+    const {t} = this.props;
+    const timepointExists = message.match(new RegExp(
+      '^A timepoint with these conditions '
+      + '\\(([^,]+), ([^,]+), ([^,]+), ([^)]+)\\) already exists\\.$'
+    ));
+    if (!timepointExists) {
+      return message;
+    }
+
+    return timepointExists.slice(1).reduce(
+      (translated, value) => translated.replace('%s', value),
+      t(
+        'A timepoint with these conditions (%s, %s, %s, %s) already exists.',
+        {ns: 'create_timepoint'}
+      )
+    );
   }
 
   /**
@@ -330,7 +358,11 @@ class CreateTimepoint extends React.Component {
         response.json().then((data) => {
           if (data.error) {
             // display conflicts on form.
-            this.setState({messages: JSON.parse(data.error)});
+            const messages = JSON.parse(data.error);
+            Object.keys(messages).forEach((key) => {
+              messages[key] = this.translateServerMessage(messages[key]);
+            });
+            this.setState({messages});
           }
         });
       }
@@ -492,6 +524,7 @@ CreateTimepoint.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('es', 'create_timepoint', esStrings);
   i18n.addResourceBundle('ja', 'create_timepoint', jaStrings);
+  i18n.addResourceBundle('hi', 'create_timepoint', hiStrings);
   i18n.addResourceBundle('fr', 'create_timepoint', frStrings);
   i18n.addResourceBundle('zh', 'create_timepoint', zhStrings);
 
