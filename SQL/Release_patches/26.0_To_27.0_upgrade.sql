@@ -95,7 +95,7 @@ DELETE FROM Config WHERE ConfigID IN (SELECT ID FROM ConfigSettings WHERE Name =
 DELETE FROM ConfigSettings WHERE Name = 'DoubleDataEntryInstruments';
 
 ALTER TABLE `mri_protocol_checks`
-  DROP FOREIGN KEY 'FK_mriProtocolChecks_ScanType';
+  DROP FOREIGN KEY `FK_mriProtocolChecks_ScanType`;
 
 -- Rename foreign key fields for consistency
 
