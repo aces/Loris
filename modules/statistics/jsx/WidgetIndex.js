@@ -210,7 +210,19 @@ const WidgetIndex = (props) => {
 
     let formObject = new FormData();
     for (const key in formDataObj) {
-      if (formDataObj[key] != '' && formDataObj[key] != ['']) {
+      if (formDataObj[key] &&
+        typeof formDataObj[key] === 'object' &&
+        !Array.isArray(formDataObj[key])
+      ) {
+        Object.entries(formDataObj[key]).forEach(([rangeKey, value]) => {
+          if (value !== '') {
+            const parameterName = `${key}${
+              rangeKey.charAt(0).toUpperCase()
+            }${rangeKey.slice(1)}`;
+            formObject.append(parameterName, value);
+          }
+        });
+      } else if (formDataObj[key] != '' && formDataObj[key] != ['']) {
         formObject.append(key, formDataObj[key]);
       }
     }
