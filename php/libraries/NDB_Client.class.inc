@@ -75,14 +75,7 @@ class NDB_Client
         // it gets lost after the redirect.
         $sessionOptions['cookie_samesite'] = "Lax";
 
-        // API Detect
-        if (strpos(
-            $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI'] ?? '',
-            '/api/v0.0.3/'
-        ) !== false
-        ) {
-            session_cache_limiter('private');
-        }
+        session_cache_limiter('private');
 
         session_start($sessionOptions);
         // if exiting, destroy the php session
