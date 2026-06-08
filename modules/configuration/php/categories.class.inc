@@ -4,43 +4,14 @@ namespace LORIS\configuration;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * JSON endpoint for configuration categories and category settings.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class Categories extends \NDB_Page implements RequestHandlerInterface
+class Categories extends \LORIS\Http\Endpoint
 {
-    /**
-     * Keep JSON responses undecorated.
-     *
-     * @param ServerRequestInterface  $request The PSR7 request
-     * @param RequestHandlerInterface $handler The request handler
-     *
-     * @return ResponseInterface
-     */
-    public function process(
-        ServerRequestInterface $request,
-        RequestHandlerInterface $handler
-    ) : ResponseInterface {
-        return $handler->handle($request);
-    }
-
-    /**
-     * Returns true if user has access to this endpoint.
-     *
-     * @param \User $user The user whose access is being checked
-     *
-     * @return bool
-     */
-    #[\Override]
-    public function isAccessibleBy(\User $user) : bool
-    {
-        return $user->hasPermission('config');
-    }
-
     /**
      * Handle /configuration/categories and /configuration/categories/<name>.
      *
@@ -177,10 +148,31 @@ class Categories extends \NDB_Page implements RequestHandlerInterface
 
                 if ($setting['AllowMultiple']) {
                     $setting['Value'] = array_column($value, 'Value');
-                } else if (count($value) === 1) {
-                    $setting['Value'] = $value[0]['Value'];
                 } else {
-                    $setting['Value'] = '';
+                    switch (count($value)) {
+                    case 0:
+                        $setting['Value'] = '';
+                        break;
+                    case 1:
+                        $setting['Value'] = $value[0]['Value'];
+                        break;
+                    default:
+                        throw new \ConfigurationException(
+                            "Multiple config settings for setting that "
+                            . "does not allow multiple"
+                        );
+                    }
+                }
+
+                if ($setting['DataType'] === "boolean") {
+                    $settingValue = $setting['Value'] ?? "0";
+                    if ($settingValue === "false") {
+                        $setting['Value'] = false;
+                    } else if ($settingValue === "true") {
+                        $setting['Value'] = true;
+                    } else {
+                        $setting['Value'] = $settingValue;
+                    }
                 }
             }
         }

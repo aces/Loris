@@ -4,43 +4,14 @@ namespace LORIS\configuration;
 
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * JSON endpoint for updating configuration settings.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class Setting extends \NDB_Page implements RequestHandlerInterface
+class Setting extends \LORIS\Http\Endpoint
 {
-    /**
-     * Keep JSON responses undecorated.
-     *
-     * @param ServerRequestInterface  $request The PSR7 request
-     * @param RequestHandlerInterface $handler The request handler
-     *
-     * @return ResponseInterface
-     */
-    public function process(
-        ServerRequestInterface $request,
-        RequestHandlerInterface $handler
-    ) : ResponseInterface {
-        return $handler->handle($request);
-    }
-
-    /**
-     * Returns true if user has access to this endpoint.
-     *
-     * @param \User $user The user whose access is being checked
-     *
-     * @return bool
-     */
-    #[\Override]
-    public function isAccessibleBy(\User $user) : bool
-    {
-        return $user->hasPermission('config');
-    }
-
     /**
      * Handle /configuration/setting/<name>.
      *

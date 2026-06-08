@@ -112,7 +112,7 @@ type RenderInputConfig = {
 };
 
 /**
- * Intro text for the configuration page.
+ * Links to related study configuration pages and LORIS configuration docs.
  *
  * @param {BaseURLProps} props React props
  * @return {JSX}
@@ -123,7 +123,7 @@ function IntroText(props: BaseURLProps): React.ReactElement {
       <p>
         Please enter the various configuration variables into the fields below.
         For information on how to configure LORIS, please refer to the Help
-        section and/or the Developer&apos;s guide.
+        section and/or the Developer's guide.
       </p>
       <p>
         To configure study cohorts&nbsp;
@@ -263,7 +263,11 @@ function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
     if (newValue === props.item.Value) {
       return;
     }
-    saveSetting(props.baseURL, props.item.Name, {value: newValue})
+    saveSetting(props.baseURL, props.item.Name, {
+      value: props.item.DataType === 'boolean'
+        ? preserveBooleanStorage(newValue, props.item.Value)
+        : newValue,
+    })
       .then(() => props.reloadCategory())
       .catch(showSaveError);
   };
@@ -534,6 +538,26 @@ function booleanRadioOptions(value: ConfigValue): ConfigOptionMap {
     return {'1': 'Yes', '0': 'No'};
   }
   return {'true': 'Yes', 'false': 'No'};
+}
+
+/**
+ * Keep existing 1/0 boolean settings in their current storage format.
+ *
+ * @param {string} newValue New radio value
+ * @param {ConfigValue} currentValue Current stored value
+ * @return {string}
+ */
+function preserveBooleanStorage(
+  newValue: string,
+  currentValue: ConfigValue
+): string {
+  if (currentValue === '1' || currentValue === '0') {
+    return newValue === 'true' ? '1' : newValue === 'false' ? '0' : newValue;
+  }
+  if (currentValue === 1 || currentValue === 0) {
+    return newValue === 'true' ? '1' : newValue === 'false' ? '0' : newValue;
+  }
+  return newValue;
 }
 
 /**
