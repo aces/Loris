@@ -30,20 +30,28 @@
 }
 
 .filter-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
+  overflow-y: scroll;
+  max-height: 300px;
 }
 
 .filter-list label {
   display: flex;
-  align-items: center;
-  margin-bottom: 0;
-  font-weight: normal;
+  padding-right: 10px;
+}
+
+.filter-list label input {
+  margin: 0;
+  margin-right: 4px;
+  margin-bottom: 4px;
 }
 
 .filter-list label span {
-  margin-left: 3px;
+  margin-left: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .issues-list {
