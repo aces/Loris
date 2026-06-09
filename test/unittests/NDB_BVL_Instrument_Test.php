@@ -1745,6 +1745,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->expectExceptionMessage("No data provided.");
         $this->_instrument->validate([]);
     }
+
     /**
      * Test that check validation method with received data.
      * Keys validation case - missing keys
@@ -1916,6 +1917,7 @@ class NDB_BVL_Instrument_Test extends TestCase
             array_map(
                 fn($field) => new class($field) {
                 public string $fieldname;
+
                 /**
                  * Constructor.
                  *
@@ -1927,6 +1929,7 @@ class NDB_BVL_Instrument_Test extends TestCase
                 {
                                 $this->fieldname = $field;
                 }
+
                 /**
                  * GetDataType.
                  *
