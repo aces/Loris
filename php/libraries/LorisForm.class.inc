@@ -833,8 +833,9 @@ class LorisForm
         if (empty($el['name'])) {
             return $el['label'];
         }
-        $val = $this->getValue($el['name']);
-        return $val;
+        $value = $this->getValue($el['name']);
+        $value = $value !== null ? htmlspecialchars($value) : null;
+        return $value;
     }
 
     /**
@@ -872,6 +873,7 @@ class LorisForm
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
         $value    = $this->getValue($el['name']);
+        $value    = $value !== null ? htmlspecialchars($value, ENT_QUOTES) : null;
         $format   = 'date';
 
         if (array_key_exists('options', $el) && isset($el['options']['format'])) {
@@ -898,11 +900,7 @@ class LorisForm
             . "onChange=\"this.setCustomValidity($required)\" "
             . (isset($el['required']) ? "required " : '')
             . (!empty($disabled) ? "disabled " : '')
-            . (
-            !empty($value)
-                ? ' value="' . $value . '" '
-                : ''
-            )
+            . (!empty($value) ? ' value="' . $value . '" ' : '')
             . ">";
 
         return $elmnt;
@@ -961,6 +959,7 @@ class LorisForm
             $readonly = 'readonly';
         }
         $value = $this->getValue($el['name']);
+        $value = $value !== null ? htmlspecialchars($value, ENT_QUOTES) : null;
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
             . (
                 isset($el['onchange']) && $el['onchange']
@@ -985,7 +984,7 @@ class LorisForm
 
             . (
                 (!empty($value) || $value === '0')
-                ? ' value="' . $this->getValue($el['name']) . '"'
+                ? ' value="' . $value . '"'
                 : ''
               )
             . $disabled
@@ -1146,14 +1145,15 @@ class LorisForm
     {
         $cls      = empty($el['class']) ? "" : "class=\"$el[class]\"";
         $disabled = '';
-        $val      = $this->getValue($el['name']);
+        $value    = $this->getValue($el['name']);
+        $value    = $value !== null ? htmlspecialchars($value, ENT_QUOTES) : null;
         if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"file\" $cls"
             . (
-                !empty($val)
-                ? ' value="' . $val . '"'
+                !empty($value)
+                ? ' value="' . $value . '"'
                 : ''
               )
             . $disabled
@@ -1186,11 +1186,9 @@ class LorisForm
             $dims .= " cols=\"$el[cols]\"";
         }
         $value = $this->getValue($el['name']);
+        $value = $value !== null ? htmlspecialchars($value) : null;
         return "<textarea name=\"$el[name]\" $cls $dims $disabled>"
-            . (
-                !empty($value)
-                ? $this->getValue($el['name']) : ''
-              )
+            . (!empty($value) ? $value : '')
             ."</textarea>";
     }
 
