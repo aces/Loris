@@ -97,13 +97,18 @@ preg_match('/\d+\.\d+\.\d+/', $mysqlVersionOutput, $matches);
 $mysqlVersion = $matches[0] ?? '0.0.0';
 
 // Determine whether --column-statistics=0 is needed
-$columnStatisticsFlag = version_compare($mysqlVersion, '8.0.0', '<=') ?
- '--column-statistics=0 ' : '';
+$columnStatisticsFlag = version_compare($mysqlVersion, '8.0.0', '>=') ?
+    '--column-statistics=0 ' :
+    '';
 
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
     $paths    = \NDB_Config::singleton()->getSetting('paths');
     $filename = $paths['base'] . "/raisinbread/RB_files/RB_$tableName.sql";
+    $setNamesSpecialChars = (
+            str_contains($tableName, 'I18n') || $tableName === 'language'
+        ) ? 'SET NAMES utf8mb4;\n'
+        : '';
     exec(
         'mysqldump -u '.escapeshellarg($adminUser).
         ' -p'.escapeshellarg($adminPassword).' -h '.escapeshellarg($dbHost).' '.
@@ -122,6 +127,7 @@ foreach ($tableNames as $tableName) {
         '\'1{/\/\*M!999999\\\\- enable the sandbox mode \*\//d}; '.
         's/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\n'.
         'TRUNCATE TABLE \1;\n'.
+        $setNamesSpecialChars.
         'LOCK TABLES \1/g\''.
         ' > '. $filename .
         '&& echo "SET FOREIGN_KEY_CHECKS=1;" >> '. $filename
