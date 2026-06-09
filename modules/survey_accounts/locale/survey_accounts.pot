@@ -1,0 +1,103 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Survey Accounts"
+msgstr ""
+
+msgid "Survey was added successfully."
+msgstr ""
+
+msgid "Click here to go back to view the list of survey's created"
+msgstr ""
+
+msgid "Survey List"
+msgstr ""
+
+msgid "Usage"
+msgstr ""
+
+msgid "Use this form to create a link for a study participant to use in order to directly enter a form/data into Loris."
+msgstr ""
+
+msgid "Add Survey"
+msgstr ""
+
+msgid "Create survey"
+msgstr ""
+
+msgid "Email survey"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Email to Study Participant"
+msgstr ""
+
+msgid "Optionally enter a customized message here. A default email will be sent if left blank."
+msgstr ""
+
+msgid "This is where your message goes."
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Instrument"
+msgstr ""
+
+msgid "URL"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "PSCID and DCCID do not match or candidate does not exist."
+msgstr ""
+
+msgid "does not exist for given candidate"
+msgstr ""
+
+msgid "Please choose an instrument."
+msgstr ""
+
+msgid "already exists for given candidate for visit"
+msgstr ""
+
+msgid "The email address is not valid."
+msgstr ""
+
+msgid "Please confirm the email address."
+msgstr ""
+
+msgid "The email addresses do not match."
+msgstr ""
+
+msgid "You must specify a valid Visit Label."
+msgstr ""
+
+msgid "You are not affiliated with this session's project"
+msgstr ""
+
+msgid "Email is not valid."
+msgstr ""
+
+msgid "Confirm Email address"
+msgstr ""

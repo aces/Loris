@@ -94,6 +94,7 @@ class Authentication extends \NDB_Page implements ETagCalculator
     {
         // Parse GET query params.
         $values = $request->getQueryParams();
+        $lang   = $request->getAttribute('lang');
 
         // Login Setup.
         $loginData = [];
@@ -113,12 +114,14 @@ class Authentication extends \NDB_Page implements ETagCalculator
                 'windowName' => $windowName,
             ];
         }
-        $loginData['description'] = html_entity_decode(
-            $config->getSetting('StudyDescription')
+        $loginData['title'] = $config->getMultilingualSetting($lang, 'title');
+
+        $loginData['description']   = html_entity_decode(
+            $config->getMultilingualSetting($lang, 'StudyDescription')
         );
-        $loginData['title']       = $config->getSetting('title');
-        $loginData['logo']        = $config->getSetting('studylogo');
-        $values['login']          = $loginData;
+        $loginData['logo']          = $config->getSetting('studylogo');
+        $loginData['partner_logos'] = $config->getSetting('partner_logos');
+        $values['login']            = $loginData;
 
         // Request Account Setup.
         $requestAccountData = [];
@@ -128,9 +131,12 @@ class Authentication extends \NDB_Page implements ETagCalculator
         if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
             $requestAccountData['captcha'] = $reCAPTCHAPublic; // captcha key.
         }
-        $requestAccountData['site']    = \Utility::getSiteList();
-        $requestAccountData['project'] = \Utility::getProjectList();
-        $values['requestAccount']      = $requestAccountData;
+        $requestAccountData['site']     = \Utility::getSiteList();
+        $requestAccountData['project']  = \Utility::getProjectList();
+        $requestAccountData['language'] = \Utility::getLanguageList();
+        $loris = $request->getAttribute("loris");
+        $requestAccountData['policy'] = $this->getHeaderPolicy($loris);
+        $values['requestAccount']     = $requestAccountData;
 
         if ($this->loris->hasModule('oidc')) {
             $DB        = $this->loris->getDatabaseConnection();
@@ -225,9 +231,9 @@ class Authentication extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return true;
     }
-
 }

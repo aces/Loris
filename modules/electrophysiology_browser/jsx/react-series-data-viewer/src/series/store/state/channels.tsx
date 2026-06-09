@@ -33,26 +33,26 @@ export const channelsReducer = (
     return state;
   }
   switch (action.type) {
-    case SET_CHUNKS: {
-      const i = state.findIndex(
-        (c) => c.index === action.payload.channelIndex
-      );
+  case SET_CHUNKS: {
+    const i = state.findIndex(
+      (c) => c.index === action.payload.channelIndex
+    );
 
-      if (i >= 0) {
-        return R.assocPath(
-          [i, 'traces', action.payload.traceIndex, 'chunks'],
-          action.payload.chunks,
-          state
-        );
-      }
-      break;
+    if (i >= 0) {
+      return R.assocPath(
+        [i, 'traces', action.payload.traceIndex, 'chunks'],
+        action.payload.chunks,
+        state
+      );
     }
-    case SET_CHANNELS: {
-      return action.payload;
-    }
-    default: {
-      return state;
-    }
+    break;
+  }
+  case SET_CHANNELS: {
+    return action.payload;
+  }
+  default: {
+    return state;
+  }
   }
 };
 
@@ -64,19 +64,19 @@ export const channelsReducer = (
  * @returns {Function} - A Fn that returns channelsCount empty channels
  */
 export const emptyChannels = (channelsCount: number, tracesCount: number) => {
- /**
-  * makeTrace
-  *
-  * @returns {Trace} - An empty trace
-  */
+  /**
+   * makeTrace
+   *
+   * @returns {Trace} - An empty trace
+   */
   const makeTrace = () => ({chunks: [], type: 'line'});
 
- /**
-  * makeChannel
-  *
-  * @param {number} index - The channel index
-  * @returns {Channel} - An empty channel
-  */
+  /**
+   * makeChannel
+   *
+   * @param {number} index - The channel index
+   * @returns {Channel} - An empty channel
+   */
   const makeChannel = (index) => ({
     index,
     traces: R.range(0, tracesCount).map(makeTrace),

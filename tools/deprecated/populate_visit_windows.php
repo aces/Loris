@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script populates the Visit_Windows table based on the config.xml.
  * This should usually be run on a one time basis, and then the Visit_Windows
@@ -12,7 +13,7 @@
  * utility function in PHP, so if the table is not up to date some drop downs
  * may not appear correctly.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

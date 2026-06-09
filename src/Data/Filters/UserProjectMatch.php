@@ -1,16 +1,5 @@
-<?php
-/**
- * This file provides an implementation of the UserProjectMatch filter.
- *
- * PHP Version 7
- *
- * @category   Data
- * @package    Main
- * @subpackage Data
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
- */
+<?php declare(strict_types=1);
+
 namespace LORIS\Data\Filters;
 
 /**
@@ -21,15 +10,23 @@ namespace LORIS\Data\Filters;
  * filtered out unless the User is a member of at least one project that the resource
  * DataInstance is a member of.
  *
- * @category   Data
- * @package    Main
- * @subpackage Data
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris/
  */
 class UserProjectMatch implements \LORIS\Data\Filter
 {
+
+    /**
+     * Constructor
+     *
+     * @param ?bool     $defaultReturn The default return value to return instead of
+     *                                throwing an exception when an exception is
+     *                                undesirable.
+     *
+     */
+    public function __construct(protected ?bool $defaultReturn = null)
+    {
+    }
+
     /**
      * Implements the \LORIS\Data\Filter interface
      *
@@ -43,7 +40,7 @@ class UserProjectMatch implements \LORIS\Data\Filter
     {
         // phan only understands method_exists on simple variables, not
         // Assigning to a variable is the a workaround
-        // for false positive 'getCenterIDs doesn't exist errors suggested
+        // for false positive 'getProjectIDs doesn't exist errors suggested
         // in https://github.com/phan/phan/issues/2628
         $res = $resource;
         '@phan-var object $res';
@@ -68,10 +65,17 @@ class UserProjectMatch implements \LORIS\Data\Filter
             // We don't know if the resource thought a null ProjectID
             // should mean "no one can access it" or "anyone can access
             // it", so throw an exception.
-            throw new \LorisException("getProjectID on resource returned null");
+            if ($this->defaultReturn === null) {
+                throw new \LorisException("getProjectID on resource returned null");
+            }
+            return $this->defaultReturn;
         }
-        throw new \LorisException(
-            "Can not implement UserProjectMatch on a resource type that has no projects."
-        );
+        if ($this->defaultReturn === null) {
+            throw new \LorisException(
+                "Can not implement UserProjectMatch on a ".
+                "resource type that has no projects."
+            );
+        }
+        return $this->defaultReturn;
     }
 }

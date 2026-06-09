@@ -1,11 +1,12 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is written for a one time use only to migrate the
  * 'Data_entry_completion_status' field from the instrument table /
  * Data column of the flag table to it's own column in the flag table
  * called "Required_elements_completed".
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

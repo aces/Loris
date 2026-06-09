@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
+
 /**
  * The modules.php script a database and automatically adds any new modules from
  * either the project/modules or loris/modules directory and maintains the
@@ -14,7 +15,7 @@
  * If the -n flag is provided, it will not actually add/delete from the
  * table, but only tell you what it would otherwise do.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Data
  * @package    Main
@@ -57,7 +58,13 @@ if (isset($flags['remove'])) {
             if ($dryrun) {
                 continue;
             }
-            $DB->delete("modules", [ 'Name' => $module]);
+        }
+        try {
+            // Attempt to delete the module
+            $DB->delete("modules", ['Name' => $module]);
+        } catch (\Exception $e) {
+            // Handle the delete failure
+            print "Failed to delete $module: " . $e->getMessage() . "\n";
         }
     }
 }

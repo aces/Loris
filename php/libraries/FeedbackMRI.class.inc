@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains a wrapper around imaging comments for a session or File.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Imaging
  * @package  Imaging
@@ -144,24 +145,27 @@ class FeedbackMRI
         $DB = \NDB_Factory::singleton()->database();
 
         // start building the query
-        $query = "SELECT CommentTypeID, PredefinedCommentID, Comment
-                      FROM feedback_mri_comments
-                  WHERE ".$this->_buildWhere();
 
-        $result = $DB->pselect($query, []);
+        $query = "SELECT CommentTypeID, PredefinedCommentID, Comment
+                      FROM feedback_mri_comments";
+
+        $query .= match ($this->objectType) {
+            'volume' => " WHERE FileID=:FileID",
+            'visit'  => " WHERE SessionID=:SessionID",
+        };
+
+        $result = $DB->pselect($query, $this->_buildWhereAssoc());
 
         $comments = [];
         // build the output array
-        if (is_array($result)) {
-            foreach ($result as $row) {
-                $CTID         = $row['CommentTypeID'];
-                $PredefinedID = $row['PredefinedCommentID'];
+        foreach ($result as $row) {
+            $CTID         = $row['CommentTypeID'];
+            $PredefinedID = $row['PredefinedCommentID'];
 
-                if (empty($row['Comment'])) {
-                    $comments[$CTID]['predefined'][$PredefinedID] = true;
-                } else {
-                    $comments[$CTID]['text'] = stripslashes($row['Comment']);
-                }
+            if (empty($row['Comment'])) {
+                $comments[$CTID]['predefined'][$PredefinedID] = true;
+            } else {
+                $comments[$CTID]['text'] = stripslashes($row['Comment']);
             }
         }
 
@@ -178,7 +182,7 @@ class FeedbackMRI
      * @return array A two-dimensional array with key (int) PredefinedCommentID
      *               and one-element array ('Comment'=> string CommentName)
      */
-    function getAllPredefinedComments(int $commentTypeID): array
+    public static function getAllPredefinedComments(int $commentTypeID): array
     {
         // create DB object
         $DB = \NDB_Factory::singleton()->database();
@@ -192,13 +196,12 @@ class FeedbackMRI
 
         // build the output array
         $comments = [];
-        if (is_array($result)) {
-            foreach ($result as $row) {
-                $PredefinedID       = $row['PredefinedCommentID'];
-                $preDefinedComments = [];
-                $preDefinedComments['Comment'] = stripslashes($row['Comment']);
-                $comments[$PredefinedID]       = $preDefinedComments;
-            }
+        foreach ($result as $row) {
+            $PredefinedID       = $row['PredefinedCommentID'];
+            $preDefinedComments = [];
+            $preDefinedComments['Comment']     = stripslashes($row['Comment']);
+            $preDefinedComments['FullComment'] = $row['Comment'];
+            $comments[$PredefinedID]           = $preDefinedComments;
         }
 
         // return the output array
@@ -326,6 +329,26 @@ class FeedbackMRI
      */
     function getAllCommentTypes(): array
     {
+        return self::getAllCommentTypesForObjectType($this->objectType);
+    }
+
+    /**
+     * Gets the list of all comment types for a given object type.
+     *
+     * @param string $objectType Type of object (i.e value of column ComentType
+     *                           in table feedback_mri_comment_types).
+     *
+     * @return array A two-dimensional array of ints (CommentTypeID) and
+     *               three-element arrays ('name'=>string CommentName,
+     *               'field'=>string name of column in mri table for status,
+     *               'values'=>array of possible enum values for field)
+     */
+    public static function getAllCommentTypesForObjectType(string $objectType): array
+    {
+        if ($objectType != 'volume' && $objectType != 'visit') {
+            throw new \LorisException("Invalid object type $objectType");
+        }
+
         // create DB object
         $DB = \NDB_Factory::singleton()->database();
 
@@ -334,46 +357,45 @@ class FeedbackMRI
                     FROM feedback_mri_comment_types
                   WHERE CommentType=:CT";
 
-        $result = $DB->pselect($query, ['CT' => $this->objectType]);
+        $result = $DB->pselect($query, ['CT' => $objectType]);
 
         // build the output array and keep overall section at the end of the array
         $commentNames = [];
         $overallName  = [];
-        $overallType  = [];
-        if (is_array($result)) {
-            foreach ($result as $row) {
-                $CommentName = $row['CommentName'];
-                $CTID        = $row['CommentTypeID'];
-                $statusField = [];
-                // deal with CommentStatusField
-                if (!empty($row['CommentStatusField'])) {
-                    $statusField = unserialize($row['CommentStatusField']);
-                }
-
-                // if CommentName is overall, don't add them yet to
-                // commentNames array we want them only at the end
-                if ($CommentName == "Overall") {
-                    $overallType = $CTID;
-                    $overallName = [
-                        'name'   => stripslashes($CommentName),
-                        'field'  => $statusField['field'] ?? 'overall',
-                        'values' => $statusField['values'] ?? '',
-                    ];
-                } else {
-                    // add a row to the output array
-                    $commentNames[$CTID] = [
-                        'name'   => stripslashes($CommentName) ?? '',
-                        'field'  => $statusField['field'] ?? '',
-                        'values' => $statusField['values'] ?? '',
-                    ];
-                }
-
-                unset($statusField);
+        $overallType  = null;
+        foreach ($result as $row) {
+            $CommentName = $row['CommentName'];
+            $CTID        = $row['CommentTypeID'];
+            $statusField = [];
+            // deal with CommentStatusField
+            if (!empty($row['CommentStatusField'])) {
+                $statusField = unserialize($row['CommentStatusField']);
             }
-            // add overall row to the end of the output array
-            if ($overallType !== '' && !empty($overallName)) {
-                $commentNames[$overallType] = $overallName;
+
+            // if CommentName is overall, don't add them yet to
+            // commentNames array we want them only at the end
+            if ($CommentName == "Overall") {
+                $overallType = $CTID;
+                $overallName = [
+                    'name'   => stripslashes($CommentName),
+                    'field'  => $statusField['field'] ?? 'overall',
+                    'values' => $statusField['values'] ?? '',
+                ];
+            } else {
+                // add a row to the output array
+                $commentNames[$CTID] = [
+                    'name'   => stripslashes($CommentName) ?? '',
+                    'field'  => $statusField['field'] ?? '',
+                    'values' => $statusField['values'] ?? '',
+                ];
             }
+
+            unset($statusField);
+        }
+
+        // add overall row to the end of the output array
+        if (!is_null($overallType) && !empty($overallName)) {
+            $commentNames[$overallType] = $overallName;
         }
 
         // return the output array
@@ -460,25 +482,6 @@ class FeedbackMRI
     }
 
     /**
-     * Constructs an appropriate where expression to limit selects to the
-     * current object
-     *
-     * @return string where string to limit selects to current object
-     * @access private
-     */
-    function _buildWhere(): string
-    {
-        // build the where depending on object and subject type
-        if ($this->objectType == 'volume') {
-            // per-volume
-            return "FileID='$this->fileID'";
-        } else {
-            // per-visit
-            return "SessionID='$this->sessionID'";
-        }
-    }
-
-    /**
      * Constructs an associative array which can be used as a where
      * argument for the Database class to limit queries to the current
      * object
@@ -498,6 +501,5 @@ class FeedbackMRI
         }
         return $where;
     }
-
 }
 

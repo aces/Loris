@@ -5,17 +5,17 @@ type formElement = {
     type: string
 };
 type formElementProps = {
-    name: string
-    id: string
-    method: 'POST' | 'GET',
-    action: string
-    class: string
-    columns: number
-    formElements: {[elementName: string]: formElement}
+    name?: string
+    id?: string
+    method?: 'POST' | 'GET' = 'POST',
+    action?: string = '',
+    class?: string
+    columns?: number
+    formElements?: {[elementName: string]: formElement}
     onSubmit: (FormEvent) => void
-    onUserInput : (name: string, value: string) => void
+    onUserInput?: (name: string, value: string) => void
     children: ReactNode
-    fieUpload: boolean
+    fileUpload?: boolean = false
 };
 /**
  * FormElement class. See Form.js
@@ -108,8 +108,7 @@ type selectElementProps = {
     required?: boolean
     emptyOption?: boolean
     autoSelect?: boolean
-    hasError?: boolean
-    errorMessage?: boolean
+    errorMessage?: string
     onUserInput: (name: string, value: any) => void
     noMargins?: boolean
     placeholder?: string
@@ -306,7 +305,6 @@ type fileElementProps = {
     disabled?: boolean
     required?: boolean
     allowMultiple?: boolean
-    hasError?: boolean
     errorMessage?: string
     onUserInput: (name: string, value: any) => void
 };
@@ -397,6 +395,63 @@ export class NumericElement {
     forceUpdate(): void
 }
 
+type numericRangeValue = {
+    min?: string
+    max?: string
+};
+
+type numericRangeElementProps = {
+    name: string
+    min?: number
+    max?: number
+    step?: string
+    label?: string
+    value?: numericRangeValue
+    id?: string
+    disabled?: boolean
+    required?: boolean
+    onUserInput: (name: string, value: numericRangeValue) => void
+    labelPlacementTop?: boolean
+    minLabel?: string
+    maxLabel?: string
+};
+
+/**
+ * NumericRangeElement class. See Form.js
+ */
+export class NumericRangeElement {
+    props: numericRangeElementProps
+    state: any
+    context: object
+    refs: {[key: string]: ReactInstance}
+
+    /**
+     * Construct a NumericRangeElement
+     *
+     * @param {numericRangeElementProps} props - React props
+     */
+    constructor(props: numericRangeElementProps)
+
+    /**
+     * React lifecycle method
+     *
+     * @returns {ReactNode} - the element
+     */
+    render(): ReactNode
+
+    /**
+     * React lifecycle method
+     *
+     * @param {object} newstate - the state to override
+     */
+    setState(newstate: object): void
+
+    /**
+     * React lifecycle method.
+     */
+    forceUpdate(): void
+}
+
 type dateElementProps = {
     name: string
     label?: string
@@ -407,7 +462,6 @@ type dateElementProps = {
     dateFormat?: string
     disabled?: boolean
     required?: boolean
-    hasError?: boolean
     errorMessage?: string
     onUserInput: (name: string, value: any) => void
 };
@@ -595,7 +649,7 @@ type radioElementProps = {
     required?: boolean
     vertical?: boolean
     checked: boolean
-    errorMessage?: boolean
+    errorMessage?: string
     elementClass?: boolean
     onUserInput: (name: string, value: any) => void
 }
@@ -650,6 +704,7 @@ export default {
   TimeElement,
   DateTimeElement,
   NumericElement,
+  NumericRangeElement,
   FileElement,
   StaticElement,
   HeaderElement,

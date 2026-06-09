@@ -77,7 +77,10 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         // Remove all instruments from this CandID.
         $SessionID = $this->DB->pselectOne(
-            "SELECT ID FROM session WHERE Visit_label=:VL AND CandID=:Candidate",
+            "SELECT s.ID
+            FROM session s
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE Visit_label=:VL AND CandID=:Candidate",
             [
                 'VL' => $this->visitTest,
                 'Candidate' => $this->candidTest

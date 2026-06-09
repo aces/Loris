@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\imaging_browser;
 use \LORIS\candidate_profile\CandidateWidget;
 
@@ -32,11 +33,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Imaging";
+        return \LORIS\GUI\MenuCategory::singleton("Imaging");
     }
 
     /**
@@ -46,7 +47,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Imaging Browser";
+        return dgettext("imaging_browser", "Imaging Browser");
     }
 
     /**
@@ -69,12 +70,16 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
-                    "New and pending imaging session",
+                    new \LORIS\GUI\LocalizableString(
+                        "imaging_browser",
+                        "New and pending imaging session",
+                        "New and pending imaging sessions",
+                    ),
                     $DB,
                     "SELECT COUNT(DISTINCT s.ID)
                      FROM files f
                          LEFT JOIN session s ON (s.ID=f.SessionID)
-                         LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                         LEFT JOIN candidate c ON (s.CandidateID=c.ID)
                      WHERE (MRIQCStatus='' OR MRIQCPending='Y')
                          AND s.Active='Y' AND c.Active='Y'
                          AND s.CenterID <> 1",
@@ -93,30 +98,58 @@ class Module extends \Module
 
             $scansummary = $DB->pselect(
                 "SELECT s.Visit_label,
-                    mst.Scan_type,
+                    mst.MriScanTypeName as ScanType,
                     COALESCE(fqc.QCStatus, '') as QC,
                     COUNT(*) as nfiles
-                 FROM files f JOIN session s ON (s.ID=f.sessionID)
-                    JOIN mri_scan_type mst ON (f.AcquisitionProtocolID=mst.ID)
+                FROM files f JOIN session s ON (s.ID=f.sessionID)
+                    JOIN candidate c ON c.ID=s.CandidateID
+                    JOIN mri_scan_type mst ON (f.MriScanTypeID=mst.MriScanTypeID)
                     LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
-                WHERE CandID=:cid AND f.OutputType='native'
-                GROUP BY s.Visit_label, mst.Scan_type, QC",
+                WHERE c.CandID=:cid AND f.OutputType='native'
+                GROUP BY s.Visit_label, mst.MriScanTypeName, QC",
                 ['cid' => $candidate->getCandID()],
             );
-            if (empty($scansummary)) {
+
+            if (count($scansummary) === 0) {
                 return [];
-            }
-            foreach ($scansummary as &$summary) {
-                $summary['nfiles'] = (int )$summary['nfiles'];
             }
             return [
                 new CandidateWidget(
-                    "Imaging QC Summary",
+                    dgettext("imaging_browser", "Imaging QC Summary"),
                     $baseURL. "/imaging_browser/js/CandidateScanQCSummaryWidget.js",
                     "lorisjs.imaging_browser.CandidateScanQCSummaryWidget.default",
-                    [ 'Files' => $scansummary],
+                    [ 'Files' => iterator_to_array($scansummary)],
                     2,
                     1,
+                )
+            ];
+        case 'study-progression':
+            $DB   = $factory->database();
+            $data = $DB->pselectWithIndexKey(
+                "SELECT 
+                    p.ProjectID,
+                    p.Name AS ProjectName,
+                    COUNT(s.ID) AS count,
+                    '".$baseURL."/imaging_browser' as url
+                FROM session s
+                JOIN Project p ON p.ProjectID = s.ProjectID
+                JOIN mri_upload mu ON mu.SessionID = s.ID
+                WHERE s.Active <> 'N' 
+                AND s.CenterID <> 1
+                GROUP BY p.Name",
+                [],
+                'ProjectID'
+            );
+            return [
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        "imaging_browser",
+                        "Imaging Session",
+                        "Imaging Sessions"
+                    ),
+                    $data,
+                    "",
+                    'rgb(235, 255, 254)',
                 )
             ];
         }
@@ -126,10 +159,10 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return \LORIS\Data\Query\QueryEngine
+     * @return \LORIS\Data\Query\QueryEngine[]
      */
-    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    public function getQueryEngines() : iterable
     {
-        return new QueryEngine($this->loris);
+        return [new QueryEngine($this->loris)];
     }
 }

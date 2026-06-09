@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Wrapper around CouchDB MRI functions
  *
@@ -169,7 +170,7 @@ class CouchDBMRIImporter
         }
 
         $Query .= " FROM session s"
-                . " JOIN candidate c USING (CandID)"
+                . " JOIN candidate c ON (c.ID = s.CandidateID)"
                 . " LEFT JOIN feedback_mri_comments fmric"
                 . " ON (fmric.SessionID=s.ID)"
                 . " LEFT JOIN feedback_mri_comment_types fmct"
@@ -194,10 +195,10 @@ class CouchDBMRIImporter
     {
         return "SELECT $whatToSelect "
              . 'FROM files f '
-             . 'LEFT JOIN mri_scan_type msc ON (f.AcquisitionProtocolID=msc.ID) '
+             . 'LEFT JOIN mri_scan_type mst USING (MriScanTypeID) '
              . 'LEFT JOIN files_qcstatus fqs USING (FileID) '
              . 'WHERE f.SessionID=s.ID '
-             . "AND msc.Scan_type='$scanType' "
+             . "AND mst.MriScanTypeName='$scanType' "
              . 'AND fqs.selected=\'true\'';
     }
 
@@ -235,7 +236,7 @@ class CouchDBMRIImporter
         );
         $header['FileInsertDate_'.$type]      = date(
             'Y-m-d',
-            $FileObj->getParameter('InsertTime')
+            intval($FileObj->getParameter('InsertTime'))
         );
         $header['SeriesDescription_'.$type]   = $FileObj->getParameter($ser_desc);
         $header['SeriesNumber_'.$type]        = $FileObj->getParameter($ser_num);
@@ -248,11 +249,11 @@ class CouchDBMRIImporter
             2
         );
         $header['SliceThickness_'.$type]      = number_format(
-            $FileObj->getParameter('slice_thickness'),
+            floatval($FileObj->getParameter('slice_thickness')) ?? 0,
             2
         );
         $header['Time_'.$type]          = number_format(
-            $FileObj->getParameter('time'),
+            $FileObj->getParameter('time') ?? 0,
             2
         );
         $header['Comment_'.$type]       = $FileObj->getParameter('Comment');
@@ -280,13 +281,21 @@ class CouchDBMRIImporter
      * @param MRIFile $file file object
      * @param string  $type type of the date
      *
-     * @return date if exists, if not an empty string
+     * @return string if exists, if not an empty string
      */
     function _getDate($file, $type)
     {
         $date = $file->getParameter($type);
         if (preg_match("/(\d{4})-?(\d{2})-?(\d{2})/", $date, $array)) {
-            return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
+            $date = mktime(
+                12,
+                0,
+                0,
+                intval($array[2]),
+                intval($array[3]),
+                intval($array[1])
+            );
+            return date('Y-m-d', $date);
         } else {
             return "";
         }
@@ -321,7 +330,7 @@ class CouchDBMRIImporter
     {
         $parameterName = 'processing:' . $type . '_rejected';
         $param         = $file->getParameter($parameterName);
-        if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $param, $array)) {
+        if (preg_match("/(Directions)([^\(]+)(\(\d+\))/", $param ?? '', $array)) {
             $dirList = preg_split('/\,/', $array[2]);
             if (count($dirList) > 1) {
                 sort($dirList);
@@ -453,13 +462,12 @@ class CouchDBMRIImporter
      */
     public function getScanTypes()
     {
-
         $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID
-             FROM mri_scan_type msc
-             JOIN files f ON msc.ID= f.AcquisitionProtocolID
-             JOIN files_qcstatus fqc ON f.FileID=fqc.FileID
-             ORDER BY f.AcquisitionProtocolID",
+            "SELECT DISTINCT MriScanTypeID, MriScanTypeName AS ScanType
+             FROM mri_scan_type
+             JOIN files USING (MriScanTypeID)
+             JOIN files_qcstatus fqc USING (FileID)
+             ORDER BY MriScanTypeID",
             []
         );
 
@@ -477,16 +485,17 @@ class CouchDBMRIImporter
     {
         $query         = $this->_generateCandidatesQuery($ScanTypes);
         $CandidateData = $this->SQLDB->pselect($query, []);
-        foreach ($CandidateData as &$row) {
+
+        foreach ($CandidateData as $row) {
             foreach ($ScanTypes as $scanType) {
-                $scan_type = $scanType['ScanType'];
+                $scan_type = $scanType['MriScanTypeName'];
                 if (!empty($row['Selected_' . $scan_type])) {
                     $fileID = $this->SQLDB->pselectOne(
                         "SELECT FileID FROM files WHERE BINARY File=:fname",
                         ['fname' => $row['Selected_' . $scan_type]]
                     );
                     if (!empty($fileID)) {
-                        $FileObj            = new MRIFile($fileID);
+                        $FileObj            = new MRIFile(intval($fileID));
                         $mri_header_results = $this->_addMRIHeaderInfo(
                             $FileObj,
                             $scan_type
@@ -500,8 +509,8 @@ class CouchDBMRIImporter
                         // instantiate feedback mri object
 
                         $mri_feedback     = new FeedbackMRI(
-                            $fileID,
-                            new \SessionID($row['SessionID'])
+                            intval($fileID),
+                            new \SessionID(strval($row['SessionID']))
                         );
                         $current_feedback = $mri_feedback->getComments();
                         $mri_qc_results   = $this->_addMRIFeedback(

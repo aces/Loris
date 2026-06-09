@@ -1,4 +1,4 @@
-Subject: Issue Assigned - # {$issueID} [{$study}]
+Subject: Issue Assigned - #{$issueID} [{$study}]
 {$firstname},
 
 The issue "{$title}" that is assigned to you has been modified.

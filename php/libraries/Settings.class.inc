@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Provides an interface to LORIS configuration settings
  * Wrapper/Proxy to LORIS Config (NDB_Config)
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -78,6 +79,22 @@ class Settings
     public function isSandbox(): bool
     {
         return $this->_getBooleanSetting('sandbox');
+    }
+
+    /**
+     * Get the project description which is displayed on the dashboard
+     * for a user.
+     *
+     * @param \User $user The user seeing the description.
+     *
+     * @return string
+     */
+    public function projectDescription(\User $user): string
+    {
+        return $this->_config->getMultilingualSetting(
+            $user->getLanguageCode(),
+            "projectDescription"
+        );
     }
 
     /**
@@ -166,7 +183,7 @@ class Settings
         $configVal = $this->_config->getSetting($settingName);
 
         if (is_bool($configVal) || is_numeric($configVal)) {
-            return (boolean)$configVal;
+            return (bool)$configVal;
         }
 
         if (is_string($configVal) && strtolower($configVal) == "true") {
@@ -188,5 +205,4 @@ class Settings
             'useConsent'
         );
     }
-
 }

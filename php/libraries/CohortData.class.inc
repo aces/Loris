@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a class which encapsulates the concept of a "Cohort"
  * in LORIS.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The Installer class handles all the logic used by the installdb.php
  * script under htdocs. It's put in a class for testability (even if there
  * aren't currently any tests for it.) and to keep installdb.php neat.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Installer
  * @package  Installer
@@ -33,7 +34,8 @@ class Installer
         '02-Permission.sql',
         '03-ConfigTables.sql',
         '04-Help.sql',
-        '05-ElectrophysiologyTables.sql'
+        '05-ElectrophysiologyTables.sql',
+        '06-BiobankTables.sql'
     ];
 
     /**
@@ -284,6 +286,7 @@ class Installer
         }
 
     }
+
     /**
      * Updates the basic config files required by LORIS.
      *
@@ -579,7 +582,12 @@ class Installer
         // Value cleanup
         $escapedValues = array_map(
             function ($val) {
-                return htmlspecialchars($val, ENT_XML1, 'ISO-8859-1');
+                return htmlspecialchars(
+                    $val,
+                    ENT_XML1 | ENT_SUBSTITUTE | ENT_HTML5,
+                    'ISO-8859-1',
+                    false
+                );
             },
             $values
         );

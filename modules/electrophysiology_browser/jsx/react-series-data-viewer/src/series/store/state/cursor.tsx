@@ -34,14 +34,14 @@ export const cursorReducer: Reducer = (
     return state;
   }
   switch (action.type) {
-    case SET_CURSOR: {
-      return R.assoc('cursorPosition', action.payload, state);
-    }
-    case SET_HOVERED_CHANNELS: {
-      return R.assoc('hoveredChannels', action.payload, state);
-    }
-    default: {
-      return state;
-    }
+  case SET_CURSOR: {
+    return R.assoc('cursorPosition', action.payload, state);
+  }
+  case SET_HOVERED_CHANNELS: {
+    return R.assoc('hoveredChannels', action.payload, state);
+  }
+  default: {
+    return state;
+  }
   }
 };

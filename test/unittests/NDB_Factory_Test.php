@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * Unit test for NDB_Factory class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -236,14 +237,32 @@ class NDB_Factory_Test extends TestCase
     function testCandidate()
     {
         $mockdb = $this->getMockBuilder("\Database")->getMock();
-        $mockdb->expects($this->any())
+        $mockdb
             ->method('pselectRow')
-            ->willReturn(['DCCID'=>'300001', 'RegistrationProjectID' => '1']);
+            ->willReturn(['DCCID'=>'300001', 'RegistrationProjectID' => 1]);
 
-        '@phan-var \Database $mockdb';
-
-        $this->_factory->setDatabase($mockdb);
-
+        // Mock call for Candidate->select()
+        $resultMock = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $resultMock->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                        [
+                            "ID"        => 97,
+                            "ProjectID" => 1,
+                            "CenterID"  => 2,
+                        ],
+                        [
+                            "ID"        => 98,
+                            "ProjectID" => 1,
+                            "CenterID"  => 2,
+                        ]
+                    ]
+                )
+            );
+        $mockdb->method('pselect')->willReturn($resultMock);
         '@phan-var \Database $mockdb';
 
         $this->_factory->setDatabase($mockdb);
@@ -267,9 +286,15 @@ class NDB_Factory_Test extends TestCase
         $mockdb     = $this->getMockBuilder("\Database")->getMock();
         $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
-        $mockdb->expects($this->any())
+        $mockdb
             ->method('pselectRow')
-            ->willReturn(['SessionID' => '1', 'ProjectID' => '1']);
+            ->willReturn(
+                [
+                    'SessionID' => '1',
+                    'ProjectID' => 1,
+                    'CandID'    => 123456
+                ]
+            );
 
         '@phan-var \NDB_Config $mockconfig';
         '@phan-var \Database $mockdb';

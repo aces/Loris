@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -15,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -38,10 +39,12 @@ class Stats_Behavioural extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }
+
     /**
      * InCenter function
      *
@@ -121,7 +124,9 @@ class Stats_Behavioural extends \NDB_Form
         }
 
         if ($_REQUEST['BehaviouralProject'] ?? '') {
-            $currentProject = new \ProjectID($_REQUEST['BehaviouralProject']);
+            $currentProject = \ProjectID::singleton(
+                intval($_REQUEST['BehaviouralProject'])
+            );
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
@@ -130,7 +135,12 @@ class Stats_Behavioural extends \NDB_Form
             $Param_Project ='AND (s.ProjectID IS NULL
                                OR c.RegistrationProjectID=:pid)';
             $this->projectParams['pid']
-                = htmlspecialchars($_REQUEST['BehaviouralProject']);
+                = htmlspecialchars(
+                    $_REQUEST['BehaviouralProject'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                );
         } elseif (!empty($userProjectsIDs)) {
             $currentProject = null;
             $paramProjects  = [];
@@ -158,7 +168,7 @@ class Stats_Behavioural extends \NDB_Form
             }
             $Visits = \Utility::getVisitList($currentProject);
         } else {
-            $Visits = \Utility::getVisitList();
+            $Visits = $user->getVisits();
         }
 
         $this->tpl_data['Visits'] = $Visits ?? '';
@@ -218,8 +228,8 @@ class Stats_Behavioural extends \NDB_Form
             "SELECT s.CenterID,
                     f.Data_Entry as Data_Entry,
                     s.visit_label as VLabel,
-                    COUNT(s.CandID) as val
-                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                    COUNT(s.CandidateID) as val
+                FROM session s JOIN candidate c ON (s.CandidateID=c.ID)
                     JOIN flag f ON (f.SessionID=s.ID)
                 WHERE
                     s.Active='Y' AND c.Active='Y'
@@ -301,9 +311,9 @@ class Stats_Behavioural extends \NDB_Form
             "SELECT s.CenterID,
                     f.Data_Entry as Data_Entry,
                     s.visit_label as VLabel,
-                    COUNT(s.CandID) as val
+                    COUNT(s.CandidateID) as val
                 FROM session as s
-                    JOIN candidate as c ON(s.CandID=c.CandID)
+                    JOIN candidate as c ON(s.CandidateID=c.ID)
                     JOIN flag as f ON(f.SessionID=s.ID)
                 WHERE s.Active = 'Y'
                     AND s.Current_stage <> 'Recycling Bin'

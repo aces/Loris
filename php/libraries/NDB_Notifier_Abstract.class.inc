@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
+
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Notification
  * @package  Notification
@@ -241,6 +242,9 @@ abstract class NDB_Notifier_Abstract
                     JOIN user_psc_rel upsc ON (u.ID=upsc.UserID)
                   WHERE nm.module_name=:nm
                     AND nm.operation_type=:ot
+                    AND u.Pending_approval = 'N'
+                    AND u.Active = 'Y'
+                    AND u.active_to < NOW()
                     ";
         $params = [
             "nm" => $this->module,
@@ -299,8 +303,8 @@ abstract class NDB_Notifier_Abstract
             ]
         );
 
-        $reqPerm  = array_column($necessary, 'perm_id');
-        $userPerm = array_column($current, 'permID');
+        $reqPerm  = array_column(iterator_to_array($necessary), 'perm_id');
+        $userPerm = array_column(iterator_to_array($current), 'permID');
 
         $diff = array_diff($reqPerm, $userPerm);
 
@@ -441,7 +445,6 @@ abstract class NDB_Notifier_Abstract
         }
         return $n_services;
     }
-
 
     /**
      * Static Getter for list of services for the study

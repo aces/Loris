@@ -12,13 +12,19 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
-    SelectElement,
-    DateElement,
-    TextboxElement,
-    TextareaElement,
-    NumericElement,
-    StaticElement,
+  SelectElement,
+  DateElement,
+  TextboxElement,
+  TextareaElement,
+  NumericElement,
+  StaticElement,
 } from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/instrument_builder.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/instrument_builder.json';
+import frStrings from '../locale/fr/LC_MESSAGES/instrument_builder.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/instrument_builder.json';
 
 /**
  * Note: This is a wrapper for Form.js (Only used in instrument builder)
@@ -46,56 +52,56 @@ class LorisElement extends Component {
     let element = this.props.element;
     let elementHtml = '';
     switch (element.Type) {
-      case 'header':
-        elementHtml = <h2>{element.Description}</h2>;
-        break;
-      case 'label':
-        elementHtml = <p>{element.Description}</p>;
-        break;
-      case 'line':
-        elementHtml = <div></div>;
-        break;
-      case 'score':
-        elementHtml = <StaticElement text={0} label={element.Description} />;
+    case 'header':
+      elementHtml = <h2>{element.Description}</h2>;
+      break;
+    case 'label':
+      elementHtml = <p>{element.Description}</p>;
+      break;
+    case 'line':
+      elementHtml = <div></div>;
+      break;
+    case 'score':
+      elementHtml = <StaticElement text={0} label={element.Description} />;
 
-        break;
-      case 'text':
-        if (element.Options.Type === 'small') {
-          elementHtml = <TextboxElement label={element.Description}/>;
-        } else {
-          elementHtml = <TextareaElement label={element.Description}/>;
-        }
-        break;
-      case 'select':
-        if (element.Options.AllowMultiple) {
-          elementHtml = <SelectElement label={element.Description}
-                                       options={element.Options.Values}
-                                       emptyOption={false}
-                                       sortByValue={false}
-                                       multiple={true}/>;
-        } else {
-          elementHtml = <SelectElement label={element.Description}
-                                       emptyOption={false}
-                                       sortByValue={false}
-                                       options={element.Options.Values}/>;
-        }
-        break;
-      case 'date':
-        elementHtml = <DateElement
-          label={element.Description}
-          minYear={element.Options.MinYear}
-          maxYear={element.Options.MaxYear}
-        />;
-        break;
-      case 'numeric':
-        elementHtml = <NumericElement
-          label={element.Description}
-          min={element.Options.MinValue}
-          max={element.Options.MaxValue}
-        />;
-        break;
-      default:
-        break;
+      break;
+    case 'text':
+      if (element.Options.Type === 'small') {
+        elementHtml = <TextboxElement label={element.Description} />;
+      } else {
+        elementHtml = <TextareaElement label={element.Description} />;
+      }
+      break;
+    case 'select':
+      if (element.Options.AllowMultiple) {
+        elementHtml = <SelectElement label={element.Description}
+          options={element.Options.Values}
+          emptyOption={false}
+          sortByValue={false}
+          multiple={true} />;
+      } else {
+        elementHtml = <SelectElement label={element.Description}
+          emptyOption={false}
+          sortByValue={false}
+          options={element.Options.Values} />;
+      }
+      break;
+    case 'date':
+      elementHtml = <DateElement
+        label={element.Description}
+        minYear={element.Options.MinYear}
+        maxYear={element.Options.MaxYear}
+      />;
+      break;
+    case 'numeric':
+      elementHtml = <NumericElement
+        label={element.Description}
+        min={element.Options.MinValue}
+        max={element.Options.MaxValue}
+      />;
+      break;
+    default:
+      break;
     }
     return (
       <div>{elementHtml}</div>
@@ -175,6 +181,10 @@ QuestionText.propTypes = {
 QuestionText.defaultProps = {
   inputLabel: 'Question Text',
 };
+QuestionText.propTypes = {
+  ...QuestionText.propTypes,
+  t: PropTypes.func,
+};
 
 /**
  * This is the React class for the question name input
@@ -224,7 +234,9 @@ class BasicOptions extends Component {
     return (
       <div>
         <div className={errorClass}>
-          <label className="col-sm-2 control-label">Question Name: </label>
+          <label className="col-sm-2 control-label">
+            {this.props.t('Question Name:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-6">
             <input className="form-control"
               type="text" id="questionName"
@@ -237,6 +249,10 @@ class BasicOptions extends Component {
         <QuestionText
           updateState={this.props.updateState}
           element={this.props.element}
+          inputLabel={this.props.t(
+            'Question Text',
+            {ns: 'instrument_builder'}
+          )}
         />
       </div>
     );
@@ -245,6 +261,7 @@ class BasicOptions extends Component {
 BasicOptions.propTypes = {
   updateState: PropTypes.func,
   element: PropTypes.object,
+  t: PropTypes.func,
 };
 
 /**
@@ -283,10 +300,19 @@ class DropdownOptions extends Component {
   addOption() {
     let option = this.state.option.trim();
 
+    // Remove Add Row dropdown error when adding an option
+    if (this.props.element.error && this.props.element.error.dropdownOptions) {
+      let tempError = {...this.props.element.error};
+      delete tempError.dropdownOptions;
+      this.props.updateState({error: tempError});
+    }
+
+    const {t} = this.props;
     // Check for empty options
     if (option === '') {
       let temp = (this.state.error) ? this.state.error : {};
-      temp.newSelectOption = 'Dropdown options cannot be empty!';
+      temp.newSelectOption = t('Dropdown options cannot be empty!',
+        {ns: 'instrument_builder'});
       this.setState({
         error: temp,
       });
@@ -309,7 +335,7 @@ class DropdownOptions extends Component {
     this.props.updateState({Options: temp});
 
     // clear input field
-    this.state.option = '';
+    this.setState({option: ''});
   }
 
   /**
@@ -330,14 +356,10 @@ class DropdownOptions extends Component {
     let multi = '';
     let options = Instrument.clone(this.props.element.Options.Values);
     let errorMessage = '';
+    let dropdownErrorMessage = '';
     let dropdownClass = 'form-group';
 
-    // Set the select option type
-    if (this.props.element.Options.AllowMultiple) {
-      multi = 'multiple';
-    }
-
-    // If an error is present, display the error
+    // If an error is present for adding an option, display the error
     if (this.state.error && this.state.error.newSelectOption) {
       errorMessage = (
         <span className="form-error">{this.state.error.newSelectOption}</span>
@@ -345,14 +367,26 @@ class DropdownOptions extends Component {
       dropdownClass += ' has-error';
     }
 
+    // If an error exists for "Dropdown options cannot be empty!" show it
+    if (this.props.element.error && this.props.element.error.dropdownOptions) {
+      dropdownErrorMessage = (
+        <div className="form-error" style={{marginTop: '5px'}}>
+          {this.props.element.error.dropdownOptions}
+        </div>
+      );
+    }
+
     return (
       <div>
         <BasicOptions
           updateState={this.props.updateState}
           element={this.props.element}
+          t={this.props.t}
         />
         <div className={dropdownClass}>
-          <label className="col-sm-2 control-label">Dropdown Option: </label>
+          <label className="col-sm-2 control-label">
+            {this.props.t('Dropdown Option:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-3">
             <input
               className="form-control"
@@ -365,28 +399,31 @@ class DropdownOptions extends Component {
           <input
             className="btn btn-default"
             type="button"
-            value="Add option"
-            onClick={this.addOption.bind(this, false) }
+            value={this.props.t('Add option', {ns: 'instrument_builder'})}
+            onClick={this.addOption.bind(this, false)}
           />
           <input
             className="btn btn-default"
             type="button"
-            value="Reset"
+            value={this.props.t('Reset', {ns: 'loris'})}
             onClick={this.resetOptions}
           />
           <div className="col-sm-6 col-sm-offset-2">
-            {errorMessage}
+            {errorMessage}  {/* Error for Add Option */}
+            {dropdownErrorMessage && <div>{dropdownErrorMessage}</div>}
           </div>
         </div>
         <div className="form-group">
-          <label className="col-sm-2 control-label">Preview: </label>
+          <label className="col-sm-2 control-label">
+            {this.props.t('Preview:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-2">
-            <select multiple={multi}
-                    id="selectOptions"
-                    className="form-control"
-            >
+            <select
+              multiple={multi}
+              id="selectOptions"
+              className="form-control">
               {Object.keys(options).map(function(option, key) {
-                return (<option key={key}>{options[option]}</option>);
+                return <option key={key}>{options[option]}</option>;
               })}
             </select>
           </div>
@@ -398,6 +435,7 @@ class DropdownOptions extends Component {
 DropdownOptions.propTypes = {
   updateState: PropTypes.func,
   element: PropTypes.object,
+  t: PropTypes.func,
 };
 
 /**
@@ -411,13 +449,29 @@ class DateOptions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dateFormat: {
-        Date: 'Standard Date',
-        BasicDate: 'Basic Date (does not include \'Not Answered\' option)',
-        MonthYear: 'Month Year (does not include day of the month)',
-      },
+      dateFormat: {},
     };
     this.onChange = this.onChange.bind(this);
+  }
+
+  /**
+   * Get translated date format options
+   *
+   * @return {object} - Date format options with translated labels
+   */
+  getDateFormatOptions() {
+    const {t} = this.props;
+    return {
+      Date: t('Standard Date', {ns: 'instrument_builder'}),
+      BasicDate: t(
+        'Basic Date (does not include \'Not Answered\' option)',
+        {ns: 'instrument_builder'}
+      ),
+      MonthYear: t(
+        'Month Year (does not include day of the month)',
+        {ns: 'instrument_builder'}
+      ),
+    };
   }
 
   /**
@@ -455,6 +509,7 @@ class DateOptions extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let minYear = this.props.element.Options.MinYear;
     let maxYear = this.props.element.Options.MaxYear;
     let dateFormat = this.props.element.Options.dateFormat;
@@ -462,7 +517,7 @@ class DateOptions extends Component {
     let dateOptionsClass = 'options form-group';
     let errorMessage = '';
 
-    let dateFormatOptions = this.state.dateFormat;
+    let dateFormatOptions = this.getDateFormatOptions();
 
     if (this.props.element.error && this.props.element.error.dateOption) {
       // If an error is present, display the error
@@ -479,9 +534,12 @@ class DateOptions extends Component {
         <BasicOptions
           updateState={this.props.updateState}
           element={this.props.element}
+          t={this.props.t}
         />
         <div id="dateoptions" className={dateOptionsClass}>
-          <label className="col-sm-2 control-label">Start year: </label>
+          <label className="col-sm-2 control-label">
+            {t('Start year:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-2">
             <input
               className="form-control"
@@ -494,7 +552,9 @@ class DateOptions extends Component {
             />
             {errorMessage}
           </div>
-          <label className="col-sm-2 control-label">End year: </label>
+          <label className="col-sm-2 control-label">
+            {t('End year:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-2">
             <input
               className="form-control"
@@ -508,7 +568,9 @@ class DateOptions extends Component {
           </div>
         </div>
         <div className="form-group">
-          <label className="col-sm-2 control-label">Date Format: </label>
+          <label className="col-sm-2 control-label">
+            {t('Date Format:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-6">
             <select
               id="dateFormat"
@@ -521,7 +583,7 @@ class DateOptions extends Component {
                     {dateFormatOptions[option]}
                   </option>
                 );
-              }) }
+              })}
             </select>
           </div>
         </div>
@@ -532,6 +594,7 @@ class DateOptions extends Component {
 DateOptions.propTypes = {
   element: PropTypes.object,
   updateState: PropTypes.func,
+  t: PropTypes.func,
 };
 
 /**
@@ -577,7 +640,7 @@ class NumericOptions extends Component {
     let errorMessage = '';
     let optionsClass = 'options form-group';
 
-        // If an error is present, display the error
+    // If an error is present, display the error
     if (this.props.element.error && this.props.element.error.numeric) {
       errorMessage = (
         <span className="form-error">
@@ -592,9 +655,12 @@ class NumericOptions extends Component {
         <BasicOptions
           updateState={this.props.updateState}
           element={this.props.element}
+          t={this.props.t}
         />
         <div id="numericoptions" className={optionsClass}>
-          <label className="col-sm-2 control-label">Min: </label>
+          <label className="col-sm-2 control-label">
+            {this.props.t('Min:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-2">
             <input
               className="form-control"
@@ -604,7 +670,9 @@ class NumericOptions extends Component {
               value={this.props.element.Options.MinValue}
             />
           </div>
-          <label className="col-sm-2 control-label">Max: </label>
+          <label className="col-sm-2 control-label">
+            {this.props.t('Max:', {ns: 'instrument_builder'})}{' '}
+          </label>
           <div className="col-sm-2">
             <input
               className="form-control"
@@ -625,6 +693,7 @@ class NumericOptions extends Component {
 NumericOptions.propTypes = {
   updateState: PropTypes.func,
   element: PropTypes.object,
+  t: PropTypes.func,
 };
 
 /**
@@ -661,42 +730,42 @@ class ListElements extends Component {
     let textSize = 'small';
     // Set the options for the desired type
     switch (newId) {
-      case 'line':
-        newState.Options = {};
-        newState.Name = '';
-        newState.Description = '';
-        break;
-      case 'textarea':
-        textSize = 'large';
-        // falls through
-      case 'textbox':
-        newState.Options = {
-          Type: textSize,
-        };
-        break;
-      case 'multiselect':
-        multi = true;
-        // falls through
-      case 'dropdown':
-        newState.Options = {
-          Values: {},
-          AllowMultiple: multi,
-        };
-        break;
-      case 'date':
-        newState.Options = {
-          MinYear: '',
-          MaxYear: '',
-        };
-        break;
-      case 'numeric':
-        newState.Options = {
-          MinValue: null,
-          MaxValue: null,
-        };
-        break;
-      default:
-        break;
+    case 'line':
+      newState.Options = {};
+      newState.Name = '';
+      newState.Description = '';
+      break;
+    case 'textarea':
+      textSize = 'large';
+      // falls through
+    case 'textbox':
+      newState.Options = {
+        Type: textSize,
+      };
+      break;
+    case 'multiselect':
+      multi = true;
+      // falls through
+    case 'dropdown':
+      newState.Options = {
+        Values: {},
+        AllowMultiple: multi,
+      };
+      break;
+    case 'date':
+      newState.Options = {
+        MinYear: '',
+        MaxYear: '',
+      };
+      break;
+    case 'numeric':
+      newState.Options = {
+        MinValue: null,
+        MaxValue: null,
+      };
+      break;
+    default:
+      break;
     }
     this.props.updateState(newState);
   }
@@ -707,158 +776,181 @@ class ListElements extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     return (
-        <div className="form-group">
-            <label htmlFor="selected-input"
-                   className="col-sm-2 control-label"
-            >Question Type:</label>
-            <div className="col-sm-4">
-                <div className="btn-group">
-                    <button id="selected-input"
-                            type="button"
-                            className="btn btn-default dropdown-toggle"
-                            data-toggle="dropdown"
-                    >
-                        <span id="search_concept">{this.props.value} </span>
-                        <span className="caret"></span>
-                    </button>
-                    <ul className="dropdown-menu" role="menu">
-                        <li>
-                            <div className="col-sm-12">
-                              <h5 className="">Information</h5>
-                            </div>
-                        </li>
-                        <li onClick={this.selectType.bind(
-                          this,
-                          'header',
-                          'Header'
-                        )}>
-                            <a id="header"
-                               className="option"
-                               title="Centered, header information"
-                            >Header</a>
-                        </li>
-                        <li onClick={this.selectType.bind(
-                          this,
-                          'label',
-                          'Label'
-                        )}>
-                            <a id="label"
-                               className="option"
-                               title="Unemphasized display text"
-                            >Label</a>
-                        </li>
-                        <li onClick={this.selectType.bind(
-                          this,
-                          'score',
-                          'Scored Field'
-                        )}>
-                            <a id="scored"
-                               className="option"
-                               title="Column which stores calculated data"
-                            >Scored Field</a>
-                        </li>
-                        <li className="divider"></li>
-                        <li>
-                            <div className="col-sm-12">
-                              <h5 className="">Data entry</h5>
-                            </div>
-                        </li>
-                        <li onClick={this.selectType.bind(
-                          this,
-                          'textbox',
-                          'Textbox'
-                        )}>
-                            <a id="textbox"
-                               className="option"
-                               title="Text box for user data entry"
-                            >Textbox</a>
-                        </li>
-                        <li onClick={this.selectType.bind(
-                          this,
-                          'textarea',
-                          'Textarea'
-                        )}>
-                            <a id="textarea"
-                               className="option"
-                               title="Larger text area for data entry"
-                            >Textarea</a>
-                        </li>
-                        <li onClick={this.selectType.bind(
-                          this,
-                          'dropdown',
-                          'Dropdown'
-                        )}>
-                            <a id="dropdown"
-                               className="option"
-                               title={'Dropdown menu for users to select '
-                                     + 'data from'}
-                            >Dropdown</a>
-                        </li>
-                        <li onClick={this.selectType.bind(
-                          this,
-                          'multiselect',
-                          'Multiselect'
-                        )}>
-                            <a id="multiselect"
-                               className="option"
-                               title={'Data entry where multiple options '
-                                     + 'may be selected'}
-                            >Multiselect</a>
-                        </li>
-                        <li onClick={this.selectType.bind(
-                          this,
-                          'date',
-                          'Date'
-                        )}>
-                            <a id="date"
-                               className="option"
-                               title="User data entry of a date"
-                            >Date</a>
-                        </li>
-                        <li onClick={
-                          this.selectType.bind(this, 'numeric', 'Numeric')
-                        }>
-                            <a id="numeric"
-                               className="option"
-                               title="User data entry of a number"
-                            >Numeric</a>
-                        </li>
-                        <li className="divider"></li>
-                        <li>
-                            <div className="col-sm-12">
-                              <h5 className="">Formatting</h5>
-                            </div>
-                        </li>
-                        <li onClick={
-                          this.selectType.bind(this, 'line', 'Blank Line')
-                        }>
-                            <a id="line"
-                               className="option"
-                               title="Empty line"
-                            >Blank Line</a>
-                        </li>
-                        <li onClick={this.selectType.bind(
-                            this,
-                            'page-break',
-                            'Page Break'
-                        )}>
-                            <a id="page-break"
-                               className="option"
-                               title="Start a new page"
-                            >Page Break</a>
-                        </li>
-                    </ul>
+      <div className="form-group">
+        <label htmlFor="selected-input"
+          className="col-sm-2 control-label"
+        >{t('Question Type:', {ns: 'instrument_builder'})}</label>
+        <div className="col-sm-4">
+          <div className="btn-group">
+            <button id="selected-input"
+              type="button"
+              className="btn btn-default dropdown-toggle"
+              data-toggle="dropdown"
+            >
+              <span id="search_concept">
+                {this.props.value === 'Select One' ?
+                  t('Select One', {ns: 'instrument_builder'}) :
+                  this.props.value}{' '}
+              </span>
+              <span className="caret"></span>
+            </button>
+            <ul className="dropdown-menu" role="menu">
+              <li>
+                <div className="col-sm-12">
+                  <h5 className="">
+                    {t('Information', {ns: 'instrument_builder'})}
+                  </h5>
                 </div>
-            </div>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'header',
+                t('Header', {ns: 'instrument_builder'})
+              )}>
+                <a id="header"
+                  className="option"
+                  title="Centered, header information"
+                >{t('Header', {ns: 'instrument_builder'})}</a>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'label',
+                t('Label', {ns: 'instrument_builder'})
+              )}>
+                <a id="label"
+                  className="option"
+                  title="Unemphasized display text"
+                >{t('Label', {ns: 'instrument_builder'})}</a>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'score',
+                t('Scored Field', {ns: 'instrument_builder'})
+              )}>
+                <a id="scored"
+                  className="option"
+                  title="Column which stores calculated data"
+                >{t('Scored Field', {ns: 'instrument_builder'})}</a>
+              </li>
+              <li className="divider"></li>
+              <li>
+                <div className="col-sm-12">
+                  <h5 className="">
+                    {t('Data entry', {ns: 'instrument_builder'})}
+                  </h5>
+                </div>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'textbox',
+                t('Textbox', {ns: 'instrument_builder'})
+              )}>
+                <a id="textbox"
+                  className="option"
+                  title="Text box for user data entry"
+                >{t('Textbox', {ns: 'instrument_builder'})}</a>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'textarea',
+                t('Textarea', {ns: 'instrument_builder'})
+              )}>
+                <a id="textarea"
+                  className="option"
+                  title="Larger text area for data entry"
+                >{t('Textarea', {ns: 'instrument_builder'})}</a>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'dropdown',
+                t('Dropdown', {ns: 'instrument_builder'})
+              )}>
+                <a id="dropdown"
+                  className="option"
+                  title={'Dropdown menu for users to select '
+                    + 'data from'}
+                >{t('Dropdown', {ns: 'instrument_builder'})}</a>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'multiselect',
+                t('Multiselect', {ns: 'instrument_builder'})
+              )}>
+                <a id="multiselect"
+                  className="option"
+                  title={'Data entry where multiple options '
+                    + 'may be selected'}
+                >{t('Multiselect', {ns: 'instrument_builder'})}</a>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'date',
+                t('Date', {ns: 'loris'})
+              )}>
+                <a id="date"
+                  className="option"
+                  title="User data entry of a date"
+                >{t('Date', {ns: 'loris'})}</a>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'numeric',
+                t('Numeric', {ns: 'instrument_builder'})
+              )}>
+                <a id="numeric"
+                  className="option"
+                  title="User data entry of a number"
+                >{t('Numeric', {ns: 'instrument_builder'})}</a>
+              </li>
+              <li className="divider"></li>
+              <li>
+                <div className="col-sm-12">
+                  <h5 className="">
+                    {t('Formatting', {ns: 'instrument_builder'})}
+                  </h5>
+                </div>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'line',
+                t('Blank Line', {ns: 'instrument_builder'})
+              )}>
+                <a id="line"
+                  className="option"
+                  title="Empty line"
+                >{t('Blank Line', {ns: 'instrument_builder'})}</a>
+              </li>
+              <li onClick={this.selectType.bind(
+                this,
+                'page-break',
+                t('Page Break', {ns: 'instrument_builder'})
+              )}>
+                <a id="page-break"
+                  className="option"
+                  title="Start a new page"
+                >{t('Page Break', {ns: 'instrument_builder'})}</a>
+              </li>
+            </ul>
+          </div>
         </div>
+      </div>
     );
   }
 }
 ListElements.propTypes = {
   value: PropTypes.string,
   updateState: PropTypes.func,
+  t: PropTypes.func,
 };
+
+// Forward declaration for translated components
+let TranslatedListElements;
+let TranslatedBasicOptions;
+let TranslatedDropdownOptions;
+let TranslatedDateOptions;
+let TranslatedNumericOptions;
 
 /**
  * This is the React class for adding a new element or
@@ -880,8 +972,8 @@ class AddElement extends Component {
         ),
         Description: Instrument.clone(
           this.props.element.Description === undefined ?
-          {} :
-          this.props.element.Description
+            {} :
+            this.props.element.Description
         ),
         Name: Instrument.clone(this.props.element.Name === undefined ?
           '' :
@@ -915,26 +1007,70 @@ class AddElement extends Component {
    * @param {object} newState
    */
   updateState(newState) {
-    this.setState(newState);
+    this.setState((prevState) => {
+      let updatedState = {...prevState, ...newState};
+
+      // If the Name field is changing, remove the duplicate error dynamically
+      if (newState.Name && prevState.error && prevState.error.questionName) {
+        let newErrorState = {...prevState.error};
+        delete newErrorState.questionName;
+        updatedState.error = newErrorState;
+      }
+      // If dropdown options are updated, remove dropdown error dynamically
+      if
+      (
+        newState.Options
+        && Object.keys(newState.Options.Values || {}).length >= 2
+      ) {
+        let newErrorState = {...prevState.error};
+        delete newErrorState.dropdownOptions;
+        updatedState.error = newErrorState;
+      }
+
+      return updatedState;
+    });
   }
 
   /**
    * Add a question to the buildPane
    */
   addQuestion() {
+    const {t} = this.props;
     let selected = this.state.selected.id;
     let questionText = this.state.Description;
     let questionName = this.state.Name;
     let hasError = false;
 
     if (questionName && questionName.indexOf('status') > -1) {
-      alert('Question name can\'t contain \'status\' as part of the name!');
+      alert(t('Question name can\'t contain \'status\' as part of the name!',
+        {ns: 'instrument_builder'}));
       return;
     }
 
+    // Validate Dropdown Options only when the type is 'dropdown' or 'multiselect'
+    if ((selected === 'dropdown'
+      || selected === 'multiselect')
+      && this.state.Options.Values) {
+      let optionsCount = Object.keys(this.state.Options.Values).length;
+
+      if (optionsCount === 0) {
+        this.setState((state) => ({
+          error: {
+            ...state.error,
+            dropdownOptions: t('Dropdown options cannot be empty!',
+              {ns: 'instrument_builder'}),
+          },
+        }));
+        hasError = true;
+      }
+    }
+    // Stop execution only if dropdown validation fails
+    if (hasError) {
+      return;
+    }
     if (!selected) {
       // Error, no element selected, alert the user and return
-      alert('No element type selected');
+      alert(t('No element type selected', {ns: 'instrument_builder'}));
       return;
     }
 
@@ -948,7 +1084,10 @@ class AddElement extends Component {
       if ((isNaN(minDate) && min !== '') || (isNaN(maxDate) && max !== '')) {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = 'Invalid date provided';
+        temp.dateOption = t(
+          'Invalid date provided',
+          {ns: 'instrument_builder'}
+        );
         this.setState({
           error: temp,
         });
@@ -958,7 +1097,10 @@ class AddElement extends Component {
       if (minDate > maxDate && min !== '' && max !== '') {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = 'End year happened before start year';
+        temp.dateOption = t(
+          'End year happened before start year',
+          {ns: 'instrument_builder'}
+        );
         this.setState({
           error: temp,
         });
@@ -971,9 +1113,11 @@ class AddElement extends Component {
       ) {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = 'The year must have exactly 4 digits. '
-                          + 'Please choose an integer number '
-                          + 'between 1000 and 9999.';
+        temp.dateOption = t(
+          'The year must have exactly 4 digits. ' +
+          'Please choose an integer number between 1000 and 9999.',
+          {ns: 'instrument_builder'}
+        );
         this.setState({
           error: temp,
         });
@@ -996,7 +1140,10 @@ class AddElement extends Component {
 
       if (min != null && max != null && min >= max) {
         let temp = (this.state.error) ? this.state.error : {};
-        temp.numeric = 'Max value must be larger than min value';
+        temp.numeric = t(
+          'Max value must be larger than min value',
+          {ns: 'instrument_builder'}
+        );
         this.setState({
           error: temp,
         });
@@ -1014,13 +1161,19 @@ class AddElement extends Component {
     }
 
     if (questionText === '' && selected !== 'line') {
-        // Error, question text is required. Set the element error flag
-        // for the questionText with message. Set the hasError flag
+      // Error, question text is required. Set the element error flag
+      // for the questionText with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
       if (selected === 'page-break') {
-        temp.questionText = 'Must use question text as page header';
+        temp.questionText = t(
+          'Must use question text as page header',
+          {ns: 'instrument_builder'}
+        );
       } else {
-        temp.questionText = 'No question text specified';
+        temp.questionText = t(
+          'No question text specified',
+          {ns: 'instrument_builder'}
+        );
       }
       this.setState({
         error: temp,
@@ -1029,8 +1182,8 @@ class AddElement extends Component {
     }
 
     if (!hasError && this.state.error) {
-        // No error, remove the elememt's questionText error flag
-        // if set
+      // No error, remove the elememt's questionText error flag
+      // if set
       let temp = this.state.error;
       delete temp.questionText;
       this.setState({
@@ -1039,12 +1192,15 @@ class AddElement extends Component {
     }
 
     if (questionName.length > 64 && selected !== 'textbox'
-        && selected !== 'textarea' && selected !== 'date'
-        && selected !== 'numeric') {
+      && selected !== 'textarea' && selected !== 'date'
+      && selected !== 'numeric') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = 'Please shorten to 64 characters maximum';
+      temp.questionName = t(
+        'Please shorten to 64 characters maximum',
+        {ns: 'instrument_builder'}
+      );
       this.setState({
         error: temp,
       });
@@ -1068,7 +1224,10 @@ class AddElement extends Component {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = 'Please shorten to 57 characters maximum';
+      temp.questionName = t(
+        'Please shorten to 57 characters maximum',
+        {ns: 'instrument_builder'}
+      );
       this.setState({
         error: temp,
       });
@@ -1091,7 +1250,10 @@ class AddElement extends Component {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = 'Must specify name for database to save value into';
+      temp.questionName = t(
+        'Must specify name for database to save value into',
+        {ns: 'instrument_builder'}
+      );
       this.setState({
         error: temp,
       });
@@ -1111,27 +1273,27 @@ class AddElement extends Component {
 
     // Setup the desired element to be added
     switch (selected) {
-      case 'line':
-        break;
-      case 'header':
-      case 'label':
-        questionName = '';
-        break;
-      case 'textbox':
-      case 'textarea':
-        selected = 'text';
-        break;
-      case 'dropdown':
-      case 'multiselect':
-        selected = 'select';
-        break;
-      case 'page-break':
-        // If page-break, add new page to the buildPane
-        // element list
-        this.props.addPage(questionText);
-        return;
-      default:
-        break;
+    case 'line':
+      break;
+    case 'header':
+    case 'label':
+      questionName = '';
+      break;
+    case 'textbox':
+    case 'textarea':
+      selected = 'text';
+      break;
+    case 'dropdown':
+    case 'multiselect':
+      selected = 'select';
+      break;
+    case 'page-break':
+      // If page-break, add new page to the buildPane
+      // element list
+      this.props.addPage(questionText);
+      return;
+    default:
+      break;
     }
 
     // Remove all error flags
@@ -1157,9 +1319,13 @@ class AddElement extends Component {
     if (hasError) {
       // Error, element name already exists. Set the element error flag
       // for the questionName with message.
+      const {t} = this.props;
       this.setState(function(state) {
         let temp = (state.error) ? state.error : {};
-        temp.questionName = 'Duplicate question name';
+        temp.questionName = t(
+          'Duplicate question name',
+          {ns: 'instrument_builder'}
+        );
         return {
           error: temp,
         };
@@ -1215,53 +1381,54 @@ class AddElement extends Component {
     let questionInput;
     let header = '';
     let buttons;
-        // Set the inputs to display based on the desired element type
+    // Set the inputs to display based on the desired element type
     switch (this.state.selected.id) {
-      case 'line':
-        break;
-      case 'header':
-      case 'label':
-        questionInput = <QuestionText
-          updateState={this.updateState}
-          element={this.state}
-        />;
-        break;
-      case 'page-break':
-        questionInput = <QuestionText
-          updateState={this.updateState}
-          element={this.state}
-          inputLabel={'Page Name'}
-        />;
-        break;
-      case 'score':
-      case 'textbox':
-      case 'textarea':
-        questionInput = <BasicOptions
-          updateState={this.updateState}
-          element={this.state}
-        />;
-        break;
-      case 'multiselect':
-      case 'dropdown':
-        questionInput = <DropdownOptions
-          updateState={this.updateState}
-          element={this.state}
-        />;
-        break;
-      case 'date':
-        questionInput = <DateOptions
-          updateState={this.updateState}
-          element={this.state}
-        />;
-        break;
-      case 'numeric':
-        questionInput = <NumericOptions
-          updateState={this.updateState}
-          element={this.state}
-        />;
-        break;
-      default:
-        break;
+    case 'line':
+      break;
+    case 'header':
+    case 'label':
+      questionInput = <QuestionText
+        updateState={this.updateState}
+        element={this.state}
+        inputLabel={this.props.t('Question Text', {ns: 'instrument_builder'})}
+      />;
+      break;
+    case 'page-break':
+      questionInput = <QuestionText
+        updateState={this.updateState}
+        element={this.state}
+        inputLabel={this.props.t('Page Name', {ns: 'instrument_builder'})}
+      />;
+      break;
+    case 'score':
+    case 'textbox':
+    case 'textarea':
+      questionInput = <TranslatedBasicOptions
+        updateState={this.updateState}
+        element={this.state}
+      />;
+      break;
+    case 'multiselect':
+    case 'dropdown':
+      questionInput = <TranslatedDropdownOptions
+        updateState={this.updateState}
+        element={this.state}
+      />;
+      break;
+    case 'date':
+      questionInput = <TranslatedDateOptions
+        updateState={this.updateState}
+        element={this.state}
+      />;
+      break;
+    case 'numeric':
+      questionInput = <TranslatedNumericOptions
+        updateState={this.updateState}
+        element={this.state}
+      />;
+      break;
+    default:
+      break;
     }
 
     // Set the button/header based on whether you are editing or adding an element.
@@ -1270,17 +1437,19 @@ class AddElement extends Component {
         <input
           className="btn btn-default"
           type="button"
-          value="Edit Row"
+          value={this.props.t('Edit Row', {ns: 'instrument_builder'})}
           onClick={this.addQuestion}
         />
       );
     } else {
-      header = (<h2>Add Question</h2>);
+      header = (
+        <h2>{this.props.t('Add Question', {ns: 'instrument_builder'})}</h2>
+      );
       buttons = (
         <input
           className="btn btn-default"
           type="button"
-          value="Add Row"
+          value={this.props.t('Add Row', {ns: 'instrument_builder'})}
           onClick={this.addQuestion}
         />
       );
@@ -1289,7 +1458,7 @@ class AddElement extends Component {
       <div className="col-xs-12">
         {header}
         <div className="form-horizontal" role="form">
-          <ListElements
+          <TranslatedListElements
             updateState={this.updateState}
             value={this.state.selected.value}
           />
@@ -1309,16 +1478,41 @@ AddElement.propTypes = {
   updateQuestions: PropTypes.func,
   addPage: PropTypes.func,
   index: PropTypes.number,
+  t: PropTypes.func,
 };
+
+i18n.addResourceBundle('hi', 'instrument_builder', hiStrings);
+i18n.addResourceBundle('ja', 'instrument_builder', jaStrings);
+i18n.addResourceBundle('fr', 'instrument_builder', frStrings);
+i18n.addResourceBundle('zh', 'instrument_builder', zhStrings);
+
+TranslatedBasicOptions = withTranslation(
+  ['instrument_builder', 'loris']
+)(BasicOptions);
+TranslatedDropdownOptions = withTranslation(
+  ['instrument_builder', 'loris']
+)(DropdownOptions);
+TranslatedDateOptions = withTranslation(
+  ['instrument_builder', 'loris']
+)(DateOptions);
+TranslatedNumericOptions = withTranslation(
+  ['instrument_builder', 'loris']
+)(NumericOptions);
+TranslatedListElements = withTranslation(
+  ['instrument_builder', 'loris']
+)(ListElements);
+const TranslatedAddElement = withTranslation(
+  ['instrument_builder', 'loris']
+)(AddElement);
 
 window.LorisElement = LorisElement;
 window.QuestionText = QuestionText;
-window.BasicOptions = BasicOptions;
-window.DropdownOptions = DropdownOptions;
-window.DateOptions = DateOptions;
-window.NumericOptions = NumericOptions;
-window.ListElements = ListElements;
-window.AddElement = AddElement;
+window.BasicOptions = TranslatedBasicOptions;
+window.DropdownOptions = TranslatedDropdownOptions;
+window.DateOptions = TranslatedDateOptions;
+window.NumericOptions = TranslatedNumericOptions;
+window.ListElements = TranslatedListElements;
+window.AddElement = TranslatedAddElement;
 
 export default {
   LorisElement,

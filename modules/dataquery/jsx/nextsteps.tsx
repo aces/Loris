@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useTranslation} from 'react-i18next';
 import {APIQueryField} from './types';
 import {ButtonElement} from 'jsx/Form';
 import {QueryGroup} from './querydef';
@@ -19,146 +20,155 @@ function NextSteps(props: {
     page: string,
     changePage: (newpage: string) => void,
 }) {
-    const [expanded, setExpanded] = useState(true);
-    const steps: React.ReactElement[] = [];
+  const {t} = useTranslation('dataquery');
+  const [expanded, setExpanded] = useState(true);
+  const steps: React.ReactElement[] = [];
 
 
-    const canRun = (props.fields && props.fields.length > 0);
-    const fieldLabel = (props.fields && props.fields.length > 0)
-        ? 'Modify Fields'
-        : 'Choose Fields';
-    const filterLabel = (props.filters && props.filters.group.length > 0)
-        ? 'Modify Filters'
-        : 'Add Filters';
-    switch (props.page) {
-    case 'Info':
-        if (canRun) {
-            // A previous query was loaded, it can be either
-            // modified or run
-            steps.push(<ButtonElement
-                    label={fieldLabel}
-                    columnSize='col-sm-12'
-                    key='fields'
-                    onUserInput={() => props.changePage('DefineFields')}
-            />);
-            steps.push(<ButtonElement
-                    label={filterLabel}
-                    columnSize='col-sm-12'
-                    key='filters'
-                    onUserInput={() => props.changePage('DefineFilters')}
-            />);
-            steps.push(<ButtonElement
-                    label='Run Query'
-                    columnSize='col-sm-12'
-                    key='runquery'
-                    onUserInput={() => props.changePage('ViewData')}
-            />);
-        } else {
-            // No query loaded, must define fields
-            steps.push(<ButtonElement
-                    label={fieldLabel}
-                    columnSize='col-sm-12'
-                    key='fields'
-                    onUserInput={() => props.changePage('DefineFields')}
-            />);
-        }
-        break;
-    case 'DefineFields':
-        steps.push(<ButtonElement
-                label={filterLabel}
-                columnSize='col-sm-12'
-                key='filters'
-                onUserInput={() => props.changePage('DefineFilters')}
-        />);
-        if (canRun) {
-            steps.push(<ButtonElement
-                    label='Run Query'
-                    columnSize='col-sm-12'
-                    key='runquery'
-                    onUserInput={() => props.changePage('ViewData')}
-            />);
-        }
-        break;
-    case 'DefineFilters':
-        if (canRun) {
-            steps.push(<ButtonElement
-                    label='Run Query'
-                    key='runquery'
-                    columnSize='col-sm-12'
-                    onUserInput={() => props.changePage('ViewData')}
-            />);
-        }
-        steps.push(<ButtonElement
-                label={fieldLabel}
-                key='fields'
-                columnSize='col-sm-12'
-                onUserInput={() => props.changePage('DefineFields')}
-        />);
-        break;
-    case 'ViewData':
-        steps.push(<ButtonElement
-                label={fieldLabel}
-                key='fields'
-                columnSize='col-sm-12'
-                onUserInput={() => props.changePage('DefineFields')}
-        />);
-        steps.push(<ButtonElement
-                label={filterLabel}
-                key='filters'
-                columnSize='col-sm-12'
-                onUserInput={() => props.changePage('DefineFilters')}
-        />);
-        break;
+  const canRun = (props.fields && props.fields.length > 0);
+  const fieldLabel = (props.fields && props.fields.length > 0)
+    ? t('Modify Fields', {ns: 'dataquery'})
+    : t('Choose Fields', {ns: 'dataquery'});
+  const filterLabel = (props.filters && props.filters.group.length > 0)
+    ? t('Modify Filters', {ns: 'dataquery'})
+    : t('Add Filters', {ns: 'dataquery'});
+  switch (props.page) {
+  case 'Info':
+    if (canRun) {
+      // A previous query was loaded, it can be either
+      // modified or run
+      steps.push(<ButtonElement
+        label={fieldLabel}
+        columnSize='col-sm-12'
+        key='fields'
+        onUserInput={() => props.changePage('DefineFields')}
+      />);
+      steps.push(<ButtonElement
+        label={filterLabel}
+        columnSize='col-sm-12'
+        key='filters'
+        onUserInput={() => props.changePage('DefineFilters')}
+      />);
+      steps.push(<ButtonElement
+        label={t('Run Query', {ns: 'dataquery'})}
+        columnSize='col-sm-12'
+        key='runquery'
+        onUserInput={() => props.changePage('ViewData')}
+      />);
+    } else {
+      // No query loaded, must define fields
+      steps.push(<ButtonElement
+        label={fieldLabel}
+        columnSize='col-sm-12'
+        key='fields'
+        onUserInput={() => props.changePage('DefineFields')}
+      />);
     }
+    break;
+  case 'DefineFields':
+    steps.push(<ButtonElement
+      label={filterLabel}
+      columnSize='col-sm-12'
+      key='filters'
+      onUserInput={() => props.changePage('DefineFilters')}
+    />);
+    if (canRun) {
+      steps.push(<ButtonElement
+        label={t('Run Query', {ns: 'dataquery'})}
+        columnSize='col-sm-12'
+        key='runquery'
+        onUserInput={() => props.changePage('ViewData')}
+      />);
+    }
+    break;
+  case 'DefineFilters':
+    if (canRun) {
+      steps.push(<ButtonElement
+        label={t('Run Query', {ns: 'dataquery'})}
+        key='runquery'
+        columnSize='col-sm-12'
+        onUserInput={() => props.changePage('ViewData')}
+      />);
+    }
+    steps.push(<ButtonElement
+      label={fieldLabel}
+      key='fields'
+      columnSize='col-sm-12'
+      onUserInput={() => props.changePage('DefineFields')}
+    />);
+    break;
+  case 'ViewData':
+    steps.push(<ButtonElement
+      label={fieldLabel}
+      key='fields'
+      columnSize='col-sm-12'
+      onUserInput={() => props.changePage('DefineFields')}
+    />);
+    steps.push(<ButtonElement
+      label={filterLabel}
+      key='filters'
+      columnSize='col-sm-12'
+      onUserInput={() => props.changePage('DefineFilters')}
+    />);
+    break;
+  }
 
-    const expandIcon = <i
-            style={{transform: 'scaleY(2)', fontSize: '2em'}}
-            className='fas fa-chevron-left'
-            onClick={() => setExpanded(!expanded)}
-        ></i>;
-    const style = expanded ? {
-        background: 'white',
-        padding: '0.5em',
-        paddingLeft: '2em',
-    } : {
-        display: 'none',
-        visibility: 'hidden' as const,
-        padding: '0.5em',
-        paddingLeft: '2em',
-    };
+  const expandIcon = <i
+    style={{
+      fontSize: '2em',
+      rotate: expanded ? '270deg' : '90deg',
+      color: '#064785',
+    }}
+    className='fas fa-chevron-left'
+  ></i>;
+  const style = expanded ? {
+    background: 'white',
+    padding: '1rem 2rem',
+    width: '100%',
+  } : {
+    display: 'hidden',
+    padding: '0rem 2rem',
+    height: '0px',
+    width: '100%',
+  };
 
-    return (
-        <div style={{
-            position: 'fixed',
-            bottom: 0,
-            right: 0,
-            borderWidth: 'thin',
-            borderStyle: 'solid',
-            borderColor: 'black',
-            // Fix the height size so it doesn't move when
-            // expanded or collapsed
-            height: 120,
-            // Make sure we're on top of the footer
-            zIndex: 300,
-        }}>
-          <div style={{
-              display: 'flex',
-              alignItems: 'stretch',
-              height: 120,
-              paddingRight: '14px',
-            }}>
-              <div style={style}>
-                <h3>Next Steps</h3>
-                <div style={{display: 'flex'}}>
-                    {steps}
-                </div>
-              </div>
-              <div
-                  style={{alignSelf: 'center'}}
-              >{expandIcon}</div>
+  return (
+    <div style={{
+      position: 'fixed',
+      bottom: 0,
+      right: 0,
+      border: '1px solid black',
+      // Fix the height size so it doesn't move when
+      // expanded or collapsed
+      // Make sure we're on top of the footer
+      zIndex: 300,
+      backgroundColor: '#fff',
+    }}>
+      <div
+        style={{display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '16px',
+          padding: expanded ? '16px 3rem 8px' : '16px 3rem',
+          cursor: 'pointer',
+        }}
+        onClick={() => setExpanded(!expanded)}
+      >
+        <h3 style={{margin: '0'}}>{t('Next Steps', {ns: 'dataquery'})}</h3>
+        {expandIcon}</div>
+      <div style={{
+        display: 'flex',
+        alignItems: 'stretch',
+      }}>
+        <div style={style}>
+          <div style={{display: 'flex', justifyContent: 'center', gap: '1rem'}}>
+            {steps}
           </div>
         </div>
-    );
+
+      </div>
+    </div>
+  );
 }
 
 export default NextSteps;

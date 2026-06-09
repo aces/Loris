@@ -1,5 +1,6 @@
 #!/usr/bin/env php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is written for a one time use only to populate the examiners_psc_rel
  * table in the database after decoupling the examiners from the CenterID.
@@ -10,7 +11,7 @@
  *  - examiners_psc_rel
  *  - certification
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

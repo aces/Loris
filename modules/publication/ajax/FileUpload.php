@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Publication file upload & editing handler
  *
  * This processes and inserts data for publication uploads & editing
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Publication
@@ -20,7 +21,7 @@ if (isset($_REQUEST['action'])) {
         editProject();
     } else {
         http_response_code(400);
-        exit;
+        exit(0);
     }
 }
 
@@ -67,28 +68,6 @@ function uploadPublication() : void
     $leadInvest = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
-    // check if lead investigator already exists in collaborator table
-    // use ID if exists, else insert
-    $leadInvID = $db->pselectOne(
-        'SELECT PublicationCollaboratorID '.
-        'FROM publication_collaborator '.
-        'WHERE Name = :n AND Email = :e',
-        [
-            'e' => $leadInvestEmail,
-            'n' => $leadInvest,
-        ]
-    );
-    if (empty($leadInvID)) {
-        $db->insert(
-            'publication_collaborator',
-            [
-                'Name'  => $leadInvest,
-                'Email' => $leadInvestEmail,
-            ]
-        );
-
-        $leadInvID = $db->getLastInsertId();
-    }
     if (!isset($desc, $leadInvest, $leadInvestEmail)) {
         showPublicationError('A mandatory field is missing!', 400);
     }
@@ -97,17 +76,18 @@ function uploadPublication() : void
     $today = date('Y-m-d');
     // insert the title to avoid double escaping
     $fields = [
-        'UserID'             => $uid,
-        'Title'              => $title,
-        'Description'        => $desc,
-        'project'            => $project,
-        'publishingStatus'   => $publishingStatus,
-        'datePublication'    => $datePublication,
-        'journal'            => $journal,
-        'doi'                => $doi,
-        'link'               => $link,
-        'LeadInvestigatorID' => $leadInvID,
-        'DateProposed'       => $today,
+        'UserID'                => $uid,
+        'Title'                 => $title,
+        'Description'           => $desc,
+        'project'               => $project,
+        'publishingStatus'      => $publishingStatus,
+        'datePublication'       => $datePublication,
+        'journal'               => $journal,
+        'doi'                   => $doi,
+        'link'                  => $link,
+        'LeadInvestigator'      => $leadInvest,
+        'LeadInvestigatorEmail' => $leadInvestEmail,
+        'DateProposed'          => $today,
     ];
 
     $db->insert('publication', $fields);
@@ -138,7 +118,7 @@ function uploadPublication() : void
         showPublicationError($e->getMessage(), 500);
     }
 
-    notify($pubID, 'submission', $_POST['baseURL']);
+    notify($pubID, 'submission');
 }
 
 /**
@@ -213,37 +193,42 @@ function processFiles($pubID) : void
  */
 function insertCollaborators(int $pubID) : void
 {
+    $db = \NDB_Factory::singleton()->database();
+    // Delete all collaborators for this publication
+    $currentPublicationCollaborators = $db->pselectCol(
+        "SELECT pc.PublicationCollaboratorID
+         FROM publication_collaborator_rel pcr
+         JOIN publication_collaborator pc
+         ON pc.PublicationCollaboratorID =
+            pcr.PublicationCollaboratorID
+         WHERE PublicationID = :pid",
+        ['pid' => $pubID]
+    );
+    $db->delete(
+        'publication_collaborator_rel',
+        ['PublicationID' => $pubID]
+    );
+    foreach ($currentPublicationCollaborators as $currentPublicationCollaborator) {
+        $db->delete(
+            'publication_collaborator',
+            ['PublicationCollaboratorID' => $currentPublicationCollaborator]
+        );
+    }
     if (!isset($_POST['collaborators'])) {
         return;
     }
-    $db = \NDB_Factory::singleton()->database();
-
     $collaborators = json_decode($_POST['collaborators'], true);
+    // Add all collaborators again
     foreach ($collaborators as $c) {
-        $cid = $db->pselectOne(
-            'SELECT PublicationCollaboratorID '.
-            'FROM publication_collaborator '.
-            'WHERE Name=:c',
-            ['c' => $c['name']]
+        $collabInsert = [
+            'Name'  => $c['name'],
+            'Email' => $c['email'],
+        ];
+        $db->insert(
+            'publication_collaborator',
+            $collabInsert
         );
-        // if collaborator does not already exist in table, add them
-        if (!$cid) {
-            $collabInsert = [
-                'Name'  => $c['name'],
-                'Email' => $c['email'],
-            ];
-
-            $db->insert(
-                'publication_collaborator',
-                $collabInsert
-            );
-            $cid = $db->pselectOne(
-                'SELECT PublicationCollaboratorID ' .
-                'FROM publication_collaborator ' .
-                'WHERE Name=:c',
-                ['c' => $c['name']]
-            );
-        }
+        $cid = $db->getLastInsertId();
         $collabRelInsert = [
             'PublicationID'             => $pubID,
             'PublicationCollaboratorID' => $cid,
@@ -383,6 +368,7 @@ function insertVOIs(int $pubID) : void
         }
     }
 }
+
 /**
  * Deletes all inserted data if there is an exception thrown
  *
@@ -426,13 +412,12 @@ function cleanup(int $pubID) : void
 /**
  * Send out email notifications for project submission
  *
- * @param int    $pubID   publication ID
- * @param string $type    The notification type i.e., submission|edit|review
- * @param string $baseURL the base URL of the loris site
+ * @param int    $pubID publication ID
+ * @param string $type  The notification type i.e., submission|edit|review
  *
  * @return void
  */
-function notify($pubID, $type, $baseURL) : void
+function notify($pubID, $type) : void
 {
     $acceptedTypes = [
         'submission',
@@ -451,10 +436,8 @@ function notify($pubID, $type, $baseURL) : void
     $emailData = [];
 
     $data = $db->pselectRow(
-        "SELECT Title, DateProposed, pc.Email as LeadInvestigatorEmail " .
+        "SELECT Title, DateProposed, LeadInvestigatorEmail " .
         "FROM publication p " .
-        "LEFT JOIN publication_collaborator pc ".
-        "ON p.LeadInvestigatorID=pc.PublicationCollaboratorID " .
         "WHERE PublicationID=:pubID",
         ['pubID' => $pubID]
     );
@@ -469,14 +452,12 @@ function notify($pubID, $type, $baseURL) : void
     $emailData['Title']       = $data['Title'];
     $emailData['Date']        = $data['DateProposed'];
     $emailData['User']        = $user->getFullname();
-    $emailData['URL']         = $baseURL . '/publication/view_project/?id='.$pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
     $Notifier = new \NDB_Notifier(
         "publication",
         $type
     );
     $msg_data = [
-        'URL'         => $emailData['URL'],
         'Title'       => $emailData['Title'],
         'User'        => $emailData['User'],
         'ProjectName' => $emailData['ProjectName'],
@@ -550,17 +531,14 @@ function editProject() : void
     $publishingStatus = $_POST['publishingStatus'] ?? null;
     $datePublication  = $_POST['datePublication'] ?? null;
     $journal          = $_POST['journal'] ?? null;
-    $doi  = $_POST['doi'] ?? null;
-    $link = $_POST['link'] ?? null;
-    $leadInvestigator      = $_POST['leadInvestigator'] ?? null;
-    $leadInvestigatorEmail = $_POST['leadInvestigatorEmail'] ?? null;
+    $doi        = $_POST['doi'] ?? null;
+    $link       = $_POST['link'] ?? null;
+    $leadInvest = $_POST['leadInvestigator'] ?? null;
+    $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
 
     $pubData = $db->pselectRow(
-        'SELECT p.*, pc.Name as LeadInvestigator, ' .
-        'pc.Email as LeadInvestigatorEmail ' .
+        'SELECT p.* ' .
         'FROM publication p ' .
-        'LEFT JOIN publication_collaborator pc '.
-        'ON p.LeadInvestigatorID=pc.PublicationCollaboratorID '.
         'WHERE PublicationID=:pid',
         ['pid' => $id]
     );
@@ -571,8 +549,7 @@ function editProject() : void
     }
 
     // build array of changed values
-    $toUpdate        = [];
-    $leadInvToUpdate = [];
+    $toUpdate = [];
     if ($pubData['Title'] !== $title) {
         $toUpdate['Title'] = $title;
     }
@@ -603,38 +580,31 @@ function editProject() : void
     if ($pubData['link'] !== $link) {
         $toUpdate['link'] = $link;
     }
-    if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
-        $leadInvToUpdate['Name'] = $leadInvestigator;
+    if ($pubData['LeadInvestigator'] !== $leadInvest) {
+        $toUpdate['LeadInvestigator'] = $leadInvest;
     }
-    if ($pubData['LeadInvestigatorEmail'] !== $leadInvestigatorEmail) {
-        $leadInvToUpdate['Email'] = $leadInvestigatorEmail;
+    if ($pubData['LeadInvestigatorEmail'] !== $leadInvestEmail) {
+        $toUpdate['LeadInvestigatorEmail'] = $leadInvestEmail;
     }
 
     editEditors($id);
-    editCollaborators($id);
+    insertCollaborators($id);
     editKeywords($id);
     editVOIs($id);
     editUploads($id);
     processFiles($id);
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
-        notify($id, 'review', $_POST['baseURL']);
+        notify($id, 'review');
     } else {
         // otherwise send edit email
-        notify($id, 'edit', $_POST['baseURL']);
+        notify($id, 'edit');
     }
     if (!empty($toUpdate)) {
         $db->update(
             'publication',
             $toUpdate,
             ['PublicationID' => $id]
-        );
-    }
-    if (!empty($leadInvToUpdate)) {
-        $db->update(
-            'publication_collaborator',
-            $leadInvToUpdate,
-            ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
         );
     }
 }
@@ -677,91 +647,6 @@ function editEditors($id) : void
                     'UserID'        => $uid,
                     'PublicationID' => $id,
                 ]
-            );
-        }
-    }
-}
-
-/**
- * Edit collaborators
- *
- * @param int $id Publication ID
- *
- * @return void
- */
-function editCollaborators($id) : void
-{
-    $db = \NDB_Factory::singleton()->database();
-    $submittedCollaborators = isset($_POST['collaborators'])
-        ? json_decode($_POST['collaborators'], true) : null;
-
-    $currentCollabs       = $db->pselectCol(
-        'SELECT Name FROM publication_collaborator pc '.
-        'LEFT JOIN publication_collaborator_rel pcr '.
-        'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
-        'WHERE pcr.PublicationID=:pid',
-        ['pid' => $id]
-    );
-    $currCollabNames      = array_values($currentCollabs);
-    $submittedCollabNames = array_column($submittedCollaborators, 'name');
-    if ($submittedCollabNames != $currCollabNames) {
-        $newCollabs = array_diff($submittedCollabNames, $currCollabNames);
-        $oldCollabs = array_diff($currentCollabs, $submittedCollabNames);
-    }
-
-    if (!empty($newCollabs)) {
-        insertCollaborators($id);
-    }
-    if (!empty($oldCollabs)) {
-        foreach ($oldCollabs as $name) {
-            $cid = $db->pselectOne(
-                'SELECT PublicationCollaboratorID '.
-                'FROM publication_collaborator '.
-                'WHERE Name=:n',
-                ['n' => $name]
-            );
-            $db->delete(
-                'publication_collaborator_rel',
-                [
-                    'PublicationCollaboratorID' => $cid,
-                    'PublicationID'             => $id,
-                ]
-            );
-        }
-    }
-    // update emails if any have changed
-    $currentCollabs = $db->pselect(
-        'SELECT Name, Email FROM publication_collaborator pc '.
-        'LEFT JOIN publication_collaborator_rel pcr '.
-        'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
-        'WHERE pcr.PublicationID=:pid',
-        ['pid' => $id]
-    );
-
-    $currCollabEmails      = array_column($currentCollabs, 'email');
-    $submittedCollabEmails = array_column($submittedCollaborators, 'email');
-    $staleEmails           = [];
-    if ($submittedCollabEmails != $currCollabEmails) {
-        // only care about updated emails here
-        $staleEmails = array_diff($currCollabEmails, $submittedCollabEmails);
-    }
-    if (!empty($staleEmails)) {
-        $currentCollabs = array_combine(
-            array_column($currentCollabs, 'email'),
-            array_column($currentCollabs, 'name')
-        );
-
-        $submittedCollaborators = array_combine(
-            array_column($submittedCollaborators, 'name'),
-            array_column($submittedCollaborators, 'email')
-        );
-        foreach ($staleEmails as $s) {
-            $name     = $currentCollabs[$s];
-            $newEmail = $submittedCollaborators[$name];
-            $db->update(
-                'publication_collaborator',
-                ['Email' => $newEmail],
-                ['Name' => $name]
             );
         }
     }
@@ -911,10 +796,22 @@ function editUploads($id) : void
         $cit = $_POST[$citationIndex] ?? null;
         $ver = $_POST[$versionIndex] ?? null;
 
-        if (htmlspecialchars($cit) !== $data['Citation']) {
+        if (htmlspecialchars(
+            $cit,
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        )!== $data['Citation']
+        ) {
             $toUpdate[$puid]['Citation'] = $cit;
         }
-        if (htmlspecialchars($ver) !== $data['Version']) {
+        if (htmlspecialchars(
+            $ver,
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+            false
+        )!== $data['Version']
+        ) {
             $toUpdate[$puid]['Version'] = $ver;
         }
     }
@@ -929,6 +826,7 @@ function editUploads($id) : void
         }
     }
 }
+
 /**
  * Utility function to return errors from the server
  *
@@ -945,5 +843,7 @@ function showPublicationError($message, $code = 500) : void
 
     http_response_code($code);
     header('Content-Type: application/json; charset=UTF-8');
-    exit(json_encode(['message' => $message]));
+
+    print(json_encode(['message' => $message]));
+    exit(0);
 }

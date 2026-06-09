@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * File contains the \LORIS\dashboard\WidgetDisplayProps class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

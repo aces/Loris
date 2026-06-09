@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Data Querying Module
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Data_Querying_Module
  * @package  Loris

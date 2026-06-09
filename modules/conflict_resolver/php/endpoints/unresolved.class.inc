@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
+
 /**
  * This class provides the php code to create the menu filter form that
  * allows unresolved conflicts to be processed as part of the conflict resolver
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Main
@@ -95,12 +96,14 @@ class Unresolved extends Endpoint implements ETagCalculator
         $sites       = array_values(\Utility::getSiteList(false));
         $visitlabels = array_values(\Utility::getVisitList());
         $projects    = array_values(\Utility::getProjectList());
+        $cohorts     = array_values(\Utility::getCohortList());
 
         return [
             'site'       => array_combine($sites, $sites),
             'instrument' => \NDB_BVL_Instrument::getInstrumentNamesList($loris),
             'visitLabel' => array_combine($visitlabels, $visitlabels),
             'project'    => array_combine($projects, $projects),
+            'cohort'     => array_combine($cohorts, $cohorts),
         ];
     }
 
@@ -252,7 +255,7 @@ class Unresolved extends Endpoint implements ETagCalculator
             '',
             true
         );
-        if ($instrument->_hasAccess($user) == false) {
+        if ($instrument->isAccessibleBy($user) == false) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Permission denied for ' . $conflict['TestName']
             );
@@ -290,8 +293,6 @@ class Unresolved extends Endpoint implements ETagCalculator
             '
              REPLACE INTO conflicts_resolved (
                UserID,
-               User1,
-               User2,
                TestName,
                ExtraKeyColumn,
                ExtraKey1,
@@ -306,8 +307,6 @@ class Unresolved extends Endpoint implements ETagCalculator
              )
              SELECT
                :v_username,
-               f1.UserID,
-               f2.UserID,
                cu.TestName,
                cu.ExtraKeyColumn,
                cu.ExtraKey1,
@@ -328,8 +327,6 @@ class Unresolved extends Endpoint implements ETagCalculator
              UNION DISTINCT
              SELECT
                :v_username,
-               cr.User1,
-               cr.User2,
                cr.TestName,
                cr.ExtraKeyColumn,
                cr.ExtraKey1,

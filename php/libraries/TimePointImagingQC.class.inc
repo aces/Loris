@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * File implements the TimepointImagingQC class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  *  @category Imaging
  *  @package  Main

@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the Electrophysiology page class under Project
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  LORIS
@@ -45,7 +46,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return boolean true if access is permitted
      */
-    private function _hasAccess(\User $user)
+    private function _innerHasAccess(\User $user)
     {
         return (
             $user->hasPermission('electrophysiology_browser_view_allsites') ||
@@ -59,13 +60,16 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Contructor
      *
-     * @param \Project $project The requested project
+     * @param \LORIS\LorisInstance $loris   The LORIS instance to retrieve data
+     *                                      from.
+     * @param \Project             $project The requested project
      */
-    public function __construct(\Project $project)
-    {
+    public function __construct(
+        protected \LORIS\LorisInstance $loris,
+        \Project $project
+    ) {
         $this->_project = $project;
     }
-
 
     /**
      * Returns which methods are supported by this endpoint.
@@ -104,7 +108,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\Unauthorized();
         }
 
-        if (!$this->_hasAccess($user)) {
+        if (!$this->_innerHasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
@@ -153,6 +157,7 @@ class Recordings extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         $provisioner = new \LORIS\api\Provisioners\ProjectRecordingsRowProvisioner(
+            $this->loris,
             $this->_project,
             $since
         );

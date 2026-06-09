@@ -28,6 +28,13 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
     private $_instrument = '';
 
     /**
+     * Data Entry Type (IDE or DDE)
+     *
+     * @var string
+     */
+    private $_data_entry_type = '';
+
+    /**
      * The candID
      *
      * @var string
@@ -51,9 +58,9 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
     /**
      * The project
      *
-     * @var string
+     * @var int
      */
-    private $_project = '';
+    private $_project;
 
     /**
      * The feedback_status
@@ -65,9 +72,9 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
     /**
      * The site
      *
-     * @var string
+     * @var int
      */
-    private $_site = '';
+    private $_site;
 
     /**
      * The id
@@ -112,7 +119,7 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
      */
     public function getCenterID(): \CenterID
     {
-        return new \CenterID(strval($this->_site));
+        return \CenterID::singleton($this->_site);
     }
 
     /**
@@ -123,7 +130,7 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
      */
     public function getProjectID(): \ProjectID
     {
-        return new \ProjectID(strval($this->_project));
+        return \ProjectID::singleton($this->_project);
     }
 
     /**
@@ -134,18 +141,19 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
     public function jsonSerialize() : array
     {
         return [
-            'instrument' => $this->_instrument,
-            'candID'     => $this->_candID,
-            'pscID'      => $this->_pscID,
-            'visit'      => $this->_visit,
-            'project'    => $this->_project,
-            'cohort'     => $this->_cohort,
-            'site'       => $this->_site,
-            'id'         => $this->_id,
-            'sessionID'  => $this->_sessionID,
-            'test_name'  => $this->_test_name,
-            'data_entry' => $this->_data_entry,
-            'commentID'  => $this->_commentID,
+            'instrument'      => $this->_instrument,
+            'data_entry_type' => $this->_data_entry_type,
+            'candID'          => $this->_candID,
+            'pscID'           => $this->_pscID,
+            'visit'           => $this->_visit,
+            'project'         => $this->_project,
+            'cohort'          => $this->_cohort,
+            'site'            => $this->_site,
+            'id'              => $this->_id,
+            'sessionID'       => $this->_sessionID,
+            'test_name'       => $this->_test_name,
+            'data_entry'      => $this->_data_entry,
+            'commentID'       => $this->_commentID,
         ];
     }
 }

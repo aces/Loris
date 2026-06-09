@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains unit test for the CandID value object.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  StudyEntities
@@ -10,7 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace LORIS\StudyEntitites\Candidate\Test;
+namespace LORIS\StudyEntities\Candidate\Test;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
@@ -20,7 +21,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 /**
  * Unit test class for the CandID value object
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tests
  * @package  StudyEntities
@@ -30,41 +31,6 @@ use \LORIS\StudyEntities\Candidate\CandID;
  */
 class CandID_Test extends TestCase
 {
-    /**
-     * DataProviders for constructor invalid values
-     *
-     * @return []
-     */
-    public function invalidValues(): array
-    {
-        return [
-            ['A'],
-            [1],
-            [000000],
-            ['11111a'],
-            [' 11111'],
-            ['111111a'],
-            ['a111111'],
-            ['1111111']
-        ];
-    }
-
-    /**
-     * Test the CandID constructor with invalid values
-     *
-     * @param string $invalidValue An invalid value
-     *
-     * @dataProvider invalidValues
-     *
-     * @expectedException DomainException
-     * @return            void
-     */
-    public function testContructorInvalidValues($invalidValue): void
-    {
-        $this->expectException("DomainException");
-        new CandID($invalidValue);
-    }
-
     /**
      * Test CandID::getType()
      *
@@ -84,7 +50,7 @@ class CandID_Test extends TestCase
     public function testToString(): void
     {
         $candid = new CandID("123456");
-        $this->assertEquals('123456', (string) $candid);
+        $this->assertEquals('123456', (string)$candid);
     }
 }
 

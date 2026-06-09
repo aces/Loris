@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * A TimePointData object is a DTO (data transfer object) to
  * store a representation of data associated with a TimePoint

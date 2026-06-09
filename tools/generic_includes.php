@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This script contains useful generic stuff to include
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -33,3 +33,7 @@ $lorisInstance = new \LORIS\LorisInstance(
         __DIR__ . "/../modules/",
     ],
 );
+// Register S3 stream wrapper if configured
+if (getenv('AWS_ACCESS_KEY_ID') !== false) {
+    (new \LORIS\AWS\Client($lorisInstance))->registerStreamWrapper();
+}

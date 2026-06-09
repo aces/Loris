@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
+
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Main
@@ -87,12 +88,14 @@ class Resolved extends Endpoint implements ETagCalculator
         $sites       = array_values(\Utility::getSiteList(false));
         $visitlabels = array_values(\Utility::getVisitList());
         $projects    = array_values(\Utility::getProjectList());
+        $cohorts     = array_values(\Utility::getCohortList());
 
         return [
             'site'       => array_combine($sites, $sites),
             'instrument' => \NDB_BVL_Instrument::getInstrumentNamesList($loris),
             'visitLabel' => array_combine($visitlabels, $visitlabels),
             'project'    => array_combine($projects, $projects),
+            'cohort'     => array_combine($cohorts, $cohorts),
         ];
     }
 

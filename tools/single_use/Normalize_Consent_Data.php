@@ -14,7 +14,7 @@
  * - candidate_consent_rel
  * - candidate_consent_history
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

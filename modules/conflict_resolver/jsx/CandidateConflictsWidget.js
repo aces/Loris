@@ -1,7 +1,12 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import {useTranslation} from 'react-i18next';
+import 'I18nSetup';
+import jaStrings from '../locale/ja/LC_MESSAGES/conflict_resolver.json';
+import frStrings from '../locale/fr/LC_MESSAGES/conflict_resolver.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/conflict_resolver.json';
 
 /**
  * Renders a representation of the candidate conflicts as a React
@@ -11,68 +16,75 @@ import PropTypes from 'prop-types';
  * @return {object}
  */
 function CandidateConflictsWidget(props) {
+  const {t, i18n} = useTranslation();
+  const [reload, setReload] = useState(0);
+  useEffect(() => {
     const visits = getVisits(props.Conflicts);
     const instruments = getInstruments(props.Conflicts);
-
-    useEffect(() => {
-        c3.generate({
-            bindto: '#conflictschart',
-            data: {
-                columns: getDataBreakdown(visits, instruments, props.Conflicts),
-                type: 'bar',
-                onclick: function(d, el) {
-                    // If the user clicked on a bar in the chart, redirect to
-                    // the specific instrument/visit for this candid.
-                    window.location = props.BaseURL + '/conflict_resolver/'
-                        + '?visitLabel=' + visits[d.index]
-                        + '&instrument=' + d.id
-                        + '&candidateID=' + props.Candidate.Meta.CandID;
-                },
-            },
-            axis: {
-                x: {
-                    type: 'category',
-                    categories: visits,
-                    label: {
-                        text: 'Visit',
-                        position: 'outer-center',
-                    },
-                },
-                y: {
-                    label: {
-                        position: 'outer-middle',
-                        text: 'Number of Conflicts',
-                    },
-                },
-            },
-            legend: {
-                item: {
-                    onclick: function(id) {
-                        // If the user clicked on the legend, redirect to the
-                        // conflict resolver for that instrument across all
-                        // visits
-                        window.location = props.BaseURL + '/conflict_resolver/'
-                            + '?instrument=' + id
-                            + '&candidateID=' + props.Candidate.Meta.CandID;
-                    },
-                },
-            },
-        });
+    i18n.addResourceBundle('ja', 'conflict_resolver', jaStrings);
+    i18n.addResourceBundle('fr', 'conflict_resolver', frStrings);
+    i18n.addResourceBundle('zh', 'conflict_resolver', zhStrings);
+    c3.generate({
+      bindto: '#conflictschart',
+      data: {
+        columns: getDataBreakdown(visits, instruments, props.Conflicts),
+        type: 'bar',
+        onclick: function(d, el) {
+          // If the user clicked on a bar in the chart, redirect to
+          // the specific instrument/visit for this candid.
+          window.location = props.BaseURL + '/conflict_resolver/'
+            + '?visitLabel=' + visits[d.index]
+            + '&instrument=' + d.id
+            + '&candidateID=' + props.Candidate.Meta.CandID;
+        },
+      },
+      axis: {
+        x: {
+          type: 'category',
+          categories: visits,
+          label: {
+            text: t('Visit', {ns: 'loris'}),
+            position: 'outer-center',
+          },
+        },
+        y: {
+          label: {
+            position: 'outer-middle',
+            text: t('Number of Conflicts', {ns: 'conflict_resolver'}),
+          },
+        },
+      },
+      legend: {
+        item: {
+          onclick: function(id) {
+            // If the user clicked on the legend, redirect to the
+            // conflict resolver for that instrument across all
+            // visits
+            window.location = props.BaseURL + '/conflict_resolver/'
+              + '?instrument=' + id
+              + '&candidateID=' + props.Candidate.Meta.CandID;
+          },
+        },
+      },
     });
+    setReload(reload + 1);
+  }, [t]);
 
-    return <div>
-        <div id='conflictschart' />
-        <ul>
-            <li>
-              {'Click on instrument in legend to visit conflict resolver '
-                + 'for that instrument across all visits.'}
-            </li>
-            <li>
-              {'Click on bar in graph to visit conflict resolver '
-                + 'for that visit and instrument combination.'}
-            </li>
-        </ul>
-    </div>;
+  return <div>
+    <div id='conflictschart' />
+    <ul>
+      <li>
+        {t('Click on instrument in legend to visit conflict resolver '
+          + 'for that instrument across all visits.',
+        {ns: 'conflict_resolver'})}
+      </li>
+      <li>
+        {t('Click on bar in graph to visit conflict resolver '
+          + 'for that visit and instrument combination.',
+        {ns: 'conflict_resolver'})}
+      </li>
+    </ul>
+  </div>;
 }
 CandidateConflictsWidget.propTypes = {
   Conflicts: PropTypes.array,
@@ -87,11 +99,11 @@ CandidateConflictsWidget.propTypes = {
  * @return {array}
  */
 function getVisits(data) {
-    let visits = {};
-    for (const row of Object.values(data)) {
-        visits[row.Visit_label] = true;
-    }
-    return Object.keys(visits);
+  let visits = {};
+  for (const row of Object.values(data)) {
+    visits[row.Visit_label] = true;
+  }
+  return Object.keys(visits);
 }
 
 /**
@@ -101,11 +113,11 @@ function getVisits(data) {
  * @return {array}
  */
 function getInstruments(data) {
-    let visits = {};
-    for (const row of Object.values(data)) {
-        visits[row.Test_name] = true;
-    }
-    return Object.keys(visits);
+  let visits = {};
+  for (const row of Object.values(data)) {
+    visits[row.Test_name] = true;
+  }
+  return Object.keys(visits);
 }
 
 /**
@@ -118,36 +130,36 @@ function getInstruments(data) {
  * @return {array} - an array suitable for an C3 data key
  */
 function getDataBreakdown(visits, instruments, conflicts) {
-    let odata = {};
-    // The data needs to be in the format:
-    //    ['instrument1', v1val, v2val, v3val],
-    //    ['instrument2', v1val, v2val, v3val]
-    // etc.
-    // First we convert the conflicts from the format returned
-    // from the DB of [VisitLabel, TestName, Count] (sparsely
-    // populated if count is 0) into an object so we can easily
-    // look up the value, then we go through the list of instruments
-    // and populate an array to return to C3.
-    for (let i = 0; i < conflicts.length; i++) {
-        const conflict = conflicts[i];
-        if (!odata[conflict.Test_name]) {
-            odata[conflict.Test_name] = {};
-        }
-        odata[conflict.Test_name][conflict.Visit_label] = conflict.Conflicts;
+  let odata = {};
+  // The data needs to be in the format:
+  //    ['instrument1', v1val, v2val, v3val],
+  //    ['instrument2', v1val, v2val, v3val]
+  // etc.
+  // First we convert the conflicts from the format returned
+  // from the DB of [VisitLabel, TestName, Count] (sparsely
+  // populated if count is 0) into an object so we can easily
+  // look up the value, then we go through the list of instruments
+  // and populate an array to return to C3.
+  for (let i = 0; i < conflicts.length; i++) {
+    const conflict = conflicts[i];
+    if (!odata[conflict.Test_name]) {
+      odata[conflict.Test_name] = {};
     }
+    odata[conflict.Test_name][conflict.Visit_label] = conflict.Conflicts;
+  }
 
-    let data = [];
+  let data = [];
 
-    for (let i = 0; i < instruments.length; i++) {
-        const tn = instruments[i];
-        let row = [tn];
-        for (let j = 0; j < visits.length; j++) {
-            const visit = visits[j];
-                row.push(Number(odata[tn][visit]));
-        }
-        data.push(row);
+  for (let i = 0; i < instruments.length; i++) {
+    const tn = instruments[i];
+    let row = [tn];
+    for (let j = 0; j < visits.length; j++) {
+      const visit = visits[j];
+      row.push(Number(odata[tn][visit]));
     }
-    return data;
+    data.push(row);
+  }
+  return data;
 }
 
 export default CandidateConflictsWidget;

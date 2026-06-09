@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements the visit's instruments endpoint class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -139,7 +140,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
 
             $user = $request->getAttribute('user');
-            if ($instrument->_hasAccess($user) == false) {
+            if ($instrument->isAccessibleBy($user) == false) {
                 return new \LORIS\Http\Response\JSON\Forbidden();
             };
         } catch (\Exception $e) {
@@ -202,7 +203,7 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                     '',
                     true
                 );
-                if (!$instrument->_hasAccess($user)) {
+                if (!$instrument->isAccessibleBy($user)) {
                     return new \LORIS\Http\Response\JSON\Forbidden();
                 }
             } catch (\NotFound $e) {

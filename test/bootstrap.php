@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * PHPUnit bootstrap file
  *
@@ -12,7 +13,7 @@
  * NOTE: It is best to run tests using integration.sh and unittests.sh
  *          bash scripts
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Main

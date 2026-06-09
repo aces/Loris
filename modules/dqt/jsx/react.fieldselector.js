@@ -209,7 +209,7 @@ class FieldItem extends Component {
       // Add download icon if field is downloadable
       downloadIcon = (
         <span className="glyphicon glyphicon-download-alt pull-right"
-              title="Downloadable File"/>
+          title="Downloadable File"/>
       );
     }
     // Don't display the category in the field selector
@@ -219,11 +219,11 @@ class FieldItem extends Component {
 
     return (
       <div className={classList}
-           onClick={this.rowClickHandler}
-           style={{
-             cursor: 'pointer',
-             maxHeight: '200px',
-           }}>
+        onClick={this.rowClickHandler}
+        style={{
+          cursor: 'pointer',
+          maxHeight: '200px',
+        }}>
         <div className="col-xs-8">
           <h4 className="list-group-item-heading col-xs-12">
             {displayName}{criteria}{downloadIcon}
@@ -231,12 +231,12 @@ class FieldItem extends Component {
           <span className="col-xs-12">{this.props.Description}</span>
         </div>
         <div className="col-xs-4 fieldVisitsRow"
-             style={{
-               maxHeight: '180px',
-               overflowY: 'scroll',
-               visibility: visitsVisible ? 'visible' : 'hidden',
-             }}
-             onClick={(e) => e.stopPropagation()}>
+          style={{
+            maxHeight: '180px',
+            overflowY: 'scroll',
+            visibility: visitsVisible ? 'visible' : 'hidden',
+          }}
+          onClick={(e) => e.stopPropagation()}>
           {multiselect}
         </div>
       </div>
@@ -334,16 +334,16 @@ class FieldList extends Component {
 
       fields.push(
         <FieldItem key={fieldName}
-                   FieldName={fieldName}
-                   Category={this.props.category}
-                   Description={desc}
-                   ValueType={type}
-                   onClick={this.onFieldClick.bind(this, fieldName, isFile)}
-                   selected={selected}
-                   downloadable={isFile}
-                   Visits={this.props.Visits}
-                   selectedVisits={selectedFields}
-                   fieldVisitSelect={this.props.fieldVisitSelect}
+          FieldName={fieldName}
+          Category={this.props.category}
+          Description={desc}
+          ValueType={type}
+          onClick={this.onFieldClick.bind(this, fieldName, isFile)}
+          selected={selected}
+          downloadable={isFile}
+          Visits={this.props.Visits}
+          selectedVisits={selectedFields}
+          fieldVisitSelect={this.props.fieldVisitSelect}
         />,
       );
       if (fields.length >= rowsPerPage) {
@@ -354,9 +354,9 @@ class FieldList extends Component {
     return (
       <div className="list-group col-md-11 col-sm-12">
         <PaginationLinks Total={filteredItems.length}
-                         Active={this.props.PageNumber}
-                         onChangePage={this.props.changePage}
-                         RowsPerPage={rowsPerPage}/>
+          Active={this.props.PageNumber}
+          onChangePage={this.props.changePage}
+          RowsPerPage={rowsPerPage}/>
         {fields}
       </div>
     );
@@ -431,14 +431,14 @@ class FieldSelector extends Component {
         + '?Module=dqt'
         + '&script=datadictionary.php'
         + '&category=' + category)
-      .then((resp) => resp.json())
-      .then( (data) => {
+        .then((resp) => resp.json())
+        .then( (data) => {
           let cf = this.state.categoryFields;
           cf[category] = data;
           this.setState({
             categoryFields: cf,
           });
-      });
+        });
     }
     this.setState({
       selectedCategory: category,
@@ -455,7 +455,7 @@ class FieldSelector extends Component {
     let filter = evt.currentTarget.value.toLowerCase();
     let filteredItems = this.state.categoryFields[
       this.state.selectedCategory
-      ].filter((item) => {
+    ].filter((item) => {
       let fieldName = item.key[1];
       let desc = item.value.Description;
       return (fieldName.toLowerCase().indexOf(filter) != -1 ||
@@ -509,13 +509,13 @@ class FieldSelector extends Component {
     for (i in this.state.categoryFields[this.state.selectedCategory]) {
       if (this.state.categoryFields[
         this.state.selectedCategory
-        ].hasOwnProperty(i)) {
+      ].hasOwnProperty(i)) {
         fieldName = this.state.categoryFields[
           this.state.selectedCategory
-          ][i].key[1];
+        ][i].key[1];
         category = this.state.categoryFields[
           this.state.selectedCategory
-          ][i].key[0];
+        ][i].key[0];
         if (this.props.selectedFields[category]
           && this.props.selectedFields[category][fieldName]) {
           isFile = (this.state.categoryFields[category][i].value.IsFile)
@@ -539,14 +539,14 @@ class FieldSelector extends Component {
     ) {
       for (let field in this.props.selectedFields[
         this.state.selectedCategory
-        ]) {
+      ]) {
         if (this.props.selectedFields[
           this.state.selectedCategory
-          ].hasOwnProperty(field)
+        ].hasOwnProperty(field)
         ) {
           if (this.props.selectedFields[
             this.state.selectedCategory
-            ].hasOwnProperty(field)
+          ].hasOwnProperty(field)
           ) {
             if (field === 'allVisits') {
               continue;
@@ -554,7 +554,7 @@ class FieldSelector extends Component {
             if (action === 'check'
               && !this.props.selectedFields[
                 this.state.selectedCategory
-                ][field][visit]
+              ][field][visit]
             ) {
               this.props.fieldVisitSelect(
                 action,
@@ -564,7 +564,7 @@ class FieldSelector extends Component {
             } else if (action === 'uncheck'
               && this.props.selectedFields[
                 this.state.selectedCategory
-                ][field][visit]
+              ][field][visit]
             ) {
               this.props.fieldVisitSelect(
                 action,
@@ -622,7 +622,7 @@ class FieldSelector extends Component {
       for (let i = 0; i < this.props.items.length; i++) {
         instruments[
           this.props.items[i].category
-          ] = this.props.items[i].category;
+        ] = this.props.items[i].category;
       }
     }
     let categoryVisits = {};
@@ -638,10 +638,10 @@ class FieldSelector extends Component {
           if (this.props.selectedFields[this.state.selectedCategory]
             && this.props.selectedFields[
               this.state.selectedCategory
-              ].allVisits[key]
+            ].allVisits[key]
             && this.props.selectedFields[
               this.state.selectedCategory
-              ].allVisits[key] == selectedFieldsCount) {
+            ].allVisits[key] == selectedFieldsCount) {
             categoryVisits[key] = true;
           } else {
             categoryVisits[key] = false;
@@ -668,39 +668,39 @@ class FieldSelector extends Component {
           />
         </div>
         <div className="container-fluid"
-             style={{
-               visibility: this.state.selectedCategory ? 'visible' : 'hidden',
-               margin: '0 auto',
-               maxWidth: '800px',
-             }}>
+          style={{
+            visibility: this.state.selectedCategory ? 'visible' : 'hidden',
+            margin: '0 auto',
+            maxWidth: '800px',
+          }}>
           <div className="form-group has-feedback">
             <div className="input-group">
-            <span className="input-group-addon"
-                  style={{
-                    height: '40px',
-                    backgroundColor: '#FFFFFF',
-                    borderTopLeftRadius: '20px',
-                    borderBottomLeftRadius: '20px',
-                  }}
-            >
-              <span className="glyphicon glyphicon-search"/>
-            </span>
+              <span className="input-group-addon"
+                style={{
+                  height: '40px',
+                  backgroundColor: '#FFFFFF',
+                  borderTopLeftRadius: '20px',
+                  borderBottomLeftRadius: '20px',
+                }}
+              >
+                <span className="glyphicon glyphicon-search"/>
+              </span>
               <input type="text"
-                     className="form-control"
-                     onChange={this.filterChange}
-                     value={this.state.filter}
-                     ref={(ref) => this.searchFieldsInputField = ref}
-                     onFocus={(event) => {
-                       setTimeout(() => this.onFocus(event), 0);
-                     }}
-                     style={{
-                       height: '40px',
-                       borderLeft: '0',
-                       fontSize: '14pt',
-                       borderTopRightRadius: '20px',
-                       borderBottomRightRadius: '20px',
-                     }}
-                     placeholder={'Search within Fields'}
+                className="form-control"
+                onChange={this.filterChange}
+                value={this.state.filter}
+                ref={(ref) => this.searchFieldsInputField = ref}
+                onFocus={(event) => {
+                  setTimeout(() => this.onFocus(event), 0);
+                }}
+                style={{
+                  height: '40px',
+                  borderLeft: '0',
+                  fontSize: '14pt',
+                  borderTopRightRadius: '20px',
+                  borderBottomRightRadius: '20px',
+                }}
+                placeholder={'Search within Fields'}
               />
             </div>
           </div>
@@ -725,13 +725,13 @@ class FieldSelector extends Component {
           <div className="col-md-4 col-sm-3">
             <div style={{position: 'absolute'}}>
               <button type="button"
-                      className="btn btn-primary"
-                      onClick={this.addAll}>
+                className="btn btn-primary"
+                onClick={this.addAll}>
                 Add All
               </button>
               <button type="button"
-                      className="btn btn-primary"
-                      onClick={this.deleteAll}>
+                className="btn btn-primary"
+                onClick={this.deleteAll}>
                 Remove All
               </button>
             </div>

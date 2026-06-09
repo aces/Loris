@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Provides a default way to determine whether a process is running
  * or not.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category ServerProcessLauncher
  * @package  Loris

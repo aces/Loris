@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file defines a MapIterator implementation.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Data
  * @package    Main

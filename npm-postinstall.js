@@ -123,5 +123,5 @@ getConfig.stdout.on('data', (data) => {
 });
 
 getConfig.on('error', (error) => {
-    console.error(error);
+  console.error(error);
 });

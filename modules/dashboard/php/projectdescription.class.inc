@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\dashboard;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -20,7 +21,8 @@ class ProjectDescription extends \LORIS\Http\Endpoint
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $desc = $this->loris->getConfiguration()->getSetting('projectDescription');
+        $settings = \NDB_Factory::singleton()->settings();
+        $desc     = $settings->projectDescription($request->getAttribute("user"));
         return new \LORIS\Http\Response\JSON\OK(['Description' => $desc]);
     }
 
@@ -31,7 +33,8 @@ class ProjectDescription extends \LORIS\Http\Endpoint
      *
      * @return bool
      */
-    function _hasAccess(\User $user)
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return true;
     }

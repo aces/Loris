@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Encapsulates informations and methods regarding a process.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category TaskManager
  * @package  Loris

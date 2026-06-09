@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a StringStream, a simple wrapper which converts
  * a PHP string into a PSR7 StreamInterface compatible with other PSR7
  * interfaces.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category PSR7
  * @package  Http

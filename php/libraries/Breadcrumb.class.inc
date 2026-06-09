@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * This file defines a Breadcrumb element.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Breadcrumbs
  * @package  User_Interface
@@ -16,7 +17,7 @@ namespace LORIS;
 /**
  * A Breadcrumb consists of a label and an hyperlink.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Breadcrumbs
  * @package  User_Interface

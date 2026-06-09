@@ -21,8 +21,13 @@ class Card extends Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.state = {hasError: false};
   }
 
+  static getDerivedStateFromError(error) {
+    console.error(error);
+    return {hasError: true};
+  }
   /**
    * Delegate clicks on the card to the onClick handler
    *
@@ -49,10 +54,10 @@ class Card extends Component {
       boxSizing: 'border-box',
     };
     if (this.props.style) {
-        divStyling = {...divStyling, ...this.props.style};
+      divStyling = {...divStyling, ...this.props.style};
     }
     if (this.props.cardSize) {
-        divStyling.height = this.props.cardSize;
+      divStyling.height = this.props.cardSize;
     }
     return (
       <div style={divStyling}>
@@ -60,15 +65,19 @@ class Card extends Component {
           id={this.props.id}
           title={this.props.title}
           initCollapsed={this.props.initCollapsed}
-            style={{overflow: 'auto'}}
-           panelSize={this.props.cardSize}
+          style={{overflow: 'auto'}}
+          panelSize={this.props.cardSize}
           collapsing={this.props.collapsing}
         >
           <div
             onClick={this.handleClick}
             style={cursorStyle}
           >
-            {this.props.children}
+            {this.state.hasError ? <div>
+              <strong>Something went wrong rendering this panel.
+                          Please open a bug report.</strong>
+            </div>
+              : this.props.children}
           </div>
         </Panel>
       </div>

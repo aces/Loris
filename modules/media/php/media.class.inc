@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\media;
 
 /**
@@ -8,7 +9,7 @@ namespace LORIS\media;
  * Displays a list of media files and control panel to search them and upload
  * new ones.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Media
@@ -25,7 +26,8 @@ class Media extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -158,6 +160,13 @@ class Media extends \DataFrameworkMenu
             // We don't filter out hidden files.
             return $provisioner;
         }
+
+        if (!$user->hasPermission('access_all_profiles')) {
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
+        }
+
         return $provisioner->filter(new HideFileFilter());
     }
 

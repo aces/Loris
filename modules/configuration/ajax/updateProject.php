@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file is used by the Configuration module to update
  * or insert values into the Project table.
@@ -15,7 +16,7 @@
 $user = \User::singleton();
 if (!$user->hasPermission('config')) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    exit(0);
 }
 
 $client = new NDB_Client();
@@ -41,7 +42,7 @@ if ($projectID == 'new') {
     if (in_array($_POST['Name'], $ProjectList, true)) {
         http_response_code(409);
         echo json_encode(['error' => 'Conflict']);
-        exit;
+        exit(0);
     }
 
     if (empty($_POST['Name'])
@@ -50,10 +51,10 @@ if ($projectID == 'new') {
     ) {
         http_response_code(400);
         echo json_encode(['error' => 'Bad Request']);
-        exit;
+        exit(0);
     }
 
-    $project = \Project::createNew($projectName, $projectAlias, $recTarget);
+    $project = \Project::createNew($projectName, $projectAlias, intval($recTarget));
     $db->insert(
         'user_project_rel',
         ["UserID"=>$user->getId(),"ProjectID"=>$project->getId()]
@@ -65,11 +66,11 @@ if ($projectID == 'new') {
     ) {
         http_response_code(400);
         echo json_encode(['error' => 'Bad Request']);
-        exit;
+        exit(0);
     }
 
     // Update Project fields
-    $project = \Project::getProjectFromID(new \ProjectID($projectID));
+    $project = \Project::getProjectFromID(\ProjectID::singleton(intval($projectID)));
     $project->updateName($projectName);
     $project->updateAlias($projectAlias);
     $project->updateRecruitmentTarget($recTarget);
@@ -98,5 +99,5 @@ if (!empty($cohortIDs)) {
 
 http_response_code(200);
 echo json_encode(['ok' => 'Success']);
-exit;
+exit(0);
 

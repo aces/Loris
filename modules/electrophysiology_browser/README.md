@@ -34,6 +34,10 @@ electrophysiology_browser_view_site
 electrophysiology_browser_edit_annotations
  - This permission allows the user to add, edit, and delete annotations for raw or derived datasets
 
+## Configuration
+
+The electrophysiology browser displays the imaging file types present in the `ephys_browser_file_type` table.
+
 ## Download
 
 You can download all the files related to a recording (channel information,
@@ -47,5 +51,6 @@ New events or edits to existing events made through the browser must also be upd
 
 The visualization components require Protocol Buffers v3.0.0 or higher.
 For install instructions, you can refer to the Protocol Buffers GitHub page: https://github.com/protocolbuffers/protobuf
+Note: Protocol Buffers > v3.21 does not include the javascript compiler in the main repository anymore. To install it on your system, run `npm install -g protoc-gen-js`.
 
 To enable the visualization components, set the `useEEGBrowserVisualizationComponents` config (Configuration/GUI) to true and run `make dev` or `npm install && npm run compile` from the loris root directory.

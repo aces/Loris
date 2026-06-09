@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This tool scores any registered instrument that was built using the
  * NDB_BVL_Instrument class and that has a working score() method.
@@ -123,7 +124,7 @@ if ($test_name== 'all') {
 $testNames = $DB->pselect($query, $qparams);
 
 // if nothing is returned than the instrument DNE
-if (!is_array($testNames) || count($testNames)==0) {
+if (count($testNames) === 0) {
     printError("Invalid Instrument ($test_name)!");
     return false;
 }
@@ -135,18 +136,19 @@ foreach ($testNames as $test) {
     logMessage("------------------------------");
 
     $query = "
-        SELECT s.CandID, 
-            s.Visit_label, 
-            s.ID as SessionID, 
-            f.CommentID, 
+        SELECT c.CandID,
+            s.Visit_label,
+            s.ID as SessionID,
+            f.CommentID,
             c.PSCID
-        FROM candidate c 
-            JOIN session s ON c.CandID=s.CandID
+        FROM candidate c
+            JOIN session s ON c.ID=s.CandidateID
             JOIN flag f ON s.ID=f.SessionID
-        WHERE s.Active = 'Y' 
-            AND c.Active='Y' 
-            AND f.Test_name = :tnm 
-            AND f.Administration <> 'None' 
+            JOIN test_names tn ON tn.ID = f.TestID
+        WHERE s.Active = 'Y'
+            AND c.Active='Y'
+            AND tn.Test_name = :tnm
+            AND f.Administration <> 'None'
             AND f.Administration IS NOT NULL
             ";
 
@@ -154,7 +156,7 @@ foreach ($testNames as $test) {
 
     // only want to score one instrument for one candidate
     if ($action=='one') {
-        $query .= " AND s.ID = :sid AND s.CandID= :cid";
+        $query .= " AND s.ID = :sid AND c.CandID= :cid";
         $params = array_merge(
             $params,
             [
@@ -172,7 +174,7 @@ foreach ($testNames as $test) {
     $instrumentMetaData = $DB->pselect($query, $params);
 
     // return error if no candidates/timepoint matched the args
-    if (!is_array($instrumentMetaData) || empty($instrumentMetaData)) {
+    if (count($instrumentMetaData) === 0) {
         // given that the tool might be run with all
         // $candID and $sessionID might not be defined
         if (!empty($candID) && !empty($sessionID)) {
@@ -296,15 +298,15 @@ function showHelp()
     echo "Usage:
     score_instrument.php [help | -h]                                       "
     . "-> displays this message
-            
+
     score_instrument.php <test_name> one <candID> <sessionID> [inprogress] "
     . "-> scores test only for this candidate
-            
+
     score_instrument.php <test_name> all [inprogress]                      "
     . "-> scores test for all candidates meeting the necessary criteria
-            
+
     score_instrument.php all [inprogress]                                  "
-    . "-> scores all instruments for all candidates meeting the necessary criteria 
+    . "-> scores all instruments for all candidates meeting the necessary criteria
     \n\n";
 
     die();

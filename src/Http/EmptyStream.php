@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * File contains the EmptyStream implementation.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category PSR7
  * @package  Http

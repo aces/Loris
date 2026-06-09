@@ -1,0 +1,184 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "DICOM Archive"
+msgstr ""
+
+msgid "Patient ID"
+msgstr ""
+
+msgid "Patient Name"
+msgstr ""
+
+msgid "Acquisition Date"
+msgstr ""
+
+msgid "Archive Location"
+msgstr ""
+
+msgid "Metadata"
+msgstr ""
+
+msgid "MRI Browser"
+msgstr ""
+
+msgid "Series UID"
+msgstr ""
+
+msgid "TarchiveID"
+msgstr ""
+
+msgid "SessionID"
+msgstr ""
+
+msgid "CenterID"
+msgstr ""
+
+msgid "IsPhantom"
+msgstr ""
+
+msgid "Tarchive Metadata"
+msgstr ""
+
+msgid "Acquisition ID"
+msgstr ""
+
+msgid "Patient Birthdate"
+msgstr ""
+
+msgid "Patient Biological Sex"
+msgstr ""
+
+msgid "Date acquired"
+msgstr ""
+
+msgid "Scanner Model"
+msgstr ""
+
+msgid "Serial Number"
+msgstr ""
+
+msgid "Scanner Software Version"
+msgstr ""
+
+msgid "Acquired at"
+msgstr ""
+
+msgid "Number of Acquisitions"
+msgstr ""
+
+msgid "Archived by"
+msgstr ""
+
+msgid "Last update"
+msgstr ""
+
+msgid "Never"
+msgstr ""
+
+msgid "Summary type version"
+msgstr ""
+
+msgid "Source location"
+msgstr ""
+
+msgid "Archive type version"
+msgstr ""
+
+msgid "Archive location"
+msgstr ""
+
+msgid "Archiving log"
+msgstr ""
+
+msgid "md5sum of Archive"
+msgstr ""
+
+msgid "md5sum of Dicom unzipped"
+msgstr ""
+
+msgid "Series"
+msgstr ""
+
+msgid "Show/Hide series"
+msgstr ""
+
+msgid "Series Number"
+msgstr ""
+
+msgid "Series Description"
+msgstr ""
+
+msgid "Protocol Name"
+msgstr ""
+
+msgid "Sequence Name"
+msgstr ""
+
+msgid "Echo Time"
+msgstr ""
+
+msgid "Repetition Time"
+msgstr ""
+
+msgid "Inversion Time"
+msgstr ""
+
+msgid "Slice Thickness"
+msgstr ""
+
+msgid "Phase Encoding"
+msgstr ""
+
+msgid "Number of Files"
+msgstr ""
+
+msgid "SeriesUID"
+msgstr ""
+
+msgid "Files"
+msgstr ""
+
+msgid "Show/Hide files"
+msgstr ""
+
+msgid "SeriesNumber"
+msgstr ""
+
+msgid "FileNumber"
+msgstr ""
+
+msgid "EchoNumber"
+msgstr ""
+
+msgid "Md5Sum"
+msgstr ""
+
+msgid "FileName"
+msgstr ""
+
+msgid "INVALID - HIDDEN"
+msgstr ""
+
+msgid "View Details"
+msgstr ""
+
+msgid "View Images"
+msgstr ""

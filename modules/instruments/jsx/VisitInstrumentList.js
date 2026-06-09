@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
+import jaStrings from '../locale/ja/LC_MESSAGES/instruments.json';
+import frStrings from '../locale/fr/LC_MESSAGES/instruments.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/instruments.json';
 
 /**
  * A VisitInstrumentList is a type of React component which displays
@@ -10,290 +15,319 @@ import PropTypes from 'prop-types';
  * to the timepoint_list page.
  */
 class VisitInstrumentList extends Component {
-    /**
-     * Construct the VisitInstrumentList
-     *
-     * @param {object} props - React props
-     */
-     constructor(props) {
-         super(props);
-         this.state = {
-             expanded: false,
-             hover: false,
-         };
-         this.toggleExpanded = this.toggleExpanded.bind(this);
-         this.toggleHover = this.toggleHover.bind(this);
-         this.getInstruments = this.getInstruments.bind(this);
-         this.calcAge = this.calcAge.bind(this);
-     }
+  /**
+   * Construct the VisitInstrumentList
+   *
+   * @param {object} props - React props
+   */
+  constructor(props) {
+    super(props);
+    i18n.addResourceBundle('ja', 'instruments', jaStrings);
+    i18n.addResourceBundle('fr', 'instruments', frStrings);
+    i18n.addResourceBundle('zh', 'instruments', zhStrings);
+    this.state = {
+      expanded: false,
+      hover: false,
+    };
+    this.toggleExpanded = this.toggleExpanded.bind(this);
+    this.toggleHover = this.toggleHover.bind(this);
+    this.getInstruments = this.getInstruments.bind(this);
+    this.calcAge = this.calcAge.bind(this);
+  }
 
-    /**
-     * Toggle determine whether this item is being hovered over.
-     * This is used for styling the background.
-     */
-     toggleHover() {
-         this.setState({hover: !this.state.hover});
-     }
+  /**
+   * Toggle determine whether this item is being hovered over.
+   * This is used for styling the background.
+   */
+  toggleHover() {
+    this.setState({hover: !this.state.hover});
+  }
 
-    /**
-     * Calculate the age at a visit.
-     *
-     * @param {string} dob - The date of birth as a string
-     * @param {string} visit - The visit date as a string
-     * @return {string} - A human readable description of the age
-     */
-     calcAge(dob, visit) {
-        let dobdate = new Date(dob);
-        let vdate = new Date(visit);
-        let years = vdate.getFullYear()-dobdate.getFullYear();
-        let months = years*12 + vdate.getMonth() - dobdate.getMonth();
-        if (months <= 36) {
-            return months + ' months old';
-        }
-        return years + ' years old';
+  /**
+   * Calculate the age at a visit.
+   *
+   * @param {string} dob - The date of birth as a string
+   * @param {string} visit - The visit date as a string
+   * @return {string} - A human readable description of the age
+   */
+  calcAge(dob, visit) {
+    let dobdate = new Date(dob);
+    let vdate = new Date(visit);
+    let years = vdate.getFullYear()-dobdate.getFullYear();
+    let months = years*12 + vdate.getMonth() - dobdate.getMonth();
+
+    if (months <= 36) {
+      return this.props.t(
+        '{{months}} months old',
+        {ns: 'loris', months: months}
+      );
     }
+    return this.props.t(
+      '{{years}} years old',
+      {ns: 'loris', years: years}
+    );
+  }
 
-    /**
-     * Toggle whether instruments are displayed.
-     */
-    toggleExpanded() {
-        // Only get the instruments the first time, otherwise just reuse
-        // what the data from state.
-        if (!this.state.expanded === true && !this.state.instruments) {
-            this.getInstruments();
-        }
-        this.setState({expanded: !this.state.expanded});
+  /**
+   * Toggle whether instruments are displayed.
+   */
+  toggleExpanded() {
+    // Only get the instruments the first time, otherwise just reuse
+    // what the data from state.
+    if (!this.state.expanded === true && !this.state.instruments) {
+      this.getInstruments();
     }
+    this.setState({expanded: !this.state.expanded});
+  }
 
-    /**
-     * Get a list of instruments and their data entry completion percentage.
-     *
-     * The list of instruments will be stored in the component's state.
-     */
-    getInstruments() {
-        fetch(this.props.BaseURL + '/instruments/visitsummary?CandID='
+  /**
+   * Get a list of instruments and their data entry completion percentage.
+   *
+   * The list of instruments will be stored in the component's state.
+   */
+  getInstruments() {
+    fetch(this.props.BaseURL + '/instruments/visitsummary?CandID='
             + this.props.Candidate.Meta.CandID
             + '&VisitLabel=' + this.props.Visit.Meta.Visit)
-        .then((response) => response.json())
-        .then((json) => {
-            this.setState({instruments: json});
-        });
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({instruments: json});
+      });
+  }
+
+  /**
+   * React lifecycle method. Render the component
+   *
+   * @return {object} - The rendered JSX
+   */
+  render() {
+    const dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        style: 'short',
+        timeZone: 'UTC',
+
+      }
+    );
+    let style = {
+      marginRight: '0.5%',
+      textAlign: 'center',
+      boxSizing: 'border-box',
+      transition: 'flex 0.3s, width 0.3s ease-out, height 0.3s ease-out',
+      width: '98%',
+      marginBottom: '1ex',
+      backgroundColor: 'transparent',
+    };
+
+    let vstatus = this.props.t('Not Started', {ns: 'loris'});
+    let bg = '#ea9999';
+    const statusString = (s) => this.props.t(s, {ns: 'loris'})
+      + '—' + this.props.t(this.props.Visit.Stages[s].Status, {ns: 'loris'});
+    if (this.props.Visit.Stages.Approval) {
+      vstatus = statusString('Approval');
+      bg = '#b6d7a8';
+    } else if (this.props.Visit.Stages.Visit) {
+      vstatus = statusString('Visit');
+      bg = '#ffe599';
+    } else if (this.props.Visit.Stages.Screening) {
+      vstatus = statusString('Screening');
+      bg = '#f9cb9c';
     }
 
-    /**
-     * React lifecycle method. Render the component
-     *
-     * @return {object} - The rendered JSX
-     */
-    render() {
-        let style = {
-            marginRight: '0.5%',
-            textAlign: 'center',
-            boxSizing: 'border-box',
-            transition: 'flex 0.3s, width 0.3s ease-out, height 0.3s ease-out',
-            width: '98%',
-            marginBottom: '1ex',
-            backgroundColor: 'transparent',
-        };
+    let clickEnabled = true;
+    if (!this.state.expanded) {
+      if (vstatus === 'Not Started') {
+        style.cursor = 'not-allowed';
+        clickEnabled = false;
+      } else {
+        style.cursor = 'pointer';
+      }
+      if (this.state.hover) {
+        style.backgroundColor = 'rgb(235, 235, 235)';
+      }
+    }
 
-        let vstatus = 'Not Started';
-        let bg = '#ea9999';
-        if (this.props.Visit.Stages.Approval) {
-            vstatus = 'Approval - ' + this.props.Visit.Stages.Approval.Status;
-            bg = '#b6d7a8';
-        } else if (this.props.Visit.Stages.Visit) {
-            vstatus = 'Visit - ' + this.props.Visit.Stages.Visit.Status;
-            bg = '#ffe599';
-        } else if (this.props.Visit.Stages.Screening) {
-            vstatus = 'Screening - ' + this.props.Visit.Stages.Screening.Status;
-            bg = '#f9cb9c';
-        }
+    let flexcontainer = {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'nowrap',
+      width: '100%',
+      height: '100%',
+      border: '1px solid #E4EBF2',
+      borderTopRightRadius: '10px',
+      borderBottomRightRadius: '10px',
+      alignItems: 'center',
+    };
+    flexcontainer.justifyContent = 'flex-start';
 
-        let clickEnabled = true;
-        if (!this.state.expanded) {
-            if (vstatus === 'Not Started') {
-                style.cursor = 'not-allowed';
-                clickEnabled = false;
-            } else {
-                style.cursor = 'pointer';
-            }
-            if (this.state.hover) {
-                style.backgroundColor = 'rgb(235, 235, 235)';
-            }
-        }
+    let center = {
+      display: 'flex',
+      width: '12%',
+      height: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
 
-        let flexcontainer = {
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'nowrap',
-            width: '100%',
-            height: '100%',
-            border: '1px solid #E4EBF2',
-            borderTopRightRadius: '10px',
-            borderBottomRightRadius: '10px',
-            alignItems: 'center',
-        };
-        flexcontainer.justifyContent = 'flex-start';
+    const termstyle = {paddingLeft: '2em', paddingRight: '2em'};
 
-        let center = {
-            display: 'flex',
-            width: '12%',
-            height: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
-        };
-
-        const termstyle = {paddingLeft: '2em', paddingRight: '2em'};
-
-        let instruments = null;
-        if (!this.state.instruments) {
-            instruments = 'Loading...';
-        } else {
-            instruments = this.state.instruments.map((instrument) => {
-                let conflicterror = null;
-                if (instrument.NumOfConflict != 0) {
-                    conflicterror = (<a href={
-                        this.props.BaseURL
+    let instruments = null;
+    if (!this.state.instruments) {
+      instruments = 'Loading...';
+    } else {
+      instruments = this.state.instruments.map((instrument) => {
+        let conflicterror = null;
+        if (instrument.NumOfConflict != 0) {
+          conflicterror = (<a href={
+            this.props.BaseURL
                         + '/conflict_resolver/?candidateID='
                         + this.props.Candidate.Meta.CandID
                         + '&instrument=' + instrument.Test_name
                         + '&visitLabel=' + this.props.Visit.Meta.Visit}>
-                        <i style={{color: 'red'}}
-                           className="fas fa-exclamation-triangle"></i>
-                    </a>);
-                }
-                return (<tr key={instrument.Test_name}>
-                    <td style={{textAlign: 'left'}}>
-                        <a href={this.props.BaseURL
+            <i style={{color: 'red'}}
+              className="fas fa-exclamation-triangle"></i>
+          </a>);
+        }
+        return (<tr key={instrument.Test_name}>
+          <td style={{textAlign: 'left'}}>
+            <a href={this.props.BaseURL
                             + '/instruments/' + instrument.Test_name
                             + '?commentID='
                             + instrument.CommentID}>
-                            {instrument.Test_name}
-                        </a>
-                    </td>
-                    <td>
-                        <progress
-                            value={instrument.Completion}
-                            max='100'>
-                            {instrument.Completion + '%'}
-                        </progress>
-                    </td>
-                    <td>{conflicterror}</td>
-                    </tr>);
-            });
+              {instrument.Test_name}
+            </a>
+          </td>
+          <td>
+            <progress
+              value={instrument.Completion}
+              max='100'>
+              {instrument.Completion + '%'}
+            </progress>
+          </td>
+          <td>{conflicterror}</td>
+        </tr>);
+      });
 
-            if (this.state.instruments.length === 0) {
-                instruments = (
-                    <div>
-                        {'Visit has no registered instruments in test battery.'}
-                    </div>
-                );
-            } else {
-                instruments = (<div>
-                    <h5>Instruments</h5>
-                        <table
-                            className="table table-hover table-bordered"
-                            style={{width: '95%'}}
-                        >
-                            <thead>
-                                <tr>
-                                    <th>Instrument</th>
-                                    <th style={{textAlign: 'center'}}>
-                                        Completion
-                                    </th>
-                                    <th style={{textAlign: 'center'}}>
-                                        Conflicts?
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {instruments}
-                            </tbody>
-                        </table>
-                    </div>);
+      if (this.state.instruments.length === 0) {
+        instruments = (
+          <div>
+            {this.props.t(
+              'Visit has no registered instruments in test battery.',
+              {ns: 'instruments'})
             }
-        }
-        if (!this.state.expanded || vstatus === 'Not Started') {
-            instruments = null;
-        }
-
-        // We don't show the visit date of age if it's not possible because
-        // the visit wasn't started.
-        let vdate = null;
-        let vage = null;
-        if (this.props.Visit.Stages.Visit) {
-          vdate = (<div style={termstyle}>
-                <dt>Date Of Visit</dt>
-                <dd>{this.props.Visit.Stages.Visit.Date}</dd>
-            </div>);
-          vage = (<div style={termstyle}>
-                      <dt>Age</dt>
-                      <dd>{this.calcAge(
-                              this.props.Candidate.Meta.DoB,
-                              this.props.Visit.Stages.Visit.Date
-                      )}</dd>
-                </div>);
-        }
-        const defliststyle = {
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            width: '100%',
-            justifyContent: 'space-between',
-            margin: 0,
-            padding: '1ex',
-        };
-
-        return (
-          <div
-              style={style}
-              onClick={clickEnabled ? this.toggleExpanded : null}
-              onMouseEnter={this.toggleHover}
-              onMouseLeave={this.toggleHover}
+          </div>
+        );
+      } else {
+        instruments = (<div>
+          <h5>{this.props.t(
+            'Instrument',
+            {ns: 'loris', count: this.state.instruments.length}
+          )}</h5>
+          <table
+            className="table table-hover table-bordered"
+            style={{width: '95%'}}
           >
-            <div style={flexcontainer}>
-                <div style={{background: bg, width: '1%', height: '100%'}}>
-                </div>
-                <div style={center}>
-                    <h4 style={{width: '100%', padding: 0, margin: 0}}>
-                        <a href={this.props.BaseURL
+            <thead>
+              <tr>
+                <th>{this.props.t('Instrument', {ns: 'loris', count: 1})}</th>
+                <th style={{textAlign: 'center'}}>
+                  {this.props.t('Completion', {ns: 'instruments'})}
+                </th>
+                <th style={{textAlign: 'center'}}>
+                  {this.props.t('Conflicts?', {ns: 'instruments'})}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {instruments}
+            </tbody>
+          </table>
+        </div>);
+      }
+    }
+    if (!this.state.expanded || vstatus === 'Not Started') {
+      instruments = null;
+    }
+
+    // We don't show the visit date of age if it's not possible because
+    // the visit wasn't started.
+    let vdate = null;
+    let vage = null;
+    if (this.props.Visit.Stages.Visit) {
+      vdate = (<div style={termstyle}>
+        <dt>{this.props.t('Date Of Visit', {ns: 'loris'})}</dt>
+        <dd>{dateFormatter.format(
+          new Date(this.props.Visit.Stages.Visit.Date)
+        )}</dd>
+      </div>);
+      vage = (<div style={termstyle}>
+        <dt>{this.props.t('Age', {ns: 'loris'})}</dt>
+        <dd>{this.calcAge(
+          this.props.Candidate.Meta.DoB,
+          this.props.Visit.Stages.Visit.Date
+        )}</dd>
+      </div>);
+    }
+    const defliststyle = {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      width: '100%',
+      justifyContent: 'space-between',
+      margin: 0,
+      padding: '1ex',
+    };
+
+    return (
+      <div
+        style={style}
+        onClick={clickEnabled ? this.toggleExpanded : null}
+        onMouseEnter={this.toggleHover}
+        onMouseLeave={this.toggleHover}
+      >
+        <div style={flexcontainer}>
+          <div style={{background: bg, width: '1%', height: '100%'}}>
+          </div>
+          <div style={center}>
+            <h4 style={{width: '100%', padding: 0, margin: 0}}>
+              <a href={this.props.BaseURL
                             + '/instrument_list/?candID='
                             + this.props.Candidate.Meta.CandID
                             + '&sessionID='
                             + this.props.VisitMap[this.props.Visit.Meta.Visit]}>
-                            {this.props.Visit.Meta.Visit}
-                        </a>
-                    </h4>
-                </div>
-                <div>
-                <dl style={defliststyle}>
-                    <div style={termstyle}>
-                        <dt>Cohort</dt>
-                        <dd>{this.props.Visit.Meta.Battery}</dd>
-                    </div>
-                    <div style={termstyle}>
-                        <dt>Site</dt>
-                        <dd>{this.props.Visit.Meta.Site}</dd>
-                    </div>
-                    {vdate}
-                    {vage}
-                    <div style={termstyle}>
-                        <dt>Status</dt>
-                        <dd>{vstatus}</dd>
-                    </div>
-                </dl>
-                {instruments}
-                </div>
-            </div>
-            </div>
-        );
-    }
+                {this.props.Visit.Meta.Visit}
+              </a>
+            </h4>
+          </div>
+          <div>
+            <dl style={defliststyle}>
+              <div style={termstyle}>
+                <dt>{this.props.t('Cohort', {ns: 'loris', count: 1})}</dt>
+                <dd>{this.props.Visit.Meta.Battery}</dd>
+              </div>
+              <div style={termstyle}>
+                <dt>{this.props.t('Site', {ns: 'loris'})}</dt>
+                <dd>{this.props.Visit.Meta.Site}</dd>
+              </div>
+              {vdate}
+              {vage}
+              <div style={termstyle}>
+                <dt>{this.props.t('Status', {ns: 'loris'})}</dt>
+                <dd>{vstatus}</dd>
+              </div>
+            </dl>
+            {instruments}
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 VisitInstrumentList.propTypes = {
   BaseURL: PropTypes.string,
   Candidate: PropTypes.object,
   Visit: PropTypes.object,
   VisitMap: PropTypes.object,
+  t: PropTypes.Func,
 };
 
-export default VisitInstrumentList;
+export default withTranslation(['instruments', 'loris'])(VisitInstrumentList);

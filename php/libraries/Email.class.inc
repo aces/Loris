@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This file contains a class used for sending emails from Loris.
  * It handles all the details of getting setting the email headers,
@@ -8,7 +9,7 @@
  * Email templates should be in an email/ subdirectory of the smarty
  * template directory.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

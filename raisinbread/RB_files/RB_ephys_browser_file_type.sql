@@ -1,0 +1,13 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `ephys_browser_file_type`;
+LOCK TABLES `ephys_browser_file_type` WRITE;
+INSERT INTO `ephys_browser_file_type` (`Type`) VALUES ('set');
+INSERT INTO `ephys_browser_file_type` (`Type`) VALUES ('bdf');
+INSERT INTO `ephys_browser_file_type` (`Type`) VALUES ('vhdr');
+INSERT INTO `ephys_browser_file_type` (`Type`) VALUES ('vsm');
+INSERT INTO `ephys_browser_file_type` (`Type`) VALUES ('edf');
+INSERT INTO `ephys_browser_file_type` (`Type`) VALUES ('cnt');
+INSERT INTO `ephys_browser_file_type` (`Type`) VALUES ('ctf');
+INSERT INTO `ephys_browser_file_type` (`Type`) VALUES ('archive');
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

@@ -1,7 +1,12 @@
 import '../../../node_modules/c3/c3.css';
 import c3 from 'c3';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import {useTranslation} from 'react-i18next';
+import 'I18nSetup';
+import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
+import frStrings from '../locale/fr/LC_MESSAGES/imaging_browser.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/imaging_browser.json';
 
 /**
  * A CandidateScanQCSummaryWidget is a type of React widget
@@ -12,67 +17,77 @@ import PropTypes from 'prop-types';
  * @return {*} - rendered React component
  */
 function CandidateScanQCSummaryWidget(props) {
-    useEffect(() => {
-        const modalities = getModalities(props.Files);
-        const data = getDataObject(modalities, props.Files);
-        const visits = getVisits(props.Files);
-        c3.generate({
-            bindto: '#imagebreakdownchart',
-            data: {
-                columns: getDataBreakdown(data, modalities, visits),
-                type: 'bar',
-                groups: getDataGroups(modalities),
-                colors: getColorFuncs(modalities),
-                onclick: function(d, el) {
-                    const vl = visits[d.index];
-                    window.location = props.BaseURL
-                        + '/imaging_browser/viewSession'
-                        + '?sessionID=' + props.VisitMap[vl];
-                },
-            },
-            axis: {
-                x: {
-                    type: 'category',
-                    categories: visits,
-                    label: {
-                        text: 'Visit',
-                        position: 'outer-center',
-                    },
-                },
-                y: {
-                    label: {
-                        position: 'outer-middle',
-                        text: 'Number of Scans',
-                    },
-                },
-            },
-            legend: {
-                show: false,
-            },
-        });
+  const {t, i18n} = useTranslation();
+  const [reload, setReload] = useState(0);
+  useEffect(() => {
+    const modalities = getModalities(props.Files);
+    const data = getDataObject(modalities, props.Files);
+    const visits = getVisits(props.Files);
+    i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
+    c3.generate({
+      bindto: '#imagebreakdownchart',
+      data: {
+        columns: getDataBreakdown(data, modalities, visits),
+        type: 'bar',
+        groups: getDataGroups(modalities),
+        colors: getColorFuncs(modalities),
+        onclick: function(d, el) {
+          const vl = visits[d.index];
+          window.location = props.BaseURL
+            + '/imaging_browser/viewSession'
+            + '?sessionID=' + props.VisitMap[vl];
+        },
+      },
+      axis: {
+        x: {
+          type: 'category',
+          categories: visits,
+          label: {
+            text: t('Visit', {ns: 'loris'}),
+            position: 'outer-center',
+          },
+        },
+        y: {
+          label: {
+            position: 'outer-middle',
+            text: t('Number of Scans', {ns: 'imaging_browser'}),
+          },
+        },
+      },
+      legend: {
+        show: false,
+      },
     });
+    setReload(reload + 1);
+  }, [t]);
 
-    return <div>
-        <div id='imagebreakdownchart' />
-            <ul>
-              <li>Red bar denotes number of failed QC scans.</li>
-              <li>Green bar denotes number of passed QC scans.</li>
-              <li>Grey bar denotes other QC statuses.</li>
-            </ul>
-            <p>
-              Different shades represent different modalities.
-              Only native modalities are displayed in results.
-            </p>
-            <p>
-              Hover over any visit to see detailed modality breakdown for visit,
-              click to go to imaging browser.
-            </p>
-        </div>;
+  return <div>
+    <div id='imagebreakdownchart' />
+    <ul>
+      <li>{t('Red bar denotes number of failed QC scans.',
+        {ns: 'imaging_browser'})}</li>
+      <li>{t('Green bar denotes number of passed QC scans.',
+        {ns: 'imaging_browser'})}</li>
+      <li>{t('Grey bar denotes other QC statuses.',
+        {ns: 'imaging_browser'})}</li>
+    </ul>
+    <p>
+      {t('Different shades represent different modalities.' +
+        ' Only native modalities are displayed in results.',
+      {ns: 'imaging_browser'})}
+    </p>
+    <p>
+      {t('Hover over any visit to see detailed modality breakdown for visit,' +
+        ' click to go to imaging browser.', {ns: 'imaging_browser'})}
+    </p>
+  </div>;
 }
 CandidateScanQCSummaryWidget.propTypes = {
   Files: PropTypes.array,
   BaseURL: PropTypes.string,
-  VisitMap: PropTypes.array,
+  VisitMap: PropTypes.object,
 };
 
 /**
@@ -82,11 +97,11 @@ CandidateScanQCSummaryWidget.propTypes = {
  * @return {array}
  */
 function getModalities(files) {
-    let modalities = {};
-    for (const row of Object.values(files)) {
-        modalities[row.Scan_type] = true;
-    }
-    return Object.keys(modalities).sort();
+  let modalities = {};
+  for (const row of Object.values(files)) {
+    modalities[row.ScanType] = true;
+  }
+  return Object.keys(modalities).sort();
 }
 
 /**
@@ -96,11 +111,11 @@ function getModalities(files) {
  * @return {array}
  */
 function getVisits(files) {
-    let visits = {};
-    for (const row of Object.values(files)) {
-        visits[row.Visit_label] = true;
-    }
-    return Object.keys(visits);
+  let visits = {};
+  for (const row of Object.values(files)) {
+    visits[row.Visit_label] = true;
+  }
+  return Object.keys(visits);
 }
 
 /**
@@ -121,33 +136,33 @@ function getVisits(files) {
  * @return {array}
  */
 function getDataBreakdown(data, modalities, visits) {
-    let rv = [];
-    for (const modality of modalities) {
-        let pass = [modality + ' - Pass'];
-        let fail = [modality + ' - Fail'];
-        let other = [modality + ' - Other'];
-        for (const visit of visits) {
-            if (data[modality].Pass[visit]) {
-                pass.push(data[modality].Pass[visit]);
-            } else {
-                pass.push(0);
-            }
-            if (data[modality].Fail[visit]) {
-                fail.push(data[modality].Fail[visit]);
-            } else {
-                fail.push(0);
-            }
-            if (data[modality].Other[visit]) {
-                other.push(data[modality].Other[visit]);
-            } else {
-                other.push(0);
-            }
-        }
-        rv.push(pass);
-        rv.push(fail);
-        rv.push(other);
+  let rv = [];
+  for (const modality of modalities) {
+    let pass = [modality + ' - Pass'];
+    let fail = [modality + ' - Fail'];
+    let other = [modality + ' - Other'];
+    for (const visit of visits) {
+      if (data[modality].Pass[visit]) {
+        pass.push(data[modality].Pass[visit]);
+      } else {
+        pass.push(0);
+      }
+      if (data[modality].Fail[visit]) {
+        fail.push(data[modality].Fail[visit]);
+      } else {
+        fail.push(0);
+      }
+      if (data[modality].Other[visit]) {
+        other.push(data[modality].Other[visit]);
+      } else {
+        other.push(0);
+      }
     }
-    return rv;
+    rv.push(pass);
+    rv.push(fail);
+    rv.push(other);
+  }
+  return rv;
 }
 
 /**
@@ -160,20 +175,20 @@ function getDataBreakdown(data, modalities, visits) {
  * @return {object}
  */
 function getDataObject(modalities, files) {
-    let data = {};
-    for (const modality of modalities) {
-        data[modality] = {
-            'Pass': {},
-            'Fail': {},
-            'Other': {},
-        };
-    }
-    for (let i = 0; i < files.length; i++) {
-        const session = files[i];
-        const QC = session.QC == '' ? 'Other' : session.QC;
-        data[session.Scan_type][QC][session.Visit_label] = session.nfiles;
-    }
-    return data;
+  let data = {};
+  for (const modality of modalities) {
+    data[modality] = {
+      'Pass': {},
+      'Fail': {},
+      'Other': {},
+    };
+  }
+  for (let i = 0; i < files.length; i++) {
+    const session = files[i];
+    const QC = session.QC == '' ? 'Other' : session.QC;
+    data[session.ScanType][QC][session.Visit_label] = session.nfiles;
+  }
+  return data;
 }
 
 /**
@@ -184,15 +199,15 @@ function getDataObject(modalities, files) {
  * @return {array}
  */
 function getDataGroups(modalities) {
-    let pgroup = [];
-    let fgroup = [];
-    let ogroup = [];
-    for (const modality of modalities) {
-        pgroup.push(modality + ' - Pass');
-        fgroup.push(modality + ' - Fail');
-        ogroup.push(modality + ' - Other');
-    }
-    return [pgroup, fgroup, ogroup];
+  let pgroup = [];
+  let fgroup = [];
+  let ogroup = [];
+  for (const modality of modalities) {
+    pgroup.push(modality + ' - Pass');
+    fgroup.push(modality + ' - Fail');
+    ogroup.push(modality + ' - Other');
+  }
+  return [pgroup, fgroup, ogroup];
 }
 
 /**
@@ -209,26 +224,26 @@ function getDataGroups(modalities) {
  * @return {object}
  */
 function getColorFuncs(modalities) {
-    const obj = {};
-    const n = modalities.length;
-    const step = 100 / n;
-    for (let i = 0; i < modalities.length; i++) {
-        let mlabel = modalities[i] + ' - Pass';
-        obj[mlabel] = 'rgb(46, ' + (200 - (step*i)) + ', 80)';
+  const obj = {};
+  const n = modalities.length;
+  const step = 100 / n;
+  for (let i = 0; i < modalities.length; i++) {
+    let mlabel = modalities[i] + ' - Pass';
+    obj[mlabel] = 'rgb(46, ' + (200 - (step * i)) + ', 80)';
 
-        mlabel = modalities[i] + ' - Fail';
-        obj[mlabel] = 'rgb(' + (200 - (step*i)) + ', 20, 60)';
+    mlabel = modalities[i] + ' - Fail';
+    obj[mlabel] = 'rgb(' + (200 - (step * i)) + ', 20, 60)';
 
-        mlabel = modalities[i] + ' - Other';
-        obj[mlabel] = 'rgb('
-                      + (200 - (step*i))
-                      + ', '
-                      + (200 - (step*i))
-                      + ', '
-                      + (200 - (step*i))
-                      + ')';
-    }
-    return obj;
+    mlabel = modalities[i] + ' - Other';
+    obj[mlabel] = 'rgb('
+      + (200 - (step * i))
+      + ', '
+      + (200 - (step * i))
+      + ', '
+      + (200 - (step * i))
+      + ')';
+  }
+  return obj;
 }
 
 export default CandidateScanQCSummaryWidget;

@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * File contains the \LORIS\dashboard\WidgetContent class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -44,6 +45,7 @@ class WidgetContent
         $this->_body   = $body;
         $this->_footer = $footer;
     }
+
     /**
      * Return the content for the title of the widget.
      *
@@ -63,6 +65,7 @@ class WidgetContent
     {
         return $this->_body;
     }
+
     /**
      * Return the content for the title of the widget.
      *

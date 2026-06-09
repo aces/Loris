@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Provides a way to create ServerProcess objects of the appropriate type
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category ServerProcessLauncher
  * @package  Loris

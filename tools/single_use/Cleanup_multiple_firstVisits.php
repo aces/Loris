@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is written for a one time use only to clean up existing data in the
  * 'session' table where there are multiple first visits, i.e. VisitNo=1,
  * for a candidate.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

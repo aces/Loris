@@ -51,6 +51,36 @@ class LorisInstance
     }
 
     /**
+     * Return a new database connection to this LORIS instance.
+     *
+     * @return \Database
+     */
+    public function getNewDatabaseConnection() : \Database
+    {
+        $settings = \NDB_Factory::singleton()->settings();
+
+        // Pass the credentials in environment variables, so that they
+        // don't potentially show up in a stack trace if something goes
+        // wrong.
+        $dbname = $settings->dbName();
+        putenv("LORIS_{$dbname}_USERNAME=" . $settings->dbUserName());
+        putenv("LORIS_{$dbname}_PASSWORD=" . $settings->dbPassword());
+        putenv("LORIS_{$dbname}_HOST=" . $settings->dbHost());
+
+        $db = new \Database();
+        $db->connect(
+            $settings->dbName(),
+            true,
+        );
+
+        // Unset the variables now that they're no longer needed.
+        putenv("LORIS_{$dbname}_USERNAME=");
+        putenv("LORIS_{$dbname}_PASSWORD=");
+        putenv("LORIS_{$dbname}_HOST=");
+        return $db;
+    }
+
+    /**
      * Return a list of directories on the filesystem which
      * may contain modules.
      *
@@ -141,6 +171,13 @@ class LorisInstance
                 $cls       = new $className($this, $name, $mpath);
                 $this->moduleInstances[$name] = $cls;
                 $cls->registerAutoloader();
+
+        // NB: This gets overridden by the BaseRouter if a project/locale/
+        //     override exists for the user's language
+                if (is_dir("$mpath/locale/")) {
+                    \bind_textdomain_codeset($name, 'UTF-8');
+                    \bindtextdomain($name, "$mpath/locale");
+                }
                 return $cls;
             }
         }
@@ -171,7 +208,7 @@ class LorisInstance
 
         return array_map(
             function ($center) {
-                return \Site::singleton(new \CenterID($center));
+                return \Site::singleton(\CenterID::singleton(intval($center)));
             },
             $centers
         );

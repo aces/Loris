@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class represents an attempt to re-implement the API for
  * HTML_QuickForm (Version 1) in Loris since QuickForm1 isn't
@@ -9,7 +10,7 @@
  * PHP warnings that QuickForm1 generates since QuickForm1 was written
  * for PHP4.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -51,6 +52,7 @@ class LorisForm
     ];
     public $validOperators;
     public $encrypt;
+    public $textdomain = "loris";
 
     /**
      * Creates and returns an element that can be added
@@ -68,7 +70,9 @@ class LorisForm
      */
     protected function &createBase($name, $label, $attribs=[])
     {
-        $el = ['label' => $label];
+        $el = [
+            'label' => !empty($label) ? dgettext($this->textdomain, $label) : null
+        ];
 
         if (!empty($name)) {
             $el['name'] = $name;
@@ -110,6 +114,7 @@ class LorisForm
 
         return $el;
     }
+
     /**
      * Adds an element to the $this->form array. Handles the creation
      * of any shared attributes that are shared between different
@@ -247,6 +252,7 @@ class LorisForm
         }
         return $el;
     }
+
     /**
      * Reimplementation of HTML_QuickForm's "addDate" API. The behaviour
      * of this varies slightly from QuickForm in that this will use an
@@ -556,7 +562,6 @@ class LorisForm
         return $el;
     }
 
-
     /**
      * Retrives the default value to populate for a form element.
      * If it was POSTed by the user, use that value, otherwise use
@@ -700,12 +705,20 @@ class LorisForm
                         }
                     } else {
                         // Submitted value not an array: trim it
-                        $newValue = trim($value);
+                        $newValue = trim(strval($value));
                     }
                 }
             }
         }
-
+        //double escaping
+        if (!is_array($newValue)) {
+            $newValue = htmlspecialchars(
+                strval($newValue),
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
+        }
         return $newValue;
     }
 
@@ -823,6 +836,7 @@ class LorisForm
         $val = $this->getValue($el['name']);
         return $val;
     }
+
     /**
      * Generates the HTML to add to the page when rendered for a date
      * element.
@@ -1055,7 +1069,7 @@ class LorisForm
             $value = $timeStamp;
         } else if (preg_match(
             '/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])($|:00$)/',
-            $timeStamp,
+            $timeStamp ?? '',
             $bits
         )
         ) {
@@ -1089,7 +1103,7 @@ class LorisForm
     {
         $year   = $this->getValue($el['name']);
         $smarty = new Smarty_NeuroDB;
-        $value  = explode('-', $year)[0];
+        $value  = explode('-', $year ?? '')[0];
 
         $smarty->assign('name', $el['name']);
         $smarty->assign('minYear', $el['options']['minYear']);
@@ -1180,8 +1194,6 @@ class LorisForm
             ."</textarea>";
     }
 
-
-
     /**
      * Reimplements the HTML_QuickForm setDefaults API.
      *
@@ -1204,6 +1216,7 @@ class LorisForm
     {
         return (!empty($_FILES) || !empty($_POST));
     }
+
     /**
      * Reimplements the HTML_QuickForm validate API.
      *
@@ -1607,13 +1620,13 @@ class LorisForm
         }
         /// XXX: There seems to be a problem when using &nbsp; to separate the
         //  checkbox from the label. Both Firefox and Chrome will still put a
-        //  linebreak between the space and the checkbox. Instead, we wrap use
+        //  linebreak between the space and the checkbox. Instead, we use
         //  CSS to wrap the tag which avoids the label from being separated from the
         //  checkbox. We don't wrap the whole label in it because if it's a long
         //  label it's still allowed to have linebreaks.
-        return "<span style=\"white-space: nowrap\"><input name=\"$el[name]\""
-            . " type=\"checkbox\" $checked $value "
-            . "$disabled $required/>"
+        return "<span style='white-space: nowrap;vertical-align: middle;'>"
+            . "<input name='$el[name]' type='checkbox' $checked $value "
+            . "$disabled $required style='vertical-align: baseline; margin-top: 0'/>"
             . " </span>$el[label]";
     }
 
@@ -1965,6 +1978,7 @@ class LorisForm
         $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'page';
     }
+
     /**
      * Reimplementation of QuickForm API.
      *

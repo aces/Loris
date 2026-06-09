@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * Contains the ElectrophysioFile class used for electrophysiological browser
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Electrophysiology
  * @package  Electrophysiology
@@ -29,7 +30,6 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
     private $_chunksURLs   = [];
     private $_splitFileIDs = [];
     private \LORIS\LorisInstance $loris;
-
 
     /**
      * Construct a BIDSFile
@@ -144,8 +144,9 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
      */
     function getParameter(string $parameterName) : string
     {
-        return $this->_fileData[$parameterName] ??
+        $val = $this->_fileData[$parameterName] ??
             ($this->_parameters[$parameterName] ?? '');
+        return strval($val);
     }
 
     /**

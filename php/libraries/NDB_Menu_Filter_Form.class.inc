@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class over-rides the NDB_Menu_Filter class by including the functionality
  * of saving/processing the form.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Behavioural
  * @package  Main
@@ -29,8 +30,6 @@ use \Psr\Http\Message\ResponseInterface;
 
 class NDB_Menu_Filter_Form extends NDB_Menu_Filter
 {
-
-
     /**
      * Saves the form
      *
@@ -51,8 +50,6 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
             }
         }
     }
-
-
 
     /**
      * Preprocesses the array of values to be saved into the database
@@ -82,7 +79,6 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
         $this->_process($values);
     }
 
-
     /**
      * Processes the values and saves to database
      *
@@ -111,6 +107,5 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
         }
         return parent::handle($request);
     }
-
 }
 

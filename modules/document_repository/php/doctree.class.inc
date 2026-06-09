@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * It includes one main function.
  * Get method handles getting the parent's categroies and
  * the children's categories of one category.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository
@@ -21,7 +22,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Get method handles getting the parent's categroies and
  * the children's categories of one category.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository
@@ -40,13 +41,15 @@ class DocTree extends \NDB_Page
      *
      * @return bool true only if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
                 'document_repository_view',
                 'document_repository_delete',
-                'document_repository_edit'
+                'document_repository_categories',
+                'document_repository_upload_edit'
             ]
         );
     }
@@ -73,6 +76,7 @@ class DocTree extends \NDB_Page
                 );
         }
     }
+
     /**
      * This method will return an array of document_repository_categories
      *
@@ -80,11 +84,14 @@ class DocTree extends \NDB_Page
      */
     public function getTreeData()
     {
-        return $this->loris->getDatabaseConnection()->pselect(
-            "SELECT * FROM document_repository_categories",
-            []
+        return iterator_to_array(
+            $this->loris->getDatabaseConnection()->pselect(
+                "SELECT * FROM document_repository_categories",
+                []
+            )
         );
     }
+
     /**
      * This method will return an array of all children's categories
      *
@@ -134,6 +141,7 @@ class DocTree extends \NDB_Page
         }
         return $arr;
     }
+
     /**
      * This method will return a json of the parent's categroies and
      * the children's categories of one category.
@@ -172,11 +180,10 @@ class DocTree extends \NDB_Page
         );
         $parentcategories =   $this->getParents($tree, $id);
         $result['allsubcategories'] = $allsubcategories;
-        $result['currentcategory']  = $currentcategory;
+        $result['currentcategory']  = iterator_to_array($currentcategory);
         $result['parentcategory']   = $parentcategories;
-        $result['subcategories']    = $subcategories;
+        $result['subcategories']    = iterator_to_array($subcategories);
 
         return $result;
     }
-
 }

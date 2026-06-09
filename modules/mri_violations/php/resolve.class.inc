@@ -1,7 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\mri_violations;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
+
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Implement and endpoint to handle POST requests which resolve
@@ -18,7 +20,8 @@ class Resolve extends \NDB_Page
      *
      * @return boolean true if the user is permitted to see violated scans
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user): bool
     {
         return $user->hasAnyPermission(
             [
@@ -36,17 +39,25 @@ class Resolve extends \NDB_Page
      *
      * @return ResponseInterface
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $user = $request->getAttribute("user");
-        if (!$this->_hasAccess($user)) {
-            return new \LORIS\Http\Response\JSON\Forbidden("Access denied");
+        if (!$this->isAccessibleBy($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                dgettext(
+                    'loris',
+                    "Access denied"
+                )
+            );
         }
 
         $requestdata = json_decode((string) $request->getBody(), true);
         if (!is_array($requestdata)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Must submit data in JSON format"
+                dgettext(
+                    'loris',
+                    "Must submit data in JSON format"
+                )
             );
         }
 
@@ -79,7 +90,7 @@ class Resolve extends \NDB_Page
                 // Not modified
                 $response = $response->withStatus(304);
             }
-        } else if ($val !== 'unresolved') {
+        } elseif ($val !== 'unresolved') {
             // no need to insert to DB for Unresolved value.
 
             // Base of the insert
@@ -153,4 +164,3 @@ class Resolve extends \NDB_Page
         return $response;
     }
 }
-

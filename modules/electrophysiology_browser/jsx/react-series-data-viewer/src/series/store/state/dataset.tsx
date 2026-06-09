@@ -1,6 +1,7 @@
 import * as R from 'ramda';
 import {createAction} from 'redux-actions';
 import {
+  ChannelInfo,
   ChannelMetadata,
   Epoch,
   EpochFilter,
@@ -52,6 +53,7 @@ export type Action =
   | {
       type: 'SET_DATASET_METADATA',
       payload: {
+        bidsChannels: ChannelInfo[],
         chunksURL: string,
         channelNames: string[],
         shapes: number[][],
@@ -59,17 +61,24 @@ export type Action =
         timeInterval: [number, number],
         seriesRange: [number, number],
         limit: number,
+        loadedChannels: number,
         samplingFrequency: string,
-        offsetIndex: number,
+        eegMontageName: string,
+        channelDelimiter: string,
+        tagsHaveChanges: boolean,
+        recordingHasHED: boolean,
       }
     };
 
 export type State = {
+  bidsChannels: ChannelInfo[],
   chunksURL: string,
   channelMetadata: ChannelMetadata[],
-  offsetIndex: number,
+  channelDelimiter: string,
   limit: number,
+  loadedChannels: number,
   samplingFrequency: string,
+  eegMontageName: string,
   epochs: Epoch[],
   filteredEpochs: EpochFilter,
   activeEpoch: number | null,
@@ -83,6 +92,8 @@ export type State = {
   hedRelOverrides: HEDTag[],
   addedTags: HEDTag[],
   deletedTags: HEDTag[],
+  tagsHaveChanges: boolean,
+  recordingHasHED: boolean,
 };
 
 /**
@@ -94,18 +105,22 @@ export type State = {
  */
 export const datasetReducer = (
   state: State = {
+    bidsChannels: [],
     chunksURL: '',
     channelMetadata: [],
     epochs: [],
     filteredEpochs: {
       plotVisibility: [],
       columnVisibility: [],
+      searchVisibility: [],
     },
     activeEpoch: null,
     physioFileID: null,
-    offsetIndex: 1,
+    channelDelimiter: '',
     limit: DEFAULT_MAX_CHANNELS,
+    loadedChannels: 0,
     samplingFrequency: '',
+    eegMontageName: '',
     shapes: [],
     validSamples: [],
     timeInterval: [0, 1],
@@ -115,6 +130,8 @@ export const datasetReducer = (
     hedRelOverrides: [],
     addedTags: [],
     deletedTags: [],
+    tagsHaveChanges: false,
+    recordingHasHED: false,
   },
   action?: Action
 ): State => {
@@ -122,38 +139,38 @@ export const datasetReducer = (
     return state;
   }
   switch (action.type) {
-    case SET_EPOCHS: {
-      return R.assoc('epochs', action.payload, state);
-    }
-    case SET_FILTERED_EPOCHS: {
-      return R.assoc('filteredEpochs', action.payload, state);
-    }
-    case SET_ACTIVE_EPOCH: {
-      return R.assoc('activeEpoch', action.payload, state);
-    }
-    case SET_PHYSIOFILE_ID: {
-      return R.assoc('physioFileID', action.payload, state);
-    }
-    case SET_HED_SCHEMA_DOCUMENT: {
-      return R.assoc('hedSchema', action.payload, state);
-    }
-    case SET_DATASET_TAGS: {
-      return R.assoc('datasetTags', action.payload, state);
-    }
-    case SET_HED_REL_OVERRIDES: {
-      return R.assoc('hedRelOverrides', action.payload, state);
-    }
-    case SET_ADDED_TAGS: {
-      return R.assoc('addedTags', action.payload, state);
-    }
-    case SET_DELETED_TAGS: {
-      return R.assoc('deletedTags', action.payload, state);
-    }
-    case SET_DATASET_METADATA: {
-      return R.merge(state, action.payload);
-    }
-    default: {
-      return state;
-    }
+  case SET_EPOCHS: {
+    return R.assoc('epochs', action.payload, state);
+  }
+  case SET_FILTERED_EPOCHS: {
+    return R.assoc('filteredEpochs', action.payload, state);
+  }
+  case SET_ACTIVE_EPOCH: {
+    return R.assoc('activeEpoch', action.payload, state);
+  }
+  case SET_PHYSIOFILE_ID: {
+    return R.assoc('physioFileID', action.payload, state);
+  }
+  case SET_HED_SCHEMA_DOCUMENT: {
+    return R.assoc('hedSchema', action.payload, state);
+  }
+  case SET_DATASET_TAGS: {
+    return R.assoc('datasetTags', action.payload, state);
+  }
+  case SET_HED_REL_OVERRIDES: {
+    return R.assoc('hedRelOverrides', action.payload, state);
+  }
+  case SET_ADDED_TAGS: {
+    return R.assoc('addedTags', action.payload, state);
+  }
+  case SET_DELETED_TAGS: {
+    return R.assoc('deletedTags', action.payload, state);
+  }
+  case SET_DATASET_METADATA: {
+    return R.merge(state, action.payload);
+  }
+  default: {
+    return state;
+  }
   }
 };

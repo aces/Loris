@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This tests the LorisForm replacement for HTML_QuickForm used by
  * Loris.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Main
@@ -59,7 +60,6 @@ class LorisForms_Test extends TestCase
     {
         if (!isset($this->form->form[$el])) {
             $this->fail("Element $el does not exist");
-            return;
         }
         $this->assertEquals(
             $this->form->form[$el]['type'],
@@ -81,7 +81,6 @@ class LorisForms_Test extends TestCase
     {
         if (!isset($this->form->form[$el])) {
             $this->fail("Element $el does not exist");
-            return;
         }
         $this->assertEquals(
             $this->form->form[$el]['label'],
@@ -106,7 +105,6 @@ class LorisForms_Test extends TestCase
     {
         if (!isset($this->form->form[$el])) {
             $this->fail("Element $el does not exist");
-            return;
         }
 
         if (is_array($attribValue)) {
@@ -131,7 +129,6 @@ class LorisForms_Test extends TestCase
             "Element $el's $attribute did not match $msg"
         );
     }
-
 
     /**
      * Test that the addSelect wrapper adds an element of the appropriate
@@ -231,7 +228,6 @@ class LorisForms_Test extends TestCase
         $this->assertTrue(isset($this->form->form["abc"]["options"]));
     }
 
-
     /**
      * Test that the addFile wrapper adds an element of the appropriate
      * type to the page
@@ -245,7 +241,6 @@ class LorisForms_Test extends TestCase
         $this->assertType("abc", "file");
         $this->assertLabel("abc", "Hello");
     }
-
 
     /**
      * Test that the addPassword wrapper adds an element of the appropriate
@@ -1335,10 +1330,12 @@ class LorisForms_Test extends TestCase
     {
         $this->form->addCheckbox("abc", "Hello", []);
         $this->assertEquals(
-            "<span style=\"white-space: nowrap\"><input name=\"abc\" " .
-            "type=\"checkbox\"    /> </span>Hello",
+            "<span style='white-space: nowrap;vertical-align: middle;'>" .
+            "<input name='abc' type='checkbox'     " .
+            "style='vertical-align: baseline; margin-top: 0'/> </span>Hello",
             $this->form->checkboxHTML($this->form->form['abc'])
         );
+
     }
 
     /**
@@ -1356,9 +1353,10 @@ class LorisForms_Test extends TestCase
         $this->form->addCheckbox("abc", "Hello", $testAttributes);
         $this->form->setDefaults(['abc' => 'abc_default']);
         $this->assertEquals(
-            "<span style=\"white-space: nowrap\"><input name=\"abc\" " .
-            "type=\"checkbox\" checked=\"checked\"" .
-            " value=\"value1\" disabled /> </span>Hello",
+            "<span style='white-space: nowrap;vertical-align: middle;'>".
+            "<input name='abc' type='checkbox' checked=\"checked\" value=\"value1\"".
+            " disabled  style='vertical-align: baseline; margin-top: 0'/>".
+            " </span>Hello",
             $this->form->checkboxHTML($this->form->form['abc'])
         );
     }

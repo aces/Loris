@@ -1,0 +1,273 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Issue Tracker"
+msgstr "问题跟踪器"
+
+# Google Translate is giving me completely different translations for
+# singular and plural. Might be worth investigating.
+msgid "Issue"
+msgstr "问题"
+
+msgid "Your assigned issue"
+msgid_plural "Your assigned issues"
+msgstr[0] "您指定的问题"
+
+msgid "Open Issues"
+msgstr "未决问题"
+
+msgid "Issue ID"
+msgstr "问题ID"
+
+msgid "Reporter"
+msgstr "记者"
+
+msgid "Assignee"
+msgstr "受让人"
+
+msgid "Priority"
+msgstr "优先事项"
+
+msgid "Title"
+msgstr "标题"
+
+msgid "Category"
+msgstr "类别"
+
+msgid "Date Created"
+msgstr "创建日期"
+
+msgid "Last Update"
+msgstr "最后更新"
+
+msgid "SessionID"
+msgstr "会话ID"
+
+msgid "Watching"
+msgstr "观看"
+
+msgid "Normal"
+msgstr "普通的"
+
+msgid "High"
+msgstr "高的"
+
+msgid "Urgent"
+msgstr "紧迫的"
+
+msgid "Immediate"
+msgstr "即时"
+
+msgid "Low"
+msgstr "低的"
+
+msgid "All Sites"
+msgstr "所有网站"
+
+msgid "All Issues"
+msgstr "所有问题"
+
+msgid "Active Issues"
+msgstr "活跃问题"
+
+msgid "Closed Issues"
+msgstr "已解决的问题"
+
+msgid "My Issues"
+msgstr "我的问题"
+
+msgid "New Issue"
+msgstr "新一期"
+
+msgid "Browse Issues"
+msgstr "浏览问题"
+
+msgid "Batch Edit"
+msgstr "批量编辑"
+
+msgid "Add Comment"
+msgstr "添加评论"
+
+msgid "Create New Issue"
+msgstr "创建新问题"
+
+msgid "Never!"
+msgstr "绝不！"
+
+msgid "No-one!"
+msgstr "没有人！"
+
+msgid "Sometime Soon!"
+msgstr "很快！"
+
+msgid "Submit Issue"
+msgstr "提交问题"
+
+msgid "Edit Issue"
+msgstr "编辑问题"
+
+msgid "Update Issue"
+msgstr "更新问题"
+
+msgid "Add Attachment"
+msgstr "添加附件"
+
+msgid "Attachment for issue"
+msgstr "问题附件"
+
+msgid "Attachment for Issue"
+msgstr "问题附件"
+
+msgid "Description"
+msgstr "描述"
+
+msgid "Watching?"
+msgstr "在看吗？"
+
+msgid "Add others to watching?"
+msgstr "添加其他人观看？"
+
+msgid "New Comment"
+msgstr "新评论"
+
+msgid "This field is required"
+msgstr "此字段是必需的"
+
+msgid "You will be redirected to main page in 2 seconds!"
+msgstr "2秒后您将被重定向到主页！"
+
+msgid "Failed to submit issue :("
+msgstr "提交问题失败:("
+
+msgid "Issue updated!"
+msgstr "问题已更新！"
+
+msgid "Issue created!"
+msgstr "问题已创建！"
+
+msgid "Comments and History"
+msgstr "评论和历史"
+
+msgid "Last Updated By"
+msgstr "最后更新者"
+
+msgid "Created"
+msgstr "已创建"
+
+msgid "Last Updated"
+msgstr "最后更新"
+
+msgid "({{count}} issue)"
+msgid_plural "({{count}} issues)"
+msgstr[0] "（{{count}}问题）"
+
+msgid "{{count}} issues displayed of {{total}}"
+msgstr "显示 {{total}} 的 {{count}} 问题"
+
+msgid "Maximum issues per page: {{total}}"
+msgstr "每页最大问题数：{{total}}"
+
+msgid "Failed to fetch issues. Please try again later."
+msgstr "无法获取问题。请稍后重试。"
+
+msgid "No issues match the selected filters."
+msgstr "没有问题与所选过滤器匹配。"
+
+msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
+msgstr "请确认删除“ {{fileName}} ”附件的请求。"
+
+msgid "Title cannot be empty"
+msgstr "标题不能为空"
+
+msgid "No changes were made"
+msgstr "没有做任何改变"
+
+msgid "Issue updated successfully"
+msgstr "问题更新成功"
+
+msgid "Information"
+msgstr "信息"
+
+msgid "Updated by <0>{{user}}</0> on {{date}}"
+msgstr "由 <0> {{user}} </0> 于 {{date}} 更新"
+
+msgid "Updated by <0>{{user}}</0> {{seconds}} seconds ago"
+msgstr "由 <0> {{user}} </0> {{seconds}} 秒前更新"
+
+msgid "Updated by <0>{{user}}</0> {{minutes}} minutes ago"
+msgstr "由 <0> {{user}} </0> {{minutes}} 分钟前更新"
+
+msgid "Updated by <0>{{user}}</0> {{hours}} hours ago"
+msgstr "由 <0> {{user}} </0> {{hours}} 小时前更新"
+
+msgid "New"
+msgstr "新的"
+
+msgid "Acknowledged"
+msgstr "已确认"
+
+msgid "Feedback"
+msgstr "反馈"
+
+msgid "Assigned"
+msgstr "已分配"
+
+msgid "Resolved"
+msgstr "已解决"
+
+msgid "Closed"
+msgstr "关闭"
+
+msgid "Behavioural Battery"
+msgstr "行为电池"
+
+msgid "Behavioural Instruments"
+msgstr "行为仪器"
+
+msgid "Data Entry"
+msgstr "数据录入"
+
+msgid "Examiners"
+msgstr "考官"
+
+msgid "Imaging"
+msgstr "影像学"
+
+msgid "Other"
+msgstr "其他"
+
+msgid "Technical Issue"
+msgstr "技术问题"
+
+msgid "User Accounts"
+msgstr "用户帐户"
+
+msgid "Last 3 Comments"
+msgstr "最后 3 条评论"
+
+msgid "The server is not configured for attachments."
+msgstr "服务器未配置附件。"
+
+msgid "The server is not configured to receive a file this large."
+msgstr "服务器未配置为接收这么大的文件。"
+
+msgid "Submit Attachment"
+msgstr "提交附件"

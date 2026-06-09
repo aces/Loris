@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
 import Breadcrumbs from 'jsx/Breadcrumbs';
 
 // Declared in smarty main.tpl
@@ -12,85 +13,86 @@ declare const loris: any;
  * @param {function} setActiveTab - set the state on click
  */
 function useBreadcrumbs(
-    activeTab: string,
-    setActiveTab: (newtab: string) => void
+  activeTab: string,
+  setActiveTab: (newtab: string) => void
 ) {
-    // update breadcrumbs breadcrumbs
-    useEffect(() => {
-        const breadcrumbs = [
-            {
-                text: 'Data Query Tool (Beta)',
-                /**
-                 * OnClick handler for the main breadcrumb
-                 *
-                 * @param {React.MouseEvent<HTMLElement>} e - Callback for when hovering over the delete icon
-                 * @returns {void}
-                 */
-                onClick: (e: React.MouseEvent) => {
-                    e.preventDefault();
-                    setActiveTab('Info');
-                },
-            },
-        ];
-        if (activeTab == 'DefineFields'
+  const {t} = useTranslation('dataquery');
+  // update breadcrumbs breadcrumbs
+  useEffect(() => {
+    const breadcrumbs = [
+      {
+        text: t('Data Query Tool (Beta)', {ns: 'dataquery'}),
+        /**
+         * OnClick handler for the main breadcrumb
+         *
+         * @param {React.MouseEvent<HTMLElement>} e - Callback for when hovering over the delete icon
+         * @returns {void}
+         */
+        onClick: (e: React.MouseEvent) => {
+          e.preventDefault();
+          setActiveTab('Info');
+        },
+      },
+    ];
+    if (activeTab == 'DefineFields'
                 || activeTab == 'DefineFilters'
                 || activeTab == 'ViewData') {
-            breadcrumbs.push({
-                text: 'Define Fields',
-                /**
-                 * OnClick handler for the define fields breadcrumb
-                 *
-                 * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-                 * @returns {void}
-                 */
-                onClick: (e) => {
-                    e.preventDefault();
-                    setActiveTab('DefineFields');
-                },
-            });
-        }
-        if (activeTab == 'DefineFilters'
+      breadcrumbs.push({
+        text: t('Define Fields', {ns: 'dataquery'}),
+        /**
+         * OnClick handler for the define fields breadcrumb
+         *
+         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
+         * @returns {void}
+         */
+        onClick: (e) => {
+          e.preventDefault();
+          setActiveTab('DefineFields');
+        },
+      });
+    }
+    if (activeTab == 'DefineFilters'
                 || activeTab == 'ViewData') {
-            breadcrumbs.push({
-                text: 'Define Filters',
-                /**
-                 * OnClick handler for the define filters breadcrumb
-                 *
-                 * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-                 * @returns {void}
-                 */
-                onClick: (e) => {
-                    e.preventDefault();
-                    setActiveTab('DefineFilters');
-                },
-            });
-        }
+      breadcrumbs.push({
+        text: t('Define Filters', {ns: 'dataquery'}),
+        /**
+         * OnClick handler for the define filters breadcrumb
+         *
+         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
+         * @returns {void}
+         */
+        onClick: (e) => {
+          e.preventDefault();
+          setActiveTab('DefineFilters');
+        },
+      });
+    }
 
-        if (activeTab == 'ViewData') {
-            breadcrumbs.push({
-                text: 'View Data',
-                /**
-                 * OnClick handler for the View Data breadcrumb
-                 *
-                 * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-                 * @returns {void}
-                 */
-                onClick: (e) => {
-                    e.preventDefault();
-                    setActiveTab('ViewData');
-                },
-            });
-        }
+    if (activeTab == 'ViewData') {
+      breadcrumbs.push({
+        text: t('View Data', {ns: 'dataquery'}),
+        /**
+         * OnClick handler for the View Data breadcrumb
+         *
+         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
+         * @returns {void}
+         */
+        onClick: (e) => {
+          e.preventDefault();
+          setActiveTab('ViewData');
+        },
+      });
+    }
 
-        if (breadcrumbsRoot) {
-            breadcrumbsRoot.render(
-                <Breadcrumbs
-                    breadcrumbs={breadcrumbs}
-                    baseURL={loris.BaseURL}
-                />,
-            );
-        }
-    }, [activeTab]);
+    if (breadcrumbsRoot) {
+      breadcrumbsRoot.render(
+        <Breadcrumbs
+          breadcrumbs={breadcrumbs}
+          baseURL={loris.BaseURL}
+        />,
+      );
+    }
+  }, [activeTab, t]);
 }
 
 export default useBreadcrumbs;

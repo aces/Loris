@@ -3,12 +3,20 @@ import Loader from 'Loader';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import {
-    FormElement,
-    TextboxElement,
-    TextareaElement,
-    SelectElement,
-    ButtonElement,
+  FormElement,
+  TextboxElement,
+  TextareaElement,
+  SelectElement,
+  ButtonElement,
 } from 'jsx/Form';
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
+import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/document_repository.json';
+
 /**
  * Document Edit Form
  *
@@ -25,6 +33,10 @@ class DocEditForm extends React.Component {
    */
   constructor(props) {
     super(props);
+    i18n.addResourceBundle('hi', 'document_repository', hiStrings);
+    i18n.addResourceBundle('ja', 'document_repository', jaStrings);
+    i18n.addResourceBundle('fr', 'document_repository', frStrings);
+    i18n.addResourceBundle('zh', 'document_repository', zhStrings);
 
     this.state = {
       data: {},
@@ -55,7 +67,7 @@ class DocEditForm extends React.Component {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
       .then((data) => {
-       const formData = data.docData;
+        const formData = data.docData;
         this.setState({
           data: data,
           docData: data.docData,
@@ -64,7 +76,7 @@ class DocEditForm extends React.Component {
       })
       .catch((error) => {
         this.setState({error: true});
-    });
+      });
   }
 
   /**
@@ -73,77 +85,94 @@ class DocEditForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-       return <h3>An error occured while loading the page.</h3>;
-     }
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
+    }
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <Loader/>
+        <Loader />
       );
     }
 
+    let categoryDisabled =
+      !loris.userHasPermission('document_repository_categories');
+
     return (
-        <div>
+      <div>
         <FormElement
           name="docEdit"
           onSubmit={this.handleSubmit}
         >
-          <h3>Edit Document Repository File</h3>
+          <h3>{t('Edit Document Repository File',
+            {ns: 'document_repository'})}</h3>
           <br />
-            <SelectElement
-              name="category"
-              label="Category"
-              options={this.state.data.categories}
+          <SelectElement
+            name="category"
+            label={t('Category', {ns: 'document_repository'})}
+            options={this.state.data.categories}
+            onUserInput={this.setFormData}
+            required={true}
+            disabled={categoryDisabled}
+            value={this.state.docData.category}
+          />
+          <SelectElement
+            name="forSite"
+            label={t('Site', {ns: 'loris', count: 1})}
+            options={this.state.data.sites}
+            onUserInput={this.setFormData}
+            required={true}
+            disabled={true}
+            value={this.state.docData.forSite}
+          />
+          <SelectElement
+            name="instrument"
+            label={t('Instrument', {ns: 'loris', count: 1})}
+            options={this.state.data.instruments}
+            onUserInput={this.setFormData}
+            value={this.state.docData.instrument}
+          />
+          <TextboxElement
+            name="pscid"
+            label={t('PSCID', {ns: 'loris'})}
+            onUserInput={this.setFormData}
+            disable={true}
+            value={this.state.docData.pscid}
+          />
+          <TextboxElement
+            name="visitLabel"
+            label={t('Visit Label', {ns: 'loris'})}
+            onUserInput={this.setFormData}
+            value={this.state.docData.visitLabel}
+          />
+          <TextareaElement
+            name="comments"
+            label={t('Comments', {ns: 'document_repository'})}
+            onUserInput={this.setFormData}
+            value={this.state.docData.comments}
+          />
+          {
+            loris.userHasPermission('document_repository_hidden') &&
+            (<SelectElement
+              name="hiddenFile"
+              label={t('Restrict access to the file?',
+                {ns: 'document_repository'})}
+              options={this.state.data.hiddenVideo}
+              sortByValue={false}
               onUserInput={this.setFormData}
-              hasError={false}
-              required={true}
-              disabled={true}
-              value={this.state.docData.category}
-            />
-            <SelectElement
-              name="forSite"
-              label="Site"
-              options={this.state.data.sites}
-              onUserInput={this.setFormData}
-              required={true}
-              disabled={true}
-              value={this.state.docData.forSite}
-            />
-            <SelectElement
-              name="instrument"
-              label="Instrument"
-              options={this.state.data.instruments}
-              onUserInput={this.setFormData}
-              value={this.state.docData.instrument}
-            />
-            <TextboxElement
-              name="pscid"
-              label="PSCID"
-              onUserInput={this.setFormData}
-              disable = {true}
-              value={this.state.docData.pscid}
-            />
-            <TextboxElement
-              name="visitLabel"
-              label="Visit Label"
-              onUserInput={this.setFormData}
-              value={this.state.docData.visitLabel}
-            />
-            <TextareaElement
-              name="comments"
-              label="Comments"
-              onUserInput={this.setFormData}
-              value={this.state.docData.comments}
-            />
-            <TextboxElement
-              name="version"
-              label="Version"
-              onUserInput={this.setFormData}
-              value={this.state.docData.version}
-            />
-          <ButtonElement label="Update File"/>
+              value={this.state.docData.hiddenVideo}
+            />)
+          }
+          <TextboxElement
+            name="version"
+            label={t('Version', {ns: 'document_repository'})}
+            onUserInput={this.setFormData}
+            value={this.state.docData.version}
+          />
+          <ButtonElement label={t('Update File', {ns: 'document_repository'})}/>
         </FormElement>
       </div>
     );
@@ -160,15 +189,15 @@ class DocEditForm extends React.Component {
     fetch(this.props.action, {
       method: 'PUT',
       headers: {
-            'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data',
       },
       body: JSON.stringify(formData),
     })
-    .then((resp) => resp.json())
-    .then(()=>{
-      swal.fire('Updated Successful!', '', 'success');
-      this.fetchData();
-    });
+      .then((resp) => resp.json())
+      .then(() => {
+        swal.fire('Updated Successful!', '', 'success');
+        this.fetchData();
+      });
   }
 
   /**
@@ -179,7 +208,7 @@ class DocEditForm extends React.Component {
    */
   setFormData(formElement, value) {
     let docData = this.state.docData;
-      docData[formElement] = value;
+    docData[formElement] = value;
     this.setState({
       docData: docData,
     });
@@ -189,6 +218,7 @@ class DocEditForm extends React.Component {
 DocEditForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default DocEditForm;
+export default withTranslation(['document_repository', 'loris'])(DocEditForm);

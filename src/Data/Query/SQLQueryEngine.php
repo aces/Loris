@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\Data\Query;
 
 use LORIS\StudyEntities\Candidate\CandID;
@@ -104,7 +105,7 @@ abstract class SQLQueryEngine implements QueryEngine
      * @param ?string[]                   $visitlist The optional list of visits
      *                                               to match at.
      *
-     * @return CandID[]
+     * @return \Generator<CandID>
      */
     public function getCandidateMatches(
         \LORIS\Data\Query\QueryTerm $term,
@@ -115,7 +116,7 @@ abstract class SQLQueryEngine implements QueryEngine
         $this->addWhereClause("c.Active='Y'");
         $prepbindings = [];
 
-        $this->buildQueryFromCriteria($term, $prepbindings);
+        $this->buildQueryFromCriteria($term, $prepbindings, $visitlist);
 
         $query = 'SELECT DISTINCT c.CandID FROM';
 
@@ -127,13 +128,9 @@ abstract class SQLQueryEngine implements QueryEngine
 
         $DB   = $this->loris->getDatabaseConnection();
         $rows = $DB->pselectCol($query, $prepbindings);
-
-        return array_map(
-            function ($cid) {
-                return new CandID($cid);
-            },
-            $rows
-        );
+        foreach ($rows as $candID) {
+            yield new CandID(strval($candID));
+        }
     }
 
     /**
@@ -170,14 +167,17 @@ abstract class SQLQueryEngine implements QueryEngine
         $sessionVariables = false;
         $keyFields        = [];
         foreach ($items as $dict) {
+            // Quote the question marks otherwise PDO will interpret
+            // these as positional placeholders
+            $dictName = str_replace('?', '??', $dict->getName());
             $fields[] = $this->getFieldNameFromDict($dict)
                 . ' as '
-                . "`{$dict->getName()}`";
+                . "`$dictName`";
             if ($dict->getScope() == 'session') {
                 $sessionVariables = true;
             }
             if ($dict->getCardinality()->__toString() === "many") {
-                $keyFields[] = $this->getCorrespondingKeyField($dict) . " as `{$dict->getName()}:key`";
+                $keyFields[] = $this->getCorrespondingKeyField($dict) . " as `$dictName:key`";
             }
         }
 
@@ -237,7 +237,7 @@ abstract class SQLQueryEngine implements QueryEngine
      *
      * @return string
      */
-    protected function sqlOperator(Criteria $criteria) : string
+    public static function sqlOperator(Criteria $criteria) : string
     {
         if ($criteria instanceof LessThan) {
             return '<';
@@ -285,7 +285,7 @@ abstract class SQLQueryEngine implements QueryEngine
      *
      * @return string
      */
-    protected function sqlValue(DictionaryItem $dict, Criteria $criteria, array &$prepbindings) : string
+    public static function sqlValue(DictionaryItem $dict, Criteria $criteria, array &$prepbindings) : string
     {
         static $i = 1;
 
@@ -534,7 +534,7 @@ abstract class SQLQueryEngine implements QueryEngine
         $DB->run("DROP TEMPORARY TABLE IF EXISTS $tablename");
         $DB->run(
             "CREATE TEMPORARY TABLE $tablename (
-            CandID int(6)
+            CandID int(10) unsigned
         );"
         );
 
@@ -582,7 +582,7 @@ abstract class SQLQueryEngine implements QueryEngine
         );
 
         if ($visitlist != null) {
-            $this->addTable("LEFT JOIN session s ON (s.CandID=c.CandID AND s.Active='Y')");
+            $this->addTable("LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')");
             $inset = [];
             $i     = count($prepbindings);
             foreach ($visitlist as $vl) {

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\media;
 use LORIS\candidate_profile\CandidateWidget;
 
@@ -25,11 +26,11 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return string The menu category for this module
+     * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : string
+    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
     {
-        return "Clinical";
+        return \LORIS\GUI\MenuCategory::singleton("Clinical");
     }
 
     /**
@@ -39,7 +40,7 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Media";
+        return dgettext("media", "Media");
     }
 
     /**
@@ -68,19 +69,20 @@ class Module extends \Module
                 "SELECT file_name as Filename, last_modified as LastModified
                  FROM media m
                     JOIN session s ON (m.session_id=s.ID)
-                 WHERE s.CandID=:cid
+                    JOIN candidate c ON (s.CandidateID=c.ID)
+                 WHERE c.CandID=:cid
                     AND hide_file=false",
                 ['cid' => $candidate->getCandID()],
             );
-            if (empty($media)) {
+            if (count($media) === 0) {
                 return [];
             }
             return [
                 new CandidateWidget(
-                    "Candidate Media",
+                    dgettext("media", "Candidate Media"),
                     $baseurl . "/media/js/CandidateMediaWidget.js",
                     "lorisjs.media.CandidateMediaWidget.default",
-                    [ 'Files' => $media],
+                    [ 'Files' => iterator_to_array($media)],
                     1,
                     1,
                 )
