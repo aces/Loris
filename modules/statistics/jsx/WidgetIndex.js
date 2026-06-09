@@ -19,20 +19,6 @@ import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/statistics.json';
 
 /**
- * Returns the total number of participants reported by the widget endpoint.
- *
- * @param {object} data - Widget endpoint data
- * @return {number|null} The total participant count, or null before data loads.
- */
-const getTotalParticipants = (data) => {
-  if (!data || !data.recruitment || !data.recruitment.overall) {
-    return null;
-  }
-
-  return Number(data.recruitment.overall.total_recruitment);
-};
-
-/**
  * Empty panel content shown when the study has no collected data yet.
  *
  * @param {Function} t - Translation helper
@@ -56,8 +42,8 @@ const WidgetIndex = (props) => {
   const [widgetsLoaded, setWidgetsLoaded] = useState(false);
   const [modalChart, setModalChart] = useState(null);
   const {t, i18n} = useTranslation();
-  const totalParticipants = getTotalParticipants(recruitmentData);
-  const hasNoCollectedData = widgetsLoaded && totalParticipants === 0;
+  const hasNoCollectedData = widgetsLoaded
+    && Number(recruitmentData?.recruitment?.overall?.total_recruitment) === 0;
 
   useEffect( () => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
@@ -381,16 +367,7 @@ const WidgetIndex = (props) => {
       {hasNoCollectedData ? (
         <>
           <Panel
-            title={
-              t('Recruitment', {ns: 'statistics'})
-              + ' — '
-              + t('Overall', {ns: 'statistics'})
-              + ' | '
-              + t(
-                'Total Participants: {{count}}',
-                {ns: 'statistics', count: totalParticipants}
-              )
-            }
+            title={t('Recruitment', {ns: 'statistics'})}
             id='statistics_recruitment'
           >
             {emptyState(t)}
