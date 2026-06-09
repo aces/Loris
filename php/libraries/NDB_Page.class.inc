@@ -146,7 +146,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
             ->getLogSettings()
             ->getRequestLogLevel();
 
-        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+        if ($loglevel !== "none") {
+            $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+        } else {
+            $this->logger = new \Psr\Log\NullLogger();
+        }
 
     }
 

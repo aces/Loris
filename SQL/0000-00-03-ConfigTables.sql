@@ -234,6 +234,11 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "Ymd" FROM ConfigSettings WHERE 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Ymd"  FROM ConfigSettings WHERE Name="dodFormat";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "365" FROM ConfigSettings WHERE Name="UserMaximumDaysInactive";
 
+INSERT INTO Config (ConfigID, Value) SELECT ID, "warning" FROM ConfigSettings WHERE Name="database_log_level";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "warning" FROM ConfigSettings WHERE Name="request_log_level";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "warning" FROM ConfigSettings WHERE Name="exception_log_level";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "none" FROM ConfigSettings WHERE Name="profiler_log_level";
+
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="imagePath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "%LORISROOT%" FROM ConfigSettings WHERE Name="base";
@@ -333,4 +338,3 @@ INSERT INTO menu_categories (name, orderby) VALUES
 ('Reports', 7),
 ('Tools', 8),
 ('Admin', 9);
-
