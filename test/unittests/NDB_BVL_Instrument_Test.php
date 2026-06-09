@@ -1959,9 +1959,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $mockLoris->method('getConfiguration')->willReturn($mockConfig);
 
         $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
-        // https://wiki.php.net/rfc/deprecations_php_8_5#extreflection_deprecations
-        // https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        (\PHP_VERSION_ID < 80100) && ref->setAccessible(true);
         $ref->setValue($this->_instrument, $mockLoris);
         // phan-suppress-next-line PhanUndeclaredMethod
         $this->_instrument->validate($instrumentQuestions);
