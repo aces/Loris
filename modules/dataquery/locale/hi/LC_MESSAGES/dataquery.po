@@ -264,8 +264,8 @@ msgid_plural "Fields"
 msgstr[0] "फ़ील्ड"
 msgstr[1] "फ़ील्ड्स"
 
-msgid "Select a field"
-msgstr "फ़ील्ड चुनें"
+msgid "Select Category"
+msgstr "श्रेणी का चयन करें"
 
 msgid "in"
 msgstr "में"

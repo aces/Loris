@@ -258,7 +258,7 @@ msgid_plural "Fields"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Select a field"
+msgid "Select Category"
 msgstr ""
 
 msgid "in"

@@ -519,8 +519,8 @@ msgstr "デフォルトの訪問"
 msgid "Sync selected visits across all fields"
 msgstr "選択した訪問を全項目で同期"
 
-msgid "Select a field"
-msgstr "フィールドを選択"
+msgid "Select Category"
+msgstr "カテゴリを選択してください"
 
 msgid "Select a category"
 msgstr "カテゴリーを選択"

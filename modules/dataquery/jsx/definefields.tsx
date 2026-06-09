@@ -472,7 +472,7 @@ function DefineFields(props: {
     <div>
       <div style={{display: 'flex', gap: '2rem', width: '100%'}}>
         <div style={{width: 'calc(70% - 2rem/2)'}}>
-          <h2>{t('Select a field', {ns: 'dataquery'})}</h2>
+          <h2>{t('Select Category', {ns: 'dataquery'})}</h2>
           <FilterableSelectGroup groups={props.allCategories.categories}
             mapGroupName={(key) => props.allCategories.modules[key]}
             onChange={props.onCategoryChange}

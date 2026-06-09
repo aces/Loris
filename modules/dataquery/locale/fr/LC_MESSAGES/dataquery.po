@@ -381,8 +381,8 @@ msgid_plural "Fields"
 msgstr[0] "Champ"
 msgstr[1] "Champs"
 
-msgid "Select a field"
-msgstr "Choisir un champ"
+msgid "Select Category"
+msgstr "Choisir une catégorie"
 
 msgid "in"
 msgstr "en"
