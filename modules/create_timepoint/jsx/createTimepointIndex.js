@@ -294,25 +294,6 @@ class CreateTimepoint extends React.Component {
     }
   }
 
-  translateServerMessage(message) {
-    const {t} = this.props;
-    const timepointExists = message.match(new RegExp(
-      '^A timepoint with these conditions '
-      + '\\(([^,]+), ([^,]+), ([^,]+), ([^)]+)\\) already exists\\.$'
-    ));
-    if (!timepointExists) {
-      return message;
-    }
-
-    return timepointExists.slice(1).reduce(
-      (translated, value) => translated.replace('%s', value),
-      t(
-        'A timepoint with these conditions (%s, %s, %s, %s) already exists.',
-        {ns: 'create_timepoint'}
-      )
-    );
-  }
-
   /**
    * Handle form submission
    *
@@ -358,11 +339,7 @@ class CreateTimepoint extends React.Component {
         response.json().then((data) => {
           if (data.error) {
             // display conflicts on form.
-            const messages = JSON.parse(data.error);
-            Object.keys(messages).forEach((key) => {
-              messages[key] = this.translateServerMessage(messages[key]);
-            });
-            this.setState({messages});
+            this.setState({messages: JSON.parse(data.error)});
           }
         });
       }

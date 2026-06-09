@@ -193,7 +193,7 @@ msgstr "sélectionné"
 
 # Common swal labels
 msgid "OK"
-msgstr "D'accord"
+msgstr "OK"
 
 msgid "Cancel"
 msgstr "Annuler"
