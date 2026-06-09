@@ -6,19 +6,20 @@ window.addEventListener('load', () => {
   if (!btn) return;
 
   btn.addEventListener('click', () => {
-    const userID = document.getElementById('UserID').value;
+    const pathParts = window.location.pathname.split('/');
+    const userID = pathParts[pathParts.length - 1];
     const baseurl = loris.BaseURL;
 
     swal.fire({
       title: 'Are you sure?',
       text: `Do you really want to reject user "${userID}"?\n` +
             'This action cannot be undone.',
-      icon: 'warning',
+      type: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, reject user!',
       cancelButtonText: 'Cancel',
     }).then((result) => {
-      if (result.isConfirmed) {
+      if (result.value) {
         fetch(`${baseurl}/user_accounts/ajax/rejectUser.php`, {
           method: 'POST',
           credentials: 'same-origin',
