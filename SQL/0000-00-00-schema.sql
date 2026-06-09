@@ -1697,7 +1697,6 @@ CREATE TABLE `issues_attachments` (
     `file_hash` varchar(64) NOT NULL,
     `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
     `file_name` varchar(255) NOT NULL DEFAULT '',
-    `deleted` tinyint(1) NOT NULL DEFAULT 0,
     `user` varchar(255) NOT NULL DEFAULT '',
     `description` text DEFAULT NULL,
     `file_size` int(20) DEFAULT NULL,
