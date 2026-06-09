@@ -38,7 +38,7 @@ class NDB_BVL_Instrument_Test extends TestCase
     /**
      * The instrument (or instrument mock) being tested.
      *
-     * @var \PHPUnit\Framework\MockObject\MockObject&\NDB_BVL_Instrument
+     * @var \NDB_BVL_Instrument | \PHPUnit\Framework\MockObject\MockObject&\NDB_BVL_Instrument
      */
     private $_instrument;
 
