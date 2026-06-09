@@ -39,17 +39,11 @@ msgstr "データリリースID"
 msgid "Upload File"
 msgstr "ファイルをアップロード"
 
-msgid "File to upload"
-msgstr "アップロードするファイル"
-
 msgid "Upload a New File"
 msgstr "新しいファイルをアップロードする"
 
 msgid "Add Permission"
 msgstr "権限の追加"
-
-msgid "User"
-msgstr "ユーザー"
 
 msgid "Manage Permissions"
 msgstr "権限の管理"
@@ -78,9 +72,6 @@ msgstr "アップロードエラー"
 msgid "Upload Successful!"
 msgstr "アップロード成功しました!"
 
-msgid "Are you sure?"
-msgstr "本気ですか？"
-
 msgid "A file with this name already exists!"
 msgstr "この名前のファイルは既に存在します。"
 
@@ -89,12 +80,6 @@ msgstr "既存のファイルを上書きしますか?"
 
 msgid "Note that the version associated with the file will also be overwritten."
 msgstr "ファイルに関連付けられたバージョンも上書きされることに注意してください。"
-
-msgid "Yes, I am sure!"
-msgstr "はい、間違いないです！"
-
-msgid "No, cancel it!"
-msgstr "いや、キャンセルしろ！"
 
 msgid "Choose a specific file or an entire release below"
 msgstr "以下の特定のファイルまたはリリース全体を選択してください"

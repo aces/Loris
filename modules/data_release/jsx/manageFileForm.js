@@ -189,7 +189,7 @@ class ManageFileForm extends Component {
             >
               <SelectElement
                 name='userid'
-                label={t('User', {ns: 'data_release'})}
+                label={t('Username', {ns: 'loris'})}
                 options={
                   this.state.fieldOptions.usersByFilePermissions[
                     this.state.specificReleaseI
