@@ -35,7 +35,9 @@ $(document).ready(function() {
                       data = null;
                     }
                     if (!response.ok) {
-                      throw {error: (data && data.error) ? data.error : text};
+                      throw new Error(
+                        (data && data.error) ? data.error : text
+                      );
                     }
                     $(form.find(".saveStatus"))
                     .text(data && data.ok ? data.ok : "Saved")
@@ -56,8 +58,10 @@ $(document).ready(function() {
                     );
                   }
                 })
-                .catch(function(data) {
-                    var message = data && data.error ? data.error : 'Request failed.';
+                .catch(function(error) {
+                    var message = error && error.message
+                      ? error.message
+                      : 'Request failed.';
                     $(form.find(".saveStatus"))
                     .text(message)
                     .css({ 'color': 'red'})
