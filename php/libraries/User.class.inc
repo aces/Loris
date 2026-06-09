@@ -335,7 +335,12 @@ class User extends UserPermissions implements
         if ($projects === '') {
             return [];
         }
-        return explode(';', $projects);
+
+        $translated = [];
+        foreach (explode(';', $projects) as $project) {
+            $translated[$project] = dgettext("Project", $project);
+        }
+        return $translated;
     }
 
     /**
@@ -466,7 +471,7 @@ class User extends UserPermissions implements
             $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
                 $user_study_sites[$val->__toString()]
-                    = $site[$key]->getCenterName();
+                    = dgettext("psc", $site[$key]->getCenterName());
             }
         }
         natcasesort($user_study_sites);

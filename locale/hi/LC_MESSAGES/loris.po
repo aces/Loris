@@ -44,6 +44,9 @@ msgstr "प्रोजेक्ट अफिलिएशन्स"
 msgid "Log Out"
 msgstr "लॉग आउट"
 
+msgid "OK"
+msgstr "ठीक है"
+
 msgid "My Preferences"
 msgstr "मेरी पसंद"
 

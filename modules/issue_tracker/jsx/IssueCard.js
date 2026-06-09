@@ -4,6 +4,7 @@ import swal from 'sweetalert2';
 import Modal from 'jsx/Modal';
 import {withTranslation, Trans} from 'react-i18next';
 import '../css/issue_card.css';
+import Markdown from 'jsx/Markdown';
 
 const IssueCard = React.memo(function IssueCard(props) {
   const {t} = props;
@@ -457,7 +458,8 @@ const IssueCard = React.memo(function IssueCard(props) {
             ) : (
               <div className="description-container">
                 <p className="description-text">
-                  {description}</p>
+                  <Markdown content={description} />
+                </p>
               </div>
             )}
           </div>
@@ -469,7 +471,8 @@ const IssueCard = React.memo(function IssueCard(props) {
                 issue.topComments.map((comment, index) => (
                   <div key={index} className="comment">
                     <p className="comment-text">
-                      {comment.issueComment}</p>
+                      <Markdown content={comment.issueComment} />
+                    </p>
                     <span className="comment-meta">
                       <Trans
                         ns="issue_tracker"
