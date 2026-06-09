@@ -817,7 +817,7 @@ function SingleQueryDisplay(props: {
   const loadIcon = <LoadIcon onClick={loadQuery} />;
 
   const pinIcon = props.queryAdmin
-    ? <span title={t('Pin Study Query', {ns: 'dataquery'})}
+    ? <span title={t('Pin study query', {ns: 'dataquery'})}
       style={{cursor: 'pointer'}}
       className="fa-stack"
       onClick={() => {

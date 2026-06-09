@@ -602,16 +602,16 @@ msgstr "Vous devez fournir un nom de requête."
 msgid "Pin Top Query"
 msgstr "Requête épinglée au sommet"
 
-msgid "Pin Study Query"
+msgid "Pin study query"
 msgstr "Épingler la requête d'étude"
 
 #, fuzzy
-msgid "Pin Dashboard Summary"
-msgstr "Résumé du tableau de bord des épingles"
+msgid "Show on dashboard"
+msgstr "Afficher sur le tableau de bord"
 
 #, fuzzy
-msgid "Pin To Login Page"
-msgstr "Épingler à la page de connexion"
+msgid "Show summary on login page"
+msgstr "Afficher le résumé sur la page de connexion"
 
 #, fuzzy
 msgid "Must pin as study query, to dashboard, or to the login page."

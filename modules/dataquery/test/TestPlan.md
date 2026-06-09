@@ -21,21 +21,21 @@
    13. Click the `Pin` icon to pin some queries.
       1. With and empty text in the `query name` text field, click the `Submit` button.
       2. Assert that: the error message `Must provide a query name to pin query as.` is triggered.
-      3. Unchecking all checkboxes (i.e. `Pin Study Query` and `Pin Dashboard Summary` and `Pin to Login Page`).
+      3. Unchecking all checkboxes (i.e. `Pin study query` and `Show on dashboard` and `Show summary on login page`).
       4. Assert that: clicking `Submit` triggers the error message `Must pin as study query, to dashboard, or to the login page.`.
-      5. Check the `Pin Study Query` checkbox and click the submit button.
+      5. Check the `Pin study query` checkbox and click the submit button.
       6. Assert that: the query is now pinned at the top of the page in the `Study Queries` panel.
       7. Go to LORIS main page by clicking the `LORIS` name in the top-left corner.
       8. Assert that: the query is **NOT** displayed inside the right-side `Study Queries` panel.
       9. Go back to the module.
-      10. Create a new named pinned query, only checking the `Pin Dashboard Summary` this time.
+      10. Create a new named pinned query, only checking the `Show on dashboard` this time.
       11. Assert that: the query is **NOT** pinned at the top of the page in the `Study Queries` panel.
       12. Go to LORIS main page by clicking the `LORIS` name in the top-left corner.
       13. Assert that: the query is displayed inside the right-side `Study Queries` panel.
       14. Click the pinned query.
       15. Assert that: the confirmation message `Query loaded` is displayed and query can immediately be executed.
-      16. Try pinning a query with `Pin Study Query`, `Pin Dashboard Summary` and `Pin to Login Page` options.
-      17. For testing the `Pin to Login Page` option, check the Login module test plan: `modules/login/test/Login_Statistics_Test_Plan.md`.
+      16. Try pinning a query with `Pin study query`, `Show on dashboard` and `Show summary on login page` options.
+      17. For testing the `Show summary on login page` option, check the Login module test plan: `modules/login/test/Login_Statistics_Test_Plan.md`.
       18. Assert that: `Study Queries` in the dataquery module **AND** `Study Queries` in LORIS welcome page **AND** `Data in LORIS` on the LORIS Login Page are displayed.
    14. Assert that: the query is now pinned at the top of the page, in `Study Queries` panel.
    15. Go back to `LORIS main page`.
