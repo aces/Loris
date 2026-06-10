@@ -242,7 +242,8 @@ class Charts extends \NDB_Page
             {$conditions['cohortQuery']}
             {$conditions['visitQuery']}
             {$conditions['siteQuery']}
-            {$conditions['participantStatusQuery']}",
+            {$conditions['participantStatusQuery']}
+            ORDER BY c.DoB DESC",
             $conditions['params']
         );
 
@@ -277,13 +278,6 @@ class Charts extends \NDB_Page
             $label      = $startOfSplit . '-' . $endOfSplit;
             $recruitmentByAgeData[] = ["label" => $label, "total" => $count];
         }
-        // sort the labels
-        usort(
-            $recruitmentByAgeData,
-            function ($a, $b) {
-                return $a['label'] <=> $b['label'];
-            }
-        );
 
         return (new \LORIS\Http\Response\JsonResponse($recruitmentByAgeData));
     }
