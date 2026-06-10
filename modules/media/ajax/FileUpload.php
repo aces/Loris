@@ -54,8 +54,8 @@ function editFile()
         "SELECT s.CenterID FROM media m
          JOIN session s ON m.session_id = s.ID
          WHERE m.id = :id",
-            ['id' => $idMediaFile]
-        );
+        ['id' => $idMediaFile]
+    );
 
     if (!$row) {
         showMediaError("Media ID $idMediaFile not found", 404);
