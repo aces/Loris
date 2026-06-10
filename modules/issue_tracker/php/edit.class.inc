@@ -742,8 +742,39 @@ class Edit extends \NDB_Page implements ETagCalculator
             );
         }
 
-        $user = $request->getAttribute('user');
+        $user     = $request->getAttribute('user');
+        $centerID = isset($values['centerID'])
+            && $values['centerID'] != 'null'
+            ? new \CenterID((string)$values['centerID'])
+            : null;
+
+
         $db   = $this->loris->getDatabaseConnection();
+        $oldCenterID = $db->pselectOne(
+            "SELECT centerID FROM issues WHERE issueID=:issueID",
+            ['issueID' => $values['issueID']]
+        );
+        $oldCenterID = isset($oldCenterID)
+            ? new \CenterID((string)$oldCenterID)
+            : null;
+
+
+        // Verify that user has edit permissions:
+        // 1) User has permission to edit all issues
+        if (!($user->hasPermission('issue_tracker_all_issue')
+            // 2) User has permission to edit site issues &
+            // issue has no site or is at site belonging to user
+            || ($user->hasPermission('issue_tracker_site_issue')
+            && (empty($centerID) || $user->hasCenter($centerID))
+            && (empty($oldCenterID) || $user->hasCenter($oldCenterID)))
+            // 3) User has permission to edit own issue & user is issue reporter
+            || ($user->hasPermission('issue_tracker_own_issue')
+            && $values['reporter'] === $user->getUserName()))
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'User does not have permission to edit issues.'
+            );
+        }
 
         $issueValues    = [];
         $validateValues = [];
