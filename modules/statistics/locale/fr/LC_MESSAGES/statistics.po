@@ -25,6 +25,9 @@ msgstr "Statistiques"
 msgid "Study Progression"
 msgstr "Progression des études"
 
+msgid "Admin stats"
+msgstr "Statistiques d'administration"
+
 msgid "Summary"
 msgstr "Résumé"
 
@@ -73,6 +76,18 @@ msgstr "Répartition selon le sexe biologique par site"
 
 msgid "Candidate Age at Registration"
 msgstr "Âge du candidat au moment de l'inscription"
+
+msgid "User Registrations"
+msgstr "Inscriptions d'utilisateurs"
+
+msgid "Registrations"
+msgstr "Inscriptions"
+
+msgid "Unique Monthly Logins"
+msgstr "Connexions mensuelles uniques"
+
+msgid "Unique Logins"
+msgstr "Connexions uniques"
 
 msgid "Candidates registered"
 msgstr "Candidats inscrits"

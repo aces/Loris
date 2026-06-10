@@ -24,6 +24,9 @@ msgstr ""
 msgid "Study Progression"
 msgstr ""
 
+msgid "Admin stats"
+msgstr ""
+
 msgid "Summary"
 msgstr ""
 
@@ -70,6 +73,18 @@ msgid "Biological sex breakdown by site"
 msgstr ""
 
 msgid "Candidate Age at Registration"
+msgstr ""
+
+msgid "User Registrations"
+msgstr ""
+
+msgid "Registrations"
+msgstr ""
+
+msgid "Unique Monthly Logins"
+msgstr ""
+
+msgid "Unique Logins"
 msgstr ""
 
 msgid "Candidates registered"

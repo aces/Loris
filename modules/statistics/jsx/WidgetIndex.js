@@ -14,6 +14,7 @@ import '../css/WidgetIndex.css';
 
 import {setupCharts, unloadCharts} from './widgets/helpers/chartBuilder';
 import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/statistics.json';
 import frStrings from '../locale/fr/LC_MESSAGES/statistics.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
 
@@ -31,6 +32,7 @@ const WidgetIndex = (props) => {
   const {t, i18n} = useTranslation();
   useEffect( () => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
+    i18n.addResourceBundle('hi', 'statistics', hiStrings);
     i18n.addResourceBundle('fr', 'statistics', frStrings);
     i18n.addResourceBundle('zh', 'statistics', zhStrings);
   }, []);
@@ -371,11 +373,11 @@ const WidgetIndex = (props) => {
         showChart ={showChart}
         updateFilters ={updateFilters}
       />
-      <AdminStats
+      {loris.userHasPermission('user_account_multisite') && <AdminStats
         data ={adminStatsData}
         baseURL ={props.baseURL}
         showChart ={showChart}
-      />
+      />}
     </>
   );
 };
@@ -460,3 +462,4 @@ const exportChartAsImage = (chartId) => {
   'data:image/svg+xml;base64,'
   + btoa(unescape(encodeURIComponent(svgData)));
 };
+

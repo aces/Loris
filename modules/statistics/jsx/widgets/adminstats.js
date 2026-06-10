@@ -6,6 +6,8 @@ import Panel from 'Panel';
 import {setupCharts} from './helpers/chartBuilder';
 import {useTranslation} from 'react-i18next';
 import jaStrings from '../../locale/ja/LC_MESSAGES/statistics.json';
+import hiStrings from '../../locale/hi/LC_MESSAGES/statistics.json';
+import zhStrings from '../../locale/zh/LC_MESSAGES/statistics.json';
 import frStrings from '../../locale/fr/LC_MESSAGES/statistics.json';
 
 /**
@@ -54,6 +56,8 @@ const AdminStats = (props) => {
 
   useEffect(() => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
+    i18n.addResourceBundle('zh', 'statistics', zhStrings);
+    i18n.addResourceBundle('hi', 'statistics', hiStrings);
     i18n.addResourceBundle('fr', 'statistics', frStrings);
 
     let newdetails = {...chartDetails};

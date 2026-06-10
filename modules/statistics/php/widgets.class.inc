@@ -501,6 +501,9 @@ class Widgets extends \NDB_Page implements ETagCalculator
     private function _removeUrlsFromWidgetData(array $widgetData): array
     {
         foreach ($widgetData as $key => $value) {
+            if (!is_array($value)) {
+                continue;
+            }
             if (isset($value['url'])) {
                 $widgetData[$key]['url'] = null;
             }
@@ -517,29 +520,26 @@ class Widgets extends \NDB_Page implements ETagCalculator
      */
     private function _collectAdminStatsWidgets(\User $user): array
     {
-        $modules    = $this->loris->getActiveModules();
+        $module    = $this->loris->getModule('user_accounts');
+        if (!$module->hasAccess($user)) {
+            return [];
+        }
         $adminStats = [];
 
-        foreach ($modules as $module) {
-            $moduleWidgets = $module->getWidgets('admin-stats', $user, []);
+        $moduleWidgets = $module->getWidgets('admin-stats', $user, []);
 
-            foreach ($moduleWidgets as $widget) {
-                if (!($widget instanceof \LORIS\dashboard\DataWidget)) {
-                    continue;
-                }
-
-                $widgetData = [
-                    ...$widget->data(),
-                    'colour' => $widget->colour(),
-                    'ref'    => $widget,
-                ];
-
-                if (!$module->hasAccess($user)) {
-                    $widgetData = $this->_removeUrlsFromWidgetData($widgetData);
-                }
-
-                $adminStats[$widget->label()->getN(2)] = $widgetData;
+        foreach ($moduleWidgets as $widget) {
+            if (!($widget instanceof \LORIS\dashboard\DataWidget)) {
+                continue;
             }
+
+            $widgetData = [
+                ...$widget->data(),
+                'colour' => $widget->colour(),
+                'ref'    => $widget,
+            ];
+
+            $adminStats[$widget->label()->getN(2)] = $widgetData;
         }
 
         return $adminStats;
