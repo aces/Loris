@@ -1629,7 +1629,7 @@ export default connect(
     interval: state.bounds.interval,
     amplitudeScale: state.bounds.amplitudeScale,
     rightPanel: state.rightPanel,
-    timexSelection: state.timeSelection,
+    timeSelection: state.timeSelection,
     chunksURL: state.dataset.chunksURL,
     channels: state.channels,
     bidsChannels: state.dataset.bidsChannels,

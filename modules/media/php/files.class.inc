@@ -36,6 +36,7 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
     : \Psr\Http\Message\ResponseInterface
     {
         $user = \User::singleton();
+        // @phan-suppress-next-line PhanUndeclaredMethod
         if (!$this->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden("Permission Denied");
         }
