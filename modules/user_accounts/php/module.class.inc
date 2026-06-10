@@ -75,11 +75,12 @@ class Module extends \Module
      */
     public function getWidgets(string $type, \User $user, array $options) : array
     {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $baseURL = $factory->settings()->getBaseURL();
+
         switch ($type) {
         case "usertasks":
-            $factory = \NDB_Factory::singleton();
-            $DB      = $factory->database();
-            $baseURL = $factory->settings()->getBaseURL();
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
                     $user,
@@ -99,6 +100,99 @@ class Module extends \Module
                     $baseURL . "/user_accounts/?pendingApproval=Y",
                     "pending-accounts"
                 )
+            ];
+        case "admin-stats":
+            $registrations = iterator_to_array(
+                $DB->pselect(
+                    "SELECT
+                        EXTRACT(YEAR FROM account_request_date) AS RequestYear,
+                        EXTRACT(MONTH FROM account_request_date) AS RequestMonth,
+                        COUNT(ID) AS RequestCount
+                    FROM users
+                    WHERE Pending_approval = 'N'
+                    AND account_request_date IS NOT NULL
+                    GROUP BY RequestYear, RequestMonth
+                    ORDER BY RequestYear, RequestMonth",
+                    []
+                )
+            );
+
+            $registrationsData = [
+                'labels'   => array_map(
+                    fn(array $row) : string => sprintf(
+                        '%02d-%04d',
+                        intval($row['RequestMonth']),
+                        intval($row['RequestYear'])
+                    ),
+                    $registrations,
+                ),
+                'datasets' => [
+                    [
+                        'name' => 'User Registrations',
+                        'data' => array_map(
+                            fn(array $row) : int => intval($row['RequestCount']),
+                            $registrations,
+                        ),
+                    ],
+                ],
+            ];
+
+            $uniqueLogins = iterator_to_array(
+                $DB->pselect(
+                    "SELECT
+                        EXTRACT(YEAR FROM Login_timestamp) AS LoginYear,
+                        EXTRACT(MONTH FROM Login_timestamp) AS LoginMonth,
+                        COUNT(DISTINCT ulh.userID) AS UniqueLogins
+                    FROM user_login_history AS ulh
+                    JOIN users AS u USING(userID)
+                    WHERE Fax IS NULL
+                    GROUP BY LoginYear, LoginMonth
+                    ORDER BY LoginYear, LoginMonth",
+                    []
+                )
+            );
+
+            $uniqueLoginsData = [
+                'labels'   => array_map(
+                    fn(array $row) : string => sprintf(
+                        '%02d-%04d',
+                        intval($row['LoginMonth']),
+                        intval($row['LoginYear'])
+                    ),
+                    $uniqueLogins,
+                ),
+                'datasets' => [
+                    [
+                        'name' => 'Unique Monthly Logins',
+                        'data' => array_map(
+                            fn(array $row) : int => intval($row['UniqueLogins']),
+                            $uniqueLogins,
+                        ),
+                    ],
+                ],
+            ];
+
+            return [
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        'statistics',
+                        'User Registration',
+                        'User Registrations'
+                    ),
+                    $registrationsData,
+                    '',
+                    'rgb(214, 235, 255)',
+                ),
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        'statistics',
+                        'Unique Monthly Login',
+                        'Unique Monthly Logins'
+                    ),
+                    $uniqueLoginsData,
+                    '',
+                    'rgb(223, 245, 221)',
+                ),
             ];
         }
         return [];

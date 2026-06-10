@@ -113,6 +113,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $sites = \Utility::getSiteList();
 
         $studyWidgets = $this->_collectStudyProgressionWidgets($user);
+        $adminStats   = $this->_collectAdminStatsWidgets($user);
         $studyProgressionProjects = $this->_createStudyProgressionProjects(
             $projects,
             $config,
@@ -203,6 +204,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
             'recruitment'     => $recruitment,
             'progressionData' => $studyProgressionProjects,
         ];
+        $values['adminstats']         = $adminStats;
         $values['options']            = $options;
         $values['recruitmentcohorts'] = $recruitmentCohorts;
 
@@ -504,6 +506,43 @@ class Widgets extends \NDB_Page implements ETagCalculator
             }
         }
         return $widgetData;
+    }
+
+    /**
+     * Collects admin stats widgets from all active modules.
+     *
+     * @param \User $user The current user
+     *
+     * @return array Collected admin stats widget data
+     */
+    private function _collectAdminStatsWidgets(\User $user): array
+    {
+        $modules    = $this->loris->getActiveModules();
+        $adminStats = [];
+
+        foreach ($modules as $module) {
+            $moduleWidgets = $module->getWidgets('admin-stats', $user, []);
+
+            foreach ($moduleWidgets as $widget) {
+                if (!($widget instanceof \LORIS\dashboard\DataWidget)) {
+                    continue;
+                }
+
+                $widgetData = [
+                    ...$widget->data(),
+                    'colour' => $widget->colour(),
+                    'ref'    => $widget,
+                ];
+
+                if (!$module->hasAccess($user)) {
+                    $widgetData = $this->_removeUrlsFromWidgetData($widgetData);
+                }
+
+                $adminStats[$widget->label()->getN(2)] = $widgetData;
+            }
+        }
+
+        return $adminStats;
     }
 
     /**

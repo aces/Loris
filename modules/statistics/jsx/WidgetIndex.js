@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Recruitment from './widgets/recruitment';
 import StudyProgression from './widgets/studyprogression';
+import AdminStats from './widgets/adminstats';
 import {fetchData} from './Fetch';
 import Modal from 'Modal';
 import Loader from 'Loader';
@@ -25,6 +26,7 @@ import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
 const WidgetIndex = (props) => {
   const [recruitmentData, setRecruitmentData] = useState({});
   const [studyProgressionData, setStudyProgressionData] = useState({});
+  const [adminStatsData, setAdminStatsData] = useState({});
   const [modalChart, setModalChart] = useState(null);
   const {t, i18n} = useTranslation();
   useEffect( () => {
@@ -273,6 +275,7 @@ const WidgetIndex = (props) => {
         );
         setRecruitmentData(data);
         setStudyProgressionData(data);
+        setAdminStatsData(data);
       };
       setup().catch(
         (error) => {
@@ -367,6 +370,11 @@ const WidgetIndex = (props) => {
         baseURL ={props.baseURL}
         showChart ={showChart}
         updateFilters ={updateFilters}
+      />
+      <AdminStats
+        data ={adminStatsData}
+        baseURL ={props.baseURL}
+        showChart ={showChart}
       />
     </>
   );

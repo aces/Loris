@@ -157,7 +157,15 @@ const createBarChart = (t, labels, columns, id, targetModal, colours, dataType) 
   return newChart;
 }
 
-const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => {
+const createLineChart = (
+  data,
+  columns,
+  id,
+  label,
+  targetModal,
+  titlePrefix,
+  dateFormat,
+) => {
   // Calculate grand total across all data points for percentage calculation
   let grandTotal = 0;
   if (data && data.datasets) {
@@ -167,6 +175,22 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
       }
     }
   }
+  const xFormat = dateFormat || (id.includes('bymonth') ? '%m-%Y' : null);
+  const axis = xFormat ? {
+    x: {
+      type: 'timeseries',
+      tick: {
+        format: xFormat,
+        rotate: -65,
+        multiline: true,
+      },
+    },
+    y: {
+      max: maxY(data),
+      label: label,
+    },
+  } : undefined;
+
   let newChart = c3.generate({
     size: {
       height: targetModal && 500,
@@ -175,25 +199,12 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
     bindto: targetModal ? targetModal : id,
     data: {
       x: 'x',
-      xFormat: id.includes('bymonth') && '%m-%Y',
+      xFormat: xFormat || undefined,
       columns: columns,
       type: 'area-spline',
     },
     spline: {interpolation: {type: 'monotone'}},
-    axis: id.includes('bymonth') && {
-      x: {
-        type: 'timeseries',
-        tick: {
-          format: '%m-%Y',
-          rotate: -65,
-          multiline: true,
-        },
-      },
-      y: {
-        max: maxY(data),
-        label: label,
-      },
-    },
+    axis: axis,
     zoom: {
       enabled: true,
     },
@@ -309,7 +320,11 @@ const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
             labels = chartData.labels;
             colours = sexColours;
           } else if (chart.dataType === 'line') {
-            columns = formatLineData(chartData, totalLabel);
+            columns = formatLineData(
+              chartData,
+              totalLabel,
+              chart.includeTotal !== false,
+            );
           }
           let chartObject = null;
           if (chart.chartType === 'pie') {
@@ -317,7 +332,15 @@ const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
           } else if (chart.chartType === 'bar') {
             chartObject = createBarChart(t, labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
           } else if (chart.chartType === 'line') {
-            chartObject = createLineChart(chartData, columns, `#${chartID}`, chart.label, targetIsModal && '#dashboardModal', chart.titlePrefix);
+            chartObject = createLineChart(
+              chartData,
+              columns,
+              `#${chartID}`,
+              chart.label,
+              targetIsModal && '#dashboardModal',
+              chart.titlePrefix,
+              chart.dateFormat,
+            );
           }
           newChartDetails[section][chartID].data = chartData;
           newChartDetails[section][chartID].chartObject = chartObject;
@@ -337,7 +360,7 @@ const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
  * @param {object} data
  * @return {*[]}
  */
-const formatLineData = (data, totalLabel) => {
+const formatLineData = (data, totalLabel, includeTotal = true) => {
   const processedData = [];
   const labels = [];
   labels.push('x');
@@ -350,16 +373,18 @@ const formatLineData = (data, totalLabel) => {
     dataset.push(data['datasets'][i].name);
     processedData.push(dataset.concat(data['datasets'][i].data));
   }
-  const totals = [];
-  totals.push(totalLabel);
-  for (let j = 0; j < data['datasets'][0].data.length; j++) {
-    let total = 0;
-    for (let i = 0; i < data['datasets'].length; i++) {
-      total += parseInt(data['datasets'][i].data[j]);
+  if (includeTotal) {
+    const totals = [];
+    totals.push(totalLabel);
+    for (let j = 0; j < data['datasets'][0].data.length; j++) {
+      let total = 0;
+      for (let i = 0; i < data['datasets'].length; i++) {
+        total += parseInt(data['datasets'][i].data[j]);
+      }
+      totals.push(total);
     }
-    totals.push(total);
+    processedData.push(totals);
   }
-  processedData.push(totals);
   return processedData;
 };
 
