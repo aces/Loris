@@ -36,6 +36,7 @@ import {Trans, useTranslation} from 'react-i18next';
  *                                           to the existing QueryGroup
  * @param {function} props.removeQueryGroupItem - Function that will remove an item from a
  *                                                QueryGroup by index.
+ * @param {string[]} props.visitLabels - Array of allowed visit label values
  * @returns {React.ReactElement} - The Define Filters page
  */
 function DefineFilters(props: {
@@ -60,6 +61,7 @@ function DefineFilters(props: {
     ) => QueryGroup,
     addNewQueryGroup: (group: QueryGroup) => void,
     removeQueryGroupItem: (group: QueryGroup, i: number) => QueryGroup,
+    visitLabels: string[],
 }) : React.ReactElement {
   const {t} = useTranslation('dataquery');
   let displayquery: React.ReactNode = null;
@@ -370,6 +372,7 @@ function DefineFilters(props: {
     <ImportCSVModal
       setQuery={props.setQuery}
       closeModal={() => setCSVModal(false)}
+      visitLabels={props.visitLabels}
     />
   ) : '';
 
