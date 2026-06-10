@@ -157,7 +157,7 @@
                             </li>
                             {/if}
                             {if $header_policy}
-                                <li class="hidden-xs hidden-sm" id="header-policy-button"></li>
+                                <li id="header-policy-button"></li>
                             {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>
