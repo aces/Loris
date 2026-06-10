@@ -748,8 +748,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             ? new \CenterID((string)$values['centerID'])
             : null;
 
-
-        $db   = $this->loris->getDatabaseConnection();
+        $db          = $this->loris->getDatabaseConnection();
         $oldCenterID = $db->pselectOne(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
             ['issueID' => $values['issueID']]
@@ -757,7 +756,6 @@ class Edit extends \NDB_Page implements ETagCalculator
         $oldCenterID = isset($oldCenterID)
             ? new \CenterID((string)$oldCenterID)
             : null;
-
 
         // Verify that user has edit permissions:
         // 1) User has permission to edit all issues
