@@ -242,7 +242,8 @@ class Charts extends \NDB_Page
             {$conditions['cohortQuery']}
             {$conditions['visitQuery']}
             {$conditions['siteQuery']}
-            {$conditions['participantStatusQuery']}",
+            {$conditions['participantStatusQuery']}
+            ORDER BY c.DoB DESC",
             $conditions['params']
         );
 
