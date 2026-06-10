@@ -448,14 +448,14 @@ msgstr "क्वेरी का नाम देना होगा।"
 msgid "Pin Top Query"
 msgstr "पिन टॉप क्वेरी"
 
-msgid "Pin Study Query"
+msgid "Pin study query"
 msgstr "पिन अध्ययन क्वेरी"
 
-msgid "Pin Dashboard Summary"
-msgstr "पिन डैशबोर्ड सारांश"
+msgid "Show on dashboard"
+msgstr "डैशबोर्ड पर दिखाएँ"
 
-msgid "Pin To Login Page"
-msgstr "लॉगिन पेज पर पिन करें"
+msgid "Show summary on login page"
+msgstr "लॉगिन पृष्ठ पर सारांश दिखाएँ"
 
 msgid "Must pin as study query, to dashboard, or to the login page."
 msgstr "स्टडी क्वेरी के तौर पर, डैशबोर्ड पर, या लॉगिन पेज पर पिन करना होगा।"
