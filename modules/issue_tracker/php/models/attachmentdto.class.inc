@@ -33,7 +33,7 @@ class AttachmentDTO implements \LORIS\Data\DataInstance
     public string $file_hash;
     public string $date_added;
     public string $file_name;
-    public int $deleted;
+    public ?string $date_deleted;
     public string $user;
     public string $description;
     public int $file_size;
@@ -51,8 +51,8 @@ class AttachmentDTO implements \LORIS\Data\DataInstance
             'issueID'     => $this->issueID,
             'file_hash'   => $this->file_hash,
             'date_added'  => $this->date_added,
+            'date_deleted' => $this->date_deleted,
             'file_name'   => $this->file_name,
-            'deleted'     => $this->deleted,
             'user'        => $this->user,
             'description' => $this->description,
             'file_size'   => $this->file_size,

@@ -163,13 +163,11 @@ class UploadHelper
         $values = [
             'issueID'      => $this->_values['issueID'],
             'file_hash'    => $fileToUpload->file_hash,
-            'date_added'   => date('Y-m-d h:i:s', time()),
+            'date_added'   => date('Y-m-d H:i:s', time()),
             'file_name'    => $fileToUpload->file,
-            'deleted'      => 0,
             'user'         => $fileToUpload->inserted_by,
             'description'  => $fileToUpload->description,
             'file_size'    => $fileToUpload->size,
-            'date_deleted' => date('Y-m-d h:i:s', time()),
             'mime_type'    => $fileToUpload->mime_type
         ];
         try {
