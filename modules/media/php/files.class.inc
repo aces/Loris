@@ -25,8 +25,8 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
     /**
      * {@inheritDoc}
      *
-     * @param \Psr\Http\Message\ServerRequestInterface $request The PSR15
-     *                                                          Request being handled
+     * @param \Psr\Http\Message\ServerRequestInterface $request The PSR15 Request
+     *                                                          being handled
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
