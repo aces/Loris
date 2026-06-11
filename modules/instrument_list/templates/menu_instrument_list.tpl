@@ -73,21 +73,21 @@
         {$edc_age}
     </td>
     <td>
-      {$display.Sex}
+      {dgettext("sex", $display.Sex)}
     </td>
     {if $display.ProjectName != "" && $display.ProjectName == $display.ProjectTitle}  
       <td>
-        {$display.ProjectName}
+        {dgettext("Project", $display.ProjectName)}
       </td>
     {else}
       {if $display.ProjectTitle != ""}  
         <td>
-          {$display.ProjectTitle}
+          {dgettext("Project", $display.ProjectTitle)}
         </td>
       {/if}
       {if $display.ProjectName != ""}  
         <td>
-          {$display.ProjectName}
+          {dgettext("Project", $display.ProjectName)}
         </td>
       {/if}
     {/if}
@@ -100,13 +100,13 @@
     {if $sessionID != ""}
       <!-- timepoint data -->
       <td>
-        {$display.Visit_label}
+        {dgettext("visit", $display.Visit_label)}
       </td>
       <td>
-        {$display.PSC}
+        {dgettext("psc", $display.PSC)}
       </td>
       <td>
-        {$display.CohortTitle}
+        {dgettext("cohort", $display.CohortTitle)}
       </td>
       <td>
         {if $display.scanDone != ""}

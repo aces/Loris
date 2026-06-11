@@ -87,11 +87,11 @@
       </td>
     {/if}
     <td>
-      {$candidate.Sex}
+      {dgettext("sex", $candidate.Sex)}
     </td>
     {if $candidate.ProjectTitle != ""}
       <td>
-        {$candidate.ProjectTitle}
+        {dgettext("Project", $candidate.ProjectTitle)}
       </td>
     {/if}
     {foreach from=$candidate.DisplayParameters item=value key=name}
@@ -102,13 +102,13 @@
 
       <!-- timepoint data -->
       <td>
-        {$timePoint.Visit_label}
+        {dgettext("visit", $timePoint.Visit_label)}
       </td>
       <td>
-        {$timePoint.PSC}
+        {dgettext("psc", $timePoint.PSC)}
       </td>
       <td>
-        {$timePoint.CohortTitle}
+        {dgettext("cohort", $timePoint.CohortTitle)}
       </td>
       <td>
         {if $timePoint.scanDone != ""}
