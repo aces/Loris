@@ -13,7 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Challah"
-msgstr "Hallah"
+msgstr "Challah"
 
 msgid "DCP"
 msgstr "PCD"
