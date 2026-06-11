@@ -287,6 +287,9 @@ msgstr "Actualizado"
 msgid "Uploaded"
 msgstr "Subido"
 
+msgid "Uploaded By"
+msgstr "Subido por"
+
 msgid "Total"
 msgstr "Total"
 

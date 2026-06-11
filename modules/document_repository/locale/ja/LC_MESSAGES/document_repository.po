@@ -147,9 +147,6 @@ msgstr "アップロード"
 msgid "File Name"
 msgstr "ファイル名"
 
-msgid "Uploaded By"
-msgstr "アップロード者"
-
 msgid "For Site"
 msgstr "サイト向け"
 

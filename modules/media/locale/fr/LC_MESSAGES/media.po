@@ -28,9 +28,6 @@ msgstr "Nom du fichier"
 msgid "Instrument"
 msgstr "Instrument"
 
-msgid "Uploaded By"
-msgstr "Téléverser par"
-
 msgid "Date Taken"
 msgstr "Date de passage"
 

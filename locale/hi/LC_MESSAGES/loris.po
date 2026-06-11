@@ -401,6 +401,9 @@ msgstr "अद्यतन किया गया"
 msgid "Uploaded"
 msgstr "अपलोड किया गया"
 
+msgid "Uploaded By"
+msgstr "द्वारा अपलोड किया गया"
+
 # User Account related
 msgid "Password Rules"
 msgstr "पासवर्ड नियम"

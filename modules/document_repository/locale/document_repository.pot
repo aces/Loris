@@ -141,13 +141,7 @@ msgstr ""
 msgid "Delete Successful!"
 msgstr ""
 
-msgid "Upload"
-msgstr ""
-
 msgid "File Name"
-msgstr ""
-
-msgid "Uploaded By"
 msgstr ""
 
 msgid "For Site"

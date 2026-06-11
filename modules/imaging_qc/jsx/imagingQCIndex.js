@@ -1,10 +1,14 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line no-unused-vars
 import i18n from 'I18nSetup';
+
+import jaStrings from '../locale/ja/LC_MESSAGES/imaging_qc.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/imaging_qc.json';
 /**
  * Imaging Quality Control React Component
  */
@@ -81,12 +85,13 @@ class ImagingQCIndex extends Component {
    * @return {object}
    */
   fetchData(url, state) {
+    const {t} = this.props;
     return fetch(url, {credentials: 'same-origin'})
       .then((resp) => {
         return resp.text();
       })
       .then((data) => {
-        if (data === 'MRI Parameter Form table does not exist') {
+        if (data === t('MRI Parameter Form table does not exist', {ns: 'imaging_qc'})) {
           this.setState({error: data});
         } else {
           this.setState({[state]: JSON.parse(data)});
@@ -103,6 +108,7 @@ class ImagingQCIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoadedImg) {
       return <Loader/>;
     }
@@ -111,104 +117,104 @@ class ImagingQCIndex extends Component {
 
       const ImgFields = [
         {
-          label: 'PSCID', show: true, filter: {
+          label: t('PSCID', {ns: 'loris'}), show: true, filter: {
             name: 'pSCID',
             type: 'text',
           },
         },
-        {label: 'Session ID', show: true},
+        {label: t('Session ID', {ns: 'loris'}), show: true},
         {
-          label: 'DCCID', show: true, filter: {
+          label: t('DCCID', {ns: 'loris'}), show: true, filter: {
             name: 'candId',
             type: 'text',
           },
         },
         {
-          label: 'Site', show: true, filter: {
+          label: t('Site', {ns: 'loris'}), show: true, filter: {
             name: 'site',
             type: 'select',
             options: ImgOptions.site,
           },
         },
         {
-          label: 'Project', show: true, filter: {
+          label: t('Project', {ns: 'loris'}), show: true, filter: {
             name: 'project',
             type: 'select',
             options: ImgOptions.project,
           },
         },
         {
-          label: 'Cohort', show: true, filter: {
+          label: t('Cohort', {ns: 'loris'}), show: true, filter: {
             name: 'cohort',
             type: 'select',
             options: ImgOptions.cohort,
           },
         },
         {
-          label: 'Visit Label', show: true, filter: {
+          label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
             name: 'visitLabel',
             type: 'select',
             options: ImgOptions.visitLabel,
           },
         },
         {
-          label: 'Scan Type', show: true, filter: {
+          label: t('Scan Type', {ns: 'imaging_qc'}), show: true, filter: {
             name: 'scanType',
             type: 'select',
             options: ImgOptions.scanType,
           },
         },
         {
-          label: 'MRI Parameter Form', show: true, filter: {
+          label: t('MRI Parameter Form', {ns: 'imaging_qc'}), show: true, filter: {
             name: 'mRIParameterForm',
             type: 'select',
             options: ImgOptions.mRIParameterForm,
           },
         },
         {
-          label: 'Scan Done in MRI PF', show: true, filter: {
+          label: t('Scan Done in MRI PF', {ns: 'imaging_qc'}), show: true, filter: {
             name: 'scanDoneInMRIPF',
             type: 'select',
             options: ImgOptions.scanDoneInMRIPF,
           },
         },
         {
-          label: 'Tarchive', show: true, filter: {
+          label: t('Tarchive', {ns: 'imaging_qc'}), show: true, filter: {
             name: 'tarchive',
             type: 'select',
             options: ImgOptions.tarchive,
           },
         },
         {
-          label: 'Scan Location', show: true, filter: {
+          label: t('Scan Location', {ns: 'imaging_qc'}), show: true, filter: {
             name: 'scanLocation',
             type: 'select',
             options: ImgOptions.scanLocation,
           },
         },
         {
-          label: 'QC Status', show: true, filter: {
+          label: t('QC Status', {ns: 'imaging_qc'}), show: true, filter: {
             name: 'qCStatus',
             type: 'select',
             options: ImgOptions.qCStatus,
           },
         },
         {
-          label: 'Uploaded By', show: true, filter: {
+          label: t('Uploaded By', {ns: 'loris'}), show: true, filter: {
             name: 'uploadedBy',
             type: 'select',
             options: ImgOptions.uploadedBy,
           },
         },
         {
-          label: 'Selected', show: true, filter: {
+          label: t('Selected', {ns: 'loris'}), show: true, filter: {
             name: 'selected',
             type: 'select',
             options: ImgOptions.selected,
           },
         },
-        {label: 'CommentID', show: false},
-        {label: 'TarchiveID', show: false},
+        {label: t('CommentID', {ns: 'imaging_qc'}), show: false},
+        {label: t('TarchiveID', {ns: 'imaging_qc'}), show: false},
       ];
 
       const datatable = (
@@ -227,19 +233,20 @@ class ImagingQCIndex extends Component {
     } else {
       return (
         <div>
-          {this.state.error === 'MRI Parameter Form table does not exist' ?
+          {this.state.error === 
+          t('MRI Parameter Form table does not exist', {ns: 'imaging_qc'}) ?
             <>
-              <h3>
-                  The MRI parameter form instrument must be
-                  installed in-order to use this module.
+              <h3>{t(
+                  'The MRI parameter form instrument must be installed in-order '
+                  + ' to use this module.', {ns: 'imaging_qc'})}
               </h3>
-              <p>
-                  Please contact your administrator
-                  if you require this functionality.
+              <p>{t(
+                  'Please contact your administrator '
+                  + 'if you require this functionality.', {ns: 'imaging_qc'})}
               </p>
             </> :
             <h3>
-                An error occurred while loading the page.
+                {t('An error occurred while loading the page.', {ns: 'loris'})}
             </h3>
           }
         </div>
@@ -254,10 +261,16 @@ ImagingQCIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'document_repository', jaStrings);
+  i18n.addResourceBundle('zh', 'document_repository', zhStrings);
+
+  const TranslatedImagingQCIndex = withTranslation(
+    ['imaging_qc', 'loris']
+  )(ImagingQCIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <ImagingQCIndex
+    <TranslatedImagingQCIndex
       ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
       hasPermission={loris.userHasPermission}
     />

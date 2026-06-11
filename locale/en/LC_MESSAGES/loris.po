@@ -229,6 +229,9 @@ msgstr "Updated"
 msgid "Uploaded"
 msgstr "Uploaded"
 
+msgid "Uploaded By"
+msgstr "Uploaded By"
+
 msgid "Total"
 msgstr "Total"
 

@@ -104,9 +104,6 @@ msgstr "Temps de téléversement"
 msgid "Status"
 msgstr "Statut"
 
-msgid "Uploaded By"
-msgstr "Téléverser par"
-
 # upload.class.inc
 msgid "File not found."
 msgstr "Fichier introuvable."

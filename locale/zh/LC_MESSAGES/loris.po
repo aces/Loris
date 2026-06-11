@@ -391,6 +391,9 @@ msgstr "已更新"
 msgid "Uploaded"
 msgstr "已上传"
 
+msgid "Uploaded By"
+msgstr "上传者"
+
 # User Account related
 msgid "Password Rules"
 msgstr "密码规则"

@@ -425,6 +425,9 @@ msgstr ""
 msgid "Uploaded"
 msgstr ""
 
+msgid "Uploaded By"
+msgstr ""
+
 # User Account related
 msgid "Password Rules"
 msgstr ""

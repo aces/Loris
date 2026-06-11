@@ -30,9 +30,6 @@ msgstr "ファイル名"
 msgid "Instrument"
 msgstr "楽器"
 
-msgid "Uploaded By"
-msgstr "アップロード者"
-
 msgid "Date Taken"
 msgstr "撮影日"
 

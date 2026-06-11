@@ -418,6 +418,9 @@ msgstr "Mis à jour"
 msgid "Uploaded"
 msgstr "Téléversé"
 
+msgid "Uploaded By"
+msgstr "Téléverser par"
+
 # User Account related
 msgid "Password Rules"
 msgstr "Règles de mot de passe"

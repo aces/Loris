@@ -27,9 +27,6 @@ msgstr "फ़ाइल नाम"
 msgid "Instrument"
 msgstr "इंस्ट्रूमेंट"
 
-msgid "Uploaded By"
-msgstr "अपलोड किया गया"
-
 msgid "Date Taken"
 msgstr "तारीख ली गई"
 

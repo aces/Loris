@@ -146,9 +146,6 @@ msgstr "हटाना सफल रहा!"
 msgid "File Name"
 msgstr "फ़ाइल का नाम"
 
-msgid "Uploaded By"
-msgstr "द्वारा अपलोड किया गया"
-
 msgid "For Site"
 msgstr "साइट के लिए"
 
