@@ -124,6 +124,15 @@ msgstr "No"
 msgid "Cancel"
 msgstr "Cancel"
 
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Proceed"
+msgstr "Proceed"
+
 # Common candidate terms
 msgid "PSCID"
 msgstr "PSCID"
@@ -147,7 +156,7 @@ msgid "Cohort"
 msgid_plural "Cohorts"
 msgstr[0] "Cohort"
 msgstr[1] "Cohorts"
- 
+
 msgid "Session"
 msgstr "Session"
 

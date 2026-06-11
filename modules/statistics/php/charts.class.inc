@@ -39,7 +39,8 @@ class Charts extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }
@@ -81,7 +82,11 @@ class Charts extends \NDB_Page
         // Strip any prefix of '/' to ensure that we don't have an empty string
         // when splitting the path, then there should be exactly 2 parts left,
         // "charts", and the endpoint requested.
-        $url       = ltrim($request->getURI()->getPath(), '/');
+        $url = ltrim(
+            $request->getAttribute("unhandledURI")->getPath(),
+            '/'
+        );
+
         $pathparts = explode('/', $url);
         if (count($pathparts) != 2) {
             return new \LORIS\Http\Response\JSON\NotFound();
@@ -237,7 +242,8 @@ class Charts extends \NDB_Page
             {$conditions['cohortQuery']}
             {$conditions['visitQuery']}
             {$conditions['siteQuery']}
-            {$conditions['participantStatusQuery']}",
+            {$conditions['participantStatusQuery']}
+            ORDER BY c.DoB DESC",
             $conditions['params']
         );
 
@@ -272,13 +278,6 @@ class Charts extends \NDB_Page
             $label      = $startOfSplit . '-' . $endOfSplit;
             $recruitmentByAgeData[] = ["label" => $label, "total" => $count];
         }
-        // sort the labels
-        usort(
-            $recruitmentByAgeData,
-            function ($a, $b) {
-                return $a['label'] <=> $b['label'];
-            }
-        );
 
         return (new \LORIS\Http\Response\JsonResponse($recruitmentByAgeData));
     }
@@ -766,6 +765,26 @@ class Charts extends \NDB_Page
             $paramName          = 'dateEnd' . (++$paramCounter);
             $projectQuery      .= " AND c.Date_registered <= :$paramName";
             $params[$paramName] = $queryParams['dateRegisteredEnd'];
+        }
+        if (is_numeric($queryParams['candidateAgeMin'] ?? null)) {
+            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
+            $paramName          = 'candidateAgeMin' . (++$paramCounter);
+            $projectQuery      .= " AND TIMESTAMPDIFF(
+                YEAR,
+                c.DoB,
+                c.Date_registered
+            ) >= :$paramName";
+            $params[$paramName] = $queryParams['candidateAgeMin'];
+        }
+        if (is_numeric($queryParams['candidateAgeMax'] ?? null)) {
+            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
+            $paramName          = 'candidateAgeMax' . (++$paramCounter);
+            $projectQuery      .= " AND TIMESTAMPDIFF(
+                YEAR,
+                c.DoB,
+                c.Date_registered
+            ) <= :$paramName";
+            $params[$paramName] = $queryParams['candidateAgeMax'];
         }
 
         return [

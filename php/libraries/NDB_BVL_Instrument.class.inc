@@ -233,6 +233,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         ) {
             return null;
         }
+
+        \bind_textdomain_codeset($instrument, 'UTF-8');
+        \bindtextdomain($instrument, __DIR__ . "/../../project/locale");
         if (file_exists($base."project/instruments/$instrument.linst")
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
@@ -268,9 +271,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
+        $origlang = \getenv("LANG");
+        $obj->form->textdomain = $instrument;
         // if a script is loading this form without a commentID, display all fields
-        if (!isset($commentID)) {
+        if (empty($commentID)) {
             $obj->displayAllFields = true;
+        } else {
+            $obj->commentID = $commentID;
+            $timepoint      = \TimePoint::singleton($obj->getSessionID());
+            $ilang          = $timepoint->getLanguage();
+            \putenv("LANG=" . $ilang->code . ".utf8");
+            \putenv("LANGUAGE=" . $ilang->code . ".utf8");
         }
 
         // Set page name to testName
@@ -302,6 +313,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $base . "project/instruments/$instrument.rules"
         );
 
+        \putenv("LANG=$origlang");
+        \putenv("LANGUAGE=$origlang");
         return $obj;
     }
 
@@ -320,9 +333,17 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $DB = $this->loris->getDatabaseConnection();
+
+        //check if user has site's permission
+        $sessionID = $this->getSessionID();
+        $timepoint = \Timepoint::singleton($sessionID);
+        if (!$timepoint->isAccessibleBy($user)) {
+            return false;
+        }
 
         $instrumentPermissions = $DB->pselectCol(
             "SELECT code FROM testnames_permissions_rel rel
@@ -477,7 +498,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $buttons[] = $this->form->createElement(
                 'submit',
                 'fire_away',
-                'Save Data',
+                dgettext('loris', 'Save'),
                 ['class' => 'button']
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
@@ -829,6 +850,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // don't overwrite data from other pages.
         $newData = array_merge($this->getInstanceData() ?? [], $values);
 
+        $userID = $db->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:uid",
+            ['uid' => $newData['UserID'] ?? ""]
+        );
+        if (($userID ?? "") != "") {
+            $db->insertOnDuplicateUpdate(
+                "flag_editors",
+                [
+                    'userID'    => $userID,
+                    'CommentID' => $this->getCommentID(),
+                ],
+            );
+        }
         // If there's already a row with the same data, re-use the DataID.
         // Otherwise, insert it, then update the DataID on flag.
         $jsonencoded = json_encode($newData);
@@ -878,29 +912,33 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->dateOptions = $dateOptions;
 
-        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
+        $this->addBasicDate(
+            'Date_taken',
+            dgettext('instruments', 'Date of Administration'),
+            $dateOptions
+        );
 
         if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age (Months)'
+                    dgettext("instruments", 'Candidate Age (Months)')
                 );
             } else {
                 $this->addScoreColumn(
                     'Candidate_Age',
-                    'Candidate Age at Death (Months)'
+                    dgettext("instruments", 'Candidate Age at Death (Months)')
                 );
             }
             $this->addScoreColumn(
                 'Window_Difference',
-                'Window Difference (+/- Days)'
+                dgettext("instruments", 'Window Difference (+/- Days)')
             );
         }
         $examiners = $this->_getExaminerNames();
         $this->addSelect(
             'Examiner',
-            'Examiner',
+            dgettext("instruments", 'Examiner'),
             array_merge(['' => ''], $examiners)
         );
 
@@ -1027,7 +1065,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
 
-        $curr_examinerID = $this->getFieldValue("Examiner");
+        $allValues       = $this->getInstanceData();
+        $curr_examinerID = $allValues['Examiner'];
 
         list(
             $CertificationEnabled,
@@ -1609,9 +1648,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $label,
             [
                 ''             => '',
-                'yes'          => 'Yes',
-                'no'           => 'No',
-                'not_answered' => 'Not Answered',
+                'yes'          => dgettext('loris', 'Yes'),
+                'no'           => dgettext('loris', 'No'),
+                'not_answered' => dgettext('loris', 'Not Answered'),
             ]
         );
 
@@ -2069,25 +2108,27 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // Load other instance data
         $otherData = $otherInstrument->getInstanceData();
 
+        $instrumentFields = array_keys($thisData + $otherData);
+
         // Create the return object data structure
         $diff = [];
 
         // Loop over this instance data
-        foreach ($thisData AS $key=>$value) {
-            if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
-                if (($otherData[$key] ?? null) != $value) {
-                    $diff[] = [
-                        'TestName'       => $this->testName,
-                        'ExtraKeyColumn' => null,
-                        'ExtraKey1'      => ' ',
-                        'ExtraKey2'      => ' ',
-                        'FieldName'      => $key,
-                        'CommentId1'     => $this->getCommentID(),
-                        'Value1'         => $value,
-                        'CommentId2'     => $otherInstrument->getCommentID(),
-                        'Value2'         => $otherData[$key] ?? null,
-                    ];
-                }
+        foreach ($instrumentFields AS $key) {
+            if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)
+                && ($otherData[$key] ?? null) != ($thisData[$key] ?? null)
+            ) {
+                $diff[] = [
+                    'TestName'       => $this->testName,
+                    'ExtraKeyColumn' => null,
+                    'ExtraKey1'      => ' ',
+                    'ExtraKey2'      => ' ',
+                    'FieldName'      => $key,
+                    'CommentId1'     => $this->getCommentID(),
+                    'Value1'         => $thisData[$key] ?? null,
+                    'CommentId2'     => $otherInstrument->getCommentID(),
+                    'Value2'         => $otherData[$key] ?? null,
+                ];
             }
         }
 

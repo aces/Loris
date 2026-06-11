@@ -41,7 +41,6 @@ class ElectrophysiologyBrowserRowProvisioner
      */
     function __construct(protected \LORIS\LorisInstance $loris)
     {
-
         parent::__construct(
             $loris,
             "SELECT
@@ -50,6 +49,22 @@ class ElectrophysiologyBrowserRowProvisioner
               c.CandID                                      AS DCCID,
               Project.Name                              AS Project,
               s.Visit_label                             AS Visit_Label,
+              (
+                SELECT IF((
+                  SELECT COUNT(*)
+                  FROM bids_event_dataset_mapping
+                  WHERE ProjectID = s.ProjectID
+                ) + (
+                  SELECT COUNT(*)
+                  FROM physiological_task_event_hed_rel
+                  WHERE PhysiologicalTaskEventID IN (
+                    SELECT PhysiologicalTaskEventID
+                    FROM physiological_task_event pte
+                    JOIN physiological_file pf USING (PhysiologicalFileID)
+                    WHERE pf.SessionID = s.ID
+                  )
+                ) > 0, 'Yes', 'No')
+              )                                         AS HasHEDTags,
               MIN(pf.AcquisitionTime)                   AS Acquisition_Time,
               MIN(pf.InsertTime)                        AS Insert_Time,
               GROUP_CONCAT(DISTINCT pot.OutputTypeName) AS Links,
@@ -58,6 +73,7 @@ class ElectrophysiologyBrowserRowProvisioner
               s.CenterID                                AS CenterID,
               s.ProjectID                               AS ProjectID
             FROM physiological_file pf
+              JOIN ephys_browser_file_type ebft ON (ebft.Type=pf.FileType)
               LEFT JOIN session s   ON (s.ID=pf.SessionID)
               LEFT JOIN candidate c ON (c.ID=s.CandidateID)
               LEFT JOIN psc         ON (s.CenterID=psc.CenterID)
@@ -66,12 +82,6 @@ class ElectrophysiologyBrowserRowProvisioner
                 USING (PhysiologicalOutputTypeID)
             WHERE c.Active='Y'
               AND s.Active='Y'
-              AND pf.FileType IN (
-                SELECT type FROM ImagingFileTypes
-                WHERE
-                  description LIKE '%(EEG)'
-                  OR type = 'archive'
-              )
             GROUP BY SessionID",
             []
         );

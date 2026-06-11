@@ -14,6 +14,8 @@ import {withTranslation} from 'react-i18next';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/candidate_list.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/candidate_list.json';
+import frStrings from '../locale/fr/LC_MESSAGES/candidate_list.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/candidate_list.json';
 
 /**
  * Candidate List
@@ -43,6 +45,15 @@ class CandidateListIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.toggleFilters = this.toggleFilters.bind(this);
+
+    this.dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        style: 'short',
+        timeZone: 'UTC',
+
+      }
+    );
   }
 
   /**
@@ -142,6 +153,14 @@ class CandidateListIndex extends Component {
 
       return <td><a href ={url}>{cell}</a></td>;
     }
+    if (column === this.props.t('DoB', {ns: 'loris'})
+      || column === this.props.t('Date of registration', {ns: 'loris'})) {
+      if (cell) {
+        const date = new Date(cell);
+        return <td>{this.dateFormatter.format(date)}</td>;
+      }
+      return <td></td>;
+    }
     if (column === this.props.t('Feedback', {ns: 'loris'})) {
       switch (cell) {
       case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
@@ -151,16 +170,18 @@ class CandidateListIndex extends Component {
       default: return <td>None</td>;
       }
     }
-    if (
-      column === this.props.t('Scan Done', {ns: 'candidate_list'})
-      && cell === 'Y'
-    ) {
-      const pscid = row[this.props.t('PSCID', {ns: 'loris'})];
-      let url = this.props.baseURL + '/imaging_browser/?PSCID=' + pscid;
-      return (
-        <td className="scanDoneLink">
-          <a href={url}>{cell}</a></td>
-      );
+    if (column === this.props.t('Scan Done', {ns: 'loris'})) {
+      if (cell === 'Y') {
+        const pscid = row[this.props.t('PSCID', {ns: 'loris'})];
+        let url = this.props.baseURL + '/imaging_browser/?PSCID=' + pscid;
+        return (
+          <td className="scanDoneLink">
+            <a href={url}>{this.props.t('Yes', {ns: 'loris'})}</a>
+          </td>
+        );
+      } else if (cell === 'N') {
+        return <td>{this.props.t('No', {ns: 'loris'})}</td>;
+      }
     }
 
     if (column === this.props.t('Cohort', {ns: 'loris', count: 1})) {
@@ -218,10 +239,11 @@ class CandidateListIndex extends Component {
           name: 'visitLabel',
           type: 'multiselect',
           options: options.visitlabel,
+          sortByValue: false,
         },
       },
       {
-        label: this.props.t('Site', {ns: 'loris'}),
+        label: this.props.t('Site', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'site',
@@ -244,10 +266,7 @@ class CandidateListIndex extends Component {
         filter: {
           name: 'entityType',
           type: 'select',
-          options: {
-            'Human': 'Human',
-            'Scanner': 'Scanner',
-          },
+          options: options.entitytype,
         },
       },
       {
@@ -258,8 +277,8 @@ class CandidateListIndex extends Component {
           type: 'select',
           hide: this.state.hideFilter,
           options: {
-            'Y': 'Yes',
-            'N': 'No',
+            'Y': this.props.t('Yes', {ns: 'loris'}),
+            'N': this.props.t('No', {ns: 'loris'}),
           },
         },
       },
@@ -326,7 +345,7 @@ class CandidateListIndex extends Component {
         },
       },
       {
-        'label': this.props.t('Project', {ns: 'loris'}),
+        'label': this.props.t('Project', {ns: 'loris', count: 1}),
         'show': true,
         'filter': {
           name: 'project',
@@ -409,6 +428,8 @@ window.addEventListener('load', () => {
   const args = QueryString.get();
   i18n.addResourceBundle('ja', 'candidate_list', jaStrings);
   i18n.addResourceBundle('hi', 'candidate_list', hiStrings);
+  i18n.addResourceBundle('fr', 'candidate_list', frStrings);
+  i18n.addResourceBundle('zh', 'candidate_list', zhStrings);
 
 
   const CLIndex = withTranslation(

@@ -6,6 +6,7 @@ INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('bdf','Biosemi fi
 INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('bval','NIfTI DWI file with b-values');
 INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('bvec','NIfTI DWI file with b-vectors');
 INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('cnt','Neuroscan CNT data format (EEG)');
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('ctf','CTF data format (MEG)');
 INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('edf','European data format (EEG)');
 INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('grid_0','MNI BIC non-linear field for non-linear transformation');
 INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('json','JSON file');

@@ -36,15 +36,11 @@ class Modules extends \NDB_Page
      * @param \User $user The user whose access is to be verified
      *
      * @return bool
-     *
-     * @note Can not have public access modifier explicitly specified to
-     *       avoid conflicting with PEAR standard enforced on parent class
-     *       in php/libraries
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
-        return parent::_hasAccess($user) &&
-             $user->hasPermission('module_manager_edit');
+        return $user->hasPermission('module_manager_edit');
     }
 
     /**
@@ -63,7 +59,7 @@ class Modules extends \NDB_Page
                 "No valid user"
             );
         }
-        if (!($this->_hasAccess($user))) {
+        if (!($this->isAccessibleBy($user))) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 

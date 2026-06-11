@@ -32,10 +32,10 @@
       {$edc_age}
     </td>
     <td>
-      {$candidate.Sex}
+      {dgettext("sex", $candidate.Sex)}
     </td>
       <td>
-        {$candidate.ProjectTitle}
+        {dgettext("Project", $candidate.ProjectTitle)}
       </td>
     {foreach from=$candidate.DisplayParameters item=value key=name}
       <td>
@@ -76,6 +76,7 @@
             <th>{dgettext("timepoint_list", "BVL QC")}</th>
             <th>{dgettext("timepoint_list", "BVL Exclusion")}</th>
             <th>{dgettext("timepoint_list", "Registered By")}</th>
+            <th>{dgettext("loris", "Language")}</th>
         </tr>
     </thead>
     <tbody>
@@ -83,13 +84,13 @@
         <tr>
             <td>
               <a href="{$baseurl|default}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">
-                  {$timePoints[timepoint].Visit_label}
+                  {dgettext("visit", $timePoints[timepoint].Visit_label)}
               </a>
             </td>
-            <td>{$timePoints[timepoint].CohortTitle}</td>
+            <td>{dgettext("cohort", $timePoints[timepoint].CohortTitle)}</td>
 
-            <td>{$timePoints[timepoint].SiteAlias}</td>
-            <td>{$timePoints[timepoint].ProjectName}</td>
+            <td>{dgettext("psc", $timePoints[timepoint].SiteName)}</td>
+            <td>{dgettext("Project", $timePoints[timepoint].ProjectName)}</td>
 
             {if $timePoints[timepoint].staticStage|default != "" || $timePoints[timepoint].Current_stage == "Not Started"}
             <td colspan="3">{dgettext("loris", $timePoints[timepoint].Current_stage)}</td>
@@ -107,17 +108,17 @@
             {/if}
             </td>
             <td>
-            {if $timePoints[timepoint].Scan_done != ""}
-                    {if $timePoints[timepoint].Scan_done == 'Y'}
-                        {assign var="scan_done" value={dgettext("loris", "Yes")}}
+            {if $timePoints[timepoint].scanDone != ""}
+                    {if $timePoints[timepoint].scanDone}
+                        {assign var="scanDone" value={dgettext("loris", "Yes")}}
                         <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$timePoints[timepoint].SessionID}" class="timepoint_list">
-                        {dgettext('loris', $scan_done)}</a>
+                        {dgettext('loris', $scanDone)}</a>
                     {else}
-                        {assign var="scan_done" value={dgettext("loris", "No")}}
-                        {$scan_done}
+                        {assign var="scanDone" value={dgettext("loris", "No")}}
+                        {$scanDone}
                     {/if}
             {else}
-                <img alt="Data Missing" src="{$baseurl|default}/images/help2.gif" border=0>
+                <img alt="Data Missing" src="{$baseurl|default}/images/delete.gif" border=0>
             {/if}
             </td>
 
@@ -153,6 +154,9 @@
 
             <td>
                 {$timePoints[timepoint].Real_name}
+            </td>
+            <td>
+                {$timePoints[timepoint].language->label}
             </td>
         </tr>
     {sectionelse}

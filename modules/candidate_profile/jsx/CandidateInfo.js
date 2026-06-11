@@ -145,7 +145,7 @@ class CandidateInfo extends Component {
         value: this.props.Candidate.Meta.Sex,
       },
       {
-        label: this.props.t('Project', {ns: 'loris'}),
+        label: this.props.t('Project', {ns: 'loris', count: 1}),
         value: this.props.Candidate.Meta.Project,
       },
       {
@@ -153,7 +153,7 @@ class CandidateInfo extends Component {
         value: cohorts.join(', '),
       },
       {
-        label: this.props.t('Site', {ns: 'loris'}),
+        label: this.props.t('Site', {ns: 'loris', count: 1}),
         value: this.props.Candidate.Meta.Site,
       },
       {
@@ -165,10 +165,12 @@ class CandidateInfo extends Component {
 
     const renderTerm = (label, value, info) => {
       const cardStyle = {
-        width: info.width || '6em',
-        padding: '1em',
-        marginLeft: '1ex',
-        marginRight: '1ex',
+        width: info.width || 'unset',
+        padding: '1rem 0',
+        marginLeft: '0.5rem',
+        marginRight: '0.5rem',
+        wordBreak: 'break-word',
+        flexGrow: 1,
       };
       let valueStyle = {};
       if (info.valueWhitespace) {

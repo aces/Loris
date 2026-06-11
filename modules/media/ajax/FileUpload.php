@@ -36,10 +36,6 @@ function editFile()
 {
     $db   = \NDB_Factory::singleton()->database();
     $user =& User::singleton();
-    if (!$user->hasPermission('media_write')) {
-        showMediaError("Permission Denied", 403);
-        exit(0);
-    }
 
     // Read JSON from STDIN
     $stdin = file_get_contents('php://input');
@@ -51,6 +47,27 @@ function editFile()
 
     if (!$idMediaFile) {
         showMediaError("Media ID $idMediaFile not found", 404);
+        exit(0);
+    }
+
+    $row = $db->pselectRow(
+        "SELECT s.CenterID FROM media m
+         JOIN session s ON m.session_id = s.ID
+         WHERE m.id = :id",
+        ['id' => $idMediaFile]
+    );
+
+    if (!$row) {
+        showMediaError("Media ID $idMediaFile not found", 404);
+        exit(0);
+    }
+
+    if (!$user->hasPermission('media_write')
+        || (!$user->hasPermission('access_all_profiles')
+        && !$user->hasCenter(new \CenterID(strval($row['CenterID']))))
+    ) {
+        showMediaError("Permission Denied", 403);
+        exit(0);
     }
 
     $dateTaken = $req['dateTaken'];
@@ -96,7 +113,7 @@ function uploadFile()
     // Validate media path and destination folder
     $mediaPath = $config->getSetting('mediaPath');
 
-    if (!isset($mediaPath)) {
+    if (!isset($mediaPath) || empty($mediaPath)) {
         showMediaError(
             "Media path not set in LORIS settings! "
             . "Please contact your LORIS administrator",
@@ -186,8 +203,15 @@ function uploadFile()
         "SELECT ProjectID FROM session WHERE ID=:sid",
         ['sid' => $sessionID]
     );
+    $dstfile   = \Utility::appendForwardSlash($mediaPath)
+        . \Utility::resolvePath($fileName);
 
-    if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
+    if (file_exists($dstfile)) {
+        showMediaError("Conflict", 409);
+        return;
+    }
+
+    if (move_uploaded_file($_FILES["file"]["tmp_name"], $dstfile)) {
         try {
             // Insert or override db record if file_name already exists
             $db->unsafeInsertOnDuplicateUpdate('media', $query);
@@ -318,8 +342,8 @@ function getUploadFields()
         $visit = $record["Visit_label"];
         $pscid = $record["PSCID"];
 
-        if (!isset($sessionData[$pscid]['instruments'][$visit])) {
-            $sessionData[$pscid]['instruments'][$visit] = [];
+        if (!isset($sessionData[$pscid]['instruments'][$visit ?? ''])) {
+            $sessionData[$pscid]['instruments'][$visit ?? ''] = [];
         }
         if (!isset($sessionData[$pscid]['instruments']['all'])) {
             $sessionData[$pscid]['instruments']['all'] = [];
@@ -377,7 +401,6 @@ function getUploadFields()
         'visits'      => $visitList,
         'instruments' => $instrumentsList,
         'mediaData'   => $mediaData,
-        'mediaFiles'  => array_values(getFilesList()),
         'sessionData' => $sessionData,
         'language'    => $languageList,
         'startYear'   => $startYear,
@@ -426,29 +449,10 @@ function toSelect($options, $item, $item2)
     }
 
     foreach (array_keys($options) as $key) {
-        $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
+        $selectOptions[$options[$key][$optionsValue] ?? ''] = $options[$key][$item];
     }
 
     return $selectOptions;
-}
-
-/**
- * Returns an array of (id, file_name) pairs from media table
- *
- * @return array
- * @throws DatabaseException
- */
-function getFilesList()
-{
-    $db       = \NDB_Factory::singleton()->database();
-    $fileList = $db->pselect("SELECT id, file_name FROM media", []);
-
-    $mediaFiles = [];
-    foreach ($fileList as $row) {
-        $mediaFiles[$row['id']] = $row['file_name'];
-    }
-
-    return $mediaFiles;
 }
 
 /**

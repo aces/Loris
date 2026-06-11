@@ -105,6 +105,7 @@ CREATE TABLE `users` (
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Password_hash` varchar(255) default NULL,
   `PasswordChangeRequired` tinyint(1) NOT NULL default 0,
+  `TOTPSecret` binary(64) DEFAULT NULL,
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
@@ -220,7 +221,6 @@ CREATE TABLE `session` (
   `BVLQCType` enum('Visual','Hardcopy') DEFAULT NULL,
   `BVLQCExclusion` enum('Excluded','Not Excluded') DEFAULT NULL,
   `QCd` enum('Visual','Hardcopy') DEFAULT NULL,
-  `Scan_done` enum('N','Y') DEFAULT NULL,
   `MRIQCStatus` enum('','Pass','Fail') NOT NULL DEFAULT '',
   `MRIQCPending` enum('Y','N') NOT NULL DEFAULT 'N',
   `MRIQCFirstChangeTime` datetime DEFAULT NULL,
@@ -293,13 +293,12 @@ CREATE TABLE `flag` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `SessionID` int(10) unsigned NOT NULL,
   `TestID` int(10) unsigned NOT NULL,
-  `CommentID` varchar(255) NOT NULL default '',
+  `CommentID` varchar(255) NOT NULL,
   `Data_entry` enum('In Progress','Complete') default NULL,
   `Required_elements_completed` enum('Y','N') NOT NULL default 'N',
   `Administration` enum('None','Partial','All') default NULL,
   `Validity` enum('Questionable','Invalid','Valid') default NULL,
   `Exclusion` enum('Fail','Pass') default NULL,
-  `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `DataID` int(10) unsigned default NULL,
   PRIMARY KEY  (`CommentID`),
@@ -309,10 +308,27 @@ CREATE TABLE `flag` (
   KEY `flag_Data_entry` (`Data_entry`),
   KEY `flag_Validity` (`Validity`),
   KEY `flag_Administration` (`Administration`),
-  KEY `flag_UserID` (`UserID`),
   CONSTRAINT `FK_flag_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_flag_3` FOREIGN KEY (`DataID`) REFERENCES `instrument_data` (`ID`),
   CONSTRAINT `FK_ibfk_1` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `flag_editors` (
+  `userID` int(10) unsigned NOT NULL,
+  `CommentID` VARCHAR(255) NOT NULL,
+  `editDate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`userID`,`CommentID`),
+  KEY `FK_flag_editors_2` (`CommentID`),
+  CONSTRAINT `FK_flag_editors_2`
+  FOREIGN KEY (`CommentID`)
+    REFERENCES `flag` (`CommentID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_flag_editors_1`
+  FOREIGN KEY (`userID`)
+    REFERENCES `users` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `history` (
@@ -1265,19 +1281,20 @@ CREATE TABLE `participant_status_options` (
   `Description` varchar(255) DEFAULT NULL,
   `Required` tinyint(1) DEFAULT NULL,
   `parentID` int(10) DEFAULT NULL,
+  `commentRequired` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `participant_status_options` (Description, Required) VALUES
-  ('Active',0),
-  ('Refused/Not Enrolled',0),
-  ('Ineligible',0),
-  ('Excluded',0),
-  ('Inactive',1),
-  ('Incomplete',1),
-  ('Complete',0);
+INSERT INTO `participant_status_options` (Description, Required, commentRequired) VALUES
+  ('Active',0,0),
+  ('Refused/Not Enrolled',0,1),
+  ('Ineligible',0,1),
+  ('Excluded',0,1),
+  ('Inactive',1,1),
+  ('Incomplete',1,1),
+  ('Complete',0,0);
 
 INSERT INTO `participant_status_options` (Description, Required, parentID) VALUES
   ('Unsure',NULL,@tmp_val),
@@ -1450,6 +1467,28 @@ CREATE TABLE policies (
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+CREATE TABLE policiesI18n (
+  PolicyID INT NOT NULL,
+  LanguageID INT(10) UNSIGNED NOT NULL,
+  Content TEXT NULL,
+  SwalTitle VARCHAR(255) NULL,
+  HeaderButtonText VARCHAR(255) NULL,
+  AcceptButtonText VARCHAR(255) NULL,
+  DeclineButtonText VARCHAR(255) NULL,
+  CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (PolicyID, LanguageID),
+  CONSTRAINT policiesI18n_policy_fk
+    FOREIGN KEY (PolicyID)
+    REFERENCES policies (PolicyID)
+    ON DELETE CASCADE,
+  CONSTRAINT policiesI18n_language_fk
+    FOREIGN KEY (LanguageID)
+    REFERENCES language (language_id)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE user_policy_decision (
     ID INT AUTO_INCREMENT PRIMARY KEY,
@@ -2162,8 +2201,10 @@ CREATE TABLE `data_release` (
  `version` varchar(255),
  `upload_date` date,
  `ProjectID` INT(10) UNSIGNED NULL,
+ `hidden_by_userid` INT(10) UNSIGNED NULL,
  PRIMARY KEY (`id`),
- FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID)
+ FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID),
+ FOREIGN KEY (hidden_by_userid) REFERENCES users (ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `data_release_permissions` (
@@ -2455,7 +2496,6 @@ CREATE TABLE `publication_collaborator` (
 CREATE TABLE `publication` (
     `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `PublicationStatusID` int(2) unsigned NOT NULL default 1,
-    `LeadInvestigatorID` int(10) unsigned NOT NULL,
     `UserID` int(10) unsigned NOT NULL,
     `RatedBy` int(10) unsigned,
     `DateProposed` date NOT NULL,
@@ -2469,12 +2509,13 @@ CREATE TABLE `publication` (
     `link` varchar(255) DEFAULT NULL,
     `publishingStatus` enum('In Progress','Published') DEFAULT NULL,
     `project` int(10) unsigned DEFAULT NULL,
+    `LeadInvestigator` VARCHAR(255) DEFAULT NULL,
+    `LeadInvestigatorEmail` VARCHAR(255) DEFAULT NULL,
     CONSTRAINT `FK_publication_project` FOREIGN KEY (project) REFERENCES Project(ProjectID),
     CONSTRAINT `PK_publication` PRIMARY KEY(`PublicationID`),
     CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_PublicationStatusID` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`),
-    CONSTRAINT `FK_publication_LeadInvestigatorID` FOREIGN KEY(`LeadInvestigatorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`),
     CONSTRAINT `UK_publication_Title` UNIQUE (`Title`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 

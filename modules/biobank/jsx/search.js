@@ -1,4 +1,5 @@
 import React, {PureComponent} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import Modal from 'Modal';
 import {FormElement, TextboxElement} from 'jsx/Form';
@@ -40,11 +41,11 @@ class Search extends PureComponent {
         <FormElement>
           <TextboxElement
             name='barcode'
-            label='Barcode'
+            label={this.props.t('Barcode')}
             value={this.state.barcode}
             options={this.props.barcodes}
             onUserInput={onInput}
-            placeHolder='Please Scan or Type Barcode'
+            placeHolder={this.props.t('Please Scan or Type Barcode')}
             autoFocus={true}
           />
         </FormElement>
@@ -55,6 +56,7 @@ class Search extends PureComponent {
 
 // Search.propTypes
 Search.propTypes = {
+  t: PropTypes.func.isRequired,
   barcodes: PropTypes.arrayOf(PropTypes.string).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
@@ -64,4 +66,4 @@ Search.propTypes = {
   show: PropTypes.bool.isRequired,
 };
 
-export default Search;
+export default withTranslation(['biobank', 'loris'])(Search);

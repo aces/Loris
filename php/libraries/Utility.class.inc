@@ -141,7 +141,11 @@ class Utility
 
         $result = $DB->pselectCol($query, []);
 
-        return array_combine($result, $result);
+        $translated = [];
+        foreach ($result as $val) {
+            $translated[$val] = dgettext("sex", $val);
+        }
+        return $translated;
     }
 
     /**
@@ -178,7 +182,7 @@ class Utility
         // fix the array
         $list = [];
         foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
+            $list[$row["CenterID"]] = dgettext("psc", $row["Name"]);
         }
         return $list;
     }
@@ -323,7 +327,7 @@ class Utility
 
         $subprojs = [];
         foreach ($cohorts as $row) {
-            $subprojs[$row['CohortID']] = $row['title'];
+            $subprojs[$row['CohortID']] = dgettext('cohort', $row['title']);
         }
         return $subprojs;
     }
@@ -883,6 +887,31 @@ class Utility
     }
 
     /**
+     * Get the list of language available in the database with the array key being
+     * the language code (ie. en_CA)
+     *
+     * @return array Array of language which exist in the database table 'language'
+     *               array is of the form
+     *               array($language_code => $language_label)
+     */
+    static function getLanguageListByCode(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        return array_column(
+            iterator_to_array(
+                $DB->pselect(
+                    "SELECT language_code, language_label FROM language",
+                    [],
+                ),
+            ),
+            "language_label",
+            "language_code",
+        );
+    }
+
+    /**
      * Generate a random string, using a cryptographically secure
      * pseudorandom number generator (random_int)
      *
@@ -969,7 +998,7 @@ class Utility
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
             "SELECT MriScanTypeID, MriScanTypeName
-             FROM mri_scan_type 
+             FROM mri_scan_type
              JOIN files USING (MriScanTypeID)",
             []
         );

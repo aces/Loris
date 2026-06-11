@@ -38,7 +38,8 @@ class Imaging_Browser extends \DataFrameworkMenu
      *
      * @return bool whether the user hass access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.
@@ -122,14 +123,14 @@ class Imaging_Browser extends \DataFrameworkMenu
 
         // get visit QC status options
         $visitQCStatus = [
-            'Pass' => 'Pass',
-            'Fail' => 'Fail',
+            'Pass' => dgettext("loris", "Pass"),
+            'Fail' => dgettext("loris", "Fail"),
         ];
 
         // get Pending/New options
         $pending = [
-            'P' => 'Pending',
-            'N' => 'New',
+            'P' => dgettext("loris", "Pending"),
+            'N' => dgettext("loris", "New"),
         ];
 
         $all_scan_types = array_values(\Utility::getScanTypeList());
@@ -140,8 +141,8 @@ class Imaging_Browser extends \DataFrameworkMenu
 
         // get entity type options
         $entityType = [
-            'Human'   => 'Human',
-            'Scanner' => 'Scanner',
+            'Human'   => dgettext("imaging_browser", "Human"),
+            'Scanner' => dgettext("imaging_browser", "Scanner"),
         ];
 
         return [

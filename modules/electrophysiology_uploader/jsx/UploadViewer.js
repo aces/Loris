@@ -17,16 +17,19 @@ export default function UploadViewer(props) {
    * @param {object} row - row content indexed by column
    * @return {JSX} a formated table cell for a given column
    */
+  const {t} = props;
   const formatColumn = (column, cell, row) => {
     switch (column) {
-    case 'Upload Location':
+    case t('Upload Location', {ns: 'electrophysiology_uploader'}):
       const downloadURL =
           loris.BaseURL
           + '/electrophysiology_uploader/upload?'
           + `upload_id=${row['Upload ID']}`;
       return (
         <td>
-          <a href={downloadURL} target="_blank" download={row['File Name']}>
+          <a href={downloadURL} target="_blank"
+            download={row[t('File Name',
+              {ns: 'electrophysiology_uploader'})]}>
             {cell}
           </a>
         </td>
@@ -38,11 +41,11 @@ export default function UploadViewer(props) {
 
   const fields = [
     {
-      label: 'Upload ID',
+      label: t('Upload ID', {ns: 'electrophysiology_uploader'}),
       show: true,
     },
     {
-      label: 'Site',
+      label: t('Site', {ns: 'loris', count: 1}),
       show: true,
       filter: {
         name: 'site',
@@ -51,7 +54,7 @@ export default function UploadViewer(props) {
       },
     },
     {
-      label: 'PSCID',
+      label: t('PSCID', {ns: 'loris'}),
       show: true,
       filter: {
         name: 'pscid',
@@ -59,7 +62,7 @@ export default function UploadViewer(props) {
       },
     },
     {
-      label: 'Visit',
+      label: t('Visit Label', {ns: 'loris'}),
       show: true,
       filter: {
         name: 'visitLabel',
@@ -68,19 +71,19 @@ export default function UploadViewer(props) {
       },
     },
     {
-      label: 'Upload Location',
+      label: t('Upload Location', {ns: 'electrophysiology_uploader'}),
       show: true,
     },
     {
-      label: 'Upload Time',
+      label: t('Upload Time', {ns: 'electrophysiology_uploader'}),
       show: false,
     },
     {
-      label: 'Status',
+      label: t('Status', {ns: 'electrophysiology_uploader'}),
       show: true,
     },
     {
-      label: 'Uploaded By',
+      label: t('Uploaded By', {ns: 'electrophysiology_uploader'}),
       show: true,
     },
   ];
@@ -98,4 +101,5 @@ export default function UploadViewer(props) {
 UploadViewer.propTypes = {
   data: PropTypes.array.isRequired,
   fieldOptions: PropTypes.object.isRequired,
+  t: PropTypes.func,
 };

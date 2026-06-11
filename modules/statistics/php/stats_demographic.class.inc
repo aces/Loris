@@ -39,7 +39,8 @@ class Stats_Demographic extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }
@@ -213,7 +214,8 @@ class Stats_Demographic extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $visits = \Utility::getVisitList();
+        $user   = \NDB_Factory::singleton()->user();
+        $visits = $user->getVisits();
         $db     = $this->loris->getDatabaseConnection();
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table

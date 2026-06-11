@@ -8,6 +8,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputLabel from 'jsx/form/InputLabel';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Form Component.
@@ -557,6 +558,7 @@ export class SelectElement extends Component {
             value={newOptions[option]}
             key={newOptions[option]}
             disabled={isDisabled}
+            title={option}
           >
             {option}
           </option>
@@ -570,6 +572,7 @@ export class SelectElement extends Component {
             value={option}
             key={option}
             disabled={isDisabled}
+            title={options[option]}
           >
             {options[option]}
           </option>
@@ -592,15 +595,22 @@ export class SelectElement extends Component {
     // element will take up the whole row.
     let inputClass = this.props.noMargins ? '' : 'col-sm-12';
     if (this.props.label) {
-      inputClass = 'col-sm-9';
+      inputClass = `col-sm-${this.props.labelPlacementTop ? '12': '9'}`;
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={inputClass}>
@@ -613,6 +623,7 @@ export class SelectElement extends Component {
             onChange={this.handleChange}
             required={this.props.required}
             disabled={this.props.disabled}
+            style={{overflow: 'auto'}}
           >
             {emptyOptionHTML}
             {optionList}
@@ -644,6 +655,7 @@ SelectElement.propTypes = {
   noMargins: PropTypes.bool,
   placeholder: PropTypes.string,
   sortByValue: PropTypes.bool,
+  labelPlacementTop: PropTypes.bool,
 };
 
 SelectElement.defaultProps = {
@@ -664,6 +676,7 @@ SelectElement.defaultProps = {
   },
   noMargins: false,
   placeholder: '',
+  labelPlacementTop: false,
 };
 
 /**
@@ -1101,15 +1114,22 @@ export class TextboxElement extends Component {
     // element will take up the whole row.
     let inputClass = this.props.class;
     if (this.props.label || this.props.label == '') {
-      inputClass = 'col-sm-9';
+      inputClass = `col-sm-${this.props.labelPlacementTop ? '12' : '9'}`;
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {(this.props.label || this.props.label == '') && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={inputClass}>
@@ -1146,6 +1166,7 @@ TextboxElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 TextboxElement.defaultProps = {
@@ -1163,6 +1184,7 @@ TextboxElement.defaultProps = {
   },
   onUserBlur: function() {
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1510,13 +1532,22 @@ export class DateElement extends Component {
       maxFullDate = maxYear + '-' + currentMonth;
     }
 
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1551,6 +1582,7 @@ DateElement.propTypes = {
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 DateElement.defaultProps = {
@@ -1567,6 +1599,7 @@ DateElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1599,13 +1632,22 @@ export class TimeElement extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
     return (
-      <div className="row form-group">
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1636,6 +1678,7 @@ TimeElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 TimeElement.defaultProps = {
@@ -1648,6 +1691,7 @@ TimeElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1762,7 +1806,9 @@ export class NumericElement extends Component {
   render() {
     let errorMessage = null;
     let elementClass = 'row form-group';
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
 
     // Add error message
     if (this.props.errorMessage) {
@@ -1771,11 +1817,15 @@ export class NumericElement extends Component {
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ?
+          {display: 'flex', flexDirection: 'column'} : {}}>
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1811,6 +1861,7 @@ NumericElement.propTypes = {
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
   errorMessage: PropTypes.string,
+  labelPlacementTop: PropTypes.bool,
 };
 
 NumericElement.defaultProps = {
@@ -1826,13 +1877,151 @@ NumericElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
+};
+
+/**
+ * Numeric range component.
+ * React wrapper for filtering a numeric value between two bounds.
+ */
+export class NumericRangeElement extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      {
+        ...this.props.value,
+        [e.target.name]: e.target.value,
+      }
+    );
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    const value = this.props.value || {};
+    const minID = `${this.props.id || this.props.name}_min`;
+    const maxID = `${this.props.id || this.props.name}_max`;
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
+
+    return (
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ?
+          {display: 'flex', flexDirection: 'column'} : {}}
+      >
+        {this.props.label && (
+          <InputLabel
+            label={this.props.label}
+            required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
+          />
+        )}
+        <div className={wrapperClass}>
+          <div style={{display: 'flex', gap: '8px'}}>
+            <div style={{flex: 1}}>
+              <label className="sr-only" htmlFor={minID}>
+                {this.props.minLabel}
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                name="min"
+                id={minID}
+                min={this.props.min}
+                max={this.props.max}
+                step={this.props.step}
+                value={value.min || ''}
+                placeholder={this.props.minLabel}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+            <div style={{flex: 1}}>
+              <label className="sr-only" htmlFor={maxID}>
+                {this.props.maxLabel}
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                name="max"
+                id={maxID}
+                min={this.props.min}
+                max={this.props.max}
+                step={this.props.step}
+                value={value.max || ''}
+                placeholder={this.props.maxLabel}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+NumericRangeElement.propTypes = {
+  name: PropTypes.string.isRequired,
+  min: PropTypes.number,
+  max: PropTypes.number,
+  step: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.shape({
+    min: PropTypes.string,
+    max: PropTypes.string,
+  }),
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
+  minLabel: PropTypes.string,
+  maxLabel: PropTypes.string,
+};
+
+NumericRangeElement.defaultProps = {
+  name: '',
+  min: null,
+  max: null,
+  step: '1',
+  label: '',
+  value: {},
+  id: null,
+  required: false,
+  disabled: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  labelPlacementTop: false,
+  minLabel: 'Minimum',
+  maxLabel: 'Maximum',
 };
 
 /**
  * File Component
  * React wrapper for a simple or 'multiple' <input type="file"> element.
  */
-export class FileElement extends Component {
+class FileElement extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1945,7 +2134,8 @@ export class FileElement extends Component {
             </div>
             <div className="input-group-btn">
               <div className="btn btn-primary btn-file">
-                <i className="glyphicon glyphicon-folder-open"></i> Browse
+                <i className="glyphicon glyphicon-folder-open"></i>
+                {' ' + this.props.t('Browse', {ns: 'loris'})}
                 <input
                   type="file"
                   className="fileUpload"
@@ -1977,6 +2167,9 @@ FileElement.propTypes = {
   allowMultiple: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
 FileElement.defaultProps = {
@@ -1992,6 +2185,10 @@ FileElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
 };
+
+// Wrap FileElement with translation HOC
+const FileElementWithTranslation = withTranslation('loris')(FileElement);
+export {FileElementWithTranslation as FileElement};
 
 /**
  * Static element component.
@@ -2409,6 +2606,9 @@ export class LorisElement extends Component {
     case 'numeric':
       elementHtml = (<NumericElement {...elementProps} />);
       break;
+    case 'number-range':
+      elementHtml = (<NumericRangeElement {...elementProps} />);
+      break;
     case 'textarea':
       elementHtml = (<TextareaElement {...elementProps} />);
       break;
@@ -2765,7 +2965,8 @@ export default {
   TimeElement,
   DateTimeElement,
   NumericElement,
-  FileElement,
+  NumericRangeElement,
+  FileElement: FileElementWithTranslation,
   StaticElement,
   HeaderElement,
   LinkElement,

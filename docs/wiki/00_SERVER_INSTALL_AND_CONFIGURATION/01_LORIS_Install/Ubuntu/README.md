@@ -6,7 +6,7 @@ If you are using CentOS, please visit the CentOS installation guide for
 instructions on installation.
 
 When you've completed this guide, you should be able to load and log into LORIS in your browser. Further setup to customize LORIS for your project will be required after that. Please visit
-[the Setup page](https://github.com/aces/Loris/wiki/Setup) in order to complete the setup for LORIS.
+[the Setup page](../../../01_STUDY_PARAMETERS_SETUP/01_Study_Variables/00_Introduction_to_Study_Variables.md) in order to complete the setup for LORIS.
 
 ## Prequisities
 
@@ -61,6 +61,8 @@ The following Ubuntu packages are required and should be installed using
 * php8.3-intl
 
 * libapache2-mod-php8.3
+
+* gettext
 
 ## Creating the lorisadmin user
 Create the _lorisadmin_ user and group and give _lorisadmin_ `sudo` permission. 
@@ -170,4 +172,16 @@ If you encounter issues creating/generating your config file, you may have to ma
 
 Your LORIS instance should now be accessible by pointing your browser URL to `http://%IPADDRESS%`.
 
-Now that the installation is complete, follow the [Setup process](https://github.com/aces/Loris/wiki/Setup) to customize your project.
+## Enabling Multilingual
+
+In-order for translated text to appear in LORIS, **locales** must be installed on the operating system.
+
+* Verify the existing list of installed locales by running: `locale -a`
+* If a desired language is not listed, modify the `/etc/locale.gen` with superuser permissions.
+* Uncomment any Locales you would like in your LORIS instance. As of LORIS v28-release; French, Spanish, Hindi and Japanese have translations.
+* Save the changes and run `sudo locale-gen` to generate the locales.
+* Confirm they were installed with `locale -a`.
+* You can now configure the LORIS database to recognize these locales by inserting the language codes into the `language` table. If the language names have special characters, run `SET NAMES 'utf8mb4';` first so that they are inserted with the correct encoding.
+
+
+Now that the installation is complete, follow the [Setup process](../../../01_STUDY_PARAMETERS_SETUP/01_Study_Variables/00_Introduction_to_Study_Variables.md) to customize your project.

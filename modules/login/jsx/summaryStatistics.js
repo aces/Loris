@@ -2,14 +2,18 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import {SelectElement} from 'jsx/Form';
 import SummaryStatisticsPhone from '../assets/summaryStatisticsPhone.js';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Login Summary Statistics
  *
+ * @param root0
+ * @param root0.data
  * @author Saagar Arya
  * @version 1.0.0
  */
 const SummaryStatistics = ({data}) => {
+  const {t} = useTranslation();
   const [selectedProject, setSelectedProject] = useState(
     data.projects.includes('All Projects')
       ? data.projects.indexOf('All Projects')
@@ -29,7 +33,7 @@ const SummaryStatistics = ({data}) => {
           onUserInput={(name, value) => setSelectedProject(value)}
           emptyOption={false}
         />
-        <div>Data in LORIS:</div>
+        <div>{t('Data in LORIS:', {ns: 'login'})}</div>
         {/* Statistics */}
         {data.statistics.map((statistic, index) => {
           if (
@@ -47,7 +51,6 @@ const SummaryStatistics = ({data}) => {
                   {statistic.Value.toLocaleString('fr-CA')}{' '}
                 </span>
                 {statistic.Title}
-                {statistic.Value !== 1 ? 's' : ''}
               </div>
             );
           }

@@ -145,13 +145,13 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         $instrument->form     = $this->quickForm;
         $instrument->testName = "Test";
+        $instrument->name     = "Test";
 
         // Use reflection to set the internal
         // loris object that should have been
         // set by the instrument constructor,
         // if PHPunit hadn't disabled the constructor
         $ref = new \ReflectionProperty(get_class($instrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $instrument,
             new \LORIS\LorisInstance(
@@ -1057,13 +1057,9 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetVisitLabel()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
-            ->with(
-                "SELECT SessionID FROM flag WHERE CommentID = :CID",
-                ['CID' => 'commentID1']
-            )
+        $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
             ->willReturn('123');
-        $this->_mockDB->expects($this->any())->method('pselectRow')
+        $this->_mockDB->method('pselectRow')
             ->willReturn(
                 ['CohortID' => '2', 'ProjectID' => 1,
                     'Visit_label' => 'V1', 'CandID' => '300123'
@@ -1082,14 +1078,20 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetCohortID()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
+        $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
             )
             ->willReturn('123');
-        $this->_mockDB->expects($this->any())->method('pselectRow')
-            ->willReturn(['CohortID' => '2','ProjectID' => '1']);
+        $this->_mockDB->method('pselectRow')
+            ->willReturn(
+                [
+                    'CohortID'  => '2',
+                    'ProjectID' => '1',
+                    'CandID'    => '300123'
+                ]
+            );
         $this->assertEquals(2, $this->_instrument->getCohortID());
     }
 
@@ -1160,7 +1162,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                 'Administration'              => '',
                 'Validity'                    => '',
                 'Exclusion'                   => null,
-                'UserID'                      => '456',
                 'Testdate'                    => '2020-01-01 00:00:00',
                 'DataID'                      => null,
             ]
@@ -1621,7 +1622,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         // set by the instrument constructor,
         // if PHPunit hadn't disabled the constructor
         $ref = new \ReflectionProperty(get_class($otherInstrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $otherInstrument,
             new \LORIS\LorisInstance(
@@ -1896,7 +1896,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'SessionID'                   => '123',
                     'CommentID'                   => 'commentID1',
                     'TestID'                      => '1000',
-                    'UserID'                      => '456',
                     'Data_entry'                  => 'Incomplete',
                     'Administration'              => 'admin1',
                     'Validity'                    => 'valid1',
@@ -1907,7 +1906,6 @@ class NDB_BVL_Instrument_Test extends TestCase
                     'SessionID'                   => '234',
                     'CommentID'                   => 'commentID2',
                     'TestID'                      => '1001',
-                    'UserID'                      => '457',
                     'Data_entry'                  => 'Complete',
                     'Administration'              => 'admin2',
                     'Validity'                    => 'valid2',
@@ -1954,13 +1952,11 @@ class NDB_BVL_Instrument_Test extends TestCase
             [
                 [
                     'CommentID'  => 'commentID1',
-                    'UserID'     => '456',
                     'Examiner'   => 'Test Examiner1',
                     'Date_taken' => '2010-05-05'
                 ],
                 [
                     'CommentID'  => 'commentID2',
-                    'UserID'     => '457',
                     'Examiner'   => 'Test Examiner2',
                     'Date_taken' => '2010-05-05'
                 ],
@@ -2022,7 +2018,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_factoryForDB->setConfig($this->_config);
 
         $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $this->_instrument,
             new \LORIS\LorisInstance(

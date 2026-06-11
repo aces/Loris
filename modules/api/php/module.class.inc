@@ -53,7 +53,7 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if ($this->hasPrefix('/static/', $request->getURI())) {
+        if ($this->hasPrefix('api/static/', $request->getURI())) {
             /*
              * Bypass for statically served files. If the request url
              * is /api/static/... this will call the handle  function
@@ -68,7 +68,7 @@ class Module extends \Module
         }
 
         // Requests sent to this module must start with /api/$version
-        $url    = $request->getURI()->getPath();
+        $url    = $request->getAttribute("unhandledURI")->getPath();
         $pieces = [];
         if (preg_match(
             "/^\/?(v[0-9]+\.[0-9]+\.[0-9]+[^\/]*)\/(.*)/",

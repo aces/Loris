@@ -241,7 +241,7 @@ class RedcapDictionaryRecord
     {
         $field_type  = $this->field_type;
         $field_name  = $this->field_name;
-        $field_label = str_replace("\n", "<br /><br />", $this->field_label);
+        $field_label = str_replace(["\r\n", "\r", "\n"], '', $this->field_label);
         $field_desc  = "$field_name{@}$field_label";
 
         //
@@ -268,7 +268,7 @@ class RedcapDictionaryRecord
                 . $this->_optionsToLINST();
         case 'yesno':
             // Map yes/no fields to dropdowns with yes and no options.
-            return "select{@}$field_desc{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
+            return "select{@}$field_desc{@}NULL=>''{-}'1'=>'Yes'{-}'0'=>'No'";
         case 'calc':
             // Calc maps to a score field. We create the DB field but don't do
             // the score.
@@ -313,17 +313,30 @@ class RedcapDictionaryRecord
 
         $choices      = explode('|', $dictionary);
         $linstChoices = [];
-        $pattern      = "/^(\s)*([[:alnum:]]+)(\s)*,(.*)$/";
-        foreach ($choices as $choice) {
-            $matches = [];
-            if (preg_match($pattern, $choice, $matches) !== 1) {
-                throw new \DomainException(
-                    "Could not parse radio option: '$choice'"
-                );
+        $pattern      = "/^(\s)*([[:alnum:]._]+)(\s)*,(.*)$/";
 
+        $index = 1; //Auto-index counter
+        foreach ($choices as $choice) {
+            $choice = trim($choice);
+
+            $matches = [];
+
+            if (preg_match($pattern, $choice, $matches) !== 1) {
+                // Missing code -auto-generate one
+                error_log(
+                    "Warning: Auto-indexing malformed option:
+                    '$choice' as index $index"
+                );
+                $backend = $index;
+                $label   = $choice;
+                $index++;
+            } else {
+                //Normal parsing
+                $backend = $matches[2];
+                $label   = trim($matches[4]);
             }
-            $backend        = $matches[2];
-            $linstFormat    = "'$backend'=>'" . trim($matches[4]) . '\'';
+
+            $linstFormat    = "'$backend'=>'$label'";
             $linstChoices[] = $linstFormat;
 
         }

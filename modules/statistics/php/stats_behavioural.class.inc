@@ -39,7 +39,8 @@ class Stats_Behavioural extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }
@@ -167,7 +168,7 @@ class Stats_Behavioural extends \NDB_Form
             }
             $Visits = \Utility::getVisitList($currentProject);
         } else {
-            $Visits = \Utility::getVisitList();
+            $Visits = $user->getVisits();
         }
 
         $this->tpl_data['Visits'] = $Visits ?? '';

@@ -143,11 +143,11 @@ class Edit extends \NDB_Page implements ETagCalculator
         }
 
         $priorities = [
-            'low'       => 'Low',
-            'normal'    => 'Normal',
-            'high'      => 'High',
-            'urgent'    => 'Urgent',
-            'immediate' => 'Immediate',
+            'low'       => dgettext('issue_tracker', 'Low'),
+            'normal'    => dgettext('issue_tracker', 'Normal'),
+            'high'      => dgettext('issue_tracker', 'High'),
+            'urgent'    => dgettext('issue_tracker', 'Urgent'),
+            'immediate' => dgettext('issue_tracker', 'Immediate'),
         ];
 
         $unorgCategories = $db->pselect(
@@ -250,11 +250,11 @@ class Edit extends \NDB_Page implements ETagCalculator
         $issueData['comment'] = null;
 
         $statuses = [
-            'new'          => 'New',
-            'acknowledged' => 'Acknowledged',
-            'assigned'     => 'Assigned',
-            'feedback'     => 'Feedback',
-            'resolved'     => 'Resolved',
+            'new'          => dgettext('issue_tracker', 'New'),
+            'acknowledged' => dgettext('issue_tracker', 'Acknowledged'),
+            'assigned'     => dgettext('issue_tracker', 'Assigned'),
+            'feedback'     => dgettext('issue_tracker', 'Feedback'),
+            'resolved'     => dgettext('issue_tracker', 'Resolved'),
         ];
 
         // Give "close" option if user has site close permissions and the issue
@@ -270,8 +270,8 @@ class Edit extends \NDB_Page implements ETagCalculator
                 || ($user->hasPermission('issue_tracker_own_issue')
                 && $isOwnIssue)
             ) {
-                $statuses['closed']   = 'Closed';
-                $statuses['rejected'] = 'Rejected';
+                $statuses['closed']   = dgettext('issue_tracker', 'Closed');
+                $statuses['rejected'] = dgettext('issue_tracker', 'Rejected');
             }
         }
 
@@ -743,8 +743,37 @@ class Edit extends \NDB_Page implements ETagCalculator
             );
         }
 
-        $user = $request->getAttribute('user');
-        $db   = $this->loris->getDatabaseConnection();
+        $user     = $request->getAttribute('user');
+        $centerID = isset($values['centerID'])
+            && $values['centerID'] != 'null'
+            ? new \CenterID((string)$values['centerID'])
+            : null;
+
+        $db          = $this->loris->getDatabaseConnection();
+        $oldCenterID = $db->pselectOne(
+            "SELECT centerID FROM issues WHERE issueID=:issueID",
+            ['issueID' => $values['issueID']]
+        );
+        $oldCenterID = isset($oldCenterID)
+            ? new \CenterID((string)$oldCenterID)
+            : null;
+
+        // Verify that user has edit permissions:
+        // 1) User has permission to edit all issues
+        if (!($user->hasPermission('issue_tracker_all_issue')
+            // 2) User has permission to edit site issues &
+            // issue has no site or is at site belonging to user
+            || ($user->hasPermission('issue_tracker_site_issue')
+            && (empty($centerID) || $user->hasCenter($centerID))
+            && (empty($oldCenterID) || $user->hasCenter($oldCenterID)))
+            // 3) User has permission to edit own issue & user is issue reporter
+            || ($user->hasPermission('issue_tracker_own_issue')
+            && $values['reporter'] === $user->getUserName()))
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'User does not have permission to edit issues.'
+            );
+        }
 
         $issueValues    = [];
         $validateValues = [];
@@ -1259,20 +1288,35 @@ class Edit extends \NDB_Page implements ETagCalculator
     /**
      * Get a formatted string from user information.
      *
-     * @param string $userid a username/userid
+     * @param string|null $userid a username/userid, or null
      *
      * @return string a formatted string "fullname (userid)"
      */
-    function formatUserInformation(string $userid)
+    function formatUserInformation(?string $userid)
     {
-        $user = \User::factory($userid);
-        $un   = $user->getUsername();
-        if (empty($un)) {
-            // e.g. in case of anonymous user
-            return $user->getFullname();
-        } else {
-            return $user->getFullname() . " (" . $un . ")";
+        if ($userid === null) {
+            // same as the real name for AnonymousUser object
+            return "AnonymousUser";
         }
+
+        // get real name
+        $db       = $this->loris->getdatabaseConnection();
+        $realName = $db->pselectOne(
+            "SELECT Real_name
+            FROM users
+            WHERE userid = :uid
+            ",
+            ["uid" => $userid]
+        );
+
+        // not found => Anonymous
+        if ($realName === null) {
+            // same as the real name for AnonymousUser object
+            return "AnonymousUser";
+        }
+
+        // else full name + username
+        return "{$realName} ({$userid})";
     }
 
     /**
@@ -1338,7 +1382,8 @@ class Edit extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [

@@ -50,7 +50,7 @@ class ScheduleTest extends LorisIntegrationTest
                 'AppointmentID'     => '1',
                 'SessionID'         => '1',
                 'AppointmentTypeID' => '2',
-                'StartsAt'          => '2025-02-02 02:02:02',
+                'StartsAt'          => '2027-02-02 02:02:02',
             ]
         );
 

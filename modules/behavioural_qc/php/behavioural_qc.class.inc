@@ -36,7 +36,8 @@ class Behavioural_QC extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('behavioural_quality_control_view');
     }
@@ -69,7 +70,7 @@ class Behavioural_QC extends \NDB_Form
     {
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                'Behavioural Quality Control',
+                dgettext("behavioural_qc", "Behavioural Quality Control"),
                 '/behavioural_qc'
             )
         );

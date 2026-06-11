@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import {ModuleDictionary, FullDictionary} from '../types';
 
@@ -23,6 +24,7 @@ export type CategoriesAPIReturn = {
  */
 function useCategories(): CategoriesAPIReturn|null {
   const [categories, setCategories] = useState(null);
+  const {t} = useTranslation('dataquery');
   useEffect(() => {
     if (categories !== null) {
       return;
@@ -30,7 +32,7 @@ function useCategories(): CategoriesAPIReturn|null {
     fetch('/dictionary/categories', {credentials: 'same-origin'})
       .then((resp) => {
         if (!resp.ok) {
-          throw new Error('Invalid response');
+          throw new Error(t('Invalid response', {ns: 'dataquery'}));
         }
         return resp.json();
       }).then((result) => {
@@ -59,7 +61,7 @@ function useDataDictionary(): DataDictionaryReturnType {
   // typescript says the key is always defined when we try and check if
   // it's set, need to figure out the correct way to do that, for now just use any
   const [pendingModules, setPendingModules] = useState<any>({});
-
+  const {t} = useTranslation('dataquery');
   /**
    * Fetch a module's dictionary and cache it into fulldictionary.
    *
@@ -80,7 +82,7 @@ function useDataDictionary(): DataDictionaryReturnType {
           {credentials: 'same-origin'}
         ).then((resp) => {
           if (!resp.ok) {
-            throw new Error('Invalid response');
+            throw new Error(t('Invalid response', {ns: 'dataquery'}));
           }
           return resp.json();
         }).then((result) => {

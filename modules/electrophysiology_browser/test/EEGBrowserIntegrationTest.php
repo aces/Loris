@@ -40,8 +40,8 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
     static $DCCIDHeader  = "#dynamictable > thead > tr > th:nth-child(4)";
     static $firstElement = "#dynamictable > tbody > tr:nth-child(1)";
 
-    static $allLink = "tbody > tr:nth-child(1) > td:nth-child(9) > a:last-child";
-    static $rawLink = "tbody > tr:nth-child(1) > td:nth-child(9) > a:nth-child(1)";
+    static $allLink = "tbody > tr:nth-child(1) > td:nth-child(10) > a:last-child";
+    static $rawLink = "tbody > tr:nth-child(1) > td:nth-child(10) > a:nth-child(1)";
 
     static $prevLink       = "#nav_previous";
     static $nextLink       = "#nav_next";
@@ -84,23 +84,8 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
                 'Visit_label'   => 'Test0',
                 'CenterID'      => 253,
                 'ProjectID'     => 2,
-                'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
-            ]
-        );
-        $this->DB->insert(
-            "ImagingFileTypes",
-            [
-                'type'        => 'testType',
-                'description' => 'test%(EEG)'
-            ]
-        );
-        $this->DB->insert(
-            "ImagingFileTypes",
-            [
-                'type'        => 'testType2',
-                'description' => 'test2%(EEG)'
             ]
         );
         $this->DB->insert(
@@ -124,7 +109,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
                 'PhysiologicalOutputTypeID' => 22,
                 'InsertedByUser'            => 'Unit Tester',
                 'FilePath'                  => '/path/to/test/file',
-                'FileType'                  => 'testType'
+                'FileType'                  => 'set'
             ]
         );
         $this->DB->insert(
@@ -134,7 +119,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
                 'PhysiologicalOutputTypeID' => 23,
                 'InsertedByUser'            => 'Unit Tester',
                 'FilePath'                  => '/path/to/test/file2',
-                'FileType'                  => 'testType2'
+                'FileType'                  => 'ctf'
             ]
         );
     }
@@ -191,20 +176,6 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
             [
                 'PhysiologicalOutputTypeID' => 23,
                 'OutputTypeName'            => 'test2'
-            ]
-        );
-        $this->DB->delete(
-            "ImagingFileTypes",
-            [
-                'type'        => 'testType',
-                'description' => 'test%(EEG)'
-            ]
-        );
-        $this->DB->delete(
-            "ImagingFileTypes",
-            [
-                'type'        => 'testType2',
-                'description' => 'test2%(EEG)'
             ]
         );
         parent::tearDown();
@@ -538,6 +509,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->markTestSkipped(
             'rewrite later'
         );
+        /*
         $this->safeGet($this->url . "/electrophysiology_browser/sessions/999999");
         $link = self::$nextLink;
         $this->safeClick(WebDriverBy::cssSelector($link));
@@ -553,6 +525,7 @@ class EEGBrowserIntegrationTest extends LorisIntegrationTestWithCandidate
 
         $this->safeClick(WebDriverBy::cssSelector(self::$prevLink));
         $this->assertStringContainsString("166", $this->webDriver->getCurrentURL());
+        */
     }
 
     /**

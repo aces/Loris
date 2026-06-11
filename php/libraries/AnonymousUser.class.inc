@@ -85,4 +85,25 @@ class AnonymousUser extends \User
     {
         return [];
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    function totpRequired() : bool
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param array $set The array formatted for use in a Database call
+     *
+     * @return void
+     */
+    public function update(array $set): void
+    {
+    }
 }

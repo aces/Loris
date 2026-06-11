@@ -60,6 +60,7 @@ class UserTest extends TestCase
             'Active'                 => 'Y',
             'Password_hash'          => null,
             'PasswordChangeRequired' => 0,
+            'TOTPSecret'             => null,
             'Pending_approval'       => 'Y',
             'Doc_Repo_Notifications' => 'Y',
             'language_preference'    => 2,
@@ -313,8 +314,14 @@ class UserTest extends TestCase
         parent::setUp();
         $this->_factory = \NDB_Factory::singleton();
         $this->_factory->reset();
-        $this->_configMock = $this->_factory->Config(CONFIG_XML);
-        $this->_dbMock     = $this->_factory->database();
+
+        $mockdb     = $this->_factory->database();
+        $mockconfig = $this->_factory->Config(CONFIG_XML);
+        '@phan-var \Database&PHPUnit\Framework\MockObject\MockObject $mockdb';
+        '@phan-var \NDB_Config&PHPUnit\Framework\MockObject\MockObject $mockconfig';
+
+        $this->_configMock = $mockconfig;
+        $this->_dbMock     = $mockdb;
 
         $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
         $mockdb     = $this->getMockBuilder('Database')->getMock();
@@ -344,7 +351,7 @@ class UserTest extends TestCase
         $passwordHash = (new \Password(
             $this->_userInfo['Password']
         ))->__toString();
-        $this->_userInfoComplete['language_code'] = null;
+        $this->_userInfoComplete['language_code'] = 'fr_CA';
         $this->_userInfo['Password_hash']         = $passwordHash;
         $this->_userInfoComplete['Password_hash'] = $passwordHash;
 
@@ -708,7 +715,7 @@ class UserTest extends TestCase
         $this->_factory->setConfig($mockConfig);
 
         '@phan-var \PHPUnit\Framework\MockObject\MockObject $mockConfig';
-        $mockConfig->expects($this->any())
+        $mockConfig
             ->method('settingEnabled')
             ->willReturn(false);
 
@@ -739,7 +746,7 @@ class UserTest extends TestCase
         $oldHash = $this->_user->getData('Password_hash');
 
         // Cause usePwnedPasswordsAPI config option to return false.
-        $this->_mockConfig->expects($this->any())
+        $this->_mockConfig
             ->method('settingEnabled')
             ->willReturn(false);
 
@@ -768,7 +775,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $count       = 1;
-        $this->_mockDB->expects($this->any())
+        $this->_mockDB
             ->method('pselectOneInt')
             ->with(
                 $this->stringContains("FROM user_login_history")
@@ -790,7 +797,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $count       = 0;
-        $this->_mockDB->expects($this->any())
+        $this->_mockDB
             ->method('pselectOneInt')
             ->with(
                 $this->stringContains("FROM user_login_history")
@@ -852,7 +859,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $timestamp   = '2020-06-15 09:49:23';
-        $this->_mockDB->expects($this->any())
+        $this->_mockDB
             ->method('pselectOne')
             ->with(
                 $this->stringContains("WHERE Login_timestamp <")
@@ -875,7 +882,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $timestamp   = '';
-        $this->_mockDB->expects($this->any())
+        $this->_mockDB
             ->method('pselectOne')
             ->with(
                 $this->stringContains("WHERE Login_timestamp <")
@@ -1169,7 +1176,15 @@ class UserTest extends TestCase
         $this->assertEquals(
             $this->_user->getPermissionsVerbose($loris),
             [
-                0 => ['permID' => '2',
+                0 => ['permID' => '1',
+                    'code'        => "superuser",
+                    'description' => "superuser description",
+                    'type'        => "superuser category",
+                    'action'      => null,
+                    'moduleID'    => null,
+                    'label'       => "superuser description"
+                ],
+                1 => ['permID' => '2',
                     'code'        => "test_permission",
                     'description' => "description 1",
                     'type'        => "category 1",
@@ -1177,7 +1192,7 @@ class UserTest extends TestCase
                     'moduleID'    => '2',
                     'label'       => "Access Profile: View description 1"
                 ],
-                1 => ['permID' => '3',
+                2 => ['permID' => '3',
                     'code'        => "test_permission2",
                     'description' => "description 2",
                     'type'        => "category 2",
@@ -1185,7 +1200,7 @@ class UserTest extends TestCase
                     'moduleID'    => '5',
                     'label'       => "Timepoint List: Edit description 2"
                 ],
-                2 => ['permID' => '4',
+                3 => ['permID' => '4',
                     'code'        => 'test_permission3',
                     'description' => 'description 3',
                     'type'        => null,

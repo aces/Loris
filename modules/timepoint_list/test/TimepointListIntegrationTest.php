@@ -32,7 +32,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
     private static $_TST0001_SESSION = [
         'Test',
         '',
-        'DCC',
+        'Data Coordinating Center',
         'Pumpernickel',
         'Not Started',
         '-',
@@ -41,6 +41,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         '',
         '',
         '',
+        'Unknown',
     ];
 
     /**

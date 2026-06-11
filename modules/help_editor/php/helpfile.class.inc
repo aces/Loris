@@ -13,6 +13,7 @@
  * @link     https://github.com/aces/Loris
  */
 namespace LORIS\help_editor;
+require __DIR__ . '/../../../tools/generic_includes.php';
 
 /**
  * Base class for files containing help text information
@@ -67,6 +68,18 @@ class HelpFile
              created, updated FROM help WHERE helpID = :HID",
             ['HID' => $helpID]
         );
+
+        // get instrument  test_name
+        $instruments = $DB->pselect("SELECT * FROM test_names", []);
+        foreach ($instruments as $item) {
+            if ($result !== null && md5($item['Test_name']) === $result['hash']) {
+
+                $result['instrument_full_name'] = $item['Full_name'];
+                $result['instrument']           = $item['Test_name'];
+                break;
+            }
+        }
+
         // set the help file
         $obj->data = $result ?? [];
 
@@ -115,9 +128,12 @@ class HelpFile
      */
     function toArray()
     {
-        $data            = $this->data;
-        $data['topic']   = stripslashes($this->data['topic']);
-        $data['content'] = stripslashes($this->data['content']);
+        $data          = $this->data;
+        $data['topic'] = stripslashes($this->data['topic'] ?? '');
+
+        $data['content'] = stripslashes($this->data['content'] ?? '');
+
+        $data['instrument'] = stripslashes($this->data['instrument'] ?? '');
 
         return $data;
     }

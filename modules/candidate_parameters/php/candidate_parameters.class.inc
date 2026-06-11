@@ -39,7 +39,8 @@ class Candidate_Parameters extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $candidate =& \Candidate::singleton(new CandID($this->identifier));
 
@@ -91,10 +92,20 @@ class Candidate_Parameters extends \NDB_Form
     {
         $candidate =& \Candidate::singleton(new CandID($this->identifier));
         $candID    = $candidate->getCandID();
+        $pscid     = $candidate->getPSCID();
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                dgettext("candidate_parameters", 'Candidate Parameters'),
+                dgettext("candidate_list", 'Access Profile'),
+                '/candidate_list'
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("candidate_profile", "Candidate Profile")
+                . " $candID / $pscid",
+                "/$candID"
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("candidate_parameters", "Candidate Parameters"),
                 "/candidate_parameters/?candID=$candID&identifier=$candID"
             )
         );

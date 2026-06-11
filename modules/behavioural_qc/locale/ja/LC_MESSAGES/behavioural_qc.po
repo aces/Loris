@@ -25,3 +25,34 @@ msgstr "行動品質管理"
 msgid  "Behavioural Session"
 msgid_plural "Behavioural Sessions"
 msgstr[0] "行動品質管理"
+
+msgid "Incomplete Forms"
+msgstr "不完全なフォーム"
+
+msgid "Data Conflicts"
+msgstr "データの競合"
+
+msgid "Behavioural Feedback"
+msgstr "行動フィードバック"
+
+msgid "Data Entry Type"
+msgstr "データ入力タイプ"
+
+msgid "Initial Data Entry (IDE)"
+msgstr "初期データ入力 (IDE)"
+
+msgid "Double Data Entry (DDE)"
+msgstr "二重データ入力 (DDE)"
+
+msgid "Field Name"
+msgstr "フィールド名"
+
+msgid "Feedback Level"
+msgstr "フィードバックレベル"
+
+msgid "Test Name"
+msgstr "テスト名"
+
+msgid "Feedback Status"
+msgstr "フィードバックステータス"
+

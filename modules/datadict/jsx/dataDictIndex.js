@@ -12,6 +12,8 @@ import fetchDataStream from 'jslib/fetchDataStream';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/datadict.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/datadict.json';
+import frStrings from '../locale/fr/LC_MESSAGES/datadict.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/datadict.json';
 
 /**
  * Data Dictionary Page.
@@ -241,6 +243,8 @@ DataDictIndex.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'datadict', hiStrings);
   i18n.addResourceBundle('ja', 'datadict', jaStrings);
+  i18n.addResourceBundle('fr', 'datadict', frStrings);
+  i18n.addResourceBundle('zh', 'datadict', zhStrings);
   const Index = withTranslation(
     ['datadict', 'loris']
   )(DataDictIndex);

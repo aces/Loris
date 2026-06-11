@@ -1,3 +1,6 @@
+ALTER TABLE `mri_protocol_checks`
+  DROP FOREIGN KEY `FK_mriProtocolChecks_ScanType`;
+
 -- Rename foreign key fields for consistency
 
 ALTER TABLE `mri_scan_type`
@@ -46,6 +49,5 @@ ALTER TABLE `mri_violations_log`
 -- Rename the existing constraints for consistency
 
 ALTER TABLE `mri_protocol_checks`
-  DROP FOREIGN KEY `FK_mriProtocolChecks_ScanType`,
   ADD CONSTRAINT `FK_mri_protocol_checks_scan_type`
     FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`);

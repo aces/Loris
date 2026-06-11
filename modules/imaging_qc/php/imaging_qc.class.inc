@@ -41,7 +41,8 @@ class Imaging_QC extends \NDB_Menu_Filter
      * @return bool
      * @throws \ConfigurationException
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('imaging_quality_control_view');
     }

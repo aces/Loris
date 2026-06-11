@@ -1,0 +1,126 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-12-09 18:18-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#, fuzzy
+msgid "Behavioural Feedback"
+msgstr "Rétroaction comportementale"
+
+#, fuzzy
+msgid "Behavioural Feedback Notifications"
+msgstr "Notifications de rétroaction comportementale"
+
+# Default strings from feedback_bvl_type in raisinbread
+# Comments from dashboard widget on raisinbread.
+# These are dynamically entered user data, but having
+# the test set value on demo translated looks better
+msgid "Input"
+msgstr "Entrée"
+
+#, fuzzy
+msgid "Input Errors"
+msgstr "Erreurs de saisie"
+
+msgid "Scoring"
+msgstr "Score"
+
+#, fuzzy
+msgid "Scoring Errors"
+msgstr "Erreurs de notation"
+
+msgid "Other"
+msgstr "Autre"
+
+#, fuzzy
+msgid "Feedback Type"
+msgstr "Type de commentaire"
+
+msgid "Feedback description"
+msgstr "Description de la rétroaction"
+
+#, fuzzy
+msgid "Feedback for PSCID: {{PSCID}}"
+msgstr "Commentaires pour PSCID : {{PSCID}}"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Author"
+msgstr "Auteur"
+
+msgid "Status"
+msgstr "Statut"
+
+#, fuzzy
+msgid "There are no threads for this user!"
+msgstr "Il n'y a pas de fils de discussion pour cet utilisateur !"
+
+msgid "Open"
+msgstr "Ouvert"
+
+#, fuzzy
+msgid "Comment added!"
+msgstr "Commentaire ajouté !"
+
+#, fuzzy
+msgid "Add a comment:"
+msgstr "Ajouter un commentaire :"
+
+msgid "Update comment:"
+msgstr "Mettre à jour un commentaire:"
+
+msgid "Submit"
+msgstr "Soumettre"
+
+msgid "Create thread"
+msgstr "Créer un fil de discussion"
+
+#, fuzzy
+msgid "The new thread has been submitted!"
+msgstr "Le nouveau fil de discussion a été soumis !"
+
+#, fuzzy
+msgid "Across All Fields"
+msgstr "Dans tous les domaines"
+
+msgid "QC Class"
+msgstr "Classe CQ"
+
+msgid "# Threads"
+msgstr "# Fils de discussion"
+
+#, fuzzy
+msgid "This candidate has no behavioural feedback."
+msgstr "Ce candidat n'a reçu aucun commentaire sur son comportement."
+
+#, fuzzy
+msgid "New {{feedbacklevel}} level feedback"
+msgstr "Nouveau {{feedbacklevel}} niveau de rétroaction"
+
+#, fuzzy
+msgid "Open Thread Summary"
+msgstr "Résumé du fil de discussion ouvert"
+
+#, fuzzy
+msgid "Feedback Threads"
+msgstr "Fils de discussion"
+
+msgid "Field Name"
+msgstr "Nom du champ"

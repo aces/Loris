@@ -155,7 +155,7 @@ class VisitController
         return array_map(
             function ($row) {
                 return [
-                    new \LORIS\Visit($row['name'], $row['ID']),
+                    new \LORIS\Visit($row['name'], $row['label']),
                     $row['project'],    // will be modified to object when
                     $row['cohort'], // available
                 ];
@@ -163,7 +163,7 @@ class VisitController
             iterator_to_array(
                 $this->database->pselect(
                     'SELECT
-                  v.VisitID as "ID",
+                  v.VisitLabel as "label",
                   v.VisitName as "name",
                   psr.ProjectID as "project",
                   psr.CohortID as "cohort"
@@ -175,7 +175,7 @@ class VisitController
                  JOIN
                   project_cohort_rel psr
                  ON vps.ProjectCohortRelID = psr.ProjectCohortRelID
-                ORDER BY ID, project, cohort
+                ORDER BY label, project, cohort
                 ',
                     []
                 )

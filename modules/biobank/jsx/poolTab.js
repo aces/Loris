@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -64,9 +65,9 @@ class PoolTab extends Component {
   mapPoolColumns(column, value) {
     const {options} = this.props;
     switch (column) {
-    case 'Type':
+    case this.props.t('Type', {ns: 'biobank'}):
       return options.specimen.types[value].label;
-    case 'Site':
+    case this.props.t('Site', {ns: 'loris', count: 1}):
       return options.centers[value];
     default:
       return value;
@@ -82,28 +83,28 @@ class PoolTab extends Component {
    * @return {JSX}
    */
   formatPoolColumns(column, value, row) {
-    const {options} = this.props;
+    const {t, options} = this.props;
     value = this.mapPoolColumns(column, value);
     const candId = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row['PSCID'])?.id;
+      .find((cand) => cand?.pscid == row[t('PSCID', {ns: 'loris'})])?.id;
 
     // If candId is defined, then the user has access to the candidate and a
     // hyperlink can be established.
     const candidatePermission = candId !== undefined;
     switch (column) {
-    case 'Pooled Specimens':
+    case this.props.t('Pooled Specimens', {ns: 'biobank'}):
       const barcodes = value
         .map((barcode, i) => {
           return <Link key={i} to={`/barcode=${barcode}`}>{barcode}</Link>;
         })
         .reduce((prev, curr) => [prev, ', ', curr]);
       return <td>{barcodes}</td>;
-    case 'PSCID':
+    case this.props.t('PSCID', {ns: 'loris'}):
       if (candidatePermission) {
         return <td><a href={loris.BaseURL + '/' + candId}>{value}</a></td>;
       }
       return <td>{value}</td>;
-    case 'Visit Label':
+    case this.props.t('Visit Label', {ns: 'loris'}):
       if (candidatePermission) {
         const sessId = Object.values(options.candidates[candId]).find(
           (sess) => sess.label == value
@@ -116,9 +117,10 @@ class PoolTab extends Component {
         }
       }
       return <td>{value}</td>;
-    case 'Aliquot':
+    case this.props.t('Aliquot', {ns: 'biobank'}):
       const onClick = () => this.openAliquotForm(row['ID']);
-      return <td><CTA label='Aliquot' onUserInput={onClick}/></td>;
+      const label = t('Aliquot', {ns: 'biobank'});
+      return <td><CTA label={label} onUserInput={onClick}/></td>;
     default:
       return <td>{value}</td>;
     }
@@ -152,7 +154,7 @@ class PoolTab extends Component {
 
     return (
       <SpecimenForm
-        title='Aliquot Pool'
+        title={this.props.t('Aliquot Pool', {ns: 'biobank'})}
         parent={parents}
         options={options}
         data={data}
@@ -170,7 +172,7 @@ class PoolTab extends Component {
    * @return {JSX}
    */
   render() {
-    const {data, options} = this.props;
+    const {t, data, options} = this.props;
     const specimenTypes = mapFormOptions(
       options.specimen.types, 'label'
     );
@@ -193,33 +195,33 @@ class PoolTab extends Component {
 
     const fields = [
       {label: 'ID', show: false},
-      {label: 'Label', show: true, filter: {
+      {label: t('Label', {ns: 'biobank'}), show: true, filter: {
         name: 'barcode',
         type: 'text',
       }},
-      {label: 'Quantity', show: true},
-      {label: 'Pooled Specimens', show: true},
-      {label: 'PSCID', show: true, filter: {
+      {label: t('Quantity', {ns: 'biobank'}), show: true},
+      {label: t('Pooled Specimens', {ns: 'biobank'}), show: true},
+      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
         name: 'pscid',
         type: 'text',
       }},
-      {label: 'Visit Label', show: true, filter: {
+      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'session',
         type: 'text',
       }},
-      {label: 'Type', show: true, filter: {
+      {label: t('Type', {ns: 'biobank'}), show: true, filter: {
         name: 'type',
         type: 'select',
         options: specimenTypes,
       }},
-      {label: 'Site', show: true, filter: {
+      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'site',
         type: 'select',
         options: options.centers,
       }},
-      {label: 'Date', show: true},
-      {label: 'Time', show: true},
-      {label: 'Aliquot', show: true},
+      {label: t('Date', {ns: 'loris'}), show: true},
+      {label: t('Time', {ns: 'loris'}), show: true},
+      {label: t('Aliquot', {ns: 'biobank'}), show: true},
     ];
 
     return (
@@ -240,6 +242,7 @@ class PoolTab extends Component {
 
 // PoolTab.propTypes
 PoolTab.propTypes = {
+  t: PropTypes.func.isRequired,
   data: PropTypes.shape({
     containers: PropTypes.arrayOf(
       PropTypes.shape({
@@ -271,4 +274,4 @@ PoolTab.propTypes = {
   loading: PropTypes.bool.isRequired,
 };
 
-export default PoolTab;
+export default withTranslation(['biobank', 'loris'])(PoolTab);

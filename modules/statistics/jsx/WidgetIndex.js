@@ -13,6 +13,8 @@ import '../css/WidgetIndex.css';
 
 import {setupCharts, unloadCharts} from './widgets/helpers/chartBuilder';
 import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
+import frStrings from '../locale/fr/LC_MESSAGES/statistics.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
 
 /**
  * WidgetIndex - the main window.
@@ -27,6 +29,8 @@ const WidgetIndex = (props) => {
   const {t, i18n} = useTranslation();
   useEffect( () => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
+    i18n.addResourceBundle('fr', 'statistics', frStrings);
+    i18n.addResourceBundle('zh', 'statistics', zhStrings);
   }, []);
 
   // used by recruitment.js and studyprogression.js to display each chart.
@@ -75,7 +79,11 @@ const WidgetIndex = (props) => {
                     );
                   }}
                 >
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                  {/* [Pie|Bar] toggle */}
+                  {t(
+                    key.charAt(0).toUpperCase() + key.slice(1),
+                    {ns: 'statistics'},
+                  )}
                 </button>
               ))}
             </div>
@@ -202,7 +210,19 @@ const WidgetIndex = (props) => {
 
     let formObject = new FormData();
     for (const key in formDataObj) {
-      if (formDataObj[key] != '' && formDataObj[key] != ['']) {
+      if (formDataObj[key] &&
+        typeof formDataObj[key] === 'object' &&
+        !Array.isArray(formDataObj[key])
+      ) {
+        Object.entries(formDataObj[key]).forEach(([rangeKey, value]) => {
+          if (value !== '') {
+            const parameterName = `${key}${
+              rangeKey.charAt(0).toUpperCase()
+            }${rangeKey.slice(1)}`;
+            formObject.append(parameterName, value);
+          }
+        });
+      } else if (formDataObj[key] != '' && formDataObj[key] != ['']) {
         formObject.append(key, formDataObj[key]);
       }
     }

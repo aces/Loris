@@ -374,8 +374,18 @@ class DataTable extends Component {
       result = (filterData === data);
     }
 
+    // Handle numeric range inputs
+    if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+      const numericData = Number.parseFloat(data);
+      const min = Number.parseFloat(filterData.min);
+      const max = Number.parseFloat(filterData.max);
+      result = !Number.isNaN(numericData) &&
+        (Number.isNaN(min) || numericData >= min) &&
+        (Number.isNaN(max) || numericData <= max);
+    }
+
     // Handle array inputs for multiselects
-    if (typeof filterData === 'object') {
+    if (Array.isArray(filterData)) {
       let match = false;
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();
@@ -443,7 +453,7 @@ class DataTable extends Component {
             </div>
           </div>
           <div className='alert alert-info no-result-found-panel'>
-            <strong>No result found.</strong>
+            <strong>{this.props.t('No result found.', {ns: 'loris'})}</strong>
           </div>
         </div>
       );

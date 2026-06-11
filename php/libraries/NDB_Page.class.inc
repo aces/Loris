@@ -27,7 +27,9 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
+class NDB_Page extends \LORIS\Http\Endpoint implements
+    RequestHandlerInterface,
+    \LORIS\StudyEntities\AccessibleResource
 {
     use Psr\Log\LoggerAwareTrait;
 
@@ -144,7 +146,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ->getLogSettings()
             ->getRequestLogLevel();
 
-        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+        if ($loglevel !== "none") {
+            $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+        } else {
+            $this->logger = new \Psr\Log\NullLogger();
+        }
 
     }
 
@@ -192,7 +198,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $this->form->addElement(
             'file',
             $name,
-            $label,
+            dgettext($this->name, $label),
             [],
             array_merge(['class' => 'fileUpload'], $attribs)
         );
@@ -207,7 +213,8 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addHeader($header)
     {
-        $this->form->addElement('header', '', $header);
+        $this->form->addElement('header', '', dgettext($this->name, $header));
+
     }
 
     /**
@@ -232,7 +239,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('select', $name, $label, $options, $attribs);
+        $this->form->addElement(
+            'select',
+            $name,
+            dgettext($this->name, $label),
+            $options,
+            $attribs
+        );
     }
 
     /**
@@ -244,7 +257,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addLabel($label)
     {
-        $this->form->addElement('static', '', $label);
+        $this->form->addElement(
+            'static',
+            '',
+            dgettext($this->name, $label)
+        );
     }
 
     /**
@@ -257,7 +274,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addScoreColumn($name, $label)
     {
-        $this->form->addElement('static', $name, $label);
+        $this->form->addElement(
+            'static',
+            $name,
+            dgettext($this->name, $label)
+        );
     }
 
     /**
@@ -274,7 +295,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     function addBasicText($field, $label, $options=[], $attribs=[])
     {
         $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
-        $this->form->addElement('text', $field, $label, $options, $attribs);
+        $this->form->addElement(
+            'text',
+            $field,
+            dgettext($this->name, $label),
+            $options,
+            $attribs
+        );
     }
 
     /**
@@ -296,7 +323,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('textarea', $field, $label, [], $attribs);
+        $this->form->addElement(
+            'textarea',
+            $field,
+            dgettext($this->name, $label),
+            [],
+            $attribs
+        );
     }
 
     /**
@@ -323,7 +356,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         ]
     ) {
         $options = ($options ?? []) + $this->dateOptions;
-        $this->form->addElement('date', $field, $label, $options, $attribs);
+        $this->form->addElement(
+            'date',
+            $field,
+            dgettext($this->name, $label),
+            $options,
+            $attribs
+        );
     }
 
     /**
@@ -342,7 +381,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm'],
             $attribs
         );
-        $this->form->addElement('advcheckbox', $name, $label, [], $attribs);
+        $this->form->addElement(
+            'advcheckbox',
+            $name,
+            dgettext($this->name, $label),
+            [],
+            $attribs
+        );
     }
 
     /**
@@ -367,7 +412,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         foreach ($radios as $radElement) {
             $radGroup[] = $this->createRadio(
                 $name,
-                $radElement['label'],
+                dgettext($this->name, $radElement['label']),
                 $options,
                 [
                     'class' => 'form-control input-sm',
@@ -421,7 +466,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
             ['class' => 'form-control input-sm not-answered']
         );
 
-        $this->addGroup($group, $field . '_group', $label, '');
+        $this->addGroup(
+            $group,
+            $field . '_group',
+            dgettext($this->name,  $label),
+            ''
+        );
 
     }
 
@@ -440,7 +490,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $attribs=[]
     ) {
         $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
-        $this->form->addElement('password', $field, $label, [], $attribs);
+        $this->form->addElement(
+            'password',
+            $field,
+            dgettext($this->name,  $label),
+            [],
+            $attribs
+        );
     }
 
     /**
@@ -461,7 +517,12 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addRule($element, $message, $type, $format=null)
     {
-        $this->form->addRule($element, $message, $type, $format);
+        $this->form->addRule(
+            $element,
+            dgettext($this->name, $message),
+            $type,
+            $format
+        );
     }
 
     /**
@@ -484,13 +545,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      * Adds a group (array of elements created by $this->create*
      * wrappers) to the current page.
      *
-     * @param array  $elements  The group of elements to add to the page
-     * @param string $name      The name to give this group
-     * @param string $label     A label to attach to the group
-     * @param string $delimiter The separator to use between group elements
-     * @param ?array $options   An optional array to include prefix_wrapper and
-     *                          postfix_wrapper strings - html that will be
-     *                          placed before and after the group html
+     * @param array   $elements  The group of elements to add to the page
+     * @param string  $name      The name to give this group
+     * @param ?string $label     A label to attach to the group
+     * @param string  $delimiter The separator to use between group elements
+     * @param ?array  $options   An optional array to include prefix_wrapper and
+     *                           postfix_wrapper strings - html that will be
+     *                           placed before and after the group html
      *
      * @return void
      *
@@ -500,7 +561,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
      */
     function addGroup($elements, $name, $label, $delimiter, $options=null)
     {
-        $this->form->addGroup($elements, $name, $label, $delimiter, $options);
+        $this->form->addGroup(
+            $elements,
+            $name,
+            !empty($label) ? dgettext($this->name, $label) : '',
+            $delimiter,
+            $options
+        );
     }
 
     /**
@@ -522,7 +589,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "select",
             $field,
-            $label,
+            dgettext($this->name, $label),
             $options,
             $attribs
         );
@@ -540,7 +607,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "static",
             '',
-            $labelString
+            dgettext($this->name, $labelString),
         );
     }
 
@@ -559,7 +626,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         $attribs=[]
     ) {
         $attr = array_merge(['class' => 'form-control input-sm'], $attribs);
-        return $this->form->createElement("text", $field, $label, [], $attr);
+        return $this->form->createElement(
+            "text",
+            $field,
+            dgettext($this->name, $label),
+            [],
+            $attr
+        );
     }
 
     /**
@@ -575,7 +648,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "textarea",
             $field,
-            $label,
+            dgettext($this->name, $label),
             [],
             ['class' => 'form-control input-sm']
         );
@@ -607,7 +680,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "date",
             $field,
-            $label,
+            dgettext($this->name, $label),
             ($dateOptions ?? []) + $this->dateOptions,
             $attribs
         );
@@ -627,7 +700,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "advcheckbox",
             $field,
-            $label,
+            !empty($label) ? dgettext($this->name, $label) : '',
             [],
             $attribs
         );
@@ -649,7 +722,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             "radio",
             $field,
-            $label,
+            dgettext($this->name, $label),
             $options,
             $attribs
         );
@@ -672,7 +745,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
         return $this->form->createElement(
             'password',
             $field,
-            $label,
+            dgettext($this->name, $label),
             [],
             $attribs
         );
@@ -700,11 +773,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     ) : ResponseInterface {
         $this->logger->debug("NDB_Page middleware called");
         $user = $request->getAttribute("user");
-        if ($this->_hasAccess($user ?? new \LORIS\AnonymousUser()) !== true) {
+        if ($this->isAccessibleBy($user ?? new \LORIS\AnonymousUser()) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
-                    new \LORIS\Http\StringStream("Permission Denied")
+                    new \LORIS\Http\StringStream(
+                        dgettext("loris", "Permission Denied")
+                    )
                 )->withStatus(403);
         }
 
@@ -899,15 +974,14 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     }
 
     /**
-     * Returns true if user has access to this page.
+     * Implements the AccessibleResourceInterface.
      *
-     * You do not need to overload hasAccess() if there are no access restrictions.
-     *
-     * @param \User $user The user whose access is being checked
+     * @param \User $user The user accessing the Page @unused-param
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return true;
     }
@@ -954,6 +1028,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
     ) {
         $moduleName = $this->Module->getName();
         $DB         = $loris->getDatabaseConnection();
+        $locale     = \LORIS\Middleware\Language::detectLocale($loris);
+        $languageID = (int) ($DB->pselectOne(
+            "SELECT language_id FROM language WHERE language_code = :code",
+            ['code' => $locale]
+        ) ?? 0);
         // If no policy name is given, we return the latest policy for the module
         if (!empty($policyName)) {
             $policyName = 'AND p.Name = '. $DB->quote($policyName);
@@ -970,17 +1049,29 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
                 "SELECT
                     p.Name as PolicyName,
                     Version,
-                    Content,
-                    SwalTitle,
-                    HeaderButtonText,
-                    AcceptButtonText,
-                    DeclineButtonText,
+                    COALESCE(pi.Content, p.Content) AS Content,
+                    COALESCE(pi.SwalTitle, p.SwalTitle) AS SwalTitle,
+                    COALESCE(
+                        pi.HeaderButtonText,
+                        p.HeaderButtonText
+                    ) AS HeaderButtonText,
+                    COALESCE(
+                        pi.AcceptButtonText,
+                        p.AcceptButtonText
+                    ) AS AcceptButtonText,
+                    COALESCE(
+                        pi.DeclineButtonText,
+                        p.DeclineButtonText
+                    ) AS DeclineButtonText,
                     m.Name as ModuleName,
-                    PolicyID,
-                    PolicyRenewalTime,
-                    PolicyRenewalTimeUnit
+                    p.PolicyID,
+                    p.PolicyRenewalTime,
+                    p.PolicyRenewalTimeUnit
                 FROM policies p
                 JOIN modules m ON m.ID = p.ModuleID
+                LEFT JOIN policiesI18n pi
+                    ON pi.PolicyID = p.PolicyID
+                    AND pi.LanguageID = :languageID
                 WHERE m.Name = :moduleName
                     $policyName
                     AND p.Active = 'Y'
@@ -989,6 +1080,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
                 LIMIT 1
                 ",
                 [
+                    'languageID' => $languageID,
                     'moduleName' => $moduleName
                 ]
             )

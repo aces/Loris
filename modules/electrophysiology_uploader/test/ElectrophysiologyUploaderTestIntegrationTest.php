@@ -45,7 +45,7 @@ class ElectrophysiologyUploaderTestIntegrationTest extends LorisIntegrationTest
             "selector" => "#upload",
         ],
         [
-            "label"    => "CandID",
+            "label"    => "DCCID",
             "selector" => "#upload",
         ],
         [

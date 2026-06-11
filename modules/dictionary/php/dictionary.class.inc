@@ -23,7 +23,8 @@ class Dictionary extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return ($user->hasPermission('data_dict_view') ||
                 $user->hasPermission('data_dict_edit'));
@@ -63,7 +64,7 @@ class Dictionary extends \DataFrameworkMenu
             $cohort_options[$name] = $name;
         }
         $visit_options = [];
-        foreach (\Utility::getVisitList() as $visit) {
+        foreach ($user->getVisits() as $visit) {
             $visit_options[$visit] = $visit;
         }
         return [

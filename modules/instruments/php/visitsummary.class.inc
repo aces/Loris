@@ -30,7 +30,7 @@ class VisitSummary extends \NDB_Page
                 "No valid user"
             );
         }
-        if (!($this->_hasAccess($user))) {
+        if (!($this->isAccessibleBy($user))) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
@@ -115,13 +115,19 @@ class VisitSummary extends \NDB_Page
                 '',
                 false
             );
-            if ($instrument->_hasAccess($user) == false) {
+            if ($instrument->isAccessibleBy($user) == false) {
                 $this->logger->debug(
                     "Skipping $testName"
                     . " because user does not have permission"
                 );
                 continue;
             }
+
+            $rslt[$key] = [
+                'Test_name'     => $row['Test_name'],
+                'CommentID'     => $row['CommentID'],
+                'NumOfConflict' => $row['NumOfConflict'],
+            ];
             if ($instrument === null) {
                 $rslt[$key]['Completion'] = 0;
             } else {

@@ -38,3 +38,30 @@
         flex-direction: column-reverse;
     }
 }
+
+.partner-container-desktop .panel-body,
+.partner-container-mobile .panel-body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.partner-container-desktop .panel-body img,
+.partner-container-mobile .panel-body img {
+    width: calc(50% - 8px);
+    object-fit: contain;
+    max-height: 150px;
+}
+
+@media (max-width: 991px) {
+    .partner-container-desktop {
+        display: none;
+    }
+}
+
+@media (min-width: 992px) {
+    .partner-container-mobile {
+        display: none;
+    }
+}

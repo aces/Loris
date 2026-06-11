@@ -24,8 +24,206 @@ msgstr ""
 msgid "Caveat"
 msgstr ""
 
-msgid "Consent Summary"
+msgid "Return to timepoint list"
 msgstr ""
 
-msgid "Consent Type"
+# tabs
+msgid "Candidate Information"
+msgstr ""
+
+msgid "Participant Status"
+msgstr ""
+
+msgid "Diagnosis Evolution"
+msgstr ""
+
+msgid "Proband Information"
+msgstr ""
+
+msgid "Family Information"
+msgstr ""
+
+msgid "Consent Status"
+msgstr ""
+
+# Candidate Information tab
+msgid "Caveat Emptor Flag for Candidate"
+msgstr ""
+
+msgid "Reason for Caveat Emptor Flag"
+msgstr ""
+
+msgid "If Other, please specify"
+msgstr ""
+
+# Participant Status tab
+msgid "Specify Reason"
+msgstr ""
+
+msgid "Comments"
+msgstr ""
+
+# DoB tab
+msgid "Disclaimer:"
+msgstr ""
+
+msgid "Any changes to the date of birth requires an administrator to run the fix_candidate_age script."
+msgstr ""
+
+msgid "Date of birth cannot be later than today!"
+msgstr ""
+
+msgid "Date of birth updated!"
+msgstr ""
+
+msgid "Something went wrong."
+msgstr ""
+
+# DoD tab
+msgid "Any changes to the date of death requires an administrator to run the fix_candidate_age script."
+msgstr ""
+
+msgid "Date Of Death:"
+msgstr ""
+
+msgid "Invalid date"
+msgstr ""
+
+msgid "Date of death cannot be later than today!"
+msgstr ""
+
+msgid "Date of death must be after date of birth!"
+msgstr ""
+
+msgid "Date of death updated!"
+msgstr ""
+
+# Diagnosis Evolution tab
+msgid "Trajectory Name"
+msgstr ""
+
+msgid "Configured Order"
+msgstr ""
+
+msgid "Source Fields"
+msgstr ""
+
+msgid "Diagnosis"
+msgstr ""
+
+msgid "Confirmed"
+msgstr ""
+
+msgid "Last Update"
+msgstr ""
+
+# ProbandInfo Evolution tab
+msgid "'An error occurred when loading the form!'"
+msgstr ""
+
+msgid "DOB do not match!"
+msgstr ""
+
+msgid "Proband date of birth cannot be later than today!"
+msgstr ""
+
+msgid "Update Successful!"
+msgstr ""
+
+msgid "Failed to update!"
+msgstr ""
+
+msgid "Proband Sex"
+msgstr ""
+
+msgid "DoB Proband"
+msgstr ""
+
+msgid "Confirm DoB Proband"
+msgstr ""
+
+msgid "Age Difference (months)"
+msgstr ""
+
+# FamilyInfo tab
+msgid "Add"
+msgstr ""
+
+msgid "Family Member ID (DCCID)"
+msgstr ""
+
+msgid "Relation Type"
+msgstr ""
+
+msgid "Full Sibling"
+msgstr ""
+
+msgid "Half Sibling"
+msgstr ""
+
+msgid "First Cousin"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+# ConsentStatus tab
+msgid "Response"
+msgstr ""
+
+msgid "Date of Response"
+msgstr ""
+
+msgid "Confirmation Date of Response"
+msgstr ""
+
+msgid "Date of Withdrawal of Consent"
+msgstr ""
+
+msgid "Confirmation Date of Withdrawal of Consent"
+msgstr ""
+
+msgid "Update successful."
+msgstr ""
+
+msgid "{{label}} dates do not match!"
+msgstr ""
+
+msgid "{{label}} date cannot be later than today!"
+msgstr ""
+
+msgid "{{label}} withdrawal dates do not match!"
+msgstr ""
+
+msgid "{{label}} withdrawal date cannot be later than today!"
+msgstr ""
+
+msgid "{{label}} withdrawal date cannot be earlier than response date!"
+msgstr ""
+
+msgid "Hide Consent History"
+msgstr ""
+
+msgid "Show Consent History"
+msgstr ""
+
+msgid "Date of Consent to {{consentDate}}"
+msgstr ""
+
+msgid "Date of Consent Withdrawal to {{withdrawal}}"
+msgstr ""
+
+msgid "updated for {{label}}:"
+msgstr ""
+
+msgid "Status to "
+msgstr ""
+
+msgid " Status: "
+msgstr ""
+
+msgid "Details: "
+msgstr ""
+
+msgid "Comments: "
 msgstr ""

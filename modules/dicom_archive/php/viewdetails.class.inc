@@ -50,7 +50,8 @@ class ViewDetails extends \NDB_Form
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         // Permission of access to this page needs to match the module's filters
         $config           = \NDB_Factory::singleton()->config();
@@ -120,7 +121,7 @@ class ViewDetails extends \NDB_Form
         $this->DB = $this->loris->getDatabaseConnection();
 
         $user = \User::singleton();
-        if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess($user))) {
+        if ((!empty($_REQUEST['tarchiveID'])) && ($this->isAccessibleBy($user))) {
             $this->tarchiveID          = intval($_REQUEST['tarchiveID']);
             $this->tpl_data['archive'] = $this->_getTarchiveData(
                 $this->tarchiveID,
@@ -212,7 +213,7 @@ class ViewDetails extends \NDB_Form
 
     /**
      * Validates PatientName and PatientID,
-     * sets INVALID-HIDDEN if not validated.
+     * sets INVALID - HIDDEN if not validated.
      *
      * @return null
      */
@@ -258,6 +259,9 @@ class ViewDetails extends \NDB_Form
             ['tid' => $this->tpl_data['archive']['TarchiveID']]
         )['IsPhantom'] ?? null;
 
+        // This shouldn't happen, but without it phan doesn't realize
+        // that patientname is part of the array
+        assert(isset($this->tpl_data['archive']['PatientName']));
         if ($isPhantom === 'Y') {
             $isValid = preg_match(
                 "/$legoPhanRegex/",
@@ -288,7 +292,8 @@ class ViewDetails extends \NDB_Form
 
         $this->tpl_data['archive']['patientNameValid'] = $isValid ? 1 : 0;
         if (!$isValid) {
-            $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
+            $this->tpl_data['archive']['PatientName']
+                = dgettext('dicom_archive', 'INVALID - HIDDEN');
         }
 
         if (isset($this->tpl_data['archive']['PatientID'])
@@ -302,7 +307,9 @@ class ViewDetails extends \NDB_Form
                 $this->tpl_data['archive']['patientIDValid'] = 1;
             } else {
                 $this->tpl_data['archive']['patientIDValid'] = 0;
-                $this->tpl_data['archive']['PatientID']      = "INVALID - HIDDEN";
+
+                $this->tpl_data['archive']['PatientID']
+                    = dgettext('dicom_archive', 'INVALID - HIDDEN');
             }
         }
     }
@@ -429,11 +436,13 @@ class ViewDetails extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'View Details',
+                dgettext('dicom_archive', "DICOM Archive"),
+                "/$this->name",
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext('dicom_archive', 'View Details'),
                 "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
             )
         );

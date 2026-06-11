@@ -33,15 +33,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 {
     /**
      * Construct a BaseRouter
-     *
-     * @param \LORIS\LorisInstance $loris The LORIS instance being routed
-     * @param \User                $user  The user accessing LORIS. (May be an
-     *                                    AnonymousUser instance).
      */
-    public function __construct(
-        protected \LORIS\LorisInstance $loris,
-        protected \User $user
-    ) {
+    public function __construct()
+    {
     }
 
     /**
@@ -54,19 +48,23 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $uri  = $request->getUri();
-        $path = $uri->getPath();
+        $request = $request->withAttribute("unhandledURI", $request->getURI());
+        $uri     = $request->getUri();
+        $path    = $uri->getPath();
+
+        // from request attributes
+        $loris = $request->getAttribute("loris");
+        $user  = $request->getAttribute("user");
 
         // Replace multiple slashes in the URL with a single slash
         $path = preg_replace("/\/+/", "/", $path);
         // Remove any trailing slash remaining, so that foo/ and foo are the same
         // route
-        $path    = preg_replace("/\/$/", "", $path);
-        $request = $request->withAttribute("user", $this->user)
-            ->withAttribute("loris", $this->loris);
+        $path = preg_replace("/\/$/", "", $path);
 
+        $modulename = null;
         if ($path == "") {
-            if ($this->user instanceof \LORIS\AnonymousUser) {
+            if ($user instanceof \LORIS\AnonymousUser) {
                 $modulename = "login";
             } else {
                 $modulename = "dashboard";
@@ -78,14 +76,14 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         }
 
         $components = [];
-        if (empty($modulename)) {
+        if ($modulename === null) {
             $components = preg_split("/\/+?/", $path);
             $modulename = $components[0];
         }
 
         $factory           = \NDB_Factory::singleton();
         $ehandler          = new \LORIS\Middleware\ExceptionHandlingMiddleware();
-        $logSettings       = $this->loris->getConfiguration()->getLogSettings();
+        $logSettings       = $loris->getConfiguration()->getLogSettings();
         $exceptionloglevel = $logSettings->getExceptionLogLevel();
 
         if ($exceptionloglevel != "none") {
@@ -96,7 +94,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $ehandler->setLogger(new \PSR\Log\NullLogger);
         }
 
-        if ($this->loris->hasModule($modulename)) {
+        if ($loris->hasModule($modulename)) {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
 
@@ -109,15 +107,15 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                 $baseurl = '';
             }
             $baseurl = $uri->withPath($baseurl)->withQuery("");
-            $request = $request->withAttribute("baseurl", $baseurl->__toString());
+            $factory->setBaseURL((string) $baseurl);
 
-            $factory->setBaseURL((string )$baseurl);
-
-            $module = $this->loris->getModule($modulename);
+            $module = $loris->getModule($modulename);
             $module->registerAutoloader();
 
+            $lang    = \LORIS\Middleware\Language::detectLocale($loris, $request);
+            $request = $request->withAttribute("lang", $lang);
+
             if (file_exists(__DIR__ . "/../../project/locale/")) {
-                $lang = \LORIS\Middleware\Language::detectLocale($this->loris, $request);
                 if ($lang !== null) {
                     /* detectLanguage should have validated that it's a valid locale, but
                      * ensure that there are no unsafe characters just in case since we
@@ -157,22 +155,20 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                 $module->setLogger(new \PSR\Log\NullLogger);
             }
             $mr      = new ModuleRouter($module);
-            $request = $request->withURI($suburi);
+            $request = $request->withAttribute("unhandledURI", $suburi);
+
             return $ehandler->process($request, $mr);
         }
         // Legacy from .htaccess. A CandID goes to the timepoint_list
         // FIXME: This should all be one candidates module, not a bunch
         // of hacks in the base router.
         if (preg_match("/^([0-9]{6,10})$/", $components[0])) {
-            $baseurl = $uri->withPath("")->withQuery("");
-
-            $factory->setBaseURL((string )$baseurl);
+            $baseurl = $request->getAttribute("baseurl");
+            $factory->setBaseURL((string) $baseurl);
             if (count($components) == 1) {
-                $request = $request
-                    ->withAttribute("baseurl", $baseurl->__toString())
-                    ->withAttribute("CandID", $components[0]);
+                $request = $request->withAttribute("CandID", $components[0]);
 
-                $module = $this->loris->getModule("timepoint_list");
+                $module = $loris->getModule("timepoint_list");
                 $module->registerAutoloader();
 
                 $requestloglevel = $logSettings->getRequestLogLevel();
@@ -190,7 +186,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 
         // Fall through to 404. We don't have any routes that go farther
         // than 1 level..
-        return (new \LORIS\Middleware\PageDecorationMiddleware($this->user))
+        return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
                     new NoopResponder(new \LORIS\Http\Error($request, 404))

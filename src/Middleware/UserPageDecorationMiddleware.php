@@ -174,6 +174,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                                     'useConsent'  => $this->Config->getSetting(
                                         'useConsent'
                                     ),
+                                    'studyTitle'  => $this->Config->getSetting(
+                                        'Title'
+                                    ),
                                    );
         $tpl_data['jsonParams']  = json_encode(
             array(
@@ -201,7 +204,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // Retrieve site and project names for tooltips
         $tpl_data['user']['SitesTooltip']    = implode(
             "<br/>",
-            $this->user->getSiteNames()
+            array_map(
+                fn($site) => $site->getCenterName(),
+                $this->user->getSites(),
+            )
         );
         $tpl_data['user']['ProjectsTooltip'] = implode(
             "<br/>",
@@ -222,7 +228,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Do not show menu item if module not active
         $tpl_data['my_preferences'] = $loris->hasModule('my_preferences');
-        $tpl_data['userjson']       = json_encode(
+        $lang = \LORIS\Middleware\Language::detectLocale($request->getAttribute("loris"), $request);
+        $tpl_data['language']  = $lang;
+        $tpl_data['languages'] = \Utility::getLanguageListByCode();
+        $tpl_data['userjson']  = json_encode(
             [
              'username' => $user->getUsername(),
              'id'       => $user->getId(),

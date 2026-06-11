@@ -357,9 +357,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             return $visits;
         }
 
-        // Fall back on all visits if something ends up getting
+        $user = \NDB_Factory::singleton()->user();
+
+        // Fall back on user visits if something ends up getting
         // added that we can't derive the modality of.
-        return array_keys(\Utility::getVisitList());
+        return array_keys($user->getVisits());
     }
 
     /**
@@ -373,10 +375,15 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         \LORIS\Data\Dictionary\DictionaryItem $item
     ): string {
         if ($item->getName() == 'ScanDone') {
-            $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
-                return "CASE WHEN s.Scan_Done='Y' THEN true
-                             WHEN s.Scan_Done='N' THEN false
-                             ELSE NULL END";
+            $this->addTable(
+                "LEFT JOIN session s "
+                . "ON (s.CandidateID=c.ID AND s.Active='Y')"
+            );
+            return "(
+                EXISTS (SELECT 1 FROM files      f2 WHERE f2.SessionID = s.ID)
+             OR EXISTS (SELECT 1 FROM mri_upload m2 WHERE m2.SessionID = s.ID)
+             OR EXISTS (SELECT 1 FROM tarchive   t2 WHERE t2.SessionID = s.ID)
+            )";
         }
 
         if (!($item instanceof ImagingDictionaryItem)) {
@@ -390,7 +397,10 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         // $field = whatever's after the first underscore
         $field = substr($item->getName(), strpos($item->getName(), '_') + 1);
 
-        $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
+        $this->addTable(
+            "LEFT JOIN session s "
+            . "ON (s.CandidateID=c.ID AND s.Active='Y')"
+        );
         $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
 
         if ($item instanceof LocationDictionaryItem) {
@@ -542,7 +552,10 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             || $item instanceof MRICommentDictionaryItem
             || $item instanceof MRIPredefinedCommentDictionaryItem
         ) {
-            $this->addTable('LEFT JOIN session s ON (s.CandidateID=c.ID)');
+            $this->addTable(
+                "LEFT JOIN session s "
+                . "ON (s.CandidateID=c.ID AND s.Active='Y')"
+            );
             $this->addTable("LEFT JOIN files ON (s.ID=files.SessionID)");
             return "SUBSTRING_INDEX(files.File, '/', -1)";
         }

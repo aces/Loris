@@ -33,7 +33,8 @@ class ProjectDescription extends \LORIS\Http\Endpoint
      *
      * @return bool
      */
-    function _hasAccess(\User $user)
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return true;
     }

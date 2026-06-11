@@ -1,5 +1,6 @@
 import swal from 'sweetalert2';
 import {useState, useEffect, ReactNode} from 'react';
+import {useTranslation} from 'react-i18next';
 
 import fetchDataStream from 'jslib/fetchDataStream';
 
@@ -93,11 +94,26 @@ function DisplayValue(props: {
   }
 
   if (props.dictionary.type == 'URI') {
-    display = (
-      <a href={props.value}>
-        {display}
-      </a>
-    );
+    switch (props.dictionary.cardinality) {
+    case 'many':
+      // Split the string and map to multiple <a> tags
+      const urls = String(props.value).split(';');
+      display = (
+        urls.map((url, i) => (
+          <span key={i}>
+            <a href={url.trim()}>{url.trim()}</a>
+            {i < urls.length - 1 && '; '}
+          </span>
+        ))
+      );
+      break;
+    default:
+      display = (
+        <a href={props.value}>
+          {display}
+        </a>
+      );
+    }
   }
   return display;
 }
@@ -112,36 +128,44 @@ function DisplayValue(props: {
  * @returns {React.ReactElement} - The ProgressBar element
  */
 function ProgressBar(props: {type: string, value: number, max: number}) {
+  const {t} = useTranslation('dataquery');
   switch (props.type) {
   case 'loading':
     if (props.value == 0) {
-      return <h2>Query not yet run</h2>;
+      return <h2>{t('Query not yet run', {ns: 'dataquery'})}</h2>;
     }
     return (<div>
-      <label htmlFor="loadingprogress">Loading data:</label>
+      <label htmlFor="loadingprogress">{t('Loading data:',
+        {ns: 'dataquery'})}</label>
       <progress id="loadingprogress"
         value={props.value} max={props.max}>
-        {props.value} of {props.max} candidates
+        {t('{{value}} of {{max}} candidates',
+          {ns: 'dataquery', value: props.value, max: props.max})}
       </progress>
     </div>);
   case 'headers':
     return (<div>
-      <label htmlFor="loadingprogress">Organizing headers:</label>
+      <label htmlFor="loadingprogress">{t('Organizing headers:',
+        {ns: 'dataquery'})}</label>
       <progress id="loadingprogress"
         value={props.value} max={props.max}>
-        {props.value} of {props.max} columns
+        {t('{{value}} of {{max}} columns', {ns: 'dataquery',
+          value: props.value, max: props.max})}
       </progress>
     </div>);
   case 'dataorganization':
     return (<div>
-      <label htmlFor="loadingprogress">Organizing data:</label>
+      <label htmlFor="loadingprogress">{t('Organizing data:',
+        {ns: 'dataquery'})}</label>
       <progress id="loadingprogress"
         value={props.value} max={props.max}>
-        {props.value} of {props.max} columns
+        {t('{{value}} of {{max}} columns', {ns: 'dataquery',
+          value: props.value, max: props.max})}
       </progress>
     </div>);
   }
-  return <h2>Invalid progress type: {props.type}</h2>;
+  return <h2>{t('Invalid progress type: {{type}}', {ns: 'dataquery',
+    type: props.type})}</h2>;
 }
 
 type RunQueryType = {
@@ -259,6 +283,8 @@ function useDataOrganization(
         = useState<'headers'|'data'|'done'|null>(null);
   const [progress, setProgress] = useState<number>(0);
   const [headers, setHeaders] = useState<string[]>([]);
+  const {t} = useTranslation();
+
   useEffect( () => {
     if (queryData.loading == true) {
       return;
@@ -268,6 +294,7 @@ function useDataOrganization(
       visitOrganization,
       headerDisplay,
       fulldictionary,
+      t,
       (i) => setProgress(i),
     ).then( (headers: string[]) => {
       setHeaders(headers);
@@ -298,6 +325,7 @@ function useDataOrganization(
  * The View Data tab
  *
  * @param {object} props - React props
+ * @param {any} props.t - useTranslation
  * @param {APIQueryField[]} props.fields - The selected fields
  * @param {QueryGroup} props.filters - The selected filters
  * @param {object} props.fulldictionary - the data dictionary
@@ -305,11 +333,13 @@ function useDataOrganization(
  * @returns {React.ReactElement} - The ViewData tab
  */
 function ViewData(props: {
+    t: any
     fields: APIQueryField[],
     filters: QueryGroup,
     onRun: () => void
     fulldictionary: FullDictionary,
 }) {
+  const {t} = props;
   const [visitOrganization, setVisitOrganization]
         = useState<VisitOrgType>('inline');
   const [headerDisplay, setHeaderDisplay]
@@ -335,7 +365,7 @@ function ViewData(props: {
   } else {
     switch (organizedData['status']) {
     case null:
-      return queryTable = <h2>Query not yet run</h2>;
+      return queryTable = <h2>{t('Query not yet run')}</h2>;
     case 'headers':
       queryTable = <ProgressBar
         type='headers'
@@ -351,7 +381,7 @@ function ViewData(props: {
     case 'done':
       try {
         queryTable = <DataTable
-          rowNumLabel="Row Number"
+          rowNumLabel={t('Row Number')}
           fields={organizedData.headers.map(
             (val: string) => {
               return {show: true, label: val};
@@ -373,6 +403,7 @@ function ViewData(props: {
               props.fulldictionary,
               emptyVisits,
               enumDisplay,
+              props.t
             )
           }
           hide={
@@ -386,7 +417,7 @@ function ViewData(props: {
       } catch (e) {
         // OrganizedMapper/Formatter can throw an error
         // before the loading is complete
-        return <div>Loading..</div>;
+        return <div>{t('Loading...', {ns: 'loris'})}</div>;
       }
       break;
     default:
@@ -398,7 +429,7 @@ function ViewData(props: {
     <CheckboxElement
       name="emptyvisits"
       value={emptyVisits}
-      label="Display empty visits?"
+      label={t('Display empty visits?', {ns: 'dataquery'})}
       onUserInput={
         (name: string, value: boolean) =>
           setEmptyVisits(value)
@@ -409,11 +440,11 @@ function ViewData(props: {
     <SelectElement
       name='headerdisplay'
       options={{
-        'fieldname': 'Field Name',
-        'fielddesc': 'Field Description',
-        'fieldnamedesc': 'Field Name: Field Description',
+        'fieldname': t('Field Name'),
+        'fielddesc': t('Field Description'),
+        'fieldnamedesc': t('Field Name: Field Description'),
       }}
-      label='Header Display Format'
+      label={t('Header Display Format')}
       value={headerDisplay}
       multiple={false}
       emptyOption={false}
@@ -426,12 +457,12 @@ function ViewData(props: {
     <SelectElement
       name='visitorganization'
       options={{
-        'crosssection': 'Rows (Cross-sectional)',
-        'longitudinal': 'Columns (Longitudinal)',
-        'inline': 'Inline values (no download)',
-        'raw': 'Raw JSON (debugging only)',
+        'crosssection': t('Rows (Cross-sectional)', {ns: 'dataquery'}),
+        'longitudinal': t('Columns (Longitudinal)', {ns: 'dataquery'}),
+        'inline': t('Inline values (no download)', {ns: 'dataquery'}),
+        'raw': t('Raw JSON (debugging only)', {ns: 'dataquery'}),
       }}
-      label='Display visits as'
+      label={t('Display visits as', {ns: 'dataquery'})}
       value={visitOrganization}
       multiple={false}
       emptyOption={false}
@@ -444,10 +475,10 @@ function ViewData(props: {
     <SelectElement
       name='enumdisplay'
       options={{
-        'labels': 'Labels',
-        'values': 'Values',
+        'labels': t('Label', {ns: 'dataquery', count: 99}),
+        'values': t('Value', {ns: 'dataquery', count: 99}),
       }}
-      label='Display options as'
+      label={t('Display options as', {ns: 'dataquery'})}
       value={enumDisplay == EnumDisplayTypes.EnumLabel
         ? 'labels'
         : 'values'}
@@ -572,9 +603,14 @@ function organizeData(
                           dataRow.push(null);
                         } else {
                           const mappedVals = Object.keys(thevalues)
-                            .map(
-                              (key) => key + '=' + thevalues[key]
-                            )
+                            .map((key) => {
+                            // If it's a URI, don't prepend the key/label
+                              if (dictionary.type === 'URI') {
+                                return thevalues[key];
+                              }
+                              // Otherwise, concatenate key and value
+                              return key + '=' + thevalues[key];
+                            })
                             .join(';');
                           dataRow.push(mappedVals);
                         }
@@ -756,7 +792,14 @@ function expandLongitudinalCells(
             }
             const thevalues = thissession.values;
             return {value: Object.keys(thevalues)
-              .map( (key) => key + '=' + thevalues[key])
+              .map( (key) => {
+                // If it's a URI, don't prepend the key/label
+                if (fielddict.type === 'URI') {
+                  return thevalues[key];
+                }
+                // Otherwise concatenate key with value.
+                return key + '=' + thevalues[key];
+              })
               .join(';'), dictionary: fielddict};
           default:
             if (thissession.value !== undefined) {
@@ -783,10 +826,12 @@ function expandLongitudinalCells(
  *                                     option selected
  * @param {array} fields - The fields selected
  * @param {array} dict - The full dictionary
- * @param {boolean} displayEmptyVisits - Whether visits with
-                                 no data should be displayed
- * @param {EnumDisplayTypes} enumDisplay - The format to display
-                                           enum values
+ * @param {boolean} displayEmptyVisits -  Whether visits with
+ *                                        no data should be displayed
+ * @param {EnumDisplayTypes} enumDisplay -  The format to display
+ *                                          enum values
+ * @param {any} t - useTranslation
+
  * @returns {function} - the appropriate column formatter for
                          this data organization
  */
@@ -797,6 +842,7 @@ function organizedFormatter(
   dict: FullDictionary,
   displayEmptyVisits: boolean,
   enumDisplay: EnumDisplayTypes,
+  t: any,
 ) {
   let callback;
   switch (visitOrganization) {
@@ -841,20 +887,19 @@ function organizedFormatter(
       }
       if (fielddict.scope == 'candidate') {
         if (cell === '') {
-          return <td><i>(No data)</i></td>;
+          return <td><i>{t('(No data)', {ns: 'dataquery'})}</i></td>;
         }
         switch (fielddict.cardinality) {
         case 'many':
-          return <td><i>(Not implemented)</i></td>;
+          return <td><i>{t('(Not implemented)', {ns: 'dataquery'})}</i></td>;
         case 'single':
         case 'unique':
         case 'optional':
           return <TableCell data={cell} />;
         default:
           return (<td>
-            <i>(Internal Error. Unhandled cardinality:
-              {fielddict.cardinality})
-            </i>
+            <i>{t('(Internal Error. Unhandled cardinality: {{cardinality}})',
+              {ns: 'dataquery', cardinality: fielddict.cardinality})}</i>
           </td>);
         }
       }
@@ -932,7 +977,7 @@ function organizedFormatter(
                 return null;
               } catch (e) {
                 console.error(e);
-                return <i>(Internal error)</i>;
+                return <i>({t('Internal error', {ns: 'dataquery'})})</i>;
               }
             };
             let theval = visitval(visit, cell);
@@ -940,7 +985,7 @@ function organizedFormatter(
               return <div key={visit} />;
             }
             if (theval === null) {
-              theval = <i>(No data)</i>;
+              theval = <i>{t('(No data)', {ns: 'dataquery'})}</i>;
             }
             return (<div key={visit} style={
               {
@@ -997,7 +1042,7 @@ function organizedFormatter(
                   }
                 }
               } catch (e) {
-                return <i>(Internal error)</i>;
+                return <i>({t('Internal error', {ns: 'dataquery'})})</i>;
               }
               return null;
             };
@@ -1006,7 +1051,7 @@ function organizedFormatter(
               return <div key={visit} />;
             }
             if (theval === null) {
-              theval = <i>(No data)</i>;
+              theval = <i>{t('(No data)', {ns: 'dataquery'})}</i>;
             }
             return (<div key={visit} style={
               {
@@ -1071,7 +1116,7 @@ function organizedFormatter(
       }
       return <>{cells.map((cell: LongitudinalExpansion) => {
         if (cell.value === null) {
-          return <td><i>(No data)</i></td>;
+          return <td><i>{t('(No data)', {ns: 'dataquery'})}</i></td>;
         }
 
         return (<td>
@@ -1102,7 +1147,7 @@ function organizedFormatter(
       fieldNo: number
     ): ReactNode => {
       if (cell === null) {
-        return <td><i>No data for visit</i></td>;
+        return <td><i>{t('No data for visit', {ns: 'dataquery'})}</i></td>;
       }
       if (fieldNo == 0) {
         // automatically added Visit column
@@ -1157,6 +1202,7 @@ type HeaderDisplayType = 'fieldname' | 'fielddesc' | 'fieldnamedesc';
  * @param {string} org - the visit organization
  * @param {string} display - the header display format
  * @param {object} fulldict - the data dictionary
+ * @param {any} t - useTranslation
  * @param {function} onProgress - Callback to indicate progress in processing
  * @returns {array} - A promise which resolves to the array of headers to display
  *                    in the frontend table
@@ -1166,6 +1212,7 @@ function organizeHeaders(
   org: VisitOrgType,
   display: HeaderDisplayType,
   fulldict: FullDictionary,
+  t: any,
   onProgress: (i: number) => void): Promise<string[]> {
   /**
    * Format a header according to the selected display type
@@ -1212,7 +1259,7 @@ function organizeHeaders(
       const dict = getDictionary(field, fulldict);
 
       if (dict === null) {
-        headers.push('Internal Error');
+        headers.push(t('Internal error', {ns: 'dataquery'}));
       } else if (dict.scope == 'candidate') {
         headers.push(formatHeader(field));
       } else {

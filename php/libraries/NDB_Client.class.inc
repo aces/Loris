@@ -107,9 +107,7 @@ class NDB_Client
             $auth = $login->authenticate();
             if ($auth === true) {
                 if ($login->passwordExpired()) {
-                    header("HTTP/1.1 302 Found");
-                    header("Location: /login/password-expiry");
-
+                    return false;
                 }
                 $login->setState();
             } elseif ($auth === false) {
@@ -137,24 +135,6 @@ class NDB_Client
         session_write_close();
         // finished initializing
         return true;
-    }
-
-    /**
-     * Returns true if the user is logged in
-     *
-     * @return true only if user is logged in
-     */
-    function isLoggedIn()
-    {
-        if (!isset($_SESSION['State'])) {
-            $_SESSION['State'] =& State::singleton();
-            $login = new SinglePointLogin();
-            $_SESSION['State']->setProperty('login', $login);
-        } else {
-            $login = $_SESSION['State']->getProperty('login');
-        }
-
-        return $login->isLoggedIn();
     }
 }
 

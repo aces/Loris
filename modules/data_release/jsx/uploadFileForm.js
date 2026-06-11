@@ -7,7 +7,7 @@ import {
   FormElement,
   StaticElement,
   FileElement,
-  TextboxElement,
+  SearchableDropdown,
   ButtonElement,
   SelectElement,
 } from 'jsx/Form';
@@ -70,17 +70,19 @@ class UploadFileForm extends Component {
         />
         <FileElement
           name='file'
-          label={t('File to upload', {ns: 'data_release'})}
+          label={t('File to upload', {ns: 'loris'})}
           onUserInput={this.updateFormElement}
           required={true}
           value={this.state.formData.file}
         />
-        <TextboxElement
+        <SearchableDropdown
           name='version'
           label={t('Version', {ns: 'data_release'})}
           onUserInput={this.updateFormElement}
           required={false}
           value={this.state.formData.version}
+          strictSearch={false}
+          options={this.props.versions}
         />
         <SelectElement
           name='project'
@@ -190,7 +192,7 @@ class UploadFileForm extends Component {
     }).then(async (response) => {
       if (response.status === 409) {
         swal.fire({
-          title: t('Are you sure?', {ns: 'data_release'}),
+          title: t('Are you sure?', {ns: 'loris'}),
           text: t('A file with this name already exists!',
             {ns: 'data_release'}) + '\n ' +
                 t('Would you like to overwrite existing file?',
@@ -200,8 +202,8 @@ class UploadFileForm extends Component {
                 {ns: 'data_release'}),
           type: 'warning',
           showCancelButton: true,
-          confirmButtonText: t('Yes, I am sure!', {ns: 'data_release'}),
-          cancelButtonText: t('No, cancel it!', {ns: 'data_release'}),
+          confirmButtonText: t('Yes, I am sure!', {ns: 'loris'}),
+          cancelButtonText: t('No, cancel it!', {ns: 'loris'}),
         }).then((isConfirm) => {
           if (isConfirm && isConfirm.value) {
             this.uploadFile(true);
@@ -249,6 +251,7 @@ UploadFileForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   projects: PropTypes.array.isRequired,
+  versions: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
 };
 

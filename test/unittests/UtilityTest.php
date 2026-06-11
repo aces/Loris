@@ -173,7 +173,8 @@ class UtilityTest extends TestCase
         parent::setUp();
 
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        '@phan-var \NDB_Config $configMock';
+
+        '@phan-var \NDB_Config \NDB_Config&PHPUnit\Framework\MockObject\MockObject $configMock'; // phpcs:ignore
         $this->_configMock = $configMock;
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
 
@@ -219,7 +220,7 @@ class UtilityTest extends TestCase
      */
     public function testGetConsentList()
     {
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselectWithIndexKey')
             ->willReturn($this->_consentInfo);
         $this->assertEquals($this->_consentInfo, Utility::getConsentList());
@@ -233,7 +234,7 @@ class UtilityTest extends TestCase
      */
     public function testGetProjectList()
     {
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselectColWithIndexKey')
             ->willReturn($this->_projectInfo);
         $this->assertEquals(
@@ -263,7 +264,7 @@ class UtilityTest extends TestCase
             new \ArrayIterator($cohortRows)
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->willReturn($queryMock);
 
@@ -295,7 +296,7 @@ class UtilityTest extends TestCase
             new \ArrayIterator($cohortRows)
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->with($this->stringContains("JOIN project_cohort_rel USING (CohortID)"))
             ->willReturn($queryMock);
@@ -325,7 +326,7 @@ class UtilityTest extends TestCase
             new \ArrayIterator($cohortRows)
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->with($this->stringContains("JOIN project_cohort_rel USING (CohortID)"))
             ->willReturn($queryMock);
@@ -370,7 +371,7 @@ class UtilityTest extends TestCase
             new \ArrayIterator($testNameInfo)
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->willReturn($queryMock);
 
@@ -404,7 +405,7 @@ class UtilityTest extends TestCase
             new \ArrayIterator($test_battery)
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->willReturn($queryMock);
 
@@ -441,7 +442,7 @@ class UtilityTest extends TestCase
         );
 
         // Mock DB to return the Query mock
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->willReturn($queryMock);
 
@@ -478,7 +479,7 @@ class UtilityTest extends TestCase
             )
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->willReturn($queryMock);
 
@@ -510,7 +511,7 @@ class UtilityTest extends TestCase
             ]
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->willReturn($queryMock);
 
@@ -557,7 +558,7 @@ class UtilityTest extends TestCase
         );
 
         // Mock DB to return the Query mock
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->willReturn($queryMock);
 
@@ -599,7 +600,7 @@ class UtilityTest extends TestCase
         );
 
         // Mock DB so pselect() returns the Query mock
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->with(
                 $this->stringContains(
@@ -658,7 +659,7 @@ class UtilityTest extends TestCase
     public function testGetVisitInstruments()
     {
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselectColWithIndexKey')
             ->willReturn(
                 [
@@ -696,7 +697,7 @@ class UtilityTest extends TestCase
             )
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->willReturn($queryMock);
 
@@ -731,7 +732,7 @@ class UtilityTest extends TestCase
             )
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->with($this->stringContains(" AND b.Stage=:BatStage"))
             ->willReturn($queryMock);
@@ -859,7 +860,7 @@ class UtilityTest extends TestCase
             )
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn($queryMock);
@@ -900,7 +901,7 @@ class UtilityTest extends TestCase
             )
         );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->willReturn($queryMock);
 
@@ -924,7 +925,7 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithNameSpecified()
     {
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselectRow')
             ->willReturn(
                 [
@@ -970,7 +971,7 @@ class UtilityTest extends TestCase
         );
 
         // Make pselect() return the fake Query
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn($queryMock);
@@ -1207,7 +1208,7 @@ class UtilityTest extends TestCase
         $this->_setMockDB();
 
         $config = $this->getMockBuilder("\NDB_Config")->getMock();
-        $config->expects($this->any())
+        $config
             ->method('getSetting')
             ->willReturn('Y-m-d H:i:s');
         '@phan-var \NDB_Config $config';

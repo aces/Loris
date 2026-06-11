@@ -5,6 +5,8 @@ import jaResources from '../locale/ja/LC_MESSAGES/loris.json';
 import hiResources from '../locale/hi/LC_MESSAGES/loris.json';
 import esResources from '../locale/es/LC_MESSAGES/loris.json';
 import enResources from '../locale/en/LC_MESSAGES/loris.json';
+import frResources from '../locale/fr/LC_MESSAGES/loris.json';
+import zhResources from '../locale/zh/LC_MESSAGES/loris.json';
 
 const resources = {
   ja: {
@@ -19,6 +21,28 @@ const resources = {
   en: {
     loris: enResources,
   },
+  fr: {
+    loris: frResources,
+  },
+  zh: {
+    loris: zhResources,
+  },
+
+};
+
+/**
+ * Get language from cookie, session, or default
+ *
+ * @return {string} language code
+ */
+const getLanguagePreference = () => {
+  // Check for language cookie first (persists across session regeneration)
+  const cookieMatch = document.cookie.match(/(?:^|; )loris_language=([^;]*)/);
+  if (cookieMatch) {
+    return cookieMatch[1];
+  }
+  // Fall back to langpref from PHP
+  return loris.user.langpref ?? 'en';
 };
 
 i18n
@@ -27,7 +51,7 @@ i18n
     resources,
     // debug: true,
     partialBundledLanguages: true,
-    lng: loris.user.langpref ?? 'en',
+    lng: getLanguagePreference(),
     interpolation: {
       escapeValue: false, // react already safes from xss
     },

@@ -35,7 +35,8 @@ class View_Project extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
@@ -108,11 +109,13 @@ class View_Project extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'View Project',
+                dgettext("publication", "Publications"),
+                "/publication"
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("publication", 'View Project'),
                 "/publication/view_project?id=" . $_GET['id']
             )
         );

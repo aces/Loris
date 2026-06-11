@@ -40,7 +40,8 @@ class Preparations implements RequestHandlerInterface
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return true;
     }
@@ -132,7 +133,7 @@ class Preparations implements RequestHandlerInterface
         $this->loris = $request->getAttribute("loris");
 
         $db        = $this->loris->getDatabaseConnection();
-        $endpoint  = $request->getURI()->getPath();
+        $endpoint  = $request->getAttribute("unhandledURI")->getPath();
         $pathparts = explode('/', $endpoint);
         $db->delete(
             'biobank_specimen_preparation',

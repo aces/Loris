@@ -40,7 +40,8 @@ class Timepoint_List extends \NDB_Menu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         $candidate = \Candidate::singleton($this->candID);
 
@@ -230,6 +231,13 @@ class Timepoint_List extends \NDB_Menu
                         = $timePoint->$getDateMethod();
                 }
             }
+
+            $this->tpl_data['timePoints'][$x]['language']
+                = $timePoint->getLanguage();
+
+            $this->tpl_data['timePoints'][$x]['scanDone']
+                =   $timePoint->isScanDone();
+
             $x++;
         } // end list
 
