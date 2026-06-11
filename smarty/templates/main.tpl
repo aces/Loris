@@ -196,6 +196,13 @@
                                     {if count($languages) > 1}
                                         <div style="padding: 2ex">
                                             <form method="get" >
+                                                    {foreach from=$languageQueryParams key=param item=value}
+                                                        <input
+                                                            type="hidden"
+                                                            name="{$param|escape:'html'}"
+                                                            value="{$value|escape:'html'}"
+                                                        />
+                                                    {/foreach}
                                                     <select
                                                         class="form-control"
                                                         name="lang"

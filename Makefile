@@ -30,6 +30,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/instrument_list/locale/fr/LC_MESSAGES/instrument_list.po \
 	modules/instrument_list/locale/ja/LC_MESSAGES/instrument_list.po \
 	modules/instrument_list/locale/es/LC_MESSAGES/instrument_list.po \
+	modules/instrument_list/locale/hi/LC_MESSAGES/instrument_list.po \
 	modules/my_preferences/locale/fr/LC_MESSAGES/my_preferences.po \
 	modules/my_preferences/locale/ja/LC_MESSAGES/my_preferences.po \
 	modules/my_preferences/locale/hi/LC_MESSAGES/my_preferences.po \
@@ -54,6 +55,8 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/instrument_manager/locale/ja/LC_MESSAGES/instrument_manager.po \
 	modules/candidate_profile/locale/fr/LC_MESSAGES/candidate_profile.po \
 	modules/candidate_profile/locale/ja/LC_MESSAGES/candidate_profile.po \
+	modules/candidate_profile/locale/hi/LC_MESSAGES/candidate_profile.po \
+	modules/candidate_profile/locale/es/LC_MESSAGES/candidate_profile.po \
 	modules/behavioural_qc/locale/fr/LC_MESSAGES/behavioural_qc.po \
 	modules/behavioural_qc/locale/ja/LC_MESSAGES/behavioural_qc.po \
 	modules/behavioural_qc/locale/hi/LC_MESSAGES/behavioural_qc.po \
@@ -101,6 +104,7 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/issue_tracker/locale/hi/LC_MESSAGES/issue_tracker.po \
 	modules/timepoint_list/locale/fr/LC_MESSAGES/timepoint_list.po \
 	modules/timepoint_list/locale/ja/LC_MESSAGES/timepoint_list.po \
+	modules/timepoint_list/locale/hi/LC_MESSAGES/timepoint_list.po \
 	modules/timepoint_list/locale/es/LC_MESSAGES/timepoint_list.po \
 	modules/data_release/locale/fr/LC_MESSAGES/data_release.po \
 	modules/data_release/locale/ja/LC_MESSAGES/data_release.po \

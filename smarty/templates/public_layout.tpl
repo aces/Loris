@@ -55,6 +55,10 @@
       {if count($languages) > 1}
         <div style="padding: 2ex">
         <form method="get" >
+          {foreach from=$languageQueryParams key=param item=value}
+            <input type="hidden" name="{$param|escape:'html'}" value="{$value|escape:'html'}" />
+          {/foreach}
+
           <div class="form-group">
             <select class="form-control" name="lang" onChange="this.form.submit()">
               {foreach from=$languages key=langcode item=lang}
