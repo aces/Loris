@@ -260,6 +260,9 @@ msgstr "Résolu"
 msgid "Closed"
 msgstr "Fermé"
 
+msgid "Rejected"
+msgstr "Rejeté"
+
 #, fuzzy
 msgid "Behavioural Battery"
 msgstr "Batterie comportementale"

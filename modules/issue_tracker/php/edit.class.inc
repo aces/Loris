@@ -270,7 +270,8 @@ class Edit extends \NDB_Page implements ETagCalculator
                 || ($user->hasPermission('issue_tracker_own_issue')
                 && $isOwnIssue)
             ) {
-                $statuses['closed'] = dgettext('issue_tracker', 'Closed');
+                $statuses['closed']   = dgettext('issue_tracker', 'Closed');
+                $statuses['rejected'] = dgettext('issue_tracker', 'Rejected');
             }
         }
 

@@ -242,6 +242,9 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
+msgid "Rejected"
+msgstr ""
+
 msgid "Behavioural Battery"
 msgstr ""
 

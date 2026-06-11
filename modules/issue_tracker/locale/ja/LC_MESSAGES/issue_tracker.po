@@ -246,6 +246,9 @@ msgstr "解決済み"
 msgid "Closed"
 msgstr "閉鎖"
 
+msgid "Rejected"
+msgstr "却下"
+
 msgid "Behavioural Battery"
 msgstr "行動バッテリー"
 
