@@ -37,18 +37,18 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
         unset($languageQueryParams['lang']);
         // Basic page outline variables
         $tpl_data = array(
-                     'study_title'     => $this->Config->getMultilingualSetting($lang, 'title'),
-                     'logo_left'       => $this->Config->getSetting('login_logo_left'),
-                     'logo_right'      => $this->Config->getSetting('login_logo_right'),
-                     'logo_left_link'  => $this->Config->getSetting('login_logo_left_link'),
-                     'logo_right_link' => $this->Config->getSetting('login_logo_right_link'),
-                     'baseurl'         => $this->BaseURL,
-                     'currentyear'     => date('Y'),
-                     'sandbox'         => ($this->Config->getSetting("sandbox") === '1'),
-                     'partner_logos'   => $this->Config->getSetting('partner_logos'),
-                     'language'        => $lang,
+                     'study_title'         => $this->Config->getMultilingualSetting($lang, 'title'),
+                     'logo_left'           => $this->Config->getSetting('login_logo_left'),
+                     'logo_right'          => $this->Config->getSetting('login_logo_right'),
+                     'logo_left_link'      => $this->Config->getSetting('login_logo_left_link'),
+                     'logo_right_link'     => $this->Config->getSetting('login_logo_right_link'),
+                     'baseurl'             => $this->BaseURL,
+                     'currentyear'         => date('Y'),
+                     'sandbox'             => ($this->Config->getSetting("sandbox") === '1'),
+                     'partner_logos'       => $this->Config->getSetting('partner_logos'),
+                     'language'            => $lang,
                      'languageQueryParams' => $languageQueryParams,
-                     'languages'       => \Utility::getLanguageListByCode(),
+                     'languages'           => \Utility::getLanguageListByCode(),
                     );
 
         $tpl_data['css'] = 'main.css';

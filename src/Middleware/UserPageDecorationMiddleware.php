@@ -111,9 +111,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $languageQueryParams = $get;
         unset($languageQueryParams['lang']);
         $tpl_data['languageQueryParams'] = $languageQueryParams;
-        $tpl_data['sessionID']   = $get['sessionID'] ?? '';
-        $tpl_data['commentID']   = $get['commentID'] ?? '';
-        $tpl_data['dynamictabs'] = $get['dynamictabs'] ?? '';
+        $tpl_data['sessionID']           = $get['sessionID'] ?? '';
+        $tpl_data['commentID']           = $get['commentID'] ?? '';
+        $tpl_data['dynamictabs']         = $get['dynamictabs'] ?? '';
 
         $candID = $request->getAttribute("CandID");
         if ($candID == null && !empty($get['candID'])) {
