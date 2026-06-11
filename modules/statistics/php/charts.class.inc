@@ -214,7 +214,7 @@ class Charts extends \NDB_Page
                 if (!isset($sexData['datasets'][$sex])) {
                     $sexData['datasets'][$sex] = [
                         'label' => dgettext("sex", ucwords($sex)),
-                        'data' => [],
+                        'data'  => [],
                     ];
                 }
 
@@ -435,7 +435,7 @@ class Charts extends \NDB_Page
             if ($id == null) {
                 $id = dgettext("statistics", "Unknown");
             }
-            $label = dgettext("candidate",$id);
+            $label = dgettext("candidate", $id);
             $recruitmentByEthnicityData[] = ["label" => $label, "total" => $count];
         }
 
