@@ -82,11 +82,5 @@
     </a>
     by <a href="https://mcin.ca/" target="_blank">MCIN</a>
   </footer>
-  <script src="{$baseurl}/js/modernizr/modernizr.min.js"/>
-  <script>
-    if (!Modernizr.webgl) {
-      alert("Please download the latest version of Google Chrome of Mozilla Firefox in order to use Loris!");
-    }
-  </script>
 </body>
 </html>

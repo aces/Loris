@@ -809,7 +809,6 @@ class NDB_PageTest extends TestCase
             [
                 '/js/jquery/jquery-1.11.0.min.js',
                 '/js/loris-scripts.js',
-                '/js/modernizr/modernizr.min.js',
                 '/js/polyfills.js',
                 '/vendor/js/react/react.production.min.js',
                 '/vendor/js/react/react-dom.production.min.js',

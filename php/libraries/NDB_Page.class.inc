@@ -912,14 +912,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
 
         $min = ($config->getSetting("sandbox") === '1') ? '' : '.min';
 
-        // Currently jquery-ui is required for dialogs and datepickers to work.
-        // In the future release, dialogs should be replaced with bootstrap dialogs
-        // and datepickers only created by modernizr
-
+        // Currently jquery-ui is required for dialogs 
+        // In the future release, dialogs should be replaced with swals
         $files = [
             $baseurl . '/js/jquery/jquery-1.11.0.min.js',
             $baseurl . '/js/loris-scripts.js',
-            $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
             $baseurl . '/js/polyfills.js',
                     // $baseurl . '/js/react/react-with-addons' . $min . '.js',
