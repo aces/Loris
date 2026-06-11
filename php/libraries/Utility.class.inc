@@ -14,7 +14,6 @@ use \Loris\StudyEntities\Candidate\CandID;
  */
 class Utility
 {
-
     /**
      * Stops anyone from instantiating an instance of Utility
      */
@@ -87,6 +86,7 @@ class Utility
 
         return $age;
     }
+
     /**
      * Returns list of consent groups in the database
      *
@@ -106,6 +106,7 @@ class Utility
 
         return $result;
     }
+
     /**
      * Returns list of consents in the database
      *
@@ -140,7 +141,11 @@ class Utility
 
         $result = $DB->pselectCol($query, []);
 
-        return array_combine($result, $result);
+        $translated = [];
+        foreach ($result as $val) {
+            $translated[$val] = dgettext("sex", $val);
+        }
+        return $translated;
     }
 
     /**
@@ -177,7 +182,7 @@ class Utility
         // fix the array
         $list = [];
         foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
+            $list[$row["CenterID"]] = dgettext("psc", $row["Name"]);
         }
         return $list;
     }
@@ -262,7 +267,7 @@ class Utility
             $ExtraProject_Criteria ='';
         }
         $query  = "SELECT DISTINCT Visit_label FROM session s
-            JOIN candidate c ON (s.CandID = c.Candid)
+            JOIN candidate c ON (s.CandidateID = c.ID)
             WHERE c.Active = 'Y'
             AND s.Active = 'Y'
             AND c.Entity_type != 'Scanner'
@@ -322,7 +327,7 @@ class Utility
 
         $subprojs = [];
         foreach ($cohorts as $row) {
-            $subprojs[$row['CohortID']] = $row['title'];
+            $subprojs[$row['CohortID']] = dgettext('cohort', $row['title']);
         }
         return $subprojs;
     }
@@ -405,8 +410,6 @@ class Utility
 
         return $result;
     }
-
-
 
     /**
      * Returns a list of bvl instruments
@@ -668,7 +671,8 @@ class Utility
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $query = "select DISTINCT Current_stage from session where ".
+        $query = "SELECT DISTINCT Current_stage FROM session s ".
+            "JOIN candidate c ON c.ID=s.CandidateID WHERE ".
             "CandID = :Cand_id";
         $stage = $db->pselect($query, ['Cand_id' => $Cand_id->__toString()]);
         return $stage->getFirstRow()['Current_stage'];
@@ -715,7 +719,9 @@ class Utility
             );
         } elseif (!is_null($commentID)) { //get sourcefield using commentid
             $instrument   = $DB->pselectOne(
-                "SELECT Test_name FROM flag WHERE CommentID = :cid",
+                "SELECT Test_name FROM flag
+                 JOIN test_names ON (test_names.ID = flag.TestID)
+                 WHERE CommentID = :cid",
                 ['cid' => $commentID]
             );
             $sourcefields = $DB->pselect(
@@ -734,7 +740,6 @@ class Utility
         }
         return iterator_to_array($sourcefields);
     }
-
 
     /**
      * Returns a list of study Visit Labels that are being used by this study.
@@ -773,9 +778,9 @@ class Utility
         $test_names = $DB->pselectColWithIndexKey(
             "SELECT DISTINCT t.Test_name, t.Full_name
             FROM session s
-            JOIN candidate c ON (c.CandID=s.CandID)
+            JOIN candidate c ON (c.ID=s.CandidateID)
             JOIN flag f ON (f.sessionID=s.id)
-            JOIN test_names t ON (f.test_name=t.Test_name)
+            JOIN test_names t ON (f.TestID=t.ID)
             WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
             AND s.CenterID != '1' AND c.Entity_type != 'Scanner'
             ORDER BY t.Full_name",
@@ -882,6 +887,31 @@ class Utility
     }
 
     /**
+     * Get the list of language available in the database with the array key being
+     * the language code (ie. en_CA)
+     *
+     * @return array Array of language which exist in the database table 'language'
+     *               array is of the form
+     *               array($language_code => $language_label)
+     */
+    static function getLanguageListByCode(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        return array_column(
+            iterator_to_array(
+                $DB->pselect(
+                    "SELECT language_code, language_label FROM language",
+                    [],
+                ),
+            ),
+            "language_label",
+            "language_code",
+        );
+    }
+
+    /**
      * Generate a random string, using a cryptographically secure
      * pseudorandom number generator (random_int)
      *
@@ -967,15 +997,16 @@ class Utility
     {
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
-            "SELECT ID, Scan_type
-             FROM mri_scan_type mri
-                JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+            "SELECT MriScanTypeID, MriScanTypeName
+             FROM mri_scan_type
+             JOIN files USING (MriScanTypeID)",
             []
         );
 
         $scan_types = [];
         foreach ($scan_types_DB as $scan_type) {
-            $scan_types[$scan_type['ID']] = $scan_type['Scan_type'];
+            $scan_types[$scan_type['MriScanTypeID']]
+                = $scan_type['MriScanTypeName'];
         }
 
         return $scan_types;
@@ -1055,10 +1086,13 @@ class Utility
         $status  = $isApproved ? 'Y' : 'N';
 
         $dxToUpdate = $DB->pselect(
-            "SELECT cde.CandID, cde.DxEvolutionID
-            FROM candidate_diagnosis_evolution_rel cde 
+            "SELECT c.CandID, cde.DxEvolutionID
+            FROM candidate_diagnosis_evolution_rel cde
             JOIN diagnosis_evolution de USING (DxEvolutionID)
-            JOIN session s ON (cde.CandID=s.CandID AND s.Visit_label=de.visitLabel)
+            JOIN session s ON (
+                cde.CandidateID=s.CandidateID AND s.Visit_label=de.visitLabel
+            )
+            JOIN candidate c ON c.ID=s.CandidateID
             WHERE s.ID=:sid",
             ['sid' => $sessionID]
         );

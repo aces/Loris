@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
 import {CTA} from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Data Table component
@@ -121,7 +122,7 @@ class DataTable extends Component {
     if (this.props.getMappedCell) {
       csvData = csvData
         .map((row, i) => this.props.fields
-          .flatMap((field, j) => this.props.getMappedCell(
+          .map((field, j) => this.props.getMappedCell(
             field.label,
             row[j],
             row,
@@ -354,7 +355,9 @@ class DataTable extends Component {
         }
         break;
       default:
-        searchString = data ? data.toString().toLowerCase() : '';
+        searchString = (data !== null && data !== undefined) ?
+          data.toString().toLowerCase() : '';
+
         if (exactMatch) {
           result = (searchString === searchKey);
         } else if (opposite) {
@@ -371,12 +374,23 @@ class DataTable extends Component {
       result = (filterData === data);
     }
 
+    // Handle numeric range inputs
+    if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+      const numericData = Number.parseFloat(data);
+      const min = Number.parseFloat(filterData.min);
+      const max = Number.parseFloat(filterData.max);
+      result = !Number.isNaN(numericData) &&
+        (Number.isNaN(min) || numericData >= min) &&
+        (Number.isNaN(max) || numericData <= max);
+    }
+
     // Handle array inputs for multiselects
-    if (typeof filterData === 'object') {
+    if (Array.isArray(filterData)) {
       let match = false;
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();
-        searchString = data ? data.toString().toLowerCase() : '';
+        searchString = (data !== null && data !== undefined) ?
+          data.toString().toLowerCase() : '';
 
         let searchArray = searchString.split(',');
         match = (searchArray.includes(searchKey));
@@ -439,7 +453,7 @@ class DataTable extends Component {
             </div>
           </div>
           <div className='alert alert-info no-result-found-panel'>
-            <strong>No result found.</strong>
+            <strong>{this.props.t('No result found.', {ns: 'loris'})}</strong>
           </div>
         </div>
       );
@@ -555,7 +569,12 @@ class DataTable extends Component {
       </select>
     );
 
-    const loading = this.props.loading ? 'Loading...' : '';
+    // This doesn't feel like a very robust way to handle the dropdown.
+    // It's not clear if there's any good way to structure this for locales that
+    // use RTL languages or prefer a different kind of parenthesis.
+    let changeRowsDropdown = <span>
+       ({this.props.t('Maximum rows per page:')} {rowsPerPageDropdown})
+    </span>;
 
     let header = this.props.hide.rowsPerPage === true ? '' : (
       <div className="table-header">
@@ -571,9 +590,14 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-              {rows.length} rows displayed of {filteredCount}.
-              (Maximum rows per page: {rowsPerPageDropdown})
-              {loading}
+              {this.props.t(
+                '{{pageCount}} rows displayed of {{totalCount}}.',
+                {
+                  pageCount: rows.length,
+                  totalCount: filteredCount,
+                }
+              )}
+              {changeRowsDropdown}
             </div>
             <div style={{
               order: '2',
@@ -590,7 +614,7 @@ class DataTable extends Component {
                   className="btn btn-primary"
                   onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
                 >
-                Download Table as CSV
+                  {this.props.t('Download Data as CSV')}
                 </button>)
               }
               <PaginationLinks
@@ -619,8 +643,14 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-              {rows.length} rows displayed of {filteredCount}.
-              (Maximum rows per page: {rowsPerPageDropdown})
+              {this.props.t(
+                '{{pageCount}} rows displayed of {{totalCount}}.',
+                {
+                  pageCount: rows.length,
+                  totalCount: filteredCount,
+                }
+              )}
+              {changeRowsDropdown}
             </div>
             <div style={{
               order: '2',
@@ -678,6 +708,9 @@ DataTable.propTypes = {
   freezeColumn: PropTypes.string,
   loading: PropTypes.element,
   folder: PropTypes.element,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 DataTable.defaultProps = {
   headers: [],
@@ -693,4 +726,4 @@ DataTable.defaultProps = {
   noDynamicTable: false,
 };
 
-export default DataTable;
+export default withTranslation(['loris'])(DataTable);

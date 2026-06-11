@@ -6,7 +6,7 @@
  * places that need a Module argument but have no meaningful
  * "module" to provide.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -28,6 +28,7 @@
 class NullModule extends Module
 {
     protected $longname;
+
     /**
      * The NullModule is used in cases where there is no
      * directory to pass (such as unit tests) and as such

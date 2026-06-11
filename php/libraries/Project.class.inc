@@ -4,7 +4,7 @@
  * This file contains a class which encapsulates the concept of a "Project"
  * in LORIS.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -87,7 +87,7 @@ class Project implements \JsonSerializable
             );
             $project->_projectName       = $projectData['name'];
             $project->_projectAlias      = $projectData['Alias'];
-            $project->_recruitmentTarget = (integer) $projectData['recTarget'];
+            $project->_recruitmentTarget = (int) $projectData['recTarget'];
 
             self::$_instances[$projectName] = $project;
         }
@@ -520,7 +520,7 @@ class Project implements \JsonSerializable
             );
             $project->_projectName       = $projectData['name'];
             $project->_projectAlias      = $projectData['Alias'];
-            $project->_recruitmentTarget = (integer)$projectData['recTarget'];
+            $project->_recruitmentTarget = (int)$projectData['recTarget'];
 
             self::$_instances[$projectData['name']] = $project;
             $projects[] = $project;

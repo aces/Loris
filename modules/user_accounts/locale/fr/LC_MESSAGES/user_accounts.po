@@ -1,0 +1,234 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2025-11-13 21:59-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+msgid "User Accounts"
+msgstr "Comptes utilisateur"
+
+msgid "Edit User"
+msgstr "Modifier l'utilisateur"
+
+msgid "Pending account approval"
+msgstr "En attente d'approbation du compte"
+
+msgid "Pending account approvals"
+msgstr "Approbations de compte en attente"
+
+msgid "This user has no site affiliations"
+msgstr "Cet utilisateur n'est affilié à aucun site."
+
+msgid "This user has no project affiliations"
+msgstr "Cet utilisateur n'est affilié à aucun projet."
+
+msgid "Full Name"
+msgstr "Nom complet"
+
+msgid "Pending Approval"
+msgstr "En attente d'approbation"
+
+msgid "Radiologist"
+msgstr "Radiologue"
+
+msgid "Account Request Date"
+msgstr "Date de demande de compte"
+
+msgid "Add User"
+msgstr "Ajouter un utilisateur"
+
+msgid "The form you submitted contains data entry errors"
+msgstr "Le formulaire que vous avez soumis contient des erreurs de saisie."
+
+msgid "Notes"
+msgstr "Notes"
+
+msgid ""
+"It is recommended to use an email address as the username, for clarity and "
+"uniqueness."
+msgstr ""
+"Il est recommandé d'utiliser une adresse courriel comme nom d'utilisateur, "
+"pour plus de clarté et de singularité."
+
+msgid ""
+"When generating a new password, please notify the user by checking 'Send "
+"email to user' box below!"
+msgstr ""
+"Lorsque vous générez un nouveau mot de passe, veuillez en informer "
+"l'utilisateur en cochant la case « Envoyer un courriel à l'utilisateur » ci-"
+"dessous !"
+
+#, fuzzy
+msgid ""
+"You must leave the password field empty if you want the system to generate "
+"one for you"
+msgstr ""
+"Vous devez laisser le champ du mot de passe vide si vous souhaitez que le "
+"système en génère un pour vous."
+
+msgid "Add/Edit User"
+msgstr "Ajouter / Modifier un·e utilisateur·trice"
+
+msgid "Reject User"
+msgstr "Rejeter l'utilisateur"
+
+msgid "Make user name match email address"
+msgstr "Faire correspondre le nom d'utilisateur à l'adresse courriel"
+
+msgid "Generate new password"
+msgstr "Générer un nouveau mot de passe"
+
+msgid "Degree"
+msgstr "Niveau"
+
+msgid "Academic Position"
+msgstr "Poste universitaire"
+
+msgid "Institution"
+msgstr "Établissement"
+
+msgid "Department"
+msgstr "Département"
+
+msgid "Street Address"
+msgstr "Adresse"
+
+msgid "City"
+msgstr "Ville"
+
+msgid "State/Province"
+msgstr "État/Province"
+
+msgid "Zip/Postal Code"
+msgstr "Code postal"
+
+msgid "Country"
+msgstr "Pays"
+
+msgid "FAX"
+msgstr "FAX"
+
+msgid "Send email to user"
+msgstr "Envoyer un courriel à l'utilisateur"
+
+msgid "Confirm Email"
+msgstr "Confirmez le courriel"
+
+msgid "Examiner At:"
+msgstr "Examinateur à :"
+
+msgid "Examiner Status"
+msgstr "Statut d'examinateur"
+
+msgid "Pending approval"
+msgstr "En attente de validation"
+
+msgid "Active from"
+msgstr "Actif depuis"
+
+msgid "Active to"
+msgstr "Actif jusqu'au"
+
+msgid "Permissions"
+msgstr "Permissions"
+
+msgid "Supervisors"
+msgstr "Superviseur(s)"
+
+msgid "You cannot enter a user name if you want it to match the email address"
+msgstr ""
+"Vous ne pouvez pas saisir un nom d'utilisateur si vous souhaitez qu'il "
+"corresponde à l'adresse courriel"
+
+msgid "You must enter a user name or choose to make it match the email address"
+msgstr ""
+"Vous devez saisir un nom d'utilisateur ou choisir de le faire correspondre à "
+"l'adresse courriel."
+
+msgid "The user name already exists"
+msgstr "Le nom d'utilisateur existe déjà."
+
+msgid "The user name must not exceed 255 characters"
+msgstr "Le nom d'utilisateur ne doit pas dépasser 255 caractères."
+
+msgid ""
+"You cannot have the user name match an email address that contains a "
+"whitespace character"
+msgstr ""
+"Le nom d'utilisateur ne peut pas correspondre à une adresse courriel "
+"contenant un espace."
+
+msgid "Whitespace characters are not allowed in user names"
+msgstr "Les espaces ne sont pas autorisés dans les noms d'utilisateur."
+
+msgid "Please specify password or click Generate new password"
+msgstr ""
+"Veuillez indiquer votre mot de passe ou cliquer sur Générer un nouveau mot "
+"de passe."
+
+msgid "Password is required"
+msgstr "Mot de passe requis"
+
+msgid "You must enter an email address"
+msgstr "Vous devez saisir une adresse courriel."
+
+msgid "Email and confirmed email do not match"
+msgstr ""
+"L'adresse courriel et l'adresse courriel confirmée ne correspondent pas."
+
+msgid "You must select at least one site/affiliation"
+msgstr "Vous devez sélectionner au moins un site/affiliation."
+
+msgid "You must select at least one project/affiliation"
+msgstr "Vous devez sélectionner au moins un projet/une affiliation."
+
+msgid "Please specify if examiner is a radiologist"
+msgstr "Veuillez préciser si l'examinateur est un radiologue."
+
+msgid "Please set pending approval Yes or No"
+msgstr "Veuillez définir l'approbation en attente Oui ou Non"
+
+msgid ""
+"Please select at least one examiner site or clear the 'Examiner status' "
+"fields below (i.e. 'Radiologist' and 'Pending Approval')."
+msgstr ""
+"Veuillez sélectionner au moins un site d'examinateur ou effacer les champs "
+"« Statut d'examinateur » ci-dessous (c'est-à-dire « Radiologue » et « En "
+"attente d'approbation »)."
+
+msgid ""
+"Please notice that the \"Active from\" date should be lesser or equal to the "
+"\"Active to\" date."
+msgstr ""
+"Veuillez noter que la date « Actif à partir du » doit être inférieure ou "
+"égale à la date « Actif jusqu'au »."
+
+msgid "Your password cannot be your email."
+msgstr "Votre mot de passe ne peut pas être votre adresse courriel."
+
+msgid "Your password cannot be your user name."
+msgstr "Votre mot de passe ne peut pas être votre nom d'utilisateur."
+
+msgid "The passwords do not match."
+msgstr "Les mots de passe ne correspondent pas."
+
+msgid "New and old passwords are identical"
+msgstr "Les nouveaux et anciens mots de passe sont identiques."
+
+msgid "This email address is already in use"
+msgstr "Cette adresse email est déjà utilisée"

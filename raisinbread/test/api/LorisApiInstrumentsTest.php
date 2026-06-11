@@ -77,7 +77,10 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
     {
         // Remove all instruments from this CandID.
         $SessionID = $this->DB->pselectOne(
-            "SELECT ID FROM session WHERE Visit_label=:VL AND CandID=:Candidate",
+            "SELECT s.ID
+            FROM session s
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE Visit_label=:VL AND CandID=:Candidate",
             [
                 'VL' => $this->visitTest,
                 'Candidate' => $this->candidTest
@@ -312,7 +315,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'All',
-                'Validity'       => 'Invalid' 
+                'Validity'       => 'Invalid'
             ]
         ];
         $response   = $this->client->request(
@@ -387,7 +390,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'Partial',
-                'Validity'       => 'Questionable' 
+                'Validity'       => 'Questionable'
             ]
         ];
         $response   = $this->client->request(
@@ -569,7 +572,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'All',
-                'Validity'       => 'Valid' 
+                'Validity'       => 'Valid'
             ]
         ];
         $response   = $this->client->request(
@@ -624,7 +627,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
             'Flags' => [
                 'Data_entry'     => 'Complete',
                 'Administration' => 'All',
-                'Validity'       => 'Valid' 
+                'Validity'       => 'Valid'
             ]
         ];
         $response   = $this->client->request(

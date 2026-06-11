@@ -3,7 +3,7 @@
 /**
  * Data Querying Module
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Module
  * @package    Loris
@@ -17,7 +17,7 @@ namespace LORIS\dqt;
 /**
  * Data Querying Module
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Module
  * @package    Loris
@@ -37,10 +37,11 @@ class Dqt extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         // check user permissions
-        return $user->hasPermission('dataquery_view');
+        return $user->hasPermission('dqt_view');
     }
 
     /**

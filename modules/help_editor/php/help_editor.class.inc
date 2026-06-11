@@ -3,7 +3,7 @@
 /**
  * This file contains code for editing context help section
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -16,7 +16,7 @@ namespace LORIS\help_editor;
 /**
  * This file contains code for editing context help section
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -36,7 +36,8 @@ class Help_Editor extends \NDB_Menu_Filter
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('context_help');
     }
@@ -48,7 +49,7 @@ class Help_Editor extends \NDB_Menu_Filter
      */
     function getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new HelpRowProvisioner();
+        return new HelpRowProvisioner($this->loris);
     }
 
     /**

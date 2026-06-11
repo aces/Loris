@@ -5,7 +5,7 @@
  *
  * Used for uploading file with Issue Tracker.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Issue_Tracker
@@ -73,7 +73,10 @@ class UploadHelper
             || empty($files['file']->getStream()->getMetadata('uri'))
         ) {
             $this->errorMessage
-                = 'The server is not configured to receive a file this large.';
+                = dgettext(
+                    'issue_tracker',
+                    'The server is not configured to receive a file this large.'
+                );
             return false;
         }
         $this->_user   = $user;
@@ -97,7 +100,10 @@ class UploadHelper
 
         if (!$this->setFullPath($this->_fileToUpload)) {
             $this->errorMessage
-                = 'The server is not configured for attachments';
+                = dgettext(
+                    'issue_tracker',
+                    'The server is not configured for attachments.'
+                );
             return false;
         }
 

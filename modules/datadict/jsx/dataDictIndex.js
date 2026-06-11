@@ -1,10 +1,19 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+
+import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
 import fetchDataStream from 'jslib/fetchDataStream';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/datadict.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/datadict.json';
+import frStrings from '../locale/fr/LC_MESSAGES/datadict.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/datadict.json';
 
 /**
  * Data Dictionary Page.
@@ -79,8 +88,9 @@ class DataDictIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+    const {t} = this.props;
     const hasEditPermission = loris.userHasPermission('data_dict_edit');
-    if (column === 'Description' && hasEditPermission) {
+    if (column === t('Description', {ns: 'datadict'}) && hasEditPermission) {
       let updateDict = (rowdata) => {
         const name = rowdata.Name;
         return (e) => {
@@ -142,8 +152,11 @@ class DataDictIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
+
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -154,7 +167,7 @@ class DataDictIndex extends Component {
     const options = this.state.fieldOptions;
     let fields = [
       {
-        label: 'Source From',
+        label: t('Source From', {ns: 'datadict'}),
         show: true,
         filter: {
           name: 'Source From',
@@ -163,7 +176,7 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: 'Name',
+        label: t('Name', {ns: 'datadict'}),
         show: true,
         filter: {
           name: 'Name',
@@ -171,7 +184,7 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: 'Source Field',
+        label: t('Source Field', {ns: 'datadict'}),
         show: true,
         filter: {
           name: 'Source Field',
@@ -179,7 +192,7 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: 'Description',
+        label: t('Description', {ns: 'datadict'}),
         show: true,
         filter: {
           name: 'Description',
@@ -187,16 +200,25 @@ class DataDictIndex extends Component {
         },
       },
       {
-        label: 'Description Status',
+        label: t('Description Status', {ns: 'datadict'}),
         show: true,
         filter: {
           name: 'DescriptionStatus',
           type: 'select',
           options: {
-            'empty': 'Empty',
-            'modified': 'Modified',
-            'unchanged': 'Unchanged',
+            'empty': t('Empty', {ns: 'datadict'}),
+            'modified': t('Modified', {ns: 'datadict'}),
+            'unchanged': t('Unchanged', {ns: 'datadict'}),
           },
+        },
+      },
+      {
+        label: t('Cohorts', {ns: 'datadict'}),
+        show: true,
+        filter: {
+          name: 'Cohorts',
+          type: 'multiselect',
+          options: options.cohort,
         },
       },
     ];
@@ -215,13 +237,21 @@ class DataDictIndex extends Component {
 DataDictIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
   fieldsURL: PropTypes.string,
+  t: PropTypes.func,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'datadict', hiStrings);
+  i18n.addResourceBundle('ja', 'datadict', jaStrings);
+  i18n.addResourceBundle('fr', 'datadict', frStrings);
+  i18n.addResourceBundle('zh', 'datadict', zhStrings);
+  const Index = withTranslation(
+    ['datadict', 'loris']
+  )(DataDictIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <DataDictIndex
+    <Index
       dataURL={`${loris.BaseURL}/datadict/?format=binary`}
       fieldsURL={`${loris.BaseURL}/datadict/fields`}
     />

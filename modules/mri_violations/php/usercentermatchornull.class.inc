@@ -20,7 +20,7 @@ class UserCenterMatchOrNull implements \LORIS\Data\Filter
      *
      * @return bool
      */
-    public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
+    public function filter(\User $user, \Loris\Data\DataInstance $resource): bool
     {
         // phan only understands method_exists on simple variables.
         // Assigning to a variable is the a workaround
@@ -37,7 +37,10 @@ class UserCenterMatchOrNull implements \LORIS\Data\Filter
             return true;
         }
         throw new \LorisException(
-            "Can not implement filter on a resource type that has no centers."
+            dgettext(
+                'mri_violations',
+                "Can not implement filter on a resource type that has no centers."
+            )
         );
     }
 }

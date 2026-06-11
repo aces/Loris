@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
+import 'I18nSetup';
+
 import {
   FormElement,
   StaticElement,
@@ -19,10 +22,11 @@ class CandidateInfo extends Component {
    */
   constructor(props) {
     super(props);
+    const {t} = this.props;
     this.state = {
       caveatOptions: {
-        true: 'True',
-        false: 'False',
+        true: t('True', {ns: 'loris'}),
+        false: t('False', {ns: 'loris'}),
       },
       Data: [],
       formData: {},
@@ -41,6 +45,7 @@ class CandidateInfo extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
+    const {t} = this.props;
     let that = this;
     $.ajax(
       this.props.dataURL,
@@ -64,7 +69,7 @@ class CandidateInfo extends Component {
         },
         error: function(data, errorCode, errorMsg) {
           that.setState({
-            error: 'An error occurred when loading the form!',
+            error: t('An error occured while loading the page.', {ns: 'loris'}),
           });
         },
       }
@@ -113,6 +118,7 @@ class CandidateInfo extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return (
@@ -129,7 +135,7 @@ class CandidateInfo extends Component {
     let updateButton = null;
     if (loris.userHasPermission('candidate_parameter_edit')) {
       disabled = false;
-      updateButton = <ButtonElement label="Update"/>;
+      updateButton = <ButtonElement label={t('Update', {ns: 'loris'})}/>;
     }
     let reasonDisabled = true;
     let reasonRequired = false;
@@ -169,7 +175,7 @@ class CandidateInfo extends Component {
 
     if (reasonKey !== null) {
       specifyOther = <TextareaElement
-        label="If Other, please specify"
+        label={t('If Other, please specify', {ns: 'candidate_parameters'})}
         name="flaggedOther"
         value={this.state.formData.flaggedOther}
         onUserInput={this.setFormData}
@@ -246,11 +252,12 @@ class CandidateInfo extends Component {
     if (this.state.updateResult) {
       if (this.state.updateResult === 'success') {
         alertClass = 'alert alert-success text-center';
-        alertMessage = 'Update Successful!';
+        alertMessage = t('Update Successful!', {ns: 'loris'});
       } else if (this.state.updateResult === 'error') {
         let errorMessage = this.state.errorMessage;
         alertClass = 'alert alert-danger text-center';
-        alertMessage = errorMessage ? errorMessage : 'Failed to update!';
+        alertMessage =
+          errorMessage ? errorMessage : t('Failed to update!', {ns: 'loris'});
       }
     }
 
@@ -265,15 +272,18 @@ class CandidateInfo extends Component {
           ref="form"
           class="col-md-6">
           <StaticElement
-            label="PSCID"
+            label={t('PSCID', {ns: 'loris'})}
             text={this.state.Data.pscid}
           />
           <StaticElement
-            label="DCCID"
+            label={t('DCCID', {ns: 'loris'})}
             text={this.state.Data.candID}
           />
           <SelectElement
-            label="Caveat Emptor Flag for Candidate"
+            label={
+              t('Caveat Emptor Flag for Candidate',
+                {ns: 'candidate_parameters'})
+            }
             name="flaggedCaveatemptor"
             options={this.state.caveatOptions}
             value={this.state.formData.flaggedCaveatemptor}
@@ -283,7 +293,10 @@ class CandidateInfo extends Component {
             required={true}
           />
           <SelectElement
-            label="Reason for Caveat Emptor Flag"
+            label={
+              t('Reason for Caveat Emptor Flag',
+                {ns: 'candidate_parameters'})
+            }
             name="flaggedReason"
             options={this.state.Data.caveatReasonOptions}
             value={this.state.formData.flaggedReason}
@@ -380,7 +393,8 @@ CandidateInfo.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
+  t: PropTypes.string.isRequired,
 };
-
-
-export default CandidateInfo;
+export default withTranslation(
+  ['candidate_parameters', 'loris']
+)(CandidateInfo);

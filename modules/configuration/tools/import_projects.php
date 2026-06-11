@@ -14,7 +14,7 @@
  *
  *     -a -> Imports both the cohorts and the projects
  *           from the XML.
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Loris
  * @package  Configuration

@@ -5,6 +5,7 @@ namespace LORIS\Database;
 class Query implements \Countable, \IteratorAggregate
 {
     protected \PDOStatement $stmt;
+    private bool $executed;
 
     public function __construct(
         protected \PDO $DB,
@@ -12,14 +13,18 @@ class Query implements \Countable, \IteratorAggregate
         protected array $params = [],
         protected bool $buffered = true
     ) {
-        $this->stmt = $DB->prepare($query);
+        $this->stmt     = $DB->prepare($query);
+        $this->executed = false;
     }
 
     public function count(): int
     {
         // PDOStatement->rowCount only works for buffered connections
         if ($this->buffered == true) {
-            $this->stmt->execute($this->params);
+            if ($this->executed === false) {
+                $this->stmt->execute($this->params);
+                $this->executed = true;
+            }
             return $this->stmt->rowCount();
         } else {
             $stmt = $this->DB->prepare("SELECT COUNT('x') FROM ({$this->query})");
@@ -32,14 +37,15 @@ class Query implements \Countable, \IteratorAggregate
     {
          $rows = $this->getIterator();
          assert($rows instanceof \PDOStatement);
-         $val = $rows->fetch();
-         $rows->closeCursor();
-         return $val;
+         return $rows->fetch();
     }
 
     public function getIterator() : \Traversable
     {
-        $this->stmt->execute($this->params);
+        if ($this->executed === false) {
+            $this->stmt->execute($this->params);
+            $this->executed = true;
+        }
         return $this->stmt;
     }
 }

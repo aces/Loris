@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import Panel from 'jsx/Panel';
 import DataTable from 'jsx/DataTable';
 import Filter from 'jsx/Filter';
+import ProgressBar from 'jsx/ProgressBar';
+
+import {withTranslation} from 'react-i18next';
 
 /**
  * FilterableDataTable component.
@@ -56,6 +59,13 @@ class FilterableDataTable extends Component {
     Object.entries(filters).forEach(([name, filter]) => {
       if (filter.value.constructor === Array) {
         filter.value.forEach((v) => searchParams.append(name, v));
+      } else if (typeof filter.value === 'object') {
+        if ((filter.value.min || '') !== '') {
+          searchParams.set(`${name}Min`, filter.value.min);
+        }
+        if ((filter.value.max || '') !== '') {
+          searchParams.set(`${name}Max`, filter.value.max);
+        }
       } else {
         searchParams.set(name, filter.value);
       }
@@ -140,6 +150,7 @@ class FilterableDataTable extends Component {
         id={this.props.name + '_filter'}
         columns={this.props.columns}
         filters={filters}
+        title={this.props.t('Selection Filter')}
         filterPresets={this.props.filterPresets}
         fields={this.props.fields}
         addFilter={this.addFilter}
@@ -149,7 +160,10 @@ class FilterableDataTable extends Component {
       />
     );
 
-    const dataTable = (
+    const {progress} = this.props;
+    const dataTable = !isNaN(progress) && progress < 100 ? (
+      <ProgressBar value={progress}/>
+    ) : (
       <DataTable
         data={this.props.data}
         fields={this.props.fields}
@@ -191,10 +205,14 @@ FilterableDataTable.propTypes = {
   updateFilterCallback: PropTypes.func,
   noDynamicTable: PropTypes.bool,
   loading: PropTypes.element,
+  progress: PropTypes.number,
   getMappedCell: PropTypes.func,
   folder: PropTypes.element,
   nullTableShow: PropTypes.element,
   children: PropTypes.node,
+
+  // Provided by withTranslation HOC
+  t: PropTypes.func,
 };
 
-export default FilterableDataTable;
+export default withTranslation(['loris'])(FilterableDataTable);

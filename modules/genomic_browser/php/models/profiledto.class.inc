@@ -84,13 +84,6 @@ class ProfileDTO implements DataInstance, SiteHaver
     private $_Cohort = "";
 
     /**
-     * The DoB
-     *
-     * @var string
-     */
-    private $_DoB = "";
-
-    /**
      * The externalID
      *
      * @var string
@@ -138,7 +131,6 @@ class ProfileDTO implements DataInstance, SiteHaver
             'PSCID'      => $this->_PSCID,
             'Sex'        => $this->_Sex,
             'Cohort'     => $this->_Cohort,
-            'DoB'        => $this->_DoB,
             'externalID' => $this->_externalID,
             'File'       => $this->_File,
             'SNP'        => $this->_SNP,

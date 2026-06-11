@@ -17,7 +17,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Coho
   SELECT 'bmi', 1, 2147483647, 'Y', 'Visit', CohortID, 'V1', 'Y' FROM cohort WHERE title = 'Stale';
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, CohortID, Visit_label, DoubleDataEntryEnabled)
   SELECT 'bmi', 1, 2147483647, 'Y', 'Visit', CohortID, 'V2', 'Y' FROM cohort WHERE title = 'Stale';
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, CohortID, Visit_label)
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, CohortID, Visit_label, DoubleDataEntryEnabled)
   SELECT 'bmi', 1, 2147483647, 'Y', 'Visit', CohortID, 'V3', 'Y' FROM cohort WHERE title = 'Stale';
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, CohortID, Visit_label, DoubleDataEntryEnabled)
   SELECT 'bmi', 1, 2147483647, 'Y', 'Visit', CohortID, 'V4', 'Y' FROM cohort WHERE title = 'Stale';

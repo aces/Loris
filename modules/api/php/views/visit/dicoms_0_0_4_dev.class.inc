@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category ApiViews
  * @package  Loris
@@ -110,4 +110,3 @@ class Dicoms_0_0_4_Dev
         ];
     }
 }
-

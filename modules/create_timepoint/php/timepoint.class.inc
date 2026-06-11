@@ -109,6 +109,21 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
         if (empty($values['psc'])) {
             unset($values['psc']);
+        } else {
+            // Suggested site is the site of the last registered visit
+            $DB = $this->loris->getDatabaseConnection();
+
+            $query  = "
+                SELECT CenterID
+                FROM session s
+                JOIN candidate c ON c.ID=s.CandidateID
+                WHERE c.CandID=:cid AND Date_visit IS NOT NULL
+                ORDER BY Date_visit DESC LIMIT 1
+            ";
+            $where  = ['cid' => $values['candID']];
+            $result = iterator_to_array($DB->pselect($query, $where));
+
+            $values['defaultpsc'] = $result[0]['CenterID'];
         }
 
         return new \LORIS\Http\Response\JsonResponse(
@@ -242,23 +257,31 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $num_sites          = count($user_list_of_sites);
         $conflict           = [];
         if ($num_sites == 0) {
-            $conflict['psc']
-                = "You must be affiliated with a site to create a timepoint.";
+            $conflict['psc'] = dgettext(
+                "create_timepoint",
+                "You must be affiliated with a site to create a timepoint."
+            );
         } else if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
-            $conflict['psc']
-                = "Site must be selected from the available dropdown.";
+            $conflict['psc'] = dgettext(
+                "create_timepoint",
+                "Site must be selected from the available dropdown."
+            );
         }
 
         //Project
         $user_list_of_projects = $user->getProjectIDs();
         if (count($user_list_of_projects) == 0) {
-            $conflict['project']
-                = "You must be affiliated with a project to create a timepoint.";
+            $conflict['project'] = dgettext(
+                "create_timepoint",
+                "You must be affiliated with a project to create a timepoint."
+            );
         } else if (count($user_list_of_projects) > 1
             && is_null($values['project'])
         ) {
-            $conflict['project']
-                = "A project must be selected from the available dropdown.";
+            $conflict['project'] = dgettext(
+                "create_timepoint",
+                "A project must be selected from the available dropdown."
+            );
         }
 
         $candid    = $values['candID'];
@@ -289,7 +312,10 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         // validate language
         $languages = \Utility::getLanguageList();
         if (count($languages) > 1 && empty($values['languages'])) {
-            $conflict['languages'] = 'A language must be selected.';
+            $conflict['languages'] = dgettext(
+                "create_timepoint",
+                "A language must be selected."
+            );
         }
         // set form message if exists.
         if ($conflict) {
@@ -306,10 +332,12 @@ class Timepoint extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }
+
     /**
      * An ETagCalculator provides the ability to calculate an ETag for
      * an incoming HTTP request.
@@ -325,6 +353,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
         return md5(json_encode((string) $this->_handleGET($request)->getBody()));
     }
+
     /**
      * Return an array of valid HTTP methods for this endpoint
      *

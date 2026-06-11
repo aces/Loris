@@ -10,6 +10,7 @@ import {
   SelectElement,
   ButtonElement,
 } from 'jsx/Form';
+import swal from 'sweetalert2';
 
 /**
  * Genomic Upload Form
@@ -152,7 +153,6 @@ class GenomicUploadForm extends Component {
               options={this.state.options.fileTypes}
               onUserInput={this.setFileUploadFormData}
               ref='fileType'
-              hasError={false}
               required={true}
               value={this.state.formData.fileType}
             />
@@ -201,7 +201,8 @@ class GenomicUploadForm extends Component {
           }, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal('Upload Successful!', '', 'success');
+        swal.fire('Upload Successful!', '', 'success');
+        this.props.closeFileUploadModal();
       }
       ).catch((error) => {
         console.error(error);
@@ -212,7 +213,7 @@ class GenomicUploadForm extends Component {
           errorMessage: msg,
           uploadProgress: -1,
         });
-        swal(msg, '', 'error');
+        swal.fire(msg, '', 'error');
       });
   }
 }
@@ -220,6 +221,7 @@ GenomicUploadForm.propTypes = {
   action: PropTypes.string,
   permissions: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  closeFileUploadModal: PropTypes.func.isRequired,
 };
 
 export default GenomicUploadForm;

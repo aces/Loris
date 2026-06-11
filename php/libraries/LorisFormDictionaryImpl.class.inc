@@ -61,7 +61,7 @@ trait LorisFormDictionaryImpl
         $items = [];
         $scope = new Scope(Scope::SESSION);
         foreach ($elements AS $element) {
-            $card = new Cardinality(Cardinality::SINGLE);
+            $card = new Cardinality(Cardinality::OPTIONAL);
             if (!empty($element['label'])) {
                 $label = str_replace("&nbsp;", "", $element['label']);
                 $label = trim(preg_replace('/\s+/', ' ', $label));
@@ -97,14 +97,14 @@ trait LorisFormDictionaryImpl
                 // the array and coerce things to a string.
                 $keys   = [];
                 $labels = [];
-                foreach ($element['options'] as $key => $label) {
+                foreach ($element['options'] as $key => $olabel) {
                     if ($key === '' || $key === null) {
                         continue;
                     }
 
                     // Coerce it to a string
                     $keys[]   = "$key";
-                    $labels[] = "$label";
+                    $labels[] = "$olabel";
                 }
                 if (array_key_exists('multiple', $element)) {
                     $card = new Cardinality(Cardinality::MANY);

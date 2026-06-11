@@ -23,7 +23,8 @@ class Queries extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return true;
     }
@@ -103,7 +104,13 @@ class Queries extends \NDB_Page
             $pieces
         ) === 1
         ) {
-            return new \LORIS\Http\Response\JSON\NotImplemented();
+            $queryID = intval($pieces[1]);
+            $runID   = intval($pieces[2]);
+            return (new \LORIS\dataquery\endpoints\queries\query\run\Run(
+                $this->loris,
+                $queryID,
+                $runID,
+            ))->handle($request);
         }
         return new \LORIS\Http\Response\JSON\NotFound();
     }

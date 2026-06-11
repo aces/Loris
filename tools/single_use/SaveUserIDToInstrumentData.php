@@ -14,7 +14,7 @@
  * Example use:
  * $ php SaveUserIDToInstrumentData.php [confirm]
 
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Tools
  * @package  Loris

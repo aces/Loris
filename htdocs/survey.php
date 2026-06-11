@@ -7,7 +7,7 @@
  * loading the correct instrument, displaying it to them in a user-friendly
  * manner and saving the data to the database.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Survey
  * @package  Loris
@@ -113,7 +113,7 @@ class DirectDataEntryMainPage
         );
 
         $user = \User::singleton();
-        if ($instrumentObj->_hasAccess($user) !== true) {
+        if ($instrumentObj->isAccessibleBy($user) !== true) {
             throw new \Exception("Permission denied", 403);
         }
 
@@ -145,8 +145,6 @@ class DirectDataEntryMainPage
             'study_title' => $config->getSetting('title'),
         ];
     }
-
-
 
     /**
      * Get the page which follows this page

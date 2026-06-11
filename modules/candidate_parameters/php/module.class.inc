@@ -14,11 +14,28 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) &&
+        $user->hasAnyPermission(
+            ['candidate_parameter_view',
+                'candidate_parameter_edit'
+            ]
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @return string The human readable name for this module
      */
     public function getLongName() : string
     {
-        return "Candidate Parameters";
+        return dgettext("candidate_parameters", "Candidate Parameters");
     }
 
     /**
@@ -64,7 +81,7 @@ class Module extends \Module
 
             return [
                 new CandidateWidget(
-                    "Consent Summary",
+                    dgettext("candidate_parameters", "Consent Summary"),
                     $baseurl . "/candidate_parameters/js/ConsentWidget.js",
                     "lorisjs.candidate_parameters.ConsentWidget.default",
                     [
@@ -99,8 +116,9 @@ class Module extends \Module
             // Participant Status
             $entries = [
                 new CandidateInfo(
-                    "Participant Status",
-                    $candidate->getParticipantStatusDescription($db) ?: 'N/A',
+                    dgettext("loris", "Participant Status"),
+                    $candidate->getParticipantStatusDescription($db)
+                    ?: dgettext("loris", 'N/A'),
                 ),
             ];
 
@@ -147,10 +165,11 @@ class Module extends \Module
             return null;
         }
 
+        $title = dgettext("candidate_parameters", "Caveat");
         if ($caveat['Description'] == 'Other') {
-            return new CandidateInfo("Caveat", $caveat['flagged_other']);
+            return new CandidateInfo($title, $caveat['flagged_other']);
         }
-        return new CandidateInfo("Caveat", $caveat['Description']);
+        return new CandidateInfo($title, $caveat['Description']);
     }
 
     /**
@@ -176,7 +195,8 @@ class Module extends \Module
                 JOIN parameter_candidate pc USING (ParameterTypeID)
                 JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
                 JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
-             WHERE ptc.Name='Candidate Parameters' AND pc.CandID=:cid",
+                JOIN candidate c ON c.ID=pc.CandidateID
+             WHERE ptc.Name='Candidate Parameters' AND c.CandID=:cid",
             ['cid' => $candidate->getCandID()]
         );
 
@@ -190,10 +210,10 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return \LORIS\Data\Query\QueryEngine
+     * @return \LORIS\Data\Query\QueryEngine[]
      */
-    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    public function getQueryEngines() : iterable
     {
-        return new CandidateQueryEngine($this->loris);
+        return [new CandidateQueryEngine($this->loris)];
     }
 }

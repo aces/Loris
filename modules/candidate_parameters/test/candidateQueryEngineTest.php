@@ -29,7 +29,6 @@ use LORIS\Data\Query\Criteria\Substring;
  */
 class CandidateQueryEngineTest extends TestCase
 {
-
     protected \LORIS\candidate_parameters\CandidateQueryEngine $engine;
     protected $factory;
     protected $config;
@@ -112,9 +111,13 @@ class CandidateQueryEngineTest extends TestCase
             [__DIR__ . "/../../"]
         );
 
-        $this->engine = $lorisinstance->getModule(
+        $engine = $lorisinstance->getModule(
             'candidate_parameters'
-        )->getQueryEngine();
+        )->getQueryEngines()[0];
+
+        assert($engine instanceof \LORIS\candidate_parameters\CandidateQueryEngine);
+
+        $this->engine = $engine;
     }
 
     /**
@@ -1032,7 +1035,7 @@ class CandidateQueryEngineTest extends TestCase
             [
                 [
                     'ID'          => 1,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => '1',
                     'ProjectID'   => '1',
                     'Active'      => 'Y',
@@ -1040,7 +1043,7 @@ class CandidateQueryEngineTest extends TestCase
                 ],
                 [
                     'ID'          => 2,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => '2',
                     'ProjectID'   => '1',
                     'Active'      => 'Y',
@@ -1102,7 +1105,7 @@ class CandidateQueryEngineTest extends TestCase
             [
                 [
                     'ID'          => 1,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => '1',
                     'ProjectID'   => '2',
                     'Active'      => 'Y',
@@ -1110,7 +1113,7 @@ class CandidateQueryEngineTest extends TestCase
                 ],
                 [
                     'ID'          => 2,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => '2',
                     'ProjectID'   => '2',
                     'Active'      => 'Y',
@@ -1189,7 +1192,7 @@ class CandidateQueryEngineTest extends TestCase
             [
                 [
                     'ID'          => 1,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => '1',
                     'ProjectID'   => '2',
                     'Active'      => 'Y',
@@ -1197,7 +1200,7 @@ class CandidateQueryEngineTest extends TestCase
                 ],
                 [
                     'ID'          => 2,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => '2',
                     'ProjectID'   => '2',
                     'Active'      => 'Y',
@@ -1276,7 +1279,7 @@ class CandidateQueryEngineTest extends TestCase
             [
                 [
                     'ID'          => 1,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => '1',
                     'ProjectID'   => '2',
                     'CohortID'    => '1',
@@ -1285,7 +1288,7 @@ class CandidateQueryEngineTest extends TestCase
                 ],
                 [
                     'ID'          => 2,
-                    'CandID'      => "123457",
+                    'CandidateID' => 2,
                     'CenterID'    => '2',
                     'ProjectID'   => '2',
                     'CohortID'    => '2',
@@ -1388,12 +1391,12 @@ class CandidateQueryEngineTest extends TestCase
             [
                 [
                     'ID'                 => 1,
-                    'CandID'             => "123457",
+                    'CandidateID'        => 2,
                     'participant_status' => '1',
                 ],
                 [
                     'ID'                 => 2,
-                    'CandID'             => "123456",
+                    'CandidateID'        => 1,
                     'participant_status' => '2',
                 ],
             ]
@@ -1554,12 +1557,12 @@ class CandidateQueryEngineTest extends TestCase
             [
                 [
                     'ID'                 => 1,
-                    'CandID'             => "123457",
+                    'CandidateID'        => 2,
                     'participant_status' => '1',
                 ],
                 [
                     'ID'                 => 2,
-                    'CandID'             => "123456",
+                    'CandidateID'        => 1,
                     'participant_status' => '2',
                 ],
             ]
@@ -1616,7 +1619,7 @@ class CandidateQueryEngineTest extends TestCase
             [
                 [
                     'ID'          => 1,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => '1',
                     'ProjectID'   => '2',
                     'CohortID'    => '1',
@@ -1625,7 +1628,7 @@ class CandidateQueryEngineTest extends TestCase
                 ],
                 [
                     'ID'          => 2,
-                    'CandID'      => "123456",
+                    'CandidateID' => 1,
                     'CenterID'    => '2',
                     'ProjectID'   => '2',
                     'CohortID'    => '1',
@@ -1634,7 +1637,7 @@ class CandidateQueryEngineTest extends TestCase
                 ],
                 [
                     'ID'          => 3,
-                    'CandID'      => "123457",
+                    'CandidateID' => 2,
                     'CenterID'    => '2',
                     'ProjectID'   => '2',
                     'CohortID'    => '2',
@@ -1839,7 +1842,7 @@ class CandidateQueryEngineTest extends TestCase
     {
         $this->engine->useQueryBuffering(false);
         $insert = $this->DB->prepare(
-            "INSERT INTO candidate 
+            "INSERT INTO candidate
             (ID, CandID, PSCID, RegistrationProjectID, RegistrationCenterID,
                 Active, DoB, DoD, Sex, EDC, Entity_type)
             VALUES (?, ?, ?, '1', '1', 'Y', '1933-03-23', '1950-03-23',

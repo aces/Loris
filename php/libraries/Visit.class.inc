@@ -3,7 +3,7 @@
 /**
  * Describe a LORIS visit
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Model
  * @package  Visits

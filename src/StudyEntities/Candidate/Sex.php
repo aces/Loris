@@ -4,7 +4,7 @@
  * This defines valid values for the Sex data point for a Candidate.
  * It is a Value Object used to assist with validation.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS
@@ -61,7 +61,7 @@ class Sex implements \JsonSerializable
      */
     public static function validate(string $value, array $validValues): bool
     {
-        return in_array($value, array_values($validValues), true);
+        return in_array($value, array_keys($validValues), true);
     }
 
     /**

@@ -4,7 +4,7 @@
  * This class implements a data Instance which represents a single
  * row in the dicom archive menu table.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -29,6 +29,7 @@ namespace LORIS\dicom_archive;
 class DICOMArchiveRowWithoutSession implements \LORIS\Data\DataInstance
 {
     protected $DBRow;
+    protected $CreatedBy;
 
     /**
      * Create a new DICOMArchiveRow without a session.
@@ -36,12 +37,34 @@ class DICOMArchiveRowWithoutSession implements \LORIS\Data\DataInstance
      * Session-less DICOMArchiveRows do not have CenterIDs to be filtered
      * by.
      *
-     * @param array $row The row (in the same format as \Database::pselectRow
-     *                   returns)
+     * @param array $row     The row (in the same format as \Database::pselectRow
+     *                       returns)
+     * @param \User $creator The user who created this row
      */
-    public function __construct(array $row)
+    public function __construct(array $row, \User $creator)
     {
-        $this->DBRow = $row;
+        $this->DBRow     = $row;
+        $this->CreatedBy = $creator;
+    }
+
+    /**
+     * Returns Null always since this class is specifically for no session IDs.
+     *
+     * @return ?\SessionID The SessionID
+     */
+    public function getSessionID(): ?\SessionID
+    {
+        return null;
+    }
+
+    /**
+     * Return the User who created this row.
+     *
+     * @return \User The user who created this row
+     */
+    public function createdBy() : \User
+    {
+        return $this->CreatedBy;
     }
 
     /**

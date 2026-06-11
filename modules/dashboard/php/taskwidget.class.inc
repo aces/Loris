@@ -3,7 +3,7 @@
 /**
  * File contains the \LORIS\dashboard\TaskWidget class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

@@ -11,7 +11,7 @@ $factory = NDB_Factory::singleton();
 $user    = $factory->user();
 if (!$user->hasPermission('config')) {
     header("HTTP/1.1 403 Forbidden");
-    exit;
+    exit(0);
 }
 
 require_once __DIR__ . "/../../../vendor/autoload.php";
@@ -119,5 +119,5 @@ if (!Utility::valueIsPositiveInteger($recTarget)) {
     {
         http_response_code($code);
         print json_encode($msg);
-        exit;
+        exit(0);
     }

@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category ApiViews
  * @package  Loris
@@ -42,7 +42,6 @@ class Project
     {
         $this->_project = $project;
     }
-
 
     /**
      * Produce an array representation of this project.

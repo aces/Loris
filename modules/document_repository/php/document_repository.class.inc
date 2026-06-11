@@ -3,7 +3,7 @@
 /**
  * This file handles the Document Repository for LORIS
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Documentation
  * @package  Main
@@ -41,10 +41,12 @@ class Document_Repository extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(self::PERMISSIONS);
     }
+
     /**
      * Function getFieldOptions
      *
@@ -106,9 +108,10 @@ class Document_Repository extends \DataFrameworkMenu
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
-            'hiddenFile'     => ['yes' => "Yes", 'no' => "No"],
+            'hiddenVideo'    => ['yes' => "Yes", 'no' => "No"],
         ];
     }
+
     /**
      * Handler of parsing category
      *
@@ -141,6 +144,7 @@ class Document_Repository extends \DataFrameworkMenu
              "id"   => $id,
          ];
     }
+
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
@@ -166,6 +170,7 @@ class Document_Repository extends \DataFrameworkMenu
             ]
         );
     }
+
     /**
      * {@inheritDoc}
      *
@@ -175,6 +180,7 @@ class Document_Repository extends \DataFrameworkMenu
     {
         return false;
     }
+
     /**
      * {@inheritDoc}
      *
@@ -182,8 +188,9 @@ class Document_Repository extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new DocRepoProvisioner();
+        return new DocRepoProvisioner($this->loris);
     }
+
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -195,7 +202,6 @@ class Document_Repository extends \DataFrameworkMenu
                 return ['access_all_profiles'];
 
     }
-
 
     /**
      * Include additional CSS files:
@@ -235,7 +241,6 @@ class Document_Repository extends \DataFrameworkMenu
             ]
         );
     }
-
 }
 
 

@@ -1,0 +1,166 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Publications"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Authors"
+msgstr ""
+
+msgid "Journal"
+msgstr ""
+
+msgid "DOI"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "Please fix any remaining form errors before submission"
+msgstr ""
+
+msgid "Something went wrong!"
+msgstr ""
+
+msgid "Submission Successful!"
+msgstr ""
+
+msgid "Propose a Project"
+msgstr ""
+
+msgid "Propose a new project"
+msgstr ""
+
+msgid "Edit failed!"
+msgstr ""
+
+msgid "Edit Successful!"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Citation"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Collaborators"
+msgstr ""
+
+msgid "Keywords"
+msgstr ""
+
+msgid "Variables Of Interest"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Publishing Status"
+msgstr ""
+
+msgid "Date Published"
+msgstr ""
+
+msgid "Link"
+msgstr ""
+
+msgid "Lead Investigator"
+msgstr ""
+
+msgid "Lead Investigator Email"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Reason for rejection"
+msgstr ""
+
+msgid "Approved"
+msgstr ""
+
+msgid "Rejected"
+msgstr ""
+
+msgid "For help finding variables of interest, consult"
+msgstr ""
+
+msgid "Date Proposed"
+msgstr ""
+
+msgid "Approval Status"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Project Proposal Creator"
+msgstr ""
+
+msgid "Published"
+msgstr ""
+
+msgid "View Project"
+msgstr ""
+
+msgid "LORIS Users with Edit Permission"
+msgstr ""
+
+msgid "Type of Variables of Interest"
+msgstr ""
+
+msgid "Propose Project"
+msgstr ""
+
+msgid "Send email notification?"
+msgstr ""
+
+msgid "Add User"
+msgstr ""
+
+msgid "Add Collaborator"
+msgstr ""
+
+msgid "Add Keyword"
+msgstr ""
+
+msgid "Add Variable of Interest"
+msgstr ""
+
+msgid "Publication Type"
+msgstr ""
+
+msgid "Publication Version"
+msgstr ""
+
+msgid "helpFindingVariables"
+msgstr ""

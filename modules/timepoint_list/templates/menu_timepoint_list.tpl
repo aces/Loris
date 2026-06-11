@@ -4,16 +4,16 @@
   <thead>
   <tr class="info">
     <th>
-      Derived Age
+      {dgettext("timepoint_list", "Derived Age")}
     </th>
     <th>
-      EDC Age
+      {dgettext("timepoint_list", "EDC Age")}
     </th>
     <th>
-      Biological Sex
+      {dgettext("timepoint_list", "Biological Sex")}
     </th>
     <th>
-      Project
+      {dgettext("loris", "Project")}
     </th>
     {foreach from=$candidate.DisplayParameters item=value key=name}
       <th>
@@ -32,10 +32,10 @@
       {$edc_age}
     </td>
     <td>
-      {$candidate.Sex}
+      {dgettext("sex", $candidate.Sex)}
     </td>
       <td>
-        {$candidate.ProjectTitle}
+        {dgettext("Project", $candidate.ProjectTitle)}
       </td>
     {foreach from=$candidate.DisplayParameters item=value key=name}
       <td>
@@ -57,42 +57,46 @@
 <br>
 
 <!-- table title -->
-<strong>List of Visits (Time Points)</strong>
+<strong>{dgettext("timepoint_list", "List of Visits (Time Points)")}</strong>
 <!-- list of timepoints table -->
 <table style="margin-top:0" class="table table-hover table-primary table-bordered dynamictable" cellpadding="2">
     <!-- table column headings -->
     <thead>
         <tr class="info">
-            <th>Visit Label<BR>(Click to Open)</th>
-            <th>Cohort</th>
-            <th>Site</th>
-            <th>Project</th>
-            <th>Stage</th>
-            <th>Stage Status</th>
-            <th>Date of Stage</th>
-            <th>Sent To DCC</th>
-            <th>Imaging Scan Done</th>
-            <th>Feedback</th>
-            <th>BVL QC</th>
-            <th>BVL Exclusion</th>
-            <th>Registered By</th>
+            <th>{dgettext("loris", "Visit Label")}<BR>({dgettext("timepoint_list", "Click to Open")})</th>
+            <th>{dgettext("loris", "Cohort")}</th>
+            <th>{dgettext("loris", "Site")}</th>
+            <th>{dgettext("loris", "Project")}</th>
+            <th>{dgettext("loris", "Stage")}</th>
+            <th>{dgettext("timepoint_list", "Stage Status")}</th>
+            <th>{dgettext("timepoint_list", "Date of Stage")}</th>
+            <th>{dgettext("loris", "Sent To DCC")}</th>
+            <th>{dgettext("timepoint_list", "Imaging Scan Done")}</th>
+            <th>{dgettext("loris", "Feedback")}</th>
+            <th>{dgettext("timepoint_list", "BVL QC")}</th>
+            <th>{dgettext("timepoint_list", "BVL Exclusion")}</th>
+            <th>{dgettext("timepoint_list", "Registered By")}</th>
+            <th>{dgettext("loris", "Language")}</th>
         </tr>
     </thead>
     <tbody>
     {section name=timepoint loop=$timePoints}
         <tr>
-            <td><a href="{$baseurl|default}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">{$timePoints[timepoint].Visit_label}</a></td>
+            <td>
+              <a href="{$baseurl|default}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">
+                  {dgettext("visit", $timePoints[timepoint].Visit_label)}
+              </a>
+            </td>
+            <td>{dgettext("cohort", $timePoints[timepoint].CohortTitle)}</td>
 
-            <td>{$timePoints[timepoint].CohortTitle}</td>
-
-            <td>{$timePoints[timepoint].SiteAlias}</td>
-            <td>{$timePoints[timepoint].ProjectName}</td>
+            <td>{dgettext("psc", $timePoints[timepoint].SiteName)}</td>
+            <td>{dgettext("Project", $timePoints[timepoint].ProjectName)}</td>
 
             {if $timePoints[timepoint].staticStage|default != "" || $timePoints[timepoint].Current_stage == "Not Started"}
-            <td colspan="3">{$timePoints[timepoint].Current_stage}</td>
+            <td colspan="3">{dgettext("loris", $timePoints[timepoint].Current_stage)}</td>
             {else}
-            <td>{$timePoints[timepoint].Current_stage}</td>
-            <td>{$timePoints[timepoint].currentStatus}</td>
+            <td>{dgettext("loris", $timePoints[timepoint].Current_stage)}</td>
+            <td>{dgettext("loris", $timePoints[timepoint].currentStatus)}</td>
             <td>{$timePoints[timepoint].currentDate}</td>
             {/if}
 
@@ -104,23 +108,23 @@
             {/if}
             </td>
             <td>
-            {if $timePoints[timepoint].Scan_done != ""}
-                    {if $timePoints[timepoint].Scan_done == 'Y'}
-                        {assign var="scan_done" value="Yes"}
+            {if $timePoints[timepoint].scanDone != ""}
+                    {if $timePoints[timepoint].scanDone}
+                        {assign var="scanDone" value={dgettext("loris", "Yes")}}
                         <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$timePoints[timepoint].SessionID}" class="timepoint_list">
-                        {$scan_done}</a>
+                        {dgettext('loris', $scanDone)}</a>
                     {else}
-                        {assign var="scan_done" value="No"}
-                        {$scan_done}
+                        {assign var="scanDone" value={dgettext("loris", "No")}}
+                        {$scanDone}
                     {/if}
             {else}
-                <img alt="Data Missing" src="{$baseurl|default}/images/help2.gif" border=0>
+                <img alt="Data Missing" src="{$baseurl|default}/images/delete.gif" border=0>
             {/if}
             </td>
 
             <td bgColor="{$timePoints[timepoint].feedbackColor}">
             {if $timePoints[timepoint].feedbackCount}
-                {$timePoints[timepoint].feedbackStatus}
+                {dgettext("timepoint_list", $timePoints[timepoint].feedbackStatus)}
             {else}
                 -
             {/if}
@@ -128,7 +132,9 @@
 
             <td>
             {if $timePoints[timepoint].BVLQCStatus}
-                {$timePoints[timepoint].BVLQCType}
+                {if $timePoints[timepoint].BVLQCType != ""}
+		    {dgettext("timepoint_list", $timePoints[timepoint].BVLQCType)}
+                {/if}
             {else}
                 <img src="{$baseurl|default}/images/delete.gif" border="0" />
             {/if}
@@ -137,9 +143,9 @@
             <td>
             {if $timePoints[timepoint].BVLQCExclusion}
                 {if $timePoints[timepoint].BVLQCExclusion == 'Not Excluded'}
-                Pass
+                {dgettext("loris", "Pass")}
                 {else}
-                Fail
+                {dgettext("loris", "Failure")}
                 {/if}
             {else}
                 <img src="{$baseurl|default}/images/delete.gif" border="0" />
@@ -149,9 +155,12 @@
             <td>
                 {$timePoints[timepoint].Real_name}
             </td>
+            <td>
+                {$timePoints[timepoint].language->label}
+            </td>
         </tr>
     {sectionelse}
-        <tr><td colspan="10">You do not have access to any timepoints registered for this candidate.</td></tr>
+        <tr><td colspan="10">{dgettext("timepoint_list", "You do not have access to any timepoints registered for this candidate.")}</td></tr>
     {/section}
     </tbody>
 </table>

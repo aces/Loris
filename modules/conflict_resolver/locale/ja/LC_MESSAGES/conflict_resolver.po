@@ -1,0 +1,79 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Conflict Resolver"
+msgstr "紛争解決者"
+
+msgid "Data entry conflict"
+msgstr "データ入力の競合"
+
+msgid "Unresolved Conflicts"
+msgstr "未解決の紛争"
+
+msgid "Number of Conflicts"
+msgstr "競合の数"
+
+msgid "Unresolved"
+msgstr "未解決"
+
+msgid "Resolved"
+msgstr "解決済み"
+
+msgid "Correct Answer"
+msgstr "正解"
+
+msgid "Conflict ID"
+msgstr "競合識別子"
+
+msgid "Question"
+msgstr "質問"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Value 1"
+msgstr "値1"
+
+msgid "Value 2"
+msgstr "値2"
+
+msgid "Resolved ID"
+msgstr "解決された識別子"
+
+msgid "Incorrect Answer"
+msgstr "不正解"
+
+msgid "User 1"
+msgstr "ユーザー1"
+
+msgid "User 2"
+msgstr "ユーザー2"
+
+msgid "Resolver"
+msgstr "リゾルバ"
+
+msgid "Resolution Timestamp"
+msgstr "解決タイムスタンプ"
+
+msgid "Click on instrument in legend to visit conflict resolver for that instrument across all visits."
+msgstr "凡例の機器をクリックすると、すべての訪問にわたってその機器の競合解決ツールにアクセスできます。"
+
+msgid "Click on bar in graph to visit conflict resolver for that visit and instrument combination."
+msgstr "グラフ内のバーをクリックすると、その訪問と機器の組み合わせの競合解決ツールが表示されます。"

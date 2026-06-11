@@ -1,0 +1,229 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Candidate Parameters"
+msgstr "Parámetros del Candidato"
+
+msgid "Caveat"
+msgstr "Advertencia"
+
+msgid "Return to timepoint list"
+msgstr "Volver a la lista the Puntos en el Tiempo"
+
+# tabs 
+msgid "Candidate Information"
+msgstr "Información del Candidato"
+
+msgid "Participant Status"
+msgstr "Estado del Participante"
+
+msgid "Diagnosis Evolution"
+msgstr "Evolución del Diagnóstico"
+
+msgid "Proband Information"
+msgstr "Información de la Probanda"
+
+msgid "Family Information"
+msgstr "Información Familiar"
+
+msgid "Consent Status"
+msgstr "Estado del consentimiento"
+
+# Candidate Information tab
+msgid "Caveat Emptor Flag for Candidate"
+msgstr "Alerta sobre el Candidato"
+
+msgid "Reason for Caveat Emptor Flag"
+msgstr "Razón de la Alerta sobre el Candidato"
+
+msgid "If Other, please specify"
+msgstr "Si otra, por favor especifique"
+
+# Participant Status tab
+msgid "Specify Reason"
+msgstr "Especifique la razón"
+
+msgid "Comments"
+msgstr "Comentarios"
+
+# DoB tab
+msgid "Disclaimer:"
+msgstr "Descargo de responsabilidad:"
+
+msgid "Any changes to the date of birth requires an administrator to run the fix_candidate_age script."
+msgstr "Todo cambio en la Fecha de Nacimiento requiere que un administrador corra el script fix_candidate_age."
+
+msgid "Date of birth cannot be later than today!"
+msgstr "La Fecha de Nacimiento no puede ser posterior al día de hoy!"
+
+msgid "Date of birth updated!"
+msgstr "Fecha de Nacimiento actualizada!"
+
+msgid "Something went wrong."
+msgstr "Algo salió mal."
+
+# DoD tab
+msgid "Any changes to the date of death requires an administrator to run the fix_candidate_age script."
+msgstr "Todo cambio en la Fecha de Defunción requiere que un administrador corra el script fix_candidate_age."
+
+msgid "Date Of Death:"
+msgstr "Fecha de Defunción"
+
+msgid "Invalid date"
+msgstr "Fecha no válida"
+
+msgid "Date of death cannot be later than today!"
+msgstr "La fecha de fallecimiento no puder ser major que la fecha de hoy en día!"
+
+msgid "Date of death must be after date of birth!"
+msgstr "La fecha de fallecimiento debe ser posterior a la fecha de nacimiento!"
+
+msgid "Date of death updated!"
+msgstr "Fecha de fallecimiento actualizada!"
+
+# Diagnosis Evolution tab
+msgid "Trajectory Name"
+msgstr "Nombre de la trajectoria"
+
+msgid "Configured Order"
+msgstr "Orden configurado"
+
+msgid "Source Fields"
+msgstr "Campos Fuente"
+
+msgid "Diagnosis"
+msgstr "Diagnóstico"
+
+msgid "Confirmed"
+msgstr "Confirmado"
+
+msgid "Last Update"
+msgstr "Última actualización"
+
+# ProbandInfo Evolution tab
+msgid "An error occurred when loading the form!"
+msgstr "Un error ocurrió mientras se cargaba el formulario!"
+
+msgid "DOB do not match!"
+msgstr "Las fechas de nacimiento no son iguales!"
+
+msgid "Proband date of birth cannot be later than today!"
+msgstr "La fecha de nacimiento de la Probanda no puede ser posterior a hoy!"
+
+msgid "Update Successful!"
+msgstr "Actualización exitosa!"
+
+msgid "Failed to update!"
+msgstr "Actualización fallida!"
+
+msgid "Proband Sex"
+msgstr "Sexo del probanda"
+
+msgid "DoB Proband"
+msgstr "Fecha de nacimiento del probanda"
+
+msgid "Confirm DoB Proband"
+msgstr "Confirme la fecha de nacimiento del probanda"
+
+msgid "Age Difference (months)"
+msgstr "Diferencia de Edad (meses)"
+
+# FamilyInfo tab
+msgid "Add"
+msgstr "Adicionar"
+
+msgid "Family Member ID (DCCID)"
+msgstr "Identificador del miembro Familiar (CCDID)"
+
+msgid "Relation Type"
+msgstr "Tipo de relación"
+
+msgid "Full Sibling"
+msgstr "Hermano"
+
+msgid "Half Sibling"
+msgstr "Medio hermano"
+
+msgid "First Cousin"
+msgstr "Primo hermano"
+
+msgid "Delete"
+msgstr "Borrar"
+
+# ConsentStatus tab
+msgid "Response"
+msgstr "Respuesta"
+
+msgid "Date of Response"
+msgstr "Fecha de la respuesta"
+
+msgid "Confirmation Date of Response"
+msgstr "Confirmación de la Fecha de la respuesta"
+
+msgid "Date of Withdrawal of Consent"
+msgstr "Fecha de revocación del consentimiento"
+
+msgid "Confirmation Date of Withdrawal of Consent"
+msgstr "Confirmación de la Fecha de revocación del consentimiento"
+
+msgid "Update successful."
+msgstr "Actualización exitosa."
+
+msgid "{{label}} dates do not match!"
+msgstr "Las fechas en {{label}} no coinciden!"
+
+msgid "{{label}} date cannot be later than today!"
+msgstr "La fecha en {{label}} no puede ser posterior a hoy!"
+
+msgid "{{label}} withdrawal dates do not match!"
+msgstr "Las fechas de revocación de {{label}} no coinciden!"
+
+msgid "{{label}} withdrawal date cannot be later than today!"
+msgstr "La fecha de revocación de {{label}} no puede ser posterior a hoy!"
+
+msgid "{{label}} withdrawal date cannot be earlier than response date!"
+msgstr "La fecha de revocación de {{label}} no puede ser anterior a la fecha del consentimiento!"
+
+msgid "Hide Consent History"
+msgstr "Ocultar Histórico de Consentimiento"
+
+msgid "Show Consent History"
+msgstr "Mostrar Histórico de Consentimiento"
+
+msgid "Date of Consent to {{consentDate}}"
+msgstr "Fecha del consentimiento a {{consentDate}}"
+
+msgid "Date of Consent Withdrawal to {{withdrawal}}"
+msgstr "Fecha de la revocación del consentimiento a {{withdrawal}}"
+
+msgid "updated for {{label}}:"
+msgstr "actualizado para {{label}}:"
+
+msgid "Status to "
+msgstr "Estado a "
+
+msgid " Status: "
+msgstr " Estado: "
+
+msgid "Details: "
+msgstr "Detalles: "
+
+msgid "Comments: "
+msgstr "Comentarios: "

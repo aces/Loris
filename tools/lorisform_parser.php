@@ -16,13 +16,8 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
-
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize("../project/config.xml");
 
 $instrumentsToSkip = [];
 $instruments       = getExcludedInstruments();
@@ -106,7 +101,7 @@ foreach ($files as $file) {
 if (empty($output)) {
     echo "Nothing to output, 'ip_output.txt' not created\n";
 } else {
-    $fp =fopen("ip_output.txt", "w");
+    $fp =fopen(__DIR__ ."/ip_output.txt", "w");
     fwrite($fp, $output);
     fclose($fp);
 }

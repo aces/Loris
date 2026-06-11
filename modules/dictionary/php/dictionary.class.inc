@@ -23,7 +23,8 @@ class Dictionary extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return ($user->hasPermission('data_dict_view') ||
                 $user->hasPermission('data_dict_edit'));
@@ -52,9 +53,25 @@ class Dictionary extends \DataFrameworkMenu
         foreach ($this->modules as $module) {
             $amodules[$module->getName()] = $module->getLongName();
         }
+        $user     = \NDB_Factory::singleton()->user();
+        $projects = $user->getProjectIDs();
+        $cohorts  = [];
+        foreach ($projects AS $projectID) {
+            $cohorts = $cohorts + \Utility::getCohortList($projectID);
+        }
+        $cohort_options = [];
+        foreach (array_values($cohorts) as $name) {
+            $cohort_options[$name] = $name;
+        }
+        $visit_options = [];
+        foreach ($user->getVisits() as $visit) {
+            $visit_options[$visit] = $visit;
+        }
         return [
             'modules'    => $amodules,
             'categories' => $this->categories,
+            'visits'     => $visit_options,
+            'cohorts'    => $cohort_options,
         ];
     }
 
@@ -98,7 +115,10 @@ class Dictionary extends \DataFrameworkMenu
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Data Dictionary', "/$this->name")
+            new \LORIS\Breadcrumb(
+                dgettext('dictionary', 'Data Dictionary'),
+                "/$this->name"
+            )
         );
     }
 

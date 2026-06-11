@@ -24,4 +24,4 @@ $db->delete('feedback_bvl_entry', ["ID" => $_POST['entryID']]);
 
 print json_encode('success');
 
-exit();
+exit(0);
