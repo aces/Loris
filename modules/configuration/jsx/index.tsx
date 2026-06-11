@@ -260,14 +260,13 @@ function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
    * @param {string} newValue New setting value
    */
   const saveChange = (newValue: string) => {
-    if (newValue === props.item.Value) {
+    const currentValue = props.item.DataType === 'boolean'
+      ? booleanRadioValue(props.item.Value)
+      : props.item.Value;
+    if (newValue === currentValue) {
       return;
     }
-    saveSetting(props.baseURL, props.item.Name, {
-      value: props.item.DataType === 'boolean'
-        ? preserveBooleanStorage(newValue, props.item.Value)
-        : newValue,
-    })
+    saveSetting(props.baseURL, props.item.Name, {value: newValue})
       .then(() => props.reloadCategory())
       .catch(showSaveError);
   };
@@ -434,7 +433,7 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
         onUserInput={(_name: string, inputValue: string) => {
           config.onCommit(inputValue);
         }}
-        options={booleanRadioOptions(config.value)}
+        options={booleanRadioOptions()}
       />
     );
   case 'date_format':
@@ -515,49 +514,19 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
  * @return {string}
  */
 function booleanRadioValue(value: ConfigValue): string {
-  if (value === '1' || value === 1) {
+  if (value === '1' || value === 1 || value === true || value === 'true') {
     return '1';
   }
-  if (value === '0' || value === 0) {
-    return '0';
-  }
-  if (value === true || value === 'true') {
-    return 'true';
-  }
-  return 'false';
+  return '0';
 }
 
 /**
- * Preserve legacy 1/0 boolean storage when a setting already uses it.
+ * Return boolean radio options using the existing 1/0 storage format.
  *
- * @param {ConfigValue} value Stored boolean value
  * @return {object}
  */
-function booleanRadioOptions(value: ConfigValue): ConfigOptionMap {
-  if (value === '1' || value === '0' || value === 1 || value === 0) {
-    return {'1': 'Yes', '0': 'No'};
-  }
-  return {'true': 'Yes', 'false': 'No'};
-}
-
-/**
- * Keep existing 1/0 boolean settings in their current storage format.
- *
- * @param {string} newValue New radio value
- * @param {ConfigValue} currentValue Current stored value
- * @return {string}
- */
-function preserveBooleanStorage(
-  newValue: string,
-  currentValue: ConfigValue
-): string {
-  if (currentValue === '1' || currentValue === '0') {
-    return newValue === 'true' ? '1' : newValue === 'false' ? '0' : newValue;
-  }
-  if (currentValue === 1 || currentValue === 0) {
-    return newValue === 'true' ? '1' : newValue === 'false' ? '0' : newValue;
-  }
-  return newValue;
+function booleanRadioOptions(): ConfigOptionMap {
+  return {'1': 'Yes', '0': 'No'};
 }
 
 /**
