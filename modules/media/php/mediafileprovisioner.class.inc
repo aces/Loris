@@ -108,6 +108,9 @@ class MediaFileProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         }
         $row['fullName'] = $this->_instrumentnames[$testname] ?? null;
 
+        if (isset($row['visitLabel'])) {
+            $row['visitLabel'] = dgettext("visit", $row['visitLabel']);
+        }
         return new MediaFile($row);
     }
 }

@@ -212,6 +212,7 @@ class MediaIndex extends Component {
       {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'select',
+        sortByValue: false,
         options: options.visits,
       }},
       {label: t('Language', {ns: 'loris'}), show: true, filter: {
