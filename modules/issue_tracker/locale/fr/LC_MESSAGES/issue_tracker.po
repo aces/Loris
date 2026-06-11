@@ -251,7 +251,7 @@ msgstr "Résolu"
 msgid "Closed"
 msgstr "Fermé"
 
-msgid "Closed"
+msgid "Rejected"
 msgstr "Rejeté"
 
 #, fuzzy
