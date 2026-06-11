@@ -520,7 +520,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
      */
     private function _collectAdminStatsWidgets(\User $user): array
     {
-        $module    = $this->loris->getModule('user_accounts');
+        $module = $this->loris->getModule('user_accounts');
         if (!$module->hasAccess($user)) {
             return [];
         }
