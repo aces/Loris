@@ -103,6 +103,12 @@ msgstr ""
 msgid "Add Comment"
 msgstr ""
 
+msgid "Add New Comment"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
 msgid "Create New Issue"
 msgstr ""
 
@@ -137,6 +143,9 @@ msgid "Description"
 msgstr ""
 
 msgid "Watching?"
+msgstr ""
+
+msgid "Watchers"
 msgstr ""
 
 msgid "Add others to watching?"
@@ -267,4 +276,7 @@ msgid "The server is not configured for attachments."
 msgstr ""
 
 msgid "Submit Attachment"
+msgstr ""
+
+msgid "Submit Comment"
 msgstr ""
