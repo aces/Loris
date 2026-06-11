@@ -16,7 +16,7 @@ msgid "Challah"
 msgstr "Hallah"
 
 msgid "DCP"
-msgstr "DCP"
+msgstr "PCD"
 
 msgid "Pumpernickel"
 msgstr "Pumpernickel"
