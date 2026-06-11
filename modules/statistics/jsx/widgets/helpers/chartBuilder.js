@@ -13,7 +13,7 @@ const siteColours = [
 ];
 
 // Colours for the recruitment bar chart: breakdown by sex
-const sexColours = ['#2FA4E7', '#1C70B6'];
+const sexColours = ['#2FA4E7', '#1C70B6', '#4AE8C2', '#7900DB', '#FF8000', '#D90074'];
 
 let charts = []
 const resizeGraphs = (chartDetails) => {
@@ -66,12 +66,9 @@ const formatPieData = (data) => {
 const formatBarData = (data) => {
   const processedData = [];
   if (data['datasets']) {
-    const females = ['Female'];
-    processedData.push(females.concat(data['datasets']['female']));
-  }
-  if (data['datasets']) {
-    const males = ['Male'];
-    processedData.push(males.concat(data['datasets']['male']));
+    Object.values(data['datasets']).forEach((dataset) => {
+      processedData.push([dataset.label].concat(dataset.data));
+    });
   }
   return processedData;
 };
@@ -119,10 +116,10 @@ const createBarChart = (t, labels, columns, id, targetModal, colours, dataType) 
             return colours[d.index];
           }
         } :
-        {
-          [columns[0][0]]: colours[0],
-          [columns[1][0]]: colours[1],
-        }
+        columns.reduce((accumulator, column, index) => {
+          accumulator[column[0]] = colours[index % colours.length];
+          return accumulator;
+        }, {})
     },
     size: {
       height: targetModal ? 500 : 300,

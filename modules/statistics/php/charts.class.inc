@@ -191,27 +191,36 @@ class Charts extends \NDB_Page
             $conditions['params']
         );
         $processed_data = [];
+        $sexes          = [];
         foreach ($data as $row) {
             $siteid = $row['SiteID'];
             $count  = intval($row['Count']);
-            $sex    = is_string($row['Sex']) ? strtolower($row['Sex']) : '';
+            $sex    = is_string($row['Sex']) ? strtolower(trim($row['Sex'])) : '';
             if (!isset($processed_data[$siteid])) {
-                $processed_data[$siteid] = [
-                    strtolower($sex) => $count
-                ];
-            } else {
-                assert(!isset($processed_data[$siteid][$sex]));
-                $processed_data[$siteid][$sex] = $count;
+                $processed_data[$siteid] = [];
             }
+
+            assert(!isset($processed_data[$siteid][$sex]));
+            $processed_data[$siteid][$sex] = $count;
+            $sexes[$sex] = true;
         }
+
+        $sexes = array_keys($sexes);
+        sort($sexes);
+
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;
+            foreach ($sexes as $sex) {
+                if (!isset($sexData['datasets'][$sex])) {
+                    $sexData['datasets'][$sex] = [
+                        'label' => dgettext("sex", ucwords($sex)),
+                        'data' => [],
+                    ];
+                }
 
-            $sexData['datasets']['female'][]
-                = $processed_data[$siteID]['female'] ?? 0;
-
-            $sexData['datasets']['male'][]
-                = $processed_data[$siteID]['male'] ?? 0;
+                $sexData['datasets'][$sex]['data'][]
+                    = $processed_data[$siteID][$sex] ?? 0;
+            }
         }
 
         return (new \LORIS\Http\Response\JsonResponse($sexData));
@@ -367,7 +376,7 @@ class Charts extends \NDB_Page
             }
 
             $ageData['datasets'][] = [
-                'name' => $projectData['name'],
+                'name' => dgettext("Project", $projectData['name']),
                 'data' => $data
             ];
         }
@@ -426,7 +435,7 @@ class Charts extends \NDB_Page
             if ($id == null) {
                 $id = dgettext("statistics", "Unknown");
             }
-            $label = $id;
+            $label = dgettext("candidate",$id);
             $recruitmentByEthnicityData[] = ["label" => $label, "total" => $count];
         }
 
