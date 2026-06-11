@@ -142,9 +142,6 @@ msgstr "删除错误！"
 msgid "Delete Successful!"
 msgstr "删除成功！"
 
-msgid "Upload"
-msgstr "上传"
-
 msgid "File Name"
 msgstr "文件名"
 
