@@ -111,7 +111,12 @@ class Module extends \Module
             if (count($studyqueries) > 0) {
                 $widgets[] = new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
-                        dngettext("dataquery", "Study Query", "Study Queries", count($studyqueries)),
+                        dngettext(
+                            "dataquery",
+                            "Study Query",
+                            "Study Queries",
+                            count($studyqueries)
+                        ),
                         $this->renderTemplate(
                             "studyquerieswidget.tpl",
                             [
