@@ -111,7 +111,7 @@ function AddFilterModal(props: {
   const [op, setOp] = useState<Operators|null>(null);
   const [value, setValue] = useState<string|string[]>('');
   const [selectedVisits, setSelectedVisits] = useState<string[]|null>(null);
-   const [hasUserMadeSelection, setHasUserMadeSelection] = useState(false);
+  const [hasUserMadeSelection, setHasUserMadeSelection] = useState(false);
 
   const dropdownTitle = t('Field', {ns: 'dataquery', count: 99});
   if (props.displayedFields) {
