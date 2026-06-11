@@ -43,9 +43,6 @@ msgstr ""
 msgid "Signal Viewer"
 msgstr ""
 
-msgid "SessionID"
-msgstr ""
-
 msgid "split {{splitNum}}"
 msgstr ""
 

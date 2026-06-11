@@ -45,9 +45,6 @@ msgstr "सीरीज़ यूआईडी"
 msgid "TarchiveID"
 msgstr "टीआर्काइवआईडी"
 
-msgid "SessionID"
-msgstr "सत्र आईडी"
-
 msgid "CenterID"
 msgstr "केंद्र आईडी"
 

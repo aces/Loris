@@ -238,6 +238,9 @@ msgid "Session"
 msgid_plural "Sessions"
 msgstr[0] ""
 
+msgid "SessionID"
+msgstr "Identifiant de session"
+
 msgid "Date of registration"
 msgstr ""
 

@@ -274,6 +274,9 @@ msgid_plural "Sessions"
 msgstr[0] "सत्र"
 msgstr[1] "सत्र"
 
+msgid "SessionID"
+msgstr "सत्र आईडी"
+
 msgid "Date of registration"
 msgstr "पंजीकरण की तिथि"
 

@@ -48,9 +48,6 @@ msgstr "नया डेटा"
 msgid "Links"
 msgstr "लिंक"
 
-msgid "SessionID"
-msgstr "सेशन आईडी"
-
 msgid "Sequence Type"
 msgstr "सीक्वेंस प्रकार"
 

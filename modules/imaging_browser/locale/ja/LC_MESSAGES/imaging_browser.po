@@ -77,9 +77,6 @@ msgstr "新しいデータ"
 msgid "Links"
 msgstr "リンク"
 
-msgid "SessionID"
-msgstr "SessionID"
-
 msgid "Sequence Type"
 msgstr "シーケンスタイプ"
 

@@ -63,10 +63,6 @@ msgid "Links"
 msgstr "Liens"
 
 #, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
-
-#, fuzzy
 msgid "Sequence Type"
 msgstr "Type de séquence"
 

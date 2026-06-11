@@ -13,40 +13,41 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Imaging Quality Control"
-msgstr ""
+msgstr "Contrôle de la qualité de l'imagerie"
 
 msgid "MRI Parameter Form table does not exist"
-msgstr ""
+msgstr "Le tableau « Formulaire des paramètres IRM » n'existe pas"
 
 msgid "Scan Type"
-msgstr ""
+msgstr "Type de scan"
 
 msgid "MRI Parameter Form"
-msgstr ""
+msgstr "Formulaire des paramètres IRM"
 
 msgid "Scan Done in MRI PF"
-msgstr ""
+msgstr "Examen IRM réalisé"
 
 msgid "TarchiveID"
-msgstr ""
+msgstr "ID de tarchive"
 
 msgid "Scan Location"
-msgstr ""
+msgstr "Emplacement de scan"
 
 msgid "QC Status"
-msgstr ""
+msgstr "État du contrôle qualité"
 
 msgid "CommentID"
-msgstr ""
+msgstr "ID de commentaire"
 
-msgid "The MRI parameter form instrument must be installed in-order to use this module. "
-msgstr ""
+msgid "The MRI parameter form instrument must be installed in-order to use this module."
+msgstr "Pour pouvoir utiliser ce module, il est nécessaire d'installer l'outil de configuration des paramètres IRM."
 
 msgid "Please contact your administrator if you require this functionality."
-msgstr ""
+msgstr "Veuillez contacter votre administrateur si vous avez besoin de cette fonctionnalité."

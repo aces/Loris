@@ -50,10 +50,6 @@ msgid "Signal Viewer"
 msgstr "Visualiseur de signaux"
 
 #, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
-
-#, fuzzy
 msgid "split {{splitNum}}"
 msgstr "diviser {{splitNum}}"
 

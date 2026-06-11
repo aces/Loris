@@ -197,6 +197,9 @@ msgstr[1] "Cohortes"
 msgid "Session"
 msgstr ""
 
+msgid "SessionID"
+msgstr "Identificador de sesión"
+
 msgid "Date of registration"
 msgstr ""
 

@@ -234,6 +234,9 @@ msgid "Session"
 msgid_plural "Sessions"
 msgstr[0] "会话"
 
+msgid "SessionID"
+msgstr "会话ID"
+
 msgid "Date of registration"
 msgstr "注册日期"
 

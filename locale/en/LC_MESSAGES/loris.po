@@ -160,6 +160,9 @@ msgstr[1] "Cohorts"
 msgid "Session"
 msgstr "Session"
 
+msgid "SessionID"
+msgstr "SessionID"
+
 msgid "Date of registration"
 msgstr "Date of registration"
 

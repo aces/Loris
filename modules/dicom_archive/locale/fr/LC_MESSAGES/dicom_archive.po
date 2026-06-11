@@ -53,10 +53,6 @@ msgid "TarchiveID"
 msgstr "ID de tarchive"
 
 #, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
-
-#, fuzzy
 msgid "CenterID"
 msgstr "Site ID"
 

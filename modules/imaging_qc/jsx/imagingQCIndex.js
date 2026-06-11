@@ -7,7 +7,9 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line no-unused-vars
 import i18n from 'I18nSetup';
 
+import hiStrings from '../locale/hi/LC_MESSAGES/imaging_qc.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/imaging_qc.json';
+import frStrings from '../locale/fr/LC_MESSAGES/imaging_qc.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/imaging_qc.json';
 /**
  * Imaging Quality Control React Component
@@ -122,7 +124,7 @@ class ImagingQCIndex extends Component {
             type: 'text',
           },
         },
-        {label: t('Session ID', {ns: 'loris'}), show: true},
+        {label: t('SessionID', {ns: 'loris'}), show: true},
         {
           label: t('DCCID', {ns: 'loris'}), show: true, filter: {
             name: 'candId',
@@ -238,7 +240,7 @@ class ImagingQCIndex extends Component {
             <>
               <h3>{t(
                   'The MRI parameter form instrument must be installed in-order '
-                  + ' to use this module.', {ns: 'imaging_qc'})}
+                  + 'to use this module.', {ns: 'imaging_qc'})}
               </h3>
               <p>{t(
                   'Please contact your administrator '
@@ -261,8 +263,10 @@ ImagingQCIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  i18n.addResourceBundle('ja', 'document_repository', jaStrings);
-  i18n.addResourceBundle('zh', 'document_repository', zhStrings);
+  i18n.addResourceBundle('hi', 'imaging_qc', hiStrings);
+  i18n.addResourceBundle('ja', 'imaging_qc', jaStrings);
+  i18n.addResourceBundle('zh', 'imaging_qc', zhStrings);
+  i18n.addResourceBundle('fr', 'imaging_qc', frStrings);
 
   const TranslatedImagingQCIndex = withTranslation(
     ['imaging_qc', 'loris']
