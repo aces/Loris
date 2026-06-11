@@ -4,14 +4,21 @@ import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import Loader from 'Loader';
 import {
-    SearchableDropdown,
-    SelectElement,
-    FormElement,
-    TextboxElement,
-    TextareaElement,
-    FileElement,
-    ButtonElement,
+  SearchableDropdown,
+  SelectElement,
+  FormElement,
+  TextboxElement,
+  TextareaElement,
+  FileElement,
+  ButtonElement,
 } from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
+import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/document_repository.json';
 
 /**
  * Media Upload Form
@@ -87,12 +94,14 @@ class DocUploadForm extends Component {
    */
   render() {
     // Data loading error
+    const {t} = this.props;
     if (this.state.error) {
-       return <h3>An error occured while loading the page.</h3>;
-     }
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
+    }
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (<Loader/>);
+      return (<Loader />);
     }
     return (
       <div className="row">
@@ -103,20 +112,19 @@ class DocUploadForm extends Component {
             onSubmit={this.uploadFiles}
             method="POST"
           >
-            <h3>Upload files</h3><br/>
+            <h3>{t('Upload files', {ns: 'document_repository'})}</h3><br />
             <SelectElement
               name="category"
-              label="Category"
+              label={t('Category', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
-              hasError={false}
               required={true}
               value={this.state.formData.category}
             />
             <SearchableDropdown
               name="forSite"
-              label="Site"
-              placeHolder="Search for site"
+              label={t('Site', {ns: 'loris', count: 1})}
+              placeHolder={t('Search for site', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.sites}
               strictSearch={true}
               onUserInput={this.setFormData}
@@ -125,44 +133,45 @@ class DocUploadForm extends Component {
             />
             <SelectElement
               name="instrument"
-              label="Instrument"
+              label={t('Instrument', {ns: 'loris', count: 1})}
               options={this.state.data.fieldOptions.instruments}
               onUserInput={this.setFormData}
               value={this.state.formData.instrument}
             />
             <TextboxElement
               name="pscid"
-              label="PSCID"
+              label={t('PSCID', {ns: 'loris'})}
               onUserInput={this.setFormData}
               value={this.state.formData.pscid}
             />
             <TextboxElement
               name="visitLabel"
-              label="Visit Label"
+              label={t('Visit Label', {ns: 'loris'})}
               onUserInput={this.setFormData}
               value={this.state.formData.visitLabel}
             />
             <TextboxElement
               name="version"
-              label="Version"
+              label={t('Version', {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               value={this.state.formData.version}
             />
             <TextareaElement
               name="comments"
-              label="Comments"
+              label={t('Comments', {ns: 'document_repository'})}
               onUserInput={this.setFormData}
               value={this.state.formData.comments}
             />
             {
               loris.userHasPermission('document_repository_hidden') ?
                 (<SelectElement
-                name="hiddenFile"
-                label="Restrict access to the file?"
-                options={this.state.data.fieldOptions.hiddenFile}
-                sortByValue={false}
-                onUserInput={this.setFormData}
-                value={this.state.formData.hiddenFile}
+                  name="hiddenFile"
+                  label={t('Restrict access to the file?',
+                    {ns: 'document_repository'})}
+                  options={this.state.data.fieldOptions.hiddenFile}
+                  sortByValue={false}
+                  onUserInput={this.setFormData}
+                  value={this.state.formData.hiddenFile}
                 />) :
                 null
             }
@@ -170,14 +179,15 @@ class DocUploadForm extends Component {
               name="files"
               id="docUploadEl"
               onUserInput={this.setFormData}
-              label="File(s) to upload"
+              label={t('File(s) to upload', {ns: 'document_repository'})}
               required={true}
               value={this.state.formData.files}
               allowMultiple={true}
             />
             <ButtonElement
-              label="Upload File(s)"
+              label={t('Upload File(s)', {ns: 'document_repository'})}
               disabled={this.state.uploadInProgress}
+              disabledLabel={t('Uploading...', {ns: 'document_repository'})}
             />
           </FormElement>
         </div>
@@ -204,9 +214,9 @@ class DocUploadForm extends Component {
         if (formData[key] !== '') {
           if (key === 'files' &&
             document.querySelector('.fileUpload').multiple) {
-              Array.from(formData[key]).forEach((file) => {
-                formObject.append('files[]', file);
-              });
+            Array.from(formData[key]).forEach((file) => {
+              formObject.append('files[]', file);
+            });
           } else {
             formObject.append(key, formData[key]);
           }
@@ -223,47 +233,71 @@ class DocUploadForm extends Component {
           if (resp.ok) {
             resp.json().then((data) => {
               if (data.error_count === 0) {
-                swal.fire('Upload Successful!', '', 'success')
-                  .then((result) => {
-                    if (result.value) {
-                      this.setState({formData: {}});
-                      this.props.refreshPage();
-                    }
+                swal.fire(
+                  this.props.t('Upload Successful!',
+                    {ns: 'document_repository'}),
+                  '',
+                  'success'
+                ).then((result) => {
+                  if (result.value) {
+                    this.setState({formData: {}});
+                    this.props.refreshPage();
+                  }
                 });
               } else {
                 console.error(resp);
-                swal.fire('Upload Incomplete', data.message, 'warning');
+                swal.fire(
+                  this.props.t('Upload Incomplete',
+                    {ns: 'document_repository'}),
+                  data.message,
+                  'warning'
+                );
               }
             }).catch((error) => {
               console.error(error);
               swal.fire(
-                'Error reading response',
-                'Please report the issue or contact your administrator',
+                this.props.t('Error reading response',
+                  {ns: 'document_repository'}),
+                this.props.t(
+                  'Please report the issue or contact your administrator',
+                  {ns: 'document_repository'}),
                 'error'
               );
             });
           } else {
-              if (resp.status == 413) {
-                swal.fire('File too large', 'Could not upload file', 'error');
-              }
-              if (resp.status == 403) {
-                swal.fire('Permission denied',
-                    'Could not upload file',
-                    'error'
-                );
-              }
-              if (resp.status == 400) {
-                swal.fire('Something went wrong',
-                    JSON.parse(resp.response).message,
-                    'error'
-                );
-              }
+            if (resp.status == 413) {
+              swal.fire(
+                this.props.t('File too large', {ns: 'document_repository'}),
+                this.props.t('Could not upload file',
+                  {ns: 'document_repository'}),
+                'error'
+              );
+            }
+            if (resp.status == 403) {
+              swal.fire(
+                this.props.t('Permission denied', {ns: 'loris'}),
+                this.props.t('Could not upload file',
+                  {ns: 'document_repository'}),
+                'error'
+              );
+            }
+            if (resp.status == 400) {
+              swal.fire(
+                this.props.t('Something went wrong',
+                  {ns: 'document_repository'}),
+                JSON.parse(resp.response).message,
+                'error'
+              );
+            }
           }
         }).catch((error) => {
           console.error(error);
           swal.fire(
-            'Something went wrong',
-            'Please report the issue or contact your administrator',
+            this.props.t('Something went wrong',
+              {ns: 'document_repository'}),
+            this.props.t(
+              'Please report the issue or contact your administrator',
+              {ns: 'document_repository'}),
             'error'
           );
         }).finally(() => this.setState({uploadInProgress: false}));
@@ -292,6 +326,19 @@ DocUploadForm.propTypes = {
   action: PropTypes.string.isRequired,
   refreshPage: PropTypes.func.isRequired,
   category: PropTypes.bool,
+  t: PropTypes.func,
 };
 
-export default DocUploadForm;
+export default withTranslation(['document_repository', 'loris'])(DocUploadForm);
+
+window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'document_repository', hiStrings);
+  i18n.addResourceBundle('ja', 'document_repository', jaStrings);
+  i18n.addResourceBundle('fr', 'document_repository', frStrings);
+  i18n.addResourceBundle('zh', 'document_repository', zhStrings);
+
+  const element = document.getElementById('lorisworkspace');
+  if (!element) {
+    throw new Error('Missing lorisworkspace');
+  }
+});

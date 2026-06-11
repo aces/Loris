@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
+
 /**
  * PHP Version 8
  *
@@ -190,7 +191,7 @@ use \Psr\Http\Message\ResponseInterface;
  * it.
  */
 class some_api extends \LORIS\Http\Endpoint {
-    public function _hasAccess(\User \$user) : bool {
+    public function isAccessibleBy(\User \$user) : bool {
         // XXX: Add permission checks here if necessary.
         return true;
     }

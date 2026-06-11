@@ -1,16 +1,16 @@
 ## Imaging Browser test plan
-	
+
 ### Imaging Browser main page
 1. User can access Imaging Browser module front page if and only if they have permission `imaging_browser_view_site`, `imaging_browser_view_allsites`, `imaging_browser_phantom_allsites` or `imaging_browser_phantom_ownsite`.
  [Partial Automation Testing]
-2. User can see other sites Imaging datasets if and only if has permission `imaging_browser_view_allsites`. User can see only own site Imaging datasets if and only if has permission `imaging_browser_view_site`. User can see phantom data only from across all sites with the `imaging_browser_phantom_allsites`, and from own sites with `imaging_browser_phantom_ownsite`. 
+2. User can see other sites Imaging datasets if and only if has permission `imaging_browser_view_allsites`. User can see only own site Imaging datasets if and only if has permission `imaging_browser_view_site`. User can see phantom data only from across all sites with the `imaging_browser_phantom_allsites`, and from own sites with `imaging_browser_phantom_ownsite`.
  [Partial Automation Testing]
 3. Test that all filters work. When the Site filter is empty, all sites with which the user is associated should be displayed. Every site should be displayed if the user has the `imaging_browser_view_allsites` permission.
 [Automation Testing]
 4. Test Clear Filters button. [Automation Testing]
 5. Test column table is sortable by headers.
 6. Ensure that the hyperlinks in the Links column are active and load the correct dataset.
-7. Add more modalities (from the Scan_type column of the `mri_scan_type` table) to the Configuration -> Imaging Modules -> Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table. (This requires back-end access)
+7. Add more modalities (from the `MriScanTypeName` column of the `mri_scan_type` table) to the Configuration -> Imaging Modules -> Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table. (This requires back-end access)
 
 ### View Session / Volume List
 8. Make sure a user can only access the viewSession page if and only if at least one of the following cases is true:
@@ -18,8 +18,8 @@
    - The session's candidate is of entity type "scanner" and the user has the permission `imaging_browser_phantom_ownsite` while being affiliated to the site and the project to which this session belongs.
    - The session's candidate is of entity type "human" and the user has the permission `imaging_browser_view_allsites` while being affiliated to the project to which this session belongs.
    - The session's candidate is of entity type "human" and the user has the permission `imaging_browser_view_site` while being affiliated to the site and the project to which this session belongs.
-9. Sidebar:  
-   - Ensure that all links work, including the Download DICOM option. 
+9. Sidebar:
+   - Ensure that all links work, including the Download DICOM option.
    - Ensure that projects can customize (add/remove) their list of instruments that can be linked to from the Configuration -> Imaging Modules -> Imaging Browser Links to Insruments.
 10. Select an image using the checkbox above the volume previews. Click the "3D Only" and "3D + Overlay" buttons. These should load the Brain Browser module.
 11. Visit level QC controls (Pass/Fail, Pending, Visit Level Caveat) viewable to all, editable if and only if user has permission `imaging_browser_qc`.
@@ -53,7 +53,7 @@ prepended with the Patient Name.
 25. Longitudinal View button launches the BrainBrowser with images of the chosen modality for that specific candidate across visits/timepoints.
 
 ### MRI-QC : Scan-level (QC Comments) dialog window
-26. With the permission `imaging_browser_qc`, edit comments, checkboxes, and dropdown values. 
+26. With the permission `imaging_browser_qc`, edit comments, checkboxes, and dropdown values.
 27. Clicking Save should update the values.
 28. Data should not be editable without this permission.
 

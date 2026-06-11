@@ -82,13 +82,13 @@ class SNP extends Component {
   formatColumn(column, cell, rowData, rowHeaders) {
     let reactElement;
     switch (column) {
-      case 'PSCID':
-        const url = `${this.props.baseURL}/${rowData.DCCID}/`;
-        reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
-        break;
-      default:
-        reactElement = <td>{cell}</td>;
-        break;
+    case 'PSCID':
+      const url = `${this.props.baseURL}/${rowData.DCCID}/`;
+      reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
+      break;
+    default:
+      reactElement = <td>{cell}</td>;
+      break;
     }
     return reactElement;
   }
@@ -198,10 +198,10 @@ class SNP extends Component {
         show: false,
       },
       {
-        label: 'Name',
+        label: 'Gene Name',
         show: false,
         filter: {
-          name: 'Name',
+          name: 'Gene Name',
           type: 'text',
         },
       },
@@ -223,10 +223,10 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Name',
+        label: 'SNP Name',
         show: false,
         filter: {
-          name: 'Name',
+          name: 'SNP Name',
           type: 'text',
         },
       },

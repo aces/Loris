@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\electrophysiology_browser;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -7,7 +8,7 @@ use LORIS\electrophysiology_browser\Models\ElectrophysioFile;
 /**
  * Contains the Split_Data class used for electrophysiological browser
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Electrophysiology
  * @package  Electrophysiology

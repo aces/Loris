@@ -80,22 +80,21 @@ class GWAS extends Component {
       'PSC',
       'DCCID',
       'externalID',
-      'DoB',
     ];
     let reactElement;
     if (-1 === hiddenHeaders.indexOf(column)) {
       switch (column) {
-        case 'PSCID':
-          const url = `${this.props.baseURL}/${cell}/`;
-          reactElement = (
-            <td><a href={url}>{rowData.PSCID}</a></td>
-          );
-          break;
-        default:
-          reactElement = (
-            <td>{cell}</td>
-          );
-          break;
+      case 'PSCID':
+        const url = `${this.props.baseURL}/${cell}/`;
+        reactElement = (
+          <td><a href={url}>{rowData.PSCID}</a></td>
+        );
+        break;
+      default:
+        reactElement = (
+          <td>{cell}</td>
+        );
+        break;
       }
     }
     return reactElement;

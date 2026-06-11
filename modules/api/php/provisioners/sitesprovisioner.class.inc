@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get the site information
  * of all sites accessible to a given user.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -20,7 +21,7 @@ use \LORIS\Data\Provisioners\DBObjectProvisioner;
  * This class implements a data provisioner to get the site information
  * of all site accessible to a given user.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris

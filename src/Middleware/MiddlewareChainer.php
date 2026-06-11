@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * File defines the MiddlewareChainer interface.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Interfaces
  * @package  Middleware

@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the Test Endpoint.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Battery_Manager
@@ -21,7 +22,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Handles requests for retrieving and saving Test Instances.
  * Allows users to add, activate, and deactivate entries in the test battery.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Battery_Manager
@@ -53,7 +54,8 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return true;
     }
@@ -74,20 +76,6 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         return $handler->handle($request);
-    }
-
-    /**
-     * This function can be overridden in a module's page to load the necessary
-     * resources to check the permissions of a user.
-     *
-     * @param \User                  $user    The user to load the resources for
-     * @param ServerRequestInterface $request The PSR15 Request being handled
-     *
-     * @return void
-     */
-    public function loadResources(
-        \User $user, ServerRequestInterface $request
-    ) : void {
     }
 
     /**
@@ -156,7 +144,10 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _postInstance(ServerRequestInterface $request)
     {
         $testArray = json_decode($request->getBody()->getContents(), true);
-        $test      = new Test($this->loris, null, $testArray);
+        $dde       = 'DoubleDataEntryEnabled';
+        $testArray[$dde] = $testArray[$dde] ?? 'N';
+
+        $test = new Test($this->loris, null, $testArray);
         $test->row['active'] = 'Y';
         return $this->_saveInstance($test, "post");
     }
@@ -218,7 +209,8 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                          CohortID,
                          Visit_label,
                          CenterID,
-                         firstVisit
+                         firstVisit,
+                         DoubleDataEntryEnabled as DDE_enabled
                   FROM test_battery";
         // Select duplicate entry from Test Battery
         $entries = $this->db->pselect($query, []);
@@ -234,6 +226,7 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
                 && $testArray['Visit_label'] == $entry['Visit_label']
                 && $testArray['CenterID'] == $entry['CenterID']
                 && $testArray['firstVisit'] == $entry['firstVisit']
+                && $testArray['DoubleDataEntryEnabled'] == $entry['DDE_enabled']
             ) {
                 return true;
             }

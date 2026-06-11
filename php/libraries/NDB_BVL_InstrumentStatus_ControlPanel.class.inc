@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * File contains NDB_BVL_InstrumentStatus_ControlPanel class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Behavioural
@@ -158,7 +159,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         $html = $smarty->fetch("instrumentstatus_controlpanel.tpl");
         return $html;
     }
-
 
     /**
      * Saves changes to the flags based on interaction with the control panel
@@ -416,7 +416,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         // make sure user belongs to same site as timepoint
         if (!$user->hasPermission('data_entry')
             || !in_array(
-                $timePoint->getData('CenterID'),
+                $timePoint->getCenterID(),
                 $user->getCenterIDs()
             )
         ) {

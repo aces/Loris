@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Schedule_module automated integration tests
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -34,6 +35,7 @@ class ScheduleTest extends LorisIntegrationTest
                       "div > div.swal2-actions > button.swal2-confirm.swal2-styled";
     static $create  = "#addScheduleForm > div > div:nth-child(7) ".
                        "> div > div > button";
+
     /**
      * Insert an appointment
      *
@@ -48,11 +50,12 @@ class ScheduleTest extends LorisIntegrationTest
                 'AppointmentID'     => '1',
                 'SessionID'         => '1',
                 'AppointmentTypeID' => '2',
-                'StartsAt'          => '2025-02-02 02:02:02',
+                'StartsAt'          => '2027-02-02 02:02:02',
             ]
         );
 
     }
+
     /**
      * Delete an appointment
      *
@@ -80,6 +83,7 @@ class ScheduleTest extends LorisIntegrationTest
         $this->assertStringNotContainsString("An error occurred", $bodyText);
 
     }
+
     /**
      * Tests that, the homepage should have "Schedule Module"
      * on the page with permission.
@@ -96,6 +100,7 @@ class ScheduleTest extends LorisIntegrationTest
             "Schedule Appointment"
         );
     }
+
     /**
      * Tests add an appointment
      *
@@ -117,6 +122,7 @@ class ScheduleTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("Add Appointment", $bodyText);
     }
+
     /**
      * Tests edit an appointment
      *
@@ -151,6 +157,7 @@ class ScheduleTest extends LorisIntegrationTest
         );
 
     }
+
     /**
      * Tests delete an appointment
      *
@@ -175,6 +182,7 @@ class ScheduleTest extends LorisIntegrationTest
             $bodyText
         );
     }
+
     /**
      * Helper function to set up and load a page with a given permisison code.
      *

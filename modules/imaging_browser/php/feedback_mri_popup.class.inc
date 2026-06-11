@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Imaging browser MRI Feedback class file.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category MRI
  * @package  Loris
@@ -91,7 +92,7 @@ class Feedback_MRI_Popup extends \NDB_Page
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
-                "Feedback MRI Popup",
+                dgettext("imaging_browser", "Feedback MRI Popup"),
                 "/imaging_browser/$this->page/$pageID"
             )
         );
@@ -127,7 +128,8 @@ class Feedback_MRI_Popup extends \NDB_Page
      *
      * @return bool whether the user hass access
      */
-    function _hasAccess(\User $user): bool
+    #[\Override]
+    public function isAccessibleBy(\User $user): bool
     {
         return $user->hasAnyPermission(
             [
@@ -162,26 +164,29 @@ class Feedback_MRI_Popup extends \NDB_Page
 
         // get identifier of subject/volume
         if ($feedbackObj->fileID) {
-            $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label,
-                             s.CohortID, f.File AS File_name, st.Scan_type
+            $query = "SELECT c.CandID AS DCCID, c.PSCID,
+                             s.Visit_label as Visit_Label,
+                             co.title AS Cohort, f.File AS File_name,
+                             mst.MriScanTypeName AS ScanType
                       FROM files AS f, session AS s, candidate AS c,
-                           mri_scan_type AS st
+                           mri_scan_type AS mst, cohort co
                       WHERE f.FileID=:FID
                           AND f.SessionID=s.ID
-                          AND s.CandID=c.CandID
-                          AND f.AcquisitionProtocolID=st.ID
+                          AND s.CandidateID=c.ID
+                          AND f.MriScanTypeID=mst.MriScanTypeID
                           AND s.Active='Y'";
 
             $qparams = ['FID' => $feedbackObj->fileID];
         } elseif ($feedbackObj->sessionID) {
-            $query = "SELECT c.CandID, c.PSCID, s.Visit_label, s.CohortID
-                FROM session AS s, candidate AS c
-              WHERE s.ID=:SID AND s.CandID=c.CandID AND s.Active='Y'";
+            $query = "SELECT c.CandID AS DCCID,
+                c.PSCID, s.Visit_label as Visit_Label, co.title AS Cohort
+                FROM session AS s, candidate AS c, cohort co
+              WHERE s.ID=:SID AND s.CandidateID=c.ID AND s.Active='Y'";
 
             $qparams = ['SID' => $feedbackObj->sessionID];
         } else {
             $query = "SELECT c.CandID FROM session AS s, candidate AS c
-                WHERE s.ID=:SID AND s.CandID=c.CandID AND s.Active='Y'";
+                WHERE s.ID=:SID AND s.CandidateID=c.ID AND s.Active='Y'";
 
             $qparams = ['SID' => $this->session_id];
         }
@@ -189,6 +194,9 @@ class Feedback_MRI_Popup extends \NDB_Page
         if (count($result) > 0) {
             $i = 0;
             foreach ($result[0] as $key => $value) {
+                if ($key === 'CandID') {
+                    $key = 'DCCID';
+                }
                 $tpl_data['identifier'][$i]['name']  = str_replace('_', ' ', $key);
                 $tpl_data['identifier'][$i]['value'] = $value;
                 $i++;
@@ -221,9 +229,8 @@ class Feedback_MRI_Popup extends \NDB_Page
                     );
             }
 
-            if (is_array($comment_array)) {
-                $CommentTpl['name'] = $comment_array['name'];
-            }
+            $CommentTpl['name']
+                = dgettext("imaging_browser", $comment_array['name']);
 
             // get the list of predefined feedbackObj for the current type
             $predefined_comments = $feedbackObj->getAllPredefinedComments(
@@ -302,9 +309,7 @@ class Feedback_MRI_Popup extends \NDB_Page
         }
 
         // save all comment status fields
-        if (isset($values['saveCommentStatusField'])
-            && is_array($values['saveCommentStatusField'])
-        ) {
+        if (isset($values['saveCommentStatusField'])) {
             foreach ($values['saveCommentStatusField'] as $status_field => $value) {
                 $feedbackObj->setMRIValue($status_field, $value);
             }
@@ -327,5 +332,4 @@ class Feedback_MRI_Popup extends \NDB_Page
         $html = $smarty->fetch("form_feedback_mri_popup.tpl");
         return $html;
     }
-
 }

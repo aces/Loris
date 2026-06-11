@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * A representation of a CenterID object. A CenterID is always an integer
  *
@@ -22,7 +23,6 @@ class CenterID extends ValidatableIdentifier implements \JsonSerializable
         }
         return $cache[$id];
     }
-
 
     /**
      * Returns this identifier type

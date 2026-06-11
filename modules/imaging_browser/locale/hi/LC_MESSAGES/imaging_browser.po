@@ -1,0 +1,205 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Imaging Browser"
+msgstr "इमेजिंग ब्राउज़र"
+
+msgid "View Session"
+msgstr "सत्र देखें"
+
+msgid "New and pending imaging session"
+msgstr "नई और लंबित इमेजिंग सत्र"
+
+msgid "New and pending imaging sessions"
+msgstr "नई और लंबित इमेजिंग सत्रों"
+
+msgid "Visit QC Status"
+msgstr "विजिट QC स्थिति"
+
+msgid "First Acquisition"
+msgstr "पहला अधिग्रहण"
+
+msgid "First Insertion"
+msgstr "पहला सम्मिलन"
+
+msgid "Last QC"
+msgstr "अंतिम QC"
+
+msgid "New Data"
+msgstr "नया डेटा"
+
+msgid "Links"
+msgstr "लिंक"
+
+msgid "SessionID"
+msgstr "सेशन आईडी"
+
+msgid "Sequence Type"
+msgstr "सीक्वेंस प्रकार"
+
+msgid "Pending New"
+msgstr "लंबित नया"
+
+msgid "QC Status"
+msgstr "QC स्थिति"
+
+msgid "Caveat"
+msgstr "चेतावनी"
+
+msgid "SNR"
+msgstr "सिग्नल-से-शोर अनुपात"
+
+msgid "all types"
+msgstr "सभी प्रकार"
+
+msgid "Header Info"
+msgstr "हेडर जानकारी"
+
+msgid "Download Image"
+msgstr "इमेज डाउनलोड करें"
+
+msgid "Longitudinal View"
+msgstr "लंबवत दृश्य"
+
+msgid "QC Comments"
+msgstr "QC टिप्पणियाँ"
+
+msgid "Series Instance UID"
+msgstr "सीरीज इंस्टेंस UID"
+
+msgid "Number of Scans"
+msgstr "स्कैन की संख्या"
+
+msgid "Red bar denotes number of failed QC scans."
+msgstr "लाल बार असफल QC स्कैन की संख्या दर्शाता है।"
+
+msgid "Green bar denotes number of passed QC scans."
+msgstr "हरा बार पास किए गए QC स्कैन की संख्या दर्शाता है।"
+
+msgid "Grey bar denotes other QC statuses."
+msgstr "ग्रे बार अन्य QC स्थितियाँ दर्शाता है।"
+
+msgid "Different shades represent different modalities. Only native modalities are displayed in results."
+msgstr "विभिन्न शेड्स विभिन्न मोडैलिटी का प्रतिनिधित्व करते हैं। केवल मूल मोडैलिटी परिणामों में दिखाई जाती हैं।"
+
+msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
+msgstr "किसी भी विजिट पर होवर करें ताकि विजिट के लिए विस्तृत मोडैलिटी ब्रेकडाउन देखें, क्लिक करें और इमेजिंग ब्राउज़र पर जाएं।"
+
+msgid "%1 file(s) displayed."
+msgstr "%1 फ़ाइल(ओं) प्रदर्शित।"
+
+msgid "No data available"
+msgstr "कोई डेटा उपलब्ध नहीं है"
+
+msgid "Patient Name"
+msgstr "रोगी का नाम"
+
+msgid "QC Pending"
+msgstr "गुणवत्ता नियंत्रण लंबित"
+
+msgid "Output Type"
+msgstr "आउटपुट प्रकार"
+
+msgid "Scanner"
+msgstr "स्कैनर"
+
+msgid "Human"
+msgstr "मानव"
+
+msgid "EDC"
+msgstr "ईडीसी"
+
+msgid "Navigation"
+msgstr "नेविगेशन"
+
+msgid "Back to list"
+msgstr "सूची में वापस जाएँ"
+
+msgid "Volume Viewer"
+msgstr "वॉल्यूम व्यूअर"
+
+msgid "3D Only"
+msgstr "केवल 3D"
+
+msgid "3D + Overlay"
+msgstr "3D + ओवरले"
+
+msgid "Report a Bug (Mantis)"
+msgstr "बग रिपोर्ट करें (मैन्टिस)"
+
+msgid "Visit Level QC"
+msgstr "भेंट स्तर गुणवत्ता नियंत्रण"
+
+msgid "Visit Level Feedback"
+msgstr "भेंट स्तर प्रतिक्रिया"
+
+msgid "Visit Level Caveat"
+msgstr "भेंट स्तर चेतावनी"
+
+msgid "DCC MRI Quality Control"
+msgstr "डीसीसी एमआरआई गुणवत्ता नियंत्रण"
+
+msgid "Click here to close this window"
+msgstr "इस विंडो को बंद करने के लिए यहाँ क्लिक करें"
+
+msgid "Comments saved."
+msgstr "टिप्पणियाँ सहेजी गईं।"
+
+msgid "Voxel Size"
+msgstr "वॉक्सल का आकार"
+
+msgid "Protocol"
+msgstr "प्रोटोकॉल"
+
+msgid "Acquisition Date"
+msgstr "अधिग्रहण तिथि"
+
+msgid "Inserted Date"
+msgstr "प्रविष्ट तिथि"
+
+msgid "Series Number"
+msgstr "श्रृंखला संख्या"
+
+msgid "Series Description"
+msgstr "श्रृंखला का विवरण"
+
+msgid "Slice Thick"
+msgstr "मोटा काटें"
+
+msgid "Phase Encoding Direction"
+msgstr "चरण एन्कोडिंग दिशा"
+
+msgid "Image Type"
+msgstr "छवि का प्रकार"
+
+msgid "Echo Number"
+msgstr "प्रतिध्वनि संख्या"
+
+msgid "Number of volumes"
+msgstr "खंडों की संख्या"
+
+msgid "Feedback MRI Popup"
+msgstr "फीडबैक एमआरआई पॉपअप"
+
+msgid "Subject"
+msgstr "विषय"
+
+msgid "Download DICOM"
+msgstr "DICOM डाउनलोड करें"

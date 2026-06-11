@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
+
 /**
  * This defines the entity type property for a Candidate. It is a Value Object used
  * to assist with validation.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  LORIS

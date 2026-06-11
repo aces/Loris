@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\oidc;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -105,5 +106,4 @@ class Login extends \NDB_Page
         }
         return $respjson;
     }
-
 }

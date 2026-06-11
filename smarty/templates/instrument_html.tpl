@@ -1,5 +1,8 @@
 <script type="text/javascript" src="{$baseurl}/js/instrument_form_control.js"></script>
 <style type="text/css">
+	.table-instrument {
+		white-space: nowrap;
+	}
 	.table-instrument>tbody>tr>th{
 		color: black;
 	}
@@ -14,20 +17,29 @@
   <thead>
   <tr class="info">
     <th>
-      DOB
+      {dgettext("timepoint_list", "Derived Age")}
     </th>
-    {if $candidate.EDC!=""}
-      <th>
-        EDC
-      </th>
-    {/if}
     <th>
-      Biological Sex
+      {dgettext("timepoint_list", "EDC Age")}
     </th>
-    {if $candidate.ProjectTitle != ""}
+    <th>
+      {dgettext("timepoint_list", "Biological Sex")}
+    </th>
+    {if $candidate.ProjectTitle == $candidate.ProjectName && $candidate.ProjectName != ""}
       <th>
-        Project
+        {dgettext("loris", "Project")}
       </th>
+    {else}
+      {if $candidate.ProjectTitle != ""}
+        <th>
+          {dgettext("loris", "Candidate Registration Project")}
+        </th>
+      {/if}
+      {if $candidate.ProjectName != ""}
+        <th>
+          {dgettext("loris", "Timepoint Project")}
+        </th>
+      {/if}
     {/if}
     {foreach from=$candidate.DisplayParameters item=value key=name}
       <th>
@@ -35,22 +47,22 @@
       </th>
     {/foreach}
       <th>
-        Visit Label
+        {dgettext("loris", "Visit Label")}
       </th>
       <th>
-        Visit to Site
+        {dgettext("instrument_list", "Visit to Site")}
       </th>
       <th>
-        Cohort
+        {dgettext("loris", "Cohort")}
       </th>
       <th>
-        MR Scan Done
+        {dgettext("timepoint_list", "Imaging Scan Done")}
       </th>
       <th>
-        Within Optimal
+        {dgettext("instrument_list", "Within Optimal")}
       </th>
       <th>
-        Within Permitted
+        {dgettext("instrument_list", "Within Permitted")}
       </th>
       {if $SupplementalSessionStatuses }
         {foreach from=$timePoint.status item=status key=name}
@@ -64,12 +76,14 @@
   <!-- candidate data -->
   <tbody>
   <tr>
-    <td>
-      {$candidate.DoB}
-    </td>
-    {if $candidate.EDC!=""}
+    {if $dob_age!=""}
       <td>
-        {$candidate.EDC}
+        {$dob_age}
+      </td>
+    {/if}
+    {if $edc_age!=""}
+      <td>
+        {$edc_age}
       </td>
     {/if}
     <td>
@@ -97,23 +111,33 @@
         {$timePoint.CohortTitle}
       </td>
       <td>
-        {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"$baseurl/images/help2.gif\" width=\"12\" height=\"12\" />"}
+        {if $timePoint.scanDone != ""}
+            {if $timePoint.scanDone == 'Y'}
+                {assign var="scanDone" value=dgettext("loris", "Yes")}
+                {$scanDone}
+            {else}
+                {assign var="scanDone" value={dgettext("loris", "No")}}
+                {$scanDone}
+            {/if}
+        {else}
+            <img alt="Data Missing" src="{$baseurl|default}/images/delete.gif" border=0>
+        {/if}
       </td>
       <td>
-        {if $timePoint.WindowInfo.Optimum}
-          Yes
+        {if $display.WindowInfo.Optimum|default}
+          {dgettext("loris", "Yes")}
         {else}
-          No
+          {dgettext("loris", "No")}
         {/if}
       </td>
-      <td {if not $timePoint.WindowInfo.Optimum}class="error"{/if}>
-        {if $timePoint.WindowInfo.Permitted}
-          Yes
+      <td {if not $display.WindowInfo.Optimum|default}class="error"{/if}>
+        {if $display.WindowInfo.Permitted|default}
+          {dgettext("loris", "Yes")}
         {else}
-          No
+          {dgettext("loris", "No")}
         {/if}
       </td>
-      {if $SupplementalSessionStatuses }
+      {if $SupplementalSessionStatuses|default}
         {foreach from=$timePoint.status item=status}
           <td>
             {$status}
@@ -130,20 +154,20 @@
     <thead>
     <tr class="info">
       <th nowrap="nowrap" colspan="3">
-        Stage
+        {dgettext("loris", "Stage")}
       </th>
       <th nowrap="nowrap" colspan="3">
-        Status
+        {dgettext("timepoint_list", "Stage Status")}
       </th>
       <th nowrap="nowrap" colspan="2">
-        Date
+        {dgettext("timepoint_list", "Date of Stage")}
       </th>
     </tr>
     </thead>
     <tbody>
     <tr>
       <td nowrap="nowrap" colspan="3">
-        Screening
+        {dgettext("loris", "Screening")}
       </td>
       <td nowrap="nowrap" colspan="3">
         {$timePoint.Screening}
@@ -154,10 +178,12 @@
     </tr>
     <tr>
       <td nowrap="nowrap" colspan="3">
-        Visit
+        {dgettext("loris", "Visit")}
       </td>
       <td nowrap="nowrap" colspan="3">
-        {$timePoint.Visit}
+        {if $timePoint.Visit != ""}
+            {dgettext("loris", $timePoint.Visit)}
+        {/if}
       </td>
       <td nowrap="nowrap" colspan="2">
         {$timePoint.Date_visit}
@@ -165,7 +191,7 @@
     </tr>
     <tr>
       <td nowrap="nowrap" colspan="3">
-        Approval
+        {dgettext("loris", "Approval")}
       </td>
       <td nowrap="nowrap" colspan="3">
         {$timePoint.Approval}

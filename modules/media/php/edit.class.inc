@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the NDB_Form_media class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Loris
  * @package  Media
@@ -96,9 +97,9 @@ class Edit extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('media_write');
     }
-
 }

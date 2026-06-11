@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This contains an abstract class for Loris unit tests which
  * will not mock the Database class and therefore will use
  * DBUnit to set up the test database's initial state using fixtures.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Tests
  * @package  Test

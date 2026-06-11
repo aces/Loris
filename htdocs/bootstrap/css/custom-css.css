@@ -928,3 +928,8 @@ legend {
 .highlighted {
     animation: highlight ease 3s;
 }
+
+select[multiple].input-sm.resizable {
+    height: 100px;
+    resize: both;
+}

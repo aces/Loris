@@ -1,0 +1,111 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Behavioural Feedback"
+msgstr ""
+
+msgid "Behavioural Feedback Notifications"
+msgstr ""
+
+# Default strings from feedback_bvl_type in raisinbread
+
+# Comments from dashboard widget on raisinbread.
+# These are dynamically entered user data, but having
+# the test set value on demo translated looks better
+msgid "Input"
+msgstr ""
+
+msgid "Input Errors"
+msgstr ""
+
+msgid "Scoring"
+msgstr ""
+
+msgid "Scoring Errors"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Feedback Type"
+msgstr ""
+
+msgid "Feedback description"
+msgstr ""
+
+msgid "Feedback for PSCID: {{PSCID}}"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Author"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "There are no threads for this user!"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Comment added!"
+msgstr ""
+
+msgid "Add a comment:"
+msgstr ""
+
+msgid "Update comment:"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Create thread"
+msgstr ""
+
+msgid "The new thread has been submitted!"
+msgstr ""
+
+msgid "Across All Fields"
+msgstr ""
+
+msgid "QC Class"
+msgstr ""
+
+msgid "# Threads"
+msgstr ""
+
+msgid "This candidate has no behavioural feedback."
+msgstr ""
+
+msgid "New {{feedbacklevel}} level feedback"
+msgstr ""
+
+msgid "Open Thread Summary"
+msgstr ""
+
+msgid "Feedback Threads"
+msgstr ""
+
+msgid "Field Name"
+msgstr ""

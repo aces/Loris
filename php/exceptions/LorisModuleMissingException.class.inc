@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class is an Exception extention created to distinguish any
  * Exception from the case when a module can't be load via the Module class
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Errors
  * @package  Loris

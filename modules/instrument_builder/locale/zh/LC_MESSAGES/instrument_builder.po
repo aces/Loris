@@ -1,0 +1,221 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Instrument Builder"
+msgstr "量表构建器"
+
+msgid "Instrument Loaded"
+msgstr "量表已加载"
+
+msgid "Load Instrument"
+msgstr "加载量表"
+
+msgid "Save Instrument"
+msgstr "保存量表"
+
+msgid "Build Instrument"
+msgstr "创建量表"
+
+msgid "Filename:"
+msgstr "文件名："
+
+msgid "Instrument Name:"
+msgstr "量表名称："
+
+msgid "Load"
+msgstr "加载"
+
+msgid "Build"
+msgstr "创建"
+
+msgid "Database Name"
+msgstr "数据库名称"
+
+msgid "Question Display (Front End)"
+msgstr "问题显示（前端）"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Page:"
+msgstr "页码："
+
+msgid "Drop here"
+msgstr "拖放到此处"
+
+msgid "Question Text"
+msgstr "问题内容"
+
+msgid "Question Name:"
+msgstr "问题名称："
+
+msgid "Dropdown Option:"
+msgstr "下拉选项："
+
+msgid "Add option"
+msgstr "添加选项"
+
+msgid "Preview:"
+msgstr "预览："
+
+msgid "Start year:"
+msgstr "开始年份："
+
+msgid "End year:"
+msgstr "结束年份："
+
+msgid "Date Format:"
+msgstr "日期格式："
+
+msgid "Min:"
+msgstr "最小值："
+
+msgid "Max:"
+msgstr "最大值："
+
+msgid "Question Type:"
+msgstr "问题类型："
+
+msgid "Information"
+msgstr "信息"
+
+msgid "Header"
+msgstr "标题"
+
+msgid "Label"
+msgstr "标签"
+
+msgid "Scored Field"
+msgstr "评分字段"
+
+msgid "Data entry"
+msgstr "数据录入"
+
+msgid "Textbox"
+msgstr "文本框"
+
+msgid "Textarea"
+msgstr "文本区域"
+
+msgid "Dropdown"
+msgstr "下拉菜单"
+
+msgid "Multiselect"
+msgstr "多选框"
+
+msgid "Numeric"
+msgstr "数值型"
+
+msgid "Formatting"
+msgstr "格式"
+
+msgid "Blank Line"
+msgstr "空行"
+
+msgid "Page Break"
+msgstr "分页符"
+
+msgid "Select One"
+msgstr "选择一项"
+
+msgid "Add Question"
+msgstr "添加问题"
+
+msgid "Add Row"
+msgstr "添加行"
+
+msgid "Edit Row"
+msgstr "编辑行"
+
+msgid "Page Name"
+msgstr "页面名称"
+
+msgid "Standard Date"
+msgstr "标准日期"
+
+msgid "Basic Date (does not include 'Not Answered' option)"
+msgstr "基本日期（不含“未回答”选项）"
+
+msgid "Month Year (does not include day of the month)"
+msgstr "月 年（不含具体日期）"
+
+msgid "Invalid extension. Only .linst files are allowed."
+msgstr "文件扩展名无效，仅允许 .linst 文件。"
+
+msgid "Spaces are not allowed in the file name."
+msgstr "文件名中不能包含空格。"
+
+msgid "Multiple periods in the file name are not allowed."
+msgstr "文件名中不能包含多个点号。"
+
+msgid "Special characters are not allowed (only letters, numbers, and _)."
+msgstr "文件名不能包含特殊字符（仅允许字母、数字和下划线）。"
+
+msgid "File name cannot end with a special character."
+msgstr "文件名不能以特殊字符结尾。"
+
+msgid "Question name can't contain 'status' as part of the name!"
+msgstr "问题名称不能包含“status”！"
+
+msgid "Dropdown options cannot be empty!"
+msgstr "下拉选项不能为空！"
+
+msgid "No element type selected"
+msgstr "未选择元素类型"
+
+msgid "Invalid date provided"
+msgstr "提供的日期无效"
+
+msgid "End year happened before start year"
+msgstr "结束年份早于开始年份"
+
+msgid "The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999."
+msgstr "年份必须为四位数字，请选择 1000 到 9999 之间的整数。"
+
+msgid "Max value must be larger than min value"
+msgstr "最大值必须大于最小值"
+
+msgid "Must use question text as page header"
+msgstr "必须使用问题内容作为页面标题"
+
+msgid "No question text specified"
+msgstr "未指定问题内容"
+
+msgid "Please shorten to 64 characters maximum"
+msgstr "请将内容缩短至最多 64 个字符"
+
+msgid "Please shorten to 57 characters maximum"
+msgstr "请将内容缩短至最多 57 个字符"
+
+msgid "Must specify name for database to save value into"
+msgstr "必须指定数据库名称以保存值"
+
+msgid "Duplicate question name"
+msgstr "问题名称重复"
+
+msgid "Top"
+msgstr "顶部"
+
+msgid "Browse"
+msgstr "浏览"
+
+msgid "Delete"
+msgstr "删除"

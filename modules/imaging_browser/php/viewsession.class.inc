@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Form_imaging_browser class file
@@ -54,7 +54,8 @@ class ViewSession extends \NDB_Form
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         /* User has access if they have an 'all site' permission or if they are
         * part of a study site and are permitted to view their own site.
@@ -107,7 +108,7 @@ class ViewSession extends \NDB_Form
 
         if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
             $user = \User::singleton();
-            if ($this->_hasAccess($user) && isset($_POST['save_changes'])) {
+            if ($this->isAccessibleBy($user) && isset($_POST['save_changes'])) {
                 $this->_updateStatus($_POST);
                 $this->_updateSelected();
                 $this->_updateVisitStatus();
@@ -129,8 +130,7 @@ class ViewSession extends \NDB_Form
                 'true'  => 'True',
                 'false' => 'False',
             ];
-            $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
-                                                 true : false;
+            $this->tpl_data['has_permission']    = $this->isAccessibleBy($user);
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ?
                                                     true : false;
             if ($this->_hasQCPerm()) {
@@ -163,7 +163,7 @@ class ViewSession extends \NDB_Form
                 $extra_where_string .= " AND OutputType='native'";
             } elseif ($outputType=="skull_mask") {
                 $extra_where_string .= " AND (OutputType='skull_mask'
-                    OR  (OutputType='native' AND AcquisitionProtocolID='44') )";
+                    OR  (OutputType='native' AND MriScanTypeID='44') )";
             } else {
                 $extra_where_string .= " AND (OutputType=:outputType
                     OR OutputType='linreg')";
@@ -175,11 +175,11 @@ class ViewSession extends \NDB_Form
             "SELECT files.FileID, files.ScannerID FROM files
              LEFT JOIN files_qcstatus as sel
              on (files.FileID=sel.FileID)
-            WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL
-            OR AcquisitionProtocolID not in (1, 2, 3, 52))
+            WHERE SessionID=:SID AND (MriScanTypeID IS NULL
+            OR MriScanTypeID not in (1, 2, 3, 52))
             $extra_where_string
             ORDER BY files.OutputType,
-                     files.AcquisitionProtocolID,
+                     files.MriScanTypeID,
                      files.File",
             $args
         );
@@ -303,7 +303,7 @@ class ViewSession extends \NDB_Form
             $JsonFile    = $FileObj->getParameter('bids_json_file');
             $OtherTimepoints = $this->_getFilesAcrossTimepoints(
                 (int)$FileObj->getParameter('SessionID'),
-                (int)$FileObj->getParameter('AcquisitionProtocolID')
+                (int)$FileObj->getParameter('MriScanTypeID')
             );
 
             $manualCaveatViolationsResolvedID
@@ -447,6 +447,7 @@ class ViewSession extends \NDB_Form
             return $file->getParameter($parameter);
         }
     }
+
     /**
      * Gets the date according to the type
      *
@@ -476,6 +477,7 @@ class ViewSession extends \NDB_Form
             return "";
         }
     }
+
     /**
      * Updates QCStatus in the form
      *
@@ -574,21 +576,25 @@ class ViewSession extends \NDB_Form
                     $insertSet['PhaseEncodingDirection'] = $file->getParameter(
                         'PhaseEncodingDirection'
                     );
-                    $insertSet['EchoTime']    = $file->getParameter('echo_time');
-                    $insertSet['EchoNumber']  = $file->getParameter('echo_numbers');
-                    $insertSet['TarchiveID']  = $file->getParameter(
+                    $insertSet['EchoTime']      = $file->getParameter('echo_time');
+                    $insertSet['EchoNumber']    = $file->getParameter(
+                        'echo_numbers'
+                    );
+                    $insertSet['TarchiveID']    = $file->getParameter(
                         'TarchiveSource'
                     );
-                    $insertSet['MincFile']    = $file->getParameter('File');
-                    $insertSet['PatientName'] = $file->getParameter('patient_name');
-                    $insertSet['CandID']      = $candid;
-                    $insertSet['Visit_label'] = $visit_label;
-                    $insertSet['CheckID']     = null;
-                    $insertSet['Scan_type']   = $file->getParameter(
-                        'AcquisitionProtocolID'
+                    $insertSet['MincFile']      = $file->getParameter('File');
+                    $insertSet['PatientName']   = $file->getParameter(
+                        'patient_name'
                     );
-                    $insertSet['Severity']    = 'warning';
-                    $insertSet['Header']      = 'Manual Caveat Set by '
+                    $insertSet['CandID']        = $candid;
+                    $insertSet['Visit_label']   = $visit_label;
+                    $insertSet['CheckID']       = null;
+                    $insertSet['MriScanTypeID'] = $file->getParameter(
+                        'MriScanTypeID'
+                    );
+                    $insertSet['Severity']      = 'warning';
+                    $insertSet['Header']        = 'Manual Caveat Set by '
                         . $user->getUsername();
 
                     // The TimeRun column is really the time at which the
@@ -683,6 +689,7 @@ class ViewSession extends \NDB_Form
             }
         }
     }
+
     /**
      * Updates selections
      *
@@ -748,6 +755,7 @@ class ViewSession extends \NDB_Form
             }
         }
     }
+
     /**
      * Updates status
      *
@@ -847,9 +855,9 @@ class ViewSession extends \NDB_Form
 
         $selectResults = $this->_DB->pselect(
             "SELECT FileID FROM files ".
-            "WHERE AcquisitionProtocolID =:initialFileAcquisitionID ".
+            "WHERE MriScanTypeID =:initialFileAcquisitionID ".
             "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
-            "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
+            "ON s1.CandidateID = s2.CandidateID WHERE s1.ID =:initialFileID)",
             [
                 'initialFileAcquisitionID' => $initialFileAcquisitionID,
                 'initialFileID'            => $initialFileID,
@@ -906,6 +914,7 @@ class ViewSession extends \NDB_Form
         $html = $smarty->fetch("table_session_header.tpl");
         return $html;
     }
+
     /**
      * Populates data for the template
      *
@@ -971,6 +980,7 @@ class ViewSession extends \NDB_Form
         // Cache the data
         return $subjectData;
     }
+
     /**
      * Gets control panel
      *
@@ -983,6 +993,7 @@ class ViewSession extends \NDB_Form
         );
         return $controlPanel->display();
     }
+
     /**
      * Get js Dependencies
      *
@@ -1028,12 +1039,14 @@ class ViewSession extends \NDB_Form
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Imaging Browser', '/imaging_browser'),
             new \LORIS\Breadcrumb(
-                'View Session',
+                dgettext("imaging_browser", 'Imaging Browser'),
+                '/imaging_browser'
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("imaging_browser", 'View Session'),
                 "/imaging_browser/viewSession/?sessionID=$this->sessionID"
             )
         );
     }
-
 }

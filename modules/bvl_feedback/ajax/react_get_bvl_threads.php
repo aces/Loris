@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Used by react on initial load to load the thread state.
  *
@@ -49,5 +50,5 @@ if (isset($data['candID']) && !empty($data['candID'])) {
 $feedbackThreadList = $feedbackThread->getThreadList();
 echo json_encode($feedbackThreadList);
 
-exit();
+exit(0);
 

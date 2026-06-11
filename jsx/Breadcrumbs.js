@@ -106,9 +106,9 @@ class Breadcrumbs extends Component {
       } else {
         breadcrumbs.push(
           <a key={'crumb_' + i}
-             href={url}
-             className='btn btn-primary'
-             onClick={onClick}>
+            href={url}
+            className='btn btn-primary'
+            onClick={onClick}>
             <div>
               {element.text}
             </div>
@@ -121,10 +121,10 @@ class Breadcrumbs extends Component {
       breadcrumbDropdown = (
         <div className='btn-group ellipsis btn btn-primary'>
           <button type='button'
-                  className='dropdown-toggle'
-                  data-toggle='dropdown'
-                  aria-haspopup='true'
-                  aria-expanded='false'
+            className='dropdown-toggle'
+            data-toggle='dropdown'
+            aria-haspopup='true'
+            aria-expanded='false'
           >
             ...
           </button>

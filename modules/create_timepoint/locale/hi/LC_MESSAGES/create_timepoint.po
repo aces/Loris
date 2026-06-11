@@ -1,0 +1,49 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Create Timepoint"
+msgstr "टाइमपॉइंट बनाएं"
+
+msgid "No cohorts defined for project: {{project}}"
+msgstr "प्रोजेक्ट {{project}} के लिए कोई समूह परिभाषित नहीं है"
+
+msgid "No visit labels defined for the combination project: {{project}} and cohort: {{cohort}}"
+msgstr "प्रोजेक्ट {{project}} और समूह {{cohort}} के संयोजन के लिए कोई विजिट लेबल परिभाषित नहीं है"
+
+msgid "Timepoint created."
+msgstr "टाइमपॉइंट बनाया गया."
+
+msgid "A timepoint with these conditions (%s, %s, %s, %s) already exists."
+msgstr "इन शर्तों (%s, %s, %s, %s) वाला टाइमपॉइंट पहले से मौजूद है."
+
+msgid "You must be affiliated with a site to create a timepoint."
+msgstr "टाइमपॉइंट बनाने के लिए आपका किसी साइट से संबद्ध होना आवश्यक है."
+
+msgid "Site must be selected from the available dropdown."
+msgstr "साइट उपलब्ध ड्रॉपडाउन से चुनी जानी चाहिए."
+
+msgid "You must be affiliated with a project to create a timepoint."
+msgstr "टाइमपॉइंट बनाने के लिए आपका किसी प्रोजेक्ट से संबद्ध होना आवश्यक है."
+
+msgid "A project must be selected from the available dropdown."
+msgstr "प्रोजेक्ट उपलब्ध ड्रॉपडाउन से चुना जाना चाहिए."
+
+msgid "A language must be selected."
+msgstr "एक भाषा चुनी जानी चाहिए."

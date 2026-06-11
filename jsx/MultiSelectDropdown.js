@@ -310,26 +310,26 @@ export class SelectDropdown extends Component {
       }
     }
     const overlay = this.state.open ? (
-       <div style={{
-         top: 0,
-         left: 0,
-         zIndex: 100,
-         position: 'fixed',
-         width: 'calc(100vw)',
-         height: 'calc(100vh)',
-        }} onClick={this.overlayClickHandler}
-       />
-     ) : null;
+      <div style={{
+        top: 0,
+        left: 0,
+        zIndex: 100,
+        position: 'fixed',
+        width: 'calc(100vw)',
+        height: 'calc(100vh)',
+      }} onClick={this.overlayClickHandler}
+      />
+    ) : null;
     return (
       <>
         <div className={parentDivClass}>
           <button type="button"
-                  className="btn btn-default dropdown-toggle col-xs-12"
-                  onClick={this.toggleDropdown}>
+            className="btn btn-default dropdown-toggle col-xs-12"
+            onClick={this.toggleDropdown}>
             <div className="col-xs-10">
-                <span className="pull-left">
-                  {selectLabel}
-                </span>
+              <span className="pull-left">
+                {selectLabel}
+              </span>
             </div>
             <div className="pull-right">
               <span className="glyphicon glyphicon-menu-down"></span>

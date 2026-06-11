@@ -63,73 +63,73 @@ const NavigationWithSave = (props) => {
 
   const getTextDescriptionPrevious = (index) => {
     switch (index) {
-      case 0:
-        return '';
-      case 1:
-        return 'Create or Load';
-      case 2:
-        return 'Define Fields';
-      case 3:
-        return 'Define Filters';
-      case 4:
-        return 'Run Query';
-      default:
-        break;
+    case 0:
+      return '';
+    case 1:
+      return 'Create or Load';
+    case 2:
+      return 'Define Fields';
+    case 3:
+      return 'Define Filters';
+    case 4:
+      return 'Run Query';
+    default:
+      break;
     }
     return '';
   };
 
   const getTextDescriptionNext = (index) => {
     switch (index) {
-      case 0:
-        return 'Define Fields';
-      case 1:
-        return 'Define Filters';
-      case 2:
-        return 'Run Query';
-      case 3:
-        return '';
-      case 4:
-        return '';
-      default:
-        break;
+    case 0:
+      return 'Define Fields';
+    case 1:
+      return 'Define Filters';
+    case 2:
+      return 'Run Query';
+    case 3:
+      return '';
+    case 4:
+      return '';
+    default:
+      break;
     }
     return '';
   };
 
   return (
     <div className={'navigationStepper'}
-         style={(props.visible
-           ? null
-           : {opacity: 0, position: 'absolute', right: '9999px'}
-         )}>
+      style={(props.visible
+        ? null
+        : {opacity: 0, position: 'absolute', right: '9999px'}
+      )}>
       <button onClick={() => props.onClickHandler('previous')}
-              className={props.disable.previous
-                ? 'navigation-button disabled'
-                : 'navigation-button'}
-              style={{
-                display: 'inline-block',
-                marginRight: '10px',
-              }}
-              disabled={props.disable.previous}>
+        className={props.disable.previous
+          ? 'navigation-button disabled'
+          : 'navigation-button'}
+        style={{
+          display: 'inline-block',
+          marginRight: '10px',
+        }}
+        disabled={props.disable.previous}>
         <span className='glyphicon glyphicon-chevron-left'/>
         {getTextDescriptionPrevious(props.index)}
       </button>
       <button onClick={() => props.onClickHandler('save')}
-              className={'save-button'}
-              style={{
-                display: 'inline-block',
-                marginRight: '10px',
-              }}
-              disabled={props.disable.save}>
+        className={'save-button'}
+        style={{
+          display: 'inline-block',
+          marginRight: '10px',
+        }}
+        disabled={props.disable.save}>
         Save
       </button>
       <button onClick={() => props.onClickHandler('next')}
-              className={props.disable.next
-                ? 'navigation-button disabled'
-                : 'navigation-button'}
-              style={{display: 'inline-block'}}
-              disabled={props.disable.next}>
+        className={props.disable.next
+          ? 'navigation-button disabled'
+          : 'navigation-button'}
+        style={{display: 'inline-block'}}
+        disabled={props.disable.next}>
         {getTextDescriptionNext(props.index)}
         <span className='glyphicon glyphicon-chevron-right'/>
       </button>

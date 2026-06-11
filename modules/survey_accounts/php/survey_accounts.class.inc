@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This implements a menu filter to be used for viewing the Loris survey
  * keys that have been created
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Survey
  * @package  Loris
@@ -31,7 +32,8 @@ class Survey_Accounts extends \DataFrameworkMenu
      *
      * @return boolean true if access is permitted
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('survey_accounts_view');
     }
@@ -75,10 +77,10 @@ class Survey_Accounts extends \DataFrameworkMenu
     public function getFieldOptions() : array
     {
         $statusOptions = [
-            'Created'     => 'Created',
-            'Sent'        => 'Sent',
-            'In Progress' => 'In Progress',
-            'Complete'    => 'Complete',
+            'Created'     => dgettext("loris", "Created"),
+            'Sent'        => dgettext("loris", "Sent"),
+            'In Progress' => dgettext("loris", "In Progress"),
+            'Complete'    => dgettext("loris", "Complete"),
         ];
 
         $instruments
@@ -100,7 +102,7 @@ class Survey_Accounts extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
     {
-        return new SurveyAccountsProvisioner();
+        return new SurveyAccountsProvisioner($this->loris);
     }
 
     /**

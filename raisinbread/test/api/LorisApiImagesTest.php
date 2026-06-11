@@ -92,7 +92,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
     public function testGetCandidatesCandidVisitImagesFilename(): void
     {
         $resource = fopen($this->imagefileTest, 'w');
-        $stream   = GuzzleHttp\Psr7\stream_for($resource);
+        $stream   = GuzzleHttp\Stream\Stream::factory($resource);
         $response = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/" .
@@ -137,7 +137,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
             ),
             true
         );
-        $this->assertEquals(null, $imagesArray);    
+        $this->assertEquals(null, $imagesArray);
     }
 
     /**
@@ -286,7 +286,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
                 'Visit'  => $visit,
                 'File'   => $filename
             ],
-            "QC"       => 'pass',
+            "QC"       => 'Pass',
             "Selected" => false,
             'Caveats'  => [
                 '0' => [
@@ -335,7 +335,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
                 "candidates/$this->candidTest/$this->visitTest/images/" .
                 "$this->imagefileTest/format/brainbrowser"
             );
-        } 
+        }
         $this->assertEquals(200, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
@@ -401,7 +401,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
         $this->assertArrayHasKey('zspace', $imagesArray);
         $this->assertArrayHasKey('space_length', $imagesArray['zspace']);
         $this->assertArrayHasKey('start', $imagesArray['zspace']);
-        $this->assertArrayHasKey('step', $imagesArray['zspace']);    
+        $this->assertArrayHasKey('step', $imagesArray['zspace']);
     }
 
     /**
@@ -425,7 +425,7 @@ class LorisApiImagesTest extends LorisApiAuthenticatedTest
     void
     {
         $resource        = fopen($this->imagefileTest, 'w');
-        $stream          = GuzzleHttp\Psr7\stream_for($resource);
+        $stream          = GuzzleHttp\Stream\Stream::factory($resource);
         $response_stream = $this->client->request(
             'GET',
             "candidates/$this->candidTest/$this->visitTest/images/" .

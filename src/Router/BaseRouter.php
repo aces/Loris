@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implements BaseRouter, a Router to handle the base of a LORIS
  * install.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Router
  * @package  Router
@@ -30,28 +31,11 @@ use \Psr\Http\Server\RequestHandlerInterface;
  */
 class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 {
-    protected $loris;
-    protected $user;
-
     /**
      * Construct a BaseRouter
-     *
-     * @param \User  $user       The user accessing LORIS. (May be an AnonymousUser
-     *                           instance).
-     * @param string $projectdir The base of the LORIS project directory.
-     * @param string $moduledir  The base of the LORIS modules directory.
      */
-    public function __construct(\User $user, string $projectdir, string $moduledir)
+    public function __construct()
     {
-        $this->user  = $user;
-        $this->loris = new \LORIS\LorisInstance(
-            \NDB_Factory::singleton()->database(),
-            \NDB_Factory::singleton()->config(),
-            [
-             $projectdir . "/modules",
-             $moduledir,
-            ]
-        );
     }
 
     /**
@@ -64,18 +48,23 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $uri  = $request->getUri();
-        $path = $uri->getPath();
+        $request = $request->withAttribute("unhandledURI", $request->getURI());
+        $uri     = $request->getUri();
+        $path    = $uri->getPath();
+
+        // from request attributes
+        $loris = $request->getAttribute("loris");
+        $user  = $request->getAttribute("user");
+
         // Replace multiple slashes in the URL with a single slash
         $path = preg_replace("/\/+/", "/", $path);
         // Remove any trailing slash remaining, so that foo/ and foo are the same
         // route
-        $path    = preg_replace("/\/$/", "", $path);
-        $request = $request->withAttribute("user", $this->user)
-            ->withAttribute("loris", $this->loris);
+        $path = preg_replace("/\/$/", "", $path);
 
+        $modulename = null;
         if ($path == "") {
-            if ($this->user instanceof \LORIS\AnonymousUser) {
+            if ($user instanceof \LORIS\AnonymousUser) {
                 $modulename = "login";
             } else {
                 $modulename = "dashboard";
@@ -87,14 +76,14 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         }
 
         $components = [];
-        if (empty($modulename)) {
+        if ($modulename === null) {
             $components = preg_split("/\/+?/", $path);
             $modulename = $components[0];
         }
 
         $factory           = \NDB_Factory::singleton();
         $ehandler          = new \LORIS\Middleware\ExceptionHandlingMiddleware();
-        $logSettings       = $this->loris->getConfiguration()->getLogSettings();
+        $logSettings       = $loris->getConfiguration()->getLogSettings();
         $exceptionloglevel = $logSettings->getExceptionLogLevel();
 
         if ($exceptionloglevel != "none") {
@@ -105,20 +94,58 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $ehandler->setLogger(new \PSR\Log\NullLogger);
         }
 
-        if ($this->loris->hasModule($modulename)) {
+        if ($loris->hasModule($modulename)) {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
 
             // Calculate the base path by stripping off the module from the original.
-            $path    = $uri->getPath();
-            $baseurl = substr($path, 0, strpos($path, $modulename));
+            $path     = $uri->getPath();
+            $pathstrt =strpos($path, $modulename);
+            if ($pathstrt !== false) {
+                $baseurl = substr($path, 0, $pathstrt);
+            } else {
+                $baseurl = '';
+            }
             $baseurl = $uri->withPath($baseurl)->withQuery("");
-            $request = $request->withAttribute("baseurl", $baseurl->__toString());
+            $factory->setBaseURL((string) $baseurl);
 
-            $factory->setBaseURL((string )$baseurl);
-
-            $module = $this->loris->getModule($modulename);
+            $module = $loris->getModule($modulename);
             $module->registerAutoloader();
+
+            $lang    = \LORIS\Middleware\Language::detectLocale($loris, $request);
+            $request = $request->withAttribute("lang", $lang);
+
+            if (file_exists(__DIR__ . "/../../project/locale/")) {
+                if ($lang !== null) {
+                    /* detectLanguage should have validated that it's a valid locale, but
+                     * ensure that there are no unsafe characters just in case since we
+                     * might be dealing with user input */
+                    if (preg_match("/([a-zA-Z])+(_)?(a-zA-Z)*/", $lang)) {
+                        $overrides = glob(__DIR__ . "/../../project/locale/$lang/LC_MESSAGES/*.mo");
+                        // Requires pecl intl extension
+                        if (function_exists('locale_get_primary_language')) {
+                            $overrides = array_merge(
+                                $overrides,
+                                glob(
+                                    __DIR__ . "/../../project/locale/"
+                                    . locale_get_primary_language($lang)
+                                    . "/LC_MESSAGES/*.mo"
+                                )
+                            );
+                        }
+
+                        // We need to override the textdomain binding for every module
+                        // that has a translation override for the menu to be able
+                        // to look up the right project-specific translation even though we're
+                        // in the module.
+                        // Otherwise, fall back on the module's textdomain set from getModule()
+                        foreach ($overrides as $file) {
+                            $textdomain = basename($file, ".mo");
+                            bindtextdomain($textdomain, __DIR__ . "/../../project/locale/");
+                        }
+                    }
+                }
+            }
             $requestloglevel = $logSettings->getRequestLogLevel();
             if ($requestloglevel != "none") {
                 $module->setLogger(
@@ -128,22 +155,20 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
                 $module->setLogger(new \PSR\Log\NullLogger);
             }
             $mr      = new ModuleRouter($module);
-            $request = $request->withURI($suburi);
+            $request = $request->withAttribute("unhandledURI", $suburi);
+
             return $ehandler->process($request, $mr);
         }
         // Legacy from .htaccess. A CandID goes to the timepoint_list
         // FIXME: This should all be one candidates module, not a bunch
         // of hacks in the base router.
-        if (preg_match("/^([0-9]{6})$/", $components[0])) {
-            $baseurl = $uri->withPath("")->withQuery("");
-
-            $factory->setBaseURL((string )$baseurl);
+        if (preg_match("/^([0-9]{6,10})$/", $components[0])) {
+            $baseurl = $request->getAttribute("baseurl");
+            $factory->setBaseURL((string) $baseurl);
             if (count($components) == 1) {
-                $request = $request
-                    ->withAttribute("baseurl", $baseurl->__toString())
-                    ->withAttribute("CandID", $components[0]);
+                $request = $request->withAttribute("CandID", $components[0]);
 
-                $module = $this->loris->getModule("timepoint_list");
+                $module = $loris->getModule("timepoint_list");
                 $module->registerAutoloader();
 
                 $requestloglevel = $logSettings->getRequestLogLevel();
@@ -161,7 +186,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 
         // Fall through to 404. We don't have any routes that go farther
         // than 1 level..
-        return (new \LORIS\Middleware\PageDecorationMiddleware($this->user))
+        return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
                     new NoopResponder(new \LORIS\Http\Error($request, 404))

@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class is a wrapper around any Database exceptions thrown Loris
  * It represents the base of the exception hierarchy, as well as any
  * other type of exception that does not fit into any other category.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Errors
  * @package  Loris

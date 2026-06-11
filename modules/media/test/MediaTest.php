@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Media module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -17,7 +18,7 @@ require_once __DIR__ .
 /**
  * Media module automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -39,6 +40,7 @@ class MediaTest extends LorisIntegrationTest
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
     static $display = ".table-header > .row > div > div:nth-child(1)";
+
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -60,8 +62,35 @@ class MediaTest extends LorisIntegrationTest
             "An error occured while loading the page.",
             $bodyText
         );
+
         $this->resetPermissions();
     }
+
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testLoadsWithPermissionWrite()
+    {
+        $this->setupPermissions(["media_write"]);
+        $this->safeGet($this->url . "/media/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
+        $this->resetPermissions();
+    }
+
+    /**
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -81,6 +110,7 @@ class MediaTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+
     /**
      * Testing React filter in this page.
      *
@@ -92,11 +122,12 @@ class MediaTest extends LorisIntegrationTest
         $this->_testFilter(self::$PSCID, self::$table, null, "MTL010");
         $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
         $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
-        $this->_testFilter(self::$Language, self::$table, "27", "2");
+        $this->_testFilter(self::$Language, self::$table, "27", "1");
         $this->_testFilter(self::$Instrument, self::$table, "4 rows", "2");
         //$this->_testFilter(self::$Site, self::$table, "12 rows", "2");rewirte later
 
     }
+
     /**
      * Testing the link React filter in this page.
      *
@@ -131,6 +162,7 @@ class MediaTest extends LorisIntegrationTest
         $this->assertStringContainsString("Edit Media File", $text);
 
     }
+
     /**
      * Testing filter function and clear button
      *
@@ -183,6 +215,48 @@ class MediaTest extends LorisIntegrationTest
                 "return document.querySelector('$element').value"
             );
         $this->assertEquals("", $inputText);
+    }
+
+    /**
+     * Testing Browse tab and coulumn clicking
+     *
+     * @return void
+     */
+    function testBrowseTab()
+    {
+        $this->safeGet($this->url . "/media/");
+
+        $this->checkColumn(2, "DCC090_V1_bmi.txt");
+        $this->checkColumn(3, "DCC090");
+        $this->checkColumn(4, "V1");
+        $this->checkColumn(5, "English");
+        $this->checkColumn(6, "");
+        $this->checkColumn(7, "Data Coordinating Center");
+        $this->checkColumn(8, "Pumpernickel");
+    }
+
+    /**
+     * Test Browse tab and coulumn clicking-middleware
+     *
+     * @param int    $columnNumber columnNumber
+     * @param string $expectedText expectedText
+     *
+     * @return void
+     */
+    function checkColumn($columnNumber, $expectedText)
+    {
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                "#dynamictable > thead > tr > th:nth-child($columnNumber)"
+            )
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr:nth-child(1)".
+                " > td:nth-child($columnNumber)"
+            )
+        )->getText();
+            $this->assertEquals($expectedText, $bodyText);
     }
 }
 

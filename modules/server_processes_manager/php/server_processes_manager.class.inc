@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Page used to view/manage the processes launched asynchronously by LORIS users.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category ServerProcessLauncher
  * @package  Loris
@@ -16,7 +17,7 @@ namespace LORIS\server_processes_manager;
  * Builds a new filter to view/manage processes launched asynchronously by LORIS
  * users.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category ServerProcessLauncher
  * @package  Loris
@@ -37,7 +38,8 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
      *
      * @return bool true if the user has access, false otherwise
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('server_processes_manager');
     }
@@ -49,6 +51,30 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        // Get processes pending resolution
+        $DB           = $this->loris->getDatabaseConnection();
+        $idsToMonitor = $DB->pselect(
+            "SELECT id
+            FROM server_processes
+            WHERE end_time IS NULL
+            OR exit_code IS NULL",
+            []
+        );
+
+        if (count($idsToMonitor) > 0) {
+            // Update information of processes pending resolution
+            // Ensures data is up-to-date
+            $serverProcessesMonitor = new ServerProcessesMonitor();
+            $serverProcessesMonitor->getProcessesState(
+                array_map(
+                    function ($row) {
+                        return strval($row['id']);
+                    },
+                    iterator_to_array($idsToMonitor)
+                )
+            );
+        }
+
         // Columns displayed in the result table
         $this->columns = [
             'pid',
@@ -70,7 +96,7 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
             'userid',
         ];
 
-        $this->query = " FROM server_processes 
+        $this->query = " FROM server_processes
                          WHERE 1=1";
 
         $this->formToFilter = [
@@ -99,5 +125,4 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
             ]
         );
     }
-
 }

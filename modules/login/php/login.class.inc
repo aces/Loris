@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace LORIS\login;
 /**
@@ -33,6 +33,7 @@ class Login extends \NDB_Page
             ]
         );
     }
+
     /**
      * Include additional CSS files:
      *
@@ -48,5 +49,4 @@ class Login extends \NDB_Page
             [$baseURL . '/login/css/login.css']
         );
     }
-
 }

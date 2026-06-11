@@ -1,5 +1,6 @@
 #!/usr/bin/php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The script generate_tables_sql.php takes the ip_output.txt file generated from
  * lorisform_parser.php and outputs an sql build file for the table of each
@@ -10,7 +11,7 @@
  * Options:
  *          [-D]: Adds DROP TABLE statement to output query
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The configuration module is used to manage the configuration of Loris.
  *
@@ -33,7 +34,8 @@ class Cohort extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('config');
     }
@@ -58,6 +60,11 @@ class Cohort extends \NDB_Form
         $this->tpl_data['cohorts'] = $cohorts;
 
         $this->tpl_data['useEDCOptions']
+            = [
+                '1' => 'Yes',
+                '0' => 'No',
+            ];
+        $this->tpl_data['useDoBOptions']
             = [
                 '1' => 'Yes',
                 '0' => 'No',

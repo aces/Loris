@@ -1,5 +1,6 @@
 #!/usr/bin/php
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The script update_issues_with_description.php copies the first comment
  * by timestamp (dateAdded) in issues_comments table to the description
@@ -7,7 +8,7 @@
  *
  * Usage: php update_issues_with_description.php
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -16,21 +17,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . "/generic_includes.php";
-
-set_include_path(
-    get_include_path().":".
-    __DIR__."/../project/libraries:".
-    __DIR__."/../php/libraries:"
-);
-
 require_once __DIR__ . "/../vendor/autoload.php";
-require_once "NDB_Client.class.inc";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
-
-$DB = \NDB_Factory::singleton()->database();
+require_once __DIR__ . "/generic_includes.php";
 
 $allIssueIDsWithComments = $DB->pselectCol(
     "SELECT issueID FROM issues_comments",

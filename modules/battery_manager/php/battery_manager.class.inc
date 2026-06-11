@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\battery_manager;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -10,7 +11,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Displays a list of records in the test battery and control panel to search them
  * Allows user to add, activate, and deactivate entries in the test battery
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Battery_Manager
@@ -30,7 +31,8 @@ class Battery_Manager extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('battery_manager_view') ||
                $user->hasPermission('battery_manager_edit');

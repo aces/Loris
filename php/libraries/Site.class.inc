@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * A site object represents a site in the PSC table of
  * Loris.
@@ -73,7 +74,7 @@ class Site implements
      */
     function getCenterName(): string
     {
-        return strval($this->_siteInfo['Name']);
+        return dgettext("psc", strval($this->_siteInfo['Name']));
     }
 
     /**

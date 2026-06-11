@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This class handles a post request to upload a new category.
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository
@@ -15,7 +16,7 @@ use \Psr\Http\Message\ResponseInterface;
 
 /**
  * This class handles a post request to upload a new category.
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Document_Repository
@@ -34,18 +35,18 @@ class EditCategory extends \NDB_Page
      *
      * @return bool true if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return ($user->hasPermission('document_repository_categories')
             && $user->hasAnyPermission(
                 [
-                    'document_repository_upload',
+                    'document_repository_upload_edit',
                     'document_repository_delete',
                 ]
             )
         );
     }
-
 
     /**
      * Handle a post form
@@ -64,6 +65,7 @@ class EditCategory extends \NDB_Page
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(['POST']);
         }
     }
+
     /**
      * Handles the upload category process
      *

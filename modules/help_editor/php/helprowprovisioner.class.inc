@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file implements a data provisioner to get all possible rows
  * for the help editor menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -19,7 +20,7 @@ namespace LORIS\help_editor;
  * This class implements a data provisioner to get all possible rows
  * for the help editory menu page.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -33,17 +34,24 @@ class HelpRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
     /**
      * Create a HelpRowProvisioner, which gets rows for the help_editory
      * menu table.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
+     *                                    from.
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
         parent::__construct(
-            "SELECT help.helpID as helpID,
-                    help.topic as Topic,
-                    help.content as Content
-             FROM help
-             WHERE help.hash IS NOT NULL
-             AND help.topic IS NOT NULL
-             ORDER BY help.helpID",
+            $loris,
+            "SELECT h.helpID as helpID,
+                    h.topic as Topic,
+		    h.content as Content,
+                    t.Full_name
+	     FROM help h
+             JOIN test_names t
+                ON h.hash = MD5(t.Test_name)
+             WHERE h.hash IS NOT NULL
+             AND h.topic IS NOT NULL
+             ORDER BY h.helpID",
             []
         );
     }

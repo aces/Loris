@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * This script is used to correctly establish a link betwen the `issues` table
  * used by the Issue Tracker module and the new table `modules`.

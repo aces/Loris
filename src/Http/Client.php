@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
+
 /**
 * File contains the PSR18 HTTP Client implementation that
 * can be constructed with the "new" keyword.
 *
-* PHP Version 7
+* PHP Version 8
 *
 * @category PSR18
 * @package  Http

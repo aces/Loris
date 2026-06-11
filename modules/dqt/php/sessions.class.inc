@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The Sessions 'endpoint' class for the DQT Module.
  *
- * PHP Version 7.4
+ * PHP Version 8.4
  *
  * @category   API
  * @package    Loris
@@ -22,7 +23,7 @@ use \Psr\Http\Message\ResponseInterface;
  * the background for the stream "reader" to retrieve
  * the needed sessions from couchDB.
  *
- * PHP Version 7.4
+ * PHP Version 8.4
  *
  * @category   API
  * @package    LORIS
@@ -42,9 +43,10 @@ class Sessions extends \NDB_Form implements RequestHandlerInterface
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
-        return $user->hasPermission('dataquery_view');
+        return $user->hasPermission('dqt_view');
     }
 
     /**

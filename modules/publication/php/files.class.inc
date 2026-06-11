@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 // @phan-file-suppress PhanUnusedProtectedMethodParameter
 // Suppressed due to false-positive for doDownloadNotification function
@@ -21,7 +21,8 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
      *
      * @return bool
      */
-    function _hasAccess(\User $user): bool
+    #[\Override]
+    function isAccessibleBy(\User $user): bool
     {
         return $user->hasAnyPermission(
             [

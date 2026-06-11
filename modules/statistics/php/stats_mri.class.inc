@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -15,7 +16,7 @@ namespace LORIS\statistics;
 /**
  * The module to display study statistics
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Loris
  * @package  Main
@@ -34,7 +35,8 @@ class Stats_MRI extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }
@@ -95,7 +97,12 @@ class Stats_MRI extends \NDB_Form
         $tpl_data = [];
         // Sanitize test name if present. Otherwise use empty string.
         $tpl_data['test_name']  = isset($_REQUEST['test_name'])
-            ? htmlspecialchars($_REQUEST['test_name'])
+            ? htmlspecialchars(
+                $_REQUEST['test_name'],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            )
             : '';
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
@@ -249,8 +256,18 @@ class Stats_MRI extends \NDB_Form
                 ];
             $sqlVar        = 'AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
-            $this->params['pid']    = htmlspecialchars($_REQUEST['MRIProject']);
-            $bigTable_params['pid'] = htmlspecialchars($_REQUEST['MRIProject']);
+            $this->params['pid']    = htmlspecialchars(
+                $_REQUEST['MRIProject'],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
+            $bigTable_params['pid'] = htmlspecialchars(
+                $_REQUEST['MRIProject'],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
         } else {
             $Param_Project = '';
         }
@@ -266,7 +283,12 @@ class Stats_MRI extends \NDB_Form
         //SITES
         if ($_REQUEST['MRIsite'] ?? '') {
             $Param_Site          ='AND (s.CenterID IS NULL OR s.CenterID=:sid) ';
-            $this->params['sid'] = htmlspecialchars($_REQUEST['MRIsite']);
+            $this->params['sid'] = htmlspecialchars(
+                $_REQUEST['MRIsite'],
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+                false
+            );
         } else {
             $Param_Site = '';
         }
@@ -308,15 +330,15 @@ class Stats_MRI extends \NDB_Form
 
         //GET SCAN TYPES
         $Scan_type_results = $DB->pselect(
-            "SELECT mst.ID, mst.Scan_type
+            "SELECT mst.MriScanTypeID, mst.MriScanTypeName
               FROM mri_scan_type mst
-                JOIN mri_protocol mp ON (mst.ID=mp.Scan_type)",
+                JOIN mri_protocol mp USING (MriScanTypeID)",
             []
         );
 
         $scan_types = [];
         foreach ($Scan_type_results as $row) {
-            $scan_types[$row['ID']] = $row['Scan_type'];
+            $scan_types[$row['MriScanTypeID']] = $row['MriScanTypeName'];
         }
 
         $scans_selected = [];
@@ -376,30 +398,32 @@ class Stats_MRI extends \NDB_Form
         $scanDoneExists = false;
         if ($DB->columnExists('mri_parameter_form', $MRI_Type . "_Scan_Done")) {
             $scanDoneExists = true;
-            $result         = $DB->pselect(
-                "SELECT s.CohortID,
-                    s.CenterID,
-                    s.Visit_label as VLabel,
-                    $CaseStatement as Subcat,
-                    COUNT(*) as val
-                FROM mri_parameter_form m
-                    JOIN flag f USING (CommentID)
-                    JOIN session s ON (f.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
-                WHERE s.Current_stage <> 'Recycling Bin'
-                    AND f.Administration <> 'None'
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND f.CommentID NOT LIKE 'DDE%'
-                    AND s.CenterID <> '1'
+            $result         = iterator_to_array(
+                $DB->pselect(
+                    "SELECT s.CohortID,
+                        s.CenterID,
+                        s.Visit_label as VLabel,
+                        $CaseStatement as Subcat,
+                        COUNT(*) as val
+                    FROM mri_parameter_form m
+                        JOIN flag f USING (CommentID)
+                        JOIN session s ON (f.SessionID=s.ID)
+                        JOIN candidate c ON (c.ID=s.CandidateID)
+                    WHERE s.Current_stage <> 'Recycling Bin'
+                        AND f.Administration <> 'None'
+                        AND s.Active='Y'
+                        AND c.Active='Y'
+                        AND f.CommentID NOT LIKE 'DDE%'
+                        AND s.CenterID <> '1'
 		    AND s.CenterID IN (" . $sitesString . ")
-                    $suproject_query
-                    $Param_Project
-                GROUP BY Subcat,
-                    s.CohortID,
-                    s.CenterID,
-                    s.Visit_label",
-                $bigTable_params
+                        $suproject_query
+                        $Param_Project
+                    GROUP BY Subcat,
+                        s.CohortID,
+                        s.CenterID,
+                        s.Visit_label",
+                    $bigTable_params
+                )
             );
         }
 
@@ -432,7 +456,7 @@ class Stats_MRI extends \NDB_Form
                 "SELECT COUNT(*)
                 FROM files fi
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND s.Active='Y'
                     AND c.Active='Y'
@@ -451,7 +475,7 @@ class Stats_MRI extends \NDB_Form
                 "SELECT s.CohortID as subID, COUNT(*) as cnt
                 FROM files fi
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND s.Active='Y'
                     AND c.Active='Y'
@@ -480,7 +504,7 @@ class Stats_MRI extends \NDB_Form
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
@@ -501,7 +525,7 @@ class Stats_MRI extends \NDB_Form
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
@@ -532,7 +556,7 @@ class Stats_MRI extends \NDB_Form
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
@@ -553,7 +577,7 @@ class Stats_MRI extends \NDB_Form
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
                     JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                    JOIN candidate c ON (c.ID=s.CandidateID)
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
@@ -625,6 +649,7 @@ class Stats_MRI extends \NDB_Form
             ]
         );
     }
+
     /**
      * Include additional CSS files:
      *
@@ -640,6 +665,4 @@ class Stats_MRI extends \NDB_Form
             [$baseURL . "/statistics/css/statistics.css"]
         );
     }
-
 }
-

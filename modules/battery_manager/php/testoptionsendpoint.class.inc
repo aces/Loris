@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the endpoint for Test field options.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Battery_Manager
@@ -22,7 +23,7 @@ use \Psr\Http\Message\ResponseInterface;
  * Displays a list of records in the test battery and control panel to search them
  * Allows user to add, activate, and deactivate entries in the test battery
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Module
  * @package  Battery_Manager
@@ -63,15 +64,16 @@ class TestOptionsEndpoint extends \NDB_Page
             $this->loris->getDatabaseConnection()
         );
         return [
-            'instruments' => \NDB_BVL_Instrument::getInstrumentNamesList(
+            'instruments'            => \NDB_BVL_Instrument::getInstrumentNamesList(
                 $this->loris
             ),
-            'stages'      => $this->_getStageList(),
-            'cohorts'     => \Utility::getCohortList(null),
-            'visits'      => $visitController->getVisitlabels(),
-            'sites'       => \Utility::getSiteList(false),
-            'firstVisit'  => $this->_getYesNoList(),
-            'active'      => $this->_getYesNoList(),
+            'stages'                 => $this->_getStageList(),
+            'cohorts'                => \Utility::getCohortList(null),
+            'visits'                 => $visitController->getVisitlabels(),
+            'sites'                  => \Utility::getSiteList(false),
+            'firstVisit'             => $this->_getYesNoList(),
+            'DoubleDataEntryEnabled' => $this->_getYesNoList(),
+            'active'                 => $this->_getYesNoList(),
         ];
     }
 

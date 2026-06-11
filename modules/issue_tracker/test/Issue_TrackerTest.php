@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Issue Tracker automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -17,7 +18,7 @@ require_once __DIR__ .
 /**
  * Issue Tracker automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
@@ -28,7 +29,6 @@ require_once __DIR__ .
 
 class Issue_TrackerTest extends LorisIntegrationTest
 {
-
     /**
      * Insert testing data into the database
      *
@@ -53,6 +53,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
                 'UserID'     => 'TestUser',
                 'First_name' => 'Test',
                 'Last_name'  => 'User',
+                'Real_name'  => 'Test User'
             ]
         );
         $this->DB->insert(
@@ -112,7 +113,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerDoespageLoadWithPermission()
     {
-        $this->setupPermissions(["issue_tracker_reporter"]);
+        $this->setupPermissions(["issue_tracker_all_issue"]);
         $this->safeGet($this->url . "/issue_tracker/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#bc2 > a:nth-child(2) > div")
@@ -133,6 +134,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->_testFilter('low');
         $this->_testFilter('Test User');
     }
+
     /**
      * Tests that Issue Tracker filter
      *
@@ -150,6 +152,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->assertStringContainsString($value, $bodyText);
 
     }
+
     /**
      * Tests Clear Form function in Issue Tracker
      *
@@ -157,7 +160,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testClearFormIssueTracker()
     {
-         $this->safeGet($this->url . "/issue_tracker/");
+        $this->safeGet($this->url . "/issue_tracker/");
         $titleElement = $this->safeFindElement(
             WebDriverBy::Name("title")
         );

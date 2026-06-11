@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Controls access to files on the filesystem. This script should ensure that
  * only files relative to the paths specified in the config.xml are accessible.
@@ -10,7 +11,7 @@
  *
  * Used by MRI Browser and (old) Data Query GUI.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Loris
  * @package  MRI

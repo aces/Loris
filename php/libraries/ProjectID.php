@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 /**
  * A representation of a ProjectID object. A ProjectID is always an integer
  *
@@ -67,6 +68,5 @@ class ProjectID extends ValidatableIdentifier implements \JsonSerializable
     {
         return $this->value;
     }
-
 }
 

@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the CohortController class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Controller
  * @package  Cohorts
@@ -63,6 +64,7 @@ class CohortController extends \LORIS\Data\ProvisionerInstance
                 RecruitmentTarget
             FROM cohort ";
     }
+
     /**
      * Retruns a list of configured Cohorts
      *

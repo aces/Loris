@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * This class features the code for the menu portion of the Loris issue
  * tracker.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Behavioural
  * @package    Main
@@ -37,12 +37,14 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
-                'issue_tracker_reporter',
-                'issue_tracker_developer',
+                'issue_tracker_all_issue',
+                'issue_tracker_own_issue',
+                'issue_tracker_site_issue',
             ]
         );
     }
@@ -59,7 +61,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
 
-        if ($user->hasPermission('access_all_profiles') === false) {
+        if ($user->hasPermission('issue_tracker_all_issue') === false) {
             $provisioner = $provisioner->filter(
                 new \LORIS\Data\Filters\UserSiteMatch()
             );
@@ -82,7 +84,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         bool $DCC = true
     ): array {
         $user = \User::singleton();
-        if ($user->hasPermission('access_all_profiles')) {
+        if ($user->hasPermission('issue_tracker_all_issue')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = \Utility::getSiteList($study_site, $DCC);
         } else {
@@ -104,8 +106,15 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $user    = $factory->user();
         $db      = $factory->database();
 
+        $hasPartialAccess = !$user->hasAnyPermission(
+            [
+                'issue_tracker_all_issue',
+                'issue_tracker_site_issue',
+            ]
+        ) && $user->hasPermission('issue_tracker_own_issue');
+
         //sites
-        if ($user->hasPermission('access_all_profiles')) {
+        if ($user->hasPermission('issue_tracker_all_issue')) {
             $sites = \Utility::getSiteList();
         } else {
             // allow only to view own site data
@@ -122,6 +131,16 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
                ON(i.reporter=u.UserID)",
             []
         );
+        if ($hasPartialAccess) {
+            $reporter_expanded = $db->pselect(
+                "SELECT DISTINCT u.UserID,
+                        u.Real_name
+                 FROM issues i
+                 INNER JOIN users u
+                   ON(i.reporter=u.UserID AND i.reporter=:username)",
+                ['username' => $user->getUsername()]
+            );
+        }
         foreach ($reporter_expanded as $r_row) {
             $reporters[$r_row['Real_name']] = $r_row['Real_name'];
         }
@@ -154,20 +173,20 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         );
 
         $priorities = [
-            'low'       => 'Low',
-            'normal'    => 'Normal',
-            'high'      => 'High',
-            'urgent'    => 'Urgent',
-            'immediate' => 'Immediate',
+            'low'       => dgettext('issue_tracker', 'Low'),
+            'normal'    => dgettext('issue_tracker', 'Normal'),
+            'high'      => dgettext('issue_tracker', 'High'),
+            'urgent'    => dgettext('issue_tracker', 'Urgent'),
+            'immediate' => dgettext('issue_tracker', 'Immediate'),
         ];
 
         $statuses = [
-            'new'          => 'New',
-            'acknowledged' => 'Acknowledged',
-            'feedback'     => 'Feedback',
-            'assigned'     => 'Assigned',
-            'resolved'     => 'Resolved',
-            'closed'       => 'Closed',
+            'new'          => dgettext('issue_tracker', 'New'),
+            'acknowledged' => dgettext('issue_tracker', 'Acknowledged'),
+            'feedback'     => dgettext('issue_tracker', 'Feedback'),
+            'assigned'     => dgettext('issue_tracker', 'Assigned'),
+            'resolved'     => dgettext('issue_tracker', 'Resolved'),
+            'closed'       => dgettext('issue_tracker', 'Closed'),
         ];
 
         $unorgCategories = $db -> pselect(
@@ -179,9 +198,19 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
-                $categories[$categoryName] = $categoryName;
+                $categories[$categoryName] = dgettext(
+                    "issue_tracker",
+                    $categoryName,
+                );
             }
         }
+
+        $userIssueCount = $db->pselectOne(
+            "SELECT COUNT(*) FROM issues
+                WHERE assignee=:username
+                AND status <> 'closed'",
+            ['username' => $user->getUsername()]
+        );
 
         $fieldOptions = [
             'modules'    => $modules,
@@ -191,7 +220,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             'statuses'   => $statuses,
             'priorities' => $priorities,
             'sites'      => $sites,
-            'userID'     => $user->getUsername(),
+            'userID'     => $user->getFullname(),
         ];
 
         $table = (new \LORIS\Data\Table())
@@ -204,9 +233,10 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         );
         return json_encode(
             [
-                'data'         => $arr,
-                'fieldOptions' => $fieldOptions,
-                'centerIDs'    => \Utility::getSiteList()
+                'data'           => $arr,
+                'fieldOptions'   => $fieldOptions,
+                'centerIDs'      => \Utility::getSiteList(),
+                'userIssueCount' => $userIssueCount,
             ]
         );
     }

@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Implementation of .htacces as a PHP router file
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Test
@@ -14,7 +15,7 @@ $url     = ltrim($_SERVER['REQUEST_URI'], "/");
 $urlpath = ltrim($_SERVER['PHP_SELF'], "/");
 
 $request = $_SERVER['REQUEST_URI'];
-
+$urlpath = preg_replace('#^index.php/#', '', $urlpath);
 if ($request != '/'
     && (    file_exists(__DIR__ . $request)
     || file_exists(__DIR__ . "/" . $urlpath))

@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
+
 /**
  * File contains the PSR15 ResponseInterface implementation for
  * Conflict responses.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category PSR15
  * @package  Http

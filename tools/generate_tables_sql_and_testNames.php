@@ -1,5 +1,5 @@
 #!/usr/bin/php
-<?php
+<?php declare(strict_types=1);
 
 /**
  * The script generate_tables_sql_and_testNames.php takes
@@ -10,7 +10,7 @@
  *
  * Example usage:  cat ip_output.txt |  php generate_tables_sql_and_testNames.php
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris
@@ -54,7 +54,12 @@ foreach ($instruments as $instrument) {
 
         case "page":
             if (array_key_exists(2, $bits)) {
-                $pages[] = htmlspecialchars($bits[2]);
+                $pages[] = htmlspecialchars(
+                    $bits[2],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                );
             }
             continue 2;
 

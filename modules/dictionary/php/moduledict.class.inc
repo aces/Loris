@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 namespace LORIS\dictionary;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -31,7 +32,7 @@ class ModuleDict extends \NDB_Page
                 "No valid user"
             );
         }
-        if (!($this->_hasAccess($user))) {
+        if (!($this->isAccessibleBy($user))) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 
@@ -110,6 +111,4 @@ class ModuleDict extends \NDB_Page
         }
         return new \LORIS\Http\Response\JSON\OK($organized);
     }
-
-
 }

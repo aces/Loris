@@ -335,7 +335,13 @@ class Database implements LoggerAwareInterface
             // Use ENT_COMPAT, to ensure the same behaviour between PHP 8.1 and
             // earlier versions, since the default flags changed in PHP 8.1.
             $retVal[$key] = is_string($val)
-                ? htmlspecialchars($val, ENT_COMPAT) : $val;
+                ? htmlspecialchars(
+                    $val,
+                    ENT_COMPAT | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    : $val;
         }
         return $retVal;
     }
@@ -416,10 +422,20 @@ class Database implements LoggerAwareInterface
             );
         }
 
+        $operation = 'I'; // Default to an insert
+
+        // If it was an 'ON DUPLICATE KEY UPDATE' query, check the PDO rowCount()
+        if ($onDuplicateUpdate) {
+            $rowsAffected = $prep->rowCount();
+            if ($rowsAffected !== 2) {
+                $operation = 'U'; // It was an update
+            }
+        }
+
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $this->trackChanges($table, $set, '2=1', 'I');
+        $this->trackChanges($table, $set, '2=1', $operation);
         return true;
     }
 
@@ -725,6 +741,7 @@ class Database implements LoggerAwareInterface
         }
         return $rows;
     }
+
     /**
      * Runs an SQL select statement as a prepared query
      *
@@ -1606,7 +1623,7 @@ class Database implements LoggerAwareInterface
     public function setBuffering(bool $buffered): void
     {
         if ($this->_PDO->setAttribute(
-            \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
+            \PDO\Mysql::ATTR_USE_BUFFERED_QUERY,
             $buffered
         ) == false
         ) {

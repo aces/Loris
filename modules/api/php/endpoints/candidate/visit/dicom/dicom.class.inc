@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * This implements a visit's dicom endpoint class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -45,7 +46,7 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * A cache of the endpoint results, so that it doesn't need to be
      * recalculated for the ETag and handler.
      *
-     * @var ResponseInterface
+     * @var \Psr\Http\Message\MessageInterface
      */
     private $_cache;
 

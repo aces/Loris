@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is written to clean up the files with special characters from the
  * document repository data table as well as clean up the
@@ -7,7 +8,7 @@
  * To use the script: php Cleanup_Special_Chars_Document_Repository.php
  *
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

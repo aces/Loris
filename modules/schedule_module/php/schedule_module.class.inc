@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
+
 /**
  * File contains the Schedule Module class.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category   Core
  * @package    Main
@@ -35,6 +36,7 @@ class Schedule_Module extends \DataFrameworkMenu
     {
         return true;
     }
+
     /**
      * Tells the base class that this page's provisioner can support
      * the UserProjectMatch filter.
@@ -45,6 +47,7 @@ class Schedule_Module extends \DataFrameworkMenu
     {
         return true;
     }
+
     /**
      * Tells the base class that this page's provisioner can support the
      * HasAnyPermissionOrUserSiteMatch filter.
@@ -88,6 +91,7 @@ class Schedule_Module extends \DataFrameworkMenu
             'next30days'      => date("Y-m-d", strtotime("+30 days")),
         ];
     }
+
     /**
      * {@inheritDoc}
      *
@@ -95,7 +99,7 @@ class Schedule_Module extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new ScheduleModuleProvisioner();
+        return new ScheduleModuleProvisioner($this->loris);
     }
 
     /**

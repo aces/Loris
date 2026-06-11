@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains the State class
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Main
@@ -97,7 +98,6 @@ class State
         }
         return null;
     }
-
 
     /**
      * Gets the last URL that was access to use as a "back" link.

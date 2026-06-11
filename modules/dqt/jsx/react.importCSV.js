@@ -8,9 +8,9 @@ import PropTypes from 'prop-types';
 import Modal from 'jsx/Modal';
 import Papa from 'papaparse';
 import {
-    FileElement,
-    RadioElement,
-    ButtonElement,
+  FileElement,
+  RadioElement,
+  ButtonElement,
 } from 'jsx/Form';
 /**
  * Import CSV Modal Component

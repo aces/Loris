@@ -1,11 +1,12 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * Time Point status control panel class
  *
  * This class provides the management GUI for the status flags
  * (session table) of a time point in the NeuroDB framework.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Instrument_List
  * @package  Loris
@@ -21,7 +22,7 @@ namespace LORIS\instrument_list;
  * This class provides the management GUI for the status flags
  * (session table) of a time point in the NeuroDB framework.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Instrument_List
  * @package  Loris
@@ -132,8 +133,6 @@ class Instrument_List_ControlPanel extends \TimePoint
             && in_array($currentStage, ['Visit', 'Screening'])
             && $currentStatus != 'In Progress'
         ) {
-            $config = \NDB_Config::singleton();
-
             // Send to DCC - set Submitted to Y
             $this->setData(
                 [
@@ -168,9 +167,11 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $batteryList = $battery->getBatteryVerbose();
 
                 // Get the list of DDE instruments
-                $config         =& \NDB_Config::singleton();
-                $ddeInstruments = $config->getSetting(
-                    'DoubleDataEntryInstruments'
+                $ddeInstruments = array_keys(
+                    \NDB_BVL_Instrument::getDDEInstrumentNamesList(
+                        $this->loris,
+                        $this->getData('Visit_label')
+                    )
                 );
 
                 // clear the unresolved conflicts for all the instruments
@@ -234,9 +235,11 @@ class Instrument_List_ControlPanel extends \TimePoint
                 // get the list of instruments
                 $batteryList = $battery->getBatteryVerbose();
                 // Get the list of DDE instruments
-                $config         =& \NDB_Config::singleton();
-                $ddeInstruments = $config->getSetting(
-                    'DoubleDataEntryInstruments'
+                $ddeInstruments = array_keys(
+                    \NDB_BVL_Instrument::getDDEInstrumentNamesList(
+                        $this->loris,
+                        $this->getData('Visit_label')
+                    )
                 );
 
                 // detect conflicts for all the instruments
@@ -319,6 +322,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             return;
         }
     }
+
     /**
      * DeterminePreviousStage function
      *
@@ -337,7 +341,6 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
         return  'Not Started';
     }
-
 
     /**
      * DisplayStatus function
@@ -370,8 +373,12 @@ class Instrument_List_ControlPanel extends \TimePoint
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $config         = \NDB_Config::singleton();
-        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $ddeInstruments = array_keys(
+            \NDB_BVL_Instrument::getDDEInstrumentNamesList(
+                $this->loris,
+                $this->getData('Visit_label')
+            )
+        );
 
         // loop the list and check the Data Entry status
         $ddeConflictDetected = false;
@@ -454,6 +461,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
         return $hasAccess;
     }
+
     /**
      * DisplayStatus function
      *
@@ -473,6 +481,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         return $user->hasPermission('data_entry')
             && $user->hasCenter($this->getCenterID());
     }
+
     /**
      * DisplayStatus function
      *
@@ -580,8 +589,12 @@ class Instrument_List_ControlPanel extends \TimePoint
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $config         =& \NDB_Config::singleton();
-        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $ddeInstruments = array_keys(
+            \NDB_BVL_Instrument::getDDEInstrumentNamesList(
+                $this->loris,
+                $this->getData('Visit_label')
+            )
+        );
 
         // clear the unresolved conflicts for all the instruments
         $allDataEntryComplete =true;
@@ -622,11 +635,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     function _getSendToDCCStatusMessage()
     {
         // create user object
-        $user   = \User::singleton();
-        $config = \NDB_Config::singleton();
-
-        // get the value of the session.Scan_done field
-        $scanDone = $this->getData('Scan_done');
+        $user = \User::singleton();
 
         if (!$user->hasPermission('send_to_dcc')) {
             return "User does not have permission to send to DCC";
@@ -661,12 +670,6 @@ class Instrument_List_ControlPanel extends \TimePoint
             return "The status of this stage is either"
                 . " In Progress or has not been set.";
         }
-        if (! $config->settingEnabled("useScanDone")
-            || ($this->getData('Current_stage') != 'Screening'
-            && empty($scanDone))
-        ) {
-            return "The Scan done field must be entered for the Visit stage";
-        }
 
         $battery = new \NDB_BVL_Battery();
 
@@ -677,7 +680,12 @@ class Instrument_List_ControlPanel extends \TimePoint
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $ddeInstruments = array_keys(
+            \NDB_BVL_Instrument::getDDEInstrumentNamesList(
+                $this->loris,
+                $this->getData('Visit_label')
+            )
+        );
 
         // clear the unresolved conflicts for all the instruments
         $allDataEntryComplete =true;
@@ -707,6 +715,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             return "All instruments must have data entry marked as complete.";
         }
     }
+
     /**
      * HasAccessSendToDCC function
      *
@@ -715,11 +724,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     function _hasAccessSendToDCC()
     {
         // create user object
-        $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
-
-        // get the value of the session.Scan_done field
-        $scanDone = $this->getData('Scan_done');
+        $user =& \User::singleton();
 
         // make the option available is the Stage/Status is Sendable to DCC
         // or if its Superuser and option was Sent (to unsend i.e. set to N)
@@ -745,14 +750,12 @@ class Instrument_List_ControlPanel extends \TimePoint
                     'In Progress',
                 ]
             )
-            && (!$config->settingEnabled("useScanDone")
-            || $this->getData('Current_stage') == 'Screening'
-            || !empty($scanDone))
         ) {
             return true;
         }
         return false;
     }
+
     /**
      * DisplayStartNextStage function
      *
@@ -773,6 +776,5 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
         return $this->isStartable();
     }
-
 }
 

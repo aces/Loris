@@ -6,6 +6,13 @@ import {
   ButtonElement,
   SelectElement,
 } from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
+
+import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
+import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/document_repository.json';
 
 /**
  * Document Delete category Form
@@ -15,8 +22,7 @@ import {
  *
  * @author Rolando Acosta
  * @version 1.0.0
- *
- * */
+ */
 class DeleteDocCategoryForm extends React.Component {
   /**
    * @constructor
@@ -47,6 +53,7 @@ class DeleteDocCategoryForm extends React.Component {
 
   /**
    * Fetch data
+   *
    * @return {Promise<void>}
    */
   fetchData() {
@@ -65,20 +72,23 @@ class DeleteDocCategoryForm extends React.Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (<Loader/>);
+      return (<Loader />);
     }
 
     let disabled = true;
     let deleteButton = null;
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
-      deleteButton = <ButtonElement label="Delete Category"/>;
+      deleteButton = <ButtonElement label={t('Delete Category',
+        {ns: 'document_repository'})} />;
     }
 
     return (
@@ -88,15 +98,14 @@ class DeleteDocCategoryForm extends React.Component {
             name="categoryEdit"
             onSubmit={this.handleSubmit}
           >
-            <h3>Delete a category</h3><br/>
+            <h3>{t('Delete a category', {ns: 'document_repository'})}</h3><br />
             <SelectElement
               name="categoryID"
-              label="Category Name:"
+              label={t('Category Name:', {ns: 'document_repository'})}
               options={this.state.data.fieldOptions.fileCategories}
               onUserInput={this.setFormData}
               required={true}
               disabled={disabled}
-              hasError={false}
               value={this.state.formData.categoryID}
             />
             {deleteButton}
@@ -106,13 +115,16 @@ class DeleteDocCategoryForm extends React.Component {
     );
   }
 
-  /** *******************************************************************************
+  /**
+   * *******************************************************************************
    *                      ******     Helper methods     *******
-   *********************************************************************************/
+   ********************************************************************************
+   */
 
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -124,6 +136,7 @@ class DeleteDocCategoryForm extends React.Component {
    * Delete the Category.
    */
   deleteCategory() {
+    const {t} = this.props;
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
@@ -141,11 +154,11 @@ class DeleteDocCategoryForm extends React.Component {
         const body = await response.json();
         let msg;
         if (body && body.error) {
-            msg = body.error;
+          msg = body.error;
         } else if (response.statusText) {
-            msg = response.statusText;
+          msg = response.statusText;
         } else {
-            msg = 'Delete error!';
+          msg = t('Delete error!', {ns: 'document_repository'});
         }
         this.setState({
           errorMessage: msg,
@@ -153,16 +166,17 @@ class DeleteDocCategoryForm extends React.Component {
         swal.fire(msg, '', 'error');
         console.error(msg);
       } else {
-          swal.fire({
-            text: 'Delete Successful!',
-            title: '',
-            type: 'success',
-          }).then(function() {
-            window.location.assign('/document_repository');
-          });
+        swal.fire({
+          text: t('Delete Successful!', {ns: 'document_repository'}),
+          title: '',
+          type: 'success',
+        }).then(function() {
+          window.location.assign('/document_repository');
+        });
       }
-    }).catch( (error) => {
-      let msg = error.message ? error.message : 'Delete error!';
+    }).catch((error) => {
+      let msg = error.message ? error.message : t('Delete error!',
+        {ns: 'document_repository'});
       this.setState({
         errorMessage: msg,
         uploadProgress: -1,
@@ -188,6 +202,20 @@ class DeleteDocCategoryForm extends React.Component {
 DeleteDocCategoryForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  t: PropTypes.func,
 };
 
-export default DeleteDocCategoryForm;
+export default withTranslation(
+  ['document_repository', 'loris'])(DeleteDocCategoryForm);
+
+window.addEventListener('load', () => {
+  i18n.addResourceBundle('hi', 'document_repository', hiStrings);
+  i18n.addResourceBundle('ja', 'document_repository', jaStrings);
+  i18n.addResourceBundle('fr', 'document_repository', frStrings);
+  i18n.addResourceBundle('zh', 'document_repository', zhStrings);
+
+  const element = document.getElementById('lorisworkspace');
+  if (!element) {
+    throw new Error('Missing lorisworkspace');
+  }
+});

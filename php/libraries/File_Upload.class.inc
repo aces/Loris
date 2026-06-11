@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file contains a wrapper for managing and verifying files that are
  * uploaded through PHP QuickForm and handles putting them in the correct place,
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Main
  * @package  Behavioural
@@ -55,6 +56,7 @@ class File_Upload
     public $form;
     public $baseUploadDirectory;
     private $_seeded;
+
     /**
      * Construct the File_Upload class. This sets the default parameters
      * for a file which can be overwritten by calling the set* methods
@@ -151,7 +153,6 @@ class File_Upload
         return true;
     }
 
-
     /**
      * Initializes the necessary file handling properties and ensures
      * the file was uploaded succesfully.
@@ -184,7 +185,6 @@ class File_Upload
             return true;
         }
     }
-
 
     /**
      * Calls an external method of a class to verify whether
@@ -222,7 +222,6 @@ class File_Upload
         return $output;
     }
 
-
     /**
      * Moves the file from the tmp directory to its final destination.
      *
@@ -253,7 +252,6 @@ class File_Upload
         chmod("$this->destinationDirectory$this->destinationFilename", 0666);
         return true;
     }
-
 
     /**
      * Builds the final directory for the file.
@@ -306,7 +304,6 @@ class File_Upload
         return true;
     }
 
-
     /**
      * Builds the final filename for the file.
      *
@@ -344,8 +341,6 @@ class File_Upload
         $this->destinationFilename =$safe_name;
         return true;
     }
-
-
 
     /**
      * Tests the handler to ensure the class and its methods
@@ -444,7 +439,6 @@ class File_Upload
         return true;
     }
 
-
     /**
      * Sets arguments to provide the File Handlers.
      *
@@ -464,7 +458,6 @@ class File_Upload
         $this->handlerArgs =$args;
         return true;
     }
-
 
     /**
      * Formats a file name to be safe (No longer than 250 characters and
@@ -605,7 +598,6 @@ class File_Upload
         }
     }
 
-
     /**
      * Determines how to rename a file if an existing file of the original
      * filename is discovered in the target directory.
@@ -708,7 +700,6 @@ class File_Upload
         $this->filenamePrefix =$prefix;
     }
 
-
     /**
      * Gets the final destination directory for the uploaded file
      *
@@ -719,7 +710,6 @@ class File_Upload
     {
         return $this->destinationDirectory;
     }
-
 
     /**
      * Gets the final filename for the uploaded file
@@ -745,7 +735,6 @@ class File_Upload
         $this->createDirectories =$mode;
     }
 
-
     /**
      * Adds an error to the error log
      *
@@ -766,7 +755,6 @@ class File_Upload
         }
     }
 
-
     /**
      * Gets the array of errors
      *
@@ -777,7 +765,6 @@ class File_Upload
     {
         return $this->errorLog;
     }
-
 
     /**
      * This function registers a file to be used instead of a quickform file.

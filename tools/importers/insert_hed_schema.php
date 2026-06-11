@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 // This script imports a HED Schema in XML format in the database
 // Example usage: php insert_hed_schema.php https://raw.githubusercontent.com/hed-standard/hed-schemas/main/standard_schema/hedxml/HED8.2.0.xml
 require_once __DIR__ . "/../../tools/generic_includes.php";
@@ -45,7 +46,6 @@ foreach ($schema as $parentNode) {
     echo "Inserting '$parentNode->name' nodes\n";
     insertNodes($newSchemaID, $parentNode, 0, '');
 }
-
 
 /**
  * Insert HED tag nodes in DB

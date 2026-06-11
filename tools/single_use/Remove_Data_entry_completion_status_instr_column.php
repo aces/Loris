@@ -1,11 +1,12 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This script is written for a one time use only to iterate through
  * instruments and generate a patch to remove the Data_entry_completion_status
  * field from instrument tables. To be run after
  * Set_Required_elements_completed_flag.php
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Main
  * @package  Loris

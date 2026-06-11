@@ -1,9 +1,10 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * This file features the code for the form portion of the Loris issue
  * tracker.
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category   Loris
  * @package    Main
@@ -45,8 +46,9 @@ class Issue extends \NDB_Form
             || !isset($issueID))
             && !$user->hasAnyPermission(
                 [
-                    'issue_tracker_reporter',
-                    'issue_tracker_developer',
+                    'issue_tracker_all_issue',
+                    'issue_tracker_own_issue',
+                    'issue_tracker_site_issue',
                 ]
             )
         ) {
@@ -96,25 +98,36 @@ class Issue extends \NDB_Form
      *
      * @throws \ConfigurationException
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $issueID = $this->issueID;
         if (!$issueID) {
             return true;
         }
-        $issueData = \NDB_Factory::singleton()->database()->pselectRow(
-            "SELECT centerID FROM issues WHERE issueID=:issueID",
+        $issueData  = \NDB_Factory::singleton()->database()->pselectRow(
+            "SELECT centerID, reporter FROM issues WHERE issueID=:issueID",
             ['issueID' => $issueID]
         );
+        $centerIDs  = $user->getCenterIDs();
+        $centerList = implode(",", $centerIDs);
+        $centerList = explode(',', $centerList);
+        $isOwnIssue = ($issueData['reporter'] ?? null) == $user->getUsername();
+
         return (is_null($issueData)
-            || in_array($issueData['centerID'], $user->getCenterIDs())
-            || ($user->hasPermission('access_all_profiles'))
-            || (empty($issueData['centerID']))
+            || ($user->hasPermission('issue_tracker_site_issue') &&
+                (
+                    in_array($issueData['centerID'], $centerList) ||
+                    empty($issueData['centerID'])
+                )
+            )
+            || ($user->hasPermission('issue_tracker_own_issue') && $isOwnIssue)
+            || ($user->hasPermission('issue_tracker_all_issue'))
         );
     }
 
     /**
-     * Ensure $this->issueID is set so that _hasAccess is valid
+     * Ensure $this->issueID is set so that isAccessibleBy is valid
      * before calling the parent middleware.
      *
      * @param ServerRequestInterface  $request The PSR7 request being processed.
@@ -167,11 +180,12 @@ class Issue extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
+        $label      = dgettext("issue_tracker", "Issue Tracker");
+        $issueLabel = dgettext("issue_tracker", "Issue");
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'Issue',
+                $issueLabel,
                 "/issue_tracker/issue/$this->issueID"
             )
         );

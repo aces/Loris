@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
+
 /**
- * PHP Version 7
+ * PHP Version 8
  *
  * @category API
  * @package  Loris
@@ -165,7 +166,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $inputqcstatus = $data['QCStatus'] ?? null;
+        $inputqcstatus = $data['QC'] ?? null;
         $inputselected = $data['Selected'] ?? null;
 
         // TODO :: This is (and was) not checking or handling Caveats

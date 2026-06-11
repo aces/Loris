@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
+
 /**
  * Defines a MiddlewareChainerMixin trait to aid in the
  * implementation of Middleware chains.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  * @category Helpers
  * @package  Middleware

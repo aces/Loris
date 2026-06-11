@@ -4,3 +4,64 @@
     cursor: pointer;
     color: grey;
 }
+
+.study-description {
+    display: flex;
+    flex-direction: row;
+}
+
+.stats-phone {
+    position: relative;
+    width: 300px;
+    margin: auto;
+}
+
+.stats-screen {
+    position: absolute;
+    left: 8%;
+    top: 10%;
+    width: 55%;
+    height: 90%;
+}
+
+.stats-copy {
+    position: absolute;
+    bottom: 20px;
+}
+
+.stats-copy:hover {
+    opacity: 1;
+}
+
+@media screen and (max-width: 768px) {
+    .study-description {
+        flex-direction: column-reverse;
+    }
+}
+
+.partner-container-desktop .panel-body,
+.partner-container-mobile .panel-body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.partner-container-desktop .panel-body img,
+.partner-container-mobile .panel-body img {
+    width: calc(50% - 8px);
+    object-fit: contain;
+    max-height: 150px;
+}
+
+@media (max-width: 991px) {
+    .partner-container-desktop {
+        display: none;
+    }
+}
+
+@media (min-width: 992px) {
+    .partner-container-mobile {
+        display: none;
+    }
+}

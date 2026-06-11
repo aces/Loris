@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace LORIS\document_repository;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -31,7 +32,8 @@ class Files extends \NDB_Page
      *
      * @return bool true only if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -59,6 +61,29 @@ class Files extends \NDB_Page
         $downloadpath = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")
         );
+
+        if ($request->getMethod() != "POST") {
+            $factory = \NDB_Factory::singleton();
+            $user    = $factory->user();
+            $db      = $factory->database();
+
+            $filename = explode(
+                'Files',
+                urldecode($request->getUri()->getPath())
+            )[1];
+
+            $forSite = $db->pselectOne(
+                "SELECT For_site
+                 FROM document_repository
+                 WHERE Data_dir = :file_dir",
+                ['file_dir' => mb_substr($filename, 1)]
+            );
+
+            if (! $user->hasCenter(\CenterID::singleton((int)$forSite))) {
+                return (new \LORIS\Http\Response\JSON\Forbidden());
+            }
+        }
+
         switch ($request->getMethod()) {
         case "POST":
             return $this->uploadDocFile($request);
@@ -85,7 +110,7 @@ class Files extends \NDB_Page
 
             $filename = explode(
                 'Files',
-                urldecode($request->getUri()->getPath())
+                $request->getUri()->getPath()
             )[1];
 
             $downloader = new \LORIS\FilesDownloadHandler(
@@ -102,6 +127,7 @@ class Files extends \NDB_Page
             ));
         }
     }
+
     /**
      * Handles the document editing process
      *
@@ -122,8 +148,8 @@ class Files extends \NDB_Page
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'File_category' => $req['category'] ?? null,
-            'hidden_file'   => !empty($req['hiddenFile']) ?
-                $req['hiddenFile'] : null,
+            'hidden_video'  => !empty($req['hiddenVideo']) ?
+                $req['hiddenVideo'] : null,
             'instrument'    => $req['instrument'] ?? null,
             'comments'      => $req['comments'] ?? null,
             'version'       => $req['version'] ?? null,
@@ -157,6 +183,7 @@ class Files extends \NDB_Page
             );
         }
     }
+
     /**
      * Handles the document deleting process
      *
@@ -206,6 +233,7 @@ class Files extends \NDB_Page
             unlink($path);
         }
     }
+
     /**
      * Returns a list of categories fields from database
      *
@@ -242,7 +270,7 @@ class Files extends \NDB_Page
                 "visitLabel, " .
                 "Instrument as instrument, " .
                 "comments, " .
-                "hidden_file as hiddenFile," .
+                "hide_video as hiddenVideo," .
                 "File_Name as fileName, " .
                 "version " .
                 "FROM document_repository " .
@@ -255,11 +283,12 @@ class Files extends \NDB_Page
             'sites'       => $siteList,
             'instruments' => $instrumentsList,
             'docData'     => $docData,
-            'hiddenFile'  => ['yes' => "Yes", 'no' => "No"],
+            'hiddenVideo' => ['yes' => "Yes", 'no' => "No"],
         ];
 
         return $result;
     }
+
     /**
      * Handler of parsing category
      *
@@ -312,7 +341,7 @@ class Files extends \NDB_Page
 
         if (! $user->hasPermission('document_repository_upload_edit')) {
             header("HTTP/1.1 403 Forbidden");
-            exit;
+            exit(0);
         }
 
         // Do some validation and fail early on bad inputs.
@@ -324,7 +353,7 @@ class Files extends \NDB_Page
 
         if (is_null($uploadedFiles)) {
             header("HTTP/1.1 413 Too_large");
-            exit;
+            exit(0);
         }
         $category = $body['category']; // required
         if (!\Utility::valueIsPositiveInteger(strval($category))) {
@@ -363,15 +392,7 @@ class Files extends \NDB_Page
             $targetdir = new \SplFileInfo($path);
 
             try {
-                $uploader = (new \LORIS\FilesUploadHandler($targetdir))
-                    ->withPermittedMIMETypes(
-                        'application/pdf',
-                        'image/jpeg',
-                        'image/png',
-                        'image/gif',
-                        'image/svg+xml',
-                        'text/plain'
-                    );
+                $uploader = (new \LORIS\FilesUploadHandler($targetdir));
             } catch (\ConfigurationException $e) {
                 $responseMessages[] = "$filename: {$e->getMessage()}";
                 $errorCounter      += 1;
@@ -404,7 +425,7 @@ class Files extends \NDB_Page
             $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
             $comments   = !empty($body['comments'])   ? $body['comments']   : null;
             $version    = !empty($body['version'])    ? $body['version']    : null;
-            $hidden     = !empty($body['hiddenFile']) ? $body['hiddenFile'] : null;
+            $hidden     = !empty($body['hiddenVideo']) ? $body['hiddenVideo'] : null;
 
             $fileSize = $uploadedFile->getSize();
             $fileType = pathinfo($filename, PATHINFO_EXTENSION);
@@ -417,7 +438,7 @@ class Files extends \NDB_Page
                     'For_site'      => $site,
                     'comments'      => $comments,
                     'version'       => $version,
-                    'hidden_file'   => $hidden,
+                    'hide_video'    => $hidden,
                     'File_name'     => $filename,
                     'File_size'     => $fileSize,
                     'Data_dir'      => "$name/$filename",
@@ -456,6 +477,7 @@ class Files extends \NDB_Page
             ]
         ));
     }
+
     /**
      * Check the find name in the database, if exists return false
      *

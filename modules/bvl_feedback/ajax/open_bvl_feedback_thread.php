@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * File to open a BVL feedback thread via the BVL feedback panel.
  *
@@ -21,7 +22,7 @@ if (! \Utility::valueIsPositiveInteger($feedbackID)) {
     print json_encode(
         ['error' => 'feedbackId missing or invalid']
     );
-    exit;
+    exit(0);
 }
 
 // This is really powerful; it allows you to reopen any feedbackthread as long as the
@@ -35,7 +36,7 @@ if ($openedthreadcount === 0) {
     print json_encode(
         ['error' => 'No feedback thread updated']
     );
-    exit;
+    exit(0);
 }
 
 
@@ -44,5 +45,5 @@ print json_encode(
     ['status' => 'success']
 );
 
-exit;
+exit(0);
 

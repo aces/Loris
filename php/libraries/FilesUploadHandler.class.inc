@@ -7,7 +7,7 @@
  * serve as the ONLY way that files are uploaded so that all file uploading
  * functionality can occur on a well-tested foundation.
  *
- * PHP Version 7
+ * PHP Version 8
  *
  *  @category Main
  *  @package  Behavioural
@@ -157,11 +157,21 @@ class FilesUploadHandler implements RequestHandlerInterface
                 );
             }
 
+            $filename = $file->getClientFilename();
+
+            if (str_contains($filename, "/") === true
+                || str_contains($filename, "..") === true
+            ) {
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    'Path traversal not allowed'
+                );
+            }
+
             /* basename() is used here to prevent path traversal characters
              * from being used.
              */
             $targetPath = $this->uploadDirectory->getPathname() . '/' . basename(
-                $file->getClientFilename()
+                $filename
             );
 
             /* If file exists, set response code to 'Conflict' unless the
