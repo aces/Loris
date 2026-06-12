@@ -94,7 +94,7 @@ class ImagingQCIndex extends Component {
       })
       .then((data) => {
         if (data === t('MRI Parameter Form table does not exist',
-           {ns: 'imaging_qc'})) {
+          {ns: 'imaging_qc'})) {
           this.setState({error: data});
         } else {
           this.setState({[state]: JSON.parse(data)});
@@ -169,7 +169,7 @@ class ImagingQCIndex extends Component {
         },
         {
           label: t('MRI Parameter Form',
-             {ns: 'imaging_qc'}), show: true, filter: {
+            {ns: 'imaging_qc'}), show: true, filter: {
             name: 'mRIParameterForm',
             type: 'select',
             options: ImgOptions.mRIParameterForm,
@@ -177,7 +177,7 @@ class ImagingQCIndex extends Component {
         },
         {
           label: t('Scan Done in MRI PF',
-             {ns: 'imaging_qc'}), show: true, filter: {
+            {ns: 'imaging_qc'}), show: true, filter: {
             name: 'scanDoneInMRIPF',
             type: 'select',
             options: ImgOptions.scanDoneInMRIPF,
