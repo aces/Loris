@@ -93,7 +93,8 @@ class ImagingQCIndex extends Component {
         return resp.text();
       })
       .then((data) => {
-        if (data === t('MRI Parameter Form table does not exist', {ns: 'imaging_qc'})) {
+        if (data === t('MRI Parameter Form table does not exist',
+           {ns: 'imaging_qc'})) {
           this.setState({error: data});
         } else {
           this.setState({[state]: JSON.parse(data)});
@@ -167,14 +168,16 @@ class ImagingQCIndex extends Component {
           },
         },
         {
-          label: t('MRI Parameter Form', {ns: 'imaging_qc'}), show: true, filter: {
+          label: t('MRI Parameter Form',
+             {ns: 'imaging_qc'}), show: true, filter: {
             name: 'mRIParameterForm',
             type: 'select',
             options: ImgOptions.mRIParameterForm,
           },
         },
         {
-          label: t('Scan Done in MRI PF', {ns: 'imaging_qc'}), show: true, filter: {
+          label: t('Scan Done in MRI PF',
+             {ns: 'imaging_qc'}), show: true, filter: {
             name: 'scanDoneInMRIPF',
             type: 'select',
             options: ImgOptions.scanDoneInMRIPF,
@@ -235,20 +238,20 @@ class ImagingQCIndex extends Component {
     } else {
       return (
         <div>
-          {this.state.error === 
-          t('MRI Parameter Form table does not exist', {ns: 'imaging_qc'}) ?
+          {this.state.error ===
+           t('MRI Parameter Form table does not exist', {ns: 'imaging_qc'}) ?
             <>
               <h3>{t(
-                  'The MRI parameter form instrument must be installed in-order '
-                  + 'to use this module.', {ns: 'imaging_qc'})}
+                'The MRI parameter form instrument must be installed '
+                  + 'in-order to use this module.', {ns: 'imaging_qc'})}
               </h3>
               <p>{t(
-                  'Please contact your administrator '
+                'Please contact your administrator '
                   + 'if you require this functionality.', {ns: 'imaging_qc'})}
               </p>
             </> :
             <h3>
-                {t('An error occurred while loading the page.', {ns: 'loris'})}
+              {t('An error occurred while loading the page.', {ns: 'loris'})}
             </h3>
           }
         </div>
@@ -260,6 +263,7 @@ class ImagingQCIndex extends Component {
 ImagingQCIndex.propTypes = {
   ImgDataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.string.isRequired,
 };
 
 window.addEventListener('load', () => {
