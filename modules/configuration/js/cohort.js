@@ -1,6 +1,6 @@
 $(document).ready(function() {
     "use strict";
-    var lorisFetch = window.lorisFetch || fetch;
+    var lorisFetch = window.lorisFetch;
     $('div').tooltip();
     $(".savecohort").click(function(e) {
         var form = $(e.currentTarget).closest('form');
@@ -36,7 +36,7 @@ $(document).ready(function() {
                     }
                     if (!response.ok) {
                       throw new Error(
-                        (data && data.error) ? data.error : text
+                        (data && data.error) ? data.error : 'Request failed.'
                       );
                     }
                     $(form.find(".saveStatus"))
@@ -49,13 +49,20 @@ $(document).ready(function() {
                       location.reload();
                     }, 1000);
                   } else {
-                    var projectDiv = document.getElementById(`#cohort${cohortID}`);
-                    var Name = projectDiv.innerText;
-                    projectDiv.innerText = title;
+                    var projectTab = document.querySelector(`a[href="#cohort${cohortID}"]`);
                     var projectHeader = document.getElementById(`cohort${cohortID}`);
-                    projectHeader.children[0].innerText = title + projectHeader.children[0].innerText.substring(
-                      Name.length
-                    );
+
+                    if (projectHeader && projectHeader.children.length > 0) {
+                      var headerTitle = projectHeader.children[0].innerText;
+                      var suffix = projectTab
+                        ? headerTitle.substring(projectTab.innerText.length)
+                        : '';
+                      projectHeader.children[0].innerText = title + suffix;
+                    }
+
+                    if (projectTab) {
+                      projectTab.innerText = title;
+                    }
                   }
                 })
                 .catch(function(error) {
