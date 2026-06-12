@@ -63,9 +63,6 @@ msgstr "編集"
 msgid "Browse"
 msgstr "ブラウズ"
 
-msgid "Upload"
-msgstr "アップロード"
-
 msgid "An error occured while loading the page."
 msgstr "ページの読み込み中にエラーが発生しました。"
 

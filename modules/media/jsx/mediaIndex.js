@@ -261,7 +261,7 @@ class MediaIndex extends Component {
     const tabs = [{id: 'browse', label: t('Browse', {ns: 'media'})}];
     const uploadTab = () => {
       if (this.props.hasPermission('media_write')) {
-        tabs.push({id: 'upload', label: t('Upload', {ns: 'media'})});
+        tabs.push({id: 'upload', label: t('Upload', {ns: 'loris'})});
         return (
           <TabPane TabId={tabs[1].id}>
             <MediaUploadForm

@@ -65,9 +65,6 @@ msgstr "Modifier"
 msgid "Browse"
 msgstr "Parcourir"
 
-msgid "Upload"
-msgstr "Téléverser"
-
 msgid "An error occured while loading the page."
 msgstr "Une erreur s'est produite lors du chargement de la page."
 

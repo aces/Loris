@@ -64,9 +64,6 @@ msgstr "编辑"
 msgid "Browse"
 msgstr "浏览"
 
-msgid "Upload"
-msgstr "上传"
-
 msgid "An error occured while loading the page."
 msgstr "加载页面时发生错误。"
 
