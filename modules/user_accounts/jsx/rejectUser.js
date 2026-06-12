@@ -1,6 +1,15 @@
 import swal from 'sweetalert2';
+import i18n from 'I18nSetup';
+import hiStrings from '../locale/hi/LC_MESSAGES/user_accounts.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/user_accounts.json';
+import frStrings from '../locale/fr/LC_MESSAGES/user_accounts.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/user_accounts.json';
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('ja', 'user_accounts', jaStrings);
+  i18n.addResourceBundle('hi', 'user_accounts', hiStrings);
+  i18n.addResourceBundle('fr', 'user_accounts', frStrings);
+  i18n.addResourceBundle('zh', 'user_accounts', zhStrings);
   const btn = document.getElementById('btn_reject');
 
   if (!btn) return;
@@ -11,13 +20,14 @@ window.addEventListener('load', () => {
     const baseurl = loris.BaseURL;
 
     swal.fire({
-      title: 'Are you sure?',
-      text: `Do you really want to reject user "${userID}"?\n` +
-            'This action cannot be undone.',
+      title: i18n.t('Are you sure?', {ns: 'loris'}),
+      html: i18n.t('Do you really want to reject this user?', {ns: 'user_accounts'}) + 
+            '<br>' + 
+            i18n.t('This action cannot be undone.', {ns: 'user_accounts'}),
       type: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, reject user!',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: i18n.t('Yes, reject user!', {ns: 'user_accounts'}),
+      cancelButtonText: i18n.t('Cancel', {ns: 'loris'}),
     }).then((result) => {
       if (result.value) {
         fetch(`${baseurl}/user_accounts/ajax/rejectUser.php`, {
@@ -39,7 +49,7 @@ window.addEventListener('load', () => {
             window.location.href = `${baseurl}/user_accounts/`;
           })
           .catch((error) => {
-            swal.fire('Error', error.message, 'error');
+            swal.fire(i18n.t('Error', {ns: 'loris'}), error.message, 'error');
           });
       }
     });
