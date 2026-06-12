@@ -165,7 +165,7 @@ class Categories extends \LORIS\Http\Endpoint
                 }
 
                 if ($setting['DataType'] === "boolean") {
-                    $settingValue = $setting['Value'] ?? "0";
+                    $settingValue = $setting['Value'] ?? "false";
                     if ($settingValue === "false") {
                         $setting['Value'] = false;
                     } else if ($settingValue === "true") {

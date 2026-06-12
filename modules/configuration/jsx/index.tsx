@@ -260,9 +260,7 @@ function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
    * @param {string} newValue New setting value
    */
   const saveChange = (newValue: string) => {
-    const currentValue = props.item.DataType === 'boolean'
-      ? booleanRadioValue(props.item.Value)
-      : props.item.Value;
+    const currentValue = String(props.item.Value ?? '');
     if (newValue === currentValue) {
       return;
     }
@@ -426,14 +424,14 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
   case 'boolean':
     return (
       <RadioElement
-        checked={booleanRadioValue(config.value)}
+        checked={config.value ? 'yes' : 'no'}
         disabled={config.disabled}
         label={config.label}
         name={config.name}
         onUserInput={(_name: string, inputValue: string) => {
-          config.onCommit(inputValue);
+          config.onCommit(inputValue === 'yes' ? 'true' : 'false');
         }}
-        options={booleanRadioOptions()}
+        options={{'yes': 'Yes', 'no': 'No'}}
       />
     );
   case 'date_format':
@@ -505,28 +503,6 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
       <div className="text-danger">Unsupported type {config.dataType}</div>
     );
   }
-}
-
-/**
- * Return the radio value matching the stored boolean representation.
- *
- * @param {ConfigValue} value Stored boolean value
- * @return {string}
- */
-function booleanRadioValue(value: ConfigValue): string {
-  if (value === '1' || value === 1 || value === true || value === 'true') {
-    return '1';
-  }
-  return '0';
-}
-
-/**
- * Return boolean radio options using the existing 1/0 storage format.
- *
- * @return {object}
- */
-function booleanRadioOptions(): ConfigOptionMap {
-  return {'1': 'Yes', '0': 'No'};
 }
 
 /**
