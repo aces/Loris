@@ -282,7 +282,7 @@ function AddFilterModal(props: {
     }
     );
   return (
-    <Modal title={t('Add criteria', {ns: 'dataquery'})}
+    <Modal title={t('Add condition', {ns: 'dataquery'})}
       show={true}
       throwWarning={true}
       onClose={props.closeModal}
