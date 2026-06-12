@@ -21,12 +21,19 @@ window.addEventListener('load', () => {
 
     swal.fire({
       title: i18n.t('Are you sure?', {ns: 'loris'}),
-      html: i18n.t('Do you really want to reject this user?', {ns: 'user_accounts'}) + 
-            '<br>' + 
-            i18n.t('This action cannot be undone.', {ns: 'user_accounts'}),
+      html: i18n.t(
+        'Do you really want to reject this user?',
+        {ns: 'user_accounts'}
+      ) + '<br>' + i18n.t(
+        'This action cannot be undone.',
+        {ns: 'user_accounts'}
+      ),
       type: 'warning',
       showCancelButton: true,
-      confirmButtonText: i18n.t('Yes, reject user!', {ns: 'user_accounts'}),
+      confirmButtonText: i18n.t(
+        'Yes, reject user!',
+        {ns: 'user_accounts'}
+      ),
       cancelButtonText: i18n.t('Cancel', {ns: 'loris'}),
     }).then((result) => {
       if (result.value) {
