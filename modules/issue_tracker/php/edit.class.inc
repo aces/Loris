@@ -286,19 +286,33 @@ class Edit extends \NDB_Page implements ETagCalculator
             || ($user->hasPermission('issue_tracker_own_issue')
             && $isOwnIssue);
 
+        $hasExternalIdPermission = $user->hasPermission('issue_tracker_external_id');
+        if (!$hasExternalIdPermission) {
+            unset($issueData['externalIssueID']);
+            if (isset($issueData['commentHistory'])) {
+                $issueData['commentHistory'] = array_values(
+                    array_filter(
+                        $issueData['commentHistory'],
+                        fn($row) => $row['fieldChanged'] !== 'externalIssueID'
+                    )
+                );
+            }
+        }
+
         $result = [
-            'assignees'         => $assignees,
-            'inactiveUsers'     => $inactive_users,
-            'sites'             => $sites,
-            'statuses'          => $statuses,
-            'priorities'        => $priorities,
-            'categories'        => $categories,
-            'modules'           => $modules,
-            'instruments'       => $instruments,
-            'otherWatchers'     => $otherWatchers,
-            'issueData'         => $issueData,
-            'hasEditPermission' => $hasEditPermission,
-            'isOwnIssue'        => $isOwnIssue,
+            'assignees'               => $assignees,
+            'inactiveUsers'           => $inactive_users,
+            'sites'                   => $sites,
+            'statuses'                => $statuses,
+            'priorities'              => $priorities,
+            'categories'              => $categories,
+            'modules'                 => $modules,
+            'instruments'             => $instruments,
+            'otherWatchers'           => $otherWatchers,
+            'issueData'               => $issueData,
+            'hasEditPermission'       => $hasEditPermission,
+            'isOwnIssue'              => $isOwnIssue,
+            'hasExternalIdPermission' => $hasExternalIdPermission,
         ];
 
         return new \LORIS\Http\Response\JsonResponse(
@@ -485,6 +499,9 @@ class Edit extends \NDB_Page implements ETagCalculator
 
             $issue['topComments'] = $this->getTopComments($issueID);
             unset($issue['CandidateID']);
+            if (!$user->hasPermission('issue_tracker_external_id')) {
+                unset($issue['externalIssueID']);
+            }
         }
 
         return [
@@ -787,6 +804,7 @@ class Edit extends \NDB_Page implements ETagCalculator
             'category',
             'module',
             'instrument',
+            'externalIssueID',
         ];
         $fieldsToValidateFirst = [
             'PSCID',
@@ -819,6 +837,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             if (isset($values[$vField]) && $values[$vField] !== "null") {
                 $validateValues[$vField] = $values[$vField];
             }
+        }
+
+        if (!$user->hasPermission('issue_tracker_external_id')) {
+            unset($issueValues['externalIssueID']);
         }
 
         $issueID = intval($values['issueID']);
