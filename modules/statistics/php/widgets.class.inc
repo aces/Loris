@@ -75,12 +75,15 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 "SELECT
                 COUNT(*) as Count,
                 c.Sex as Sex,
+                s.Name as SexLabel,
+                s.Colour as Colour,
                 c.RegistrationProjectID as ProjectID
              FROM candidate c
+                 LEFT JOIN sex s ON s.Name=c.Sex
                  WHERE c.Active='Y' AND c.Entity_type='Human'
                  AND c.RegistrationProjectID IN $projectString
                  AND c.RegistrationCenterID IN $centerString
-             GROUP BY c.Sex, c.RegistrationProjectID",
+             GROUP BY c.Sex, s.Name, s.Colour, c.RegistrationProjectID",
                 []
             )
         );
@@ -230,59 +233,36 @@ class Widgets extends \NDB_Page implements ETagCalculator
         \Database $db,
         $totalRecruitment
     ) {
+        $totalRecruitment  = intval($totalRecruitment);
+        $recruitmentTarget = intval($recruitmentTarget ?: $totalRecruitment);
+
         $rv = [
             'total_recruitment' => $totalRecruitment,
             'title'             => $title,
         ];
 
-        if (empty($recruitmentTarget)) {
-            $recruitmentTarget = $totalRecruitment;
-        }
-
         $rv['recruitment_target'] = $recruitmentTarget;
-        $totalFemales         = $this->getTotalSexByCohort(
-            $db,
-            "Female",
-            intval($ID)
-        );
-        $rv['female_total']   = $totalFemales;
-        $rv['female_percent'] = $recruitmentTarget ?
-            round($totalFemales / $recruitmentTarget * 100) :
-            null;
-        $totalMales           = $this->getTotalSexByCohort(
-            $db,
-            "Male",
-            intval($ID)
-        );
-        $rv['male_total']     = $totalMales;
-        $rv['male_percent']   = $recruitmentTarget ?
-            round($totalMales / $recruitmentTarget * 100) :
-            null;
         if ($totalRecruitment >= $recruitmentTarget) {
             $rv['surpassed_recruitment'] = "true";
         }
-        $rv['female_full_percent'] = $totalRecruitment ?
-            round($totalFemales / $totalRecruitment * 100) :
-            null;
-
-        $rv['male_full_percent'] = $totalRecruitment ?
-            round($totalMales / $totalRecruitment * 100) :
-            null;
+        $rv['sex_breakdown'] = $this->_formatSexBreakdown(
+            $this->_getSexBreakdownByCohort($db, intval($ID)),
+            $recruitmentTarget,
+            $totalRecruitment
+        );
         return $rv;
     }
 
     /**
-     * Gets the total count of candidates of a specific sex,
-     * associated with a specific project
+     * Gets the grouped sex breakdown associated with a specific cohort.
      *
      * @param \Database $DB       A database connection to retrieve information
      *                            from.
-     * @param string    $sex      A biological sex (male or female)
      * @param int       $cohortID Cohort ID
      *
-     * @return int|string
+     * @return array<int, array<string, mixed>>
      */
-    function getTotalSexByCohort(\Database $DB, string $sex, int $cohortID)
+    private function _getSexBreakdownByCohort(\Database $DB, int $cohortID) : array
     {
 
         $user        = \User::singleton();
@@ -291,20 +271,21 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $centerIDs   = $user->getCenterIDs();
         $centerList  = "'" . implode("','", $centerIDs) . "'";
 
-        return intval(
-            $DB->pselectOne(
-                "SELECT COUNT(DISTINCT s.CandidateID)
+        return iterator_to_array(
+            $DB->pselect(
+                "SELECT COUNT(DISTINCT s.CandidateID) as Count,
+                    c.Sex as Sex,
+                    sx.Name as SexLabel,
+                    sx.Colour as Colour
                 FROM session s
                 JOIN candidate c ON (c.ID=s.CandidateID)
+                LEFT JOIN sex sx ON sx.Name=c.Sex
                 WHERE CohortID=:sid
                 AND CenterID IN ({$centerList})
                 AND ProjectID IN ({$projectList})
-                AND c.Sex=:sex
-                AND c.RegistrationCenterID <> 1",
-                [
-                    'sex' => $sex,
-                    'sid' => $cohortID
-                ]
+                AND c.RegistrationCenterID <> 1
+                GROUP BY c.Sex, sx.Name, sx.Colour",
+                ['sid' => $cohortID]
             )
         );
     }
@@ -347,89 +328,120 @@ class Widgets extends \NDB_Page implements ETagCalculator
         $totalRecruitment,
         $rawData
     ): array {
+        $totalRecruitment  = intval($totalRecruitment);
+        $recruitmentTarget = intval($recruitmentTarget);
+
         $rv = [
             'total_recruitment' => $totalRecruitment,
             'title'             => $title,
         ];
-        if (empty($recruitmentTarget)) {
+        if ($recruitmentTarget === 0) {
             return $rv;
         }
 
         $rv['recruitment_target'] = $recruitmentTarget;
-        if ($ID == 'overall') {
-            $totalFemales = $this->_getTotalSex($rawData, "Female");
-        } else {
-            $totalFemales = $this->getTotalSexByProject(
-                $rawData,
-                "Female",
-                intval(strval($ID))
-            );
-        }
-        $rv['female_total']   = $totalFemales;
-        $rv['female_percent']
-            = round($totalFemales / $recruitmentTarget * 100);
-        if ($ID == 'overall') {
-            $totalMales = $this->_getTotalSex($rawData, "Male");
-        } else {
-            $totalMales = $this->getTotalSexByProject(
-                $rawData,
-                "Male",
-                intval(strval($ID))
-            );
-        }
-        $rv['male_total']   = $totalMales;
-        $rv['male_percent']
-            = round($totalMales / $recruitmentTarget * 100);
+        $filteredRaw = $ID == 'overall'
+            ? $rawData
+            : $this->_getSexBreakdownByProject($rawData, intval(strval($ID)));
         if ($totalRecruitment > $recruitmentTarget) {
             $rv['surpassed_recruitment'] = "true";
-
-            $rv['female_full_percent']
-                = round($totalFemales / $totalRecruitment * 100);
-
-            $rv['male_full_percent']
-                = round($totalMales / $totalRecruitment * 100);
         }
+        $rv['sex_breakdown'] = $this->_formatSexBreakdown(
+            $filteredRaw,
+            $recruitmentTarget,
+            $totalRecruitment
+        );
         return $rv;
     }
 
     /**
-     * Gets the total count of candidates of a specific sex
+     * Formats grouped sex data for progress bars.
      *
-     * @param array  $raw The raw data returned from the SQL query.
-     * @param string $sex Biological sex (male or female)
+     * @param array $raw               Grouped sex data.
+     * @param int   $recruitmentTarget Target recruitment count.
+     * @param int   $totalRecruitment  Total recruitment count.
      *
-     * @return int
+     * @return array<int, array<string, int|string|null>>
      */
-    private function _getTotalSex(array $raw, string $sex) : int
-    {
-        $sum = 0;
+    private function _formatSexBreakdown(
+        array $raw,
+        int $recruitmentTarget,
+        int $totalRecruitment
+    ) : array {
+        $aggregatedBreakdown = [];
         foreach ($raw as $row) {
-            if ($row['Sex'] == $sex) {
-                $sum += intval($row['Count']);
+            $sexValue = is_string($row['Sex'] ?? null) ? trim($row['Sex']) : '';
+            $label    = is_string($row['SexLabel'] ?? null)
+                && trim($row['SexLabel']) !== ''
+                ? trim($row['SexLabel'])
+                : $sexValue;
+            $key      = $this->_normalizeSexKey($sexValue);
+            $count    = intval($row['Count'] ?? 0);
+            if (!isset($aggregatedBreakdown[$key])) {
+                $aggregatedBreakdown[$key] = [
+                    'key'    => $key,
+                    'label'  => $label !== '' ? $label : $key,
+                    'colour' => is_string($row['Colour'] ?? null)
+                        && trim($row['Colour']) !== ''
+                        ? trim($row['Colour'])
+                        : '#000000',
+                    'total'  => 0,
+                ];
             }
+            $aggregatedBreakdown[$key]['total'] += $count;
         }
-        return $sum;
+
+        $breakdown = [];
+        foreach ($aggregatedBreakdown as $item) {
+            $count = intval($item['total']);
+            $breakdown[] = [
+                'key'            => $item['key'],
+                'label'          => $item['label'],
+                'colour'         => $item['colour'],
+                'total'          => $count,
+                'target_percent' => $recruitmentTarget > 0
+                    ? round($count / $recruitmentTarget * 100)
+                    : null,
+                'full_percent'   => $totalRecruitment > 0
+                    ? round($count / $totalRecruitment * 100)
+                    : null,
+            ];
+        }
+        return $breakdown;
     }
 
     /**
-     * Gets the total count of candidates of a specific sex,
-     * associated with a specific project
+     * Normalize a sex value into a stable key for frontend datasets.
      *
-     * @param array  $raw       The raw data returned from the SQL query.
-     * @param string $sex       A biological sex (male or female)
-     * @param int    $projectID Project ID
+     * @param string $sexValue Raw sex value.
      *
-     * @return int
+     * @return string
      */
-    function getTotalSexByProject(array $raw, string $sex, int $projectID) : int
+    private function _normalizeSexKey(string $sexValue) : string
     {
-        $sum = 0;
+        $normalized = strtolower(trim($sexValue));
+        $normalized = preg_replace('/[^a-z0-9]+/', '_', $normalized) ?? '';
+        $normalized = trim($normalized, '_');
+        return $normalized !== '' ? $normalized : 'unknown';
+    }
+
+    /**
+     * Gets the grouped sex breakdown associated with a specific project.
+     *
+     * @param array $raw       The raw data returned from the SQL query.
+     * @param int   $projectID Project ID.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function _getSexBreakdownByProject(array $raw, int $projectID) : array
+    {
+        $filtered = [];
         foreach ($raw as $row) {
-            if ($row['Sex'] == $sex && $row['ProjectID'] == $projectID) {
-                $sum += intval($row['Count']);
+            if (intval($row['ProjectID']) === $projectID) {
+                $filtered[] = $row;
             }
         }
-        return $sum;
+        return $filtered;
     }
 
     /**

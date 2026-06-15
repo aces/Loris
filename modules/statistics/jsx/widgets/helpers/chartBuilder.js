@@ -12,9 +12,6 @@ const siteColours = [
   '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5',
 ];
 
-// Colours for the recruitment bar chart: breakdown by sex
-const sexColours = ['#2FA4E7', '#1C70B6', '#4AE8C2', '#7900DB', '#FF8000', '#D90074'];
-
 let charts = []
 const resizeGraphs = (chartDetails) => {
   Object.keys(chartDetails).forEach((section) => {
@@ -61,16 +58,18 @@ const formatPieData = (data) => {
 /**
  * formatBarData - used for the recruitment widget
  * @param {object} data
- * @return {[]}
+ * @return {{columns: Array, colours: Array}}
  */
 const formatBarData = (data) => {
-  const processedData = [];
+  const columns = [];
+  const colours = [];
   if (data['datasets']) {
     Object.values(data['datasets']).forEach((dataset) => {
-      processedData.push([dataset.label].concat(dataset.data));
+      columns.push([dataset.label].concat(dataset.data));
+      colours.push(dataset.colour || '#000000');
     });
   }
-  return processedData;
+  return {columns, colours};
 };
 
 const createPieChart = (columns, id, targetModal, colours) => {
@@ -117,7 +116,7 @@ const createBarChart = (t, labels, columns, id, targetModal, colours, dataType) 
           }
         } :
         columns.reduce((accumulator, column, index) => {
-          accumulator[column[0]] = colours[index % colours.length];
+          accumulator[column[0]] = colours[index];
           return accumulator;
         }, {})
     },
@@ -302,9 +301,10 @@ const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
               columns = newColumns;
             }
           } else if (chart.dataType === 'bar') {
-            columns = formatBarData(chartData);
+            const formattedBarData = formatBarData(chartData);
+            columns = formattedBarData.columns;
             labels = chartData.labels;
-            colours = sexColours;
+            colours = formattedBarData.colours;
           } else if (chart.dataType === 'line') {
             columns = formatLineData(chartData, totalLabel);
           }

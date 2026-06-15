@@ -177,8 +177,11 @@ class Charts extends \NDB_Page
             "
                 SELECT COUNT(c.CandID) as Count,
                     c.RegistrationCenterID as SiteID,
-                    c.Sex as Sex
+                    c.Sex as Sex,
+                    s.Name as SexLabel,
+                    s.Colour as Colour
                 FROM candidate c
+                LEFT JOIN sex s ON s.Name=c.Sex
                 {$conditions['sessionJoin']}
                 {$conditions['participantStatusJoin']}
                 WHERE c.Active='Y' AND c.Entity_type='Human'
@@ -187,15 +190,17 @@ class Charts extends \NDB_Page
                 {$conditions['visitQuery']}
                 {$conditions['siteQuery']}
                 {$conditions['participantStatusQuery']}
-                GROUP BY c.RegistrationCenterID, c.Sex",
+                GROUP BY c.RegistrationCenterID, c.Sex, s.Name, s.Colour",
             $conditions['params']
         );
         $processed_data = [];
         $sexes          = [];
+        $sexMeta        = [];
         foreach ($data as $row) {
             $siteid = $row['SiteID'];
             $count  = intval($row['Count']);
-            $sex    = is_string($row['Sex']) ? strtolower(trim($row['Sex'])) : '';
+            $sexValue = is_string($row['Sex']) ? trim($row['Sex']) : '';
+            $sex      = $this->_normalizeSexKey($sexValue);
             if (!isset($processed_data[$siteid])) {
                 $processed_data[$siteid] = [];
             }
@@ -203,6 +208,18 @@ class Charts extends \NDB_Page
             assert(!isset($processed_data[$siteid][$sex]));
             $processed_data[$siteid][$sex] = $count;
             $sexes[$sex] = true;
+            if (!isset($sexMeta[$sex])) {
+                $sexMeta[$sex] = [
+                    'label' => is_string($row['SexLabel'])
+                        && trim($row['SexLabel']) !== ''
+                        ? trim($row['SexLabel'])
+                        : $sexValue,
+                    'colour' => is_string($row['Colour'])
+                        && trim($row['Colour']) !== ''
+                        ? trim($row['Colour'])
+                        : '#000000',
+                ];
+            }
         }
 
         $sexes = array_keys($sexes);
@@ -213,8 +230,9 @@ class Charts extends \NDB_Page
             foreach ($sexes as $sex) {
                 if (!isset($sexData['datasets'][$sex])) {
                     $sexData['datasets'][$sex] = [
-                        'label' => dgettext("sex", ucwords($sex)),
-                        'data'  => [],
+                        'label'  => $sexMeta[$sex]['label'] ?? $sex,
+                        'colour' => $sexMeta[$sex]['colour'] ?? '#000000',
+                        'data'   => [],
                     ];
                 }
 
@@ -224,6 +242,21 @@ class Charts extends \NDB_Page
         }
 
         return (new \LORIS\Http\Response\JsonResponse($sexData));
+    }
+
+    /**
+     * Normalize a sex value into a stable key for frontend datasets.
+     *
+     * @param string $sexValue Raw sex value.
+     *
+     * @return string
+     */
+    private function _normalizeSexKey(string $sexValue) : string
+    {
+        $normalized = strtolower(trim($sexValue));
+        $normalized = preg_replace('/[^a-z0-9]+/', '_', $normalized) ?? '';
+        $normalized = trim($normalized, '_');
+        return $normalized !== '' ? $normalized : 'unknown';
     }
 
     /**

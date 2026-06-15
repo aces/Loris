@@ -6,75 +6,43 @@
  * @return {JSX.Element} the charts to render to the widget panel.
  */
 const progressBarBuilder = (t, data) => {
+  const exceededTarget = Boolean(data['surpassed_recruitment']);
+  const sexBreakdown = Array.isArray(data['sex_breakdown']) ? data['sex_breakdown'] : [];
+  const renderSegment = (sexData) => {
+    const width = exceededTarget ? sexData.full_percent : sexData.target_percent;
+
+    if (!width) {
+      return null;
+    }
+
+    return <div
+      key={sexData.key || sexData.label}
+      className ='progress-bar'
+      role ='progressbar'
+      style ={{
+        width: `${width}%`,
+        backgroundColor: sexData.colour || '#000000',
+      }}
+      data-toggle ='tooltip'
+      data-placement ='bottom'
+      title ={`${width}% ${sexData.label}`}>
+      <p>
+        {sexData.total}<br/>
+        {sexData.label}
+      </p>
+    </div>;
+  };
+
   let title;
   let content;
   title = <h5>
     {data['title']}
   </h5>;
-  if (data['surpassed_recruitment']) {
+  if (exceededTarget) {
     content = (
       <div>
         <div className ='progress'>
-          {
-            data['female_percent'] &&
-              <div className ='progress-bar progress-bar-female'
-                role ='progressbar'
-                style ={{width: `${data['female_full_percent']}%`}}
-                data-toggle ='tooltip'
-                data-placement ='bottom'
-                title ={`${data['female_full_percent']}% female`}>
-                <p>
-                  {data['female_total']}<br/>
-                  {t(
-                    'Female',
-                    {
-                      'ns': 'loris',
-                      'count': parseInt(data['female_total'] ?? '0'),
-                    }
-                  )}
-                </p>
-              </div>
-          }
-          {
-            data['male_percent'] &&
-              <div className ='progress-bar progress-bar-male'
-                data-toggle ='tooltip'
-                data-placement ='bottom'
-                role ='progressbar'
-                style ={{width: `${data['male_full_percent']}%`}}
-                title ={`${data['male_full_percent']}% male`}>
-                <p>
-                  {data['male_total']}<br/>
-                  {t(
-                    'Male',
-                    {
-                      'ns': 'loris',
-                      'count': parseInt(data['male_total'] ?? '0'),
-                    }
-                  )}
-                </p>
-              </div>
-          }
-          {
-            data['non_binary_percent'] &&
-              <div className ='progress-bar progress-bar-other'
-                data-toggle ='tooltip'
-                data-placement ='bottom'
-                role ='progressbar'
-                style ={{width: `${data['non_binary_percent']}%`}}
-                title ={`${data['non_binary_percent']}% other`}>
-                <p>
-                  {data['non_binary_total']}<br/>
-                  {t(
-                    'Other',
-                    {
-                      'ns': 'loris',
-                      'count': parseInt(data['non_binary_total'] ?? '0'),
-                    }
-                  )}
-                </p>
-              </div>
-          }
+          {sexBreakdown.map(renderSegment)}
           <p className ='pull-right small target'>
             {t(
               'Target: {{target}}',
@@ -101,66 +69,7 @@ const progressBarBuilder = (t, data) => {
     content = (
       <>
         <div className ='progress'>
-          {
-            data['female_percent'] &&
-              <div className ='progress-bar progress-bar-female'
-                role ='progressbar'
-                style ={{width: `${data['female_percent']}%`}}
-                data-toggle ='tooltip'
-                data-placement ='bottom'
-                title ={`${data['female_percent']}% female`}>
-                <p>
-                  {data['female_total']}<br/>
-                  {t(
-                    'Female',
-                    {
-                      'ns': 'loris',
-                      'count': parseInt(data['female_total'] ?? '0'),
-                    }
-                  )}
-                </p>
-              </div>
-          }
-          {
-            data['male_percent'] &&
-              <div className ='progress-bar progress-bar-male'
-                data-toggle ='tooltip'
-                data-placement ='bottom'
-                role ='progressbar'
-                style ={{width: `${data['male_percent']}%`}}
-                title ={`${data['male_percent']}% male`}>
-                <p>
-                  {data['male_total']}<br/>
-                  {t(
-                    'Male',
-                    {
-                      'ns': 'loris',
-                      'count': parseInt(data['male_total'] ?? '0'),
-                    }
-                  )}
-                </p>
-              </div>
-          }
-          {
-            data['non_binary_percent'] &&
-                <div className ='progress-bar progress-bar-other'
-                  data-toggle ='tooltip'
-                  data-placement ='bottom'
-                  role ='progressbar'
-                  style ={{width: `${data['non_binary_percent']}%`}}
-                  title ={`${data['non_binary_percent']}% other`}>
-                  <p>
-                    {data['non_binary_total']}<br/>
-                    {t(
-                      'Other',
-                      {
-                        'ns': 'loris',
-                        'count': parseInt(data['non_binary_total'] ?? '0'),
-                      }
-                    )}
-                  </p>
-                </div>
-          }
+          {sexBreakdown.map(renderSegment)}
           {
             data['recruitment_target'] ?
               <p className ='pull-right small target'>
