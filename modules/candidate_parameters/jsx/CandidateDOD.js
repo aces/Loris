@@ -208,6 +208,8 @@ class CandidateDOD extends Component {
         text: t('Date of death updated!', {ns: 'candidate_parameters'}),
         type: 'success',
         confirmButtonText: t('OK', {ns: 'loris'}),
+      }).then((result) => {
+        location.reload();
       });
       if (result.value) {
         this.fetchData();

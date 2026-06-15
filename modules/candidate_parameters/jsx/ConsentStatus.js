@@ -281,12 +281,10 @@ class ConsentStatus extends Component {
         })
           .then((result) => {
             if (result.value) {
-              this.setState({submitDisabled: false});
-              this.fetchData();
+              location.reload();
             }
           }
           );
-        this.fetchData();
       },
       error: (error) => {
         console.error(error);

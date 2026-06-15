@@ -193,6 +193,10 @@ class CandidateDOB extends Component {
             text: t('Date of birth updated!', {ns: 'candidate_parameters'}),
             type: 'success',
             confirmButtonText: t('OK', {ns: 'loris'}),
+          }).then((result) => {
+            if (result.value) {
+              location.reload();
+            }
           });
           if (resp.value) {
             this.fetchData();
