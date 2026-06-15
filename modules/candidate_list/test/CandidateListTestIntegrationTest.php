@@ -38,6 +38,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';
     static $Participant = 'select[name="participantStatus"]';
+    static $dob         = 'input[name="DoB"]';
     static $derivedAge  = 'input[name="derivedAge"]';
     static $visitCount  = 'input[name="visitCount"]';
     static $feedback    = 'select[name="feedback"]';
@@ -54,8 +55,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $pscidLink   = "tr:nth-child(1) a";
 
     /**
-     * Backs up the useEDC config value and sets the value to a known
-     * value (true) for testing.
+     * Backs up the useEDC and useDoB config values and sets the values
+     * to a known value (true) for testing.
      *
      * @return void
      */
@@ -63,6 +64,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         parent::setUp();
         $this->setupConfigSetting("useEDC", "true");
+        $this->setupConfigSetting("useDoB", "true");
     }
 
     /**
@@ -74,6 +76,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         parent::tearDown();
         $this->restoreConfigSetting("useEDC");
+        $this->restoreConfigSetting("useDoB");
     }
 
     /**
@@ -144,6 +147,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Name("participantStatus")
         );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
+        $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoB"));
+           $this->assertEquals("input", $dobOptions->getTagName());
+           $this->assertEquals("date", $dobOptions->getAttribute("type"));
         $derivedAgeOptions = $this->safeFindElement(
             WebDriverBy::Name("derivedAge")
         );
@@ -266,6 +272,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$clearFilter,
             "Active",
             '436'
+        );
+        $this->_filterTest(
+            self::$dob,
+            self::$display,
+            self::$clearFilter,
+            "2003-07-30",
+            '1 row',
         );
         $this->_filterTest(
             self::$derivedAge,

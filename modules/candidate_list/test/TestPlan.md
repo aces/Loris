@@ -16,10 +16,11 @@
    [ ] Participant Status
    [ ] Sex
    [ ] Visit Count
+   [ ] DoB, if Use DoB is enabled
    [ ] Derived Age
    [ ] Feedback
    [ ] Entity Type
-   [ ] EDC Age
+   [ ] EDC Age, if Use EDC is enabled
    [Automation Testing]
 7. Click "Clear Filter" and ensure filters are reset to same state as #2.
 8. Ensure that columns are sortable by clicking on the column headers.
@@ -31,3 +32,4 @@
 Alternatively, an incorrect PSCID/DCCID combination in the Selection Filter form should not give such an error; it should return that no results were found.
 14. Enter a correct PSCID/DCCID combination in the 'Open Profile' form and ensure that it loads the correct Candidate Profile page
 15. In the Configuration module, set the Study variable 'Use EDC' to _No_. Ensure that the _EDC Age_ filter and the _EDC Age_ column are removed from the Selection Filter form and data table, respectively.
+16. In the Configuration module, set the Study variable 'Use DoB' to _No_. Ensure that the _DoB_ filter and the _DoB_ column are removed from the Selection Filter form and data table, respectively, while _Derived Age_ remains available.

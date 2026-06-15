@@ -31,6 +31,8 @@ namespace LORIS\candidate_list;
  */
 class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
+    private string $dobFormat;
+
     /**
      * Create a CandidateListRowProvisioner, which gets rows for
      * the candidate_list menu table.
@@ -40,10 +42,11 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      */
     function __construct(protected \LORIS\LorisInstance $loris)
     {
-        $factory       = \NDB_Factory::singleton();
-        $config        = $factory->config();
-        $derivedAgeSQL = self::_getDerivedAgeSQL('c.DoB');
-        $maybeDerivedEDCSQL = '';
+        $factory             = \NDB_Factory::singleton();
+        $config              = $factory->config();
+        $derivedAgeSQL       = self::_getDerivedAgeSQL('c.DoB');
+        $maybeDerivedEDCSQL  = '';
+        $this->dobFormat     = $config->getSetting("dobFormat");
         if ($config->getSetting("useEDC") === "true") {
             $derivedEDCAgeSQL   = self::_getDerivedAgeSQL('c.EDC');
             $maybeDerivedEDCSQL = ", $derivedEDCAgeSQL AS EDCAge";
@@ -60,6 +63,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.Entity_type AS EntityType,
                 MAX(s.Scan_done) AS scanDone,
                 COALESCE(pso.Description,'Active') AS ParticipantStatus,
+                DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
                 $derivedAgeSQL AS DerivedAge,
                 DATE_FORMAT(c.Date_registered,'%Y-%m-%d') AS Date_registered,
                 c.Sex,
@@ -124,6 +128,20 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         // one of the user's sites.
         $cid = \CenterID::singleton($row['RegistrationCenterID']);
         $pid = \ProjectID::singleton($row['RegistrationProjectID']);
+
+        if ($row['DoB'] !== null) {
+            $dob = new \DateTimeImmutable($row['DoB']);
+            switch ($this->dobFormat) {
+            case 'Ym':
+                $row['DoB'] = $dob->format('Y-m');
+                break;
+            case 'Ymd':
+                $row['DoB'] = $dob->format('Y-m-d');
+                break;
+            default:
+                throw new \Exception("Unhandled DoB format: $this->dobFormat");
+            }
+        }
 
         if (isset($row['Cohort'])) {
             $cohorts    = explode(',', $row['Cohort']);

@@ -104,6 +104,7 @@ class Options extends \LORIS\Http\Endpoint
             'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
+            'usedob'            => $config->getSetting("useDoB"),
             'Sex'               => $sexes,
             'entitytype'        => $entityTypes,
         ];

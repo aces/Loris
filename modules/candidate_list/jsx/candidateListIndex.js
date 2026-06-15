@@ -294,6 +294,17 @@ class CandidateListIndex extends Component {
         },
       },
       {
+        'label': this.props.t('DoB', {ns: 'loris'}),
+        'show': options.usedob === 'true',
+        ...(options.usedob === 'true' ? {
+          filter: {
+            name: 'DoB',
+            type: 'date',
+            hide: this.state.hideFilter,
+          },
+        } : {}),
+      },
+      {
         'label': this.props.t('Derived Age', {ns: 'candidate_list'}),
         'show': true,
         'filter': {
