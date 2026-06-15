@@ -42,9 +42,9 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
      */
     function __construct(protected \LORIS\LorisInstance $loris)
     {
-        $factory            = \NDB_Factory::singleton();
-        $config             = $factory->config();
-        $derivedAgeSQL      = self::_getDerivedAgeSQL('c.DoB');
+        $factory       = \NDB_Factory::singleton();
+        $config        = $factory->config();
+        $derivedAgeSQL = self::_getDerivedAgeSQL('c.DoB');
         $maybeDerivedEDCSQL = '';
         $this->dobFormat    = $config->getSetting("dobFormat");
         if ($config->getSetting("useEDC") === "true") {
