@@ -161,12 +161,22 @@ class Configuration extends \NDB_Form
         foreach ($configs as &$setting) {
             if ($setting['Disabled'] == 'No') {
                 $value = $DB->pselect(
-                    "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
+                    "SELECT c.ID, c.Value, cm.Value AS MappedValue
+                     FROM Config c
+                     LEFT JOIN ConfigMappings cm ON (c.ID=cm.ConfigID)
+                     WHERE c.ConfigID=:ID",
                     ['ID' => $setting['ID']]
                 );
                 if ($value) {
                     foreach ($value as $subvalue) {
-                        $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                        if ($setting['DataType'] === 'mapping') {
+                            $setting['Value'][$subvalue['ID']] = [
+                                'Value'       => $subvalue['Value'],
+                                'MappedValue' => $subvalue['MappedValue'] ?? '',
+                            ];
+                        } else {
+                            $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                        }
                     }
                 }
             }

@@ -60,6 +60,20 @@
      <input type="text" class="form-control" name="{$k}" value="{$v|escape:html}" {if $d eq "Yes"}disabled{/if}>
 {/function}
 
+{function name=createMapping}
+    {if isset($v.Value)}
+        {assign var=mappingValue value=$v.Value}
+        {assign var=mappedValue value=$v.MappedValue|default:''}
+    {else}
+        {assign var=mappingValue value=$v|default:''}
+        {assign var=mappedValue value=''}
+    {/if}
+    <div class="configuration-mapping-fields">
+        <input type="text" class="form-control configuration-mapping-value" name="{$k}" value="{$mappingValue|escape:html}" placeholder="Value" {if $d eq "Yes"}disabled{/if}>
+        <input type="text" class="form-control configuration-mapping-mapped-value" name="mapping-{$k}" value="{$mappedValue|escape:html}" placeholder="Mapped value" {if $d eq "Yes"}disabled{/if}>
+    </div>
+{/function}
+
 {function name=createLogDropdown}
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
         {foreach from=$log_levels key=name item=label}
@@ -94,7 +108,7 @@
 {function name=printForm}
     <div class="config-form-group" id="{$node['ID']}">
     {foreach from=$node['Value']|default key=k item=v}
-        {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
+        {if $node['AllowMultiple'] == 1}<div class="input-group entry {if $node['DataType'] eq 'mapping'}configuration-mapping-row{/if}">{/if}
 
         {if $k == 0}
             {assign var=id value={"add-"|cat:$node['ID']} }
@@ -118,6 +132,8 @@
             {call createLookUpCenterNameUsing k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'log_level'}
             {call createLogDropdown k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'mapping'}
+            {call createMapping k=$id v=$v d=$node['Disabled']}
         {else}
             {call createText k=$id v=$v d=$node['Disabled']}
         {/if}
@@ -130,7 +146,7 @@
         {/if}
         {if $node['AllowMultiple'] == 1}</div>{/if}
     {foreachelse}
-        {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
+        {if $node['AllowMultiple'] == 1}<div class="input-group entry {if $node['DataType'] eq 'mapping'}configuration-mapping-row{/if}">{/if}
         {assign var=id value={"add-"|cat:$node['ID']} }
         {if $node['DataType'] eq 'boolean'}
             {call createRadio k=$id d=$node['Disabled']}
@@ -146,6 +162,8 @@
             {call createTextArea k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'lookup_center'}
             {call createLookUpCenterNameUsing k=$id d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'mapping'}
+            {call createMapping k=$id d=$node['Disabled']}
         {else}
             {call createText k=$id d=$node['Disabled']}
         {/if}

@@ -19,7 +19,7 @@ $(function() {
 
     // Setup the new form field
     let newField = currentField.clone();
-    newField.find('.form-control').attr('name', name);
+    assignFormControlNames(newField, name);
     $(newField).find('.btn-remove')
       .addClass('remove-new')
       .removeClass('btn-remove');
@@ -39,7 +39,7 @@ $(function() {
   $('.btn-remove').on('click', function(e) {
     e.preventDefault();
 
-    let selectedOption = $(this).parent().parent().children()
+    let selectedOption = $(this).parent().parent().find('.form-control:first')
       .prop('value');
 
     let fieldName = $(this)
@@ -76,9 +76,7 @@ $(function() {
               let name = 'add-' + parentID;
 
               resetForm($(button).parent().parent());
-              $(button)
-                .parent().parent().children('.form-control')
-                .attr('name', name);
+              assignFormControlNames($(button).parent().parent(), name);
               $(button)
                 .addClass('remove-new')
                 .removeClass('btn-remove');
@@ -94,11 +92,10 @@ $(function() {
   });
 
   // On form submit, process the changes through an AJAX call
-  $('form').on('submit', function(e) {
+  $('body').on('submit', 'form', function(e) {
     e.preventDefault();
 
     let form = $(this).serialize();
-
     // Clear previous feedback
     $('.submit-area > label').remove();
 
@@ -122,7 +119,7 @@ $(function() {
   });
 
   // On form reset, to delete the elements added with the "Add field" button that were not submitted.
-  $('form').on('reset', function(e) {
+  $('body').on('reset', 'form', function(e) {
     $('.tab-pane.active').find('select[name^="add-"]').parent().remove();
   });
 });
@@ -149,4 +146,18 @@ function resetForm(form) {
   ).val('');
   $(form).find('input:radio, input:checkbox')
     .removeAttr('checked').removeAttr('selected');
+}
+
+/**
+ * Assign posted field names to simple and mapping configuration controls.
+ *
+ * @param {Element} field A configuration entry element
+ * @param {string} name The base POST field name
+ */
+function assignFormControlNames(field, name) {
+  'use strict';
+
+  $(field).find('.form-control').attr('name', name);
+  $(field).find('.configuration-mapping-mapped-value')
+    .attr('name', 'mapping-' + name);
 }
