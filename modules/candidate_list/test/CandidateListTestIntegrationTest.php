@@ -277,7 +277,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$dob,
             self::$display,
             self::$clearFilter,
-            "2003-07-30",
+            "2003-06-30",
             '1 row',
         );
         $this->_filterTest(
