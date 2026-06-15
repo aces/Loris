@@ -391,9 +391,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
         );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(self::$pscidLink)
-        )->getText();
-        $this->assertStringContainsString(
+            WebDriverBy::cssSelector('input[name="PSCID"]')
+        )->getAttribute("value");
+        $this->assertEquals(
             "MTL022",
             $bodyText
         );
