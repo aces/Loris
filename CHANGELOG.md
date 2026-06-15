@@ -18,6 +18,9 @@ other improvements such as
 - Add infrastructure to track user decisions to policies 
 - Add Support for TOTP / 2FA
 
+#### Updates and Improvements
+- [docs] Update login page Setup Guide link to readthedocs (PR #7071)
+
 ### Notes For Existing Projects
 
 Upgrading LORIS requires following the upgrade process each major and minor release (bug fix releases can be script) to ensure the schema is up to date.
