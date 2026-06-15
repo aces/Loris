@@ -35,7 +35,7 @@ can exclusively see candidates at study sites with which they are affiliated.
 
 ## Configurations
 
-The "EDC" column is only displayed in the data table if the `useEDC` variable
+The "EDC Age" column is only displayed in the data table if the `useEDC` variable
 (_"Use EDC"_) is configured to 'Yes' in the Configuration module.
 
 ## Interactions with LORIS

@@ -39,9 +39,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $scanDone    = 'select[name="scanDone"]';
     static $Participant = 'select[name="participantStatus"]';
     static $dob         = 'input[name="DoB"]';
+    static $derivedAge  = 'input[name="derivedAge"]';
     static $visitCount  = 'input[name="visitCount"]';
     static $feedback    = 'select[name="feedback"]';
-    static $edc         = 'input[name="edc"]';
+    static $edcAge      = 'input[name="edcAge"]';
 
 
 
@@ -54,8 +55,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     static $pscidLink   = "tr:nth-child(1) a";
 
     /**
-     * Backs up the useEDC config value and sets the value to a known
-     * value (true) for testing.
+     * Backs up the useEDC and useDoB config values and sets the values
+     * to a known value (true) for testing.
      *
      * @return void
      */
@@ -63,6 +64,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         parent::setUp();
         $this->setupConfigSetting("useEDC", "true");
+        $this->setupConfigSetting("useDoB", "true");
     }
 
     /**
@@ -74,6 +76,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         parent::tearDown();
         $this->restoreConfigSetting("useEDC");
+        $this->restoreConfigSetting("useDoB");
     }
 
     /**
@@ -144,20 +147,25 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Name("participantStatus")
         );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
-           $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoB"));
+        $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoB"));
            $this->assertEquals("input", $dobOptions->getTagName());
+           $this->assertEquals("date", $dobOptions->getAttribute("type"));
+        $derivedAgeOptions = $this->safeFindElement(
+            WebDriverBy::Name("derivedAge")
+        );
+           $this->assertEquals("input", $derivedAgeOptions->getTagName());
            // Not currently done
-           //$this->assertEquals("date",$dobOptions->getAttribute("type"));
+           //$this->assertEquals("text",$derivedAgeOptions->getAttribute("type"));
            $sexOptions = $this->safeFindElement(WebDriverBy::Name("sex"));
            $this->assertEquals("select", $sexOptions->getTagName());
-           $this->assertEquals("input", $dobOptions->getTagName());
+           $this->assertEquals("input", $derivedAgeOptions->getTagName());
            // Not currently done in Loris.
-           //$this->assertEquals("number",$dobOptions->getAttribute("type"));
-           //$this->assertEquals("0",$dobOptions->getAttribute("min"));
-           $edcOptions = $this->safeFindElement(WebDriverBy::Name("edc"));
-           $this->assertEquals("input", $edcOptions->getTagName());
+           //$this->assertEquals("number",$derivedAgeOptions->getAttribute("type"));
+           //$this->assertEquals("0",$derivedAgeOptions->getAttribute("min"));
+           $edcAgeOptions = $this->safeFindElement(WebDriverBy::Name("edcAge"));
+           $this->assertEquals("input", $edcAgeOptions->getTagName());
            // Not currently done
-           //$this->assertEquals("date",$edcOptions->getAttribute("type"));
+           //$this->assertEquals("text",$edcAgeOptions->getAttribute("type"));
         $feedbackOptions = $this->safeFindElement(
             WebDriverBy::Name("feedback")
         );
@@ -270,7 +278,14 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             self::$display,
             self::$clearFilter,
             "2003-06-30",
-            '1 row'
+            '1 row',
+        );
+        $this->_filterTest(
+            self::$derivedAge,
+            self::$display,
+            self::$clearFilter,
+            " y / ",
+            '435'
         );
         $this->_filterTest(
             self::$visitCount,
@@ -287,11 +302,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             '11 rows'
         );
         $this->_filterTest(
-            self::$edc,
+            self::$edcAge,
             self::$display,
             self::$clearFilter,
-            "2003-07-30",
-            '1 row'
+            " y / ",
+            '432'
         );
         $this->_filterTest(
             self::$cohort,
@@ -379,11 +394,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                 "#dynamictable > tbody > tr > td.scanDoneLink"
             )
         );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(self::$pscidLink)
-        )->getText();
+        $bodyText = $this->webDriver->executeScript("return window.location.href;");
         $this->assertStringContainsString(
-            "MTL022",
+            "/imaging_browser/?PSCID=MTL022",
             $bodyText
         );
     }

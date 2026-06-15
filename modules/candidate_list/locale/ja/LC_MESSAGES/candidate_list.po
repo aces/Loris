@@ -24,6 +24,12 @@ msgstr "アクセスプロファイル"
 msgid "Visit Count"
 msgstr "訪問回数"
 
+msgid "Derived Age"
+msgstr "派生年齢"
+
+msgid "EDC Age"
+msgstr "EDC 年齢"
+
 msgid "Open Profile"
 msgstr "プロフィールを開く"
 

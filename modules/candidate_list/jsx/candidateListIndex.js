@@ -1,3 +1,5 @@
+
+
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
@@ -153,8 +155,7 @@ class CandidateListIndex extends Component {
 
       return <td><a href ={url}>{cell}</a></td>;
     }
-    if (column === this.props.t('DoB', {ns: 'loris'})
-      || column === this.props.t('Date of registration', {ns: 'loris'})) {
+    if (column === this.props.t('Date of registration', {ns: 'loris'})) {
       if (cell) {
         const date = new Date(cell);
         return <td>{this.dateFormatter.format(date)}</td>;
@@ -294,10 +295,21 @@ class CandidateListIndex extends Component {
       },
       {
         'label': this.props.t('DoB', {ns: 'loris'}),
+        'show': options.usedob === 'true',
+        ...(options.usedob === 'true' ? {
+          filter: {
+            name: 'DoB',
+            type: 'date',
+            hide: this.state.hideFilter,
+          },
+        } : {}),
+      },
+      {
+        'label': this.props.t('Derived Age', {ns: 'candidate_list'}),
         'show': true,
         'filter': {
-          name: 'DoB',
-          type: 'date',
+          name: 'derivedAge',
+          type: 'text',
           hide: this.state.hideFilter,
         },
       },
@@ -358,17 +370,16 @@ class CandidateListIndex extends Component {
     if (options.useedc === 'true') {
       fields.push(
         {
-          'label': this.props.t('EDC', {ns: 'loris'}),
+          'label': this.props.t('EDC Age', {ns: 'candidate_list'}),
           'show': true,
           'filter': {
-            name: 'edc',
-            type: 'date',
+            name: 'edcAge',
+            type: 'text',
             hide: this.state.hideFilter,
           },
         }
       );
     }
-
     // Open profile modal window
     const profileForm = (
       <Modal

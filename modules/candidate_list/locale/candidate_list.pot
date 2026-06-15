@@ -24,6 +24,12 @@ msgstr ""
 msgid "Visit Count"
 msgstr ""
 
+msgid "Derived Age"
+msgstr ""
+
+msgid "EDC Age"
+msgstr ""
+
 msgid "Open Profile"
 msgstr ""
 

@@ -25,5 +25,11 @@ msgstr "受试者资料"
 msgid "Visit Count"
 msgstr "访问次数"
 
+msgid "Derived Age"
+msgstr "衍生年龄"
+
+msgid "EDC Age"
+msgstr "EDC 年龄"
+
 msgid "Open Profile"
 msgstr "打开资料"
