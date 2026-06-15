@@ -31,7 +31,7 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
         case 'GET':
             $DB       = $this->loris->getDatabaseConnection();
             $response = $DB->pselect(
-                "SELECT * FROM login_summary_statistics
+                "SELECT * FROM Login_Summary_Statistics
                 WHERE Value > 0
                 ORDER BY QueryOrder ASC",
                 [],
@@ -40,7 +40,7 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
                 return new \LORIS\Http\Response\JsonResponse(null);
             }
             $projects = $DB->pselectCol(
-                "SELECT DISTINCT Project FROM login_summary_statistics",
+                "SELECT DISTINCT Project FROM Login_Summary_Statistics",
                 []
             );
 
