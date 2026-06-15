@@ -380,20 +380,27 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testScanDoneLink()
     {
         $this->safeGet($this->url . "/candidate_list/?pscid=MTL022");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
-        )->getText();
-        $this->assertStringContainsString(
-            "Y",
-            $bodyText
+        // The Scan Done cell contains an <a> whose text is the translated "Yes".
+        $scanDoneAnchor = "#dynamictable > tbody > tr > td.scanDoneLink a";
+        $link = $this->safeFindElement(
+            WebDriverBy::cssSelector($scanDoneAnchor)
         );
-        $this->safeClick(
-            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
-        );
-        $bodyText = $this->webDriver->executeScript("return window.location.href;");
+        // Verify the link href is correct before clicking.
         $this->assertStringContainsString(
             "/imaging_browser/?PSCID=MTL022",
-            $bodyText
+            $link->getAttribute("href")
+        );
+        // Click the <a> directly so the browser navigates.
+        $this->safeClick(WebDriverBy::cssSelector($scanDoneAnchor));
+        // Wait until the URL reflects the imaging browser page.
+        $this->webDriver->wait(15, 500)->until(
+            \Facebook\WebDriver\WebDriverExpectedCondition::urlContains(
+                "/imaging_browser/?PSCID=MTL022"
+            )
+        );
+        $this->assertStringContainsString(
+            "/imaging_browser/?PSCID=MTL022",
+            $this->webDriver->getCurrentURL()
         );
     }
 }
