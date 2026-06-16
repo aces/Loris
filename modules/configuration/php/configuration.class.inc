@@ -147,95 +147,148 @@ class Configuration extends \NDB_Form
             )
         );
 
-        // Get the names and meta-information for the config settings in the database
+        foreach ($categories as &$category) {
+            $category['Label']       = dgettext(
+                'ConfigSettings',
+                $category['Label']
+            );
+            $category['Description'] = dgettext(
+                'ConfigSettings',
+                $category['Description']
+            );
+        }
+        unset($category);
+
         $configs = iterator_to_array(
             $DB->pselect(
-                "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
+                "SELECT *
+                 FROM ConfigSettings
+                 WHERE Visible=1
+                 ORDER BY CategoryID, Parent, OrderNumber, ID",
                 []
             )
         );
 
-        // Convert the labels and descriptions to the appropriate language
-        foreach ($configs as &$setting) {
-            $setting['Label']       = dgettext('ConfigSettings', $setting['Label']);
-            $setting['Description'] = dgettext(
-                'ConfigSettings',
-                $setting['Description']
-            );
-        }
-
-        // Check whether any setting is overwritten in the config.xml
-        // Add this info to the array so form entries can be disabled in front end
-        // Update the value for the setting to the value from the config.xml
-        foreach ($configs as &$setting) {
-            try {
-                $setting['Disabled'] = 'Yes';
-                $valueFromXML        = $config->getSettingFromXML($setting['Name']);
-                if (!is_array($valueFromXML)) {
-                    $setting['Value'][0] = $valueFromXML;
-                } else {
-                    $setting['Value'] = $valueFromXML;
-                }
-            } catch (\ConfigurationException $e) {
-                $setting['Disabled'] = 'No';
-            }
-        }
-        unset($setting);
-
-        // Now check for config settings from the database for the fields not
-        // overridden in the config.xml
-        foreach ($configs as &$setting) {
-            if ($setting['Disabled'] == 'No') {
-                $value = $DB->pselect(
-                    "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
-                    ['ID' => $setting['ID']]
-                );
-                if ($value) {
-                    foreach ($value as $subvalue) {
-                        if ($setting['Multilingual']) {
-                            $setting['Value'][$subvalue['ID']]
-                                = $config->getMultilingualSetting(
-                                    $lang,
-                                    $setting['Name']
-                                );
-                        } else {
-                            $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
-                        }
-                    }
-                }
-            }
-        }
-        unset($setting);
-
-        // build a tree from configs array
-        $settingsByID       = [];
+        $childrenByParent   = [];
         $settingsByCategory = [];
-        foreach ($configs as &$node) {
-            $node['Children'] = [];
-            $settingsByID[intval($node['ID'])] = &$node;
-        }
-        unset($node);
-
-        foreach ($configs as &$node) {
-            if ($node['Parent'] !== null) {
-                $settingsByID[intval($node['Parent'])]['Children'][] = &$node;
+        foreach ($configs as $setting) {
+            $setting = $this->_formatConfigSetting(
+                $setting,
+                $config,
+                $DB,
+                $lang
+            );
+            if ($setting['Parent'] !== null) {
+                $childrenByParent[strval($setting['Parent'])][] = $setting;
                 continue;
             }
 
-            if ($node['CategoryID'] !== null) {
-                $settingsByCategory[intval($node['CategoryID'])][] = &$node;
+            if ($setting['CategoryID'] !== null) {
+                $settingsByCategory[intval($setting['CategoryID'])][] = $setting;
             }
         }
-        unset($node);
 
         foreach ($categories as &$category) {
             $category['Disabled'] = 'No';
-            $category['Children'] = $settingsByCategory[intval($category['ID'])]
+            $category['Value']    = [];
+            $category['Children'] = [];
+            $categorySettings     = $settingsByCategory[intval($category['ID'])]
                 ?? [];
+            foreach ($categorySettings as $setting) {
+                $setting['Children'] = $this->_buildConfigSettingTree(
+                    $childrenByParent,
+                    intval($setting['ID'])
+                );
+                $category['Children'][] = $setting;
+            }
         }
         unset($category);
 
         return $categories;
+    }
+
+    /**
+     * Add value and override metadata to a config setting row.
+     *
+     * @param array       $setting The config setting row
+     * @param \NDB_Config $config  Runtime configuration object
+     * @param \Database   $DB      Database handle
+     * @param string      $lang    Current language code
+     *
+     * @return array
+     */
+    private function _formatConfigSetting(
+        array $setting,
+        \NDB_Config $config,
+        \Database $DB,
+        string $lang
+    ) : array {
+        $setting['Label']       = dgettext('ConfigSettings', $setting['Label']);
+        $setting['Description'] = dgettext(
+            'ConfigSettings',
+            $setting['Description']
+        );
+        $setting['Children']    = [];
+        $setting['Value']       = [];
+
+        if ($setting['DataType'] === null) {
+            $setting['Disabled'] = 'No';
+            return $setting;
+        }
+
+        try {
+            $setting['Disabled'] = 'Yes';
+            $valueFromXML        = $config->getSettingFromXML($setting['Name']);
+            if (!is_array($valueFromXML)) {
+                $setting['Value'][0] = $valueFromXML;
+            } else {
+                $setting['Value'] = $valueFromXML;
+            }
+            return $setting;
+        } catch (\ConfigurationException $e) {
+            $setting['Disabled'] = 'No';
+        }
+
+        $values = $DB->pselect(
+            "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
+            ['ID' => $setting['ID']]
+        );
+        foreach ($values as $subvalue) {
+            if ($setting['Multilingual']) {
+                $setting['Value'][$subvalue['ID']]
+                    = $config->getMultilingualSetting(
+                        $lang,
+                        $setting['Name']
+                    );
+            } else {
+                $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+            }
+        }
+
+        return $setting;
+    }
+
+    /**
+     * Build a recursive config setting tree from settings grouped by parent.
+     *
+     * @param array $childrenByParent Config settings grouped by parent ID
+     * @param int   $parentID         Parent ID to build from
+     *
+     * @return array
+     */
+    private function _buildConfigSettingTree(
+        array $childrenByParent,
+        int $parentID
+    ) : array {
+        $settings = [];
+        foreach ($childrenByParent[strval($parentID)] ?? [] as $setting) {
+            $setting['Children'] = $this->_buildConfigSettingTree(
+                $childrenByParent,
+                intval($setting['ID'])
+            );
+            $settings[] = $setting;
+        }
+        return $settings;
     }
 
     /**
