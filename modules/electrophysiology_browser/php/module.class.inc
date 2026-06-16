@@ -83,7 +83,7 @@ class Module extends \Module
             $baseURL = $factory->settings()->getBaseURL();
             $DB      = $factory->database();
 
-            $query   = "SELECT
+            $query  = "SELECT
                     Project.ProjectID,
                     COUNT(ppf.PhysiologicalFileID) AS count,
                     CONCAT(

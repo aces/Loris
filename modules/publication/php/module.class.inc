@@ -83,7 +83,7 @@ class Module extends \Module
             $baseURL = $factory->settings()->getBaseURL();
             $DB      = $factory->database();
 
-            $query   = "SELECT
+            $query  = "SELECT
                     pr.ProjectID,
                     COUNT(*) AS count,
                     CONCAT('$baseURL/publication/?project=', pr.Name) AS url,
