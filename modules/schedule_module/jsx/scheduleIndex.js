@@ -86,11 +86,11 @@ class ScheduleIndex extends Component {
             const today = data.fieldOptions.today;
             const next = data.fieldOptions.next30days;
             const list = data.Data;
-            this.setState({tabledatapast: list.filter((e)=>e[7]<today)});
+            this.setState({tabledatapast: list.filter((e)=>e[8]<today)});
             this.setState({tabledatanext: list.filter((e)=>{
-              return e[7]>today && e[7]<=next;
+              return e[8]>today && e[8]<=next;
             })});
-            this.setState({tabledatatoday: list.filter((e)=>e[7]==today)});
+            this.setState({tabledatatoday: list.filter((e)=>e[8]==today)});
             this.setState({isLoaded: true});
           });
         }
