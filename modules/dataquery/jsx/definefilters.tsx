@@ -75,40 +75,68 @@ function DefineFilters(props: {
   const [queryMatches, setQueryMatches] = useState(null);
   useEffect(() => {
     setQueryMatches(null);
-    const payload = calcPayload(props.fields, props.query);
-    fetch(
-      '/dataquery/queries',
-      {
-        method: 'POST',
-        credentials: 'same-origin',
-        body: JSON.stringify(payload),
-      },
-    ).then(
-      (resp) => {
-        if (!resp.ok) {
+    if (!props.fields || props.fields.length === 0) {
+      return;
+    }
+
+    let cancelled = false;
+    const controller = new AbortController();
+
+    /**
+     * Fetches the current candidate count preview for the
+     * provided field/filter selection.
+     */
+    const updateQueryCount = async () => {
+      try {
+        const payload = calcPayload(props.fields, props.query);
+        const createResp = await fetch(
+          '/dataquery/queries',
+          {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: JSON.stringify(payload),
+            signal: controller.signal,
+          },
+        );
+
+        if (!createResp.ok) {
           throw new Error('Error creating query.');
         }
-        return resp.json();
-      }
-    ).then(
-      (data) => {
-        fetch(
-          '/dataquery/queries/'
-                            + data.QueryID + '/count',
+
+        const data = await createResp.json();
+        const countResp = await fetch(
+          `/dataquery/queries/${data.QueryID}/count`,
           {
             method: 'GET',
             credentials: 'same-origin',
-          }
-        ).then((resp) => {
-          if (!resp.ok) {
-            throw new Error('Could not get count.');
-          }
-          return resp.json();
-        }).then((result) => {
+            signal: controller.signal,
+          },
+        );
+
+        if (!countResp.ok) {
+          throw new Error('Could not get count.');
+        }
+
+        const result = await countResp.json();
+        if (!cancelled) {
           setQueryMatches(result.count);
-        });
+        }
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          console.error(error);
+          if (!cancelled) {
+            setQueryMatches(null);
+          }
+        }
       }
-    );
+    };
+
+    updateQueryCount();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
   }, [props.fields, props.query]);
 
   const bGroupStyle = {

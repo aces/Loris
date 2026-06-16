@@ -435,14 +435,14 @@ msgstr "必须提供查询名称。"
 msgid "Pin Top Query"
 msgstr "置顶查询"
 
-msgid "Pin Study Query"
+msgid "Pin study query"
 msgstr "固定研究查询"
 
-msgid "Pin Dashboard Summary"
-msgstr "固定仪表盘摘要"
+msgid "Show on dashboard"
+msgstr "在仪表板上显示"
 
-msgid "Pin To Login Page"
-msgstr "固定到登录页面"
+msgid "Show summary on login page"
+msgstr "在登录页面显示摘要"
 
 msgid "Must pin as study query, to dashboard, or to the login page."
 msgstr "必须固定为研究查询、固定到仪表盘或登录页面。"

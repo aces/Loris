@@ -122,7 +122,7 @@ class MediaTest extends LorisIntegrationTest
         $this->_testFilter(self::$PSCID, self::$table, null, "MTL010");
         $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
         $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
-        $this->_testFilter(self::$Language, self::$table, "27", "2");
+        $this->_testFilter(self::$Language, self::$table, "27", "1");
         $this->_testFilter(self::$Instrument, self::$table, "4 rows", "2");
         //$this->_testFilter(self::$Site, self::$table, "12 rows", "2");rewirte later
 
@@ -229,7 +229,7 @@ class MediaTest extends LorisIntegrationTest
         $this->checkColumn(2, "DCC090_V1_bmi.txt");
         $this->checkColumn(3, "DCC090");
         $this->checkColumn(4, "V1");
-        $this->checkColumn(5, "");
+        $this->checkColumn(5, "English");
         $this->checkColumn(6, "");
         $this->checkColumn(7, "Data Coordinating Center");
         $this->checkColumn(8, "Pumpernickel");

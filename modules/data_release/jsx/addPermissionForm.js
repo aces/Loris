@@ -107,7 +107,7 @@ class AddPermissionForm extends Component {
       >
         <SelectElement
           name='userid'
-          label={t('User', {ns: 'data_release'})}
+          label={t('Username', {ns: 'loris'})}
           options={this.state.fieldOptions.users}
           onUserInput={this.setFormData}
           ref='userid'
@@ -212,6 +212,7 @@ class AddPermissionForm extends Component {
           text: t('Permission Update Success!', {ns: 'data_release'}),
           title: '',
           type: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
         }).then(function() {
           window.location.assign('/data_release');
         });

@@ -35,10 +35,14 @@ class DatasetTags
      */
     function __construct(\LORIS\LorisInstance $loris, int $physioFileID)
     {
-        $loglevel     = $loris->getConfiguration()
+        $loglevel = $loris->getConfiguration()
             ->getLogSettings()
             ->getRequestLogLevel();
-        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+        if ($loglevel !== "none") {
+            $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+        } else {
+            $this->logger = new \Psr\Log\NullLogger();
+        }
 
         $this->loris         = $loris;
         $this->_physioFileID = $physioFileID;

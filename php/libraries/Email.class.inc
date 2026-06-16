@@ -35,14 +35,15 @@ class Email
      * Every template MUST BEGIN with "Subject: subject text". Put new
      * templates in the subfolder "email" of the Smarty templates folder.
      *
-     * @param string $to       email address to send email to
-     * @param string $template template to use for email content
-     * @param array  $tpl_data template's data for smarty binding
-     * @param string $reply_to optional email header
-     * @param string $from     optional email header
-     * @param string $cc       optional email header
-     * @param string $bcc      optional email header
-     * @param string $type     optional defaults to plain text
+     * @param string $to          email address to send email to
+     * @param string $template    template to use for email content
+     * @param array  $tpl_data    template's data for smarty binding
+     * @param string $reply_to    optional email header
+     * @param string $from        optional email header
+     * @param string $cc          optional email header
+     * @param string $bcc         optional email header
+     * @param string $type        optional defaults to plain text
+     * @param array  $attachments optional files to attach
      *
      * @return bool The result of PHP mail().
      * @access public
@@ -55,7 +56,8 @@ class Email
         string $from = '',
         string $cc = '',
         string $bcc = '',
-        string $type="text/plain"
+        string $type="text/plain",
+        array  $attachments = []
     ): bool {
         $config   =& NDB_Config::singleton();
         $defaults = $config->getSetting('mail');
@@ -69,7 +71,6 @@ class Email
         }
         // build header
         $headers  = "MIME-Version: 1.0\n";
-        $headers .= "Content-type: $type; charset = UTF-8\n";
         $headers .= "Reply-to: $reply_to\n";
         $headers .= "From: $from\n";
         $headers .= "Return-Path: $from\n";
@@ -105,11 +106,66 @@ class Email
         // get rid of the subject from the message body
         $message = preg_replace('/^Subject: .*/', '', $message);
 
+        // Set attachment settings in body if there are any
+        if (!empty($attachments)) {
+
+            // boundary to seaprate MIME parts
+            $boundary = bin2hex(random_bytes(16));
+
+            // For attachments, use multipart
+            $headers .= "Content-Type: multipart/mixed; boundary=\"$boundary\"\r\n";
+
+            // In first part add charset / encoding since content-type in header
+            // is indicating multi-part
+            $body  = "--$boundary\r\n";
+            $body .= "Content-Type: $type; charset=UTF-8\r\n";
+            $body .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
+
+            // Add email message
+            $body .= $message . "\r\n";
+
+            foreach ($attachments as $file) {
+                if (!$file instanceof \SplFileInfo) {
+                    throw new \Exception(
+                        "Invalid attachment provided. " .
+                        "Expected instance of SplFileInfo."
+                    );
+                }
+                $filePath = $file->getRealPath();
+                $filename = $file->getFilename();
+                $filetype = mime_content_type($filePath);
+
+                if (!file_exists($filePath)) {
+                    throw new \Exception(
+                        "Email attachment file not found: {$filePath}"
+                    );
+                }
+
+                // Use chunk_split for proper line length
+                $fileContent = chunk_split(
+                    base64_encode(file_get_contents($filePath))
+                );
+
+                // Add part for each file attachment
+                $body .= "--$boundary\r\n";
+                $body .= "Content-Type: $filetype; name=\"$filename\"\r\n";
+                $body .=
+                    "Content-Disposition: attachment; filename=\"$filename\"\r\n";
+                $body .= "Content-Transfer-Encoding: base64\r\n\r\n";
+                $body .= $fileContent . "\r\n";
+            }
+
+            $body .= "--$boundary--";
+        } else {
+            $headers .= "Content-type: $type; charset=UTF-8\r\n";
+            $body     = $message;
+        }
+
         // send the email
         return mail(
             $to,
             $match[1],
-            preg_replace("/(?<!\r)\n/s", "\n", $message),
+            preg_replace("/(?<!\r)\n/s", "\n", $body),
             $headers
         );
     }

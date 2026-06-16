@@ -435,14 +435,14 @@ msgstr "クエリ名を指定する必要があります。"
 msgid "Pin Top Query"
 msgstr "ピントップクエリ"
 
-msgid "Pin Study Query"
+msgid "Pin study query"
 msgstr "ピンスタディクエリ"
 
-msgid "Pin Dashboard Summary"
-msgstr "ピンダッシュボードの概要"
+msgid "Show on dashboard"
+msgstr "ダッシュボードに表示"
 
-msgid "Pin To Login Page"
-msgstr "ログインページにピン留めする"
+msgid "Show summary on login page"
+msgstr "ログインページに概要を表示"
 
 msgid "Must pin as study query, to dashboard, or to the login page."
 msgstr "調査クエリとしてダッシュボードまたはログイン ページにピン留めする必要があります。"

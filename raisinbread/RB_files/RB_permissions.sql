@@ -73,7 +73,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categor
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (79,'issue_tracker_close_all_issue','Issues - All Sites',27,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (80,'dataquery_admin','Admin dataquery queries',44,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (81,'imaging_uploader_ownsites','Imaging Scans - Own Sites',22,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (82,'imaging_uploader_nosessionid', 'Imaging Scans with no session ID',22,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (82,'imaging_uploader_nosessionid','Imaging Scans with no session ID',22,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (83,'dicom_archive_nosessionid','DICOMs with no session ID',15,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (84,'dicom_archive_view_ownsites','DICOMs - Own Sites',15,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (85,'view_instrument_data','Data',26,2);
