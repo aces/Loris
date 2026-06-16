@@ -27,6 +27,10 @@ msgstr "データ入力の競合"
 msgid "Unresolved Conflicts"
 msgstr "未解決の紛争"
 
+msgid "% conflict resolved"
+msgid_plural "% conflicts resolved"
+msgstr[0] "解決済みの競合 %"
+
 msgid "Number of Conflicts"
 msgstr "競合の数"
 

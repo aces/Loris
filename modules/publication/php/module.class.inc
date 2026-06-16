@@ -64,4 +64,68 @@ class Module extends \Module
     {
         return dgettext("publication", "Publications");
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type    The type of widgets to get.
+     * @param \User  $user    The user widgets are being retrieved for.
+     * @param array  $options A type dependent list of options to provide
+     *                        to the widget.
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user, array $options) : array
+    {
+        switch ($type) {
+        case 'study-progression':
+            $factory = \NDB_Factory::singleton();
+            $baseURL = $factory->settings()->getBaseURL();
+            $DB      = $factory->database();
+
+            $query = "SELECT
+                    pr.ProjectID,
+                    COUNT(*) AS count,
+                    CONCAT('$baseURL/publication/?project=', pr.Name) AS url,
+                    pr.Name AS ProjectName
+                FROM publication p
+                JOIN Project pr ON (p.project=pr.ProjectID)";
+            $params = [];
+
+            if (!($user->hasPermission('publication_view')
+                || $user->hasPermission('publication_propose')
+                || $user->hasPermission('publication_approve'))
+            ) {
+                $query .= "
+                JOIN publication_users_edit_perm_rel puepr
+                    ON (puepr.PublicationID=p.PublicationID)
+                WHERE puepr.UserID=:userID";
+                $params['userID'] = $user->getId();
+            }
+
+            $query .= "
+                GROUP BY pr.ProjectID, pr.Name";
+
+            $data = $DB->pselectWithIndexKey(
+                $query,
+                $params,
+                'ProjectID'
+            );
+
+            return [
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        "publication",
+                        "Publication",
+                        "Publications"
+                    ),
+                    $data,
+                    "",
+                    'rgb(209, 195, 255)',
+                )
+            ];
+        }
+
+        return [];
+    }
 }

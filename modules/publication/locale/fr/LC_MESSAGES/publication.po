@@ -22,6 +22,9 @@ msgstr ""
 msgid "Publications"
 msgstr "Publications"
 
+msgid "Publication"
+msgstr "Publication"
+
 msgid "File to upload"
 msgstr "Sélectionner un fichier à téléverser"
 

@@ -179,6 +179,96 @@ class Module extends \Module
                     1,
                 )
             ];
+        case 'study-progression':
+            $factory = \NDB_Factory::singleton();
+            $baseURL = $factory->settings()->getBaseURL();
+            $DB      = $factory->database();
+
+            $query  = "SELECT
+                    p.ProjectID,
+                    CAST(ROUND(
+                        100 * SUM(
+                            CASE WHEN conflict_status.status = 'resolved'
+                                THEN 1
+                                ELSE 0
+                            END
+                        ) / COUNT(*)
+                    ) AS SIGNED) AS count,
+                    CONCAT('$baseURL/conflict_resolver/?Project=', p.Name)
+                    AS url,
+                    p.Name AS ProjectName
+                FROM (
+                    SELECT CommentId1, 'unresolved' AS status
+                    FROM conflicts_unresolved
+                    UNION ALL
+                    SELECT CommentId1, 'resolved' AS status
+                    FROM conflicts_resolved
+                ) conflict_status
+                    LEFT JOIN flag f ON (conflict_status.CommentId1=f.CommentID)
+                    LEFT JOIN session s ON (f.SessionID=s.ID)
+                    LEFT JOIN candidate c ON (s.CandidateID=c.ID)
+                    LEFT JOIN Project p ON (s.ProjectID=p.ProjectID)
+                WHERE s.Active='Y'
+                    AND c.Active='Y'
+                    AND s.CenterID <> 1";
+            $params = [];
+
+            if (!$user->hasPermission('access_all_profiles')) {
+                $siteIDs = array_map(
+                    fn($centerID) => (string)$centerID,
+                    $user->getCenterIDs()
+                );
+                $projectIDs = array_map(
+                    fn($projectID) => (string)$projectID,
+                    $user->getProjectIDs()
+                );
+
+                if (count($siteIDs) === 0 || count($projectIDs) === 0) {
+                    return [];
+                }
+
+                $sitePlaceholders = [];
+                foreach ($siteIDs as $index => $siteID) {
+                    $placeholder                = "site$index";
+                    $sitePlaceholders[]         = ':' . $placeholder;
+                    $params[$placeholder] = $siteID;
+                }
+
+                $projectPlaceholders = [];
+                foreach ($projectIDs as $index => $projectID) {
+                    $placeholder                   = "project$index";
+                    $projectPlaceholders[]         = ':' . $placeholder;
+                    $params[$placeholder] = $projectID;
+                }
+
+                $query .= "
+                    AND s.CenterID IN (" . implode(', ', $sitePlaceholders) . ")
+                    AND s.ProjectID IN ("
+                    . implode(', ', $projectPlaceholders)
+                    . ")";
+            }
+
+            $query .= "
+                GROUP BY p.ProjectID, p.Name";
+
+            $data = $DB->pselectWithIndexKey(
+                $query,
+                $params,
+                'ProjectID'
+            );
+
+            return [
+                new \LORIS\dashboard\DataWidget(
+                    new \LORIS\GUI\LocalizableString(
+                        "conflict_resolver",
+                        "% conflict resolved",
+                        "% conflicts resolved"
+                    ),
+                    $data,
+                    "",
+                    'rgb(255, 235, 235)',
+                )
+            ];
         }
 
         return [];
