@@ -393,7 +393,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
 
         $breakdown = [];
         foreach ($aggregatedBreakdown as $item) {
-            $count = intval($item['total']);
+            $count       = intval($item['total']);
             $breakdown[] = [
                 'key'            => $item['key'],
                 'label'          => $item['label'],

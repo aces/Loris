@@ -197,8 +197,8 @@ class Charts extends \NDB_Page
         $sexes          = [];
         $sexMeta        = [];
         foreach ($data as $row) {
-            $siteid = $row['SiteID'];
-            $count  = intval($row['Count']);
+            $siteid   = $row['SiteID'];
+            $count    = intval($row['Count']);
             $sexValue = is_string($row['Sex']) ? trim($row['Sex']) : '';
             $sex      = $this->_normalizeSexKey($sexValue);
             if (!isset($processed_data[$siteid])) {
@@ -210,7 +210,7 @@ class Charts extends \NDB_Page
             $sexes[$sex] = true;
             if (!isset($sexMeta[$sex])) {
                 $sexMeta[$sex] = [
-                    'label' => is_string($row['SexLabel'])
+                    'label'  => is_string($row['SexLabel'])
                         && trim($row['SexLabel']) !== ''
                         ? trim($row['SexLabel'])
                         : $sexValue,
