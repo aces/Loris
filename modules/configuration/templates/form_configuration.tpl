@@ -70,16 +70,40 @@
 
 
 {function name=printConfigItem}
+{assign var=hasChildren value=isset($node['Children']) && $node['Children']}
+{assign var=hasInput value=$node['DataType'] ne ''}
+{if $hasChildren && !$hasInput}
+<div class="configuration-tree-node">
+    <button
+        class="configuration-tree-header"
+        type="button"
+        data-toggle="collapse"
+        data-target="#config-node-{$node['ID']}"
+        aria-expanded="false"
+        aria-controls="config-node-{$node['ID']}"
+    >
+        <span class="glyphicon glyphicon-chevron-right configuration-tree-icon configuration-tree-icon-collapsed"></span>
+        <span class="glyphicon glyphicon-chevron-down configuration-tree-icon configuration-tree-icon-expanded"></span>
+        <span class="configuration-tree-label">{$node['Label']}</span>
+        {if $sandbox}<span class="configuration-tree-name"><i>{$node['Name']}</i></span>{/if}
+        {if $node['Description']}<span class="configuration-tree-description">{$node['Description']}</span>{/if}
+    </button>
+    <div class="collapse configuration-tree-collapse" id="config-node-{$node['ID']}">
+        <div class="configuration-tree-children">
+            {foreach $node['Children'] as $child}
+                {call name=printConfigItem node=$child}
+            {/foreach}
+        </div>
+    </div>
+</div>
+{else}
 <div class="form-group">
     <div class="col-sm-3" data-toggle="tooltip" data-placement="right" title="{$node['Description']}">
         <label class="col-sm-12 control-label config-name">{$node['Label']}</label>
         {if $sandbox}<div class="config-dev-name pull-right"><i>{$node['Name']}</i></div>{/if}
     </div>
     <div class="col-sm-9">
-        {if isset($node['Children']) && $node['Children']}
-            Child nodes go here
-            {call name=printConfigItem node=$node['Children']}
-        {else}
+        {if $hasInput}
             {call name=printForm node=$node}
         {/if}
         {if $node['AllowMultiple'] == 1}
@@ -87,8 +111,16 @@
                 <span class="glyphicon glyphicon-plus"></span> Add field
             </button>
         {/if}
+        {if $hasChildren}
+            <div class="configuration-tree-children">
+                {foreach $node['Children'] as $child}
+                    {call name=printConfigItem node=$child}
+                {/foreach}
+            </div>
+        {/if}
     </div>
 </div>
+{/if}
 {/function}
 
 {function name=printForm}
