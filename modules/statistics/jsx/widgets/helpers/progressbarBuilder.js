@@ -7,9 +7,13 @@
  */
 const progressBarBuilder = (t, data) => {
   const exceededTarget = Boolean(data['surpassed_recruitment']);
-  const sexBreakdown = Array.isArray(data['sex_breakdown']) ? data['sex_breakdown'] : [];
+  const sexBreakdown = Array.isArray(data['sex_breakdown'])
+    ? data['sex_breakdown']
+    : [];
   const renderSegment = (sexData) => {
-    const width = exceededTarget ? sexData.full_percent : sexData.target_percent;
+    const width = exceededTarget
+    ? sexData.full_percent
+    : sexData.target_percent;
 
     if (!width) {
       return null;
