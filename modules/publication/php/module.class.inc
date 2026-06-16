@@ -83,7 +83,7 @@ class Module extends \Module
             $baseURL = $factory->settings()->getBaseURL();
             $DB      = $factory->database();
 
-            $query = "SELECT
+            $query   = "SELECT
                     pr.ProjectID,
                     COUNT(*) AS count,
                     CONCAT('$baseURL/publication/?project=', pr.Name) AS url,
@@ -96,7 +96,7 @@ class Module extends \Module
                 || $user->hasPermission('publication_propose')
                 || $user->hasPermission('publication_approve'))
             ) {
-                $query .= "
+                $query           .= "
                 JOIN publication_users_edit_perm_rel puepr
                     ON (puepr.PublicationID=p.PublicationID)
                 WHERE puepr.UserID=:userID";

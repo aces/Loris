@@ -83,7 +83,7 @@ class Module extends \Module
             $baseURL = $factory->settings()->getBaseURL();
             $DB      = $factory->database();
 
-            $query = "SELECT
+            $query   = "SELECT
                     Project.ProjectID,
                     COUNT(ppf.PhysiologicalFileID) AS count,
                     CONCAT(
@@ -109,7 +109,7 @@ class Module extends \Module
             $params = [];
 
             if (!$user->hasPermission('electrophysiology_browser_view_allsites')) {
-                $siteIDs = array_map(
+                $siteIDs    = array_map(
                     fn($centerID) => (string)$centerID,
                     $user->getCenterIDs()
                 );
@@ -124,16 +124,16 @@ class Module extends \Module
 
                 $sitePlaceholders = [];
                 foreach ($siteIDs as $index => $siteID) {
-                    $placeholder = "site$index";
-                    $sitePlaceholders[] = ':' . $placeholder;
+                    $placeholder          = "site$index";
+                    $sitePlaceholders[]   = ':' . $placeholder;
                     $params[$placeholder] = $siteID;
                 }
 
                 $projectPlaceholders = [];
                 foreach ($projectIDs as $index => $projectID) {
-                    $placeholder = "project$index";
+                    $placeholder           = "project$index";
                     $projectPlaceholders[] = ':' . $placeholder;
-                    $params[$placeholder] = $projectID;
+                    $params[$placeholder]  = $projectID;
                 }
 
                 $query .= "

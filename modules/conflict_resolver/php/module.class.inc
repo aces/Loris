@@ -214,7 +214,7 @@ class Module extends \Module
             $params = [];
 
             if (!$user->hasPermission('access_all_profiles')) {
-                $siteIDs = array_map(
+                $siteIDs    = array_map(
                     fn($centerID) => (string)$centerID,
                     $user->getCenterIDs()
                 );
@@ -229,16 +229,16 @@ class Module extends \Module
 
                 $sitePlaceholders = [];
                 foreach ($siteIDs as $index => $siteID) {
-                    $placeholder                = "site$index";
-                    $sitePlaceholders[]         = ':' . $placeholder;
+                    $placeholder          = "site$index";
+                    $sitePlaceholders[]   = ':' . $placeholder;
                     $params[$placeholder] = $siteID;
                 }
 
                 $projectPlaceholders = [];
                 foreach ($projectIDs as $index => $projectID) {
-                    $placeholder                   = "project$index";
-                    $projectPlaceholders[]         = ':' . $placeholder;
-                    $params[$placeholder] = $projectID;
+                    $placeholder           = "project$index";
+                    $projectPlaceholders[] = ':' . $placeholder;
+                    $params[$placeholder]  = $projectID;
                 }
 
                 $query .= "
