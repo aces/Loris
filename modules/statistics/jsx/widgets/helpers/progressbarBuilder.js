@@ -12,8 +12,8 @@ const progressBarBuilder = (t, data) => {
     : [];
   const renderSegment = (sexData) => {
     const width = exceededTarget
-    ? sexData.full_percent
-    : sexData.target_percent;
+      ? sexData.full_percent
+      : sexData.target_percent;
 
     if (!width) {
       return null;
