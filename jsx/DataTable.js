@@ -590,9 +590,9 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-              {'${rows.length} rows displayed of ${trilteredCount}. '}
-                (changeRowsDropdown)
-              </div>
+              {`${rows.length} rows displayed of ${filteredCount}. `}
+              {changeRowsDropdown}
+            </div>
             <div style={{
               order: '2',
               display: 'flex',
@@ -637,9 +637,9 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-              {'${rows.length} rows displayed of ${trilteredCount}. '}
-                (changeRowsDropdown)
-              </div>
+              {`${rows.length} rows displayed of ${filteredCount}. `}
+              {changeRowsDropdown}
+            </div>
             <div style={{
               order: '2',
               padding: '5px 0',
