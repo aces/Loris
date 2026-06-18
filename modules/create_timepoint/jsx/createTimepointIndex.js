@@ -17,8 +17,9 @@ import {
 
 import esStrings from '../locale/es/LC_MESSAGES/create_timepoint.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/create_timepoint.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/create_timepoint.json';
 import frStrings from '../locale/fr/LC_MESSAGES/create_timepoint.json';
-
+import zhStrings from '../locale/zh/LC_MESSAGES/create_timepoint.json';
 /**
  * Create Timepoint.
  *
@@ -198,13 +199,19 @@ class CreateTimepoint extends React.Component {
       // Display error message to user.
       const errorMessage = t(
         'No cohorts defined for project: {{project}}',
-        {ns: 'create_timepoint',
+        {
+          ns: 'create_timepoint',
           project: this.state.form.options.project[
             this.state.form.value.project
-          ]});
+          ],
+        });
       state.messages = [errorMessage];
       state.messages = [errorMessage];
-      swal.fire(errorMessage, '', 'error');
+      swal.fire({
+        title: errorMessage,
+        icon: 'error',
+        confirmButtonText: t('OK', {ns: 'loris'}),
+      });
       state.form.options.cohort = {};
       state.form.options.visit = {};
     } else {
@@ -239,8 +246,9 @@ class CreateTimepoint extends React.Component {
       ) {
         const errorMessage = t(
           'No visit labels defined for the combination'
-            + ' project: {{project}} and cohort: {{cohort}}',
-          {ns: 'create_timepoint',
+          + ' project: {{project}} and cohort: {{cohort}}',
+          {
+            ns: 'create_timepoint',
             project: this.state.form.options.project[
               this.state.form.value.project
             ],
@@ -249,7 +257,11 @@ class CreateTimepoint extends React.Component {
             ],
           });
         state.messages = [errorMessage];
-        swal.fire(errorMessage, '', 'error');
+        swal.fire({
+          title: errorMessage,
+          icon: 'error',
+          confirmButtonText: t('OK', {ns: 'loris'}),
+        });
         state.form.options.visit = {};
       } else {
         state.form.options.visit = state.storage.visit[
@@ -312,9 +324,12 @@ class CreateTimepoint extends React.Component {
       }
     ).then((response) => {
       if (response.ok) {
-        swal.fire(
-          t('Success!', {ns: 'loris'}),
-          t('Timepoint created.', {ns: 'create_timepoint'}), 'success')
+        swal.fire({
+          title: t('Success!', {ns: 'loris'}),
+          text: t('Timepoint created.', {ns: 'create_timepoint'}),
+          icon: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
+        })
           .then(() => {
             window.location.replace(
               `${this.props.baseURL}/${this.state.url.params.candID}`
@@ -343,7 +358,7 @@ class CreateTimepoint extends React.Component {
 
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     /**
@@ -486,7 +501,9 @@ CreateTimepoint.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('es', 'create_timepoint', esStrings);
   i18n.addResourceBundle('ja', 'create_timepoint', jaStrings);
+  i18n.addResourceBundle('hi', 'create_timepoint', hiStrings);
   i18n.addResourceBundle('fr', 'create_timepoint', frStrings);
+  i18n.addResourceBundle('zh', 'create_timepoint', zhStrings);
 
   const TranslatedCreateTimepoint = withTranslation(
     ['create_timepoint', 'loris']

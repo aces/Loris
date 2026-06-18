@@ -335,7 +335,12 @@ class User extends UserPermissions implements
         if ($projects === '') {
             return [];
         }
-        return explode(';', $projects);
+
+        $translated = [];
+        foreach (explode(';', $projects) as $project) {
+            $translated[$project] = dgettext("Project", $project);
+        }
+        return $translated;
     }
 
     /**
@@ -362,7 +367,7 @@ class User extends UserPermissions implements
             if (in_array(\ProjectID::singleton($projectID), $userProjectIDs)) {
                 $visitLabel = $visit->getName();
                 if (!in_array($visitLabel, $visit_labels)) {
-                    $visit_labels[$visitLabel] = $visitLabel;
+                    $visit_labels[$visitLabel] = dgettext('visit', $visitLabel);
                 }
             }
         }
@@ -453,20 +458,6 @@ class User extends UserPermissions implements
     }
 
     /**
-     * Returns all user's sites in an associative array (CenterID => CenterName)
-     *
-     * @return array
-     */
-    function getSiteNamesList(): array
-    {
-        $sites = [];
-        foreach ($this->getSites() as $site) {
-            $sites[$site->getCenterID()->__toString()] = $site->getCenterName();
-        }
-        return $sites;
-    }
-
-    /**
      * Returns all user's sites that are StudySites
      *
      * @return array
@@ -480,7 +471,7 @@ class User extends UserPermissions implements
             $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
                 $user_study_sites[$val->__toString()]
-                    = $site[$key]->getCenterName();
+                    = dgettext("psc", $site[$key]->getCenterName());
             }
         }
         natcasesort($user_study_sites);

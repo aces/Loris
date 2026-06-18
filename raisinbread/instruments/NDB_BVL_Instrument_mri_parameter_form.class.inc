@@ -132,7 +132,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         );
 
         $typesOfData = array(
-            null                => '',
+            ''                  => '',
             'participant'       => 'Participant',
             'human_phantom'     => 'Human Phantom',
             'geometric_phantom' => 'Geometric Phantom',
@@ -148,7 +148,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         $query    = "SELECT Name, CenterID FROM psc";
         $db       = \NDB_Factory::singleton()->database();
         $sitesRaw = $db->pselect($query, array());
-        $sites    = array(null => '');
+        $sites    = array('' => '');
         foreach ($sitesRaw as $i) {
             $sites[$i['CenterID']] = $i['Name'];
         }
@@ -184,7 +184,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         );
 
         $acquiredOptions = array(
-            null      => '',
+            ''        => '',
             'yes'     => dgettext("loris", 'Yes'),
             'partial' => dgettext($this->name, 'Partial'),
             'no'      => dgettext("loris", 'No'),

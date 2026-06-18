@@ -140,6 +140,7 @@ const Recruitment = (props) => {
             name={'recruitment'}
             id={'recruitmentForm' + section}
             data={json}
+            showCandidateAge={true}
             callback={async (formDataObj) => {
               await updateFilters(formDataObj, section);
             }}

@@ -129,7 +129,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Visit_label'   => 'Test0',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
-                'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
             ]
@@ -143,7 +142,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Visit_label'   => 'Test1',
                 'CenterID'      => 253,
                 'ProjectID'     => 1,
-                'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
             ]
@@ -157,7 +155,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Visit_label'   => 'Test2',
                 'CenterID'      => 254,
                 'ProjectID'     => 1,
-                'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
             ]
@@ -712,6 +709,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better'
         );
+	/*
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
@@ -728,6 +726,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("View Session", $bodyText);
+	*/
 
         // Selected link tested in the next test
     }
@@ -747,6 +746,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             'Links are broken, Redmine 9576'
         );
 
+	/*
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
 
@@ -802,6 +802,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector('#table-header-left tbody td:nth-child(5)')
         )->getText();
         $this->assertStringContainsString("Test Site AOL", $SiteText1);
+	 */
     }
 
     /**
@@ -836,6 +837,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped(
             'Currently awaiting redmine 9385'
         );
+	/*
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
@@ -861,6 +863,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="page"]/div/div[1]/a/label')
         )->getText();
         $this->assertStringContainsString("Brainbrowser", $BreadCrumbText);
+	 */
     }
 
     /**
@@ -874,6 +877,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better'
         );
+	/*
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->safeGet(
@@ -954,6 +958,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("visit_status")
         )->getText();
         $this->assertStringContainsString("Fail", $QCStatusVisit);
+	 */
     }
 
     /**
@@ -967,6 +972,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better'
         );
+	/*
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
@@ -995,6 +1001,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[1]/div/div/div[1]')
         )->getText();
         $this->assertStringContainsString("Selection Filter", $SelectionFilter);
+	 */
     }
 
     /******** C ********/
@@ -1017,6 +1024,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped(
             'React components can not be tested'
         );
+	/*
 
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
@@ -1154,6 +1162,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Mri Violations", $breadcrumbText);
+	 */
     }
 
     /**
@@ -1188,6 +1197,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped(
             'Popup windows can not be tested'
         );
+	/*
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
@@ -1217,6 +1227,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("Click here to close this window", $newWindowText);
         $this->webDriver->switchTo()->window($diff[1])->close();
+	 */
     }
 
     /******** D ********/
@@ -1230,6 +1241,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better'
         );
+	/*
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(
             array(
@@ -1278,6 +1290,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->webDriver->switchTo()->window($diff[1])->close();
+	 */
     }
 
     /******** E ********/
@@ -1291,6 +1304,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped(
             'React components can not be tested'
         );
+	/*
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(
             array(
@@ -1342,6 +1356,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->webDriver->switchTo()->window($diff[1])->close();
+	 */
     }
 }
 ?>

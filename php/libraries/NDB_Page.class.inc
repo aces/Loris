@@ -146,7 +146,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
             ->getLogSettings()
             ->getRequestLogLevel();
 
-        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+        if ($loglevel !== "none") {
+            $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+        } else {
+            $this->logger = new \Psr\Log\NullLogger();
+        }
 
     }
 
@@ -541,13 +545,13 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
      * Adds a group (array of elements created by $this->create*
      * wrappers) to the current page.
      *
-     * @param array  $elements  The group of elements to add to the page
-     * @param string $name      The name to give this group
-     * @param string $label     A label to attach to the group
-     * @param string $delimiter The separator to use between group elements
-     * @param ?array $options   An optional array to include prefix_wrapper and
-     *                          postfix_wrapper strings - html that will be
-     *                          placed before and after the group html
+     * @param array   $elements  The group of elements to add to the page
+     * @param string  $name      The name to give this group
+     * @param ?string $label     A label to attach to the group
+     * @param string  $delimiter The separator to use between group elements
+     * @param ?array  $options   An optional array to include prefix_wrapper and
+     *                           postfix_wrapper strings - html that will be
+     *                           placed before and after the group html
      *
      * @return void
      *
@@ -560,7 +564,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
         $this->form->addGroup(
             $elements,
             $name,
-            !empty($label) ? dgettext($this->name, $label) : null,
+            !empty($label) ? dgettext($this->name, $label) : '',
             $delimiter,
             $options
         );
@@ -1024,6 +1028,11 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
     ) {
         $moduleName = $this->Module->getName();
         $DB         = $loris->getDatabaseConnection();
+        $locale     = \LORIS\Middleware\Language::detectLocale($loris);
+        $languageID = (int) ($DB->pselectOne(
+            "SELECT language_id FROM language WHERE language_code = :code",
+            ['code' => $locale]
+        ) ?? 0);
         // If no policy name is given, we return the latest policy for the module
         if (!empty($policyName)) {
             $policyName = 'AND p.Name = '. $DB->quote($policyName);
@@ -1040,17 +1049,29 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
                 "SELECT
                     p.Name as PolicyName,
                     Version,
-                    Content,
-                    SwalTitle,
-                    HeaderButtonText,
-                    AcceptButtonText,
-                    DeclineButtonText,
+                    COALESCE(pi.Content, p.Content) AS Content,
+                    COALESCE(pi.SwalTitle, p.SwalTitle) AS SwalTitle,
+                    COALESCE(
+                        pi.HeaderButtonText,
+                        p.HeaderButtonText
+                    ) AS HeaderButtonText,
+                    COALESCE(
+                        pi.AcceptButtonText,
+                        p.AcceptButtonText
+                    ) AS AcceptButtonText,
+                    COALESCE(
+                        pi.DeclineButtonText,
+                        p.DeclineButtonText
+                    ) AS DeclineButtonText,
                     m.Name as ModuleName,
-                    PolicyID,
-                    PolicyRenewalTime,
-                    PolicyRenewalTimeUnit
+                    p.PolicyID,
+                    p.PolicyRenewalTime,
+                    p.PolicyRenewalTimeUnit
                 FROM policies p
                 JOIN modules m ON m.ID = p.ModuleID
+                LEFT JOIN policiesI18n pi
+                    ON pi.PolicyID = p.PolicyID
+                    AND pi.LanguageID = :languageID
                 WHERE m.Name = :moduleName
                     $policyName
                     AND p.Active = 'Y'
@@ -1059,6 +1080,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
                 LIMIT 1
                 ",
                 [
+                    'languageID' => $languageID,
                     'moduleName' => $moduleName
                 ]
             )

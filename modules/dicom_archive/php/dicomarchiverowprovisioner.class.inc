@@ -88,12 +88,10 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
             $cid = \CenterID::singleton(intval($row['CenterID']));
             $pid = \ProjectID::singleton(intval($row['ProjectID']));
             $sid = new \SessionID(strval($row['SessionID']));
-            unset($row['CenterID']);
             unset($row['ProjectID']);
             unset($row['CreatingUser']);
             return new DICOMArchiveRowWithSession($row, $cid, $pid, $sid, $creator);
         }
-        unset($row['CenterID']);
         unset($row['ProjectID']);
         unset($row['CreatingUser']);
         return new DICOMArchiveRowWithoutSession($row, $creator);

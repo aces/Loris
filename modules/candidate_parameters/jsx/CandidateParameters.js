@@ -14,6 +14,7 @@ import DiagnosisEvolution from './DiagnosisEvolution';
 import {Tabs, TabPane} from 'Tabs';
 
 import esStrings from '../locale/es/LC_MESSAGES/candidate_parameters.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/candidate_parameters.json';
 
 /**
  * Candidate parameters component
@@ -118,13 +119,6 @@ class CandidateParameters extends Component {
 
     return (
       <div>
-        <a className='btn btn-sm btn-primary'
-          href={loris.BaseURL + '/' + this.props.candID}
-          style={{marginBottom: '20px'}}
-        >
-          {t('Return to timepoint list', {ns: 'candidate_parameters'})}
-        </a>
-        <br />
         <Tabs tabs={tabList} defaultTab='candidateInfo' updateURL={true}>
           {this.getTabPanes(tabList)}
         </Tabs>
@@ -145,6 +139,7 @@ const args = QueryString.get(document.currentScript.src);
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('es', 'candidate_parameters', esStrings);
+  i18n.addResourceBundle('zh', 'candidate_parameters', zhStrings);
 
   const TranslatedCandidateParameters = withTranslation(
     ['candidate_parameters', 'loris']

@@ -68,6 +68,7 @@ window.addEventListener('load', () => {
 		    {if $widget->getWidth()},Width: {$widget->getWidth()}{/if}
 		    {if $widget->getOrder()},Order: {$widget->getOrder()}{/if}
 		    {if $widget->getHeight()},Height: {$widget->getHeight()}{/if}
+		    {if $widget->getMaxHeight()},MaxHeight: "{$widget->getMaxHeight()}"{/if}
 		});
         } catch(err) {
              console.error(err);

@@ -173,11 +173,12 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 'CohortID'
             );
             foreach ($cohortsRaw AS $sp) {
-                $cohortOptions[$sp["CohortID"]]      = $sp["Title"];
+                $title = dgettext("cohort", $sp['Title']);
+                $cohortOptions[$sp["CohortID"]]      = $title;
                 $recruitmentCohorts[$sp["CohortID"]]
                     = $this->_createCohortProgressBar(
                         $sp["CohortID"],
-                        $sp["Title"],
+                        $title,
                         $sp["RecruitmentTarget"],
                         $db,
                         $sp["Count"]
@@ -187,7 +188,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 );
                 foreach ($cohortVisits as $visitLabel => $visitName) {
                     // get visit id
-                    $visitOptions[$visitLabel] = $visitName;
+                    $visitOptions[$visitLabel] = dgettext("visit", $visitName);
                 }
             }
 

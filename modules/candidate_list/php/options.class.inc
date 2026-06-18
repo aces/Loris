@@ -63,12 +63,7 @@ class Options extends \LORIS\Http\Endpoint
         }
 
         // get the list of projects
-        // $list_of_projects = \Utility::getProjectList();
         $list_of_projects = $user->getProjectNames();
-        $project_options  = [];
-        foreach (array_values($list_of_projects) as $name) {
-            $project_options[$name] = $name;
-        }
 
         // get the list of cohorts
         $list_of_cohorts = \Utility::getCohortList();
@@ -85,14 +80,29 @@ class Options extends \LORIS\Http\Endpoint
             $participant_status_options[$name] = $name;
         }
 
+        // Data is translated in the table, while the keys are not,
+        // so we need to convert the array format to
+        // $translated => $translated in order for filtering to
+        // work.
+        $sexes = \Utility::getSexList();
+        $sexes = array_combine($sexes, $sexes);
+
+        $entityTypes = [
+            dgettext("candidate", 'Human')   => dgettext("candidate", 'Human'),
+            dgettext("candidate", 'Scanner') => dgettext("candidate", 'Scanner'),
+        ];
+
+        $projects = array_combine($list_of_projects, $list_of_projects);
+
         return [
             'visitlabel'        => $visit_label_options,
             'site'              => $site_options,
-            'project'           => $project_options,
+            'project'           => $projects,
             'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
-            'Sex'               => \Utility::getSexList(),
+            'Sex'               => $sexes,
+            'entitytype'        => $entityTypes,
         ];
     }
 

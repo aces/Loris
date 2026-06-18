@@ -141,7 +141,11 @@ class Utility
 
         $result = $DB->pselectCol($query, []);
 
-        return array_combine($result, $result);
+        $translated = [];
+        foreach ($result as $val) {
+            $translated[$val] = dgettext("sex", $val);
+        }
+        return $translated;
     }
 
     /**
@@ -178,7 +182,7 @@ class Utility
         // fix the array
         $list = [];
         foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
+            $list[$row["CenterID"]] = dgettext("psc", $row["Name"]);
         }
         return $list;
     }
@@ -323,7 +327,7 @@ class Utility
 
         $subprojs = [];
         foreach ($cohorts as $row) {
-            $subprojs[$row['CohortID']] = $row['title'];
+            $subprojs[$row['CohortID']] = dgettext('cohort', $row['title']);
         }
         return $subprojs;
     }
@@ -994,7 +998,7 @@ class Utility
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
             "SELECT MriScanTypeID, MriScanTypeName
-             FROM mri_scan_type 
+             FROM mri_scan_type
              JOIN files USING (MriScanTypeID)",
             []
         );

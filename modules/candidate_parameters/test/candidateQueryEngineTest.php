@@ -29,7 +29,6 @@ use LORIS\Data\Query\Criteria\Substring;
  */
 class CandidateQueryEngineTest extends TestCase
 {
-
     protected \LORIS\candidate_parameters\CandidateQueryEngine $engine;
     protected $factory;
     protected $config;
@@ -112,9 +111,13 @@ class CandidateQueryEngineTest extends TestCase
             [__DIR__ . "/../../"]
         );
 
-        $this->engine = $lorisinstance->getModule(
+        $engine = $lorisinstance->getModule(
             'candidate_parameters'
         )->getQueryEngines()[0];
+
+        assert($engine instanceof \LORIS\candidate_parameters\CandidateQueryEngine);
+
+        $this->engine = $engine;
     }
 
     /**

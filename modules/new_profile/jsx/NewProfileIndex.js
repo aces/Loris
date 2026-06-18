@@ -20,6 +20,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/new_profile.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/new_profile.json';
 import esStrings from '../locale/es/LC_MESSAGES/new_profile.json';
 import frStrings from '../locale/fr/LC_MESSAGES/new_profile.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/new_profile.json';
 
 /**
  * New Profile Form
@@ -401,6 +402,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'new_profile', jaStrings);
   i18n.addResourceBundle('es', 'new_profile', esStrings);
   i18n.addResourceBundle('fr', 'new_profile', frStrings);
+  i18n.addResourceBundle('zh', 'new_profile', zhStrings);
 
   const NPIndex = withTranslation(['new_profile'])(NewProfileIndex);
   createRoot(

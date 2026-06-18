@@ -86,3 +86,7 @@ msgstr ""
 
 msgid "Uploaded By"
 msgstr ""
+
+# upload.class.inc
+msgid "File not found."
+msgstr ""

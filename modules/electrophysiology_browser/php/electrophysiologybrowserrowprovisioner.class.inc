@@ -41,7 +41,6 @@ class ElectrophysiologyBrowserRowProvisioner
      */
     function __construct(protected \LORIS\LorisInstance $loris)
     {
-
         parent::__construct(
             $loris,
             "SELECT
@@ -74,6 +73,7 @@ class ElectrophysiologyBrowserRowProvisioner
               s.CenterID                                AS CenterID,
               s.ProjectID                               AS ProjectID
             FROM physiological_file pf
+              JOIN ephys_browser_file_type ebft ON (ebft.Type=pf.FileType)
               LEFT JOIN session s   ON (s.ID=pf.SessionID)
               LEFT JOIN candidate c ON (c.ID=s.CandidateID)
               LEFT JOIN psc         ON (s.CenterID=psc.CenterID)
@@ -82,12 +82,6 @@ class ElectrophysiologyBrowserRowProvisioner
                 USING (PhysiologicalOutputTypeID)
             WHERE c.Active='Y'
               AND s.Active='Y'
-              AND pf.FileType IN (
-                SELECT type FROM ImagingFileTypes
-                WHERE
-                  description LIKE '%(EEG)'
-                  OR type = 'archive'
-              )
             GROUP BY SessionID",
             []
         );

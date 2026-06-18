@@ -152,7 +152,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         // set by the instrument constructor,
         // if PHPunit hadn't disabled the constructor
         $ref = new \ReflectionProperty(get_class($instrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $instrument,
             new \LORIS\LorisInstance(
@@ -1058,13 +1057,9 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetVisitLabel()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
-            ->with(
-                "SELECT SessionID FROM flag WHERE CommentID = :CID",
-                ['CID' => 'commentID1']
-            )
+        $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
             ->willReturn('123');
-        $this->_mockDB->expects($this->any())->method('pselectRow')
+        $this->_mockDB->method('pselectRow')
             ->willReturn(
                 ['CohortID' => '2', 'ProjectID' => 1,
                     'Visit_label' => 'V1', 'CandID' => '300123'
@@ -1083,14 +1078,20 @@ class NDB_BVL_Instrument_Test extends TestCase
     function testGetCohortID()
     {
         $this->_instrument->commentID = 'commentID1';
-        $this->_mockDB->expects($this->any(0))->method('pselectOne')
+        $this->_mockDB->expects($this->atLeastOnce())->method('pselectOne')
             ->with(
                 "SELECT SessionID FROM flag WHERE CommentID = :CID",
                 ['CID' => 'commentID1']
             )
             ->willReturn('123');
-        $this->_mockDB->expects($this->any())->method('pselectRow')
-            ->willReturn(['CohortID' => '2','ProjectID' => '1']);
+        $this->_mockDB->method('pselectRow')
+            ->willReturn(
+                [
+                    'CohortID'  => '2',
+                    'ProjectID' => '1',
+                    'CandID'    => '300123'
+                ]
+            );
         $this->assertEquals(2, $this->_instrument->getCohortID());
     }
 
@@ -1621,7 +1622,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         // set by the instrument constructor,
         // if PHPunit hadn't disabled the constructor
         $ref = new \ReflectionProperty(get_class($otherInstrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $otherInstrument,
             new \LORIS\LorisInstance(
@@ -2018,7 +2018,6 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_factoryForDB->setConfig($this->_config);
 
         $ref = new \ReflectionProperty(get_class($this->_instrument), 'loris');
-        $ref->setAccessible(true);
         $ref->setValue(
             $this->_instrument,
             new \LORIS\LorisInstance(

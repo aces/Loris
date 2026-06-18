@@ -13,6 +13,7 @@ import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
 import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/document_repository.json';
 
 /**
  * Document Edit Category Form
@@ -80,7 +81,7 @@ class EditDocCategoryForm extends React.Component {
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (<Loader/>);
+      return (<Loader />);
     }
 
     let disabled = true;
@@ -88,14 +89,14 @@ class EditDocCategoryForm extends React.Component {
     if (loris.userHasPermission('document_repository_categories')) {
       disabled = false;
       updateButton = <ButtonElement label={t('Edit Category',
-        {ns: 'document_repository'})}/>;
+        {ns: 'document_repository'})} />;
     }
 
     let errorSameParent = null;
 
     if (
-      this.state.formData.categoryID==this.state.formData.newParentID
-      && this.state.formData.categoryID!=null
+      this.state.formData.categoryID == this.state.formData.newParentID
+      && this.state.formData.categoryID != null
     ) {
       errorSameParent = t('Cannot be equal to itself',
         {ns: 'document_repository'});
@@ -109,7 +110,7 @@ class EditDocCategoryForm extends React.Component {
             onSubmit={this.handleSubmit}
           >
             <h3>{t('Change Name of a category',
-              {ns: 'document_repository'})}</h3><br/>
+              {ns: 'document_repository'})}</h3><br />
             <SelectElement
               name="categoryID"
               label={t('Category Name:', {ns: 'document_repository'})}
@@ -160,8 +161,8 @@ class EditDocCategoryForm extends React.Component {
     e.preventDefault();
     const {t} = this.props;
     if (
-      this.state.formData.categoryID==this.state.formData.newParentID
-      && this.state.formData.categoryID!=null
+      this.state.formData.categoryID == this.state.formData.newParentID
+      && this.state.formData.categoryID != null
     ) {
       swal.fire(t('New parent cannot be equal to itself',
         {ns: 'document_repository'}), '', 'error');
@@ -178,8 +179,8 @@ class EditDocCategoryForm extends React.Component {
     let formObj = new FormData();
 
     if (
-      formData.categoryID==formData.newParentID
-      && formData.categoryID!=null
+      formData.categoryID == formData.newParentID
+      && formData.categoryID != null
     ) {
       swal.fire(this.props.t('New parent cannot be equal to itself',
         {ns: 'document_repository'}), '', 'error');
@@ -222,7 +223,7 @@ class EditDocCategoryForm extends React.Component {
           window.location.assign('/document_repository');
         });
       }
-    }).catch( (error) => {
+    }).catch((error) => {
       let msg = error.message ? error.message :
         this.props.t('Edit error!', {ns: 'document_repository'});
       this.setState({
@@ -260,6 +261,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'document_repository', hiStrings);
   i18n.addResourceBundle('ja', 'document_repository', jaStrings);
   i18n.addResourceBundle('fr', 'document_repository', frStrings);
+  i18n.addResourceBundle('zh', 'document_repository', zhStrings);
 
   const element = document.getElementById('lorisworkspace');
   if (!element) {

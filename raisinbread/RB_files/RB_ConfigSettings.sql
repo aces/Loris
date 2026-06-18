@@ -1,4 +1,3 @@
-/*M!999999\- enable the sandbox mode */ 
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `ConfigSettings`;
 LOCK TABLES `ConfigSettings` WRITE;
@@ -19,7 +18,6 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (17,'excluded_instruments','Instruments to be excluded from the Data Dictionary and download via the Data Query Tool',1,1,'instrument',1,'Excluded instruments',16,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (19,'InstrumentResetting','Allows resetting of instrument data',1,0,'boolean',1,'Instrument Resetting',18,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (20,'SupplementalSessionStatus','Display supplemental session status information on Timepoint List page',1,0,'boolean',1,'Use Supplemental Session Status',19,0);
-INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (21,'useScanDone','Used for identifying timepoints that have (or should have) imaging data',1,0,'boolean',1,'Use Scan Done',20,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (22,'allowPrenatalTimepoints','Determines whether creation of timepoints prior to Date of Birth is allowed',1,0,'boolean',1,'Allow Prenatal Timepoints',21,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (23,'ImagingUploaderAutoLaunch','Allows running the ImagingUpload pre-processing scripts',1,0,'boolean',1,'ImagingUploader Auto Launch',22,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (24,'citation_policy','Citation Policy for Acknowledgements module',1,0,'textarea',1,'Citation Policy',23,0);
@@ -128,8 +126,9 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (136,'printEndpoint','Endpoint address for label printing logic',1,0,'text',135,'Label Printing Endpoint',1,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (137,'login_logo_left','Path for top left logo on the login page.',1,0,'text',1,'Login Top Left Logo',3,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (138,'login_logo_right','Path for top right logo on the login page.',1,0,'text',1,'Login Top Right Logo',3,0);
-INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (139,'login_logo_left_link','Optional link to redirect when clicking on top left logo',1,0,'text', 1,'Login Top Left Logo Link',4,0);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (139,'login_logo_left_link','Optional link to redirect when clicking on top left logo',1,0,'text',1,'Login Top Left Logo Link',4,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (140,'login_logo_right_link','Optional link to redirect when clicking on top right logo',1,0,'text',1,'Login Top Right Logo Link',4,0);
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (141,'partner_logos','Logos for partners to be displayed in the homepage',1,1,'text',1,'Partner Logos',4,0);
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`, `Multilingual`) VALUES (142,'EEGChunksPath','Path to store the EEG chunks for Visualization',1,0,'text',45,'EEG chunks path',16,0);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

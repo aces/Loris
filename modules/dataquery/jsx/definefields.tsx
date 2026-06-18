@@ -340,12 +340,25 @@ function DefineFields(props: {
       const selectedVisits = props.defaultVisits.map((el) => {
         return {value: el, label: el};
       });
+      const selectAllOption = {
+        value: 'ALL',
+        label: t('Select All', {ns: 'dataquery'}),
+      };
+      const visitOptions = selectedVisits.length < allVisits.length ?
+        [selectAllOption, ...allVisits] :
+        allVisits;
       defaultVisits = <div style={{paddingBottom: '1em', display: 'flex'}}>
         <h4 style={{paddingRight: '1ex'}}>{t('Default Visits',
           {ns: 'dataquery'})}</h4>
-        <Select options={allVisits}
+        <Select options={visitOptions}
           isMulti
-          onChange={props.onChangeDefaultVisits}
+          onChange={(newVisits) => {
+            if (newVisits.some((visit) => visit.value === 'ALL')) {
+              props.onChangeDefaultVisits(allVisits);
+              return;
+            }
+            props.onChangeDefaultVisits(newVisits);
+          }}
           placeholder={t('Select Visits', {ns: 'dataquery'})}
           noOptionsMessage={() => t('No options', {ns: 'loris'})}
           menuPortalTarget={document.body}
@@ -600,7 +613,8 @@ function SelectedFieldList(props: {
         onMouseEnter={() => setRemovingIdx(i)}
         onMouseLeave={() => setRemovingIdx(null)}>
         <i
-          className="fas fa-trash-alt" onClick={() => {
+          className="fas fa-trash-alt" onClick={(e) => {
+            e.stopPropagation();
             removeField(item);
             setRemovingIdx(null);
           }}

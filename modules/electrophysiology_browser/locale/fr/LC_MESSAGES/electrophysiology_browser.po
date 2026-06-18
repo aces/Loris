@@ -624,9 +624,9 @@ msgstr "Détails de l’événement"
 msgid "Sampling Frequency"
 msgstr "Fréquence d'échantillonnage"
 
-#, fuzzy
-msgid "%s Channel Count\"  # Channel Type (ex: EEG, ECG"
-msgstr "%s Nombre de canaux » # Type de canal (ex. : EEG, ECG"
+# Channel Type (ex: EEG, ECG)
+msgid "%s Channel Count"
+msgstr "Nombre canaux %s"
 
 msgid "Reference"
 msgstr "Référence"
@@ -765,3 +765,6 @@ msgstr "Tous les fichiers"
 
 msgid "View Session"
 msgstr "Voir la session"
+
+msgid "Channel Types"
+msgstr "Types de chaînes"
