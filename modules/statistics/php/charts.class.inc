@@ -796,7 +796,6 @@ class Charts extends \NDB_Page
                 c.Date_registered
             ) <= :$paramName";
             $params[$paramName] = $queryParams['candidateAgeMax'];
-
         }
 
         return [

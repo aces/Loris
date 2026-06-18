@@ -166,3 +166,22 @@ msgstr "Circulaire"
 
 msgid "Bar"
 msgstr "Barre"
+
+# EEG charts
+msgid "EEG Recordings by project"
+msgstr "Enregistrements EEG par project"
+
+msgid "EEG Recordings by site"
+msgstr "Enregistrements EEG par site"
+
+msgid "EEG Recordings"
+msgstr "Enregistrements EEG"
+
+msgid "EEG Events by project"
+msgstr "Événements EEG par project"
+
+msgid "EEG Events"
+msgstr "Événements EEG"
+
+msgid "EEG data"
+msgstr "Donnés EEG"

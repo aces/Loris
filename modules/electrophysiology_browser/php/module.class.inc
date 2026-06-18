@@ -123,7 +123,7 @@ class Module extends \Module
             return [
                 new \LORIS\dashboard\DataWidget(
                     new \LORIS\GUI\LocalizableString(
-                        "dqt",
+                        "electrophysiology_browser",
                         "EEG Session",
                         "EEG Sessions",
                     ),
@@ -133,7 +133,7 @@ class Module extends \Module
                 ),
                 new \LORIS\dashboard\DataWidget(
                     new \LORIS\GUI\LocalizableString(
-                        "dqt",
+                        "electrophysiology_browser",
                         "EEG Event",
                         "EEG Events",
                     ),
