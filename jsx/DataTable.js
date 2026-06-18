@@ -590,66 +590,54 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-              {this.props.t(
-                '{{pageCount}} rows displayed of {{totalCount}}.',
-                {
-                  pageCount: rows.length,
-                  totalCount: filteredCount,
-                }
-              )}
-              {changeRowsDropdown}
-            </div>
-            <div style={{
-              order: '2',
-              display: 'flex',
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              padding: '5px 0',
-              marginLeft: 'auto',
-            }}>
-              {this.renderActions()}
-              {this.props.hide.downloadCSV === true ? '' : (
-                <button
-                  className="btn btn-primary"
-                  onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
-                >
-                  {this.props.t('Download Data as CSV')}
-                </button>)
-              }
-              <PaginationLinks
-                Total={filteredCount}
-                onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.page.number}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+               {rows.length} rows displayed of {filteredCount}. 
+               {changeRowsDropdown}
+             </div>
+             <div style={{
+               order: '2',
+               display: 'flex',
+               justifyContent: 'flex-end',
+               alignItems: 'center',
+               flexWrap: 'wrap',
+               padding: '5px 0',
+               marginLeft: 'auto',
+             }}>
+               {this.renderActions()}
+               {this.props.hide.downloadCSV === true ? '' : (
+                 <button
+                   className="btn btn-primary"
+                   onClick={this.downloadCSV.bind(null, filteredRowIndexes)}
+                 >
+                   {this.props.t('Download Data as CSV')}
+                 </button>)
+               }
+               <PaginationLinks
+                 Total={filteredCount}
+                 onChangePage={this.changePage}
+                 RowsPerPage={rowsPerPage}
+                 Active={this.state.page.number}
+               />
+             </div>
+           </div>
+         </div>
+       </div>
+     );
 
-    let footer = (
-      <div>
-        <div className="row">
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            padding: '5px 15px',
-          }}>
-            <div style={{
-              order: '1',
-              padding: '5px 0',
-            }}>
-              {this.props.t(
-                '{{pageCount}} rows displayed of {{totalCount}}.',
-                {
-                  pageCount: rows.length,
-                  totalCount: filteredCount,
-                }
-              )}
+     let footer = (
+       <div>
+         <div className="row">
+           <div style={{
+             display: 'flex',
+             justifyContent: 'space-between',
+             alignItems: 'center',
+             flexWrap: 'wrap',
+             padding: '5px 15px',
+           }}>
+             <div style={{
+               order: '1',
+               padding: '5px 0',
+             }}>
+               {rows.length} rows displayed of {filteredCount}. 
               {changeRowsDropdown}
             </div>
             <div style={{
