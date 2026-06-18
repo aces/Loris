@@ -122,7 +122,6 @@ class Charts extends \NDB_Page
         }
     }
 
-
     /**
      * Handle an incoming request for pie data.
      *
