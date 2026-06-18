@@ -285,7 +285,7 @@ const StudyProgression = (props) => {
                 }
               ),
             }
-          )
+          ),
         ]}
       />
     </>
