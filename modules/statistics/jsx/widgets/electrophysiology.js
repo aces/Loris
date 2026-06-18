@@ -6,8 +6,8 @@ import Panel from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {setupCharts} from './helpers/chartBuilder';
 import {useTranslation} from 'react-i18next';
-import jaStrings from "../../locale/ja/LC_MESSAGES/statistics.json";
-import frStrings from "../../locale/fr/LC_MESSAGES/statistics.json";
+import jaStrings from '../../locale/ja/LC_MESSAGES/statistics.json';
+import frStrings from '../../locale/fr/LC_MESSAGES/statistics.json';
 import zhStrings from '../../locale/zh/LC_MESSAGES/statistics.json';
 
 /**
