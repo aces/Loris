@@ -183,3 +183,18 @@ msgstr ""
 
 msgid "EEG data"
 msgstr ""
+
+msgid "Recordings by Project"
+msgstr ""
+
+msgid "Total Recordings: {{count}}"
+msgstr ""
+
+msgid "Recordings by Site"
+msgstr ""
+
+msgid "Events by Project"
+msgstr ""
+
+msgid "Total Events: {{count}}"
+msgstr ""

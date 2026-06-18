@@ -1,10 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import Panel from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {setupCharts} from './helpers/chartBuilder';
 import {useTranslation} from 'react-i18next';
+import jaStrings from "../../locale/ja/LC_MESSAGES/statistics.json";
+import frStrings from "../../locale/fr/LC_MESSAGES/statistics.json";
+import zhStrings from '../../locale/zh/LC_MESSAGES/statistics.json';
 
 /**
  * Electrophysiology - a widget containing statistics for EEG data.
@@ -16,6 +20,44 @@ const Electrophysiology = (props) => {
   const {t} = useTranslation();
   const [loading, setLoading] = useState(true);
   const [showFiltersBreakdown, setShowFiltersBreakdown] = useState(false);
+
+  useEffect( () => {
+    i18n.addResourceBundle('ja', 'statistics', jaStrings);
+    i18n.addResourceBundle('fr', 'statistics', frStrings);
+    i18n.addResourceBundle('zh', 'statistics', zhStrings);
+
+    // Re-set default state that depended on the translation
+    let newdetails = {...chartDetails};
+    newdetails['project_recordings']['eeg_recordings_by_project']['title']
+      = t('EEG Recordings by project', {ns: 'statistics'});
+    newdetails['project_recordings']['eeg_recordings_by_project']['label']
+      = t('EEG Recordings', {ns: 'statistics'});
+    newdetails['project_recordings']['eeg_recordings_by_project']['yLabel']
+      = t('EEG Recordings', {ns: 'statistics'});
+    newdetails['project_recordings']['eeg_recordings_by_project']['titlePrefix']
+      = t('Project', {ns: 'loris'});
+
+    newdetails['site_recordings']['eeg_recordings_by_site']['title']
+      = t('EEG Recordings by site', {ns: 'statistics'});
+    newdetails['site_recordings']['eeg_recordings_by_site']['label']
+      = t('EEG Recordings', {ns: 'statistics'});
+    newdetails['site_recordings']['eeg_recordings_by_site']['yLabel']
+      = t('EEG Recordings', {ns: 'statistics'});
+    newdetails['site_recordings']['eeg_recordings_by_site']['titlePrefix']
+      = t('Site', {ns: 'loris'});
+
+
+    newdetails['project_events']['eeg_events_by_project']['title']
+      = t('EEG Recordings by project', {ns: 'statistics'});
+    newdetails['project_events']['eeg_events_by_project']['label']
+      = t('EEG Events', {ns: 'statistics'});
+    newdetails['project_events']['eeg_events_by_project']['yLabel']
+      = t('EEG Events', {ns: 'statistics'});
+    newdetails['project_events']['eeg_events_by_project']['titlePrefix']
+      = t('Project', {ns: 'loris'});
+
+    setChartDetails(newdetails);
+  }, []);
 
   let json = props.data;
 
