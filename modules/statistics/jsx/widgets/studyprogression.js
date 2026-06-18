@@ -260,43 +260,32 @@ const StudyProgression = (props) => {
             title: title('Site Recruitment'),
             onToggleFilters: () => showFiltersBreakdown((prev) => !prev),
           },
-          {
-            content:
-              Object.keys(json['options']['projects']).length > 0 ? (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '10px',
-                  }}
-                >
-                  <div className="btn-group" style={{marginBottom: '10px'}}>
+          (json['studyprogression']['total_size'] ?? -1) > 0 && (
+            {
+              content:
+                Object.keys(json['options']['projects']).length > 0 ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '10px',
+                    }}
+                  >
+                    {showChart('project_sizes', 'size_byproject')}
                   </div>
-                  {showFiltersBreakdown && (
-                    <QueryChartForm
-                      Module={'statistics'}
-                      name={'studyprogression'}
-                      id={'studyprogressionProjectSizesForm'}
-                      data={props.data}
-                      callback={(formDataObj) => {
-                        updateFilters(formDataObj, 'project_sizes');
-                      }}
-                    />
-                  )}
-                  {showChart('project_sizes', 'size_byproject')}
-                </div>
-              ) : (
-                <p>{t('There is no data yet.', {ns: 'statistics'})}</p>
+                ) : (
+                  <p>{t('There is no data yet.', {ns: 'statistics'})}</p>
+                ),
+              title: title('Project Dataset Sizes'),
+              subtitle: t(
+                'Total Size: {{count}} GB',
+                {
+                  ns: 'statistics',
+                  count: json['studyprogression']['total_size'] ?? -1,
+                }
               ),
-            title: title('Project Dataset Sizes'),
-            subtitle: t(
-              'Total Size: {{count}} GB',
-              {
-                ns: 'statistics',
-                count: json['studyprogression']['total_size'] ?? -1,
-              }
-            ),
-          },
+            }
+          )
         ]}
       />
     </>
