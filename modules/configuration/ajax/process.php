@@ -43,6 +43,21 @@ foreach ($_POST as $key => $value) {
 
 foreach ($_POST as $key => $value) {
     $key = (string) $key;
+    if (strpos($key, 'mapping-') === 0
+        || !array_key_exists($key, $mappingValues)
+    ) {
+        continue;
+    }
+    $valueIsEmpty        = trim((string) $value) === '';
+    $mappingValueIsEmpty = trim((string) $mappingValues[$key]) === '';
+    if ($valueIsEmpty !== $mappingValueIsEmpty) {
+        displayError(400, 'Mapping rows need both a value and mapped value.');
+        return;
+    }
+}
+
+foreach ($_POST as $key => $value) {
+    $key = (string) $key;
     if (strpos($key, 'mapping-') === 0) {
         continue;
     }

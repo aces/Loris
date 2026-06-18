@@ -95,9 +95,18 @@ $(function() {
   $('body').on('submit', 'form', function(e) {
     e.preventDefault();
 
-    let form = $(this).serialize();
     // Clear previous feedback
     $('.submit-area > label').remove();
+
+    if (hasIncompleteMappingFields()) {
+      $('<label>Mapping rows need both a value and mapped value.</label>')
+        .hide()
+        .appendTo('.submit-area')
+        .fadeIn(500).delay(1000);
+      return;
+    }
+
+    let form = $(this).serialize();
 
     $.ajax({
       type: 'post',
@@ -160,4 +169,28 @@ function assignFormControlNames(field, name) {
   $(field).find('.form-control').attr('name', name);
   $(field).find('.configuration-mapping-mapped-value')
     .attr('name', 'mapping-' + name);
+}
+
+/**
+ * Check whether any mapping row has only one side of the pair filled.
+ *
+ * @returns {boolean} True when an incomplete mapping row exists
+ */
+function hasIncompleteMappingFields() {
+  'use strict';
+
+  let incomplete = false;
+  $('.configuration-mapping-fields').each(function() {
+    let value = $.trim($(this).find('.configuration-mapping-value').val());
+    let mappedValue = $.trim(
+      $(this).find('.configuration-mapping-mapped-value').val()
+    );
+
+    if ((value === '') !== (mappedValue === '')) {
+      incomplete = true;
+      return false;
+    }
+  });
+
+  return incomplete;
 }
