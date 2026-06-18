@@ -292,7 +292,7 @@ class NDB_Config
         if ($id === null) {
             $configSetting = $db->pselect(
                 "SELECT cs.ID as ParentID, child.ID as ChildID,
-                        cs.AllowMultiple, child.Name, 0 AS IsCategory
+                        cs.AllowMultiple, child.Name, 1 AS HasConfigValue
                 FROM ConfigSettings cs
                     LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
                 WHERE cs.Name=:nm",
@@ -302,7 +302,7 @@ class NDB_Config
             if (count($configSetting) === 0) {
                 $configSetting = $db->pselect(
                     "SELECT cc.ID as ParentID, child.ID as ChildID,
-                            0 AS AllowMultiple, child.Name, 1 AS IsCategory
+                            0 AS AllowMultiple, child.Name, 0 AS HasConfigValue
                     FROM ConfigCategories cc
                         LEFT JOIN ConfigSettings child ON (
                             child.CategoryID=cc.ID
@@ -321,7 +321,7 @@ class NDB_Config
         } else {
             $configSetting = $db->pselect(
                 "SELECT cs.ID as ParentID, child.ID as ChildID,
-                        cs.AllowMultiple, child.Name, 0 AS IsCategory
+                        cs.AllowMultiple, child.Name, 1 AS HasConfigValue
                 FROM ConfigSettings cs
                     LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
                 WHERE cs.ID=:nm",
@@ -340,7 +340,7 @@ class NDB_Config
         if (count($configSetting) === 1
             && $firstConfigSetting !== null
             && $firstConfigSetting['ChildID'] === null
-            && intval($firstConfigSetting['IsCategory']) === 0
+            && intval($firstConfigSetting['HasConfigValue']) === 1
         ) {
             // Trying to get a single value from the database.
             if ($firstConfigSetting['AllowMultiple'] == '0') {
