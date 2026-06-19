@@ -345,7 +345,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
      * @param integer    $cohortID  The cohortID
      * @param string     $visitName The visit name
      *
-     * @throws LorisException
+     * @throws \LorisException
      *
      * @return void
      */
