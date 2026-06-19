@@ -414,6 +414,7 @@ Globals.propTypes = {
       fTCycle: PropTypes.string,
       projectId: PropTypes.number,
       sessionId: PropTypes.number,
+      sessionLabel: PropTypes.string,
       candidateId: PropTypes.number,
       quantity: PropTypes.number,
       unitId: PropTypes.number,
