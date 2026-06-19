@@ -378,7 +378,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
 
         $candidate =& \Candidate::singleton($candid);
-        $db          = $this->loris->getDatabaseConnection();
+        $db        = $this->loris->getDatabaseConnection();
 
         // Get the list of sessions for this candidate in the specific
         // project and cohort
