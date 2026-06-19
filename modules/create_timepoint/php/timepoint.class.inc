@@ -1,5 +1,17 @@
 <?php declare(strict_types=1);
 
+/**
+ * This file contains the Timepoint class for the create_timepoint module.
+ *
+ * PHP Version 8
+ *
+ * @category LORIS_Module
+ * @package  Create_Timepoint
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+
 namespace LORIS\create_timepoint;
 
 use LORIS\StudyEntities\Candidate\CandID;
@@ -298,16 +310,16 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             $this->loris->getDatabaseConnection()
         ))->getVisitFromVisitLabel($visitLabel)->getName();
 
-         try {
-             $this->_validateVisitLabelForProjectCohort(
-                 new CandID($candid),
-                 $projectID,
-                 $cohortID,
-                 $visitName,
-             );
-         } catch (\LorisException $exception) {
-             $conflict['visitLabel'] = $exception->getMessage();
-         }
+        try {
+            $this->_validateVisitLabelForProjectCohort(
+                new CandID($candid),
+                $projectID,
+                $cohortID,
+                $visitName,
+            );
+        } catch (\LorisException $exception) {
+            $conflict['visitLabel'] = $exception->getMessage();
+        }
 
         // validate language
         $languages = \Utility::getLanguageList();
@@ -368,7 +380,8 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $candidate =& \Candidate::singleton($candid);
         $db = $this->loris->getDatabaseConnection();
 
-        // Get the list of sessions for this candidate in the specific project and cohort
+        // Get the list of sessions for this candidate in the specific
+        // project and cohort
         $query = "
             SELECT s.Visit_label
             FROM session s
@@ -376,13 +389,16 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             WHERE c.CandID=:cid AND s.ProjectID=:projectID AND s.CohortID=:cohortID
             AND s.Active='Y'
         ";
-        $result = $db->pselect($query, [
+        $result = $db->pselect(
+            $query, [
             'cid'       => $candid,
             'projectID' => $projectID,
             'cohortID'  => $cohortID,
-        ]);
+            ]
+        );
 
-        // If the visitLabel is already in use for this project+cohort then let the user pick another
+        // If the visitLabel is already in use for this project+cohort
+        // then let the user pick another
         foreach ($result as $row) {
             if (strcasecmp($visitName, $row['Visit_label']) == 0) {
                 // Get project name
