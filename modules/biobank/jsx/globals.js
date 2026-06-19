@@ -360,11 +360,13 @@ function Globals(props) {
       />
       <InlineField
         label={this.props.t('Visit Label', {ns: 'loris'})}
-        value={options.sessions[specimen.sessionId].label}
+        value={specimen.sessionLabel}
         link={
-          loris.BaseURL+'/instrument_list/?candID='+
-            specimen.candidateId+'&sessionID='+
-            specimen.sessionId
+          options.sessions[specimen.sessionId]
+            ? loris.BaseURL+'/instrument_list/?candID='+
+                specimen.candidateId+'&sessionID='+
+                specimen.sessionId
+            : null
         }
       />
     </div>
@@ -682,7 +684,7 @@ InlineField.propTypes = {
   pencil: PropTypes.node.isRequired,
   editValue: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  link: PropTypes.string.isRequired,
+  link: PropTypes.string,
   value: PropTypes.string.isRequired,
 };
 
