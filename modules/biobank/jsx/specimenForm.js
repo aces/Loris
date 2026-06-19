@@ -391,6 +391,7 @@ SpecimenForm.propTypes = {
       specimen: PropTypes.shape({
         candidateId: PropTypes.number,
         sessionId: PropTypes.number,
+        sessionLabel: PropTypes.string,
         typeId: PropTypes.number.isRequired,
       }).isRequired,
       container: PropTypes.shape({
