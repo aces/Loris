@@ -378,24 +378,23 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
 
         $candidate =& \Candidate::singleton($candid);
-        $db = $this->loris->getDatabaseConnection();
+        $db          = $this->loris->getDatabaseConnection();
 
         // Get the list of sessions for this candidate in the specific
         // project and cohort
-        $query = "
+        $query  = "
             SELECT s.Visit_label
             FROM session s
             JOIN candidate c ON c.ID=s.CandidateID
             WHERE c.CandID=:cid AND s.ProjectID=:projectID AND s.CohortID=:cohortID
             AND s.Active='Y'
         ";
-        $result = $db->pselect(
-            $query, [
+        $where  = [
             'cid'       => $candid,
             'projectID' => $projectID,
             'cohortID'  => $cohortID,
-            ]
-        );
+        ];
+        $result = $db->pselect($query, $where);
 
         // If the visitLabel is already in use for this project+cohort
         // then let the user pick another
