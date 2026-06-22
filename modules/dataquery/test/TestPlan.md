@@ -5,7 +5,8 @@
 1. Ensure the module loads only for a user that has the `dataquery_view` permission. They must also have access to the dictionary module.
 2. Assert that: `Instructions` panel, `Recent Queries` panel, and `Next Steps` panel (bottom-right corner) collapse as expected.
 3. Assert that: `Continue to Define Fields` button in the main panel, and `Choose Fields` button in the `Next Steps` panel are redirecting to the same page.
-4. `Recent Queries` panel
+4. Ensure the pinning icon only appears for users that have the `dataquery_admin` (Data Query Tool: Admin dataquery queries) permission. Users without it should not be able to pin queries.
+5. `Recent Queries` panel
    1. If not queries are available, make some so they will be added to this section.
    2. Assert that: queries you made have their parameters correctly displayed (i.e. fields and filters).
    3. Assert that: `text filter` immediately filter the queries.
