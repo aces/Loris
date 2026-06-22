@@ -244,7 +244,7 @@ abstract class NDB_Notifier_Abstract
                     AND nm.operation_type=:ot
                     AND u.Pending_approval = 'N'
                     AND u.Active = 'Y'
-                    AND u.active_to < NOW()
+                    AND u.active_to > NOW()
                     ";
         $params = [
             "nm" => $this->module,
