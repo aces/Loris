@@ -37,3 +37,9 @@ download table as CSV works as well.
 11. Check that the `tools/exporters/data_dictionary_builder.php` works. Try changing 
 field names in an instrument before running the script and make sure that the 
 corresponding entries in Data Dictionary are updated correctly.
+12. Module enable/disable behaviour. Using the Module Manager (Admin > Modules), disable a module that provides a dictionary (e.g. `imaging_browser` or `candidate_parameters`). Reload the Data Dictionary and confirm:
+ - The module's fields no longer appear in the table.
+ - The module is no longer an option in the "Module" filter.
+ - Selecting any remaining module repopulates the "Category" filter with only that module's categories. Re-enable the module and confirm its fields, "Module" filter option, and "Category" filter options reappear.
+13. Per-user module access. Log in as a user who does NOT have access to a specific module that provides a dictionary. Confirm that the dictionary entries (fields), the "Module" filter option, and the related "Category" options for that module are NOT visible to that user, even though the module is active. Now grant access to that module from an admin account and confirm the same entries and filter options are now visible.
+14. Make sure that the "Module" filter lists only active modules that the logged-in user can access and that actually provide a dictionary (e.g. `instruments`, `imaging_browser`, `candidate_parameters`). The "Category" filter is empty until a Module is selected, then shows only the categories of the selected module.
