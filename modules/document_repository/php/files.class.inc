@@ -67,20 +67,23 @@ class Files extends \NDB_Page
             $user    = $factory->user();
             $db      = $factory->database();
 
-            $filename = explode(
-                'Files',
-                urldecode($request->getUri()->getPath())
-            )[1];
+            $path     = urldecode($request->getUri()->getPath());
+            $filename = explode('Files', $path)[1] ?? '';
 
-            $forSite = $db->pselectOne(
-                "SELECT For_site
-                 FROM document_repository
-                 WHERE Data_dir = :file_dir",
-                ['file_dir' => mb_substr($filename, 1)]
-            );
+            if ($filename !== '' && !str_starts_with($filename, '/meta')) {
+                $forSite = $db->pselectOne(
+                    "SELECT For_site
+                     FROM document_repository
+                     WHERE Data_dir = :file_dir",
+                    ['file_dir' => mb_substr($filename, 1)]
+                );
 
-            if (! $user->hasCenter(\CenterID::singleton((int)$forSite))) {
-                return (new \LORIS\Http\Response\JSON\Forbidden());
+                if ($forSite !== null
+                    && (int)$forSite > 0
+                    && ! $user->hasCenter(\CenterID::singleton((int)$forSite))
+                ) {
+                    return (new \LORIS\Http\Response\JSON\Forbidden());
+                }
             }
         }
 
