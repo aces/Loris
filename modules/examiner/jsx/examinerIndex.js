@@ -59,7 +59,9 @@ class ExaminerIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.filterVisibleRows = this.filterVisibleRows.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.mapCSVCell = this.mapCSVCell.bind(this);
     this.renderAddExaminerForm = this.renderAddExaminerForm.bind(this);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -102,6 +104,51 @@ class ExaminerIndex extends Component {
     this.setState({
       formData: formData,
     });
+  }
+
+  /**
+   * Get the subset of site IDs visible to the current user.
+   *
+   * @return {object}
+   */
+  getVisibleSites() {
+    return this.state.data.fieldOptions?.sites || {};
+  }
+
+  /**
+   * Keep only site IDs visible to the current user.
+   *
+   * @param {string[]|number[]} siteIds - examiner site IDs
+   * @return {string[]|number[]}
+   */
+  filterVisibleSiteIds(siteIds) {
+    const visibleSites = this.getVisibleSites();
+    if (!Array.isArray(siteIds)) {
+      return [];
+    }
+    return siteIds.filter((centerId) => visibleSites[centerId] != null);
+  }
+
+  /**
+   * Convert visible site IDs into site labels.
+   *
+   * @param {string[]|number[]} siteIds - examiner site IDs
+   * @return {string[]}
+   */
+  mapVisibleSiteNames(siteIds) {
+    const visibleSites = this.getVisibleSites();
+    return this.filterVisibleSiteIds(siteIds)
+      .map((centerId) => visibleSites[centerId]);
+  }
+
+  /**
+   * Limit rows to examiners that share at least one visible site.
+   *
+   * @param {Array[]} rows - examiner data rows
+   * @return {Array[]}
+   */
+  filterVisibleRows(rows) {
+    return rows.filter((row) => this.filterVisibleSiteIds(row[2]).length > 0);
   }
 
   /**
@@ -184,16 +231,11 @@ class ExaminerIndex extends Component {
         result = <td>{t('None', {ns: 'loris'})}</td>;
       }
     } else if (column === 'Site' || column === labelSite) {
-      // If user has multiple sites, join array of sites into string
+      const siteNames = this.mapVisibleSiteNames(cell);
       result = (
-        <td>{cell
-          .filter((centerId) => this.state.data.fieldOptions.sites[centerId]
-          != null)
-          .map((centerId) => this.state.data.fieldOptions.sites[centerId])
-          .join(', ')}
-        </td>
+        <td>{siteNames.join(', ')}</td>
       );
-      if (cell.length === 0) {
+      if (siteNames.length === 0) {
         result = (
           <td>{t(
             'This user has no site affiliations',
@@ -203,6 +245,29 @@ class ExaminerIndex extends Component {
       }
     }
     return result;
+  }
+
+  /**
+   * Map raw row values to CSV-safe display values.
+   *
+   * @param {string} column - column label
+   * @param {*} cell - raw cell value
+   * @return {*} mapped cell value
+   */
+  mapCSVCell(column, cell) {
+    const {t} = this.props;
+    const labelCertification = t('Certification', {ns: 'examiner'});
+    const labelSite = t('Site', {ns: 'loris', count: 1});
+
+    if (column === labelSite) {
+      return this.mapVisibleSiteNames(cell).join(', ');
+    }
+
+    if (column === labelCertification && cell === null) {
+      return t('None', {ns: 'loris'});
+    }
+
+    return cell;
   }
 
   /**
@@ -308,6 +373,7 @@ class ExaminerIndex extends Component {
      * queried columns in _setupVariables() in examiner.class.inc
      */
     const options = this.state.data.fieldOptions;
+    const data = this.filterVisibleRows(this.state.data.Data);
     const fields = [
       {label: t('Examiner', {ns: 'examiner'}), show: true, filter: {
         name: 'examiner',
@@ -345,9 +411,10 @@ class ExaminerIndex extends Component {
         <FilterableDataTable
           name='examiner'
           title={t('Examiner', {ns: 'examiner'})}
-          data={this.state.data.Data}
+          data={data}
           fields={fields}
           getFormattedCell={this.formatColumn}
+          getMappedCell={this.mapCSVCell}
           actions={actions}
         />
       </div>

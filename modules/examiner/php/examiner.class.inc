@@ -90,7 +90,6 @@ class Examiner extends \DataFrameworkMenu
             'radiologists'     => $yesNoOptions,
             'useCertification' => $useCertification,
         ];
-
     }
 
     /**
