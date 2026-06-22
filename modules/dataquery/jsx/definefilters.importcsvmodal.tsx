@@ -104,6 +104,18 @@ function ImportCSVModal(props: {
           return;
         }
       }
+      if (idType === 'PSCID') {
+        if (!value.data[i][0] || value.data[i][0].trim() === '') {
+          swal.fire({
+            type: 'error',
+            title: t('Invalid PSCID', {ns: 'dataquery'}),
+            text: t('Invalid PSCID ({{id}}) on line {{line}}.',
+              {ns: 'dataquery', id: value.data[i][0], line: i+1}),
+          });
+          setCSVFile(null);
+          return;
+        }
+      }
     }
 
     // Now that it's been validated, build a new query

@@ -345,6 +345,12 @@ msgstr ""
 msgid "Invalid DCCID ({{id}}) on line {{line}}."
 msgstr ""
 
+msgid "Invalid PSCID"
+msgstr ""
+
+msgid "Invalid PSCID ({{id}}) on line {{line}}."
+msgstr ""
+
 msgid "Welcome to the Data Query Tool"
 msgstr ""
 
