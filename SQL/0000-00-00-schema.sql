@@ -159,7 +159,7 @@ CREATE TABLE `candidate` (
   `ExternalID` varchar(255) DEFAULT NULL,
   `DoB` date DEFAULT NULL,
   `DoD` date DEFAULT NULL,
-  `DoD_precision` enum('known_year_month','known_year','unknown') DEFAULT NULL,
+  `DoD_precision` enum('known_full','known_year_month','known_year','unknown') DEFAULT NULL,
   `EDC` date DEFAULT NULL,
   `Sex` varchar(255) DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL,
