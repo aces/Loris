@@ -609,9 +609,10 @@ function getDODFields(): array
     $dobFormat = $config->getSetting('dobFormat');
 
     $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
-    $dobDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoB']);
-    $dob = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
-
+    $dob    = formatCandidateDate(
+        $candidateData['DoB'] ?? null,
+        $dobProcessedFormat
+    );
     $result = [
         'pscid'     => $candidateData['PSCID'],
         'candID'    => $candID->__toString(),
