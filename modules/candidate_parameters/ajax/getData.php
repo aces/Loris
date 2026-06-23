@@ -563,7 +563,7 @@ function getDOBFields(): array
     $dobFormat = $config->getSetting('dobFormat');
 
     $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
-    $formattedDate = formatCandidateDate($dob, $dobProcessedFormat);
+    $formattedDate      = formatCandidateDate($dob, $dobProcessedFormat);
 
     $result = [
         'pscid'     => $pscid,
