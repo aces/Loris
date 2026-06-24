@@ -1,10 +1,6 @@
 import {useState, PropsWithChildren, CSSProperties, ReactNode} from 'react';
 import Swal from 'sweetalert2';
 import Loader from './Loader';
-import {
-  ButtonElement,
-  FormElement,
-} from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
 
 export type ModalProps = PropsWithChildren<{
@@ -96,30 +92,36 @@ export const FormModal = ({
     }
   };
 
-  const submitButton = onSubmit && !(loading || success) && (
-    <div style={submitStyle}><ButtonElement label={t('Save')}/></div>
+  const submitFooter = onSubmit && !(loading || success) && (
+    <div style={footerSubmitStyle}>
+      <button type='submit' className='btn btn-primary'>
+        {t('Save')}
+      </button>
+    </div>
   );
 
   /**
    * Loader element displayed during form submission.
    */
-  const loader = loading && (
-    <div style={processStyle}>
+  const loadingFooter = loading && (
+    <div style={footerStatusStyle}>
       <Loader size={20}/>
-      <h5 className='animate-flicker'>{t('Saving', {ns: 'loris'})}</h5>
+      <span className='animate-flicker'>
+        {t('Saving', {ns: 'loris'})}
+      </span>
     </div>
   );
 
   /**
    * Success display element shown after successful form submission.
    */
-  const successDisplay = success && (
-    <div style={processStyle}>
+  const successFooter = success && (
+    <div style={footerStatusStyle}>
       <span
         style={{color: 'green', marginBottom: '2px'}}
         className='glyphicon glyphicon-ok-circle'
       />
-      <h5>{t('Success!', {ns: 'loris'})}</h5>
+      <span>{t('Success!', {ns: 'loris'})}</span>
     </div>
   );
 
@@ -131,27 +133,31 @@ export const FormModal = ({
       throwWarning={throwWarning}
       width={width}
     >
-      <FormElement
+      <form
+        className='form-horizontal'
         name='modal'
-        onSubmit={handleSubmit}
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleSubmit();
+        }}
+        style={formStyle}
       >
         <div style={{
           ...bodyStyle,
           padding: success ? 0 : bodyStyle.padding,
-          maxHeight: success ? 0 : bodyStyle.maxHeight,
           opacity: success ? 0 : 1,
         }}>
           {show && children}
         </div>
         <div style={{
-          ...footerStyle,
+          ...formFooterStyle,
           backgroundColor: success ? '#e0ffec' : undefined,
         }}>
-          {loader}
-          {successDisplay}
-          {submitButton}
+          {loadingFooter}
+          {successFooter}
+          {submitFooter}
         </div>
-      </FormElement>
+      </form>
     </ModalFrame>
   );
 };
@@ -210,9 +216,9 @@ const ModalFrame = ({
       >
         <div style={headerStyle}>
           {title}
-          <span style={glyphStyle} onClick={handleClose}>×</span>
+          <span style={closeButtonStyle} onClick={handleClose}>×</span>
         </div>
-        <div>
+        <div style={contentStyle}>
           {children}
         </div>
       </div>
@@ -222,33 +228,52 @@ const ModalFrame = ({
 
 const headerStyle: CSSProperties = {
   display: 'flex',
-  flexDirection: 'row',
   alignItems: 'center',
-  height: '40px',
-  borderTopRightRadius: '10',
-  fontSize: 24,
-  padding: 35,
+  flex: '0 0 auto',
+  minHeight: '64px',
+  fontSize: 22,
+  fontWeight: 400,
+  lineHeight: 1.25,
+  padding: '16px 20px',
   borderBottom: '1px solid #DDDDDD',
 };
 
-const glyphStyle: CSSProperties = {
+const closeButtonStyle: CSSProperties = {
   marginLeft: 'auto',
   cursor: 'pointer',
 };
 
 const bodyStyle: CSSProperties = {
-  padding: '15px 15px',
-  maxHeight: '75vh',
-  overflow: 'scroll',
-  transition: '1s ease, opacity 0.3s',
+  flex: '1 1 auto',
+  minHeight: 0,
+  padding: '16px',
+  overflow: 'auto',
+  transition: 'opacity 0.3s ease',
+};
+
+const contentStyle: CSSProperties = {
+  display: 'flex',
+  flex: '1 1 auto',
+  flexDirection: 'column',
+  minHeight: 0,
+  overflow: 'hidden',
+};
+
+const formStyle: CSSProperties = {
+  display: 'flex',
+  flex: '1 1 auto',
+  flexDirection: 'column',
+  minHeight: 0,
+  overflow: 'hidden',
 };
 
 const modalContainer: CSSProperties = {
-  display: 'block',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   position: 'fixed',
   zIndex: 9999,
-  paddingTop: '100px',
-  paddingBottom: '100px',
+  padding: '24px 16px',
   left: 0,
   top: 0,
   width: '100%',
@@ -258,36 +283,44 @@ const modalContainer: CSSProperties = {
 };
 
 const modalContent: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
   position: 'relative',
   backgroundColor: '#fefefe',
-  borderRadius: '7px',
-  margin: 'auto',
-  padding: 0,
+  borderRadius: '8px',
   border: '1px solid #888',
-  boxShadow: '0 4px 8px 0 rbga(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)',
-  transition: '0.4s ease',
+  maxHeight: '100%',
+  maxWidth: '100%',
+  overflow: 'hidden',
+  boxShadow: '0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)',
+  transition: 'opacity 0.4s ease, top 0.4s ease',
 };
 
 const footerStyle: CSSProperties = {
   borderTop: '1px solid #DDDDDD',
   display: 'flex',
-  flexDirection: 'row',
   alignItems: 'center',
-  height: '40px',
-  padding: '35px',
+  flex: '0 0 auto',
+  minHeight: '64px',
+  padding: '16px 20px',
 };
 
-const submitStyle: CSSProperties = {
-  marginLeft: 'auto',
-  marginRight: '20px',
+const formFooterStyle: CSSProperties = {
+  ...footerStyle,
+  flexDirection: 'column',
+  gap: '12px',
+  justifyContent: 'center',
 };
 
-const processStyle: CSSProperties = {
+const footerSubmitStyle: CSSProperties = {
+  alignSelf: 'flex-end',
+};
+
+const footerStatusStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-evenly',
-  margin: '0px auto',
-  width: '90px',
+  alignSelf: 'center',
+  gap: '8px',
 };
 
 export default Modal;
