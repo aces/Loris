@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import FilterableSelectGroup from './components/filterableselectgroup';
-import Modal from 'jsx/Modal';
+import {FormModal} from 'jsx/Modal';
 import Select from 'react-select';
 import swal from 'sweetalert2';
 import {
@@ -282,7 +282,7 @@ function AddFilterModal(props: {
     }
     );
   return (
-    <Modal title={t('Add criteria', {ns: 'dataquery'})}
+    <FormModal title={t('Add criteria', {ns: 'dataquery'})}
       show={true}
       throwWarning={true}
       onClose={props.closeModal}
@@ -312,7 +312,7 @@ function AddFilterModal(props: {
         {criteriaSelect}
         {visitSelect}
       </div>
-    </Modal>
+    </FormModal>
   );
 }
 

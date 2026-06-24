@@ -1,4 +1,4 @@
-import Modal from 'jsx/Modal';
+import {FormModal} from 'jsx/Modal';
 import {QueryGroup, QueryTerm} from './querydef';
 import {useState} from 'react';
 import Papa from 'papaparse';
@@ -152,7 +152,7 @@ function ImportCSVModal(props: {
     marginTop: '1em',
   };
 
-  return <Modal title={t('Import Population From CSV', {ns: 'dataquery'})}
+  return <FormModal title={t('Import Population From CSV', {ns: 'dataquery'})}
     show={true}
     throwWarning={true}
     onClose={props.closeModal}
@@ -229,7 +229,7 @@ function ImportCSVModal(props: {
         </dl>
       </div>
     </fieldset>
-  </Modal>;
+  </FormModal>;
 }
 
 export default ImportCSVModal;

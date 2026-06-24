@@ -3,7 +3,7 @@ import {withTranslation} from 'react-i18next';
 import SpecimenProcessForm from './processForm';
 import ContainerParentForm from './containerParentForm';
 import {ListForm, ListItem} from './listForm';
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import {mapFormOptions, clone} from './helpers.js';
 import {
   SearchableDropdown,
@@ -325,7 +325,7 @@ class SpecimenForm extends React.Component {
 
     const handleClose = () => this.setState(initialState, this.props.onClose);
     return (
-      <Modal
+      <FormModal
         title={this.props.title}
         show={this.props.show}
         onClose={handleClose}
@@ -375,7 +375,7 @@ class SpecimenForm extends React.Component {
           onUserInput={(name, value) => this.setState({[name]: value})}
           value={this.state.printBarcodes}
         />
-      </Modal>
+      </FormModal>
     );
   }
 }
