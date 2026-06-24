@@ -1,10 +1,13 @@
 import React, {useState, ElementType} from 'react';
-import Modal, {ModalProps} from 'Modal';
+import Modal, {FormModal, ModalProps, FormModalProps} from 'Modal';
 import Form from 'jsx/Form';
 
-interface TriggerableModalProps extends Omit<ModalProps, 'show' | 'onClose'> {
+interface TriggerableModalProps
+  extends Omit<ModalProps, 'show' | 'onClose'> {
   label: string; // Label for the default CTA trigger button
   onClose?: ModalProps['onClose'];
+  onSubmit?: FormModalProps['onSubmit'];
+  onSuccess?: FormModalProps['onSuccess'];
   onUserInput?: () => void; // Optional callback when the trigger is activated
   TriggerTag?: ElementType; // Custom component for the modal trigger
 }
@@ -49,7 +52,16 @@ const TriggerableModal = ({
   return (
     <>
       {trigger}
-      <Modal {...modalProps} show={open} onClose={handleClose} />
+      {modalProps.onSubmit ? (
+        <FormModal
+          {...modalProps}
+          onSubmit={modalProps.onSubmit}
+          show={open}
+          onClose={handleClose}
+        />
+      ) : (
+        <Modal {...modalProps} show={open} onClose={handleClose} />
+      )}
     </>
   );
 };

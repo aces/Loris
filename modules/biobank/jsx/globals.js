@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import {mapFormOptions} from './helpers.js';
 
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import Loader from 'Loader';
 import {
   SelectElement,
@@ -308,7 +308,7 @@ function Globals(props) {
                 </span>
               </div>
               <div>
-                <Modal
+                <FormModal
                   title={t('Update Parent Container', {ns: 'biobank'})}
                   onClose={props.clearAll}
                   show={editable.containerParentForm}
@@ -323,7 +323,7 @@ function Globals(props) {
                     setContainer={props.setContainer}
                     setCurrent={props.setCurrent}
                   />
-                </Modal>
+                </FormModal>
               </div>
             </div>
           );

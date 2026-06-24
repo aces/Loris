@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
 import FilterableDataTable from '../../../jsx/FilterableDataTable'; // Temporary CBIGR Override for 26.0
 import {UseShipment} from './Shipment';
 // import Container from './Container';
-import Modal from '../../../jsx/Modal'; // Temporary CBIGR Override for 26.0
+import {FormModal} from '../../../jsx/Modal'; // Temporary CBIGR Override for 26.0
 import TriggerableModal from '../../../jsx/TriggerableModal'; // Temporary CBIGR Override for 26.0
 
 import {
@@ -433,7 +433,7 @@ function CreateShipment({
   }, [shipment.containerIds]);
 
   return (
-    <Modal
+    <FormModal
       show={show}
       title={t('Create Shipment', {ns: 'biobank'})}
       onSubmit={onSubmit}
@@ -486,7 +486,7 @@ function CreateShipment({
         errors={errors.logs[logIndex]}
         users={users}
       />
-    </Modal>
+    </FormModal>
   );
 }
 
