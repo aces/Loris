@@ -181,8 +181,8 @@ class Files extends \NDB_Page
                 ['project' => $projectName]
             );
 
-            if (!$user->hasPermission("data_release_upload") ||
-                !$user->hasProject(
+            if (!$user->hasPermission("data_release_upload")
+                || !$user->hasProject(
                     \ProjectID::singleton((int)$ProjectID)
                 )
             ) {
