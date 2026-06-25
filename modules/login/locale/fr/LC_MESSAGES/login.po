@@ -60,6 +60,36 @@ msgstr "Retour à la page de connexion"
 msgid "Reset Password"
 msgstr "Réinitialiser le mot de passe"
 
+msgid "Update Password"
+msgstr "Mettre à jour le mot de passe"
+
+msgid "Password Strength Rules"
+msgstr "Règles de robustesse du mot de passe"
+
+msgid "The password must be at least 8 characters long."
+msgstr "Le mot de passe doit comporter au moins 8 caractères."
+
+msgid "The password and the email address must not be the same."
+msgstr "Le mot de passe et l'adresse courriel ne doivent pas être identiques."
+
+msgid ""
+"No special characters are required but your password must be sufficiently "
+"complex to be accepted."
+msgstr ""
+"Aucun caractère spécial n'est requis, mais votre mot de passe doit être "
+"suffisamment complexe pour être accepté."
+
+msgid "Please choose a unique password."
+msgstr "Veuillez choisir un mot de passe unique."
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr ""
+"Nous vous suggérons d'utiliser un gestionnaire de mots de passe pour en "
+"générer un."
+
+msgid "New Password mismatch!"
+msgstr "Les nouveaux mots de passe ne correspondent pas !"
+
 msgid "Thank you!"
 msgstr "Merci !"
 
