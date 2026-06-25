@@ -118,9 +118,12 @@ class Data_Release extends \DataFrameworkMenu
 
         $versionsList = [];
         foreach ($versions as $version) {
-            $version = $version == null || $version == '' ?
-                'Unversioned' : html_entity_decode($version, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-            $versionsList[$version] = $version;
+            if ($version === null || $version === '') {
+                $versionsList['Unversioned'] = 'Unversioned';
+            } else {
+                $versionsList[$version] =
+                    html_entity_decode($version, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            }
         }
 
         return $versionsList;
