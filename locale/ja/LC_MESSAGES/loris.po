@@ -100,6 +100,10 @@ msgstr[0] "為り手"
 msgid "Genomics"
 msgstr "ゲノミクス"
 
+#: modules/biobank/php/module.class.inc:140
+msgid "Biobank"
+msgstr "バイオバンク"
+
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
 msgstr "電気生理学"

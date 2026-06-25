@@ -100,6 +100,10 @@ msgstr[0] "受试者"
 msgid "Genomics"
 msgstr "基因组学"
 
+#: modules/biobank/php/module.class.inc:140
+msgid "Biobank"
+msgstr "生物样本库"
+
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
 msgstr "电生理学"
