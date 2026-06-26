@@ -90,7 +90,8 @@ class Data_Release extends \DataFrameworkMenu
 
         foreach ($result as $id => $row) {
             $version     = $row['version'] == null || $row['version'] == '' ?
-               'Unversioned' : html_entity_decode($row['version'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+               'Unversioned' :
+               html_entity_decode($row['version'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
             $result[$id] = $row['file_name'].' - '.$version;
         }
 
@@ -121,10 +122,10 @@ class Data_Release extends \DataFrameworkMenu
             if ($version === null || $version === '') {
                 $versionsList['Unversioned'] = 'Unversioned';
             } else {
-                $versionsList[$version] 
-                = html_entity_decode(
-                        $version, 
-                        ENT_QUOTES | ENT_HTML5, 
+                $versionsList[$version]
+                    = html_entity_decode(
+                        $version,
+                        ENT_QUOTES | ENT_HTML5,
                         'UTF-8'
                     );
             }
