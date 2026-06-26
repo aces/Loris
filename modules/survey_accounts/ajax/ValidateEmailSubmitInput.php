@@ -69,7 +69,8 @@ $numSessions = $db->pselectOne(
 if ($numSessions != 1) {
     echo json_encode(
         [
-            'error_msg' => dgettext('survey_accounts', 'Visit').' '. $_REQUEST['VL'].' '.
+            'error_msg' => dgettext('survey_accounts', 'Visit').' '.
+                  $_REQUEST['VL'].' '.
                   dgettext('survey_accounts', 'does not exist for given candidate'),
         ]
     );
