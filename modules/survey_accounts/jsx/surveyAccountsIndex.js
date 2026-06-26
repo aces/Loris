@@ -126,7 +126,9 @@ class SurveyAccountsIndex extends Component {
         },
       },
       {
-        label: t('Instrument', {ns: 'survey_accounts', count: 1}), show: true, filter: {
+        label: t('Instrument', {ns: 'survey_accounts', count: 1}),
+        show: true,
+        filter: {
           name: 'instrument',
           type: 'select',
           options: options.instruments,
