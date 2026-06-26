@@ -9,6 +9,9 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/survey_accounts.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/survey_accounts.json';
+import frCAStrings from '../locale/fr_CA/LC_MESSAGES/survey_accounts.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/survey_accounts.json';
 /**
  * Survey Account React Component
  */
@@ -73,7 +76,7 @@ class SurveyAccountsIndex extends Component {
       const url = loris.BaseURL + '/survey.php?key=' + row.URL;
       result = <td><a href={url}>{cell}</a></td>;
       break;
-    case t('Instrument', {ns: 'loris', count: 1}):
+    case t('Instrument', {ns: 'survey_accounts', count: 1}):
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
     }
@@ -110,20 +113,20 @@ class SurveyAccountsIndex extends Component {
     const options = this.state.data.fieldOptions;
     const fields = [
       {
-        label: t('PSCID', {ns: 'loris'}), show: true, filter: {
+        label: t('PSCID', {ns: 'survey_accounts'}), show: true, filter: {
           name: 'pscid',
           type: 'text',
         },
       },
       {
-        label: t('Visit', {ns: 'loris'}), show: true, filter: {
+        label: t('Visit', {ns: 'survey_accounts'}), show: true, filter: {
           name: 'visit',
           type: 'select',
           options: options.visits,
         },
       },
       {
-        label: t('Instrument', {ns: 'loris', count: 1}), show: true, filter: {
+        label: t('Instrument', {ns: 'survey_accounts', count: 1}), show: true, filter: {
           name: 'instrument',
           type: 'select',
           options: options.instruments,
@@ -139,7 +142,10 @@ class SurveyAccountsIndex extends Component {
       },
     ];
     const addSurvey = () => {
-      location.href = '/survey_accounts/addSurvey/';
+      const params = new URLSearchParams(window.location.search);
+      const lang = params.get('lang');
+      const query = lang ? `?lang=${encodeURIComponent(lang)}` : '';
+      location.href = `${loris.BaseURL}/survey_accounts/addSurvey/${query}`;
     };
     const actions = [
       {label: t('Add Survey', {ns: 'survey_accounts'}), action: addSurvey},
@@ -167,8 +173,9 @@ SurveyAccountsIndex.propTypes = {
 window.addEventListener(
   'load', () => {
     i18n.addResourceBundle('hi', 'survey_accounts', hiStrings);
-    i18n.addResourceBundle('ja', 'survey_accounts', {});
-    i18n.addResourceBundle('zh', 'survey_accounts', {});
+    i18n.addResourceBundle('ja', 'survey_accounts', jaStrings);
+    i18n.addResourceBundle('fr_CA', 'survey_accounts', frCAStrings);
+    i18n.addResourceBundle('zh', 'survey_accounts', zhStrings);
     const Index = withTranslation(
       ['survey_accounts']
     )(SurveyAccountsIndex);
