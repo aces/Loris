@@ -1,9 +1,21 @@
 <?php declare(strict_types=1);
 
+/**
+ * Behavioural QC data provisioner for behavioural feedback.
+ *
+ * PHP version 7
+ *
+ * @category Behavioural
+ * @package  Loris
+ * @author   Xavier Lecours <xavier.lecours@mcin.ca>
+ *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris-Trunk
+ */
 namespace LORIS\behavioural_qc\Provisioners;
 
 /**
- * TThis class implements a data provisioner to get all feedback level
+ * This class implements a data provisioner to get all feedback level
  * of visits.
  *
  * PHP version 7
@@ -49,7 +61,7 @@ class BehaviouralProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
                 LEFT JOIN test_names tn ON (tn.ID = f.TestID)
             WHERE
                 fb.Public = 'Y'
-                AND fb.Status = 'opened'
+                AND fb.Status <> 'closed'
                 AND fb.active = 'Y'
             ",
             [],
