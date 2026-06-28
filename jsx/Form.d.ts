@@ -100,7 +100,7 @@ type selectElementProps = {
     name: string
     options: {[name: string]: string}
     disabledOptions?: {[name: string]: string}
-    label: string
+    label: ReactNode
     value: string|string[]
     id?: string
     multiple?: boolean
@@ -249,7 +249,7 @@ export class ButtonElement {
 
 type textboxProps = {
     name: string
-    label?: string
+    label?: ReactNode
     value?: string
     id?: string
     class?: string
@@ -260,6 +260,8 @@ type textboxProps = {
     errorMessage?: string;
     onUserInput: (name: string, value: any) => void;
     onUserBlur?: (name: string, value: any) => void;
+    noMargins?: boolean
+    labelPlacementTop?: boolean
 }
 
 type emailProps = textboxProps
@@ -529,7 +531,7 @@ export class TimeElement {
 
 type textareaElementProps = {
     name: string
-    label?: string
+    label?: ReactNode
     value?: string
     placeholder?: string
     id?: string
@@ -537,6 +539,7 @@ type textareaElementProps = {
     required?: boolean
     rows?: number
     cols?: number
+    noMargins?: boolean
     onUserInput: (name: string, value: any) => void
     onUserBlur?: (name: string, value: any) => void
 }
@@ -624,7 +627,7 @@ export class DateTimeElement {
 
 type radioElementProps = {
     name: string
-    label?: string
+    label?: ReactNode
     options: {[name: string]: string}
     disabled?: boolean
     required?: boolean
@@ -632,6 +635,7 @@ type radioElementProps = {
     checked: string|boolean
     errorMessage?: string
     elementClass?: boolean
+    noMargins?: boolean
     onUserInput: (name: string, value: any) => void
 }
 /**

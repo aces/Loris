@@ -78,16 +78,22 @@ type DevNameProps = {
   name: string,
 };
 
+type SettingLabelProps = {
+  item: ConfigItem,
+  options: ConfigOptions,
+};
+
 type CategoryDisplayProps = BaseURLProps & {
   items: ConfigItem[],
   options: ConfigOptions,
   reloadCategory: ReloadCategory,
 };
 
-type ItemDisplayProps = BaseURLProps & {
+type ItemDisplayProps = {
   item: ConfigItem,
+  onChange: (item: ConfigItem, value: ConfigValue) => void,
   options: ConfigOptions,
-  reloadCategory: ReloadCategory,
+  value: ConfigValue,
 };
 
 type MultiValueRowProps = {
@@ -95,7 +101,7 @@ type MultiValueRowProps = {
   disabled: boolean,
   name: string,
   onRemove: () => void,
-  onSave: (newValue: string) => void,
+  onChange: (newValue: string) => void,
   options: ConfigOptions,
   value?: string,
 };
@@ -103,10 +109,10 @@ type MultiValueRowProps = {
 type RenderInputConfig = {
   dataType: string,
   disabled: boolean,
-  label: string,
+  label: React.ReactNode,
   name: string,
-  onChange: (value: string) => void,
-  onCommit: (value: string) => void,
+  noMargins?: boolean,
+  onChange: (value: ConfigValue) => void,
   options: ConfigOptions,
   value: ConfigValue,
 };
@@ -186,7 +192,64 @@ function DevName(props: DevNameProps): React.ReactElement | null {
   if (!props.enabled) {
     return null;
   }
-  return <div className="config-dev-name pull-right"><i>{props.name}</i></div>;
+  return <div className="config-dev-name"><i>{props.name}</i></div>;
+}
+
+/**
+ * User-facing label plus the development config key in sandbox mode.
+ *
+ * @param {SettingLabelProps} props React props
+ * @return {JSX}
+ */
+function SettingLabel(
+  props: SettingLabelProps
+): React.ReactElement {
+  return (
+    <>
+      {props.item.Label}
+      <DevName enabled={props.options.sandbox} name={props.item.Name} />
+    </>
+  );
+}
+
+/**
+ * Convert a config value into a stable comparison key.
+ *
+ * @param {ConfigValue} value Config value
+ * @return {string}
+ */
+function valueKey(value: ConfigValue): string {
+  if (Array.isArray(value)) {
+    return JSON.stringify(value.map(String));
+  }
+  return String(value ?? '');
+}
+
+/**
+ * Return the save payload for a configuration item.
+ *
+ * @param {ConfigItem} item Configuration item
+ * @param {ConfigValue} value Draft value
+ * @return {object}
+ */
+function settingPayload(
+  item: ConfigItem,
+  value: ConfigValue
+): Record<string, unknown> {
+  if (item.AllowMultiple) {
+    return {values: Array.isArray(value) ? value.map(String) : []};
+  }
+  return {value: String(value ?? '')};
+}
+
+/**
+ * Interpret the stored boolean value for radio rendering.
+ *
+ * @param {ConfigValue} value Config value
+ * @return {boolean}
+ */
+function booleanValue(value: ConfigValue): boolean {
+  return value === true || value === 1 || value === '1' || value === 'true';
 }
 
 /**
@@ -196,17 +259,109 @@ function DevName(props: DevNameProps): React.ReactElement | null {
  * @return {JSX}
  */
 function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
+  /**
+   * Build draft values from the loaded category items.
+   *
+   * @return {object}
+   */
+  const initialDrafts = () => Object.fromEntries(
+    props.items.map((item) => [item.Name, item.Value])
+  ) as Record<string, ConfigValue>;
+  const [drafts, setDrafts] = useState<Record<string, ConfigValue>>(
+    initialDrafts
+  );
+  const [changed, setChanged] = useState<Record<string, true>>({});
+
+  useEffect(() => {
+    setDrafts(initialDrafts());
+    setChanged({});
+  }, [props.items]);
+
+  const itemByName = Object.fromEntries(
+    props.items.map((item) => [item.Name, item])
+  ) as Record<string, ConfigItem>;
+  const changedNames = Object.keys(changed);
+
+  /**
+   * Update the local draft value for an item.
+   *
+   * @param {ConfigItem} item Configuration item
+   * @param {ConfigValue} value Draft value
+   */
+  const updateDraft = (item: ConfigItem, value: ConfigValue) => {
+    setDrafts((current) => ({
+      ...current,
+      [item.Name]: value,
+    }));
+    setChanged((current) => {
+      const next = {...current};
+      if (valueKey(value) === valueKey(item.Value)) {
+        delete next[item.Name];
+      } else {
+        next[item.Name] = true;
+      }
+      return next;
+    });
+  };
+
+  /**
+   * Save all modified settings in the active category.
+   */
+  const saveChanges = () => {
+    Promise.all(changedNames.map((name) => {
+      const item = itemByName[name];
+      return saveSetting(
+        props.baseURL,
+        name,
+        settingPayload(item, drafts[name])
+      );
+    })).then(() => {
+      const labels = changedNames
+        .map((name) => itemByName[name]?.Label ?? name)
+        .join(', ');
+      void swal.fire('Success!', `Successfully saved ${labels}`, 'success');
+      props.reloadCategory();
+    }).catch(showSaveError);
+  };
+
   const rows = props.items.map((item) => (
     <ItemDisplay
       key={item.ID}
-      baseURL={props.baseURL}
       item={item}
+      onChange={updateDraft}
       options={props.options}
-      reloadCategory={props.reloadCategory}
+      value={drafts[item.Name] ?? item.Value}
     />
   ));
 
-  return <div className="col-md-9">{rows}</div>;
+  return (
+    <div className="col-md-9">
+      {rows}
+      <div className="row submit-area">
+        <div className="col-sm-offset-3 col-sm-9 btn-container">
+          <button
+            className="btn btn-primary"
+            disabled={changedNames.length === 0}
+            onClick={saveChanges}
+            type="button"
+          >
+            Submit
+          </button>
+          <button
+            className="btn btn-default"
+            disabled={changedNames.length === 0}
+            onClick={() => {
+              setDrafts(initialDrafts());
+              setChanged({});
+            }}
+            type="button"
+          >
+            Reset
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -220,10 +375,10 @@ function ItemDisplay(props: ItemDisplayProps): React.ReactElement {
   if (item.AllowMultiple) {
     return (
       <MultiValueInput
-        baseURL={props.baseURL}
         item={item}
+        onChange={props.onChange}
         options={props.options}
-        reloadCategory={props.reloadCategory}
+        value={props.value}
       />
     );
   }
@@ -231,12 +386,11 @@ function ItemDisplay(props: ItemDisplayProps): React.ReactElement {
   return (
     <div title={item.Description}>
       <SingleValueInput
-        baseURL={props.baseURL}
         item={item}
+        onChange={props.onChange}
         options={props.options}
-        reloadCategory={props.reloadCategory}
+        value={props.value}
       />
-      <DevName enabled={props.options.sandbox} name={item.Name} />
     </div>
   );
 }
@@ -248,36 +402,24 @@ function ItemDisplay(props: ItemDisplayProps): React.ReactElement {
  * @return {JSX}
  */
 function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
-  const [value, setValue] = useState<ConfigValue>(props.item.Value);
-
-  useEffect(() => {
-    setValue(props.item.Value);
-  }, [props.item.Value]);
-
   /**
-   * Persist a changed setting value.
+   * Update the draft value for this setting.
    *
-   * @param {string} newValue New setting value
+   * @param {ConfigValue} value Draft value
    */
-  const saveChange = (newValue: string) => {
-    const currentValue = String(props.item.Value ?? '');
-    if (newValue === currentValue) {
-      return;
-    }
-    saveSetting(props.baseURL, props.item.Name, {value: newValue})
-      .then(() => props.reloadCategory())
-      .catch(showSaveError);
-  };
+  const updateValue = (value: ConfigValue) => props.onChange(
+    props.item,
+    value
+  );
 
   return renderInput({
     dataType: props.item.DataType,
     disabled: props.item.Disabled,
-    label: props.item.Label,
+    label: <SettingLabel item={props.item} options={props.options} />,
     name: props.item.Name,
-    onChange: setValue,
-    onCommit: saveChange,
+    onChange: updateValue,
     options: props.options,
-    value: value,
+    value: props.value,
   });
 }
 
@@ -288,24 +430,17 @@ function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
  * @return {JSX}
  */
 function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
-  const values = Array.isArray(props.item.Value) ?
-    props.item.Value.map(String) :
-    [];
-  const [isAdding, setIsAdding] = useState(false);
+  const values = Array.isArray(props.value) ? props.value.map(String) : [];
 
   /**
-   * Persist the full list of values for a multi-value setting.
+   * Update the draft values for this setting.
    *
-   * @param {string[]} newValues New setting values
+   * @param {string[]} newValues Draft values
    */
-  const saveValues = (newValues: string[]) => {
-    saveSetting(props.baseURL, props.item.Name, {values: newValues})
-      .then(() => {
-        setIsAdding(false);
-        props.reloadCategory();
-      })
-      .catch(showSaveError);
-  };
+  const setValues = (newValues: string[]) => props.onChange(
+    props.item,
+    newValues
+  );
 
   const rows = values.map((value, idx) => (
     <MultiValueRow
@@ -313,52 +448,34 @@ function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
       disabled={props.item.Disabled}
       key={`${props.item.Name}-${idx}`}
       name={props.item.Name}
-      onRemove={() => saveValues(values.filter((_el, i) => i !== idx))}
-      onSave={(newValue) => {
+      onRemove={() => setValues(values.filter((_el, i) => i !== idx))}
+      onChange={(newValue) => {
         const newValues = [...values];
         newValues[idx] = newValue;
-        saveValues(newValues);
+        setValues(newValues);
       }}
       options={props.options}
       value={value}
     />
   ));
 
-  if (isAdding) {
-    rows.push(
-      <MultiValueRow
-        dataType={props.item.DataType}
-        disabled={props.item.Disabled}
-        key={`${props.item.Name}-new`}
-        name={props.item.Name}
-        onRemove={() => setIsAdding(false)}
-        onSave={(newValue) => saveValues([...values, newValue])}
-        options={props.options}
-        value=""
-      />
-    );
-  }
-
   return (
-    <div className="form-group" title={props.item.Description}>
+    <div className="row form-group" title={props.item.Description}>
       <div className="col-sm-3">
         <label className="col-sm-12 control-label config-name">
-          {props.item.Label}
+          <SettingLabel item={props.item} options={props.options} />
         </label>
-        <DevName enabled={props.options.sandbox} name={props.item.Name} />
       </div>
       <div className="col-sm-9">
         {rows}
-        {!isAdding && (
-          <button
-            className="btn btn-success add"
-            disabled={props.item.Disabled}
-            onClick={() => setIsAdding(true)}
-            type="button"
-          >
-            <span className="glyphicon glyphicon-plus"></span> Add field
-          </button>
-        )}
+        <button
+          className="btn btn-success add"
+          disabled={props.item.Disabled}
+          onClick={() => setValues([...values, ''])}
+          type="button"
+        >
+          <span className="glyphicon glyphicon-plus"></span> Add field
+        </button>
       </div>
     </div>
   );
@@ -375,15 +492,18 @@ function MultiValueRow({
   disabled,
   name,
   onRemove,
-  onSave,
+  onChange,
   options,
   value: initialValue = '',
 }: MultiValueRowProps): React.ReactElement {
-  const [value, setValue] = useState(initialValue);
-
-  useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
+  /**
+   * Update the draft value for this row.
+   *
+   * @param {ConfigValue} newValue Draft value
+   */
+  const updateValue = (newValue: ConfigValue) => onChange(
+    String(newValue ?? '')
+  );
 
   return (
     <div className="input-group entry">
@@ -392,10 +512,10 @@ function MultiValueRow({
         disabled: disabled,
         label: '',
         name: name,
-        onChange: setValue,
-        onCommit: onSave,
+        noMargins: true,
+        onChange: updateValue,
         options: options,
-        value: value,
+        value: initialValue,
       })}
       <div className="input-group-btn">
         <button
@@ -424,12 +544,13 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
   case 'boolean':
     return (
       <RadioElement
-        checked={config.value ? 'yes' : 'no'}
+        checked={booleanValue(config.value) ? 'yes' : 'no'}
         disabled={config.disabled}
         label={config.label}
         name={config.name}
+        noMargins={config.noMargins}
         onUserInput={(_name: string, inputValue: string) => {
-          config.onCommit(inputValue === 'yes' ? 'true' : 'false');
+          config.onChange(inputValue === 'yes' ? 'true' : 'false');
         }}
         options={{'yes': 'Yes', 'no': 'No'}}
       />
@@ -444,8 +565,9 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
         disabled={config.disabled}
         label={config.label}
         name={config.name}
+        noMargins={config.noMargins}
         onUserInput={(_name: string, inputValue: string) => {
-          config.onCommit(inputValue);
+          config.onChange(inputValue);
         }}
         options={config.options[DATA_TYPE_OPTIONS[config.dataType]]}
         value={value}
@@ -457,9 +579,7 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
         disabled={config.disabled}
         label={config.label}
         name={config.name}
-        onUserBlur={(_name: string, inputValue: string) => {
-          config.onCommit(inputValue);
-        }}
+        noMargins={config.noMargins}
         onUserInput={(_name: string, inputValue: string) => {
           config.onChange(inputValue);
         }}
@@ -472,9 +592,7 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
         disabled={config.disabled}
         label={config.label}
         name={config.name}
-        onUserBlur={(_name: string, inputValue: string) => {
-          config.onCommit(inputValue);
-        }}
+        noMargins={config.noMargins}
         onUserInput={(_name: string, inputValue: string) => {
           config.onChange(inputValue);
         }}
@@ -489,9 +607,7 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
         disabled={config.disabled}
         label={config.label}
         name={config.name}
-        onUserBlur={(_name: string, inputValue: string) => {
-          config.onCommit(inputValue);
-        }}
+        noMargins={config.noMargins}
         onUserInput={(_name: string, inputValue: string) => {
           config.onChange(inputValue);
         }}
@@ -530,8 +646,6 @@ function saveSetting(
       throw new Error(`Could not save ${setting}`);
     }
     return resp.json();
-  }).then((): void => {
-    void swal.fire('Success!', `Successfully saved ${setting}`, 'success');
   });
 }
 
