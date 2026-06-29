@@ -37,7 +37,7 @@ class NullModule extends Module
      * @param \LORIS\LorisInstance $loris The LORIS instance for this module.
      * @param string               $name  An optional name to use for this module.
      */
-    public function __construct(\LORIS\LorisInstance $loris, string $name='loris')
+    public function __construct(\LORIS\LorisInstance $loris, string $name='')
     {
         $this->longname = $name;
         parent::__construct($loris, $name, "");
