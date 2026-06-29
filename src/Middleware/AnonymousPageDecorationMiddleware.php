@@ -33,8 +33,6 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $lang = \LORIS\Middleware\Language::detectLocale($request->getAttribute("loris"), $request);
-        $languageQueryParams = $request->getQueryParams();
-        unset($languageQueryParams['lang']);
         // Basic page outline variables
         $tpl_data = array(
                      'study_title'         => $this->Config->getMultilingualSetting($lang, 'title'),
@@ -46,9 +44,8 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
                      'currentyear'         => date('Y'),
                      'sandbox'             => ($this->Config->getSetting("sandbox") === '1'),
                      'partner_logos'       => $this->Config->getSetting('partner_logos'),
-                     'language'            => $lang,
-                     'languageQueryParams' => $languageQueryParams,
-                     'languages'           => \Utility::getLanguageListByCode(),
+                     'language'  => $lang,
+                     'languages' => \Utility::getLanguageListByCode(),
                     );
 
         $tpl_data['css'] = 'main.css';
