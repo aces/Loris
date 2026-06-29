@@ -32,7 +32,6 @@ class Files extends \NDB_Page
      *
      * @return bool true only if the user has access to this page.
      */
-    #[\Override]
     public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
@@ -67,23 +66,20 @@ class Files extends \NDB_Page
             $user    = $factory->user();
             $db      = $factory->database();
 
-            $path     = urldecode($request->getUri()->getPath());
-            $filename = explode('Files', $path)[1] ?? '';
+            $filename = explode(
+                'Files',
+                urldecode($request->getUri()->getPath())
+            )[1];
 
-            if ($filename !== '' && !str_starts_with($filename, '/meta')) {
-                $forSite = $db->pselectOne(
-                    "SELECT For_site
-                     FROM document_repository
-                     WHERE Data_dir = :file_dir",
-                    ['file_dir' => mb_substr($filename, 1)]
-                );
+            $forSite = $db->pselectOne(
+                "SELECT For_site
+                 FROM document_repository
+                 WHERE Data_dir = :file_dir",
+                ['file_dir' => mb_substr($filename, 1)]
+            );
 
-                if ($forSite !== null
-                    && (int)$forSite > 0
-                    && ! $user->hasCenter(\CenterID::singleton((int)$forSite))
-                ) {
-                    return (new \LORIS\Http\Response\JSON\Forbidden());
-                }
+            if (!empty($forSite) && ! $user->hasCenter(\CenterID::singleton((int)$forSite))) {
+                return (new \LORIS\Http\Response\JSON\Forbidden());
             }
         }
 
@@ -269,6 +265,7 @@ class Files extends \NDB_Page
         $query   ="SELECT " .
                 "record_id as id, " .
                 "PSCID as pscid, " .
+                "For_site as forSite, " .
                 "File_category as category," .
                 "visitLabel, " .
                 "Instrument as instrument, " .
