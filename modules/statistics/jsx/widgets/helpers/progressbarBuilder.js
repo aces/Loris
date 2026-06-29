@@ -10,10 +10,13 @@ const progressBarBuilder = (t, data) => {
   const sexBreakdown = Array.isArray(data['sex_breakdown'])
     ? data['sex_breakdown']
     : [];
+  const totalRecruitment = Number(data['total_recruitment']) || 0;
+  const formatPercent = (value) => `${(Number(value) || 0).toFixed(1)}%`;
   const renderSegment = (sexData) => {
+    const total = Number(sexData.total) || 0;
     const width = exceededTarget
-      ? sexData.full_percent
-      : sexData.target_percent;
+      ? (totalRecruitment > 0 ? total / totalRecruitment * 100 : 0)
+      : Number(sexData.target_percent) || 0;
 
     if (!width) {
       return null;
@@ -29,7 +32,7 @@ const progressBarBuilder = (t, data) => {
       }}
       data-toggle ='tooltip'
       data-placement ='bottom'
-      title ={`${width}% ${sexData.label}`}>
+      title ={`${sexData.label}: ${sexData.total} participants (${formatPercent(width)})`}>
       <p>
         {sexData.total}<br/>
         {sexData.label}

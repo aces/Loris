@@ -388,7 +388,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
      * @param int   $recruitmentTarget Target recruitment count.
      * @param int   $totalRecruitment  Total recruitment count.
      *
-     * @return array<int, array<string, int|string|null>>
+     * @return array<int, array<string, int|float|string|null>>
      */
     private function _formatSexBreakdown(
         array $raw,
@@ -427,10 +427,10 @@ class Widgets extends \NDB_Page implements ETagCalculator
                 'colour'         => $item['colour'],
                 'total'          => $count,
                 'target_percent' => $recruitmentTarget > 0
-                    ? round($count / $recruitmentTarget * 100)
+                    ? round($count / $recruitmentTarget * 100, 1)
                     : null,
                 'full_percent'   => $totalRecruitment > 0
-                    ? round($count / $totalRecruitment * 100)
+                    ? round($count / $totalRecruitment * 100, 1)
                     : null,
             ];
         }
