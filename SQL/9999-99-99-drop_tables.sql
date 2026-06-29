@@ -255,7 +255,12 @@ DROP TABLE IF EXISTS `appointment_type`;
 
 DROP TABLE IF EXISTS `openid_connect_csrf`;
 DROP TABLE IF EXISTS `openid_connect_providers`;
-
+DROP TABLE IF EXISTS `physiological_task_event_history`;
+DROP TABLE IF EXISTS `hed_tag_history`;
+DROP TABLE IF EXISTS `hed_tag_endorsement_history`;
+DROP TABLE IF EXISTS `hed_tag_endorsement`;
+DROP TABLE IF EXISTS `cached_data_type`;
+DROP TABLE IF EXISTS `cached_data`;
 
 DROP TABLE IF EXISTS `candidate_diagnosis_evolution_rel`;
 DROP TABLE IF EXISTS `diagnosis_evolution`;
