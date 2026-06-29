@@ -587,19 +587,19 @@ class DataTable extends Component {
             flexWrap: 'wrap',
             padding: '5px 15px',
           }}>
-             <div style={{
-               order: '1',
-               padding: '5px 0',
-             }}>
-               {this.props.t(
-                 '{{pageCount}} rows displayed of {{totalCount}}. ',
-                 {
-                   pageCount: rows.length,
-                   totalCount: filteredCount,
-                 }
-               )}
-               {changeRowsDropdown}
-             </div>
+            <div style={{
+              order: '1',
+              padding: '5px 0',
+            }}>
+              {this.props.t(
+                '{{pageCount}} rows displayed of {{totalCount}}. ',
+                {
+                  pageCount: rows.length,
+                  totalCount: filteredCount,
+                }
+              )}
+              {changeRowsDropdown}
+            </div>
             <div style={{
               order: '2',
               display: 'flex',
