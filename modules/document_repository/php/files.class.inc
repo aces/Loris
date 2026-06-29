@@ -149,7 +149,7 @@ class Files extends \NDB_Page
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'File_category' => $req['category'] ?? null,
-            'hide_video'  => !empty($req['hiddenVideo']) ?
+            'hide_video'  => isset($req['hiddenVideo']) ?
                 $req['hiddenVideo'] : null,
             'instrument'    => $req['instrument'] ?? null,
             'comments'      => $req['comments'] ?? null,
@@ -280,12 +280,15 @@ class Files extends \NDB_Page
         $where   = ['record_id' => $id];
         $docData = $db->pselectRow($query, $where);
 
+        // Cast hiddenVideo to string to avoid falsy-0 issue in JS SelectElement
+        $docData['hiddenVideo'] = (string)$docData['hiddenVideo'];
+
         $result = [
             'categories'  => $categoriesList,
             'sites'       => $siteList,
             'instruments' => $instrumentsList,
             'docData'     => $docData,
-            'hiddenVideo' => ['yes' => "Yes", 'no' => "No"],
+            'hiddenVideo' => ['0' => "No", '1' => "Yes"],
         ];
 
         return $result;
@@ -427,7 +430,7 @@ class Files extends \NDB_Page
             $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
             $comments   = !empty($body['comments'])   ? $body['comments']   : null;
             $version    = !empty($body['version'])    ? $body['version']    : null;
-            $hidden     = !empty($body['hiddenVideo']) ? $body['hiddenVideo'] : null;
+            $hidden     = isset($body['hiddenVideo']) ? $body['hiddenVideo'] : null;
 
             $fileSize = $uploadedFile->getSize();
             $fileType = pathinfo($filename, PATHINFO_EXTENSION);
