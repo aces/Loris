@@ -202,7 +202,7 @@ msgstr "वर्तमान क्वेरी"
 msgid "Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query."
 msgstr "ध्यान दें कि केवल वे उम्मीदवार शामिल हैं जिन्हें LORIS में एक्सेस करने की आपको अनुमति है। परिणामों की संख्या अन्य उपयोगकर्ताओं से भिन्न हो सकती है।"
 
-msgid "Candidate matches"
+msgid "Candidate matches:"
 msgstr "उम्मीदवार मेल खाते हैं"
 
 msgid "Note: matches count only includes candidates that you have access to. Results may vary from other users due to permissions."
