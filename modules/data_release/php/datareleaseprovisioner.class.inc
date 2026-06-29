@@ -93,6 +93,14 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                     'UTF-8'
                 );
         }
+        if (!empty($row['fileName'])) {
+            $row['fileName']
+                = html_entity_decode(
+                    $row['fileName'],
+                    ENT_QUOTES | ENT_HTML5,
+                    'UTF-8'
+                );
+        }
         return new DataReleaseRow($row);
     }
 }
