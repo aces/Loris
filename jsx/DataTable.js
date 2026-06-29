@@ -4,6 +4,7 @@ import PaginationLinks from 'jsx/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
 import {CTA} from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
 
 /**
  * Data Table component
@@ -586,13 +587,19 @@ class DataTable extends Component {
             flexWrap: 'wrap',
             padding: '5px 15px',
           }}>
-            <div style={{
-              order: '1',
-              padding: '5px 0',
-            }}>
-              {`${rows.length} rows displayed of ${filteredCount}. `}
-              {changeRowsDropdown}
-            </div>
+             <div style={{
+               order: '1',
+               padding: '5px 0',
+             }}>
+               {this.props.t(
+                 '{{pageCount}} rows displayed of {{totalCount}}. ',
+                 {
+                   pageCount: rows.length,
+                   totalCount: filteredCount,
+                 }
+               )}
+               {changeRowsDropdown}
+             </div>
             <div style={{
               order: '2',
               display: 'flex',
@@ -637,7 +644,13 @@ class DataTable extends Component {
               order: '1',
               padding: '5px 0',
             }}>
-              {`${rows.length} rows displayed of ${filteredCount}. `}
+              {this.props.t(
+                '{{pageCount}} rows displayed of {{totalCount}}. ',
+                {
+                  pageCount: rows.length,
+                  totalCount: filteredCount,
+                }
+              )}
               {changeRowsDropdown}
             </div>
             <div style={{
