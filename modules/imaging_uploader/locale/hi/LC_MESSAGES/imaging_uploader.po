@@ -39,7 +39,7 @@ msgstr "फ़ाइल इससे अधिक नहीं हो सकत�
 msgid "File must be of type .tgz or tar.gz or .zip"
 msgstr "फ़ाइल का प्रकार .tgz, .tar.gz या .zip होना चाहिए"
 
-msgid "For files that are not Phantom Scans, file name must begin with"
+msgid "For files that are not Phantom Scans, file name must begin with <0>{{prefix}}</0>"
 msgstr "जो फाइलें फैंटम स्कैन नहीं हैं, उनका नाम इससे शुरू होना चाहिए"
 
 msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
