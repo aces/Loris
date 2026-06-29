@@ -188,7 +188,7 @@ class Configuration extends \NDB_Form
         $settingsByID       = [];
         $settingsByCategory = [];
         foreach ($configs as &$node) {
-            $node['Children']                 = [];
+            $node['Children'] = [];
             $settingsByID[intval($node['ID'])] = &$node;
         }
         unset($node);
