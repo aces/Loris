@@ -509,7 +509,10 @@ class ElectrophysiologySessionView extends Component {
                       <DownloadPanel
                         id={'file_download_' + i}
                         downloads={this.state.database[i].file.downloads}
+                        dccid={this.state.patient.info.dccid}
+                        visit={this.state.patient.info.visit_label}
                         physioFileID={this.state.database[i].file.id}
+                        physioFileName={this.state.database[i].file.name}
                         outputType={this.state.database[i].file.output_type}
                         t={t}
                       />

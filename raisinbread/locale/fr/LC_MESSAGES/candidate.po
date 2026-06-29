@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+
+"Project-Id-Version: LORIS 28\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2026-06-11 14:37-0400\n"
+"Last-Translator: Saagar Arya <saagar.arya@mcin.ca>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Human"
+msgstr "Humain"
+
+msgid "Scanner"
+msgstr "Scanneur"
+
+msgid "White"
+msgstr "Blanc"
+
+msgid "Black"
+msgstr "Noir"
+
+msgid "Indigenous"
+msgstr "Autochtone"
+
+msgid "Asian"
+msgstr "Asiatique"
+
+msgid "Hispanic"
+msgstr "Hispanique"
+

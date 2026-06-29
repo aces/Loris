@@ -268,6 +268,9 @@ msgstr "हल किया गया"
 msgid "Closed"
 msgstr "बंद"
 
+msgid "Rejected"
+msgstr "अस्वीकृत"
+
 msgid "Behavioural Battery"
 msgstr "व्यवहारिक बैटरी"
 
