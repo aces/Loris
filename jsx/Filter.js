@@ -92,7 +92,12 @@ function Filter(props) {
         let element;
         switch (filter.type) {
         case 'text':
-          element = <TextboxElement labelPlacementTop/>;
+          element = (
+            <TextboxElement
+              disabled={filter.disabled}
+              labelPlacementTop
+            />
+          );
           break;
         case 'select':
           element = (
@@ -100,6 +105,7 @@ function Filter(props) {
               options={filter.options}
               sortByValue={filter.sortByValue}
               autoSelect={false}
+              disabled={filter.disabled}
               labelPlacementTop
             />
           );
@@ -111,6 +117,7 @@ function Filter(props) {
               sortByValue={filter.sortByValue}
               multiple={true}
               emptyOption={false}
+              disabled={filter.disabled}
               labelPlacementTop
             />
           );
@@ -118,6 +125,7 @@ function Filter(props) {
         case 'numeric':
           element = <NumericElement
             options={filter.options}
+            disabled={filter.disabled}
             labelPlacementTop
           />;
           break;
@@ -128,23 +136,48 @@ function Filter(props) {
             step={filter.step}
             minLabel={filter.minLabel}
             maxLabel={filter.maxLabel}
+            disabled={filter.disabled}
             labelPlacementTop
           />;
           break;
         case 'date':
-          element = <DateElement labelPlacementTop />;
+          element = (
+            <DateElement
+              labelPlacementTop
+              disabled={filter.disabled}
+            />
+          );
           break;
         case 'datetime':
-          element = <DateTimePartialElement labelPlacementTop />;
+          element = (
+            <DateTimePartialElement
+              disabled={filter.disabled}
+              labelPlacementTop
+            />
+          );
           break;
         case 'checkbox':
-          element = <CheckboxElement/>;
+          element = (
+            <CheckboxElement
+              disabled={filter.disabled}
+            />
+          );
           break;
         case 'time':
-          element = <TimeElement labelPlacementTop />;
+          element = (
+            <TimeElement
+              disabled={filter.disabled}
+              labelPlacementTop
+            />
+          );
           break;
         default:
-          element = <TextboxElement labelPlacementTop />;
+          element = (
+            <TextboxElement
+              disabled={filter.disabled}
+              labelPlacementTop
+            />
+          );
         }
 
         // The value prop has to default to false if the first two options
