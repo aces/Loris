@@ -27,6 +27,11 @@ msgstr "डेटा प्रविष्टि टकराव"
 msgid "Unresolved Conflicts"
 msgstr "असुलझे टकराव"
 
+msgid "% conflict resolved"
+msgid_plural "% conflicts resolved"
+msgstr[0] "% टकराव सुलझा"
+msgstr[1] "% टकराव सुलझे"
+
 msgid "Unresolved"
 msgstr "असुलझा"
 

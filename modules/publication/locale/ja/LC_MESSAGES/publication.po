@@ -21,6 +21,9 @@ msgstr ""
 msgid "Publications"
 msgstr "出版物"
 
+msgid "Publication"
+msgstr "出版物"
+
 msgid "Submit"
 msgstr "提出する"
 

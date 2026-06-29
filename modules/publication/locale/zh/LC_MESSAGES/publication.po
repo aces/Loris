@@ -22,6 +22,9 @@ msgstr ""
 msgid "Publications"
 msgstr "刊物"
 
+msgid "Publication"
+msgstr "刊物"
+
 msgid "Submit"
 msgstr "提交"
 

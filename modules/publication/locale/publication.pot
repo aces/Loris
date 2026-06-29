@@ -21,6 +21,9 @@ msgstr ""
 msgid "Publications"
 msgstr ""
 
+msgid "Publication"
+msgstr ""
+
 msgid "Submit"
 msgstr ""
 

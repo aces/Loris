@@ -22,6 +22,10 @@ msgstr ""
 msgid "Electrophysiology Browser"
 msgstr "電気生理学ブラウザ"
 
+msgid "EEG Recording"
+msgid_plural "EEG Recordings"
+msgstr[0] "EEG記録"
+
 msgid "Links"
 msgstr "リンク"
 
