@@ -586,7 +586,13 @@ function getDODFields(): array
     $db     = \NDB_Factory::singleton()->database();
 
     $candidateData = $db->pselectRow(
-        'SELECT PSCID,DoD, DoB FROM candidate where CandID =:candid',
+        'SELECT
+            PSCID,
+            DoD,
+            DoD_precision,
+            DoB
+        FROM candidate
+        WHERE CandID =:candid',
         ['candid' => $candID]
     );
     if ($candidateData === null) {
@@ -614,11 +620,12 @@ function getDODFields(): array
     $dob = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
 
     $result = [
-        'pscid'     => $candidateData['PSCID'],
-        'candID'    => $candID->__toString(),
-        'dod'       => $dod,
-        'dob'       => $dob,
-        'dodFormat' => $config->getSetting('dodFormat'),
+        'pscid'         => $candidateData['PSCID'],
+        'candID'        => $candID->__toString(),
+        'dod'           => $dod,
+        'dob'           => $dob,
+        'dod_precision' => $candidateData['DoD_precision'],
+        'dodFormat'     => $config->getSetting('dodFormat'),
     ];
     return $result;
 }
