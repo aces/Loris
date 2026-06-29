@@ -172,7 +172,7 @@ class Configuration extends \NDB_Form
             $categorySettings     = $settingsByCategory[intval($category['ID'])]
                 ?? [];
             foreach ($categorySettings as $setting) {
-                $setting['Children'] = $this->_buildConfigSettingTree(
+                $setting['Children']    = $this->_buildConfigSettingTree(
                     $childrenByParent,
                     intval($setting['ID'])
                 );
@@ -248,7 +248,7 @@ class Configuration extends \NDB_Form
                 $childrenByParent,
                 intval($setting['ID'])
             );
-            $settings[] = $setting;
+            $settings[]          = $setting;
         }
         return $settings;
     }
