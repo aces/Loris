@@ -591,7 +591,7 @@ class DataTable extends Component {
               padding: '5px 0',
             }}>
               {this.props.t(
-                '{{pageCount}} rows displayed of {{totalCount}}. ',
+                '{{pageCount}} rows displayed of {{totalCount}}.',
                 {
                   pageCount: rows.length,
                   totalCount: filteredCount,
@@ -644,7 +644,7 @@ class DataTable extends Component {
               padding: '5px 0',
             }}>
               {this.props.t(
-                '{{pageCount}} rows displayed of {{totalCount}}. ',
+                '{{pageCount}} rows displayed of {{totalCount}}.',
                 {
                   pageCount: rows.length,
                   totalCount: filteredCount,
