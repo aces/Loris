@@ -280,6 +280,10 @@ class Files extends \NDB_Page
         $where   = ['record_id' => $id];
         $docData = $db->pselectRow($query, $where);
 
+        // Ensure $docData is an array before array access.
+        // pselectRow returns nullable array.
+        $docData = $docData ?? [];
+
         // Cast hiddenVideo to string to avoid falsy-0 issue in JS SelectElement
         $docData['hiddenVideo'] = (string)$docData['hiddenVideo'];
 
