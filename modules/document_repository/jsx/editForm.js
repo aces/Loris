@@ -11,6 +11,7 @@ import {
 } from 'jsx/Form';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
+import DocumentRepositoryClient from './DocumentRepositoryClient';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
@@ -48,6 +49,7 @@ class DocEditForm extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.documentRepositoryClient = new DocumentRepositoryClient();
   }
 
   /**
@@ -64,8 +66,11 @@ class DocEditForm extends React.Component {
    * @return {Promise}
    */
   fetchData() {
-    return fetch(this.props.dataURL, {credentials: 'same-origin'})
-      .then((resp) => resp.json())
+    const fileID = this.props.dataURL.substring(
+      this.props.dataURL.lastIndexOf('/') + 1
+    );
+
+    return this.documentRepositoryClient.getFileData(fileID)
       .then((data) => {
         const formData = data.docData;
         this.setState({
