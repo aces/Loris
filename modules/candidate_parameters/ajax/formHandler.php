@@ -354,9 +354,14 @@ function deleteFamilyMember(\Database $db)
         ['cid' => $candID]
     );
 
+    $familyMemberCandidateID = $db->pselectOne(
+        'SELECT ID FROM candidate WHERE CandID=:familyMemberID',
+        ['familyMemberID' => $familyMemberID]
+    );
+
     $where = [
-        'FamilyID'  => $familyID,
-        'Candidate' => $familyMemberID,
+        'FamilyID'    => $familyID,
+        'CandidateID' => $familyMemberCandidateID,
     ];
 
     $db->delete('family', $where);
