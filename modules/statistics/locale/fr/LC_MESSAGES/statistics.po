@@ -128,6 +128,39 @@ msgstr "Participants"
 msgid "Unknown"
 msgstr "Inconnu"
 
+msgid "Total Scans: {{count}}"
+msgstr "Nombre de scans : {{count}}"
+
+msgid "There have been no scans yet."
+msgstr "Aucun scan 'a encore été effectué."
+
+msgid "There have been no candidates registered yet."
+msgstr "Aucun candidat n'a encore été inscrit."
+
+msgid "There is no data yet."
+msgstr "Il n'y a pas encore de données."
+
+# Project sizes
+msgid "Project Dataset Sizes"
+msgstr "Tailles des données du projet"
+
+msgid "Dataset size breakdown by project"
+msgstr "Répartition de taille des données par projet"
+
+msgid "Dataset Size"
+msgid_plural "Dataset Size"
+msgstr[0] "Taille des données"
+msgstr[1] "Taille des données"
+
+msgid "Size (GB)"
+msgstr "Taille (Go)"
+
+msgid "%s GB"
+msgstr "%s Go"
+
+msgid "Total Size: {{count}} GB"
+msgstr "Taille totale: {{count}} Go"
+
 msgid "Pie"
 msgstr "Circulaire"
 
