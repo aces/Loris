@@ -197,6 +197,9 @@ msgstr[1] "Cohortes"
 msgid "Session"
 msgstr ""
 
+msgid "SessionID"
+msgstr "Identificador de sesión"
+
 msgid "Date of registration"
 msgstr ""
 
@@ -286,6 +289,9 @@ msgstr "Actualizado"
 
 msgid "Uploaded"
 msgstr "Subido"
+
+msgid "Uploaded By"
+msgstr "Subido por"
 
 msgid "Total"
 msgstr "Total"

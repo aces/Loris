@@ -180,7 +180,9 @@ POFILES=locale/fr/LC_MESSAGES/loris.po \
 	modules/survey_accounts/locale/zh/LC_MESSAGES/survey_accounts.po \
 	modules/timepoint_list/locale/zh/LC_MESSAGES/timepoint_list.po \
 	modules/biobank/locale/zh/LC_MESSAGES/biobank.po \
-	modules/user_accounts/locale/zh/LC_MESSAGES/user_accounts.po
+	modules/user_accounts/locale/zh/LC_MESSAGES/user_accounts.po \
+	modules/imaging_qc/locale/fr/LC_MESSAGES/imaging_qc.po \
+	modules/imaging_qc/locale/hi/LC_MESSAGES/imaging_qc.po
 
 MOFILES=$(patsubst %.po,%.mo,$(POFILES))
 I18NJSONFILES=$(patsubst %.po,%.json,$(POFILES))

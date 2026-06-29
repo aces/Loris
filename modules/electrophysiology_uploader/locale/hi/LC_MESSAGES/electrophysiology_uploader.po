@@ -83,6 +83,3 @@ msgstr "अपलोड समय"
 
 msgid "Status"
 msgstr "स्थिति"
-
-msgid "Uploaded By"
-msgstr "द्वारा अपलोड किया गया"

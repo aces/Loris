@@ -158,14 +158,8 @@ msgstr "Supprimer l'erreur !"
 msgid "Delete Successful!"
 msgstr "Suppression réussie !"
 
-msgid "Upload"
-msgstr "Téléverser"
-
 msgid "File Name"
 msgstr "Nom du fichier"
-
-msgid "Uploaded By"
-msgstr "Téléverser par"
 
 #, fuzzy
 msgid "For Site"

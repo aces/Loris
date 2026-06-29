@@ -43,9 +43,6 @@ msgstr "类型"
 msgid "Signal Viewer"
 msgstr "信号查看器"
 
-msgid "SessionID"
-msgstr "会话ID"
-
 msgid "split {{splitNum}}"
 msgstr "分割{{splitNum}}"
 

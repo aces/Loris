@@ -45,9 +45,6 @@ msgstr "シリーズ固有識別子"
 msgid "TarchiveID"
 msgstr "TarchiveID"
 
-msgid "SessionID"
-msgstr "SessionID"
-
 msgid "CenterID"
 msgstr "CenterID"
 

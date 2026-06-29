@@ -17,6 +17,38 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Imaging Quality Control"
 msgstr "画像品質管理"
+
+msgid "MRI Parameter Form table does not exist"
+msgstr "「MRIパラメータフォーム」テーブルが存在しません"
+
+msgid "Scan Type"
+msgstr "スキャン方式"
+
+msgid "MRI Parameter Form"
+msgstr "MRIパラメータ設定書"
+
+msgid "Scan Done in MRI PF"
+msgstr "MRI PFでのスキャン完了"
+
+msgid "TarchiveID"
+msgstr "TarchiveID"
+
+msgid "Scan Location"
+msgstr "スキャン場所"
+
+msgid "QC Status"
+msgstr "品質管理状況"
+
+msgid "CommentID"
+msgstr "コメントID"
+
+msgid "The MRI parameter form instrument must be installed in-order to use this module."
+msgstr "このモジュールを使用するには、MRIパラメータフォームツールがインストールされている必要があります。"
+
+msgid "Please contact your administrator if you require this functionality."
+msgstr "この機能が必要な場合は、管理者にお問い合わせください。"
+

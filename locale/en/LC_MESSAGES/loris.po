@@ -160,6 +160,9 @@ msgstr[1] "Cohorts"
 msgid "Session"
 msgstr "Session"
 
+msgid "SessionID"
+msgstr "SessionID"
+
 msgid "Date of registration"
 msgstr "Date of registration"
 
@@ -228,6 +231,9 @@ msgstr "Updated"
 
 msgid "Uploaded"
 msgstr "Uploaded"
+
+msgid "Uploaded By"
+msgstr "Uploaded By"
 
 msgid "Total"
 msgstr "Total"

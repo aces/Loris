@@ -27,9 +27,6 @@ msgstr "Nombre del archivo"
 msgid "Instrument"
 msgstr "Instrumento"
 
-msgid "Uploaded By"
-msgstr "Subido por"
-
 msgid "Date Taken"
 msgstr "Fecha de toma"
 
@@ -62,9 +59,6 @@ msgstr "Editar"
 
 msgid "Browse"
 msgstr "Navegar"
-
-msgid "Upload"
-msgstr "Subir"
 
 msgid "An error occured while loading the page."
 msgstr "Se ha producido un error al cargar la página."

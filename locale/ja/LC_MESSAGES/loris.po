@@ -234,6 +234,9 @@ msgid "Session"
 msgid_plural "Sessions"
 msgstr[0] "セッション"
 
+msgid "SessionID"
+msgstr "SessionID"
+
 msgid "Date of registration"
 msgstr "入学日"
 
@@ -390,6 +393,9 @@ msgstr "更新"
 
 msgid "Uploaded"
 msgstr "アップロード済み"
+
+msgid "Uploaded By"
+msgstr "アップロード者"
 
 # User Account related
 msgid "Password Rules"

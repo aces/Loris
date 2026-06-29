@@ -141,14 +141,8 @@ msgstr "削除エラー!"
 msgid "Delete Successful!"
 msgstr "削除に成功しました!"
 
-msgid "Upload"
-msgstr "アップロード"
-
 msgid "File Name"
 msgstr "ファイル名"
-
-msgid "Uploaded By"
-msgstr "アップロード者"
 
 msgid "For Site"
 msgstr "サイト向け"

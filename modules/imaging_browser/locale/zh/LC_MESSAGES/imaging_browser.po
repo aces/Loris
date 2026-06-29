@@ -77,9 +77,6 @@ msgstr "新数据"
 msgid "Links"
 msgstr "链接"
 
-msgid "SessionID"
-msgstr "会话ID"
-
 msgid "Sequence Type"
 msgstr "序列类型"
 

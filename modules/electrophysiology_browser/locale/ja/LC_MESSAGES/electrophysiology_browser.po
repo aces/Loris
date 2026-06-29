@@ -43,9 +43,6 @@ msgstr "タイプ"
 msgid "Signal Viewer"
 msgstr "シグナルビューアー"
 
-msgid "SessionID"
-msgstr "SessionID"
-
 msgid "split {{splitNum}}"
 msgstr "{{splitNum}} を分割"
 

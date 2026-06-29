@@ -21,3 +21,33 @@ msgstr ""
 
 msgid "Imaging Quality Control"
 msgstr "成像质量控制"
+
+msgid "MRI Parameter Form table does not exist"
+msgstr "不存在 MRI 參數表"
+
+msgid "Scan Type"
+msgstr "掃描類型"
+
+msgid "MRI Parameter Form"
+msgstr "磁振造影參數表"
+
+msgid "Scan Done in MRI PF"
+msgstr "已在 MRI PF 完成掃描"
+
+msgid "TarchiveID"
+msgstr "TarchiveID"
+
+msgid "Scan Location"
+msgstr "掃描位置"
+
+msgid "QC Status"
+msgstr "品質控制狀態"
+
+msgid "CommentID"
+msgstr "評論編號"
+
+msgid "The MRI parameter form instrument must be installed in-order to use this module."
+msgstr "必須安裝 MRI 參數表工具，才能使用此模組。"
+
+msgid "Please contact your administrator if you require this functionality."
+msgstr "若您需要此功能，請聯絡您的系統管理員。"
