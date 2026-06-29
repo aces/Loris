@@ -232,3 +232,12 @@ msgstr "Les nouveaux et anciens mots de passe sont identiques."
 
 msgid "This email address is already in use"
 msgstr "Cette adresse email est déjà utilisée"
+
+msgid "Do you really want to reject this user?"
+msgstr "Voulez-vous vraiment rejeter cet utilisateur ?"
+
+msgid "This action cannot be undone."
+msgstr "Cette action ne peut pas être annulée."
+
+msgid "Yes, reject user!"
+msgstr "Oui, rejeter l’utilisateur !"

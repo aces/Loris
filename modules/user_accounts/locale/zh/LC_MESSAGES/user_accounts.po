@@ -211,3 +211,12 @@ msgstr "新旧密码相同"
 
 msgid "This email address is already in use"
 msgstr "该电子邮件地址已被使用"
+
+msgid "Do you really want to reject this user?"
+msgstr "您确定要拒绝该用户吗？"
+
+msgid "This action cannot be undone."
+msgstr "此操作无法撤销。"
+
+msgid "Yes, reject user!"
+msgstr "是的，拒绝用户！"

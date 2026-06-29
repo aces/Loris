@@ -603,6 +603,12 @@ msgstr "Actualiser"
 msgid "Dataset"
 msgstr "Ensemble de données"
 
+msgid "GB"
+msgstr "Go"
+
+msgid "Month"
+msgstr "Mois"
+
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr "Aucune option"
