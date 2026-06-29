@@ -478,8 +478,10 @@ abstract class SQLQueryEngine implements QueryEngine
                             } else {
                                 // It is many, so use an array
 
-                                // The question marks in the field name need to be
-                                // quoted (see function getCandidateData)
+                                // The question marks in the field names were quoted (i.e doubled, see
+                                // function getCandidateData) in order for PDO *not* to interpret
+                                // them as SQL parameter placeholders so we have to perform the
+                                // quoting here also (see https://www.php.net/manual/en/pdo.prepare.php).
                                 $quotedFieldName = str_replace('?', '??', $field->getName());
                                 $key = $row[$quotedFieldName . ':key'];
                                 $val = $this->displayValue($field, $row[$quotedFieldName]);
