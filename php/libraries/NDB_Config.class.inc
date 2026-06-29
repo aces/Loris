@@ -334,6 +334,7 @@ class NDB_Config
         // If multiple rows are returned, it means that there are children
         // for this element, so we need to build the tree to be consistent
         // with what would have come from the config.xml.
+        $firstConfigSetting = null;
         if (count($configSetting) === 1) {
             $firstConfigSetting = $configSetting->getFirstRow();
         }
