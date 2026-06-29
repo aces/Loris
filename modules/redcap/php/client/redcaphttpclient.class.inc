@@ -26,6 +26,7 @@ use LORIS\redcap\client\models\mappings\RedcapRepeatingInstrumentEvent;
 use LORIS\redcap\client\models\mappings\RedcapInstrumentEventMap;
 use LORIS\redcap\client\models\records\RedcapRecord;
 use LORIS\redcap\client\models\records\RedcapRepeatingRecord;
+use LORIS\redcap\config\RedcapConfigRepeatId;
 
 /**
  * A REDCap Client.
@@ -61,6 +62,11 @@ class RedcapHttpClient
     private Client $_client;
 
     /**
+     * REDCap repeated instrument field.
+     */
+    private RedcapConfigRepeatId $_repeat_index_field;
+
+    /**
      * A cache of all already done calls.
      *
      * @var array
@@ -70,13 +76,15 @@ class RedcapHttpClient
     /**
      * Create a new REDCap Client for a specific REDCap instance and project.
      *
-     * @param string $instance_url      A REDCap instance URL.
-     * @param string $project_api_token A REDCap project API token.
-     * @param bool   $verbose           Verbose mode.
+     * @param string               $instance_url      A REDCap instance URL.
+     * @param string               $project_api_token A REDCap project API token.
+     * @param RedcapConfigRepeatId $repeat_index      The REDCap repeated field.
+     * @param bool                 $verbose           Verbose mode.
      */
     public function __construct(
         string $instance_url,
         string $project_api_token,
+        RedcapConfigRepeatId $repeat_index,
         bool $verbose = false
     ) {
         $trimmed_url    = rtrim($instance_url, '/');
@@ -85,6 +93,9 @@ class RedcapHttpClient
         $this->_token   = $project_api_token;
         $this->_client  = new Client($api_url);
         $this->_verbose = $verbose;
+
+        // only useful when repeated instruments exist.
+        $this->_repeat_index_field = $repeat_index;
     }
 
     /**
@@ -721,28 +732,42 @@ class RedcapHttpClient
                 $unique_event_name
             )
         ) {
-            // TODO: ${instrument_name}_dtt seems to be HBCD-specific. The code
-            // could probably be cleaner with a single timestamp abstraction. The
-            // problem is that the repeating index depends on the order in which the
-            // records were filled. However, this index might also be obtainable
-            // from a field in the record. Investigation needed.
-            // Order the records by ${instrument_name}_dtt field value
-            usort(
-                $record_dicts,
-                function ($a, $b) use ($instrument_name) {
-                    $dttField = "{$instrument_name}_dtt";
-                    $a_date   = new \DateTimeImmutable($a[$dttField]);
-                    $b_date   = new \DateTimeImmutable($b[$dttField]);
-                    return $a_date <=> $b_date;
-                }
-            );
+            // If the record_id is null then all records have been imported.
+            // We need to group them by record_id to make sense and not have
+            // thousands of overlapping repeated records.
+            if ($record_id === null) {
+                // need to be grouped by record id = possibly multiple
+                // repeated records.
+                $record_groups = [];
+                foreach ($record_dicts as $record_dict) {
+                    $record_group_id = $record_dict["record_id"];
 
-            foreach ($record_dicts as $index => $record) {
-                $records[] = new RedcapRepeatingRecord(
+                    // group them by "record_id"
+                    if (array_key_exists($record_group_id, $record_groups)) {
+                        $record_groups[$record_group_id][] = $record_dict;
+                    } else {
+                        $record_groups[$record_group_id] = [$record_dict];
+                    }
+                }
+
+                // foreach group or record_id, parse them into RepeatedRecords
+                foreach ($record_groups as $record_group_id => $record_group) {
+                    $records = array_merge(
+                        $records,
+                        $this->_buildRepeatedRecords(
+                            strval($record_group_id),
+                            $instrument_name,
+                            $record_group
+                        )
+                    );
+                }
+            } else {
+                // does not neeed to group by record_id = only one RepeatedRecord
+                $records[] = $this->_buildRepeatedRecords(
+                    $record_id,
                     $instrument_name,
-                    $record,
-                    $index + 1
-                );
+                    $record_dicts
+                )[0];
             }
         } else {
             // Transform the record dictionaries into record objects.
@@ -780,6 +805,82 @@ class RedcapHttpClient
         }
 
         return $records;
+    }
+
+    /**
+     * Build a list of RepeatedRecord out of a array of record dictionaries.
+     * The build process takes the configuration::RedcapConfigRepeatId in account
+     * to either build with the redcap_repeat_instance or the timestamp field.
+     *
+     * @param string $record_id       A REDCap record_id.
+     * @param string $instrument_name A REDCap instrument name.
+     * @param array  $raw_records     An array of record dictionaries.
+     *
+     * @return RedcapRepeatingRecord[] an array of repeated records
+     */
+    private function _buildRepeatedRecords(
+        string $record_id,
+        string $instrument_name,
+        array $raw_records
+    ): array {
+        // log record_id
+        $tag = "[instrument:{$instrument_name}][record_id:{$record_id}]";
+        error_log("[redcap] {$tag} building repeated records");
+
+        $repeated_records = [];
+
+        // instrument repeat instance as the ordering point
+        if ($this->_repeat_index_field === RedcapConfigRepeatId::RepeatInstance) {
+            // sort based on the instance index number
+            usort(
+                $raw_records,
+                function ($a, $b) {
+                    $redcapRepeatIndex = "redcap_repeat_instance";
+                    return $a[$redcapRepeatIndex] <=> $b[$redcapRepeatIndex];
+                }
+            );
+
+            // build records
+            foreach ($raw_records as $record) {
+                $repeated_records[] = new RedcapRepeatingRecord(
+                    $instrument_name,
+                    $record,
+                    $record["redcap_repeat_instance"]
+                );
+            }
+        } else if ($this->_repeat_index_field === RedcapConfigRepeatId::Timestamp) {
+            // sort based on the record timestamp
+            usort(
+                $raw_records,
+                function ($a, $b) use ($instrument_name) {
+                    $tsField = "{$instrument_name}_timestamp";
+                    $ts_a    = new \DateTimeImmutable($a[$tsField]);
+                    $ts_b    = new \DateTimeImmutable($b[$tsField]);
+                    return $ts_a <=> $ts_b;
+                }
+            );
+
+            // build records
+            foreach ($raw_records as $index => $record) {
+                $repeated_records[] = new RedcapRepeatingRecord(
+                    $instrument_name,
+                    $record,
+                    $index + 1
+                );
+            }
+        } else {
+            // default process = iterate and increment record id.
+            foreach ($raw_records as $index => $record) {
+                $repeated_records[] = new RedcapRepeatingRecord(
+                    $instrument_name,
+                    $record,
+                    $index + 1
+                );
+            }
+        }
+
+        // built repeated records
+        return $repeated_records;
     }
 
     /**

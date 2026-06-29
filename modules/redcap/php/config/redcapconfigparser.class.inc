@@ -16,6 +16,7 @@ use LORIS\redcap\config\RedcapConfig;
 use LORIS\redcap\config\RedcapConfigLorisId;
 use LORIS\redcap\config\RedcapConfigRedcapId;
 use LORIS\redcap\config\RedcapConfigVisit;
+use LORIS\redcap\config\RedcapConfigRepeatId;
 
 /**
  * This represents a REDCap configuration parser.
@@ -117,6 +118,9 @@ class RedcapConfigParser
         $redcap_participant_id      = $this->_parseRedcapParticipantId(
             $project_node
         );
+        $redcap_repeat_id           = $this->_parseRedcapRepeatId(
+            $project_node
+        );
         $candidate_id = $this->_parseCandidateId($project_node);
         $visits       = $this->_parseVisits($project_node);
 
@@ -126,6 +130,7 @@ class RedcapConfigParser
             $redcap_api_token,
             $prefix_instrument_variable,
             $redcap_participant_id,
+            $redcap_repeat_id,
             $candidate_id,
             $visits,
         );
@@ -286,6 +291,35 @@ class RedcapConfigParser
                 . " found '$redcap_participant_id'."
             );
         }
+    }
+
+    /**
+     * Parse the REDCap repeat identifier configuration from a REDCap
+     * configuration project XML node.
+     *
+     * @param array $project_node The REDCap configuration project XML node.
+     *
+     * @return RedcapConfigRepeatId The REDCap repeat identifier.
+     */
+    private function _parseRedcapRepeatId(
+        array $project_node,
+    ): RedcapConfigRepeatId {
+        $redcap_repeat_id = $project_node['redcap-repeat-id'] ?? null;
+
+        // Default value.
+        if ($redcap_repeat_id === null) {
+            return RedcapConfigRepeatId::RepeatInstance;
+        }
+
+        return match ($redcap_repeat_id) {
+            "repeat_instance" => RedcapConfigRepeatId::RepeatInstance,
+            "timestamp"       => RedcapConfigRepeatId::Timestamp,
+            default           => throw $this->_exception(
+                "invalid REDCap repeat identifier type for the selected"
+                . " project, expected 'timestamp' or 'repeat_instance' but"
+                . " found '{$redcap_repeat_id}'."
+            )
+        };
     }
 
     /**
