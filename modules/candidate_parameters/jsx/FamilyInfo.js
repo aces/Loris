@@ -8,6 +8,8 @@ import {
   ButtonElement,
   SelectElement,
 } from 'jsx/Form';
+import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Family info component
@@ -28,6 +30,7 @@ class FamilyInfo extends Component {
       isLoaded: false,
       loadedData: 0,
     };
+    this.client = new CandidateParametersClient();
     this.setFormData = this.setFormData.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -41,37 +44,21 @@ class FamilyInfo extends Component {
    */
   fetchData() {
     const {t} = this.props;
-    $.ajax(
-      this.props.dataURL,
-      {
-        dataType: 'json',
-        xhr: function() {
-          let xhr = new window.XMLHttpRequest();
-          xhr.addEventListener(
-            'progress',
-            function(evt) {
-              this.setState({
-                loadedData: evt.loaded,
-              });
-            }.bind(this));
-          return xhr;
-        }.bind(this),
-        success: function(data) {
-          this.setState({
-            Data: data,
-            isLoaded: true,
-            familyMembers: data.existingFamilyMembers,
-          });
-        }.bind(this),
-        error: function(data, errorCode, errorMsg) {
-          this.setState({
-            error: t('An error occurred when loading the form!',
-              {ns: 'candidate_parameters'}
-            ),
-          });
-        }.bind(this),
-      }
-    );
+    this.client.getData(this.props.candID, this.props.tabName)
+      .then((data) => {
+        this.setState({
+          Data: data,
+          isLoaded: true,
+          familyMembers: data.existingFamilyMembers,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          error: t('An error occurred when loading the form!',
+            {ns: 'candidate_parameters'}
+          ),
+        });
+      });
   }
 
   /**
@@ -281,14 +268,25 @@ class FamilyInfo extends Component {
       familyMembers: familyMembers,
     });
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function(data) {
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
         self.setState({
           updateResult: 'success',
           formData: {},
@@ -304,9 +302,9 @@ class FamilyInfo extends Component {
         });
         // rerender components
         self.forceUpdate();
-      },
-      error: function(err) {
-        let errorMessage = JSON.parse(err.responseText).message;
+      })
+      .catch((err) => {
+        let errorMessage = err.lorisMessage || '';
         self.setState(
           {
             updateResult: 'error',
@@ -314,9 +312,7 @@ class FamilyInfo extends Component {
           }
         );
         self.showAlertMessage();
-      },
-
-    });
+      });
   }
 
   /**
@@ -335,10 +331,10 @@ class FamilyInfo extends Component {
         self.setState(
           {
             updateResult: null,
-
           }
         );
-      });
+      }
+    );
   }
 
   /**
@@ -373,38 +369,46 @@ class FamilyInfo extends Component {
     formData.append('candID', this.state.Data.candID);
     formData.append('familyDCCID', candID);
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function(data) {
+    lorisFetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
         self.setState(
           {
             updateResult: 'success',
           });
         self.showAlertMessage();
-      },
-      error: function(err) {
-        if (err.responseText !== '') {
-          let errorMessage = JSON.parse(err.responseText).message;
+      })
+      .catch((err) => {
+        if (err.lorisMessage !== undefined && err.lorisMessage !== '') {
           self.setState(
             {
               updateResult: 'error',
-              errorMessage: errorMessage,
+              errorMessage: err.lorisMessage,
             });
           self.showAlertMessage();
         }
-      },
-    });
+      });
   }
 }
 FamilyInfo.propTypes = {
-  dataURL: PropTypes.string,
-  tabName: PropTypes.string,
-  candID: PropTypes.string,
+  tabName: PropTypes.string.isRequired,
+  candID: PropTypes.string.isRequired,
   action: PropTypes.string,
   t: PropTypes.string.isRequired,
 };
