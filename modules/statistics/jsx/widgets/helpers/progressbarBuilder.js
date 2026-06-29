@@ -32,7 +32,11 @@ const progressBarBuilder = (t, data) => {
       }}
       data-toggle ='tooltip'
       data-placement ='bottom'
-      title ={`${sexData.label}: ${sexData.total} participants (${formatPercent(width)})`}>
+      title ={
+        `${sexData.label}:
+          ${sexData.total} participants
+          (${formatPercent(width)})`
+      }>
       <p>
         {sexData.total}<br/>
         {sexData.label}
