@@ -25,10 +25,8 @@ msgid "View Session"
 msgstr "सत्र देखें"
 
 msgid "New and pending imaging session"
-msgstr "नई और लंबित इमेजिंग सत्र"
-
-msgid "New and pending imaging sessions"
-msgstr "नई और लंबित इमेजिंग सत्रों"
+msgid_plural "New and pending imaging sessions"
+msgstr[0] "नई और लंबित इमेजिंग सत्रों"
 
 msgid "Visit QC Status"
 msgstr "विजिट QC स्थिति"
