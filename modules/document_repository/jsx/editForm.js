@@ -157,7 +157,7 @@ class DocEditForm extends React.Component {
           {
             loris.userHasPermission('document_repository_hidden') &&
             (<SelectElement
-              name="hiddenFile"
+              name="hiddenVideo"
               label={t('Restrict access to the file?',
                 {ns: 'document_repository'})}
               options={this.state.data.hiddenVideo}
