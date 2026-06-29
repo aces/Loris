@@ -4,7 +4,6 @@ import PaginationLinks from 'jsx/PaginationLinks';
 import createFragment from 'react-addons-create-fragment';
 import {CTA} from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
-import i18n from 'I18nSetup';
 
 /**
  * Data Table component
