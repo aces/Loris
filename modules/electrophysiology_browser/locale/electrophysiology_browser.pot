@@ -616,3 +616,6 @@ msgstr ""
 
 msgid "View Session"
 msgstr ""
+
+msgid "Channel Types"
+msgstr ""
