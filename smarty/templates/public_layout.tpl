@@ -14,6 +14,13 @@
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
   <script>
   const loris = { user: { langpref: "{$language}" }};
+
+  const switchLanguage = (selectEl) => {
+    const queryParams = new URLSearchParams(window.location.search);
+
+    queryParams.set('lang', selectEl.value);
+    window.location.search = queryParams.toString();
+  };
   </script>
   {section name=jsfile loop=$jsfiles}
     <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
@@ -54,15 +61,13 @@
 
       {if count($languages) > 1}
         <div style="padding: 2ex">
-        <form method="get" >
           <div class="form-group">
-            <select class="form-control" name="lang" onChange="this.form.submit()">
+            <select class="form-control" name="lang" onChange="switchLanguage(this)">
               {foreach from=$languages key=langcode item=lang}
                 <option value={$langcode} {if $langcode==$language}selected="selected"{/if}>{$lang}</option>
               {/foreach}
             </select>
           </div>
-        </form>
         </div>
       {/if}
       </div>

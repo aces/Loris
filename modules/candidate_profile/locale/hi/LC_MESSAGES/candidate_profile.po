@@ -13,41 +13,17 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: es\n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Instrument List"
-msgstr "Lista de Instrumentos"
+msgid "Candidate Profile"
+msgstr "उम्मीदवार की प्रोफ़ाइल"
 
-msgid "Visit to Site"
-msgstr "Visita al Sitio"
+msgid "Candidate Info"
+msgstr "उम्मीदवार की जानकारी"
 
-msgid "Within Optimal"
-msgstr "Dentro de lo óptimo"
-
-msgid "Within Permitted"
-msgstr "Dentro de permitido"
-
-msgid "Behavioural Battery of Instruments"
-msgstr "Batería de instrumentos de comportamiento"
-
-msgid "The battery has no registered instruments"
-msgstr "La batería no tiene instrumentos registrados"
-
-msgid "View Imaging data"
-msgstr "Ver datos de Imágenes"
-
-msgid "Send TimePoint"
-msgstr "Enviar Punto en el Tiempo"
-
-msgid "No actions"
-msgstr "No acciones"
-
-msgid "Stage: %s"
-msgstr "Etapa: %s"
-
-msgid "Start %s Stage"
-msgstr "Iniciar %s Etapa"
+msgid "Candidate Dashboard"
+msgstr "उम्मीदवार डैशबोर्ड"
