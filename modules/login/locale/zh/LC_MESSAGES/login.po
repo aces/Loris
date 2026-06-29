@@ -62,9 +62,7 @@ msgstr "密码长度必须至少为 8 个字符。"
 msgid "The password and the email address must not be the same."
 msgstr "密码和电子邮件地址不能相同。"
 
-msgid ""
-"No special characters are required but your password must be sufficiently "
-"complex to be accepted."
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
 msgstr "不要求特殊字符，但密码必须足够复杂才能被接受。"
 
 msgid "Please choose a unique password."
