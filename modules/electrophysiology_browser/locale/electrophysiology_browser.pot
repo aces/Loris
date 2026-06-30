@@ -617,6 +617,9 @@ msgstr ""
 msgid "View Session"
 msgstr ""
 
+msgid "Channel Types"
+msgstr ""
+
 # EEG charts
 msgid "EEG Session"
 msgid_plural "EEG Sessions"

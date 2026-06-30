@@ -122,17 +122,19 @@ class Files extends \NDB_Page
 
         $user = $request->getAttribute("user");
 
+        $posted = $request->getParsedBody();
+        assert(is_array($posted));
+
         $validateError = $this->_validateUserCanUpload(
             $user,
             $fileName,
+            $posted['project'],
             $overwrite
         );
         if ($validateError !== null) {
             return $validateError;
         }
 
-        $posted = $request->getParsedBody();
-        assert(is_array($posted));
         return $this->_moveFile(
             $uploadhandler,
             $user,
@@ -149,16 +151,18 @@ class Files extends \NDB_Page
      * if there are no errors, or an error response if something
      * is wrong.
      *
-     * @param \User  $user      The user attempting to upload
-     * @param string $fileName  The filename being uploaded
-     * @param bool   $overwrite Whether the overwrite flag is set
+     * @param \User  $user        The user attempting to upload
+     * @param string $fileName    The filename being uploaded
+     * @param string $projectName Name of the project
+     * @param bool   $overwrite   Whether the overwrite flag is set
      *
      * @return ?ResponseInterface
      */
     private function _validateUserCanUpload(
-        \User $user,
+        \User  $user,
         string $fileName,
-        bool $overwrite
+        string $projectName,
+        bool   $overwrite
     ) : ?ResponseInterface {
         // Check if file is duplicate
         $DB            = $this->loris->getDatabaseConnection();
@@ -170,11 +174,21 @@ class Files extends \NDB_Page
         if (!isset($duplicateFile)) {
             // File doesn't exist, user can upload as long as they have
             // permission.
-            if (!$user->hasPermission("data_release_upload")) {
+
+            // Get ProjectID
+            $ProjectID = $DB->pselectOne(
+                "SELECT ProjectID FROM Project WHERE Name=:project",
+                ['project' => $projectName]
+            );
+
+            if (!$user->hasPermission("data_release_upload")
+                || !$user->hasProject(
+                    \ProjectID::singleton((int)$ProjectID)
+                )
+            ) {
                 return new \LORIS\Http\Response\JSON\Forbidden(
                     "Permission denied."
                 );
-
             }
             return null;
         }

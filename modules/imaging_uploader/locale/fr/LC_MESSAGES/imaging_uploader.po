@@ -45,10 +45,10 @@ msgid "File must be of type .tgz or tar.gz or .zip"
 msgstr "Le fichier doit être en format .tgz, tar.gz ou .zip."
 
 #, fuzzy
-msgid "For files that are not Phantom Scans, file name must begin with"
+msgid "For files that are not Phantom Scans, file name must begin with <0>{{prefix}}</0>"
 msgstr ""
 "Pour les fichiers qui ne sont pas des scans fantômes, le nom du fichier doit "
-"commencer par"
+"commencer par <0>{{prefix}}</0>"
 
 #, fuzzy
 msgid ""

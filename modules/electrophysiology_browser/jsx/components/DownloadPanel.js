@@ -33,7 +33,7 @@ class DownloadPanel extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const {t} = this.props;
+    const {t, dccid, visit, physioFileName} = this.props;
     return (
       <Panel
         id={this.props.id}
@@ -58,6 +58,24 @@ class DownloadPanel extends Component {
                 }>
                 {Object.entries(panel.links).map(([type, download], j) => {
                   const disabled = (download.file === '');
+
+                  let recordingFileUrl = `/api/v0.0.3/candidates/${dccid}/`
+                    + `${visit}/recordings/${physioFileName}`;
+
+                  switch (type) {
+                  case 'physiological_event_files':
+                    recordingFileUrl += '/bidsfiles/events';
+                    break;
+                  case 'all_files':
+                    recordingFileUrl += '/bidsfiles/archive';
+                    break;
+                  case 'physiological_channel_file':
+                    recordingFileUrl += '/bidsfiles/channels';
+                    break;
+                  case 'physiological_electrode_file':
+                    recordingFileUrl += '/bidsfiles/electrodes';
+                    break;
+                  }
 
                   // Ignore physiological_coord_system_file
                   return type !== 'physiological_coord_system_file'
@@ -93,13 +111,13 @@ class DownloadPanel extends Component {
                           : <a
                             className='btn btn-primary download col-xs-6'
                             href={
-                              (type ==
-                                'physiological_event_files' ||
-                                type == 'all_files') ?
-                                this.state.annotationsAction
-                                + '?physioFileID=' + this.state.physioFileID
-                                + '&filePath=' + download.file
-                                : '/mri/jiv/get_file.php?file=' + download.file
+                              (type == 'physiological_event_files')
+                                ? (
+                                  this.state.annotationsAction
+                                  + '?physioFileID=' + this.state.physioFileID
+                                  + '&filePath=' + download.file
+                                )
+                                : recordingFileUrl
                             }
                             target='_blank'
                             style={{
@@ -141,7 +159,10 @@ class DownloadPanel extends Component {
 
 DownloadPanel.propTypes = {
   downloads: PropTypes.array,
+  dccid: PropTypes.string,
+  visit: PropTypes.string,
   physioFileID: PropTypes.number,
+  physioFileName: PropTypes.string,
   outputType: PropTypes.string,
   id: PropTypes.string,
   t: PropTypes.func,

@@ -26,10 +26,8 @@ msgid "View Session"
 msgstr "セッションを見る"
 
 msgid "New and pending imaging session"
-msgstr "新規および保留中のMRI セッション"
-
-msgid "New and pending imaging sessions"
-msgstr "新規および保留中のMRI セッション"
+msgid_plural "New and pending imaging sessions"
+msgstr[0] "新規および保留中のMRI セッション"
 
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"
