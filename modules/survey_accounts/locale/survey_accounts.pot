@@ -63,21 +63,10 @@ msgstr ""
 msgid "DCCID"
 msgstr ""
 
-msgid "PSCID"
-msgstr ""
-
-msgid "Visit"
-msgstr ""
-
-msgid "Visit Label"
-msgstr ""
 
 msgid "Email address"
 msgstr ""
 
-msgid "Instrument"
-msgid_plural "Instruments"
-msgstr[0] ""
 
 msgid "URL"
 msgstr ""

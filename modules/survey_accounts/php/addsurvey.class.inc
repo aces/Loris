@@ -139,7 +139,7 @@ class AddSurvey extends \NDB_Form
 
         if ($numSessions != 1) {
             return [
-                'VL' => dgettext('survey_accounts', "Visit")." ".
+                'VL' => dgettext('loris', "Visit")." ".
                             $values['VL']." ".
             dgettext(
                 'survey_accounts',
@@ -215,7 +215,7 @@ class AddSurvey extends \NDB_Form
             ) {
                 return ['Email' => dgettext(
                     'survey_accounts',
-                    'The email address is not valid.'
+                    'Email is not valid.'
                 )
                 ];
 
