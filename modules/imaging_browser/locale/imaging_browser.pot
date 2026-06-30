@@ -28,6 +28,9 @@ msgid "New and pending imaging session"
 msgid_plural "New and pending imaging sessions"
 msgstr[0] ""
 
+msgid "Imaging QC Summary"
+msgstr ""
+
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"
 msgstr[0] ""
