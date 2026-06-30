@@ -1640,8 +1640,12 @@ class DateRangeElementBase extends Component {
     const value = this.props.value || {};
     const minID = `${this.props.id || this.props.name}_min`;
     const maxID = `${this.props.id || this.props.name}_max`;
-    const minRangeLabel = this.props.t(this.props.minLabel, {ns: 'loris'});
-    const maxRangeLabel = this.props.t(this.props.maxLabel, {ns: 'loris'});
+    const minRangeLabel = this.props.minLabel ?
+      this.props.t(this.props.minLabel, {ns: 'loris'}) :
+      this.props.t('Minimum', {ns: 'loris'});
+    const maxRangeLabel = this.props.maxLabel ?
+      this.props.t(this.props.maxLabel, {ns: 'loris'}) :
+      this.props.t('Maximum', {ns: 'loris'});
     const minLabel = this.props.labelPlacementTop && this.props.label ?
       this.props.t('{{label}} Minimum', {
         ns: 'loris',
@@ -1777,8 +1781,8 @@ DateRangeElementBase.defaultProps = {
     return text;
   },
   labelPlacementTop: false,
-  minLabel: 'Minimum',
-  maxLabel: 'Maximum',
+  minLabel: '',
+  maxLabel: '',
 };
 
 export const DateRangeElement = withTranslation('loris')(DateRangeElementBase);
@@ -2099,8 +2103,12 @@ class NumericRangeElementBase extends Component {
     const value = this.props.value || {};
     const minID = `${this.props.id || this.props.name}_min`;
     const maxID = `${this.props.id || this.props.name}_max`;
-    const minLabel = this.props.t(this.props.minLabel, {ns: 'loris'});
-    const maxLabel = this.props.t(this.props.maxLabel, {ns: 'loris'});
+    const minLabel = this.props.minLabel ?
+      this.props.t(this.props.minLabel, {ns: 'loris'}) :
+      this.props.t('Minimum', {ns: 'loris'});
+    const maxLabel = this.props.maxLabel ?
+      this.props.t(this.props.maxLabel, {ns: 'loris'}) :
+      this.props.t('Maximum', {ns: 'loris'});
     const wrapperClass =
       this.props.label && !this.props.labelPlacementTop ?
         'col-sm-9' : 'col-sm-12';
@@ -2202,8 +2210,8 @@ NumericRangeElementBase.defaultProps = {
     return text;
   },
   labelPlacementTop: false,
-  minLabel: 'Minimum',
-  maxLabel: 'Maximum',
+  minLabel: '',
+  maxLabel: '',
 };
 
 export const NumericRangeElement = withTranslation('loris')(
