@@ -32,7 +32,35 @@ $client->makeCommandLine();
 $client->initialize();
 $factory = \NDB_Factory::singleton();
 $DB      = $factory->database();
+
+$mappingValues = [];
 foreach ($_POST as $key => $value) {
+    $key = (string) $key;
+    if (strpos($key, 'mapping-') === 0) {
+        $mappingValues[substr($key, strlen('mapping-'))] = $value;
+    }
+}
+
+foreach ($_POST as $key => $value) {
+    $key = (string) $key;
+    if (strpos($key, 'mapping-') === 0
+        || !array_key_exists($key, $mappingValues)
+    ) {
+        continue;
+    }
+    $valueIsEmpty        = trim((string) $value) === '';
+    $mappingValueIsEmpty = trim((string) $mappingValues[$key]) === '';
+    if ($valueIsEmpty !== $mappingValueIsEmpty) {
+        displayError(400, 'Mapping rows need both a value and mapped value.');
+        return;
+    }
+}
+
+foreach ($_POST as $key => $value) {
+    $key = (string) $key;
+    if (strpos($key, 'mapping-') === 0) {
+        continue;
+    }
     if (is_numeric($key)) {
         // When a $key is numeric, it means we are updating the entry in the
         // Config table with ID == $key.
@@ -71,6 +99,9 @@ foreach ($_POST as $key => $value) {
                 ['Value' => $value],
                 ['ID' => $key]
             );
+            if (array_key_exists($key, $mappingValues)) {
+                saveMappingValue($key, $mappingValues[$key]);
+            }
         }
     } else {
         // This branch is executed when the key is prefixed with the string
@@ -83,13 +114,15 @@ foreach ($_POST as $key => $value) {
         // This is different from the above is_numeric case; this makes use of
         // Config.ID, not Config.ConfigID (which is a FK to ConfigSettings.ID).
         // The Config table is the one that will be modified here.
-        $keySplit         = explode("-", $key); // e.g. 'add-17-1' or 'remove'
-        $action           = $keySplit[0];
-        $ConfigSettingsID = $keySplit[1];
-        $valueSplit       = explode("-", $value); // e.g. "remove-74"
-        $removeID         = $valueSplit[1];
+        $keySplit = explode("-", $key); // e.g. 'add-17-1' or 'remove'
+        $action   = $keySplit[0];
         //assert(count($keySplit) == 2);
         if ($action == 'add') {
+            $ConfigSettingsID = $keySplit[1] ?? null;
+            if ($ConfigSettingsID === null) {
+                displayError(400, 'Invalid action');
+                return;
+            }
             // This branch adds a new entry to the Config table.
             if ($value === "") {
                 continue;
@@ -131,7 +164,16 @@ foreach ($_POST as $key => $value) {
                     'Value'    => $value,
                 ]
             );
+            if (array_key_exists($key, $mappingValues)) {
+                saveMappingValue($DB->lastInsertID, $mappingValues[$key]);
+            }
         } elseif ($action == 'remove') {
+            $valueSplit = explode("-", $value); // e.g. "remove-74"
+            $removeID   = $valueSplit[1] ?? null;
+            if ($removeID === null) {
+                displayError(400, 'Invalid action');
+                return;
+            }
             // Delete an entry from the Config table.
             $DB->delete(
                 'Config',
@@ -142,6 +184,29 @@ foreach ($_POST as $key => $value) {
         }
     }
     unset($pathIDs);
+}
+
+/**
+ * Save the mapped value for a row in the Config table.
+ *
+ * @param string $configID The Config.ID value
+ * @param string $value    The right-hand mapped value
+ *
+ * @return void
+ */
+function saveMappingValue($configID, $value): void
+{
+    $factory = \NDB_Factory::singleton();
+    $DB      = $factory->database();
+
+    $DB->delete('ConfigMappings', ['ConfigID' => $configID]);
+    $DB->unsafeInsert(
+        'ConfigMappings',
+        [
+            'ConfigID' => $configID,
+            'Value'    => $value,
+        ]
+    );
 }
 
 /**
@@ -263,4 +328,3 @@ function validPath($value)
     }
     return true;
 }
-

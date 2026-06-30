@@ -8,7 +8,7 @@ CREATE TABLE `ConfigSettings` (
     `Description` varchar(255) DEFAULT NULL,
     `Visible` tinyint(1) DEFAULT '0',
     `AllowMultiple` tinyint(1) DEFAULT '0',
-    `DataType` ENUM('text','boolean','email','instrument','textarea','scan_type','date_format','lookup_center','path','web_path', 'log_level') DEFAULT NULL,
+    `DataType` ENUM('text','boolean','email','instrument','textarea','scan_type','date_format','lookup_center','path','web_path', 'log_level','mapping') DEFAULT NULL,
     `Parent` int(11) DEFAULT NULL,
     `Label` varchar(255) DEFAULT NULL,
     `OrderNumber` int(11) DEFAULT NULL,
@@ -37,6 +37,19 @@ CREATE TABLE `Config` (
   CONSTRAINT `fk_Config_1`
   FOREIGN KEY (`ConfigID`)
     REFERENCES `ConfigSettings` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `ConfigMappings` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ConfigID` int(11) NOT NULL,
+  `Value` text,
+  PRIMARY KEY (`ID`),
+  KEY `fk_ConfigMappings_ConfigID_idx` (`ConfigID`),
+  CONSTRAINT `fk_ConfigMappings_ConfigID`
+  FOREIGN KEY (`ConfigID`)
+    REFERENCES `Config` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
