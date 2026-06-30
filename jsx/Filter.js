@@ -69,8 +69,9 @@ function Filter(props) {
    */
   const onFieldUpdate = (name, value) => {
     const {fields} = JSON.parse(JSON.stringify(props));
-    const type = fields
-      .find((field) => (field.filter||{}).name == name).filter.type;
+    const field = fields.find((field) => (field.filter || {}).name === name);
+    const filter = field && field.filter ? field.filter : {};
+    const type = filter.type;
     const exactMatch = (!(type === 'text' || type === 'date'
       || type === 'datetime' || type === 'date-range'
       || type === 'multiselect' || type === 'number-range'));

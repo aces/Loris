@@ -323,9 +323,10 @@ class DataTable extends Component {
       exactMatch = this.props.filters[name].exactMatch;
       opposite = this.props.filters[name].opposite;
     }
-    const filter = (this.props.fields.find(
+    const field = this.props.fields.find(
       (field) => (field.filter || {}).name === name
-    ) || {}).filter || {};
+    );
+    const filter = field && field.filter ? field.filter : {};
 
     // Handle null inputs
     if (filterData === null || data === null) {
