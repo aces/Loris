@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   CheckboxElement,
   DateElement,
+  DateRangeElement,
   FieldsetElement,
   TimeElement,
   FormElement,
@@ -35,24 +36,28 @@ function Filter(props) {
     const searchParams = new URLSearchParams(location.search);
     props.fields.forEach((field) => {
       const filter = field.filter;
-      if (!filter || filter.hide === true) {
+      if (!filter) {
         return;
       }
 
-      if (filter.type === 'number-range') {
+      if (filter.type === 'number-range' || filter.type === 'date-range') {
         const min = searchParams.get(`${filter.name}Min`) || '';
         const max = searchParams.get(`${filter.name}Max`) || '';
         if (min !== '' || max !== '') {
           onFieldUpdate(filter.name, {min, max});
         }
+        return;
       }
-    });
 
-    searchParams.forEach((value, name) => {
-      // This checks to make sure the filter actually exists
-      if (props.fields.find((field) => (field.filter||{}).name == name)) {
-        onFieldUpdate(name, searchParams.getAll(name));
+      const values = searchParams.getAll(filter.name);
+      if (values.length === 0) {
+        return;
       }
+
+      onFieldUpdate(
+        filter.name,
+        filter.type === 'multiselect' ? values : values[0]
+      );
     });
   }, []);
 
@@ -64,15 +69,20 @@ function Filter(props) {
    */
   const onFieldUpdate = (name, value) => {
     const {fields} = JSON.parse(JSON.stringify(props));
-    const type = fields
-      .find((field) => (field.filter||{}).name == name).filter.type;
+    const field = fields.find((field) => (field.filter || {}).name === name);
+    const filter = field && field.filter ? field.filter : {};
+    const type = filter.type;
     const exactMatch = (!(type === 'text' || type === 'date'
-      || type === 'datetime' || type === 'multiselect'
-      || type === 'number-range'));
+      || type === 'datetime' || type === 'date-range'
+      || type === 'multiselect' || type === 'number-range'));
+    const emptyRange = value !== null &&
+      typeof value === 'object' &&
+      !Array.isArray(value) &&
+      (value.min || '') === '' &&
+      (value.max || '') === '';
     if (value === null || value === '' ||
-      (typeof value === 'object' && !Array.isArray(value) &&
-        (value.min || '') === '' && (value.max || '') === '') ||
       (value.constructor === Array && value.length === 0) ||
+      emptyRange ||
       (type === 'checkbox' && value === false)) {
       props.removeFilter(name);
     } else {
@@ -134,6 +144,18 @@ function Filter(props) {
         case 'date':
           element = <DateElement labelPlacementTop />;
           break;
+        case 'date-range':
+          element = (
+            <DateRangeElement
+              dateFormat={filter.dateFormat}
+              minYear={filter.minYear}
+              maxYear={filter.maxYear}
+              minLabel={filter.minLabel}
+              maxLabel={filter.maxLabel}
+              labelPlacementTop
+            />
+          );
+          break;
         case 'datetime':
           element = <DateTimePartialElement labelPlacementTop />;
           break;
@@ -147,6 +169,9 @@ function Filter(props) {
           element = <TextboxElement labelPlacementTop />;
         }
 
+        const filterValue = props.filters[filter.name] ?
+          props.filters[filter.name].value : null;
+
         // The value prop has to default to false if the first two options
         // are undefined so that the checkbox component is a controlled input
         // element with a starting default value
@@ -156,9 +181,10 @@ function Filter(props) {
             key: filter.name,
             name: filter.name,
             label: field.label,
-            value: (props.filters[filter.name] || {}).value || (
-              filter.type === 'number-range' ? {} : null
-            ),
+            value: (filter.type === 'number-range' ||
+              filter.type === 'date-range') ?
+              filterValue || {} :
+              filterValue || null,
             onUserInput: onFieldUpdate,
           }
         ));

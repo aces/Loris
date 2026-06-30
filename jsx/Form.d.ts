@@ -501,6 +501,59 @@ export class DateElement {
     forceUpdate(): void
 }
 
+type dateRangeElementProps = {
+    name: string
+    label?: string
+    value?: {
+        min?: string
+        max?: string
+    }
+    id?: string
+    maxYear?: string|number
+    minYear?: string|number
+    dateFormat?: string
+    disabled?: boolean
+    required?: boolean
+    minLabel?: string
+    maxLabel?: string
+    onUserInput: (name: string, value: any) => void
+};
+/**
+ * DateRangeElement class. See Form.js
+ */
+export class DateRangeElement {
+    props: dateRangeElementProps
+    state: any
+    context: object
+    refs: {[key: string]: ReactInstance}
+
+    /**
+     * Construct a DateRangeElement
+     *
+     * @param {dateRangeElementProps} props - React props
+     */
+    constructor(props: dateRangeElementProps)
+
+    /**
+     * React lifecycle method
+     *
+     * @returns {ReactNode} - the element
+     */
+    render(): ReactNode
+
+    /**
+     * React lifecycle method
+     *
+     * @param {object} newstate - the state to override
+     */
+    setState(newstate: object): void
+
+    /**
+     * React lifecycle method.
+     */
+    forceUpdate(): void
+}
+
 type timeElementProps = {
     name: string
     label?: string
@@ -701,6 +754,7 @@ export default {
   TextareaElement,
   PasswordElement,
   DateElement,
+  DateRangeElement,
   TimeElement,
   DateTimeElement,
   NumericElement,
