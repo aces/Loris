@@ -60,30 +60,10 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-msgid "DCCID"
-msgstr ""
-
-
-msgid "Email address"
-msgstr ""
-
-
 msgid "URL"
 msgstr ""
 
 msgid "Status"
-msgstr ""
-
-msgid "Created"
-msgstr ""
-
-msgid "Sent"
-msgstr ""
-
-msgid "In Progress"
-msgstr ""
-
-msgid "Complete"
 msgstr ""
 
 msgid "PSCID and DCCID do not match or candidate does not exist."
@@ -98,7 +78,7 @@ msgstr ""
 msgid "already exists for given candidate for visit"
 msgstr ""
 
-msgid "The email address is not valid."
+msgid "Email is not valid."
 msgstr ""
 
 msgid "Please confirm the email address."

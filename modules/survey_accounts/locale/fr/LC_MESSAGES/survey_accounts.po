@@ -61,32 +61,11 @@ msgstr "Votre message s'inscrit ici."
 msgid "Email"
 msgstr "Adresse courriel"
 
-msgid "DCCID"
-msgstr "DCCID"
-
-
-
-msgid "Email address"
-msgstr "Adresse courriel"
-
-
 msgid "URL"
 msgstr "URL"
 
 msgid "Status"
 msgstr "Statut"
-
-msgid "Created"
-msgstr "Créé"
-
-msgid "Sent"
-msgstr "Envoyé"
-
-msgid "In Progress"
-msgstr "En cours"
-
-msgid "Complete"
-msgstr "Complété"
 
 msgid "PSCID and DCCID do not match or candidate does not exist."
 msgstr "Le PSCID et le DCCID ne correspondent pas ou le candidat n'existe pas."
@@ -100,7 +79,7 @@ msgstr "Veuillez choisir un instrument."
 msgid "already exists for given candidate for visit"
 msgstr "existe déjà pour le candidat donné pour la visite"
 
-msgid "The email address is not valid."
+msgid "Email is not valid."
 msgstr "L'adresse courriel n'est pas valide."
 
 msgid "Please confirm the email address."

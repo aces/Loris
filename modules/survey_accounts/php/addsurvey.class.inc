@@ -68,7 +68,7 @@ class AddSurvey extends \NDB_Form
             if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
                 return ['Email' => dgettext(
                     'survey_accounts',
-                    'The email address is not valid.'
+                    'Email is not valid.'
                 )
                 ];
             }
@@ -194,7 +194,7 @@ class AddSurvey extends \NDB_Form
                 );
                 return [
                     'Test_name' => dcngettext(
-                        'survey_accounts',
+                        'loris',
                         'Instrument',
                         'Instruments',
                         1,
@@ -332,17 +332,17 @@ class AddSurvey extends \NDB_Form
         parent::setup();
 
         $this->redirect = "test_name=$this->name";
-        $this->addBasicText("CandID", dgettext('survey_accounts', 'DCCID'));
-        $this->addBasicText("PSCID", dgettext('survey_accounts', 'PSCID'));
+        $this->addBasicText("CandID", dgettext('loris', 'DCCID'));
+        $this->addBasicText("PSCID", dgettext('loris', 'PSCID'));
         $this->addSelect(
             "VL",
-            dgettext('survey_accounts', 'Visit Label'),
+            dgettext('loris', 'Visit Label'),
             \Utility::getVisitList()
         );
         $this->addSelect(
             "Test_name",
             dcngettext(
-                'survey_accounts',
+                'loris',
                 'Instrument',
                 'Instruments',
                 1,
@@ -353,7 +353,7 @@ class AddSurvey extends \NDB_Form
                 \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris)
             )
         );
-        $this->addBasicText("Email", dgettext('survey_accounts', 'Email address'));
+        $this->addBasicText("Email", dgettext('loris', 'Email address'));
         $this->addBasicText(
             "Email2",
             dgettext('survey_accounts', 'Confirm Email address')
