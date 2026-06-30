@@ -12,9 +12,6 @@ const siteColours = [
   '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5',
 ];
 
-// Colours for the recruitment bar chart: breakdown by sex
-const sexColours = ['#2FA4E7', '#1C70B6'];
-
 let charts = []
 const resizeGraphs = (chartDetails) => {
   Object.keys(chartDetails).forEach((section) => {
@@ -61,19 +58,18 @@ const formatPieData = (data) => {
 /**
  * formatBarData - used for the recruitment widget
  * @param {object} data
- * @return {[]}
+ * @return {{columns: Array, colours: Array}}
  */
 const formatBarData = (data) => {
-  const processedData = [];
+  const columns = [];
+  const colours = [];
   if (data['datasets']) {
-    const females = ['Female'];
-    processedData.push(females.concat(data['datasets']['female']));
+    Object.values(data['datasets']).forEach((dataset) => {
+      columns.push([dataset.label].concat(dataset.data));
+      colours.push(dataset.colour || '#000000');
+    });
   }
-  if (data['datasets']) {
-    const males = ['Male'];
-    processedData.push(males.concat(data['datasets']['male']));
-  }
-  return processedData;
+  return {columns, colours};
 };
 
 const createPieChart = (columns, id, targetModal, colours, units = null, showPieLabelRatio = true) => {
@@ -128,10 +124,10 @@ const createBarChart = (labels, columns, id, targetModal, colours, dataType, yLa
             return colours[d.index];
           }
         } :
-        {
-          [columns[0][0]]: colours[0],
-          [columns[1][0]]: colours[1],
-        }
+        columns.reduce((accumulator, column, index) => {
+          accumulator[column[0]] = colours[index];
+          return accumulator;
+        }, {})
     },
     size: {
       height: targetModal ? 500 : 300,
@@ -313,9 +309,10 @@ const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
               columns = newColumns;
             }
           } else if (chart.dataType === 'bar') {
-            columns = formatBarData(chartData);
+            const formattedBarData = formatBarData(chartData);
+            columns = formattedBarData.columns;
             labels = chartData.labels;
-            colours = sexColours;
+            colours = formattedBarData.colours;
           } else if (chart.dataType === 'line') {
             columns = formatLineData(chartData, totalLabel);
           }

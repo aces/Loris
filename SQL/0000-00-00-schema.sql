@@ -75,6 +75,7 @@ INSERT INTO language (language_code, language_label) VALUES
 
 CREATE TABLE `sex` (
   `Name` varchar(255) NOT NULL,
+  `Colour` varchar(50) NULL,
   PRIMARY KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores sex options available for candidates in LORIS';
 

@@ -179,8 +179,11 @@ class Charts extends \NDB_Page
             "
                 SELECT COUNT(c.CandID) as Count,
                     c.RegistrationCenterID as SiteID,
-                    c.Sex as Sex
+                    c.Sex as Sex,
+                    s.Name as SexLabel,
+                    s.Colour as Colour
                 FROM candidate c
+                LEFT JOIN sex s ON s.Name=c.Sex
                 {$conditions['sessionJoin']}
                 {$conditions['participantStatusJoin']}
                 WHERE c.Active='Y' AND c.Entity_type='Human'
@@ -189,34 +192,73 @@ class Charts extends \NDB_Page
                 {$conditions['visitQuery']}
                 {$conditions['siteQuery']}
                 {$conditions['participantStatusQuery']}
-                GROUP BY c.RegistrationCenterID, c.Sex",
+                GROUP BY c.RegistrationCenterID, c.Sex, s.Name, s.Colour",
             $conditions['params']
         );
         $processed_data = [];
+        $sexes          = [];
+        $sexMeta        = [];
         foreach ($data as $row) {
-            $siteid = $row['SiteID'];
-            $count  = intval($row['Count']);
-            $sex    = is_string($row['Sex']) ? strtolower($row['Sex']) : '';
+            $siteid   = $row['SiteID'];
+            $count    = intval($row['Count']);
+            $sexValue = is_string($row['Sex']) ? trim($row['Sex']) : '';
+            $sex      = $this->_normalizeSexKey($sexValue);
             if (!isset($processed_data[$siteid])) {
-                $processed_data[$siteid] = [
-                    strtolower($sex) => $count
+                $processed_data[$siteid] = [];
+            }
+
+            assert(!isset($processed_data[$siteid][$sex]));
+            $processed_data[$siteid][$sex] = $count;
+            $sexes[$sex] = true;
+            if (!isset($sexMeta[$sex])) {
+                $sexMeta[$sex] = [
+                    'label'  => is_string($row['SexLabel'])
+                        && trim($row['SexLabel']) !== ''
+                        ? trim($row['SexLabel'])
+                        : $sexValue,
+                    'colour' => is_string($row['Colour'])
+                        && trim($row['Colour']) !== ''
+                        ? trim($row['Colour'])
+                        : '#000000',
                 ];
-            } else {
-                assert(!isset($processed_data[$siteid][$sex]));
-                $processed_data[$siteid][$sex] = $count;
             }
         }
+
+        $sexes = array_keys($sexes);
+        sort($sexes);
+
         foreach ($list_of_sites as $siteID => $siteName) {
             $sexData['labels'][] = $siteName;
+            foreach ($sexes as $sex) {
+                if (!isset($sexData['datasets'][$sex])) {
+                    $sexData['datasets'][$sex] = [
+                        'label'  => $sexMeta[$sex]['label'] ?? $sex,
+                        'colour' => $sexMeta[$sex]['colour'] ?? '#000000',
+                        'data'   => [],
+                    ];
+                }
 
-            $sexData['datasets']['female'][]
-                = $processed_data[$siteID]['female'] ?? 0;
-
-            $sexData['datasets']['male'][]
-                = $processed_data[$siteID]['male'] ?? 0;
+                $sexData['datasets'][$sex]['data'][]
+                    = $processed_data[$siteID][$sex] ?? 0;
+            }
         }
 
         return (new \LORIS\Http\Response\JsonResponse($sexData));
+    }
+
+    /**
+     * Normalize a sex value into a stable key for frontend datasets.
+     *
+     * @param string $sexValue Raw sex value.
+     *
+     * @return string
+     */
+    private function _normalizeSexKey(string $sexValue) : string
+    {
+        $normalized = strtolower(trim($sexValue));
+        $normalized = preg_replace('/[^a-z0-9]+/', '_', $normalized) ?? '';
+        $normalized = trim($normalized, '_');
+        return $normalized !== '' ? $normalized : 'unknown';
     }
 
     /**
@@ -369,7 +411,7 @@ class Charts extends \NDB_Page
             }
 
             $ageData['datasets'][] = [
-                'name' => $projectData['name'],
+                'name' => dgettext("Project", $projectData['name']),
                 'data' => $data
             ];
         }
@@ -428,7 +470,7 @@ class Charts extends \NDB_Page
             if ($id == null) {
                 $id = dgettext("statistics", "Unknown");
             }
-            $label = $id;
+            $label = dgettext("candidate", $id);
             $recruitmentByEthnicityData[] = ["label" => $label, "total" => $count];
         }
 
