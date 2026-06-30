@@ -345,7 +345,7 @@ const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
               `#${chartID}`,
               chart.label,
               targetIsModal && '#dashboardModal',
-              chart.titlePrefix,
+              t(chart.titlePrefix, {ns: 'loris'}),
               chart.dateFormat,
             );
           }

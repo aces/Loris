@@ -84,7 +84,7 @@ msgstr ""
 msgid "Unique Monthly Logins"
 msgstr ""
 
-msgid "Unique Logins"
+msgid "Logins"
 msgstr ""
 
 msgid "Candidates registered"

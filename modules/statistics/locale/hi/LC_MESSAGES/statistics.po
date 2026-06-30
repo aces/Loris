@@ -85,8 +85,8 @@ msgstr "पंजीकरण"
 msgid "Unique Monthly Logins"
 msgstr "अद्वितीय मासिक लॉगिन"
 
-msgid "Unique Logins"
-msgstr "अद्वितीय लॉगिन"
+msgid "Logins"
+msgstr "लॉगिन"
 
 msgid "Candidates registered"
 msgstr "पंजीकृत उम्मीदवार"
@@ -141,6 +141,38 @@ msgstr "प्रतिभागी"
 
 msgid "Unknown"
 msgstr "अज्ञात"
+
+msgid "Total Scans: {{count}}"
+msgstr "कुल स्कैन: {{count}}"
+
+msgid "There have been no scans yet."
+msgstr "अभी तक कोई स्कैन नहीं हुए हैं।"
+
+msgid "There have been no candidates registered yet."
+msgstr "अभी तक कोई उम्मीदवार पंजीकृत नहीं हुए हैं।"
+
+msgid "There is no data yet."
+msgstr "अभी तक कोई डेटा नहीं है।."
+
+# Project sizes
+msgid "Project Dataset Sizes"
+msgstr "परियोजना डेटासेट आकार"
+
+msgid "Dataset size breakdown by project"
+msgstr "परियोजना के अनुसार डेटासेट आकार का विवरण"
+
+msgid "Dataset Size"
+msgid_plural "Dataset Size"
+msgstr[0] "डेटासेट का आकार"
+
+msgid "Size (GB)"
+msgstr "आकार (जीबी)"
+
+msgid "%s GB"
+msgstr "%s जीबी"
+
+msgid "Total Size: {{count}} GB"
+msgstr "कुल आकार: {{count}} जीबी"
 
 msgid "Pie"
 msgstr "पाई"

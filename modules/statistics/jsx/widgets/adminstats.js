@@ -34,7 +34,7 @@ const AdminStats = (props) => {
         options: {line: 'line'},
         chartObject: null,
         includeTotal: false,
-        titlePrefix: 'Month',
+        titlePrefix: t('Month', {ns: 'loris'}),
         dateFormat: '%m-%Y',
       },
       'uniquelogins_bymonth': {
@@ -43,12 +43,12 @@ const AdminStats = (props) => {
         filters: '',
         chartType: 'line',
         dataType: 'line',
-        label: t('Unique Logins', {ns: 'statistics'}),
+        label: t('Logins', {ns: 'statistics'}),
         legend: '',
         options: {line: 'line'},
         chartObject: null,
         includeTotal: false,
-        titlePrefix: 'Month',
+        titlePrefix: t('Month', {ns: 'loris'}),
         dateFormat: '%m-%Y',
       },
     },
@@ -61,15 +61,18 @@ const AdminStats = (props) => {
     i18n.addResourceBundle('fr', 'statistics', frStrings);
 
     let newdetails = {...chartDetails};
-    newdetails['adminStats']['userregistrations_bydate']['title']
-      = t('User Registrations', {ns: 'statistics'});
     newdetails['adminStats']['userregistrations_bydate']['label']
       = t('Registrations', {ns: 'statistics'});
-
+    newdetails['adminStats']['userregistrations_bydate']['title']
+      = t('User Registrations', {ns: 'statistics'});
+    newdetails['adminStats']['userregistrations_bydate']['titlePrefix']
+      = t('Month', {ns: 'loris'});
+    newdetails['adminStats']['uniquelogins_bymonth']['label']
+      = t('Logins', {ns: 'statistics'});
     newdetails['adminStats']['uniquelogins_bymonth']['title']
       = t('Unique Monthly Logins', {ns: 'statistics'});
-    newdetails['adminStats']['uniquelogins_bymonth']['label']
-      = t('Unique Logins', {ns: 'statistics'});
+    newdetails['adminStats']['uniquelogins_bymonth']['titlePrefix']
+      = t('Month', {ns: 'loris'});
     setChartDetails(newdetails);
   }, []);
 

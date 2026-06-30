@@ -128,7 +128,7 @@ class Module extends \Module
                 ),
                 'datasets' => [
                     [
-                        'name' => 'User Registrations',
+                        'name' => dgettext('statistics', 'User Registrations'),
                         'data' => array_map(
                             fn(array $row) : int => intval($row['RequestCount']),
                             $registrations,
@@ -163,7 +163,7 @@ class Module extends \Module
                 ),
                 'datasets' => [
                     [
-                        'name' => 'Unique Monthly Logins',
+                        'name' => dgettext('statistics', 'Unique Monthly Logins'),
                         'data' => array_map(
                             fn(array $row) : int => intval($row['UniqueLogins']),
                             $uniqueLogins,

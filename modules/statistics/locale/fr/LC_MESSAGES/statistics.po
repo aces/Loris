@@ -86,8 +86,8 @@ msgstr "Inscriptions"
 msgid "Unique Monthly Logins"
 msgstr "Connexions mensuelles uniques"
 
-msgid "Unique Logins"
-msgstr "Connexions uniques"
+msgid "Logins"
+msgstr "Connexions"
 
 msgid "Candidates registered"
 msgstr "Candidats inscrits"
