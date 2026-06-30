@@ -1606,7 +1606,7 @@ DateElement.defaultProps = {
  * Date range component.
  * React wrapper for filtering date values between two bounds.
  */
-export class DateRangeElement extends Component {
+class DateRangeElementBase extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -1626,7 +1626,7 @@ export class DateRangeElement extends Component {
       this.props.name,
       {
         ...this.props.value,
-        [e.target.name]: e.target.value,
+        [e.target.dataset.rangeBound]: e.target.value,
       }
     );
   }
@@ -1640,10 +1640,18 @@ export class DateRangeElement extends Component {
     const value = this.props.value || {};
     const minID = `${this.props.id || this.props.name}_min`;
     const maxID = `${this.props.id || this.props.name}_max`;
+    const minRangeLabel = this.props.t(this.props.minLabel, {ns: 'loris'});
+    const maxRangeLabel = this.props.t(this.props.maxLabel, {ns: 'loris'});
     const minLabel = this.props.labelPlacementTop && this.props.label ?
-      `${this.props.label} ${this.props.minLabel}` : this.props.minLabel;
+      this.props.t('{{label}} Minimum', {
+        ns: 'loris',
+        label: this.props.label,
+      }) : minRangeLabel;
     const maxLabel = this.props.labelPlacementTop && this.props.label ?
-      `${this.props.label} ${this.props.maxLabel}` : this.props.maxLabel;
+      this.props.t('{{label}} Maximum', {
+        ns: 'loris',
+        label: this.props.label,
+      }) : maxRangeLabel;
     const wrapperClass =
       this.props.label && !this.props.labelPlacementTop ?
         'col-sm-9' : 'col-sm-12';
@@ -1694,7 +1702,8 @@ export class DateRangeElement extends Component {
               <input
                 type={inputType}
                 className="form-control"
-                name="min"
+                name={`${this.props.name}Min`}
+                data-range-bound="min"
                 id={minID}
                 min={minFullDate}
                 max={maxFullDate}
@@ -1712,7 +1721,8 @@ export class DateRangeElement extends Component {
               <input
                 type={inputType}
                 className="form-control"
-                name="max"
+                name={`${this.props.name}Max`}
+                data-range-bound="max"
                 id={maxID}
                 min={minFullDate}
                 max={maxFullDate}
@@ -1730,7 +1740,7 @@ export class DateRangeElement extends Component {
   }
 }
 
-DateRangeElement.propTypes = {
+DateRangeElementBase.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   value: PropTypes.shape({
@@ -1747,9 +1757,10 @@ DateRangeElement.propTypes = {
   labelPlacementTop: PropTypes.bool,
   minLabel: PropTypes.string,
   maxLabel: PropTypes.string,
+  t: PropTypes.func,
 };
 
-DateRangeElement.defaultProps = {
+DateRangeElementBase.defaultProps = {
   name: '',
   label: '',
   value: {},
@@ -1762,10 +1773,15 @@ DateRangeElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  t: function(text) {
+    return text;
+  },
   labelPlacementTop: false,
   minLabel: 'Minimum',
   maxLabel: 'Maximum',
 };
+
+export const DateRangeElement = withTranslation('loris')(DateRangeElementBase);
 
 /**
  * Time Component
@@ -2049,7 +2065,7 @@ NumericElement.defaultProps = {
  * Numeric range component.
  * React wrapper for filtering a numeric value between two bounds.
  */
-export class NumericRangeElement extends Component {
+class NumericRangeElementBase extends Component {
   /**
    * @constructor
    * @param {object} props - React Component properties
@@ -2069,7 +2085,7 @@ export class NumericRangeElement extends Component {
       this.props.name,
       {
         ...this.props.value,
-        [e.target.name]: e.target.value,
+        [e.target.dataset.rangeBound]: e.target.value,
       }
     );
   }
@@ -2083,6 +2099,8 @@ export class NumericRangeElement extends Component {
     const value = this.props.value || {};
     const minID = `${this.props.id || this.props.name}_min`;
     const maxID = `${this.props.id || this.props.name}_max`;
+    const minLabel = this.props.t(this.props.minLabel, {ns: 'loris'});
+    const maxLabel = this.props.t(this.props.maxLabel, {ns: 'loris'});
     const wrapperClass =
       this.props.label && !this.props.labelPlacementTop ?
         'col-sm-9' : 'col-sm-12';
@@ -2104,36 +2122,38 @@ export class NumericRangeElement extends Component {
           <div style={{display: 'flex', gap: '8px'}}>
             <div style={{flex: 1}}>
               <label className="sr-only" htmlFor={minID}>
-                {this.props.minLabel}
+                {minLabel}
               </label>
               <input
                 type="number"
                 className="form-control"
-                name="min"
+                name={`${this.props.name}Min`}
+                data-range-bound="min"
                 id={minID}
                 min={this.props.min}
                 max={this.props.max}
                 step={this.props.step}
                 value={value.min || ''}
-                placeholder={this.props.minLabel}
+                placeholder={minLabel}
                 disabled={this.props.disabled}
                 onChange={this.handleChange}
               />
             </div>
             <div style={{flex: 1}}>
               <label className="sr-only" htmlFor={maxID}>
-                {this.props.maxLabel}
+                {maxLabel}
               </label>
               <input
                 type="number"
                 className="form-control"
-                name="max"
+                name={`${this.props.name}Max`}
+                data-range-bound="max"
                 id={maxID}
                 min={this.props.min}
                 max={this.props.max}
                 step={this.props.step}
                 value={value.max || ''}
-                placeholder={this.props.maxLabel}
+                placeholder={maxLabel}
                 disabled={this.props.disabled}
                 onChange={this.handleChange}
               />
@@ -2145,7 +2165,7 @@ export class NumericRangeElement extends Component {
   }
 }
 
-NumericRangeElement.propTypes = {
+NumericRangeElementBase.propTypes = {
   name: PropTypes.string.isRequired,
   min: PropTypes.number,
   max: PropTypes.number,
@@ -2162,9 +2182,10 @@ NumericRangeElement.propTypes = {
   labelPlacementTop: PropTypes.bool,
   minLabel: PropTypes.string,
   maxLabel: PropTypes.string,
+  t: PropTypes.func,
 };
 
-NumericRangeElement.defaultProps = {
+NumericRangeElementBase.defaultProps = {
   name: '',
   min: null,
   max: null,
@@ -2177,10 +2198,17 @@ NumericRangeElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  t: function(text) {
+    return text;
+  },
   labelPlacementTop: false,
   minLabel: 'Minimum',
   maxLabel: 'Maximum',
 };
+
+export const NumericRangeElement = withTranslation('loris')(
+  NumericRangeElementBase
+);
 
 /**
  * File Component

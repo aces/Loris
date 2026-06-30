@@ -35,8 +35,8 @@ function Filter(props) {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     props.fields.forEach((field) => {
-      const filter = field.filter || {};
-      if (!filter || filter.hide === true) {
+      const filter = field.filter;
+      if (!filter) {
         return;
       }
 
@@ -168,6 +168,9 @@ function Filter(props) {
           element = <TextboxElement labelPlacementTop />;
         }
 
+        const filterValue = props.filters[filter.name] ?
+          props.filters[filter.name].value : null;
+
         // The value prop has to default to false if the first two options
         // are undefined so that the checkbox component is a controlled input
         // element with a starting default value
@@ -179,8 +182,8 @@ function Filter(props) {
             label: field.label,
             value: (filter.type === 'number-range' ||
               filter.type === 'date-range') ?
-              (props.filters[filter.name] || {}).value || {} :
-              (props.filters[filter.name] || {}).value || null,
+              filterValue || {} :
+              filterValue || null,
             onUserInput: onFieldUpdate,
           }
         ));

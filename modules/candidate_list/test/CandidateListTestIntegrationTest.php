@@ -38,7 +38,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';
     static $Participant = 'select[name="participantStatus"]';
-    static $dob         = 'input[name="min"]';
+    static $dob         = 'input[name="DoBMin"]';
     static $visitCount  = 'input[name="visitCount"]';
     static $feedback    = 'select[name="feedback"]';
     static $edc         = 'input[name="edc"]';
@@ -144,7 +144,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Name("participantStatus")
         );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
-           $dobOptions = $this->safeFindElement(WebDriverBy::Name("min"));
+           $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoBMin"));
            $this->assertEquals("input", $dobOptions->getTagName());
            // Not currently done
            //$this->assertEquals("date",$dobOptions->getAttribute("type"));

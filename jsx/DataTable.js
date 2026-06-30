@@ -323,6 +323,9 @@ class DataTable extends Component {
       exactMatch = this.props.filters[name].exactMatch;
       opposite = this.props.filters[name].opposite;
     }
+    const filter = (this.props.fields.find(
+      (field) => (field.filter || {}).name === name
+    ) || {}).filter || {};
 
     // Handle null inputs
     if (filterData === null || data === null) {
@@ -330,7 +333,9 @@ class DataTable extends Component {
     }
 
     // Handle date range inputs.
-    if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+    if (filter.type === 'date-range' &&
+      typeof filterData === 'object' &&
+      !Array.isArray(filterData)) {
       const dateData = (data !== null && data !== undefined) ?
         data.toString() : '';
       const min = filterData.min || '';
@@ -387,7 +392,9 @@ class DataTable extends Component {
     }
 
     // Handle numeric range inputs
-    if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+    if (filter.type === 'number-range' &&
+      typeof filterData === 'object' &&
+      !Array.isArray(filterData)) {
       const numericData = Number.parseFloat(data);
       const min = Number.parseFloat(filterData.min);
       const max = Number.parseFloat(filterData.max);
