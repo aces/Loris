@@ -24,7 +24,8 @@ msgstr "Instrumentos"
 
 msgid "Incomplete form"
 msgid_plural "Incomplete forms"
-msgstr[0] "Formularios incompletos"
+msgstr[0] "Formulario incompleto"
+msgstr[1] "Formularios incompletos"
 
 msgid "Clear Instrument"
 msgstr "Limpiar Instrumento"
