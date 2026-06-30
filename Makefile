@@ -261,6 +261,9 @@ create_timepoint: $(filter modules/create_timepoint/%,$(MOFILES)) $(filter modul
 data_release: $(filter modules/data_release/%,$(MOFILES)) $(filter modules/data_release/%,$(I18NJSONFILES))
 	target=data_release npm run compile
 
+configuration: $(filter modules/configuration/%,$(MOFILES)) $(filter modules/configuration/%,$(I18NJSONFILES))
+	target=configuration npm run compile
+
 instrument_manager: $(filter modules/instrument_manager/%,$(MOFILES)) $(filter modules/instrument_manager/%,$(I18NJSONFILES))
 	target=instrument_manager npm run compile
 

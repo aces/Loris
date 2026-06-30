@@ -639,7 +639,7 @@ SelectElement.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.object.isRequired,
   disabledOptions: PropTypes.object,
-  label: PropTypes.string,
+  label: PropTypes.node,
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.array,
@@ -988,6 +988,7 @@ export class TextareaElement extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
   }
 
   /**
@@ -1000,15 +1001,26 @@ export class TextareaElement extends Component {
   }
 
   /**
+   * Handle blur
+   *
+   * @param {object} e - Event
+   */
+  handleBlur(e) {
+    this.props.onUserBlur(this.props.name, e.target.value);
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
     return (
-      <div className="row form-group">
-        <InputLabel label={this.props.label} required={this.props.required} />
-        <div className="col-sm-9">
+      <div className={this.props.noMargins ? '' : 'row form-group'}>
+        {!this.props.noMargins && (
+          <InputLabel label={this.props.label} required={this.props.required} />
+        )}
+        <div className={this.props.noMargins ? '' : 'col-sm-9'}>
           <textarea
             cols={this.props.cols}
             rows={this.props.rows}
@@ -1020,6 +1032,7 @@ export class TextareaElement extends Component {
             required={this.props.required}
             disabled={this.props.disabled}
             onChange={this.handleChange}
+            onBlur={this.handleBlur}
           >
           </textarea>
         </div>
@@ -1030,7 +1043,7 @@ export class TextareaElement extends Component {
 
 TextareaElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.node,
   value: PropTypes.string,
   placeholder: PropTypes.string,
   id: PropTypes.string,
@@ -1038,7 +1051,9 @@ TextareaElement.propTypes = {
   required: PropTypes.bool,
   rows: PropTypes.number,
   cols: PropTypes.number,
+  noMargins: PropTypes.bool,
   onUserInput: PropTypes.func,
+  onUserBlur: PropTypes.func,
 };
 
 TextareaElement.defaultProps = {
@@ -1051,9 +1066,11 @@ TextareaElement.defaultProps = {
   required: false,
   rows: 4,
   cols: 25,
+  noMargins: false,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  onUserBlur: function() {},
 };
 
 /**
@@ -1100,20 +1117,25 @@ export class TextboxElement extends Component {
    */
   render() {
     let errorMessage = null;
-    let elementClass = 'row form-group';
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
 
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = this.props.noMargins ?
+        'has-error' :
+        'row form-group has-error';
     }
 
     // Label prop needs to be provided to render label
     // (including empty label i.e. <TextboxElement label='' />)
     // and retain formatting. If label prop is not provided at all, the input
     // element will take up the whole row.
-    let inputClass = this.props.class;
-    if (this.props.label || this.props.label == '') {
+    let inputClass = this.props.noMargins ? '' : this.props.class;
+    if (
+      !this.props.noMargins &&
+      (this.props.label || this.props.label == '')
+    ) {
       inputClass = `col-sm-${this.props.labelPlacementTop ? '12' : '9'}`;
     }
 
@@ -1125,13 +1147,14 @@ export class TextboxElement extends Component {
           flexDirection: 'column',
         } : {}}
       >
-        {(this.props.label || this.props.label == '') && (
-          <InputLabel
-            label={this.props.label}
-            required={this.props.required}
-            fullWidth={this.props.labelPlacementTop}
-          />
-        )}
+        {!this.props.noMargins && (this.props.label || this.props.label == '') ?
+          (
+            <InputLabel
+              label={this.props.label}
+              required={this.props.required}
+              fullWidth={this.props.labelPlacementTop}
+            />
+          ) : null}
         <div className={inputClass}>
           <input
             type="text"
@@ -1155,7 +1178,7 @@ export class TextboxElement extends Component {
 
 TextboxElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.node,
   value: PropTypes.string,
   id: PropTypes.string,
   class: PropTypes.string,
@@ -1166,6 +1189,7 @@ TextboxElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
+  noMargins: PropTypes.bool,
   labelPlacementTop: PropTypes.bool,
 };
 
@@ -1184,6 +1208,7 @@ TextboxElement.defaultProps = {
   },
   onUserBlur: function() {
   },
+  noMargins: false,
   labelPlacementTop: false,
 };
 
@@ -1231,31 +1256,37 @@ export class EmailElement extends Component {
    */
   render() {
     let errorMessage = null;
-    let elementClass = 'row form-group';
+    let elementClass = this.props.noMargins ? '' : 'row form-group';
 
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
+      elementClass = this.props.noMargins ?
+        'has-error' :
+        'row form-group has-error';
     }
 
     // Label prop needs to be provided to render label
     // (including empty label i.e. <TextboxElement label='' />)
     // and retain formatting. If label prop is not provided at all, the input
     // element will take up the whole row.
-    let inputClass = this.props.class;
-    if (this.props.label || this.props.label == '') {
+    let inputClass = this.props.noMargins ? '' : this.props.class;
+    if (
+      !this.props.noMargins &&
+      (this.props.label || this.props.label == '')
+    ) {
       inputClass = 'col-sm-9';
     }
 
     return (
       <div className={elementClass}>
-        {(this.props.label || this.props.label == '') && (
-          <InputLabel
-            label={this.props.label}
-            required={this.props.required}
-          />
-        )}
+        {!this.props.noMargins && (this.props.label || this.props.label == '') ?
+          (
+            <InputLabel
+              label={this.props.label}
+              required={this.props.required}
+            />
+          ) : null}
         <div className={inputClass}>
           <input
             type="email"
@@ -1279,7 +1310,7 @@ export class EmailElement extends Component {
 }
 EmailElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.node,
   value: PropTypes.string,
   id: PropTypes.string,
   class: PropTypes.string,
@@ -1290,6 +1321,7 @@ EmailElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
+  noMargins: PropTypes.bool,
 };
 EmailElement.defaultProps = {
   name: '',
@@ -1306,6 +1338,7 @@ EmailElement.defaultProps = {
   },
   onUserBlur: function() {
   },
+  noMargins: false,
 };
 
 /**
@@ -2757,7 +2790,7 @@ export class RadioElement extends React.Component {
   render() {
     let errorMessage = null;
     let requiredHTML = null;
-    let elementClass = this.props.elementClass;
+    let elementClass = this.props.noMargins ? '' : this.props.elementClass;
     let required = this.props.required ? 'required' : null;
 
     // Add required asterix
@@ -2767,19 +2800,23 @@ export class RadioElement extends React.Component {
     // Add error message
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = this.props.elementClass + ' has-error';
+      elementClass = this.props.noMargins ?
+        'has-error' :
+        this.props.elementClass + ' has-error';
     }
     // Generate layout
     const layout = this.generateLayout();
 
     return (
       <div className={elementClass}>
-        <label className={'col-sm-3 control-label'}>
-          {this.props.label}
-          {errorMessage}
-          {requiredHTML}
-        </label>
-        <div className={'col-sm-9'}>
+        {!this.props.noMargins && (
+          <label className={'col-sm-3 control-label'}>
+            {this.props.label}
+            {errorMessage}
+            {requiredHTML}
+          </label>
+        )}
+        <div className={this.props.noMargins ? '' : 'col-sm-9'}>
           {layout}
         </div>
       </div>
@@ -2788,7 +2825,7 @@ export class RadioElement extends React.Component {
 }
 RadioElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string,
+  label: PropTypes.node,
   options: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
@@ -2796,6 +2833,7 @@ RadioElement.propTypes = {
   checked: PropTypes.string.isRequired,
   errorMessage: PropTypes.string,
   elementClass: PropTypes.string,
+  noMargins: PropTypes.bool,
   onUserInput: PropTypes.func,
 };
 RadioElement.defaultProps = {
@@ -2804,6 +2842,7 @@ RadioElement.defaultProps = {
   vertical: false,
   errorMessage: null,
   elementClass: 'row form-group',
+  noMargins: false,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
