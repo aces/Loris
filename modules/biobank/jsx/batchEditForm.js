@@ -212,7 +212,7 @@ class BatchEditForm extends React.PureComponent {
       (specimen.typeId !== current.typeId)) {
       Swal.fire(
         t('Oops!', {ns: 'biobank'}),
-        t('Specimens must be of the same Type and Center', {ns: 'biobank'}),
+        t('Specimens must be of the same Type and Site', {ns: 'biobank'}),
         'warning'
       );
       return Promise.reject();
