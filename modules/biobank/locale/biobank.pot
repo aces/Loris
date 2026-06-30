@@ -227,14 +227,6 @@ msgstr ""
 msgid "Batch Preparation Successful!"
 msgstr ""
 
-#: jsx/biobankIndex.js:506
-msgid "This field is required."
-msgstr ""
-
-#: jsx/biobankIndex.js:512
-msgid "This field must be a number."
-msgstr ""
-
 #: jsx/biobankIndex.js:518
 msgid "This field must not be negative."
 msgstr ""
@@ -244,12 +236,12 @@ msgid "This field must be an integer."
 msgstr ""
 
 #: jsx/biobankIndex.js:597 jsx/biobankIndex.js:699 jsx/biobankIndex.js:736
-#: jsx/biobankIndex.js:636
+#: jsx/biobankIndex.js:636 jsx/biobankIndex.js:506
 msgid "This field is required."
 msgstr ""
 
 #: jsx/biobankIndex.js:604 jsx/biobankIndex.js:705 jsx/biobankIndex.js:741
-#: jsx/biobankIndex.js:644
+#: jsx/biobankIndex.js:644 jsx/biobankIndex.js:512
 msgid "This field must be a number."
 msgstr ""
 
