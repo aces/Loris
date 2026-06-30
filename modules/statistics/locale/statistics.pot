@@ -163,3 +163,38 @@ msgstr ""
 
 msgid "Bar"
 msgstr ""
+
+
+# EEG charts
+msgid "EEG Recordings by project"
+msgstr ""
+
+msgid "EEG Recordings by site"
+msgstr ""
+
+msgid "EEG Recordings"
+msgstr ""
+
+msgid "EEG Events by project"
+msgstr ""
+
+msgid "EEG Events"
+msgstr ""
+
+msgid "EEG data"
+msgstr ""
+
+msgid "Recordings by Project"
+msgstr ""
+
+msgid "Total Recordings: {{count}}"
+msgstr ""
+
+msgid "Recordings by Site"
+msgstr ""
+
+msgid "Events by Project"
+msgstr ""
+
+msgid "Total Events: {{count}}"
+msgstr ""

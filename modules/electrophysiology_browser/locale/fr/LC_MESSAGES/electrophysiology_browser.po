@@ -768,3 +768,14 @@ msgstr "Voir la session"
 
 msgid "Channel Types"
 msgstr "Types de chaînes"
+
+# Widgets
+msgid "EEG Session"
+msgid_plural "EEG Sessions"
+msgstr[0] "Session EEG"
+msgstr[1] "Sessions EEG"
+
+msgid "EEG Event"
+msgid_plural "EEG Events"
+msgstr[0] "Événement EEG"
+msgstr[1] "Événements EEG"

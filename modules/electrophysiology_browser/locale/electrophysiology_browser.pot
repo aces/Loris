@@ -619,3 +619,12 @@ msgstr ""
 
 msgid "Channel Types"
 msgstr ""
+
+# EEG charts
+msgid "EEG Session"
+msgid_plural "EEG Sessions"
+msgstr[0] ""
+
+msgid "EEG Event"
+msgid_plural "EEG Events"
+msgstr[0] ""
