@@ -238,14 +238,6 @@ msgstr "Imprimer les codes-barres ?"
 msgid "Batch Preparation Successful!"
 msgstr "Préparation du lot réussie !"
 
-#: jsx/biobankIndex.js:506
-msgid "This field is required."
-msgstr "Ce champ est obligatoire."
-
-#: jsx/biobankIndex.js:512
-msgid "This field must be a number."
-msgstr "Ce champ doit être un nombre."
-
 #: jsx/biobankIndex.js:518
 msgid "This field must not be negative."
 msgstr "Ce champ ne doit pas être négatif."
@@ -255,20 +247,22 @@ msgid "This field must be an integer."
 msgstr "Ce champ doit être un entier."
 
 #: jsx/biobankIndex.js:597 jsx/biobankIndex.js:699 jsx/biobankIndex.js:736
-msgid "This field is required!"
-msgstr "Ce champ est obligatoire !"
+#: jsx/biobankIndex.js:506
+msgid "This field is required."
+msgstr "Ce champ est obligatoire."
 
 #: jsx/biobankIndex.js:604 jsx/biobankIndex.js:705 jsx/biobankIndex.js:741
-msgid "This field must be a number!"
-msgstr "Ce champ doit être un nombre !"
+#: jsx/biobankIndex.js:512
+msgid "This field must be a number."
+msgstr "Ce champ doit être un nombre."
 
 #: jsx/biobankIndex.js:611 jsx/biobankIndex.js:652 jsx/biobankIndex.js:747
-msgid "This field must be a valid date!"
-msgstr "Ce champ doit être une date valide !"
+msgid "This field must be a valid date."
+msgstr "Ce champ doit être une date valide."
 
 #: jsx/biobankIndex.js:617 jsx/biobankIndex.js:660 jsx/biobankIndex.js:753
-msgid "This field must be a valid time!"
-msgstr "Ce champ doit être une heure valide !"
+msgid "This field must be a valid time."
+msgstr "Ce champ doit être une heure valide."
 
 #: jsx/biobankIndex.js:711
 msgid "Barcode must be unique."

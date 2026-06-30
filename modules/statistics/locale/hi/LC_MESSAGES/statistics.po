@@ -1,0 +1,166 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Saagar Arya <saagar.arya@mcin.ca>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2026-06-10 21:23-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Statistics"
+msgstr "सांख्यिकी"
+
+msgid "Study Progression"
+msgstr "अध्ययन प्रगति"
+
+msgid "Summary"
+msgstr "सारांश"
+
+msgid "Site Scans"
+msgstr "साइट स्कैन"
+
+msgid "Site Recruitment"
+msgstr "साइट भर्ती"
+
+msgid "-- Clear Selection --"
+msgstr "-- चयन साफ़ करें --"
+
+msgid "Scan sessions per site"
+msgstr "प्रति साइट स्कैन सत्र"
+
+msgid "Recruitment per site"
+msgstr "प्रति साइट भर्ती"
+
+msgid "Download as PNG"
+msgstr "PNG के रूप में डाउनलोड करें"
+
+msgid "Labels"
+msgstr "लेबल"
+
+msgid "Date Registered"
+msgstr "पंजीकरण तिथि"
+
+msgid "Range Start"
+msgstr "सीमा प्रारंभ"
+
+msgid "Range End"
+msgstr "सीमा समाप्त"
+
+msgid "Total recruitment by Age"
+msgstr "आयु के अनुसार कुल भर्ती"
+
+msgid "Ethnicity at Screening"
+msgstr "स्क्रीनिंग के समय जातीयता"
+
+msgid "Total Recruitment per Site"
+msgstr "प्रति साइट कुल भर्ती"
+
+msgid "Biological sex breakdown by site"
+msgstr "साइट के अनुसार जैविक लिंग विभाजन"
+
+msgid "Candidate Age at Registration"
+msgstr "पंजीकरण के समय उम्मीदवार की आयु"
+
+msgid "Candidates registered"
+msgstr "पंजीकृत उम्मीदवार"
+
+msgid "Target: {{target}}"
+msgstr "लक्ष्य: {{target}}"
+
+msgid "Recruitment target of {{target}} was reached."
+msgstr "{{target}} का भर्ती लक्ष्य प्राप्त हो गया।"
+
+msgid "Recruitment target of {{target}} was not reached."
+msgstr "{{target}} का भर्ती लक्ष्य प्राप्त नहीं हुआ।"
+
+msgid "No target set"
+msgstr "कोई लक्ष्य निर्धारित नहीं"
+
+msgid "{{total}} total participants."
+msgstr "कुल {{total}} प्रतिभागी।"
+
+msgid "Overall Recruitment"
+msgstr "कुल भर्ती"
+
+msgid "Recruitment"
+msgstr "भर्ती"
+
+msgid "Overall"
+msgstr "समग्र"
+
+msgid "Site Breakdown"
+msgstr "साइट विभाजन"
+
+msgid "Project Breakdown"
+msgstr "परियोजना विभाजन"
+
+msgid "Cohort Breakdown"
+msgstr "कोहोर्ट विभाजन"
+
+msgid "Total Participants: {{count}}"
+msgstr "कुल प्रतिभागी: {{count}}"
+
+msgid "Projects: {{count}}"
+msgstr "परियोजनाएँ: {{count}}"
+
+msgid "Cohorts: {{count}}"
+msgstr "कोहोर्ट: {{count}}"
+
+msgid "Age (Years)"
+msgstr "आयु (वर्ष)"
+
+msgid "Participants"
+msgstr "प्रतिभागी"
+
+msgid "Unknown"
+msgstr "अज्ञात"
+
+msgid "Total Scans: {{count}}"
+msgstr "कुल स्कैन: {{count}}"
+
+msgid "There have been no scans yet."
+msgstr "अभी तक कोई स्कैन नहीं हुए हैं।"
+
+msgid "There have been no candidates registered yet."
+msgstr "अभी तक कोई उम्मीदवार पंजीकृत नहीं हुए हैं।"
+
+msgid "There is no data yet."
+msgstr "अभी तक कोई डेटा नहीं है।."
+
+# Project sizes
+msgid "Project Dataset Sizes"
+msgstr "परियोजना डेटासेट आकार"
+
+msgid "Dataset size breakdown by project"
+msgstr "परियोजना के अनुसार डेटासेट आकार का विवरण"
+
+msgid "Dataset Size"
+msgstr "डेटासेट का आकार"
+
+msgid "Size (GB)"
+msgstr "आकार (जीबी)"
+
+msgid "%s GB"
+msgstr "%s जीबी"
+
+msgid "Total Size: {{count}} GB"
+msgstr "कुल आकार: {{count}} जीबी"
+
+msgid "Pie"
+msgstr "पाई"
+
+msgid "Bar"
+msgstr "बार"

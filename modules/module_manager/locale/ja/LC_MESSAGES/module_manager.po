@@ -27,7 +27,7 @@ msgstr "モジュール名"
 msgid "Full Name"
 msgstr "フルネーム"
 
-msgid "Could not update {{name}}"
+msgid "Could not update {{name}}."
 msgstr "{{name}} を更新できませんでした。"
 
 msgid "Updated {{name}} status!"

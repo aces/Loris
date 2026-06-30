@@ -100,6 +100,10 @@ msgstr[0] "受试者"
 msgid "Genomics"
 msgstr "基因组学"
 
+#: modules/biobank/php/module.class.inc:140
+msgid "Biobank"
+msgstr "生物样本库"
+
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
 msgstr "电生理学"
@@ -425,8 +429,8 @@ msgstr "确认密码"
 msgid "Email address is required"
 msgstr "电子邮件地址为必填项"
 
-msgid "Email address cannot contain any of the following characters: <, >, &, and "
-msgstr "电子邮件地址不能包含以下任何字符：<、>、& 和 "
+msgid "Email address cannot contain any of the following characters: <, >, &, and \""
+msgstr "电子邮件地址不能包含以下任何字符：<、>、&、 \" 和 "
 
 msgid "The password must be at least 8 characters long."
 msgstr "密码长度必须至少为 8 个字符。"

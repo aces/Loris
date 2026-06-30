@@ -227,3 +227,10 @@ msgstr ""
 
 msgid "Comments: "
 msgstr ""
+
+# Widgets
+msgid "Consent Summary"
+msgstr ""
+
+msgid "Consent Type"
+msgstr ""

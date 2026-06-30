@@ -7,6 +7,7 @@ import {
   PasswordElement,
   ButtonElement,
 } from 'jsx/Form';
+import {withTranslation} from 'react-i18next';
 
 
 /**
@@ -66,7 +67,10 @@ class PasswordExpired extends Component {
     e.preventDefault();
     const state = JSON.parse(JSON.stringify(this.state));
     if (state.form.value.confirm !== state.form.value.password) {
-      state.form.error.message = 'New Password mismatch!';
+      state.form.error.message = this.props.t(
+        'New Password mismatch!',
+        {ns: 'login'}
+      );
       state.form.error.toggle = true;
       this.setState(state);
       return;
@@ -122,15 +126,33 @@ class PasswordExpired extends Component {
     const success = !this.state.request ? (
       <div>
         <div>
-          <p><b>Password Strength Rules</b></p>
+          <p><b>{this.props.t(
+            'Password Strength Rules',
+            {ns: 'login'}
+          )}</b></p>
           <ul>
-            <li>The password must be at least 8 characters long.</li>
-            <li>The password and the email address must not be the same.</li>
-            <li>No special characters are required but your password
-              must be sufficiently complex to be accepted.</li>
+            <li>{this.props.t(
+              'The password must be at least 8 characters long.',
+              {ns: 'login'}
+            )}</li>
+            <li>{this.props.t(
+              'The password and the email address must not be the same.',
+              {ns: 'login'}
+            )}</li>
+            <li>{this.props.t(
+              'No special characters are required but your password must be ' +
+              'sufficiently complex to be accepted.',
+              {ns: 'login'}
+            )}</li>
           </ul>
-          <p><b>Please choose a unique password.</b></p>
-          <p>We suggest using a password manager to generate one for you.</p>
+          <p><b>{this.props.t(
+            'Please choose a unique password.',
+            {ns: 'login'}
+          )}</b></p>
+          <p>{this.props.t(
+            'We suggest using a password manager to generate one for you.',
+            {ns: 'login'}
+          )}</p>
         </div>
         <FormElement
           name={'passwordExpiry'}
@@ -145,7 +167,7 @@ class PasswordExpired extends Component {
             onUserInput={this.setForm}
             class={'col-sm-12'}
             required={true}
-            placeholder={'New Password'}
+            placeholder={this.props.t('New Password', {ns: 'loris'})}
           />
           <PasswordElement
             name={'confirm'}
@@ -153,33 +175,44 @@ class PasswordExpired extends Component {
             onUserInput={this.setForm}
             class={'col-sm-12'}
             required={true}
-            placeholder={'Confirm Password'}
+            placeholder={this.props.t('Confirm Password', {ns: 'loris'})}
           />
           {error}
           <ButtonElement
-            label={'Save'}
+            label={this.props.t('Save', {ns: 'loris'})}
             type={'submit'}
             columnSize={'col-sm-12'}
             buttonClass={'btn btn-primary btn-block'}
           />
         </FormElement>
         <a onClick={() => window.location.href = window.location.origin}
-          style={{cursor: 'pointer'}}>Back to login page</a>
+          style={{cursor: 'pointer'}}>{this.props.t(
+            'Back to login page',
+            {ns: 'login'}
+          )}</a>
       </div>
     ) : (
       <div className={'success-message'}>
-        <h1>Thank you!</h1>
-        <p>Your request for an account has been received successfully.</p>
-        <p>Please contact your project administrator to activate
-          this account.</p>
+        <h1>{this.props.t('Thank you!', {ns: 'login'})}</h1>
+        <p>{this.props.t(
+          'Your request for an account has been received successfully.',
+          {ns: 'login'}
+        )}</p>
+        <p>{this.props.t(
+          'Please contact your project administrator to activate this account.',
+          {ns: 'login'}
+        )}</p>
         <a onClick={() => window.location.href = window.location.origin}
-          style={{cursor: 'pointer'}}>Return to Login Page</a>
+          style={{cursor: 'pointer'}}>{this.props.t(
+            'Return to Login Page',
+            {ns: 'login'}
+          )}</a>
       </div>
     );
     return (
       <div className={'container'}>
         <Panel
-          title={'Update Password'}
+          title={this.props.t('Update Password', {ns: 'login'})}
           class={'panel-default panel-center'}
           collapsing={false}
         >
@@ -194,6 +227,8 @@ PasswordExpired.propTypes = {
   module: PropTypes.string,
   setMode: PropTypes.func,
   data: PropTypes.object,
+
+  t: PropTypes.func, /* from withTranslation HoC */
 };
 
-export default PasswordExpired;
+export default withTranslation(['login', 'loris'])(PasswordExpired);

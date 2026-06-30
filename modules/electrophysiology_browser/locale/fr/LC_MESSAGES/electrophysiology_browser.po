@@ -155,9 +155,10 @@ msgstr "Afficher :"
 msgid "to {{channelsInView}} of {{totalChannels}}"
 msgstr "à {{channelsInView}} de {{totalChannels}}"
 
+# s stands for second
 #, fuzzy
-msgid "Time (s)\"  # s stands for second"
-msgstr "Temps (s) » # s signifie seconde"
+msgid "Time (s)"
+msgstr "Temps (s)"
 
 msgid "No Offset"
 msgstr "Pas de décalage"
@@ -310,9 +311,10 @@ msgstr "Afficher par :"
 msgid "{{label}} search..."
 msgstr "{{label}} recherche..."
 
+# The BIDS value N/A
 #, fuzzy
-msgid "Ignore {{bidsNA}}\"   # The BIDS value: n/"
-msgstr "Ignorer {{bidsNA}} » # Valeur BIDS : n/"
+msgid "Ignore {{bidsNA}}"
+msgstr "Ignorer {{bidsNA}}"
 
 #, fuzzy
 msgid "Exclude <text>{{searchText}}</text>"

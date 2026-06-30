@@ -126,3 +126,40 @@ msgstr "参加者"
 
 msgid "Unknown"
 msgstr "未知"
+
+msgid "Total Scans: {{count}}"
+msgstr "スキャン総数：{{count}}"
+
+msgid "There have been no scans yet."
+msgstr "まだスキャンは行われていません。"
+
+msgid "There have been no candidates registered yet."
+msgstr "まだ登録された候補者はいません。"
+
+msgid "There is no data yet."
+msgstr "まだデータはありません。"
+
+# Project sizes
+msgid "Project Dataset Sizes"
+msgstr "プロジェクトのデータセットのサイズ"
+
+msgid "Dataset size breakdown by project"
+msgstr "プロジェクト別のデータセット規模の内訳"
+
+msgid "Dataset Size"
+msgstr "データセットのサイズ"
+
+msgid "Size (GB)"
+msgstr "容量（GB）"
+
+msgid "%s GB"
+msgstr "%s GB"
+
+msgid "Total Size: {{count}} GB"
+msgstr "合計サイズ：{{count}} GB"
+
+msgid "Pie"
+msgstr "円グラフ"
+
+msgid "Bar"
+msgstr "棒グラフ"
