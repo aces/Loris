@@ -355,6 +355,7 @@ class MediaUploadForm extends Component {
             msg = JSON.parse(xhr.response).message;
           } catch (e) {
             // Ignore non-JSON responses.
+            console.warn('Upload response was not valid JSON', e);
           }
         }
 
