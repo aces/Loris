@@ -351,7 +351,7 @@ msgid "Invalid DCCID ({{id}}) on line {{line}}."
 msgstr "行 {{line}} の DCCID ({{id}}) が無効です。"
 
 msgid "Invalid PSCID"
-msgstr "無効なPSCID"
+msgstr "無効なプロジェクト識別子"
 
 msgid "Invalid PSCID ({{id}}) on line {{line}}."
 msgstr "行{{line}}に無効なプロジェクト識別子{{id}}があります。"
