@@ -354,7 +354,7 @@ msgid "Invalid PSCID"
 msgstr "無効なPSCID"
 
 msgid "Invalid PSCID ({{id}}) on line {{line}}."
-msgstr "行 {{line}} の PSCID ({{id}}) が無効です。"
+msgstr "行{{line}}に無効なプロジェクト識別子{{id}}があります。"
 
 msgid "Welcome to the Data Query Tool"
 msgstr "データクエリツールへようこそ"
