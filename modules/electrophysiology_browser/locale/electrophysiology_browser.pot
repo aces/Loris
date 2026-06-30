@@ -129,7 +129,8 @@ msgstr ""
 msgid "to {{channelsInView}} of {{totalChannels}}"
 msgstr ""
 
-msgid "Time (s)"  # s stands for seconds
+# s stands for seconds
+msgid "Time (s)"
 msgstr ""
 
 msgid "No Offset"
@@ -256,7 +257,8 @@ msgstr ""
 msgid "{{label}} search..."
 msgstr ""
 
-msgid "Ignore {{bidsNA}}"   # The BIDS value: n/a
+# The BIDS value: n/a
+msgid "Ignore {{bidsNA}}"
 msgstr ""
 
 msgid "Exclude <text>{{searchText}}</text>"
