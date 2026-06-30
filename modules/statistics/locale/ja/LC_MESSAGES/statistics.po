@@ -112,6 +112,9 @@ msgstr "コホートの内訳"
 msgid "Total Participants: {{count}}"
 msgstr "参加者総数: {{count}}"
 
+msgid "No data collected yet"
+msgstr "まだデータが収集されていません"
+
 msgid "Projects: {{count}}"
 msgstr "プロジェクト: {{count}}"
 
