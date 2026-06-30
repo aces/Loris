@@ -156,7 +156,7 @@ class PoolSpecimenForm extends React.Component {
         {
           title: this.props.t('Oops!', {ns: 'biobank'}),
           text: this.props.t(`Specimens must be of the same PSCID,
-                    Visit Label, Type and Center`),
+                    Visit Label, Type and Site`),
           type: 'warning',
         }
       );
