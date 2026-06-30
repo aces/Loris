@@ -357,6 +357,12 @@ msgstr "अमान्य DCC ID"
 msgid "Invalid DCC ID ({{id}}) on line {{line}}."
 msgstr "अमान्य DCC ID ({{id}}) पंक्ति {{line}} पर।"
 
+msgid "Invalid PSCID"
+msgstr "अमान्य PSCID"
+
+msgid "Invalid PSCID ({{id}}) on line {{line}}."
+msgstr "अमान्य PSCID ({{id}}) पंक्ति {{line}} पर।"
+
 msgid "Welcome to the Data Query Tool"
 msgstr "डेटा क्वेरी टूल में आपका स्वागत है"
 

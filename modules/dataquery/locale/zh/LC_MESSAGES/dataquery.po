@@ -347,6 +347,12 @@ msgstr "DCCID 无效"
 msgid "Invalid DCCID ({{id}}) on line {{line}}."
 msgstr "第 {{line}} 行的 DCCID ({{id}}) 无效。"
 
+msgid "Invalid PSCID"
+msgstr "PSCID 无效"
+
+msgid "Invalid PSCID ({{id}}) on line {{line}}."
+msgstr "第 {{line}} 行的 PSCID ({{id}}) 无效。"
+
 msgid "Welcome to the Data Query Tool"
 msgstr "欢迎使用数据查询工具"
 
