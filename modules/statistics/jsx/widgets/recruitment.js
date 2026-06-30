@@ -82,6 +82,7 @@ const Recruitment = (props) => {
           options: {line: 'line'},
           yLabel: t('Candidates registered', {ns: 'statistics'}),
           chartObject: null,
+          titlePrefix: t('Age', {ns: 'loris'}),
         },
       },
     }

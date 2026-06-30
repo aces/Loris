@@ -24,6 +24,9 @@ msgstr "統計"
 msgid "Study Progression"
 msgstr "学習の進捗"
 
+msgid "Admin stats"
+msgstr "管理統計"
+
 msgid "Summary"
 msgstr "まとめ"
 
@@ -72,6 +75,18 @@ msgstr "部位別の生物学的性別の内訳"
 
 msgid "Candidate Age at Registration"
 msgstr "登録時の候補者の年齢"
+
+msgid "User Registrations"
+msgstr "ユーザー登録数"
+
+msgid "Registrations"
+msgstr "登録数"
+
+msgid "Unique Monthly Logins"
+msgstr "月別ユニークログイン数"
+
+msgid "Logins"
+msgstr "ログイン"
 
 msgid "Candidates registered"
 msgstr "登録候補者"
@@ -126,3 +141,42 @@ msgstr "参加者"
 
 msgid "Unknown"
 msgstr "未知"
+
+msgid "Total Scans: {{count}}"
+msgstr "スキャン総数：{{count}}"
+
+msgid "There have been no scans yet."
+msgstr "まだスキャンは行われていません。"
+
+msgid "There have been no candidates registered yet."
+msgstr "まだ登録された候補者はいません。"
+
+msgid "There is no data yet."
+msgstr "まだデータはありません。"
+
+# Project sizes
+msgid "Project Dataset Sizes"
+msgstr "プロジェクトのデータセットのサイズ"
+
+msgid "Dataset size breakdown by project"
+msgstr "プロジェクト別のデータセット規模の内訳"
+
+msgid "Dataset Size"
+msgid_plural "Dataset Size"
+msgstr[0] "データセットのサイズ"
+msgstr[1] "データセットのサイズ"
+
+msgid "Size (GB)"
+msgstr "容量（GB）"
+
+msgid "%s GB"
+msgstr "%s GB"
+
+msgid "Total Size: {{count}} GB"
+msgstr "合計サイズ：{{count}} GB"
+
+msgid "Pie"
+msgstr "円グラフ"
+
+msgid "Bar"
+msgstr "棒グラフ"

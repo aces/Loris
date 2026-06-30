@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Recruitment from './widgets/recruitment';
 import StudyProgression from './widgets/studyprogression';
+import AdminStats from './widgets/adminstats';
 import {fetchData} from './Fetch';
 import Modal from 'Modal';
 import Loader from 'Loader';
@@ -13,6 +14,7 @@ import '../css/WidgetIndex.css';
 
 import {setupCharts, unloadCharts} from './widgets/helpers/chartBuilder';
 import jaStrings from '../locale/ja/LC_MESSAGES/statistics.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/statistics.json';
 import frStrings from '../locale/fr/LC_MESSAGES/statistics.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
 
@@ -25,10 +27,12 @@ import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
 const WidgetIndex = (props) => {
   const [recruitmentData, setRecruitmentData] = useState({});
   const [studyProgressionData, setStudyProgressionData] = useState({});
+  const [adminStatsData, setAdminStatsData] = useState({});
   const [modalChart, setModalChart] = useState(null);
   const {t, i18n} = useTranslation();
   useEffect( () => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
+    i18n.addResourceBundle('hi', 'statistics', hiStrings);
     i18n.addResourceBundle('fr', 'statistics', frStrings);
     i18n.addResourceBundle('zh', 'statistics', zhStrings);
   }, []);
@@ -273,6 +277,7 @@ const WidgetIndex = (props) => {
         );
         setRecruitmentData(data);
         setStudyProgressionData(data);
+        setAdminStatsData(data);
       };
       setup().catch(
         (error) => {
@@ -368,6 +373,11 @@ const WidgetIndex = (props) => {
         showChart ={showChart}
         updateFilters ={updateFilters}
       />
+      {loris.userHasPermission('user_account_multisite') && <AdminStats
+        data ={adminStatsData}
+        baseURL ={props.baseURL}
+        showChart ={showChart}
+      />}
     </>
   );
 };
@@ -452,3 +462,4 @@ const exportChartAsImage = (chartId) => {
   'data:image/svg+xml;base64,'
   + btoa(unescape(encodeURIComponent(svgData)));
 };
+

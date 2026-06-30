@@ -25,6 +25,9 @@ msgstr "统计数据"
 msgid "Study Progression"
 msgstr "学习进展"
 
+msgid "Admin stats"
+msgstr "管理统计"
+
 msgid "Summary"
 msgstr "概括"
 
@@ -72,6 +75,18 @@ msgstr "按地点划分的生物性别细分"
 
 msgid "Candidate Age at Registration"
 msgstr "候选人注册时的年龄"
+
+msgid "User Registrations"
+msgstr "用户注册"
+
+msgid "Registrations"
+msgstr "注册"
+
+msgid "Unique Monthly Logins"
+msgstr "每月唯一登录次数"
+
+msgid "Logins"
+msgstr "登录"
 
 msgid "Candidates registered"
 msgstr "候选人已登记"
@@ -126,3 +141,41 @@ msgstr "参加者"
 
 msgid "Unknown"
 msgstr "未知"
+
+msgid "Total Scans: {{count}}"
+msgstr "扫描总数：{{count}}"
+
+msgid "There have been no scans yet."
+msgstr "目前还没有扫描。"
+
+msgid "There have been no candidates registered yet."
+msgstr "目前还没有已注册的候选人。"
+
+msgid "There is no data yet."
+msgstr "目前还没有数据。"
+
+# Project sizes
+msgid "Project Dataset Sizes"
+msgstr "项目数据集大小"
+
+msgid "Dataset size breakdown by project"
+msgstr "按项目划分的数据集大小明细"
+
+msgid "Dataset Size"
+msgid_plural "Dataset Size"
+msgstr[0] "数据集大小"
+
+msgid "Size (GB)"
+msgstr "大小（GB）"
+
+msgid "%s GB"
+msgstr "%s GB"
+
+msgid "Total Size: {{count}} GB"
+msgstr "总大小：{{count}} GB"
+
+msgid "Pie"
+msgstr "饼图"
+
+msgid "Bar"
+msgstr "柱状图"
