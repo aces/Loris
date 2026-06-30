@@ -153,10 +153,6 @@ msgstr "Un fichier portant ce nom existe déjà ! Voulez-vous remplacer le fichi
 msgid "Cancelled"
 msgstr "Annulée"
 
-#, fuzzy
-msgid "Your imaginary file is safe :)"
-msgstr "Votre fichier imaginaire est en sécurité :)"
-
 msgid "Success!"
 msgstr "Réussi !"
 

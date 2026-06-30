@@ -137,9 +137,6 @@ msgstr "¡Ya existe un archivo con este nombre! ¿Desea sobrescribir el archivo 
 msgid "Cancelled"
 msgstr "Cancelado"
 
-msgid "Your imaginary file is safe :"
-msgstr "Tu archivo imaginario está a salvo:"
-
 msgid "Success!"
 msgstr "¡Éxito!"
 

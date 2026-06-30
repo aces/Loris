@@ -144,9 +144,6 @@ msgstr ""
 msgid "Cancelled"
 msgstr "取消"
 
-msgid "Your imaginary file is safe :)"
-msgstr "你的虚拟文件是安全的:)"
-
 msgid "Success!"
 msgstr "成功！"
 
