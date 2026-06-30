@@ -350,6 +350,12 @@ msgstr "無効なDCCID"
 msgid "Invalid DCCID ({{id}}) on line {{line}}."
 msgstr "行 {{line}} の DCCID ({{id}}) が無効です。"
 
+msgid "Invalid PSCID"
+msgstr "無効なPSCID"
+
+msgid "Invalid PSCID ({{id}}) on line {{line}}."
+msgstr "行 {{line}} の PSCID ({{id}}) が無効です。"
+
 msgid "Welcome to the Data Query Tool"
 msgstr "データクエリツールへようこそ"
 
