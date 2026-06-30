@@ -39,7 +39,7 @@ msgstr ""
 msgid "File must be of type .tgz or tar.gz or .zip"
 msgstr ""
 
-msgid "For files that are not Phantom Scans, file name must begin with"
+msgid "For files that are not Phantom Scans, file name must begin with <0>{{prefix}}</0>"
 msgstr ""
 
 msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
