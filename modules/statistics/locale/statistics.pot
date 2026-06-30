@@ -163,6 +163,7 @@ msgstr ""
 msgid "Dataset Size"
 msgid_plural "Dataset Size"
 msgstr[0] ""
+msgstr[1] ""
 
 msgid "Size (GB)"
 msgstr ""

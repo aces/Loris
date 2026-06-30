@@ -164,6 +164,7 @@ msgstr "プロジェクト別のデータセット規模の内訳"
 msgid "Dataset Size"
 msgid_plural "Dataset Size"
 msgstr[0] "データセットのサイズ"
+msgstr[1] "データセットのサイズ"
 
 msgid "Size (GB)"
 msgstr "容量（GB）"
