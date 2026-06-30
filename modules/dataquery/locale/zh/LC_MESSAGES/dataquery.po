@@ -211,9 +211,6 @@ msgstr "当前查询"
 msgid "Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query."
 msgstr "请注意，结果中仅包含您有权在 LORIS 中访问的受试者。结果数量可能会因其他用户运行相同查询的权限差异而有所不同。"
 
-msgid "Candidate matches"
-msgstr "受试者匹配项"
-
 msgid "Select Visits"
 msgstr "选择访视"
 
