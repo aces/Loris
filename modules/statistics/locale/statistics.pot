@@ -146,8 +146,7 @@ msgid "Dataset size breakdown by project"
 msgstr ""
 
 msgid "Dataset Size"
-msgid_plural "Dataset Size"
-msgstr[0] ""
+msgstr ""
 
 msgid "Size (GB)"
 msgstr ""
