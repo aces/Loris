@@ -32,6 +32,7 @@ class Files extends \NDB_Page
      *
      * @return bool true only if the user has access to this page.
      */
+    #[\Override]
     public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
