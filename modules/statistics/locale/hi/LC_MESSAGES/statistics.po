@@ -147,9 +147,7 @@ msgid "Dataset size breakdown by project"
 msgstr "परियोजना के अनुसार डेटासेट आकार का विवरण"
 
 msgid "Dataset Size"
-msgid_plural "Dataset Size"
-msgstr[0] "डेटासेट का आकार"
-msgstr[1] "डेटासेट का आकार"
+msgstr "डेटासेट का आकार"
 
 msgid "Size (GB)"
 msgstr "आकार (जीबी)"
