@@ -8,6 +8,14 @@ import enResources from '../locale/en/LC_MESSAGES/loris.json';
 import frResources from '../locale/fr/LC_MESSAGES/loris.json';
 import zhResources from '../locale/zh/LC_MESSAGES/loris.json';
 
+declare const loris: any;
+
+declare module 'i18next' {
+  interface CustomTypeOptions {
+    defaultNS: 'loris';
+  }
+}
+
 const resources = {
   ja: {
     loris: jaResources,
@@ -27,7 +35,6 @@ const resources = {
   zh: {
     loris: zhResources,
   },
-
 };
 
 /**
@@ -60,4 +67,5 @@ i18n
     defaultNS: 'loris',
     fallbackNS: [],
   });
+
 export default i18n;

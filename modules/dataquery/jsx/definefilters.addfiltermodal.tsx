@@ -19,6 +19,7 @@ import {
 } from './types';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import {Trans} from 'react-i18next';
+import {TFunction} from 'i18next';
 
 /**
  * Renders a selectable list of visits
@@ -32,7 +33,7 @@ import {Trans} from 'react-i18next';
  * @returns {React.ReactElement} - The visit list dropdown
  */
 function VisitList(props: {
-    t: any,
+    t: TFunction,
     selected: string[],
     options: string[],
     onChange: (newvals: string[]) => void,
@@ -88,7 +89,7 @@ function VisitList(props: {
  * @returns {React.ReactElement} - The modal window
  */
 function AddFilterModal(props: {
-    t: any,
+    t: TFunction,
     query: QueryGroup,
     closeModal: () => void,
     addQueryGroupItem: (group: QueryGroup, condition: QueryTerm) => void,
@@ -321,11 +322,11 @@ function AddFilterModal(props: {
  * Get a list of possible query operators based on a field's dictionary
  *
  * @param {object} dict - the field dictionary
- * @param {any} t useTranslation
+ * @param {TFunction} t useTranslation
  *
  * @returns {object} - list of options for this dictionary
  */
-function getOperatorOptions(dict: FieldDictionary, t: any) {
+function getOperatorOptions(dict: FieldDictionary, t: TFunction) {
   let options: {[operator: string]: string};
   if (dict.type == 'integer' || dict.type == 'date' ||
             dict.type == 'interval' || dict.type == 'time' ||
@@ -396,7 +397,7 @@ function valueInput(fielddict: FieldDictionary,
   op: Operators,
   value: string|string[],
   setValue: (val: string) => void,
-  t: any
+  t: TFunction,
 ) {
   const vs: string = value as string;
   switch (op) {

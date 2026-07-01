@@ -11,6 +11,7 @@ import {QueryGroup} from './querydef';
 import {FullDictionary, FieldDictionary} from './types';
 import {calcPayload} from './calcpayload';
 import getDictionaryDescription from './getdictionarydescription';
+import {TFunction} from 'i18next';
 
 type TableRow = (string|null)[];
 
@@ -333,7 +334,7 @@ function useDataOrganization(
  * @returns {React.ReactElement} - The ViewData tab
  */
 function ViewData(props: {
-    t: any
+    t: TFunction,
     fields: APIQueryField[],
     filters: QueryGroup,
     onRun: () => void
@@ -830,7 +831,7 @@ function expandLongitudinalCells(
  *                                        no data should be displayed
  * @param {EnumDisplayTypes} enumDisplay -  The format to display
  *                                          enum values
- * @param {any} t - useTranslation
+ * @param {TFunction} t - useTranslation
 
  * @returns {function} - the appropriate column formatter for
                          this data organization
@@ -842,7 +843,7 @@ function organizedFormatter(
   dict: FullDictionary,
   displayEmptyVisits: boolean,
   enumDisplay: EnumDisplayTypes,
-  t: any,
+  t: TFunction,
 ) {
   let callback;
   switch (visitOrganization) {
@@ -1202,7 +1203,7 @@ type HeaderDisplayType = 'fieldname' | 'fielddesc' | 'fieldnamedesc';
  * @param {string} org - the visit organization
  * @param {string} display - the header display format
  * @param {object} fulldict - the data dictionary
- * @param {any} t - useTranslation
+ * @param {TFunction} t - useTranslation
  * @param {function} onProgress - Callback to indicate progress in processing
  * @returns {array} - A promise which resolves to the array of headers to display
  *                    in the frontend table
@@ -1212,7 +1213,7 @@ function organizeHeaders(
   org: VisitOrgType,
   display: HeaderDisplayType,
   fulldict: FullDictionary,
-  t: any,
+  t: TFunction,
   onProgress: (i: number) => void): Promise<string[]> {
   /**
    * Format a header according to the selected display type
