@@ -99,8 +99,8 @@ Because the REDCap module imports REDCap instruments as LORIS LINST instruments,
 
 ## REDCap unique idnetifier field
 
-REDCap defines a unique idnetifier field, sometimes called `Record ID` field. This field uniquely identifies records and can be renamed for each project.
-As state in the current REDCap documentation, it is defined as _"the first field of the first instrument, and if not using a template, the default is 'Record ID' [record_id]"_. 
+REDCap defines a unique identifier field, sometimes called `Record ID` field. This field uniquely identifies a record and its name can be changed for each project.
+As stated in the current REDCap documentation, it is defined as _"the first field of the first instrument, and if not using a template, the default is 'Record ID' [record_id]"_. 
 
 When exporting REDCap form data, it is also used to unlock a "hidden" feature, which adds several other metadata fields in the response, including:
 
