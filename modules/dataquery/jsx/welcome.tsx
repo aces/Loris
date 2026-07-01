@@ -15,6 +15,7 @@ import {FlattenedField, FlattenedQuery, VisitOption} from './types';
 import ReplayIcon from './ReplayIcon';
 import ShareIconA from './ShareIconA';
 import {useTranslation} from 'react-i18next';
+import {TFunction} from 'i18next';
 import 'I18nSetup';
 
 declare const loris: any;
@@ -1084,7 +1085,7 @@ function ShareIcon(props: {
  * @returns {React.ReactElement} - The React element
  */
 function NameIcon(props: {
-  t: any,
+  t: TFunction,
   onClick?: () => void
 }): React.ReactElement {
   return (<span title={props.t('Name Query', {ns: 'dataquery'})}
