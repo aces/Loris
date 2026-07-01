@@ -868,7 +868,9 @@ class RedcapHttpClient
             [$first_instrument_name]
         );
         if (empty($first_instrument_dictionary)) {
-            throw new \LorisException("[redcap] cannot get the first instrument dictionary");
+            throw new \LorisException(
+                "[redcap] cannot get the first instrument dictionary"
+            );
         }
 
         // get the  dictionary item of "Record ID" field
@@ -879,7 +881,9 @@ class RedcapHttpClient
             )
         )[0] ?? null;
         if ($record_id_field === null) {
-            throw new \LorisException("[redcap] no 'record_id' designed field on REDCap");
+            throw new \LorisException(
+                "[redcap] no 'record_id' designed field on REDCap"
+            );
         }
 
         // init the record id field name
