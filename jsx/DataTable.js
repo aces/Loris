@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
-import createFragment from 'react-addons-create-fragment';
 import {CTA} from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
 
@@ -539,7 +538,9 @@ class DataTable extends Component {
         if (cell !== null) {
           curRow.push(React.cloneElement(cell, {key: 'td_col_' + j}));
         } else {
-          curRow.push(createFragment({celldata}));
+          curRow.push(
+            <React.Fragment key={'td_col_' + j}>{celldata}</React.Fragment>
+          );
         }
       }
 
