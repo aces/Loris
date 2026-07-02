@@ -1,6 +1,22 @@
 # Behavioural Feedback Test Plan
 
-1. Behavioural feedback button (notepad in the toolbar) should show up on the following pages:
+1. Permissions
+- Disable the module in the database:
+- UPDATE modules SET Active = 'N' WHERE Name = 'bvl_feedback';
+- Assert that 
+- [] Behavioural Feedback: Create/Edit Feedback Threads does not appear in the user_accounts module.
+- Re-Enable the module by setting Active to 'Y' and assert that the permission **does** appear in user_accounts
+- Enable the following permissions in the front end:
+- [x] Access Profile: Create/View Candidates and Timepoints
+- [x] Candidate Parameters: View Candidate Information
+- [x] Behavioural Quality Control: View Flagged Behavioural Entries
+- Assert that, under the Clinical Tab in the website, 'Behavioural Quality Control' appears.
+- Click on the `Behavioural Feedback` tab and click on an entry in the `Instrument` field.
+- The behavioural feedback module is a window that "pops" out when you select an entry. So, with the Behavioural Feedback permission un-ticked, assert that this window does not pop out. Instead, the candidate's linst instrument should appear without this window.
+- enable the Behavioural Feedback permission and assert that the Window does pop out 
+
+
+Behavioural feedback button (notepad in the toolbar) should show up on the following pages:
  * Candidate Profile
  * Instrument List
  * Any instrument
