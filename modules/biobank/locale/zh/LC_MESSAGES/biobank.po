@@ -235,14 +235,6 @@ msgstr "是否打印条形码？"
 msgid "Batch Preparation Successful!"
 msgstr "批量准备成功！"
 
-#: jsx/biobankIndex.js:506
-msgid "This field is required."
-msgstr "此项必填。"
-
-#: jsx/biobankIndex.js:512
-msgid "This field must be a number."
-msgstr "此项必须为数字。"
-
 #: jsx/biobankIndex.js:518
 msgid "This field must not be negative."
 msgstr "此项不能为负数。"
@@ -252,19 +244,21 @@ msgid "This field must be an integer."
 msgstr "此项必须为整数。"
 
 #: jsx/biobankIndex.js:597 jsx/biobankIndex.js:699 jsx/biobankIndex.js:736
-msgid "This field is required!"
+#: jsx/biobankIndex.js:506
+msgid "This field is required."
 msgstr "此项必填！"
 
 #: jsx/biobankIndex.js:604 jsx/biobankIndex.js:705 jsx/biobankIndex.js:741
-msgid "This field must be a number!"
+#: jsx/biobankIndex.js:512
+msgid "This field must be a number."
 msgstr "此项必须为数字！"
 
 #: jsx/biobankIndex.js:611 jsx/biobankIndex.js:652 jsx/biobankIndex.js:747
-msgid "This field must be a valid date!"
+msgid "This field must be a valid date."
 msgstr "此项必须为有效日期！"
 
 #: jsx/biobankIndex.js:617 jsx/biobankIndex.js:660 jsx/biobankIndex.js:753
-msgid "This field must be a valid time!"
+msgid "This field must be a valid time."
 msgstr "此项必须为有效时间！"
 
 #: jsx/biobankIndex.js:711

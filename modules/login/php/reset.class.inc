@@ -108,9 +108,11 @@ class Reset extends \NDB_Page implements ETagCalculator
                     // send the user an email
                     $factory = \NDB_Factory::singleton();
 
-                    $msg_data          = [];
-                    $msg_data['study'] = $config->getSetting('title');
-                    $msg_data['url']   = $factory->settings()->getBaseURL();
+                    $msg_data = [];
+                    $tmp      = $config->getSetting('title');
+                    $title    = is_array($tmp) ? implode('', $tmp):$tmp;
+                    $msg_data['study']    = $title;
+                    $msg_data['url']      = $factory->settings()->getBaseURL();
                     $msg_data['realname'] = $user->getFullname();
                     $msg_data['password'] = $password;
                     \Email::send($email, 'lost_password.tpl', $msg_data);

@@ -263,7 +263,7 @@ class Data_Release extends \DataFrameworkMenu
     {
         $user     =& \User::singleton();
         $db       = $this->loris->getDatabaseConnection();
-        $projects = \Utility::getProjectList();
+        $projects = $user->getProjectNames();
         return [
             'currentUser'            => $user->getID(),
             'users'                  => $this->getUsersList($db),

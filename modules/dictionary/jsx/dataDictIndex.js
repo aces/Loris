@@ -253,6 +253,7 @@ class DataDictIndex extends Component {
         filter: {
           name: 'Category',
           type: 'select',
+          disabled: this.state.moduleFilter === '',
           options: this.state.moduleFilter === ''
             ? {}
             : options.categories[this.state.moduleFilter],

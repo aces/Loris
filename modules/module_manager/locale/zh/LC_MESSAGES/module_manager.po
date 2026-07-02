@@ -28,7 +28,7 @@ msgstr "姓名"
 msgid "Full Name"
 msgstr "姓名"
 
-msgid "Could not update {{name}}"
+msgid "Could not update {{name}}."
 msgstr "无法更新{{name}}"
 
 msgid "Updated {{name}} status!"

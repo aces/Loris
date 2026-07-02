@@ -1,12 +1,12 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Default LORIS strings to be translated (English)
+# Copyright (C) 2026
+# This file is distributed under the same license as the LORIS package.
+# Henri Rabalais <henri.j.rabalais@gmail.com>, 2026
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: LORIS 29\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-05 08:40-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Biobank"
@@ -31,7 +31,7 @@ msgstr ""
 #: jsx/poolSpecimenForm.js:158
 msgid ""
 "Specimens must be of the same PSCID,\n"
-"Visit Label, Type and Center"
+"Visit Label, Type and Site"
 msgstr ""
 
 #: jsx/poolSpecimenForm.js:207
@@ -207,6 +207,10 @@ msgstr ""
 msgid "Current Site"
 msgstr ""
 
+#: jsx/specimenTab.js:75 jsx/globals.js:234
+msgid "Draw Site"
+msgstr ""
+
 #: jsx/container.js:54
 msgid "Checkout Child Containers"
 msgstr ""
@@ -223,14 +227,6 @@ msgstr ""
 msgid "Batch Preparation Successful!"
 msgstr ""
 
-#: jsx/biobankIndex.js:506
-msgid "This field is required."
-msgstr ""
-
-#: jsx/biobankIndex.js:512
-msgid "This field must be a number. "
-msgstr ""
-
 #: jsx/biobankIndex.js:518
 msgid "This field must not be negative."
 msgstr ""
@@ -240,27 +236,21 @@ msgid "This field must be an integer."
 msgstr ""
 
 #: jsx/biobankIndex.js:597 jsx/biobankIndex.js:699 jsx/biobankIndex.js:736
-msgid "This field is required! "
+#: jsx/biobankIndex.js:636 jsx/biobankIndex.js:506
+msgid "This field is required."
 msgstr ""
 
 #: jsx/biobankIndex.js:604 jsx/biobankIndex.js:705 jsx/biobankIndex.js:741
-msgid "This field must be a number! "
+#: jsx/biobankIndex.js:644 jsx/biobankIndex.js:512
+msgid "This field must be a number."
 msgstr ""
 
 #: jsx/biobankIndex.js:611 jsx/biobankIndex.js:652 jsx/biobankIndex.js:747
-msgid "This field must be a valid date! "
+msgid "This field must be a valid date."
 msgstr ""
 
 #: jsx/biobankIndex.js:617 jsx/biobankIndex.js:660 jsx/biobankIndex.js:753
-msgid "This field must be a valid time! "
-msgstr ""
-
-#: jsx/biobankIndex.js:636
-msgid "This field is required!"
-msgstr ""
-
-#: jsx/biobankIndex.js:644
-msgid "This field must be a number!"
+msgid "This field must be a valid time."
 msgstr ""
 
 #: jsx/biobankIndex.js:711
@@ -270,6 +260,12 @@ msgstr ""
 #: jsx/biobankIndex.js:757
 msgid "Pooling requires at least 2 specimens"
 msgstr ""
+
+#: jsx/filter.js:73
+msgid "Container"
+msgid_plural "Containers"
+msgstr[0] ""
+msgstr[1] ""
 
 #: jsx/shipmentTab.js:69 jsx/shipmentTab.js:141
 msgid "Origin Site"
@@ -296,7 +292,7 @@ msgid "User"
 msgstr ""
 
 #: jsx/batchEditForm.js:214
-msgid "Specimens must be of the same Type and Center"
+msgid "Specimens must be of the same Type and Site"
 msgstr ""
 
 #: jsx/batchEditForm.js:274 jsx/globals.js:144
@@ -412,7 +408,7 @@ msgid ""
 msgstr ""
 
 #: jsx/specimenForm.js:219
-msgid "Parent Specimen(s, {ns: 'biobank'})"
+msgid "Parent Specimen(s)"
 msgstr ""
 
 #: jsx/specimenForm.js:255

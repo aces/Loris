@@ -211,9 +211,6 @@ msgstr "現在のクエリ"
 msgid "Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query."
 msgstr "ロリスでアクセス権限を持つ候補のみが結果に含まれることにご注意ください。結果の数は、同じクエリを実行する他のユーザーによって異なる場合があります。"
 
-msgid "Candidate matches"
-msgstr "候補者の一致"
-
 msgid "Select Visits"
 msgstr "選択した訪問"
 
@@ -349,6 +346,12 @@ msgstr "無効なDCCID"
 
 msgid "Invalid DCCID ({{id}}) on line {{line}}."
 msgstr "行 {{line}} の DCCID ({{id}}) が無効です。"
+
+msgid "Invalid PSCID"
+msgstr "無効なプロジェクト識別子"
+
+msgid "Invalid PSCID ({{id}}) on line {{line}}."
+msgstr "行{{line}}に無効なプロジェクト識別子{{id}}があります。"
 
 msgid "Welcome to the Data Query Tool"
 msgstr "データクエリツールへようこそ"

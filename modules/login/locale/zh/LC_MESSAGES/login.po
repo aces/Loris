@@ -50,6 +50,30 @@ msgstr "返回登录页面"
 msgid "Reset Password"
 msgstr "重置密码"
 
+msgid "Update Password"
+msgstr "更新密码"
+
+msgid "Password Strength Rules"
+msgstr "密码强度规则"
+
+msgid "The password must be at least 8 characters long."
+msgstr "密码长度必须至少为 8 个字符。"
+
+msgid "The password and the email address must not be the same."
+msgstr "密码和电子邮件地址不能相同。"
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr "不要求特殊字符，但密码必须足够复杂才能被接受。"
+
+msgid "Please choose a unique password."
+msgstr "请选择一个唯一的密码。"
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr "建议使用密码管理器为您生成密码。"
+
+msgid "New Password mismatch!"
+msgstr "新密码不匹配！"
+
 msgid "Thank you!"
 msgstr "谢谢你！"
 

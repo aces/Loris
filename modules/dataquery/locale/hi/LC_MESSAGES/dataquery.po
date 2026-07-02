@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Data Query Tool (Beta)"
 msgstr "डेटा क्वेरी टूल (बीटा)"
@@ -202,8 +203,8 @@ msgstr "वर्तमान क्वेरी"
 msgid "Note that only candidates which you have permission to access in LORIS are included in results. Number of results may vary from other users running the same query."
 msgstr "ध्यान दें कि केवल वे उम्मीदवार शामिल हैं जिन्हें LORIS में एक्सेस करने की आपको अनुमति है। परिणामों की संख्या अन्य उपयोगकर्ताओं से भिन्न हो सकती है।"
 
-msgid "Candidate matches"
-msgstr "उम्मीदवार मेल खाते हैं"
+msgid "Candidate matches:"
+msgstr "उम्मीदवार मिलान:"
 
 msgid "Note: matches count only includes candidates that you have access to. Results may vary from other users due to permissions."
 msgstr "नोट: मेल गिनती केवल उन्हीं उम्मीदवारों को शामिल करती है जिन तक आपकी पहुँच है। अनुमतियों के कारण परिणाम अन्य उपयोगकर्ताओं से भिन्न हो सकते हैं।"
@@ -356,6 +357,12 @@ msgstr "अमान्य DCC ID"
 
 msgid "Invalid DCC ID ({{id}}) on line {{line}}."
 msgstr "अमान्य DCC ID ({{id}}) पंक्ति {{line}} पर।"
+
+msgid "Invalid PSCID"
+msgstr "अमान्य PSCID"
+
+msgid "Invalid PSCID ({{id}}) on line {{line}}."
+msgstr "अमान्य PSCID ({{id}}) पंक्ति {{line}} पर।"
 
 msgid "Welcome to the Data Query Tool"
 msgstr "डेटा क्वेरी टूल में आपका स्वागत है"

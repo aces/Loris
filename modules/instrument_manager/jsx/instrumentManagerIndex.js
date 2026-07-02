@@ -13,6 +13,7 @@ import InfoPanel from 'jsx/InfoPanel';
 
 import Select from 'react-select';
 import swal from 'sweetalert2';
+import 'I18nSetup';
 
 /**
  * Instrument Manager Index component

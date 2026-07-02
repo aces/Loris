@@ -195,7 +195,7 @@ class AddSurvey extends \NDB_Form
                 return [
                     'Test_name' => "Instrument ".
                         $instrument_instance->getFullName().
-                        $reminder. $values['VL'],
+                        " ". $reminder. " ". $values['VL'],
                 ];
             }
         }

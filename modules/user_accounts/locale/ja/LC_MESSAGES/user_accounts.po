@@ -198,3 +198,11 @@ msgstr "新しいパスワードと古いパスワードは同一です。"
 msgid "This email address is already in use"
 msgstr "このメールアドレスはすでに使用されています。"
 
+msgid "Do you really want to reject this user?"
+msgstr "本当にこのユーザーを拒否しますか？"
+
+msgid "This action cannot be undone."
+msgstr "この操作は取り消せません。"
+
+msgid "Yes, reject user!"
+msgstr "はい、ユーザーを拒否します！"

@@ -75,6 +75,7 @@ INSERT INTO language (language_code, language_label) VALUES
 
 CREATE TABLE `sex` (
   `Name` varchar(255) NOT NULL,
+  `Colour` varchar(50) NULL,
   PRIMARY KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores sex options available for candidates in LORIS';
 
@@ -1536,6 +1537,35 @@ INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VAL
   ('statistics', 'stats_demographic', 'Demographic Statistics', 2),
   ('statistics', 'stats_behavioural', 'Behavioural Statistics', 3),
   ('statistics', 'stats_MRI', 'Imaging Statistics', 4);
+
+
+-- ********************************
+-- statistics
+-- ********************************
+
+
+CREATE TABLE `cached_data_type` (
+    `CachedDataTypeID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Name` VARCHAR(255) UNIQUE NOT NULL,
+    PRIMARY KEY  (`CachedDataTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `cached_data_type` (`Name`) SELECT 'projects_disk_space';
+
+
+CREATE TABLE `cached_data` (
+   `CachedDataID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+   `CachedDataTypeID` INT(10) UNSIGNED NOT NULL,
+   `Value` TEXT NOT NULL,
+   `LastUpdate` TIMESTAMP NOT NULL
+       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   PRIMARY KEY  (`CachedDataID`),
+   CONSTRAINT `FK_cached_data_type` FOREIGN KEY (`CachedDataTypeID`)
+       REFERENCES `cached_data_type` (`CachedDataTypeID`)
+       ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- ********************************
 -- server_processes tables

@@ -179,7 +179,7 @@ class Configuration extends \NDB_Form
             $tree[intval($node['ID'])] = &$node;
         }
         foreach ($configs as &$node) {
-            $tree[$node['Parent']]['Children'][] = &$node;
+            $tree[$node['Parent'] ?? '']['Children'][] = &$node;
         }
 
         return $configs;

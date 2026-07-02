@@ -26,10 +26,8 @@ msgid "View Session"
 msgstr "查看会话"
 
 msgid "New and pending imaging session"
-msgstr "新的及待处理的成像会话"
-
-msgid "New and pending imaging sessions"
-msgstr "新的及待处理的成像会话"
+msgid_plural "New and pending imaging sessions"
+msgstr[0] "新的及待处理的成像会话"
 
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"

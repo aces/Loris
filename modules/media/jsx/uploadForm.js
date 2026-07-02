@@ -345,16 +345,18 @@ class MediaUploadForm extends Component {
       } else {
         let msg = this.props.t('Upload error!', {ns: 'media'});
 
-        if (xhr.response) {
-          if (xhr.statusText) {
-            msg = JSON.parse(xhr.response).message;
-          }
-        }
         if (xhr.status === 409) {
           msg = this.props.t('A file with the same name already exists!',
             {ns: 'media'});
         } else if (xhr.status === 413) {
           msg = this.props.t('File too large!', {ns: 'media'});
+        } else if (xhr.response) {
+          try {
+            msg = JSON.parse(xhr.response).message;
+          } catch (e) {
+            // Ignore non-JSON responses.
+            console.warn('Upload response was not valid JSON', e);
+          }
         }
 
         this.setState({

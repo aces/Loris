@@ -46,5 +46,5 @@ msgid "Continue"
 msgstr "Continuer sans actualiser"
 
 #, fuzzy
-msgid "Could not find module {{id}}"
+msgid "Could not find module {{id}}."
 msgstr "Impossible de trouver le module {{id}}"
