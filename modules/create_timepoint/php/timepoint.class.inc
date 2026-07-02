@@ -1,5 +1,17 @@
 <?php declare(strict_types=1);
 
+/**
+ * This file contains the Timepoint class for the create_timepoint module.
+ *
+ * PHP Version 8
+ *
+ * @category LORIS_Module
+ * @package  Create_Timepoint
+ * @author   Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+
 namespace LORIS\create_timepoint;
 
 use LORIS\StudyEntities\Candidate\CandID;
@@ -299,7 +311,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         ))->getVisitFromVisitLabel($visitLabel)->getName();
 
         try {
-            \TimePoint::isValidVisitLabel(
+            $this->_validateVisitLabelForProjectCohort(
                 new CandID($candid),
                 $projectID,
                 $cohortID,
@@ -322,6 +334,100 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             $values['conflict'] = $conflict;
         }
         return $values;
+    }
+
+    /**
+     * Validates if a given visit_label can be created for the given candidate
+     * within the specific project and cohort combination.
+     *
+     * @param CandID     $candid    The candidate identifier
+     * @param \ProjectID $projectID The Project identifier
+     * @param integer    $cohortID  The cohortID
+     * @param string     $visitName The visit name
+     *
+     * @throws \LorisException
+     *
+     * @return void
+     */
+    private function _validateVisitLabelForProjectCohort(
+        CandID $candid,
+        \ProjectID $projectID,
+        int $cohortID,
+        string $visitName
+    ): void {
+        // This can happen if the user quickly clicks "Create Time Point" before the
+        // page has loaded and the Visit Label dropdown hasn't been selected yet.
+        // The page will create "V1" when this is the case without this check.
+        if (empty($visitName)) {
+            throw new \LorisException(
+                'A visit label is required.'
+            );
+        }
+
+        // Check if visit label exists for this cohort
+        if (!array_key_exists(
+            $visitName,
+            \Utility::getVisitsForCohort(
+                $cohortID
+            )
+        )
+        ) {
+            throw new \LorisException(
+                'This visit label is not valid for this cohort.'
+            );
+        }
+
+        $candidate =& \Candidate::singleton($candid);
+        $db        = $this->loris->getDatabaseConnection();
+
+        // Get the list of sessions for this candidate in the specific
+        // project and cohort
+        $query  = "
+            SELECT s.Visit_label
+            FROM session s
+            JOIN candidate c ON c.ID=s.CandidateID
+            WHERE c.CandID=:cid AND s.ProjectID=:projectID AND s.CohortID=:cohortID
+            AND s.Active='Y'
+        ";
+        $where  = [
+            'cid'       => $candid,
+            'projectID' => $projectID,
+            'cohortID'  => $cohortID,
+        ];
+        $result = $db->pselect($query, $where);
+
+        // If the visitLabel is already in use for this project+cohort
+        // then let the user pick another
+        foreach ($result as $row) {
+            if (strcasecmp($visitName, $row['Visit_label']) == 0) {
+                // Get project name
+                $project     = \Project::getProjectFromID($projectID);
+                $projectName = $project->getName();
+
+                // Get cohort title
+                $factory        = \NDB_Factory::singleton();
+                $config         = $factory->config();
+                $cohortSettings = $config->getCohortSettings($cohortID);
+                $cohortTitle    = $cohortSettings['title'] ?? 'Unknown';
+
+                // Get participant PSCID
+                $pscid = $candidate->getPSCID();
+
+                $message = sprintf(
+                    dgettext(
+                        "create_timepoint",
+                        "A timepoint with these conditions (%s, %s, %s, %s) "
+                            . "already exists."
+                    ),
+                    $pscid,
+                    $projectName,
+                    $cohortTitle,
+                    $visitName
+                );
+
+                throw new \LorisException($message);
+            }
+        }
     }
 
     /**
