@@ -564,7 +564,7 @@ class NDB_BVL_Feedback
                          ON (c.ID=ft.CandidateID)
                      LEFT JOIN session as s
                          ON (s.ID = ft.SessionID)
-                     JOIN feedback_bvl_type as ftp
+                     LEFT JOIN feedback_bvl_type as ftp
                          ON (ftp.Feedback_type=ft.Feedback_type)";
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
             $query .= ", flag as f LEFT JOIN test_names tn ON (tn.ID=f.TestID)";
@@ -574,7 +574,7 @@ class NDB_BVL_Feedback
         // cause SQL syntax errors on any code paths.
         // This would make more sense to put in an array and then
         // call "join($arrayname, ", ") at the end to construct the string.
-        $query .= " WHERE ftp.Feedback_type = ft.Feedback_type";
+        $query .= " WHERE 1=1";
 
         if (!empty($this->_feedbackObjectInfo['CommentID'])) {
             $query           .= " AND ft.SessionID = :SID";
