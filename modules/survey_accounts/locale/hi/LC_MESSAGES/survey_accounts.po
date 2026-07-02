@@ -61,9 +61,6 @@ msgstr "यहाँ आपका संदेश जाएगा।"
 msgid "Email"
 msgstr "ईमेल"
 
-msgid "Instrument"
-msgstr "यंत्र"
-
 msgid "URL"
 msgstr "यूआरएल"
 
@@ -82,7 +79,7 @@ msgstr "कृपया एक उपकरण चुनें."
 msgid "already exists for given candidate for visit"
 msgstr "दिए गए उम्मीदवार के लिए यात्रा हेतु पहले से ही मौजूद है"
 
-msgid "The email address is not valid."
+msgid "Email is not valid."
 msgstr "ईमेल पता मान्य नहीं है."
 
 msgid "Please confirm the email address."
@@ -100,5 +97,3 @@ msgstr "आप इस सत्र की परियोजना से सं
 msgid "Confirm Email address"
 msgstr "ईमेल पते की पुष्टि करें"
 
-msgid "Email is not valid."
-msgstr "विद्युतडाक मान्य नहीं है।"

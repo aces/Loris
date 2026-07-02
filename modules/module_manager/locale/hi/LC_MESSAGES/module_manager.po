@@ -28,12 +28,8 @@ msgstr "नाम"
 msgid "Full Name"
 msgstr "पूरा नाम"
 
-msgid "Could not update"
-msgstr "अपडेट नहीं कर सका"
-
-msgid "status!"
-msgstr "स्थिति!"
-
+msgid "Could not update {{name}}."
+msgstr "{{name}} को अपडेट नहीं कर सका।"
 msgid "To apply changes the interface must be reloaded. Proceed?"
 msgstr "परिवर्तन लागू करने के लिए इंटरफ़ेस को पुनः लोड करना होगा। आगे बढ़ें?"
 
@@ -43,6 +39,5 @@ msgstr "पृष्ठ पुनः लोड करें"
 msgid "Continue"
 msgstr "जारी रखें"
 
-msgid "Could not find module"
-msgstr "मॉड्यूल नहीं मिला"
-
+msgid "Could not find module {{id}}."
+msgstr "मॉड्यूल {{id}} नहीं मिला।"
