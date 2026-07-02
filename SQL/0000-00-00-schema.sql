@@ -1091,7 +1091,7 @@ CREATE TABLE `document_repository` (
   `comments` text,
   `multipart` enum('Yes','No') DEFAULT NULL,
   `EARLI` tinyint(1) DEFAULT 0,
-  `hide_video` tinyint(1) DEFAULT 0,
+  `hide_file` tinyint(1) DEFAULT 0,
   `File_category` int(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`record_id`),
   KEY `fk_document_repository_1_idx` (`File_category`),
