@@ -36,4 +36,5 @@ msgstr "पृष्ठ पुनः लोड करें"
 
 msgid "Continue"
 msgstr "जारी रखें"
-
+msgid "Could not find module {{id}}."
+msgstr "मॉड्यूल {{id}} नहीं मिला।"
