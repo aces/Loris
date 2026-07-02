@@ -61,12 +61,8 @@ msgid "Try again"
 msgstr "Réessayer"
 
 #, fuzzy
-msgid ""
-"Help content cannot be added to an instrument that has already been "
-"registered."
-msgstr ""
-"Il n'est pas possible d'ajouter du contenu d'aide à un instrument "
-"déjà enregistré."
+msgid "Help content cannot be added to an instrument that has already been registered."
+msgstr "Il n'est pas possible d'ajouter du contenu d'aide à un instrument déjà enregistré."
 
 #, fuzzy
 msgid "Adding help content for a specific instrument"

@@ -67,12 +67,8 @@ msgstr ""
 "Utilisez la clé suivante dans votre application d'authentification : "
 "<0>{{code}}</0>"
 
-msgid ""
-"Scan the following QR code below in your MFA authenticator and enter the "
-"code to validate."
-msgstr ""
-"Scannez le code QR ci-dessous dans votre authentificateur AMF et entrez le "
-"code pour valider."
+msgid "Scan the following QR code below in your MFA authenticator and enter the code to validate."
+msgstr "Scannez le code QR ci-dessous dans votre logciel d'authentification mutlifactorielle, et entrez le code pour valider."
 
 #, fuzzy
 msgid "Note that this will <0>overwrite</0> any previously setup MFA in LORIS!"
