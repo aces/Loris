@@ -407,7 +407,7 @@ class Widgets extends \NDB_Page implements ETagCalculator
             if (!isset($aggregatedBreakdown[$key])) {
                 $aggregatedBreakdown[$key] = [
                     'key'    => $key,
-                    'label'  => $label !== '' ? $label : $key,
+                    'label'  => dgettext("sex", $label !== '' ? $label : $key),
                     'colour' => is_string($row['Colour'] ?? null)
                         && trim($row['Colour']) !== ''
                         ? trim($row['Colour'])
