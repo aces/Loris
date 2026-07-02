@@ -165,13 +165,13 @@ class DocUploadForm extends Component {
             {
               loris.userHasPermission('document_repository_hidden') ?
                 (<SelectElement
-                  name="hiddenVideo"
+                  name="hiddenFile"
                   label={t('Restrict access to the file?',
                     {ns: 'document_repository'})}
-                  options={this.state.data.fieldOptions.hiddenVideo}
+                  options={this.state.data.fieldOptions.hiddenFile}
                   sortByValue={false}
                   onUserInput={this.setFormData}
-                  value={this.state.formData.hiddenVideo}
+                  value={this.state.formData.hiddenFile}
                 />) :
                 null
             }

@@ -150,8 +150,8 @@ class Files extends \NDB_Page
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'File_category' => $req['category'] ?? null,
-            'hide_video'    => isset($req['hiddenVideo']) ?
-                $req['hiddenVideo'] : null,
+            'hide_file'    => isset($req['hiddenFile']) ?
+                $req['hiddenFile'] : null,
             'instrument'    => $req['instrument'] ?? null,
             'comments'      => $req['comments'] ?? null,
             'version'       => $req['version'] ?? null,
@@ -273,7 +273,7 @@ class Files extends \NDB_Page
                 "visitLabel, " .
                 "Instrument as instrument, " .
                 "comments, " .
-                "hide_video as hiddenVideo," .
+                "hide_file as hiddenFile," .
                 "File_Name as fileName, " .
                 "version " .
                 "FROM document_repository " .
@@ -285,15 +285,15 @@ class Files extends \NDB_Page
         // pselectRow returns nullable array.
         $docData = $docData ?? [];
 
-        // Cast hiddenVideo to string to avoid falsy-0 issue in JS SelectElement
-        $docData['hiddenVideo'] = (string)$docData['hiddenVideo'];
+        // Cast hiddenFile to string to avoid falsy-0 issue in JS SelectElement
+        $docData['hiddenFile'] = (string)$docData['hiddenFile'];
 
         $result = [
             'categories'  => $categoriesList,
             'sites'       => $siteList,
             'instruments' => $instrumentsList,
             'docData'     => $docData,
-            'hiddenVideo' => ['0' => "No", '1' => "Yes"],
+            'hiddenFile' => ['0' => "No", '1' => "Yes"],
         ];
 
         return $result;
@@ -435,7 +435,7 @@ class Files extends \NDB_Page
             $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
             $comments   = !empty($body['comments'])   ? $body['comments']   : null;
             $version    = !empty($body['version'])    ? $body['version']    : null;
-            $hidden     = isset($body['hiddenVideo']) ? $body['hiddenVideo'] : null;
+            $hidden     = isset($body['hiddenFile']) ? $body['hiddenFile'] : null;
 
             $fileSize = $uploadedFile->getSize();
             $fileType = pathinfo($filename, PATHINFO_EXTENSION);
@@ -448,7 +448,7 @@ class Files extends \NDB_Page
                     'For_site'      => $site,
                     'comments'      => $comments,
                     'version'       => $version,
-                    'hide_video'    => $hidden,
+                    'hide_file'    => $hidden,
                     'File_name'     => $filename,
                     'File_size'     => $fileSize,
                     'Data_dir'      => "$name/$filename",
