@@ -141,9 +141,6 @@ msgstr "この名前のファイルは既に存在します!\n既存のファイ
 msgid "Cancelled"
 msgstr "キャンセル"
 
-msgid "Your imaginary file is safe :)"
-msgstr "あなたの想像上のファイルは安全です :)"
-
 msgid "Success!"
 msgstr "成功！"
 
