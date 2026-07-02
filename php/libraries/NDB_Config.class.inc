@@ -292,12 +292,26 @@ class NDB_Config
         if ($id === null) {
             $configSetting = $db->pselect(
                 "SELECT cs.ID as ParentID, child.ID as ChildID,
-                        cs.AllowMultiple, child.Name
+                        cs.AllowMultiple, child.Name, 0 AS IsCategory
                 FROM ConfigSettings cs
                     LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
                 WHERE cs.Name=:nm",
                 ["nm" => $name]
             );
+
+            if (count($configSetting) === 0) {
+                $configSetting = $db->pselect(
+                    "SELECT cc.ID as ParentID, child.ID as ChildID,
+                            0 AS AllowMultiple, child.Name, 1 AS IsCategory
+                    FROM ConfigCategories cc
+                        LEFT JOIN ConfigSettings child ON (
+                            child.CategoryID=cc.ID
+                            AND child.Parent IS NULL
+                        )
+                    WHERE cc.Name=:nm",
+                    ["nm" => $name]
+                );
+            }
 
             if (count($configSetting) === 0) {
                 throw new ConfigurationException(
@@ -307,7 +321,7 @@ class NDB_Config
         } else {
             $configSetting = $db->pselect(
                 "SELECT cs.ID as ParentID, child.ID as ChildID,
-                        cs.AllowMultiple, child.Name
+                        cs.AllowMultiple, child.Name, 0 AS IsCategory
                 FROM ConfigSettings cs
                     LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
                 WHERE cs.ID=:nm",
@@ -320,13 +334,19 @@ class NDB_Config
         // If multiple rows are returned, it means that there are children
         // for this element, so we need to build the tree to be consistent
         // with what would have come from the config.xml.
+        $firstConfigSetting = null;
         if (count($configSetting) === 1) {
+            $firstConfigSetting = $configSetting->getFirstRow();
+        }
+        if ($firstConfigSetting !== null
+            && $firstConfigSetting['ChildID'] === null
+            && intval($firstConfigSetting['IsCategory'] ?? 0) === 0
+        ) {
             // Trying to get a single value from the database.
-            $configSetting = $configSetting->getFirstRow();
-            if ($configSetting['AllowMultiple'] == '0') {
+            if ($firstConfigSetting['AllowMultiple'] == '0') {
                 $val = $db->pselectOne(
                     "SELECT Value FROM Config WHERE ConfigID=:CID",
-                    ['CID' => $configSetting['ParentID']]
+                    ['CID' => $firstConfigSetting['ParentID']]
                 );
                 if (empty($val)) {
                     return null;
@@ -337,7 +357,7 @@ class NDB_Config
                 // as ie. $config->getSetting("DoubleDataEntryInstruments")
                 $val = $db->pselect(
                     "SELECT Value FROM Config WHERE ConfigID=:CID",
-                    ['CID' => $configSetting['ParentID']]
+                    ['CID' => $firstConfigSetting['ParentID']]
                 );
                 $ret = [];
                 foreach ($val as $item) {
@@ -345,10 +365,13 @@ class NDB_Config
                 }
                 return $ret;
             }
-        } else if (count($configSetting) > 1) {
+        } else if (count($configSetting) >= 1) {
             // This was a parent element, so construct the children.
             $tree = [];
             foreach ($configSetting as $childSetting) {
+                if ($childSetting['ChildID'] === null) {
+                    continue;
+                }
                 $childName        = $childSetting['Name'];
                 $childID          = $childSetting['ChildID'];
                 $childValue       = $this->getSettingFromDB(
@@ -621,4 +644,3 @@ class NDB_Config
 
     }
 }
-
