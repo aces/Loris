@@ -15,7 +15,7 @@ import {withTranslation} from 'react-i18next';
 import DataTable from 'jsx/DataTable';
 import Panel from 'jsx/Panel';
 import {FilePanel} from './components/electrophysiology_session_panels';
-import {SummaryPanel} from './components/electrophysiology_session_summary';
+import SummaryPanel from './components/SummaryPanel';
 import {DownloadPanel} from './components/DownloadPanel';
 import Sidebar from './components/Sidebar';
 import SidebarContent from './components/SidebarContent';
