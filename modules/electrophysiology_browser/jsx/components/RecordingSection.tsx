@@ -73,7 +73,7 @@ type PatientInfo = {
   visit_label: string;
 };
 
-type RecordingPanelProps = {
+type RecordingSectionProps = {
   dbEntry: RecordingDatabaseEntry;
   fileIndex: number;
   getSplitData: (
@@ -86,17 +86,17 @@ type RecordingPanelProps = {
 };
 
 /**
- * Recording Panel
+ * Recording Section
  *
  * This component renders all panels for one electrophysiology recording.
  */
-function RecordingPanel({
+function RecordingSection({
   dbEntry,
   fileIndex,
   getSplitData,
   patient,
   t,
-}: RecordingPanelProps): React.ReactElement {
+}: RecordingSectionProps): React.ReactElement {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const {
     chunksURLs,
@@ -310,4 +310,4 @@ function RecordingPanel({
   );
 }
 
-export default RecordingPanel;
+export default RecordingSection;

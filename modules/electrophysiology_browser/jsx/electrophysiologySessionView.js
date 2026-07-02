@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import DataTable from 'jsx/DataTable';
-import RecordingPanel from './components/RecordingPanel';
+import RecordingSection from './components/RecordingSection';
 import Sidebar from './components/Sidebar';
 import SidebarContent from './components/SidebarContent';
 import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
@@ -328,7 +328,7 @@ class ElectrophysiologySessionView extends Component {
     if (this.state.isLoaded) {
       const database = this.state.database.map((dbEntry, i) => {
         return (
-          <RecordingPanel
+          <RecordingSection
             key={i}
             dbEntry={dbEntry}
             fileIndex={i}
