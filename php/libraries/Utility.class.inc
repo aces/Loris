@@ -279,12 +279,7 @@ class Utility
             AND c.Entity_type != 'Scanner'
             AND s.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
-        $result = $db->pselectCol($query, $qparams);
-
-        $visitLabels = [];
-        foreach ($result as $vl) {
-            $visitLabels[$vl] = dgettext("visit", $vl);
-        }
+        $result = $db->pselect($query, $qparams);
 
         $translatedVisitLabels = [];
         foreach ($visitLabels as $visitLabel) {
@@ -292,6 +287,7 @@ class Utility
         }
         // Generates an array where the keys are equal to the values.
         $cache[$projStr] = $translatedVisitLabels;
+
         return $cache[$projStr];
     }
 
