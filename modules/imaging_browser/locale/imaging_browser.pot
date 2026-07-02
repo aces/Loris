@@ -173,6 +173,39 @@ msgstr ""
 msgid "Comments saved."
 msgstr ""
 
+msgid "Voxel Size"
+msgstr ""
+
+msgid "Protocol"
+msgstr ""
+
+msgid "Acquisition Date"
+msgstr ""
+
+msgid "Inserted Date"
+msgstr ""
+
+msgid "Series Number"
+msgstr ""
+
+msgid "Series Description"
+msgstr ""
+
+msgid "Slice Thick"
+msgstr ""
+
+msgid "Phase Encoding Direction"
+msgstr ""
+
+msgid "Image Type"
+msgstr ""
+
+msgid "Echo Number"
+msgstr ""
+
+msgid "Number of volumes"
+msgstr ""
+
 msgid "Feedback MRI Popup"
 msgstr ""
 
