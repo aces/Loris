@@ -1,6 +1,6 @@
 type PatientRecordingPath = {
   pscid: string;
-  visit_label: string;
+  'visit_label': string;
 };
 
 type EventInstance = {
@@ -14,9 +14,9 @@ type EventExtraColumn = {
 };
 
 export type RecordingEvents = {
-  hed_tags: unknown[];
+  'hed_tags': unknown[];
   instances: EventInstance[];
-  extra_columns: EventExtraColumn[];
+  'extra_columns': EventExtraColumn[];
 };
 
 export type DatasetTags = Record<string, Record<string, unknown[]>>;
@@ -30,7 +30,8 @@ export function getRecordingChannelsURL(
   recordingName: string
 ): string {
   return `${baseURL}/api/v0.0.4-dev/candidates`
-    + `/${patient.pscid}/${patient.visit_label}/recordings/${recordingName}`
+    + `/${patient.pscid}/${patient['visit_label']}`
+    + `/recordings/${recordingName}`
     + `/channels`;
 }
 
@@ -41,7 +42,7 @@ export function hasRecordingHED(
   events: RecordingEvents,
   datasetTags: DatasetTags
 ): boolean {
-  return events.hed_tags.length > 0 ||
+  return events['hed_tags'].length > 0 ||
     Object.keys(datasetTags).some((column) => {
       return Object.keys(datasetTags[column]).filter((columnValue) => {
         return datasetTags[column][columnValue].length > 0;
@@ -56,7 +57,7 @@ export function hasRecordingHED(
           });
         }
 
-        return events.extra_columns.some((prop) => {
+        return events['extra_columns'].some((prop) => {
           return prop.PropertyName === column &&
             prop.PropertyValue === columnValue;
         });
