@@ -259,10 +259,10 @@ msgid "Participant Status"
 msgstr "Statut du participant"
 
 msgid "DoB"
-msgstr "DdN"
+msgstr "Date de naissance"
 
 msgid "DoD"
-msgstr "DdD"
+msgstr "Date de décès"
 
 msgid "Sex"
 msgstr "Sexe"
