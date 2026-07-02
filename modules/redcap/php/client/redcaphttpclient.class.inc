@@ -873,20 +873,15 @@ class RedcapHttpClient
             );
         }
 
-        // get the  dictionary item of "Record ID" field
-        $record_id_field = array_values(
-            array_filter(
-                $first_instrument_dictionary,
-                fn($dict_item) => $dict_item->field_label === "Record ID"
-            )
-        )[0] ?? null;
-        if ($record_id_field === null) {
+        // get the first dictionary item
+        $first_field = $first_instrument_dictionary[0] ?? null;
+        if ($first_field === null) {
             throw new \LorisException(
                 "[redcap] no 'record_id' designed field on REDCap"
             );
         }
 
         // init the record id field name
-        $this->_record_id_field_name = $record_id_field->field_name;
+        $this->_record_id_field_name = $first_field->field_name;
     }
 }
