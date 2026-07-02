@@ -108,8 +108,8 @@ class Configuration extends \NDB_Form
 
         $parentConfigItems = $DB->pselect(
             "SELECT Label, Name
-             FROM ConfigSettings
-             WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
+             FROM ConfigCategories
+             WHERE Visible=1 ORDER BY OrderNumber",
             []
         );
 
@@ -129,6 +129,18 @@ class Configuration extends \NDB_Form
         $config = \NDB_Config::singleton();
         $DB     = $this->loris->getDatabaseConnection();
 
+        $categories = iterator_to_array(
+            $DB->pselect(
+                "SELECT ID, Name, Description, Visible, 0 AS AllowMultiple,
+                    NULL AS DataType, NULL AS Parent, Label, OrderNumber,
+                    0 AS Multilingual
+                 FROM ConfigCategories
+                 WHERE Visible=1
+                 ORDER BY OrderNumber",
+                []
+            )
+        );
+
         // Get the names and meta-information for the config settings in the database
         $configs = iterator_to_array(
             $DB->pselect(
@@ -143,18 +155,17 @@ class Configuration extends \NDB_Form
         foreach ($configs as &$setting) {
             try {
                 $setting['Disabled'] = 'Yes';
-                if ($setting['Parent'] != null) {
-                    $valueFromXML = $config->getSettingFromXML($setting['Name']);
-                    if (!is_array($valueFromXML)) {
-                        $setting['Value'][0] = $valueFromXML;
-                    } else {
-                        $setting['Value'] = $valueFromXML;
-                    }
+                $valueFromXML        = $config->getSettingFromXML($setting['Name']);
+                if (!is_array($valueFromXML)) {
+                    $setting['Value'][0] = $valueFromXML;
+                } else {
+                    $setting['Value'] = $valueFromXML;
                 }
             } catch (\ConfigurationException $e) {
                 $setting['Disabled'] = 'No';
             }
         }
+        unset($setting);
 
         // Now check for config settings from the database for the fields not
         // overridden in the config.xml
@@ -171,18 +182,37 @@ class Configuration extends \NDB_Form
                 }
             }
         }
+        unset($setting);
 
         // build a tree from configs array
-        $tree = [];
+        $settingsByID       = [];
+        $settingsByCategory = [];
         foreach ($configs as &$node) {
-            $node['Children']          = [];
-            $tree[intval($node['ID'])] = &$node;
+            $node['Children'] = [];
+            $settingsByID[intval($node['ID'])] = &$node;
         }
-        foreach ($configs as &$node) {
-            $tree[$node['Parent']]['Children'][] = &$node;
-        }
+        unset($node);
 
-        return $configs;
+        foreach ($configs as &$node) {
+            if ($node['Parent'] !== null) {
+                $settingsByID[intval($node['Parent'])]['Children'][] = &$node;
+                continue;
+            }
+
+            if ($node['CategoryID'] !== null) {
+                $settingsByCategory[intval($node['CategoryID'])][] = &$node;
+            }
+        }
+        unset($node);
+
+        foreach ($categories as &$category) {
+            $category['Disabled'] = 'No';
+            $category['Children'] = $settingsByCategory[intval($category['ID'])]
+                ?? [];
+        }
+        unset($category);
+
+        return $categories;
     }
 
     /**
