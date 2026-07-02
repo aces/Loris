@@ -338,7 +338,7 @@ class NDB_Config
         if (count($configSetting) === 1) {
             $firstConfigSetting = $configSetting->getFirstRow();
         }
-        if (count($configSetting) === 1
+        if ($firstConfigSetting !== null
             && $firstConfigSetting['ChildID'] === null
             && intval($firstConfigSetting['IsCategory'] ?? 0) === 0
         ) {
