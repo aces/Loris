@@ -273,12 +273,14 @@ class Utility
             AND c.Entity_type != 'Scanner'
             AND s.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
-        $result = $db->pselect($query, $qparams);
+        $result = $db->pselectCol($query, $qparams);
         // The result has several columns; we only want the visit labels.
-        $visitLabels = array_column(iterator_to_array($result), 'Visit_label');
+        $visitLabels = [];
+        foreach ($result as $vl) {
+            $visitLabels[$vl] = dgettext("visit", $vl);
+        }
 
-        // Generates an array where the keys are equal to the values.
-        $cache[$projStr] = array_combine($visitLabels, $visitLabels);
+        $cache[$projStr] = $visitLabels;
         return $cache[$projStr];
     }
 
@@ -298,7 +300,12 @@ class Utility
             [],
             'ProjectID'
         ) ?? [];
-        return $projects;
+        return array_map(
+            function ($name) {
+                return dgettext("Project", $name);
+            },
+            $projects
+        );
     }
 
     /**
