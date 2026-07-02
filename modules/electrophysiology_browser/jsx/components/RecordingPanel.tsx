@@ -1,15 +1,27 @@
-/* global EEG_VIS_ENABLED, loris */
-
 import React, {useState} from 'react';
-import PropTypes from 'prop-types';
+import type {ReactNode} from 'react';
+import type {TFunction} from 'i18next';
 import Panel from 'jsx/Panel';
 import DetailsPanel from './DetailsPanel';
 import SummaryPanel from './SummaryPanel';
 import {DownloadPanel} from './DownloadPanel';
+import {
+  getRecordingChannelsURL,
+  hasRecordingHED,
+} from '../utils';
+import type {
+  DatasetTags,
+  RecordingEvents,
+} from '../utils';
 
-let EEGLabSeriesProvider;
-let SeriesRenderer;
-let EEGMontage;
+declare const EEG_VIS_ENABLED: boolean;
+declare const loris: {
+  BaseURL: string;
+};
+
+let EEGLabSeriesProvider: React.ComponentType<any> | null = null;
+let SeriesRenderer: React.ComponentType<any> | null = null;
+let EEGMontage: React.ComponentType<any> | null = null;
 if (EEG_VIS_ENABLED) {
   EEGLabSeriesProvider = require(
     '../react-series-data-viewer/src/eeglab/EEGLabSeriesProvider'
@@ -22,13 +34,61 @@ if (EEG_VIS_ENABLED) {
   ).default;
 }
 
+type MetadataRow = {
+  name: ReactNode;
+  value: ReactNode;
+};
+
+type SplitData = {
+  splitCount: number;
+  splitIndex: number;
+};
+
+type RecordingFile = {
+  id: number;
+  name: string;
+  details: MetadataRow[];
+  downloads: unknown[];
+  output_type: string;
+  splitData?: SplitData;
+  summary: MetadataRow[];
+};
+
+type RecordingDatabaseEntry = {
+  chunksURLs?: string[];
+  coordSystemURL?: Array<string | false | undefined>;
+  datasetTagEndorsements: unknown;
+  datasetTags: DatasetTags;
+  eegMontage?: string;
+  electrodesURL?: Array<string | false | undefined>;
+  epochsURL?: string[];
+  events: RecordingEvents;
+  file: RecordingFile;
+  hedSchema: unknown;
+};
+
+type PatientInfo = {
+  dccid: string;
+  pscid: string;
+  visit_label: string;
+};
+
+type RecordingPanelProps = {
+  dbEntry: RecordingDatabaseEntry;
+  fileIndex: number;
+  getSplitData: (
+    physioFileID: number,
+    fileIndex: number,
+    splitIndex: number
+  ) => void;
+  patient: PatientInfo;
+  t: TFunction;
+};
+
 /**
  * Recording Panel
  *
  * This component renders all panels for one electrophysiology recording.
- *
- * @param {object} props - React Component properties
- * @return {JSX} - React markup for the component
  */
 function RecordingPanel({
   dbEntry,
@@ -36,7 +96,7 @@ function RecordingPanel({
   getSplitData,
   patient,
   t,
-}) {
+}: RecordingPanelProps): React.ReactElement {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const {
     chunksURLs,
@@ -50,23 +110,29 @@ function RecordingPanel({
     eegMontage,
   } = dbEntry;
   const file = dbEntry.file;
+  const splitData = file.splitData;
   const recordingPanelID = 'filename_panel_' + fileIndex;
   const recordingBodyID = recordingPanelID + '_body';
-  const channelsURL = `${loris.BaseURL}/api/v0.0.4-dev/candidates`
-    + `/${patient.pscid}/${patient.visit_label}/recordings/${file.name}`
-    + `/channels`;
+  const channelsURL = getRecordingChannelsURL(
+    loris.BaseURL,
+    patient,
+    file.name
+  );
+  const currentChunksURL = splitData && chunksURLs
+    ? chunksURLs[splitData.splitIndex]
+    : chunksURLs;
   const recordingHasHED = hasRecordingHED(events, datasetTags);
 
-  const splitPagination = file.splitData
-    ? [...Array(file.splitData.splitCount).keys()].map((j) => (
+  const splitPagination = splitData
+    ? [...Array(splitData.splitCount).keys()].map((j) => (
       <a
         key={j}
         className={
           'btn btn-xs btn-primary split-nav'
-          + (file.splitData.splitIndex === j ? ' active' : '')
+          + (splitData.splitIndex === j ? ' active' : '')
         }
         onClick={() => getSplitData(file.id, fileIndex, j)}
-      >{j+1}</a>
+      >{j + 1}</a>
     ))
     : [];
 
@@ -118,12 +184,13 @@ function RecordingPanel({
       >
         <div className='container-fluid'>
           <div className='row'>
-            {EEG_VIS_ENABLED &&
+            {EEGLabSeriesProvider &&
+            SeriesRenderer &&
+            EEGMontage &&
             <div className='react-series-data-viewer-scoped col-xs-12'>
               <EEGLabSeriesProvider
                 channelsURL={channelsURL}
-                chunksURL={chunksURLs?.[file.splitData?.splitIndex]
-                  || chunksURLs}
+                chunksURL={currentChunksURL}
                 epochsURL={epochsURL}
                 events={events}
                 electrodesURL={electrodesURL}
@@ -141,18 +208,18 @@ function RecordingPanel({
                   id='channel-viewer'
                   title={
                     t('Signal Viewer', {ns: 'electrophysiology_browser'}) + (
-                      file.splitData
+                      splitData
                         ? ` [${
                           t('split {{splitNum}}', {
                             ns: 'electrophysiology_browser',
-                            splitNum: file.splitData?.splitIndex + 1,
+                            splitNum: splitData.splitIndex + 1,
                           })
                         }]`
                         : ''
                     )
                   }
                 >
-                  {file.splitData &&
+                  {splitData &&
                   <>
                     <span
                       style={{
@@ -170,14 +237,14 @@ function RecordingPanel({
                     <a
                       className={
                         'btn btn-xs btn-default split-nav'
-                        + (file.splitData.splitIndex === 0
+                        + (splitData.splitIndex === 0
                           ? ' disabled'
                           : '')
                       }
                       onClick={() => getSplitData(
                         file.id,
                         fileIndex,
-                        file.splitData.splitIndex-1
+                        splitData.splitIndex - 1
                       )}
                     >
                       {'<'}
@@ -186,8 +253,8 @@ function RecordingPanel({
                     <a
                       className={
                         'btn btn-xs btn-default split-nav'
-                          + (file.splitData.splitIndex
-                          === (file.splitData.splitCount-1)
+                          + (splitData.splitIndex
+                          === (splitData.splitCount - 1)
                             ? ' disabled'
                             : '')
                       }
@@ -195,7 +262,7 @@ function RecordingPanel({
                         () => getSplitData(
                           file.id,
                           fileIndex,
-                          file.splitData.splitIndex+1
+                          splitData.splitIndex + 1
                         )
                       }
                     >
@@ -240,44 +307,5 @@ function RecordingPanel({
     </div>
   );
 }
-
-/**
- * Check whether a recording has HED tags.
- *
- * @param {object} events
- * @param {object} datasetTags
- * @return {boolean}
- */
-function hasRecordingHED(events, datasetTags) {
-  return events.hed_tags.length > 0 ||
-    Object.keys(datasetTags).some((column) => {
-      return Object.keys(datasetTags[column]).filter((columnValue) => {
-        return datasetTags[column][columnValue].length > 0;
-      }).some((columnValue) => {
-        if (column === 'trial_type') {
-          return events.instances.some((event) => {
-            return event['TrialType'] === columnValue;
-          });
-        } else if (column === 'value') {
-          return events.instances.some((event) => {
-            return event['EventValue'] === columnValue;
-          });
-        }
-
-        return events.extra_columns.some((prop) => {
-          return prop.PropertyName === column &&
-            prop.PropertyValue === columnValue;
-        });
-      });
-    });
-}
-
-RecordingPanel.propTypes = {
-  dbEntry: PropTypes.object.isRequired,
-  fileIndex: PropTypes.number.isRequired,
-  getSplitData: PropTypes.func.isRequired,
-  patient: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired,
-};
 
 export default RecordingPanel;
