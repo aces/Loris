@@ -365,14 +365,15 @@ class UploadForm extends Component {
     let messageToPrint = '';
     let resp = null;
     if (xhr.response) {
-      try{
+      try {
         resp = JSON.parse(xhr.response);
-      } catch(e){
+      } 
+      catch (e) {
         console.warn('Failed upload response was not valid JSON', e);
       }
     }
     if (resp && resp.errors) {
-        errorMessage = resp.errors;
+      errorMessage = resp.errors;
       } else if (xhr.status == 0) {
       errorMessage = {
         'mriFile': [t('Upload failed: a network error occured',
