@@ -576,9 +576,6 @@ msgstr "Chargement en cours..."
 msgid "Permission denied"
 msgstr "Permission refusée"
 
-msgid "Permission Denied"
-msgstr "Permission refusée"
-
 msgid "Unauthorized"
 msgstr "Non autorisé"
 
