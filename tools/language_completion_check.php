@@ -17,7 +17,10 @@
  * The script exits with a "1" if errors are found or "0" if there are
  * no errors present, so that it can be integrated into our testing pipeline.
  */
-require_once 'generic_includes.php';
+// This only uses standard php functions and doesn't use any loris infrastructure,
+// don't include generic_includes because then the GitHub Actions needs a database
+// connecction/project directory/etc
+//require_once 'generic_includes.php';
 
 $patterns = [
     __DIR__ . "/../locale/*.pot",
