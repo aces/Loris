@@ -335,7 +335,7 @@ msgid "Access denied"
 msgstr "Accès refusé"
 
 msgid "No."
-msgstr "Non."
+msgstr "N°"
 
 msgid "Ethnicity"
 msgstr "Ethnicité"
