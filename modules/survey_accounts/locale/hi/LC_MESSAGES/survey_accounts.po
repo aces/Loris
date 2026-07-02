@@ -97,5 +97,3 @@ msgstr "आप इस सत्र की परियोजना से सं
 msgid "Confirm Email address"
 msgstr "ईमेल पते की पुष्टि करें"
 
-msgid "Email is not valid."
-msgstr "विद्युतडाक मान्य नहीं है।"
