@@ -4,7 +4,8 @@ import type {TFunction} from 'i18next';
 import Panel from 'jsx/Panel';
 import DetailsPanel from './DetailsPanel';
 import SummaryPanel from './SummaryPanel';
-import {DownloadPanel} from './DownloadPanel';
+import DownloadPanel from './DownloadPanel';
+import type {DownloadGroup} from './DownloadPanel';
 import {
   getRecordingChannelsURL,
   hasRecordingHED,
@@ -48,8 +49,7 @@ type RecordingFile = {
   id: number;
   name: string;
   details: MetadataRow[];
-  downloads: unknown[];
-  output_type: string;
+  downloads: DownloadGroup[];
   splitData?: SplitData;
   summary: MetadataRow[];
 };
@@ -285,8 +285,10 @@ function RecordingPanel({
                     <DownloadPanel
                       id={'file_download_' + fileIndex}
                       downloads={file.downloads}
+                      dccid={patient.dccid}
+                      visit={patient.visit_label}
                       physioFileID={file.id}
-                      outputType={file.output_type}
+                      physioFileName={file.name}
                       t={t}
                     />
                   </div>
