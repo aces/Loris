@@ -214,6 +214,26 @@ jobs:
       if: always()
       run: cat error_log
 
+  languagecheck:
+    runs-on: ubuntu-latest
+    needs:
+      - buildphp
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.5']
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: zip, php-ast
+
+    - name: Check for extra language strings
+      run: php tools/language_completion_check.php --extra
+
   docker:
     runs-on: ubuntu-latest
     strategy:
