@@ -280,7 +280,7 @@ class Utility
             $visitLabels[$vl] = dgettext("visit", $vl);
         }
 
-        $cache[$projStr] = array_combine($visitLabels, $visitLabels);
+        $cache[$projStr] = $visitLabels;
         return $cache[$projStr];
     }
 
