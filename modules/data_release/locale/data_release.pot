@@ -48,9 +48,6 @@ msgstr ""
 msgid "Manage Permissions"
 msgstr ""
 
-msgid "An error occured while loading the page."
-msgstr ""
-
 msgid "Note"
 msgstr ""
 
