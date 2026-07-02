@@ -256,18 +256,6 @@ msgstr ""
 msgid "Sex"
 msgstr ""
 
-msgid "Female"
-msgid_plural "Females"
-msgstr[0] ""
-
-msgid "Male"
-msgid_plural "Males"
-msgstr[0] ""
-
-msgid "Other"
-msgid_plural "Others"
-msgstr[0] ""
-
 msgid "Feedback"
 msgstr ""
 
