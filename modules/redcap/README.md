@@ -96,3 +96,16 @@ To be importable, the LORIS version of a REDCap instrument must:
 
 Because the REDCap module imports REDCap instruments as LORIS LINST instruments, REDCap instruments must adhere to a few naming requirements to be LINST-compatible:
 - A field name should not finish with `_status`.
+
+## REDCap unique idnetifier field
+
+REDCap defines a unique identifier field, sometimes called `Record ID` field. This field uniquely identifies a record and its name can be changed for each project.
+As stated in the current REDCap documentation, it is defined as _"the first field of the first instrument, and if not using a template, the default is 'Record ID' [record_id]"_. 
+
+When exporting REDCap form data, it is also used to unlock a "hidden" feature, which adds several other metadata fields in the response, including:
+
+- `redcap_event_name`: REDCap unique event name.
+- `redcap_repeat_instrument`: in the case of repeated instruments, the instrument name.
+- `redcap_repeat_instance`: in the case of repeated instruments, the instrument repeated instance number.
+
+This is automatically set up during the client initialization and does not need any other set up.

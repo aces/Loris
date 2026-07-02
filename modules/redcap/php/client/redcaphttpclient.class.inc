@@ -68,6 +68,13 @@ class RedcapHttpClient
     private array $_cache;
 
     /**
+     * The record_id field name.
+     *
+     * @var string|null
+     */
+    private ?string $_record_id_field_name;
+
+    /**
      * Create a new REDCap Client for a specific REDCap instance and project.
      *
      * @param string $instance_url      A REDCap instance URL.
@@ -85,6 +92,9 @@ class RedcapHttpClient
         $this->_token   = $project_api_token;
         $this->_client  = new Client($api_url);
         $this->_verbose = $verbose;
+
+        // needs to be init
+        $this->_initRecordIDFieldName();
     }
 
     /**
@@ -817,7 +827,7 @@ class RedcapHttpClient
             'forms'                  => $instrument_names,
             // The 'record_id' parameter adds both the 'record_id' and
             // 'redcap_event_name' fields to the REDCap records.
-            'fields'                 => ['record_id'],
+            'fields'                 => [$this->_record_id_field_name],
             'events'                 => $unique_event_names,
             'records'                => $record_ids,
             'rawOrLabel'             => 'raw',
@@ -829,5 +839,49 @@ class RedcapHttpClient
 
         // send request
         return json_decode($this->_sendRequest($data), true);
+    }
+
+    /**
+     * Initialize the record ID field name from REDCap project.
+     * By default, it is defined as "record_id", but it can vary and be user-defined.
+     * The current documentation rule seems to be: "the record ID field name is
+     * accessible as the first field of the first instrument."
+     *
+     * @return void
+     */
+    private function _initRecordIDFieldName(): void
+    {
+        // get the REDCap instrument list
+        $instruments = $this->getInstruments();
+        if (empty($instruments)) {
+            throw new \LorisException("[redcap] no instrument in the project");
+        }
+
+        // get the first instrument name
+        $first_instrument_name = $instruments[0]->name ?? null;
+        if ($first_instrument_name === null) {
+            throw new \LorisException("[redcap] cannot get the first instrument");
+        }
+
+        // get the dictionary of that instrument
+        $first_instrument_dictionary = $this->getDataDictionary(
+            [$first_instrument_name]
+        );
+        if (empty($first_instrument_dictionary)) {
+            throw new \LorisException(
+                "[redcap] cannot get the first instrument dictionary"
+            );
+        }
+
+        // get the first dictionary item
+        $first_field = $first_instrument_dictionary[0] ?? null;
+        if ($first_field === null) {
+            throw new \LorisException(
+                "[redcap] no 'record_id' designed field on REDCap"
+            );
+        }
+
+        // init the record id field name
+        $this->_record_id_field_name = $first_field->field_name;
     }
 }
