@@ -488,6 +488,14 @@ msgid "Invalid DCCID ({{id}}) on line {{line}}."
 msgstr "DCCID invalide ({{id}}) sur la ligne {{line}}."
 
 #, fuzzy
+msgid "Invalid PSCID"
+msgstr "PSCID invalide"
+
+#, fuzzy
+msgid "Invalid PSCID ({{id}}) on line {{line}}."
+msgstr "PSCID invalide ({{id}}) sur la ligne {{line}}."
+
+#, fuzzy
 msgid "Welcome to the Data Query Tool"
 msgstr "Bienvenue dans l'outil de requête de données"
 

@@ -100,6 +100,10 @@ msgstr[0] "為り手"
 msgid "Genomics"
 msgstr "ゲノミクス"
 
+#: modules/biobank/php/module.class.inc:140
+msgid "Biobank"
+msgstr "バイオバンク"
+
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
 msgstr "電気生理学"
@@ -245,6 +249,9 @@ msgstr "参加者ステータス"
 
 msgid "DoB"
 msgstr "生年月日"
+
+msgid "DoD"
+msgstr "死亡日"
 
 msgid "Sex"
 msgstr "性別"
@@ -465,6 +472,12 @@ msgstr "スクリーニング"
 msgid "Visit"
 msgstr "訪問"
 
+msgid "Created"
+msgstr "作成済み"
+
+msgid "Sent"
+msgstr "送信済み"
+
 msgid "Approval"
 msgstr "承認"
 
@@ -557,6 +570,10 @@ msgstr "クリア"
 
 msgid "Add"
 msgstr "追加"
+
+#, fuzzy
+msgid "Update"
+msgstr "修正"
 
 msgid "Dataset"
 msgstr "データセット"

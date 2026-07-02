@@ -192,10 +192,10 @@ class ManageFileForm extends Component {
                 label={t('Username', {ns: 'loris'})}
                 options={
                   this.state.fieldOptions.usersByFilePermissions[
-                    this.state.specificReleaseI
+                    this.state.specificReleaseId
                   ]
                 }
-                onUserInput={(value) => {
+                onUserInput={(formElement, value) => {
                   this.setState({
                     selectedUserToRemove: value,
                   });

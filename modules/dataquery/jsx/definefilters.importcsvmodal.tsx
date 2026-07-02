@@ -46,6 +46,7 @@ function ImportCSVModal(props: {
     });
 
   const candIDRegex = new RegExp('^[1-9][0-9]{5}$');
+  const pscidRegex = new RegExp('^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]+$');
 
   /**
    * Callback function for after papaparse has parsed the csv
@@ -98,6 +99,17 @@ function ImportCSVModal(props: {
             type: 'error',
             title: t('Invalid DCCID', {ns: 'dataquery'}),
             text: t('Invalid DCCID ({{id}}) on line {{line}}.',
+              {ns: 'dataquery', id: value.data[i][0], line: i+1}),
+          });
+          setCSVFile(null);
+          return;
+        }
+      } else if (idType === 'PSCID') {
+        if (pscidRegex.test(value.data[i][0]) !== true) {
+          swal.fire({
+            type: 'error',
+            title: t('Invalid PSCID', {ns: 'dataquery'}),
+            text: t('Invalid PSCID ({{id}}) on line {{line}}.',
               {ns: 'dataquery', id: value.data[i][0], line: i+1}),
           });
           setCSVFile(null);

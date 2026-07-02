@@ -85,6 +85,22 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
+        if (!empty($row['version'])) {
+            $row['version']
+                = html_entity_decode(
+                    $row['version'],
+                    ENT_QUOTES | ENT_HTML5,
+                    'UTF-8'
+                );
+        }
+        if (!empty($row['fileName'])) {
+            $row['fileName']
+                = html_entity_decode(
+                    $row['fileName'],
+                    ENT_QUOTES | ENT_HTML5,
+                    'UTF-8'
+                );
+        }
         return new DataReleaseRow($row);
     }
 }

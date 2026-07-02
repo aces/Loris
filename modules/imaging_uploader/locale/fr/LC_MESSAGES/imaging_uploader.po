@@ -18,6 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Imaging Uploader"
 msgstr "Téléverseur d'images"
@@ -45,10 +46,10 @@ msgid "File must be of type .tgz or tar.gz or .zip"
 msgstr "Le fichier doit être en format .tgz, tar.gz ou .zip."
 
 #, fuzzy
-msgid "For files that are not Phantom Scans, file name must begin with"
+msgid "For files that are not Phantom Scans, file name must begin with <0>{{prefix}}</0>"
 msgstr ""
 "Pour les fichiers qui ne sont pas des scans fantômes, le nom du fichier doit "
-"commencer par"
+"commencer par <0>{{prefix}}</0>"
 
 #, fuzzy
 msgid ""

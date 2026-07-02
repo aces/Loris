@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Module Manager"
 msgstr "モジュールマネージャー"
@@ -27,7 +28,7 @@ msgstr "モジュール名"
 msgid "Full Name"
 msgstr "フルネーム"
 
-msgid "Could not update {{name}}"
+msgid "Could not update {{name}}."
 msgstr "{{name}} を更新できませんでした。"
 
 msgid "Updated {{name}} status!"

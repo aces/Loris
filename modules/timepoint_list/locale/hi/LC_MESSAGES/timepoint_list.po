@@ -1,0 +1,89 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2026-06-11 12:09-0400\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Timepoint List"
+msgstr "टाइमपॉइंट सूची"
+
+msgid "Click to Open"
+msgstr "खोलने के लिए क्लिक करें"
+
+msgid "Stage Status"
+msgstr "चरण की स्थिति"
+
+msgid "Date of Stage"
+msgstr "चरण की तिथि"
+
+msgid "Imaging Scan Done"
+msgstr "इमेजिंग स्कैन पूरा हुआ"
+
+msgid "BVL QC"
+msgstr "बीवीएल गुणवत्ता नियंत्रण"
+
+msgid "BVL Exclusion"
+msgstr "बीवीएल बहिष्करण"
+
+msgid "Registered By"
+msgstr "द्वारा पंजीकृत"
+
+msgid "List of Visits (Time Points)"
+msgstr "भेंटों की सूची (टाइमपॉइंट्स)"
+
+msgid "Create time point"
+msgstr "टाइमपॉइंट बनाएँ"
+
+msgid "Candidate Info"
+msgstr "उम्मीदवार जानकारी"
+
+msgid "View Imaging datasets"
+msgstr "इमेजिंग डेटासेट देखें"
+
+msgid "Actions:"
+msgstr "कार्रवाइयाँ:"
+
+msgid "Derived Age"
+msgstr "व्युत्पन्न आयु"
+
+msgid "EDC Age"
+msgstr "ईडीसी आयु"
+
+msgid "Biological Sex"
+msgstr "जैविक लिंग"
+
+msgid "You do not have access to any timepoints registered for this candidate."
+msgstr "आपको इस उम्मीदवार के लिए पंजीकृत किसी भी टाइमपॉइंट तक पहुँच नहीं है।"
+
+msgid " y / "
+msgstr " व / "
+
+msgid " m"
+msgstr " म"
+
+msgid "Not Done"
+msgstr "पूरा नहीं हुआ"
+
+msgid "Visual"
+msgstr "दृश्य"
+
+msgid "Hardcopy"
+msgstr "हार्डकॉपी"
+
+msgid "Complete"
+msgstr "पूर्ण"

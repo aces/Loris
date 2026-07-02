@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Imaging Uploader"
 msgstr "इमेजिंग अपलोडर"
@@ -39,8 +40,8 @@ msgstr "फ़ाइल इससे अधिक नहीं हो सकत�
 msgid "File must be of type .tgz or tar.gz or .zip"
 msgstr "फ़ाइल का प्रकार .tgz, .tar.gz या .zip होना चाहिए"
 
-msgid "For files that are not Phantom Scans, file name must begin with"
-msgstr "जो फाइलें फैंटम स्कैन नहीं हैं, उनका नाम इससे शुरू होना चाहिए"
+msgid "For files that are not Phantom Scans, file name must begin with <0>{{prefix}}</0>"
+msgstr "जो फ़ाइलें फैंटम स्कैन नहीं हैं, उनके लिए फ़ाइल का नाम <0>{{prefix}}</0> से शुरू होना चाहिए।"
 
 msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
 msgstr "उदाहरण के लिए, DCCID {{dccid}}, PSCID {{pscid}}, और विजिट लेबल {{visitLabel}} के लिए फ़ाइल नाम की शुरुआत इससे होनी चाहिए: {{prefix}}"

@@ -118,7 +118,7 @@ msgid "Last Update"
 msgstr ""
 
 # ProbandInfo Evolution tab
-msgid "'An error occurred when loading the form!'"
+msgid "An error occurred when loading the form!"
 msgstr ""
 
 msgid "DOB do not match!"
@@ -226,4 +226,11 @@ msgid "Details: "
 msgstr ""
 
 msgid "Comments: "
+msgstr ""
+
+# Widgets
+msgid "Consent Summary"
+msgstr ""
+
+msgid "Consent Type"
 msgstr ""

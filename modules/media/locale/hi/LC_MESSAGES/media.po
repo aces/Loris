@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Media"
 msgstr "मीडिया"
@@ -136,9 +137,6 @@ msgstr "इस नाम की एक फ़ाइल पहले से म�
 
 msgid "Cancelled"
 msgstr "रद्द कर दिया गया"
-
-msgid "Your imaginary file is safe :"
-msgstr "आपकी काल्पनिक फ़ाइल सुरक्षित है :"
 
 msgid "Success!"
 msgstr "सफलता!"

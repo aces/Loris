@@ -126,3 +126,40 @@ msgstr "参加者"
 
 msgid "Unknown"
 msgstr "未知"
+
+msgid "Total Scans: {{count}}"
+msgstr "扫描总数：{{count}}"
+
+msgid "There have been no scans yet."
+msgstr "目前还没有扫描。"
+
+msgid "There have been no candidates registered yet."
+msgstr "目前还没有已注册的候选人。"
+
+msgid "There is no data yet."
+msgstr "目前还没有数据。"
+
+# Project sizes
+msgid "Project Dataset Sizes"
+msgstr "项目数据集大小"
+
+msgid "Dataset size breakdown by project"
+msgstr "按项目划分的数据集大小明细"
+
+msgid "Dataset Size"
+msgstr "数据集大小"
+
+msgid "Size (GB)"
+msgstr "大小（GB）"
+
+msgid "%s GB"
+msgstr "%s GB"
+
+msgid "Total Size: {{count}} GB"
+msgstr "总大小：{{count}} GB"
+
+msgid "Pie"
+msgstr "饼图"
+
+msgid "Bar"
+msgstr "柱状图"

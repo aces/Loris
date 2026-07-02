@@ -42,6 +42,6 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-msgid "Could not find module {{id}}"
+msgid "Could not find module {{id}}."
 msgstr ""
 
