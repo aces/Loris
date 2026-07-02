@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import React, {useState} from 'react';
 import type {ReactNode} from 'react';
 import type {TFunction} from 'i18next';
@@ -70,7 +71,7 @@ type RecordingDatabaseEntry = {
 type PatientInfo = {
   dccid: string;
   pscid: string;
-  visit_label: string;
+  'visit_label': string;
 };
 
 type RecordingSectionProps = {
@@ -286,7 +287,7 @@ function RecordingSection({
                       id={'file_download_' + fileIndex}
                       downloads={file.downloads}
                       dccid={patient.dccid}
-                      visit={patient.visit_label}
+                      visit={patient['visit_label']}
                       physioFileID={file.id}
                       physioFileName={file.name}
                       t={t}
