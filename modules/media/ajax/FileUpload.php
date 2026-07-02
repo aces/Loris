@@ -66,7 +66,7 @@ function editFile()
         || (!$user->hasPermission('access_all_profiles')
         && !$user->hasCenter(new \CenterID(strval($row['CenterID']))))
     ) {
-        showMediaError("Permission Denied", 403);
+        showMediaError("Permission denied", 403);
         exit(0);
     }
 
@@ -106,7 +106,7 @@ function uploadFile()
     $config = NDB_Config::singleton();
     $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
-        showMediaError("Permission Denied", 403);
+        showMediaError("Permission denied", 403);
         exit(0);
     }
 
