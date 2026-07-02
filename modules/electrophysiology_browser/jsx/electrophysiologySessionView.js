@@ -16,6 +16,7 @@ import DataTable from 'jsx/DataTable';
 import Panel from 'jsx/Panel';
 import {FilePanel} from './components/electrophysiology_session_panels';
 import SummaryPanel from './components/SummaryPanel';
+import DetailsPanel from './components/DetailsPanel';
 import {DownloadPanel} from './components/DownloadPanel';
 import Sidebar from './components/Sidebar';
 import SidebarContent from './components/SidebarContent';
@@ -395,7 +396,7 @@ class ElectrophysiologySessionView extends Component {
                   prop.PropertyValue === columnValue;
               });
             });
-          });
+        });
         database.push(
           <div key={i}>
             <FilePanel
@@ -517,6 +518,14 @@ class ElectrophysiologySessionView extends Component {
                   </div>
                 </EEGLabSeriesProvider>
               </div>}
+              <div className='col-xs-12'>
+                  <DetailsPanel
+                    id={i + '_details'}
+                    title={this.state.database[i].file.name}
+                    data={this.state.database[i].file.details}
+                    t={t}
+                  />
+              </div>
             </FilePanel>
           </div>
         );
