@@ -90,8 +90,14 @@ class Data_Release extends \DataFrameworkMenu
 
         foreach ($result as $id => $row) {
             $version     = $row['version'] == null || $row['version'] == '' ?
-               'Unversioned' : $row['version'];
-            $result[$id] = $row['file_name'].' - '.$version;
+               'Unversioned' :
+               html_entity_decode($row['version'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $filename    = html_entity_decode(
+                $row['file_name'],
+                ENT_QUOTES | ENT_HTML5,
+                'UTF-8'
+            );
+            $result[$id] = $filename.' - '.$version;
         }
 
         return $result;
@@ -118,9 +124,16 @@ class Data_Release extends \DataFrameworkMenu
 
         $versionsList = [];
         foreach ($versions as $version) {
-            $version = $version == null || $version == '' ?
-                'Unversioned' : $version;
-            $versionsList[$version] = $version;
+            if ($version === null || $version === '') {
+                $versionsList['Unversioned'] = 'Unversioned';
+            } else {
+                $versionsList[$version]
+                    = html_entity_decode(
+                        $version,
+                        ENT_QUOTES | ENT_HTML5,
+                        'UTF-8'
+                    );
+            }
         }
 
         return $versionsList;
@@ -229,13 +242,12 @@ class Data_Release extends \DataFrameworkMenu
     {
         $result = $db->pselect(
             "
-            SELECT LOWER(upr.userid) as userid, dr.id as data_release_id
+            SELECT dpr.userid as userid, dr.id as data_release_id
             FROM data_release_permissions dpr
             JOIN data_release dr ON dr.id = dpr.data_release_id
-            JOIN user_project_rel upr ON upr.ProjectID = dr.ProjectID
-            WHERE upr.UserID = :userID",
-            [':userID' => \User::singleton()->getID()],
-            'file_name'
+            WHERE dr.ProjectID IS NULL OR dr.ProjectID IN
+                (SELECT ProjectID FROM user_project_rel WHERE UserID = :userID)",
+            [':userID' => \User::singleton()->getID()]
         );
 
         $users     = $this->getUsersList($db);
