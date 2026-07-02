@@ -164,14 +164,14 @@ msgstr "Afficher les paramètres avancés"
 
 #, fuzzy
 msgid "The \"nested groups\" options are advanced options for queries that do not have any specific condition at the base of the query. Use Add nested \"or\" condition groups if you need to build a query of the form. (a or b) and (c or d) [or (e and f)..]"
-msgstr "Les options « groupes imbriqués » sont des options avancées pour les requêtes qui ne comportent aucune condition spécifique à la base de la requête. Utilisez Ajouter des groupes de conditions « ou » imbriqués si vous devez créer une requête de la forme (a ou b) et (c ou d) [ou (e et f)..]."
+msgstr "Les options de « groupes imbriqués » sont des options avancées pour les requêtes qui ne comportent aucune condition spécifique à la base de la requête. Utilisez \"Ajouter des groupes de conditions « ou » imbriqués\" si vous devez créer une requête de la forme (a ou b) et (c ou d) [ou (e et f)..]."
 
 msgid "Add nested \"or\" condition groups"
 msgstr "Ajouter des groupes imbriqués de conditions « ou »"
 
 #, fuzzy
 msgid "Use Add nested \"and\" condition groups if you need to build a query of the form (a and b) or (c and d) [or (e and f)..]"
-msgstr "Utilisez Ajouter des groupes de conditions imbriquées « et » si vous devez créer une requête sous la forme (a et b) ou (c et d) [ou (e et f)..]."
+msgstr "Utilisez \"Ajouter des groupes de conditions « et » imbriquées\" si vous devez créer une requête sous la forme (a et b) ou (c et d) [ou (e et f)..]."
 
 msgid "Add nested \"and\" condition groups"
 msgstr "Ajouter des groupes imbriqués de conditions « et »"
@@ -188,11 +188,11 @@ msgstr ""
 
 #, fuzzy
 msgid "Click Add Condition to add one or more conditions to your filters (ie. \"Date Of Birth < 2015-02-15\"). This is most likely where you want to start your filters."
-msgstr "Cliquez sur Ajouter une condition pour ajouter une ou plusieurs conditions à vos filtres (par exemple, « Date de naissance < 15/02/2015 »). C'est probablement par là que vous souhaitez commencer vos filtres."
+msgstr "Cliquez sur \"Ajouter une condition\" pour ajouter une ou plusieurs conditions à vos filtres (par exemple, « Date de naissance < 15/02/2015 »). C'est probablement la voie que vous souhaiteriez pour commencer vos filtres."
 
 #, fuzzy
 msgid "You can also import a population from a CSV by clicking the Import from CSV button."
-msgstr "Vous pouvez également importer une population à partir d'un fichier CSV en cliquant sur le bouton Importer à partir d'un fichier CSV."
+msgstr "Vous pouvez également importer une population à partir d'un fichier CSV en cliquant sur le bouton \"Importer à partir d'un fichier CSV\"."
 
 #, fuzzy
 msgid "The advanced options are for queries that do not have a condition to add at the base of the query."
@@ -205,7 +205,7 @@ msgid "Import from CSV"
 msgstr "Importer depuis un fichier CSV"
 
 msgid "Use New \"and\" subgroup if the rest of the query you need to write is a subgroup consisting of \"and\" conditions. ie your query is of the form: (your condition above) or (c and d [and e and f..])"
-msgstr "Utilisez le nouveau sous-groupe « et » si le reste de la requête que vous devez écrire est un sous-groupe composé de conditions « et ». Autrement dit, votre requête est de la forme suivante : (votre condition ci-dessus) ou (c et d [et e et f..])"
+msgstr "Utilisez \"Nouveau sous-groupe « et »\" si le reste de la requête que vous devez écrire est un sous-groupe composé de conditions « et ». Autrement dit, votre requête est de la forme suivante : (votre condition ci-dessus) ou (c et d [et e et f..])"
 
 #, fuzzy
 msgid "New \"and\" subgroup"
@@ -213,7 +213,7 @@ msgstr "Nouveau sous-groupe « et »"
 
 #, fuzzy
 msgid "Use New \"or\" subgroup if the rest of the query you need to write is a subgroup consisting of \"or\" conditions. ie your query is of the form: (your condition above) and (c or d [or e or f..])"
-msgstr "Utilisez le nouveau sous-groupe « ou » si le reste de la requête que vous devez écrire est un sous-groupe composé de conditions « ou ». Autrement dit, votre requête est de la forme suivante : (votre condition ci-dessus) et (c ou d [ou e ou f..])."
+msgstr "Utilisez \"Nouveau sous-groupe « ou »\" si le reste de la requête que vous devez écrire est un sous-groupe composé de conditions « ou ». Autrement dit, votre requête est de la forme suivante : (votre condition ci-dessus) et (c ou d [ou e ou f..])."
 
 #, fuzzy
 msgid "New \"or\" subgroup"
@@ -407,7 +407,7 @@ msgstr "Le fichier CSV téléversé est vide."
 
 #, fuzzy
 msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
-msgstr "{{expectedLength}} colonnes attendues dans le fichier CSV. {{gotLength}} colonne trouvée à la ligne {{line}}."
+msgstr "{{expectedLength}} colonnes attendues dans le fichier CSV. {{gotLength}} colonne(s) trouvée(s) à la ligne {{line}}."
 
 #, fuzzy
 msgid "Invalid DCCID"
@@ -586,18 +586,18 @@ msgstr "Continuer à définir les champs"
 
 #, fuzzy
 msgid "Above, there is also a Study Queries panel. This are a special type of shared queries that have been pinned by a study administer to always display at the top of this page."
-msgstr "Au-dessus, vous trouverez également un panneau « Requêtes d'étude ». Il s'agit d'un type particulier de requêtes partagées qui ont été épinglées par un administrateur d'étude afin d'être toujours affichées en haut de cette page."
+msgstr "En haut de cette page, vous trouverez également un panneau « Requêtes d'étude ». Il s'agit d'un type particulier de requêtes partagées qui ont été épinglées par un administrateur d'étude afin d'être toujours affichées."
 
 msgid "The data query tool allows you to query data within LORIS. There are three steps to defining a query:"
-msgstr "L'outil de requête de données vous permet de télécharger les données contenues dans LORIS. La définition d'une requête se fait en trois étapes :"
+msgstr "L'outil de requête de données vous permet de créer des requêtes afin de sélectionner et télécharger les données contenues dans LORIS. La définition d'une requête se fait en trois étapes :"
 
 #, fuzzy
 msgid "First, you must select the fields that you're interested in on the Define Fields page."
-msgstr "Tout d'abord, vous devez sélectionner les champs qui vous intéressent sur la page Définir les champs."
+msgstr "Tout d'abord, vous devez sélectionner les champs qui vous intéressent sur la page \"Définir les champs\"."
 
 #, fuzzy
 msgid "Next, you can optionally define filters on the Define Filters page to restrict the population that is returned."
-msgstr "Ensuite, vous pouvez éventuellement définir des filtres sur la page Définir les filtres afin de restreindre la population renvoyée."
+msgstr "Ensuite, vous pouvez éventuellement définir des filtres sur la page \"Définir les filtres\" afin de restreindre la population renvoyée."
 
 #, fuzzy
 msgid "Finally, you view your query results on the View Data page"
@@ -607,15 +607,15 @@ msgstr ""
 
 #, fuzzy
 msgid "The Next Steps on the bottom right of your screen always the context-sensitive next steps that you can do to build your query."
-msgstr "Les étapes suivantes, en bas à droite de votre écran, sont toujours les étapes contextuelles suivantes que vous pouvez suivre pour créer votre requête."
+msgstr "La section \"Étapes suivantes\" en bas à droite de votre écran vous permet d'avoir une vue contextuelle sur les différentes parties de la création de votre requête."
 
 #, fuzzy
 msgid "Your recently run queries will be displayed in the Recent Queries panel below. Instead of building a new query, you can reload a query that you've recently run by clicking on the icon next to the query."
-msgstr "Vos requêtes récentes s'affichent dans le panneau Requêtes récentes ci-dessous. Au lieu de créer une nouvelle requête, vous pouvez recharger une requête que vous avez récemment exécutée en cliquant sur l'icône à côté de la requête."
+msgstr "Vos requêtes récentes s'affichent dans le panneau \"Requêtes récentes\" ci-dessous. Au lieu de créer une nouvelle requête, vous pouvez recharger une requête que vous avez récemment exécutée en cliquant sur l'icône à côté de la requête."
 
 #, fuzzy
 msgid "Queries can be shared with others by clicking the icon. This will cause the query to be shared with all users who have access to the fields used by the query. It will display in a Shared Queries panel below the Recent Queries."
-msgstr "Les requêtes peuvent être partagées avec d'autres utilisateurs en cliquant sur l'icône. La requête sera alors partagée avec tous les utilisateurs ayant accès aux champs utilisés par la requête. Elle s'affichera dans le panneau Requêtes partagées situé sous les Requêtes récentes."
+msgstr "Les requêtes peuvent être partagées avec d'autres utilisateurs en cliquant sur l'icône. La requête sera alors partagée avec tous les utilisateurs ayant accès aux champs utilisés par la requête. Elle s'affichera dans le panneau \"Requêtes partagées\" situé sous les \"Requêtes récentes\"."
 
 #, fuzzy
 msgid "You may also give a query a name at any time by clicking the icon. This makes it easier to find queries you care about by giving them an easier to remember name that can be used for filtering. When you share a query, the name will be shared along with it."

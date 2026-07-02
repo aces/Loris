@@ -351,7 +351,7 @@ msgstr "Les doublons ne sont pas autorisés."
 
 #, fuzzy
 msgid "Invalid string format. Expected channel names delimited by \"{{channelDelimiter}}\""
-msgstr "Format de chaîne invalide. Les noms de chaînes attendus doivent être délimités par « {{channelDelimiter}} »."
+msgstr "Format de texte invalide. Les noms attendus doivent être délimités par « {{channelDelimiter}} »."
 
 #, fuzzy
 msgid "String contains one or more unrecognized channels"

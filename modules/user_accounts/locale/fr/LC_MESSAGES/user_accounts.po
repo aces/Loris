@@ -59,7 +59,7 @@ msgid "Notes"
 msgstr "Notes"
 
 msgid "It is recommended to use an email address as the username, for clarity and uniqueness."
-msgstr "Il est recommandé d'utiliser une adresse courriel comme nom d'utilisateur, pour plus de clarté et de singularité."
+msgstr "Il est recommandé d'utiliser une adresse courriel comme nom d'utilisateur, pour une plus grande clarté et unicité."
 
 msgid "When generating a new password, please notify the user by checking 'Send email to user' box below!"
 msgstr "Lorsque vous générez un nouveau mot de passe, veuillez en informer l'utilisateur en cochant la case « Envoyer un courriel à l'utilisateur » ci-dessous !"
@@ -211,7 +211,7 @@ msgid "You cannot edit your own account settings"
 msgstr "Vous ne pouvez pas modifier les paramètres de votre propre compte"
 
 msgid "To change your email or password, go to \"My Preferences\""
-msgstr "Pour modifier votre adresse e-mail ou votre mot de passe, rendez-vous dans « Mes préférences »"
+msgstr "Pour modifier votre adresse courriel ou votre mot de passe, rendez-vous dans « Mes préférences »"
 
 msgid "For any other changes, contact an administrator"
 msgstr "Pour toute autre modification, veuillez contacter un administrateur."

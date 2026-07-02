@@ -52,7 +52,7 @@ msgstr ""
 
 #, fuzzy
 msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
-msgstr "Par exemple, pour DCCID {{dccid}}, PSCID {{pscid}} et Libellé de visite {{visitLabel}}, le nom du fichier doit être préfixé par : {{prefix}}"
+msgstr "Par exemple, pour DCCID {{dccid}}, PSCID {{pscid}} et libellé de visite {{visitLabel}}, le nom du fichier doit être préfixé par : {{prefix}}"
 
 #, fuzzy
 msgid "The file {{fileName}} must be of type .tgz, .tar.gz or .zip."
