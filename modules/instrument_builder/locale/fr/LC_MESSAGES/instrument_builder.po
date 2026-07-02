@@ -212,12 +212,8 @@ msgid "End year happened before start year"
 msgstr "L'année de fin est antérieure à l'année de début."
 
 #, fuzzy
-msgid ""
-"The year must have exactly 4 digits. Please choose an integer number between "
-"1000 and 9999."
-msgstr ""
-"L'année doit comporter exactement 4 chiffres. Veuillez choisir un nombre "
-"entier compris entre 1000 et 9999."
+msgid "The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999."
+msgstr "L'année doit comporter exactement 4 chiffres. Veuillez choisir un nombre entier compris entre 1000 et 9999."
 
 #, fuzzy
 msgid "Max value must be larger than min value"
@@ -254,3 +250,6 @@ msgstr "Haut"
 
 msgid "Browse"
 msgstr "Parcourir"
+
+msgid "Delete"
+msgstr "Supprimer"

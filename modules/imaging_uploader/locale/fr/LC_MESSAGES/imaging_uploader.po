@@ -51,12 +51,8 @@ msgstr ""
 "commencer par <0>{{prefix}}</0>"
 
 #, fuzzy
-msgid ""
-"For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label "
-"{{visitLabel}} the file name should be prefixed by: {{prefix}}"
-msgstr ""
-"Par exemple, pour DCCID {{dccid}}, PSCID {{pscid}} et Libellé de visite "
-"{{visitLabel}}, le nom du fichier doit être préfixé par : {{prefix}}"
+msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
+msgstr "Par exemple, pour DCCID {{dccid}}, PSCID {{pscid}} et Libellé de visite {{visitLabel}}, le nom du fichier doit être préfixé par : {{prefix}}"
 
 #, fuzzy
 msgid "The file {{fileName}} must be of type .tgz, .tar.gz or .zip."
@@ -96,12 +92,8 @@ msgstr ""
 "pipeline IRM !"
 
 #, fuzzy
-msgid ""
-"A file with this name already exists! Would you like to overwrite the "
-"existing file?"
-msgstr ""
-"Un fichier portant ce nom existe déjà ! Voulez-vous remplacer le fichier "
-"existant ?"
+msgid "A file with this name already exists! Would you like to overwrite the existing file?"
+msgstr "Un fichier portant ce nom existe déjà ! Voulez-vous remplacer le fichier existant ?"
 
 msgid "Cancelled"
 msgstr "Annulé"
@@ -109,12 +101,8 @@ msgstr "Annulé"
 msgid "Your upload has been cancelled."
 msgstr "Votre téléversement a été annulé."
 
-msgid ""
-"A file with this name has been uploaded but has not yet been processed by "
-"the MRI pipeline. Would you like to overwrite the existing file?"
-msgstr ""
-"Un fichier portant ce nom a été téléversé, mais n'a pas encore été traité "
-"par le pipeline IRM. Souhaitez-vous remplacer le fichier existant ?"
+msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
+msgstr "Un fichier portant ce nom a été téléversé, mais n'a pas encore été traité par le pipeline IRM. Souhaitez-vous remplacer le fichier existant ?"
 
 #, fuzzy
 msgid "Upload Successful!"

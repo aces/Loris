@@ -145,9 +145,7 @@ msgid "File name should begin with:"
 msgstr "Le nom du fichier doit commencer par :"
 
 #, fuzzy
-msgid ""
-"A file with this name already exists!\n"
-" Would you like to override existing file?"
+msgid "A file with this name already exists!\n Would you like to override existing file?"
 msgstr "Un fichier portant ce nom existe déjà ! Voulez-vous remplacer le fichier existant ?"
 
 msgid "Cancelled"

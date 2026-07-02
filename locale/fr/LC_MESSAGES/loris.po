@@ -261,6 +261,9 @@ msgstr "Statut du participant"
 msgid "DoB"
 msgstr "DdN"
 
+msgid "DoD"
+msgstr "DdD"
+
 msgid "Sex"
 msgstr "Sexe"
 
@@ -328,6 +331,12 @@ msgstr "Scan terminé"
 msgid "Language"
 msgstr "Langage"
 
+msgid "Access denied"
+msgstr "Accès refusé"
+
+msgid "No."
+msgstr "Non."
+
 msgid "Ethnicity"
 msgstr "Ethnicité"
 
@@ -373,6 +382,9 @@ msgid "View details"
 msgstr "Voir les détails"
 
 # Data table strings
+msgid "No result found."
+msgstr "Aucun résultat trouvé."
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{pageCount}} lignes affichées sur {{totalCount}}."
 
@@ -517,6 +529,12 @@ msgstr "Retrait"
 
 msgid "Withdrawn"
 msgstr "Retiré"
+
+msgid "Created"
+msgstr "Créé"
+
+msgid "Sent"
+msgstr "Envoyé"
 
 msgid "In Progress"
 msgstr "En cours"

@@ -350,12 +350,8 @@ msgid "Duplicates are not allowed"
 msgstr "Les doublons ne sont pas autorisés."
 
 #, fuzzy
-msgid ""
-"Invalid string format. Expected channel names delimited by "
-"\"{{channelDelimiter}}\""
-msgstr ""
-"Format de chaîne invalide. Les noms de chaînes attendus doivent être "
-"délimités par « {{channelDelimiter}} »."
+msgid "Invalid string format. Expected channel names delimited by \"{{channelDelimiter}}\""
+msgstr "Format de chaîne invalide. Les noms de chaînes attendus doivent être délimités par « {{channelDelimiter}} »."
 
 #, fuzzy
 msgid "String contains one or more unrecognized channels"
@@ -414,12 +410,8 @@ msgid "View JSON"
 msgstr "Afficher JSON"
 
 #, fuzzy
-msgid ""
-"This will undo all changes since your latest submission. You won't be able "
-"to revert this!"
-msgstr ""
-"Cela annulera toutes les modifications apportées depuis votre dernière "
-"soumission. Vous ne pourrez pas revenir en arrière !"
+msgid "This will undo all changes since your latest submission. You won't be able to revert this!"
+msgstr "Cela annulera toutes les modifications apportées depuis votre dernière soumission. Vous ne pourrez pas revenir en arrière !"
 
 #, fuzzy
 msgid "Yes, reset all changes!"

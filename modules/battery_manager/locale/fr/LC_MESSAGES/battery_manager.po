@@ -95,12 +95,8 @@ msgid "Test Duplicate"
 msgstr "Test en double"
 
 #, fuzzy
-msgid ""
-"The information provided corresponds with a deactivated test that already "
-"exists in the system."
-msgstr ""
-"Les informations fournies correspondent à un test désactivé qui existe déjà "
-"dans le système."
+msgid "The information provided corresponds with a deactivated test that already exists in the system."
+msgstr "Les informations fournies correspondent à un test désactivé qui existe déjà dans le système."
 
 #, fuzzy
 msgid "Would you to like activate that test?"
@@ -111,29 +107,20 @@ msgid "You cannot duplicate an active test"
 msgstr "Vous ne pouvez pas dupliquer un test actif."
 
 #, fuzzy
-msgid ""
-"You cannot add an entry if it has a duplicate entry in the test battery."
-msgstr ""
-"Vous ne pouvez pas ajouter une entrée si elle existe déjà dans la batterie "
-"de tests."
+msgid "You cannot add an entry if it has a duplicate entry in the test battery."
+msgstr "Vous ne pouvez pas ajouter une entrée si elle existe déjà dans la batterie de tests."
 
 #, fuzzy
-msgid ""
-"If the duplicate entry is inactive, you will be given the option to activate "
-"it."
-msgstr ""
-"Si l'entrée en double est inactive, vous aurez la possibilité de l'activer."
+msgid "If the duplicate entry is inactive, you will be given the option to activate it."
+msgstr "Si l'entrée en double est inactive, vous aurez la possibilité de l'activer."
 
 #, fuzzy
 msgid "Editing an entry will alter the current entry."
 msgstr "La modification d'une entrée modifiera l'entrée actuelle."
 
 #, fuzzy
-msgid ""
-"You cannot edit an entry to have the same values as another active entry."
-msgstr ""
-"Vous ne pouvez pas modifier une entrée pour lui attribuer les mêmes valeurs "
-"qu'une autre entrée active."
+msgid "You cannot edit an entry to have the same values as another active entry."
+msgstr "Vous ne pouvez pas modifier une entrée pour lui attribuer les mêmes valeurs qu'une autre entrée active."
 
 #, fuzzy
 msgid "Search for instrument"
