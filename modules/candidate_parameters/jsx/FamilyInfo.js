@@ -132,11 +132,14 @@ class FamilyInfo extends Component {
         </button>
       );
     }
-    let relationshipOptions = {
-      'full_sibling': t('Full Sibling', {ns: 'candidate_parameters'}),
-      'half_sibling': t('Half Sibling', {ns: 'candidate_parameters'}),
-      '1st_cousin': t('First Cousin', {ns: 'candidate_parameters'}),
-    };
+    let relationshipOptions = {};
+
+    Object.keys(this.state.Data.relationshipOptions).forEach((type) => {
+      relationshipOptions[type] = t(
+        this.state.Data.relationshipOptions[type].RelationshipLabel,
+        {ns: 'candidate_parameters'}
+      );
+    });
 
     let disabled = true;
     let addButton = null;

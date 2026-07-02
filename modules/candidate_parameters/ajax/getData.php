@@ -306,11 +306,21 @@ function getFamilyInfoFields()
         ]
     );
 
+    $relationshipOptions = $db->pselectWithIndexKey(
+        "SELECT DISTINCT Relationship_type, RelationshipLabel
+        FROM family
+        WHERE Relationship_type IS NOT NULL
+        ORDER BY RelationshipLabel",
+        [],
+        'Relationship_type'
+    );
+
     $result = [
         'pscid'                 => $pscid,
         'candID'                => $candID->__toString(),
         'candidates'            => $candidates,
         'existingFamilyMembers' => $familyMembers,
+        'relationshipOptions'   => $relationshipOptions,
     ];
 
     return $result;
