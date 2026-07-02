@@ -1,5 +1,7 @@
 # Behavioural Feedback Test Plan
 
+The Behavioural Feedback module is located in Clinical -> Behavioural Quality Control -> Behavioural Feedback
+
 1. Permissions
 - Disable the module in the database:
 - UPDATE modules SET Active = 'N' WHERE Name = 'bvl_feedback';
@@ -11,10 +13,30 @@
 - [x] Candidate Parameters: View Candidate Information
 - [x] Behavioural Quality Control: View Flagged Behavioural Entries
 - Assert that, under the Clinical Tab in the website, 'Behavioural Quality Control' appears.
-- Click on the `Behavioural Feedback` tab and click on an entry in the `Instrument` field.
-- The behavioural feedback module is a window that "pops" out when you select an entry. So, with the Behavioural Feedback permission un-ticked, assert that this window does not pop out. Instead, the candidate's linst instrument should appear without this window.
-- enable the Behavioural Feedback permission and assert that the Window does pop out 
+- Click on the `Behavioural Feedback` tab and click on an entry in the `Feedback Level` field.
+- The behavioural feedback thread summary is a panel that "slides" out when you select an entry. So, with the Behavioural Feedback permission un-ticked, assert that this panel does not slide out. Instead, the candidate's linst instrument should appear without this window.
+- Enable the Behavioural Feedback permission and assert that the panel does slide out.
 
+2. Behavioural Feedback Sliding Panel
+- Assert that the chevrons expand and collapse windows for `Open Thread Summary`, `New profile level feedback', and `Feedback Threads`
+
+- In `Open Thread Summary`, click the `Instrument`. Assert that you are re-directed to the linst instrument page for this participant. 
+
+- Click the notepad icon with pencil that is located in the top right corner of the blue LORIS horizontal menu bar next to the question mark. This will redirect you back to the behavioural feedback sliding panel for that participant.
+
+- Again, in Open Thread Summary, click on `Visit` to be re-directed to /instrument_list. Click one the same notepad icon in the top right corner of LORIS to re-directed back to the behavioural feedback slide out pane.
+
+- Assert that the icon appears in that top right corner in the following: a Candidate page, their instrument list, and a single instrument within that list.
+
+- In `New instrument level feedback` pane, enter some random text in the text box, select the first items in `Field Name` and in `Feedback Type` and click on `Create Thread`. Assert that this thread appears in the `Feedback Threads` pane continaing the field names, your author name with timestamp, Status `Open`, and the text itself.
+
+- Assert that this text has appeared as an entry in the feedback_bvl_entry table in the database.
+
+- Assert also that an entry was made in `feedback_bvl_thread` references the thread's `FeedbackID`.
+
+- Click on the pencil next to the entered text to modify the comment text. Click submit and assert that it has changed. Assert that it has also been updated in the feedback_bvl_thread table.
+
+- Close the thread by selected `opened` in the `Status` section and assert that the button has now changed to `closed`.
 
 Behavioural feedback button (notepad in the toolbar) should show up on the following pages:
  * Candidate Profile
