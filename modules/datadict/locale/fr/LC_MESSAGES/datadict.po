@@ -22,7 +22,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Data Dictionary (Legacy)"
-msgstr "Dictionnaire de données (ancienne version)"
+msgstr "Dictionnaire de données (Ancienne version)"
 
 msgid "Source From"
 msgstr "Source provenant de"
