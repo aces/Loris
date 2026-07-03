@@ -28,13 +28,13 @@ msgid "Start Next Stage"
 msgstr "Commencer l'étape suivante"
 
 msgid "Date of %s"
-msgstr "Date du %s"
+msgstr "Date de la %s"
 
 msgid "Retype Date of %s"
-msgstr "Saisir à nouveau la date du %s"
+msgstr "Saisir à nouveau la date de la %s"
 
 msgid "Start %s"
-msgstr "Démarrer le %s"
+msgstr "Démarrer la %s"
 
 msgid "CohortID:"
 msgstr "Identifiant de cohorte :"
