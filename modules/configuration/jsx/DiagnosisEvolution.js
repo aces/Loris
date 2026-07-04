@@ -265,7 +265,7 @@ class DiagnosisEvolution extends Component {
    */
   render() {
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>An error occurred while loading the page.</h3>;
     }
 
     if (!this.state.isLoaded) {

@@ -313,7 +313,7 @@ msgstr ""
 msgid "Complete"
 msgstr ""
 
-msgid "An error occured while loading the page."
+msgid "An error occurred while loading the page."
 msgstr ""
 
 msgid "Active"

@@ -93,7 +93,7 @@ class DocEditForm extends React.Component {
     const {t} = this.props;
     // Data loading error
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
+      return <h3>{t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
     // Waiting for data to load

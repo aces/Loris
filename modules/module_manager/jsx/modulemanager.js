@@ -207,7 +207,7 @@ class ModuleManagerIndex extends Component {
     if (this.state.error) {
       const {t} = this.props;
       return (
-        <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>
+        <h3>{t('An error occurred while loading the page.', {ns: 'loris'})}</h3>
       );
     }
 

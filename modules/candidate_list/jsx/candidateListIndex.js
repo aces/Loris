@@ -201,7 +201,7 @@ class CandidateListIndex extends Component {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>An error occurred while loading the page.</h3>;
     }
 
     // Waiting for async data to load

@@ -279,7 +279,7 @@ msgstr "出生日期"
 msgid "Visits"
 msgstr "随访/访视"
 
-msgid "An error occured while loading the page."
+msgid "An error occurred while loading the page."
 msgstr "加载页面时发生错误。"
 
 msgid "Active"

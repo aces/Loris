@@ -70,7 +70,7 @@ msgstr "浏览"
 msgid "Upload"
 msgstr "上传"
 
-msgid "An error occured while loading the page."
+msgid "An error occurred while loading the page."
 msgstr "加载页面时发生错误。"
 
 msgid "Language"

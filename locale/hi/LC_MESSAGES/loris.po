@@ -325,7 +325,7 @@ msgstr "प्रगति पर"
 msgid "Complete"
 msgstr "पूर्ण"
 
-msgid "An error occured while loading the page."
+msgid "An error occurred while loading the page."
 msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
 
 msgid "Active"

@@ -66,7 +66,7 @@ msgstr "Navegar"
 msgid "Upload"
 msgstr "Subir"
 
-msgid "An error occured while loading the page."
+msgid "An error occurred while loading the page."
 msgstr "Se ha producido un error al cargar la página."
 
 msgid "Language"

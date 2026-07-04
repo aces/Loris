@@ -236,7 +236,7 @@ msgstr "Fecha de Nacimiento"
 msgid "Visits"
 msgstr "Visitas"
 
-msgid "An error occured while loading the page."
+msgid "An error occurred while loading the page."
 msgstr "Un error ocurrió minstras cargaba la página"
 
 msgid "Entity Type"

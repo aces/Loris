@@ -309,7 +309,7 @@ msgstr "Date de naissance"
 msgid "Visits"
 msgstr "Visites"
 
-msgid "An error occured while loading the page."
+msgid "An error occurred while loading the page."
 msgstr "Une erreur s'est produite lors du chargement de la page."
 
 msgid "Active"

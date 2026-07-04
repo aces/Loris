@@ -69,7 +69,7 @@ class CandidateInfo extends Component {
         },
         error: function(data, errorCode, errorMsg) {
           that.setState({
-            error: t('An error occured while loading the page.', {ns: 'loris'}),
+            error: t('An error occurred while loading the page.', {ns: 'loris'}),
           });
         },
       }
