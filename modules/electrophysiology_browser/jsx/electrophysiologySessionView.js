@@ -13,7 +13,6 @@ import {withTranslation} from 'react-i18next';
 import DataTable from 'jsx/DataTable';
 import RecordingSection from './components/RecordingSection';
 import Sidebar from './components/Sidebar';
-import SidebarContent from './components/SidebarContent';
 import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/electrophysiology_browser.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/electrophysiology_browser.json';
@@ -394,17 +393,10 @@ window.onload = function() {
   i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
   i18n.addResourceBundle('zh', 'electrophysiology_browser', zhStrings);
   const i18nNamespaces = ['electrophysiology_browser', 'loris'];
-  const SideContent = withTranslation(i18nNamespaces)(SidebarContent);
-  const sidebarContent = <SideContent
-    previous={'previous'} next={'next'}
-  />;
+  const EegSidebar = withTranslation(i18nNamespaces)(Sidebar);
 
   const eegSidebar = (
-    <Sidebar
-      content={sidebarContent}
-      open={true}
-      docked={true}>
-    </Sidebar>
+    <EegSidebar previous={'previous'} next={'next'} />
   );
 
   const eegSidebarDOM = document.createElement('div');
