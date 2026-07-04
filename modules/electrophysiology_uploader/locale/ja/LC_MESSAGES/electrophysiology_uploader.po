@@ -63,7 +63,7 @@ msgstr "アップロード成功しました!"
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr "電気生理学パイプラインによるこのファイルの処理が開始されました。"
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr "アップロードに失敗しました: ネットワーク エラーが発生しました。"
 
 msgid "Upload failed: received HTTP response code"

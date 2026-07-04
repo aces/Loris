@@ -93,7 +93,7 @@ msgstr "इस फ़ाइल का MRI पाइपलाइन द्वा�
 msgid "Select this upload in the result table to view the processing progress"
 msgstr "प्रोसेसिंग प्रगति देखने के लिए परिणाम तालिका में इस अपलोड का चयन करें"
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr "अपलोड विफल: नेटवर्क त्रुटि हुई"
 
 msgid "Please make sure files are not larger than {{maxFileSize}}"

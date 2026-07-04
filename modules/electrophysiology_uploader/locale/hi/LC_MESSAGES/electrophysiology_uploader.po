@@ -63,7 +63,7 @@ msgstr "अपलोड सफल!"
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr "EEG पाइपलाइन द्वारा इस फ़ाइल की प्रोसेसिंग शुरू हो गई है"
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr "अपलोड विफल: नेटवर्क त्रुटि हुई"
 
 msgid "Upload failed: received HTTP response code"

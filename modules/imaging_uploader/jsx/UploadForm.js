@@ -370,7 +370,7 @@ class UploadForm extends Component {
       }
     } else if (xhr.status == 0) {
       errorMessage = {
-        'mriFile': [t('Upload failed: a network error occured',
+        'mriFile': [t('Upload failed: a network error occurred',
           {ns: 'imaging_uploader'})],
       };
     } else if (xhr.status == 413) {

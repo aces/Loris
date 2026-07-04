@@ -93,7 +93,7 @@ msgstr ""
 msgid "Select this upload in the result table to view the processing progress"
 msgstr ""
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr ""
 
 msgid "Please make sure files are not larger than {{maxFileSize}}"

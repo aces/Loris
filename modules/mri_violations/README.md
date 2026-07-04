@@ -50,7 +50,7 @@ approving the insertion to indicate what the flag is for
 - **Other**: resolutions that don't fit in any of the above categories 
 
 It does not resolve any problems itself, it only logs the problem and
-what resolution occured.
+what resolution occurred.
 
 ## Permissions
 

@@ -81,7 +81,7 @@ msgstr "Téléversement réussi!"
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr "Le traitement de ce fichier par le pipeline EEG a commencé."
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr "Échec du téléversement : une erreur réseau s'est produite."
 
 #, fuzzy

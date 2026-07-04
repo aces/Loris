@@ -93,7 +93,7 @@ msgstr "MRIパイプラインによるこのファイルの処理が開始され
 msgid "Select this upload in the result table to view the processing progress"
 msgstr "処理の進行状況を表示するには、結果テーブルでこのアップロードを選択してください"
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr "アップロードに失敗しました: ネットワーク エラーが発生しました。"
 
 msgid "Please make sure files are not larger than {{maxFileSize}}"

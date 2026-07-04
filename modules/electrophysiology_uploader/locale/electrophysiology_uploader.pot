@@ -63,7 +63,7 @@ msgstr ""
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr ""
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr ""
 
 msgid "Upload failed: received HTTP response code"

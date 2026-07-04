@@ -64,7 +64,7 @@ msgstr "上传成功！"
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr "EEG 管道已开始处理此文件"
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr "上传失败：出现网络错误"
 
 msgid "Upload failed: received HTTP response code"
