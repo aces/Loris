@@ -115,8 +115,7 @@ class Acknowledgementsprocess extends \NDB_Page
             // 4. Return the Created response
             return new \LORIS\Http\Response\JSON\Created(
                 [
-                    "message" => dgettext('acknowledgements',
-                    "Acknowledgement added."),
+                    "message" => "Acknowledgement added.",
                     "id"      => $newId
                 ],
                 ["Location" => "{$baseURL}/api/v1/acknowledgements/{$newId}"]
