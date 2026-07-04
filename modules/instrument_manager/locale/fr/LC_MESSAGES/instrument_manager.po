@@ -90,5 +90,3 @@ msgstr "Le téléchargement a réussi!"
 
 msgid "Instrument file"
 msgstr "Fichier d'instrument"
-
-
