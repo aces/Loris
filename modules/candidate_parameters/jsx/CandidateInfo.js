@@ -67,10 +67,10 @@ class CandidateInfo extends Component {
             formData: formData,
           });
         },
-        error: function (data, errorCode, errorMsg) {
+        error: function(data, errorCode, errorMsg) {
           that.setState({
             error: t('An error occurred while loading the page.',
-            {ns: 'loris'}),
+              {ns: 'loris'}),
           });
         },
       }
