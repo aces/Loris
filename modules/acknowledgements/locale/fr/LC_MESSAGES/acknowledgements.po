@@ -13,115 +13,110 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Acknowledgements"
-msgstr ""
+msgstr "Remerciements"
 
 msgid "Douglas"
-msgstr ""
+msgstr "Douglas"
 
 msgid "McGill"
-msgstr ""
+msgstr "McGill"
 
 msgid "Bachelors"
-msgstr ""
+msgstr "Licences"
 
 msgid "Masters"
-msgstr ""
+msgstr "Maîtrises"
 
 msgid "PhD"
-msgstr ""
+msgstr "Doctorat"
 
 msgid "Postdoctoral"
-msgstr ""
+msgstr "Postdoctoral"
 
 msgid "MD"
-msgstr ""
+msgstr "Doctorat en médecine"
 
 msgid "Registered Nurse"
-msgstr ""
+msgstr "Infirmier(ère) autorisé(e)"
 
 msgid "Investigators"
-msgstr ""
+msgstr "Chercheurs"
 
 msgid "Project Administration"
-msgstr ""
+msgstr "Gestion de projet"
 
 msgid "Database Management"
-msgstr ""
+msgstr "Gestion des bases de données"
 
 msgid "Interview Data Collection"
-msgstr ""
+msgstr "Collecte de données d'entrevue"
 
 msgid "Data Analyses"
-msgstr ""
+msgstr "Analyses de données"
 
 msgid "MRI Acquisition"
-msgstr ""
+msgstr "Acquisition d'IRM"
 
 msgid "Data Entry"
-msgstr ""
+msgstr "Saisie de données"
 
 msgid "Database Programming"
-msgstr ""
+msgstr "Programmation de bases de données"
 
 msgid "Imaging Processing and Evaluation"
-msgstr ""
+msgstr "Traitement et évaluation des images"
 
 msgid "Genetic Analysis"
-msgstr ""
+msgstr "Analyse génétique"
 
 msgid "Randomization and Pharmacy Allocation"
-msgstr ""
+msgstr "Randomisation et attribution pharmaceutique"
 
 msgid "Consultants"
-msgstr ""
+msgstr "Consultants"
 
 msgid "LP/CSF Collection"
-msgstr ""
+msgstr "Collecte de PL/LCR"
 
 msgid "Acknowledgement added."
-msgstr ""
+msgstr "Ajout d'une mention de remerciement."
 
 msgid "success"
-msgstr ""
+msgstr "succès"
 
 msgid "Citation Policy"
-msgstr ""
-
-msgid "Add Acknowledgement"
-msgstr ""
-
-msgid "Citation Name"
-msgstr ""
+msgstr "Politique de citation"
 
 msgid "Ordering"
-msgstr ""
+msgstr "Ordre"
 
 msgid "Full Name"
-msgstr ""
+msgstr "Nom complet"
 
 msgid "Citation Name"
-msgstr ""
+msgstr "Nom de la référence"
 
 msgid "Degrees"
-msgstr ""
+msgstr "Diplômes"
 
 msgid "Roles"
-msgstr ""
+msgstr "Rôles"
 
 msgid "Start Date"
-msgstr ""
+msgstr "Date de début"
 
 msgid "End Date"
-msgstr ""
+msgstr "Date de fin"
 
 msgid "Present"
-msgstr ""
+msgstr "Actif"
 
 msgid "Add Acknowledgement"
-msgstr ""
+msgstr "Ajouter une mention de remerciement"
