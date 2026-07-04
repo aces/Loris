@@ -70,7 +70,7 @@ class AcknowledgementsIndex extends Component {
           {ns: 'acknowledgements'}),
         dataAnalyses: t('Data Analyses', {ns: 'acknowledgements'}),
         mriAcquisition: t('MRI Acquisition', {ns: 'acknowledgements'}),
-        dataEntry: t('Data Entry', { ns: 'loris' }),
+        dataEntry: t('Data Entry', {ns: 'loris'}),
         databaseProgramming: t('Database Programming',
           {ns: 'acknowledgements'}),
         imagingProcessingAndEvaluation: t('Imaging Processing and Evaluation',
@@ -400,7 +400,7 @@ class AcknowledgementsIndex extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-         {ns: 'loris'})}</h3>;
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
