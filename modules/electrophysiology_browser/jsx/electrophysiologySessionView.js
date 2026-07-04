@@ -6,7 +6,8 @@
  */
 
 import {createRoot} from 'react-dom/client';
-import React, {Component} from 'react';
+import {createPortal} from 'react-dom';
+import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
@@ -40,8 +41,6 @@ class ElectrophysiologySessionView extends Component {
           outputType: '',
         },
       },
-      prevSession: '',
-      nextSession: '',
       patient: {
         info: {
           pscid: '',
@@ -242,18 +241,14 @@ class ElectrophysiologySessionView extends Component {
         },
       });
 
-      document.getElementById(
-        'nav_next'
-      ).href = dataURL + data.nextSession + outputTypeArg;
-      document.getElementById(
-        'nav_previous'
-      ).href = dataURL + data.prevSession + outputTypeArg;
-      if (data.prevSession !== '') {
-        document.getElementById('nav_previous').style.display = 'block';
-      }
-      if (data.nextSession !== '') {
-        document.getElementById('nav_next').style.display = 'block';
-      }
+      this.props.onSessionNavigationChange({
+        next: !data.nextSession
+          ? undefined
+          : dataURL + data.nextSession + outputTypeArg,
+        previous: !data.prevSession
+          ? undefined
+          : dataURL + data.prevSession + outputTypeArg,
+      });
     })
       .catch((error) => {
         this.setState({error: true});
@@ -378,10 +373,58 @@ class ElectrophysiologySessionView extends Component {
 
 ElectrophysiologySessionView.propTypes = {
   module: PropTypes.string.isRequired,
+  onSessionNavigationChange: PropTypes.func.isRequired,
   sessionid: PropTypes.string,
   t: PropTypes.func,
 };
 ElectrophysiologySessionView.defaultProps = {
+  module: '',
+};
+
+/**
+ * Electrophysiology session page.
+ *
+ * Renders the session view and places the session navigation sidebar in its
+ * DOM container.
+ *
+ * @param {object} props - React Component properties
+ * @return {React.ReactNode} React markup for the component
+ */
+function ElectrophysiologySessionPage(props) {
+  const {sessionid, sidebarContainer, t} = props;
+  const [navigation, setNavigation] = useState({
+    next: undefined,
+    previous: undefined,
+  });
+
+  return (
+    <>
+      {createPortal(
+        <Sidebar
+          next={navigation.next}
+          previous={navigation.previous}
+          t={t}
+        />,
+        sidebarContainer
+      )}
+      <ElectrophysiologySessionView
+        module={props.module}
+        onSessionNavigationChange={setNavigation}
+        sessionid={sessionid}
+        t={t}
+      />
+    </>
+  );
+}
+
+ElectrophysiologySessionPage.propTypes = {
+  module: PropTypes.string.isRequired,
+  sidebarContainer: PropTypes.object.isRequired,
+  sessionid: PropTypes.string,
+  t: PropTypes.func,
+};
+
+ElectrophysiologySessionPage.defaultProps = {
   module: '',
 };
 
@@ -393,25 +436,16 @@ window.onload = function() {
   i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
   i18n.addResourceBundle('zh', 'electrophysiology_browser', zhStrings);
   const i18nNamespaces = ['electrophysiology_browser', 'loris'];
-  const EegSidebar = withTranslation(i18nNamespaces)(Sidebar);
-
-  const eegSidebar = (
-    <EegSidebar previous={'previous'} next={'next'} />
-  );
-
-  const eegSidebarDOM = document.createElement('div');
-  eegSidebarDOM.id = 'eegSidebar';
 
   const page = document.getElementById('page');
   page.classList.add('eegBrowser');
 
   const wrapDOM = document.getElementById('wrap');
-  wrapDOM.insertBefore(eegSidebarDOM, page);
 
   const pathparts = window.location.pathname.split('/');
 
-  const EegSessionView =
-    withTranslation(i18nNamespaces)(ElectrophysiologySessionView);
+  const EegSessionPage =
+    withTranslation(i18nNamespaces)(ElectrophysiologySessionPage);
 
   // Create a wrapper div in which react component will be loaded.
   const EEGSessionViewAppDOM = document.createElement('div');
@@ -422,16 +456,11 @@ window.onload = function() {
   rootDOM.appendChild(EEGSessionViewAppDOM);
 
   // Render the React Components.
-  createRoot(
-    document.getElementById('eegSessionView')
-  ).render(
-    <EegSessionView
+  createRoot(EEGSessionViewAppDOM).render(
+    <EegSessionPage
       module={'eegSessionView'}
+      sidebarContainer={wrapDOM}
       sessionid={pathparts[pathparts.length - 1]}
     />
   );
-
-  createRoot(
-    document.getElementById('eegSidebar')
-  ).render(eegSidebar);
 };

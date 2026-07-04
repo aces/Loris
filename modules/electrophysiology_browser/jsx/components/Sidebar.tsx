@@ -45,7 +45,6 @@ const contentStyle: CSSProperties = {
 const previousLinkStyle: CSSProperties = {
   color: '#064785',
   fontSize: '16px',
-  display: 'none',
   padding: '0 0 0 10px',
   textDecoration: 'none',
 };
@@ -53,7 +52,6 @@ const previousLinkStyle: CSSProperties = {
 const nextLinkStyle: CSSProperties = {
   color: '#064785',
   fontSize: '16px',
-  display: 'none',
   padding: '10px 0 0 30px',
   textDecoration: 'none',
 };
@@ -62,12 +60,12 @@ const nextLinkStyle: CSSProperties = {
  * Sidebar navigation for the electrophysiology session view.
  */
 export default function Sidebar({
-  previous = 'previous',
-  next = 'next',
+  previous,
+  next,
   t,
 }: SidebarProps): React.ReactElement {
   return (
-    <div style={rootStyle} role='navigation'>
+    <div id="ephys-sidebar" style={rootStyle} role='navigation'>
       <div style={sidebarStyle}>
         <div style={titleStyle}>
           {t('Navigation', ns)}
@@ -77,7 +75,10 @@ export default function Sidebar({
             id='nav_previous'
             href={previous}
             target='_self'
-            style={previousLinkStyle}
+            style={{
+              ...previousLinkStyle,
+              display: previous === undefined ? 'none' : 'block',
+            }}
           >
             &#171; {t('Previous', {ns: 'loris'})}
           </a>
@@ -85,7 +86,10 @@ export default function Sidebar({
             id='nav_next'
             href={next}
             target='_self'
-            style={nextLinkStyle}
+            style={{
+              ...nextLinkStyle,
+              display: next === undefined ? 'none' : 'block',
+            }}
           >
             {t('Next', {ns: 'loris'})} &#187;
           </a>
