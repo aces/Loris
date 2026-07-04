@@ -74,7 +74,7 @@ class InstrumentManagerIndex extends Component {
    */
   formatColumn(column, cell, row) {
     const {t} = this.props;
-    if (column === t('Permission Required', { ns: 'instrument_manager' })) {
+    if (column === t('Permission Required', {ns: 'instrument_manager'})) {
       const clickHandler = (row) => {
         return () => {
           this.setState({
@@ -96,19 +96,19 @@ class InstrumentManagerIndex extends Component {
           >
             {
               cell == null
-                ? t('No Permissions enforced.', { ns: 'instrument_manager' })
+                ? t('No Permissions enforced.', {ns: 'instrument_manager'})
                 : cell.join(',')
             }
             {
               this.props.hasPermission('instrument_manager_write') && (
                 <button
                   className='btn btn-primary'
-                  style={{ marginTop: '5px' }}
+                  style={{marginTop: '5px'}}
                   onClick={clickHandler(row)}
                 >
                   {cell == null ? t('Add Permissions',
-                    { ns: 'instrument_manager' }) :
-                    t('Modify Permissions', { ns: 'instrument_manager' })}
+                    {ns: 'instrument_manager'}) :
+                    t('Modify Permissions', {ns: 'instrument_manager'})}
                 </button>
               )
             }
@@ -132,7 +132,7 @@ class InstrumentManagerIndex extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t('An error occured while loading the page.',
-        { ns: 'loris' })}
+        {ns: 'loris'})}
       </h3>;
     }
 
@@ -143,14 +143,14 @@ class InstrumentManagerIndex extends Component {
 
     const fields = [
       {
-        label: t('Instrument', { ns: 'loris', count: 1 }), show: true,
+        label: t('Instrument', {ns: 'loris', count: 1}), show: true,
         filter: {
           name: 'instrument',
           type: 'text',
-        }
+        },
       },
       {
-        label: t('Instrument Type', { ns: 'instrument_manager' }), show: true,
+        label: t('Instrument Type', {ns: 'instrument_manager'}), show: true,
         filter: {
           name: 'instrumentType',
           type: 'select',
@@ -159,10 +159,10 @@ class InstrumentManagerIndex extends Component {
             'PHP': 'PHP',
             'Missing': 'Missing',
           },
-        }
+        },
       },
       {
-        label: t('Table Installed', { ns: 'instrument_manager' }), show: true,
+        label: t('Table Installed', {ns: 'instrument_manager'}), show: true,
         filter: {
           name: 'tableInstalled',
           type: 'select',
@@ -170,29 +170,29 @@ class InstrumentManagerIndex extends Component {
             'Exists': 'Exists',
             'Missing': 'Missing',
           },
-        }
+        },
       },
       {
-        label: t('Table Valid', { ns: 'instrument_manager' }), show: true,
+        label: t('Table Valid', {ns: 'instrument_manager'}), show: true,
         filter: {
           name: 'tableValid',
           type: 'text',
-        }
+        },
       },
       {
-        label: t('Pages Valid', { ns: 'instrument_manager' }), show: true,
+        label: t('Pages Valid', {ns: 'instrument_manager'}), show: true,
         filter: {
           name: 'pagesValid',
           type: 'text',
-        }
+        },
       },
       {
-        label: t('Permission Required', { ns: 'instrument_manager' }),
+        label: t('Permission Required', {ns: 'instrument_manager'}),
         show: true,
         filter: {
           name: 'permissionsRequired',
           type: 'text',
-        }
+        },
       },
     ];
 
@@ -214,7 +214,7 @@ class InstrumentManagerIndex extends Component {
               if (!response.ok) {
                 console.error(response.status);
                 throw new Error(t('Could not modify permissions',
-                  { ns: 'instrument_manager' }));
+                  {ns: 'instrument_manager'}));
               }
               return response.json();
             }).then( (data) => {
@@ -222,9 +222,9 @@ class InstrumentManagerIndex extends Component {
               this.fetchData();
             }).catch((message) => {
               swal.fire({
-                title: t('Oops..', { ns: 'instrument_manager' }),
-                text: t('Something went wrong!', { ns: 'instrument_manager' }),
-                type: t('error', { ns: 'instrument_manager' }),
+                title: t('Oops..', {ns: 'instrument_manager'}),
+                text: t('Something went wrong!', {ns: 'instrument_manager'}),
+                type: t('error', {ns: 'instrument_manager'}),
               });
               reject();
             });
@@ -234,7 +234,7 @@ class InstrumentManagerIndex extends Component {
       permsModal = (<Modal
         title={t('Edit Permissions for {{instrument}}', {
           ns: 'instrument_manager',
-          instrument: this.state.modifyPermissions.instrument
+          instrument: this.state.modifyPermissions.instrument,
         })}
         show={true}
         onSubmit={submitPromise}
@@ -246,13 +246,13 @@ class InstrumentManagerIndex extends Component {
         <p>{t('Select the permissions required for accessing {{instrument}} in'
           + ' the dropdown below', {
           ns: 'instrument_manager',
-          instrument: this.state.modifyPermissions.instrument
+          instrument: this.state.modifyPermissions.instrument,
         })}
         </p>
         <p>{t('Any user accessing the instrument (either for viewing the data'
           + ' or data entry) must have one of the access permissions'
           + ' selected.',
-          { ns: 'instrument_manager' })}
+        {ns: 'instrument_manager'})}
         </p>
         <InfoPanel>
           <Trans
@@ -289,11 +289,11 @@ class InstrumentManagerIndex extends Component {
         && this.props.hasPermission('instrument_manager_write')) {
         return (
           <div className='alert alert-warning'>
-            {t("Instrument installation is not possible given the current"
-              + " server configuration; the LORIS 'adminUser' is not"
-              + " configured properly. File upload is still possible but"
-              + " instruments will need to be installed manually",
-              { ns: 'instrument_manager' })}
+            {t('Instrument installation is not possible given the current'
+              + ' server configuration; the LORIS \'adminUser\' is not'
+              + ' configured properly. File upload is still possible but'
+              + ' instruments will need to be installed manually',
+            { ns: 'instrument_manager' })}
           </div>
         );
       }
@@ -319,7 +319,7 @@ class InstrumentManagerIndex extends Component {
             {t('Installation is not possible given the current server'
               + ' configuration. Please contact your administrator if'
               + ' you require this functionality',
-              { ns: 'instrument_manager' })}
+            { ns: 'instrument_manager' })}
           </div>
         );
       }

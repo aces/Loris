@@ -52,8 +52,8 @@ class InstrumentUploadForm extends Component {
       .then((resp) => {
         if (resp.status == 201) {
           swal.fire({
-            title: t('Installation Successful!', { ns: 'instrument_manager' }),
-            type: t('success', { ns: 'instrument_manager' }),
+            title: t('Installation Successful!', {ns: 'instrument_manager'}),
+            type: t('success', {ns: 'instrument_manager'}),
           }).then(function() {
             window.location.assign(loris.BaseURL + '/instrument_manager/');
           });
@@ -63,8 +63,8 @@ class InstrumentUploadForm extends Component {
       .then((data) => {
         if (data.message) {
           swal.fire({
-            title: t('Upload Successful!', { ns: 'instrument_manager' }),
-            type: t('success', { ns: 'instrument_manager' }),
+            title: t('Upload Successful!', {ns: 'instrument_manager'}),
+            type: t('success', {ns: 'instrument_manager'}),
             text: data.message,
           }).then(function() {
             window.location.assign(loris.BaseURL + '/instrument_manager/');
@@ -72,8 +72,8 @@ class InstrumentUploadForm extends Component {
         }
         if (data.error) {
           swal.fire({
-            title: t('An error occured', { ns: 'loris' }),
-            type: t('error', { ns: 'instrument_manager' }),
+            title: t('An error occured', {ns: 'loris'}),
+            type: t('error', {ns: 'instrument_manager'}),
             text: data.error,
           });
         }
@@ -101,7 +101,7 @@ class InstrumentUploadForm extends Component {
               <div className="col-xs-12">
                 <FileElement
                   name='install_file'
-                  label={t('Instrument file', { ns: 'instrument_manager' })}
+                  label={t('Instrument file', {ns: 'instrument_manager'})}
                   onUserInput={this.fileSelected}
                   value={this.state.selectedFile}
                 />
