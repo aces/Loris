@@ -263,8 +263,8 @@ class InstrumentManagerIndex extends Component {
               + ' selected, the default LORIS permissions will be enforced for'
               + ' this instrument.'
             }
-            components={{ em: <em /> }}
-            values={{ instrument: this.state.modifyPermissions.instrument }}
+            components={{em: <em />}}
+            values={{instrument: this.state.modifyPermissions.instrument}}
           />
         </InfoPanel>
 
@@ -293,7 +293,7 @@ class InstrumentManagerIndex extends Component {
               + ' server configuration; the LORIS \'adminUser\' is not'
               + ' configured properly. File upload is still possible but'
               + ' instruments will need to be installed manually',
-            { ns: 'instrument_manager' })}
+            {ns: 'instrument_manager'})}
           </div>
         );
       }
@@ -305,7 +305,7 @@ class InstrumentManagerIndex extends Component {
         content = (
           <div className='alert alert-warning'>
             {t('You do not have access to this page.',
-              { ns: 'instrument_manager' })}
+              {ns: 'instrument_manager'})}
           </div>
         );
       } else if (this.state.data.fieldOptions.writable) {
@@ -319,7 +319,7 @@ class InstrumentManagerIndex extends Component {
             {t('Installation is not possible given the current server'
               + ' configuration. Please contact your administrator if'
               + ' you require this functionality',
-            { ns: 'instrument_manager' })}
+            {ns: 'instrument_manager'})}
           </div>
         );
       }
