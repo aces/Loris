@@ -126,4 +126,5 @@ InstrumentUploadForm.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default withTranslation(['instrument_manager', 'loris'])(InstrumentUploadForm);
+export default withTranslation(['instrument_manager', 'loris']
+)(InstrumentUploadForm);
