@@ -31,3 +31,21 @@ msgstr "Ouvrir le profil"
 
 msgid "New %s (Beta)"
 msgstr "%s (Nouveau/Bêta)"
+
+msgid "Scanner"
+msgstr "Scanner"
+
+msgid "Human"
+msgstr "Humain"
+
+msgid "Opened"
+msgstr "Ouvert"
+
+msgid "Answered"
+msgstr "Répondu"
+
+msgid "Closed"
+msgstr "Fermé"
+
+msgid "Comment"
+msgstr "Commentaire"

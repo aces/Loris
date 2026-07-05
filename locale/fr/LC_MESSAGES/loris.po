@@ -323,7 +323,7 @@ msgstr "Type d’entité"
 
 #, fuzzy
 msgid "Scan Done"
-msgstr "Scan terminé"
+msgstr "Scan d’imagerie complété"
 
 msgid "Language"
 msgstr "Langage"

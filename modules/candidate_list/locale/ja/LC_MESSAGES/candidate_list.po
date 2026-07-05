@@ -28,3 +28,8 @@ msgstr "訪問回数"
 msgid "Open Profile"
 msgstr "プロフィールを開く"
 
+msgid "Scanner"
+msgstr "スキャナー"
+
+msgid "Human"
+msgstr "人間"

@@ -27,3 +27,10 @@ msgstr "访问次数"
 
 msgid "Open Profile"
 msgstr "打开资料"
+
+msgid "Scanner"
+msgstr "扫描仪"
+
+msgid "Human"
+msgstr "受试者"
+
