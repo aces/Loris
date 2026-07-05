@@ -1546,7 +1546,7 @@ class Edit_User extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = $this->isCreatingNewUser() 
+        $label = $this->isCreatingNewUser()
             ? dgettext("user_accounts", "Add User")
             : dgettext("user_accounts", "Edit User");
         return new \LORIS\BreadcrumbTrail(
