@@ -157,10 +157,7 @@ class CandidateListIndex extends Component {
       || column === this.props.t('Date of registration', {ns: 'loris'})) {
       if (cell) {
         const date = new Date(cell);
-
-        if (!Number.isNaN(date.getTime())) {
-          return <td>{this.dateFormatter.format(date)}</td>;
-        }
+        return <td>{this.dateFormatter.format(date)}</td>;
       }
       return <td></td>;
     }

@@ -198,7 +198,7 @@ msgid "Session"
 msgstr ""
 
 msgid "Date of registration"
-msgstr ""
+msgstr "Fecha de inscripción"
 
 msgid "Participant Status"
 msgstr ""
