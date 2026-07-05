@@ -1538,4 +1538,26 @@ class Edit_User extends \NDB_Form
             ]
         );
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = $this->isCreatingNewUser() 
+            ? dgettext("user_accounts", "Add User")
+            : dgettext("user_accounts", "Edit User");
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                dgettext("user_accounts", "User Accounts"),
+                "/user_accounts/"
+            ),
+            new \LORIS\Breadcrumb(
+                $label,
+                ""
+            )
+        );
+    }
 }
