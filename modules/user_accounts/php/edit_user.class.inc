@@ -914,7 +914,7 @@ class Edit_User extends \NDB_Form
                 ]
             );
             $examinerGroup[] = $this->createLabel(
-                "Radiologist: "
+                dgettext("user_accounts", "Radiologist") . ": "
             );
             $examinerGroup[] = $this->createSelect(
                 "examiner_radiologist",
