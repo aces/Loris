@@ -191,14 +191,6 @@ class Edit_User extends \NDB_Form
      */
     function _process($values)
     {
-        if ($this->_isEditingOwnAccount()) {
-            error_log(
-                "[user_accounts] Blocked self-edit attempt for user: "
-                . $this->identifier
-            );
-            return;
-        }
-
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $config  = $factory->config();
@@ -206,7 +198,8 @@ class Edit_User extends \NDB_Form
         //The arrays that contain the edited permissions
         $permissionsRemoved = [];
         $permissionsAdded   = [];
-        $editor = $factory->user();
+        $editor     = $factory->user();
+        $isSelfEdit = $this->_isEditingOwnAccount();
 
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
@@ -293,14 +286,16 @@ class Edit_User extends \NDB_Form
         }
         // multi-site UPDATE
         $uid           = $user->getId();
-        $us_curr_sites = $values['CenterIDs'];
-        $userNewCenterIDs = array_map(
-            function ($val) {
-                return \CenterID::singleton(intval($val));
-            },
-            $values['CenterIDs']
-        );
-        if (!$this->isCreatingNewUser()) {
+        $us_curr_sites = $values['CenterIDs'] ?? [];
+        $userNewCenterIDs = $isSelfEdit
+            ? $user->getCenterIDs()
+            : array_map(
+                function ($val) {
+                    return \CenterID::singleton(intval($val));
+                },
+                $us_curr_sites
+            );
+        if (!$this->isCreatingNewUser() && !$isSelfEdit) {
             // Prevent deletion of rules/sites editor may not have access to edit.
             if (!$editor->hasPermission('user_accounts_multisite')) {
                 // Collect CenterID(s) of user being modified.
@@ -336,8 +331,8 @@ class Edit_User extends \NDB_Form
         // END multi-site UPDATE
 
         // START PROJECT UPDATE
-        $us_curr_projects = $values['ProjectIDs'];
-        if (!$this->isCreatingNewUser()) {
+        $us_curr_projects = $values['ProjectIDs'] ?? [];
+        if (!$this->isCreatingNewUser() && !$isSelfEdit) {
             $DB->delete('user_project_rel', ["UserID" => $uid]);
             foreach ($us_curr_projects as $project) {
                 $DB->insert(
@@ -654,7 +649,6 @@ class Edit_User extends \NDB_Form
         if (!empty($matches[1])) {
             $this->identifier = $matches[1];
         }
-        $this->tpl_data['isSelfEdit'] = $this->_isEditingOwnAccount();
         $response = parent::handle($request);
         if (!empty($this->redirect)) {
             return $response
@@ -869,15 +863,20 @@ class Edit_User extends \NDB_Form
             }
         }
 
+        $siteAttributes = [
+            'class'    => 'form-control input-sm resizable',
+            'multiple' => 'multiple',
+            'required' => true,
+        ];
+        if ($this->_isEditingOwnAccount()) {
+            $siteAttributes['disabled'] = 'disabled';
+        }
+
         $this->addSelect(
             'CenterIDs',
             dngettext("loris", "Site", "Sites", count($siteOptions)),
             $siteOptions,
-            [
-                'class'    => 'form-control input-sm resizable',
-                'multiple' => 'multiple',
-                'required' => true,
-            ]
+            $siteAttributes
         );
 
         // START PROJECT SECTION
@@ -889,15 +888,20 @@ class Edit_User extends \NDB_Form
                 = $projects[$projectID->__toString()];
         }
 
+        $projectAttributes = [
+            'class'    => 'form-control input-sm resizable',
+            'multiple' => 'multiple',
+            'required' => true,
+        ];
+        if ($this->_isEditingOwnAccount()) {
+            $projectAttributes['disabled'] = 'disabled';
+        }
+
         $this->addSelect(
             'ProjectIDs',
             dngettext("loris", "Project", "Projects", count($projects)),
             $projectOptions,
-            [
-                'class'    => 'form-control input-sm resizable',
-                'multiple' => 'multiple',
-                'required' => true,
-            ]
+            $projectAttributes
         );
         // END PROJECT SECTION
 
@@ -1115,8 +1119,6 @@ class Edit_User extends \NDB_Form
         // unique key and password rules
         $this->form->addFormRule([&$this, '_validateEditUser']);
 
-        // Expose self-edit flag to the Smarty template.
-        $this->tpl_data['isSelfEdit'] = $this->_isEditingOwnAccount();
     }
 
     /**
@@ -1367,7 +1369,7 @@ class Edit_User extends \NDB_Form
         //           Validate Site
         //======================================
         // Ensure that at least one site is selected
-        if (empty($values['CenterIDs'])) {
+        if (!$this->_isEditingOwnAccount() && empty($values['CenterIDs'])) {
             $errors['sites_group'] = dgettext(
                 "user_accounts",
                 "You must select at least one site/affiliation"
@@ -1378,7 +1380,7 @@ class Edit_User extends \NDB_Form
         //           Validate Project
         //======================================
         // Ensure that at least one site is selected
-        if (empty($values['ProjectIDs'])) {
+        if (!$this->_isEditingOwnAccount() && empty($values['ProjectIDs'])) {
             $errors['projects_group'] = dgettext(
                 "user_accounts",
                 "You must select at least one project/affiliation"
@@ -1424,8 +1426,10 @@ class Edit_User extends \NDB_Form
         //    should be less or equal to the time to it will be active.
         //======================================
 
-        if (($values['active_to'] != null)
-            && ($values['active_from'] > $values['active_to'])
+        $activeFrom = $values['active_from'] ?? null;
+        $activeTo   = $values['active_to'] ?? null;
+        if (($activeTo != null)
+            && ($activeFrom > $activeTo)
         ) {
             $errors['active_timeWindows'] = dgettext(
                 "user_accounts",

@@ -280,7 +280,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field = $this->safeFindElement(WebDriverBy::Name('__ConfirmEmail'));
         $field->clear();
         $field->sendKeys('email@example.com');
-        $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+        $sitesElement = $this->safeFindElement(
+            WebDriverBy::Name('CenterIDs[]')
+        );
         $sitesOption  = new WebDriverSelect($sitesElement);
         $sitesOption->selectByValue("1");
         $projectsElement = $this->safeFindElement(WebDriverBy::Name('ProjectIDs[]'));
@@ -338,7 +340,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function submit(): void
     {
-        $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+        $sitesElement = $this->safeFindElement(
+            WebDriverBy::Name('CenterIDs[]')
+        );
         $sitesOption  = new WebDriverSelect($sitesElement);
         $sitesOption->selectByValue("1");
 
@@ -373,39 +377,45 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Verifies that when a user opens their own account page the form is
-     * entirely read-only: a warning banner is shown, all editable fields are
-     * disabled, and the Save button is disabled.
+     * Verifies that a user cannot remove their own project or site
+     * affiliations while editing their own account.
      *
      * @return void
      */
-    function testSelfEditFormIsReadOnly(): void
+    function testSelfEditDisablesProjectsAndSites(): void
     {
         $this->_accessUser(self::UNITTESTER_USERNAME);
 
-        // Warning message must be visible
-        $this->assertStringContainsString(
-            'You cannot edit your own account settings',
-            $this->getBody()
+        $sitesElement = $this->safeFindElement(
+            WebDriverBy::Name('CenterIDs[]')
+        );
+        $this->assertFalse(
+            $sitesElement->isEnabled(),
+            'Expected Sites to be disabled when editing own account'
         );
 
-        // Core fields must be disabled (fieldset-level disabled propagates to
-        // descendants; isEnabled() reflects the effective disabled state)
+        $projectsElement = $this->safeFindElement(
+            WebDriverBy::Name('ProjectIDs[]')
+        );
+        $this->assertFalse(
+            $projectsElement->isEnabled(),
+            'Expected Projects to be disabled when editing own account'
+        );
+
         foreach (['First_name', 'Last_name', 'Email'] as $fieldName) {
-            $this->assertFalse(
+            $this->assertTrue(
                 $this->safeFindElement(
                     WebDriverBy::Name($fieldName)
                 )->isEnabled(),
-                "Expected field '$fieldName' to be disabled when editing own account"
+                "Expected field '$fieldName' to stay enabled"
             );
         }
 
-        // Save button must be disabled (it carries an explicit disabled attr)
-        $this->assertNotNull(
+        $this->assertTrue(
             $this->safeFindElement(
                 WebDriverBy::Name('fire_away')
-            )->getAttribute('disabled'),
-            'Expected Save button to be disabled when editing own account'
+            )->isEnabled(),
+            'Expected Save to stay enabled'
         );
     }
 
@@ -548,4 +558,3 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
     }
 }
-
