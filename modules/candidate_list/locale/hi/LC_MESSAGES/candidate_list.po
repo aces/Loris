@@ -34,6 +34,16 @@ msgstr "स्कैनर"
 msgid "Human"
 msgstr "मानव"
 
+msgid "Opened"
+msgstr "खोला गया"
 
+msgid "Answered"
+msgstr "उत्तर दिया गया"
+
+msgid "Closed"
+msgstr "बंद"
+
+msgid "Comment"
+msgstr "टिप्पणी"
 
 
