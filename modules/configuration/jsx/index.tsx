@@ -319,7 +319,11 @@ function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
       const labels = changedNames
         .map((name) => itemByName[name]?.Label ?? name)
         .join(', ');
-      void swal.fire('Success!', `Successfully saved ${labels}`, 'success');
+      void swal.fire(
+        'Success!',
+        `Successfully saved changes to: ${labels}`,
+        'success'
+      );
       props.reloadCategory();
     }).catch(showSaveError);
   };
