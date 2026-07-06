@@ -97,6 +97,24 @@ msgstr "डेटा रिलीज़ संस्करण"
 msgid "Permission Update Success!"
 msgstr "अनुमति अद्यतन सफल!"
 
+msgid "Remove Permission"
+msgstr "अनुमति हटाएँ"
+
+msgid "Modify Hidden File Status"
+msgstr "छिपी हुई फ़ाइल की स्थिति बदलें"
+
+msgid "Unhide Release File"
+msgstr "रिलीज़ फ़ाइल दिखाएँ"
+
+msgid "Hide Release File"
+msgstr "रिलीज़ फ़ाइल छिपाएँ"
+
+msgid "Delete File"
+msgstr "फ़ाइल हटाएँ"
+
+msgid "Delete Release File"
+msgstr "रिलीज़ फ़ाइल हटाएँ"
+
 msgid "Submission Error!"
 msgstr "सबमिशन त्रुटि!"
 
@@ -118,8 +136,17 @@ msgstr "संस्करण"
 msgid "Manage Users with access to a Version"
 msgstr "किसी संस्करण तक पहुँच वाले उपयोगकर्ताओं का प्रबंधन करें"
 
+msgid "Users"
+msgstr "उपयोगकर्ता"
+
 msgid "Search for a Version"
 msgstr "संस्करण खोजें"
 
 msgid "An error occurred when loading the form!"
 msgstr "फ़ॉर्म लोड करते समय एक त्रुटि हुई!"
+
+msgid "Manage File"
+msgstr "फ़ाइल प्रबंधित करें"
+
+msgid "Unversioned"
+msgstr "संस्करणहीन"

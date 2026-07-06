@@ -98,6 +98,24 @@ msgstr "数据发布版本"
 msgid "Permission Update Success!"
 msgstr "权限更新成功！"
 
+msgid "Remove Permission"
+msgstr "移除权限"
+
+msgid "Modify Hidden File Status"
+msgstr "修改隐藏文件状态"
+
+msgid "Unhide Release File"
+msgstr "取消隐藏发布文件"
+
+msgid "Hide Release File"
+msgstr "隐藏发布文件"
+
+msgid "Delete File"
+msgstr "删除文件"
+
+msgid "Delete Release File"
+msgstr "删除发布文件"
+
 msgid "Submission Error!"
 msgstr "提交错误！"
 
@@ -119,8 +137,17 @@ msgstr "版本"
 msgid "Manage Users with access to a Version"
 msgstr "管理有权访问版本的用户"
 
+msgid "Users"
+msgstr "用户"
+
 msgid "Search for a Version"
 msgstr "搜索版本"
 
 msgid "An error occurred when loading the form!"
 msgstr "加载表单时发生错误！"
+
+msgid "Manage File"
+msgstr "管理文件"
+
+msgid "Unversioned"
+msgstr "未版本化"

@@ -99,6 +99,24 @@ msgstr ""
 msgid "Permission Update Success!"
 msgstr ""
 
+msgid "Remove Permission"
+msgstr ""
+
+msgid "Modify Hidden File Status"
+msgstr ""
+
+msgid "Unhide Release File"
+msgstr ""
+
+msgid "Hide Release File"
+msgstr ""
+
+msgid "Delete File"
+msgstr ""
+
+msgid "Delete Release File"
+msgstr ""
+
 msgid "Submission Error!"
 msgstr ""
 
@@ -120,8 +138,18 @@ msgstr ""
 msgid "Manage Users with access to a Version"
 msgstr ""
 
+msgid "Users"
+msgstr ""
+
 msgid "Search for a Version"
 msgstr ""
 
 msgid "An error occurred when loading the form!"
 msgstr ""
+
+msgid "Manage File"
+msgstr ""
+
+msgid "Unversioned"
+msgstr ""
+

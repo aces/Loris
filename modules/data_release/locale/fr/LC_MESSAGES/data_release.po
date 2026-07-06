@@ -31,7 +31,7 @@ msgid "Version"
 msgstr "Version"
 
 msgid "Upload Date"
-msgstr "Date d'importation"
+msgstr "Date de publication"
 
 msgid "Project Name"
 msgstr "Nom du projet"
@@ -103,6 +103,24 @@ msgstr "Version de publication des données"
 msgid "Permission Update Success!"
 msgstr "Mise à jour des permissions réussie!"
 
+msgid "Remove Permission"
+msgstr "Supprimer l'autorisation"
+
+msgid "Modify Hidden File Status"
+msgstr "Modifier le statut des fichiers cachés"
+
+msgid "Unhide Release File"
+msgstr "Afficher le fichier de publication"
+
+msgid "Hide Release File"
+msgstr "Masquer le fichier de publication"
+
+msgid "Delete File"
+msgstr "Supprimer le fichier"
+
+msgid "Delete Release File"
+msgstr "Supprimer le fichier de publication"
+
 msgid "Submission Error!"
 msgstr "Erreur de soumission!"
 
@@ -124,8 +142,17 @@ msgstr "Versions"
 msgid "Manage Users with access to a Version"
 msgstr "Gérer les utilisateurs ayant accès à une version"
 
+msgid "Users"
+msgstr "Utilisateurs"
+
 msgid "Search for a Version"
 msgstr "Rechercher une version"
 
 msgid "An error occurred when loading the form!"
 msgstr "Une erreur s'est produite lors du chargement du formulaire!"
+
+msgid "Manage File"
+msgstr "Gérer les fichiers"
+
+msgid "Unversioned"
+msgstr "Non versionné"

@@ -151,7 +151,7 @@ class ManageFileForm extends Component {
               data={this.state.data}
               fieldOptions={this.state.fieldOptions}
             />
-            <h3>Remove Permission</h3>
+            <h3>{t('Remove Permission', {ns: 'data_release'})}</h3>
             <FormElement
               name='Remove Permission'
               onSubmit={() => {
@@ -207,13 +207,14 @@ class ManageFileForm extends Component {
                 value={this.state.selectedUserToRemove}
                 sortByValue={true}
               />
-              <ButtonElement label='Remove Permission' />
+              <ButtonElement label={t('Remove Permission',
+                {ns: 'data_release'})} />
             </FormElement>
           </>
         )}
         {loris.userHasPermission('data_release_hide') && (
           <>
-            <h3>Modify Hidden File Status</h3>
+            <h3>{t('Modify Hidden File Status', {ns: 'data_release'})}</h3>
             {this.state.managingFile.hiddenById ? (
               <div
                 style={{
@@ -229,7 +230,7 @@ class ManageFileForm extends Component {
                   ]}.
                 </p>
                 <ButtonElement
-                  label='Unhide Release File'
+                  label={t('Unhide Release File', {ns: 'data_release'})}
                   onUserInput={() => {
                     this.modifyFileStatus('unhide');
                   }}
@@ -237,7 +238,7 @@ class ManageFileForm extends Component {
               </div>
             ) : (
               <ButtonElement
-                label='Hide Release File'
+                label={t('Hide Release File', {ns: 'data_release'})}
                 onUserInput={() => {
                   this.modifyFileStatus('hide');
                 }}
@@ -247,9 +248,9 @@ class ManageFileForm extends Component {
         )}
         {loris.userHasPermission('data_release_delete') && (
           <>
-            <h3>Delete File</h3>
+            <h3>{t('Delete File', {ns: 'data_release'})}</h3>
             <ButtonElement
-              label='Delete Release File'
+              label={t('Delete Release File', {ns: 'data_release'})}
               onUserInput={() => {
                 this.modifyFileStatus('delete');
               }}

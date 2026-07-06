@@ -253,7 +253,7 @@ class DataReleaseIndex extends Component {
     const manageFileForm = (
       <Modal
         title="Manage File"
-        label="Manage File"
+        label={t("Manage File", {ns: 'data_release'})}
         show={this.state.show.manageFileForm}
         onClose={() => {
           this.hide('manageFileForm');

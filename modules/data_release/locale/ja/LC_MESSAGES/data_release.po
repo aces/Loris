@@ -97,6 +97,24 @@ msgstr "データリリースバージョン"
 msgid "Permission Update Success!"
 msgstr "権限の更新に成功しました!"
 
+msgid "Remove Permission"
+msgstr "権限を削除する"
+
+msgid "Modify Hidden File Status"
+msgstr "隠しファイルのステータスを変更する"
+
+msgid "Unhide Release File"
+msgstr "リリースファイルの非表示を解除"
+
+msgid "Hide Release File"
+msgstr "リリースファイルを非表示にする"
+
+msgid "Delete File"
+msgstr "ファイルを削除する"
+
+msgid "Delete Release File"
+msgstr "リリースファイルを削除する"
+
 msgid "Submission Error!"
 msgstr "送信エラー!"
 
@@ -118,8 +136,17 @@ msgstr "バージョン"
 msgid "Manage Users with access to a Version"
 msgstr "バージョンへのアクセス権を持つユーザーを管理する"
 
+msgid "Users"
+msgstr "ユーザー"
+
 msgid "Search for a Version"
 msgstr "バージョンを検索"
 
 msgid "An error occurred when loading the form!"
 msgstr "フォームの読み込み中にエラーが発生しました"
+
+msgid "Manage File"
+msgstr "ファイルの管理"
+
+msgid "Unversioned"
+msgstr "バージョン管理対象外"
