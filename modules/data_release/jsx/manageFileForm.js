@@ -141,7 +141,7 @@ class ManageFileForm extends Component {
       <>
         {loris.userHasPermission('data_release_edit_file_access') && (
           <>
-            <h3>Add Permission</h3>
+            <h3>{t('Add Permission', {ns: 'data_release'})}</h3>
             <AddPermissionForm
               DataURL={this.props.DataURL}
               action={this.props.managePermissionActions + '?action=add'}

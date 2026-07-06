@@ -107,7 +107,7 @@ msgid "Remove Permission"
 msgstr "Supprimer l'autorisation"
 
 msgid "Modify Hidden File Status"
-msgstr "Modifier le statut des fichiers cachés"
+msgstr "Modifier le statut des fichiers masqués"
 
 msgid "Unhide Release File"
 msgstr "Afficher le fichier de publication"
