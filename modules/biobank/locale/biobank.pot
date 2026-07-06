@@ -426,3 +426,93 @@ msgstr ""
 #: jsx/specimenForm.js:373
 msgid "Print Barcodes"
 msgstr ""
+
+msgid "Age at Collection"
+msgstr ""
+
+msgid "Container Barcode"
+msgstr ""
+
+msgid "Go To Specimen"
+msgstr ""
+
+msgid "Assigned Containers"
+msgstr ""
+
+msgid "Unassigned Containers"
+msgstr ""
+
+msgid "Parent Barcode"
+msgstr ""
+
+msgid "Go To Container"
+msgstr ""
+
+msgid "Add Container"
+msgstr ""
+
+msgid "Specimens"
+msgstr ""
+
+msgid "Containers"
+msgstr ""
+
+msgid "Pools"
+msgstr ""
+
+msgid "Shipments"
+msgstr ""
+
+msgid "Parent Specimen"
+msgstr ""
+
+msgid "Move Container"
+msgstr ""
+
+msgid "Update Parent Container"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Coordinate"
+msgstr ""
+
+msgid "Aliquot"
+msgstr ""
+
+msgid "Aliquot Pool"
+msgstr ""
+
+msgid "Origin Center"
+msgstr ""
+
+msgid "Destination Center"
+msgstr ""
+
+msgid "Parent Specimens"
+msgstr ""
+
+msgid "F/T Cycle"
+msgstr ""
+
+msgid "Male"
+msgstr ""
+
+msgid "Female"
+msgstr ""
+
+msgid "Collection Date"
+msgstr ""
+
+msgid "Collection Time"
+msgstr ""
+
+msgid "Preparation Time"
+msgstr ""
+
+msgid "Add Specimen"
+msgstr ""
+
+msgid "Add New Specimen"
+msgstr ""
