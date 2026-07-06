@@ -454,9 +454,6 @@ msgstr ""
 msgid "Specimens"
 msgstr ""
 
-msgid "Containers"
-msgstr ""
-
 msgid "Pools"
 msgstr ""
 
