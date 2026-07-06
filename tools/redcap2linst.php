@@ -259,7 +259,6 @@ function writeLINSTFile(
         }
     }
 
-    fwrite($fp, "{-@-}\n");
     fclose($fp);
 
     // META file
