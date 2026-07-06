@@ -143,11 +143,7 @@ class BehaviouralFeedback extends Component {
       const commentID = rowData['commentID'];
       const testName = rowData[labelTestName];
       const instrument = rowData[labelInstrument] || testName || commentID;
-      const hasSession = sessionID !== undefined
-        && sessionID !== null
-        && sessionID !== ''
-        && sessionID !== 0
-        && sessionID !== '0';
+      const hasSession = !!sessionID && sessionID !== '0';
 
       if (feedbackLevel === 'instrument') {
         if (hasSession) {
