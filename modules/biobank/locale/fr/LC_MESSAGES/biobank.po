@@ -539,3 +539,12 @@ msgstr "Ajouter un échantillon"
 
 msgid "Add New Specimen"
 msgstr "Ajouter un nouvel échantillon"
+
+msgid "Create Shipment"
+msgstr "Créer une expédition"
+
+msgid "Receive Shipment"
+msgstr "Réceptionner une expédition"
+
+msgid "Done by"
+msgstr "Effectué par"

@@ -546,3 +546,12 @@ msgstr "Agregar espécimen"
 
 msgid "Add New Specimen"
 msgstr "Agregar nuevo espécimen"
+
+msgid "Create Shipment"
+msgstr "Crear envío"
+
+msgid "Receive Shipment"
+msgstr "Recibir envío"
+
+msgid "Done by"
+msgstr "Realizado por"

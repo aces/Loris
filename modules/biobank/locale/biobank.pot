@@ -265,7 +265,6 @@ msgstr ""
 msgid "Container"
 msgid_plural "Containers"
 msgstr[0] ""
-msgstr[1] ""
 
 #: jsx/shipmentTab.js:69 jsx/shipmentTab.js:141
 msgid "Origin Site"
@@ -512,4 +511,13 @@ msgid "Add Specimen"
 msgstr ""
 
 msgid "Add New Specimen"
+msgstr ""
+
+msgid "Create Shipment"
+msgstr ""
+
+msgid "Receive Shipment"
+msgstr ""
+
+msgid "Done by"
 msgstr ""

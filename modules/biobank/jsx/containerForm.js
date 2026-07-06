@@ -78,7 +78,7 @@ class ContainerForm extends Component {
     const handleClose = () => this.setState(initialState, this.props.onClose);
     return (
       <Modal
-        title={this.props.t('Add New Container')}
+        title={this.props.t('Add New Container', {ns: 'biobank'})}
         show={show}
         onClose={handleClose}
         onSubmit={this.handleSubmit}

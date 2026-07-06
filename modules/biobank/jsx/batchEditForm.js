@@ -468,10 +468,10 @@ class BatchEditForm extends React.PureComponent {
       <div className='form-top'>
         <StaticElement
           label={this.props.t('Editing Note', {ns: 'biobank'})}
-          text={this.props.t(`Select a form for the list to
-                edit the specimen values. Any previous value associated
-                with a Specimen for a given field will be
-                overwritten if one is added on this form.`, {ns: 'biobank'})}
+          text={this.props.t('Select a form for the list to' +
+                ' edit the specimen values. Any previous value associated' +
+                ' with a Specimen for a given field will be' +
+                ' overwritten if one is added on this form.', {ns: 'biobank'})}
         />
         <VerticalTabs
           tabs={tabList}
@@ -495,8 +495,8 @@ class BatchEditForm extends React.PureComponent {
           <div className='col-sm-10 col-sm-offset-1'>
             <StaticElement
               label={this.props.t('Editing Note', {ns: 'biobank'})}
-              text={t(`Select or Scan the specimens to be edited. Specimens
-                    must share the same Type.`, {ns: 'biobank'})}
+              text={this.props.t('Select or Scan the specimens to be edited. Specimens' +
+                    ' must share the same Type.', {ns: 'biobank'})}
             />
             <StaticElement
               label='Specimen Type'
