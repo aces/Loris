@@ -373,6 +373,18 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
+msgid "Minimum"
+msgstr ""
+
+msgid "Maximum"
+msgstr ""
+
+msgid "{{label}} Minimum"
+msgstr ""
+
+msgid "{{label}} Maximum"
+msgstr ""
+
 msgid "Note"
 msgstr ""
 

@@ -324,7 +324,7 @@ class DataTable extends Component {
       opposite = this.props.filters[name].opposite;
     }
     const field = this.props.fields.find(
-      (field) => (field.filter || {}).name === name
+      (field) => field.filter?.name === name
     );
     const filter = field && field.filter ? field.filter : {};
 

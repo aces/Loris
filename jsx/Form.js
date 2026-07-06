@@ -1641,10 +1641,10 @@ class DateRangeElementBase extends Component {
     const minID = `${this.props.id || this.props.name}_min`;
     const maxID = `${this.props.id || this.props.name}_max`;
     const minRangeLabel = this.props.minLabel ?
-      this.props.t(this.props.minLabel, {ns: 'loris'}) :
+      this.props.minLabel :
       this.props.t('Minimum', {ns: 'loris'});
     const maxRangeLabel = this.props.maxLabel ?
-      this.props.t(this.props.maxLabel, {ns: 'loris'}) :
+      this.props.maxLabel :
       this.props.t('Maximum', {ns: 'loris'});
     const minLabel = this.props.labelPlacementTop && this.props.label ?
       this.props.t('{{label}} Minimum', {
@@ -2104,10 +2104,10 @@ class NumericRangeElementBase extends Component {
     const minID = `${this.props.id || this.props.name}_min`;
     const maxID = `${this.props.id || this.props.name}_max`;
     const minLabel = this.props.minLabel ?
-      this.props.t(this.props.minLabel, {ns: 'loris'}) :
+      this.props.minLabel :
       this.props.t('Minimum', {ns: 'loris'});
     const maxLabel = this.props.maxLabel ?
-      this.props.t(this.props.maxLabel, {ns: 'loris'}) :
+      this.props.maxLabel :
       this.props.t('Maximum', {ns: 'loris'});
     const wrapperClass =
       this.props.label && !this.props.labelPlacementTop ?
