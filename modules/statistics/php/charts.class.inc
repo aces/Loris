@@ -232,7 +232,7 @@ class Charts extends \NDB_Page
             foreach ($sexes as $sex) {
                 if (!isset($sexData['datasets'][$sex])) {
                     $sexData['datasets'][$sex] = [
-                        'label'  => $sexMeta[$sex]['label'] ?? $sex,
+                        'label'  => dgettext("sex", $sexMeta[$sex]['label'] ?? $sex),
                         'colour' => $sexMeta[$sex]['colour'] ?? '#000000',
                         'data'   => [],
                     ];
