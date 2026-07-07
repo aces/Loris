@@ -3,7 +3,7 @@
 
 /**
  * The script generate_tables_sql.php takes the ip_output.txt file generated from
- * lorisform_parser.php and outputs an sql build file for the table of each
+ * ip_output_builder.php and outputs an sql build file for the table of each
  * instrument it finds in the ip_output.txt file.  These sql files are output
  * to the tables_sql/ subdirectory.
  *

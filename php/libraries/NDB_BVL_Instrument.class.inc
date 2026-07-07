@@ -153,7 +153,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * True if the instrument page is being loaded by a script
-     * such as the lorisform_parser where all elements should be added to form,
+     * such as the ip_output_builder where all elements should be added to form,
      * ignoring age-dependent or other conditional display logic in the form.
      * To be called from within individual instrument forms.
      */
