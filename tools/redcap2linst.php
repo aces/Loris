@@ -255,7 +255,6 @@ function writeLINSTFile(
         } else {
             // write field line
             fwrite($fp, "$field\n");
-
         }
     }
 
