@@ -41,22 +41,6 @@ msgstr ""
 msgid "Pooling Note"
 msgstr "Nota de agrupación"
 
-#: jsx/poolSpecimenForm.js:208
-msgid ""
-"Select or Scan the specimens to be pooled. Specimens must\n"
-"have a Status of 'Available', have a Quantity of greater\n"
-"than 0, and share the same Type, PSCID, Visit Label\n"
-"and Current Site. Pooled specimens cannot already belong "
-"to a pool. Once pooled, the Status of specimen will be changed\n"
-"to 'Dispensed' and there Quantity set to '0'"
-msgstr ""
-"Select or Scan the specimens to be pooled. Specimens must\n"
-"have a Status of 'Available', have a Quantity of greater\n"
-"than 0, and share the same Type, PSCID, Visit Label\n"
-"and Current Site. Pooled specimens cannot already belong "
-"to a pool. Once pooled, the Status of specimen will be changed\n"
-"to 'Dispensed' and there Quantity set to '0'"
-
 #: jsx/poolSpecimenForm.js:217 jsx/globals.js:30 jsx/batchProcessForm.js:262
 #: jsx/specimenForm.js:601
 msgid "Specimen Type"
@@ -564,3 +548,15 @@ msgstr "Entrada de {{label}}"
 
 msgid "{{label}} List"
 msgstr "Lista de {{label}}"
+
+msgid "Select or Scan the specimens to be pooled. Specimens must have a Status of 'Available', have a Quantity of greater than 0, and share the same Type, PSCID, Visit Label and Current Site. Pooled specimens cannot already belong to a pool. Once pooled, the Status of specimen will be changed to 'Dispensed' and there Quantity set to '0'."
+msgstr "Seleccione o escanee los especímenes que se van a agrupar. Los especímenes deben tener el estado 'Disponible', una cantidad mayor que 0 y compartir el mismo tipo, PSCID, etiqueta de visita y sitio actual. Los especímenes agrupados no pueden pertenecer ya a un grupo. Una vez agrupados, el estado del espécimen cambiará a 'Dispensado' y su cantidad se establecerá en '0'."
+
+msgid "Select or Scan the specimens to be prepared. Specimens must have a Status of 'Available', and share the same Type. Any previous value associated with a Specimen will be overwritten if one is added on this form."
+msgstr "Seleccione o escanee los especímenes que se prepararán. Los especímenes deben tener el estado «Disponible» y ser del mismo tipo. Cualquier valor previamente asociado a un espécimen será reemplazado si se agrega uno nuevo en este formulario."
+
+msgid "Barcode Input"
+msgstr "Entrada de códigos de barras"
+
+msgid "Barcode List"
+msgstr "Lista de códigos de barras"

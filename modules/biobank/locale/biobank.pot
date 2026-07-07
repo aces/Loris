@@ -369,14 +369,6 @@ msgstr ""
 msgid "Processing Note"
 msgstr ""
 
-#: jsx/batchProcessForm.js:256
-msgid ""
-"Select or Scan the specimens to be prepared. Specimens must\n"
-"have a Status of 'Available', and share the same Type.\n"
-"Any previous value associated with a Specimen will be\n"
-"overwritten if one is added on this form."
-msgstr ""
-
 #: jsx/batchProcessForm.js:315
 msgid "Process Specimens"
 msgstr ""
@@ -529,4 +521,16 @@ msgid "{{label}} Input"
 msgstr ""
 
 msgid "{{label}} List"
+msgstr ""
+
+msgid "Select or Scan the specimens to be pooled. Specimens must have a Status of 'Available', have a Quantity of greater than 0, and share the same Type, PSCID, Visit Label and Current Site. Pooled specimens cannot already belong to a pool. Once pooled, the Status of specimen will be changed to 'Dispensed' and their Quantity set to '0'."
+msgstr ""
+
+msgid "Select or Scan the specimens to be prepared. Specimens must have a Status of 'Available', and share the same Type. Any previous value associated with a Specimen will be overwritten if one is added on this form."
+msgstr ""
+
+msgid "Barcode Input"
+msgstr ""
+
+msgid "Barcode List"
 msgstr ""

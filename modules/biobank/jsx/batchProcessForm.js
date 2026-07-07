@@ -126,8 +126,8 @@ class BatchProcessForm extends React.PureComponent {
       (specimen.typeId !== current.typeId)
     ) {
       Swal.fire(
-        this.props.t('Oops!', {ns: 'biobank'}),
-        this.props.t('Specimens must be of the same Type', {ns: 'biobank'}),
+        t('Oops!', {ns: 'biobank'}),
+        t('Specimens must be of the same Type', {ns: 'biobank'}),
         'warning'
       );
       return Promise.reject();
@@ -150,13 +150,13 @@ class BatchProcessForm extends React.PureComponent {
 
       if (barcodes.length > 0) {
         return Swal.fire({
-          title: this.props.t('Warning!', {ns: 'biobank'}),
+          title: t('Warning!', {ns: 'biobank'}),
           html: `Preparation for specimen(s) <b>${barcodes.join(', ')}</b> ` +
             `already exists. By completing this form, the previous `
             + `preparation will be overwritten.`,
           type: 'warning',
           showCancelButton: true,
-          confirmButtonText: this.props.t('Proceed', {ns: 'loris'})})
+          confirmButtonText: t('Proceed', {ns: 'loris'})})
           .then((result) => result.value ? resolve(list) : reject());
       } else {
         return resolve(list);
@@ -188,7 +188,7 @@ class BatchProcessForm extends React.PureComponent {
       return <Loader/>;
     }
 
-    const {data, options} = this.props;
+    const {t, data, options} = this.props;
     const {
       containerId,
       poolId,
@@ -252,21 +252,22 @@ class BatchProcessForm extends React.PureComponent {
       <div className='row'>
         <div className='col-sm-10 col-sm-offset-1'>
           <StaticElement
-            label={this.props.t('Processing Note', {ns: 'biobank'})}
-            text={this.props.t('Select or Scan the specimens to be prepared.' +
+            label={t('Processing Note', {ns: 'biobank'})}
+            text={t('Select or Scan the specimens to be prepared.' +
                   ' Specimens must have a Status of \'Available\', and share the' +
                   ' same Type. Any previous value associated with a Specimen will' +
                   ' be overwritten if one is added on this form.', {ns: 'biobank'})}
           />
           <StaticElement
-            label={this.props.t('Specimen Type', {ns: 'biobank'})}
+            label={t('Specimen Type', {ns: 'biobank'})}
             text={(options.specimen.types[current.typeId]||{}).label || '—'}
           />
           <div className='row'>
             <div className='col-xs-6'>
-              <h4>Barcode Input</h4>
+              <h4>{t('Barcode Input', {ns: 'biobank'})}</h4>
               <div className='form-top'/>
               <BarcodeInput
+                t={t}
                 data={data}
                 options={options}
                 list={list}
@@ -276,14 +277,14 @@ class BatchProcessForm extends React.PureComponent {
               />
               <SearchableDropdown
                 name={'poolId'}
-                label={'Pool'}
+                label={t('Pool', {ns: 'biobank'})}
                 onUserInput={handlePoolInput}
                 options={pools}
                 value={poolId}
               />
             </div>
             <div className='col-xs-6'>
-              <h4>Barcode List</h4>
+              <h4>{t('Barcode List', {ns: 'biobank'})}</h4>
               <div className='form-top'/>
               <div className='preparation-list'>
                 {barcodeList}
@@ -318,7 +319,7 @@ class BatchProcessForm extends React.PureComponent {
     };
     return (
       <Modal
-        title={this.props.t('Process Specimens', {ns: 'biobank'})}
+        title={t('Process Specimens', {ns: 'biobank'})}
         show={this.props.show}
         onClose={handleClose}
         onSubmit={handleSubmit}
@@ -371,7 +372,7 @@ class BarcodeInput extends PureComponent {
    * @return {JSX}
    */
   render() {
-    const {data, options, list, containerId, addListItem} = this.props;
+    const {t, data, options, list, containerId, addListItem} = this.props;
     // Create options for barcodes based on match typeId
     const barcodesPrimary = Object.values(data.containers)
       .reduce((result, container) => {
@@ -407,7 +408,7 @@ class BarcodeInput extends PureComponent {
     return (
       <SearchableDropdown
         name={'containerId'}
-        label={this.props.t('Specimen', {ns: 'biobank'})}
+        label={t('Specimen', {ns: 'biobank'})}
         onUserInput={handleInput}
         options={barcodesPrimary}
         value={containerId}

@@ -373,6 +373,9 @@ msgid "View details"
 msgstr "Voir les détails"
 
 # Data table strings
+msgid "No result found."
+msgstr "Aucun résultat trouvé."
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{pageCount}} lignes affichées sur {{totalCount}}."
 
