@@ -223,6 +223,34 @@ msgstr "Site actuel"
 msgid "Draw Site"
 msgstr "Site de prélèvement"
 
+#: jsx/specimenTab.js:140 jsx/specimenTab.js:325
+msgid "Container Barcode"
+msgstr "Code-barres du conteneur"
+
+#: jsx/specimenTab.js:275
+msgid "Age at Collection"
+msgstr "Âge au prélèvement"
+
+#: jsx/specimenTab.js:313
+msgid "Collection Date"
+msgstr "Date de prélèvement"
+
+#: jsx/specimenTab.js:317
+msgid "Collection Time"
+msgstr "Heure de prélèvement"
+
+#: jsx/specimenTab.js:321
+msgid "Preparation Time"
+msgstr "Heure de préparation"
+
+#: jsx/specimenTab.js:341 jsx/specimenTab.js:378
+msgid "Go To Specimen"
+msgstr "Aller à l'échantillon"
+
+#: jsx/specimenTab.js:346
+msgid "Add Specimen"
+msgstr "Ajouter un échantillon"
+
 #: jsx/container.js:54
 msgid "Checkout Child Containers"
 msgstr "Vérifier les conteneurs enfants"
