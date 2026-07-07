@@ -469,6 +469,7 @@ function CreateShipment({
         setItems={handler.setContainerIds}
         options={data.containers}
         errorMessage={errors.containerIds}
+        t={t}
       />
       <SelectElement
         name='destinationCenterId'
@@ -773,9 +774,9 @@ function InputList({
   setItems,
   errorMessage,
   options,
+  t,
 }) {
   const [item, setItem] = useState('');
-
   const removeItem = (index) => setItems(items.filter((item, i) => index != i));
   const addItem = () => {
     const match = Object.keys(options)
@@ -828,7 +829,12 @@ function InputList({
   return (
     <div style={{display: 'flex', justifyContent: 'space-between'}}>
       <div style={{flex: '0.47'}}>
-        <FormHeader header={label + ' Input'}/>
+        <FormHeader
+          header={t('{{label}} Input', {
+            ns: 'biobank',
+            label,
+          })}
+        />
         <InlineField weights={[1, 0]}>
           <TextboxElement
             name={name}
@@ -843,7 +849,12 @@ function InputList({
         </InlineField>
       </div>
       <div style={{flex: '0.47'}}>
-        <FormHeader header={label + ' List'}/>
+        <FormHeader
+          header={t('{{label}} List', {
+            ns: 'biobank',
+            label,
+          })}
+        />
         <div style={listStyle}>
           {itemsDisplay}
         </div>
@@ -866,6 +877,7 @@ InputList.propTypes = {
       [PropTypes.PropTypes.string]: PropTypes.string, // This is a placeholder, actual key is dynamic (props.name)
     }).isRequired
   ).isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 /**

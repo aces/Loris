@@ -521,3 +521,12 @@ msgstr ""
 
 msgid "Done by"
 msgstr ""
+
+msgid "Any container or specimen added to this form will be dissassociated from its parent. Any children of the containers listed will also be added to the shipment."
+msgstr ""
+
+msgid "{{label}} Input"
+msgstr ""
+
+msgid "{{label}} List"
+msgstr ""

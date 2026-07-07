@@ -548,3 +548,12 @@ msgstr "Réceptionner une expédition"
 
 msgid "Done by"
 msgstr "Effectué par"
+
+msgid "Any container or specimen added to this form will be dissassociated from its parent. Any children of the containers listed will also be added to the shipment."
+msgstr "Tout conteneur ou échantillon ajouté à ce formulaire sera dissocié de son parent. Tous les conteneurs enfants des conteneurs répertoriés seront également ajoutés à l’expédition."
+
+msgid "{{label}} Input"
+msgstr "Saisie de {{label}}"
+
+msgid "{{label}} List"
+msgstr "Liste des {{label}}"

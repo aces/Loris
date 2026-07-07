@@ -119,7 +119,7 @@ class BiobankIndex extends Component {
     return new Promise((resolve) => {
       const data = clone(this.state.data);
       entities.forEach((entity) => data[type][entity.id] = entity);
-      this.setState({data}, resolve());
+      this.setState({data}, resolve);
     });
   }
 
@@ -379,8 +379,8 @@ class BiobankIndex extends Component {
       .then((entities) => {
         return printBarcodes(entities)
           .then(() => {
-            this.setData('containers', entities.containers);
-            this.setData('specimens', entities.specimens);
+            return this.setData('containers', entities.containers)
+              .then(() => this.setData('specimens', entities.specimens));
           });
       })
       .then(() => Promise.resolve());
@@ -741,7 +741,7 @@ class BiobankIndex extends Component {
   }
 
   /**
-   * Validate a pool of speciments
+   * Validate a pool of specimens
    *
    * @param {object} pool - The pool to validate
    * @return {object} an object of any errors
@@ -844,11 +844,11 @@ class BiobankIndex extends Component {
 
 // biobankIndex.propTypes
 BiobankIndex.propTypes = {
-  specimenAPI: PropTypes.object.isRequired,
-  containerAPI: PropTypes.object.isRequired,
-  poolAPI: PropTypes.object.isRequired,
-  optionsAPI: PropTypes.object.isRequired,
-  labelAPI: PropTypes.object.isRequired,
+  specimenAPI: PropTypes.string.isRequired,
+  containerAPI: PropTypes.string.isRequired,
+  poolAPI: PropTypes.string.isRequired,
+  optionsAPI: PropTypes.string.isRequired,
+  labelAPI: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 
