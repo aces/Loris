@@ -100,7 +100,7 @@ foreach ($instruments as $instrumentName => $instrumentFileName) {
         //
         fprintf(STDOUT, "Copying LINST instrument: {$instrumentName}\n");
         $barename = substr($instrumentFileName, 0, strpos($instrumentFileName, "."));
-        $res = copyLINSTInstrument(
+        $res      = copyLINSTInstrument(
             $ipOutput,
             $instrumentName,
             "{$instrumenDir}/{$instrumentFileName}",
@@ -259,7 +259,10 @@ function parsePHPInstrument(
     // check instrument state
     preg_match("/class (.+) extends NDB_BVL_Instrument/", $data, $matches);
     if (empty($matches[1])) {
-        fprintf(STDERR, "File '{$instrumentFilePath}' does not contain an instrument.\n");
+        fprintf(
+            STDERR,
+            "File '{$instrumentFilePath}' does not contain an instrument.\n"
+        );
         return false;
     }
 
@@ -335,8 +338,8 @@ function parsePHPInstrument(
  *
  * @return string LINST formated element.
  */
- function parseElements($instrument, $elements, $groupLabel = "")
- {
+function parseElements($instrument, $elements, $groupLabel = "")
+{
     $output = '';
     foreach ($elements as $element) {
 
@@ -456,15 +459,16 @@ function parsePHPInstrument(
             );
             break;
         }
-     }
-     return $output;
- }
+    }
+    return $output;
+}
 
  /**
   * Clean a raw label.
   *
   * @param null|string $rawLabel   the raw label to clean.
-  * @param string      $groupLabel an optional group label to include in the cleaning.
+  * @param string      $groupLabel an optional group label to include in the
+  *                                cleaning.
   *
   * @return string the cleaned label
   */
@@ -554,6 +558,8 @@ function getInstruments(LorisInstance $loris, string $instrumenDir): array
 /**
  * Get the excluded instruments from the config file
  *
+ * @param LorisInstance $loris a loris instance.
+ *
  * @return array List of instruments to be skipped
  */
 function getExcludedInstruments(LorisInstance $loris): array
@@ -580,10 +586,12 @@ function getExcludedInstruments(LorisInstance $loris): array
 function usage(): void
 {
     $msg  = "";
-    $msg .= "Usage: ip_output_builder.php [-l|--add-linst] [-m|--add-meta] [-h|--help]\n\n";
+    $msg .= "Usage: ip_output_builder.php [-l|--add-linst]";
+    $msg .= " [-m|--add-meta] [-h|--help]\n\n";
     $msg .= "Options:\n";
     $msg .= "    -l/--add-linst add LINST instrument\n";
-    $msg .= "    -m/--add-meta  only if '--add-linst' is used, add \".meta\" file content\n";
+    $msg .= "    -m/--add-meta  if '--add-linst' is used, add '.meta' file";
+    $msg .= " content\n";
     $msg .= "    -h/--help      Show this screen\n";
 
     // display message
