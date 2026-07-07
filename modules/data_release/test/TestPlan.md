@@ -1,42 +1,64 @@
-# Data Release Module Test Plan 
 
-Ensure that users with `data_release_view` permission only can see the data release 
-module without the 'Upload File', 'Add Permission' and 'Manage Permissions' 
-buttons at the top of the data table.
+# Set up
+For this test, you will create 3 users. 
+- user1 
+    - (admin) all permissions. Use this account to create two more users
+- user2
+    - [x] Access Profile: Create/View Candidates and Timepoints - Own Sites
+    - [x] Data Release: View Release Files
+    - [x] Data Release: Grant Other Users Access to Releases
+- user3
+    - [x] Access Profile: Create/View Candidates and Timepoints - Own Sites
+    - [x] Data Release: View Release Files
 
+# Upload
+This section tests the upload functionality of the module
+- Open loris instance in a new "incognito" browser window
+- login with user2 credentials 
+- navigate to tools -> data release
+- assert that the `Upload File` button does **not** appear
+- go to your admin account in a normal browser window and add the following permission:
+- [x] Data Release: Upload Release Files
+- hard-refresh the page in the incognito browser window opened for user 2
+- assert that the `Upload File` button has appeared
+- click on `Upload File`
+- Select `Browse` and use the file-picker to upload any local file, ideally nothing with sensitive or personal information
+-  Leave `Version` blank
+- Select a project
+- Click `Upload File`
 
-## Upload File
+# Version
+This section tests the version functionality of the module
+- Assert that the file appears in the data release list as `Unversioned`and with the correct upload date and project
+- repeat the above procedure and assert that the following error swal appears:
+- `A file with this name already exists! Would you like to overwrite existing file? Note that the version associated with thefile will also be overwritten`
+- verify that the file still appears in the data release
+- repeat the procedure again but add `VERSION2`
+- assert that the above error swal appears and that the file is in the list with the entered version
+- check the data_release table for this entry and assert that the version string is in lower case
 
-1. Give the user the `data_release_upload` *(Data Release: Upload file)* permission. 
- Ensure the user can upload new files to the module.
- 
-2. As the 'superuser', click on the 'Upload File' button to upload a file 
- and ensure the uploaded file is available in the list of files.
++----+------------+---------+-------------+-----------+
+| id | file_name  | version | upload_date | ProjectID |
++----+------------+---------+-------------+-----------+
+|  1 | test.txt   | version2 | 2026-07-07  |        1 |
++----+------------+---------+-------------+-----------+
 
-3. Upload a file with a version name containing `.` and ensure the permissions
- tests done in the next section work on that version.
-
-4. Upload a file with a version that includes Uppercase letters. Ensure that the
-version is saved to the database with all values in lowercase.
-
-5. Upload a file with no version. Ensure that it is uploaded properly without any error. 
- 
 ## Permissions
+This section tests the functionality to grant a specfied user access to specific files or versions
 
-1. Give the user the `data_release_edit_file_access` *(Data Release: Grant Other
-Users Access to Releases)* permission.
+- Login with user3 in **another** incognito window and navigate to the data release module
+- Assert that this user can *not* see the file you uploaded
+Go to your admin window and give user2 the following permission:
+- [x] Data Release: Grant Other Users Access to Releases
+- Go to user2 window and hard refresh
+- assert that `Add Permission` button appears
+- click on `Add Permission`
+- in the `Username` field, select user3
+- in the `Data Release File`, select the file that you uploaded and click `Add Permission`
+- assert that that you get a swal saying the permission was added 
+- assert that user3 can now see the file that you uploaded
+- assert that `data_release_permissions` contains an entry with the associations 
 
-2. Click on the 'Add Permission' button.
-
-3. Select another 'User' (that you have access to and is not a 'superuser').
- 
-4. Select a 'Data Release File' (ideally a file that the 'User' has no 
-access to yet). Note that at least one file needs to be uploaded in the 
-module to be able to set permissions to access a file, otherwise, the drop 
-down for 'Data Release File' will remain empty).
- 
-5. Ensure that this 'User' can now see the file now that the 
-permission was added for him/her.
 
 6. Repeat steps 2 to 5 but instead of selecting a 'Data Release File', select a
 'Data Release Version' and ensure that the user can see all data release files
