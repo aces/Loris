@@ -21,7 +21,14 @@ use \LORIS\LorisInstance;
 use \Loris\Behavioural\NDB_BVL_Instrument_LINST;
 
 // parse args
-$flags = getopt("mh", ["add-meta", "help"]);
+$flags = getopt(
+    "lmh",
+    [
+        "add-linst",
+        "add-meta",
+        "help"
+    ]
+);
 
 //
 if (isset($flags["h"]) || isset($flags["help"])) {
@@ -29,11 +36,27 @@ if (isset($flags["h"]) || isset($flags["help"])) {
     exit(0);
 }
 
-// should add ".meta" file content?
-$addMeta = isset($flags["m"]) || isset($flags["add-meta"]);
-if ($addMeta) {
-    fprintf(STDOUT, "[option:add-meta] LINST \".meta\" file content will be added.\n");
+// add options
+$addLINST = isset($flags["l"]) || isset($flags["add-linst"]);
+$addMeta  = isset($flags["m"]) || isset($flags["add-meta"]);
+
+if ($addMeta && !$addLINST) {
+    fprintf(STDERR, "Option '--add-meta' requires '--add-linst'.\n");
+    usage();
+    exit(0);
 }
+
+// should add "linst" instruments?
+if ($addLINST) {
+    fprintf(STDOUT, "[option:add-linst] LINST instrument files will be added.\n");
+}
+
+// should add linst ".meta" file content?
+if ($addMeta) {
+    fprintf(STDOUT, "[option:add-meta] LINST \".meta\" files will be added.\n");
+}
+
+
 
 /**
  * Clean label regex.
@@ -68,6 +91,13 @@ foreach ($instruments as $instrumentName => $instrumentFileName) {
 
     // process according to the file type
     if ($isLINST($instrumentFileName)) {
+        // skip linst
+        if (!$addLINST) {
+            fprintf(STDOUT, "Skipping LINST instrument: {$instrumentName}\n");
+            continue;
+        }
+
+        //
         fprintf(STDOUT, "Copying LINST instrument: {$instrumentName}\n");
         $barename = substr($instrumentFileName, 0, strpos($instrumentFileName, "."));
         $res = copyLINSTInstrument(
@@ -550,10 +580,11 @@ function getExcludedInstruments(LorisInstance $loris): array
 function usage(): void
 {
     $msg  = "";
-    $msg .= "Usage: ip_output_builder.php [-m|--add-meta] [-h|--help]\n\n";
+    $msg .= "Usage: ip_output_builder.php [-l|--add-linst] [-m|--add-meta] [-h|--help]\n\n";
     $msg .= "Options:\n";
-    $msg .= "    -m/--add-meta in case of LINST instrument, add \".meta\" file content\n";
-    $msg .= "    -h/--help     Show this screen\n";
+    $msg .= "    -l/--add-linst add LINST instrument\n";
+    $msg .= "    -m/--add-meta  only if '--add-linst' is used, add \".meta\" file content\n";
+    $msg .= "    -h/--help      Show this screen\n";
 
     // display message
     fprintf(STDOUT, $msg);
