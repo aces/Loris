@@ -149,5 +149,4 @@ msgid "Manage File"
 msgstr "ファイルの管理"
 
 msgid "Unversioned"
-msgstr "バージョン管理対象外"
-
+msgstr "バージョンなし"
