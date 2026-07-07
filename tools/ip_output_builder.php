@@ -22,10 +22,11 @@ use \Loris\Behavioural\NDB_BVL_Instrument_LINST;
 
 // parse args
 $flags = getopt(
-    "lmh",
+    "lmo:h",
     [
         "add-linst",
         "add-meta",
+        "one-instrument:",
         "help"
     ]
 );
@@ -56,7 +57,14 @@ if ($addMeta) {
     fprintf(STDOUT, "[option:add-meta] LINST \".meta\" files will be added.\n");
 }
 
-
+// only one instrument
+$instrumentTarget = $flags["o"] ?? $flags["one-instrument"] ?? null;
+if ($instrumentTarget !== null) {
+    fprintf(
+        STDOUT,
+        "[option:one-instrument] Only targeting instrument: {$instrumentTarget}\n"
+    );
+}
 
 /**
  * Clean label regex.
@@ -77,6 +85,25 @@ $outputFile   = "{$lorisBase}/tools/ip_output.txt";
 
 // get the list of instruments
 $instruments = getInstruments($lorisInstance, $instrumenDir);
+
+// if only one instrument to parse
+if ($instrumentTarget !== null) {
+    if (!array_key_exists($instrumentTarget, $instruments)) {
+        fprintf(
+            STDERR,
+            "[option:one-instrument] Targeted instrument does not"
+            . " exist or is excluded: {$instrumentTarget}\n"
+        );
+        exit(1);
+    }
+
+    // select only this instrument
+    $instruments = array_filter(
+        $instruments,
+        fn($i) => $i === $instrumentTarget,
+        ARRAY_FILTER_USE_KEY
+    );
+}
 
 // open ip_output.txt
 $ipOutput = fopen($outputFile, "w");
@@ -587,12 +614,14 @@ function usage(): void
 {
     $msg  = "";
     $msg .= "Usage: ip_output_builder.php [-l|--add-linst]";
-    $msg .= " [-m|--add-meta] [-h|--help]\n\n";
+    $msg .= " [-m|--add-meta] [-o=INST|--one-instrument=INST]";
+    $msg .= " [-h|--help]\n\n";
     $msg .= "Options:\n";
-    $msg .= "    -l/--add-linst add LINST instrument\n";
-    $msg .= "    -m/--add-meta  if '--add-linst' is used, add '.meta' file";
+    $msg .= "    -l/--add-linst       Add LINST instrument processing\n";
+    $msg .= "    -m/--add-meta        If '--add-linst' is used, add '.meta' file";
     $msg .= " content\n";
-    $msg .= "    -h/--help      Show this screen\n";
+    $msg .= "    -o/--one-instrument  Only process one instrument INST\n";
+    $msg .= "    -h/--help            Show this screen\n";
 
     // display message
     fprintf(STDOUT, $msg);
