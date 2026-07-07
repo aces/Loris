@@ -263,7 +263,7 @@ class ImagingQCIndex extends Component {
 ImagingQCIndex.propTypes = {
   ImgDataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
