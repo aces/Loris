@@ -220,6 +220,34 @@ msgstr "当前站点"
 msgid "Draw Site"
 msgstr "采样站点"
 
+#: jsx/specimenTab.js:140 jsx/specimenTab.js:325
+msgid "Container Barcode"
+msgstr "容器条形码"
+
+#: jsx/specimenTab.js:275
+msgid "Age at Collection"
+msgstr "采集时年龄"
+
+#: jsx/specimenTab.js:313
+msgid "Collection Date"
+msgstr "采集日期"
+
+#: jsx/specimenTab.js:317
+msgid "Collection Time"
+msgstr "采集时间"
+
+#: jsx/specimenTab.js:321
+msgid "Preparation Time"
+msgstr "制备时间"
+
+#: jsx/specimenTab.js:341 jsx/specimenTab.js:378
+msgid "Go To Specimen"
+msgstr "前往样本"
+
+#: jsx/specimenTab.js:346
+msgid "Add Specimen"
+msgstr "添加样本"
+
 #: jsx/container.js:54
 msgid "Checkout Child Containers"
 msgstr "检出子容器"
