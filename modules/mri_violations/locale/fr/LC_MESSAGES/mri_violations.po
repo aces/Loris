@@ -266,3 +266,6 @@ msgstr "Intervalle du pas en Z"
 
 msgid "Time Range"
 msgstr "Intervalle de temps"
+
+msgid "Series Description Regex:"
+msgstr ""

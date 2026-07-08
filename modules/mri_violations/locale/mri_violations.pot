@@ -229,3 +229,5 @@ msgstr ""
 msgid "Echo Number"
 msgstr ""
 
+msgid "Series Description Regex:"
+msgstr ""

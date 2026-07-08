@@ -217,3 +217,5 @@ msgstr "時間範囲"
 msgid "Can not implement filter on a resource type that has no projects."
 msgstr "プロジェクトがないリソース タイプにフィルターを実装することはできません。"
 
+msgid "Series Description Regex:"
+msgstr ""

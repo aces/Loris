@@ -166,7 +166,7 @@ function ProtocolViolationModal(props) {
 
   const pushgroup = (name, tablerows) => {
     protocolgroups.push(<div>
-      <h3>{name}</h3>
+      <h3>{t('Default MRI protocol group', {ns: 'mri_protocol_group'})}</h3>
       <table className="table table-hover table-primary table-bordered">
         <thead>
           <tr>
