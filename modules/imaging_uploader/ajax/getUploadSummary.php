@@ -17,6 +17,7 @@
  * @license  Loris license
  * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
+$user          = \NDB_Factory::singleton()->user();
 
 // Base access check - user must have either of these permissions
 // more access validation after request validation
@@ -32,7 +33,6 @@ if (!$user->hasAnyPermission(
 }
 $config        = \NDB_Factory::singleton()->config();
 $advancedperms = $config->getSetting('useAdvancedPermissions');
-$user          = \NDB_Factory::singleton()->user();
 $centerString  = implode("','", $user->getCenterIDs());
 $projectString = implode("','", $user->getProjectIDs());
 $username      = $user->getUsername();
