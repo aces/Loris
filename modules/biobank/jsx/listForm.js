@@ -1,6 +1,8 @@
 import {clone, isEmpty} from './helpers.js';
 import PropTypes from 'prop-types';
 
+import {withTranslation} from 'react-i18next';
+
 /**
  * A form containing a list
  */
@@ -207,6 +209,7 @@ class ListForm extends React.Component {
 
 // ListForm.propTypes
 ListForm.propTypes = {
+  t: PropTypes.func.isRequired,
   list: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -296,4 +299,6 @@ ListItem.propTypes = {
   itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
-export {ListForm, ListItem};
+const TranslatedListForm = withTranslation(['biobank', 'loris'])(ListForm);
+
+export {TranslatedListForm as ListForm, ListItem};
