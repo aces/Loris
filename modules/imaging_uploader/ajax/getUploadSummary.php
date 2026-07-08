@@ -17,7 +17,7 @@
  * @license  Loris license
  * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
-$user          = \NDB_Factory::singleton()->user();
+$user = \NDB_Factory::singleton()->user();
 
 // Base access check - user must have either of these permissions
 // more access validation after request validation
