@@ -263,7 +263,7 @@ class BatchProcessForm extends React.PureComponent {
               ' Specimens must have a Status of \'Available\', and share' +
               ' the same Type. Any previous value associated with a Specimen' +
               ' will be overwritten if one is added on this form.'
-              , { ns: 'biobank' })}
+            , {ns: 'biobank'})}
           />
           <StaticElement
             label={t('Specimen Type', {ns: 'biobank'})}

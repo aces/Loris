@@ -212,8 +212,8 @@ class PoolSpecimenForm extends React.Component {
               ' PSCID, VisitLabel and Current Site. Pooled specimens' +
               ' cannot already belong to a pool. Once pooled,' +
               ' the Status of specimen will be changed to \'Dispensed\'' +
-              ' changed to  and their Quantity set to \'0\'.',
-              {ns: 'biobank'})}
+              ' changed to  and their Quantity set to \'0\'.'
+            , {ns: 'biobank'})}
           />
           <SearchableDropdown
             name='typeId'
