@@ -215,4 +215,4 @@ msgid "Can not implement filter on a resource type that has no projects."
 msgstr "No se puede implementar un filtro en un tipo de recurso que no tenga proyectos."
 
 msgid "Series Description Regex:"
-msgstr ""
+msgstr "Expresión regular de la descripción de la serie:"

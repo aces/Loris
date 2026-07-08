@@ -268,4 +268,4 @@ msgid "Time Range"
 msgstr "Intervalle de temps"
 
 msgid "Series Description Regex:"
-msgstr ""
+msgstr "Expression régulière de description de série :"

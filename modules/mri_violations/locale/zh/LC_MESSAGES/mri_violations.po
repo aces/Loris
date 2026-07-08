@@ -218,4 +218,4 @@ msgid "Can not implement filter on a resource type that has no projects."
 msgstr "无法对没有项目的资源类型实施筛选。"
 
 msgid "Series Description Regex:"
-msgstr ""
+msgstr "序列描述正则表达式："
