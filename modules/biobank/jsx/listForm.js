@@ -118,6 +118,7 @@ class ListForm extends React.Component {
    * @return {JSX}
    */
   render() {
+    const {t} = this.props;
     const {collapsed, multiplier} = this.state;
     const {errors, list} = this.props;
 
@@ -157,7 +158,7 @@ class ListForm extends React.Component {
                         </div>
                       </span>
                       <span className='action-title'>
-                        New Entry
+                        {t('New Entry', {ns: 'biobank'})}
                       </span>
                     </div>
                   </div>

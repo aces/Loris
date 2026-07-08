@@ -38,16 +38,6 @@ msgstr ""
 msgid "Pooling Note"
 msgstr ""
 
-#: jsx/poolSpecimenForm.js:208
-msgid ""
-"Select or Scan the specimens to be pooled. Specimens must\n"
-"have a Status of 'Available', have a Quantity of greater\n"
-"than 0, and share the same Type, PSCID, Visit Label\n"
-"and Current Site. Pooled specimens cannot already belong "
-"to a pool. Once pooled, the Status of specimen will be changed\n"
-"to 'Dispensed' and there Quantity set to '0'"
-msgstr ""
-
 #: jsx/poolSpecimenForm.js:217 jsx/globals.js:30 jsx/batchProcessForm.js:262
 #: jsx/specimenForm.js:601
 msgid "Specimen Type"
@@ -314,22 +304,8 @@ msgstr ""
 msgid "Editing Note"
 msgstr ""
 
-#: jsx/batchEditForm.js:470
-msgid ""
-"Select a form for the list to\n"
-"edit the specimen values. Any previous value associated\n"
-"with a Specimen for a given field will be\n"
-"overwritten if one is added on this form."
-msgstr ""
-
 #: jsx/batchEditForm.js:487
 msgid "Edit Specimens"
-msgstr ""
-
-#: jsx/batchEditForm.js:497
-msgid ""
-"Select or Scan the specimens to be edited. Specimens\n"
-"                    must share the same Type."
 msgstr ""
 
 #: jsx/batchEditForm.js:517 jsx/globals.js:69
@@ -385,17 +361,6 @@ msgid ""
 "to add another barcode field, or press for the \"Copy\" "
 "button to\n"
 "duplicate the previous entry."
-msgstr ""
-
-#: jsx/specimenForm.js:199
-msgid ""
-"To create new specimens, first select a PSCID and Visit Label.\n"
-"Then, enter a Barcode, fill out the coresponding sub-form "
-"and\n"
-"press submit. Press \"New Entry\" button to add another "
-"barcode\n"
-"field, or press for the \"Copy\" button to duplicate the\n"
-"previous entry."
 msgstr ""
 
 #: jsx/specimenForm.js:219
@@ -533,4 +498,19 @@ msgid "Barcode Input"
 msgstr ""
 
 msgid "Barcode List"
+msgstr ""
+
+msgid "Preparation for specimen(s) <b>{{barcodes}}</b> already exists. By completing this form, the previous preparation will be overwritten."
+msgstr ""
+
+msgid "Select a form for the list to edit the specimen values. Any previous value associated with a Specimen for a given field will be overwritten if one is added on this form."
+msgstr ""
+
+msgid "Select or Scan the specimens to be edited. Specimens must share the same Type."
+msgstr ""
+
+msgid "To create new specimens, first select a PSCID and Visit Label. Then, enter a Barcode, fill out the coresponding sub-form and press submit. Press 'New Entry' button to add another barcode field, or press for the 'Copy' button to duplicate the previous entry."
+msgstr ""
+
+msgid "New Entry"
 msgstr ""

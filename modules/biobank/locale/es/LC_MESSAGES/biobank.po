@@ -313,29 +313,9 @@ msgstr "Preparación"
 msgid "Editing Note"
 msgstr "Nota de edición"
 
-#: jsx/batchEditForm.js:470
-msgid ""
-"Select a form for the list to\n"
-"edit the specimen values. Any previous value associated\n"
-"with a Specimen for a given field will be\n"
-"overwritten if one is added on this form."
-msgstr ""
-"Seleccione un formulario de la lista para editar los valores de los\n"
-"especímenes. Cualquier valor previo asociado a un espécimen para un\n"
-"campo determinado será sobrescrito si se agrega uno nuevo mediante\n"
-"este formulario."
-
 #: jsx/batchEditForm.js:487
 msgid "Edit Specimens"
 msgstr "Editar especímenes"
-
-#: jsx/batchEditForm.js:497
-msgid ""
-"Select or Scan the specimens to be edited. Specimens\n"
-"                    must share the same Type."
-msgstr ""
-"Seleccione o escanee los especímenes que desea editar. Los especímenes\n"
-"deben compartir el mismo tipo."
 
 #: jsx/batchEditForm.js:517 jsx/globals.js:69
 msgid "Pool"
@@ -373,18 +353,6 @@ msgstr "¡Advertencia!"
 #: jsx/batchProcessForm.js:255
 msgid "Processing Note"
 msgstr "Nota de procesamiento"
-
-#: jsx/batchProcessForm.js:256
-msgid ""
-"Select or Scan the specimens to be prepared. Specimens must\n"
-"have a Status of 'Available', and share the same Type.\n"
-"Any previous value associated with a Specimen will be\n"
-"overwritten if one is added on this form."
-msgstr ""
-"Seleccione o escanee los especímenes que desea procesar. Los especímenes\n"
-"deben tener el estado «Disponible» y compartir el mismo tipo.\n"
-"Cualquier valor previo asociado a un espécimen será sobrescrito\n"
-"si se agrega uno nuevo mediante este formulario."
 
 #: jsx/batchProcessForm.js:315
 msgid "Process Specimens"
@@ -560,3 +528,18 @@ msgstr "Entrada de códigos de barras"
 
 msgid "Barcode List"
 msgstr "Lista de códigos de barras"
+
+msgid "Preparation for specimen(s) <b>{{barcodes}}</b> already exists. By completing this form, the previous preparation will be overwritten."
+msgstr "Ya existe una preparación para el/los espécimen(es) <b>{{barcodes}}</b>. Al completar este formulario, la preparación anterior será reemplazada."
+
+msgid "Select a form for the list to edit the specimen values. Any previous value associated with a Specimen for a given field will be overwritten if one is added on this form."
+msgstr "Seleccione un formulario de la lista para editar los valores de los especímenes. Cualquier valor anterior asociado a un espécimen para un campo determinado será reemplazado si se introduce un nuevo valor en este formulario."
+
+msgid "Select or Scan the specimens to be edited. Specimens must share the same Type."
+msgstr "Seleccione o escanee los especímenes que se van a editar. Los especímenes deben ser del mismo tipo."
+
+msgid "To create new specimens, first select a PSCID and Visit Label. Then, enter a Barcode, fill out the coresponding sub-form and press submit. Press 'New Entry' button to add another barcode field, or press for the 'Copy' button to duplicate the previous entry."
+msgstr "Para crear nuevos especímenes, primero seleccione un PSCID y una etiqueta de visita. Luego introduzca un código de barras, complete el subformulario correspondiente y pulse «Enviar». Pulse el botón «Nueva entrada» para agregar otro campo de código de barras o el botón «Copiar» para duplicar la entrada anterior."
+
+msgid "New Entry"
+msgstr "Nueva entrada"

@@ -119,6 +119,7 @@ class BatchProcessForm extends React.PureComponent {
    * @return {Promise}
    */
   validateListItem(containerId) {
+    const {t} = this.props;
     const {current, list} = clone(this.state);
     const container = this.props.data.containers[containerId];
     const specimen = this.props.data.specimens[container.specimenId];
@@ -143,6 +144,7 @@ class BatchProcessForm extends React.PureComponent {
    * @return {Promise}
    */
   validateList(list) {
+    const {t} = this.props;
     return new Promise((resolve, reject) => {
       const barcodes = Object.values(list)
         .filter((item) => !!item.specimen.preparation)
@@ -151,9 +153,13 @@ class BatchProcessForm extends React.PureComponent {
       if (barcodes.length > 0) {
         return Swal.fire({
           title: t('Warning!', {ns: 'biobank'}),
-          html: `Preparation for specimen(s) <b>${barcodes.join(', ')}</b> ` +
-            `already exists. By completing this form, the previous `
-            + `preparation will be overwritten.`,
+          html: t('Preparation for specimen(s) <b>{{barcodes}}</b>'
+            + ' already exists. By completing this form, the previous'
+            + ' preparation will be overwritten.',
+            {
+              ns: 'biobank',
+              barcodes: barcodes.join(', '),
+            }),
           type: 'warning',
           showCancelButton: true,
           confirmButtonText: t('Proceed', {ns: 'loris'})})
