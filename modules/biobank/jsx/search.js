@@ -45,7 +45,8 @@ class Search extends PureComponent {
             value={this.state.barcode}
             options={this.props.barcodes}
             onUserInput={onInput}
-            placeHolder={this.props.t('Please Scan or Type Barcode', {ns: 'biobank'})}
+            placeHolder={this.props.t('Please Scan or Type Barcode',
+              {ns: 'biobank'})}
             autoFocus={true}
           />
         </FormElement>

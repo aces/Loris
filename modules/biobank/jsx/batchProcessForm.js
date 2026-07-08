@@ -156,10 +156,10 @@ class BatchProcessForm extends React.PureComponent {
           html: t('Preparation for specimen(s) <b>{{barcodes}}</b>'
             + ' already exists. By completing this form, the previous'
             + ' preparation will be overwritten.',
-            {
-              ns: 'biobank',
-              barcodes: barcodes.join(', '),
-            }),
+          {
+            ns: 'biobank',
+            barcodes: barcodes.join(', '),
+          }),
           type: 'warning',
           showCancelButton: true,
           confirmButtonText: t('Proceed', {ns: 'loris'})})
@@ -260,9 +260,10 @@ class BatchProcessForm extends React.PureComponent {
           <StaticElement
             label={t('Processing Note', {ns: 'biobank'})}
             text={t('Select or Scan the specimens to be prepared.' +
-                  ' Specimens must have a Status of \'Available\', and share the' +
-                  ' same Type. Any previous value associated with a Specimen will' +
-                  ' be overwritten if one is added on this form.', {ns: 'biobank'})}
+              ' Specimens must have a Status of \'Available\', and share' +
+              ' the same Type. Any previous value associated with a Specimen' +
+              ' will be overwritten if one is added on this form.'
+              , { ns: 'biobank' })}
           />
           <StaticElement
             label={t('Specimen Type', {ns: 'biobank'})}

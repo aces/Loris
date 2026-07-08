@@ -442,8 +442,8 @@ function CreateShipment({
       <StaticElement
         label={t('Note', {ns: 'loris'})}
         text={t('Any container or specimen added to this form will be' +
-        ' dissassociated from its parent. Any children of the containers listed' +
-        ' will also be added to the shipment.', {ns: 'biobank'})}
+        ' dissassociated from its parent. Any children of the containers' +
+        ' listed will also be added to the shipment.', {ns: 'biobank'})}
       />
       <TextboxElement
         name='barcode'
