@@ -166,7 +166,7 @@ function ProtocolViolationModal(props) {
 
   const pushgroup = (name, tablerows) => {
     protocolgroups.push(<div>
-      <h3>test</h3>
+      <h3>{name}</h3>
       <table className="table table-hover table-primary table-bordered">
         <thead>
           <tr>
