@@ -123,3 +123,9 @@ msgstr "最大年齢（日数）"
 
 msgid "Minimum Age (days)"
 msgstr "最低年齢（日数）"
+
+msgid "An error occurred while saving the test."
+msgstr "検査の保存中にエラーが発生しました。"
+
+msgid "This will deactivate the current test."
+msgstr "現在の検査は無効になります。"

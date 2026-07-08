@@ -144,3 +144,9 @@ msgstr "Âge maximal (jours)"
 #, fuzzy
 msgid "Minimum Age (days)"
 msgstr "Âge minimum (jours)"
+
+msgid "An error occurred while saving the test."
+msgstr "Une erreur s'est produite lors de l'enregistrement du test."
+
+msgid "This will deactivate the current test."
+msgstr "Cette action désactivera le test actuel."

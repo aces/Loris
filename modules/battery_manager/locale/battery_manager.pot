@@ -122,3 +122,9 @@ msgstr ""
 
 msgid "Minimum Age (days)"
 msgstr ""
+
+msgid "An error occurred while saving the test."
+msgstr ""
+
+msgid "This will deactivate the current test."
+msgstr ""
