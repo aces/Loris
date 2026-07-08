@@ -277,8 +277,12 @@ class Utility
         // The result has several columns; we only want the visit labels.
         $visitLabels = array_column(iterator_to_array($result), 'Visit_label');
 
+        $translatedVisitLabels = [];
+        foreach ($visitLabels as $visitLabel) {
+            $translatedVisitLabels[$visitLabel] = dgettext('visit', $visitLabel);
+        }
         // Generates an array where the keys are equal to the values.
-        $cache[$projStr] = array_combine($visitLabels, $visitLabels);
+        $cache[$projStr] = $translatedVisitLabels;
         return $cache[$projStr];
     }
 
@@ -298,7 +302,15 @@ class Utility
             [],
             'ProjectID'
         ) ?? [];
-        return $projects;
+
+        $translatedProjects = [];
+        foreach ($projects as $projectID => $name) {
+            $translatedProjects[$projectID] = dgettext(
+                'Project',
+                $name
+            );
+        }
+        return $translatedProjects;
     }
 
     /**
