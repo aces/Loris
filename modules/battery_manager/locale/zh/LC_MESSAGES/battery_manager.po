@@ -129,3 +129,15 @@ msgstr "保存检查时发生错误。"
 
 msgid "This will deactivate the current test."
 msgstr "这将停用当前检查。"
+
+msgid "Unspecified Request"
+msgstr "未指定请求"
+
+msgid "This Test already exists in the database"
+msgstr "该测试已存在于数据库中。"
+
+msgid "Edit Permission Denied"
+msgstr "没有编辑权限"
+
+msgid "Could not add entry to the Test Battery"
+msgstr "无法将条目添加到测试集。"

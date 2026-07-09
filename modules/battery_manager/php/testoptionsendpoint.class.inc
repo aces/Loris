@@ -50,7 +50,7 @@ class TestOptionsEndpoint extends \NDB_Page
             return new \LORIS\Http\Response\JSON\OK($this->_getOptions());
         }
 
-        return new \LORIS\Http\Response\JSON\BadRequest('Unspecified Request');
+        return new \LORIS\Http\Response\JSON\BadRequest(dgettext("battery_manager", "Unspecified Request"));
     }
 
     /**
