@@ -152,3 +152,30 @@ msgstr ""
 
 msgid "Invalid MFA code"
 msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "password expired"
+msgstr ""
+
+msgid "Can not use an empty password."
+msgstr ""
+
+msgid "You cannot keep the same password."
+msgstr ""
+
+msgid "Server encountered an error."
+msgstr ""
+
+msgid "Sending reset email failed."
+msgstr ""
+
+msgid "Please complete the reCaptcha"
+msgstr ""
+
+msgid "Email address can not contain the following characters: <,>,& and \""
+msgstr ""
+
+msgid "Please provide a valid email address!"
+msgstr ""

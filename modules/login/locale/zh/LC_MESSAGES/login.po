@@ -151,3 +151,30 @@ msgstr "缺少验证码"
 
 msgid "Invalid MFA code"
 msgstr "MFA 验证码无效"
+
+msgid "Error"
+msgstr "错误"
+
+msgid "password expired"
+msgstr "密码已过期。"
+
+msgid "Can not use an empty password."
+msgstr "密码不能为空。"
+
+msgid "You cannot keep the same password."
+msgstr "不能继续使用相同的密码。"
+
+msgid "Server encountered an error."
+msgstr "服务器遇到错误。"
+
+msgid "Sending reset email failed."
+msgstr "发送密码重置邮件失败。"
+
+msgid "Please complete the reCaptcha"
+msgstr "请完成 reCAPTCHA 验证。"
+
+msgid "Email address can not contain the following characters: <,>,& and \""
+msgstr "电子邮件地址不能包含以下字符：<、>、& 和 \"。"
+
+msgid "Please provide a valid email address!"
+msgstr "请输入有效的电子邮件地址！"
