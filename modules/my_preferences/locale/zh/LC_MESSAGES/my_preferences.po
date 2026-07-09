@@ -78,3 +78,9 @@ msgstr "验证码"
 
 msgid "Successfully registered multifactor authenticator"
 msgstr "已成功注册多因素身份验证器"
+
+msgid "Invalid code provided. MFA not registered."
+msgstr "提供的验证码无效。MFA 尚未配置。"
+
+msgid "Missing code or secret to validate"
+msgstr "缺少用于验证的验证码或密钥。"

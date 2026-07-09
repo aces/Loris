@@ -78,3 +78,9 @@ msgstr "कोड सत्यापित करें"
 
 msgid "Successfully registered multifactor authenticator"
 msgstr "मल्टी-फ़ैक्टर ऑथेंटिकेटर सफलतापूर्वक पंजीकृत किया गया"
+
+msgid "Invalid code provided. MFA not registered."
+msgstr "दिया गया कोड अमान्य है। MFA कॉन्फ़िगर नहीं किया गया है।"
+
+msgid "Missing code or secret to validate"
+msgstr "सत्यापन के लिए कोड या गुप्त कुंजी उपलब्ध नहीं है।"
