@@ -22,7 +22,6 @@ msgstr ""
 msgid "Login"
 msgstr "ログイン"
 
-
 msgid "Login to LORIS"
 msgstr "ロリスにログイン"
 
@@ -149,3 +148,9 @@ msgstr[0] "サイト"
 msgid "Visit"
 msgid_plural "Visits"
 msgstr[0] "訪問"
+
+msgid "Missing code"
+msgstr "コードがありません"
+
+msgid "Invalid MFA code"
+msgstr "MFAコードが無効です"

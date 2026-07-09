@@ -40,8 +40,7 @@ msgstr "输入下面验证器应用程序中的代码以继续。"
 msgid "Data in LORIS:"
 msgstr "LORIS 中的数据："
 
-msgid ""
-"Please enter your username below, and a new password will be sent to you."
+msgid "Please enter your username below, and a new password will be sent to you."
 msgstr "请在下面输入您的用户名，新密码将发送给您。"
 
 msgid "Back to login page"
@@ -98,9 +97,7 @@ msgstr "放射科医生"
 msgid "Examiner role"
 msgstr "考官角色"
 
-msgid ""
-"Please fill in the form below to request a LORIS account. We will contact "
-"you once your account has been approved."
+msgid "Please fill in the form below to request a LORIS account. We will contact you once your account has been approved."
 msgstr "请填写下面的表格来申请 LORIS 帐户。您的帐户获得批准后，我们​​将与您联系。"
 
 msgid "Your request for an account has been received successfully."
@@ -148,3 +145,9 @@ msgstr[0] "中心"
 msgid "Visit"
 msgid_plural "Visits"
 msgstr[0] "访视"
+
+msgid "Missing code"
+msgstr "缺少验证码"
+
+msgid "Invalid MFA code"
+msgstr "MFA 验证码无效"

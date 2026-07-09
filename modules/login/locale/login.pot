@@ -146,3 +146,9 @@ msgstr[0] ""
 msgid "Visit"
 msgid_plural "Visits"
 msgstr[0] ""
+
+msgid "Missing code"
+msgstr ""
+
+msgid "Invalid MFA code"
+msgstr ""
