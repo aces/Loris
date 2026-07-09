@@ -59,5 +59,3 @@ msgstr "प्रतिक्रिया स्थिति"
 
 msgid "Profile"
 msgstr "प्रोफाइल"
-
-
