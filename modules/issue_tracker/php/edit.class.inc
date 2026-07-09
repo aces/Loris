@@ -856,153 +856,166 @@ class Edit extends \NDB_Page implements ETagCalculator
             $user
         );
 
-        if (!empty($issueID)) {
-            try {
-                $db->unsafeUpdate('issues', $issueValues, ['issueID' => $issueID]);
-            } catch (\Exception $ex) {
-                return new \LORIS\Http\Response\JSON\InternalServerError();
+        try {
+            $db->beginTransaction();
+
+            if (!empty($issueID)) {
+                try {
+                    $db->unsafeUpdate(
+                        'issues',
+                        $issueValues,
+                        ['issueID' => $issueID]
+                    );
+                } catch (\Exception $ex) {
+                    return new \LORIS\Http\Response\JSON\InternalServerError();
+                }
+            } else {
+                $issueValues['reporter']    = $user->getUsername();
+                $issueValues['dateCreated'] = date('Y-m-d H:i:s');
+                $db->unsafeInsert('issues', $issueValues);
+                $issueID = intval($db->getLastInsertId());
             }
-        } else {
-            $issueValues['reporter']    = $user->getUsername();
-            $issueValues['dateCreated'] = date('Y-m-d H:i:s');
-            $db->unsafeInsert('issues', $issueValues);
-            $issueID = intval($db->getLastInsertId());
-        }
 
-        // convert the aspect of 'lastUpdatedBy' to Fullname
-        // once the db has registered the username (userID)
-        $issueValues['lastUpdatedBy']
-            = $this->formatUserInformation($user->getUserName());
+            // convert the aspect of 'lastUpdatedBy' to Fullname
+            // once the db has registered the username (userID)
+            $issueValues['lastUpdatedBy']
+                = $this->formatUserInformation($user->getUserName());
 
-        $this->updateHistory($historyValues, $issueID, $user);
-        $this->updateComments($values['comment'], $issueID, $user);
+            $this->updateHistory($historyValues, $issueID, $user);
+            $this->updateComments($values['comment'], $issueID, $user);
 
-        // Attachment for new issue.
-        $uploadedFiles = $request->getUploadedFiles();
-        if (!empty($uploadedFiles)) {
-            $attachment = new \LORIS\issue_tracker\UploadHelper();
-            $success    = $attachment->setupUploading(
-                $user,
-                $uploadedFiles,
-                [
-                    'fileDescription' => '',
-                    'issueID'         => $issueID,
-                ]
-            );
-            if (!$success) {
-                $this->logger->log(
-                    \Psr\Log\LogLevel::ERROR,
-                    $attachment->errorMessage
+            // Attachment for new issue.
+            $uploadedFiles = $request->getUploadedFiles();
+            if (!empty($uploadedFiles)) {
+                $attachment = new \LORIS\issue_tracker\UploadHelper();
+                $success    = $attachment->setupUploading(
+                    $user,
+                    $uploadedFiles,
+                    [
+                        'fileDescription' => '',
+                        'issueID'         => $issueID,
+                    ]
                 );
-                return new \LORIS\Http\Response\JSON\Conflict(
-                    $attachment->errorMessage
-                );
-            }
-        }
-
-        // Get users watching all issues
-        $usersWatching = $db->pselectCol(
-            "SELECT u.UserID
-                FROM users_notifications_rel unr
-                JOIN users u ON unr.user_id=u.ID
-                WHERE unr.module_id=
-                (SELECT id FROM notification_modules
-                    WHERE module_name='issue_tracker'
-                    AND operation_type='create/edit'
-                )",
-            []
-        );
-        // If the assignee is watching, add them
-        if ($values['watching'] == 'Yes'
-            && $issueValues['assignee'] == $user->getUsername()
-        ) {
-            $usersWatching[] = $issueValues['assignee'];
-        }
-        // Add new watchers (if any)
-        if (isset($values['othersWatching'])) {
-            $usersWatching = array_unique(
-                array_merge(
-                    $usersWatching,
-                    explode(',', $values['othersWatching'] ?? '')
-                )
-            );
-        }
-
-        // Adding others from multiselect to watching table.
-        if (isset($usersWatching)) {
-            // Clear the list of current watchers
-            $db->delete(
-                'issues_watching',
-                ['issueID' => $issueID]
-            );
-
-            foreach ($usersWatching as $userWatching) {
-                if ($userWatching) {
-                    $db->replace(
-                        'issues_watching',
-                        [
-                            'userID'  => $userWatching,
-                            'issueID' => $issueID,
-                        ]
+                if (!$success) {
+                    $db->rollBack();
+                    $this->logger->log(
+                        \Psr\Log\LogLevel::ERROR,
+                        $attachment->errorMessage
+                    );
+                    return new \LORIS\Http\Response\JSON\Conflict(
+                        $attachment->errorMessage
                     );
                 }
             }
-        }
 
-        // Add editor to the watching table unless they don't want to be added.
-        if (isset($values['watching'])
-            && $values['watching'] == 'Yes'
-            && (!isset($issueValues['assignee'])
-            || $issueValues['assignee'] !== $user->getUsername())
-        ) {
-            $nowWatching = [
-                'userID'  => $user->getUsername(),
-                'issueID' => $issueID,
-            ];
-            $db->replace('issues_watching', $nowWatching);
-        } else if (isset($values['watching'])
-            && $values['watching'] == 'No'
-            && (!isset($issueValues['assignee'])
-            || $issueValues['assignee'] !== $user->getUsername())
-        ) {
-            $db->delete(
-                'issues_watching',
-                [
-                    'issueID' => $issueID,
-                    'userID'  => $user->getUsername(),
-                ]
+            // Get users watching all issues
+            $usersWatching = $db->pselectCol(
+                "SELECT u.UserID
+                    FROM users_notifications_rel unr
+                    JOIN users u ON unr.user_id=u.ID
+                    WHERE unr.module_id=
+                    (SELECT id FROM notification_modules
+                        WHERE module_name='issue_tracker'
+                        AND operation_type='create/edit'
+                    )",
+                []
             );
+            // If the assignee is watching, add them
+            if ($values['watching'] == 'Yes'
+                && $issueValues['assignee'] == $user->getUsername()
+            ) {
+                $usersWatching[] = $issueValues['assignee'];
+            }
+            // Add new watchers (if any)
+            if (isset($values['othersWatching'])) {
+                $usersWatching = array_unique(
+                    array_merge(
+                        $usersWatching,
+                        explode(',', $values['othersWatching'] ?? '')
+                    )
+                );
+            }
+
+            // Adding others from multiselect to watching table.
+            if (isset($usersWatching)) {
+                // Clear the list of current watchers
+                $db->delete(
+                    'issues_watching',
+                    ['issueID' => $issueID]
+                );
+
+                foreach ($usersWatching as $userWatching) {
+                    if ($userWatching) {
+                        $db->replace(
+                            'issues_watching',
+                            [
+                                'userID'  => $userWatching,
+                                'issueID' => $issueID,
+                            ]
+                        );
+                    }
+                }
+            }
+
+            // Add editor to the watching table unless they don't want to be added.
+            if (isset($values['watching'])
+                && $values['watching'] == 'Yes'
+                && (!isset($issueValues['assignee'])
+                || $issueValues['assignee'] !== $user->getUsername())
+            ) {
+                $nowWatching = [
+                    'userID'  => $user->getUsername(),
+                    'issueID' => $issueID,
+                ];
+                $db->replace('issues_watching', $nowWatching);
+            } else if (isset($values['watching'])
+                && $values['watching'] == 'No'
+                && (!isset($issueValues['assignee'])
+                || $issueValues['assignee'] !== $user->getUsername())
+            ) {
+                $db->delete(
+                    'issues_watching',
+                    [
+                        'issueID' => $issueID,
+                        'userID'  => $user->getUsername(),
+                    ]
+                );
+            }
+            $flag           = 'false';
+            $assigneeString = '';
+            // Adding new assignee to watching
+            if (isset($issueValues['assignee'])
+                && $issueValues['assignee'] !== $assignee
+            ) {
+                $nowWatching = [
+                    'userID'  => $issueValues['assignee'],
+                    'issueID' => $issueID
+                ];
+                $db->replace('issues_watching', $nowWatching);
+                // sending email
+                $assigneeString = $issueValues['assignee'];
+            } else if (isset($issueValues['assignee'])
+                && $issueValues['assignee'] === $assignee
+            ) {
+                $flag           = 'true';
+                $assigneeString = $issueValues['assignee'];
+            }
+            $db->commit();
+            $this->emailUser(
+                $issueID,
+                $assigneeString,
+                isset($usersWatching) ? $usersWatching : [],
+                $user,
+                $flag,
+                $values
+            );
+            return new \LORIS\Http\Response\JsonResponse(
+                ['issueID' => $issueID]
+            );
+        } catch (\DatabaseException $ex) {
+            $db->rollBack();
+            return new \LORIS\Http\Response\JSON\InternalServerError();
         }
-        $flag           = 'false';
-        $assigneeString = '';
-        // Adding new assignee to watching
-        if (isset($issueValues['assignee'])
-            && $issueValues['assignee'] !== $assignee
-        ) {
-            $nowWatching = [
-                'userID'  => $issueValues['assignee'],
-                'issueID' => $issueID
-            ];
-            $db->replace('issues_watching', $nowWatching);
-            // sending email
-            $assigneeString = $issueValues['assignee'];
-        } else if (isset($issueValues['assignee'])
-            && $issueValues['assignee'] === $assignee
-        ) {
-            $flag           = 'true';
-            $assigneeString = $issueValues['assignee'];
-        }
-        $this->emailUser(
-            $issueID,
-            $assigneeString,
-            isset($usersWatching) ? $usersWatching : [],
-            $user,
-            $flag,
-            $values
-        );
-        return new \LORIS\Http\Response\JsonResponse(
-            ['issueID' => $issueID]
-        );
     }
 
     /**
