@@ -97,7 +97,10 @@ class MFA extends \NDB_Page
         $wantCode      = $validator->getCode($counter, 6);
         if ($wantCode !== strval($values['code'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                dgettext('my_preferences', 'Invalid code provided. MFA not registered.')
+                dgettext(
+                    'my_preferences',
+                    'Invalid code provided. MFA not registered.'
+                )
             );
         }
         $db = $this->loris->getDatabaseConnection();
