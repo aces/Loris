@@ -174,7 +174,7 @@ msgstr ""
 msgid "Please complete the reCaptcha"
 msgstr ""
 
-msgid "Email address can not contain the following characters: <,>,& and \""
+msgid "Email address can not contain the following characters: <,>,& and \"."
 msgstr ""
 
 msgid "Please provide a valid email address!"

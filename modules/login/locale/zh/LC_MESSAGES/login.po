@@ -173,7 +173,7 @@ msgstr "发送密码重置邮件失败。"
 msgid "Please complete the reCaptcha"
 msgstr "请完成 reCAPTCHA 验证。"
 
-msgid "Email address can not contain the following characters: <,>,& and \""
+msgid "Email address can not contain the following characters: <,>,& and \"."
 msgstr "电子邮件地址不能包含以下字符：<、>、& 和 \"。"
 
 msgid "Please provide a valid email address!"
