@@ -143,7 +143,7 @@ class Signup extends \NDB_Page implements ETagCalculator
                 dgettext(
                     'login',
                     'Email address can not contain the following'
-                    + 'characters: <,>,& and ".'
+                    . 'characters: <,>,& and ".'
                 )
             );
         }
