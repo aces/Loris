@@ -64,13 +64,10 @@ msgstr "手动 MFA 设置"
 msgid "Use the following key in your authenticator app: <0>{{code}}</0>"
 msgstr "在您的身份验证器应用中使用以下密钥：<0> {{code}} </0>"
 
-msgid ""
-"Scan the following QR code below in your MFA authenticator and enter the "
-"code to validate."
+msgid "Scan the following QR code below in your MFA authenticator and enter the code to validate."
 msgstr "在 MFA 身份验证器中扫描下面的二维码并输入该代码进行验证。"
 
-msgid ""
-"Note that this will <0>overwrite</0> any previously setup MFA in LORIS!"
+msgid "Note that this will <0>overwrite</0> any previously setup MFA in LORIS!"
 msgstr "请注意，这将<0>覆盖</0>之前在 LORIS 中设置的任何 MFA！"
 
 msgid "Can't scan the QR code? <0>Setup manually.</0>"
