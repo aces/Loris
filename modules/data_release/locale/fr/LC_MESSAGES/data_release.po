@@ -52,9 +52,6 @@ msgstr "Ajouter une permission"
 msgid "Manage Permissions"
 msgstr "Gérer les permissions"
 
-msgid "An error occured while loading the page."
-msgstr "Une erreur s'est produite lors du chargement de la page."
-
 msgid "Note"
 msgstr "Note"
 
@@ -156,3 +153,45 @@ msgstr "Gérer les fichiers"
 
 msgid "Unversioned"
 msgstr "Non versionné"
+
+msgid "Hidden By ID"
+msgstr "Masqué par ID"
+
+msgid "Missing action"
+msgstr "Action manquante"
+
+msgid "Invalid action"
+msgstr "Action invalide"
+
+msgid "No data was sent in the POST request"
+msgstr "Aucune donnée n'a été envoyée dans la requête POST."
+
+msgid "Missing user to grant access to"
+msgstr "Utilisateur auquel accorder l'accès manquant."
+
+msgid "Must select either specific file OR version to grant access to"
+msgstr "Vous devez sélectionner un fichier précis ou une version à laquelle accorder l'accès."
+
+msgid "No valid data was sent in the request"
+msgstr "Aucune donnée valide n'a été envoyée dans la requête."
+
+msgid "Missing user to remove access from"
+msgstr "Utilisateur auquel retirer l'accès manquant."
+
+msgid "Must select a specific file"
+msgstr "Vous devez sélectionner un fichier précis."
+
+msgid "Can not upload duplicate file"
+msgstr "Impossible de téléverser un fichier en double."
+
+msgid "Permission denied."
+msgstr "Permission refusée."
+
+msgid "Overwrite failed. A file of this name already exists which you do not have permission to overwrite."
+msgstr "Échec de l'écrasement. Un fichier portant ce nom existe déjà et vous n'avez pas l'autorisation de l'écraser."
+
+msgid "Can not upload duplicate file."
+msgstr "Impossible de téléverser un fichier en double."
+
+msgid "Not found"
+msgstr "Introuvable"

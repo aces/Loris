@@ -48,9 +48,6 @@ msgstr ""
 msgid "Manage Permissions"
 msgstr ""
 
-msgid "An error occured while loading the page."
-msgstr ""
-
 msgid "Note"
 msgstr ""
 
@@ -151,4 +148,46 @@ msgid "Manage File"
 msgstr ""
 
 msgid "Unversioned"
+msgstr ""
+
+msgid "Hidden By ID"
+msgstr ""
+
+msgid "Missing action"
+msgstr ""
+
+msgid "Invalid action"
+msgstr ""
+
+msgid "No data was sent in the POST request"
+msgstr ""
+
+msgid "Missing user to grant access to"
+msgstr ""
+
+msgid "Must select either specific file OR version to grant access to"
+msgstr ""
+
+msgid "No valid data was sent in the request"
+msgstr ""
+
+msgid "Missing user to remove access from"
+msgstr ""
+
+msgid "Must select a specific file"
+msgstr ""
+
+msgid "Can not upload duplicate file"
+msgstr ""
+
+msgid "Permission denied."
+msgstr ""
+
+msgid "Overwrite failed. A file of this name already exists which you do not have permission to overwrite."
+msgstr ""
+
+msgid "Can not upload duplicate file."
+msgstr ""
+
+msgid "Not found"
 msgstr ""

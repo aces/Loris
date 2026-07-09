@@ -79,8 +79,7 @@ msgstr "同名的文件已存在！"
 msgid "Would you like to overwrite existing file?"
 msgstr "您想覆盖现有文件吗？"
 
-msgid ""
-"Note that the version associated with the file will also be overwritten."
+msgid "Note that the version associated with the file will also be overwritten."
 msgstr "请注意，与该文件关联的版本也将被覆盖。"
 
 msgid "Choose a specific file or an entire release below"
@@ -151,3 +150,45 @@ msgstr "管理文件"
 
 msgid "Unversioned"
 msgstr "未版本化"
+
+msgid "Hidden By ID"
+msgstr "按 ID 隐藏"
+
+msgid "Missing action"
+msgstr "缺少操作"
+
+msgid "Invalid action"
+msgstr "无效操作"
+
+msgid "No data was sent in the POST request"
+msgstr "POST 请求中未发送任何数据。"
+
+msgid "Missing user to grant access to"
+msgstr "未指定要授予访问权限的用户。"
+
+msgid "Must select either specific file OR version to grant access to"
+msgstr "必须选择要授予访问权限的特定文件或版本。"
+
+msgid "No valid data was sent in the request"
+msgstr "请求中未发送有效数据。"
+
+msgid "Missing user to remove access from"
+msgstr "未指定要移除访问权限的用户。"
+
+msgid "Must select a specific file"
+msgstr "必须选择一个特定文件。"
+
+msgid "Can not upload duplicate file"
+msgstr "无法上传重复文件。"
+
+msgid "Permission denied."
+msgstr "权限被拒绝。"
+
+msgid "Overwrite failed. A file of this name already exists which you do not have permission to overwrite."
+msgstr "覆盖失败。同名文件已存在，且您没有覆盖该文件的权限。"
+
+msgid "Can not upload duplicate file."
+msgstr "无法上传重复文件。"
+
+msgid "Not found"
+msgstr "未找到"
