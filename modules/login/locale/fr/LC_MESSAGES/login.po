@@ -214,3 +214,9 @@ msgstr "L'adresse courriel ne peut pas contenir les caractères suivants : <, >,
 
 msgid "Please provide a valid email address!"
 msgstr "Veuillez fournir une adresse courriel valide."
+
+msgid "Not a valid user"
+msgstr "Utilisateur invalide."
+
+msgid "Please complete the reCaptcha!"
+msgstr "Veuillez compléter le reCAPTCHA !"

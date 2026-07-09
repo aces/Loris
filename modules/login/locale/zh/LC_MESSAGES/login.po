@@ -178,3 +178,9 @@ msgstr "电子邮件地址不能包含以下字符：<、>、& 和 \"。"
 
 msgid "Please provide a valid email address!"
 msgstr "请输入有效的电子邮件地址！"
+
+msgid "Not a valid user"
+msgstr "无效用户。"
+
+msgid "Please complete the reCaptcha!"
+msgstr "请完成 reCAPTCHA 验证！"

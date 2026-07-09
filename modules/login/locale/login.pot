@@ -179,3 +179,9 @@ msgstr ""
 
 msgid "Please provide a valid email address!"
 msgstr ""
+
+msgid "Not a valid user"
+msgstr ""
+
+msgid "Please complete the reCaptcha!"
+msgstr ""

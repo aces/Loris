@@ -181,3 +181,9 @@ msgstr "メールアドレスには次の文字を含めることはできませ
 
 msgid "Please provide a valid email address!"
 msgstr "有効なメールアドレスを入力してください。"
+
+msgid "Not a valid user"
+msgstr "有効なユーザーではありません。"
+
+msgid "Please complete the reCaptcha!"
+msgstr "reCAPTCHA を完了してください。"
