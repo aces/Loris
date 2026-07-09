@@ -140,7 +140,11 @@ class Signup extends \NDB_Page implements ETagCalculator
             // current HTML escaping method, it is better to reject email
             // addresses containing them
             return new \LORIS\Http\Response\JSON\Conflict(
-                dgettext('login', 'Email address can not contain the following characters: <,>,& and ".')
+                dgettext(
+                    'login',
+                    'Email address can not contain the following'
+                    + 'characters: <,>,& and ".'
+                )
             );
         }
         if (!filter_var($from, FILTER_VALIDATE_EMAIL)) {
