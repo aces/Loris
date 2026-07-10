@@ -89,3 +89,12 @@ msgstr ""
 
 msgid "Instrument file"
 msgstr ""
+
+msgid "This instrument already exists in the test battery."
+msgstr ""
+
+msgid "This file has already been uploaded. Please contact your administrator to install the instrument."
+msgstr ""
+
+msgid "Automatic installation of instruments is not possible given the current server configuration. Please contact your administrator if you require this functionality."
+msgstr ""
