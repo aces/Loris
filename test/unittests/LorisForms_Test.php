@@ -1556,6 +1556,69 @@ class LorisForms_Test extends TestCase
     }
 
     /**
+     * Test that a 'regex' rule rejects a value containing a character
+     * outside the Basic Multilingual Plane (e.g. an emoji). This is a
+     * regression test for the my_preferences module, whose First_name,
+     * Last_name and Email fields use this exact pattern to reject values
+     * that would otherwise crash the page when saved to the database
+     * (the `users` table uses MySQL's 3-byte `utf8` charset, which cannot
+     * store such characters).
+     *
+     * @covers LorisForm::validate
+     * @return void
+     */
+    function testRegexRuleRejectsSupplementaryPlaneCharacters()
+    {
+        $this->form->addText("First_name", "First name", []);
+        $this->form->addRule(
+            "First_name",
+            "First name may not contain emoji or other unsupported "
+            . "special characters",
+            "regex",
+            '/^[^\x{10000}-\x{10FFFF}]*$/u'
+        );
+
+        $_POST    = ["First_name" => "Jane \u{1F600}"];
+        $_REQUEST = $_POST;
+
+        $this->assertFalse($this->form->validate());
+        $this->assertEquals(
+            "First name may not contain emoji or other unsupported "
+            . "special characters",
+            $this->form->getElementError("First_name")
+        );
+
+        unset($_POST, $_REQUEST);
+    }
+
+    /**
+     * Test that a 'regex' rule accepts an ordinary value which only
+     * contains Basic Multilingual Plane characters (i.e. no emoji).
+     *
+     * @covers LorisForm::validate
+     * @return void
+     */
+    function testRegexRuleAllowsBasicMultilingualPlaneCharacters()
+    {
+        $this->form->addText("First_name", "First name", []);
+        $this->form->addRule(
+            "First_name",
+            "First name may not contain emoji or other unsupported "
+            . "special characters",
+            "regex",
+            '/^[^\x{10000}-\x{10FFFF}]*$/u'
+        );
+
+        $_POST    = ["First_name" => "Jane"];
+        $_REQUEST = $_POST;
+
+        $this->assertTrue($this->form->validate());
+        $this->assertEquals("", $this->form->getElementError("First_name"));
+
+        unset($_POST, $_REQUEST);
+    }
+
+    /**
      * Test that isSubmitted returns true/false if the $_POST array
      * is set or not set
      *

@@ -15,6 +15,14 @@ class My_Preferences extends \NDB_Form
     private const PASSWORD_ERROR_NO_MATCH  = 'The passwords do not match';
     private const PASSWORD_ERROR_NO_CHANGE = 'New and old passwords are identical';
 
+    // The `users` table is stored using MySQL's legacy 3-byte `utf8`
+    // character set, which cannot store characters outside the Basic
+    // Multilingual Plane (e.g. most emoji). Attempting to save such a
+    // character causes an uncaught database error. This pattern is used
+    // to reject those characters client- and server-side before they
+    // ever reach the database.
+    private const NO_SUPPLEMENTARY_CHARS_REGEX = '/^[^\x{10000}-\x{10FFFF}]*$/u';
+
     /**
      * Computes the initial values this page will be filled with.
      *
@@ -247,6 +255,19 @@ class My_Preferences extends \NDB_Form
                 'required'  => true,
             ]
         );
+        // Emoji and other characters outside the Basic Multilingual Plane
+        // cannot be stored in the `users` table and must be rejected here
+        // instead of causing a database error on save.
+        $this->addRule(
+            'First_name',
+            dgettext(
+                'my_preferences',
+                'First name may not contain emoji or other unsupported '
+                . 'special characters'
+            ),
+            'regex',
+            self::NO_SUPPLEMENTARY_CHARS_REGEX
+        );
         // The supplied pattern is:
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
@@ -265,6 +286,17 @@ class My_Preferences extends \NDB_Form
                 'pattern'   => '^\s*\S.{0,119}\s*$',
                 'required'  => true,
             ]
+        );
+        // See comment above the equivalent 'First_name' rule.
+        $this->addRule(
+            'Last_name',
+            dgettext(
+                'my_preferences',
+                'Last name may not contain emoji or other unsupported '
+                . 'special characters'
+            ),
+            'regex',
+            self::NO_SUPPLEMENTARY_CHARS_REGEX
         );
 
         // email address
@@ -290,6 +322,17 @@ class My_Preferences extends \NDB_Form
                 'Email address is required'
             ),
             'required'
+        );
+        // See comment above the equivalent 'First_name' rule.
+        $this->addRule(
+            'Email',
+            dgettext(
+                'my_preferences',
+                'Email address may not contain emoji or other unsupported '
+                . 'special characters'
+            ),
+            'regex',
+            self::NO_SUPPLEMENTARY_CHARS_REGEX
         );
         $this->addRule(
             'Email',
