@@ -1,10 +1,9 @@
-Subject: [LORIS] Project proposal submission confirmation
+Subject: [LORIS] A project proposal has been submitted
 
 Hello,
 
-This is to confirm the project proposal "{$Title}" received on {$Date}.
-We will notify you once this proposal has been reviewed. In the mean time, you
-can view the project proposal in the loris website.
+The project proposal "{$Title}" has been submitted by {$User} on {$Date}.
+You can view the project proposal in the loris website.
 
 Thank you,
 The {$ProjectName} Team
