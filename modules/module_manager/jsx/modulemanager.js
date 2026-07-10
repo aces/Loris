@@ -111,7 +111,7 @@ class ModuleManagerIndex extends Component {
           swal.fire({
             title: t('Success!', {ns: 'loris'}),
             text: t(
-              'Updated {{name}} status!',
+              'Updated {{name}} status! ',
               {ns: 'module_manager', name: name}
             ) + t(
               'To apply changes the interface must be reloaded. Proceed?',
