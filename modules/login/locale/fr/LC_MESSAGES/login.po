@@ -220,3 +220,12 @@ msgstr "Utilisateur invalide."
 
 msgid "Please complete the reCaptcha!"
 msgstr "Veuillez compléter le reCAPTCHA !"
+
+msgid "Login with {{provider}}"
+msgstr "Se connecter avec {{provider}}"
+
+msgid "Our partners"
+msgstr "Nos partenaires"
+
+msgid "Password expired for user."
+msgstr "Le mot de passe de l'utilisateur a expiré."

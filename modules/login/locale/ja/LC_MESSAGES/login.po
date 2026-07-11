@@ -187,3 +187,12 @@ msgstr "有効なユーザーではありません。"
 
 msgid "Please complete the reCaptcha!"
 msgstr "reCAPTCHA を完了してください。"
+
+msgid "Login with {{provider}}"
+msgstr "{{provider}} でログイン"
+
+msgid "Our partners"
+msgstr "パートナー"
+
+msgid "Password expired for user."
+msgstr "ユーザーのパスワードの有効期限が切れています。"

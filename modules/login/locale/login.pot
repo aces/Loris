@@ -185,3 +185,12 @@ msgstr ""
 
 msgid "Please complete the reCaptcha!"
 msgstr ""
+
+msgid "Login with {{provider}}"
+msgstr ""
+
+msgid "Our partners"
+msgstr ""
+
+msgid "Password expired for user."
+msgstr ""

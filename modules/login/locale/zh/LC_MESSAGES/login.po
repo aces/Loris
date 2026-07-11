@@ -184,3 +184,12 @@ msgstr "无效用户。"
 
 msgid "Please complete the reCaptcha!"
 msgstr "请完成 reCAPTCHA 验证！"
+
+msgid "Login with {{provider}}"
+msgstr "使用 {{provider}} 登录"
+
+msgid "Our partners"
+msgstr "我们的合作伙伴"
+
+msgid "Password expired for user."
+msgstr "用户密码已过期。"
