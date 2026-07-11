@@ -123,7 +123,10 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $since      = new \DateTime($datestring);
         } catch (\Exception $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
+                dgettext(
+                    'api',
+                    $e->getMessage()
+                )
             );
         }
 

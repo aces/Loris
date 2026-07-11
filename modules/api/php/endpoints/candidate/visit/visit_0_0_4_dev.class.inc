@@ -115,7 +115,12 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
         if ($this->_visit !== null) {
             $user = $request->getAttribute('user');
             if (!$this->_visit->isAccessibleBy($user)) {
-                return new \LORIS\Http\Response\JSON\Forbidden('Permission denied');
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    dgettext(
+                        'loris',
+                        'Permission denied'
+                    )
+                );
             }
         }
 
@@ -140,7 +145,12 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
 
         if ($this->_visit === null) {
             // Subendpoint requires a Timepoint. see Constructor comment for $visit
-            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    'api',
+                    'Visit not found'
+                )
+            );
         }
 
         // Delegate to sub-endpoints
@@ -182,7 +192,12 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
     private function _handleGET(): ResponseInterface
     {
         if ($this->_visit === null) {
-            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    'api',
+                    'Visit not found'
+                )
+            );
         }
 
         return new \LORIS\Http\Response\JsonResponse(
@@ -229,19 +244,28 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
             $this->_project = \NDB_Factory::singleton()->project($data['Project']);
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
+                dgettext(
+                    'api',
+                    $e->getMessage()
+                )
             );
         }
 
         if (strval($data['CandID']) !== strval($this->_candidate->getCandID())) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'The CandID field does not match this candidate'
+                dgettext(
+                    'api',
+                    'The CandID field does not match this candidate'
+                )
             );
         }
 
         if (!$this->_candidate->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't modify that candidate"
+                dgettext(
+                    'api',
+                    "You can't modify that candidate"
+                )
             );
         }
 
@@ -254,8 +278,14 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
             )
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't create or modify candidates' visits for the site " .
-                $data['Site']
+                sprintf(
+                    dgettext(
+                        'api',
+                        "You can't create or modify candidates' visits for the site'
+                        . ' %s"
+                    ),
+                    $data['Site']
+                )
             );
         }
 
@@ -301,7 +331,10 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
 
             if ($timepoint->getCurrentStage() !== 'Not Started') {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'This visit is already started'
+                    dgettext(
+                        'api',
+                        'This visit is already started'
+                    )
                 );
             }
 
@@ -338,7 +371,10 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
             );
         } catch (\LorisException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
+                dgettext(
+                    'api',
+                    $e->getMessage()
+                )
             );
         }
 
@@ -370,12 +406,20 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
 
         if (is_null($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'The request is not a valid json object'
+                dgettext(
+                    'api',
+                    'The request is not a valid json object'
+                )
             );
         }
 
         if (is_null($this->_visit)) {
-            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    'api',
+                    'Visit not found'
+                )
+            );
         }
 
         // a PATCH request should contain the same mandatory fields as a PUT request.
@@ -386,13 +430,19 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
 
         if ($data['Visit'] !== $this->_visit->getVisitLabel()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'The Visit field does not match this visit'
+                dgettext(
+                    'api',
+                    'The Visit field does not match this visit'
+                )
             );
         }
 
         if ($this->_visit->getCurrentStage() !== 'Not Started') {
             return new \LORIS\Http\Response\JSON\Conflict(
-                "This visit is already started"
+                dgettext(
+                    'api',
+                    'This visit is already started'
+                )
             );
         }
 
@@ -400,7 +450,10 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
             $date = new \DateTime($data['Stages']['Visit']['Date'] ?? 0);
         } catch (\Exception $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Stages.Visit.Date is invalid or missing'
+                dgettext(
+                    'api',
+                    'Stages.Visit.Date is invalid or missing'
+                )
             );
         }
         // TODO :: Check for min and max year
@@ -408,7 +461,10 @@ class Visit_0_0_4_Dev extends Endpoint implements \LORIS\Middleware\ETagCalculat
         $status = $data['Stages']['Visit']['Status'] ?? '';
         if ($status != 'In Progress') {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Stages.Visit.Status invalid or missing'
+                dgettext(
+                    'api',
+                    'Stages.Visit.Status is invalid or missing'
+                )
             );
         }
 

@@ -144,7 +144,10 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $data = json_decode((string) $request->getBody(), true);
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                dgettext(
+                    'api',
+                    'Invalid request'
+                )
             );
         }
 
@@ -164,20 +167,29 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $candid = new CandID($data['Meta']['CandID']);
         } catch (\DomainException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'CandID is invalid'
+                dgettext(
+                    'api',
+                    'CandID is invalid'
+                )
             );
         }
 
         if ($candid != $this->_visit->getCandID()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Candidate from URL does not match metadata'
+                dgettext(
+                    'api',
+                    'Candidate from URL does not match metadata'
+                )
             );
         }
 
         $visitlabel = $data['Meta']['Visit'] ?? null;
         if ($visitlabel !== $this->_visit->getVisitLabel()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Visit from URL does not match metadata'
+                dgettext(
+                    'api',
+                    'Visit from URL does not match metadata'
+                )
             );
         }
 
@@ -189,7 +201,10 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
             || !$user->hasProject($projectID)
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'You can not edit imaging QC for this visit'
+                dgettext(
+                    'api',
+                    'You can not edit imaging QC for this visit'
+                )
             );
         }
 
@@ -197,7 +212,10 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_visit->setData(['MRIQCStatus' => $qcstatus]);
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'MRIQCStatus value not acceptable'
+                dgettext(
+                    'api',
+                    'MRIQCStatus value not acceptable'
+                )
             );
         }
 
@@ -205,7 +223,10 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $this->_visit->setData(['MRIQCPending' => $ispending]);
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'MRIQCPending value not acceptable'
+                dgettext(
+                    'api',
+                    'MRIQCPending value not acceptable'
+                )
             );
         }
 

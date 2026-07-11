@@ -99,7 +99,12 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if ($this->_visit !== null) {
             $user = $request->getAttribute('user');
             if (!$this->_visit->isAccessibleBy($user)) {
-                return new \LORIS\Http\Response\JSON\Forbidden('Permission denied');
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    dgettext(
+                        'loris',
+                        'Permission denied'
+                    )
+                );
             }
 
         }
@@ -126,7 +131,12 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($this->_visit === null) {
             // Subendpoint requires a Timepoint. see Constructor comment for $visit
-            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    'api',
+                    'Visit not found'
+                )
+            );
         }
 
         // Delegate to sub-endpoints
@@ -168,7 +178,12 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private function _handleGET(): ResponseInterface
     {
         if ($this->_visit === null) {
-            return new \LORIS\Http\Response\JSON\NotFound('Visit not found');
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    'api',
+                    'Visit not found'
+                )
+            );
         }
 
         return new \LORIS\Http\Response\JsonResponse(
@@ -215,19 +230,28 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $project = \NDB_Factory::singleton()->project($visitinfo['Project']);
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
+                dgettext(
+                    'api',
+                    $e->getMessage()
+                )
             );
         }
 
         if ($visitinfo['CandID'] !== $this->_candidate->getCandID()->__toString()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'CandID does not match this candidate'
+                dgettext(
+                    'api',
+                    'CandID does not match this candidate'
+                )
             );
         }
 
         if (!$this->_candidate->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't create or modify that candidate"
+                dgettext(
+                    'api',
+                    "You can't create or modify that candidate"
+                )
             );
         }
 
@@ -237,8 +261,13 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             || !in_array(\CenterID::singleton($centerid), $user->getCenterIDs())
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't create or modify candidates visit for the site " .
-                $centerid
+                sprintf(
+                    dgettext(
+                        'api',
+                        "You can't create or modify candidates visit for the site %s"
+                    ),
+                    $centerid
+                )
             );
         }
 
@@ -263,7 +292,10 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
             if ($timepoint->getCurrentStage() !== 'Not Started') {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'This visit is already started'
+                    dgettext(
+                        'api',
+                        'This visit is already started'
+                    )
                 );
             }
 
@@ -300,7 +332,10 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         } catch (\LorisException $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                $e->getMessage()
+                dgettext(
+                    'api',
+                    $e->getMessage()
+                )
             );
         }
 

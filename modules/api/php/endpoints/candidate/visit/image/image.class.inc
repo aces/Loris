@@ -119,7 +119,12 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $this->_filename
             );
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    'api',
+                    $e->getMessage()
+                )
+            );
         }
 
         $subendpoint = array_shift($pathparts);
@@ -164,7 +169,12 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $this->_filename
             );
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    'api',
+                    $e->getMessage()
+                )
+            );
         }
 
         $mimetype = substr($image->getHeader('header'), 0, 4) === 'hdf5' ?
