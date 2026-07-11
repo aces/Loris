@@ -33,7 +33,7 @@ class CohortRelations extends Component {
 
     return (
       <div>
-        <h2>Related Cohorts</h2>
+        <h2>{t('Related Cohorts', {ns: 'configuration'})}</h2>
         <ul>
           {cohortList}
         </ul>

@@ -144,7 +144,7 @@ class DiagnosisEvolution extends Component {
     const deleteButton = id !== 'new' ?
       (
         <ButtonElement
-          label='Delete'
+          label={t('Delete', {ns: 'configuration'})}
           type='delete'
           onUserInput={this.confirmDelete}
         />
@@ -163,7 +163,7 @@ class DiagnosisEvolution extends Component {
     return (
       <TabPane TabId={`${dxEvolutionID}`} key={dxEvolutionID}>
         <div className='row'>
-          <h3>Diagnosis Evolution</h3>
+          <h3>{t('Diagnosis Evolution', {ns: 'configuration'})}</h3>
           <br />
           <FormElement
             name='diagnosisEvolution'
@@ -175,7 +175,7 @@ class DiagnosisEvolution extends Component {
             >
               <TextboxElement
                 name='Name'
-                label='Trajectory Name'
+                label={t('Trajectory Name', {ns: 'configuration'})}
                 onUserInput={this.setFormData}
                 value={trajectoryData.Name}
                 required={true}
@@ -183,7 +183,7 @@ class DiagnosisEvolution extends Component {
               />
               <SearchableDropdown
                 name='ProjectID'
-                label='Project'
+                label={t('Project', {ns: 'loris', count: 1})}
                 options={this.state.formData.projects}
                 onUserInput={this.setFormData}
                 value={JSON.stringify(trajectoryData.ProjectID)}
@@ -192,7 +192,7 @@ class DiagnosisEvolution extends Component {
               />
               <SearchableDropdown
                 name='visitLabel'
-                label='Visit'
+                label={t('Visit', {ns: 'loris'})}
                 options={this.state.formData.visits}
                 onUserInput={this.setFormData}
                 value={trajectoryData.visitLabel}
@@ -201,7 +201,7 @@ class DiagnosisEvolution extends Component {
               />
               <SearchableDropdown
                 name='instrumentName'
-                label='Instrument'
+                label={t('Instrument', {ns: 'loris', count: 1})}
                 options={this.state.formData.instruments}
                 onUserInput={this.setFormData}
                 value={trajectoryData.instrumentName}
@@ -211,7 +211,7 @@ class DiagnosisEvolution extends Component {
               <TagsElement
                 name='sourceField'
                 id={dxEvolutionID}
-                label='Source Field'
+                label={t('Source Field', {ns: 'configuration'})}
                 options={this.state.formData.sourceFields}
                 useSearch={true}
                 strictSearch={true}
@@ -231,7 +231,7 @@ class DiagnosisEvolution extends Component {
                 name='orderNumber'
                 min={1}
                 max={100}
-                label='Order Number'
+                label={t('Order Number', {ns: 'configuration'})}
                 onUserInput={this.setFormData}
                 value={trajectoryData.orderNumber}
                 required={true}
@@ -240,12 +240,12 @@ class DiagnosisEvolution extends Component {
               <div className='btn-container'>
                 <ButtonElement
                   name='submit'
-                  label='Save'
+                  label={t('Save', {ns: 'loris'})}
                   type='submit'
                   onUserInput={this.handleSubmit}
                 />
                 <ButtonElement
-                  label='Reset'
+                  label={t('Reset', {ns: 'loris'})}
                   type='reset'
                   onUserInput={this.handleReset}
                 />
@@ -265,7 +265,7 @@ class DiagnosisEvolution extends Component {
    */
   render() {
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occurred while loading the page.', {ns: 'configuration'})}</h3>;
     }
 
     if (!this.state.isLoaded) {
@@ -273,7 +273,7 @@ class DiagnosisEvolution extends Component {
     }
 
     let tabList = [];
-    tabList.push({id: 'new', label: 'New Diagnosis Trajectory'});
+    tabList.push({id: 'new', label: t('New Diagnosis Trajectory', {ns: 'configuration'})});
 
     let diagnosisTracks = [];
     const trajectories = this.state.data.diagnosisTracks;
@@ -389,7 +389,7 @@ class DiagnosisEvolution extends Component {
     }).then((resp) => {
       if (resp.ok) {
         swal.fire({
-          title: 'Submission Successful!',
+          title: t('Submission Successful!', {ns: 'configuration'}),
           type: 'success',
         });
         window.location.href =
@@ -456,11 +456,11 @@ class DiagnosisEvolution extends Component {
     e.preventDefault();
 
     swal.fire({
-      title: 'Are you sure you want to delete this diagnosis trajectory?',
+      title: t('Are you sure you want to delete this diagnosis trajectory?', {ns: 'configuration'}),
       type: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: t('Delete', {ns: 'configuration'}),
+      cancelButtonText: t('Cancel', {ns: 'loris'}),
     }).then((result) => {
       if (result.value) {
         this.handleDelete();
@@ -484,7 +484,7 @@ class DiagnosisEvolution extends Component {
     }).then((resp) => {
       if (resp.ok) {
         swal.fire({
-          title: 'Deletion Successful!',
+          title: t('Deletion Successful!', {ns: 'configuration'}),
           type: 'success',
         });
         window.location.href =
