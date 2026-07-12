@@ -142,7 +142,7 @@ class Configuration extends \NDB_Form
             )
         );
 
-        // Convert the labels to the appropriate language
+        // Convert the labels and descriptions to the appropriate language
         foreach ($configs as &$setting) {
             $setting['Label']       = dgettext('ConfigSettings', $setting['Label']);
             $setting['Description'] = dgettext(
