@@ -180,7 +180,10 @@ class Configuration extends \NDB_Form
                 );
                 if ($value) {
                     foreach ($value as $subvalue) {
-                        $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                        $setting['Value'][$subvalue['ID']] = dgettext(
+                            'Config',
+                            $subvalue['Value']
+                        );
                     }
                 }
             }
