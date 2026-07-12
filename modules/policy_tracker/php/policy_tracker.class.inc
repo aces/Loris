@@ -38,7 +38,8 @@ class Policy_Tracker extends \NDB_Page
     #[\Override]
     public function isAccessibleBy(\User $user) : bool
     {
-        return $user->hasPermission('config');
+        return $user->hasPermission('view_policy_decisions')
+            || $user->hasPermission('edit_policies');
     }
 
     /**
