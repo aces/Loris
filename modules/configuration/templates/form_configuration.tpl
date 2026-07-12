@@ -84,7 +84,7 @@
         {/if}
         {if $node['AllowMultiple'] == 1}
             <button class="btn btn-success add" id="{$node['ID']}" type="button" {if $node['Disabled'] eq "Yes"}disabled{/if}>
-                <span class="glyphicon glyphicon-plus"></span> Add field
+                <span class="glyphicon glyphicon-plus"></span> {dgettext('configuration', 'Add field')}
             </button>
         {/if}
     </div>

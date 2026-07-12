@@ -156,3 +156,6 @@ msgstr "L'objectif de recrutement doit être un entier supérieur à zéro."
 
 msgid "Table must be \"Config\" or \"ConfigSettings\""
 msgstr "La table doit être « Config » ou « ConfigSettings »."
+
+msgid "Add field"
+msgstr "Ajouter un champ"

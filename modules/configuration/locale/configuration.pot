@@ -155,3 +155,6 @@ msgstr ""
 
 msgid "Table must be \"Config\" or \"ConfigSettings\""
 msgstr ""
+
+msgid "Add field"
+msgstr ""
