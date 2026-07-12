@@ -113,7 +113,12 @@ class Configuration extends \NDB_Form
             []
         );
 
-        return iterator_to_array($parentConfigItems);
+        // Convert the labels to the appropriate language
+        $parentConfigItems = iterator_to_array($parentConfigItems);
+        foreach ($parentConfigItems as &$setting) {
+            $setting['Label'] = dgettext('ConfigSettings', $setting['Label']);
+        }
+        return $parentConfigItems;
     }
 
     /**
@@ -136,6 +141,12 @@ class Configuration extends \NDB_Form
                 []
             )
         );
+
+        // Convert the labels to the appropriate language
+        foreach ($configs as &$setting) {
+            $setting['Label'] = dgettext('ConfigSettings', $setting['Label']);
+            $setting['Description'] = dgettext('ConfigSettings', $setting['Description']);
+        }
 
         // Check whether any setting is overwritten in the config.xml
         // Add this info to the array so form entries can be disabled in front end

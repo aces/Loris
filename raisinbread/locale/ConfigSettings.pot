@@ -1,0 +1,441 @@
+msgid ""
+msgstr ""
+
+"Project-Id-Version: LORIS 28\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Labels
+msgid "Study title"
+msgstr ""
+
+msgid "Study logo"
+msgstr ""
+
+msgid "Login Top Left Logo"
+msgstr ""
+
+msgid "Login Top Right Logo"
+msgstr ""
+
+msgid "Login Top Left Logo Link"
+msgstr ""
+
+msgid "Login Top Right Logo Link"
+msgstr ""
+
+msgid "Partner Logos"
+msgstr ""
+
+msgid "Start year"
+msgstr ""
+
+msgid "End year"
+msgstr ""
+
+msgid "Minimum candidate age"
+msgstr ""
+
+msgid "Maximum candidate age"
+msgstr ""
+
+msgid "DOB Format"
+msgstr ""
+
+msgid "DOD Format"
+msgstr ""
+
+msgid "Use family"
+msgstr ""
+
+msgid "Use proband"
+msgstr ""
+
+msgid "Use EDC"
+msgstr ""
+
+msgid "Use external ID"
+msgstr ""
+
+msgid "Use DoB"
+msgstr ""
+
+msgid "Use screening"
+msgstr ""
+
+msgid "Additional user information"
+msgstr ""
+
+msgid "Use consent"
+msgstr ""
+
+msgid "Excluded instruments"
+msgstr ""
+
+msgid "Instrument Resetting"
+msgstr ""
+
+msgid "Use Supplemental Session Status"
+msgstr ""
+
+msgid "Allow Prenatal Timepoints"
+msgstr ""
+
+msgid "ImagingUploader Auto Launch"
+msgstr ""
+
+msgid "Enable \"Pwned Password\" check"
+msgstr ""
+
+msgid "Citation Policy"
+msgstr ""
+
+msgid "Content-Security Extensions"
+msgstr ""
+
+msgid "Date display format"
+msgstr ""
+
+msgid "Administrator Email"
+msgstr ""
+
+msgid "Maximum Days Before Maing User Inactive"
+msgstr ""
+
+msgid "Base"
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
+msgid "Downloads"
+msgstr ""
+
+msgid "Incoming data"
+msgstr ""
+
+msgid "Genomic Data Path"
+msgstr ""
+
+msgid "Issue Tracker Data Path"
+msgstr ""
+
+msgid "Images"
+msgstr ""
+
+msgid "Media"
+msgstr ""
+
+msgid "Publications"
+msgstr ""
+
+msgid "Deleted Publications"
+msgstr ""
+
+msgid "Document Repository Upload Path"
+msgstr ""
+
+msgid "Data Release Upload Path"
+msgstr ""
+
+msgid "Study Description"
+msgstr ""
+
+msgid "Enable the EEG Browser components"
+msgstr ""
+
+msgid "Host"
+msgstr ""
+
+msgid "Issue Tracker URL"
+msgstr ""
+
+msgid "Project Description"
+msgstr ""
+
+msgid "Target number of participants"
+msgstr ""
+
+msgid "Patient ID regex"
+msgstr ""
+
+msgid "Patient name regex"
+msgstr ""
+
+msgid "Lego phantom regex"
+msgstr ""
+
+msgid "Living phantom regex"
+msgstr ""
+
+msgid "Show transfer status"
+msgstr ""
+
+msgid "Use Advanced Permissions"
+msgstr ""
+
+msgid "Imaging Browser Tabulated Scan Types"
+msgstr ""
+
+msgid "Imaging Browser Links To Instruments"
+msgstr ""
+
+msgid "From"
+msgstr ""
+
+msgid "Reply-to"
+msgstr ""
+
+msgid "X-MimeOLE"
+msgstr ""
+
+msgid "File Group for Uploads"
+msgstr ""
+
+msgid "JWT Secret Key"
+msgstr ""
+
+msgid "reCAPTCHA Private Key"
+msgstr ""
+
+msgid "reCAPTCHA Public Key"
+msgstr ""
+
+msgid "Database Log Level"
+msgstr ""
+
+msgid "HTTP Request Log Level"
+msgstr ""
+
+msgid "BIDS Dataset Authors"
+msgstr ""
+
+msgid "BIDS Dataset Acknowledgments"
+msgstr ""
+
+msgid "BIDS Dataset README"
+msgstr ""
+
+msgid "BIDS Validation options to ignore"
+msgstr ""
+
+msgid "AWS S3 Endpoint"
+msgstr ""
+
+msgid "AWS S3 Region"
+msgstr ""
+
+msgid "AWS S3 Default Bucket"
+msgstr ""
+
+msgid "Loris-MRI Data Directory"
+msgstr ""
+
+msgid "Study Name"
+msgstr ""
+
+msgid "User to notify when executing the pipeline"
+msgstr ""
+
+msgid "Full path to get_dicom_info.pl script"
+msgstr ""
+
+msgid "Horizontal pictures creation"
+msgstr ""
+
+msgid "LORIS-MRI code"
+msgstr ""
+
+msgid "NIfTI file creation"
+msgstr ""
+
+msgid "MRI Incoming Directory"
+msgstr ""
+
+msgid "DICOM converter tool to use (dcm2mnc or dcm2niix)"
+msgstr ""
+
+msgid "Path to Tarchives"
+msgstr ""
+
+msgid "Patient identifiers and center name lookup variable"
+msgstr ""
+
+msgid "Enable candidate creation"
+msgstr ""
+
+msgid "Enable visit creation"
+msgstr ""
+
+msgid "Path to the MINC tools"
+msgstr ""
+
+msgid "Default project"
+msgstr ""
+
+msgid "Default cohort"
+msgstr ""
+
+msgid "Default visit label for BIDS dataset"
+msgstr ""
+
+msgid "Project batch management used"
+msgstr ""
+
+msgid "Use legacy DICOM study importer"
+msgstr ""
+
+msgid "Number of volumes in native DTI acquisitions"
+msgstr ""
+
+msgid "Scan type of native T1 acquisition"
+msgstr ""
+
+msgid "Max number of DTI rejected directions for passing QC"
+msgstr ""
+
+msgid "NIAK Path"
+msgstr ""
+
+msgid "Secondary QCed dataset"
+msgstr ""
+
+msgid "Series description to exclude from imaging insertion"
+msgstr ""
+
+msgid "Compute automatic QC"
+msgstr ""
+
+msgid "Name of the Perl MRI config file"
+msgstr ""
+
+msgid "Name of the environment file"
+msgstr ""
+
+msgid "Modalities on which SNR should be calculated"
+msgstr ""
+
+msgid "Scan type to use as a reference for defacing (typically a T1W image)"
+msgstr ""
+
+msgid "Modalities on which to run the defacing pipeline"
+msgstr ""
+
+msgid "Name of the Python MRI config file"
+msgstr ""
+
+msgid "Label Printing Endpoint"
+msgstr ""
+
+msgid "EEG Incoming Directory"
+msgstr ""
+
+msgid "EEG S3 data path"
+msgstr ""
+
+msgid "EEG chunks path"
+msgstr ""
+
+msgid "Study"
+msgstr ""
+
+msgid "Paths"
+msgstr ""
+
+msgid "GUI"
+msgstr ""
+
+msgid "WWW"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Imaging Modules"
+msgstr ""
+
+msgid "Statistics"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Uploads"
+msgstr ""
+
+msgid "API Keys"
+msgstr ""
+
+msgid "Log Settings"
+msgstr ""
+
+msgid "MINC to BIDS Converter Tool Options"
+msgstr ""
+
+msgid "AWS Settings"
+msgstr ""
+
+msgid "Imaging Pipeline"
+msgstr ""
+
+msgid "Biobank"
+msgstr ""
+
+msgid "EEG Pipeline"
+msgstr ""
+
+# Descriptions
+msgid "Settings related to details of the study"
+msgstr ""
+
+msgid "Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality."
+msgstr ""
+
+msgid "Settings related to the overall display of LORIS"
+msgstr ""
+
+msgid "Web address settings"
+msgstr ""
+
+msgid "Settings that affect the appearance of the dashboard and its charts"
+msgstr ""
+
+msgid "DICOM Archive and Imaging Browser settings"
+msgstr ""
+
+msgid "Statistics module settings"
+msgstr ""
+
+msgid "LORIS email settings for notifications sent to users"
+msgstr ""
+
+msgid "Settings related to file uploading"
+msgstr ""
+
+msgid "Specify any API keys required for LORIS"
+msgstr ""
+
+msgid "Settings related to logging"
+msgstr ""
+
+msgid "Settings related to converting MINC to BIDS LORIS-MRI tool script"
+msgstr ""
+
+msgid "Settings related to AWS services"
+msgstr ""
+
+msgid "Imaging Pipeline settings"
+msgstr ""
+
+msgid "Settings related to the biobank module"
+msgstr ""
+
+msgid "EEG Pipeline settings"
+msgstr ""
