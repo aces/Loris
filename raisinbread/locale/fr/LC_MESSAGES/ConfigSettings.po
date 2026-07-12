@@ -393,7 +393,6 @@ msgid "EEG Pipeline"
 msgstr "Pipeline EEG"
 
 # Descriptions
-
 msgid "Settings related to details of the study"
 msgstr "Paramètres relatifs aux détails de l'étude"
 

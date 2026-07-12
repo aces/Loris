@@ -144,8 +144,11 @@ class Configuration extends \NDB_Form
 
         // Convert the labels to the appropriate language
         foreach ($configs as &$setting) {
-            $setting['Label'] = dgettext('ConfigSettings', $setting['Label']);
-            $setting['Description'] = dgettext('ConfigSettings', $setting['Description']);
+            $setting['Label']       = dgettext('ConfigSettings', $setting['Label']);
+            $setting['Description'] = dgettext(
+                'ConfigSettings',
+                $setting['Description']
+            );
         }
 
         // Check whether any setting is overwritten in the config.xml
