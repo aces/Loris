@@ -51,7 +51,7 @@
                         <label class="col-sm-12 control-label">{dgettext('configuration', 'Recruitment Target')}</label>
                     </div>
                     <div class="col-sm-12 col-md-9">
-                        <input class="form-control cohortRecruitmentTarget" name="target" placeholder={dgettext('configuration', 'Please add a recruitment target here')} value="{$cohort.RecruitmentTarget}">
+                        <input class="form-control cohortRecruitmentTarget" name="target" placeholder="{dgettext('configuration', 'Please add a recruitment target here')}" value="{$cohort.RecruitmentTarget}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -79,7 +79,7 @@
                         <label class="col-sm-12 control-label">{dgettext('configuration', 'Cohort Name')}</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
-                        <input class="form-control cohortTitle" name="title" placeholder={dgettext('configuration', 'Please add a cohort title here')} value="">
+                        <input class="form-control cohortTitle" name="title" placeholder="{dgettext('configuration', 'Please add a cohort title here')}" value="">
                     </div>
                 </div>
                 <div class="form-group">
@@ -103,7 +103,7 @@
                         <label class="col-sm-12 control-label">{dgettext('configuration', 'Recruitment Target')}</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
-                        <input class="form-control cohortRecruitmentTarget" name="target" placeholder={dgettext('configuration', 'Please add a recruitment target here')} value="">
+                        <input class="form-control cohortRecruitmentTarget" name="target" placeholder="{dgettext('configuration', 'Please add a recruitment target here')}" value="">
                     </div>
                 </div>
                 <div class="form-group">

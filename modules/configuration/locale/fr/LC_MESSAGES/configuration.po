@@ -159,3 +159,9 @@ msgstr "La table doit être « Config » ou « ConfigSettings »."
 
 msgid "Add field"
 msgstr "Ajouter un champ"
+
+msgid "Register Trajectory"
+msgstr "Créer une trajectoire"
+
+msgid "Use this page to manage the configuration of the study's diagnosis trajectory."
+msgstr "Utilisez cette page pour gérer la configuration de la trajectoire diagnostique de l'étude."

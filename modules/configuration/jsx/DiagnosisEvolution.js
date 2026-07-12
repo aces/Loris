@@ -176,7 +176,7 @@ class DiagnosisEvolution extends Component {
             ref='form'
           >
             <FieldsetElement
-              legend='Register Trajectory'
+              legend={t('Register Trajectory', {ns: 'configuration'})}
             >
               <TextboxElement
                 name='Name'
@@ -226,7 +226,7 @@ class DiagnosisEvolution extends Component {
                   null}
                 items={trajectoryData.sourceField || []}
                 required={true}
-                btnLabel='Add Field'
+                btnLabel={t('Add Field', {ns: 'configuration'})}
                 pendingValKey='pendingSourceField'
                 onUserAdd={this.addSourceField}
                 onUserRemove={this.removeSourceField}
@@ -295,8 +295,7 @@ class DiagnosisEvolution extends Component {
     return (
       <div>
         <p>
-                    Use this page to manage the configuration of the study's
-                    diagnosis trajectory.
+                    {t('Use this page to manage the configuration of the study\'s diagnosis trajectory.', {ns: 'configuration'})}
         </p>
         <VerticalTabs
           tabs={tabList}

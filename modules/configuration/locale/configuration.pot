@@ -158,3 +158,9 @@ msgstr ""
 
 msgid "Add field"
 msgstr ""
+
+msgid "Register Trajectory"
+msgstr ""
+
+msgid "Use this page to manage the configuration of the study's diagnosis trajectory."
+msgstr ""

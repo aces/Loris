@@ -84,7 +84,7 @@
                         <label class="col-sm-12 control-label">{dgettext('configuration', 'Project Name')}</label>
                     </div>
                     <div class="col-sm-12 col-md-9">
-                        <input class="form-control projectName" name="Name" placeholder={dgettext('configuration', 'Please add a project title here')} value="">
+                        <input class="form-control projectName" name="Name" placeholder="{dgettext('configuration', 'Please add a project title here')}" value="">
                     </div>
                 </div>
                 <div class="form-group">
@@ -92,7 +92,7 @@
                         <label class="col-sm-12 control-label">{dgettext('configuration', 'Alias')}</label>
                     </div>
                     <div class="col-sm-12 col-md-9">
-                        <input class="form-control projectAlias" name="Alias" placeholder={dgettext('configuration', 'Please add an alias here')} value="">
+                        <input class="form-control projectAlias" name="Alias" placeholder="{dgettext('configuration', 'Please add an alias here')}" value="">
                     </div>
                 </div>
                 <div class="form-group">
@@ -100,7 +100,7 @@
                         <label class="col-sm-12 control-label">{dgettext('configuration', 'Recruitment Target')}</label>
                     </div>
                     <div class="col-sm-12 col-md-9">
-			            <input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder={dgettext('configuration', 'Please add a recruitment target here')} value="">
+			            <input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder="{dgettext('configuration', 'Please add a recruitment target here')}" value="">
                     </div>
                 </div>
                 <div>
