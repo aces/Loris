@@ -212,7 +212,11 @@
     <!-- print the sub group header row -->
     <thead>
     <tr class="info">
-	    <th>{dgettext("loris", $instrument_groups[group].title)}
+	    <th>{if $instrument_groups[group].title == "Instruments"}
+	         {dngettext("loris", "Instrument", "Instruments", 2)}
+	       {else}
+	         {dgettext("loris", $instrument_groups[group].title)}
+	       {/if}
 	       <!-- show the instruction only one time -->
 	       {if $smarty.section.group.iteration == 1}
 	       <br />({dgettext("timepoint_list", "Click to Open")})
