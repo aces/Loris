@@ -5,10 +5,10 @@
     {$useZerosAndOnes=true}
   {/if}
     <label class="radio-inline">
-        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="1"{else}value="true"{/if} {if $v eq "1" || $v eq "true"}checked{/if} {if $d eq "Yes"}disabled{/if}>Yes
+        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="1"{else}value="true"{/if} {if $v eq "1" || $v eq "true"}checked{/if} {if $d eq "Yes"}disabled{/if}>{dgettext('loris', 'Yes')}
     </label>
     <label class="radio-inline">
-        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="0"{else}value="false"{/if} {if $v eq "0" || $v eq "false"}checked{/if} {if $d eq "Yes"}disabled{/if}>No
+        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="0"{else}value="false"{/if} {if $v eq "0" || $v eq "false"}checked{/if} {if $d eq "Yes"}disabled{/if}>{dgettext('loris', 'No')}
     </label>
 {/function}
 

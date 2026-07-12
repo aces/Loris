@@ -164,3 +164,54 @@ msgstr ""
 
 msgid "Use this page to manage the configuration of the study's diagnosis trajectory."
 msgstr ""
+
+msgid "Ymd (EX: 2015-12-28)"
+msgstr ""
+
+msgid "Ym (EX: 2015-12)"
+msgstr ""
+
+msgid "Debug"
+msgstr ""
+
+msgid "Info"
+msgstr ""
+
+msgid "Notice"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Critical"
+msgstr ""
+
+msgid "Alert"
+msgstr ""
+
+msgid "Emergency"
+msgstr ""
+
+msgid "PatientID"
+msgstr ""
+
+msgid "PatientName"
+msgstr ""
+
+msgid "Closest Test Battery"
+msgstr ""
+
+msgid "Optimal Visit Window for Visit Label"
+msgstr ""
+
+msgid "This field is required!"
+msgstr ""
+
+msgid "This field is required! Entry must be included in provided list of options."
+msgstr ""
+
+msgid "This field is required! Please click \"Add Field\" before saving."
+msgstr ""

@@ -271,7 +271,10 @@ class DiagnosisEvolution extends Component {
   render() {
     const {t} = this.props;
     if (this.state.error) {
-      return <h3>{t('An error occurred while loading the page.', {ns: 'configuration'})}</h3>;
+      return <h3>{t(
+        'An error occurred while loading the page.',
+        {ns: 'configuration'}
+      )}</h3>;
     }
 
     if (!this.state.isLoaded) {
@@ -279,7 +282,12 @@ class DiagnosisEvolution extends Component {
     }
 
     let tabList = [];
-    tabList.push({id: 'new', label: t('New Diagnosis Trajectory', {ns: 'configuration'})});
+    tabList.push({
+      id: 'new', label: t(
+        'New Diagnosis Trajectory',
+        {ns: 'configuration'},
+      ),
+    });
 
     let diagnosisTracks = [];
     const trajectories = this.state.data.diagnosisTracks;
@@ -295,7 +303,9 @@ class DiagnosisEvolution extends Component {
     return (
       <div>
         <p>
-                    {t('Use this page to manage the configuration of the study\'s diagnosis trajectory.', {ns: 'configuration'})}
+          {t(
+            'Use this page to manage the configuration of the study\'s'
+            + ' diagnosis trajectory.', {ns: 'configuration'})}
         </p>
         <VerticalTabs
           tabs={tabList}
@@ -318,6 +328,7 @@ class DiagnosisEvolution extends Component {
    * @return {boolean}
    */
   validate(formData, tabID) {
+    const {t} = this.props;
     let isValid = true;
 
     let errorMessage = this.state.errorMessage;
@@ -331,31 +342,48 @@ class DiagnosisEvolution extends Component {
     };
 
     if (!formData.Name) {
-      errorMessage[tabID]['Name'] = 'This field is required!';
+      errorMessage[tabID]['Name'] = t(
+        'This field is required!',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
     if (!formData.ProjectID) {
-      errorMessage[tabID]['ProjectID'] = 'This field is required!' +
-                ' Entry must be included in provided list of options.';
+      errorMessage[tabID]['ProjectID'] = t(
+        'This field is required!'
+        + ' Entry must be included in provided list of options.',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
     if (!formData.visitLabel) {
-      errorMessage[tabID]['visitLabel'] = 'This field is required!' +
-                ' Entry must be included in provided list of options.';
+      errorMessage[tabID]['visitLabel'] = t(
+        'This field is required!'
+        + ' Entry must be included in provided list of options.',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
     if (!formData.instrumentName) {
-      errorMessage[tabID]['instrumentName'] = 'This field is required!' +
-                ' Entry must be included in provided list of options.';
+      errorMessage[tabID]['instrumentName'] = t(
+        'This field is required!'
+        + ' Entry must be included in provided list of options.',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
     if (!formData.sourceField || !formData.sourceField.length) {
-      errorMessage[tabID]['sourceField'] = 'This field is required!' +
-                ' Please click "Add Field" before saving.';
+      errorMessage[tabID]['sourceField'] = t(
+        'This field is required! Please click "Add Field" before saving.',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
     if (!formData.orderNumber) {
-      errorMessage[tabID]['orderNumber'] = 'This field is required!';
+      errorMessage[tabID]['orderNumber'] = t(
+        'This field is required!',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
 
@@ -422,7 +450,6 @@ class DiagnosisEvolution extends Component {
    * @param {event} e - Form submission event
    */
   handleReset(e) {
-    const {t} = this.props;
     e.preventDefault();
     const tabID = this.state.currentTab;
     let formData = this.state.formData;
@@ -460,10 +487,14 @@ class DiagnosisEvolution extends Component {
    * @param {event} e - Form submission event
    */
   confirmDelete(e) {
+    const {t} = this.props;
     e.preventDefault();
 
     swal.fire({
-      title: t('Are you sure you want to delete this diagnosis trajectory?', {ns: 'configuration'}),
+      title: t(
+        'Are you sure you want to delete this diagnosis trajectory?',
+        {ns: 'configuration'}
+      ),
       type: 'warning',
       showCancelButton: true,
       confirmButtonText: t('Delete', {ns: 'configuration'}),
