@@ -132,3 +132,27 @@ msgstr "Veuillez confirmer que vous souhaitez supprimer l'option « {{option}} �
 
 msgid "Confirm"
 msgstr "Confirmer"
+
+msgid "Please fill out all fields!"
+msgstr "Veuillez remplir tous les champs !"
+
+msgid "Visit is not defined for selected Project."
+msgstr "La visite n'est pas définie pour le projet sélectionné."
+
+msgid "Instrument does not exist in selected visit."
+msgstr "L'instrument n'existe pas pour la visite sélectionnée."
+
+msgid "Source Field does not exist in instrument."
+msgstr "Le champ source n'existe pas dans l'instrument."
+
+msgid "Order Number not unique for this Project! Already used in Trajectory: %s"
+msgstr "Le numéro d'ordre n'est pas unique pour ce projet ! Il est déjà utilisé dans la trajectoire : %s"
+
+msgid "Trajectory Name already exists."
+msgstr "Le nom de la trajectoire existe déjà."
+
+msgid "Recruitment Target must be an integer greater than zero"
+msgstr "L'objectif de recrutement doit être un entier supérieur à zéro."
+
+msgid "Table must be \"Config\" or \"ConfigSettings\""
+msgstr "La table doit être « Config » ou « ConfigSettings »."

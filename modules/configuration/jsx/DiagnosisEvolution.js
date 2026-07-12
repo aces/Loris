@@ -1,7 +1,9 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import {TabPane, VerticalTabs} from 'Tabs';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import '../css/configuration.css';
 import swal from 'sweetalert2';
@@ -14,6 +16,8 @@ import {
   TagsElement,
   NumericElement,
 } from 'jsx/Form';
+
+import frStrings from '../locale/fr/LC_MESSAGES/configuration.json';
 
 /**
  * Candidate diagnosis evolution component
@@ -136,6 +140,7 @@ class DiagnosisEvolution extends Component {
    * @return {JSX} React markup for the component
    */
   renderDiagnosisForm(dxEvolutionID) {
+    const {t} = this.props;
     const id = typeof dxEvolutionID !== 'undefined' ?
       dxEvolutionID : this.state.currentTab;
     const trajectoryData = id == 'new' ?
@@ -264,6 +269,7 @@ class DiagnosisEvolution extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (this.state.error) {
       return <h3>{t('An error occurred while loading the page.', {ns: 'configuration'})}</h3>;
     }
@@ -365,6 +371,7 @@ class DiagnosisEvolution extends Component {
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
 
     const tabID = this.state.currentTab;
@@ -416,6 +423,7 @@ class DiagnosisEvolution extends Component {
    * @param {event} e - Form submission event
    */
   handleReset(e) {
+    const {t} = this.props;
     e.preventDefault();
     const tabID = this.state.currentTab;
     let formData = this.state.formData;
@@ -472,6 +480,7 @@ class DiagnosisEvolution extends Component {
    * Handles diagnosis delete
    */
   handleDelete() {
+    const {t} = this.props;
     const tabID = this.state.currentTab;
 
     let diagnosisTracks = this.state.formData.diagnosisTracks;
@@ -586,14 +595,19 @@ DiagnosisEvolution.propTypes = {
   tabName: PropTypes.string,
   action: PropTypes.string,
   submitURL: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('fr', 'configuration', frStrings);
+  const TranslatedDiagnosisEvolution = withTranslation(
+    ['configuration', 'loris']
+  )(DiagnosisEvolution);
   const root = createRoot(
     document.getElementById('lorisworkspace')
   );
   root.render(
-    <DiagnosisEvolution
+    <TranslatedDiagnosisEvolution
       dataURL={`${loris.BaseURL}/configuration/diagnosis`}
       submitURL={`${loris.BaseURL}/configuration/diagnosis`}
     />

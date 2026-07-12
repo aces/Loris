@@ -131,3 +131,27 @@ msgstr ""
 
 msgid "Confirm"
 msgstr ""
+
+msgid "Please fill out all fields!"
+msgstr ""
+
+msgid "Visit is not defined for selected Project."
+msgstr ""
+
+msgid "Instrument does not exist in selected visit."
+msgstr ""
+
+msgid "Source Field does not exist in instrument."
+msgstr ""
+
+msgid "Order Number not unique for this Project! Already used in Trajectory: %s"
+msgstr ""
+
+msgid "Trajectory Name already exists."
+msgstr ""
+
+msgid "Recruitment Target must be an integer greater than zero"
+msgstr ""
+
+msgid "Table must be \"Config\" or \"ConfigSettings\""
+msgstr ""
