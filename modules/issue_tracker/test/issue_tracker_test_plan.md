@@ -44,6 +44,17 @@
 11. Test if user assigned to issue cannot delete attachments of issue owner.
 12. Test that emails are sent to users that are watching the issue.
 
+## Issue Tracker Batch Edit [Manual Testing]
+1. Confirm that the Batch Edit tab is only available with the `Issue Tracker: View/Edit/Comment Issues - All Sites` permission.
+2. Filter the issue cards and confirm that Select all filtered issues selects only issues matching the current filters.
+3. Select issues across multiple pages and update status, priority, category, and assignee together.
+4. Confirm that fields set to No change retain their original values.
+5. Set category to Uncategorized and assignee to Unassigned and confirm both values are cleared.
+6. Confirm that each changed field is added to the issue history, a cleared assignee is displayed as Unassigned, and the editor is recorded as Last Updated By.
+7. Confirm that a newly assigned user is added as a watcher.
+8. Confirm that Closed and Rejected are unavailable without an Issue Tracker close permission and that the endpoint rejects a selection containing any issue the user cannot close.
+9. Submit a mix of changed and unchanged issues and confirm the success count includes only changed issues.
+
 ## Permissions [Automation Testing]
 1. Remove `Issue Tracker: View/Edit/Comment Issues - All Sites` permission.
 2. Remove `Issue Tracker: View/Edit/Comment Issues - Own Sites` permission.

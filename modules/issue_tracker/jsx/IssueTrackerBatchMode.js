@@ -5,17 +5,21 @@ import Loader from 'Loader';
 import PaginationLinks from 'jsx/PaginationLinks';
 import Panel from 'jsx/Panel';
 import {Tabs, TabPane} from 'jsx/Tabs';
+import swal from 'sweetalert2';
 import '../css/issue_tracker_batchmode.css';
 import {withTranslation} from 'react-i18next';
+
+const NO_CHANGE = '__no_change__';
 
 /**
  * IssueTrackerBatchMode component
  *
  * @param {object} props - The component props
  * @param {object} props.options - The options for the IssueTrackerBatchMode
+ * @param {boolean} props.canCloseIssues - Whether issues can be closed
  * @param {function} props.t - Translation function
  */
-function IssueTrackerBatchMode({options = {}, t}) {
+function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
   const [issues, setIssues] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedPriorities, setSelectedPriorities] = useState([]);
@@ -27,6 +31,14 @@ function IssueTrackerBatchMode({options = {}, t}) {
   const [error, setError] = useState(null);
   const [assignees, setAssignees] = useState({});
   const [otherWatchers, setOtherWatchers] = useState({});
+  const [selectedIssueIDs, setSelectedIssueIDs] = useState([]);
+  const [batchUpdates, setBatchUpdates] = useState({
+    status: NO_CHANGE,
+    priority: NO_CHANGE,
+    category: NO_CHANGE,
+    assignee: NO_CHANGE,
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Pagination state
   const [page, setPage] = useState({
@@ -71,16 +83,20 @@ function IssueTrackerBatchMode({options = {}, t}) {
       const data = await response.json();
 
       // ordering watchers
-      const orderedWatchers = Object.keys(data.otherWatchers)
+      const watchers = data.otherWatchers || {};
+      const orderedWatchers = Object.keys(watchers)
         .sort()
         .reduce((obj, key) => {
-          obj[key] = data.otherWatchers[key];
+          obj[key] = watchers[key];
           return obj;
         }, {}
         );
 
       // set data
-      setIssues(data.issues || []);
+      setIssues((data.issues || []).map((issue) => ({
+        ...issue,
+        issueID: Number(issue.issueID),
+      })));
       setAssignees(data.assignees || {});
       setOtherWatchers(orderedWatchers || {});
       setIsLoading(false);
@@ -143,6 +159,118 @@ function IssueTrackerBatchMode({options = {}, t}) {
     fetchIssues();
   }
 
+  /**
+   * Toggles whether an issue is selected for the batch update.
+   *
+   * @param {number} issueID - The issue ID to toggle
+   */
+  function toggleIssueSelection(issueID) {
+    setSelectedIssueIDs((current) => current.includes(issueID) ?
+      current.filter((id) => id !== issueID) :
+      [...current, issueID]
+    );
+  }
+
+  /**
+   * Selects or clears every issue matching the current filters.
+   */
+  function toggleAllFilteredIssues() {
+    const filteredIssueIDs = filteredIssues.map((issue) => issue.issueID);
+    const allFilteredSelected = filteredIssueIDs.length > 0 &&
+      filteredIssueIDs.every((issueID) => selectedIssueIDs.includes(issueID));
+
+    setSelectedIssueIDs((current) => allFilteredSelected ?
+      current.filter((issueID) => !filteredIssueIDs.includes(issueID)) :
+      [...new Set([...current, ...filteredIssueIDs])]
+    );
+  }
+
+  /**
+   * Updates one field in the pending batch changes.
+   *
+   * @param {string} field - The issue field to update
+   * @param {string} value - The selected value
+   */
+  function updateBatchField(field, value) {
+    setBatchUpdates((current) => ({...current, [field]: value}));
+  }
+
+  /**
+   * Submits the selected batch changes.
+   */
+  async function submitBatchEdit() {
+    if (selectedIssueIDs.length === 0) {
+      await swal.fire({
+        type: 'info',
+        text: t('Select at least one issue.', {ns: 'issue_tracker'}),
+      });
+      return;
+    }
+
+    const updates = Object.entries(batchUpdates).reduce(
+      (result, [field, value]) => {
+        if (value !== NO_CHANGE) {
+          result[field] = value === '' ? null : value;
+        }
+        return result;
+      },
+      {}
+    );
+
+    if (Object.keys(updates).length === 0) {
+      await swal.fire({
+        type: 'info',
+        text: t('Choose at least one field to update.',
+          {ns: 'issue_tracker'}),
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(
+        `${loris.BaseURL}/issue_tracker/BatchEdit/`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({issueIDs: selectedIssueIDs, updates}),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Network response was not ok');
+      }
+
+      setSelectedIssueIDs([]);
+      setBatchUpdates({
+        status: NO_CHANGE,
+        priority: NO_CHANGE,
+        category: NO_CHANGE,
+        assignee: NO_CHANGE,
+      });
+      await fetchIssues();
+      await swal.fire({
+        type: 'success',
+        text: t('{{count}} issue updated successfully', {
+          ns: 'issue_tracker',
+          count: data.updated,
+        }),
+      });
+    } catch (error) {
+      console.error('Error updating issues:', error);
+      await swal.fire({
+        type: 'error',
+        text: error.message || t(
+          'Failed to update issues. Please try again later.',
+          {ns: 'issue_tracker'}
+        ),
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   // Pagination functions
   /**
    *
@@ -173,6 +301,11 @@ function IssueTrackerBatchMode({options = {}, t}) {
   const startIndex = (page.number - 1) * page.rows;
   const endIndex = startIndex + page.rows;
   const paginatedIssues = filteredIssues.slice(startIndex, endIndex);
+  const filteredIssueIDs = filteredIssues.map((issue) => issue.issueID);
+  const allFilteredSelected = filteredIssueIDs.length > 0 &&
+    filteredIssueIDs.every((issueID) => selectedIssueIDs.includes(issueID));
+  const hasBatchUpdates = Object.values(batchUpdates)
+    .some((value) => value !== NO_CHANGE);
 
   const tabList = [
     {
@@ -354,6 +487,135 @@ function IssueTrackerBatchMode({options = {}, t}) {
         </Tabs>
       </Panel>
       <br/>
+      <Panel
+        id="batch-edit-panel"
+        title={t('Batch changes', {ns: 'issue_tracker'})}
+        collapsing={true}
+        panelSize="auto"
+        className="panel-default"
+      >
+        <div className="batch-selection-controls">
+          <label>
+            <input
+              type="checkbox"
+              checked={allFilteredSelected}
+              disabled={filteredIssueIDs.length === 0}
+              onChange={toggleAllFilteredIssues}
+              className="checkbox"
+            />
+            {t('Select all filtered issues', {ns: 'issue_tracker'})}
+          </label>
+          <span>
+            {t('{{count}} issue selected', {
+              ns: 'issue_tracker',
+              count: selectedIssueIDs.length,
+            })}
+          </span>
+          <button
+            type="button"
+            className="btn btn-default btn-sm"
+            disabled={selectedIssueIDs.length === 0 || isSubmitting}
+            onClick={() => setSelectedIssueIDs([])}
+          >
+            {t('Clear selection', {ns: 'issue_tracker'})}
+          </button>
+        </div>
+        <div className="batch-edit-controls">
+          <label>
+            {t('Status', {ns: 'loris'})}
+            <select
+              className="form-control input-sm"
+              value={batchUpdates.status}
+              disabled={isSubmitting}
+              onChange={(event) =>
+                updateBatchField('status', event.target.value)
+              }
+            >
+              <option value={NO_CHANGE}>
+                {t('No change', {ns: 'issue_tracker'})}
+              </option>
+              {Object.entries(statuses)
+                .filter(([value]) => canCloseIssues ||
+                  !['closed', 'rejected'].includes(value))
+                .map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+            </select>
+          </label>
+          <label>
+            {t('Priority', {ns: 'issue_tracker'})}
+            <select
+              className="form-control input-sm"
+              value={batchUpdates.priority}
+              disabled={isSubmitting}
+              onChange={(event) =>
+                updateBatchField('priority', event.target.value)
+              }
+            >
+              <option value={NO_CHANGE}>
+                {t('No change', {ns: 'issue_tracker'})}
+              </option>
+              {Object.entries(priorities).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            {t('Category', {ns: 'issue_tracker'})}
+            <select
+              className="form-control input-sm"
+              value={batchUpdates.category}
+              disabled={isSubmitting}
+              onChange={(event) =>
+                updateBatchField('category', event.target.value)
+              }
+            >
+              <option value={NO_CHANGE}>
+                {t('No change', {ns: 'issue_tracker'})}
+              </option>
+              <option value="">
+                {t('Uncategorized', {ns: 'issue_tracker'})}
+              </option>
+              {Object.entries(categories).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            {t('Assignee', {ns: 'issue_tracker'})}
+            <select
+              className="form-control input-sm"
+              value={batchUpdates.assignee}
+              disabled={isSubmitting}
+              onChange={(event) =>
+                updateBatchField('assignee', event.target.value)
+              }
+            >
+              <option value={NO_CHANGE}>
+                {t('No change', {ns: 'issue_tracker'})}
+              </option>
+              <option value="">
+                {t('Unassigned', {ns: 'issue_tracker'})}
+              </option>
+              {Object.entries(assignees).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            className="btn btn-primary batch-update-button"
+            disabled={selectedIssueIDs.length === 0 ||
+              !hasBatchUpdates || isSubmitting}
+            onClick={submitBatchEdit}
+          >
+            {isSubmitting ?
+              t('Updating...', {ns: 'issue_tracker'}) :
+              t('Apply changes', {ns: 'issue_tracker'})}
+          </button>
+        </div>
+      </Panel>
+      <br/>
       <div className="pagination-container">
         <div>
           {t('{{count}} issues displayed of {{total}}', {
@@ -389,17 +651,31 @@ function IssueTrackerBatchMode({options = {}, t}) {
       <div className="issues-list">
         {paginatedIssues.length > 0 ? (
           paginatedIssues.map((issue) => (
-            <IssueCard
+            <div
               key={issue.issueID}
-              issue={issue}
-              assignees={assignees}
-              otherWatchers={otherWatchers}
-              onUpdate={handleIssueUpdate}
-              statuses={statuses}
-              priorities={priorities}
-              categories={categories}
-              sites={sites}
-            />
+              className={'issue-selection-card' +
+                (selectedIssueIDs.includes(issue.issueID) ? ' selected' : '')}
+            >
+              <label className="issue-selection-control">
+                <input
+                  type="checkbox"
+                  checked={selectedIssueIDs.includes(issue.issueID)}
+                  onChange={() => toggleIssueSelection(issue.issueID)}
+                  className="checkbox"
+                />
+                {t('Select issue', {ns: 'issue_tracker'})} #{issue.issueID}
+              </label>
+              <IssueCard
+                issue={issue}
+                assignees={assignees}
+                otherWatchers={otherWatchers}
+                onUpdate={handleIssueUpdate}
+                statuses={statuses}
+                priorities={priorities}
+                categories={categories}
+                sites={sites}
+              />
+            </div>
           ))
         ) : (
           <div className="no-results-message">
@@ -452,6 +728,7 @@ IssueTrackerBatchMode.propTypes = {
     sites: PropTypes.object,
     assignees: PropTypes.object,
   }).isRequired,
+  canCloseIssues: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
 };
 

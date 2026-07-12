@@ -1,5 +1,18 @@
 <?php declare(strict_types=1);
 
+/**
+ * Issue Tracker edit endpoint.
+ *
+ * PHP Version 8
+ *
+ * @category Loris
+ * @package  Issue_Tracker
+ * @author   Caitrin Armstrong <caitrin.mcin@gmail.com>
+ *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
 namespace LORIS\issue_tracker;
 
 use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
@@ -647,6 +660,13 @@ class Edit extends \NDB_Page implements ETagCalculator
                 );
                 $comment['newValue'] = $visitLabel;
                 $comment['fieldChanged'] = 'Visit Label';
+            } else if ($comment['fieldChanged'] === 'assignee'
+                && $comment['newValue'] === ''
+            ) {
+                $comment['newValue'] = dgettext(
+                    'issue_tracker',
+                    'Unassigned'
+                );
             } else if ($comment['fieldChanged'] === 'assignee'
                 || $comment['fieldChanged'] === 'lastUpdatedBy'
             ) {

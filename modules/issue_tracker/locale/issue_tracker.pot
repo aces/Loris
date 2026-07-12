@@ -100,6 +100,50 @@ msgstr ""
 msgid "Batch Edit"
 msgstr ""
 
+msgid "Batch changes"
+msgstr ""
+
+msgid "Select all filtered issues"
+msgstr ""
+
+msgid "{{count}} issue selected"
+msgid_plural "{{count}} issues selected"
+msgstr[0] ""
+
+msgid "Clear selection"
+msgstr ""
+
+msgid "No change"
+msgstr ""
+
+msgid "Uncategorized"
+msgstr ""
+
+msgid "Unassigned"
+msgstr ""
+
+msgid "Apply changes"
+msgstr ""
+
+msgid "Updating..."
+msgstr ""
+
+msgid "Select issue"
+msgstr ""
+
+msgid "Select at least one issue."
+msgstr ""
+
+msgid "Choose at least one field to update."
+msgstr ""
+
+msgid "{{count}} issue updated successfully"
+msgid_plural "{{count}} issues updated successfully"
+msgstr[0] ""
+
+msgid "Failed to update issues. Please try again later."
+msgstr ""
+
 msgid "Add Comment"
 msgstr ""
 

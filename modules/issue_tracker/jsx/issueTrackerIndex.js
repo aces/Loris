@@ -374,6 +374,11 @@ class IssueTrackerIndex extends Component {
         <TabPane TabId="batch">
           <IssueTrackerBatchMode
             issues={this.state.data.data}
+            canCloseIssues={[
+              'issue_tracker_close_all_issue',
+              'issue_tracker_close_site_issue',
+              'issue_tracker_own_issue',
+            ].some((permission) => this.props.hasPermission(permission))}
             options={{
               priorities: this.state.data.fieldOptions.priorities,
               statuses: this.state.data.fieldOptions.statuses,
