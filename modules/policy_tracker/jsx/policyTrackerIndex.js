@@ -30,6 +30,8 @@ class PolicyTrackerIndex extends Component {
       },
       versionForm: {},
       translationForm: {},
+      canViewDecisions: false,
+      canEditPolicies: false,
       error: false,
       isLoaded: false,
     };
@@ -77,38 +79,65 @@ class PolicyTrackerIndex extends Component {
   }
 
   /**
+   * Format policy decision rows for the DataTable.
+   *
+   * @param {object} decisions - Raw decisions response.
+   * @return {object}
+   */
+  formatDecisions(decisions) {
+    return {
+      ...decisions,
+      Data: decisions.Data.map((row) => [
+        row.ID,
+        row.Username,
+        row.User,
+        row.Policy,
+        row.Version,
+        row.Module,
+        row.Decision,
+        row['Decision Date'],
+      ]),
+    };
+  }
+
+  /**
    * Fetch table rows and policy editor options.
    */
   fetchData() {
-    Promise.all([
-      this.requestJSON('decisions'),
-      this.requestJSON('options'),
-    ]).then(([decisions, options]) => {
-      this.setState({
-        decisions: {
-          ...decisions,
-          Data: decisions.Data.map((row) => [
-            row.ID,
-            row.Username,
-            row.User,
-            row.Policy,
-            row.Version,
-            row.Module,
-            row.Decision,
-            row['Decision Date'],
-          ]),
-        },
-        options,
-        versionForm: this.getVersionForm(options.policies[0]),
-        translationForm: this.getTranslationForm(
-          options.policies[0],
-          options.languages[0]
-        ),
-        error: false,
-        isLoaded: true,
+    this.requestJSON('decisions').then((decisions) => {
+      if (!decisions.canEditPolicies) {
+        this.setState({
+          decisions: this.formatDecisions(decisions),
+          canViewDecisions: decisions.canViewDecisions,
+          canEditPolicies: false,
+          error: false,
+          isLoaded: true,
+        });
+        return null;
+      }
+
+      return this.requestJSON('options').then((options) => {
+        this.setState({
+          decisions: this.formatDecisions(decisions),
+          options,
+          versionForm: this.getVersionForm(options.policies[0]),
+          translationForm: this.getTranslationForm(
+            options.policies[0],
+            options.languages[0],
+            options.translations
+          ),
+          canViewDecisions: decisions.canViewDecisions,
+          canEditPolicies: true,
+          error: false,
+          isLoaded: true,
+        });
+        return null;
       });
     }).catch((error) => {
-      this.setState({error: true, isLoaded: true});
+      this.setState({
+        error: true,
+        isLoaded: true,
+      });
       console.error(error);
     });
   }
@@ -144,13 +173,18 @@ class PolicyTrackerIndex extends Component {
    *
    * @param {object} policy - Policy row.
    * @param {object} language - Language row.
+   * @param {array} translations - Existing policy translations.
    * @return {object}
    */
-  getTranslationForm(policy, language) {
+  getTranslationForm(
+    policy,
+    language,
+    translations = this.state.options.translations
+  ) {
     if (!policy || !language) {
       return {};
     }
-    const translation = this.state.options.translations.find((row) => {
+    const translation = translations.find((row) => {
       return parseInt(row.PolicyID) === parseInt(policy.PolicyID) &&
         parseInt(row.LanguageID) === parseInt(language.language_id);
     }) || {};
@@ -158,13 +192,13 @@ class PolicyTrackerIndex extends Component {
     return {
       PolicyID: policy.PolicyID,
       LanguageID: language.language_id,
-      Content: translation.Content || policy.Content,
-      SwalTitle: translation.SwalTitle || policy.SwalTitle,
-      HeaderButtonText: translation.HeaderButtonText ||
+      Content: translation.Content ?? policy.Content,
+      SwalTitle: translation.SwalTitle ?? policy.SwalTitle,
+      HeaderButtonText: translation.HeaderButtonText ??
         policy.HeaderButtonText,
-      AcceptButtonText: translation.AcceptButtonText ||
+      AcceptButtonText: translation.AcceptButtonText ??
         policy.AcceptButtonText,
-      DeclineButtonText: translation.DeclineButtonText ||
+      DeclineButtonText: translation.DeclineButtonText ??
         policy.DeclineButtonText,
     };
   }
@@ -315,18 +349,20 @@ class PolicyTrackerIndex extends Component {
    * @param {object} options - Select options.
    * @param {string|number} value - Selected value.
    * @param {Function} onChange - Change handler.
+   * @param {string} idPrefix - Prefix for the input ID.
    * @return {React.ReactNode}
    */
-  renderSelect(name, label, options, value, onChange) {
+  renderSelect(name, label, options, value, onChange, idPrefix = 'version') {
+    const id = `${idPrefix}-${name}`;
     return (
       <div className="form-group">
-        <label className="col-sm-3 control-label" htmlFor={name}>
+        <label className="col-sm-3 control-label" htmlFor={id}>
           {label}
         </label>
         <div className="col-sm-9">
           <select
             className="form-control"
-            id={name}
+            id={id}
             name={name}
             value={value || ''}
             onChange={onChange}
@@ -348,18 +384,27 @@ class PolicyTrackerIndex extends Component {
    * @param {string|number} value - Field value.
    * @param {Function} onChange - Change handler.
    * @param {string} type - Input type.
+   * @param {string} idPrefix - Prefix for the input ID.
    * @return {React.ReactNode}
    */
-  renderInput(name, label, value, onChange, type = 'text') {
+  renderInput(
+    name,
+    label,
+    value,
+    onChange,
+    type = 'text',
+    idPrefix = 'version'
+  ) {
+    const id = `${idPrefix}-${name}`;
     return (
       <div className="form-group">
-        <label className="col-sm-3 control-label" htmlFor={name}>
+        <label className="col-sm-3 control-label" htmlFor={id}>
           {label}
         </label>
         <div className="col-sm-9">
           <input
             className="form-control"
-            id={name}
+            id={id}
             name={name}
             type={type}
             value={value || ''}
@@ -377,18 +422,20 @@ class PolicyTrackerIndex extends Component {
    * @param {string} label - Field label.
    * @param {string} value - Field value.
    * @param {Function} onChange - Change handler.
+   * @param {string} idPrefix - Prefix for the input ID.
    * @return {React.ReactNode}
    */
-  renderTextarea(name, label, value, onChange) {
+  renderTextarea(name, label, value, onChange, idPrefix = 'version') {
+    const id = `${idPrefix}-${name}`;
     return (
       <div className="form-group">
-        <label className="col-sm-3 control-label" htmlFor={name}>
+        <label className="col-sm-3 control-label" htmlFor={id}>
           {label}
         </label>
         <div className="col-sm-9">
           <textarea
             className="form-control"
-            id={name}
+            id={id}
             name={name}
             rows="8"
             value={value || ''}
@@ -602,44 +649,55 @@ class PolicyTrackerIndex extends Component {
             t('Policy', {ns: 'policy_tracker'}),
             policies,
             this.state.translationForm.PolicyID,
-            this.selectTranslation
+            this.selectTranslation,
+            'translation'
           )}
           {this.renderSelect(
             'LanguageID',
             t('Language', {ns: 'loris'}),
             languages,
             this.state.translationForm.LanguageID,
-            this.selectTranslation
+            this.selectTranslation,
+            'translation'
           )}
           {this.renderInput(
             'SwalTitle',
             t('Modal Title', {ns: 'policy_tracker'}),
             this.state.translationForm.SwalTitle,
-            this.handleTranslationChange
+            this.handleTranslationChange,
+            'text',
+            'translation'
           )}
           {this.renderInput(
             'HeaderButtonText',
             t('Header Button Text', {ns: 'policy_tracker'}),
             this.state.translationForm.HeaderButtonText,
-            this.handleTranslationChange
+            this.handleTranslationChange,
+            'text',
+            'translation'
           )}
           {this.renderInput(
             'AcceptButtonText',
             t('Accept Button Text', {ns: 'policy_tracker'}),
             this.state.translationForm.AcceptButtonText,
-            this.handleTranslationChange
+            this.handleTranslationChange,
+            'text',
+            'translation'
           )}
           {this.renderInput(
             'DeclineButtonText',
             t('Decline Button Text', {ns: 'policy_tracker'}),
             this.state.translationForm.DeclineButtonText,
-            this.handleTranslationChange
+            this.handleTranslationChange,
+            'text',
+            'translation'
           )}
           {this.renderTextarea(
             'Content',
             t('Content', {ns: 'loris'}),
             this.state.translationForm.Content,
-            this.handleTranslationChange
+            this.handleTranslationChange,
+            'translation'
           )}
           <div className="form-group">
             <div className="col-sm-offset-3 col-sm-9">
@@ -677,15 +735,17 @@ class PolicyTrackerIndex extends Component {
         <div className="page-header">
           <h2>{t('Policy Tracker', {ns: 'policy_tracker'})}</h2>
         </div>
-        {this.renderDecisionTable()}
-        <div className="row">
-          <div className="col-md-6">
-            {this.renderVersionForm()}
+        {this.state.canViewDecisions && this.renderDecisionTable()}
+        {this.state.canEditPolicies &&
+          <div className="row">
+            <div className="col-md-6">
+              {this.renderVersionForm()}
+            </div>
+            <div className="col-md-6">
+              {this.renderTranslationForm()}
+            </div>
           </div>
-          <div className="col-md-6">
-            {this.renderTranslationForm()}
-          </div>
-        </div>
+        }
       </div>
     );
   }

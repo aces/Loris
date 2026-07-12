@@ -97,5 +97,8 @@ INSERT INTO `perm_perm_action_rel` (`permID`, `actionID`) VALUES (88,1);
 INSERT INTO `perm_perm_action_rel` (`permID`, `actionID`) VALUES (89,8);
 INSERT INTO `perm_perm_action_rel` (`permID`, `actionID`) VALUES (92,1);
 INSERT INTO `perm_perm_action_rel` (`permID`, `actionID`) VALUES (92,8);
+INSERT INTO `perm_perm_action_rel` (`permID`, `actionID`) VALUES (93,1);
+INSERT INTO `perm_perm_action_rel` (`permID`, `actionID`) VALUES (94,2);
+INSERT INTO `perm_perm_action_rel` (`permID`, `actionID`) VALUES (94,3);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

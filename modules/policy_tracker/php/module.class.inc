@@ -48,10 +48,20 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $route       = $this->_getRoute($request);
-        $adminRoutes = ['decisions', 'options', 'new-version', 'translation'];
-        if (in_array($route, $adminRoutes, true)
-            && !$this->_hasConfigAccess($request)
+        $route = $this->_getRoute($request);
+        if ($route === 'decisions'
+            && $request->getMethod() === 'GET'
+            && !$this->_hasDecisionAccess($request)
+            && !$this->_hasEditAccess($request)
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                "Permission denied"
+            );
+        }
+
+        $editRoutes = ['options', 'new-version', 'translation'];
+        if (in_array($route, $editRoutes, true)
+            && !$this->_hasEditAccess($request)
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 "Permission denied"
@@ -59,7 +69,9 @@ class Module extends \Module
         }
 
         if ($route === 'decisions' && $request->getMethod() === 'GET') {
-            return new \LORIS\Http\Response\JSON\OK($this->_getDecisionData());
+            return new \LORIS\Http\Response\JSON\OK(
+                $this->_getDecisionData($request)
+            );
         }
 
         if ($route === 'options' && $request->getMethod() === 'GET') {
@@ -129,28 +141,48 @@ class Module extends \Module
     }
 
     /**
-     * Check whether the request user can manage policies.
+     * Check whether the request user can view policy decisions.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return bool
      */
-    private function _hasConfigAccess(ServerRequestInterface $request) : bool
+    private function _hasDecisionAccess(ServerRequestInterface $request) : bool
     {
         $user = $request->getAttribute("user");
-        return $user instanceof \User && $user->hasPermission('config');
+        return $user instanceof \User
+            && $user->hasPermission('view_policy_decisions');
+    }
+
+    /**
+     * Check whether the request user can edit policies.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return bool
+     */
+    private function _hasEditAccess(ServerRequestInterface $request) : bool
+    {
+        $user = $request->getAttribute("user");
+        return $user instanceof \User
+            && $user->hasPermission('edit_policies');
     }
 
     /**
      * Get the policy decisions used by the frontend table.
      *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
      * @return array
      */
-    private function _getDecisionData() : array
+    private function _getDecisionData(ServerRequestInterface $request) : array
     {
-        $db = $this->loris->getDatabaseConnection();
-        return [
-            'Data'         => iterator_to_array(
+        $canViewDecisions = $this->_hasDecisionAccess($request);
+        $decisions        = [];
+        $fieldOptions     = [];
+        if ($canViewDecisions) {
+            $db           = $this->loris->getDatabaseConnection();
+            $decisions    = iterator_to_array(
                 $db->pselect(
                     "SELECT
                         upd.ID,
@@ -175,15 +207,22 @@ class Module extends \Module
                     ORDER BY upd.DecisionDate DESC",
                     []
                 )
-            ),
-            'fieldOptions' => [
+            );
+            $fieldOptions = [
                 'modules'  => $this->_getModuleOptions(),
                 'policies' => $this->_getPolicyNameOptions(),
                 'decision' => [
                     'Accepted' => dgettext("policy_tracker", "Accepted"),
                     'Declined' => dgettext("policy_tracker", "Declined"),
                 ],
-            ],
+            ];
+        }
+
+        return [
+            'Data'             => $decisions,
+            'canViewDecisions' => $canViewDecisions,
+            'canEditPolicies'  => $this->_hasEditAccess($request),
+            'fieldOptions'     => $fieldOptions,
         ];
     }
 

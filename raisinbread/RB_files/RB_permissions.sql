@@ -84,5 +84,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categor
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (90,'data_release_hide','Hide data release files',12,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (91,'data_release_delete','Delete data release files',12,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (92,'data_release_download_all','All Release Files',12,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (93,'view_policy_decisions','Policy Decisions',51,2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `categoryID`) VALUES (94,'edit_policies','Policies',51,2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
