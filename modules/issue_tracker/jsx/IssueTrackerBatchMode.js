@@ -72,7 +72,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
   async function fetchIssues() {
     try {
       const response = await fetch(
-        `${loris.BaseURL}/issue_tracker/Edit/?batch=true`,
+        `${loris.BaseURL}/issue_tracker/BatchEdit/`,
         {
           credentials: 'include', // This ensures cookies are sent with the request
         }

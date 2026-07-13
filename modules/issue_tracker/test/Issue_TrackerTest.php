@@ -123,6 +123,39 @@ class Issue_TrackerTest extends LorisIntegrationTest
     }
 
     /**
+     * Tests that the Batch Edit endpoint returns the issues used by batch mode.
+     *
+     * @return void
+     */
+    function testBatchEditEndpointReturnsIssues()
+    {
+        $this->setupPermissions(["issue_tracker_all_issue"]);
+        $this->webDriver->get($this->url . "/issue_tracker/BatchEdit/");
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertStringContainsString('"issues"', $bodyText);
+        $this->assertStringContainsString('Test Issue', $bodyText);
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests that Batch Edit rejects users without all-issue access.
+     *
+     * @return void
+     */
+    function testBatchEditEndpointRejectsSitePermission()
+    {
+        $this->setupPermissions(["issue_tracker_site_issue"]);
+        $this->webDriver->get($this->url . "/issue_tracker/BatchEdit/");
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertStringContainsString(
+            'You do not have access to this page.',
+            $bodyText
+        );
+        $this->assertStringNotContainsString('"issues"', $bodyText);
+        $this->resetPermissions();
+    }
+
+    /**
      * Tests that Issue Tracker's filters
      *
      * @return void
@@ -173,4 +206,3 @@ class Issue_TrackerTest extends LorisIntegrationTest
          $this->assertStringNotContainsString("TestTestTest", $bodyText);
     }
 }
-

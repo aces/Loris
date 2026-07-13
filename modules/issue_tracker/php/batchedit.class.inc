@@ -13,6 +13,7 @@
 
 namespace LORIS\issue_tracker;
 
+use LORIS\Middleware\ETagCalculator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -24,7 +25,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class BatchEdit extends \NDB_Page
+class BatchEdit extends \NDB_Page implements ETagCalculator
 {
     private const EDITABLE_FIELDS = [
         'assignee',
@@ -65,7 +66,7 @@ class BatchEdit extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if ($request->getMethod() !== 'POST') {
+        if (!in_array($request->getMethod(), $this->allowedMethods(), true)) {
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 $this->allowedMethods()
             );
@@ -77,6 +78,12 @@ class BatchEdit extends \NDB_Page
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'User does not have permission to batch edit issues.'
+            );
+        }
+
+        if ($request->getMethod() === 'GET') {
+            return new \LORIS\Http\Response\JsonResponse(
+                $this->_getAllIssues($user)
             );
         }
 
@@ -92,12 +99,239 @@ class BatchEdit extends \NDB_Page
             return $issueIDs;
         }
 
-        $updates = $this->_validateUpdates($values['updates'] ?? null, $user);
+        $updates = $this->_validateUpdates($values['updates'] ?? null);
         if ($updates instanceof ResponseInterface) {
             return $updates;
         }
 
         return $this->_updateIssues($issueIDs, $updates, $user);
+    }
+
+    /**
+     * Fetch all issues and related data for batch editing.
+     *
+     * @param \User $user The current user.
+     *
+     * @return array{
+     *     issues: array<int, array<string, mixed>>,
+     *     assignees: array<string, string>,
+     *     otherWatchers: array<string, string>
+     * } Contains issues, assignees, and watcher information.
+     */
+    private function _getAllIssues(\User $user) : array
+    {
+        $db            = $this->loris->getDatabaseConnection();
+        $assignees     = [];
+        $otherWatchers = [];
+
+        /**
+         * Users who can be assigned an issue.
+         *
+         * @var array<int, array{UserID: string}> $assigneeRows
+         */
+        $assigneeRows = iterator_to_array(
+            $db->pselect(
+                "SELECT UserID
+                 FROM users
+                 WHERE Pending_approval = 'N'",
+                []
+            )
+        );
+        foreach ($assigneeRows as $assignee) {
+            if (!empty($assignee['UserID'])) {
+                $assignees[$assignee['UserID']]
+                    = $this->_formatUserInformation($assignee['UserID']);
+            }
+        }
+
+        $currentUsername = $user->getUsername();
+        /**
+         * Active users who can watch an issue.
+         *
+         * @var array<int, array{UserID: string}> $potentialWatchers
+         */
+        $potentialWatchers = iterator_to_array(
+            $db->pselect(
+                "SELECT UserID
+                 FROM users
+                 WHERE Active = 'Y' AND Pending_approval = 'N'",
+                []
+            )
+        );
+        foreach ($potentialWatchers as $watcher) {
+            if (!empty($watcher['UserID'])
+                && $watcher['UserID'] !== $currentUsername
+            ) {
+                $otherWatchers[$watcher['UserID']]
+                    = $this->_formatUserInformation($watcher['UserID']);
+            }
+        }
+
+        /**
+         * Issues displayed in batch mode.
+         *
+         * @var array<int, array{
+         *     issueID: int|string,
+         *     assignee: ?string,
+         *     reporter: ?string,
+         *     lastUpdatedBy: ?string,
+         *     CandidateID: mixed
+         * }&array<string, mixed>> $issues
+         */
+        $issues = iterator_to_array(
+            $db->pselect(
+                "SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
+                 FROM issues AS i
+                 LEFT JOIN candidate c ON i.CandidateID = c.ID
+                 LEFT JOIN session s ON i.sessionID = s.ID
+                 ORDER BY i.issueID DESC",
+                []
+            )
+        );
+        if (empty($issues)) {
+            return [
+                'issues'        => [],
+                'assignees'     => $assignees,
+                'otherWatchers' => $otherWatchers,
+            ];
+        }
+
+        $watcherParams       = [];
+        $watcherPlaceholders = [];
+        foreach (array_column($issues, 'issueID') as $index => $issueID) {
+            $param = "issueID$index";
+            $watcherPlaceholders[] = ":$param";
+            $watcherParams[$param] = $issueID;
+        }
+        $watcherPlaceholderList = implode(',', $watcherPlaceholders);
+        /**
+         * Watchers grouped by issue.
+         *
+         * @var array<int, array{issueID: int|string, userID: string}>
+         *     $watcherRows
+         */
+        $watcherRows = iterator_to_array(
+            $db->pselect(
+                "SELECT issueID, userID
+                 FROM issues_watching
+                 WHERE issueID IN ($watcherPlaceholderList)",
+                $watcherParams
+            )
+        );
+
+        $watchersByIssue = [];
+        foreach ($watcherRows as $watcher) {
+            if (!empty($watcher['userID'])) {
+                $issueID = (int)$watcher['issueID'];
+                $watchersByIssue[$issueID][] = $watcher['userID'];
+            }
+        }
+
+        foreach ($issues as &$issue) {
+            $issueID           = (int)$issue['issueID'];
+            $issueWatchers     = $watchersByIssue[$issueID] ?? [];
+            $issue['watching'] = in_array(
+                $currentUsername,
+                $issueWatchers,
+                true
+            ) ? 'Yes' : 'No';
+
+            $assigneeUserID = $issue['assignee'] ?? null;
+            if (!empty($assigneeUserID)) {
+                $issueWatchers = array_values(
+                    array_filter(
+                        $issueWatchers,
+                        fn($watcherUserID) => $watcherUserID !== $assigneeUserID
+                    )
+                );
+            }
+            $issue['othersWatching'] = $issueWatchers;
+
+            $issue['reporter']      = !empty($issue['reporter'])
+                ? $this->_formatUserInformation($issue['reporter'])
+                : null;
+            $issue['lastUpdatedBy'] = !empty($issue['lastUpdatedBy'])
+                ? $this->_formatUserInformation($issue['lastUpdatedBy'])
+                : null;
+            $issue['topComments']   = $this->_getTopComments($issueID);
+            unset($issue['CandidateID']);
+        }
+        unset($issue);
+
+        return [
+            'issues'        => $issues,
+            'assignees'     => $assignees,
+            'otherWatchers' => $otherWatchers,
+        ];
+    }
+
+    /**
+     * Fetch the three most recent comments for an issue.
+     *
+     * @param int $issueID The issue ID.
+     *
+     * @return array<int, array{
+     *     issueComment: string,
+     *     dateAdded: string,
+     *     addedBy: string
+     * }> The recent comments.
+     */
+    private function _getTopComments(int $issueID) : array
+    {
+        /**
+         * Comment rows returned by the database.
+         *
+         * @var iterable<array{
+         *     issueComment: string,
+         *     dateAdded: string,
+         *     addedBy: string
+         * }> $comments
+         */
+        $comments = $this->loris->getDatabaseConnection()->pselect(
+            "SELECT issueComment, dateAdded, addedBy
+             FROM issues_comments
+             WHERE issueID = :issueID
+             ORDER BY dateAdded DESC
+             LIMIT 3",
+            ['issueID' => $issueID]
+        );
+
+        $topComments = [];
+        foreach ($comments as $comment) {
+            $topComments[] = [
+                'issueComment' => $comment['issueComment'],
+                'dateAdded'    => $comment['dateAdded'],
+                'addedBy'      => $this->_formatUserInformation(
+                    $comment['addedBy']
+                ),
+            ];
+        }
+
+        return $topComments;
+    }
+
+    /**
+     * Format a user ID for display in batch-mode issue cards.
+     *
+     * @param ?string $userID The user ID to format.
+     *
+     * @return string The formatted user information.
+     */
+    private function _formatUserInformation(?string $userID) : string
+    {
+        if ($userID === null) {
+            return 'AnonymousUser';
+        }
+
+        $realName = $this->loris->getDatabaseConnection()->pselectOne(
+            'SELECT Real_name FROM users WHERE userid = :userID',
+            ['userID' => $userID]
+        );
+        if ($realName === null) {
+            return 'AnonymousUser';
+        }
+
+        return (string)$realName . " ($userID)";
     }
 
     /**
@@ -130,15 +364,12 @@ class BatchEdit extends \NDB_Page
      * Validate and normalize the fields to update.
      *
      * @param mixed $updates The submitted field updates.
-     * @param \User $user    The user making the request.
      *
      * @return array<string, ?string>|ResponseInterface Valid updates or an error
      *                                                  response.
      */
-    private function _validateUpdates(
-        mixed $updates,
-        \User $user
-    ) : array|ResponseInterface {
+    private function _validateUpdates(mixed $updates) : array|ResponseInterface
+    {
         if (!is_array($updates) || empty($updates)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'At least one field must be updated.'
@@ -557,12 +788,30 @@ class BatchEdit extends \NDB_Page
     }
 
     /**
+     * Calculate an ETag for a batch-edit data request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request.
+     *
+     * @return string The value to use for the ETag header.
+     */
+    public function ETag(ServerRequestInterface $request) : string
+    {
+        if ($request->getMethod() !== 'GET') {
+            return '';
+        }
+
+        return md5(
+            (string)json_encode((string)$this->handle($request)->getBody())
+        );
+    }
+
+    /**
      * Return the valid HTTP methods for this endpoint.
      *
      * @return string[] Valid methods.
      */
     protected function allowedMethods() : array
     {
-        return ['POST'];
+        return ['GET', 'POST'];
     }
 }
