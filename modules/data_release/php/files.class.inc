@@ -396,7 +396,7 @@ class Files extends \NDB_Page
                 // FilesUploadHandler throws an exception if there's a problem with
                 // the downloaddir.
                 return new \LORIS\Http\Response\JSON\InternalServerError(
-                    dgettext("data_release", $e->getMessage())
+                    $e->getMessage()
                 );
             }
         }
