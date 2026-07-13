@@ -75,8 +75,8 @@ Class TimePoint_List_ControlPanel extends \Candidate
                 'imaging_browser_phantom_ownsite'
             ]
         );
-        
-       $this->tpl_data['hasCandidateParameterAccess'] = $user->hasAnyPermission(
+
+        $this->tpl_data['hasCandidateParameterAccess'] = $user->hasAnyPermission(
             [
                 'candidate_parameter_view',
                 'candidate_parameter_edit'
