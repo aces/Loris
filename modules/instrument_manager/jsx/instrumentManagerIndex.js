@@ -328,6 +328,16 @@ function PermissionSelect(props) {
     isMulti={true}
     options={options}
     value={values}
+    menuPortalTarget={document.body}
+    styles={{menuPortal:
+            /**
+             * Required for rendering properly on top of window.
+             *
+             * @param {object} base - The base from React Select
+             * @returns {object} - The new CSS object
+             */
+            (base) => ({...base, zIndex: 9999})}
+    }
     onChange={(newValue) => {
       props.modifySelected(newValue.map((row) => row.value));
     }}
