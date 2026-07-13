@@ -59,28 +59,30 @@ class ManageFileForm extends Component {
    * @param {string} type - type of pop-up warning
    */
   modifyFileStatus(type) {
+    const {t} = this.props;
     let text = {};
     if (type === 'hide') {
       text.warning
-        = 'Only you, and system administrators will be able to see this file!';
+        = t('Only you, and system administrators will be able to see this file!', {ns: 'data_release'});
       text.confirmation = 'hidden';
     } else if (type === 'unhide') {
       text.warning
-        = 'Anyone with permission to this file will be able to see it.';
+        = t('Anyone with permission to this file will be able to see it.', {ns: 'data_release'});
       text.confirmation = 'unhidden';
     } else if (type === 'delete') {
-      text.warning = 'This will permanently delete the file from the system!';
+      text.warning = t('This will permanently delete the file from the system!', {ns: 'data_release'});
       text.confirmation = 'deleted';
     }
 
     swal
       .fire({
-        title: 'Are you sure?',
+        title: t('Are you sure?', {ns: 'loris'}),
         text: text.warning,
         type: 'warning',
         showCancelButton: true,
+        cancelButtonText: t('Cancel', {ns: 'loris'}),
         confirmButtonClass: 'btn-danger',
-        confirmButtonText: 'Yes, ' + type + ' it!',
+        confirmButtonText: t('Yes, ' + type + ' it!', {ns: 'data_release'}),
       })
       .then((result) => {
         if (result.value) {
@@ -93,7 +95,7 @@ class ManageFileForm extends Component {
             if (response.ok) {
               swal
                 .fire({
-                  text: 'File Successfully ' + text.confirmation,
+                  text: t('File Successfully ' + text.confirmation, {ns: 'data_release'}),
                   title: '',
                   type: 'success',
                 })

@@ -192,3 +192,30 @@ msgstr "डुप्लिकेट फ़ाइल अपलोड नहीं
 
 msgid "Not found"
 msgstr "नहीं मिला"
+
+msgid "Only you, and system administrators will be able to see this file!"
+msgstr "केवल आप और सिस्टम व्यवस्थापक ही इस फ़ाइल को देख सकेंगे!"
+
+msgid "Anyone with permission to this file will be able to see it."
+msgstr "जिस किसी को इस फ़ाइल की अनुमति होगी, वह इसे देख सकेगा।"
+
+msgid "This will permanently delete the file from the system!"
+msgstr "यह फ़ाइल को सिस्टम से स्थायी रूप से हटा देगा!"
+
+msgid "File Successfully hidden"
+msgstr "फ़ाइल सफलतापूर्वक छिपा दी गई"
+
+msgid "File Successfully unhidden"
+msgstr "फ़ाइल सफलतापूर्वक दिखाई गई"
+
+msgid "File Successfully deleted"
+msgstr "फ़ाइल सफलतापूर्वक हटाई गई"
+
+msgid "Yes, hide it!"
+msgstr "हाँ, इसे छिपाएँ!"
+
+msgid "Yes, unhide it!"
+msgstr "हाँ, इसे दिखाएँ!"
+
+msgid "Yes, delete it!"
+msgstr "हाँ, इसे हटाएँ!"

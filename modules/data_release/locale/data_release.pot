@@ -191,3 +191,30 @@ msgstr ""
 
 msgid "Not found"
 msgstr ""
+
+msgid "Only you, and system administrators will be able to see this file!"
+msgstr ""
+
+msgid "Anyone with permission to this file will be able to see it."
+msgstr ""
+
+msgid "This will permanently delete the file from the system!"
+msgstr ""
+
+msgid "File Successfully hidden"
+msgstr ""
+
+msgid "File Successfully unhidden"
+msgstr ""
+
+msgid "File Successfully deleted"
+msgstr ""
+
+msgid "Yes, hide it!"
+msgstr ""
+
+msgid "Yes, unhide it!"
+msgstr ""
+
+msgid "Yes, delete it!"
+msgstr ""

@@ -252,7 +252,7 @@ class DataReleaseIndex extends Component {
     // Manage File modal window
     const manageFileForm = (
       <Modal
-        title="Manage File"
+        title={t('Manage File', {ns: 'data_release'})}
         label={t('Manage File', {ns: 'data_release'})}
         show={this.state.show.manageFileForm}
         onClose={() => {

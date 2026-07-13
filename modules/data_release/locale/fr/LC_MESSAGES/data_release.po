@@ -47,10 +47,10 @@ msgid "Upload a New File"
 msgstr "Téléverser un nouveau fichier"
 
 msgid "Add Permission"
-msgstr "Ajouter une permission"
+msgstr "Ajouter une autorisation"
 
 msgid "Manage Permissions"
-msgstr "Gérer les permissions"
+msgstr "Gérer les autorisations"
 
 msgid "Note"
 msgstr "Note"
@@ -98,7 +98,7 @@ msgid "Data Release Version"
 msgstr "Version de publication des données"
 
 msgid "Permission Update Success!"
-msgstr "Mise à jour des permissions réussie!"
+msgstr "Mise à jour des autorisations réussie!"
 
 msgid "Remove Permission"
 msgstr "Supprimer l'autorisation"
@@ -125,7 +125,7 @@ msgid "You must select a user!"
 msgstr "Vous devez sélectionner un utilisateur!"
 
 msgid "You must select a file OR a version to grant permission on!"
-msgstr "Vous devez sélectionner un fichier OU une version pour accorder la permission!"
+msgstr "Vous devez sélectionner un fichier OU une version pour accorder l'autorisation!"
 
 msgid "Manage Versions a User has access to"
 msgstr "Gérer les versions auxquelles un utilisateur a accès"
@@ -195,3 +195,30 @@ msgstr "Impossible de téléverser un fichier en double."
 
 msgid "Not found"
 msgstr "Introuvable"
+
+msgid "Only you, and system administrators will be able to see this file!"
+msgstr "Seuls vous et les administrateurs système pourrez voir ce fichier !"
+
+msgid "Anyone with permission to this file will be able to see it."
+msgstr "Toute personne autorisée à accéder à ce fichier pourra le voir."
+
+msgid "This will permanently delete the file from the system!"
+msgstr "Cette action supprimera définitivement le fichier du système !"
+
+msgid "File Successfully hidden"
+msgstr "Fichier masqué avec succès"
+
+msgid "File Successfully unhidden"
+msgstr "Fichier rendu visible avec succès"
+
+msgid "File Successfully deleted"
+msgstr "Fichier supprimé avec succès"
+
+msgid "Yes, hide it!"
+msgstr "Oui, masquer le fichier !"
+
+msgid "Yes, unhide it!"
+msgstr "Oui, rendre le fichier visible !"
+
+msgid "Yes, delete it!"
+msgstr "Oui, supprimer le fichier !"

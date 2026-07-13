@@ -192,3 +192,30 @@ msgstr "重複したファイルはアップロードできません。"
 
 msgid "Not found"
 msgstr "見つかりません"
+
+msgid "Only you, and system administrators will be able to see this file!"
+msgstr "このファイルは、あなたとシステム管理者のみが閲覧できます。"
+
+msgid "Anyone with permission to this file will be able to see it."
+msgstr "このファイルへのアクセス権を持つユーザーは閲覧できます。"
+
+msgid "This will permanently delete the file from the system!"
+msgstr "この操作により、ファイルはシステムから完全に削除されます。"
+
+msgid "File Successfully hidden"
+msgstr "ファイルを非表示にしました"
+
+msgid "File Successfully unhidden"
+msgstr "ファイルを再表示しました"
+
+msgid "File Successfully deleted"
+msgstr "ファイルを削除しました"
+
+msgid "Yes, hide it!"
+msgstr "はい、非表示にします！"
+
+msgid "Yes, unhide it!"
+msgstr "はい、再表示します！"
+
+msgid "Yes, delete it!"
+msgstr "はい、削除します！"

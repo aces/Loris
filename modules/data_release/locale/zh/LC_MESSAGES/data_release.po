@@ -192,3 +192,30 @@ msgstr "无法上传重复文件。"
 
 msgid "Not found"
 msgstr "未找到"
+
+msgid "Only you, and system administrators will be able to see this file!"
+msgstr "只有您和系统管理员能够查看此文件！"
+
+msgid "Anyone with permission to this file will be able to see it."
+msgstr "任何拥有此文件访问权限的用户都可以查看它。"
+
+msgid "This will permanently delete the file from the system!"
+msgstr "此操作将永久从系统中删除该文件！"
+
+msgid "File Successfully hidden"
+msgstr "文件已成功隐藏"
+
+msgid "File Successfully unhidden"
+msgstr "文件已成功取消隐藏"
+
+msgid "File Successfully deleted"
+msgstr "文件已成功删除"
+
+msgid "Yes, hide it!"
+msgstr "是，隐藏它！"
+
+msgid "Yes, unhide it!"
+msgstr "是，取消隐藏！"
+
+msgid "Yes, delete it!"
+msgstr "是，删除它！"

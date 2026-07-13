@@ -159,6 +159,7 @@ class UploadFileForm extends Component {
         text: msg,
         type: 'error',
         showCancelButton: true,
+        cancelButtonText: t('Cancel', {ns: 'loris'}),
       });
       this.setState({errorMessage});
       return;
