@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import {TabPane, VerticalTabs} from 'Tabs';
 import PropTypes from 'prop-types';
-import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import '../css/configuration.css';
 import swal from 'sweetalert2';
@@ -589,6 +588,7 @@ DiagnosisEvolution.propTypes = {
   tabName: PropTypes.string,
   action: PropTypes.string,
   submitURL: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
