@@ -101,7 +101,7 @@ class Expired extends \NDB_Page implements ETagCalculator
                 unset($_SESSION['PasswordExpiredForUser']);
             } catch (\InvalidArgumentException $e) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    dgettext('login', $e->getMessage())
+                    $e->getMessage()
                 );
             }
         } else {
