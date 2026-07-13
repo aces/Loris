@@ -63,13 +63,18 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     function __construct(array $data)
     {
         $this->barcode     = $data['barcode'] ?? null;
-        $this->centerId    = new \CenterID($data['centerId'] ?? null);
+        $this->centerId    = isset($data['centerId'])
+            ? new \CenterID((string)$data['centerId'])
+            : null;
         $this->status      = $data['status'] ?? null;
         $this->user        = $data['user'] ?? null;
         $this->temperature = $data['temperature'] ?? null;
-        $this->date        = new \DateTime($data['date'] ?? null);
-        $this->time        = new \DateTime($data['time'] ?? null);
-        $this->comments    = $data['comments'] ?? null;
+        $this->date        = isset($data['date'])
+            ? new \DateTime($data['date'])
+            : null;
+        $this->time        = isset($data['time'])
+            ? new \DateTime($data['time'])
+            : null;
     }
 
     /**
@@ -87,7 +92,7 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
      *
      * @return \CenterID
      */
-    public function getCenterId() : \CenterID
+    public function getCenterId() : ?\CenterID
     {
         return $this->centerId;
     }
