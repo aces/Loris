@@ -164,11 +164,11 @@ class Instrument_Manager extends \DataFrameworkMenu
 
         } catch (\NotFound $e) {
             return (new \LORIS\Http\Response\JSON\NotFound(
-                dgettext("instrument_manager", $e->getMessage())
+                $e->getMessage()
             ));
         } catch (\Exception $e) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                dgettext("instrument_manager", $e->getMessage())
+                $e->getMessage()
             );
         }
         return new \LORIS\Http\Response\JSON\Created(["ok"=>"ok"]);
