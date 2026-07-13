@@ -303,6 +303,29 @@ class Instrument_List extends \NDB_Menu_Filter
 
         $this->tpl_data['display']
             = array_merge($this->candidate->getData(), $this->timePoint->getData());
+
+        // Ideally this would be handled by $this->timePoint->getDate but other code
+        // depends on Date_visit being a string
+        $dateFormatter = new \IntlDateFormatter(
+            "",
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::NONE,
+        );
+        if (isset($this->tpl_data['display']['Date_screening'])) {
+            $this->tpl_data['display']['Date_screening'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_screening'])
+            );
+        }
+        if (isset($this->tpl_data['display']['Date_visit'])) {
+            $this->tpl_data['display']['Date_visit'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_visit'])
+            );
+        }
+        if (isset($this->tpl_data['display']['Date_approval'])) {
+            $this->tpl_data['display']['Date_approval'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_approval'])
+            );
+        }
         // DoB to Derived Age
         $dob = $this->candidate->getCandidateDoB();
         if (is_string($dob) && strtotime($dob) !== false) {

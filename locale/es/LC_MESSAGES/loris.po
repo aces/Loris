@@ -327,8 +327,10 @@ msgstr "En Progreso"
 msgid "Complete"
 msgstr "Completo"
 
-msgid "Instruments"
-msgstr "Instrumentos"
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "Instrumento"
+msgstr[1] "Instrumentos"
 
 msgid "None"
 msgstr "Ninguna"

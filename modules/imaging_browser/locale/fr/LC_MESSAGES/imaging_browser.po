@@ -34,6 +34,9 @@ msgid_plural "New and pending imaging sessions"
 msgstr[0] "Nouvelle session d'imagerie et session en attente"
 msgstr[1] "Nouvelles sessions d'imagerie et sessions en attente"
 
+msgid "Imaging QC Summary"
+msgstr "Résumé du contrôle qualité de l'imagerie"
+
 #, fuzzy
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"
@@ -119,20 +122,12 @@ msgid "Grey bar denotes other QC statuses."
 msgstr "La barre grise indique d'autres statuts de contrôle qualité."
 
 #, fuzzy
-msgid ""
-"Different shades represent different modalities. Only native modalities are "
-"displayed in results."
-msgstr ""
-"Les différentes nuances représentent différentes modalités. Seules les "
-"modalités natives sont affichées dans les résultats."
+msgid "Different shades represent different modalities. Only native modalities are displayed in results."
+msgstr "Les différentes nuances représentent différentes modalités. Seules les modalités natives sont affichées dans les résultats."
 
 #, fuzzy
-msgid ""
-"Hover over any visit to see detailed modality breakdown for visit, click to "
-"go to imaging browser."
-msgstr ""
-"Passez la souris sur n'importe quelle visite pour voir le détail des "
-"modalités utilisées, cliquez pour accéder au navigateur d'imagerie."
+msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
+msgstr "Passez la souris sur n'importe quelle visite pour voir le détail des modalités utilisées, cliquez pour accéder au navigateur d'imagerie."
 
 #, fuzzy
 msgid "%1 file(s) displayed."

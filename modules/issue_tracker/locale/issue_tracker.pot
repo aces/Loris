@@ -109,6 +109,9 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
+msgid "Failed to add comment"
+msgstr ""
+
 msgid "Create New Issue"
 msgstr ""
 
@@ -148,6 +151,9 @@ msgstr ""
 msgid "Watchers"
 msgstr ""
 
+msgid "Submitting..."
+msgstr ""
+
 msgid "Add others to watching?"
 msgstr ""
 
@@ -175,6 +181,9 @@ msgstr ""
 msgid "Last Updated By"
 msgstr ""
 
+msgid "Unassigned"
+msgstr ""
+
 msgid "Created"
 msgstr ""
 
@@ -197,7 +206,17 @@ msgstr ""
 msgid "No issues match the selected filters."
 msgstr ""
 
+msgid "({{count}} comment)"
+msgid_plural "({{count}} comments)"
+msgstr[0] ""
+
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
+msgstr ""
+
+msgid "Upload Successful!"
+msgstr ""
+
+msgid "Upload error!"
 msgstr ""
 
 msgid "Title cannot be empty"
@@ -207,6 +226,9 @@ msgid "No changes were made"
 msgstr ""
 
 msgid "Issue updated successfully"
+msgstr ""
+
+msgid "Failed to update issue"
 msgstr ""
 
 msgid "Information"
@@ -272,6 +294,36 @@ msgstr ""
 msgid "Last 3 Comments"
 msgstr ""
 
+msgid "Confirmation"
+msgstr ""
+
+msgid "Delete attachment"
+msgstr ""
+
+msgid "Attachment options: "
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Date of attachment: "
+msgstr ""
+
+msgid "File: "
+msgstr ""
+
+msgid "User: "
+msgstr ""
+
+msgid "Description: "
+msgstr ""
+
+msgid "Attachment History"
+msgstr ""
+
 msgid "The server is not configured to receive a file this large."
 msgstr ""
 
@@ -279,6 +331,15 @@ msgid "The server is not configured for attachments."
 msgstr ""
 
 msgid "Submit Attachment"
+msgstr ""
+
+msgid "An error occurred when loading the form!"
+msgstr ""
+
+msgid "Please add a comment or make changes"
+msgstr ""
+
+msgid " to "
 msgstr ""
 
 msgid "Submit Comment"
