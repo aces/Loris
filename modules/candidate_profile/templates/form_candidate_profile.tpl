@@ -5,9 +5,9 @@
     <script src="{$widgets[widget]->getJSURL()}" type="text/javascript"></script>
 {/section}
 <script type="text/javascript">
-   // On page load, retrieve the candidate and all of its visits via the API so that
-   // y can be passed as properties to widgets. Nearly every widget uses them, so
-   // this saves them all having to make the same requests over and over again.
+{* On page load, retrieve the candidate and all of its visits via the API so that
+   they can be passed as properties to widgets. Nearly every widget uses them, so
+   this saves them all having to make the same requests over and over again. *}
 window.addEventListener('load', () => {
     let candidate = null;
 
