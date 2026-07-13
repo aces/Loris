@@ -1,7 +1,9 @@
 import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
+import {withTranslation} from 'react-i18next';
 import {TabPane, VerticalTabs} from 'Tabs';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import '../css/configuration.css';
 import swal from 'sweetalert2';
@@ -365,6 +367,7 @@ class DiagnosisEvolution extends Component {
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
 
     const tabID = this.state.currentTab;
@@ -389,7 +392,7 @@ class DiagnosisEvolution extends Component {
     }).then((resp) => {
       if (resp.ok) {
         swal.fire({
-          title: 'Submission Successful!',
+          title: t('Submission Successful!', {ns: 'loris'}),
           type: 'success',
         });
         window.location.href =
@@ -589,11 +592,14 @@ DiagnosisEvolution.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  const TranslatedDiagnosisEvolution = withTranslation(
+    ['configuration', 'loris']
+  )(DiagnosisEvolution);
   const root = createRoot(
     document.getElementById('lorisworkspace')
   );
   root.render(
-    <DiagnosisEvolution
+    <TranslatedDiagnosisEvolution
       dataURL={`${loris.BaseURL}/configuration/diagnosis`}
       submitURL={`${loris.BaseURL}/configuration/diagnosis`}
     />

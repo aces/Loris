@@ -21,9 +21,6 @@ msgstr ""
 msgid "Battery Manager"
 msgstr ""
 
-msgid "Submission successful!"
-msgstr ""
-
 msgid "Instrument"
 msgstr ""
 
