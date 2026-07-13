@@ -5,13 +5,23 @@
     <script src="{$widgets[widget]->getJSURL()}" type="text/javascript"></script>
 {/section}
 <script type="text/javascript">
-{* On page load, retrieve the candidate and all of its visits via the API so that
-   they can be passed as properties to widgets. Nearly every widget uses them, so
-   this saves them all having to make the same requests over and over again. *}
+   // On page load, retrieve the candidate and all of its visits via the API so that
+   // y can be passed as properties to widgets. Nearly every widget uses them, so
+   // this saves them all having to make the same requests over and over again.
 window.addEventListener('load', () => {
     let candidate = null;
+
+    function fetchProfileData(url) {
+        return fetch(url, {
+            cache: 'no-cache',
+            credentials: 'same-origin',
+        });
+    }
+
     async function loadCandidate() {
-        let response = await fetch(loris.BaseURL + '/api/v0.0.3/candidates/{$candidate->getCandID()}');
+        let response = await fetchProfileData(
+            loris.BaseURL + '/api/v0.0.3/candidates/{$candidate->getCandID()}'
+        );
         let data = await response.json();
         candidate = data;
         return data;
@@ -20,7 +30,10 @@ window.addEventListener('load', () => {
     async function loadVisits(candidate) {
         let visits = candidate.Visits.map(async function(visit) {
             // FIXME: This shouldn't use the dev version. See #6058
-            let response = await fetch(loris.BaseURL + '/api/v0.0.3/candidates/' + candidate.Meta.CandID + '/' + visit);
+            let response = await fetchProfileData(
+                loris.BaseURL + '/api/v0.0.3/candidates/'
+                + candidate.Meta.CandID + '/' + visit
+            );
             if (!response.ok) {
               return new Error('Permission denied');
             } else {
