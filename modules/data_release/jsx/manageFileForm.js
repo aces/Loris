@@ -63,14 +63,23 @@ class ManageFileForm extends Component {
     let text = {};
     if (type === 'hide') {
       text.warning
-        = t('Only you, and system administrators will be able to see this file!', {ns: 'data_release'});
+        = t(
+          'Only you, and system administrators will be able to see this file!',
+          {ns: 'data_release'}
+        );
       text.confirmation = 'hidden';
     } else if (type === 'unhide') {
       text.warning
-        = t('Anyone with permission to this file will be able to see it.', {ns: 'data_release'});
+        = t(
+          'Anyone with permission to this file will be able to see it.',
+          {ns: 'data_release'}
+        );
       text.confirmation = 'unhidden';
     } else if (type === 'delete') {
-      text.warning = t('This will permanently delete the file from the system!', {ns: 'data_release'});
+      text.warning = t(
+        'This will permanently delete the file from the system!',
+        {ns: 'data_release'}
+      );
       text.confirmation = 'deleted';
     }
 
@@ -95,7 +104,10 @@ class ManageFileForm extends Component {
             if (response.ok) {
               swal
                 .fire({
-                  text: t('File Successfully ' + text.confirmation, {ns: 'data_release'}),
+                  text: t(
+                    'File Successfully ' + text.confirmation,
+                    {ns: 'data_release'}
+                  ),
                   title: '',
                   type: 'success',
                 })
