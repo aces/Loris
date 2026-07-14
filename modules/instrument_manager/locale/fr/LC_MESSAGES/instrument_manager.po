@@ -86,7 +86,7 @@ msgid "success"
 msgstr "succès"
 
 msgid "Upload Successful!"
-msgstr "Le téléchargement a réussi!"
+msgstr "Téléversement réussi!"
 
 msgid "Instrument file"
 msgstr "Fichier d'instrument"
