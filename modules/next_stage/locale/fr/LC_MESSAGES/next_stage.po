@@ -56,7 +56,7 @@ msgid "Date of Visit is less than Date of Birth/EDC."
 msgstr "La date de la visite est antérieure à la date de naissance/DPA."
 
 msgid "Next stage started."
-msgstr "La prochaine étape a commencé."
+msgstr "La prochaine étape a été initiée."
 
 msgid "Click here to continue."
 msgstr "Appuyez ici pour continuer."
