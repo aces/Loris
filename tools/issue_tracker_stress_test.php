@@ -15,12 +15,12 @@
 const MAX_ISSUES = 100000;
 const MAX_COMMENTS_PER_ISSUE = 100;
 const DEFAULT_BATCH_SIZE     = 500;
+const MAX_BATCH_SIZE         = 1000;
 
 $flags = getopt(
-    'hn',
+    'h',
     [
         'help',
-        'dry-run',
         'confirm',
         'issues:',
         'comments:',
@@ -47,84 +47,42 @@ $batchOption    = getStringOption($flags, 'batch-size')
 $runIDOption    = getStringOption($flags, 'run-id') ?? date('Ymd-His');
 $reporterOption = getStringOption($flags, 'reporter');
 
-require_once __DIR__ . '/../vendor/autoload.php';
+if (($cleanupOption === null) === ($issuesOption === null)) {
+    usage();
+    fail('Specify exactly one of --issues or --cleanup.');
+}
 
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
-$config = NDB_Config::singleton();
-$DB     = NDB_Factory::singleton()->database();
+require_once __DIR__ . '/generic_includes.php';
 
+/**
+ * Bootstrap globals.
+ *
+ * @var NDB_Config $config
+ * @var Database   $DB
+ */
 $devSettings = $config->getSetting('dev');
 if (!is_array($devSettings) || empty($devSettings['sandbox'])) {
-    fwrite(
-        STDERR,
-        "Config file indicates that this is not a sandbox. Aborting.\n"
-    );
-    exit(1);
+    fail('Config file indicates that this is not a sandbox. Aborting.');
 }
 
-$dryRun = isset($flags['n'])
-    || isset($flags['dry-run'])
-    || !isset($flags['confirm']);
-
-if (isset($flags['confirm'])
-    && (isset($flags['n']) || isset($flags['dry-run']))
-) {
-    fail('--confirm cannot be combined with --dry-run.');
-}
+$dryRun = !isset($flags['confirm']);
 
 try {
     if ($cleanupOption !== null) {
-        if ($issuesOption !== null) {
-            fail('--cleanup cannot be combined with --issues.');
-        }
-
-        $runID = validateRunID($cleanupOption);
-        cleanupRun($DB, $runID, $dryRun);
-        exit(0);
+        cleanupIssues($DB, validateRunID($cleanupOption), $dryRun);
+    } elseif ($issuesOption !== null) {
+        generateIssues(
+            $DB,
+            validateRunID($runIDOption),
+            getReporter($DB, $reporterOption),
+            parseInteger($issuesOption, '--issues', 1, MAX_ISSUES),
+            parseCommentCounts($commentsOption),
+            parseInteger($batchOption, '--batch-size', 1, MAX_BATCH_SIZE),
+            $dryRun
+        );
     }
-
-    if ($issuesOption === null) {
-        usage();
-        fail('Specify --issues to generate data or --cleanup to remove a run.');
-    }
-
-    $issueCount    = parseInteger(
-        $issuesOption,
-        '--issues',
-        1,
-        MAX_ISSUES
-    );
-    $commentCounts = parseCommentCounts($commentsOption);
-    $batchSize     = parseInteger(
-        $batchOption,
-        '--batch-size',
-        1,
-        1000
-    );
-    $runID         = validateRunID($runIDOption);
-    $reporter      = getReporter($DB, $reporterOption);
-    $categories    = array_values(
-        $DB->pselectCol(
-            'SELECT categoryName FROM issues_categories ORDER BY categoryName',
-            []
-        )
-    );
-
-    generateRun(
-        $DB,
-        $runID,
-        $reporter,
-        $issueCount,
-        $commentCounts,
-        $batchSize,
-        $categories,
-        $dryRun
-    );
 } catch (Throwable $error) {
-    fwrite(STDERR, 'Stress-test operation failed: ' . $error->getMessage() . "\n");
-    exit(1);
+    fail('Stress-test operation failed: ' . $error->getMessage());
 }
 
 /**
@@ -147,12 +105,12 @@ Generate options:
                        (default: 0,1,5; maximum value: 100)
   --batch-size=COUNT   Rows per insert batch (default: 500; maximum: 1000)
   --run-id=RUN_ID      Unique alphanumeric/hyphen identifier for this run
-  --reporter=USER_ID   Active approved user to own generated records
+  --reporter=USER_ID   Active approved user to own generated records; defaults
+                       to the first available user
 
 Safety options:
   --confirm            Write to the sandbox database; without this flag the
                        command is a dry run
-  -n, --dry-run        Validate and display the plan without writing data
   --cleanup=RUN_ID     Remove issues and comments created by one run
   -h, --help           Show this help
 
@@ -260,8 +218,8 @@ function validateRunID(string $runID): string
 {
     if (!preg_match('/^[A-Za-z0-9][A-Za-z0-9-]{0,63}$/', $runID)) {
         fail(
-            'Run IDs must be 1-64 characters and contain only letters, ' .
-            'numbers, and hyphens.'
+            'Run IDs must be 1-64 characters, start with a letter or number, ' .
+            'and contain only letters, numbers, and hyphens.'
         );
     }
 
@@ -295,10 +253,7 @@ function getReporter(Database $db, ?string $requested): string
     }
 
     $reporter = $db->pselectOne(
-        "SELECT COALESCE(
-                    MAX(CASE WHEN UserID='lorisadmin' THEN UserID END),
-                    MIN(UserID)
-                )
+        "SELECT MIN(UserID)
          FROM users
          WHERE Active='Y' AND Pending_approval='N'",
         []
@@ -313,29 +268,33 @@ function getReporter(Database $db, ?string $requested): string
 /**
  * Generate one tagged stress-test run.
  *
- * @param Database          $db            Database connection.
- * @param string            $runID         Run identifier.
- * @param string            $reporter      User attached to generated rows.
- * @param int               $issueCount    Number of issues to create.
- * @param array<int,int>    $commentCounts Comment distribution.
- * @param int               $batchSize     Insert batch size.
- * @param array<int,string> $categories    Existing issue categories.
- * @param bool              $dryRun        Whether writes should be skipped.
+ * @param Database       $db            Database connection.
+ * @param string         $runID         Run identifier.
+ * @param string         $reporter      User attached to generated rows.
+ * @param int            $issueCount    Number of issues to create.
+ * @param array<int,int> $commentCounts Comment distribution.
+ * @param int            $batchSize     Insert batch size.
+ * @param bool           $dryRun        Whether writes should be skipped.
  *
  * @return void
  */
-function generateRun(
+function generateIssues(
     Database $db,
     string $runID,
     string $reporter,
     int $issueCount,
     array $commentCounts,
     int $batchSize,
-    array $categories,
     bool $dryRun
 ): void {
-    $markers  = getMarkers($runID);
-    $existing = countRunIssues($db, $markers);
+    $categories = array_values(
+        $db->pselectCol(
+            'SELECT categoryName FROM issues_categories ORDER BY categoryName',
+            []
+        )
+    );
+    $markers    = getMarkers($runID);
+    $existing   = countRunIssues($db, $markers);
     if ($existing > 0) {
         fail(
             "Run '$runID' already has $existing issue(s). " .
@@ -492,7 +451,7 @@ function insertComments(
 
     while (true) {
         /**
-         * Generated issue identifiers and titles.
+         * Generated issue rows.
          *
          * @var array<int,array{issueID:string,title:string}> $issues
          */
@@ -609,7 +568,7 @@ function executeWrite(Database $db, string $query, array $params): void
 }
 
 /**
- * Remove one generated run after checking for attachments.
+ * Remove one generated run.
  *
  * @param Database $db     Database connection.
  * @param string   $runID  Run identifier.
@@ -617,21 +576,11 @@ function executeWrite(Database $db, string $query, array $params): void
  *
  * @return void
  */
-function cleanupRun(Database $db, string $runID, bool $dryRun): void
+function cleanupIssues(Database $db, string $runID, bool $dryRun): void
 {
     $markers      = getMarkers($runID);
     $issueCount   = countRunIssues($db, $markers);
-    $commentCount = $db->pselectOneInt(
-        "SELECT COUNT(*)
-         FROM issues_comments c
-         JOIN issues i ON i.issueID=c.issueID
-         WHERE i.title LIKE :title_marker
-           AND i.description LIKE :description_marker",
-        [
-            'title_marker'       => $markers['title'],
-            'description_marker' => $markers['description'],
-        ]
-    ) ?? 0;
+    $commentCount = countRunComments($db, $markers);
 
     printf(
         "%s cleanup for run '%s': %s issues and %s comments.\n",
@@ -647,24 +596,6 @@ function cleanupRun(Database $db, string $runID, bool $dryRun): void
     if ($dryRun) {
         echo "No records were removed. Re-run with --confirm to clean up.\n";
         return;
-    }
-
-    $attachmentCount = $db->pselectOneInt(
-        "SELECT COUNT(*)
-         FROM issues_attachments a
-         JOIN issues i ON i.issueID=a.issueID
-         WHERE i.title LIKE :title_marker
-           AND i.description LIKE :description_marker",
-        [
-            'title_marker'       => $markers['title'],
-            'description_marker' => $markers['description'],
-        ]
-    ) ?? 0;
-    if ($attachmentCount > 0) {
-        fail(
-            "Run '$runID' has $attachmentCount attachment(s). Remove them " .
-            'through the Issue Tracker before cleanup.'
-        );
     }
 
     $params = [
@@ -706,6 +637,29 @@ function countRunIssues(Database $db, array $markers): int
          FROM issues
          WHERE title LIKE :title_marker
            AND description LIKE :description_marker",
+        [
+            'title_marker'       => $markers['title'],
+            'description_marker' => $markers['description'],
+        ]
+    ) ?? 0;
+}
+
+/**
+ * Count comments belonging to one generated run.
+ *
+ * @param Database             $db      Database connection.
+ * @param array<string,string> $markers SQL LIKE markers.
+ *
+ * @return int
+ */
+function countRunComments(Database $db, array $markers): int
+{
+    return $db->pselectOneInt(
+        "SELECT COUNT(*)
+         FROM issues_comments c
+         JOIN issues i ON i.issueID=c.issueID
+         WHERE i.title LIKE :title_marker
+           AND i.description LIKE :description_marker",
         [
             'title_marker'       => $markers['title'],
             'description_marker' => $markers['description'],
