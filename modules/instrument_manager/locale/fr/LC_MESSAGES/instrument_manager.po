@@ -98,4 +98,4 @@ msgid "This file has already been uploaded. Please contact your administrator to
 msgstr "Ce fichier a déjà été téléversé. Veuillez communiquer avec votre administrateur pour installer l'instrument."
 
 msgid "Automatic installation of instruments is not possible given the current server configuration. Please contact your administrator if you require this functionality."
-msgstr "L'installation automatique des instruments n'est pas possible avec la configuration actuelle du serveur. Veuillez communiquer avec votre administrateur si vous avez besoin de cette fonctionnalité."
+msgstr "L'installation automatique des instruments n'est pas possible compte tenu de la configuration actuelle du serveur. Veuillez communiquer avec votre administrateur si vous avez besoin de cette fonctionnalité."
