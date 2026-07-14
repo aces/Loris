@@ -540,6 +540,23 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
+     * used when unpinning a query from the Recent Queries list, which
+     * should remove it from all locations where it was pinned.
+     *
+     * @return void
+     */
+    public function removeAllAdminPinnedQueries() : void
+    {
+        $DB = $this->loris->getDatabaseConnection();
+        $DB->delete(
+            'dataquery_study_queries_rel',
+            [
+                'QueryID' => $this->queryID,
+            ]
+        );
+    }
+
+    /**
      * Get a list of CandIDs which match this query for a user
      *
      * @param \User $user The user running the query.
