@@ -56,7 +56,7 @@ msgid "Configure multi-factor authentication (MFA)"
 msgstr "मल्टी-फ़ैक्टर प्रमाणीकरण (MFA) कॉन्फ़िगर करें"
 
 msgid "Configure MFA"
-msgstr "नया और पुराना पासवर्ड समान हैं।"
+msgstr "मल्टी-फ़ैक्टर प्रमाणीकरण (MFA) कॉन्फ़िगर करें"
 
 msgid "Manual MFA Setup"
 msgstr "मैन्युअल MFA सेटअप"
