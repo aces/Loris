@@ -298,7 +298,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             1
         )->getText();
         $this->assertStringContainsString(
-            "Submission successful!",
+            "Submission Successful!",
             $bodyText
         );
     }
@@ -363,7 +363,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             1
         )->getText();
         $this->assertStringContainsString(
-            "Submission successful!",
+            "Submission Successful!",
             $bodyText
         );
     }
@@ -386,7 +386,7 @@ class BatteryManagerTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("#swal2-title")
         )->getText();
         $this->assertStringContainsString(
-            "Submission successful!",
+            "Submission Successful!",
             $bodyText
         );
     }
