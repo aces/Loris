@@ -165,3 +165,108 @@ msgstr "Circulaire"
 
 msgid "Bar"
 msgstr "Barre"
+
+msgid "General Description"
+msgstr "Description générale"
+
+msgid "General Demographic Statistics"
+msgstr "Statistiques démographiques générales"
+
+msgid "Behavioural Statistics"
+msgstr "Statistiques comportementales"
+
+msgid "Welcome to the statistics page"
+msgstr "Bienvenue sur la page des statistiques"
+
+msgid "This page will display statistics related to data acquisition, data processing and data entry as it relates to both the behavioural and imaging aspects of this study."
+msgstr "Cette page affiche des statistiques relatives à l'acquisition des données, au traitement des données et à la saisie des données, couvrant les aspects comportementaux et d'imagerie de cette étude."
+
+msgid "Demographics Statistics"
+msgstr "Statistiques démographiques"
+
+msgid "MRI Statistics"
+msgstr "Statistiques IRM"
+
+msgid "General Statistics with QC Status"
+msgstr "Statistiques générales avec état du contrôle qualité"
+
+msgid "All Scan Types"
+msgstr "Tous les types d'acquisition"
+
+msgid "Submit Query"
+msgstr "Exécuter la requête"
+
+msgid "Scan Type"
+msgstr "Type d'acquisition"
+
+msgid "QC Status"
+msgstr "État du contrôle qualité"
+
+msgid "Scans Inserted"
+msgstr "Acquisitions importées"
+
+msgid "Passed"
+msgstr "Réussi"
+
+msgid "Failed"
+msgstr "Échoué"
+
+msgid "Not QCed"
+msgstr "Contrôle qualité non effectué"
+
+msgid "Oops"
+msgstr "Oups"
+
+msgid "Per Instrument Stats"
+msgstr "Statistiques par instrument"
+
+msgid "View Details"
+msgstr "Voir les détails"
+
+msgid "Completed"
+msgstr "Complété"
+
+msgid "Completed (%)"
+msgstr "Complété (%)"
+
+msgid "Demographics"
+msgstr "Démographie"
+
+msgid "No defined cohort"
+msgstr "Aucune cohorte définie"
+
+msgid "Registered candidates"
+msgstr "Candidats enregistrés"
+
+msgid "Inactive"
+msgstr "Inactif"
+
+msgid "Age Average (months)"
+msgstr "Âge moyen (mois)"
+
+msgid "Completion Count"
+msgstr "Nombre de complétions"
+
+msgid "Incomplete Candidates"
+msgstr "Candidats incomplets"
+
+msgid "Issue type"
+msgstr "Type de problème"
+
+msgid "Incomplete Entries"
+msgstr "Entrées incomplètes"
+
+msgid "Total Across Cohorts"
+msgstr "Total toutes cohortes confondues"
+
+msgid "Categories"
+msgstr "Catégories"
+
+msgid "Site Total Across All Visits"
+msgstr "Total du site pour toutes les visites"
+
+msgid "Grand Total"
+msgstr "Total général"
+
+msgid "Ethnicity"
+msgstr "Origine ethnique"

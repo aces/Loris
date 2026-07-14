@@ -162,3 +162,108 @@ msgstr ""
 
 msgid "Bar"
 msgstr ""
+
+msgid "General Description"
+msgstr ""
+
+msgid "General Demographic Statistics"
+msgstr ""
+
+msgid "Behavioural Statistics"
+msgstr ""
+
+msgid "Welcome to the statistics page"
+msgstr ""
+
+msgid "This page will display statistics related to data acquisition, data processing and data entry as it relates to both the behavioural and imaging aspects of this study."
+msgstr ""
+
+msgid "Demographics Statistics"
+msgstr ""
+
+msgid "MRI Statistics"
+msgstr ""
+
+msgid "General Statistics with QC Status"
+msgstr ""
+
+msgid "All Scan Types"
+msgstr ""
+
+msgid "Submit Query"
+msgstr ""
+
+msgid "Scan Type"
+msgstr ""
+
+msgid "QC Status"
+msgstr ""
+
+msgid "Scans Inserted"
+msgstr ""
+
+msgid "Passed"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Not QCed"
+msgstr ""
+
+msgid "Oops"
+msgstr ""
+
+msgid "Per Instrument Stats"
+msgstr ""
+
+msgid "View Details"
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Completed (%)"
+msgstr ""
+
+msgid "Demographics"
+msgstr ""
+
+msgid "No defined cohort"
+msgstr ""
+
+msgid "Registered candidates"
+msgstr ""
+
+msgid "Inactive"
+msgstr ""
+
+msgid "Age Average (months)"
+msgstr ""
+
+msgid "Completion Count"
+msgstr ""
+
+msgid "Incomplete Candidates"
+msgstr ""
+
+msgid "Issue type"
+msgstr ""
+
+msgid "Incomplete Entries"
+msgstr ""
+
+msgid "Total Across Cohorts"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Site Total Across All Visits"
+msgstr ""
+
+msgid "Grand Total"
+msgstr ""
+
+msgid "Ethnicity"
+msgstr ""

@@ -4,7 +4,7 @@
         <div class="col-sm-2">
             {html_options id="BehaviouralProject" options=$Projects name="BehaviouralProject" selected=$CurrentProject.ID|default class="form-control"}
         </div>
-        <button class="btn btn-primary btn-sm" onClick="updateBehaviouralTab()">Submit Query</button>
+        <button class="btn btn-primary btn-sm" onClick="updateBehaviouralTab()">{dgettext('statistics', 'Submit Query')}</button>
         <br><br>
 
     <table class="data table table-primary table-bordered dynamictable">
@@ -18,10 +18,10 @@
             {/foreach}
         </tr>
         <tr class="info">
-            <th class="  ">Visit</th>
+            <th class="  ">{dgettext('loris', 'Visit')}</th>
             {foreach from=$Centers item=center}
-                <th class='{$center.ID}'>Completed (%)</th>
-                <th class='{$center.ID}'>Created</th>
+                <th class='{$center.ID}'>{dgettext('statistics', 'Completed (%)')}</th>
+                <th class='{$center.ID}'>{dgettext('statistics', 'Created')}</th>
             {/foreach}
         </tr>
         </thead>
@@ -36,17 +36,17 @@
             </tr>
         {/foreach}
         <tr>
-            <td class="total">Total</td>
+            <td class="total">{dgettext('statistics', 'Total')}</td>
             {foreach from=$Centers item=center key=centername}
                 <td class='{$center.ID} visit_complete total'>{$behaviour[$center.ID].all.complete|default:"0"} ({$behaviour[$center.ID].all.percent|default:"0"}%)</td>
                 <td class='{$center.ID} total '>{$behaviour[$center.ID].all.total|default:"0"}</td>
             {/foreach}
         </tr>
         <tr>
-            <td class="   pis">Per Instrument Stats</td>
+            <td class="   pis">{dgettext('statistics', 'Per Instrument Stats')}</td>
             {foreach from=$Centers item=center key=centername}
                 <td id='{$center.ID}PIS' class="pis" colspan="2">
-                    <a href='{$baseurl|default}/statistics/statistics_site/?CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID|default}' target="_blank">View Details</a>
+                    <a href='{$baseurl|default}/statistics/statistics_site/?CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID|default}' target="_blank">{dgettext('statistics', 'View Details')}</a>
                 </td>
             {/foreach}
         </tr>
@@ -57,7 +57,7 @@
 
     <b><a href='{$baseurl|default}/statistics/statistics_site/?CenterID={$CurrentSite.ID|default}&ProjectID={$CurrentProject.ID|default}' target="_blank">Click here for breakdown per participant {if $CurrentSite|default} for {$CurrentSite.Name|default} {/if} {if $CurrentProject|default} for {$CurrentProject.Name|default} {/if}</a></b>
     <br><br>
-    <h2 class="statsH2">Double Data Entry Statistics:</h2>
+    <h2 class="statsH2">{dgettext('statistics', 'Double Data Entry Statistics')}</h2>
 
     <table class="data table table-primary table-bordered dynamictable">
         <thead>
@@ -68,14 +68,14 @@
                   {$center.LongName}
                 </th>
             {/foreach}
-            <!--  <th colspan="3" id='total'>Total</th>
+            <!--  <th colspan="3" id='total'>{dgettext('statistics', 'Total')}</th>
              <th rowspan="2"></th> -->
         </tr>
         <tr class="info">
-            <th class="  DD">Visit</th>
+            <th class="  DD">{dgettext('loris', 'Visit')}</th>
             {foreach from=$Centers item=center}
-                <th class='{$center.ID}DD'>Completed</th>
-                <th class='{$center.ID}DD'>Created</th>
+                <th class='{$center.ID}DD'>{dgettext('statistics', 'Completed')}</th>
+                <th class='{$center.ID}DD'>{dgettext('loris', 'Created')}</th>
             {/foreach}
         </tr>
         </thead>
@@ -90,17 +90,17 @@
 
             {/foreach}
         <tr>
-            <td class="total">Total</td>
+            <td class="total">{dgettext('loris', 'Total')}</td>
             {foreach from=$Centers item=center key=centername}
                 <td class='{$center.ID}DD visit_complete total'>{$dde[$center.ID].all.complete|default:"0"} ({$dde[$center.ID].all.percent|default:"0"}%)</td>
                 <td class='{$center.ID}DD total'>{$dde[$center.ID].all.total|default:"0"}</td>
             {/foreach}
         </tr>
         <tr>
-            <td class=" pis">Per Instrument Stats</td>
+            <td class=" pis">{dgettext('statistics', 'Per Instrument Stats')}</td>
             {foreach from=$Centers item=center key=centername}
                 <td id='{$center.ID}DDPIS' class="pis" colspan="2">
-                    <a href='{$baseurl|default}/statistics/statistics_dd_site/?CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID|default}' target="_blank">View Details</a>
+                    <a href='{$baseurl|default}/statistics/statistics_dd_site/?CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID|default}' target="_blank">{dgettext('statistics', 'View Details')}</a>
                 </td>
             {/foreach}
         </tr>
