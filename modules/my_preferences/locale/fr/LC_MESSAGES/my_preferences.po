@@ -91,4 +91,4 @@ msgid "Invalid code provided. MFA not registered."
 msgstr "Le code fourni est invalide. Le MFA n'est pas configuré."
 
 msgid "Missing code or secret to validate"
-msgstr "Code ou clé secrète à valider manquant."
+msgstr "Code ou clé secrète de validation manquant."
