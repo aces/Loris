@@ -76,16 +76,12 @@
   <!-- candidate data -->
   <tbody>
   <tr>
-    {if $dob_age!=""}
-      <td>
-        {$dob_age}
-      </td>
-    {/if}
-    {if $edc_age!=""}
-      <td>
-        {$edc_age}
-      </td>
-    {/if}
+    <td>
+      {$dob_age|default}
+    </td>
+    <td>
+      {$edc_age|default}
+    </td>
     <td>
       {$candidate.Sex}
     </td>
