@@ -540,7 +540,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * used when unpinning a query from the Recent Queries list, which
+     * Used when unpinning a query from the Recent Queries list, which
      * should remove it from all locations where it was pinned.
      *
      * @return void
