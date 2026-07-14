@@ -207,12 +207,18 @@ class Utility
             $values[$para] = $siteID;
         }
 
-        return $DB->pselectColWithIndexKey(
+        $sites = $DB->pselectColWithIndexKey(
             "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
             implode(', ', $params) . ")",
             $values,
             'ID'
         );
+
+        $translatedSites = [];
+        foreach ($sites as $siteID => $siteName) {
+            $translatedSites[$siteID] = dgettext("psc", $siteName);
+        }
+        return $translatedSites;
     }
 
     /**

@@ -211,7 +211,7 @@ class Project implements \JsonSerializable
      */
     public function getName(): string
     {
-        return $this->_projectName;
+        return dgettext('Project', $this->_projectName);
     }
 
     /**
