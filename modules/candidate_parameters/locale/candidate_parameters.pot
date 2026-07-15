@@ -155,15 +155,6 @@ msgstr ""
 msgid "Relation Type"
 msgstr ""
 
-msgid "Full Sibling"
-msgstr ""
-
-msgid "Half Sibling"
-msgstr ""
-
-msgid "First Cousin"
-msgstr ""
-
 msgid "Delete"
 msgstr ""
 

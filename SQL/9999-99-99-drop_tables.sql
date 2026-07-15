@@ -194,6 +194,7 @@ DROP TABLE IF EXISTS `examiners`;
 
 DROP TABLE IF EXISTS `participant_status_history`;
 DROP TABLE IF EXISTS `family`;
+DROP TABLE IF EXISTS `family_relationship_type`;
 DROP TABLE IF EXISTS `participant_emails`;
 DROP TABLE IF EXISTS `participant_accounts`;
 DROP TABLE IF EXISTS `participant_status`;

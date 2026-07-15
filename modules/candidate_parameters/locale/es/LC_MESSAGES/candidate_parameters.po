@@ -155,15 +155,6 @@ msgstr "Identificador del miembro Familiar (CCDID)"
 msgid "Relation Type"
 msgstr "Tipo de relación"
 
-msgid "Full Sibling"
-msgstr "Hermano"
-
-msgid "Half Sibling"
-msgstr "Medio hermano"
-
-msgid "First Cousin"
-msgstr "Primo hermano"
-
 msgid "Delete"
 msgstr "Borrar"
 

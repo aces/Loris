@@ -307,10 +307,9 @@ function getFamilyInfoFields()
     );
 
     $relationshipOptions = $db->pselectWithIndexKey(
-        "SELECT DISTINCT Relationship_type, RelationshipLabel
-        FROM family
-        WHERE Relationship_type IS NOT NULL
-        ORDER BY RelationshipLabel",
+        "SELECT NAME AS Relationship_type, Label
+        FROM family_relationship_type
+        ORDER BY Label",
         [],
         'Relationship_type'
     );
