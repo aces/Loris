@@ -195,12 +195,7 @@ class Qc extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 )
             );
         } catch (\DomainException $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                dgettext(
-                    'api',
-                    $e->getMessage()
-                )
-            );
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         } catch (\Throwable $e) {
             return  new \LORIS\Http\Response\JSON\BadRequest();
         }

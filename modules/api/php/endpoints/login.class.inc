@@ -133,12 +133,7 @@ class Login extends Endpoint
                 }
             }
 
-            return new \LORIS\Http\Response\JSON\Unauthorized(
-                dgettext(
-                    'api',
-                    $login->_lastError
-                )
-            );
+            return new \LORIS\Http\Response\JSON\Unauthorized($login->_lastError);
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
                 ->withHeader('Allow', $this->allowedMethods());

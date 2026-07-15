@@ -229,12 +229,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $project = \NDB_Factory::singleton()->project($visitinfo['Project']);
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                dgettext(
-                    'api',
-                    $e->getMessage()
-                )
-            );
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 
         if ($visitinfo['CandID'] !== $this->_candidate->getCandID()->__toString()) {
@@ -331,12 +326,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $visitinfo['Visit']
             );
         } catch (\LorisException $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                dgettext(
-                    'api',
-                    $e->getMessage()
-                )
-            );
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 
         \TimePoint::createNew(

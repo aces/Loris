@@ -116,12 +116,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $this->_filename
             );
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\JSON\NotFound(
-                dgettext(
-                    'api',
-                    $e->getMessage()
-                )
-            );
+            return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
 
         $subendpoint = array_shift($pathparts);
@@ -172,12 +167,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $this->_filename
             );
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\JSON\NotFound(
-                dgettext(
-                    'api',
-                    $e->getMessage()
-                )
-            );
+            return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
 
         $info     = $recording->getFileInfo();

@@ -122,12 +122,7 @@ class Images extends Endpoint implements \LORIS\Middleware\ETagCalculator
             $datestring = $request->getQueryParams()['since'] ?? '1970-01-01';
             $since      = new \DateTime($datestring);
         } catch (\Exception $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                dgettext(
-                    'api',
-                    $e->getMessage()
-                )
-            );
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 
         $provisioner = new \LORIS\api\Provisioners\ProjectImagesRowProvisioner(

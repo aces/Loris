@@ -264,12 +264,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             $project = \NDB_Factory::singleton()->project($projectname);
         } catch (\NotFound $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                dgettext(
-                    'api',
-                    $e->getMessage()
-                )
-            );
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 
         if (!in_array($projectname, $userprojects, true)) {
@@ -300,19 +295,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $project->getId()
             );
         } catch (\ConflictException $e) {
-            return new \LORIS\Http\Response\JSON\Conflict(
-                dgettext(
-                    'api',
-                    $e->getMessage()
-                )
-            );
+            return new \LORIS\Http\Response\JSON\Conflict($e->getMessage());
         } catch (\Exception | \LorisException | \InvalidArgumentException $e) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                dgettext(
-                    'api',
-                    $e->getMessage()
-                )
-            );
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
         }
 
         $candidate = \NDB_Factory::singleton()->candidate($candid);
