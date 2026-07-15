@@ -133,6 +133,7 @@ class Configuration extends \NDB_Form
     {
         $config = \NDB_Config::singleton();
         $DB     = $this->loris->getDatabaseConnection();
+        $lang   = \User::singleton()->getLanguageCode();
 
         // Get the names and meta-information for the config settings in the database
         $configs = iterator_to_array(
@@ -180,10 +181,15 @@ class Configuration extends \NDB_Form
                 );
                 if ($value) {
                     foreach ($value as $subvalue) {
-                        $setting['Value'][$subvalue['ID']] = dgettext(
-                            'Config',
-                            $subvalue['Value']
-                        );
+                        if ($setting['Multilingual']) {
+                            $setting['Value'][$subvalue['ID']]
+                                = $config->getMultilingualSetting(
+                                    $lang,
+                                    $setting['Name']
+                                );
+                        } else {
+                            $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                        }
                     }
                 }
             }
