@@ -166,7 +166,6 @@ class Image extends Endpoint implements \LORIS\Middleware\ETagCalculator
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\NotFound($e->getMessage());
         }
-        }
 
         $mimetype = substr($image->getHeader('header'), 0, 4) === 'hdf5' ?
             'application/x.minc2' : 'application/octet-stream';
