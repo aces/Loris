@@ -240,7 +240,10 @@ const Recruitment = (props) => {
                     </div>
                   </>
                 ) : (
-                  <p>{t('There have been no candidates registered yet.', {ns: 'statistics'})}</p>
+                  <p>{t(
+                    'There have been no candidates registered yet.',
+                    {ns: 'statistics'}
+                  )}</p>
                 ),
             title: title('Site Breakdown'),
             subtitle: t(

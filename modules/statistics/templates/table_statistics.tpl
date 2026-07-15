@@ -39,7 +39,7 @@
       {html_options id="BehaviouralInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
     </div>
     <input type="checkbox" id="showVL" checked/> {dgettext('statistics', 'Show Visit Labels')}
-    <button onClick="updateBehaviouralInstrument()" class="btn btn-primary btn-small">{dgettext('statistics, 'Submit Query')}</button>
+    <button onClick="updateBehaviouralInstrument()" class="btn btn-primary btn-small">{dgettext('statistics', 'Submit Query')}</button>
   {/if}
 </div>
 <br>

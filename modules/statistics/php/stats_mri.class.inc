@@ -370,9 +370,9 @@ class Stats_MRI extends \NDB_Form
             return;
         }
         $MRISubcategories = [
-            dgettext('loris','Complete'),
-            dgettext('statistics','Partial Run'),
-            dgettext('statistics','No Scan'),
+            dgettext('loris', 'Complete'),
+            dgettext('statistics', 'Partial Run'),
+            dgettext('statistics', 'No Scan'),
         ];
 
         //Check if a specific scan is requested otherwise display first
@@ -429,7 +429,7 @@ class Stats_MRI extends \NDB_Form
 
         $M_Visits = \Utility::getVisitList($currentProject);
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
-            dgettext('statistics',"Breakdown By Scan Type"),
+            dgettext('statistics', "Breakdown By Scan Type"),
             $MRIHeader,
             $MRISubcategories,
             $M_Visits,

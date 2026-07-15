@@ -314,7 +314,7 @@ class Stats_Demographic extends \NDB_Form
         );
 
         $sites     = [];
-        $sites[''] =dgettext('statistics', 'All sites');
+        $sites[''] = dgettext('statistics', 'All sites');
 
         if (!empty($centers)) {
             foreach ($centers as $row) {
@@ -530,7 +530,7 @@ class Stats_Demographic extends \NDB_Form
         //START BIG TABLE
         $instrumentList = \Utility::getAllInstruments();
         $instDropdown   = array_merge(
-            [ '' => dgettext('statistics','Recruit Breakdown by Sex')],
+            [ '' => dgettext('statistics', 'Recruit Breakdown by Sex')],
             $instrumentList
         );
         $this->tpl_data['all_instruments'] = $instrumentList;
