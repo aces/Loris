@@ -267,3 +267,39 @@ msgstr ""
 
 msgid "Ethnicity"
 msgstr ""
+
+msgid "All sites"
+msgstr ""
+
+msgid "All Projects"
+msgstr ""
+
+msgid "Breakdown of Registered Candidates"
+msgstr ""
+
+msgid "Breakdown by Sex"
+msgstr ""
+
+msgid "Recruit Breakdown by Sex"
+msgstr ""
+
+msgid "Show Visit Labels"
+msgstr ""
+
+msgid "Double Data Entry Statistics"
+msgstr ""
+
+msgid "Click here for breakdown per participant"
+msgstr ""
+
+msgid "Breakdown By Scan Type"
+msgstr ""
+
+msgid "Partial run"
+msgstr ""
+
+msgid "No Scan"
+msgstr ""
+
+msgid "Data Entry Statistics"
+msgstr ""

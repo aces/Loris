@@ -270,3 +270,39 @@ msgstr "Total général"
 
 msgid "Ethnicity"
 msgstr "Origine ethnique"
+
+msgid "All sites"
+msgstr "Tous les sites"
+
+msgid "All Projects"
+msgstr "Tous les projets"
+
+msgid "Breakdown of Registered Candidates"
+msgstr "Répartition des candidats inscrits"
+
+msgid "Breakdown by Sex"
+msgstr "Répartition par sexe"
+
+msgid "Recruit Breakdown by Sex"
+msgstr "Répartition des recrues par sexe"
+
+msgid "Show Visit Labels"
+msgstr "Afficher les libellés des visites"
+
+msgid "Double Data Entry Statistics"
+msgstr "Statistiques de la double saisie des données"
+
+msgid "Click here for breakdown per participant"
+msgstr "Cliquez ici pour la répartition par participant"
+
+msgid "Breakdown By Scan Type"
+msgstr "Répartition par type de scan"
+
+msgid "Partial run"
+msgstr "Exécution partielle"
+
+msgid "No Scan"
+msgstr "Aucun scan"
+
+msgid "Data Entry Statistics"
+msgstr "Statistiques de saisie des données"

@@ -22,15 +22,15 @@
     <div class="col-sm-4">
       {html_options id="DemographicInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
     </div>
-    <input type="checkbox" id="showVL" checked/> Show Visit Labels
-    <button onClick="updateDemographicInstrument()" class="btn btn-primary btn-small">Submit Query</button>
+    <input type="checkbox" id="showVL" checked/> {dgettext('statistics', 'Show Visit Labels')}
+    <button onClick="updateDemographicInstrument()" class="btn btn-primary btn-small">{dgettext('statistics', 'Submit Query')}</button>
   {/if}
 
   {if $Subsection=="mri" }
     <div class="col-sm-2">
       {html_options id="mri_type" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
     </div>
-    <input type="checkbox" id="showVL" checked/> Show Visit Labels
+    <input type="checkbox" id="showVL" checked/>{dgettext('statistics', 'Show Visit Labels')}
     <button onClick="updateMRITable()" class="btn btn-primary btn-small">{dgettext('statistics', 'Submit Query')}</button>
   {/if}
 
@@ -38,8 +38,8 @@
     <div class="col-sm-2">
       {html_options id="BehaviouralInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
     </div>
-    <input type="checkbox" id="showVL" checked/> Show Visit Labels
-    <button onClick="updateBehaviouralInstrument()" class="btn btn-primary btn-small">Submit Query</button>
+    <input type="checkbox" id="showVL" checked/> {dgettext('statistics', 'Show Visit Labels')}
+    <button onClick="updateBehaviouralInstrument()" class="btn btn-primary btn-small">{dgettext('statistics, 'Submit Query')}</button>
   {/if}
 </div>
 <br>
@@ -48,7 +48,7 @@
   <table id="bigtable" class="data table table-primary table-bordered dynamictable">
     <thead>
     <tr>
-      <th rowspan="1" id="tpcol">{dngettext('statistics', 'Cohort', 'Cohorts', 1)}</th>
+      <th rowspan="1" id="tpcol">{dngettext('loris', 'Cohort', 'Cohorts', 1)}</th>
       {assign var='colspan' value=count($Subcategories)}
       {foreach key=proj item=name from=$Cohorts}
         <th colspan="{$colspan}">{$name|capitalize}</th>
