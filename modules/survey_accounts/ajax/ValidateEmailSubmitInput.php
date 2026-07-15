@@ -69,7 +69,8 @@ $numSessions = $db->pselectOne(
 if ($numSessions != 1) {
     echo json_encode(
         [
-            'error_msg' => dgettext('loris', 'Visit').' '. $_REQUEST['VL'].' '.
+            'error_msg' => dgettext('loris', 'Visit').' '.
+                  $_REQUEST['VL'].' '.
                   dgettext('survey_accounts', 'does not exist for given candidate'),
         ]
     );
@@ -78,7 +79,7 @@ if ($numSessions != 1) {
 
 if (empty($_REQUEST['TN'])) {
     echo json_encode(
-        ['error_msg' => dgettext('survey_accounts', 'Please choose an instrument')]
+        ['error_msg' => dgettext('survey_accounts', 'Please choose an instrument.')]
     );
     exit(0);
 }
@@ -100,8 +101,13 @@ foreach ($instrument_list as $instrument) {
     if ($_REQUEST['TN'] == $instrument['Test_name']) {
         echo json_encode(
             [
-                'error_msg' => dgettext('loris', 'Instrument').' '. $_REQUEST['TN']
-                .' ' .dgettext(
+                'error_msg' => dcngettext(
+                    'loris',
+                    'Instrument',
+                    'Instruments',
+                    1,
+                    LC_MESSAGES
+                ).' '. $_REQUEST['TN'].' ' .dgettext(
                     'survey_accounts',
                     'already exists for given candidate for visit'
                 ).' '. $_REQUEST['VL'],
@@ -116,7 +122,7 @@ if (!empty($_REQUEST['Email']) ) {
         echo json_encode(
             ['error_msg' => dgettext(
                 'survey_accounts',
-                'The email address is not valid.'
+                'Email is not valid.'
             )
             ]
         );

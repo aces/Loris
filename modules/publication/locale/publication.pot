@@ -48,9 +48,6 @@ msgstr ""
 msgid "Something went wrong!"
 msgstr ""
 
-msgid "Submission Successful!"
-msgstr ""
-
 msgid "Propose a Project"
 msgstr ""
 

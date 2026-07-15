@@ -48,11 +48,8 @@ msgid "Data in LORIS:"
 msgstr "Données dans LORIS :"
 
 #, fuzzy
-msgid ""
-"Please enter your username below, and a new password will be sent to you."
-msgstr ""
-"Veuillez saisir votre nom d'utilisateur ci-dessous, et un nouveau mot de "
-"passe vous sera envoyé."
+msgid "Please enter your username below, and a new password will be sent to you."
+msgstr "Veuillez saisir votre nom d'utilisateur ci-dessous, et un nouveau mot de passe vous sera envoyé."
 
 msgid "Back to login page"
 msgstr "Retour à la page de connexion"
@@ -120,12 +117,8 @@ msgid "Examiner role"
 msgstr "Examinateur"
 
 #, fuzzy
-msgid ""
-"Please fill in the form below to request a LORIS account. We will contact "
-"you once your account has been approved."
-msgstr ""
-"Veuillez remplir le formulaire ci-dessous pour demander un compte LORIS. "
-"Nous vous contacterons dès que votre compte aura été approuvé."
+msgid "Please fill in the form below to request a LORIS account. We will contact you once your account has been approved."
+msgstr "Veuillez remplir le formulaire ci-dessous pour demander un compte LORIS. Nous vous contacterons dès que votre compte aura été approuvé."
 
 #, fuzzy
 msgid "Your request for an account has been received successfully."

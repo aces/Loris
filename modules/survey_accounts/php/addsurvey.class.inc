@@ -68,7 +68,7 @@ class AddSurvey extends \NDB_Form
             if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
                 return ['Email' => dgettext(
                     'survey_accounts',
-                    'The email address is not valid.'
+                    'Email is not valid.'
                 )
                 ];
             }
@@ -193,14 +193,20 @@ class AddSurvey extends \NDB_Form
                     $instrument['Test_name']
                 );
                 return [
-                    'Test_name' => "Instrument ".
+                    'Test_name' => dcngettext(
+                        'loris',
+                        'Instrument',
+                        'Instruments',
+                        1,
+                        LC_MESSAGES
+                    )." ".
                         $instrument_instance->getFullName().
                         " ". $reminder. " ". $values['VL'],
                 ];
             }
         }
         if (!isset($_REQUEST['fire_away'])
-            || ($_REQUEST['fire_away'] !== 'Create survey')
+            || ($_REQUEST['fire_away'] !== 'create_survey')
         ) {
             if (!filter_var(
                 $values['Email'],
@@ -326,18 +332,28 @@ class AddSurvey extends \NDB_Form
         parent::setup();
 
         $this->redirect = "test_name=$this->name";
-        $this->addBasicText("CandID", "DCCID");
-        $this->addBasicText("PSCID", "PSCID");
-        $this->addSelect("VL", "Visit Label", \Utility::getVisitList());
+        $this->addBasicText("CandID", dgettext('loris', 'DCCID'));
+        $this->addBasicText("PSCID", dgettext('loris', 'PSCID'));
+        $this->addSelect(
+            "VL",
+            dgettext('loris', 'Visit Label'),
+            \Utility::getVisitList()
+        );
         $this->addSelect(
             "Test_name",
-            "Instrument",
+            dcngettext(
+                'loris',
+                'Instrument',
+                'Instruments',
+                1,
+                LC_MESSAGES
+            ),
             array_merge(
                 ['' => ''],
                 \NDB_BVL_Instrument::getDirectEntryInstrumentNamesList($this->loris)
             )
         );
-        $this->addBasicText("Email", "Email address");
+        $this->addBasicText("Email", dgettext('loris', 'Email address'));
         $this->addBasicText(
             "Email2",
             dgettext('survey_accounts', 'Confirm Email address')

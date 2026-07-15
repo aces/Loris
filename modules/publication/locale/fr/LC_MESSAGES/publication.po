@@ -18,6 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Publications"
 msgstr "Publications"
@@ -49,10 +50,6 @@ msgstr "Veuillez corriger les erreurs restantes dans le formulaire avant de le s
 
 msgid "Something went wrong!"
 msgstr "Un problème est survenu!"
-
-#, fuzzy
-msgid "Submission Successful!"
-msgstr "Soumission réussie!"
 
 #, fuzzy
 msgid "Propose a Project"

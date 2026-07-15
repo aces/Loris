@@ -182,29 +182,8 @@ msgstr "बनाया गया"
 msgid "Last Updated"
 msgstr "अंतिम अपडेट"
 
-msgid "None"
-msgstr "कोई नहीं"
-
-msgid "Uncategorized"
-msgstr "अवर्गीकृत"
-
 msgid "Comments and History"
 msgstr "टिप्पणियाँ और इतिहास"
-
-msgid "on"
-msgstr "पर"
-
-msgid "at"
-msgstr "पर"
-
-msgid "seconds ago"
-msgstr "सेकंड पहले"
-
-msgid "minutes ago"
-msgstr "मिनट पहले"
-
-msgid "hours ago"
-msgstr "घंटे पहले"
 
 msgid "Title cannot be empty"
 msgstr "शीर्षक खाली नहीं हो सकता"
@@ -230,20 +209,11 @@ msgstr "टिप्पणी"
 msgid "Failed to add comment"
 msgstr "टिप्पणी जोड़ने में विफल"
 
-msgid "of"
-msgstr "का"
-
-msgid "Maximum issues per page"
-msgstr "प्रति पृष्ठ अधिकतम समस्याएँ"
-
 msgid "Failed to fetch issues. Please try again later."
 msgstr "समस्याएँ प्राप्त करने में विफल। कृपया बाद में पुनः प्रयास करें।"
 
 msgid "No issues match the selected filters."
 msgstr "कोई समस्या चयनित फ़िल्टर से मेल नहीं खाती।"
-
-msgid "issues displayed"
-msgstr "समस्याएँ प्रदर्शित"
 
 msgid "({{count}} comment)"
 msgid_plural "({{count}} comments)"
@@ -345,9 +315,6 @@ msgstr "फ़ॉर्म लोड करते समय एक त्रु�
 
 msgid "Please add a comment or make changes"
 msgstr "कृपया एक टिप्पणी जोड़ें या परिवर्तन करें"
-
-msgid "Updated by"
-msgstr "द्वारा अपडेट किया गया"
 
 msgid " to "
 msgstr " से "

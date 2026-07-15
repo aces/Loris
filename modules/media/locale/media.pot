@@ -137,9 +137,6 @@ msgstr ""
 msgid "Cancelled"
 msgstr ""
 
-msgid "Your imaginary file is safe :)"
-msgstr ""
-
 msgid "Success!"
 msgstr ""
 

@@ -914,7 +914,7 @@ class Edit_User extends \NDB_Form
                 ]
             );
             $examinerGroup[] = $this->createLabel(
-                "Radiologist: "
+                dgettext("user_accounts", "Radiologist") . ": "
             );
             $examinerGroup[] = $this->createSelect(
                 "examiner_radiologist",
@@ -1536,6 +1536,28 @@ class Edit_User extends \NDB_Form
             [
                 $baseURL . "/css/password.css",
             ]
+        );
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = $this->isCreatingNewUser()
+            ? dgettext("user_accounts", "Add User")
+            : dgettext("user_accounts", "Edit User");
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                dgettext("user_accounts", "User Accounts"),
+                "/user_accounts/"
+            ),
+            new \LORIS\Breadcrumb(
+                $label,
+                ""
+            )
         );
     }
 }
