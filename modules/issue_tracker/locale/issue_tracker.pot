@@ -103,6 +103,18 @@ msgstr ""
 msgid "Batch changes"
 msgstr ""
 
+msgid "Batch actions"
+msgstr ""
+
+msgid "Back to batch configuration"
+msgstr ""
+
+msgid "Selection"
+msgstr ""
+
+msgid "Changes to apply"
+msgstr ""
+
 msgid "Select all filtered issues"
 msgstr ""
 

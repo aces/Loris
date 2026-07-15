@@ -32,6 +32,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
   const [assignees, setAssignees] = useState({});
   const [otherWatchers, setOtherWatchers] = useState({});
   const [selectedIssueIDs, setSelectedIssueIDs] = useState([]);
+  const [selectAllFiltered, setSelectAllFiltered] = useState(false);
   const [batchUpdates, setBatchUpdates] = useState({
     status: NO_CHANGE,
     priority: NO_CHANGE,
@@ -66,6 +67,12 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
     issues,
   ]);
 
+  useEffect(() => {
+    if (selectAllFiltered) {
+      setSelectedIssueIDs(filteredIssues.map((issue) => issue.issueID));
+    }
+  }, [filteredIssues, selectAllFiltered]);
+
   /**
    * Fetches issues from the server
    */
@@ -75,6 +82,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
         `${loris.BaseURL}/issue_tracker/BatchEdit/`,
         {
           credentials: 'include', // This ensures cookies are sent with the request
+          cache: 'no-store',
         }
       );
       if (!response.ok) {
@@ -150,6 +158,9 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
     setSelectedStatuses([]);
     setSelectedSites([]);
     setSelectedAssignees([]);
+    if (!selectAllFiltered) {
+      setSelectedIssueIDs([]);
+    }
   }
 
   /**
@@ -165,6 +176,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
    * @param {number} issueID - The issue ID to toggle
    */
   function toggleIssueSelection(issueID) {
+    setSelectAllFiltered(false);
     setSelectedIssueIDs((current) => current.includes(issueID) ?
       current.filter((id) => id !== issueID) :
       [...current, issueID]
@@ -179,10 +191,29 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
     const allFilteredSelected = filteredIssueIDs.length > 0 &&
       filteredIssueIDs.every((issueID) => selectedIssueIDs.includes(issueID));
 
+    setSelectAllFiltered(!allFilteredSelected);
     setSelectedIssueIDs((current) => allFilteredSelected ?
       current.filter((issueID) => !filteredIssueIDs.includes(issueID)) :
-      [...new Set([...current, ...filteredIssueIDs])]
+      filteredIssueIDs
     );
+  }
+
+  /**
+   * Clears the batch selection and exits select-all-filtered mode.
+   */
+  function clearSelection() {
+    setSelectAllFiltered(false);
+    setSelectedIssueIDs([]);
+  }
+
+  /**
+   * Returns to the batch configuration panel.
+   */
+  function scrollToBatchConfiguration() {
+    document.getElementById('batch-edit-panel')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
   }
 
   /**
@@ -242,7 +273,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
         throw new Error(data.error || 'Network response was not ok');
       }
 
-      setSelectedIssueIDs([]);
+      clearSelection();
       setBatchUpdates({
         status: NO_CHANGE,
         priority: NO_CHANGE,
@@ -255,6 +286,8 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
         text: t('{{count}} issue updated successfully', {
           ns: 'issue_tracker',
           count: data.updated,
+          defaultValue_one: '{{count}} issue updated successfully',
+          defaultValue_other: '{{count}} issues updated successfully',
         }),
       });
     } catch (error) {
@@ -306,6 +339,13 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
     filteredIssueIDs.every((issueID) => selectedIssueIDs.includes(issueID));
   const hasBatchUpdates = Object.values(batchUpdates)
     .some((value) => value !== NO_CHANGE);
+  const hasSelectedIssues = selectedIssueIDs.length > 0;
+  const selectedIssueCount = t('{{count}} issue selected', {
+    ns: 'issue_tracker',
+    count: selectedIssueIDs.length,
+    defaultValue_one: '{{count}} issue selected',
+    defaultValue_other: '{{count}} issues selected',
+  });
 
   const tabList = [
     {
@@ -495,7 +535,10 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
         className="panel-default"
       >
         <div className="batch-selection-controls">
-          <label>
+          <h4 className="batch-section-title">
+            {t('Selection', {ns: 'issue_tracker'})}
+          </h4>
+          <label className="batch-select-all-control">
             <input
               type="checkbox"
               checked={allFilteredSelected}
@@ -505,28 +548,18 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
             />
             {t('Select all filtered issues', {ns: 'issue_tracker'})}
           </label>
-          <span>
-            {t('{{count}} issue selected', {
-              ns: 'issue_tracker',
-              count: selectedIssueIDs.length,
-            })}
-          </span>
-          <button
-            type="button"
-            className="btn btn-default btn-sm"
-            disabled={selectedIssueIDs.length === 0 || isSubmitting}
-            onClick={() => setSelectedIssueIDs([])}
-          >
-            {t('Clear selection', {ns: 'issue_tracker'})}
-          </button>
+          <span>{selectedIssueCount}</span>
         </div>
+        <h4 className="batch-section-title batch-changes-title">
+          {t('Changes to apply', {ns: 'issue_tracker'})}
+        </h4>
         <div className="batch-edit-controls">
           <label>
             {t('Status', {ns: 'loris'})}
             <select
               className="form-control input-sm"
               value={batchUpdates.status}
-              disabled={isSubmitting}
+              disabled={!hasSelectedIssues || isSubmitting}
               onChange={(event) =>
                 updateBatchField('status', event.target.value)
               }
@@ -547,7 +580,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
             <select
               className="form-control input-sm"
               value={batchUpdates.priority}
-              disabled={isSubmitting}
+              disabled={!hasSelectedIssues || isSubmitting}
               onChange={(event) =>
                 updateBatchField('priority', event.target.value)
               }
@@ -565,7 +598,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
             <select
               className="form-control input-sm"
               value={batchUpdates.category}
-              disabled={isSubmitting}
+              disabled={!hasSelectedIssues || isSubmitting}
               onChange={(event) =>
                 updateBatchField('category', event.target.value)
               }
@@ -586,7 +619,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
             <select
               className="form-control input-sm"
               value={batchUpdates.assignee}
-              disabled={isSubmitting}
+              disabled={!hasSelectedIssues || isSubmitting}
               onChange={(event) =>
                 updateBatchField('assignee', event.target.value)
               }
@@ -602,11 +635,39 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
               ))}
             </select>
           </label>
+        </div>
+      </Panel>
+      <aside
+        className="batch-actions-panel"
+        aria-label={t('Batch actions', {ns: 'issue_tracker'})}
+      >
+        <div className="batch-actions-header">
+          <strong>{t('Batch actions', {ns: 'issue_tracker'})}</strong>
+          <button
+            type="button"
+            className="btn btn-default btn-sm batch-scroll-button"
+            onClick={scrollToBatchConfiguration}
+            title={t('Back to batch configuration', {ns: 'issue_tracker'})}
+            aria-label={t('Back to batch configuration',
+              {ns: 'issue_tracker'})}
+          >
+            <span aria-hidden="true">&uarr;</span>
+          </button>
+        </div>
+        <div className="batch-actions-summary">{selectedIssueCount}</div>
+        <div className="batch-action-buttons">
+          <button
+            type="button"
+            className="btn btn-default"
+            disabled={!hasSelectedIssues || isSubmitting}
+            onClick={clearSelection}
+          >
+            {t('Clear selection', {ns: 'issue_tracker'})}
+          </button>
           <button
             type="button"
             className="btn btn-primary batch-update-button"
-            disabled={selectedIssueIDs.length === 0 ||
-              !hasBatchUpdates || isSubmitting}
+            disabled={!hasSelectedIssues || !hasBatchUpdates || isSubmitting}
             onClick={submitBatchEdit}
           >
             {isSubmitting ?
@@ -614,7 +675,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
               t('Apply changes', {ns: 'issue_tracker'})}
           </button>
         </div>
-      </Panel>
+      </aside>
       <br/>
       <div className="pagination-container">
         <div>
@@ -651,31 +712,19 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
       <div className="issues-list">
         {paginatedIssues.length > 0 ? (
           paginatedIssues.map((issue) => (
-            <div
+            <IssueCard
               key={issue.issueID}
-              className={'issue-selection-card' +
-                (selectedIssueIDs.includes(issue.issueID) ? ' selected' : '')}
-            >
-              <label className="issue-selection-control">
-                <input
-                  type="checkbox"
-                  checked={selectedIssueIDs.includes(issue.issueID)}
-                  onChange={() => toggleIssueSelection(issue.issueID)}
-                  className="checkbox"
-                />
-                {t('Select issue', {ns: 'issue_tracker'})} #{issue.issueID}
-              </label>
-              <IssueCard
-                issue={issue}
-                assignees={assignees}
-                otherWatchers={otherWatchers}
-                onUpdate={handleIssueUpdate}
-                statuses={statuses}
-                priorities={priorities}
-                categories={categories}
-                sites={sites}
-              />
-            </div>
+              issue={issue}
+              assignees={assignees}
+              otherWatchers={otherWatchers}
+              onUpdate={handleIssueUpdate}
+              statuses={statuses}
+              priorities={priorities}
+              categories={categories}
+              sites={sites}
+              isSelected={selectedIssueIDs.includes(issue.issueID)}
+              onToggleSelection={() => toggleIssueSelection(issue.issueID)}
+            />
           ))
         ) : (
           <div className="no-results-message">

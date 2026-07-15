@@ -54,6 +54,11 @@
 7. Confirm that a newly assigned user is added as a watcher.
 8. Confirm that Closed and Rejected are unavailable without an Issue Tracker close permission and that the endpoint rejects a selection containing any issue the user cannot close.
 9. Submit a mix of changed and unchanged issues and confirm the success count includes only changed issues.
+10. Confirm that the floating Batch actions panel remains available while scrolling and that its up-arrow returns to the Batch changes panel.
+11. Confirm that batch fields are disabled with no selected issues and become available after selecting an issue.
+12. Enable Select all filtered issues, change and reset the filters, and confirm the selected issue count continues to match the filtered issues.
+13. Confirm that each issue checkbox appears beside its issue ID and that selected cards use a highlighted header without a footer band.
+14. Apply a batch change to multiple issues and confirm that the plural success message and updated card values appear without refreshing the page.
 
 ## Permissions [Automation Testing]
 1. Remove `Issue Tracker: View/Edit/Comment Issues - All Sites` permission.

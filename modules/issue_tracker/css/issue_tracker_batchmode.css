@@ -3,6 +3,7 @@
   flex-direction: column;
   max-width: 1000px;
   margin: 0 auto;
+  padding-bottom: 140px;
 }
 
 .filter-tabs {
@@ -220,15 +221,32 @@
   padding: 10px;
 }
 
-.batch-selection-controls label {
+.batch-select-all-control {
   display: flex;
   align-items: center;
   margin: 0;
 }
 
+.batch-select-all-control .checkbox {
+  margin: 0 8px 0 0;
+}
+
+.batch-section-title {
+  flex-basis: 100%;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.batch-changes-title {
+  margin: 10px 10px 0;
+}
+
 .batch-edit-controls {
   display: grid;
-  grid-template-columns: repeat(4, minmax(150px, 1fr)) auto;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
   align-items: end;
   gap: 15px;
   padding: 10px;
@@ -246,28 +264,58 @@
   white-space: nowrap;
 }
 
-.issue-selection-card {
-  border: 2px solid transparent;
-  border-radius: 8px;
+.batch-actions-panel {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1030;
+  width: 360px;
+  padding: 12px;
+  border: 1px solid #9aafc4;
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
 }
 
-.issue-selection-card.selected {
+.batch-actions-header,
+.batch-action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.batch-scroll-button {
+  min-width: 34px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.batch-actions-summary {
+  margin: 10px 0;
+  padding: 8px 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.batch-action-buttons .btn {
+  flex: 1;
+}
+
+.issue-card.batch-selected {
   border-color: #074785;
 }
 
-.issue-selection-control {
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: 8px 12px;
-  background-color: #f8f8f8;
-  border: 1px solid #ddd;
-  border-bottom: 0;
+.issue-card.batch-selected .issue-header {
+  margin: -20px -20px 15px;
+  padding: 12px 20px;
   border-radius: 8px 8px 0 0;
+  background-color: #e4edf5;
 }
 
-.issue-selection-card .issue-card {
-  border-radius: 0 0 8px 8px;
+.issue-selection-checkbox {
+  flex: 0 0 auto;
+  margin: 0 8px 0 0;
 }
 
 @media (max-width: 900px) {
@@ -279,5 +327,12 @@
 @media (max-width: 500px) {
   .batch-edit-controls {
     grid-template-columns: 1fr;
+  }
+
+  .batch-actions-panel {
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
   }
 }
