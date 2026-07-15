@@ -65,7 +65,7 @@ class UnresolvedDTO implements DataInstance, SiteHaver
             'PSCID'       => $this->pscid,
             'Visit Label' => dgettext('visit', $this->visitlabel),
             'Instrument'  => $this->instrument,
-            'Question'    => dgettext('conflicts_unresolved', $this->question),
+            'Question'    => $this->question,
             'Description' => "",
             'Value 1'     => $this->value1,
             'Value 2'     => $this->value2,

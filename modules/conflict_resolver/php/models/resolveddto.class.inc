@@ -67,7 +67,7 @@ class ResolvedDTO implements DataInstance, SiteHaver
             'PSCID'               => $this->pscid,
             'Visit Label'         => dgettext('visit', $this->visitlabel),
             'Instrument'          => $this->instrument,
-            'Question'            => dgettext('conflicts_resolved', $this->question),
+            'Question'            => $this->question,
             'Description'         => "",
             'Incorrect Answer'    => $this->oldValue,
             'Correct Answer'      => $this->correctanswer,
