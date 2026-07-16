@@ -90,7 +90,7 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
     /**
      * Get the center for this log
      *
-     * @return \CenterID
+     * @return ?\CenterID
      */
     public function getCenterId() : ?\CenterID
     {

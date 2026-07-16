@@ -131,7 +131,7 @@ class Shipment implements
     /**
      * Gets the destination center of the shipment
      *
-     * @return \CenterID
+     * @return ?\CenterID
      */
     public function getDestinationCenterId() : ?\CenterID
     {
