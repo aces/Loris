@@ -6,9 +6,9 @@ CREATE TABLE `family_relationship_type` (
 )
 
 ALTER TABLE family
-MODIFY COLUMN Relationship_type int(10) unsigned DEFAULT NULL;
+MODIFY COLUMN Relationship_type_id int(10) unsigned DEFAULT NULL;
 
 ALTER TABLE family
 ADD CONSTRAINT `FK_family_relationship_type_1`
-FOREIGN KEY (`Relationship_type`)
+FOREIGN KEY (`Relationship_type_id`)
 REFERENCES `family_relationship_type`(`ID`);

@@ -1372,10 +1372,10 @@ CREATE TABLE `family` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `FamilyID` int(6) NOT NULL,
   `CandidateID` int(10) unsigned NOT NULL,
-  `Relationship_type` int(10) unsigned DEFAULT NULL,
+  `Relationship_type_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `FK_family_candidate_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`),
-  CONSTRAINT `FK_family_relationship_type_1` FOREIGN KEY (`Relationship_type`) REFERENCES `family_relationship_type`(`ID`)
+  CONSTRAINT `FK_family_relationship_type_1` FOREIGN KEY (`Relationship_type_id`) REFERENCES `family_relationship_type`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
