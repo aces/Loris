@@ -290,11 +290,10 @@ class SavePane extends Component {
 
   /**
    * Validate the filename before saving
-   * 
+   *
    * @return {boolean} - True if valid file name
    */
   validateFileName() {
-
     const {t} = this.props;
     const fileName = this.state.fileName;
 
@@ -359,7 +358,6 @@ class SavePane extends Component {
    */
   render() {
     const {t} = this.props;
-    let value = this.state.fileName;
 
     let alert = {
       message: '',
@@ -381,7 +379,9 @@ class SavePane extends Component {
         {...this.props}
       >
         <div className='form-group'>
-          <div style={{display: alert.display}} className={alert.class} role='alert'>
+          <div style={{display: alert.display}}
+            className={alert.class} role='alert'
+          >
             <button type='button' className='close' onClick={this.resetAlert}>
               <span aria-hidden='true'>&times;</span>
             </button>
