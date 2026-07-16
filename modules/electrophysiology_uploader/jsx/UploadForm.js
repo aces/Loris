@@ -169,7 +169,11 @@ export default function UploadForm(props) {
           type: 'success',
         }).then((result) => {
           if (result.value) {
-            props.refreshPage();
+            // Force a reload of the page to the browse tab.
+            // A manual reload is used because simply changing the anchor of the
+            // URL does not reload the page.
+            window.history.replaceState(null, '', props.browseURL);
+            window.location.reload();
           }
         });
 
@@ -309,8 +313,8 @@ export default function UploadForm(props) {
 
 UploadForm.propTypes = {
   autoLaunch: PropTypes.string,
+  browseURL: PropTypes.string.isRequired,
   uploadURL: PropTypes.string.isRequired,
   maxUploadSize: PropTypes.number,
-  refreshPage: PropTypes.func,
   t: PropTypes.func,
 };
