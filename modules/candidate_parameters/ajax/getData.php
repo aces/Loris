@@ -293,7 +293,7 @@ function getFamilyInfoFields()
     }
 
     $familyMembers = $db->pselect(
-        "SELECT c1.CandID as FamilyCandidate, f1.Relationship_type
+        "SELECT c1.CandID as FamilyCandidate, f1.Relationship_type_id
         FROM family f1
         JOIN family f2 ON f1.FamilyID=f2.FamilyID
         JOIN candidate c1 ON f1.CandidateID=c1.ID
@@ -307,11 +307,11 @@ function getFamilyInfoFields()
     );
 
     $relationshipOptions = $db->pselectWithIndexKey(
-        "SELECT NAME AS Relationship_type, Label
+        "SELECT ID, Name, Label
         FROM family_relationship_type
         ORDER BY Label",
         [],
-        'Relationship_type'
+        'ID'
     );
 
     $result = [

@@ -132,11 +132,10 @@ class FamilyInfo extends Component {
         </button>
       );
     }
-    let relationshipOptions = {};
+    const relationshipOptions = {};
 
-    Object.keys(this.state.Data.relationshipOptions).forEach((type) => {
-      relationshipOptions[type] = this.state.Data.relationshipOptions[type].Label;
-      console.log(this.state.Data.relationshipOptions[type].Label);
+    Object.keys(this.state.Data.relationshipOptions).forEach((id) => {
+      relationshipOptions[id] = this.state.Data.relationshipOptions[id].Label;
     });
 
     let disabled = true;
@@ -155,7 +154,7 @@ class FamilyInfo extends Component {
     for (let key in familyMembers) {
       if (familyMembers.hasOwnProperty(key)) {
         let candID = familyMembers[key].FamilyCandID;
-        let relationship = familyMembers[key].Relationship_type;
+        let relationshipId = familyMembers[key].Relationship_type_id;
         let link = '?candID=' + candID + '&identifier=' + candID;
 
         familyMembersHTML.push(
@@ -168,7 +167,7 @@ class FamilyInfo extends Component {
             />
             <StaticElement
               label={t('Relation Type', {ns: 'candidate_parameters'})}
-              text={relationshipOptions[relationship]}
+              text={relationshipOptions[relationshipId]}
             />
 
             <ButtonElement
@@ -236,13 +235,13 @@ class FamilyInfo extends Component {
           />
           <SelectElement
             label={t('Relation Type', {ns: 'candidate_parameters'})}
-            name="Relationship_type"
+            name="Relationship_type_id"
             options={relationshipOptions}
             onUserInput={this.setFormData}
-            ref="Relationship_type"
+            ref="Relationship_type_id"
             disabled={disabled}
             required={true}
-            value={this.state.formData.Relationship_type}
+            value={this.state.formData.Relationship_type_id}
           />
           {addButton}
         </FormElement>
