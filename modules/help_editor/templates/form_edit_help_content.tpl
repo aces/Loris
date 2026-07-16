@@ -4,8 +4,8 @@
           document.getElementById('lorisworkspace')
       ).render(
           React.createElement(RHelpEditorForm, {
-            title:      "{$title}",
-            content:    `{$content}`,
+            title: {$title|json_encode nofilter},
+            content: {$content|json_encode nofilter},
             section:    "{$section}",
             subsection: "{$subsection}",
             instrument: "{$instrument}",

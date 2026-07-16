@@ -127,7 +127,11 @@ class Edit_Help_Content extends \NDB_Form
 
         if ($data['helpid']) {
             $help_data          = HelpFile::factory($data['helpid'])->toArray();
-            $data['title']      = $help_data['topic'];
+            $data['title']      = htmlspecialchars_decode(
+                trim(
+                    $help_data['topic']
+                )
+            );
             $data['content']    = htmlspecialchars_decode(
                 trim(
                     $help_data['content']

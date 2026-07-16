@@ -66,6 +66,17 @@ class HelpRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
+        $row['Topic'] = html_entity_decode(
+            $row['Topic'],
+            ENT_QUOTES | ENT_HTML5,
+            'UTF-8'
+        );
+
+        $row['Content'] = html_entity_decode(
+            $row['Content'],
+            ENT_QUOTES | ENT_HTML5,
+            'UTF-8'
+        );
             return new HelpRow($row);
     }
 }
