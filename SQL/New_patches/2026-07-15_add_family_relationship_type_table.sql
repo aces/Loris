@@ -5,7 +5,7 @@ CREATE TABLE `family_relationship_type` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Extract the values from the existing enum for each project (limitation: every relationship_type present in code, hardcoded in js is assumed to present in the enum).
+-- Extract the values from the existing enum for each project (limitation: every relationship_type hardcoded in javascript is assumed to be present in the enum)
 SET @enum_list = (
     SELECT SUBSTRING(
         COLUMN_TYPE,
@@ -38,7 +38,7 @@ SET Label = CONCAT(
 ALTER TABLE `family`
 ADD COLUMN `Relationship_type_id` int(10) unsigned DEFAULT NULL;
 
--- Convert existing enum values to the new corresponding integer values (ID of the family_relationship_type table).
+-- Convert existing enum values to the new corresponding IDs in the family_relationship_type table
 UPDATE `family` f
 INNER JOIN `family_relationship_type` frt
     ON frt.`Name` = f.`Relationship_type`
