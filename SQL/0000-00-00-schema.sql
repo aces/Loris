@@ -1361,20 +1361,21 @@ CREATE TABLE `participant_status_history` (
   CONSTRAINT `FK_participant_status_history_candidate_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `family` (
-  `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `FamilyID` int(6) NOT NULL,
-  `CandidateID` int(10) unsigned NOT NULL,
-  `Relationship_type` enum('half_sibling','full_sibling','1st_cousin') DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  CONSTRAINT `FK_family_candidate_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `family_relationship_type` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) DEFAULT NULL,
   `Label` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `family` (
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
+  `FamilyID` int(6) NOT NULL,
+  `CandidateID` int(10) unsigned NOT NULL,
+  `Relationship_type` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `FK_family_candidate_1` FOREIGN KEY (`CandidateID`) REFERENCES `candidate`(`ID`),
+  CONSTRAINT `FK_family_relationship_type_1` FOREIGN KEY (`Relationship_type`) REFERENCES `family_relationship_type`(`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
