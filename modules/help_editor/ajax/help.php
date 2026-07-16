@@ -59,7 +59,7 @@ try {
                 'updated' => '',
             ];
         }
-        $data['topic'] = html_entity_decode(
+        $data['topic']    = html_entity_decode(
             trim($data['topic']),
             ENT_QUOTES | ENT_HTML5,
             'UTF-8'
