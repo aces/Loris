@@ -1,4 +1,4 @@
-<h2 class="statsH2">{$SiteName} Double Data Entry Completion Statistics {$CurrentProject.Name}</h2>
+<h2 class="statsH2">sprintf(dgettext('statistics', '%s Double Data Entry Completion Statistics %s'), {dgettext('loris', $SiteName, $CurrentProject.Name)</h2>
 <table class="fancytable dynamictable" width="100%">
    <tr>
       <th>{dngettext('loris', 'Instrument', 'Instruments', 1)}</th>

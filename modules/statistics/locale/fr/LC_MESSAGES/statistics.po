@@ -199,7 +199,7 @@ msgstr "Exécuter la requête"
 msgid "Scan Type"
 msgstr "Type d'acquisition"
 
-msgid "QC Status"
+msgid "QC status"
 msgstr "État du contrôle qualité"
 
 msgid "Scans Inserted"
@@ -245,7 +245,7 @@ msgid "Age Average (months)"
 msgstr "Âge moyen (mois)"
 
 msgid "Completion Count"
-msgstr "Nombre de complétions"
+msgstr "Nombre de formulaires complétés"
 
 msgid "Incomplete Candidates"
 msgstr "Candidats incomplets"
@@ -295,10 +295,16 @@ msgstr "Statistiques de la double saisie des données"
 msgid "Click here for breakdown per participant"
 msgstr "Cliquez ici pour la répartition par participant"
 
+msgid "Click here for breakdown per participant%s%s"
+msgstr "Cliquez ici pour la répartition par participant%s%s"
+
+msgid " for %s"
+msgstr " pour %s"
+
 msgid "Breakdown By Scan Type"
 msgstr "Répartition par type de scan"
 
-msgid "Partial run"
+msgid "Partial Run"
 msgstr "Exécution partielle"
 
 msgid "No Scan"
@@ -306,3 +312,15 @@ msgstr "Aucun scan"
 
 msgid "Data Entry Statistics"
 msgstr "Statistiques de saisie des données"
+
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+msgid "%s Double Data Entry Completion Statistics %s"
+msgstr "%s Statistiques d’achèvement de la double saisie des données %s"
+
+msgid "Completion Statistics"
+msgstr "Statistiques d’achèvement"
+
+msgid "All Completion Statistics"
+msgstr "Toutes les statistiques d’achèvement"

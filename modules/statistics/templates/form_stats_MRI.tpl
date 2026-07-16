@@ -9,7 +9,7 @@
         </div>
     <br><br>
     <div id="scancheckbox">
-        <input type="checkbox" id="selectall" style="margin-bottom: 8px;"/> Select All
+        <input type="checkbox" id="selectall" style="margin-bottom: 8px;"/> {dgettext('statistics', 'Select All')}
         {html_checkboxes id="MRIScans" options=$scan_types name="MRIScans" selected=$Scans_sel_box class="timesheet-daily-checkbox" style="margin: 4px 0 4px;"}
         {*<input type="checkbox" name="all" value="bla" checked><b>{dgettext('statistics', 'All Scan Types')}</b>
         {foreach item=scan key=scanid from=$scan_types}

@@ -196,7 +196,7 @@ msgstr ""
 msgid "Scan Type"
 msgstr ""
 
-msgid "QC Status"
+msgid "QC status"
 msgstr ""
 
 msgid "Scans Inserted"
@@ -292,14 +292,32 @@ msgstr ""
 msgid "Click here for breakdown per participant"
 msgstr ""
 
+msgid "Click here for breakdown per participant%s%s"
+msgstr ""
+
+msgid " for %s"
+msgstr ""
+
 msgid "Breakdown By Scan Type"
 msgstr ""
 
-msgid "Partial run"
+msgid "Partial Run"
 msgstr ""
 
 msgid "No Scan"
 msgstr ""
 
 msgid "Data Entry Statistics"
+msgstr ""
+
+msgid "Select All"
+msgstr ""
+
+msgid "%s Double Data Entry Completion Statistics %s"
+msgstr ""
+
+msgid "Completion Statistics"
+msgstr ""
+
+msgid "All Completion Statistics"
 msgstr ""

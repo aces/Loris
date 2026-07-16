@@ -55,7 +55,33 @@
 
 
 
-    <b><a href='{$baseurl|default}/statistics/statistics_site/?CenterID={$CurrentSite.ID|default}&ProjectID={$CurrentProject.ID|default}' target="_blank">{dgettext('statistics', 'Click here for breakdown per participant')} {if $CurrentSite|default} for {$CurrentSite.Name|default} {/if} {if $CurrentProject|default} for {$CurrentProject.Name|default} {/if}</a></b>
+    <b><a href='{$baseurl|default}/statistics/statistics_site/?CenterID={$CurrentSite.ID|default}&ProjectID={$CurrentProject.ID|default}'
+            target="_blank"
+        >
+            {sprintf(    
+                dgettext(   
+                    'statistics',  
+                    'Click here for breakdown per participant%s%s'  
+                ),   
+                {if $CurrentSite|default}
+                    sprintf(  
+                        dgettext('statistics', ' for %s'),  
+                        dgettext('psc', $CurrentSite.Name|default)  
+                    )   
+                {else}
+                    ''
+                {/if}  
+                {if $CurrentProject|default  }
+                    sprintf(
+                        dgettext('statistics', ' for %s'),
+                        dgettext('Project', $CurrentProject.Name|default)
+                    )
+                {else}
+                    ''
+                {/if}
+            )}
+        </a>
+    </b>
     <br><br>
     <h2 class="statsH2">{dgettext('statistics', 'Double Data Entry Statistics')}</h2>
 
