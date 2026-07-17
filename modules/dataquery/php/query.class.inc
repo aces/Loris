@@ -35,7 +35,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      * Construct a Query object
      *
      * @param \LORIS\LorisInstance $loris     The LORIS Instance
-     * @param int                  $queryID   The Query ID
+     * @param ?int                 $queryID   The Query ID
      * @param ?array               $query     The serialized form of
      *                                        the query
      * @param ?string              $name      The query name
@@ -47,7 +47,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function __construct(
         protected \LORIS\LorisInstance $loris,
-        public readonly int $queryID,
+        public readonly ?int $queryID,
         ?array $query=null,
         public ?string $name=null,
         protected ?string $adminname=null,
@@ -761,11 +761,7 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                     throw new \Exception("Unhandled operator: " . $crit['op']);
                 }
 
-                // FIXME: Verify visits, test was done with candidate scope data
-                $visitlist = null;
-                if (isset($crit['visits'])) {
-                    $visitlist = $crit['visits'];
-                }
+                $visitlist = $crit['visits'] ?? null;
 
                 \Profiler::checkpoint("Calling engine get matches");
                 $matches = $engine->getCandidateMatches($term, $visitlist);

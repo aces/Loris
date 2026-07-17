@@ -78,9 +78,6 @@ msgstr "Erreur de téléversement!"
 msgid "Upload Successful!"
 msgstr "Téléversement réussi!"
 
-msgid "Are you sure?"
-msgstr "Êtes-vous sûr?"
-
 msgid "A file with this name already exists!"
 msgstr "Un fichier portant ce nom existe déjà!"
 
@@ -89,12 +86,6 @@ msgstr "Voulez-vous remplacer le fichier existant?"
 
 msgid "Note that the version associated with the file will also be overwritten."
 msgstr "Notez que la version associée au fichier sera également remplacée."
-
-msgid "Yes, I am sure!"
-msgstr "Oui, j'en suis sûr!"
-
-msgid "No, cancel it!"
-msgstr "Non, Annuler le"
 
 msgid "Choose a specific file or an entire release below"
 msgstr "Choisissez un fichier spécifique ou une version ci-dessous"

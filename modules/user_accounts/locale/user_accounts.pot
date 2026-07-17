@@ -197,3 +197,12 @@ msgstr ""
 
 msgid "This email address is already in use"
 msgstr ""
+
+msgid "You cannot edit your own account settings"
+msgstr ""
+
+msgid "To change your email or password, go to \"My Preferences\""
+msgstr ""
+
+msgid "For any other changes, contact an administrator"
+msgstr ""

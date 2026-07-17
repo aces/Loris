@@ -11,6 +11,7 @@ import jaStrings from
   '../locale/ja/LC_MESSAGES/examiner.json';
 import frStrings from
   '../locale/fr/LC_MESSAGES/examiner.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/examiner.json';
 
 import swal from 'sweetalert2';
 import Modal from 'Modal';
@@ -365,6 +366,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'examiner', hiStrings);
   i18n.addResourceBundle('ja', 'examiner', jaStrings);
   i18n.addResourceBundle('fr', 'examiner', frStrings);
+  i18n.addResourceBundle('zh', 'examiner', zhStrings);
   const Index = withTranslation(
     ['examiner', 'loris']
   )(ExaminerIndex);

@@ -242,7 +242,8 @@ class Charts extends \NDB_Page
             {$conditions['cohortQuery']}
             {$conditions['visitQuery']}
             {$conditions['siteQuery']}
-            {$conditions['participantStatusQuery']}",
+            {$conditions['participantStatusQuery']}
+            ORDER BY c.DoB DESC",
             $conditions['params']
         );
 
@@ -277,13 +278,6 @@ class Charts extends \NDB_Page
             $label      = $startOfSplit . '-' . $endOfSplit;
             $recruitmentByAgeData[] = ["label" => $label, "total" => $count];
         }
-        // sort the labels
-        usort(
-            $recruitmentByAgeData,
-            function ($a, $b) {
-                return $a['label'] <=> $b['label'];
-            }
-        );
 
         return (new \LORIS\Http\Response\JsonResponse($recruitmentByAgeData));
     }
@@ -771,6 +765,26 @@ class Charts extends \NDB_Page
             $paramName          = 'dateEnd' . (++$paramCounter);
             $projectQuery      .= " AND c.Date_registered <= :$paramName";
             $params[$paramName] = $queryParams['dateRegisteredEnd'];
+        }
+        if (is_numeric($queryParams['candidateAgeMin'] ?? null)) {
+            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
+            $paramName          = 'candidateAgeMin' . (++$paramCounter);
+            $projectQuery      .= " AND TIMESTAMPDIFF(
+                YEAR,
+                c.DoB,
+                c.Date_registered
+            ) >= :$paramName";
+            $params[$paramName] = $queryParams['candidateAgeMin'];
+        }
+        if (is_numeric($queryParams['candidateAgeMax'] ?? null)) {
+            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
+            $paramName          = 'candidateAgeMax' . (++$paramCounter);
+            $projectQuery      .= " AND TIMESTAMPDIFF(
+                YEAR,
+                c.DoB,
+                c.Date_registered
+            ) <= :$paramName";
+            $params[$paramName] = $queryParams['candidateAgeMax'];
         }
 
         return [

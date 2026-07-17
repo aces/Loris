@@ -618,3 +618,6 @@ msgstr "すべてのファイル"
 
 msgid "View Session"
 msgstr "セッションを見る"
+
+msgid "Channel Types"
+msgstr "チャネルタイプ"

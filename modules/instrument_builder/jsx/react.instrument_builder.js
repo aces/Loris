@@ -6,6 +6,7 @@ import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/instrument_builder.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/instrument_builder.json';
 import frStrings from '../locale/fr/LC_MESSAGES/instrument_builder.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/instrument_builder.json';
 /* global Instrument */
 /* exported RInstrumentBuilderApp */
 
@@ -945,6 +946,7 @@ InstrumentBuilderApp.propTypes = {
 i18n.addResourceBundle('hi', 'instrument_builder', hiStrings);
 i18n.addResourceBundle('ja', 'instrument_builder', jaStrings);
 i18n.addResourceBundle('fr', 'instrument_builder', frStrings);
+i18n.addResourceBundle('zh', 'instrument_builder', zhStrings);
 
 const TranslatedInstrumentBuilderApp = withTranslation(
   ['instrument_builder', 'loris']

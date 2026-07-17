@@ -8,6 +8,7 @@ import i18n from 'I18nSetup';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/bvl_feedback.json';
 import frStrings from '../locale/fr/LC_MESSAGES/bvl_feedback.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/bvl_feedback.json';
 
 import '../css/bvl_feedback_panel.css';
 
@@ -982,6 +983,7 @@ class FeedbackPanel extends Component {
     super(props);
     i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
     i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
+    i18n.addResourceBundle('zh', 'bvl_feedback', zhStrings);
     this.state = {
       threads: [],
       summary: null,

@@ -103,6 +103,12 @@ msgstr ""
 msgid "Add Comment"
 msgstr ""
 
+msgid "Add New Comment"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
 msgid "Create New Issue"
 msgstr ""
 
@@ -137,6 +143,9 @@ msgid "Description"
 msgstr ""
 
 msgid "Watching?"
+msgstr ""
+
+msgid "Watchers"
 msgstr ""
 
 msgid "Add others to watching?"
@@ -233,6 +242,9 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
+msgid "Rejected"
+msgstr ""
+
 msgid "Behavioural Battery"
 msgstr ""
 
@@ -267,4 +279,7 @@ msgid "The server is not configured for attachments."
 msgstr ""
 
 msgid "Submit Attachment"
+msgstr ""
+
+msgid "Submit Comment"
 msgstr ""

@@ -100,6 +100,16 @@ function FilterableDataTable({
       if (Array.isArray(filter.value)) {
         filter.value.forEach((v) => url.searchParams.append(key, String(v)));
       } else if (
+        typeof filter.value === 'object' &&
+        filter.value !== null
+      ) {
+        if ((filter.value.min || '') !== '') {
+          url.searchParams.set(`${key}Min`, String(filter.value.min));
+        }
+        if ((filter.value.max || '') !== '') {
+          url.searchParams.set(`${key}Max`, String(filter.value.max));
+        }
+      } else if (
         filter.value !== undefined &&
         filter.value !== null &&
       filter.value !== ''

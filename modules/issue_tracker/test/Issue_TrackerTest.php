@@ -53,6 +53,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
                 'UserID'     => 'TestUser',
                 'First_name' => 'Test',
                 'Last_name'  => 'User',
+                'Real_name'  => 'Test User'
             ]
         );
         $this->DB->insert(
@@ -159,7 +160,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testClearFormIssueTracker()
     {
-         $this->safeGet($this->url . "/issue_tracker/");
+        $this->safeGet($this->url . "/issue_tracker/");
         $titleElement = $this->safeFindElement(
             WebDriverBy::Name("title")
         );

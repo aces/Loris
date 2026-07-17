@@ -499,7 +499,8 @@ msgstr ""
 msgid "Sampling Frequency"
 msgstr ""
 
-msgid "%s Channel Count"  # Channel Type (ex: EEG, ECG)
+# Channel Type (ex: EEG, ECG)
+msgid "%s Channel Count"
 msgstr ""
 
 msgid "Reference"

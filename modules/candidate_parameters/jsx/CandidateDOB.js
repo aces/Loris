@@ -91,6 +91,12 @@ class CandidateDOB extends Component {
     }
 
     let dateFormat = this.state.data.dobFormat;
+
+    let dobValue = this.state.formData.dob || '';
+    if (dateFormat == 'Ym' && this.state.formData.dob) {
+      dobValue = dobValue.slice(0, 7);
+    }
+
     let disabled = true;
     let updateButton = null;
     if (loris.userHasPermission('candidate_dob_edit')) {
@@ -126,7 +132,7 @@ class CandidateDOB extends Component {
           <DateElement
             label={t('DoB', {ns: 'loris'})}
             name='dob'
-            dateFormat={dateFormat}
+            dateFormat={dobValue}
             value={this.state.formData.dob}
             onUserInput={this.setFormData}
             disabled={disabled}

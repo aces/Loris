@@ -39,10 +39,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private const UNITTESTER_EMAIL     = 'tester@example.com';
     private const UNITTESTER_EMAIL_NEW = 'newemail@example.com';
     // Admin user details
-    private const ADMIN_USERNAME  = 'admin';
-    private const ADMIN_REALNAME  = 'Admin account';
-    private const ADMIN_EMAIL     = 'admin@example.com';
-    private const ADMIN_EMAIL_NEW = 'tester@example.com';
+    private const ADMIN_USERNAME         = 'admin';
+    private const ADMIN_REALNAME         = 'Admin account';
+    private const ADMIN_EMAIL            = 'admin@example.com';
+    private const ADMIN_EMAIL_NEW        = 'tester@example.com';
+    private const UNITTESTERTWO_USERNAME = 'UnitTesterTwo';
+    private const UNITTESTERTWO_EMAIL    = 'tester2@example.com';
 
     private $_name        = 'input[name="username"]';
     private $_site        = 'select[name="site"]';
@@ -213,38 +215,36 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function testUserAccountEdits()
     {
-        // Test changing first name
+        // Test changing first name on another user
         $this->_verifyUserModification(
-            'UnitTester',
+            self::UNITTESTERTWO_USERNAME,
             'First_name',
             'NewFirst'
         );
-        // Test changing last name
+        // Test changing last name on another user
         $this->_verifyUserModification(
-            'UnitTester',
+            self::UNITTESTERTWO_USERNAME,
             'Last_name',
             'NewLast'
         );
-        // Test changing 'Active' status
+        // Test changing 'Active' status on another user
         $this->_verifyUserModification(
-            'UnitTesterTwo',
+            self::UNITTESTERTWO_USERNAME,
             'Active',
             'No'
         );
-        // Test changing Email
+        // Test changing Email on another user
         $this->_verifyUserModification(
-            'UnitTester',
+            self::UNITTESTERTWO_USERNAME,
             'Email',
             'newemail@example.com'
         );
-        // Test changing Approval status
+        // Test changing Approval status on another user
         $this->_verifyUserModification(
-            'UnitTesterTwo',
+            self::UNITTESTERTWO_USERNAME,
             'Pending_approval',
             'No'
         );
-        //TODO:add test case to ensure pending_approval
-        //DOES NOT show up on UnitTester since logged in user is UnitTester
     }
 
     /**
@@ -373,6 +373,43 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
+     * Verifies that when a user opens their own account page the form is
+     * entirely read-only: a warning banner is shown, all editable fields are
+     * disabled, and the Save button is disabled.
+     *
+     * @return void
+     */
+    function testSelfEditFormIsReadOnly(): void
+    {
+        $this->_accessUser(self::UNITTESTER_USERNAME);
+
+        // Warning message must be visible
+        $this->assertStringContainsString(
+            'You cannot edit your own account settings',
+            $this->getBody()
+        );
+
+        // Core fields must be disabled (fieldset-level disabled propagates to
+        // descendants; isEnabled() reflects the effective disabled state)
+        foreach (['First_name', 'Last_name', 'Email'] as $fieldName) {
+            $this->assertFalse(
+                $this->safeFindElement(
+                    WebDriverBy::Name($fieldName)
+                )->isEnabled(),
+                "Expected field '$fieldName' to be disabled when editing own account"
+            );
+        }
+
+        // Save button must be disabled (it carries an explicit disabled attr)
+        $this->assertNotNull(
+            $this->safeFindElement(
+                WebDriverBy::Name('fire_away')
+            )->getAttribute('disabled'),
+            'Expected Save button to be disabled when editing own account'
+        );
+    }
+
+    /**
      * Ensures that the user cannot set their password to be the same value
      * as their email address.
      *
@@ -380,17 +417,16 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function testPasswordMustNotEqualEmail(): void
     {
-        // Make sure the user's email is set to a known value. This will also
-        // load the page.
+        // Set UnitTesterTwo's email to a known value first.
         $this->_verifyUserModification(
-            self::UNITTESTER_USERNAME,
+            self::UNITTESTERTWO_USERNAME,
             'Email',
             self::UNITTESTER_EMAIL_NEW
         );
 
         // Try changing the password to the same value.
         $this->_sendPasswordValues(
-            self::UNITTESTER_USERNAME,
+            self::UNITTESTERTWO_USERNAME,
             self::UNITTESTER_EMAIL_NEW
         );
         // This text comes from the class constants in Edit User
@@ -408,7 +444,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // Send two different random strings to the password and confirm
         // password values.
         $this->_sendPasswordValues(
-            self::UNITTESTER_USERNAME,
+            self::UNITTESTERTWO_USERNAME,
             \Utility::randomString(),
             \Utility::randomString()
         );
@@ -427,13 +463,13 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $newPassword = \Utility::randomString();
         // Change the user's password to $newPassword
         $this->_sendPasswordValues(
-            self::UNITTESTER_USERNAME,
+            self::UNITTESTERTWO_USERNAME,
             $newPassword
         );
         // Change the password again using the same value. This should cause
         // and error.
         $this->_sendPasswordValues(
-            self::UNITTESTER_USERNAME,
+            self::UNITTESTERTWO_USERNAME,
             $newPassword
         );
         // This text comes from the class constants in Edit User

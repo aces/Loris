@@ -6,6 +6,7 @@ import {
   TimeElement,
   FormElement,
   NumericElement,
+  NumericRangeElement,
   SelectElement,
   TextboxElement,
 } from 'jsx/Form';
@@ -70,6 +71,19 @@ function Filter({
    */
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
+    fields.forEach((field) => {
+      const filter = field.filter;
+      if (!filter || filter.hide === true) {
+        return;
+      }
+      if (filter.type === 'number-range') {
+        const min = searchParams.get(`${filter.name}Min`) || '';
+        const max = searchParams.get(`${filter.name}Max`) || '';
+        if (min !== '' || max !== '') {
+          onFieldUpdate(filter.name, {min, max});
+        }
+      }
+    });
     searchParams.forEach((value, name) => {
       if (fields.find((field) => field.filter?.name === name)) {
         onFieldUpdate(name, searchParams.getAll(name));
@@ -88,12 +102,14 @@ function Filter({
     if (!field) return;
 
     const type = field.filter.type;
-    const exactMatch = !['text', 'date', 'datetime', 'multiselect']
-      .includes(type);
+    const exactMatch = !['text', 'date', 'datetime', 'multiselect',
+      'number-range'].includes(type);
 
     const isEmpty =
       value === null ||
       value === '' ||
+      (typeof value === 'object' && !Array.isArray(value) &&
+        (value.min || '') === '' && (value.max || '') === '') ||
       (Array.isArray(value) && value.length === 0) ||
       (type === 'checkbox' && value === false);
 
@@ -120,7 +136,9 @@ function Filter({
         key: filter.name,
         name: filter.name,
         label: field.label,
-        value: filters[filter.name]?.value ?? undefined,
+        value: filters[filter.name]?.value ?? (
+          filter.type === 'number-range' ? {} : undefined
+        ),
         onUserInput: onFieldUpdate,
         labelPlacementTop: true,
       };
@@ -142,6 +160,17 @@ function Filter({
         );
       case 'numeric':
         return <NumericElement {...commonProps} />;
+      case 'number-range':
+        return (
+          <NumericRangeElement
+            {...commonProps}
+            min={filter.min}
+            max={filter.max}
+            step={filter.step}
+            minLabel={filter.minLabel}
+            maxLabel={filter.maxLabel}
+          />
+        );
       case 'date':
         return <DateElement {...commonProps} />;
       case 'datetime':

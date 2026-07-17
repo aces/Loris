@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/instruments.json';
 import frStrings from '../locale/fr/LC_MESSAGES/instruments.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/instruments.json';
 
 /**
  * A VisitInstrumentList is a type of React component which displays
@@ -23,6 +24,7 @@ class VisitInstrumentList extends Component {
     super(props);
     i18n.addResourceBundle('ja', 'instruments', jaStrings);
     i18n.addResourceBundle('fr', 'instruments', frStrings);
+    i18n.addResourceBundle('zh', 'instruments', zhStrings);
     this.state = {
       expanded: false,
       hover: false,
@@ -158,15 +160,16 @@ class VisitInstrumentList extends Component {
     };
     flexcontainer.justifyContent = 'flex-start';
 
-    let center = {
+    let titleText = {
       display: 'flex',
-      width: '12%',
-      height: '100%',
+      width: '100%',
       alignItems: 'center',
-      justifyContent: 'center',
+      textAlign: 'left',
+      wordBreak: 'break-word',
+      padding: '1rem',
     };
 
-    const termstyle = {paddingLeft: '2em', paddingRight: '2em'};
+    const termstyle = {padding: '1rem 1.5em', flexGrow: 1};
 
     let instruments = null;
     if (!this.state.instruments) {
@@ -283,37 +286,38 @@ class VisitInstrumentList extends Component {
         onMouseLeave={this.toggleHover}
       >
         <div style={flexcontainer}>
-          <div style={{background: bg, width: '1%', height: '100%'}}>
-          </div>
-          <div style={center}>
-            <h4 style={{width: '100%', padding: 0, margin: 0}}>
-              <a href={this.props.BaseURL
-                            + '/instrument_list/?candID='
-                            + this.props.Candidate.Meta.CandID
-                            + '&sessionID='
-                            + this.props.VisitMap[this.props.Visit.Meta.Visit]}>
-                {this.props.Visit.Meta.Visit}
-              </a>
-            </h4>
-          </div>
-          <div>
-            <dl style={defliststyle}>
-              <div style={termstyle}>
-                <dt>{this.props.t('Cohort', {ns: 'loris', count: 1})}</dt>
-                <dd>{this.props.Visit.Meta.Battery}</dd>
-              </div>
-              <div style={termstyle}>
-                <dt>{this.props.t('Site', {ns: 'loris'})}</dt>
-                <dd>{this.props.Visit.Meta.Site}</dd>
-              </div>
-              {vdate}
-              {vage}
-              <div style={termstyle}>
-                <dt>{this.props.t('Status', {ns: 'loris'})}</dt>
-                <dd>{vstatus}</dd>
-              </div>
-            </dl>
-            {instruments}
+          <div style={{background: bg, width: '1%', height: '100%'}}></div>
+          <div style={{width: '100%'}}>
+            <div style={titleText}>
+              <h4 style={{width: '100%', padding: 0, margin: 0}}>
+                <a href={this.props.BaseURL
+                        + '/instrument_list/?candID='
+                        + this.props.Candidate.Meta.CandID
+                        + '&sessionID='
+                        + this.props.VisitMap[this.props.Visit.Meta.Visit]}>
+                  {this.props.Visit.Meta.Visit}
+                </a>
+              </h4>
+            </div>
+            <div>
+              <dl style={defliststyle}>
+                <div style={termstyle}>
+                  <dt>{this.props.t('Cohort', {ns: 'loris', count: 1})}</dt>
+                  <dd>{this.props.Visit.Meta.Battery}</dd>
+                </div>
+                <div style={termstyle}>
+                  <dt>{this.props.t('Site', {ns: 'loris'})}</dt>
+                  <dd>{this.props.Visit.Meta.Site}</dd>
+                </div>
+                {vdate}
+                {vage}
+                <div style={termstyle}>
+                  <dt>{this.props.t('Status', {ns: 'loris'})}</dt>
+                  <dd>{vstatus}</dd>
+                </div>
+              </dl>
+              {instruments}
+            </div>
           </div>
         </div>
       </div>

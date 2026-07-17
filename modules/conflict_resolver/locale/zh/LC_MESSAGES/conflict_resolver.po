@@ -1,0 +1,80 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Conflict Resolver"
+msgstr "冲突解决"
+
+msgid "Data entry conflict"
+msgstr "数据输入冲突"
+
+msgid "Unresolved Conflicts"
+msgstr "未解决的冲突"
+
+msgid "Number of Conflicts"
+msgstr "冲突数量"
+
+msgid "Unresolved"
+msgstr "未解决"
+
+msgid "Resolved"
+msgstr "已解决"
+
+msgid "Correct Answer"
+msgstr "正确答案"
+
+msgid "Conflict ID"
+msgstr "冲突ID"
+
+msgid "Question"
+msgstr "问题"
+
+msgid "Description"
+msgstr "描述"
+
+msgid "Value 1"
+msgstr "值1"
+
+msgid "Value 2"
+msgstr "值2"
+
+msgid "Resolved ID"
+msgstr "已解析 ID"
+
+msgid "Incorrect Answer"
+msgstr "错误答案"
+
+msgid "User 1"
+msgstr "用户1"
+
+msgid "User 2"
+msgstr "用户2"
+
+msgid "Resolver"
+msgstr "解决"
+
+msgid "Resolution Timestamp"
+msgstr "解决时间戳"
+
+msgid "Click on instrument in legend to visit conflict resolver for that instrument across all visits."
+msgstr "单击图例中的仪器可在所有访问中访问该仪器的冲突解决程序。"
+
+msgid "Click on bar in graph to visit conflict resolver for that visit and instrument combination."
+msgstr "单击图表中的栏可访问该访问和工具组合的冲突解决程序。"

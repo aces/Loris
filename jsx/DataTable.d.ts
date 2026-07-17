@@ -3,7 +3,7 @@ import {ReactNode} from 'react';
 export type TableRow = (string | null)[];
 
 export type FilterType = 'text' | 'select' | 'multiselect' |
-  'numeric' | 'date' | 'datetime' | 'checkbox' | 'time';
+  'numeric' | 'date' | 'datetime' | 'checkbox' | 'time' | 'number-range';
 
 type BaseFilter = {
     name: string;
@@ -21,7 +21,18 @@ export type OtherFilterConfig = BaseFilter & {
     options?: never; // Ensures you don't accidentally put options on a text field
 };
 
-export type FilterConfig = SelectFilterConfig | OtherFilterConfig;
+export type NumberRangeFilterConfig = BaseFilter & {
+    type: 'number-range';
+    min?: number;
+    max?: number;
+    step?: string;
+    minLabel?: string;
+    maxLabel?: string;
+    options?: never;
+};
+
+export type FilterConfig =
+  SelectFilterConfig | OtherFilterConfig | NumberRangeFilterConfig;
 
 export interface Field {
     show: boolean;

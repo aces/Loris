@@ -191,6 +191,14 @@ class Edit_User extends \NDB_Form
      */
     function _process($values)
     {
+        if ($this->_isEditingOwnAccount()) {
+            error_log(
+                "[user_accounts] Blocked self-edit attempt for user: "
+                . $this->identifier
+            );
+            return;
+        }
+
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $config  = $factory->config();
@@ -646,6 +654,7 @@ class Edit_User extends \NDB_Form
         if (!empty($matches[1])) {
             $this->identifier = $matches[1];
         }
+        $this->tpl_data['isSelfEdit'] = $this->_isEditingOwnAccount();
         $response = parent::handle($request);
         if (!empty($this->redirect)) {
             return $response
@@ -1105,6 +1114,9 @@ class Edit_User extends \NDB_Form
 
         // unique key and password rules
         $this->form->addFormRule([&$this, '_validateEditUser']);
+
+        // Expose self-edit flag to the Smarty template.
+        $this->tpl_data['isSelfEdit'] = $this->_isEditingOwnAccount();
     }
 
     /**

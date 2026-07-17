@@ -93,7 +93,7 @@ msgid "Submission error!"
 msgstr "Erreur de soumission!"
 
 msgid "Upload Location"
-msgstr "Emplacement de téléversement"
+msgstr "Emplacement du téléversement"
 
 msgid "Upload ID"
 msgstr "ID de téléversement"
@@ -106,3 +106,7 @@ msgstr "Statut"
 
 msgid "Uploaded By"
 msgstr "Téléverser par"
+
+# upload.class.inc
+msgid "File not found."
+msgstr "Fichier introuvable."

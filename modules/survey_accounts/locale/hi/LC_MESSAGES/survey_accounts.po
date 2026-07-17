@@ -1,0 +1,103 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Survey Accounts"
+msgstr "सर्वे खाते"
+
+msgid "Survey was added successfully."
+msgstr "सर्वे सफलतापूर्वक जोड़ा गया।"
+
+msgid "Click here to go back to view the list of survey's created"
+msgstr "बनाए गए सर्वे की सूची देखने के लिए यहाँ क्लिक करें"
+
+msgid "Survey List"
+msgstr "सर्वे सूची"
+
+msgid "Usage"
+msgstr "उपयोग"
+
+msgid "Use this form to create a link for a study participant to use in order to directly enter a form/data into Loris."
+msgstr "इस फ़ॉर्म का उपयोग अध्ययन प्रतिभागी के लिए लिंक बनाने के लिए करें ताकि वह सीधे Loris में फ़ॉर्म/डेटा दर्ज कर सके।"
+
+msgid "Add Survey"
+msgstr "सर्वे जोड़ें"
+
+msgid "Create survey"
+msgstr "सर्वे बनाएँ"
+
+msgid "Email survey"
+msgstr "सर्वे ईमेल करें"
+
+msgid "Close"
+msgstr "बंद करें"
+
+msgid "Email to Study Participant"
+msgstr "अध्ययन प्रतिभागी को ईमेल"
+
+msgid "Optionally enter a customized message here. A default email will be sent if left blank."
+msgstr "वैकल्पिक रूप से यहाँ एक कस्टम संदेश दर्ज करें। खाली छोड़ने पर डिफ़ॉल्ट ईमेल भेजा जाएगा।"
+
+msgid "This is where your message goes."
+msgstr "यहाँ आपका संदेश जाएगा।"
+
+msgid "Email"
+msgstr "ईमेल"
+
+msgid "Instrument"
+msgstr "यंत्र"
+
+msgid "URL"
+msgstr "यूआरएल"
+
+msgid "Status"
+msgstr "स्थिति"
+
+msgid "PSCID and DCCID do not match or candidate does not exist."
+msgstr "पीएससीआईडी ​​और डीसीसीआईडी ​​मेल नहीं खाते या उम्मीदवार मौजूद नहीं है।"
+
+msgid "does not exist for given candidate"
+msgstr "दिए गए उम्मीदवार के लिए मौजूद नहीं है"
+
+msgid "Please choose an instrument."
+msgstr "कृपया एक उपकरण चुनें."
+
+msgid "already exists for given candidate for visit"
+msgstr "दिए गए उम्मीदवार के लिए यात्रा हेतु पहले से ही मौजूद है"
+
+msgid "The email address is not valid."
+msgstr "ईमेल पता मान्य नहीं है."
+
+msgid "Please confirm the email address."
+msgstr "कृपया ईमेल पता की पुष्टि करें."
+
+msgid "The email addresses do not match."
+msgstr "ईमेल पते मेल नहीं खाते."
+
+msgid "You must specify a valid Visit Label."
+msgstr "आपको एक वैध विज़िट लेबल निर्दिष्ट करना होगा."
+
+msgid "You are not affiliated with this session's project"
+msgstr "आप इस सत्र की परियोजना से संबद्ध नहीं हैं"
+
+msgid "Confirm Email address"
+msgstr "ईमेल पते की पुष्टि करें"
+
+msgid "Email is not valid."
+msgstr "विद्युतडाक मान्य नहीं है।"

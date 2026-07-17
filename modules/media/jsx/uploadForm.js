@@ -18,11 +18,13 @@ import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/media.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/media.json';
 import frStrings from '../locale/fr/LC_MESSAGES/media.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/media.json';
 import esStrings from '../locale/es/LC_MESSAGES/media.json';
 i18n.addResourceBundle('hi', 'media', hiStrings);
 i18n.addResourceBundle('ja', 'media', jaStrings);
 i18n.addResourceBundle('fr', 'media', frStrings);
 i18n.addResourceBundle('es', 'media', esStrings);
+i18n.addResourceBundle('zh', 'media', zhStrings);
 
 /**
  * Media Upload Form
@@ -112,7 +114,7 @@ class MediaUploadForm extends Component {
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return (
-        <Loader/>
+        <Loader />
       );
     }
 
@@ -120,13 +122,13 @@ class MediaUploadForm extends Component {
       <span>
         {t('File name must begin with', {ns: 'media'})}
         <b>[{t('PSCID', {ns: 'loris'})}]_[{t('Visit Label', {ns: 'loris'})}]_[
-          {t('Instrument', {ns: 'loris', count: 1})}]</b><br/>
+          {t('Instrument', {ns: 'loris', count: 1})}]</b><br />
         {t('For example, for candidate', {ns: 'media'})}
         <i>ABC123</i>, {t('visit', {ns: 'media'})} <i>V1</i>
         {t('for', {ns: 'media'})}
         <i>Body Mass Index</i>
         {t('the file name should be prefixed by', {ns: 'media'})}:
-        <b> ABC123_V1_bmi</b><br/>
+        <b> ABC123_V1_bmi</b><br />
         {t('File cannot exceed', {ns: 'media'})} {this.props.maxUploadSize}
       </span>
     );
@@ -135,7 +137,7 @@ class MediaUploadForm extends Component {
       this.state.Data.sessionData[this.state.formData.pscid].visits :
       {};
     const instruments = this.state.formData.pscid
-                        && this.state.formData.visitLabel ?
+      && this.state.formData.visitLabel ?
       this.state.Data.sessionData[this.state.formData.pscid]
         .instruments[this.state.formData.visitLabel] :
       {};
@@ -227,10 +229,10 @@ class MediaUploadForm extends Component {
               required={true}
               value={this.state.formData.file}
             />
-            <ButtonElement label={t('Upload File', {ns: 'media'})}/>
+            <ButtonElement label={t('Upload File', {ns: 'media'})} />
             <div className='row'>
               <div className='col-sm-9 col-sm-offset-3'>
-                <ProgressBar value={this.state.uploadProgress}/>
+                <ProgressBar value={this.state.uploadProgress} />
               </div>
             </div>
           </FormElement>
@@ -270,9 +272,6 @@ class MediaUploadForm extends Component {
 
     let formData = this.state.formData;
     let formRefs = this.refs;
-    let mediaFiles = this.state.Data.mediaFiles ?
-      this.state.Data.mediaFiles :
-      [];
 
     // Validate the form
     if (!this.isValidForm(formRefs, formData)) {
@@ -291,34 +290,13 @@ class MediaUploadForm extends Component {
       swal.fire(
         'Invalid file name!',
         'Your file\'s base name should be: <code>'
-        + requiredFileName +'</code>'
+        + requiredFileName + '</code>'
         + '<br>followed by the file extension.',
         'error'
       );
       return;
     }
-
-    // Check for duplicate file names
-    let isDuplicate = mediaFiles.indexOf(fileName);
-    if (isDuplicate >= 0) {
-      swal.fire({
-        title: 'Are you sure?',
-        text: 'A file with this name already exists!' + '\n'
-              + 'Would you like to overwrite the existing file?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: this.props.t('Yes, I am sure!', {ns: 'loris'}),
-        cancelButtonText: this.props.t('No, cancel it!', {ns: 'loris'}),
-      }).then(function(isConfirm) {
-        if (isConfirm) {
-          this.uploadFile();
-        } else {
-          swal.fire('Cancelled', 'Your file was not overwritten', 'error');
-        }
-      }.bind(this));
-    } else {
-      this.uploadFile();
-    }
+    this.uploadFile();
   }
 
   /**
@@ -346,16 +324,12 @@ class MediaUploadForm extends Component {
       if (xhr.status < 400) {
         // Update data "row" into table
         this.props.insertRow(JSON.parse(xhr.response));
-        // Add git pfile to the list of exiting files
-        let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
-        mediaFiles.push(formData.file.name);
 
         // Trigger an update event to update all observers (i.e DataTable)
         let event = new CustomEvent('update-datatable');
         window.dispatchEvent(event);
 
         this.setState({
-          mediaFiles: mediaFiles,
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
@@ -369,14 +343,17 @@ class MediaUploadForm extends Component {
           }
         });
       } else {
-        console.error(xhr.status + ': ' + xhr.statusText);
         let msg = this.props.t('Upload error!', {ns: 'media'});
+
         if (xhr.response) {
           if (xhr.statusText) {
             msg = JSON.parse(xhr.response).message;
           }
         }
-        if (xhr.status === 413) {
+        if (xhr.status === 409) {
+          msg = this.props.t('A file with the same name already exists!',
+            {ns: 'media'});
+        } else if (xhr.status === 413) {
           msg = this.props.t('File too large!', {ns: 'media'});
         }
 

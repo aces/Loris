@@ -122,4 +122,3 @@ msgstr "संस्करण खोजें"
 
 msgid "An error occurred when loading the form!"
 msgstr "फ़ॉर्म लोड करते समय एक त्रुटि हुई!"
-

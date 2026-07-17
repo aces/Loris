@@ -230,6 +230,7 @@ class UploadFileForm extends Component {
           text: t('Upload Successful!', {ns: 'data_release'}),
           title: '',
           type: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
         }).then(function() {
           window.location.assign('/data_release');
         });

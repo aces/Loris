@@ -229,6 +229,9 @@ class MediaEditForm extends Component {
           }
         }
         console.error(msg);
+        if (xhr.status === 403) {
+          msg = t('Permission Denied', {ns: 'media'});
+        }
         swal.fire(msg, '', 'error');
       }
     }, false);

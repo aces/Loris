@@ -314,8 +314,14 @@ class UserTest extends TestCase
         parent::setUp();
         $this->_factory = \NDB_Factory::singleton();
         $this->_factory->reset();
-        $this->_configMock = $this->_factory->Config(CONFIG_XML);
-        $this->_dbMock     = $this->_factory->database();
+
+        $mockdb     = $this->_factory->database();
+        $mockconfig = $this->_factory->Config(CONFIG_XML);
+        '@phan-var \Database&PHPUnit\Framework\MockObject\MockObject $mockdb';
+        '@phan-var \NDB_Config&PHPUnit\Framework\MockObject\MockObject $mockconfig';
+
+        $this->_configMock = $mockconfig;
+        $this->_dbMock     = $mockdb;
 
         $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
         $mockdb     = $this->getMockBuilder('Database')->getMock();
@@ -345,7 +351,7 @@ class UserTest extends TestCase
         $passwordHash = (new \Password(
             $this->_userInfo['Password']
         ))->__toString();
-        $this->_userInfoComplete['language_code'] = null;
+        $this->_userInfoComplete['language_code'] = 'fr_CA';
         $this->_userInfo['Password_hash']         = $passwordHash;
         $this->_userInfoComplete['Password_hash'] = $passwordHash;
 
@@ -709,7 +715,7 @@ class UserTest extends TestCase
         $this->_factory->setConfig($mockConfig);
 
         '@phan-var \PHPUnit\Framework\MockObject\MockObject $mockConfig';
-        $mockConfig->expects($this->any())
+        $mockConfig
             ->method('settingEnabled')
             ->willReturn(false);
 
@@ -740,7 +746,7 @@ class UserTest extends TestCase
         $oldHash = $this->_user->getData('Password_hash');
 
         // Cause usePwnedPasswordsAPI config option to return false.
-        $this->_mockConfig->expects($this->any())
+        $this->_mockConfig
             ->method('settingEnabled')
             ->willReturn(false);
 
@@ -769,7 +775,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $count       = 1;
-        $this->_mockDB->expects($this->any())
+        $this->_mockDB
             ->method('pselectOneInt')
             ->with(
                 $this->stringContains("FROM user_login_history")
@@ -791,7 +797,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $count       = 0;
-        $this->_mockDB->expects($this->any())
+        $this->_mockDB
             ->method('pselectOneInt')
             ->with(
                 $this->stringContains("FROM user_login_history")
@@ -853,7 +859,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $timestamp   = '2020-06-15 09:49:23';
-        $this->_mockDB->expects($this->any())
+        $this->_mockDB
             ->method('pselectOne')
             ->with(
                 $this->stringContains("WHERE Login_timestamp <")
@@ -876,7 +882,7 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $timestamp   = '';
-        $this->_mockDB->expects($this->any())
+        $this->_mockDB
             ->method('pselectOne')
             ->with(
                 $this->stringContains("WHERE Login_timestamp <")

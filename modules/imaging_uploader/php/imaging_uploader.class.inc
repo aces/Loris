@@ -484,7 +484,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //////// for "new" scans //////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         $updateFile = isset($args['values']['overwrite'])
-            ? (boolean) $args['values']['overwrite'] : false;
+            ? (bool) $args['values']['overwrite'] : false;
         $id         = $db->pselectOne(
             "SELECT
                 IF (InsertionComplete=0 AND
@@ -558,7 +558,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $pname      = '';
         $IsPhantom  = $args['values']['IsPhantom'];
         $updateFile = isset($args['values']['overwrite'])
-            ? (boolean) $args['values']['overwrite'] : false;
+            ? (bool) $args['values']['overwrite'] : false;
         ///////////////////////////////////////////////////////////////////////
         ///////////////If empty get it using User class////////////////////////
         ///////////////////////////////////////////////////////////////////////

@@ -58,20 +58,20 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
         $this->_addMetadataFields();
 
         $yes_no_option = [
-            null           => "",
+            ""             => "",
             "no"           => "No",
             "yes"          => "Yes",
             "not_answered" => "Not Answered",
         ];
         $normal_option = [
-            null           => "",
+            ""             => "",
             "normal"       => "Normal",
             "abnormal"     => "Abnormal",
             "atypical"     => "Atypical",
             "not_answered" => "Not Answered",
         ];
         $exclusionaryOrNot = [
-            null               => "",
+            ""                 => "",
             "exclusionary"     => "Exclusionary",
             "non_exclusionary" => "Non-Exclusionary",
             "not_answered"     => "Not Answered",

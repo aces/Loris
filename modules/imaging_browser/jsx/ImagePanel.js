@@ -11,6 +11,7 @@ import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/imaging_browser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
 import frStrings from '../locale/fr/LC_MESSAGES/imaging_browser.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/imaging_browser.json';
 
 /**
  * Image panel header component
@@ -24,6 +25,7 @@ class ImagePanelHeader extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -83,7 +85,7 @@ class ImagePanelHeader extends Component {
 
       <div className="panel-heading clearfix">
         <input type="checkbox" data-file-id={this.props.FileID}
-          className="mripanel user-success"/>
+          className="mripanel user-success" />
         <h3 className="panel-title"
           data-toggle="tooltip"
           title={this.props.Filename}
@@ -124,6 +126,7 @@ class ImagePanelHeadersTable extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -165,11 +168,11 @@ class ImagePanelHeadersTable extends Component {
               {ns: 'imaging_browser'})}</th>
             <td className="col-xs-6" colSpan="3">
               {this.props.HeaderInfo.XStep === '' ? ' ' : 'X: ' +
-              this.props.HeaderInfo.XStep + ' mm, '}
+                this.props.HeaderInfo.XStep + ' mm, '}
               {this.props.HeaderInfo.YStep === '' ? ' ' : 'Y: ' +
-              this.props.HeaderInfo.YStep + ' mm, '}
+                this.props.HeaderInfo.YStep + ' mm, '}
               {this.props.HeaderInfo.ZStep === '' ? ' ' : 'Z: ' +
-              this.props.HeaderInfo.ZStep + ' mm '}
+                this.props.HeaderInfo.ZStep + ' mm '}
             </td>
             <th className="col-xs-2 info">{t('Output Type',
               {ns: 'imaging_browser'})}</th>
@@ -263,12 +266,12 @@ class ImagePanelHeadersTable extends Component {
             {this.props.HeaderInfo.ProcDate ?
               <th className="col-xs-2 info">{t('Processing Pipeline Date',
                 {ns: 'imaging_browser'})}</th>
-              : null }
+              : null}
             {this.props.HeaderInfo.ProcDate ?
               <td className="col-xs-2">
                 {this.props.HeaderInfo.ProcDate}
               </td>
-              : null }
+              : null}
           </tr>
           {this.props.HeaderInfo.ProcessingPipeline === 'DTIPrepPipeline' ?
             <tr>
@@ -329,6 +332,7 @@ class ImageQCDropdown extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -359,7 +363,7 @@ class ImageQCDropdown extends Component {
       }
       dropdown = (
         <select name={this.props.FormName +
-        '[' + this.props.FileID + ']'}
+          '[' + this.props.FileID + ']'}
         defaultValue={this.props.defaultValue}
         className="form-control input-sm"
         >
@@ -407,6 +411,7 @@ class ImageQCStatic extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -452,6 +457,7 @@ class ImagePanelQCStatusSelector extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -466,7 +472,7 @@ class ImagePanelQCStatusSelector extends Component {
     if (this.props.HasQCPerm && this.props.FileNew) {
       qcStatusLabel = <span>
         {t('QC Status', {ns: 'imaging_browser'})} <span className="text-info">
-                             ( <span className="glyphicon glyphicon-star">
+          ( <span className="glyphicon glyphicon-star">
           </span> {t('New', {ns: 'loris'})} )
         </span>
       </span>;
@@ -481,8 +487,10 @@ class ImagePanelQCStatusSelector extends Component {
         FileID={this.props.FileID}
         editable={this.props.HasQCPerm}
         defaultValue={this.props.QCStatus}
-        options={{'': '', 'Pass': t('Pass', {ns: 'loris'}),
-          'Fail': t('Fail', {ns: 'loris'})}}
+        options={{
+          '': '', 'Pass': t('Pass', {ns: 'loris'}),
+          'Fail': t('Fail', {ns: 'loris'}),
+        }}
       />
     );
   }
@@ -511,6 +519,7 @@ class ImagePanelQCSelectedSelector extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -527,8 +536,10 @@ class ImagePanelQCSelectedSelector extends Component {
         FormName="selectedvol"
         FileID={this.props.FileID}
         editable={this.props.HasQCPerm}
-        options={{'': '', 'true': t('True', {ns: 'loris'}),
-          'false': t('False', {ns: 'loris'})}}
+        options={{
+          '': '', 'true': t('True', {ns: 'loris'}),
+          'false': t('False', {ns: 'loris'}),
+        }}
         defaultValue={this.props.Selected}
       />
     );
@@ -557,6 +568,7 @@ class ImagePanelQCCaveatSelector extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -571,8 +583,8 @@ class ImagePanelQCCaveatSelector extends Component {
     let mriViolationsLink = null;
     if (this.props.FullName && this.props.Caveat === '1') {
       mriViolationsLink = '/mri_violations/?' +
-          'mincFile=' + this.props.FullName +
-          '&seriesUID=' + this.props.SeriesUID;
+        'mincFile=' + this.props.FullName +
+        '&seriesUID=' + this.props.SeriesUID;
     }
 
     return (
@@ -619,6 +631,7 @@ class ImagePanelQCSNRValue extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -664,6 +677,7 @@ class ImagePanelQCPanel extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -731,6 +745,7 @@ class DownloadButton extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -745,14 +760,14 @@ class DownloadButton extends Component {
       return !prop || prop == '';
     };
     if (empty(this.props.FileName) && empty(this.props.URL)) {
-      return <span/>;
+      return <span />;
     }
     let style = {
       margin: 6,
     };
     const url = this.props.URL ||
-        (this.props.BaseURL
-           + '/mri/jiv/get_file.php?file=' + this.props.FileName);
+      (this.props.BaseURL
+        + '/mri/jiv/get_file.php?file=' + this.props.FileName);
     return (
       <a href={url}
         className="btn btn-default" style={style}>
@@ -787,6 +802,7 @@ class ImageQCCommentsButton extends Component {
     this.openWindowHandler = this.openWindowHandler.bind(this);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -815,7 +831,7 @@ class ImageQCCommentsButton extends Component {
   render() {
     const {t} = this.props;
     if (!this.props.FileID || this.props.FileID === '') {
-      return <span/>;
+      return <span />;
     }
     return (
       <a className="btn btn-default"
@@ -854,6 +870,7 @@ class LongitudinalViewButton extends Component {
     this.openWindowHandler = this.openWindowHandler.bind(this);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -880,7 +897,7 @@ class LongitudinalViewButton extends Component {
   render() {
     const {t} = this.props;
     if (!this.props.FileID || this.props.FileID === '') {
-      return <span/>;
+      return <span />;
     }
     return (
       <a className="btn btn-default"
@@ -918,6 +935,7 @@ class ImageDownloadButtons extends Component {
     super(props);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -949,7 +967,7 @@ class ImageDownloadButtons extends Component {
           BaseURL={this.props.BaseURL}
           Label={t('Download NRRD', {ns: 'imaging_browser'})}
         />
-        { this.props.NiiFile ?
+        {this.props.NiiFile ?
           <TranslatedDownloadButton URL={this.props.APIFile + '/format/nifti'}
             Label={t('Download NIfTI', {ns: 'imaging_browser'})}
           /> :
@@ -1014,6 +1032,7 @@ class ImagePanelBody extends Component {
     this.openWindowHandler = this.openWindowHandler.bind(this);
     i18n.addResourceBundle('hi', 'imaging_browser', hiStrings);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
   }
 
@@ -1041,7 +1060,7 @@ class ImagePanelBody extends Component {
           <div className="col-xs-9 imaging_browser_pic">
             <a href="#noID" onClick={this.openWindowHandler}>
               <img className="img-checkpic img-responsive"
-                src={this.props.APIFile + '/format/thumbnail'}/>
+                src={this.props.APIFile + '/format/thumbnail'} />
             </a>
           </div>
           <div className="col-xs-3 mri-right-panel">
@@ -1073,7 +1092,7 @@ class ImagePanelBody extends Component {
           OtherTimepoints={this.props.OtherTimepoints}
         />
         {this.props.HeadersExpanded ? <TranslatedImagePanelHeadersTable
-          HeaderInfo={this.props.HeaderInfo}/> : ''}
+          HeaderInfo={this.props.HeaderInfo} /> : ''}
       </div>
     );
   }

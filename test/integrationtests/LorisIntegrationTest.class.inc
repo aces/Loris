@@ -150,13 +150,6 @@ abstract class LorisIntegrationTest extends TestCase
 
             $this->login("UnitTester", $this->validPassword);
         }
-
-        if (extension_loaded('xdebug')
-            && function_exists("xdebug_start_code_coverage")
-        ) {
-            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-        }
-
     }
 
     /**
@@ -712,9 +705,12 @@ abstract class LorisIntegrationTest extends TestCase
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
+
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("$row")
+            WebDriverBy::cssSelector("$row"),
+            15
         )->getText();
+
         // 4 means there are 4 records under this site.
         $this->assertStringContainsString($expect_records, $bodyText);
         //test clear filter

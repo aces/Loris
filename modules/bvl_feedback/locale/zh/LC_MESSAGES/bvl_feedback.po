@@ -1,0 +1,111 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Behavioural Feedback"
+msgstr "行为数据反馈"
+
+msgid "Behavioural Feedback Notifications"
+msgstr "行为数据反馈通知"
+
+# Default strings from feedback_bvl_type in raisinbread
+# Comments from dashboard widget on raisinbread.
+# These are dynamically entered user data, but having
+# the test set value on demo translated looks better
+msgid "Input"
+msgstr "数据录入"
+
+msgid "Input Errors"
+msgstr "录入错误"
+
+msgid "Scoring"
+msgstr "评分"
+
+msgid "Scoring Errors"
+msgstr "评分错误"
+
+msgid "Other"
+msgstr "其他"
+
+msgid "Feedback Type"
+msgstr "反馈类型"
+
+msgid "Feedback description"
+msgstr "反馈说明"
+
+msgid "Feedback for PSCID: {{PSCID}}"
+msgstr "PSCID {{PSCID}} 的反馈"
+
+msgid "Type"
+msgstr "类型"
+
+msgid "Author"
+msgstr "提交人"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "There are no threads for this user!"
+msgstr "该用户暂无反馈记录！"
+
+msgid "Open"
+msgstr "未关闭"
+
+msgid "Comment added!"
+msgstr "评论已添加"
+
+msgid "Add a comment:"
+msgstr "添加评论："
+
+msgid "Update comment:"
+msgstr "更新评论："
+
+msgid "Submit"
+msgstr "提交"
+
+msgid "Create thread"
+msgstr "创建反馈"
+
+msgid "The new thread has been submitted!"
+msgstr "新反馈已提交"
+
+msgid "Across All Fields"
+msgstr "所有字段"
+
+msgid "QC Class"
+msgstr "质控类别"
+
+msgid "# Threads"
+msgstr "反馈数量"
+
+msgid "This candidate has no behavioural feedback."
+msgstr "该受试者暂无行为数据反馈"
+
+msgid "New {{feedbacklevel}} level feedback"
+msgstr "新增 {{feedbacklevel}} 级反馈"
+
+msgid "Open Thread Summary"
+msgstr "未关闭反馈摘要"
+
+msgid "Feedback Threads"
+msgstr "反馈列表"
+
+msgid "Field Name"
+msgstr "字段名称"

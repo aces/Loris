@@ -1,10 +1,10 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  php = pkgs.php84.withExtensions ({ enabled, all }:
+  php = pkgs.php85.withExtensions ({ enabled, all }:
     enabled ++ [ all.ast ]);
 in
 pkgs.mkShell {
-  buildInputs = with pkgs; [ php git nodejs php84Packages.composer gettext webpack-cli typescript ];
+  buildInputs = with pkgs; [ php git nodejs php85Packages.composer gettext webpack-cli typescript ];
   shellHook =
     ''
        php -v;

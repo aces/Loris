@@ -1,0 +1,89 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Electrophysiology Uploader"
+msgstr "电生理学上传者"
+
+msgid "LORIS 26 Beta Note:"
+msgstr "LORIS 26 Beta 注意："
+
+msgid "Files uploaded in this module will not be viewable in the Electrophysiology Browser module. This feature is under construction for the next release. Please get in touch with the LORIS team to configure this for your project."
+msgstr "在此模块中上传的文件将无法在电生理学浏览器模块中查看。此功能正在为下一版本构建。请与 LORIS 团队联系，为您的项目进行配置。"
+
+msgid "Upload an electrophysiology recording session"
+msgstr "上传电生理学记录会话"
+
+msgid "File to Upload"
+msgstr "要上传的文件"
+
+msgid "File name must match the following convention:"
+msgstr "文件名必须符合以下约定："
+
+msgid "File cannot exceed {{maxFileSize}}"
+msgstr "文件不能超过{{maxFileSize}}"
+
+msgid "Invalid extension for the uploaded file!"
+msgstr "上传文件的扩展名无效！"
+
+msgid "Filename extension does not match .tar.gz "
+msgstr "文件扩展名与 .tar.gz 不匹配"
+
+msgid "The file {{filename}} must be of type .tar.gz."
+msgstr "文件 {{filename}} 的类型必须为 .tar.gz。"
+
+msgid "Invalid filename!"
+msgstr "文件名无效！"
+
+msgid "Filename should be of the form"
+msgstr "文件名应采用以下形式"
+
+msgid "The file does not respect name convention"
+msgstr "该文件不遵守名称约定"
+
+msgid "Upload Successful!"
+msgstr "上传成功！"
+
+msgid "Processing of this file by the EEG pipeline has started"
+msgstr "EEG 管道已开始处理此文件"
+
+msgid "Upload failed: a network error occured"
+msgstr "上传失败：出现网络错误"
+
+msgid "Upload failed: received HTTP response code"
+msgstr "上传失败：收到 HTTP 响应代码"
+
+msgid "Submission error!"
+msgstr "提交错误！"
+
+msgid "Upload Location"
+msgstr "上传位置"
+
+msgid "Upload ID"
+msgstr "上传身份证件"
+
+msgid "Upload Time"
+msgstr "上传时间"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Uploaded By"
+msgstr "上传者"

@@ -12,6 +12,7 @@ import jaStrings
   from '../locale/ja/LC_MESSAGES/server_processes_manager.json';
 import hiStrings
   from '../locale/hi/LC_MESSAGES/server_processes_manager.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/server_processes_manager.json';
 
 /**
  * ServerProcessesManagerIndex is the main entry point of the
@@ -151,6 +152,7 @@ ServerProcessesManagerIndex.propTypes = {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'server_processes_manager', jaStrings);
   i18n.addResourceBundle('hi', 'server_processes_manager', hiStrings);
+  i18n.addResourceBundle('zh', 'server_processes_manager', zhStrings);
   const SPMIndex = withTranslation(
     ['server_processes_manager', 'loris']
   )(ServerProcessesManagerIndex);

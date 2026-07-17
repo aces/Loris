@@ -1,0 +1,176 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Document Repository"
+msgstr "文档库"
+
+msgid "Document Repository Notifications"
+msgstr "文档存通知"
+
+msgid "Upload files"
+msgstr "上传文件"
+
+msgid "Category"
+msgstr "类别"
+
+msgid "Search for site"
+msgstr "搜索站点"
+
+msgid "Version"
+msgstr "版本"
+
+msgid "Comments"
+msgstr "评论"
+
+msgid "Restrict access to the file?"
+msgstr "限制对文件的访问？"
+
+msgid "File(s) to upload"
+msgstr "要上传的文件"
+
+msgid "Upload File(s)"
+msgstr "上传文件"
+
+msgid "Uploading..."
+msgstr "正在上传..."
+
+msgid "Upload Successful!"
+msgstr "上传成功！"
+
+msgid "Upload Incomplete"
+msgstr "上传不完整"
+
+msgid "Error reading response"
+msgstr "读取响应时出错"
+
+msgid "Please report the issue or contact your administrator"
+msgstr "请报告问题或联系您的管理员"
+
+msgid "File too large"
+msgstr "文件太大"
+
+msgid "Could not upload file"
+msgstr "无法上传文件"
+
+msgid "Something went wrong"
+msgstr "出了点问题"
+
+msgid "Add Category"
+msgstr "添加类别"
+
+msgid "Add a category"
+msgstr "添加类别"
+
+msgid "Category Name"
+msgstr "类别名称"
+
+msgid "Parent"
+msgstr "父目录"
+
+msgid "Category added successfully!"
+msgstr "类别添加成功！"
+
+msgid "Error"
+msgstr "错误"
+
+msgid "Edit Document Repository File"
+msgstr "编辑文档存储库文件"
+
+msgid "File updated successfully!"
+msgstr "文件更新成功！"
+
+msgid "Update File"
+msgstr "更新文件"
+
+msgid "Edit Category"
+msgstr "编辑类别"
+
+msgid "Update Category"
+msgstr "更新类别"
+
+msgid "Change Name of a category"
+msgstr "更改类别名称"
+
+msgid "Category Name:"
+msgstr "类别名称："
+
+msgid "New Name for Category"
+msgstr "类别的新名称"
+
+msgid "New Parent:"
+msgstr "新父目录："
+
+msgid "Cannot be equal to itself"
+msgstr "不能等于自身"
+
+msgid "New parent cannot be equal to itself"
+msgstr "新的父目录不能等于它自己"
+
+msgid "Edit error!"
+msgstr "编辑错误！"
+
+msgid "Edited Successful!"
+msgstr "编辑成功！"
+
+msgid "Delete Category"
+msgstr "删除类别"
+
+msgid "Delete a category"
+msgstr "删除类别"
+
+msgid "Delete error!"
+msgstr "删除错误！"
+
+msgid "Delete Successful!"
+msgstr "删除成功！"
+
+msgid "Upload"
+msgstr "上传"
+
+msgid "File Name"
+msgstr "文件名"
+
+msgid "Uploaded By"
+msgstr "上传者"
+
+msgid "For Site"
+msgstr "对于网站"
+
+msgid "File Type"
+msgstr "文件类型"
+
+msgid "Date Uploaded"
+msgstr "上传日期"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Delete File"
+msgstr "删除文件"
+
+msgid "Filter globally"
+msgstr "全局过滤"
+
+msgid "You won't be able to revert this!"
+msgstr "您将无法恢复此状态！"
+
+msgid "Yes, delete it!"
+msgstr "是的，删除它！"

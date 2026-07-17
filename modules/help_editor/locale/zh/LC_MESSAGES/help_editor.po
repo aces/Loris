@@ -1,0 +1,59 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Help Editor"
+msgstr "帮助编辑器"
+
+msgid "Edit Help Content"
+msgstr "编辑帮助内容"
+
+msgid "Help ID"
+msgstr "帮助ID"
+
+msgid "Topic"
+msgstr "主题"
+
+msgid "Content"
+msgstr "内容"
+
+msgid "Title"
+msgstr "标题"
+
+msgid "Open the help dialog to preview the changes."
+msgstr "打开帮助对话框预览更改。"
+
+msgid "Content update successful!"
+msgstr "内容更新成功！"
+
+msgid "Content update unsuccessful."
+msgstr "内容更新失败。"
+
+msgid "Something went wrong"
+msgstr "出了点问题"
+
+msgid "Try again"
+msgstr "再试一次"
+
+msgid "Help content cannot be added to an instrument that has already been registered."
+msgstr "无法将帮助内容添加到已注册的仪器中。"
+
+msgid "Adding help content for a specific instrument"
+msgstr "添加特定仪器的帮助内容"

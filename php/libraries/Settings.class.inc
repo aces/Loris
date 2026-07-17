@@ -183,7 +183,7 @@ class Settings
         $configVal = $this->_config->getSetting($settingName);
 
         if (is_bool($configVal) || is_numeric($configVal)) {
-            return (boolean)$configVal;
+            return (bool)$configVal;
         }
 
         if (is_string($configVal) && strtolower($configVal) == "true") {

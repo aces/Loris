@@ -40,22 +40,22 @@ const GenomicBrowser = (props) => {
       <div className={'row'}>
         <Tabs tabs={tabList} defaultTab='tabProfiles'>
           <TabPane TabId={tabList[0].id}>
-            <Profiles baseURL={props.baseURL}/>
+            <Profiles baseURL={props.baseURL} />
           </TabPane>
           <TabPane TabId={tabList[1].id}>
-            <GWAS baseURL={props.baseURL}/>
+            <GWAS baseURL={props.baseURL} />
           </TabPane>
           <TabPane TabId={tabList[2].id}>
-            <SNP baseURL={props.baseURL}/>
+            <SNP baseURL={props.baseURL} />
           </TabPane>
           <TabPane TabId={tabList[3].id}>
-            <CNV baseURL={props.baseURL}/>
+            <CNV baseURL={props.baseURL} />
           </TabPane>
           <TabPane TabId={tabList[4].id}>
-            <Methylation baseURL={props.baseURL}/>
+            <Methylation baseURL={props.baseURL} />
           </TabPane>
           <TabPane TabId={tabList[5].id}>
-            <Files baseURL={props.baseURL}/>
+            <Files baseURL={props.baseURL} />
           </TabPane>
         </Tabs>
       </div>
@@ -71,6 +71,7 @@ GenomicBrowser.propTypes = {
  */
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'genomic_browser', {});
+  i18n.addResourceBundle('zh', 'genomic_browser', {});
   const GenomicB = withTranslation(
     ['genomic_browser', 'loris']
   )(GenomicBrowser);

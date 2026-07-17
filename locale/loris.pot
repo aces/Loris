@@ -298,6 +298,21 @@ msgstr ""
 msgid "Visits"
 msgstr ""
 
+msgid "Visit"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
 msgid "An error occured while loading the page."
 msgstr ""
 
@@ -481,9 +496,6 @@ msgstr ""
 msgid "Screening"
 msgstr ""
 
-msgid "Visit"
-msgstr ""
-
 msgid "Approval"
 msgstr ""
 
@@ -502,16 +514,10 @@ msgstr ""
 msgid "Withdrawn"
 msgstr ""
 
-msgid "In Progress"
-msgstr ""
-
 msgid "Progress"
 msgstr ""
 
 msgid "Success"
-msgstr ""
-
-msgid "Complete"
 msgstr ""
 
 msgid "Instrument"

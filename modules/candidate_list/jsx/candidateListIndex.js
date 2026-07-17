@@ -15,6 +15,7 @@ import {withTranslation} from 'react-i18next';
 import jaStrings from '../locale/ja/LC_MESSAGES/candidate_list.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/candidate_list.json';
 import frStrings from '../locale/fr/LC_MESSAGES/candidate_list.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/candidate_list.json';
 
 /**
  * Candidate List
@@ -44,6 +45,15 @@ class CandidateListIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.toggleFilters = this.toggleFilters.bind(this);
+
+    this.dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        style: 'short',
+        timeZone: 'UTC',
+
+      }
+    );
   }
 
   /**
@@ -143,6 +153,14 @@ class CandidateListIndex extends Component {
 
       return <td><a href ={url}>{cell}</a></td>;
     }
+    if (column === this.props.t('DoB', {ns: 'loris'})
+      || column === this.props.t('Date of registration', {ns: 'loris'})) {
+      if (cell) {
+        const date = new Date(cell);
+        return <td>{this.dateFormatter.format(date)}</td>;
+      }
+      return <td></td>;
+    }
     if (column === this.props.t('Feedback', {ns: 'loris'})) {
       switch (cell) {
       case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
@@ -221,6 +239,7 @@ class CandidateListIndex extends Component {
           name: 'visitLabel',
           type: 'multiselect',
           options: options.visitlabel,
+          sortByValue: false,
         },
       },
       {
@@ -247,10 +266,7 @@ class CandidateListIndex extends Component {
         filter: {
           name: 'entityType',
           type: 'select',
-          options: {
-            'Human': 'Human',
-            'Scanner': 'Scanner',
-          },
+          options: options.entitytype,
         },
       },
       {
@@ -413,6 +429,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'candidate_list', jaStrings);
   i18n.addResourceBundle('hi', 'candidate_list', hiStrings);
   i18n.addResourceBundle('fr', 'candidate_list', frStrings);
+  i18n.addResourceBundle('zh', 'candidate_list', zhStrings);
 
 
   const CLIndex = withTranslation(

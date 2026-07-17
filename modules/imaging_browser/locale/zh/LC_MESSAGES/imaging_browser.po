@@ -1,0 +1,180 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Imaging Browser"
+msgstr "影像浏览器"
+
+msgid "View Session"
+msgstr "查看会话"
+
+msgid "New and pending imaging session"
+msgstr "新的及待处理的成像会话"
+
+msgid "New and pending imaging sessions"
+msgstr "新的及待处理的成像会话"
+
+msgid "Imaging Session"
+msgid_plural "Imaging Sessions"
+msgstr[0] "成像会话"
+
+msgid "Imaging QC Summary"
+msgstr "成像质量控制概览"
+
+msgid "Number of Scans"
+msgstr "扫描次数"
+
+msgid "Red bar denotes number of failed QC scans."
+msgstr "红色条表示 QC 失败的扫描数。"
+
+msgid "Green bar denotes number of passed QC scans."
+msgstr "绿色条表示 QC 通过的扫描数。"
+
+msgid "Grey bar denotes other QC statuses."
+msgstr "灰色条表示其他 QC 状态。"
+
+msgid "Different shades represent different modalities. Only native modalities are displayed in results."
+msgstr "不同颜色深浅表示不同成像模态。结果中仅显示本机模态。"
+
+msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
+msgstr "将鼠标悬停在任一访问上可查看该访问的详细模态分解，单击即可进入影像浏览器。"
+
+msgid "%1 file(s) displayed."
+msgstr "显示 %1 个文件。"
+
+msgid "Visit QC Status"
+msgstr "访问质量控制状态"
+
+msgid "First Acquisition"
+msgstr "首次采集"
+
+msgid "First Insertion"
+msgstr "首次插入"
+
+msgid "Last QC"
+msgstr "最近质量控制"
+
+msgid "New Data"
+msgstr "新数据"
+
+msgid "Links"
+msgstr "链接"
+
+msgid "SessionID"
+msgstr "会话ID"
+
+msgid "Sequence Type"
+msgstr "序列类型"
+
+msgid "Pending New"
+msgstr "待处理"
+
+msgid "QC Status"
+msgstr "质量控制状态"
+
+msgid "Caveat"
+msgstr "注意事项"
+
+msgid "SNR"
+msgstr "信噪比"
+
+msgid "all types"
+msgstr "所有类型"
+
+msgid "Header Info"
+msgstr "头信息"
+
+msgid "Download Image"
+msgstr "下载影像"
+
+msgid "Longitudinal View"
+msgstr "纵向视图"
+
+msgid "QC Comments"
+msgstr "质控意见"
+
+msgid "Series Instance UID"
+msgstr "系列实例 UID"
+
+msgid "No data available"
+msgstr "无可用数据"
+
+msgid "Patient Name"
+msgstr "患者姓名"
+
+msgid "QC Pending"
+msgstr "质量控制待处理"
+
+msgid "Output Type"
+msgstr "输出类型"
+
+msgid "Scanner"
+msgstr "扫描仪"
+
+msgid "Human"
+msgstr "受试者"
+
+msgid "EDC"
+msgstr "EDC"
+
+msgid "Navigation"
+msgstr "导航"
+
+msgid "Back to list"
+msgstr "返回列表"
+
+msgid "Volume Viewer"
+msgstr "体积查看器"
+
+msgid "3D Only"
+msgstr "仅 3D"
+
+msgid "3D + Overlay"
+msgstr "3D + 叠加显示"
+
+msgid "Report a Bug (Mantis)"
+msgstr "报告错误（Mantis）"
+
+msgid "Visit Level QC"
+msgstr "访问级别 QC"
+
+msgid "Visit Level Feedback"
+msgstr "访问级别反馈"
+
+msgid "Visit Level Caveat"
+msgstr "访问级别注意事项"
+
+msgid "DCC MRI Quality Control"
+msgstr "DCC MRI 质量控制"
+
+msgid "Click here to close this window"
+msgstr "单击此处关闭窗口"
+
+msgid "Comments saved."
+msgstr "评论已保存。"
+
+msgid "Feedback MRI Popup"
+msgstr "MRI 反馈弹窗"
+
+msgid "Subject"
+msgstr "受试者"
+
+msgid "Download DICOM"
+msgstr "下载 DICOM"

@@ -7,6 +7,7 @@ import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/brainbrowser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/brainbrowser.json';
 import frStrings from '../locale/fr/LC_MESSAGES/brainbrowser.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/brainbrowser.json';
 
 /**
  * Brainbrowser Page.
@@ -127,6 +128,7 @@ if (typeof i18n !== 'undefined') {
   i18n.addResourceBundle('hi', 'brainbrowser', hiStrings);
   i18n.addResourceBundle('ja', 'brainbrowser', jaStrings);
   i18n.addResourceBundle('fr', 'brainbrowser', frStrings);
+  i18n.addResourceBundle('zh', 'brainbrowser', zhStrings);
 }
 
 const strings = {

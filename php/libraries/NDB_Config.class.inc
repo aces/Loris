@@ -537,7 +537,7 @@ class NDB_Config
             null
             : [
                 'id'                => $info['ProjectID'],
-                'Name'              => $info['Name'],
+                'Name'              => dgettext("Project", $info['Name']),
                 'Alias'             => $info['Alias'],
                 'recruitmentTarget' => $info['recruitmentTarget'],
             ];
