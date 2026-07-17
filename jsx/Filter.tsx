@@ -154,7 +154,10 @@ function Filter({
             options={filter.options}
             sortByValue={filter.sortByValue}
             multiple={filter.type === 'multiselect'}
-            emptyOption={false}
+            // A plain select keeps its default empty option so the first real
+            // option isn't pre-selected (which would make re-selecting it a
+            // no-op that never fires the filter). Only multiselect drops it.
+            emptyOption={filter.type !== 'multiselect'}
             autoSelect={false}
           />
         );
