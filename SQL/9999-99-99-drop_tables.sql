@@ -279,6 +279,7 @@ DROP TABLE IF EXISTS `user_psc_rel`;
 DROP TABLE IF EXISTS `user_project_rel`;
 DROP TABLE IF EXISTS `candidate`;
 DROP TABLE IF EXISTS `caveat_options`;
+DROP TABLE IF EXISTS `user_password_reset`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `sex`;
 DROP TABLE IF EXISTS `language`;
