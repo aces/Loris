@@ -82,7 +82,7 @@ class Expired extends \NDB_Page implements ETagCalculator
 
         // Check if the token is valid and not expired.
         $row = $db->pSelectRow(
-            "SELECT r.UserID, r.CreationDate, u.UserID AS Username
+            "SELECT r.UserID AS UserID, r.CreationDate, u.UserID AS Username
              FROM user_password_reset r
              INNER JOIN users u
              ON r.UserID = u.ID
@@ -101,6 +101,7 @@ class Expired extends \NDB_Page implements ETagCalculator
         // Set the session variable to indicate that the user can reset their password.
         $_SESSION['PasswordExpiredForUser'] = $row['Username'];
         $_SESSION['PasswordResetToken']     = $token;
+        $_SESSION['PasswordResetUserID']    = $row['UserID'];
 
         return new \LORIS\Http\Response\JsonResponse(
             ['valid' => true]
@@ -163,6 +164,10 @@ class Expired extends \NDB_Page implements ETagCalculator
             }
             // Update password
             try {
+                $response = $this->validateResetToken($request);
+                if ($response->getStatusCode() !== 200) {
+                    return $response;
+                }
                 $user->updatePassword(
                     new \Password(
                         $plaintext
@@ -171,10 +176,14 @@ class Expired extends \NDB_Page implements ETagCalculator
                 $db->update(
                     'user_password_reset',
                     ['ACTIVE' => 'N'],
-                    ['ResetToken' => $_SESSION['PasswordResetToken']]
+                    [
+                        'UserID' => $_SESSION['PasswordResetUserID'],
+                        'ACTIVE' => 'Y',
+                    ]
                 );
                 unset($_SESSION['PasswordExpiredForUser']);
                 unset($_SESSION['PasswordResetToken']);
+                unset($_SESSION['PasswordResetUserID']);
             } catch (\InvalidArgumentException $e) {
                 return new \LORIS\Http\Response\JSON\Conflict(
                     $e->getMessage()

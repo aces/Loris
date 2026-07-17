@@ -107,18 +107,16 @@ class Reset extends \NDB_Page implements ETagCalculator
                     //     true
                     // );
 
-                    $activeTokens = iterator_to_array($db->pSelect(
-                        "SELECT ResetToken, CreationDate
+                    $activeTokenCount = $db->pSelectOne(
+                        "SELECT COUNT(*)
                          FROM user_password_reset
                          WHERE UserID = :userID
                             AND ACTIVE = 'Y'
                             AND CreationDate >= NOW() - INTERVAL 20 MINUTE
-                         ORDER BY CreationDate
                          ",
                         ['userID' => $user->userID]
-                    ));
+                    );
 
-                    $activeTokenCount = count($activeTokens);
                     if ($activeTokenCount < 3) {
                         // Generate a new password reset token.
                         $resetToken = \Utility::randomString(64);

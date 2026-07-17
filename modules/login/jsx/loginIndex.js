@@ -56,6 +56,7 @@ class Login extends Component {
         },
       },
       mode: props.defaultmode || 'login',
+      resetTokenError: null,
       oidc: null,
       component: {
         requestAccount: null,
@@ -93,10 +94,19 @@ class Login extends Component {
         method: 'GET',
         credentials: 'same-origin',
       })
-        .then((resp) => resp.json())
+        .then((resp) => {
+          if (!resp.ok) {
+            this.setState({
+              resetTokenError: 'Your password reset token is invalid or has expired. Please request a new password reset link.',
+            });
+            return null;
+          }
+          return resp.json();
+        })
         .then((json) => {
           if (json.valid) {
-            this.setState({ mode: 'expired' });
+            this.setState({mode: 'expired'});
+            resetTokenError: null;
           }
         });
     }
@@ -271,6 +281,11 @@ class Login extends Component {
           class={'col-xs-12 col-sm-12 col-md-12 text-danger'}
         />
       ) : null;
+      const resetTokenError = this.state.resetTokenError ? (
+        <div className={'alert alert-danger'} role="alert">
+          {this.state.resetTokenError}
+        </div>
+      ) : null;
       const policy = this.state.component.requestAccount.policy;
       const policyButton = policy ?
         <PolicyButton
@@ -321,6 +336,7 @@ class Login extends Component {
               autoComplete={'current-password'}
             />
             {error}
+            {resetTokenError}
             <ButtonElement
               label={this.props.t('Login', {ns: 'login'})}
               type={'submit'}
