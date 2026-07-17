@@ -230,7 +230,16 @@ function Filter({
         >
           {renderPresets()}
           <li>
-            <a role="button" onClick={clearFilters} style={{cursor: 'pointer'}}>
+            <a
+              role="button"
+              onClick={clearFilters}
+              style={{cursor: 'pointer'}}
+              // `name` is valid DOM on <a> but absent from React's anchor
+              // types; the integration suite locates this button via
+              // a[name="reset"], so set it through a typed spread.
+              {...({name: 'reset'} as unknown as
+                React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+            >
               {t('Clear Filters')}
             </a>
           </li>
