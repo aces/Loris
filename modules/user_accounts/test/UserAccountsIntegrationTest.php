@@ -76,7 +76,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 'PSCPI'                  => 'N',
                 'Active'                 => 'Y',
                 'Password_hash'          => $password,
-                'PasswordChangeRequired' => false,
                 'Pending_approval'       => 'N'
             ]
         );

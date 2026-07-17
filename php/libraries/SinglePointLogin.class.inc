@@ -229,7 +229,6 @@ class SinglePointLogin
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
                         UserID,
-                        PasswordChangeRequired as Expired,
                         Active,
                         Pending_approval,
                         Password_hash,
@@ -379,7 +378,6 @@ class SinglePointLogin
 
             // Save the new password if the last password expired
             if ($row['Expired']) {
-                $this->_passwordChangeRequired      = true;
                 $_SESSION['PasswordExpiredForUser'] = $username;
                 return false;
             }

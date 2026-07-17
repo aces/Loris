@@ -74,7 +74,6 @@ foreach ($compromised as $username => $details) {
     // password reset
     $DB->update(
         'users',
-        ['PasswordChangeRequired' => '1'],
         ['UserID' => $username]
     );
 }

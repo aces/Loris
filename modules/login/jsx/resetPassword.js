@@ -102,8 +102,8 @@ class ResetPassword extends Component {
           onSubmit={this.handleSubmit}
         >
           <StaticElement
-            text={this.props.t('Please enter your username below, '
-            + 'and a new password will be sent to you.', {ns: 'login'})}
+            text={this.props.t('Please enter your username below'
+            + ' and a reset password link will be sent to you.', {ns: 'login'})}
             class={'col-sm-12'}
             textClass={'text-center'}
           />
@@ -132,8 +132,7 @@ class ResetPassword extends Component {
     ) : (
       <div className={'success-message'}>
         <h1>{this.props.t('Thank you!', {ns: 'login'})}</h1>
-        <p>{this.props.t('Password reset. You should receive an email within ' +
-          'a few minutes.', {ns: 'login'})}</p>
+        <p>{this.props.t('A password reset link has been sent to your email. You should receive it within a few minutes.', {ns: 'login'})}</p>
         <a onClick={() => window.location.href = window.location.origin}
           style={{cursor: 'pointer'}}>{this.props.t(
             'Return to Login Page',

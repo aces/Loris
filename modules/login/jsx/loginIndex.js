@@ -67,6 +67,7 @@ class Login extends Component {
     // Bind component instance to custom methods
     this.handleSubmit = this.handleSubmit.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.checkResetPasswordToken = this.checkResetPasswordToken.bind(this);
     this.setForm = this.setForm.bind(this);
     this.setMode = this.setMode.bind(this);
     this.getOIDCLinks = this.getOIDCLinks.bind(this);
@@ -77,6 +78,28 @@ class Login extends Component {
    */
   componentDidMount() {
     this.fetchData();
+    this.checkResetPasswordToken();
+  }
+
+  /**
+   * Check the reset password token.
+   */
+  checkResetPasswordToken() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    if (token) {
+      fetch(`login/Expired?token=${encodeURIComponent(token)}`, {
+        method: 'GET',
+        credentials: 'same-origin',
+      })
+        .then((resp) => resp.json())
+        .then((json) => {
+          if (json.valid) {
+            this.setState({ mode: 'expired' });
+          }
+        });
+    }
   }
 
   /**

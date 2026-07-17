@@ -30,6 +30,8 @@ class Expired extends \NDB_Page implements ETagCalculator
     {
         // Ensure POST request.
         switch ($request->getMethod()) {
+        case 'GET':
+            return $this->_handleGET($request);
         case 'POST':
             return $this->_handlePOST($request);
         default:
@@ -37,6 +39,72 @@ class Expired extends \NDB_Page implements ETagCalculator
                 $this->allowedMethods()
             );
         }
+    }
+
+    /**
+     * Processes GET requests for password reset links.
+     *
+     * Validates the password reset token in the query string
+     * before displaying the password reset form.
+     *
+     * @param ServerRequestInterface $request The incoming PSR-7 request.
+     *
+     * @return ResponseInterface The outgoing PSR-7 response.
+     */
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Parse GET request parameters.
+        $params = $request->getQueryParams();
+
+        if (isset($params['token'])) {
+            return $this->validateResetToken($request);
+        }
+
+        return new \LORIS\Http\Response\JSON\BadRequest(
+            'Error'
+        );
+    }
+
+    private function validateResetToken(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Parse GET request parameters.
+        $params = $request->getQueryParams();
+        $token  = $params['token'] ?? '';
+
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        if (!is_string($token) || trim($token) === '') {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Missing password reset token.'
+            );
+        }
+
+        // Check if the token is valid and not expired.
+        $row = $db->pSelectRow(
+            "SELECT r.UserID, r.CreationDate, u.UserID AS Username
+             FROM user_password_reset r
+             INNER JOIN users u
+             ON r.UserID = u.ID
+             WHERE r.ResetToken = :token
+                AND r.ACTIVE = 'Y'
+                AND r.CreationDate >= NOW() - INTERVAL 20 MINUTE",
+            ['token' => $token]
+        );
+
+        if (empty($row)) {
+            return new \LORIS\Http\Response\JSON\Conflict(
+                'Invalid or expired token.'
+            );
+        }
+
+        // Set the session variable to indicate that the user can reset their password.
+        $_SESSION['PasswordExpiredForUser'] = $row['Username'];
+        $_SESSION['PasswordResetToken']     = $token;
+
+        return new \LORIS\Http\Response\JsonResponse(
+            ['valid' => true]
+        );
     }
 
     /**
@@ -72,6 +140,8 @@ class Expired extends \NDB_Page implements ETagCalculator
      */
     function expiredPassword(ServerRequestInterface $request) : ResponseInterface
     {
+        $factory      = \NDB_Factory::singleton();
+        $db           = $factory->database();
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
 
@@ -98,7 +168,13 @@ class Expired extends \NDB_Page implements ETagCalculator
                         $plaintext
                     )
                 );
+                $db->update(
+                    'user_password_reset',
+                    ['ACTIVE' => 'N'],
+                    ['ResetToken' => $_SESSION['PasswordResetToken']]
+                );
                 unset($_SESSION['PasswordExpiredForUser']);
+                unset($_SESSION['PasswordResetToken']);
             } catch (\InvalidArgumentException $e) {
                 return new \LORIS\Http\Response\JSON\Conflict(
                     $e->getMessage()
@@ -137,6 +213,7 @@ class Expired extends \NDB_Page implements ETagCalculator
     protected function allowedMethods(): array
     {
         return [
+            'GET',
             'POST',
         ];
     }

@@ -59,7 +59,6 @@ class UserTest extends TestCase
             'DBAccess'               => '123',
             'Active'                 => 'Y',
             'Password_hash'          => null,
-            'PasswordChangeRequired' => 0,
             'TOTPSecret'             => null,
             'Pending_approval'       => 'Y',
             'Doc_Repo_Notifications' => 'Y',
@@ -726,7 +725,6 @@ class UserTest extends TestCase
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory(self::USERNAME);
 
-        $this->assertEquals(true, $this->_user->getData('PasswordChangeRequired'));
         // This checks that the hash has been updated. There is no way to predict
         // what the new hash will be, so simply check that it changed!
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
@@ -760,7 +758,6 @@ class UserTest extends TestCase
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory(self::USERNAME);
 
-        $this->assertEquals(0, $this->_user->getData('PasswordChangeRequired'));
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
     }
 

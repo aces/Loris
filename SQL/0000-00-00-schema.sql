@@ -105,7 +105,6 @@ CREATE TABLE `users` (
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Password_hash` varchar(255) default NULL,
-  `PasswordChangeRequired` tinyint(1) NOT NULL default 0,
   `TOTPSecret` binary(64) DEFAULT NULL,
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
@@ -119,10 +118,18 @@ CREATE TABLE `users` (
   CONSTRAINT `FK_users_2` FOREIGN KEY (`language_preference`) REFERENCES `language` (`language_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval)
+VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N');
 
-
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,PasswordChangeRequired)
-VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N',0);
+CREATE TABLE `user_password_reset` (
+  `UserID` int(10) unsigned NOT NULL,
+  `ResetToken` char(64) NOT NULL,
+  `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `CreationDate` datetime NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY (`UserID`,`ResetToken`),
+  UNIQUE KEY `ResetToken` (`ResetToken`),
+  CONSTRAINT `FK_user_password_reset_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,

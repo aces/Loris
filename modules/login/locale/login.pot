@@ -40,7 +40,7 @@ msgstr ""
 msgid "Data in LORIS:"
 msgstr ""
 
-msgid "Please enter your username below, and a new password will be sent to you."
+msgid "Please enter your username below and a reset password link will be sent to you."
 msgstr ""
 
 msgid "Back to login page"
@@ -76,7 +76,7 @@ msgstr ""
 msgid "Thank you!"
 msgstr ""
 
-msgid "Password reset. You should receive an email within a few minutes."
+msgid "A password reset link has been sent to your email. You should receive it within a few minutes."
 msgstr ""
 
 msgid "Return to Login Page"

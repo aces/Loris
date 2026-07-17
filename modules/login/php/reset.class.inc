@@ -72,6 +72,8 @@ class Reset extends \NDB_Page implements ETagCalculator
      */
     function resetPassword(ServerRequestInterface $request) : ResponseInterface
     {
+        $factory      = \NDB_Factory::singleton();
+        $db           = $factory->database();
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
 
@@ -96,38 +98,49 @@ class Reset extends \NDB_Page implements ETagCalculator
                 // Check if valid email.
                 if ($user->isEmailValid()) {
                     $config = \NDB_Factory::singleton()->config();
-                    // Generate a new password.
-                    $password = \Utility::randomString();
-                    // Reset the password in the database and
-                    // expire password so user must change it upon login.
-                    $user->updatePassword(
-                        new \Password($password),
-                        true
-                    );
+                    // // Generate a new password.
+                    // $password = \Utility::randomString();
+                    // // Reset the password in the database and
+                    // // expire password so user must change it upon login.
+                    // $user->updatePassword(
+                    //     new \Password($password),
+                    //     true
+                    // );
 
-                    // send the user an email
-                    $factory = \NDB_Factory::singleton();
+                    $activeTokens = iterator_to_array($db->pSelect(
+                        "SELECT ResetToken, CreationDate
+                         FROM user_password_reset
+                         WHERE UserID = :userID
+                            AND ACTIVE = 'Y'
+                            AND CreationDate >= NOW() - INTERVAL 20 MINUTE
+                         ORDER BY CreationDate
+                         ",
+                        ['userID' => $user->userID]
+                    ));
 
-                    $msg_data = [];
-                    $tmp      = $config->getSetting('title');
-                    $title    = is_array($tmp) ? implode('', $tmp):$tmp;
-                    $msg_data['study']    = $title;
-                    $msg_data['url']      = $factory->settings()->getBaseURL();
-                    $msg_data['realname'] = $user->getFullname();
-                    $msg_data['password'] = $password;
+                    $activeTokenCount = count($activeTokens);
+                    if ($activeTokenCount < 3) {
+                        // Generate a new password reset token.
+                        $resetToken = \Utility::randomString(64);
 
-                    $locale   = $request->getAttribute('locale');
-                    $language = strtolower(substr($locale, 0, 2));
+                        $db->insert(
+                            'user_password_reset',
+                            [
+                                'UserID'     => $user->userID,
+                                'ResetToken' => $resetToken,
+                            ]
+                        );
 
-                    $template = match ($language) {
-                        'fr'    => 'lost_password_fr.tpl',
-                        'es'    => 'lost_password_es.tpl',
-                        'zh'    => 'lost_password_zh.tpl',
-                        'ja'    => 'lost_password_ja.tpl',
-                        'hi'    => 'lost_password_hi.tpl',
-                        default => 'lost_password.tpl',
-                    };
-                    \Email::send($email, $template, $msg_data);
+                        $activeTokenCount++;
+                        // send the user an email
+                        $msg_data = [];
+                        $tmp      = $config->getSetting('title');
+                        $title    = is_array($tmp) ? implode('', $tmp):$tmp;
+                        $msg_data['study']                 = $title;
+                        $msg_data['realname']              = $user->getFullname();
+                        $msg_data['resetpasswordurl']      = $factory->settings()->getBaseURL() . '/login?token=' . urlencode($resetToken);
+                        \Email::send($email, 'lost_password.tpl', $msg_data);
+                    }
                 } else {
                     error_log(
                         $_SERVER['REMOTE_ADDR']
@@ -160,7 +173,7 @@ class Reset extends \NDB_Page implements ETagCalculator
      */
     public function ETag(ServerRequestInterface $request): string
     {
-        if ($request->getMethod() === 'POST') {
+        if ($request->getMethod() === 'POST' || $request->getMethod() === 'GET') {
             return '';
         }
     }
