@@ -609,8 +609,8 @@ class Stats_Demographic extends \NDB_Form
             );
         } else {
             $subcategories = [
-                dngettext('statistics', 'Male', 'Males', 1),
-                dngettext('statistics', 'Female', 'Females', 1)
+                dngettext('loris', 'Male', 'Males', 1),
+                dngettext('loris', 'Female', 'Females', 1)
             ];
             $result        = iterator_to_array(
                 $db->pselect(

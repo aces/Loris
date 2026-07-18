@@ -12,7 +12,7 @@
         <tr class="info">
             <th class="   spacer"> </th>
             {foreach from=$Centers item=center key=centername}
-                <th id='{$center.ID}' class="centers tip" colspan="2" onclick="hideStats(this)" data-toggle="tooltip" data-placement="bottom" data-container="body" title="Click to minimize">
+                <th id='{$center.ID}' class="centers tip" colspan="2" onclick="hideStats(this)" data-toggle="tooltip" data-placement="bottom" data-container="body" title={dgettext('statistics', 'Click to minimize')}>
                     {$center.LongName}
                 </th>
             {/foreach}
@@ -54,7 +54,21 @@
     </table>
 
 
+    {assign var=siteText value=''}
+    {if $CurrentSite|default}
+    {assign var=siteText value=sprintf(
+    dgettext('statistics', ' for %s'),
+    dgettext('psc', $CurrentSite.Name|default)
+    )}
+    {/if}
 
+    {assign var=projectText value=''}
+    {if $CurrentProject|default}
+    {assign var=projectText value=sprintf(
+    dgettext('statistics', ' for %s'),
+    dgettext('Project', $CurrentProject.Name|default)
+    )}
+    {/if}
     <b><a href='{$baseurl|default}/statistics/statistics_site/?CenterID={$CurrentSite.ID|default}&ProjectID={$CurrentProject.ID|default}'
             target="_blank"
         >
@@ -63,22 +77,8 @@
                     'statistics',  
                     'Click here for breakdown per participant%s%s'  
                 ),   
-                {if $CurrentSite|default}
-                    sprintf(  
-                        dgettext('statistics', ' for %s'),  
-                        dgettext('psc', $CurrentSite.Name|default)  
-                    )   
-                {else}
-                    ''
-                {/if}  
-                {if $CurrentProject|default  }
-                    sprintf(
-                        dgettext('statistics', ' for %s'),
-                        dgettext('Project', $CurrentProject.Name|default)
-                    )
-                {else}
-                    ''
-                {/if}
+                $siteText,
+                $projectText
             )}
         </a>
     </b>
@@ -133,7 +133,19 @@
         </tbody>
     </table>
     <div>
-        <b><a href='{$baseurl|default}/statistics/statistics_dd_site/?CenterID={$CurrentSite.ID|default}&ProjectID={$CurrentProject.ID|default}' target="_blank">{dgettext('statistics', 'Click here for breakdown per participant')} {if $CurrentSite|default} for {$CurrentSite.Name|default} {/if} {if $CurrentProject|default} for {$CurrentProject.Name|default} {/if}</a></b>
-    </div>
+    <b><a href='{$baseurl|default}/statistics/statistics_site/?CenterID={$CurrentSite.ID|default}&ProjectID={$CurrentProject.ID|default}'
+        target="_blank"
+        >
+            {sprintf(
+                dgettext(
+                    'statistics',
+                    'Click here for breakdown per participant%s%s'
+                ),
+                $siteText,
+                $projectText
+            )}
+        </a>
+    </b>
+</div>
 </div>
 

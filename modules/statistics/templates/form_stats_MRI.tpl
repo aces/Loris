@@ -88,8 +88,9 @@
     {else}
         <br><br>
         <h2>{dgettext('statistics', 'Oops')}</h2>
-        <p> It seems like the "mri_parameter_form" table is missing in the database currently in use. <br>
-            This table is necessary in order to compute the Breakdown table of the MRI statistics page.</p>
+        <p> {dgettext('statistics', 'It seems like the "mri_parameter_form" table is missing in the database currently in use.')}<br>
+            {dgettext('statistics', 'This table is necessary in order to compute the Breakdown table of the MRI statistics page.')}
+        </p>
     {/if}
 </div>
 

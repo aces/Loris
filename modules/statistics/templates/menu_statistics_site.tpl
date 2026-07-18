@@ -1,4 +1,4 @@
-<h2>{$SiteName} Completion Statistics</h2>
+<h2>{sprintf(dgettext('statistics', '%s Completion Statistics'), dgettext('psc', $SiteName))}</h2>
 <table class="fancytable dynamictable" width="100%">
    <tr>
       <th>{dngettext('loris', 'Instrument', 'Instruments', 1)}</th>
