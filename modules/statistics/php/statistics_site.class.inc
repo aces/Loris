@@ -319,7 +319,7 @@ class Statistics_Site extends \NDB_Menu
                     $results[$row['Visit_label']][] = $arrayVar;
                 }
                 $data[] = [
-                    'name'        => $label,
+                    'name'        => dgettext('test_names', $label),
                     'count'       => $complete_count,
                     'incompletes' => $results,
                 ];
