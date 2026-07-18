@@ -348,3 +348,9 @@ msgstr ""
 
 msgid "The %sMRI statistics%s tab currently displays the number of scans inserted per site as well as their QC (Quality Control) status. For various scans within a study based on the MRI parameter form entries, there is a breakdown of scan completion, arranged by site, cohort and timepoint, with the option to hide visit labels to only display total visit counts per site."
 msgstr ""
+
+msgid "Incomplete"
+msgstr ""
+
+msgid "Data Entry Completion Status for %s"
+msgstr ""

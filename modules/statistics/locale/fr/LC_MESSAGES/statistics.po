@@ -351,3 +351,9 @@ msgstr "L'onglet %sStatistiques comportementales%s présente actuellement des st
 
 msgid "The %sMRI statistics%s tab currently displays the number of scans inserted per site as well as their QC (Quality Control) status. For various scans within a study based on the MRI parameter form entries, there is a breakdown of scan completion, arranged by site, cohort and timepoint, with the option to hide visit labels to only display total visit counts per site."
 msgstr "L'onglet %sStatistiques IRM%s affiche actuellement le nombre d'acquisitions insérées par site ainsi que leur état de contrôle de la qualité (QC). Pour les différents types d'acquisition d'une étude, selon les données saisies dans le formulaire des paramètres IRM, une répartition des acquisitions complétées est disponible par site, cohorte et point temporel. Il est également possible de masquer les libellés de visite afin d'afficher uniquement le nombre total de visites par site."
+
+msgid "Incomplete"
+msgstr "Incomplet"
+
+msgid "Data Entry Completion Status for %s"
+msgstr "État d'avancement de la saisie des données pour %s"

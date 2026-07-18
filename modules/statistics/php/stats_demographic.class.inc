@@ -543,8 +543,8 @@ class Stats_Demographic extends \NDB_Form
                 false
             );
             $subcategories         = [
-                'Complete',
-                'Incomplete',
+                dgettext('loris', 'Complete'),
+                dgettext('statistics', 'Incomplete'),
             ];
             $result = iterator_to_array(
                 $db->pselect(
@@ -594,8 +594,13 @@ class Stats_Demographic extends \NDB_Form
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 dgettext('statistics', 'Breakdown of Registered Candidates'),
-                'Data Entry Completion Status for '.
-                    $instrumentList[$demographicInstrument],
+                sprintf(
+                    dgettext(
+                        'statistics',
+                        'Data Entry Completion Status for %s'
+                    ),
+                    $instrumentList[$demographicInstrument]
+                ),
                 $subcategories,
                 $visits,
                 'DemographicInstrument',
