@@ -106,7 +106,7 @@ class Login extends Component {
         .then((json) => {
           if (json.valid) {
             this.setState({mode: 'expired'});
-            resetTokenError: null;
+            this.setState({resetTokenError: null});
           }
         });
     }

@@ -117,6 +117,15 @@ class Reset extends \NDB_Page implements ETagCalculator
                         ['userID' => $user->userID]
                     );
 
+                    // Clean up expired tokens
+                    $stmt = $db->prepare(
+                        "UPDATE user_password_reset
+                        SET ACTIVE = 'N'
+                        WHERE ACTIVE = 'Y'
+                        AND CreationDate < NOW() - INTERVAL 20 MINUTE"
+                    );
+
+                    $stmt->execute();
                     if ($activeTokenCount < 3) {
                         // Generate a new password reset token.
                         $resetToken = \Utility::randomString(64);

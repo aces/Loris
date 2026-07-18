@@ -1,5 +1,13 @@
 # Lost Password Test Plan
 
+**Prerequisite:** Ensure the user account being tested has a valid email address configured. If necessary, update the user's email in the database:
+
+```sql
+UPDATE users
+SET Email = 'user@example.com'
+WHERE UserID = 'username';
+```
+
 1. On the LORIS login page, click the "Forgot your password?" link and ensure you are taken to the lost password form.
 2. Enter your username or the email address associated with your account. Click the submit button. A notice should appear indicating that a password reset email has been sent.
 3. Open the password reset email and click the password reset link. Ensure that you are taken to the password reset page.
