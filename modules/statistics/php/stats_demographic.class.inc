@@ -237,7 +237,10 @@ class Stats_Demographic extends \NDB_Form
 
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects["$ProjectID"] = dgettext('Project', $allProjectList["$ProjectID"]);
+            $projects["$ProjectID"] = dgettext(
+                'Project',
+                $allProjectList["$ProjectID"]
+            );
         }
 
         if ($user->hasPermission('access_all_profiles')) {
@@ -318,7 +321,10 @@ class Stats_Demographic extends \NDB_Form
 
         if (!empty($centers)) {
             foreach ($centers as $row) {
-                $sites[$row['NumericID']] = dgettext('psc', $row['ShortName']);
+                $sites[$row['NumericID']] = dgettext(
+                    'psc',
+                    $row['ShortName']
+                );
                 if ($demographicSite == $row['NumericID']) {
                     $this->tpl_data['CurrentSite'] = [
                         'ID'   => $row['NumericID'],

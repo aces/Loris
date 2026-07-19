@@ -569,7 +569,10 @@ class Utility
         $instruments   = [];
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
-                $instruments[$row['Test_name']] = dgettext('test_names', $row['Full_name']);
+                $instruments[$row['Test_name']] = dgettext(
+                    'test_names',
+                    $row['Full_name']
+                );
             }
         }
 
