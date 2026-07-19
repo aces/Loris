@@ -10,6 +10,13 @@ import '../css/issue_tracker_batchmode.css';
 import {withTranslation} from 'react-i18next';
 
 const NO_CHANGE = '__no_change__';
+const INITIAL_BATCH_UPDATES = {
+  status: NO_CHANGE,
+  priority: NO_CHANGE,
+  category: NO_CHANGE,
+  centerID: NO_CHANGE,
+  assignee: NO_CHANGE,
+};
 
 /**
  * IssueTrackerBatchMode component
@@ -33,13 +40,10 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
   const [otherWatchers, setOtherWatchers] = useState({});
   const [selectedIssueIDs, setSelectedIssueIDs] = useState([]);
   const [selectAllFiltered, setSelectAllFiltered] = useState(false);
-  const [batchUpdates, setBatchUpdates] = useState({
-    status: NO_CHANGE,
-    priority: NO_CHANGE,
-    category: NO_CHANGE,
-    assignee: NO_CHANGE,
-  });
+  const [batchUpdates, setBatchUpdates] = useState(INITIAL_BATCH_UPDATES);
+  const [isBatchChangesCollapsed, setIsBatchChangesCollapsed] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const hasSelectedIssues = selectedIssueIDs.length > 0;
 
   // Pagination state
   const [page, setPage] = useState({
@@ -72,6 +76,12 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
       setSelectedIssueIDs(filteredIssues.map((issue) => issue.issueID));
     }
   }, [filteredIssues, selectAllFiltered]);
+
+  useEffect(() => {
+    if (hasSelectedIssues) {
+      setIsBatchChangesCollapsed(false);
+    }
+  }, [hasSelectedIssues]);
 
   /**
    * Fetches issues from the server
@@ -210,9 +220,12 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
    * Returns to the batch configuration panel.
    */
   function scrollToBatchConfiguration() {
-    document.getElementById('batch-edit-panel')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
+    setIsBatchChangesCollapsed(false);
+    requestAnimationFrame(() => {
+      document.getElementById('batch-edit-panel')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
     });
   }
 
@@ -273,13 +286,16 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
         throw new Error(data.error || 'Network response was not ok');
       }
 
+      if (Number(data.updated) === 0) {
+        await swal.fire({
+          type: 'info',
+          text: t('No changes were made', {ns: 'issue_tracker'}),
+        });
+        return;
+      }
+
       clearSelection();
-      setBatchUpdates({
-        status: NO_CHANGE,
-        priority: NO_CHANGE,
-        category: NO_CHANGE,
-        assignee: NO_CHANGE,
-      });
+      setBatchUpdates(INITIAL_BATCH_UPDATES);
       await fetchIssues();
       await swal.fire({
         type: 'success',
@@ -339,7 +355,6 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
     filteredIssueIDs.every((issueID) => selectedIssueIDs.includes(issueID));
   const hasBatchUpdates = Object.values(batchUpdates)
     .some((value) => value !== NO_CHANGE);
-  const hasSelectedIssues = selectedIssueIDs.length > 0;
   const selectedIssueCount = t('{{count}} issue selected', {
     ns: 'issue_tracker',
     count: selectedIssueIDs.length,
@@ -404,6 +419,26 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
         onClick={resetFilters}
       >
         {t('Reset', {ns: 'loris'})}
+      </button>
+    </div>
+  );
+
+  const batchPanelTitle = (
+    <div className="panel-title-container">
+      <span>{t('Batch changes', {ns: 'issue_tracker'})}</span>
+      <button
+        type="button"
+        className="btn btn-link btn-sm batch-collapse-button"
+        aria-label={t('Batch changes', {ns: 'issue_tracker'})}
+        aria-expanded={!isBatchChangesCollapsed}
+        onClick={() => setIsBatchChangesCollapsed((collapsed) => !collapsed)}
+      >
+        <span
+          className={isBatchChangesCollapsed ?
+            'glyphicon glyphicon-chevron-down' :
+            'glyphicon glyphicon-chevron-up'}
+          aria-hidden="true"
+        />
       </button>
     </div>
   );
@@ -529,8 +564,9 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
       <br/>
       <Panel
         id="batch-edit-panel"
-        title={t('Batch changes', {ns: 'issue_tracker'})}
-        collapsing={true}
+        title={batchPanelTitle}
+        collapsing={false}
+        collapsed={isBatchChangesCollapsed}
         panelSize="auto"
         className="panel-default"
       >
@@ -615,6 +651,27 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
             </select>
           </label>
           <label>
+            {t('Site', {ns: 'loris', count: 1})}
+            <select
+              className="form-control input-sm"
+              value={batchUpdates.centerID}
+              disabled={!hasSelectedIssues || isSubmitting}
+              onChange={(event) =>
+                updateBatchField('centerID', event.target.value)
+              }
+            >
+              <option value={NO_CHANGE}>
+                {t('No change', {ns: 'issue_tracker'})}
+              </option>
+              <option value="">
+                {t('All Sites', {ns: 'issue_tracker'})}
+              </option>
+              {Object.entries(sites).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          </label>
+          <label>
             {t('Assignee', {ns: 'issue_tracker'})}
             <select
               className="form-control input-sm"
@@ -647,11 +704,8 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
             type="button"
             className="btn btn-default btn-sm batch-scroll-button"
             onClick={scrollToBatchConfiguration}
-            title={t('Back to batch configuration', {ns: 'issue_tracker'})}
-            aria-label={t('Back to batch configuration',
-              {ns: 'issue_tracker'})}
           >
-            <span aria-hidden="true">&uarr;</span>
+            {t('Select changes to apply', {ns: 'issue_tracker'})}
           </button>
         </div>
         <div className="batch-actions-summary">{selectedIssueCount}</div>

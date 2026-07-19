@@ -32,6 +32,7 @@ class BatchEdit extends \NDB_Page implements ETagCalculator
         'status',
         'priority',
         'category',
+        'centerID',
     ];
 
     private const STATUSES = [
@@ -365,8 +366,8 @@ class BatchEdit extends \NDB_Page implements ETagCalculator
      *
      * @param mixed $updates The submitted field updates.
      *
-     * @return array<string, ?string>|ResponseInterface Valid updates or an error
-     *                                                  response.
+     * @return array<string, int|string|null>|ResponseInterface Valid updates or
+     *                                                          an error response.
      */
     private function _validateUpdates(mixed $updates) : array|ResponseInterface
     {
@@ -448,15 +449,42 @@ class BatchEdit extends \NDB_Page implements ETagCalculator
             }
         }
 
+        if (array_key_exists('centerID', $updates)) {
+            $centerID = $updates['centerID'];
+            if ($centerID !== null
+                && !is_int($centerID)
+                && !(is_string($centerID) && ctype_digit($centerID))
+            ) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Invalid issue site.'
+                );
+            }
+
+            if ($centerID !== null) {
+                $centerID = (int)$centerID;
+                if ($centerID <= 0
+                    || $db->pselectOne(
+                        'SELECT CenterID FROM psc WHERE CenterID=:centerID',
+                        ['centerID' => $centerID]
+                    ) === null
+                ) {
+                    return new \LORIS\Http\Response\JSON\BadRequest(
+                        'Invalid issue site.'
+                    );
+                }
+            }
+            $updates['centerID'] = $centerID;
+        }
+
         return $updates;
     }
 
     /**
      * Apply the validated updates to each selected issue.
      *
-     * @param int[]                  $issueIDs The issue IDs to update.
-     * @param array<string, ?string> $updates  The fields to update.
-     * @param \User                  $user     The user making the request.
+     * @param int[]                          $issueIDs The issue IDs to update.
+     * @param array<string, int|string|null> $updates  The fields to update.
+     * @param \User                          $user     The user making the request.
      *
      * @return ResponseInterface The batch edit result.
      */
@@ -531,7 +559,11 @@ class BatchEdit extends \NDB_Page implements ETagCalculator
             foreach ($issues as $issue) {
                 $changedValues = [];
                 foreach ($updates as $field => $value) {
-                    if ($issue[$field] !== $value) {
+                    $currentValue = $field === 'centerID'
+                        && $issue[$field] !== null
+                        ? (int)$issue[$field]
+                        : $issue[$field];
+                    if ($currentValue !== $value) {
                         $changedValues[$field] = $value;
                     }
                 }
@@ -561,7 +593,9 @@ class BatchEdit extends \NDB_Page implements ETagCalculator
 
                 $newAssignee = $issue['assignee'];
                 if (array_key_exists('assignee', $changedValues)) {
-                    $newAssignee = $changedValues['assignee'];
+                    $newAssignee = is_string($changedValues['assignee'])
+                        ? $changedValues['assignee']
+                        : null;
                     if ($issue['assignee'] !== null) {
                         $db->delete(
                             'issues_watching',

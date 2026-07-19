@@ -213,6 +213,12 @@
   margin-right: 10px;
 }
 
+.batch-collapse-button {
+  margin-left: auto;
+  padding: 0 10px;
+  color: inherit;
+}
+
 .batch-selection-controls {
   display: flex;
   align-items: center;
@@ -246,7 +252,7 @@
 
 .batch-edit-controls {
   display: grid;
-  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  grid-template-columns: repeat(5, minmax(150px, 1fr));
   align-items: end;
   gap: 15px;
   padding: 10px;
@@ -286,9 +292,7 @@
 }
 
 .batch-scroll-button {
-  min-width: 34px;
-  font-size: 18px;
-  line-height: 1;
+  white-space: nowrap;
 }
 
 .batch-actions-summary {

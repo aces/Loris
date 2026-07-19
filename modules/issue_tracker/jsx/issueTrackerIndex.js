@@ -346,8 +346,10 @@ class IssueTrackerIndex extends Component {
       },
     ];
 
+    const canBatchEdit = this.props.hasPermission('issue_tracker_all_issue');
+
     // Only display the Batch mode tab if user has the required permission
-    if (this.props.hasPermission('issue_tracker_all_issue')) {
+    if (canBatchEdit) {
       tabList.push({
         id: 'batch',
         label: t('Batch Edit', {ns: 'issue_tracker'}),
@@ -358,7 +360,7 @@ class IssueTrackerIndex extends Component {
       <Tabs
         tabs={tabList}
         defaultTab={this.state.activeTab}
-        updateURL={true}
+        updateURL={canBatchEdit}
         onTabChange={this.handleTabChange}
       >
         <TabPane TabId="browse">
@@ -371,23 +373,25 @@ class IssueTrackerIndex extends Component {
             getFormattedCell={this.formatColumn}
           />
         </TabPane>
-        <TabPane TabId="batch">
-          <IssueTrackerBatchMode
-            issues={this.state.data.data}
-            canCloseIssues={[
-              'issue_tracker_close_all_issue',
-              'issue_tracker_close_site_issue',
-              'issue_tracker_own_issue',
-            ].some((permission) => this.props.hasPermission(permission))}
-            options={{
-              priorities: this.state.data.fieldOptions.priorities,
-              statuses: this.state.data.fieldOptions.statuses,
-              categories: this.state.data.fieldOptions.categories,
-              sites: this.state.data.fieldOptions.sites,
-              assignees: this.state.data.fieldOptions.assignees,
-            }}
-          />
-        </TabPane>
+        {canBatchEdit && (
+          <TabPane TabId="batch">
+            <IssueTrackerBatchMode
+              issues={this.state.data.data}
+              canCloseIssues={[
+                'issue_tracker_close_all_issue',
+                'issue_tracker_close_site_issue',
+                'issue_tracker_own_issue',
+              ].some((permission) => this.props.hasPermission(permission))}
+              options={{
+                priorities: this.state.data.fieldOptions.priorities,
+                statuses: this.state.data.fieldOptions.statuses,
+                categories: this.state.data.fieldOptions.categories,
+                sites: this.state.data.fieldOptions.sites,
+                assignees: this.state.data.fieldOptions.assignees,
+              }}
+            />
+          </TabPane>
+        )}
       </Tabs>
     );
   }
