@@ -563,8 +563,12 @@ class Edit_User extends \NDB_Form
                      */
                     if (!(in_array($permID, $current_permissionids))) {
                         $user->insertIntoUserAccountHistory($permID, 'I');
+                        error_log('Permission description: [' . $this->getDescriptionUsingPermID($permID) . ']');
                         $permissionsAdded[]
-                            = $this->getDescriptionUsingPermID($permID);
+                            = dgettext(
+                                'permissions',
+                                $this->getDescriptionUsingPermID($permID)
+                            );
                     }
                 }
             }
@@ -576,7 +580,10 @@ class Edit_User extends \NDB_Form
                     if (!in_array($currentPermID, $permIDs)) {
                         $user->insertIntoUserAccountHistory($currentPermID, 'D');
                         $permissionsRemoved[]
-                            = $this->getDescriptionUsingPermID($currentPermID);
+                            = dgettext(
+                                'permissions',
+                                $this->getDescriptionUsingPermID($currentPermID)
+                            );
                     }
                 }
             }
@@ -1018,7 +1025,7 @@ class Edit_User extends \NDB_Form
                     . "<h3 id=\"header_$lastRole\" "
                     . "class=\"perm_header button\" "
                     . "style=\"text-align: center; margin-top: 5px;\">"
-                    . ucwords($row['type'])
+                    . ucwords(dgettext('permissions_category', $row['type']))
                     . '</h3>'
                     . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
                 );
