@@ -354,3 +354,6 @@ msgstr ""
 
 msgid "Data Entry Completion Status for %s"
 msgstr ""
+
+msgid "%s Breakdown"
+msgstr ""

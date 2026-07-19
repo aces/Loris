@@ -319,11 +319,11 @@ msgstr "Tout sélectionner"
 msgid "%s Double Data Entry Completion Statistics %s"
 msgstr "%s Statistiques d’achèvement de la double saisie des données %s"
 
-msgid "%s Completion Statistics"
-msgstr "Statistiques d’achèvement de %s"
-
 msgid "All Completion Statistics"
 msgstr "Toutes les statistiques d’achèvement"
+
+msgid "%s Completion Statistics"
+msgstr "Statistiques d’achèvement de %s"
 
 msgid "QC Status"
 msgstr "État du contrôle qualité"
@@ -357,3 +357,6 @@ msgstr "Incomplet"
 
 msgid "Data Entry Completion Status for %s"
 msgstr "État d'avancement de la saisie des données pour %s"
+
+msgid "%s Breakdown"
+msgstr ""

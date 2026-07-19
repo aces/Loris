@@ -384,7 +384,7 @@ class Stats_MRI extends \NDB_Form
         }
 
         $MRI_Type_Field = $MRI_Type . "_Scan_Done";
-        $MRIHeader      = "$MRI_Type Breakdown";
+        $MRIHeader      = sprintf(dgettext('statistics', "%s Breakdown"), $MRI_Type);
         $CaseStatement  = "
                           CASE($MRI_Type_Field)
                           WHEN 'Partial' THEN 'Partial Run'
