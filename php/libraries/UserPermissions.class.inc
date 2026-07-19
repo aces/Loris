@@ -343,13 +343,16 @@ class UserPermissions
             }
             $translatedAction = '';
             if (!empty($perm['action'])) {
-                $actions = explode('/', $perm['action']);
+                $actions           = explode('/', $perm['action']);
                 $translatedActions = [];
                 foreach ($actions as $action) {
-                    $translatedActions[] = dgettext('permissions_action', trim($action));
+                    $translatedActions[] = dgettext(
+                        'permissions_action',
+                        trim($action)
+                    );
                 }
                 $translatedAction = implode('/', $translatedActions);
-            }   
+            }
 
             $newDesc .= empty($translatedAction) ? "" : $translatedAction . " ";
             $newDesc .= dgettext('permissions', $perm['description']);

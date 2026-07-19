@@ -563,7 +563,6 @@ class Edit_User extends \NDB_Form
                      */
                     if (!(in_array($permID, $current_permissionids))) {
                         $user->insertIntoUserAccountHistory($permID, 'I');
-                        error_log('Permission description: [' . $this->getDescriptionUsingPermID($permID) . ']');
                         $permissionsAdded[]
                             = dgettext(
                                 'permissions',
