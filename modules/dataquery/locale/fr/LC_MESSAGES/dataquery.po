@@ -508,7 +508,7 @@ msgstr "(Exécuter sur {{runTime}})"
 
 #, fuzzy
 msgid "You ran this query on {{runTime}}"
-msgstr "Vous avez exécuté cette requête sur {{runTime}}"
+msgstr "Vous avez exécuté cette requête le {{runTime}}"
 
 #, fuzzy
 msgid "You ran this query"

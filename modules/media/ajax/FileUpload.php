@@ -211,6 +211,8 @@ function uploadFile()
         return;
     }
 
+    $phpFileUploadError = $_FILES["file"]["error"] ?? UPLOAD_ERR_OK;
+
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $dstfile)) {
         try {
             // Insert or override db record if file_name already exists
@@ -249,7 +251,17 @@ function uploadFile()
             echo showMediaError("Could not upload the file. Please try again!", 500);
         }
     } else {
-        echo showMediaError("File too Large!", 500);
+        $msg = match (true) {
+            $phpFileUploadError === UPLOAD_ERR_INI_SIZE
+                || $phpFileUploadError === UPLOAD_ERR_FORM_SIZE
+                => "File exceeds maximum upload size",
+            !is_writable($mediaPath)
+                => "Upload directory is not writable",
+            default
+                => "Could not save uploaded file."
+                . " Check directory permissions and disk space",
+        };
+        echo showMediaError($msg, 500);
     }
 }
 
@@ -482,3 +494,4 @@ function checkDateTaken($dateTaken)
         }
     }
 }
+

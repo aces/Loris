@@ -52,10 +52,6 @@ msgid "Something went wrong!"
 msgstr "Un problème est survenu!"
 
 #, fuzzy
-msgid "Submission Successful!"
-msgstr "Soumission réussie!"
-
-#, fuzzy
 msgid "Propose a Project"
 msgstr "Proposer un projet"
 

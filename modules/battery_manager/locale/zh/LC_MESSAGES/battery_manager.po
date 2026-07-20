@@ -22,9 +22,6 @@ msgstr ""
 msgid "Battery Manager"
 msgstr "电池管理器"
 
-msgid "Submission successful!"
-msgstr "提交成功！"
-
 msgid "Instrument"
 msgstr "量表/评估工具"
 

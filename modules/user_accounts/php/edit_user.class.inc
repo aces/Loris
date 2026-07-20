@@ -914,7 +914,7 @@ class Edit_User extends \NDB_Form
                 ]
             );
             $examinerGroup[] = $this->createLabel(
-                "Radiologist: "
+                dgettext("user_accounts", "Radiologist") . ": "
             );
             $examinerGroup[] = $this->createSelect(
                 "examiner_radiologist",
@@ -1018,7 +1018,7 @@ class Edit_User extends \NDB_Form
                     . "<h3 id=\"header_$lastRole\" "
                     . "class=\"perm_header button\" "
                     . "style=\"text-align: center; margin-top: 5px;\">"
-                    . ucwords($row['type'])
+                    . ucwords(dgettext('permissions_category', $row['type']))
                     . '</h3>'
                     . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
                 );
@@ -1493,9 +1493,12 @@ class Edit_User extends \NDB_Form
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        return $db->pselectOne(
-            "SELECT Description FROM permissions WHERE permID =:pID",
-            ['pID' => $permID]
+        return dgettext(
+            'permissions',
+            $db->pselectOne(
+                "SELECT Description FROM permissions WHERE permID =:pID",
+                ['pID' => $permID]
+            )
         );
     }
 
@@ -1536,6 +1539,28 @@ class Edit_User extends \NDB_Form
             [
                 $baseURL . "/css/password.css",
             ]
+        );
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = $this->isCreatingNewUser()
+            ? dgettext("user_accounts", "Add User")
+            : dgettext("user_accounts", "Edit User");
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                dgettext("user_accounts", "User Accounts"),
+                "/user_accounts/"
+            ),
+            new \LORIS\Breadcrumb(
+                $label,
+                ""
+            )
         );
     }
 }

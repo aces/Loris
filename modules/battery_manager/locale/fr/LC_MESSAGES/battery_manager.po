@@ -24,10 +24,6 @@ msgstr ""
 msgid "Battery Manager"
 msgstr "Gestionnaire de batterie"
 
-#, fuzzy
-msgid "Submission successful!"
-msgstr "Soumission réussie !"
-
 msgid "Instrument"
 msgstr "Instrument"
 
