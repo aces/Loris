@@ -569,3 +569,6 @@ msgstr "महीना"
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr "कोई विकल्प नहीं"
+
+msgid "Submission Successful!"
+msgstr "सबमिशन सफल रहा!"

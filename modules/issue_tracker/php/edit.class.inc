@@ -869,11 +869,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             $issueID = intval($db->getLastInsertId());
         }
 
-        // convert the aspect of 'lastUpdatedBy' to Fullname
-        // once the db has registered the username (userID)
-        $issueValues['lastUpdatedBy']
-            = $this->formatUserInformation($user->getUserName());
-
         $this->updateHistory($historyValues, $issueID, $user);
         $this->updateComments($values['comment'], $issueID, $user);
 

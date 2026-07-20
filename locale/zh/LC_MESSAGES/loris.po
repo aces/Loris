@@ -568,3 +568,6 @@ msgstr "数据集"
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr "无可选项"
+
+msgid "Submission Successful!"
+msgstr "提交成功！"
