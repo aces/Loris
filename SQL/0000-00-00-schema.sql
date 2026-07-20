@@ -117,7 +117,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
   CONSTRAINT `FK_users_2` FOREIGN KEY (`language_preference`) REFERENCES `language` (`language_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -344,7 +344,7 @@ CREATE TABLE `history` (
   `userID` varchar(255) NOT NULL default '',
   `type` char(1),
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table keeps track of ongoing changes in the database. ';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='This table keeps track of ongoing changes in the database. ';
 
 CREATE TABLE `test_battery` (
   `ID` int(10) unsigned NOT NULL auto_increment,
@@ -1587,7 +1587,7 @@ CREATE TABLE `server_processes` (
   PRIMARY KEY (`id`),
   KEY `FK_task_1` (`userid`),
   CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `mri_upload_server_processes_rel` (
   `UploadID` int(10) unsigned NOT NULL,
@@ -1631,7 +1631,7 @@ CREATE TABLE `issues_categories` (
   `categoryName` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 INSERT INTO issues_categories (categoryName) VALUES
@@ -1678,7 +1678,7 @@ CREATE TABLE `issues` (
   CONSTRAINT `fk_issues_5` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_instrument` FOREIGN KEY (`instrument`) REFERENCES `test_names` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -1720,7 +1720,7 @@ CREATE TABLE `issues_watching` (
   PRIMARY KEY (`userID`,`issueID`),
   KEY `fk_issues_watching_2` (`issueID`),
   CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `issues_attachments` (
     `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
