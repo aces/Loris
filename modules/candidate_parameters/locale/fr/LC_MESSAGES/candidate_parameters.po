@@ -23,7 +23,7 @@ msgid "Candidate Parameters"
 msgstr "Paramètres du candidat"
 
 msgid "Caveat"
-msgstr "Avertissement"
+msgstr "Mise en garde"
 
 msgid "Return to timepoint list"
 msgstr "Retour à la liste des temps d'acquisition"
@@ -49,10 +49,10 @@ msgstr "Statut du consentement"
 
 # Candidate Information tab
 msgid "Caveat Emptor Flag for Candidate"
-msgstr "Indicateur Caveat Emptor du candidat"
+msgstr "Indicateur de mise en garde pour le candidat"
 
 msgid "Reason for Caveat Emptor Flag"
-msgstr "Motif de l’indicateur Caveat Emptor"
+msgstr "Motif de l’indicateur de mise en garde"
 
 msgid "If Other, please specify"
 msgstr "Si autre, veuillez préciser"
