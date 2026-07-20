@@ -101,7 +101,7 @@ class GenomicUploadForm extends Component {
     ) ? (
         <CheckboxElement
           name='pscidColumn'
-          label='Use PSCID in column headers'
+          label={t('Use PSCID in column headers', {ns: 'genomic_browser'})}
           id='pscidColumn'
           value={this.state.pscidColumn}
           onUserInput={this.setFileUploadFormData}
@@ -117,13 +117,13 @@ class GenomicUploadForm extends Component {
             id='mediaUploadEl'
             onUserInput={this.setFileUploadFormData}
             ref='file'
-            label='File to upload'
+            label={t('File to upload', {ns: 'loris'})}
             required={true}
             value={this.state.formData.file}
           />
           <TextareaElement
             name='fileDescription'
-            label='Description'
+            label={t('Description', {ns: 'genomic_browser'})}
             value={this.state.formData.fileDescription}
             required={false}
             onUserInput={this.setFileUploadFormData}
@@ -134,7 +134,7 @@ class GenomicUploadForm extends Component {
               <ProgressBar value={this.state.uploadProgress}/>
             </div>
           </div>
-          <ButtonElement label='Upload File'/>
+          <ButtonElement label={t('Upload File', {ns: 'genomic_browser'})}/>
         </React.Fragment>
       ) : null;
 
@@ -149,7 +149,7 @@ class GenomicUploadForm extends Component {
           >
             <SelectElement
               name='fileType'
-              label='File type'
+              label={t('File type', {ns: 'genomic_browser'})}
               options={this.state.options.fileTypes}
               onUserInput={this.setFileUploadFormData}
               ref='fileType'
