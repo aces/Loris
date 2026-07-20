@@ -49,9 +49,6 @@ msgstr "कृपया सबमिट करने से पहले शे�
 msgid "Something went wrong!"
 msgstr "कुछ गलत हो गया!"
 
-msgid "Submission Successful!"
-msgstr "सबमिशन सफल रहा!"
-
 msgid "Propose a Project"
 msgstr "एक प्रोजेक्ट प्रस्तावित करें"
 

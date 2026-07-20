@@ -588,3 +588,5 @@ msgstr "月"
 msgid "No options"
 msgstr "オプションなし"
 
+msgid "Submission Successful!"
+msgstr "送信成功しました!"

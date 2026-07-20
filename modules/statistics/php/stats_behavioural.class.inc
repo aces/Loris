@@ -106,7 +106,7 @@ class Stats_Behavioural extends \NDB_Form
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
             $projects[$ProjectID->__toString()]
-                = $allProjectList[$ProjectID->__toString()];
+                = dgettext('Project', $allProjectList[$ProjectID->__toString()]);
         }
 
         $this->tpl_data['Projects'] = $projects;

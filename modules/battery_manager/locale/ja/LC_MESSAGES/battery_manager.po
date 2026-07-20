@@ -22,9 +22,6 @@ msgstr ""
 msgid "Battery Manager"
 msgstr "バッテリーマネージャー"
 
-msgid "Submission successful!"
-msgstr "送信成功しました!"
-
 msgid "Instrument"
 msgstr "楽器"
 

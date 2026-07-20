@@ -22,9 +22,6 @@ msgstr ""
 msgid "Battery Manager"
 msgstr "बैटरी प्रबंधक"
 
-msgid "Submission successful!"
-msgstr "प्रस्तुति सफल रही!"
-
 msgid "Instrument"
 msgstr "उपकरण"
 

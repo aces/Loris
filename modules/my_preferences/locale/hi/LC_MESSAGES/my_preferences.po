@@ -52,5 +52,35 @@ msgstr "पासवर्ड मेल नहीं खाते।"
 msgid "New and old passwords are identical"
 msgstr "नया और पुराना पासवर्ड समान हैं।"
 
+msgid "Configure multi-factor authentication (MFA)"
+msgstr "मल्टी-फ़ैक्टर प्रमाणीकरण (MFA) कॉन्फ़िगर करें"
+
 msgid "Configure MFA"
-msgstr "नया और पुराना पासवर्ड समान हैं।"
+msgstr "मल्टी-फ़ैक्टर प्रमाणीकरण (MFA) कॉन्फ़िगर करें"
+
+msgid "Manual MFA Setup"
+msgstr "मैन्युअल MFA सेटअप"
+
+msgid "Use the following key in your authenticator app: <0>{{code}}</0>"
+msgstr "अपने ऑथेंटिकेटर ऐप में निम्नलिखित कुंजी का उपयोग करें: <0>{{code}}</0>"
+
+msgid "Scan the following QR code below in your MFA authenticator and enter the code to validate."
+msgstr "अपने MFA ऑथेंटिकेटर ऐप से नीचे दिए गए QR कोड को स्कैन करें और सत्यापन के लिए कोड दर्ज करें।"
+
+msgid "Note that this will <0>overwrite</0> any previously setup MFA in LORIS!"
+msgstr "ध्यान दें कि इससे LORIS में पहले से कॉन्फ़िगर किया गया कोई भी MFA <0>अधिलेखित</0> हो जाएगा!"
+
+msgid "Can't scan the QR code? <0>Setup manually.</0>"
+msgstr "क्या आप QR कोड स्कैन नहीं कर पा रहे हैं? <0>मैन्युअल रूप से सेटअप करें।</0>"
+
+msgid "Validate Code"
+msgstr "कोड सत्यापित करें"
+
+msgid "Successfully registered multifactor authenticator"
+msgstr "मल्टी-फ़ैक्टर ऑथेंटिकेटर सफलतापूर्वक पंजीकृत किया गया"
+
+msgid "Invalid code provided. MFA not registered."
+msgstr "दिया गया कोड अमान्य है। MFA कॉन्फ़िगर नहीं किया गया है।"
+
+msgid "Missing code or secret to validate"
+msgstr "सत्यापन के लिए कोड या गुप्त कुंजी उपलब्ध नहीं है।"

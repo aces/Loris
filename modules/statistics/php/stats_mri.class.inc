@@ -243,7 +243,10 @@ class Stats_MRI extends \NDB_Form
 
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects["$ProjectID"] = $allProjectList["$ProjectID"];
+            $projects["$ProjectID"] = dgettext(
+                'Project',
+                $allProjectList["$ProjectID"]
+            );
         }
 
         $currentProject = null;
@@ -317,7 +320,7 @@ class Stats_MRI extends \NDB_Form
         $sites     = [];
         $sites[''] ="All sites";
         foreach ($centers as $row) {
-            $sites[$row['NumericID']] = $row['ShortName'];
+            $sites[$row['NumericID']] = dgettext('psc', $row['ShortName']);
             if (isset($_REQUEST['MRIsite'])
                 && $_REQUEST['MRIsite'] == $row['NumericID']
             ) {
