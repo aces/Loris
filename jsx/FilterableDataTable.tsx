@@ -1,4 +1,6 @@
-import {useState, useEffect, useCallback, useMemo, ReactNode} from 'react';
+import {
+  useState, useEffect, useCallback, useMemo, useRef, ReactNode,
+} from 'react';
 import {useTranslation} from 'react-i18next';
 import Panel from 'jsx/Panel';
 import DataTable from 'jsx/DataTable';
@@ -16,7 +18,6 @@ export type FilterableDataTableProps = DataTableProps & {
     updateFilterCallback?: (filters: Filters) => void;
     progress?: number;
     loading?: boolean;
-    folder?: string;
     actions?: (row: TableRow) => ReactNode;
     children?: ReactNode;
 };
@@ -84,6 +85,11 @@ function FilterableDataTable({
     return initialFilters;
   });
 
+  // Mirrors `filters` so that several updates fired in the same tick (the
+  // Filter URL-hydration effect calls onFieldUpdate in a loop) each build on
+  // the previous one instead of all starting from the same stale value.
+  const filtersRef = useRef<Filters>(filters);
+
   /**
    * Updates the URL search parameters to reflect the current filter state.
    * Uses the native URL object for path and query handling.
@@ -139,6 +145,7 @@ function FilterableDataTable({
    * @param newFilters - The next state of filters
    */
   const handleUpdateFilters = useCallback((newFilters: Filters): void => {
+    filtersRef.current = newFilters;
     setFilters(newFilters);
     if (updateFilterCallback) {
       updateFilterCallback(newFilters);
@@ -154,10 +161,13 @@ function FilterableDataTable({
    */
   const addFilter = useCallback(
     (filterName: string, value: any, exactMatch: boolean): void => {
-      const nextFilters = {...filters, [filterName]: {value, exactMatch}};
+      const nextFilters = {
+        ...filtersRef.current,
+        [filterName]: {value, exactMatch},
+      };
       handleUpdateFilters(nextFilters);
     },
-    [filters, handleUpdateFilters]
+    [handleUpdateFilters]
   );
 
   /**
@@ -166,10 +176,10 @@ function FilterableDataTable({
    * @param filterName - The name of the filter to delete
    */
   const removeFilter = useCallback((filterName: string): void => {
-    const nextFilters = {...filters};
+    const nextFilters = {...filtersRef.current};
     delete nextFilters[filterName];
     handleUpdateFilters(nextFilters);
-  }, [filters, handleUpdateFilters]);
+  }, [handleUpdateFilters]);
 
   /**
    * Resets all filters to an empty state.

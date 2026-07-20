@@ -126,10 +126,8 @@ function Filter({
    * @return {array}
    */
   const renderFilterFields = () => {
-    return fields .map((field) => {
+    return fields.filter((field) => !field.filter.hide).map((field) => {
       const filter = field.filter;
-
-      if (filter.hide) return;
 
       // Shared props for all elements
       const commonProps = {
