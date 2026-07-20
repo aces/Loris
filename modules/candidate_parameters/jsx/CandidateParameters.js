@@ -129,7 +129,7 @@ class CandidateParameters extends Component {
 
 CandidateParameters.propTypes = {
   candID: PropTypes.string.isRequired,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 /**
