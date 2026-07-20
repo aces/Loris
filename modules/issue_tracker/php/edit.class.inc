@@ -856,8 +856,8 @@ class Edit extends \NDB_Page implements ETagCalculator
             $user
         );
 
+        $success = false;
         try {
-            $success = false;
             $db->beginTransaction();
 
             if (!empty($issueID)) {
