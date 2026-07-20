@@ -191,19 +191,19 @@ msgid "General Statistics with QC Status"
 msgstr "Statistiques générales avec état du contrôle qualité"
 
 msgid "All Scan Types"
-msgstr "Tous les types d'acquisition"
+msgstr "Tous les types de scan"
 
 msgid "Submit Query"
 msgstr "Exécuter la requête"
 
 msgid "Scan Type"
-msgstr "Type d'acquisition"
+msgstr "Type de scan"
 
 msgid "QC status"
 msgstr "État du contrôle qualité"
 
 msgid "Scans Inserted"
-msgstr "Acquisitions importées"
+msgstr "Scans importées"
 
 msgid "Passed"
 msgstr "Réussi"
@@ -284,7 +284,7 @@ msgid "Breakdown by Sex"
 msgstr "Répartition par sexe"
 
 msgid "Recruit Breakdown by Sex"
-msgstr "Répartition des recrues par sexe"
+msgstr "Répartition des participants recrutés par sexe"
 
 msgid "Show Visit Labels"
 msgstr "Afficher les libellés des visites"
@@ -332,10 +332,10 @@ msgid "Click to minimize"
 msgstr "Cliquez pour réduire"
 
 msgid "It seems like the scan type selected does not have a corresponding column in the mri_parameter_form table in the database."
-msgstr "Il semble que le type d'acquisition sélectionné ne possède pas de colonne correspondante dans la table mri_parameter_form de la base de données."
+msgstr "Il semble que le type de scan sélectionné ne possède pas de colonne correspondante dans la table mri_parameter_form de la base de données."
 
 msgid "In order to display the statistics for the scan type, make sure the mri_parameter_form table contains a column in the exact format SCANTYPE_Scan_done"
-msgstr "Pour afficher les statistiques de ce type d'acquisition, assurez-vous que la table mri_parameter_form contient une colonne dont le nom respecte exactement le format SCANTYPE_Scan_done."
+msgstr "Pour afficher les statistiques de ce type de scan, assurez-vous que la table mri_parameter_form contient une colonne dont le nom respecte exactement le format SCANTYPE_Scan_done."
 
 msgid "It seems like the \"mri_parameter_form\" table is missing in the database currently in use."
 msgstr "Il semble que la table « mri_parameter_form » soit absente de la base de données actuellement utilisée."
@@ -350,7 +350,7 @@ msgid "The %sBehavioural Statistics%s tab currently includes data entry statisti
 msgstr "L'onglet %sStatistiques comportementales%s présente actuellement des statistiques de saisie de données relatives au nombre de participants ayant complété chaque instrument par site et par point temporel. Il est également possible de consulter les statistiques de saisie de données par instrument, ainsi qu'une répartition par participant, qui affiche un tableau détaillé répertoriant les PSCID des participants, le nombre d'instruments complétés et les participants ayant des instruments incomplets. Les mêmes statistiques sont également disponibles pour la double saisie des données."
 
 msgid "The %sMRI statistics%s tab currently displays the number of scans inserted per site as well as their QC (Quality Control) status. For various scans within a study based on the MRI parameter form entries, there is a breakdown of scan completion, arranged by site, cohort and timepoint, with the option to hide visit labels to only display total visit counts per site."
-msgstr "L'onglet %sStatistiques IRM%s affiche actuellement le nombre d'acquisitions insérées par site ainsi que leur état de contrôle de la qualité (QC). Pour les différents types d'acquisition d'une étude, selon les données saisies dans le formulaire des paramètres IRM, une répartition des acquisitions complétées est disponible par site, cohorte et point temporel. Il est également possible de masquer les libellés de visite afin d'afficher uniquement le nombre total de visites par site."
+msgstr "L'onglet %sStatistiques IRM%s affiche actuellement le nombre de scans insérées par site ainsi que leur état de contrôle de la qualité (QC). Pour les différents types de scan d'une étude, selon les données saisies dans le formulaire des paramètres IRM, une répartition des scans complétées est disponible par site, cohorte et point temporel. Il est également possible de masquer les libellés de visite afin d'afficher uniquement le nombre total de visites par site."
 
 msgid "Incomplete"
 msgstr "Incomplet"
@@ -359,4 +359,4 @@ msgid "Data Entry Completion Status for %s"
 msgstr "État d'avancement de la saisie des données pour %s"
 
 msgid "%s Breakdown"
-msgstr ""
+msgstr "Répartition des %s"
