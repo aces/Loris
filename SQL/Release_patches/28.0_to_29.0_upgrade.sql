@@ -4,6 +4,7 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- 1. Core schema additions
+-- From: 2024-10-13_meg-ctf-head-shape-tables.sql
 CREATE TABLE IF NOT EXISTS `meg_ctf_head_shape_file` (
     `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `Path` VARCHAR(255) NOT NULL,
@@ -25,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `meg_ctf_head_shape_point` (
       ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- From: 2026-02-04_ephys_browser_file_type.sql
 CREATE TABLE IF NOT EXISTS `ephys_browser_file_type` (
   `Type` varchar(12) NOT NULL PRIMARY KEY,
   CONSTRAINT `FK_ephys_browser_file_type`
@@ -33,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `ephys_browser_file_type` (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- From: 2025-09-11_add_data_cache_table.sql
 CREATE TABLE IF NOT EXISTS `cached_data_type` (
     `CachedDataTypeID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `Name` VARCHAR(255) UNIQUE NOT NULL,
@@ -50,6 +53,7 @@ CREATE TABLE IF NOT EXISTS `cached_data` (
        ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- From: 2026-05-28-Add-policiesI18n.sql
 CREATE TABLE IF NOT EXISTS policiesI18n (
   PolicyID INT NOT NULL,
   LanguageID INT(10) UNSIGNED NOT NULL,
@@ -183,6 +187,7 @@ CREATE TABLE IF NOT EXISTS `physiological_task_event_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 2. Add new columns and alter existing columns safely
+-- From: 2024-10-07-Issuetracker-Status-Update.sql
 SET @col_exists := (
   SELECT COUNT(*)
   FROM information_schema.columns
@@ -197,6 +202,7 @@ PREPARE stmt FROM @stmt;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
+-- From: 2024-10-31-Data_Release_Hide_File.sql
 SET @col_exists := (
   SELECT COUNT(*)
   FROM information_schema.columns
@@ -225,6 +231,7 @@ PREPARE stmt FROM @stmt;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
+-- From: 2024-11-29-Participant_Status_Required_Comments.sql
 SET @col_exists := (
   SELECT COUNT(*)
   FROM information_schema.columns
@@ -285,6 +292,7 @@ PREPARE stmt FROM @stmt;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
+-- From: 2026-02-12_fix-physio-event-response-time.sql
 SET @col_exists := (
   SELECT COUNT(*)
   FROM information_schema.columns
@@ -299,6 +307,7 @@ PREPARE stmt FROM @stmt;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
+-- From: 2026-02-12_fix-physio-event-sample-type.sql
 SET @col_exists := (
   SELECT COUNT(*)
   FROM information_schema.columns
@@ -313,6 +322,7 @@ PREPARE stmt FROM @stmt;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
+-- From: 2026-03-13_fix-physio-file-default-date.sql
 SET @col_exists := (
   SELECT COUNT(*)
   FROM information_schema.columns
@@ -331,6 +341,7 @@ UPDATE physiological_file
 SET AcquisitionTime = NULL
 WHERE AcquisitionTime = '1970-01-01 00:00:01';
 
+-- From: 2026-06-14_rename_hide_video_field_document_repository.sql / 2026-07-02-docs-repo-video-to-file.sql
 SET @col_exists := (
   SELECT COUNT(*)
   FROM information_schema.columns
@@ -352,6 +363,7 @@ PREPARE stmt FROM @stmt;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
+-- From: 2026-06-15-Add-Sex-Colours.sql
 SET @col_exists := (
   SELECT COUNT(*)
   FROM information_schema.columns
@@ -383,6 +395,7 @@ SET s.Colour = CASE ordered_sex.row_num
 END
 WHERE ordered_sex.row_num <= 6;
 
+-- From: 2025-12-16-remove-scan-done.sql
 SET @col_exists := (
   SELECT COUNT(*)
   FROM information_schema.columns
@@ -455,14 +468,17 @@ WHERE NOT EXISTS (
     AND p.code = 'data_release_delete'
 );
 
+-- From: 2026-01-04-Update_Login_Setup_Link.sql
 UPDATE Config
 SET Value = REPLACE(Value, 'https://github.com/aces/Loris/wiki/Setup', 'https://acesloris.readthedocs.io/en/latest')
 WHERE ConfigID = (SELECT ID FROM ConfigSettings WHERE Name = 'StudyDescription');
 
+-- From: 2026-01-10_fix-meg-ref-mag-channel-type.sql
 UPDATE physiological_channel_type
 SET ChannelTypeName = 'MEGREFMAG'
 WHERE ChannelTypeName = 'MEGGREFMAG';
 
+-- From: 2026-04-21_add-eegchunkspath-config.sql
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
 SELECT 'EEGChunksPath', 'Path to store the EEG chunks for Visualization', 1, 0, 'text', ID, 'EEG chunks path', 16
 FROM ConfigSettings
@@ -630,6 +646,7 @@ EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
 -- 5. Charset conversion and cleanup for utf8mb4 support
+-- From: 2026-07-13-Add-utf8mb4-to-history-table.sql
 SET FOREIGN_KEY_CHECKS = 0;
 
 ALTER TABLE electrophysiology_uploader
