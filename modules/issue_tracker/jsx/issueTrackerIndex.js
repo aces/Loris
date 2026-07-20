@@ -165,11 +165,11 @@ class IssueTrackerIndex extends Component {
       break;
     case statusKey:
       // Display status values as-is (not translated)
-      result = <td>{cell}</td>;
+      result = <td>{t(cell, {ns: 'issue_tracker'})}</td>;
       break;
     case categoryKey:
       // Display category values as-is (not translated)
-      result = <td>{cell || ''}</td>;
+      result = <td>{t(cell, {ns: 'issues_categories'}) || ''}</td>;
       break;
     case siteKey:
       // if cell is an array containing all sites values

@@ -1226,7 +1226,8 @@ class Edit extends \NDB_Page implements ETagCalculator
                 return new \LORIS\Http\Response\JSON\Conflict(
                     dgettext(
                         'issue_tracker',
-                        'PSCID and Visit Label do not match a valid candidate session!'
+                        'PSCID and Visit Label do not match a valid candidate'
+                        . ' session!'
                     )
                 );
             }
