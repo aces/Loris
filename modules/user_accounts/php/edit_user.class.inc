@@ -1493,12 +1493,13 @@ class Edit_User extends \NDB_Form
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        return dgettext('permissions', $db->pselectOne(
-            "SELECT Description FROM permissions WHERE permID =:pID",
-            ['pID' => $permID]
-        ));
-
-
+        return dgettext(
+            'permissions',
+            $db->pselectOne(
+                "SELECT Description FROM permissions WHERE permID =:pID",
+                ['pID' => $permID]
+            )
+        );
     }
 
     /**
