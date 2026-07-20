@@ -115,6 +115,11 @@ class Diagnosis extends \NDB_Page
         foreach ($diagnosisTracks as $key => $data) {
             $diagnosisTracks[$key]['sourceField']
                 = explode(",", $diagnosisTracks[$key]['sourceField']);
+
+            $diagnosisTracks[$key]['Name'] = dgettext(
+                'diagnosis_evolution',
+                $diagnosisTracks[$key]['Name']
+            );
         }
 
         $values['projects']        = $projects;

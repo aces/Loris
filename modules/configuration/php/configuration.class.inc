@@ -113,7 +113,12 @@ class Configuration extends \NDB_Form
             []
         );
 
-        return iterator_to_array($parentConfigItems);
+        // Convert the labels to the appropriate language
+        $parentConfigItems = iterator_to_array($parentConfigItems);
+        foreach ($parentConfigItems as &$setting) {
+            $setting['Label'] = dgettext('ConfigSettings', $setting['Label']);
+        }
+        return $parentConfigItems;
     }
 
     /**
@@ -128,6 +133,7 @@ class Configuration extends \NDB_Form
     {
         $config = \NDB_Config::singleton();
         $DB     = $this->loris->getDatabaseConnection();
+        $lang   = \User::singleton()->getLanguageCode();
 
         // Get the names and meta-information for the config settings in the database
         $configs = iterator_to_array(
@@ -136,6 +142,15 @@ class Configuration extends \NDB_Form
                 []
             )
         );
+
+        // Convert the labels and descriptions to the appropriate language
+        foreach ($configs as &$setting) {
+            $setting['Label']       = dgettext('ConfigSettings', $setting['Label']);
+            $setting['Description'] = dgettext(
+                'ConfigSettings',
+                $setting['Description']
+            );
+        }
 
         // Check whether any setting is overwritten in the config.xml
         // Add this info to the array so form entries can be disabled in front end
@@ -166,7 +181,15 @@ class Configuration extends \NDB_Form
                 );
                 if ($value) {
                     foreach ($value as $subvalue) {
-                        $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                        if ($setting['Multilingual']) {
+                            $setting['Value'][$subvalue['ID']]
+                                = $config->getMultilingualSetting(
+                                    $lang,
+                                    $setting['Name']
+                                );
+                        } else {
+                            $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                        }
                     }
                 }
             }
