@@ -140,3 +140,6 @@ survey_accounts: $(filter modules/survey_accounts/%,$(MOFILES)) $(filter modules
 
 dicom_archive: $(filter modules/dicom_archive/%,$(MOFILES)) $(filter modules/dicom_archive/%,$(I18NJSONFILES))
 	target=dicom_archive npm run compile
+
+configuration: $(filter modules/configuration/%,$(MOFILES)) $(filter modules/configuration/%,$(I18NJSONFILES))
+	target=configuration npm run compile

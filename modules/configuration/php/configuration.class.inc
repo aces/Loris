@@ -64,8 +64,8 @@ class Configuration extends \NDB_Form
 
         $date_format = [
             ''    => '',
-            'Ymd' => 'Ymd (EX: 2015-12-28)',
-            'Ym'  => 'Ym (EX: 2015-12)'
+            'Ymd' => dgettext('configuration', 'Ymd (EX: 2015-12-28)'),
+            'Ym'  => dgettext('configuration', 'Ym (EX: 2015-12)')
         ];
 
         $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
@@ -77,22 +77,22 @@ class Configuration extends \NDB_Form
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
         $this->tpl_data['log_levels']      = [
-            'none'      => 'None',
-            'debug'     => 'Debug',
-            'info'      => 'Info',
-            'notice'    => 'Notice',
-            'warning'   => 'Warning',
-            'error'     => 'Error',
-            'critical'  => 'Critical',
-            'alert'     => 'Alert',
-            'emergency' => 'Emergency',
+            'none'      => dgettext('loris', 'None'),
+            'debug'     => dgettext('configuration', 'Debug'),
+            'info'      => dgettext('configuration', 'Info'),
+            'notice'    => dgettext('configuration', 'Notice'),
+            'warning'   => dgettext('configuration', 'Warning'),
+            'error'     => dgettext('configuration', 'Error'),
+            'critical'  => dgettext('configuration', 'Critical'),
+            'alert'     => dgettext('configuration', 'Alert'),
+            'emergency' => dgettext('configuration', 'Emergency'),
         ];
 
         $this->tpl_data['date_format']   = $date_format;
         $this->tpl_data['lookup_center'] = [
             ''            => '',
-            'PatientID'   => 'PatientID',
-            'PatientName' => 'PatientName',
+            'PatientID'   => dgettext('configuration', 'PatientID'),
+            'PatientName' => dgettext('configuration', 'PatientName'),
         ];
     }
 

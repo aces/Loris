@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {withTranslation} from 'react-i18next';
 import {TabPane, VerticalTabs} from 'Tabs';
 import PropTypes from 'prop-types';
+import i18n from 'I18nSetup';
 import Loader from 'Loader';
 import '../css/configuration.css';
 import swal from 'sweetalert2';
@@ -15,6 +16,8 @@ import {
   TagsElement,
   NumericElement,
 } from 'jsx/Form';
+
+import frStrings from '../locale/fr/LC_MESSAGES/configuration.json';
 
 /**
  * Candidate diagnosis evolution component
@@ -137,6 +140,7 @@ class DiagnosisEvolution extends Component {
    * @return {JSX} React markup for the component
    */
   renderDiagnosisForm(dxEvolutionID) {
+    const {t} = this.props;
     const id = typeof dxEvolutionID !== 'undefined' ?
       dxEvolutionID : this.state.currentTab;
     const trajectoryData = id == 'new' ?
@@ -145,7 +149,7 @@ class DiagnosisEvolution extends Component {
     const deleteButton = id !== 'new' ?
       (
         <ButtonElement
-          label='Delete'
+          label={t('Delete', {ns: 'configuration'})}
           type='delete'
           onUserInput={this.confirmDelete}
         />
@@ -164,7 +168,7 @@ class DiagnosisEvolution extends Component {
     return (
       <TabPane TabId={`${dxEvolutionID}`} key={dxEvolutionID}>
         <div className='row'>
-          <h3>Diagnosis Evolution</h3>
+          <h3>{t('Diagnosis Evolution', {ns: 'configuration'})}</h3>
           <br />
           <FormElement
             name='diagnosisEvolution'
@@ -172,11 +176,11 @@ class DiagnosisEvolution extends Component {
             ref='form'
           >
             <FieldsetElement
-              legend='Register Trajectory'
+              legend={t('Register Trajectory', {ns: 'configuration'})}
             >
               <TextboxElement
                 name='Name'
-                label='Trajectory Name'
+                label={t('Trajectory Name', {ns: 'configuration'})}
                 onUserInput={this.setFormData}
                 value={trajectoryData.Name}
                 required={true}
@@ -184,7 +188,7 @@ class DiagnosisEvolution extends Component {
               />
               <SearchableDropdown
                 name='ProjectID'
-                label='Project'
+                label={t('Project', {ns: 'loris', count: 1})}
                 options={this.state.formData.projects}
                 onUserInput={this.setFormData}
                 value={JSON.stringify(trajectoryData.ProjectID)}
@@ -193,7 +197,7 @@ class DiagnosisEvolution extends Component {
               />
               <SearchableDropdown
                 name='visitLabel'
-                label='Visit'
+                label={t('Visit', {ns: 'loris'})}
                 options={this.state.formData.visits}
                 onUserInput={this.setFormData}
                 value={trajectoryData.visitLabel}
@@ -202,7 +206,7 @@ class DiagnosisEvolution extends Component {
               />
               <SearchableDropdown
                 name='instrumentName'
-                label='Instrument'
+                label={t('Instrument', {ns: 'loris', count: 1})}
                 options={this.state.formData.instruments}
                 onUserInput={this.setFormData}
                 value={trajectoryData.instrumentName}
@@ -212,7 +216,7 @@ class DiagnosisEvolution extends Component {
               <TagsElement
                 name='sourceField'
                 id={dxEvolutionID}
-                label='Source Field'
+                label={t('Source Field', {ns: 'configuration'})}
                 options={this.state.formData.sourceFields}
                 useSearch={true}
                 strictSearch={true}
@@ -222,7 +226,7 @@ class DiagnosisEvolution extends Component {
                   null}
                 items={trajectoryData.sourceField || []}
                 required={true}
-                btnLabel='Add Field'
+                btnLabel={t('Add field', {ns: 'configuration'})}
                 pendingValKey='pendingSourceField'
                 onUserAdd={this.addSourceField}
                 onUserRemove={this.removeSourceField}
@@ -232,7 +236,7 @@ class DiagnosisEvolution extends Component {
                 name='orderNumber'
                 min={1}
                 max={100}
-                label='Order Number'
+                label={t('Order Number', {ns: 'configuration'})}
                 onUserInput={this.setFormData}
                 value={trajectoryData.orderNumber}
                 required={true}
@@ -241,12 +245,12 @@ class DiagnosisEvolution extends Component {
               <div className='btn-container'>
                 <ButtonElement
                   name='submit'
-                  label='Save'
+                  label={t('Save', {ns: 'loris'})}
                   type='submit'
                   onUserInput={this.handleSubmit}
                 />
                 <ButtonElement
-                  label='Reset'
+                  label={t('Reset', {ns: 'loris'})}
                   type='reset'
                   onUserInput={this.handleReset}
                 />
@@ -265,8 +269,12 @@ class DiagnosisEvolution extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t(
+        'An error occurred while loading the page.',
+        {ns: 'configuration'}
+      )}</h3>;
     }
 
     if (!this.state.isLoaded) {
@@ -274,7 +282,12 @@ class DiagnosisEvolution extends Component {
     }
 
     let tabList = [];
-    tabList.push({id: 'new', label: 'New Diagnosis Trajectory'});
+    tabList.push({
+      id: 'new', label: t(
+        'New Diagnosis Trajectory',
+        {ns: 'configuration'},
+      ),
+    });
 
     let diagnosisTracks = [];
     const trajectories = this.state.data.diagnosisTracks;
@@ -290,8 +303,9 @@ class DiagnosisEvolution extends Component {
     return (
       <div>
         <p>
-                    Use this page to manage the configuration of the study's
-                    diagnosis trajectory.
+          {t(
+            'Use this page to manage the configuration of the study\'s'
+            + ' diagnosis trajectory.', {ns: 'configuration'})}
         </p>
         <VerticalTabs
           tabs={tabList}
@@ -314,6 +328,7 @@ class DiagnosisEvolution extends Component {
    * @return {boolean}
    */
   validate(formData, tabID) {
+    const {t} = this.props;
     let isValid = true;
 
     let errorMessage = this.state.errorMessage;
@@ -327,31 +342,48 @@ class DiagnosisEvolution extends Component {
     };
 
     if (!formData.Name) {
-      errorMessage[tabID]['Name'] = 'This field is required!';
+      errorMessage[tabID]['Name'] = t(
+        'This field is required!',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
     if (!formData.ProjectID) {
-      errorMessage[tabID]['ProjectID'] = 'This field is required!' +
-                ' Entry must be included in provided list of options.';
+      errorMessage[tabID]['ProjectID'] = t(
+        'This field is required!'
+        + ' Entry must be included in provided list of options.',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
     if (!formData.visitLabel) {
-      errorMessage[tabID]['visitLabel'] = 'This field is required!' +
-                ' Entry must be included in provided list of options.';
+      errorMessage[tabID]['visitLabel'] = t(
+        'This field is required!'
+        + ' Entry must be included in provided list of options.',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
     if (!formData.instrumentName) {
-      errorMessage[tabID]['instrumentName'] = 'This field is required!' +
-                ' Entry must be included in provided list of options.';
+      errorMessage[tabID]['instrumentName'] = t(
+        'This field is required!'
+        + ' Entry must be included in provided list of options.',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
     if (!formData.sourceField || !formData.sourceField.length) {
-      errorMessage[tabID]['sourceField'] = 'This field is required!' +
-                ' Please click "Add Field" before saving.';
+      errorMessage[tabID]['sourceField'] = t(
+        'This field is required! Please click "Add Field" before saving.',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
     if (!formData.orderNumber) {
-      errorMessage[tabID]['orderNumber'] = 'This field is required!';
+      errorMessage[tabID]['orderNumber'] = t(
+        'This field is required!',
+        {ns: 'configuration'}
+      );
       isValid = false;
     }
 
@@ -455,14 +487,18 @@ class DiagnosisEvolution extends Component {
    * @param {event} e - Form submission event
    */
   confirmDelete(e) {
+    const {t} = this.props;
     e.preventDefault();
 
     swal.fire({
-      title: 'Are you sure you want to delete this diagnosis trajectory?',
+      title: t(
+        'Are you sure you want to delete this diagnosis trajectory?',
+        {ns: 'configuration'}
+      ),
       type: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: t('Delete', {ns: 'configuration'}),
+      cancelButtonText: t('Cancel', {ns: 'loris'}),
     }).then((result) => {
       if (result.value) {
         this.handleDelete();
@@ -474,6 +510,7 @@ class DiagnosisEvolution extends Component {
    * Handles diagnosis delete
    */
   handleDelete() {
+    const {t} = this.props;
     const tabID = this.state.currentTab;
 
     let diagnosisTracks = this.state.formData.diagnosisTracks;
@@ -486,7 +523,7 @@ class DiagnosisEvolution extends Component {
     }).then((resp) => {
       if (resp.ok) {
         swal.fire({
-          title: 'Deletion Successful!',
+          title: t('Deletion Successful!', {ns: 'configuration'}),
           type: 'success',
         });
         window.location.href =
@@ -592,6 +629,7 @@ DiagnosisEvolution.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('fr', 'configuration', frStrings);
   const TranslatedDiagnosisEvolution = withTranslation(
     ['configuration', 'loris']
   )(DiagnosisEvolution);

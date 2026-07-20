@@ -5,10 +5,10 @@
     {$useZerosAndOnes=true}
   {/if}
     <label class="radio-inline">
-        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="1"{else}value="true"{/if} {if $v eq "1" || $v eq "true"}checked{/if} {if $d eq "Yes"}disabled{/if}>Yes
+        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="1"{else}value="true"{/if} {if $v eq "1" || $v eq "true"}checked{/if} {if $d eq "Yes"}disabled{/if}>{dgettext('loris', 'Yes')}
     </label>
     <label class="radio-inline">
-        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="0"{else}value="false"{/if} {if $v eq "0" || $v eq "false"}checked{/if} {if $d eq "Yes"}disabled{/if}>No
+        <input type="radio" name="{$k}" {if $useZerosAndOnes} value="0"{else}value="false"{/if} {if $v eq "0" || $v eq "false"}checked{/if} {if $d eq "Yes"}disabled{/if}>{dgettext('loris', 'No')}
     </label>
 {/function}
 
@@ -84,7 +84,7 @@
         {/if}
         {if $node['AllowMultiple'] == 1}
             <button class="btn btn-success add" id="{$node['ID']}" type="button" {if $node['Disabled'] eq "Yes"}disabled{/if}>
-                <span class="glyphicon glyphicon-plus"></span> Add field
+                <span class="glyphicon glyphicon-plus"></span> {dgettext('configuration', 'Add field')}
             </button>
         {/if}
     </div>
@@ -161,11 +161,11 @@
     </div>
 {/function}
 
-<p>Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide.</p>
-<p>To configure study cohorts <a href="{$baseurl|default}/configuration/cohort/">click here</a>.
-    To configure study projects <a href="{$baseurl|default}/configuration/project/">click here</a>.
+<p>{dgettext('configuration', 'Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer\'s guide.')}</p>
+<p>{dgettext('configuration', 'To configure study cohorts')} <a href="{$baseurl|default}/configuration/cohort/">{dgettext('configuration', 'click here')}</a>.
+    {dgettext('configuration', 'To configure study projects')} <a href="{$baseurl|default}/configuration/project/">{dgettext('configuration', 'click here')}</a>.
 </p>
-<p>To configure the diagnosis trajectory of the study <a href="{$baseurl}/configuration/diagnosis_evolution/">click here</a>.
+<p>{dgettext('configuration', 'To configure the diagnosis trajectory of the study')} <a href="{$baseurl}/configuration/diagnosis_evolution/">{dgettext('configuration', 'click here')}</a>.
 <br>
 
 <div class="col-md-3">
@@ -200,8 +200,8 @@
             {/foreach}
                 <div class="form-group">
                     <div class="col-sm-offset-3 col-sm-9 submit-area">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                        <button type="reset" class="btn btn-default">Reset</button>
+                        <button type="submit" class="btn btn-primary">{dgettext('loris', 'Submit')}</button>
+                        <button type="reset" class="btn btn-default">{dgettext('loris', 'Reset')}</button>
                     </div>
                 </div>
             </form>
