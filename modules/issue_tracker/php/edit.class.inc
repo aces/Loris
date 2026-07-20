@@ -857,6 +857,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         );
 
         try {
+            $success = false;
             $db->beginTransaction();
 
             if (!empty($issueID)) {
@@ -1001,6 +1002,13 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $assigneeString = $issueValues['assignee'];
             }
             $db->commit();
+            $success = true;
+        } catch (\DatabaseException $ex) {
+            $db->rollBack();
+            return new \LORIS\Http\Response\JSON\InternalServerError();
+        }
+
+        if ($success) {
             $this->emailUser(
                 $issueID,
                 $assigneeString,
@@ -1012,9 +1020,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             return new \LORIS\Http\Response\JsonResponse(
                 ['issueID' => $issueID]
             );
-        } catch (\DatabaseException $ex) {
-            $db->rollBack();
-            return new \LORIS\Http\Response\JSON\InternalServerError();
         }
     }
 
