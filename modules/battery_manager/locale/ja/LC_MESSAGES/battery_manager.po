@@ -120,3 +120,21 @@ msgstr "最大年齢（日数）"
 
 msgid "Minimum Age (days)"
 msgstr "最低年齢（日数）"
+
+msgid "An error occurred while saving the test."
+msgstr "検査の保存中にエラーが発生しました。"
+
+msgid "This will deactivate the current test."
+msgstr "現在の検査は無効になります。"
+
+msgid "Unspecified Request"
+msgstr "要求が指定されていません"
+
+msgid "This Test already exists in the database"
+msgstr "このテストは既にデータベースに存在します。"
+
+msgid "Edit Permission Denied"
+msgstr "編集権限がありません"
+
+msgid "Could not add entry to the Test Battery"
+msgstr "テストバッテリーに項目を追加できませんでした。"

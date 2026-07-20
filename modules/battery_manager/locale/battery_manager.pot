@@ -119,3 +119,21 @@ msgstr ""
 
 msgid "Minimum Age (days)"
 msgstr ""
+
+msgid "An error occurred while saving the test."
+msgstr ""
+
+msgid "This will deactivate the current test."
+msgstr ""
+
+msgid "Unspecified Request"
+msgstr ""
+
+msgid "This Test already exists in the database"
+msgstr ""
+
+msgid "Edit Permission Denied"
+msgstr ""
+
+msgid "Could not add entry to the Test Battery"
+msgstr ""

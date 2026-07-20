@@ -140,3 +140,21 @@ msgstr "Âge maximal (jours)"
 #, fuzzy
 msgid "Minimum Age (days)"
 msgstr "Âge minimum (jours)"
+
+msgid "An error occurred while saving the test."
+msgstr "Une erreur s'est produite lors de l'enregistrement du test."
+
+msgid "This will deactivate the current test."
+msgstr "Cette action désactivera le test actuel."
+
+msgid "Unspecified Request"
+msgstr "Requête non spécifiée"
+
+msgid "This Test already exists in the database"
+msgstr "Ce test existe déjà dans la base de données."
+
+msgid "Edit Permission Denied"
+msgstr "Permission de modification refusée"
+
+msgid "Could not add entry to the Test Battery"
+msgstr "Impossible d'ajouter l'entrée à la batterie de tests."
