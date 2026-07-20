@@ -226,7 +226,7 @@ class DiagnosisEvolution extends Component {
                   null}
                 items={trajectoryData.sourceField || []}
                 required={true}
-                btnLabel={t('Add Field', {ns: 'configuration'})}
+                btnLabel={t('Add field', {ns: 'configuration'})}
                 pendingValKey='pendingSourceField'
                 onUserAdd={this.addSourceField}
                 onUserRemove={this.removeSourceField}
@@ -423,7 +423,7 @@ class DiagnosisEvolution extends Component {
     }).then((resp) => {
       if (resp.ok) {
         swal.fire({
-          title: t('Submission Successful!', {ns: 'configuration'}),
+          title: t('Submission Successful!', {ns: 'loris'}),
           type: 'success',
         });
         window.location.href =
