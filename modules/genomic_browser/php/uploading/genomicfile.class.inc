@@ -98,7 +98,14 @@ class Genomicfile
         default:
             $unsupported = $this->_fileToUpload->genomic_file_type;
             return [
-                'message'  => sprintf(dgettext("genomic_browser", "Unsupported filetype: %s"), $unsupported),
+                'message'  =>
+                    sprintf(
+                        dgettext(
+                            "genomic_browser",
+                            "Unsupported filetype: %s"
+                        ),
+                        $unsupported
+                    ),
                 'progress' => 100,
                 'error'    => true,
             ];

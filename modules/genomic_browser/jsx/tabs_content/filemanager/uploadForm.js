@@ -11,6 +11,7 @@ import {
   ButtonElement,
 } from 'jsx/Form';
 import swal from 'sweetalert2';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Genomic Upload Form
@@ -82,6 +83,7 @@ class GenomicUploadForm extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // Waiting for data to load
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -222,6 +224,7 @@ GenomicUploadForm.propTypes = {
   permissions: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
   closeFileUploadModal: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default GenomicUploadForm;
+export default withTranslation('genomic_browser', 'loris')(GenomicUploadForm);
