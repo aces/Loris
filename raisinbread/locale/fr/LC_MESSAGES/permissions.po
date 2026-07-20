@@ -56,16 +56,16 @@ msgid "Cross-Modality Data"
 msgstr "Données multimodales"
 
 msgid "Hide data release files"
-msgstr "Masquer les fichiers de diffusion des données"
+msgstr "Masquer les publications de données"
 
 msgid "Delete data release files"
-msgstr "Supprimer les fichiers de diffusion des données"
+msgstr "Supprimer les publications de données"
 
 msgid "Release Files"
-msgstr "Fichiers de diffusion"
+msgstr "Fichiers de publication"
 
 msgid "Grant Other Users Access to Releases"
-msgstr "Accorder à d'autres utilisateurs l'accès aux diffusions"
+msgstr "Accorder à d'autres utilisateurs l'accès aux publications"
 
 msgid "DICOMs - All Sites"
 msgstr "DICOM - Tous les sites"
