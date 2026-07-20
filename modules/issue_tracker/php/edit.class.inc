@@ -856,7 +856,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             $user
         );
 
-        $success = false;
         try {
             $db->beginTransaction();
 
@@ -997,25 +996,22 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $assigneeString = $issueValues['assignee'];
             }
             $db->commit();
-            $success = true;
         } catch (\DatabaseException $ex) {
             $db->rollBack();
             return new \LORIS\Http\Response\JSON\InternalServerError();
         }
 
-        if ($success) {
-            $this->emailUser(
-                $issueID,
-                $assigneeString,
-                isset($usersWatching) ? $usersWatching : [],
-                $user,
-                $flag,
-                $values
-            );
-            return new \LORIS\Http\Response\JsonResponse(
-                ['issueID' => $issueID]
-            );
-        }
+        $this->emailUser(
+            $issueID,
+            $assigneeString,
+            isset($usersWatching) ? $usersWatching : [],
+            $user,
+            $flag,
+            $values
+        );
+        return new \LORIS\Http\Response\JsonResponse(
+            ['issueID' => $issueID]
+        );
     }
 
     /**
