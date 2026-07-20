@@ -182,10 +182,10 @@ msgid "Installed Modules"
 msgstr "Modules installés"
 
 msgid "Violated Scans - All Sites"
-msgstr "Acquisitions en violation - Tous les sites"
+msgstr "Scans non conformes - Tous les sites"
 
 msgid "Violated Scans - Own Sites"
-msgstr "Acquisitions en violation - Sites attribués"
+msgstr "Scans non conformes - Sites attribués"
 
 msgid "View Containers"
 msgstr "Afficher les conteneurs"
