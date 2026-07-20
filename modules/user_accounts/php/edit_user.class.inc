@@ -564,10 +564,7 @@ class Edit_User extends \NDB_Form
                     if (!(in_array($permID, $current_permissionids))) {
                         $user->insertIntoUserAccountHistory($permID, 'I');
                         $permissionsAdded[]
-                            = dgettext(
-                                'permissions',
-                                $this->getDescriptionUsingPermID($permID)
-                            );
+                            = $this->getDescriptionUsingPermID($permID);
                     }
                 }
             }
@@ -579,10 +576,7 @@ class Edit_User extends \NDB_Form
                     if (!in_array($currentPermID, $permIDs)) {
                         $user->insertIntoUserAccountHistory($currentPermID, 'D');
                         $permissionsRemoved[]
-                            = dgettext(
-                                'permissions',
-                                $this->getDescriptionUsingPermID($currentPermID)
-                            );
+                            = $this->getDescriptionUsingPermID($currentPermID);
                     }
                 }
             }
@@ -1499,10 +1493,12 @@ class Edit_User extends \NDB_Form
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        return $db->pselectOne(
+        return dgettext('permissions', $db->pselectOne(
             "SELECT Description FROM permissions WHERE permID =:pID",
             ['pID' => $permID]
-        );
+        ));
+
+
     }
 
     /**
