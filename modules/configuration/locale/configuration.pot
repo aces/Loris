@@ -57,7 +57,7 @@ msgstr ""
 msgid "After adding a new cohort, Visit labels for this cohort can only be created by editing the configuration file, \"config.xml\". Please contact your administrator if you need more information."
 msgstr ""
 
-msgid "Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer\'s guide."
+msgid "Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide."
 msgstr ""
 
 msgid "To configure study cohorts"
