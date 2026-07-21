@@ -27,6 +27,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Edit_User extends \NDB_Form
 {
+    /**
+     * Skip the retired Smarty template.
+     *
+     * @var bool
+     */
+    public $skipTemplate = true;
+
     private const PASSWORD_ERROR_IS_EMAIL  = 'Your password cannot be your email.';
     private const PASSWORD_ERROR_IS_USER   = 'Your password cannot be ' .
                                         'your user name.';
@@ -35,6 +42,27 @@ class Edit_User extends \NDB_Form
                                         'identical: please choose another one';
     private const EMAIL_NOT_UNIQUE         = 'This email address is already ' .
                                                 'in use';
+
+    /**
+     * Permission groups exposed to the React form.
+     *
+     * @var array<string, list<array{label: string, name: string}>>
+     */
+    private array $permissionGroups = [];
+
+    /**
+     * Supervisors exposed to the React form.
+     *
+     * @var list<array{label: string, name: string}>
+     */
+    private array $supervisors = [];
+
+    /**
+     * Permission IDs that the editor cannot change.
+     *
+     * @var list<int|string>
+     */
+    private array $hiddenPermissions = [];
 
     /**
      * Determines whether this form is in edit or create mode.
@@ -656,7 +684,7 @@ class Edit_User extends \NDB_Form
         }
         $this->tpl_data['isSelfEdit'] = $this->_isEditingOwnAccount();
         $response = parent::handle($request);
-        if (!empty($this->redirect)) {
+        if (!empty($this->redirect) && $this->format !== 'json') {
             return $response
                 ->withStatus(303)
                 ->withHeader("Location", $this->redirect);
@@ -1003,11 +1031,22 @@ class Edit_User extends \NDB_Form
                 = self::canRejectAccount(\User::factory($this->identifier));
         }
 
+        /**
+         * Permission definitions available to the current editor.
+         *
+         * @var list<array{label: string, permID: int, type: string}> $perms
+         */
         $perms = $editor->getPermissionsVerbose($this->loris);
 
         $lastRole = '';
         $group    = [];
         foreach ($perms as $row) {
+            $type = ucwords($row['type']);
+            $this->permissionGroups[$type][] = [
+                'label' => $row['label'],
+                'name'  => 'permID[' . $row['permID'] . ']',
+            ];
+
             if ($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
                 $group[]  = $this->form->createElement(
@@ -1059,6 +1098,11 @@ class Edit_User extends \NDB_Form
                   JOIN users u ON (u.ID = up.userID)
                   WHERE p.code = 'send_to_dcc'";
 
+        /**
+         * Supervisors who receive permission-change notifications.
+         *
+         * @var list<array{Real_Name: string, email: string}> $results
+         */
         $results = \NDB_Factory::singleton()->database()->pselect($query, []);
 
         $group   = [];
@@ -1075,6 +1119,11 @@ class Edit_User extends \NDB_Form
 
         $attribs = $this->_isEditingOwnAccount() ? ['disabled' => true] : null;
         foreach ($results as $row) {
+            $this->supervisors[] = [
+                'label' => $row['Real_Name'],
+                'name'  => 'supervisorEmail[' . $row['email'] . ']',
+            ];
+
             $group[] = $this->createCheckbox(
                 'supervisorEmail[' . $row['email'] . ']',
                 htmlspecialchars(
@@ -1106,6 +1155,7 @@ class Edit_User extends \NDB_Form
                 $editor->getPermissionIDs()
             );
             foreach ($permDiff as $permID) {
+                $this->hiddenPermissions[] = $permID;
                 $this->addHidden("permID[$permID]", "1");
             }
         }
@@ -1117,6 +1167,152 @@ class Edit_User extends \NDB_Form
 
         // Expose self-edit flag to the Smarty template.
         $this->tpl_data['isSelfEdit'] = $this->_isEditingOwnAccount();
+    }
+
+    /**
+     * Embeds the form data for the React page or returns it as JSON.
+     *
+     * @return string
+     */
+    #[\Override]
+    function display()
+    {
+        if ($this->format === 'json') {
+            return $this->toJSON();
+        }
+
+        $data = json_encode(
+            $this->toArray(),
+            JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        );
+        return '<script>window.userAccountsEditData = '
+            . $data
+            . ';</script>';
+    }
+
+    /**
+     * Converts the edit-user form into data for the React page.
+     *
+     * @return array<string, mixed>
+     */
+    #[\Override]
+    function toArray(): array
+    {
+        $this->_setDefaults($this->_getDefaults());
+        $this->form->applyFilter('__ALL__', 'trim');
+
+        $fields = [];
+        foreach ($this->form->form as $name => $element) {
+            if ($element['type'] === 'group') {
+                if ($name === 'examiner_group') {
+                    foreach ($element['elements'] as $child) {
+                        if (isset($child['name'])) {
+                            $fields[(string) $child['name']]
+                                = $this->_serializeElement($child);
+                        }
+                    }
+                }
+                continue;
+            }
+
+            if ($element['type'] === 'hidden') {
+                continue;
+            }
+            $fields[(string) $name] = $this->_serializeElement($element);
+        }
+
+        $permissions = [];
+        foreach ($this->permissionGroups as $type => $group) {
+            $permissions[$type] = array_map(
+                function (array $permission): array {
+                    $permission['checked']
+                        = !empty($this->form->getValue($permission['name']));
+                    return $permission;
+                },
+                $group
+            );
+        }
+
+        $supervisors = array_map(
+            function (array $supervisor): array {
+                $supervisor['checked']
+                    = !empty($this->form->getValue($supervisor['name']));
+                return $supervisor;
+            },
+            $this->supervisors
+        );
+
+        return [
+            'canReject'         => $this->tpl_data['can_reject'] ?? false,
+            'errors'            => $this->_decodeForJSON($this->form->errors),
+            'fields'            => $fields,
+            'hiddenPermissions' => $this->hiddenPermissions,
+            'identifier'        => $this->identifier,
+            'isCreating'        => $this->isCreatingNewUser(),
+            'isSelfEdit'        => $this->_isEditingOwnAccount(),
+            'permissions'       => $permissions,
+            'supervisors'       => $supervisors,
+        ];
+    }
+
+    /**
+     * Converts one LorisForm element into a JSON-safe field definition.
+     *
+     * @param array<string, mixed> $element LorisForm element
+     *
+     * @return array<string, mixed>
+     */
+    private function _serializeElement(array $element): array
+    {
+        $name = $element['name'] ?? null;
+        if (!is_string($name)) {
+            throw new \UnexpectedValueException(
+                'Form element name must be a string.'
+            );
+        }
+        $options = $element['options'] ?? [];
+        if ($options instanceof \Traversable) {
+            $options = iterator_to_array($options);
+        }
+
+        $value = $this->form->getValue($name);
+        if ($element['type'] === 'password') {
+            $value = '';
+        }
+
+        return [
+            'disabled' => isset($element['disabled']),
+            'label'    => $this->_decodeForJSON($element['label'] ?? ''),
+            'multiple' => isset($element['multiple']),
+            'name'     => $name,
+            'options'  => $this->_decodeForJSON($options),
+            'pattern'  => $element['pattern'] ?? null,
+            'required' => !empty($element['required']),
+            'type'     => $element['type'],
+            'value'    => $this->_decodeForJSON($value),
+        ];
+    }
+
+    /**
+     * Decodes values that were escaped for the retired Smarty template.
+     *
+     * @param mixed $value Value to decode
+     *
+     * @return mixed
+     */
+    private function _decodeForJSON(mixed $value): mixed
+    {
+        if (is_array($value)) {
+            return array_map([$this, '_decodeForJSON'], $value);
+        }
+        if (!is_string($value)) {
+            return $value;
+        }
+        return html_entity_decode(
+            $value,
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8'
+        );
     }
 
     /**
@@ -1512,10 +1708,7 @@ class Edit_User extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . '/user_accounts/js/rejectUser.js',
-                $baseURL . '/js/passwordVisibility.js',
-                $baseURL . '/user_accounts/js/edit_user_helper.js',
-                $baseURL . '/js/invalid_form_scroll.js',
+                $baseURL . '/user_accounts/js/formEditUser.js',
             ]
         );
     }
