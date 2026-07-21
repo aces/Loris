@@ -70,6 +70,13 @@ foreach ($compromised as $username => $details) {
         $details['date'],
         $details['active']
     );
+
+    // password reset
+    $DB->update(
+        'users',
+        ['PasswordChangeRequired' => '1'],
+        ['UserID' => $username]
+    );
 }
 
 echo implode("\n", $report) . "\n";

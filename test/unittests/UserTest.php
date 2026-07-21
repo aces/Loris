@@ -695,14 +695,12 @@ class UserTest extends TestCase
     }
 
     /**
-     * Test that updatePassword updates
-     * the 'Password_hash' and 'PasswordChangeRequired'
-     * fields when both the new password and expiration are specified
+     * Test that updatePassword changes the user's password hash.
      *
      * @return void
      * @covers User::updatePassword
      */
-    public function testUpdatePasswordWithExpiration()
+    public function testUpdatePasswordUpdatesHash()
     {
         $this->_user     = \User::factory(self::USERNAME);
         $oldHash         = $this->_user->getData('Password_hash');
@@ -718,44 +716,13 @@ class UserTest extends TestCase
             ->willReturn(false);
 
         $this->_user->updatePassword(
-            new \Password(\Utility::randomString(16)),
+            new \Password(\Utility::randomString(16))
         );
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory(self::USERNAME);
 
         // This checks that the hash has been updated. There is no way to predict
         // what the new hash will be, so simply check that it changed!
-        $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
-    }
-
-    /**
-     * Test that updatePassword causes a new password to not be expired by
-     * default.
-     *
-     * @return void
-     * @covers User::updatePassword
-     */
-    public function testUpdatePasswordWithoutExpiry()
-    {
-        $this->_user = \User::factory(self::USERNAME);
-
-        $oldHash = $this->_user->getData('Password_hash');
-
-        // Cause usePwnedPasswordsAPI config option to return false.
-        $this->_mockConfig
-            ->method('settingEnabled')
-            ->willReturn(false);
-
-        $mockConfig = &$this->_mockConfig;
-        $this->_factory->setConfig($mockConfig);
-
-        $this->_user->updatePassword(
-            new \Password(\Utility::randomString(16))
-        );
-
-        //Re-populate the user object now that the password has been changed
-        $this->_user = \User::factory(self::USERNAME);
-
         $this->assertNotEquals($oldHash, $this->_user->getData('Password_hash'));
     }
 

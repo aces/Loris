@@ -558,7 +558,7 @@ class Edit_User extends \NDB_Form
             $user->updatePassword(
                 new \Password(
                     htmlspecialchars_decode($values['Password_hash'])
-                ),
+                )
             );
         }
 

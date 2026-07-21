@@ -606,7 +606,7 @@ class User extends UserPermissions implements
      * @return void
      */
     function updatePassword(
-        \Password $password,
+        \Password $password
     ): void {
         if (password_verify($this->userInfo['Email'], (string) $password)) {
             throw new \InvalidArgumentException(
