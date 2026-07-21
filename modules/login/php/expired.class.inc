@@ -90,25 +90,15 @@ class Expired extends \NDB_Page implements ETagCalculator
              INNER JOIN users u
              ON r.UserID = u.ID
              WHERE r.ResetToken = :token
-                AND r.ACTIVE = 'Y'
+                AND r.Status IS NULL
                 AND r.CreationDate >= NOW() - INTERVAL 20 MINUTE",
             ['token' => $token]
         );
 
         if (empty($row)) {
-            // The reset token has expired. Mark it as inactive and return an error.
-            $db->update(
-                'user_password_reset',
-                ['ACTIVE' => 'N'],
-                [
-                    'ResetToken' => $token,
-                    'ACTIVE'     => 'Y',
-                ]
-            );
             return new \LORIS\Http\Response\JSON\Conflict(
                 'Invalid or expired reset password link.'
             );
-
         }
 
         // Set the session variable to indicate that the user can reset their password.
@@ -186,14 +176,27 @@ class Expired extends \NDB_Page implements ETagCalculator
                         $plaintext
                     )
                 );
+                // Mark the token that successfully reset the password as 'Used'
                 $db->update(
                     'user_password_reset',
-                    ['ACTIVE' => 'N'],
+                    ['Status' => 'Used'],
                     [
-                        'UserID' => $_SESSION['PasswordResetUserID'],
-                        'ACTIVE' => 'Y',
+                        'ResetToken' => $_SESSION['PasswordResetToken'],
                     ]
                 );
+                // Invalidate all other active tokens for this user by marking them as 'Superseded'
+                $stmt = $db->prepare(
+                    "UPDATE user_password_reset
+                        SET Status = 'Superseded'
+                    WHERE UserID = :userID
+                        AND ResetToken <> :token
+                        AND Status IS NULL
+                        AND CreationDate >= NOW() - INTERVAL 20 MINUTE"
+                );
+                $stmt->execute([
+                    ':userID' => $_SESSION['PasswordResetUserID'],
+                    ':token'  => $_SESSION['PasswordResetToken']
+                ]);
                 unset($_SESSION['PasswordExpiredForUser']);
                 unset($_SESSION['PasswordResetToken']);
                 unset($_SESSION['PasswordResetUserID']);

@@ -124,7 +124,7 @@ VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N',''
 CREATE TABLE `user_password_reset` (
   `UserID` int(10) unsigned NOT NULL,
   `ResetToken` char(64) NOT NULL,
-  `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `Status` enum('Used','Superseded') DEFAULT NULL,  
   `CreationDate` datetime NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY (`UserID`,`ResetToken`),
   UNIQUE KEY `ResetToken` (`ResetToken`),
