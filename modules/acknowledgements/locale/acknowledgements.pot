@@ -87,9 +87,6 @@ msgstr ""
 msgid "Acknowledgement added."
 msgstr ""
 
-msgid "success"
-msgstr ""
-
 msgid "Citation Policy"
 msgstr ""
 

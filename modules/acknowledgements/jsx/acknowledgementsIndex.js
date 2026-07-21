@@ -176,7 +176,7 @@ class AcknowledgementsIndex extends Component {
 
       await swal.fire(t('Success!', {ns: 'loris'}),
         t('Acknowledgement added.', {ns: 'acknowledgements'}),
-        t('success', {ns: 'acknowledgements'}));
+        'success');
       this.closeModalForm();
       this.fetchData();
     } catch (error) {
@@ -236,6 +236,10 @@ class AcknowledgementsIndex extends Component {
 
     case t('Roles', {ns: 'acknowledgements'}):
       result = <td>{this.parseMultiple(cell, 'rolesOptions')}</td>;
+      break;
+
+    case t('Present', {ns: 'acknowledgements'}):
+      result = <td>{t(cell, {ns: 'loris'})}</td>;
       break;
     }
     return result;
