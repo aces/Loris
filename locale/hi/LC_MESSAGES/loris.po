@@ -155,12 +155,6 @@ msgstr "वापस"
 msgid "None"
 msgstr "कोई नहीं"
 
-msgid "Y"
-msgstr "हाँ"
-
-msgid "N"
-msgstr "नहीं"
-
 msgid "Create"
 msgstr "बनाएँ"
 

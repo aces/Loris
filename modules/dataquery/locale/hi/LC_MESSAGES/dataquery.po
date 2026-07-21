@@ -307,12 +307,6 @@ msgstr "मौजूद नहीं है"
 msgid "number of"
 msgstr "संख्या"
 
-msgid "true"
-msgstr "सही"
-
-msgid "false"
-msgstr "ग़लत"
-
 msgid "Select a value"
 msgstr "मान चुनें"
 
@@ -352,10 +346,10 @@ msgstr "अपलोड की गई CSV फ़ाइल खाली है।
 msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
 msgstr "CSV में {{expectedLength}} कॉलम अपेक्षित थे। पंक्ति {{line}} पर {{gotLength}} मिले।"
 
-msgid "Invalid DCC ID"
+msgid "Invalid DCCID"
 msgstr "अमान्य DCC ID"
 
-msgid "Invalid DCC ID ({{id}}) on line {{line}}."
+msgid "Invalid DCCID ({{id}}) on line {{line}}."
 msgstr "अमान्य DCC ID ({{id}}) पंक्ति {{line}} पर।"
 
 msgid "Invalid PSCID"

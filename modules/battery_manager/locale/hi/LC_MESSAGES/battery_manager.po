@@ -106,9 +106,6 @@ msgstr "आप किसी प्रविष्टि को संपाद�
 msgid "Search for instrument"
 msgstr "उपकरण खोजें"
 
-msgid "days"
-msgstr "दिन"
-
 msgid "Search for site"
 msgstr "साइट खोजें"
 

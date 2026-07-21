@@ -61,9 +61,6 @@ msgstr "यहाँ आपका संदेश जाएगा।"
 msgid "Email"
 msgstr "ईमेल"
 
-msgid "Instrument"
-msgstr "यंत्र"
-
 msgid "URL"
 msgstr "यूआरएल"
 
