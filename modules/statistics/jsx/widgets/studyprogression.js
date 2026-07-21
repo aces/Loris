@@ -127,7 +127,8 @@ const StudyProgression = (props) => {
   const filterLabel = (hide) => hide ?
     t('Hide Filters', {ns: 'loris'})
     : t('Show Filters', {ns: 'loris'});
-  return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
+  return loading ? <Panel title={t('Study Progression', {ns: 'statistics'})}>
+    <Loader /></Panel> : (
     <>
       <Panel
         title={t('Study Progression', {ns: 'statistics'})}

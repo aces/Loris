@@ -101,7 +101,7 @@ class Stats_Behavioural extends \NDB_Form
         // PROJECTS
         $allProjectList = \Utility::getProjectList();
         $projects       = [];
-        $projects['']   = 'All Projects';
+        $projects['']   = dgettext('statistics', 'All Projects');
 
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {

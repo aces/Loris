@@ -239,7 +239,7 @@ class Stats_MRI extends \NDB_Form
         $allProjectList = \Utility::getProjectList();
 
         $projects     = [];
-        $projects[''] = 'All Projects';
+        $projects[''] = dgettext('statistics', 'All Projects');
 
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
@@ -318,7 +318,7 @@ class Stats_MRI extends \NDB_Form
             )
         );
         $sites     = [];
-        $sites[''] ="All sites";
+        $sites[''] = dgettext('statistics', 'All sites');
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = dgettext('psc', $row['ShortName']);
             if (isset($_REQUEST['MRIsite'])
@@ -373,9 +373,9 @@ class Stats_MRI extends \NDB_Form
             return;
         }
         $MRISubcategories = [
-            'Complete',
-            'Partial Run',
-            'No Scan',
+            dgettext('loris', 'Complete'),
+            dgettext('statistics', 'Partial Run'),
+            dgettext('statistics', 'No Scan'),
         ];
 
         //Check if a specific scan is requested otherwise display first
@@ -387,7 +387,7 @@ class Stats_MRI extends \NDB_Form
         }
 
         $MRI_Type_Field = $MRI_Type . "_Scan_Done";
-        $MRIHeader      = "$MRI_Type Breakdown";
+        $MRIHeader      = sprintf(dgettext('statistics', "%s Breakdown"), $MRI_Type);
         $CaseStatement  = "
                           CASE($MRI_Type_Field)
                           WHEN 'Partial' THEN 'Partial Run'
@@ -432,7 +432,7 @@ class Stats_MRI extends \NDB_Form
 
         $M_Visits = \Utility::getVisitList($currentProject);
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
-            "Breakdown By Scan Type",
+            dgettext('statistics', "Breakdown By Scan Type"),
             $MRIHeader,
             $MRISubcategories,
             $M_Visits,
