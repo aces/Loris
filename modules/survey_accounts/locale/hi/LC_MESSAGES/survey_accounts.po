@@ -79,7 +79,7 @@ msgstr "कृपया एक उपकरण चुनें."
 msgid "already exists for given candidate for visit"
 msgstr "दिए गए उम्मीदवार के लिए यात्रा हेतु पहले से ही मौजूद है"
 
-msgid "Email is not valid."
+msgid "The email address is not valid."
 msgstr "ईमेल पता मान्य नहीं है."
 
 msgid "Please confirm the email address."
