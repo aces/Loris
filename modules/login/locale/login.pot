@@ -146,3 +146,51 @@ msgstr[0] ""
 msgid "Visit"
 msgid_plural "Visits"
 msgstr[0] ""
+
+msgid "Missing code"
+msgstr ""
+
+msgid "Invalid MFA code"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "password expired"
+msgstr ""
+
+msgid "Can not use an empty password."
+msgstr ""
+
+msgid "You cannot keep the same password."
+msgstr ""
+
+msgid "Server encountered an error."
+msgstr ""
+
+msgid "Sending reset email failed."
+msgstr ""
+
+msgid "Please complete the reCaptcha"
+msgstr ""
+
+msgid "Email address can not contain the following characters: <,>,& and \"."
+msgstr ""
+
+msgid "Please provide a valid email address!"
+msgstr ""
+
+msgid "Not a valid user"
+msgstr ""
+
+msgid "Please complete the reCaptcha!"
+msgstr ""
+
+msgid "Login with {{provider}}"
+msgstr ""
+
+msgid "Our partners"
+msgstr ""
+
+msgid "Password expired for user."
+msgstr ""

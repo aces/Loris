@@ -181,3 +181,51 @@ msgid "Visit"
 msgid_plural "Visits"
 msgstr[0] "Visite"
 msgstr[1] "Visites"
+
+msgid "Missing code"
+msgstr "Code manquant"
+
+msgid "Invalid MFA code"
+msgstr "Code MFA invalide"
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "password expired"
+msgstr "Le mot de passe a expiré."
+
+msgid "Can not use an empty password."
+msgstr "Le mot de passe ne peut pas être vide."
+
+msgid "You cannot keep the same password."
+msgstr "Vous ne pouvez pas conserver le même mot de passe."
+
+msgid "Server encountered an error."
+msgstr "Le serveur a rencontré une erreur."
+
+msgid "Sending reset email failed."
+msgstr "L'envoi du courriel de réinitialisation a échoué."
+
+msgid "Please complete the reCaptcha"
+msgstr "Veuillez compléter le reCAPTCHA."
+
+msgid "Email address can not contain the following characters: <,>,& and \"."
+msgstr "L'adresse courriel ne peut pas contenir les caractères suivants : <, >, &, et \"."
+
+msgid "Please provide a valid email address!"
+msgstr "Veuillez fournir une adresse courriel valide."
+
+msgid "Not a valid user"
+msgstr "Utilisateur invalide."
+
+msgid "Please complete the reCaptcha!"
+msgstr "Veuillez compléter le reCAPTCHA !"
+
+msgid "Login with {{provider}}"
+msgstr "Se connecter avec {{provider}}"
+
+msgid "Our partners"
+msgstr "Nos partenaires"
+
+msgid "Password expired for user."
+msgstr "Le mot de passe de l'utilisateur a expiré."

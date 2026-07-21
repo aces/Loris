@@ -79,7 +79,7 @@ class Authentication extends \NDB_Page implements ETagCalculator
         }
 
         return new \LORIS\Http\Response\JSON\BadRequest(
-            'Error'
+            dgettext('login', 'Error')
         );
     }
 
@@ -176,12 +176,12 @@ class Authentication extends \NDB_Page implements ETagCalculator
             $login->setState();
         } else if ($login->passwordChangeRequired()) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'password expired'
+                dgettext('login', 'password expired')
             );
         } else {
             // login error.
             return new \LORIS\Http\Response\JSON\Conflict(
-                (string) $login->_lastError
+                dgettext('login', (string) $login->_lastError)
             );
         }
 
