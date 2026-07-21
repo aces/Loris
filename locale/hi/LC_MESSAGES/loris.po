@@ -520,6 +520,9 @@ msgstr "{{months}} महीने का/की"
 msgid "{{years}} years old"
 msgstr "{{years}} वर्ष का"
 
+msgid "%d y / %d m"
+msgstr "%d व / %d म"
+
 # Other generic terms
 msgid "Loading..."
 msgstr "लोड हो रहा है..."

@@ -73,12 +73,6 @@ msgstr "Sexe biologique"
 msgid "You do not have access to any timepoints registered for this candidate."
 msgstr "Vous n'avez pas accès aux temps d'acquisitions enregistrés pour ce candidat."
 
-msgid " y / "
-msgstr " y / "
-
-msgid " m"
-msgstr " m"
-
 msgid "Not Done"
 msgstr "Non réalisé"
 
