@@ -49,6 +49,6 @@ msgstr "アクションなし"
 msgid "Stage: %s"
 msgstr "ステージ: %s"
 
-msgid "Start %s Stage"
-msgstr "%s ステージを開始"
+msgid "Start the \"%s\" Stage"
+msgstr "「%s」ステージを開始"
 
