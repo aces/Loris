@@ -234,9 +234,15 @@ class Imaging_QC extends \NDB_Menu_Filter
         }
 
         $scan_location = [
-            "In Imaging Browser"    => "Found in Imaging Browser",
-            "In MRI Violated Scans" => "Found in MRI Violated Scans",
-            "Missing"               => "Missing",
+            "In Imaging Browser"    => dgettext(
+                "imaging_qc",
+                "Found in Imaging Browser"
+            ),
+            "In MRI Violated Scans" => dgettext(
+                "imaging_qc",
+                "Found in MRI Violated Scans"
+            ),
+            "Missing"               => dgettext("imaging_qc", "Missing"),
         ];
 
         $this->fieldOptions
@@ -246,26 +252,26 @@ class Imaging_QC extends \NDB_Menu_Filter
                 'cohort'           => $cohortList2,
                 'scanType'         => $scan_types,
                 'mRIParameterForm' => [
-                    "Incomplete" => "Incomplete",
-                    "Complete"   => "Complete",
+                    "Incomplete" => dgettext("imaging_qc", "Incomplete"),
+                    "Complete"   => dgettext("imaging_qc", "Complete"),
                 ],
                 'scanDoneInMRIPF'  => [
-                    "Yes" => "Yes",
-                    "No"  => "No",
+                    "Yes" => dgettext("loris", "Yes"),
+                    "No"  => dgettext("loris", "No"),
                 ],
                 'tarchive'         => [
-                    "In DICOM" => "In DICOM Archives",
-                    "Missing"  => "Missing",
+                    "In DICOM" => dgettext("imaging_qc", "In DICOM Archives"),
+                    "Missing"  => dgettext("imaging_qc", "Missing"),
                 ],
                 'scanLocation'     => $scan_location,
                 'qCStatus'         => [
-                    "Pass" => "Pass",
-                    "Fail" => "Fail",
+                    "Pass" => dgettext("loris", "Pass"),
+                    "Fail" => dgettext("loris", "Fail"),
                 ],
                 'uploadedBy'       => $uploaderList,
                 'selected'         => [
-                    "True"  => "True",
-                    "False" => "False",
+                    "True"  => dgettext("loris", "True"),
+                    "False" => dgettext("loris", "False"),
                 ],
                 'visitLabel'       => $visitList,
             ];
