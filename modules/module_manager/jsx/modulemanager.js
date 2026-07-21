@@ -106,27 +106,24 @@ class ModuleManagerIndex extends Component {
           'error'
         );
       } else {
-        const success = this.setModuleDisplayStatus(name, value);
-        if (success === true) {
-          swal.fire({
-            title: t('Success!', {ns: 'loris'}),
-            text: t(
-              'Updated {{name}} status! ',
-              {ns: 'module_manager', name: name}
-            ) + t(
-              'To apply changes the interface must be reloaded. Proceed?',
-              {ns: 'module_manager'}
-            ),
-            type: 'success',
-            showCancelButton: true,
-            confirmButtonText: t('Reload the page', {ns: 'module_manager'}),
-            cancelButtonText: t('Continue', {ns: 'module_manager'}),
-          }).then((status) => {
-            if (status.value) {
-              window.location.href = this.props.BaseURL
-                                     + '/module_manager';
-            }
-          });
+         const success = this.setModuleDisplayStatus(name, value);
+         if (success === true) {
+           swal.fire({
+             title: t('Success!', {ns: 'loris'}),
+             text: t(
+               'Updated {{name}} status! To apply changes the interface must be reloaded. Proceed?',
+               {ns: 'module_manager', name: name}
+             ),
+             type: 'success',
+             showCancelButton: true,
+             confirmButtonText: t('Reload the page', {ns: 'module_manager'}),
+             cancelButtonText: t('Continue', {ns: 'module_manager'}),
+           }).then((status) => {
+             if (status.value) {
+               window.location.href = this.props.BaseURL
+                                      + '/module_manager';
+             }
+           });
         } else {
           // If we get here something went very wrong, because somehow
           // a module was toggled that isn't in the table.
