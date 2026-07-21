@@ -119,13 +119,6 @@ class CandidateParameters extends Component {
 
     return (
       <div>
-        <a className='btn btn-sm btn-primary'
-          href={loris.BaseURL + '/' + this.props.candID}
-          style={{marginBottom: '20px'}}
-        >
-          {t('Return to timepoint list', {ns: 'candidate_parameters'})}
-        </a>
-        <br />
         <Tabs tabs={tabList} defaultTab='candidateInfo' updateURL={true}>
           {this.getTabPanes(tabList)}
         </Tabs>

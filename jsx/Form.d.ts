@@ -395,6 +395,63 @@ export class NumericElement {
     forceUpdate(): void
 }
 
+type numericRangeValue = {
+    min?: string
+    max?: string
+};
+
+type numericRangeElementProps = {
+    name: string
+    min?: number
+    max?: number
+    step?: string
+    label?: string
+    value?: numericRangeValue
+    id?: string
+    disabled?: boolean
+    required?: boolean
+    onUserInput: (name: string, value: numericRangeValue) => void
+    labelPlacementTop?: boolean
+    minLabel?: string
+    maxLabel?: string
+};
+
+/**
+ * NumericRangeElement class. See Form.js
+ */
+export class NumericRangeElement {
+    props: numericRangeElementProps
+    state: any
+    context: object
+    refs: {[key: string]: ReactInstance}
+
+    /**
+     * Construct a NumericRangeElement
+     *
+     * @param {numericRangeElementProps} props - React props
+     */
+    constructor(props: numericRangeElementProps)
+
+    /**
+     * React lifecycle method
+     *
+     * @returns {ReactNode} - the element
+     */
+    render(): ReactNode
+
+    /**
+     * React lifecycle method
+     *
+     * @param {object} newstate - the state to override
+     */
+    setState(newstate: object): void
+
+    /**
+     * React lifecycle method.
+     */
+    forceUpdate(): void
+}
+
 type dateElementProps = {
     name: string
     label?: string
@@ -647,6 +704,7 @@ export default {
   TimeElement,
   DateTimeElement,
   NumericElement,
+  NumericRangeElement,
   FileElement,
   StaticElement,
   HeaderElement,

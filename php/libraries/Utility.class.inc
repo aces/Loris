@@ -182,7 +182,7 @@ class Utility
         // fix the array
         $list = [];
         foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
+            $list[$row["CenterID"]] = dgettext("psc", $row["Name"]);
         }
         return $list;
     }
@@ -998,7 +998,7 @@ class Utility
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
             "SELECT MriScanTypeID, MriScanTypeName
-             FROM mri_scan_type 
+             FROM mri_scan_type
              JOIN files USING (MriScanTypeID)",
             []
         );

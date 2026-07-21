@@ -765,3 +765,6 @@ msgstr "Tous les fichiers"
 
 msgid "View Session"
 msgstr "Voir la session"
+
+msgid "Channel Types"
+msgstr "Types de chaînes"

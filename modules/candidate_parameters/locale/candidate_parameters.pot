@@ -227,3 +227,18 @@ msgstr ""
 
 msgid "Comments: "
 msgstr ""
+
+msgid "I know the year and month of death"
+msgstr ""
+
+msgid "I know the year of death"
+msgstr ""
+
+msgid "I do not know the date of death"
+msgstr ""
+
+msgid "I know the full date of death"
+msgstr ""
+
+msgid "Precision of date:"
+msgstr ""

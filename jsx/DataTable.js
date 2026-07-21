@@ -69,6 +69,16 @@ const hasFilterKeyword = (name, data, filters) => {
     return (filterData === data);
   }
 
+  // Handle numeric range inputs
+  if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+    const numericData = Number.parseFloat(data);
+    const min = Number.parseFloat(filterData.min);
+    const max = Number.parseFloat(filterData.max);
+    return !Number.isNaN(numericData) &&
+      (Number.isNaN(min) || numericData >= min) &&
+      (Number.isNaN(max) || numericData <= max);
+  }
+
   // Handle array inputs for multiselects
   if (typeof filterData === 'object' && Array.isArray(filterData)) {
     const searchString = (data !== null && data !== undefined) ?
@@ -363,6 +373,10 @@ const DataTable = ({
           return (
             <CTA
               key={key}
+              buttonClass={
+                'btn btn-primary' +
+                (action.name ? ` action-${action.name}` : '')
+              }
               label={action.label}
               onUserInput={action.action}
             />

@@ -122,7 +122,7 @@ const Panel = (props) => {
    */
   return (
     <div className={`panel ${props.class}`}
-      style={{height: props.panelSize}}>
+      style={{height: props.panelSize, maxHeight: props.maxHeight}}>
       {panelHeading}
       <div id={props.id}
         className={props.collapsed ?
@@ -154,6 +154,7 @@ Panel.propTypes = {
   panelSize: PropTypes.string,
   style: PropTypes.object,
   children: PropTypes.node,
+  maxHeight: PropTypes.string,
 };
 Panel.defaultProps = {
   initCollapsed: false,

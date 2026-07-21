@@ -1,3 +1,10 @@
+DROP TABLE IF EXISTS `testtest`;
+DROP TABLE IF EXISTS `aosi`;
+DROP TABLE IF EXISTS `bmi`;
+DROP TABLE IF EXISTS `medical_history`;
+DROP TABLE IF EXISTS `mri_parameter_form`;
+DROP TABLE IF EXISTS `radiology_review`;
+
 DROP TABLE IF EXISTS dataquery_study_queries_rel;
 DROP TABLE IF EXISTS dataquery_run_results;
 DROP TABLE IF EXISTS dataquery_starred_queries_rel;
@@ -39,12 +46,19 @@ DROP TABLE IF EXISTS `biobank_container_dimension`;
 DROP TABLE IF EXISTS `biobank_unit`;
 
 -- 0000-00-05-ElectrophysiologyTables.sql
+DROP TABLE IF EXISTS `physiological_task_event_history`;
+DROP TABLE IF EXISTS `hed_tag_history`;
+DROP TABLE IF EXISTS `hed_tag_endorsement_history`;
+DROP TABLE IF EXISTS `hed_tag_endorsement`;
+DROP TABLE IF EXISTS `parameter_project`;
 DROP TABLE IF EXISTS `bids_event_file_mapping`;
 DROP TABLE IF EXISTS `bids_event_dataset_mapping`;
 DROP TABLE IF EXISTS `physiological_task_event_hed_rel`;
 DROP TABLE IF EXISTS `hed_schema_nodes`;
 DROP TABLE IF EXISTS `hed_schema`;
+DROP TABLE IF EXISTS `ephys_browser_file_type`;
 DROP TABLE IF EXISTS `electrophysiology_uploader`;
+DROP TABLE IF EXISTS `physiological_archive`;
 DROP TABLE IF EXISTS `physiological_event_parameter_category_level`;
 DROP TABLE IF EXISTS `physiological_event_parameter`;
 DROP TABLE IF EXISTS `physiological_event_archive`;
@@ -56,20 +70,21 @@ DROP TABLE IF EXISTS `physiological_coord_system_point_3d_rel`;
 DROP TABLE IF EXISTS `physiological_electrode`;
 DROP TABLE IF EXISTS `physiological_electrode_material`;
 DROP TABLE IF EXISTS `physiological_electrode_type`;
+DROP TABLE IF EXISTS `point_3d`;
 DROP TABLE IF EXISTS `physiological_coord_system`;
 DROP TABLE IF EXISTS `physiological_coord_system_unit`;
 DROP TABLE IF EXISTS `physiological_coord_system_name`;
 DROP TABLE IF EXISTS `physiological_coord_system_type`;
-DROP TABLE IF EXISTS `point_3d`;
 DROP TABLE IF EXISTS `physiological_channel`;
 DROP TABLE IF EXISTS `physiological_channel_type`;
 DROP TABLE IF EXISTS `physiological_status_type`;
-DROP TABLE IF EXISTS `physiological_archive`;
 DROP TABLE IF EXISTS `physiological_parameter_file`;
 DROP TABLE IF EXISTS `physiological_split_file`;
 DROP TABLE IF EXISTS `physiological_file`;
 DROP TABLE IF EXISTS `physiological_output_type`;
 DROP TABLE IF EXISTS `physiological_modality`;
+DROP TABLE IF EXISTS `meg_ctf_head_shape_point`;
+DROP TABLE IF EXISTS `meg_ctf_head_shape_file`;
 
 -- 0000-00-04-Help.sql
 DROP TABLE IF EXISTS `help`;
@@ -154,7 +169,6 @@ DROP TABLE IF EXISTS `login_summary_statistics`;
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
 DROP TABLE IF EXISTS `parameter_candidate`;
-DROP TABLE IF EXISTS `parameter_project`;
 DROP TABLE IF EXISTS `parameter_type_override`;
 DROP TABLE IF EXISTS `parameter_type_category_rel`;
 DROP TABLE IF EXISTS `parameter_type_category`;
@@ -166,8 +180,9 @@ DROP TABLE IF EXISTS `server_processes`;
 DROP TABLE IF EXISTS `StatisticsTabs`;
 DROP TABLE IF EXISTS `user_login_history`;
 DROP TABLE IF EXISTS `user_account_history`;
-DROP TABLE IF EXISTS `policies`;
+DROP TABLE IF EXISTS `policiesI18n`;
 DROP TABLE IF EXISTS `user_policy_decision`;
+DROP TABLE IF EXISTS `policies`;
 DROP TABLE IF EXISTS `data_integrity_flag`;
 DROP TABLE IF EXISTS `certification_training_quiz_answers`;
 DROP TABLE IF EXISTS `certification_training_quiz_questions`;
@@ -240,10 +255,6 @@ DROP TABLE IF EXISTS `appointment_type`;
 
 DROP TABLE IF EXISTS `openid_connect_csrf`;
 DROP TABLE IF EXISTS `openid_connect_providers`;
-DROP TABLE IF EXISTS `physiological_task_event_history`;
-DROP TABLE IF EXISTS `hed_tag_history`;
-DROP TABLE IF EXISTS `hed_tag_endorsement_history`;
-DROP TABLE IF EXISTS `hed_tag_endorsement`;
 
 
 DROP TABLE IF EXISTS `candidate_diagnosis_evolution_rel`;

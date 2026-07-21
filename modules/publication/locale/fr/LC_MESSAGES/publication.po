@@ -187,6 +187,5 @@ msgstr "Type de publication"
 msgid "Publication Version"
 msgstr "Version publiée"
 
-#, fuzzy
 msgid "helpFindingVariables"
-msgstr "aideRechercheDeVariables"
+msgstr "Pour vous aider à trouver des variables d'intérêt, consultez le <ddLink>Dictionnaire de données</ddLink>"

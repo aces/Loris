@@ -109,17 +109,17 @@
         {$display.CohortTitle}
       </td>
       <td>
-        {if $display.Scan_done != ""}
-            {if $display.Scan_done == 'Y'}
-                {assign var="scan_done" value=dgettext("loris", "Yes")}
+        {if $display.scanDone != ""}
+            {if $display.scanDone == 'Y'}
+                {assign var="scanDone" value=dgettext("loris", "Yes")}
                 <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$sessionID}" class="timepoint_list">
-                {$scan_done}</a>
+                {$scanDone}</a>
             {else}
-                {assign var="scan_done" value={dgettext("loris", "No")}}
-                {$scan_done}
+                {assign var="scanDone" value={dgettext("loris", "No")}}
+                {$scanDone}
             {/if}
         {else}
-            <img alt="Data Missing" src="{$baseurl|default}/images/help2.gif" border=0>
+            <img alt="Data Missing" src="{$baseurl|default}/images/delete.gif" border=0>
         {/if}
       </td>
       <td>
