@@ -58,7 +58,8 @@ msgstr "Nouvelle cohorte"
 msgid "After adding a new cohort, Visit labels for this cohort can only be created by editing the configuration file, \"config.xml\". Please contact your administrator if you need more information."
 msgstr "Après l'ajout d'une nouvelle cohorte, les libellés de visite de cette cohorte ne peuvent être créés qu'en modifiant le fichier de configuration « config.xml ». Veuillez communiquer avec votre administrateur si vous avez besoin de plus d'informations."
 
-msgid "Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide."
+
+msgid "Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer\'s guide."
 msgstr "Veuillez saisir les différentes variables de configuration dans les champs ci-dessous. Pour savoir comment configurer LORIS, consultez la section Aide et/ou le guide du développeur."
 
 msgid "To configure study cohorts"
