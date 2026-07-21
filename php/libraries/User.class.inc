@@ -602,14 +602,11 @@ class User extends UserPermissions implements
      * database.
      *
      * @param \Password $password The plain text password to be hashed and saved.
-     * @param bool      $expired  Whether the password is expired. If so, a reset
-     *                            will be triggered on the user's next login.
      *
      * @return void
      */
     function updatePassword(
         \Password $password,
-        bool $expired = false
     ): void {
         if (password_verify($this->userInfo['Email'], (string) $password)) {
             throw new \InvalidArgumentException(

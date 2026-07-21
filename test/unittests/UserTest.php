@@ -706,7 +706,6 @@ class UserTest extends TestCase
     {
         $this->_user     = \User::factory(self::USERNAME);
         $oldHash         = $this->_user->getData('Password_hash');
-        $passwordExpired = true;
 
         // Cause usePwnedPasswordsAPI config option to return false.
         $mockConfig = &$this->_mockConfig;
@@ -720,7 +719,6 @@ class UserTest extends TestCase
 
         $this->_user->updatePassword(
             new \Password(\Utility::randomString(16)),
-            $passwordExpired
         );
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory(self::USERNAME);

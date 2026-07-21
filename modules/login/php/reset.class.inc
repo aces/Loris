@@ -98,14 +98,6 @@ class Reset extends \NDB_Page implements ETagCalculator
                 // Check if valid email.
                 if ($user->isEmailValid()) {
                     $config = \NDB_Factory::singleton()->config();
-                    // // Generate a new password.
-                    // $password = \Utility::randomString();
-                    // // Reset the password in the database and
-                    // // expire password so user must change it upon login.
-                    // $user->updatePassword(
-                    //     new \Password($password),
-                    //     true
-                    // );
 
                     $activeTokenCount = $db->pSelectOne(
                         "SELECT COUNT(*)
