@@ -148,7 +148,7 @@ msgstr "Détaillé"
 
 #, fuzzy
 msgid "<select a row in the table below to view the upload logs>"
-msgstr "<select a row in the table below to view the upload logs>"
+msgstr "<sélectionnez une ligne dans le tableau ci-dessous pour afficher les journaux de téléversement>"
 
 #, fuzzy
 msgid "Number Of Files Created"
