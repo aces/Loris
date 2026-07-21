@@ -117,3 +117,6 @@ msgstr "Actif"
 
 msgid "Add Acknowledgement"
 msgstr "Ajouter une mention de remerciement"
+
+msgid "An unexpected error occurred."
+msgstr "Une erreur inattendue est survenue."

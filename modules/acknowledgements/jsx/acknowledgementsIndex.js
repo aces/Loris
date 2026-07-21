@@ -182,8 +182,8 @@ class AcknowledgementsIndex extends Component {
     } catch (error) {
       const message = error.message || t('An unexpected error occurred.',
         {ns: 'acknowledgements'});
-      swal.fire(t('Error!', {ns: 'acknowledgements'}), message,
-        t('error', {ns: 'acknowledgements'}));
+      swal.fire(t('Error!', {ns: 'loris'}), message,
+        'error');
       console.error(error);
     } finally {
       this.setState({submitting: false});

@@ -122,3 +122,6 @@ msgstr ""
 
 msgid "Add Acknowledgement"
 msgstr ""
+
+msgid "An unexpected error occurred."
+msgstr ""
