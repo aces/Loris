@@ -43,9 +43,6 @@ msgstr "MRI 浏览器"
 msgid "Series UID"
 msgstr "系列唯一标识"
 
-msgid "TarchiveID"
-msgstr "档案ID"
-
 msgid "CenterID"
 msgstr "中心ID"
 

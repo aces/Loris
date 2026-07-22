@@ -36,9 +36,6 @@ msgstr ""
 msgid "CommentID"
 msgstr ""
 
-msgid "TarchiveID"
-msgstr ""
-
 msgid "Found in Imaging Browser"
 msgstr ""
 

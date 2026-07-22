@@ -581,3 +581,6 @@ msgstr "द्वारा अपलोड किया गया"
 
 msgid "QC Status"
 msgstr "QC स्थिति"
+
+msgid "TarchiveID"
+msgstr "टीआर्काइवआईडी"

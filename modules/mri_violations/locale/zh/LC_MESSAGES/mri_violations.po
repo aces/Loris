@@ -169,9 +169,6 @@ msgstr "散列"
 msgid "JoinID"
 msgstr "加入ID"
 
-msgid "TarchiveID"
-msgstr "档案ID"
-
 msgid "Center Name"
 msgstr "中心名称"
 

@@ -216,7 +216,7 @@ class ImagingQCIndex extends Component {
           },
         },
         {label: t('CommentID', {ns: 'imaging_qc'}), show: false},
-        {label: t('TarchiveID', {ns: 'imaging_qc'}), show: false},
+        {label: t('TarchiveID', {ns: 'loris'}), show: false},
       ];
 
       const datatable = (

@@ -43,9 +43,6 @@ msgstr "MRIブラウザ"
 msgid "Series UID"
 msgstr "シリーズ固有識別子"
 
-msgid "TarchiveID"
-msgstr "TarchiveID"
-
 msgid "CenterID"
 msgstr "CenterID"
 

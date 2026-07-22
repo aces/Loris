@@ -412,3 +412,6 @@ msgstr "ID de sesión"
 
 msgid "Uploaded By"
 msgstr "Subido por"
+
+msgid "TarchiveID"
+msgstr "ID de archivo"

@@ -42,9 +42,6 @@ msgstr ""
 msgid "Series UID"
 msgstr ""
 
-msgid "TarchiveID"
-msgstr ""
-
 msgid "CenterID"
 msgstr ""
 

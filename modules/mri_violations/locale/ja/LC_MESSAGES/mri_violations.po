@@ -169,9 +169,6 @@ msgstr "ハッシュ"
 msgid "JoinID"
 msgstr "参加ID"
 
-msgid "TarchiveID"
-msgstr "アーカイブID"
-
 msgid "Center Name"
 msgstr "センター名"
 

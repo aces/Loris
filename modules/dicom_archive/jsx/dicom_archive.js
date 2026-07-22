@@ -93,7 +93,7 @@ class DicomArchive extends Component {
     case t('Metadata', {ns: 'dicom_archive'}): {
       const metaURL = loris.BaseURL
           + '/dicom_archive/viewDetails/?tarchiveID='
-          + row[t('TarchiveID', {ns: 'dicom_archive'})];
+          + row[t('TarchiveID', {ns: 'loris'})];
       result=<td><a href={metaURL}>{t(cell, {ns: 'dicom_archive'})}</a></td>;
       break;
     }
@@ -180,7 +180,7 @@ class DicomArchive extends Component {
         type: 'select',
         options: options.sites,
       }},
-      {label: t('TarchiveID', {ns: 'dicom_archive'}), show: false},
+      {label: t('TarchiveID', {ns: 'loris'}), show: false},
       {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('CenterID', {ns: 'dicom_archive'}), show: false},
       {label: t('IsPhantom', {ns: 'dicom_archive'}), show: false},

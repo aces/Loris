@@ -211,10 +211,6 @@ msgstr "Empreinte numérique"
 msgid "JoinID"
 msgstr "JoinID"
 
-#, fuzzy
-msgid "TarchiveID"
-msgstr "TarchiveID"
-
 msgid "Center Name"
 msgstr "Nom du site"
 
