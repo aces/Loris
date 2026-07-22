@@ -18,7 +18,6 @@ class ImagingUploader extends Component {
    * @param {object} props - React Component properties
    */
   constructor(props) {
-    const {t} = props;
     super(props);
 
     this.state = {
