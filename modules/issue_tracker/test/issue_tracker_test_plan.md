@@ -11,7 +11,7 @@
 8. Test that all preset filters work and redirect to the correct table. 
 9. Test that the watching checkbox works correctly (issues that your userID is watching in issues_watching table)
 10. Check that links to issues in table are correct.
-11. Check that table sorts and displays additional pages correctly 
+11. Check that table sorts and displays additional pages correctly. Users with `issue_tracker_all_issue` permission should see all issues across all sites (no site-based or owner-based filtering). Verify that pagination shows the correct total count of the complete issue dataset. 
 12. Check that a user who has `Issue Tracker: View/Edit/Comment Issues - Own Sites` permission and belongs to only one site can see all issues with a NULL centerID. Check that they have the label `All Sites` in the Site column. 
 
 ## Issue Tracker Create New Issue [Manual Testing]
@@ -41,8 +41,9 @@
 8. Check that an attachment can be added to an existing issue.
 9. Test if users assigned to issues can upload attachments.
 10. Test if users can delete their own uploaded attachments.
-11. Test if user assigned to issue cannot delete attachments of issue owner.
-12. Test that emails are sent to users that are watching the issue.
+11. Test that users without `issue_tracker_all_issue` permission cannot delete attachments uploaded by another user (even if they are assigned to the issue).
+12. Test that users with `issue_tracker_all_issue` permission can delete attachments uploaded by any user (unowned attachments).
+13. Test that emails are sent to users that are watching the issue.
 
 ## Permissions [Automation Testing]
 1. Remove `Issue Tracker: View/Edit/Comment Issues - All Sites` permission.
