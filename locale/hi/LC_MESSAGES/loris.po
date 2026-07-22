@@ -572,3 +572,6 @@ msgstr "सबमिशन सफल रहा!"
 
 msgid "Scan Type"
 msgstr "स्कैन प्रकार"
+
+msgid "SessionID"
+msgstr "सत्र आईडी"

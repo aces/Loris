@@ -55,9 +55,6 @@ msgstr ""
 msgid "Last Update"
 msgstr ""
 
-msgid "SessionID"
-msgstr ""
-
 msgid "Watching"
 msgstr ""
 

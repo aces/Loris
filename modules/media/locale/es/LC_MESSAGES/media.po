@@ -46,9 +46,6 @@ msgstr "Tipo de archivo"
 msgid "CandID"
 msgstr "Sincero"
 
-msgid "SessionID"
-msgstr "ID de sesión"
-
 msgid "File Visibility"
 msgstr "Visibilidad de archivos"
 

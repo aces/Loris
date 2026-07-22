@@ -98,7 +98,7 @@ class DicomArchive extends Component {
       break;
     }
     case t('MRI Browser', {ns: 'dicom_archive'}): {
-      const sessionID = row[t('SessionID', {ns: 'dicom_archive'})];
+      const sessionID = row[t('SessionID', {ns: 'loris'})];
       if (sessionID === null || sessionID === '') {
         result = <td>&nbsp;</td>;
       } else {
@@ -181,7 +181,7 @@ class DicomArchive extends Component {
         options: options.sites,
       }},
       {label: t('TarchiveID', {ns: 'dicom_archive'}), show: false},
-      {label: t('SessionID', {ns: 'dicom_archive'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('CenterID', {ns: 'dicom_archive'}), show: false},
       {label: t('IsPhantom', {ns: 'dicom_archive'}), show: false},
     ];

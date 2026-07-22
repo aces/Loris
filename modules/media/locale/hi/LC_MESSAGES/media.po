@@ -46,9 +46,6 @@ msgstr "फ़ाइल प्रकार"
 msgid "CandID"
 msgstr "कैंडआईडी"
 
-msgid "SessionID"
-msgstr "सेशनआईडी"
-
 msgid "File Visibility"
 msgstr "फ़ाइल दृश्यता"
 

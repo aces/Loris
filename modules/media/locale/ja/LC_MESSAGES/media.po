@@ -49,9 +49,6 @@ msgstr "ファイルの種類"
 msgid "CandID"
 msgstr "候補者ID"
 
-msgid "SessionID"
-msgstr "セッションID"
-
 msgid "File Visibility"
 msgstr "ファイルの可視性"
 

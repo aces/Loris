@@ -295,7 +295,7 @@ class IssueTrackerIndex extends Component {
         type: 'date',
       }},
       {label: t('Last Update', {ns: 'issue_tracker'}), show: true},
-      {label: t('SessionID', {ns: 'issue_tracker'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('DCCID', {ns: 'loris'}), show: false},
       {label: t('Watching', {ns: 'issue_tracker'}), show: false, filter: {
         name: 'watching',

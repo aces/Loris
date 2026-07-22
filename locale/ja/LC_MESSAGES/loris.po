@@ -596,3 +596,6 @@ msgstr "送信成功しました!"
 
 msgid "Scan Type"
 msgstr "スキャンタイプ"
+
+msgid "SessionID"
+msgstr "SessionID"

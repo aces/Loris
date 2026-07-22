@@ -58,9 +58,6 @@ msgstr "创建日期"
 msgid "Last Update"
 msgstr "最后更新"
 
-msgid "SessionID"
-msgstr "会话ID"
-
 msgid "Watching"
 msgstr "观看"
 

@@ -247,7 +247,7 @@ class MediaIndex extends Component {
         options: options.fileTypes,
       }},
       {label: t('CandID', {ns: 'media'}), show: false},
-      {label: t('SessionID', {ns: 'media'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('File Visibility', {ns: 'media'}), show: false, filter: {
         name: 'fileVisibility',
         type: 'select',

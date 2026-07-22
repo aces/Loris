@@ -121,7 +121,7 @@ class ImagingQCIndex extends Component {
             type: 'text',
           },
         },
-        {label: t('Session ID', {ns: 'imaging_qc'}), show: true},
+        {label: t('SessionID', {ns: 'loris'}), show: true},
         {
           label: t('DCCID', {ns: 'loris'}), show: true, filter: {
             name: 'candId',

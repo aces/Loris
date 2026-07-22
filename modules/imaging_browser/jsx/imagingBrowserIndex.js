@@ -70,7 +70,7 @@ class ImagingBrowserIndex extends Component {
     const style = '';
     let result = <td className={style}>{cell}</td>;
     const {t} = this.props;
-    const sessionIDKey = t('SessionID', {ns: 'imaging_browser'});
+    const sessionIDKey = t('SessionID', {ns: 'loris'});
     const sessionID = row[sessionIDKey];
     switch (column) {
     case t('New Data', {ns: 'imaging_browser'}):
@@ -172,7 +172,7 @@ class ImagingBrowserIndex extends Component {
       {label: t('Last QC', {ns: 'imaging_browser'}), show: true},
       {label: t('New Data', {ns: 'imaging_browser'}), show: true},
       {label: t('Links', {ns: 'imaging_browser'}), show: true},
-      {label: t('SessionID', {ns: 'imaging_browser'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('Sequence Type', {ns: 'imaging_browser'}),
         show: false, filter: {
           name: 'sequenceType',

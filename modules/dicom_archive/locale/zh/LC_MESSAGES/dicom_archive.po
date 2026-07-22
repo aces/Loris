@@ -46,9 +46,6 @@ msgstr "系列唯一标识"
 msgid "TarchiveID"
 msgstr "档案ID"
 
-msgid "SessionID"
-msgstr "会话ID"
-
 msgid "CenterID"
 msgstr "中心ID"
 

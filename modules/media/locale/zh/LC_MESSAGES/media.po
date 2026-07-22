@@ -49,9 +49,6 @@ msgstr "文件类型"
 msgid "CandID"
 msgstr "坦率"
 
-msgid "SessionID"
-msgstr "会话ID"
-
 msgid "File Visibility"
 msgstr "文件可见性"
 

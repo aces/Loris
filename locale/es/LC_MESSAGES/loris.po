@@ -406,3 +406,6 @@ msgstr ""
 
 msgid "Scan Type"
 msgstr "Tipo de escaneo"
+
+msgid "SessionID"
+msgstr "ID de sesión"

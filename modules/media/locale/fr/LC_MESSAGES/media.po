@@ -50,10 +50,6 @@ msgid "CandID"
 msgstr "CandID"
 
 #, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
-
-#, fuzzy
 msgid "File Visibility"
 msgstr "Visibilité des fichiers"
 

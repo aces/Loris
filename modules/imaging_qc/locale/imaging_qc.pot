@@ -21,9 +21,6 @@ msgstr ""
 msgid "Imaging Quality Control"
 msgstr ""
 
-msgid "Session ID"
-msgstr ""
-
 msgid "MRI Parameter Form"
 msgstr ""
 

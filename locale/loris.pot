@@ -610,3 +610,6 @@ msgstr ""
 
 msgid "Scan Type"
 msgstr ""
+
+msgid "SessionID"
+msgstr ""

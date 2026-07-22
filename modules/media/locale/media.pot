@@ -45,9 +45,6 @@ msgstr ""
 msgid "CandID"
 msgstr ""
 
-msgid "SessionID"
-msgstr ""
-
 msgid "File Visibility"
 msgstr ""
 

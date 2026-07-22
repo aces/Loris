@@ -640,3 +640,6 @@ msgstr "Soumission réussie!"
  
 msgid "Scan Type"
 msgstr "Type de scan"
+
+msgid "SessionID"
+msgstr "Identifiant de session"
