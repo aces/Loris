@@ -20,12 +20,11 @@ import 'I18nSetup';
 declare const loris: any;
 
 /**
- * Build an order-independent signature for a query filter group. AND/OR
- * groups are commutative, so terms are sorted to ignore the order they
- * were added in.
+ * Order-independent signature for a query filter group. Reordering the terms
+ * in an and/or group doesn't change the query, so they're sorted.
  *
  * @param {QueryGroup} group - the filter group to serialize
- * @returns {string} a stable signature for the group's content
+ * @returns {string} a stable signature for the group
  */
 function criteriaSignature(group: QueryGroup): string {
   const terms = group.group.map((term) => {
@@ -46,15 +45,12 @@ function criteriaSignature(group: QueryGroup): string {
 }
 
 /**
- * Build a signature representing the semantic content of a query (its
- * columns and filters), independent of its QueryID and run time.
- *
- * Identical queries can be stored under different QueryIDs because the
- * server dedupes saved queries by an exact string match on the query
- * JSON, so any non-semantic difference (column order, an optional visits
- * key) produces a distinct QueryID. Comparing content instead lets the
- * "eliminate duplicates" filter collapse them. Columns and filter terms
- * are sorted so their order does not affect the signature.
+ * Signature of a query's content (columns + filters), independent of QueryID
+ * and run time. Recent Queries lists every run, and two runs of the same
+ * query can have different QueryIDs: definitions are matched by exact JSON
+ * string, so something like column order stores a new one. Keying on content
+ * lets "eliminate duplicates" collapse them; columns and filter terms are
+ * sorted so their order doesn't matter.
  *
  * @param {FlattenedQuery} query - the query to build a signature for
  * @returns {string} a stable signature for the query's content
