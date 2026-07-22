@@ -107,7 +107,7 @@ class IssueTrackerIndex extends Component {
     const siteKey = t('Site', {ns: 'loris', count: 1});
     const pscidKey = t('PSCID', {ns: 'loris'});
     const visitLabelKey = t('Visit Label', {ns: 'loris'});
-    const sessionIDKey = t('Session ID', {ns: 'loris'});
+    const sessionIDKey = t('SessionID', {ns: 'loris'});
     const dccidKey = t('DCCID', {ns: 'loris'});
     const statusKey = t('Status', {ns: 'loris'});
     const categoryKey = t('Category', {ns: 'issue_tracker'});
