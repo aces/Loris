@@ -132,7 +132,8 @@ class ResetPassword extends Component {
     ) : (
       <div className={'success-message'}>
         <h1>{this.props.t('Thank you!', {ns: 'login'})}</h1>
-        <p>{this.props.t('A password reset link has been sent to your email. You should receive it within a few minutes.', {ns: 'login'})}</p>
+        <p>{this.props.t('A password reset link has been sent to your email.'
+          + ' You should receive it within a few minutes.', {ns: 'login'})}</p>
         <a onClick={() => window.location.href = window.location.origin}
           style={{cursor: 'pointer'}}>{this.props.t(
             'Return to Login Page',

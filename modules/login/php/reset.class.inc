@@ -19,6 +19,9 @@ use \LORIS\Middleware\ETagCalculator;
  */
 class Reset extends \NDB_Page implements ETagCalculator
 {
+    private const ACTIVE_TOKEN_LIMIT       = 3;
+    private const TOKEN_EXPIRATION_MINUTES = 20;
+
     /**
      * This function will return a json object for login module.
      *
@@ -99,17 +102,20 @@ class Reset extends \NDB_Page implements ETagCalculator
                 if ($user->isEmailValid()) {
                     $config = \NDB_Factory::singleton()->config();
 
-                    $activeTokenCount = $db->pSelectOne(
+                    $activeTokenCount = (int) $db->pSelectOne(
                         "SELECT COUNT(*)
                          FROM user_password_reset
                          WHERE UserID = :userID
                             AND Status IS NULL
-                            AND CreationDate >= NOW() - INTERVAL 20 MINUTE
+                            AND CreationDate >= NOW() - INTERVAL "
+                            . self::ACTIVE_TOKEN_LIMIT . " "
+                            . self::TOKEN_EXPIRATION_MINUTES
+                            . " MINUTE
                          ",
                         ['userID' => $user->userID]
                     );
 
-                    if ($activeTokenCount < 3) {
+                    if ($activeTokenCount < self::ACTIVE_TOKEN_LIMIT) {
                         // Generate a new password reset token.
                         $resetToken = \Utility::randomString(64);
 

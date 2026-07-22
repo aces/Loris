@@ -19,6 +19,8 @@ use \LORIS\Middleware\ETagCalculator;
  */
 class Expired extends \NDB_Page implements ETagCalculator
 {
+    private const TOKEN_EXPIRATION_MINUTES = 20;
+
     /**
      * This function will return a json object for login module.
      *
@@ -100,7 +102,9 @@ class Expired extends \NDB_Page implements ETagCalculator
              ON r.UserID = u.ID
              WHERE r.ResetToken = :token
                 AND r.Status IS NULL
-                AND r.CreationDate >= NOW() - INTERVAL 20 MINUTE",
+                AND r.CreationDate >= NOW() - INTERVAL "
+                . self::TOKEN_EXPIRATION_MINUTES
+                . " MINUTE",
             ['token' => $token]
         );
 
@@ -203,7 +207,9 @@ class Expired extends \NDB_Page implements ETagCalculator
                     WHERE UserID = :userID
                         AND ResetToken <> :token
                         AND Status IS NULL
-                        AND CreationDate >= NOW() - INTERVAL 20 MINUTE"
+                        AND CreationDate >= NOW() - INTERVAL "
+                        . self::TOKEN_EXPIRATION_MINUTES
+                        . " MINUTE"
                 );
                 $stmt->execute(
                     [
