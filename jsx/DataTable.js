@@ -154,7 +154,7 @@ const DataTable = ({
    */
   const updatePageRows = (e) => {
     setPage({
-      rows: e.target.value,
+      rows: parseInt(e.target.value, 10),
       number: 1, // Reset to first page when changing row count
     });
   };
@@ -554,8 +554,7 @@ DataTable.propTypes = {
 };
 
 DataTable.defaultProps = {
-  headers: [],
-  data: {},
+  data: [],
   rowNumLabel: 'No.',
   filters: {},
   hide: {
