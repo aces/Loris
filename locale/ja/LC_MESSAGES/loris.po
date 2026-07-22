@@ -599,3 +599,6 @@ msgstr "スキャンタイプ"
 
 msgid "SessionID"
 msgstr "SessionID"
+
+msgid "Uploaded By"
+msgstr "アップロード者"

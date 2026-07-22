@@ -84,6 +84,3 @@ msgstr "上传时间"
 
 msgid "Status"
 msgstr "状态"
-
-msgid "Uploaded By"
-msgstr "上传者"

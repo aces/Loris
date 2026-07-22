@@ -202,7 +202,7 @@ class ImagingQCIndex extends Component {
           },
         },
         {
-          label: t('Uploaded By', {ns: 'imaging_qc'}), show: true, filter: {
+          label: t('Uploaded By', {ns: 'loris'}), show: true, filter: {
             name: 'uploadedBy',
             type: 'select',
             options: ImgOptions.uploadedBy,

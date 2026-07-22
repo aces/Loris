@@ -27,9 +27,6 @@ msgstr ""
 msgid "Instrument"
 msgstr ""
 
-msgid "Uploaded By"
-msgstr ""
-
 msgid "Date Taken"
 msgstr ""
 

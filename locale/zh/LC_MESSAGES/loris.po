@@ -580,3 +580,6 @@ msgstr "扫描类型"
 
 msgid "SessionID"
 msgstr "会话ID"
+
+msgid "Uploaded By"
+msgstr "上传者"

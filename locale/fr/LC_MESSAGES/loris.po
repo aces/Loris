@@ -643,3 +643,6 @@ msgstr "Type de scan"
 
 msgid "SessionID"
 msgstr "Identifiant de session"
+
+msgid "Uploaded By"
+msgstr "Téléversé par"

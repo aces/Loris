@@ -409,3 +409,6 @@ msgstr "Tipo de escaneo"
 
 msgid "SessionID"
 msgstr "ID de sesión"
+
+msgid "Uploaded By"
+msgstr "Subido por"

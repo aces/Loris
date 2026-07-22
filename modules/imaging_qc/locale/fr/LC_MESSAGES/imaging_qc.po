@@ -37,9 +37,6 @@ msgstr "Emplacement du scan"
 msgid "QC Status"
 msgstr "État du contrôle qualité"
 
-msgid "Uploaded By"
-msgstr "Téléversé par"
-
 msgid "CommentID"
 msgstr "ID du commentaire"
 

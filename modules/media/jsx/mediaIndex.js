@@ -234,7 +234,7 @@ class MediaIndex extends Component {
         type: 'select',
         options: options.projects,
       }},
-      {label: t('Uploaded By', {ns: 'media'}), show: true, filter: {
+      {label: t('Uploaded By', {ns: 'loris'}), show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
       }},

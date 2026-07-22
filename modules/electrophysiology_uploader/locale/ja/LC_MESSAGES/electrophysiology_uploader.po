@@ -84,6 +84,3 @@ msgstr "アップロード時間"
 
 msgid "Status"
 msgstr "状態"
-
-msgid "Uploaded By"
-msgstr "アップロード者"
