@@ -130,7 +130,7 @@ msgstr ""
 msgid "{{successText}} ({{inserted}} out of {{created}})"
 msgstr ""
 
-msgid "{{numViolatedScans}} violated scans"
+msgid "({{numViolatedScans}} violated scans)"
 msgstr ""
 
 msgid "Tarchive Info"
