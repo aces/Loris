@@ -259,12 +259,6 @@ msgstr "El código de barras debe ser único."
 msgid "Pooling requires at least 2 specimens"
 msgstr "La agrupación requiere al menos 2 especímenes."
 
-#: jsx/filter.js:73
-msgid "Container"
-msgid_plural "Containers"
-msgstr[0] "Contenedor"
-msgstr[1] "Contenedores"
-
 #: jsx/shipmentTab.js:69 jsx/shipmentTab.js:141
 msgid "Origin Site"
 msgstr "Sitio de origen"
@@ -517,8 +511,8 @@ msgstr "Entrada de {{label}}"
 msgid "{{label}} List"
 msgstr "Lista de {{label}}"
 
-msgid "Select or Scan the specimens to be pooled. Specimens must have a Status of 'Available', have a Quantity of greater than 0, and share the same Type, PSCID, Visit Label and Current Site. Pooled specimens cannot already belong to a pool. Once pooled, the Status of specimen will be changed to 'Dispensed' and there Quantity set to '0'."
-msgstr "Seleccione o escanee los especímenes que se van a agrupar. Los especímenes deben tener el estado 'Disponible', una cantidad mayor que 0 y compartir el mismo tipo, PSCID, etiqueta de visita y sitio actual. Los especímenes agrupados no pueden pertenecer ya a un grupo. Una vez agrupados, el estado del espécimen cambiará a 'Dispensado' y su cantidad se establecerá en '0'."
+msgid "Select or Scan the specimens to be pooled. Specimens must have a Status of 'Available', have a Quantity of greater than 0, and share the same Type, PSCID, Visit Label and Current Site. Pooled specimens cannot already belong to a pool. Once pooled, the Status of specimen will be changed to 'Dispensed' and their Quantity set to '0'."
+msgstr "Seleccione o escanee los especímenes que se van a agrupar. Los especímenes deben tener el estado 'Disponible', una cantidad superior a 0 y compartir el mismo Tipo, PSCID, Etiqueta de visita y Sitio actual. Los especímenes agrupados no pueden pertenecer ya a un grupo. Una vez agrupados, el estado de los especímenes cambiará a 'Dispensado' y su cantidad se establecerá en '0'."
 
 msgid "Select or Scan the specimens to be prepared. Specimens must have a Status of 'Available', and share the same Type. Any previous value associated with a Specimen will be overwritten if one is added on this form."
 msgstr "Seleccione o escanee los especímenes que se prepararán. Los especímenes deben tener el estado «Disponible» y ser del mismo tipo. Cualquier valor previamente asociado a un espécimen será reemplazado si se agrega uno nuevo en este formulario."
@@ -543,3 +537,6 @@ msgstr "Para crear nuevos especímenes, primero seleccione un PSCID y una etique
 
 msgid "New Entry"
 msgstr "Nueva entrada"
+
+msgid "Containers"
+msgstr "Contenedores"

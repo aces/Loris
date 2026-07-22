@@ -331,7 +331,7 @@ function ShipmentInformation({
         text={shipment.type}
       />
       <StaticElement
-        label={t('Container', {ns: 'biobank', count: 99})}
+        label={t('Containers', {ns: 'biobank'})}
         text={containerBarcodes}
       />
       <StaticElement
@@ -464,7 +464,7 @@ function CreateShipment({
       />
       <InputList
         name='barcode'
-        label={t('Container', {ns: 'biobank', count: 99})}
+        label={t('Containers', {ns: 'biobank'})}
         items={shipment.containerIds}
         setItems={handler.setContainerIds}
         options={data.containers}

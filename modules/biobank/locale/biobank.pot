@@ -251,11 +251,6 @@ msgstr ""
 msgid "Pooling requires at least 2 specimens"
 msgstr ""
 
-#: jsx/filter.js:73
-msgid "Container"
-msgid_plural "Containers"
-msgstr[0] ""
-
 #: jsx/shipmentTab.js:69 jsx/shipmentTab.js:141
 msgid "Origin Site"
 msgstr ""
@@ -513,4 +508,7 @@ msgid "To create new specimens, first select a PSCID and Visit Label. Then, ente
 msgstr ""
 
 msgid "New Entry"
+msgstr ""
+
+msgid "Containers"
 msgstr ""

@@ -72,8 +72,8 @@ class BiobankFilter extends Component {
     if (loris.userHasPermission('biobank_container_view')) {
       tabInfo.push({id: 'containers', content: containerTab});
       tabList.push({
-        id: 'containers', label: t('Container',
-          {ns: 'biobank', count: 99}),
+        id: 'containers', label: t('Containers',
+          {ns: 'biobank'}),
       });
     }
     if (loris.userHasPermission('biobank_pool_view')) {

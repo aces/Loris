@@ -256,11 +256,6 @@ msgstr "条形码必须唯一。"
 msgid "Pooling requires at least 2 specimens"
 msgstr "样本合并至少需要 2 个样本"
 
-#: jsx/filter.js:73
-msgid "Container"
-msgid_plural "Containers"
-msgstr[0] "容器"
-
 #: jsx/shipmentTab.js:69 jsx/shipmentTab.js:141
 msgid "Origin Site"
 msgstr "起始站点"
@@ -522,3 +517,6 @@ msgstr "要创建新样本，请先选择 PSCID 和访视标签。然后输入�
 
 msgid "New Entry"
 msgstr "新建条目"
+
+msgid "Containers"
+msgstr "容器"

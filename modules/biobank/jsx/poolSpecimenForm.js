@@ -209,10 +209,10 @@ class PoolSpecimenForm extends React.Component {
             text={t('Select or Scan the specimens to be pooled.' +
               ' Specimens must have a Status of \'Available\', have a' +
               ' Quantity of greater than 0, and share the same Type,' +
-              ' PSCID, VisitLabel and Current Site. Pooled specimens' +
+              ' PSCID, Visit Label and Current Site. Pooled specimens' +
               ' cannot already belong to a pool. Once pooled,' +
               ' the Status of specimen will be changed to \'Dispensed\'' +
-              ' changed to  and their Quantity set to \'0\'.'
+              ' and their Quantity set to \'0\'.'
             , {ns: 'biobank'})}
           />
           <SearchableDropdown

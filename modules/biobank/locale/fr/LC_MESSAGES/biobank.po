@@ -258,12 +258,6 @@ msgstr "Le code-barres doit être unique."
 msgid "Pooling requires at least 2 specimens"
 msgstr "La mise en pool nécessite au moins 2 échantillons"
 
-#: jsx/filter.js:73
-msgid "Container"
-msgid_plural "Containers"
-msgstr[0] "Conteneur"
-msgstr[1] "Conteneurs"
-
 #: jsx/shipmentTab.js:69 jsx/shipmentTab.js:141
 msgid "Origin Site"
 msgstr "Site d'origine"
@@ -501,7 +495,7 @@ msgstr "Saisie de {{label}}"
 msgid "{{label}} List"
 msgstr "Liste des {{label}}"
 
-msgid "Select or Scan the specimens to be pooled. Specimens must have a Status of 'Available', have a Quantity of greater than 0, and share the same Type, PSCID, Visit Label and Current Site. Pooled specimens cannot already belong to a pool. Once pooled, the Status of specimen will be changed to 'Dispensed' and there Quantity set to '0'."
+msgid "Select or Scan the specimens to be pooled. Specimens must have a Status of 'Available', have a Quantity of greater than 0, and share the same Type, PSCID, Visit Label and Current Site. Pooled specimens cannot already belong to a pool. Once pooled, the Status of specimen will be changed to 'Dispensed' and their Quantity set to '0'."
 msgstr "Sélectionnez ou numérisez les spécimens à regrouper. Les spécimens doivent avoir le statut 'Disponible', une quantité supérieure à 0, et partager le même type, PSCID, libellé de visite et site actuel. Les spécimens regroupés ne doivent pas déjà appartenir à un groupe. Une fois regroupés, le statut du spécimen sera changé à 'Distribué' et sa quantité sera définie à '0'."
 
 msgid "Select or Scan the specimens to be prepared. Specimens must have a Status of 'Available', and share the same Type. Any previous value associated with a Specimen will be overwritten if one is added on this form."
@@ -527,3 +521,6 @@ msgstr "Pour créer de nouveaux échantillons, sélectionnez d'abord un PSCID et
 
 msgid "New Entry"
 msgstr "Nouvelle entrée"
+
+msgid "Containers"
+msgstr "Conteneurs"
