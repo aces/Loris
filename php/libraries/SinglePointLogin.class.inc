@@ -44,27 +44,6 @@ class SinglePointLogin
     var $_lastError = null;
 
     /**
-     * Defines whether a user's password has expired
-     */
-    var $_passwordExpired = false;
-
-    /**
-     * Defines whether a user's password needs to be changed
-     */
-    var $_passwordChangeRequired = false;
-
-    /**
-     * Checks whether password change is required
-     *
-     * @return bool
-     * @access public
-     */
-    function passwordChangeRequired(): bool
-    {
-        return $this->_passwordChangeRequired;
-    }
-
-    /**
      * Checks whether anyone is currently logged in
      *
      * @return bool
@@ -76,26 +55,12 @@ class SinglePointLogin
     }
 
     /**
-     * Checks whether users password is expired
-     *
-     * @return bool
-     * @access public
-     */
-    function passwordExpired(): bool
-    {
-        return $this->_passwordExpired;
-    }
-
-    /**
      * Attempt to authenticate a user's credentials by any supported means.
      *
      * @return bool Whether a user has successfully authenticated.
      */
     function authenticate(): bool
     {
-        // Reset passwordExpired flag
-        $this->_passwordExpired = false;
-
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();
@@ -376,11 +341,6 @@ class SinglePointLogin
                 return false;
             }
 
-            // Save the new password if the last password expired
-            if ($row['Expired']) {
-                $_SESSION['PasswordExpiredForUser'] = $username;
-                return false;
-            }
             // Allow a user to login if none of the previous cases have occurred
             $this->_username = $row['UserID'];
 
