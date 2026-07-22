@@ -179,6 +179,7 @@ class GenomicUploadForm extends Component {
    * Uploads the file to the server
    */
   uploadFile() {
+    const {t} = this.props;
     // Set form data and upload the media file
     const state = Object.assign({}, this.state);
     let formObj = new FormData();
@@ -203,14 +204,15 @@ class GenomicUploadForm extends Component {
           }, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal.fire('Upload Successful!', '', 'success');
+        swal.fire(t('Upload Successful!', {ns: 'genomic_browser'}), '',
+          'success');
         this.props.closeFileUploadModal();
       }
       ).catch((error) => {
         console.error(error);
         const msg = error.responseJSON ?
           error.responseJSON.message
-          : 'Upload error!';
+          : t('Upload error!', {ns: 'genomic_browser'});
         this.setState({
           errorMessage: msg,
           uploadProgress: -1,

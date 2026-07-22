@@ -317,3 +317,9 @@ msgstr "non classé"
 
 msgid "unknown"
 msgstr "inconnu"
+
+msgid "Upload Successful!"
+msgstr "Téléversement réussi !"
+
+msgid "Upload error!"
+msgstr "Erreur de téléversement !"
