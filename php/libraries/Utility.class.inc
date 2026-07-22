@@ -304,7 +304,12 @@ class Utility
             [],
             'ProjectID'
         ) ?? [];
-        return $projects;
+        return array_map(
+            function ($name) {
+                return dgettext("Project", $name);
+            },
+            $projects
+        );
     }
 
     /**
