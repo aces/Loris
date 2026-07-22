@@ -194,7 +194,7 @@ class ImagingUploader extends Component {
             rowData[filesCreatedKey] - rowData[filesInsertedKey];
 
         const violUrl = loris.BaseURL +
-                         '/mri_violations/?patientName=' + rowData['PatientName'];
+            '/mri_violations/?patientName=' + rowData['PatientName'];
         violatedScans = <a href={violUrl}>
           {this.props.t('({{numViolatedScans}} violated scans)',
             {ns: 'imaging_uploader', numViolatedScans: numViolatedScans}
