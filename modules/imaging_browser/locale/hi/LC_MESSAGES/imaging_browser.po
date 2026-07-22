@@ -53,9 +53,6 @@ msgstr "सीक्वेंस प्रकार"
 msgid "Pending New"
 msgstr "लंबित नया"
 
-msgid "QC Status"
-msgstr "QC स्थिति"
-
 msgid "Caveat"
 msgstr "चेतावनी"
 

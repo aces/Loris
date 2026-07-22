@@ -197,7 +197,7 @@ class ImagingBrowserIndex extends Component {
      * configured and stored in database
      */
     Object.values(configLabels).forEach((label)=> {
-      fields.push({label: label + ' ' + t('QC Status', {ns: 'imaging_browser'}),
+      fields.push({label: label + ' ' + t('QC Status', {ns: 'loris'}),
         show: true}
       );
     });

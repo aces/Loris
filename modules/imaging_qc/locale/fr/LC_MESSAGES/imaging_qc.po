@@ -34,9 +34,6 @@ msgstr "Tarchive"
 msgid "Scan Location"
 msgstr "Emplacement du scan"
 
-msgid "QC Status"
-msgstr "État du contrôle qualité"
-
 msgid "CommentID"
 msgstr "ID du commentaire"
 

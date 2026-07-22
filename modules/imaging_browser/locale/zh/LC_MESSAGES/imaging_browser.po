@@ -81,9 +81,6 @@ msgstr "序列类型"
 msgid "Pending New"
 msgstr "待处理"
 
-msgid "QC Status"
-msgstr "质量控制状态"
-
 msgid "Caveat"
 msgstr "注意事项"
 

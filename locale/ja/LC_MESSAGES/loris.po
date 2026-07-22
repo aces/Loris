@@ -602,3 +602,6 @@ msgstr "SessionID"
 
 msgid "Uploaded By"
 msgstr "アップロード者"
+
+msgid "QC Status"
+msgstr "品質管理状況"

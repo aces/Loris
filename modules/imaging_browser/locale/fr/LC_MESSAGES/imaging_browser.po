@@ -73,9 +73,6 @@ msgstr "Type de séquence"
 msgid "Pending New"
 msgstr "En attente/Nouveau"
 
-msgid "QC Status"
-msgstr "Statut QC"
-
 #, fuzzy
 msgid "Caveat"
 msgstr "Avertissement"

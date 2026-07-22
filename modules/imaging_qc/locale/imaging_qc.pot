@@ -33,9 +33,6 @@ msgstr ""
 msgid "Scan Location"
 msgstr ""
 
-msgid "QC Status"
-msgstr ""
-
 msgid "CommentID"
 msgstr ""
 

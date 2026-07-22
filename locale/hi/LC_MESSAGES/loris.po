@@ -578,3 +578,6 @@ msgstr "सत्र आईडी"
 
 msgid "Uploaded By"
 msgstr "द्वारा अपलोड किया गया"
+
+msgid "QC Status"
+msgstr "QC स्थिति"

@@ -583,3 +583,6 @@ msgstr "会话ID"
 
 msgid "Uploaded By"
 msgstr "上传者"
+
+msgid "QC Status"
+msgstr "质量控制状态"

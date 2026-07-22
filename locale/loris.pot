@@ -616,3 +616,6 @@ msgstr ""
 
 msgid "Uploaded By"
 msgstr ""
+
+msgid "QC Status"
+msgstr ""

@@ -24,7 +24,7 @@
             <thead>
             <tr class="info">
                 <th id="scantype">dgettext('Scan Type', 'loris')</th>
-                <th colspan="2">QC Status</th>
+                <th colspan="2">dgettext('QC Status', 'loris')</th>
                 {foreach from=$Cohorts item=name key=proj}
                     <th>{$name}</th>
                 {/foreach}

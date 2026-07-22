@@ -59,9 +59,6 @@ msgstr ""
 msgid "Pending New"
 msgstr ""
 
-msgid "QC Status"
-msgstr ""
-
 msgid "Caveat"
 msgstr ""
 

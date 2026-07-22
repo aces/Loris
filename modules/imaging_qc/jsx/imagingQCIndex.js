@@ -195,7 +195,7 @@ class ImagingQCIndex extends Component {
           },
         },
         {
-          label: t('QC Status', {ns: 'imaging_qc'}), show: true, filter: {
+          label: t('QC Status', {ns: 'loris'}), show: true, filter: {
             name: 'qCStatus',
             type: 'select',
             options: ImgOptions.qCStatus,
