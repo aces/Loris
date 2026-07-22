@@ -587,6 +587,10 @@ msgstr "{{months}} mois"
 msgid "{{years}} years old"
 msgstr "{{years}} ans"
 
+msgid "%d y / %d m"
+msgstr "%d a / %d m"
+
+
 # Other generic terms
 msgid "Loading..."
 msgstr "Chargement en cours..."
