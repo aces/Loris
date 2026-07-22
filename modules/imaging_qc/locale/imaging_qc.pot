@@ -30,7 +30,7 @@ msgstr ""
 msgid "MRI Parameter Form"
 msgstr ""
 
-msgid "Scan Done in MRI PF"
+msgid "Scan Done in MRI Parameter Form"
 msgstr ""
 
 msgid "Tarchive"

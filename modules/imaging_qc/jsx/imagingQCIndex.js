@@ -39,7 +39,7 @@ class ImagingQCIndex extends Component {
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'Scan Done in MRI PF':
+    case 'Scan Done in MRI Parameter Form':
       if (cell == 'Yes') {
         let mpfURL = loris.BaseURL
                        + '/instruments/mri_parameter_form/?commentID='
@@ -172,11 +172,12 @@ class ImagingQCIndex extends Component {
           },
         },
         {
-          label: t('Scan Done in MRI PF', {ns: 'imaging_qc'}), show: true,
+          label: t('Scan Done in MRI Parameter Form', {ns: 'imaging_qc'}),
+          show: true,
           filter: {
-            name: 'scanDoneInMRIPF',
+            name: 'scanDoneInMRIParameterForm',
             type: 'select',
-            options: ImgOptions.scanDoneInMRIPF,
+            options: ImgOptions.scanDoneInMRIParameterForm,
           },
         },
         {

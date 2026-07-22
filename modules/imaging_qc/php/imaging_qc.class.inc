@@ -247,33 +247,33 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $this->fieldOptions
             = [
-                'site'             => $siteList,
-                'project'          => $projectList2,
-                'cohort'           => $cohortList2,
-                'scanType'         => $scan_types,
-                'mRIParameterForm' => [
+                'site'                       => $siteList,
+                'project'                    => $projectList2,
+                'cohort'                     => $cohortList2,
+                'scanType'                   => $scan_types,
+                'mRIParameterForm'           => [
                     "Incomplete" => dgettext("imaging_qc", "Incomplete"),
                     "Complete"   => dgettext("imaging_qc", "Complete"),
                 ],
-                'scanDoneInMRIPF'  => [
+                'scanDoneInMRIParameterForm' => [
                     "Yes" => dgettext("loris", "Yes"),
                     "No"  => dgettext("loris", "No"),
                 ],
-                'tarchive'         => [
+                'tarchive'                   => [
                     "In DICOM" => dgettext("imaging_qc", "In DICOM Archives"),
                     "Missing"  => dgettext("imaging_qc", "Missing"),
                 ],
-                'scanLocation'     => $scan_location,
-                'qCStatus'         => [
+                'scanLocation'               => $scan_location,
+                'qCStatus'                   => [
                     "Pass" => dgettext("loris", "Pass"),
                     "Fail" => dgettext("loris", "Fail"),
                 ],
-                'uploadedBy'       => $uploaderList,
-                'selected'         => [
+                'uploadedBy'                 => $uploaderList,
+                'selected'                   => [
                     "True"  => dgettext("loris", "True"),
                     "False" => dgettext("loris", "False"),
                 ],
-                'visitLabel'       => $visitList,
+                'visitLabel'                 => $visitList,
             ];
 
         $scan_types = $this->_getScanTypes();
@@ -281,13 +281,13 @@ class Imaging_QC extends \NDB_Menu_Filter
         $acq_IDs    = [];
         foreach ($scan_types as $scan_type) {
             // Only include scan types that appear in the MRI Parameter Form
-            $scanTypeInMRIPF = $db->columnExists(
+            $scanTypeInMRIParameterForm = $db->columnExists(
                 'mri_parameter_form',
                 $scan_type .
                 "_Scan_done"
             );
 
-            if (!$scanTypeInMRIPF) {
+            if (!$scanTypeInMRIParameterForm) {
                 unset($scan_types[$scan_type]);
                 continue;
             }

@@ -31,8 +31,8 @@ msgstr "Type de scan"
 msgid "MRI Parameter Form"
 msgstr "Formulaire des paramètres d'IRM"
 
-msgid "Scan Done in MRI PF"
-msgstr "Scan effectuée dans le formulaire des paramètres d'IRM"
+msgid "Scan Done in MRI Parameter Form"
+msgstr "Scan effectué dans le formulaire des paramètres d'IRM"
 
 msgid "Tarchive"
 msgstr "Tarchive"
@@ -41,7 +41,7 @@ msgid "Scan Location"
 msgstr "Emplacement du scan"
 
 msgid "QC Status"
-msgstr "Statut du CQ"
+msgstr "État du contrôle qualité"
 
 msgid "Uploaded By"
 msgstr "Téléversé par"
@@ -56,7 +56,7 @@ msgid "Found in Imaging Browser"
 msgstr "Trouvé dans le navigateur d'imagerie"
 
 msgid "Found in MRI Violated Scans"
-msgstr "Trouvé dans les acquisitions IRM non conformes"
+msgstr "Trouvé dans les scans IRM non conformes"
 
 msgid "Missing"
 msgstr "Manquant"
