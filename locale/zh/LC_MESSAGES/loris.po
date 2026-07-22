@@ -537,7 +537,7 @@ msgstr "{{months}} 月龄"
 msgid "{{years}} years old"
 msgstr "{{years}} 岁"
 
-msgid "%d y / %d"
+msgid "%d y / %d m"
 msgstr "%d 年 / %d 月"
 
 # Other generic terms
