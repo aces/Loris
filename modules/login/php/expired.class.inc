@@ -57,7 +57,7 @@ class Expired extends \NDB_Page implements ETagCalculator
         $params = $request->getQueryParams();
 
         if (isset($params['token'])) {
-            return $this->validateResetToken($request);
+            return $this->_validateResetToken($request);
         }
 
         return new \LORIS\Http\Response\JSON\BadRequest(
@@ -65,13 +65,22 @@ class Expired extends \NDB_Page implements ETagCalculator
         );
     }
 
-    private function validateResetToken(ServerRequestInterface $request) : ResponseInterface
+    /**
+     * Validates the password reset token.
+     *
+     * @param ServerRequestInterface $request PSR-7 request.
+     *
+     * @return ResponseInterface The outgoing PSR-7 response.
+     */
+    private function _validateResetToken(ServerRequestInterface $request)
+    : ResponseInterface
     {
-        if ($request->getMethod() === 'POST')
+        if ($request->getMethod() === 'POST') {
             $token = $_SESSION['PasswordResetToken'] ?? null;
+        }
         if ($request->getMethod() === 'GET') {
             $queryParams = $request->getQueryParams();
-            $token = $queryParams['token'] ?? null;
+            $token       = $queryParams['token'] ?? null;
         }
 
         $factory = \NDB_Factory::singleton();
@@ -101,7 +110,8 @@ class Expired extends \NDB_Page implements ETagCalculator
             );
         }
 
-        // Set the session variable to indicate that the user can reset their password.
+        // Set the session variable to indicate that the user can reset their
+        // password.
         $_SESSION['PasswordExpiredForUser'] = $row['Username'];
         $_SESSION['PasswordResetToken']     = $token;
         $_SESSION['PasswordResetUserID']    = $row['UserID'];
@@ -118,7 +128,8 @@ class Expired extends \NDB_Page implements ETagCalculator
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
+    private function _handlePOST(ServerRequestInterface $request)
+    : ResponseInterface
     {
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
@@ -144,8 +155,8 @@ class Expired extends \NDB_Page implements ETagCalculator
      */
     function expiredPassword(ServerRequestInterface $request) : ResponseInterface
     {
-        $factory      = \NDB_Factory::singleton();
-        $db           = $factory->database();
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
 
@@ -167,7 +178,7 @@ class Expired extends \NDB_Page implements ETagCalculator
             }
             // Update password
             try {
-                $response = $this->validateResetToken($request);
+                $response = $this->_validateResetToken($request);
                 if ($response->getStatusCode() !== 200) {
                     return $response;
                 }
@@ -184,7 +195,8 @@ class Expired extends \NDB_Page implements ETagCalculator
                         'ResetToken' => $_SESSION['PasswordResetToken'],
                     ]
                 );
-                // Invalidate all other active tokens for this user by marking them as 'Superseded'
+                // Invalidate all other active tokens for this user by marking them
+                // as 'Superseded'
                 $stmt = $db->prepare(
                     "UPDATE user_password_reset
                         SET Status = 'Superseded'
@@ -193,10 +205,12 @@ class Expired extends \NDB_Page implements ETagCalculator
                         AND Status IS NULL
                         AND CreationDate >= NOW() - INTERVAL 20 MINUTE"
                 );
-                $stmt->execute([
-                    ':userID' => $_SESSION['PasswordResetUserID'],
-                    ':token'  => $_SESSION['PasswordResetToken']
-                ]);
+                $stmt->execute(
+                    [
+                        ':userID' => $_SESSION['PasswordResetUserID'],
+                        ':token'  => $_SESSION['PasswordResetToken']
+                    ]
+                );
                 unset($_SESSION['PasswordExpiredForUser']);
                 unset($_SESSION['PasswordResetToken']);
                 unset($_SESSION['PasswordResetUserID']);

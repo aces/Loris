@@ -623,7 +623,7 @@ class User extends UserPermissions implements
                 'Password_hash'          => $password,
             ]
         );
-        $this->userInfo['Password_hash']          = (string) $password;
+        $this->userInfo['Password_hash'] = (string) $password;
     }
 
     /**

@@ -702,8 +702,8 @@ class UserTest extends TestCase
      */
     public function testUpdatePasswordUpdatesHash()
     {
-        $this->_user     = \User::factory(self::USERNAME);
-        $oldHash         = $this->_user->getData('Password_hash');
+        $this->_user = \User::factory(self::USERNAME);
+        $oldHash     = $this->_user->getData('Password_hash');
 
         // Cause usePwnedPasswordsAPI config option to return false.
         $mockConfig = &$this->_mockConfig;

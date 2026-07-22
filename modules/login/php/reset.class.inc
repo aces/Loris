@@ -72,8 +72,8 @@ class Reset extends \NDB_Page implements ETagCalculator
      */
     function resetPassword(ServerRequestInterface $request) : ResponseInterface
     {
-        $factory      = \NDB_Factory::singleton();
-        $db           = $factory->database();
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
 
@@ -126,9 +126,11 @@ class Reset extends \NDB_Page implements ETagCalculator
                         $msg_data = [];
                         $tmp      = $config->getSetting('title');
                         $title    = is_array($tmp) ? implode('', $tmp):$tmp;
-                        $msg_data['study']                 = $title;
-                        $msg_data['realname']              = $user->getFullname();
-                        $msg_data['resetpasswordurl']      = $factory->settings()->getBaseURL() . '/login?token=' . urlencode($resetToken);
+                        $msg_data['study']            = $title;
+                        $msg_data['realname']         = $user->getFullname();
+                        $msg_data['resetpasswordurl']
+                            = $factory->settings()->getBaseURL()
+                            . '/login?token=' . urlencode($resetToken);
                         \Email::send($email, 'lost_password.tpl', $msg_data);
                     }
                 } else {
