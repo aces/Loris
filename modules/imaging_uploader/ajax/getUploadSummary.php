@@ -124,11 +124,11 @@ if ($summary) {
 }
 
 $notifications = [];
-$rows = $DB->pselect(
+$rows          = $DB->pselect(
     $query,
     ['processId' => $uploadId]
 );
-foreach($rows as $row) {
+foreach ($rows as $row) {
     $notifications[] = $row;
 }
 
