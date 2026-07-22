@@ -18,6 +18,58 @@ import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 
 declare const loris: any;
+
+/**
+ * Build an order-independent signature for a query filter group. AND/OR
+ * groups are commutative, so terms are sorted to ignore the order they
+ * were added in.
+ *
+ * @param {QueryGroup} group - the filter group to serialize
+ * @returns {string} a stable signature for the group's content
+ */
+function criteriaSignature(group: QueryGroup): string {
+  const terms = group.group.map((term) => {
+    if (term instanceof QueryGroup) {
+      return criteriaSignature(term);
+    }
+    const t = term as QueryTerm;
+    return JSON.stringify({
+      module: t.module,
+      category: t.category,
+      fieldname: t.fieldname,
+      op: t.op,
+      value: t.value,
+      visits: (t.visits ?? []).slice().sort(),
+    });
+  }).sort();
+  return JSON.stringify({operator: group.operator, terms});
+}
+
+/**
+ * Build a signature representing the semantic content of a query (its
+ * columns and filters), independent of its QueryID and run time.
+ *
+ * Identical queries can be stored under different QueryIDs because the
+ * server dedupes saved queries by an exact string match on the query
+ * JSON, so any non-semantic difference (column order, an optional visits
+ * key) produces a distinct QueryID. Comparing content instead lets the
+ * "eliminate duplicates" filter collapse them. Columns and filter terms
+ * are sorted so their order does not affect the signature.
+ *
+ * @param {FlattenedQuery} query - the query to build a signature for
+ * @returns {string} a stable signature for the query's content
+ */
+function queryContentSignature(query: FlattenedQuery): string {
+  const fields = query.fields.map((field: FlattenedField) => JSON.stringify({
+    module: field.module,
+    category: field.category,
+    field: field.field,
+    visits: (field.visits ?? []).map((v: VisitOption) => v.value).sort(),
+  })).sort();
+  const criteria = query.criteria ? criteriaSignature(query.criteria) : '';
+  return JSON.stringify({fields, criteria});
+}
+
 /**
  * Return the welcome tab for the DQT
  *
@@ -404,13 +456,21 @@ function QueryList(props: {
     );
   }
   if (noDuplicates === true) {
-    const queryList: {[queryID: number]: FlattenedQuery} = {};
+    const seen: {[signature: string]: number} = {};
     const newDisplayedQueries: FlattenedQuery[] = [];
     displayedQueries.forEach((val) => {
-      if (queryList.hasOwnProperty(val.QueryID)) {
+      const signature = queryContentSignature(val);
+      if (seen.hasOwnProperty(signature)) {
+        // A named query is a better representative for the group than an
+        // otherwise identical unnamed run, so keep it if the one already
+        // kept is unnamed.
+        const index = seen[signature];
+        if (!newDisplayedQueries[index].Name && val.Name) {
+          newDisplayedQueries[index] = val;
+        }
         return;
       }
-      queryList[val.QueryID] = val;
+      seen[signature] = newDisplayedQueries.length;
       newDisplayedQueries.push(val);
     });
     displayedQueries = newDisplayedQueries;
