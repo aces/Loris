@@ -569,3 +569,6 @@ msgstr "कोई विकल्प नहीं"
 
 msgid "Submission Successful!"
 msgstr "सबमिशन सफल रहा!"
+
+msgid "Scan Type"
+msgstr "स्कैन प्रकार"

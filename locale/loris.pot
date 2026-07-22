@@ -607,3 +607,6 @@ msgstr ""
 
 msgid "Submission Successful!"
 msgstr ""
+
+msgid "Scan Type"
+msgstr ""

@@ -25,9 +25,6 @@ msgstr "Contrôle de la qualité de l'imagerie"
 msgid "Session ID"
 msgstr "ID de session"
 
-msgid "Scan Type"
-msgstr "Type de scan"
-
 msgid "MRI Parameter Form"
 msgstr "Formulaire des paramètres d'IRM"
 

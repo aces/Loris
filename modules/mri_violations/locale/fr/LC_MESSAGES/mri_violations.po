@@ -129,9 +129,6 @@ msgstr "Protocoles d'étude"
 msgid "Scan Problems"
 msgstr "Problèmes avec l'acquisition"
 
-msgid "Scan Type"
-msgstr "Type de scan"
-
 msgid "Severity"
 msgstr "Sévérité"
 

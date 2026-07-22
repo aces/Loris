@@ -100,9 +100,6 @@ msgstr "Protocolos de estudio"
 msgid "Scan Problems"
 msgstr "Problemas de escaneo"
 
-msgid "Scan Type"
-msgstr "Tipo de escaneo"
-
 msgid "Severity"
 msgstr "Gravedad"
 

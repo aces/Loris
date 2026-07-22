@@ -24,9 +24,6 @@ msgstr ""
 msgid "Session ID"
 msgstr ""
 
-msgid "Scan Type"
-msgstr ""
-
 msgid "MRI Parameter Form"
 msgstr ""
 

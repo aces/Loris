@@ -574,3 +574,6 @@ msgstr "无可选项"
 
 msgid "Submission Successful!"
 msgstr "提交成功！"
+
+msgid "Scan Type"
+msgstr "扫描类型"

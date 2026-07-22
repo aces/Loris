@@ -100,9 +100,6 @@ msgstr "अध्ययन प्रोटोकॉल"
 msgid "Scan Problems"
 msgstr "स्कैन समस्याएँ"
 
-msgid "Scan Type"
-msgstr "स्कैन प्रकार"
-
 msgid "Severity"
 msgstr "गंभीरता"
 

@@ -403,3 +403,6 @@ msgstr ""
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr ""
+
+msgid "Scan Type"
+msgstr "Tipo de escaneo"

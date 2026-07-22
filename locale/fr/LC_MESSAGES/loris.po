@@ -638,3 +638,5 @@ msgstr "Aucune option"
 msgid "Submission Successful!"
 msgstr "Soumission réussie!"
  
+msgid "Scan Type"
+msgstr "Type de scan"

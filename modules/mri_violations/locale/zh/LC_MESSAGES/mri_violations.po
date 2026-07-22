@@ -103,9 +103,6 @@ msgstr "研究方案"
 msgid "Scan Problems"
 msgstr "扫描问题"
 
-msgid "Scan Type"
-msgstr "扫描类型"
-
 msgid "Severity"
 msgstr "严重性"
 

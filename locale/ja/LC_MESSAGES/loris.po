@@ -593,3 +593,6 @@ msgstr "オプションなし"
 
 msgid "Submission Successful!"
 msgstr "送信成功しました!"
+
+msgid "Scan Type"
+msgstr "スキャンタイプ"

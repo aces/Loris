@@ -157,7 +157,7 @@ class ImagingQCIndex extends Component {
           },
         },
         {
-          label: t('Scan Type', {ns: 'imaging_qc'}), show: true, filter: {
+          label: t('Scan Type', {ns: 'loris'}), show: true, filter: {
             name: 'scanType',
             type: 'select',
             options: ImgOptions.scanType,
