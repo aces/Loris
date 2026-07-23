@@ -199,6 +199,12 @@ msgstr "「and」条件を追加する"
 msgid "Add \"or\" condition"
 msgstr "「または」条件を追加する"
 
+msgid "Are you sure you want to clear all filters?"
+msgstr "すべてのフィルターを消去してもよろしいですか？"
+
+msgid "Remove all filters"
+msgstr "すべてのフィルターを削除"
+
 msgid "Delete Item"
 msgstr "アイテムを削除"
 

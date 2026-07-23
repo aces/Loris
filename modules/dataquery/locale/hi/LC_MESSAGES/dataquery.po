@@ -191,6 +191,12 @@ msgstr "\"and\" शर्त जोड़ें"
 msgid "Add \"or\" condition"
 msgstr "\"or\" शर्त जोड़ें"
 
+msgid "Are you sure you want to clear all filters?"
+msgstr "क्या आप वाकई सभी फ़िल्टर साफ़ करना चाहते हैं?"
+
+msgid "Remove all filters"
+msgstr "सभी फ़िल्टर हटाएँ"
+
 msgid "Delete Item"
 msgstr "आइटम हटाएँ"
 
