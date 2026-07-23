@@ -107,7 +107,7 @@ msgid "Log Viewer"
 msgstr "ログビューア"
 
 msgid "Logs to display"
-msgstr "表示する"
+msgstr "表示するログ"
 
 msgid "Summary"
 msgstr "まとめ"
