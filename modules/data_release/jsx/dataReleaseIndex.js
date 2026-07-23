@@ -80,32 +80,32 @@ class DataReleaseIndex extends Component {
 
   formatColumn(column, cell, row) {
     const {t} = this.props;
-    // Set class to 'bg-danger' if file is hidden.
-    let hidden = row['hiddenById']
+    
+    let hidden = row[t('Hidden By ID', { ns: 'data_release' })]
       && this.props.hasPermission('data_release_hide');
-    let result = <td
-      className={hidden ? 'bg-danger' : ''}
-    >{cell}</td>;
+      
+    let result = <td className={hidden ? 'bg-danger' : ''}>{cell}</td>;
+    
     switch (column) {
     case t('File Name', {ns: 'data_release'}):
       if (this.props.hasPermission('superuser')
             || this.props.hasPermission('data_release_view')
             || this.props.hasPermission('data_release_upload')
-            || this.props.hasPermission('data_release_edit_file_access')) {
+            || this.props.hasPermission('data_release_edit_file_access')) {           
         const downloadURL = loris.BaseURL
-             + '/data_release/files/'
-             + encodeURIComponent(row['dataReleaseID']);
+            + '/data_release/files/'
+            + encodeURIComponent(row[t('Data Release ID', { ns: 'data_release' })]);
+            
         result = (
           <td
             className={hidden ? 'bg-danger' : ''}
-            style={{display: 'flex',
-              justifyContent: 'space-between',
-            }}
+            style={{display: 'flex', justifyContent: 'space-between'}}
           >
             <a
-              href = {downloadURL}
-              target = "_blank"
-              download = {row['fileName']} >
+              href={downloadURL}
+              target="_blank"
+              download={row[t('File Name', { ns: 'data_release' })]}
+            >
               {cell}
             </a>
             {
@@ -118,25 +118,25 @@ class DataReleaseIndex extends Component {
                   onClick={() => {
                     this.setState({
                       managingFile: {
-                        fileName: row['fileName'],
-                        version: row['version'],
-                        hiddenById: row['hiddenById'],
-                        dataReleaseID: row['dataReleaseID'],
-                      },
+                        fileName: row[t('File Name', { ns: 'data_release' })],
+                        version: row[t('Version', { ns: 'data_release' })],
+                        hiddenById: row[t('Hidden By ID', { ns: 'data_release' })],
+                        dataReleaseID: row[t('Data Release ID', { ns: 'data_release' })]
+                      }
                     });
                     this.show('manageFileForm');
                   }}
                 >
-                  <span className='glyphicon glyphicon-pencil' />
+                  <span className="glyphicon glyphicon-pencil" />
                 </a>
             }
           </td>
         );
       }
       break;
-    case 'Version':
-      result = <td
-        className={hidden ? 'bg-danger' : ''}>
+      
+    case t('Version', {ns: 'data_release'}):
+      result = <td className={hidden ? 'bg-danger' : ''}>
         {cell}
       </td>;
       break;
