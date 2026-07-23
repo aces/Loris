@@ -1,0 +1,237 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Candidate Parameters"
+msgstr "Paramètres du candidat"
+
+msgid "Caveat"
+msgstr "Mise en garde"
+
+msgid "Return to timepoint list"
+msgstr "Retour à la liste des temps d'acquisition"
+
+# tabs
+msgid "Candidate Information"
+msgstr "Informations sur le candidat"
+
+msgid "Participant Status"
+msgstr "Statut du participant"
+
+msgid "Diagnosis Evolution"
+msgstr "Évolution du diagnostic"
+
+msgid "Proband Information"
+msgstr "Informations sur le cas index"
+
+msgid "Family Information"
+msgstr "Informations sur la famille"
+
+msgid "Consent Status"
+msgstr "Statut du consentement"
+
+# Candidate Information tab
+msgid "Caveat Emptor Flag for Candidate"
+msgstr "Indicateur de mise en garde pour le candidat"
+
+msgid "Reason for Caveat Emptor Flag"
+msgstr "Motif de l’indicateur de mise en garde"
+
+msgid "If Other, please specify"
+msgstr "Si autre, veuillez préciser"
+
+# Participant Status tab
+msgid "Specify Reason"
+msgstr "Précisez le motif"
+
+msgid "Comments"
+msgstr "Commentaires"
+
+# DoB tab
+msgid "Disclaimer:"
+msgstr "Avertissement:"
+
+msgid "Any changes to the date of birth requires an administrator to run the fix_candidate_age script."
+msgstr "Toute modification de la date de naissance nécessite qu'un administrateur exécute le script « fix_candidate_age »."
+
+msgid "Date of birth cannot be later than today!"
+msgstr "La date de naissance ne peut pas être postérieure à aujourd'hui!"
+
+msgid "Date of birth updated!"
+msgstr "Date de naissance mise à jour!"
+
+msgid "Something went wrong."
+msgstr "Une erreur s'est produite."
+
+# DoD tab
+msgid "Any changes to the date of death requires an administrator to run the fix_candidate_age script."
+msgstr "Toute modification de la date de décès nécessite qu'un administrateur exécute le script « fix_candidate_age »."
+
+msgid "Date Of Death:"
+msgstr "Date du décès:"
+
+msgid "Invalid date"
+msgstr "Date non valide"
+
+msgid "Date of death cannot be later than today!"
+msgstr "La date du décès ne peut pas être postérieure à aujourd'hui!"
+
+msgid "Date of death must be after date of birth!"
+msgstr "La date de décès doit être postérieure à la date de naissance!"
+
+msgid "Date of death updated!"
+msgstr "Date du décès mise à jour!"
+
+# Diagnosis Evolution tab
+msgid "Trajectory Name"
+msgstr "Nom de la trajectoire"
+
+msgid "Configured Order"
+msgstr "Ordre configuré"
+
+msgid "Source Fields"
+msgstr "Champs source"
+
+msgid "Diagnosis"
+msgstr "Diagnostic"
+
+msgid "Confirmed"
+msgstr "Confirmé"
+
+msgid "Last Update"
+msgstr "Dernière mise à jour"
+
+# ProbandInfo Evolution tab
+msgid "An error occurred when loading the form!"
+msgstr "Une erreur s'est produite lors du chargement du formulaire!"
+
+msgid "DOB do not match!"
+msgstr "Les dates de naissance ne correspondent pas!"
+
+msgid "Proband date of birth cannot be later than today!"
+msgstr "La date de naissance du cas index ne peut pas être postérieure à aujourd'hui!"
+
+msgid "Update Successful!"
+msgstr "Mise à jour réussie!"
+
+msgid "Failed to update!"
+msgstr "Échec de la mise à jour!"
+
+msgid "Proband Sex"
+msgstr "Sexe du cas index"
+
+msgid "DoB Proband"
+msgstr "Date de naissance du cas index"
+
+msgid "Confirm DoB Proband"
+msgstr "Confirmer la date de naissance du cas index"
+
+msgid "Age Difference (months)"
+msgstr "Différence d'âge (en mois)"
+
+# FamilyInfo tab
+msgid "Add"
+msgstr "Ajouter"
+
+msgid "Family Member ID (DCCID)"
+msgstr "Identifiant du membre de la famille (DCCID)"
+
+msgid "Relation Type"
+msgstr "Type de relation"
+
+msgid "Full Sibling"
+msgstr "Frère ou sœur germain(e)"
+
+msgid "Half Sibling"
+msgstr "Demi-frère ou demi-sœur"
+
+msgid "First Cousin"
+msgstr "Cousin de premier degré"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+# ConsentStatus tab
+msgid "Response"
+msgstr "Réponse"
+
+msgid "Date of Response"
+msgstr "Date de la réponse"
+
+msgid "Confirmation Date of Response"
+msgstr "Date de confirmation de la réponse"
+
+msgid "Date of Withdrawal of Consent"
+msgstr "Date de retrait du consentement"
+
+msgid "Confirmation Date of Withdrawal of Consent"
+msgstr "Date de confirmation du retrait du consentement"
+
+msgid "Update successful."
+msgstr "La mise à jour s'est déroulée avec succès."
+
+msgid "{{label}} dates do not match!"
+msgstr "Les dates de {{label}} ne correspondent pas!"
+
+msgid "{{label}} date cannot be later than today!"
+msgstr "La date de {{label}} ne peut pas être postérieure à aujourd'hui!"
+
+msgid "{{label}} withdrawal dates do not match!"
+msgstr "Les dates de retrait de {{label}} ne correspondent pas!"
+
+msgid "{{label}} withdrawal date cannot be later than today!"
+msgstr "La date de retrait de {{label}} ne peut pas être postérieure à aujourd'hui!"
+
+msgid "{{label}} withdrawal date cannot be earlier than response date!"
+msgstr "La date de retrait de {{label}} ne peut pas être antérieure à la date de réponse!"
+
+msgid "Hide Consent History"
+msgstr "Masquer l'historique des consentements"
+
+msgid "Show Consent History"
+msgstr "Afficher l'historique des consentements"
+
+msgid "Date of Consent to {{consentDate}}"
+msgstr "Date de consentement à {{consentDate}}"
+
+msgid "Date of Consent Withdrawal to {{withdrawal}}"
+msgstr "Date du retrait du consentement à {{withdrawal}}"
+
+msgid "updated for {{label}}:"
+msgstr "mis à jour pour {{label}}:"
+
+msgid "Status to "
+msgstr "Statut de "
+
+msgid " Status: "
+msgstr " Statut: "
+
+msgid "Details: "
+msgstr "Détails: "
+
+msgid "Comments: "
+msgstr "Commentaires: "
+
+# Widgets
+msgid "Consent Summary"
+msgstr "Résumé du consentement"
+
+msgid "Consent Type"
+msgstr "Type de consentement"

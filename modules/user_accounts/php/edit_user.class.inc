@@ -1018,7 +1018,7 @@ class Edit_User extends \NDB_Form
                     . "<h3 id=\"header_$lastRole\" "
                     . "class=\"perm_header button\" "
                     . "style=\"text-align: center; margin-top: 5px;\">"
-                    . ucwords($row['type'])
+                    . ucwords(dgettext('permissions_category', $row['type']))
                     . '</h3>'
                     . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
                 );
@@ -1316,7 +1316,7 @@ class Edit_User extends \NDB_Form
             $errors['Email'] = dgettext(
                 "user_accounts",
                 "When generating a new password, please notify the user by checking"
-                . " 'Send email to user' box"
+                . " 'Send email to user' box below!"
             );
         }
 
@@ -1493,9 +1493,12 @@ class Edit_User extends \NDB_Form
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        return $db->pselectOne(
-            "SELECT Description FROM permissions WHERE permID =:pID",
-            ['pID' => $permID]
+        return dgettext(
+            'permissions',
+            $db->pselectOne(
+                "SELECT Description FROM permissions WHERE permID =:pID",
+                ['pID' => $permID]
+            )
         );
     }
 

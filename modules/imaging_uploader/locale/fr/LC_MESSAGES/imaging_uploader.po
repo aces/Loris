@@ -163,8 +163,8 @@ msgid "{{successText}} ({{inserted}} out of {{created}})"
 msgstr "{{successText}} ({{inserted}} sur {{created}})"
 
 #, fuzzy
-msgid "{{numViolatedScans}} violated scans"
-msgstr "{{numViolatedScans}} scans non conformes"
+msgid "({{numViolatedScans}} violated scans)"
+msgstr "({{numViolatedScans}} scans non conformes)"
 
 #, fuzzy
 msgid "Tarchive Info"

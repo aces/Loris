@@ -69,9 +69,6 @@ msgstr "फ़ाइल बहुत बड़ी है"
 msgid "Could not upload file"
 msgstr "फ़ाइल अपलोड नहीं हो सकी"
 
-msgid "Permission denied"
-msgstr "अनुमति अस्वीकृत"
-
 msgid "Something went wrong"
 msgstr "कुछ गलत हो गया"
 

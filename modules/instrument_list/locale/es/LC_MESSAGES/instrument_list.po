@@ -49,5 +49,5 @@ msgstr "No acciones"
 msgid "Stage: %s"
 msgstr "Etapa: %s"
 
-msgid "Start %s Stage"
-msgstr "Iniciar %s Etapa"
+msgid "Start the \"%s\" Stage"
+msgstr "Iniciar la etapa \"%s\""

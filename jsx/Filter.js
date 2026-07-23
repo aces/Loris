@@ -115,6 +115,7 @@ function Filter(props) {
             <SelectElement
               options={filter.options}
               sortByValue={filter.sortByValue}
+              autoSelect={false}
               multiple={true}
               emptyOption={false}
               disabled={filter.disabled}

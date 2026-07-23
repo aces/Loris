@@ -130,8 +130,8 @@ msgstr "挿入されたファイルの数"
 msgid "{{successText}} ({{inserted}} out of {{created}})"
 msgstr "{{successText}} ({{inserted}} / {{created}})"
 
-msgid "{{numViolatedScans}} violated scans"
-msgstr "{{numViolatedScans}} 件の違反スキャン"
+msgid "({{numViolatedScans}} violated scans)"
+msgstr "({{numViolatedScans}} 件の違反スキャン)"
 
 msgid "Tarchive Info"
 msgstr "アーカイブ情報"

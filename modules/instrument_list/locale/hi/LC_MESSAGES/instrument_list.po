@@ -49,5 +49,5 @@ msgstr "कोई कार्रवाई नहीं"
 msgid "Stage: %s"
 msgstr "चरण: %s"
 
-msgid "Start %s Stage"
-msgstr "%s चरण प्रारंभ करें"
+msgid "Start the \"%s\" Stage"
+msgstr "\"%s\" चरण प्रारंभ करें"

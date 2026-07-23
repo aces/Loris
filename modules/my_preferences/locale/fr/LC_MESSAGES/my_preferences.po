@@ -48,7 +48,7 @@ msgid "Your password cannot be your username"
 msgstr "Votre mot de passe ne peut pas être votre nom d'utilisateur."
 
 msgid "The passwords do not match"
-msgstr "Non trouvé"
+msgstr "Les mots de passe ne sont pas identiques."
 
 msgid "New and old passwords are identical"
 msgstr "Les nouveaux et anciens mots de passe sont identiques."
@@ -86,3 +86,9 @@ msgstr "Valider le code"
 
 msgid "Successfully registered multifactor authenticator"
 msgstr "Authentificateur multifactoriel enregistré avec succès"
+
+msgid "Invalid code provided. MFA not registered."
+msgstr "Le code fourni est invalide. Le MFA n'est pas configuré."
+
+msgid "Missing code or secret to validate"
+msgstr "Code ou clé secrète de validation manquant."

@@ -16,18 +16,18 @@ The following applies to both tabs, check that:
     - `Issue Tracker: Close Issues - All Sites` permission,
     - OR `Issue Tracker: Close Issues - Own Sites` permission,
     - OR `Issue Tracker: View/Edit/Comment/Close Issues - Own` permission.
-7. Check that a user who has `Issue Tracker: View/Edit/Comment Issues - Own Sites` permission and belongs to only one site can see all issues with no associated site. 
+7. Check that a user who has `Issue Tracker: View/Edit/Comment Issues - Own Sites` permission and belongs to only one site can see all issues with no associated site.
 
 ## 1. `Browse Issues` tab
 
 ### Issue Tracker Filter Form [Automation Testing]
 
 1. Test that all filters work. Nothing should be filtered at first loading.
-2. Test that all preset filters work and redirect to the correct table. 
+2. Test that all preset filters work and redirect to the correct table.
 3. Test that the watching checkbox works correctly (issues that your userID is watching in issues_watching table)
 4. Check that links to issues in table are correct.
-5. Check that table sorts and displays additional pages correctly 
-6. Check that a user who has `Issue Tracker: View/Edit/Comment Issues - Own Sites` permission and belongs to only one site can see all issues with a NULL centerID. Check that they have the label `All Sites` in the Site column. 
+5. Check that table sorts and displays additional pages correctly. Users with `issue_tracker_all_issue` permission should see all issues across all sites (no site-based or owner-based filtering). Verify that pagination shows the correct total count of the complete issue dataset.
+6. Check that a user who has `Issue Tracker: View/Edit/Comment Issues - Own Sites` permission and belongs to only one site can see all issues with a NULL centerID. Check that they have the label `All Sites` in the Site column.
 
 ### Issue Tracker Create New Issue [Manual Testing]
 
@@ -37,9 +37,9 @@ The following applies to both tabs, check that:
 4. Do not provide a PSCID value and and check that site can be populated by a particular site (except All Sites) in the dropdown values.
 5. Submit a PSCID and set Site to All Sites. This should work if the PSCID exists in the database.
 6. Submit a PSCID with a Site value (except All Sites). This should not work if the PSCID does not exists or if the PSCID does not match with the site.
-7. Should display message, and redirect after success. 
-8. Submit invalid and valid PSCID and visit label pairs. Error messages should display accordingly. 
-9. A user should be able to submit a PSCID from other sites only if they have `Issue Tracker: View/Edit/Comment Issues - All Sites` permission. 
+7. Should display message, and redirect after success.
+8. Submit invalid and valid PSCID and visit label pairs. Error messages should display accordingly.
+9. A user should be able to submit a PSCID from other sites only if they have `Issue Tracker: View/Edit/Comment Issues - All Sites` permission.
 10. Submit just a visit label - this should give an error message.
 11. Check that all values are propagated and saved correctly.
 12. Add an attachment to the new issue and make sure that it is successfully uploaded.
@@ -48,7 +48,7 @@ The following applies to both tabs, check that:
 ### Issue Tracker Edit Existing Issue [Manual Testing]
 
 1. User can access the page if they fulfill all the following conditions:
-	* they have `Issue Tracker: View/Edit/Comment Issues - All Sites` or `Issue Tracker: View/Edit/Comment Issues - Own Sites` or `Issue Tracker: View/Edit/Comment/Close Issues - Own` permission. 
+	* they have `Issue Tracker: View/Edit/Comment Issues - All Sites` or `Issue Tracker: View/Edit/Comment Issues - Own Sites` or `Issue Tracker: View/Edit/Comment/Close Issues - Own` permission.
 2. Users can only enter a PSCID for those candidate that are in their site.
 3. Submit invalid and valid PSCID and visit label pairs. Error messages should respond accordingly. Not that you cannot submit PSCIDs from other sites unless you have `Issue Tracker: View/Edit/Comment Issues - All Sites` permission.
 4. Submit just a visit label - this should give an error message.
@@ -58,8 +58,9 @@ The following applies to both tabs, check that:
 8. Check that an attachment can be added to an existing issue.
 9. Test if users assigned to issues can upload attachments.
 10. Test if users can delete their own uploaded attachments.
-11. Test if user assigned to issue cannot delete attachments of issue owner.
-12. Test that emails are sent to users that are watching the issue.
+11. Test that users without `issue_tracker_all_issue` permission cannot delete attachments uploaded by another user (even if they are assigned to the issue).
+12. Test that users with `issue_tracker_all_issue` permission can delete attachments uploaded by any user (unowned attachments).
+13. Test that emails are sent to users that are watching the issue.
 
 ### Permissions [Automation Testing]
 
@@ -68,7 +69,7 @@ The following applies to both tabs, check that:
 3. Remove `Issue Tracker: View/Edit/Comment/Close Issues - Own` permission.
 4. Remove `Issue Tracker: Close Issues - All Sites` permission.
 5. Remove `Issue Tracker: Close Issues - Own Sites` permission.
-6. Test that the "Browse Issues" tab behaves correctly as described above. 
+6. Test that the "Browse Issues" tab behaves correctly as described above.
 
 **Test the Issue Tracker Dashboard widget**
 
@@ -85,7 +86,6 @@ The following applies to both tabs, check that:
 5. The links should redirect the user to the correct issue.
 6. Create or assign an issue to a PSCID and see if the foregoing works correctly for the new issue.
 
-
 ## 2. `Batch Edit` tab
 
 ### Filter Form [Automation Testing]
@@ -100,7 +100,6 @@ The following applies to both tabs, check that:
 4. Check the reset button actually reset all filter tabs and cards.
 5. Check that pagination displays additional pages correctly depending on the maximum number of card items selected.
 
-
 ### Card block [Manual Testing]
 
 1. Check that links to issues in cards are correct.
@@ -113,7 +112,6 @@ The following applies to both tabs, check that:
 5. Also check the database to validate it.
 6. Check the view and access with several user with different permissions (see "Permissions" section).
 
-
 ### Permissions [Automation Testing]
 
 Same as the previous tab, for each point check the access/view/edit capability:
@@ -123,4 +121,4 @@ Same as the previous tab, for each point check the access/view/edit capability:
 3. Remove `Issue Tracker: View/Edit/Comment/Close Issues - Own` permission.
 4. Remove `Issue Tracker: Close Issues - All Sites` permission.
 5. Remove `Issue Tracker: Close Issues - Own Sites` permission.
-6. Test that the "Batch Edit: tab behaves correctly as described above.
+6. Test that the "Batch Edit" tab behaves correctly as described above.
