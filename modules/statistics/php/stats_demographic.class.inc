@@ -237,10 +237,7 @@ class Stats_Demographic extends \NDB_Form
 
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects["$ProjectID"] = dgettext(
-                'Project',
-                $allProjectList["$ProjectID"]
-            );
+            $projects["$ProjectID"] = $allProjectList["$ProjectID"];
         }
 
         if ($user->hasPermission('access_all_profiles')) {
