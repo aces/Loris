@@ -74,7 +74,7 @@ msgid "Optional"
 msgstr "Optionnel"
 
 msgid "Many"
-msgstr "Beaucoup"
+msgstr "Plusieurs"
 
 msgid "Description"
 msgstr "Description"
