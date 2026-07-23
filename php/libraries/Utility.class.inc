@@ -282,7 +282,9 @@ class Utility
         $result = $db->pselect($query, $qparams);
 
         $translatedVisitLabels = [];
-        foreach ($result as $visitLabel) {
+        foreach ($result as $row) {
+            $visitLabel = $row['Visit_label'];
+
             $translatedVisitLabels[$visitLabel] = dgettext('visit', $visitLabel);
         }
         // Generates an array where the keys are equal to the values.
