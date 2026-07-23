@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "V1"
-msgstr "1ᵉ Visite"
+msgstr "1ʳᵉ Visite"
 
 msgid "V2"
 msgstr "2ᵉ Visite"
