@@ -190,7 +190,7 @@ msgstr ""
 msgid "Add \"or\" condition"
 msgstr ""
 
-msgid "Are you sure you want to clear all filters?"
+msgid "This will remove all currently selected filters"
 msgstr ""
 
 msgid "Remove all filters"

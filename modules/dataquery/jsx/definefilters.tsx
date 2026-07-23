@@ -85,7 +85,7 @@ function DefineFilters(props: {
     swal.fire({
       title: t('Are you sure?', {ns: 'loris'}),
       text: t(
-        'Are you sure you want to clear all filters?',
+        'This will remove all currently selected filters',
         {ns: 'dataquery'},
       ),
       type: 'warning',
