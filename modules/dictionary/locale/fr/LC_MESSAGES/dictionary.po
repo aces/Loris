@@ -68,13 +68,13 @@ msgid "Unique"
 msgstr "Unique"
 
 msgid "Single"
-msgstr "Unique"
+msgstr "Une seule valeur"
 
 msgid "Optional"
 msgstr "Optionnel"
 
 msgid "Many"
-msgstr "Beaucoup"
+msgstr "Plusieurs"
 
 msgid "Description"
 msgstr "Description"
