@@ -381,10 +381,10 @@ class Utility
             "VisitName"
         );
 
-    return array_map(
-	    fn($visit) => dgettext("visit", $visit), 
-	    $result,
-    );
+        return array_map(
+            fn($visit) => dgettext("visit", $visit),
+            $result,
+        );
     }
 
     /**
@@ -417,10 +417,10 @@ class Utility
             "VisitID"
         );
 
-    return array_map(
-	    fn($visit) => dgettext("visit", $visit), 
-	    $result,
-    );
+        return array_map(
+            fn($visit) => dgettext("visit", $visit),
+            $result,
+        );
     }
 
     /**

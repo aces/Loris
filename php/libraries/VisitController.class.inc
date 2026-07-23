@@ -115,9 +115,9 @@ class VisitController
     }
 
     /**
-     * Instanciate a visit object using the visit label value
+     * Instanciate a visit object using the visit ID
      *
-     * @param string $visitLabel Label for which the Visit object s requested
+     * @param int $visitId ID for which the Visit object is requested
      *
      * @return Visit Visit associated with the supplied label
      *
@@ -127,7 +127,7 @@ class VisitController
     {
         $visitData = $this->database->pselectRow(
             'SELECT
-                 v.VisitID, v.VisitName
+                 v.VisitID, v.VisitName, v.VisitLabel
                 FROM
                  visit v
                 WHERE
@@ -141,8 +141,9 @@ class VisitController
             );
         }
 
-        return new \LORIS\Visit($visitData['VisitName'], $visitLabel);
+        return new \LORIS\Visit($visitData['VisitName'], $visitData['VisitLabel']);
     }
+
     /**
      * Instanciate a visit object using the visit label value
      *
