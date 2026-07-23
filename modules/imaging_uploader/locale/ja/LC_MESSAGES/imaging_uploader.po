@@ -28,9 +28,6 @@ msgstr "画像スキャンをアップロードする"
 msgid "Phantom Scans"
 msgstr "ファントムスキャン"
 
-msgid "File to Upload"
-msgstr "アップロードするファイル"
-
 msgid "Notes"
 msgstr "注記"
 

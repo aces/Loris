@@ -28,9 +28,6 @@ msgstr "上传影像扫描"
 msgid "Phantom Scans"
 msgstr "幻影扫描"
 
-msgid "File to Upload"
-msgstr "要上传的文件"
-
 msgid "Notes"
 msgstr "笔记"
 

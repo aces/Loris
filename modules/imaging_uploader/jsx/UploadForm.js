@@ -512,7 +512,7 @@ class UploadForm extends Component {
             />
             <FileElement
               name='mriFile'
-              label={t('File to Upload', {ns: 'imaging_uploader'})}
+              label={t('File to upload', {ns: 'loris'})}
               onUserInput={this.onFormChange}
               required={true}
               errorMessage={this.state.errorMessage.mriFile}

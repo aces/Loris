@@ -118,7 +118,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             "selector" => "#upload",
         ],
         [
-            "label"    => "File to Upload",
+            "label"    => "File to upload",
             "selector" => "#upload",
         ],
     ];

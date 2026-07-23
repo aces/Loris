@@ -28,9 +28,6 @@ msgstr "इमेजिंग स्कैन अपलोड करें"
 msgid "Phantom Scans"
 msgstr "फैंटम स्कैन"
 
-msgid "File to Upload"
-msgstr "अपलोड करने के लिए फ़ाइल"
-
 msgid "Notes"
 msgstr "नोट्स"
 

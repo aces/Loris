@@ -27,9 +27,6 @@ msgstr ""
 msgid "Phantom Scans"
 msgstr ""
 
-msgid "File to Upload"
-msgstr ""
-
 msgid "Notes"
 msgstr ""
 

@@ -168,7 +168,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->addBasicText('candID', dgettext('loris', 'DCCID'));
         $this->addBasicText('pSCID', 'PSCID');
         $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
-        $this->addFile('mriFile', 'File to Upload');
+        $this->addFile('mriFile', 'File to upload');
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
         ///////////////////////////////////////////////////////////////////////

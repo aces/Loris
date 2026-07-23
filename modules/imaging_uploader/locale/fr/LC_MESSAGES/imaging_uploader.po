@@ -30,10 +30,6 @@ msgstr "Téléverser un scan d'imagerie"
 msgid "Phantom Scans"
 msgstr "Scans fantômes"
 
-#, fuzzy
-msgid "File to Upload"
-msgstr "Sélectionner un fichier à téléverser"
-
 msgid "Notes"
 msgstr "Notes"
 
