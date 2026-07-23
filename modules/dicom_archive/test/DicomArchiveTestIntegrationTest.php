@@ -66,6 +66,11 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function testdicomArchiveViewDetailsDoespageLoad()
     {
         $this->safeGet($this->url . "/dicom_archive/viewDetails/?tarchiveID=27");
+        $heading = $this->safeFindElement(
+            WebDriverBy::cssSelector('#lorisworkspace h2')
+        );
+        $this->assertSame('Tarchive Metadata', $heading->getText());
+
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString("View Details", $bodyText);
@@ -77,6 +82,27 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             "An error occured while loading the page.",
             $bodyText
         );
+        $this->assertStringContainsString("Acquisition ID", $bodyText);
+        $this->assertStringContainsString("Show/Hide series", $bodyText);
+        $this->assertStringContainsString("Show/Hide files", $bodyText);
+
+        $seriesToggle = WebDriverBy::cssSelector(
+            'a[aria-controls="series-data"]'
+        );
+        $this->safeClick($seriesToggle);
+        $seriesTable = $this->safeFindElement(
+            WebDriverBy::cssSelector('#series-data table')
+        );
+        $this->assertTrue($seriesTable->isDisplayed());
+
+        $filesToggle = WebDriverBy::cssSelector(
+            'a[aria-controls="files-data"]'
+        );
+        $this->safeClick($filesToggle);
+        $filesTable = $this->safeFindElement(
+            WebDriverBy::cssSelector('#files-data table')
+        );
+        $this->assertTrue($filesTable->isDisplayed());
     }
 
     /**
