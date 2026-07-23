@@ -70,9 +70,6 @@ msgstr "エラー"
 msgid "Upload error!"
 msgstr "アップロードエラー"
 
-msgid "Upload Successful!"
-msgstr "アップロード成功しました!"
-
 msgid "A file with this name already exists!"
 msgstr "この名前のファイルは既に存在します。"
 

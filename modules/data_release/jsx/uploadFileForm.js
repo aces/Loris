@@ -228,7 +228,7 @@ class UploadFileForm extends Component {
         console.error(msg);
       } else {
         swal.fire({
-          text: t('Upload Successful!', {ns: 'data_release'}),
+          text: t('Upload successful!', {ns: 'loris'}),
           title: '',
           type: 'success',
           confirmButtonText: t('OK', {ns: 'loris'}),

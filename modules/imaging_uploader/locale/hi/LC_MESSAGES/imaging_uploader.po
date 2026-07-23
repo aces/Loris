@@ -28,9 +28,6 @@ msgstr "इमेजिंग स्कैन अपलोड करें"
 msgid "Phantom Scans"
 msgstr "फैंटम स्कैन"
 
-msgid "File to Upload"
-msgstr "अपलोड करने के लिए फ़ाइल"
-
 msgid "Notes"
 msgstr "नोट्स"
 
@@ -84,9 +81,6 @@ msgstr "आपका अपलोड रद्द कर दिया गया 
 
 msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
 msgstr "इस नाम की फ़ाइल अपलोड की गई है लेकिन अभी MRI पाइपलाइन द्वारा प्रोसेस नहीं हुई है। क्या आप मौजूदा फ़ाइल को अधिलेखित करना चाहेंगे?"
-
-msgid "Upload Successful!"
-msgstr "अपलोड सफल!"
 
 msgid "Processing of this file by the MRI pipeline has started"
 msgstr "इस फ़ाइल का MRI पाइपलाइन द्वारा प्रोसेसिंग शुरू हो गई है"

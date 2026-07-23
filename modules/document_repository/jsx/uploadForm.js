@@ -234,8 +234,8 @@ class DocUploadForm extends Component {
             resp.json().then((data) => {
               if (data.error_count === 0) {
                 swal.fire(
-                  this.props.t('Upload Successful!',
-                    {ns: 'document_repository'}),
+                  this.props.t('Upload successful!',
+                    {ns: 'loris'}),
                   '',
                   'success'
                 ).then((result) => {

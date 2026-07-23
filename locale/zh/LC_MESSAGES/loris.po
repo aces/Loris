@@ -589,3 +589,6 @@ msgstr "质量控制状态"
 
 msgid "TarchiveID"
 msgstr "档案ID"
+
+msgid "Upload successful!"
+msgstr "上传成功！"

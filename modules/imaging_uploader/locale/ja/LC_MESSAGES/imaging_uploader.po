@@ -28,9 +28,6 @@ msgstr "画像スキャンをアップロードする"
 msgid "Phantom Scans"
 msgstr "ファントムスキャン"
 
-msgid "File to Upload"
-msgstr "アップロードするファイル"
-
 msgid "Notes"
 msgstr "注記"
 
@@ -85,9 +82,6 @@ msgstr "アップロードはキャンセルされました。"
 msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
 msgstr "この名前のファイルはアップロードされていますが、MRIパイプラインでまだ処理されていません。既存のファイルを上書きしますか？"
 
-msgid "Upload Successful!"
-msgstr "アップロード成功しました!"
-
 msgid "Processing of this file by the MRI pipeline has started"
 msgstr "MRIパイプラインによるこのファイルの処理が開始されました"
 
@@ -110,7 +104,7 @@ msgid "Log Viewer"
 msgstr "ログビューア"
 
 msgid "Logs to display"
-msgstr "表示する"
+msgstr "表示するログ"
 
 msgid "Summary"
 msgstr "まとめ"

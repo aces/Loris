@@ -214,9 +214,6 @@ msgstr[0] "{{count}} 件のコメント"
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr "添付ファイル「{{fileName}}」の削除リクエストを確認してください。"
 
-msgid "Upload Successful!"
-msgstr "アップロードに成功しました！"
-
 msgid "Upload error!"
 msgstr "アップロードエラー！"
 

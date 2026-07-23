@@ -584,3 +584,6 @@ msgstr "QC स्थिति"
 
 msgid "TarchiveID"
 msgstr "टीआर्काइवआईडी"
+
+msgid "Upload successful!"
+msgstr "अपलोड सफल!"

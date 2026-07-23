@@ -608,3 +608,6 @@ msgstr "品質管理状況"
 
 msgid "TarchiveID"
 msgstr "TarchiveID"
+
+msgid "Upload successful!"
+msgstr "アップロード成功しました!"

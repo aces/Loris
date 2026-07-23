@@ -51,9 +51,6 @@ msgstr "फ़ाइल(ें) अपलोड करें"
 msgid "Uploading..."
 msgstr "अपलोड हो रहा है..."
 
-msgid "Upload Successful!"
-msgstr "अपलोड सफल रहा!"
-
 msgid "Upload Incomplete"
 msgstr "अपलोड अधूरा है"
 
