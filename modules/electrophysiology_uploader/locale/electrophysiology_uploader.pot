@@ -57,9 +57,6 @@ msgstr ""
 msgid "The file does not respect name convention"
 msgstr ""
 
-msgid "Upload Successful!"
-msgstr ""
-
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr ""
 

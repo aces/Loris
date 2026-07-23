@@ -70,9 +70,6 @@ msgstr "错误"
 msgid "Upload error!"
 msgstr "上传错误！"
 
-msgid "Upload Successful!"
-msgstr "上传成功！"
-
 msgid "A file with this name already exists!"
 msgstr "同名的文件已存在！"
 

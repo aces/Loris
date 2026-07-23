@@ -85,9 +85,6 @@ msgstr "您的上传已被取消。"
 msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
 msgstr "具有此名称的文件已上传，但尚未由 MRI 管道处理。您想覆盖现有文件吗？"
 
-msgid "Upload Successful!"
-msgstr "上传成功！"
-
 msgid "Processing of this file by the MRI pipeline has started"
 msgstr "MRI 管道已开始处理此文件"
 

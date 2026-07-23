@@ -52,9 +52,6 @@ msgstr "ファイルをアップロード"
 msgid "Uploading..."
 msgstr "アップロード中..."
 
-msgid "Upload Successful!"
-msgstr "アップロード成功しました!"
-
 msgid "Upload Incomplete"
 msgstr "アップロードが不完全です"
 

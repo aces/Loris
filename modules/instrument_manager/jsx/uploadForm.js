@@ -63,7 +63,7 @@ class InstrumentUploadForm extends Component {
       .then((data) => {
         if (data.message) {
           swal.fire({
-            title: t('Upload Successful!', {ns: 'instrument_manager'}),
+            title: t('Upload successful!', {ns: 'loris'}),
             type: t('success', {ns: 'instrument_manager'}),
             text: data.message,
           }).then(function() {

@@ -327,7 +327,7 @@ class UploadForm extends Component {
                 {ns: 'imaging_uploader'});
         }
         swal.fire({
-          title: t('Upload Successful!', {ns: 'imaging_uploader'}),
+          title: t('Upload successful!', {ns: 'loris'}),
           text: text,
           type: 'success',
           confirmButtonText: t('OK', {ns: 'loris'}),

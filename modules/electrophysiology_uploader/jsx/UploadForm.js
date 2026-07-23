@@ -163,8 +163,8 @@ export default function UploadForm(props) {
             {ns: 'electrophysiology_uploader'});
         }
         swal.fire({
-          title: t('Upload Successful!',
-            {ns: 'electrophysiology_uploader'}),
+          title: t('Upload successful!',
+            {ns: 'loris'}),
           text: text,
           type: 'success',
         }).then((result) => {

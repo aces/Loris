@@ -85,9 +85,6 @@ msgstr "アップロードはキャンセルされました。"
 msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
 msgstr "この名前のファイルはアップロードされていますが、MRIパイプラインでまだ処理されていません。既存のファイルを上書きしますか？"
 
-msgid "Upload Successful!"
-msgstr "アップロード成功しました!"
-
 msgid "Processing of this file by the MRI pipeline has started"
 msgstr "MRIパイプラインによるこのファイルの処理が開始されました"
 

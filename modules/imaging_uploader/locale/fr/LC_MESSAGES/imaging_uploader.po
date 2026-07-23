@@ -106,10 +106,6 @@ msgid "A file with this name has been uploaded but has not yet been processed by
 msgstr "Un fichier portant ce nom a été téléversé, mais n'a pas encore été traité par le pipeline IRM. Souhaitez-vous remplacer le fichier existant ?"
 
 #, fuzzy
-msgid "Upload Successful!"
-msgstr "Téléversement réussi !"
-
-#, fuzzy
 msgid "Processing of this file by the MRI pipeline has started"
 msgstr "Le traitement de ce fichier par le pipeline IRM a commencé."
 

@@ -84,9 +84,6 @@ msgstr ""
 msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
 msgstr ""
 
-msgid "Upload Successful!"
-msgstr ""
-
 msgid "Processing of this file by the MRI pipeline has started"
 msgstr ""
 

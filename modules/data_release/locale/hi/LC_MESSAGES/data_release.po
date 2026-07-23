@@ -70,9 +70,6 @@ msgstr "त्रुटि"
 msgid "Upload error!"
 msgstr "अपलोड त्रुटि!"
 
-msgid "Upload Successful!"
-msgstr "अपलोड सफल!"
-
 msgid "A file with this name already exists!"
 msgstr "इस नाम की फ़ाइल पहले से मौजूद है!"
 

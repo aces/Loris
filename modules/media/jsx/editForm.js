@@ -216,7 +216,7 @@ class MediaEditForm extends Component {
     let xhr = new XMLHttpRequest();
     xhr.addEventListener('load', () => {
       if (xhr.status < 400) {
-        swal.fire(t('Upload Successful!', {ns: 'media'}),
+        swal.fire(t('Upload successful!', {ns: 'loris'}),
           '', 'success');
         this.props.fetchData();
       } else {

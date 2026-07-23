@@ -69,9 +69,6 @@ msgstr ""
 msgid "Upload error!"
 msgstr ""
 
-msgid "Upload Successful!"
-msgstr ""
-
 msgid "A file with this name already exists!"
 msgstr ""
 

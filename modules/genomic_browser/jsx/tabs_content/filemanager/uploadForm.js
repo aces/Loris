@@ -204,8 +204,7 @@ class GenomicUploadForm extends Component {
           }, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal.fire(t('Upload Successful!', {ns: 'genomic_browser'}), '',
-          'success');
+        swal.fire('Upload successful!', '', 'success');
         this.props.closeFileUploadModal();
       }
       ).catch((error) => {

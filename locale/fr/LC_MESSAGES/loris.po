@@ -649,3 +649,6 @@ msgstr "État du contrôle qualité"
 
 msgid "TarchiveID"
 msgstr "Identifiant de tarchive"
+
+msgid "Upload successful!"
+msgstr "Téléversement réussi!"

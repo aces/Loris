@@ -210,9 +210,6 @@ msgstr[0] ""
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr ""
 
-msgid "Upload Successful!"
-msgstr ""
-
 msgid "Upload error!"
 msgstr ""
 

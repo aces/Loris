@@ -73,9 +73,6 @@ msgstr "Erreur"
 msgid "Upload error!"
 msgstr "Erreur de téléversement!"
 
-msgid "Upload Successful!"
-msgstr "Téléversement réussi!"
-
 msgid "A file with this name already exists!"
 msgstr "Un fichier portant ce nom existe déjà!"
 

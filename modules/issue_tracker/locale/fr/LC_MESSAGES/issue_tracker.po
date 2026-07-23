@@ -226,9 +226,6 @@ msgstr "Aucun incident ne correspond aux filtres sélectionnés."
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr "Veuillez confirmer la demande de suppression de la pièce jointe « {{fileName}} »."
 
-msgid "Upload Successful!"
-msgstr "Téléversement réussi !"
-
 msgid "Upload error!"
 msgstr "Erreur lors du téléversement !"
 
