@@ -280,15 +280,16 @@ class Utility
             AND s.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
         $result = $db->pselect($query, $qparams);
-        // The result has several columns; we only want the visit labels.
-        $visitLabels = array_column(iterator_to_array($result), 'Visit_label');
 
         $translatedVisitLabels = [];
-        foreach ($visitLabels as $visitLabel) {
+        foreach ($result as $row) {
+            $visitLabel = $row['Visit_label'];
+
             $translatedVisitLabels[$visitLabel] = dgettext('visit', $visitLabel);
         }
         // Generates an array where the keys are equal to the values.
         $cache[$projStr] = $translatedVisitLabels;
+
         return $cache[$projStr];
     }
 
