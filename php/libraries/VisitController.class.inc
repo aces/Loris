@@ -137,7 +137,7 @@ class VisitController
 
         if (empty($visitData)) {
             throw new \NotFound(
-                "No visits found in the database with label: $visitLabel"
+                "No visits found in the database with id: $visitId"
             );
         }
 

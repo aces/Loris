@@ -186,11 +186,6 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             );
         }
 
-        //Visit - Get all visits to map ID back to label for session table
-        $visits    = \Utility::getVisitsForProjectCohort(
-            $project->getId(),
-            intval($values['cohort'])
-        );
         $visitName = (new VisitController(
             $this->loris->getDatabaseConnection()
         ))->getVisitFromVisitID(intval($values['visit']))->getName();
@@ -286,12 +281,6 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $candid    = $values['candID'];
         $cohortID  = intval($values['cohort']);
         $projectID = \ProjectID::singleton(intval($values['project']));
-
-        //Visit - Get all visits to map ID back to label for session table
-        $visits = \Utility::getVisitsForProjectCohort(
-            $projectID,
-            intval($values['cohort'])
-        );
 
         $visitName = (new VisitController(
             $this->loris->getDatabaseConnection()
