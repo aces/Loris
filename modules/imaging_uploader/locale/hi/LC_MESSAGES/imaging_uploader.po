@@ -100,8 +100,8 @@ msgstr "अपलोड विफल: नेटवर्क त्रुटि �
 msgid "Please make sure files are not larger than {{maxFileSize}}"
 msgstr "कृपया सुनिश्चित करें कि फ़ाइलें {{maxFileSize}} से बड़ी न हों"
 
-msgid "Upload failed: received HTTP response code"
-msgstr "अपलोड विफल: HTTP प्रतिक्रिया कोड प्राप्त हुआ"
+msgid "Upload failed: received HTTP response code {{code}}"
+msgstr "अपलोड विफल: HTTP प्रतिक्रिया कोड {{code}} प्राप्त हुआ"
 
 msgid "Submission error!"
 msgstr "सबमिशन त्रुटि!"
@@ -130,8 +130,8 @@ msgstr "डाली गई फ़ाइलों की संख्या"
 msgid "{{successText}} ({{inserted}} out of {{created}})"
 msgstr "{{successText}} ({{created}} में से {{inserted}})"
 
-msgid "{{numViolatedScans}} violated scans"
-msgstr "{{numViolatedScans}} उल्लंघन स्कैन"
+msgid "({{numViolatedScans}} violated scans)"
+msgstr "({{numViolatedScans}} उल्लंघन स्कैन)"
 
 msgid "Tarchive Info"
 msgstr "टीआर्काइव जानकारी"
@@ -144,6 +144,3 @@ msgstr "अपलोड स्थान"
 
 msgid "Upload Date"
 msgstr "अपलोड की तिथि"
-
-msgid "Uploaded By"
-msgstr "द्वारा अपलोड किया गया"

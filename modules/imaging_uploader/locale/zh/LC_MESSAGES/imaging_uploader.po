@@ -130,8 +130,8 @@ msgstr "插入的文件数"
 msgid "{{successText}} ({{inserted}} out of {{created}})"
 msgstr "{{successText}}（{{created}} 中的 {{inserted}}）"
 
-msgid "{{numViolatedScans}} violated scans"
-msgstr "{{numViolatedScans}} 扫描违规"
+msgid "({{numViolatedScans}} violated scans)"
+msgstr "({{numViolatedScans}} 扫描违规)"
 
 msgid "Tarchive Info"
 msgstr "档案信息"
@@ -144,6 +144,3 @@ msgstr "上传位置"
 
 msgid "Upload Date"
 msgstr "上传日期"
-
-msgid "Uploaded By"
-msgstr "上传者"

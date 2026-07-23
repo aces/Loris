@@ -162,3 +162,192 @@ msgstr ""
 
 msgid "Bar"
 msgstr ""
+
+msgid "General Description"
+msgstr ""
+
+msgid "General Demographic Statistics"
+msgstr ""
+
+msgid "Behavioural Statistics"
+msgstr ""
+
+msgid "Welcome to the statistics page"
+msgstr ""
+
+msgid "This page will display statistics related to data acquisition, data processing and data entry as it relates to both the behavioural and imaging aspects of this study."
+msgstr ""
+
+msgid "Demographics Statistics"
+msgstr ""
+
+msgid "MRI Statistics"
+msgstr ""
+
+msgid "General Statistics with QC Status"
+msgstr ""
+
+msgid "All Scan Types"
+msgstr ""
+
+msgid "Submit Query"
+msgstr ""
+
+msgid "Scans Inserted"
+msgstr ""
+
+msgid "Passed"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Not QCed"
+msgstr ""
+
+msgid "Oops"
+msgstr ""
+
+msgid "Per Instrument Stats"
+msgstr ""
+
+msgid "View Details"
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Completed (%)"
+msgstr ""
+
+msgid "Demographics"
+msgstr ""
+
+msgid "No defined cohort"
+msgstr ""
+
+msgid "Registered candidates"
+msgstr ""
+
+msgid "Inactive"
+msgstr ""
+
+msgid "Age Average (months)"
+msgstr ""
+
+msgid "Completion Count"
+msgstr ""
+
+msgid "Incomplete Candidates"
+msgstr ""
+
+msgid "Issue type"
+msgstr ""
+
+msgid "Incomplete Entries"
+msgstr ""
+
+msgid "Total Across Cohorts"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Site Total Across All Visits"
+msgstr ""
+
+msgid "Grand Total"
+msgstr ""
+
+msgid "Ethnicity"
+msgstr ""
+
+msgid "All sites"
+msgstr ""
+
+msgid "All Projects"
+msgstr ""
+
+msgid "Breakdown of Registered Candidates"
+msgstr ""
+
+msgid "Breakdown by Sex"
+msgstr ""
+
+msgid "Recruit Breakdown by Sex"
+msgstr ""
+
+msgid "Show Visit Labels"
+msgstr ""
+
+msgid "Double Data Entry Statistics"
+msgstr ""
+
+msgid "Click here for breakdown per participant"
+msgstr ""
+
+msgid "Click here for breakdown per participant%s%s"
+msgstr ""
+
+msgid " for %s"
+msgstr ""
+
+msgid "Breakdown By Scan Type"
+msgstr ""
+
+msgid "Partial Run"
+msgstr ""
+
+msgid "No Scan"
+msgstr ""
+
+msgid "Data Entry Statistics"
+msgstr ""
+
+msgid "Select All"
+msgstr ""
+
+msgid "%s Double Data Entry Completion Statistics %s"
+msgstr ""
+
+msgid "%s Completion Statistics"
+msgstr ""
+
+msgid "All Completion Statistics"
+msgstr ""
+
+msgid "QC Status"
+msgstr ""
+
+msgid "Click to minimize"
+msgstr ""
+
+msgid "It seems like the scan type selected does not have a corresponding column in the mri_parameter_form table in the database."
+msgstr ""
+
+msgid "In order to display the statistics for the scan type, make sure the mri_parameter_form table contains a column in the exact format SCANTYPE_Scan_done"
+msgstr ""
+
+msgid "It seems like the \"mri_parameter_form\" table is missing in the database currently in use."
+msgstr ""
+
+msgid "This table is necessary in order to compute the Breakdown table of the MRI statistics page."
+msgstr ""
+
+msgid "The %sDemographics Statistics%s tab currently includes general statistics relating to the number of candidates registered in each cohort as well as customizable categories displaying statistics relating to candidate demographics (participant status, sex, age etc.). You may also view statistics broken down per instrument, displaying the number of complete and incomplete instruments per site, as it pertains to each visit label and cohort by selecting an instrument from the dropdown menu with the option to hide visit labels to only display total visit counts per site."
+msgstr ""
+
+msgid "The %sBehavioural Statistics%s tab currently includes data entry statistics relating to the number of candidates who have completed each instrument per site and timepoint. As well, there is an option to view the data entry statistics per instrument as well a breakdown per participant, which will reveal an in-depth table, listing candidate PSCIDs, completion count, and incomplete candidates. The same statistics are also available for double data entry."
+msgstr ""
+
+msgid "The %sMRI statistics%s tab currently displays the number of scans inserted per site as well as their QC (Quality Control) status. For various scans within a study based on the MRI parameter form entries, there is a breakdown of scan completion, arranged by site, cohort and timepoint, with the option to hide visit labels to only display total visit counts per site."
+msgstr ""
+
+msgid "Incomplete"
+msgstr ""
+
+msgid "Data Entry Completion Status for %s"
+msgstr ""
+
+msgid "%s Breakdown"
+msgstr ""

@@ -81,3 +81,9 @@ msgstr "नई तिथि"
 
 msgid "No changes have been made"
 msgstr "कोई बदलाव नहीं किया गया है"
+
+msgid "Permission denied: You cannot assign examiner to this Site."
+msgstr "अनुमति अस्वीकृत: आप इस साइट पर परीक्षक नियुक्त नहीं कर सकते।"
+
+msgid "This examiner already exists."
+msgstr "यह परीक्षक पहले से मौजूद है।"

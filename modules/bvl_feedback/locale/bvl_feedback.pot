@@ -83,7 +83,13 @@ msgstr ""
 msgid "Create thread"
 msgstr ""
 
+msgid "Thread created!"
+msgstr ""
+
 msgid "The new thread has been submitted!"
+msgstr ""
+
+msgid "Failed to create thread"
 msgstr ""
 
 msgid "Across All Fields"

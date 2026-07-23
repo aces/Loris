@@ -51,9 +51,6 @@ msgstr "निर्माण तिथि"
 msgid "Last Update"
 msgstr "अंतिम अपडेट"
 
-msgid "SessionID"
-msgstr "सत्र आईडी"
-
 msgid "Watching"
 msgstr "देख रहे हैं"
 

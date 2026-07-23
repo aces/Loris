@@ -22,7 +22,6 @@ msgstr ""
 msgid "Login"
 msgstr "ログイン"
 
-
 msgid "Login to LORIS"
 msgstr "ロリスにログイン"
 
@@ -149,3 +148,51 @@ msgstr[0] "サイト"
 msgid "Visit"
 msgid_plural "Visits"
 msgstr[0] "訪問"
+
+msgid "Missing code"
+msgstr "コードがありません"
+
+msgid "Invalid MFA code"
+msgstr "MFAコードが無効です"
+
+msgid "Error"
+msgstr "エラー"
+
+msgid "password expired"
+msgstr "パスワードの有効期限が切れています。"
+
+msgid "Can not use an empty password."
+msgstr "空のパスワードは使用できません。"
+
+msgid "You cannot keep the same password."
+msgstr "同じパスワードを使用し続けることはできません。"
+
+msgid "Server encountered an error."
+msgstr "サーバーでエラーが発生しました。"
+
+msgid "Sending reset email failed."
+msgstr "パスワード再設定メールの送信に失敗しました。"
+
+msgid "Please complete the reCaptcha"
+msgstr "reCAPTCHA を完了してください。"
+
+msgid "Email address can not contain the following characters: <,>,& and \"."
+msgstr "メールアドレスには次の文字を含めることはできません: <, >, &, および \"。"
+
+msgid "Please provide a valid email address!"
+msgstr "有効なメールアドレスを入力してください。"
+
+msgid "Not a valid user"
+msgstr "有効なユーザーではありません。"
+
+msgid "Please complete the reCaptcha!"
+msgstr "reCAPTCHA を完了してください。"
+
+msgid "Login with {{provider}}"
+msgstr "{{provider}} でログイン"
+
+msgid "Our partners"
+msgstr "パートナー"
+
+msgid "Password expired for user."
+msgstr "ユーザーのパスワードの有効期限が切れています。"

@@ -15,6 +15,7 @@ import {Tabs, TabPane} from 'Tabs';
 
 import esStrings from '../locale/es/LC_MESSAGES/candidate_parameters.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/candidate_parameters.json';
+import frStrings from '../locale/fr/LC_MESSAGES/candidate_parameters.json';
 
 /**
  * Candidate parameters component
@@ -129,7 +130,7 @@ class CandidateParameters extends Component {
 
 CandidateParameters.propTypes = {
   candID: PropTypes.string.isRequired,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 /**
@@ -140,6 +141,7 @@ const args = QueryString.get(document.currentScript.src);
 window.addEventListener('load', () => {
   i18n.addResourceBundle('es', 'candidate_parameters', esStrings);
   i18n.addResourceBundle('zh', 'candidate_parameters', zhStrings);
+  i18n.addResourceBundle('fr', 'candidate_parameters', frStrings);
 
   const TranslatedCandidateParameters = withTranslation(
     ['candidate_parameters', 'loris']

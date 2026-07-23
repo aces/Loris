@@ -53,16 +53,10 @@ msgstr ""
 msgid "Links"
 msgstr ""
 
-msgid "SessionID"
-msgstr ""
-
 msgid "Sequence Type"
 msgstr ""
 
 msgid "Pending New"
-msgstr ""
-
-msgid "QC Status"
 msgstr ""
 
 msgid "Caveat"

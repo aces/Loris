@@ -537,6 +537,9 @@ msgstr "{{months}} 月龄"
 msgid "{{years}} years old"
 msgstr "{{years}} 岁"
 
+msgid "%d y / %d m"
+msgstr "%d年%d月"
+
 # Other generic terms
 msgid "Loading..."
 msgstr "加载中..."
@@ -568,3 +571,21 @@ msgstr "数据集"
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr "无可选项"
+
+msgid "Submission Successful!"
+msgstr "提交成功！"
+
+msgid "Scan Type"
+msgstr "扫描类型"
+
+msgid "SessionID"
+msgstr "会话ID"
+
+msgid "Uploaded By"
+msgstr "上传者"
+
+msgid "QC Status"
+msgstr "质量控制状态"
+
+msgid "TarchiveID"
+msgstr "档案ID"

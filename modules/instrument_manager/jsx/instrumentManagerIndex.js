@@ -12,8 +12,11 @@ import Modal from 'jsx/Modal';
 import InfoPanel from 'jsx/InfoPanel';
 
 import Select from 'react-select';
+import {withTranslation, Trans} from 'react-i18next';
 import swal from 'sweetalert2';
-import 'I18nSetup';
+import i18n from 'I18nSetup';
+
+import frStrings from '../locale/fr/LC_MESSAGES/instrument_manager.json';
 
 /**
  * Instrument Manager Index component
@@ -70,7 +73,8 @@ class InstrumentManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    if (column === 'Permission Required') {
+    const {t} = this.props;
+    if (column === t('Permission Required', {ns: 'instrument_manager'})) {
       const clickHandler = (row) => {
         return () => {
           this.setState({
@@ -92,7 +96,7 @@ class InstrumentManagerIndex extends Component {
           >
             {
               cell == null
-                ? 'No Permissions enforced.'
+                ? t('No Permissions enforced.', {ns: 'instrument_manager'})
                 : cell.join(',')
             }
             {
@@ -102,7 +106,9 @@ class InstrumentManagerIndex extends Component {
                   style={{marginTop: '5px'}}
                   onClick={clickHandler(row)}
                 >
-                  {cell == null ? 'Add Permissions' : 'Modify Permissions'}
+                  {cell == null ? t('Add Permissions',
+                    {ns: 'instrument_manager'}) :
+                    t('Modify Permissions', {ns: 'instrument_manager'})}
                 </button>
               )
             }
@@ -121,10 +127,13 @@ class InstrumentManagerIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}
+      </h3>;
     }
 
     // Waiting for async data to load
@@ -133,43 +142,62 @@ class InstrumentManagerIndex extends Component {
     }
 
     const fields = [
-      {label: 'Instrument', show: true, filter: {
-        name: 'instrument',
-        type: 'text',
-      }},
-      {label: 'Instrument Type', show: true, filter: {
-        name: 'instrumentType',
-        type: 'select',
-        options: {
-          'Instrument Builder': 'Instrument Builder',
-          'PHP': 'PHP',
-          'Missing': 'Missing',
+      {
+        label: t('Instrument', {ns: 'loris', count: 1}), show: true,
+        filter: {
+          name: 'instrument',
+          type: 'text',
         },
-      }},
-      {label: 'Table Installed', show: true, filter: {
-        name: 'tableInstalled',
-        type: 'select',
-        options: {
-          'Exists': 'Exists',
-          'Missing': 'Missing',
+      },
+      {
+        label: t('Instrument Type', {ns: 'instrument_manager'}), show: true,
+        filter: {
+          name: 'instrumentType',
+          type: 'select',
+          options: {
+            'Instrument Builder': 'Instrument Builder',
+            'PHP': 'PHP',
+            'Missing': 'Missing',
+          },
         },
-      }},
-      {label: 'Table Valid', show: true, filter: {
-        name: 'tableValid',
-        type: 'text',
-      }},
-      {label: 'Pages Valid', show: true, filter: {
-        name: 'pagesValid',
-        type: 'text',
-      }},
-      {label: 'Permission Required', show: true, filter: {
-        name: 'permissionsRequired',
-        type: 'text',
-      }},
+      },
+      {
+        label: t('Table Installed', {ns: 'instrument_manager'}), show: true,
+        filter: {
+          name: 'tableInstalled',
+          type: 'select',
+          options: {
+            'Exists': 'Exists',
+            'Missing': 'Missing',
+          },
+        },
+      },
+      {
+        label: t('Table Valid', {ns: 'instrument_manager'}), show: true,
+        filter: {
+          name: 'tableValid',
+          type: 'text',
+        },
+      },
+      {
+        label: t('Pages Valid', {ns: 'instrument_manager'}), show: true,
+        filter: {
+          name: 'pagesValid',
+          type: 'text',
+        },
+      },
+      {
+        label: t('Permission Required', {ns: 'instrument_manager'}),
+        show: true,
+        filter: {
+          name: 'permissionsRequired',
+          type: 'text',
+        },
+      },
     ];
 
     const tabs = [
-      {id: 'browse', label: 'Browse'},
+      {id: 'browse', label: t('Browse', {ns: 'loris'})},
     ];
 
     let permsModal = null;
@@ -185,7 +213,8 @@ class InstrumentManagerIndex extends Component {
               }).then((response) => {
               if (!response.ok) {
                 console.error(response.status);
-                throw new Error('Could not modify permissions');
+                throw new Error(t('Could not modify permissions',
+                  {ns: 'instrument_manager'}));
               }
               return response.json();
             }).then( (data) => {
@@ -193,9 +222,9 @@ class InstrumentManagerIndex extends Component {
               this.fetchData();
             }).catch((message) => {
               swal.fire({
-                title: 'Oops..',
-                text: 'Something went wrong!',
-                type: 'error',
+                title: t('Oops..', {ns: 'instrument_manager'}),
+                text: t('Something went wrong!', {ns: 'instrument_manager'}),
+                type: t('error', {ns: 'instrument_manager'}),
               });
               reject();
             });
@@ -203,8 +232,10 @@ class InstrumentManagerIndex extends Component {
       };
 
       permsModal = (<Modal
-        title={'Edit Permissions for '
-                + this.state.modifyPermissions.instrument}
+        title={t('Edit Permissions for {{instrument}}', {
+          ns: 'instrument_manager',
+          instrument: this.state.modifyPermissions.instrument,
+        })}
         show={true}
         onSubmit={submitPromise}
         onClose={
@@ -212,18 +243,29 @@ class InstrumentManagerIndex extends Component {
             this.setState({'modifyPermissions': false});
           }
         }>
-        <p>Select the permissions required for accessing&nbsp;
-          {this.state.modifyPermissions.instrument} in the dropdown below.
+        <p>{t('Select the permissions required for accessing {{instrument}} in'
+          + ' the dropdown below', {
+          ns: 'instrument_manager',
+          instrument: this.state.modifyPermissions.instrument,
+        })}
         </p>
-        <p>Any user accessing the instrument (either for viewing the data
-               or data entry) must have one of the access permissions selected.
+        <p>{t('Any user accessing the instrument (either for viewing the data'
+          + ' or data entry) must have one of the access permissions'
+          + ' selected.',
+        {ns: 'instrument_manager'})}
         </p>
         <InfoPanel>
-                A user with <em>any</em> of the selected permissions will
-                be able to access&nbsp;
-          {this.state.modifyPermissions.instrument}.
-                If no permissions are selected, the default LORIS permissions
-                will be enforced for this instrument.
+          <Trans
+            ns="instrument_manager"
+            defaults={
+              'A user with <0>any</0> of the selected permissions'
+              + ' will be able to access {{instrument}}. If no permissions are'
+              + ' selected, the default LORIS permissions will be enforced for'
+              + ' this instrument.'
+            }
+            components={{em: <em />}}
+            values={{instrument: this.state.modifyPermissions.instrument}}
+          />
         </InfoPanel>
 
         <PermissionSelect
@@ -239,7 +281,7 @@ class InstrumentManagerIndex extends Component {
       </Modal>);
     }
     if (this.props.hasPermission('instrument_manager_write')) {
-      tabs.push({id: 'upload', label: 'Upload'});
+      tabs.push({id: 'upload', label: t('Upload', {ns: 'loris'})});
     }
 
     const feedback = () => {
@@ -247,10 +289,11 @@ class InstrumentManagerIndex extends Component {
         && this.props.hasPermission('instrument_manager_write')) {
         return (
           <div className='alert alert-warning'>
-            Instrument installation is not possible given the current server
-            configuration; the LORIS 'adminUser' is not configured properly.
-            File upload is still possible but instruments will need to be
-            installed manually
+            {t('Instrument installation is not possible given the current'
+              + ' server configuration; the LORIS \'adminUser\' is not'
+              + ' configured properly. File upload is still possible but'
+              + ' instruments will need to be installed manually',
+            {ns: 'instrument_manager'})}
           </div>
         );
       }
@@ -261,7 +304,8 @@ class InstrumentManagerIndex extends Component {
       if (!this.props.hasPermission('instrument_manager_write')) {
         content = (
           <div className='alert alert-warning'>
-            You do not have access to this page.
+            {t('You do not have access to this page.',
+              {ns: 'instrument_manager'})}
           </div>
         );
       } else if (this.state.data.fieldOptions.writable) {
@@ -272,8 +316,10 @@ class InstrumentManagerIndex extends Component {
       } else {
         content = (
           <div className='alert alert-warning'>
-            Installation is not possible given the current server configuration.
-            Please contact your administrator if you require this functionality
+            {t('Installation is not possible given the current server'
+              + ' configuration. Please contact your administrator if'
+              + ' you require this functionality',
+            {ns: 'instrument_manager'})}
           </div>
         );
       }
@@ -304,6 +350,7 @@ InstrumentManagerIndex.propTypes = {
   BaseURL: PropTypes.string,
   dataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 /**
@@ -328,6 +375,16 @@ function PermissionSelect(props) {
     isMulti={true}
     options={options}
     value={values}
+    menuPortalTarget={document.body}
+    styles={{menuPortal:
+            /**
+             * Required for rendering properly on top of window.
+             *
+             * @param {object} base - The base from React Select
+             * @returns {object} - The new CSS object
+             */
+            (base) => ({...base, zIndex: 9999})}
+    }
     onChange={(newValue) => {
       props.modifySelected(newValue.map((row) => row.value));
     }}
@@ -341,10 +398,15 @@ PermissionSelect.propTypes = {
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('fr', 'instrument_manager', frStrings);
+
+  const TranslatedInstrumentManagerIndex = withTranslation(
+    ['instrument_manager', 'loris']
+  )(InstrumentManagerIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <InstrumentManagerIndex
+    <TranslatedInstrumentManagerIndex
       BaseURL={loris.BaseURL}
       dataURL={`${loris.BaseURL}/instrument_manager/?format=json`}
       hasPermission={loris.userHasPermission}

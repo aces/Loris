@@ -30,10 +30,7 @@ msgstr ""
 msgid "Could not update {{name}}."
 msgstr ""
 
-msgid "Updated {{name}} status!"
-msgstr ""
-
-msgid "To apply changes the interface must be reloaded. Proceed?"
+msgid "Updated {{name}} status! To apply changes the interface must be reloaded. Proceed?"
 msgstr ""
 
 msgid "Reload the page"

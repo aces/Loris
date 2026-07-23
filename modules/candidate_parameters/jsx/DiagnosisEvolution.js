@@ -251,7 +251,7 @@ DiagnosisEvolution.propTypes = {
   submitURL: PropTypes.string,
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 export default withTranslation(
   ['candidate_parameters', 'loris']

@@ -546,6 +546,9 @@ msgstr "{{months}}ヶ月"
 msgid "{{years}} years old"
 msgstr "{{years}}歳"
 
+msgid "%d y / %d m"
+msgstr "%d年%dヶ月"
+
 # Other generic terms
 msgid "Loading..."
 msgstr "読み込み中..."
@@ -588,3 +591,20 @@ msgstr "月"
 msgid "No options"
 msgstr "オプションなし"
 
+msgid "Submission Successful!"
+msgstr "送信成功しました!"
+
+msgid "Scan Type"
+msgstr "スキャンタイプ"
+
+msgid "SessionID"
+msgstr "SessionID"
+
+msgid "Uploaded By"
+msgstr "アップロード者"
+
+msgid "QC Status"
+msgstr "品質管理状況"
+
+msgid "TarchiveID"
+msgstr "TarchiveID"

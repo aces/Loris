@@ -165,3 +165,192 @@ msgstr "Circulaire"
 
 msgid "Bar"
 msgstr "Barre"
+
+msgid "General Description"
+msgstr "Description générale"
+
+msgid "General Demographic Statistics"
+msgstr "Statistiques démographiques générales"
+
+msgid "Behavioural Statistics"
+msgstr "Statistiques comportementales"
+
+msgid "Welcome to the statistics page"
+msgstr "Bienvenue sur la page des statistiques"
+
+msgid "This page will display statistics related to data acquisition, data processing and data entry as it relates to both the behavioural and imaging aspects of this study."
+msgstr "Cette page affiche des statistiques relatives à l'acquisition des données, au traitement des données et à la saisie des données, couvrant les aspects comportementaux et d'imagerie de cette étude."
+
+msgid "Demographics Statistics"
+msgstr "Statistiques démographiques"
+
+msgid "MRI Statistics"
+msgstr "Statistiques IRM"
+
+msgid "General Statistics with QC Status"
+msgstr "Statistiques générales avec état du contrôle qualité"
+
+msgid "All Scan Types"
+msgstr "Tous les types de scan"
+
+msgid "Submit Query"
+msgstr "Exécuter la requête"
+
+msgid "Scans Inserted"
+msgstr "Scans importées"
+
+msgid "Passed"
+msgstr "Réussi"
+
+msgid "Failed"
+msgstr "Échoué"
+
+msgid "Not QCed"
+msgstr "Contrôle qualité non effectué"
+
+msgid "Oops"
+msgstr "Oups"
+
+msgid "Per Instrument Stats"
+msgstr "Statistiques par instrument"
+
+msgid "View Details"
+msgstr "Voir les détails"
+
+msgid "Completed"
+msgstr "Complété"
+
+msgid "Completed (%)"
+msgstr "Complété (%)"
+
+msgid "Demographics"
+msgstr "Démographie"
+
+msgid "No defined cohort"
+msgstr "Aucune cohorte définie"
+
+msgid "Registered candidates"
+msgstr "Candidats enregistrés"
+
+msgid "Inactive"
+msgstr "Inactif"
+
+msgid "Age Average (months)"
+msgstr "Âge moyen (mois)"
+
+msgid "Completion Count"
+msgstr "Nombre de formulaires complétés"
+
+msgid "Incomplete Candidates"
+msgstr "Candidats incomplets"
+
+msgid "Issue type"
+msgstr "Type de problème"
+
+msgid "Incomplete Entries"
+msgstr "Entrées incomplètes"
+
+msgid "Total Across Cohorts"
+msgstr "Total toutes cohortes confondues"
+
+msgid "Categories"
+msgstr "Catégories"
+
+msgid "Site Total Across All Visits"
+msgstr "Total du site pour toutes les visites"
+
+msgid "Grand Total"
+msgstr "Total général"
+
+msgid "Ethnicity"
+msgstr "Origine ethnique"
+
+msgid "All sites"
+msgstr "Tous les sites"
+
+msgid "All Projects"
+msgstr "Tous les projets"
+
+msgid "Breakdown of Registered Candidates"
+msgstr "Répartition des candidats inscrits"
+
+msgid "Breakdown by Sex"
+msgstr "Répartition par sexe"
+
+msgid "Recruit Breakdown by Sex"
+msgstr "Répartition des participants recrutés par sexe"
+
+msgid "Show Visit Labels"
+msgstr "Afficher les libellés des visites"
+
+msgid "Double Data Entry Statistics"
+msgstr "Statistiques de la double saisie des données"
+
+msgid "Click here for breakdown per participant"
+msgstr "Cliquez ici pour la répartition par participant"
+
+msgid "Click here for breakdown per participant%s%s"
+msgstr "Cliquez ici pour la répartition par participant%s%s"
+
+msgid " for %s"
+msgstr " pour %s"
+
+msgid "Breakdown By Scan Type"
+msgstr "Répartition par type de scan"
+
+msgid "Partial Run"
+msgstr "Exécution partielle"
+
+msgid "No Scan"
+msgstr "Aucun scan"
+
+msgid "Data Entry Statistics"
+msgstr "Statistiques de saisie des données"
+
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+msgid "%s Double Data Entry Completion Statistics %s"
+msgstr "%s Statistiques d’achèvement de la double saisie des données %s"
+
+msgid "All Completion Statistics"
+msgstr "Toutes les statistiques d’achèvement"
+
+msgid "%s Completion Statistics"
+msgstr "Statistiques d’achèvement de %s"
+
+msgid "QC Status"
+msgstr "État du contrôle qualité"
+
+msgid "Click to minimize"
+msgstr "Cliquez pour réduire"
+
+msgid "It seems like the scan type selected does not have a corresponding column in the mri_parameter_form table in the database."
+msgstr "Il semble que le type de scan sélectionné ne possède pas de colonne correspondante dans la table mri_parameter_form de la base de données."
+
+msgid "In order to display the statistics for the scan type, make sure the mri_parameter_form table contains a column in the exact format SCANTYPE_Scan_done"
+msgstr "Pour afficher les statistiques de ce type de scan, assurez-vous que la table mri_parameter_form contient une colonne dont le nom respecte exactement le format SCANTYPE_Scan_done."
+
+msgid "It seems like the \"mri_parameter_form\" table is missing in the database currently in use."
+msgstr "Il semble que la table « mri_parameter_form » soit absente de la base de données actuellement utilisée."
+
+msgid "This table is necessary in order to compute the Breakdown table of the MRI statistics page."
+msgstr "Cette table est nécessaire pour générer le tableau de répartition de la page des statistiques IRM."
+
+msgid "The %sDemographics Statistics%s tab currently includes general statistics relating to the number of candidates registered in each cohort as well as customizable categories displaying statistics relating to candidate demographics (participant status, sex, age etc.). You may also view statistics broken down per instrument, displaying the number of complete and incomplete instruments per site, as it pertains to each visit label and cohort by selecting an instrument from the dropdown menu with the option to hide visit labels to only display total visit counts per site."
+msgstr "L'onglet %sStatistiques démographiques%s présente actuellement des statistiques générales sur le nombre de participants inscrits dans chaque cohorte, ainsi que des catégories personnalisables affichant des statistiques relatives aux caractéristiques démographiques des participants (statut du participant, sexe, âge, etc.). Vous pouvez également consulter des statistiques ventilées par instrument, indiquant le nombre d'instruments complets et incomplets par site pour chaque libellé de visite et chaque cohorte, en sélectionnant un instrument dans le menu déroulant. Il est également possible de masquer les libellés de visite afin d'afficher uniquement le nombre total de visites par site."
+
+msgid "The %sBehavioural Statistics%s tab currently includes data entry statistics relating to the number of candidates who have completed each instrument per site and timepoint. As well, there is an option to view the data entry statistics per instrument as well a breakdown per participant, which will reveal an in-depth table, listing candidate PSCIDs, completion count, and incomplete candidates. The same statistics are also available for double data entry."
+msgstr "L'onglet %sStatistiques comportementales%s présente actuellement des statistiques de saisie de données relatives au nombre de participants ayant complété chaque instrument par site et par point temporel. Il est également possible de consulter les statistiques de saisie de données par instrument, ainsi qu'une répartition par participant, qui affiche un tableau détaillé répertoriant les PSCID des participants, le nombre d'instruments complétés et les participants ayant des instruments incomplets. Les mêmes statistiques sont également disponibles pour la double saisie des données."
+
+msgid "The %sMRI statistics%s tab currently displays the number of scans inserted per site as well as their QC (Quality Control) status. For various scans within a study based on the MRI parameter form entries, there is a breakdown of scan completion, arranged by site, cohort and timepoint, with the option to hide visit labels to only display total visit counts per site."
+msgstr "L'onglet %sStatistiques IRM%s affiche actuellement le nombre de scans insérées par site ainsi que leur état de contrôle de la qualité (QC). Pour les différents types de scan d'une étude, selon les données saisies dans le formulaire des paramètres IRM, une répartition des scans complétées est disponible par site, cohorte et point temporel. Il est également possible de masquer les libellés de visite afin d'afficher uniquement le nombre total de visites par site."
+
+msgid "Incomplete"
+msgstr "Incomplet"
+
+msgid "Data Entry Completion Status for %s"
+msgstr "État d'avancement de la saisie des données pour %s"
+
+msgid "%s Breakdown"
+msgstr "Répartition des %s"

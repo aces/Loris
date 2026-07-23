@@ -27,9 +27,6 @@ msgstr ""
 msgid "Instrument"
 msgstr ""
 
-msgid "Uploaded By"
-msgstr ""
-
 msgid "Date Taken"
 msgstr ""
 
@@ -43,9 +40,6 @@ msgid "File Type"
 msgstr ""
 
 msgid "CandID"
-msgstr ""
-
-msgid "SessionID"
 msgstr ""
 
 msgid "File Visibility"
