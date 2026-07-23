@@ -191,10 +191,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             $project->getId(),
             intval($values['cohort'])
         );
-        $visitLabel = $visits[$values['visit']];
         $visitName  = (new VisitController(
             $this->loris->getDatabaseConnection()
-        ))->getVisitFromVisitLabel($visitLabel)->getName();
+        ))->getVisitFromVisitID(intval($values['visit']))->getName();
 
         \TimePoint::createNew(
             \Candidate::singleton(new CandID($values['candID'])),
@@ -293,10 +292,10 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             $projectID,
             intval($values['cohort'])
         );
-        $visitLabel = $visits[$values['visit']];
+
         $visitName  = (new VisitController(
             $this->loris->getDatabaseConnection()
-        ))->getVisitFromVisitLabel($visitLabel)->getName();
+        ))->getVisitFromVisitID(intval($values['visit']))->getName();
 
         try {
             \TimePoint::isValidVisitLabel(

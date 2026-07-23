@@ -123,6 +123,35 @@ class VisitController
      *
      * @throws \NotFound
      */
+    public function getVisitFromVisitID(int $visitId) : \LORIS\Visit
+    {
+        $visitData = $this->database->pselectRow(
+            'SELECT
+                 v.VisitID, v.VisitName
+                FROM
+                 visit v
+                WHERE
+                 v.VisitID = :vid',
+            ['vid' => $visitId]
+        );
+
+        if (empty($visitData)) {
+            throw new \NotFound(
+                "No visits found in the database with label: $visitLabel"
+            );
+        }
+
+        return new \LORIS\Visit($visitData['VisitName'], $visitLabel);
+    }
+    /**
+     * Instanciate a visit object using the visit label value
+     *
+     * @param string $visitLabel Label for which the Visit object s requested
+     *
+     * @return Visit Visit associated with the supplied label
+     *
+     * @throws \NotFound
+     */
     public function getVisitFromVisitLabel(string $visitLabel) : \LORIS\Visit
     {
         $visitData = $this->database->pselectRow(
