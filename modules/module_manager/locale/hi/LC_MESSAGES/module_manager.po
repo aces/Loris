@@ -28,14 +28,10 @@ msgstr "नाम"
 msgid "Full Name"
 msgstr "पूरा नाम"
 
+msgid "Updated {{name}} status! To apply changes the interface must be reloaded. Proceed?"
+msgstr "{{name}} की स्थिति अपडेट हुई! परिवर्तन लागू करने के लिए इंटरफ़ेस को पुनः लोड करना होगा। आगे बढ़ें?"
 msgid "Could not update {{name}}."
 msgstr "{{name}} को अपडेट नहीं कर सका।"
-
-msgid "To apply changes the interface must be reloaded. Proceed?"
-msgstr "परिवर्तन लागू करने के लिए इंटरफ़ेस को पुनः लोड करना होगा। आगे बढ़ें?"
-
-msgid "Updated {{name}} status!"
-msgstr "{{name}} की स्थिति अपडेट कर दी गई!"
 
 msgid "Reload the page"
 msgstr "पृष्ठ पुनः लोड करें"
