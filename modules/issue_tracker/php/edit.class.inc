@@ -158,7 +158,10 @@ class Edit extends \NDB_Page implements ETagCalculator
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
-                $categories[$categoryName] = $categoryName;
+                $categories[$categoryName] = dgettext(
+                    "issues_categories",
+                    $categoryName,
+                );
             }
         }
 
@@ -270,7 +273,8 @@ class Edit extends \NDB_Page implements ETagCalculator
                 || ($user->hasPermission('issue_tracker_own_issue')
                 && $isOwnIssue)
             ) {
-                $statuses['closed'] = dgettext('issue_tracker', 'Closed');
+                $statuses['closed']   = dgettext('issue_tracker', 'Closed');
+                $statuses['rejected'] = dgettext('issue_tracker', 'Rejected');
             }
         }
 
@@ -738,12 +742,44 @@ class Edit extends \NDB_Page implements ETagCalculator
         $values = $request->getParsedBody();
         if (!is_array($values)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                dgettext('issue_tracker', 'Invalid request')
             );
         }
 
-        $user = $request->getAttribute('user');
-        $db   = $this->loris->getDatabaseConnection();
+        $user     = $request->getAttribute('user');
+        $centerID = isset($values['centerID'])
+            && $values['centerID'] != 'null'
+            ? new \CenterID((string)$values['centerID'])
+            : null;
+
+        $db          = $this->loris->getDatabaseConnection();
+        $oldCenterID = $db->pselectOne(
+            "SELECT centerID FROM issues WHERE issueID=:issueID",
+            ['issueID' => $values['issueID']]
+        );
+        $oldCenterID = isset($oldCenterID)
+            ? new \CenterID((string)$oldCenterID)
+            : null;
+
+        // Verify that user has edit permissions:
+        // 1) User has permission to edit all issues
+        if (!($user->hasPermission('issue_tracker_all_issue')
+            // 2) User has permission to edit site issues &
+            // issue has no site or is at site belonging to user
+            || ($user->hasPermission('issue_tracker_site_issue')
+            && (empty($centerID) || $user->hasCenter($centerID))
+            && (empty($oldCenterID) || $user->hasCenter($oldCenterID)))
+            // 3) User has permission to edit own issue & user is issue reporter
+            || ($user->hasPermission('issue_tracker_own_issue')
+            && $values['reporter'] === $user->getUserName()))
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                dgettext(
+                    'issue_tracker',
+                    'User does not have permission to edit issues.'
+                )
+            );
+        }
 
         $issueValues    = [];
         $validateValues = [];
@@ -838,11 +874,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             $db->unsafeInsert('issues', $issueValues);
             $issueID = intval($db->getLastInsertId());
         }
-
-        // convert the aspect of 'lastUpdatedBy' to Fullname
-        // once the db has registered the username (userID)
-        $issueValues['lastUpdatedBy']
-            = $this->formatUserInformation($user->getUserName());
 
         $this->updateHistory($historyValues, $issueID, $user);
         $this->updateComments($values['comment'], $issueID, $user);
@@ -1158,7 +1189,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'PSCID and Center ID do not match a valid session!'
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID and Center ID do not match a valid session!'
+                    dgettext(
+                        'issue_tracker',
+                        'PSCID and Center ID do not match a valid session!'
+                    )
                 );
             }
         }
@@ -1185,7 +1219,11 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'PSCID and Visit Label do not match a valid candidate session!'
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID and Visit Label do not match a valid candidate session!'
+                    dgettext(
+                        'issue_tracker',
+                        'PSCID and Visit Label do not match a valid candidate'
+                        . ' session!'
+                    )
                 );
             }
             return $result;
@@ -1210,7 +1248,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'PSCID does not match a valid candidate!'
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID does not match a valid candidate!'
+                    dgettext(
+                        'issue_tracker',
+                        'PSCID does not match a valid candidate!'
+                    )
                 );
             }
 
@@ -1224,7 +1265,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                 'Visit Label must be accompanied by a PSCID'
             );
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Visit Label must be accompanied by a PSCID'
+                dgettext(
+                    'issue_tracker',
+                    'Visit Label must be accompanied by a PSCID'
+                )
             );
         }
         return $result;
@@ -1258,20 +1302,35 @@ class Edit extends \NDB_Page implements ETagCalculator
     /**
      * Get a formatted string from user information.
      *
-     * @param string $userid a username/userid
+     * @param string|null $userid a username/userid, or null
      *
      * @return string a formatted string "fullname (userid)"
      */
-    function formatUserInformation(string $userid)
+    function formatUserInformation(?string $userid)
     {
-        $user = \User::factory($userid);
-        $un   = $user->getUsername();
-        if (empty($un)) {
-            // e.g. in case of anonymous user
-            return $user->getFullname();
-        } else {
-            return $user->getFullname() . " (" . $un . ")";
+        if ($userid === null) {
+            // same as the real name for AnonymousUser object
+            return "AnonymousUser";
         }
+
+        // get real name
+        $db       = $this->loris->getdatabaseConnection();
+        $realName = $db->pselectOne(
+            "SELECT Real_name
+            FROM users
+            WHERE userid = :uid
+            ",
+            ["uid" => $userid]
+        );
+
+        // not found => Anonymous
+        if ($realName === null) {
+            // same as the real name for AnonymousUser object
+            return "AnonymousUser";
+        }
+
+        // else full name + username
+        return "{$realName} ({$userid})";
     }
 
     /**

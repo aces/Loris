@@ -14,6 +14,7 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\electrophysiology_browser;
+
 /**
  * Class module implements the basic LORIS module functionality
  *

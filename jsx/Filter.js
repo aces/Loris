@@ -7,6 +7,7 @@ import {
   TimeElement,
   FormElement,
   NumericElement,
+  NumericRangeElement,
   SelectElement,
   TextboxElement,
 } from 'jsx/Form';
@@ -32,6 +33,21 @@ function Filter(props) {
    */
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
+    props.fields.forEach((field) => {
+      const filter = field.filter;
+      if (!filter || filter.hide === true) {
+        return;
+      }
+
+      if (filter.type === 'number-range') {
+        const min = searchParams.get(`${filter.name}Min`) || '';
+        const max = searchParams.get(`${filter.name}Max`) || '';
+        if (min !== '' || max !== '') {
+          onFieldUpdate(filter.name, {min, max});
+        }
+      }
+    });
+
     searchParams.forEach((value, name) => {
       // This checks to make sure the filter actually exists
       if (props.fields.find((field) => (field.filter||{}).name == name)) {
@@ -51,8 +67,11 @@ function Filter(props) {
     const type = fields
       .find((field) => (field.filter||{}).name == name).filter.type;
     const exactMatch = (!(type === 'text' || type === 'date'
-      || type === 'datetime' || type === 'multiselect'));
+      || type === 'datetime' || type === 'multiselect'
+      || type === 'number-range'));
     if (value === null || value === '' ||
+      (typeof value === 'object' && !Array.isArray(value) &&
+        (value.min || '') === '' && (value.max || '') === '') ||
       (value.constructor === Array && value.length === 0) ||
       (type === 'checkbox' && value === false)) {
       props.removeFilter(name);
@@ -73,7 +92,12 @@ function Filter(props) {
         let element;
         switch (filter.type) {
         case 'text':
-          element = <TextboxElement labelPlacementTop/>;
+          element = (
+            <TextboxElement
+              disabled={filter.disabled}
+              labelPlacementTop
+            />
+          );
           break;
         case 'select':
           element = (
@@ -81,6 +105,7 @@ function Filter(props) {
               options={filter.options}
               sortByValue={filter.sortByValue}
               autoSelect={false}
+              disabled={filter.disabled}
               labelPlacementTop
             />
           );
@@ -90,8 +115,10 @@ function Filter(props) {
             <SelectElement
               options={filter.options}
               sortByValue={filter.sortByValue}
+              autoSelect={false}
               multiple={true}
               emptyOption={false}
+              disabled={filter.disabled}
               labelPlacementTop
             />
           );
@@ -99,23 +126,59 @@ function Filter(props) {
         case 'numeric':
           element = <NumericElement
             options={filter.options}
+            disabled={filter.disabled}
+            labelPlacementTop
+          />;
+          break;
+        case 'number-range':
+          element = <NumericRangeElement
+            min={filter.min}
+            max={filter.max}
+            step={filter.step}
+            minLabel={filter.minLabel}
+            maxLabel={filter.maxLabel}
+            disabled={filter.disabled}
             labelPlacementTop
           />;
           break;
         case 'date':
-          element = <DateElement labelPlacementTop />;
+          element = (
+            <DateElement
+              labelPlacementTop
+              disabled={filter.disabled}
+            />
+          );
           break;
         case 'datetime':
-          element = <DateTimePartialElement labelPlacementTop />;
+          element = (
+            <DateTimePartialElement
+              disabled={filter.disabled}
+              labelPlacementTop
+            />
+          );
           break;
         case 'checkbox':
-          element = <CheckboxElement/>;
+          element = (
+            <CheckboxElement
+              disabled={filter.disabled}
+            />
+          );
           break;
         case 'time':
-          element = <TimeElement labelPlacementTop />;
+          element = (
+            <TimeElement
+              disabled={filter.disabled}
+              labelPlacementTop
+            />
+          );
           break;
         default:
-          element = <TextboxElement labelPlacementTop />;
+          element = (
+            <TextboxElement
+              disabled={filter.disabled}
+              labelPlacementTop
+            />
+          );
         }
 
         // The value prop has to default to false if the first two options
@@ -127,7 +190,9 @@ function Filter(props) {
             key: filter.name,
             name: filter.name,
             label: field.label,
-            value: (props.filters[filter.name] || {}).value || null,
+            value: (props.filters[filter.name] || {}).value || (
+              filter.type === 'number-range' ? {} : null
+            ),
             onUserInput: onFieldUpdate,
           }
         ));

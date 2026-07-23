@@ -76,16 +76,12 @@
   <!-- candidate data -->
   <tbody>
   <tr>
-    {if $dob_age!=""}
-      <td>
-        {$dob_age}
-      </td>
-    {/if}
-    {if $edc_age!=""}
-      <td>
-        {$edc_age}
-      </td>
-    {/if}
+    <td>
+      {$dob_age|default}
+    </td>
+    <td>
+      {$edc_age|default}
+    </td>
     <td>
       {$candidate.Sex}
     </td>
@@ -111,16 +107,16 @@
         {$timePoint.CohortTitle}
       </td>
       <td>
-        {if $timePoint.Scan_done != ""}
-            {if $timePoint.Scan_done == 'Y'}
-                {assign var="scan_done" value=dgettext("loris", "Yes")}
-                {$scan_done}
+        {if $timePoint.scanDone != ""}
+            {if $timePoint.scanDone == 'Y'}
+                {assign var="scanDone" value=dgettext("loris", "Yes")}
+                {$scanDone}
             {else}
-                {assign var="scan_done" value={dgettext("loris", "No")}}
-                {$scan_done}
+                {assign var="scanDone" value={dgettext("loris", "No")}}
+                {$scanDone}
             {/if}
         {else}
-            <img alt="Data Missing" src="{$baseurl|default}/images/help2.gif" border=0>
+            <img alt="Data Missing" src="{$baseurl|default}/images/delete.gif" border=0>
         {/if}
       </td>
       <td>

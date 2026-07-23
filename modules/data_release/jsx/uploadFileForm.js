@@ -159,6 +159,7 @@ class UploadFileForm extends Component {
         text: msg,
         type: 'error',
         showCancelButton: true,
+        cancelButtonText: t('Cancel', {ns: 'loris'}),
       });
       this.setState({errorMessage});
       return;
@@ -197,7 +198,7 @@ class UploadFileForm extends Component {
             {ns: 'data_release'}) + '\n ' +
                 t('Would you like to overwrite existing file?',
                   {ns: 'data_release'}) + '\n ' +
-                t('Note that the version associated with the' +
+                t('Note that the version associated with the ' +
                   'file will also be overwritten.',
                 {ns: 'data_release'}),
           type: 'warning',
@@ -230,6 +231,7 @@ class UploadFileForm extends Component {
           text: t('Upload Successful!', {ns: 'data_release'}),
           title: '',
           type: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
         }).then(function() {
           window.location.assign('/data_release');
         });

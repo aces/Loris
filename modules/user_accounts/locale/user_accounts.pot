@@ -206,3 +206,12 @@ msgstr ""
 
 msgid "For any other changes, contact an administrator"
 msgstr ""
+
+msgid "Do you really want to reject this user?"
+msgstr ""
+
+msgid "This action cannot be undone."
+msgstr ""
+
+msgid "Yes, reject user!"
+msgstr "

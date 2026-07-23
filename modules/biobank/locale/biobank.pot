@@ -1,12 +1,12 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Default LORIS strings to be translated (English)
+# Copyright (C) 2026
+# This file is distributed under the same license as the LORIS package.
+# Henri Rabalais <henri.j.rabalais@gmail.com>, 2026
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: LORIS 29\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-05 08:40-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "Biobank"
@@ -31,21 +31,11 @@ msgstr ""
 #: jsx/poolSpecimenForm.js:158
 msgid ""
 "Specimens must be of the same PSCID,\n"
-"Visit Label, Type and Center"
+"Visit Label, Type and Site"
 msgstr ""
 
 #: jsx/poolSpecimenForm.js:207
 msgid "Pooling Note"
-msgstr ""
-
-#: jsx/poolSpecimenForm.js:208
-msgid ""
-"Select or Scan the specimens to be pooled. Specimens must\n"
-"have a Status of 'Available', have a Quantity of greater\n"
-"than 0, and share the same Type, PSCID, Visit Label\n"
-"and Current Site. Pooled specimens cannot already belong "
-"to a pool. Once pooled, the Status of specimen will be changed\n"
-"to 'Dispensed' and there Quantity set to '0'"
 msgstr ""
 
 #: jsx/poolSpecimenForm.js:217 jsx/globals.js:30 jsx/batchProcessForm.js:262
@@ -207,6 +197,10 @@ msgstr ""
 msgid "Current Site"
 msgstr ""
 
+#: jsx/specimenTab.js:75 jsx/globals.js:234
+msgid "Draw Site"
+msgstr ""
+
 #: jsx/container.js:54
 msgid "Checkout Child Containers"
 msgstr ""
@@ -223,14 +217,6 @@ msgstr ""
 msgid "Batch Preparation Successful!"
 msgstr ""
 
-#: jsx/biobankIndex.js:506
-msgid "This field is required."
-msgstr ""
-
-#: jsx/biobankIndex.js:512
-msgid "This field must be a number. "
-msgstr ""
-
 #: jsx/biobankIndex.js:518
 msgid "This field must not be negative."
 msgstr ""
@@ -240,27 +226,21 @@ msgid "This field must be an integer."
 msgstr ""
 
 #: jsx/biobankIndex.js:597 jsx/biobankIndex.js:699 jsx/biobankIndex.js:736
-msgid "This field is required! "
+#: jsx/biobankIndex.js:636 jsx/biobankIndex.js:506
+msgid "This field is required."
 msgstr ""
 
 #: jsx/biobankIndex.js:604 jsx/biobankIndex.js:705 jsx/biobankIndex.js:741
-msgid "This field must be a number! "
+#: jsx/biobankIndex.js:644 jsx/biobankIndex.js:512
+msgid "This field must be a number."
 msgstr ""
 
 #: jsx/biobankIndex.js:611 jsx/biobankIndex.js:652 jsx/biobankIndex.js:747
-msgid "This field must be a valid date! "
+msgid "This field must be a valid date."
 msgstr ""
 
 #: jsx/biobankIndex.js:617 jsx/biobankIndex.js:660 jsx/biobankIndex.js:753
-msgid "This field must be a valid time! "
-msgstr ""
-
-#: jsx/biobankIndex.js:636
-msgid "This field is required!"
-msgstr ""
-
-#: jsx/biobankIndex.js:644
-msgid "This field must be a number!"
+msgid "This field must be a valid time."
 msgstr ""
 
 #: jsx/biobankIndex.js:711
@@ -296,7 +276,7 @@ msgid "User"
 msgstr ""
 
 #: jsx/batchEditForm.js:214
-msgid "Specimens must be of the same Type and Center"
+msgid "Specimens must be of the same Type and Site"
 msgstr ""
 
 #: jsx/batchEditForm.js:274 jsx/globals.js:144
@@ -319,22 +299,8 @@ msgstr ""
 msgid "Editing Note"
 msgstr ""
 
-#: jsx/batchEditForm.js:470
-msgid ""
-"Select a form for the list to\n"
-"edit the specimen values. Any previous value associated\n"
-"with a Specimen for a given field will be\n"
-"overwritten if one is added on this form."
-msgstr ""
-
 #: jsx/batchEditForm.js:487
 msgid "Edit Specimens"
-msgstr ""
-
-#: jsx/batchEditForm.js:497
-msgid ""
-"Select or Scan the specimens to be edited. Specimens\n"
-"                    must share the same Type."
 msgstr ""
 
 #: jsx/batchEditForm.js:517 jsx/globals.js:69
@@ -374,14 +340,6 @@ msgstr ""
 msgid "Processing Note"
 msgstr ""
 
-#: jsx/batchProcessForm.js:256
-msgid ""
-"Select or Scan the specimens to be prepared. Specimens must\n"
-"have a Status of 'Available', and share the same Type.\n"
-"Any previous value associated with a Specimen will be\n"
-"overwritten if one is added on this form."
-msgstr ""
-
 #: jsx/batchProcessForm.js:315
 msgid "Process Specimens"
 msgstr ""
@@ -400,19 +358,8 @@ msgid ""
 "duplicate the previous entry."
 msgstr ""
 
-#: jsx/specimenForm.js:199
-msgid ""
-"To create new specimens, first select a PSCID and Visit Label.\n"
-"Then, enter a Barcode, fill out the coresponding sub-form "
-"and\n"
-"press submit. Press \"New Entry\" button to add another "
-"barcode\n"
-"field, or press for the \"Copy\" button to duplicate the\n"
-"previous entry."
-msgstr ""
-
 #: jsx/specimenForm.js:219
-msgid "Parent Specimen(s, {ns: 'biobank'})"
+msgid "Parent Specimen(s)"
 msgstr ""
 
 #: jsx/specimenForm.js:255
@@ -429,4 +376,139 @@ msgstr ""
 
 #: jsx/specimenForm.js:373
 msgid "Print Barcodes"
+msgstr ""
+
+msgid "Age at Collection"
+msgstr ""
+
+msgid "Container Barcode"
+msgstr ""
+
+msgid "Go To Specimen"
+msgstr ""
+
+msgid "Assigned Containers"
+msgstr ""
+
+msgid "Unassigned Containers"
+msgstr ""
+
+msgid "Parent Barcode"
+msgstr ""
+
+msgid "Go To Container"
+msgstr ""
+
+msgid "Add Container"
+msgstr ""
+
+msgid "Specimens"
+msgstr ""
+
+msgid "Pools"
+msgstr ""
+
+msgid "Shipments"
+msgstr ""
+
+msgid "Parent Specimen"
+msgstr ""
+
+msgid "Move Container"
+msgstr ""
+
+msgid "Update Parent Container"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Coordinate"
+msgstr ""
+
+msgid "Aliquot"
+msgstr ""
+
+msgid "Aliquot Pool"
+msgstr ""
+
+msgid "Origin Center"
+msgstr ""
+
+msgid "Destination Center"
+msgstr ""
+
+msgid "Parent Specimens"
+msgstr ""
+
+msgid "F/T Cycle"
+msgstr ""
+
+msgid "Male"
+msgstr ""
+
+msgid "Female"
+msgstr ""
+
+msgid "Collection Date"
+msgstr ""
+
+msgid "Collection Time"
+msgstr ""
+
+msgid "Preparation Time"
+msgstr ""
+
+msgid "Add Specimen"
+msgstr ""
+
+msgid "Add New Specimen"
+msgstr ""
+
+msgid "Create Shipment"
+msgstr ""
+
+msgid "Receive Shipment"
+msgstr ""
+
+msgid "Done by"
+msgstr ""
+
+msgid "Any container or specimen added to this form will be dissassociated from its parent. Any children of the containers listed will also be added to the shipment."
+msgstr ""
+
+msgid "{{label}} Input"
+msgstr ""
+
+msgid "{{label}} List"
+msgstr ""
+
+msgid "Select or Scan the specimens to be pooled. Specimens must have a Status of 'Available', have a Quantity of greater than 0, and share the same Type, PSCID, Visit Label and Current Site. Pooled specimens cannot already belong to a pool. Once pooled, the Status of specimen will be changed to 'Dispensed' and their Quantity set to '0'."
+msgstr ""
+
+msgid "Select or Scan the specimens to be prepared. Specimens must have a Status of 'Available', and share the same Type. Any previous value associated with a Specimen will be overwritten if one is added on this form."
+msgstr ""
+
+msgid "Barcode Input"
+msgstr ""
+
+msgid "Barcode List"
+msgstr ""
+
+msgid "Preparation for specimen(s) <b>{{barcodes}}</b> already exists. By completing this form, the previous preparation will be overwritten."
+msgstr ""
+
+msgid "Select a form for the list to edit the specimen values. Any previous value associated with a Specimen for a given field will be overwritten if one is added on this form."
+msgstr ""
+
+msgid "Select or Scan the specimens to be edited. Specimens must share the same Type."
+msgstr ""
+
+msgid "To create new specimens, first select a PSCID and Visit Label. Then, enter a Barcode, fill out the coresponding sub-form and press submit. Press 'New Entry' button to add another barcode field, or press for the 'Copy' button to duplicate the previous entry."
+msgstr ""
+
+msgid "New Entry"
+msgstr ""
+
+msgid "Containers"
 msgstr ""

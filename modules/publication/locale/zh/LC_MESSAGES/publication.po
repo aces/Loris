@@ -49,9 +49,6 @@ msgstr "请在提交前修正任何剩余的表单错误"
 msgid "Something went wrong!"
 msgstr "出了问题！"
 
-msgid "Submission Successful!"
-msgstr "提交成功！"
-
 msgid "Propose a Project"
 msgstr "提出一个项目"
 

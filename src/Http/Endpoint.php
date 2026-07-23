@@ -47,7 +47,11 @@ abstract class Endpoint implements
             ->getLogSettings()
             ->getRequestLogLevel();
 
-        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+        if ($loglevel !== "none") {
+            $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+        } else {
+            $this->logger = new \Psr\Log\NullLogger();
+        }
 
         $interfaces = class_implements($handler);
         if (in_array('LORIS\Middleware\ETagCalculator', $interfaces)) {

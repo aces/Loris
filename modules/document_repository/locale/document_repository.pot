@@ -147,9 +147,6 @@ msgstr ""
 msgid "File Name"
 msgstr ""
 
-msgid "Uploaded By"
-msgstr ""
-
 msgid "For Site"
 msgstr ""
 

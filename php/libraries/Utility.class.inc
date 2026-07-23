@@ -182,7 +182,7 @@ class Utility
         // fix the array
         $list = [];
         foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
+            $list[$row["CenterID"]] = dgettext("psc", $row["Name"]);
         }
         return $list;
     }
@@ -207,12 +207,18 @@ class Utility
             $values[$para] = $siteID;
         }
 
-        return $DB->pselectColWithIndexKey(
+        $sites = $DB->pselectColWithIndexKey(
             "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
             implode(', ', $params) . ")",
             $values,
             'ID'
         );
+
+        $translatedSites = [];
+        foreach ($sites as $siteID => $siteName) {
+            $translatedSites[$siteID] = dgettext("psc", $siteName);
+        }
+        return $translatedSites;
     }
 
     /**
@@ -298,7 +304,12 @@ class Utility
             [],
             'ProjectID'
         ) ?? [];
-        return $projects;
+        return array_map(
+            function ($name) {
+                return dgettext("Project", $name);
+            },
+            $projects
+        );
     }
 
     /**
@@ -563,7 +574,10 @@ class Utility
         $instruments   = [];
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
-                $instruments[$row['Test_name']] =$row['Full_name'];
+                $instruments[$row['Test_name']] = dgettext(
+                    'test_names',
+                    $row['Full_name']
+                );
             }
         }
 
@@ -998,7 +1012,7 @@ class Utility
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
             "SELECT MriScanTypeID, MriScanTypeName
-             FROM mri_scan_type 
+             FROM mri_scan_type
              JOIN files USING (MriScanTypeID)",
             []
         );

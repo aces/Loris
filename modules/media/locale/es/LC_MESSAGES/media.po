@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 msgid "Media"
 msgstr "Medios de comunicación"
@@ -26,9 +27,6 @@ msgstr "Nombre del archivo"
 
 msgid "Instrument"
 msgstr "Instrumento"
-
-msgid "Uploaded By"
-msgstr "Subido por"
 
 msgid "Date Taken"
 msgstr "Fecha de toma"
@@ -44,9 +42,6 @@ msgstr "Tipo de archivo"
 
 msgid "CandID"
 msgstr "Sincero"
-
-msgid "SessionID"
-msgstr "ID de sesión"
 
 msgid "File Visibility"
 msgstr "Visibilidad de archivos"
@@ -136,9 +131,6 @@ msgstr "¡Ya existe un archivo con este nombre! ¿Desea sobrescribir el archivo 
 
 msgid "Cancelled"
 msgstr "Cancelado"
-
-msgid "Your imaginary file is safe :"
-msgstr "Tu archivo imaginario está a salvo:"
 
 msgid "Success!"
 msgstr "¡Éxito!"

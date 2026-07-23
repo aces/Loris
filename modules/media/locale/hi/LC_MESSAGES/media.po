@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Media"
 msgstr "मीडिया"
@@ -26,9 +27,6 @@ msgstr "फ़ाइल नाम"
 
 msgid "Instrument"
 msgstr "इंस्ट्रूमेंट"
-
-msgid "Uploaded By"
-msgstr "अपलोड किया गया"
 
 msgid "Date Taken"
 msgstr "तारीख ली गई"
@@ -44,9 +42,6 @@ msgstr "फ़ाइल प्रकार"
 
 msgid "CandID"
 msgstr "कैंडआईडी"
-
-msgid "SessionID"
-msgstr "सेशनआईडी"
 
 msgid "File Visibility"
 msgstr "फ़ाइल दृश्यता"
@@ -136,9 +131,6 @@ msgstr "इस नाम की एक फ़ाइल पहले से म�
 
 msgid "Cancelled"
 msgstr "रद्द कर दिया गया"
-
-msgid "Your imaginary file is safe :"
-msgstr "आपकी काल्पनिक फ़ाइल सुरक्षित है :"
 
 msgid "Success!"
 msgstr "सफलता!"

@@ -48,17 +48,42 @@ msgid "Data in LORIS:"
 msgstr "Données dans LORIS :"
 
 #, fuzzy
-msgid ""
-"Please enter your username below, and a new password will be sent to you."
-msgstr ""
-"Veuillez saisir votre nom d'utilisateur ci-dessous, et un nouveau mot de "
-"passe vous sera envoyé."
+msgid "Please enter your username below, and a new password will be sent to you."
+msgstr "Veuillez saisir votre nom d'utilisateur ci-dessous, et un nouveau mot de passe vous sera envoyé."
 
 msgid "Back to login page"
 msgstr "Retour à la page de connexion"
 
 msgid "Reset Password"
 msgstr "Réinitialiser le mot de passe"
+
+msgid "Update Password"
+msgstr "Mettre à jour le mot de passe"
+
+msgid "Password Strength Rules"
+msgstr "Règles de robustesse du mot de passe"
+
+msgid "The password must be at least 8 characters long."
+msgstr "Le mot de passe doit comporter au moins 8 caractères."
+
+msgid "The password and the email address must not be the same."
+msgstr "Le mot de passe et l'adresse courriel ne doivent pas être identiques."
+
+msgid "No special characters are required but your password must be sufficiently complex to be accepted."
+msgstr ""
+"Aucun caractère spécial n'est requis, mais votre mot de passe doit être "
+"suffisamment complexe pour être accepté."
+
+msgid "Please choose a unique password."
+msgstr "Veuillez choisir un mot de passe unique."
+
+msgid "We suggest using a password manager to generate one for you."
+msgstr ""
+"Nous vous suggérons d'utiliser un gestionnaire de mots de passe pour en "
+"générer un."
+
+msgid "New Password mismatch!"
+msgstr "Les nouveaux mots de passe ne correspondent pas !"
 
 msgid "Thank you!"
 msgstr "Merci !"
@@ -92,12 +117,8 @@ msgid "Examiner role"
 msgstr "Examinateur"
 
 #, fuzzy
-msgid ""
-"Please fill in the form below to request a LORIS account. We will contact "
-"you once your account has been approved."
-msgstr ""
-"Veuillez remplir le formulaire ci-dessous pour demander un compte LORIS. "
-"Nous vous contacterons dès que votre compte aura été approuvé."
+msgid "Please fill in the form below to request a LORIS account. We will contact you once your account has been approved."
+msgstr "Veuillez remplir le formulaire ci-dessous pour demander un compte LORIS. Nous vous contacterons dès que votre compte aura été approuvé."
 
 #, fuzzy
 msgid "Your request for an account has been received successfully."
@@ -160,3 +181,51 @@ msgid "Visit"
 msgid_plural "Visits"
 msgstr[0] "Visite"
 msgstr[1] "Visites"
+
+msgid "Missing code"
+msgstr "Code manquant"
+
+msgid "Invalid MFA code"
+msgstr "Code MFA invalide"
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "password expired"
+msgstr "Le mot de passe a expiré."
+
+msgid "Can not use an empty password."
+msgstr "Le mot de passe ne peut pas être vide."
+
+msgid "You cannot keep the same password."
+msgstr "Vous ne pouvez pas conserver le même mot de passe."
+
+msgid "Server encountered an error."
+msgstr "Le serveur a rencontré une erreur."
+
+msgid "Sending reset email failed."
+msgstr "L'envoi du courriel de réinitialisation a échoué."
+
+msgid "Please complete the reCaptcha"
+msgstr "Veuillez compléter le reCAPTCHA."
+
+msgid "Email address can not contain the following characters: <,>,& and \"."
+msgstr "L'adresse courriel ne peut pas contenir les caractères suivants : <, >, &, et \"."
+
+msgid "Please provide a valid email address!"
+msgstr "Veuillez fournir une adresse courriel valide."
+
+msgid "Not a valid user"
+msgstr "Utilisateur invalide."
+
+msgid "Please complete the reCaptcha!"
+msgstr "Veuillez compléter le reCAPTCHA !"
+
+msgid "Login with {{provider}}"
+msgstr "Se connecter avec {{provider}}"
+
+msgid "Our partners"
+msgstr "Nos partenaires"
+
+msgid "Password expired for user."
+msgstr "Le mot de passe de l'utilisateur a expiré."

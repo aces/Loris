@@ -206,8 +206,8 @@ class DataDictIndex extends Component {
           onClick={this.editSwal(rowData)}>
         </i>);
       }
-      if (rowData[t('Description Status', {ns: 'dictionary'})] ===
-       t('Modified', {ns: 'dictionary'})) {
+
+      if (rowData[t('Description Status', {ns: 'dictionary'})] === 'Modified') {
         edited = <span>({t('edited', {ns: 'dictionary'})})</span>;
       }
       return <td>{cell}
@@ -253,6 +253,7 @@ class DataDictIndex extends Component {
         filter: {
           name: 'Category',
           type: 'select',
+          disabled: this.state.moduleFilter === '',
           options: this.state.moduleFilter === ''
             ? {}
             : options.categories[this.state.moduleFilter],

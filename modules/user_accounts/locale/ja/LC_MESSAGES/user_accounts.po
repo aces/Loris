@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "User Accounts"
 msgstr "ユーザーアカウント"
@@ -198,3 +199,11 @@ msgstr "新しいパスワードと古いパスワードは同一です。"
 msgid "This email address is already in use"
 msgstr "このメールアドレスはすでに使用されています。"
 
+msgid "Do you really want to reject this user?"
+msgstr "本当にこのユーザーを拒否しますか？"
+
+msgid "This action cannot be undone."
+msgstr "この操作は取り消せません。"
+
+msgid "Yes, reject user!"
+msgstr "はい、ユーザーを拒否します！"

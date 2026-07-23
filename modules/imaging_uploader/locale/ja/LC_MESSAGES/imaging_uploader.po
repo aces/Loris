@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Imaging Uploader"
 msgstr "画像アップローダー"
@@ -129,8 +130,8 @@ msgstr "挿入されたファイルの数"
 msgid "{{successText}} ({{inserted}} out of {{created}})"
 msgstr "{{successText}} ({{inserted}} / {{created}})"
 
-msgid "{{numViolatedScans}} violated scans"
-msgstr "{{numViolatedScans}} 件の違反スキャン"
+msgid "({{numViolatedScans}} violated scans)"
+msgstr "({{numViolatedScans}} 件の違反スキャン)"
 
 msgid "Tarchive Info"
 msgstr "アーカイブ情報"
@@ -143,7 +144,3 @@ msgstr "アップロード場所"
 
 msgid "Upload Date"
 msgstr "アップロード日"
-
-msgid "Uploaded By"
-msgstr "アップロード者"
-

@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Media"
 msgstr "メディア"
@@ -29,9 +30,6 @@ msgstr "ファイル名"
 
 msgid "Instrument"
 msgstr "楽器"
-
-msgid "Uploaded By"
-msgstr "アップロード者"
 
 msgid "Date Taken"
 msgstr "撮影日"
@@ -47,9 +45,6 @@ msgstr "ファイルの種類"
 
 msgid "CandID"
 msgstr "候補者ID"
-
-msgid "SessionID"
-msgstr "セッションID"
 
 msgid "File Visibility"
 msgstr "ファイルの可視性"
@@ -139,9 +134,6 @@ msgstr "この名前のファイルは既に存在します!\n既存のファイ
 
 msgid "Cancelled"
 msgstr "キャンセル"
-
-msgid "Your imaginary file is safe :)"
-msgstr "あなたの想像上のファイルは安全です :)"
 
 msgid "Success!"
 msgstr "成功！"

@@ -26,10 +26,8 @@ msgid "View Session"
 msgstr "查看会话"
 
 msgid "New and pending imaging session"
-msgstr "新的及待处理的成像会话"
-
-msgid "New and pending imaging sessions"
-msgstr "新的及待处理的成像会话"
+msgid_plural "New and pending imaging sessions"
+msgstr[0] "新的及待处理的成像会话"
 
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"
@@ -77,17 +75,11 @@ msgstr "新数据"
 msgid "Links"
 msgstr "链接"
 
-msgid "SessionID"
-msgstr "会话ID"
-
 msgid "Sequence Type"
 msgstr "序列类型"
 
 msgid "Pending New"
 msgstr "待处理"
-
-msgid "QC Status"
-msgstr "质量控制状态"
 
 msgid "Caveat"
 msgstr "注意事项"

@@ -75,6 +75,7 @@ INSERT INTO language (language_code, language_label) VALUES
 
 CREATE TABLE `sex` (
   `Name` varchar(255) NOT NULL,
+  `Colour` varchar(50) NULL,
   PRIMARY KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores sex options available for candidates in LORIS';
 
@@ -116,7 +117,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
   CONSTRAINT `FK_users_2` FOREIGN KEY (`language_preference`) REFERENCES `language` (`language_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
@@ -221,7 +222,6 @@ CREATE TABLE `session` (
   `BVLQCType` enum('Visual','Hardcopy') DEFAULT NULL,
   `BVLQCExclusion` enum('Excluded','Not Excluded') DEFAULT NULL,
   `QCd` enum('Visual','Hardcopy') DEFAULT NULL,
-  `Scan_done` enum('N','Y') DEFAULT NULL,
   `MRIQCStatus` enum('','Pass','Fail') NOT NULL DEFAULT '',
   `MRIQCPending` enum('Y','N') NOT NULL DEFAULT 'N',
   `MRIQCFirstChangeTime` datetime DEFAULT NULL,
@@ -344,7 +344,7 @@ CREATE TABLE `history` (
   `userID` varchar(255) NOT NULL default '',
   `type` char(1),
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table keeps track of ongoing changes in the database. ';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='This table keeps track of ongoing changes in the database. ';
 
 CREATE TABLE `test_battery` (
   `ID` int(10) unsigned NOT NULL auto_increment,
@@ -1091,7 +1091,7 @@ CREATE TABLE `document_repository` (
   `comments` text,
   `multipart` enum('Yes','No') DEFAULT NULL,
   `EARLI` tinyint(1) DEFAULT 0,
-  `hide_video` tinyint(1) DEFAULT 0,
+  `hide_file` tinyint(1) DEFAULT 0,
   `File_category` int(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`record_id`),
   KEY `fk_document_repository_1_idx` (`File_category`),
@@ -1282,19 +1282,20 @@ CREATE TABLE `participant_status_options` (
   `Description` varchar(255) DEFAULT NULL,
   `Required` tinyint(1) DEFAULT NULL,
   `parentID` int(10) DEFAULT NULL,
+  `commentRequired` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `participant_status_options` (Description, Required) VALUES
-  ('Active',0),
-  ('Refused/Not Enrolled',0),
-  ('Ineligible',0),
-  ('Excluded',0),
-  ('Inactive',1),
-  ('Incomplete',1),
-  ('Complete',0);
+INSERT INTO `participant_status_options` (Description, Required, commentRequired) VALUES
+  ('Active',0,0),
+  ('Refused/Not Enrolled',0,1),
+  ('Ineligible',0,1),
+  ('Excluded',0,1),
+  ('Inactive',1,1),
+  ('Incomplete',1,1),
+  ('Complete',0,0);
 
 INSERT INTO `participant_status_options` (Description, Required, parentID) VALUES
   ('Unsure',NULL,@tmp_val),
@@ -1468,6 +1469,28 @@ CREATE TABLE policies (
     UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE policiesI18n (
+  PolicyID INT NOT NULL,
+  LanguageID INT(10) UNSIGNED NOT NULL,
+  Content TEXT NULL,
+  SwalTitle VARCHAR(255) NULL,
+  HeaderButtonText VARCHAR(255) NULL,
+  AcceptButtonText VARCHAR(255) NULL,
+  DeclineButtonText VARCHAR(255) NULL,
+  CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (PolicyID, LanguageID),
+  CONSTRAINT policiesI18n_policy_fk
+    FOREIGN KEY (PolicyID)
+    REFERENCES policies (PolicyID)
+    ON DELETE CASCADE,
+  CONSTRAINT policiesI18n_language_fk
+    FOREIGN KEY (LanguageID)
+    REFERENCES language (language_id)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE user_policy_decision (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
@@ -1515,6 +1538,35 @@ INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VAL
   ('statistics', 'stats_behavioural', 'Behavioural Statistics', 3),
   ('statistics', 'stats_MRI', 'Imaging Statistics', 4);
 
+
+-- ********************************
+-- statistics
+-- ********************************
+
+
+CREATE TABLE `cached_data_type` (
+    `CachedDataTypeID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Name` VARCHAR(255) UNIQUE NOT NULL,
+    PRIMARY KEY  (`CachedDataTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `cached_data_type` (`Name`) SELECT 'projects_disk_space';
+
+
+CREATE TABLE `cached_data` (
+   `CachedDataID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+   `CachedDataTypeID` INT(10) UNSIGNED NOT NULL,
+   `Value` TEXT NOT NULL,
+   `LastUpdate` TIMESTAMP NOT NULL
+       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   PRIMARY KEY  (`CachedDataID`),
+   CONSTRAINT `FK_cached_data_type` FOREIGN KEY (`CachedDataTypeID`)
+       REFERENCES `cached_data_type` (`CachedDataTypeID`)
+       ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 -- ********************************
 -- server_processes tables
 -- ********************************
@@ -1535,7 +1587,7 @@ CREATE TABLE `server_processes` (
   PRIMARY KEY (`id`),
   KEY `FK_task_1` (`userid`),
   CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `mri_upload_server_processes_rel` (
   `UploadID` int(10) unsigned NOT NULL,
@@ -1579,7 +1631,7 @@ CREATE TABLE `issues_categories` (
   `categoryName` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 INSERT INTO issues_categories (categoryName) VALUES
@@ -1597,7 +1649,7 @@ CREATE TABLE `issues` (
   `title` varchar(255) NOT NULL DEFAULT '',
   `reporter` varchar(255) NOT NULL DEFAULT '',
   `assignee` varchar(255) DEFAULT NULL,
-  `status` enum('new','acknowledged','feedback','assigned','resolved','closed') NOT NULL DEFAULT 'new',
+  `status` enum('new','acknowledged','feedback','assigned','resolved','closed','rejected') NOT NULL DEFAULT 'new',
   `priority` enum('low','normal','high','urgent','immediate') NOT NULL DEFAULT 'low',
   `module` int(10) unsigned DEFAULT NULL,
   `dateCreated` datetime DEFAULT NULL,
@@ -1626,7 +1678,7 @@ CREATE TABLE `issues` (
   CONSTRAINT `fk_issues_5` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_instrument` FOREIGN KEY (`instrument`) REFERENCES `test_names` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -1668,7 +1720,7 @@ CREATE TABLE `issues_watching` (
   PRIMARY KEY (`userID`,`issueID`),
   KEY `fk_issues_watching_2` (`issueID`),
   CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `issues_attachments` (
     `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,

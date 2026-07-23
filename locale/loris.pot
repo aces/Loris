@@ -558,6 +558,9 @@ msgstr ""
 msgid "{{years}} years old"
 msgstr ""
 
+msgid "%d y / %d m"
+msgstr ""
+
 # Other generic terms
 msgid "Loading..."
 msgstr ""
@@ -592,6 +595,30 @@ msgstr ""
 msgid "Dataset"
 msgstr ""
 
+msgid "GB"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
+msgstr ""
+
+msgid "Submission Successful!"
+msgstr ""
+
+msgid "Scan Type"
+msgstr ""
+
+msgid "SessionID"
+msgstr ""
+
+msgid "Uploaded By"
+msgstr ""
+
+msgid "QC Status"
+msgstr ""
+
+msgid "TarchiveID"
 msgstr ""

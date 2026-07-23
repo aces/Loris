@@ -27,9 +27,6 @@ msgstr ""
 msgid "Instrument"
 msgstr ""
 
-msgid "Uploaded By"
-msgstr ""
-
 msgid "Date Taken"
 msgstr ""
 
@@ -43,9 +40,6 @@ msgid "File Type"
 msgstr ""
 
 msgid "CandID"
-msgstr ""
-
-msgid "SessionID"
 msgstr ""
 
 msgid "File Visibility"
@@ -135,9 +129,6 @@ msgid "A file with this name already exists!\n Would you like to override existi
 msgstr ""
 
 msgid "Cancelled"
-msgstr ""
-
-msgid "Your imaginary file is safe :)"
 msgstr ""
 
 msgid "Success!"

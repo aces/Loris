@@ -342,12 +342,19 @@ function getParticipantStatusFields()
     $reasonOptions = [];
 
     $req      = $db->pselect(
-        'SELECT ID from participant_status_options where Required=1',
+        'SELECT ID, Required, commentRequired from participant_status_options
+        WHERE Required=1 OR commentRequired=1',
         []
     );
     $required = [];
-    foreach ($req as $k=>$row) {
-        $required[$k] = $row['ID'];
+    $commentRequired = [];
+    foreach ($req as $_=>$row) {
+        if ($row['Required'] == 1) {
+            $required[] = $row['ID'];
+        }
+        if ($row['commentRequired'] == 1) {
+            $commentRequired[] = $row['ID'];
+        }
     }
     $parentIDs   = $db->pselect(
         'SELECT distinct(parentID) from participant_status_options',
@@ -391,6 +398,7 @@ function getParticipantStatusFields()
         'candID'                => $candID->__toString(),
         'statusOptions'         => $statusOptions,
         'required'              => $required,
+        'commentRequired'       => $commentRequired,
         'reasonOptions'         => $reasonOptions,
         'parentIDs'             => $parentIDMap,
         'participantStatus'     => $status,
@@ -555,8 +563,7 @@ function getDOBFields(): array
     $dobFormat = $config->getSetting('dobFormat');
 
     $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
-    $dobDate            = DateTime::createFromFormat('Y-m-d', $dob);
-    $formattedDate      = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+    $formattedDate      = formatCandidateDate($dob, $dobProcessedFormat);
 
     $result = [
         'pscid'     => $pscid,
@@ -602,9 +609,10 @@ function getDODFields(): array
     $dobFormat = $config->getSetting('dobFormat');
 
     $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
-    $dobDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoB']);
-    $dob = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
-
+    $dob    = formatCandidateDate(
+        $candidateData['DoB'] ?? null,
+        $dobProcessedFormat
+    );
     $result = [
         'pscid'     => $candidateData['PSCID'],
         'candID'    => $candID->__toString(),
@@ -694,5 +702,30 @@ function getDiagnosisEvolutionFields(): array
         'projects'                        => $candProjects
     ];
     return $result;
+}
+
+/**
+ * Format a candidate date for display.
+ *
+ * Returns null when the date is null or invalid.
+ *
+ * @param string|null $date   Database date in Y-m-d format
+ * @param string      $format Display format
+ *
+ * @return string|null
+ */
+function formatCandidateDate(?string $date, string $format): ?string
+{
+    if (empty($date)) {
+        return null;
+    }
+
+    $dateTime = DateTime::createFromFormat('Y-m-d', $date);
+
+    if ($dateTime === false) {
+        return null;
+    }
+
+    return $dateTime->format($format);
 }
 

@@ -103,9 +103,6 @@ msgstr ""
 msgid "Scan Problems"
 msgstr ""
 
-msgid "Scan Type"
-msgstr ""
-
 msgid "Severity"
 msgstr ""
 
@@ -175,16 +172,10 @@ msgstr ""
 msgid "JoinID"
 msgstr ""
 
-msgid "TarchiveID"
-msgstr ""
-
 msgid "Center Name"
 msgstr ""
 
 msgid "Scanner ID"
-msgstr ""
-
-msgid "Scan Type"
 msgstr ""
 
 msgid "TR Range"

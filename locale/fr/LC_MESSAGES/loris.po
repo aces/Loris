@@ -259,7 +259,10 @@ msgid "Participant Status"
 msgstr "Statut du participant"
 
 msgid "DoB"
-msgstr "DdN"
+msgstr "Date de naissance"
+
+msgid "DoD"
+msgstr "Date de décès"
 
 msgid "Sex"
 msgstr "Sexe"
@@ -328,6 +331,12 @@ msgstr "Scan terminé"
 msgid "Language"
 msgstr "Langage"
 
+msgid "Access denied"
+msgstr "Accès refusé"
+
+msgid "No."
+msgstr "N°"
+
 msgid "Ethnicity"
 msgstr "Ethnicité"
 
@@ -373,6 +382,9 @@ msgid "View details"
 msgstr "Voir les détails"
 
 # Data table strings
+msgid "No result found."
+msgstr "Aucun résultat trouvé."
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{pageCount}} lignes affichées sur {{totalCount}}."
 
@@ -518,6 +530,12 @@ msgstr "Retrait"
 msgid "Withdrawn"
 msgstr "Retiré"
 
+msgid "Created"
+msgstr "Créé"
+
+msgid "Sent"
+msgstr "Envoyé"
+
 msgid "In Progress"
 msgstr "En cours"
 
@@ -569,6 +587,10 @@ msgstr "{{months}} mois"
 msgid "{{years}} years old"
 msgstr "{{years}} ans"
 
+msgid "%d y / %d m"
+msgstr "%d a / %d m"
+
+
 # Other generic terms
 msgid "Loading..."
 msgstr "Chargement en cours..."
@@ -603,6 +625,30 @@ msgstr "Actualiser"
 msgid "Dataset"
 msgstr "Ensemble de données"
 
+msgid "GB"
+msgstr "Go"
+
+msgid "Month"
+msgstr "Mois"
+
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr "Aucune option"
+
+msgid "Submission Successful!"
+msgstr "Soumission réussie!"
+ 
+msgid "Scan Type"
+msgstr "Type de scan"
+
+msgid "SessionID"
+msgstr "Identifiant de session"
+
+msgid "Uploaded By"
+msgstr "Téléversé par"
+
+msgid "QC Status"
+msgstr "État du contrôle qualité"
+
+msgid "TarchiveID"
+msgstr "Identifiant de tarchive"

@@ -23,10 +23,8 @@ msgid "Instruments"
 msgstr "量表/评估工具"
 
 msgid "Incomplete form"
-msgstr "表格不完整"
-
-msgid "Incomplete forms"
-msgstr "表格不完整"
+msgid_plural "Incomplete forms"
+msgstr[0] "表格不完整"
 
 msgid "Clear Instrument"
 msgstr "清除仪器"

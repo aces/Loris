@@ -61,7 +61,8 @@ ALTER TABLE `issues`
     AFTER `category`;
 
 ALTER TABLE `issues_history`
-    MODIFY `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'description') NOT NULL DEFAULT 'comment';
+    MODIFY `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID', 'watching', 'description') NOT NULL DEFAULT 'comment';
+    
 CREATE TABLE `instrument_data` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`Data`)),
@@ -93,6 +94,10 @@ UPDATE test_battery SET DoubleDataEntryEnabled = 'Y' WHERE Test_name IN (
 DELETE FROM Config WHERE ConfigID IN (SELECT ID FROM ConfigSettings WHERE Name = 'DoubleDataEntryInstruments');
 
 DELETE FROM ConfigSettings WHERE Name = 'DoubleDataEntryInstruments';
+
+ALTER TABLE `mri_protocol_checks`
+  DROP FOREIGN KEY `FK_mriProtocolChecks_ScanType`;
+
 -- Rename foreign key fields for consistency
 
 ALTER TABLE `mri_scan_type`
@@ -141,7 +146,6 @@ ALTER TABLE `mri_violations_log`
 -- Rename the existing constraints for consistency
 
 ALTER TABLE `mri_protocol_checks`
-  DROP FOREIGN KEY `FK_mriProtocolChecks_ScanType`,
   ADD CONSTRAINT `FK_mri_protocol_checks_scan_type`
     FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`);
 -- Drop nonsensical defaults and put use right type for others.

@@ -19,6 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #, fuzzy
 msgid "MRI Violated Scans"
@@ -128,9 +129,6 @@ msgstr "Protocoles d'étude"
 msgid "Scan Problems"
 msgstr "Problèmes avec l'acquisition"
 
-msgid "Scan Type"
-msgstr "Type de scan"
-
 msgid "Severity"
 msgstr "Sévérité"
 
@@ -212,10 +210,6 @@ msgstr "Empreinte numérique"
 #, fuzzy
 msgid "JoinID"
 msgstr "JoinID"
-
-#, fuzzy
-msgid "TarchiveID"
-msgstr "TarchiveID"
 
 msgid "Center Name"
 msgstr "Nom du site"

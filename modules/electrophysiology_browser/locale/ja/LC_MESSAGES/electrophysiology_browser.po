@@ -43,9 +43,6 @@ msgstr "タイプ"
 msgid "Signal Viewer"
 msgstr "シグナルビューアー"
 
-msgid "SessionID"
-msgstr "SessionID"
-
 msgid "split {{splitNum}}"
 msgstr "{{splitNum}} を分割"
 
@@ -618,3 +615,6 @@ msgstr "すべてのファイル"
 
 msgid "View Session"
 msgstr "セッションを見る"
+
+msgid "Channel Types"
+msgstr "チャネルタイプ"

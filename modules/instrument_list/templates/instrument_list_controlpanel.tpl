@@ -3,7 +3,7 @@
 	    	<li>
 		{if $access.next_stage}
                         <i class="fas fa-folder-open fa-sm" width="12" height="12"></i>&nbsp;<a
-				href="{$baseurl}/next_stage/?candID={$candID}&sessionID={$sessionID}&identifier={$sessionID}">{sprintf(dgettext("instrument_list", "Start %s Stage"), dgettext("loris", $next_stage))}</a>
+				href="{$baseurl}/next_stage/?candID={$candID}&sessionID={$sessionID}&identifier={$sessionID}">{sprintf(dgettext("instrument_list", "Start the \"%s\" Stage"), dgettext("loris", $next_stage))}</a>
 {else}
                         <small>({dgettext("instrument_list", "No actions")})</small>
 {/if}

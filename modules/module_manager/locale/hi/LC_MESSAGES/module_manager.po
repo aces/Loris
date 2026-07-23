@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Module Manager"
 msgstr "मॉड्यूल प्रबंधक"
@@ -29,6 +30,8 @@ msgstr "पूरा नाम"
 
 msgid "Updated {{name}} status! To apply changes the interface must be reloaded. Proceed?"
 msgstr "{{name}} की स्थिति अपडेट हुई! परिवर्तन लागू करने के लिए इंटरफ़ेस को पुनः लोड करना होगा। आगे बढ़ें?"
+msgid "Could not update {{name}}."
+msgstr "{{name}} को अपडेट नहीं कर सका।"
 
 msgid "Reload the page"
 msgstr "पृष्ठ पुनः लोड करें"
@@ -36,6 +39,5 @@ msgstr "पृष्ठ पुनः लोड करें"
 msgid "Continue"
 msgstr "जारी रखें"
 
-msgid "Could not find module"
-msgstr "मॉड्यूल नहीं मिला"
-
+msgid "Could not find module {{id}}."
+msgstr "मॉड्यूल {{id}} नहीं मिला।"
