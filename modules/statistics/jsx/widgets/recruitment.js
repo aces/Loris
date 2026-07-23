@@ -59,7 +59,7 @@ const Recruitment = (props) => {
           chartObject: null,
         },
         'siterecruitment_bysex': {
-          title: t('Biological sex breakdown by site', {ns: 'statistics'}),
+          title: t('Sex breakdown by site', {ns: 'statistics'}),
           filters: '',
           chartType: 'bar',
           dataType: 'bar',
@@ -104,7 +104,7 @@ const Recruitment = (props) => {
       = t('Participants', {ns: 'statistics'});
 
     newdetails['siteBreakdown']['siterecruitment_bysex']['title']
-      = t('Biological sex breakdown by site', {ns: 'statistics'});
+      = t('Sex breakdown by site', {ns: 'statistics'});
 
     newdetails['projectBreakdown']['agedistribution_line']['title']
       = t('Candidate Age at Registration', {ns: 'statistics'});

@@ -63,7 +63,7 @@ msgstr ""
 msgid "EDC Age"
 msgstr ""
 
-msgid "Biological Sex"
+msgid "Sex Assigned At Birth"
 msgstr ""
 
 msgid "You do not have access to any timepoints registered for this candidate."

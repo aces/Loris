@@ -63,7 +63,7 @@ msgstr ""
 msgid "Patient Birthdate"
 msgstr ""
 
-msgid "Patient Biological Sex"
+msgid "Patient Sex Assigned at Birth"
 msgstr ""
 
 msgid "Date acquired"

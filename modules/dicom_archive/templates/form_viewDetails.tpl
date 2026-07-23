@@ -21,7 +21,7 @@
     <td>{$archive.PatientDoB}</td>
   </tr>
   <tr>
-    <th>{dgettext("dicom_archive", "Patient Biological Sex")}</th>
+    <th>{dgettext("dicom_archive", "Patient Sex Assigned at Birth")}</th>
     <td>{$archive.PatientSex}</td>
   </tr>
   <tr>

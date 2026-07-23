@@ -96,7 +96,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 ),
                 new DictionaryItem(
                     "Sex",
-                    "Candidate's biological sex",
+                    "Sex assigned at birth",
                     $candscope,
                     $t,
                     new Cardinality(Cardinality::SINGLE),

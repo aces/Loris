@@ -23,7 +23,7 @@
       {dgettext("timepoint_list", "EDC Age")}
     </th>
     <th>
-      {dgettext("timepoint_list", "Biological Sex")}
+      {dgettext("timepoint_list", "Sex Assigned At Birth")}
     </th>
     {if $candidate.ProjectTitle == $candidate.ProjectName && $candidate.ProjectName != ""}
       <th>
