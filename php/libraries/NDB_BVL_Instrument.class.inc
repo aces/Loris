@@ -278,10 +278,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $obj->displayAllFields = true;
         } else {
             $obj->commentID = $commentID;
-            $timepoint      = \TimePoint::singleton($obj->getSessionID());
-            $ilang          = $timepoint->getLanguage();
-            \putenv("LANG=" . $ilang->code . ".utf8");
-            \putenv("LANGUAGE=" . $ilang->code . ".utf8");
         }
 
         // Set page name to testName
@@ -291,7 +287,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         if (!empty($commentID)) {
             $obj->setupCandidateInfoTables();
+
+            $timepoint = \TimePoint::singleton($obj->getSessionID());
+            $ilang     = $timepoint->getLanguage();
+            \putenv("LANG=" . $ilang->code . ".utf8");
+            \putenv("LANGUAGE=" . $ilang->code . ".utf8");
         }
+
         if (file_exists($base."project/instruments/$instrument.meta")) {
             $obj->loadInstrumentMetadata(
                 $base . "project/instruments/$instrument.meta"
@@ -397,28 +399,64 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->tpl_data['candidate'] = $candidate->getData();
         $this->tpl_data['timePoint'] = $timePoint->getData();
-        // convert DoB And EDC date to years and months
-        // DoB to Derived Age
-        $dob = $candidate->getCandidateDoB();
-        if (is_string($dob) && strtotime($dob) !== false) {
-            $dob_date     = new \DateTime($dob);
-            $current_date = new \DateTime();
-            $dob_year     = abs($current_date->diff($dob_date)->y);
-            $dob_month    = abs($current_date->diff($dob_date)->m);
-            $dob_age      = $dob_year . dgettext("timepoint_list", " y / ")
-                . $dob_month . dgettext("timepoint_list", " m");
-            $this->tpl_data['dob_age'] = $dob_age;
+
+        $this->tpl_data['display'] = $timePoint->getData();
+
+        // Ideally this would be handled by $this->timePoint->getDate but other code
+        // depends on Date_visit being a string
+        $dateFormatter = new \IntlDateFormatter(
+            "",
+            \IntlDateFormatter::SHORT,
+            \IntlDateFormatter::NONE,
+        );
+        if (isset($this->tpl_data['display']['Date_screening'])) {
+            $this->tpl_data['display']['Date_screening'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_screening'])
+            );
         }
-        // EDC to EDC Age
-        $edc = $candidate->getCandidateEDC();
-        if (is_string($edc) && strtotime($edc) !== false) {
-            $edc_date     = new DateTime($edc);
-            $current_date = new DateTime();
-            $edc_year     = abs($current_date->diff($edc_date)->y);
-            $edc_month    = abs($current_date->diff($edc_date)->m);
-            $edc_age      = $edc_year . dgettext("timepoint_list", " y / ")
-                . $edc_month . dgettext("timepoint_list", " m");
-            $this->tpl_data['edc_age'] = $edc_age;
+        if (isset($this->tpl_data['display']['Date_visit'])) {
+            $this->tpl_data['display']['Date_visit'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_visit'])
+            );
+        }
+        if (isset($this->tpl_data['display']['Date_approval'])) {
+            $this->tpl_data['display']['Date_approval'] = $dateFormatter->format(
+                new \DateTimeImmutable($this->tpl_data['display']['Date_approval'])
+            );
+        }
+
+        // convert DoB date to age and months and rename it to Derived Age
+        $dob = $candidate->getData();
+        if (isset($dob['DoB']) && is_string($dob['DoB'])) {
+            $dob_date = date_create_from_format('Y-m-d', $dob['DoB']);
+            if ($dob_date !== false) {
+                $current_date = new \DateTime();
+                $dob_year     = abs($current_date->diff($dob_date)->y);
+                $dob_month    = abs($current_date->diff($dob_date)->m);
+                $dob_age      = sprintf(
+                    dgettext("loris", "%d y / %d m"),
+                    $dob_year,
+                    $dob_month,
+                );
+                $this->tpl_data['dob_age'] = $dob_age;
+            }
+
+        }
+        // convert EDC date to age and months and rename it to EDC Age
+        $edc = $candidate->getData();
+        if (isset($edc['EDC']) && is_string($edc['EDC'])) {
+            $edc_date = date_create_from_format('Y-m-d', $edc['EDC']);
+            if ($edc_date !== false) {
+                $current_date = new \DateTime();
+                $edc_year     = abs($current_date->diff($edc_date)->y);
+                $edc_month    = abs($current_date->diff($edc_date)->m);
+                $edc_age      = sprintf(
+                    dgettext("loris", "%d y / %d m"),
+                    $edc_year,
+                    $edc_month,
+                );
+                $this->tpl_data['edc_age'] = $edc_age;
+            }
         }
     }
 
