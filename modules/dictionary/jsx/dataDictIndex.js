@@ -329,7 +329,7 @@ class DataDictIndex extends Component {
         filter: {
           name: 'Visits',
           type: 'multiselect',
-	  sortByValue: false,
+          sortByValue: false,
           options: options.visits,
         },
       },
