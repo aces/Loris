@@ -144,7 +144,3 @@ msgstr ""
 
 msgid "Upload Date"
 msgstr ""
-
-msgid "Uploaded By"
-msgstr ""
-

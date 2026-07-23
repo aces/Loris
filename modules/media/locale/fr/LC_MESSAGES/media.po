@@ -29,9 +29,6 @@ msgstr "Nom du fichier"
 msgid "Instrument"
 msgstr "Instrument"
 
-msgid "Uploaded By"
-msgstr "Téléverser par"
-
 msgid "Date Taken"
 msgstr "Date de passage"
 
@@ -48,10 +45,6 @@ msgstr "Type de fichier"
 #, fuzzy
 msgid "CandID"
 msgstr "CandID"
-
-#, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
 
 #, fuzzy
 msgid "File Visibility"

@@ -593,3 +593,18 @@ msgstr "オプションなし"
 
 msgid "Submission Successful!"
 msgstr "送信成功しました!"
+
+msgid "Scan Type"
+msgstr "スキャンタイプ"
+
+msgid "SessionID"
+msgstr "SessionID"
+
+msgid "Uploaded By"
+msgstr "アップロード者"
+
+msgid "QC Status"
+msgstr "品質管理状況"
+
+msgid "TarchiveID"
+msgstr "TarchiveID"

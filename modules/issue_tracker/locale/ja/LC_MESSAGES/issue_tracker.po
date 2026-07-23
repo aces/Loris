@@ -59,9 +59,6 @@ msgstr "作成日"
 msgid "Last Update"
 msgstr "最終更新日"
 
-msgid "SessionID"
-msgstr "SessionID"
-
 msgid "Watching"
 msgstr "ウォッチン"
 

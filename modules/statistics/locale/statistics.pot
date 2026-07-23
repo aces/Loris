@@ -193,12 +193,6 @@ msgstr ""
 msgid "Submit Query"
 msgstr ""
 
-msgid "Scan Type"
-msgstr ""
-
-msgid "QC status"
-msgstr ""
-
 msgid "Scans Inserted"
 msgstr ""
 

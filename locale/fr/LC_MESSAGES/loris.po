@@ -638,3 +638,17 @@ msgstr "Aucune option"
 msgid "Submission Successful!"
 msgstr "Soumission réussie!"
  
+msgid "Scan Type"
+msgstr "Type de scan"
+
+msgid "SessionID"
+msgstr "Identifiant de session"
+
+msgid "Uploaded By"
+msgstr "Téléversé par"
+
+msgid "QC Status"
+msgstr "État du contrôle qualité"
+
+msgid "TarchiveID"
+msgstr "Identifiant de tarchive"

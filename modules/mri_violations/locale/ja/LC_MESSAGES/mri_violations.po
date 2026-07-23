@@ -103,9 +103,6 @@ msgstr "研究プロトコル"
 msgid "Scan Problems"
 msgstr "スキャンの問題"
 
-msgid "Scan Type"
-msgstr "スキャンタイプ"
-
 msgid "Severity"
 msgstr "重大度"
 
@@ -171,9 +168,6 @@ msgstr "ハッシュ"
 
 msgid "JoinID"
 msgstr "参加ID"
-
-msgid "TarchiveID"
-msgstr "アーカイブID"
 
 msgid "Center Name"
 msgstr "センター名"

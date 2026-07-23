@@ -144,7 +144,3 @@ msgstr "アップロード場所"
 
 msgid "Upload Date"
 msgstr "アップロード日"
-
-msgid "Uploaded By"
-msgstr "アップロード者"
-

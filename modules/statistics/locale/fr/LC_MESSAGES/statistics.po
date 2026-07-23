@@ -196,12 +196,6 @@ msgstr "Tous les types de scan"
 msgid "Submit Query"
 msgstr "Exécuter la requête"
 
-msgid "Scan Type"
-msgstr "Type de scan"
-
-msgid "QC status"
-msgstr "État du contrôle qualité"
-
 msgid "Scans Inserted"
 msgstr "Scans importées"
 

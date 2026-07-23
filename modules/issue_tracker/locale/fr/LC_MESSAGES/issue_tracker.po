@@ -58,10 +58,6 @@ msgstr "Date de création"
 msgid "Last Update"
 msgstr "Dernière mise à jour"
 
-#, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
-
 msgid "Watching"
 msgstr "En train de regarder"
 

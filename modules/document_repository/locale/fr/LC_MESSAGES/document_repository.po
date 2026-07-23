@@ -165,9 +165,6 @@ msgstr "Téléverser"
 msgid "File Name"
 msgstr "Nom du fichier"
 
-msgid "Uploaded By"
-msgstr "Téléversé par"
-
 #, fuzzy
 msgid "For Site"
 msgstr "Pour le site"

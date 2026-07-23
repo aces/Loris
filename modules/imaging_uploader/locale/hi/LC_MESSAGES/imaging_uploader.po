@@ -144,6 +144,3 @@ msgstr "अपलोड स्थान"
 
 msgid "Upload Date"
 msgstr "अपलोड की तिथि"
-
-msgid "Uploaded By"
-msgstr "द्वारा अपलोड किया गया"

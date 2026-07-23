@@ -23,8 +23,8 @@
         <table id="scandata" class="table table-primary table-bordered dynamictable">
             <thead>
             <tr class="info">
-                <th id="scantype">{dgettext('statistics', 'Scan Type')}</th>
-                <th colspan="2">{dgettext('statistics', 'QC Status')}</th>
+                <th id="scantype">dgettext('Scan Type', 'loris')</th>
+                <th colspan="2">dgettext('QC Status', 'loris')</th>
                 {foreach from=$Cohorts item=name key=proj}
                     <th>{$name}</th>
                 {/foreach}

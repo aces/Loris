@@ -178,6 +178,3 @@ msgstr "Emplacement de téléversement"
 
 msgid "Upload Date"
 msgstr "Date d'importation"
-
-msgid "Uploaded By"
-msgstr "Téléversé par"

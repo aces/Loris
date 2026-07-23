@@ -403,3 +403,15 @@ msgstr ""
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr ""
+
+msgid "Scan Type"
+msgstr "Tipo de escaneo"
+
+msgid "SessionID"
+msgstr "ID de sesión"
+
+msgid "Uploaded By"
+msgstr "Subido por"
+
+msgid "TarchiveID"
+msgstr "ID de archivo"

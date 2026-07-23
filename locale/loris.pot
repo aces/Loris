@@ -607,3 +607,18 @@ msgstr ""
 
 msgid "Submission Successful!"
 msgstr ""
+
+msgid "Scan Type"
+msgstr ""
+
+msgid "SessionID"
+msgstr ""
+
+msgid "Uploaded By"
+msgstr ""
+
+msgid "QC Status"
+msgstr ""
+
+msgid "TarchiveID"
+msgstr ""
