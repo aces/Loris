@@ -58,7 +58,8 @@ class ContentSecurityPolicy implements MiddlewareChainer
         return $response->withHeader(
             "Content-Security-Policy",
             "default-src 'self' 'unsafe-inline'; "
-            . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
+            . "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: $CaptchaDomains; "
+            . "worker-src 'self' blob:; "
             . "font-src 'self' data:; "
             . "img-src 'self' https://images.loris.ca data:; "
             . "frame-ancestors 'none'; "

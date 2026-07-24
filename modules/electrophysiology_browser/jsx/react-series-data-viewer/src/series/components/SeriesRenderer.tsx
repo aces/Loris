@@ -6,6 +6,7 @@ import React, {
   FunctionComponent,
   MutableRefObject,
   useMemo,
+  useContext,
 } from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
@@ -17,10 +18,9 @@ import {colorOrder} from '../../color';
 import {
   MAX_RENDERED_EPOCHS,
   DEFAULT_MAX_CHANNELS,
-  SIGNAL_UNIT,
+  DEFAULT_SIGNAL_UNIT,
   Vector2,
   DEFAULT_TIME_INTERVAL,
-  STATIC_SERIES_RANGE,
   DEFAULT_VIEWER_HEIGHT,
   MIN_EPOCH_WIDTH,
 } from '../../vector';
@@ -32,7 +32,7 @@ import SeriesCursor from './SeriesCursor';
 import LoadingBar from './LoadingBar';
 import {setRightPanel} from '../store/state/rightPanel';
 import {setDatasetMetadata} from '../store/state/dataset';
-import {createChannelTypesDict, filterDisplayedChannels, filterSelectedChannels} from '../store/logic/channels';
+import {createChannelTypesDict, filterDisplayedChannels, filterSelectedChannels, findBidsChannel} from '../store/logic/channels';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
 import AnnotationForm from './AnnotationForm';
@@ -44,11 +44,17 @@ import {
   resetAmplitudesScale,
 } from '../store/logic/scaleAmplitudes';
 import {
-  LOW_PASS_FILTERS,
+  getHighPassFilterFrequency,
+  getHighPassFilterKey,
+  getLowPassFilterFrequency,
+  getLowPassFilterKey,
   setLowPassFilter,
-  HIGH_PASS_FILTERS,
   setHighPassFilter,
 } from '../store/logic/highLowPass';
+import {
+  HighPassFilterSelect,
+  LowPassFilterSelect,
+} from './PassFilterSelect';
 import {
   setViewerWidth,
   setViewerHeight,
@@ -61,15 +67,14 @@ import {
 } from '../store/logic/timeSelection';
 
 import {
-  ChannelMetadata,
   Channel,
+  Cursor,
   Epoch as EpochType,
   RightPanel, EpochFilter,
-  ChannelInfo,
+  Trace,
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {setCursorInteraction} from '../store/logic/cursorInteraction';
-import {setHoveredChannels} from '../store/state/cursor';
 import {getEpochsInRange, updateActiveEpoch} from '../store/logic/filterEpochs';
 import HEDEndorsement from "./HEDEndorsement";
 import {setTimeSelection} from "../store/state/timeSelection";
@@ -78,6 +83,9 @@ import ChannelTypesSelector from './ChannelTypesSelector';
 import Pagination from './Pagination';
 import {SET_CHANNELS} from '../store/state/channels';
 import {UPDATE_VIEWED_CHUNKS} from '../store/logic/fetchChunks';
+import {ChannelInfosContext, ChannelMetasContext, HoveredChannelsContext} from '../../eeglab/EEGLabSeriesProvider';
+import {computePercentileRange, computeMean} from '../../utils';
+import MutableKeyDepCache from '../../MutableDepCache';
 
 /**
  * The state of a channel type.
@@ -85,6 +93,47 @@ import {UPDATE_VIEWED_CHUNKS} from '../store/logic/fetchChunks';
 export type ChannelTypeState = {
   visible: boolean,
   channelsCount: number,
+};
+
+/**
+ * The specific cache type used to cache channel ranges.
+ */
+type ChannelRangeCache = MutableKeyDepCache<
+  // The channel index.
+  number,
+  // The dependencies upon which the range depends.
+  ChannelRangeCacheDeps,
+  // The computed range.
+  [number, number]
+>
+
+/**
+ * The dependencies upon which a channel range depends.
+ */
+type ChannelRangeCacheDeps = {
+  interval: [number, number],
+  chunkIds: number[],
+}
+
+/**
+ * Check whethere two channel range cache dependencies are equal.
+ */
+function compareChannelRangeDeps(a: ChannelRangeCacheDeps, b: ChannelRangeCacheDeps): boolean {
+  if (a.interval[0] !== b.interval[0] || a.interval[1] !== b.interval[1]) {
+    return false;
+  }
+
+  if (a.chunkIds.length !== b.chunkIds.length) {
+    return false;
+  }
+
+  for (let i = 0; i < a.chunkIds.length; i += 1) {
+    if (a.chunkIds[i] !== b.chunkIds[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 type CProps = {
@@ -96,16 +145,12 @@ type CProps = {
   amplitudeScale: number,
   rightPanel: RightPanel,
   timeSelection?: [number, number],
-  setCursor: (number) => void,
   setRightPanel: (_: RightPanel | void) => void,
   chunksURL: string,
   channels: Channel[],
-  channelMetadata: ChannelMetadata[],
-  hidden: number[],
   epochs: EpochType[],
   filteredEpochs: EpochFilter,
   activeEpoch: number,
-  bidsChannels: ChannelInfo[],
   setAmplitudesScale: (_: number) => void,
   resetAmplitudesScale: (_: void) => void,
   setLowPassFilter: (_: string) => void,
@@ -121,10 +166,9 @@ type CProps = {
   setInterval: (_: [number, number]) => void,
   setCurrentAnnotation: (_: EpochType) => void,
   physioFileID: number,
-  hoveredChannels: number[],
-  setHoveredChannels:  (_: number[]) => void,
   updateActiveEpoch: (_: number) => void,
   setTimeSelection: (_: [number, number]) => void,
+  setCursor: (_: Cursor) => void,
 };
 
 /**
@@ -143,12 +187,9 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   setRightPanel,
   chunksURL,
   channels,
-  channelMetadata,
-  hidden,
   epochs,
   filteredEpochs,
   activeEpoch,
-  bidsChannels: bidsChannels,
   setAmplitudesScale,
   resetAmplitudesScale,
   setLowPassFilter,
@@ -163,8 +204,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   loadedChannels,
   setCurrentAnnotation,
   physioFileID,
-  hoveredChannels,
-  setHoveredChannels,
   updateActiveEpoch,
   setTimeSelection,
 }) => {
@@ -175,6 +214,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
     // The channel types are indexed by channel type name.
     const [channelTypes, setChannelTypes] = useState<Record<string, ChannelTypeState>>({});
+    const channelMetadata = useContext(ChannelMetasContext);
 
     const [cursorEnabled, setCursorEnabled] = useState(false);
     const toggleCursor = () => setCursorEnabled((value) => !value);
@@ -201,6 +241,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [panelIsDirty, setPanelIsDirty] = useState(false);
     const [eventChannels, setEventChannels] = useState([]);
     const {t} = useTranslation();
+
+    const bidsChannels = useContext(ChannelInfosContext);
 
     // Initialize the channel types mapping once channels information is loaded.
     useEffect(() => {
@@ -346,8 +388,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     store.dispatch(createAction(SET_CHANNELS)(channels));
     store.dispatch(createAction(UPDATE_VIEWED_CHUNKS)());
   }, [displayedChannelIndexes]);
-
-  const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
 
   // Function used to update the pagination offset index, with checks to prevent invalid indexes.
   const updateOffsetIndex = useCallback((newOffsetIndex: number) => {
@@ -545,6 +585,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     });
   };
 
+  const {hoveredChannels, setHoveredChannels} = useContext(HoveredChannelsContext);
+
   useEffect(() => {
     hoveredChannels.forEach((channelIndex) => {
       if (prevHoveredChannels.current.includes(channelIndex)) {
@@ -578,6 +620,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   const center = vec2.create();
   vec2.add(center, topLeft, bottomRight);
   vec2.scale(center, center, 1 / 2);
+
+  // A mutable cache for the visible range of the values each channel.
+  const channelRangeCache: MutableRefObject<ChannelRangeCache> = useRef(
+    new MutableKeyDepCache(compareChannelRangeDeps)
+  );
 
   const scales: [
       ScaleLinear<number, number, never>,
@@ -692,7 +739,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     return (
       <Group top={-viewerHeight/2} left={-viewerWidth/2}>
         <line y1="0" y2={viewerHeight} stroke="black" />
-        {filteredChannels.map((channel, i) => {
+        {channels.map((channel, i) => {
           const seriesRange = channelMetadata[channel.index]?.seriesRange;
           if (!seriesRange || !showAxisScaleLines) return null;
           return (
@@ -723,10 +770,35 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       !cursorRef.current && stackedView &&
       singleMode && hoveredChannels.length > 0
     )
-      ? filteredChannels.filter(
+      ? channels.filter(
         (channel) => hoveredChannels.includes(channel.index)
       )
-      : filteredChannels;
+      : channels;
+
+    // Get the maximum range for each channel type based on the ranges of
+    // the visible values of each visible channel of that type.
+    const channelTypeRanges: Record<string, number> = {};
+    channelList.forEach((channel) => {
+      const bidsChannel = findBidsChannel(channelMetadata[channel.index], bidsChannels);
+      const type = bidsChannel?.ChannelType ?? 'Unknown';
+
+      // Get the visible values range of that channel, from the cache if possible.
+      const [min, max] = channelRangeCache.current.get(
+        channel.index,
+        {
+          interval,
+          chunkIds: channel.traces.flatMap((trace) => trace.chunks.map((chunk) => chunk.index)).sort(),
+        },
+        () => getChannelVisibleRange(channel, interval)
+      );
+
+      const range = max - min;
+      if (!channelTypeRanges[type]) {
+        channelTypeRanges[type] = range;
+      } else {
+        channelTypeRanges[type] = Math.max(channelTypeRanges[type], range);
+      }
+    });
 
     return (
       <>
@@ -785,30 +857,18 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 (chunk) => chunk.values.length > 0
               ).length;
 
-              const valuesInView = trace.chunks.map((chunk) => {
-                let includedIndices = [0, chunk.values.length];
-                if (chunk.interval[0] < interval[0]) {
-                  const startIndex = chunk.values.length *
-                    (interval[0] - chunk.interval[0]) /
-                    (chunk.interval[1] - chunk.interval[0]);
-                  includedIndices = [startIndex, includedIndices[1]];
-                }
-                if (chunk.interval[1] > interval[1]) {
-                  const endIndex = chunk.values.length *
-                    (interval[1] - chunk.interval[0]) /
-                    (chunk.interval[1] - chunk.interval[0]);
-                  includedIndices = [includedIndices[0], endIndex];
-                }
-                return chunk.values.slice(
-                  includedIndices[0], includedIndices[1]
-                );
-              }).flat();
+              const valuesInView = getTraceVisibleValues(trace, interval);
 
               if (valuesInView.length === 0) {
                 return;
               }
 
-              const seriesRange: [number, number] = STATIC_SERIES_RANGE;
+              // Get the range centered on the average for channels of the same type
+              const average = computeMean(valuesInView);
+              const bidsChannel = findBidsChannel(channelMetadata[channel.index], bidsChannels);
+              const type = bidsChannel?.ChannelType ?? 'Unknown';
+              const overallRange = channelTypeRanges[type] || 0;
+              const seriesRange: [number, number] = [average - overallRange / 2, average + overallRange / 2];
 
               const scales: [
                 ScaleLinear<number, number, never>,
@@ -949,6 +1009,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
    *
    */
   const onChannelHover = (channelIndex : number) => {
+    console.log("SET HOVERED CHANNELS A");
     setHoveredChannels(channelIndex === -1 ? [] : [channelIndex]);
   };
 
@@ -997,136 +1058,137 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   const canEditEvents = chunksURL[0]?.includes('Face13');
 
+  const ZoomControls = (
+    <div
+      style={{
+        textAlign: 'center',
+        margin: '20px 40px',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <h5 className='col-xs-title btn-zoom'>
+          {t('Zoom', {ns: 'electrophysiology_browser'})}
+        </h5>
+        <div>
+          <input
+            type='button'
+            className='btn btn-primary btn-xs btn-zoom'
+            onClick={zoomReset}
+            disabled={
+              (interval[1] - interval[0]) ===
+              (DEFAULT_TIME_INTERVAL[1] - DEFAULT_TIME_INTERVAL[0])
+            }
+            value={t('Reset', {ns: 'loris'})}
+          />
+          <br/>
+          <input
+            type='button'
+            className='btn btn-primary btn-xs btn-zoom'
+            onClick={zoomIn}
+            disabled={(interval[1] - interval[0]) <= 0.1}
+            value='+'
+          />
+          <br/>
+          <input
+            type='button'
+            className='btn btn-primary btn-xs btn-zoom'
+            onClick={zoomOut}
+            disabled={
+              interval[0] === domain[0] &&
+              interval[1] === domain[1]
+            }
+            value='-'
+          />
+          <br/>
+          <input
+            type='button'
+            className='btn btn-primary btn-xs btn-zoom'
+            onClick={zoomToSelection}
+            disabled={!selectionCanBeZoomedTo}
+            value={t('Fit to Window', {ns: 'electrophysiology_browser'})}
+          />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <>
 {/*      {channels.length > 0 ? (*/}
-        <>
-        <div
-          className='row'
-          style={{
-            width: rightPanel ? '72.5%' : '96.5%',
-            position: 'absolute',
-            zIndex: 3,
-          }}
-        >
-          <div id="right-panel-controls">
-            <button
-              className={'btn btn-primary'}
-              disabled={!chunksURL || !canEditEvents || rightPanel === 'annotationForm'}
-              onClick={() => {
-                confirmPanelClose(() => {
-                  setRightPanel('annotationForm')
-                  setCurrentAnnotation(null);
-                });
-              }}
-            >
-              {t('Add Event', {ns: 'electrophysiology_browser'})}
-            </button>
-            {
-              rightPanel === null && (
-                <button
-                  className={
-                    'btn btn-primary btn-blue'
-                    + (rightPanel ? ' active' : '')
-                  }
-                  onClick={() => {
-                    confirmPanelClose(() => {
-                      setRightPanel(
-                        rightPanel
-                          ? null
-                          : 'eventList'
-                      );
-                    })
+      <>
+        <div className="row">
+          <div className={rightPanel ? 'col-md-9' : 'col-xs-12'}>
+            <div className="controls" style={{display: 'flex'}}>
+              {ZoomControls}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                flexGrow: '1',
+                gap: '1rem',
+              }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
                   }}
                 >
-                  {rightPanel
-                    ? t('Close Panel', {ns: 'electrophysiology_browser'})
-                    : t('Display Events', {ns: 'electrophysiology_browser'})
-                  }
-                </button>
-              )
-            }
-            <ChannelTypesSelector
-              channelTypes={channelTypes}
-              setChannelTypes={setChannelTypes}
-            />
-          </div>
-        </div>
-        <div className={'row'}>
-          <div className={rightPanel ? 'col-md-9' : 'col-xs-12'}>
-            <div
-              className='col-xs-1'
-              style={{
-                textAlign: 'center',
-                position: 'absolute',
-                marginTop: '20px',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: rightPanel ? 'unset' : 'center',
-                }}
-              >
-                <h5 className='col-xs-title btn-zoom'>
-                  {t('Zoom', {ns: 'electrophysiology_browser'})}
-                </h5>
-                <div>
-                  <input
-                    type='button'
-                    className='btn btn-primary btn-xs btn-zoom'
-                    onClick={zoomReset}
-                    disabled={
-                      (interval[1] - interval[0]) ===
-                      (DEFAULT_TIME_INTERVAL[1] - DEFAULT_TIME_INTERVAL[0])
+                  <div id="right-panel-controls">
+                    <ChannelTypesSelector
+                      channelTypes={channelTypes}
+                      setChannelTypes={setChannelTypes}
+                    />
+                    <button
+                      className={'btn btn-primary'}
+                      disabled={!chunksURL || !canEditEvents || rightPanel === 'annotationForm'}
+                      onClick={() => {
+                        confirmPanelClose(() => {
+                          setRightPanel('annotationForm')
+                          setCurrentAnnotation(null);
+                        });
+                      }}
+                    >
+                      {t('Add Event', {ns: 'electrophysiology_browser'})}
+                    </button>
+                    {
+                      rightPanel === null && (
+                        <button
+                          className={
+                            'btn btn-primary btn-blue'
+                            + (rightPanel ? ' active' : '')
+                          }
+                          onClick={() => {
+                            confirmPanelClose(() => {
+                              setRightPanel(
+                                rightPanel
+                                  ? null
+                                  : 'eventList'
+                              );
+                            })
+                          }}
+                        >
+                          {rightPanel
+                            ? t('Close Panel', {ns: 'electrophysiology_browser'})
+                            : t('Display Events', {ns: 'electrophysiology_browser'})
+                          }
+                        </button>
+                      )
                     }
-                    value={t('Reset', {ns: 'loris'})}
-                  />
-                  <br/>
-                  <input
-                    type='button'
-                    className='btn btn-primary btn-xs btn-zoom'
-                    onClick={zoomIn}
-                    disabled={(interval[1] - interval[0]) <= 0.1}
-                    value='+'
-                  />
-                  <br/>
-                  <input
-                    type='button'
-                    className='btn btn-primary btn-xs btn-zoom'
-                    onClick={zoomOut}
-                    disabled={
-                      interval[0] === domain[0] &&
-                      interval[1] === domain[1]
-                    }
-                    value='-'
-                  />
-                  <br/>
-                  <input
-                    type='button'
-                    className='btn btn-primary btn-xs btn-zoom'
-                    onClick={zoomToSelection}
-                    disabled={!selectionCanBeZoomedTo}
-                    value={t('Fit to Window', {ns: 'electrophysiology_browser'})}
-                  />
+                  </div>
                 </div>
-              </div>
-            </div>
-            <IntervalSelect />
-            <div className='row'>
-              <div
-                className='col-xs-offset-1 col-xs-11'
-                style={{zIndex: '1'}}
-              >
+                <IntervalSelect />
                 <div
-                  className='row'
                   style={{
-                    paddingTop: '15px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
                   }}
                 >
                   <div
-                    className={rightPanel ? 'col-lg-12' : 'col-lg-7'}
                     style={{
                       paddingTop: '5px',
                       paddingBottom: '5px',
@@ -1154,89 +1216,23 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         value='+'
                       />
                     </div>
-                    <div
-                      className='btn-group'
-                      style={{position: 'relative'}}
-                    >
-                      <button
-                        type="button"
-                        className="btn btn-xs btn-primary dropdown-toggle"
-                        data-toggle='dropdown'
-                      >
-                        {t(
-                          HIGH_PASS_FILTERS[highPass].label, {
-                            ns: 'electrophysiology_browser',
-                            frequency: HIGH_PASS_FILTERS[highPass].frequency,
-                          }
-                        )}
-                        <div
-                          style={{paddingLeft: '5px'}}
-                          className="pull-right"
-                        >
-                          <span
-                            className="glyphicon glyphicon-menu-down"
-                          ></span>
-                        </div>
-                      </button>
-                      <ul className="dropdown-menu">
-                        {Object.keys(HIGH_PASS_FILTERS).map((key) =>
-                          <li
-                            key={key}
-                            onClick={() => {
-                              setHighPassFilter(key);
-                              setHighPass(key);
-                            }}
-                          >{t(
-                            HIGH_PASS_FILTERS[key].label, {
-                              ns: 'electrophysiology_browser',
-                              frequency: HIGH_PASS_FILTERS[key].frequency,
-                            }
-                          )}</li>
-                        )}
-                      </ul>
-                    </div>
+                    <HighPassFilterSelect
+                      value={getHighPassFilterFrequency(highPass)}
+                      onChange={(frequency) => {
+                        const key = getHighPassFilterKey(frequency);
+                        setHighPassFilter(key);
+                        setHighPass(key);
+                      }}
+                    />
 
-                    <div
-                      className='btn-group'
-                      style={{position: 'relative'}}
-                    >
-                      <button
-                        type="button"
-                        className="btn btn-xs btn-primary dropdown-toggle"
-                        data-toggle='dropdown'
-                      >
-                        {t(
-                          LOW_PASS_FILTERS[lowPass].label, {
-                            ns: 'electrophysiology_browser',
-                            frequency: LOW_PASS_FILTERS[lowPass].frequency,
-                          }
-                        )}
-                        <div
-                          style={{paddingLeft: '5px'}}
-                          className="pull-right"
-                        >
-                          <span
-                            className="glyphicon glyphicon-menu-down"
-                          ></span>
-                        </div>
-                      </button>
-                      <ul className="dropdown-menu">
-                        {Object.keys(LOW_PASS_FILTERS).map((key) =>
-                          <li
-                            key={key}
-                            onClick={() => {
-                              setLowPassFilter(key);
-                              setLowPass(key);
-                            }}
-                          >{t(
-                            LOW_PASS_FILTERS[key].label, {
-                              ns: 'electrophysiology_browser',
-                              frequency: LOW_PASS_FILTERS[key].frequency,
-                            }
-                          )}</li>
-                        )}
-                      </ul>
-                    </div>
+                    <LowPassFilterSelect
+                      value={getLowPassFilterFrequency(lowPass)}
+                      onChange={(frequency) => {
+                        const key = getLowPassFilterKey(frequency);
+                        setLowPassFilter(key);
+                        setLowPass(key);
+                      }}
+                    />
                     <input
                       type='button'
                       className='btn btn-primary btn-xs'
@@ -1256,7 +1252,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     updateOffsetIndex={updateOffsetIndex}
                     displayedChannelsLimit={numDisplayedChannels}
                     setDisplayedChannelsLimit={handleChannelChange}
-                    rightPanel={rightPanel}
                   />
                 </div>
               </div>
@@ -1300,7 +1295,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                   userSelect: 'none',
                 }}
               >{/* Below slice changes labels to be subset of channel choice */}
-                {filteredChannels
+                {channels
                   .slice(0, numDisplayedChannels)
                   .map((channel) => (
                   <div
@@ -1353,7 +1348,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         position: 'absolute',
                       }}
                     >
-                      ({SIGNAL_UNIT})
+                      ({DEFAULT_SIGNAL_UNIT})
                     </div>
                     : null
                   }
@@ -1372,7 +1367,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                     channels={channels}
                     interval={interval}
                     enabled={cursorEnabled}
-                    hoveredChannels={hoveredChannels}
                     channelMetadata={channelMetadata}
                     showEvents={rightPanel === 'eventList'}
                   />
@@ -1383,9 +1377,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       mouseMove={useCallback((cursor: [number, number]) => {
                         setCursor({
                           cursorPosition: [cursor[0], cursor[1]],
-                          viewerRef: viewerRef
+                          viewerRef,
+                          hoveredChannels,
+                          setHoveredChannels,
                         });
-                      }, [])}
+                      }, [hoveredChannels, setHoveredChannels, setCursor])}
                       mouseDown={useCallback((v: Vector2) => {
                         document.addEventListener('mousemove', onMouseMove);
                         document.addEventListener('mouseup', onMouseUp);
@@ -1619,10 +1615,99 @@ SeriesRenderer.defaultProps = {
   viewerHeight: 400,
   channels: [],
   epochs: [],
-  hidden: [],
-  channelMetadata: [],
   limit: DEFAULT_MAX_CHANNELS,
 };
+
+/**
+ * Get the range of the visible values of a channel across all its traces.
+ */
+function getChannelVisibleRange(channel: Channel, interval: [number, number]): [number, number] {
+  let channelMin = Infinity;
+  let channelMax = -Infinity;
+
+  channel.traces.forEach((trace) => {
+    const values = getTraceVisibleValues(trace, interval);
+    if (values.length === 0) {
+      return;
+    }
+
+    const [traceMin, traceMax] = computePercentileRange(values);
+    channelMin = Math.min(channelMin, traceMin);
+    channelMax = Math.max(channelMax, traceMax);
+  });
+
+  return [channelMin, channelMax];
+}
+
+/**
+ * Get the values of a trace that fall within the visible interval.
+ */
+function getTraceVisibleValues(trace: Trace, interval: [number, number]): Float32Array {
+  const [start, end] = interval;
+
+  // First pass: calculate total length needed
+  let totalLength = 0;
+  for (const chunk of trace.chunks) {
+    const [chunkStart, chunkEnd] = chunk.interval;
+
+    if (chunkEnd <= start || chunkStart >= end) {
+      continue;
+    }
+
+    const overlapStart = Math.max(start, chunkStart);
+    const overlapEnd = Math.min(end, chunkEnd);
+
+    const chunkDuration = chunkEnd - chunkStart;
+    const numSamples = chunk.values.length;
+
+    const startIndex = Math.max(0, Math.floor(
+      (overlapStart - chunkStart) / chunkDuration * numSamples
+    ));
+
+    const endIdx = Math.min(numSamples, Math.ceil(
+      (overlapEnd - chunkStart) / chunkDuration * numSamples
+    ));
+
+    totalLength += (endIdx - startIndex);
+  }
+
+  // Create Float32Array of exact size
+  const values = new Float32Array(totalLength);
+  let writeIndex = 0;
+
+  // Second pass: fill the array
+  for (const chunk of trace.chunks) {
+    const [chunkStart, chunkEnd] = chunk.interval;
+
+    // No overlap, skip this chunk.
+    if (chunkEnd <= start || chunkStart >= end) {
+      continue;
+    }
+
+    // Calculate overlap with view window.
+    const overlapStart = Math.max(start, chunkStart);
+    const overlapEnd = Math.min(end, chunkEnd);
+
+    const chunkDuration = chunkEnd - chunkStart;
+    const numSamples = chunk.values.length;
+
+    // Convert time to sample indices.
+    const startIndex = Math.max(0, Math.floor(
+      (overlapStart - chunkStart) / chunkDuration * numSamples
+    ));
+
+    const endIdx = Math.min(numSamples, Math.ceil(
+      (overlapEnd - chunkStart) / chunkDuration * numSamples
+    ));
+
+    // Copy values directly into the Float32Array
+    const length = endIdx - startIndex;
+    values.set(chunk.values.subarray(startIndex, endIdx), writeIndex);
+    writeIndex += length;
+  }
+
+  return values;
+}
 
 export default connect(
   (state: RootState)=> ({
@@ -1634,17 +1719,13 @@ export default connect(
     timeSelection: state.timeSelection,
     chunksURL: state.dataset.chunksURL,
     channels: state.channels,
-    bidsChannels: state.dataset.bidsChannels,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
     activeEpoch: state.dataset.activeEpoch,
-    hidden: state.montage.hidden,
-    channelMetadata: state.dataset.channelMetadata,
     limit: state.dataset.limit,
     loadedChannels: state.dataset.loadedChannels,
     domain: state.bounds.domain,
     physioFileID: state.dataset.physioFileID,
-    hoveredChannels: state.cursor.hoveredChannels,
   }),
   (dispatch: (_: any) => void) => ({
     setInterval: R.compose(
@@ -1702,10 +1783,6 @@ export default connect(
     dragEnd: R.compose(
       dispatch,
       endDragSelection
-    ),
-    setHoveredChannels: R.compose(
-      dispatch,
-      setHoveredChannels
     ),
     updateActiveEpoch: R.compose(
       dispatch,

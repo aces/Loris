@@ -44,14 +44,22 @@ export const loadChunks = (chunksData: FetchedChunks[]) => {
 
       // Concatenate all visible chunks
       const originalChunkValues = chunks.reduce(
-        (chunkValues: number[], chunk: Chunk) => {
-          return chunkValues.concat(chunk.originalValues);
-        }, []
+        (chunkValues: Float32Array, chunk: Chunk) => {
+          const newArray = new Float32Array(
+            chunkValues.length
+            + chunk.originalValues.length
+          );
+
+          newArray.set(chunkValues);
+          newArray.set(chunk.originalValues, chunkValues.length);
+          return newArray;
+        },
+        new Float32Array(0)
       );
 
       // Filter entire visible signal
       const filteredChunkValues = Object.values(filters).reduce(
-        (signal: number[], filter: Filter) => {
+        (signal: Float32Array, filter: Filter) => {
           return filter.fn(signal);
         },
         originalChunkValues
@@ -60,10 +68,9 @@ export const loadChunks = (chunksData: FetchedChunks[]) => {
       // Modify values of chunks
       for (let i = 0; i < chunks.length; i++) {
         chunks[i].filters = Object.values(filters).map((filter) => filter.name);
-        chunks[i].values = filteredChunkValues.slice(
-          i * chunks[0].values.length,
-          (i + 1) * chunks[i].values.length
-        );
+        const startIdx = i * chunks[0].values.length;
+        const endIdx = (i + 1) * chunks[i].values.length;
+        chunks[i].values = filteredChunkValues.slice(startIdx, endIdx);
       }
 
       const idx = channels.findIndex((c) => c.index === channelIndex);

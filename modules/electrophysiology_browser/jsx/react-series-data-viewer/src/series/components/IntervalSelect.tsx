@@ -147,7 +147,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
   };
 
   return (
-    <div className='row'>
+    <>
       <div
         style={{
           display: 'flex',
@@ -156,17 +156,6 @@ const IntervalSelect: FunctionComponent<CProps> = ({
           alignItems: 'center',
         }}
       >
-        <h5
-          className='col-xs-offset-1 col-xs-11 col-xs-title'
-          style={{
-            paddingLeft: '15px',
-            marginBottom: '15px',
-          }}
-        >
-          {t('Timeline Range View', {
-            ns: 'electrophysiology_browser'
-          })}
-        </h5>
         <div
           className='col-xs-offset-1 col-xs-11'
           style={{
@@ -254,10 +243,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
           </div>
         </div>
       </div>
-      <div
-        className='col-xs-offset-1 col-xs-11'
-        style={{height: viewerHeight}}
-      >
+      <div style={{height: viewerHeight, position: 'relative'}}>
         <Slider
           mode={2}
           rootStyle={sliderStyle}
@@ -330,7 +316,7 @@ const IntervalSelect: FunctionComponent<CProps> = ({
           {t('Time (s)', {ns: 'electrophysiology_browser'})}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

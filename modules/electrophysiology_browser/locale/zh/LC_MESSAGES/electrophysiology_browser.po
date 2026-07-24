@@ -77,11 +77,17 @@ msgid "Data Authors"
 msgstr "数据作者"
 
 # Filters
+msgid "High Pass Filter"
+msgstr "高通滤波器"
+
 msgid "No High Pass Filter"
 msgstr "无高通滤波器"
 
 msgid "High Pass {{frequency}}Hz"
 msgstr "高通 {{frequency}} Hz"
+
+msgid "Low Pass Filter"
+msgstr "低通滤波器"
 
 msgid "No Low Pass Filter"
 msgstr "无低通滤波器"
@@ -301,8 +307,20 @@ msgstr "选择无"
 msgid "Select All"
 msgstr "选择全部"
 
-msgid "Electrode Map"
-msgstr "电极图"
+msgid "Sensor Map"
+msgstr "传感器图"
+
+msgid "Sensor Types"
+msgstr "传感器类型"
+
+msgid "EEG Electrode"
+msgstr "EEG 电极"
+
+msgid "MEG Sensor"
+msgstr "MEG 传感器"
+
+msgid "Head Shape Point"
+msgstr "头部形状点"
 
 msgid "Show indices"
 msgstr "显示索引"
@@ -595,8 +613,8 @@ msgstr "电刺激"
 msgid "Electrical Stimulation Parameters"
 msgstr "电刺激参数"
 
-msgid "EEG File(s)"
-msgstr "脑电图文件"
+msgid "Acquisition File"
+msgstr "采集文件"
 
 msgid "Electrodes"
 msgstr "电极"
@@ -615,3 +633,6 @@ msgstr "所有文件"
 
 msgid "View Session"
 msgstr "查看会话"
+
+msgid "Channel Types"
+msgstr "通道类型"

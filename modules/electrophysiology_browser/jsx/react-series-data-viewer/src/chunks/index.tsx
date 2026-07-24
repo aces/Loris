@@ -19,8 +19,8 @@ export const fetchChunk = (url: string): Promise<typeof FloatChunk> => {
           index: parsed.getIndex(),
           cutoff: parsed.getCutoff(),
           downsampling: parsed.getDownsampling(),
-          originalValues: parsed.getSamplesList(),
-          values: parsed.getSamplesList(),
+          originalValues: new Float32Array(parsed.getSamplesList()),
+          values: new Float32Array(parsed.getSamplesList()),
         });
       });
     });

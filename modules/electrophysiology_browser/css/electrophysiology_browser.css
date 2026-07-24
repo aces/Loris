@@ -775,22 +775,6 @@ li.hed-comment::before {
   border-bottom: none;
 }
 
-#channel-selector-montage > div {
-  padding-top: 3% !important;
-}
-
-#channel-selector-montage svg {
-  margin-top: 5vh;
-}
-
-#channel-selector-montage > div > div > div:nth-child(2) {
-  max-height: 80vh !important;
-}
-
-#channel-selector-montage > div > div > div > div:last-child {
-  display: none !important;  /* Disappear modal footer */
-}
-
 .epoch-action .glyphicon {
   padding-top: 2px !important;
 }

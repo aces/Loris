@@ -9,13 +9,13 @@ export type Action = {
   payload: {
     key: string,
     name: string,
-    fn: (_: number[]) => number[],
+    fn: (_: Float32Array) => Float32Array,
   }
 };
 
 export type Filter = {
   name: string,
-  fn: (n: number[]) => number[]
+  fn: (n: Float32Array) => Float32Array
 }
 
 /**

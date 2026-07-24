@@ -23,7 +23,7 @@ declare const loris: {
 
 let EEGLabSeriesProvider: React.ComponentType<any> | null = null;
 let SeriesRenderer: React.ComponentType<any> | null = null;
-let EEGMontage: React.ComponentType<any> | null = null;
+let Montage: React.ComponentType<any> | null = null;
 if (EEG_VIS_ENABLED) {
   EEGLabSeriesProvider = require(
     '../react-series-data-viewer/src/eeglab/EEGLabSeriesProvider'
@@ -31,8 +31,8 @@ if (EEG_VIS_ENABLED) {
   SeriesRenderer = require(
     '../react-series-data-viewer/src/series/components/SeriesRenderer'
   ).default;
-  EEGMontage = require(
-    '../react-series-data-viewer/src/series/components/EEGMontage'
+  Montage = require(
+    '../react-series-data-viewer/src/montage/Montage'
   ).default;
 }
 
@@ -187,7 +187,7 @@ function RecordingSection({
           <div className='row'>
             {EEGLabSeriesProvider &&
             SeriesRenderer &&
-            EEGMontage &&
+            Montage &&
             <div className='react-series-data-viewer-scoped col-xs-12'>
               <EEGLabSeriesProvider
                 channelsURL={channelsURL}
@@ -281,7 +281,7 @@ function RecordingSection({
                       t={t}
                     />
                   </div>
-                  <EEGMontage />
+                  <Montage />
                   <div className='col-md-6 col-lg-4'>
                     <DownloadPanel
                       id={'file_download_' + fileIndex}
