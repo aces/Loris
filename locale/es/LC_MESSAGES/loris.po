@@ -218,6 +218,12 @@ msgstr "Retroalimentación"
 msgid "Scans"
 msgstr ""
 
+msgid "Date"
+msgstr "Fecha"
+
+msgid "Time"
+msgstr "Hora"
+
 msgid "Stage"
 msgstr "Etapa"
 
