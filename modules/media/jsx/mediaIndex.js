@@ -138,7 +138,8 @@ class MediaIndex extends Component {
     case t('Visit Label', {ns: 'loris'}):
       if (row[t('CandID')] !== null && row[t('SessionID', {ns: 'loris'})]) {
         const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
-          row[t('CandID')] + '&sessionID=' + t(row[t('SessionID', {ns: 'loris'})]);
+          row[t('CandID')] + '&sessionID='
+          + t(row[t('SessionID', {ns: 'loris'})]);
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
