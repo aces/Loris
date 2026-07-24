@@ -611,3 +611,6 @@ msgstr "TarchiveID"
 
 msgid "Upload successful!"
 msgstr "アップロード成功しました!"
+
+msgid "unknown"
+msgstr "不明"

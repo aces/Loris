@@ -313,9 +313,6 @@ msgstr ""
 msgid "unclassified"
 msgstr ""
 
-msgid "unknown"
-msgstr ""
-
 msgid "Upload Successful!"
 msgstr ""
 

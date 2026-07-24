@@ -71,7 +71,13 @@ class ServerProcessesManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    return (<td>{cell}</td>);
+    const {t} = this.props;
+    switch (cell) {
+    case 'unknown':
+      return (<td>{t('unknown', {ns: 'loris'})}</td>);
+    default:
+      return (<td>{cell}</td>);
+    }
   }
 
   /**

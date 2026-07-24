@@ -652,3 +652,6 @@ msgstr "Identifiant de tarchive"
 
 msgid "Upload successful!"
 msgstr "Téléversement réussi!"
+
+msgid "unknown"
+msgstr "inconnu"

@@ -315,8 +315,5 @@ msgstr "paternel"
 msgid "unclassified"
 msgstr "non classé"
 
-msgid "unknown"
-msgstr "inconnu"
-
 msgid "Upload error!"
 msgstr "Erreur de téléversement !"
