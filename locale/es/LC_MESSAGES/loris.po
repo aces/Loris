@@ -181,13 +181,13 @@ msgid "Module"
 msgstr ""
 
 msgid "Project"
-msgstr "Projecto"
+msgstr "Proyecto"
 
 msgid "Candidate Registration Project"
-msgstr "Projecto donde se registró al Candidato"
+msgstr "Proyecto donde se registró al Candidato"
 
 msgid "Timepoint Project"
-msgstr "Punto en el tiempo del Projecto"
+msgstr "Punto en el tiempo del Proyecto"
 
 msgid "Cohort"
 msgid_plural "Cohorts"
