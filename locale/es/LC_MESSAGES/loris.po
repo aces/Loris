@@ -415,3 +415,6 @@ msgstr "Subido por"
 
 msgid "TarchiveID"
 msgstr "ID de archivo"
+
+msgid "Type"
+msgstr "Tipo"

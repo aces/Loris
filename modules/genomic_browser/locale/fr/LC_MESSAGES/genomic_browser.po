@@ -78,9 +78,6 @@ msgstr "Gène"
 msgid "Gene Name"
 msgstr "Nom du gène"
 
-msgid "Type"
-msgstr "Type"
-
 msgid "Copy Number Change"
 msgstr "Variation du nombre de copies"
 

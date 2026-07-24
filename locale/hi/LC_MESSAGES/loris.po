@@ -590,3 +590,6 @@ msgstr "अपलोड सफल!"
 
 msgid "unknown"
 msgstr "अज्ञात"
+
+msgid "Type"
+msgstr "प्रकार"

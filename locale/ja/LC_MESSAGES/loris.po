@@ -614,3 +614,6 @@ msgstr "アップロード成功しました!"
 
 msgid "unknown"
 msgstr "不明"
+
+msgid "Type"
+msgstr "タイプ"

@@ -45,17 +45,11 @@ msgstr "得点エラー"
 msgid "Other"
 msgstr "他の"
 
-msgid "Feedback Type"
-msgstr "フィードバックタイプ"
-
 msgid "Feedback description"
 msgstr "フィードバックの説明"
 
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr "プロジェクト識別子へのフィードバック: {{PSCID}}"
-
-msgid "Type"
-msgstr "タイプ"
 
 msgid "Author"
 msgstr "著者"

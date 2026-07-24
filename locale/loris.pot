@@ -624,3 +624,6 @@ msgstr ""
 
 msgid "unknown"
 msgstr ""
+
+msgid "Type"
+msgstr ""

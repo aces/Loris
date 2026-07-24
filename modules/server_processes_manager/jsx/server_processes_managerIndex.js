@@ -107,7 +107,7 @@ class ServerProcessesManagerIndex extends Component {
         name: 'pid',
         type: 'text',
       }},
-      {label: t('Type', {ns: 'server_processes_manager'}), show: true, filter: {
+      {label: t('Type', {ns: 'loris'}), show: true, filter: {
         name: 'type',
         type: 'text',
       }},

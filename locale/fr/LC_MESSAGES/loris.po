@@ -655,3 +655,6 @@ msgstr "Téléversement réussi!"
 
 msgid "unknown"
 msgstr "inconnu"
+
+msgid "Type"
+msgstr "Type"

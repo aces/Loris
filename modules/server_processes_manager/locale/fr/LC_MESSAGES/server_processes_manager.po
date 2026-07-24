@@ -25,9 +25,6 @@ msgstr "Gestionnaire des processus du serveur"
 msgid "PID"
 msgstr "Identifiant du processus"
 
-msgid "Type"
-msgstr "Type"
-
 msgid "Stdout File"
 msgstr "Fichier Stdout"
 

@@ -181,11 +181,6 @@ msgstr "Realizado por"
 msgid "Comments"
 msgstr "Comentarios"
 
-#: jsx/specimenTab.js:60 jsx/containerTab.js:56 jsx/poolTab.js:68
-#: jsx/shipmentTab.js:131
-msgid "Type"
-msgstr "Tipo"
-
 #: jsx/specimenTab.js:62 jsx/containerForm.js:174 jsx/batchEditForm.js:283
 #: jsx/globals.js:49 jsx/specimenForm.js:610
 msgid "Container Type"
