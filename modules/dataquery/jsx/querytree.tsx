@@ -41,7 +41,7 @@ function alternateColour(c: string): string {
  * @param {object} props.mapCategoryName - Function to map the backend category name to a user friendly name
  * @param {object} props.fulldictionary - The dictionary of all modules that have been loaded
  * @param {function} props.setDeleteItemIndex - Callback to set or clear the index of the item marked for deletion
- * @param props.extraButton - Adds a button the far right on the row as the other two buttons
+ * @param {React.ReactElement} props.extraButton - Adds a button the far right on the row as the other two buttons
  * @returns {React.ReactElement} - the react element
  */
 function QueryTree(props: {
