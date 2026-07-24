@@ -127,7 +127,7 @@ class FeedbackPanelContent extends Component {
     let headers = [
       t('Type', {ns: 'loris'}),
       t('Author', {ns: 'bvl_feedback'}),
-      t('Status', {ns: 'bvl_feedback'})
+      t('Status', {ns: 'bvl_feedback'}),
     ];
 
     if (this.props.feedbackLevel === 'instrument') {
