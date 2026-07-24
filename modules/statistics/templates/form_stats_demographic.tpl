@@ -116,7 +116,7 @@
         </tr>
         <tr>
             <td rowspan="2" align="left" style="vertical-align:middle">{dgettext('loris', 'Sex')}</td>
-            <td align="left" >{dngettext('statistics', 'Male', 'Males', 1)}</td>
+            <td align="left" >{dgettext('sex', 'Male')}</td>
             {if {$CurrentProject.ID|default > 0}}
                 {if {$ps_active[$NULL]|default}>0}
                     {if {$sex_male[$NULL]|default}>0}
@@ -151,7 +151,7 @@
 
         </tr>
         <tr>
-            <td align="left">{dngettext('loris', 'Female', 'Females', 1)}</td>
+            <td align="left">{dgettext('sex', 'Female')}</td>
             {if {$CurrentProject.ID|default > 0}}
                 {if {$ps_active[$NULL]|default}>0}
                     {if {$sex_female[$NULL]|default}>0}

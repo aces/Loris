@@ -14,17 +14,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Female"
-msgid_plural "Females"
-msgstr[0] "स्त्री"
-msgstr[1] "महिलाएँ"
+msgstr "स्त्री"
 
 msgid "Male"
-msgid_plural "Males"
-msgstr[0] "पुरुष"
-msgstr[1] "नर"
+msgstr "पुरुष"
 
 msgid "Other"
-msgid_plural "Others"
-msgstr[0] "अन्य"
-msgstr[1] "अन्य"
-
+msgstr "अन्य"
