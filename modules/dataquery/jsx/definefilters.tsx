@@ -101,6 +101,15 @@ function DefineFilters(props: {
     });
   };
 
+  const removeFiltersButton = (
+    <ButtonElement
+      label={t('Remove all filters', {ns: 'dataquery'})}
+      columnSize="col-sm-12"
+      buttonClass='btn btn-danger btn-remove'
+      onUserInput={clearAllFilters}
+    />
+  );
+
   useEffect(() => {
     setQueryMatches(null);
     if (!props.fields || props.fields.length === 0) {
@@ -371,13 +380,9 @@ function DefineFilters(props: {
                   props.query.operator = 'or';
                 }} />
             </div>
-            <ButtonElement
-              label={t('Remove all filters', {ns: 'dataquery'})}
-              columnSize="col-sm-12"
-              style={{marginTop: '1ex'}}
-              buttonClass='btn btn-danger btn-remove'
-              onUserInput={clearAllFilters}
-            />
+            <div style={{marginTop: '1ex'}}>
+              {removeFiltersButton}
+            </div>
           </div>
           {toggleAdvancedButton}
           {advancedButtons}
@@ -408,13 +413,7 @@ function DefineFilters(props: {
             newGroup={props.addNewQueryGroup}
             fulldictionary={props.fulldictionary}
             setDeleteItemIndex={setDeleteItemIndex}
-          />
-          <ButtonElement
-            label={t('Remove all filters', {ns: 'dataquery'})}
-            columnSize="col-sm-12"
-            style={{marginLeft: '5px'}}
-            buttonClass='btn btn-danger btn-remove'
-            onUserInput={clearAllFilters}
+            extraButton={removeFiltersButton}
           />
         </fieldset>
       </form>

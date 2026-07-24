@@ -41,6 +41,7 @@ function alternateColour(c: string): string {
  * @param {object} props.mapCategoryName - Function to map the backend category name to a user friendly name
  * @param {object} props.fulldictionary - The dictionary of all modules that have been loaded
  * @param {function} props.setDeleteItemIndex - Callback to set or clear the index of the item marked for deletion
+ * @param props.extraButton - Adds a button the far right on the row as the other two buttons
  * @returns {React.ReactElement} - the react element
  */
 function QueryTree(props: {
@@ -61,6 +62,7 @@ function QueryTree(props: {
     fulldictionary: FullDictionary,
     mapModuleName: (module: string) => string,
     mapCategoryName: (module: string, category: string) => string,
+    extraButton?: React.ReactNode,
 }) {
   const [deleteItemIndex, setDeleteItemIndex] = useState<number|null>(null);
   const {t} = useTranslation('dataquery');
@@ -185,7 +187,7 @@ function QueryTree(props: {
   switch (props.items.group.length) {
   case 0:
     warning = <div className="alert alert-warning"
-      style={{display: 'flex'}}>
+      style={{display: 'flex', marginBottom: 0}}>
       <i className="fas fa-exclamation-triangle"
         style={{
           fontSize: '1.5em',
@@ -199,7 +201,7 @@ function QueryTree(props: {
     break;
   case 1:
     warning = <div className="alert alert-warning"
-      style={{display: 'flex'}}>
+      style={{display: 'flex', marginBottom: 0}}>
       <i className="fas fa-exclamation-triangle"
         style={{
           fontSize: '1.5em',
@@ -263,6 +265,14 @@ function QueryTree(props: {
     margin: 0,
     padding: 0,
   };
+
+  const emptyGroupStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '4px',
+    marginBottom: '20px',
+  };
+
   return (
     <div style={style}>
       <ul style={marginStyle}>
@@ -288,9 +298,17 @@ function QueryTree(props: {
                 columnSize='col-sm-12'
               />
             </div>
-            {warning}
-            {deleteGroupHTML}
-          </div></li>
+            <div style={emptyGroupStyle}>
+              {warning}
+              {deleteGroupHTML}
+            </div>
+            {props.extraButton ? (
+              <div style={{margin: '5px 0 0 auto'}}>
+                {props.extraButton}
+              </div>
+            ) : null}
+          </div>
+        </li>
       </ul>
     </div>
   );
