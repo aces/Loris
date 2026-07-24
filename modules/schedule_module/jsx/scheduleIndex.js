@@ -22,6 +22,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/schedule_module.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/schedule_module.json';
 import frStrings from '../locale/fr/LC_MESSAGES/schedule_module.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/schedule_module.json';
+import esStrings from '../locale/es/LC_MESSAGES/schedule_module.json';
 
 /**
  * Schedule Module
@@ -630,6 +631,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('fr', 'schedule_module', frStrings);
   i18n.addResourceBundle('ja', 'schedule_module', jaStrings);
   i18n.addResourceBundle('zh', 'schedule_module', zhStrings);
+  i18n.addResourceBundle('es', 'schedule_module', esStrings);
   const Index = withTranslation(
     ['schedule_module', 'loris']
   )(ScheduleIndex);
