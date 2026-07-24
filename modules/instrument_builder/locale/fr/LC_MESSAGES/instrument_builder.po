@@ -121,7 +121,7 @@ msgid "Data entry"
 msgstr "Entrée de données"
 
 msgid "Textbox"
-msgstr "Zone de texte"
+msgstr "Champ de texte"
 
 msgid "Textarea"
 msgstr "Zone de texte"
