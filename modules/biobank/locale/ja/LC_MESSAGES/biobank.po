@@ -23,6 +23,3 @@ msgstr "バイオバンク"
 
 msgid "Biospecimens"
 msgstr "生体試料"
-
-msgid "Feedback Type"
-msgstr "フィードバックタイプ"

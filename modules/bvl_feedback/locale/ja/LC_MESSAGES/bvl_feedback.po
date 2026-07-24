@@ -45,6 +45,9 @@ msgstr "得点エラー"
 msgid "Other"
 msgstr "他の"
 
+msgid "Feedback Type"
+msgstr "フィードバックタイプ"
+
 msgid "Feedback description"
 msgstr "フィードバックの説明"
 
