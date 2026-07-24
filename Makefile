@@ -294,6 +294,9 @@ dashboard: $(filter modules/dashboard/%,$(MOFILES)) $(filter modules/dashboard/%
 brainbrowser: $(filter modules/brainbrowser/%,$(MOFILES)) $(filter modules/brainbrowser/%,$(I18NJSONFILES))
 	target=brainbrowser npm run compile
 
+timepoint_list: $(filter modules/timepoint_list/%,$(MOFILES)) $(filter modules/timepoint_list/%,$(I18NJSONFILES))
+	target=timepoint_list npm run compile
+
 schedule_module: $(filter modules/schedule_module/%,$(MOFILES)) $(filter modules/schedule_module/%,$(I18NJSONFILES))
 	target=schedule_module npm run compile
 
