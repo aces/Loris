@@ -117,13 +117,19 @@ class DataReleaseIndex extends Component {
                 <a
                   style={{marginLeft: 'auto'}}
                   onClick={() => {
+                    const fileName = t('File Name', {ns: 'data_release'});
+                    const version = t('Version', {ns: 'data_release'});
+                    const hiddenById = t('Hidden By ID',
+                      {ns: 'data_release'});
+                    const dataReleaseID = t('Data Release ID',
+                      {ns: 'data_release'});
                     this.setState({
                       managingFile: {
-                        fileName: row[t('File Name', {ns: 'data_release'})],
-                        version: row[t('Version', {ns: 'data_release'})],
-                        hiddenById: row[t('Hidden By ID', {ns: 'data_release'})],
-                        dataReleaseID: row[t('Data Release ID', {ns: 'data_release'})],
-                      }
+                        fileName: row[fileName],
+                        version: row[version],
+                        hiddenById: row[hiddenById],
+                        dataReleaseID: row[dataReleaseID],
+                      },
                     });
                     this.show('manageFileForm');
                   }}
