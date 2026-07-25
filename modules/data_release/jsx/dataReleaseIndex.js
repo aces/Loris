@@ -133,9 +133,9 @@ class DataReleaseIndex extends Component {
                     });
                     this.show('manageFileForm');
                   }}
-                  >
-                    <span className='glyphicon glyphicon-pencil' />
-                  </a>
+                >
+                  <span className='glyphicon glyphicon-pencil' />
+                </a>
             }
           </td>
         );
