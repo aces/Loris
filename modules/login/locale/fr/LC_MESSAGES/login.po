@@ -141,47 +141,6 @@ msgstr "{{title}} non accepté"
 msgid "You must accept the {{title}} before requesting an account."
 msgstr "Vous devez accepter le {{title}} avant de demander un compte."
 
-# Hack for the login page.
-# These strings come from the database and are
-# the defaults in the login_summary_statistics table
-#, fuzzy
-msgid "EEG Recording"
-msgid_plural "EEG Recordings"
-msgstr[0] "Enregistrement EEG"
-msgstr[1] "Enregistrements EEG"
-
-#, fuzzy
-msgid "Female Participant"
-msgid_plural "Female Participants"
-msgstr[0] "Participante"
-msgstr[1] "Participantes"
-
-msgid "Instrument"
-msgid_plural "Instruments"
-msgstr[0] "Instrument"
-msgstr[1] "Instruments"
-
-#, fuzzy
-msgid "Male Participant"
-msgid_plural "Male Participants"
-msgstr[0] "Participant masculin"
-msgstr[1] "Participants masculins"
-
-msgid "Scan"
-msgid_plural "Scans"
-msgstr[0] "Scanner"
-msgstr[1] "Scans"
-
-msgid "Site"
-msgid_plural "Sites"
-msgstr[0] "Site"
-msgstr[1] "Sites"
-
-msgid "Visit"
-msgid_plural "Visits"
-msgstr[0] "Visite"
-msgstr[1] "Visites"
-
 msgid "Missing code"
 msgstr "Code manquant"
 
@@ -229,3 +188,9 @@ msgstr "Nos partenaires"
 
 msgid "Password expired for user."
 msgstr "Le mot de passe de l'utilisateur a expiré."
+
+msgid "Statistic"
+msgstr "Statistique"
+
+msgid "Value"
+msgstr "Valeur"
