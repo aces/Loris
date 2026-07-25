@@ -173,6 +173,7 @@ const QueryChartForm = (props) => {
                 ...options.visits}}
               multiple ={true}
               emptyOption ={false}
+              pinnedOption ='__clear__'
               value ={formDataObj['selectedVisits'] || []}
               onUserInput ={(name, value) => {
                 setFormData(name, value);
