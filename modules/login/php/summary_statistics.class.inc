@@ -54,8 +54,8 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
 
             // csv version for exporting to clipboard
             $reusable_response = iterator_to_array($response);
-            $csv =
-                dngettext('loris', 'Project', 'Projects', 1) . ',' .
+            $csv
+                = dngettext('loris', 'Project', 'Projects', 1) . ',' .
                 dgettext('login', 'Statistic') . ',' .
                 dgettext('login', 'Value') . "\n";
             foreach ($reusable_response as &$row) {
