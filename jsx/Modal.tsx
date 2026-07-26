@@ -12,11 +12,6 @@ export type ModalProps = PropsWithChildren<{
   footer?: ReactNode;
 }>;
 
-export type FormModalProps = Omit<ModalProps, 'footer'> & {
-  onSubmit?: () => Promise<any> | any;
-  onSuccess?: (data: any) => void;
-};
-
 /**
  * Modal Component
  *
@@ -25,7 +20,7 @@ export type FormModalProps = Omit<ModalProps, 'footer'> & {
  * @param {ModalProps} props - Properties for the modal component
  * @returns {JSX.Element} - A modal dialog box
  */
-const Modal = ({
+function Modal({
   throwWarning = false,
   show = false,
   onClose,
@@ -33,7 +28,7 @@ const Modal = ({
   children,
   width,
   footer,
-}: ModalProps) => {
+}: ModalProps) {
   return (
     <ModalFrame
       show={show}
@@ -46,6 +41,11 @@ const Modal = ({
       {footer && <div style={footerStyle}>{footer}</div>}
     </ModalFrame>
   );
+}
+
+export type FormModalProps<T> = Omit<ModalProps, 'footer'> & {
+  onSubmit: () => Promise<T>;
+  onSuccess?: (data: T) => void;
 };
 
 /**
@@ -54,7 +54,7 @@ const Modal = ({
  * A form-specific modal that keeps submit controls inside the form DOM while
  * preserving the async submit, loading, and success behavior used by LORIS.
  */
-export const FormModal = ({
+export function FormModal<T>({
   throwWarning = false,
   show = false,
   onClose,
@@ -63,7 +63,7 @@ export const FormModal = ({
   title,
   children,
   width,
-}: FormModalProps) => {
+}: FormModalProps<T>) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const {t} = useTranslation('loris');
@@ -73,8 +73,6 @@ export const FormModal = ({
    * `onSubmit` and handling modal state based on success or failure.
    */
   const handleSubmit = async () => {
-    if (!onSubmit) return; // Ensure onSubmit exists
-
     setLoading(true); // Show loader
 
     try {
@@ -92,7 +90,7 @@ export const FormModal = ({
     }
   };
 
-  const submitFooter = onSubmit && !(loading || success) && (
+  const submitFooter = !(loading || success) && (
     <div style={footerSubmitStyle}>
       <button type='submit' className='btn btn-primary'>
         {t('Save')}
@@ -160,21 +158,21 @@ export const FormModal = ({
       </form>
     </ModalFrame>
   );
-};
+}
 
 type ModalFrameProps = Omit<ModalProps, 'footer'>;
 
 /**
  * Shared modal frame that owns the chrome and close behavior.
  */
-const ModalFrame = ({
+function ModalFrame({
   throwWarning = false,
   show = false,
   onClose,
   title,
   children,
   width,
-}: ModalFrameProps) => {
+}: ModalFrameProps) {
   const {t} = useTranslation('loris');
 
   /**
@@ -224,7 +222,7 @@ const ModalFrame = ({
       </div>
     </div>
   );
-};
+}
 
 const headerStyle: CSSProperties = {
   display: 'flex',
