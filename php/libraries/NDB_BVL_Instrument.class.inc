@@ -340,7 +340,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         //check if user has site's permission
         $sessionID = $this->getSessionID();
-        $timepoint = \Timepoint::singleton($sessionID);
+        $timepoint = \TimePoint::singleton($sessionID);
         if (!$timepoint->isAccessibleBy($user)) {
             return false;
         }
@@ -3333,7 +3333,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $user      = $request->getAttribute("user");
         $sessionID = $this->getSessionID();
         if ($sessionID !== null) {
-            $timepoint = \Timepoint::singleton($sessionID);
+            $timepoint = \TimePoint::singleton($sessionID);
         }
 
         // create an instrument status object
