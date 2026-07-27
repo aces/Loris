@@ -55,3 +55,6 @@ msgstr "测试名称"
 
 msgid "Feedback Status"
 msgstr "反馈状态"
+
+msgid "Profile"
+msgstr "个人资料"
