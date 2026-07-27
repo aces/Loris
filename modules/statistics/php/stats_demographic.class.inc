@@ -616,10 +616,7 @@ class Stats_Demographic extends \NDB_Form
                 $demographicProject
             );
         } else {
-            $subcategories = [
-                dngettext('loris', 'Male', 'Males', 1),
-                dngettext('loris', 'Female', 'Females', 1)
-            ];
+            $subcategories = array_values(\Utility::getSexList());
             $result        = iterator_to_array(
                 $db->pselect(
                     "SELECT s.CenterID as CenterID,

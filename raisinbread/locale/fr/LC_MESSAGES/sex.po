@@ -14,17 +14,10 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Female"
-msgid_plural "Females"
-msgstr[0] "Femme"
-msgstr[1] "Femmes"
+msgstr "Femme"
 
 msgid "Male"
-msgid_plural "Males"
-msgstr[0] "Homme"
-msgstr[1] "Hommes"
+msgstr "Homme"
 
 msgid "Other"
-msgid_plural "Others"
-msgstr[0] "Autre"
-msgstr[1] "Autres"
-
+msgstr "Autre"
