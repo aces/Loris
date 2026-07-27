@@ -141,7 +141,7 @@ class IncompleteDTO implements \LORIS\Data\DataInstance,
     public function jsonSerialize() : array
     {
         return [
-            'instrument'      => dgettext('test_names', $this->_instrument),
+            'instrument'      => $this->_instrument,
             'data_entry_type' => $this->_data_entry_type,
             'candID'          => $this->_candID,
             'pscID'           => $this->_pscID,
