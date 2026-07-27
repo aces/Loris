@@ -217,7 +217,7 @@ msgstr "Libellé de visite"
 
 #, fuzzy
 msgid "Email"
-msgstr "Adresse Courriel"
+msgstr "Adresse courriel"
 
 msgid "Site"
 msgid_plural "Sites"
