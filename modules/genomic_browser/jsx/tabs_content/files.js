@@ -188,7 +188,7 @@ class Files extends Component {
         },
       },
       {
-        label: t('Type', {ns: 'genomic_browser'}),
+        label: t('Type', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Type',

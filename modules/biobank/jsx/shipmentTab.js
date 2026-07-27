@@ -128,7 +128,7 @@ function ShipmentTab({
       name: 'barcode',
       type: 'text',
     }},
-    {label: t('Type', {ns: 'biobank'}), show: true, filter: {
+    {label: t('Type', {ns: 'loris'}), show: true, filter: {
       name: 'type',
       type: 'select',
       options: options.shipment.types,
@@ -327,7 +327,7 @@ function ShipmentInformation({
         text={shipment.barcode}
       />
       <StaticElement
-        label={t('Type', {ns: 'biobank'})}
+        label={t('Type', {ns: 'loris'})}
         text={shipment.type}
       />
       <StaticElement

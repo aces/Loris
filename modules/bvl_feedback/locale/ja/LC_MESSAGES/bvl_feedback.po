@@ -54,9 +54,6 @@ msgstr "フィードバックの説明"
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr "プロジェクト識別子へのフィードバック: {{PSCID}}"
 
-msgid "Type"
-msgstr "タイプ"
-
 msgid "Author"
 msgstr "著者"
 

@@ -213,7 +213,7 @@ class CNV extends Component {
         },
       },
       {
-        label: t('Type', {ns: 'genomic_browser'}),
+        label: t('Type', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Type',
@@ -221,7 +221,7 @@ class CNV extends Component {
           options: {
             gain: t('gain', {ns: 'genomic_browser'}),
             loss: t('loss', {ns: 'genomic_browser'}),
-            unknown: t('Unknown', {ns: 'genomic_browser'}),
+            unknown: t('unknown', {ns: 'loris'}),
           },
         },
       },
@@ -277,7 +277,7 @@ class CNV extends Component {
             'maternal': t('maternal', {ns: 'genomic_browser'}),
             'paternal': t('paternal', {ns: 'genomic_browser'}),
             'unclassified': t('unclassified', {ns: 'genomic_browser'}),
-            'unknown': t('unknown', {ns: 'genomic_browser'}),
+            'unknown': t('unknown', {ns: 'loris'}),
             'NA': 'NA',
           },
         },

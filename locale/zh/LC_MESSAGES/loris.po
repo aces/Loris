@@ -592,3 +592,9 @@ msgstr "档案ID"
 
 msgid "Upload successful!"
 msgstr "上传成功！"
+
+msgid "unknown"
+msgstr "未知"
+
+msgid "Type"
+msgstr "类型"

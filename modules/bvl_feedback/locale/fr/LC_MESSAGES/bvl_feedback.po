@@ -60,9 +60,6 @@ msgstr "Description de la rétroaction"
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr "Commentaires pour PSCID : {{PSCID}}"
 
-msgid "Type"
-msgstr "Type"
-
 msgid "Author"
 msgstr "Auteur"
 

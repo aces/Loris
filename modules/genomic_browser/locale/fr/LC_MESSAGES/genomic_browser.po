@@ -78,9 +78,6 @@ msgstr "Gène"
 msgid "Gene Name"
 msgstr "Nom du gène"
 
-msgid "Type"
-msgstr "Type"
-
 msgid "Copy Number Change"
 msgstr "Variation du nombre de copies"
 
@@ -314,9 +311,6 @@ msgstr "paternel"
 
 msgid "unclassified"
 msgstr "non classé"
-
-msgid "unknown"
-msgstr "inconnu"
 
 msgid "Upload error!"
 msgstr "Erreur de téléversement !"

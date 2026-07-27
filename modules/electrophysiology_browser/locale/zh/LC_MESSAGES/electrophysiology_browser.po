@@ -37,9 +37,6 @@ msgstr "采集时间"
 msgid "Insertion Time"
 msgstr "插入时间"
 
-msgid "Type"
-msgstr "类型"
-
 msgid "Signal Viewer"
 msgstr "信号查看器"
 

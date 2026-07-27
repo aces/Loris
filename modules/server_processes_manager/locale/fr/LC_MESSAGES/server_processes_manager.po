@@ -7,44 +7,44 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LORIS 27\n"
+"Project-Id-Version: LORIS 29\n"
 "Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
 "POT-Creation-Date: 2025-04-08 14:37-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: ja\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Server Processes Manager"
-msgstr "サーバープロセスマネージャー"
+msgstr "Gestionnaire des processus du serveur"
 
 msgid "PID"
-msgstr "PID"
+msgstr "Identifiant du processus"
 
 msgid "Stdout File"
-msgstr "標準出力ファイル"
+msgstr "Fichier Stdout"
 
 msgid "Stderr File"
-msgstr "標準エラーファイル"
+msgstr "Fichier Stderr"
 
 msgid "Exit Code File"
-msgstr "終了コードファイル"
+msgstr "Fichier du code de sortie"
 
 msgid "Exit Code"
-msgstr "終了コード"
+msgstr "Code de sortie"
 
 msgid "User ID"
-msgstr "ユーザー識別子"
+msgstr "Identifiant de l'utilisateur"
 
 msgid "Start Time"
-msgstr "開始時間"
+msgstr "Heure de début"
 
 msgid "End Time"
-msgstr "終了時間"
+msgstr "Heure de fin"
 
 msgid "Exit Text"
-msgstr "終了テキスト"
+msgstr "Texte de sortie"

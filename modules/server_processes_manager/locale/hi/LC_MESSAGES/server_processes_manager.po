@@ -25,9 +25,6 @@ msgstr "सर्वर प्रक्रियाएँ प्रबंधक"
 msgid "PID"
 msgstr "पीआईडी"
 
-msgid "Type"
-msgstr "प्रकार"
-
 msgid "Stdout File"
 msgstr "स्टडआउट फ़ाइल"
 

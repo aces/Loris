@@ -587,3 +587,9 @@ msgstr "टीआर्काइवआईडी"
 
 msgid "Upload successful!"
 msgstr "अपलोड सफल!"
+
+msgid "unknown"
+msgstr "अज्ञात"
+
+msgid "Type"
+msgstr "प्रकार"

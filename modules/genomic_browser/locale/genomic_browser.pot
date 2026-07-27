@@ -76,9 +76,6 @@ msgstr ""
 msgid "Gene Name"
 msgstr ""
 
-msgid "Type"
-msgstr ""
-
 msgid "Copy Number Change"
 msgstr ""
 
@@ -311,9 +308,6 @@ msgid "paternal"
 msgstr ""
 
 msgid "unclassified"
-msgstr ""
-
-msgid "unknown"
 msgstr ""
 
 msgid "Upload Successful!"

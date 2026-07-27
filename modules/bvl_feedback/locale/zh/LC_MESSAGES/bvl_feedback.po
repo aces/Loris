@@ -53,9 +53,6 @@ msgstr "反馈说明"
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr "PSCID {{PSCID}} 的反馈"
 
-msgid "Type"
-msgstr "类型"
-
 msgid "Author"
 msgstr "提交人"
 

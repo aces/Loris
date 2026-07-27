@@ -53,9 +53,6 @@ msgstr ""
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr ""
 
-msgid "Type"
-msgstr ""
-
 msgid "Author"
 msgstr ""
 
