@@ -148,13 +148,15 @@ function AddFilterModal(props: {
       <h3>{t('Criteria', {ns: 'dataquery'})}</h3>
       <div style={{display: 'flex'}}>
         <div style={{width: '20%'}}>
-          <FilterableSelectGroup groups={
-            {'Operators': getOperatorOptions(fieldDictionary, t)}
-          }
-          onChange={(value: string, operator: string) => {
-            setOp(operator as Operators);
-          }}
-          placeholder={t('Select an operator', {ns: 'dataquery'})}
+          <FilterableSelectGroup
+            key={fieldname}
+            groups={
+              {'Operators': getOperatorOptions(fieldDictionary, t)}
+            }
+            onChange={(value: string, operator: string) => {
+              setOp(operator as Operators);
+            }}
+            placeholder={t('Select an operator', {ns: 'dataquery'})}
           />
         </div>
         <div style={{width: '80%'}}>{valueSelect}</div>
