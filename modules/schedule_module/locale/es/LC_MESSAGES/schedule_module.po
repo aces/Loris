@@ -32,9 +32,6 @@ msgstr "Hora de la cita"
 msgid "Appointment Type"
 msgstr "Tipo de cita"
 
-msgid "AppointmentTypeName"
-msgstr "Nombre del tipo de cita"
-
 msgid "Edit"
 msgstr "Editar"
 

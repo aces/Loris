@@ -32,10 +32,6 @@ msgstr "Temps de rendez-vous"
 msgid "Appointment Type"
 msgstr "Type de rendez vous"
 
-#, fuzzy
-msgid "AppointmentTypeName"
-msgstr "Nom du type de rendez-vous"
-
 msgid "Edit"
 msgstr "Modifier"
 

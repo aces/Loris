@@ -31,10 +31,6 @@ msgstr "予約時間"
 msgid "Appointment Type"
 msgstr "予約の種類"
 
-# ???
-msgid "AppointmentTypeName"
-msgstr "予約タイプ名"
-
 msgid "Edit"
 msgstr "編集"
 
