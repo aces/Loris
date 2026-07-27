@@ -174,7 +174,7 @@ msgstr "Masquer les filtres avancés"
 
 #, fuzzy
 msgid "Pass"
-msgstr "Approuver"
+msgstr "Approuvé"
 
 msgid "Fail"
 msgstr "Echec"
