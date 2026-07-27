@@ -84,36 +84,37 @@ if (empty($_REQUEST['TN'])) {
     exit(0);
 }
 
-$instrumentExists = $db->pselectOne(
-    "SELECT 'x' FROM participant_accounts pa
-             JOIN session s ON s.ID = pa.SessionID
+$instrument_list = $db->pselect(
+    "SELECT tn.Test_name FROM flag f
+             JOIN session s on s.ID = f.SessionID
              JOIN candidate c ON c.ID = s.CandidateID
+             JOIN test_names tn ON tn.ID = f.TestID
              WHERE c.CandID=:v_CandID
              AND UPPER(s.Visit_label)=UPPER(:v_VL)
-             AND pa.Test_name=:v_TN
              AND s.Active='Y'",
     [
         'v_CandID' => $_REQUEST['dccid'],
         'v_VL'     => $_REQUEST['VL'],
-        'v_TN'     => $_REQUEST['TN'],
     ]
 );
-if ($instrumentExists === 'x') {
-    echo json_encode(
-        [
-            'error_msg' => dcngettext(
-                'loris',
-                'Instrument',
-                'Instruments',
-                1,
-                LC_MESSAGES
-            ).' '. $_REQUEST['TN'].' ' .dgettext(
-                'survey_accounts',
-                'already exists for given candidate for visit'
-            ).' '. $_REQUEST['VL'],
-        ]
-    );
-    exit(0);
+foreach ($instrument_list as $instrument) {
+    if ($_REQUEST['TN'] == $instrument['Test_name']) {
+        echo json_encode(
+            [
+                'error_msg' => dcngettext(
+                    'loris',
+                    'Instrument',
+                    'Instruments',
+                    1,
+                    LC_MESSAGES
+                ).' '. $_REQUEST['TN'].' ' .dgettext(
+                    'survey_accounts',
+                    'already exists for given candidate for visit'
+                ).' '. $_REQUEST['VL'],
+            ]
+        );
+        exit(0);
+    }
 }
 
 if (!empty($_REQUEST['Email']) ) {
@@ -128,5 +129,4 @@ if (!empty($_REQUEST['Email']) ) {
         exit(0);
     }
 }
-
 echo json_encode(['valid' => true]);
