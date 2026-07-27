@@ -28,7 +28,7 @@ msgstr "Cliquez pour ouvrir"
 
 #, fuzzy
 msgid "Stage Status"
-msgstr "Statue du stade"
+msgstr "Statut du stade"
 
 #, fuzzy
 msgid "Date of Stage"
