@@ -23,7 +23,7 @@ msgid "Document Repository"
 msgstr "文档库"
 
 msgid "Document Repository Notifications"
-msgstr "文档存通知"
+msgstr "文档库通知"
 
 msgid "Upload files"
 msgstr "上传文件"
@@ -59,7 +59,7 @@ msgid "Error reading response"
 msgstr "读取响应时出错"
 
 msgid "Please report the issue or contact your administrator"
-msgstr "请报告问题或联系您的管理员"
+msgstr "请报告问题或联系管理员"
 
 msgid "File too large"
 msgstr "文件太大"
@@ -71,25 +71,25 @@ msgid "Something went wrong"
 msgstr "出了点问题"
 
 msgid "Add Category"
-msgstr "添加类别"
+msgstr "添加分类"
 
 msgid "Add a category"
-msgstr "添加类别"
+msgstr "添加分类"
 
 msgid "Category Name"
-msgstr "类别名称"
+msgstr "分类名称"
 
 msgid "Parent"
-msgstr "父目录"
+msgstr "父分类"
 
 msgid "Category added successfully!"
-msgstr "类别添加成功！"
+msgstr "分类添加成功！"
 
 msgid "Error"
 msgstr "错误"
 
 msgid "Edit Document Repository File"
-msgstr "编辑文档存储库文件"
+msgstr "编辑文档库文件"
 
 msgid "File updated successfully!"
 msgstr "文件更新成功！"
@@ -98,28 +98,28 @@ msgid "Update File"
 msgstr "更新文件"
 
 msgid "Edit Category"
-msgstr "编辑类别"
+msgstr "编辑分类"
 
 msgid "Update Category"
-msgstr "更新类别"
+msgstr "更新分类"
 
 msgid "Change Name of a category"
-msgstr "更改类别名称"
+msgstr "更改分类名称"
 
 msgid "Category Name:"
-msgstr "类别名称："
+msgstr "分类名称："
 
 msgid "New Name for Category"
-msgstr "类别的新名称"
+msgstr "分类的新名称"
 
 msgid "New Parent:"
-msgstr "新父目录："
+msgstr "新父分类："
 
 msgid "Cannot be equal to itself"
 msgstr "不能等于自身"
 
 msgid "New parent cannot be equal to itself"
-msgstr "新的父目录不能等于它自己"
+msgstr "新父分类不能等于自身"
 
 msgid "Edit error!"
 msgstr "编辑错误！"
@@ -128,10 +128,10 @@ msgid "Edited Successful!"
 msgstr "编辑成功！"
 
 msgid "Delete Category"
-msgstr "删除类别"
+msgstr "删除分类"
 
 msgid "Delete a category"
-msgstr "删除类别"
+msgstr "删除分类"
 
 msgid "Delete error!"
 msgstr "删除错误！"
@@ -146,7 +146,7 @@ msgid "File Name"
 msgstr "文件名"
 
 msgid "For Site"
-msgstr "对于网站"
+msgstr "所属站点"
 
 msgid "File Type"
 msgstr "文件类型"

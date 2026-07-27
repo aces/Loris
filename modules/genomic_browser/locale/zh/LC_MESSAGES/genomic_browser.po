@@ -21,3 +21,6 @@ msgstr ""
 
 msgid "Genomic Browser"
 msgstr "基因组浏览器"
+
+msgid "Regulatory feat.:"
+msgstr "调控特征："

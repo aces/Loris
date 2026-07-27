@@ -338,7 +338,7 @@ msgid "Save"
 msgstr "保存"
 
 msgid "Saving"
-msgstr "保存"
+msgstr "保存中"
 
 msgid "Reset"
 msgstr "重置"
@@ -348,6 +348,24 @@ msgstr "笔记"
 
 msgid "View details"
 msgstr "查看详情"
+
+msgid "Created"
+msgstr "已创建"
+
+msgid "DoD"
+msgstr "死亡日期"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "Month"
+msgstr "月"
+
+msgid "Sent"
+msgstr "已发送"
+
+msgid "Update"
+msgstr "更新"
 
 # Data table strings
 msgid "No result found."
@@ -454,7 +472,7 @@ msgid "Error!"
 msgstr "错误！"
 
 msgid "Status"
-msgstr "地位"
+msgstr "状态"
 
 msgid "Incorrect username or password."
 msgstr "用户名或密码不正确。"

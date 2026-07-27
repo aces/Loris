@@ -26,7 +26,7 @@ msgid "My Tasks"
 msgstr "我的任务"
 
 msgid "Site: All"
-msgstr "地点：全部"
+msgstr "站点：全部"
 
 msgid "Site: All User Sites"
 msgstr "站点：所有用户站点"
