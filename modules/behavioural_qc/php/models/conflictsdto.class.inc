@@ -134,10 +134,10 @@ class ConflictsDTO implements \LORIS\Data\DataInstance,
     public function jsonSerialize() : array
     {
         return [
-            'instrument'        => $this->_instrument,
+            'instrument'        => dgettext('test_names', $this->_instrument),
             'candID'            => $this->_candID,
             'pscID'             => $this->_pscID,
-            'visit'             => $this->_visit,
+            'visit'             => dgettext('visit', $this->_visit),
             'project'           => $this->_project,
             'cohort'            => $this->_cohort,
             'site'              => $this->_site,

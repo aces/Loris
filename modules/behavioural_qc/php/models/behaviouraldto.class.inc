@@ -161,7 +161,10 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
             'feedback_level'  => $this->_feedback_level,
             'test_name'       => $this->_test_name,
             'field_name'      => $this->_field_name,
-            'feedback_status' => $this->_feedback_status,
+            'feedback_status' => dgettext(
+                'feedback_bvl_thread',
+                $this->_feedback_status
+            ),
         ];
     }
 }
