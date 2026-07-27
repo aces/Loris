@@ -48,5 +48,5 @@ msgstr ""
 msgid "Stage: %s"
 msgstr ""
 
-msgid "Start %s Stage"
+msgid "Start the \"%s\" Stage"
 msgstr ""

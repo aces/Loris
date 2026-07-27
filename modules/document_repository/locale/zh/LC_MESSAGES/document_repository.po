@@ -52,9 +52,6 @@ msgstr "上传文件"
 msgid "Uploading..."
 msgstr "正在上传..."
 
-msgid "Upload Successful!"
-msgstr "上传成功！"
-
 msgid "Upload Incomplete"
 msgstr "上传不完整"
 
@@ -147,9 +144,6 @@ msgstr "上传"
 
 msgid "File Name"
 msgstr "文件名"
-
-msgid "Uploaded By"
-msgstr "上传者"
 
 msgid "For Site"
 msgstr "对于网站"

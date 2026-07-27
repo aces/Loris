@@ -49,7 +49,7 @@ msgid "No actions"
 msgstr "Aucune action"
 
 msgid "Stage: %s"
-msgstr "Stade: %s"
+msgstr "Étape: %s"
 
-msgid "Start %s Stage"
-msgstr "Démarrer %s Stade"
+msgid "Start the \"%s\" Stage"
+msgstr "Débuter l'étape de la « %s »"

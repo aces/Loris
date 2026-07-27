@@ -71,12 +71,6 @@ msgid ""
 "You do not have access to any timepoints registered for this candidate."
 msgstr "您无权访问为此候选人注册的任何时间点。"
 
-msgid " y / "
-msgstr "年 /"
-
-msgid " m"
-msgstr "月"
-
 msgid "Not Done"
 msgstr "未完成"
 

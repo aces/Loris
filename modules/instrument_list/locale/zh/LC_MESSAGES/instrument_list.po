@@ -49,5 +49,5 @@ msgstr "没有动作"
 msgid "Stage: %s"
 msgstr "阶段：%s"
 
-msgid "Start %s Stage"
-msgstr "启动%s阶段"
+msgid "Start the \"%s\" Stage"
+msgstr "启动“%s”阶段"

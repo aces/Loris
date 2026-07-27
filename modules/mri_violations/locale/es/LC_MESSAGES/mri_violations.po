@@ -100,9 +100,6 @@ msgstr "Protocolos de estudio"
 msgid "Scan Problems"
 msgstr "Problemas de escaneo"
 
-msgid "Scan Type"
-msgstr "Tipo de escaneo"
-
 msgid "Severity"
 msgstr "Gravedad"
 
@@ -168,9 +165,6 @@ msgstr "picadillo"
 
 msgid "JoinID"
 msgstr "UnirseID"
-
-msgid "TarchiveID"
-msgstr "ID de archivo"
 
 msgid "Center Name"
 msgstr "Nombre del centro"

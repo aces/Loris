@@ -59,28 +59,39 @@ class ManageFileForm extends Component {
    * @param {string} type - type of pop-up warning
    */
   modifyFileStatus(type) {
+    const {t} = this.props;
     let text = {};
     if (type === 'hide') {
       text.warning
-        = 'Only you, and system administrators will be able to see this file!';
+        = t(
+          'Only you, and system administrators will be able to see this file!',
+          {ns: 'data_release'}
+        );
       text.confirmation = 'hidden';
     } else if (type === 'unhide') {
       text.warning
-        = 'Anyone with permission to this file will be able to see it.';
+        = t(
+          'Anyone with permission to this file will be able to see it.',
+          {ns: 'data_release'}
+        );
       text.confirmation = 'unhidden';
     } else if (type === 'delete') {
-      text.warning = 'This will permanently delete the file from the system!';
+      text.warning = t(
+        'This will permanently delete the file from the system!',
+        {ns: 'data_release'}
+      );
       text.confirmation = 'deleted';
     }
 
     swal
       .fire({
-        title: 'Are you sure?',
+        title: t('Are you sure?', {ns: 'loris'}),
         text: text.warning,
         type: 'warning',
         showCancelButton: true,
+        cancelButtonText: t('Cancel', {ns: 'loris'}),
         confirmButtonClass: 'btn-danger',
-        confirmButtonText: 'Yes, ' + type + ' it!',
+        confirmButtonText: t('Yes, ' + type + ' it!', {ns: 'data_release'}),
       })
       .then((result) => {
         if (result.value) {
@@ -93,7 +104,10 @@ class ManageFileForm extends Component {
             if (response.ok) {
               swal
                 .fire({
-                  text: 'File Successfully ' + text.confirmation,
+                  text: t(
+                    'File Successfully ' + text.confirmation,
+                    {ns: 'data_release'}
+                  ),
                   title: '',
                   type: 'success',
                 })
@@ -141,7 +155,7 @@ class ManageFileForm extends Component {
       <>
         {loris.userHasPermission('data_release_edit_file_access') && (
           <>
-            <h3>Add Permission</h3>
+            <h3>{t('Add Permission', {ns: 'data_release'})}</h3>
             <AddPermissionForm
               DataURL={this.props.DataURL}
               action={this.props.managePermissionActions + '?action=add'}
@@ -151,7 +165,7 @@ class ManageFileForm extends Component {
               data={this.state.data}
               fieldOptions={this.state.fieldOptions}
             />
-            <h3>Remove Permission</h3>
+            <h3>{t('Remove Permission', {ns: 'data_release'})}</h3>
             <FormElement
               name='Remove Permission'
               onSubmit={() => {
@@ -207,13 +221,14 @@ class ManageFileForm extends Component {
                 value={this.state.selectedUserToRemove}
                 sortByValue={true}
               />
-              <ButtonElement label='Remove Permission' />
+              <ButtonElement label={t('Remove Permission',
+                {ns: 'data_release'})} />
             </FormElement>
           </>
         )}
         {loris.userHasPermission('data_release_hide') && (
           <>
-            <h3>Modify Hidden File Status</h3>
+            <h3>{t('Modify Hidden File Status', {ns: 'data_release'})}</h3>
             {this.state.managingFile.hiddenById ? (
               <div
                 style={{
@@ -229,7 +244,7 @@ class ManageFileForm extends Component {
                   ]}.
                 </p>
                 <ButtonElement
-                  label='Unhide Release File'
+                  label={t('Unhide Release File', {ns: 'data_release'})}
                   onUserInput={() => {
                     this.modifyFileStatus('unhide');
                   }}
@@ -237,7 +252,7 @@ class ManageFileForm extends Component {
               </div>
             ) : (
               <ButtonElement
-                label='Hide Release File'
+                label={t('Hide Release File', {ns: 'data_release'})}
                 onUserInput={() => {
                   this.modifyFileStatus('hide');
                 }}
@@ -247,9 +262,9 @@ class ManageFileForm extends Component {
         )}
         {loris.userHasPermission('data_release_delete') && (
           <>
-            <h3>Delete File</h3>
+            <h3>{t('Delete File', {ns: 'data_release'})}</h3>
             <ButtonElement
-              label='Delete Release File'
+              label={t('Delete Release File', {ns: 'data_release'})}
               onUserInput={() => {
                 this.modifyFileStatus('delete');
               }}

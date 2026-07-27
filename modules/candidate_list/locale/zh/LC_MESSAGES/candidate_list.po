@@ -27,3 +27,21 @@ msgstr "访问次数"
 
 msgid "Open Profile"
 msgstr "打开资料"
+
+msgid "Scanner"
+msgstr "扫描仪"
+
+msgid "Human"
+msgstr "受试者"
+
+msgid "Opened"
+msgstr "已打开"
+
+msgid "Answered"
+msgstr "已回复"
+
+msgid "Closed"
+msgstr "关闭"
+
+msgid "Comment"
+msgstr "评论"

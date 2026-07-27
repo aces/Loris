@@ -27,9 +27,6 @@ msgstr ""
 msgid "Phantom Scans"
 msgstr ""
 
-msgid "File to Upload"
-msgstr ""
-
 msgid "Notes"
 msgstr ""
 
@@ -84,9 +81,6 @@ msgstr ""
 msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
 msgstr ""
 
-msgid "Upload Successful!"
-msgstr ""
-
 msgid "Processing of this file by the MRI pipeline has started"
 msgstr ""
 
@@ -130,7 +124,7 @@ msgstr ""
 msgid "{{successText}} ({{inserted}} out of {{created}})"
 msgstr ""
 
-msgid "{{numViolatedScans}} violated scans"
+msgid "({{numViolatedScans}} violated scans)"
 msgstr ""
 
 msgid "Tarchive Info"
@@ -144,7 +138,3 @@ msgstr ""
 
 msgid "Upload Date"
 msgstr ""
-
-msgid "Uploaded By"
-msgstr ""
-

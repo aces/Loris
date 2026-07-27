@@ -51,9 +51,6 @@ msgstr "निर्माण तिथि"
 msgid "Last Update"
 msgstr "अंतिम अपडेट"
 
-msgid "SessionID"
-msgstr "सत्र आईडी"
-
 msgid "Watching"
 msgstr "देख रहे हैं"
 
@@ -300,9 +297,6 @@ msgstr "संलग्नक इतिहास"
 
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr "कृपया \"{{fileName}}\" संलग्नक को हटाने के अनुरोध की पुष्टि करें"
-
-msgid "Upload Successful!"
-msgstr "अपलोड सफल!"
 
 msgid "Upload error!"
 msgstr "अपलोड त्रुटि!"

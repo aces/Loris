@@ -55,7 +55,7 @@ msgstr "नोट्स"
 msgid "It is recommended to use an email address as the username, for clarity and uniqueness."
 msgstr "स्पष्टता और अद्वितीयता के लिए उपयोगकर्ता नाम के रूप में ईमेल पते का उपयोग करने की अनुशंसा की जाती है।"
 
-msgid "When generating a new password, please notify the user by checking 'Send email to user' box"
+msgid "When generating a new password, please notify the user by checking 'Send email to user' box below!"
 msgstr "नया पासवर्ड बनाते समय, कृपया 'उपयोगकर्ता को ईमेल भेजें' बॉक्स को चुनकर उपयोगकर्ता को सूचित करें।"
 
 msgid "You must leave the password field empty if you want the system to generate one for you"

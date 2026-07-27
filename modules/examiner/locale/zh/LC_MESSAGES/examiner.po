@@ -84,3 +84,9 @@ msgstr "新日期"
 
 msgid "No changes have been made"
 msgstr "没有做出任何改变"
+
+msgid "Permission denied: You cannot assign examiner to this Site."
+msgstr "权限被拒绝：您无法将检查员分配到此站点。"
+
+msgid "This examiner already exists."
+msgstr "该检查员已存在。"

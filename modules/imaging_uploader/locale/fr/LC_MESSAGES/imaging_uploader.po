@@ -30,10 +30,6 @@ msgstr "Téléverser un scan d'imagerie"
 msgid "Phantom Scans"
 msgstr "Scans fantômes"
 
-#, fuzzy
-msgid "File to Upload"
-msgstr "Sélectionner un fichier à téléverser"
-
 msgid "Notes"
 msgstr "Notes"
 
@@ -106,10 +102,6 @@ msgid "A file with this name has been uploaded but has not yet been processed by
 msgstr "Un fichier portant ce nom a été téléversé, mais n'a pas encore été traité par le pipeline IRM. Souhaitez-vous remplacer le fichier existant ?"
 
 #, fuzzy
-msgid "Upload Successful!"
-msgstr "Téléversement réussi !"
-
-#, fuzzy
 msgid "Processing of this file by the MRI pipeline has started"
 msgstr "Le traitement de ce fichier par le pipeline IRM a commencé."
 
@@ -148,7 +140,7 @@ msgstr "Détaillé"
 
 #, fuzzy
 msgid "<select a row in the table below to view the upload logs>"
-msgstr "<select a row in the table below to view the upload logs>"
+msgstr "<sélectionnez une ligne dans le tableau ci-dessous pour afficher les journaux de téléversement>"
 
 #, fuzzy
 msgid "Number Of Files Created"
@@ -163,8 +155,8 @@ msgid "{{successText}} ({{inserted}} out of {{created}})"
 msgstr "{{successText}} ({{inserted}} sur {{created}})"
 
 #, fuzzy
-msgid "{{numViolatedScans}} violated scans"
-msgstr "{{numViolatedScans}} scans non conformes"
+msgid "({{numViolatedScans}} violated scans)"
+msgstr "({{numViolatedScans}} scans non conformes)"
 
 #, fuzzy
 msgid "Tarchive Info"
@@ -178,6 +170,3 @@ msgstr "Emplacement de téléversement"
 
 msgid "Upload Date"
 msgstr "Date d'importation"
-
-msgid "Uploaded By"
-msgstr "Téléversé par"

@@ -58,9 +58,6 @@ msgstr "ファイル名は次の形式である必要があります"
 msgid "The file does not respect name convention"
 msgstr "ファイルは命名規則に従っていません"
 
-msgid "Upload Successful!"
-msgstr "アップロード成功しました!"
-
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr "電気生理学パイプラインによるこのファイルの処理が開始されました。"
 
@@ -84,6 +81,3 @@ msgstr "アップロード時間"
 
 msgid "Status"
 msgstr "状態"
-
-msgid "Uploaded By"
-msgstr "アップロード者"

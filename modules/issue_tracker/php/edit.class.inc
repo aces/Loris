@@ -158,7 +158,10 @@ class Edit extends \NDB_Page implements ETagCalculator
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
-                $categories[$categoryName] = $categoryName;
+                $categories[$categoryName] = dgettext(
+                    "issues_categories",
+                    $categoryName,
+                );
             }
         }
 
@@ -739,7 +742,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         $values = $request->getParsedBody();
         if (!is_array($values)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                dgettext('issue_tracker', 'Invalid request')
             );
         }
 
@@ -771,7 +774,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             && $values['reporter'] === $user->getUserName()))
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'User does not have permission to edit issues.'
+                dgettext(
+                    'issue_tracker',
+                    'User does not have permission to edit issues.'
+                )
             );
         }
 
@@ -868,11 +874,6 @@ class Edit extends \NDB_Page implements ETagCalculator
             $db->unsafeInsert('issues', $issueValues);
             $issueID = intval($db->getLastInsertId());
         }
-
-        // convert the aspect of 'lastUpdatedBy' to Fullname
-        // once the db has registered the username (userID)
-        $issueValues['lastUpdatedBy']
-            = $this->formatUserInformation($user->getUserName());
 
         $this->updateHistory($historyValues, $issueID, $user);
         $this->updateComments($values['comment'], $issueID, $user);
@@ -1188,7 +1189,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'PSCID and Center ID do not match a valid session!'
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID and Center ID do not match a valid session!'
+                    dgettext(
+                        'issue_tracker',
+                        'PSCID and Center ID do not match a valid session!'
+                    )
                 );
             }
         }
@@ -1215,7 +1219,11 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'PSCID and Visit Label do not match a valid candidate session!'
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID and Visit Label do not match a valid candidate session!'
+                    dgettext(
+                        'issue_tracker',
+                        'PSCID and Visit Label do not match a valid candidate'
+                        . ' session!'
+                    )
                 );
             }
             return $result;
@@ -1240,7 +1248,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'PSCID does not match a valid candidate!'
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID does not match a valid candidate!'
+                    dgettext(
+                        'issue_tracker',
+                        'PSCID does not match a valid candidate!'
+                    )
                 );
             }
 
@@ -1254,7 +1265,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                 'Visit Label must be accompanied by a PSCID'
             );
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Visit Label must be accompanied by a PSCID'
+                dgettext(
+                    'issue_tracker',
+                    'Visit Label must be accompanied by a PSCID'
+                )
             );
         }
         return $result;

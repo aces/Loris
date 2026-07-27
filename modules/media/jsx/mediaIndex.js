@@ -212,6 +212,7 @@ class MediaIndex extends Component {
       {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'select',
+        sortByValue: false,
         options: options.visits,
       }},
       {label: t('Language', {ns: 'loris'}), show: true, filter: {
@@ -234,7 +235,7 @@ class MediaIndex extends Component {
         type: 'select',
         options: options.projects,
       }},
-      {label: t('Uploaded By', {ns: 'media'}), show: true, filter: {
+      {label: t('Uploaded By', {ns: 'loris'}), show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
       }},
@@ -247,7 +248,7 @@ class MediaIndex extends Component {
         options: options.fileTypes,
       }},
       {label: t('CandID', {ns: 'media'}), show: false},
-      {label: t('SessionID', {ns: 'media'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('File Visibility', {ns: 'media'}), show: false, filter: {
         name: 'fileVisibility',
         type: 'select',

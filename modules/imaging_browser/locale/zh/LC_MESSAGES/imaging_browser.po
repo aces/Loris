@@ -75,17 +75,11 @@ msgstr "新数据"
 msgid "Links"
 msgstr "链接"
 
-msgid "SessionID"
-msgstr "会话ID"
-
 msgid "Sequence Type"
 msgstr "序列类型"
 
 msgid "Pending New"
 msgstr "待处理"
-
-msgid "QC Status"
-msgstr "质量控制状态"
 
 msgid "Caveat"
 msgstr "注意事项"

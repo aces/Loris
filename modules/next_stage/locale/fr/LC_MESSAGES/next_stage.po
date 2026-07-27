@@ -28,13 +28,13 @@ msgid "Start Next Stage"
 msgstr "Commencer l'étape suivante"
 
 msgid "Date of %s"
-msgstr "Date du %s"
+msgstr "Date de la %s"
 
 msgid "Retype Date of %s"
-msgstr "Saisir à nouveau la date du %s"
+msgstr "Saisir à nouveau la date de la %s"
 
 msgid "Start %s"
-msgstr "Démarrer le %s"
+msgstr "Démarrer la %s"
 
 msgid "CohortID:"
 msgstr "Identifiant de cohorte :"
@@ -56,7 +56,7 @@ msgid "Date of Visit is less than Date of Birth/EDC."
 msgstr "La date de la visite est antérieure à la date de naissance/DPA."
 
 msgid "Next stage started."
-msgstr "La prochaine étape a commencé."
+msgstr "La prochaine étape a été initiée."
 
 msgid "Click here to continue."
 msgstr "Appuyez ici pour continuer."

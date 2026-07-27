@@ -54,10 +54,6 @@ msgstr "Téléverser fichier(s)"
 msgid "Uploading..."
 msgstr "Téléversement..."
 
-#, fuzzy
-msgid "Upload Successful!"
-msgstr "Téléversement réussi!"
-
 msgid "Upload Incomplete"
 msgstr "Téléversement incomplet"
 
@@ -164,9 +160,6 @@ msgstr "Téléverser"
 
 msgid "File Name"
 msgstr "Nom du fichier"
-
-msgid "Uploaded By"
-msgstr "Téléverser par"
 
 #, fuzzy
 msgid "For Site"

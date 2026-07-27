@@ -58,9 +58,6 @@ msgstr "文件名应采用以下形式"
 msgid "The file does not respect name convention"
 msgstr "该文件不遵守名称约定"
 
-msgid "Upload Successful!"
-msgstr "上传成功！"
-
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr "EEG 管道已开始处理此文件"
 
@@ -84,6 +81,3 @@ msgstr "上传时间"
 
 msgid "Status"
 msgstr "状态"
-
-msgid "Uploaded By"
-msgstr "上传者"

@@ -33,12 +33,8 @@ msgstr "Titre"
 msgid "Could not update {{name}}."
 msgstr "Impossible de mettre à jour {{name}}."
 
-msgid "Updated {{name}} status!"
-msgstr "Statut du module {{name}} mis à jour !"
-
-#, fuzzy
-msgid "To apply changes the interface must be reloaded. Proceed?"
-msgstr "Pour appliquer les modifications, l'interface doit être actualisée."
+msgid "Updated {{name}} status! To apply changes the interface must be reloaded. Proceed?"
+msgstr "Statut du module {{name}} mis à jour ! Pour appliquer les modifications, l'interface doit être actualisée."
 
 msgid "Reload the page"
 msgstr "Recharger la page actuelle"

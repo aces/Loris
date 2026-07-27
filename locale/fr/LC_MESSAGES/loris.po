@@ -267,21 +267,6 @@ msgstr "Date de décès"
 msgid "Sex"
 msgstr "Sexe"
 
-msgid "Female"
-msgid_plural "Females"
-msgstr[0] "Femme"
-msgstr[1] "Femmes"
-
-msgid "Male"
-msgid_plural "Males"
-msgstr[0] "Homme"
-msgstr[1] "Hommes"
-
-msgid "Other"
-msgid_plural "Others"
-msgstr[0] "Autre"
-msgstr[1] "Autres"
-
 msgid "Feedback"
 msgstr "Commentaires"
 
@@ -326,7 +311,7 @@ msgstr "Type d’entité"
 
 #, fuzzy
 msgid "Scan Done"
-msgstr "Scan terminé"
+msgstr "Scan d’imagerie complété"
 
 msgid "Language"
 msgstr "Langage"
@@ -587,14 +572,15 @@ msgstr "{{months}} mois"
 msgid "{{years}} years old"
 msgstr "{{years}} ans"
 
+msgid "%d y / %d m"
+msgstr "%d a / %d m"
+
+
 # Other generic terms
 msgid "Loading..."
 msgstr "Chargement en cours..."
 
 msgid "Permission denied"
-msgstr "Permission refusée"
-
-msgid "Permission Denied"
 msgstr "Permission refusée"
 
 msgid "Unauthorized"
@@ -630,3 +616,24 @@ msgstr "Mois"
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr "Aucune option"
+
+msgid "Submission Successful!"
+msgstr "Soumission réussie!"
+ 
+msgid "Scan Type"
+msgstr "Type de scan"
+
+msgid "SessionID"
+msgstr "Identifiant de session"
+
+msgid "Uploaded By"
+msgstr "Téléversé par"
+
+msgid "QC Status"
+msgstr "État du contrôle qualité"
+
+msgid "TarchiveID"
+msgstr "Identifiant de tarchive"
+
+msgid "Upload successful!"
+msgstr "Téléversement réussi!"

@@ -55,9 +55,6 @@ msgstr ""
 msgid "Last Update"
 msgstr ""
 
-msgid "SessionID"
-msgstr ""
-
 msgid "Watching"
 msgstr ""
 
@@ -213,9 +210,6 @@ msgstr[0] ""
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr ""
 
-msgid "Upload Successful!"
-msgstr ""
-
 msgid "Upload error!"
 msgstr ""
 
@@ -343,4 +337,49 @@ msgid " to "
 msgstr ""
 
 msgid "Submit Comment"
+msgstr ""
+
+msgid "Invalid request"
+msgstr ""
+
+msgid "PSCID and Center ID do not match a valid session!"
+msgstr ""
+
+msgid "PSCID and Visit Label do not match a valid candidate session!"
+msgstr ""
+
+msgid "PSCID does not match a valid candidate!"
+msgstr ""
+
+msgid "Visit Label must be accompanied by a PSCID"
+msgstr ""
+
+msgid "Invalid Permissions"
+msgstr ""
+
+msgid "User does not have permission to edit issues."
+msgstr ""
+
+msgid "No comments available."
+msgstr ""
+
+msgid "acknowledged"
+msgstr ""
+
+msgid "assigned"
+msgstr ""
+
+msgid "feedback"
+msgstr ""
+
+msgid "new"
+msgstr ""
+
+msgid "resolved"
+msgstr ""
+
+msgid "closed"
+msgstr ""
+
+msgid "Uncategorized"
 msgstr ""

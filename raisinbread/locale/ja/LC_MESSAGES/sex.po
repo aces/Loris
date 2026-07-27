@@ -21,4 +21,3 @@ msgstr "男の人"
 
 msgid "Other"
 msgstr "不明"
-

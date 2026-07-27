@@ -51,9 +51,6 @@ msgstr "फ़ाइल(ें) अपलोड करें"
 msgid "Uploading..."
 msgstr "अपलोड हो रहा है..."
 
-msgid "Upload Successful!"
-msgstr "अपलोड सफल रहा!"
-
 msgid "Upload Incomplete"
 msgstr "अपलोड अधूरा है"
 
@@ -68,9 +65,6 @@ msgstr "फ़ाइल बहुत बड़ी है"
 
 msgid "Could not upload file"
 msgstr "फ़ाइल अपलोड नहीं हो सकी"
-
-msgid "Permission denied"
-msgstr "अनुमति अस्वीकृत"
 
 msgid "Something went wrong"
 msgstr "कुछ गलत हो गया"
@@ -146,9 +140,6 @@ msgstr "हटाना सफल रहा!"
 
 msgid "File Name"
 msgstr "फ़ाइल का नाम"
-
-msgid "Uploaded By"
-msgstr "द्वारा अपलोड किया गया"
 
 msgid "For Site"
 msgstr "साइट के लिए"

@@ -31,9 +31,6 @@ msgstr "文件名"
 msgid "Instrument"
 msgstr "量表/评估工具"
 
-msgid "Uploaded By"
-msgstr "上传者"
-
 msgid "Date Taken"
 msgstr "拍摄日期"
 
@@ -48,9 +45,6 @@ msgstr "文件类型"
 
 msgid "CandID"
 msgstr "坦率"
-
-msgid "SessionID"
-msgstr "会话ID"
 
 msgid "File Visibility"
 msgstr "文件可见性"
