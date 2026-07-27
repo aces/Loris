@@ -535,3 +535,6 @@ msgstr ""
 
 msgid "or"
 msgstr ""
+
+msgid "Show candidates with no data"
+msgstr ""

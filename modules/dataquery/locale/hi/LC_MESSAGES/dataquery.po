@@ -531,3 +531,6 @@ msgstr "अमान्य उत्तर"
 
 msgid "Invalid tab"
 msgstr "अमान्य टैब"
+
+msgid "Show candidates with no data"
+msgstr "बिना डेटा वाले उम्मीदवार दिखाएँ"
