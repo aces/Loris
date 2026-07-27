@@ -148,7 +148,7 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
     public function jsonSerialize() : array
     {
         return [
-            'instrument'      => $this->_instrument,
+            'instrument'      => dgettext('test_names', $this->_instrument),
             'candID'          => $this->_candID,
             'pscID'           => $this->_pscID,
             'visit'           => $this->_visit,
