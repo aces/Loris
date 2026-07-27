@@ -217,7 +217,7 @@ msgstr "Libellé de visite"
 
 #, fuzzy
 msgid "Email"
-msgstr "Adresse E-mail"
+msgstr "Adresse courriel"
 
 msgid "Site"
 msgid_plural "Sites"
@@ -400,7 +400,7 @@ msgid "Data Supervisors to Email"
 msgstr "Superviseurs des données à contacter par e-mail"
 
 msgid "Invalid email address"
-msgstr "Adresse email non valide"
+msgstr "Adresse courriel non valide"
 
 # Common strings on widgets
 msgid "NEW"
@@ -437,7 +437,7 @@ msgid "Last name is required and should not exceed 120 characters"
 msgstr "Le nom de famille est obligatoire et ne doit pas dépasser 120 caractères."
 
 msgid "Email address"
-msgstr "Adresse email"
+msgstr "Adresse courriel"
 
 msgid "New Password"
 msgstr "Nouveau mot de passe"
