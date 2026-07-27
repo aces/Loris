@@ -13,7 +13,7 @@ msgstr ""
 "PO-Revision-Date: 2025-12-09 10:55-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: fr\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,95 +21,88 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Schedule Appointment"
-msgstr "Planifier un Rendez-vous"
+msgstr "Programar una cita"
 
 msgid "Appointment Date"
-msgstr "Date de rendez-vous"
+msgstr "Fecha de la cita"
 
 msgid "Appointment Time"
-msgstr "Temps de rendez-vous"
+msgstr "Hora de la cita"
 
 msgid "Appointment Type"
-msgstr "Type de rendez vous"
+msgstr "Tipo de cita"
 
 msgid "Edit"
-msgstr "Modifier"
+msgstr "Editar"
 
 msgid "Delete"
-msgstr "Supprimer"
+msgstr "Eliminar"
 
-#, fuzzy
 msgid "Data Entry Status"
-msgstr "Statut de double entrée des données"
+msgstr "Estado de la entrada de datos"
 
 msgid "Complete"
-msgstr "Complète"
+msgstr "Completo"
 
 msgid "No Data Found"
-msgstr "Aucune donnée trouvée"
+msgstr "No se encontraron datos"
 
 msgid "Not Started"
-msgstr "Non commencé"
+msgstr "No iniciado"
 
 msgid "Edit Appointment"
-msgstr "Éditer le rendez-vous"
+msgstr "Editar cita"
 
 msgid "Create Appointment"
-msgstr "Créer un rendez-vous"
+msgstr "Crear una cita"
 
 msgid "Add Appointment"
-msgstr "Ajouter un rendez-vous"
+msgstr "Agregar una cita"
 
 msgid "All"
-msgstr "Tout"
+msgstr "Todos"
 
 msgid "Past"
-msgstr "Passé"
+msgstr "Pasadas"
 
 msgid "Next 30 Days"
-msgstr "Prochain 30 jours"
+msgstr "Próximos 30 días"
 
 msgid "Today"
-msgstr "Aujourd’hui"
+msgstr "Hoy"
 
-#, fuzzy
 msgid "Appointment modified."
-msgstr "Rendez-vous modifié."
+msgstr "La cita ha sido modificada."
 
-#, fuzzy
 msgid "Appointment added."
-msgstr "Rendez-vous ajouté."
+msgstr "La cita ha sido agregada."
 
 msgid "Success!"
-msgstr "Réussi !"
+msgstr "¡Éxito!"
 
-#, fuzzy
 msgid "No changes were made!"
-msgstr "Aucune modification n'a été apportée !"
+msgstr "¡No se realizaron cambios!"
 
 msgid "You won't be able to revert this!"
-msgstr "Vous ne pourrez pas revenir en arrière !"
+msgstr "¡No podrás revertir esta acción!"
 
 msgid "Yes, delete it!"
-msgstr "Oui, supprimer !"
+msgstr "¡Sí, eliminar!"
 
 msgid "Deleted!"
-msgstr "Supprimés!"
+msgstr "¡Eliminado!"
 
-#, fuzzy
 msgid "Your appointment has been deleted."
-msgstr "Votre rendez-vous a été supprimé."
+msgstr "Tu cita ha sido eliminada."
 
-#, fuzzy
 msgid "Starts At"
-msgstr "Commence à"
+msgstr "Hora de inicio"
 
 msgid "Date"
-msgstr "Date"
+msgstr "Fecha"
 
 msgid "Time"
-msgstr "Heure"
+msgstr "Hora"
 
-#, fuzzy
 msgid "Appointment Type Name"
-msgstr "Nom du type de rendez-vous"
+msgstr "Nombre del tipo de cita"

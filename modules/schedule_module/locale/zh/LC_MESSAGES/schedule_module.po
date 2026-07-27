@@ -31,10 +31,6 @@ msgstr "预约时间"
 msgid "Appointment Type"
 msgstr "预约类型"
 
-# ???
-msgid "AppointmentTypeName"
-msgstr "预约类型名称"
-
 msgid "Edit"
 msgstr "编辑"
 

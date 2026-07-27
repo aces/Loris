@@ -31,10 +31,6 @@ msgstr "予約時間"
 msgid "Appointment Type"
 msgstr "予約の種類"
 
-# ???
-msgid "AppointmentTypeName"
-msgstr ""
-
 msgid "Edit"
 msgstr "編集"
 
@@ -99,7 +95,7 @@ msgid "Your appointment has been deleted."
 msgstr "予約は削除されました。"
 
 msgid "Starts At"
-msgstr "開始価格"
+msgstr "開始時刻"
 
 msgid "Date"
 msgstr "日付"
