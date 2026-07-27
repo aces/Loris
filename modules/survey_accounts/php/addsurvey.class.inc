@@ -379,5 +379,25 @@ class AddSurvey extends \NDB_Form
             ]
         );
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    #[\Override]
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                dgettext("survey_accounts", "Survey Accounts"),
+                "/survey_accounts/"
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("survey_accounts", "Add Survey"),
+                ""
+            )
+        );
+    }
 }
 
