@@ -138,3 +138,12 @@ msgstr ""
 
 msgid "Upload Date"
 msgstr ""
+
+msgid "Invalid PSCID %s for CandID %s. Check that you entered the correct PSCID and CandID."
+msgstr ""
+
+msgid "Invalid Visit Label %s for CandID %s. Check that you entered the correct Visit Label and CandID."
+msgstr ""
+
+msgid "The session associated with CandID %s and Visit Label %s is not active in the database."
+msgstr ""

@@ -170,3 +170,12 @@ msgstr "Emplacement de téléversement"
 
 msgid "Upload Date"
 msgstr "Date d'importation"
+
+msgid "Invalid PSCID %s for CandID %s. Check that you entered the correct PSCID and CandID."
+msgstr "Le PSCID %s est invalide pour le CandID %s. Vérifiez que vous avez saisi le bon PSCID et le bon CandID."
+
+msgid "Invalid Visit Label %s for CandID %s. Check that you entered the correct Visit Label and CandID."
+msgstr "L'étiquette de visite %s est invalide pour le CandID %s. Vérifiez que vous avez saisi la bonne étiquette de visite et le bon CandID."
+
+msgid "The session associated with CandID %s and Visit Label %s is not active in the database."
+msgstr "La session associée au CandID %s et à l'étiquette de visite %s n'est pas active dans la base de données."

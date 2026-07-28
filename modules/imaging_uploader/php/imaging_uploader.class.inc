@@ -408,20 +408,32 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     if (!$candidate['candid_with_pscid']) {
                         array_push(
                             $errors["pSCID"],
-                            "Invalid PSCID " . $pscid .
-                             " for CandID " . $candid .
-                             ". Check that you entered the correct" .
-                             " PSCID and CandID."
+                            sprintf(
+                                dgettext(
+                                    "imaging_uploader",
+                                    "Invalid PSCID %s for CandID %s. Check"
+                                        . " that you entered the correct PSCID"
+                                        . " and CandID."
+                                ),
+                                $pscid,
+                                $candid
+                            )
                         );
                     }
                     if (!$candidate['visit_label']) {
                             array_push(
                                 $errors["visitLabel"],
-                                "Invalid Visit Label " . $visit_label .
-                                " for CandID " . $candid .
-                                ". Check that you entered the correct" .
-                                " Visit Label and CandID."
-                            );
+                            sprintf(
+                                dgettext(
+                                    "imaging_uploader",
+                                    "Invalid Visit Label %s for CandID %s."
+                                        . " Check that you entered the correct"
+                                        . " Visit Label and CandID."
+                                ),
+                                $visit_label,
+                                $candid
+                            )
+                        );
                     }
                     if ($advancedperms === 'true') {
                         // Basic fields have been validated, check user permisions
@@ -449,10 +461,16 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     if ($candidate['session_active'] == 'N') {
                         array_push(
                             $errors["visitLabel"],
-                            "The session associated with CandID " .
-                            $candid . " and Visit Label " .
-                            $visit_label . " is not active in".
-                            " the database."
+                            sprintf(
+                                dgettext(
+                                    "imaging_uploader",
+                                    "The session associated with CandID %s and"
+                                        . " Visit Label %s is not active in the"
+                                        . " database."
+                                ),
+                                $candid,
+                                $visit_label
+                            )
                         );
                     }
                 }
