@@ -12,23 +12,22 @@ window.addEventListener('load', () => {
     let candidate = null;
 
     function fetchProfileData(url) {
-        let response = fetch(loris.BaseURL + '/api/v0.0.3/' + url, {
+        return fetch(loris.BaseURL + '/api/v0.0.3/' + url, {
             cache: 'no-cache',
             credentials: 'same-origin',
         });
-        if (!response.ok) {
-            throw new Error('Failed to load candidate (' + response.status + ')');
-        }
-        return response;
     }
 
     async function loadCandidate() {
         let response = await fetchProfileData(
             'candidates/{$candidate->getCandID()}'
         );
-        let data = await response.json();
-        candidate = data;
-        return data;
+        if (!response.ok) {
+            return new Error('Failed to load candidate (' + response.status + ')');
+        } else {
+            let data = await response.json();
+            return data;
+        }
     };
 
     async function loadVisits(candidate) {
@@ -37,7 +36,7 @@ window.addEventListener('load', () => {
                 'candidates/' + candidate.Meta.CandID + '/' + visit
             );
             if (!response.ok) {
-              return new Error('Permission denied');
+              return new Error('Failed to load visit (' + response.status + ')');
             } else {
               let data = await response.json();
               return data;
