@@ -64,9 +64,6 @@ msgstr "問題を報告するか、管理者に連絡してください"
 msgid "File too large"
 msgstr "ファイルが大きすぎます"
 
-msgid "Could not upload file"
-msgstr "ファイルをアップロードできませんでした"
-
 msgid "Something went wrong"
 msgstr "問題が発生しました"
 

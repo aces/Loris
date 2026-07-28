@@ -616,3 +616,6 @@ msgstr "未知"
 
 msgid "Type"
 msgstr "类型"
+
+msgid "Could not upload file"
+msgstr "无法上传文件"

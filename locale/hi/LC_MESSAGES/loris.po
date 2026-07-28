@@ -593,3 +593,6 @@ msgstr "अज्ञात"
 
 msgid "Type"
 msgstr "प्रकार"
+
+msgid "Could not upload file"
+msgstr "फ़ाइल अपलोड नहीं हो सकी"

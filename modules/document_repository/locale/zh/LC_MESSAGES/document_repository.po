@@ -64,9 +64,6 @@ msgstr "请报告问题或联系管理员"
 msgid "File too large"
 msgstr "文件太大"
 
-msgid "Could not upload file"
-msgstr "无法上传文件"
-
 msgid "Something went wrong"
 msgstr "出了点问题"
 

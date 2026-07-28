@@ -617,3 +617,6 @@ msgstr "不明"
 
 msgid "Type"
 msgstr "タイプ"
+
+msgid "Could not upload file"
+msgstr "ファイルをアップロードできませんでした"

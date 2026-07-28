@@ -615,3 +615,27 @@ msgstr ""
 
 msgid "Type"
 msgstr ""
+
+msgid "Upload directory is not a directory"
+msgstr ""
+
+msgid "Upload directory is not writable"
+msgstr ""
+
+msgid "Upload directory is not writable"
+msgstr ""
+
+msgid "Path traversal not allowed"
+msgstr ""
+
+msgid "This file has already been uploaded."
+msgstr ""
+
+msgid "File type not allowed"
+msgstr ""
+
+msgid "Could not upload file"
+msgstr ""
+
+msgid "Could not upload file: "
+msgstr ""
