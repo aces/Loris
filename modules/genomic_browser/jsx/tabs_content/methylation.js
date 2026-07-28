@@ -102,7 +102,8 @@ class Methylation extends Component {
               <span key={i}>
                 <a
                   href={
-                    `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${val}`
+                    'https://genome.ucsc.edu/cgi-bin/' +
+                    `hgTracks?db=hg19&position=${val}`
                   }
                   target="_blank"
                   rel="noopener noreferrer"
