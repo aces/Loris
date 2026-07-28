@@ -384,7 +384,10 @@ function ViewData(props: {
           rowNumLabel={t('Row Number')}
           fields={organizedData.headers.map(
             (val: string) => {
-              return {show: true, label: val};
+              return {
+                show: true,
+                label: <div className="header-text">{val}</div>,
+              };
             })
           }
           data={organizedData.data}
@@ -436,7 +439,21 @@ function ViewData(props: {
       }
     />
     : <div />);
-  return <div>
+  return <div className='dataquery-view-container'>
+    <style>{`
+      .dataquery-view-container .header-text {
+        max-height: 250px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 12;
+        display: -webkit-box;
+      }
+      .dataquery-view-container table th,
+      .dataquery-view-container table td {
+        min-width: 150px;
+      }
+    `}</style>
     <SelectElement
       name='headerdisplay'
       options={{
