@@ -260,6 +260,34 @@ table th {
     font-weight: bold;
 }
 
+.table-row-selected {
+    background-color: rgb(255 165 0 / 10%) !important; /* Light orange tint */
+}
+
+/* Ensure the actions column stays at the end and doesn't wrap */
+.actions-column, .row-quick-actions {
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.row-quick-actions {
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.2s ease-in-out;
+    text-align: right;
+}
+
+/* Show actions when the specific row is hovered */
+tr:hover .row-quick-actions {
+    opacity: 1;
+}
+
+/* Optional: Make quick action buttons slightly smaller than header buttons */
+.row-quick-actions .btn {
+    padding: 2px 8px;
+    margin-left: 5px;
+}
+
 /*
  *	CSS for the footer
  */

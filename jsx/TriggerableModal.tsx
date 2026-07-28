@@ -7,6 +7,8 @@ interface TriggerableModalProps extends Omit<ModalProps, 'show' | 'onClose'> {
   onClose?: ModalProps['onClose'];
   onUserInput?: () => void; // Optional callback when the trigger is activated
   TriggerTag?: ElementType; // Custom component for the modal trigger
+  disabled?: boolean;
+  tooltip?: string;
 }
 
 /**
@@ -14,11 +16,20 @@ interface TriggerableModalProps extends Omit<ModalProps, 'show' | 'onClose'> {
  *
  * Renders a modal triggered by a custom or default CTA component, with `show`
  * controlled internally.
+ *
+ * @param root0 - props
+ * @param root0.label - Label for the default CTA trigger button
+ * @param root0.onUserInput - Optional callback when the trigger is activated
+ * @param root0.TriggerTag - Custom component for the modal trigger
+ * @param root0.disabled - disabled state of trigger
+ * @param root0.tooltip - tooltip for trigger
  */
 const TriggerableModal = ({
   label,
   onUserInput,
   TriggerTag = Form.CTA, // Default trigger component is CTA
+  disabled = false, // Destructure with default
+  tooltip = '', // Destructure with default
   ...modalProps // Spread other modal-related props to pass to Modal
 }: TriggerableModalProps) => {
   const [open, setOpen] = useState(false);
@@ -39,6 +50,8 @@ const TriggerableModal = ({
   const trigger = (
     <TriggerTag
       label={label}
+      title={tooltip}
+      disabled={disabled}
       onUserInput={() => {
         onUserInput?.(); // Call onUserInput if it exists
         setOpen(true); // Open the modal

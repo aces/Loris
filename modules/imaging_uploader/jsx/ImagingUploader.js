@@ -19,7 +19,6 @@ class ImagingUploader extends Component {
    */
   constructor(props) {
     super(props);
-    loris.hiddenHeaders = ['PatientName', 'SessionID'];
 
     this.state = {
       isLoaded: false,
@@ -51,9 +50,7 @@ class ImagingUploader extends Component {
   }
 
   /**
-   * Retrive data from the provided URL and save it in state
-   * Additionaly add hiddenHeaders to global loris vairable
-   * for easy access by columnFormatter.
+   * Retrive data from the provided URL and save it in state.
    */
   fetchData() {
     fetch(this.props.DataURL, {
@@ -102,11 +99,6 @@ class ImagingUploader extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    // If a column if set as hidden, don't display it
-    if (loris.hiddenHeaders.indexOf(column) > -1) {
-      return null;
-    }
-
     // Create the mapping between rowHeaders and rowData in a row object.
     let row = {};
     rowHeaders.forEach((header, index) => {
@@ -300,7 +292,6 @@ class ImagingUploader extends Component {
               )}
               getFormattedCell={this.formatColumn}
               filters={this.state.filter}
-              hiddenHeaders={this.state.hiddenHeaders}
             />
           </div>
         </TabPane>
