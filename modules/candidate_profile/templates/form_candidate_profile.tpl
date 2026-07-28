@@ -26,7 +26,8 @@ window.addEventListener('load', () => {
             return new Error('Failed to load candidate (' + response.status + ')');
         } else {
             let data = await response.json();
-            return data;
+            candidate = data;
+            return candidate;
         }
     };
 
@@ -39,6 +40,7 @@ window.addEventListener('load', () => {
               return new Error('Failed to load visit (' + response.status + ')');
             } else {
               let data = await response.json();
+              console.log(data)
               return data;
             }
         });
