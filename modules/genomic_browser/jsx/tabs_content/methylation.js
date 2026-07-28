@@ -88,7 +88,6 @@ class Methylation extends Component {
       reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
       break;
 
-    // Corrected: Must match the label exactly as defined in the fields array
     case 'CPG Name':
     case 'Gene':
     case 'Accession number':
