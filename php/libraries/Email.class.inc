@@ -158,6 +158,7 @@ class Email
             $body .= "--$boundary--";
         } else {
             $headers .= "Content-type: $type; charset=UTF-8\r\n";
+            $headers .= "Content-Transfer-Encoding: 8bit\r\n";
             $body     = $message;
         }
 
