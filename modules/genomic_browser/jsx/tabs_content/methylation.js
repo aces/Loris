@@ -87,9 +87,9 @@ class Methylation extends Component {
       const url = `${this.props.baseURL}/${rowData.DCCID}/`;
       reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
       break;
-    
+
     // Corrected: Must match the label exactly as defined in the fields array
-    case 'CPG Name': 
+    case 'CPG Name':
     case 'Gene':
     case 'Accession number':
     case 'Island Loc':
@@ -97,16 +97,22 @@ class Methylation extends Component {
         <td>
           {String(cell || '')
             .split(',')
-            .map(v => v.trim())
-            .filter(Boolean) 
+            .map((v) => v.trim())
+            .filter(Boolean)
             .map((val, i, arr) => (
-            <span key={i}>
-              <a href={`https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${val}`} target="_blank" rel="noopener noreferrer">
-                {val}
-              </a>
-              {i < arr.length - 1 ? ', ' : ''}
-            </span>
-          ))}
+              <span key={i}>
+                <a
+                  href={
+                    `https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=${val}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {val}
+                </a>
+                {i < arr.length - 1 ? ', ' : ''}
+              </span>
+            ))}
         </td>
       );
       break;
