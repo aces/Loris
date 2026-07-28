@@ -293,8 +293,8 @@ msgstr "Mis à jour !"
 
 # EventManager
 #, fuzzy
-msgid "Total events in recording {{total}}"
-msgstr "Nombre total d'événements enregistrés {{total}}"
+msgid "Total events in recording: {{total}}"
+msgstr "Nombre total d'événements enregistrés: {{total}}"
 
 #, fuzzy
 msgid "Display by:"
@@ -388,7 +388,7 @@ msgstr "Cliquez pour afficher le schéma HED"
 
 #, fuzzy
 msgid "Open Dataset Tag Manager"
-msgstr "Gestionnaire de balises pour ensembles de données ouverts"
+msgstr "Gestionnaire de balises de jeux de données"
 
 #, fuzzy
 msgid "View/Edit Tags"
@@ -755,3 +755,21 @@ msgstr "Voir la session"
 
 msgid "Channel Types"
 msgstr "Types de chaînes"
+
+msgid "end time"
+msgstr "heure de fin"
+
+msgid "trial_type"
+msgstr "type d'essai"
+
+msgid "onset"
+msgstr "début"
+
+msgid "duration"
+msgstr "durée"
+
+msgid "Yes, delete it!"
+msgstr "Oui, supprimez-le !"
+
+msgid "HED"
+msgstr "HED"

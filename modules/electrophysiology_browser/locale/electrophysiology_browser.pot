@@ -242,7 +242,7 @@ msgid "Updated!"
 msgstr ""
 
 # EventManager
-msgid "Total events in recording {{total}}"
+msgid "Total events in recording: {{total}}"
 msgstr ""
 
 msgid "Display by:"
@@ -614,4 +614,22 @@ msgid "View Session"
 msgstr ""
 
 msgid "Channel Types"
+msgstr ""
+
+msgid "end time"
+msgstr ""
+
+msgid "trial_type"
+msgstr ""
+
+msgid "onset"
+msgstr ""
+
+msgid "duration"
+msgstr ""
+
+msgid "Yes, delete it!"
+msgstr ""
+
+msgid "HED"
 msgstr ""
