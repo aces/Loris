@@ -28,6 +28,10 @@ msgstr "数据输入冲突"
 msgid "Unresolved Conflicts"
 msgstr "未解决的冲突"
 
+msgid "% conflict resolved"
+msgid_plural "% conflicts resolved"
+msgstr[0] "已解决冲突 %"
+
 msgid "Number of Conflicts"
 msgstr "冲突数量"
 

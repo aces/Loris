@@ -28,6 +28,10 @@ msgstr[0] ""
 msgid "Unresolved Conflicts"
 msgstr ""
 
+msgid "% conflict resolved"
+msgid_plural "% conflicts resolved"
+msgstr[0] ""
+
 msgid "Number of Conflicts"
 msgstr ""
 

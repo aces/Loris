@@ -21,6 +21,9 @@ msgstr ""
 msgid "Publications"
 msgstr "प्रकाशन"
 
+msgid "Publication"
+msgstr "प्रकाशन"
+
 msgid "Submit"
 msgstr "जमा करें"
 

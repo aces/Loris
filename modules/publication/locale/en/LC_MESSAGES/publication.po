@@ -18,6 +18,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "Publication"
+msgstr "Publication"
+
 msgid "helpFindingVariables"
 msgstr "For help finding variables of interest, consult the <ddLink>Data Dictionary</ddLink>"
 

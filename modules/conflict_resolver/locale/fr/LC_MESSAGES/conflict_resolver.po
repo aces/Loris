@@ -33,6 +33,11 @@ msgstr[1] "Conflits de saisie des données"
 msgid "Unresolved Conflicts"
 msgstr "Conflits non résolus"
 
+msgid "% conflict resolved"
+msgid_plural "% conflicts resolved"
+msgstr[0] "% conflit résolu"
+msgstr[1] "% conflits résolus"
+
 #, fuzzy
 msgid "Number of Conflicts"
 msgstr "Nombre de conflits"
