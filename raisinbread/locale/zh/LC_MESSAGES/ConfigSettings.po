@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2026-07-27 14:37-0400\n"
-"Last-Translator: Kun <kun@example.com>\n"
+"Last-Translator: Shen Wang <wangshen.mcin@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
