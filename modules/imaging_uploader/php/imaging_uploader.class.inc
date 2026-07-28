@@ -423,17 +423,17 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     if (!$candidate['visit_label']) {
                             array_push(
                                 $errors["visitLabel"],
-                            sprintf(
-                                dgettext(
-                                    "imaging_uploader",
-                                    "Invalid Visit Label %s for CandID %s."
+                                sprintf(
+                                    dgettext(
+                                        "imaging_uploader",
+                                        "Invalid Visit Label %s for CandID %s."
                                         . " Check that you entered the correct"
                                         . " Visit Label and CandID."
-                                ),
-                                $visit_label,
-                                $candid
-                            )
-                        );
+                                    ),
+                                    $visit_label,
+                                    $candid
+                                )
+                            );
                     }
                     if ($advancedperms === 'true') {
                         // Basic fields have been validated, check user permisions
