@@ -594,5 +594,23 @@ msgstr "अज्ञात"
 msgid "Type"
 msgstr "प्रकार"
 
+msgid "Upload directory is not a directory"
+msgstr "अपलोड निर्देशिका एक मान्य निर्देशिका नहीं है"
+
+msgid "Upload directory is not writable"
+msgstr "अपलोड निर्देशिका में लिखा नहीं जा सकता"
+
+msgid "Path traversal not allowed"
+msgstr "पाथ ट्रैवर्सल की अनुमति नहीं है"
+
+msgid "This file has already been uploaded."
+msgstr "यह फ़ाइल पहले ही अपलोड की जा चुकी है।"
+
+msgid "File type not allowed"
+msgstr "इस फ़ाइल प्रकार की अनुमति नहीं है"
+
 msgid "Could not upload file"
 msgstr "फ़ाइल अपलोड नहीं हो सकी"
+
+msgid "Could not upload file: "
+msgstr "फ़ाइल अपलोड नहीं हो सकी: "

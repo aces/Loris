@@ -618,5 +618,23 @@ msgstr "不明"
 msgid "Type"
 msgstr "タイプ"
 
+msgid "Upload directory is not a directory"
+msgstr "アップロードディレクトリが有効なディレクトリではありません"
+
+msgid "Upload directory is not writable"
+msgstr "アップロードディレクトリに書き込めません"
+
+msgid "Path traversal not allowed"
+msgstr "パストラバーサルは許可されていません"
+
+msgid "This file has already been uploaded."
+msgstr "このファイルはすでにアップロードされています。"
+
+msgid "File type not allowed"
+msgstr "許可されていないファイル形式です"
+
 msgid "Could not upload file"
 msgstr "ファイルをアップロードできませんでした"
+
+msgid "Could not upload file: "
+msgstr "ファイルをアップロードできませんでした: "

@@ -424,3 +424,24 @@ msgstr "ID de archivo"
 
 msgid "Type"
 msgstr "Tipo"
+
+msgid "Upload directory is not a directory"
+msgstr "El directorio de carga no es un directorio válido"
+
+msgid "Upload directory is not writable"
+msgstr "No se puede escribir en el directorio de carga"
+
+msgid "Path traversal not allowed"
+msgstr "No se permite la navegación por rutas"
+
+msgid "This file has already been uploaded."
+msgstr "Este archivo ya ha sido cargado."
+
+msgid "File type not allowed"
+msgstr "Tipo de archivo no permitido"
+
+msgid "Could not upload file"
+msgstr "No se pudo cargar el archivo"
+
+msgid "Could not upload file: "
+msgstr "No se pudo cargar el archivo: "
