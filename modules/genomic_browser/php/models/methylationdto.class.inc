@@ -273,6 +273,7 @@ class MethylationDTO implements DataInstance, SiteHaver
             'PSCID'            => $this->_PSCID,
             'Sex'              => $this->_Sex,
             'Cohort'           => $this->_Cohort,
+            'Date_of_Birth'    => "", // Added to fix alignment
             'Sample'           => $this->_Sample,
             'cpg_name'         => $this->_cpg_name,
             'Beta_value'       => $this->_Beta_value,
