@@ -116,7 +116,7 @@ class Reset extends \NDB_Page implements ETagCalculator
                     $msg_data['realname'] = $user->getFullname();
                     $msg_data['password'] = $password;
 
-                    $locale = $request->getAttribute('locale');
+                    $locale   = $request->getAttribute('locale');
                     $language = strtolower(substr($locale, 0, 2));
                     error_log($language);
                     $template = match ($language) {
