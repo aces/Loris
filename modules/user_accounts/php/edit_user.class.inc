@@ -84,6 +84,10 @@ class Edit_User extends \NDB_Form
     {
         $defaults = [];
 
+        if ($this->isCreatingNewUser()) {
+            $defaults['SendEmail'] = 'on';
+        }
+
         if (!$this->isCreatingNewUser()) {
             $user = \User::factory($this->identifier);
             // get the user defaults
@@ -624,7 +628,7 @@ class Edit_User extends \NDB_Form
             if (isset($values['Password_hash'])) {
                 $msg_data['password'] = $values['Password_hash'];
             }
-            $template = (is_null($this->identifier))
+            $template = ($this->isCreatingNewUser())
                 ? 'new_user.tpl' : 'edit_user.tpl';
             \Email::send($values['Email'], $template, $msg_data);
             unset($msg_data);
@@ -1316,6 +1320,19 @@ class Edit_User extends \NDB_Form
             $errors['Email'] = dgettext(
                 "user_accounts",
                 "When generating a new password, please notify the user by checking"
+                . " 'Send email to user' box"
+            );
+        }
+
+        // if manually entering a password (not using NA_Password), also require
+        // the SendEmail checkbox to be checked so the user gets notified
+        if (empty($values['NA_Password'])
+            && !empty($values['Password_hash'])
+            && $values['SendEmail'] != "on"
+        ) {
+            $errors['Email'] = dgettext(
+                "user_accounts",
+                "When changing the password, please notify the user by checking"
                 . " 'Send email to user' box"
             );
         }

@@ -198,7 +198,12 @@ class My_Preferences extends \NDB_Form
         // send the user an email
         $msg_data          = [];
         $msg_data['study'] = $config->getSetting('title');
+        $msg_data['url']   = $factory->settings()->getBaseURL();
         $msg_data['realname'] = $values['Real_name'];
+        $msg_data['username'] = $user->getUsername();
+        if (isset($values['Password_hash'])) {
+            $msg_data['password'] = $values['Password_hash'];
+        }
 
         \Email::send($values['Email'], 'account_details_changed.tpl', $msg_data);
 

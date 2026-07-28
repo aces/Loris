@@ -236,6 +236,7 @@ class AddSurvey extends \NDB_Form
      */
     function _process($values)
     {
+
         $db    = $this->loris->getDatabaseConnection();
         $email = $values['Email'];
         unset($values['Email']);
@@ -305,7 +306,13 @@ class AddSurvey extends \NDB_Form
                         urlencode($key),
                 'EmailForm' => $values['email_dialog'],
             ];
-            \Email::send($email, 'new_survey.tpl', $msg_data);
+            $sent = \Email::send($email, 'new_survey.tpl', $msg_data);
+            if (!$sent) {
+                error_log(
+                    "[survey_accounts] Failed to send survey email to: $email"
+                    . " (key=" . urlencode($key) . ")"
+                );
+            }
         }
     }
 
