@@ -28,7 +28,7 @@ const SummaryStatistics = ({data}) => {
         {/* Project Selector */}
         <SelectElement
           name='project'
-          options={data.projectLabels}
+          options={data.translatedProjects}
           value={selectedProject}
           onUserInput={(name, value) => setSelectedProject(value)}
           emptyOption={false}

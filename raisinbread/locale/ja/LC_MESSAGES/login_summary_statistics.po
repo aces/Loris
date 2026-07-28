@@ -40,16 +40,3 @@ msgstr[0] "サイト"
 msgid "Visit"
 msgid_plural "Visits"
 msgstr[0] "訪問"
-
-# Projects
-msgid "All Projects"
-msgstr "すべてのプロジェクト"
-
-msgid "Challah"
-msgstr "チャラパン"
-
-msgid "Pumpernickel"
-msgstr "プンパーニッケルパン"
-
-msgid "Rye"
-msgstr "ライ麦パン"

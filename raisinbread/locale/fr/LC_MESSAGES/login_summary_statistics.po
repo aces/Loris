@@ -48,15 +48,3 @@ msgid_plural "Visits"
 msgstr[0] "Visite"
 msgstr[1] "Visites"
 
-# Projects
-msgid "All Projects"
-msgstr "Tous les projets"
-
-msgid "Challah"
-msgstr "Challah"
-
-msgid "Pumpernickel"
-msgstr "Pumpernickel"
-
-msgid "Rye"
-msgstr "Seigle"

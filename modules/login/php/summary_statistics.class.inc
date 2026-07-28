@@ -47,7 +47,7 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
             $translatedProjects = [];
             foreach ($projects as $project) {
                 $translatedProjects[] = dgettext(
-                    "login_summary_statistics",
+                    "Project",
                     $project,
                 );
             }
@@ -59,7 +59,7 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
                 dgettext('login', 'Statistic') . ',' .
                 dgettext('login', 'Value') . "\n";
             foreach ($reusable_response as &$row) {
-                $csv .= dgettext("login_summary_statistics", $row['Project']).","
+                $csv .= dgettext("Project", $row['Project']).","
                 .dgettext("login_summary_statistics", $row['Title']).","
                 .$row['Value'] . "\n";
                 // we just add an "s" for the plural form since the final
@@ -74,10 +74,10 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
 
             return new \LORIS\Http\Response\JsonResponse(
                 [
-                    'statistics'    => $reusable_response,
-                    'projects'      => $projects,
-                    'projectLabels' => $translatedProjects,
-                    'csv'           => $csv,
+                    'statistics'         => $reusable_response,
+                    'projects'           => $projects,
+                    'translatedProjects' => $translatedProjects,
+                    'csv'                => $csv,
                 ]
             );
         default:

@@ -48,15 +48,3 @@ msgid_plural "Visits"
 msgstr[0] "विज़िट"
 msgstr[1] "विज़िट्स"
 
-# Projects
-msgid "All Projects"
-msgstr "सभी परियोजनाएँ"
-
-msgid "Challah"
-msgstr "चल्ला"
-
-msgid "Pumpernickel"
-msgstr "पम्परनिकल"
-
-msgid "Rye"
-msgstr "राई"
