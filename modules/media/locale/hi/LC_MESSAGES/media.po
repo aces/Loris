@@ -25,9 +25,6 @@ msgstr "मीडिया"
 msgid "File Name"
 msgstr "फ़ाइल नाम"
 
-msgid "Instrument"
-msgstr "इंस्ट्रूमेंट"
-
 msgid "Date Taken"
 msgstr "तारीख ली गई"
 
@@ -60,12 +57,6 @@ msgstr "ब्राउज़ करें"
 
 msgid "Upload"
 msgstr "अपलोड करें"
-
-msgid "An error occured while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
-
-msgid "Language"
-msgstr "भाषा"
 
 # New strings from uploadForm.js
 
@@ -122,15 +113,6 @@ msgstr "फ़ाइल छिपाएँ"
 
 msgid "Invalid file name!"
 msgstr "अमान्य फ़ाइल नाम!"
-
-msgid "File name should begin with:"
-msgstr "फ़ाइल नाम इससे शुरू होना चाहिए:"
-
-msgid "A file with this name already exists!\n Would you like to override existing file?"
-msgstr "इस नाम की एक फ़ाइल पहले से मौजूद है!\n क्या आप मौजूदा फ़ाइल को अधिलेखित करना चाहेंगे?"
-
-msgid "Cancelled"
-msgstr "रद्द कर दिया गया"
 
 msgid "Success!"
 msgstr "सफलता!"
