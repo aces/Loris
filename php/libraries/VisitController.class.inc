@@ -144,7 +144,6 @@ class VisitController
         return new \LORIS\Visit($visitData['VisitName'], $visitData['VisitLabel']);
     }
 
-
     /**
      * Returns a list of configured Visits and their association with projects
      * and cohorts
