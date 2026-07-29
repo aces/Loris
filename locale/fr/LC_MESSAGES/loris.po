@@ -643,3 +643,22 @@ msgstr "inconnu"
 
 msgid "Type"
 msgstr "Type"
+
+msgid "Upload directory is not a directory"
+msgstr "Le répertoire de téléversement n'est pas un répertoire valide"
+
+msgid "Upload directory is not writable"
+msgstr "Le répertoire de téléversement n'est pas modifiable"
+
+msgid "Path traversal not allowed"
+msgstr "La traversée de répertoires n'est pas autorisée"
+
+msgid "This file has already been uploaded."
+msgstr "Ce fichier a déjà été téléversé."
+
+msgid "File type not allowed"
+msgstr "Type de fichier non autorisé"
+
+msgid "Could not upload file"
+msgstr "Impossible de téléverser le fichier"
+

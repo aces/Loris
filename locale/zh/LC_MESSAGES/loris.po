@@ -616,3 +616,21 @@ msgstr "未知"
 
 msgid "Type"
 msgstr "类型"
+
+msgid "Upload directory is not a directory"
+msgstr "上传目录不是有效的目录"
+
+msgid "Upload directory is not writable"
+msgstr "上传目录不可写"
+
+msgid "Path traversal not allowed"
+msgstr "不允许路径遍历"
+
+msgid "This file has already been uploaded."
+msgstr "此文件已上传。"
+
+msgid "File type not allowed"
+msgstr "不允许的文件类型"
+
+msgid "Could not upload file"
+msgstr "无法上传文件"
