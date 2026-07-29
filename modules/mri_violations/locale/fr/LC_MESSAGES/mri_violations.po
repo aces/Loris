@@ -193,7 +193,7 @@ msgid "Select Resolution"
 msgstr "Choisir la résolution"
 
 msgid "Image File"
-msgstr "Fichier de l'Image"
+msgstr "Fichier de l'image"
 
 #, fuzzy
 msgid "Must submit data in JSON format"
