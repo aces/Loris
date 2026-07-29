@@ -199,6 +199,15 @@ msgstr "新しいパスワードと古いパスワードは同一です。"
 msgid "This email address is already in use"
 msgstr "このメールアドレスはすでに使用されています。"
 
+msgid "You cannot edit your own account settings."
+msgstr "アカウント設定はご自身で編集することはできません。"
+
+msgid "To change your email or password, go to \"My Preferences\"."
+msgstr "メールアドレスまたはパスワードを変更するには、「マイ設定」にアクセスしてください。"
+
+msgid "For any other changes, contact an administrator."
+msgstr "その他の変更については、管理者にお問い合わせください。"
+
 msgid "Do you really want to reject this user?"
 msgstr "本当にこのユーザーを拒否しますか？"
 
