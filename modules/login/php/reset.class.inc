@@ -118,7 +118,7 @@ class Reset extends \NDB_Page implements ETagCalculator
 
                     $locale   = $request->getAttribute('locale');
                     $language = strtolower(substr($locale, 0, 2));
-                    error_log($language);
+                    
                     $template = match ($language) {
                         'fr'    => 'lost_password_fr.tpl',
                         'es'    => 'lost_password_es.tpl',
