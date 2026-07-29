@@ -277,6 +277,12 @@ msgstr "Ajouter la condition « et »"
 msgid "Add \"or\" condition"
 msgstr "Ajouter la condition « ou »"
 
+msgid "This will remove all currently selected filters"
+msgstr "Ceci supprimera tous les filtres actuellement sélectionnés."
+
+msgid "Remove all filters"
+msgstr "Supprimer tous les filtres"
+
 msgid "Delete Item"
 msgstr "Supprimer l'élément"
 
