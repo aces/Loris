@@ -36,7 +36,7 @@ msgid "Usage"
 msgstr "使用法"
 
 msgid "Use this form to create a link for a study participant to use in order to directly enter a form/data into Loris."
-msgstr ""
+msgstr "このフォームを使用して、研究参加者がロリスに直接フォーム/データを入力するためのリンクを作成します。"
 
 msgid "Add Survey"
 msgstr "アンケートを追加する"
