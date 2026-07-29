@@ -1,7 +1,7 @@
 {if $success}
 <p>
   {dgettext("survey_accounts", "Survey was added successfully.")}<br/>
-  {dgettext("survey_accounts", "Click here to go back to view the list of survey's created")} :
+  {dgettext("survey_accounts", "Click here to go back to view the list of surveys created")} :
   <a href="{$baseurl}/survey_accounts/">{dgettext("survey_accounts", "Survey List")}</a><br />
 </p>
 <br />
