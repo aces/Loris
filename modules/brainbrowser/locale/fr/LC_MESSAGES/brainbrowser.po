@@ -93,11 +93,11 @@ msgstr "Afficher les tranches"
 
 #, fuzzy
 msgid "Sagittal"
-msgstr "Sagittal"
+msgstr "Sagittales"
 
 msgid "Coronal"
-msgstr "Coronaire"
+msgstr "Coronaires"
 
 #, fuzzy
 msgid "Transverse"
-msgstr "Transversal"
+msgstr "Transversales"
