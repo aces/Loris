@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 
-import {withTranslation} from 'react-i18next';
+import {withTranslation, Trans} from 'react-i18next';
 import i18n from 'I18nSetup';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/bvl_feedback.json';
