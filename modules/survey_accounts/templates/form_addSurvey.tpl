@@ -73,7 +73,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
-                        <span class="sr-only">{dgettext("survey_accounts", "Close")}</span>
+                        <span class="sr-only">{dgettext("loris", "Close")}</span>
                     </button>
                     <h3 class="modal-title">{dgettext("survey_accounts", "Email to Study Participant")}</h3>
                 </div>
