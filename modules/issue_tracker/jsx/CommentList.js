@@ -49,6 +49,7 @@ class CommentList extends Component {
       'module': t('Module', {ns: 'loris'}),
       'instrument': t('Instrument', {ns: 'loris', count: 1}),
       'description': t('Description', {ns: 'issue_tracker'}),
+      'externalIssueID': t('External Issue ID', {ns: 'issue_tracker'}),
     };
     return fieldLabelMap[fieldName] || fieldName;
   }
