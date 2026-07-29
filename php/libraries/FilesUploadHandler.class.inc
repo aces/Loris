@@ -202,7 +202,7 @@ class FilesUploadHandler implements RequestHandlerInterface
                 $file->moveTo($targetPath);
             } catch (\Exception $e) {
                 error_log(
-                    dgettext('loris', 'Could not upload file: ') . $e->getMessage()
+                    'Could not upload file: ' . $e->getMessage()
                 );
                 return new \LORIS\Http\Response\JSON\InternalServerError(
                     dgettext('loris', 'Could not upload file')

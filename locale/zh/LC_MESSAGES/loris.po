@@ -634,6 +634,3 @@ msgstr "不允许的文件类型"
 
 msgid "Could not upload file"
 msgstr "无法上传文件"
-
-msgid "Could not upload file: "
-msgstr "无法上传文件："

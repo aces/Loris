@@ -636,6 +636,3 @@ msgstr ""
 
 msgid "Could not upload file"
 msgstr ""
-
-msgid "Could not upload file: "
-msgstr ""

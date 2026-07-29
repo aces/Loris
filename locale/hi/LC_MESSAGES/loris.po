@@ -611,6 +611,3 @@ msgstr "इस फ़ाइल प्रकार की अनुमति न�
 
 msgid "Could not upload file"
 msgstr "फ़ाइल अपलोड नहीं हो सकी"
-
-msgid "Could not upload file: "
-msgstr "फ़ाइल अपलोड नहीं हो सकी: "

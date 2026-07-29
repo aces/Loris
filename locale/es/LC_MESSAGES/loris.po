@@ -442,6 +442,3 @@ msgstr "Tipo de archivo no permitido"
 
 msgid "Could not upload file"
 msgstr "No se pudo cargar el archivo"
-
-msgid "Could not upload file: "
-msgstr "No se pudo cargar el archivo: "
