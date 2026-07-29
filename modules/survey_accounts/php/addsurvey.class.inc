@@ -117,7 +117,7 @@ class AddSurvey extends \NDB_Form
               ['CandID' => $error];
         }
 
-        if (! in_array($values['VL'], \Utility::getVisitList(), true)) {
+        if (! array_key_exists($values['VL'], \Utility::getVisitList())) {
             return ['VL' => dgettext(
                 'survey_accounts',
                 'You must specify a valid Visit Label.'
