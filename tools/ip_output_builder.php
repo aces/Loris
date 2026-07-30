@@ -81,7 +81,7 @@ $lorisBase = rtrim($lorisBase, "/");
 
 // define paths
 $instrumentDir = "{$lorisBase}/project/instruments";
-$outputFile   = "{$lorisBase}/tools/ip_output.txt";
+$outputFile    = "{$lorisBase}/tools/ip_output.txt";
 
 // get the list of instruments
 $instruments = getInstruments($lorisInstance, $instrumentDir);
