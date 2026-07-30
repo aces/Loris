@@ -407,8 +407,8 @@ function parseElements($instrument, $elements, $groupLabel = "")
         case "date":
             $options = "{@}";
             if (array_key_exists("options", $element)
-                && isset($el["options"]["minYear"])
-                && isset($el["options"]["maxYear"])
+                && isset($element["options"]["minYear"])
+                && isset($element["options"]["maxYear"])
             ) {
                 $options = $element["options"]["minYear"]
                 ."{@}"
