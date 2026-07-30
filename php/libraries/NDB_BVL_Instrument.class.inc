@@ -25,6 +25,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $jsonData = false;
 
     /**
+     * Whether the instrument was imported from REDCap.
+     *
+     * REDCap field names are not subject to LORIS's special handling of
+     * fields whose names end in "_status".
+     */
+    protected bool $isRedcap = false;
+
+    /**
      * Variable defining the type of form in use
      *
      * Note: this seems to always be defined as 'XIN'
@@ -781,6 +789,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Determine whether a field is a LORIS response-status field.
+     *
+     * @param string $field The field name
+     *
+     * @return bool
+     */
+    protected function isStatusField(string $field): bool
+    {
+        return !$this->isRedcap && str_ends_with($field, '_status');
+    }
+
+    /**
      * This removes all the value of any field which has its accompagning
      * _status field set.
      *
@@ -793,7 +813,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         //Remove the values of all fields who have had statuses assigned
         foreach (array_keys($values) AS $field) {
-            if (substr($field, -7)=="_status") {
+            if ($this->isStatusField($field)) {
                 if (!empty($values[$field])) {
                     $baseField          = substr($field, 0, (strlen($field)-7));
                     $values[$baseField] = "";
@@ -1261,7 +1281,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     if (is_array($result)) {
                         $errors += $result;
                     }
-                } else if (substr($elname, -7) != "_status"
+                } else if (!$this->isStatusField($elname)
                     && !in_array($elname, ["page", "subtest"])
                 ) {
                     $errors[$elname] = "Required.";
@@ -2480,7 +2500,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 		    JOIN test_names tn ON (tn.ID=f.TestID)
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (s.CandidateID=c.ID)
-                     
+
 		    $where";
             \Profiler::checkpoint("Running query (table instrument): " . $query);
             $data = $db->pselect($query, $params);
@@ -2979,8 +2999,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $Responses = $this->getInstanceData();
 
         foreach ($tpl_data['questions'] as $key => &$row) {
-            $isStatusField = $row['SourceField']
-                === $tpl_data['questions'][$key-1]['SourceField']."_status";
+            $isStatusField = false;
+            if ($key > 0 && $this->isStatusField($row['SourceField'])) {
+                $previousQuestion    = $tpl_data['questions'][$key-1];
+                $previousSourceField = $previousQuestion['SourceField'];
+                $isStatusField       = $row['SourceField']
+                    === $previousSourceField . '_status';
+            }
+
             if (isset($Responses[$row['SourceField']])) {
                 // Consider status fields
                 if ($isStatusField) {
@@ -3128,7 +3154,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             unset($formArray['elements'][$name]);
         }
-        if (strpos($name, "_status") === false) {
+        if (!$this->isStatusField($name)) {
             $this->_toJSONParseSmarty($element);
         } else {
             unset($formArray['elements'][$name]);
