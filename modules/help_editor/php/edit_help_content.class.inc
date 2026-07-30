@@ -127,16 +127,8 @@ class Edit_Help_Content extends \NDB_Form
 
         if ($data['helpid']) {
             $help_data          = HelpFile::factory($data['helpid'])->toArray();
-            $data['title']      = htmlspecialchars_decode(
-                trim(
-                    $help_data['topic']
-                )
-            );
-            $data['content']    = htmlspecialchars_decode(
-                trim(
-                    $help_data['content']
-                )
-            );
+            $data['title']      = $help_data['topic'];
+            $data['content']    = trim($help_data['content']);
             $data['instrument'] = $help_data['instrument'];
             $data['instrumentslist'] = [];
             $instrumentList          = \NDB_BVL_Instrument::getInstrumentNamesList(

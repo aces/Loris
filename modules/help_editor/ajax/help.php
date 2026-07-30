@@ -59,11 +59,6 @@ try {
                 'updated' => '',
             ];
         }
-        $data['topic']    = html_entity_decode(
-            trim($data['topic']),
-            ENT_QUOTES | ENT_HTML5,
-            'UTF-8'
-        );
         $data['content']  = trim($data['content']);
         $data['editable'] = $editable;
         $data['source']   = 'db';
