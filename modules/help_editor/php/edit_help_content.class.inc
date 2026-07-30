@@ -163,7 +163,7 @@ class Edit_Help_Content extends \NDB_Form
         $data['content']    = json_encode($data['content']);
         $data['section']    = json_encode($data['section']);
         $data['subsection'] = json_encode($data['subsection']);
-        $data['instrument'] = json_encode($data['instrument']);
+        $data['instrument'] = json_encode($data['instrument'] ?? null);
 
         $this->tpl_data = $data;
         return (new \LORIS\Http\Response())
