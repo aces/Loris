@@ -80,11 +80,11 @@ if ($lorisBase === null) {
 $lorisBase = rtrim($lorisBase, "/");
 
 // define paths
-$instrumenDir = "{$lorisBase}/project/instruments";
+$instrumentDir = "{$lorisBase}/project/instruments";
 $outputFile   = "{$lorisBase}/tools/ip_output.txt";
 
 // get the list of instruments
-$instruments = getInstruments($lorisInstance, $instrumenDir);
+$instruments = getInstruments($lorisInstance, $instrumentDir);
 
 // if only one instrument to parse
 if ($instrumentTarget !== null) {
@@ -130,9 +130,9 @@ foreach ($instruments as $instrumentName => $instrumentFileName) {
         $res      = copyLINSTInstrument(
             $ipOutput,
             $instrumentName,
-            "{$instrumenDir}/{$instrumentFileName}",
+            "{$instrumentDir}/{$instrumentFileName}",
             $addMeta,
-            "{$instrumenDir}/{$barename}.meta"
+            "{$instrumentDir}/{$barename}.meta"
         );
     } else {
         // parse and add PHP instrument to ip_ouput.txt
@@ -141,7 +141,7 @@ foreach ($instruments as $instrumentName => $instrumentFileName) {
             $lorisInstance,
             $ipOutput,
             $instrumentName,
-            "{$instrumenDir}/{$instrumentFileName}"
+            "{$instrumentDir}/{$instrumentFileName}"
         );
     }
 
@@ -516,12 +516,12 @@ function cleanLabel(
 /**
  * Get the list of parsable PHP instruments.
  *
- * @param LorisInstance $loris        the loris instance
- * @param string        $instrumenDir the instrument directory path
+ * @param LorisInstance $loris         the loris instance
+ * @param string        $instrumentDir the instrument directory path
  *
  * @return array the list of selected instrument [name => filename]
  */
-function getInstruments(LorisInstance $loris, string $instrumenDir): array
+function getInstruments(LorisInstance $loris, string $instrumentDir): array
 {
     // instruments to skip
     $excludedInstruments = getExcludedInstruments($loris);
@@ -529,7 +529,7 @@ function getInstruments(LorisInstance $loris, string $instrumenDir): array
     // building list
     fprintf(STDOUT, "Building instrument list...\n");
     $instruments = [];
-    foreach (new DirectoryIterator($instrumenDir) as $fileInfo) {
+    foreach (new DirectoryIterator($instrumentDir) as $fileInfo) {
         // skip self/parent directory
         if ($fileInfo->isDot()) {
             continue;
