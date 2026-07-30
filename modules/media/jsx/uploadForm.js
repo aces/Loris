@@ -268,6 +268,7 @@ class MediaUploadForm extends Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
 
     let formData = this.state.formData;
