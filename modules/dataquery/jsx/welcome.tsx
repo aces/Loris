@@ -15,9 +15,8 @@ import {FlattenedField, FlattenedQuery, VisitOption} from './types';
 import ReplayIcon from './ReplayIcon';
 import ShareIconA from './ShareIconA';
 import {useTranslation} from 'react-i18next';
-import 'I18nSetup';
+import i18n from 'I18nSetup';
 
-declare const loris: any;
 /**
  * Return the welcome tab for the DQT
  *
@@ -832,7 +831,7 @@ function SingleQueryDisplay(props: {
   let msg: React.ReactNode = null;
   if (query.RunTime) {
     const dateFormatter = new Intl.DateTimeFormat(
-      loris.user.langpref.replace('_', '-'),
+      i18n.language.replace('_', '-'),
       {
         dateStyle: 'long',
         timeStyle: 'medium',
