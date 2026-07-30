@@ -34,6 +34,12 @@ $instruments = explode("{-@-}", trim($data));
 $tblCount       = 0;
 $parameterCount = 0;
 foreach ($instruments as $instrument) {
+    // skip last line (empty instrument)
+    if (empty($instrument)) {
+        continue;
+    }
+
+    // parse instrument
     $catId  = "";
     $output = "";
     $items  = explode("\n", trim($instrument));
