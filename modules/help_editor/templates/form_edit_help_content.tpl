@@ -10,7 +10,7 @@
             subsection: {$subsection|@json_encode nofilter},
             instrument: {$instrument|@json_encode nofilter},
             instrumentslist: {$instrumentslist|@json_encode nofilter},
-            helpid:     {$helpid|@json_encode nofilter},
+            helpid:     {$helpid},
           })
       );
   });
