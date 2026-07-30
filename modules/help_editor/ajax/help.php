@@ -59,6 +59,7 @@ try {
                 'updated' => '',
             ];
         }
+
         $data['content']  = trim($data['content']);
         $data['editable'] = $editable;
         $data['source']   = 'db';
