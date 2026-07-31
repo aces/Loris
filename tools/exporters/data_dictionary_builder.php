@@ -116,7 +116,7 @@ foreach ($instruments AS $instrument) {
             break;
         case "table":
             $table = $bits[1];
-            //`testname` was only recently added to the lorisform parser, for
+            //`testname` was only recently added to the ip_output_builder, for
             //backwards compatibility, instruments with no testname parameter
             //should assume the testname from the `table` name (to maintain
             //status quo) although it might be incorrect since instrument names
