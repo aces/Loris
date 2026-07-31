@@ -39,10 +39,12 @@ class Profiles
      */
     public function __construct($sites, $cohorts)
     {
+        $sexes = \Utility::getSexList();
+        $sexes = array_combine($sexes, $sexes);
         $this->_formElement = [
             'Sites'   => $sites,
             'Cohorts' => $cohorts,
-            'Sex'     => \Utility::getSexList(),
+            'Sex'     => $sexes,
         ];
     }
 
