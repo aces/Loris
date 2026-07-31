@@ -226,15 +226,14 @@ class CnvDTO implements DataInstance, SiteHaver
             'Gene_Symbol'       => $this->_Gene_Symbol,
             'Gene_Name'         => $this->_Gene_Name,
             'CNV_Description'   => $this->_CNV_Description,
-            'CNV_Type'          => dgettext("genomic_browser", $this->_CNV_Type),
+            'CNV_Type'          => $this->_CNV_Type === "unknown"
+                ? dgettext("loris", $this->_CNV_Type)
+                : dgettext("genomic_browser", $this->_CNV_Type),
             'Copy_Num_Change'   => $this->_Copy_Num_Change,
             'Event_Name'        => $this->_Event_Name,
             'Common_CNV'        => $this->_Common_CNV,
-            'Characteristics'   => dgettext(
-                "genomic_browser",
-                $this->_Characteristics
-            ),
-            'Inheritance'       => $this->_Inheritance,
+            'Characteristics'   => $this->_Characteristics,
+            'Inheritance'       => dgettext("loris", $this->_Inheritance),
             'Array_Report'      => $this->_Array_Report,
             'Markers'           => $this->_Markers,
             'Validation_Method' => $this->_Validation_Method,
