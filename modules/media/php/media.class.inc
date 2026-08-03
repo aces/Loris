@@ -70,7 +70,7 @@ class Media extends \DataFrameworkMenu
         $db   = $this->loris->getDatabaseConnection();
 
         $siteList  = [];
-        $visits = \Utility::getVisitList();
+        $visits    = \Utility::getVisitList();
         $visitList = array_combine($visits, $visits);
 
         // allow to view all sites data through filter
