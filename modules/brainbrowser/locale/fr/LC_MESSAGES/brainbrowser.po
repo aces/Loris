@@ -101,3 +101,6 @@ msgstr "Coronaires"
 #, fuzzy
 msgid "Transverse"
 msgstr "Transversales"
+
+msgid "Blend (0.0 to 1.0)"
+msgstr "Mélange (de 0,0 à 1,0)"
