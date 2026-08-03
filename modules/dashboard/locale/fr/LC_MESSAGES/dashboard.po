@@ -43,3 +43,6 @@ msgstr "Bienvenue, %s!"
 
 msgid "Last login:"
 msgstr "Dernière connexion:"
+
+msgid "No open tasks for you."
+msgstr "Aucune tâche ouverte ne vous est attribuée."
