@@ -25,9 +25,6 @@ msgstr "Medios de comunicación"
 msgid "File Name"
 msgstr "Nombre del archivo"
 
-msgid "Instrument"
-msgstr "Instrumento"
-
 msgid "Date Taken"
 msgstr "Fecha de toma"
 
@@ -60,12 +57,6 @@ msgstr "Navegar"
 
 msgid "Upload"
 msgstr "Subir"
-
-msgid "An error occured while loading the page."
-msgstr "Se ha producido un error al cargar la página."
-
-msgid "Language"
-msgstr "Idioma"
 
 # New strings from uploadForm.js
 
@@ -122,15 +113,6 @@ msgstr "Ocultar archivo"
 
 msgid "Invalid file name!"
 msgstr "¡Nombre de archivo no válido!"
-
-msgid "File name should begin with:"
-msgstr "El nombre del archivo debe comenzar con:"
-
-msgid "A file with this name already exists!\n Would you like to override existing file?"
-msgstr "¡Ya existe un archivo con este nombre! ¿Desea sobrescribir el archivo existente?"
-
-msgid "Cancelled"
-msgstr "Cancelado"
 
 msgid "Success!"
 msgstr "¡Éxito!"

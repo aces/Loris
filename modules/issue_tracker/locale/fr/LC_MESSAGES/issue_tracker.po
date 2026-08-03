@@ -86,7 +86,7 @@ msgid "Active Issues"
 msgstr "Incidents actifs"
 
 msgid "Closed Issues"
-msgstr "Incidents fermées"
+msgstr "Incidents fermés"
 
 msgid "My Issues"
 msgstr "Mes incidents"

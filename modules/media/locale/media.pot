@@ -24,9 +24,6 @@ msgstr ""
 msgid "File Name"
 msgstr ""
 
-msgid "Instrument"
-msgstr ""
-
 msgid "Date Taken"
 msgstr ""
 
@@ -58,12 +55,6 @@ msgid "Browse"
 msgstr ""
 
 msgid "Upload"
-msgstr ""
-
-msgid "An error occured while loading the page."
-msgstr ""
-
-msgid "Language"
 msgstr ""
 
 # New strings from uploadForm.js
@@ -122,15 +113,6 @@ msgstr ""
 msgid "Invalid file name!"
 msgstr ""
 
-msgid "File name should begin with:"
-msgstr ""
-
-msgid "A file with this name already exists!\n Would you like to override existing file?"
-msgstr ""
-
-msgid "Cancelled"
-msgstr ""
-
 msgid "Success!"
 msgstr ""
 
@@ -150,4 +132,10 @@ msgid "This field is required."
 msgstr ""
 
 msgid "Candidate Media"
+msgstr ""
+
+msgid "Visible only"
+msgstr ""
+
+msgid "Hidden only"
 msgstr ""
