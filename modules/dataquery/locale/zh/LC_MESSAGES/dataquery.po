@@ -256,9 +256,6 @@ msgstr "无效访视"
 msgid "No visits selected for criteria."
 msgstr "未为标准选择访视。"
 
-msgid "Add criteria"
-msgstr "添加标准"
-
 msgid "Field"
 msgid_plural "Fields"
 msgstr[0] "字段"
