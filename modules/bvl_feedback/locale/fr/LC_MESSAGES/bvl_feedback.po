@@ -107,7 +107,7 @@ msgid "Across All Fields"
 msgstr "Dans tous les domaines"
 
 msgid "QC Class"
-msgstr "Classe CQ"
+msgstr "Classe de contrôle qualité"
 
 msgid "# Threads"
 msgstr "# Fils de discussion"
