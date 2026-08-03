@@ -176,8 +176,14 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             && ($_SERVER['REQUEST_METHOD']=='POST')
         ) { //catch file overload error...
             $upload_max_size = \Utility::getMaxUploadSize();
-            $error_message   = "Please make sure files are not larger than " .
-                                $upload_max_size;
+            $error_message   = sprintf(
+                dgettext(
+                    "imaging_uploader",
+                    "Please make sure files are not larger"
+                        . " than %s"
+                ),
+                $upload_max_size
+            );
             http_response_code(413);
             $errors = [
                 'IsPhantom'  => [],
@@ -358,8 +364,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if (!$this->isCompressed($temp_file)) {
             array_push(
                 $errors["mriFile"],
-                "The file $file_name is not of type".
-                " .tgz, .tar.gz or .zip."
+                sprintf(
+                    dgettext(
+                        "imaging_uploader",
+                        "The file %s is not of type .tgz, .tar.gz or .zip."
+                    ),
+                    $file_name
+                )
             );
         }
 
@@ -401,8 +412,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 if (is_null($candidate) || $candidate["candid"] !== $candid) {
                     array_push(
                         $errors["candID"],
-                        "The CandID " . $candid .
-                        " does not exist in the database."
+                        sprintf(
+                            dgettext(
+                                "imaging_uploader",
+                                "The CandID %s does not exist in the database."
+                            ),
+                            $candid
+                        )
                     );
                 } else {
                     if (!$candidate['candid_with_pscid']) {
@@ -442,8 +458,11 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                             new \SessionID(strval($candidate['SessionID']))
                         );
                         if (!$session->isAccessibleBy($user)) {
-                            $errors["user"] = "This user does not have permission ".
-                            "to upload files for this session.";
+                            $errors["user"] = dgettext(
+                                "imaging_uploader",
+                                "This user does not have permission to upload"
+                                    . " files for this session."
+                            );
                             http_response_code(403);
                             header('Content-Type: application/json; charset=UTF-8');
                             exit(json_encode(['errors' => $errors]));
@@ -453,9 +472,15 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     if ($candidate['candidate_active'] == 'N') {
                         array_push(
                             $errors["pSCID"],
-                            "The candidate associated with CandID " .
-                            $candid . " and PSCID " .
-                            $pscid . " is not active in the database."
+                            sprintf(
+                                dgettext(
+                                    "imaging_uploader",
+                                    "The candidate associated with CandID %s and"
+                                    . "PSCID %s is not active in the database."
+                                ),
+                                $candid,
+                                $pscid
+                            )
                         );
                     }
                     if ($candidate['session_active'] == 'N') {
@@ -487,13 +512,20 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             if ((!preg_match("/^{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
                 && (!preg_match("/^{$pcvu}.*(\.(zip|tgz|tar.gz))/", $file_name))
             ) {
-                     $file_name_error
-                         = "File name and fields entered in CandID, PSCID," .
-                     " Visit Label must match. Verify that the information" .
-                     " entered in all the fields above is correct or rename" .
-                     " the file so that the file name matches " . $pcv .
-                     " or begins with " . "\"". $pcvu . "\"" .
-                     ", and has the extension .tgz, tar.gz or .zip";
+                $file_name_error
+                    = sprintf(
+                        dgettext(
+                            "imaging_uploader",
+                            "File name and fields entered in CandID, PSCID, Visit"
+                            . " Label must match. Verify that the information"
+                            . " entered in all the fields above is correct or rename"
+                            . " the file so that the file name matches %s"
+                            . " or begins with \"%s\" and has the extension .tgz,"
+                            . " tar.gz or .zip"
+                        ),
+                        $pcv,
+                        $pcvu
+                    );
             }
         }
 
@@ -516,7 +548,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if (!$updateFile && !empty($id) && file_exists($uploadPath)) {
             array_push(
                 $errors['mriFile'],
-                "This file has already been uploaded."
+                dgettext("imaging_uploader", "This file has already been uploaded.")
             );
         }
         // Loops through associative array of error messages
@@ -547,9 +579,16 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
         if (!copy($temp_file, $new_temp_file)) {
-            $msg = "An internal server error prevented this file from being "
-                 . "uploaded. Please contact the system administrator: "
-                 . "failed to copy $temp_file to $new_temp_file";
+            $msg = sprintf(
+                dgettext(
+                    "imaging_uploader",
+                    "An internal server error prevented"
+                        . " this file from being uploaded. Please contact the system"
+                        . "administrator: " . "failed to copy %s to %s"
+                ),
+                $temp_file,
+                $new_temp_file
+            );
             array_push($errors["mriFile"], $msg);
             http_response_code(400);
             header('Content-Type: application/json; charset=UTF-8');
