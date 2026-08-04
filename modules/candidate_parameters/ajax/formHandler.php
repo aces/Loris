@@ -293,8 +293,6 @@ function editFamilyInfoFields(\Database $db)
             $updateValues['FamilyID'] = $newFamilyID;
             $db->insert('family', $updateValues);
 
-            // Add a corresponding row for the candidate whose profile is
-            // being edited
             $candidateID = $db->pselectOne(
             "SELECT ID FROM candidate WHERE CandID=:candID",
             ['candID' => $candID]
