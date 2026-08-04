@@ -51,7 +51,7 @@
                 return carry.concat(' - ', item.text);
               }, ''));
             {/if}
-            {if !$breadcrumbs|strstr:'"Edit Help Content"'}
+            if (loris.Subtest !== 'edit_help_content') {
               const helpContainers = document.getElementsByClassName('help-container');
               for (let i = 0; i < helpContainers.length; i++) {
                 ReactDOM.createRoot(
@@ -64,7 +64,7 @@
                   })
                 );
               }
-            {/if}
+            }
 
             // Make Navigation bar toggle change glyphicon up/down
             let navBtn = document.querySelector('.nav-button');
