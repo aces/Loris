@@ -59,7 +59,7 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
 
             $tpl_data['links'][] = array(
                                     'url'        => $url,
-                                    'label'      => $label,
+                                    'label'      => dgettext("ExternalLinks", $label),
                                     'windowName' => $WindowName,
                                    );
         }
