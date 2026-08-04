@@ -554,25 +554,6 @@ class Charts extends \NDB_Page
 
         $conditions = $this->_buildQueryConditions($request, false);
 
-        $recruitmentData      = [];
-        $recruitmentStartDate = $DB->pselectOne(
-            "SELECT MIN(Date_registered) FROM candidate",
-            []
-        );
-        $recruitmentEndDate   = $DB->pselectOne(
-            "SELECT MAX(Date_registered) FROM candidate",
-            []
-        );
-
-        if ($recruitmentStartDate !== null
-            && $recruitmentEndDate !== null
-        ) {
-            $recruitmentData['labels'] = $this->_createSiteLineChartLabels(
-                new \DateTimeImmutable($recruitmentStartDate),
-                new \DateTimeImmutable($recruitmentEndDate)
-            );
-        }
-
         $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = $user->getStudySites();
 
@@ -597,10 +578,12 @@ class Charts extends \NDB_Page
         );
 
         $recruitmentdata = [];
+        $labels = [];
         foreach ($recruitment_summary as $row) {
             $siteId = $row['SiteID'];
             $year   = $row['Year'];
             $month  = $row['Month'];
+            $labels["{$month}-{$year}"] = true;
             if (!isset($recruitmentdata[$siteId])) {
                 $recruitmentdata[$siteId] = [
                     $year => [$month => $row['Count']]
@@ -613,6 +596,7 @@ class Charts extends \NDB_Page
             }
 
         }
+        $recruitmentData['labels'] = array_keys($labels);
         foreach ($list_of_sites as $siteID => $siteName) {
             if (!isset($recruitmentData['labels'])) {
                 continue;
@@ -755,15 +739,23 @@ class Charts extends \NDB_Page
         }
 
         if (($queryParams['dateRegisteredStart'] ?? "undefined") != 'undefined') {
-            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
             $paramName          = 'dateStart' . (++$paramCounter);
-            $projectQuery      .= " AND c.Date_registered >= :$paramName";
+            if ($scansbymonth === true) {
+                $projectQuery .= " AND DATE(pf.Value) >= :$paramName";
+            } else {
+                $candJoin      = "JOIN candidate c ON c.ID=s.CandidateID";
+                $projectQuery .= " AND c.Date_registered >= :$paramName";
+            }
             $params[$paramName] = $queryParams['dateRegisteredStart'];
         }
         if (($queryParams['dateRegisteredEnd'] ?? "undefined") != 'undefined') {
-            $candJoin           = "JOIN candidate c ON c.ID=s.CandidateID";
             $paramName          = 'dateEnd' . (++$paramCounter);
-            $projectQuery      .= " AND c.Date_registered <= :$paramName";
+            if ($scansbymonth === true) {
+                $projectQuery .= " AND DATE(pf.Value) <= :$paramName";
+            } else {
+                $candJoin      = "JOIN candidate c ON c.ID=s.CandidateID";
+                $projectQuery .= " AND c.Date_registered <= :$paramName";
+            }
             $params[$paramName] = $queryParams['dateRegisteredEnd'];
         }
         if (is_numeric($queryParams['candidateAgeMin'] ?? null)) {
@@ -798,34 +790,6 @@ class Charts extends \NDB_Page
             'candJoin'               => $candJoin,
             'params'                 => $params,
         ];
-    }
-
-    /**
-     * Helper to generate labels for every month between startDate and endDate.
-     *
-     * @param \DateTimeImmutable $startDate The start date for the labels.
-     * @param \DateTimeImmutable $endDate   The end date for the labels.
-     *
-     * @return array
-     */
-    private function _createSiteLineChartLabels(
-        \DateTimeImmutable $startDate,
-        \DateTimeImmutable $endDate
-    ) : array {
-        $month = date_interval_create_from_date_string('1 month');
-
-        // Since we're only concerned with months, act as if $startDate
-        // is always the first of the month so that the last month doesn't
-        // get truncated.
-        $betweenDate = new \DateTimeImmutable($startDate->format('Y-m-01'));
-
-        $labels = [];
-
-        while ($betweenDate <= $endDate) {
-            $labels[]    = $betweenDate->format('n-Y');
-            $betweenDate = $betweenDate->add($month);
-        }
-        return $labels;
     }
 
     /**
