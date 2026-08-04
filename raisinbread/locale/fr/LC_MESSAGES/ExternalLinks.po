@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Loris Website"
-msgstr "Site web LORIS"
+msgstr "Site web Loris"
 
 msgid "GitHub"
 msgstr "GitHub"
