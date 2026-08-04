@@ -86,7 +86,7 @@ const ERROR_KEYS: Record<string, string[]> = {
   examiner_sites: ['examiner_sites'],
   examiner_radiologist: ['examiner_group'],
   examiner_pending: ['examiner_pending'],
-  active_from: ['active_from', 'active_timeWindows'],
+  active_from: ['active_from'],
   active_to: ['active_to'],
 };
 
@@ -98,10 +98,7 @@ const ERROR_KEYS: Record<string, string[]> = {
  */
 function initialFieldValue(field: FormField): FieldValue {
   if (field.type === 'advcheckbox') {
-    return field.value === true
-      || field.value === 1
-      || field.value === '1'
-      || field.value === 'on';
+    return [true, 1, '1', 'on', 'Y'].includes(field.value as any);
   }
   if (field.multiple) {
     if (Array.isArray(field.value)) {
@@ -227,6 +224,9 @@ function InlineCheckbox(props: FormFieldProps): React.ReactElement {
         />{' '}
         {props.field.label}
       </label>
+      {!props.value && (
+        <input name={props.field.name} type="hidden" value="" />
+      )}
     </div>
   );
 }
@@ -274,6 +274,9 @@ function FormFieldRow(props: FormFieldProps): React.ReactElement {
             />{' '}
             {field.label}
           </label>
+          {!props.value && (
+            <input name={field.name} type="hidden" value="" />
+          )}
           {props.error && <span className="help-block">{props.error}</span>}
         </div>
       </div>

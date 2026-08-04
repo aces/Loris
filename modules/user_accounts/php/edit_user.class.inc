@@ -1623,7 +1623,7 @@ class Edit_User extends \NDB_Form
         if (($values['active_to'] != null)
             && ($values['active_from'] > $values['active_to'])
         ) {
-            $errors['active_timeWindows'] = dgettext(
+            $errors['active_from'] = dgettext(
                 "user_accounts",
                 "Please notice that the \"Active from\" date should be"
                 . " lesser or equal to the \"Active to\" date."
