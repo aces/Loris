@@ -58,7 +58,7 @@ msgid "Range Start"
 msgstr "Début de la plage"
 
 msgid "Range End"
-msgstr "Fin de la Plage"
+msgstr "Fin de la plage"
 
 msgid "Total recruitment by Age"
 msgstr "Recrutement total par âge"
