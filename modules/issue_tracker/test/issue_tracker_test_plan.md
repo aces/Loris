@@ -73,25 +73,28 @@
    `php tools/issue_tracker_stress_test.php --issues=10 --comments=0,1,5 --run-id=smoke`.
 3. Re-run the smoke test with `--confirm`. Verify that 10 tagged issues were
    created and that their repeating comment counts are 0, 1, and 5.
-4. Open the Browse Issues tab on `/issue_tracker/`. Filter the Title field by
+4. Before cleanup, create another confirmed run with a different run ID. Verify
+   that both runs coexist, can be filtered independently, and cleaning up one
+   run does not remove the other.
+5. Open the Browse Issues tab on `/issue_tracker/`. Filter the Title field by
    the run ID and verify that the generated issues and issue details load.
-5. Open the Batch Edit tab and verify that the tagged generated issues appear.
+6. Open the Batch Edit tab and verify that the tagged generated issues appear.
    Exercise its category, priority, status, site, and assignee filters. Select
    several generated issues, batch edit their status or priority, and confirm
    that the changes persist.
-6. In Browse Issues, test filtering, sorting, and pagination. In Batch Edit,
+7. In Browse Issues, test filtering, sorting, and pagination. In Batch Edit,
    test its filters, page-size control, and pagination. Record cold and warm
    response times and any PHP, browser-console, or database errors.
-7. Clean up the smoke run with
+8. Clean up the smoke run with
    `php tools/issue_tracker_stress_test.php --cleanup=smoke --confirm`. Verify
    that its tagged issues and comments no longer exist.
-8. Repeat the generate, browser-test, and cleanup cycle separately with 1,000,
+9. Repeat the generate, browser-test, and cleanup cycle separately with 1,000,
    5,000, 10,000, 20,000, 50,000, and 100,000 issues. Clean up between runs so
    each result measures one exact data size.
-9. Test each size with no comments, one comment per issue, and a mixed
+10. Test each size with no comments, one comment per issue, and a mixed
    distribution such as `--comments=0,1,5,10`. Confirm that issue-list and
    issue-detail comment counts remain correct.
-10. Confirm that the My Tasks dashboard widget still loads and reports the
+11. Confirm that the My Tasks dashboard widget still loads and reports the
    generated issues assigned to the selected reporter.
-11. Record the command, issue count, comment count, generation time, page
+12. Record the command, issue count, comment count, generation time, page
     response times, and any server/database errors for every test run.

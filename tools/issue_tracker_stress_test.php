@@ -396,7 +396,7 @@ function insertIssues(
             )";
             $params["title$suffix"]       = makeTitle($runID, $sequence);
             $params["reporter$suffix"]    = $reporter;
-            $params["assignee$suffix"]    = $sequence % 4 === 0 ? null : $reporter;
+            $params["assignee$suffix"]    = $reporter;
             $params["status$suffix"]      = $statuses[$statusIndex];
             $params["priority$suffix"]    = $priorities[$priorityIndex];
             $params["created$suffix"]     = $createdAt;
