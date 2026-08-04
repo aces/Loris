@@ -578,7 +578,7 @@ class Charts extends \NDB_Page
         );
 
         $recruitmentdata = [];
-        $labels = [];
+        $labels          = [];
         foreach ($recruitment_summary as $row) {
             $siteId = $row['SiteID'];
             $year   = $row['Year'];
@@ -739,7 +739,7 @@ class Charts extends \NDB_Page
         }
 
         if (($queryParams['dateRegisteredStart'] ?? "undefined") != 'undefined') {
-            $paramName          = 'dateStart' . (++$paramCounter);
+            $paramName = 'dateStart' . (++$paramCounter);
             if ($scansbymonth === true) {
                 $projectQuery .= " AND DATE(pf.Value) >= :$paramName";
             } else {
@@ -749,7 +749,7 @@ class Charts extends \NDB_Page
             $params[$paramName] = $queryParams['dateRegisteredStart'];
         }
         if (($queryParams['dateRegisteredEnd'] ?? "undefined") != 'undefined') {
-            $paramName          = 'dateEnd' . (++$paramCounter);
+            $paramName = 'dateEnd' . (++$paramCounter);
             if ($scansbymonth === true) {
                 $projectQuery .= " AND DATE(pf.Value) <= :$paramName";
             } else {
