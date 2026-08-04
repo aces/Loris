@@ -93,7 +93,7 @@ fwrite(
 msgid ""
 msgstr ""
 
-"Project-Id-Version: LORIS 28\\n"
+"Project-Id-Version: LORIS 29\\n"
 "Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\\n"
 "POT-Creation-Date: 2025-04-08 14:37-0400\\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"
