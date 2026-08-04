@@ -115,38 +115,6 @@ msgstr ""
 msgid "You must accept the {{title}} before requesting an account."
 msgstr ""
 
-# Hack for the login page.
-# These strings come from the database and are
-# the defaults in the login_summary_statistics table
-
-msgid "EEG Recording"
-msgid_plural "EEG Recordings"
-msgstr[0] ""
-
-msgid "Female Participant"
-msgid_plural "Female Participants"
-msgstr[0] ""
-
-msgid "Instrument"
-msgid_plural "Instruments"
-msgstr[0] ""
-
-msgid "Male Participant"
-msgid_plural "Male Participants"
-msgstr[0] ""
-
-msgid "Scan"
-msgid_plural "Scans"
-msgstr[0] ""
-
-msgid "Site"
-msgid_plural "Sites"
-msgstr[0] ""
-
-msgid "Visit"
-msgid_plural "Visits"
-msgstr[0] ""
-
 msgid "Missing code"
 msgstr ""
 
@@ -193,4 +161,10 @@ msgid "Our partners"
 msgstr ""
 
 msgid "Password expired for user."
+msgstr ""
+
+msgid "Statistic"
+msgstr ""
+
+msgid "Value"
 msgstr ""
