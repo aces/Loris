@@ -19,7 +19,7 @@ In addition to the above, the following packages should be installed with `yum` 
  
  * [Composer](https://getcomposer.org)  
  
- * NodeJS 16.10.0 (or higher)
+ * NodeJS 20.20.0 (or higher)
  
  * NPM 8.19.2 (or higher)
  

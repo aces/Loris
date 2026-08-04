@@ -22,7 +22,7 @@ LORIS requires a LAMP stack in order to run, specifically:
 
 Additionally, the following package manager are required to build LORIS:  
 
-* NodeJS 16.10.0 (or higher)
+* NodeJS 20.20.0 (or higher)
 
 * NPM 8.19.2 (or higher)
 
