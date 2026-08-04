@@ -170,3 +170,36 @@ msgstr "Emplacement de téléversement"
 
 msgid "Upload Date"
 msgstr "Date d'importation"
+
+msgid "Invalid PSCID %s for CandID %s. Check that you entered the correct PSCID and CandID."
+msgstr "Le PSCID %s est invalide pour le CandID %s. Vérifiez que vous avez saisi le bon PSCID et le bon CandID."
+
+msgid "Invalid Visit Label %s for CandID %s. Check that you entered the correct Visit Label and CandID."
+msgstr "L'étiquette de visite %s est invalide pour le CandID %s. Vérifiez que vous avez saisi la bonne étiquette de visite et le bon CandID."
+
+msgid "The session associated with CandID %s and Visit Label %s is not active in the database."
+msgstr "La session associée au CandID %s et à l'étiquette de visite %s n'est pas active dans la base de données."
+
+msgid "Please make sure files are not larger than %s"
+msgstr "Veuillez vous assurer que les fichiers ne dépassent pas %s."
+
+msgid "The file %s is not of type .tgz, .tar.gz or .zip."
+msgstr "Le fichier %s n'est pas de type .tgz, .tar.gz ou .zip."
+
+msgid "The CandID %s does not exist in the database."
+msgstr "Le CandID %s n'existe pas dans la base de données."
+
+msgid "This user does not have permission to upload files for this session."
+msgstr "Cet utilisateur n'est pas autorisé à téléverser des fichiers pour cette session."
+
+msgid "The candidate associated with CandID %s and PSCID %s is not active in the database."
+msgstr "Le candidat associé au CandID %s et au PSCID %s n'est pas actif dans la base de données."
+
+msgid "File name and fields entered in CandID, PSCID, Visit Label must match. Verify that the information entered in all the fields above is correct or rename the file so that the file name matches %s or begins with \"%s\" and has the extension .tgz, tar.gz or .zip"
+msgstr "Le nom du fichier et les champs CandID, PSCID et Libellé de visite doivent correspondre. Vérifiez que les informations saisies dans les champs ci-dessus sont correctes ou renommez le fichier afin que son nom corresponde à %s ou commence par \"%s\" et qu'il ait l'extension .tgz, .tar.gz ou .zip."
+
+msgid "This file has already been uploaded."
+msgstr "Ce fichier a déjà été téléversé."
+
+msgid "An internal server error prevented this file from being uploaded. Please contact the system administrator: failed to copy %s to %s"
+msgstr "Une erreur interne du serveur a empêché le téléversement de ce fichier. Veuillez communiquer avec l'administrateur du système : impossible de copier %s vers %s."
