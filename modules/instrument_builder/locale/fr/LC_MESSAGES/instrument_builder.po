@@ -249,8 +249,5 @@ msgstr "Nom de question en double"
 msgid "Top"
 msgstr "Haut"
 
-msgid "Browse"
-msgstr "Parcourir"
-
 msgid "Delete"
 msgstr "Supprimer"
