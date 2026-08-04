@@ -476,7 +476,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                                 dgettext(
                                     "imaging_uploader",
                                     "The candidate associated with CandID %s and"
-                                    . "PSCID %s is not active in the database."
+                                    . " PSCID %s is not active in the database."
                                 ),
                                 $candid,
                                 $pscid
