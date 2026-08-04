@@ -391,7 +391,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
       ),
     },
     {
-      id: 'site', // Added site tab
+      id: 'site',
       label: (
         <span>
           {t('Site', {ns: 'loris', count: 1})}{' '}
@@ -400,10 +400,10 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
       ),
     },
     {
-      id: 'assignee', // Added assignee tab
+      id: 'assignee',
       label: (
         <span>
-          Assignee{' '}
+          {t('Assignee', {ns: 'issue_tracker'})}{' '}
           <span className="badge bg-primary">{selectedAssignees.length}</span>
         </span>
       ),
@@ -663,9 +663,6 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
               <option value={NO_CHANGE}>
                 {t('No change', {ns: 'issue_tracker'})}
               </option>
-              <option value="">
-                {t('All Sites', {ns: 'issue_tracker'})}
-              </option>
               {Object.entries(sites).map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
               ))}
@@ -694,42 +691,44 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
           </label>
         </div>
       </Panel>
-      <aside
-        className="batch-actions-panel"
-        aria-label={t('Batch actions', {ns: 'issue_tracker'})}
-      >
-        <div className="batch-actions-header">
-          <strong>{t('Batch actions', {ns: 'issue_tracker'})}</strong>
-          <button
-            type="button"
-            className="btn btn-default btn-sm batch-scroll-button"
-            onClick={scrollToBatchConfiguration}
-          >
-            {t('Select changes to apply', {ns: 'issue_tracker'})}
-          </button>
-        </div>
-        <div className="batch-actions-summary">{selectedIssueCount}</div>
-        <div className="batch-action-buttons">
-          <button
-            type="button"
-            className="btn btn-default"
-            disabled={!hasSelectedIssues || isSubmitting}
-            onClick={clearSelection}
-          >
-            {t('Clear selection', {ns: 'issue_tracker'})}
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary batch-update-button"
-            disabled={!hasSelectedIssues || !hasBatchUpdates || isSubmitting}
-            onClick={submitBatchEdit}
-          >
-            {isSubmitting ?
-              t('Updating...', {ns: 'issue_tracker'}) :
-              t('Apply changes', {ns: 'issue_tracker'})}
-          </button>
-        </div>
-      </aside>
+      {hasSelectedIssues && (
+        <aside
+          className="batch-actions-panel"
+          aria-label={t('Batch actions', {ns: 'issue_tracker'})}
+        >
+          <div className="batch-actions-header">
+            <strong>{t('Batch actions', {ns: 'issue_tracker'})}</strong>
+            <button
+              type="button"
+              className="btn btn-default btn-sm batch-scroll-button"
+              onClick={scrollToBatchConfiguration}
+            >
+              {t('Select changes to apply', {ns: 'issue_tracker'})}
+            </button>
+          </div>
+          <div className="batch-actions-summary">{selectedIssueCount}</div>
+          <div className="batch-action-buttons">
+            <button
+              type="button"
+              className="btn btn-default"
+              disabled={isSubmitting}
+              onClick={clearSelection}
+            >
+              {t('Clear selection', {ns: 'issue_tracker'})}
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary batch-update-button"
+              disabled={!hasBatchUpdates || isSubmitting}
+              onClick={submitBatchEdit}
+            >
+              {isSubmitting ?
+                t('Updating...', {ns: 'issue_tracker'}) :
+                t('Apply changes', {ns: 'issue_tracker'})}
+            </button>
+          </div>
+        </aside>
+      )}
       <br/>
       <div className="pagination-container">
         <div>

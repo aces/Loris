@@ -202,11 +202,11 @@ class Issue_TrackerTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that Batch Edit can assign an issue to all sites.
+     * Tests that Batch Edit rejects assigning an issue to all sites.
      *
      * @return void
      */
-    function testBatchEditClearsSite()
+    function testBatchEditRejectsAllSites()
     {
         $this->setupPermissions(["issue_tracker_all_issue"]);
         $result = $this->_postBatchEdit(
@@ -216,16 +216,16 @@ class Issue_TrackerTest extends LorisIntegrationTest
             ]
         );
 
-        $this->assertSame(200, $result['status']);
-        $this->assertSame(1, $result['body']['updated']);
-        $this->assertNull(
+        $this->assertSame(400, $result['status']);
+        $this->assertSame('Invalid issue site.', $result['body']['error']);
+        $this->assertSame(
+            '55',
             $this->DB->pselectOne(
                 'SELECT centerID FROM issues WHERE issueID=:issueID',
                 ['issueID' => 999999]
             )
         );
-        $this->assertSame(
-            '',
+        $this->assertNull(
             $this->DB->pselectOne(
                 "SELECT newValue FROM issues_history
                  WHERE issueID=:issueID AND fieldChanged='centerID'",

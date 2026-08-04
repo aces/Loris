@@ -451,8 +451,7 @@ class BatchEdit extends \NDB_Page implements ETagCalculator
 
         if (array_key_exists('centerID', $updates)) {
             $centerID = $updates['centerID'];
-            if ($centerID !== null
-                && !is_int($centerID)
+            if (!is_int($centerID)
                 && !(is_string($centerID) && ctype_digit($centerID))
             ) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
@@ -460,18 +459,16 @@ class BatchEdit extends \NDB_Page implements ETagCalculator
                 );
             }
 
-            if ($centerID !== null) {
-                $centerID = (int)$centerID;
-                if ($centerID <= 0
-                    || $db->pselectOne(
-                        'SELECT CenterID FROM psc WHERE CenterID=:centerID',
-                        ['centerID' => $centerID]
-                    ) === null
-                ) {
-                    return new \LORIS\Http\Response\JSON\BadRequest(
-                        'Invalid issue site.'
-                    );
-                }
+            $centerID = (int)$centerID;
+            if ($centerID <= 0
+                || $db->pselectOne(
+                    'SELECT CenterID FROM psc WHERE CenterID=:centerID',
+                    ['centerID' => $centerID]
+                ) === null
+            ) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Invalid issue site.'
+                );
             }
             $updates['centerID'] = $centerID;
         }
