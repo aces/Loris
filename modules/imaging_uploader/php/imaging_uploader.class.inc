@@ -584,7 +584,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     "imaging_uploader",
                     "An internal server error prevented"
                         . " this file from being uploaded. Please contact the system"
-                        . "administrator: " . "failed to copy %s to %s"
+                        . " administrator: " . "failed to copy %s to %s"
                 ),
                 $temp_file,
                 $new_temp_file
