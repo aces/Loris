@@ -309,10 +309,10 @@ class EditExaminer extends \NDB_Form
             'maxYear'        => $config->getSetting('endYear'),
         ];
         $statusOptions = [
-            ''              => 'N/A',
-            'not_certified' => 'Not Certified',
-            'in_training'   => 'In Training',
-            'certified'     => 'Certified',
+            ''              => dgettext("loris", "N/A"),
+            'not_certified' => dgettext("loris", "Not Certified"),
+            'in_training'   => dgettext("loris", "In Training"),
+            'certified'     => dgettext("loris", "Certified"),
         ];
 
         // Get the list of certification instruments
