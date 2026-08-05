@@ -570,7 +570,7 @@ class NDB_Config
             $x = $info['WindowDifference'];
             return [
                 'id'                => $info['CohortID'],
-                'title'             => $info['title'],
+                'title'             => dgettext("cohort", $info['title']),
                 'options'           => [
                     'useEDC'           => $info['useEDC'],
                     'WindowDifference' => $x,
