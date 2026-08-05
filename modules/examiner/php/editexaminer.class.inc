@@ -295,24 +295,43 @@ class EditExaminer extends \NDB_Form
             ['EID' => $this->identifier]
         );
 
-        $this->tpl_data['certification_history'] = \iterator_to_array(
-            $certification_history
-        );
-
-        $config = \NDB_Config::singleton();
-
-        $dateOptions   = [
-            'language'       => 'en',
-            'format'         => 'YMd',
-            'addEmptyOption' => true,
-            'minYear'        => $config->getSetting('startYear'),
-            'maxYear'        => $config->getSetting('endYear'),
-        ];
         $statusOptions = [
             ''              => dgettext("loris", "N/A"),
             'not_certified' => dgettext("examiner", "Not Certified"),
             'in_training'   => dgettext("examiner", "In Training"),
             'certified'     => dgettext("examiner", "Certified"),
+        ];
+
+        $certificationHistory = iterator_to_array($certification_history);
+
+        foreach ($certificationHistory as &$history) {
+            if (!empty($history['old'])) {
+                $history['old'] = $statusOptions[$history['old']]
+                    ?? mb_convert_case(
+                        str_replace('_', ' ', $history['old']),
+                        MB_CASE_TITLE
+                    );
+            }
+
+            if (!empty($history['new'])) {
+                $history['new'] = $statusOptions[$history['new']]
+                    ?? mb_convert_case(
+                        str_replace('_', ' ', $history['new']),
+                        MB_CASE_TITLE
+                    );
+            }
+        }
+        unset($history);
+        $this->tpl_data['certification_history'] = $certificationHistory;
+
+        $config = \NDB_Config::singleton();
+
+        $dateOptions = [
+            'language'       => 'en',
+            'format'         => 'YMd',
+            'addEmptyOption' => true,
+            'minYear'        => $config->getSetting('startYear'),
+            'maxYear'        => $config->getSetting('endYear'),
         ];
 
         // Get the list of certification instruments
