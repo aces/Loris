@@ -1,7 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `feedback_bvl_thread`;
 LOCK TABLES `feedback_bvl_thread` WRITE;
-INSERT INTO `feedback_bvl_thread` (`FeedbackID`, `CandidateID`, `SessionID`, `CommentID`, `Feedback_level`, `Feedback_type`, `Public`, `Status`, `Active`, `Date_taken`, `UserID`, `Testdate`, `FieldName`) VALUES (1,1004,0,'','instrument',3,'Y','opened','Y','2016-06-17','','2016-07-14 23:00:52','');
 INSERT INTO `feedback_bvl_thread` (`FeedbackID`, `CandidateID`, `SessionID`, `CommentID`, `Feedback_level`, `Feedback_type`, `Public`, `Status`, `Active`, `Date_taken`, `UserID`, `Testdate`, `FieldName`) VALUES (2,163,NULL,NULL,'profile',1,'Y','closed','Y','2016-07-14','admin','2016-07-14 22:58:15',NULL);
 INSERT INTO `feedback_bvl_thread` (`FeedbackID`, `CandidateID`, `SessionID`, `CommentID`, `Feedback_level`, `Feedback_type`, `Public`, `Status`, `Active`, `Date_taken`, `UserID`, `Testdate`, `FieldName`) VALUES (4,163,2,'300002MTL0022221465351036','instrument',2,'Y','closed','Y','2016-07-14','admin','2016-07-14 22:59:43','Across All Fields');
 INSERT INTO `feedback_bvl_thread` (`FeedbackID`, `CandidateID`, `SessionID`, `CommentID`, `Feedback_level`, `Feedback_type`, `Public`, `Status`, `Active`, `Date_taken`, `UserID`, `Testdate`, `FieldName`) VALUES (5,168,7,'300007MTL0077221465351036','instrument',1,'Y','closed','Y','2016-07-14','admin','2016-07-14 22:58:15','Administration');

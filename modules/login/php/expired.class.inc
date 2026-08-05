@@ -59,7 +59,7 @@ class Expired extends \NDB_Page implements ETagCalculator
         }
 
         return new \LORIS\Http\Response\JSON\BadRequest(
-            'Error'
+            dgettext('login', 'Error')
         );
     }
 
@@ -78,7 +78,7 @@ class Expired extends \NDB_Page implements ETagCalculator
         // Check if password is not empty.
         if (empty($values['password']) || empty($values['confirm'])) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Can not use an empty password.'
+                dgettext('login', 'Can not use an empty password.')
             );
         }
         // Update the user password.
@@ -88,7 +88,7 @@ class Expired extends \NDB_Page implements ETagCalculator
             // Check if new password is same as old password.
             if (!$user->isPasswordDifferent($plaintext)) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'You cannot keep the same password.'
+                    dgettext('login', 'You cannot keep the same password.')
                 );
             }
             // Update password
@@ -106,7 +106,7 @@ class Expired extends \NDB_Page implements ETagCalculator
             }
         } else {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Server encountered an error.'
+                dgettext('login', 'Server encountered an error.')
             );
         }
         return new \LORIS\Http\Response\JsonResponse(

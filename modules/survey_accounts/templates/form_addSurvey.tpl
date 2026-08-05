@@ -31,7 +31,7 @@
         {/foreach}
 
         <tr>
-            <td id="email-error" nowrap="nowrap" colspan="2" style="display: none;" class="error"></td>
+            <td id="email-error" nowrap="nowrap" colspan="2" style="display: none;" class="error" data-email-mismatch="{dgettext("survey_accounts", "The email addresses do not match.")|escape}"></td>
         </tr>
 
         <tr>
@@ -60,8 +60,8 @@
         </tr>
         <tr>
             <td nowrap="nowrap" colspan="2">
-                <input class="btn btn-sm btn-primary" name="fire_away" value="{dgettext("survey_accounts", "Create survey")}" id="create_survey" type="submit" />
-                <input class="btn btn-sm btn-primary email" name="fire_away" value="{dgettext("survey_accounts", "Email survey")}" id="email_survey" type="submit" />
+                <button class="btn btn-sm btn-primary" name="fire_away" value="create_survey" id="create_survey" type="submit">{dgettext("survey_accounts", "Create survey")}</button>
+                <button class="btn btn-sm btn-primary email" name="fire_away" value="email_survey" id="email_survey" type="submit">{dgettext("survey_accounts", "Email survey")}</button>
         {/if}
             </td>
         </tr>
