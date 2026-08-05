@@ -310,9 +310,9 @@ class EditExaminer extends \NDB_Form
         ];
         $statusOptions = [
             ''              => dgettext("loris", "N/A"),
-            'not_certified' => dgettext("loris", "Not Certified"),
-            'in_training'   => dgettext("loris", "In Training"),
-            'certified'     => dgettext("loris", "Certified"),
+            'not_certified' => dgettext("examiner", "Not Certified"),
+            'in_training'   => dgettext("examiner", "In Training"),
+            'certified'     => dgettext("examiner", "Certified"),
         ];
 
         // Get the list of certification instruments
