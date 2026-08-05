@@ -1063,7 +1063,7 @@ const AnnotationForm = ({
                 ? ' form-edit'
                 : ''
             )}
-            label={t('trial_type', {ns: 'electrophysiology_browser'})}
+            label="trial_type"
             value={currentAnnotation ? currentAnnotation.label : (label ?? '')}
             onUserInput={(_, value) => setLabel(value)}
             required={false/*currentAnnotation === null*/}

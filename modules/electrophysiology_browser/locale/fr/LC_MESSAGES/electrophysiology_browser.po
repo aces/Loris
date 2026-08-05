@@ -759,9 +759,6 @@ msgstr "Types de chaînes"
 msgid "end time"
 msgstr "heure de fin"
 
-msgid "trial_type"
-msgstr "type d'essai"
-
 msgid "onset"
 msgstr "début"
 

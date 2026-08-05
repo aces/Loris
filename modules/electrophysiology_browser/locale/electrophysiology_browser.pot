@@ -619,9 +619,6 @@ msgstr ""
 msgid "end time"
 msgstr ""
 
-msgid "trial_type"
-msgstr ""
-
 msgid "onset"
 msgstr ""
 
