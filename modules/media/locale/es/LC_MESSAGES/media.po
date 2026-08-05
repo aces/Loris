@@ -17,18 +17,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 msgid "Media"
 msgstr "Medios de comunicación"
 
 msgid "File Name"
 msgstr "Nombre del archivo"
-
-msgid "Instrument"
-msgstr "Instrumento"
-
-msgid "Uploaded By"
-msgstr "Subido por"
 
 msgid "Date Taken"
 msgstr "Fecha de toma"
@@ -44,9 +39,6 @@ msgstr "Tipo de archivo"
 
 msgid "CandID"
 msgstr "Sincero"
-
-msgid "SessionID"
-msgstr "ID de sesión"
 
 msgid "File Visibility"
 msgstr "Visibilidad de archivos"
@@ -65,12 +57,6 @@ msgstr "Navegar"
 
 msgid "Upload"
 msgstr "Subir"
-
-msgid "An error occurred while loading the page."
-msgstr "Se ha producido un error al cargar la página."
-
-msgid "Language"
-msgstr "Idioma"
 
 # New strings from uploadForm.js
 
@@ -127,18 +113,6 @@ msgstr "Ocultar archivo"
 
 msgid "Invalid file name!"
 msgstr "¡Nombre de archivo no válido!"
-
-msgid "File name should begin with:"
-msgstr "El nombre del archivo debe comenzar con:"
-
-msgid "A file with this name already exists!\n Would you like to override existing file?"
-msgstr "¡Ya existe un archivo con este nombre! ¿Desea sobrescribir el archivo existente?"
-
-msgid "Cancelled"
-msgstr "Cancelado"
-
-msgid "Your imaginary file is safe :"
-msgstr "Tu archivo imaginario está a salvo:"
 
 msgid "Success!"
 msgstr "¡Éxito!"

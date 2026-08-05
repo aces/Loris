@@ -163,11 +163,15 @@ class CandidateListIndex extends Component {
     }
     if (column === this.props.t('Feedback', {ns: 'loris'})) {
       switch (cell) {
-      case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
-      case '2': return <td style ={{background: '#EEEEAA'}}>Answered</td>;
-      case '3': return <td style ={{background: '#99CC99'}}>Closed</td>;
-      case '4': return <td style ={{background: '#99CCFF'}}>Comment</td>;
-      default: return <td>None</td>;
+      case '1': return <td style={{background: '#E4A09E'}}>
+        {this.props.t('Opened', {ns: 'candidate_list'})}</td>;
+      case '2': return <td style={{background: '#EEEEAA'}}>
+        {this.props.t('Answered', {ns: 'candidate_list'})}</td>;
+      case '3': return <td style={{background: '#99CC99'}}>
+        {this.props.t('Closed', {ns: 'candidate_list'})}</td>;
+      case '4': return <td style={{background: '#99CCFF'}}>
+        {this.props.t('Comment', {ns: 'candidate_list'})}</td>;
+      default: return <td>{this.props.t('None', {ns: 'loris'})}</td>;
       }
     }
     if (column === this.props.t('Scan Done', {ns: 'loris'})) {
@@ -336,11 +340,11 @@ class CandidateListIndex extends Component {
           type: 'select',
           hide: this.state.hideFilter,
           options: {
-            '0': 'None',
-            '1': 'Opened',
-            '2': 'Answered',
-            '3': 'Closed',
-            '4': 'Comment',
+            '0': this.props.t('None', {ns: 'loris'}),
+            '1': this.props.t('Opened', {ns: 'candidate_list'}),
+            '2': this.props.t('Answered', {ns: 'candidate_list'}),
+            '3': this.props.t('Closed', {ns: 'candidate_list'}),
+            '4': this.props.t('Comment', {ns: 'candidate_list'}),
           },
         },
       },

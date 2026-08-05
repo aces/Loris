@@ -359,7 +359,7 @@ ParticipantStatus.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default withTranslation(

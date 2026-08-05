@@ -13,6 +13,7 @@ import jaStrings
 import hiStrings
   from '../locale/hi/LC_MESSAGES/server_processes_manager.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/server_processes_manager.json';
+import frStrings from '../locale/fr/LC_MESSAGES/server_processes_manager.json';
 
 /**
  * ServerProcessesManagerIndex is the main entry point of the
@@ -70,7 +71,13 @@ class ServerProcessesManagerIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
-    return (<td>{cell}</td>);
+    const {t} = this.props;
+    switch (cell) {
+    case 'unknown':
+      return (<td>{t('unknown', {ns: 'loris'})}</td>);
+    default:
+      return (<td>{cell}</td>);
+    }
   }
 
   /**
@@ -100,7 +107,7 @@ class ServerProcessesManagerIndex extends Component {
         name: 'pid',
         type: 'text',
       }},
-      {label: t('Type', {ns: 'server_processes_manager'}), show: true, filter: {
+      {label: t('Type', {ns: 'loris'}), show: true, filter: {
         name: 'type',
         type: 'text',
       }},
@@ -153,6 +160,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'server_processes_manager', jaStrings);
   i18n.addResourceBundle('hi', 'server_processes_manager', hiStrings);
   i18n.addResourceBundle('zh', 'server_processes_manager', zhStrings);
+  i18n.addResourceBundle('fr', 'server_processes_manager', frStrings);
   const SPMIndex = withTranslation(
     ['server_processes_manager', 'loris']
   )(ServerProcessesManagerIndex);

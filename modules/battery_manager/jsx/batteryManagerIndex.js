@@ -103,7 +103,7 @@ class BatteryManagerIndex extends Component {
             body = JSON.parse(body);
             if (response.ok) {
               swal.fire(
-                this.props.t('Submission successful!', {ns: 'battery_manager'}),
+                this.props.t('Submission Successful!', {ns: 'loris'}),
                 body.message,
                 'success'
               ).then((result) => {
@@ -568,6 +568,7 @@ class BatteryManagerIndex extends Component {
               edit,
             icon: 'warning',
             confirmButtonText: t('Activate', {ns: 'battery_manager'}),
+            cancelButtonText: t('Cancel', {ns: 'loris'}),
             showCancelButton: true,
           }).then((result) => {
             if (result.value) {

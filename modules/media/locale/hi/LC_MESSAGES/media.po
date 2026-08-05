@@ -17,18 +17,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Media"
 msgstr "मीडिया"
 
 msgid "File Name"
 msgstr "फ़ाइल नाम"
-
-msgid "Instrument"
-msgstr "इंस्ट्रूमेंट"
-
-msgid "Uploaded By"
-msgstr "अपलोड किया गया"
 
 msgid "Date Taken"
 msgstr "तारीख ली गई"
@@ -44,9 +39,6 @@ msgstr "फ़ाइल प्रकार"
 
 msgid "CandID"
 msgstr "कैंडआईडी"
-
-msgid "SessionID"
-msgstr "सेशनआईडी"
 
 msgid "File Visibility"
 msgstr "फ़ाइल दृश्यता"
@@ -65,12 +57,6 @@ msgstr "ब्राउज़ करें"
 
 msgid "Upload"
 msgstr "अपलोड करें"
-
-msgid "An error occurred while loading the page."
-msgstr "पृष्ठ लोड करते समय एक त्रुटि हुई।"
-
-msgid "Language"
-msgstr "भाषा"
 
 # New strings from uploadForm.js
 
@@ -127,18 +113,6 @@ msgstr "फ़ाइल छिपाएँ"
 
 msgid "Invalid file name!"
 msgstr "अमान्य फ़ाइल नाम!"
-
-msgid "File name should begin with:"
-msgstr "फ़ाइल नाम इससे शुरू होना चाहिए:"
-
-msgid "A file with this name already exists!\n Would you like to override existing file?"
-msgstr "इस नाम की एक फ़ाइल पहले से मौजूद है!\n क्या आप मौजूदा फ़ाइल को अधिलेखित करना चाहेंगे?"
-
-msgid "Cancelled"
-msgstr "रद्द कर दिया गया"
-
-msgid "Your imaginary file is safe :"
-msgstr "आपकी काल्पनिक फ़ाइल सुरक्षित है :"
 
 msgid "Success!"
 msgstr "सफलता!"

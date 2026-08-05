@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Imaging Uploader"
 msgstr "इमेजिंग अपलोडर"
@@ -27,9 +28,6 @@ msgstr "इमेजिंग स्कैन अपलोड करें"
 msgid "Phantom Scans"
 msgstr "फैंटम स्कैन"
 
-msgid "File to Upload"
-msgstr "अपलोड करने के लिए फ़ाइल"
-
 msgid "Notes"
 msgstr "नोट्स"
 
@@ -39,8 +37,8 @@ msgstr "फ़ाइल इससे अधिक नहीं हो सकत�
 msgid "File must be of type .tgz or tar.gz or .zip"
 msgstr "फ़ाइल का प्रकार .tgz, .tar.gz या .zip होना चाहिए"
 
-msgid "For files that are not Phantom Scans, file name must begin with"
-msgstr "जो फाइलें फैंटम स्कैन नहीं हैं, उनका नाम इससे शुरू होना चाहिए"
+msgid "For files that are not Phantom Scans, file name must begin with <0>{{prefix}}</0>"
+msgstr "जो फ़ाइलें फैंटम स्कैन नहीं हैं, उनके लिए फ़ाइल का नाम <0>{{prefix}}</0> से शुरू होना चाहिए।"
 
 msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
 msgstr "उदाहरण के लिए, DCCID {{dccid}}, PSCID {{pscid}}, और विजिट लेबल {{visitLabel}} के लिए फ़ाइल नाम की शुरुआत इससे होनी चाहिए: {{prefix}}"
@@ -84,9 +82,6 @@ msgstr "आपका अपलोड रद्द कर दिया गया 
 msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
 msgstr "इस नाम की फ़ाइल अपलोड की गई है लेकिन अभी MRI पाइपलाइन द्वारा प्रोसेस नहीं हुई है। क्या आप मौजूदा फ़ाइल को अधिलेखित करना चाहेंगे?"
 
-msgid "Upload Successful!"
-msgstr "अपलोड सफल!"
-
 msgid "Processing of this file by the MRI pipeline has started"
 msgstr "इस फ़ाइल का MRI पाइपलाइन द्वारा प्रोसेसिंग शुरू हो गई है"
 
@@ -99,8 +94,8 @@ msgstr "अपलोड विफल: नेटवर्क त्रुटि �
 msgid "Please make sure files are not larger than {{maxFileSize}}"
 msgstr "कृपया सुनिश्चित करें कि फ़ाइलें {{maxFileSize}} से बड़ी न हों"
 
-msgid "Upload failed: received HTTP response code"
-msgstr "अपलोड विफल: HTTP प्रतिक्रिया कोड प्राप्त हुआ"
+msgid "Upload failed: received HTTP response code {{code}}"
+msgstr "अपलोड विफल: HTTP प्रतिक्रिया कोड {{code}} प्राप्त हुआ"
 
 msgid "Submission error!"
 msgstr "सबमिशन त्रुटि!"
@@ -129,8 +124,8 @@ msgstr "डाली गई फ़ाइलों की संख्या"
 msgid "{{successText}} ({{inserted}} out of {{created}})"
 msgstr "{{successText}} ({{created}} में से {{inserted}})"
 
-msgid "{{numViolatedScans}} violated scans"
-msgstr "{{numViolatedScans}} उल्लंघन स्कैन"
+msgid "({{numViolatedScans}} violated scans)"
+msgstr "({{numViolatedScans}} उल्लंघन स्कैन)"
 
 msgid "Tarchive Info"
 msgstr "टीआर्काइव जानकारी"
@@ -143,6 +138,3 @@ msgstr "अपलोड स्थान"
 
 msgid "Upload Date"
 msgstr "अपलोड की तिथि"
-
-msgid "Uploaded By"
-msgstr "द्वारा अपलोड किया गया"

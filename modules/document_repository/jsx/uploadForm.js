@@ -234,8 +234,8 @@ class DocUploadForm extends Component {
             resp.json().then((data) => {
               if (data.error_count === 0) {
                 swal.fire(
-                  this.props.t('Upload Successful!',
-                    {ns: 'document_repository'}),
+                  this.props.t('Upload successful!',
+                    {ns: 'loris'}),
                   '',
                   'success'
                 ).then((result) => {
@@ -269,7 +269,7 @@ class DocUploadForm extends Component {
               swal.fire(
                 this.props.t('File too large', {ns: 'document_repository'}),
                 this.props.t('Could not upload file',
-                  {ns: 'document_repository'}),
+                  {ns: 'loris'}),
                 'error'
               );
             }
@@ -277,7 +277,7 @@ class DocUploadForm extends Component {
               swal.fire(
                 this.props.t('Permission denied', {ns: 'loris'}),
                 this.props.t('Could not upload file',
-                  {ns: 'document_repository'}),
+                  {ns: 'loris'}),
                 'error'
               );
             }

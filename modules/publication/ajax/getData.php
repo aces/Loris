@@ -318,8 +318,8 @@ function getFiles($id) : array
     $results = [];
     foreach ($files as $key => $f) {
         $val = [];
-        $val['Citation'] = htmlspecialchars_decode($f['Citation']);
-        $val['Version']  = htmlspecialchars_decode($f['Version']);
+        $val['Citation'] = htmlspecialchars_decode($f['Citation'] ?? '');
+        $val['Version']  = htmlspecialchars_decode($f['Version'] ?? '');
 
         $results[$key] = $val;
     }

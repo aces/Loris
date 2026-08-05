@@ -107,7 +107,7 @@ class IssueTrackerIndex extends Component {
     const siteKey = t('Site', {ns: 'loris', count: 1});
     const pscidKey = t('PSCID', {ns: 'loris'});
     const visitLabelKey = t('Visit Label', {ns: 'loris'});
-    const sessionIDKey = t('Session ID', {ns: 'loris'});
+    const sessionIDKey = t('SessionID', {ns: 'loris'});
     const dccidKey = t('DCCID', {ns: 'loris'});
     const statusKey = t('Status', {ns: 'loris'});
     const categoryKey = t('Category', {ns: 'issue_tracker'});
@@ -165,11 +165,11 @@ class IssueTrackerIndex extends Component {
       break;
     case statusKey:
       // Display status values as-is (not translated)
-      result = <td>{cell}</td>;
+      result = <td>{t(cell, {ns: 'issue_tracker'})}</td>;
       break;
     case categoryKey:
       // Display category values as-is (not translated)
-      result = <td>{cell || ''}</td>;
+      result = <td>{t(cell, {ns: 'issues_categories'}) || ''}</td>;
       break;
     case siteKey:
       // if cell is an array containing all sites values
@@ -177,7 +177,7 @@ class IssueTrackerIndex extends Component {
         JSON.stringify(
           Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
       ) {
-        result = <td>All Sites</td>;
+        result = <td>{t('All Sites', {ns: 'issue_tracker'})}</td>;
       } else {
         result = <td>
           {cell.map((v) =>
@@ -295,7 +295,7 @@ class IssueTrackerIndex extends Component {
         type: 'date',
       }},
       {label: t('Last Update', {ns: 'issue_tracker'}), show: true},
-      {label: t('SessionID', {ns: 'issue_tracker'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('DCCID', {ns: 'loris'}), show: false},
       {label: t('Watching', {ns: 'issue_tracker'}), show: false, filter: {
         name: 'watching',

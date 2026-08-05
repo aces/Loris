@@ -22,6 +22,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/schedule_module.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/schedule_module.json';
 import frStrings from '../locale/fr/LC_MESSAGES/schedule_module.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/schedule_module.json';
+import esStrings from '../locale/es/LC_MESSAGES/schedule_module.json';
 
 /**
  * Schedule Module
@@ -86,11 +87,11 @@ class ScheduleIndex extends Component {
             const today = data.fieldOptions.today;
             const next = data.fieldOptions.next30days;
             const list = data.Data;
-            this.setState({tabledatapast: list.filter((e)=>e[7]<today)});
+            this.setState({tabledatapast: list.filter((e)=>e[8]<today)});
             this.setState({tabledatanext: list.filter((e)=>{
-              return e[7]>today && e[7]<=next;
+              return e[8]>today && e[8]<=next;
             })});
-            this.setState({tabledatatoday: list.filter((e)=>e[7]==today)});
+            this.setState({tabledatatoday: list.filter((e)=>e[8]==today)});
             this.setState({isLoaded: true});
           });
         }
@@ -630,6 +631,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('fr', 'schedule_module', frStrings);
   i18n.addResourceBundle('ja', 'schedule_module', jaStrings);
   i18n.addResourceBundle('zh', 'schedule_module', zhStrings);
+  i18n.addResourceBundle('es', 'schedule_module', esStrings);
   const Index = withTranslation(
     ['schedule_module', 'loris']
   )(ScheduleIndex);
