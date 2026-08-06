@@ -1447,7 +1447,13 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
     {
         $lang = $this->getData('Language');
         if ($lang === null) {
-            return new \Language(dgettext("loris", "unknown"), "en_CA");
+            return new \Language(
+                mb_convert_case(
+                    dgettext("loris", "unknown"),
+                    MB_CASE_TITLE
+                ),
+                "en_CA"
+            );
         }
         return $lang;
     }
