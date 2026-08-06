@@ -5,7 +5,7 @@ import {useTranslation} from 'react-i18next';
 import fetchDataStream from 'jslib/fetchDataStream';
 
 import DataTable from 'jsx/DataTable';
-import {SelectElement, CheckboxElement} from 'jsx/Form';
+import {SelectElement, CheckboxElement, ButtonElement} from 'jsx/Form';
 import {APIQueryField, APIQueryObject} from './types';
 import {QueryGroup} from './querydef';
 import {FullDictionary, FieldDictionary} from './types';
@@ -172,6 +172,8 @@ type RunQueryType = {
   loading: boolean,
   data: string[][],
   totalcount: number,
+  hasError: boolean,
+  retry: () => void,
 };
 /**
  * React hook to run a given query.
@@ -189,40 +191,47 @@ function useRunQuery(
   const [expectedResults, setExpectedResults] = useState<number>(0);
   const [resultData, setResultData] = useState<string[][]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
+  const [retryCount, setRetryCount] = useState<number>(0);
+
+  /**
+   * Method used to trigger a new query fetch run
+   */
+  const retry = () => setRetryCount((c) => c + 1);
 
   useEffect(() => {
     setLoading(true);
+    setHasError(false);
+    setResultData([]);
     const payload: APIQueryObject = calcPayload(fields, filters);
-    fetch(
-      '/dataquery/queries',
-      {
-        method: 'post',
-        credentials: 'same-origin',
-        body: JSON.stringify(payload),
-      },
-    ).then(
-      (resp) => {
-        if (!resp.ok) {
-          throw new Error('Error creating query.');
-        }
+
+    fetch('/dataquery/queries', {
+      method: 'post',
+      credentials: 'same-origin',
+      body: JSON.stringify(payload),
+    })
+      .then((resp) => {
+        if (!resp.ok) throw new Error('Error creating query.');
         return resp.json();
-      }
-    ).then(
-      (data) => {
+      })
+      .then((data) => {
+        return fetch(`/dataquery/queries/${data.QueryID}/count`, {
+          method: 'GET',
+          credentials: 'same-origin',
+        })
+          .then((resp) => {
+            if (!resp.ok) throw new Error('Could not get query count.');
+            return resp.json();
+          })
+          .then((json) => {
+            setExpectedResults(json.count);
+            return data;
+          });
+      })
+      .then((data) => {
         const resultbuffer: any[] = [];
-        fetch(
-          '/dataquery/queries/'
-                            + data.QueryID + '/count',
-          {
-            method: 'GET',
-            credentials: 'same-origin',
-          }
-        ).then((resp) => resp.json()
-        ).then( (json) => {
-          setExpectedResults(json.count);
-        });
         fetchDataStream(
-          '/dataquery/queries/' + data.QueryID + '/run',
+          `/dataquery/queries/${data.QueryID}/run`,
           (row: any) => {
             resultbuffer.push(row);
           },
@@ -238,20 +247,22 @@ function useRunQuery(
           'post',
         );
         onRun(); // forces query list to be reloaded
-      }
-    ).catch(
-      (msg) => {
+      })
+      .catch((err) => {
+        setHasError(true);
+        setLoading(false);
         swal.fire({
           type: 'error',
-          text: msg,
+          text: err.message || 'An unexpected error occurred.',
         });
-      }
-    );
-  }, [fields, filters]);
+      });
+  }, [fields, filters, retryCount]);
   return {
     loading: loading,
     data: resultData,
     totalcount: expectedResults,
+    hasError: hasError,
+    retry: retry,
   };
 }
 
@@ -496,7 +507,29 @@ function ViewData(props: {
       sortByValue={false}
     />
     {emptyCheckbox}
-    {queryTable}
+    {queryData.hasError ? (
+      <div style={{
+        margin: '16px auto',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        textAlign: 'center',
+        backgroundColor: '#f7fbff',
+        padding: '32px',
+        maxWidth: '600px',
+        borderRadius: '8px',
+        border: '1px solid #dbeafe',
+      }}>
+        <h3 style={{margin: '15px 0 16px 0'}}>Something went wrong.</h3>
+        <ButtonElement
+          label={t('Run Query Again', {ns: 'dataquery'})}
+          onUserInput={queryData.retry}
+          buttonClass='btn btn-primary'
+          columnSize='col-sm-12'
+          type='button'
+        />
+      </div>
+    ) : <>{queryTable}</>}
   </div>;
 }
 
