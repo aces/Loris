@@ -211,7 +211,9 @@ function useRunQuery(
       body: JSON.stringify(payload),
     })
       .then((resp) => {
-        if (!resp.ok) throw new Error('Error creating query.');
+        if (!resp.ok) {
+          throw new Error('Error creating query.');
+        }
         return resp.json();
       })
       .then((data) => {
@@ -220,7 +222,9 @@ function useRunQuery(
           credentials: 'same-origin',
         })
           .then((resp) => {
-            if (!resp.ok) throw new Error('Could not get query count.');
+            if (!resp.ok) {
+              throw new Error('Could not get query count.');
+            }
             return resp.json();
           })
           .then((json) => {
