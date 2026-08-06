@@ -995,8 +995,14 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
     {
         // If the page name is the same as the module directory name,
         // there should only be 1 level of breadcrumb.
-        $pagename = ucwords(str_replace('_', ' ', $this->name));
-        $sublabel = ucwords(str_replace('_', ' ', $this->page));
+        $pagename = mb_convert_case(
+            str_replace('_', ' ', $this->name),
+            MB_CASE_TITLE
+        );
+        $sublabel = mb_convert_case(
+            str_replace('_', ' ', $this->page),
+            MB_CASE_TITLE
+        );
 
         if ($pagename == $sublabel) {
             return new \LORIS\BreadcrumbTrail(

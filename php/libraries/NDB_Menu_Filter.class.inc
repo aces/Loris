@@ -586,7 +586,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $this->tpl_data['headers'][$i]['name'] = $header;
             // format header
             $this->tpl_data['headers'][$i]['displayName']
-                = ucwords(str_replace('_', ' ', $header));
+                = mb_convert_case(str_replace('_', ' ', $header), MB_CASE_TITLE);
             // set field ordering
             if (isset($this->filter['order'])) {
                 $this->tpl_data['headers'][$i]['fieldOrder']
@@ -748,7 +748,10 @@ class NDB_Menu_Filter extends NDB_Menu
 
         $headers = array_map(
             function ($header) {
-                return ucwords(str_replace('_', ' ', $header));
+                return mb_convert_case(
+                    str_replace('_', ' ', $header),
+                    MB_CASE_TITLE
+                );
             },
             $this->headers
         );
