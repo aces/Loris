@@ -520,7 +520,9 @@ function ViewData(props: {
         borderRadius: '8px',
         border: '1px solid #dbeafe',
       }}>
-        <h3 style={{margin: '15px 0 16px 0'}}>Something went wrong.</h3>
+        <h3 style={{margin: '15px 0 16px 0'}}>
+          {t('Something went wrong.', {ns: 'dataquery'})}
+        </h3>
         <ButtonElement
           label={t('Run Query Again', {ns: 'dataquery'})}
           onUserInput={queryData.retry}
