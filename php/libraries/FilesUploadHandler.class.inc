@@ -73,13 +73,13 @@ class FilesUploadHandler implements RequestHandlerInterface
 
         if (! $this->uploadDirectory->isDir()) {
             throw new \ConfigurationException(
-                'Upload directory is not a directory'
+                dgettext('loris', 'Upload directory is not a directory')
             );
         }
 
         if (! $this->uploadDirectory->isWritable()) {
             throw new \ConfigurationException(
-                'Upload directory is not writable'
+                dgettext('loris', 'Upload directory is not writable')
             );
         }
     }
@@ -157,11 +157,21 @@ class FilesUploadHandler implements RequestHandlerInterface
                 );
             }
 
+            $filename = $file->getClientFilename();
+
+            if (str_contains($filename, "/") === true
+                || str_contains($filename, "..") === true
+            ) {
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    dgettext('loris', 'Path traversal not allowed')
+                );
+            }
+
             /* basename() is used here to prevent path traversal characters
              * from being used.
              */
             $targetPath = $this->uploadDirectory->getPathname() . '/' . basename(
-                $file->getClientFilename()
+                $filename
             );
 
             /* If file exists, set response code to 'Conflict' unless the
@@ -169,7 +179,7 @@ class FilesUploadHandler implements RequestHandlerInterface
              */
             if (file_exists($targetPath) && $this->overwrite !== true) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'This file has already been uploaded.'
+                    dgettext('loris', 'This file has already been uploaded.')
                 );
             }
 
@@ -182,7 +192,7 @@ class FilesUploadHandler implements RequestHandlerInterface
                 )
                 ) {
                     return new \LORIS\Http\Response\JSON\Forbidden(
-                        'File type not allowed'
+                        dgettext('loris', 'File type not allowed')
                     );
                 }
             }
@@ -195,7 +205,7 @@ class FilesUploadHandler implements RequestHandlerInterface
                     'Could not upload file: ' . $e->getMessage()
                 );
                 return new \LORIS\Http\Response\JSON\InternalServerError(
-                    'Could not upload file'
+                    dgettext('loris', 'Could not upload file')
                 );
             }
             chmod($targetPath, $this->permissions);

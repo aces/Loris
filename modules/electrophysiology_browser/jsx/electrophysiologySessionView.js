@@ -12,7 +12,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
-import StaticDataTable from 'jsx/StaticDataTable';
+import DataTable from 'jsx/DataTable';
 import Panel from 'jsx/Panel';
 import {FilePanel} from './components/electrophysiology_session_panels';
 import {SummaryPanel} from './components/electrophysiology_session_summary';
@@ -35,7 +35,7 @@ if (EEG_VIS_ENABLED) {
 }
 import frStrings from '../locale/fr/LC_MESSAGES/electrophysiology_browser.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/electrophysiology_browser.json';
-
+import zhStrings from '../locale/zh/LC_MESSAGES/electrophysiology_browser.json';
 
 /**
  * Electrophysiology Session View page
@@ -358,6 +358,10 @@ class ElectrophysiologySessionView extends Component {
           eegMontage,
         } = this.state.database[i];
         const file = this.state.database[i].file;
+        const channelsURL = `${loris.BaseURL}/api/v0.0.4-dev/candidates`
+          + `/${this.state.patient.info.pscid}`
+          + `/${this.state.patient.info.visit_label}/recordings/${file.name}`
+          + `/channels`;
         const splitPagination = [];
         for (const j of Array(file.splitData?.splitCount).keys()) {
           splitPagination.push(
@@ -403,6 +407,7 @@ class ElectrophysiologySessionView extends Component {
               {EEG_VIS_ENABLED &&
               <div className="react-series-data-viewer-scoped col-xs-12">
                 <EEGLabSeriesProvider
+                  channelsURL={channelsURL}
                   chunksURL={
                     chunksURLs?.[file.splitData?.splitIndex] || chunksURLs
                   }
@@ -504,7 +509,10 @@ class ElectrophysiologySessionView extends Component {
                       <DownloadPanel
                         id={'file_download_' + i}
                         downloads={this.state.database[i].file.downloads}
+                        dccid={this.state.patient.info.dccid}
+                        visit={this.state.patient.info.visit_label}
                         physioFileID={this.state.database[i].file.id}
+                        physioFileName={this.state.database[i].file.name}
                         outputType={this.state.database[i].file.output_type}
                         t={t}
                       />
@@ -519,18 +527,21 @@ class ElectrophysiologySessionView extends Component {
 
       return (
         <div id='lorisworkspace'>
-          <StaticDataTable
-            Headers={[
-              t('PSCID', {ns: 'loris'}),
-              t('DCCID', {ns: 'loris'}),
-              t('Visit Label', {ns: 'loris'}),
-              t('Site', {ns: 'loris', count: 1}),
-              t('DoB', {ns: 'loris'}),
-              t('Sex', {ns: 'loris'}),
-              t('Output Type', {ns: 'electrophysiology_browser'}),
-              t('Cohort', {ns: 'loris', count: 1}),
+          <DataTable
+            fields={[
+              {label: t('PSCID', {ns: 'loris'}), show: true},
+              {label: t('DCCID', {ns: 'loris'}), show: true},
+              {label: t('Visit Label', {ns: 'loris'}), show: true},
+              {label: t('Site', {ns: 'loris', count: 1}), show: true},
+              {label: t('DoB', {ns: 'loris'}), show: true},
+              {label: t('Sex', {ns: 'loris'}), show: true},
+              {
+                label: t('Output Type', {ns: 'electrophysiology_browser'}),
+                show: true,
+              },
+              {label: t('Cohort', {ns: 'loris', count: 1}), show: true},
             ]}
-            Data={[
+            data={[
               [
                 this.state.patient.info.pscid,
                 this.state.patient.info.dccid,
@@ -567,6 +578,7 @@ ElectrophysiologySessionView.defaultProps = {
 window.onload = function() {
   i18n.addResourceBundle('ja', 'electrophysiology_browser', jaStrings);
   i18n.addResourceBundle('fr', 'electrophysiology_browser', frStrings);
+  i18n.addResourceBundle('zh', 'electrophysiology_browser', zhStrings);
   const i18nNamespaces = ['electrophysiology_browser', 'loris'];
   const SideContent = withTranslation(i18nNamespaces)(SidebarContent);
   const sidebarContent = <SideContent

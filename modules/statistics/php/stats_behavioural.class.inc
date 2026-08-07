@@ -39,7 +39,8 @@ class Stats_Behavioural extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }
@@ -100,12 +101,12 @@ class Stats_Behavioural extends \NDB_Form
         // PROJECTS
         $allProjectList = \Utility::getProjectList();
         $projects       = [];
-        $projects['']   = 'All Projects';
+        $projects['']   = dgettext('statistics', 'All Projects');
 
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
             $projects[$ProjectID->__toString()]
-                = $allProjectList[$ProjectID->__toString()];
+                = dgettext('Project', $allProjectList[$ProjectID->__toString()]);
         }
 
         $this->tpl_data['Projects'] = $projects;

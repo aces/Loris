@@ -7,7 +7,7 @@ import {
   FormElement,
   StaticElement,
   FileElement,
-  TextboxElement,
+  SearchableDropdown,
   ButtonElement,
   SelectElement,
 } from 'jsx/Form';
@@ -75,12 +75,14 @@ class UploadFileForm extends Component {
           required={true}
           value={this.state.formData.file}
         />
-        <TextboxElement
+        <SearchableDropdown
           name='version'
           label={t('Version', {ns: 'data_release'})}
           onUserInput={this.updateFormElement}
           required={false}
           value={this.state.formData.version}
+          strictSearch={false}
+          options={this.props.versions}
         />
         <SelectElement
           name='project'
@@ -157,6 +159,7 @@ class UploadFileForm extends Component {
         text: msg,
         type: 'error',
         showCancelButton: true,
+        cancelButtonText: t('Cancel', {ns: 'loris'}),
       });
       this.setState({errorMessage});
       return;
@@ -195,7 +198,7 @@ class UploadFileForm extends Component {
             {ns: 'data_release'}) + '\n ' +
                 t('Would you like to overwrite existing file?',
                   {ns: 'data_release'}) + '\n ' +
-                t('Note that the version associated with the' +
+                t('Note that the version associated with the ' +
                   'file will also be overwritten.',
                 {ns: 'data_release'}),
           type: 'warning',
@@ -225,9 +228,10 @@ class UploadFileForm extends Component {
         console.error(msg);
       } else {
         swal.fire({
-          text: t('Upload Successful!', {ns: 'data_release'}),
+          text: t('Upload successful!', {ns: 'loris'}),
           title: '',
           type: 'success',
+          confirmButtonText: t('OK', {ns: 'loris'}),
         }).then(function() {
           window.location.assign('/data_release');
         });
@@ -249,6 +253,7 @@ UploadFileForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   projects: PropTypes.array.isRequired,
+  versions: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
 };
 

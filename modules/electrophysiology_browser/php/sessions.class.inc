@@ -47,7 +47,8 @@ class Sessions extends \NDB_Page
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return (($user->hasPermission('electrophysiology_browser_view_allsites')
                 || ($user->hasCenter($this->timepoint->getCenterID())
@@ -103,7 +104,7 @@ class Sessions extends \NDB_Page
         $parameters = $request->getQueryParams();
         $user       = $request->getAttribute('user');
 
-        if (!$this->_hasAccess($user)) {
+        if (!$this->isAccessibleBy($user)) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
                 ->process(
                     $request,
@@ -155,19 +156,18 @@ class Sessions extends \NDB_Page
 
         $db = $this->loris->getDatabaseConnection();
 
-        $query = 'SELECT
+        $query = "SELECT
                 DISTINCT(pf.SessionID)
               FROM physiological_file pf
+                JOIN ephys_browser_file_type ebft ON (pf.FileType = ebft.Type)
                 LEFT JOIN session s ON (s.ID=pf.SessionID)
                 LEFT JOIN candidate c ON (c.ID=s.CandidateID)
                 LEFT JOIN psc ON (s.CenterID=psc.CenterID)
                 LEFT JOIN physiological_output_type pot
                   USING (PhysiologicalOutputTypeID)
               WHERE
-                s.Active = "Y"
-                AND pf.FileType IN ('.
-            '"bdf", "cnt", "edf", "set", "vhdr", "vsm", "archive"'.
-            ') ORDER BY pf.SessionID';
+                s.Active = 'Y'
+                ORDER BY pf.SessionID";
 
         $response = [];
 

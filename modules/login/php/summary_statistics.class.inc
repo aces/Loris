@@ -44,15 +44,28 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
                 []
             );
 
+            $translatedProjects = [];
+            foreach ($projects as $project) {
+                $translatedProjects[] = dgettext(
+                    "Project",
+                    $project,
+                );
+            }
+
             // csv version for exporting to clipboard
             $reusable_response = iterator_to_array($response);
-            $csv = "Project,Statistic,Value\n";
+            $csv
+                = dngettext('loris', 'Project', 'Projects', 1) . ',' .
+                dgettext('login', 'Statistic') . ',' .
+                dgettext('login', 'Value') . "\n";
             foreach ($reusable_response as &$row) {
-                $csv .= $row['Project'].",".$row['Title'].",".$row['Value'] . "\n";
+                $csv .= dgettext("Project", $row['Project']).","
+                .dgettext("login_summary_statistics", $row['Title']).","
+                .$row['Value'] . "\n";
                 // we just add an "s" for the plural form since the final
                 // string will come from dngettext anyways
                 $row['Title'] = dngettext(
-                    "login",
+                    "login_summary_statistics",
                     $row['Title'],
                     $row['Title'] . 's',
                     $row['Value']
@@ -61,9 +74,10 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
 
             return new \LORIS\Http\Response\JsonResponse(
                 [
-                    'statistics' => $reusable_response,
-                    'projects'   => $projects,
-                    'csv'        => $csv,
+                    'statistics'         => $reusable_response,
+                    'projects'           => $projects,
+                    'translatedProjects' => $translatedProjects,
+                    'csv'                => $csv,
                 ]
             );
         default:
@@ -106,7 +120,8 @@ class Summary_Statistics extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return true;
     }

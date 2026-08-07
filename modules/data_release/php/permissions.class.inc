@@ -25,7 +25,8 @@ class Permissions extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_release_edit_file_access');
     }
@@ -83,15 +84,27 @@ class Permissions extends \NDB_Page
     {
         $action = $request->getQueryParams()['action'];
         if (empty($action)) {
-            return new \LORIS\Http\Response\JSON\BadRequest("Missing action");
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                dgettext(
+                    "data_release",
+                    "Missing action"
+                )
+            );
         }
         switch ($action) {
         case 'add':
             return $this->_addPermission($request);
         case 'manage':
             return $this->_managePermissions($request);
+        case 'remove':
+            return $this->_removePermissions($request);
         default:
-            return new \LORIS\Http\Response\JSON\BadRequest("Invalid action");
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                dgettext(
+                    "data_release",
+                    "Invalid action"
+                )
+            );
         }
     }
 
@@ -107,18 +120,16 @@ class Permissions extends \NDB_Page
         ServerRequestInterface $request
     ) : ResponseInterface {
         $posted = $request->getParsedBody();
-
         if (empty($posted)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "No data was sent in the POST request"
+                dgettext("data_release", "No data was sent in the POST request")
             );
         }
         if (empty($posted['userid'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Missing user to grant access to"
+                dgettext("data_release", "Missing user to grant access to")
             );
         }
-
         $releaseid = $posted['data_release_id'];
         if ($releaseid === "null") {
             $releaseid = null;
@@ -145,7 +156,8 @@ class Permissions extends \NDB_Page
             );
         } elseif (empty($releaseid) && !empty($version)) {
             // If there is no release id but there is a version, give
-            // access to every file with that version.
+            // access to every file with that version AND every file
+            // where there is no version.
             if ($version == 'Unversioned') {
                 $IDs = $DB->pselectCol(
                     "SELECT id FROM data_release WHERE
@@ -171,7 +183,10 @@ class Permissions extends \NDB_Page
             }
         } else {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Must select either specific file OR version to grant access to",
+                dgettext(
+                    "data_release",
+                    "Must select either specific file OR version to grant access to"
+                )
             );
         }
 
@@ -199,7 +214,7 @@ class Permissions extends \NDB_Page
         $body = $request->getParsedBody();
         if ($body === null || !is_array($body)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "No valid data was sent in the request"
+                dgettext("data_release", "No valid data was sent in the request")
             );
         }
 
@@ -260,6 +275,60 @@ class Permissions extends \NDB_Page
         //addpermissionSuccess=true/false
         //does not currently do anything on the front-end
         //just a placeholder displaying if the operation succeeded or not
+        $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+        return (new \LORIS\Http\Response())
+            ->withStatus(204)
+            ->withHeader(
+                "Location",
+                "{$baseURL}/data_release/?addpermissionSuccess=true"
+            );
+    }
+
+    /**
+     * Handle an incoming HTTP remove permission request
+     * in the module.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The PSR15 response to the request.
+     */
+    private function _removePermissions(
+        ServerRequestInterface $request
+    ) : ResponseInterface {
+        $posted = $request->getParsedBody();
+
+        if (empty($posted)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                dgettext("data_release", "No data was sent in the POST request")
+            );
+        }
+        if (empty($posted['userid'])) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                dgettext("data_release", "Missing user to remove access from")
+            );
+        }
+
+        $releaseid = $posted['data_release_id'];
+        if ($releaseid === "null") {
+            $releaseid = null;
+        }
+
+        $DB = $request->getAttribute("loris")->getDatabaseConnection();
+
+        if (!empty($releaseid)) {
+            $DB->delete(
+                'data_release_permissions',
+                [
+                    'userid'          => $posted['userid'],
+                    'data_release_id' => $releaseid,
+                ]
+            );
+        } else {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                dgettext("data_release", "Must select a specific file"),
+            );
+        }
+
         $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
         return (new \LORIS\Http\Response())
             ->withStatus(204)

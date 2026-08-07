@@ -117,21 +117,26 @@ class DataTable extends Component {
    */
 
   downloadCSV(filteredRowIndexes) {
+    const fields = this.props.fields.map((field, index) => ({field, index}));
+    const visibleFields = fields.filter(({field}) => field.show !== false);
+    const headers = this.props.fields.map((field) => field.label);
     let csvData = filteredRowIndexes.map((id) => this.props.data[id]);
     // Map cell data to proper values if applicable.
     if (this.props.getMappedCell) {
       csvData = csvData
-        .map((row, i) => this.props.fields
-          .map((field, j) => this.props.getMappedCell(
+        .map((row) => visibleFields
+          .map(({field, index}) => this.props.getMappedCell(
             field.label,
-            row[j],
+            row[index],
             row,
-            this.props.fields.map(
-              (val) => val.label,
-            ),
-            j
+            headers,
+            index
           ))
         );
+    } else {
+      csvData = csvData.map(
+        (row) => visibleFields.map(({index}) => row[index])
+      );
     }
 
     let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
@@ -152,7 +157,7 @@ class DataTable extends Component {
         document.body.removeChild(link);
       }
     });
-    const headerList = this.props.fields.map((field) => field.label);
+    const headerList = visibleFields.map(({field}) => field.label);
     csvworker.postMessage({
       cmd: 'SaveFile',
       data: csvData,
@@ -374,8 +379,18 @@ class DataTable extends Component {
       result = (filterData === data);
     }
 
+    // Handle numeric range inputs
+    if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+      const numericData = Number.parseFloat(data);
+      const min = Number.parseFloat(filterData.min);
+      const max = Number.parseFloat(filterData.max);
+      result = !Number.isNaN(numericData) &&
+        (Number.isNaN(min) || numericData >= min) &&
+        (Number.isNaN(max) || numericData <= max);
+    }
+
     // Handle array inputs for multiselects
-    if (typeof filterData === 'object') {
+    if (Array.isArray(filterData)) {
       let match = false;
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();

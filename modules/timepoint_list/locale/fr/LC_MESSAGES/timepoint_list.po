@@ -18,6 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Timepoint List"
 msgstr "Liste des temps d'acquisition"
@@ -27,7 +28,7 @@ msgstr "Cliquez pour ouvrir"
 
 #, fuzzy
 msgid "Stage Status"
-msgstr "Statue du stade"
+msgstr "Statut du stade"
 
 #, fuzzy
 msgid "Date of Stage"
@@ -37,7 +38,7 @@ msgid "Imaging Scan Done"
 msgstr "Scan d'imagerie complété"
 
 msgid "BVL QC"
-msgstr "CQ comportemental"
+msgstr "Contrôle qualité comportemental"
 
 msgid "BVL Exclusion"
 msgstr "Exclusion comportementale"
@@ -72,12 +73,6 @@ msgstr "Sexe biologique"
 msgid "You do not have access to any timepoints registered for this candidate."
 msgstr "Vous n'avez pas accès aux temps d'acquisitions enregistrés pour ce candidat."
 
-msgid " y / "
-msgstr " y / "
-
-msgid " m"
-msgstr " m"
-
 msgid "Not Done"
 msgstr "Non réalisé"
 
@@ -85,7 +80,7 @@ msgid "Visual"
 msgstr "Visuel"
 
 msgid "Hardcopy"
-msgstr "copie papier"
+msgstr "Copie papier"
 
 msgid "Complete"
-msgstr "Compléter"
+msgstr "Complété"

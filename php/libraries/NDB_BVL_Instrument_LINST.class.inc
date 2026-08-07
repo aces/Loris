@@ -226,7 +226,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $errors += $result;
                         }
                     }
-                } else if (substr($elname, -7) != "_status"
+                } else if (!$this->isStatusField($elname)
                     && !in_array($elname, ["page", "subtest"])
                 ) {
                     // Check if element part of a group.
@@ -400,7 +400,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                 $type      = $pieces[0];
                 $fieldname = isset($pieces[1]) ? $pieces[1] : null;
-                if (strpos($fieldname, "_status") !== false) {
+                if ($fieldname && $this->isStatusField($fieldname)) {
                     continue;
                 }
                 if ($fieldname == 'Date_taken'
@@ -599,7 +599,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new StringType(255),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -625,7 +625,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new StringType(),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -714,7 +714,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new DateType(),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -731,7 +731,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         dgettext($this->name, trim($pieces[2])),
                         $scope,
                         new IntegerType(),
-                        new Cardinality(Cardinality::SINGLE),
+                        new Cardinality(Cardinality::OPTIONAL),
                         $pieces[1],
                     );
                     if ($firstFieldOfPage) {
@@ -827,7 +827,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($type == 'multiple') {
                         $cardinality = new Cardinality(Cardinality::MANY);
                     } else {
-                        $cardinality = new Cardinality(Cardinality::SINGLE);
+                        $cardinality = new Cardinality(Cardinality::OPTIONAL);
                     }
 
                     $t  = new Enumeration(...$dictopts);
@@ -929,6 +929,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 break;
             case 'norules':
                 $this->skipRules = trim($pieces[1]) === 'true';
+                break;
+            case 'redcap':
+                $this->isRedcap = trim($pieces[1]) === 'true';
                 break;
             default:
                 break;
@@ -1042,7 +1045,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $pageTitle  = 'Top';
 
         foreach ($this->LinstLines as $value) {
-            if (strpos($value[1], "_status") !== false) {
+            if ($value[0] === 'redcap') {
+                continue;
+            }
+            if ($this->isStatusField($value[1])) {
                 $lastIndex = count($elements) - 1;
                 $elements[$lastIndex]['Options']['RequireResponse'] = true;
             } else {

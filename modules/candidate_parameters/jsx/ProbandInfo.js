@@ -371,7 +371,7 @@ ProbandInfo.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   tabName: PropTypes.string,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default withTranslation(['candidate_parameters', 'loris'])(ProbandInfo);

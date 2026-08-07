@@ -18,6 +18,7 @@ import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/document_repository.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/document_repository.json';
 import frStrings from '../locale/fr/LC_MESSAGES/document_repository.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/document_repository.json';
 
 /**
  * Media Upload Form
@@ -100,7 +101,7 @@ class DocUploadForm extends Component {
     }
     // Waiting for data to load
     if (!this.state.isLoaded) {
-      return (<Loader/>);
+      return (<Loader />);
     }
     return (
       <div className="row">
@@ -111,7 +112,7 @@ class DocUploadForm extends Component {
             onSubmit={this.uploadFiles}
             method="POST"
           >
-            <h3>{t('Upload files', {ns: 'document_repository'})}</h3><br/>
+            <h3>{t('Upload files', {ns: 'document_repository'})}</h3><br />
             <SelectElement
               name="category"
               label={t('Category', {ns: 'document_repository'})}
@@ -233,8 +234,8 @@ class DocUploadForm extends Component {
             resp.json().then((data) => {
               if (data.error_count === 0) {
                 swal.fire(
-                  this.props.t('Upload Successful!',
-                    {ns: 'document_repository'}),
+                  this.props.t('Upload successful!',
+                    {ns: 'loris'}),
                   '',
                   'success'
                 ).then((result) => {
@@ -268,7 +269,7 @@ class DocUploadForm extends Component {
               swal.fire(
                 this.props.t('File too large', {ns: 'document_repository'}),
                 this.props.t('Could not upload file',
-                  {ns: 'document_repository'}),
+                  {ns: 'loris'}),
                 'error'
               );
             }
@@ -276,7 +277,7 @@ class DocUploadForm extends Component {
               swal.fire(
                 this.props.t('Permission denied', {ns: 'loris'}),
                 this.props.t('Could not upload file',
-                  {ns: 'document_repository'}),
+                  {ns: 'loris'}),
                 'error'
               );
             }
@@ -334,6 +335,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'document_repository', hiStrings);
   i18n.addResourceBundle('ja', 'document_repository', jaStrings);
   i18n.addResourceBundle('fr', 'document_repository', frStrings);
+  i18n.addResourceBundle('zh', 'document_repository', zhStrings);
 
   const element = document.getElementById('lorisworkspace');
   if (!element) {

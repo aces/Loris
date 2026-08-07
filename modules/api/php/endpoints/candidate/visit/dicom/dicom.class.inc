@@ -46,7 +46,7 @@ class Dicom extends Endpoint implements \LORIS\Middleware\ETagCalculator
      * A cache of the endpoint results, so that it doesn't need to be
      * recalculated for the ETag and handler.
      *
-     * @var ResponseInterface
+     * @var \Psr\Http\Message\MessageInterface
      */
     private $_cache;
 

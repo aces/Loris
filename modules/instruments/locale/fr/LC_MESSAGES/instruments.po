@@ -17,16 +17,16 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.8\n"
 
 msgid "Instruments"
 msgstr "Instruments"
 
 msgid "Incomplete form"
-msgstr "Formulaire incomplet"
-
-msgid "Incomplete forms"
-msgstr "Formulaires incomplets"
+msgid_plural "Incomplete forms"
+msgstr[0] "Formulaire incomplet"
+msgstr[1] "Formulaires incomplets"
 
 #, fuzzy
 msgid "Clear Instrument"

@@ -300,14 +300,14 @@ class RedcapMapper
 
         if (!$project_id) {
             throw new \LorisException(
-                "[redcap] Error: No LORIS project found for site name"
+                "[redcap] Error: No LORIS project found for project name"
                 . " '$project_name', the REDCap module configuration is incorrect."
             );
         }
 
         if (!$cohort_id) {
             throw new \LorisException(
-                "[redcap] Error: No LORIS cohort found for site name"
+                "[redcap] Error: No LORIS cohort found for cohort name"
                 . " '$cohort_name', the REDCap module configuration is incorrect."
             );
         }

@@ -250,9 +250,6 @@ msgstr ""
 msgid "No visits selected for criteria."
 msgstr ""
 
-msgid "Add criteria"
-msgstr ""
-
 msgid "Field"
 msgid_plural "Fields"
 msgstr[0] ""
@@ -343,6 +340,12 @@ msgid "Invalid DCCID"
 msgstr ""
 
 msgid "Invalid DCCID ({{id}}) on line {{line}}."
+msgstr ""
+
+msgid "Invalid PSCID"
+msgstr ""
+
+msgid "Invalid PSCID ({{id}}) on line {{line}}."
 msgstr ""
 
 msgid "Welcome to the Data Query Tool"
@@ -440,13 +443,13 @@ msgstr ""
 msgid "Pin Top Query"
 msgstr ""
 
-msgid "Pin Study Query"
+msgid "Pin study query"
 msgstr ""
 
-msgid "Pin Dashboard Summary"
+msgid "Show on dashboard"
 msgstr ""
 
-msgid "Pin To Login Page"
+msgid "Show summary on login page"
 msgstr ""
 
 msgid "Must pin as study query, to dashboard, or to the login page."

@@ -30,19 +30,21 @@ msgstr "Voir la session"
 
 #, fuzzy
 msgid "New and pending imaging session"
-msgstr "Nouvelle session d'imagerie et session en attente"
+msgid_plural "New and pending imaging sessions"
+msgstr[0] "Nouvelle session d'imagerie et session en attente"
+msgstr[1] "Nouvelles sessions d'imagerie et sessions en attente"
 
-msgid "New and pending imaging sessions"
-msgstr "Nouvelles séances d'imagerie et séances en attente"
+msgid "Imaging QC Summary"
+msgstr "Résumé du contrôle qualité de l'imagerie"
 
 #, fuzzy
 msgid "Imaging Session"
 msgid_plural "Imaging Sessions"
-msgstr[0] "Séance d'imagerie"
-msgstr[1] "Séances d'imagerie"
+msgstr[0] "Session d'imagerie"
+msgstr[1] "Sessions d'imagerie"
 
 msgid "Visit QC Status"
-msgstr "Consulter le statut CQ"
+msgstr "QC de la visite"
 
 #, fuzzy
 msgid "First Acquisition"
@@ -64,19 +66,12 @@ msgid "Links"
 msgstr "Liens"
 
 #, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
-
-#, fuzzy
 msgid "Sequence Type"
 msgstr "Type de séquence"
 
 #, fuzzy
 msgid "Pending New"
-msgstr "En attente Nouveau"
-
-msgid "QC Status"
-msgstr "Statut CQ"
+msgstr "En attente/Nouveau"
 
 #, fuzzy
 msgid "Caveat"
@@ -89,7 +84,7 @@ msgid "all types"
 msgstr "tous les types"
 
 msgid "Header Info"
-msgstr "Info de l’en-tête"
+msgstr "Métadonnées"
 
 msgid "Download Image"
 msgstr "Télécharger l'image"
@@ -99,7 +94,7 @@ msgid "Longitudinal View"
 msgstr "Vue longitudinale"
 
 msgid "QC Comments"
-msgstr "Commentaires CQ"
+msgstr "Commentaires de QC"
 
 #, fuzzy
 msgid "Series Instance UID"
@@ -110,34 +105,26 @@ msgid "Number of Scans"
 msgstr "Nombre de scans"
 
 msgid "Red bar denotes number of failed QC scans."
-msgstr "La barre rouge indique le nombre d'analyses CQ ayant échoué."
+msgstr "La barre rouge indique le nombre de scans de mauvaise qualité."
 
 msgid "Green bar denotes number of passed QC scans."
-msgstr "La barre verte indique le nombre de scans CQ réussis."
+msgstr "La barre verte indique le nombre de scans de bonne qualité."
 
 #, fuzzy
 msgid "Grey bar denotes other QC statuses."
 msgstr "La barre grise indique d'autres statuts de contrôle qualité."
 
 #, fuzzy
-msgid ""
-"Different shades represent different modalities. Only native modalities are "
-"displayed in results."
-msgstr ""
-"Les différentes nuances représentent différentes modalités. Seules les "
-"modalités natives sont affichées dans les résultats."
+msgid "Different shades represent different modalities. Only native modalities are displayed in results."
+msgstr "Les différentes nuances représentent différentes modalités. Seules les modalités natives sont affichées dans les résultats."
 
 #, fuzzy
-msgid ""
-"Hover over any visit to see detailed modality breakdown for visit, click to "
-"go to imaging browser."
-msgstr ""
-"Passez la souris sur n'importe quelle visite pour voir le détail des "
-"modalités utilisées, cliquez pour accéder au navigateur d'imagerie."
+msgid "Hover over any visit to see detailed modality breakdown for visit, click to go to imaging browser."
+msgstr "Passez la souris sur n'importe quelle visite pour voir le détail des modalités utilisées, cliquez pour accéder au navigateur d'imagerie."
 
 #, fuzzy
 msgid "%1 file(s) displayed."
-msgstr "%1 f fichier(s) affiché(s)."
+msgstr "%1 fichier(s) affiché(s)."
 
 msgid "No data available"
 msgstr "Pas de données disponibles"
@@ -146,7 +133,7 @@ msgid "Patient Name"
 msgstr "Nom du patient"
 
 msgid "QC Pending"
-msgstr "CQ en attente"
+msgstr "QC en attente"
 
 msgid "Output Type"
 msgstr "Type de sortie"
@@ -184,19 +171,19 @@ msgid "Report a Bug (Mantis)"
 msgstr "Signaler un bug (Mantis)"
 
 msgid "Visit Level QC"
-msgstr "Visitez le niveau CQ"
+msgstr "QC de la visite"
 
 #, fuzzy
 msgid "Visit Level Feedback"
-msgstr "Visite Niveau Commentaires"
+msgstr "Commentaire sur la visite"
 
 #, fuzzy
 msgid "Visit Level Caveat"
-msgstr "Visite Niveau Avertissement"
+msgstr "Avertissement sur la visite"
 
 #, fuzzy
 msgid "DCC MRI Quality Control"
-msgstr "Contrôle qualité IRM DCC"
+msgstr "Contrôle qualité IRM du CCD"
 
 #, fuzzy
 msgid "Click here to close this window"
@@ -215,4 +202,4 @@ msgstr "Sujet"
 
 #, fuzzy
 msgid "Download DICOM"
-msgstr "Télécharger DICOM"
+msgstr "Télécharger les DICOMs"

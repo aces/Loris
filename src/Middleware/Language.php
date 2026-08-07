@@ -13,10 +13,10 @@ use \Psr\Http\Server\RequestHandlerInterface;
  *
  * By priority:
  *  1. First it will check if a "lang" get attribute is passed so
- *         that it can be overridden on a page dropdown
- *      2. Next, it will check the user's preference and use their preferred
- *         language if they haven't chosen another for this page load
- *      3. Finally, a best attempt based on the request Accept-Language header
+ *         that it can be overridden on a page dropdown (sets a cookie)
+ *  2. Next, it will check the language cookie
+ *  3. Next, it will check the user's preference
+ *  4. Finally, a best attempt based on the request Accept-Language header
  *         is made
  *
  * Otherwise, the request will fall back on the default locale.
@@ -27,9 +27,11 @@ class Language implements MiddlewareInterface, MiddlewareChainer
 {
     use MiddlewareChainerMixin;
 
-    public static function detectLocale(\LORIS\LorisInstance $loris, ServerRequestInterface $request) : string
-    {
-        $DB = $request->getAttribute("loris")->getDatabaseConnection();
+    public static function detectLocale(
+        \LORIS\LorisInstance $loris,
+        ?ServerRequestInterface $request = null
+    ) : string {
+        $DB = $loris->getDatabaseConnection();
 
         $validLocales = $DB->pselectCol(
             "SELECT language_code FROM language",
@@ -37,22 +39,32 @@ class Language implements MiddlewareInterface, MiddlewareChainer
         );
 
         if (count($validLocales) == 1) {
-            return $validLocales[0];
+            return array_values($validLocales)[0];
         }
 
-        $params = $request->getQueryParams();
-        if (isset($params['lang'])
-            && in_array($params['lang'], $validLocales)) {
-            $_SESSION['language'] = $params['lang'];
-            return $params['lang'];
+        if ($request !== null) {
+            $params = $request->getQueryParams();
+            if (isset($params['lang'])
+                && in_array($params['lang'], $validLocales)) {
+                return $params['lang'];
+            }
         }
 
-        if (!empty($_SESSION['language'])) {
-            return $_SESSION['language'];
+        // Check for language cookie
+        if (!empty($_COOKIE['loris_language'])
+            && in_array($_COOKIE['loris_language'], $validLocales)) {
+            return $_COOKIE['loris_language'];
         }
 
-        $user     = $request->getAttribute("user");
-        $userpref = $user->getLanguageCode();
+        $userpref = '';
+        if ($request !== null) {
+            $user = $request->getAttribute("user");
+            if ($user !== null) {
+                $userpref = $user->getLanguageCode();
+            }
+        } else {
+            $userpref = \User::singleton()->getLanguageCode();
+        }
         if ($userpref !== ""
             && in_array($userpref, $validLocales)) {
             return $userpref;
@@ -60,9 +72,9 @@ class Language implements MiddlewareInterface, MiddlewareChainer
 
         // This doesn't necessarily work if the user has multiple languages
         // accepted because the potential match is based on the system's
-    // locales, not the LORIS language table. It also may not be available
-    // depending on PHP versions
-        if (function_exists('\locale_accept_from_http')) {
+        // locales, not the LORIS language table. It also may not be available
+        // depending on PHP versions
+        if ($request !== null && function_exists('\locale_accept_from_http')) {
             $fromheader = \locale_accept_from_http($request->getHeaderLine('Accept-Language'));
             if ($fromheader !== false
             && in_array($fromheader, $validLocales)) {
@@ -87,6 +99,35 @@ class Language implements MiddlewareInterface, MiddlewareChainer
     ) : ResponseInterface {
         $loris = $request->getAttribute("loris");
         $lang  = self::detectLocale($loris, $request);
+        
+        // Set language cookie if explicitly selected via query parameter
+        $params = $request->getQueryParams();
+        if (isset($params['lang'])) {
+            $DB           = $loris->getDatabaseConnection();
+            $validLocales = $DB->pselectCol(
+                "SELECT language_code FROM language",
+                [],
+            );
+            if (in_array($params['lang'], $validLocales)) {
+                // Update user's language preference if logged in
+                $user = $request->getAttribute("user");
+                if ($user !== null) {
+                    $langID = $DB->pselectOne(
+                        "SELECT language_id FROM language WHERE language_code = :code",
+                        ['code' => $params['lang']]
+                    );
+                    $user->update(['language_preference' => $langID]);
+                }
+
+                setcookie(
+                    'loris_language',
+                    $params['lang'],
+                    time() + (24 * 60 * 60),
+                    '/',
+                );
+            }
+        }
+        
         if ($lang !== null) {
             \setlocale(LC_MESSAGES, $lang . '.utf8');
              putenv("LANG=$lang");

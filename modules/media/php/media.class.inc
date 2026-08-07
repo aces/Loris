@@ -26,7 +26,8 @@ class Media extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -119,8 +120,8 @@ class Media extends \DataFrameworkMenu
         $hiddenOptions = [];
         if (\User::singleton()->hasPermission('superuser')) {
             $hiddenOptions = [
-                'visible' => 'Visible only',
-                'hidden'  => 'Hidden only',
+                'visible' => dgettext('media', 'Visible only'),
+                'hidden'  => dgettext('media', 'Hidden only'),
             ];
         }
 
@@ -159,6 +160,13 @@ class Media extends \DataFrameworkMenu
             // We don't filter out hidden files.
             return $provisioner;
         }
+
+        if (!$user->hasPermission('access_all_profiles')) {
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
+        }
+
         return $provisioner->filter(new HideFileFilter());
     }
 

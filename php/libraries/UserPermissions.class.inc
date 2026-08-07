@@ -301,7 +301,7 @@ class UserPermissions
                 LEFT JOIN permissions_category pc ON (pc.ID = p.categoryID)
                 LEFT JOIN modules m ON (p.moduleID = m.ID)
         ";
-        $where      = " WHERE m.Active='Y'";
+        $where      = " WHERE (m.Active='Y' OR m.Active IS NULL)";
         $groupBy    = " GROUP BY p.permID, p.code, pc.Description, p.moduleID";
         $orderBy    = " ORDER BY p.categoryID, m.Name, p.description";
         $conditions = [];
@@ -341,8 +341,21 @@ class UserPermissions
             if (!empty($perm['moduleID'])) {
                 $newDesc = $modules[$perm['moduleID']]->getLongName() . ": ";
             }
-            $newDesc .= empty($perm['action']) ? "" : $perm['action'] . " ";
-            $newDesc .= $perm['description'];
+            $translatedAction = '';
+            if (!empty($perm['action'])) {
+                $actions           = explode('/', $perm['action']);
+                $translatedActions = [];
+                foreach ($actions as $action) {
+                    $translatedActions[] = dgettext(
+                        'permissions_action',
+                        trim($action)
+                    );
+                }
+                $translatedAction = implode('/', $translatedActions);
+            }
+
+            $newDesc .= empty($translatedAction) ? "" : $translatedAction . " ";
+            $newDesc .= dgettext('permissions', $perm['description']);
 
             $results[$key]          = $perm;
             $results[$key]['label'] = $newDesc;

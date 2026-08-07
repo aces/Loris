@@ -15,6 +15,7 @@ import BatteryManagerForm from './batteryManagerForm';
 import hiStrings from '../locale/hi/LC_MESSAGES/battery_manager.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/battery_manager.json';
 import frStrings from '../locale/fr/LC_MESSAGES/battery_manager.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/battery_manager.json';
 
 /**
  * Battery Manager
@@ -102,7 +103,7 @@ class BatteryManagerIndex extends Component {
             body = JSON.parse(body);
             if (response.ok) {
               swal.fire(
-                this.props.t('Submission successful!', {ns: 'battery_manager'}),
+                this.props.t('Submission Successful!', {ns: 'loris'}),
                 body.message,
                 'success'
               ).then((result) => {
@@ -286,7 +287,7 @@ class BatteryManagerIndex extends Component {
       this.checkDuplicate(test)
         .then((test) => this.validateTest(test))
         .then((test) => this.postData(
-          this.props.testEndpoint+(test.id || ''),
+          this.props.testEndpoint + (test.id || ''),
           test,
           request
         ))
@@ -328,7 +329,7 @@ class BatteryManagerIndex extends Component {
 
     // Waiting for async data to load
     if (!this.state.isLoaded) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     /**
@@ -567,6 +568,7 @@ class BatteryManagerIndex extends Component {
               edit,
             icon: 'warning',
             confirmButtonText: t('Activate', {ns: 'battery_manager'}),
+            cancelButtonText: t('Cancel', {ns: 'loris'}),
             showCancelButton: true,
           }).then((result) => {
             if (result.value) {
@@ -636,7 +638,7 @@ class BatteryManagerIndex extends Component {
           {ns: 'battery_manager'});
       }
       if (test.DoubleDataEntryEnabled == null ||
-          test.DoubleDataEntryEnabled === '') {
+        test.DoubleDataEntryEnabled === '') {
         errors.DoubleDataEntryEnabled = t('This field is required',
           {ns: 'battery_manager'});
       }
@@ -661,6 +663,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'battery_manager', hiStrings);
   i18n.addResourceBundle('ja', 'battery_manager', jaStrings);
   i18n.addResourceBundle('fr', 'battery_manager', frStrings);
+  i18n.addResourceBundle('zh', 'battery_manager', zhStrings);
   const Index = withTranslation(
     ['battery_manager', 'loris']
   )(BatteryManagerIndex);

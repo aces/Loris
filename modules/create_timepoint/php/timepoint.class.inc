@@ -186,15 +186,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             );
         }
 
-        //Visit - Get all visits to map ID back to label for session table
-        $visits     = \Utility::getVisitsForProjectCohort(
-            $project->getId(),
-            intval($values['cohort'])
-        );
-        $visitLabel = $visits[$values['visit']];
-        $visitName  = (new VisitController(
+        $visitName = (new VisitController(
             $this->loris->getDatabaseConnection()
-        ))->getVisitFromVisitLabel($visitLabel)->getName();
+        ))->getVisitFromVisitID(intval($values['visit']))->getName();
 
         \TimePoint::createNew(
             \Candidate::singleton(new CandID($values['candID'])),
@@ -288,15 +282,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $cohortID  = intval($values['cohort']);
         $projectID = \ProjectID::singleton(intval($values['project']));
 
-        //Visit - Get all visits to map ID back to label for session table
-        $visits     = \Utility::getVisitsForProjectCohort(
-            $projectID,
-            intval($values['cohort'])
-        );
-        $visitLabel = $visits[$values['visit']];
-        $visitName  = (new VisitController(
+        $visitName = (new VisitController(
             $this->loris->getDatabaseConnection()
-        ))->getVisitFromVisitLabel($visitLabel)->getName();
+        ))->getVisitFromVisitID(intval($values['visit']))->getName();
 
         try {
             \TimePoint::isValidVisitLabel(
@@ -332,7 +320,8 @@ class Timepoint extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }

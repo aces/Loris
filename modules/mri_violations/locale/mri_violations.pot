@@ -22,10 +22,8 @@ msgid "MRI Violated Scans"
 msgstr ""
 
 msgid "Violated scan"
-msgstr ""
-
-msgid "Violated scans"
-msgstr ""
+msgid_plural "Violated scans"
+msgstr[0] ""
 
 msgid "Violations for SeriesUID"
 msgstr ""
@@ -105,9 +103,6 @@ msgstr ""
 msgid "Scan Problems"
 msgstr ""
 
-msgid "Scan Type"
-msgstr ""
-
 msgid "Severity"
 msgstr ""
 
@@ -177,16 +172,10 @@ msgstr ""
 msgid "JoinID"
 msgstr ""
 
-msgid "TarchiveID"
-msgstr ""
-
 msgid "Center Name"
 msgstr ""
 
 msgid "Scanner ID"
-msgstr ""
-
-msgid "Scan Type"
 msgstr ""
 
 msgid "TR Range"
@@ -231,3 +220,5 @@ msgstr ""
 msgid "Echo Number"
 msgstr ""
 
+msgid "Series Description Regex:"
+msgstr ""

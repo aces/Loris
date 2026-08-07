@@ -88,7 +88,7 @@ class Module extends \Module
         );
 
         $user = $request->getAttribute("user");
-        if ($instrument->_hasAccess($user) == false) {
+        if ($instrument->isAccessibleBy($user) === false) {
             return (new \Laminas\Diactoros\Response())
                 ->withStatus(403)
                 ->withBody(new \LORIS\Http\StringStream("Permission denied"));
@@ -169,10 +169,10 @@ class Module extends \Module
     /**
      * {@inheritDoc}
      *
-     * @return \LORIS\Data\Query\QueryEngine
+     * @return \LORIS\Data\Query\QueryEngine[]
      */
-    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    public function getQueryEngines() : iterable
     {
-        return new InstrumentQueryEngine($this->loris);
+        return [new InstrumentQueryEngine($this->loris)];
     }
 }

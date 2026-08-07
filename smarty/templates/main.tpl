@@ -14,6 +14,13 @@
         <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
         <script language="javascript" type="text/javascript">
         let loris = new LorisHelper({$userjson}, {$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
+
+        const switchLanguage = (selectEl) => {
+          const queryParams = new URLSearchParams(window.location.search);
+
+          queryParams.set('lang', selectEl.value);
+          window.location.search = queryParams.toString();
+        };
         </script>
         {section name=jsfile loop=$jsfiles}
             <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
@@ -157,7 +164,7 @@
                             </li>
                             {/if}
                             {if $header_policy}
-                                <li class="hidden-xs hidden-sm" id="header-policy-button"></li>
+                                <li id="header-policy-button"></li>
                             {/if}
 
                             <li class="hidden-xs hidden-sm help-container"></li>
@@ -193,6 +200,21 @@
                                     {$user.Real_name|escape} <b class="caret"></b>
                                 </a>
                                 <ul class="dropdown-menu">
+                                    {if count($languages) > 1}
+                                        <div style="padding: 2ex">
+                                            <select
+                                                class="form-control"
+                                                name="lang"
+                                                onChange="switchLanguage(this)"
+                                            >
+                                                {foreach from=$languages key=langcode item=lang}
+                                                    <option value={$langcode}
+                                                        {if $langcode==$language}selected="selected"{/if}>{$lang}
+                                                    </option>
+                                                {/foreach}
+                                            </select>
+                                        </div>
+                                    {/if}
                                     {if $my_preferences|default}
                                     <li>
                                         <a href="{$baseurl}/my_preferences/">

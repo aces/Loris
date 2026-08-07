@@ -145,7 +145,7 @@ class Database implements LoggerAwareInterface
 
         try {
             $this->_PDO = new PDO(
-                "mysql:host=$host;dbname=$database;charset=UTF8",
+                "mysql:host=$host;dbname=$database;charset=utf8mb4",
                 $username,
                 $password
             );
@@ -1623,7 +1623,7 @@ class Database implements LoggerAwareInterface
     public function setBuffering(bool $buffered): void
     {
         if ($this->_PDO->setAttribute(
-            \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,
+            \PDO\Mysql::ATTR_USE_BUFFERED_QUERY,
             $buffered
         ) == false
         ) {

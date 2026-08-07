@@ -20,6 +20,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/new_profile.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/new_profile.json';
 import esStrings from '../locale/es/LC_MESSAGES/new_profile.json';
 import frStrings from '../locale/fr/LC_MESSAGES/new_profile.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/new_profile.json';
 
 /**
  * New Profile Form
@@ -212,10 +213,9 @@ class NewProfileIndex extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    let formData = Object.assign({}, this.state.formData);
-    formData[formElement] = value;
-
-    this.setState({formData: formData});
+    this.setState((prevState) => ({
+      formData: Object.assign({}, prevState.formData, {[formElement]: value}),
+    }));
   }
 
   /**
@@ -293,6 +293,7 @@ class NewProfileIndex extends React.Component {
           onUserInput = {this.setFormData}
           value = {this.state.formData.site}
           required = {true}
+          autoSelect = {true}
         />;
     }
     const fields = [
@@ -363,6 +364,7 @@ class NewProfileIndex extends React.Component {
             onUserInput = {this.setFormData}
             value = {this.state.formData.project}
             required = {true}
+            autoSelect = {true}
           />
         ),
       },
@@ -401,6 +403,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'new_profile', jaStrings);
   i18n.addResourceBundle('es', 'new_profile', esStrings);
   i18n.addResourceBundle('fr', 'new_profile', frStrings);
+  i18n.addResourceBundle('zh', 'new_profile', zhStrings);
 
   const NPIndex = withTranslation(['new_profile'])(NewProfileIndex);
   createRoot(

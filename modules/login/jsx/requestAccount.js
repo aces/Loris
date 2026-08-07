@@ -40,6 +40,9 @@ class RequestAccount extends Component {
           project: this.props.data.project
             ? Object.keys(this.props.data.project)['']
             : '',
+          language_preference: this.props.data.language
+            ? Object.keys(this.props.data.language)['']
+            : '',
           examiner: false,
           radiologist: false,
         },
@@ -110,6 +113,7 @@ class RequestAccount extends Component {
           email: state.form.value.email,
           site: state.form.value.site,
           project: state.form.value.project,
+          language_preference: state.form.value.language_preference,
           examiner: state.form.value.examiner,
           radiologist: state.form.value.radiologist,
         }),
@@ -171,7 +175,12 @@ class RequestAccount extends Component {
         <div className='g-recaptcha'
           data-sitekey={this.state.form.captcha}/>
         <span id='helpBlock' className='help-block'>
-          <b className='text-danger'>Please complete the reCaptcha!</b>
+          <b className='text-danger'>{
+            this.props.t(
+              'Please complete the reCaptcha!',
+              {ns: 'login'}
+            )
+          }</b>
         </span>
       </div>
     ) : null;
@@ -257,6 +266,15 @@ class RequestAccount extends Component {
             emptyOption={false}
             required={true}
             placeholder={this.props.t('Choose your project:', {ns: 'login'})}
+          />
+          <SelectElement
+            name={'language_preference'}
+            options={this.props.data.language}
+            value={this.state.form.value.language_preference}
+            onUserInput={this.setForm}
+            emptyOption={false}
+            required={false}
+            placeholder={this.props.t('Preferred language:', {ns: 'login'})}
           />
           <CheckboxElement
             name={'examiner'}

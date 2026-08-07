@@ -59,6 +59,13 @@ class FilterableDataTable extends Component {
     Object.entries(filters).forEach(([name, filter]) => {
       if (filter.value.constructor === Array) {
         filter.value.forEach((v) => searchParams.append(name, v));
+      } else if (typeof filter.value === 'object') {
+        if ((filter.value.min || '') !== '') {
+          searchParams.set(`${name}Min`, filter.value.min);
+        }
+        if ((filter.value.max || '') !== '') {
+          searchParams.set(`${name}Max`, filter.value.max);
+        }
       } else {
         searchParams.set(name, filter.value);
       }

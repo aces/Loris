@@ -35,7 +35,8 @@ class EditCategory extends \NDB_Page
      *
      * @return bool true if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return ($user->hasPermission('document_repository_categories')
             && $user->hasAnyPermission(
@@ -81,7 +82,7 @@ class EditCategory extends \NDB_Page
             $req['categoryNameChange'] : null;
         $new_parent  = isset($req['newParentID']) ? $req['newParentID'] : null;
         if ($new_parent != null) {
-            $DB->update(
+            $DB->unsafeupdate(
                 "document_repository_categories",
                 [
                     "category_name" => $new_name,
@@ -92,7 +93,7 @@ class EditCategory extends \NDB_Page
                 ]
             );
         } else {
-            $DB->update(
+            $DB->unsafeupdate(
                 "document_repository_categories",
                 [
                     "category_name" => $new_name,

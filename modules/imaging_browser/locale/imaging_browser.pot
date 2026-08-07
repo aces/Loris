@@ -25,9 +25,10 @@ msgid "View Session"
 msgstr ""
 
 msgid "New and pending imaging session"
-msgstr ""
+msgid_plural "New and pending imaging sessions"
+msgstr[0] ""
 
-msgid "New and pending imaging sessions"
+msgid "Imaging QC Summary"
 msgstr ""
 
 msgid "Imaging Session"
@@ -52,16 +53,10 @@ msgstr ""
 msgid "Links"
 msgstr ""
 
-msgid "SessionID"
-msgstr ""
-
 msgid "Sequence Type"
 msgstr ""
 
 msgid "Pending New"
-msgstr ""
-
-msgid "QC Status"
 msgstr ""
 
 msgid "Caveat"
@@ -170,6 +165,39 @@ msgid "Click here to close this window"
 msgstr ""
 
 msgid "Comments saved."
+msgstr ""
+
+msgid "Voxel Size"
+msgstr ""
+
+msgid "Protocol"
+msgstr ""
+
+msgid "Acquisition Date"
+msgstr ""
+
+msgid "Inserted Date"
+msgstr ""
+
+msgid "Series Number"
+msgstr ""
+
+msgid "Series Description"
+msgstr ""
+
+msgid "Slice Thick"
+msgstr ""
+
+msgid "Phase Encoding Direction"
+msgstr ""
+
+msgid "Image Type"
+msgstr ""
+
+msgid "Echo Number"
+msgstr ""
+
+msgid "Number of volumes"
 msgstr ""
 
 msgid "Feedback MRI Popup"

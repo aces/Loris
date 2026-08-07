@@ -5,6 +5,7 @@ import React, {
   useRef,
   FunctionComponent,
   MutableRefObject,
+  useMemo,
 } from 'react';
 import * as R from 'ramda';
 import {vec2} from 'gl-matrix';
@@ -16,7 +17,6 @@ import {colorOrder} from '../../color';
 import {
   MAX_RENDERED_EPOCHS,
   DEFAULT_MAX_CHANNELS,
-  CHANNEL_DISPLAY_OPTIONS,
   SIGNAL_UNIT,
   Vector2,
   DEFAULT_TIME_INTERVAL,
@@ -32,11 +32,12 @@ import SeriesCursor from './SeriesCursor';
 import LoadingBar from './LoadingBar';
 import {setRightPanel} from '../store/state/rightPanel';
 import {setDatasetMetadata} from '../store/state/dataset';
-import {setOffsetIndex} from '../store/logic/pagination';
+import {createChannelTypesDict, filterDisplayedChannels, filterSelectedChannels} from '../store/logic/channels';
 import IntervalSelect from './IntervalSelect';
 import EventManager from './EventManager';
 import AnnotationForm from './AnnotationForm';
 import {RootState} from '../store';
+import {createAction} from 'redux-actions';
 
 import {
   setAmplitudesScale,
@@ -64,6 +65,7 @@ import {
   Channel,
   Epoch as EpochType,
   RightPanel, EpochFilter,
+  ChannelInfo,
 } from '../store/types';
 import {setCurrentAnnotation} from '../store/state/currentAnnotation';
 import {setCursorInteraction} from '../store/logic/cursorInteraction';
@@ -72,13 +74,25 @@ import {getEpochsInRange, updateActiveEpoch} from '../store/logic/filterEpochs';
 import HEDEndorsement from "./HEDEndorsement";
 import {setTimeSelection} from "../store/state/timeSelection";
 import {useTranslation} from "react-i18next";
+import ChannelTypesSelector from './ChannelTypesSelector';
+import Pagination from './Pagination';
+import {SET_CHANNELS} from '../store/state/channels';
+import {UPDATE_VIEWED_CHUNKS} from '../store/logic/fetchChunks';
+
+/**
+ * The state of a channel type.
+ */
+export type ChannelTypeState = {
+  visible: boolean,
+  channelsCount: number,
+}
 
 type CProps = {
   ref: MutableRefObject<any>,
   viewerWidth: number,
   viewerHeight: number,
   interval: [number, number],
-  domain: number,
+  domain: [number, number],
   amplitudeScale: number,
   rightPanel: RightPanel,
   timeSelection?: [number, number],
@@ -91,8 +105,7 @@ type CProps = {
   epochs: EpochType[],
   filteredEpochs: EpochFilter,
   activeEpoch: number,
-  offsetIndex: number,
-  setOffsetIndex: (_: number) => void,
+  bidsChannels: ChannelInfo[],
   setAmplitudesScale: (_: number) => void,
   resetAmplitudesScale: (_: void) => void,
   setLowPassFilter: (_: string) => void,
@@ -116,44 +129,6 @@ type CProps = {
 
 /**
  *
- * @param root0
- * @param root0.viewerHeight
- * @param root0.viewerWidth
- * @param root0.interval
- * @param root0.setInterval
- * @param root0.domain
- * @param root0.amplitudeScale
- * @param root0.rightPanel
- * @param root0.timeSelection
- * @param root0.setCursor
- * @param root0.setRightPanel
- * @param root0.chunksURL
- * @param root0.channels
- * @param root0.channelMetadata
- * @param root0.hidden
- * @param root0.epochs
- * @param root0.filteredEpochs
- * @param root0.activeEpoch
- * @param root0.offsetIndex
- * @param root0.setOffsetIndex
- * @param root0.setAmplitudesScale
- * @param root0.resetAmplitudesScale
- * @param root0.setLowPassFilter
- * @param root0.setHighPassFilter
- * @param root0.setViewerWidth
- * @param root0.setViewerHeight
- * @param root0.setDatasetMetadata
- * @param root0.dragStart
- * @param root0.dragContinue
- * @param root0.dragEnd
- * @param root0.limit
- * @param root0.loadedChannels
- * @param root0.setCurrentAnnotation
- * @param root0.physioFileID
- * @param root0.hoveredChannels
- * @param root0.setHoveredChannels
- * @param root0.updateActiveEpoch
- * @param root0.setTimeSelection
  */
 const SeriesRenderer: FunctionComponent<CProps> = ({
   viewerHeight,
@@ -173,8 +148,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   epochs,
   filteredEpochs,
   activeEpoch,
-  offsetIndex,
-  setOffsetIndex,
+  bidsChannels: bidsChannels,
   setAmplitudesScale,
   resetAmplitudesScale,
   setLowPassFilter,
@@ -198,6 +172,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
         numDisplayedChannels,
         setNumDisplayedChannels,
     ] = useState<number>(DEFAULT_MAX_CHANNELS);
+
+    // The channel types are indexed by channel type name.
+    const [channelTypes, setChannelTypes] = useState<Record<string, ChannelTypeState>>({});
+
     const [cursorEnabled, setCursorEnabled] = useState(false);
     const toggleCursor = () => setCursorEnabled((value) => !value);
     const [DCOffsetView, setDCOffsetView] = useState(true);
@@ -212,6 +190,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [lowPass, setLowPass] = useState('none');
     const [refNode, setRefNode] = useState<HTMLDivElement>(null);
     const [bounds, setBounds] = useState<ClientRect>(null);
+    const [offsetIndex, setOffsetIndex] = useState(1);
     const getBounds = useCallback((domNode) => {
         if (domNode) {
             setRefNode(domNode);
@@ -222,6 +201,11 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     const [panelIsDirty, setPanelIsDirty] = useState(false);
     const [eventChannels, setEventChannels] = useState([]);
     const {t} = useTranslation();
+
+    // Initialize the channel types mapping once channels information is loaded.
+    useEffect(() => {
+      setChannelTypes(createChannelTypesDict(channelMetadata, bidsChannels));
+    }, [channelMetadata, bidsChannels]);
 
     window.onbeforeunload = function() {
       if (panelIsDirty) {
@@ -335,10 +319,52 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   const viewerRef = useRef(null);
   const cursorRef = useRef(null);
 
+  // Selected channels are all the channels that should be currently available in the viewer,
+  // including those not currently displayed because of pagination.
+  const selectedChannels = useMemo(() => (
+    filterSelectedChannels(channelMetadata, bidsChannels, channelTypes)
+  ), [bidsChannels, channelMetadata, channelTypes]);
+
+  // Indexes of the selected channel indexes for comparison with previous renders.
+  const selectedChannelIndexes = JSON.stringify(selectedChannels.map((channel) => channel.index));
+
+  // Displayed channels are all the selected channels that are currently displayed on screen.
+  channels = useMemo(() => (
+    filterDisplayedChannels(selectedChannels, offsetIndex, limit, channels)
+  ), [bidsChannels, selectedChannelIndexes, offsetIndex, limit, channels]);
+
+  // Indexes of the displayed channel indexes for comparison with previous renders.
+  const displayedChannelIndexes = JSON.stringify(channels.map((channel) => channel.index));
+
+  // Hack to update the global store whenever displayed channels are updated.
+  useEffect(() => {
+    const store = window.EEGLabSeriesProviderStore[chunksURL];
+    if (store === undefined) {
+      return;
+    }
+
+    store.dispatch(createAction(SET_CHANNELS)(channels));
+    store.dispatch(createAction(UPDATE_VIEWED_CHUNKS)());
+  }, [displayedChannelIndexes]);
+
+  const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
+
+  // Function used to update the pagination offset index, with checks to prevent invalid indexes.
+  const updateOffsetIndex = useCallback((newOffsetIndex: number) => {
+    if (
+      isNaN(newOffsetIndex)
+      || newOffsetIndex < 1
+      || newOffsetIndex > selectedChannels.length - limit + 1
+    ) {
+      return;
+    }
+
+    setOffsetIndex(newOffsetIndex);
+  }, [selectedChannels.length, limit]);
+
   useEffect(() => { // Keypress handler
     /**
      *
-     * @param e
      */
     const keydownHandler = (e) => {
       const hedSearchIsFocus = document.activeElement.id === 'hed-search';
@@ -356,10 +382,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
             const intervalSize = interval[1] - interval[0];
             switch (e.code) {
               case 'ArrowUp':
-                setOffsetIndex(offsetIndex - limit);
+                updateOffsetIndex(offsetIndex - limit);
                 break;
               case 'ArrowDown':
-                setOffsetIndex(offsetIndex + limit);
+                updateOffsetIndex(offsetIndex + limit);
                 break;
               case 'ArrowRight':
                 setInterval([
@@ -499,8 +525,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param channelIndex
-   * @param colored
    */
   const setLineColor = (channelIndex: number, colored: boolean) => {
     const classString = `.visx-linepath.channel-${channelIndex}`;
@@ -567,15 +591,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
       .range([topLeft[1], bottomRight[1]]),
   ];
 
-  const filteredChannels = channels.filter((_, i) => !hidden.includes(i));
   const showAxisScaleLines = false; // Visibility state of y-axis scale lines
 
   /**
    *
-   * @param root0
-   * @param root0.viewerWidth
-   * @param root0.viewerHeight
-   * @param root0.interval
    */
   const XAxisLayer = ({viewerWidth, viewerHeight, interval}) => {
     return (
@@ -667,9 +686,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param root0
-   * @param root0.viewerWidth
-   * @param root0.viewerHeight
    */
   const ChannelAxesLayer = ({viewerWidth, viewerHeight}) => {
     const axisHeight = viewerHeight / numDisplayedChannels;
@@ -697,8 +713,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param root0
-   * @param root0.viewerWidth
    */
   const ChannelsLayer = ({viewerWidth}) => {
     useEffect(() => {
@@ -821,7 +835,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
               /**
                *
-               * @param values
                */
               const getScaledMean = (values) => {
                 let numValues = values.length;
@@ -870,11 +883,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     );
   };
 
-  const hardLimit = Math.min(offsetIndex + limit - 1, channelMetadata.length);
-
   /**
    *
-   * @param v
    */
   const onMouseMove = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
@@ -887,7 +897,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param v
    */
   const onMouseUp = (v : MouseEvent) => {
     if (bounds === null || bounds === undefined) return;
@@ -898,14 +907,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
   };
 
   /**
-   *
-   * @param e
+   * Handle a change to the limit of the number of displayed channels.
    */
-  const handleChannelChange = (e) => {
-    const numChannels = parseInt(e.target.value, 10);
+  const handleChannelChange = (numChannels: number) => {
     setNumDisplayedChannels(numChannels); // This one is the frontend controller
     setDatasetMetadata({limit: numChannels}); // Will trigger re-render to the store
-    setOffsetIndex(offsetIndex); // Will include new channels on limit increase
+    updateOffsetIndex(offsetIndex); // Will include new channels on limit increase
     setViewerHeight(
       numChannels > 4
         ? DEFAULT_VIEWER_HEIGHT
@@ -915,7 +922,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param channelIndex
    */
   const onChannelClick = (channelIndex : number) => {
     if (rightPanel !== 'annotationForm') {
@@ -941,7 +947,6 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
 
   /**
    *
-   * @param channelIndex
    */
   const onChannelHover = (channelIndex : number) => {
     setHoveredChannels(channelIndex === -1 ? [] : [channelIndex]);
@@ -990,6 +995,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     'HED_ENDORSEMENT': 'HED Endorsements',
   }
 
+  const canEditEvents = chunksURL[0]?.includes('Face13');
+
   return (
     <>
 {/*      {channels.length > 0 ? (*/}
@@ -1005,7 +1012,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           <div id="right-panel-controls">
             <button
               className={'btn btn-primary'}
-              disabled={!chunksURL || !chunksURL[0].includes('Face13') || rightPanel === 'annotationForm'}
+              disabled={!chunksURL || !canEditEvents || rightPanel === 'annotationForm'}
               onClick={() => {
                 confirmPanelClose(() => {
                   setRightPanel('annotationForm')
@@ -1039,6 +1046,10 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                 </button>
               )
             }
+            <ChannelTypesSelector
+              channelTypes={channelTypes}
+              setChannelTypes={setChannelTypes}
+            />
           </div>
         </div>
         <div className={'row'}>
@@ -1238,83 +1249,15 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                       )}
                     />
                   </div>
-
-                  <div
-                    className={
-                      (rightPanel ? '' : 'pull-right-lg col-lg-5 ')
-                      + 'pagination-nav'
-                    }
-                    style={{
-                      padding: '5px 15px',
-                    }}
-                  >
-                    <small style={{marginRight: '3px',}}>
-                        {t('Displaying: ', {ns: 'electrophysiology_browser'})}
-                      <select
-                        value={numDisplayedChannels}
-                        onChange={handleChannelChange}
-                      >
-                        {CHANNEL_DISPLAY_OPTIONS.map((numChannels) => {
-                          return <option
-                            key={`${numChannels}`}
-                            value={numChannels}
-                          >
-                            {t('{{numChannels}} channels', {
-                              ns: 'electrophysiology_browser',
-                              numChannels: numChannels,
-                            })}
-                          </option>;
-                        })};
-                      </select>
-                      &nbsp;
-                      {t('Showing:', {ns: 'electrophysiology_browser'})}
-                      &nbsp;
-                      <input
-                        type='number'
-                        style={{width: '45px'}}
-                        value={offsetIndex}
-                        onChange={(e) => {
-                          const value = parseInt(e.target.value);
-                          !isNaN(value) && setOffsetIndex(value);
-                        }}
-                      />
-                      &nbsp;
-                      {t('to {{channelsInView}} of {{totalChannels}}', {
-                        ns: 'electrophysiology_browser',
-                        channelsInView: hardLimit,
-                        totalChannels: channelMetadata.length
-                      })}
-                    </small>
-                    <div
-                      className='btn-group'
-                      style={{marginRight: 0}}
-                    >
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex - limit)}
-                        value='<<'
-                      />
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex - 1)}
-                        value='<'
-                      />
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex + 1)}
-                        value='>'
-                      />
-                      <input
-                        type='button'
-                        className='btn btn-primary btn-xs'
-                        onClick={() => setOffsetIndex(offsetIndex + limit)}
-                        value='>>'
-                      />
-                    </div>
-                  </div>
+                  <Pagination
+                    limit={limit}
+                    selectedChannelsCount={selectedChannels.length}
+                    offsetIndex={offsetIndex}
+                    updateOffsetIndex={updateOffsetIndex}
+                    displayedChannelsLimit={numDisplayedChannels}
+                    setDisplayedChannelsLimit={handleChannelChange}
+                    rightPanel={rightPanel}
+                  />
                 </div>
               </div>
             </div>
@@ -1449,8 +1392,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         R.compose(dragStart, R.nth(0))(v);
                       }, [bounds])}
                       showOverflow={showOverflow}
-                      chunksURL={chunksURL}
                       cssClass={''}
+                      domain={domain}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
@@ -1638,7 +1581,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               </div>
               {
                 rightPanel === 'annotationForm' &&
-                chunksURL[0].includes('Face13') &&
+                canEditEvents &&
                 <AnnotationForm
                   panelIsDirty={panelIsDirty}
                   setPanelIsDirty={setPanelIsDirty}
@@ -1648,12 +1591,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               }
               {
                 rightPanel === 'eventList' &&
-                <EventManager canEdit={chunksURL[0].includes('Face13')} />
+                <EventManager canEdit={canEditEvents} />
               }
               {
                 rightPanel === 'hedEndorsement' &&
                 <HEDEndorsement
-                  canEndorse={chunksURL[0].includes('Face13')}
+                  canEndorse={canEditEvents}
                   pressedKey={pressedKey}
                 />
               }
@@ -1678,7 +1621,6 @@ SeriesRenderer.defaultProps = {
   epochs: [],
   hidden: [],
   channelMetadata: [],
-  offsetIndex: 1,
   limit: DEFAULT_MAX_CHANNELS,
 };
 
@@ -1689,15 +1631,15 @@ export default connect(
     interval: state.bounds.interval,
     amplitudeScale: state.bounds.amplitudeScale,
     rightPanel: state.rightPanel,
-    timexSelection: state.timeSelection,
+    timeSelection: state.timeSelection,
     chunksURL: state.dataset.chunksURL,
     channels: state.channels,
+    bidsChannels: state.dataset.bidsChannels,
     epochs: state.dataset.epochs,
     filteredEpochs: state.dataset.filteredEpochs,
     activeEpoch: state.dataset.activeEpoch,
     hidden: state.montage.hidden,
     channelMetadata: state.dataset.channelMetadata,
-    offsetIndex: state.dataset.offsetIndex,
     limit: state.dataset.limit,
     loadedChannels: state.dataset.loadedChannels,
     domain: state.bounds.domain,
@@ -1705,10 +1647,6 @@ export default connect(
     hoveredChannels: state.cursor.hoveredChannels,
   }),
   (dispatch: (_: any) => void) => ({
-    setOffsetIndex: R.compose(
-      dispatch,
-      setOffsetIndex
-    ),
     setInterval: R.compose(
       dispatch,
       setInterval

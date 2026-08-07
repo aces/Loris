@@ -248,11 +248,13 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      */
     public function getHelp(string $page): string
     {
-        $helpFile = $this->dir . "/help/$page.md";
-        if (file_exists($helpFile)) {
-                return file_get_contents($helpFile);
+        $helpFile = realpath($this->dir . "/help/$page.md");
+        if ($helpFile && file_exists($helpFile)
+            && str_starts_with($helpFile, realpath($this->dir))
+        ) {
+            return file_get_contents($helpFile);
         }
-        return "No help available for $page ($helpFile)";
+        return "No help available for $page";
     }
 
     /**
@@ -309,7 +311,7 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         }
 
         $page->loadResources($user, $request);
-        if ($page->_hasAccess($user) !== true) {
+        if ($page->isAccessibleBy($user) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $user
             ))->process(
@@ -456,10 +458,10 @@ abstract class Module extends \LORIS\Router\PrefixRouter
      * Gets the QueryEngine to be used for querying against this module's
      * data.
      *
-     * @return \LORIS\Data\Query\QueryEngine
+     * @return \LORIS\Data\Query\QueryEngine[]
      */
-    public function getQueryEngine() : \LORIS\Data\Query\QueryEngine
+    public function getQueryEngines() : iterable
     {
-        return new \LORIS\Data\Query\NullQueryEngine();
+        return [];
     }
 }

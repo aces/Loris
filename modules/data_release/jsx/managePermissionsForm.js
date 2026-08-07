@@ -28,6 +28,8 @@ class ManagePermissionsForm extends Component {
       originalData: {},
       errorMessage: {},
       isLoaded: false,
+      user: null,
+      version: null,
     };
 
     this.setFormData = this.setFormData.bind(this);
@@ -212,9 +214,11 @@ class ManagePermissionsForm extends Component {
               {ns: 'data_release'}),
             title: '',
             type: 'success',
+            confirmButtonText: t('OK', {ns: 'loris'}),
           });
-          this.props.fetchData();
-          return Promise.resolve();
+          return Promise.resolve().then(() => {
+            window.location.reload();
+          });
         } else {
           let msg = response.statusText ?
             response.statusText : t('Submission Error!',

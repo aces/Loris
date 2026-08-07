@@ -73,21 +73,21 @@
         {$edc_age}
     </td>
     <td>
-      {$display.Sex}
+      {dgettext("sex", {$display.Sex})}
     </td>
     {if $display.ProjectName != "" && $display.ProjectName == $display.ProjectTitle}  
       <td>
-        {$display.ProjectName}
+        {dgettext("Project", {$display.ProjectName})}
       </td>
     {else}
       {if $display.ProjectTitle != ""}  
         <td>
-          {$display.ProjectTitle}
+          {dgettext("Project", {$display.ProjectTitle})}
         </td>
       {/if}
       {if $display.ProjectName != ""}  
         <td>
-          {$display.ProjectName}
+          {dgettext("Project", {$display.ProjectName})}
         </td>
       {/if}
     {/if}
@@ -100,26 +100,26 @@
     {if $sessionID != ""}
       <!-- timepoint data -->
       <td>
-        {$display.Visit_label}
+        {dgettext("visit", {$display.Visit_label})}
       </td>
       <td>
-        {$display.PSC}
+        {dgettext("psc", {$display.PSC})}
       </td>
       <td>
-        {$display.CohortTitle}
+        {dgettext("cohort", {$display.CohortTitle})}
       </td>
       <td>
-        {if $display.Scan_done != ""}
-            {if $display.Scan_done == 'Y'}
-                {assign var="scan_done" value=dgettext("loris", "Yes")}
+        {if $display.scanDone != ""}
+            {if $display.scanDone == 'Y'}
+                {assign var="scanDone" value=dgettext("loris", "Yes")}
                 <a href="{$baseurl|default}/imaging_browser/viewSession/?sessionID={$sessionID}" class="timepoint_list">
-                {$scan_done}</a>
+                {$scanDone}</a>
             {else}
-                {assign var="scan_done" value={dgettext("loris", "No")}}
-                {$scan_done}
+                {assign var="scanDone" value={dgettext("loris", "No")}}
+                {$scanDone}
             {/if}
         {else}
-            <img alt="Data Missing" src="{$baseurl|default}/images/help2.gif" border=0>
+            <img alt="Data Missing" src="{$baseurl|default}/images/delete.gif" border=0>
         {/if}
       </td>
       <td>
@@ -212,7 +212,11 @@
     <!-- print the sub group header row -->
     <thead>
     <tr class="info">
-	    <th>{dgettext("loris", $instrument_groups[group].title)}
+	    <th>{if $instrument_groups[group].title == "Instruments"}
+	         {dngettext("loris", "Instrument", "Instruments", 2)}
+	       {else}
+	         {dgettext("loris", $instrument_groups[group].title)}
+	       {/if}
 	       <!-- show the instruction only one time -->
 	       {if $smarty.section.group.iteration == 1}
 	       <br />({dgettext("timepoint_list", "Click to Open")})

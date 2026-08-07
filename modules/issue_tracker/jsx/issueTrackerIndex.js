@@ -12,6 +12,7 @@ import IssueTrackerBatchMode from './IssueTrackerBatchMode';
 import hiStrings from '../locale/hi/LC_MESSAGES/issue_tracker.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/issue_tracker.json';
 import frStrings from '../locale/fr/LC_MESSAGES/issue_tracker.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/issue_tracker.json';
 
 /**
  * Issue Tracker Index component
@@ -106,7 +107,7 @@ class IssueTrackerIndex extends Component {
     const siteKey = t('Site', {ns: 'loris', count: 1});
     const pscidKey = t('PSCID', {ns: 'loris'});
     const visitLabelKey = t('Visit Label', {ns: 'loris'});
-    const sessionIDKey = t('Session ID', {ns: 'loris'});
+    const sessionIDKey = t('SessionID', {ns: 'loris'});
     const dccidKey = t('DCCID', {ns: 'loris'});
     const statusKey = t('Status', {ns: 'loris'});
     const categoryKey = t('Category', {ns: 'issue_tracker'});
@@ -164,11 +165,11 @@ class IssueTrackerIndex extends Component {
       break;
     case statusKey:
       // Display status values as-is (not translated)
-      result = <td>{cell}</td>;
+      result = <td>{t(cell, {ns: 'issue_tracker'})}</td>;
       break;
     case categoryKey:
       // Display category values as-is (not translated)
-      result = <td>{cell || ''}</td>;
+      result = <td>{t(cell, {ns: 'issues_categories'}) || ''}</td>;
       break;
     case siteKey:
       // if cell is an array containing all sites values
@@ -176,7 +177,7 @@ class IssueTrackerIndex extends Component {
         JSON.stringify(
           Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
       ) {
-        result = <td>All Sites</td>;
+        result = <td>{t('All Sites', {ns: 'issue_tracker'})}</td>;
       } else {
         result = <td>
           {cell.map((v) =>
@@ -294,7 +295,7 @@ class IssueTrackerIndex extends Component {
         type: 'date',
       }},
       {label: t('Last Update', {ns: 'issue_tracker'}), show: true},
-      {label: t('SessionID', {ns: 'issue_tracker'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('DCCID', {ns: 'loris'}), show: false},
       {label: t('Watching', {ns: 'issue_tracker'}), show: false, filter: {
         name: 'watching',
@@ -378,6 +379,7 @@ class IssueTrackerIndex extends Component {
               statuses: this.state.data.fieldOptions.statuses,
               categories: this.state.data.fieldOptions.categories,
               sites: this.state.data.fieldOptions.sites,
+              assignees: this.state.data.fieldOptions.assignees,
             }}
           />
         </TabPane>
@@ -396,6 +398,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'issue_tracker', hiStrings);
   i18n.addResourceBundle('ja', 'issue_tracker', jaStrings);
   i18n.addResourceBundle('fr', 'issue_tracker', frStrings);
+  i18n.addResourceBundle('zh', 'issue_tracker', zhStrings);
 
   const IssueTrackerIndexWithTranslation = withTranslation(
     ['issue_tracker', 'loris']

@@ -18,6 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #, fuzzy
 msgid "Conflict Resolver"
@@ -25,7 +26,9 @@ msgstr "Résolution des conflits"
 
 #, fuzzy
 msgid "Data entry conflict"
-msgstr "Conflit de saisie des données"
+msgid_plural "Data entry conflicts"
+msgstr[0] "Conflit de saisie des données"
+msgstr[1] "Conflits de saisie des données"
 
 #, fuzzy
 msgid "Unresolved Conflicts"
@@ -82,16 +85,8 @@ msgstr "Résolveur"
 msgid "Resolution Timestamp"
 msgstr "Horodatage de la résolution"
 
-msgid ""
-"Click on instrument in legend to visit conflict resolver for that instrument "
-"across all visits."
-msgstr ""
-"Cliquez sur l'instrument dans la légende pour accéder au module de "
-"résolution de conflits pour cet instrument pour toutes les visites."
+msgid "Click on instrument in legend to visit conflict resolver for that instrument across all visits."
+msgstr "Cliquez sur l'instrument dans la légende pour accéder au module de résolution de conflits pour cet instrument à travers l'ensemble des visites."
 
-msgid ""
-"Click on bar in graph to visit conflict resolver for that visit and "
-"instrument combination."
-msgstr ""
-"Cliquez sur la barre du graphique pour accéder au module de résolution de "
-"conflits correspondant à cette visite et à cette combinaison d'instruments."
+msgid "Click on bar in graph to visit conflict resolver for that visit and instrument combination."
+msgstr "Cliquez sur la barre du graphique pour accéder au module de résolution de conflits correspondant à cette visite et combinaison d'instruments."

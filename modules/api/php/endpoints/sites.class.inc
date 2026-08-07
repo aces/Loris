@@ -39,7 +39,7 @@ class Sites extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return boolean true if access is permitted
      */
-    private function _hasAccess(\User $user) : bool
+    private function _innerHasAccess(\User $user) : bool
     {
         return !($user instanceof \LORIS\AnonymousUser);
     }
@@ -77,7 +77,7 @@ class Sites extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $user = $request->getAttribute('user');
-        if (!$this->_hasAccess($user)) {
+        if (!$this->_innerHasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Unauthorized();
         }
 

@@ -39,7 +39,8 @@ class Stats_Demographic extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }
@@ -232,7 +233,7 @@ class Stats_Demographic extends \NDB_Form
         $allProjectList = \Utility::getProjectList();
 
         $projects     = [];
-        $projects[''] = 'All Projects';
+        $projects[''] = dgettext('statistics', 'All Projects');
 
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
@@ -313,11 +314,14 @@ class Stats_Demographic extends \NDB_Form
         );
 
         $sites     = [];
-        $sites[''] ='All sites';
+        $sites[''] = dgettext('statistics', 'All sites');
 
         if (!empty($centers)) {
             foreach ($centers as $row) {
-                $sites[$row['NumericID']] = $row['ShortName'];
+                $sites[$row['NumericID']] = dgettext(
+                    'psc',
+                    $row['ShortName']
+                );
                 if ($demographicSite == $row['NumericID']) {
                     $this->tpl_data['CurrentSite'] = [
                         'ID'   => $row['NumericID'],
@@ -529,7 +533,7 @@ class Stats_Demographic extends \NDB_Form
         //START BIG TABLE
         $instrumentList = \Utility::getAllInstruments();
         $instDropdown   = array_merge(
-            [ '' => 'Recruit Breakdown by Sex'],
+            [ '' => dgettext('statistics', 'Recruit Breakdown by Sex')],
             $instrumentList
         );
         $this->tpl_data['all_instruments'] = $instrumentList;
@@ -542,8 +546,8 @@ class Stats_Demographic extends \NDB_Form
                 false
             );
             $subcategories         = [
-                'Complete',
-                'Incomplete',
+                dgettext('loris', 'Complete'),
+                dgettext('statistics', 'Incomplete'),
             ];
             $result = iterator_to_array(
                 $db->pselect(
@@ -592,9 +596,14 @@ class Stats_Demographic extends \NDB_Form
                 )
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
-                'Breakdown of Registered Candidates',
-                'Data Entry Completion Status for '.
-                    $instrumentList[$demographicInstrument],
+                dgettext('statistics', 'Breakdown of Registered Candidates'),
+                sprintf(
+                    dgettext(
+                        'statistics',
+                        'Data Entry Completion Status for %s'
+                    ),
+                    $instrumentList[$demographicInstrument]
+                ),
                 $subcategories,
                 $visits,
                 'DemographicInstrument',
@@ -607,10 +616,7 @@ class Stats_Demographic extends \NDB_Form
                 $demographicProject
             );
         } else {
-            $subcategories = [
-                'Male',
-                'Female',
-            ];
+            $subcategories = array_values(\Utility::getSexList());
             $result        = iterator_to_array(
                 $db->pselect(
                     "SELECT s.CenterID as CenterID,
@@ -633,8 +639,8 @@ class Stats_Demographic extends \NDB_Form
                 )
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
-                'Breakdown of Registered Candidates',
-                'Breakdown by Sex',
+                dgettext('statistics', 'Breakdown of Registered Candidates'),
+                dgettext('statistics', 'Breakdown by Sex'),
                 $subcategories,
                 $visits,
                 'DemographicInstrument',

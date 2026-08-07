@@ -68,7 +68,8 @@ if ($config->getSetting('useExternalID') !== 'true') {
 $cands = $DB->pselect(
     "SELECT CandID, ExternalID, RegistrationCenterID as site,
     RegistrationProjectID as project
-    FROM candidate",
+    FROM candidate
+    WHERE Entity_type<>'Scanner'",
     []
 );
 

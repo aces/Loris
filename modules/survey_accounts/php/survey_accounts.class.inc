@@ -32,7 +32,8 @@ class Survey_Accounts extends \DataFrameworkMenu
      *
      * @return boolean true if access is permitted
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('survey_accounts_view');
     }
@@ -76,10 +77,10 @@ class Survey_Accounts extends \DataFrameworkMenu
     public function getFieldOptions() : array
     {
         $statusOptions = [
-            'Created'     => 'Created',
-            'Sent'        => 'Sent',
-            'In Progress' => 'In Progress',
-            'Complete'    => 'Complete',
+            dgettext("loris", "Created")     => dgettext("loris", "Created"),
+            dgettext("loris", "Sent")        => dgettext("loris", "Sent"),
+            dgettext("loris", "In Progress") => dgettext("loris", "In Progress"),
+            dgettext("loris", "Complete")    => dgettext("loris", "Complete"),
         ];
 
         $instruments

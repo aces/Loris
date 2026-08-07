@@ -1352,6 +1352,7 @@ class Database_Test extends TestCase
         $this->markTestIncomplete(
             "This test calls a private method, making it fail for now"
         );
+        /*
         $stub = $this->getMockBuilder('FakeDatabase')
             ->onlyMethods($this->getAllMethodsExcept(['insertIgnore']))
             ->getMock();
@@ -1364,6 +1365,7 @@ class Database_Test extends TestCase
 
         '@phan-var \Database $stub';
         $stub->insertIgnore($table, $set);
+        */
     }
 
     /**

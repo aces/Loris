@@ -94,11 +94,17 @@ msgstr "Imagerie"
 #: modules/candidate_list/php/module.class.inc:76
 #: modules/new_profile/php/module.class.inc:50
 msgid "Candidate"
-msgstr "Candidat"
+msgid_plural "Candidates"
+msgstr[0] "Candidat"
+msgstr[1] "Candidats"
 
 #: modules/genomic_browser/php/module.class.inc:53
 msgid "Genomics"
 msgstr "Génomique"
+
+#: modules/biobank/php/module.class.inc:140
+msgid "Biobank"
+msgstr "Biobanque"
 
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
@@ -168,7 +174,7 @@ msgstr "Masquer les filtres avancés"
 
 #, fuzzy
 msgid "Pass"
-msgstr "Approuver"
+msgstr "Approuvé"
 
 msgid "Fail"
 msgstr "Echec"
@@ -211,7 +217,7 @@ msgstr "Libellé de visite"
 
 #, fuzzy
 msgid "Email"
-msgstr "Adresse E-mail"
+msgstr "Adresse courriel"
 
 msgid "Site"
 msgid_plural "Sites"
@@ -253,7 +259,10 @@ msgid "Participant Status"
 msgstr "Statut du participant"
 
 msgid "DoB"
-msgstr "DdN"
+msgstr "Date de naissance"
+
+msgid "DoD"
+msgstr "Date de décès"
 
 msgid "Sex"
 msgstr "Sexe"
@@ -302,10 +311,16 @@ msgstr "Type d’entité"
 
 #, fuzzy
 msgid "Scan Done"
-msgstr "Scan terminé"
+msgstr "Scan d’imagerie complété"
 
 msgid "Language"
 msgstr "Langage"
+
+msgid "Access denied"
+msgstr "Accès refusé"
+
+msgid "No."
+msgstr "N°"
 
 msgid "Ethnicity"
 msgstr "Ethnicité"
@@ -352,6 +367,9 @@ msgid "View details"
 msgstr "Voir les détails"
 
 # Data table strings
+msgid "No result found."
+msgstr "Aucun résultat trouvé."
+
 msgid "{{pageCount}} rows displayed of {{totalCount}}."
 msgstr "{{pageCount}} lignes affichées sur {{totalCount}}."
 
@@ -382,7 +400,7 @@ msgid "Data Supervisors to Email"
 msgstr "Superviseurs des données à contacter par e-mail"
 
 msgid "Invalid email address"
-msgstr "Adresse email non valide"
+msgstr "Adresse courriel non valide"
 
 # Common strings on widgets
 msgid "NEW"
@@ -419,7 +437,7 @@ msgid "Last name is required and should not exceed 120 characters"
 msgstr "Le nom de famille est obligatoire et ne doit pas dépasser 120 caractères."
 
 msgid "Email address"
-msgstr "Adresse email"
+msgstr "Adresse courriel"
 
 msgid "New Password"
 msgstr "Nouveau mot de passe"
@@ -497,6 +515,12 @@ msgstr "Retrait"
 msgid "Withdrawn"
 msgstr "Retiré"
 
+msgid "Created"
+msgstr "Créé"
+
+msgid "Sent"
+msgstr "Envoyé"
+
 msgid "In Progress"
 msgstr "En cours"
 
@@ -548,9 +572,93 @@ msgstr "{{months}} mois"
 msgid "{{years}} years old"
 msgstr "{{years}} ans"
 
+msgid "%d y / %d m"
+msgstr "%d a / %d m"
+
+
 # Other generic terms
 msgid "Loading..."
 msgstr "Chargement en cours..."
 
 msgid "Permission denied"
 msgstr "Permission refusée"
+
+msgid "Unauthorized"
+msgstr "Non autorisé"
+
+msgid "File to upload"
+msgstr "Fichier à téléverser"
+
+msgid "Please make sure files are not larger than {{maxFileSize}}"
+msgstr "Veuillez vous assurer que les fichiers ne dépassent pas la taille de {{maxFileSize}}"
+
+msgid "Submit"
+msgstr "Soumettre"
+
+msgid "Clear"
+msgstr "Effacer"
+
+msgid "Add"
+msgstr "Ajouter"
+
+msgid "Update"
+msgstr "Actualiser"
+
+msgid "Dataset"
+msgstr "Ensemble de données"
+
+msgid "GB"
+msgstr "Go"
+
+msgid "Month"
+msgstr "Mois"
+
+# For react-select <Select> noOptionsMessage prop
+msgid "No options"
+msgstr "Aucune option"
+
+msgid "Submission Successful!"
+msgstr "Soumission réussie!"
+ 
+msgid "Scan Type"
+msgstr "Type de scan"
+
+msgid "SessionID"
+msgstr "Identifiant de session"
+
+msgid "Uploaded By"
+msgstr "Téléversé par"
+
+msgid "QC Status"
+msgstr "État du contrôle qualité"
+
+msgid "TarchiveID"
+msgstr "Identifiant de tarchive"
+
+msgid "Upload successful!"
+msgstr "Téléversement réussi!"
+
+msgid "unknown"
+msgstr "inconnu"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Upload directory is not a directory"
+msgstr "Le répertoire de téléversement n'est pas un répertoire valide"
+
+msgid "Upload directory is not writable"
+msgstr "Le répertoire de téléversement n'est pas modifiable"
+
+msgid "Path traversal not allowed"
+msgstr "La traversée de répertoires n'est pas autorisée"
+
+msgid "This file has already been uploaded."
+msgstr "Ce fichier a déjà été téléversé."
+
+msgid "File type not allowed"
+msgstr "Type de fichier non autorisé"
+
+msgid "Could not upload file"
+msgstr "Impossible de téléverser le fichier"
+

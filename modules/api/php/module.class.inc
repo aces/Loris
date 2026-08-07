@@ -53,7 +53,7 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        if ($this->hasPrefix('/static/', $request->getURI())) {
+        if ($this->hasPrefix('api/static/', $request->getURI())) {
             /*
              * Bypass for statically served files. If the request url
              * is /api/static/... this will call the handle  function

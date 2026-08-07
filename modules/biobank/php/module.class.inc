@@ -113,7 +113,7 @@ class Module extends \Module
         }
 
         $page->loadResources($user, $request);
-        if ($page->_hasAccess($user) !== true) {
+        if ($page->isAccessibleBy($user) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $user
             ))->process(
@@ -147,6 +147,16 @@ class Module extends \Module
      */
     public function getLongName() : string
     {
-        return "Biospecimens";
+        return dgettext("biobank", "Biospecimens");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Query\QueryEngine[]
+     */
+    public function getQueryEngines() : iterable
+    {
+        return [new QueryEngine($this->loris)];
     }
 }

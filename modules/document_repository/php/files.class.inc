@@ -32,7 +32,8 @@ class Files extends \NDB_Page
      *
      * @return bool true only if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -60,6 +61,31 @@ class Files extends \NDB_Page
         $downloadpath = \Utility::appendForwardSlash(
             $config->getSetting("documentRepositoryPath")
         );
+
+        if ($request->getMethod() != "POST") {
+            $factory = \NDB_Factory::singleton();
+            $user    = $factory->user();
+            $db      = $factory->database();
+
+            $filename = explode(
+                'Files',
+                urldecode($request->getUri()->getPath())
+            )[1];
+
+            $forSite = $db->pselectOne(
+                "SELECT For_site
+                 FROM document_repository
+                 WHERE Data_dir = :file_dir",
+                ['file_dir' => mb_substr($filename, 1)]
+            );
+
+            if (!empty($forSite)
+                && ! $user->hasCenter(\CenterID::singleton((int)$forSite))
+            ) {
+                return (new \LORIS\Http\Response\JSON\Forbidden());
+            }
+        }
+
         switch ($request->getMethod()) {
         case "POST":
             return $this->uploadDocFile($request);
@@ -86,7 +112,7 @@ class Files extends \NDB_Page
 
             $filename = explode(
                 'Files',
-                urldecode($request->getUri()->getPath())
+                $request->getUri()->getPath()
             )[1];
 
             $downloader = new \LORIS\FilesDownloadHandler(
@@ -124,8 +150,8 @@ class Files extends \NDB_Page
         $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'File_category' => $req['category'] ?? null,
-            'hidden_video'  => !empty($req['hiddenVideo']) ?
-                $req['hiddenVideo'] : null,
+            'hide_file'     => isset($req['hiddenFile']) ?
+                $req['hiddenFile'] : null,
             'instrument'    => $req['instrument'] ?? null,
             'comments'      => $req['comments'] ?? null,
             'version'       => $req['version'] ?? null,
@@ -242,11 +268,12 @@ class Files extends \NDB_Page
         $query   ="SELECT " .
                 "record_id as id, " .
                 "PSCID as pscid, " .
+                "For_site as forSite, " .
                 "File_category as category," .
                 "visitLabel, " .
                 "Instrument as instrument, " .
                 "comments, " .
-                "hide_video as hiddenVideo," .
+                "hide_file as hiddenFile," .
                 "File_Name as fileName, " .
                 "version " .
                 "FROM document_repository " .
@@ -254,12 +281,19 @@ class Files extends \NDB_Page
         $where   = ['record_id' => $id];
         $docData = $db->pselectRow($query, $where);
 
+        // Ensure $docData is an array before array access.
+        // pselectRow returns nullable array.
+        $docData = $docData ?? [];
+
+        // Cast hiddenFile to string to avoid falsy-0 issue in JS SelectElement
+        $docData['hiddenFile'] = (string)$docData['hiddenFile'];
+
         $result = [
             'categories'  => $categoriesList,
             'sites'       => $siteList,
             'instruments' => $instrumentsList,
             'docData'     => $docData,
-            'hiddenVideo' => ['yes' => "Yes", 'no' => "No"],
+            'hiddenFile'  => ['0' => "No", '1' => "Yes"],
         ];
 
         return $result;
@@ -401,7 +435,7 @@ class Files extends \NDB_Page
             $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
             $comments   = !empty($body['comments'])   ? $body['comments']   : null;
             $version    = !empty($body['version'])    ? $body['version']    : null;
-            $hidden     = !empty($body['hiddenVideo']) ? $body['hiddenVideo'] : null;
+            $hidden     = isset($body['hiddenFile']) ? $body['hiddenFile'] : null;
 
             $fileSize = $uploadedFile->getSize();
             $fileType = pathinfo($filename, PATHINFO_EXTENSION);
@@ -414,7 +448,7 @@ class Files extends \NDB_Page
                     'For_site'      => $site,
                     'comments'      => $comments,
                     'version'       => $version,
-                    'hide_video'    => $hidden,
+                    'hide_file'     => $hidden,
                     'File_name'     => $filename,
                     'File_size'     => $fileSize,
                     'Data_dir'      => "$name/$filename",

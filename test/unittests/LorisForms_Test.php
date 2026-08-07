@@ -60,7 +60,6 @@ class LorisForms_Test extends TestCase
     {
         if (!isset($this->form->form[$el])) {
             $this->fail("Element $el does not exist");
-            return;
         }
         $this->assertEquals(
             $this->form->form[$el]['type'],
@@ -82,7 +81,6 @@ class LorisForms_Test extends TestCase
     {
         if (!isset($this->form->form[$el])) {
             $this->fail("Element $el does not exist");
-            return;
         }
         $this->assertEquals(
             $this->form->form[$el]['label'],
@@ -107,7 +105,6 @@ class LorisForms_Test extends TestCase
     {
         if (!isset($this->form->form[$el])) {
             $this->fail("Element $el does not exist");
-            return;
         }
 
         if (is_array($attribValue)) {

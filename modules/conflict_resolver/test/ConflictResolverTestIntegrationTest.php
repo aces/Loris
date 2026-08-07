@@ -11,7 +11,6 @@
   * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
   * @link     https://github.com/aces/Loris
   */
-use Facebook\WebDriver\WebDriverSelect;
 use Facebook\WebDriver\WebDriverBy;
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
@@ -97,7 +96,12 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
       */
     function testConflictResolverPermission()
     {
-        $permissionList = ["conflict_resolver","data_dict_edit","data_dict_view"];
+        $permissionList = [
+            "conflict_resolver",
+            "data_dict_edit",
+            "data_dict_view",
+            "view_instrument_data",
+        ];
         $this->setupPermissions($permissionList);
         $this->safeGet($this->url . "/conflict_resolver/");
         $bodyElement = $this->safeFindElement(WebDriverBy::cssSelector("body"));
@@ -230,6 +234,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             'rewrite later'
         );
          //set canID 475906 to resolved
+        /*
         $this->safeGet(
             $this->url .
             "/conflict_resolver/?CandID=475906&instrument=radiology_review"
@@ -246,5 +251,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         )->getText();
          // 4 means there are 4 records under this site.
         $this->assertStringContainsString("of 575", $bodyText);
+        */
     }
 }
