@@ -521,6 +521,9 @@ msgstr "डिफ़ॉल्ट विज़िट"
 msgid "Sync selected visits across all fields"
 msgstr "चयनित विज़िट को सभी फ़ील्ड्स में सिंक करें"
 
+msgid "Select a field"
+msgstr "एक फ़ील्ड चुनें"
+
 msgid "Select a category"
 msgstr "एक फ़ील्ड चुनें"
 

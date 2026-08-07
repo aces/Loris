@@ -527,6 +527,9 @@ msgstr ""
 msgid "Sync selected visits across all fields"
 msgstr ""
 
+msgid "Select a field"
+msgstr ""
+
 msgid "Select a category"
 msgstr ""
 

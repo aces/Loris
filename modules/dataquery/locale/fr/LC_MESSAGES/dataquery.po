@@ -633,10 +633,6 @@ msgstr "Ajouter tous"
 msgid "Remove all"
 msgstr "Tout supprimer"
 
-#, fuzzy
-msgid "Filter within category"
-msgstr "Filtrer dans la catégorie"
-
 msgid "Filter within ${cname}"
 msgstr "Filtrer dans ${cname}"
 
@@ -648,8 +644,8 @@ msgid "Sync selected visits across all fields"
 msgstr "Synchroniser les visites sélectionnées dans tous les champs"
 
 #, fuzzy
-msgid "Sync with selected fields"
-msgstr "Synchronisation avec les champs sélectionnés"
+msgid "Select a field"
+msgstr "Sélectionner un champ"
 
 msgid "Select a category"
 msgstr "Sélectionner une catégorie"
