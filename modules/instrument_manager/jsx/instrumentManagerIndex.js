@@ -8,7 +8,7 @@ import FilterableDataTable from 'FilterableDataTable';
 
 import InstrumentUploadForm from './uploadForm';
 
-import Modal from 'jsx/Modal';
+import {FormModal} from 'jsx/Modal';
 import InfoPanel from 'jsx/InfoPanel';
 
 import Select from 'react-select';
@@ -231,7 +231,7 @@ class InstrumentManagerIndex extends Component {
           });
       };
 
-      permsModal = (<Modal
+      permsModal = (<FormModal
         title={t('Edit Permissions for {{instrument}}', {
           ns: 'instrument_manager',
           instrument: this.state.modifyPermissions.instrument,
@@ -278,7 +278,7 @@ class InstrumentManagerIndex extends Component {
             this.setState({modifyPermissions});
           }}
         />
-      </Modal>);
+      </FormModal>);
     }
     if (this.props.hasPermission('instrument_manager_write')) {
       tabs.push({id: 'upload', label: t('Upload', {ns: 'loris'})});
