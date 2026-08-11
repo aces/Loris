@@ -99,3 +99,6 @@ ALTER TABLE family ADD CONSTRAINT FK_family_candidate_1 FOREIGN KEY (CandidateID
 
 -- Change candidate's PK to ID
 ALTER TABLE candidate DROP PRIMARY KEY, ADD PRIMARY KEY(ID);
+
+-- CandIDGenerator uses length of 10 unsigned int, this modifies table to avoid out of range generations
+ALTER TABLE candidate MODIFY CandID INT(10) unsigned NOT NULL;
