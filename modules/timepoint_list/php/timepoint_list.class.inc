@@ -46,7 +46,7 @@ class Timepoint_List extends \NDB_Menu
 
         // check user permissions
         return $user->hasPermission('access_all_profiles')
-            || ($user->hasPermission('data_entry') 
+            || ($user->hasPermission('data_entry')
                 && $candidate->isAccessibleBy($user));
     }
 
