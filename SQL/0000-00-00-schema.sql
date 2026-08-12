@@ -585,6 +585,29 @@ INSERT INTO `mri_scan_type` VALUES
     (999,'unknown'),
     (1000,'NA');
 
+CREATE TABLE `bids_dataset` (
+  `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `Path` VARCHAR(255) NOT NULL,
+  `InsertTime` DATETIME NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `bids_dataset_path_unique` (`Path`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `bids_file` (
+  `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `DatasetID` INT(10) UNSIGNED NOT NULL,
+  `Path` VARCHAR(255) NOT NULL,
+  `SourcePath` VARCHAR(255) NULL,
+  `InsertTime` DATETIME NOT NULL,
+  `Blake2bHash` CHAR(128) NOT NULL,
+  `Derivative` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `bids_file_dataset_id_path_unique` (`DatasetID`, `Path`),
+  KEY `bids_file_dataset_id_fk_idx` (`DatasetID`),
+  CONSTRAINT `bids_file_dataset_id_fk`
+    FOREIGN KEY (`DatasetID`) REFERENCES `bids_dataset` (`ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `files` (
   `FileID` int(10) unsigned NOT NULL auto_increment,
   `SessionID` int(10) unsigned NOT NULL,
@@ -609,6 +632,7 @@ CREATE TABLE `files` (
   `ScannerID` int(10) unsigned default NULL,
   `AcqOrderPerModality` int(11) default NULL,
   `AcquisitionDate` date default NULL,
+  `BidsInfoID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
@@ -618,6 +642,7 @@ CREATE TABLE `files` (
   KEY `scannerid` (`ScannerID`),
   KEY `tarchivesource` (`TarchiveSource`),
   KEY `FK_files_HrrtArchiveID_1` (`HrrtArchiveID`),
+  KEY `files_bids_info_id_fk_idx` (`BidsInfoID`),
   CONSTRAINT `FK_files_2` FOREIGN KEY (`MriScanTypeID`) REFERENCES `mri_scan_type` (`MriScanTypeID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
@@ -625,7 +650,9 @@ CREATE TABLE `files` (
   CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`),
   CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
   CONSTRAINT `FK_files_TarchiveID` FOREIGN KEY (`TarchiveSource`) REFERENCES `tarchive` (`TarchiveID`),
-  CONSTRAINT `FK_files_HrrtArchiveID` FOREIGN KEY (`HrrtArchiveID`) REFERENCES `hrrt_archive` (`HrrtArchiveID`)
+  CONSTRAINT `FK_files_HrrtArchiveID` FOREIGN KEY (`HrrtArchiveID`) REFERENCES `hrrt_archive` (`HrrtArchiveID`),
+  CONSTRAINT `files_bids_info_id_fk`
+    FOREIGN KEY (`BidsInfoID`) REFERENCES `bids_file` (`ID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_intermediary` (
