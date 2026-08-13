@@ -349,10 +349,10 @@
                     </ul>
                 </center>
                 <div align="center" colspan="1">
-                    Powered by LORIS &copy; {$currentyear}. All rights reserved.
+                    {dgettext("loris", "Powered by")} LORIS&copy; {$currentyear}. {dgettext("loris", "All rights reserved.")}
                 </div>
       		<div align="center" colspan="1">
-                    Created by <a href="http://mcin-cnim.ca/" target="_blank">
+                    {dgettext("loris", "Created by")} <a href="http://mcin-cnim.ca/" target="_blank">
                          MCIN
                     </a>
                 </div>
