@@ -827,7 +827,7 @@ function SingleQueryDisplay(props: {
       }>
       <i className="fas fa-thumbtack fa-stack-1x"> </i>
     </span>
-    : <div />;
+    : <></>;
 
   let msg: React.ReactNode = null;
   if (query.RunTime) {
