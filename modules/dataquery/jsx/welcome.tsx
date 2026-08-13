@@ -891,7 +891,7 @@ function SingleQueryDisplay(props: {
         <i className="fas fa-slash fa-stack-1x"></i>
         <i className="fas fa-thumbtack fa-stack-1x"> </i>
       </span>
-      : <div />;
+      : <></>;
     msg = <div><b>{name}</b>&nbsp;{loadIcon}{unpinIcon}</div>;
   } else {
     console.error('Invalid query. Neither shared nor recent', query);
