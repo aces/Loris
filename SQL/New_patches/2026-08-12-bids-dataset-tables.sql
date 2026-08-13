@@ -1,7 +1,8 @@
 CREATE TABLE `bids_dataset` (
   `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `Path` VARCHAR(255) NOT NULL,
-  `InsertTime` DATETIME NOT NULL,
+  `InsertTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `UpdateTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `bids_dataset_path_unique` (`Path`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -11,7 +12,7 @@ CREATE TABLE `bids_file` (
   `DatasetID` INT(10) UNSIGNED NOT NULL,
   `Path` VARCHAR(255) NOT NULL,
   `SourcePath` VARCHAR(255) NULL,
-  `InsertTime` DATETIME NOT NULL,
+  `InsertTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Blake2bHash` CHAR(128) NOT NULL,
   `Derivative` TINYINT(1) NOT NULL,
   PRIMARY KEY (`ID`),
@@ -41,7 +42,7 @@ ALTER TABLE `physiological_event_file`
 
 ALTER TABLE `meg_ctf_head_shape_file`
   ADD COLUMN `BidsInfoID` INT(10) UNSIGNED NULL,
-  ADD COLUMN `InsertTime` DATETIME NOT NULL,
+  ADD COLUMN `InsertTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ADD KEY `meg_ctf_head_shape_file_bids_info_id_fk_idx` (`BidsInfoID`),
   ADD CONSTRAINT `meg_ctf_head_shape_file_bids_info_id_fk`
     FOREIGN KEY (`BidsInfoID`) REFERENCES `bids_file` (`ID`) ON DELETE SET NULL;

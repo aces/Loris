@@ -8,7 +8,7 @@ CREATE TABLE `meg_ctf_head_shape_file` (
     `Path`        VARCHAR(255)     NOT NULL,
     `Blake2bHash` VARCHAR(128)     NOT NULL,
     `BidsInfoID`  INT(10) UNSIGNED DEFAULT NULL,
-    `InsertTime`  DATETIME         NOT NULL,
+    `InsertTime`  DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`ID`),
     KEY `meg_ctf_head_shape_file_bids_info_id_fk_idx` (`BidsInfoID`),
     CONSTRAINT `meg_ctf_head_shape_file_bids_info_id_fk`
