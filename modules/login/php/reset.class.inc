@@ -127,7 +127,6 @@ class Reset extends \NDB_Page implements ETagCalculator
                             ]
                         );
 
-                        $activeTokenCount++;
                         // send the user an email
                         $msg_data = [];
                         $tmp      = $config->getSetting('title');

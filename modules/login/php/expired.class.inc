@@ -77,6 +77,8 @@ class Expired extends \NDB_Page implements ETagCalculator
     private function _validateResetToken(ServerRequestInterface $request)
     : ResponseInterface
     {
+        $token = null;
+
         if ($request->getMethod() === 'POST') {
             $token = $_SESSION['PasswordResetToken'] ?? null;
         }
