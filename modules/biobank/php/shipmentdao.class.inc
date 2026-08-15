@@ -94,7 +94,7 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
         ?array $conditions = [],
         $operator = 'AND'
     ) : array {
-        $query = "SELECT s.ShipmentID as id,
+        $query  = "SELECT s.ShipmentID as id,
                          s.Barcode as barcode,
                          st.Label as type,
                          s.DestinationCenterID as destinationCenterId,
@@ -109,22 +109,22 @@ class ShipmentDAO extends \LORIS\Data\ProvisionerInstance
                     ON (s.ShipmentID=bcsr.ShipmentID)
                   LEFT JOIN biobank_container bc
                     ON (bcsr.ContainerID=bc.ContainerID)";
+        $params = [];
         if (!empty($conditions)) {
             $whereClause = [];
+            $i           = 0;
             foreach ($conditions as $condition) {
-                $whereClause[] = $condition['column']
-                    . '='
-                    . '"'
-                    . $condition['value']
-                    . '"';
+                $key           = 'param'.$i++;
+                $whereClause[] = $condition['column'].'=:'.$key;
+                $params[$key]  = $condition['value'];
             }
             $query .= ' WHERE '.implode(" $operator ", $whereClause);
         }
-        $query .= " GROUP BY s.ShipmentID";
+        $query       .= " GROUP BY s.ShipmentID";
+        $shipmentRows = $this->db->pselectWithIndexKey($query, $params, 'barcode');
 
-        $shipments    = [];
-        $shipmentRows = $this->db->pselectWithIndexKey($query, [], 'barcode');
-        $logs         = $this->getLogs();
+        $shipments = [];
+        $logs      = $this->getLogs();
         foreach ($shipmentRows as $barcode => $shipmentRow) {
             $shipmentRow['containerIds']      = $shipmentRow['containerIds'] ?
               explode(',', $shipmentRow['containerIds']) : [];
