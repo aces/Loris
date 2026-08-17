@@ -1,0 +1,10 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `biobank_specimen_attribute_datatype`;
+LOCK TABLES `biobank_specimen_attribute_datatype` WRITE;
+INSERT INTO `biobank_specimen_attribute_datatype` (`DatatypeID`, `Datatype`) VALUES (5,'boolean');
+INSERT INTO `biobank_specimen_attribute_datatype` (`DatatypeID`, `Datatype`) VALUES (3,'date');
+INSERT INTO `biobank_specimen_attribute_datatype` (`DatatypeID`, `Datatype`) VALUES (2,'number');
+INSERT INTO `biobank_specimen_attribute_datatype` (`DatatypeID`, `Datatype`) VALUES (1,'text');
+INSERT INTO `biobank_specimen_attribute_datatype` (`DatatypeID`, `Datatype`) VALUES (4,'time');
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

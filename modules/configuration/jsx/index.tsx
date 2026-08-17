@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
+import {useTranslation} from 'react-i18next';
+import i18n from 'I18nSetup';
 import swal from 'sweetalert2';
 import {
   EmailElement,
@@ -8,6 +10,7 @@ import {
   TextareaElement,
   TextboxElement,
 } from 'jsx/Form';
+import frStrings from '../locale/fr/LC_MESSAGES/configuration.json';
 
 declare const loris: {BaseURL: string};
 
@@ -124,23 +127,34 @@ type RenderInputConfig = {
  * @return {JSX}
  */
 function IntroText(props: BaseURLProps): React.ReactElement {
+  const {t} = useTranslation(['configuration']);
   return (
     <div>
       <p>
-        Please enter the various configuration variables into the fields below.
-        For information on how to configure LORIS, please refer to the Help
-        section and/or the Developer's guide.
+        {t(
+          'Please enter the various configuration variables into the fields '
+          + 'below. For information on how to configure LORIS, please refer '
+          + 'to the Help section and/or the Developer\'s guide.',
+          {ns: 'configuration'}
+        )}
       </p>
       <p>
-        To configure study cohorts&nbsp;
-        <a href={`${props.baseURL}/configuration/cohort/`}>click here</a>.
-        &nbsp;To configure study projects&nbsp;
-        <a href={`${props.baseURL}/configuration/project/`}>click here</a>.
+        {t('To configure study cohorts', {ns: 'configuration'})}&nbsp;
+        <a href={`${props.baseURL}/configuration/cohort/`}>
+          {t('click here', {ns: 'configuration'})}
+        </a>.
+        &nbsp;{t('To configure study projects', {ns: 'configuration'})}&nbsp;
+        <a href={`${props.baseURL}/configuration/project/`}>
+          {t('click here', {ns: 'configuration'})}
+        </a>.
       </p>
       <p>
-        To configure the diagnosis trajectory of the study&nbsp;
+        {t(
+          'To configure the diagnosis trajectory of the study',
+          {ns: 'configuration'}
+        )}&nbsp;
         <a href={`${props.baseURL}/configuration/diagnosis_evolution/`}>
-          click here
+          {t('click here', {ns: 'configuration'})}
         </a>.
       </p>
     </div>
@@ -259,6 +273,7 @@ function booleanValue(value: ConfigValue): boolean {
  * @return {JSX}
  */
 function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
+  const {t} = useTranslation(['configuration', 'loris']);
   /**
    * Build draft values from the loaded category items.
    *
@@ -320,8 +335,8 @@ function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
         .map((name) => itemByName[name]?.Label ?? name)
         .join(', ');
       void swal.fire(
-        'Success!',
-        `Successfully saved changes to: ${labels}`,
+        t('Success!', {ns: 'loris'}),
+        `${t('Submitted', {ns: 'configuration'})}: ${labels}`,
         'success'
       );
       props.reloadCategory();
@@ -349,7 +364,7 @@ function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
             onClick={saveChanges}
             type="button"
           >
-            Submit
+            {t('Submit', {ns: 'loris'})}
           </button>
           <button
             className="btn btn-default"
@@ -360,7 +375,7 @@ function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
             }}
             type="button"
           >
-            Reset
+            {t('Reset', {ns: 'loris'})}
           </button>
         </div>
       </div>
@@ -434,6 +449,7 @@ function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
  * @return {JSX}
  */
 function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
+  const {t} = useTranslation(['configuration']);
   const values = Array.isArray(props.value) ? props.value.map(String) : [];
 
   /**
@@ -478,7 +494,8 @@ function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
           onClick={() => setValues([...values, ''])}
           type="button"
         >
-          <span className="glyphicon glyphicon-plus"></span> Add field
+          <span className="glyphicon glyphicon-plus"></span>{' '}
+          {t('Add field', {ns: 'configuration'})}
         </button>
       </div>
     </div>
@@ -556,7 +573,10 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
         onUserInput={(_name: string, inputValue: string) => {
           config.onChange(inputValue === 'yes' ? 'true' : 'false');
         }}
-        options={{'yes': 'Yes', 'no': 'No'}}
+        options={{
+          'yes': i18n.t('Yes', {ns: 'loris'}),
+          'no': i18n.t('No', {ns: 'loris'}),
+        }}
       />
     );
   case 'date_format':
@@ -660,7 +680,11 @@ function saveSetting(
  * @return {void}
  */
 function showSaveError(error: Error): void {
-  void swal.fire('Error', error.toString(), 'error');
+  void swal.fire(
+    i18n.t('Error', {ns: 'configuration'}),
+    error.toString(),
+    'error'
+  );
 }
 
 /**
@@ -748,6 +772,7 @@ function ConfigurationIndex(props: BaseURLProps): React.ReactElement {
 }
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('fr', 'configuration', frStrings);
   const workspace = document.getElementById('lorisworkspace');
   if (workspace === null) {
     throw new Error('Could not find lorisworkspace root');

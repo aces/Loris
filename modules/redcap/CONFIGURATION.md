@@ -15,6 +15,7 @@ The configuration is of the following form:
       <redcap-api-token>ABCDEFGGHIJKLMNOPQRSTUVWXYZ</redcap-api-token>
       <prefix-instrument-variable>false</prefix-instrument-variable>
       <redcap-participant-id>record_id</redcap-participant-id>
+      <redcap-repeat-id>repeat_instance</redcap-repeat-id>
       <candidate-id>pscid</candidate-id>
       <visit>
         <visit-label>visit_1</visit-label>
@@ -50,6 +51,7 @@ In a `project` entry, the configuration parameters are the following:
 - `redcap-api-token` (required): The REDCap API token used by LORIS to retrieve REDCap data for this project.
 - `prefix-instrument-variable` (optional): Whether or not the instrument field variable names are prefixed by their instrument name in REDCap. The two options are `true` or `false`. If not present, `false` is used.
 - `redcap-participant-id` (optional): The type of REDCap participant identifier used to map the REDCap participants with the LORIS candidates. The two options are `record_id` and `survey_participant_id`. If not present, `record_id` is used.
+- `redcap-repeat-id` (optional): only active when repeated instruments are in use. The type of REDCap repeat identifier (i.e. a REDCap instrument field) used to order repeated instrument records. The two options are `repeat_instance` and `timestamp`. If not present, `repeat_instance` is used.
 - `candidate-id` (optional): The type of LORIS candidate identifier used to map the REDCap participants with the LORIS candidates. The three options are `pscid`, `candid`, and `external_id`. If not present, `pscid` is used.
 - `visit` (optional, multiple allowed): A list of visit mappings that describe how REDCap arms and events are mapped to LORIS visits. If not present, the REDCap arms are ignored and the REDCap event names are matched to LORIS visit labels with the same name.
 

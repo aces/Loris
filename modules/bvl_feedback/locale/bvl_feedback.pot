@@ -53,9 +53,6 @@ msgstr ""
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr ""
 
-msgid "Type"
-msgstr ""
-
 msgid "Author"
 msgstr ""
 
@@ -83,7 +80,13 @@ msgstr ""
 msgid "Create thread"
 msgstr ""
 
+msgid "Thread created!"
+msgstr ""
+
 msgid "The new thread has been submitted!"
+msgstr ""
+
+msgid "Failed to create thread"
 msgstr ""
 
 msgid "Across All Fields"

@@ -49,6 +49,10 @@ class Categories extends \LORIS\Http\Endpoint
              ORDER BY OrderNumber",
             []
         );
+        $parentConfigItems = iterator_to_array($parentConfigItems);
+        foreach ($parentConfigItems as &$setting) {
+            $setting['Label'] = dgettext('ConfigSettings', $setting['Label']);
+        }
 
         $scans     = $DB->pselect(
             "SELECT MriScanTypeName FROM mri_scan_type",
@@ -65,28 +69,31 @@ class Categories extends \LORIS\Http\Endpoint
 
         return new \LORIS\Http\Response\JSON\OK(
             [
-                'categories'   => iterator_to_array($parentConfigItems),
+                'categories'   => $parentConfigItems,
                 'dateFormat'   => [
                     ''    => '',
-                    'Ymd' => 'Ymd (EX: 2015-12-28)',
-                    'Ym'  => 'Ym (EX: 2015-12)',
+                    'Ymd' => dgettext(
+                        'configuration',
+                        'Ymd (EX: 2015-12-28)'
+                    ),
+                    'Ym'  => dgettext('configuration', 'Ym (EX: 2015-12)'),
                 ],
                 'instruments'  => $instruments,
                 'logLevels'    => [
-                    'none'      => 'None',
-                    'debug'     => 'Debug',
-                    'info'      => 'Info',
-                    'notice'    => 'Notice',
-                    'warning'   => 'Warning',
-                    'error'     => 'Error',
-                    'critical'  => 'Critical',
-                    'alert'     => 'Alert',
-                    'emergency' => 'Emergency',
+                    'none'      => dgettext('loris', 'None'),
+                    'debug'     => dgettext('configuration', 'Debug'),
+                    'info'      => dgettext('configuration', 'Info'),
+                    'notice'    => dgettext('configuration', 'Notice'),
+                    'warning'   => dgettext('configuration', 'Warning'),
+                    'error'     => dgettext('configuration', 'Error'),
+                    'critical'  => dgettext('configuration', 'Critical'),
+                    'alert'     => dgettext('configuration', 'Alert'),
+                    'emergency' => dgettext('configuration', 'Emergency'),
                 ],
                 'lookupCenter' => [
                     ''            => '',
-                    'PatientID'   => 'PatientID',
-                    'PatientName' => 'PatientName',
+                    'PatientID'   => dgettext('configuration', 'PatientID'),
+                    'PatientName' => dgettext('configuration', 'PatientName'),
                 ],
                 'sandbox'      => boolval(
                     \NDB_Config::singleton()->getSetting("sandbox")
@@ -128,7 +135,16 @@ class Categories extends \LORIS\Http\Endpoint
         );
 
         $config = \NDB_Config::singleton();
+        $lang   = \User::singleton()->getLanguageCode();
         foreach ($configs as &$setting) {
+            $setting['Label']         = dgettext(
+                'ConfigSettings',
+                $setting['Label']
+            );
+            $setting['Description']   = dgettext(
+                'ConfigSettings',
+                $setting['Description']
+            );
             $setting['AllowMultiple'] = boolval($setting['AllowMultiple']);
             $settingName = strval($setting['Name']);
             try {
@@ -146,7 +162,12 @@ class Categories extends \LORIS\Http\Endpoint
                     )
                 );
 
-                if ($setting['AllowMultiple']) {
+                if (!empty($setting['Multilingual'])) {
+                    $setting['Value'] = $config->getMultilingualSetting(
+                        $lang,
+                        $settingName
+                    );
+                } else if ($setting['AllowMultiple']) {
                     $setting['Value'] = array_column($value, 'Value');
                 } else {
                     switch (count($value)) {

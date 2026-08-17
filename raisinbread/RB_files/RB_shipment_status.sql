@@ -1,0 +1,10 @@
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE `shipment_status`;
+LOCK TABLES `shipment_status` WRITE;
+INSERT INTO `shipment_status` (`StatusID`, `Label`) VALUES (1,'cancelled');
+INSERT INTO `shipment_status` (`StatusID`, `Label`) VALUES (2,'created');
+INSERT INTO `shipment_status` (`StatusID`, `Label`) VALUES (3,'received');
+INSERT INTO `shipment_status` (`StatusID`, `Label`) VALUES (4,'returned');
+INSERT INTO `shipment_status` (`StatusID`, `Label`) VALUES (5,'shipped');
+UNLOCK TABLES;
+SET FOREIGN_KEY_CHECKS=1;

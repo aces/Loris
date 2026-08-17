@@ -1,5 +1,5 @@
 <div id="demographics">
-    <h2 class="statsH2">General Demographic Statistics{if $CurrentSite|default} for {$CurrentSite.Name|default}{/if}
+    <h2 class="statsH2">{dgettext('statistics', 'General Demographic Statistics')}{if $CurrentSite|default} for {$CurrentSite.Name|default}{/if}
         {if $CurrentProject|default} for {$CurrentProject.Name|default} {/if}</h2>
 
     <div class="col-sm-2">
@@ -9,24 +9,24 @@
         {html_options id="DemographicProject" options=$Projects name="DemographicProject" selected=$CurrentProject.ID|default class="form-control"}
     </div>
     <script type="text/javascript" src="{$baseurl|default}/statistics/js/form_stats_demographic.js"></script>
-    <button  onClick="updateDemographicTab()" class="btn btn-primary btn-small">Submit Query</button>
+    <button  onClick="updateDemographicTab()" class="btn btn-primary btn-small">{dgettext('statistics', 'Submit Query')}</button>
     <br><br>
     <table id="generalDemographics" class="data generalStats table table-primary table-bordered dynamictable">
         <thead>
         <tr>
-            <th colspan="2" id="demog">Demographics</th>
+            <th colspan="2" id="demog">{dgettext('statistics', 'Demographics')}</th>
             {if {$CurrentProject.ID|default > 0}}
-                <th>No defined cohort</th>
+                <th>{dgettext('statistics', 'No defined cohort')}</th>
             {/if}
             {foreach from=$Cohorts|default item=name key=proj}
                 <th>{$name}</th>
             {/foreach}
-            <th class="data">Total</th>
+            <th class="data">{dgettext('loris', 'Total')}</th>
         </tr>
         </thead>
         <tbody align="right">
         <tr>
-            <td colspan="2" align="left">Registered candidates</td>
+            <td colspan="2" align="left">{dgettext('statistics', 'Registered candidates')}</td>
             {if {$CurrentProject.ID|default > 0}}
                 {if {$registered[$keyid]|default}>0}
                     <td><b>{$registered[NULL]}</b></td>
@@ -44,8 +44,8 @@
             <td class="total">{$registered.total}</td>
         </tr>
         <tr >
-            <td rowspan="2" align="left" style="vertical-align:middle;background-color: #FFFFFF;">Participant Status</td>
-            <td align="left" class="status_active">Active</td>
+            <td rowspan="2" align="left" style="vertical-align:middle;background-color: #FFFFFF;">{dgettext('loris', 'Participant Status')}</td>
+            <td align="left" class="status_active">{dgettext('loris', 'Active')}</td>
             {if {$CurrentProject.ID|default > 0}}
                 {if {$registered[$NULL]|default}>0}
                     {if {$ps_active[$NULL]|default}>0}
@@ -79,7 +79,7 @@
             {/if}
         </tr>
         <tr class="status_inactive">
-            <td align="left" class="status_inactive">Inactive</td>
+            <td align="left" class="status_inactive">{dgettext('statistics', 'Inactive')}</td>
             {if {$CurrentProject.ID|default > 0}}
                 {if {$registered[$NULL]|default}>0}
                     {if {$ps_inactive[$NULL]|default}>0}
@@ -115,8 +115,8 @@
 
         </tr>
         <tr>
-            <td rowspan="2" align="left" style="vertical-align:middle">Sex</td>
-            <td align="left" >Male</td>
+            <td rowspan="2" align="left" style="vertical-align:middle">{dgettext('loris', 'Sex')}</td>
+            <td align="left" >{dgettext('sex', 'Male')}</td>
             {if {$CurrentProject.ID|default > 0}}
                 {if {$ps_active[$NULL]|default}>0}
                     {if {$sex_male[$NULL]|default}>0}
@@ -151,7 +151,7 @@
 
         </tr>
         <tr>
-            <td align="left">Female</td>
+            <td align="left">{dgettext('sex', 'Female')}</td>
             {if {$CurrentProject.ID|default > 0}}
                 {if {$ps_active[$NULL]|default}>0}
                     {if {$sex_female[$NULL]|default}>0}
@@ -187,7 +187,7 @@
 
         </tr>
         <tr>
-            <td colspan="2" align="left" style="vertical-align:middle">Age Average (months)</td>
+            <td colspan="2" align="left" style="vertical-align:middle">{dgettext('statistics', 'Age Average (months)')}</td>
             {if {$CurrentProject.ID|default > 0}}
                 {if {$age_avg[$NULL]|default}>0}
                     <td>{$age_avg[$NULL]}</td>
@@ -202,7 +202,7 @@
                     <td>0</td>
                 {/if}
             {/foreach}
-            <td class="total">N/A</td>
+            <td class="total">{dgettext('loris', 'N/A')}</td>
         </tr>
         </tbody>
     </table>
