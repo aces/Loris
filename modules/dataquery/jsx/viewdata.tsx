@@ -94,11 +94,26 @@ function DisplayValue(props: {
   }
 
   if (props.dictionary.type == 'URI') {
-    display = (
-      <a href={props.value}>
-        {display}
-      </a>
-    );
+    switch (props.dictionary.cardinality) {
+    case 'many':
+      // Split the string and map to multiple <a> tags
+      const urls = String(props.value).split(';');
+      display = (
+        urls.map((url, i) => (
+          <span key={i}>
+            <a href={url.trim()}>{url.trim()}</a>
+            {i < urls.length - 1 && '; '}
+          </span>
+        ))
+      );
+      break;
+    default:
+      display = (
+        <a href={props.value}>
+          {display}
+        </a>
+      );
+    }
   }
   return display;
 }
@@ -340,7 +355,7 @@ function ViewData(props: {
     props.fulldictionary
   );
   const [emptyVisits, setEmptyVisits] = useState<boolean>(true);
-  const [emptyCandidates, setEmptyCandidates] = useState<boolean>(true);
+  const [showEmptyCandidates, setShowEmptyCandidates] = useState<boolean>(true);
 
   let queryTable;
   if (queryData.loading) {
@@ -443,36 +458,11 @@ function ViewData(props: {
           return false;
         };
 
-        // Filter out empty candidates if toggle is off
-        let filteredData = emptyCandidates
+        // Filter out empty candidates if toggle is off. In Cross-sectional
+        // mode each row is a single visit, so this also drops empty visits.
+        const filteredData = showEmptyCandidates
           ? organizedData.data
           : organizedData.data.filter(rowHasData);
-
-        // For Cross-sectional mode, also filter out empty visits if toggle is off
-        // In this mode, each visit is a separate row with Visit column at index 0
-        if (visitOrganization === 'crosssection' && !emptyVisits) {
-          filteredData = filteredData.filter((row) => {
-            // In Cross-sectional, each row represents ONE visit
-            // Check if this specific visit row has any session data
-            // Start at index 1 to skip the Visit column itself
-            for (let i = 1; i < row.length; i++) {
-              if (row[i] !== null && row[i] !== '') {
-                // This column has data - verify it's a session field
-                const fieldIndex = i - 1; // Adjust for Visit column offset
-                if (fieldIndex >= 0 && fieldIndex < props.fields.length) {
-                  const field = props.fields[fieldIndex];
-                  const dict = getDictionary(field, props.fulldictionary);
-
-                  // Only count session-scoped fields
-                  if (dict && dict.scope === 'session') {
-                    return true; // This visit has session data
-                  }
-                }
-              }
-            }
-            return false; // No session data for this visit
-          });
-        }
 
         // If all data is filtered out, show "No result found" message directly
         // This avoids potential React reconciliation errors in DataTable when switching from populated table to empty
@@ -505,7 +495,6 @@ function ViewData(props: {
                 props.fields,
                 props.fulldictionary,
                 emptyVisits,
-                emptyCandidates,
                 enumDisplay,
                 props.t
               )
@@ -549,11 +538,11 @@ function ViewData(props: {
   const emptyCandidatesCheckbox = (
     <CheckboxElement
       name="emptycandidates"
-      value={emptyCandidates}
+      value={showEmptyCandidates}
       label={t('Show candidates with no data', {ns: 'dataquery'})}
       onUserInput={
         (name: string, value: boolean) =>
-          setEmptyCandidates(value)
+          setShowEmptyCandidates(value)
       }
     />
   );
@@ -616,8 +605,8 @@ function ViewData(props: {
       }
       sortByValue={false}
     />
-    {emptyVisitsCheckbox}
     {emptyCandidatesCheckbox}
+    {emptyVisitsCheckbox}
     {queryTable}
   </div>;
 }
@@ -725,9 +714,14 @@ function organizeData(
                           dataRow.push(null);
                         } else {
                           const mappedVals = Object.keys(thevalues)
-                            .map(
-                              (key) => key + '=' + thevalues[key]
-                            )
+                            .map((key) => {
+                            // If it's a URI, don't prepend the key/label
+                              if (dictionary.type === 'URI') {
+                                return thevalues[key];
+                              }
+                              // Otherwise, concatenate key and value
+                              return key + '=' + thevalues[key];
+                            })
                             .join(';');
                           dataRow.push(mappedVals);
                         }
@@ -909,7 +903,14 @@ function expandLongitudinalCells(
             }
             const thevalues = thissession.values;
             return {value: Object.keys(thevalues)
-              .map( (key) => key + '=' + thevalues[key])
+              .map( (key) => {
+                // If it's a URI, don't prepend the key/label
+                if (fielddict.type === 'URI') {
+                  return thevalues[key];
+                }
+                // Otherwise concatenate key with value.
+                return key + '=' + thevalues[key];
+              })
               .join(';'), dictionary: fielddict};
           default:
             if (thissession.value !== undefined) {
@@ -938,8 +939,6 @@ function expandLongitudinalCells(
  * @param {array} dict - The full dictionary
  * @param {boolean} displayEmptyVisits -  Whether visits with
  *                                        no data should be displayed
- * @param {boolean} displayEmptyCandidates - Whether candidates with
- *                                           no data should be displayed
  * @param {EnumDisplayTypes} enumDisplay -  The format to display
  *                                          enum values
  * @param {any} t - useTranslation
@@ -953,7 +952,6 @@ function organizedFormatter(
   fields: APIQueryField[],
   dict: FullDictionary,
   displayEmptyVisits: boolean,
-  displayEmptyCandidates: boolean,
   enumDisplay: EnumDisplayTypes,
   t: any,
 ) {
