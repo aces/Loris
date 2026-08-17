@@ -108,7 +108,6 @@ class Reset extends \NDB_Page implements ETagCalculator
                          WHERE UserID = :userID
                             AND Status IS NULL
                             AND CreationDate >= NOW() - INTERVAL "
-                            . self::ACTIVE_TOKEN_LIMIT . " "
                             . self::TOKEN_EXPIRATION_MINUTES
                             . " MINUTE
                          ",
