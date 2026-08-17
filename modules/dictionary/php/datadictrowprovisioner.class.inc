@@ -57,16 +57,16 @@ class DataDictRowProvisioner extends \LORIS\Data\ProvisionerInstance
 
                 foreach ($cat->getItems() as $item) {
                     $name   = $item->getName();
-                    $status = dgettext('dictionary', 'Unchanged');
+                    $status = 'Unchanged';
                     if (isset($overrides[$name])) {
                         $desc   = $overrides[$name]['Description'];
-                        $status = dgettext('dictionary', 'Modified');
+                        $status = 'Modified';
                     } else {
                         $desc = $item->getDescription();
                     }
 
                     if ($desc == '') {
-                        $status = dgettext('dictionary', 'Empty');
+                        $status = 'Empty';
                     }
 
                     $cohorts = $DB->pselectCol(

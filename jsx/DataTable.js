@@ -200,20 +200,28 @@ const DataTable = ({
    * @param {number[]} filteredRowIndexes - The filtered Row Indexes
    */
   const downloadCSV = useCallback((filteredRowIndexes) => {
+    const indexedFields = fields.map((field, index) => ({field, index}));
+    const visibleFields = indexedFields.filter(
+      ({field}) => field.show !== false
+    );
+    const headers = fields.map((field) => field.label);
     let csvData = filteredRowIndexes.map((id) => data[id]);
 
-    // Map cell data if the getter exists
+    // Map cell data to proper values if applicable.
     if (getMappedCell) {
-      csvData = csvData.map((row) =>
-        fields.map((field, j) =>
-          getMappedCell(
+      csvData = csvData
+        .map((row) => visibleFields
+          .map(({field, index}) => getMappedCell(
             field.label,
-            row[j],
+            row[index],
             row,
-            fields.map((val) => val.label),
-            j
-          )
-        )
+            headers,
+            index
+          ))
+        );
+    } else {
+      csvData = csvData.map(
+        (row) => visibleFields.map(({index}) => row[index])
       );
     }
 
@@ -237,7 +245,7 @@ const DataTable = ({
       }
     });
 
-    const headerList = fields.map((field) => field.label);
+    const headerList = visibleFields.map(({field}) => field.label);
 
     csvworker.postMessage({
       cmd: 'SaveFile',

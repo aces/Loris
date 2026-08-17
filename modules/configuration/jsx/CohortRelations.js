@@ -1,6 +1,7 @@
 /* exported RCohortRelations */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Cohort Relations React Component
@@ -25,6 +26,7 @@ class CohortRelations extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let cohortIDs = Object.keys(this.props.Relations);
     let that = this;
     let cohortList = cohortIDs.map(function(key) {
@@ -33,7 +35,7 @@ class CohortRelations extends Component {
 
     return (
       <div>
-        <h2>Related Cohorts</h2>
+        <h2>{t('Related Cohorts', {ns: 'configuration'})}</h2>
         <ul>
           {cohortList}
         </ul>
@@ -44,6 +46,7 @@ class CohortRelations extends Component {
 
 CohortRelations.propTypes = {
   Relations: PropTypes.array,
+  t: PropTypes.func.isRequired,
 };
 
 let RCohortRelations = React.createFactory(CohortRelations);
@@ -51,4 +54,4 @@ let RCohortRelations = React.createFactory(CohortRelations);
 window.CohortRelations = CohortRelations;
 window.RCohortRelations = RCohortRelations;
 
-export default CohortRelations;
+export default withTranslation('configuration')(CohortRelations);

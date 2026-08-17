@@ -305,13 +305,17 @@ const IssueCard = React.memo(function IssueCard(props) {
           </h3>
         </div>
         <div className="issue-dates">
-          <span>{t('Created', {ns: 'issue_tracker'})}:
-            {issue.dateCreated}</span>
-          <span>{t('Last Updated', {ns: 'issue_tracker'})}:
-            {issue.lastUpdate}</span>
-          <span>{t('Assignee', {ns: 'issue_tracker'})}:
-            {issue.assignee || t('None',
-              {ns: 'loris'})}</span>
+          <span>
+            {t('Created', {ns: 'issue_tracker'})} : {issue.dateCreated}
+          </span>
+          <span>
+            {t('Last Updated', {ns: 'issue_tracker'})} : {issue.lastUpdate}
+          </span>
+          <span>
+            {t('Assignee', {ns: 'issue_tracker'})} : {issue.assignee ||
+              t('None',
+                {ns: 'loris'})}
+          </span>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="issue-form">
@@ -372,7 +376,7 @@ const IssueCard = React.memo(function IssueCard(props) {
                   }
                 >
                   <option value="">
-                    Uncategorized
+                    {t('Uncategorized', {ns: 'issue_tracker'})}
                   </option>
                   {Object.entries(categories).map(([value, label]) => (
                     <option
@@ -430,7 +434,7 @@ const IssueCard = React.memo(function IssueCard(props) {
                 <label>{t('Category', {ns: 'issue_tracker'})}:&nbsp;</label>
                 <span>
                   {categories[tempEditedIssue.category] ||
-                    'Uncategorized'}
+                    t('Uncategorized', {ns: 'issue_tracker'})}
                 </span>
               </div>
               <div className="control-group">
