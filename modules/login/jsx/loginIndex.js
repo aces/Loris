@@ -355,7 +355,7 @@ class Login extends Component {
                 window.history.replaceState({}, '', url);
                 this.setMode('reset');
               }}
-              style={{ cursor: 'pointer' }}>{this.props.t(
+              style={{cursor: 'pointer'}}>{this.props.t(
                 'Forgot your password?',
                 {ns: 'login'}
               )}</a>
