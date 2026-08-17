@@ -135,7 +135,19 @@ class Reset extends \NDB_Page implements ETagCalculator
                         $msg_data['resetpasswordurl']
                             = $factory->settings()->getBaseURL()
                             . '/login?token=' . urlencode($resetToken);
-                        \Email::send($email, 'lost_password.tpl', $msg_data);
+
+                        $locale   = $request->getAttribute('locale');
+                        $language = strtolower(substr($locale, 0, 2));
+
+                        $template = match ($language) {
+                            'fr'    => 'lost_password_fr.tpl',
+                            'es'    => 'lost_password_es.tpl',
+                            'zh'    => 'lost_password_zh.tpl',
+                            'ja'    => 'lost_password_ja.tpl',
+                            'hi'    => 'lost_password_hi.tpl',
+                            default => 'lost_password.tpl',
+                        };
+                        \Email::send($email, $template, $msg_data);
                     }
                 } else {
                     error_log(
