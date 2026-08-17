@@ -348,8 +348,14 @@ class Login extends Component {
             />
           </FormElement>
           <div className={'help-links'}>
-            <a onClick={() => this.setMode('reset')}
-              style={{cursor: 'pointer'}}>{this.props.t(
+            <a
+              onClick={() => {
+                const url = new URL(window.location.href);
+                url.searchParams.set('page', 'reset');
+                window.history.replaceState({}, '', url);
+                this.setMode('reset');
+              }}
+              style={{ cursor: 'pointer' }}>{this.props.t(
                 'Forgot your password?',
                 {ns: 'login'}
               )}</a>
