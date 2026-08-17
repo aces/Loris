@@ -112,17 +112,21 @@ const hasFilterKeyword = (name, data, filters) => {
  * @param {React.JSX} props.folder           - Optional React element to render
  */
 const DataTable = ({
-  data,
-  rowNumLabel,
+  data = [],
+  rowNumLabel = 'No.',
   getFormattedCell,
   actions,
-  hide,
-  nullTableShow,
-  noDynamicTable,
+  hide = {
+    rowsPerPage: false,
+    downloadCSV: false,
+    defaultColumn: false,
+  },
+  nullTableShow = false,
+  noDynamicTable = false,
   getMappedCell,
   fields,
   RowNameMap,
-  filters,
+  filters = {},
   freezeColumn,
   folder,
 }) => {
@@ -411,7 +415,7 @@ const DataTable = ({
     padding: '5px 0',
     marginLeft: 'auto',
   };
-  const renderTableControls = () => (
+  const renderTableControls = (showActions) => (
     <div className="row">
       <div style={tableControlStyle}>
         <div style={{order: '1', padding: '5px 0'}}>
@@ -434,8 +438,8 @@ const DataTable = ({
           </span>
         </div>
         <div style={tableActionsStyle}>
-          {renderActions()}
-          {!hide.downloadCSV && (
+          {showActions && renderActions()}
+          {showActions && !hide.downloadCSV && (
             <button
               className="btn btn-primary"
               onClick={() => downloadCSV(filteredRowIndexes)}
@@ -456,11 +460,28 @@ const DataTable = ({
 
   const isEmpty = (!data || data.length === 0) && !nullTableShow;
 
+  if (isEmpty) {
+    return (
+      <div>
+        <div className="row">
+          <div className="col-xs-12">
+            <div className="pull-right" style={{marginRight: '10px'}}>
+              {renderActions()}
+            </div>
+          </div>
+        </div>
+        <div className="alert alert-info no-result-found-panel">
+          <strong>{t('No result found.')}</strong>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{margin: '14px'}}>
       {!hide.rowsPerPage && (
         <div className="table-header">
-          {renderTableControls()}
+          {renderTableControls(true)}
         </div>
       )}
 
@@ -478,61 +499,56 @@ const DataTable = ({
                 {rowNumLabel}
               </th>
             )}
-            {fields.filter((f) => f.show).map((field, i) => (
-              <th
-                key={`th_col_${i+1}`}
-                id={field.freezeColumn ? freezeColumn : undefined}
-                onClick={() => setSortColumn(i)}
-              >
-                {field.label}
-              </th>
-            ))}
+            {fields.map((field, i) => {
+              if (!field.show) return null;
+              return (
+                <th
+                  key={`th_col_${i+1}`}
+                  id={field.freezeColumn ? freezeColumn : undefined}
+                  onClick={() => setSortColumn(i)}
+                >
+                  {field.label}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         {folder}
         <tbody>
-          {isEmpty ? (
-            <tr>
-              <td colSpan={fields.length + 1} className="alert alert-info">
-                <strong>{t('No result found.')}</strong>
-              </td>
-            </tr>
-          ) : (
-            paginatedRows.map((item, i) => {
-              const rowData = data[item.RowIdx];
+          {paginatedRows.map((item, i) => {
+            const rowData = data[item.RowIdx];
 
-              // Construct the 'row' object for the formatter
-              const rowObj = {};
-              fields.forEach((f, k) => rowObj[f.label] = rowData[k]);
-              const fieldLabels = fields.map((f) => f.label);
+            // Construct the 'row' object for the formatter
+            const rowObj = {};
+            fields.forEach((f, k) => rowObj[f.label] = rowData[k]);
+            const fieldLabels = fields.map((f) => f.label);
 
-              return (
-                <tr key={`tr_${item.RowIdx}`}>
-                  {!hide.defaultColumn && <td>{item.Content}</td>}
-                  {fields.map((field, j) => {
-                    if (!field.show) return null;
+            return (
+              <tr key={`tr_${item.RowIdx}`}>
+                {!hide.defaultColumn && <td>{item.Content}</td>}
+                {fields.map((field, j) => {
+                  if (!field.show) return null;
 
-                    if (getFormattedCell) {
-                      return React.cloneElement(
-                        getFormattedCell(
-                          field.label, rowData[j],
-                          rowObj,
-                          fieldLabels,
-                          j
-                        ),
-                        {key: `td_col_${j}`}
-                      );
-                    }
-                    return <td key={`td_col_${j}`}>{rowData[j]}</td>;
-                  })}
-                </tr>
-              );
-            })
-          )}
+                  if (getFormattedCell) {
+                    return React.cloneElement(
+                      getFormattedCell(
+                        field.label, rowData[j],
+                        rowObj,
+                        fieldLabels,
+                        j
+                      ),
+                      {key: `td_col_${j}`}
+                    );
+                  }
+                  return <td key={`td_col_${j}`}>{rowData[j]}</td>;
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
-      <div className="table-footer">{renderTableControls()}</div>
+      <div className="table-footer">{renderTableControls(false)}</div>
     </div>
   );
 };
@@ -551,19 +567,6 @@ DataTable.propTypes = {
   filters: PropTypes.object,
   freezeColumn: PropTypes.string,
   folder: PropTypes.element,
-};
-
-DataTable.defaultProps = {
-  data: [],
-  rowNumLabel: 'No.',
-  filters: {},
-  hide: {
-    rowsPerPage: false,
-    downloadCSV: false,
-    defaultColumn: false,
-  },
-  nullTableShow: false,
-  noDynamicTable: false,
 };
 
 export default DataTable;
