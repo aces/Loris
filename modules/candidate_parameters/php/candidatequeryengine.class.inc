@@ -44,7 +44,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 new DictionaryItem(
                     "PSCID",
                     dgettext(
-                        "candidate_parameters", 
+                        "candidate_parameters",
                         "Project Candidate Identifier"
                     ),
                     $candscope,
@@ -54,7 +54,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 new DictionaryItem(
                     "flagged_caveatemptor",
                     dgettext(
-                        "candidate_parameters", 
+                        "candidate_parameters",
                         "Caveat Emptor Flag for Candidate"
                     ),
                     $candscope,
@@ -64,7 +64,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 new DictionaryItem(
                     "flagged_reason",
                     dgettext(
-                        "candidate_parameters", 
+                        "candidate_parameters",
                         "Reason for Caveat Emptor Flag Candidate"
                     ),
                     $candscope,
@@ -74,8 +74,8 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 new DictionaryItem(
                     "flagged_other",
                     dgettext(
-                        "candidate_parameters", 
-                        "Other reason for Caveat Emptor Flag Candidate," 
+                        "candidate_parameters",
+                        "Other reason for Caveat Emptor Flag Candidate,"
                         . " please specify"
                     ),
                     $candscope,
@@ -146,7 +146,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 new DictionaryItem(
                     "DateRegistered",
                     dgettext(
-                        "candidate_parameters", 
+                        "candidate_parameters",
                         "The date when the visit was registered"
                     ),
                     $sesscope,
@@ -156,7 +156,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 new DictionaryItem(
                     "CurrentStage",
                     dgettext(
-                        "candidate_parameters", 
+                        "candidate_parameters",
                         "Visit's current stage"
                     ),
                     $sesscope,
@@ -166,7 +166,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 new DictionaryItem(
                     "SessionFeedback",
                     dgettext(
-                        "candidate_parameters", 
+                        "candidate_parameters",
                         "Behavioural feedback at the session level"
                     ),
                     $sesscope,
@@ -177,7 +177,8 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                     "SessionFailure",
                     dgettext(
                         "candidate_parameters",
-                        "Whether a session was failure or did the candidate withdrawal"
+                        "Whether a session was failure or did the candidate"
+                        . " withdrawal"
                     ),
                     $sesscope,
                     new \LORIS\Data\Types\Enumeration(
