@@ -488,7 +488,8 @@ class BatchEditForm extends React.PureComponent {
         title={t('Edit Specimens', {ns: 'biobank'})}
         show={this.props.show}
         onClose={handleClose}
-        onSubmit={Object.keys(list).length > 1 ? handleSubmit : undefined}
+        onSubmit={handleSubmit}
+        submitDisabled={Object.keys(list).length <= 1}
         throwWarning={true}
       >
         <div className='row'>

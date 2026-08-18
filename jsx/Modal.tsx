@@ -46,6 +46,7 @@ function Modal({
 export type FormModalProps<T> = Omit<ModalProps, 'footer'> & {
   onSubmit: () => Promise<T>;
   onSuccess?: (data: T) => void;
+  submitDisabled?: boolean;
 };
 
 /**
@@ -60,6 +61,7 @@ export function FormModal<T>({
   onClose,
   onSubmit,
   onSuccess,
+  submitDisabled = false,
   title,
   children,
   width,
@@ -73,6 +75,8 @@ export function FormModal<T>({
    * `onSubmit` and handling modal state based on success or failure.
    */
   const handleSubmit = async () => {
+    if (submitDisabled) return;
+
     setLoading(true); // Show loader
 
     try {
@@ -92,7 +96,11 @@ export function FormModal<T>({
 
   const submitFooter = !(loading || success) && (
     <div style={footerSubmitStyle}>
-      <button type='submit' className='btn btn-primary'>
+      <button
+        type='submit'
+        className='btn btn-primary'
+        disabled={submitDisabled}
+      >
         {t('Save')}
       </button>
     </div>
