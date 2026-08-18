@@ -83,7 +83,7 @@ class QueryEngine extends SQLQueryEngine
         $scope    = new Scope(Scope::SESSION);
         $specimen = new Category(
             "Specimen",
-            "Specimen Collection and Availability",
+            dgettext("biobank", "Specimen Collection and Availability"),
         );
 
         $specimenTypes     = $this->_getSpecimenTypes();
@@ -92,98 +92,140 @@ class QueryEngine extends SQLQueryEngine
         $items = [
             new DictionaryItem(
                 "SpecimenCollectionDone",
-                "Whether the session has any specimen collected",
+                dgettext(
+                    "biobank",
+                    "Whether the session has any specimen collected"
+                ),
                 $scope,
                 new BooleanType(),
                 new Cardinality(Cardinality::SINGLE),
             ),
             new DictionaryItem(
                 "SpecimenAvailable",
-                "Whether the session has any specimen currently available",
+                dgettext(
+                    "biobank",
+                    "Whether the session has any specimen currently available"
+                ),
                 $scope,
                 new BooleanType(),
                 new Cardinality(Cardinality::SINGLE),
             ),
             new DictionaryItem(
                 "SpecimenType",
-                "Type of specimen",
+                dgettext(
+                    "biobank",
+                    "Type of specimen"
+                ),
                 $scope,
                 new Enumeration(...$specimenTypes),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenBarcode",
-                "Barcode for specimen",
+                dgettext(
+                    "biobank",
+                    "Barcode for specimen"
+                ),
                 $scope,
                 new StringType(40),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenQuantity",
-                "Current quantity of specimen",
+                dgettext(
+                    "biobank",
+                    "Current quantity of specimen"
+                ),
                 $scope,
                 new DecimalType(),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenUnit",
-                "Unit of measurement for specimen quantity",
+                dgettext(
+                    "biobank",
+                    "Unit of measurement for specimen quantity"
+                ),
                 $scope,
                 new StringType(20),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenStatus",
-                "Whether specimen is available or used/discarded",
+                dgettext(
+                    "biobank",
+                    "Whether specimen is available or used/discarded"
+                ),
                 $scope,
                 new Enumeration(...$containerStatuses),
                 new Cardinality(Cardinality::MANY)
             ),
             new DictionaryItem(
                 "SpecimenFreezeThawCycle",
-                "Number of freeze-thaw cycles for specimen",
+                dgettext(
+                    "biobank",
+                    "Number of freeze-thaw cycles for specimen"
+                ),
                 $scope,
                 new IntegerType(),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenCollectionDate",
-                "Date specimen was collected",
+                dgettext(
+                    "biobank",
+                    "Date specimen was collected"
+                ),
                 $scope,
                 new DateType(),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenCollectionTime",
-                "Time specimen was collected",
+                dgettext(
+                    "biobank",
+                    "Time specimen was collected"
+                ),
                 $scope,
                 new StringType(8),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenCollectionProtocol",
-                "Collection protocol used for specimen",
+                dgettext(
+                    "biobank",
+                    "Collection protocol used for specimen"
+                ),
                 $scope,
                 new StringType(100),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenCollectionCenter",
-                "Center where specimen was collected",
+                dgettext(
+                    "biobank",
+                    "Center where specimen was collected"
+                ),
                 $scope,
                 new StringType(255),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenContainerType",
-                "Type of container holding specimen",
+                dgettext(
+                    "biobank",
+                    "Type of container holding specimen"
+                ),
                 $scope,
                 new StringType(40),
                 new Cardinality(Cardinality::MANY),
             ),
             new DictionaryItem(
                 "SpecimenTemperature",
-                "Storage temperature for specimen",
+                dgettext(
+                    "biobank",
+                    "Storage temperature for specimen"
+                ),
                 $scope,
                 new DecimalType(),
                 new Cardinality(Cardinality::MANY),
