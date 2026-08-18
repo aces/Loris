@@ -215,7 +215,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
       id: 'assignee', // Added assignee tab
       label: (
         <span>
-          Assignee{' '}
+          {t('Assignee', {ns: 'issue_tracker'})}{' '}
           <span className="badge bg-primary">{selectedAssignees.length}</span>
         </span>
       ),
@@ -418,7 +418,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
           {' ('}
           {t('Maximum issues per page: {{total}}', {
             ns: 'issue_tracker',
-            count: paginatedIssues.length,
+            total: paginatedIssues.length,
           })}
           <select
             className="input-sm perPage"

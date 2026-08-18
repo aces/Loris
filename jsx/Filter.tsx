@@ -139,6 +139,7 @@ function Filter({
         ),
         onUserInput: onFieldUpdate,
         labelPlacementTop: true,
+        disabled: filter.disabled,
       };
 
       switch (filter.type) {

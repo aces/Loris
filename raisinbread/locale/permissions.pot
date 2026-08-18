@@ -1,0 +1,220 @@
+msgid ""
+msgstr ""
+
+"Project-Id-Version: LORIS 29\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Superuser - supersedes all permissions"
+msgstr ""
+
+msgid "Feedback Threads"
+msgstr ""
+
+msgid "Candidates and Timepoints - Own Sites"
+msgstr ""
+
+msgid "Acknowledgee List"
+msgstr ""
+
+msgid "LORIS API Manual"
+msgstr ""
+
+msgid "Battery Entries"
+msgstr ""
+
+msgid "Flagged Behavioural Entries"
+msgstr ""
+
+msgid "Candidates and Timepoints - All Sites"
+msgstr ""
+
+msgid "Candidate Information"
+msgstr ""
+
+msgid "Dates of Birth"
+msgstr ""
+
+msgid "Dates of Death"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Resolve Conflicts"
+msgstr ""
+
+msgid "Cross-Modality Data"
+msgstr ""
+
+msgid "Hide data release files"
+msgstr ""
+
+msgid "Delete data release files"
+msgstr ""
+
+msgid "Release Files"
+msgstr ""
+
+msgid "Grant Other Users Access to Releases"
+msgstr ""
+
+msgid "DICOMs - All Sites"
+msgstr ""
+
+msgid "DICOMs - Own Sites"
+msgstr ""
+
+msgid "DICOMs with no session ID"
+msgstr ""
+
+msgid "Parameter Type Descriptions"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Documents"
+msgstr ""
+
+msgid "Restricted files"
+msgstr ""
+
+msgid "Admin dataquery queries"
+msgstr ""
+
+msgid "Cross-Modality Data (legacy)"
+msgstr ""
+
+msgid "Annotations"
+msgstr ""
+
+msgid "EEG - All Sites"
+msgstr ""
+
+msgid "EEG - Own Sites"
+msgstr ""
+
+msgid "Monitor EEG uploads"
+msgstr ""
+
+msgid "Add and Certify Examiners - All Sites"
+msgstr ""
+
+msgid "Add and Certify Examiners - Own Sites"
+msgstr ""
+
+msgid "Genomic Data - All Sites"
+msgstr ""
+
+msgid "Genomic Data - Own Sites"
+msgstr ""
+
+msgid "Genomic Files"
+msgstr ""
+
+msgid "Help documentation"
+msgstr ""
+
+msgid "Imaging Scans - All Sites"
+msgstr ""
+
+msgid "Imaging Scans - Own Sites"
+msgstr ""
+
+msgid "Phantom Scans - All Sites"
+msgstr ""
+
+msgid "Phantom Scans - Own Sites"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Flagged Imaging Entries"
+msgstr ""
+
+msgid "Imaging Scans with no session ID"
+msgstr ""
+
+msgid "Data"
+msgstr ""
+
+msgid "Instrument Forms"
+msgstr ""
+
+msgid "Reverse Send from DCC"
+msgstr ""
+
+msgid "Send to DCC"
+msgstr ""
+
+msgid "Installed Instruments"
+msgstr ""
+
+msgid "Upload and Install Instruments"
+msgstr ""
+
+msgid "Issues - All Sites"
+msgstr ""
+
+msgid "Issues - Own"
+msgstr ""
+
+msgid "Issues - Own Sites"
+msgstr ""
+
+msgid "Candidate Media Files"
+msgstr ""
+
+msgid "Access to recently uploaded media notifications digest."
+msgstr ""
+
+msgid "Installed Modules"
+msgstr ""
+
+msgid "Violated Scans - All Sites"
+msgstr ""
+
+msgid "Violated Scans - Own Sites"
+msgstr ""
+
+msgid "View Containers"
+msgstr ""
+
+msgid "View Pools"
+msgstr ""
+
+msgid "View Specimens"
+msgstr ""
+
+msgid "Accept/Reject Publication Projects"
+msgstr ""
+
+msgid "Propose Publication Projects"
+msgstr ""
+
+msgid "Publication Projects"
+msgstr ""
+
+msgid "Schedule Module: edit and delete appointment"
+msgstr ""
+
+msgid "Processes"
+msgstr ""
+
+msgid "Candidate Surveys"
+msgstr ""
+
+msgid "User Accounts - All Sites"
+msgstr ""
+
+msgid "User Accounts - Own Sites"
+msgstr ""

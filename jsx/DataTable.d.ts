@@ -8,6 +8,7 @@ export type FilterType = 'text' | 'select' | 'multiselect' |
 type BaseFilter = {
     name: string;
     hide?: boolean;
+    disabled?: boolean;
 };
 
 export type SelectFilterConfig = BaseFilter & {
