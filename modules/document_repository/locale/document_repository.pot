@@ -63,9 +63,6 @@ msgstr ""
 msgid "File too large"
 msgstr ""
 
-msgid "Could not upload file"
-msgstr ""
-
 msgid "Something went wrong"
 msgstr ""
 

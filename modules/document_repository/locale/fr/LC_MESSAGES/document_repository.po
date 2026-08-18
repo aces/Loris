@@ -68,9 +68,6 @@ msgstr "Veuillez signaler le problème ou contacter votre administrateur."
 msgid "File too large"
 msgstr "Fichier trop volumineux"
 
-msgid "Could not upload file"
-msgstr "Impossible de téléverser le fichier"
-
 msgid "Something went wrong"
 msgstr "Un problème est survenu"
 

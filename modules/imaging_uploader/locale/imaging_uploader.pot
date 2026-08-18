@@ -138,3 +138,36 @@ msgstr ""
 
 msgid "Upload Date"
 msgstr ""
+
+msgid "Invalid PSCID %s for CandID %s. Check that you entered the correct PSCID and CandID."
+msgstr ""
+
+msgid "Invalid Visit Label %s for CandID %s. Check that you entered the correct Visit Label and CandID."
+msgstr ""
+
+msgid "The session associated with CandID %s and Visit Label %s is not active in the database."
+msgstr ""
+
+msgid "Please make sure files are not larger than %s"
+msgstr ""
+
+msgid "The file %s is not of type .tgz, .tar.gz or .zip."
+msgstr ""
+
+msgid "The CandID %s does not exist in the database."
+msgstr ""
+
+msgid "This user does not have permission to upload files for this session."
+msgstr ""
+
+msgid "The candidate associated with CandID %s and PSCID %s is not active in the database."
+msgstr ""
+
+msgid "File name and fields entered in CandID, PSCID, Visit Label must match. Verify that the information entered in all the fields above is correct or rename the file so that the file name matches %s or begins with \"%s\" and has the extension .tgz, tar.gz or .zip"
+msgstr ""
+
+msgid "This file has already been uploaded."
+msgstr ""
+
+msgid "An internal server error prevented this file from being uploaded. Please contact the system administrator: failed to copy %s to %s"
+msgstr ""

@@ -117,7 +117,7 @@ class AddSurvey extends \NDB_Form
               ['CandID' => $error];
         }
 
-        if (! in_array($values['VL'], \Utility::getVisitList(), true)) {
+        if (! array_key_exists($values['VL'], \Utility::getVisitList())) {
             return ['VL' => dgettext(
                 'survey_accounts',
                 'You must specify a valid Visit Label.'
@@ -377,6 +377,26 @@ class AddSurvey extends \NDB_Form
             [
                 $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
             ]
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    #[\Override]
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                dgettext("survey_accounts", "Survey Accounts"),
+                "/survey_accounts/"
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext("survey_accounts", "Add Survey"),
+                ""
+            )
         );
     }
 }

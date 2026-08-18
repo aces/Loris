@@ -28,7 +28,7 @@ msgstr "Cliquez pour ouvrir"
 
 #, fuzzy
 msgid "Stage Status"
-msgstr "Statue du stade"
+msgstr "Statut du stade"
 
 #, fuzzy
 msgid "Date of Stage"
@@ -38,7 +38,7 @@ msgid "Imaging Scan Done"
 msgstr "Scan d'imagerie complété"
 
 msgid "BVL QC"
-msgstr "CQ comportemental"
+msgstr "Contrôle qualité comportemental"
 
 msgid "BVL Exclusion"
 msgstr "Exclusion comportementale"
@@ -83,4 +83,4 @@ msgid "Hardcopy"
 msgstr "Copie papier"
 
 msgid "Complete"
-msgstr "Compléter"
+msgstr "Complété"

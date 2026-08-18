@@ -73,11 +73,10 @@ $(document).ready(function () {
                 Email2: $("input[name=Email2]").val()
             },
             function(result) {
-                if (result) {
+                if (result && result.error_msg) {
                     // if an error was already thrown,
                     // hide it to avoid stacking error messages
                     $(".error").hide();
-                    result = JSON.parse(result);
                     $("#email-error").show();
                     $("#email-error").html(result.error_msg);
                 }

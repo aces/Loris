@@ -147,7 +147,7 @@ function AddFilterModal(props: {
     criteriaSelect = <div>
       <h3>{t('Criteria', {ns: 'dataquery'})}</h3>
       <div style={{display: 'flex'}}>
-        <div style={{width: '20%'}}>
+        <div style={{width: '40%'}}>
           <FilterableSelectGroup
             key={fieldname}
             groups={
@@ -159,7 +159,7 @@ function AddFilterModal(props: {
             placeholder={t('Select an operator', {ns: 'dataquery'})}
           />
         </div>
-        <div style={{width: '80%'}}>{valueSelect}</div>
+        <div style={{width: '60%'}}>{valueSelect}</div>
       </div>
     </div>;
 
@@ -284,13 +284,12 @@ function AddFilterModal(props: {
     }
     );
   return (
-    <Modal title={t('Add criteria', {ns: 'dataquery'})}
+    <Modal title={t('Add Condition', {ns: 'dataquery'})}
       show={true}
       throwWarning={true}
       onClose={props.closeModal}
       onSubmit={submitPromise}>
       <div style={{width: '100%', padding: '1em'}}>
-        <h3>{t('Field', {ns: 'dataquery', count: 1})}</h3>
         <div style={{display: 'flex', width: '100%'}}>
           <div style={{width: '40%'}}>
             <FilterableSelectGroup
@@ -306,7 +305,7 @@ function AddFilterModal(props: {
               }}
             />
           </div>
-          <div style={{width: '100%'}}>
+          <div style={{width: '60%'}}>
             {fieldSelect}
           </div>
         </div>

@@ -12,17 +12,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "aosi"
+msgid "Default MRI protocol group"
 msgstr ""
 
-msgid "BMI Calculator"
-msgstr ""
-
-msgid "MRI Parameter Form"
-msgstr ""
-
-msgid "Medical History"
-msgstr ""
-
-msgid "Radiology review"
-msgstr ""

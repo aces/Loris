@@ -91,8 +91,3 @@ To be importable, the LORIS version of a REDCap instrument must:
 - Have a database definition, that is, have an entry in the `test_names`, `session`, and `test_battery` tables.
 - Have a visit that corresponds to a REDCap event name, or use a visit mapping in the REDCap module configuration.
 - Have a started visit with a populated battery, or use the automatic session creation feature in the REDCap module configuration.
-
-## REDCap instrument naming
-
-Because the REDCap module imports REDCap instruments as LORIS LINST instruments, REDCap instruments must adhere to a few naming requirements to be LINST-compatible:
-- A field name should not finish with `_status`.

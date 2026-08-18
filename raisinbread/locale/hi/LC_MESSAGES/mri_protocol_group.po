@@ -13,17 +13,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "aosi"
-msgstr "AOSI"
+msgid "Default MRI protocol group"
+msgstr "डिफ़ॉल्ट एमआरआई प्रोटोकॉल समूह"
 
-msgid "BMI Calculator"
-msgstr "बीएमआई कैलकुलेटर"
-
-msgid "MRI Parameter Form"
-msgstr "एमआरआई पैरामीटर फ़ॉर्म"
-
-msgid "Medical History"
-msgstr "चिकित्सा इतिहास"
-
-msgid "Radiology review"
-msgstr "रेडियोलॉजी समीक्षा"

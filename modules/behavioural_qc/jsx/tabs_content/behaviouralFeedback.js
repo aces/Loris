@@ -253,6 +253,7 @@ class BehaviouralFeedback extends Component {
         filter: {
           name: 'Visit',
           type: 'select',
+          sortByValue: false,
           options: options.visits,
         },
       },

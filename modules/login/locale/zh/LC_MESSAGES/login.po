@@ -7,12 +7,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LORIS 27\n"
+"Project-Id-Version: LORIS 29.0\n"
 "Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
 "POT-Creation-Date: 2025-04-08 14:37-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+
 "Language: zh\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -115,37 +115,6 @@ msgstr "{{title}} 不被接受"
 msgid "You must accept the {{title}} before requesting an account."
 msgstr "在请求帐户之前，您必须接受 {{title}}。"
 
-# Hack for the login page.
-# These strings come from the database and are
-# the defaults in the login_summary_statistics table
-msgid "EEG Recording"
-msgid_plural "EEG Recordings"
-msgstr[0] "脑电图记录"
-
-msgid "Female Participant"
-msgid_plural "Female Participants"
-msgstr[0] "女性参与者"
-
-msgid "Instrument"
-msgid_plural "Instruments"
-msgstr[0] "量表/评估工具"
-
-msgid "Male Participant"
-msgid_plural "Male Participants"
-msgstr[0] "男性参与者"
-
-msgid "Scan"
-msgid_plural "Scans"
-msgstr[0] "扫描序列/影像"
-
-msgid "Site"
-msgid_plural "Sites"
-msgstr[0] "中心"
-
-msgid "Visit"
-msgid_plural "Visits"
-msgstr[0] "访视"
-
 msgid "Missing code"
 msgstr "缺少验证码"
 
@@ -193,3 +162,9 @@ msgstr "我们的合作伙伴"
 
 msgid "Password expired for user."
 msgstr "用户密码已过期。"
+
+msgid "Statistic"
+msgstr "统计"
+
+msgid "Value"
+msgstr "值"

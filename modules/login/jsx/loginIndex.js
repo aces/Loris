@@ -427,7 +427,7 @@ class Login extends Component {
         return <div>
           <a href={'/oidc/login?loginWith=' + val}>
             {this.props.t('Login with {{provider}}', {
-              ns: 'openid_connect', provider: val,
+              ns: 'login', provider: val,
             })}
           </a>
         </div>;
