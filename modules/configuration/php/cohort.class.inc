@@ -61,8 +61,8 @@ class Cohort extends \NDB_Form
 
         $this->tpl_data['useEDCOptions']
             = [
-                '1' => 'Yes',
-                '0' => 'No',
+                '1' => dgettext('loris', 'Yes'),
+                '0' => dgettext('loris', 'No'),
             ];
         $this->tpl_data['useDoBOptions']
             = [
@@ -72,8 +72,11 @@ class Cohort extends \NDB_Form
 
         $this->tpl_data['WindowDifferenceOptions']
             = [
-                'battery' => 'Closest Test Battery',
-                'optimal' => 'Optimal Visit Window for Visit Label',
+                'battery' => dgettext('configuration', 'Closest Test Battery'),
+                'optimal' => dgettext(
+                    'configuration',
+                    'Optimal Visit Window for Visit Label'
+                ),
             ];
     }
 }

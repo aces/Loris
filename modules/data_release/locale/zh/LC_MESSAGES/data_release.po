@@ -7,12 +7,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LORIS 27\n"
+"Project-Id-Version: LORIS 29.0\n"
 "Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
 "POT-Creation-Date: 2025-04-08 14:37-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+
 "Language: zh\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -70,17 +70,13 @@ msgstr "错误"
 msgid "Upload error!"
 msgstr "上传错误！"
 
-msgid "Upload Successful!"
-msgstr "上传成功！"
-
 msgid "A file with this name already exists!"
 msgstr "同名的文件已存在！"
 
 msgid "Would you like to overwrite existing file?"
 msgstr "您想覆盖现有文件吗？"
 
-msgid ""
-"Note that the version associated with the file will also be overwritten."
+msgid "Note that the version associated with the file will also be overwritten."
 msgstr "请注意，与该文件关联的版本也将被覆盖。"
 
 msgid "Choose a specific file or an entire release below"
@@ -97,6 +93,24 @@ msgstr "数据发布版本"
 
 msgid "Permission Update Success!"
 msgstr "权限更新成功！"
+
+msgid "Remove Permission"
+msgstr "移除权限"
+
+msgid "Modify Hidden File Status"
+msgstr "修改隐藏文件状态"
+
+msgid "Unhide Release File"
+msgstr "取消隐藏发布文件"
+
+msgid "Hide Release File"
+msgstr "隐藏发布文件"
+
+msgid "Delete File"
+msgstr "删除文件"
+
+msgid "Delete Release File"
+msgstr "删除发布文件"
 
 msgid "Submission Error!"
 msgstr "提交错误！"
@@ -119,8 +133,86 @@ msgstr "版本"
 msgid "Manage Users with access to a Version"
 msgstr "管理有权访问版本的用户"
 
+msgid "Users"
+msgstr "用户"
+
 msgid "Search for a Version"
 msgstr "搜索版本"
 
 msgid "An error occurred when loading the form!"
 msgstr "加载表单时发生错误！"
+
+msgid "Manage File"
+msgstr "管理文件"
+
+msgid "Unversioned"
+msgstr "未版本化"
+
+msgid "Hidden By ID"
+msgstr "按 ID 隐藏"
+
+msgid "Missing action"
+msgstr "缺少操作"
+
+msgid "Invalid action"
+msgstr "无效操作"
+
+msgid "No data was sent in the POST request"
+msgstr "POST 请求中未发送任何数据。"
+
+msgid "Missing user to grant access to"
+msgstr "未指定要授予访问权限的用户。"
+
+msgid "Must select either specific file OR version to grant access to"
+msgstr "必须选择要授予访问权限的特定文件或版本。"
+
+msgid "No valid data was sent in the request"
+msgstr "请求中未发送有效数据。"
+
+msgid "Missing user to remove access from"
+msgstr "未指定要移除访问权限的用户。"
+
+msgid "Must select a specific file"
+msgstr "必须选择一个特定文件。"
+
+msgid "Can not upload duplicate file"
+msgstr "无法上传重复文件。"
+
+msgid "Permission denied."
+msgstr "权限被拒绝。"
+
+msgid "Overwrite failed. A file of this name already exists which you do not have permission to overwrite."
+msgstr "覆盖失败。同名文件已存在，且您没有覆盖该文件的权限。"
+
+msgid "Can not upload duplicate file."
+msgstr "无法上传重复文件。"
+
+msgid "Not found"
+msgstr "未找到"
+
+msgid "Only you, and system administrators will be able to see this file!"
+msgstr "只有您和系统管理员能够查看此文件！"
+
+msgid "Anyone with permission to this file will be able to see it."
+msgstr "任何拥有此文件访问权限的用户都可以查看它。"
+
+msgid "This will permanently delete the file from the system!"
+msgstr "此操作将永久从系统中删除该文件！"
+
+msgid "File Successfully hidden"
+msgstr "文件已成功隐藏"
+
+msgid "File Successfully unhidden"
+msgstr "文件已成功取消隐藏"
+
+msgid "File Successfully deleted"
+msgstr "文件已成功删除"
+
+msgid "Yes, hide it!"
+msgstr "是，隐藏它！"
+
+msgid "Yes, unhide it!"
+msgstr "是，取消隐藏！"
+
+msgid "Yes, delete it!"
+msgstr "是，删除它！"

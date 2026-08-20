@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "DICOM Archive"
 msgstr "डीआईसीओएम संग्रह"
@@ -41,12 +42,6 @@ msgstr "एमआरआई ब्राउज़र"
 
 msgid "Series UID"
 msgstr "सीरीज़ यूआईडी"
-
-msgid "TarchiveID"
-msgstr "टीआर्काइवआईडी"
-
-msgid "SessionID"
-msgstr "सत्र आईडी"
 
 msgid "CenterID"
 msgstr "केंद्र आईडी"

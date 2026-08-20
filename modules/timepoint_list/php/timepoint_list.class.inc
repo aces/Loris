@@ -47,7 +47,8 @@ class Timepoint_List extends \NDB_Menu
 
         // check user permissions
         return $user->hasPermission('access_all_profiles')
-            || $candidate->isAccessibleBy($user);
+            || ($user->hasPermission('data_entry')
+                && $candidate->isAccessibleBy($user));
     }
 
     /**
@@ -90,8 +91,11 @@ class Timepoint_List extends \NDB_Menu
                 $current_date = new \DateTime();
                 $dob_year     = abs($current_date->diff($dob_date)->y);
                 $dob_month    = abs($current_date->diff($dob_date)->m);
-                $dob_age      = $dob_year . dgettext("timepoint_list", " y / ")
-                    . $dob_month . dgettext("timepoint_list", " m");
+                $dob_age      = sprintf(
+                    dgettext("loris", "%d y / %d m"),
+                    $dob_year,
+                    $dob_month,
+                );
                 $this->tpl_data['dob_age'] = $dob_age;
             }
 
@@ -104,8 +108,11 @@ class Timepoint_List extends \NDB_Menu
                 $current_date = new \DateTime();
                 $edc_year     = abs($current_date->diff($edc_date)->y);
                 $edc_month    = abs($current_date->diff($edc_date)->m);
-                $edc_age      = $edc_year . dgettext("timepoint_list", " y / ")
-                    . $edc_month . dgettext("timepoint_list", " m");
+                $edc_age      = sprintf(
+                    dgettext("loris", "%d y / %d m"),
+                    $edc_year,
+                    $edc_month,
+                );
                 $this->tpl_data['edc_age'] = $edc_age;
             }
         }

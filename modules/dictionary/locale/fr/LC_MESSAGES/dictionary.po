@@ -18,6 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Data Dictionary"
 msgstr "Dictionnaire des données"
@@ -67,13 +68,13 @@ msgid "Unique"
 msgstr "Unique"
 
 msgid "Single"
-msgstr "Unique"
+msgstr "Une seule valeur"
 
 msgid "Optional"
 msgstr "Optionnel"
 
 msgid "Many"
-msgstr "Beaucoup"
+msgstr "Plusieurs"
 
 msgid "Description"
 msgstr "Description"
