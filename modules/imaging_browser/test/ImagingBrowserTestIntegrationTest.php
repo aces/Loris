@@ -129,7 +129,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Visit_label'   => 'Test0',
                 'CenterID'      => 1,
                 'ProjectID'     => 1,
-                'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
             ]
@@ -143,7 +142,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Visit_label'   => 'Test1',
                 'CenterID'      => 253,
                 'ProjectID'     => 1,
-                'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
             ]
@@ -157,7 +155,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Visit_label'   => 'Test2',
                 'CenterID'      => 254,
                 'ProjectID'     => 1,
-                'Scan_done'     => 'Y',
                 'Current_stage' => 'Visit',
                 'Visit'         => 'In Progress',
             ]

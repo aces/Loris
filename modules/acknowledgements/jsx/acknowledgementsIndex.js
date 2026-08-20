@@ -20,6 +20,8 @@ import {
 import {Acknowledgement} from './entities';
 import {Query} from 'jslib/http';
 
+import frStrings from '../locale/fr/LC_MESSAGES/acknowledgements.json';
+
 /**
  * Acknowledgements Module page.
  *
@@ -39,6 +41,7 @@ class AcknowledgementsIndex extends Component {
    */
   constructor(props) {
     super(props);
+    const {t} = this.props;
 
     this.state = {
       data: {},
@@ -47,33 +50,37 @@ class AcknowledgementsIndex extends Component {
       error: false,
       isLoaded: false,
       affiliationsOptions: {
-        douglas: 'Douglas',
-        mcgill: 'McGill',
+        douglas: t('Douglas', {ns: 'acknowledgements'}),
+        mcgill: t('McGill', {ns: 'acknowledgements'}),
       },
       degreesOptions: {
-        bachelors: 'Bachelors',
-        masters: 'Masters',
-        phd: 'PhD',
-        postdoc: 'Postdoctoral',
-        md: 'MD',
-        registeredNurse: 'Registered Nurse',
+        bachelors: t('Bachelors', {ns: 'acknowledgements'}),
+        masters: t('Masters', {ns: 'acknowledgements'}),
+        phd: t('PhD', {ns: 'acknowledgements'}),
+        postdoc: t('Postdoctoral', {ns: 'acknowledgements'}),
+        md: t('MD', {ns: 'acknowledgements'}),
+        registeredNurse: t('Registered Nurse', {ns: 'acknowledgements'}),
       },
       rolesOptions: {
-        investigators: 'Investigators',
-        projectAdministration: 'Project Administration',
-        databaseManagement: 'Database Management',
-        interviewDataCollection: 'Interview Data Collection',
-        dataAnalyses: 'Data Analyses',
-        mriAcquisition: 'MRI Acquisition',
-        dataEntry: 'Data Entry',
-        databaseProgramming: 'Database Programming',
-        imagingProcessingAndEvaluation: 'Imaging Processing and Evaluation',
-        geneticAnalysisAndBiochemicalAssays: 'Genetic Analysis '
-          + 'and Biochemical Assays',
-        randomizationAndPharmacyAllocation: 'Randomization '
-          + 'and Pharmacy Allocation',
-        consultants: 'Consultants',
-        lpCsfCollection: 'LP/CSF Collection',
+        investigators: t('Investigators', {ns: 'acknowledgements'}),
+        projectAdministration: t('Project Administration',
+          {ns: 'acknowledgements'}),
+        databaseManagement: t('Database Management', {ns: 'acknowledgements'}),
+        interviewDataCollection: t('Interview Data Collection',
+          {ns: 'acknowledgements'}),
+        dataAnalyses: t('Data Analyses', {ns: 'acknowledgements'}),
+        mriAcquisition: t('MRI Acquisition', {ns: 'acknowledgements'}),
+        dataEntry: t('Data Entry', {ns: 'loris'}),
+        databaseProgramming: t('Database Programming',
+          {ns: 'acknowledgements'}),
+        imagingProcessingAndEvaluation: t('Imaging Processing and Evaluation',
+          {ns: 'acknowledgements'}),
+        geneticAnalysisAndBiochemicalAssays: t('Genetic Analysis'
+          + ' and Biochemical Assays', {ns: 'acknowledgements'}),
+        randomizationAndPharmacyAllocation: t('Randomization'
+          + ' and Pharmacy Allocation', {ns: 'acknowledgements'}),
+        consultants: t('Consultants', {ns: 'acknowledgements'}),
+        lpCsfCollection: t('LP/CSF Collection', {ns: 'acknowledgements'}),
       },
       showModal: false,
     };
@@ -154,6 +161,7 @@ class AcknowledgementsIndex extends Component {
    * @param {event} e - event of the form
    */
   async handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault(); // prevent default form submission
     const {formData, submitting} = this.state;
 
@@ -166,12 +174,16 @@ class AcknowledgementsIndex extends Component {
         .setSubEndpoint('AcknowledgementsProcess');
       await client.create(formData);
 
-      await swal.fire('Success!', 'Acknowledgement added.', 'success');
+      await swal.fire(t('Success!', {ns: 'loris'}),
+        t('Acknowledgement added.', {ns: 'acknowledgements'}),
+        'success');
       this.closeModalForm();
       this.fetchData();
     } catch (error) {
-      const message = error.message || 'An unexpected error occurred.';
-      swal.fire('Error!', message, 'error');
+      const message = error.message || t('An unexpected error occurred.',
+        {ns: 'acknowledgements'});
+      swal.fire(t('Error!', {ns: 'loris'}), message,
+        'error');
       console.error(error);
     } finally {
       this.setState({submitting: false});
@@ -211,18 +223,23 @@ class AcknowledgementsIndex extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, row) {
+    const {t} = this.props;
     let result = <td>{cell}</td>;
 
     switch (column) {
-    case 'Affiliations':
+    case t('Affiliations', {ns: 'loris'}):
       result = <td>{this.parseMultiple(cell, 'affiliationsOptions')}</td>;
       break;
-    case 'Degrees':
+    case t('Degrees', {ns: 'acknowledgements'}):
       result = <td>{this.parseMultiple(cell, 'degreesOptions')}</td>;
       break;
 
-    case 'Roles':
+    case t('Roles', {ns: 'acknowledgements'}):
       result = <td>{this.parseMultiple(cell, 'rolesOptions')}</td>;
+      break;
+
+    case t('Present', {ns: 'acknowledgements'}):
+      result = <td>{t(cell, {ns: 'loris'})}</td>;
       break;
     }
     return result;
@@ -251,10 +268,11 @@ class AcknowledgementsIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   renderCitationPolicy() {
+    const {t} = this.props;
     return (
       <Panel
         id='citationPolicy'
-        title='Citation Policy'
+        title={t('Citation Policy', {ns: 'acknowledgements'})}
       >
         <div className='col-sm-12 col-md-12'>
           <span>{this.state.data.meta.citation_policy}</span>
@@ -269,9 +287,10 @@ class AcknowledgementsIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   renderAddForm() {
+    const {t} = this.props;
     return (
       <Modal
-        title='Add Acknowledgement'
+        title={t('Add Acknowledgement', {ns: 'acknowledgements'})}
         onClose={this.closeModalForm}
         show={this.state.showModal}
         throwWarning={(Object.keys(this.state.formData).length !== 0)}
@@ -285,21 +304,21 @@ class AcknowledgementsIndex extends Component {
         >
           <TextboxElement
             name='addOrdering'
-            label='Ordering'
+            label={t('Ordering', {ns: 'acknowledgements'})}
             value={this.state.formData.addOrdering}
             required={true}
             onUserInput={this.setFormData}
           />
           <TextboxElement
             name='addFullName'
-            label='Full Name'
+            label={t('Full Name', {ns: 'acknowledgements'})}
             value={this.state.formData.addFullName}
             required={true}
             onUserInput={this.setFormData}
           />
           <TextboxElement
             name='addCitationName'
-            label='Citation Name'
+            label={t('Citation Name', {ns: 'acknowledgements'})}
             value={this.state.formData.addCitationName}
             required={true}
             onUserInput={this.setFormData}
@@ -307,7 +326,7 @@ class AcknowledgementsIndex extends Component {
           <SelectElement
             name='addAffiliations'
             options={this.state.affiliationsOptions}
-            label='Affiliations'
+            label={t('Affiliations', {ns: 'loris'})}
             value={this.state.formData.addAffiliations}
             multiple={true}
             emptyOption={true}
@@ -316,7 +335,7 @@ class AcknowledgementsIndex extends Component {
           <SelectElement
             name='addDegrees'
             options={this.state.degreesOptions}
-            label='Degrees'
+            label={t('Degrees', {ns: 'acknowledgements'})}
             value={this.state.formData.addDegrees}
             multiple={true}
             emptyOption={true}
@@ -325,7 +344,7 @@ class AcknowledgementsIndex extends Component {
           <SelectElement
             name='addRoles'
             options={this.state.rolesOptions}
-            label='Roles'
+            label={t('Roles', {ns: 'acknowledgements'})}
             value={this.state.formData.addRoles}
             multiple={true}
             emptyOption={true}
@@ -333,7 +352,7 @@ class AcknowledgementsIndex extends Component {
           />
           <DateElement
             name='addStartDate'
-            label='Start date'
+            label={t('Start Date', {ns: 'acknowledgements'})}
             value={this.state.formData.addStartDate}
             maxYear={this.state.formData.addEndDate
               || this.state.data.meta.maxYear}
@@ -343,7 +362,7 @@ class AcknowledgementsIndex extends Component {
           />
           <DateElement
             name='addEndDate'
-            label='End date'
+            label={t('End Date', {ns: 'acknowledgements'})}
             value={this.state.formData.addEndDate}
             maxYear={this.state.data.meta.maxYear}
             minYear={this.state.formData.addStartDate
@@ -354,7 +373,7 @@ class AcknowledgementsIndex extends Component {
           <SelectElement
             name='addPresent'
             options={this.state.data.fieldOptions.presents}
-            label='Present'
+            label={t('Present', {ns: 'acknowledgements'})}
             value={this.state.formData.addPresent}
             emptyOption={true}
             required={true}
@@ -363,7 +382,7 @@ class AcknowledgementsIndex extends Component {
           <div>
             <ButtonElement
               name='fire_away'
-              label='Save'
+              label={t('Save', {ns: 'loris'})}
               type='submit'
               buttonClass='btn btn-sm btn-primary'
               disabled={this.state.submitting}
@@ -380,10 +399,12 @@ class AcknowledgementsIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>An error occured while loading the page.</h3>;
+      return <h3>{t('An error occured while loading the page.',
+        {ns: 'loris'})}</h3>;
     }
 
     // Waiting for async data to load
@@ -397,36 +418,37 @@ class AcknowledgementsIndex extends Component {
      */
     const options = this.state.data.fieldOptions;
     const fields = [
-      {label: 'Ordering', show: true},
+      {label: t('Ordering', {ns: 'acknowledgements'}), show: true},
       {
-        label: 'Full Name', show: true, filter: {
+        label: t('Full Name', {ns: 'acknowledgements'}), show: true, filter: {
           name: 'fullName',
           type: 'text',
         },
       },
       {
-        label: 'Citation Name', show: true, filter: {
+        label: t('Citation Name', {ns: 'acknowledgements'}), show: true,
+        filter: {
           name: 'citationName',
           type: 'text',
         },
       },
-      {label: 'Affiliations', show: true},
-      {label: 'Degrees', show: true},
-      {label: 'Roles', show: true},
+      {label: t('Affiliations', {ns: 'loris'}), show: true},
+      {label: t('Degrees', {ns: 'acknowledgements'}), show: true},
+      {label: t('Roles', {ns: 'acknowledgements'}), show: true},
       {
-        label: 'Start Date', show: true, filter: {
+        label: t('Start Date', {ns: 'acknowledgements'}), show: true, filter: {
           name: 'startDate',
           type: 'date',
         },
       },
       {
-        label: 'End Date', show: true, filter: {
+        label: t('End Date', {ns: 'acknowledgements'}), show: true, filter: {
           name: 'endDate',
           type: 'date',
         },
       },
       {
-        label: 'Present', show: true, filter: {
+        label: t('Present', {ns: 'acknowledgements'}), show: true, filter: {
           name: 'present',
           type: 'select',
           options: options.presents,
@@ -436,7 +458,7 @@ class AcknowledgementsIndex extends Component {
     const actions = [
       {
         name: 'addAcknowledgement',
-        label: 'Add Acknowledgement',
+        label: t('Add Acknowledgement', {ns: 'acknowledgements'}),
         action: this.openModalForm,
         show: this.props.hasPermission('acknowledgements_edit'),
       },
@@ -448,7 +470,7 @@ class AcknowledgementsIndex extends Component {
         {this.renderAddForm()}
         <FilterableDataTable
           name='acknowledgements'
-          title='Acknowledgements'
+          title={t('Acknowledgements', {ns: 'acknowledgements'})}
           data={this.state.data.Data}
           fields={fields}
           getFormattedCell={this.formatColumn}
@@ -461,18 +483,20 @@ class AcknowledgementsIndex extends Component {
 
 AcknowledgementsIndex.propTypes = {
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'acknowledgements', {});
+  i18n.addResourceBundle('fr', 'acknowledgements', frStrings);
   i18n.addResourceBundle('zh', 'acknowledgements', {});
-  const Index = withTranslation(
+  const TranslatedAcknowledgementsIndex = withTranslation(
     ['acknowledgements', 'loris']
   )(AcknowledgementsIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <Index
+    <TranslatedAcknowledgementsIndex
       hasPermission={loris.userHasPermission}
     />
   );

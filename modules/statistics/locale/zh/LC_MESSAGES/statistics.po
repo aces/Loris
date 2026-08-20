@@ -7,12 +7,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LORIS 27\n"
+"Project-Id-Version: LORIS 29.0\n"
 "Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
 "POT-Creation-Date: 2025-04-08 14:37-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+
 "Language: zh\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -129,3 +129,40 @@ msgstr "参加者"
 
 msgid "Unknown"
 msgstr "未知"
+
+msgid "Total Scans: {{count}}"
+msgstr "扫描总数：{{count}}"
+
+msgid "There have been no scans yet."
+msgstr "目前还没有扫描。"
+
+msgid "There have been no candidates registered yet."
+msgstr "目前还没有已注册的候选人。"
+
+msgid "There is no data yet."
+msgstr "目前还没有数据。"
+
+# Project sizes
+msgid "Project Dataset Sizes"
+msgstr "项目数据集大小"
+
+msgid "Dataset size breakdown by project"
+msgstr "按项目划分的数据集大小明细"
+
+msgid "Dataset Size"
+msgstr "数据集大小"
+
+msgid "Size (GB)"
+msgstr "大小（GB）"
+
+msgid "%s GB"
+msgstr "%s GB"
+
+msgid "Total Size: {{count}} GB"
+msgstr "总大小：{{count}} GB"
+
+msgid "Pie"
+msgstr "饼图"
+
+msgid "Bar"
+msgstr "柱状图"

@@ -38,3 +38,6 @@ msgstr ""
 
 msgid "Last login:"
 msgstr ""
+
+msgid "No open tasks for you."
+msgstr ""

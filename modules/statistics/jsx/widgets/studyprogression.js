@@ -32,6 +32,16 @@ const StudyProgression = (props) => {
       = t('Scan sessions per site', {ns: 'statistics'});
     newdetails['total_recruitment']['siterecruitment_bymonth']['title']
       = t('Recruitment per site', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['title']
+      = t('Dataset size breakdown by project', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['label']
+      = t('Size (GB)', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['units']
+      = t('GB', {ns: 'loris'});
+    newdetails['project_sizes']['size_byproject']['yLabel']
+      = t('Size (GB)', {ns: 'statistics'});
+    newdetails['project_sizes']['size_byproject']['titlePrefix']
+      = t('Project', {ns: 'loris'});
     setChartDetails(newdetails);
   }, []);
 
@@ -49,7 +59,8 @@ const StudyProgression = (props) => {
         legend: 'under',
         options: {line: 'line'},
         chartObject: null,
-        titlePrefix: 'Month',
+        yLabel: t('Candidates registered', {ns: 'statistics'}),
+        titlePrefix: t('Month', {ns: 'loris'}),
       },
     },
     'total_recruitment': {
@@ -62,7 +73,25 @@ const StudyProgression = (props) => {
         legend: '',
         options: {line: 'line'},
         chartObject: null,
-        titlePrefix: 'Month',
+        yLabel: t('Candidates registered', {ns: 'statistics'}),
+        titlePrefix: t('Month', {ns: 'loris'}),
+      },
+    },
+    'project_sizes': {
+      'size_byproject': {
+        sizing: 11,
+        title: t('Dataset size breakdown by project', {ns: 'statistics'}),
+        filters: '',
+        chartType: 'pie',
+        dataType: 'pie',
+        label: t('Size (GB)', {ns: 'statistics'}),
+        units: t('GB', {ns: 'loris'}),
+        showPieLabelRatio: false,
+        legend: '',
+        options: {pie: 'pie', bar: 'bar'},
+        chartObject: null,
+        yLabel: t('Size (GB)', {ns: 'statistics'}),
+        titlePrefix: t('Project', {ns: 'loris'}),
       },
     },
   });
@@ -100,7 +129,8 @@ const StudyProgression = (props) => {
   const filterLabel = (hide) => hide ?
     t('Hide Filters', {ns: 'loris'})
     : t('Show Filters', {ns: 'loris'});
-  return loading ? <Panel title='Study Progression'><Loader/></Panel> : (
+  return loading ? <Panel title={t('Study Progression', {ns: 'statistics'})}>
+    <Loader /></Panel> : (
     <>
       <Panel
         title={t('Study Progression', {ns: 'statistics'})}
@@ -177,9 +207,16 @@ const StudyProgression = (props) => {
                 {showChart('total_scans', 'scans_bymonth')}
               </div>
             ) : (
-              <p>There have been no scans yet.</p>
+              <p>{t('There have been no scans yet.', {ns: 'statistics'})}</p>
             ),
             title: title('Site Scans'),
+            subtitle: t(
+              'Total Scans: {{count}}',
+              {
+                ns: 'statistics',
+                count: json['studyprogression']['total_scans'],
+              }
+            ),
             onToggleFilters: () => setShowFiltersScans((prev) => !prev),
           },
           {
@@ -216,11 +253,42 @@ const StudyProgression = (props) => {
                   {showChart('total_recruitment', 'siterecruitment_bymonth')}
                 </div>
               ) : (
-                <p>There have been no candidates registered yet.</p>
+                <p>
+                  {t(
+                    'There have been no candidates registered yet.',
+                    {ns: 'statistics'}
+                  )}
+                </p>
               ),
             title: title('Site Recruitment'),
             onToggleFilters: () => showFiltersBreakdown((prev) => !prev),
           },
+          (json['studyprogression']['total_size'] ?? -1) > 0 && (
+            {
+              content:
+                Object.keys(json['options']['projects']).length > 0 ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '10px',
+                    }}
+                  >
+                    {showChart('project_sizes', 'size_byproject')}
+                  </div>
+                ) : (
+                  <p>{t('There is no data yet.', {ns: 'statistics'})}</p>
+                ),
+              title: title('Project Dataset Sizes'),
+              subtitle: t(
+                'Total Size: {{count}} GB',
+                {
+                  ns: 'statistics',
+                  count: json['studyprogression']['total_size'] ?? -1,
+                }
+              ),
+            }
+          ),
         ]}
       />
     </>

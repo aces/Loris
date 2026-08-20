@@ -218,6 +218,8 @@ class RedcapRecordImporter
                 return !in_array(
                     $name,
                     [
+                        "redcap_repeat_instrument",
+                        "redcap_repeat_instance",
                         "record_id",
                         "redcap_data_access_group",
                         "redcap_event_name",

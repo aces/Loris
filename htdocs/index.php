@@ -42,12 +42,14 @@ Profiler::checkpoint("Profiler started");
 // Middleware that happens on every request. This doesn't include
 // any authentication middleware, because that's done dynamically
 // based on the module router, depending on if the module is public.
-$middlewarechain = (new \LORIS\Middleware\Language())
+$middlewarechain = (new \LORIS\Middleware\RequestAttributeBuilder())
+    ->withMiddleware(new \LORIS\Middleware\Language())
     ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\LorisMenu())
     ->withMiddleware(new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\AWS())
     ->withMiddleware(new \LORIS\Middleware\ContentSecurityPolicy())
+    ->withMiddleware(new \LORIS\Middleware\RedirectControl())
     ->withMiddleware(new \LORIS\Middleware\MFA())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 

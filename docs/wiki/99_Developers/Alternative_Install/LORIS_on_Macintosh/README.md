@@ -83,9 +83,9 @@ sudo apachectl -k restart
 ```
 
 
-#### An alternative to Apache is using php -S in the htdocs directory.
+#### An alternative to Apache is using php -S from the LORIS root directory.
 ```
-php -S localhost:8000 -t . router.php
+php -S localhost:8000 -t htdocs/ htdocs/router.php
 ```
 Logs will be sent to stderr.
 

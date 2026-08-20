@@ -4,6 +4,7 @@ import swal from 'sweetalert2';
 import Modal from 'jsx/Modal';
 import {withTranslation, Trans} from 'react-i18next';
 import '../css/issue_card.css';
+import Markdown from 'jsx/Markdown';
 
 const IssueCard = React.memo(function IssueCard(props) {
   const {t} = props;
@@ -304,13 +305,17 @@ const IssueCard = React.memo(function IssueCard(props) {
           </h3>
         </div>
         <div className="issue-dates">
-          <span>{t('Created', {ns: 'issue_tracker'})}:
-            {issue.dateCreated}</span>
-          <span>{t('Last Updated', {ns: 'issue_tracker'})}:
-            {issue.lastUpdate}</span>
-          <span>{t('Assignee', {ns: 'issue_tracker'})}:
-            {issue.assignee || t('None',
-              {ns: 'loris'})}</span>
+          <span>
+            {t('Created', {ns: 'issue_tracker'})} : {issue.dateCreated}
+          </span>
+          <span>
+            {t('Last Updated', {ns: 'issue_tracker'})} : {issue.lastUpdate}
+          </span>
+          <span>
+            {t('Assignee', {ns: 'issue_tracker'})} : {issue.assignee ||
+              t('None',
+                {ns: 'loris'})}
+          </span>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="issue-form">
@@ -371,7 +376,7 @@ const IssueCard = React.memo(function IssueCard(props) {
                   }
                 >
                   <option value="">
-                    Uncategorized
+                    {t('Uncategorized', {ns: 'issue_tracker'})}
                   </option>
                   {Object.entries(categories).map(([value, label]) => (
                     <option
@@ -429,7 +434,7 @@ const IssueCard = React.memo(function IssueCard(props) {
                 <label>{t('Category', {ns: 'issue_tracker'})}:&nbsp;</label>
                 <span>
                   {categories[tempEditedIssue.category] ||
-                    'Uncategorized'}
+                    t('Uncategorized', {ns: 'issue_tracker'})}
                 </span>
               </div>
               <div className="control-group">
@@ -457,7 +462,8 @@ const IssueCard = React.memo(function IssueCard(props) {
             ) : (
               <div className="description-container">
                 <p className="description-text">
-                  {description}</p>
+                  <Markdown content={description} />
+                </p>
               </div>
             )}
           </div>
@@ -469,7 +475,8 @@ const IssueCard = React.memo(function IssueCard(props) {
                 issue.topComments.map((comment, index) => (
                   <div key={index} className="comment">
                     <p className="comment-text">
-                      {comment.issueComment}</p>
+                      <Markdown content={comment.issueComment} />
+                    </p>
                     <span className="comment-meta">
                       <Trans
                         ns="issue_tracker"

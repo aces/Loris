@@ -182,7 +182,7 @@ class Utility
         // fix the array
         $list = [];
         foreach ($result as $row) {
-            $list[$row["CenterID"]] = $row["Name"];
+            $list[$row["CenterID"]] = dgettext("psc", $row["Name"]);
         }
         return $list;
     }
@@ -207,12 +207,18 @@ class Utility
             $values[$para] = $siteID;
         }
 
-        return $DB->pselectColWithIndexKey(
+        $sites = $DB->pselectColWithIndexKey(
             "SELECT CenterID as ID, Name FROM psc WHERE CenterID in (" .
             implode(', ', $params) . ")",
             $values,
             'ID'
         );
+
+        $translatedSites = [];
+        foreach ($sites as $siteID => $siteName) {
+            $translatedSites[$siteID] = dgettext("psc", $siteName);
+        }
+        return $translatedSites;
     }
 
     /**
@@ -274,11 +280,16 @@ class Utility
             AND s.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
         $result = $db->pselect($query, $qparams);
-        // The result has several columns; we only want the visit labels.
-        $visitLabels = array_column(iterator_to_array($result), 'Visit_label');
 
+        $translatedVisitLabels = [];
+        foreach ($result as $row) {
+            $visitLabel = $row['Visit_label'];
+
+            $translatedVisitLabels[$visitLabel] = dgettext('visit', $visitLabel);
+        }
         // Generates an array where the keys are equal to the values.
-        $cache[$projStr] = array_combine($visitLabels, $visitLabels);
+        $cache[$projStr] = $translatedVisitLabels;
+
         return $cache[$projStr];
     }
 
@@ -298,7 +309,12 @@ class Utility
             [],
             'ProjectID'
         ) ?? [];
-        return $projects;
+        return array_map(
+            function ($name) {
+                return dgettext("Project", $name);
+            },
+            $projects
+        );
     }
 
     /**
@@ -375,7 +391,10 @@ class Utility
             "VisitName"
         );
 
-        return $result;
+        return array_map(
+            fn($visit) => dgettext("visit", $visit),
+            $result,
+        );
     }
 
     /**
@@ -408,7 +427,10 @@ class Utility
             "VisitID"
         );
 
-        return $result;
+        return array_map(
+            fn($visit) => dgettext("visit", $visit),
+            $result,
+        );
     }
 
     /**
@@ -563,7 +585,10 @@ class Utility
         $instruments   = [];
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
-                $instruments[$row['Test_name']] =$row['Full_name'];
+                $instruments[$row['Test_name']] = dgettext(
+                    'test_names',
+                    $row['Full_name']
+                );
             }
         }
 
@@ -998,7 +1023,7 @@ class Utility
 
         $scan_types_DB = \NDB_Factory::singleton()->database()->pselect(
             "SELECT MriScanTypeID, MriScanTypeName
-             FROM mri_scan_type 
+             FROM mri_scan_type
              JOIN files USING (MriScanTypeID)",
             []
         );

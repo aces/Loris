@@ -1,4 +1,3 @@
-/*M!999999\- enable the sandbox mode */
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `Config`;
 LOCK TABLES `Config` WRITE;
@@ -9,7 +8,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (4,4,'images/LORIS_logo.
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (5,5,'false');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (6,6,'5');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (7,7,'99');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (9,9,'false');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (9,9,'true');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (10,10,'2016');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (11,11,'2028');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (12,13,'false');
@@ -90,7 +89,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (104,103,'/data/data_rel
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (105,104,'Ymd');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (106,105,'Y-m-d H:i:s');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (107,106,'/data/issue_tracker/');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (108,107,'');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (113,112,'warning');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (114,113,'warning');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (115,114,'warning');
