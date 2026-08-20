@@ -213,7 +213,12 @@ function noDuplicateInDropdown($id,$value)
 function getPathIDs(string $table): array
 {
     if (! in_array($table, ['Config', 'ConfigSettings', true])) {
-        throw new \LorisException('Table must be "Config" or "ConfigSettings"');
+        throw new \LorisException(
+            dgettext(
+                'configuration',
+                'Table must be "Config" or "ConfigSettings"'
+            )
+        );
     }
     $query = '';
     switch ($table) {

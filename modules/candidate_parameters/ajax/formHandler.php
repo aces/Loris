@@ -630,14 +630,20 @@ function editCandidateDOB(\Database $db): void
 function editCandidateDOD(\Database $db): void
 {
     $candID       = new CandID($_POST['candID']);
-    $dod          = new DateTime($_POST['dod']);
+    $dod          = array_key_exists('dod', $_POST) ?
+        new DateTime($_POST['dod']) : null;
+    $precision    = $_POST['dod_precision'];
     $strippedDate = null;
     $dodString    = null;
 
-    if (!$dod) {
+    if (!$dod && $precision !== 'unknown') {
         throw new \LorisException('Date not valid.');
     }
+    if (!$precision) {
+        throw new \LorisException('Date of Death precision must be specified.');
+    }
 
+    $updateData = [];
     if (!empty($dod)) {
         $config    = \NDB_Config::singleton();
         $dodFormat = $config->getSetting('dodFormat');
@@ -646,10 +652,17 @@ function editCandidateDOD(\Database $db): void
         } else {
             $dodString = $dod->format('Y-m-d');
         }
+        $updateData['DoD'] = $strippedDate ?? $dodString;
+    } else {
+        $updateData['DoD'] = null;
+    }
+
+    if ($precision) {
+        $updateData['DoD_precision'] = $precision;
         $db->update(
             'candidate',
-            ['DoD' => $strippedDate ?? $dodString],
-            ['ID' => $candID->__toString()]
+            $updateData,
+            ['CandID' => $candID->__toString()]
         );
     }
 }

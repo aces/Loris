@@ -18,18 +18,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Media"
 msgstr "Média"
 
 msgid "File Name"
 msgstr "Nom du fichier"
-
-msgid "Instrument"
-msgstr "Instrument"
-
-msgid "Uploaded By"
-msgstr "Téléverser par"
 
 msgid "Date Taken"
 msgstr "Date de passage"
@@ -49,10 +44,6 @@ msgid "CandID"
 msgstr "CandID"
 
 #, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
-
-#, fuzzy
 msgid "File Visibility"
 msgstr "Visibilité des fichiers"
 
@@ -70,12 +61,6 @@ msgstr "Parcourir"
 
 msgid "Upload"
 msgstr "Téléverser"
-
-msgid "An error occured while loading the page."
-msgstr "Une erreur s'est produite lors du chargement de la page."
-
-msgid "Language"
-msgstr "Langage"
 
 # New strings from uploadForm.js
 msgid "An error occurred when loading the form!"
@@ -140,23 +125,6 @@ msgstr "Masquer le fichier"
 msgid "Invalid file name!"
 msgstr "Le nom de fichier spécifié n'est pas valide.  "
 
-#, fuzzy
-msgid "File name should begin with:"
-msgstr "Le nom du fichier doit commencer par :"
-
-#, fuzzy
-msgid ""
-"A file with this name already exists!\n"
-" Would you like to override existing file?"
-msgstr "Un fichier portant ce nom existe déjà ! Voulez-vous remplacer le fichier existant ?"
-
-msgid "Cancelled"
-msgstr "Annulée"
-
-#, fuzzy
-msgid "Your imaginary file is safe :)"
-msgstr "Votre fichier imaginaire est en sécurité :)"
-
 msgid "Success!"
 msgstr "Réussi !"
 
@@ -180,3 +148,9 @@ msgstr "Ce champ est requis."
 #, fuzzy
 msgid "Candidate Media"
 msgstr "Médias candidats"
+
+msgid "Visible only"
+msgstr "Visibles uniquement"
+
+msgid "Hidden only"
+msgstr "Masqués uniquement"

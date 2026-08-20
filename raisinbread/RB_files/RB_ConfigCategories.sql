@@ -1,4 +1,4 @@
-/*M!999999\- enable the sandbox mode */ 
+/*M!999999\- enable the sandbox mode */
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `ConfigCategories`;
 LOCK TABLES `ConfigCategories` WRITE;
