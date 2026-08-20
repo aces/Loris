@@ -11,6 +11,7 @@ import {QueryGroup} from './querydef';
 import {FullDictionary, FieldDictionary} from './types';
 import {calcPayload} from './calcpayload';
 import getDictionaryDescription from './getdictionarydescription';
+import '../css/viewdata.css';
 
 type TableRow = (string|null)[];
 
@@ -440,20 +441,6 @@ function ViewData(props: {
     />
     : <div />);
   return <div className='dataquery-view-container'>
-    <style>{`
-      .dataquery-view-container .header-text {
-        max-height: 250px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 12;
-        display: -webkit-box;
-      }
-      .dataquery-view-container table th,
-      .dataquery-view-container table td {
-        min-width: 150px;
-      }
-    `}</style>
     <SelectElement
       name='headerdisplay'
       options={{
