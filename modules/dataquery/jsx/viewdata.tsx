@@ -439,9 +439,9 @@ function ViewData(props: {
   return <div>
     <style>{`
       .dataquery-session-row {
-        display: 'flex';
-        flex-direction: 'row';
-        justify-content: 'start';
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
         flex-grow: 1;
         flex-shrink: 1;
         flex-basis: 0;
