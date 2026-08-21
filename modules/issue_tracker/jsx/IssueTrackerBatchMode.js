@@ -796,7 +796,7 @@ function IssueTrackerBatchMode({options = {}, canCloseIssues, t}) {
           {' ('}
           {t('Maximum issues per page: {{total}}', {
             ns: 'issue_tracker',
-            count: paginatedIssues.length,
+            total: paginatedIssues.length,
           })}
           <select
             className="input-sm perPage"

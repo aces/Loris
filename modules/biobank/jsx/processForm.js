@@ -20,6 +20,7 @@ import CustomFields from './customFields';
  * @return {JSX}
  */
 const SpecimenProcessForm = (props) => {
+  const {t} = props;
   const setProcess = (name, value) => {
     let process = clone(props.process);
     process[name] = value;
@@ -59,7 +60,7 @@ const SpecimenProcessForm = (props) => {
 
   const updateButton = specimen && (
     <ButtonElement
-      label={this.props.t('Update', {ns: 'biobank'})}
+      label={t('Update', {ns: 'biobank'})}
       onUserInput={() => props.updateSpecimen(specimen)}
     />
   );
@@ -103,7 +104,7 @@ const SpecimenProcessForm = (props) => {
   const collectionFields = processStage === 'collection' && [
     <TextboxElement
       name="quantity"
-      label={this.props.t('Quantity', {ns: 'biobank'})}
+      label={t('Quantity', {ns: 'biobank'})}
       onUserInput={setProcess}
       required={true}
       value={process.quantity}
@@ -111,7 +112,7 @@ const SpecimenProcessForm = (props) => {
     />,
     <SelectElement
       name="unitId"
-      label={this.props.t('Unit', {ns: 'biobank'})}
+      label={t('Unit', {ns: 'biobank'})}
       options={specimenTypeUnits}
       onUserInput={setProcess}
       required={true}
@@ -124,7 +125,7 @@ const SpecimenProcessForm = (props) => {
   const protocolField = !props.hideProtocol && (
     <SelectElement
       name="protocolId"
-      label={this.props.t('Protocol', {ns: 'biobank'})}
+      label={t('Protocol', {ns: 'biobank'})}
       options={specimenProtocols}
       onUserInput={setProtocol}
       required={true}
@@ -140,7 +141,7 @@ const SpecimenProcessForm = (props) => {
       protocolField,
       <SelectElement
         name="examinerId"
-        label={this.props.t('Done By', {ns: 'biobank'})}
+        label={t('Done By', {ns: 'biobank'})}
         options={examiners}
         onUserInput={setProcess}
         required={true}
@@ -150,7 +151,7 @@ const SpecimenProcessForm = (props) => {
       />,
       <DateElement
         name="date"
-        label={this.props.t('Date', {ns: 'loris'})}
+        label={t('Date', {ns: 'loris'})}
         onUserInput={setProcess}
         required={true}
         value={process.date}
@@ -158,7 +159,7 @@ const SpecimenProcessForm = (props) => {
       />,
       <TimeElement
         name="time"
-        label={this.props.t('Time', {ns: 'loris'})}
+        label={t('Time', {ns: 'loris'})}
         onUserInput={setProcess}
         required={true}
         value={process.time}
@@ -169,7 +170,7 @@ const SpecimenProcessForm = (props) => {
       renderProtocolFields(),
       <TextareaElement
         name="comments"
-        label={this.props.t('Comments', {ns: 'biobank'})}
+        label={t('Comments', {ns: 'biobank'})}
         onUserInput={setProcess}
         value={process.comments}
         errorMessage={errors.comments}
@@ -191,9 +192,9 @@ const SpecimenProcessForm = (props) => {
 
       // Convert boolean values to "Yes" or "No"
       if (value === true) {
-        value = this.props.t('Yes', {ns: 'loris'});
+        value = t('Yes', {ns: 'loris'});
       } else if (value === false) {
-        value = this.props.t('No', {ns: 'loris'});
+        value = t('No', {ns: 'loris'});
       }
 
       return (
@@ -207,36 +208,36 @@ const SpecimenProcessForm = (props) => {
 
     const collectionStaticFields = (processStage === 'collection') && (
       <StaticElement
-        label={this.props.t('Quantity', {ns: 'biobank'})}
+        label={t('Quantity', {ns: 'biobank'})}
         text={process.quantity+' '+options.specimen.units[process.unitId].label}
       />
     );
 
     return [
       <StaticElement
-        label={this.props.t('Protocol', {ns: 'biobank'})}
+        label={t('Protocol', {ns: 'biobank'})}
         text={options.specimen.protocols[process.protocolId].label}
       />,
       <StaticElement
-        label={this.props.t('Site', {ns: 'loris', count: 1})}
+        label={t('Site', {ns: 'loris', count: 1})}
         text={options.centers[process.centerId]}
       />,
       <StaticElement
-        label={this.props.t('Done By', {ns: 'biobank'})}
+        label={t('Done By', {ns: 'biobank'})}
         text={options.examiners[process.examinerId].label}
       />,
       <StaticElement
-        label={this.props.t('Date', {ns: 'loris'})}
+        label={t('Date', {ns: 'loris'})}
         text={process.date}
       />,
       <StaticElement
-        label={this.props.t('Time', {ns: 'loris'})}
+        label={t('Time', {ns: 'loris'})}
         text={process.time}
       />,
       collectionStaticFields,
       protocolStaticFields,
       <StaticElement
-        label={this.props.t('Comments', {ns: 'biobank'})}
+        label={t('Comments', {ns: 'biobank'})}
         text={process.comments}
       />,
     ];
@@ -311,6 +312,7 @@ SpecimenProcessForm.propTypes = {
   setParent: PropTypes.func.isRequired,
   render: PropTypes.func,
   updateSpecimen: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default withTranslation(['biobank', 'loris'])(SpecimenProcessForm);

@@ -83,7 +83,7 @@ export default function UploadViewer(props) {
       show: true,
     },
     {
-      label: t('Uploaded By', {ns: 'electrophysiology_uploader'}),
+      label: t('Uploaded By', {ns: 'loris'}),
       show: true,
     },
   ];

@@ -118,7 +118,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             "selector" => "#upload",
         ],
         [
-            "label"    => "File to Upload",
+            "label"    => "File to upload",
             "selector" => "#upload",
         ],
     ];
@@ -207,14 +207,14 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::name("pSCID")
         )->sendKeys("test");
 
-        $this->webDriver->navigate()->refresh();
+        $this->safeClick(WebDriverBy::cssSelector("button[type='reset']"));
 
         $bodyText1 = $this->safeFindElement(
             WebDriverBy::name("candID")
-        )->getText();
+        )->getAttribute('value');
         $bodyText2 = $this->safeFindElement(
             WebDriverBy::name("pSCID")
-        )->getText();
+        )->getAttribute('value');
 
          $this->assertEquals('', $bodyText1);
          $this->assertEquals('', $bodyText2);
