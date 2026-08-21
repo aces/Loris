@@ -181,13 +181,13 @@ msgid "Module"
 msgstr ""
 
 msgid "Project"
-msgstr "Projecto"
+msgstr "Proyecto"
 
 msgid "Candidate Registration Project"
-msgstr "Projecto donde se registró al Candidato"
+msgstr "Proyecto donde se registró al Candidato"
 
 msgid "Timepoint Project"
-msgstr "Punto en el tiempo del Projecto"
+msgstr "Punto en el tiempo del Proyecto"
 
 msgid "Cohort"
 msgid_plural "Cohorts"
@@ -198,7 +198,7 @@ msgid "Session"
 msgstr ""
 
 msgid "Date of registration"
-msgstr ""
+msgstr "Fecha de inscripción"
 
 msgid "Participant Status"
 msgstr ""
@@ -217,6 +217,12 @@ msgstr "Retroalimentación"
 
 msgid "Scans"
 msgstr ""
+
+msgid "Date"
+msgstr "Fecha"
+
+msgid "Time"
+msgstr "Hora"
 
 msgid "Stage"
 msgstr "Etapa"
@@ -327,8 +333,10 @@ msgstr "En Progreso"
 msgid "Complete"
 msgstr "Completo"
 
-msgid "Instruments"
-msgstr "Instrumentos"
+msgid "Instrument"
+msgid_plural "Instruments"
+msgstr[0] "Instrumento"
+msgstr[1] "Instrumentos"
 
 msgid "None"
 msgstr "Ninguna"
@@ -364,6 +372,9 @@ msgstr "{{months}} meses"
 msgid "{{years}} years old"
 msgstr "{{years}} años"
 
+msgid "%d y / %d m"
+msgstr "%d a / %d m"
+
 # Other generic terms
 msgid "Loading..."
 msgstr ""
@@ -398,3 +409,36 @@ msgstr ""
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
 msgstr ""
+
+msgid "Scan Type"
+msgstr "Tipo de escaneo"
+
+msgid "SessionID"
+msgstr "ID de sesión"
+
+msgid "Uploaded By"
+msgstr "Subido por"
+
+msgid "TarchiveID"
+msgstr "ID de archivo"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Upload directory is not a directory"
+msgstr "El directorio de carga no es un directorio válido"
+
+msgid "Upload directory is not writable"
+msgstr "No se puede escribir en el directorio de carga"
+
+msgid "Path traversal not allowed"
+msgstr "No se permite la navegación por rutas"
+
+msgid "This file has already been uploaded."
+msgstr "Este archivo ya ha sido cargado."
+
+msgid "File type not allowed"
+msgstr "Tipo de archivo no permitido"
+
+msgid "Could not upload file"
+msgstr "No se pudo cargar el archivo"

@@ -31,8 +31,9 @@ const Recruitment = (props) => {
           filters: '',
           chartType: 'pie',
           dataType: 'pie',
-          label: 'Age (Years)',
+          label: t('Age (Years)', {ns: 'statistics'}),
           options: {pie: 'pie', bar: 'bar'},
+          yLabel: t('Candidates registered', {ns: 'statistics'}),
           legend: 'under',
           chartObject: null,
         },
@@ -41,8 +42,9 @@ const Recruitment = (props) => {
           filters: '',
           chartType: 'pie',
           dataType: 'pie',
-          label: 'Ethnicity',
+          label: t('Ethnicity', {ns: 'loris'}),
           options: {pie: 'pie', bar: 'bar'},
+          yLabel: t('Candidates registered', {ns: 'statistics'}),
           legend: 'under',
           chartObject: null,
         },
@@ -53,9 +55,10 @@ const Recruitment = (props) => {
           filters: '',
           chartType: 'pie',
           dataType: 'pie',
-          label: 'Participants',
+          label: t('Participants', {ns: 'statistics'}),
           legend: '',
           options: {pie: 'pie', bar: 'bar'},
+          yLabel: t('Candidates registered', {ns: 'statistics'}),
           chartObject: null,
         },
         'siterecruitment_bysex': {
@@ -65,6 +68,7 @@ const Recruitment = (props) => {
           dataType: 'bar',
           legend: 'under',
           options: {bar: 'bar', pie: 'pie'},
+          yLabel: t('Candidates registered', {ns: 'statistics'}),
           chartObject: null,
         },
       },
@@ -76,6 +80,7 @@ const Recruitment = (props) => {
           dataType: 'line',
           legend: '',
           options: {line: 'line'},
+          yLabel: t('Candidates registered', {ns: 'statistics'}),
           chartObject: null,
         },
       },
@@ -152,6 +157,7 @@ const Recruitment = (props) => {
       setChartDetails);
   };
 
+  // Helper functions to calculate totals for each view
   const getTotalProjectsCount = () => {
     return Object.keys(json['recruitment'] || {})
       .filter((key) => key !== 'overall').length;
@@ -234,7 +240,10 @@ const Recruitment = (props) => {
                     </div>
                   </>
                 ) : (
-                  <p>There have been no candidates registered yet.</p>
+                  <p>{t(
+                    'There have been no candidates registered yet.',
+                    {ns: 'statistics'}
+                  )}</p>
                 ),
             title: title('Site Breakdown'),
             subtitle: t(

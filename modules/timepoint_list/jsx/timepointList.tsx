@@ -49,6 +49,7 @@ type TimePointData = {
 };
 
 type ActionData = {
+  hasCandidateParameterAccess: boolean,
   isDataEntryPerson: boolean,
   isImagingPerson: boolean,
 };
@@ -150,7 +151,11 @@ function CandidateInfo(
 function Actions(
   props: Pick<TimepointListData, 'actions' | 'candID'> & WithTranslation
 ): React.ReactElement | null {
-  if (!props.actions.isDataEntryPerson && !props.actions.isImagingPerson) {
+  if (
+    !props.actions.hasCandidateParameterAccess
+    && !props.actions.isDataEntryPerson
+    && !props.actions.isImagingPerson
+  ) {
     return null;
   }
 
@@ -161,23 +166,15 @@ function Actions(
     <div className="col-xs-12 row">
       <h3>{props.t('Actions:', {ns: 'timepoint_list'})}</h3>
       {props.actions.isDataEntryPerson && (
-        <>
-          <a
-            className="btn btn-default"
-            href={`${loris.BaseURL}/create_timepoint/?${candidateQuery}`}
-            role="button"
-          >
-            {props.t('Create time point', {ns: 'timepoint_list'})}
-          </a>{' '}
-          <a
-            className="btn btn-default"
-            href={`${loris.BaseURL}/candidate_parameters/?${candidateQuery}`}
-            role="button"
-          >
-            {props.t('Candidate Info', {ns: 'timepoint_list'})}
-          </a>{' '}
-        </>
+        <a
+          className="btn btn-default"
+          href={`${loris.BaseURL}/create_timepoint/?${candidateQuery}`}
+          role="button"
+        >
+          {props.t('Create time point', {ns: 'timepoint_list'})}
+        </a>
       )}
+      {' '}
       {props.actions.isImagingPerson && (
         <a
           className="btn btn-default"
@@ -187,6 +184,16 @@ function Actions(
           role="button"
         >
           {props.t('View Imaging datasets', {ns: 'timepoint_list'})}
+        </a>
+      )}
+      {' '}
+      {props.actions.hasCandidateParameterAccess && (
+        <a
+          className="btn btn-default"
+          href={`${loris.BaseURL}/candidate_parameters/?${candidateQuery}`}
+          role="button"
+        >
+          {props.t('Candidate Info', {ns: 'timepoint_list'})}
         </a>
       )}
     </div>

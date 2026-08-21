@@ -167,6 +167,7 @@ foreach ($instruments AS $instrument) {
             break;
         case "jsondata":
         case "norules":
+        case "redcap":
             break;
         //for HTML_QuickForm versions of standard HTML Form Elements...
         default:

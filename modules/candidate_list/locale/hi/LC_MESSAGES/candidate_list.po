@@ -17,11 +17,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Access Profile"
 msgstr "प्रोफ़ाइल तक पहुँचें"
-
-
 
 msgid "Visit Count"
 msgstr "आगंतुक गणना"
@@ -29,5 +28,22 @@ msgstr "आगंतुक गणना"
 msgid "Open Profile"
 msgstr "प्रोफ़ाइल खोलें"
 
+msgid "Scanner"
+msgstr "स्कैनर"
+
+msgid "Human"
+msgstr "मानव"
+
+msgid "Opened"
+msgstr "खोला गया"
+
+msgid "Answered"
+msgstr "उत्तर दिया गया"
+
+msgid "Closed"
+msgstr "बंद"
+
+msgid "Comment"
+msgstr "टिप्पणी"
 
 
