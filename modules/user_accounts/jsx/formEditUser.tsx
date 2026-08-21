@@ -425,25 +425,47 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
    * Reject a pending account through the existing guarded endpoint.
    */
   const rejectUser = () => {
-    const lorisFetch = window.lorisFetch ?? fetch;
-    lorisFetch(`${loris.BaseURL}/user_accounts/ajax/rejectUser.php`, {
-      body: new URLSearchParams({identifier: data.identifier}),
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      },
-      method: 'POST',
-    }).then((response) => {
-      if (!response.ok) {
-        return response.text().then((message) => {
-          throw new Error(message);
-        });
+    void swal.fire({
+      cancelButtonText: props.t('Cancel', {ns: 'loris'}),
+      confirmButtonText: props.t(
+        'Yes, reject user!',
+        {ns: 'user_accounts'}
+      ),
+      html: props.t(
+        'Do you really want to reject this user?',
+        {ns: 'user_accounts'}
+      ) + '<br>' + props.t(
+        'This action cannot be undone.',
+        {ns: 'user_accounts'}
+      ),
+      showCancelButton: true,
+      title: props.t('Are you sure?', {ns: 'loris'}),
+      type: 'warning',
+    }).then((result) => {
+      if (!result.value) {
+        return;
       }
-      window.location.href = `${loris.BaseURL}/user_accounts/`;
-    }).catch((error: Error) => {
-      void swal.fire({
-        text: error.message,
-        type: 'error',
+
+      const lorisFetch = window.lorisFetch ?? fetch;
+      lorisFetch(`${loris.BaseURL}/user_accounts/ajax/rejectUser.php`, {
+        body: new URLSearchParams({identifier: data.identifier}),
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        method: 'POST',
+      }).then((response) => {
+        if (!response.ok) {
+          return response.text().then((message) => {
+            throw new Error(message);
+          });
+        }
+        window.location.href = `${loris.BaseURL}/user_accounts/`;
+      }).catch((error: Error) => {
+        void swal.fire({
+          text: error.message,
+          type: 'error',
+        });
       });
     });
   };

@@ -76,6 +76,13 @@ Class TimePoint_List_ControlPanel extends \Candidate
             ]
         );
 
+        $this->tpl_data['hasCandidateParameterAccess'] = $user->hasAnyPermission(
+            [
+                'candidate_parameter_view',
+                'candidate_parameter_edit'
+            ]
+        );
+
         //set the baseurl of the tpl_data
         $factory  = \NDB_Factory::singleton();
         $settings = $factory->settings();
@@ -87,4 +94,3 @@ Class TimePoint_List_ControlPanel extends \Candidate
         return $html;
     }
 }
-

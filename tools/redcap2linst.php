@@ -267,7 +267,8 @@ function writeLINSTFile(
     fwrite($fp_meta, "testname{@}$instrument_name\n");
     fwrite($fp_meta, "table{@}$instrument_name\n");
     fwrite($fp_meta, "jsondata{@}true\n");
-    fwrite($fp_meta, "norules{@}true");
+    fwrite($fp_meta, "norules{@}true\n");
+    fwrite($fp_meta, "redcap{@}true");
     fclose($fp_meta);
 }
 
