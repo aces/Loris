@@ -279,6 +279,14 @@ class CandidateInfo extends Component {
             label={t('DCCID', {ns: 'loris'})}
             text={this.state.Data.candID}
           />
+          <StaticElement
+            label={t('Registration Project', {ns: 'candidate_parameters'})}
+            text={this.state.Data.registrationProject}
+          />
+          <StaticElement
+            label={t('Registration Cohort', {ns: 'candidate_parameters'})}
+            text={this.state.Data.registrationCohort}
+          />
           <SelectElement
             label={
               t('Caveat Emptor Flag for Candidate',
