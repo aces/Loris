@@ -936,7 +936,7 @@ function editUploads($id) : void
         $ver = $_POST[$versionIndex] ?? null;
 
         if (htmlspecialchars(
-            $cit,
+            $cit ?? '',
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
@@ -945,7 +945,7 @@ function editUploads($id) : void
             $toUpdate[$puid]['Citation'] = $cit;
         }
         if (htmlspecialchars(
-            $ver,
+            $ver ?? '',
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false

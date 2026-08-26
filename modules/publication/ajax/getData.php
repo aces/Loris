@@ -323,11 +323,10 @@ function getFiles($id) : array
 
     $results = [];
     foreach ($files as $key => $f) {
-        $val = [];
-        $val['Citation'] = htmlspecialchars_decode($f['Citation']);
-        $val['Version']  = htmlspecialchars_decode($f['Version']);
+        $f['Citation'] = htmlspecialchars_decode($f['Citation'] ?? '');
+        $f['Version']  = htmlspecialchars_decode($f['Version'] ?? '');
 
-        $results[$key] = $val;
+        $results[$key] = $f;
     }
 
     return $results;
