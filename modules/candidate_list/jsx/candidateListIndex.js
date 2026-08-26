@@ -301,7 +301,7 @@ class CandidateListIndex extends Component {
         'show': true,
         'filter': {
           name: 'DoB',
-          type: 'date',
+          type: 'date-range',
           hide: this.state.hideFilter,
         },
       },
