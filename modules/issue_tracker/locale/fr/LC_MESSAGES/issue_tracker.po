@@ -58,10 +58,6 @@ msgstr "Date de création"
 msgid "Last Update"
 msgstr "Dernière mise à jour"
 
-#, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
-
 msgid "Watching"
 msgstr "En train de regarder"
 
@@ -90,7 +86,7 @@ msgid "Active Issues"
 msgstr "Incidents actifs"
 
 msgid "Closed Issues"
-msgstr "Incidents fermées"
+msgstr "Incidents fermés"
 
 msgid "My Issues"
 msgstr "Mes incidents"
@@ -112,6 +108,9 @@ msgstr "Ajouter un nouveau commentaire"
 
 msgid "Comment"
 msgstr "Commentaire"
+
+msgid "Failed to add comment"
+msgstr "Échec de l'ajout du commentaire"
 
 msgid "Create New Issue"
 msgstr "Créer un nouvel incident"
@@ -148,12 +147,18 @@ msgstr "Pièce jointe pour l’incident"
 msgid "Description"
 msgstr "Description"
 
+msgid "Attachment History"
+msgstr "Historique des pièces jointes"
+
 #, fuzzy
 msgid "Watching?"
 msgstr "Tu regardes ?"
 
 msgid "Watchers"
 msgstr "Observateurs"
+
+msgid "Submitting..."
+msgstr "Envoi en cours..."
 
 #, fuzzy
 msgid "Add others to watching?"
@@ -186,11 +191,19 @@ msgstr "Commentaires et historique"
 msgid "Last Updated By"
 msgstr "Dernière mise à jour par"
 
+msgid "Unassigned"
+msgstr "Non attribué"
+
 msgid "Created"
 msgstr "Créé"
 
 msgid "Last Updated"
 msgstr "Dernière mise à jour"
+
+msgid "({{count}} comment)"
+msgid_plural "({{count}} comments)"
+msgstr[0] "({{count}} commentaire)"
+msgstr[1] "({{count}} commentaires)"
 
 msgid "({{count}} issue)"
 msgid_plural "({{count}} issues)"
@@ -213,6 +226,9 @@ msgstr "Aucun incident ne correspond aux filtres sélectionnés."
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
 msgstr "Veuillez confirmer la demande de suppression de la pièce jointe « {{fileName}} »."
 
+msgid "Upload error!"
+msgstr "Erreur lors du téléversement !"
+
 msgid "Title cannot be empty"
 msgstr "Le titre ne peut pas être vide"
 
@@ -222,6 +238,9 @@ msgstr "Aucune modification n'a été apportée."
 
 msgid "Issue updated successfully"
 msgstr "Incident mis à jour avec succès"
+
+msgid "Failed to update issue"
+msgstr "Échec de la mise à jour du ticket"
 
 msgid "Information"
 msgstr "Information"
@@ -294,6 +313,33 @@ msgstr "Comptes utilisateur"
 msgid "Last 3 Comments"
 msgstr "3 derniers commentaires"
 
+msgid "Confirmation"
+msgstr "Confirmation"
+
+msgid "Delete attachment"
+msgstr "Supprimer la pièce jointe"
+
+msgid "Attachment options: "
+msgstr "Options de la pièce jointe : "
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "Date of attachment: "
+msgstr "Date de la pièce jointe : "
+
+msgid "File: "
+msgstr "Fichier : "
+
+msgid "User: "
+msgstr "Utilisateur : "
+
+msgid "Description: "
+msgstr "Description : "
+
 msgid "The server is not configured for attachments."
 msgstr "Le serveur n'est pas configuré pour les pièces jointes."
 
@@ -303,5 +349,59 @@ msgstr "Le serveur n'est pas configuré pour recevoir un fichier de cette taille
 msgid "Submit Attachment"
 msgstr "Soumettre la pièce jointe"
 
+msgid "An error occurred when loading the form!"
+msgstr "Une erreur s'est produite lors du chargement du formulaire !"
+
+msgid "Please add a comment or make changes"
+msgstr "Veuillez ajouter un commentaire ou apporter des modifications"
+
+msgid " to "
+msgstr " à "
+
 msgid "Submit Comment"
 msgstr "Soumettre le commentaire"
+
+msgid "Invalid request"
+msgstr "Requête invalide"
+
+msgid "PSCID and Center ID do not match a valid session!"
+msgstr "Le PSCID et l'identifiant du centre ne correspondent à aucune session valide !"
+
+msgid "PSCID and Visit Label do not match a valid candidate session!"
+msgstr "Le PSCID et l'étiquette de visite ne correspondent à aucune session valide du candidat !"
+
+msgid "PSCID does not match a valid candidate!"
+msgstr "Le PSCID ne correspond à aucun candidat valide !"
+
+msgid "Visit Label must be accompanied by a PSCID"
+msgstr "L'étiquette de visite doit être accompagnée d'un PSCID"
+
+msgid "Invalid Permissions"
+msgstr "Autorisations invalides"
+
+msgid "User does not have permission to edit issues."
+msgstr "L'utilisateur n'a pas l'autorisation de modifier les tickets."
+
+msgid "No comments available."
+msgstr "Aucun commentaire disponible."
+
+msgid "acknowledged"
+msgstr "reconnu"
+
+msgid "assigned"
+msgstr "attribué"
+
+msgid "feedback"
+msgstr "retour"
+
+msgid "new"
+msgstr "nouveau"
+
+msgid "resolved"
+msgstr "résolu"
+
+msgid "closed"
+msgstr "fermé"
+
+msgid "Uncategorized"
+msgstr "Non catégorisé"

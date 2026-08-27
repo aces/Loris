@@ -10,21 +10,37 @@
    this saves them all having to make the same requests over and over again. *}
 window.addEventListener('load', () => {
     let candidate = null;
+
+    function fetchProfileData(url) {
+        return fetch(loris.BaseURL + '/api/v0.0.3/' + url, {
+            cache: 'no-cache',
+            credentials: 'same-origin',
+        });
+    }
+
     async function loadCandidate() {
-        let response = await fetch(loris.BaseURL + '/api/v0.0.3/candidates/{$candidate->getCandID()}');
-        let data = await response.json();
-        candidate = data;
-        return data;
+        let response = await fetchProfileData(
+            'candidates/{$candidate->getCandID()}'
+        );
+        if (!response.ok) {
+            return new Error('Failed to load candidate (' + response.status + ')');
+        } else {
+            let data = await response.json();
+            candidate = data;
+            return candidate;
+        }
     };
 
     async function loadVisits(candidate) {
         let visits = candidate.Visits.map(async function(visit) {
-            // FIXME: This shouldn't use the dev version. See #6058
-            let response = await fetch(loris.BaseURL + '/api/v0.0.3/candidates/' + candidate.Meta.CandID + '/' + visit);
+            let response = await fetchProfileData(
+                'candidates/' + candidate.Meta.CandID + '/' + visit
+            );
             if (!response.ok) {
-              return new Error('Permission denied');
+              return new Error('Failed to load visit (' + response.status + ')');
             } else {
               let data = await response.json();
+              console.log(data)
               return data;
             }
         });

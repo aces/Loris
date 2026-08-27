@@ -1,6 +1,8 @@
+import i18n from 'I18nSetup';
 import swal from 'sweetalert2';
 
 $(function() {
+  const {t} = i18n;
   'use strict';
 
   $('div').tooltip();
@@ -47,13 +49,19 @@ $(function() {
       .attr('data-original-title');
 
     swal.fire({
-      text: 'Please confirm you want to delete the option "' +
-                selectedOption
-                + '" of the field "' + fieldName + '".',
+      text: t(
+        'Please confirm you want to delete the option'
+        + ' "{{option}}" of the field "{{field}}".',
+        {
+          ns: 'configuration',
+          option: selectedOption,
+          field: fieldName,
+        }
+      ),
       type: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Confirm',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: t('Confirm', {ns: 'configuration'}),
+      cancelButtonText: t('Cancel', {ns: 'loris'}),
     }).then((result) => {
       if (result.value) {
         let id = $(this).attr('name');
@@ -107,7 +115,10 @@ $(function() {
       url: loris.BaseURL + '/configuration/ajax/process.php',
       data: form,
       success: function() {
-        let html = '<label>Submitted</label>';
+        let html = '<label>' + t(
+          'Submitted',
+          {ns: 'configuration'}
+        ) + '</label>';
         $(html)
           .hide()
           .appendTo('.submit-area')

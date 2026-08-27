@@ -3,7 +3,7 @@
 	    	<li>
 		{if $access.next_stage}
                         <i class="fas fa-folder-open fa-sm" width="12" height="12"></i>&nbsp;<a
-				href="{$baseurl}/next_stage/?candID={$candID}&sessionID={$sessionID}&identifier={$sessionID}">{sprintf(dgettext("instrument_list", "Start %s Stage"), dgettext("loris", $next_stage))}</a>
+				href="{$baseurl}/next_stage/?candID={$candID}&sessionID={$sessionID}&identifier={$sessionID}">{sprintf(dgettext("instrument_list", "Start the \"%s\" Stage"), dgettext("loris", $next_stage))}</a>
 {else}
                         <small>({dgettext("instrument_list", "No actions")})</small>
 {/if}
@@ -58,7 +58,7 @@
 	</ul>
 
 
-	<h3 class="controlPanelSection">{dgettext("timepoint_list", "BVL QC")}</h3>
+	<h3 class="controlPanelSection">{dgettext("instrument_list", "BVL QC Type")}</h3>
 	<ul class="controlPanel fa-ul">
 		<li>
 			<span class="fa-li"><i class="{$bvl_qc_type_none.icon|default:'far fa-square'}"></i></span>
@@ -87,7 +87,7 @@
 		</li>
 	</ul>
 
-	<h3 class="controlPanelSection">{dgettext("timepoint_list", "BVL QC")}</h3>
+	<h3 class="controlPanelSection">{dgettext("instrument_list", "BVL QC Status")}</h3>
 	<ul class="controlPanel fa-ul">
 		<li>
 			<span class="fa-li"><i class="{$bvl_qc_status_none.icon|default:'far fa-square'}"></i></span>
