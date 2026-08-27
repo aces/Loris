@@ -658,26 +658,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan3()
     {
-        $this->safeGet($this->url . '/configuration/');
-        $this->safeClick(
-            WebDriverBy::cssSelector("a[href='#dashboard']")
-        );
-
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='49']/input"
-            )
-        )->clear();
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='49']/input"
-            )
-        )->sendKeys('888');
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
-            )
-        )->click();
+        $this->setupConfigSetting('recruitmentTarget', '888');
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
             WebDriverBy::Id("overall-recruitment")
@@ -686,6 +667,7 @@ class DashboardTest extends LorisIntegrationTest
             "888",
             $testText
         );
+        $this->restoreConfigSetting("recruitmentTarget");
     }
 
     /**
