@@ -51,35 +51,3 @@ ALTER TABLE `physiological_file`
   DROP FOREIGN KEY `physiological_file_head_shape_file_id_fk`,
   ADD CONSTRAINT `physiological_file_head_shape_file_id_fk`
     FOREIGN KEY (`HeadShapeFileID`) REFERENCES `meg_ctf_head_shape_file` (`ID`) ON DELETE SET NULL;
-
-/* Revert patch
-
-ALTER TABLE `physiological_file`
-  DROP FOREIGN KEY `physiological_file_head_shape_file_id_fk`,
-  ADD CONSTRAINT `physiological_file_head_shape_file_id_fk`
-    FOREIGN KEY (`HeadShapeFileID`) REFERENCES `meg_ctf_head_shape_file` (`ID`);
-
-ALTER TABLE `meg_ctf_head_shape_file`
-  DROP FOREIGN KEY `meg_ctf_head_shape_file_bids_info_id_fk`,
-  DROP KEY `meg_ctf_head_shape_file_bids_info_id_fk_idx`,
-  DROP COLUMN `InsertTime`,
-  DROP COLUMN `BidsInfoID`;
-
-ALTER TABLE `physiological_event_file`
-  DROP FOREIGN KEY `physiological_event_file_bids_info_id_fk`,
-  DROP KEY `physiological_event_file_bids_info_id_fk_idx`,
-  DROP COLUMN `BidsInfoID`;
-
-ALTER TABLE `physiological_file`
-  DROP FOREIGN KEY `physiological_file_bids_info_id_fk`,
-  DROP KEY `physiological_file_bids_info_id_fk_idx`,
-  DROP COLUMN `BidsInfoID`;
-
-ALTER TABLE `files`
-  DROP FOREIGN KEY `files_bids_info_id_fk`,
-  DROP KEY `files_bids_info_id_fk_idx`,
-  DROP COLUMN `BidsInfoID`;
-
-DROP TABLE `bids_file`;
-
-DROP TABLE `bids_dataset`; */
