@@ -117,21 +117,26 @@ class DataTable extends Component {
    */
 
   downloadCSV(filteredRowIndexes) {
+    const fields = this.props.fields.map((field, index) => ({field, index}));
+    const visibleFields = fields.filter(({field}) => field.show !== false);
+    const headers = this.props.fields.map((field) => field.label);
     let csvData = filteredRowIndexes.map((id) => this.props.data[id]);
     // Map cell data to proper values if applicable.
     if (this.props.getMappedCell) {
       csvData = csvData
-        .map((row, i) => this.props.fields
-          .map((field, j) => this.props.getMappedCell(
+        .map((row) => visibleFields
+          .map(({field, index}) => this.props.getMappedCell(
             field.label,
-            row[j],
+            row[index],
             row,
-            this.props.fields.map(
-              (val) => val.label,
-            ),
-            j
+            headers,
+            index
           ))
         );
+    } else {
+      csvData = csvData.map(
+        (row) => visibleFields.map(({index}) => row[index])
+      );
     }
 
     let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
@@ -152,7 +157,7 @@ class DataTable extends Component {
         document.body.removeChild(link);
       }
     });
-    const headerList = this.props.fields.map((field) => field.label);
+    const headerList = visibleFields.map(({field}) => field.label);
     csvworker.postMessage({
       cmd: 'SaveFile',
       data: csvData,
@@ -323,10 +328,28 @@ class DataTable extends Component {
       exactMatch = this.props.filters[name].exactMatch;
       opposite = this.props.filters[name].opposite;
     }
+    const field = this.props.fields.find(
+      (field) => field.filter?.name === name
+    );
+    const filter = field && field.filter ? field.filter : {};
 
     // Handle null inputs
     if (filterData === null || data === null) {
       return false;
+    }
+
+    // Handle date range inputs.
+    if (filter.type === 'date-range' &&
+      typeof filterData === 'object' &&
+      !Array.isArray(filterData)) {
+      const dateData = (data !== null && data !== undefined) ?
+        data.toString() : '';
+      const min = filterData.min || '';
+      const max = filterData.max || '';
+
+      return dateData !== '' &&
+        (min === '' || dateData >= min) &&
+        (max === '' || dateData <= max);
     }
 
     // Handle numeric inputs
@@ -375,7 +398,9 @@ class DataTable extends Component {
     }
 
     // Handle numeric range inputs
-    if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+    if (filter.type === 'number-range' &&
+      typeof filterData === 'object' &&
+      !Array.isArray(filterData)) {
       const numericData = Number.parseFloat(data);
       const min = Number.parseFloat(filterData.min);
       const max = Number.parseFloat(filterData.max);

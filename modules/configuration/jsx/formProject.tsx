@@ -229,12 +229,14 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
       } else {
         props.onSaved(props.projectID, values);
       }
-    } catch {
+    } catch (error) {
       setStatus({
-        message: props.t(
-          'Failed to save, same name already exist!',
-          {ns: 'configuration'}
-        ),
+        message: error instanceof Error
+          ? error.message
+          : props.t(
+            'Failed to save, same name already exist!',
+            {ns: 'configuration'}
+          ),
         type: 'error',
       });
     } finally {

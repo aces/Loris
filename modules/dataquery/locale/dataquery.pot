@@ -250,9 +250,6 @@ msgstr ""
 msgid "No visits selected for criteria."
 msgstr ""
 
-msgid "Add criteria"
-msgstr ""
-
 msgid "Field"
 msgid_plural "Fields"
 msgstr[0] ""
@@ -343,6 +340,12 @@ msgid "Invalid DCCID"
 msgstr ""
 
 msgid "Invalid DCCID ({{id}}) on line {{line}}."
+msgstr ""
+
+msgid "Invalid PSCID"
+msgstr ""
+
+msgid "Invalid PSCID ({{id}}) on line {{line}}."
 msgstr ""
 
 msgid "Welcome to the Data Query Tool"

@@ -1,0 +1,774 @@
+msgid ""
+msgstr ""
+
+"Project-Id-Version: LORIS 29.0\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2026-07-27 14:37-0400\n"
+"Last-Translator: Shen Wang <wangshen.mcin@gmail.com>\n"
+
+"Plural-Forms: nplurals=1; plural=0\n"
+
+# Labels
+
+msgid "Study title"
+msgstr "研究标题"
+
+msgid "Study logo"
+msgstr "研究标志"
+
+msgid "Login Top Left Logo"
+msgstr "登录页左上标志"
+
+msgid "Login Top Right Logo"
+msgstr "登录页右上标志"
+
+msgid "Login Top Left Logo Link"
+msgstr "登录页左上标志链接"
+
+msgid "Login Top Right Logo Link"
+msgstr "登录页右上标志链接"
+
+msgid "Partner Logos"
+msgstr "合作伙伴标志"
+
+msgid "Start year"
+msgstr "开始年份"
+
+msgid "End year"
+msgstr "结束年份"
+
+msgid "Minimum candidate age"
+msgstr "最小候选人年龄"
+
+msgid "Maximum candidate age"
+msgstr "最大候选人年龄"
+
+msgid "DOB Format"
+msgstr "出生日期格式"
+
+msgid "DOD Format"
+msgstr "死亡日期格式"
+
+msgid "Use family"
+msgstr "使用家庭"
+
+msgid "Use proband"
+msgstr "使用先证者"
+
+msgid "Use EDC"
+msgstr "使用预产期"
+
+msgid "Use external ID"
+msgstr "使用外部ID"
+
+msgid "Use DoB"
+msgstr "使用出生日期"
+
+msgid "Use screening"
+msgstr "使用筛选"
+
+msgid "Additional user information"
+msgstr "附加用户信息"
+
+msgid "Use consent"
+msgstr "使用知情同意"
+
+msgid "Excluded instruments"
+msgstr "排除的工具"
+
+msgid "Instrument Resetting"
+msgstr "工具重置"
+
+msgid "Use Supplemental Session Status"
+msgstr "使用补充会话状态"
+
+msgid "Allow Prenatal Timepoints"
+msgstr "允许产前时间点"
+
+msgid "ImagingUploader Auto Launch"
+msgstr "影像上传自动启动"
+
+msgid "Enable \"Pwned Password\" check"
+msgstr "启用\"已泄露密码\"检查"
+
+msgid "Citation Policy"
+msgstr "引用政策"
+
+msgid "Content-Security Extensions"
+msgstr "内容安全扩展"
+
+msgid "Date display format"
+msgstr "日期显示格式"
+
+msgid "Administrator Email"
+msgstr "管理员邮箱"
+
+msgid "Maximum Days Before Maing User Inactive"
+msgstr "用户不活跃最大天数"
+
+msgid "Base"
+msgstr "基础"
+
+msgid "Logs"
+msgstr "日志"
+
+msgid "Downloads"
+msgstr "下载"
+
+msgid "Incoming data"
+msgstr "传入数据"
+
+msgid "Genomic Data Path"
+msgstr "基因组数据路径"
+
+msgid "Issue Tracker Data Path"
+msgstr "问题跟踪数据路径"
+
+msgid "Images"
+msgstr "图像"
+
+msgid "Media"
+msgstr "媒体"
+
+msgid "Publications"
+msgstr "发布"
+
+msgid "Deleted Publications"
+msgstr "已删除发布"
+
+msgid "Document Repository Upload Path"
+msgstr "文档库上传路径"
+
+msgid "Data Release Upload Path"
+msgstr "数据发布上传路径"
+
+msgid "Study Description"
+msgstr "研究描述"
+
+msgid "Enable the EEG Browser components"
+msgstr "启用EEG浏览器组件"
+
+msgid "Host"
+msgstr "主机"
+
+msgid "Issue Tracker URL"
+msgstr "问题跟踪URL"
+
+msgid "Project Description"
+msgstr "项目描述"
+
+msgid "Target number of participants"
+msgstr "目标参与者数量"
+
+msgid "Patient ID regex"
+msgstr "患者ID正则表达式"
+
+msgid "Patient name regex"
+msgstr "患者姓名正则表达式"
+
+msgid "Lego phantom regex"
+msgstr "乐高体模正则表达式"
+
+msgid "Living phantom regex"
+msgstr "活体模正则表达式"
+
+msgid "Show transfer status"
+msgstr "显示传输状态"
+
+msgid "Use Advanced Permissions"
+msgstr "使用高级权限"
+
+msgid "Imaging Browser Tabulated Scan Types"
+msgstr "影像浏览器表格扫描类型"
+
+msgid "Imaging Browser Links To Instruments"
+msgstr "影像浏览器到工具链接"
+
+msgid "From"
+msgstr "发件人"
+
+msgid "Reply-to"
+msgstr "回复地址"
+
+msgid "X-MimeOLE"
+msgstr "X-MimeOLE"
+
+msgid "File Group for Uploads"
+msgstr "上传文件组"
+
+msgid "JWT Secret Key"
+msgstr "JWT密钥"
+
+msgid "reCAPTCHA Private Key"
+msgstr "reCAPTCHA私钥"
+
+msgid "reCAPTCHA Public Key"
+msgstr "reCAPTCHA公钥"
+
+msgid "Database Log Level"
+msgstr "数据库日志级别"
+
+msgid "HTTP Request Log Level"
+msgstr "HTTP请求日志级别"
+
+msgid "PHP Exception Log Level"
+msgstr "PHP异常日志级别"
+
+msgid "BIDS Dataset Authors"
+msgstr "BIDS数据集作者"
+
+msgid "BIDS Dataset Acknowledgments"
+msgstr "BIDS数据集致谢"
+
+msgid "BIDS Dataset README"
+msgstr "BIDS数据集README"
+
+msgid "BIDS Validation options to ignore"
+msgstr "BIDS验证忽略选项"
+
+msgid "AWS S3 Endpoint"
+msgstr "AWS S3端点"
+
+msgid "AWS S3 Region"
+msgstr "AWS S3区域"
+
+msgid "AWS S3 Default Bucket"
+msgstr "AWS S3默认桶"
+
+msgid "Loris-MRI Data Directory"
+msgstr "Loris-MRI数据目录"
+
+msgid "Study Name"
+msgstr "研究名称"
+
+msgid "User to notify when executing the pipeline"
+msgstr "执行流程时通知的用户"
+
+msgid "Full path to get_dicom_info.pl script"
+msgstr "get_dicom_info.pl脚本完整路径"
+
+msgid "Horizontal pictures creation"
+msgstr "水平图像创建"
+
+msgid "LORIS-MRI code"
+msgstr "LORIS-MRI代码"
+
+msgid "NIfTI file creation"
+msgstr "NIfTI文件创建"
+
+msgid "MRI Incoming Directory"
+msgstr "MRI传入目录"
+
+msgid "DICOM converter tool to use (dcm2mnc or dcm2niix)"
+msgstr "要使用的DICOM转换工具（dcm2mnc或dcm2niix）"
+
+msgid "Path to Tarchives"
+msgstr "Tarchives路径"
+
+msgid "Patient identifiers and center name lookup variable"
+msgstr "患者标识符和中心名称查找变量"
+
+msgid "Enable candidate creation"
+msgstr "启用候选人创建"
+
+msgid "Enable visit creation"
+msgstr "启用访视创建"
+
+msgid "Path to the MINC tools"
+msgstr "MINC工具路径"
+
+msgid "Default project"
+msgstr "默认项目"
+
+msgid "Default cohort"
+msgstr "默认队列"
+
+msgid "Default visit label for BIDS dataset"
+msgstr "BIDS数据集默认访视标签"
+
+msgid "Project batch management used"
+msgstr "使用的项目批次管理"
+
+msgid "Use legacy DICOM study importer"
+msgstr "使用旧版DICOM研究导入器"
+
+msgid "Number of volumes in native DTI acquisitions"
+msgstr "原生DTI采集中的体积数"
+
+msgid "Scan type of native T1 acquisition"
+msgstr "原生T1采集的扫描类型"
+
+msgid "Max number of DTI rejected directions for passing QC"
+msgstr "通过QC的最大DTI拒绝方向数"
+
+msgid "NIAK Path"
+msgstr "NIAK路径"
+
+msgid "Secondary QCed dataset"
+msgstr "二次QC数据集"
+
+msgid "Series description to exclude from imaging insertion"
+msgstr "从影像插入中排除的序列描述"
+
+msgid "Compute automatic QC"
+msgstr "计算自动QC"
+
+msgid "Name of the Perl MRI config file"
+msgstr "Perl MRI配置文件名称"
+
+msgid "Name of the environment file"
+msgstr "环境文件名称"
+
+msgid "Modalities on which SNR should be calculated"
+msgstr "应计算SNR的模态"
+
+msgid "Scan type to use as a reference for defacing (typically a T1W image)"
+msgstr "用作去面参考的扫描类型（通常为T1W图像）"
+
+msgid "Modalities on which to run the defacing pipeline"
+msgstr "运行去面流程的模态"
+
+msgid "Name of the Python MRI config file"
+msgstr "Python MRI配置文件名称"
+
+msgid "Label Printing Endpoint"
+msgstr "标签打印端点"
+
+msgid "EEG Incoming Directory"
+msgstr "EEG传入目录"
+
+msgid "EEG S3 data path"
+msgstr "EEG S3数据路径"
+
+msgid "EEG chunks path"
+msgstr "EEG数据块路径"
+
+msgid "Study"
+msgstr "研究"
+
+msgid "Paths"
+msgstr "路径"
+
+msgid "GUI"
+msgstr "图形界面"
+
+msgid "WWW"
+msgstr "网页"
+
+msgid "Dashboard"
+msgstr "仪表盘"
+
+msgid "Imaging Modules"
+msgstr "影像模块"
+
+msgid "Statistics"
+msgstr "统计"
+
+msgid "Email"
+msgstr "电子邮件"
+
+msgid "Uploads"
+msgstr "上传"
+
+msgid "API Keys"
+msgstr "API密钥"
+
+msgid "Log Settings"
+msgstr "日志设置"
+
+msgid "MINC to BIDS Converter Tool Options"
+msgstr "MINC到BIDS转换工具选项"
+
+msgid "AWS Settings"
+msgstr "AWS设置"
+
+msgid "Imaging Pipeline"
+msgstr "影像流程"
+
+msgid "Biobank"
+msgstr "生物样本库"
+
+msgid "EEG Pipeline"
+msgstr "EEG流程"
+
+# Descriptions
+
+msgid "Settings related to details of the study"
+msgstr "与研究详情相关的设置"
+
+msgid "Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality."
+msgstr "指定LORIS相关文件存储或创建的目录。编辑这些字段时请小心，错误的更改可能导致某些模块失去功能。"
+
+msgid "Settings related to the overall display of LORIS"
+msgstr "与LORIS整体显示相关的设置"
+
+msgid "Web address settings"
+msgstr "网址设置"
+
+msgid "Settings that affect the appearance of the dashboard and its charts"
+msgstr "影响仪表盘及其图表外观的设置"
+
+msgid "DICOM Archive and Imaging Browser settings"
+msgstr "DICOM归档和影像浏览器设置"
+
+msgid "Statistics module settings"
+msgstr "统计模块设置"
+
+msgid "LORIS email settings for notifications sent to users"
+msgstr "用于发送给用户通知的LORIS电子邮件设置"
+
+msgid "Settings related to file uploading"
+msgstr "与文件上传相关的设置"
+
+msgid "Specify any API keys required for LORIS"
+msgstr "指定LORIS所需的任何API密钥"
+
+msgid "Settings related to logging"
+msgstr "与日志记录相关的设置"
+
+msgid "Settings related to converting MINC to BIDS LORIS-MRI tool script"
+msgstr "与MINC到BIDS转换的LORIS-MRI工具脚本相关的设置"
+
+msgid "Settings related to AWS services"
+msgstr "与AWS服务相关的设置"
+
+msgid "Imaging Pipeline settings"
+msgstr "影像流程设置"
+
+msgid "Settings related to the biobank module"
+msgstr "与生物样本库模块相关的设置"
+
+msgid "EEG Pipeline settings"
+msgstr "EEG流程设置"
+
+msgid "Full descriptive title of the study"
+msgstr "研究的完整描述性标题"
+
+msgid "Filename containing logo of the study. File should be located under the htdocs/images/ folder"
+msgstr "包含研究标志的文件名。文件应位于htdocs/images/文件夹下"
+
+msgid "Path for top left logo on the login page."
+msgstr "登录页面左上标志的路径。"
+
+msgid "Path for top right logo on the login page."
+msgstr "登录页面右上标志的路径。"
+
+msgid "Optional link to redirect when clicking on top left logo"
+msgstr "点击左上标志时的可选重定向链接"
+
+msgid "Optional link to redirect when clicking on top right logo"
+msgstr "点击右上标志时的可选重定向链接"
+
+msgid "Logos for partners to be displayed in the homepage"
+msgstr "在首页显示的合作伙伴标志"
+
+msgid "Start year for study recruitment or data collection"
+msgstr "研究招募或数据收集的开始年份"
+
+msgid "End year for study recruitment or data collection"
+msgstr "研究招募或数据收集的结束年份"
+
+msgid "Minimum candidate age in years (0+)"
+msgstr "最小候选人年龄（岁，0岁以上）"
+
+msgid "Maximum candidate age in years"
+msgstr "最大候选人年龄（岁）"
+
+msgid "Format of the Date of Birth"
+msgstr "出生日期格式"
+
+msgid "Format of the Date of Death"
+msgstr "死亡日期格式"
+
+msgid "Enable if family members are recruited for the study"
+msgstr "如果研究招募了家庭成员则启用"
+
+msgid "Enable for proband data collection"
+msgstr "为先证者数据收集启用"
+
+msgid "Use EDC (Expected Date of Confinement) for birthdate estimations if the study involves neonatals"
+msgstr "如果研究涉及新生儿，则使用预产期（EDC）进行出生日期估算"
+
+msgid "Enable if data is used for blind data distribution, or from external data sources"
+msgstr "如果数据用于盲法分发或来自外部数据源则启用"
+
+msgid "Use DoB (Date of Birth)"
+msgstr "使用出生日期"
+
+msgid "Enable if there is a Screening stage with its own distinct instruments, administered before the Visit stage"
+msgstr "如果在访视阶段之前有独立的筛选阶段及其特有工具则启用"
+
+msgid "Display additional user profile fields on the User accounts page (e.g. Institution, Position, Country, Address)"
+msgstr "在用户账户页面显示额外的用户资料字段（例如机构、职位、国家、地址）"
+
+msgid "Enable if the study uses the loris architecture for consent"
+msgstr "如果研究使用LORIS架构进行知情同意则启用"
+
+msgid "Instruments to be excluded from the Data Dictionary and download via the Data Query Tool"
+msgstr "要从数据字典和通过数据查询工具下载中排除的工具"
+
+msgid "Allows resetting of instrument data"
+msgstr "允许重置工具数据"
+
+msgid "Display supplemental session status information on Timepoint List page"
+msgstr "在时间点列表页面显示补充会话状态信息"
+
+msgid "Determines whether creation of timepoints prior to Date of Birth is allowed"
+msgstr "确定是否允许创建在出生日期之前的时间点"
+
+msgid "Allows running the ImagingUpload pre-processing scripts"
+msgstr "允许运行ImagingUpload预处理脚本"
+
+msgid "Whether to query the Have I Been Pwned password API on password changes to prevent the usage of common and breached passwords"
+msgstr "是否在密码更改时查询Have I Been Pwned密码API以防止使用常见和被泄露的密码"
+
+msgid "Citation Policy for Acknowledgements module"
+msgstr "致谢模块的引用政策"
+
+msgid "Extensions to the Content-security policy allow only for self-hosted content"
+msgstr "内容安全策略扩展仅允许自托管内容"
+
+msgid "The date format to use throughout LORIS for displaying date information - formats for date inputs are browser- and locale-dependent."
+msgstr "在LORIS中用于显示日期信息的日期格式 - 日期输入的格式取决于浏览器和区域设置。"
+
+msgid "An email address that users can write to in order to report issues or ask question"
+msgstr "用户可以写信报告问题或提问的电子邮件地址"
+
+msgid "The maximum number of days since last login before making a user inactive."
+msgstr "自上次登录后使用户变为不活跃状态的最大天数。"
+
+msgid "The base filesystem path where LORIS is installed"
+msgstr "LORIS安装的基础文件系统路径"
+
+msgid "Path to logs (relative path starting from /var/www/$projectname)"
+msgstr "日志路径（从/var/www/$projectname开始的相对路径）"
+
+msgid "Where files are downloaded"
+msgstr "文件下载的位置"
+
+msgid "Path for imaging data transferred to the project server (e.g. /data/incoming/$project/)"
+msgstr "传输到项目服务器的影像数据路径（例如/data/incoming/$project/）"
+
+msgid "Path to Genomic data files"
+msgstr "基因组数据文件路径"
+
+msgid "Path to Issue Tracker data files"
+msgstr "问题跟踪数据文件路径"
+
+msgid "Path to images for display in Imaging Browser (e.g. /data/$project/data/) "
+msgstr "在影像浏览器中显示的图像路径（例如/data/$project/data/）"
+
+msgid "Path to uploaded media files"
+msgstr "上传的媒体文件路径"
+
+msgid "Path to uploaded publications"
+msgstr "上传的发布文件路径"
+
+msgid "Path to deleted publications"
+msgstr "已删除发布文件路径"
+
+msgid "Path to uploaded document repository files"
+msgstr "上传的文档库文件路径"
+
+msgid "Path to uploaded data release files"
+msgstr "上传的数据发布文件路径"
+
+msgid "Description of the Study"
+msgstr "研究描述"
+
+msgid "Whether to enable the visualization components on the EEG Browser module"
+msgstr "是否在EEG浏览器模块上启用可视化组件"
+
+msgid "URL of the preferred issue tracker for this study"
+msgstr "此研究的首选问题跟踪器URL"
+
+msgid "Description of the study displayed in main dashboard panel"
+msgstr "在仪表盘主面板显示的研究描述"
+
+msgid "Target number of participants for the study"
+msgstr "研究的目标参与者数量"
+
+msgid "Regex for masking the Patient ID header field"
+msgstr "用于屏蔽患者ID头字段的正则表达式"
+
+msgid "Regex for masking the Patient Name header field"
+msgstr "用于屏蔽患者姓名头字段的正则表达式"
+
+msgid "Regex for identifying a Lego Phantom scan header"
+msgstr "用于识别乐高体模扫描头的正则表达式"
+
+msgid "Regex to be used on Living Phantom scan header"
+msgstr "用于活体模扫描头的正则表达式"
+
+msgid "Show transfer status in the DICOM Archive table"
+msgstr "在DICOM归档表中显示传输状态"
+
+msgid "Restricts access to data based on both sites and projects and require a special permission to access data not affiliated to a session (SessionID null). Keeping this setting to NO should ensure backwards compatibility (access to all data when module loads)"
+msgstr "根据站点和项目限制数据访问，并需要特殊权限才能访问与会话无关的数据（SessionID为空）。将此设置保持为\"否\"可确保向后兼容性（模块加载时访问所有数据）"
+
+msgid "Scan types from the mri_scan_type table that the project wants to see displayed in Imaging Browser table"
+msgstr "项目希望在影像浏览器表中显示的来自mri_scan_type表的扫描类型"
+
+msgid "Instruments that the users want to see linked from Imaging Browser"
+msgstr "用户希望从影像浏览器链接到的工具"
+
+msgid "Instruments to be excluded from Statistics calculations"
+msgstr "要从统计计算中排除的工具"
+
+msgid "Sender email address header (e.g. admin@myproject.loris.ca)"
+msgstr "发件人电子邮件地址头（例如admin@myproject.loris.ca）"
+
+msgid "Reply-to email address header (e.g. admin@myproject.loris.ca)"
+msgstr "回复电子邮件地址头（例如admin@myproject.loris.ca）"
+
+msgid "Determines the group permission for new subdirectories created for uploaded files"
+msgstr "确定为上传文件创建的新子目录的组权限"
+
+msgid "Secret key for signing JWT tokens on this server. This should be unique and never shared with anyone. "
+msgstr "在此服务器上签名JWT令牌的密钥。此密钥应唯一且不得与任何人共享。"
+
+msgid "Private Key for Google reCAPTCHA"
+msgstr "Google reCAPTCHA私钥"
+
+msgid "Public Key for Google reCaptcha"
+msgstr "Google reCAPTCHA公钥"
+
+msgid "Verbosity of database logging"
+msgstr "数据库日志详细程度"
+
+msgid "Verbosity of HTTP request logs"
+msgstr "HTTP请求日志详细程度"
+
+msgid "Verbosity of PHP exception logging"
+msgstr "PHP异常日志详细程度"
+
+msgid "Authors for the BIDS dataset"
+msgstr "BIDS数据集作者"
+
+msgid "Acknowledgments to be added in the dataset_description.json file of the BIDS dataset created out of the MINC files"
+msgstr "要添加到基于MINC文件创建的BIDS数据集的dataset_description.json文件中的致谢"
+
+msgid "Content to be added to the README of the BIDS dataset generated out of the MINC files"
+msgstr "要添加到基于MINC文件生成的BIDS数据集README中的内容"
+
+msgid "Options to be ignored for BIDS validation"
+msgstr "BIDS验证中忽略的选项"
+
+msgid "Endpoint to use for accessing files stored in S3. Endpoint or region are required for S3 support."
+msgstr "用于访问S3中存储文件的端点。S3支持需要端点或区域。"
+
+msgid "AWS Region to use for accessing files stored in S3. Endpoint or region are required for S3 support."
+msgstr "用于访问S3中存储文件的AWS区域。S3支持需要端点或区域。"
+
+msgid "Default bucket for LORIS to use for accessing files in S3."
+msgstr "LORIS用于访问S3中文件的默认桶。"
+
+msgid "Base Path to the data directory of Loris-MRI"
+msgstr "Loris-MRI数据目录的基础路径"
+
+msgid "Study prefix or study name"
+msgstr "研究前缀或研究名称"
+
+msgid "User to be notified during imaging pipeline execution"
+msgstr "影像流程执行期间要通知的用户"
+
+msgid "Full path to get_dicom_info.pl"
+msgstr "get_dicom_info.pl的完整路径"
+
+msgid "Enable generation of horizontal pictures"
+msgstr "启用水平图像生成"
+
+msgid "Path to directory where Loris-MRI (git) code is installed"
+msgstr "Loris-MRI（git）代码安装目录的路径"
+
+msgid "Enable creation of NIfTI files"
+msgstr "启用NIfTI文件创建"
+
+msgid "Path to the upload directory for incoming MRI studies"
+msgstr "传入MRI研究的上传目录路径"
+
+msgid "If converter is set to dcm2mnc, the c-version of dcm2mnc will be used. If however you want to use any of the various versions of the converter, you will have to specify what it is called and the uploader will try to invoke it"
+msgstr "如果转换器设置为dcm2mnc，将使用dcm2mnc的C版本。但如果要使用转换器的其他版本，必须指定其名称，上传程序将尝试调用它"
+
+msgid "Location of storing the library of used tarchives. If this is not set, they will not be moved"
+msgstr "存储已用tarchive库的位置。如果未设置，则不会移动它们"
+
+msgid "DICOM field (either PatientName or PatientID) to use to get the patient identifiers and the center name of the DICOM study"
+msgstr "用于获取DICOM研究的患者标识符和中心名称的DICOM字段（PatientName或PatientID）"
+
+msgid "Enable candidate creation in the imaging pipeline"
+msgstr "在影像流程中启用候选人创建"
+
+msgid "Enable visit creation in the imaging pipeline"
+msgstr "在影像流程中启用访视创建"
+
+msgid "Default project used when creating scan candidate or visit"
+msgstr "创建扫描候选人或访视时使用的默认项目"
+
+msgid "Default cohort used when creating scan visit"
+msgstr "创建扫描访视时使用的默认队列"
+
+msgid "Default visit label to use when no visit label set in the BIDS dataset"
+msgstr "BIDS数据集中未设置访视标签时使用的默认访视标签"
+
+msgid "Enable use of batch management in the imaging pipeline"
+msgstr "在影像流程中启用批次管理"
+
+msgid "Use the legacy DICOM study importer instead of the new one"
+msgstr "使用旧版DICOM研究导入器而非新版"
+
+msgid "Scan type of native T1 acquisition (as in the mri_scan_type table)"
+msgstr "原生T1采集的扫描类型（如mri_scan_type表中定义）"
+
+msgid "Max number of directions that can be rejected to PASS QC"
+msgstr "可通过QC的最大拒绝方向数"
+
+msgid "Path to niak quarantine to use if mincdiffusion will be run (option -runMincdiffusion set when calling DTIPrep_pipeline.pl)"
+msgstr "如果要运行mincdiffusion，则使用的niak隔离路径（调用DTIPrep_pipeline.pl时设置-runMincdiffusion选项）"
+
+msgid "DTIPrep protocol step at which a secondary QCed dataset is produced (for example one without motion correction and eddy current correction would be saved at INTERLACE_outputDWIFileNameSuffix step of DTIPrep)"
+msgstr "产生二次QC数据集的DTIPrep协议步骤（例如，没有运动校正和涡流校正的数据集将保存在DTIPrep的INTERLACE_outputDWIFileNameSuffix步骤）"
+
+msgid "Series description to be excluded from insertion into the database (typically localizers and scouts)"
+msgstr "要从数据库插入中排除的序列描述（通常为定位器和预扫描）"
+
+msgid "Determines whether a call is made from LORIS-MRI to the DeepQC app for automatic QC prediction"
+msgstr "确定是否从LORIS-MRI调用DeepQC应用进行自动QC预测"
+
+msgid "Name of the Perl MRI config file (stored in dicom-archive/.loris_mri/)"
+msgstr "Perl MRI配置文件名称（存储在dicom-archive/.loris_mri/中）"
+
+msgid "Name of the environment file that need to be sourced for the imaging pipeline"
+msgstr "影像流程需要加载的环境文件名称"
+
+msgid "Modalities for which the SNR should be computed when running the insertion MRI scripts"
+msgstr "运行MRI插入脚本时应计算SNR的模态"
+
+msgid "Scan type to use as a reference for registration when defacing anatomical images (typically a T1W image)"
+msgstr "去面解剖图像时用作配准参考的扫描类型（通常为T1W图像）"
+
+msgid "Modalities for which defacing should be run and defaced image inserted in the database"
+msgstr "应运行去面处理并将去面图像插入数据库的模态"
+
+msgid "Name of the Python MRI config file (stored in dicom-archive/.loris_mri/)"
+msgstr "Python MRI配置文件名称（存储在dicom-archive/.loris_mri/中）"
+
+msgid "Endpoint address for label printing logic"
+msgstr "标签打印逻辑的端点地址"
+
+msgid "Path to the upload directory for incoming EEG studies"
+msgstr "传入EEG研究的上传目录路径"
+
+msgid "EEG S3 data path for assembly data"
+msgstr "用于组装数据的EEG S3数据路径"
+
+msgid "Path to store the EEG chunks for Visualization"
+msgstr "用于存储EEG数据块以进行可视化的路径"

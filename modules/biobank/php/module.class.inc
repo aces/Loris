@@ -149,4 +149,14 @@ class Module extends \Module
     {
         return dgettext("biobank", "Biospecimens");
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Query\QueryEngine[]
+     */
+    public function getQueryEngines() : iterable
+    {
+        return [new QueryEngine($this->loris)];
+    }
 }

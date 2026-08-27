@@ -21,3 +21,107 @@ msgstr ""
 msgid "Acknowledgements"
 msgstr ""
 
+msgid "Douglas"
+msgstr ""
+
+msgid "McGill"
+msgstr ""
+
+msgid "Bachelors"
+msgstr ""
+
+msgid "Masters"
+msgstr ""
+
+msgid "PhD"
+msgstr ""
+
+msgid "Postdoctoral"
+msgstr ""
+
+msgid "MD"
+msgstr ""
+
+msgid "Registered Nurse"
+msgstr ""
+
+msgid "Investigators"
+msgstr ""
+
+msgid "Project Administration"
+msgstr ""
+
+msgid "Database Management"
+msgstr ""
+
+msgid "Interview Data Collection"
+msgstr ""
+
+msgid "Data Analyses"
+msgstr ""
+
+msgid "MRI Acquisition"
+msgstr ""
+
+msgid "Data Entry"
+msgstr ""
+
+msgid "Database Programming"
+msgstr ""
+
+msgid "Imaging Processing and Evaluation"
+msgstr ""
+
+msgid "Genetic Analysis"
+msgstr ""
+
+msgid "Randomization and Pharmacy Allocation"
+msgstr ""
+
+msgid "Consultants"
+msgstr ""
+
+msgid "LP/CSF Collection"
+msgstr ""
+
+msgid "Acknowledgement added."
+msgstr ""
+
+msgid "Citation Policy"
+msgstr ""
+
+msgid "Add Acknowledgement"
+msgstr ""
+
+msgid "Citation Name"
+msgstr ""
+
+msgid "Ordering"
+msgstr ""
+
+msgid "Full Name"
+msgstr ""
+
+msgid "Citation Name"
+msgstr ""
+
+msgid "Degrees"
+msgstr ""
+
+msgid "Roles"
+msgstr ""
+
+msgid "Start Date"
+msgstr ""
+
+msgid "End Date"
+msgstr ""
+
+msgid "Present"
+msgstr ""
+
+msgid "Add Acknowledgement"
+msgstr ""
+
+msgid "An unexpected error occurred."
+msgstr ""

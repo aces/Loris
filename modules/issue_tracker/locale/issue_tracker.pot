@@ -55,9 +55,6 @@ msgstr ""
 msgid "Last Update"
 msgstr ""
 
-msgid "SessionID"
-msgstr ""
-
 msgid "Watching"
 msgstr ""
 
@@ -109,6 +106,9 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
+msgid "Failed to add comment"
+msgstr ""
+
 msgid "Create New Issue"
 msgstr ""
 
@@ -148,6 +148,9 @@ msgstr ""
 msgid "Watchers"
 msgstr ""
 
+msgid "Submitting..."
+msgstr ""
+
 msgid "Add others to watching?"
 msgstr ""
 
@@ -175,6 +178,9 @@ msgstr ""
 msgid "Last Updated By"
 msgstr ""
 
+msgid "Unassigned"
+msgstr ""
+
 msgid "Created"
 msgstr ""
 
@@ -197,7 +203,14 @@ msgstr ""
 msgid "No issues match the selected filters."
 msgstr ""
 
+msgid "({{count}} comment)"
+msgid_plural "({{count}} comments)"
+msgstr[0] ""
+
 msgid "Please confirm the request to delete the \"{{fileName}}\" attachment."
+msgstr ""
+
+msgid "Upload error!"
 msgstr ""
 
 msgid "Title cannot be empty"
@@ -207,6 +220,9 @@ msgid "No changes were made"
 msgstr ""
 
 msgid "Issue updated successfully"
+msgstr ""
+
+msgid "Failed to update issue"
 msgstr ""
 
 msgid "Information"
@@ -272,6 +288,36 @@ msgstr ""
 msgid "Last 3 Comments"
 msgstr ""
 
+msgid "Confirmation"
+msgstr ""
+
+msgid "Delete attachment"
+msgstr ""
+
+msgid "Attachment options: "
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Date of attachment: "
+msgstr ""
+
+msgid "File: "
+msgstr ""
+
+msgid "User: "
+msgstr ""
+
+msgid "Description: "
+msgstr ""
+
+msgid "Attachment History"
+msgstr ""
+
 msgid "The server is not configured to receive a file this large."
 msgstr ""
 
@@ -281,5 +327,59 @@ msgstr ""
 msgid "Submit Attachment"
 msgstr ""
 
+msgid "An error occurred when loading the form!"
+msgstr ""
+
+msgid "Please add a comment or make changes"
+msgstr ""
+
+msgid " to "
+msgstr ""
+
 msgid "Submit Comment"
+msgstr ""
+
+msgid "Invalid request"
+msgstr ""
+
+msgid "PSCID and Center ID do not match a valid session!"
+msgstr ""
+
+msgid "PSCID and Visit Label do not match a valid candidate session!"
+msgstr ""
+
+msgid "PSCID does not match a valid candidate!"
+msgstr ""
+
+msgid "Visit Label must be accompanied by a PSCID"
+msgstr ""
+
+msgid "Invalid Permissions"
+msgstr ""
+
+msgid "User does not have permission to edit issues."
+msgstr ""
+
+msgid "No comments available."
+msgstr ""
+
+msgid "acknowledged"
+msgstr ""
+
+msgid "assigned"
+msgstr ""
+
+msgid "feedback"
+msgstr ""
+
+msgid "new"
+msgstr ""
+
+msgid "resolved"
+msgstr ""
+
+msgid "closed"
+msgstr ""
+
+msgid "Uncategorized"
 msgstr ""
