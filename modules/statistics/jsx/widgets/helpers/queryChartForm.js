@@ -4,8 +4,8 @@ import {
   SelectElement,
   FormElement,
   ButtonElement,
-  DateElement,
   NumericRangeElement,
+  DateRangeElement,
 } from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
 
@@ -43,6 +43,26 @@ const QueryChartForm = (props) => {
     [props.data]
   );
 
+  const getCallbackData = (formData) => {
+    const callbackData = {...formData};
+    const dateRegistered = callbackData.dateRegistered || {};
+
+    delete callbackData.dateRegistered;
+    if ((dateRegistered.min || '') !== '') {
+      callbackData.dateRegisteredStart = dateRegistered.min;
+    } else {
+      delete callbackData.dateRegisteredStart;
+    }
+
+    if ((dateRegistered.max || '') !== '') {
+      callbackData.dateRegisteredEnd = dateRegistered.max;
+    } else {
+      delete callbackData.dateRegisteredEnd;
+    }
+
+    return callbackData;
+  };
+
   /**
    * setFormData - Stores the value of the element in formDataObj state.
    *
@@ -51,6 +71,23 @@ const QueryChartForm = (props) => {
    */
 
   const setFormData = (formElement, value) => {
+    if (formElement === 'dateRegistered') {
+      const min = value.min || '';
+      const max = value.max || '';
+      if ((min !== '' && min < '1900-01-01') ||
+        (max !== '' && max < '1900-01-01')) {
+        return;
+      }
+
+      const newFormData = {
+        ...formDataObj,
+        dateRegistered: value,
+      };
+      props.callback(getCallbackData(newFormData));
+      setFormDataObj(newFormData);
+      return;
+    }
+
     let normalizedValue = value;
     if (formElement === 'candidateAge') {
       if ((normalizedValue.min || '') === '' &&
@@ -89,7 +126,7 @@ const QueryChartForm = (props) => {
       Module ={props.Module}
       name ={props.name}
       id ={props.id}
-      onSubmit ={() => props.callback(formDataObj)}
+      onSubmit ={() => props.callback(getCallbackData(formDataObj))}
       method ='GET'
     >
       <div className ="filter-grid">
@@ -229,31 +266,16 @@ const QueryChartForm = (props) => {
 
         {/* DateRegistered Section */}
         <div>
-          <label style ={{fontWeight: 'bold',
-            marginBottom: '5px',
-            display: 'block'}}>
-            {t('Date Registered', {ns: 'statistics'})}</label>
-          <DateElement
-            name='dateRegisteredStart'
-            value={formDataObj['dateRegisteredStart'] || ''}
-            onUserInput ={(name, value) => {
-              setFormData(name, value);
-            }}
-            style={{width: '100%', padding: '8px',
-              borderRadius: '5px',
-              border: '1px solid #ccc'}}
-            label={t('Range Start', {ns: 'statistics'})}
-          />
-          <DateElement
-            name='dateRegisteredEnd'
-            value={formDataObj['dateRegisteredEnd'] || ''}
+          <DateRangeElement
+            name='dateRegistered'
+            value={formDataObj['dateRegistered'] || {}}
             onUserInput={(name, value) => {
               setFormData(name, value);
             }}
-            style={{width: '100%', padding: '8px',
-              borderRadius: '5px',
-              border: '1px solid #ccc'}}
-            label={t('Range End', {ns: 'statistics'})}
+            label={t('Date Registered', {ns: 'statistics'})}
+            minLabel={t('Range Start', {ns: 'statistics'})}
+            maxLabel={t('Range End', {ns: 'statistics'})}
+            labelPlacementTop
           />
         </div>
       </div>

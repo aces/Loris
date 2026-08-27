@@ -43,6 +43,17 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
 
         $rows = $DB->pselectCol("SELECT Test_name FROM test_names", []);
 
+        // Instruments in the excluded_instruments config setting should
+        // not be queryable through the data dictionary or DQT.
+        $excluded = [];
+        $config   = $this->loris->getConfiguration();
+        $setting  = $config->getSetting('excluded_instruments');
+        foreach ($setting as $instruments) {
+            foreach (\Utility::asArray($instruments) as $instrument) {
+                $excluded[$instrument] = $instrument;
+            }
+        }
+
         $dict = [];
 
         // Use the same option enums for all instruments
@@ -54,6 +65,9 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         $scope       = new Scope(Scope::SESSION);
 
         foreach ($rows as $testname) {
+            if (isset($excluded[$testname])) {
+                continue;
+            }
             try {
                 $inst = \NDB_BVL_Instrument::factory(
                     $this->loris,

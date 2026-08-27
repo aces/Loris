@@ -563,8 +563,7 @@ function getDOBFields(): array
     $dobFormat = $config->getSetting('dobFormat');
 
     $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
-    $dobDate            = DateTime::createFromFormat('Y-m-d', $dob);
-    $formattedDate      = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+    $formattedDate      = formatCandidateDate($dob, $dobProcessedFormat);
 
     $result = [
         'pscid'     => $pscid,
@@ -586,7 +585,13 @@ function getDODFields(): array
     $db     = \NDB_Factory::singleton()->database();
 
     $candidateData = $db->pselectRow(
-        'SELECT PSCID,DoD, DoB FROM candidate where CandID =:candid',
+        'SELECT
+            PSCID,
+            DoD,
+            DoD_precision,
+            DoB
+        FROM candidate
+        WHERE CandID =:candid',
         ['candid' => $candID]
     );
     if ($candidateData === null) {
@@ -610,15 +615,17 @@ function getDODFields(): array
     $dobFormat = $config->getSetting('dobFormat');
 
     $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
-    $dobDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoB']);
-    $dob = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
-
+    $dob    = formatCandidateDate(
+        $candidateData['DoB'] ?? null,
+        $dobProcessedFormat
+    );
     $result = [
-        'pscid'     => $candidateData['PSCID'],
-        'candID'    => $candID->__toString(),
-        'dod'       => $dod,
-        'dob'       => $dob,
-        'dodFormat' => $config->getSetting('dodFormat'),
+        'pscid'         => $candidateData['PSCID'],
+        'candID'        => $candID->__toString(),
+        'dod'           => $dod,
+        'dob'           => $dob,
+        'dod_precision' => $candidateData['DoD_precision'],
+        'dodFormat'     => $config->getSetting('dodFormat'),
     ];
     return $result;
 }
@@ -702,5 +709,30 @@ function getDiagnosisEvolutionFields(): array
         'projects'                        => $candProjects
     ];
     return $result;
+}
+
+/**
+ * Format a candidate date for display.
+ *
+ * Returns null when the date is null or invalid.
+ *
+ * @param string|null $date   Database date in Y-m-d format
+ * @param string      $format Display format
+ *
+ * @return string|null
+ */
+function formatCandidateDate(?string $date, string $format): ?string
+{
+    if (empty($date)) {
+        return null;
+    }
+
+    $dateTime = DateTime::createFromFormat('Y-m-d', $date);
+
+    if ($dateTime === false) {
+        return null;
+    }
+
+    return $dateTime->format($format);
 }
 

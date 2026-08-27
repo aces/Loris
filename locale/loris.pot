@@ -256,18 +256,6 @@ msgstr ""
 msgid "Sex"
 msgstr ""
 
-msgid "Female"
-msgid_plural "Females"
-msgstr[0] ""
-
-msgid "Male"
-msgid_plural "Males"
-msgstr[0] ""
-
-msgid "Other"
-msgid_plural "Others"
-msgstr[0] ""
-
 msgid "Feedback"
 msgstr ""
 
@@ -371,6 +359,18 @@ msgid "Saving"
 msgstr ""
 
 msgid "Reset"
+msgstr ""
+
+msgid "Minimum"
+msgstr ""
+
+msgid "Maximum"
+msgstr ""
+
+msgid "{{label}} Minimum"
+msgstr ""
+
+msgid "{{label}} Maximum"
 msgstr ""
 
 msgid "Note"
@@ -558,14 +558,14 @@ msgstr ""
 msgid "{{years}} years old"
 msgstr ""
 
+msgid "%d y / %d m"
+msgstr ""
+
 # Other generic terms
 msgid "Loading..."
 msgstr ""
 
 msgid "Permission denied"
-msgstr ""
-
-msgid "Permission Denied"
 msgstr ""
 
 msgid "Unauthorized"
@@ -592,6 +592,59 @@ msgstr ""
 msgid "Dataset"
 msgstr ""
 
+msgid "GB"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
+msgstr ""
+
+msgid "Submission Successful!"
+msgstr ""
+
+msgid "Scan Type"
+msgstr ""
+
+msgid "SessionID"
+msgstr ""
+
+msgid "Uploaded By"
+msgstr ""
+
+msgid "QC Status"
+msgstr ""
+
+msgid "TarchiveID"
+
+msgid "Upload successful!"
+msgstr ""
+
+msgid "unknown"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Upload directory is not a directory"
+msgstr ""
+
+msgid "Upload directory is not writable"
+msgstr ""
+
+msgid "Upload directory is not writable"
+msgstr ""
+
+msgid "Path traversal not allowed"
+msgstr ""
+
+msgid "This file has already been uploaded."
+msgstr ""
+
+msgid "File type not allowed"
+msgstr ""
+
+msgid "Could not upload file"
 msgstr ""
