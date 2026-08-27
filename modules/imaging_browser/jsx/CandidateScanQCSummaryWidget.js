@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import 'I18nSetup';
 import jaStrings from '../locale/ja/LC_MESSAGES/imaging_browser.json';
 import frStrings from '../locale/fr/LC_MESSAGES/imaging_browser.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/imaging_browser.json';
 
 /**
  * A CandidateScanQCSummaryWidget is a type of React widget
@@ -24,6 +25,7 @@ function CandidateScanQCSummaryWidget(props) {
     const visits = getVisits(props.Files);
     i18n.addResourceBundle('ja', 'imaging_browser', jaStrings);
     i18n.addResourceBundle('fr', 'imaging_browser', frStrings);
+    i18n.addResourceBundle('zh', 'imaging_browser', zhStrings);
     c3.generate({
       bindto: '#imagebreakdownchart',
       data: {
@@ -34,8 +36,8 @@ function CandidateScanQCSummaryWidget(props) {
         onclick: function(d, el) {
           const vl = visits[d.index];
           window.location = props.BaseURL
-                        + '/imaging_browser/viewSession'
-                        + '?sessionID=' + props.VisitMap[vl];
+            + '/imaging_browser/viewSession'
+            + '?sessionID=' + props.VisitMap[vl];
         },
       },
       axis: {
@@ -58,7 +60,7 @@ function CandidateScanQCSummaryWidget(props) {
         show: false,
       },
     });
-    setReload(reload+1);
+    setReload(reload + 1);
   }, [t]);
 
   return <div>
@@ -72,12 +74,12 @@ function CandidateScanQCSummaryWidget(props) {
         {ns: 'imaging_browser'})}</li>
     </ul>
     <p>
-      {t('Different shades represent different modalities.'+
+      {t('Different shades represent different modalities.' +
         ' Only native modalities are displayed in results.',
       {ns: 'imaging_browser'})}
     </p>
     <p>
-      {t('Hover over any visit to see detailed modality breakdown for visit,'+
+      {t('Hover over any visit to see detailed modality breakdown for visit,' +
         ' click to go to imaging browser.', {ns: 'imaging_browser'})}
     </p>
   </div>;
@@ -227,19 +229,19 @@ function getColorFuncs(modalities) {
   const step = 100 / n;
   for (let i = 0; i < modalities.length; i++) {
     let mlabel = modalities[i] + ' - Pass';
-    obj[mlabel] = 'rgb(46, ' + (200 - (step*i)) + ', 80)';
+    obj[mlabel] = 'rgb(46, ' + (200 - (step * i)) + ', 80)';
 
     mlabel = modalities[i] + ' - Fail';
-    obj[mlabel] = 'rgb(' + (200 - (step*i)) + ', 20, 60)';
+    obj[mlabel] = 'rgb(' + (200 - (step * i)) + ', 20, 60)';
 
     mlabel = modalities[i] + ' - Other';
     obj[mlabel] = 'rgb('
-                      + (200 - (step*i))
-                      + ', '
-                      + (200 - (step*i))
-                      + ', '
-                      + (200 - (step*i))
-                      + ')';
+      + (200 - (step * i))
+      + ', '
+      + (200 - (step * i))
+      + ', '
+      + (200 - (step * i))
+      + ')';
   }
   return obj;
 }

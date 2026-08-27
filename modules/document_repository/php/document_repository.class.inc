@@ -41,7 +41,8 @@ class Document_Repository extends \DataFrameworkMenu
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(self::PERMISSIONS);
     }
@@ -107,7 +108,7 @@ class Document_Repository extends \DataFrameworkMenu
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
-            'hiddenVideo'    => ['yes' => "Yes", 'no' => "No"],
+            'hiddenFile'     => ['0' => "No", '1' => "Yes"],
         ];
     }
 

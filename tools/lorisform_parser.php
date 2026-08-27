@@ -53,7 +53,7 @@ foreach ($files as $file) {
     echo "Instantiating new object...\n";
     $obj =new $className(
         $lorisInstance,
-        new NullModule($lorisInstance),
+        new NullModule($lorisInstance, "loris"),
         "",
         "",
         "",
@@ -101,7 +101,7 @@ foreach ($files as $file) {
 if (empty($output)) {
     echo "Nothing to output, 'ip_output.txt' not created\n";
 } else {
-    $fp =fopen("ip_output.txt", "w");
+    $fp =fopen(__DIR__ ."/ip_output.txt", "w");
     fwrite($fp, $output);
     fclose($fp);
 }

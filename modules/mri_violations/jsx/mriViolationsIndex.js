@@ -10,6 +10,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/mri_violations.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/mri_violations.json';
 import frStrings from '../locale/fr/LC_MESSAGES/mri_violations.json';
 import esStrings from '../locale/es/LC_MESSAGES/mri_violations.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/mri_violations.json';
 
 /**
  * Entry point for the MRI Violatons module.
@@ -82,7 +83,7 @@ function MRIViolationsIndex(props) {
             filter.label === t('Resolution Status', {ns: 'mri_violations'}),
         );
         const hashfilterIndex = filtersData.findIndex(
-          (filter) => filter.label === 'hash',
+          (filter) => filter.label === t('hash', {ns: 'mri_violations'}),
         );
         const dataIndex = data.findIndex(
           (row) => row[hashfilterIndex] === hashname,
@@ -115,7 +116,7 @@ function MRIViolationsIndex(props) {
   const formatColumn = (mapper, setPage) => {
     const Mapper = function(column, cell, rowData) {
       cell = mapper(column, cell);
-      const hashname = rowData.hash;
+      const hashname = rowData[t('hash', {ns: 'mri_violations'})];
       const labelTypeOfProblem = t('Type of Problem', {ns: 'mri_violations'});
       const labelProtocolViolation = t('Protocol Violation', {
         ns: 'mri_violations',
@@ -154,7 +155,7 @@ function MRIViolationsIndex(props) {
                   PatientName: rowData[t('Patient Name', {ns: 'mri_violations'})
                   ],
                   SeriesUID: rowData[t('Series UID', {ns: 'mri_violations'})],
-                  TarchiveID: rowData[t('TarchiveID', {ns: 'mri_violations'})],
+                  TarchiveID: rowData[t('TarchiveID', {ns: 'loris'})],
                   CandID: rowData.CandID,
                 })
               }
@@ -419,7 +420,7 @@ function MRIViolationsIndex(props) {
       },
       {label: t('hash', {ns: 'mri_violations'}), show: false},
       {label: t('JoinID', {ns: 'mri_violations'}), show: false},
-      {label: t('TarchiveID', {ns: 'mri_violations'}), show: false},
+      {label: t('TarchiveID', {ns: 'loris'}), show: false},
       {label: t('DCCID', {ns: 'loris'}), show: false},
       {label: t('PSCID', {ns: 'loris'}), show: false},
 
@@ -494,6 +495,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'mri_violations', jaStrings);
   i18n.addResourceBundle('fr', 'mri_violations', frStrings);
   i18n.addResourceBundle('es', 'mri_violations', esStrings);
+  i18n.addResourceBundle('zh', 'mri_violations', zhStrings);
 
   const ViolationsIndex = withTranslation(['mri_violations', 'loris'])(
     MRIViolationsIndex,

@@ -126,7 +126,7 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
         // Questions
 
         $yesNoOptions = array(
-                         null  => "",
+                         ""    => "",
                          "yes" => "Yes",
                          "no"  => "No",
                         );
@@ -157,7 +157,7 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
         // Questions
 
         $yesNoOptions = array(
-                         null  => "",
+                         ""    => "",
                          "yes" => "Yes",
                          "no"  => "No",
                         );
@@ -197,7 +197,7 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
         // Questions
 
         $yesNoOptions = array(
-                         null  => "",
+                         ""    => "",
                          "yes" => "Yes",
                          "no"  => "No",
                         );
@@ -254,7 +254,7 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
         // Questions
 
         $yesNoOptions = array(
-                         null  => "",
+                         ""    => "",
                          "yes" => "Yes",
                          "no"  => "No",
                         );
@@ -338,7 +338,7 @@ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
         }
 
         $concussionOptions = array(
-                              null              => "",
+                              ""                => "",
                               "headaches"       => "Headaches",
                               "dizziness"       => "Dizziness",
                               "memory_problems" => "Memory problems",

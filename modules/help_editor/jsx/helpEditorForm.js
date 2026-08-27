@@ -11,6 +11,7 @@ import i18n from 'I18nSetup';
 import hiStrings from '../locale/hi/LC_MESSAGES/help_editor.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/help_editor.json';
 import frStrings from '../locale/fr/LC_MESSAGES/help_editor.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/help_editor.json';
 
 /**
  * Help Editor Form Page.
@@ -83,7 +84,7 @@ const HelpEditorForm = (props) => {
           title: t('Content update unsuccessful.',
             {ns: 'help_editor'}),
           text: t('Help content cannot be added to an instrument '
-           + 'that has already been registered.',
+            + 'that has already been registered.',
           {ns: 'help_editor'}),
           type: 'error',
           confirmButtonText: t('Try again', {ns: 'help_editor'}),
@@ -180,6 +181,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'help_editor', hiStrings);
   i18n.addResourceBundle('ja', 'help_editor', jaStrings);
   i18n.addResourceBundle('fr', 'help_editor', frStrings);
+  i18n.addResourceBundle('zh', 'help_editor', zhStrings);
   i18n.changeLanguage(i18n.language || 'en');
 });
 window.RHelpEditorForm = React.createFactory(

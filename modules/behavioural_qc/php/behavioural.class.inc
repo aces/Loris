@@ -92,7 +92,8 @@ class Behavioural extends \NDB_Page implements ETagCalculator
         ServerRequestInterface $request
     ) : array {
         $user         = $request->getAttribute('user');
-        $visit_array  = $user->getVisits();
+        $visits       = $user->getVisits();
+        $visit_array  = array_combine($visits, $visits);
         $userProjects = $user->getProjects();
         $projects     = [];
         foreach ($userProjects as $project) {
@@ -132,7 +133,8 @@ class Behavioural extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('behavioural_quality_control_view');
     }

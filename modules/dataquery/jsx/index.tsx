@@ -22,6 +22,7 @@ import {withTranslation} from 'react-i18next';
 import hiStrings from '../locale/hi/LC_MESSAGES/dataquery.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dataquery.json';
 import frStrings from '../locale/fr/LC_MESSAGES/dataquery.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/dataquery.json';
 
 type ActiveCategoryType = {
     module: string,
@@ -72,20 +73,18 @@ function useActiveCategory(
  * @param {object} props - React props
  * @param {any} props.t - useTranslation
  * @param {boolean} props.queryAdmin - true if the current user has permission to administer study queries
- * @param {string} props.username - The user accessing the app
  *
  * @returns {React.ReactElement} - The main page of the app
  */
 function DataQueryApp(props: {
     t: any,
     queryAdmin: boolean,
-    username: string
 }) {
   const [activeTab, setActiveTab] = useState('Info');
   useBreadcrumbs(activeTab, setActiveTab);
 
   const [queries, reloadQueries, queryActions]
-        = useSharedQueries(props.username);
+        = useSharedQueries();
 
   const visits = useVisits();
 
@@ -256,6 +255,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'dataquery', jaStrings);
   i18n.addResourceBundle('hi', 'dataquery', hiStrings);
   i18n.addResourceBundle('fr', 'dataquery', frStrings);
+  i18n.addResourceBundle('zh', 'dataquery', zhStrings);
   const Index = withTranslation(
     ['dataquery', 'loris']
   )(DataQueryApp);
@@ -267,7 +267,6 @@ window.addEventListener('load', () => {
   root.render(
     <Index
       queryAdmin={loris.userHasPermission('dataquery_admin')}
-      username={loris.user.username}
     />,
   );
 });

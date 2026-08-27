@@ -127,6 +127,7 @@ class ParticipantStatus extends Component {
     }
 
     let required = this.state.Data.required;
+    let commentRequired = this.state.Data.commentRequired;
     let subOptions = {};
     let suboptionsRequired = false;
     let participantStatus = (
@@ -139,10 +140,12 @@ class ParticipantStatus extends Component {
       suboptionsRequired = true;
     }
 
-    let statusOpts = this.state.Data.statusOptions;
-    let commentsRequired = statusOpts &&
-          statusOpts[participantStatus] !== 'Active' &&
-          statusOpts[participantStatus] !== 'Complete';
+    let commentsRequired = false;
+    if (participantStatus &&
+        commentRequired.indexOf(parseInt(participantStatus)) > -1
+    ) {
+      commentsRequired = true;
+    }
 
     let formattedHistory = [];
     for (let statusKey in this.state.Data.history) {
@@ -346,7 +349,7 @@ ParticipantStatus.propTypes = {
   candID: PropTypes.string.isRequired,
   tabName: PropTypes.string.isRequired,
   action: PropTypes.string,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default withTranslation(

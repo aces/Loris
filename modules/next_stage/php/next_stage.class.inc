@@ -46,7 +46,8 @@ class Next_Stage extends \NDB_Form
      *
      * @return bool true if they have access to this page
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         $timePoint = \TimePoint::singleton(new \SessionID($this->identifier));
 

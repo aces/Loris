@@ -21,7 +21,8 @@ class Logout extends \LORIS\Http\Endpoint
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         // Logged out users can not further log out
         return !($user instanceof \LORIS\AnonymousUser);
@@ -39,6 +40,7 @@ class Logout extends \LORIS\Http\Endpoint
         $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
         $uri     = \GuzzleHttp\Psr7\Utils::uriFor($baseURL);
 
+        setcookie('loris_language', '', time() - 3600, '/');
         // NDB_Client called session_write_close, so we need to re-start
         // the session in order to destroy it.
         session_start();

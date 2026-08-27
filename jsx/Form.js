@@ -558,6 +558,7 @@ export class SelectElement extends Component {
             value={newOptions[option]}
             key={newOptions[option]}
             disabled={isDisabled}
+            title={option}
           >
             {option}
           </option>
@@ -571,6 +572,7 @@ export class SelectElement extends Component {
             value={option}
             key={option}
             disabled={isDisabled}
+            title={options[option]}
           >
             {options[option]}
           </option>
@@ -593,15 +595,22 @@ export class SelectElement extends Component {
     // element will take up the whole row.
     let inputClass = this.props.noMargins ? '' : 'col-sm-12';
     if (this.props.label) {
-      inputClass = 'col-sm-9';
+      inputClass = `col-sm-${this.props.labelPlacementTop ? '12': '9'}`;
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={inputClass}>
@@ -614,6 +623,7 @@ export class SelectElement extends Component {
             onChange={this.handleChange}
             required={this.props.required}
             disabled={this.props.disabled}
+            style={{overflow: 'auto'}}
           >
             {emptyOptionHTML}
             {optionList}
@@ -645,6 +655,7 @@ SelectElement.propTypes = {
   noMargins: PropTypes.bool,
   placeholder: PropTypes.string,
   sortByValue: PropTypes.bool,
+  labelPlacementTop: PropTypes.bool,
 };
 
 SelectElement.defaultProps = {
@@ -665,6 +676,7 @@ SelectElement.defaultProps = {
   },
   noMargins: false,
   placeholder: '',
+  labelPlacementTop: false,
 };
 
 /**
@@ -1102,15 +1114,22 @@ export class TextboxElement extends Component {
     // element will take up the whole row.
     let inputClass = this.props.class;
     if (this.props.label || this.props.label == '') {
-      inputClass = 'col-sm-9';
+      inputClass = `col-sm-${this.props.labelPlacementTop ? '12' : '9'}`;
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {(this.props.label || this.props.label == '') && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={inputClass}>
@@ -1147,6 +1166,7 @@ TextboxElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 TextboxElement.defaultProps = {
@@ -1164,6 +1184,7 @@ TextboxElement.defaultProps = {
   },
   onUserBlur: function() {
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1511,13 +1532,22 @@ export class DateElement extends Component {
       maxFullDate = maxYear + '-' + currentMonth;
     }
 
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1552,6 +1582,7 @@ DateElement.propTypes = {
   required: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 DateElement.defaultProps = {
@@ -1568,7 +1599,193 @@ DateElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
+
+/**
+ * Date range component.
+ * React wrapper for filtering date values between two bounds.
+ */
+class DateRangeElementBase extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      {
+        ...this.props.value,
+        [e.target.dataset.rangeBound]: e.target.value,
+      }
+    );
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    const value = this.props.value || {};
+    const minID = `${this.props.id || this.props.name}_min`;
+    const maxID = `${this.props.id || this.props.name}_max`;
+    const minRangeLabel = this.props.minLabel ?
+      this.props.minLabel :
+      this.props.t('Minimum', {ns: 'loris'});
+    const maxRangeLabel = this.props.maxLabel ?
+      this.props.maxLabel :
+      this.props.t('Maximum', {ns: 'loris'});
+    const minLabel = this.props.labelPlacementTop && this.props.label ?
+      this.props.t('{{label}} Minimum', {
+        ns: 'loris',
+        label: this.props.label,
+      }) : minRangeLabel;
+    const maxLabel = this.props.labelPlacementTop && this.props.label ?
+      this.props.t('{{label}} Maximum', {
+        ns: 'loris',
+        label: this.props.label,
+      }) : maxRangeLabel;
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
+
+    let minYear = this.props.minYear;
+    let maxYear = this.props.maxYear;
+    if (this.props.minYear === '' || this.props.minYear === null) {
+      minYear = '1000';
+    }
+    if (this.props.maxYear === '' || this.props.maxYear === null) {
+      maxYear = '9999';
+    }
+
+    const currentDate = new Date();
+    const currentDay = `${currentDate.getDate()}`.padStart(2, '0');
+    const currentMonth = `${currentDate.getMonth() + 1}`.padStart(2, '0');
+
+    let inputType = 'date';
+    let minFullDate = minYear + '-01-01';
+    let maxFullDate = maxYear + '-' + currentMonth + '-' + currentDay;
+    if (!this.props.dateFormat.match(/d/i)) {
+      inputType = 'month';
+      minFullDate = minYear + '-01';
+      maxFullDate = maxYear + '-' + currentMonth;
+    }
+
+    return (
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
+        {this.props.label && !this.props.labelPlacementTop && (
+          <InputLabel
+            label={this.props.label}
+            required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
+          />
+        )}
+        <div className={wrapperClass}>
+          <div style={{display: 'flex', gap: '8px'}}>
+            <div style={{flex: 1}}>
+              <label htmlFor={minID}>
+                {minLabel}
+              </label>
+              <input
+                type={inputType}
+                className="form-control"
+                name={`${this.props.name}Min`}
+                data-range-bound="min"
+                id={minID}
+                min={minFullDate}
+                max={maxFullDate}
+                value={value.min || ''}
+                placeholder={minLabel}
+                required={this.props.required}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+            <div style={{flex: 1}}>
+              <label htmlFor={maxID}>
+                {maxLabel}
+              </label>
+              <input
+                type={inputType}
+                className="form-control"
+                name={`${this.props.name}Max`}
+                data-range-bound="max"
+                id={maxID}
+                min={minFullDate}
+                max={maxFullDate}
+                value={value.max || ''}
+                placeholder={maxLabel}
+                required={this.props.required}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+DateRangeElementBase.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  value: PropTypes.shape({
+    min: PropTypes.string,
+    max: PropTypes.string,
+  }),
+  id: PropTypes.string,
+  maxYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  minYear: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  dateFormat: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
+  minLabel: PropTypes.string,
+  maxLabel: PropTypes.string,
+  t: PropTypes.func,
+};
+
+DateRangeElementBase.defaultProps = {
+  name: '',
+  label: '',
+  value: {},
+  id: null,
+  maxYear: '9999',
+  minYear: '1000',
+  dateFormat: 'YMd',
+  disabled: false,
+  required: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  t: function(text) {
+    return text;
+  },
+  labelPlacementTop: false,
+  minLabel: '',
+  maxLabel: '',
+};
+
+export const DateRangeElement = withTranslation('loris')(DateRangeElementBase);
 
 /**
  * Time Component
@@ -1600,13 +1817,22 @@ export class TimeElement extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
     return (
-      <div className="row form-group">
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ? {
+          display: 'flex',
+          flexDirection: 'column',
+        } : {}}
+      >
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1637,6 +1863,7 @@ TimeElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
 };
 
 TimeElement.defaultProps = {
@@ -1649,6 +1876,7 @@ TimeElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
 
 /**
@@ -1763,7 +1991,9 @@ export class NumericElement extends Component {
   render() {
     let errorMessage = null;
     let elementClass = 'row form-group';
-    const wrapperClass = this.props.label ? 'col-sm-9' : 'col-sm-12';
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
 
     // Add error message
     if (this.props.errorMessage) {
@@ -1772,11 +2002,15 @@ export class NumericElement extends Component {
     }
 
     return (
-      <div className={elementClass}>
+      <div
+        className={elementClass}
+        style={this.props.labelPlacementTop ?
+          {display: 'flex', flexDirection: 'column'} : {}}>
         {this.props.label && (
           <InputLabel
             label={this.props.label}
             required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
           />
         )}
         <div className={wrapperClass}>
@@ -1812,6 +2046,7 @@ NumericElement.propTypes = {
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
   errorMessage: PropTypes.string,
+  labelPlacementTop: PropTypes.bool,
 };
 
 NumericElement.defaultProps = {
@@ -1827,7 +2062,161 @@ NumericElement.defaultProps = {
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
+  labelPlacementTop: false,
 };
+
+/**
+ * Numeric range component.
+ * React wrapper for filtering a numeric value between two bounds.
+ */
+class NumericRangeElementBase extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  /**
+   * Handle change
+   *
+   * @param {object} e - Event
+   */
+  handleChange(e) {
+    this.props.onUserInput(
+      this.props.name,
+      {
+        ...this.props.value,
+        [e.target.dataset.rangeBound]: e.target.value,
+      }
+    );
+  }
+
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
+  render() {
+    const value = this.props.value || {};
+    const minID = `${this.props.id || this.props.name}_min`;
+    const maxID = `${this.props.id || this.props.name}_max`;
+    const minLabel = this.props.minLabel ?
+      this.props.minLabel :
+      this.props.t('Minimum', {ns: 'loris'});
+    const maxLabel = this.props.maxLabel ?
+      this.props.maxLabel :
+      this.props.t('Maximum', {ns: 'loris'});
+    const wrapperClass =
+      this.props.label && !this.props.labelPlacementTop ?
+        'col-sm-9' : 'col-sm-12';
+
+    return (
+      <div
+        className="row form-group"
+        style={this.props.labelPlacementTop ?
+          {display: 'flex', flexDirection: 'column'} : {}}
+      >
+        {this.props.label && (
+          <InputLabel
+            label={this.props.label}
+            required={this.props.required}
+            fullWidth={this.props.labelPlacementTop}
+          />
+        )}
+        <div className={wrapperClass}>
+          <div style={{display: 'flex', gap: '8px'}}>
+            <div style={{flex: 1}}>
+              <label className="sr-only" htmlFor={minID}>
+                {minLabel}
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                name={`${this.props.name}Min`}
+                data-range-bound="min"
+                id={minID}
+                min={this.props.min}
+                max={this.props.max}
+                step={this.props.step}
+                value={value.min || ''}
+                placeholder={minLabel}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+            <div style={{flex: 1}}>
+              <label className="sr-only" htmlFor={maxID}>
+                {maxLabel}
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                name={`${this.props.name}Max`}
+                data-range-bound="max"
+                id={maxID}
+                min={this.props.min}
+                max={this.props.max}
+                step={this.props.step}
+                value={value.max || ''}
+                placeholder={maxLabel}
+                disabled={this.props.disabled}
+                onChange={this.handleChange}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+NumericRangeElementBase.propTypes = {
+  name: PropTypes.string.isRequired,
+  min: PropTypes.number,
+  max: PropTypes.number,
+  step: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.shape({
+    min: PropTypes.string,
+    max: PropTypes.string,
+  }),
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  required: PropTypes.bool,
+  onUserInput: PropTypes.func,
+  labelPlacementTop: PropTypes.bool,
+  minLabel: PropTypes.string,
+  maxLabel: PropTypes.string,
+  t: PropTypes.func,
+};
+
+NumericRangeElementBase.defaultProps = {
+  name: '',
+  min: null,
+  max: null,
+  step: '1',
+  label: '',
+  value: {},
+  id: null,
+  required: false,
+  disabled: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  t: function(text) {
+    return text;
+  },
+  labelPlacementTop: false,
+  minLabel: '',
+  maxLabel: '',
+};
+
+export const NumericRangeElement = withTranslation('loris')(
+  NumericRangeElementBase
+);
 
 /**
  * File Component
@@ -2412,11 +2801,17 @@ export class LorisElement extends Component {
     case 'date':
       elementHtml = (<DateElement {...elementProps} />);
       break;
+    case 'date-range':
+      elementHtml = (<DateRangeElement {...elementProps} />);
+      break;
     case 'time':
       elementHtml = (<TimeElement {...elementProps} />);
       break;
     case 'numeric':
       elementHtml = (<NumericElement {...elementProps} />);
+      break;
+    case 'number-range':
+      elementHtml = (<NumericRangeElement {...elementProps} />);
       break;
     case 'textarea':
       elementHtml = (<TextareaElement {...elementProps} />);
@@ -2771,9 +3166,11 @@ export default {
   TextboxElement,
   PasswordElement,
   DateElement,
+  DateRangeElement,
   TimeElement,
   DateTimeElement,
   NumericElement,
+  NumericRangeElement,
   FileElement: FileElementWithTranslation,
   StaticElement,
   HeaderElement,

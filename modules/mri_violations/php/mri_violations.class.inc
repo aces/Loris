@@ -25,7 +25,8 @@ class Mri_Violations extends \DataFrameworkMenu
      *
      * @return boolean true if the user is permitted to see violated scans
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [
@@ -102,12 +103,21 @@ class Mri_Violations extends \DataFrameworkMenu
              ORDER BY mpg.MriProtocolGroupID ASC, p.MriScanTypeID ASC",
             []
         );
+        $protocols = iterator_to_array($protocols);
+        foreach ($protocols as &$protocol) {
+            $protocol['Protocol Group'] = dgettext(
+                'mri_protocol_group',
+                $protocol['Protocol Group']
+            );
+        }
+        unset($protocol);
+
         return [
             'projects'     => \Utility::getProjectList(),
             'cohorts'      => \Utility::getCohortList(),
             'sites'        => \Utility::getSiteList(),
             'problemtypes' => $problemTypes,
-            'protocols'    => iterator_to_array($protocols),
+            'protocols'    => $protocols,
         ];
     }
 

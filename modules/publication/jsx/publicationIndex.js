@@ -10,7 +10,8 @@ import {withTranslation} from 'react-i18next';
 import frStrings from '../locale/fr/LC_MESSAGES/publication.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/publication.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/publication.json';
-import enStrings from '../locale/en/LC_MESSAGES/publication.json';
+import enStrings from '../locale/en/LC_MESSAGES/publication.json'
+import zhStrings from '../locale/zh/LC_MESSAGES/publication.json';
 import FilterableDataTable from 'FilterableDataTable';
 
 /**
@@ -34,6 +35,15 @@ class PublicationIndex extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
+
+    this.dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        dateStyle: 'short',
+        timeZone: 'UTC',
+      }
+    );
   }
 
   /**
@@ -230,6 +240,7 @@ class PublicationIndex extends React.Component {
    * @return {JSX} - React markup for the component
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+    const {t} = this.props;
     // If a column if set as hidden, don't display it
     if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
@@ -243,6 +254,10 @@ class PublicationIndex extends React.Component {
         </td>
       );
     }
+    if (column === t('Date Proposed', {ns: 'publication'})
+      || column === t('Date Published', {ns: 'publication'})) {
+      return <td>{cell ? this.dateFormatter.format(new Date(cell)) : ''}</td>;
+    }
     return <td>{cell}</td>;
   }
 }
@@ -255,6 +270,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'publication', hiStrings);
   i18n.addResourceBundle('ja', 'publication', jaStrings);
   i18n.addResourceBundle('en', 'publication', enStrings);
+  i18n.addResourceBundle('zh', 'publication', zhStrings);
 
   const PubIndex = withTranslation(['publication'])(PublicationIndex);
 
@@ -264,4 +280,3 @@ window.addEventListener('load', () => {
     </div>
   );
 });
-

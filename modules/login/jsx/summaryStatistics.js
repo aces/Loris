@@ -7,6 +7,8 @@ import {useTranslation} from 'react-i18next';
 /**
  * Login Summary Statistics
  *
+ * @param root0
+ * @param root0.data
  * @author Saagar Arya
  * @version 1.0.0
  */
@@ -26,7 +28,7 @@ const SummaryStatistics = ({data}) => {
         {/* Project Selector */}
         <SelectElement
           name='project'
-          options={data.projects}
+          options={data.translatedProjects}
           value={selectedProject}
           onUserInput={(name, value) => setSelectedProject(value)}
           emptyOption={false}

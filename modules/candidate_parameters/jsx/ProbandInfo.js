@@ -379,8 +379,8 @@ class ProbandInfo extends Component {
 ProbandInfo.propTypes = {
   candID: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
-  tabName: PropTypes.string.isRequired,
-  t: PropTypes.string.isRequired,
+  tabName: PropTypes.string,
+  t: PropTypes.func.isRequired,
 };
 
 export default withTranslation(['candidate_parameters', 'loris'])(ProbandInfo);

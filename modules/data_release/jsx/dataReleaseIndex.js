@@ -17,6 +17,7 @@ import ManageFileForm from './manageFileForm';
 import hiStrings from '../locale/hi/LC_MESSAGES/data_release.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/data_release.json';
 import frStrings from '../locale/fr/LC_MESSAGES/data_release.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/data_release.json';
 
 /**
  * Data Release
@@ -251,8 +252,8 @@ class DataReleaseIndex extends Component {
     // Manage File modal window
     const manageFileForm = (
       <Modal
-        title="Manage File"
-        label="Manage File"
+        title={t('Manage File', {ns: 'data_release'})}
+        label={t('Manage File', {ns: 'data_release'})}
         show={this.state.show.manageFileForm}
         onClose={() => {
           this.hide('manageFileForm');
@@ -318,6 +319,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'data_release', jaStrings);
   i18n.addResourceBundle('hi', 'data_release', hiStrings);
   i18n.addResourceBundle('fr', 'data_release', frStrings);
+  i18n.addResourceBundle('zh', 'data_release', zhStrings);
   const Index = withTranslation(
     ['data_release', 'loris']
   )(DataReleaseIndex);

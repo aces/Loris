@@ -99,10 +99,9 @@ type SharedQueriesType = [
 /**
  * React hook to load recent and shared queries from the server
  *
- * @param {string} username - The username accessing the module
  * @returns {array} - [{queries}, reload function(), {queryActions}]
  */
-function useSharedQueries(username: string): SharedQueriesType {
+function useSharedQueries(): SharedQueriesType {
   const [recentQueries, setRecentQueries] = useState<FlattenedQuery[]>([]);
   const [sharedQueries, setSharedQueries] = useState<FlattenedQuery[]>([]);
   const [topQueries, setTopQueries] = useState<FlattenedQuery[]>([]);
@@ -138,27 +137,10 @@ function useSharedQueries(username: string): SharedQueriesType {
               convertedtop.push(flattened);
             }
             if (query.Public == true) {
-              // If we're the only person who shared it, don't show it in our
-              // shared queries.
-              // If other people shared it too, then remove ourselves from the
-              // "shared by" list in the Shared Queries panel.
-              if (query.SharedBy.length == 1
-                            && query.SharedBy[0] == username
-              ) {
-                // don't include
-              } else {
-                // filter
-                query.SharedBy = query.SharedBy.filter(
-                  (item: string) => {
-                    return item != username;
-                  }
-                );
-                // Make a new copy to avoid mutating the version used by other
-                // tabs
-                const flattened2: FlattenedQuery
-                            = query2flattened(query);
-                convertedshared.push(flattened2);
-              }
+              // Include all public queries, including ones shared by the
+              // current user, so shared queries are consistent with the
+              // Recent Queries "Shared Only" filter.
+              convertedshared.push(flattened);
             }
           });
         }

@@ -58,7 +58,7 @@ class Signup extends \NDB_Page implements ETagCalculator
             return $this->requestAccount($request);
         }
         return new \LORIS\Http\Response\JSON\BadRequest(
-            'Error'
+            dgettext('login', 'Error')
         );
     }
 
@@ -86,7 +86,7 @@ class Signup extends \NDB_Page implements ETagCalculator
             );
             if (!$resp->isSuccess()) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Please complete the reCaptcha!'
+                    dgettext('login', 'Please complete the reCaptcha!')
                 );
             }
         }
@@ -113,7 +113,8 @@ class Signup extends \NDB_Page implements ETagCalculator
         );
         $site     = $values['site'];
         $project  = $values['project'];
-        $fullname = $name . ' ' . $lastname;
+        $language_preference = $values['language_preference'] ?? null;
+        $fullname            = $name . ' ' . $lastname;
 
         $vals = [
             'UserID'               => $from,
@@ -125,20 +126,31 @@ class Signup extends \NDB_Page implements ETagCalculator
             'account_request_date' => date('Y-m-d'),
         ];
 
+        // Add language_preference if provided and valid
+        if (!is_null($language_preference) && !empty($language_preference)) {
+            $languageList = \Utility::getLanguageList();
+            if (array_key_exists($language_preference, $languageList)) {
+                $vals['language_preference'] = $language_preference;
+            }
+        }
+
         // Check if email address is valid.
         if (preg_match('/(<|>|"|&)/', $from)) {
             // Although some of these characters are legal in emails, due to the
             // current HTML escaping method, it is better to reject email
             // addresses containing them
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Email address can not contain the following' .
-                ' characters: <,>,& and "'
+                dgettext(
+                    'login',
+                    'Email address can not contain the following'
+                    . 'characters: <,>,& and ".'
+                )
             );
         }
         if (!filter_var($from, FILTER_VALIDATE_EMAIL)) {
             // Invalid email address.
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Please provide a valid email address!'
+                dgettext('login', 'Please provide a valid email address!')
             );
         }
 
@@ -303,7 +315,8 @@ class Signup extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return true;
     }

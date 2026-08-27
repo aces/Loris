@@ -32,7 +32,8 @@ class Edit extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('document_repository_upload_edit');
     }
@@ -44,12 +45,14 @@ class Edit extends \NDB_Page
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $label = ucwords(str_replace('_', ' ', $this->name));
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
-                'Edit',
-                "/" . $_GET['lorispath']
+                dgettext('document_repository', 'Document Repository'),
+                "/$this->name"
+            ),
+            new \LORIS\Breadcrumb(
+                dgettext('document_repository', 'Edit'),
+                "/$this->name/$this->page"
             )
         );
     }

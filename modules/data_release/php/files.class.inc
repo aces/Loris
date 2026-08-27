@@ -25,7 +25,8 @@ class Files extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         // check user permissions
         return $user->hasAnyPermission(
@@ -121,17 +122,19 @@ class Files extends \NDB_Page
 
         $user = $request->getAttribute("user");
 
+        $posted = $request->getParsedBody();
+        assert(is_array($posted));
+
         $validateError = $this->_validateUserCanUpload(
             $user,
             $fileName,
+            $posted['project'],
             $overwrite
         );
         if ($validateError !== null) {
             return $validateError;
         }
 
-        $posted = $request->getParsedBody();
-        assert(is_array($posted));
         return $this->_moveFile(
             $uploadhandler,
             $user,
@@ -148,16 +151,18 @@ class Files extends \NDB_Page
      * if there are no errors, or an error response if something
      * is wrong.
      *
-     * @param \User  $user      The user attempting to upload
-     * @param string $fileName  The filename being uploaded
-     * @param bool   $overwrite Whether the overwrite flag is set
+     * @param \User  $user        The user attempting to upload
+     * @param string $fileName    The filename being uploaded
+     * @param string $projectName Name of the project
+     * @param bool   $overwrite   Whether the overwrite flag is set
      *
      * @return ?ResponseInterface
      */
     private function _validateUserCanUpload(
-        \User $user,
+        \User  $user,
         string $fileName,
-        bool $overwrite
+        string $projectName,
+        bool   $overwrite
     ) : ?ResponseInterface {
         // Check if file is duplicate
         $DB            = $this->loris->getDatabaseConnection();
@@ -169,11 +174,21 @@ class Files extends \NDB_Page
         if (!isset($duplicateFile)) {
             // File doesn't exist, user can upload as long as they have
             // permission.
-            if (!$user->hasPermission("data_release_upload")) {
-                return new \LORIS\Http\Response\JSON\Forbidden(
-                    "Permission denied."
-                );
 
+            // Get ProjectID
+            $ProjectID = $DB->pselectOne(
+                "SELECT ProjectID FROM Project WHERE Name=:project",
+                ['project' => $projectName]
+            );
+
+            if (!$user->hasPermission("data_release_upload")
+                || !$user->hasProject(
+                    \ProjectID::singleton((int)$ProjectID)
+                )
+            ) {
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    dgettext("data_release", "Permission denied.")
+                );
             }
             return null;
         }
@@ -187,14 +202,17 @@ class Files extends \NDB_Page
             );
             if (!isset($userPermission) && !$user->hasPermission('superuser')) {
                 return new \LORIS\Http\Response\JSON\Forbidden(
-                    "Overwrite failed. A file of this name already exists which "
-                    . " you do not have permission to overwrite."
+                    dgettext(
+                        "data_release",
+                        "Overwrite failed. A file of this name already exists which"
+                        . " you do not have permission to overwrite."
+                    )
                 );
             }
         } else {
             // File is duplicate and overwrite not declared
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Can not upload duplicate file.'
+                dgettext("data_release", "Can not upload duplicate file.")
             );
         }
         return null;
@@ -318,7 +336,12 @@ class Files extends \NDB_Page
         );
 
         if (!$regexmatch) {
-            return new \LORIS\Http\Response\JSON\NotFound("Not found");
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    "data_release",
+                    "Not found"
+                )
+            );
         }
 
         $DB = $this->loris->getDatabaseConnection();
@@ -329,12 +352,22 @@ class Files extends \NDB_Page
                 ['fileid' => $fileID]
             );
             if ($filename === null) {
-                return new \LORIS\Http\Response\JSON\NotFound("Not found");
+                return new \LORIS\Http\Response\JSON\NotFound(
+                    dgettext(
+                        "data_release",
+                        "Not found"
+                    )
+                );
             }
 
             $user = $request->getAttribute("user");
             if (!$user->hasPermission("data_release_view")) {
-                return new \LORIS\Http\Response\JSON\Forbidden("Permission denied");
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    dgettext(
+                        "loris",
+                        "Permission denied"
+                    )
+                );
             }
 
             $hasFilePerm = $DB->pselectOne(
@@ -345,7 +378,12 @@ class Files extends \NDB_Page
                 ]
             );
             if ($hasFilePerm === null) {
-                return new \LORIS\Http\Response\JSON\Forbidden("Permission denied");
+                return new \LORIS\Http\Response\JSON\Forbidden(
+                    dgettext(
+                        "loris",
+                        "Permission denied"
+                    )
+                );
             }
 
             try {
@@ -389,14 +427,19 @@ class Files extends \NDB_Page
         // Get ID
         $data_release_id = $request->getParsedBody()['data_release_id'] ?? null;
         if (!$data_release_id) {
-            return new \LORIS\Http\Response\JSON\NotFound("Not found");
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    "data_release",
+                    "Not found"
+                )
+            );
         }
 
         $user = $request->getAttribute("user");
 
         if (!$user->hasPermission('data_release_delete')) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "Permission denied."
+                dgettext("data_release", "Permission denied.")
             );
         }
 
@@ -429,14 +472,19 @@ class Files extends \NDB_Page
         // Get ID
         $data_release_id = $request->getParsedBody()['data_release_id'] ?? null;
         if (!$data_release_id) {
-            return new \LORIS\Http\Response\JSON\NotFound("Not found");
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    "data_release",
+                    "Not found"
+                )
+            );
         }
 
         $user = $request->getAttribute("user");
 
         if (!$user->hasPermission('data_release_hide')) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "Permission denied."
+                dgettext("data_release", "Permission denied.")
             );
         }
 

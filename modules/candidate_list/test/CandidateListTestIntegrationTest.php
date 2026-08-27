@@ -38,7 +38,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';
     static $Participant = 'select[name="participantStatus"]';
-    static $dob         = 'input[name="DoB"]';
+    static $dob         = 'input[name="DoBMin"]';
     static $visitCount  = 'input[name="visitCount"]';
     static $feedback    = 'select[name="feedback"]';
     static $edc         = 'input[name="edc"]';
@@ -144,7 +144,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Name("participantStatus")
         );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
-           $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoB"));
+           $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoBMin"));
            $this->assertEquals("input", $dobOptions->getTagName());
            // Not currently done
            //$this->assertEquals("date",$dobOptions->getAttribute("type"));
@@ -266,13 +266,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             '436'
         );
         $this->_filterTest(
-            self::$dob,
-            self::$display,
-            self::$clearFilter,
-            "2003-06-30",
-            '1 row'
-        );
-        $this->_filterTest(
             self::$visitCount,
             self::$display,
             self::$clearFilter,
@@ -357,7 +350,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     }
 
     /**
-     * Tests that, click the scan_done ="y" link,
+     * Tests that, click the scanDone ="y" link,
      * and it will goto the imaging browser page.
      *
      * @return void
@@ -366,14 +359,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/?pscid=MTL022");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr > td.scanDoneLink"
+            )
         )->getText();
         $this->assertStringContainsString(
             "Y",
             $bodyText
         );
         $this->safeClick(
-            WebDriverBy::cssSelector("#dynamictable > tbody > tr > td.scanDoneLink")
+            WebDriverBy::cssSelector(
+                "#dynamictable > tbody > tr > td.scanDoneLink"
+            )
         );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector(self::$pscidLink)

@@ -48,8 +48,12 @@ $(document).ready(function() {
               $(form.find(".saveStatus")).text("Failed to save, Alias should be at most 4 characters long!").css({'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
             }
           } else {
-            return function () {
-              $(form.find(".saveStatus")).text("Failed to save, same name already exist!").css({'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
+            return function (data) {
+              var error = "Failed to save, same name already exist!";
+              if (data.status !== 409 && data.responseJSON && data.responseJSON.error) {
+                error = data.responseJSON.error;
+              }
+              $(form.find(".saveStatus")).text(error).css({'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
             }
           }
         }
@@ -65,6 +69,7 @@ $(document).ready(function() {
                         "recruitmentTarget" : recruitmentTarget,
                         "CohortIDs" : CohortIDs
                     },
+                    "dataType": "json",
                     "success" : successClosure(ProjectID, form),
                     "error" : errorClosure(ProjectID, form)
                 }

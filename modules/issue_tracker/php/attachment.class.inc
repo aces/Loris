@@ -156,7 +156,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
             );
         }
         return new \LORIS\Http\Response\JSON\Forbidden(
-            'Invalid Permissions'
+            dgettext('issue_tracker', 'Invalid Permissions')
         );
     }
 
@@ -237,7 +237,8 @@ class Attachment extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasAnyPermission(
             [

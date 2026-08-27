@@ -20,6 +20,7 @@ import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 import jaStrings from '../locale/ja/LC_MESSAGES/login.json';
 import frStrings from '../locale/fr/LC_MESSAGES/login.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/login.json';
 
 /**
  * Login form.
@@ -157,9 +158,35 @@ class Login extends Component {
         if (response.ok) {
           response.json().then(() => {
             // Redirect if there is a "redirect" param, refresh the page otherwise
-            window.location.href = this.props.redirect !== null
-              ? this.props.redirect
-              : window.location.origin;
+            const redirectUrl = this.props.redirect;
+            if (redirectUrl) {
+              // test URL as string
+              if (typeof redirectUrl !== 'string') {
+                window.location.href = window.location.origin;
+              }
+
+              // parse URL
+              try {
+                // relative and absolute url parsing
+                const url = new URL(redirectUrl.trim(), window.location.origin);
+
+                if (url.origin === window.location.origin) {
+                  // same origin, load
+                  window.location.href = url.href;
+                } else {
+                  // different origin
+                  // TODO: add a sweet alert here to mention the tentative of
+                  // redirection outside of LORIS.
+                  window.location.href = window.location.origin;
+                }
+              } catch (e) {
+                // Invalid URL, fallback
+                window.location.href = window.location.origin;
+              }
+            } else {
+              // no redirection
+              window.location.href = window.location.origin;
+            }
           });
         } else {
           response.json().then((data) => {
@@ -168,7 +195,10 @@ class Login extends Component {
               if (data.error === 'password expired') {
                 // password expired
                 state.component.expiredPassword = {
-                  message: 'Password expired for user.',
+                  message: this.props.t(
+                    'Password expired for user.',
+                    {ns: 'login'}
+                  ),
                   username: state.form.value.username,
                 };
                 state.mode = 'expired';
@@ -309,7 +339,7 @@ class Login extends Component {
               </Panel>
               {partnerLogos.length > 0 ? (
                 <Panel
-                  title="Our Partners"
+                  title={this.props.t('Our Partners', {ns: 'login'})}
                   class="panel-default partner-container-desktop"
                   collapsing={false}
                   bold
@@ -337,7 +367,7 @@ class Login extends Component {
               </Panel>
               {partnerLogos.length > 0 ? (
                 <Panel
-                  title="Our Partners"
+                  title={this.props.t('Our Partners', {ns: 'login'})}
                   class="panel-default partner-container-mobile"
                   collapsing={false}
                   bold
@@ -396,7 +426,9 @@ class Login extends Component {
       {this.state.oidc.map((val) => {
         return <div>
           <a href={'/oidc/login?loginWith=' + val}>
-                    Login with {val}
+            {this.props.t('Login with {{provider}}', {
+              ns: 'login', provider: val,
+            })}
           </a>
         </div>;
       })}
@@ -421,6 +453,7 @@ window.addEventListener('load', () => {
   };
   i18n.addResourceBundle('ja', 'login', jaStrings);
   i18n.addResourceBundle('fr', 'login', frStrings);
+  i18n.addResourceBundle('zh', 'login', zhStrings);
   const TLogin = withTranslation(['login', 'loris'])(Login);
 
   createRoot(

@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 msgid "MRI Violated Scans"
 msgstr "Escaneos de resonancia magnética violados"
@@ -99,9 +100,6 @@ msgstr "Protocolos de estudio"
 msgid "Scan Problems"
 msgstr "Problemas de escaneo"
 
-msgid "Scan Type"
-msgstr "Tipo de escaneo"
-
 msgid "Severity"
 msgstr "Gravedad"
 
@@ -168,9 +166,6 @@ msgstr "picadillo"
 msgid "JoinID"
 msgstr "UnirseID"
 
-msgid "TarchiveID"
-msgstr "ID de archivo"
-
 msgid "Center Name"
 msgstr "Nombre del centro"
 
@@ -212,3 +207,6 @@ msgstr "Rango de tiempo"
 
 msgid "Can not implement filter on a resource type that has no projects."
 msgstr "No se puede implementar un filtro en un tipo de recurso que no tenga proyectos."
+
+msgid "Series Description Regex:"
+msgstr "Expresión regular de la descripción de la serie:"

@@ -15,6 +15,7 @@ import {withTranslation} from 'react-i18next';
 import jaStrings from '../locale/ja/LC_MESSAGES/candidate_list.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/candidate_list.json';
 import frStrings from '../locale/fr/LC_MESSAGES/candidate_list.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/candidate_list.json';
 
 /**
  * Candidate List
@@ -44,6 +45,15 @@ class CandidateListIndex extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.toggleFilters = this.toggleFilters.bind(this);
+
+    this.dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        style: 'short',
+        timeZone: 'UTC',
+
+      }
+    );
   }
 
   /**
@@ -143,13 +153,25 @@ class CandidateListIndex extends Component {
 
       return <td><a href ={url}>{cell}</a></td>;
     }
+    if (column === this.props.t('DoB', {ns: 'loris'})
+      || column === this.props.t('Date of registration', {ns: 'loris'})) {
+      if (cell) {
+        const date = new Date(cell);
+        return <td>{this.dateFormatter.format(date)}</td>;
+      }
+      return <td></td>;
+    }
     if (column === this.props.t('Feedback', {ns: 'loris'})) {
       switch (cell) {
-      case '1': return <td style ={{background: '#E4A09E'}}>Opened</td>;
-      case '2': return <td style ={{background: '#EEEEAA'}}>Answered</td>;
-      case '3': return <td style ={{background: '#99CC99'}}>Closed</td>;
-      case '4': return <td style ={{background: '#99CCFF'}}>Comment</td>;
-      default: return <td>None</td>;
+      case '1': return <td style={{background: '#E4A09E'}}>
+        {this.props.t('Opened', {ns: 'candidate_list'})}</td>;
+      case '2': return <td style={{background: '#EEEEAA'}}>
+        {this.props.t('Answered', {ns: 'candidate_list'})}</td>;
+      case '3': return <td style={{background: '#99CC99'}}>
+        {this.props.t('Closed', {ns: 'candidate_list'})}</td>;
+      case '4': return <td style={{background: '#99CCFF'}}>
+        {this.props.t('Comment', {ns: 'candidate_list'})}</td>;
+      default: return <td>{this.props.t('None', {ns: 'loris'})}</td>;
       }
     }
     if (column === this.props.t('Scan Done', {ns: 'loris'})) {
@@ -221,6 +243,7 @@ class CandidateListIndex extends Component {
           name: 'visitLabel',
           type: 'multiselect',
           options: options.visitlabel,
+          sortByValue: false,
         },
       },
       {
@@ -247,10 +270,7 @@ class CandidateListIndex extends Component {
         filter: {
           name: 'entityType',
           type: 'select',
-          options: {
-            'Human': 'Human',
-            'Scanner': 'Scanner',
-          },
+          options: options.entitytype,
         },
       },
       {
@@ -281,7 +301,7 @@ class CandidateListIndex extends Component {
         'show': true,
         'filter': {
           name: 'DoB',
-          type: 'date',
+          type: 'date-range',
           hide: this.state.hideFilter,
         },
       },
@@ -320,11 +340,11 @@ class CandidateListIndex extends Component {
           type: 'select',
           hide: this.state.hideFilter,
           options: {
-            '0': 'None',
-            '1': 'Opened',
-            '2': 'Answered',
-            '3': 'Closed',
-            '4': 'Comment',
+            '0': this.props.t('None', {ns: 'loris'}),
+            '1': this.props.t('Opened', {ns: 'candidate_list'}),
+            '2': this.props.t('Answered', {ns: 'candidate_list'}),
+            '3': this.props.t('Closed', {ns: 'candidate_list'}),
+            '4': this.props.t('Comment', {ns: 'candidate_list'}),
           },
         },
       },
@@ -413,6 +433,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'candidate_list', jaStrings);
   i18n.addResourceBundle('hi', 'candidate_list', hiStrings);
   i18n.addResourceBundle('fr', 'candidate_list', frStrings);
+  i18n.addResourceBundle('zh', 'candidate_list', zhStrings);
 
 
   const CLIndex = withTranslation(

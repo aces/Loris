@@ -100,6 +100,10 @@ msgstr[0] ""
 msgid "Genomics"
 msgstr ""
 
+#: modules/biobank/php/module.class.inc:140
+msgid "Biobank"
+msgstr ""
+
 #: modules/electrophysiology_browser/php/module.class.inc:54
 msgid "Electrophysiology"
 msgstr ""
@@ -282,6 +286,21 @@ msgstr ""
 msgid "Visits"
 msgstr ""
 
+msgid "Visit"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
 msgid "An error occured while loading the page."
 msgstr ""
 
@@ -340,6 +359,18 @@ msgid "Saving"
 msgstr ""
 
 msgid "Reset"
+msgstr ""
+
+msgid "Minimum"
+msgstr ""
+
+msgid "Maximum"
+msgstr ""
+
+msgid "{{label}} Minimum"
+msgstr ""
+
+msgid "{{label}} Maximum"
 msgstr ""
 
 msgid "Note"
@@ -465,9 +496,6 @@ msgstr ""
 msgid "Screening"
 msgstr ""
 
-msgid "Visit"
-msgstr ""
-
 msgid "Approval"
 msgstr ""
 
@@ -486,16 +514,10 @@ msgstr ""
 msgid "Withdrawn"
 msgstr ""
 
-msgid "In Progress"
-msgstr ""
-
 msgid "Progress"
 msgstr ""
 
 msgid "Success"
-msgstr ""
-
-msgid "Complete"
 msgstr ""
 
 msgid "Instrument"
@@ -536,6 +558,9 @@ msgstr ""
 msgid "{{years}} years old"
 msgstr ""
 
+msgid "%d y / %d m"
+msgstr ""
+
 # Other generic terms
 msgid "Loading..."
 msgstr ""
@@ -567,6 +592,59 @@ msgstr ""
 msgid "Dataset"
 msgstr ""
 
+msgid "GB"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
 # For react-select <Select> noOptionsMessage prop
 msgid "No options"
+msgstr ""
+
+msgid "Submission Successful!"
+msgstr ""
+
+msgid "Scan Type"
+msgstr ""
+
+msgid "SessionID"
+msgstr ""
+
+msgid "Uploaded By"
+msgstr ""
+
+msgid "QC Status"
+msgstr ""
+
+msgid "TarchiveID"
+
+msgid "Upload successful!"
+msgstr ""
+
+msgid "unknown"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Upload directory is not a directory"
+msgstr ""
+
+msgid "Upload directory is not writable"
+msgstr ""
+
+msgid "Upload directory is not writable"
+msgstr ""
+
+msgid "Path traversal not allowed"
+msgstr ""
+
+msgid "This file has already been uploaded."
+msgstr ""
+
+msgid "File type not allowed"
+msgstr ""
+
+msgid "Could not upload file"
 msgstr ""

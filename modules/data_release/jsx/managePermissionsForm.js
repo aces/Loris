@@ -214,6 +214,7 @@ class ManagePermissionsForm extends Component {
               {ns: 'data_release'}),
             title: '',
             type: 'success',
+            confirmButtonText: t('OK', {ns: 'loris'}),
           });
           return Promise.resolve().then(() => {
             window.location.reload();

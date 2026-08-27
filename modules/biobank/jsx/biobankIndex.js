@@ -11,6 +11,8 @@ import BiobankFilter from './filter';
 import BarcodePage from './barcodePage';
 
 import frStrings from '../locale/fr/LC_MESSAGES/biobank.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/biobank.json';
+import esStrings from '../locale/es/LC_MESSAGES/biobank.json';
 
 import {clone, isEmpty, get, getStream, post} from './helpers.js';
 
@@ -117,7 +119,7 @@ class BiobankIndex extends Component {
     return new Promise((resolve) => {
       const data = clone(this.state.data);
       entities.forEach((entity) => data[type][entity.id] = entity);
-      this.setState({data}, resolve());
+      this.setState({data}, resolve);
     });
   }
 
@@ -377,8 +379,8 @@ class BiobankIndex extends Component {
       .then((entities) => {
         return printBarcodes(entities)
           .then(() => {
-            this.setData('containers', entities.containers);
-            this.setData('specimens', entities.specimens);
+            return this.setData('containers', entities.containers)
+              .then(() => this.setData('specimens', entities.specimens));
           });
       })
       .then(() => Promise.resolve());
@@ -514,7 +516,7 @@ class BiobankIndex extends Component {
 
     float.map((field) => {
       if (isNaN(parseInt(specimen[field])) || !isFinite(specimen[field])) {
-        errors[field] = t('This field must be a number. ', {ns: 'biobank'});
+        errors[field] = t('This field must be a number.', {ns: 'biobank'});
       }
     });
 
@@ -600,27 +602,27 @@ class BiobankIndex extends Component {
     // validate required fields
     required && required.map((field) => {
       if (!process[field]) {
-        errors[field] = t('This field is required! ', {ns: 'biobank'});
+        errors[field] = t('This field is required.', {ns: 'biobank'});
       }
     });
 
     // validate floats
     number && number.map((field) => {
       if (isNaN(parseInt(process[field])) || !isFinite(process[field])) {
-        errors[field] = t('This field must be a number! ', {ns: 'biobank'});
+        errors[field] = t('This field must be a number.', {ns: 'biobank'});
       }
     });
 
     // validate date
     regex = /^[12]\d{3}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
     if (regex.test(process.date === false)) {
-      errors.date = t('This field must be a valid date! ', {ns: 'biobank'});
+      errors.date = t('This field must be a valid date.', {ns: 'biobank'});
     }
 
     // validate time
     regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
     if (regex.test(process.time === false)) {
-      errors.time = t('This field must be a valid time! ', {ns: 'biobank'});
+      errors.time = t('This field must be a valid time.', {ns: 'biobank'});
     }
 
     // validate custom attributes
@@ -640,7 +642,7 @@ class BiobankIndex extends Component {
             if (attribute.required == 1
               && !process.data[attribute.id]) {
               errors.data[attribute.id] = t(
-                'This field is required!',
+                'This field is required.',
                 {ns: 'biobank'}
               );
             }
@@ -651,7 +653,7 @@ class BiobankIndex extends Component {
               if (isNaN(parseInt(process.data[attribute.id])) ||
                 !isFinite(process.data[attribute.id])) {
                 errors.data[attribute.id] = t(
-                  'This field must be a number!',
+                  'This field must be a number.',
                   {ns: 'biobank'}
                 );
               }
@@ -662,7 +664,7 @@ class BiobankIndex extends Component {
               regex = /^[12]\d{3}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
               if (regex.test(process.data[attribute.id] === false )) {
                 errors.data[attribute.id] = t(
-                  'This field must be a valid date! ',
+                  'This field must be a valid date.',
                   {ns: 'biobank'}
                 );
               }
@@ -673,7 +675,7 @@ class BiobankIndex extends Component {
               regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
               if (regex.test(process.data[attribute.id] === false)) {
                 errors.data[attribute.id] = t(
-                  'This field must be a valid time! ',
+                  'This field must be a valid time.',
                   {ns: 'biobank'}
                 );
               }
@@ -715,13 +717,13 @@ class BiobankIndex extends Component {
 
     required.map((field) => {
       if (!container[field]) {
-        errors[field] = t('This field is required! ', {ns: 'biobank'});
+        errors[field] = t('This field is required.', {ns: 'biobank'});
       }
     });
 
     float.map((field) => {
       if (isNaN(parseInt(container[field])) || !isFinite(container[field])) {
-        errors[field] = t('This field must be a number! ', {ns: 'biobank'});
+        errors[field] = t('This field must be a number.', {ns: 'biobank'});
       }
     });
 
@@ -739,7 +741,7 @@ class BiobankIndex extends Component {
   }
 
   /**
-   * Validate a pool of speciments
+   * Validate a pool of specimens
    *
    * @param {object} pool - The pool to validate
    * @return {object} an object of any errors
@@ -753,24 +755,24 @@ class BiobankIndex extends Component {
 
     required.forEach((field) => {
       if (!pool[field]) {
-        errors[field] = t('This field is required! ', {ns: 'biobank'});
+        errors[field] = t('This field is required.', {ns: 'biobank'});
       }
     });
 
     if (isNaN(parseInt(pool.quantity)) || !isFinite(pool.quantity)) {
-      errors.quantity = t('This field must be a number! ', {ns: 'biobank'});
+      errors.quantity = t('This field must be a number.', {ns: 'biobank'});
     }
 
     // validate date
     regex = /^[12]\d{3}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/;
     if (regex.test(pool.date === false )) {
-      errors.date = t('This field must be a valid date! ', {ns: 'biobank'});
+      errors.date = t('This field must be a valid date.', {ns: 'biobank'});
     }
 
     // validate time
     regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
     if (regex.test(pool.time === false)) {
-      errors.time = t('This field must be a valid time! ', {ns: 'biobank'});
+      errors.time = t('This field must be a valid time.', {ns: 'biobank'});
     }
 
     if (pool.specimenIds == null || pool.specimenIds.length < 2) {
@@ -842,16 +844,18 @@ class BiobankIndex extends Component {
 
 // biobankIndex.propTypes
 BiobankIndex.propTypes = {
-  specimenAPI: PropTypes.object.isRequired,
-  containerAPI: PropTypes.object.isRequired,
-  poolAPI: PropTypes.object.isRequired,
-  optionsAPI: PropTypes.object.isRequired,
-  labelAPI: PropTypes.object.isRequired,
+  specimenAPI: PropTypes.string.isRequired,
+  containerAPI: PropTypes.string.isRequired,
+  poolAPI: PropTypes.string.isRequired,
+  optionsAPI: PropTypes.string.isRequired,
+  labelAPI: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
   i18n.addResourceBundle('fr', 'biobank', frStrings);
+  i18n.addResourceBundle('zh', 'biobank', zhStrings);
+  i18n.addResourceBundle('es', 'biobank', esStrings);
   const biobank = `${loris.BaseURL}/biobank/`;
   const Index = withTranslation(
   )(BiobankIndex);

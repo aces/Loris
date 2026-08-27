@@ -85,6 +85,8 @@ class Module extends \Module
                     [ 'Files' => iterator_to_array($media)],
                     1,
                     1,
+                    null,
+                    "85vh"
                 )
             ];
         }

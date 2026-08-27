@@ -12,6 +12,7 @@ import swal from 'sweetalert2';
 import hiStrings from '../locale/hi/LC_MESSAGES/dictionary.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dictionary.json';
 import frStrings from '../locale/fr/LC_MESSAGES/dictionary.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/dictionary.json';
 
 /**
  * Data Dictionary Page.
@@ -205,8 +206,8 @@ class DataDictIndex extends Component {
           onClick={this.editSwal(rowData)}>
         </i>);
       }
-      if (rowData[t('Description Status', {ns: 'dictionary'})] ===
-       t('Modified', {ns: 'dictionary'})) {
+
+      if (rowData[t('Description Status', {ns: 'dictionary'})] === 'Modified') {
         edited = <span>({t('edited', {ns: 'dictionary'})})</span>;
       }
       return <td>{cell}
@@ -252,6 +253,7 @@ class DataDictIndex extends Component {
         filter: {
           name: 'Category',
           type: 'select',
+          disabled: this.state.moduleFilter === '',
           options: this.state.moduleFilter === ''
             ? {}
             : options.categories[this.state.moduleFilter],
@@ -327,11 +329,12 @@ class DataDictIndex extends Component {
         filter: {
           name: 'Visits',
           type: 'multiselect',
+          sortByValue: false,
           options: options.visits,
         },
       },
       {
-        label: t('Cohorts', {ns: 'loris'}),
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Cohorts',
@@ -361,6 +364,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'dictionary', jaStrings);
   i18n.addResourceBundle('hi', 'dictionary', hiStrings);
   i18n.addResourceBundle('fr', 'dictionary', frStrings);
+  i18n.addResourceBundle('zh', 'dictionary', zhStrings);
   const Index = withTranslation(
     ['dictionary', 'loris']
   )(DataDictIndex);

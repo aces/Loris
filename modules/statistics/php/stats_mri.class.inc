@@ -35,7 +35,8 @@ class Stats_MRI extends \NDB_Form
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('data_entry');
     }
@@ -238,11 +239,14 @@ class Stats_MRI extends \NDB_Form
         $allProjectList = \Utility::getProjectList();
 
         $projects     = [];
-        $projects[''] = 'All Projects';
+        $projects[''] = dgettext('statistics', 'All Projects');
 
         $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects["$ProjectID"] = $allProjectList["$ProjectID"];
+            $projects["$ProjectID"] = dgettext(
+                'Project',
+                $allProjectList["$ProjectID"]
+            );
         }
 
         $currentProject = null;
@@ -314,9 +318,9 @@ class Stats_MRI extends \NDB_Form
             )
         );
         $sites     = [];
-        $sites[''] ="All sites";
+        $sites[''] = dgettext('statistics', 'All sites');
         foreach ($centers as $row) {
-            $sites[$row['NumericID']] = $row['ShortName'];
+            $sites[$row['NumericID']] = dgettext('psc', $row['ShortName']);
             if (isset($_REQUEST['MRIsite'])
                 && $_REQUEST['MRIsite'] == $row['NumericID']
             ) {
@@ -369,9 +373,9 @@ class Stats_MRI extends \NDB_Form
             return;
         }
         $MRISubcategories = [
-            'Complete',
-            'Partial Run',
-            'No Scan',
+            dgettext('loris', 'Complete'),
+            dgettext('statistics', 'Partial Run'),
+            dgettext('statistics', 'No Scan'),
         ];
 
         //Check if a specific scan is requested otherwise display first
@@ -383,7 +387,7 @@ class Stats_MRI extends \NDB_Form
         }
 
         $MRI_Type_Field = $MRI_Type . "_Scan_Done";
-        $MRIHeader      = "$MRI_Type Breakdown";
+        $MRIHeader      = sprintf(dgettext('statistics', "%s Breakdown"), $MRI_Type);
         $CaseStatement  = "
                           CASE($MRI_Type_Field)
                           WHEN 'Partial' THEN 'Partial Run'
@@ -397,36 +401,38 @@ class Stats_MRI extends \NDB_Form
         $scanDoneExists = false;
         if ($DB->columnExists('mri_parameter_form', $MRI_Type . "_Scan_Done")) {
             $scanDoneExists = true;
-            $result         = $DB->pselect(
-                "SELECT s.CohortID,
-                    s.CenterID,
-                    s.Visit_label as VLabel,
-                    $CaseStatement as Subcat,
-                    COUNT(*) as val
-                FROM mri_parameter_form m
-                    JOIN flag f USING (CommentID)
-                    JOIN session s ON (f.SessionID=s.ID)
-                    JOIN candidate c ON (c.ID=s.CandidateID)
-                WHERE s.Current_stage <> 'Recycling Bin'
-                    AND f.Administration <> 'None'
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND f.CommentID NOT LIKE 'DDE%'
-                    AND s.CenterID <> '1'
+            $result         = iterator_to_array(
+                $DB->pselect(
+                    "SELECT s.CohortID,
+                        s.CenterID,
+                        s.Visit_label as VLabel,
+                        $CaseStatement as Subcat,
+                        COUNT(*) as val
+                    FROM mri_parameter_form m
+                        JOIN flag f USING (CommentID)
+                        JOIN session s ON (f.SessionID=s.ID)
+                        JOIN candidate c ON (c.ID=s.CandidateID)
+                    WHERE s.Current_stage <> 'Recycling Bin'
+                        AND f.Administration <> 'None'
+                        AND s.Active='Y'
+                        AND c.Active='Y'
+                        AND f.CommentID NOT LIKE 'DDE%'
+                        AND s.CenterID <> '1'
 		    AND s.CenterID IN (" . $sitesString . ")
-                    $suproject_query
-                    $Param_Project
-                GROUP BY Subcat,
-                    s.CohortID,
-                    s.CenterID,
-                    s.Visit_label",
-                $bigTable_params
+                        $suproject_query
+                        $Param_Project
+                    GROUP BY Subcat,
+                        s.CohortID,
+                        s.CenterID,
+                        s.Visit_label",
+                    $bigTable_params
+                )
             );
         }
 
         $M_Visits = \Utility::getVisitList($currentProject);
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
-            "Breakdown By Scan Type",
+            dgettext('statistics', "Breakdown By Scan Type"),
             $MRIHeader,
             $MRISubcategories,
             $M_Visits,
@@ -663,4 +669,3 @@ class Stats_MRI extends \NDB_Form
         );
     }
 }
-

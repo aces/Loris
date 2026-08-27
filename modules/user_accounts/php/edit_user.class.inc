@@ -47,6 +47,25 @@ class Edit_User extends \NDB_Form
     }
 
     /**
+     * This function can be overridden in a module's page to load the necessary
+     * resources to check the permissions of a user.
+     *
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
+        $matches = [];
+        preg_match('#.*/edit_user/(.*)#', $request->getUri()->getPath(), $matches);
+        if (!empty($matches[1])) {
+            $this->identifier = $matches[1];
+        }
+    }
+
+    /**
      * Controls who's got access to this page, namely those who have the
      * 'user_accounts' and who either have permission
      * 'user_accounts_multisite' or whose site matches the site of the user they
@@ -56,12 +75,12 @@ class Edit_User extends \NDB_Form
      *
      * @return bool true if user has access, false otherwise.
      */
-    function _hasAccess(\User $editor): bool
+    #[\Override]
+    public function isAccessibleBy(\User $editor): bool
     {
         if ($editor->hasPermission('user_accounts_multisite')) {
             return true;
         }
-
         if ($editor->hasPermission('user_accounts')) {
             if ($this->isCreatingNewUser()) {
                 return true;
@@ -190,6 +209,14 @@ class Edit_User extends \NDB_Form
      */
     function _process($values)
     {
+        if ($this->_isEditingOwnAccount()) {
+            error_log(
+                "[user_accounts] Blocked self-edit attempt for user: "
+                . $this->identifier
+            );
+            return;
+        }
+
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $config  = $factory->config();
@@ -640,11 +667,8 @@ class Edit_User extends \NDB_Form
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $matches = [];
-        preg_match('#.*/edit_user/(.*)#', $request->getUri()->getPath(), $matches);
-        if (!empty($matches[1])) {
-            $this->identifier = $matches[1];
-        }
+        $this->tpl_data['isSelfEdit'] = $this->_isEditingOwnAccount();
+
         $response = parent::handle($request);
         if (!empty($this->redirect)) {
             return $response
@@ -904,7 +928,7 @@ class Edit_User extends \NDB_Form
                 ]
             );
             $examinerGroup[] = $this->createLabel(
-                "Radiologist: "
+                dgettext("user_accounts", "Radiologist") . ": "
             );
             $examinerGroup[] = $this->createSelect(
                 "examiner_radiologist",
@@ -1008,7 +1032,7 @@ class Edit_User extends \NDB_Form
                     . "<h3 id=\"header_$lastRole\" "
                     . "class=\"perm_header button\" "
                     . "style=\"text-align: center; margin-top: 5px;\">"
-                    . ucwords($row['type'])
+                    . ucwords(dgettext('permissions_category', $row['type']))
                     . '</h3>'
                     . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
                 );
@@ -1104,6 +1128,9 @@ class Edit_User extends \NDB_Form
 
         // unique key and password rules
         $this->form->addFormRule([&$this, '_validateEditUser']);
+
+        // Expose self-edit flag to the Smarty template.
+        $this->tpl_data['isSelfEdit'] = $this->_isEditingOwnAccount();
     }
 
     /**
@@ -1303,7 +1330,7 @@ class Edit_User extends \NDB_Form
             $errors['Email'] = dgettext(
                 "user_accounts",
                 "When generating a new password, please notify the user by checking"
-                . " 'Send email to user' box"
+                . " 'Send email to user' box below!"
             );
         }
 
@@ -1480,9 +1507,12 @@ class Edit_User extends \NDB_Form
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        return $db->pselectOne(
-            "SELECT Description FROM permissions WHERE permID =:pID",
-            ['pID' => $permID]
+        return dgettext(
+            'permissions',
+            $db->pselectOne(
+                "SELECT Description FROM permissions WHERE permID =:pID",
+                ['pID' => $permID]
+            )
         );
     }
 
@@ -1523,6 +1553,28 @@ class Edit_User extends \NDB_Form
             [
                 $baseURL . "/css/password.css",
             ]
+        );
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = $this->isCreatingNewUser()
+            ? dgettext("user_accounts", "Add User")
+            : dgettext("user_accounts", "Edit User");
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                dgettext("user_accounts", "User Accounts"),
+                "/user_accounts/"
+            ),
+            new \LORIS\Breadcrumb(
+                $label,
+                ""
+            )
         );
     }
 }

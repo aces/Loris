@@ -39,7 +39,8 @@ class Diagnosis extends \NDB_Page
      *
      * @return bool
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('config');
     }
@@ -114,6 +115,11 @@ class Diagnosis extends \NDB_Page
         foreach ($diagnosisTracks as $key => $data) {
             $diagnosisTracks[$key]['sourceField']
                 = explode(",", $diagnosisTracks[$key]['sourceField']);
+
+            $diagnosisTracks[$key]['Name'] = dgettext(
+                'diagnosis_evolution',
+                $diagnosisTracks[$key]['Name']
+            );
         }
 
         $values['projects']        = $projects;
@@ -156,7 +162,7 @@ class Diagnosis extends \NDB_Page
             && $instrumentName && $sourceFields && $orderNumber)
         ) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Please fill out all fields!'
+                dgettext('configuration', 'Please fill out all fields!')
             );
         }
 
@@ -171,7 +177,10 @@ class Diagnosis extends \NDB_Page
 
         if (!in_array($visit, $projectVisits)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Visit is not defined for selected Project.'
+                dgettext(
+                    'configuration',
+                    'Visit is not defined for selected Project.'
+                )
             );
         }
 
@@ -185,7 +194,10 @@ class Diagnosis extends \NDB_Page
 
         if (!in_array($instrumentName, $visitInstruments)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Instrument does not exist in selected visit.'
+                dgettext(
+                    'configuration',
+                    'Instrument does not exist in selected visit.'
+                )
             );
         }
 
@@ -197,7 +209,10 @@ class Diagnosis extends \NDB_Page
         $matches          = array_intersect($sourceFields, $instrumentFields);
         if (count($matches) !== count($sourceFields)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Source Field does not exist in instrument.'
+                dgettext(
+                    'configuration',
+                    'Source Field does not exist in instrument.'
+                )
             );
         }
 
@@ -216,8 +231,14 @@ class Diagnosis extends \NDB_Page
         );
         if (!is_null($match)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                "Order Number not unique for this Project! 
-                Already used in Trajectory: $match."
+                sprintf(
+                    dgettext(
+                        'configuration',
+                        'Order Number not unique for this Project! Already'
+                        . ' used in Trajectory: %s'
+                    ),
+                    $match
+                )
             );
         }
 
@@ -281,7 +302,7 @@ class Diagnosis extends \NDB_Page
             );
             if (in_array(strtolower($set['Name']), $dxNames)) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Trajectory Name already exists.'
+                    dgettext('configuration', 'Trajectory Name already exists.')
                 );
             }
 
@@ -299,7 +320,7 @@ class Diagnosis extends \NDB_Page
             );
             if (in_array(strtolower($set['Name']), $dxNames)) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Trajectory Name already exists.'
+                    dgettext('configuration', 'Trajectory Name already exists.')
                 );
             }
 

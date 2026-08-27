@@ -44,7 +44,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      *
      * @return boolean true if access is permitted
      */
-    private function _hasAccess(\User $user)
+    private function _innerHasAccess(\User $user)
     {
         return (
             $user->hasPermission('access_all_profiles') ||
@@ -93,7 +93,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\Unauthorized();
         }
 
-        if (!$this->_hasAccess($user)) {
+        if (!$this->_innerHasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden();
         }
 

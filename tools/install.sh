@@ -117,12 +117,14 @@ mkdir -p ../smarty/templates_c
 # Setting 770 permissions for templates_c
 sudo chmod 770 ../smarty/templates_c
 
-# Detecting distribution
-if ! os_distro=$(hostnamectl 2>/dev/null)
+# Detecting operating system/distribution
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    os_distro="macOS"
+elif ! os_distro=$(hostnamectl 2>/dev/null)
 then
-  os_distro="Other"
+    os_distro="Other"
 else
-  os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
+    os_distro=$(hostnamectl |awk -F: '/Operating System:/{print $2}'|cut -f2 -d ' ')
 fi
 
 debian=("Debian" "Ubuntu")
@@ -140,6 +142,11 @@ elif [[ " ${redhat[*]} " == *" $os_distro "* ]]; then
     # can write the config.xml file.
     sudo chgrp apache ../project
     sudo chmod 770 ../project
+elif [[ "$os_distro" == "macOS" ]]; then
+    current_user=$(id -un)
+    sudo chown "$current_user":staff ../smarty/templates_c
+    sudo chgrp staff ../project
+    sudo chmod 770 ../project
 else
     echo "$os_distro Linux distribution detected. We currently do not support this. "
     echo "Please manually change subdirectory ownership and permissions to ensure the web server can read *and write* in the following: "
@@ -155,6 +162,8 @@ if [ -d logs ]; then
         sudo chgrp www-data logs
     elif [[ " ${redhat[*]} " == *" $os_distro "* ]]; then
         sudo chgrp apache logs
+    elif [[ "$os_distro" == "macOS" ]]; then
+        sudo chgrp staff logs
     else
         echo "$os_distro Linux distribution detected. We currently do not support this. Please manually set the permissions for the directory tools/logs/"
     fi
@@ -244,6 +253,9 @@ while true; do
          * ) echo "Please enter 'y' or 'n'."
     esac
 done;
+elif [[ "$os_distro" == "macOS" ]]; then
+    echo "macOS detected."
+    echo "Automatic Apache configuration is not supported on macOS. Please configure Apache manually using the macOS developer install guide."
 else
     echo "$os_distro Linux distribution detected. We currently do not support this. Please configure Apache manually."
     exit 1

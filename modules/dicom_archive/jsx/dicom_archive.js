@@ -11,6 +11,7 @@ import FilterableDataTable from 'FilterableDataTable';
 import hiStrings from '../locale/hi/LC_MESSAGES/dicom_archive.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dicom_archive.json';
 import frStrings from '../locale/fr/LC_MESSAGES/dicom_archive.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/dicom_archive.json';
 /**
  * DICOM Archive Page.
  *
@@ -92,12 +93,12 @@ class DicomArchive extends Component {
     case t('Metadata', {ns: 'dicom_archive'}): {
       const metaURL = loris.BaseURL
           + '/dicom_archive/viewDetails/?tarchiveID='
-          + row[t('TarchiveID', {ns: 'dicom_archive'})];
+          + row[t('TarchiveID', {ns: 'loris'})];
       result=<td><a href={metaURL}>{t(cell, {ns: 'dicom_archive'})}</a></td>;
       break;
     }
     case t('MRI Browser', {ns: 'dicom_archive'}): {
-      const sessionID = row[t('SessionID', {ns: 'dicom_archive'})];
+      const sessionID = row[t('SessionID', {ns: 'loris'})];
       if (sessionID === null || sessionID === '') {
         result = <td>&nbsp;</td>;
       } else {
@@ -179,8 +180,8 @@ class DicomArchive extends Component {
         type: 'select',
         options: options.sites,
       }},
-      {label: t('TarchiveID', {ns: 'dicom_archive'}), show: false},
-      {label: t('SessionID', {ns: 'dicom_archive'}), show: false},
+      {label: t('TarchiveID', {ns: 'loris'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('CenterID', {ns: 'dicom_archive'}), show: false},
       {label: t('IsPhantom', {ns: 'dicom_archive'}), show: false},
     ];
@@ -206,6 +207,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('hi', 'dicom_archive', hiStrings);
   i18n.addResourceBundle('fr', 'dicom_archive', frStrings);
   i18n.addResourceBundle('ja', 'dicom_archive', jaStrings);
+  i18n.addResourceBundle('zh', 'dicom_archive', zhStrings);
   const Index = withTranslation(
     ['dicom_archive', 'loris']
   )(DicomArchive);

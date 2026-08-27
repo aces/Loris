@@ -2,12 +2,14 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import swal from 'sweetalert2';
 
 import {withTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/bvl_feedback.json';
 import frStrings from '../locale/fr/LC_MESSAGES/bvl_feedback.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/bvl_feedback.json';
 
 import '../css/bvl_feedback_panel.css';
 
@@ -122,7 +124,11 @@ class FeedbackPanelContent extends Component {
    */
   render() {
     const t = (s) => this.props.t(s, {ns: 'bvl_feedback'});
-    let headers = [t('Type'), t('Author'), t('Status')];
+    let headers = [
+      t('Type', {ns: 'loris'}),
+      t('Author', {ns: 'bvl_feedback'}),
+      t('Status', {ns: 'bvl_feedback'}),
+    ];
 
     if (this.props.feedbackLevel === 'instrument') {
       headers[0] = this.props.t('Field Name', {ns: 'bvl_feedback'});
@@ -738,15 +744,37 @@ class NewThreadPanel extends Component {
       }).then((response) => {
         if (!response.ok) {
           console.error(response.status + ': ' + response.statusText);
+          swal.fire({
+            title: this.props.t('Error!', {ns: 'loris'}),
+            type: 'error',
+            text: this.props.t(
+              'Failed to create thread',
+              {ns: 'bvl_feedback'}
+            ),
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: true,
+          });
           return;
         }
 
         response.json().then((data) => {
-          this.setState({
-            message: this.props.t(
-              'The new thread has been submitted!',
-              {ns: 'bvl_feedback'},
+          swal.fire({
+            title: this.props.t(
+              'Thread created!',
+              {ns: 'bvl_feedback'}
             ),
+            type: 'success',
+            text: this.props.t(
+              'The new thread has been submitted!',
+              {ns: 'bvl_feedback'}
+            ),
+            timer: 2000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+          });
+          this.setState({
             textValue: '',
           });
           this.props.addThread(data);
@@ -754,6 +782,17 @@ class NewThreadPanel extends Component {
         });
       }).catch((error) => {
         console.error(error);
+        swal.fire({
+          title: this.props.t('Error!', {ns: 'loris'}),
+          type: 'error',
+          text: this.props.t(
+            'Failed to create thread',
+            {ns: 'bvl_feedback'}
+          ),
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: true,
+        });
       });
     }
   }
@@ -982,6 +1021,7 @@ class FeedbackPanel extends Component {
     super(props);
     i18n.addResourceBundle('ja', 'bvl_feedback', jaStrings);
     i18n.addResourceBundle('fr', 'bvl_feedback', frStrings);
+    i18n.addResourceBundle('zh', 'bvl_feedback', zhStrings);
     this.state = {
       threads: [],
       summary: null,

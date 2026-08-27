@@ -18,12 +18,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Publications"
 msgstr "Publications"
-
-msgid "File to upload"
-msgstr "Sélectionner un fichier à téléverser"
 
 msgid "Submit"
 msgstr "Soummettre"
@@ -52,10 +50,6 @@ msgstr "Veuillez corriger les erreurs restantes dans le formulaire avant de le s
 
 msgid "Something went wrong!"
 msgstr "Un problème est survenu!"
-
-#, fuzzy
-msgid "Submission Successful!"
-msgstr "Soumission réussie!"
 
 #, fuzzy
 msgid "Propose a Project"
@@ -187,6 +181,5 @@ msgstr "Type de publication"
 msgid "Publication Version"
 msgstr "Version publiée"
 
-#, fuzzy
 msgid "helpFindingVariables"
-msgstr "aideRechercheDeVariables"
+msgstr "Pour vous aider à trouver des variables d'intérêt, consultez le <ddLink>Dictionnaire de données</ddLink>"

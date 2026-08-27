@@ -302,7 +302,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector(".error")
         )->getText();
         $this->assertStringContainsString(
-            "PSCID and CandID do not match or candidate does not exist",
+            "PSCID and DCCID do not match or candidate does not exist",
             $bodyText
         );
     }

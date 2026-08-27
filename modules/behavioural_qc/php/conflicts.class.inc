@@ -94,7 +94,8 @@ class Conflicts extends \NDB_Page implements ETagCalculator
         ServerRequestInterface $request
     ) : array {
         $user         = $request->getAttribute('user');
-        $visit_array  = \Utility::getVisitList();
+        $visits       = \Utility::getVisitList();
+        $visit_array  = array_combine($visits, $visits);
         $userProjects = $user->getProjects();
         $projects     = [];
         foreach ($userProjects as $project) {
@@ -134,7 +135,8 @@ class Conflicts extends \NDB_Page implements ETagCalculator
      *
      * @return bool true if user has permission
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('behavioural_quality_control_view');
     }

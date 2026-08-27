@@ -76,6 +76,7 @@ if ($redcap_config === null) {
 $redcap_client = new RedcapHttpClient(
     $redcap_config->redcap_instance_url,
     $redcap_config->redcap_api_token,
+    $redcap_config->redcap_repeat_id,
 );
 
 $redcap_mapper = new RedcapMapper($lorisInstance, $redcap_client, $redcap_config);

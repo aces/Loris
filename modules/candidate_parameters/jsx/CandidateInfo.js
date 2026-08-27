@@ -396,7 +396,7 @@ CandidateInfo.propTypes = {
   candID: PropTypes.string.isRequired,
   tabName: PropTypes.string.isRequired,
   action: PropTypes.string,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 export default withTranslation(
   ['candidate_parameters', 'loris']

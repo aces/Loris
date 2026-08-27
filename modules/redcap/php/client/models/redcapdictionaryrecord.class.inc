@@ -242,9 +242,15 @@ class RedcapDictionaryRecord
         $field_type  = $this->field_type;
         $field_name  = $this->field_name;
         $field_label = str_replace(["\r\n", "\r", "\n"], '', $this->field_label);
+        // strip HTML-related content
+        $field_label = strip_tags($field_label);
+        // replace the non-breaking space in unicode-encoding (\xao)
+        // and UTF-8 encoding (\xc2)
+        $field_label = str_replace("\xc2\xa0", ' ', $field_label);
+        $field_label = preg_replace('/\s+/', ' ', $field_label);
+        $field_label = trim($field_label);
         $field_desc  = "$field_name{@}$field_label";
 
-        //
         switch ($field_type) {
         case 'text':
             // text maps directly to LORIS
@@ -268,7 +274,7 @@ class RedcapDictionaryRecord
                 . $this->_optionsToLINST();
         case 'yesno':
             // Map yes/no fields to dropdowns with yes and no options.
-            return "select{@}$field_desc{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'";
+            return "select{@}$field_desc{@}NULL=>''{-}'1'=>'Yes'{-}'0'=>'No'";
         case 'calc':
             // Calc maps to a score field. We create the DB field but don't do
             // the score.

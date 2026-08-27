@@ -373,7 +373,7 @@ class NDB_ConfigTest extends TestCase
                 )
             );
 
-        $this->_dbMock->expects($this->any())
+        $this->_dbMock
             ->method('pselect')
             ->willReturn($fakeQuery);
 

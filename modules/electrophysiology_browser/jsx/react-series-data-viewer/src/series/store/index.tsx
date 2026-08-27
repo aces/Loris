@@ -12,7 +12,6 @@ import {channelsReducer} from './state/channels';
 import {createDragBoundsEpic} from './logic/dragBounds';
 import {createTimeSelectionEpic} from './logic/timeSelection';
 import {createFetchChunksEpic} from './logic/fetchChunks';
-import {createPaginationEpic} from './logic/pagination';
 import {
   createActiveEpochEpic,
   createFilterEpochsEpic,
@@ -51,10 +50,6 @@ export const rootEpic = combineEpics(
     dataset,
     channels,
   })),
-  createPaginationEpic(({dataset, channels}) => {
-    const {limit, channelMetadata} = dataset;
-    return {limit, channelMetadata, channels};
-  }),
   createScaleAmplitudesEpic(({bounds}) => {
     const {amplitudeScale} = bounds;
     return amplitudeScale;

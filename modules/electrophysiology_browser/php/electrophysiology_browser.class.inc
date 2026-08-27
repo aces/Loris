@@ -27,7 +27,8 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      *
      * @return bool whether the user has access
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return ($user->hasPermission('electrophysiology_browser_view_allsites')
             || ($user->hasPermission('electrophysiology_browser_view_site')

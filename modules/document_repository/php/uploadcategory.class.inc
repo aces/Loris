@@ -35,7 +35,8 @@ class UploadCategory extends \NDB_Page
      *
      * @return bool true if the user has access to this page.
      */
-    function _hasAccess(\User $user) : bool
+    #[\Override]
+    public function isAccessibleBy(\User $user) : bool
     {
         return ($user->hasPermission('document_repository_categories')
             && $user->hasAnyPermission(
@@ -99,7 +100,7 @@ class UploadCategory extends \NDB_Page
         if ($this->existCategoryName($category_name, intval($parent_id))) {
             return false;
         }
-        $DB->insert(
+        $DB->unsafeinsert(
             "document_repository_categories",
             [
                 "category_name" => $category_name,

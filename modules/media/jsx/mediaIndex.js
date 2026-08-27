@@ -17,6 +17,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/media.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/media.json';
 import frStrings from '../locale/fr/LC_MESSAGES/media.json';
 import esStrings from '../locale/es/LC_MESSAGES/media.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/media.json';
 
 /**
  * Media Index component
@@ -135,9 +136,10 @@ class MediaIndex extends Component {
       }
       break;
     case t('Visit Label', {ns: 'loris'}):
-      if (row['CandID'] !== null && row['SessionID']) {
+      if (row[t('CandID')] !== null && row[t('SessionID', {ns: 'loris'})]) {
         const sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
-          row['CandID'] + '&sessionID=' + row['SessionID'];
+          row[t('CandID')] + '&sessionID='
+          + t(row[t('SessionID', {ns: 'loris'})]);
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
@@ -211,6 +213,7 @@ class MediaIndex extends Component {
       {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
         name: 'visitLabel',
         type: 'select',
+        sortByValue: false,
         options: options.visits,
       }},
       {label: t('Language', {ns: 'loris'}), show: true, filter: {
@@ -233,7 +236,7 @@ class MediaIndex extends Component {
         type: 'select',
         options: options.projects,
       }},
-      {label: t('Uploaded By', {ns: 'media'}), show: true, filter: {
+      {label: t('Uploaded By', {ns: 'loris'}), show: true, filter: {
         name: 'uploadedBy',
         type: 'text',
       }},
@@ -246,7 +249,7 @@ class MediaIndex extends Component {
         options: options.fileTypes,
       }},
       {label: t('CandID', {ns: 'media'}), show: false},
-      {label: t('SessionID', {ns: 'media'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('File Visibility', {ns: 'media'}), show: false, filter: {
         name: 'fileVisibility',
         type: 'select',
@@ -304,6 +307,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('fr', 'media', frStrings);
   i18n.addResourceBundle('ja', 'media', jaStrings);
   i18n.addResourceBundle('hi', 'media', hiStrings);
+  i18n.addResourceBundle('zh', 'media', zhStrings);
   const Index = withTranslation(
     ['media', 'loris']
   )(MediaIndex);

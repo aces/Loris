@@ -18,6 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Electrophysiology Uploader"
 msgstr "Téléverseur d'électrophysiologie"
@@ -26,15 +27,8 @@ msgstr "Téléverseur d'électrophysiologie"
 msgid "LORIS 26 Beta Note:"
 msgstr "LORIS 26 Beta Remarque :"
 
-msgid ""
-"Files uploaded in this module will not be viewable in the Electrophysiology "
-"Browser module. This feature is under construction for the next release. "
-"Please get in touch with the LORIS team to configure this for your project."
-msgstr ""
-"Les fichiers téléversés dans ce module ne seront pas visibles dans le "
-"module Navigateur Electrophysiologie. Cette fonctionnalité est en cours de "
-"développement pour la prochaine version. Veuillez contacter l'équipe LORIS "
-"pour la configurer pour votre projet."
+msgid "Files uploaded in this module will not be viewable in the Electrophysiology Browser module. This feature is under construction for the next release. Please get in touch with the LORIS team to configure this for your project."
+msgstr "Les fichiers téléversés dans ce module ne seront pas visibles dans le module \"Navigateur Electrophysiologie\". Cette fonctionnalité est en cours de développement pour la prochaine version. Veuillez contacter l'équipe LORIS pour la configurer pour votre projet."
 
 msgid "Upload an electrophysiology recording session"
 msgstr "Téléverser une session d'enregistrement électrophysiologique"
@@ -74,10 +68,6 @@ msgid "The file does not respect name convention"
 msgstr "Le fichier ne respecte pas la convention de nomenclature."
 
 #, fuzzy
-msgid "Upload Successful!"
-msgstr "Téléversement réussi!"
-
-#, fuzzy
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr "Le traitement de ce fichier par le pipeline EEG a commencé."
 
@@ -93,7 +83,7 @@ msgid "Submission error!"
 msgstr "Erreur de soumission!"
 
 msgid "Upload Location"
-msgstr "Emplacement de téléversement"
+msgstr "Emplacement du téléversement"
 
 msgid "Upload ID"
 msgstr "ID de téléversement"
@@ -104,5 +94,6 @@ msgstr "Temps de téléversement"
 msgid "Status"
 msgstr "Statut"
 
-msgid "Uploaded By"
-msgstr "Téléverser par"
+# upload.class.inc
+msgid "File not found."
+msgstr "Fichier introuvable."
