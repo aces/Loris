@@ -1,10 +1,10 @@
 <h2>{dgettext("dicom_archive", "Tarchive Metadata")}</h2>
 <table class="table table-hover table-primary table-bordered details-outer-table">
   <tr>
-    <th>{dgettext("dicom_archive", "Acquisition ID")}</th>
+    <th>{dgettext("dicom_archive", "Study Instance UID")}</th>
     <td>
       <a href="/mri_violations?patientName={$archive.PatientName}">
-        {$archive.DicomArchiveID}
+        {$archive.StudyInstanceUID}
       </a>
     </td>
   </tr>
@@ -40,8 +40,8 @@
     <td>{$archive.ScannerSoftwareVersion}</td>
   </tr>
   <tr>
-    <th>{dgettext("dicom_archive", "Acquired at")}</th>
-    <td>{$archive.CenterName}</td>
+    <th>{dgettext("dicom_archive", "Institution Name")}</th>
+    <td>{$archive.InstitutionName}</td>
   </tr>
   <tr>
     <th>{dgettext("dicom_archive", "Number of Acquisitions")}</th>
@@ -56,16 +56,8 @@
     <td>{if !isset($archive.LastUpdate)}{dgettext("dicom_archive", "Never")}{/if}</td>
   </tr>
   <tr>
-    <th>{dgettext("dicom_archive", "Summary type version")}</th>
-    <td>{$archive.sumTypeVersion}</td>
-  </tr>
-  <tr>
     <th>{dgettext("dicom_archive", "Source location")}</th>
     <td>{$archive.SourceLocation}</td>
-  </tr>
-  <tr>
-    <th>{dgettext("dicom_archive", "Archive type version")}</th>
-    <td>{$archive.tarTypeVersion}</td>
   </tr>
   <tr>
     <th>{dgettext("dicom_archive", "Archive location")}</th>
