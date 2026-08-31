@@ -10,6 +10,12 @@ import Loader from 'Loader';
 import Panel from 'Panel';
 import FilterableDataTable from 'FilterableDataTable';
 import lorisFetch from 'jslib/lorisFetch';
+import {
+  NumericElement,
+  SelectElement,
+  TextareaElement,
+  TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Policy Tracker admin page.
@@ -235,10 +241,10 @@ class PolicyTrackerIndex extends Component {
   /**
    * Handle create-version form changes.
    *
-   * @param {object} event - Change event.
+   * @param {string} name - Field name.
+   * @param {string|number} value - Field value.
    */
-  handleVersionChange(event) {
-    const {name, value} = event.target;
+  handleVersionChange(name, value) {
     this.setState((state) => ({
       versionForm: {...state.versionForm, [name]: value},
     }));
@@ -247,10 +253,10 @@ class PolicyTrackerIndex extends Component {
   /**
    * Handle translation form changes.
    *
-   * @param {object} event - Change event.
+   * @param {string} name - Field name.
+   * @param {string|number} value - Field value.
    */
-  handleTranslationChange(event) {
-    const {name, value} = event.target;
+  handleTranslationChange(name, value) {
     this.setState((state) => ({
       translationForm: {...state.translationForm, [name]: value},
     }));
@@ -259,11 +265,12 @@ class PolicyTrackerIndex extends Component {
   /**
    * Change the source policy used by the create-version form.
    *
-   * @param {object} event - Change event.
+   * @param {string} name - Field name.
+   * @param {string|number} value - Selected policy ID.
    */
-  selectPolicy(event) {
+  selectPolicy(name, value) {
     const policy = this.state.options.policies.find((row) => {
-      return parseInt(row.PolicyID) === parseInt(event.target.value);
+      return parseInt(row.PolicyID) === parseInt(value);
     });
     this.setState({versionForm: this.getVersionForm(policy)});
   }
@@ -271,12 +278,13 @@ class PolicyTrackerIndex extends Component {
   /**
    * Change the policy or language used by the translation form.
    *
-   * @param {object} event - Change event.
+   * @param {string} name - Field name.
+   * @param {string|number} value - Selected field value.
    */
-  selectTranslation(event) {
+  selectTranslation(name, value) {
     const form = {
       ...this.state.translationForm,
-      [event.target.name]: event.target.value,
+      [name]: value,
     };
     const policy = this.state.options.policies.find((row) => {
       return parseInt(row.PolicyID) === parseInt(form.PolicyID);
@@ -339,111 +347,6 @@ class PolicyTrackerIndex extends Component {
         'error'
       );
     });
-  }
-
-  /**
-   * Render a select input.
-   *
-   * @param {string} name - Field name.
-   * @param {string} label - Field label.
-   * @param {object} options - Select options.
-   * @param {string|number} value - Selected value.
-   * @param {Function} onChange - Change handler.
-   * @param {string} idPrefix - Prefix for the input ID.
-   * @return {React.ReactNode}
-   */
-  renderSelect(name, label, options, value, onChange, idPrefix = 'version') {
-    const id = `${idPrefix}-${name}`;
-    return (
-      <div className="form-group">
-        <label className="col-sm-3 control-label" htmlFor={id}>
-          {label}
-        </label>
-        <div className="col-sm-9">
-          <select
-            className="form-control"
-            id={id}
-            name={name}
-            value={value || ''}
-            onChange={onChange}
-          >
-            {Object.keys(options).map((key) => (
-              <option key={key} value={key}>{options[key]}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-    );
-  }
-
-  /**
-   * Render a text or numeric input.
-   *
-   * @param {string} name - Field name.
-   * @param {string} label - Field label.
-   * @param {string|number} value - Field value.
-   * @param {Function} onChange - Change handler.
-   * @param {string} type - Input type.
-   * @param {string} idPrefix - Prefix for the input ID.
-   * @return {React.ReactNode}
-   */
-  renderInput(
-    name,
-    label,
-    value,
-    onChange,
-    type = 'text',
-    idPrefix = 'version'
-  ) {
-    const id = `${idPrefix}-${name}`;
-    return (
-      <div className="form-group">
-        <label className="col-sm-3 control-label" htmlFor={id}>
-          {label}
-        </label>
-        <div className="col-sm-9">
-          <input
-            className="form-control"
-            id={id}
-            name={name}
-            type={type}
-            value={value || ''}
-            onChange={onChange}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  /**
-   * Render a textarea input.
-   *
-   * @param {string} name - Field name.
-   * @param {string} label - Field label.
-   * @param {string} value - Field value.
-   * @param {Function} onChange - Change handler.
-   * @param {string} idPrefix - Prefix for the input ID.
-   * @return {React.ReactNode}
-   */
-  renderTextarea(name, label, value, onChange, idPrefix = 'version') {
-    const id = `${idPrefix}-${name}`;
-    return (
-      <div className="form-group">
-        <label className="col-sm-3 control-label" htmlFor={id}>
-          {label}
-        </label>
-        <div className="col-sm-9">
-          <textarea
-            className="form-control"
-            id={id}
-            name={name}
-            rows="8"
-            value={value || ''}
-            onChange={onChange}
-          />
-        </div>
-      </div>
-    );
   }
 
   /**
@@ -537,84 +440,111 @@ class PolicyTrackerIndex extends Component {
     return (
       <Panel title={t('Create New Policy Version', {ns: 'policy_tracker'})}>
         <form className="form-horizontal" onSubmit={this.saveNewVersion}>
-          {this.renderSelect(
-            'PolicyID',
-            t('Source Policy', {ns: 'policy_tracker'}),
-            policies,
-            this.state.versionForm.PolicyID,
-            this.selectPolicy
-          )}
-          {this.renderInput(
-            'Name',
-            t('Name', {ns: 'loris'}),
-            this.state.versionForm.Name,
-            this.handleVersionChange
-          )}
-          {this.renderSelect(
-            'ModuleID',
-            t('Module', {ns: 'loris'}),
-            modules,
-            this.state.versionForm.ModuleID,
-            this.handleVersionChange
-          )}
-          {this.renderInput(
-            'PolicyRenewalTime',
-            t('Days to Renew', {ns: 'policy_tracker'}),
-            this.state.versionForm.PolicyRenewalTime,
-            this.handleVersionChange,
-            'number'
-          )}
-          {this.renderSelect(
-            'PolicyRenewalTimeUnit',
-            t('Renewal Unit', {ns: 'policy_tracker'}),
-            renewalUnits,
-            this.state.versionForm.PolicyRenewalTimeUnit,
-            this.handleVersionChange
-          )}
-          {this.renderSelect(
-            'HeaderButton',
-            t('Header Button', {ns: 'policy_tracker'}),
-            yesNo,
-            this.state.versionForm.HeaderButton,
-            this.handleVersionChange
-          )}
-          {this.renderInput(
-            'HeaderButtonText',
-            t('Header Button Text', {ns: 'policy_tracker'}),
-            this.state.versionForm.HeaderButtonText,
-            this.handleVersionChange
-          )}
-          {this.renderSelect(
-            'Active',
-            t('Active', {ns: 'loris'}),
-            yesNo,
-            this.state.versionForm.Active,
-            this.handleVersionChange
-          )}
-          {this.renderInput(
-            'SwalTitle',
-            t('Modal Title', {ns: 'policy_tracker'}),
-            this.state.versionForm.SwalTitle,
-            this.handleVersionChange
-          )}
-          {this.renderInput(
-            'AcceptButtonText',
-            t('Accept Button Text', {ns: 'policy_tracker'}),
-            this.state.versionForm.AcceptButtonText,
-            this.handleVersionChange
-          )}
-          {this.renderInput(
-            'DeclineButtonText',
-            t('Decline Button Text', {ns: 'policy_tracker'}),
-            this.state.versionForm.DeclineButtonText,
-            this.handleVersionChange
-          )}
-          {this.renderTextarea(
-            'Content',
-            t('Content', {ns: 'loris'}),
-            this.state.versionForm.Content,
-            this.handleVersionChange
-          )}
+          <SelectElement
+            name="PolicyID"
+            id="version-PolicyID"
+            label={t('Source Policy', {ns: 'policy_tracker'})}
+            options={policies}
+            value={String(this.state.versionForm.PolicyID || '')}
+            emptyOption={false}
+            autoSelect={false}
+            sortByValue={false}
+            onUserInput={this.selectPolicy}
+          />
+          <TextboxElement
+            name="Name"
+            id="version-Name"
+            label={t('Name', {ns: 'loris'})}
+            value={this.state.versionForm.Name || ''}
+            onUserInput={this.handleVersionChange}
+          />
+          <SelectElement
+            name="ModuleID"
+            id="version-ModuleID"
+            label={t('Module', {ns: 'loris'})}
+            options={modules}
+            value={String(this.state.versionForm.ModuleID || '')}
+            emptyOption={false}
+            autoSelect={false}
+            sortByValue={false}
+            onUserInput={this.handleVersionChange}
+          />
+          <NumericElement
+            name="PolicyRenewalTime"
+            id="version-PolicyRenewalTime"
+            label={t('Days to Renew', {ns: 'policy_tracker'})}
+            value={String(this.state.versionForm.PolicyRenewalTime || '')}
+            onUserInput={this.handleVersionChange}
+          />
+          <SelectElement
+            name="PolicyRenewalTimeUnit"
+            id="version-PolicyRenewalTimeUnit"
+            label={t('Renewal Unit', {ns: 'policy_tracker'})}
+            options={renewalUnits}
+            value={this.state.versionForm.PolicyRenewalTimeUnit || ''}
+            emptyOption={false}
+            autoSelect={false}
+            sortByValue={false}
+            onUserInput={this.handleVersionChange}
+          />
+          <SelectElement
+            name="HeaderButton"
+            id="version-HeaderButton"
+            label={t('Header Button', {ns: 'policy_tracker'})}
+            options={yesNo}
+            value={this.state.versionForm.HeaderButton || ''}
+            emptyOption={false}
+            autoSelect={false}
+            sortByValue={false}
+            onUserInput={this.handleVersionChange}
+          />
+          <TextboxElement
+            name="HeaderButtonText"
+            id="version-HeaderButtonText"
+            label={t('Header Button Text', {ns: 'policy_tracker'})}
+            value={this.state.versionForm.HeaderButtonText || ''}
+            onUserInput={this.handleVersionChange}
+          />
+          <SelectElement
+            name="Active"
+            id="version-Active"
+            label={t('Active', {ns: 'loris'})}
+            options={yesNo}
+            value={this.state.versionForm.Active || ''}
+            emptyOption={false}
+            autoSelect={false}
+            sortByValue={false}
+            onUserInput={this.handleVersionChange}
+          />
+          <TextboxElement
+            name="SwalTitle"
+            id="version-SwalTitle"
+            label={t('Modal Title', {ns: 'policy_tracker'})}
+            value={this.state.versionForm.SwalTitle || ''}
+            onUserInput={this.handleVersionChange}
+          />
+          <TextboxElement
+            name="AcceptButtonText"
+            id="version-AcceptButtonText"
+            label={t('Accept Button Text', {ns: 'policy_tracker'})}
+            value={this.state.versionForm.AcceptButtonText || ''}
+            onUserInput={this.handleVersionChange}
+          />
+          <TextboxElement
+            name="DeclineButtonText"
+            id="version-DeclineButtonText"
+            label={t('Decline Button Text', {ns: 'policy_tracker'})}
+            value={this.state.versionForm.DeclineButtonText || ''}
+            onUserInput={this.handleVersionChange}
+          />
+          <TextareaElement
+            name="Content"
+            id="version-Content"
+            label={t('Content', {ns: 'loris'})}
+            rows={8}
+            value={this.state.versionForm.Content || ''}
+            onUserInput={this.handleVersionChange}
+          />
           <div className="form-group">
             <div className="col-sm-offset-3 col-sm-9">
               <button className="btn btn-primary" type="submit">
@@ -644,61 +574,64 @@ class PolicyTrackerIndex extends Component {
     return (
       <Panel title={t('Edit Policy Translation', {ns: 'policy_tracker'})}>
         <form className="form-horizontal" onSubmit={this.saveTranslation}>
-          {this.renderSelect(
-            'PolicyID',
-            t('Policy', {ns: 'policy_tracker'}),
-            policies,
-            this.state.translationForm.PolicyID,
-            this.selectTranslation,
-            'translation'
-          )}
-          {this.renderSelect(
-            'LanguageID',
-            t('Language', {ns: 'loris'}),
-            languages,
-            this.state.translationForm.LanguageID,
-            this.selectTranslation,
-            'translation'
-          )}
-          {this.renderInput(
-            'SwalTitle',
-            t('Modal Title', {ns: 'policy_tracker'}),
-            this.state.translationForm.SwalTitle,
-            this.handleTranslationChange,
-            'text',
-            'translation'
-          )}
-          {this.renderInput(
-            'HeaderButtonText',
-            t('Header Button Text', {ns: 'policy_tracker'}),
-            this.state.translationForm.HeaderButtonText,
-            this.handleTranslationChange,
-            'text',
-            'translation'
-          )}
-          {this.renderInput(
-            'AcceptButtonText',
-            t('Accept Button Text', {ns: 'policy_tracker'}),
-            this.state.translationForm.AcceptButtonText,
-            this.handleTranslationChange,
-            'text',
-            'translation'
-          )}
-          {this.renderInput(
-            'DeclineButtonText',
-            t('Decline Button Text', {ns: 'policy_tracker'}),
-            this.state.translationForm.DeclineButtonText,
-            this.handleTranslationChange,
-            'text',
-            'translation'
-          )}
-          {this.renderTextarea(
-            'Content',
-            t('Content', {ns: 'loris'}),
-            this.state.translationForm.Content,
-            this.handleTranslationChange,
-            'translation'
-          )}
+          <SelectElement
+            name="PolicyID"
+            id="translation-PolicyID"
+            label={t('Policy', {ns: 'policy_tracker'})}
+            options={policies}
+            value={String(this.state.translationForm.PolicyID || '')}
+            emptyOption={false}
+            autoSelect={false}
+            sortByValue={false}
+            onUserInput={this.selectTranslation}
+          />
+          <SelectElement
+            name="LanguageID"
+            id="translation-LanguageID"
+            label={t('Language', {ns: 'loris'})}
+            options={languages}
+            value={String(this.state.translationForm.LanguageID || '')}
+            emptyOption={false}
+            autoSelect={false}
+            sortByValue={false}
+            onUserInput={this.selectTranslation}
+          />
+          <TextboxElement
+            name="SwalTitle"
+            id="translation-SwalTitle"
+            label={t('Modal Title', {ns: 'policy_tracker'})}
+            value={this.state.translationForm.SwalTitle || ''}
+            onUserInput={this.handleTranslationChange}
+          />
+          <TextboxElement
+            name="HeaderButtonText"
+            id="translation-HeaderButtonText"
+            label={t('Header Button Text', {ns: 'policy_tracker'})}
+            value={this.state.translationForm.HeaderButtonText || ''}
+            onUserInput={this.handleTranslationChange}
+          />
+          <TextboxElement
+            name="AcceptButtonText"
+            id="translation-AcceptButtonText"
+            label={t('Accept Button Text', {ns: 'policy_tracker'})}
+            value={this.state.translationForm.AcceptButtonText || ''}
+            onUserInput={this.handleTranslationChange}
+          />
+          <TextboxElement
+            name="DeclineButtonText"
+            id="translation-DeclineButtonText"
+            label={t('Decline Button Text', {ns: 'policy_tracker'})}
+            value={this.state.translationForm.DeclineButtonText || ''}
+            onUserInput={this.handleTranslationChange}
+          />
+          <TextareaElement
+            name="Content"
+            id="translation-Content"
+            label={t('Content', {ns: 'loris'})}
+            rows={8}
+            value={this.state.translationForm.Content || ''}
+            onUserInput={this.handleTranslationChange}
+          />
           <div className="form-group">
             <div className="col-sm-offset-3 col-sm-9">
               <button className="btn btn-primary" type="submit">
