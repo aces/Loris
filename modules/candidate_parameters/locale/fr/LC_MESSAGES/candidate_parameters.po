@@ -229,6 +229,15 @@ msgstr "Détails: "
 msgid "Comments: "
 msgstr "Commentaires: "
 
+msgid "Candidate Demographics"
+msgstr "Données démographiques du participant"
+
+msgid "Candidate Identifiers"
+msgstr "Identifiants du participant"
+
+msgid "Other parameters"
+msgstr "Autres paramètres"
+
 # Widgets
 msgid "Consent Summary"
 msgstr "Résumé du consentement"
