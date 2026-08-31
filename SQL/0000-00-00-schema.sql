@@ -2566,7 +2566,7 @@ CREATE TABLE `publication` (
     `doi` text DEFAULT NULL,
     `datePublication` date DEFAULT NULL,
     `link` varchar(255) DEFAULT NULL,
-    `publishingStatus` enum('In Progress','Published') DEFAULT NULL,
+    `publishingStatus` enum('In Progress','Submitted','Published') DEFAULT NULL,
     `project` int(10) unsigned DEFAULT NULL,
     `LeadInvestigator` VARCHAR(255) DEFAULT NULL,
     `LeadInvestigatorEmail` VARCHAR(255) DEFAULT NULL,
