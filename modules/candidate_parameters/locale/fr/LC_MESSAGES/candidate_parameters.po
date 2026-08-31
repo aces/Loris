@@ -229,6 +229,84 @@ msgstr "Détails: "
 msgid "Comments: "
 msgstr "Commentaires: "
 
+msgid "Candidate Identifiers"
+msgstr "Identifiants du candidat"
+
+msgid "LORIS Candidate Identifier"
+msgstr "Identifiant LORIS du candidat"
+
+msgid "Project Candidate Identifier"
+msgstr "Identifiant du candidat dans le projet"
+
+msgid "Reason for Caveat Emptor Flag Candidate"
+msgstr "Raison de l'indicateur Caveat Emptor du candidat"
+
+msgid "Other reason for Caveat Emptor Flag Candidate, please specify"
+msgstr "Autre raison de l'indicateur Caveat Emptor du candidat, veuillez préciser"
+
+msgid "Candidate Demographics"
+msgstr "Données démographiques du candidat"
+
+msgid "Date of Birth"
+msgstr "Date de naissance"
+
+msgid "Date of Death"
+msgstr "Date de décès"
+
+msgid "Candidate's biological sex"
+msgstr "Sexe biologique du candidat"
+
+msgid "Expected Date of Confinement"
+msgstr "Date prévue d'accouchement"
+
+msgid "Other parameters"
+msgstr "Autres paramètres"
+
+msgid "The study visit label"
+msgstr "Libellé de la visite de l'étude"
+
+msgid "The date when the visit was registered"
+msgstr "Date à laquelle la visite a été enregistrée"
+
+msgid "Visit's current stage"
+msgstr "Étape actuelle de la visite"
+
+msgid "Behavioural feedback at the session level"
+msgstr "Commentaires comportementaux au niveau de la session"
+
+msgid "Whether a session was failure or did the candidate withdrawal"
+msgstr "Indique si la session a échoué ou si le candidat s'est retiré"
+
+msgid "The LORIS project to categorize this session"
+msgstr "Projet LORIS utilisé pour catégoriser cette session"
+
+msgid "The LORIS cohort used for battery selection"
+msgstr "Cohorte LORIS utilisée pour la sélection de la batterie"
+
+msgid "The Site at which a visit occurred"
+msgstr "Site où la visite a eu lieu"
+
+msgid "The type of entity which this candidate represents"
+msgstr "Type d'entité que ce candidat représente"
+
+msgid "The status of the participant within the study"
+msgstr "Statut du participant au sein de l'étude"
+
+msgid "The reason of the status of the participant within the study"
+msgstr "Raison du statut du participant au sein de l'étude"
+
+msgid "Comments about the status of the participant within the study"
+msgstr "Commentaires sur le statut du participant au sein de l'étude"
+
+msgid "Candidate comments"
+msgstr "Commentaires sur le candidat"
+
+msgid "The site at which this candidate was initially registered"
+msgstr "Site où ce candidat a été initialement enregistré"
+
+msgid "The project for which this candidate was initially registered"
+msgstr "Projet pour lequel ce candidat a été initialement enregistré"
+
 # Widgets
 msgid "Consent Summary"
 msgstr "Résumé du consentement"
