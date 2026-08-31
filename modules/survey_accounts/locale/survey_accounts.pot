@@ -24,7 +24,7 @@ msgstr ""
 msgid "Survey was added successfully."
 msgstr ""
 
-msgid "Click here to go back to view the list of survey's created"
+msgid "Click here to go back to view the list of surveys created"
 msgstr ""
 
 msgid "Survey List"
@@ -45,9 +45,6 @@ msgstr ""
 msgid "Email survey"
 msgstr ""
 
-msgid "Close"
-msgstr ""
-
 msgid "Email to Study Participant"
 msgstr ""
 
@@ -57,25 +54,19 @@ msgstr ""
 msgid "This is where your message goes."
 msgstr ""
 
-msgid "Email"
-msgstr ""
-
 msgid "URL"
-msgstr ""
-
-msgid "Status"
 msgstr ""
 
 msgid "PSCID and DCCID do not match or candidate does not exist."
 msgstr ""
 
-msgid "does not exist for given candidate"
+msgid "Visit does not exist for given candidate"
 msgstr ""
 
 msgid "Please choose an instrument."
 msgstr ""
 
-msgid "already exists for given candidate for visit"
+msgid "Instrument %s already exists for given candidate for visit %s"
 msgstr ""
 
 msgid "Email is not valid."
