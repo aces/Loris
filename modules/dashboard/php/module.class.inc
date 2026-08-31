@@ -104,13 +104,7 @@ class Module extends \Module
         if ($last_login === null) {
             $logindatestring = dgettext("dashboard", "...never. Welcome!");
         } else {
-            $formatter = new \IntlDateFormatter(
-                '',
-                \IntlDateFormatter::TRADITIONAL,
-                \IntlDateFormatter::SHORT
-            );
-
-            $logindatestring = $formatter->format($last_login);
+            $logindatestring = $last_login->format(\DateTimeInterface::ATOM);
         }
 
         return new Widget(
