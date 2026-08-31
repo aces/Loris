@@ -349,7 +349,7 @@ msgstr "Précédent"
 
 #, fuzzy
 msgid "Next"
-msgstr "La prochaine étape a commencé."
+msgstr "Suivant"
 
 msgid "Save"
 msgstr "Sauvegarder"
