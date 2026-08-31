@@ -12,10 +12,11 @@ import {useTranslation} from 'react-i18next';
  * @param {string} name field name
  * @param {string} data search string
  * @param {object} filters to be matched agains
+ * @param {object} filter the field's filter configuration
  * @return {boolean} true, if filter value is found to be a substring
  * of one of the column values, false otherwise.
  */
-const hasFilterKeyword = (name, data, filters) => {
+const hasFilterKeyword = (name, data, filters, filter = {}) => {
   let filterData = null;
   let exactMatch = false;
   let opposite = false;
@@ -31,6 +32,20 @@ const hasFilterKeyword = (name, data, filters) => {
   // Handle null inputs
   if (filterData === null || data === null) {
     return false;
+  }
+
+  // Handle date range inputs.
+  if (filter.type === 'date-range' &&
+    typeof filterData === 'object' &&
+    !Array.isArray(filterData)) {
+    const dateData = (data !== null && data !== undefined) ?
+      data.toString() : '';
+    const min = filterData.min || '';
+    const max = filterData.max || '';
+
+    return dateData !== '' &&
+      (min === '' || dateData >= min) &&
+      (max === '' || dateData <= max);
   }
 
   // Handle numeric inputs
@@ -70,7 +85,9 @@ const hasFilterKeyword = (name, data, filters) => {
   }
 
   // Handle numeric range inputs
-  if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+  if (filter.type === 'number-range' &&
+    typeof filterData === 'object' &&
+    !Array.isArray(filterData)) {
     const numericData = Number.parseFloat(data);
     const min = Number.parseFloat(filterData.min);
     const max = Number.parseFloat(filterData.max);
@@ -282,7 +299,9 @@ const DataTable = ({
       fields.forEach((field, j) => {
         const cellData = row ? row[j] : null;
 
-        if (hasFilterKeyword((field.filter || {}).name, cellData, filters)) {
+        if (hasFilterKeyword(
+          (field.filter || {}).name, cellData, filters, field.filter || {}
+        )) {
           headerCount++;
         }
 

@@ -146,6 +146,18 @@ msgstr "सहेजें"
 msgid "Reset"
 msgstr "रीसेट करें"
 
+msgid "Minimum"
+msgstr "न्यूनतम"
+
+msgid "Maximum"
+msgstr "अधिकतम"
+
+msgid "{{label}} Minimum"
+msgstr "{{label}} न्यूनतम"
+
+msgid "{{label}} Maximum"
+msgstr "{{label}} अधिकतम"
+
 msgid "Note"
 msgstr "नोट"
 
