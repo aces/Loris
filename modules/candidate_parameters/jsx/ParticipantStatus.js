@@ -84,7 +84,7 @@ class ParticipantStatus extends Component {
         error: function(data, errorCode, errorMsg) {
           that.setState(
             {
-              error: t('An error occured while loading the page.',
+              error: t('An error occurred while loading the page.',
                 {ns: 'loris'}
               ),
             }
