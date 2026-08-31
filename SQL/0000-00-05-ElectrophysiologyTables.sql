@@ -7,7 +7,14 @@ CREATE TABLE `meg_ctf_head_shape_file` (
     `ID`          INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `Path`        VARCHAR(255)     NOT NULL,
     `Blake2bHash` VARCHAR(128)     NOT NULL,
-    PRIMARY KEY (`ID`)
+    `BidsInfoID`  INT(10) UNSIGNED DEFAULT NULL,
+    `InsertTime`  DATETIME         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`ID`),
+    KEY `meg_ctf_head_shape_file_bids_info_id_fk_idx` (`BidsInfoID`),
+    CONSTRAINT `meg_ctf_head_shape_file_bids_info_id_fk`
+      FOREIGN KEY (`BidsInfoID`)
+      REFERENCES `bids_file` (`ID`)
+      ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create a meg_ctf_head_shape_point table
@@ -57,7 +64,9 @@ CREATE TABLE `physiological_file` (
   `Index`                     INT(5)               DEFAULT NULL,
   `ParentID`                  INT(10) unsigned     DEFAULT NULL,
   `HeadShapeFileID`           INT(10) unsigned     DEFAULT NULL,
+  `BidsInfoID`                INT(10) unsigned     DEFAULT NULL,
   PRIMARY KEY (`PhysiologicalFileID`),
+  KEY `physiological_file_bids_info_id_fk_idx` (`BidsInfoID`),
   CONSTRAINT `FK_session_ID`
     FOREIGN KEY (`SessionID`)
     REFERENCES `session` (`ID`),
@@ -73,9 +82,14 @@ CREATE TABLE `physiological_file` (
   CONSTRAINT `FK_ParentID`
     FOREIGN KEY (`ParentID`)
     REFERENCES `physiological_file` (`PhysiologicalFileID`),
-  CONSTRAINT `FK_head_shape_HeadShapeFileID`
+  CONSTRAINT `physiological_file_head_shape_file_id_fk`
     FOREIGN KEY (`HeadShapeFileID`)
     REFERENCES `meg_ctf_head_shape_file` (`ID`)
+    ON DELETE SET NULL,
+  CONSTRAINT `physiological_file_bids_info_id_fk`
+    FOREIGN KEY (`BidsInfoID`)
+    REFERENCES `bids_file` (`ID`)
+    ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -307,12 +321,16 @@ CREATE TABLE `physiological_event_file` (
     `FilePath` varchar(255) DEFAULT NULL,
     `LastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `LastWritten` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `BidsInfoID` int(10) unsigned DEFAULT NULL,
     PRIMARY KEY (`EventFileID`),
     KEY `FK_physio_file_ID` (`PhysiologicalFileID`),
     KEY `FK_event_file_type` (`FileType`),
+    KEY `physiological_event_file_bids_info_id_fk_idx` (`BidsInfoID`),
     CONSTRAINT `FK_event_file_type` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes` (`type`),
     CONSTRAINT `FK_physio_file_ID` FOREIGN KEY (`PhysiologicalFileID`) REFERENCES `physiological_file` (`PhysiologicalFileID`),
-    CONSTRAINT `FK_pef_project_ID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`)
+    CONSTRAINT `FK_pef_project_ID` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`),
+    CONSTRAINT `physiological_event_file_bids_info_id_fk`
+      FOREIGN KEY (`BidsInfoID`) REFERENCES `bids_file` (`ID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 ;
 
