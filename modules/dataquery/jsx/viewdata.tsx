@@ -437,6 +437,20 @@ function ViewData(props: {
     />
     : <div />);
   return <div>
+    <style>{`
+      .dataquery-session-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 0;
+        border-bottom: thin dotted black;
+      }
+      .dataquery-session-row:last-child {
+        border-bottom: none;
+      }
+    `}</style>
     <SelectElement
       name='headerdisplay'
       options={{
@@ -982,22 +996,12 @@ function organizedFormatter(
             };
             let theval = visitval(visit, cell);
             if (!displayEmptyVisits && !hasdata) {
-              return <div key={visit} />;
+              return null;
             }
             if (theval === null) {
               theval = <i>{t('(No data)', {ns: 'dataquery'})}</i>;
             }
-            return (<div key={visit} style={
-              {
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'start',
-                flexGrow: 1,
-                flexShrink: 1,
-                flexBasis: 0,
-                borderBottom: 'thin dotted black',
-              }
-            }>
+            return (<div key={visit} className="dataquery-session-row">
               <div style={
                 {
                   fontWeight: 'bold',
@@ -1048,22 +1052,12 @@ function organizedFormatter(
             };
             let theval = visitval(visit, cell);
             if (!displayEmptyVisits && !hasdata) {
-              return <div key={visit} />;
+              return null;
             }
             if (theval === null) {
               theval = <i>{t('(No data)', {ns: 'dataquery'})}</i>;
             }
-            return (<div key={visit} style={
-              {
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'start',
-                flexGrow: 1,
-                flexShrink: 1,
-                flexBasis: 0,
-                borderBottom: 'thin dotted black',
-              }
-            }>
+            return (<div key={visit} className="dataquery-session-row">
               <div style={
                 {
                   fontWeight: 'bold',
