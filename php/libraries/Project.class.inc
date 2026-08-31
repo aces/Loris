@@ -386,7 +386,7 @@ class Project implements \JsonSerializable
         return iterator_to_array($cohortData);
     }
 
-   /**
+    /**
      * Get that project's participants
      *
      * @param array $centerIDs A list of center IDs that the candidate's
