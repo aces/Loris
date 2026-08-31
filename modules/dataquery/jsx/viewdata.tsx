@@ -357,6 +357,13 @@ function ViewData(props: {
   const [emptyVisits, setEmptyVisits] = useState<boolean>(true);
   const [showEmptyCandidates, setShowEmptyCandidates] = useState<boolean>(true);
 
+  // Candidate scoped fields are skipped when looking for data, so the filter
+  // can only tell rows apart when some other field is selected.
+  const hasNonCandidateFields = props.fields.some((field) => {
+    const dict = getDictionary(field, props.fulldictionary);
+    return !dict || dict.scope !== 'candidate';
+  });
+
   let queryTable;
   if (queryData.loading) {
     queryTable = <ProgressBar
@@ -460,7 +467,7 @@ function ViewData(props: {
 
         // Filter out empty candidates if toggle is off. In Cross-sectional
         // mode each row is a single visit, so this also drops empty visits.
-        const filteredData = showEmptyCandidates
+        const filteredData = (showEmptyCandidates || !hasNonCandidateFields)
           ? organizedData.data
           : organizedData.data.filter(rowHasData);
 
@@ -539,6 +546,7 @@ function ViewData(props: {
     <CheckboxElement
       name="emptycandidates"
       value={showEmptyCandidates}
+      disabled={!hasNonCandidateFields}
       label={t('Show candidates with no data', {ns: 'dataquery'})}
       onUserInput={
         (name: string, value: boolean) =>
