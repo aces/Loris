@@ -29,26 +29,9 @@ msgstr "行为数据反馈通知"
 # Comments from dashboard widget on raisinbread.
 # These are dynamically entered user data, but having
 # the test set value on demo translated looks better
-msgid "Input"
-msgstr "数据录入"
-
-msgid "Input Errors"
-msgstr "录入错误"
-
-msgid "Scoring"
-msgstr "评分"
-
-msgid "Scoring Errors"
-msgstr "评分错误"
-
-msgid "Other"
-msgstr "其他"
 
 msgid "Feedback Type"
 msgstr "反馈类型"
-
-msgid "Feedback description"
-msgstr "反馈说明"
 
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr "PSCID {{PSCID}} 的反馈"

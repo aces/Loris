@@ -32,29 +32,10 @@ msgstr "Notifications de rétroaction comportementale"
 # Comments from dashboard widget on raisinbread.
 # These are dynamically entered user data, but having
 # the test set value on demo translated looks better
-msgid "Input"
-msgstr "Entrée"
-
-#, fuzzy
-msgid "Input Errors"
-msgstr "Erreurs de saisie"
-
-msgid "Scoring"
-msgstr "Score"
-
-#, fuzzy
-msgid "Scoring Errors"
-msgstr "Erreurs de notation"
-
-msgid "Other"
-msgstr "Autre"
 
 #, fuzzy
 msgid "Feedback Type"
 msgstr "Type de commentaire"
-
-msgid "Feedback description"
-msgstr "Description de la rétroaction"
 
 #, fuzzy
 msgid "Feedback for PSCID: {{PSCID}}"
@@ -71,7 +52,7 @@ msgid "There are no threads for this user!"
 msgstr "Il n'y a pas de fils de discussion pour cet utilisateur !"
 
 msgid "Open"
-msgstr "Ouvert"
+msgstr "Ouvrir"
 
 #, fuzzy
 msgid "Comment added!"
@@ -118,7 +99,7 @@ msgstr "Ce candidat n'a reçu aucun commentaire sur son comportement."
 
 #, fuzzy
 msgid "New {{feedbacklevel}} level feedback"
-msgstr "Nouveau {{feedbacklevel}} niveau de rétroaction"
+msgstr "Nouvelle rétroaction au niveau de l’{{feedbacklevel}}"
 
 #, fuzzy
 msgid "Open Thread Summary"
@@ -130,3 +111,12 @@ msgstr "Fils de discussion"
 
 msgid "Field Name"
 msgstr "Nom du champ"
+
+msgid "opened"
+msgstr "Ouvert"
+
+msgid "closed"
+msgstr "Fermé"
+
+msgid "{{author}} on:<0/>{{date}}"
+msgstr "{{author}} le :<0/>{{date}}"

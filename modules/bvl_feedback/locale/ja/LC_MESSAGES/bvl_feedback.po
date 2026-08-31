@@ -30,26 +30,9 @@ msgstr "行動フィードバック通知"
 # Comments from dashboard widget on raisinbread.
 # These are dynamically entered user data, but having
 # the test set value on demo translated looks better
-msgid "Input"
-msgstr "インプット"
-
-msgid "Input Errors"
-msgstr "入力エラー"
-
-msgid "Scoring"
-msgstr "得点"
-
-msgid "Scoring Errors"
-msgstr "得点エラー"
-
-msgid "Other"
-msgstr "他の"
 
 msgid "Feedback Type"
 msgstr "フィードバックタイプ"
-
-msgid "Feedback description"
-msgstr "フィードバックの説明"
 
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr "プロジェクト識別子へのフィードバック: {{PSCID}}"
