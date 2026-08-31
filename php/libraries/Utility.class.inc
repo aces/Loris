@@ -817,6 +817,49 @@ class Utility
     }
 
     /**
+     * Get all the instruments which currently exist for a set of visit labels
+     * in the database.
+     *
+     * @param string[] $visit_labels The visit labels for which you would like
+     *                               to know the existing instruments
+     *
+     * @return array Array of instruments which exist for the given visit labels
+     *               array is of the form [$Test_name => $Full_name]
+     */
+    static function getVisitsInstruments(array $visit_labels): array
+    {
+        if (empty($visit_labels)) {
+            return [];
+        }
+
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $params       = [];
+        $placeholders = [];
+        foreach (array_values($visit_labels) as $i => $visit_label) {
+            $params["vl$i"] = $visit_label;
+            $placeholders[] = ":vl$i";
+        }
+
+        $test_names = $DB->pselectColWithIndexKey(
+            "SELECT DISTINCT t.Test_name, t.Full_name
+            FROM session s
+            JOIN candidate c ON (c.ID=s.CandidateID)
+            JOIN flag f ON (f.sessionID=s.id)
+            JOIN test_names t ON (f.TestID=t.ID)
+            WHERE c.Active='Y' AND s.Active='Y'
+            AND s.Visit_label IN (" . join(',', $placeholders) . ")
+            AND s.CenterID != '1' AND c.Entity_type != 'Scanner'
+            ORDER BY t.Full_name",
+            $params,
+            'Test_name'
+        );
+
+        return $test_names;
+    }
+
+    /**
      * Effectively resolve '..' characters in a file path
      *
      * @param string $path A potentially-relative filepath to be resolved
