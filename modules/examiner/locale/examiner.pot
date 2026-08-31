@@ -89,3 +89,12 @@ msgstr ""
 
 msgid "This examiner already exists."
 msgstr ""
+
+msgid "Not Certified"
+msgstr ""
+
+msgid "In Training"
+msgstr ""
+
+msgid "Certified"
+msgstr ""
