@@ -194,7 +194,9 @@ class LoadPane extends Component {
           </div>
           <input
             className='fileUpload'
-            type='file' id='instfile'
+            type='file'
+            id='instfile'
+            data-browse-label={t('Browse', {ns: 'loris'})}
             onChange={this.chooseFile}
           />
           <input
