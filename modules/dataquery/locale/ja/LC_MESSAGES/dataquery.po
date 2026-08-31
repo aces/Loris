@@ -399,8 +399,11 @@ msgstr "共有"
 msgid "Query Loaded"
 msgstr "クエリが読み込まれました"
 
-msgid "Successfully loaded query."
-msgstr "クエリが正常に読み込まれました。"
+msgid "Return to the previous page to run or modify your query."
+msgstr "前のページに戻ってクエリを実行または変更してください。"
+
+msgid "Return"
+msgstr "戻る"
 
 msgid "(Run on {{runTime}})"
 msgstr "({{runTime}} に実行)"

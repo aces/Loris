@@ -412,8 +412,11 @@ msgstr "साझा करें"
 msgid "Query Loaded"
 msgstr "क्वेरी लोड हो गई"
 
-msgid "Successfully loaded query."
-msgstr "क्वेरी सफलतापूर्वक लोड हो गई।"
+msgid "Return to the previous page to run or modify your query."
+msgstr "अपनी क्वेरी को चलाने या संशोधित करने के लिए पिछले पृष्ठ पर वापस लौटें।"
+
+msgid "Return"
+msgstr "वापस लौटें"
 
 msgid "(Run on {{runTime}})"
 msgstr "(चलाया गया {{runTime}} पर)"
