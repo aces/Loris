@@ -360,6 +360,18 @@ msgstr "Sauvegarde en cours"
 msgid "Reset"
 msgstr "Réinitialiser"
 
+msgid "Minimum"
+msgstr "Minimum"
+
+msgid "Maximum"
+msgstr "Maximum"
+
+msgid "{{label}} Minimum"
+msgstr "{{label}} minimum"
+
+msgid "{{label}} Maximum"
+msgstr "{{label}} maximum"
+
 msgid "Note"
 msgstr "Note"
 

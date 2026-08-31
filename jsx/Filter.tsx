@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {
   CheckboxElement,
   DateElement,
+  DateRangeElement,
   FieldsetElement,
   TimeElement,
   FormElement,
@@ -73,21 +74,27 @@ function Filter({
     const searchParams = new URLSearchParams(window.location.search);
     fields.forEach((field) => {
       const filter = field.filter;
-      if (!filter || filter.hide === true) {
+      if (!filter) {
         return;
       }
-      if (filter.type === 'number-range') {
+      if (filter.type === 'number-range' || filter.type === 'date-range') {
         const min = searchParams.get(`${filter.name}Min`) || '';
         const max = searchParams.get(`${filter.name}Max`) || '';
         if (min !== '' || max !== '') {
           onFieldUpdate(filter.name, {min, max});
         }
+        return;
       }
-    });
-    searchParams.forEach((value, name) => {
-      if (fields.find((field) => field.filter?.name === name)) {
-        onFieldUpdate(name, searchParams.getAll(name));
+
+      const values = searchParams.getAll(filter.name);
+      if (values.length === 0) {
+        return;
       }
+
+      onFieldUpdate(
+        filter.name,
+        filter.type === 'multiselect' ? values : values[0]
+      );
     });
   }, []);
 
@@ -102,15 +109,21 @@ function Filter({
     if (!field) return;
 
     const type = field.filter.type;
-    const exactMatch = !['text', 'date', 'datetime', 'multiselect',
-      'number-range'].includes(type);
+    const exactMatch = !['text', 'date', 'datetime', 'date-range',
+      'multiselect', 'number-range'].includes(type);
+
+    const emptyRange =
+      value !== null &&
+      typeof value === 'object' &&
+      !Array.isArray(value) &&
+      (value.min || '') === '' &&
+      (value.max || '') === '';
 
     const isEmpty =
       value === null ||
       value === '' ||
-      (typeof value === 'object' && !Array.isArray(value) &&
-        (value.min || '') === '' && (value.max || '') === '') ||
       (Array.isArray(value) && value.length === 0) ||
+      emptyRange ||
       (type === 'checkbox' && value === false);
 
     if (isEmpty) {
@@ -135,7 +148,8 @@ function Filter({
         name: filter.name,
         label: field.label,
         value: filters[filter.name]?.value ?? (
-          filter.type === 'number-range' ? {} : undefined
+          (filter.type === 'number-range' || filter.type === 'date-range')
+            ? {} : undefined
         ),
         onUserInput: onFieldUpdate,
         labelPlacementTop: true,
@@ -175,6 +189,17 @@ function Filter({
         );
       case 'date':
         return <DateElement {...commonProps} />;
+      case 'date-range':
+        return (
+          <DateRangeElement
+            {...commonProps}
+            dateFormat={filter.dateFormat}
+            minYear={filter.minYear}
+            maxYear={filter.maxYear}
+            minLabel={filter.minLabel}
+            maxLabel={filter.maxLabel}
+          />
+        );
       case 'datetime':
         return <DateTimePartialElement {...commonProps} />;
       case 'checkbox':

@@ -32,8 +32,18 @@ export type NumberRangeFilterConfig = BaseFilter & {
     options?: never;
 };
 
+export type DateRangeFilterConfig = BaseFilter & {
+    type: 'date-range';
+    dateFormat?: string;
+    minYear?: string | number;
+    maxYear?: string | number;
+    minLabel?: string;
+    maxLabel?: string;
+    options?: never;
+};
 export type FilterConfig =
-  SelectFilterConfig | OtherFilterConfig | NumberRangeFilterConfig;
+  SelectFilterConfig | OtherFilterConfig | NumberRangeFilterConfig
+  | DateRangeFilterConfig;
 
 export interface Field {
     show: boolean;
