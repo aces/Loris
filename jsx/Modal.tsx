@@ -55,6 +55,12 @@ const Modal = ({
         showCancelButton: true,
         confirmButtonText: t('Proceed', {ns: 'loris'}),
         cancelButtonText: t('Cancel', {ns: 'loris'}),
+        focusCancel: true,
+        reverseButtons: true,
+        customClass: {
+          confirmButton: 'btn-secondary',
+          cancelButton: 'btn-primary'
+        }
       }).then((result) => result.value && onClose());
     } else {
       onClose(); // Close immediately if no warning
