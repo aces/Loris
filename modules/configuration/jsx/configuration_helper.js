@@ -21,7 +21,7 @@ $(function() {
 
     // Setup the new form field
     let newField = currentField.clone();
-    newField.find('.form-control').attr('name', name);
+    assignFormControlNames(newField, name);
     $(newField).find('.btn-remove')
       .addClass('remove-new')
       .removeClass('btn-remove');
@@ -41,7 +41,7 @@ $(function() {
   $('.btn-remove').on('click', function(e) {
     e.preventDefault();
 
-    let selectedOption = $(this).parent().parent().children()
+    let selectedOption = $(this).parent().parent().find('.form-control:first')
       .prop('value');
 
     let fieldName = $(this)
@@ -84,9 +84,7 @@ $(function() {
               let name = 'add-' + parentID;
 
               resetForm($(button).parent().parent());
-              $(button)
-                .parent().parent().children('.form-control')
-                .attr('name', name);
+              assignFormControlNames($(button).parent().parent(), name);
               $(button)
                 .addClass('remove-new')
                 .removeClass('btn-remove');
@@ -102,13 +100,21 @@ $(function() {
   });
 
   // On form submit, process the changes through an AJAX call
-  $('form').on('submit', function(e) {
+  $('body').on('submit', 'form', function(e) {
     e.preventDefault();
-
-    let form = $(this).serialize();
 
     // Clear previous feedback
     $('.submit-area > label').remove();
+
+    if (hasIncompleteMappingFields()) {
+      $('<label>Mapping rows need both a value and mapped value.</label>')
+        .hide()
+        .appendTo('.submit-area')
+        .fadeIn(500).delay(1000);
+      return;
+    }
+
+    let form = $(this).serialize();
 
     $.ajax({
       type: 'post',
@@ -133,7 +139,7 @@ $(function() {
   });
 
   // On form reset, to delete the elements added with the "Add field" button that were not submitted.
-  $('form').on('reset', function(e) {
+  $('body').on('reset', 'form', function(e) {
     $('.tab-pane.active').find('select[name^="add-"]').parent().remove();
   });
 });
@@ -160,4 +166,42 @@ function resetForm(form) {
   ).val('');
   $(form).find('input:radio, input:checkbox')
     .removeAttr('checked').removeAttr('selected');
+}
+
+/**
+ * Assign posted field names to simple and mapping configuration controls.
+ *
+ * @param {Element} field A configuration entry element
+ * @param {string} name The base POST field name
+ */
+function assignFormControlNames(field, name) {
+  'use strict';
+
+  $(field).find('.form-control').attr('name', name);
+  $(field).find('.configuration-mapping-mapped-value')
+    .attr('name', 'mapping-' + name);
+}
+
+/**
+ * Check whether any mapping row has only one side of the pair filled.
+ *
+ * @returns {boolean} True when an incomplete mapping row exists
+ */
+function hasIncompleteMappingFields() {
+  'use strict';
+
+  let incomplete = false;
+  $('.configuration-mapping-fields').each(function() {
+    let value = $.trim($(this).find('.configuration-mapping-value').val());
+    let mappedValue = $.trim(
+      $(this).find('.configuration-mapping-mapped-value').val()
+    );
+
+    if ((value === '') !== (mappedValue === '')) {
+      incomplete = true;
+      return false;
+    }
+  });
+
+  return incomplete;
 }
