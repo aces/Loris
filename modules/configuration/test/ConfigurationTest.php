@@ -118,17 +118,71 @@ class ConfigurationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that cohort panel in configuration
+     * Tests that the React cohort manager renders its legacy form contract
      *
      * @return void
      */
     public function testCohort()
     {
-         $this->safeGet($this->url . "/configuration/cohort/");
-        $bodyText = $this->safeFindElement(
+        $this->safeGet($this->url . "/configuration/cohort/");
+        $newTab = $this->safeFindElement(
             WebDriverBy::cssSelector("#\#cohortnew")
+        );
+        $this->assertStringContainsString("CohortID", $newTab->getText());
+        $this->assertStringContainsString(
+            "New Cohort",
+            $this->safeFindElement(
+                WebDriverBy::cssSelector("#cohortnew h2")
+            )->getText()
+        );
+        foreach (["title", "useEDC", "WindowDifference", "target"] as $name) {
+            $this->safeFindElement(
+                WebDriverBy::cssSelector(
+                    "#cohortnew [name='$name']"
+                )
+            );
+        }
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
         )->getText();
-         $this->assertStringContainsString("CohortID", $bodyText);
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
+    }
+
+    /**
+     * Tests that the React project manager renders its legacy form contract
+     *
+     * @return void
+     */
+    public function testProject()
+    {
+        $this->safeGet($this->url . "/configuration/project/");
+        $newTab = $this->safeFindElement(
+            WebDriverBy::cssSelector("#\#projectnew")
+        );
+        $this->assertStringContainsString("ProjectID", $newTab->getText());
+        $this->assertStringContainsString(
+            "New Project",
+            $this->safeFindElement(
+                WebDriverBy::cssSelector("#projectnew h2")
+            )->getText()
+        );
+        foreach (["Name", "Alias", "recruitmentTarget", "CohortIDs"] as $name) {
+            $this->safeFindElement(
+                WebDriverBy::cssSelector(
+                    "#projectnew [name='$name']"
+                )
+            );
+        }
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
@@ -228,4 +282,3 @@ class ConfigurationTest extends LorisIntegrationTest
         );
     }
 }
-

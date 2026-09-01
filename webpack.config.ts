@@ -20,6 +20,8 @@ const lorisModules: Record<string, string[]> = {
     'CohortRelations',
     'configuration_helper',
     'DiagnosisEvolution',
+    'formCohort',
+    'formProject',
   ],
   conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
   battery_manager: ['batteryManagerIndex'],
