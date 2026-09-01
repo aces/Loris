@@ -25,8 +25,10 @@ namespace LORIS\configuration;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class Configuration extends \NDB_Form
+class Configuration extends \NDB_Page
 {
+    public $skipTemplate = true;
+
     /**
      * _has_access returns true
      * if the user has the specific permission
@@ -39,173 +41,6 @@ class Configuration extends \NDB_Form
     public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('config');
-    }
-
-     /**
-      * Loads the main configuration module page.
-      *
-      * @return void
-      */
-    function setup()
-    {
-        parent::setup();
-        $config = \NDB_Config::singleton();
-        $DB     = $this->loris->getDatabaseConnection();
-
-        $scans      = $DB->pselect(
-            "SELECT MriScanTypeName FROM mri_scan_type",
-            []
-        );
-        $scan_types = ['' => ''];
-        foreach ($scans as $type) {
-            $val = $type['MriScanTypeName'];
-            $scan_types[$val] = $val;
-        }
-
-        $date_format = [
-            ''    => '',
-            'Ymd' => dgettext('configuration', 'Ymd (EX: 2015-12-28)'),
-            'Ym'  => dgettext('configuration', 'Ym (EX: 2015-12)')
-        ];
-
-        $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
-        $instruments[''] = '';
-
-        $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
-        $this->tpl_data['config']          = $this->_getConfigSettingTree();
-        $this->tpl_data['instruments']     = $instruments;
-        $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
-        $this->tpl_data['scan_types']      = $scan_types;
-        $this->tpl_data['log_levels']      = [
-            'none'      => dgettext('loris', 'None'),
-            'debug'     => dgettext('configuration', 'Debug'),
-            'info'      => dgettext('configuration', 'Info'),
-            'notice'    => dgettext('configuration', 'Notice'),
-            'warning'   => dgettext('configuration', 'Warning'),
-            'error'     => dgettext('configuration', 'Error'),
-            'critical'  => dgettext('configuration', 'Critical'),
-            'alert'     => dgettext('configuration', 'Alert'),
-            'emergency' => dgettext('configuration', 'Emergency'),
-        ];
-
-        $this->tpl_data['date_format']   = $date_format;
-        $this->tpl_data['lookup_center'] = [
-            ''            => '',
-            'PatientID'   => dgettext('configuration', 'PatientID'),
-            'PatientName' => dgettext('configuration', 'PatientName'),
-        ];
-    }
-
-    /**
-     * Gets an array of the top level configuration items
-     * This is used to create the configuration setting category menu
-     *
-     * @return array of parent config items
-     */
-    function _getParentConfigLabels()
-    {
-        $DB = $this->loris->getDatabaseConnection();
-
-        $parentConfigItems = $DB->pselect(
-            "SELECT Label, Name
-             FROM ConfigSettings
-             WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
-            []
-        );
-
-        // Convert the labels to the appropriate language
-        $parentConfigItems = iterator_to_array($parentConfigItems);
-        foreach ($parentConfigItems as &$setting) {
-            $setting['Label'] = dgettext('ConfigSettings', $setting['Label']);
-        }
-        return $parentConfigItems;
-    }
-
-    /**
-     * Returns an array of configuration settings in a tree format.
-     * The array contains all of the settings that are in config table
-     * in the database. However, if the value if overridden in the config.xml,
-     * the value for that setting is replaced with the value from the config.xml
-     *
-     * @return array of config settings
-     */
-    function _getConfigSettingTree()
-    {
-        $config = \NDB_Config::singleton();
-        $DB     = $this->loris->getDatabaseConnection();
-        $lang   = \User::singleton()->getLanguageCode();
-
-        // Get the names and meta-information for the config settings in the database
-        $configs = iterator_to_array(
-            $DB->pselect(
-                "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
-                []
-            )
-        );
-
-        // Convert the labels and descriptions to the appropriate language
-        foreach ($configs as &$setting) {
-            $setting['Label']       = dgettext('ConfigSettings', $setting['Label']);
-            $setting['Description'] = dgettext(
-                'ConfigSettings',
-                $setting['Description']
-            );
-        }
-
-        // Check whether any setting is overwritten in the config.xml
-        // Add this info to the array so form entries can be disabled in front end
-        // Update the value for the setting to the value from the config.xml
-        foreach ($configs as &$setting) {
-            try {
-                $setting['Disabled'] = 'Yes';
-                if ($setting['Parent'] != null) {
-                    $valueFromXML = $config->getSettingFromXML($setting['Name']);
-                    if (!is_array($valueFromXML)) {
-                        $setting['Value'][0] = $valueFromXML;
-                    } else {
-                        $setting['Value'] = $valueFromXML;
-                    }
-                }
-            } catch (\ConfigurationException $e) {
-                $setting['Disabled'] = 'No';
-            }
-        }
-
-        // Now check for config settings from the database for the fields not
-        // overridden in the config.xml
-        foreach ($configs as &$setting) {
-            if ($setting['Disabled'] == 'No') {
-                $value = $DB->pselect(
-                    "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
-                    ['ID' => $setting['ID']]
-                );
-                if ($value) {
-                    foreach ($value as $subvalue) {
-                        if ($setting['Multilingual']) {
-                            $setting['Value'][$subvalue['ID']]
-                                = $config->getMultilingualSetting(
-                                    $lang,
-                                    $setting['Name']
-                                );
-                        } else {
-                            $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
-                        }
-                    }
-                }
-            }
-        }
-
-        // build a tree from configs array
-        $tree = [];
-        foreach ($configs as &$node) {
-            $node['Children']          = [];
-            $tree[intval($node['ID'])] = &$node;
-        }
-        foreach ($configs as &$node) {
-            $tree[$node['Parent'] ?? '']['Children'][] = &$node;
-        }
-
-        return $configs;
     }
 
     /**
@@ -222,17 +57,17 @@ class Configuration extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/configuration/js/configuration_helper.js",
+                $baseURL . "/configuration/js/index.js",
             ]
         );
     }
 
-     /**
-      * Include additional CSS files:
-      *  1. configuration
-      *
-      * @return array of CSS to be inserted
-      */
+    /**
+     * Include additional CSS files:
+     *  1. configuration
+     *
+     * @return array of CSS to be inserted
+     */
     function getCSSDependencies()
     {
         $factory = \NDB_Factory::singleton();

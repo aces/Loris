@@ -185,10 +185,9 @@ class ConfigurationTest extends LorisIntegrationTest
     private function _linkTest($text)
     {
         $this->safeClick(WebDriverBy::linkText($text));
-        $webActives = $this->webDriver->findElements(
-            WebDriverBy::cssSelector(".active")
-        );
-        $bodyText   = $webActives[1]->getText();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(".nav-stacked .active")
+        )->getText();
         $this->assertStringContainsString($text, $bodyText);
     }
 
@@ -228,4 +227,3 @@ class ConfigurationTest extends LorisIntegrationTest
         );
     }
 }
-
