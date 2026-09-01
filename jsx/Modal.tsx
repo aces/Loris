@@ -59,8 +59,8 @@ const Modal = ({
         reverseButtons: true,
         customClass: {
           confirmButton: 'btn-secondary',
-          cancelButton: 'btn-primary'
-        }
+          cancelButton: 'btn-primary',
+        },
       }).then((result) => result.value && onClose());
     } else {
       onClose(); // Close immediately if no warning
