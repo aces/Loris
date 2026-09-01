@@ -228,7 +228,6 @@ function getPathIDs(string $table): array
          */
         $query = "SELECT c.ID FROM Config c "
             . "LEFT JOIN ConfigSettings cs ON (c.ConfigID = cs.ID) "
-            . "JOIN ConfigSettings csp ON (cs.Parent = csp.ID) "
             . "WHERE cs.DataType = 'web_path';";
         break;
     case 'ConfigSettings':
@@ -268,4 +267,3 @@ function validPath($value)
     }
     return true;
 }
-
