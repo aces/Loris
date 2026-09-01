@@ -510,14 +510,14 @@ msgstr "全部添加"
 msgid "Remove all"
 msgstr "全部移除"
 
-msgid "Filter within category"
-msgstr "在类别内过滤"
+msgid "Filter within ${cname}"
+msgstr "在 ${cname} 内过滤"
 
 msgid "Default Visits"
 msgstr "默认访视"
 
-msgid "Sync with selected fields"
-msgstr "与选定字段同步"
+msgid "Sync selected visits across all fields"
+msgstr "在所有字段中同步选定的访视"
 
 msgid "Select a field"
 msgstr "选择一个字段"
