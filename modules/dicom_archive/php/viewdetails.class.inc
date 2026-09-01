@@ -27,6 +27,13 @@ namespace LORIS\dicom_archive;
 class ViewDetails extends \NDB_Form
 {
     /**
+     * Render the page with React instead of Smarty.
+     *
+     * @var bool
+     */
+    public $skipTemplate = true;
+
+    /**
      * ID of the tarchive for which the details should be displayed.
      */
     public $tarchiveID;
@@ -141,6 +148,25 @@ class ViewDetails extends \NDB_Form
 
             $this->_validateNamesIDs();
         }
+    }
+
+    /**
+     * Return the metadata displayed by the React page.
+     *
+     * @return array{
+     *     archive: array<string, mixed>,
+     *     archiveSeries: list<array<string, mixed>>,
+     *     archiveFiles: list<array<string, mixed>>
+     * }
+     */
+    #[\Override]
+    function toArray(): array
+    {
+        return [
+            'archive'       => $this->tpl_data['archive'] ?? [],
+            'archiveSeries' => $this->tpl_data['archive_series'] ?? [],
+            'archiveFiles'  => $this->tpl_data['archive_files'] ?? [],
+        ];
     }
 
     /**
@@ -411,6 +437,23 @@ class ViewDetails extends \NDB_Form
         } catch (\LorisException $e) {
             return "Unknown";
         }
+    }
+
+    /**
+     * Add the React entry point for the view-details page.
+     *
+     * @return array of JavaScript dependencies
+     */
+    #[\Override]
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . '/dicom_archive/js/viewDetails.js']
+        );
     }
 
     /**
