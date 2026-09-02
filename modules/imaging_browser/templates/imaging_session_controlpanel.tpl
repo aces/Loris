@@ -52,6 +52,7 @@
 
     <h3>{dgettext("imaging_browser","Visit Level QC")}</h3>
     <div class="visit-level-feedback">
+     {if $subject.sessionID != ""}
           <a class="btn btn-default" href="#"
                onClick="javascript:open_popup('{$baseurl|default}/imaging_browser/feedback_mri_popup/sessionID={$subject.sessionID}')">
                  <span class="text-default">
@@ -59,6 +60,7 @@
                      <span class="hidden-xs feedback-text"> {dgettext("imaging_browser","Visit Level Feedback")}</span>
                  </span>
         </a>
+        {/if}
      </div>
     <br>
     <div class='div-controlpanel-bottom'>
