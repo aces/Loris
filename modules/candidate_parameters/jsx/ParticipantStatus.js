@@ -69,7 +69,7 @@ class ParticipantStatus extends Component {
       .catch(() => {
         this.setState(
           {
-            error: t('An error occured while loading the page.',
+            error: t('An error occurred while loading the page.',
               {ns: 'loris'}
             ),
           }

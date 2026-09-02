@@ -273,7 +273,7 @@ class DiagnosisEvolution extends Component {
     if (this.state.error) {
       return <h3>{t(
         'An error occurred while loading the page.',
-        {ns: 'configuration'}
+        {ns: 'loris'}
       )}</h3>;
     }
 

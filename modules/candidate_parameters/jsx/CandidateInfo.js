@@ -68,7 +68,7 @@ class CandidateInfo extends Component {
       })
       .catch(() => {
         this.setState({
-          error: t('An error occured while loading the page.', {ns: 'loris'}),
+          error: t('An error occurred while loading the page.', {ns: 'loris'}),
         });
       });
   }
