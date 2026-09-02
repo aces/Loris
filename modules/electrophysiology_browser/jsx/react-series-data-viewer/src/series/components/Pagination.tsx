@@ -1,7 +1,6 @@
 import React from 'react';
 import {useTranslation} from "react-i18next";
 import {CHANNEL_DISPLAY_OPTIONS} from "../../vector";
-import {RightPanel} from "../store/types";
 
 /**
  * Pagination component that provides controls for selecting how many channels
@@ -14,7 +13,6 @@ function Pagination({
   updateOffsetIndex,
   displayedChannelsLimit,
   setDisplayedChannelsLimit,
-  rightPanel,
 }: {
   limit: number,
   selectedChannelsCount: number,
@@ -22,7 +20,6 @@ function Pagination({
   updateOffsetIndex: (_: number) => void,
   displayedChannelsLimit: number,
   setDisplayedChannelsLimit: (_: number) => void,
-  rightPanel: RightPanel,
 }) {
   const {t} = useTranslation();
 
@@ -30,9 +27,7 @@ function Pagination({
 
   return (
     <div
-      className={
-        (rightPanel ? '' : 'pull-right-lg col-lg-5 ') + 'pagination-nav'
-      }
+      className="pagination-nav"
       style={{padding: '5px 15px'}}
     >
       <small style={{marginRight: '3px'}}>

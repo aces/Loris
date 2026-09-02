@@ -3,7 +3,7 @@ import {Observable} from 'rxjs';
 import * as Rx from 'rxjs/operators';
 import {ofType} from 'redux-observable';
 import {createAction} from 'redux-actions';
-import {setCursor, setHoveredChannels} from '../state/cursor';
+import {setCursor} from '../state/cursor';
 import {Cursor} from '../types';
 
 export const SET_CURSOR_INTERACTION = 'SET_CURSOR_INTERACTION';
@@ -26,9 +26,22 @@ export const createCursorInteractionEpic = (fromState: (_: any) => any) => (
     Rx.map(R.prop('payload')),
     Rx.withLatestFrom(state$),
     Rx.map<[Cursor, any], any>(([cursor, state]) => {
+      if (cursor === null) {
+        return (dispatch) => {
+          dispatch(setCursor(null));
+        };
+      }
+
+      const {
+        cursorPosition,
+        viewerRef,
+        hoveredChannels = [],
+        setHoveredChannels = () => undefined,
+      } = cursor;
+
       const channelElements = getChannelsAtCursor(
-        cursor ? cursor.cursorPosition : null,
-        cursor ? cursor.viewerRef : null
+        cursorPosition,
+        viewerRef
       );
 
       const channelIndices = channelElements.map((element) => {
@@ -37,14 +50,12 @@ export const createCursorInteractionEpic = (fromState: (_: any) => any) => (
         return parseInt(className.split('-')[1]);
       }).reverse();
 
-      const {hoveredChannels} = fromState(state);
-
       return (dispatch) => {
-        dispatch(setCursor(cursor ? cursor.cursorPosition : null));
+        dispatch(setCursor(cursorPosition));
         if (
           JSON.stringify(hoveredChannels) !== JSON.stringify(channelIndices)
         ) {
-          dispatch(setHoveredChannels(channelIndices));
+          setHoveredChannels(channelIndices);
         }
       };
     })

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {vec2} from 'gl-matrix';
 import {MIN_EPOCH_WIDTH} from '../../vector';
 import {ScaleLinear} from 'd3-scale';
 import {connect} from "react-redux";
 import {RootState} from "../store";
-import {Channel, ChannelMetadata} from "../store/types";
+import {Channel} from "../store/types";
+import {ChannelMetasContext} from '../../eeglab/EEGLabSeriesProvider';
 
 type CProps = {
   key: string,
@@ -20,7 +21,6 @@ type CProps = {
   minWidth: number,
   epochChannels?: string[],
   channels: Channel[],
-  channelMetadata: ChannelMetadata[],
 };
 
 /**
@@ -35,7 +35,6 @@ type CProps = {
  * @param root0.minWidth
  * @param root0.epochChannels
  * @param root0.channels
- * @param root0.channelMetadata
  */
 const Epoch = (
   {
@@ -49,8 +48,9 @@ const Epoch = (
     minWidth,
     epochChannels,
     channels,
-    channelMetadata,
   }: CProps) => {
+  const channelMetadata = useContext(ChannelMetasContext);
+
   onset = isNaN(onset) ? 0 : onset;
   duration = isNaN(duration) ? 0 : duration;
 
@@ -121,5 +121,4 @@ Epoch.defaultProps = {
 export default connect(
   (state: RootState)=> ({
     channels: state.channels,
-    channelMetadata: state.dataset.channelMetadata,
   }))(Epoch);

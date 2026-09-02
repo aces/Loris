@@ -24,15 +24,12 @@ export const DEFAULT_MAX_CHANNELS = 16;
 
 export const CHANNEL_DISPLAY_OPTIONS = [4, 8, 16, 32, 64];
 
-export const STATIC_SERIES_RANGE: [number, number] = [-0.05, 0.05];
-
 export const DEFAULT_TIME_INTERVAL: [number, number] = [0, 5];
 
 export const DEFAULT_VIEWER_HEIGHT = 700;
 
-export const SIGNAL_SCALE = Math.pow(10, 6);
-
-export const SIGNAL_UNIT = 'µV';
+/** The default unit assumed for signal values if channel metadata is not available. */
+export const DEFAULT_SIGNAL_UNIT = 'V';
 
 export const MAX_RENDERED_EPOCHS = 500;
 

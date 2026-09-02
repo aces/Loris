@@ -1,5 +1,11 @@
-import React, {Component, createRef} from 'react';
-import {tsvParse} from 'd3-dsv';
+import React, {
+  Component,
+  createContext,
+  createRef,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import {applyMiddleware, createStore, Store} from 'redux';
 import {Provider} from 'react-redux';
 import {createEpicMiddleware} from 'redux-observable';
@@ -20,14 +26,15 @@ import {
 } from '../series/store/state/dataset';
 import {setDomain, setInterval} from '../series/store/state/bounds';
 import {
-  setCoordinateSystem, setElectrodes,
-} from '../series/store/state/montage';
-import {
-  ChannelInfos, EventMetadata, HEDSchemaElement,
+  ChannelInfo, ChannelInfos, ChannelMetadata, CoordinateSystem, EventMetadata,
+  HEDSchemaElement, Sensor,
 } from '../series/store/types';
 import TriggerableModal from 'jsx/TriggerableModal';
 import DatasetTagger from '../series/components/DatasetTagger';
 import {InfoIcon} from '../series/components/components';
+import {
+  parseElectrodes,
+} from '../series/store/logic/montage';
 
 declare global {
   interface Window {
@@ -62,16 +69,157 @@ const MenuOption = {
 };
 
 /**
- * EEGLabSeriesProvider component
+ * The channel informaton context, which provides the BIDS information about\
+ * the channels present in the acquisition, if available.
  */
-class EEGLabSeriesProvider extends Component<CProps, any> {
+export const ChannelInfosContext = createContext<ChannelInfo[]>([]);
+
+/**
+ * The channel metadata context, which provides the metadata about the channels
+ * present in the acquisition.
+ */
+export const ChannelMetasContext = createContext<ChannelMetadata[]>([]);
+
+/**
+ *  The sensors context, which provides the EEG and MEG sensors present in the
+ *  acquisition.
+ */
+export const SensorsContext = createContext<Sensor[]>([]);
+
+/**
+ *  The coordinate system context, which provides the coordinate system of the
+ *  electrodes, if available.
+ */
+export const CoordSystemContext = createContext<CoordinateSystem | null>(null);
+
+/**
+ * State handler for hovered channels.
+ */
+export type HoveredChannelsType = {
+  hoveredChannels: number[],
+  setHoveredChannels: React.Dispatch<React.SetStateAction<number[]>>,
+}
+
+/**
+ * Ignore setter calls made against the context's default value.
+ */
+function ignoreSetHoveredChannels(): void {
+  console.error('HoveredChannelsContext not initialized');
+}
+
+/**
+ * The hovered channels context, which provides the IDs of the channels
+ * currently hovered in the signal visualizer.
+ */
+export const HoveredChannelsContext = createContext<HoveredChannelsType>({
+  hoveredChannels: [],
+  setHoveredChannels: ignoreSetHoveredChannels,
+});
+
+/**
+ * Function wrapper around the older `EEGLabSeriesProviderClass` class
+ * component.
+ */
+function EEGLabSeriesProvider(props: CProps) {
+  const [channelInfos, setChannelInfos] = useState<ChannelInfo[]>([]);
+  const [channelMetas, setChannelMetas] = useState<ChannelMetadata[]>([]);
+  const [sensors, setSensors] = useState<Sensor[]>([]);
+  const [coordSystem, setCoordSystem] = useState<CoordinateSystem | null>(null);
+  const [hoveredChannels, setHoveredChannels] = useState<number[]>([]);
+
+  // Fetch the channel BIDS information from the API.
+  useEffect(() => {
+    fetchJSON(props.channelsURL).then((json: ChannelInfos) => {
+      setChannelInfos(json.Channels);
+    });
+  }, [props.channelsURL]);
+
+  /**
+   * Update the sensors state by appending new sensors.
+   */
+  const updateSensors = useCallback((sensors: Sensor[]) => {
+    setSensors((prevSensors) => [
+      // Re-use the old sensors if they are present, or initialize with an
+      // empty list.
+      ...prevSensors,
+      // Append the new list of sensors.
+      ...sensors,
+    ]);
+  }, []);
+
+  // Fetch the coordinate system associated with that file.
+  useEffect(() => {
+    fetchJSON(props.coordSystemURL)
+      .then(({json}) => {
+        if (!json) {
+          return;
+        }
+
+        setCoordSystem({
+          name: json.EEGCoordinateSystem ?? 'Other',
+          units: json.EEGCoordinateUnits ?? 'm',
+          description: json.EEGCoordinateSystemDescription ?? 'n/a',
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [props.coordSystemURL]);
+
+  // Fetch the EEG electrodes associated with that file.
+  useEffect(() => {
+    fetchText(props.electrodesURL)
+      .then((text) => {
+        updateSensors(parseElectrodes(text));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [props.electrodesURL]);
+
+  return (
+    <ChannelInfosContext.Provider value={channelInfos}>
+      <ChannelMetasContext.Provider value={channelMetas}>
+        <SensorsContext.Provider value={sensors}>
+          <CoordSystemContext.Provider value={coordSystem}>
+            <HoveredChannelsContext.Provider value={{
+              hoveredChannels,
+              setHoveredChannels,
+            }}>
+              <EEGLabSeriesProviderClass
+                {...props}
+                setChannelMetas={setChannelMetas}
+              />
+            </HoveredChannelsContext.Provider>
+          </CoordSystemContext.Provider>
+        </SensorsContext.Provider>
+      </ChannelMetasContext.Provider>
+    </ChannelInfosContext.Provider>
+  );
+}
+
+/**
+ * Props for the `EEGLabSeriesProviderClass` component, which extend the props
+ * of the functional component.
+ */
+type CClassProps = CProps & {
+  /**
+   * Setter for the channel metadata context lifted to the functional component.
+   */
+  setChannelMetas: (_: ChannelMetadata[]) => void,
+};
+
+/**
+ * EEGLabSeriesProviderClass component
+ */
+class EEGLabSeriesProviderClass extends Component<CClassProps, any> {
   private store: Store;
 
   /**
    * @class
    * @param {object} props - React Component properties
    */
-  constructor(props: CProps) {
+  constructor(props: CClassProps) {
     super(props);
     const epicMiddleware = createEpicMiddleware();
 
@@ -89,9 +237,6 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
 
     const {
       chunksURL,
-      epochsURL,
-      electrodesURL,
-      coordSystemURL,
       hedSchema,
       datasetTags,
       datasetTagEndorsements,
@@ -102,6 +247,7 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       eegMontageName,
       recordingHasHED,
       t,
+      setChannelMetas,
     } = props;
 
     if (!window.EEGLabSeriesProviderStore) {
@@ -181,18 +327,13 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
       }
     };
 
-    fetchJSON(props.channelsURL).then((json: ChannelInfos) => {
-      this.store.dispatch(setDatasetMetadata({
-        bidsChannels: json.Channels,
-      }));
-    });
-
     Promise.race(racers(fetchJSON, chunksURL, '/index.json')).then(
       ({json, url}) => {
         if (json) {
           const {
             channelMetadata, shapes, timeInterval, seriesRange, validSamples,
           } = json;
+          setChannelMetas(channelMetadata);
           this.store.dispatch(
             setDatasetMetadata({
               chunksURL: url,
@@ -330,46 +471,6 @@ class EEGLabSeriesProvider extends Component<CProps, any> {
         searchVisibility: [],
       }));
     });
-
-
-    Promise.race(racers(fetchText, electrodesURL))
-      .then((text) => {
-        if (!(typeof text.json === 'string'
-          || text.json instanceof String)) return;
-        this.store.dispatch(
-          setElectrodes(
-            tsvParse(text.json).map(({name, x, y, z}) => ({
-              name: name,
-              channelIndex: null,
-              position: [parseFloat(x), parseFloat(y), parseFloat(z)],
-            }))
-          )
-        );
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    Promise.race(racers(fetchJSON, coordSystemURL))
-      .then( ({json}) => {
-        if (json) {
-          const {
-            EEGCoordinateSystem,
-            EEGCoordinateUnits,
-            EEGCoordinateSystemDescription,
-          } = json;
-          this.store.dispatch(
-            setCoordinateSystem({
-              name: EEGCoordinateSystem ?? 'Other',
-              units: EEGCoordinateUnits ?? 'm',
-              description: EEGCoordinateSystemDescription ?? 'n/a',
-            })
-          );
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   }
 
   /**

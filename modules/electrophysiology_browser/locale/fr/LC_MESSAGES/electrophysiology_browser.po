@@ -93,12 +93,20 @@ msgstr "Auteurs des données"
 
 # Filters
 #, fuzzy
+msgid "High Pass Filter"
+msgstr "Filtre passe-haut"
+
+#, fuzzy
 msgid "No High Pass Filter"
 msgstr "Pas de filtre passe-haut"
 
 #, fuzzy
 msgid "High Pass {{frequency}}Hz"
 msgstr "Passe-haut {{frequency}} Hz"
+
+#, fuzzy
+msgid "Low Pass Filter"
+msgstr "Filtre passe-bas"
 
 #, fuzzy
 msgid "No Low Pass Filter"
@@ -366,8 +374,24 @@ msgid "Select All"
 msgstr "Tout sélectionner"
 
 #, fuzzy
-msgid "Electrode Map"
-msgstr "Carte des électrodes"
+msgid "Sensor Map"
+msgstr "Carte des capteurs"
+
+#, fuzzy
+msgid "Sensor Types"
+msgstr "Types de capteurs"
+
+#, fuzzy
+msgid "EEG Electrode"
+msgstr "Électrode EEG"
+
+#, fuzzy
+msgid "MEG Sensor"
+msgstr "Capteur MEG"
+
+#, fuzzy
+msgid "Head Shape Point"
+msgstr "Point de forme de tête"
 
 #, fuzzy
 msgid "Show indices"
@@ -731,8 +755,8 @@ msgid "Electrical Stimulation Parameters"
 msgstr "Paramètres de stimulation électrique"
 
 #, fuzzy
-msgid "EEG File(s)"
-msgstr "Fichier(s) EEG"
+msgid "Acquisition File"
+msgstr "Fichier d'acquisition"
 
 #, fuzzy
 msgid "Electrodes"
