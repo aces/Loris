@@ -78,7 +78,7 @@ class ElectrophysiologyBrowserIndex extends Component {
     const style = '';
     let result = <td className={style}>{cell}</td>;
     const {t} = this.props;
-    const sessionIDKey = t('SessionID', {ns: 'electrophysiology_browser'});
+    const sessionIDKey = t('SessionID', {ns: 'loris'});
     const sessionID = row[sessionIDKey] || row.SessionID;
     switch (column) {
     case t('Links', {ns: 'electrophysiology_browser'}):
@@ -122,7 +122,7 @@ class ElectrophysiologyBrowserIndex extends Component {
     const {t} = this.props;
     // If error occurs, return a message
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
+      return <h3>{t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
@@ -181,7 +181,7 @@ class ElectrophysiologyBrowserIndex extends Component {
           type: 'multiselect',
           options: options.types,
         }},
-      {label: t('SessionID', {ns: 'electrophysiology_browser'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
     ];
 
     return (

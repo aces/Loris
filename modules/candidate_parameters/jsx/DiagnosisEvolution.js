@@ -148,7 +148,7 @@ class DiagnosisEvolution extends Component {
     const {t} = this.props;
     if (this.state.error) {
       return (
-        <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>
+        <h3>{t('An error occurred while loading the page.', {ns: 'loris'})}</h3>
       );
     }
 
@@ -251,7 +251,7 @@ DiagnosisEvolution.propTypes = {
   submitURL: PropTypes.string,
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 export default withTranslation(
   ['candidate_parameters', 'loris']

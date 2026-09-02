@@ -170,6 +170,7 @@ class Notifications extends Endpoint
             $redcap_client = new RedcapHttpClient(
                 $config->redcap_instance_url,
                 $config->redcap_api_token,
+                $config->redcap_repeat_id
             );
 
             $notification_handler = new RedcapNotificationHandler(
@@ -330,7 +331,7 @@ class Notifications extends Endpoint
             'lastUpdatedBy' => $username,
             'sessionID'     => null,
             'centerID'      => $center_id,
-            'candID'        => null,
+            'CandidateID'   => null,
             'category'      => 'Data Entry',
             'description'   => "$error $data",
         ];

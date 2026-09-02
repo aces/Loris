@@ -69,7 +69,8 @@ class CandidateInfo extends Component {
         },
         error: function(data, errorCode, errorMsg) {
           that.setState({
-            error: t('An error occured while loading the page.', {ns: 'loris'}),
+            error: t('An error occurred while loading the page.',
+              {ns: 'loris'}),
           });
         },
       }
@@ -393,7 +394,7 @@ CandidateInfo.propTypes = {
   dataURL: PropTypes.string,
   tabName: PropTypes.string,
   action: PropTypes.string,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 export default withTranslation(
   ['candidate_parameters', 'loris']

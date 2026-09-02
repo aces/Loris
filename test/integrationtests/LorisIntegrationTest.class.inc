@@ -654,7 +654,7 @@ abstract class LorisIntegrationTest extends TestCase
     private function _verifyPermission(
         string $needle,
         string $haystack,
-        string $jsError= "An error occured while loading the page."
+        string $jsError= "An error occurred while loading the page."
     ): void {
         $this->assertStringContainsString($needle, $haystack);
         $this->assertStringNotContainsString($jsError, $haystack);

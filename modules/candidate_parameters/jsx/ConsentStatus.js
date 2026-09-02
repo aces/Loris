@@ -507,7 +507,7 @@ class ConsentStatus extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return (
-        <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>
+        <h3>{t('An error occurred while loading the page.', {ns: 'loris'})}</h3>
       );
     }
 
@@ -577,7 +577,7 @@ ConsentStatus.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   tabName: PropTypes.string,
-  t: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 export default withTranslation(

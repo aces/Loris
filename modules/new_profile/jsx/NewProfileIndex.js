@@ -213,10 +213,9 @@ class NewProfileIndex extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    let formData = Object.assign({}, this.state.formData);
-    formData[formElement] = value;
-
-    this.setState({formData: formData});
+    this.setState((prevState) => ({
+      formData: Object.assign({}, prevState.formData, {[formElement]: value}),
+    }));
   }
 
   /**
@@ -227,7 +226,7 @@ class NewProfileIndex extends React.Component {
   render() {
     // If error occurs, return a message.
     if (this.state.error) {
-      return <h3>{this.props.t('An error occured while loading the page.',
+      return <h3>{this.props.t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
@@ -294,6 +293,7 @@ class NewProfileIndex extends React.Component {
           onUserInput = {this.setFormData}
           value = {this.state.formData.site}
           required = {true}
+          autoSelect = {true}
         />;
     }
     const fields = [
@@ -364,6 +364,7 @@ class NewProfileIndex extends React.Component {
             onUserInput = {this.setFormData}
             value = {this.state.formData.project}
             required = {true}
+            autoSelect = {true}
           />
         ),
       },

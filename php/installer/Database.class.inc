@@ -34,7 +34,7 @@ class Database
     public $PDO;
 
     /**
-     * The last error that occured, to display to the user
+     * The last error that occurred, to display to the user
      */
     public string $lastErr;
 
