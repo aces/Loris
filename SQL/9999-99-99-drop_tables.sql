@@ -93,6 +93,7 @@ DROP TABLE IF EXISTS `help`;
 DROP TABLE IF EXISTS `ConfigI18n`;
 DROP TABLE IF EXISTS `Config`;
 DROP TABLE IF EXISTS `ConfigSettings`;
+DROP TABLE IF EXISTS `ConfigCategories`;
 DROP TABLE IF EXISTS `menu_categories`;
 
 -- issues must be deleted before `modules` table
