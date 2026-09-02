@@ -1,55 +1,152 @@
 # Instrument Test Plan
 
-1. Verify that in order to access the module the user meets one of the following criteria:
-   - User has permission `data_entry` (_"Access Profile: View/Create Candidates and Timepoints - Own Sites"_) and can access the instrument through the 
-     candidate_list module (Access Profile) 
-     - go to the candidate_list
-     - click on a PSCID to get to the timepoint_list module
-     - click on a timepoint to get to the instrument_list module
-     - click on an instrument to access the instrument itself.  
-     _**Note:** All steps before clicking on the instrument itself are handled 
-     by their own modules and necessary permissions to access these modules should be 
-     part of their respective testplans._
-   - User is provided a direct link to the instrument and has permission `data_entry` (_"Access Profile: View/Create Candidates and Timepoints - Own Sites"_).
-2. Ensure that the candidate info at the top (DoB, EDC, ...) are correct.
-3. Enter a date and click 'Save Data'. Check if age calculation
-is correct.
-4. Try to save the instruments without an examiner. You should have a box specifying that 
-'an examiner is required'.
-5. If the instrument has multiple pages (on the left pane), move from page to page and check that the
-saved data stays the same. The data that wasn't saved should be lost.
-6. Make sure that the 'Delete instrument data' button on the left pane is only visible when the user
-has the 'Send to DCC' (_"Send to DCC"_) permission, and the configuration `InstrumentResetting` (_"Instrument Resetting"_) is set to
-'Yes' in the Configuration module.
-7. Click on the 'Delete instrument data' button and check if the instrument's data is cleared.
-8. Check that an instrument with the `postMortem` variable set to true displays the label
-'Candidate Age at Death (Months)' instead of 'Candidate Age (Months)'. To set the `postMortem` variable
-for PHP instruments, assign the variable within the instrument's PHP class; for LINST instruments,
-include `postmortem{@}true` in the instrument's meta file.
-9.  Test both LINST & PHP instruments found in the `project/instruments` directory.
-    - Refer to the following guides for help.
-        1. The [Instrument Insertion](https://github.com/aces/Loris/wiki/Instrument-Insertion) for PHP instruments.
-        2. The [Creating and installing clinical instruments](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links) for LINST instruments.
-    - To test an instrument:
-        1. Register a candidate
-        2. Create a timepoint
-        3. Start its visit stage
-        4. Enter sample data, testing each field's type and logic constraints
-10.  Verify Validity flags are functioning for instruments.
-    - **Validity:** can be marked as “Valid”, “Questionable”, or “Invalid”. Whether or not this flag is shown for an instrument is by the boolean $ValidityEnabled. Whether the field is required before flagging an instrument as complete is determined by $ValidityRequired.
-    - You can test the forgoing flags by switching the corresponding boolean of the test instruments to either `true` or `false`.
+## Table of Contents
 
-### Visit the Dashboard module.
-   1. Dashboard Widget - "My Tasks" for Incomplete forms 
-      - Ensure the total of Incomplete forms correspond with the correct 
-            number of candidates inside the statistics/statistics_site module.
-      - Click on the total number of Incomplete forms and check if redirection
-            to the statistics/statistics_site module succeeds.
+- [Data Entry](#data-entry)
+  - [Instrument Access Tests](#instrument-access-tests)
+  - [Field Entry Tests](#field-entry-tests)
+  - [Configuration Tests](#configuration-tests)
+- [View Instrument Data](#view-instrument-data)
 
-### Visit the Candidate Dashboard module.
-   1. Candidate Widget - "Behavioural Data" for Candidate instruments entry.
-      - Ensure the appropriate visit labels are visible for the candidate. 
-      - The visit status, cohort status, site, date of visit, and age should be shown.
-      - Clicking on a visit should redirect to the instrument_list module for the candidate.
-      - Test making a new Time Point for a candidate and assign an instrument to the time point. 
-        The Behavioural Data widget should update accordingly.
+In the database, these permissions are found in the `permissions` table:
+
+|permID|code|description|moduleID|action|categoryID|
+|:--|:--|:--|:--|:--|:--|
+|11|data_entry|Candidates and Timepoints - Own Sites|6|View/Create|1|
+|85|view_instrument_data|Data|26|View|2|
+
+In the front end, these permissions can be accessed by entering into an admin account, then naviagting to the `Admin` drop down menu and selecting `User accounts`. 
+
+- The permissions appear with checkboxes next to them in the `Permissions` Section of the page.
+
+- [x] Access Profile: View/Create Candidates and Timepoints - Own Sites
+- [x] Instruments: View Data
+
+## Data Entry
+
+### Instrument Access Tests
+
+- In your admin account enable **only** the following permission for your user:
+- [x] Access Profile - View/Create Candidates and Timepoints
+- Go to your user account and click on `Candidate`-> `Access Profile`
+- Click on a timepoint. This will redirect you to, for example, /instrument_list/?candID=400162$sessionID=542
+- Click on an instrument
+  - Assert that link to the instrument is shown, ex:`/instruments/mri_parameter_form/?commentID=400162ROM162542341471021802&sessionID=542&candID=400162`
+- Assert that, if, for that instrument, the `Data Entry` column = `Complete`, that when you click on the instrument name, you are redirected to the instrument form. 
+- Assert the fields are "frozen" (greyed-out and not fillable)
+- Go back to the instrument list
+- Assert that, if, for an instrument, if the `Data Entry` column = `In Progress` that, when you click on the instrument name, you are redirected to the instrument form
+- Navigate to all the `Subtests` pages (in the left sidebar)
+- Assert that all the fields of every page of the instrument form are fillable (not greyed out)
+
+### Field Entry Tests
+
+- If the instrument has multiple pages, enter all data for a page and hit `Save`,
+  - then move to another page, then return to the first page, and assert that the saved data stays the same.
+- Change some data, but don't hit save, and change page. Assert that the data that wasn't saved is not still there (ie is not persistent)
+- Assert that when a field is **not** filled, and you hit `Save`, that the red-coloured "required" messages and field highlighting appears.
+- Assert that when `Not Answered` is selected, these red requirement alerts do **not** occur.
+- Enter data for all fields and assert that the data you have saved is now registered in the database by entering the following command in SQL: `SELECT * FROM instrument_data WHERE ID = <candID>;`
+  - use the candID of the participant that you are querying.
+- Change some of the data **in a very obvious way** and hit `Save`. Assert that the database reflects these changes 
+
+### View the Instruments
+
+- Create a new participant
+  - go to `/new_profile`, enter `Date of Birth`, `Date of Birth Confirm`, `Sex`, `Site`, `Project`.
+  - click `Create`. This registers the participant.
+- click `Access Profile` and Click `Create Time Point`
+- enter `Site`, `Project`, `Cohort`, `Visit Label` and `Language`
+- click `Create Time Point`.
+- Assert that you see your new time point with `Not Started` in the `Stage` field
+- Click the Visit Label you just created of your new participant
+- In the side bar, click `Start Visit Stage` and enter `Date of Visit` and `Continue`. Assert that you are taken to a list of instruments assigned to this time point: `/instrument_list`
+- Enter sample data, testing each field's type and logic constraints
+
+### Configuration Tests
+
+- [x] Instrument List: Send to DCC
+- in /configuration, under `Study`, set `InstrumentResetting` to `Yes` and click `Submit`
+- Under `Subtests` in the sidebar, click `Top` and Assert that 'Delete instrument data' button is visible
+- Click `Delete instrument data` button and assert that the instrument's data is cleared on every page
+- Select a PHP instrument by looking in the /project/instruments folder for any instrument that begins with `NDB_BVL_Instrument`
+- enter the `$postMortem` variable as follows, set it to true and save the file
+
+```
+ class NDB_BVL_Instrument_medical_history extends NDB_BVL_Instrument
+{
+    use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
+
+    var $ValidityEnabled  = false;
+    var $ValidityRequired = false;
+    var $postMortem = true;
+    /**
+```
+
+- Assert that `Candidate Age at Death (Months)` appears instead of `Candidate Age (Months)`  
+- Set it back to 'false' and reload the instrument and assert that `Candidate Age (Months)` appears
+- Select a LINST instrument by looking in /project/instruments and selecting a file that ends with .linst
+- set`postmortem{@}true` in the instrument's meta file, save, and assert that `Candidate Age at Death (Months)` appears. 
+- set it to `false` and assert that `Candidate Age (Months)` appears  
+- Look in the (SECTION) of the PHP code of the instrument in question and set the $ValidityEnabled object to `true`
+
+``` 
+public $ValidityEnabled = true;
+```
+
+Assert that you see validity ticks in the side bar of the instruent, as follows:
+- [ ] Valid
+- [ ] Questionable
+- [ ] Invalid
+
+Now set `$validityEnabled` to `false`, reload the instrument, and assert that these do not appear
+
+### Dashboard tests
+
+Go to the loris instance splash page `loris.ca/`
+
+- Under`My Tasks` click `Incomplete forms`
+- Assert that this re-directs to `statistics/statistics_site`
+-Assert that the total of Incomplete forms correspond with the correct amount of candidates
+- click `Access Profile`, click a `PSCID`, click a `timepoint` and assert that this redirects to 
+`/instrument_list/?candID=<xxxx>$sessionID=<yyyy>`which, at the bottom, contains the Behavioural Battery of Instruments
+
+- Test making a new Time Point for a candidate and assign an instrument to the time point.
+
+using `php assign_missing_instruments`???!!!!
+
+- Assert that the Behavioural Data widget should update accordingly.
+
+## View Instrument Data
+
+In your admin account, set your user's permissions to
+
+- [ ] Access Profile: View/Create Candidates and Timepoints - Own Sites
+- [x] View Instrument Data
+
+### Data Query Tool Tests
+
+- Now, using that user's account, go into Data Query Tool /dataquery
+- in `Available Fields` select `Candidate identifiers` and select the `CandID LORIS Candidate identifier`
+- go back to `Available Fields` and select an instrument such as `Aosi` and click `Add all` and, at the bottom right, click `Run Query`
+- Assert that Fields and Records (columns and rows) show up for this query (they could contain actual data or `no data`)
+- [x] Access Profile: View/Create Candidates and Timepoints - Own Sites
+
+### Instrument Access Tests
+
+- In your admin account, navigate to Access/Candidate/Timepoint/Instrument and copy the part of the url that follows loris.ca
+for example `/instruments/mri_parameter_form/?commentID=300001MTL0011241522092423&sessionID=1&candID=300001`
+
+- go to your user's account and paste this in the url after loris.ca
+- Assert that you are re-directed to the instrument form
+- Assert that you can navigate to different pages of the instrument
+- Assert that, in all pages, the form's fields are frozen (greyed-out) thereby disabling data entry.
+
+### Test Configurations
+
+#### Instrument Resetting
+
+#### Post Mortem
+
+#### Verify Validity
