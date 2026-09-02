@@ -48,9 +48,6 @@ msgstr ""
 msgid "Manage Permissions"
 msgstr ""
 
-msgid "An error occured while loading the page."
-msgstr ""
-
 msgid "Note"
 msgstr ""
 
@@ -70,9 +67,6 @@ msgid "Error"
 msgstr ""
 
 msgid "Upload error!"
-msgstr ""
-
-msgid "Upload Successful!"
 msgstr ""
 
 msgid "A file with this name already exists!"
@@ -99,6 +93,24 @@ msgstr ""
 msgid "Permission Update Success!"
 msgstr ""
 
+msgid "Remove Permission"
+msgstr ""
+
+msgid "Modify Hidden File Status"
+msgstr ""
+
+msgid "Unhide Release File"
+msgstr ""
+
+msgid "Hide Release File"
+msgstr ""
+
+msgid "Delete File"
+msgstr ""
+
+msgid "Delete Release File"
+msgstr ""
+
 msgid "Submission Error!"
 msgstr ""
 
@@ -120,8 +132,86 @@ msgstr ""
 msgid "Manage Users with access to a Version"
 msgstr ""
 
+msgid "Users"
+msgstr ""
+
 msgid "Search for a Version"
 msgstr ""
 
 msgid "An error occurred when loading the form!"
+msgstr ""
+
+msgid "Manage File"
+msgstr ""
+
+msgid "Unversioned"
+msgstr ""
+
+msgid "Hidden By ID"
+msgstr ""
+
+msgid "Missing action"
+msgstr ""
+
+msgid "Invalid action"
+msgstr ""
+
+msgid "No data was sent in the POST request"
+msgstr ""
+
+msgid "Missing user to grant access to"
+msgstr ""
+
+msgid "Must select either specific file OR version to grant access to"
+msgstr ""
+
+msgid "No valid data was sent in the request"
+msgstr ""
+
+msgid "Missing user to remove access from"
+msgstr ""
+
+msgid "Must select a specific file"
+msgstr ""
+
+msgid "Can not upload duplicate file"
+msgstr ""
+
+msgid "Permission denied."
+msgstr ""
+
+msgid "Overwrite failed. A file of this name already exists which you do not have permission to overwrite."
+msgstr ""
+
+msgid "Can not upload duplicate file."
+msgstr ""
+
+msgid "Not found"
+msgstr ""
+
+msgid "Only you, and system administrators will be able to see this file!"
+msgstr ""
+
+msgid "Anyone with permission to this file will be able to see it."
+msgstr ""
+
+msgid "This will permanently delete the file from the system!"
+msgstr ""
+
+msgid "File Successfully hidden"
+msgstr ""
+
+msgid "File Successfully unhidden"
+msgstr ""
+
+msgid "File Successfully deleted"
+msgstr ""
+
+msgid "Yes, hide it!"
+msgstr ""
+
+msgid "Yes, unhide it!"
+msgstr ""
+
+msgid "Yes, delete it!"
 msgstr ""

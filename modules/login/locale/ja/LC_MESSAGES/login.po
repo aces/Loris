@@ -22,7 +22,6 @@ msgstr ""
 msgid "Login"
 msgstr "ログイン"
 
-
 msgid "Login to LORIS"
 msgstr "ロリスにログイン"
 
@@ -118,34 +117,56 @@ msgstr "{{title}}は受け入れられませんでした"
 msgid "You must accept the {{title}} before requesting an account."
 msgstr "アカウントをリクエストする前に {{title}} に同意する必要があります。"
 
-# Hack for the login page.
-# These strings come from the database and are
-# the defaults in the login_summary_statistics table
+msgid "Missing code"
+msgstr "コードがありません"
 
-msgid "EEG Recording"
-msgid_plural "EEG Recordings"
-msgstr[0] "脳波記録"
+msgid "Invalid MFA code"
+msgstr "MFAコードが無効です"
 
-msgid "Female Participant"
-msgid_plural "Female Participants"
-msgstr[0] "女性参加者"
+msgid "Error"
+msgstr "エラー"
 
-msgid "Instrument"
-msgid_plural "Instruments"
-msgstr[0] "楽器"
+msgid "password expired"
+msgstr "パスワードの有効期限が切れています。"
 
-msgid "Male Participant"
-msgid_plural "Male Participants"
-msgstr[0] "男性参加者"
+msgid "Can not use an empty password."
+msgstr "空のパスワードは使用できません。"
 
-msgid "Scan"
-msgid_plural "Scans"
-msgstr[0] "スキャン"
+msgid "You cannot keep the same password."
+msgstr "同じパスワードを使用し続けることはできません。"
 
-msgid "Site"
-msgid_plural "Sites"
-msgstr[0] "サイト"
+msgid "Server encountered an error."
+msgstr "サーバーでエラーが発生しました。"
 
-msgid "Visit"
-msgid_plural "Visits"
-msgstr[0] "訪問"
+msgid "Sending reset email failed."
+msgstr "パスワード再設定メールの送信に失敗しました。"
+
+msgid "Please complete the reCaptcha"
+msgstr "reCAPTCHA を完了してください。"
+
+msgid "Email address can not contain the following characters: <,>,& and \"."
+msgstr "メールアドレスには次の文字を含めることはできません: <, >, &, および \"。"
+
+msgid "Please provide a valid email address!"
+msgstr "有効なメールアドレスを入力してください。"
+
+msgid "Not a valid user"
+msgstr "有効なユーザーではありません。"
+
+msgid "Please complete the reCaptcha!"
+msgstr "reCAPTCHA を完了してください。"
+
+msgid "Login with {{provider}}"
+msgstr "{{provider}} でログイン"
+
+msgid "Our partners"
+msgstr "パートナー"
+
+msgid "Password expired for user."
+msgstr "ユーザーのパスワードの有効期限が切れています。"
+
+msgid "Statistic"
+msgstr "統計"
+
+msgid "Value"
+msgstr "値"

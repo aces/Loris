@@ -54,10 +54,6 @@ msgstr "Téléverser fichier(s)"
 msgid "Uploading..."
 msgstr "Téléversement..."
 
-#, fuzzy
-msgid "Upload Successful!"
-msgstr "Téléversement réussi!"
-
 msgid "Upload Incomplete"
 msgstr "Téléversement incomplet"
 
@@ -71,9 +67,6 @@ msgstr "Veuillez signaler le problème ou contacter votre administrateur."
 
 msgid "File too large"
 msgstr "Fichier trop volumineux"
-
-msgid "Could not upload file"
-msgstr "Impossible de téléverser le fichier"
 
 msgid "Something went wrong"
 msgstr "Un problème est survenu"
@@ -164,9 +157,6 @@ msgstr "Téléverser"
 
 msgid "File Name"
 msgstr "Nom du fichier"
-
-msgid "Uploaded By"
-msgstr "Téléverser par"
 
 #, fuzzy
 msgid "For Site"

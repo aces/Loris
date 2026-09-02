@@ -58,9 +58,6 @@ msgstr "फ़ाइलनाम इस रूप में होना चा�
 msgid "The file does not respect name convention"
 msgstr "फ़ाइल नाम परंपरा का पालन नहीं करती है"
 
-msgid "Upload Successful!"
-msgstr "अपलोड सफल!"
-
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr "EEG पाइपलाइन द्वारा इस फ़ाइल की प्रोसेसिंग शुरू हो गई है"
 
@@ -84,6 +81,3 @@ msgstr "अपलोड समय"
 
 msgid "Status"
 msgstr "स्थिति"
-
-msgid "Uploaded By"
-msgstr "द्वारा अपलोड किया गया"

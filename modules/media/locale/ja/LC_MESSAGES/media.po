@@ -28,12 +28,6 @@ msgstr "候補者メディア"
 msgid "File Name"
 msgstr "ファイル名"
 
-msgid "Instrument"
-msgstr "楽器"
-
-msgid "Uploaded By"
-msgstr "アップロード者"
-
 msgid "Date Taken"
 msgstr "撮影日"
 
@@ -48,9 +42,6 @@ msgstr "ファイルの種類"
 
 msgid "CandID"
 msgstr "候補者ID"
-
-msgid "SessionID"
-msgstr "セッションID"
 
 msgid "File Visibility"
 msgstr "ファイルの可視性"
@@ -69,12 +60,6 @@ msgstr "ブラウズ"
 
 msgid "Upload"
 msgstr "アップロード"
-
-msgid "An error occured while loading the page."
-msgstr "ページの読み込み中にエラーが発生しました。"
-
-msgid "Language"
-msgstr "言語"
 
 # New strings from uploadForm.js
 
@@ -131,15 +116,6 @@ msgstr "ファイルを隠す"
 
 msgid "Invalid file name!"
 msgstr "ファイル名が無効です。"
-
-msgid "File name should begin with:"
-msgstr "ファイル名は次の文字で始まる必要があります:"
-
-msgid "A file with this name already exists!\n Would you like to override existing file?"
-msgstr "この名前のファイルは既に存在します!\n既存のファイルを上書きしますか?"
-
-msgid "Cancelled"
-msgstr "キャンセル"
 
 msgid "Success!"
 msgstr "成功！"

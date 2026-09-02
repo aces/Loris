@@ -70,9 +70,6 @@ msgstr "त्रुटि"
 msgid "Upload error!"
 msgstr "अपलोड त्रुटि!"
 
-msgid "Upload Successful!"
-msgstr "अपलोड सफल!"
-
 msgid "A file with this name already exists!"
 msgstr "इस नाम की फ़ाइल पहले से मौजूद है!"
 
@@ -97,6 +94,24 @@ msgstr "डेटा रिलीज़ संस्करण"
 msgid "Permission Update Success!"
 msgstr "अनुमति अद्यतन सफल!"
 
+msgid "Remove Permission"
+msgstr "अनुमति हटाएँ"
+
+msgid "Modify Hidden File Status"
+msgstr "छिपी हुई फ़ाइल की स्थिति बदलें"
+
+msgid "Unhide Release File"
+msgstr "रिलीज़ फ़ाइल दिखाएँ"
+
+msgid "Hide Release File"
+msgstr "रिलीज़ फ़ाइल छिपाएँ"
+
+msgid "Delete File"
+msgstr "फ़ाइल हटाएँ"
+
+msgid "Delete Release File"
+msgstr "रिलीज़ फ़ाइल हटाएँ"
+
 msgid "Submission Error!"
 msgstr "सबमिशन त्रुटि!"
 
@@ -118,8 +133,86 @@ msgstr "संस्करण"
 msgid "Manage Users with access to a Version"
 msgstr "किसी संस्करण तक पहुँच वाले उपयोगकर्ताओं का प्रबंधन करें"
 
+msgid "Users"
+msgstr "उपयोगकर्ता"
+
 msgid "Search for a Version"
 msgstr "संस्करण खोजें"
 
 msgid "An error occurred when loading the form!"
 msgstr "फ़ॉर्म लोड करते समय एक त्रुटि हुई!"
+
+msgid "Manage File"
+msgstr "फ़ाइल प्रबंधित करें"
+
+msgid "Unversioned"
+msgstr "संस्करणहीन"
+
+msgid "Hidden By ID"
+msgstr "आईडी द्वारा छिपाया गया"
+
+msgid "Missing action"
+msgstr "क्रिया निर्दिष्ट नहीं है"
+
+msgid "Invalid action"
+msgstr "अमान्य क्रिया"
+
+msgid "No data was sent in the POST request"
+msgstr "POST अनुरोध में कोई डेटा नहीं भेजा गया।"
+
+msgid "Missing user to grant access to"
+msgstr "जिस उपयोगकर्ता को पहुँच प्रदान करनी है वह निर्दिष्ट नहीं है।"
+
+msgid "Must select either specific file OR version to grant access to"
+msgstr "पहुँच प्रदान करने के लिए किसी विशिष्ट फ़ाइल या संस्करण का चयन करना आवश्यक है।"
+
+msgid "No valid data was sent in the request"
+msgstr "अनुरोध में कोई वैध डेटा नहीं भेजा गया।"
+
+msgid "Missing user to remove access from"
+msgstr "जिस उपयोगकर्ता से पहुँच हटानी है वह निर्दिष्ट नहीं है।"
+
+msgid "Must select a specific file"
+msgstr "किसी विशिष्ट फ़ाइल का चयन करना आवश्यक है।"
+
+msgid "Can not upload duplicate file"
+msgstr "डुप्लिकेट फ़ाइल अपलोड नहीं की जा सकती।"
+
+msgid "Permission denied."
+msgstr "अनुमति अस्वीकृत।"
+
+msgid "Overwrite failed. A file of this name already exists which you do not have permission to overwrite."
+msgstr "ओवरराइट विफल। इस नाम की फ़ाइल पहले से मौजूद है और आपको उसे ओवरराइट करने की अनुमति नहीं है।"
+
+msgid "Can not upload duplicate file."
+msgstr "डुप्लिकेट फ़ाइल अपलोड नहीं की जा सकती।"
+
+msgid "Not found"
+msgstr "नहीं मिला"
+
+msgid "Only you, and system administrators will be able to see this file!"
+msgstr "केवल आप और सिस्टम व्यवस्थापक ही इस फ़ाइल को देख सकेंगे!"
+
+msgid "Anyone with permission to this file will be able to see it."
+msgstr "जिस किसी को इस फ़ाइल की अनुमति होगी, वह इसे देख सकेगा।"
+
+msgid "This will permanently delete the file from the system!"
+msgstr "यह फ़ाइल को सिस्टम से स्थायी रूप से हटा देगा!"
+
+msgid "File Successfully hidden"
+msgstr "फ़ाइल सफलतापूर्वक छिपा दी गई"
+
+msgid "File Successfully unhidden"
+msgstr "फ़ाइल सफलतापूर्वक दिखाई गई"
+
+msgid "File Successfully deleted"
+msgstr "फ़ाइल सफलतापूर्वक हटाई गई"
+
+msgid "Yes, hide it!"
+msgstr "हाँ, इसे छिपाएँ!"
+
+msgid "Yes, unhide it!"
+msgstr "हाँ, इसे दिखाएँ!"
+
+msgid "Yes, delete it!"
+msgstr "हाँ, इसे हटाएँ!"

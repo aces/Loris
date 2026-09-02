@@ -268,6 +268,7 @@ class MediaUploadForm extends Component {
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
+    const {t} = this.props;
     e.preventDefault();
 
     let formData = this.state.formData;
@@ -288,7 +289,7 @@ class MediaUploadForm extends Component {
     );
     if (!this.isValidFileName(requiredFileName, fileName)) {
       swal.fire(
-        'Invalid file name!',
+        t('Invalid file name!', {ns: 'media'}),
         'Your file\'s base name should be: <code>'
         + requiredFileName + '</code>'
         + '<br>followed by the file extension.',

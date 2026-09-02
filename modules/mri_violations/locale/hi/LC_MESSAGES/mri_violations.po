@@ -22,6 +22,11 @@ msgstr ""
 msgid "MRI Violated Scans"
 msgstr "एमआरआई उल्लंघन स्कैन"
 
+msgid "Violated scan"
+msgid_plural "Violated scans"
+msgstr[0] "प्रोटोकॉल का उल्लंघन करने वाला स्कैन"
+msgstr[1] "प्रोटोकॉल का उल्लंघन करने वाले स्कैन"
+
 msgid "Violations for SeriesUID"
 msgstr "सीरीज़UID के लिए उल्लंघन"
 
@@ -100,9 +105,6 @@ msgstr "अध्ययन प्रोटोकॉल"
 msgid "Scan Problems"
 msgstr "स्कैन समस्याएँ"
 
-msgid "Scan Type"
-msgstr "स्कैन प्रकार"
-
 msgid "Severity"
 msgstr "गंभीरता"
 
@@ -169,9 +171,6 @@ msgstr "हैश"
 msgid "JoinID"
 msgstr "जॉइनआईडी"
 
-msgid "TarchiveID"
-msgstr "टार्चिवआईडी"
-
 msgid "Center Name"
 msgstr "केंद्र का नाम"
 
@@ -213,3 +212,6 @@ msgstr "समय सीमा"
 
 msgid "Can not implement filter on a resource type that has no projects."
 msgstr "ऐसे संसाधन प्रकार पर फ़िल्टर लागू नहीं किया जा सकता जिसमें कोई परियोजना नहीं है."
+
+msgid "Series Description Regex:"
+msgstr "सीरीज़ विवरण रेगुलर एक्सप्रेशन:"

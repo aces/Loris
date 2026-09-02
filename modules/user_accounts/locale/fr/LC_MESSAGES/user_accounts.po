@@ -208,13 +208,13 @@ msgstr "Les nouveaux et anciens mots de passe sont identiques."
 msgid "This email address is already in use"
 msgstr "Cette adresse email est déjà utilisée"
 
-msgid "You cannot edit your own account settings"
-msgstr "Vous ne pouvez pas modifier les paramètres de votre propre compte"
+msgid "You cannot edit your own account settings."
+msgstr "Vous ne pouvez pas modifier les paramètres de votre propre compte."
 
-msgid "To change your email or password, go to \"My Preferences\""
-msgstr "Pour modifier votre adresse courriel ou votre mot de passe, rendez-vous dans « Mes préférences »"
+msgid "To change your email or password, go to \"My Preferences\"."
+msgstr "Pour modifier votre adresse courriel ou votre mot de passe, rendez-vous dans « Mes préférences »."
 
-msgid "For any other changes, contact an administrator"
+msgid "For any other changes, contact an administrator."
 msgstr "Pour toute autre modification, veuillez contacter un administrateur."
 
 msgid "Do you really want to reject this user?"

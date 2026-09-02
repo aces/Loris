@@ -42,16 +42,9 @@ msgstr "Temps d'acquisition"
 msgid "Insertion Time"
 msgstr "Temps d'insertion"
 
-msgid "Type"
-msgstr "Type"
-
 #, fuzzy
 msgid "Signal Viewer"
 msgstr "Visualiseur de signaux"
-
-#, fuzzy
-msgid "SessionID"
-msgstr "ID de session"
 
 #, fuzzy
 msgid "split {{splitNum}}"

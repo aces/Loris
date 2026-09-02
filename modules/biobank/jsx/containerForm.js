@@ -73,12 +73,13 @@ class ContainerForm extends Component {
    * @return {JSX}
    */
   render() {
+    const {t} = this.props;
     const {current, errors, list} = this.state;
     const {options, show} = this.props;
     const handleClose = () => this.setState(initialState, this.props.onClose);
     return (
       <Modal
-        title={this.props.t('Add New Container')}
+        title={t('Add New Container', {ns: 'biobank'})}
         show={show}
         onClose={handleClose}
         onSubmit={this.handleSubmit}
@@ -88,7 +89,7 @@ class ContainerForm extends Component {
           <div className="col-xs-11">
             <SelectElement
               name="centerId"
-              label={this.props.t('Site', {ns: 'loris'})}
+              label={t('Site', {ns: 'loris'})}
               options={options.centers}
               onUserInput={this.setCurrent}
               required={true}
@@ -103,7 +104,7 @@ class ContainerForm extends Component {
           setList={this.setList}
           listItem={{}}
         >
-          <ContainerSubForm options={options}/>
+          <ContainerSubForm options={options} t={t}/>
         </ListForm>
       </Modal>
     );
@@ -155,6 +156,7 @@ class ContainerSubForm extends Component {
    * @return {JSX}
    */
   render() {
+    const {t} = this.props;
     const {item, errors, options} = this.props;
 
     const containerTypesNonPrimary = mapFormOptions(
@@ -164,7 +166,7 @@ class ContainerSubForm extends Component {
       <ListItem {...this.props}>
         <TextboxElement
           name='barcode'
-          label={this.props.t('Barcode', {ns: 'biobank'})}
+          label={t('Barcode', {ns: 'biobank'})}
           onUserInput={this.setContainer}
           required={true}
           value={item.barcode}
@@ -172,7 +174,7 @@ class ContainerSubForm extends Component {
         />
         <SelectElement
           name='typeId'
-          label={this.props.t('Container Type', {ns: 'biobank'})}
+          label={t('Container Type', {ns: 'biobank'})}
           options={containerTypesNonPrimary}
           onUserInput={this.setContainer}
           required={true}
@@ -181,14 +183,14 @@ class ContainerSubForm extends Component {
         />
         <TextboxElement
           name='lotNumber'
-          label={this.props.t('Lot Number', {ns: 'biobank'})}
+          label={t('Lot Number', {ns: 'biobank'})}
           onUserInput={this.setContainer}
           value={item.lotNumber}
           errorMessage={errors.lotNumber}
         />
         <DateElement
           name='expirationDate'
-          label={this.props.t('Expiration Date', {ns: 'biobank'})}
+          label={t('Expiration Date', {ns: 'biobank'})}
           onUserInput={this.setContainer}
           value={item.expirationDate}
           errorMessage={errors.expirationDate}

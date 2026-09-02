@@ -37,13 +37,7 @@ msgstr ""
 msgid "Insertion Time"
 msgstr ""
 
-msgid "Type"
-msgstr ""
-
 msgid "Signal Viewer"
-msgstr ""
-
-msgid "SessionID"
 msgstr ""
 
 msgid "split {{splitNum}}"

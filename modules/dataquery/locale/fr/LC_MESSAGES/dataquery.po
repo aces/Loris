@@ -307,9 +307,6 @@ msgstr "Visites non valides"
 msgid "No visits selected for criteria."
 msgstr "Aucune visite sélectionnée pour ces critères."
 
-msgid "Add criteria"
-msgstr "Ajouter critère"
-
 msgid "Field"
 msgid_plural "Fields"
 msgstr[0] "Champ"
@@ -508,7 +505,7 @@ msgstr "(Exécuter sur {{runTime}})"
 
 #, fuzzy
 msgid "You ran this query on {{runTime}}"
-msgstr "Vous avez exécuté cette requête sur {{runTime}}"
+msgstr "Vous avez exécuté cette requête le {{runTime}}"
 
 #, fuzzy
 msgid "You ran this query"

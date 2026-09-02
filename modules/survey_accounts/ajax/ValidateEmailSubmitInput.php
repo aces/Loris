@@ -129,7 +129,4 @@ if (!empty($_REQUEST['Email']) ) {
         exit(0);
     }
 }
-
-print "";
-
-
+echo json_encode(['valid' => true]);

@@ -31,11 +31,8 @@ msgstr "フルネーム"
 msgid "Could not update {{name}}."
 msgstr "{{name}} を更新できませんでした。"
 
-msgid "Updated {{name}} status!"
-msgstr ""
-
-msgid "To apply changes the interface must be reloaded. Proceed?"
-msgstr "変更を適用するには、インターフェースを再読み込みする必要があります。続行しますか?"
+msgid "Updated {{name}} status! To apply changes the interface must be reloaded. Proceed?"
+msgstr "{{name}} のステータスが更新されました！変更を適用するには、インターフェースを再読み込みする必要があります。続行しますか?"
 
 msgid "Reload the page"
 msgstr "ページを再読み込みする"

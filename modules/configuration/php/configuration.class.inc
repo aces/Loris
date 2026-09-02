@@ -64,8 +64,8 @@ class Configuration extends \NDB_Form
 
         $date_format = [
             ''    => '',
-            'Ymd' => 'Ymd (EX: 2015-12-28)',
-            'Ym'  => 'Ym (EX: 2015-12)'
+            'Ymd' => dgettext('configuration', 'Ymd (EX: 2015-12-28)'),
+            'Ym'  => dgettext('configuration', 'Ym (EX: 2015-12)')
         ];
 
         $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
@@ -77,22 +77,22 @@ class Configuration extends \NDB_Form
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
         $this->tpl_data['log_levels']      = [
-            'none'      => 'None',
-            'debug'     => 'Debug',
-            'info'      => 'Info',
-            'notice'    => 'Notice',
-            'warning'   => 'Warning',
-            'error'     => 'Error',
-            'critical'  => 'Critical',
-            'alert'     => 'Alert',
-            'emergency' => 'Emergency',
+            'none'      => dgettext('loris', 'None'),
+            'debug'     => dgettext('configuration', 'Debug'),
+            'info'      => dgettext('configuration', 'Info'),
+            'notice'    => dgettext('configuration', 'Notice'),
+            'warning'   => dgettext('configuration', 'Warning'),
+            'error'     => dgettext('configuration', 'Error'),
+            'critical'  => dgettext('configuration', 'Critical'),
+            'alert'     => dgettext('configuration', 'Alert'),
+            'emergency' => dgettext('configuration', 'Emergency'),
         ];
 
         $this->tpl_data['date_format']   = $date_format;
         $this->tpl_data['lookup_center'] = [
             ''            => '',
-            'PatientID'   => 'PatientID',
-            'PatientName' => 'PatientName',
+            'PatientID'   => dgettext('configuration', 'PatientID'),
+            'PatientName' => dgettext('configuration', 'PatientName'),
         ];
     }
 
@@ -113,7 +113,12 @@ class Configuration extends \NDB_Form
             []
         );
 
-        return iterator_to_array($parentConfigItems);
+        // Convert the labels to the appropriate language
+        $parentConfigItems = iterator_to_array($parentConfigItems);
+        foreach ($parentConfigItems as &$setting) {
+            $setting['Label'] = dgettext('ConfigSettings', $setting['Label']);
+        }
+        return $parentConfigItems;
     }
 
     /**
@@ -128,6 +133,7 @@ class Configuration extends \NDB_Form
     {
         $config = \NDB_Config::singleton();
         $DB     = $this->loris->getDatabaseConnection();
+        $lang   = \User::singleton()->getLanguageCode();
 
         // Get the names and meta-information for the config settings in the database
         $configs = iterator_to_array(
@@ -136,6 +142,15 @@ class Configuration extends \NDB_Form
                 []
             )
         );
+
+        // Convert the labels and descriptions to the appropriate language
+        foreach ($configs as &$setting) {
+            $setting['Label']       = dgettext('ConfigSettings', $setting['Label']);
+            $setting['Description'] = dgettext(
+                'ConfigSettings',
+                $setting['Description']
+            );
+        }
 
         // Check whether any setting is overwritten in the config.xml
         // Add this info to the array so form entries can be disabled in front end
@@ -166,7 +181,15 @@ class Configuration extends \NDB_Form
                 );
                 if ($value) {
                     foreach ($value as $subvalue) {
-                        $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                        if ($setting['Multilingual']) {
+                            $setting['Value'][$subvalue['ID']]
+                                = $config->getMultilingualSetting(
+                                    $lang,
+                                    $setting['Name']
+                                );
+                        } else {
+                            $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                        }
                     }
                 }
             }

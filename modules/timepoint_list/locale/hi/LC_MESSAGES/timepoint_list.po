@@ -70,12 +70,6 @@ msgstr "जैविक लिंग"
 msgid "You do not have access to any timepoints registered for this candidate."
 msgstr "आपको इस उम्मीदवार के लिए पंजीकृत किसी भी टाइमपॉइंट तक पहुँच नहीं है।"
 
-msgid " y / "
-msgstr " व / "
-
-msgid " m"
-msgstr " म"
-
 msgid "Not Done"
 msgstr "पूरा नहीं हुआ"
 

@@ -92,3 +92,9 @@ msgstr "Nouvelle date"
 #, fuzzy
 msgid "No changes have been made"
 msgstr "Aucune modification n'a été apportée."
+
+msgid "Permission denied: You cannot assign examiner to this Site."
+msgstr "Permission refusée : vous ne pouvez pas assigner un examinateur à ce site."
+
+msgid "This examiner already exists."
+msgstr "Cet examinateur existe déjà."

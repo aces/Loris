@@ -25,9 +25,6 @@ msgstr "サーバープロセスマネージャー"
 msgid "PID"
 msgstr "PID"
 
-msgid "Type"
-msgstr "タイプ"
-
 msgid "Stdout File"
 msgstr "標準出力ファイル"
 

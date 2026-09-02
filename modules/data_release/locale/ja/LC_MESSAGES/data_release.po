@@ -70,9 +70,6 @@ msgstr "エラー"
 msgid "Upload error!"
 msgstr "アップロードエラー"
 
-msgid "Upload Successful!"
-msgstr "アップロード成功しました!"
-
 msgid "A file with this name already exists!"
 msgstr "この名前のファイルは既に存在します。"
 
@@ -97,6 +94,24 @@ msgstr "データリリースバージョン"
 msgid "Permission Update Success!"
 msgstr "権限の更新に成功しました!"
 
+msgid "Remove Permission"
+msgstr "権限を削除する"
+
+msgid "Modify Hidden File Status"
+msgstr "隠しファイルのステータスを変更する"
+
+msgid "Unhide Release File"
+msgstr "リリースファイルの非表示を解除"
+
+msgid "Hide Release File"
+msgstr "リリースファイルを非表示にする"
+
+msgid "Delete File"
+msgstr "ファイルを削除する"
+
+msgid "Delete Release File"
+msgstr "リリースファイルを削除する"
+
 msgid "Submission Error!"
 msgstr "送信エラー!"
 
@@ -118,8 +133,86 @@ msgstr "バージョン"
 msgid "Manage Users with access to a Version"
 msgstr "バージョンへのアクセス権を持つユーザーを管理する"
 
+msgid "Users"
+msgstr "ユーザー"
+
 msgid "Search for a Version"
 msgstr "バージョンを検索"
 
 msgid "An error occurred when loading the form!"
 msgstr "フォームの読み込み中にエラーが発生しました"
+
+msgid "Manage File"
+msgstr "ファイルの管理"
+
+msgid "Unversioned"
+msgstr "バージョンなし"
+
+msgid "Hidden By ID"
+msgstr "ID により非表示"
+
+msgid "Missing action"
+msgstr "アクションが指定されていません"
+
+msgid "Invalid action"
+msgstr "無効なアクション"
+
+msgid "No data was sent in the POST request"
+msgstr "POST リクエストでデータが送信されませんでした。"
+
+msgid "Missing user to grant access to"
+msgstr "アクセス権を付与するユーザーが指定されていません。"
+
+msgid "Must select either specific file OR version to grant access to"
+msgstr "アクセス権を付与するには、特定のファイルまたはバージョンを選択する必要があります。"
+
+msgid "No valid data was sent in the request"
+msgstr "有効なデータがリクエストで送信されませんでした。"
+
+msgid "Missing user to remove access from"
+msgstr "アクセス権を削除するユーザーが指定されていません。"
+
+msgid "Must select a specific file"
+msgstr "特定のファイルを選択する必要があります。"
+
+msgid "Can not upload duplicate file"
+msgstr "重複したファイルはアップロードできません。"
+
+msgid "Permission denied."
+msgstr "アクセス権がありません。"
+
+msgid "Overwrite failed. A file of this name already exists which you do not have permission to overwrite."
+msgstr "上書きに失敗しました。同じ名前のファイルが既に存在しており、それを上書きする権限がありません。"
+
+msgid "Can not upload duplicate file."
+msgstr "重複したファイルはアップロードできません。"
+
+msgid "Not found"
+msgstr "見つかりません"
+
+msgid "Only you, and system administrators will be able to see this file!"
+msgstr "このファイルは、あなたとシステム管理者のみが閲覧できます。"
+
+msgid "Anyone with permission to this file will be able to see it."
+msgstr "このファイルへのアクセス権を持つユーザーは閲覧できます。"
+
+msgid "This will permanently delete the file from the system!"
+msgstr "この操作により、ファイルはシステムから完全に削除されます。"
+
+msgid "File Successfully hidden"
+msgstr "ファイルを非表示にしました"
+
+msgid "File Successfully unhidden"
+msgstr "ファイルを再表示しました"
+
+msgid "File Successfully deleted"
+msgstr "ファイルを削除しました"
+
+msgid "Yes, hide it!"
+msgstr "はい、非表示にします！"
+
+msgid "Yes, unhide it!"
+msgstr "はい、再表示します！"
+
+msgid "Yes, delete it!"
+msgstr "はい、削除します！"

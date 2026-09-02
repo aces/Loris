@@ -54,9 +54,6 @@ msgstr "フィードバックの説明"
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr "プロジェクト識別子へのフィードバック: {{PSCID}}"
 
-msgid "Type"
-msgstr "タイプ"
-
 msgid "Author"
 msgstr "著者"
 
@@ -84,8 +81,14 @@ msgstr "提出する"
 msgid "Create thread"
 msgstr "スレッドを作成"
 
+msgid "Thread created!"
+msgstr "スレッドが作成されました！"
+
 msgid "The new thread has been submitted!"
 msgstr "新しいスレッドが送信されました!"
+
+msgid "Failed to create thread"
+msgstr "スレッドの作成に失敗しました"
 
 msgid "Across All Fields"
 msgstr "あらゆる分野にわたって"

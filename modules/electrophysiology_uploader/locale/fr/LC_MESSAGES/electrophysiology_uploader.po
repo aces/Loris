@@ -68,10 +68,6 @@ msgid "The file does not respect name convention"
 msgstr "Le fichier ne respecte pas la convention de nomenclature."
 
 #, fuzzy
-msgid "Upload Successful!"
-msgstr "Téléversement réussi!"
-
-#, fuzzy
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr "Le traitement de ce fichier par le pipeline EEG a commencé."
 
@@ -97,9 +93,6 @@ msgstr "Temps de téléversement"
 
 msgid "Status"
 msgstr "Statut"
-
-msgid "Uploaded By"
-msgstr "Téléverser par"
 
 # upload.class.inc
 msgid "File not found."

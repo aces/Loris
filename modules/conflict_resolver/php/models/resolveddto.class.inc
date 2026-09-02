@@ -60,12 +60,12 @@ class ResolvedDTO implements DataInstance, SiteHaver
     {
         return [
             'ResolvedID'          => $this->resolvedid,
-            'Project'             => $this->project,
-            'Cohort'              => $this->cohort,
-            'Site'                => $this->site,
+            'Project'             => dgettext('Project', $this->project),
+            'Cohort'              => dgettext('cohort', $this->cohort),
+            'Site'                => dgettext('psc', $this->site),
             'CandID'              => $this->candid,
             'PSCID'               => $this->pscid,
-            'Visit Label'         => $this->visitlabel,
+            'Visit Label'         => dgettext('visit', $this->visitlabel),
             'Instrument'          => $this->instrument,
             'Question'            => $this->question,
             'Description'         => "",

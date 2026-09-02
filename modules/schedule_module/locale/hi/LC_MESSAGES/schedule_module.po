@@ -31,9 +31,6 @@ msgstr "अपॉइंटमेंट समय"
 msgid "Appointment Type"
 msgstr "अपॉइंटमेंट प्रकार"
 
-msgid "AppointmentTypeName"
-msgstr "अपॉइंटमेंट प्रकार नाम"
-
 msgid "Edit"
 msgstr "संपादित करें"
 

@@ -21,3 +21,296 @@ msgstr ""
 
 msgid "Genomic Browser"
 msgstr "Navigateur Génomique"
+
+msgid "Use PSCID in column headers"
+msgstr "Utiliser le PSCID dans les en-têtes de colonnes"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Upload File"
+msgstr "Téléverser un fichier"
+
+msgid "File type"
+msgstr "Type de fichier"
+
+msgid "Profiles"
+msgstr "Profils"
+
+msgid "GWAS"
+msgstr "GWAS"
+
+msgid "SNP"
+msgstr "SNP"
+
+msgid "CNV"
+msgstr "CNV"
+
+msgid "Methylation"
+msgstr "Méthylation"
+
+msgid "File"
+msgid_plural "Files"
+msgstr[0] "Fichier"
+msgstr[1] "Fichiers"
+
+msgid "External ID"
+msgstr "Identifiant externe"
+
+msgid "Build"
+msgstr "Version du génome"
+
+msgid "Strand"
+msgstr "Brin"
+
+msgid "Start Loc"
+msgstr "Position de début"
+
+msgid "End Loc"
+msgstr "Position de fin"
+
+msgid "Location"
+msgstr "Emplacement"
+
+msgid "Gene"
+msgstr "Gène"
+
+msgid "Gene Name"
+msgstr "Nom du gène"
+
+msgid "Copy Number Change"
+msgstr "Variation du nombre de copies"
+
+msgid "Event Name"
+msgstr "Nom de l'événement"
+
+msgid "Common"
+msgstr "Commun"
+
+msgid "Characteristics"
+msgstr "Caractéristiques"
+
+msgid "Inheritance"
+msgstr "Hérédité"
+
+msgid "Array Report"
+msgstr "Rapport de puce"
+
+msgid "Markers"
+msgstr "Marqueurs"
+
+msgid "Validation Method"
+msgstr "Méthode de validation"
+
+msgid "Platform"
+msgstr "Plateforme"
+
+msgid "ID"
+msgstr "Identifiant"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Inserted by User"
+msgstr "Ajouté par l'utilisateur"
+
+msgid "Caveat"
+msgstr "Mise en garde"
+
+msgid "Notes"
+msgstr "Notes"
+
+msgid "SNP ID"
+msgstr "Identifiant SNP"
+
+msgid "Chromosome"
+msgstr "Chromosome"
+
+msgid "BP Position"
+msgstr "Position (pb)"
+
+msgid "Major Allele"
+msgstr "Allèle majeur"
+
+msgid "Minor Allele"
+msgstr "Allèle mineur"
+
+msgid "MAF"
+msgstr "MAF"
+
+msgid "Estimate"
+msgstr "Estimation"
+
+msgid "Std Err"
+msgstr "Erreur type"
+
+msgid "P-value"
+msgstr "Valeur p"
+
+msgid "Sample"
+msgstr "Échantillon"
+
+msgid "CPG Name"
+msgstr "Nom du CpG"
+
+msgid "Beta value"
+msgstr "Valeur bêta"
+
+msgid "Probe Loc A"
+msgstr "Position de la sonde A"
+
+msgid "Probe Seq A"
+msgstr "Séquence de la sonde A"
+
+msgid "Probe Loc B"
+msgstr "Position de la sonde B"
+
+msgid "Probe Seq B"
+msgstr "Séquence de la sonde B"
+
+msgid "Infinium design"
+msgstr "Conception Infinium"
+
+msgid "Color"
+msgstr "Couleur"
+
+msgid "Accession number"
+msgstr "Numéro d'accession"
+
+msgid "Position"
+msgstr "Position"
+
+msgid "Island Loc"
+msgstr "Position de l'îlot"
+
+msgid "Context"
+msgstr "Contexte"
+
+msgid "Promoter"
+msgstr "Promoteur"
+
+msgid "DMR"
+msgstr "DMR"
+
+msgid "Enhancer"
+msgstr "Amplificateur"
+
+msgid "HMM Island"
+msgstr "Îlot HMM"
+
+msgid "Reg Feature Loc"
+msgstr "Position de l'élément régulateur"
+
+msgid "Regulatory feat.:"
+msgstr "Élément régulateur :"
+
+msgid "DHS"
+msgstr "DHS"
+
+msgid "SNPs found"
+msgstr "SNP trouvés"
+
+msgid "CNVs found"
+msgstr "CNV trouvés"
+
+msgid "CPGs found"
+msgstr "CpG trouvés"
+
+msgid "rsID"
+msgstr "rsID"
+
+msgid "SNP Name"
+msgstr "Nom du SNP"
+
+msgid "External Source"
+msgstr "Source externe"
+
+msgid "Allele A"
+msgstr "Allèle A"
+
+msgid "Allele B"
+msgstr "Allèle B"
+
+msgid "Reference Base"
+msgstr "Base de référence"
+
+msgid "Validated"
+msgstr "Validé"
+
+msgid "Function Prediction"
+msgstr "Prédiction fonctionnelle"
+
+msgid "Damaging"
+msgstr "Délétère"
+
+msgid "Genotype Quality"
+msgstr "Qualité du génotype"
+
+msgid "Exonic Function"
+msgstr "Fonction exonique"
+
+msgid "Genomic Range"
+msgstr "Intervalle génomique"
+
+msgid "Unsupported filetype: %s"
+msgstr "Type de fichier non pris en charge : %s"
+
+msgid "gain"
+msgstr "gain"
+
+msgid "loss"
+msgstr "perte"
+
+msgid "Unknown"
+msgstr "Inconnu"
+
+msgid "Benign"
+msgstr "Bénin"
+
+msgid "Pathogenic"
+msgstr "Pathogène"
+
+msgid "Green"
+msgstr "Vert"
+
+msgid "Red"
+msgstr "Rouge"
+
+msgid "Abnormal"
+msgstr "Anormal"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Uncertain"
+msgstr "Incertain"
+
+msgid "exonic"
+msgstr "exonique"
+
+msgid "ncRNAexonic"
+msgstr "ARNnc exonique"
+
+msgid "splicing"
+msgstr "épissage"
+
+msgid "UTR3"
+msgstr "UTR3"
+
+msgid "UTR5"
+msgstr "UTR5"
+
+msgid "de novo"
+msgstr "de novo"
+
+msgid "maternal"
+msgstr "maternel"
+
+msgid "paternal"
+msgstr "paternel"
+
+msgid "unclassified"
+msgstr "non classé"
+
+msgid "Upload error!"
+msgstr "Erreur de téléversement !"

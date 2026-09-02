@@ -7,12 +7,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: LORIS 27\n"
+"Project-Id-Version: LORIS 29.0\n"
 "Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
 "POT-Creation-Date: 2025-04-08 14:37-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+
 "Language: zh\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,8 +40,7 @@ msgstr "输入下面验证器应用程序中的代码以继续。"
 msgid "Data in LORIS:"
 msgstr "LORIS 中的数据："
 
-msgid ""
-"Please enter your username below, and a new password will be sent to you."
+msgid "Please enter your username below, and a new password will be sent to you."
 msgstr "请在下面输入您的用户名，新密码将发送给您。"
 
 msgid "Back to login page"
@@ -98,9 +97,7 @@ msgstr "放射科医生"
 msgid "Examiner role"
 msgstr "考官角色"
 
-msgid ""
-"Please fill in the form below to request a LORIS account. We will contact "
-"you once your account has been approved."
+msgid "Please fill in the form below to request a LORIS account. We will contact you once your account has been approved."
 msgstr "请填写下面的表格来申请 LORIS 帐户。您的帐户获得批准后，我们​​将与您联系。"
 
 msgid "Your request for an account has been received successfully."
@@ -118,33 +115,56 @@ msgstr "{{title}} 不被接受"
 msgid "You must accept the {{title}} before requesting an account."
 msgstr "在请求帐户之前，您必须接受 {{title}}。"
 
-# Hack for the login page.
-# These strings come from the database and are
-# the defaults in the login_summary_statistics table
-msgid "EEG Recording"
-msgid_plural "EEG Recordings"
-msgstr[0] "脑电图记录"
+msgid "Missing code"
+msgstr "缺少验证码"
 
-msgid "Female Participant"
-msgid_plural "Female Participants"
-msgstr[0] "女性参与者"
+msgid "Invalid MFA code"
+msgstr "MFA 验证码无效"
 
-msgid "Instrument"
-msgid_plural "Instruments"
-msgstr[0] "量表/评估工具"
+msgid "Error"
+msgstr "错误"
 
-msgid "Male Participant"
-msgid_plural "Male Participants"
-msgstr[0] "男性参与者"
+msgid "password expired"
+msgstr "密码已过期。"
 
-msgid "Scan"
-msgid_plural "Scans"
-msgstr[0] "扫描序列/影像"
+msgid "Can not use an empty password."
+msgstr "密码不能为空。"
 
-msgid "Site"
-msgid_plural "Sites"
-msgstr[0] "中心"
+msgid "You cannot keep the same password."
+msgstr "不能继续使用相同的密码。"
 
-msgid "Visit"
-msgid_plural "Visits"
-msgstr[0] "访视"
+msgid "Server encountered an error."
+msgstr "服务器遇到错误。"
+
+msgid "Sending reset email failed."
+msgstr "发送密码重置邮件失败。"
+
+msgid "Please complete the reCaptcha"
+msgstr "请完成 reCAPTCHA 验证。"
+
+msgid "Email address can not contain the following characters: <,>,& and \"."
+msgstr "电子邮件地址不能包含以下字符：<、>、& 和 \"。"
+
+msgid "Please provide a valid email address!"
+msgstr "请输入有效的电子邮件地址！"
+
+msgid "Not a valid user"
+msgstr "无效用户。"
+
+msgid "Please complete the reCaptcha!"
+msgstr "请完成 reCAPTCHA 验证！"
+
+msgid "Login with {{provider}}"
+msgstr "使用 {{provider}} 登录"
+
+msgid "Our partners"
+msgstr "我们的合作伙伴"
+
+msgid "Password expired for user."
+msgstr "用户密码已过期。"
+
+msgid "Statistic"
+msgstr "统计"
+
+msgid "Value"
+msgstr "值"

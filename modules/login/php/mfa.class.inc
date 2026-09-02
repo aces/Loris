@@ -85,7 +85,12 @@ class MFA extends \NDB_Page
         $requestdata = json_decode((string )$request->getBody(), true);
         $user        = $request->getAttribute("user");
         if (!isset($requestdata['code'])) {
-            return new \LORIS\Http\Response\JSON\Unauthorized("Missing code");
+            return new \LORIS\Http\Response\JSON\Unauthorized(
+                dgettext(
+                    "login",
+                    "Missing code"
+                )
+            );
         }
 
         $validator = $user->getTOTPValidator();
@@ -96,7 +101,12 @@ class MFA extends \NDB_Page
             $login->setPassedMFA();
             return new \LORIS\Http\Response\JSON\OK(["success" => "validated code"]);
         } else {
-            return new \LORIS\Http\Response\JSON\Unauthorized("Invalid MFA code");
+            return new \LORIS\Http\Response\JSON\Unauthorized(
+                dgettext(
+                    "login",
+                    "Invalid MFA code"
+                )
+            );
         }
     }
 

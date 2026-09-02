@@ -47,17 +47,11 @@ msgstr "नया डेटा"
 msgid "Links"
 msgstr "लिंक"
 
-msgid "SessionID"
-msgstr "सेशन आईडी"
-
 msgid "Sequence Type"
 msgstr "सीक्वेंस प्रकार"
 
 msgid "Pending New"
 msgstr "लंबित नया"
-
-msgid "QC Status"
-msgstr "QC स्थिति"
 
 msgid "Caveat"
 msgstr "चेतावनी"

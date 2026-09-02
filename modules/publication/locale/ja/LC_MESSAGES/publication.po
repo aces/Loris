@@ -49,9 +49,6 @@ msgstr "提出前に残っているエラーを修正してください"
 msgid "Something went wrong!"
 msgstr "問題が発生しました。"
 
-msgid "Submission Successful!"
-msgstr "送信成功しました!"
-
 msgid "Propose a Project"
 msgstr "プロジェクトを提案する"
 
