@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Recruitment from './widgets/recruitment';
 import StudyProgression from './widgets/studyprogression';
+import Electrophysiology from './widgets/electrophysiology';
 import {fetchData} from './Fetch';
 import Modal from 'Modal';
 import Loader from 'Loader';
@@ -25,6 +26,7 @@ import zhStrings from '../locale/zh/LC_MESSAGES/statistics.json';
 const WidgetIndex = (props) => {
   const [recruitmentData, setRecruitmentData] = useState({});
   const [studyProgressionData, setStudyProgressionData] = useState({});
+  const [electrophysiologyData, setElectrophysiologyData] = useState({});
   const [modalChart, setModalChart] = useState(null);
   const {t, i18n} = useTranslation();
   useEffect( () => {
@@ -273,6 +275,7 @@ const WidgetIndex = (props) => {
         );
         setRecruitmentData(data);
         setStudyProgressionData(data);
+        setElectrophysiologyData(data);
       };
       setup().catch(
         (error) => {
@@ -364,6 +367,12 @@ const WidgetIndex = (props) => {
       />
       <StudyProgression
         data ={studyProgressionData}
+        baseURL ={props.baseURL}
+        showChart ={showChart}
+        updateFilters ={updateFilters}
+      />
+      <Electrophysiology
+        data ={electrophysiologyData}
         baseURL ={props.baseURL}
         showChart ={showChart}
         updateFilters ={updateFilters}
