@@ -89,7 +89,7 @@ class SnpBrowser extends \DataFrameworkMenu implements ETagCalculator
             );
         $platform_options = [];
         foreach ($platform_results as $row) {
-            $name = $row['Name'];
+            $name = dgettext('genotyping_platform', $row['Name']);
             $platform_options[$name] = $name;
         }
         return (new \LORIS\genomic_browser\Views\SNP(

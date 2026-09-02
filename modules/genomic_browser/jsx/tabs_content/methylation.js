@@ -153,10 +153,6 @@ class Methylation extends Component {
         },
       },
       {
-        label: t('Date of Birth', {ns: 'loris'}),
-        show: false,
-      },
-      {
         label: t('Sample', {ns: 'genomic_browser'}),
         show: true,
       },
@@ -183,8 +179,8 @@ class Methylation extends Component {
           name: 'Strand',
           type: 'select',
           options: {
-            F: 'Forward',
-            R: 'Reverse',
+            '+': t('Forward', {ns: 'genomic_browser'}),
+            '-': t('Reverse', {ns: 'genomic_browser'}),
           },
         },
       },

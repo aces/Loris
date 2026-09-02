@@ -315,3 +315,9 @@ msgstr ""
 
 msgid "Upload error!"
 msgstr ""
+
+msgid "Forward"
+msgstr ""
+
+msgid "Reverse"
+msgstr ""
