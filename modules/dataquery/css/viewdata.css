@@ -1,0 +1,8 @@
+.dataquery-view-container .header-text {
+  max-height: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 12;
+  display: -webkit-box;
+}
