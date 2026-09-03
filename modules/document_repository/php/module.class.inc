@@ -97,6 +97,9 @@ class Module extends \Module
                 )
             );
             $numberOfDocs = sizeof($docs);
+            if ($numberOfDocs === 0) {
+                return [];
+            }
 
             $dateformatter = new \IntlDateFormatter(
                 "",
