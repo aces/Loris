@@ -1833,6 +1833,8 @@ components:
           type: string
         Project:
           type: string
+        RegistrationCohort:
+          type: string
         PSCID:
           type: string
         Site:
@@ -2208,6 +2210,8 @@ components:
       properties:
         Project:
           type: string
+        RegistrationCohortID:
+          type: integer
         PSCID:
           type: string
         Site:
@@ -2457,4 +2461,3 @@ components:
       type: apiKey
       name: Authorization
       in: header
-

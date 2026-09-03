@@ -68,6 +68,12 @@ class LorisApiCandidates_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
             'string'
         );
         $this->assertSame(
+            gettype(
+                $candidatesArray['Candidates']['0']['RegistrationCohort']
+            ),
+            'string'
+        );
+        $this->assertSame(
             gettype($candidatesArray['Candidates']['0']['PSCID']),
             'string'
         );
@@ -96,6 +102,10 @@ class LorisApiCandidates_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         );
         $this->assertArrayHasKey(
             'Project',
+            $candidatesArray['Candidates']['0']
+        );
+        $this->assertArrayHasKey(
+            'RegistrationCohort',
             $candidatesArray['Candidates']['0']
         );
         $this->assertArrayHasKey(
@@ -159,6 +169,10 @@ class LorisApiCandidates_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
             'string'
         );
         $this->assertSame(
+            gettype($candidatesCandidArray['Meta']['RegistrationCohort']),
+            'string'
+        );
+        $this->assertSame(
             gettype($candidatesCandidArray['Meta']['PSCID']),
             'string'
         );
@@ -213,11 +227,12 @@ class LorisApiCandidates_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         $json_new     = [
             'Candidate' =>
                 [
-                    'Project' => "Rye",
-                    'Site'    => "Data Coordinating Center",
-                    'EDC'     => "2020-01-03",
-                    'DoB'     => "2020-01-03",
-                    'Sex'     => "Male"
+                    'Project'              => "Rye",
+                    'RegistrationCohortID' => 3,
+                    'Site'                 => "Data Coordinating Center",
+                    'EDC'                  => "2020-01-03",
+                    'DoB'                  => "2020-01-03",
+                    'Sex'                  => "Male"
                 ]
         ];
         $response_new = $this->client->request(
@@ -246,11 +261,12 @@ class LorisApiCandidates_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         $json_new     = [
             'Candidate' =>
                 [
-                    'Project' => "Rye",
-                    'Site'    => "Montreal",
-                    'EDC'     => "2020-01-03",
-                    'DoB'     => "2020-01-03",
-                    'Sex'     => "Male"
+                    'Project'              => "Rye",
+                    'RegistrationCohortID' => 3,
+                    'Site'                 => "Montreal",
+                    'EDC'                  => "2020-01-03",
+                    'DoB'                  => "2020-01-03",
+                    'Sex'                  => "Male"
                 ]
         ];
         $response_new = $this->client->request(
@@ -267,6 +283,49 @@ class LorisApiCandidates_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         // Verify the endpoint has a body
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
+
+        // A registration cohort must belong to the selected project.
+        $json_new     = [
+            'Candidate' => [
+                'Project'              => "Rye",
+                'RegistrationCohortID' => 1,
+                'Site'                 => "Data Coordinating Center",
+                'EDC'                  => "2020-01-03",
+                'DoB'                  => "2020-01-03",
+                'Sex'                  => "Male"
+            ]
+        ];
+        $response_new = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_new
+            ]
+        );
+        $this->assertEquals(400, $response_new->getStatusCode());
+
+        // A registration cohort is required when the setting is enabled.
+        $json_new     = [
+            'Candidate' => [
+                'Project' => "Rye",
+                'Site'    => "Data Coordinating Center",
+                'EDC'     => "2020-01-03",
+                'DoB'     => "2020-01-03",
+                'Sex'     => "Male"
+            ]
+        ];
+        $response_new = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_new
+            ]
+        );
+        $this->assertEquals(400, $response_new->getStatusCode());
 
         $json_new     = [
             'Candidate' =>

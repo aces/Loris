@@ -50,6 +50,10 @@ class New_Profile extends \NDB_Form
         $edc       = $config->getSetting('useEDC');
         $sex       = \Utility::getSexList();
 
+        $useRegistrationCohort = $config->settingEnabled(
+            'useRegistrationCohort'
+        );
+
         $pscidSet = "false";
         $minYear  = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
         $maxYear  = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
@@ -60,6 +64,14 @@ class New_Profile extends \NDB_Form
 
         // Get projects for the select dropdown
         $projList = $user->getProjectNames();
+        $cohorts  = [];
+        if ($useRegistrationCohort) {
+            foreach ($user->getProjects() as $project) {
+                $cohorts[$project->getName()] = \Utility::getCohortsForProject(
+                    $project->getId()
+                );
+            }
+        }
 
         // Get setting through pscid
         $PSCIDsettings = $config->getSetting('PSCID');
@@ -68,14 +80,16 @@ class New_Profile extends \NDB_Form
         }
 
         $this->fieldOptions = [
-            'minYear'   => $minYear,
-            'maxYear'   => $maxYear,
-            'dobFormat' => $dobFormat,
-            'edc'       => $edc,
-            'sex'       => $sex,
-            'pscidSet'  => $pscidSet,
-            'site'      => $site,
-            'project'   => $projList,
+            'minYear'               => $minYear,
+            'maxYear'               => $maxYear,
+            'dobFormat'             => $dobFormat,
+            'edc'                   => $edc,
+            'sex'                   => $sex,
+            'pscidSet'              => $pscidSet,
+            'site'                  => $site,
+            'project'               => $projList,
+            'useRegistrationCohort' => $useRegistrationCohort,
+            'cohort'                => $cohorts,
         ];
     }
 
