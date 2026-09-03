@@ -8,6 +8,11 @@ import {FullDictionary} from './types';
  */
 function stripHTML(html: string): string {
   if (!html) return '';
+
+  if (!/<[^>]+>/.test(html)) {
+    return html;
+  }
+
   const doc = new DOMParser().parseFromString(html, 'text/html');
   return doc.body.textContent || html.replace(/<\/?[a-zA-Z][^>]*>?/gm, '');
 }
