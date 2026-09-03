@@ -13,7 +13,7 @@
  *
  * Input:
  * data_dictionary_builder.php takes as input the ip_output.txt file (generated
- * by lorisform_parser.php) and inserts records for each field of each
+ * by tools/ip_output_builder.php) and inserts records for each field of each
  * discovered NDB_BVL_Instrument. To be complete, this tool must be run on an
  * ip_output.txt file that was constructed from all instruments.
  *
@@ -116,7 +116,7 @@ foreach ($instruments AS $instrument) {
             break;
         case "table":
             $table = $bits[1];
-            //`testname` was only recently added to the lorisform parser, for
+            //`testname` was only recently added to the ip_output_builder, for
             //backwards compatibility, instruments with no testname parameter
             //should assume the testname from the `table` name (to maintain
             //status quo) although it might be incorrect since instrument names

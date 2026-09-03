@@ -3,7 +3,7 @@
 
 /**
  * The script generate_tables_sql_and_testNames.php takes
- * the ip_output.txt file generated from lorisform_parser.php
+ * the ip_output.txt file generated from ip_output_builder.php
  * and outputs an sql build file for the table of each instrument
  * it finds in the ip_output.txt file.
  * These sql files are output to the tables_sql/ subdirectory.
@@ -21,7 +21,10 @@
 
 require_once __DIR__ . "/generic_includes.php";
 
-$data = stream_get_contents(STDIN);
+// read ip_output.txt
+$fp   = fopen(__DIR__ . "/ip_output.txt", "r");
+$data = fread($fp, filesize(__DIR__ . "/ip_output.txt"));
+fclose($fp);
 
 $instruments = explode("{-@-}", trim($data));
 
@@ -29,6 +32,12 @@ $tblCount       = 0;
 $parameterCount = 0;
 $pages          = [];
 foreach ($instruments as $instrument) {
+    // skip last line (empty instrument)
+    if (empty($instrument)) {
+        continue;
+    }
+
+    // parse instrument
     $catId  = "";
     $output = "";
     $items  = explode("\n", trim($instrument));
@@ -70,6 +79,9 @@ foreach ($instruments as $instrument) {
         case "header":
             continue 2;
             break;
+
+        case "testname":
+            continue 2;
 
         // generate specific column definitions for specific HTML elements
         default:
