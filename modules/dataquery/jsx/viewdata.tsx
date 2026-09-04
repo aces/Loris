@@ -131,14 +131,12 @@ function ProgressBar(props: {type: string, value: number, max: number}) {
   const {t} = useTranslation('dataquery');
   switch (props.type) {
   case 'loading':
-    if (props.value == 0) {
-      return <h2>{t('Query not yet run', {ns: 'dataquery'})}</h2>;
-    }
     return (<div>
       <label htmlFor="loadingprogress">{t('Loading data:',
         {ns: 'dataquery'})}</label>
       <progress id="loadingprogress"
-        value={props.value} max={props.max}>
+        value={props.max > 0 ? props.value : undefined}
+        max={props.max > 0 ? props.max : undefined}>
         {t('{{value}} of {{max}} candidates',
           {ns: 'dataquery', value: props.value, max: props.max})}
       </progress>

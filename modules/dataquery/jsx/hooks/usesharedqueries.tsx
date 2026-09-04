@@ -161,11 +161,8 @@ function useSharedQueries(): SharedQueriesType {
                 const queryObj: FlattenedQuery
                         = allQueries[queryRun.QueryID];
                 if (!queryObj) {
-                  console.error(
-                    'Could not get ',
-                    queryRun.QueryID,
-                    ' from ',
-                    allQueries);
+                  // The queries endpoint filters out queries the user cannot
+                  // access, so a run can reference one that is not in the list.
                   return;
                 }
                 convertedrecent.push({
