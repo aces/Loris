@@ -933,3 +933,118 @@ select[multiple].input-sm.resizable {
     height: 100px;
     resize: both;
 }
+
+
+/*******************************
+States, drawn from the palette
+
+Bootstrap draws the hover and selected states for every surface it still owns,
+in its own colours rather than ours, so a page mixes colours nobody chose with
+colours we did. The rules below map the states bootstrap draws most often onto
+the tokens in htdocs/css/tokens.css.
+
+Hover and selection are two different questions, so they get two different
+steps of the accent. Hover says where the pointer is and goes as soon as it
+moves, so it is the lightest step there is. Selection says what is chosen, and
+sits one step up.
+
+Neither is the secondary. The orange is kept for the one case that asks to be
+noticed: something in effect because of what the user did. Nothing bootstrap
+draws here qualifies, so nothing here is orange.
+
+The navigation bar is the exception. It sits on the dark blue, where no wash of
+the accent would show at all, so it keeps the orange declared for it at the top
+of this file.
+
+This section is deliberately narrow: hover, focus, and the selected row. Do not
+add to it to avoid writing a component properly. It shrinks as surfaces are
+converted and goes when bootstrap does.
+
+See docs/DesignSystem.md.
+****************************************/
+
+/* ---- Links --------------------------------------------------------- */
+
+a:hover,
+a:focus {
+    color: var(--loris-color-accent-strong);
+}
+
+/* ---- Navigation and menus ------------------------------------------ */
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+    background-color: var(--loris-state-hover);
+    color: var(--loris-color-accent-strong);
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+    background-color: var(--loris-state-hover);
+    color: var(--loris-color-accent-strong);
+}
+
+/* ---- Rows and lists ------------------------------------------------ */
+
+.table-hover > tbody > tr:hover {
+    background-color: var(--loris-state-hover);
+}
+
+a.list-group-item:hover,
+a.list-group-item:focus {
+    background-color: var(--loris-state-hover);
+    color: var(--loris-text);
+}
+
+/* Marked the way a chosen row is marked in the select, so a list built from
+   bootstrap and a list built from a component say the same thing. */
+.list-group-item.active,
+.list-group-item.active:hover,
+.list-group-item.active:focus {
+    background-color: var(--loris-state-selected);
+    border-color: var(--loris-border-divider);
+    box-shadow: inset 3px 0 0 var(--loris-state-selected-solid);
+    color: var(--loris-text);
+}
+
+/* ---- Buttons ------------------------------------------------------- */
+
+/* Hover moves the outline and the label, and leaves the ground where it is. A
+   button is an action rather than something that can be chosen, so it has no
+   selected state to be told apart from, and filling it on hover would put the
+   label on a colour it was never chosen against. */
+.btn-default:hover,
+.btn-default:focus {
+    background-color: var(--loris-state-hover);
+    border-color: var(--loris-color-accent-strong);
+    color: var(--loris-color-accent-strong);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--loris-color-accent-strong);
+    border-color: var(--loris-color-accent-strong);
+}
+
+.btn-link:hover,
+.btn-link:focus {
+    color: var(--loris-color-accent-strong);
+}
+
+/* ---- Pagination ---------------------------------------------------- */
+
+.pagination > li > a:hover,
+.pagination > li > a:focus {
+    color: var(--loris-color-accent-strong);
+    background-color: var(--loris-state-hover);
+    border-color: var(--loris-border-divider);
+}
+
+/* The page you are on is not a choice you can change your mind about later, it
+   is where you are, so it takes the accent solid rather than a selected tint. */
+.pagination > .active > a,
+.pagination > .active > a:hover,
+.pagination > .active > a:focus {
+    background-color: var(--loris-color-accent);
+    border-color: var(--loris-color-accent);
+}

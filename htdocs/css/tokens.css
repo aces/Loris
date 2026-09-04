@@ -1,0 +1,221 @@
+/**
+ * Design tokens.
+ *
+ * The single source of truth for the values components style themselves with.
+ * Nothing below should be repeated as a literal anywhere else.
+ *
+ * There are two layers, and the distinction matters:
+ *
+ *   Palette  - the raw colours LORIS is built from. Named for what they are.
+ *              Add to these rarely, and only for a colour the product really
+ *              has.
+ *   Roles    - what a colour is for. Named for the job, not the hue.
+ *              Components reference these, never the palette, so that
+ *              restyling means repointing a role rather than hunting through
+ *              components.
+ *
+ * A component with a value nothing else shares keeps it in its own stylesheet,
+ * built from these. Anything two components would both want belongs here.
+ *
+ * Loaded on every page from main.tpl and public_layout.tpl.
+ *
+ * docs/DesignSystem.md explains how to use these and when to add one.
+ */
+:root {
+    /* ---- Palette ------------------------------------------------- */
+
+    /* Blue, the primary. The middle pair is what "Loris color palette v.0.1"
+       at the head of custom-css.css has declared all along. */
+    --loris-blue-900: #042d54;
+    --loris-blue-700: #064785;
+    --loris-blue-500: #246eb6;
+    --loris-blue-100: #e4ebf2;
+    --loris-blue-50: #f3f6f9;
+
+    /* Sky, the information colour. The same hue as the navy, carried light and
+       saturated instead of dark, which is how the biobank has drawn its live
+       layer for years: an available slot, a hovered container and a lifecycle
+       line are all this, against the navy for what is already filled. Two
+       steps. A third would be a highlight, and a highlight only ever means
+       hover, which belongs to the accent. */
+    --loris-sky: #a6d3f5;
+    --loris-sky-100: #d6eafa;
+
+    /* Orange, the secondary. The colour the same palette declared. Two steps,
+       because it never draws a hover and so never needs a highlight. */
+    --loris-orange: #e89a0c;
+    --loris-orange-100: #fdf2dc;
+
+    /* Purple, the tertiary. Unclaimed, so it is what tells categories apart.
+       Two steps, because nothing it marks is hovered. */
+    --loris-purple: #690096;
+    --loris-purple-100: #f2e6f7;
+
+    /* Named for the colour they are, because the meanings are already fixed. */
+    --loris-green: #0f9d58;
+    --loris-red: #c0402a;
+    --loris-amber: #d17a00;
+
+    /* Grey, black to white */
+    --loris-grey-1000: #000;
+    --loris-grey-800: #333;
+    --loris-grey-600: #666;
+    --loris-grey-500: #999;
+    --loris-grey-300: #ccc;
+    --loris-grey-250: #ddd;
+    --loris-grey-150: #efefef;
+    --loris-grey-50: #f8f8f8;
+    --loris-white: #fff;
+
+    /* ---- Roles --------------------------------------------------- */
+
+    /* Actions. LORIS's bootstrap is already compiled with the navy, so this is
+       what every existing button is drawn in.
+
+       A hue is used at three strengths, and the names say which job each does:
+
+         solid      - the colour itself, for a border, an icon, a filled
+                      button or text.
+         fill       - a tint you can see is coloured, for a ground something
+                      sits on.
+         highlight  - barely there, and only ever for hover.
+
+       A hue gets a step because something needs it, not for symmetry. */
+    --loris-color-accent: var(--loris-blue-700);
+    --loris-color-accent-strong: var(--loris-blue-900);
+    --loris-color-accent-border: var(--loris-blue-500);
+    --loris-color-accent-fill: var(--loris-blue-100);
+    --loris-color-accent-highlight: var(--loris-blue-50);
+
+    --loris-color-secondary: var(--loris-orange);
+    --loris-color-secondary-fill: var(--loris-orange-100);
+
+    /* Information sits with the other meanings rather than with the states,
+       because that is what it is: it marks what is there to help, and what is
+       true right now and governs what the next action will do. Help and
+       notices, and the standing rules a screen is operating under. */
+    --loris-color-info: var(--loris-sky);
+    --loris-color-info-fill: var(--loris-sky-100);
+
+    /* The sky is too light to define a shape against a white page on its own:
+       it reaches 1.58 against white where a control needs 3. This is the edge
+       to draw round it when it has to be seen as a control rather than only
+       as a colour. It is the accent's lighter blue, the same hue carried
+       darker, rather than a new step that would sit a few percent from it. */
+    --loris-color-info-edge: var(--loris-blue-500);
+
+    --loris-color-warning: var(--loris-amber);
+    --loris-color-success: var(--loris-green);
+    --loris-danger: var(--loris-red);
+    --loris-danger-strong: var(--loris-red);
+
+    /* States. Three questions a surface answers, and it answers them the same
+       way wherever it is.
+
+       Hover says where the pointer is. It follows the cursor, covers a lot of
+       ground and goes as soon as the pointer moves, so it is the lightest step
+       there is.
+
+       Selected says what is chosen. It is settled, nothing is happening to it,
+       and nobody needs to look at it, so it stays in the accent one step up
+       from hover.
+
+       Active is a state being passed through rather than rested in: the run a
+       drag is sweeping over before the pointer comes up, work about to happen
+       on release. It is the only state drawn in the secondary, and it is
+       deliberately rare. A rule that is merely standing is not this. That is
+       information, and it is drawn in the sky. */
+    --loris-state-hover: var(--loris-color-accent-highlight);
+    --loris-state-selected: var(--loris-color-accent-fill);
+    --loris-state-selected-solid: var(--loris-color-accent);
+    --loris-state-active: var(--loris-color-secondary-fill);
+    --loris-state-active-solid: var(--loris-color-secondary);
+
+    /* Surfaces */
+    --loris-surface: var(--loris-white);
+    --loris-surface-sunken: var(--loris-grey-50);
+
+    /* Borders */
+    --loris-border: var(--loris-grey-300);
+    --loris-border-subtle: var(--loris-grey-150);
+    --loris-border-divider: var(--loris-grey-250);
+
+    /* Text */
+    --loris-text: var(--loris-grey-800);
+    --loris-text-muted: var(--loris-grey-600);
+    --loris-text-faint: var(--loris-grey-500);
+    --loris-text-disabled: var(--loris-grey-300);
+
+    /* Controls. The off track is darker than a border grey on purpose. A
+       switch turned on is the sky, whose relative luminance is 0.613 against
+       0.604 for the light grey this replaced, so on and off would have
+       differed in hue and in nothing else, and said nothing at all to a reader
+       who cannot separate the two. */
+    --loris-control-off: var(--loris-grey-500);
+    --loris-control-off-edge: var(--loris-grey-600);
+
+    /* Elevation */
+    --loris-shadow-overlay: 0 6px 18px rgba(0, 0, 0, .18);
+    --loris-shadow-raised: 0 1px 2px rgba(0, 0, 0, .3);
+
+    /* The look of a field. Owned here rather than inherited from bootstrap, so
+       that a control placed outside a form still matches one inside it. */
+    --loris-field-bg: var(--loris-white);
+    --loris-field-border: var(--loris-grey-300);
+    --loris-field-border-focus: var(--loris-blue-500);
+    --loris-field-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+
+    /* Kept apart from the shadow because a field whose border is drawn by
+       something else still wants the glow, and an inset shadow would draw a
+       line across whatever sits on the top edge. */
+    --loris-field-glow-focus: 0 0 8px rgba(36, 110, 182, .5);
+    --loris-field-shadow-focus: var(--loris-field-shadow),
+                                var(--loris-field-glow-focus);
+    --loris-field-padding: 6px 12px;
+
+    /* ---- Shape, spacing and type --------------------------------- */
+
+    /* Corners. Anything rounded uses one of these. */
+    --loris-radius: 4px;
+    --loris-radius-sm: 3px;
+
+    /* Spacing steps used for laying controls out against one another */
+    --loris-space-xs: 4px;
+    --loris-space-sm: 6px;
+    --loris-space-md: 8px;
+    --loris-space-lg: 10px;
+    --loris-space-xl: 16px;
+
+    /* Type. These record what LORIS already sets rather than proposing
+       anything: the family, size and line height come from bootstrap's base,
+       which every page inherits. Components should reference these instead of
+       relying on inheritance, so that changing type once changes it
+       everywhere. */
+    /* The interface uses the operating system's own face: native everywhere,
+       nothing to download, and quiet enough to disappear behind the work. */
+    --loris-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                         "Helvetica Neue", Arial, sans-serif;
+
+    /* Identifiers use a monospace instead. A PSCID, a visit label or a field
+       name is read character by character and often transcribed, so the
+       characters that a proportional face lets collide -- I, l and 1, O and 0
+       -- have to stay apart. */
+    --loris-font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+                              Consolas, "Liberation Mono", monospace;
+    --loris-font-size: 14px;
+    --loris-font-size-sm: 12px;
+    --loris-font-size-xs: 11px;
+    --loris-line-height: 1.42857143;
+
+    /* Height of a control sitting in a row with a form-control */
+    --loris-control-height: 34px;
+    --loris-control-height-sm: 30px;
+}
+
+/* The application inherits its type from bootstrap, which nobody chose and
+   which renders differently per operating system. Setting it here means one
+   place decides. Qualified with html so it does not depend on this sheet
+   loading after bootstrap's. */
+html body {
+    font-family: var(--loris-font-family);
+}

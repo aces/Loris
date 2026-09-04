@@ -4,6 +4,7 @@
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link rel="stylesheet" href="{$baseurl}/fontawesome/css/all.css" type="text/css" />
+        <link rel="stylesheet" href="{$baseurl}/css/tokens.css" type="text/css" />
         <link rel="stylesheet" href="{$baseurl}/css/tooltip.css" type="text/css" />
         <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 
