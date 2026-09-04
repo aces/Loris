@@ -40,8 +40,8 @@ msgstr "输入下面验证器应用程序中的代码以继续。"
 msgid "Data in LORIS:"
 msgstr "LORIS 中的数据："
 
-msgid "Please enter your username below, and a new password will be sent to you."
-msgstr "请在下面输入您的用户名，新密码将发送给您。"
+msgid "Please enter your username below and a reset password link will be sent to you."
+msgstr "请在下方输入您的用户名，我们将向您的电子邮箱发送一个密码重置链接。"
 
 msgid "Back to login page"
 msgstr "返回登录页面"
@@ -76,8 +76,8 @@ msgstr "新密码不匹配！"
 msgid "Thank you!"
 msgstr "谢谢你！"
 
-msgid "Password reset. You should receive an email within a few minutes."
-msgstr "密码重置。您应该会在几分钟内收到一封电子邮件。"
+msgid "A password reset link has been sent to your email. You should receive it within a few minutes."
+msgstr "密码重置链接已发送至您的电子邮箱。您将在几分钟内收到该邮件。"
 
 msgid "Return to Login Page"
 msgstr "返回登录页面"

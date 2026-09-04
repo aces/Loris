@@ -56,6 +56,7 @@ class Login extends Component {
         },
       },
       mode: props.defaultmode || 'login',
+      resetTokenError: null,
       oidc: null,
       component: {
         requestAccount: null,
@@ -67,6 +68,7 @@ class Login extends Component {
     // Bind component instance to custom methods
     this.handleSubmit = this.handleSubmit.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.checkResetPasswordToken = this.checkResetPasswordToken.bind(this);
     this.setForm = this.setForm.bind(this);
     this.setMode = this.setMode.bind(this);
     this.getOIDCLinks = this.getOIDCLinks.bind(this);
@@ -77,6 +79,38 @@ class Login extends Component {
    */
   componentDidMount() {
     this.fetchData();
+    this.checkResetPasswordToken();
+  }
+
+  /**
+   * Check the reset password token.
+   */
+  checkResetPasswordToken() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    if (token) {
+      fetch(`login/Expired?token=${encodeURIComponent(token)}`, {
+        method: 'GET',
+        credentials: 'same-origin',
+      })
+        .then((resp) => {
+          if (!resp.ok) {
+            this.setState({
+              resetTokenError: 'Your password reset token is invalid or has'
+              + ' expired. Please request a new password reset link.',
+            });
+            return null;
+          }
+          return resp.json();
+        })
+        .then((json) => {
+          if (json.valid) {
+            this.setState({mode: 'expired'});
+            this.setState({resetTokenError: null});
+          }
+        });
+    }
   }
 
   /**
@@ -248,6 +282,11 @@ class Login extends Component {
           class={'col-xs-12 col-sm-12 col-md-12 text-danger'}
         />
       ) : null;
+      const resetTokenError = this.state.resetTokenError ? (
+        <div className={'alert alert-danger'} role="alert">
+          {this.state.resetTokenError}
+        </div>
+      ) : null;
       const policy = this.state.component.requestAccount.policy;
       const policyButton = policy ?
         <PolicyButton
@@ -298,6 +337,7 @@ class Login extends Component {
               autoComplete={'current-password'}
             />
             {error}
+            {resetTokenError}
             <ButtonElement
               label={this.props.t('Login', {ns: 'login'})}
               type={'submit'}
@@ -308,7 +348,13 @@ class Login extends Component {
             />
           </FormElement>
           <div className={'help-links'}>
-            <a onClick={() => this.setMode('reset')}
+            <a
+              onClick={() => {
+                const url = new URL(window.location.href);
+                url.searchParams.set('page', 'reset');
+                window.history.replaceState({}, '', url);
+                this.setMode('reset');
+              }}
               style={{cursor: 'pointer'}}>{this.props.t(
                 'Forgot your password?',
                 {ns: 'login'}

@@ -27,7 +27,6 @@ class PasswordExpired extends Component {
     this.state = {
       form: {
         value: {
-          username: this.props.data.username,
           password: '',
           confirm: '',
         },
@@ -85,7 +84,6 @@ class PasswordExpired extends Component {
         body: JSON.stringify({
           command: 'expired',
           login: true,
-          username: state.form.value.username,
           password: state.form.value.password,
           confirm: state.form.value.confirm,
         }),

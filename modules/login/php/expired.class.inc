@@ -19,6 +19,8 @@ use \LORIS\Middleware\ETagCalculator;
  */
 class Expired extends \NDB_Page implements ETagCalculator
 {
+    private const TOKEN_EXPIRATION_MINUTES = 20;
+
     /**
      * This function will return a json object for login module.
      *
@@ -30,6 +32,8 @@ class Expired extends \NDB_Page implements ETagCalculator
     {
         // Ensure POST request.
         switch ($request->getMethod()) {
+        case 'GET':
+            return $this->_handleGET($request);
         case 'POST':
             return $this->_handlePOST($request);
         default:
@@ -40,13 +44,98 @@ class Expired extends \NDB_Page implements ETagCalculator
     }
 
     /**
+     * Processes GET requests for password reset links.
+     *
+     * Validates the password reset token in the query string
+     * before displaying the password reset form.
+     *
+     * @param ServerRequestInterface $request The incoming PSR-7 request.
+     *
+     * @return ResponseInterface The outgoing PSR-7 response.
+     */
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
+    {
+        // Parse GET request parameters.
+        $params = $request->getQueryParams();
+
+        if (isset($params['token'])) {
+            return $this->_validateResetToken($request);
+        }
+
+        return new \LORIS\Http\Response\JSON\BadRequest(
+            'Error'
+        );
+    }
+
+    /**
+     * Validates the password reset token.
+     *
+     * @param ServerRequestInterface $request PSR-7 request.
+     *
+     * @return ResponseInterface The outgoing PSR-7 response.
+     */
+    private function _validateResetToken(ServerRequestInterface $request)
+    : ResponseInterface
+    {
+        $token = null;
+
+        if ($request->getMethod() === 'POST') {
+            $token = $_SESSION['PasswordResetToken'] ?? null;
+        }
+        if ($request->getMethod() === 'GET') {
+            $queryParams = $request->getQueryParams();
+            $token       = $queryParams['token'] ?? null;
+        }
+
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        if (!is_string($token) || trim($token) === '') {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Missing password reset token.'
+            );
+        }
+
+        // Check if the token is valid and not expired.
+        $row = $db->pSelectRow(
+            "SELECT r.UserID AS UserID, r.CreationDate, u.UserID AS Username
+             FROM user_password_reset r
+             INNER JOIN users u
+             ON r.UserID = u.ID
+             WHERE r.ResetToken = :token
+                AND r.Status IS NULL
+                AND r.CreationDate >= NOW() - INTERVAL "
+                . self::TOKEN_EXPIRATION_MINUTES
+                . " MINUTE",
+            ['token' => $token]
+        );
+
+        if (empty($row)) {
+            return new \LORIS\Http\Response\JSON\Conflict(
+                'Invalid or expired reset password link.'
+            );
+        }
+
+        // Set the session variable to indicate that the user can reset their
+        // password.
+        $_SESSION['PasswordExpiredForUser'] = $row['Username'];
+        $_SESSION['PasswordResetToken']     = $token;
+        $_SESSION['PasswordResetUserID']    = $row['UserID'];
+
+        return new \LORIS\Http\Response\JsonResponse(
+            ['valid' => true]
+        );
+    }
+
+    /**
      * Processes the values & saves to database and return a json response.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
+    private function _handlePOST(ServerRequestInterface $request)
+    : ResponseInterface
     {
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
@@ -72,6 +161,8 @@ class Expired extends \NDB_Page implements ETagCalculator
      */
     function expiredPassword(ServerRequestInterface $request) : ResponseInterface
     {
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
 
@@ -93,12 +184,44 @@ class Expired extends \NDB_Page implements ETagCalculator
             }
             // Update password
             try {
+                $response = $this->_validateResetToken($request);
+                if ($response->getStatusCode() !== 200) {
+                    return $response;
+                }
                 $user->updatePassword(
                     new \Password(
                         $plaintext
                     )
                 );
+                // Mark the token that successfully reset the password as 'Used'
+                $db->update(
+                    'user_password_reset',
+                    ['Status' => 'Used'],
+                    [
+                        'ResetToken' => $_SESSION['PasswordResetToken'],
+                    ]
+                );
+                // Invalidate all other active tokens for this user by marking them
+                // as 'Superseded'
+                $stmt = $db->prepare(
+                    "UPDATE user_password_reset
+                        SET Status = 'Superseded'
+                    WHERE UserID = :userID
+                        AND ResetToken <> :token
+                        AND Status IS NULL
+                        AND CreationDate >= NOW() - INTERVAL "
+                        . self::TOKEN_EXPIRATION_MINUTES
+                        . " MINUTE"
+                );
+                $stmt->execute(
+                    [
+                        ':userID' => $_SESSION['PasswordResetUserID'],
+                        ':token'  => $_SESSION['PasswordResetToken']
+                    ]
+                );
                 unset($_SESSION['PasswordExpiredForUser']);
+                unset($_SESSION['PasswordResetToken']);
+                unset($_SESSION['PasswordResetUserID']);
             } catch (\InvalidArgumentException $e) {
                 return new \LORIS\Http\Response\JSON\Conflict(
                     $e->getMessage()
@@ -137,6 +260,7 @@ class Expired extends \NDB_Page implements ETagCalculator
     protected function allowedMethods(): array
     {
         return [
+            'GET',
             'POST',
         ];
     }

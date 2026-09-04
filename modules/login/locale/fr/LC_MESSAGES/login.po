@@ -48,8 +48,8 @@ msgid "Data in LORIS:"
 msgstr "Données dans LORIS :"
 
 #, fuzzy
-msgid "Please enter your username below, and a new password will be sent to you."
-msgstr "Veuillez saisir votre nom d'utilisateur ci-dessous, et un nouveau mot de passe vous sera envoyé."
+msgid "Please enter your username below and a reset password link will be sent to you."
+msgstr "Veuillez saisir votre nom d’utilisateur ci-dessous. Un lien de réinitialisation du mot de passe vous sera envoyé."
 
 msgid "Back to login page"
 msgstr "Retour à la page de connexion"
@@ -89,10 +89,8 @@ msgid "Thank you!"
 msgstr "Merci !"
 
 #, fuzzy
-msgid "Password reset. You should receive an email within a few minutes."
-msgstr ""
-"Réinitialisation du mot de passe. Vous devriez recevoir un e-mail dans "
-"quelques minutes."
+msgid "A password reset link has been sent to your email. You should receive it within a few minutes."
+msgstr "Un lien de réinitialisation de votre mot de passe a été envoyé à votre adresse courriel. Vous devriez le recevoir d’ici quelques minutes."
 
 #, fuzzy
 msgid "Return to Login Page"
