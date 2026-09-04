@@ -1,0 +1,175 @@
+/**
+ * Styles for the Textbox component. Values come from the tokens in
+ * htdocs/css/tokens.css.
+ */
+
+.loris-textbox {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* The input draws its own field rather than borrowing .form-control. */
+.loris-textbox-input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    height: var(--loris-control-height);
+    padding: var(--loris-field-padding);
+    font-family: var(--loris-font-family);
+    font-size: var(--loris-font-size);
+    line-height: var(--loris-line-height);
+    color: var(--loris-text);
+    background: var(--loris-field-bg);
+    border: 1px solid var(--loris-field-border);
+    border-radius: var(--loris-radius);
+    box-shadow: var(--loris-field-shadow);
+}
+
+/* The outline draws the field whenever there is a label, so the input gives up
+   its own border and shadow. The inset shadow in particular has to go: the
+   legend's notch cuts the border, but nothing cuts a shadow, so it would draw
+   a hairline straight across the label and split it in two. */
+.loris-textbox:has(.loris-textbox-outline) .loris-textbox-input,
+.loris-textbox:has(.loris-textbox-outline) .loris-textbox-input:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.loris-textbox-input:focus {
+    outline: 0;
+    border-color: var(--loris-field-border-focus);
+    box-shadow: var(--loris-field-shadow-focus);
+}
+
+/* Focus on a labelled field is the border and the label turning, with no glow.
+   The glow spreads out from the border it follows, and the label sits on that
+   border, so a glow would be read through the label's own letters.
+
+   Matched from the wrapper because the outline is drawn before the input, so
+   there is no sibling combinator that reaches it. */
+.loris-textbox:has(.loris-textbox-input:focus) .loris-textbox-outline {
+    border-color: var(--loris-field-border-focus);
+}
+
+.loris-textbox:has(.loris-textbox-input:focus) .loris-textbox-label.raised {
+    color: var(--loris-color-accent);
+}
+
+.loris-textbox-input:disabled {
+    background: var(--loris-surface-sunken);
+    cursor: not-allowed;
+}
+
+/* Room for whichever affordance sits inside the field. */
+.loris-textbox.searchable .loris-textbox-input {
+    padding-right: calc(var(--loris-control-height) - var(--loris-space-xs));
+}
+
+.loris-textbox-icon,
+.loris-textbox-clear {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: var(--loris-control-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--loris-text-faint);
+}
+
+.loris-textbox-icon {
+    pointer-events: none;
+}
+
+.loris-textbox-clear {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+
+.loris-textbox-clear:hover,
+.loris-textbox-clear:focus-visible {
+    color: var(--loris-color-accent-strong);
+}
+
+/* Matches the select's label, so the two read as one control set in a toolbar. */
+.loris-textbox-label {
+    position: absolute;
+    left: var(--loris-space-lg);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--loris-text-muted);
+    pointer-events: none;
+    transition: top .12s ease, font-size .12s ease;
+    z-index: 1;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .loris-textbox-label {
+        transition: none;
+    }
+}
+
+/* Raised, it sits in the gap the outline's legend leaves in the border, so it
+   needs no backdrop and works on any colour behind the control. Matches the
+   select's label, in the muted grey rather than the faint one: at this size,
+   on a sunken ground, the faint grey is not readable. */
+.loris-textbox-label.raised {
+    top: 0;
+    font-size: var(--loris-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--loris-text-muted);
+    background: none;
+    padding: 0 var(--loris-space-xs);
+    left: var(--loris-space-sm);
+    z-index: 1;
+}
+
+/* The border is drawn by a fieldset behind the control rather than on the
+   control itself. Its legend reserves exactly the width of the label, which
+   leaves a real gap in the border, so the label needs no backdrop of its own
+   and works on any colour behind it. */
+.loris-textbox-outline {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0 var(--loris-space-sm);
+    border: 1px solid var(--loris-field-border);
+    border-radius: var(--loris-radius);
+    pointer-events: none;
+    min-width: 0;
+}
+
+.loris-textbox-outline legend {
+    width: auto;
+    max-width: 100%;
+    padding: 0;
+    border: 0;
+
+    /* The cut has to straddle the border, not sit under it. A legend's box
+       starts inside the fieldset, so without this the top sliver of the border
+       survives and shows as a hairline through the label. */
+    height: 4px;
+    margin: -2px 0 0;
+    visibility: hidden;
+    font-size: var(--loris-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    white-space: nowrap;
+}
+
+/* Nothing is raised, so the border closes up. */
+.loris-textbox-outline legend.closed {
+    max-width: 0;
+}
+
+.loris-textbox-outline legend span {
+    display: inline-block;
+    padding: 0 var(--loris-space-xs);
+}

@@ -1,0 +1,97 @@
+/**
+ * Styles for the Button component. Every value comes from a token in
+ * htdocs/css/tokens.css.
+ */
+
+.loris-button {
+    height: var(--loris-control-height);
+    padding: 0 var(--loris-space-lg);
+    font-family: var(--loris-font-family);
+    font-size: var(--loris-font-size);
+    line-height: var(--loris-line-height);
+    border-radius: var(--loris-radius);
+    border: 1px solid transparent;
+    background: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.loris-button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.loris-button.primary {
+    background: var(--loris-color-accent);
+    border-color: var(--loris-color-accent-strong);
+    color: var(--loris-surface);
+}
+
+/* Hover deepens the fill rather than changing its hue. A button is an action,
+   not something that can be chosen, so it has no selected state to be confused
+   with, and the label has to stay legible against whatever the ground
+   becomes. */
+.loris-button.primary:hover:not(:disabled),
+.loris-button.primary:focus-visible {
+    background: var(--loris-color-accent-strong);
+    border-color: var(--loris-color-accent-strong);
+}
+
+/* Outlined rather than filled, so it reads as available without claiming the
+   weight a primary does. */
+.loris-button.secondary {
+    background: var(--loris-field-bg);
+    border-color: var(--loris-color-accent);
+    color: var(--loris-color-accent);
+}
+
+/* The outline and the label carry the state. The ground barely moves, because
+   filling it would put the label on a colour it was not chosen against. */
+.loris-button.secondary:hover:not(:disabled),
+.loris-button.secondary:focus-visible {
+    background: var(--loris-state-hover);
+    border-color: var(--loris-color-accent-strong);
+    color: var(--loris-color-accent-strong);
+}
+
+/* Aimed at something: a run marked in a list nearby is what this will act on
+   when it is pressed. It takes that run's own colour, so the mark and the
+   control that consumes it read as one thing. The label stays the body colour,
+   because the secondary is a ground here and cannot be read against itself.
+
+   Hover cannot move the ground without breaking that link, so it draws a ring
+   instead. */
+.loris-button.secondary.targeted,
+.loris-button.secondary.targeted:hover:not(:disabled),
+.loris-button.secondary.targeted:focus-visible {
+    background: var(--loris-state-active);
+    border-color: var(--loris-state-active-solid);
+    color: var(--loris-text);
+}
+
+.loris-button.secondary.targeted:hover:not(:disabled),
+.loris-button.secondary.targeted:focus-visible {
+    box-shadow: 0 0 0 3px var(--loris-state-active);
+}
+
+/* Available without competing with the action beside it. */
+.loris-button.quiet {
+    color: var(--loris-color-accent);
+    padding: 0 var(--loris-space-sm);
+}
+
+.loris-button.quiet:hover:not(:disabled),
+.loris-button.quiet:focus-visible {
+    color: var(--loris-color-accent-strong);
+    text-decoration: underline;
+}
+
+.loris-button.danger {
+    color: var(--loris-danger);
+}
+
+.loris-button.danger:hover:not(:disabled),
+.loris-button.danger:focus-visible {
+    color: var(--loris-danger-strong);
+    text-decoration: underline;
+}
