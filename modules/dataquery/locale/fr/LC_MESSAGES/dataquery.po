@@ -657,3 +657,6 @@ msgstr "Onglet invalide"
 
 msgid "or"
 msgstr "ou"
+
+msgid "Show candidates with no data"
+msgstr "Afficher les candidats sans données"

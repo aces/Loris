@@ -533,3 +533,6 @@ msgstr "无效标签"
 
 msgid "or"
 msgstr "或者"
+
+msgid "Show candidates with no data"
+msgstr "显示无数据的受试者"
