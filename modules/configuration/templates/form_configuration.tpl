@@ -60,6 +60,48 @@
      <input type="text" class="form-control" name="{$k}" value="{$v|escape:html}" {if $d eq "Yes"}disabled{/if}>
 {/function}
 
+{function name=createImage}
+    {$currentValue=$v|default:""}
+    {$currentOptionFound=false}
+    {$legacyPath="/"|cat:$currentValue}
+    <select class="form-control configuration-image-select" name="{$k}" {if $d eq "Yes"}disabled{/if}>
+        <option value="" {if !$currentValue}selected{/if}></option>
+        {foreach from=$image_options item=path}
+            {$selected=$currentValue eq $path || $legacyPath eq $path}
+            {if $selected}{$currentOptionFound=true}{/if}
+            <option value="{if $selected}{$currentValue|escape:html}{else}{$path|escape:html}{/if}" {if $selected}selected{/if}>
+                {$path|escape:html}
+            </option>
+        {/foreach}
+        {if !$currentOptionFound && $currentValue}
+            <option value="{$currentValue|escape:html}" selected>{$currentValue|escape:html} (current)</option>
+        {/if}
+    </select>
+    <div class="input-group configuration-image-upload">
+        <input
+            type="file"
+            class="form-control configuration-image-file"
+            accept="image/gif,image/jpeg,image/png,image/webp"
+            aria-label="Choose image to upload"
+            {if $d eq "Yes" || !$image_upload_enabled}disabled{/if}
+        >
+        <span class="input-group-btn">
+            <button
+                type="button"
+                class="btn btn-default configuration-image-upload-button"
+                {if $d eq "Yes" || !$image_upload_enabled}disabled{/if}
+            >
+                Upload image
+            </button>
+        </span>
+    </div>
+    {if !$image_upload_enabled}
+        <p class="help-block">
+            {$image_upload_error|default:"The configuration upload directory is not writable."|escape:html}
+        </p>
+    {/if}
+{/function}
+
 {function name=createLogDropdown}
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
         {foreach from=$log_levels key=name item=label}
@@ -118,6 +160,15 @@
             {call createLookUpCenterNameUsing k=$id v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'log_level'}
             {call createLogDropdown k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'image'}
+            {call createImage
+                k=$id
+                v=$v
+                d=$node['Disabled']
+                image_options=$image_options
+                image_upload_enabled=$image_upload_enabled
+                image_upload_error=$image_upload_error|default:""
+            }
         {else}
             {call createText k=$id v=$v d=$node['Disabled']}
         {/if}
@@ -146,6 +197,14 @@
             {call createTextArea k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'lookup_center'}
             {call createLookUpCenterNameUsing k=$id d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'image'}
+            {call createImage
+                k=$id
+                d=$node['Disabled']
+                image_options=$image_options
+                image_upload_enabled=$image_upload_enabled
+                image_upload_error=$image_upload_error|default:""
+            }
         {else}
             {call createText k=$id d=$node['Disabled']}
         {/if}
