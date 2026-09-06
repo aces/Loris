@@ -9,6 +9,65 @@
     margin-top: -3px;
 }
 
+.configuration-tree-node {
+    border-left: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding-left: 12px;
+}
+
+.configuration-tree-header {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px 12px;
+    text-align: left;
+    width: 100%;
+}
+
+.configuration-tree-header:hover,
+.configuration-tree-header:focus {
+    background: #f2f7fc;
+}
+
+.configuration-tree-icon {
+    color: #31708f;
+    margin-right: 6px;
+}
+
+.configuration-tree-icon-expanded {
+    display: none;
+}
+
+.configuration-tree-header[aria-expanded="true"] .configuration-tree-icon-collapsed {
+    display: none;
+}
+
+.configuration-tree-header[aria-expanded="true"] .configuration-tree-icon-expanded {
+    display: inline-block;
+}
+
+.configuration-tree-label {
+    font-weight: 600;
+}
+
+.configuration-tree-name {
+    color: grey;
+    font-size: 11px;
+    margin-left: 8px;
+}
+
+.configuration-tree-description {
+    color: #555;
+    display: block;
+    margin-left: 23px;
+    margin-top: 4px;
+}
+
+.configuration-tree-children {
+    margin-left: 18px;
+    padding-top: 12px;
+}
+
 .submit-area {
     margin-top: 30px;
 }
