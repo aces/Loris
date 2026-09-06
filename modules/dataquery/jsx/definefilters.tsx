@@ -12,6 +12,7 @@ import {calcPayload} from './calcpayload';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import React from 'react';
 import {Trans, useTranslation} from 'react-i18next';
+import swal from 'sweetalert2';
 
 /**
  * The define filters tab of the DQT
@@ -73,6 +74,43 @@ function DefineFilters(props: {
   const [modalQueryGroup, setModalGroup] = useState(props.query);
   const [deleteItemIndex, setDeleteItemIndex] = useState<number|null>(null);
   const [queryMatches, setQueryMatches] = useState(null);
+
+  /**
+   * Clear all the filters currently added
+   *
+   * @param e - React Mouse Event
+   */
+  const clearAllFilters = (e: React.MouseEvent) => {
+    e.preventDefault();
+    swal.fire({
+      title: t('Are you sure?', {ns: 'loris'}),
+      text: t(
+        'This will remove all currently selected filters',
+        {ns: 'dataquery'},
+      ),
+      type: 'warning',
+      focusCancel: true,
+      showCancelButton: true,
+      confirmButtonText: t('Yes', {ns: 'loris'}),
+      cancelButtonText: t('Cancel', {ns: 'loris'}),
+    }).then((result) => {
+      if (result.value) {
+        const emptyQuery = new QueryGroup('and');
+        props.setQuery(emptyQuery);
+        setModalGroup(emptyQuery);
+      }
+    });
+  };
+
+  const removeFiltersButton = (
+    <ButtonElement
+      label={t('Remove all filters', {ns: 'dataquery'})}
+      columnSize="col-sm-12"
+      buttonClass='btn btn-danger btn-remove'
+      onUserInput={clearAllFilters}
+    />
+  );
+
   useEffect(() => {
     setQueryMatches(null);
     if (!props.fields || props.fields.length === 0) {
@@ -320,7 +358,11 @@ function DefineFilters(props: {
               style={{cursor: 'pointer'}} />
             </div>
           </div>
-          <div>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
             <div style={bGroupStyle}>
               <ButtonElement
                 label={t('Add "and" condition', {ns: 'dataquery'})}
@@ -338,6 +380,9 @@ function DefineFilters(props: {
                   setAddModal(true);
                   props.query.operator = 'or';
                 }} />
+            </div>
+            <div style={{marginTop: '1ex'}}>
+              {removeFiltersButton}
             </div>
           </div>
           {toggleAdvancedButton}
@@ -369,6 +414,7 @@ function DefineFilters(props: {
             newGroup={props.addNewQueryGroup}
             fulldictionary={props.fulldictionary}
             setDeleteItemIndex={setDeleteItemIndex}
+            extraButton={removeFiltersButton}
           />
         </fieldset>
       </form>

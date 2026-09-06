@@ -199,6 +199,12 @@ msgstr "添加“与”条件"
 msgid "Add \"or\" condition"
 msgstr "添加“或”条件"
 
+msgid "This will remove all currently selected filters"
+msgstr "这将删除当前选中的所有筛选条件。"
+
+msgid "Remove all filters"
+msgstr "删除所有筛选条件"
+
 msgid "Delete Item"
 msgstr "删除项目"
 
