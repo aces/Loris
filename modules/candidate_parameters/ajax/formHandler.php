@@ -293,7 +293,12 @@ function editFamilyInfoFields(\Database $db)
             $updateValues['FamilyID'] = $newFamilyID;
             $db->insert('family', $updateValues);
 
-            $updateValues['Candidate'] = $candID;
+            $candidateID = $db->pselectOne(
+            "SELECT ID FROM candidate WHERE CandID=:candID",
+            ['candID' => $candID]
+            );
+
+            $updateValues['CandidateID'] = $candidateID;
             $db->insert('family', $updateValues);
         }
     }
@@ -354,9 +359,16 @@ function deleteFamilyMember(\Database $db)
         ['cid' => $candID]
     );
 
+    $familyMemberCandidateID = $db->pselectOne(
+        'SELECT ID
+        FROM candidate
+        WHERE CandID=:cid',
+        ['cid' => $familyMemberID]
+    );
+
     $where = [
-        'FamilyID'  => $familyID,
-        'Candidate' => $familyMemberID,
+        'FamilyID'    => $familyID,
+        'CandidateID' => $familyMemberCandidateID,
     ];
 
     $db->delete('family', $where);
