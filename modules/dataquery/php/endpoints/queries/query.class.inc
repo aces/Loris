@@ -84,8 +84,8 @@ class Query extends \LORIS\Http\Endpoint
 
             if (isset($params['adminname'])) {
                 if ($params['adminname'] == '') {
-                    $query->removeAdminPinnedQuery('topquery');
-                    $resp['adminpin'] = 'Unpinned query from dataquery module';
+                    $query->removeAllAdminPinnedQueries();
+                    $resp['adminpin'] = 'Unpinned query from all locations';
                 } else {
                     $query->setAdminPinnedQuery(
                         $user,
