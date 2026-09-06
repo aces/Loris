@@ -165,6 +165,7 @@ CREATE TABLE `candidate` (
   `Sex` varchar(255) DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL,
   `RegistrationProjectID` int(10) unsigned NOT NULL,
+  `RegistrationCohortID` int(10) unsigned DEFAULT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `Date_active` date DEFAULT NULL,
@@ -187,9 +188,11 @@ CREATE TABLE `candidate` (
   KEY `PSCID` (`PSCID`),
   KEY `FK_candidate_sex_1` (`Sex`),
   KEY `FK_candidate_sex_2` (`ProbandSex`),
+  KEY `FK_candidate_RegistrationCohortID` (`RegistrationCohortID`),
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`RegistrationCenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_candidate_RegistrationCohortID` FOREIGN KEY (`RegistrationCohortID`) REFERENCES `cohort` (`CohortID`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `FK_candidate_sex_1` FOREIGN KEY (`Sex`) REFERENCES `sex` (`Name`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `FK_candidate_sex_2` FOREIGN KEY (`ProbandSex`) REFERENCES `sex` (`Name`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

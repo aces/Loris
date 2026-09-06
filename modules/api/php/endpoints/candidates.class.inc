@@ -249,6 +249,21 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
+        $registrationCohortID = null;
+        $config = \NDB_Factory::singleton()->config();
+        if ($config->settingEnabled('useRegistrationCohort')) {
+            $registrationCohortID
+                = filter_var(
+                    $data['Candidate']['RegistrationCohortID'] ?? null,
+                    FILTER_VALIDATE_INT
+                );
+            if ($registrationCohortID === false) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Registration cohort must be specified'
+                );
+            }
+        }
+
         $centerid = array_search(
             $data['Candidate']['Site'],
             \Utility::getSiteList()
@@ -265,7 +280,8 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $data['Candidate']['EDC'] ?? null,
                 $sex,
                 $pscid,
-                $project->getId()
+                $project->getId(),
+                $registrationCohortID
             );
         } catch (\ConflictException $e) {
             return new \LORIS\Http\Response\JSON\Conflict(

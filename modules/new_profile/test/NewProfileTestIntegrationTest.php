@@ -44,6 +44,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     function testNewProfilePageLoads()
     {
         $this->setUpConfigSetting("useEDC", "true");
+        $this->setUpConfigSetting("useRegistrationCohort", "true");
         $this->safeGet($this->url . "/new_profile/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
@@ -72,7 +73,11 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertStringContainsString("Project", $project);
 
+        $cohort = $this->safeFindElement(WebDriverBy::Name('cohort'));
+        $this->assertEquals('select', $cohort->getTagName());
+
         $this->restoreConfigSetting("useEDC");
+        $this->restoreConfigSetting("useRegistrationCohort");
     }
 
     /**
@@ -83,6 +88,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     function testNewProfileCreateCandidate(): void
     {
         $this->setUpConfigSetting("useEDC", "false");
+        $this->setUpConfigSetting("useRegistrationCohort", "false");
         $this->webDriver->get($this->url . "/new_profile/");
         // send a key to sex
         $sexElement = $this->safeFindElement(WebDriverBy::Name('sex'));
@@ -107,5 +113,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Id("swal2-title")
         )->getText();
         $this->assertEquals("New Candidate Created", $swalTitle);
+
+        $this->restoreConfigSetting("useEDC");
+        $this->restoreConfigSetting("useRegistrationCohort");
     }
 }
