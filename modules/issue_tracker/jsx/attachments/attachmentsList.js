@@ -222,10 +222,7 @@ class AttachmentsList extends Component {
         const deleteData = JSON.stringify(
           item
         );
-        // Hide "soft" deleted attachments
-        if (parseInt(item.deleted) === 1) {
-          continue;
-        }
+        const isDeleted = Boolean(item.date_deleted);
         attachmentsRows.unshift(
           <Fragment key={key}>
             <div className='row'>
@@ -242,7 +239,7 @@ class AttachmentsList extends Component {
                 </div>
                 <div className='col-md-11'>
                   <i>{item.file_name}</i>
-                  {regexImg.test(item.mime_type) ?
+                  {!isDeleted && regexImg.test(item.mime_type) ?
                     (<img
                       src={this.props.baseURL +
                       '/issue_tracker/Attachment' +
@@ -264,6 +261,27 @@ class AttachmentsList extends Component {
                 </div>
               </div>
             </div>
+            {isDeleted ? (
+              <div className='row'>
+                <div className='col-md-3'>
+                  <div className='col-md-5'>
+                    <b>{t('Date of deletion: ', {ns: 'issue_tracker'})}</b>
+                  </div>
+                  <div className='col-md-7'>{item.date_deleted}</div>
+                </div>
+                <div className='col-md-8'>
+                  <div className='col-md-1'>
+                    <b>{t('Status', {ns: 'loris'})}: </b>
+                  </div>
+                  <div className='col-md-11'>
+                    {t(
+                      'Attachment has been deleted',
+                      {ns: 'issue_tracker'}
+                    )}
+                  </div>
+                </div>
+              </div>
+            ) : null}
             <div className='row'>
               <div className='col-md-3'>
                 <div className='col-md-5'>
@@ -282,7 +300,7 @@ class AttachmentsList extends Component {
                 ) : null}
               </div>
             </div>
-            {this.displayAttachmentOptions(deleteData, item)}
+            {isDeleted ? null : this.displayAttachmentOptions(deleteData, item)}
           </Fragment>
         );
       }
