@@ -869,27 +869,11 @@ class CandidateTest extends TestCase
      */
     public function testValidateProjectPSCID()
     {
-        $seq = [
-            'seq' => [
-                0 => [
-                    '#' => '',
-                    '@' => ['type' => 'projectAbbrev'],
-                ],
-                1 => [
-                    '#' => '',
-                    '@' => [
-                        'type'   => 'numeric',
-                        'length' => '4',
-                    ],
-                ],
-            ],
-        ];
         $this->_configMap = [
             ['PSCID', [
                 'generation' => 'sequential',
-                'structure'  => $seq,
-            ]
-            ],
+                'structure'  => '{PROJECT:ALIAS}{SEQUENCE:4,FORMAT:numeric}',
+            ]],
         ];
 
         $this->_configMock->method('getSetting')
