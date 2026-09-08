@@ -657,3 +657,9 @@ msgstr "Onglet invalide"
 
 msgid "or"
 msgstr "ou"
+
+msgid "Something went wrong."
+msgstr "Une erreur est survenue."
+
+msgid "Run Query Again"
+msgstr "Réexécuter la requête"

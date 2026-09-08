@@ -529,3 +529,9 @@ msgstr "अमान्य उत्तर"
 
 msgid "Invalid tab"
 msgstr "अमान्य टैब"
+
+msgid "Something went wrong."
+msgstr "कुछ गलत हो गया।"
+
+msgid "Run Query Again"
+msgstr "फिर से क्वेरी चलाएँ"
