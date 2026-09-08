@@ -1352,15 +1352,16 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                     "/FORMAT{$escaped}:(numeric|alpha|alphanumeric)/i",
                     $matches[2],
                     $type
-                )) {
+                )
+                ) {
                     switch (strtolower($type[1])) {
-                        case 'alpha':
-                            $characters = '[A-Z]';
-                            break;
+                    case 'alpha':
+                        $characters = '[A-Z]';
+                        break;
 
-                        case 'alphanumeric':
-                            $characters = '[0-9A-Z]';
-                            break;
+                    case 'alphanumeric':
+                        $characters = '[0-9A-Z]';
+                        break;
                     }
                 }
 
@@ -1378,15 +1379,16 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                     "/FORMAT{$escaped}:(numeric|alpha|alphanumeric)/i",
                     $matches[2],
                     $type
-                )) {
+                )
+                ) {
                     switch (strtolower($type[1])) {
-                        case 'alpha':
-                            $characters = '[A-Z]';
-                            break;
+                    case 'alpha':
+                        $characters = '[A-Z]';
+                        break;
 
-                        case 'alphanumeric':
-                            $characters = '[0-9A-Z]';
-                            break;
+                    case 'alphanumeric':
+                        $characters = '[0-9A-Z]';
+                        break;
                     }
                 }
 

@@ -164,12 +164,11 @@ class SiteIDGenerator extends IdentifierGenerator
             throw new \LorisException("Invalid config for $this->kind");
         }
 
-        if (
-            preg_match(
-                '/\{(SEQUENCE|RANDOM):(\d+)([^}]*)\}/i',
-                $kind['structure'],
-                $generation
-            ) !== 1
+        if (preg_match(
+            '/\{(SEQUENCE|RANDOM):(\d+)([^}]*)\}/i',
+            $kind['structure'],
+            $generation
+        ) !== 1
         ) {
             throw new \ConfigurationException(
                 "Invalid generation template for {$this->kind}."
@@ -180,8 +179,7 @@ class SiteIDGenerator extends IdentifierGenerator
         // until the full identifier rework.
         $expected = $kind['generation'] === 'sequential' ? 'SEQUENCE' : 'RANDOM';
 
-        if (
-            $kind['generation'] !== 'user'
+        if ($kind['generation'] !== 'user'
             && strtoupper($generation[1]) !== $expected
         ) {
             throw new \ConfigurationException("Generation methods do not match.");
@@ -200,16 +198,17 @@ class SiteIDGenerator extends IdentifierGenerator
                 '/(?:^|,)FORMAT:(alpha|numeric|alphanumeric)(?:,|$)/i',
                 $generation[3],
                 $match
-            )) {
+            )
+            ) {
                 switch (strtolower($match[1])) {
-                    case 'alpha':
-                        return range('A', 'Z');
+                case 'alpha':
+                    return range('A', 'Z');
 
-                    case 'alphanumeric':
-                        return array_merge(
-                            range('0', '9'),
-                            range('A', 'Z')
-                        );
+                case 'alphanumeric':
+                    return array_merge(
+                        range('0', '9'),
+                        range('A', 'Z')
+                    );
                 }
             }
 
@@ -251,7 +250,8 @@ class SiteIDGenerator extends IdentifierGenerator
                 '/(?:^|,)PADDING:([^,]+)/i',
                 $generation[3],
                 $match
-            )) {
+            )
+            ) {
                 return $match[1];
             }
             return null;
