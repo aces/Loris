@@ -216,10 +216,21 @@ class SiteIDGenerator extends IdentifierGenerator
         }
 
         if ($setting === 'prefix') {
+            $position = strpos(
+                $kind['structure'],
+                $generation[0],
+            );
+
+            if ($position === false) {
+                throw new \ConfigurationException(
+                    "Invalid generation template for {$this->kind}."
+                );
+            }
+
             $prefix = substr(
                 $kind['structure'],
                 0,
-                strpos($kind['structure'], $generation[0])
+                $position
             );
 
             $prefix = str_replace(
