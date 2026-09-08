@@ -533,3 +533,9 @@ msgstr "無効なタブ"
 
 msgid "or"
 msgstr "または"
+
+msgid "Something went wrong."
+msgstr "問題が発生しました。"
+
+msgid "Run Query Again"
+msgstr "クエリを再実行"
