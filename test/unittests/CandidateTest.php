@@ -873,7 +873,8 @@ class CandidateTest extends TestCase
             ['PSCID', [
                 'generation' => 'sequential',
                 'structure'  => '{PROJECT:ALIAS}{SEQUENCE:4,FORMAT:numeric}',
-            ]],
+            ]
+            ],
         ];
 
         $this->_configMock->method('getSetting')
