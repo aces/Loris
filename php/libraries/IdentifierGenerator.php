@@ -72,6 +72,13 @@ abstract class IdentifierGenerator
      */
     protected $prefix;
     /**
+     * The character used to pad the suffix portion of the ID to the
+     * configured length.
+     *
+     * @var string
+     */
+    protected $padding;
+    /**
      * A short name for a Site.
      *
      * @var string
@@ -140,7 +147,7 @@ abstract class IdentifierGenerator
             return str_pad(
                 strval($this->minValue),
                 $this->length,
-                "0",
+                $this->padding,
                 STR_PAD_LEFT
             );
         }
@@ -219,7 +226,7 @@ abstract class IdentifierGenerator
         return str_pad(
             $id,
             $this->length,
-            strval($this->alphabet[0]),
+            $this->padding,
             STR_PAD_LEFT
         );
     }

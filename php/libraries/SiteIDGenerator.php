@@ -53,6 +53,7 @@ class SiteIDGenerator extends IdentifierGenerator
         $this->generationMethod = $this->_getGeneration();
         $this->length           = $this->_getLength();
         $this->alphabet         = $this->_getAlphabet();
+        $this->padding          = $this->_getPadding();
         $this->minValue         = $this->_getMinValue();
         $this->maxValue         = $this->_getMaxValue();
 
@@ -149,7 +150,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * settings relating to the PSCID structure.
      *
      * @param string $setting One of: 'generation', 'length', 'alphabet',
-     *                        'min', 'max'.
+     *                        'prefix', 'min', 'max', 'padding'.
      *
      * @return array<int,int|string>|string|null
      */
@@ -161,72 +162,102 @@ class SiteIDGenerator extends IdentifierGenerator
 
         if (!is_array($kind)) {
             throw new \LorisException("Invalid config for $this->kind");
-        };
-        // The generation setting can be easily extracted and returned.
-        if ($setting == 'generation') {
+        }
+
+        if (
+            preg_match(
+                '/\{(SEQUENCE|RANDOM):(\d+)([^}]*)\}/i',
+                $kind['structure'],
+                $generation
+            ) !== 1
+        ) {
+            throw new \ConfigurationException(
+                "Invalid generation template for {$this->kind}."
+            );
+        }
+
+        // Intermediate state where generation information is redundant
+        // until the full identifier rework.
+        $expected = $kind['generation'] === 'sequential' ? 'SEQUENCE' : 'RANDOM';
+
+        if (
+            $kind['generation'] !== 'user'
+            && strtoupper($generation[1]) !== $expected
+        ) {
+            throw new \ConfigurationException("Generation methods do not match.");
+        }
+
+        if ($setting === 'generation') {
             return $kind['generation'];
         }
 
-        // Values other than 'generation' are found within 'seq' elements and
-        // require more complex processing.
-        $idStructure = $kind['structure']['seq'];
-
-        if (!$idStructure[0]) {
-            // There's only one seq tag so the param format
-            // needs to be fixed
-            $temp        = [];
-            $temp[]      = $idStructure;
-            $idStructure = $temp;
+        if ($setting === 'length') {
+            return $generation[2];
         }
 
-        try {
-            $seqValue = self::getSeqAttribute($idStructure, $setting);
-        } catch (\ConfigurationException $e) {
-            /* Throw a new exception so that we can inform developers whether
-             * the ConfigurationException arose due to ExternalID or PSCID
-             * settings.
-             */
-            throw new \LorisException(
-                "Cannot create new candidate because of a configuration " .
-                "error in settings for {$this->kind} structure. Details: "
-                . $e->getMessage()
-            );
-        }
         if ($setting === 'alphabet') {
-            switch ($seqValue) {
-            case 'alpha':
-                return range('A', 'Z');
-            case 'numeric':
-                return range('0', '9');
-            case 'alphanumeric':
-                return array_merge(range('0', '9'), range('A', 'Z'));
+            if (preg_match(
+                '/(?:^|,)FORMAT:(alpha|numeric|alphanumeric)(?:,|$)/i',
+                $generation[3],
+                $match
+            )) {
+                switch (strtolower($match[1])) {
+                    case 'alpha':
+                        return range('A', 'Z');
+
+                    case 'alphanumeric':
+                        return array_merge(
+                            range('0', '9'),
+                            range('A', 'Z')
+                        );
+                }
             }
+
+            return range('0', '9');
         }
 
         if ($setting === 'prefix') {
-            if ($seqValue === 'static') {
-                // The 'static' seq attribute must also include a value which
-                // will be a fixed string prefix to be prepended to IDs in
-                // LORIS. This must be extracted manually.
-                foreach ($idStructure as $seq) {
-                    if ($seq['@']['type'] === 'static') {
-                        // This index stores the prefix.
-                        return $seq['#'];
-                    }
-                }
-            } elseif ($seqValue === 'siteAbbrev') {
-                return $this->siteAlias;
-            } elseif ($seqValue === 'projectAbbrev') {
-                return $this->projectAlias;
-            } else {
-                throw new ConfigurationException(
-                    "Incorrect option $seqValue selected for PSCID generation."
-                );
-            }
+            $prefix = substr(
+                $kind['structure'],
+                0,
+                strpos($kind['structure'], $generation[0])
+            );
+
+            $prefix = str_replace(
+                ['{SITE:ALIAS}', '{PROJECT:ALIAS}'],
+                [$this->siteAlias, $this->projectAlias],
+                $prefix
+            );
+
+            return $prefix;
         }
-        // The remaining values - min, max, and length - should be returned as
-        // null if they are not set.
-        return is_null($seqValue) ? $seqValue: $seqValue;
+
+        if ($setting === 'min') {
+            if (preg_match('/(?:^|,)MIN:([^,]+)/i', $generation[3], $match)) {
+                return $match[1];
+            }
+            return null;
+        }
+
+        if ($setting === 'max') {
+            if (preg_match('/(?:^|,)MAX:([^,]+)/i', $generation[3], $match)) {
+                return $match[1];
+            }
+            return null;
+        }
+
+        if ($setting === 'padding') {
+            if (preg_match(
+                '/(?:^|,)PADDING:([^,]+)/i',
+                $generation[3],
+                $match
+            )) {
+                return $match[1];
+            }
+            return null;
+        }
+
+        return null;
     }
 
     /**
@@ -424,5 +455,24 @@ class SiteIDGenerator extends IdentifierGenerator
                 intval($this->length)
             )
         );
+    }
+
+    /**
+     * Returns the padding character for the identifier.
+     *
+     * @return string
+     */
+    private function _getPadding(): string
+    {
+        $padding = $this->_getIDSetting('padding')
+            ?? strval($this->alphabet[0]);
+
+        if (!in_array($padding, $this->alphabet, true)) {
+            throw new \ConfigurationException(
+                "Padding character must be part of the configured alphabet."
+            );
+        }
+
+        return $padding;
     }
 }

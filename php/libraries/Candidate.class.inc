@@ -1035,7 +1035,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = self::structureToPCRE(
+        $regex         = self::templateToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev,
             $projectAbbrev
@@ -1308,6 +1308,94 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         } // end foreach seq
 
         return '/^'.$regex.'$/i';
+    }
+
+    /**
+     * Transforms an identifier template (such as PSCID) into a
+     * Perl-compatible regex expression for validation.
+     *
+     * @param string      $template      The identifier template
+     * @param string|null $siteAbbrev    The site abbreviation, sometimes used as
+     *                                   part of the identifier
+     * @param string|null $projectAbbrev The project abbreviation, sometimes used
+     *                                   as part of the identifier
+     *
+     * @return string The regex pattern
+     */
+    static function templateToPCRE(
+        string $template,
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
+    ): string {
+        $regex = preg_quote($template, '/');
+
+        $regex = str_replace(
+            preg_quote('{SITE:ALIAS}', '/'),
+            preg_quote($siteAbbrev ?? '', '/'),
+            $regex
+        );
+
+        $regex = str_replace(
+            preg_quote('{PROJECT:ALIAS}', '/'),
+            preg_quote($projectAbbrev ?? '', '/'),
+            $regex
+        );
+
+        $escaped = '\\\\';
+
+        $regex = preg_replace_callback(
+            "/{$escaped}\{SEQUENCE{$escaped}:(\d+)([^}]*){$escaped}\}/i",
+            function ($matches) use ($escaped) {
+                $characters = '[0-9]';
+
+                if (preg_match(
+                    "/FORMAT{$escaped}:(numeric|alpha|alphanumeric)/i",
+                    $matches[2],
+                    $type
+                )) {
+                    switch (strtolower($type[1])) {
+                        case 'alpha':
+                            $characters = '[A-Z]';
+                            break;
+
+                        case 'alphanumeric':
+                            $characters = '[0-9A-Z]';
+                            break;
+                    }
+                }
+
+                return $characters . '{' . $matches[1] . '}';
+            },
+            $regex
+        );
+
+        $regex = preg_replace_callback(
+            "/{$escaped}\{RANDOM{$escaped}:(\d+)([^}]*){$escaped}\}/i",
+            function ($matches) use ($escaped) {
+                $characters = '[0-9]';
+
+                if (preg_match(
+                    "/FORMAT{$escaped}:(numeric|alpha|alphanumeric)/i",
+                    $matches[2],
+                    $type
+                )) {
+                    switch (strtolower($type[1])) {
+                        case 'alpha':
+                            $characters = '[A-Z]';
+                            break;
+
+                        case 'alphanumeric':
+                            $characters = '[0-9A-Z]';
+                            break;
+                    }
+                }
+
+                return $characters . '{' . $matches[1] . '}';
+            },
+            $regex
+        );
+
+        return '/^' . $regex . '$/i';
     }
 
     /**
