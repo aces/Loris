@@ -85,8 +85,8 @@ msgstr "返回登录页面"
 msgid "Choose your site:"
 msgstr "选择您的网站："
 
-msgid "Choose your project:"
-msgstr "选择您的项目："
+msgid "Projects"
+msgstr "项目"
 
 msgid "Preferred language:"
 msgstr "首选语言："
