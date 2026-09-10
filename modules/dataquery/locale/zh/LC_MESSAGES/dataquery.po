@@ -510,8 +510,8 @@ msgstr "全部添加"
 msgid "Remove all"
 msgstr "全部移除"
 
-msgid "Filter within ${cname}"
-msgstr "在 ${cname} 内过滤"
+msgid "Filter within {{category}}"
+msgstr "在 {{category}} 内过滤"
 
 msgid "Default Visits"
 msgstr "默认访视"

@@ -510,8 +510,8 @@ msgstr "すべて追加"
 msgid "Remove all"
 msgstr "すべて削除"
 
-msgid "Filter within ${cname}"
-msgstr "${cname} 内でフィルター"
+msgid "Filter within {{category}}"
+msgstr "{{category}} 内でフィルター"
 
 msgid "Default Visits"
 msgstr "デフォルトの訪問"

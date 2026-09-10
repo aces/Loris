@@ -633,8 +633,8 @@ msgstr "Ajouter tous"
 msgid "Remove all"
 msgstr "Tout supprimer"
 
-msgid "Filter within ${cname}"
-msgstr "Filtrer dans ${cname}"
+msgid "Filter within {{category}}"
+msgstr "Filtrer dans {{category}}"
 
 #, fuzzy
 msgid "Default Visits"

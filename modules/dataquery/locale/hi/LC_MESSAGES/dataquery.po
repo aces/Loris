@@ -512,8 +512,8 @@ msgstr "सभी जोड़ें"
 msgid "Remove all"
 msgstr "सभी हटाएँ"
 
-msgid "Filter within ${cname}"
-msgstr "${cname} के भीतर फ़िल्टर करें"
+msgid "Filter within {{category}}"
+msgstr "{{category}} के भीतर फ़िल्टर करें"
 
 msgid "Default Visits"
 msgstr "डिफ़ॉल्ट विज़िट"

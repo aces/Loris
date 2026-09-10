@@ -445,7 +445,10 @@ function DefineFields(props: {
               <input onChange={setFilter}
                 className='form-control'
                 type="text"
-                placeholder={t(`Filter within ${cname}`, {ns: 'dataquery'})}
+                placeholder={t(
+                  'Filter within {{category}}',
+                  {ns: 'dataquery', category: cname}
+                )}
                 aria-describedby="input-filter-addon"
                 value={activeFilter}
                 style={{borderRadius: '32px 0 0 32px'}}/>
@@ -497,7 +500,7 @@ function DefineFields(props: {
           />
           {fieldList}
         </div>
-        <div style={{borderRight: '2px solid #d3d3d3', height: '80vh'}} />
+        <div style={{borderRight: '2px solid #d3d3d3', minHeight: '80vh'}} />
         <div style={{
           width: 'calc(30% - 2rem/2)',
           position: 'sticky',

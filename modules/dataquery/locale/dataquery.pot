@@ -518,7 +518,7 @@ msgstr ""
 msgid "Remove all"
 msgstr ""
 
-msgid "Filter within ${cname}"
+msgid "Filter within {{category}}"
 msgstr ""
 
 msgid "Default Visits"
