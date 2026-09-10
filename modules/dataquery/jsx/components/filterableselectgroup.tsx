@@ -83,8 +83,8 @@ function FilterableSelectGroup(props: {
                      * @param {object} base - the base CSS
                      * @returns {object} - the new CSS with z-index added
                      */
-                    (base) => ({...base, zIndex: 9999}),
-        }}
+                    (base) => ({...base, zIndex: 9999})}
+        }
         placeholder={placeholder}
       />
     </div>
