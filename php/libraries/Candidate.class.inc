@@ -1307,7 +1307,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $regex
         );
 
-        return '/^' . $regex . '$/i';
+        return '/^'.$regex.'$/i';
     }
 
     /**
