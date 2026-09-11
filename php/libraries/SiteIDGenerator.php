@@ -195,20 +195,20 @@ class SiteIDGenerator extends IdentifierGenerator
 
         if ($setting === 'alphabet') {
             if (preg_match(
-                '/(?:^|,)FORMAT:(alpha|numeric|alphanumeric)(?:,|$)/i',
+                '/(?:^|,)FORMAT:(numeric|alphanumeric|alpha)(?:,|$)/i',
                 $generation[3],
                 $match
             )
             ) {
                 switch (strtolower($match[1])) {
-                case 'alpha':
-                    return range('A', 'Z');
-
                 case 'alphanumeric':
                     return array_merge(
                         range('0', '9'),
                         range('A', 'Z')
                     );
+
+                case 'alpha':
+                    return range('A', 'Z');
                 }
             }
 
