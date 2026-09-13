@@ -658,11 +658,9 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan3()
     {
         $this->safeGet($this->url . '/configuration/');
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
-            )
-        )->click();
+        $this->safeClick(
+            WebDriverBy::cssSelector("a[href='#dashboard']")
+        );
 
         $this->safeFindElement(
             WebDriverBy::Xpath(
@@ -737,4 +735,3 @@ class DashboardTest extends LorisIntegrationTest
         );
     }
 }
-
