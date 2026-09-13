@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {withTranslation, WithTranslation} from 'react-i18next';
 
+import {Http} from 'jslib';
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
 
@@ -63,13 +64,29 @@ type TimepointListData = {
   timePoints: TimePointData[],
 };
 
-type TimepointListProps = WithTranslation & {
-  dataURL: string,
-};
+/**
+ * HTTP client for the timepoint list page.
+ */
+class TimepointListClient extends Http.Client<TimepointListData> {
+  /**
+   * Create a client for the timepoint list page.
+   */
+  constructor() {
+    super('timepoint_list');
+  }
 
-declare global {
-  interface Window {
-    lorisFetch?: typeof fetch,
+  /**
+   * Load the timepoint-list response.
+   *
+   * @param dataURL Timepoint-list JSON URL
+   * @return Timepoint-list data
+   */
+  getPage(dataURL: string): Promise<TimepointListData> {
+    return this.fetchJSON(new URL(dataURL), {
+      credentials: 'same-origin',
+      headers: {Accept: 'application/json'},
+      method: 'GET',
+    });
   }
 }
 
@@ -98,18 +115,27 @@ function hasValue(value: DisplayValue | undefined): boolean {
     && value !== false;
 }
 
+/** Candidate summary component properties. */
+type CandidateInfoProps = Pick<
+  TimepointListData,
+  'candidate' | 'dobAge' | 'edcAge'
+> & Pick<WithTranslation, 't'>;
+
 /**
  * Render the candidate summary table.
  *
  * @param props Component properties
  * @return Candidate summary
  */
-function CandidateInfo(
-  props: Pick<TimepointListData, 'candidate' | 'dobAge' | 'edcAge'>
-  & WithTranslation
+function CandidateInfo({
+  candidate,
+  dobAge,
+  edcAge,
+  t,
+}: CandidateInfoProps
 ): React.ReactElement {
   const displayParameters = Object.entries(
-    props.candidate.DisplayParameters ?? {}
+    candidate.DisplayParameters ?? {}
   );
 
   return (
@@ -120,19 +146,19 @@ function CandidateInfo(
     >
       <thead>
         <tr className="info">
-          <th>{props.t('Derived Age', {ns: 'timepoint_list'})}</th>
-          <th>{props.t('EDC Age', {ns: 'timepoint_list'})}</th>
-          <th>{props.t('Biological Sex', {ns: 'timepoint_list'})}</th>
-          <th>{props.t('Project', {ns: 'loris'})}</th>
+          <th>{t('Derived Age', {ns: 'timepoint_list'})}</th>
+          <th>{t('EDC Age', {ns: 'timepoint_list'})}</th>
+          <th>{t('Biological Sex', {ns: 'timepoint_list'})}</th>
+          <th>{t('Project', {ns: 'loris'})}</th>
           {displayParameters.map(([name]) => <th key={name}>{name}</th>)}
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>{props.dobAge}</td>
-          <td>{props.edcAge}</td>
-          <td>{props.candidate.SexLabel}</td>
-          <td>{props.candidate.ProjectTitleLabel}</td>
+          <td>{dobAge}</td>
+          <td>{edcAge}</td>
+          <td>{candidate.SexLabel}</td>
+          <td>{candidate.ProjectTitleLabel}</td>
           {displayParameters.map(([name, value]) => (
             <td key={name}>{displayValue(value)}</td>
           ))}
@@ -142,63 +168,70 @@ function CandidateInfo(
   );
 }
 
+/** Candidate actions component properties. */
+type ActionsProps = Pick<TimepointListData, 'actions' | 'candID'>
+  & Pick<WithTranslation, 't'>;
+
 /**
  * Render the actions available for this candidate.
  *
  * @param props Component properties
  * @return Candidate actions, when available
  */
-function Actions(
-  props: Pick<TimepointListData, 'actions' | 'candID'> & WithTranslation
+function Actions({actions, candID, t}: ActionsProps
 ): React.ReactElement | null {
   if (
-    !props.actions.hasCandidateParameterAccess
-    && !props.actions.isDataEntryPerson
-    && !props.actions.isImagingPerson
+    !actions.hasCandidateParameterAccess
+    && !actions.isDataEntryPerson
+    && !actions.isImagingPerson
   ) {
     return null;
   }
 
-  const candidateQuery = `candID=${encodeURIComponent(props.candID)}`
-    + `&identifier=${encodeURIComponent(props.candID)}`;
+  const candidateQuery = `candID=${encodeURIComponent(candID)}`
+    + `&identifier=${encodeURIComponent(candID)}`;
 
   return (
     <div className="col-xs-12 row">
-      <h3>{props.t('Actions:', {ns: 'timepoint_list'})}</h3>
-      {props.actions.isDataEntryPerson && (
+      <h3>{t('Actions:', {ns: 'timepoint_list'})}</h3>
+      {actions.isDataEntryPerson && (
         <a
           className="btn btn-default"
           href={`${loris.BaseURL}/create_timepoint/?${candidateQuery}`}
           role="button"
         >
-          {props.t('Create time point', {ns: 'timepoint_list'})}
+          {t('Create time point', {ns: 'timepoint_list'})}
         </a>
       )}
       {' '}
-      {props.actions.isImagingPerson && (
+      {actions.isImagingPerson && (
         <a
           className="btn btn-default"
           href={`${loris.BaseURL}/imaging_browser/?DCCID=${
-            encodeURIComponent(props.candID)
+            encodeURIComponent(candID)
           }`}
           role="button"
         >
-          {props.t('View Imaging datasets', {ns: 'timepoint_list'})}
+          {t('View Imaging datasets', {ns: 'timepoint_list'})}
         </a>
       )}
       {' '}
-      {props.actions.hasCandidateParameterAccess && (
+      {actions.hasCandidateParameterAccess && (
         <a
           className="btn btn-default"
           href={`${loris.BaseURL}/candidate_parameters/?${candidateQuery}`}
           role="button"
         >
-          {props.t('Candidate Info', {ns: 'timepoint_list'})}
+          {t('Candidate Info', {ns: 'timepoint_list'})}
         </a>
       )}
     </div>
   );
 }
+
+/** Visit-row component properties. */
+type TimepointRowsProps = Pick<TimepointListData, 'candID' | 'timePoints'>
+  & Pick<WithTranslation, 't'>;
 
 /**
  * Render the visit rows.
@@ -206,14 +239,13 @@ function Actions(
  * @param props Component properties
  * @return Visit rows
  */
-function TimepointRows(
-  props: Pick<TimepointListData, 'candID' | 'timePoints'> & WithTranslation
+function TimepointRows({candID, timePoints, t}: TimepointRowsProps
 ): React.ReactElement {
-  if (props.timePoints.length === 0) {
+  if (timePoints.length === 0) {
     return (
       <tr>
         <td colSpan={10}>
-          {props.t(
+          {t(
             'You do not have access to any timepoints registered for this '
               + 'candidate.',
             {ns: 'timepoint_list'}
@@ -225,7 +257,7 @@ function TimepointRows(
 
   return (
     <>
-      {props.timePoints.map((timePoint) => {
+      {timePoints.map((timePoint) => {
         const sessionID = displayValue(timePoint.SessionID);
         const staticStage = timePoint.staticStage
           || timePoint.currentStage === 'Not Started';
@@ -238,7 +270,7 @@ function TimepointRows(
             <td>
               <a
                 href={`${loris.BaseURL}/instrument_list/?candID=${
-                  encodeURIComponent(props.candID)
+                  encodeURIComponent(candID)
                 }&sessionID=${encodeURIComponent(sessionID)}`}
               >
                 {timePoint.VisitLabel}
@@ -273,10 +305,10 @@ function TimepointRows(
                   href={`${loris.BaseURL}/imaging_browser/viewSession/`
                     + `?sessionID=${encodeURIComponent(sessionID)}`}
                 >
-                  {props.t('Yes', {ns: 'loris'})}
+                  {t('Yes', {ns: 'loris'})}
                 </a>
               ) : (
-                props.t('No', {ns: 'loris'})
+                t('No', {ns: 'loris'})
               )}
             </td>
             <td style={{backgroundColor: timePoint.feedbackColor}}>
@@ -296,8 +328,8 @@ function TimepointRows(
             <td>
               {hasValue(timePoint.BVLQCExclusion) ? (
                 timePoint.BVLQCExclusion === 'Not Excluded'
-                  ? props.t('Pass', {ns: 'loris'})
-                  : props.t('Failure', {ns: 'loris'})
+                  ? t('Pass', {ns: 'loris'})
+                  : t('Failure', {ns: 'loris'})
               ) : (
                 <img alt="" src={`${loris.BaseURL}/images/delete.gif`}/>
               )}
@@ -311,19 +343,22 @@ function TimepointRows(
   );
 }
 
+/** Visit-table component properties. */
+type TimepointTableProps = Pick<TimepointListData, 'candID' | 'timePoints'>
+  & Pick<WithTranslation, 't'>;
+
 /**
  * Render the visit table.
  *
  * @param props Component properties
  * @return Visit table
  */
-function TimepointTable(
-  props: Pick<TimepointListData, 'candID' | 'timePoints'> & WithTranslation
+function TimepointTable({candID, timePoints, t}: TimepointTableProps
 ): React.ReactElement {
   return (
     <>
       <strong>
-        {props.t('List of Visits (Time Points)', {ns: 'timepoint_list'})}
+        {t('List of Visits (Time Points)', {ns: 'timepoint_list'})}
       </strong>
       <table
         cellPadding="2"
@@ -333,31 +368,36 @@ function TimepointTable(
         <thead>
           <tr className="info">
             <th>
-              {props.t('Visit Label', {ns: 'loris'})}<br/>
-              ({props.t('Click to Open', {ns: 'timepoint_list'})})
+              {t('Visit Label', {ns: 'loris'})}<br/>
+              ({t('Click to Open', {ns: 'timepoint_list'})})
             </th>
-            <th>{props.t('Cohort', {ns: 'loris'})}</th>
-            <th>{props.t('Site', {ns: 'loris'})}</th>
-            <th>{props.t('Project', {ns: 'loris'})}</th>
-            <th>{props.t('Stage', {ns: 'loris'})}</th>
-            <th>{props.t('Stage Status', {ns: 'timepoint_list'})}</th>
-            <th>{props.t('Date of Stage', {ns: 'timepoint_list'})}</th>
-            <th>{props.t('Sent To DCC', {ns: 'loris'})}</th>
-            <th>{props.t('Imaging Scan Done', {ns: 'timepoint_list'})}</th>
-            <th>{props.t('Feedback', {ns: 'loris'})}</th>
-            <th>{props.t('BVL QC', {ns: 'timepoint_list'})}</th>
-            <th>{props.t('BVL Exclusion', {ns: 'timepoint_list'})}</th>
-            <th>{props.t('Registered By', {ns: 'timepoint_list'})}</th>
-            <th>{props.t('Language', {ns: 'loris'})}</th>
+            <th>{t('Cohort', {ns: 'loris'})}</th>
+            <th>{t('Site', {ns: 'loris'})}</th>
+            <th>{t('Project', {ns: 'loris'})}</th>
+            <th>{t('Stage', {ns: 'loris'})}</th>
+            <th>{t('Stage Status', {ns: 'timepoint_list'})}</th>
+            <th>{t('Date of Stage', {ns: 'timepoint_list'})}</th>
+            <th>{t('Sent To DCC', {ns: 'loris'})}</th>
+            <th>{t('Imaging Scan Done', {ns: 'timepoint_list'})}</th>
+            <th>{t('Feedback', {ns: 'loris'})}</th>
+            <th>{t('BVL QC', {ns: 'timepoint_list'})}</th>
+            <th>{t('BVL Exclusion', {ns: 'timepoint_list'})}</th>
+            <th>{t('Registered By', {ns: 'timepoint_list'})}</th>
+            <th>{t('Language', {ns: 'loris'})}</th>
           </tr>
         </thead>
         <tbody>
-          <TimepointRows {...props}/>
+          <TimepointRows candID={candID} timePoints={timePoints} t={t}/>
         </tbody>
       </table>
     </>
   );
 }
+
+/** Timepoint-list page properties. */
+type TimepointListProps = WithTranslation & {
+  dataURL: string,
+};
 
 /**
  * Load and render the timepoint list.
@@ -365,27 +405,21 @@ function TimepointTable(
  * @param props Component properties
  * @return Timepoint list page
  */
-function TimepointList(props: TimepointListProps): React.ReactElement {
+function TimepointList({dataURL, t}: TimepointListProps): React.ReactElement {
   const [data, setData] = useState<TimepointListData | null>(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const lorisFetch = window.lorisFetch ?? fetch;
-    lorisFetch(props.dataURL, {credentials: 'same-origin'})
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((responseData: TimepointListData) => setData(responseData))
+    const client = new TimepointListClient();
+    client.getPage(dataURL)
+      .then(setData)
       .catch(() => setError(true));
-  }, [props.dataURL]);
+  }, [dataURL]);
 
   if (error) {
     return (
       <h3>
-        {props.t('An error occured while loading the page.', {ns: 'loris'})}
+        {t('An error occured while loading the page.', {ns: 'loris'})}
       </h3>
     );
   }
@@ -396,10 +430,19 @@ function TimepointList(props: TimepointListProps): React.ReactElement {
 
   return (
     <>
-      <CandidateInfo {...data} {...props}/>
-      <Actions {...data} {...props}/>
+      <CandidateInfo
+        candidate={data.candidate}
+        dobAge={data.dobAge}
+        edcAge={data.edcAge}
+        t={t}
+      />
+      <Actions actions={data.actions} candID={data.candID} t={t}/>
       <div className="clearfix"/>
-      <TimepointTable {...data} {...props}/>
+      <TimepointTable
+        candID={data.candID}
+        timePoints={data.timePoints}
+        t={t}
+      />
     </>
   );
 }
