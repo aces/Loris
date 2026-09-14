@@ -357,7 +357,8 @@ class PSCIDGeneratorTest extends TestCase
                         'PSCID',
                         [
                             'generation' => 'random',
-                            'structure'  => 'RANDALPHANUM-{RANDOM:4,FORMAT:alphanumeric}',
+                            'structure'  =>
+                        'RANDALPHANUM-{RANDOM:4,FORMAT:alphanumeric}',
                         ],
                     ],
                 ]
