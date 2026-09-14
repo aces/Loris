@@ -175,8 +175,8 @@ class SiteIDGenerator extends IdentifierGenerator
             );
         }
 
-        // Intermediate state where generation information is redundant
-        // until the full identifier rework.
+        // TODO: Remove this generation consistency check as part of the
+        // Candidate Identifiers rework.
         $expected = $kind['generation'] === 'sequential' ? 'SEQUENCE' : 'RANDOM';
 
         if ($kind['generation'] !== 'user'

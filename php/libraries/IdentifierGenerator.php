@@ -27,7 +27,7 @@
  */
 abstract class IdentifierGenerator
 {
-    private const RANGE_FULL = 'Cannot create new identifier because all ' .
+    private const RANGE_FULL = 'Cannot create new identifier because all' .
         ' valid identifiers are in use!';
     /**
      * How the ID will be generated. 'sequential' or 'random'.
