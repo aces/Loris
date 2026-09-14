@@ -56,7 +56,7 @@
 
     _e.g. SQL command to set session associated with CandID X and Visit Label Y as inactive:_
 
-    `UPDATE session SET Active = 'N' WHERE CandID = X AND Visit_label = 'Y';`
+    `UPDATE session s JOIN candidate c ON c.ID = s.CandidateID SET s.Active = 'N' WHERE c.CandID = X AND s.Visit_label = 'Y';`
 
     [Manual Testing]
 
