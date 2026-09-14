@@ -181,6 +181,7 @@ CREATE TABLE `candidate` (
   `ProbandDoB` date DEFAULT NULL,
   UNIQUE KEY `ID` (`ID`),
   UNIQUE KEY `ExternalID` (`ExternalID`),
+  UNIQUE KEY `CandID` (`CandID`),
   KEY `FK_candidate_1` (`RegistrationCenterID`),
   KEY `CandidateActive` (`Active`),
   KEY `FK_candidate_2_idx` (`flagged_reason`),
