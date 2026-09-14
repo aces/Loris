@@ -43,7 +43,7 @@ after the tools/update_login_summary_statistics.php tool is run, a summary of
 all the pinned queries will be displayed on the login page including the count. 
 If a query returns more than one row, the name will be appended with an 's'.
 Pinned queries must include the column Project in order to be displayed.
-Queries can also be added to project/tools/Login_Summary_Statistics to
+Queries can also be added to project/tools/login_summary_statistics to
 be added to the calculations for the statistics on the login page.
 
 

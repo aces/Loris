@@ -3,8 +3,8 @@
 /**
  * This script updates the Login Summary Statistics table in the database
  * based on the queries that are pinned to the login page in the dataquery module,
- * and on the SQL queries in the project/tools/Login_Summary_Statistics folder,
- * or if that does not exist, the SQL/Login_Summary_Statistics folder.
+ * and on the SQL queries in the project/tools/login_summary_statistics folder,
+ * or if that does not exist, the SQL/login_summary_statistics folder.
  * Pinned DQT Queries must include the Project column. SQL query files must return a
  * result with columns ProjectName and count. Here is an example SQL query that
  * counts the number of sites:
@@ -123,17 +123,17 @@ foreach ($pinnedqueries as $pin) {
     $order++;
 }
 
-// Try to get SQL queries from ../project/tools/Login_Summary_Statistics
-// Otherwise get them from SQL/Login_Summary_Statistics
+// Try to get SQL queries from ../project/tools/login_summary_statistics
+// Otherwise get them from SQL/login_summary_statistics
 // Filename should be the desired name of the query, with a "#_" infront
 // Example: 01_Site.sql where 01 means it is the first query
-$folder = __DIR__ . "/../project/tools/Login_Summary_Statistics/";
+$folder = __DIR__ . "/../project/tools/login_summary_statistics/";
 if (!is_dir($folder)) {
     print_r(
         "Folder $folder does not exist, "
-        . "using ../SQL/Login_Summary_Statistics instead \n"
+        . "using ../SQL/login_summary_statistics instead \n"
     );
-    $folder = __DIR__ . "/../SQL/Login_Summary_Statistics/";
+    $folder = __DIR__ . "/../SQL/login_summary_statistics/";
 }
 
 $files = scandir($folder);
