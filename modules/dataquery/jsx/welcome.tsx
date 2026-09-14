@@ -1079,7 +1079,7 @@ function ShareIcon(props: {
  * An icon to name a query
  *
  * @param {object} props - React props
- * @param {any} props.t - useTranslation
+ * @param {TFunction} props.t - useTranslation
  * @param {function} props.onClick - Handler to call when icon clicked
  *
  * @returns {React.ReactElement} - The React element

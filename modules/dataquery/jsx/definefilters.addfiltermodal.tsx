@@ -25,7 +25,7 @@ import {TFunction} from 'i18next';
  * Renders a selectable list of visits
  *
  * @param {object} props - React props
- * @param {any} props.t - useTranslation
+ * @param {TFunction} props.t - useTranslation
  * @param {string[]} props.selected - The currently selected visits
  * @param {string[]} props.options - The valid options
  * @param {function} props.onChange - callback when the value selected changes
@@ -77,7 +77,7 @@ function VisitList(props: {
  * Render a modal window for adding a filter
  *
  * @param {object} props - React props
- * @param {any} props.t - useTranslation
+ * @param {TFunction} props.t - useTranslation
  * @param {QueryGroup} props.query - The current query
  * @param {function} props.closeModal - Callback to close the modal
  * @param {function} props.addQueryGroupItem - Callback to add criteria to a querygroup
@@ -389,7 +389,7 @@ function getOperatorOptions(dict: FieldDictionary, t: TFunction) {
  * @param {string} op - The operator selected
  * @param {string|string[]} value - The current value
  * @param {string} setValue - a callback when a new value is selected
- * @param {function} t - Translation function from i18next
+ * @param {TFunction} t - Translation function from i18next
  * @returns {React.ReactElement} - the react element
  */
 function valueInput(fielddict: FieldDictionary,

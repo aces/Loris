@@ -72,7 +72,7 @@ function useActiveCategory(
  * Return the main page for the DQT
  *
  * @param {object} props - React props
- * @param {any} props.t - useTranslation
+ * @param {TFunction} props.t - useTranslation
  * @param {boolean} props.queryAdmin - true if the current user has permission to administer study queries
  *
  * @returns {React.ReactElement} - The main page of the app

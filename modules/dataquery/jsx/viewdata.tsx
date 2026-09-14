@@ -326,7 +326,7 @@ function useDataOrganization(
  * The View Data tab
  *
  * @param {object} props - React props
- * @param {any} props.t - useTranslation
+ * @param {TFunction} props.t - useTranslation
  * @param {APIQueryField[]} props.fields - The selected fields
  * @param {QueryGroup} props.filters - The selected filters
  * @param {object} props.fulldictionary - the data dictionary
