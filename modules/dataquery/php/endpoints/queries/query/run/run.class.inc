@@ -42,8 +42,33 @@ class Run extends \LORIS\Http\Endpoint
     {
         switch ($request->getMethod()) {
         case 'GET':
-            $user = $request->getAttribute("user");
-            return $this->queryResults($user);
+            $user   = $request->getAttribute("user");
+            $params = $request->getQueryParams();
+
+            $count = null;
+            if (isset($params['count'])) {
+                $count = filter_var(
+                    $params['count'],
+                    FILTER_VALIDATE_INT,
+                    ['options' => ['min_range' => 1]]
+                );
+                if ($count === false) {
+                    return new \LORIS\Http\Response\JSON\BadRequest(
+                        'count must be a positive integer'
+                    );
+                }
+            }
+            $offset = filter_var(
+                $params['offset'] ?? 0,
+                FILTER_VALIDATE_INT,
+                ['options' => ['min_range' => 0]]
+            );
+            if ($offset === false) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'offset must be a non-negative integer'
+                );
+            }
+            return $this->queryResults($user, $count, $offset);
         default:
             return new \LORIS\Http\Response\JSON\MethodNotAllowed(['GET']);
         }
@@ -52,32 +77,54 @@ class Run extends \LORIS\Http\Endpoint
     /**
      * Runs a Query for a user and returns the results.
      *
-     * @param \User $user The user running the query
+     * Rows are ordered by CandID and paged after the rows the user cannot
+     * access are removed. The X-Total-Count header carries the number of
+     * accessible rows in the run.
+     *
+     * @param \User $user   The user running the query
+     * @param ?int  $count  The maximum number of rows to return, or null
+     *                      for every row after the offset
+     * @param int   $offset The number of accessible rows to skip
      *
      * @return ResponseInterface
      */
-    public function queryResults(\User $user) : ResponseInterface
-    {
+    public function queryResults(
+        \User $user,
+        ?int $count = null,
+        int $offset = 0
+    ) : ResponseInterface {
         $db      = $this->loris->getDatabaseConnection();
         $candIDs = $db->pselectCol(
             "SELECT c.CandID
                 FROM dataquery_run_results drr
                 JOIN candidate c on c.ID=drr.CandidateID
-                WHERE drr.RunID=:rid",
+                WHERE drr.RunID=:rid
+                ORDER BY c.CandID",
             [
                 'rid' => $this->runID
             ]
         );
-        $candIDs = \iterator_to_array(
-            \Candidate::filterInaccessibleCandIDs(
-                $this->loris,
-                array_map(
-                    function ($candID) {
-                        return new CandID(strval($candID));
-                    },
-                    $candIDs
-                ),
-                $user
+
+        $accessible = [];
+        $filtered   = \Candidate::filterInaccessibleCandIDs(
+            $this->loris,
+            array_map(
+                function ($candID) {
+                    return new CandID(strval($candID));
+                },
+                $candIDs
+            ),
+            $user
+        );
+        foreach ($filtered as $candID) {
+            $accessible[strval($candID)] = true;
+        }
+        $candIDs = array_values(
+            array_filter(
+                $candIDs,
+                function ($candID) use ($accessible) {
+                    return isset($accessible[$candID]);
+                }
             )
         );
 
@@ -86,21 +133,31 @@ class Run extends \LORIS\Http\Endpoint
                 "No results found. Query may have expired."
             );
         }
-        $results = $db->pselect(
-            "SELECT c.CandID, drr.RowData
-                FROM dataquery_run_results drr
-                JOIN candidate c on c.ID=drr.CandidateID
-                WHERE drr.RunID=:rid",
-            [
-                'rid' => $this->runID
-            ]
-        );
-        $stream  = new \LORIS\Http\DataIteratorBinaryStream(
-            $this->_jsondecoded($results, $candIDs)
+
+        $page    = array_slice($candIDs, $offset, $count);
+        $results = [];
+        if (count($page) > 0) {
+            $results = $db->pselect(
+                "SELECT c.CandID, drr.RowData
+                    FROM dataquery_run_results drr
+                    JOIN candidate c on c.ID=drr.CandidateID
+                    WHERE drr.RunID=:rid
+                        AND c.CandID BETWEEN :first AND :last
+                    ORDER BY c.CandID",
+                [
+                    'rid'   => $this->runID,
+                    'first' => $page[0],
+                    'last'  => $page[count($page) - 1],
+                ]
+            );
+        }
+        $stream = new \LORIS\Http\DataIteratorBinaryStream(
+            $this->_jsondecoded($results, $page)
         );
 
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "application/octet-stream")
+                ->withHeader("X-Total-Count", strval(count($candIDs)))
                 ->withBody($stream);
     }
 
