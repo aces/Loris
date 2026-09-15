@@ -170,3 +170,6 @@ msgstr "統計"
 
 msgid "Value"
 msgstr "値"
+
+msgid "Your password reset token is invalid or has expired. Please request a new password reset link."
+msgstr "パスワードリセットトークンが無効であるか、有効期限が切れています。新しいパスワードリセットリンクをリクエストしてください。"
