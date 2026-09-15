@@ -995,7 +995,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = self::structureToPCRE(
+        $regex         = self::templateToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev,
             $projectAbbrev
@@ -1181,91 +1181,91 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Transforms a config structure (such as in PSCID) into a
-     * Perl-compatible regex expression for validation
+     * Transforms an identifier template (such as PSCID) into a
+     * Perl-compatible regex expression for validation.
      *
-     * @param array       $structure     the structure root
-     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
-     *                                   part of the PSCID
-     * @param string|null $projectAbbrev the project abbreviation
+     * @param string      $template      The identifier template
+     * @param string|null $siteAbbrev    The site abbreviation, sometimes used as
+     *                                   part of the identifier
+     * @param string|null $projectAbbrev The project abbreviation, sometimes used
+     *                                   as part of the identifier
      *
-     * @return string the regex pattern
-     *
-     * @note    This should probably be moved to the Candidate class, since it's
-     *       only used there to validate the PSCID
-     * @cleanup
+     * @return string The regex pattern
      */
-    static function structureToPCRE(
-        array $structure,
+    static function templateToPCRE(
+        string $template,
         ?string $siteAbbrev = null,
         ?string $projectAbbrev = null
     ): string {
-        $seqs = $structure['seq'];
-        // handle the situation where there exists only one seq
-        if (isset($seqs['#'])) {
-            $seqs = [$seqs];
-        }
-        $regex = "";
-        foreach ($seqs AS $seq) {
-            $unit = "";
+        $regex = preg_quote($template, '/');
 
-            switch ($seq['@']['type']) {
-            case 'alpha':
-                $unit .= '[a-z]';
-                break;
+        $regex = str_replace(
+            preg_quote('{SITE:ALIAS}', '/'),
+            preg_quote($siteAbbrev ?? '', '/'),
+            $regex
+        );
 
-            case 'alphanumeric':
-                $unit .= '[0-9a-z]';
-                break;
+        $regex = str_replace(
+            preg_quote('{PROJECT:ALIAS}', '/'),
+            preg_quote($projectAbbrev ?? '', '/'),
+            $regex
+        );
 
-            case 'numeric':
-                $unit .= '[0-9]';
-                break;
+        $escaped = '\\\\';
 
-            case 'static':
-                $unit .= '('.$seq['#'].')';
-                break;
+        $regex = preg_replace_callback(
+            "/{$escaped}\{SEQUENCE{$escaped}:(\d+)([^}]*){$escaped}\}/i",
+            function ($matches) use ($escaped) {
+                $characters = '[0-9]';
 
-            case 'set':
-                if (strpos($seq['#'], '|') !== false) {
-                    $unit .= '('.$seq['#'].')';
-                } else {
-                    $unit .= '['.$seq['#'].']';
+                if (preg_match(
+                    "/FORMAT{$escaped}:(numeric|alphanumeric|alpha)/i",
+                    $matches[2],
+                    $type
+                )
+                ) {
+                    switch (strtolower($type[1])) {
+                    case 'alphanumeric':
+                        $characters = '[0-9A-Z]';
+                        break;
+
+                    case 'alpha':
+                        $characters = '[A-Z]';
+                        break;
+                    }
                 }
-                break;
 
-            case 'siteAbbrev':
-                $unit .= $siteAbbrev;
-                break;
-            case 'projectAbbrev':
-                $unit .= $projectAbbrev;
-                break;
-            } // end switch
+                return $characters . '{' . $matches[1] . '}';
+            },
+            $regex
+        );
 
-            $length = "";
-            if (isset($seq['@']['length'])) {
-                $length .= $seq['@']['length'];
-            } elseif (isset($seq['@']['minLength'])) {
-                $length .= $seq['@']['minLength'];
-            } else {
-                $length .= '1';
-            }
+        $regex = preg_replace_callback(
+            "/{$escaped}\{RANDOM{$escaped}:(\d+)([^}]*){$escaped}\}/i",
+            function ($matches) use ($escaped) {
+                $characters = '[0-9]';
 
-            $length .= ',';
+                if (preg_match(
+                    "/FORMAT{$escaped}:(numeric|alphanumeric|alpha)/i",
+                    $matches[2],
+                    $type
+                )
+                ) {
+                    switch (strtolower($type[1])) {
+                    case 'alphanumeric':
+                        $characters = '[0-9A-Z]';
+                        break;
 
-            if (isset($seq['@']['length'])) {
-                $length .= $seq['@']['length'];
-            } elseif (isset($seq['@']['maxLength'])) {
-                $length .= $seq['@']['maxLength'];
-            } elseif (!isset($seq['@']['length'])
-                && !isset($seq['@']['minLength'])
-            ) {
-                $length .= '1';
-            }
+                    case 'alpha':
+                        $characters = '[A-Z]';
+                        break;
+                    }
+                }
 
-            $regex .= $unit.'{'.$length.'}';
-
-        } // end foreach seq
+                return $characters . '{' . $matches[1] . '}';
+            },
+            $regex
+        );
 
         return '/^'.$regex.'$/i';
     }

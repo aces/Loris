@@ -27,7 +27,7 @@
  */
 abstract class IdentifierGenerator
 {
-    private const RANGE_FULL = 'Cannot create new identifier because all ' .
+    private const RANGE_FULL = 'Cannot create new identifier because all' .
         ' valid identifiers are in use!';
     /**
      * How the ID will be generated. 'sequential' or 'random'.
@@ -71,6 +71,13 @@ abstract class IdentifierGenerator
      * @var string
      */
     protected $prefix;
+    /**
+     * The character used to pad the suffix portion of the ID to the
+     * configured length.
+     *
+     * @var string
+     */
+    protected $padding;
     /**
      * A short name for a Site.
      *
@@ -140,7 +147,7 @@ abstract class IdentifierGenerator
             return str_pad(
                 strval($this->minValue),
                 $this->length,
-                "0",
+                $this->padding,
                 STR_PAD_LEFT
             );
         }
@@ -219,7 +226,7 @@ abstract class IdentifierGenerator
         return str_pad(
             $id,
             $this->length,
-            strval($this->alphabet[0]),
+            $this->padding,
             STR_PAD_LEFT
         );
     }
