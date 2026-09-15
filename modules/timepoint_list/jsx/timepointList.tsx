@@ -2,16 +2,23 @@ import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {withTranslation, WithTranslation} from 'react-i18next';
 
-import {Http} from 'jslib';
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
 
 import esStrings from '../locale/es/LC_MESSAGES/timepoint_list.json';
 import frStrings from '../locale/fr/LC_MESSAGES/timepoint_list.json';
+import hiStrings from '../locale/hi/LC_MESSAGES/timepoint_list.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/timepoint_list.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/timepoint_list.json';
 
 declare const loris: {BaseURL: string};
+declare const $: (selector: string) => {DynamicTable: () => void};
+
+declare global {
+  interface Window {
+    lorisFetch?: typeof fetch,
+  }
+}
 
 type DisplayValue = boolean | null | number | string;
 
@@ -65,32 +72,6 @@ type TimepointListData = {
 };
 
 /**
- * HTTP client for the timepoint list page.
- */
-class TimepointListClient extends Http.Client<TimepointListData> {
-  /**
-   * Create a client for the timepoint list page.
-   */
-  constructor() {
-    super('timepoint_list');
-  }
-
-  /**
-   * Load the timepoint-list response.
-   *
-   * @param dataURL Timepoint-list JSON URL
-   * @return Timepoint-list data
-   */
-  getPage(dataURL: string): Promise<TimepointListData> {
-    return this.fetchJSON(new URL(dataURL), {
-      credentials: 'same-origin',
-      headers: {Accept: 'application/json'},
-      method: 'GET',
-    });
-  }
-}
-
-/**
  * Convert a value from the JSON response into table text.
  *
  * @param value Value to display
@@ -124,7 +105,7 @@ type CandidateInfoProps = Pick<
 /**
  * Render the candidate summary table.
  *
- * @param props Component properties
+ * @param {CandidateInfoProps} props Component properties
  * @return Candidate summary
  */
 function CandidateInfo({
@@ -175,7 +156,7 @@ type ActionsProps = Pick<TimepointListData, 'actions' | 'candID'>
 /**
  * Render the actions available for this candidate.
  *
- * @param props Component properties
+ * @param {ActionsProps} props Component properties
  * @return Candidate actions, when available
  */
 function Actions({actions, candID, t}: ActionsProps
@@ -236,7 +217,7 @@ type TimepointRowsProps = Pick<TimepointListData, 'candID' | 'timePoints'>
 /**
  * Render the visit rows.
  *
- * @param props Component properties
+ * @param {TimepointRowsProps} props Component properties
  * @return Visit rows
  */
 function TimepointRows({candID, timePoints, t}: TimepointRowsProps
@@ -350,7 +331,7 @@ type TimepointTableProps = Pick<TimepointListData, 'candID' | 'timePoints'>
 /**
  * Render the visit table.
  *
- * @param props Component properties
+ * @param {TimepointTableProps} props Component properties
  * @return Visit table
  */
 function TimepointTable({candID, timePoints, t}: TimepointTableProps
@@ -402,7 +383,7 @@ type TimepointListProps = WithTranslation & {
 /**
  * Load and render the timepoint list.
  *
- * @param props Component properties
+ * @param {TimepointListProps} props Component properties
  * @return Timepoint list page
  */
 function TimepointList({dataURL, t}: TimepointListProps): React.ReactElement {
@@ -410,11 +391,28 @@ function TimepointList({dataURL, t}: TimepointListProps): React.ReactElement {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const client = new TimepointListClient();
-    client.getPage(dataURL)
-      .then(setData)
+    const lorisFetch = window.lorisFetch ?? fetch;
+    lorisFetch(dataURL, {
+      credentials: 'same-origin',
+      headers: {Accept: 'application/json'},
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((responseData: TimepointListData) => setData(responseData))
       .catch(() => setError(true));
   }, [dataURL]);
+
+  useEffect(() => {
+    if (data !== null) {
+      // The legacy plugin must run after React has rendered both tables.
+      // eslint-disable-next-line no-jquery/no-jquery-constructor, no-jquery/no-other-methods
+      $('.dynamictable').DynamicTable();
+    }
+  }, [data]);
 
   if (error) {
     return (
@@ -450,6 +448,7 @@ function TimepointList({dataURL, t}: TimepointListProps): React.ReactElement {
 window.addEventListener('load', () => {
   i18n.addResourceBundle('es', 'timepoint_list', esStrings);
   i18n.addResourceBundle('fr', 'timepoint_list', frStrings);
+  i18n.addResourceBundle('hi', 'timepoint_list', hiStrings);
   i18n.addResourceBundle('ja', 'timepoint_list', jaStrings);
   i18n.addResourceBundle('zh', 'timepoint_list', zhStrings);
 
