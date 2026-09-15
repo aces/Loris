@@ -676,12 +676,10 @@ class Edit_User extends \NDB_Form
             unset($msg_data);
         }
         $this->tpl_data['success'] = true;
-        $username = $values['UserID'] ?? '';
-        if ($this->isCreatingNewUser()) {
-            $this->redirect = $baseURL
-                . "/user_accounts/edit_user/"
-                . $username;
-        }
+        $username = $values['UserID'] ?? $this->identifier ?? '';
+        $this->redirect = $baseURL
+            . "/user_accounts/edit_user/"
+            . rawurlencode($username);
     }
 
     /**
@@ -695,13 +693,22 @@ class Edit_User extends \NDB_Form
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $query = $request->getQueryParams();
+        if (($query['saved'] ?? null) === '1') {
+            $this->tpl_data['success'] = true;
+        }
         $this->tpl_data['isSelfEdit'] = $this->_isEditingOwnAccount();
 
         $response = parent::handle($request);
         if (!empty($this->redirect) && $this->format !== 'json') {
+            $query['saved'] = '1';
+            $location       = $this->redirect;
+            if (!empty($query)) {
+                $location .= '?' . http_build_query($query);
+            }
             return $response
                 ->withStatus(303)
-                ->withHeader("Location", $this->redirect);
+                ->withHeader("Location", $location);
         }
         return $response;
     }
@@ -1265,6 +1272,7 @@ class Edit_User extends \NDB_Form
             'isCreating'        => $this->isCreatingNewUser(),
             'isSelfEdit'        => $this->_isEditingOwnAccount(),
             'permissions'       => $permissions,
+            'success'           => $this->tpl_data['success'] ?? false,
             'supervisors'       => $supervisors,
         ];
     }

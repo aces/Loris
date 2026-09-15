@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {withTranslation, WithTranslation} from 'react-i18next';
 import swal from 'sweetalert2';
@@ -47,6 +47,7 @@ type EditUserData = {
   isCreating: boolean,
   isSelfEdit: boolean,
   permissions: Record<string, Permission[]>,
+  success: boolean,
   supervisors: Supervisor[],
 };
 
@@ -183,16 +184,13 @@ function PasswordField(props: PasswordFieldProps): React.ReactElement {
         />
         <button
           aria-label={props.field.label}
-          className="form-control-feedback btn btn-link"
+          className={`form-control-feedback btn btn-link glyphicon `
+            + `glyphicon-eye-${visible ? 'close' : 'open'}`}
           disabled={props.disabled}
           onClick={() => setVisible((current) => !current)}
-          style={{marginRight: '15px'}}
+          style={{marginRight: '15px', pointerEvents: 'auto'}}
           type="button"
-        >
-          <span
-            className={`glyphicon glyphicon-eye-${visible ? 'close' : 'open'}`}
-          />
-        </button>
+        />
         {props.error && <span className="help-block">{props.error}</span>}
       </div>
       {props.companion && <InlineCheckbox {...props.companion} />}
@@ -361,19 +359,17 @@ function FormFieldRow(props: FormFieldProps): React.ReactElement {
 function EditUserForm(props: EditUserFormProps): React.ReactElement {
   const data = props.data;
   const defaults = initialValues(data.fields);
+  const permissionDefaults = Object.fromEntries(
+    Object.values(data.permissions).flat().map(
+      (permission) => [permission.name, permission.checked]
+    )
+  ) as Record<string, boolean>;
+  const supervisorDefaults = Object.fromEntries(data.supervisors.map(
+    (supervisor) => [supervisor.name, supervisor.checked]
+  )) as Record<string, boolean>;
   const [values, setValues] = useState<Record<string, FieldValue>>(defaults);
-  const [permissionValues, setPermissionValues] = useState(
-    Object.fromEntries(
-      Object.values(data.permissions).flat().map(
-        (permission) => [permission.name, permission.checked]
-      )
-    ) as Record<string, boolean>
-  );
-  const [supervisorValues, setSupervisorValues] = useState(
-    Object.fromEntries(data.supervisors.map(
-      (supervisor) => [supervisor.name, supervisor.checked]
-    )) as Record<string, boolean>
-  );
+  const [permissionValues, setPermissionValues] = useState(permissionDefaults);
+  const [supervisorValues, setSupervisorValues] = useState(supervisorDefaults);
   const [expandedGroups, setExpandedGroups] = useState(
     new Set(Object.keys(data.permissions))
   );
@@ -382,6 +378,24 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
   const generatePassword = Boolean(values.NA_Password);
   const password = String(values.Password_hash ?? '');
   const confirmation = String(values.__Confirm ?? '');
+  const hasUnsavedChanges = JSON.stringify(values) !== JSON.stringify(defaults)
+    || JSON.stringify(permissionValues) !== JSON.stringify(permissionDefaults)
+    || JSON.stringify(supervisorValues) !== JSON.stringify(supervisorDefaults);
+
+  useEffect(() => {
+    if (data.success) {
+      void swal.fire({
+        text: props.t(
+          'User account saved successfully.',
+          {ns: 'user_accounts'}
+        ),
+        type: 'success',
+      });
+      const url = new URL(window.location.href);
+      url.searchParams.delete('saved');
+      window.history.replaceState(null, '', url);
+    }
+  }, [data.success, props.t]);
 
   /**
    * Update a field and apply the two legacy checkbox interactions.
@@ -411,14 +425,35 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
    */
   const resetForm = () => {
     setValues(defaults);
-    setPermissionValues(Object.fromEntries(
-      Object.values(data.permissions).flat().map(
-        (permission) => [permission.name, permission.checked]
-      )
-    ));
-    setSupervisorValues(Object.fromEntries(data.supervisors.map(
-      (supervisor) => [supervisor.name, supervisor.checked]
-    )));
+    setPermissionValues(permissionDefaults);
+    setSupervisorValues(supervisorDefaults);
+    window.scrollTo({behavior: 'smooth', top: 0});
+  };
+
+  /**
+   * Return to the user list after confirming any unsaved changes can be lost.
+   */
+  const backToUsers = () => {
+    if (!hasUnsavedChanges) {
+      window.location.href = `${loris.BaseURL}/user_accounts/`;
+      return;
+    }
+
+    void swal.fire({
+      cancelButtonText: props.t('Cancel', {ns: 'loris'}),
+      confirmButtonText: props.t('Back', {ns: 'loris'}),
+      showCancelButton: true,
+      text: props.t(
+        'Any unsaved changes will be lost.',
+        {ns: 'user_accounts'}
+      ),
+      title: props.t('Are you sure?', {ns: 'loris'}),
+      type: 'warning',
+    }).then((result) => {
+      if (result.value) {
+        window.location.href = `${loris.BaseURL}/user_accounts/`;
+      }
+    });
   };
 
   /**
@@ -482,6 +517,41 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
       return null;
     }
 
+    /**
+     * Translate a server-provided form string using both relevant catalogs.
+     *
+     * @param {string} text String to translate
+     * @return {string} Translated string
+     */
+    const translateText = (text: string): string => {
+      const trimmedText = text.trim();
+      const hasTrailingColon = trimmedText.endsWith(':');
+      const hasExactTranslation = props.i18n.exists(trimmedText, {
+        ns: 'user_accounts',
+      });
+      const key = hasTrailingColon && !hasExactTranslation
+        ? trimmedText.slice(0, -1)
+        : trimmedText;
+      const translation = props.t(key, {
+        defaultValue: props.t(key, {ns: 'loris'}),
+        ns: 'user_accounts',
+      });
+
+      return hasTrailingColon && key !== trimmedText
+        ? `${translation}:`
+        : translation;
+    };
+    const translatedField = {
+      ...field,
+      label: translateText(field.label),
+      options: Array.isArray(field.options)
+        ? field.options.map(translateText)
+        : Object.fromEntries(Object.entries(field.options).map(
+          ([value, label]) => [value, translateText(label)]
+        )),
+    };
+    const error = fieldError(data.errors, field.name);
+
     let disabled = data.isSelfEdit || field.disabled;
     let required = field.required;
     if (field.name === 'UserID') {
@@ -512,8 +582,8 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
 
     return {
       disabled,
-      error: fieldError(data.errors, field.name),
-      field,
+      error: error ? translateText(error) : '',
+      field: translatedField,
       onChange: updateField,
       required,
       validationMessage,
@@ -636,14 +706,28 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
         {renderField('__ConfirmEmail')}
         {renderField('CenterIDs')}
         {renderField('ProjectIDs')}
-        {renderField('examiner_sites')}
-        {renderField('examiner_radiologist')}
-        {renderField('examiner_pending')}
-        {renderField('Active')}
-        {renderField('active_from')}
-        {renderField('active_to')}
-        {renderField('account_request_date')}
-        {renderField('Pending_approval')}
+        <div className="panel panel-default">
+          <div className="panel-heading">
+            <strong>{props.t('Examiner Status', {ns: 'user_accounts'})}</strong>
+          </div>
+          <div className="panel-body">
+            {renderField('examiner_sites')}
+            {renderField('examiner_radiologist')}
+            {renderField('examiner_pending')}
+          </div>
+        </div>
+        <div className="panel panel-default">
+          <div className="panel-heading">
+            <strong>{props.t('Account Status', {ns: 'user_accounts'})}</strong>
+          </div>
+          <div className="panel-body">
+            {renderField('Active')}
+            {renderField('active_from')}
+            {renderField('active_to')}
+            {renderField('account_request_date')}
+            {renderField('Pending_approval')}
+          </div>
+        </div>
 
         <div className="row form-group">
           <label className="col-sm-2 control-label">
@@ -759,9 +843,7 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
         <div className="col-sm-2">
           <button
             className="btn btn-sm btn-primary"
-            onClick={() => {
-              window.location.href = `${loris.BaseURL}/user_accounts/`;
-            }}
+            onClick={backToUsers}
             type="button"
           >
             {props.t('Back', {ns: 'loris'})}
