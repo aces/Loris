@@ -78,6 +78,7 @@ const lorisModules: Record<string, string[]> = {
   statistics: ['WidgetIndex'],
   instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
   candidate_profile: ['CandidateInfo'],
+  timepoint_list: ['timepointList'],
   schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
