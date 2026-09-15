@@ -1,6 +1,23 @@
 import {FullDictionary} from './types';
 
 /**
+ * Parses string to remove HTML tags and return raw text
+ *
+ * @param {string} html - input string
+ * @returns {string} - parsed string
+ */
+function stripHTML(html: string): string {
+  if (!html) return '';
+
+  if (!/<[^>]+>/.test(html)) {
+    return html;
+  }
+
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || html.replace(/<\/?[a-zA-Z][^>]*>?/gm, '');
+}
+
+/**
  * Get the dictionary for a given term
  *
  * @param {string} module - the module
@@ -23,7 +40,8 @@ function getDictionaryDescription(
     return fieldname;
   }
 
-  return dict[module][category][fieldname].description;
+  const desc = dict[module][category][fieldname].description;
+  return stripHTML(desc);
 }
 
 export default getDictionaryDescription;

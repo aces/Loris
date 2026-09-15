@@ -11,6 +11,7 @@ import {QueryGroup} from './querydef';
 import {FullDictionary, FieldDictionary} from './types';
 import {calcPayload} from './calcpayload';
 import getDictionaryDescription from './getdictionarydescription';
+import '../css/viewdata.css';
 
 type TableRow = (string|null)[];
 
@@ -384,7 +385,10 @@ function ViewData(props: {
           rowNumLabel={t('Row Number')}
           fields={organizedData.headers.map(
             (val: string) => {
-              return {show: true, label: val};
+              return {
+                show: true,
+                label: <div className="header-text">{val}</div>,
+              };
             })
           }
           data={organizedData.data}
@@ -436,7 +440,7 @@ function ViewData(props: {
       }
     />
     : <div />);
-  return <div>
+  return <div className='dataquery-view-container'>
     <SelectElement
       name='headerdisplay'
       options={{

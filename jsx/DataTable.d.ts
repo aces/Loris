@@ -5,7 +5,7 @@ type TableRow = (string|null)[]
 
 type Field = {
     show: boolean
-    label: string
+    label: string | ReactNode
 }
 
 type hideOptions = {
