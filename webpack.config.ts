@@ -82,6 +82,7 @@ const lorisModules: Record<string, string[]> = {
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],
   my_preferences: ['mfa'],
+  policy_tracker: ['policyTrackerIndex'],
 };
 
 /*
