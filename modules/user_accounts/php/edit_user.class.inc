@@ -676,7 +676,7 @@ class Edit_User extends \NDB_Form
             unset($msg_data);
         }
         $this->tpl_data['success'] = true;
-        $username = $values['UserID'] ?? $this->identifier ?? '';
+        $username       = $values['UserID'] ?? $this->identifier ?? '';
         $this->redirect = $baseURL
             . "/user_accounts/edit_user/"
             . rawurlencode($username);
