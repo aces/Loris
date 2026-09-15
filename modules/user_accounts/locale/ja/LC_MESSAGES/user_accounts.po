@@ -216,3 +216,12 @@ msgstr "この操作は取り消せません。"
 
 msgid "Yes, reject user!"
 msgstr "はい、ユーザーを拒否します！"
+
+msgid "User account saved successfully."
+msgstr "ユーザーアカウントが正常に保存されました。"
+
+msgid "Any unsaved changes will be lost."
+msgstr "保存されていない変更はすべて失われます。"
+
+msgid "Account Status"
+msgstr "アカウントのステータス"

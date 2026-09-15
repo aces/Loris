@@ -225,3 +225,12 @@ msgstr "Cette action ne peut pas être annulée."
 
 msgid "Yes, reject user!"
 msgstr "Oui, rejeter l’utilisateur !"
+
+msgid "User account saved successfully."
+msgstr "Le compte utilisateur a été enregistré avec succès."
+
+msgid "Any unsaved changes will be lost."
+msgstr "Toute modification non enregistrée sera perdue."
+
+msgid "Account Status"
+msgstr "Statut du compte"
