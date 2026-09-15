@@ -188,37 +188,15 @@ class Expired extends \NDB_Page implements ETagCalculator
                 if ($response->getStatusCode() !== 200) {
                     return $response;
                 }
-                $user->updatePassword(
-                    new \Password(
-                        $plaintext
-                    )
+
+                $this->_updatePasswordAndTokens(
+                    $user,
+                    new \Password($plaintext),
+                    $db,
+                    $_SESSION['PasswordResetToken'],
+                    (int) $_SESSION['PasswordResetUserID']
                 );
-                // Mark the token that successfully reset the password as 'Used'
-                $db->update(
-                    'user_password_reset',
-                    ['Status' => 'Used'],
-                    [
-                        'ResetToken' => $_SESSION['PasswordResetToken'],
-                    ]
-                );
-                // Invalidate all other active tokens for this user by marking them
-                // as 'Superseded'
-                $stmt = $db->prepare(
-                    "UPDATE user_password_reset
-                        SET Status = 'Superseded'
-                    WHERE UserID = :userID
-                        AND ResetToken <> :token
-                        AND Status IS NULL
-                        AND CreationDate >= NOW() - INTERVAL "
-                        . self::TOKEN_EXPIRATION_MINUTES
-                        . " MINUTE"
-                );
-                $stmt->execute(
-                    [
-                        ':userID' => $_SESSION['PasswordResetUserID'],
-                        ':token'  => $_SESSION['PasswordResetToken']
-                    ]
-                );
+
                 unset($_SESSION['PasswordExpiredForUser']);
                 unset($_SESSION['PasswordResetToken']);
                 unset($_SESSION['PasswordResetUserID']);
@@ -226,6 +204,8 @@ class Expired extends \NDB_Page implements ETagCalculator
                 return new \LORIS\Http\Response\JSON\Conflict(
                     $e->getMessage()
                 );
+            } catch (\DatabaseException $e) {
+                return new \LORIS\Http\Response\JSON\InternalServerError();
             }
         } else {
             return new \LORIS\Http\Response\JSON\Conflict(
@@ -235,6 +215,64 @@ class Expired extends \NDB_Page implements ETagCalculator
         return new \LORIS\Http\Response\JsonResponse(
             $values
         );
+    }
+
+    /**
+     * Updates the user's password and invalidates their password reset tokens.
+     *
+     * @param \User     $user     User whose password is being reset
+     * @param \Password $password New password
+     * @param \Database $db       Database connection
+     * @param string    $token    Password reset token being used
+     * @param int       $userID   User ID associated with the reset token
+     *
+     * @return void
+     */
+    private function _updatePasswordAndTokens(
+        \User $user,
+        \Password $password,
+        \Database $db,
+        string $token,
+        int $userID
+    ): void {
+        $db->beginTransaction();
+
+        try {
+            $user->updatePassword($password);
+
+            // Mark the token that successfully reset the password as 'Used'.
+            $db->update(
+                'user_password_reset',
+                ['Status' => 'Used'],
+                ['ResetToken' => $token]
+            );
+
+            // Invalidate all other active tokens for this user.
+            $stmt = $db->prepare(
+                "UPDATE user_password_reset
+                    SET Status = 'Superseded'
+                WHERE UserID = :userID
+                    AND ResetToken <> :token
+                    AND Status IS NULL
+                    AND CreationDate >= NOW() - INTERVAL "
+                    . self::TOKEN_EXPIRATION_MINUTES
+                    . " MINUTE"
+            );
+            $stmt->execute(
+                [
+                    ':userID' => $userID,
+                    ':token'  => $token,
+                ]
+            );
+
+            $db->commit();
+        } catch (\Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+
+            throw $e;
+        }
     }
 
     /**
