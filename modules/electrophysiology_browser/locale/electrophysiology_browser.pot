@@ -77,10 +77,16 @@ msgid "Data Authors"
 msgstr ""
 
 # Filters
+msgid "High Pass Filter"
+msgstr ""
+
 msgid "No High Pass Filter"
 msgstr ""
 
 msgid "High Pass {{frequency}}Hz"
+msgstr ""
+
+msgid "Low Pass Filter"
 msgstr ""
 
 msgid "No Low Pass Filter"
@@ -299,7 +305,19 @@ msgstr ""
 msgid "Select All"
 msgstr ""
 
-msgid "Electrode Map"
+msgid "Sensor Map"
+msgstr ""
+
+msgid "Sensor Types"
+msgstr ""
+
+msgid "EEG Electrode"
+msgstr ""
+
+msgid "MEG Sensor"
+msgstr ""
+
+msgid "Head Shape Point"
 msgstr ""
 
 msgid "Show indices"
@@ -592,7 +610,7 @@ msgstr ""
 msgid "Electrical Stimulation Parameters"
 msgstr ""
 
-msgid "EEG File(s)"
+msgid "Acquisition File"
 msgstr ""
 
 msgid "Electrodes"

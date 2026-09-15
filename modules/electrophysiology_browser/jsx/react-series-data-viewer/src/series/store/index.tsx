@@ -7,7 +7,6 @@ import {currentAnnotationReducer} from './state/currentAnnotation';
 import {cursorReducer} from './state/cursor';
 import {panelReducer} from './state/rightPanel';
 import {timeSelectionReducer} from './state/timeSelection';
-import {montageReducer} from './state/montage';
 import {channelsReducer} from './state/channels';
 import {createDragBoundsEpic} from './logic/dragBounds';
 import {createTimeSelectionEpic} from './logic/timeSelection';
@@ -35,7 +34,6 @@ export const rootReducer = combineReducers({
   cursor: cursorReducer,
   rightPanel: panelReducer,
   timeSelection: timeSelectionReducer,
-  montage: montageReducer,
   channels: channelsReducer,
 });
 
@@ -71,8 +69,8 @@ export const rootEpic = combineEpics(
     return {epochs};
   }),
   createCursorInteractionEpic(({cursor}) => {
-    const {hoveredChannels} = cursor;
-    return {hoveredChannels};
+    const {hoveredChannels, setHoveredChannels} = cursor;
+    return {hoveredChannels, setHoveredChannels};
   }),
 );
 

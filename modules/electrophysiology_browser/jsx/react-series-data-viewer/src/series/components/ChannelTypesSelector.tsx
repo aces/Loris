@@ -1,6 +1,8 @@
 import {useCallback} from "react";
 import {useTranslation} from "react-i18next";
 import {ChannelTypeState} from "./SeriesRenderer";
+import MultiSelectDropdownButton
+  from "../../../../common/MultiSelectDropdownButton";
 
 /**
  * Component that displays the list of channel types present in the acquisition and
@@ -27,38 +29,17 @@ const ChannelTypesSelector = ({channelTypes, setChannelTypes}: {
   }, [setChannelTypes]);
 
   return (
-    <div style={{position: 'relative'}}>
-      <button className="btn btn-primary dropdown" data-toggle="dropdown">
-        {t('Channel Types')}
-      </button>
-      <ul className="dropdown-menu">
-        {Object.entries(channelTypes).map(([name, {visible, channelsCount}]) => (
-          <li
-            key={name}
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              padding: '0.75rem 1.5rem',
-            }}
-            onClick={(e) => {
-              toggleChannelType(name);
-              e.stopPropagation();
-            }}
-          >
-            <span>{name} ({channelsCount})</span>
-            <input
-              type="checkbox"
-              checked={visible || false}
-              onClick={
-                // Do not collapse the dropdown on click.
-                (e) => e.stopPropagation()
-              }
-              onChange={() => toggleChannelType(name)}
-            />
-          </li>
-        ))}
-      </ul>
-    </div>
+    <MultiSelectDropdownButton
+      label={t('Channel Types')}
+      align="right"
+      options={Object.entries(channelTypes).map(([name, {visible, channelsCount}]) => ({
+        key: name,
+        value: name,
+        label: `${name} (${channelsCount})`,
+        selected: visible || false,
+      }))}
+      onToggle={toggleChannelType}
+    />
   );
 }
 

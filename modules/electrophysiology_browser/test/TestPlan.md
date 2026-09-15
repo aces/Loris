@@ -37,8 +37,8 @@
 20. Test all the buttons on the interface to ensure they perform the action that the  [react-series-data-viewer README](../jsx/react-series-data-viewer/README.md#Signal Viewer) states it will perform.
 21. Hover over a signal to ensure it responds to being hovered. It should change to a color and its value should be displayed below the signal plot.
 22. Ensure that 'Stacked View' and 'Isolate Mode' behave as stateed in the [react-series-data-viewer README](../jsx/react-series-data-viewer/README.md).
-23. Ensure that the electrodes on the 'Electrode Map' 2D view are visible and their index can be hovered to reveal their channel name.
-24. Ensure that the electrodes on the 'Electrode Map' 3D view are visible and the mesh can be manipulated/rotated with the mouse.
+23. Ensure that the sensors on the 'Sensor Map' 2D view are visible and their index can be hovered to reveal their channel name.
+24. Ensure that the sensors on the 'Sensor Map' 3D view are visible and the mesh can be manipulated/rotated with the mouse.
 
 _For extra credit: Verify LORIS Menu permissions_
 User can view the top-level LORIS Menu _Electrophysiology_ and Menu item : _Electrophysiology Browser_ if and only if user has either permission:

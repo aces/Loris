@@ -4,6 +4,8 @@
     "version": "1.0.0",
     "description": "react-series-data-viewer React component",
     "dependencies": {
+        "@react-three/drei": "^9.122.0",
+        "@react-three/fiber": "^8.18.0",
         "@visx/axis": "^3.0.0",
         "@visx/group": "^2.10.0",
         "@visx/responsive": "^2.10.0",
@@ -27,6 +29,7 @@
         "redux-thunk": "^2.3.0",
         "resize-observer-polyfill": "^1.5.0",
         "rxjs": "^6.6.3",
+        "three": "^0.184.0",
         "tslib": "^1.9.3"
     },
     "devDependencies": {

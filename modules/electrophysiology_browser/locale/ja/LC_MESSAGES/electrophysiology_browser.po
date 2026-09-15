@@ -77,17 +77,23 @@ msgid "Data Authors"
 msgstr "データ作成者"
 
 # Filters
+msgid "High Pass Filter"
+msgstr "ハイパスフィルター"
+
 msgid "No High Pass Filter"
 msgstr "ハイパスフィルターなし"
 
 msgid "High Pass {{frequency}}Hz"
-msgstr "ハイパス {{frequenency}}Hz"
+msgstr "ハイパス {{frequency}}Hz"
+
+msgid "Low Pass Filter"
+msgstr "ローパスフィルター"
 
 msgid "No Low Pass Filter"
 msgstr "ローパスフィルターなし"
 
 msgid "Low Pass {{frequency}}Hz"
-msgstr "ローパス {{frequenency}}Hz"
+msgstr "ローパス {{frequency}}Hz"
 
 # SeriesRenderer
 msgid "Close Panel"
@@ -299,8 +305,20 @@ msgstr "何も選択しない"
 msgid "Select All"
 msgstr "すべて選択"
 
-msgid "Electrode Map"
-msgstr "電極マップ"
+msgid "Sensor Map"
+msgstr "センサーマップ"
+
+msgid "Sensor Types"
+msgstr "センサータイプ"
+
+msgid "EEG Electrode"
+msgstr "EEG電極"
+
+msgid "MEG Sensor"
+msgstr "MEGセンサー"
+
+msgid "Head Shape Point"
+msgstr "頭部形状点"
 
 msgid "Show indices"
 msgstr "インデックスを表示"
@@ -592,8 +610,8 @@ msgstr "電気刺激"
 msgid "Electrical Stimulation Parameters"
 msgstr "電気刺激パラメータ"
 
-msgid "EEG File(s)"
-msgstr "脳波計ファイル"
+msgid "Acquisition File"
+msgstr "収録ファイル"
 
 msgid "Electrodes"
 msgstr "電極"

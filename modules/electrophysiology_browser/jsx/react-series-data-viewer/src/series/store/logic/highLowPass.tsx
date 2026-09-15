@@ -16,6 +16,55 @@ export const setHighPassFilter = createAction(SET_HIGH_PASS_FILTER);
 
 export type Action = (_: (_: any) => void) => void;
 
+const LOW_PASS_FILTER_KEYS_BY_FREQUENCY: Record<number, string> = {
+  15: 'lopass15',
+  20: 'lopass20',
+  30: 'lopass30',
+  40: 'lopass40',
+  60: 'lopass60',
+};
+
+const HIGH_PASS_FILTER_KEYS_BY_FREQUENCY: Record<number, string> = {
+  0.5: 'hipass0_5',
+  1: 'hipass1',
+  5: 'hipass5',
+  10: 'hipass10',
+};
+
+/**
+ * Return the legacy low pass filter key for a frequency.
+ */
+export function getLowPassFilterKey(frequency?: number): string {
+  return frequency === undefined
+    ? 'none'
+    : LOW_PASS_FILTER_KEYS_BY_FREQUENCY[frequency] ?? 'none';
+}
+
+/**
+ * Return the legacy high pass filter key for a frequency.
+ */
+export function getHighPassFilterKey(frequency?: number): string {
+  return frequency === undefined
+    ? 'none'
+    : HIGH_PASS_FILTER_KEYS_BY_FREQUENCY[frequency] ?? 'none';
+}
+
+/**
+ * Return the optional low pass frequency for a legacy filter key.
+ */
+export function getLowPassFilterFrequency(key: string): number | undefined {
+  const frequency = LOW_PASS_FILTERS[key]?.frequency ?? 0;
+  return frequency === 0 ? undefined : frequency;
+}
+
+/**
+ * Return the optional high pass frequency for a legacy filter key.
+ */
+export function getHighPassFilterFrequency(key: string): number | undefined {
+  const frequency = HIGH_PASS_FILTERS[key]?.frequency ?? 0;
+  return frequency === 0 ? undefined : frequency;
+}
+
 /**
  * applyFilter
  *

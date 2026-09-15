@@ -1,9 +1,9 @@
-import {MutableRefObject} from 'react';
+import React, {MutableRefObject} from 'react';
 
 export type Chunk = {
   index: number,
-  originalValues: number[],
-  values: number[],
+  originalValues: Float32Array,
+  values: Float32Array,
   filters: string[],
   downsampling: number,
   interval: [number, number],
@@ -65,7 +65,10 @@ export type CoordinateSystem = {
   description: string | 'n/a'
 };
 
-export type Electrode = {
+export type SensorType = 'electrode' | 'meg-sensor' | 'head-shape-point';
+
+export type Sensor = {
+  type: SensorType,
   name: string,
   channelIndex?: number,
   position: [number, number, number],
@@ -74,6 +77,9 @@ export type Electrode = {
 export type Cursor = {
   cursorPosition: [number, number] | null,
   viewerRef: MutableRefObject<any> | null,
+  // Hack to pass the hovered channels context to the Rx legacy "system".
+  hoveredChannels: number[],
+  setHoveredChannels: React.Dispatch<React.SetStateAction<number[]>>,
 };
 
 export type HEDSchemaElement = {

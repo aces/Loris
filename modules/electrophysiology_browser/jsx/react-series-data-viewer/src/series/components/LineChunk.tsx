@@ -31,7 +31,12 @@ const LineMemo = R.memoizeWith(
     numChunks,
     previousPoint,
     ...rest
-   }) => {
+   }: {
+    values: Float32Array,
+    DCOffset: number,
+    filters: string[],
+    interval: [number, number],
+   } & CProps) => {
     const scales = [
       scaleLinear()
         .domain(interval)
@@ -52,16 +57,16 @@ const LineMemo = R.memoizeWith(
         )
     ];
 
-    points.push(
-      ...values.map((value, i) =>
+    for (let i = 0; i < values.length; i++) {
+      points.push(
         vec2.fromValues(
           scales[0](
             interval[0] + (i / values.length) * (interval[1] - interval[0])
           ),
-          -(scales[1](value) - DCOffset)
+          -(scales[1](values[i]) - DCOffset)
         )
-      )
-    );
+      );
+    }
 
     return (
       <LinePath

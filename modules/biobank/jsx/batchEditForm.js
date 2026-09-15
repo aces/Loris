@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
 import SpecimenProcessForm from './processForm';
 import {VerticalTabs, TabPane} from 'Tabs';
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import Loader from 'Loader';
 import {mapFormOptions, clone, isEmpty} from './helpers.js';
 import {
@@ -484,11 +484,12 @@ class BatchEditForm extends React.PureComponent {
     ) : null;
 
     return (
-      <Modal
+      <FormModal
         title={t('Edit Specimens', {ns: 'biobank'})}
         show={this.props.show}
         onClose={handleClose}
-        onSubmit={Object.keys(list).length > 1 && handleSubmit}
+        onSubmit={handleSubmit}
+        submitDisabled={Object.keys(list).length <= 1}
         throwWarning={true}
       >
         <div className='row'>
@@ -533,7 +534,7 @@ class BatchEditForm extends React.PureComponent {
             {editForms}
           </div>
         </div>
-      </Modal>
+      </FormModal>
     );
   }
 }
