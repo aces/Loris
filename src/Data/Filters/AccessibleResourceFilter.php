@@ -36,14 +36,6 @@ class AccessibleResourceFilter implements \LORIS\Data\Filter
      */
     public function filter(\User $user, \Loris\Data\DataInstance $resource) : bool
     {
-        if (!($resource instanceof \LORIS\StudyEntities\AccessibleResource)) {
-            if ($this->defaultReturn === null) {
-                throw new \LorisException(
-                    "Resource is not an AccessibleResource instance"
-                );
-            }
-            return $this->defaultReturn;
-        }
         return $resource->isAccessibleBy($user);
     }
 }
