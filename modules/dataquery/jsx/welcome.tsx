@@ -158,7 +158,7 @@ function Welcome(props: {
         <CTA
           label={t('Continue to Define Fields', {ns: 'dataquery'})}
           onUserInput={props.onContinue}
-          buttonClass="btn btn-primary dqt-welcome-cta"
+          buttonClass="btn btn-primary dataquery-welcome-cta"
         />
       </div>
       <ExpansionPanels panels={panels} />
