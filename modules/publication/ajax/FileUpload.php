@@ -638,13 +638,16 @@ function editProject() : void
             ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
         );
     }
-
-    editEditors($id);
-    editCollaborators($id);
-    editKeywords($id);
-    editVOIs($id);
-    editUploads($id);
-    processFiles($id);
+    try {
+        editEditors($id);
+        editCollaborators($id);
+        editKeywords($id);
+        editVOIs($id);
+        editUploads($id);
+        processFiles($id);
+    } catch (Exception $e) {
+        showPublicationError($e->getMessage(), 500);
+    }
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
         notify($id, 'review');
@@ -936,7 +939,7 @@ function editUploads($id) : void
         $ver = $_POST[$versionIndex] ?? null;
 
         if (htmlspecialchars(
-            $cit,
+            $cit ?? '',
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
@@ -945,7 +948,7 @@ function editUploads($id) : void
             $toUpdate[$puid]['Citation'] = $cit;
         }
         if (htmlspecialchars(
-            $ver,
+            $ver ?? '',
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
