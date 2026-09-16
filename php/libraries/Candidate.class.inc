@@ -995,7 +995,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = self::templateToPCRE(
+        $regex         = self::structureToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev,
             $projectAbbrev
@@ -1181,23 +1181,26 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
-     * Transforms an identifier template (such as PSCID) into a
-     * Perl-compatible regex expression for validation.
+     * Transforms a config structure (such as in PSCID) into a
+     * Perl-compatible regex expression for validation
      *
-     * @param string      $template      The identifier template
-     * @param string|null $siteAbbrev    The site abbreviation, sometimes used as
-     *                                   part of the identifier
-     * @param string|null $projectAbbrev The project abbreviation, sometimes used
-     *                                   as part of the identifier
+     * @param string      $structure     the identifier template
+     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
+     *                                   part of the PSCID
+     * @param string|null $projectAbbrev the project abbreviation
      *
-     * @return string The regex pattern
+     * @return string the regex pattern
+     *
+     * @note    This should probably be moved to the Candidate class, since it's
+     *       only used there to validate the PSCID
+     * @cleanup
      */
-    static function templateToPCRE(
-        string $template,
+    static function structureToPCRE(
+        string  $structure,
         ?string $siteAbbrev = null,
         ?string $projectAbbrev = null
     ): string {
-        $regex = preg_quote($template, '/');
+        $regex = preg_quote($structure, '/');
 
         $regex = str_replace(
             preg_quote('{SITE:ALIAS}', '/'),

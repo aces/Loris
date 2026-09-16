@@ -1096,75 +1096,75 @@ class CandidateTest extends TestCase
     }
 
     /**
-     * Test that templateToPCRE returns the regex form of the given template.
+     * Test that structureToPCRE returns the regex form of the given structure.
      * This test covers the different supported generation formats.
      *
-     * @covers Candidate::templateToPCRE
+     * @covers Candidate::structureToPCRE
      * @return void
      */
-    public function testTemplateToPCRE()
+    public function testStructureToPCRE()
     {
         $this->assertEquals(
             '/^TEST\-[0-9]{4}$/i',
-            Candidate::templateToPCRE(
+            Candidate::structureToPCRE(
                 'TEST-{SEQUENCE:4}'
             )
         );
 
         $this->assertEquals(
             '/^NUM\-[0-9]{4}$/i',
-            Candidate::templateToPCRE(
+            Candidate::structureToPCRE(
                 'NUM-{SEQUENCE:4,FORMAT:numeric}'
             )
         );
 
         $this->assertEquals(
             '/^ALPHA\-[A-Z]{4}$/i',
-            Candidate::templateToPCRE(
+            Candidate::structureToPCRE(
                 'ALPHA-{SEQUENCE:4,FORMAT:alpha}'
             )
         );
 
         $this->assertEquals(
             '/^ALPHANUM\-[0-9A-Z]{4}$/i',
-            Candidate::templateToPCRE(
+            Candidate::structureToPCRE(
                 'ALPHANUM-{SEQUENCE:4,FORMAT:alphanumeric}'
             )
         );
 
         $this->assertEquals(
             '/^RAND\-[0-9]{4}$/i',
-            Candidate::templateToPCRE(
+            Candidate::structureToPCRE(
                 'RAND-{RANDOM:4,FORMAT:numeric}'
             )
         );
 
         $this->assertEquals(
             '/^RANDALPHA\-[A-Z]{4}$/i',
-            Candidate::templateToPCRE(
+            Candidate::structureToPCRE(
                 'RANDALPHA-{RANDOM:4,FORMAT:alpha}'
             )
         );
 
         $this->assertEquals(
             '/^RANDALPHANUM\-[0-9A-Z]{4}$/i',
-            Candidate::templateToPCRE(
+            Candidate::structureToPCRE(
                 'RANDALPHANUM-{RANDOM:4,FORMAT:alphanumeric}'
             )
         );
     }
 
     /**
-     * Test templateToPCRE with the site and project abbreviations set
+     * Test structureToPCRE with the site and project abbreviations set
      *
-     * @covers Candidate::templateToPCRE
+     * @covers Candidate::structureToPCRE
      * @return void
      */
-    public function testTemplateToPCREWithAbbreviations()
+    public function testStructureToPCREWithAbbreviations()
     {
         $this->assertEquals(
             '/^MTL[0-9]{4}$/i',
-            Candidate::templateToPCRE(
+            Candidate::structureToPCRE(
                 '{SITE:ALIAS}{SEQUENCE:4}',
                 'MTL'
             )
@@ -1172,7 +1172,7 @@ class CandidateTest extends TestCase
 
         $this->assertEquals(
             '/^P1[0-9]{4}$/i',
-            Candidate::templateToPCRE(
+            Candidate::structureToPCRE(
                 '{PROJECT:ALIAS}{SEQUENCE:4}',
                 null,
                 'P1'
