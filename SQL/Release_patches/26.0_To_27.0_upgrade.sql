@@ -516,6 +516,10 @@ ALTER TABLE family ADD CONSTRAINT FK_family_candidate_1 FOREIGN KEY (CandidateID
 
 -- Change candidate's PK to ID
 ALTER TABLE candidate DROP PRIMARY KEY, ADD PRIMARY KEY(ID);
+
+-- CandIDGenerator uses length of 10 unsigned int, this modifies table to avoid out of range generations
+ALTER TABLE candidate MODIFY CandID INT(10) unsigned NOT NULL;
+
 ALTER TABLE permissions CHANGE `action` `action` enum (
       'Close',
       'Create',
@@ -573,7 +577,9 @@ VALUES ('view_instrument_data', 'Data',
 (SELECT ID FROM modules WHERE Name = 'instruments'), 'View', 2);
 INSERT IGNORE INTO user_perm_rel (userID, permID) 
 SELECT users.ID, permissions.permID FROM users 
-CROSS JOIN permissions WHERE users.userID='admin';CREATE TABLE `openid_connect_providers` (
+CROSS JOIN permissions WHERE users.userID='admin';
+
+CREATE TABLE `openid_connect_providers` (
     `OpenIDProviderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `Name` varchar(255) NOT NULL,
     `BaseURI` text NOT NULL, -- the provider's base uri that hosts .well-known/openid-configuration
