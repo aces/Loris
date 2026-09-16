@@ -1097,7 +1097,7 @@ class CandidateTest extends TestCase
 
     /**
      * Test that structureToPCRE returns the regex form of the given structure.
-     * This test covers the different supported generation formats.
+     * This test covers the different cases of the function.
      *
      * @covers Candidate::structureToPCRE
      * @return void
