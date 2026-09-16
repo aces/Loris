@@ -638,13 +638,16 @@ function editProject() : void
             ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
         );
     }
-
-    editEditors($id);
-    editCollaborators($id);
-    editKeywords($id);
-    editVOIs($id);
-    editUploads($id);
-    processFiles($id);
+    try {
+        editEditors($id);
+        editCollaborators($id);
+        editKeywords($id);
+        editVOIs($id);
+        editUploads($id);
+        processFiles($id);
+    } catch (Exception $e) {
+        showPublicationError($e->getMessage(), 500);
+    }
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
         notify($id, 'review');
