@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * Unit test for PSCIDGenerator class
+ * Unit test for SiteIDGenerator class
  *
  * PHP Version 8
  *
@@ -15,7 +15,7 @@
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit test for PSCIDGenerator class
+ * Unit test for SiteIDGenerator class
  *
  * @category Tests
  * @package  Main
@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class PSCIDGeneratorTest extends TestCase
+class SiteIDGeneratorTest extends TestCase
 {
     /**
      * NDB_Factory used in tests.
@@ -84,7 +84,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test sequential generation using the default numeric format
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testSequentialDefaultNumeric()
@@ -116,7 +116,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test sequential generation across a numeric boundary.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testSequentialNumericBoundary()
@@ -148,7 +148,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test sequential alpha generation using the default minimum value.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testSequentialDefaultAlpha()
@@ -181,7 +181,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test sequential alpha generation across a character boundary.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testSequentialAlphaBoundary()
@@ -213,7 +213,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test sequential alpha generation near the default maximum value.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testAlphaDefaultMax()
@@ -246,7 +246,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test that sequential alpha generation fails at the default maximum.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testAlphaDefaultMaxExceeded()
@@ -281,7 +281,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test random numeric generation.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testRandomNumeric()
@@ -313,7 +313,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test random alpha generation.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testRandomAlpha()
@@ -345,7 +345,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test random alphanumeric generation.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testRandomAlphanumeric()
@@ -378,7 +378,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test sequential numeric generation with custom padding.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testNumericPadding()
@@ -411,7 +411,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test that invalid numeric padding throws an exception.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testInvalidNumericPadding()
@@ -444,7 +444,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test sequential alpha generation with custom padding.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testAlphaPadding()
@@ -477,7 +477,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test sequential generation with minimum and maximum values.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testMinMax()
@@ -512,7 +512,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test sequential generation with a site alias.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testSiteAlias()
@@ -545,7 +545,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test sequential generation with a project alias.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testProjectAlias()
@@ -581,7 +581,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test that sequential generation with a random template throws an exception.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testSequentialRandomMismatch()
@@ -611,7 +611,7 @@ class PSCIDGeneratorTest extends TestCase
     /**
      * Test that random generation with a sequential template throws an exception.
      *
-     * @covers PSCIDGenerator
+     * @covers SiteIDGenerator
      * @return void
      */
     public function testRandomSequentialMismatch()
