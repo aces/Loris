@@ -8,9 +8,7 @@
 /* Override help panel width - make it wider for dataquery module */
 .help-content {
     width: 380px;
-    left: auto;
-    right: 0;
-    transform: translateX(0);
+    left: -60px;
 }
 
 /* On smaller screens, make it responsive */
