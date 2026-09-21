@@ -45,6 +45,14 @@
    18. Go back to `LORIS main page`.
    19. Assert that: `pinned queries` are available in the right side `Study Queries` panel.
    20. Assert that: clinking on any `study query` send you back to dataquery module with the selected query loaded (bottom-right panel already with the `Run Query` button active).
+6. Loading a saved query does not change it
+   1. Load a named, shared or pinned query from the welcome page.
+   2. Without naming the query, add a field, change the visits of a field, add a filter, remove a filter, and add a nested condition group.
+   3. Go back to the welcome page.
+   4. Assert that: the saved query still shows its original fields and filters in every panel it appears in.
+   5. Run the modified query, then go back to the welcome page.
+   6. Assert that: the saved query is unchanged, and the modified query appears as a new, unnamed entry in `Recent Queries`.
+   7. Reload the page and repeat 6.4.
 
 ## Fields selection page
 

@@ -86,4 +86,28 @@ export class QueryGroup {
       const newOp = this.operator == 'and' ? 'or' : 'and';
       this.group.push(new QueryGroup(newOp));
     }
+
+    /**
+     * Returns a deep copy of this group, so that edits to the copy
+     * do not change this group.
+     *
+     * @returns {QueryGroup} - the copy
+     */
+    clone(): QueryGroup {
+      const copy = new QueryGroup(this.operator);
+      copy.group = this.group.map((item) => {
+        if (item instanceof QueryGroup) {
+          return item.clone();
+        }
+        return new QueryTerm(
+          item.module,
+          item.category,
+          item.fieldname,
+          item.op,
+          Array.isArray(item.value) ? [...item.value] : item.value,
+          item.visits ? [...item.visits] : undefined,
+        );
+      });
+      return copy;
+    }
 }

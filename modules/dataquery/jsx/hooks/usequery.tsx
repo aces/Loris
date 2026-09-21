@@ -132,11 +132,11 @@ function useQuery(): useQueryReturnType {
     fields: APIQueryField[],
     filters: QueryGroup|null
   ): void => {
-    setFields(fields);
+    setFields(fields.map((field) => ({...field})));
     if (!filters) {
       setCriteria(new QueryGroup('and'));
     } else {
-      setCriteria(filters);
+      setCriteria(filters.clone());
     }
   };
   const fieldActions: FieldActions = {
@@ -206,7 +206,7 @@ function useQuery(): useQueryReturnType {
 
       for (let i = 0; i < newfields.length; i++) {
         if (equalField(newfields[i])) {
-          newfields[i].visits = visits;
+          newfields[i] = {...newfields[i], visits: visits};
           setFields(newfields);
           return;
         }
