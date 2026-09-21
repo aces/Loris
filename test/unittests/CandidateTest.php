@@ -1190,42 +1190,42 @@ class CandidateTest extends TestCase
     public function testStructureToPattern(): void
     {
         $this->assertSame(
-            'TEST-####',
+            'TEST-####, where # represents a number (0-9).',
             Candidate::structureToPattern(
                 'TEST-{SEQUENCE:4}'
             )
         );
 
         $this->assertSame(
-            'NUM-####',
+            'NUM-####, where # represents a number (0-9).',
             Candidate::structureToPattern(
                 'NUM-{SEQUENCE:4,FORMAT:numeric}'
             )
         );
 
         $this->assertSame(
-            'ALPHA-AAAA',
+            'ALPHA-####, where # represents a letter (A-Z).',
             Candidate::structureToPattern(
                 'ALPHA-{SEQUENCE:4,FORMAT:alpha}'
             )
         );
 
         $this->assertSame(
-            'ALPHANUM-XXXX',
+            'ALPHANUM-####, where # represents a number (0-9) or letter (A-Z).',
             Candidate::structureToPattern(
                 'ALPHANUM-{SEQUENCE:4,FORMAT:alphanumeric}'
             )
         );
 
         $this->assertSame(
-            'RAND-####',
+            'RAND-####, where # represents a number (0-9).',
             Candidate::structureToPattern(
                 'RAND-{RANDOM:4,FORMAT:numeric}'
             )
         );
 
         $this->assertSame(
-            'TSTXXXX',
+            'TST####, where # represents a number (0-9) or letter (A-Z).',
             Candidate::structureToPattern(
                 '{SITE:ALIAS}{SEQUENCE:4,FORMAT:alphanumeric}',
                 'TST'
@@ -1233,7 +1233,7 @@ class CandidateTest extends TestCase
         );
 
         $this->assertSame(
-            'P1####',
+            'P1####, where # represents a number (0-9).',
             Candidate::structureToPattern(
                 '{PROJECT:ALIAS}{SEQUENCE:4,FORMAT:numeric}',
                 null,

@@ -1215,13 +1215,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                     '/FORMAT:(numeric|alphanumeric|alpha)/i',
                     $matches[3],
                     $type
-                )) {
+                )
+                ) {
                     switch (strtolower($type[1])) {
-                        case 'alpha':
+                    case 'alpha':
                             $description = 'letter (A-Z)';
                             break;
 
-                        case 'alphanumeric':
+                    case 'alphanumeric':
                             $description = 'number (0-9) or letter (A-Z)';
                             break;
                     }
@@ -1232,9 +1233,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             $pattern
         );
 
-        return "$pattern. # represents a $description.";
+        return "$pattern, where # represents a $description.";
     }
-
 
     /**
      * Transforms a config structure (such as in PSCID) into a
