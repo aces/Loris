@@ -1219,12 +1219,12 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 ) {
                     switch (strtolower($type[1])) {
                     case 'alpha':
-                            $description = 'letter (A-Z)';
-                            break;
+                        $description = 'letter (A-Z)';
+                        break;
 
                     case 'alphanumeric':
-                            $description = 'number (0-9) or letter (A-Z)';
-                            break;
+                        $description = 'number (0-9) or letter (A-Z)';
+                        break;
                     }
                 }
 
