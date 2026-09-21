@@ -33,3 +33,8 @@ and repeat steps 4 to 6 while asserting that database values being
 saved are correct.
 11. As a user with only one site affiliation, fill the form with valid values and create a new user. When the popup indicating that the creation succeeded is displayed, click on 'Recruit another candidate'. Ensure that when the page reloads, the user's (unique) site is selected.
    [Manual Testing]
+12. Configure required and optional Candidate Parameters for two different projects.
+Select each project and confirm only its parameters appear. Create candidates and
+confirm the entered values are stored in `parameter_candidate`; confirm a missing
+required value and an invalid numeric value are rejected.
+   [Manual Testing]

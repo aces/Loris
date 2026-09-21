@@ -10,6 +10,7 @@ import {
   DateElement,
   ButtonElement,
   TextareaElement,
+  NumericElement,
 } from 'jsx/Form';
 
 /**
@@ -192,6 +193,7 @@ class CandidateInfo extends Component {
         let paramTypeID = extraParameters[key2].ParameterTypeID;
         let name = paramTypeID;
         let value = this.state.formData[paramTypeID];
+        const required = Number(extraParameters[key2].Required) === 1;
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
         case 'enu':
@@ -215,6 +217,7 @@ class CandidateInfo extends Component {
               onUserInput={this.setFormData}
               ref={name}
               disabled={disabled}
+              required={required}
               key={key2}
             />
           );
@@ -228,6 +231,21 @@ class CandidateInfo extends Component {
               onUserInput={this.setFormData}
               ref={name}
               disabled={disabled}
+              required={required}
+              key={key2}
+            />
+          );
+          break;
+        case 'num':
+          extraParameterFields.push(
+            <NumericElement
+              label={extraParameters[key2].Description}
+              name={name}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+              required={required}
               key={key2}
             />
           );
@@ -241,6 +259,7 @@ class CandidateInfo extends Component {
               onUserInput={this.setFormData}
               ref={name}
               disabled={disabled}
+              required={required}
               key={key2}
             />
           );
