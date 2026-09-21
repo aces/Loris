@@ -1207,13 +1207,17 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         );
 
         $description = 'number (0-9)';
+        $constraints = [];
 
         $pattern = preg_replace_callback(
             '/\{(SEQUENCE|RANDOM):(\d+)([^}]*)\}/i',
-            function ($matches) use (&$description) {
+            function ($matches) use (&$description, &$constraints) {
+                $length  = intval($matches[2]);
+                $options = $matches[3];
+
                 if (preg_match(
                     '/FORMAT:(numeric|alphanumeric|alpha)/i',
-                    $matches[3],
+                    $options,
                     $type
                 )
                 ) {
@@ -1228,12 +1232,37 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                     }
                 }
 
-                return str_repeat('#', intval($matches[2]));
+                $min = null;
+                $max = null;
+
+                if (preg_match('/MIN:(\d+)/i', $options, $match)) {
+                    $min = $match[1];
+                }
+
+                if (preg_match('/MAX:(\d+)/i', $options, $match)) {
+                    $max = $match[1];
+                }
+
+                if ($min !== null && $max !== null) {
+                    $constraints[] = "The value must be between $min and $max.";
+                } elseif ($min !== null) {
+                    $constraints[] = "The value must be at least $min.";
+                } elseif ($max !== null) {
+                    $constraints[] = "The value must be at most $max.";
+                }
+
+                return str_repeat('#', $length);
             },
             $pattern
         );
 
-        return "$pattern, where # represents a $description.";
+        $result = "$pattern, where # represents a $description.";
+
+        if ($constraints !== []) {
+            $result .= ' ' . implode(' ', $constraints);
+        }
+
+        return $result;
     }
 
     /**
