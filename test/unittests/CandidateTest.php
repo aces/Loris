@@ -1181,6 +1181,68 @@ class CandidateTest extends TestCase
     }
 
     /**
+     * Test that structureToPattern returns a human-readable pattern
+     * for the given identifier structure.
+     *
+     * @covers Candidate::structureToPattern
+     * @return void
+     */
+    public function testStructureToPattern(): void
+    {
+        $this->assertSame(
+            'TEST-####',
+            Candidate::structureToPattern(
+                'TEST-{SEQUENCE:4}'
+            )
+        );
+
+        $this->assertSame(
+            'NUM-####',
+            Candidate::structureToPattern(
+                'NUM-{SEQUENCE:4,FORMAT:numeric}'
+            )
+        );
+
+        $this->assertSame(
+            'ALPHA-AAAA',
+            Candidate::structureToPattern(
+                'ALPHA-{SEQUENCE:4,FORMAT:alpha}'
+            )
+        );
+
+        $this->assertSame(
+            'ALPHANUM-XXXX',
+            Candidate::structureToPattern(
+                'ALPHANUM-{SEQUENCE:4,FORMAT:alphanumeric}'
+            )
+        );
+
+        $this->assertSame(
+            'RAND-####',
+            Candidate::structureToPattern(
+                'RAND-{RANDOM:4,FORMAT:numeric}'
+            )
+        );
+
+        $this->assertSame(
+            'TSTXXXX',
+            Candidate::structureToPattern(
+                '{SITE:ALIAS}{SEQUENCE:4,FORMAT:alphanumeric}',
+                'TST'
+            )
+        );
+
+        $this->assertSame(
+            'P1####',
+            Candidate::structureToPattern(
+                '{PROJECT:ALIAS}{SEQUENCE:4,FORMAT:numeric}',
+                null,
+                'P1'
+            )
+        );
+    }
+
+    /**
      * Test Candidate::createNew
      * TODO This function calls Site::singleton() and User::singleton()
      *      So these need to be mocked in some way. It also uses the $_SESSION

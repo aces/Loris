@@ -377,8 +377,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $project->getAlias()
             )
             ) {
+                $expected = Candidate::structureToPattern(
+                    $PSCIDSettings['structure'],
+                    $site->getSiteAlias(),
+                    $project->getAlias()
+                );
+
                 throw new LorisException(
-                    "PSCID has an invalid structure",
+                    "PSCID has an invalid structure. Expected format: $expected",
                     PSCID_INVALID_STRUCTURE
                 );
             }
@@ -1179,6 +1185,56 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $latestDx = $this->getLatestDiagnosis($projectID, $isConfirmed);
         return $latestDx['DxEvolutionID'] ?? null;
     }
+
+    /**
+     * Transforms an identifier template into a human-readable pattern.
+     *
+     * @param string      $structure     the identifier template
+     * @param string|null $siteAbbrev    the site abbreviation
+     * @param string|null $projectAbbrev the project abbreviation
+     *
+     * @return string the human-readable identifier pattern
+     */
+    static function structureToPattern(
+        string $structure,
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
+    ): string {
+        $pattern = str_replace(
+            ['{SITE:ALIAS}', '{PROJECT:ALIAS}'],
+            [$siteAbbrev ?? '', $projectAbbrev ?? ''],
+            $structure
+        );
+
+        $description = 'number (0-9)';
+
+        $pattern = preg_replace_callback(
+            '/\{(SEQUENCE|RANDOM):(\d+)([^}]*)\}/i',
+            function ($matches) use (&$description) {
+                if (preg_match(
+                    '/FORMAT:(numeric|alphanumeric|alpha)/i',
+                    $matches[3],
+                    $type
+                )) {
+                    switch (strtolower($type[1])) {
+                        case 'alpha':
+                            $description = 'letter (A-Z)';
+                            break;
+
+                        case 'alphanumeric':
+                            $description = 'number (0-9) or letter (A-Z)';
+                            break;
+                    }
+                }
+
+                return str_repeat('#', intval($matches[2]));
+            },
+            $pattern
+        );
+
+        return "$pattern. # represents a $description.";
+    }
+
 
     /**
      * Transforms a config structure (such as in PSCID) into a
