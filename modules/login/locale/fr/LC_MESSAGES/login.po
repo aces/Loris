@@ -102,9 +102,8 @@ msgstr "Retour à la page de connexion"
 msgid "Choose your site:"
 msgstr "Choisissez votre site :"
 
-#, fuzzy
-msgid "Choose your project:"
-msgstr "Choisissez votre projet :"
+msgid "Projects"
+msgstr "Projets"
 
 msgid "Preferred language:"
 msgstr "Langue préférée :"
