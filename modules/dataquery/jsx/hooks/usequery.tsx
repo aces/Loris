@@ -132,7 +132,7 @@ function useQuery(): useQueryReturnType {
     fields: APIQueryField[],
     filters: QueryGroup|null
   ): void => {
-    setFields(fields.map((field) => ({...field})));
+    setFields(fields);
     if (!filters) {
       setCriteria(new QueryGroup('and'));
     } else {
@@ -206,7 +206,7 @@ function useQuery(): useQueryReturnType {
 
       for (let i = 0; i < newfields.length; i++) {
         if (equalField(newfields[i])) {
-          newfields[i] = {...newfields[i], visits: visits};
+          newfields[i].visits = visits;
           setFields(newfields);
           return;
         }
