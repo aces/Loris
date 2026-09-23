@@ -26,6 +26,8 @@ anything else related to candidates, only the candidate itself.
 
 - `useEDC`: This config setting determines whether to prompt for
   the EDC of the candidate being created.
+- `useRegistrationCohort`: This config setting determines whether to
+  require a registration cohort from the selected project.
 - `StartYear`, `EndYear`, `AgeMin`, `AgeMax`: These are used to
   determine whether the candidate's date of birth is within the
   range of the study protocol.
