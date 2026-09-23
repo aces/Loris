@@ -23,6 +23,7 @@ import hiStrings from '../locale/hi/LC_MESSAGES/dataquery.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/dataquery.json';
 import frStrings from '../locale/fr/LC_MESSAGES/dataquery.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/dataquery.json';
+import {TFunction} from 'i18next';
 
 type ActiveCategoryType = {
     module: string,
@@ -71,13 +72,13 @@ function useActiveCategory(
  * Return the main page for the DQT
  *
  * @param {object} props - React props
- * @param {any} props.t - useTranslation
+ * @param {TFunction} props.t - useTranslation
  * @param {boolean} props.queryAdmin - true if the current user has permission to administer study queries
  *
  * @returns {React.ReactElement} - The main page of the app
  */
 function DataQueryApp(props: {
-    t: any,
+    t: TFunction,
     queryAdmin: boolean,
 }) {
   const [activeTab, setActiveTab] = useState('Info');
