@@ -3,11 +3,10 @@ import {useTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 
-import FilterableDataTable from '../../../jsx/FilterableDataTable'; // Temporary CBIGR Override for 26.0
+import FilterableDataTable from '../../../jsx/FilterableDataTable';
 import {UseShipment} from './Shipment';
-// import Container from './Container';
-import {FormModal} from '../../../jsx/Modal'; // Temporary CBIGR Override for 26.0
-import TriggerableModal from '../../../jsx/TriggerableModal'; // Temporary CBIGR Override for 26.0
+import {FormModal} from '../../../jsx/Modal';
+import TriggerableModal from '../../../jsx/TriggerableModal';
 
 import {
   StaticElement,
@@ -17,7 +16,7 @@ import {
   TimeElement,
   TextareaElement,
   CTA,
-} from '../../../jsx/Form'; // Temporary CBIGR Override for 26.0
+} from '../../../jsx/Form';
 
 import {get} from './helpers.js';
 
