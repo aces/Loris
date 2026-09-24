@@ -24,7 +24,7 @@
 ### C. Visualization
 
 13. Follow the [module README extra installation steps](../README.md#installation-requirements-to-use-the-visualization-features)
-    and make sure the `Signal Viewer panel` displays correctly on the screen. (Documentation: see [react-series-data-viewer README](../jsx/react-series-data-viewer/README.md#user-manual))
+    and make sure the `Signal Viewer panel` displays correctly on the screen. (Documentation: see [recording-viewer README](../jsx/recording-viewer/README.md#user-manual))
 14. Set `useEEGBrowserVisualizationComponents` to "No" in the Configuration module and run `make dev`. Ensure it runs without failing, and that except the Signal Viewer panel, all the other components in the page display well.
 15. Temporarily deactivate an entry in `physiological_parameter_file`
     for a ParameterTypeID IN (SELECT ParameterTypeID from parameter_type WHERE Name = 'electrophysiology_chunked_dataset_path')
@@ -34,11 +34,11 @@
 17. Make sure the text fields can not be modified (support planned in future) .
 18. Make sure HED tags belonging to an individual event can be added and deleted from that individual event. The selectable tags should only be SCORE 'Artifact's.
 19. Make sure the 'Dataset Tag Viewer' can be opened with the 'Open Dataset Tag Viewer' button and the selectable fields are properly populated.
-20. Test all the buttons on the interface to ensure they perform the action that the  [react-series-data-viewer README](../jsx/react-series-data-viewer/README.md#Signal Viewer) states it will perform.
+20. Test all the buttons on the interface to ensure they perform the action that the  [recording-viewer README](../jsx/recording-viewer/README.md#Signal Viewer) states it will perform.
 21. Hover over a signal to ensure it responds to being hovered. It should change to a color and its value should be displayed below the signal plot.
-22. Ensure that 'Stacked View' and 'Isolate Mode' behave as stateed in the [react-series-data-viewer README](../jsx/react-series-data-viewer/README.md).
-23. Ensure that the electrodes on the 'Electrode Map' 2D view are visible and their index can be hovered to reveal their channel name.
-24. Ensure that the electrodes on the 'Electrode Map' 3D view are visible and the mesh can be manipulated/rotated with the mouse.
+22. Ensure that 'Stacked View' and 'Isolate Mode' behave as stateed in the [recording-viewer README](../jsx/recording-viewer/README.md).
+23. Ensure that the sensors on the 'Sensor Map' 2D view are visible and their index can be hovered to reveal their channel name.
+24. Ensure that the sensors on the 'Sensor Map' 3D view are visible and the mesh can be manipulated/rotated with the mouse.
 
 _For extra credit: Verify LORIS Menu permissions_
 User can view the top-level LORIS Menu _Electrophysiology_ and Menu item : _Electrophysiology Browser_ if and only if user has either permission:
