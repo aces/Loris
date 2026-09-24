@@ -59,4 +59,30 @@ class MRIViolation implements \LORIS\Data\DataInstance
         }
         return \ProjectID::singleton(intval($this->DBRow['Project']));
     }
+
+    /**
+     * Check whether a user can access this data instance.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool
+    {
+        if ($user->hasPermission('violated_scans_view_allsites')) {
+            return true;
+        }
+
+        $center = $this->getCenterID();
+        if ($center !== null && !$user->hasCenter($center)) {
+            return false;
+        }
+
+        $project = $this->getProjectID();
+        if ($project !== null && !$user->hasProject($project)) {
+            return false;
+        }
+
+        return true;
+    }
 }
