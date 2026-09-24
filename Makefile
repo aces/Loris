@@ -35,7 +35,7 @@ dev: node_modules locales vendor/bin/phan VERSION vendor
 
 jslatest: clean
 	rm -rf package-lock.json
-	rm -rf modules/electrophysiology_browser/jsx/react-series-data-viewer/package-lock.json
+	rm -rf modules/electrophysiology_browser/jsx/recording-viewer/package-lock.json
 	npm install
 	npm run compile
 
@@ -44,7 +44,7 @@ clean:
 	rm -f VERSION
 	rm -rf vendor
 	rm -rf node_modules
-	rm -rf modules/electrophysiology_browser/jsx/react-series-data-viewer/node_modules
+	rm -rf modules/electrophysiology_browser/jsx/recording-viewer/node_modules
 	rm -f modules/*/locale/*/LC_MESSAGES/*.mo
 
 # Perform static analysis checks
