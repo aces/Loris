@@ -377,8 +377,14 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 $project->getAlias()
             )
             ) {
+                $expected = Candidate::structureToPattern(
+                    $PSCIDSettings['structure'],
+                    $site->getSiteAlias(),
+                    $project->getAlias()
+                );
+
                 throw new LorisException(
-                    "PSCID has an invalid structure",
+                    "PSCID has an invalid structure. Expected format: $expected",
                     PSCID_INVALID_STRUCTURE
                 );
             }
@@ -1181,10 +1187,89 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     }
 
     /**
+     * Transforms an identifier template into a human-readable pattern.
+     *
+     * @param string      $structure     the identifier template
+     * @param string|null $siteAbbrev    the site abbreviation
+     * @param string|null $projectAbbrev the project abbreviation
+     *
+     * @return string the human-readable identifier pattern
+     */
+    static function structureToPattern(
+        string $structure,
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
+    ): string {
+        $pattern = str_replace(
+            ['{SITE:ALIAS}', '{PROJECT:ALIAS}'],
+            [$siteAbbrev ?? '', $projectAbbrev ?? ''],
+            $structure
+        );
+
+        $description = 'number (0-9)';
+        $constraints = [];
+
+        $pattern = preg_replace_callback(
+            '/\{(SEQUENCE|RANDOM):(\d+)([^}]*)\}/i',
+            function ($matches) use (&$description, &$constraints) {
+                $length  = intval($matches[2]);
+                $options = $matches[3];
+
+                if (preg_match(
+                    '/FORMAT:(numeric|alphanumeric|alpha)/i',
+                    $options,
+                    $type
+                )
+                ) {
+                    switch (strtolower($type[1])) {
+                    case 'alpha':
+                        $description = 'letter (A-Z)';
+                        break;
+
+                    case 'alphanumeric':
+                        $description = 'number (0-9) or letter (A-Z)';
+                        break;
+                    }
+                }
+
+                $min = null;
+                $max = null;
+
+                if (preg_match('/MIN:(\d+)/i', $options, $match)) {
+                    $min = $match[1];
+                }
+
+                if (preg_match('/MAX:(\d+)/i', $options, $match)) {
+                    $max = $match[1];
+                }
+
+                if ($min !== null && $max !== null) {
+                    $constraints[] = "The value must be between $min and $max.";
+                } elseif ($min !== null) {
+                    $constraints[] = "The value must be at least $min.";
+                } elseif ($max !== null) {
+                    $constraints[] = "The value must be at most $max.";
+                }
+
+                return str_repeat('#', $length);
+            },
+            $pattern
+        );
+
+        $result = "$pattern, where # represents a $description.";
+
+        if ($constraints !== []) {
+            $result .= ' ' . implode(' ', $constraints);
+        }
+
+        return $result;
+    }
+
+    /**
      * Transforms a config structure (such as in PSCID) into a
      * Perl-compatible regex expression for validation
      *
-     * @param array       $structure     the structure root
+     * @param string      $structure     the identifier template
      * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
      *                                   part of the PSCID
      * @param string|null $projectAbbrev the project abbreviation
@@ -1196,76 +1281,79 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * @cleanup
      */
     static function structureToPCRE(
-        array $structure,
+        string  $structure,
         ?string $siteAbbrev = null,
         ?string $projectAbbrev = null
     ): string {
-        $seqs = $structure['seq'];
-        // handle the situation where there exists only one seq
-        if (isset($seqs['#'])) {
-            $seqs = [$seqs];
-        }
-        $regex = "";
-        foreach ($seqs AS $seq) {
-            $unit = "";
+        $regex = preg_quote($structure, '/');
 
-            switch ($seq['@']['type']) {
-            case 'alpha':
-                $unit .= '[a-z]';
-                break;
+        $regex = str_replace(
+            preg_quote('{SITE:ALIAS}', '/'),
+            preg_quote($siteAbbrev ?? '', '/'),
+            $regex
+        );
 
-            case 'alphanumeric':
-                $unit .= '[0-9a-z]';
-                break;
+        $regex = str_replace(
+            preg_quote('{PROJECT:ALIAS}', '/'),
+            preg_quote($projectAbbrev ?? '', '/'),
+            $regex
+        );
 
-            case 'numeric':
-                $unit .= '[0-9]';
-                break;
+        $escaped = '\\\\';
 
-            case 'static':
-                $unit .= '('.$seq['#'].')';
-                break;
+        $regex = preg_replace_callback(
+            "/{$escaped}\{SEQUENCE{$escaped}:(\d+)([^}]*){$escaped}\}/i",
+            function ($matches) use ($escaped) {
+                $characters = '[0-9]';
 
-            case 'set':
-                if (strpos($seq['#'], '|') !== false) {
-                    $unit .= '('.$seq['#'].')';
-                } else {
-                    $unit .= '['.$seq['#'].']';
+                if (preg_match(
+                    "/FORMAT{$escaped}:(numeric|alphanumeric|alpha)/i",
+                    $matches[2],
+                    $type
+                )
+                ) {
+                    switch (strtolower($type[1])) {
+                    case 'alphanumeric':
+                        $characters = '[0-9A-Z]';
+                        break;
+
+                    case 'alpha':
+                        $characters = '[A-Z]';
+                        break;
+                    }
                 }
-                break;
 
-            case 'siteAbbrev':
-                $unit .= $siteAbbrev;
-                break;
-            case 'projectAbbrev':
-                $unit .= $projectAbbrev;
-                break;
-            } // end switch
+                return $characters . '{' . $matches[1] . '}';
+            },
+            $regex
+        );
 
-            $length = "";
-            if (isset($seq['@']['length'])) {
-                $length .= $seq['@']['length'];
-            } elseif (isset($seq['@']['minLength'])) {
-                $length .= $seq['@']['minLength'];
-            } else {
-                $length .= '1';
-            }
+        $regex = preg_replace_callback(
+            "/{$escaped}\{RANDOM{$escaped}:(\d+)([^}]*){$escaped}\}/i",
+            function ($matches) use ($escaped) {
+                $characters = '[0-9]';
 
-            $length .= ',';
+                if (preg_match(
+                    "/FORMAT{$escaped}:(numeric|alphanumeric|alpha)/i",
+                    $matches[2],
+                    $type
+                )
+                ) {
+                    switch (strtolower($type[1])) {
+                    case 'alphanumeric':
+                        $characters = '[0-9A-Z]';
+                        break;
 
-            if (isset($seq['@']['length'])) {
-                $length .= $seq['@']['length'];
-            } elseif (isset($seq['@']['maxLength'])) {
-                $length .= $seq['@']['maxLength'];
-            } elseif (!isset($seq['@']['length'])
-                && !isset($seq['@']['minLength'])
-            ) {
-                $length .= '1';
-            }
+                    case 'alpha':
+                        $characters = '[A-Z]';
+                        break;
+                    }
+                }
 
-            $regex .= $unit.'{'.$length.'}';
-
-        } // end foreach seq
+                return $characters . '{' . $matches[1] . '}';
+            },
+            $regex
+        );
 
         return '/^'.$regex.'$/i';
     }

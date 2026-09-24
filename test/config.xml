@@ -34,10 +34,7 @@
         <PSCID>
             <!-- PSCID (Study Center ID) generation method possible options: sequential/random/user -->
             <generation>sequential</generation>
-            <structure>
-                <seq type="siteAbbrev"/>
-                <seq type="alphanumeric" length="4"/> <!-- Ex: AAA0001-->
-            </structure>
+            <structure>{SITE:ALIAS}{SEQUENCE:4,FORMAT:alphanumeric}</structure>
         </PSCID>
 
         <ExternalID>
