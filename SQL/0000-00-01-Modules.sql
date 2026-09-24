@@ -56,6 +56,6 @@ INSERT INTO modules (Name, Active) VALUES ('electrophysiology_uploader', 'N');
 INSERT INTO modules (Name, Active) VALUES ('dataquery', 'N');
 INSERT INTO modules (Name, Active) VALUES ('schedule_module', 'N');
 INSERT INTO modules (Name, Active) VALUES ('redcap', 'N');
-INSERT INTO modules (Name, Active) VALUES ('policy_tracker', 'N');
+INSERT INTO modules (Name, Active) VALUES ('policy_tracker', 'Y');
 
 ALTER TABLE issues ADD CONSTRAINT `fk_issues_7` FOREIGN KEY (`module`) REFERENCES `modules` (`ID`);
