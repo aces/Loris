@@ -1,6 +1,7 @@
-import React, {CSSProperties, ReactNode} from 'react';
-import {TFunction} from 'i18next';
-import Panel from 'jsx/Panel';
+import React from 'react';
+import type {CSSProperties, ReactNode} from 'react';
+import type {TFunction} from 'i18next';
+import Panel from '../recording-viewer/src/ui/Panel';
 
 type SummaryRow = {
   name: ReactNode;
@@ -18,24 +19,22 @@ type SummaryPanelProps = {
  */
 export default function SummaryPanel({data = [], id, t}: SummaryPanelProps) {
   return (
-    <div className="summary-panel">
-      <Panel id={id} title={t('Summary', ns)}>
-        <div style={panelBodyStyle}>
-          <table style={tableStyle} className="table-bordered">
-            <tbody>
-              {data.map(({name, value}, i) => (
-                <tr key={i}>
-                  <th scope="row" style={headerCellStyle}>
-                    {name}
-                  </th>
-                  <td style={valueCellStyle}>{value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Panel>
-    </div>
+    <Panel collapsing={false} id={id} title={t('Summary', ns)}>
+      <div style={panelBodyStyle}>
+        <table style={tableStyle} className="table-bordered">
+          <tbody>
+            {data.map(({name, value}, i) => (
+              <tr key={i}>
+                <th scope="row" style={headerCellStyle}>
+                  {name}
+                </th>
+                <td style={valueCellStyle}>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Panel>
   );
 }
 

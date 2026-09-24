@@ -28,7 +28,7 @@ const getPath = (p) => {
  * ----------------------------------------
  */
 const eegVisualization =
-  'modules/electrophysiology_browser/jsx/react-series-data-viewer';
+  'modules/electrophysiology_browser/jsx/recording-viewer';
 const submodules = [
   'project',
   eegVisualization,
