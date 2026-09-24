@@ -49,9 +49,6 @@ msgstr "查看信号分割文件："
 msgid "Output Type"
 msgstr "输出类型"
 
-msgid "File Download"
-msgstr "文件下载"
-
 msgid "Download"
 msgstr "下载"
 
@@ -77,11 +74,17 @@ msgid "Data Authors"
 msgstr "数据作者"
 
 # Filters
+msgid "High Pass Filter"
+msgstr "高通滤波器"
+
 msgid "No High Pass Filter"
 msgstr "无高通滤波器"
 
 msgid "High Pass {{frequency}}Hz"
 msgstr "高通 {{frequency}} Hz"
+
+msgid "Low Pass Filter"
+msgstr "低通滤波器"
 
 msgid "No Low Pass Filter"
 msgstr "无低通滤波器"
@@ -99,26 +102,8 @@ msgstr "显示事件"
 msgid "Add Event"
 msgstr "添加事件"
 
-msgid "Zoom"
-msgstr "缩放"
-
-msgid "Fit to Window"
-msgstr "适合窗户"
-
-msgid "Reset Amplitude"
-msgstr "复位幅度"
-
-msgid "Hide Overflow"
-msgstr "隐藏溢出"
-
-msgid "Show Overflow"
-msgstr "显示溢出"
-
 msgid "{{numChannels}} channels"
 msgstr "{{numChannels}} 通道"
-
-msgid "Showing:"
-msgstr "显示："
 
 msgid "to {{channelsInView}} of {{totalChannels}}"
 msgstr "至 {{channelsInView}} 或 {{totalChannels}}"
@@ -127,20 +112,11 @@ msgstr "至 {{channelsInView}} 或 {{totalChannels}}"
 msgid "Time (s)"
 msgstr "时间（秒）"
 
-msgid "No Offset"
-msgstr "无偏移"
-
 msgid "DC Offset"
 msgstr "直流偏移"
 
-msgid "Spread"
-msgstr "传播"
-
 msgid "Stack"
 msgstr "堆"
-
-msgid "Standard"
-msgstr "标准"
 
 msgid "Isolate"
 msgstr "隔离"
@@ -148,19 +124,9 @@ msgstr "隔离"
 msgid "HED Endorsements"
 msgstr "HED 认可"
 
-msgid "Displaying: "
-msgstr "显示："
-
 # SeriesCursor
 msgid "{{seconds}} s"
 msgstr "{{seconds}} s"
-
-# IntervalSelect
-msgid "Timeline Range View"
-msgstr "时间轴范围视图"
-
-msgid "Show All"
-msgstr "显示全部"
 
 # HEDEndorsement
 msgid "No Filter"
@@ -281,9 +247,7 @@ msgstr "无需更换电极"
 msgid "Duplicates are not allowed"
 msgstr "不允许重复"
 
-msgid ""
-"Invalid string format. Expected channel names delimited by "
-"\"{{channelDelimiter}}\""
+msgid "Invalid string format. Expected channel names delimited by \"{{channelDelimiter}}\""
 msgstr "字符串格式无效。预期的通道名称由“ {{channelDelimiter}} ”分隔"
 
 msgid "String contains one or more unrecognized channels"
@@ -301,13 +265,25 @@ msgstr "选择无"
 msgid "Select All"
 msgstr "选择全部"
 
-msgid "Electrode Map"
-msgstr "电极图"
+msgid "Sensor Map"
+msgstr "传感器图"
+
+msgid "Sensor Types"
+msgstr "传感器类型"
+
+msgid "EEG Electrode"
+msgstr "EEG 电极"
+
+msgid "MEG Sensor"
+msgstr "MEG 传感器"
+
+msgid "Head Shape Point"
+msgstr "头部形状点"
 
 msgid "Show indices"
 msgstr "显示索引"
 
-# DatasetTagger / EEGLabSeriesProvider
+# DatasetTagger / RecordingDataProvider
 msgid "Dataset Tag Manager"
 msgstr "数据集标签管理器"
 
@@ -329,9 +305,7 @@ msgstr "认可标签"
 msgid "View JSON"
 msgstr "查看 JSON"
 
-msgid ""
-"This will undo all changes since your latest submission. You won't be able "
-"to revert this!"
+msgid "This will undo all changes since your latest submission. You won't be able to revert this!"
 msgstr "这将撤消自您上次提交以来的所有更改。您将无法恢复此状态！"
 
 msgid "Yes, reset all changes!"
@@ -595,8 +569,8 @@ msgstr "电刺激"
 msgid "Electrical Stimulation Parameters"
 msgstr "电刺激参数"
 
-msgid "EEG File(s)"
-msgstr "脑电图文件"
+msgid "Acquisition File"
+msgstr "采集文件"
 
 msgid "Electrodes"
 msgstr "电极"
@@ -615,3 +589,118 @@ msgstr "所有文件"
 
 msgid "View Session"
 msgstr "查看会话"
+
+msgid "Channel Types"
+msgstr "通道类型"
+
+
+msgid "Downloads"
+msgstr "下载"
+
+msgid "Expand recording"
+msgstr "展开记录"
+
+msgid "Collapse recording"
+msgstr "折叠记录"
+
+msgid "Session contents"
+msgstr "会话内容"
+
+msgid "Expand session contents"
+msgstr "展开会话内容"
+
+msgid "Collapse session contents"
+msgstr "折叠会话内容"
+
+msgid "Session summary"
+msgstr "会话摘要"
+
+msgid "Acquisition Details"
+msgstr "采集详情"
+
+msgid "Dataset"
+msgstr "数据集"
+
+msgid "Pagination"
+msgstr "分页"
+
+msgid "Showing"
+msgstr "正在显示"
+
+msgid "Previous Channel Page"
+msgstr "上一通道页"
+
+msgid "Previous Channel"
+msgstr "上一通道"
+
+msgid "Next Channel"
+msgstr "下一通道"
+
+msgid "Next Channel Page"
+msgstr "下一通道页"
+
+msgid "channel"
+msgstr "通道"
+
+msgid "Zoom Out"
+msgstr "缩小"
+
+msgid "Reset Zoom"
+msgstr "重置缩放"
+
+msgid "Zoom In"
+msgstr "放大"
+
+msgid "Fit Range to Selection"
+msgstr "使范围适合所选内容"
+
+msgid "Amplitude"
+msgstr "振幅"
+
+msgid "Decrease Amplitude"
+msgstr "减小振幅"
+
+msgid "Increase Amplitude"
+msgstr "增大振幅"
+
+msgid "Filters"
+msgstr "滤波器"
+
+msgid "Display"
+msgstr "显示"
+
+msgid "Overflow"
+msgstr "溢出"
+
+msgid "Previous Range"
+msgstr "上一范围"
+
+msgid "Back One Second"
+msgstr "后退一秒"
+
+msgid "Range Start"
+msgstr "范围起点"
+
+msgid "Range End"
+msgstr "范围终点"
+
+msgid "Forward One Second"
+msgstr "前进一秒"
+
+msgid "Next Range"
+msgstr "下一范围"
+
+msgid "Reset Range"
+msgstr "重置范围"
+
+msgid "Full Range"
+msgstr "完整范围"
+
+msgid "Move selected time range"
+msgstr "移动所选时间范围"
+
+msgid "Range start"
+msgstr "范围起点"
+
+msgid "Range end"
+msgstr "范围终点"
