@@ -49,9 +49,6 @@ msgstr "信号分割ファイルを表示しています:"
 msgid "Output Type"
 msgstr "出力タイプ"
 
-msgid "File Download"
-msgstr "ファイルのダウンロード"
-
 msgid "Download"
 msgstr "ダウンロード"
 
@@ -77,17 +74,23 @@ msgid "Data Authors"
 msgstr "データ作成者"
 
 # Filters
+msgid "High Pass Filter"
+msgstr "ハイパスフィルター"
+
 msgid "No High Pass Filter"
 msgstr "ハイパスフィルターなし"
 
 msgid "High Pass {{frequency}}Hz"
-msgstr "ハイパス {{frequenency}}Hz"
+msgstr "ハイパス {{frequency}}Hz"
+
+msgid "Low Pass Filter"
+msgstr "ローパスフィルター"
 
 msgid "No Low Pass Filter"
 msgstr "ローパスフィルターなし"
 
 msgid "Low Pass {{frequency}}Hz"
-msgstr "ローパス {{frequenency}}Hz"
+msgstr "ローパス {{frequency}}Hz"
 
 # SeriesRenderer
 msgid "Close Panel"
@@ -99,26 +102,8 @@ msgstr "表示イベント"
 msgid "Add Event"
 msgstr "イベントを追加"
 
-msgid "Zoom"
-msgstr "ズーム"
-
-msgid "Fit to Window"
-msgstr "ウィンドウに合わせる"
-
-msgid "Reset Amplitude"
-msgstr "振幅をリセット"
-
-msgid "Hide Overflow"
-msgstr "オーバーフローを非表示"
-
-msgid "Show Overflow"
-msgstr "オーバーフローを表示"
-
 msgid "{{numChannels}} channels"
 msgstr "{{numChannels}} チャンネル"
-
-msgid "Showing:"
-msgstr "表示中:"
 
 msgid "to {{channelsInView}} of {{totalChannels}}"
 msgstr "{{totalChannels}} のうち {{channelsInView}} まで"
@@ -127,20 +112,11 @@ msgstr "{{totalChannels}} のうち {{channelsInView}} まで"
 msgid "Time (s)"
 msgstr "時間（秒）"
 
-msgid "No Offset"
-msgstr "オフセットなし"
-
 msgid "DC Offset"
 msgstr "直流オフセット"
 
-msgid "Spread"
-msgstr "広める"
-
 msgid "Stack"
 msgstr "スタック"
-
-msgid "Standard"
-msgstr "標準"
 
 msgid "Isolate"
 msgstr "隔離する"
@@ -148,19 +124,9 @@ msgstr "隔離する"
 msgid "HED Endorsements"
 msgstr "HEDの推薦"
 
-msgid "Displaying: "
-msgstr "表示中: "
-
 # SeriesCursor
 msgid "{{seconds}} s"
 msgstr "{{seconds}}秒"
-
-# IntervalSelect
-msgid "Timeline Range View"
-msgstr "タイムライン範囲ビュー"
-
-msgid "Show All"
-msgstr "すべて表示"
 
 # HEDEndorsement
 msgid "No Filter"
@@ -299,13 +265,25 @@ msgstr "何も選択しない"
 msgid "Select All"
 msgstr "すべて選択"
 
-msgid "Electrode Map"
-msgstr "電極マップ"
+msgid "Sensor Map"
+msgstr "センサーマップ"
+
+msgid "Sensor Types"
+msgstr "センサータイプ"
+
+msgid "EEG Electrode"
+msgstr "EEG電極"
+
+msgid "MEG Sensor"
+msgstr "MEGセンサー"
+
+msgid "Head Shape Point"
+msgstr "頭部形状点"
 
 msgid "Show indices"
 msgstr "インデックスを表示"
 
-# DatasetTagger / EEGLabSeriesProvider
+# DatasetTagger / RecordingDataProvider
 msgid "Dataset Tag Manager"
 msgstr "データセットタグマネージャー"
 
@@ -592,8 +570,8 @@ msgstr "電気刺激"
 msgid "Electrical Stimulation Parameters"
 msgstr "電気刺激パラメータ"
 
-msgid "EEG File(s)"
-msgstr "脳波計ファイル"
+msgid "Acquisition File"
+msgstr "収録ファイル"
 
 msgid "Electrodes"
 msgstr "電極"
@@ -615,3 +593,115 @@ msgstr "セッションを見る"
 
 msgid "Channel Types"
 msgstr "チャネルタイプ"
+
+
+msgid "Downloads"
+msgstr "ダウンロード"
+
+msgid "Expand recording"
+msgstr "記録を展開"
+
+msgid "Collapse recording"
+msgstr "記録を折りたたむ"
+
+msgid "Session contents"
+msgstr "セッションの内容"
+
+msgid "Expand session contents"
+msgstr "セッションの内容を展開"
+
+msgid "Collapse session contents"
+msgstr "セッションの内容を折りたたむ"
+
+msgid "Session summary"
+msgstr "セッションの概要"
+
+msgid "Acquisition Details"
+msgstr "収録の詳細"
+
+msgid "Dataset"
+msgstr "データセット"
+
+msgid "Pagination"
+msgstr "ページ移動"
+
+msgid "Showing"
+msgstr "表示中"
+
+msgid "Previous Channel Page"
+msgstr "前のチャンネルページ"
+
+msgid "Previous Channel"
+msgstr "前のチャンネル"
+
+msgid "Next Channel"
+msgstr "次のチャンネル"
+
+msgid "Next Channel Page"
+msgstr "次のチャンネルページ"
+
+msgid "channel"
+msgstr "チャンネル"
+
+msgid "Zoom Out"
+msgstr "縮小"
+
+msgid "Reset Zoom"
+msgstr "ズームをリセット"
+
+msgid "Zoom In"
+msgstr "拡大"
+
+msgid "Fit Range to Selection"
+msgstr "範囲を選択範囲に合わせる"
+
+msgid "Amplitude"
+msgstr "振幅"
+
+msgid "Decrease Amplitude"
+msgstr "振幅を小さくする"
+
+msgid "Increase Amplitude"
+msgstr "振幅を大きくする"
+
+msgid "Filters"
+msgstr "フィルター"
+
+msgid "Display"
+msgstr "表示"
+
+msgid "Overflow"
+msgstr "オーバーフロー"
+
+msgid "Previous Range"
+msgstr "前の範囲"
+
+msgid "Back One Second"
+msgstr "1秒戻る"
+
+msgid "Range Start"
+msgstr "範囲の開始"
+
+msgid "Range End"
+msgstr "範囲の終了"
+
+msgid "Forward One Second"
+msgstr "1秒進む"
+
+msgid "Next Range"
+msgstr "次の範囲"
+
+msgid "Reset Range"
+msgstr "範囲をリセット"
+
+msgid "Full Range"
+msgstr "全範囲"
+
+msgid "Move selected time range"
+msgstr "選択した時間範囲を移動"
+
+msgid "Range start"
+msgstr "範囲の開始"
+
+msgid "Range end"
+msgstr "範囲の終了"

@@ -49,9 +49,6 @@ msgstr ""
 msgid "Output Type"
 msgstr ""
 
-msgid "File Download"
-msgstr ""
-
 msgid "Download"
 msgstr ""
 
@@ -77,10 +74,16 @@ msgid "Data Authors"
 msgstr ""
 
 # Filters
+msgid "High Pass Filter"
+msgstr ""
+
 msgid "No High Pass Filter"
 msgstr ""
 
 msgid "High Pass {{frequency}}Hz"
+msgstr ""
+
+msgid "Low Pass Filter"
 msgstr ""
 
 msgid "No Low Pass Filter"
@@ -99,25 +102,7 @@ msgstr ""
 msgid "Add Event"
 msgstr ""
 
-msgid "Zoom"
-msgstr ""
-
-msgid "Fit to Window"
-msgstr ""
-
-msgid "Reset Amplitude"
-msgstr ""
-
-msgid "Hide Overflow"
-msgstr ""
-
-msgid "Show Overflow"
-msgstr ""
-
 msgid "{{numChannels}} channels"
-msgstr ""
-
-msgid "Showing:"
 msgstr ""
 
 msgid "to {{channelsInView}} of {{totalChannels}}"
@@ -127,19 +112,10 @@ msgstr ""
 msgid "Time (s)"
 msgstr ""
 
-msgid "No Offset"
-msgstr ""
-
 msgid "DC Offset"
 msgstr ""
 
-msgid "Spread"
-msgstr ""
-
 msgid "Stack"
-msgstr ""
-
-msgid "Standard"
 msgstr ""
 
 msgid "Isolate"
@@ -148,18 +124,8 @@ msgstr ""
 msgid "HED Endorsements"
 msgstr ""
 
-msgid "Displaying: "
-msgstr ""
-
 # SeriesCursor
 msgid "{{seconds}} s"
-msgstr ""
-
-# IntervalSelect
-msgid "Timeline Range View"
-msgstr ""
-
-msgid "Show All"
 msgstr ""
 
 # HEDEndorsement
@@ -299,13 +265,25 @@ msgstr ""
 msgid "Select All"
 msgstr ""
 
-msgid "Electrode Map"
+msgid "Sensor Map"
+msgstr ""
+
+msgid "Sensor Types"
+msgstr ""
+
+msgid "EEG Electrode"
+msgstr ""
+
+msgid "MEG Sensor"
+msgstr ""
+
+msgid "Head Shape Point"
 msgstr ""
 
 msgid "Show indices"
 msgstr ""
 
-# DatasetTagger / EEGLabSeriesProvider
+# DatasetTagger / RecordingDataProvider
 msgid "Dataset Tag Manager"
 msgstr ""
 
@@ -592,7 +570,7 @@ msgstr ""
 msgid "Electrical Stimulation Parameters"
 msgstr ""
 
-msgid "EEG File(s)"
+msgid "Acquisition File"
 msgstr ""
 
 msgid "Electrodes"
@@ -614,4 +592,116 @@ msgid "View Session"
 msgstr ""
 
 msgid "Channel Types"
+msgstr ""
+
+
+msgid "Downloads"
+msgstr ""
+
+msgid "Expand recording"
+msgstr ""
+
+msgid "Collapse recording"
+msgstr ""
+
+msgid "Session contents"
+msgstr ""
+
+msgid "Expand session contents"
+msgstr ""
+
+msgid "Collapse session contents"
+msgstr ""
+
+msgid "Session summary"
+msgstr ""
+
+msgid "Acquisition Details"
+msgstr ""
+
+msgid "Dataset"
+msgstr ""
+
+msgid "Pagination"
+msgstr ""
+
+msgid "Showing"
+msgstr ""
+
+msgid "Previous Channel Page"
+msgstr ""
+
+msgid "Previous Channel"
+msgstr ""
+
+msgid "Next Channel"
+msgstr ""
+
+msgid "Next Channel Page"
+msgstr ""
+
+msgid "channel"
+msgstr ""
+
+msgid "Zoom Out"
+msgstr ""
+
+msgid "Reset Zoom"
+msgstr ""
+
+msgid "Zoom In"
+msgstr ""
+
+msgid "Fit Range to Selection"
+msgstr ""
+
+msgid "Amplitude"
+msgstr ""
+
+msgid "Decrease Amplitude"
+msgstr ""
+
+msgid "Increase Amplitude"
+msgstr ""
+
+msgid "Filters"
+msgstr ""
+
+msgid "Display"
+msgstr ""
+
+msgid "Overflow"
+msgstr ""
+
+msgid "Previous Range"
+msgstr ""
+
+msgid "Back One Second"
+msgstr ""
+
+msgid "Range Start"
+msgstr ""
+
+msgid "Range End"
+msgstr ""
+
+msgid "Forward One Second"
+msgstr ""
+
+msgid "Next Range"
+msgstr ""
+
+msgid "Reset Range"
+msgstr ""
+
+msgid "Full Range"
+msgstr ""
+
+msgid "Move selected time range"
+msgstr ""
+
+msgid "Range start"
+msgstr ""
+
+msgid "Range end"
 msgstr ""

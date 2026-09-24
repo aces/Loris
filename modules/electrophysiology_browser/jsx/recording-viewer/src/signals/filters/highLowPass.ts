@@ -1,0 +1,399 @@
+import {DifferenceEquationSignal1D}
+  from './DifferenceEquationSignal1D';
+
+export type SignalFilter = {
+  name: string,
+  fn: (_: Float32Array) => Float32Array,
+};
+
+export type FilterCoefficients = {
+  a: number[],
+  b: number[],
+};
+
+const LOW_PASS_FILTER_KEYS_BY_FREQUENCY: Record<
+  number,
+  keyof typeof LOW_PASS_FILTERS
+> = {
+  15: 'lopass15',
+  20: 'lopass20',
+  30: 'lopass30',
+  40: 'lopass40',
+  60: 'lopass60',
+};
+
+const HIGH_PASS_FILTER_KEYS_BY_FREQUENCY: Record<
+  number,
+  keyof typeof HIGH_PASS_FILTERS
+> = {
+  0.5: 'hipass0_5',
+  1: 'hipass1',
+  5: 'hipass5',
+  10: 'hipass10',
+};
+
+/**
+ * Return the legacy low pass filter key for a frequency.
+ */
+export function getLowPassFilterKey(
+  frequency?: number
+): keyof typeof LOW_PASS_FILTERS {
+  return frequency === undefined
+    ? 'none'
+    : LOW_PASS_FILTER_KEYS_BY_FREQUENCY[frequency] ?? 'none';
+}
+
+/**
+ * Return the legacy high pass filter key for a frequency.
+ */
+export function getHighPassFilterKey(
+  frequency?: number
+): keyof typeof HIGH_PASS_FILTERS {
+  return frequency === undefined
+    ? 'none'
+    : HIGH_PASS_FILTER_KEYS_BY_FREQUENCY[frequency] ?? 'none';
+}
+
+/**
+ * Return the optional low pass frequency for a legacy filter key.
+ */
+export function getLowPassFilterFrequency(
+  key: keyof typeof LOW_PASS_FILTERS
+): number | undefined {
+  const frequency = LOW_PASS_FILTERS[key]?.frequency ?? 0;
+  return frequency === 0 ? undefined : frequency;
+}
+
+/**
+ * Return the optional high pass frequency for a legacy filter key.
+ */
+export function getHighPassFilterFrequency(
+  key: keyof typeof HIGH_PASS_FILTERS
+): number | undefined {
+  const frequency = HIGH_PASS_FILTERS[key]?.frequency ?? 0;
+  return frequency === 0 ? undefined : frequency;
+}
+
+/**
+ * applyFilter
+ *
+ * @param {object} coefficients - The coefficients a, b
+ * @param {Float32Array} input - The input signal
+ * @returns {Float32Array} - The output signal
+ */
+export const applyFilter = (
+  coefficients: FilterCoefficients | null,
+  input: Float32Array
+): Float32Array => {
+  const diffFilter = new DifferenceEquationSignal1D();
+  diffFilter.enableBackwardSecondPass();
+
+  if (coefficients) {
+    diffFilter.setInput(input);
+    diffFilter.setACoefficients(coefficients.a);
+    diffFilter.setBCoefficients(coefficients.b);
+    diffFilter.run(); // eventually should be pixpipe's update()
+    return diffFilter.getOutput();
+  }
+  return input;
+};
+
+export const LOW_PASS_FILTERS = {
+  'none': {
+    label: 'No Low Pass Filter',
+    frequency: 0,
+    coefficients: {
+      '500': null,
+      '512': null,
+      '1000': null,
+      '1024': null,
+      '2000': null,
+      '2048': null,
+    },
+  },
+  'lopass15': {
+    label: 'Low Pass {{frequency}}Hz',
+    frequency: 15,
+    coefficients: {
+      '500': {
+        b: [0.0021, 0.0042, 0.0021],
+        a: [1.0000, -1.8668, 0.8752],
+      },
+      '512': {
+        b: [0.0020, 0.0040, 0.0020],
+        a: [1.0000, -1.8700, 0.8780],
+      },
+      '1000': {
+        b: [0.0005, 0.0011, 0.0005],
+        a: [1.0000, -1.9334, 0.9355],
+      },
+      '1024': {
+        b: [0.0005, 0.0010, 0.0005],
+        a: [1.0000, -1.9349, 0.9370],
+      },
+      '2000': {
+        b: [0.0001, 0.2730, 0.1365],
+        a: [1.0000, -1.9667, 0.9672],
+      },
+      '2048': {
+        b: [0.0001, 0.2605, 0.1302],
+        a: [1.0000, -1.9675, 0.9680],
+      },
+    },
+  },
+  'lopass20': {
+    label: 'Low Pass {{frequency}}Hz',
+    frequency: 20,
+    coefficients: {
+      '500': {
+        b: [0.0036, 0.0072, 0.0036],
+        a: [1.0000, -1.8227, 0.8372],
+      },
+      '512': {
+        b: [0.0035, 0.0069, 0.0035],
+        a: [1.0000, -1.8268, 0.8407],
+      },
+      '1000': {
+        b: [0.0009, 0.00189, 0.0009],
+        a: [1.0000, -1.9112, 0.9150],
+      },
+      '1024': {
+        b: [0.0009, 0.0018, 0.0009],
+        a: [1.0000, -1.9133, 0.9169],
+      },
+      '2000': {
+        b: [0.0002, 0.4827, 0.2414],
+        a: [1.0000, -1.9556, 0.9565],
+      },
+      '2048': {
+        b: [0.0002, 0.4606, 0.2303],
+        a: [1.0000, -1.9566, 0.9575],
+      },
+    },
+  },
+  'lopass30': {
+    label: 'Low Pass {{frequency}}Hz',
+    frequency: 30,
+    coefficients: {
+      '500': {
+        b: [0.0078, 0.0156, 0.0078],
+        a: [1.0000, -1.7347, 0.7660],
+      },
+      '512': {
+        b: [0.0075, 0.0150, 0.0075],
+        a: [1.0000, -1.7409, 0.7708],
+      },
+      '1000': {
+        b: [0.0021, 0.0042, 0.0021],
+        a: [1.0000, -1.8669, 0.8752],
+      },
+      '1024': {
+        b: [0.0020, 0.0040, 0.0020],
+        a: [1.0000, -1.8700, 0.8780],
+      },
+      '2000': {
+        b: [0.0005, 0.0011, 0.0005],
+        a: [1.0000, -1.9334, 0.9355],
+      },
+      '2048': {
+        b: [0.0005, 0.0010, 0.0005],
+        a: [1.0000, -1.9349, 0.9370],
+      },
+    },
+  },
+  'lopass40': {
+    label: 'Low Pass {{frequency}}Hz',
+    frequency: 40,
+    coefficients: {
+      '500': {
+        b: [0.0134, 0.0267, 0.0134],
+        a: [1.0000, -1.6475, 0.7009],
+      },
+      '512': {
+        b: [0.0128, 0.0256, 0.0128],
+        a: [1.0000, -1.6556, 0.7068],
+      },
+      '1000': {
+        b: [0.0036, 0.0072, 0.0036],
+        a: [1.0000, -1.8227, 0.8372],
+      },
+      '1024': {
+        b: [0.0035, 0.0069, 0.0035],
+        a: [1.0000, -1.8268, 0.8407],
+      },
+      '2000': {
+        b: [0.0009, 0.0019, 0.0009],
+        a: [1.0000, -1.9112, 0.9150],
+      },
+      '2048': {
+        b: [0.0009, 0.0018, 0.0009],
+        a: [1.0000, -1.9133, 0.9169],
+      },
+    },
+  },
+  'lopass60': {
+    label: 'Low Pass {{frequency}}Hz',
+    frequency: 60,
+    coefficients: {
+      '500': {
+        b: [0.0279, 0.0557, 0.0279],
+        a: [1.0000, -1.4754, 0.5869],
+      },
+      '512': {
+        b: [0.0267, 0.0534, 0.0267],
+        a: [1.0000, -1.4875, 0.5943],
+      },
+      '1000': {
+        b: [0.0078, 0.0156, 0.0078],
+        a: [1.0000, -1.7347, 0.7660],
+      },
+      '1024': {
+        b: [0.0075, 0.0150, 0.0075],
+        a: [1.0000, -1.7409, 0.7708],
+      },
+      '2000': {
+        b: [0.0021, 0.0042, 0.0021],
+        a: [1.0000, -1.8669, 0.8752],
+      },
+      '2048': {
+        b: [0.0020, 0.0040, 0.0020],
+        a: [1.0000, -1.8700, 0.8780],
+      },
+    },
+  },
+};
+
+export const HIGH_PASS_FILTERS = {
+  'none': {
+    label: 'No High Pass Filter',
+    frequency: 0,
+    coefficients: {
+      '500': null,
+      '512': null,
+      '1000': null,
+      '1024': null,
+      '2000': null,
+      '2048': null,
+    },
+  },
+  'hipass0_5': {
+    label: 'High Pass {{frequency}}Hz',
+    frequency: 0.5,
+    coefficients: {
+      '500': {
+        b: [0.9978, -1.9956, 0.9978],
+        a: [1.0000, -1.9956, 0.9956],
+      },
+      '512': {
+        b: [0.9978, -1.9957, 0.9978],
+        a: [1.0000, -1.9957, 0.9957],
+      },
+      '1000': {
+        b: [0.9989, -1.9978, 0.9989],
+        a: [1.0000, -1.9978, 0.9978],
+      },
+      '1024': {
+        b: [0.9989, -1.9978, 0.9989],
+        a: [1.0000, -1.9978, 0.9978],
+      },
+      '2000': {
+        b: [0.9994, -1.9989, 0.9994],
+        a: [1.0000, -1.9989, 0.9989],
+      },
+      '2048': {
+        b: [0.9995, -1.9989, 0.9995],
+        a: [1.0000, -1.9989, 0.9989],
+      },
+    },
+  },
+  'hipass1': {
+    label: 'High Pass {{frequency}}Hz',
+    frequency: 1,
+    coefficients: {
+      '500': {
+        b: [0.9956, -1.9911, 0.9956],
+        a: [1.0000, -1.9911, 0.9912],
+      },
+      '512': {
+        b: [0.9957, -1.9913, 0.9957],
+        a: [1.0000, -1.9913, 0.9914],
+      },
+      '1000': {
+        b: [0.9978, -1.9956, 0.9978],
+        a: [1.0000, -1.9956, 0.9956],
+      },
+      '1024': {
+        b: [0.9978, -1.9957, 0.9978],
+        a: [1.0000, -1.9957, 0.9957],
+      },
+      '2000': {
+        b: [0.9989, -1.9978, 0.9989],
+        a: [1.0000, -1.9978, 0.9978],
+      },
+      '2048': {
+        b: [0.9989, -1.9978, 0.9989],
+        a: [1.0000, -1.9978, 0.9978],
+      },
+    },
+  },
+  'hipass5': {
+    label: 'High Pass {{frequency}}Hz',
+    frequency: 5,
+    coefficients: {
+      '500': {
+        b: [0.9780, -1.9561, 0.9780],
+        a: [1.0000, -1.9556, 0.9565],
+      },
+      '512': {
+        b: [0.9785, -1.9571, 0.9785],
+        a: [1.0000, -1.9566, 0.9575],
+      },
+      '1000': {
+        b: [0.9890, -1.9779, 0.9890],
+        a: [1.0000, -1.9778, 0.9780],
+      },
+      '1024': {
+        b: [0.9892, -1.9784, 0.9892],
+        a: [1.0000, -1.9783, 0.9785],
+      },
+      '2000': {
+        b: [0.9945, -1.9889, 0.9945],
+        a: [1.0000, -1.9889, 0.9890],
+      },
+      '2048': {
+        b: [0.9946, -1.9892, 0.9946],
+        a: [1.0000, -1.9892, 0.9892],
+      },
+    },
+  },
+  'hipass10': {
+    label: 'High Pass {{frequency}}Hz',
+    frequency: 10,
+    coefficients: {
+      '500': {
+        b: [0.9565, -1.9131, 0.9565],
+        a: [1.0000, -1.9112, 0.9150],
+      },
+      '512': {
+        b: [0.9575, -1.9151, 0.9575],
+        a: [1.0000, -1.9133, 0.9169],
+      },
+      '1000': {
+        b: [0.9780, -1.9561, 0.9780],
+        a: [1.0000, -1.9556, 0.9565],
+      },
+      '1024': {
+        b: [0.9785, -1.9571, 0.9785],
+        a: [1.0000, -1.9566, 0.9575],
+      },
+      '2000': {
+        b: [0.9890, -1.9779, 0.9890],
+        a: [1.0000, -1.9778, 0.9780],
+      },
+      '2048': {
+        b: [0.9892, -1.9784, 0.9892],
+        a: [1.0000, -1.9783, 0.9785],
+      },
+    },
+  },
+};

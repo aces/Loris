@@ -1,7 +1,7 @@
 import React from 'react';
 import type {CSSProperties, ReactNode} from 'react';
 import type {TFunction} from 'i18next';
-import Panel from 'jsx/Panel';
+import Panel from '../recording-viewer/src/ui/Panel';
 
 type DetailRow = {
   name: ReactNode;
@@ -31,30 +31,24 @@ export default function DetailsPanel({
   ];
 
   return (
-    <Panel id={id} title={getPanelTitle(title, t)}>
-      <div className="container-fluid">
-        <div className="row no-gutters">
-          <div className="no-gutters">
-            {columns.map((column, i) => (
-              <div key={i} className="col-md-6">
-                <div className="table-responsive">
-                  <table style={tableStyle} className="table-bordered">
-                    <tbody>
-                      {column.map(({name, value}, j) => (
-                        <tr key={j}>
-                          <th scope="row" style={headerCellStyle}>
-                            {name}
-                          </th>
-                          <td style={valueCellStyle}>{value}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ))}
+    <Panel collapsing={false} id={id} title={getPanelTitle(title, t)}>
+      <div className="acquisition-details-columns">
+        {columns.map((column, i) => (
+          <div key={i} className="table-responsive">
+            <table style={tableStyle} className="table-bordered">
+              <tbody>
+                {column.map(({name, value}, j) => (
+                  <tr key={j}>
+                    <th scope="row" style={headerCellStyle}>
+                      {name}
+                    </th>
+                    <td style={valueCellStyle}>{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </div>
+        ))}
       </div>
     </Panel>
   );

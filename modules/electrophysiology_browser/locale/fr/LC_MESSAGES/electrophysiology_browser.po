@@ -57,9 +57,6 @@ msgstr "Affichage du fichier de séparation du signal :"
 msgid "Output Type"
 msgstr "Type de sortie"
 
-msgid "File Download"
-msgstr "Téléchargement du Fichier"
-
 msgid "Download"
 msgstr "Télécharger"
 
@@ -93,12 +90,20 @@ msgstr "Auteurs des données"
 
 # Filters
 #, fuzzy
+msgid "High Pass Filter"
+msgstr "Filtre passe-haut"
+
+#, fuzzy
 msgid "No High Pass Filter"
 msgstr "Pas de filtre passe-haut"
 
 #, fuzzy
 msgid "High Pass {{frequency}}Hz"
 msgstr "Passe-haut {{frequency}} Hz"
+
+#, fuzzy
+msgid "Low Pass Filter"
+msgstr "Filtre passe-bas"
 
 #, fuzzy
 msgid "No Low Pass Filter"
@@ -118,31 +123,9 @@ msgstr "Affichage des événements"
 msgid "Add Event"
 msgstr "Ajouter un événement"
 
-msgid "Zoom"
-msgstr "Zoom"
-
-#, fuzzy
-msgid "Fit to Window"
-msgstr "Ajuster à la fenêtre"
-
-#, fuzzy
-msgid "Reset Amplitude"
-msgstr "Réinitialiser l'amplitude"
-
-#, fuzzy
-msgid "Hide Overflow"
-msgstr "Masquer le débordement"
-
-#, fuzzy
-msgid "Show Overflow"
-msgstr "Afficher le débordement"
-
 #, fuzzy
 msgid "{{numChannels}} channels"
 msgstr "{{numChannels}} chaînes"
-
-msgid "Showing:"
-msgstr "Afficher :"
 
 #, fuzzy
 msgid "to {{channelsInView}} of {{totalChannels}}"
@@ -153,21 +136,12 @@ msgstr "à {{channelsInView}} de {{totalChannels}}"
 msgid "Time (s)"
 msgstr "Temps (s)"
 
-msgid "No Offset"
-msgstr "Pas de décalage"
-
 #, fuzzy
 msgid "DC Offset"
 msgstr "Décalage CC"
 
-msgid "Spread"
-msgstr "Diffusion"
-
 msgid "Stack"
 msgstr "Empiler"
-
-msgid "Standard"
-msgstr "Standard"
 
 msgid "Isolate"
 msgstr "Isoler"
@@ -176,22 +150,10 @@ msgstr "Isoler"
 msgid "HED Endorsements"
 msgstr "Recommandations HED"
 
-#, fuzzy
-msgid "Displaying: "
-msgstr "Affichage : "
-
 # SeriesCursor
 #, fuzzy
 msgid "{{seconds}} s"
 msgstr "{{seconds}} s"
-
-# IntervalSelect
-#, fuzzy
-msgid "Timeline Range View"
-msgstr "Affichage de la plage temporelle"
-
-msgid "Show All"
-msgstr "Afficher tout"
 
 # HEDEndorsement
 msgid "No Filter"
@@ -366,14 +328,30 @@ msgid "Select All"
 msgstr "Tout sélectionner"
 
 #, fuzzy
-msgid "Electrode Map"
-msgstr "Carte des électrodes"
+msgid "Sensor Map"
+msgstr "Carte des capteurs"
+
+#, fuzzy
+msgid "Sensor Types"
+msgstr "Types de capteurs"
+
+#, fuzzy
+msgid "EEG Electrode"
+msgstr "Électrode EEG"
+
+#, fuzzy
+msgid "MEG Sensor"
+msgstr "Capteur MEG"
+
+#, fuzzy
+msgid "Head Shape Point"
+msgstr "Point de forme de tête"
 
 #, fuzzy
 msgid "Show indices"
 msgstr "Afficher les index"
 
-# DatasetTagger / EEGLabSeriesProvider
+# DatasetTagger / RecordingDataProvider
 #, fuzzy
 msgid "Dataset Tag Manager"
 msgstr "Gestionnaire de balises de jeux de données"
@@ -731,8 +709,8 @@ msgid "Electrical Stimulation Parameters"
 msgstr "Paramètres de stimulation électrique"
 
 #, fuzzy
-msgid "EEG File(s)"
-msgstr "Fichier(s) EEG"
+msgid "Acquisition File"
+msgstr "Fichier d'acquisition"
 
 #, fuzzy
 msgid "Electrodes"
@@ -755,3 +733,115 @@ msgstr "Voir la session"
 
 msgid "Channel Types"
 msgstr "Types de chaînes"
+
+
+msgid "Downloads"
+msgstr "Téléchargements"
+
+msgid "Expand recording"
+msgstr "Développer l’enregistrement"
+
+msgid "Collapse recording"
+msgstr "Réduire l’enregistrement"
+
+msgid "Session contents"
+msgstr "Contenu de la session"
+
+msgid "Expand session contents"
+msgstr "Développer le contenu de la session"
+
+msgid "Collapse session contents"
+msgstr "Réduire le contenu de la session"
+
+msgid "Session summary"
+msgstr "Résumé de la session"
+
+msgid "Acquisition Details"
+msgstr "Détails de l’acquisition"
+
+msgid "Dataset"
+msgstr "Jeu de données"
+
+msgid "Pagination"
+msgstr "Pagination"
+
+msgid "Showing"
+msgstr "Affichage"
+
+msgid "Previous Channel Page"
+msgstr "Page de canaux précédente"
+
+msgid "Previous Channel"
+msgstr "Canal précédent"
+
+msgid "Next Channel"
+msgstr "Canal suivant"
+
+msgid "Next Channel Page"
+msgstr "Page de canaux suivante"
+
+msgid "channel"
+msgstr "canal"
+
+msgid "Zoom Out"
+msgstr "Dézoomer"
+
+msgid "Reset Zoom"
+msgstr "Réinitialiser le zoom"
+
+msgid "Zoom In"
+msgstr "Zoomer"
+
+msgid "Fit Range to Selection"
+msgstr "Ajuster la plage à la sélection"
+
+msgid "Amplitude"
+msgstr "Amplitude"
+
+msgid "Decrease Amplitude"
+msgstr "Diminuer l’amplitude"
+
+msgid "Increase Amplitude"
+msgstr "Augmenter l’amplitude"
+
+msgid "Filters"
+msgstr "Filtres"
+
+msgid "Display"
+msgstr "Affichage"
+
+msgid "Overflow"
+msgstr "Débordement"
+
+msgid "Previous Range"
+msgstr "Plage précédente"
+
+msgid "Back One Second"
+msgstr "Reculer d’une seconde"
+
+msgid "Range Start"
+msgstr "Début de la plage"
+
+msgid "Range End"
+msgstr "Fin de la plage"
+
+msgid "Forward One Second"
+msgstr "Avancer d’une seconde"
+
+msgid "Next Range"
+msgstr "Plage suivante"
+
+msgid "Reset Range"
+msgstr "Réinitialiser la plage"
+
+msgid "Full Range"
+msgstr "Plage complète"
+
+msgid "Move selected time range"
+msgstr "Déplacer la plage temporelle sélectionnée"
+
+msgid "Range start"
+msgstr "Début de la plage"
+
+msgid "Range end"
+msgstr "Fin de la plage"
