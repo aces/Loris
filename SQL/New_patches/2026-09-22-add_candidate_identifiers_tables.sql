@@ -6,8 +6,14 @@ CREATE TABLE `candidate_identifier_types` (
   `IsUnique` boolean NOT NULL DEFAULT 1,
   `AutoGenerate` boolean NOT NULL DEFAULT 1,
   `AllowMultiple` boolean NOT NULL DEFAULT 0,
+  `permID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`CandidateIdentifierTypeID`),
-  UNIQUE KEY (`Name`)
+  UNIQUE KEY (`Name`),
+  CONSTRAINT `FK_candidate_identifier_type_permission`
+    FOREIGN KEY (`permID`)
+    REFERENCES `permissions` (`permID`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `candidate_identifier_types_project_rel` (
@@ -21,22 +27,6 @@ CREATE TABLE `candidate_identifier_types_project_rel` (
   CONSTRAINT `FK_candidate_identifier_type_project_project`
     FOREIGN KEY (`ProjectID`)
     REFERENCES `Project` (`ProjectID`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE `candidate_identifier_types_permission_rel` (
-  `CandidateIdentifierTypeID` int(10) unsigned NOT NULL,
-  `permID` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`CandidateIdentifierTypeID`),
-  UNIQUE KEY (`permID`),
-  CONSTRAINT `FK_candidate_identifier_type_permission_type`
-    FOREIGN KEY (`CandidateIdentifierTypeID`)
-    REFERENCES `candidate_identifier_types` (`CandidateIdentifierTypeID`)
-    ON DELETE CASCADE,
-  CONSTRAINT `FK_candidate_identifier_type_permission_perm`
-    FOREIGN KEY (`permID`)
-    REFERENCES `permissions` (`permID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
