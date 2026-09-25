@@ -114,8 +114,12 @@ class Run extends \LORIS\Http\Endpoint
      */
     private function _jsondecoded(iterable $results, array $CandIDs)
     {
+        $accessible = [];
+        foreach ($CandIDs as $candID) {
+            $accessible[strval($candID)] = true;
+        }
         foreach ($results as $row ) {
-            if (in_array(new CandID(strval($row['CandID'])), $CandIDs)) {
+            if (isset($accessible[strval($row['CandID'])])) {
                 yield json_decode($row['RowData']);
             }
         }
