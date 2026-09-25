@@ -538,3 +538,9 @@ msgstr ""
 
 msgid "or"
 msgstr ""
+
+msgid "Something went wrong."
+msgstr ""
+
+msgid "Run Query Again"
+msgstr ""
