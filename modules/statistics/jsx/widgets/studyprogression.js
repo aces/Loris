@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
-import Panel from 'Panel';
+import Panel, {PanelViews} from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {setupCharts} from './helpers/chartBuilder';
 import {useTranslation} from 'react-i18next';
@@ -132,8 +132,7 @@ const StudyProgression = (props) => {
   return loading ? <Panel title={t('Study Progression', {ns: 'statistics'})}>
     <Loader /></Panel> : (
     <>
-      <Panel
-        title={t('Study Progression', {ns: 'statistics'})}
+      <PanelViews
         id='statistics_studyprogression'
         onChangeView={(index) => {
           setupCharts(t, false, chartDetails, t('Total', {ns: 'loris'}));
@@ -263,8 +262,8 @@ const StudyProgression = (props) => {
             title: title('Site Recruitment'),
             onToggleFilters: () => showFiltersBreakdown((prev) => !prev),
           },
-          (json['studyprogression']['total_size'] ?? -1) > 0 && (
-            {
+          ...((json['studyprogression']['total_size'] ?? -1) > 0
+            ? [{
               content:
                 Object.keys(json['options']['projects']).length > 0 ? (
                   <div
@@ -284,11 +283,10 @@ const StudyProgression = (props) => {
                 'Total Size: {{count}} GB',
                 {
                   ns: 'statistics',
-                  count: json['studyprogression']['total_size'] ?? -1,
+                  count: json['studyprogression']['total_size'],
                 }
               ),
-            }
-          ),
+            }] : []),
         ]}
       />
     </>

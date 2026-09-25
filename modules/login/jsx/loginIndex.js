@@ -331,18 +331,14 @@ class Login extends Component {
             <section className={'col-md-4 col-md-push-8'}>
               <Panel
                 title={this.props.t('Login to LORIS', {ns: 'login'})}
-                class={'panel-default login-panel'}
-                collapsing={false}
-                bold={true}
+                className={'panel-default login-panel'}
               >
                 {login}
               </Panel>
               {partnerLogos.length > 0 ? (
                 <Panel
                   title={this.props.t('Our Partners', {ns: 'login'})}
-                  class="panel-default partner-container-desktop"
-                  collapsing={false}
-                  bold
+                  className="panel-default partner-container-desktop"
                 >
                   {partnerLogos}
                 </Panel>
@@ -351,9 +347,7 @@ class Login extends Component {
             <section className={'col-md-8 col-md-pull-4'}>
               <Panel
                 title={this.state.study.title}
-                class={'panel-default login-panel'}
-                collapsing={false}
-                bold={true}
+                className={'panel-default login-panel'}
               >
                 <div
                   className='study-description'
@@ -368,9 +362,7 @@ class Login extends Component {
               {partnerLogos.length > 0 ? (
                 <Panel
                   title={this.props.t('Our Partners', {ns: 'login'})}
-                  class="panel-default partner-container-mobile"
-                  collapsing={false}
-                  bold
+                  className="panel-default partner-container-mobile"
                 >
                   {partnerLogos}
                 </Panel>
