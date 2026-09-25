@@ -89,17 +89,10 @@ class Module extends \Module
 
         $categoryitems = [];
 
-        // Get the instruments that the user has access to based on their Projects
-        $userVisits  = $user->getVisits();
-        $instruments = [];
-        foreach ($userVisits as $visitLabel => $_) {
-            $visitInstruments = \Utility::getVisitInstruments($visitLabel);
-            foreach ($visitInstruments as $testName => $fullName) {
-                if (!isset($instruments[$testName])) {
-                    $instruments[$testName] = $fullName;
-                }
-            }
-        }
+        // Get the instruments that the user has access to based on their visits.
+        $instruments = \Utility::getVisitsInstruments(
+            array_keys($user->getVisits())
+        );
         foreach ($modules as $module) {
             if ($formodule !== null && $module->getName() !== $formodule) {
                 continue;
