@@ -44,6 +44,7 @@ class Data_Release extends \DataFrameworkMenu
         return $user->hasAnyPermission(
             [
                 'data_release_view',
+                'data_release_download_all',
                 'data_release_upload',
                 'data_release_edit_file_access'
             ]

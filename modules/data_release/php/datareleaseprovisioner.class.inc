@@ -53,7 +53,10 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
             FROM data_release dr
             LEFT JOIN Project p on p.ProjectID = dr.ProjectID";
 
-        if (!$user->hasPermission("superuser")) {
+        $canViewAll = $user->hasAnyPermission(
+            ['superuser', 'data_release_download_all']
+        );
+        if (!$canViewAll) {
             $query .= "
 	        INNER JOIN
                     data_release_permissions drp

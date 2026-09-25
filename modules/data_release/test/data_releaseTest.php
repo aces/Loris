@@ -36,6 +36,20 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
     }
 
     /**
+     * Tests the page loads with the permission to download all files.
+     *
+     * @return void
+     */
+    function testPageLoadsWithDownloadAllPermission(): void
+    {
+        $this->assertStringContainsString(
+            "Data Release",
+            $this->_loadWithPermission('data_release_download_all')
+        );
+        $this->resetPermissions();
+    }
+
+    /**
      * Tests the page loads with the edit permission
      *
      * @return void
@@ -95,4 +109,3 @@ class DataReleaseIntegrationTest extends LorisIntegrationTest
         )->getText();
     }
 }
-
