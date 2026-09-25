@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import type {TFunction} from 'i18next';
-import Panel from 'jsx/Panel';
+import Panel from '../recording-viewer/src/ui/Panel';
 
 declare const loris: {
   BaseURL: string;
@@ -50,8 +50,9 @@ export default function DownloadPanel({
 
   return (
     <Panel
+      collapsing={false}
       id={id}
-      title={t('File Download', ns)}
+      title={t('Downloads', ns)}
     >
       <div
         style={{minHeight: '300px'}}
@@ -84,10 +85,9 @@ export default function DownloadPanel({
                   ? (
                     <div
                       key={j}
-                      className={'form-group'}
+                      className='download-row form-group'
                     >
                       <div
-                        className='col-xs-6'
                         style={{
                           color: '#074785',
                           fontWeight: 'bold',
@@ -98,7 +98,7 @@ export default function DownloadPanel({
                       >{download.label}</div>
                       {disabled
                         ? <a
-                          className='btn disabled col-xs-6'
+                          className='btn disabled'
                           style={{
                             color: '#b3b3b3',
                             cursor: 'not-allowed',
@@ -109,7 +109,7 @@ export default function DownloadPanel({
                           {t('Not Available', ns)}
                         </a>
                         : <a
-                          className='btn btn-primary download col-xs-6'
+                          className='btn btn-primary download'
                           href={
                             type === 'physiological_event_files'
                               ? (
@@ -137,11 +137,10 @@ export default function DownloadPanel({
           if (downloads.length > 1) {
             return (
               <Panel
+                collapsing={false}
                 id={id + '-' + i}
                 title={panelName}
-                initCollapsed={i !== 0}
                 key={i}
-                parentId={id + '-group'}
               >
                 {links}
               </Panel>
