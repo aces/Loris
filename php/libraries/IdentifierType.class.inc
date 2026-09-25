@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * This file contains the Identifier class.
+ * Describe a Candidate identifier type
  *
  * PHP Version 8
  *
@@ -15,7 +15,7 @@
 namespace LORIS;
 
 /**
- * Representation of a candidate identifier type in LORIS.
+ * Representation of a candidate identifier type in LORIS
  *
  * @category Model
  * @package  CandidateIdentifiers
@@ -23,9 +23,11 @@ namespace LORIS;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Identifier
+class IdentifierType
 {
     /**
+     * Constructor for IdentifierType
+     *
      * @param int|null   $candidateIdentifierTypeID Identifier type ID
      * @param string     $name                      Identifier type name
      * @param string     $format                    Identifier format
