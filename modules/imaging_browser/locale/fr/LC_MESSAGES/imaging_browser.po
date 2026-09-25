@@ -203,3 +203,6 @@ msgstr "Sujet"
 #, fuzzy
 msgid "Download DICOM"
 msgstr "Télécharger les DICOMs"
+
+msgid "Image Acquisitions"
+msgstr "Acquisitions d'images"

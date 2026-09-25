@@ -192,7 +192,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         $scope  = new Scope(Scope::SESSION);
         $images = new \LORIS\Data\Dictionary\Category(
             "Images",
-            "Image Acquisitions",
+            dgettext("imaging_browser", "Image Acquisitions"),
         );
         $items  = [
             new DictionaryItem(
