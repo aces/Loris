@@ -46,6 +46,24 @@ msgstr ""
 msgid "My Preferences"
 msgstr ""
 
+msgid "by"
+msgstr ""
+
+msgid "Powered by"
+msgstr ""
+
+msgid "Created by"
+msgstr ""
+
+msgid "Developed at"
+msgstr ""
+
+msgid "The Neuro (Montreal Neurological Institute-Hospital)"
+msgstr ""
+
+msgid "All rights reserved."
+msgstr ""
+
 # Auto extracted strings from PHP
 # Menu categories
 #: modules/configuration/php/module.class.inc:50
