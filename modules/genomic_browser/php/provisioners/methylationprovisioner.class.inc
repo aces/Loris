@@ -25,7 +25,7 @@ class MethylationProvisioner extends \LORIS\Data\Provisioners\DBObjectProvisione
             "
             SELECT
                 psc.Name AS _PSC,
-                LPAD(candidate.CandID, 10, '0') AS _DCCID,
+                candidate.CandID AS _DCCID,
                 candidate.PSCID AS _PSCID,
                 candidate.Sex AS _Sex,
                 candidate.RegistrationCenterID as _centerID,
