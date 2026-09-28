@@ -520,3 +520,6 @@ msgstr "Nouvelle entrée"
 
 msgid "Containers"
 msgstr "Conteneurs"
+
+msgid "Specimen Collection and Availability"
+msgstr "Collecte et disponibilité des échantillons"

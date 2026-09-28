@@ -83,7 +83,7 @@ class QueryEngine extends SQLQueryEngine
         $scope    = new Scope(Scope::SESSION);
         $specimen = new Category(
             "Specimen",
-            "Specimen Collection and Availability",
+            dgettext("biobank", "Specimen Collection and Availability"),
         );
 
         $specimenTypes     = $this->_getSpecimenTypes();
