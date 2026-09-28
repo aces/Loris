@@ -37,6 +37,7 @@ class IdentifierTypeControllerTest extends TestCase
     /**
      * This method is called before each test is executed.
      * Sets up fixtures: factory, config, database
+     *
      * @return void
      */
     protected function setUp(): void
@@ -86,7 +87,8 @@ class IdentifierTypeControllerTest extends TestCase
      */
     public function testGetIdentifierTypeFromID(): void
     {
-        $identifierType = $this->identifierTypeController->getIdentifierTypeFromID(1);
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
 
         $this->assertSame(1, $identifierType->candidateIdentifierTypeID);
         $this->assertSame('TestID', $identifierType->name);
