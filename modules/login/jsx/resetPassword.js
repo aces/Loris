@@ -145,8 +145,7 @@ class ResetPassword extends Component {
       <div className={'container'}>
         <Panel
           title={this.props.t('Reset Password', {ns: 'login'})}
-          class={'panel-default panel-center'}
-          collapsing={false}
+          className={'panel-default panel-center'}
         >
           {reset}
         </Panel>
