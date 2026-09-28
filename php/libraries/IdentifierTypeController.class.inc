@@ -172,7 +172,7 @@ class IdentifierTypeController
     {
         if ($identifierType->candidateIdentifierTypeID === null) {
             throw new \InvalidArgumentException(
-                'Cannot update an identifier without an ID'
+                'Cannot update an identifier type without an ID'
             );
         }
 

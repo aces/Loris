@@ -152,6 +152,224 @@ class IdentifierTypeControllerTest extends TestCase
         $this->assertSame([], $created->projects);
         $this->assertNull($created->permissionID);
     }
+
+    /**
+     * Tests that an identifier type can be created with a project
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::createIdentifierType
+     */
+    public function testCreateIdentifierTypeWithProject(): void
+    {
+        $project = \Project::getProjectFromID(
+            new \ProjectID('1')
+        );
+
+        $identifierType = new \LORIS\IdentifierType(
+            candidateIdentifierTypeID: null,
+            name: 'ProjectID',
+            format: '{SEQUENCE:4,FORMAT:numeric}',
+            isRequired: true,
+            isUnique: true,
+            autoGenerate: true,
+            allowMultiple: false,
+            projects: [$project],
+            permissionID: null,
+        );
+
+        $created = $this->identifierTypeController->createIdentifierType(
+            $identifierType
+        );
+
+        $this->assertCount(1, $created->projects);
+        $this->assertSame(
+            '1',
+            strval($created->projects[0]->getId())
+        );
+    }
+
+    /**
+     * Tests that an identifier type can be created with a permission
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::createIdentifierType
+     */
+    public function testCreateIdentifierTypeWithPermission(): void
+    {
+        $identifierType = new \LORIS\IdentifierType(
+            candidateIdentifierTypeID: null,
+            name: 'PermissionID',
+            format: '{SEQUENCE:4,FORMAT:numeric}',
+            isRequired: true,
+            isUnique: true,
+            autoGenerate: true,
+            allowMultiple: false,
+            projects: [],
+            permissionID: 1,
+        );
+
+        $created = $this->identifierTypeController->createIdentifierType(
+            $identifierType
+        );
+
+        $this->assertSame(1, $created->permissionID);
+    }
+
+    /**
+     * Tests that an identifier type can be updated
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::updateIdentifierType
+     */
+    public function testUpdateIdentifierType(): void
+    {
+        $identifierType = new \LORIS\IdentifierType(
+            candidateIdentifierTypeID: 1,
+            name: 'UpdatedID',
+            format: '{SEQUENCE:8,FORMAT:numeric}',
+            isRequired: false,
+            isUnique: false,
+            autoGenerate: false,
+            allowMultiple: true,
+            projects: [],
+            permissionID: null,
+        );
+
+        $updated = $this->identifierTypeController->updateIdentifierType(
+            $identifierType
+        );
+
+        $this->assertSame(1, $updated->candidateIdentifierTypeID);
+        $this->assertSame('UpdatedID', $updated->name);
+        $this->assertSame(
+            '{SEQUENCE:8,FORMAT:numeric}',
+            $updated->format
+        );
+        $this->assertFalse($updated->isRequired);
+        $this->assertFalse($updated->isUnique);
+        $this->assertFalse($updated->autoGenerate);
+        $this->assertTrue($updated->allowMultiple);
+        $this->assertSame([], $updated->projects);
+        $this->assertNull($updated->permissionID);
+    }
+
+    /**
+     * Tests that an identifier type's projects can be updated
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::updateIdentifierType
+     */
+    public function testUpdateIdentifierTypeWithProject(): void
+    {
+        $project = \Project::getProjectFromID(
+            new \ProjectID('1')
+        );
+
+        $identifierType = new \LORIS\IdentifierType(
+            candidateIdentifierTypeID: 1,
+            name: 'TestID',
+            format: '{SEQUENCE:4,FORMAT:numeric}',
+            isRequired: true,
+            isUnique: true,
+            autoGenerate: true,
+            allowMultiple: false,
+            projects: [$project],
+            permissionID: null,
+        );
+
+        $updated = $this->identifierTypeController->updateIdentifierType(
+            $identifierType
+        );
+
+        $this->assertCount(1, $updated->projects);
+        $this->assertSame(
+            '1',
+            strval($updated->projects[0]->getId())
+        );
+    }
+
+    /**
+     * Tests that an identifier type's permission can be updated
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::updateIdentifierType
+     */
+    public function testUpdateIdentifierTypeWithPermission(): void
+    {
+        $identifierType = new \LORIS\IdentifierType(
+            candidateIdentifierTypeID: 1,
+            name: 'TestID',
+            format: '{SEQUENCE:4,FORMAT:numeric}',
+            isRequired: true,
+            isUnique: true,
+            autoGenerate: true,
+            allowMultiple: false,
+            projects: [],
+            permissionID: 1,
+        );
+
+        $updated = $this->identifierTypeController->updateIdentifierType(
+            $identifierType
+        );
+
+        $this->assertSame(1, $updated->permissionID);
+    }
+
+    /**
+     * Tests that an identifier type without an ID cannot be updated
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::updateIdentifierType
+     */
+    public function testUpdateIdentifierTypeWithoutID(): void
+    {
+        $identifierType = new \LORIS\IdentifierType(
+            candidateIdentifierTypeID: null,
+            name: 'TestID',
+            format: '{SEQUENCE:4,FORMAT:numeric}',
+            isRequired: true,
+            isUnique: true,
+            autoGenerate: true,
+            allowMultiple: false,
+            projects: [],
+            permissionID: null,
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->identifierTypeController->updateIdentifierType(
+            $identifierType
+        );
+    }
+
+    /**
+     * Tests that an identifier type can be deleted
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::deleteIdentifierType
+     */
+    public function testDeleteIdentifierType(): void
+    {
+        $this->identifierTypeController->deleteIdentifierType(1);
+
+        $this->expectException(\NotFound::class);
+
+        $this->identifierTypeController->getIdentifierTypeFromID(1);
+    }
+
+    /**
+     * Tests that deleting a nonexistent identifier type throws NotFound
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::deleteIdentifierType
+     */
+    public function testDeleteIdentifierTypeNotFound(): void
+    {
+        $this->expectException(\NotFound::class);
+
+        $this->identifierTypeController->deleteIdentifierType(2);
+    }
+
     /**
      * Tears down the fixture and cleans up temporary tables.
      * This method is called after a test is executed.
