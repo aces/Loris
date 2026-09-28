@@ -159,7 +159,7 @@ The following permissions should be available in the database:
 
 Datatable columns:
 
-| No. | GenomicFileID | FileName | Description | FileType | Date Inserted | InsertedByUserID | Caveat | Notes |
+| No. | Name | Description | Type | Date | Inserted By User | Caveat | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | | | | | | | | | |
 
