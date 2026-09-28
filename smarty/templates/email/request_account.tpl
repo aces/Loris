@@ -6,6 +6,9 @@ Hi,
 Name - {$Real_name}
 Email - {$Email}
 Site - {$Site}
+Project - {$Project}
+Examiner - {$Examiner}
+Radiologist - {$Radiologist}
 
 In order to accept the user account request, you may go to {$URL}
 This is an automated message.
