@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 /**
- * This file contains the IdentifierTypeController class.
+ * This file contains the IdentifierTypeController class
  *
  * PHP Version 8
  *
@@ -43,7 +43,7 @@ class IdentifierTypeController
     }
 
     /**
-     * Gets an identifier type by ID.
+     * Gets an identifier type by ID
      *
      * @param int $candidateIdentifierTypeID Identifier type ID
      *
@@ -83,19 +83,19 @@ class IdentifierTypeController
             isUnique: (bool) $row['IsUnique'],
             autoGenerate: (bool) $row['AutoGenerate'],
             allowMultiple: (bool) $row['AllowMultiple'],
-            projects: $this->getProjects($candidateIdentifierTypeID),
+            projects: $this->_getProjects($candidateIdentifierTypeID),
             permissionID: isset($row['permID']) ? (int) $row['permID'] : null,
         );
     }
 
     /**
-     * Gets the projects associated with an identifier type.
+     * Gets the projects associated with an identifier type
      *
      * @param int $candidateIdentifierTypeID Identifier type ID
      *
      * @return \Project[] Associated projects
      */
-    private function getProjects(
+    private function _getProjects(
         int $candidateIdentifierTypeID
     ): array {
         $projectIDs = $this->database->pselectCol(
@@ -120,7 +120,8 @@ class IdentifierTypeController
      *
      * @return IdentifierType Created identifier type
      */
-    public function createIdentifierType(IdentifierType $identifierType): IdentifierType
+    public function createIdentifierType(IdentifierType $identifierType)
+    : IdentifierType
     {
         $this->database->beginTransaction();
 
@@ -168,7 +169,8 @@ class IdentifierTypeController
      *
      * @throws \NotFound If the identifier type does not exist
      */
-    public function updateIdentifierType(IdentifierType $identifierType): IdentifierType
+    public function updateIdentifierType(IdentifierType $identifierType)
+    : IdentifierType
     {
         if ($identifierType->candidateIdentifierTypeID === null) {
             throw new \InvalidArgumentException(
