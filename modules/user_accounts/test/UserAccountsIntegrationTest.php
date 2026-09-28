@@ -248,6 +248,38 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 
     /**
+     * Tests that saving with every permission unchecked removes them all.
+     *
+     * @return void
+     */
+    function testAllPermissionsCanBeRemoved(): void
+    {
+        $this->DB->insert(
+            'user_perm_rel',
+            [
+                'userID' => 999995,
+                'permID' => 4,
+            ]
+        );
+        $this->_accessUser(self::UNITTESTERTWO_USERNAME);
+
+        $permissions = $this->webDriver->findElements(
+            WebDriverBy::cssSelector('input[name^="permID["]:checked')
+        );
+        $this->assertNotEmpty($permissions);
+        foreach ($permissions as $permission) {
+            $permission->click();
+        }
+        $this->submit();
+
+        $remaining = $this->DB->pselectOne(
+            'SELECT COUNT(*) FROM user_perm_rel WHERE userID = :userID',
+            ['userID' => 999995]
+        );
+        $this->assertSame(0, (int) $remaining);
+    }
+
+    /**
      * Tests that the creation of a new user works.
      *
      * @return void
@@ -548,4 +580,3 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
     }
 }
-
