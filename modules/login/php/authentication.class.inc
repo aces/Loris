@@ -174,10 +174,6 @@ class Authentication extends \NDB_Page implements ETagCalculator
             $_SESSION['State'] =& State::singleton();
             $_SESSION['State']->setProperty('login', $login);
             $login->setState();
-        } else if ($login->passwordChangeRequired()) {
-            return new \LORIS\Http\Response\JSON\Conflict(
-                'password expired'
-            );
         } else {
             // login error.
             return new \LORIS\Http\Response\JSON\Conflict(

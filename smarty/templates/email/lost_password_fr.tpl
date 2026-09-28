@@ -1,12 +1,13 @@
-Subject: Mot de passe oublié - {$study}
+Subject: Demande de changement de mot de passe - {$study}
 
 {$realname},
 
 
-Votre mot de passe à été réinitialisé :
-{$password}
+Vous avez soumis une demande de changement de mot de passe.
 
-Veuillez vous connecter de nouveau. Il vous sera demandé de modifier votre mot de passe après votre connexion.
+Si vous n'êtes pas à l'origine de cette demande, veuillez ignorer ce courriel et vous assurer que vous pouvez toujours vous connecter à votre compte. Si vous êtes à l'origine de cette demande, utilisez le lien suivant pour changer votre mot de passe.
+
+{$resetpasswordurl}
 
 Merci,
 

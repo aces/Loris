@@ -1,7 +1,7 @@
 # Reset Password Test Plan
 
-1. In the `users` table in the database, set a user's `PasswordChangeRequired` value to `1`.
-2. Login as that user. You should see an update password page.
+1. Follow steps 1, 2 and 3 of the Lost_Password_Test_Plan.md
+2. Ensure that you are taken to the password reset page.
 3. Try using a very short password (e.g. "pass"). You should get an error.
 4. Try using a very weak password (e.g. "password"). You should get an error.
 5. Try entering unmatched passwords. You should get an error notice.
