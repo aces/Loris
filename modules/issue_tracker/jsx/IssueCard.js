@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 import Modal from 'jsx/Modal';
@@ -18,6 +18,8 @@ const IssueCard = React.memo(function IssueCard(props) {
     sites,
     assignees,
     otherWatchers,
+    isSelected,
+    onToggleSelection,
   } = props;
 
   const [isEditing, setIsEditing] = useState(false);
@@ -31,6 +33,11 @@ const IssueCard = React.memo(function IssueCard(props) {
 
   const [newAssignee, setNewAssignee] = useState(issue.assignee || '');
   const [newWatchers, setNewWatchers] = useState(issue.othersWatching || []);
+
+  useEffect(() => {
+    setEditedIssue({...issue});
+    setTempEditedIssue({...issue});
+  }, [issue]);
 
   const handleInputChange = (field, value) => {
     setTempEditedIssue((prev) => ({
@@ -208,7 +215,7 @@ const IssueCard = React.memo(function IssueCard(props) {
   const description = editedIssue.description || '';
 
   return (
-    <div className="issue-card">
+    <div className={'issue-card' + (isSelected ? ' batch-selected' : '')}>
       <Modal
         title={t('Add New Comment', {ns: 'issue_tracker'})}
         onClose={handleCloseAddCommentModal}
@@ -288,6 +295,16 @@ const IssueCard = React.memo(function IssueCard(props) {
       </Modal>
       <div className="issue-header">
         <div className="issue-title-section">
+          {onToggleSelection && (
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={onToggleSelection}
+              className="issue-selection-checkbox"
+              aria-label={`${t('Select issue', {ns: 'issue_tracker'})} ` +
+                `#${issue.issueID}`}
+            />
+          )}
           <h3>
             <span className="issue-id">#{issue.issueID}</span>
             {isEditing ? (
@@ -576,6 +593,8 @@ IssueCard.propTypes = {
   sites: PropTypes.object.isRequired,
   assignees: PropTypes.object.isRequired,
   otherWatchers: PropTypes.object.isRequired,
+  isSelected: PropTypes.bool,
+  onToggleSelection: PropTypes.func,
   t: PropTypes.func,
 };
 
