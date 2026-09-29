@@ -90,9 +90,28 @@ class Module extends \Module
         $categoryitems = [];
 
         // Get the instruments that the user has access to based on their visits.
-        $instruments = \Utility::getVisitsInstruments(
-            array_keys($user->getVisits())
-        );
+        $params       = [];
+        $placeholders = [];
+        foreach (array_keys($user->getVisits()) as $i => $visitLabel) {
+            $params["vl$i"] = $visitLabel;
+            $placeholders[] = ":vl$i";
+        }
+        $instruments = [];
+        if (count($placeholders) > 0) {
+            $instruments = array_flip(
+                $loris->getDatabaseConnection()->pselectCol(
+                    "SELECT DISTINCT t.Test_name
+                    FROM session s
+                    JOIN candidate c ON (c.ID=s.CandidateID)
+                    JOIN flag f ON (f.sessionID=s.id)
+                    JOIN test_names t ON (f.TestID=t.ID)
+                    WHERE c.Active='Y' AND s.Active='Y'
+                    AND s.Visit_label IN (" . join(',', $placeholders) . ")
+                    AND s.CenterID != '1' AND c.Entity_type != 'Scanner'",
+                    $params
+                )
+            );
+        }
         foreach ($modules as $module) {
             if ($formodule !== null && $module->getName() !== $formodule) {
                 continue;
