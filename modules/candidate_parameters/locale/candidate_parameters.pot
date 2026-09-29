@@ -228,6 +228,87 @@ msgstr ""
 msgid "Comments: "
 msgstr ""
 
+msgid "Candidate Identifiers"
+msgstr ""
+
+msgid "LORIS Candidate Identifier"
+msgstr ""
+
+msgid "Project Candidate Identifier"
+msgstr ""
+
+msgid "Caveat Emptor Flag for Candidate"
+msgstr ""
+
+msgid "Reason for Caveat Emptor Flag Candidate"
+msgstr ""
+
+msgid "Other reason for Caveat Emptor Flag Candidate, please specify"
+msgstr ""
+
+msgid "Candidate Demographics"
+msgstr ""
+
+msgid "Date of Birth"
+msgstr ""
+
+msgid "Date of Death"
+msgstr ""
+
+msgid "Candidate's biological sex"
+msgstr ""
+
+msgid "Expected Date of Confinement"
+msgstr ""
+
+msgid "Other parameters"
+msgstr ""
+
+msgid "The study visit label"
+msgstr ""
+
+msgid "The date when the visit was registered"
+msgstr ""
+
+msgid "Visit's current stage"
+msgstr ""
+
+msgid "Behavioural feedback at the session level"
+msgstr ""
+
+msgid "Whether a session was failure or did the candidate withdrawal"
+msgstr ""
+
+msgid "The LORIS project to categorize this session"
+msgstr ""
+
+msgid "The LORIS cohort used for battery selection"
+msgstr ""
+
+msgid "The Site at which a visit occurred"
+msgstr ""
+
+msgid "The type of entity which this candidate represents"
+msgstr ""
+
+msgid "The status of the participant within the study"
+msgstr ""
+
+msgid "The reason of the status of the participant within the study"
+msgstr ""
+
+msgid "Comments about the status of the participant within the study"
+msgstr ""
+
+msgid "Candidate comments"
+msgstr ""
+
+msgid "The site at which this candidate was initially registered"
+msgstr ""
+
+msgid "The project for which this candidate was initially registered"
+msgstr ""
+
 # Widgets
 msgid "Consent Summary"
 msgstr ""
