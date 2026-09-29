@@ -48,6 +48,7 @@ class CandidatesProvisioner extends DBRowProvisioner
                c.CandID as CandID,
                p.Name as ProjectName,
                c.RegistrationProjectID as ProjectID,
+               rc.title as RegistrationCohort,
                c.PSCID as PSCID,
                c.RegistrationCenterID as CenterID,
                s.Name as SiteName,
@@ -60,6 +61,8 @@ class CandidatesProvisioner extends DBRowProvisioner
                ON (s.CenterID = c.RegistrationCenterID)
              LEFT JOIN Project p
                ON (c.RegistrationProjectID = p.ProjectID)
+             LEFT JOIN cohort rc
+               ON (c.RegistrationCohortID = rc.CohortID)
              WHERE c.Active=\'Y\'
              ORDER BY c.CandID
             ',
@@ -80,4 +83,3 @@ class CandidatesProvisioner extends DBRowProvisioner
         return new CandidatesRow($row);
     }
 }
-

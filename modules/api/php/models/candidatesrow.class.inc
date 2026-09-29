@@ -27,6 +27,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
     private $_candid;
     private $_projectname;
     private $_projectid;
+    private $_registrationcohort;
     private $_pscid;
     private $_sitename;
     private $_edc;
@@ -46,6 +47,7 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
         if ($row['ProjectID'] !== null) {
             $this->_projectid = \ProjectID::singleton(intval($row['ProjectID']));
         }
+        $this->_registrationcohort = $row['RegistrationCohort'] ?? '';
         $this->_pscid    = $row['PSCID'] ?? null;
         $this->_sitename = $row['SiteName'] ?? null;
         $this->_edc      = $row['EDC'] ?? null;
@@ -62,13 +64,14 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
     public function jsonSerialize() : array
     {
         $obj = [
-            'CandID'  => $this->_candid,
-            'Project' => $this->_projectname,
-            'PSCID'   => $this->_pscid,
-            'Site'    => $this->_sitename,
-            'EDC'     => $this->_edc,
-            'DoB'     => $this->_dob,
-            'Sex'     => $this->_sex,
+            'CandID'             => $this->_candid,
+            'Project'            => $this->_projectname,
+            'RegistrationCohort' => $this->_registrationcohort,
+            'PSCID'              => $this->_pscid,
+            'Site'               => $this->_sitename,
+            'EDC'                => $this->_edc,
+            'DoB'                => $this->_dob,
+            'Sex'                => $this->_sex,
         ];
 
         return $obj;
