@@ -1,0 +1,158 @@
+/**
+ * Design tokens: the values components style themselves with.
+ *
+ * Two layers. The palette names colours for what they are. The roles name them
+ * for the job they do, and components reference the roles.
+ *
+ * Loaded on every page from main.tpl and public_layout.tpl.
+ * See docs/DesignSystem.md.
+ */
+:root {
+    /* ---- Palette ------------------------------------------------- */
+
+    /* Each hue has a solid, a fill and a highlight. The blue carries two more:
+       it is the only one with a pressed state and a border of its own. */
+
+    /* Blue, the primary */
+    --loris-blue-900: #042d54;
+    --loris-blue-700: #064785;
+    --loris-blue-500: #246eb6;
+    --loris-blue-100: #e4ebf2;
+    --loris-blue-50: #f3f6f9;
+
+    /* Sky, the information colour */
+    --loris-sky: #a6d3f5;
+    --loris-sky-100: #d4eafa;
+    --loris-sky-50: #ecf6fd;
+
+    /* Orange, the secondary */
+    --loris-orange: #e89a0c;
+    --loris-orange-100: #fcf3e2;
+    --loris-orange-50: #fefaf2;
+
+    /* Purple, categorical */
+    --loris-purple: #690096;
+    --loris-purple-100: #f2e9f6;
+    --loris-purple-50: #f9f5fb;
+
+    /* Fixed meanings */
+    --loris-green: #0f9d58;
+    --loris-green-100: #e5f4ed;
+    --loris-green-50: #f3faf7;
+    --loris-red: #c0402a;
+    --loris-red-100: #f8eae8;
+    --loris-red-50: #fcf6f4;
+
+    /* Grey, dark to white */
+    --loris-grey-800: #333;
+    --loris-grey-600: #666;
+    --loris-grey-500: #999;
+    --loris-grey-300: #ccc;
+    --loris-grey-150: #efefef;
+    --loris-grey-50: #f8f8f8;
+    --loris-white: #fff;
+
+    /* ---- Roles --------------------------------------------------- */
+
+    /* Actions. solid, then border, fill and highlight of the same hue. */
+    --loris-color-accent: var(--loris-blue-700);
+    --loris-color-accent-strong: var(--loris-blue-900);
+    --loris-color-accent-border: var(--loris-blue-500);
+    --loris-color-accent-fill: var(--loris-blue-100);
+    --loris-color-accent-highlight: var(--loris-blue-50);
+
+    --loris-color-secondary: var(--loris-orange);
+    --loris-color-secondary-fill: var(--loris-orange-100);
+
+    /* Help, notices, and rules that govern what the next action does */
+    --loris-color-info: var(--loris-sky);
+    --loris-color-info-fill: var(--loris-sky-100);
+
+    /* Edge for a control drawn in the sky, which is too light to define a
+       shape against white on its own */
+    --loris-color-info-edge: var(--loris-blue-500);
+
+    --loris-color-warning: var(--loris-orange);
+    --loris-color-success: var(--loris-green);
+    --loris-danger: var(--loris-red);
+    --loris-danger-strong: var(--loris-red);
+
+    /* States: hover is the pointer, selected is a settled choice, active is a
+       state being passed through */
+    --loris-state-hover: var(--loris-color-accent-highlight);
+    --loris-state-selected: var(--loris-color-accent-fill);
+    --loris-state-selected-solid: var(--loris-color-accent);
+    --loris-state-active: var(--loris-color-secondary-fill);
+    --loris-state-active-solid: var(--loris-color-secondary);
+
+    /* Surfaces */
+    --loris-surface: var(--loris-white);
+    --loris-surface-sunken: var(--loris-grey-50);
+
+    /* Borders */
+    --loris-border: var(--loris-grey-300);
+    --loris-border-subtle: var(--loris-grey-150);
+
+    /* Text */
+    --loris-text: var(--loris-grey-800);
+    --loris-text-muted: var(--loris-grey-600);
+    --loris-text-faint: var(--loris-grey-500);
+    --loris-text-disabled: var(--loris-grey-300);
+
+    /* Controls. The off track and its edge differ from the on state in
+       lightness, not only in hue. */
+    --loris-control-off: var(--loris-grey-500);
+    --loris-control-off-edge: var(--loris-grey-600);
+
+    /* Elevation */
+    --loris-shadow-overlay: 0 6px 18px rgba(0, 0, 0, .18);
+    --loris-shadow-raised: 0 1px 2px rgba(0, 0, 0, .3);
+
+    /* Fields, so a control outside a form matches one inside it */
+    --loris-field-bg: var(--loris-white);
+    --loris-field-border: var(--loris-grey-300);
+    --loris-field-border-focus: var(--loris-blue-500);
+    --loris-field-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+
+    /* The focus glow on its own, for a field whose border something else
+       draws */
+    --loris-field-glow-focus: 0 0 8px rgba(36, 110, 182, .5);
+    --loris-field-shadow-focus: var(--loris-field-shadow),
+                                var(--loris-field-glow-focus);
+    --loris-field-padding: 6px 12px;
+
+    /* ---- Shape, spacing and type --------------------------------- */
+
+    /* Corners */
+    --loris-radius: 4px;
+    --loris-radius-sm: 3px;
+
+    /* Spacing */
+    --loris-space-xs: 4px;
+    --loris-space-sm: 6px;
+    --loris-space-md: 8px;
+    --loris-space-lg: 10px;
+    --loris-space-xl: 16px;
+
+    /* Type. The size, family and line height record what bootstrap's base
+       already sets. */
+    --loris-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                         "Helvetica Neue", Arial, sans-serif;
+
+    /* Identifiers, where I, l and 1 have to stay apart */
+    --loris-font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+                              Consolas, "Liberation Mono", monospace;
+    --loris-font-size: 14px;
+    --loris-font-size-sm: 12px;
+    --loris-font-size-xs: 11px;
+    --loris-line-height: 1.42857143;
+
+    /* Height of a control sitting in a row with a form-control */
+    --loris-control-height: 34px;
+    --loris-control-height-sm: 30px;
+}
+
+/* Qualified with html so it does not depend on load order against bootstrap */
+html body {
+    font-family: var(--loris-font-family);
+}
