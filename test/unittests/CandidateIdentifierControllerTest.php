@@ -15,7 +15,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/IdentifierType.class.inc';
 require_once __DIR__ . '/../../php/libraries/IdentifierTypeController.class.inc';
-require_once __DIR__ 
+require_once __DIR__
 . '/../../php/libraries/CandidateIdentifierController.class.inc';
 
 use PHPUnit\Framework\TestCase;
