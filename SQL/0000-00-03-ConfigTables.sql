@@ -8,7 +8,7 @@ CREATE TABLE `ConfigSettings` (
     `Description` varchar(255) DEFAULT NULL,
     `Visible` tinyint(1) DEFAULT '0',
     `AllowMultiple` tinyint(1) DEFAULT '0',
-    `DataType` ENUM('text','boolean','email','instrument','textarea','scan_type','date_format','lookup_center','path','web_path', 'log_level') DEFAULT NULL,
+    `DataType` ENUM('text','boolean','email','instrument','textarea','scan_type','date_format','lookup_center','path','web_path', 'log_level','image') DEFAULT NULL,
     `Parent` int(11) DEFAULT NULL,
     `Label` varchar(255) DEFAULT NULL,
     `OrderNumber` int(11) DEFAULT NULL,
@@ -47,12 +47,12 @@ CREATE TABLE `Config` (
 
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('study', 'Settings related to details of the study', 1, 0, 'Study', 1);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber, Multilingual) SELECT 'title', 'Full descriptive title of the study', 1, 0, 'text', ID, 'Study title', 1, true FROM ConfigSettings WHERE Name="study";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'studylogo', 'Filename containing logo of the study. File should be located under the htdocs/images/ folder', 1, 0, 'text', ID, 'Study logo', 2 FROM ConfigSettings WHERE Name="study";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'login_logo_left', 'Path for top left logo on the login page.', 1, 0, 'text', ID, 'Login Top Left Logo', 3 FROM ConfigSettings WHERE Name="study";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'login_logo_right', 'Path for top right logo on the login page.', 1, 0, 'text', ID, 'Login Top Right Logo', 3 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'studylogo', 'Image displayed as the study logo', 1, 0, 'image', ID, 'Study logo', 2 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'login_logo_left', 'Image displayed at the top left of the login page', 1, 0, 'image', ID, 'Login Top Left Logo', 3 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'login_logo_right', 'Image displayed at the top right of the login page', 1, 0, 'image', ID, 'Login Top Right Logo', 3 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'login_logo_left_link', 'Optional link to redirect when clicking on top left logo', 1, 0, 'text', ID, 'Login Top Left Logo Link', 4 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'login_logo_right_link', 'Optional link to redirect when clicking on top right logo', 1, 0, 'text', ID, 'Login Top Right Logo Link', 4 FROM ConfigSettings WHERE Name="study";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'partner_logos', 'Logos for partners to be displayed in the homepage', 1, 1, 'text', ID, 'Partner Logos', 4 FROM ConfigSettings WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'partner_logos', 'Partner images displayed on the homepage', 1, 1, 'image', ID, 'Partner Logos', 4 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'startYear', "Start year for study recruitment or data collection", 1, 0, 'text', ID, 'Start year', 5 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'endYear', "End year for study recruitment or data collection", 1, 0, 'text', ID, 'End year', 6 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ageMin', 'Minimum candidate age in years (0+)', 1, 0, 'text', ID, 'Minimum candidate age', 7 FROM ConfigSettings WHERE Name="study";
@@ -90,6 +90,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'publication_deletions', 'Path to deleted publications', 1, 0, 'web_path', ID, 'Deleted Publications', 11 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'documentRepositoryPath', 'Path to uploaded document repository files', 1, 0, 'web_path', ID, 'Document Repository Upload Path', 13 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'dataReleasePath', 'Path to uploaded data release files', 1, 0, 'web_path', ID, 'Data release Upload Path', 14 FROM ConfigSettings WHERE Name="paths";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'config_upload_path', 'Path to images uploaded through the Configuration module', 1, 0, 'web_path', ID, 'Configuration Upload Path', 15 FROM ConfigSettings WHERE Name="paths";
 
 
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('gui', 'Settings related to the overall display of LORIS', 1, 0, 'GUI', 3);
@@ -242,6 +243,12 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "none" FROM ConfigSettings WHERE
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="imagePath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "%LORISROOT%" FROM ConfigSettings WHERE Name="base";
+INSERT INTO Config (ConfigID, Value)
+SELECT upload.ID, CONCAT(TRIM(TRAILING '/' FROM base.Value), '/htdocs/images/configuration/')
+FROM ConfigSettings upload
+JOIN ConfigSettings baseSetting ON baseSetting.Name="base"
+JOIN Config base ON base.ConfigID=baseSetting.ID
+WHERE upload.Name="config_upload_path";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "tools/logs/" FROM ConfigSettings WHERE Name="log";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/bin/mri/" FROM ConfigSettings WHERE Name="MRICodePath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/incoming/" FROM ConfigSettings WHERE Name="MRIUploadIncomingPath";

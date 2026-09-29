@@ -106,6 +106,62 @@ $(function() {
     });
   });
 
+  $('body').on('click', '.configuration-image-upload-button', function() {
+    let button = $(this);
+    let upload = button.closest('.configuration-image-upload');
+    let input = upload.find('.configuration-image-file')[0];
+    let file = input.files[0];
+
+    if (!file) {
+      swal.fire({
+        text: 'Select an image to upload.',
+        type: 'warning',
+      });
+      return;
+    }
+
+    let data = new FormData();
+    data.append('file', file);
+    button.prop('disabled', true);
+
+    $.ajax({
+      type: 'post',
+      url: loris.BaseURL + '/configuration/upload',
+      data: data,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+        $('.configuration-image-select').each(function() {
+          let select = $(this);
+          let exists = select.find('option').filter(function() {
+            return $(this).val() === response.path;
+          }).length > 0;
+          if (!exists) {
+            select.append(new Option(response.path, response.path));
+          }
+        });
+        upload.prev('.configuration-image-select').val(response.path);
+        input.value = '';
+        swal.fire({
+          text: 'Image uploaded. Submit the form to save this selection.',
+          type: 'success',
+        });
+      },
+      error: function(xhr) {
+        let message = xhr.responseJSON && xhr.responseJSON.error
+          ? xhr.responseJSON.error
+          : 'The image could not be uploaded.';
+        swal.fire({
+          text: message,
+          type: 'error',
+        });
+      },
+      complete: function() {
+        button.prop('disabled', false);
+      },
+    });
+  });
+
   // On form submit, process the changes through an AJAX call
   $('form').on('submit', function(e) {
     e.preventDefault();
