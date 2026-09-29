@@ -19,6 +19,21 @@ A static type checker for javascript.
 To install the Protocol Buffers Compiler (protoc), run:
 `apt install -y protobuf-compiler`
 
+## Signal rendering architecture
+
+Signal samples are rendered by a small WebGL2 backend in
+`src/signals/rendering`. React owns controls and state, while a single canvas
+owns all visible traces. Axes and the bounded number of event annotations stay
+in an SVG overlay.
+
+The render model packs samples into typed arrays, reduces each complete trace
+to a viewport-aligned min/max envelope independent of server chunk boundaries,
+and retains source chunks for analytical hover hit testing. Server chunk
+selection targets four visible source values per CSS pixel, subject to a
+request-count guardrail, while the raw-chunk LRU is bounded by entry and byte
+budgets. Data loading, hit testing, and render-model construction remain
+independent of WebGL APIs.
+
 
 ## <a name="user-manual"></a> User manual
 
@@ -39,7 +54,7 @@ Several tools can be used to navigate through the Signal Viewer:
    - *[<<] / [>>]*: These arrows translate the interval bounds backwards or forwards, respectively, by the value of the interval.
    - *Text fields*: The text fields can be edited to manually set the interval.
    - *Sliders*: The sliders can be dragged as an alternative way to set the interval range.
- - The **Amplitude** and **Filter** tools and the **Show/Hide Overflow** button (3) can be used to increase/reduce the amplitude scale, apply high or low-pass filters, or toggle the visibility of signal spillage, respectively.
+ - The **Amplitude** and **Filter** tools (3) can be used to increase/reduce the amplitude scale or apply high and low-pass filters.
  - The **Channel Navigation** (4) toolbar can be used to navigate through the viewed channels.
    - *Dropdown*: This dropdown allow to change the number of displayed channels. Currently supported values are: 4, 8 16, 32 or 64 visible channels.
    - *Text field*: This can be used to manually set the starting index of the displayed channels.
@@ -73,4 +88,3 @@ The montage supports 2 display modes: 2D and 3D.
 |                                                                                                              2D View                                                                                                               | 3D View |
 |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-------------------------:|
 | <img width="300" src="https://images.loris.ca/eeg-browser/electrodes-2d-hover.png"/><br/> The 2D view is a stereographic projection of the electrodes position. Electrodes are indexed and their name is displayed on mouse hover. | <img width="300" src="https://images.loris.ca/eeg-browser/electrodes-3d.png" /><br/> The 3D view displays the exact position of the electrodes on the brain. |
-

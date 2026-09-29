@@ -810,9 +810,6 @@ msgstr "Filtres"
 msgid "Display"
 msgstr "Affichage"
 
-msgid "Overflow"
-msgstr "Débordement"
-
 msgid "Previous Range"
 msgstr "Plage précédente"
 
@@ -845,3 +842,9 @@ msgstr "Début de la plage"
 
 msgid "Range end"
 msgstr "Fin de la plage"
+
+msgid "Signal traces"
+msgstr "Tracés des signaux"
+
+msgid "Signal rendering requires WebGL2: {{error}}"
+msgstr "Le rendu des signaux nécessite WebGL2 : {{error}}"
