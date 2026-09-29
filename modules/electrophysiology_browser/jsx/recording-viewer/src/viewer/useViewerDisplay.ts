@@ -5,7 +5,6 @@ type ViewerDisplayState = {
   withDCOffset: boolean,
   stackedView: boolean,
   singleMode: boolean,
-  showOverflow: boolean,
 };
 
 type ViewerDisplayOption = keyof ViewerDisplayState;
@@ -15,7 +14,6 @@ const initialDisplayState: ViewerDisplayState = {
   withDCOffset: true,
   stackedView: false,
   singleMode: false,
-  showOverflow: false,
 };
 
 /** Toggle one display option while preserving display-state invariants. */
@@ -37,7 +35,6 @@ export function useViewerDisplay() {
   const toggleDCOffset = useCallback(() => toggle('withDCOffset'), []);
   const toggleStackedView = useCallback(() => toggle('stackedView'), []);
   const toggleSingleMode = useCallback(() => toggle('singleMode'), []);
-  const toggleShowOverflow = useCallback(() => toggle('showOverflow'), []);
 
   return {
     ...state,
@@ -45,6 +42,5 @@ export function useViewerDisplay() {
     toggleDCOffset,
     toggleStackedView,
     toggleSingleMode,
-    toggleShowOverflow,
   };
 }

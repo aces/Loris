@@ -2,6 +2,7 @@ import React, {
   useEffect,
   useRef,
   useContext,
+  useState,
 } from 'react';
 import {colorOrder} from '../../ui/colors';
 import {
@@ -11,10 +12,10 @@ import {
 import {ParentSize} from '@visx/responsive';
 import {
   ChannelAxesLayer,
-  ChannelsLayer,
   EventsLayer,
   XAxisLayer,
 } from './SignalLayers';
+import WebGLSignalCanvas, {SignalCanvasHandle} from './WebGLSignalCanvas';
 import SignalCursor from './SignalCursor';
 import LoadingBar from '../../ui/LoadingBar';
 import TimeWindowControls from '../../timeline/components/TimeWindowControls';
@@ -58,7 +59,9 @@ type SignalViewerProps = {
 
 /** Signal viewer component. */
 function SignalViewer({navigationRequest, viewerID}: SignalViewerProps) {
-  const {chunksURL, physioFileID} = useRecording();
+  const signalPlotRef = useRef<HTMLDivElement | null>(null);
+  const [viewportWidth, setViewportWidth] = useState(0);
+  const {chunksURL} = useRecording();
   const {setCurrentAnnotation} = useCurrentAnnotation();
   const {
     events,
@@ -95,11 +98,10 @@ function SignalViewer({navigationRequest, viewerID}: SignalViewerProps) {
     selectedChannels, channels, loadedChannels, channelsToLoad, limit,
     offsetIndex, updateOffsetIndex, displayedChannelsLimit,
     changeDisplayedChannelsLimit, viewerHeight,
-  } = useChannelView();
+  } = useChannelView(viewportWidth);
   const {
     cursorEnabled, toggleCursor, withDCOffset, toggleDCOffset,
     stackedView, toggleStackedView, singleMode, toggleSingleMode,
-    showOverflow, toggleShowOverflow,
   } = useViewerDisplay();
   const {
     panelIsDirty, setPanelIsDirty, eventChannels, setEventChannels,
@@ -119,10 +121,11 @@ function SignalViewer({navigationRequest, viewerID}: SignalViewerProps) {
       setRightPanel(navigationRequest.viewerPanel ?? null);
     });
   }, [navigationRequest]);
+  const signalCanvasRef = useRef<SignalCanvasHandle | null>(null);
   const {
     viewerRef, handlePointerMove, handlePointerDown, handlePointerUp,
     handlePointerCancel, handlePointerLeave,
-  } = useSignalPointerInteractions();
+  } = useSignalPointerInteractions(signalCanvasRef);
   const loadingProgress = useLoadingProgress(loadedChannels, channelsToLoad);
   const pressedKey = useViewerKeyboardShortcuts({
     cursorRef,
@@ -141,47 +144,17 @@ function SignalViewer({navigationRequest, viewerID}: SignalViewerProps) {
     scaleAmplitude,
   });
 
-  const prevHoveredChannels = useRef<number[]>([]);
-  const defaultLineColor = '#999';
-
-  /** Set line color. */
-  const setLineColor = (channelIndex: number, colored: boolean) => {
-    const classString = `.visx-linepath.channel-${channelIndex}`;
-    viewerRef.current?.querySelectorAll(classString).forEach((line) => {
-      line.setAttribute(
-        'stroke',
-        colored || stackedView
-          ? colorOrder(channelIndex.toString()).toString()
-          : defaultLineColor
-      );
-
-      line.setAttribute(
-        'stroke-width',
-        colored && (!singleMode || cursorRef.current)
-          ? '2'
-          : '1'
-      );
-    });
-  };
-
   const {hoveredChannels, setHoveredChannels} = useContext(HoveredChannelsContext);
 
   useEffect(() => {
-    hoveredChannels.forEach((channelIndex) => {
-      if (prevHoveredChannels.current.includes(channelIndex)) {
-        return;
-      }
-      setLineColor(channelIndex, true);
+    const element = signalPlotRef.current;
+    if (!element) return undefined;
+    const observer = new ResizeObserver(([entry]) => {
+      setViewportWidth(Math.max(1, Math.round(entry.contentRect.width)));
     });
-
-    prevHoveredChannels.current.forEach((prevChannelIndex) => {
-      if (!hoveredChannels.includes(prevChannelIndex)) {
-        setLineColor(prevChannelIndex, false);
-      }
-    });
-
-    prevHoveredChannels.current = hoveredChannels;
-  }, [hoveredChannels]);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   const showAxisScaleLines = false;
 
@@ -366,12 +339,6 @@ function SignalViewer({navigationRequest, viewerID}: SignalViewerProps) {
                     disabled={!stackedView}
                     onClick={toggleSingleMode}
                   >{t('Isolate', {ns: 'electrophysiology_browser'})}</button>
-                  <button type='button'
-                    className={'btn btn-primary btn-xs' +
-                          (showOverflow ? ' active' : '')}
-                    aria-pressed={showOverflow}
-                    onClick={toggleShowOverflow}
-                  >{t('Overflow', {ns: 'electrophysiology_browser'})}</button>
                 </div>
               </div>
             </div>
@@ -481,14 +448,34 @@ function SignalViewer({navigationRequest, viewerID}: SignalViewerProps) {
                 channelMetadata={channelMetadata}
                 showEvents={rightPanel === 'eventList'}
               />
-              <div style={{height: viewerHeight}}>
+              <div
+                ref={signalPlotRef}
+                style={{height: viewerHeight, position: 'relative'}}
+              >
                 <ParentSize>
-                  {({width, height}) => (
+                  {({width, height}) => (<>
+                    <WebGLSignalCanvas
+                      ref={signalCanvasRef}
+                      width={width}
+                      height={height}
+                      stackedView={stackedView}
+                      singleMode={singleMode}
+                      hoveredChannels={hoveredChannels}
+                      channels={channels}
+                      channelMetadata={channelMetadata}
+                      bidsChannels={bidsChannels}
+                      channelCount={displayedChannelsLimit}
+                      timeWindow={interval}
+                      amplitudeScale={amplitudeScale}
+                      withDCOffset={withDCOffset}
+                    />
                     <svg
                       ref={viewerRef}
                       viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}
                       style={{
-                        overflowY: showOverflow ? 'visible' : 'hidden',
+                        display: 'block',
+                        overflowY: 'hidden',
+                        position: 'relative',
                         touchAction: 'none',
                       }}
                       width={width}
@@ -511,22 +498,6 @@ function SignalViewer({navigationRequest, viewerID}: SignalViewerProps) {
                         activeEvent={activeEvent}
                         eventChannels={eventChannels}
                       />
-                      <ChannelsLayer
-                        viewerWidth={width}
-                        viewerHeight={height}
-                        cursorRef={cursorRef}
-                        stackedView={stackedView}
-                        singleMode={singleMode}
-                        hoveredChannels={hoveredChannels}
-                        channels={channels}
-                        channelMetadata={channelMetadata}
-                        bidsChannels={bidsChannels}
-                        physioFileID={physioFileID}
-                        channelCount={displayedChannelsLimit}
-                        timeWindow={interval}
-                        amplitudeScale={amplitudeScale}
-                        withDCOffset={withDCOffset}
-                      />
                       <XAxisLayer
                         viewerWidth={width}
                         viewerHeight={height}
@@ -541,7 +512,7 @@ function SignalViewer({navigationRequest, viewerID}: SignalViewerProps) {
                         visible={showAxisScaleLines}
                       />
                     </svg>
-                  )}
+                  </>)}
                 </ParentSize>
               </div>
             </div>

@@ -11,7 +11,7 @@ import {useRecording} from '../recording/RecordingContext';
 import {useViewedChannels} from '../signals/useViewedChannels';
 
 /** Own channel filtering, pagination, loading, and viewer sizing. */
-export function useChannelView() {
+export function useChannelView(viewportWidth: number) {
   const {limit, setLimit} = useRecording();
   const channelMetadata = useContext(ChannelMetadataContext);
   const bidsChannels = useContext(ChannelInfosContext);
@@ -36,7 +36,10 @@ export function useChannelView() {
       .slice(offsetIndex - 1, offsetIndex - 1 + limit),
     [selectedChannels, offsetIndex, limit]
   );
-  const {channels, loadedChannels} = useViewedChannels(displayedChannelIndexes);
+  const {channels, loadedChannels} = useViewedChannels(
+    displayedChannelIndexes,
+    viewportWidth
+  );
 
   const updateOffsetIndex = useCallback((nextOffsetIndex: number) => {
     if (

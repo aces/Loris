@@ -13,7 +13,10 @@ type ViewedChannels = {
 const UPDATE_DEBOUNCE_TIME = 100;
 
 /** Load the signal data needed by the current viewport and channel page. */
-export function useViewedChannels(channelIndexes: number[]): ViewedChannels {
+export function useViewedChannels(
+  channelIndexes: number[],
+  viewportWidth: number
+): ViewedChannels {
   const {chunksURL, shapes, validSamples} = useRecording();
   const {recordingTimeRange, timeWindow} = useTimeWindow();
   const {filters} = usePassFilters();
@@ -35,7 +38,8 @@ export function useViewedChannels(channelIndexes: number[]): ViewedChannels {
       previousChannelIndexesKey.current = channelIndexesKey;
     }
 
-    if (!chunksURL || channelIndexes.length === 0 || shapes.length === 0) {
+    if (!chunksURL || channelIndexes.length === 0 || shapes.length === 0
+      || viewportWidth <= 0) {
       setChannels([]);
       return;
     }
@@ -48,6 +52,7 @@ export function useViewedChannels(channelIndexes: number[]): ViewedChannels {
         validSamples,
         recordingTimeRange,
         timeWindow,
+        viewportWidth,
         filters,
         /** Track each channel as it finishes loading. */
         onChannelLoaded: () => {
@@ -79,6 +84,7 @@ export function useViewedChannels(channelIndexes: number[]): ViewedChannels {
     shapes,
     timeWindow,
     validSamples,
+    viewportWidth,
   ]);
 
   return {channels, loadedChannels};

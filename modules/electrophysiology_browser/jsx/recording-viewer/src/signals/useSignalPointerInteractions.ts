@@ -1,6 +1,7 @@
-import React, {useRef} from 'react';
+import React, {MutableRefObject, useRef} from 'react';
 import {useSetCursor} from './state/CursorContext';
 import {useTimeSelection} from '../timeline/TimeSelectionContext';
+import {SignalCanvasHandle} from './components/WebGLSignalCanvas';
 
 /** Convert an SVG pointer event to coordinates in the unit square. */
 function getPointerPosition(
@@ -15,7 +16,9 @@ function getPointerPosition(
 }
 
 /** Own SVG pointer tracking and drag-to-select behavior. */
-export function useSignalPointerInteractions() {
+export function useSignalPointerInteractions(
+  signalCanvasRef: MutableRefObject<SignalCanvasHandle | null>
+) {
   const viewerRef = useRef<SVGSVGElement | null>(null);
   const setCursor = useSetCursor();
   const {startTimeSelection, continueTimeSelection, endTimeSelection} =
@@ -24,7 +27,11 @@ export function useSignalPointerInteractions() {
   /** Update the cursor and extend an active selection. */
   function handlePointerMove(event: React.PointerEvent<SVGSVGElement>) {
     const cursorPosition = getPointerPosition(event);
-    setCursor({cursorPosition, viewerRef});
+    setCursor({
+      cursorPosition,
+      /** Find channels beneath this pointer from the current render model. */
+      hitTest: (position) => signalCanvasRef.current?.hitTest(position) ?? [],
+    });
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       continueTimeSelection(cursorPosition[0]);
     }
