@@ -15,12 +15,13 @@ export const fetchChunk = (url: string): Promise<typeof FloatChunk> => {
     return new Promise((resolve) => {
       reader.addEventListener('loadend', () => {
         const parsed = FloatChunk.deserializeBinary(reader.result);
+        const values = new Float32Array(parsed.getSamplesList());
         resolve({
           index: parsed.getIndex(),
           cutoff: parsed.getCutoff(),
           downsampling: parsed.getDownsampling(),
-          originalValues: new Float32Array(parsed.getSamplesList()),
-          values: new Float32Array(parsed.getSamplesList()),
+          originalValues: values,
+          values,
         });
       });
     });

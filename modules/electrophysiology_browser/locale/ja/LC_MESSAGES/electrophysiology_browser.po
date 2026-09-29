@@ -670,9 +670,6 @@ msgstr "フィルター"
 msgid "Display"
 msgstr "表示"
 
-msgid "Overflow"
-msgstr "オーバーフロー"
-
 msgid "Previous Range"
 msgstr "前の範囲"
 
@@ -705,3 +702,9 @@ msgstr "範囲の開始"
 
 msgid "Range end"
 msgstr "範囲の終了"
+
+msgid "Signal traces"
+msgstr "信号波形"
+
+msgid "Signal rendering requires WebGL2: {{error}}"
+msgstr "信号のレンダリングには WebGL2 が必要です: {{error}}"

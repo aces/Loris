@@ -670,9 +670,6 @@ msgstr ""
 msgid "Display"
 msgstr ""
 
-msgid "Overflow"
-msgstr ""
-
 msgid "Previous Range"
 msgstr ""
 
@@ -704,4 +701,10 @@ msgid "Range start"
 msgstr ""
 
 msgid "Range end"
+msgstr ""
+
+msgid "Signal traces"
+msgstr ""
+
+msgid "Signal rendering requires WebGL2: {{error}}"
 msgstr ""

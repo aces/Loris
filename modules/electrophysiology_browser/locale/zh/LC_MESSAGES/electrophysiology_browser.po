@@ -669,9 +669,6 @@ msgstr "滤波器"
 msgid "Display"
 msgstr "显示"
 
-msgid "Overflow"
-msgstr "溢出"
-
 msgid "Previous Range"
 msgstr "上一范围"
 
@@ -704,3 +701,9 @@ msgstr "范围起点"
 
 msgid "Range end"
 msgstr "范围终点"
+
+msgid "Signal traces"
+msgstr "信号轨迹"
+
+msgid "Signal rendering requires WebGL2: {{error}}"
+msgstr "信号渲染需要 WebGL2：{{error}}"
