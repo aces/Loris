@@ -464,9 +464,6 @@ class Charts extends \NDB_Page
         // Convert into the desired format
         $recruitmentByEthnicityData = [];
         foreach ($ethnicities as $id => $count) {
-            $id = str_replace("_", " ", $id);
-            $id = strtolower($id);
-            $id = ucwords($id);
             if ($id == null) {
                 $id = dgettext("statistics", "Unknown");
             }
