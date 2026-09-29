@@ -178,7 +178,6 @@ const module: webpack.ModuleOptions = {
     },
     {
       test: /\.tsx?$/,
-      exclude: [/react-series-data-viewer/],
       use: [
         {
           loader: 'ts-loader',
@@ -187,21 +186,7 @@ const module: webpack.ModuleOptions = {
           },
         },
       ],
-    },
-    {
-      test: /.*\/react-series-data-viewer\/.*\.tsx?$/,
-      use: [
-        {
-          loader: 'ts-loader',
-          options: {
-            onlyCompileBundledFiles: true,
-            compilerOptions: {
-              strict: false,
-          },
-        },
-      },
-    ],
-  },
+    }
   ],
 };
 
@@ -239,7 +224,7 @@ plugins.push(new DefinePlugin({
 if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
   plugins.push(
     new IgnorePlugin({
-      resourceRegExp: /react-series-data-viewer/,
+      resourceRegExp: /recording-viewer/,
     })
   );
 }
@@ -261,7 +246,7 @@ function addProjectModules(
 
   // Copy the record of LORIS modules
   const allModules: Record<string, string[]> = modules;
-  
+
   // Add project-specific modules and overrides to the record of modules
   for (const [moduleName, moduleEntryPoints] of
     Object.entries(projectModules)
