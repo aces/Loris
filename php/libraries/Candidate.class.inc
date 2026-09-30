@@ -1301,10 +1301,15 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 	    PRIMARY KEY(CandID)
         );"
         );
-        $insertstmt = "INSERT INTO accesscandidates VALUES"
-                . " (" . join('),(', $candIDs) . ')';
-        $q          = $DB->prepare($insertstmt);
-        $q->execute([]);
+
+	$DB->beginTransaction();
+	foreach(array_chunk($candIDs, 2000) as $chunk) {
+		$insertstmt = "INSERT INTO accesscandidates VALUES"
+			. " (" . join('),(', $chunk) . ')';
+		$q          = $DB->prepare($insertstmt);
+		$q->execute([]);
+	}
+	$DB->commit();
 
         // Get the data which affects accessibility in bulk.
         $rows      = $DB->pselect(
