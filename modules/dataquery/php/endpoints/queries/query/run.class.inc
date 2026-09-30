@@ -80,16 +80,23 @@ class Run extends \LORIS\Http\Endpoint
                 $rowsBinary,
                 bool $end
             ) use (&$values, &$db, &$runid) {
-                $values[] = "SELECT "
-                .  $runid . ","
-                . "c.ID, "
-                . $db->quote(json_encode($rowsArray))
-                . " FROM candidate c"
-                . "            WHERE c.CandID=" . intval($candid);
+                $values[intval($candid)] = json_encode($rowsArray);
                 if ((count($values) >= 2000 || $end) && count($values) > 0) {
+                    $candidateIDs = $db->pselectColWithIndexKey(
+                        "SELECT CandID, ID FROM candidate WHERE CandID IN ("
+                        . join(',', array_keys($values)) . ")",
+                        [],
+                        'CandID'
+                    );
+                    $rows         = [];
+                    foreach ($values as $candid => $rowData) {
+                        $rows[] = "(" . $runid . ","
+                            . intval($candidateIDs[strval($candid)]) . ","
+                            . $db->quote($rowData) . ")";
+                    }
                     $insertstmt = "INSERT INTO dataquery_run_results
-                                         (RunID, CandidateID, RowData) "
-                    . join(' UNION ', $values);
+                                         (RunID, CandidateID, RowData) VALUES "
+                    . join(',', $rows);
                     $q          = $db->prepare($insertstmt);
                     $q->execute([]);
                     $values = [];
