@@ -80,18 +80,30 @@ class Run extends \LORIS\Http\Endpoint
                 $rowsBinary,
                 bool $end
             ) use (&$values, &$db, &$runid) {
-                $values[] = "SELECT "
-                .  $runid . ","
-                . "c.ID, "
-                . $db->quote(json_encode($rowsArray))
-                . " FROM candidate c"
-                . "            WHERE c.CandID=" . intval($candid);
+                $values[intval($candid)] = json_encode($rowsArray);
                 if ((count($values) >= 2000 || $end) && count($values) > 0) {
-                    $insertstmt = "INSERT INTO dataquery_run_results
-                                         (RunID, CandidateID, RowData) "
-                    . join(' UNION ', $values);
-                    $q          = $db->prepare($insertstmt);
-                    $q->execute([]);
+                    $candidateIDs = $db->pselectColWithIndexKey(
+                        "SELECT CandID, ID FROM candidate WHERE CandID IN ("
+                        . join(',', array_keys($values)) . ")",
+                        [],
+                        'CandID'
+                    );
+                    $rows         = [];
+                    foreach ($values as $candid => $rowData) {
+                        $candidateID = $candidateIDs[strval($candid)] ?? null;
+                        if ($candidateID !== null) {
+                            $rows[] = "(" . $runid . ","
+                                . intval($candidateID) . ","
+                                . $db->quote($rowData) . ")";
+                        }
+                    }
+                    if (count($rows) > 0) {
+                        $insertstmt = "INSERT INTO dataquery_run_results
+                                             (RunID, CandidateID, RowData) VALUES "
+                        . join(',', $rows);
+                        $q          = $db->prepare($insertstmt);
+                        $q->execute([]);
+                    }
                     $values = [];
                 }
 
