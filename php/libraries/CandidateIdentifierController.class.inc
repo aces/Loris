@@ -87,4 +87,166 @@ class CandidateIdentifierController
             value: $row['Value'],
         );
     }
+
+    /**
+     * Creates a candidate identifier
+     *
+     * @param CandidateIdentifier $candidateIdentifier Candidate identifier to create
+     *
+     * @return CandidateIdentifier Created candidate identifier
+     *
+     * @throws \InvalidArgumentException If the identifier violates its type rules
+     */
+    public function createCandidateIdentifier(
+        CandidateIdentifier $candidateIdentifier
+    ): CandidateIdentifier {
+        $identifierType = $candidateIdentifier->type;
+
+        if (!$identifierType->allowMultiple) {
+            $existingIdentifier = $this->database->pselectRow(
+                "SELECT CandidateIdentifierID
+             FROM candidate_identifiers
+             WHERE CandidateID = :candidateID
+               AND CandidateIdentifierTypeID = :identifierTypeID",
+                [
+                    'candidateID'       => $candidateIdentifier->candidateID,
+                    'identifierTypeID'  =>
+                    $identifierType->candidateIdentifierTypeID,
+                ]
+            );
+
+            if (!empty($existingIdentifier)) {
+                throw new \InvalidArgumentException(
+                    'Candidate already has an identifier of this type'
+                );
+            }
+        }
+
+        if ($identifierType->isUnique) {
+            $existingIdentifier = $this->database->pselectRow(
+                "SELECT CandidateIdentifierID
+             FROM candidate_identifiers
+             WHERE CandidateIdentifierTypeID = :identifierTypeID
+               AND Value = :value
+               AND CandidateID != :candidateID",
+                [
+                    'identifierTypeID' =>
+                    $identifierType->candidateIdentifierTypeID,
+                    'value'            => $candidateIdentifier->value,
+                    'candidateID'      => $candidateIdentifier->candidateID,
+                ]
+            );
+
+            if (!empty($existingIdentifier)) {
+                throw new \InvalidArgumentException(
+                    'Identifier value is already assigned to another candidate'
+                );
+            }
+        }
+
+        $this->database->insert(
+            'candidate_identifiers',
+            [
+                'CandidateID'               => $candidateIdentifier->candidateID,
+                'CandidateIdentifierTypeID' =>
+                $identifierType->candidateIdentifierTypeID,
+                'Value'                     => $candidateIdentifier->value,
+            ]
+        );
+
+        $candidateIdentifierID = (int) $this->database->getLastInsertId();
+
+        return $this->getCandidateIdentifierFromID($candidateIdentifierID);
+    }
+
+    /**
+     * Updates a candidate identifier
+     *
+     * @param CandidateIdentifier $candidateIdentifier Candidate identifier to update
+     *
+     * @return CandidateIdentifier Updated candidate identifier
+     *
+     * @throws \NotFound If the candidate identifier does not exist
+     */
+    public function updateCandidateIdentifier(
+        CandidateIdentifier $candidateIdentifier
+    ): CandidateIdentifier {
+        if ($candidateIdentifier->candidateIdentifierID === null) {
+            throw new \InvalidArgumentException(
+                'Cannot update a candidate identifier without an ID'
+            );
+        }
+
+        $candidateIdentifierID = $candidateIdentifier->candidateIdentifierID;
+        $identifierType        = $candidateIdentifier->type;
+
+        if ($identifierType->candidateIdentifierTypeID === null) {
+            throw new \InvalidArgumentException(
+                'Cannot update a candidate identifier without an identifier type ID'
+            );
+        }
+
+        $this->getCandidateIdentifierFromID($candidateIdentifierID);
+
+        if (!$identifierType->allowMultiple) {
+            $existingIdentifier = $this->database->pselectRow(
+                "SELECT CandidateIdentifierID
+             FROM candidate_identifiers
+             WHERE CandidateID = :candidateID
+               AND CandidateIdentifierTypeID = :identifierTypeID
+               AND CandidateIdentifierID != :candidateIdentifierID",
+                [
+                    'candidateID'          => $candidateIdentifier->candidateID,
+                    'identifierTypeID'     =>
+                    $identifierType->candidateIdentifierTypeID,
+                    'candidateIdentifierID' => $candidateIdentifierID,
+                ]
+            );
+
+            if (!empty($existingIdentifier)) {
+                throw new \InvalidArgumentException(
+                    'Candidate already has an identifier of this type'
+                );
+            }
+        }
+
+        if ($identifierType->isUnique) {
+            $existingIdentifier = $this->database->pselectRow(
+                "SELECT CandidateIdentifierID
+             FROM candidate_identifiers
+             WHERE CandidateIdentifierTypeID = :identifierTypeID
+               AND Value = :value
+               AND CandidateID != :candidateID
+               AND CandidateIdentifierID != :candidateIdentifierID",
+                [
+                    'identifierTypeID'      =>
+                    $identifierType->candidateIdentifierTypeID,
+                    'value'                 => $candidateIdentifier->value,
+                    'candidateID'           => $candidateIdentifier->candidateID,
+                    'candidateIdentifierID' => $candidateIdentifierID,
+                ]
+            );
+
+            if (!empty($existingIdentifier)) {
+                throw new \InvalidArgumentException(
+                    'Identifier value is already assigned to another candidate'
+                );
+            }
+        }
+
+        $this->database->update(
+            'candidate_identifiers',
+            [
+                'CandidateID'               => $candidateIdentifier->candidateID,
+                'CandidateIdentifierTypeID' =>
+                $identifierType->candidateIdentifierTypeID,
+                'Value'                     => $candidateIdentifier->value,
+            ],
+            [
+                'CandidateIdentifierID' => $candidateIdentifierID,
+            ]
+        );
+
+        return $this->getCandidateIdentifierFromID($candidateIdentifierID);
+    }
 }
