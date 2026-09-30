@@ -380,6 +380,37 @@ class CandidateIdentifierControllerTest extends TestCase
     }
 
     /**
+     * Tests that a candidate identifier can be deleted
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::deleteCandidateIdentifier
+     */
+    public function testDeleteCandidateIdentifier(): void
+    {
+        $this->candidateIdentifierController
+            ->deleteCandidateIdentifier(1);
+
+        $this->expectException(\NotFound::class);
+
+        $this->candidateIdentifierController
+            ->getCandidateIdentifierFromID(1);
+    }
+
+    /**
+     * Tests that deleting a nonexistent candidate identifier throws NotFound
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::deleteCandidateIdentifier
+     */
+    public function testDeleteCandidateIdentifierNotFound(): void
+    {
+        $this->expectException(\NotFound::class);
+
+        $this->candidateIdentifierController
+            ->deleteCandidateIdentifier(999);
+    }
+
+    /**
      * Tears down the fixture and cleans up temporary tables.
      * This method is called after a test is executed.
      *
