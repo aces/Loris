@@ -109,8 +109,8 @@ class CandidateIdentifierController
              WHERE CandidateID = :candidateID
                AND CandidateIdentifierTypeID = :identifierTypeID",
                 [
-                    'candidateID'       => $candidateIdentifier->candidateID,
-                    'identifierTypeID'  =>
+                    'candidateID'      => $candidateIdentifier->candidateID,
+                    'identifierTypeID' =>
                     $identifierType->candidateIdentifierTypeID,
                 ]
             );
@@ -196,8 +196,8 @@ class CandidateIdentifierController
                AND CandidateIdentifierTypeID = :identifierTypeID
                AND CandidateIdentifierID != :candidateIdentifierID",
                 [
-                    'candidateID'          => $candidateIdentifier->candidateID,
-                    'identifierTypeID'     =>
+                    'candidateID'           => $candidateIdentifier->candidateID,
+                    'identifierTypeID'      =>
                     $identifierType->candidateIdentifierTypeID,
                     'candidateIdentifierID' => $candidateIdentifierID,
                 ]
@@ -248,5 +248,27 @@ class CandidateIdentifierController
         );
 
         return $this->getCandidateIdentifierFromID($candidateIdentifierID);
+    }
+
+    /**
+     * Deletes a candidate identifier
+     *
+     * @param int $candidateIdentifierID Candidate identifier ID
+     *
+     * @return void
+     *
+     * @throws \NotFound If the candidate identifier does not exist
+     */
+    public function deleteCandidateIdentifier(
+        int $candidateIdentifierID
+    ): void {
+        $this->getCandidateIdentifierFromID($candidateIdentifierID);
+
+        $this->database->delete(
+            'candidate_identifiers',
+            [
+                'CandidateIdentifierID' => $candidateIdentifierID,
+            ]
+        );
     }
 }
