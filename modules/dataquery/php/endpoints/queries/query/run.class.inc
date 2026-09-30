@@ -90,20 +90,15 @@ class Run extends \LORIS\Http\Endpoint
                     );
                     $rows         = [];
                     foreach ($values as $candid => $rowData) {
-                        $candidateID = $candidateIDs[strval($candid)] ?? null;
-                        if ($candidateID !== null) {
-                            $rows[] = "(" . $runid . ","
-                                . intval($candidateID) . ","
-                                . $db->quote($rowData) . ")";
-                        }
+                        $rows[] = "(" . $runid . ","
+                            . intval($candidateIDs[strval($candid)]) . ","
+                            . $db->quote($rowData) . ")";
                     }
-                    if (count($rows) > 0) {
-                        $insertstmt = "INSERT INTO dataquery_run_results
-                                             (RunID, CandidateID, RowData) VALUES "
-                        . join(',', $rows);
-                        $q          = $db->prepare($insertstmt);
-                        $q->execute([]);
-                    }
+                    $insertstmt = "INSERT INTO dataquery_run_results
+                                         (RunID, CandidateID, RowData) VALUES "
+                    . join(',', $rows);
+                    $q          = $db->prepare($insertstmt);
+                    $q->execute([]);
                     $values = [];
                 }
 
