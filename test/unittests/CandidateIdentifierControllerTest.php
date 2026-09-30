@@ -231,6 +231,31 @@ class CandidateIdentifierControllerTest extends TestCase
     }
 
     /**
+     * Tests that an invalid candidate identifier value cannot be created
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::createCandidateIdentifier
+     */
+    public function testCreateCandidateIdentifierInvalidFormat(): void
+    {
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: null,
+                candidateID: 2,
+                type: $identifierType,
+                value: '12AB',
+            );
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->candidateIdentifierController
+            ->createCandidateIdentifier($candidateIdentifier);
+    }
+
+    /**
      * Tests that a candidate identifier can be updated
      *
      * @return void
@@ -374,6 +399,31 @@ class CandidateIdentifierControllerTest extends TestCase
             );
 
         $this->expectException(\NotFound::class);
+
+        $this->candidateIdentifierController
+            ->updateCandidateIdentifier($candidateIdentifier);
+    }
+
+    /**
+     * Tests that an invalid candidate identifier value cannot be updated
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::updateCandidateIdentifier
+     */
+    public function testUpdateCandidateIdentifierInvalidFormat(): void
+    {
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: 1,
+                candidateID: 1,
+                type: $identifierType,
+                value: '12AB',
+            );
+
+        $this->expectException(\InvalidArgumentException::class);
 
         $this->candidateIdentifierController
             ->updateCandidateIdentifier($candidateIdentifier);

@@ -102,6 +102,8 @@ class CandidateIdentifierController
     ): CandidateIdentifier {
         $identifierType = $candidateIdentifier->type;
 
+        $this->_validateFormat($candidateIdentifier);
+
         if (!$identifierType->allowMultiple) {
             $existingIdentifier = $this->database->pselectRow(
                 "SELECT CandidateIdentifierID
@@ -179,6 +181,8 @@ class CandidateIdentifierController
 
         $candidateIdentifierID = $candidateIdentifier->candidateIdentifierID;
         $identifierType        = $candidateIdentifier->type;
+
+        $this->_validateFormat($candidateIdentifier);
 
         if ($identifierType->candidateIdentifierTypeID === null) {
             throw new \InvalidArgumentException(
@@ -270,5 +274,28 @@ class CandidateIdentifierController
                 'CandidateIdentifierID' => $candidateIdentifierID,
             ]
         );
+    }
+
+    /**
+     * Validates a candidate identifier against its type format
+     *
+     * @param CandidateIdentifier $candidateIdentifier Candidate identifier
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException If the value does not match the format
+     */
+    private function _validateFormat(
+        CandidateIdentifier $candidateIdentifier
+    ): void {
+        $pattern = \Candidate::structureToPCRE(
+            $candidateIdentifier->type->format
+        );
+
+        if (preg_match($pattern, $candidateIdentifier->value) !== 1) {
+            throw new \InvalidArgumentException(
+                'Candidate identifier does not match the identifier type format'
+            );
+        }
     }
 }
