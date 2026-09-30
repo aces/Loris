@@ -34,6 +34,7 @@ class CandidateIdentifierControllerTest extends TestCase
     protected $factory;
     protected $DB;
     protected $config;
+    protected $identifierTypeController;
     protected $candidateIdentifierController;
 
     /**
@@ -88,6 +89,11 @@ class CandidateIdentifierControllerTest extends TestCase
             ]
         );
 
+        $this->identifierTypeController
+            = new \LORIS\IdentifierTypeController(
+                $this->DB
+            );
+
         $this->candidateIdentifierController
             = new \LORIS\CandidateIdentifierController(
                 $this->DB
@@ -141,6 +147,236 @@ class CandidateIdentifierControllerTest extends TestCase
 
         $this->candidateIdentifierController
             ->getCandidateIdentifierFromID(999);
+    }
+
+    /**
+     * Tests that a candidate identifier can be created
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::createCandidateIdentifier
+     */
+    public function testCreateCandidateIdentifier(): void
+    {
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: null,
+                candidateID: 2,
+                type: $identifierType,
+                value: '5678',
+            );
+
+        $created = $this->candidateIdentifierController
+            ->createCandidateIdentifier($candidateIdentifier);
+
+        $this->assertNotNull($created->candidateIdentifierID);
+        $this->assertSame(2, $created->candidateID);
+        $this->assertSame('5678', $created->value);
+        $this->assertSame(
+            1,
+            $created->type->candidateIdentifierTypeID
+        );
+    }
+
+    /**
+     * Tests that multiple values cannot be created when they are not allowed
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::createCandidateIdentifier
+     */
+    public function testCreateCandidateIdentifierMultipleNotAllowed(): void
+    {
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: null,
+                candidateID: 1,
+                type: $identifierType,
+                value: '5678',
+            );
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->candidateIdentifierController
+            ->createCandidateIdentifier($candidateIdentifier);
+    }
+
+    /**
+     * Tests that a unique value cannot be created for another candidate
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::createCandidateIdentifier
+     */
+    public function testCreateCandidateIdentifierDuplicateValue(): void
+    {
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: null,
+                candidateID: 2,
+                type: $identifierType,
+                value: '1234',
+            );
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->candidateIdentifierController
+            ->createCandidateIdentifier($candidateIdentifier);
+    }
+
+    /**
+     * Tests that a candidate identifier can be updated
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::updateCandidateIdentifier
+     */
+    public function testUpdateCandidateIdentifier(): void
+    {
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: 1,
+                candidateID: 1,
+                type: $identifierType,
+                value: '5678',
+            );
+
+        $updated = $this->candidateIdentifierController
+            ->updateCandidateIdentifier($candidateIdentifier);
+
+        $this->assertSame(1, $updated->candidateIdentifierID);
+        $this->assertSame(1, $updated->candidateID);
+        $this->assertSame('5678', $updated->value);
+        $this->assertSame(
+            1,
+            $updated->type->candidateIdentifierTypeID
+        );
+    }
+
+    /**
+     * Tests that multiple values cannot be assigned when they are not allowed
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::updateCandidateIdentifier
+     */
+    public function testUpdateCandidateIdentifierMultipleNotAllowed(): void
+    {
+        $this->DB->insert(
+            'candidate_identifiers',
+            [
+                'CandidateID'               => 2,
+                'CandidateIdentifierTypeID' => 1,
+                'Value'                     => '5678',
+            ]
+        );
+
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: 1,
+                candidateID: 2,
+                type: $identifierType,
+                value: '1234',
+            );
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->candidateIdentifierController
+            ->updateCandidateIdentifier($candidateIdentifier);
+    }
+
+    /**
+     * Tests that a unique value cannot be assigned to another candidate
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::updateCandidateIdentifier
+     */
+    public function testUpdateCandidateIdentifierDuplicateValue(): void
+    {
+        $this->DB->insert(
+            'candidate_identifiers',
+            [
+                'CandidateID'               => 2,
+                'CandidateIdentifierTypeID' => 1,
+                'Value'                     => '5678',
+            ]
+        );
+
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: 1,
+                candidateID: 1,
+                type: $identifierType,
+                value: '5678',
+            );
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->candidateIdentifierController
+            ->updateCandidateIdentifier($candidateIdentifier);
+    }
+
+    /**
+     * Tests that a candidate identifier without an ID cannot be updated
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::updateCandidateIdentifier
+     */
+    public function testUpdateCandidateIdentifierWithoutID(): void
+    {
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: null,
+                candidateID: 1,
+                type: $identifierType,
+                value: '5678',
+            );
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->candidateIdentifierController
+            ->updateCandidateIdentifier($candidateIdentifier);
+    }
+
+    /**
+     * Tests that updating a nonexistent candidate identifier throws NotFound
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::updateCandidateIdentifier
+     */
+    public function testUpdateCandidateIdentifierNotFound(): void
+    {
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: 999,
+                candidateID: 1,
+                type: $identifierType,
+                value: '5678',
+            );
+
+        $this->expectException(\NotFound::class);
+
+        $this->candidateIdentifierController
+            ->updateCandidateIdentifier($candidateIdentifier);
     }
 
     /**
