@@ -279,17 +279,44 @@ class CandidateIdentifierController
     /**
      * Validates a candidate identifier against its type format
      *
+     * Resolves the candidate's site and project aliases so that identifier
+     * formats containing SITE:ALIAS or PROJECT:ALIAS can be validated.
+     *
      * @param CandidateIdentifier $candidateIdentifier Candidate identifier
      *
      * @return void
      *
+     * @throws \NotFound                 If the candidate does not exist
      * @throws \InvalidArgumentException If the value does not match the format
      */
     private function _validateFormat(
         CandidateIdentifier $candidateIdentifier
     ): void {
+        $candidate = $this->database->pselectRow(
+            "SELECT p.Alias AS SiteAlias,
+                pr.Alias AS ProjectAlias
+         FROM candidate AS c
+         JOIN psc AS p
+           ON p.CenterID = c.RegistrationCenterID
+         JOIN Project AS pr
+           ON pr.ProjectID = c.RegistrationProjectID
+         WHERE c.ID = :candidateID",
+            [
+                'candidateID' => $candidateIdentifier->candidateID,
+            ]
+        );
+
+        if (empty($candidate)) {
+            throw new \NotFound(
+                "No candidate found in the database with id: "
+                    . $candidateIdentifier->candidateID
+            );
+        }
+
         $pattern = \Candidate::structureToPCRE(
-            $candidateIdentifier->type->format
+            $candidateIdentifier->type->format,
+            $candidate['SiteAlias'],
+            $candidate['ProjectAlias']
         );
 
         if (preg_match($pattern, $candidateIdentifier->value) !== 1) {
