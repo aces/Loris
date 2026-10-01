@@ -89,6 +89,45 @@ class CandidateIdentifierControllerTest extends TestCase
             ]
         );
 
+        $this->DB->setFakeTableData(
+            'candidate',
+            [
+                [
+                    'ID'                    => 1,
+                    'CandID'                => 100001,
+                    'RegistrationCenterID'  => 1,
+                    'RegistrationProjectID' => 1,
+                ],
+                [
+                    'ID'                    => 2,
+                    'CandID'                => 100002,
+                    'RegistrationCenterID'  => 1,
+                    'RegistrationProjectID' => 1,
+                ],
+            ]
+        );
+
+        $this->DB->setFakeTableData(
+            'psc',
+            [
+                [
+                    'CenterID' => 1,
+                    'Alias'    => 'MTL',
+                ],
+            ]
+        );
+
+        $this->DB->setFakeTableData(
+            'Project',
+            [
+                [
+                    'ProjectID' => 1,
+                    'Name'      => 'Test Project',
+                    'Alias'     => 'P1',
+                ],
+            ]
+        );
+
         $this->identifierTypeController
             = new \LORIS\IdentifierTypeController(
                 $this->DB
@@ -247,6 +286,78 @@ class CandidateIdentifierControllerTest extends TestCase
                 candidateID: 2,
                 type: $identifierType,
                 value: '12AB',
+            );
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $this->candidateIdentifierController
+            ->createCandidateIdentifier($candidateIdentifier);
+    }
+
+    /**
+     * Tests that site and project aliases are resolved in the identifier format
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::createCandidateIdentifier
+     */
+    public function testCreateCandidateIdentifierWithAliases(): void
+    {
+        $this->DB->update(
+            'candidate_identifier_types',
+            [
+                'Format' => '{SITE:ALIAS}-{PROJECT:ALIAS}-'
+                    . '{SEQUENCE:4,FORMAT:numeric}',
+            ],
+            [
+                'CandidateIdentifierTypeID' => 1,
+            ]
+        );
+
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: null,
+                candidateID: 2,
+                type: $identifierType,
+                value: 'MTL-P1-5678',
+            );
+
+        $created = $this->candidateIdentifierController
+            ->createCandidateIdentifier($candidateIdentifier);
+
+        $this->assertSame('MTL-P1-5678', $created->value);
+    }
+
+    /**
+     * Tests that an incorrect site alias is rejected
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::createCandidateIdentifier
+     */
+    public function testCreateCandidateIdentifierWithInvalidAlias(): void
+    {
+        $this->DB->update(
+            'candidate_identifier_types',
+            [
+                'Format' => '{SITE:ALIAS}-{PROJECT:ALIAS}-'
+                    . '{SEQUENCE:4,FORMAT:numeric}',
+            ],
+            [
+                'CandidateIdentifierTypeID' => 1,
+            ]
+        );
+
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: null,
+                candidateID: 2,
+                type: $identifierType,
+                value: 'TOR-P1-5678',
             );
 
         $this->expectException(\InvalidArgumentException::class);
@@ -477,6 +588,16 @@ class CandidateIdentifierControllerTest extends TestCase
         );
         $this->DB->run(
             'DROP TEMPORARY TABLE IF EXISTS candidate_identifier_types'
+        );
+
+        $this->DB->run(
+            'DROP TEMPORARY TABLE IF EXISTS candidate'
+        );
+        $this->DB->run(
+            'DROP TEMPORARY TABLE IF EXISTS psc'
+        );
+        $this->DB->run(
+            'DROP TEMPORARY TABLE IF EXISTS Project'
         );
 
         $this->factory->reset();
