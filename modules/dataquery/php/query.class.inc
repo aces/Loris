@@ -749,6 +749,8 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
                     $term = new QueryTerm($dictitem, new Substring($crit['value']));
                     break;
                 case 'isnotnull':
+                case 'exists':
+                case 'notexists':
                     $term = new QueryTerm($dictitem, new NotNull());
                     break;
                 case 'isnull':
@@ -765,11 +767,17 @@ class Query implements \LORIS\StudyEntities\AccessibleResource,
 
                 \Profiler::checkpoint("Calling engine get matches");
                 $matches = $engine->getCandidateMatches($term, $visitlist);
-                if (is_array($matches)) {
-                    $results[] = $matches;
-                } else {
-                    $results[] = iterator_to_array($matches);
+                if (!is_array($matches)) {
+                    $matches = iterator_to_array($matches);
                 }
+                if ($crit['op'] == 'notexists') {
+                    // A candidate has no value when it doesn't have one at
+                    // any of the visits
+                    $matches = array_values(
+                        array_diff($this->_allCandidates(), $matches)
+                    );
+                }
+                $results[] = $matches;
                 \Profiler::checkpoint("Done group");
             }
         }
