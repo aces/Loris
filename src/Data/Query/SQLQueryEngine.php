@@ -166,19 +166,56 @@ abstract class SQLQueryEngine implements QueryEngine
 
         $sessionVariables = false;
         $keyFields        = [];
+        $availability     = [];
         foreach ($items as $dict) {
             // Quote the question marks otherwise PDO will interpret
             // these as positional placeholders
             $dictName = str_replace('?', '??', $dict->getName());
-            $fields[] = $this->getFieldNameFromDict($dict)
-                . ' as '
-                . "`$dictName`";
             if ($dict->getScope() == 'session') {
                 $sessionVariables = true;
             }
+            if ($dict instanceof DataAvailabilityItem) {
+                // The listed item is both the value and the key
+                $availability[$dict->getScope()->__toString()][] = $dict;
+                $item        = $dict->getValue('availability_' . $dict->getScope());
+                $fields[]    = "$item as `$dictName`";
+                $keyFields[] = "$item as `$dictName:key`";
+                continue;
+            }
+            $fields[] = $this->getFieldNameFromDict($dict)
+                . ' as '
+                . "`$dictName`";
             if ($dict->getCardinality()->__toString() === "many") {
                 $keyFields[] = $this->getCorrespondingKeyField($dict) . " as `$dictName:key`";
             }
+        }
+        foreach ($availability as $scope => $scopeItems) {
+            // All the selected items of a scope come from one table, so that
+            // selecting several of them doesn't multiply the rows, filled
+            // with only the items of the candidates being retrieved
+            $table = "availability_$scope";
+            $DB->run("DROP TEMPORARY TABLE IF EXISTS $table");
+            $DB->run(
+                "CREATE TEMPORARY TABLE $table (
+                    State varchar(255),
+                    ID int(10) unsigned,
+                    Item varchar(255),
+                    KEY (ID)
+                )"
+            );
+            foreach ($scopeItems as $item) {
+                foreach ($item->getInserts($table, 'searchcandidates') as $insert) {
+                    $DB->run($insert);
+                }
+            }
+            if ($scope == 'session') {
+                $this->addTable(
+                    "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
+                );
+            }
+            $this->addTable(
+                "LEFT JOIN $table ON ($table.ID=" . $scopeItems[0]->getOuterID() . ')'
+            );
         }
 
         if ($sessionVariables) {
@@ -368,6 +405,15 @@ abstract class SQLQueryEngine implements QueryEngine
      */
     protected function addWhereCriteria(DictionaryItem $dict, Criteria $criteria, array &$prepbindings)
     {
+        if ($dict instanceof DataAvailabilityItem) {
+            if ($dict->getScope() == 'session') {
+                $this->addTable(
+                    "LEFT JOIN session s ON (s.CandidateID=c.ID AND s.Active='Y')"
+                );
+            }
+            $this->where[] = $dict->getCondition($criteria, $prepbindings);
+            return;
+        }
 
         $fieldname     = $this->getFieldNameFromDict($dict);
         $this->where[] = $fieldname . ' '
@@ -490,7 +536,7 @@ abstract class SQLQueryEngine implements QueryEngine
                                 // and shouldn't be included (as opposed to a cardinality:optional where it
                                 // means that the value was the value null)
                                 if ($key !== null && $val !== null) {
-                                    $candval[$fname]['keytype'] = $this->getCorrespondingKeyFieldtype($field);
+                                    $candval[$fname]['keytype'] = $this->keyFieldType($field);
 
                                     // This is just to get around PHPCS complaining about line
                                     // length.
@@ -517,6 +563,56 @@ abstract class SQLQueryEngine implements QueryEngine
         if (!empty($candval)) {
             yield $lastcandid => $candval;
         }
+    }
+
+    /**
+     * Return the type of the key of a cardinality many field.
+     *
+     * @param DictionaryItem $field The field
+     *
+     * @return string
+     */
+    private function keyFieldType(DictionaryItem $field) : string
+    {
+        if ($field instanceof DataAvailabilityItem) {
+            return $field->getDescription();
+        }
+        return $this->getCorrespondingKeyFieldType($field);
+    }
+
+    /**
+     * Return the visits at which a data availability item lists something,
+     * among the visits the user has access to.
+     *
+     * @param DataAvailabilityItem $item The item
+     *
+     * @return string[]
+     */
+    protected function getDataAvailabilityVisits(DataAvailabilityItem $item) : array
+    {
+        if ($item->getScope() != 'session') {
+            return [];
+        }
+        $user     = \NDB_Factory::singleton()->user();
+        $bindings = [];
+        $visits   = [];
+        foreach (array_keys($user->getVisits()) as $i => $visit) {
+            $visits[]            = ":visit$i";
+            $bindings["visit$i"] = $visit;
+        }
+        if (empty($visits)) {
+            return [];
+        }
+        $condition = $item->getCondition(new NotNull(), $bindings);
+        return $this->loris->getDatabaseConnection()->pselectCol(
+            "SELECT DISTINCT s.Visit_label FROM session s
+                JOIN candidate c ON (c.ID=s.CandidateID)
+             WHERE s.Active='Y' AND c.Active='Y'
+                AND s.Visit_label IN (" . join(',', $visits) . ")
+                AND $condition
+             ORDER BY s.Visit_label",
+            $bindings
+        );
     }
 
     private function displayValue(DictionaryItem $field, mixed $value) : mixed

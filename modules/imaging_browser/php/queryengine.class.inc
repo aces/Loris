@@ -5,6 +5,9 @@ namespace LORIS\imaging_browser;
 use \LORIS\Data\Dictionary\DictionaryItem;
 use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
+use \LORIS\Data\Types\Enumeration;
+use \LORIS\Data\Query\DataAvailabilityItem;
+use \LORIS\Data\Query\DataAvailabilitySource;
 
 /**
  * {@inheritDoc}
@@ -319,7 +322,88 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 
         $images = $images->withItems($items);
 
-        return [$images];
+        return [
+            $images,
+            DataAvailabilityItem::category($this->getDataAvailabilityItems()),
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return DataAvailabilityItem[]
+     */
+    public function getDataAvailabilityItems() : iterable
+    {
+        $scope     = new Scope(Scope::SESSION);
+        $scantypes = new Enumeration(...array_values(\Utility::getScanTypeList()));
+        $scantype  = "(SELECT mst.MriScanTypeName FROM mri_scan_type mst "
+            . "WHERE mst.MriScanTypeID=f.MriScanTypeID)";
+        $qc        = "files f JOIN files_qcstatus qc ON (qc.FileID=f.FileID)";
+        $inserted  = new DataAvailabilitySource(
+            from: 'files f',
+            id: 'f.SessionID',
+            item: $scantype,
+            where: 'f.MriScanTypeID IS NOT NULL',
+        );
+        return [
+            new DataAvailabilityItem(
+                "imaging_browser_HasData",
+                "Imaging data held by the session, by scan type or DICOM",
+                $scope,
+                new Enumeration(...$scantypes->getOptions(), ...['DICOM']),
+                [
+                    $inserted,
+                    new DataAvailabilitySource(
+                        from: 'tarchive t',
+                        id: 't.SessionID',
+                        item: "'DICOM'",
+                    ),
+                    new DataAvailabilitySource(
+                        from: 'mri_upload mu',
+                        id: 'mu.SessionID',
+                        item: "'DICOM'",
+                    ),
+                ],
+            ),
+            new DataAvailabilityItem(
+                "imaging_browser_Inserted",
+                "Scan types with files inserted in the imaging browser",
+                $scope,
+                $scantypes,
+                [$inserted],
+            ),
+            new DataAvailabilityItem(
+                "imaging_browser_QCPassed",
+                "Scan types with a file that passed QC",
+                $scope,
+                $scantypes,
+                [
+                    new DataAvailabilitySource(
+                        from: $qc,
+                        id: 'f.SessionID',
+                        item: $scantype,
+                        where: "f.MriScanTypeID IS NOT NULL"
+                            . " AND qc.QCStatus='Pass'",
+                    ),
+                ],
+            ),
+            new DataAvailabilityItem(
+                "imaging_browser_Selected",
+                "Scan types with a selected file",
+                $scope,
+                $scantypes,
+                [
+                    new DataAvailabilitySource(
+                        from: $qc,
+                        id: 'f.SessionID',
+                        item: $scantype,
+                        where: "f.MriScanTypeID IS NOT NULL"
+                            . " AND qc.Selected='true'",
+                    ),
+                ],
+            ),
+        ];
     }
 
     /**
@@ -336,6 +420,10 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     ) : iterable {
         if ($item->getScope()->__toString() !== 'session') {
             return [];
+        }
+
+        if ($item instanceof DataAvailabilityItem) {
+            return $this->getDataAvailabilityVisits($item);
         }
 
         if ($item instanceof ImagingDictionaryItem) {
