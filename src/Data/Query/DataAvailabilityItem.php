@@ -42,6 +42,11 @@ class DataAvailabilityItem extends DictionaryItem
         Enumeration $items,
         protected array $sources,
     ) {
+        if ($scope->__toString() !== 'session') {
+            throw new \DomainException(
+                "Data availability items must be session scoped"
+            );
+        }
         parent::__construct(
             $name,
             $desc,
@@ -138,19 +143,10 @@ class DataAvailabilityItem extends DictionaryItem
     {
         $inserts = [];
         foreach ($this->sources as $source) {
-            if ($this->getScope() == 'session') {
-                $candidate = "JOIN session availability_s"
-                    . " ON (availability_s.ID=" . $source->id . ")"
-                    . " JOIN candidate availability_c"
-                    . " ON (availability_c.ID=availability_s.CandidateID)";
-            } else {
-                $candidate = "JOIN candidate availability_c"
-                    . " ON (availability_c.ID=" . $source->id . ")";
-            }
             $insert = "INSERT INTO $table (State, ID, Item)"
                 . " SELECT DISTINCT '" . $this->getName() . "', "
                 . $source->id . ', ' . $source->item
-                . ' FROM ' . $source->from . " $candidate"
+                . ' FROM ' . $this->getSessionRows($source)
                 . " JOIN $candidates availability_candidates"
                 . " ON (availability_candidates.CandID=availability_c.CandID)";
             if ($source->where !== null) {
@@ -159,5 +155,43 @@ class DataAvailabilityItem extends DictionaryItem
             $inserts[] = $insert;
         }
         return $inserts;
+    }
+
+    /**
+     * Return an SQL select of the visit labels of the active sessions at which
+     * this field lists something, in a Visit_label column.
+     *
+     * @return string
+     */
+    public function getVisitSelect() : string
+    {
+        $selects = [];
+        foreach ($this->sources as $source) {
+            $select = 'SELECT availability_s.Visit_label AS Visit_label FROM '
+                . $this->getSessionRows($source)
+                . " WHERE availability_s.Active='Y'"
+                . " AND availability_c.Active='Y'";
+            if ($source->where !== null) {
+                $select .= ' AND ' . $source->where;
+            }
+            $selects[] = $select;
+        }
+        return join(' UNION ', $selects);
+    }
+
+    /**
+     * Return the rows of a source joined to their session, aliased
+     * availability_s, and its candidate, aliased availability_c.
+     *
+     * @param DataAvailabilitySource $source The source
+     *
+     * @return string
+     */
+    protected function getSessionRows(DataAvailabilitySource $source) : string
+    {
+        return $source->from
+            . " JOIN session availability_s ON (availability_s.ID=" . $source->id . ")"
+            . " JOIN candidate availability_c"
+            . " ON (availability_c.ID=availability_s.CandidateID)";
     }
 }

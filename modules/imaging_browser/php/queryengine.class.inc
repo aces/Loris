@@ -340,11 +340,17 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
         $scantype  = "(SELECT mst.MriScanTypeName FROM mri_scan_type mst "
             . "WHERE mst.MriScanTypeID=f.MriScanTypeID)";
         $qc        = "files f JOIN files_qcstatus qc ON (qc.FileID=f.FileID)";
-        $inserted  = new DataAvailabilitySource(
+        // Only sessions of human candidates, not phantom scans
+        $human    = function (string $id) : string {
+            return "$id IN (SELECT hs.ID FROM session hs"
+                . " JOIN candidate hc ON (hc.ID=hs.CandidateID)"
+                . " WHERE hc.Entity_Type='Human')";
+        };
+        $inserted = new DataAvailabilitySource(
             from: 'files f',
             id: 'f.SessionID',
             item: $scantype,
-            where: 'f.MriScanTypeID IS NOT NULL',
+            where: 'f.MriScanTypeID IS NOT NULL AND ' . $human('f.SessionID'),
         );
         return [
             new DataAvailabilityItem(
@@ -358,11 +364,13 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                         from: 'tarchive t',
                         id: 't.SessionID',
                         item: "'DICOM'",
+                        where: $human('t.SessionID'),
                     ),
                     new DataAvailabilitySource(
                         from: 'mri_upload mu',
                         id: 'mu.SessionID',
                         item: "'DICOM'",
+                        where: $human('mu.SessionID'),
                     ),
                 ],
             ),
@@ -384,7 +392,8 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                         id: 'f.SessionID',
                         item: $scantype,
                         where: "f.MriScanTypeID IS NOT NULL"
-                            . " AND qc.QCStatus='Pass'",
+                            . " AND qc.QCStatus='Pass' AND "
+                            . $human('f.SessionID'),
                     ),
                 ],
             ),
@@ -399,7 +408,8 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                         id: 'f.SessionID',
                         item: $scantype,
                         where: "f.MriScanTypeID IS NOT NULL"
-                            . " AND qc.Selected='true'",
+                            . " AND qc.Selected='true' AND "
+                            . $human('f.SessionID'),
                     ),
                 ],
             ),

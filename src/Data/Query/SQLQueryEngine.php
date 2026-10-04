@@ -589,9 +589,6 @@ abstract class SQLQueryEngine implements QueryEngine
      */
     protected function getDataAvailabilityVisits(DataAvailabilityItem $item) : array
     {
-        if ($item->getScope() != 'session') {
-            return [];
-        }
         $user     = \NDB_Factory::singleton()->user();
         $bindings = [];
         $visits   = [];
@@ -602,14 +599,10 @@ abstract class SQLQueryEngine implements QueryEngine
         if (empty($visits)) {
             return [];
         }
-        $condition = $item->getCondition(new NotNull(), $bindings);
         return $this->loris->getDatabaseConnection()->pselectCol(
-            "SELECT DISTINCT s.Visit_label FROM session s
-                JOIN candidate c ON (c.ID=s.CandidateID)
-             WHERE s.Active='Y' AND c.Active='Y'
-                AND s.Visit_label IN (" . join(',', $visits) . ")
-                AND $condition
-             ORDER BY s.Visit_label",
+            "SELECT DISTINCT Visit_label FROM (" . $item->getVisitSelect() . ") v
+             WHERE Visit_label IN (" . join(',', $visits) . ")
+             ORDER BY Visit_label",
             $bindings
         );
     }
