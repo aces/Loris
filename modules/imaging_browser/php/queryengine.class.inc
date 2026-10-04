@@ -322,10 +322,10 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 
         $images = $images->withItems($items);
 
-        return [
-            $images,
-            DataAvailabilityItem::category($this->getDataAvailabilityItems()),
-        ];
+        $availability = DataAvailabilityItem::category(
+            $this->getDataAvailabilityItems()
+        );
+        return [$images, $availability];
     }
 
     /**
