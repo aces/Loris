@@ -3,9 +3,8 @@
 namespace LORIS\Data\Query;
 
 /**
- * A DataAvailabilitySource is one SQL source of the items listed by a
- * DataAvailabilityItem: the rows of a table expression, each holding an item
- * for a session or a candidate.
+ * A DataAvailabilitySource is a table whose rows hold items listed by a
+ * DataAvailabilityItem for a session or a candidate.
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */

@@ -57,15 +57,13 @@ interface QueryEngine
     public function getCandidateData(array $items, iterable $candidates, ?array $visitlist) : iterable;
 
     /**
-     * Return the items describing which data this engine holds, in the
-     * order the data moves through them.
+     * Return the data availability items of this engine, in workflow order.
      *
-     * Each item is a state of the engine's data and lists, for a session
-     * or a candidate, the things the engine holds in that state, such as
-     * the scan types that passed QC. The first item lists everything the
-     * engine holds any data for, and is named after the module followed by
-     * _HasData. The items are part of the data dictionary, so they are
-     * selected and matched like any other.
+     * Each item is a state of the engine's data and lists, per session or
+     * candidate, the items in that state, such as the scan types that passed
+     * QC. The first one, named after the module followed by _HasData, lists
+     * everything the engine holds data for. The items must also be in the
+     * engine's data dictionary.
      *
      * @return \LORIS\Data\Dictionary\DictionaryItem[]
      */

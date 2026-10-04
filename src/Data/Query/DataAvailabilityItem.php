@@ -79,10 +79,6 @@ class DataAvailabilityItem extends DictionaryItem
      * Return an SQL condition on the session s or the candidate c that
      * holds when the criteria matches one of the listed items.
      *
-     * Each source is checked with a scalar subquery rather than EXISTS,
-     * which the database can't turn into a join, so that it stays a lookup
-     * of the session or candidate whatever tables the source selects from.
-     *
      * @param Criteria $criteria     The criteria to match
      * @param array    $prepbindings The prepared statement bindings, to
      *                               which the criteria's values are added
@@ -102,6 +98,8 @@ class DataAvailabilityItem extends DictionaryItem
                     . SQLQueryEngine::sqlOperator($criteria) . ' '
                     . SQLQueryEngine::sqlValue($this, $criteria, $prepbindings);
             }
+            // Not EXISTS, which the database can turn into a join over every
+            // candidate
             $found[] = '(SELECT 1 FROM ' . $source->from
                 . ' WHERE ' . join(' AND ', $where) . ' LIMIT 1) IS NOT NULL';
         }
@@ -127,10 +125,9 @@ class DataAvailabilityItem extends DictionaryItem
     }
 
     /**
-     * Return the statements that insert the items listed by this field into
-     * $table, which has the columns State, ID and Item, for the candidates
-     * in $candidates, a table with a CandID column. Each statement reads
-     * $candidates once.
+     * Return the statements inserting the items listed by this field for the
+     * candidates in the $candidates table into $table, which has the columns
+     * State, ID and Item.
      *
      * @param string $table      The table to insert into
      * @param string $candidates The table of candidates to insert items for

@@ -190,9 +190,8 @@ abstract class SQLQueryEngine implements QueryEngine
             }
         }
         foreach ($availability as $scope => $scopeItems) {
-            // All the selected items of a scope come from one table, so that
-            // selecting several of them doesn't multiply the rows, filled
-            // with only the items of the candidates being retrieved
+            // One table per scope holds the selected items of the candidates
+            // being retrieved, so that selecting several doesn't multiply rows
             $table = "availability_$scope";
             $DB->run("DROP TEMPORARY TABLE IF EXISTS $table");
             $DB->run(
