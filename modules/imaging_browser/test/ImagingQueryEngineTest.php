@@ -8,6 +8,7 @@ use LORIS\Data\Query\QueryTerm;
 use LORIS\Data\Query\Criteria\Equal;
 use LORIS\Data\Query\Criteria\NotEqual;
 use LORIS\Data\Query\Criteria\In;
+use LORIS\Data\Query\Criteria\NotNull;
 
 use LORIS\Data\Query\Criteria\StartsWith;
 use LORIS\Data\Query\Criteria\EndsWith;
@@ -447,6 +448,107 @@ class ImagingQueryEngineTest extends TestCase
                 ],
             ]
         );
+    }
+
+    /**
+     * Test that the data availability items list the scan types held by
+     * each session, and match on them.
+     *
+     * @return void
+     */
+    function testDataAvailability()
+    {
+        $this->DB->setFakeTableData("tarchive", []);
+        $this->DB->setFakeTableData("mri_upload", []);
+
+        $names = [];
+        foreach ($this->engine->getDataAvailabilityItems() as $item) {
+            $names[] = $item->getName();
+        }
+        $this->assertEquals(
+            [
+                'imaging_browser_HasData',
+                'imaging_browser_Inserted',
+                'imaging_browser_QCPassed',
+                'imaging_browser_Selected',
+            ],
+            $names
+        );
+
+        // Both candidates have a scan at TestMRIVisit, and only 123457 has
+        // a ScanType2 scan.
+        $hasdata = $this->_getDictItem("imaging_browser_HasData");
+        $this->assertEquals(
+            [new CandID("123456"), new CandID("123457")],
+            iterator_to_array(
+                $this->engine->getCandidateMatches(
+                    new QueryTerm($hasdata, new NotNull())
+                )
+            )
+        );
+        $this->assertEquals(
+            [new CandID("123457")],
+            iterator_to_array(
+                $this->engine->getCandidateMatches(
+                    new QueryTerm($hasdata, new Equal("ScanType2"))
+                )
+            )
+        );
+        $this->assertEquals(
+            [],
+            iterator_to_array(
+                $this->engine->getCandidateMatches(
+                    new QueryTerm($hasdata, new NotNull()),
+                    ["TestBvlVisit"]
+                )
+            )
+        );
+
+        // Only ScanType1 has files that passed QC.
+        $qc = $this->_getDictItem("imaging_browser_QCPassed");
+        $this->assertEquals(
+            [],
+            iterator_to_array(
+                $this->engine->getCandidateMatches(
+                    new QueryTerm($qc, new Equal("ScanType2"))
+                )
+            )
+        );
+        $results = iterator_to_array(
+            $this->engine->getCandidateData(
+                [$qc],
+                [new CandID("123456"), new CandID("123457")],
+                null
+            )
+        );
+        $this->assertEquals(
+            [
+                "123456" => [
+                    "imaging_browser_QCPassed" => [
+                        'keytype' => 'Scan types with a file that passed QC',
+                        "1"       => [
+                            'VisitLabel' => 'TestMRIVisit',
+                            'SessionID'  => 1,
+                            'values'     => ['ScanType1' => 'ScanType1'],
+                        ],
+                    ],
+                ],
+                "123457" => [
+                    "imaging_browser_QCPassed" => [
+                        'keytype' => 'Scan types with a file that passed QC',
+                        "3"       => [
+                            'VisitLabel' => 'TestMRIVisit',
+                            'SessionID'  => 3,
+                            'values'     => ['ScanType1' => 'ScanType1'],
+                        ],
+                    ],
+                ],
+            ],
+            $results
+        );
+
+        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS tarchive");
+        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS mri_upload");
     }
 
     /**
