@@ -175,6 +175,11 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     protected $baseURL;
 
     /**
+     * The scan types that have files, keyed by MriScanTypeID
+     */
+    private ?array $scanTypes = null;
+
+    /**
      * {@inheritDoc}
      *
      * @param \LORIS\LorisInstance $loris The LORIS instance being queried
@@ -207,7 +212,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             ),
         ];
 
-        $scantypes = \Utility::getScanTypeList();
+        $scantypes = $this->_getScanTypes();
         foreach ($scantypes as $ScanType) {
             foreach (self::FILE_DICTIONARY_ITEMS as $field => $properties) {
                 $fullyQualifiedType
@@ -336,7 +341,7 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     public function getDataAvailabilityItems() : iterable
     {
         $scope     = new Scope(Scope::SESSION);
-        $scantypes = new Enumeration(...array_values(\Utility::getScanTypeList()));
+        $scantypes = new Enumeration(...array_values($this->_getScanTypes()));
         $scantype  = "(SELECT mst.MriScanTypeName FROM mri_scan_type mst "
             . "WHERE mst.MriScanTypeID=f.MriScanTypeID)";
         $qc        = "files f JOIN files_qcstatus qc ON (qc.FileID=f.FileID)";
@@ -414,6 +419,19 @@ class QueryEngine extends \LORIS\Data\Query\SQLQueryEngine
                 ],
             ),
         ];
+    }
+
+    /**
+     * Return the scan types that have files, keyed by MriScanTypeID
+     *
+     * @return string[]
+     */
+    private function _getScanTypes() : array
+    {
+        if ($this->scanTypes === null) {
+            $this->scanTypes = \Utility::getScanTypeList();
+        }
+        return $this->scanTypes;
     }
 
     /**
