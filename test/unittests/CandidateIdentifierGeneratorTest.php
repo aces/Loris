@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Unit tests for CandidateIdentifierGenerator class
@@ -90,6 +88,12 @@ class CandidateIdentifierGeneratorTest extends TestCase
         $this->assertSame('0000', $generator->generate());
     }
 
+    /**
+     * Tests that the next sequential numeric identifier is generated correctly
+     *
+     * @return void
+     * @covers CandidateIdentifierGenerator::generate
+     */
     public function testGenerateNextSequentialNumericIdentifier(): void
     {
         $this->DB->insert(

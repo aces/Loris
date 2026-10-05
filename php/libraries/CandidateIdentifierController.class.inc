@@ -277,6 +277,41 @@ class CandidateIdentifierController
     }
 
     /**
+     * Gets the site and project aliases for a candidate
+     *
+     * @param int $candidateID Candidate ID
+     *
+     * @return array<string,string> Candidate site and project aliases
+     *
+     * @throws \NotFound If the candidate does not exist
+     */
+    private function _getCandidateAliases(int $candidateID): array
+    {
+        $candidate = $this->database->pselectRow(
+            "SELECT p.Alias AS SiteAlias,
+                pr.Alias AS ProjectAlias
+         FROM candidate AS c
+         JOIN psc AS p
+           ON p.CenterID = c.RegistrationCenterID
+         JOIN Project AS pr
+           ON pr.ProjectID = c.RegistrationProjectID
+         WHERE c.ID = :candidateID",
+            [
+                'candidateID' => $candidateID,
+            ]
+        );
+
+        if (empty($candidate)) {
+            throw new \NotFound(
+                "No candidate found in the database with id: "
+                    . $candidateID
+            );
+        }
+
+        return $candidate;
+    }
+
+    /**
      * Validates a candidate identifier against its type format
      *
      * Resolves the candidate's site and project aliases so that identifier
@@ -292,26 +327,10 @@ class CandidateIdentifierController
     private function _validateFormat(
         CandidateIdentifier $candidateIdentifier
     ): void {
-        $candidate = $this->database->pselectRow(
-            "SELECT p.Alias AS SiteAlias,
-                pr.Alias AS ProjectAlias
-         FROM candidate AS c
-         JOIN psc AS p
-           ON p.CenterID = c.RegistrationCenterID
-         JOIN Project AS pr
-           ON pr.ProjectID = c.RegistrationProjectID
-         WHERE c.ID = :candidateID",
-            [
-                'candidateID' => $candidateIdentifier->candidateID,
-            ]
-        );
 
-        if (empty($candidate)) {
-            throw new \NotFound(
-                "No candidate found in the database with id: "
-                    . $candidateIdentifier->candidateID
-            );
-        }
+        $candidate = $this->_getCandidateAliases(
+            $candidateIdentifier->candidateID
+        );
 
         $pattern = \Candidate::structureToPCRE(
             $candidateIdentifier->type->format,
