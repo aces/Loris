@@ -162,6 +162,45 @@ class CandidateIdentifierController
     }
 
     /**
+     * Generates and creates a candidate identifier
+     *
+     * @param int            $candidateID    Candidate ID
+     * @param IdentifierType $identifierType Identifier type
+     *
+     * @return CandidateIdentifier Generated candidate identifier
+     *
+     * @throws \InvalidArgumentException If automatic generation is not enabled
+     */
+    public function generateCandidateIdentifier(
+        int $candidateID,
+        IdentifierType $identifierType
+    ): CandidateIdentifier {
+        if (!$identifierType->autoGenerate) {
+            throw new \InvalidArgumentException(
+                'Identifier type is not configured for automatic generation'
+            );
+        }
+
+        $candidate = $this->_getCandidateAliases($candidateID);
+
+        $generator = new \CandidateIdentifierGenerator(
+            $this->database,
+            $identifierType,
+            $candidate['SiteAlias'],
+            $candidate['ProjectAlias']
+        );
+
+        $candidateIdentifier = new CandidateIdentifier(
+            candidateIdentifierID: null,
+            candidateID: $candidateID,
+            type: $identifierType,
+            value: $generator->generate(),
+        );
+
+        return $this->createCandidateIdentifier($candidateIdentifier);
+    }
+
+    /**
      * Updates a candidate identifier
      *
      * @param CandidateIdentifier $candidateIdentifier Candidate identifier to update
