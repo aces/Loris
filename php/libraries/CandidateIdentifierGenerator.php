@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Generates candidate identifiers from identifier type configuration.
@@ -41,7 +39,7 @@ class CandidateIdentifierGenerator extends IdentifierGenerator
         string $siteAlias,
         string $projectAlias,
     ) {
-        $this->siteAlias = $siteAlias;
+        $this->siteAlias    = $siteAlias;
         $this->projectAlias = $projectAlias;
 
         $this->_initializeFromFormat();
@@ -66,12 +64,11 @@ class CandidateIdentifierGenerator extends IdentifierGenerator
      */
     private function _initializeFromFormat(): void
     {
-        if (
-            preg_match(
-                '/\{(SEQUENCE|RANDOM):(\d+)([^}]*)\}/i',
-                $this->identifierType->format,
-                $generation
-            ) !== 1
+        if (preg_match(
+            '/\{(SEQUENCE|RANDOM):(\d+)([^}]*)\}/i',
+            $this->identifierType->format,
+            $generation
+        ) !== 1
         ) {
             throw new \ConfigurationException(
                 'Invalid generation template for identifier type '
@@ -88,60 +85,56 @@ class CandidateIdentifierGenerator extends IdentifierGenerator
 
         $this->alphabet = range('0', '9');
 
-        if (
-            preg_match(
-                '/(?:^|,)FORMAT:(numeric|alphanumeric|alpha)(?:,|$)/i',
-                $generation[3],
-                $format
-            ) === 1
+        if (preg_match(
+            '/(?:^|,)FORMAT:(numeric|alphanumeric|alpha)(?:,|$)/i',
+            $generation[3],
+            $format
+        ) === 1
         ) {
             switch (strtolower($format[1])) {
-                case 'alpha':
-                    $this->alphabet = range('A', 'Z');
-                    break;
+            case 'alpha':
+                $this->alphabet = range('A', 'Z');
+                break;
 
-                case 'alphanumeric':
-                    $this->alphabet = array_merge(
-                        range('0', '9'),
-                        range('A', 'Z')
-                    );
-                    break;
+            case 'alphanumeric':
+                $this->alphabet = array_merge(
+                    range('0', '9'),
+                    range('A', 'Z')
+                );
+                break;
             }
         }
 
-        $this->padding = strval($this->alphabet[0]);
+        $this->padding  = strval($this->alphabet[0]);
         $this->minValue = str_repeat($this->alphabet[0], $this->length);
         $this->maxValue = str_repeat(
             $this->alphabet[count($this->alphabet) - 1],
             $this->length
         );
 
-        if (
-            preg_match(
-                '/(?:^|,)MIN:([^,]+)/i',
-                $generation[3],
-                $min
-            ) === 1
+        if (preg_match(
+            '/(?:^|,)MIN:([^,]+)/i',
+            $generation[3],
+            $min
+        ) === 1
         ) {
             $this->minValue = $min[1];
         }
 
-        if (
-            preg_match(
-                '/(?:^|,)MAX:([^,]+)/i',
-                $generation[3],
-                $max
-            ) === 1
+        if (preg_match(
+            '/(?:^|,)MAX:([^,]+)/i',
+            $generation[3],
+            $max
+        ) === 1
         ) {
             $this->maxValue = $max[1];
         }
 
-        if (
-            preg_match(
-                '/(?:^|,)PADDING:([^,]+)/i',
-                $generation[3],
-                $padding
-            ) === 1
+        if (preg_match(
+            '/(?:^|,)PADDING:([^,]+)/i',
+            $generation[3],
+            $padding
+        ) === 1
         ) {
             $this->padding = $padding[1];
 
