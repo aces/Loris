@@ -79,6 +79,10 @@ class CandidateIdentifierGenerator extends IdentifierGenerator
         $this->generationMethod = match (strtoupper($generation[1])) {
             'SEQUENCE' => 'sequential',
             'RANDOM'   => 'random',
+            default    => throw new \ConfigurationException(
+                'Invalid generation method for identifier type '
+                    . $this->identifierType->name
+            ),
         };
 
         $this->length = intval($generation[2]);
@@ -145,10 +149,22 @@ class CandidateIdentifierGenerator extends IdentifierGenerator
             }
         }
 
+        $generationPosition = strpos(
+            $this->identifierType->format,
+            $generation[0]
+        );
+
+        if ($generationPosition === false) {
+            throw new \ConfigurationException(
+                'Invalid generation template for identifier type '
+                    . $this->identifierType->name
+            );
+        }
+
         $this->prefix = substr(
             $this->identifierType->format,
             0,
-            strpos($this->identifierType->format, $generation[0])
+            $generationPosition
         );
 
         $this->prefix = str_replace(
