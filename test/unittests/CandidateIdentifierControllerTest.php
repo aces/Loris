@@ -572,6 +572,32 @@ class CandidateIdentifierControllerTest extends TestCase
     }
 
     /**
+     * Tests that a candidate identifier can be generated and created
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::generateCandidateIdentifier
+     */
+    public function testGenerateCandidateIdentifier(): void
+    {
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $generated = $this->candidateIdentifierController
+            ->generateCandidateIdentifier(
+                2,
+                $identifierType
+            );
+
+        $this->assertNotNull($generated->candidateIdentifierID);
+        $this->assertSame(2, $generated->candidateID);
+        $this->assertSame('1235', $generated->value);
+        $this->assertSame(
+            1,
+            $generated->type->candidateIdentifierTypeID
+        );
+    }
+
+    /**
      * Tears down the fixture and cleans up temporary tables.
      * This method is called after a test is executed.
      *
