@@ -95,13 +95,9 @@ getConfig.stdout.on('data', (data) => {
     );
 
     const eegVizSubmodule = path.join(__dirname, getPath(eegVisualization));
-
-    const protoc = cp.spawn(
-      'protoc',
-      [
-        'protocol-buffers/chunk.proto',
-        '--js_out=import_style=commonjs,binary:./src/',
-      ],
+    const protobufGenerator = cp.spawn(
+      'npm',
+      ['run', 'generate:protobuf'],
       {
         env: process.env,
         cwd: eegVizSubmodule,
@@ -109,7 +105,7 @@ getConfig.stdout.on('data', (data) => {
       }
     );
 
-    protoc.on('error', (error) => {
+    protobufGenerator.on('error', (error) => {
       console.error(
         '\x1b[31m',
         'ERROR: Make sure that protoc',
