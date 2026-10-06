@@ -4,6 +4,7 @@ import {withTranslation, WithTranslation} from 'react-i18next';
 
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
+import {Client} from 'jslib/http';
 
 import frStrings from '../locale/fr/LC_MESSAGES/dicom_archive.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/dicom_archive.json';
@@ -69,12 +70,6 @@ type ViewDetailsData = {
   archiveSeries: ArchiveSeries[],
 };
 
-declare global {
-  interface Window {
-    lorisFetch?: typeof fetch,
-  }
-}
-
 type ViewDetailsProps = WithTranslation & {
   dataURL: string,
 };
@@ -90,15 +85,9 @@ function ViewDetails({dataURL, t}: ViewDetailsProps): React.ReactElement {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const lorisFetch = window.lorisFetch ?? fetch;
-    lorisFetch(dataURL, {credentials: 'same-origin'})
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((responseData: ViewDetailsData) => setData(responseData))
+    const client = new Client<ViewDetailsData>('dicom_archive');
+    client.getById(dataURL)
+      .then(setData)
       .catch(() => setError(true));
   }, [dataURL]);
 
