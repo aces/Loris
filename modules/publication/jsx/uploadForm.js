@@ -233,7 +233,7 @@ class PublicationUploadForm extends React.Component {
       return (
         <div className="alert alert-danger text-center">
           <strong>
-            {t('An error occured while loading the page.', {ns: 'loris'})}
+            {t('An error occurred while loading the page.', {ns: 'loris'})}
           </strong>
         </div>
       );

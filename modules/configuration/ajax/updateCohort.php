@@ -14,6 +14,8 @@ if (!$user->hasPermission('config')) {
     exit(0);
 }
 
+header('Content-Type: application/json');
+
 require_once __DIR__ . "/../../../vendor/autoload.php";
 $client = new NDB_Client();
 $client->makeCommandLine();

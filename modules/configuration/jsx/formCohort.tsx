@@ -4,6 +4,7 @@ import {withTranslation, WithTranslation} from 'react-i18next';
 
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
+import StudyEntitiesClient from './StudyEntitiesClient';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/configuration.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/configuration.json';
@@ -37,17 +38,6 @@ type SaveStatus = {
   message: string,
   type: 'error' | 'success',
 } | null;
-
-type SaveResponse = {
-  error?: string,
-  ok?: string,
-};
-
-declare global {
-  interface Window {
-    lorisFetch?: typeof fetch,
-  }
-}
 
 type CohortManagerProps = {
   data: CohortData,
@@ -159,25 +149,10 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
     });
 
     try {
-      const lorisFetch = window.lorisFetch ?? fetch;
-      const response = await lorisFetch(
+      const responseData = await new StudyEntitiesClient('configuration').save(
         `${loris.BaseURL}/configuration/ajax/updateCohort.php`,
-        {
-          body,
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          },
-          method: 'POST',
-        }
+        body
       );
-      const responseData = await response.json() as SaveResponse;
-      if (!response.ok) {
-        throw new Error(
-          responseData.error
-            ?? props.t('Failed to save', {ns: 'configuration'})
-        );
-      }
 
       setStatus({
         message: responseData.ok
@@ -507,14 +482,8 @@ function CohortPage(props: WithTranslation): React.ReactElement {
   useEffect(() => {
     const dataURL = new URL(window.location.href);
     dataURL.searchParams.set('format', 'json');
-    const lorisFetch = window.lorisFetch ?? fetch;
-    lorisFetch(dataURL.toString(), {credentials: 'same-origin'})
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-        return response.json();
-      })
+    new StudyEntitiesClient<CohortData>('configuration')
+      .getById(dataURL.toString())
       .then((responseData: CohortData) => setData(responseData))
       .catch(() => setError(true));
   }, []);
@@ -522,7 +491,7 @@ function CohortPage(props: WithTranslation): React.ReactElement {
   if (error) {
     return (
       <h3>
-        {props.t('An error occured while loading the page.', {ns: 'loris'})}
+        {props.t('An error occurred while loading the page.', {ns: 'loris'})}
       </h3>
     );
   }

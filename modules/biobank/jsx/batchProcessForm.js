@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
 import SpecimenProcessForm from './processForm';
 import {VerticalTabs, TabPane} from 'Tabs';
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import Loader from 'Loader';
 import {mapFormOptions, clone, isEmpty} from './helpers.js';
 import {
@@ -325,7 +325,7 @@ class BatchProcessForm extends React.PureComponent {
       });
     };
     return (
-      <Modal
+      <FormModal
         title={t('Process Specimens', {ns: 'biobank'})}
         show={this.props.show}
         onClose={handleClose}
@@ -333,7 +333,7 @@ class BatchProcessForm extends React.PureComponent {
         throwWarning={true}
       >
         {form}
-      </Modal>
+      </FormModal>
     );
   }
 }
