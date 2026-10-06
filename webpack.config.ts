@@ -19,6 +19,8 @@ const lorisModules: Record<string, string[]> = {
   configuration: [
     'CohortRelations',
     'DiagnosisEvolution',
+    'formCohort',
+    'formProject',
     'index',
   ],
   conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
@@ -45,7 +47,7 @@ const lorisModules: Record<string, string[]> = {
     'react.sidebar',
     'react.tabs',
   ],
-  dicom_archive: ['dicom_archive'],
+  dicom_archive: ['dicom_archive', 'viewDetails'],
   genomic_browser: ['genomicBrowserIndex'],
   electrophysiology_browser: [
     'electrophysiologyBrowserIndex',

@@ -112,6 +112,25 @@ The following applies to both tabs, check that:
 5. Also check the database to validate it.
 6. Check the view and access with several user with different permissions (see "Permissions" section).
 
+### Batch Changes [Manual Testing]
+
+1. Confirm that the Batch Edit tab is only available with the `Issue Tracker: View/Edit/Comment Issues - All Sites` permission.
+2. Filter the issue cards and confirm that Select all filtered issues selects only issues matching the current filters.
+3. Select issues across multiple pages and update status, priority, category, site, and assignee together.
+4. Confirm that fields set to No change retain their original values.
+5. Set category to Uncategorized and assignee to Unassigned and confirm both values are cleared.
+6. Confirm that each changed field is added to the issue history, a cleared assignee is displayed as Unassigned, and the editor is recorded as Last Updated By.
+7. Confirm that a newly assigned user is added as a watcher.
+8. Confirm that Closed and Rejected are unavailable without an Issue Tracker close permission and that the endpoint rejects a selection containing any issue the user cannot close.
+9. Submit a mix of changed and unchanged issues and confirm the success count includes only changed issues.
+10. Confirm that Batch changes is collapsed and Batch actions is hidden initially. Select an issue, then confirm that Batch changes expands and Select changes to apply in Batch actions returns to it while scrolling.
+11. Confirm that batch fields are disabled with no selected issues and become available after selecting an issue.
+12. Enable Select all filtered issues, change and reset the filters, and confirm the selected issue count continues to match the filtered issues.
+13. Confirm that each issue checkbox appears beside its issue ID and that selected cards use a highlighted header without a footer band.
+14. Apply a batch change to multiple issues and confirm that the plural success message and updated card values appear without refreshing the page.
+15. Apply values already present on every selected issue and confirm that an informational No changes were made message appears without clearing the selection.
+16. Change Site to a specific site, then confirm that the cards and issue history show the new site without refreshing the page.
+
 ### Permissions [Automation Testing]
 
 Same as the previous tab, for each point check the access/view/edit capability:
@@ -122,3 +141,37 @@ Same as the previous tab, for each point check the access/view/edit capability:
 4. Remove `Issue Tracker: Close Issues - All Sites` permission.
 5. Remove `Issue Tracker: Close Issues - Own Sites` permission.
 6. Test that the "Batch Edit" tab behaves correctly as described above.
+
+## Issue Tracker Stress Testing [Manual Testing]
+
+1. Use only a sandbox database. Confirm that the tool refuses to run when the
+   `dev.sandbox` configuration is disabled.
+2. Preview a 10-issue smoke run without changing the database:
+   `php tools/issue_tracker_stress_test.php --issues=10 --comments=0,1,5 --run-id=smoke`.
+3. Re-run the smoke test with `--confirm`. Verify that 10 tagged issues were
+   created and that their repeating comment counts are 0, 1, and 5.
+4. Before cleanup, create another confirmed run with a different run ID. Verify
+   that both runs coexist, can be filtered independently, and cleaning up one
+   run does not remove the other.
+5. Open the Browse Issues tab on `/issue_tracker/`. Filter the Title field by
+   the run ID and verify that the generated issues and issue details load.
+6. Open the Batch Edit tab and verify that the tagged generated issues appear.
+   Exercise its category, priority, status, site, and assignee filters. Select
+   several generated issues, batch edit their status or priority, and confirm
+   that the changes persist.
+7. In Browse Issues, test filtering, sorting, and pagination. In Batch Edit,
+   test its filters, page-size control, and pagination. Record cold and warm
+   response times and any PHP, browser-console, or database errors.
+8. Clean up the smoke run with
+   `php tools/issue_tracker_stress_test.php --cleanup=smoke --confirm`. Verify
+   that its tagged issues and comments no longer exist.
+9. Repeat the generate, browser-test, and cleanup cycle separately with 1,000,
+   5,000, 10,000, 20,000, 50,000, and 100,000 issues. Clean up between runs so
+   each result measures one exact data size.
+10. Test each size with no comments, one comment per issue, and a mixed
+   distribution such as `--comments=0,1,5,10`. Confirm that issue-list and
+   issue-detail comment counts remain correct.
+11. Confirm that the My Tasks dashboard widget still loads and reports the
+   generated issues assigned to the selected reporter.
+12. Record the command, issue count, comment count, generation time, page
+    response times, and any server/database errors for every test run.
