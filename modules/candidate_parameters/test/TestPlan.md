@@ -18,6 +18,9 @@
 2. Change each field and click on *Update* and make sure it updates in the front-end and back-end.
 3. If you set the *Caveat Emptor flag* to Yes, check that a reason must be specified. If the reason is set to 'Other', check that an explanation must be provided. If 'Other' does not exist as an option in the caveat_options table, the field should not show up in the front-end.
 4. Add fields to the parameter_type table and check if it shows up on this page.
+5. Add project-specific rules in `parameter_candidate_rules` and confirm only the
+fields configured for the candidate's registration project appear. Confirm required
+fields are marked required and `numeric` parameters use a numeric input.
 
 ### Proband Information Tab
 1. Check that the proband tab only shows up if _useProband_ is set to true in the configuration module.

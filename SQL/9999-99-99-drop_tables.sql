@@ -169,6 +169,7 @@ DROP TABLE IF EXISTS `login_summary_statistics`;
 
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
+DROP TABLE IF EXISTS `parameter_candidate_rules`;
 DROP TABLE IF EXISTS `parameter_candidate`;
 DROP TABLE IF EXISTS `parameter_type_override`;
 DROP TABLE IF EXISTS `parameter_type_category_rel`;

@@ -249,6 +249,15 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
+        try {
+            $parameters = $this->_validateCandidateParameters(
+                $project->getId(),
+                $data['Candidate']['Parameters'] ?? []
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest($e->getMessage());
+        }
+
         $centerid = array_search(
             $data['Candidate']['Site'],
             \Utility::getSiteList()
@@ -258,7 +267,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $sex = new Sex($data['Candidate']['Sex']);
 
+        $db = \NDB_Factory::singleton()->database();
         try {
+            $db->beginTransaction();
             $candid = \Candidate::createNew(
                 \CenterID::singleton($centerid),
                 $data['Candidate']['DoB'] ?? null,
@@ -267,11 +278,33 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $pscid,
                 $project->getId()
             );
+
+            if (!empty($parameters)) {
+                $candidate = \NDB_Factory::singleton()->candidate($candid);
+                foreach ($parameters as $parameterTypeID => $value) {
+                    $db->insert(
+                        'parameter_candidate',
+                        [
+                            'CandidateID'     => $candidate->getID(),
+                            'ParameterTypeID' => $parameterTypeID,
+                            'Value'           => $value,
+                            'InsertTime'      => time(),
+                        ]
+                    );
+                }
+            }
+            $db->commit();
         } catch (\ConflictException $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
             return new \LORIS\Http\Response\JSON\Conflict(
                 $e->getMessage()
             );
         } catch (\Exception | \LorisException | \InvalidArgumentException $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
             return new \LORIS\Http\Response\JSON\BadRequest(
                 $e->getMessage()
             );
@@ -285,6 +318,114 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         return (new \LORIS\Http\Response\JsonResponse($body))
             ->withStatus(201)
             ->withHeader('Content-Location', $link);
+    }
+
+    /**
+     * Validate configured candidate parameters for a project.
+     *
+     * @param \ProjectID $projectID Project used to create the candidate
+     * @param mixed      $values    Candidate parameter values
+     *
+     * @return array<int,string> Validated values indexed by parameter type ID
+     * @throws \InvalidArgumentException If a value is missing or invalid
+     */
+    private function _validateCandidateParameters(
+        \ProjectID $projectID,
+        mixed $values
+    ): array {
+        if (!is_array($values)) {
+            throw new \InvalidArgumentException(
+                'Candidate Parameters must be an object'
+            );
+        }
+
+        $db    = \NDB_Factory::singleton()->database();
+        $rules = $db->pselect(
+            "SELECT pt.ParameterTypeID, pt.Name, pt.Type, pt.Description,
+                pcr.Required
+            FROM parameter_type pt
+            JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
+            JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+            JOIN parameter_candidate_rules pcr USING (ParameterTypeID)
+            WHERE ptc.Name = 'Candidate Parameters'
+                AND pcr.ProjectID = :projectID
+                AND pcr.ShowOnRegistration = 1",
+            ['projectID' => $projectID]
+        );
+
+        $validated = [];
+        $allowedParameterTypeIDs = [];
+        foreach ($rules as $rule) {
+            $parameterTypeID           = (int) $rule['ParameterTypeID'];
+            $allowedParameterTypeIDs[] = $parameterTypeID;
+            $label    = $rule['Description'] ?: $rule['Name'];
+            $hasValue = array_key_exists(
+                $parameterTypeID,
+                $values
+            );
+
+            if ($hasValue && $values[$parameterTypeID] !== null
+                && !is_scalar($values[$parameterTypeID])
+            ) {
+                throw new \InvalidArgumentException("$label is invalid");
+            }
+
+            $hasValue = $hasValue
+                && $values[$parameterTypeID] !== null
+                && trim(strval($values[$parameterTypeID])) !== '';
+
+            if (!$hasValue) {
+                if ((int) $rule['Required'] === 1) {
+                    throw new \InvalidArgumentException(
+                        "$label is required"
+                    );
+                }
+                continue;
+            }
+
+            $value = trim(strval($values[$parameterTypeID]));
+            if (strlen($value) > 255) {
+                throw new \InvalidArgumentException(
+                    "$label must be 255 characters or fewer"
+                );
+            }
+
+            $type = strtolower(strval($rule['Type']));
+            if (str_starts_with($type, 'numeric') && !is_numeric($value)) {
+                throw new \InvalidArgumentException("$label must be numeric");
+            }
+
+            if (str_starts_with($type, 'date')) {
+                $date = \DateTime::createFromFormat('!Y-m-d', $value);
+                if ($date === false || $date->format('Y-m-d') !== $value) {
+                    throw new \InvalidArgumentException(
+                        "$label must be a valid date"
+                    );
+                }
+            }
+
+            if (str_starts_with($type, 'enum')) {
+                preg_match_all("/'([^']*)'/", $rule['Type'], $matches);
+                if (!in_array($value, $matches[1], true)) {
+                    throw new \InvalidArgumentException("$label is invalid");
+                }
+            }
+
+            $validated[$parameterTypeID] = $value;
+        }
+
+        foreach ($values as $parameterTypeID => $value) {
+            if (!in_array((int) $parameterTypeID, $allowedParameterTypeIDs, true)
+                && $value !== null
+                && (!is_scalar($value) || trim(strval($value)) !== '')
+            ) {
+                throw new \InvalidArgumentException(
+                    'Candidate Parameters contains an invalid field'
+                );
+            }
+        }
+
+        return $validated;
     }
 
     /**
