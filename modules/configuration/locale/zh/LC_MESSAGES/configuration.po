@@ -21,3 +21,12 @@ msgstr ""
 
 msgid "Configuration"
 msgstr "配置"
+
+msgid "To configure study cohorts <0>click here</0>."
+msgstr ""
+
+msgid "To configure study projects <0>click here</0>."
+msgstr ""
+
+msgid "To configure the diagnosis trajectory of the study <0>click here</0>."
+msgstr ""

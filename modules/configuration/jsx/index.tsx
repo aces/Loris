@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {useTranslation} from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
+import lorisFetch from 'jslib/lorisFetch';
 import swal from 'sweetalert2';
 import {
   EmailElement,
@@ -139,23 +140,26 @@ function IntroText(props: BaseURLProps): React.ReactElement {
         )}
       </p>
       <p>
-        {t('To configure study cohorts', {ns: 'configuration'})}&nbsp;
-        <a href={`${props.baseURL}/configuration/cohort/`}>
-          {t('click here', {ns: 'configuration'})}
-        </a>.
-        &nbsp;{t('To configure study projects', {ns: 'configuration'})}&nbsp;
-        <a href={`${props.baseURL}/configuration/project/`}>
-          {t('click here', {ns: 'configuration'})}
-        </a>.
+        <Trans
+          ns="configuration"
+          defaults="To configure study cohorts <0>click here</0>."
+          components={[<a href={`${props.baseURL}/configuration/cohort/`} />]}
+        />{' '}
+        <Trans
+          ns="configuration"
+          defaults="To configure study projects <0>click here</0>."
+          components={[<a href={`${props.baseURL}/configuration/project/`} />]}
+        />
       </p>
       <p>
-        {t(
-          'To configure the diagnosis trajectory of the study',
-          {ns: 'configuration'}
-        )}&nbsp;
-        <a href={`${props.baseURL}/configuration/diagnosis_evolution/`}>
-          {t('click here', {ns: 'configuration'})}
-        </a>.
+        <Trans
+          ns="configuration"
+          defaults={'To configure the diagnosis trajectory of the study '
+            + '<0>click here</0>.'}
+          components={[
+            <a href={`${props.baseURL}/configuration/diagnosis_evolution/`} />,
+          ]}
+        />
       </p>
     </div>
   );
@@ -658,7 +662,7 @@ function saveSetting(
   setting: string,
   payload: Record<string, unknown>
 ): Promise<void> {
-  return fetch(`${baseURL}/configuration/setting/${setting}`, {
+  return lorisFetch(`${baseURL}/configuration/setting/${setting}`, {
     body: JSON.stringify({
       setting: setting,
       ...payload,
@@ -708,7 +712,7 @@ function ConfigurationIndex(props: BaseURLProps): React.ReactElement {
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    fetch(`${props.baseURL}/configuration/categories`, {
+    lorisFetch(`${props.baseURL}/configuration/categories`, {
       credentials: 'same-origin',
     }).then((resp) => {
       if (!resp.ok) {
@@ -737,7 +741,7 @@ function ConfigurationIndex(props: BaseURLProps): React.ReactElement {
     if (activeCategory === '') {
       return;
     }
-    fetch(`${props.baseURL}/configuration/categories/${activeCategory}`, {
+    lorisFetch(`${props.baseURL}/configuration/categories/${activeCategory}`, {
       credentials: 'same-origin',
     }).then((resp) => {
       if (!resp.ok) {

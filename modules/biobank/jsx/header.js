@@ -5,7 +5,7 @@ import {
   TextboxElement,
   DateElement,
 } from 'jsx/Form';
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import LifeCycle from './lifeCycle.js';
 import SpecimenForm from './specimenForm.js';
 import {clone} from './helpers.js';
@@ -109,7 +109,7 @@ class Header extends Component {
     };
 
     const lotForm = (
-      <Modal
+      <FormModal
         title={this.props.t('Edit Lot Number', {ns: 'biobank'})}
         onClose={this.props.clearAll}
         show={editable.lotForm}
@@ -121,11 +121,11 @@ class Header extends Component {
           onUserInput={this.props.setContainer}
           value={current.container.lotNumber}
         />
-      </Modal>
+      </FormModal>
     );
 
     const expirationForm = (
-      <Modal
+      <FormModal
         title={this.props.t('Edit Expiration Date', {ns: 'biobank'})}
         onClose={this.props.clearAll}
         show={editable.expirationForm}
@@ -137,7 +137,7 @@ class Header extends Component {
           onUserInput={this.props.setContainer}
           value={current.container.expirationDate}
         />
-      </Modal>
+      </FormModal>
     );
 
     const parentBarcodes = this.props.getParentContainerBarcodes(container);

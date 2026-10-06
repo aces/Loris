@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'jsx/Loader';
 import swal from 'sweetalert2';
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import {withTranslation} from 'react-i18next';
 import {
   CheckboxElement,
@@ -86,7 +86,7 @@ class ManagePermissionsForm extends Component {
     }
 
     return (
-      <Modal
+      <FormModal
         title={t('Manage Permissions', {ns: 'data_release'})}
         label={t('Manage Permissions', {ns: 'data_release'})}
         show={this.props.show}
@@ -161,7 +161,7 @@ class ManagePermissionsForm extends Component {
             )}
           />
         }
-      </Modal>
+      </FormModal>
     );
   }
 

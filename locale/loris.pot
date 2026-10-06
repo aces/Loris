@@ -301,7 +301,7 @@ msgstr ""
 msgid "Complete"
 msgstr ""
 
-msgid "An error occured while loading the page."
+msgid "An error occurred while loading the page."
 msgstr ""
 
 msgid "Active"
@@ -359,6 +359,18 @@ msgid "Saving"
 msgstr ""
 
 msgid "Reset"
+msgstr ""
+
+msgid "Minimum"
+msgstr ""
+
+msgid "Maximum"
+msgstr ""
+
+msgid "{{label}} Minimum"
+msgstr ""
+
+msgid "{{label}} Maximum"
 msgstr ""
 
 msgid "Note"
