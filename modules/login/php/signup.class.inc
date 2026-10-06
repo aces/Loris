@@ -91,29 +91,29 @@ class Signup extends \NDB_Page implements ETagCalculator
             }
         }
 
-        $factory  = \NDB_Factory::singleton();
-        $DB       = \NDB_Factory::singleton()->database();
-        $name     = htmlspecialchars(
+        $factory     = \NDB_Factory::singleton();
+        $DB          = \NDB_Factory::singleton()->database();
+        $name        = htmlspecialchars(
             $values['firstname'],
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
         );
-        $lastname = htmlspecialchars(
+        $lastname    = htmlspecialchars(
             $values['lastname'],
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
         );
-        $from     = htmlspecialchars(
+        $from        = htmlspecialchars(
             $values['email'],
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
         );
-        $site     = $values['site'];
-        $project  = $values['project'];
-        $examiner = filter_var(
+        $site        = $values['site'];
+        $project     = $values['project'];
+        $examiner    = filter_var(
             $values['examiner'] ?? false,
             FILTER_VALIDATE_BOOL
         );
@@ -267,7 +267,7 @@ class Signup extends \NDB_Page implements ETagCalculator
                 if (is_array($studyName)) {
                     $studyName = implode('', $studyName);
                 }
-                $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
+                $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
                 \Email::send(
                     $row['Email'],
                     'request_account.tpl',
