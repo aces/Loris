@@ -85,9 +85,6 @@ msgstr ""
 msgid "Choose your site:"
 msgstr ""
 
-msgid "Projects"
-msgstr ""
-
 msgid "Preferred language:"
 msgstr ""
 

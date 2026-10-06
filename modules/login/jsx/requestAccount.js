@@ -264,7 +264,7 @@ class RequestAccount extends Component {
             multiple={true}
             emptyOption={false}
             required={true}
-            label={this.props.t('Projects', {ns: 'login'})}
+            label={this.props.t('Project', {ns: 'loris', count: 99})}
             labelPlacementTop={true}
           />
           <SelectElement

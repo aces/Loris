@@ -111,6 +111,9 @@ msgstr ""
 msgid "Total Participants: {{count}}"
 msgstr ""
 
+msgid "No data collected yet"
+msgstr ""
+
 msgid "Projects: {{count}}"
 msgstr ""
 

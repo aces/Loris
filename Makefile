@@ -11,8 +11,8 @@ all: node_modules locales VERSION vendor
 %.mo: %.po
 	msgfmt --use-fuzzy -o $@ $<
 
-%.json: %.po
-	npx i18next-conv -l UNUSED -t $@ -s $< --compatibilityJSON v4
+%.json: %.po tools/po_to_json.mjs
+	node tools/po_to_json.mjs $< $@
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
@@ -113,6 +113,9 @@ dashboard: $(filter modules/dashboard/%,$(MOFILES)) $(filter modules/dashboard/%
 
 brainbrowser: $(filter modules/brainbrowser/%,$(MOFILES)) $(filter modules/brainbrowser/%,$(I18NJSONFILES))
 	target=brainbrowser npm run compile
+
+timepoint_list: $(filter modules/timepoint_list/%,$(MOFILES)) $(filter modules/timepoint_list/%,$(I18NJSONFILES))
+	target=timepoint_list npm run compile
 
 schedule_module: $(filter modules/schedule_module/%,$(MOFILES)) $(filter modules/schedule_module/%,$(I18NJSONFILES))
 	target=schedule_module npm run compile

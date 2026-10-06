@@ -87,9 +87,6 @@ msgstr "ログインページに戻ります。"
 msgid "Choose your site:"
 msgstr "サイトを選択してください:"
 
-msgid "Projects"
-msgstr "プロジェクト"
-
 msgid "Preferred language:"
 msgstr "優先言語:"
 

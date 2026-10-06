@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
-import createFragment from 'react-addons-create-fragment';
 import {CTA} from 'jsx/Form';
 import {withTranslation} from 'react-i18next';
 
@@ -328,10 +327,28 @@ class DataTable extends Component {
       exactMatch = this.props.filters[name].exactMatch;
       opposite = this.props.filters[name].opposite;
     }
+    const field = this.props.fields.find(
+      (field) => field.filter?.name === name
+    );
+    const filter = field && field.filter ? field.filter : {};
 
     // Handle null inputs
     if (filterData === null || data === null) {
       return false;
+    }
+
+    // Handle date range inputs.
+    if (filter.type === 'date-range' &&
+      typeof filterData === 'object' &&
+      !Array.isArray(filterData)) {
+      const dateData = (data !== null && data !== undefined) ?
+        data.toString() : '';
+      const min = filterData.min || '';
+      const max = filterData.max || '';
+
+      return dateData !== '' &&
+        (min === '' || dateData >= min) &&
+        (max === '' || dateData <= max);
     }
 
     // Handle numeric inputs
@@ -380,7 +397,9 @@ class DataTable extends Component {
     }
 
     // Handle numeric range inputs
-    if (typeof filterData === 'object' && !Array.isArray(filterData)) {
+    if (filter.type === 'number-range' &&
+      typeof filterData === 'object' &&
+      !Array.isArray(filterData)) {
       const numericData = Number.parseFloat(data);
       const min = Number.parseFloat(filterData.min);
       const max = Number.parseFloat(filterData.max);
@@ -544,7 +563,9 @@ class DataTable extends Component {
         if (cell !== null) {
           curRow.push(React.cloneElement(cell, {key: 'td_col_' + j}));
         } else {
-          curRow.push(createFragment({celldata}));
+          curRow.push(
+            <React.Fragment key={'td_col_' + j}>{celldata}</React.Fragment>
+          );
         }
       }
 

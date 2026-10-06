@@ -423,8 +423,9 @@ class ProjectFormFields extends React.Component {
     };
 
     const publishingStatusOptions = {
-      'In Progress': 'In progress',
-      'Published': 'Published',
+      'In Progress': t('In Progress', {ns: 'publication'}),
+      'Submitted': t('Submitted', {ns: 'publication'}),
+      'Published': t('Published', {ns: 'publication'}),
     };
 
     const allVOIs = this.props.allVOIs;
