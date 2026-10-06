@@ -301,8 +301,10 @@ const IssueCard = React.memo(function IssueCard(props) {
               checked={isSelected}
               onChange={onToggleSelection}
               className="issue-selection-checkbox"
-              aria-label={`${t('Select issue', {ns: 'issue_tracker'})} ` +
-                `#${issue.issueID}`}
+              aria-label={t('Select issue {{issueID}}', {
+                ns: 'issue_tracker',
+                issueID: issue.issueID,
+              })}
             />
           )}
           <h3>

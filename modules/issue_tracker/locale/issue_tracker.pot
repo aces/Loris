@@ -125,19 +125,13 @@ msgstr ""
 msgid "No change"
 msgstr ""
 
-msgid "Uncategorized"
-msgstr ""
-
-msgid "Unassigned"
-msgstr ""
-
 msgid "Apply changes"
 msgstr ""
 
 msgid "Updating..."
 msgstr ""
 
-msgid "Select issue"
+msgid "Select issue {{issueID}}"
 msgstr ""
 
 msgid "Select at least one issue."
