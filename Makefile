@@ -11,8 +11,8 @@ all: node_modules locales VERSION vendor
 %.mo: %.po
 	msgfmt --use-fuzzy -o $@ $<
 
-%.json: %.po
-	npx i18next-conv -l UNUSED -t $@ -s $< --compatibilityJSON v4
+%.json: %.po tools/po_to_json.mjs
+	node tools/po_to_json.mjs $< $@
 
 # If anything changes, re-generate the VERSION file
 VERSION: .

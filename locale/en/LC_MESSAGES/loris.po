@@ -150,7 +150,9 @@ msgid "Module"
 msgstr "Module"
 
 msgid "Project"
-msgstr "Project"
+msgid_plural "Projects"
+msgstr[0] "Project"
+msgstr[1] "Projects"
 
 msgid "Cohort"
 msgid_plural "Cohorts"
