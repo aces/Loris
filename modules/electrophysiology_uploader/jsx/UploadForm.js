@@ -206,7 +206,7 @@ export default function UploadForm(props) {
         error = resp.error;
       }
     } else if (xhr.status == 0) {
-      error = t('Upload failed: a network error occured',
+      error = t('Upload failed: a network error occurred',
         {ns: 'electrophysiology_uploader'});
     } else if (xhr.status == 413) {
       error = t(

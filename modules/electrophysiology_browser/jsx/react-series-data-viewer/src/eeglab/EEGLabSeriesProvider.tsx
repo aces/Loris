@@ -28,6 +28,7 @@ import {
 import TriggerableModal from 'jsx/TriggerableModal';
 import DatasetTagger from '../series/components/DatasetTagger';
 import {InfoIcon} from '../series/components/components';
+import {TFunction} from 'i18next';
 
 declare global {
   interface Window {
@@ -52,7 +53,7 @@ type CProps = {
   eegMontageName: string,
   recordingHasHED: boolean,
   children: React.ReactNode,
-  t: any,
+  t: TFunction,
 };
 
 const MenuOption = {

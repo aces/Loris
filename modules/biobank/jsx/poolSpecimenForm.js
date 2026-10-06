@@ -1,4 +1,4 @@
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import {withTranslation} from 'react-i18next';
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
@@ -324,7 +324,7 @@ class PoolSpecimenForm extends React.Component {
       );
     };
     return (
-      <Modal
+      <FormModal
         title={t('Pool Specimens', {ns: 'biobank'})}
         show={this.props.show}
         onClose={handleClose}
@@ -332,7 +332,7 @@ class PoolSpecimenForm extends React.Component {
         throwWarning={true}
       >
         {form}
-      </Modal>
+      </FormModal>
     );
   }
 }
