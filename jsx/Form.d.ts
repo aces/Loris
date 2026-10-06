@@ -113,6 +113,7 @@ type selectElementProps = {
     noMargins?: boolean
     placeholder?: string
     sortByValue: boolean
+    pinnedOption?: string
 }
 
 /**
