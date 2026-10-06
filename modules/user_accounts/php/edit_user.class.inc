@@ -89,7 +89,7 @@ class Edit_User extends \NDB_Form
         $matches = [];
         preg_match('#.*/edit_user/(.*)#', $request->getUri()->getPath(), $matches);
         if (!empty($matches[1])) {
-            $this->identifier = $matches[1];
+            $this->identifier = rawurldecode($matches[1]);
         }
     }
 
@@ -1774,7 +1774,7 @@ class Edit_User extends \NDB_Form
             ),
             new \LORIS\Breadcrumb(
                 $label,
-                ""
+                "/user_accounts/edit_user/" . rawurlencode($this->identifier)
             )
         );
     }
