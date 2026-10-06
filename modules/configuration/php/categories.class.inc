@@ -44,8 +44,8 @@ class Categories extends \LORIS\Http\Endpoint
         $DB = $this->loris->getDatabaseConnection();
         $parentConfigItems = $DB->pselect(
             "SELECT Label, Name
-             FROM ConfigSettings
-             WHERE Parent IS NULL AND Visible=1
+             FROM ConfigCategories
+             WHERE Visible=1
              ORDER BY OrderNumber",
             []
         );
@@ -114,13 +114,13 @@ class Categories extends \LORIS\Http\Endpoint
     {
         $DB = $this->loris->getDatabaseConnection();
 
-        $parentID = $DB->pselectOneInt(
+        $categoryID = $DB->pselectOneInt(
             "SELECT ID
-             FROM ConfigSettings
-             WHERE Parent IS NULL AND Visible=1 AND Name=:cat",
+             FROM ConfigCategories
+             WHERE Visible=1 AND Name=:cat",
             ['cat' => $category]
         );
-        if ($parentID === null) {
+        if ($categoryID === null) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
@@ -128,9 +128,9 @@ class Categories extends \LORIS\Http\Endpoint
             $DB->pselect(
                 "SELECT *
                  FROM ConfigSettings
-                 WHERE Visible=1 AND Parent=:pid
+                 WHERE Visible=1 AND CategoryID=:cid AND Parent IS NULL
                  ORDER BY OrderNumber",
-                ['pid' => $parentID]
+                ['cid' => $categoryID]
             )
         );
 
