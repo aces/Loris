@@ -290,8 +290,5 @@ DROP TABLE IF EXISTS `consent_group`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `cohort`;
 
--- bids_dataset / bids_file (created by SQL/New_patches/2026-08-12-bids-dataset-tables.sql)
--- must come last: files, physiological_file, physiological_event_file and
--- meg_ctf_head_shape_file all reference bids_file
 DROP TABLE IF EXISTS `bids_file`;
 DROP TABLE IF EXISTS `bids_dataset`;
