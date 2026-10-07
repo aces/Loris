@@ -240,7 +240,7 @@ function IssueTrackerBatchMode({options = {}, t}) {
       <Panel
         id="filter-panel"
         title={panelTitle}
-        collapsing={true}
+        collapsible={true}
         panelSize="auto"
         className="panel-default"
       >
