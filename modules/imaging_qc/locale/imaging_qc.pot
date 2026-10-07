@@ -20,3 +20,36 @@ msgstr ""
 
 msgid "Imaging Quality Control"
 msgstr ""
+
+msgid "MRI Parameter Form"
+msgstr ""
+
+msgid "Scan Done in MRI Parameter Form"
+msgstr ""
+
+msgid "Tarchive"
+msgstr ""
+
+msgid "Scan Location"
+msgstr ""
+
+msgid "CommentID"
+msgstr ""
+
+msgid "Found in Imaging Browser"
+msgstr ""
+
+msgid "Found in MRI Violated Scans"
+msgstr ""
+
+msgid "Missing"
+msgstr ""
+
+msgid "Incomplete"
+msgstr ""
+
+msgid "Complete"
+msgstr ""
+
+msgid "In DICOM Archives"
+msgstr ""

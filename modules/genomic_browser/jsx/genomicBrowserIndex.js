@@ -13,6 +13,8 @@ import CNV from './tabs_content/cnv';
 import Methylation from './tabs_content/methylation';
 import Files from './tabs_content/files';
 
+import frStrings from '../locale/fr/LC_MESSAGES/genomic_browser.json';
+
 /**
  * Genomic Browser.
  *
@@ -23,13 +25,14 @@ import Files from './tabs_content/files';
  * @version 1.0.0
  */
 const GenomicBrowser = (props) => {
+  const {t} = props;
   const tabList = [
-    {id: 'tabProfiles', label: 'Profiles'},
-    {id: 'tabGWAS', label: 'GWAS'},
-    {id: 'tabSNP', label: 'SNP'},
-    {id: 'tabCNV', label: 'CNV'},
-    {id: 'tabMethylation', label: 'Methylation'},
-    {id: 'tabFiles', label: 'Files'},
+    {id: 'tabProfiles', label: t('Profiles', {ns: 'genomic_browser'})},
+    {id: 'tabGWAS', label: t('GWAS', {ns: 'genomic_browser'})},
+    {id: 'tabSNP', label: t('SNP', {ns: 'genomic_browser'})},
+    {id: 'tabCNV', label: t('CNV', {ns: 'genomic_browser'})},
+    {id: 'tabMethylation', label: t('Methylation', {ns: 'genomic_browser'})},
+    {id: 'tabFiles', label: t('Files', {ns: 'genomic_browser', count: 99})},
   ];
 
   /**
@@ -64,21 +67,23 @@ const GenomicBrowser = (props) => {
 };
 GenomicBrowser.propTypes = {
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 /**
  * Render Genomic Browser on page load.
  */
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('fr', 'genomic_browser', frStrings);
   i18n.addResourceBundle('ja', 'genomic_browser', {});
   i18n.addResourceBundle('zh', 'genomic_browser', {});
-  const GenomicB = withTranslation(
+  const TranslatedGenomicB = withTranslation(
     ['genomic_browser', 'loris']
   )(GenomicBrowser);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <GenomicB
+    <TranslatedGenomicB
       baseURL={loris.BaseURL}
     />
   );

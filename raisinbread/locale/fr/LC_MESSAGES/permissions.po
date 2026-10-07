@@ -1,0 +1,221 @@
+msgid ""
+msgstr ""
+
+"Project-Id-Version: LORIS 29\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Superuser - supersedes all permissions"
+msgstr "Superutilisateur - remplace toutes les autorisations"
+
+msgid "Feedback Threads"
+msgstr "Fils de discussion des commentaires"
+
+msgid "Candidates and Timepoints - Own Sites"
+msgstr "Participants et points temporels - Sites attribués"
+
+msgid "Acknowledgee List"
+msgstr "Liste des personnes à remercier"
+
+msgid "LORIS API Manual"
+msgstr "Manuel de l'API LORIS"
+
+msgid "Battery Entries"
+msgstr "Saisies de batteries"
+
+msgid "Flagged Behavioural Entries"
+msgstr "Saisies comportementales signalées"
+
+msgid "Candidates and Timepoints - All Sites"
+msgstr "Participants et points temporels - Tous les sites"
+
+msgid "Candidate Information"
+msgstr "Informations sur les participants"
+
+msgid "Dates of Birth"
+msgstr "Dates de naissance"
+
+msgid "Dates of Death"
+msgstr "Dates de décès"
+
+msgid "Settings"
+msgstr "Paramètres"
+
+msgid "Resolve Conflicts"
+msgstr "Résoudre les conflits"
+
+msgid "Cross-Modality Data"
+msgstr "Données multimodales"
+
+msgid "Hide data release files"
+msgstr "Masquer les publications de données"
+
+msgid "Delete data release files"
+msgstr "Supprimer les publications de données"
+
+msgid "Release Files"
+msgstr "Fichiers de publication"
+
+msgid "Grant Other Users Access to Releases"
+msgstr "Accorder à d'autres utilisateurs l'accès aux publications"
+
+msgid "DICOMs - All Sites"
+msgstr "DICOM - Tous les sites"
+
+msgid "DICOMs - Own Sites"
+msgstr "DICOM - Sites attribués"
+
+msgid "DICOMs with no session ID"
+msgstr "DICOM sans identifiant de session"
+
+msgid "Parameter Type Descriptions"
+msgstr "Descriptions des types de paramètres"
+
+msgid "Categories"
+msgstr "Catégories"
+
+msgid "Documents"
+msgstr "Documents"
+
+msgid "Restricted files"
+msgstr "Fichiers restreints"
+
+msgid "Admin dataquery queries"
+msgstr "Requêtes DataQuery administrateur"
+
+msgid "Cross-Modality Data (legacy)"
+msgstr "Données multimodales (ancienne version)"
+
+msgid "Annotations"
+msgstr "Annotations"
+
+msgid "EEG - All Sites"
+msgstr "EEG - Tous les sites"
+
+msgid "EEG - Own Sites"
+msgstr "EEG - Sites attribués"
+
+msgid "Monitor EEG uploads"
+msgstr "Surveiller les téléversements EEG"
+
+msgid "Add and Certify Examiners - All Sites"
+msgstr "Ajouter et certifier des examinateurs - Tous les sites"
+
+msgid "Add and Certify Examiners - Own Sites"
+msgstr "Ajouter et certifier des examinateurs - Sites attribués"
+
+msgid "Genomic Data - All Sites"
+msgstr "Données génomiques - Tous les sites"
+
+msgid "Genomic Data - Own Sites"
+msgstr "Données génomiques - Sites attribués"
+
+msgid "Genomic Files"
+msgstr "Fichiers génomiques"
+
+msgid "Help documentation"
+msgstr "Documentation d'aide"
+
+msgid "Imaging Scans - All Sites"
+msgstr "Acquisitions d'imagerie - Tous les sites"
+
+msgid "Imaging Scans - Own Sites"
+msgstr "Acquisitions d'imagerie - Sites attribués"
+
+msgid "Phantom Scans - All Sites"
+msgstr "Acquisitions fantôme - Tous les sites"
+
+msgid "Phantom Scans - Own Sites"
+msgstr "Acquisitions fantôme - Sites attribués"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Flagged Imaging Entries"
+msgstr "Saisies d'imagerie signalées"
+
+msgid "Imaging Scans with no session ID"
+msgstr "Acquisitions d'imagerie sans identifiant de session"
+
+msgid "Data"
+msgstr "Données"
+
+msgid "Instrument Forms"
+msgstr "Formulaires d'instruments"
+
+msgid "Reverse Send from DCC"
+msgstr "Envoi inverse depuis le DCC"
+
+msgid "Send to DCC"
+msgstr "Envoyer au DCC"
+
+msgid "Installed Instruments"
+msgstr "Instruments installés"
+
+msgid "Upload and Install Instruments"
+msgstr "Téléverser et installer des instruments"
+
+msgid "Issues - All Sites"
+msgstr "Incidents - Tous les sites"
+
+msgid "Issues - Own"
+msgstr "Mes incidents"
+
+msgid "Issues - Own Sites"
+msgstr "Incidents - Sites attribués"
+
+msgid "Candidate Media Files"
+msgstr "Fichiers multimédias des participants"
+
+msgid "Access to recently uploaded media notifications digest."
+msgstr "Accès au résumé des notifications des fichiers multimédias récemment téléversés."
+
+msgid "Installed Modules"
+msgstr "Modules installés"
+
+msgid "Violated Scans - All Sites"
+msgstr "Scans non conformes - Tous les sites"
+
+msgid "Violated Scans - Own Sites"
+msgstr "Scans non conformes - Sites attribués"
+
+msgid "View Containers"
+msgstr "Afficher les conteneurs"
+
+msgid "View Pools"
+msgstr "Afficher les pools"
+
+msgid "View Specimens"
+msgstr "Afficher les spécimens"
+
+msgid "Accept/Reject Publication Projects"
+msgstr "Accepter/Rejeter les projets de publication"
+
+msgid "Propose Publication Projects"
+msgstr "Proposer des projets de publication"
+
+msgid "Publication Projects"
+msgstr "Projets de publication"
+
+msgid "Schedule Module: edit and delete appointment"
+msgstr "Module de planification : modifier et supprimer un rendez-vous"
+
+msgid "Processes"
+msgstr "Processus"
+
+msgid "Candidate Surveys"
+msgstr "Questionnaires des participants"
+
+msgid "User Accounts - All Sites"
+msgstr "Comptes utilisateurs - Tous les sites"
+
+msgid "User Accounts - Own Sites"
+msgstr "Comptes utilisateurs - Sites attribués"

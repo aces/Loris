@@ -1,6 +1,8 @@
 import {clone, isEmpty} from './helpers.js';
 import PropTypes from 'prop-types';
 
+import {withTranslation} from 'react-i18next';
+
 /**
  * A form containing a list
  */
@@ -118,6 +120,7 @@ class ListForm extends React.Component {
    * @return {JSX}
    */
   render() {
+    const {t} = this.props;
     const {collapsed, multiplier} = this.state;
     const {errors, list} = this.props;
 
@@ -157,7 +160,7 @@ class ListForm extends React.Component {
                         </div>
                       </span>
                       <span className='action-title'>
-                        New Entry
+                        {t('New Entry', {ns: 'biobank'})}
                       </span>
                     </div>
                   </div>
@@ -206,6 +209,7 @@ class ListForm extends React.Component {
 
 // ListForm.propTypes
 ListForm.propTypes = {
+  t: PropTypes.func.isRequired,
   list: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -295,4 +299,6 @@ ListItem.propTypes = {
   itemKey: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
-export {ListForm, ListItem};
+const TranslatedListForm = withTranslation(['biobank', 'loris'])(ListForm);
+
+export {TranslatedListForm as ListForm, ListItem};

@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+
+"Project-Id-Version: LORIS 29.0\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2026-07-27 14:37-0400\n"
+"Last-Translator: Shen Wang <wangshen.mcin@gmail.com>\n"
+
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Behavioural Battery"
+msgstr "行为成套测试"
+
+msgid "Behavioural Instruments"
+msgstr "行为工具"
+
+msgid "Data Entry"
+msgstr "数据录入"
+
+msgid "Examiners"
+msgstr "检查者"
+
+msgid "Imaging"
+msgstr "影像"
+
+msgid "Other"
+msgstr "其他"
+
+msgid "Technical Issue"
+msgstr "技术问题"
+
+msgid "User Accounts"
+msgstr "用户账户"

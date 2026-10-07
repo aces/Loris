@@ -8,7 +8,11 @@
     <div class="panel panel-default">
       <div class="panel-heading">
         <div class="filename"></div>
-        <h3 class="panel-title filename">Overlay</h3>
+        <h3 class="panel-title filename">
+        {/literal}
+          {dgettext('brainbrowser', 'Overlay')}
+        {literal}
+        </h3>
       </div>
       <div class="panel-body">
         <div class="volume-viewer-controls volume-controls .coords">
@@ -18,7 +22,9 @@
 
             <div class="blend-div" data-volume-id="{{VOLID}}">
               <span class="control-heading" id="blend-heading{{VOLID}}">
-                Blend (0.0 to 1.0)
+              {/literal}
+                {dgettext('brainbrowser', 'Blend (0.0 to 1.0)')}
+              {literal}
               </span>
               <input class="control-inputs blend-inputs" value="0.5" id="blend-val" />
               <div id="blend-slider" class="slider volume-viewer-blend"></div>

@@ -28,7 +28,13 @@ $recTarget  = $_POST['RecruitmentTarget'];
 if (!Utility::valueIsPositiveInteger($recTarget)) {
     printAndExit(
         400,
-        ['error' => 'Recruitment Target must be an integer greater than zero']
+        [
+            'error' =>
+            dgettext(
+                'configuration',
+                'Recruitment Target must be an integer greater than zero'
+            )
+        ]
     );
 }
 

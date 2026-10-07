@@ -48,5 +48,11 @@ msgstr ""
 msgid "Stage: %s"
 msgstr ""
 
-msgid "Start %s Stage"
+msgid "Start the \"%s\" Stage"
+msgstr ""
+
+msgid "BVL QC Type"
+msgstr ""
+
+msgid "BVL QC Status"
 msgstr ""

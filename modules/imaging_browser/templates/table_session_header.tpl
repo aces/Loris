@@ -1,7 +1,7 @@
 <table class="table table-hover table-bordered dynamictable" id='table-header-left'>
      <thead>
         <tr class="info">
-            <th>{dgettext("imaging_browser","QC Status")}</th>
+            <th>{dgettext("loris","QC Status")}</th>
             <th>{dgettext("imaging_browser","Patient Name")}</th>
             <th>{dgettext("loris","PSCID")}</th>
             <th>{dgettext("loris","DCCID")}</th>

@@ -76,22 +76,18 @@
   <!-- candidate data -->
   <tbody>
   <tr>
-    {if $dob_age!=""}
-      <td>
-        {$dob_age}
-      </td>
-    {/if}
-    {if $edc_age!=""}
-      <td>
-        {$edc_age}
-      </td>
-    {/if}
     <td>
-      {$candidate.Sex}
+      {$dob_age|default}
+    </td>
+    <td>
+      {$edc_age|default}
+    </td>
+    <td>
+      {dgettext("sex", $candidate.Sex)}
     </td>
     {if $candidate.ProjectTitle != ""}
       <td>
-        {$candidate.ProjectTitle}
+        {dgettext("Project", $candidate.ProjectTitle)}
       </td>
     {/if}
     {foreach from=$candidate.DisplayParameters item=value key=name}
@@ -102,10 +98,10 @@
 
       <!-- timepoint data -->
       <td>
-        {$timePoint.Visit_label}
+        {dgettext("visit", $timePoint.Visit_label)}
       </td>
       <td>
-        {$timePoint.PSC}
+        {dgettext("psc", $timePoint.PSC)}
       </td>
       <td>
         {$timePoint.CohortTitle}
@@ -173,7 +169,7 @@
         {$timePoint.Screening}
       </td>
       <td nowrap="nowrap" colspan="2">
-        {$timePoint.Date_screening}
+        {$display.Date_screening}
       </td>
     </tr>
     <tr>
@@ -186,7 +182,7 @@
         {/if}
       </td>
       <td nowrap="nowrap" colspan="2">
-        {$timePoint.Date_visit}
+        {$display.Date_visit}
       </td>
     </tr>
     <tr>
@@ -197,7 +193,7 @@
         {$timePoint.Approval}
       </td>
       <td nowrap="nowrap" colspan="2">
-        {$timePoint.Date_approval}
+        {$display.Date_approval}
       </td>
     </tr>
     </tbody>

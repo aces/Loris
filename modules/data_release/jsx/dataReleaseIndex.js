@@ -149,7 +149,7 @@ class DataReleaseIndex extends Component {
     const {t} = this.props;
 
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
+      return <h3>{t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
@@ -252,8 +252,8 @@ class DataReleaseIndex extends Component {
     // Manage File modal window
     const manageFileForm = (
       <Modal
-        title="Manage File"
-        label="Manage File"
+        title={t('Manage File', {ns: 'data_release'})}
+        label={t('Manage File', {ns: 'data_release'})}
         show={this.state.show.manageFileForm}
         onClose={() => {
           this.hide('manageFileForm');

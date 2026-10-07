@@ -24,6 +24,11 @@ function ConsentWidget(props) {
       'candidate_parameters',
       require('../locale/zh/LC_MESSAGES/candidate_parameters.json')
     );
+    i18n.addResourceBundle(
+      'fr',
+      'candidate_parameters',
+      require('../locale/fr/LC_MESSAGES/candidate_parameters.json')
+    );
     // Change a state to force a reload now that the terms have been added.
     setReload(reload + 1);
   }, [i18n]);

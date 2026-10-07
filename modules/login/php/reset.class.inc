@@ -59,7 +59,7 @@ class Reset extends \NDB_Page implements ETagCalculator
         }
 
         return new \LORIS\Http\Response\JSON\BadRequest(
-            'Error'
+            dgettext('login', 'Error')
         );
     }
 
@@ -88,7 +88,7 @@ class Reset extends \NDB_Page implements ETagCalculator
             $email = $user->getEmail();
             if (empty($email)) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Not a valid user'
+                    dgettext('login', 'Not a valid user')
                 );
             }
 
@@ -108,12 +108,26 @@ class Reset extends \NDB_Page implements ETagCalculator
                     // send the user an email
                     $factory = \NDB_Factory::singleton();
 
-                    $msg_data          = [];
-                    $msg_data['study'] = $config->getSetting('title');
-                    $msg_data['url']   = $factory->settings()->getBaseURL();
+                    $msg_data = [];
+                    $tmp      = $config->getSetting('title');
+                    $title    = is_array($tmp) ? implode('', $tmp):$tmp;
+                    $msg_data['study']    = $title;
+                    $msg_data['url']      = $factory->settings()->getBaseURL();
                     $msg_data['realname'] = $user->getFullname();
                     $msg_data['password'] = $password;
-                    \Email::send($email, 'lost_password.tpl', $msg_data);
+
+                    $locale   = $request->getAttribute('locale');
+                    $language = strtolower(substr($locale, 0, 2));
+
+                    $template = match ($language) {
+                        'fr'    => 'lost_password_fr.tpl',
+                        'es'    => 'lost_password_es.tpl',
+                        'zh'    => 'lost_password_zh.tpl',
+                        'ja'    => 'lost_password_ja.tpl',
+                        'hi'    => 'lost_password_hi.tpl',
+                        default => 'lost_password.tpl',
+                    };
+                    \Email::send($email, $template, $msg_data);
                 } else {
                     error_log(
                         $_SERVER['REMOTE_ADDR']
@@ -121,13 +135,13 @@ class Reset extends \NDB_Page implements ETagCalculator
                         . ' attempted to reset password for ' . $username
                     );
                     return new \LORIS\Http\Response\JSON\Conflict(
-                        'Sending reset email failed.'
+                        dgettext('login', 'Sending reset email failed.')
                     );
                 }
             } catch (\LorisException $e) {
                 error_log($e->getMessage());
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Sending reset email failed.'
+                    dgettext('login', 'Sending reset email failed.')
                 );
             }
         }

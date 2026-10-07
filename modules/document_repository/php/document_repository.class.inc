@@ -108,7 +108,7 @@ class Document_Repository extends \DataFrameworkMenu
             'sites'          => $siteList,
             'instruments'    => $instrumentsList,
             'fileTypes'      => $fileTypeList,
-            'hiddenVideo'    => ['yes' => "Yes", 'no' => "No"],
+            'hiddenFile'     => ['0' => "No", '1' => "Yes"],
         ];
     }
 

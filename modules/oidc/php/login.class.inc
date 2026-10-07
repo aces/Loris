@@ -100,7 +100,7 @@ class Login extends \NDB_Page
             return null;
         }
 
-        $respjson = json_decode($response->getBody(), true);
+        $respjson = json_decode($response->getBody()->getContents(), true);
         if ($respjson === false) {
             return null;
         }

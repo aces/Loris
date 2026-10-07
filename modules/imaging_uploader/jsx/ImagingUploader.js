@@ -19,7 +19,6 @@ class ImagingUploader extends Component {
    */
   constructor(props) {
     super(props);
-    loris.hiddenHeaders = ['PatientName', 'SessionID'];
 
     this.state = {
       isLoaded: false,
@@ -102,17 +101,6 @@ class ImagingUploader extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-    // If a column if set as hidden, don't display it
-    if (loris.hiddenHeaders.indexOf(column) > -1) {
-      return null;
-    }
-
-    // Create the mapping between rowHeaders and rowData in a row object.
-    let row = {};
-    rowHeaders.forEach((header, index) => {
-      row[header] = rowData[index];
-    }, this);
-
     // Default cell style
     const cellStyle = {whiteSpace: 'nowrap'};
     const {t} = this.props;
@@ -122,6 +110,7 @@ class ImagingUploader extends Component {
     const filesInsertedKey = t('Number Of Files Inserted',
       {ns: 'imaging_uploader'});
     const tarchiveInfoKey = t('Tarchive Info', {ns: 'imaging_uploader'});
+
     const failureText = t('Failure', {ns: 'loris'});
     const inProgressText = t('In Progress', {ns: 'loris'}) + '...';
     const successText = t('Success', {ns: 'loris'});
@@ -147,8 +136,8 @@ class ImagingUploader extends Component {
       }
 
       if (cell === 'Success') {
-        const created = row[filesCreatedKey];
-        const inserted = row[filesInsertedKey];
+        const created = rowData[filesCreatedKey];
+        const inserted = rowData[filesInsertedKey];
         return (
           <td style={cellStyle}>
             {t('{{successText}} ({{inserted}} out of {{created}})',
@@ -187,7 +176,7 @@ class ImagingUploader extends Component {
       if (cell > 0) {
         const url = loris.BaseURL
                     + '/imaging_browser/viewSession/?sessionID='
-                    + row.SessionID;
+                    + rowData['SessionID'];
         return (
           <td style={cellStyle}>
             <a href={url}>{cell}</a>
@@ -199,15 +188,15 @@ class ImagingUploader extends Component {
     if (column === filesCreatedKey) {
       let violatedScans;
       if (
-        row[filesCreatedKey] - row[filesInsertedKey] > 0
+        rowData[filesCreatedKey] - rowData[filesInsertedKey] > 0
       ) {
         let numViolatedScans =
-             row[filesCreatedKey] - row[filesInsertedKey];
+            rowData[filesCreatedKey] - rowData[filesInsertedKey];
 
         const violUrl = loris.BaseURL +
-                         '/mri_violations/?patientName=' + row.PatientName;
+            '/mri_violations/?patientName=' + rowData['PatientName'];
         violatedScans = <a href={violUrl}>
-          {this.props.t('{{numViolatedScans}} violated scans',
+          {this.props.t('({{numViolatedScans}} violated scans)',
             {ns: 'imaging_uploader', numViolatedScans: numViolatedScans}
           )}
         </a>;
@@ -293,7 +282,7 @@ class ImagingUploader extends Component {
                   }
                   return {
                     label: t(header, {ns: ['imaging_uploader', 'loris']}),
-                    show: true,
+                    show: (header !== 'SessionID' && header !== 'PatientName'),
                     filter: filter,
                   };
                 }

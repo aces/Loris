@@ -21,3 +21,297 @@ msgstr ""
 msgid "Genomic Browser"
 msgstr ""
 
+msgid "Use PSCID in column headers"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Upload File"
+msgstr ""
+
+msgid "File type"
+msgstr ""
+
+msgid "Profiles"
+msgstr ""
+
+msgid "GWAS"
+msgstr ""
+
+msgid "SNP"
+msgstr ""
+
+msgid "CNV"
+msgstr ""
+
+msgid "Methylation"
+msgstr ""
+
+msgid "File"
+msgid_plural "Files"
+msgstr[0] ""
+
+msgid "External ID"
+msgstr ""
+
+msgid "Build"
+msgstr ""
+
+msgid "Strand"
+msgstr ""
+
+msgid "Start Loc"
+msgstr ""
+
+msgid "End Loc"
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Gene"
+msgstr ""
+
+msgid "Gene Name"
+msgstr ""
+
+msgid "Copy Number Change"
+msgstr ""
+
+msgid "Event Name"
+msgstr ""
+
+msgid "Common"
+msgstr ""
+
+msgid "Characteristics"
+msgstr ""
+
+msgid "Inheritance"
+msgstr ""
+
+msgid "Array Report"
+msgstr ""
+
+msgid "Markers"
+msgstr ""
+
+msgid "Validation Method"
+msgstr ""
+
+msgid "Platform"
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Inserted by User"
+msgstr ""
+
+msgid "Caveat"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "SNP ID"
+msgstr ""
+
+msgid "Chromosome"
+msgstr ""
+
+msgid "BP Position"
+msgstr ""
+
+msgid "Major Allele"
+msgstr ""
+
+msgid "Minor Allele"
+msgstr ""
+
+msgid "MAF"
+msgstr ""
+
+msgid "Estimate"
+msgstr ""
+
+msgid "Std Err"
+msgstr ""
+
+msgid "P-value"
+msgstr ""
+
+msgid "Sample"
+msgstr ""
+
+msgid "CPG Name"
+msgstr ""
+
+msgid "Beta value"
+msgstr ""
+
+msgid "Probe Loc A"
+msgstr ""
+
+msgid "Probe Seq A"
+msgstr ""
+
+msgid "Probe Loc B"
+msgstr ""
+
+msgid "Probe Seq B"
+msgstr ""
+
+msgid "Infinium design"
+msgstr ""
+
+msgid "Color"
+msgstr ""
+
+msgid "Accession number"
+msgstr ""
+
+msgid "Position"
+msgstr ""
+
+msgid "Island Loc"
+msgstr ""
+
+msgid "Context"
+msgstr ""
+
+msgid "Promoter"
+msgstr ""
+
+msgid "DMR"
+msgstr ""
+
+msgid "Enhancer"
+msgstr ""
+
+msgid "HMM Island"
+msgstr ""
+
+msgid "Reg Feature Loc"
+msgstr ""
+
+msgid "Regulatory feat.:"
+msgstr ""
+
+msgid "DHS"
+msgstr ""
+
+msgid "SNPs found"
+msgstr ""
+
+msgid "CNVs found"
+msgstr ""
+
+msgid "CPGs found"
+msgstr ""
+
+msgid "rsID"
+msgstr ""
+
+msgid "SNP Name"
+msgstr ""
+
+msgid "External Source"
+msgstr ""
+
+msgid "Allele A"
+msgstr ""
+
+msgid "Allele B"
+msgstr ""
+
+msgid "Reference Base"
+msgstr ""
+
+msgid "Validated"
+msgstr ""
+
+msgid "Function Prediction"
+msgstr ""
+
+msgid "Damaging"
+msgstr ""
+
+msgid "Genotype Quality"
+msgstr ""
+
+msgid "Exonic Function"
+msgstr ""
+
+msgid "Genomic Range"
+msgstr ""
+
+msgid "Unsupported filetype: %s"
+msgstr ""
+
+msgid "gain"
+msgstr ""
+
+msgid "loss"
+msgstr ""
+
+msgid "Unknown"
+msgstr ""
+
+msgid "Benign"
+msgstr ""
+
+msgid "Pathogenic"
+msgstr ""
+
+msgid "Green"
+msgstr ""
+
+msgid "Red"
+msgstr ""
+
+msgid "Abnormal"
+msgstr ""
+
+msgid "Normal"
+msgstr ""
+
+msgid "Uncertain"
+msgstr ""
+
+msgid "exonic"
+msgstr ""
+
+msgid "ncRNAexonic"
+msgstr ""
+
+msgid "splicing"
+msgstr ""
+
+msgid "UTR3"
+msgstr ""
+
+msgid "UTR5"
+msgstr ""
+
+msgid "de novo"
+msgstr ""
+
+msgid "maternal"
+msgstr ""
+
+msgid "paternal"
+msgstr ""
+
+msgid "unclassified"
+msgstr ""
+
+msgid "Upload Successful!"
+msgstr ""
+
+msgid "Upload error!"
+msgstr ""

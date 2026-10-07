@@ -213,7 +213,12 @@ function noDuplicateInDropdown($id,$value)
 function getPathIDs(string $table): array
 {
     if (! in_array($table, ['Config', 'ConfigSettings', true])) {
-        throw new \LorisException('Table must be "Config" or "ConfigSettings"');
+        throw new \LorisException(
+            dgettext(
+                'configuration',
+                'Table must be "Config" or "ConfigSettings"'
+            )
+        );
     }
     $query = '';
     switch ($table) {
@@ -223,7 +228,6 @@ function getPathIDs(string $table): array
          */
         $query = "SELECT c.ID FROM Config c "
             . "LEFT JOIN ConfigSettings cs ON (c.ConfigID = cs.ID) "
-            . "JOIN ConfigSettings csp ON (cs.Parent = csp.ID) "
             . "WHERE cs.DataType = 'web_path';";
         break;
     case 'ConfigSettings':
@@ -263,4 +267,3 @@ function validPath($value)
     }
     return true;
 }
-

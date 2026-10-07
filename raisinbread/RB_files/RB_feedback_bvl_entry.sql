@@ -1,7 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `feedback_bvl_entry`;
 LOCK TABLES `feedback_bvl_entry` WRITE;
-INSERT INTO `feedback_bvl_entry` (`ID`, `FeedbackID`, `Comment`, `UserID`, `Testdate`) VALUES (1,1,'Instrument (bmi) has been added to the battery. You may now complete data entry for this instrument. Please respond to this feedback to acknowledge the changes.','','2016-06-18 00:39:02');
 INSERT INTO `feedback_bvl_entry` (`ID`, `FeedbackID`, `Comment`, `UserID`, `Testdate`) VALUES (2,2,'Feedback','admin','2016-07-14 18:34:42');
 INSERT INTO `feedback_bvl_entry` (`ID`, `FeedbackID`, `Comment`, `UserID`, `Testdate`) VALUES (4,4,'Score doesn\'t match','admin','2016-07-14 18:37:33');
 INSERT INTO `feedback_bvl_entry` (`ID`, `FeedbackID`, `Comment`, `UserID`, `Testdate`) VALUES (5,5,'Some feedback','admin','2016-07-14 18:38:29');

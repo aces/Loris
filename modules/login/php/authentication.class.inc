@@ -79,7 +79,7 @@ class Authentication extends \NDB_Page implements ETagCalculator
         }
 
         return new \LORIS\Http\Response\JSON\BadRequest(
-            'Error'
+            dgettext('login', 'Error')
         );
     }
 

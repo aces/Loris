@@ -24,9 +24,6 @@ msgstr ""
 msgid "PID"
 msgstr ""
 
-msgid "Type"
-msgstr ""
-
 msgid "Stdout File"
 msgstr ""
 

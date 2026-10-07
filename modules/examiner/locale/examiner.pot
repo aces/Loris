@@ -84,3 +84,8 @@ msgstr ""
 msgid "No changes have been made"
 msgstr ""
 
+msgid "Permission denied: You cannot assign examiner to this Site."
+msgstr ""
+
+msgid "This examiner already exists."
+msgstr ""

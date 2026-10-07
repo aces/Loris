@@ -53,9 +53,6 @@ msgstr "反馈说明"
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr "PSCID {{PSCID}} 的反馈"
 
-msgid "Type"
-msgstr "类型"
-
 msgid "Author"
 msgstr "提交人"
 
@@ -83,8 +80,14 @@ msgstr "提交"
 msgid "Create thread"
 msgstr "创建反馈"
 
+msgid "Thread created!"
+msgstr "反馈已创建！"
+
 msgid "The new thread has been submitted!"
 msgstr "新反馈已提交"
+
+msgid "Failed to create thread"
+msgstr "创建反馈失败"
 
 msgid "Across All Fields"
 msgstr "所有字段"

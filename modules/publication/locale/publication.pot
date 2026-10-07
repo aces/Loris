@@ -48,9 +48,6 @@ msgstr ""
 msgid "Something went wrong!"
 msgstr ""
 
-msgid "Submission Successful!"
-msgstr ""
-
 msgid "Propose a Project"
 msgstr ""
 
@@ -124,6 +121,12 @@ msgid "Project"
 msgstr ""
 
 msgid "Project Proposal Creator"
+msgstr ""
+
+msgid "In Progress"
+msgstr ""
+
+msgid "Submitted"
 msgstr ""
 
 msgid "Published"

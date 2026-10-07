@@ -155,7 +155,7 @@ function MRIViolationsIndex(props) {
                   PatientName: rowData[t('Patient Name', {ns: 'mri_violations'})
                   ],
                   SeriesUID: rowData[t('Series UID', {ns: 'mri_violations'})],
-                  TarchiveID: rowData[t('TarchiveID', {ns: 'mri_violations'})],
+                  TarchiveID: rowData[t('TarchiveID', {ns: 'loris'})],
                   CandID: rowData.CandID,
                 })
               }
@@ -420,7 +420,7 @@ function MRIViolationsIndex(props) {
       },
       {label: t('hash', {ns: 'mri_violations'}), show: false},
       {label: t('JoinID', {ns: 'mri_violations'}), show: false},
-      {label: t('TarchiveID', {ns: 'mri_violations'}), show: false},
+      {label: t('TarchiveID', {ns: 'loris'}), show: false},
       {label: t('DCCID', {ns: 'loris'}), show: false},
       {label: t('PSCID', {ns: 'loris'}), show: false},
 

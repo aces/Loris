@@ -63,7 +63,7 @@
     <br>
     <div class='div-controlpanel-bottom'>
         <div class="form-group">
-            <label>{dgettext("imaging_browser","QC Status")}</label>
+            <label>{dgettext("loris","QC Status")}</label>
             {if $subject.has_permission}{html_options options=$subject.status_options selected=$subject.mriqcstatus name=visit_status tabindex=1 class="form-control input-sm" style="width:100px"}{else}{$subject.mriqcstatus}{/if}
    <br>
                <label>{dgettext("imaging_browser","QC Pending")}</label>

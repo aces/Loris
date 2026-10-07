@@ -17,12 +17,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Battery Manager"
 msgstr "बैटरी प्रबंधक"
-
-msgid "Submission successful!"
-msgstr "प्रस्तुति सफल रही!"
 
 msgid "Instrument"
 msgstr "उपकरण"
@@ -108,9 +106,6 @@ msgstr "आप किसी प्रविष्टि को संपाद�
 msgid "Search for instrument"
 msgstr "उपकरण खोजें"
 
-msgid "days"
-msgstr "दिन"
-
 msgid "Search for site"
 msgstr "साइट खोजें"
 
@@ -125,3 +120,21 @@ msgstr "अधिकतम आयु (दिन)"
 
 msgid "Minimum Age (days)"
 msgstr "न्यूनतम आयु (दिन)"
+
+msgid "An error occurred while saving the test."
+msgstr "परीक्षण सहेजते समय एक त्रुटि हुई।"
+
+msgid "This will deactivate the current test."
+msgstr "इससे वर्तमान परीक्षण निष्क्रिय हो जाएगा।"
+
+msgid "Unspecified Request"
+msgstr "अनिर्दिष्ट अनुरोध"
+
+msgid "This Test already exists in the database"
+msgstr "यह परीक्षण पहले से ही डेटाबेस में मौजूद है।"
+
+msgid "Edit Permission Denied"
+msgstr "संपादन की अनुमति अस्वीकृत"
+
+msgid "Could not add entry to the Test Battery"
+msgstr "परीक्षण बैटरी में प्रविष्टि जोड़ना संभव नहीं हुआ।"

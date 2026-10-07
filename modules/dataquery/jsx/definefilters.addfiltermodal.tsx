@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import FilterableSelectGroup from './components/filterableselectgroup';
-import Modal from 'jsx/Modal';
+import {FormModal} from 'jsx/Modal';
 import Select from 'react-select';
 import swal from 'sweetalert2';
 import {
@@ -19,12 +19,13 @@ import {
 } from './types';
 import {CategoriesAPIReturn} from './hooks/usedatadictionary';
 import {Trans} from 'react-i18next';
+import {TFunction} from 'i18next';
 
 /**
  * Renders a selectable list of visits
  *
  * @param {object} props - React props
- * @param {any} props.t - useTranslation
+ * @param {TFunction} props.t - useTranslation
  * @param {string[]} props.selected - The currently selected visits
  * @param {string[]} props.options - The valid options
  * @param {function} props.onChange - callback when the value selected changes
@@ -32,7 +33,7 @@ import {Trans} from 'react-i18next';
  * @returns {React.ReactElement} - The visit list dropdown
  */
 function VisitList(props: {
-    t: any,
+    t: TFunction,
     selected: string[],
     options: string[],
     onChange: (newvals: string[]) => void,
@@ -76,7 +77,7 @@ function VisitList(props: {
  * Render a modal window for adding a filter
  *
  * @param {object} props - React props
- * @param {any} props.t - useTranslation
+ * @param {TFunction} props.t - useTranslation
  * @param {QueryGroup} props.query - The current query
  * @param {function} props.closeModal - Callback to close the modal
  * @param {function} props.addQueryGroupItem - Callback to add criteria to a querygroup
@@ -88,7 +89,7 @@ function VisitList(props: {
  * @returns {React.ReactElement} - The modal window
  */
 function AddFilterModal(props: {
-    t: any,
+    t: TFunction,
     query: QueryGroup,
     closeModal: () => void,
     addQueryGroupItem: (group: QueryGroup, condition: QueryTerm) => void,
@@ -147,7 +148,7 @@ function AddFilterModal(props: {
     criteriaSelect = <div>
       <h3>{t('Criteria', {ns: 'dataquery'})}</h3>
       <div style={{display: 'flex'}}>
-        <div style={{width: '20%'}}>
+        <div style={{width: '40%'}}>
           <FilterableSelectGroup groups={
             {'Operators': getOperatorOptions(fieldDictionary, t)}
           }
@@ -157,7 +158,7 @@ function AddFilterModal(props: {
           placeholder={t('Select an operator', {ns: 'dataquery'})}
           />
         </div>
-        <div style={{width: '80%'}}>{valueSelect}</div>
+        <div style={{width: '60%'}}>{valueSelect}</div>
       </div>
     </div>;
 
@@ -282,13 +283,12 @@ function AddFilterModal(props: {
     }
     );
   return (
-    <Modal title={t('Add criteria', {ns: 'dataquery'})}
+    <FormModal title={t('Add Condition', {ns: 'dataquery'})}
       show={true}
       throwWarning={true}
       onClose={props.closeModal}
       onSubmit={submitPromise}>
       <div style={{width: '100%', padding: '1em'}}>
-        <h3>{t('Field', {ns: 'dataquery', count: 1})}</h3>
         <div style={{display: 'flex', width: '100%'}}>
           <div style={{width: '40%'}}>
             <FilterableSelectGroup
@@ -304,7 +304,7 @@ function AddFilterModal(props: {
               }}
             />
           </div>
-          <div style={{width: '100%'}}>
+          <div style={{width: '60%'}}>
             {fieldSelect}
           </div>
         </div>
@@ -312,7 +312,7 @@ function AddFilterModal(props: {
         {criteriaSelect}
         {visitSelect}
       </div>
-    </Modal>
+    </FormModal>
   );
 }
 
@@ -321,11 +321,11 @@ function AddFilterModal(props: {
  * Get a list of possible query operators based on a field's dictionary
  *
  * @param {object} dict - the field dictionary
- * @param {any} t useTranslation
+ * @param {TFunction} t useTranslation
  *
  * @returns {object} - list of options for this dictionary
  */
-function getOperatorOptions(dict: FieldDictionary, t: any) {
+function getOperatorOptions(dict: FieldDictionary, t: TFunction) {
   let options: {[operator: string]: string};
   if (dict.type == 'integer' || dict.type == 'date' ||
             dict.type == 'interval' || dict.type == 'time' ||
@@ -389,14 +389,14 @@ function getOperatorOptions(dict: FieldDictionary, t: any) {
  * @param {string} op - The operator selected
  * @param {string|string[]} value - The current value
  * @param {string} setValue - a callback when a new value is selected
- * @param {function} t - Translation function from i18next
+ * @param {TFunction} t - Translation function from i18next
  * @returns {React.ReactElement} - the react element
  */
 function valueInput(fielddict: FieldDictionary,
   op: Operators,
   value: string|string[],
   setValue: (val: string) => void,
-  t: any
+  t: TFunction,
 ) {
   const vs: string = value as string;
   switch (op) {

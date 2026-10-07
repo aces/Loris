@@ -6,7 +6,8 @@
 <div class="panel panel-default">
     <div class="panel-heading" id="panel-main-heading">
 {if $files|@count}
-        <h3 class="panel-title">{dgettext("imaging_browser","%1 file(s) displayed.")|replace:"%1":$files|@count}</h3>
+        {assign var="file_count" value=$files|@count}
+        <h3 class="panel-title">{dgettext("imaging_browser","%1 file(s) displayed.")|replace:"%1":$file_count}</h3>
         <span class="pull-right clickable mri-arrow glyphicon glyphicon-chevron-up"></span>
     </div> <!-- closing panel-heading div-->
     <div class="panel-body">

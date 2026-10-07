@@ -58,7 +58,7 @@ class Signup extends \NDB_Page implements ETagCalculator
             return $this->requestAccount($request);
         }
         return new \LORIS\Http\Response\JSON\BadRequest(
-            'Error'
+            dgettext('login', 'Error')
         );
     }
 
@@ -86,7 +86,7 @@ class Signup extends \NDB_Page implements ETagCalculator
             );
             if (!$resp->isSuccess()) {
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'Please complete the reCaptcha!'
+                    dgettext('login', 'Please complete the reCaptcha!')
                 );
             }
         }
@@ -140,14 +140,17 @@ class Signup extends \NDB_Page implements ETagCalculator
             // current HTML escaping method, it is better to reject email
             // addresses containing them
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Email address can not contain the following' .
-                ' characters: <,>,& and "'
+                dgettext(
+                    'login',
+                    'Email address can not contain the following'
+                    . 'characters: <,>,& and ".'
+                )
             );
         }
         if (!filter_var($from, FILTER_VALIDATE_EMAIL)) {
             // Invalid email address.
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Please provide a valid email address!'
+                dgettext('login', 'Please provide a valid email address!')
             );
         }
 

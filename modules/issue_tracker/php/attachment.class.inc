@@ -156,7 +156,7 @@ class Attachment extends \NDB_Page implements ETagCalculator
             );
         }
         return new \LORIS\Http\Response\JSON\Forbidden(
-            'Invalid Permissions'
+            dgettext('issue_tracker', 'Invalid Permissions')
         );
     }
 

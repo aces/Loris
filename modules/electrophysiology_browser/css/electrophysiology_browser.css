@@ -819,7 +819,7 @@ li.hed-comment::before {
   scale: 1.05;
 }
 
-#eegSidebar {
+#ephys-sidebar {
   top: 0;
   bottom: 0;
   left: 0;
@@ -879,7 +879,7 @@ li.hed-comment::before {
     padding-top: 8px;
   }
 
-  #eegSidebar {
+  #ephys-sidebar {
     display: none;
   }
 }
@@ -891,7 +891,7 @@ li.hed-comment::before {
 
 /* Small Devices, Tablets */
 @media only screen and (min-width : 768px) {
-  #eegSidebar {
+  #ephys-sidebar {
     display: block;
   }
 

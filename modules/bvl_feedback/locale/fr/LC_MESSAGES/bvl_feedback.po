@@ -18,6 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #, fuzzy
 msgid "Behavioural Feedback"
@@ -59,9 +60,6 @@ msgstr "Description de la rétroaction"
 msgid "Feedback for PSCID: {{PSCID}}"
 msgstr "Commentaires pour PSCID : {{PSCID}}"
 
-msgid "Type"
-msgstr "Type"
-
 msgid "Author"
 msgstr "Auteur"
 
@@ -93,15 +91,23 @@ msgid "Create thread"
 msgstr "Créer un fil de discussion"
 
 #, fuzzy
+msgid "Thread created!"
+msgstr "Fil de discussion créé !"
+
+#, fuzzy
 msgid "The new thread has been submitted!"
 msgstr "Le nouveau fil de discussion a été soumis !"
+
+#, fuzzy
+msgid "Failed to create thread"
+msgstr "Impossible de créer le fil de discussion"
 
 #, fuzzy
 msgid "Across All Fields"
 msgstr "Dans tous les domaines"
 
 msgid "QC Class"
-msgstr "Classe CQ"
+msgstr "Classe de contrôle qualité"
 
 msgid "# Threads"
 msgstr "# Fils de discussion"

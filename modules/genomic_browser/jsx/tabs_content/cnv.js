@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import FilterableDataTable from 'jsx/FilterableDataTable';
 import Loader from 'jsx/Loader';
+import {withTranslation} from 'react-i18next';
 
 /**
  * CNV Component.
@@ -96,6 +97,7 @@ class CNV extends Component {
    * @return {DOMRect}
    */
   render() {
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -107,7 +109,7 @@ class CNV extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: 'Site',
+        label: t('Site', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Site',
@@ -116,7 +118,7 @@ class CNV extends Component {
         },
       },
       {
-        label: 'DCCID',
+        label: t('DCCID', {ns: 'loris'}),
         show: false,
         filter: {
           name: 'DCCID',
@@ -124,7 +126,7 @@ class CNV extends Component {
         },
       },
       {
-        label: 'PSCID',
+        label: t('PSCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'PSCID',
@@ -132,7 +134,7 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Sex',
+        label: t('Sex', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Sex',
@@ -141,7 +143,7 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Cohort',
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Cohort',
@@ -150,11 +152,11 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Date of Birth',
+        label: t('Date of Birth', {ns: 'loris'}),
         show: false,
       },
       {
-        label: 'External ID',
+        label: t('External ID', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'External ID',
@@ -162,7 +164,7 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Build',
+        label: t('Build', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'File',
@@ -171,7 +173,7 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Strand',
+        label: t('Strand', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Strand',
@@ -183,27 +185,27 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Start Loc',
+        label: t('Start Loc', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'End Loc',
+        label: t('End Loc', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Location',
+        label: t('Location', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'Gene',
+        label: t('Gene', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Gene Name',
+        label: t('Gene Name', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Description',
+        label: t('Description', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Description',
@@ -211,20 +213,20 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Type',
+        label: t('Type', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Type',
           type: 'select',
           options: {
-            gain: 'gain',
-            loss: 'loss',
-            unknown: 'Unknown',
+            gain: t('gain', {ns: 'genomic_browser'}),
+            loss: t('loss', {ns: 'genomic_browser'}),
+            unknown: t('unknown', {ns: 'loris'}),
           },
         },
       },
       {
-        label: 'Copy Number Change',
+        label: t('Copy Number Change', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Copy Number Change',
@@ -232,7 +234,7 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Event Name',
+        label: t('Event Name', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Event Name',
@@ -240,64 +242,64 @@ class CNV extends Component {
         },
       },
       {
-        label: 'Common',
+        label: t('Common', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Common',
           type: 'select',
           options: {
-            Y: 'Yes',
-            N: 'No',
+            Y: t('Yes', {ns: 'loris'}),
+            N: t('No', {ns: 'loris'}),
           },
         },
       },
       {
-        label: 'Characteristics',
+        label: t('Characteristics', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Characteristics',
           type: 'select',
           options: {
-            Benign: 'Benign',
-            Pathogenic: 'Pathogenic',
-            Unknown: 'Unknown',
+            Benign: t('Benign', {ns: 'genomic_browser'}),
+            Pathogenic: t('Pathogenic', {ns: 'genomic_browser'}),
+            Unknown: t('Unknown', {ns: 'genomic_browser'}),
           },
         },
       },
       {
-        label: 'Inheritance',
+        label: t('Inheritance', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Inheritance',
           type: 'select',
           options: {
-            'de novo': 'de novo',
-            'maternal': 'maternal',
-            'paternal': 'paternal',
-            'unclassified': 'unclassified',
-            'unknown': 'unknown',
+            'de novo': t('de novo', {ns: 'genomic_browser'}),
+            'maternal': t('maternal', {ns: 'genomic_browser'}),
+            'paternal': t('paternal', {ns: 'genomic_browser'}),
+            'unclassified': t('unclassified', {ns: 'genomic_browser'}),
+            'unknown': t('unknown', {ns: 'loris'}),
             'NA': 'NA',
           },
         },
       },
       {
-        label: 'Array Report',
+        label: t('Array Report', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Markers',
+        label: t('Markers', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Validation Method',
+        label: t('Validation Method', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Validation Method',
+        label: t('Validation Method', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Platform',
+        label: t('Platform', {ns: 'genomic_browser'}),
         show: true,
       },
     ];
@@ -321,6 +323,7 @@ CNV.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default CNV;
+export default withTranslation(['genomic_browser', 'loris'])(CNV);

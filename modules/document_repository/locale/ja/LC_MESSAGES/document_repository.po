@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Document Repository"
 msgstr "ドキュメントリポジトリ"
@@ -51,9 +52,6 @@ msgstr "ファイルをアップロード"
 msgid "Uploading..."
 msgstr "アップロード中..."
 
-msgid "Upload Successful!"
-msgstr "アップロード成功しました!"
-
 msgid "Upload Incomplete"
 msgstr "アップロードが不完全です"
 
@@ -65,9 +63,6 @@ msgstr "問題を報告するか、管理者に連絡してください"
 
 msgid "File too large"
 msgstr "ファイルが大きすぎます"
-
-msgid "Could not upload file"
-msgstr "ファイルをアップロードできませんでした"
 
 msgid "Something went wrong"
 msgstr "問題が発生しました"
@@ -146,9 +141,6 @@ msgstr "アップロード"
 
 msgid "File Name"
 msgstr "ファイル名"
-
-msgid "Uploaded By"
-msgstr "アップロード者"
 
 msgid "For Site"
 msgstr "サイト向け"

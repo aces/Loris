@@ -14,6 +14,8 @@ import frStrings from '../locale/fr/LC_MESSAGES/behavioural_qc.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/behavioural_qc.json';
 import jaStrings from '../locale/ja/LC_MESSAGES/behavioural_qc.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/behavioural_qc.json';
+import esStrings from '../locale/es/LC_MESSAGES/behavioural_qc.json';
+
 /**
  * Behavioural Quality Control.
  *
@@ -68,6 +70,7 @@ window.addEventListener('load', () => {
   i18n.addResourceBundle('ja', 'behavioural_qc', jaStrings);
   i18n.addResourceBundle('hi', 'behavioural_qc', hiStrings);
   i18n.addResourceBundle('zh', 'behavioural_qc', zhStrings);
+  i18n.addResourceBundle('es', 'behavioural_qc', esStrings);
   const Index = withTranslation(
     ['behavioural_qc', 'loris']
   )(BehaviouralQC);

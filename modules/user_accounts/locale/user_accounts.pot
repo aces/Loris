@@ -198,11 +198,20 @@ msgstr ""
 msgid "This email address is already in use"
 msgstr ""
 
-msgid "You cannot edit your own account settings"
+msgid "You cannot edit your own account settings."
 msgstr ""
 
-msgid "To change your email or password, go to \"My Preferences\""
+msgid "To change your email or password, go to \"My Preferences\"."
 msgstr ""
 
-msgid "For any other changes, contact an administrator"
+msgid "For any other changes, contact an administrator."
 msgstr ""
+
+msgid "Do you really want to reject this user?"
+msgstr ""
+
+msgid "This action cannot be undone."
+msgstr ""
+
+msgid "Yes, reject user!"
+msgstr "

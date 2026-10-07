@@ -18,6 +18,8 @@
  * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
 
+$user = \NDB_Factory::singleton()->user();
+
 // Base access check - user must have either of these permissions
 // more access validation after request validation
 if (!$user->hasAnyPermission(
@@ -32,7 +34,6 @@ if (!$user->hasAnyPermission(
 }
 $config        = \NDB_Factory::singleton()->config();
 $advancedperms = $config->getSetting('useAdvancedPermissions');
-$user          = \NDB_Factory::singleton()->user();
 $centerString  = implode("','", $user->getCenterIDs());
 $projectString = implode("','", $user->getProjectIDs());
 $username      = $user->getUsername();
@@ -92,12 +93,10 @@ $accessData = $DB->pselectRow(
     ['uploadId' => $uploadId]
 );
 
-
 if (empty($accessData)) {
     http_response_code(403);
     return;
 }
-
 
 /* Fetch columns Inserting and InsertionComplete from table mri_upload
  * create Database object
@@ -124,10 +123,14 @@ if ($summary) {
     $query .= " AND Verbose = 'N'";
 }
 
-$notifications = $DB->pselect(
+$notifications = [];
+$rows          = $DB->pselect(
     $query,
     ['processId' => $uploadId]
 );
+foreach ($rows as $row) {
+    $notifications[] = $row;
+}
 
 // Return JSON object encapsulating the response
 echo json_encode(

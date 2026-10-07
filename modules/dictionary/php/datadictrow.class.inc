@@ -48,8 +48,14 @@ class DataDictRow implements \LORIS\Data\DataInstance,
         $this->item         = $item;
         $this->desc         = $desc;
         $this->status       = $descstatus;
-        $this->visits       = $visits;
-        $this->cohorts      = $cohorts;
+        $this->visits       = $visits != null ? array_map(
+            fn($visit) => dgettext("visit", $visit),
+            $visits,
+        ) : null;
+        $this->cohorts      = $cohorts != null ? array_map(
+            fn($cohort) => dgettext("cohort", $cohort),
+            $cohorts,
+        ) : null;
     }
 
     /**

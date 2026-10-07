@@ -792,7 +792,7 @@ class ListElements extends Component {
               <span id="search_concept">
                 {this.props.value === 'Select One' ?
                   t('Select One', {ns: 'instrument_builder'}) :
-                  this.props.value}{' '}
+                  t(this.props.value, {ns: 'instrument_builder'})}
               </span>
               <span className="caret"></span>
             </button>

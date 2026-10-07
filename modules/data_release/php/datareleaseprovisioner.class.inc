@@ -45,7 +45,7 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         $query = "
             SELECT
                 file_name AS fileName,
-                IF(version is null or version ='','Unversioned', version) AS version,
+                IF(version is null or version ='', :unversioned, version) AS version,
                 upload_date AS uploadDate,
                 p.Name as ProjectName,
                 dr.id as dataReleaseID,
@@ -72,7 +72,11 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 
         $query .= " ORDER BY uploadDate";
 
-        parent::__construct($loris, $query, []);
+        parent::__construct(
+            $loris,
+            $query,
+            [':unversioned' => dgettext('data_release', 'Unversioned')]
+        );
     }
 
     /**
@@ -85,6 +89,22 @@ class DataReleaseProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
+        if (!empty($row['version'])) {
+            $row['version']
+                = html_entity_decode(
+                    $row['version'],
+                    ENT_QUOTES | ENT_HTML5,
+                    'UTF-8'
+                );
+        }
+        if (!empty($row['fileName'])) {
+            $row['fileName']
+                = html_entity_decode(
+                    $row['fileName'],
+                    ENT_QUOTES | ENT_HTML5,
+                    'UTF-8'
+                );
+        }
         return new DataReleaseRow($row);
     }
 }

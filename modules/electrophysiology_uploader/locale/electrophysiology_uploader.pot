@@ -57,13 +57,10 @@ msgstr ""
 msgid "The file does not respect name convention"
 msgstr ""
 
-msgid "Upload Successful!"
-msgstr ""
-
 msgid "Processing of this file by the EEG pipeline has started"
 msgstr ""
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr ""
 
 msgid "Upload failed: received HTTP response code"
@@ -82,9 +79,6 @@ msgid "Upload Time"
 msgstr ""
 
 msgid "Status"
-msgstr ""
-
-msgid "Uploaded By"
 msgstr ""
 
 # upload.class.inc

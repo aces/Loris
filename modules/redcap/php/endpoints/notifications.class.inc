@@ -331,7 +331,7 @@ class Notifications extends Endpoint
             'lastUpdatedBy' => $username,
             'sessionID'     => null,
             'centerID'      => $center_id,
-            'candID'        => null,
+            'CandidateID'   => null,
             'category'      => 'Data Entry',
             'description'   => "$error $data",
         ];

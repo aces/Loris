@@ -27,9 +27,6 @@ msgstr ""
 msgid "Phantom Scans"
 msgstr ""
 
-msgid "File to Upload"
-msgstr ""
-
 msgid "Notes"
 msgstr ""
 
@@ -39,7 +36,7 @@ msgstr ""
 msgid "File must be of type .tgz or tar.gz or .zip"
 msgstr ""
 
-msgid "For files that are not Phantom Scans, file name must begin with"
+msgid "For files that are not Phantom Scans, file name must begin with <0>{{prefix}}</0>"
 msgstr ""
 
 msgid "For example, for DCCID {{dccid}}, PSCID {{pscid}}, and Visit Label {{visitLabel}} the file name should be prefixed by: {{prefix}}"
@@ -84,16 +81,13 @@ msgstr ""
 msgid "A file with this name has been uploaded but has not yet been processed by the MRI pipeline. Would you like to overwrite the existing file?"
 msgstr ""
 
-msgid "Upload Successful!"
-msgstr ""
-
 msgid "Processing of this file by the MRI pipeline has started"
 msgstr ""
 
 msgid "Select this upload in the result table to view the processing progress"
 msgstr ""
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr ""
 
 msgid "Please make sure files are not larger than {{maxFileSize}}"
@@ -130,7 +124,7 @@ msgstr ""
 msgid "{{successText}} ({{inserted}} out of {{created}})"
 msgstr ""
 
-msgid "{{numViolatedScans}} violated scans"
+msgid "({{numViolatedScans}} violated scans)"
 msgstr ""
 
 msgid "Tarchive Info"
@@ -145,6 +139,35 @@ msgstr ""
 msgid "Upload Date"
 msgstr ""
 
-msgid "Uploaded By"
+msgid "Invalid PSCID %s for CandID %s. Check that you entered the correct PSCID and CandID."
 msgstr ""
 
+msgid "Invalid Visit Label %s for CandID %s. Check that you entered the correct Visit Label and CandID."
+msgstr ""
+
+msgid "The session associated with CandID %s and Visit Label %s is not active in the database."
+msgstr ""
+
+msgid "Please make sure files are not larger than %s"
+msgstr ""
+
+msgid "The file %s is not of type .tgz, .tar.gz or .zip."
+msgstr ""
+
+msgid "The CandID %s does not exist in the database."
+msgstr ""
+
+msgid "This user does not have permission to upload files for this session."
+msgstr ""
+
+msgid "The candidate associated with CandID %s and PSCID %s is not active in the database."
+msgstr ""
+
+msgid "File name and fields entered in CandID, PSCID, Visit Label must match. Verify that the information entered in all the fields above is correct or rename the file so that the file name matches %s or begins with \"%s\" and has the extension .tgz, tar.gz or .zip"
+msgstr ""
+
+msgid "This file has already been uploaded."
+msgstr ""
+
+msgid "An internal server error prevented this file from being uploaded. Please contact the system administrator: failed to copy %s to %s"
+msgstr ""

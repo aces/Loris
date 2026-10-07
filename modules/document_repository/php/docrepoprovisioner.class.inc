@@ -60,7 +60,7 @@ SELECT
 FROM
     document_repository v
 WHERE
-    COALESCE(v.hide_video, false) = false
+    COALESCE(v.hide_file, false) = false
 ORDER BY
     v.File_name;
 	    ",

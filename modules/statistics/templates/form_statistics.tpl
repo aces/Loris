@@ -10,7 +10,7 @@
     </div>
     <div class="visible-xs visible-sm panel panel-primary">
         <div class="panel-heading" onclick="toggleTabs()">
-            <label id="hiddenTabs">General Description</label>
+            <label id="hiddenTabs">{dgettext('statistics', 'General Description')}</label>
             <span class="glyphicon glyphicon-chevron-down pull-right" id="down"></span>
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up" style="display:none"></span>
         </div>

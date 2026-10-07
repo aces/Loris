@@ -40,7 +40,7 @@ INSERT INTO ConfigSettings (
     Visible,
     AllowMultiple,
     DataType,
-    Parent,
+    CategoryID,
     Label,
     OrderNumber
 )
@@ -53,7 +53,7 @@ SELECT
     ID,
     'Configuration Upload Path',
     15
-FROM ConfigSettings
+FROM ConfigCategories
 WHERE Name='paths';
 
 INSERT INTO Config (ConfigID, Value)

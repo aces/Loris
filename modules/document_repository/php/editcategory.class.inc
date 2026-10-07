@@ -82,7 +82,7 @@ class EditCategory extends \NDB_Page
             $req['categoryNameChange'] : null;
         $new_parent  = isset($req['newParentID']) ? $req['newParentID'] : null;
         if ($new_parent != null) {
-            $DB->update(
+            $DB->unsafeupdate(
                 "document_repository_categories",
                 [
                     "category_name" => $new_name,
@@ -93,7 +93,7 @@ class EditCategory extends \NDB_Page
                 ]
             );
         } else {
-            $DB->update(
+            $DB->unsafeupdate(
                 "document_repository_categories",
                 [
                     "category_name" => $new_name,

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import FilterableDataTable from 'jsx/FilterableDataTable';
 import Loader from 'jsx/Loader';
+import {withTranslation} from 'react-i18next';
 
 /**
  * Methylation Component.
@@ -97,6 +98,7 @@ class Methylation extends Component {
    * @return {DOMRect}
    */
   render() {
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -108,7 +110,7 @@ class Methylation extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: 'Site',
+        label: t('Site', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Site',
@@ -117,7 +119,7 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'DCCID',
+        label: t('DCCID', {ns: 'loris'}),
         show: false,
         filter: {
           name: 'DCCID',
@@ -125,7 +127,7 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'PSCID',
+        label: t('PSCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'PSCID',
@@ -133,7 +135,7 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Sex',
+        label: t('Sex', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Sex',
@@ -142,7 +144,7 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Cohort',
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Cohort',
@@ -151,15 +153,15 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Date of Birth',
+        label: t('Date of Birth', {ns: 'loris'}),
         show: false,
       },
       {
-        label: 'Sample',
+        label: t('Sample', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'CPG Name',
+        label: t('CPG Name', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'File',
@@ -167,15 +169,15 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Beta value',
+        label: t('Beta value', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Chromosome',
+        label: t('Chromosome', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Strand',
+        label: t('Strand', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Strand',
@@ -187,27 +189,27 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Start Loc',
+        label: t('Start Loc', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Probe Loc A',
+        label: t('Probe Loc A', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Probe Seq A',
+        label: t('Probe Seq A', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'Probe Loc B',
+        label: t('Probe Loc B', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'Probe Seq B',
+        label: t('Probe Seq B', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'Infinium design',
+        label: t('Infinium design', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Infinium design',
@@ -219,19 +221,19 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Color',
+        label: t('Color', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Color',
           type: 'select',
           options: {
-            Grn: 'Green',
-            Red: 'Red',
+            Grn: t('Green', {ns: 'genomic_browser'}),
+            Red: t('Red', {ns: 'genomic_browser'}),
           },
         },
       },
       {
-        label: 'Build',
+        label: t('Build', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Build',
@@ -242,27 +244,27 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'SNP',
+        label: t('SNP', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'SNP',
           type: 'select',
           options: {
-            'NULL': 'No',
-            '_': 'Yes',
+            'NULL': t('No', 'loris'),
+            '_': t('Yes', 'loris'),
           },
         },
       },
       {
-        label: 'Gene',
+        label: t('Gene', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'Accession number',
+        label: t('Accession number', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'Position',
+        label: t('Position', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Position',
@@ -278,42 +280,42 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'Island Loc',
+        label: t('Island Loc', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Context',
+        label: t('Context', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Promoter',
+        label: t('Promoter', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'DMR',
+        label: t('DMR', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'Enhancer',
+        label: t('Enhancer', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Enhancer',
           type: 'select',
           options: {
-            1: 'Yes',
+            1: t('Yes', {ns: 'loris'}),
           },
         },
       },
       {
-        label: 'HMM Island',
+        label: t('HMM Island', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Reg Feature Loc',
+        label: t('Reg Feature Loc', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Regulatory feat.:',
+        label: t('Regulatory feat.:', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Regulatory feat.:',
@@ -322,11 +324,11 @@ class Methylation extends Component {
         },
       },
       {
-        label: 'DHS',
+        label: t('DHS', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'Platform',
+        label: t('Platform', {ns: 'genomic_browser'}),
         show: false,
       },
     ];
@@ -350,6 +352,7 @@ Methylation.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default Methylation;
+export default withTranslation(['genomic_browser', 'loris'])(Methylation);

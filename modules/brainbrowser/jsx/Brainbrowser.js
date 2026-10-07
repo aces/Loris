@@ -135,8 +135,9 @@ const strings = {
   hi: hiStrings,
   ja: jaStrings,
   fr: frStrings,
+  zh: zhStrings,
 };
-const activeLang = (loris?.user?.langpref || 'en').slice(0, 2);
+const activeLang = i18n.language.slice(0, 2);
 const t = strings[activeLang] || strings['en'];
 
 const TranslatedBrainBrowser = withTranslation(

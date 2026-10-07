@@ -545,6 +545,7 @@ class ViewSession extends \NDB_Form
                 new \SessionID(strval($this->sessionID))
             );
             $candid      = $timePoint->getCandID();
+            $candidateID = \Candidate::singleton($candid)->getID();
             $visit_label = $timePoint->getData('Visit_label');
 
             foreach ($values['caveat'] as $curFileID => $curCaveat) {
@@ -587,7 +588,7 @@ class ViewSession extends \NDB_Form
                     $insertSet['PatientName']   = $file->getParameter(
                         'patient_name'
                     );
-                    $insertSet['CandID']        = $candid;
+                    $insertSet['CandidateID']   = $candidateID;
                     $insertSet['Visit_label']   = $visit_label;
                     $insertSet['CheckID']       = null;
                     $insertSet['MriScanTypeID'] = $file->getParameter(

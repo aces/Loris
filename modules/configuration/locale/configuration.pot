@@ -21,3 +21,194 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
+msgid "Related Cohorts"
+msgstr ""
+
+msgid "Diagnosis Evolution"
+msgstr ""
+
+msgid "An error occurred while loading the page."
+msgstr ""
+
+msgid "Submitted"
+msgstr ""
+
+msgid "Use this page to manage the configuration of existing cohorts, or to add a new one."
+msgstr ""
+
+msgid "New CohortID"
+msgstr ""
+
+msgid "Cohort Name"
+msgstr ""
+
+msgid "Use EDC"
+msgstr ""
+
+msgid "Calculate Window Difference For Instruments Based On"
+msgstr ""
+
+msgid "Recruitment Target"
+msgstr ""
+
+msgid "New Cohort"
+msgstr ""
+
+msgid "After adding a new cohort, Visit labels for this cohort can only be created by editing the configuration file, \"config.xml\". Please contact your administrator if you need more information."
+msgstr ""
+
+msgid "Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide."
+msgstr ""
+
+msgid "To configure study cohorts"
+msgstr ""
+
+msgid "To configure study projects"
+msgstr ""
+
+msgid "click here"
+msgstr ""
+
+msgid "To configure the diagnosis trajectory of the study"
+msgstr ""
+
+msgid "Use this page to manage the configuration of existing projects, or to add a new one."
+msgstr ""
+
+msgid "New ProjectID"
+msgstr ""
+
+msgid "Project Name"
+msgstr ""
+
+msgid "Alias"
+msgstr ""
+
+msgid "Affiliated Cohorts"
+msgstr ""
+
+msgid "New Project"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Trajectory Name"
+msgstr ""
+
+msgid "Source Field"
+msgstr ""
+
+msgid "Order Number"
+msgstr ""
+
+msgid "Please add a recruitment target here"
+msgstr ""
+
+msgid "Please add a cohort title here"
+msgstr ""
+
+msgid "Please add a project title here"
+msgstr ""
+
+msgid "Please add an alias here"
+msgstr ""
+
+msgid "New Diagnosis Trajectory"
+msgstr ""
+
+msgid "Are you sure you want to delete this diagnosis trajectory?"
+msgstr ""
+
+msgid "Deletion Successful!"
+msgstr ""
+
+msgid "Please confirm you want to delete the option \"{{option}}\" of the field \"{{field}}\"."
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Please fill out all fields!"
+msgstr ""
+
+msgid "Visit is not defined for selected Project."
+msgstr ""
+
+msgid "Instrument does not exist in selected visit."
+msgstr ""
+
+msgid "Source Field does not exist in instrument."
+msgstr ""
+
+msgid "Order Number not unique for this Project! Already used in Trajectory: %s"
+msgstr ""
+
+msgid "Trajectory Name already exists."
+msgstr ""
+
+msgid "Recruitment Target must be an integer greater than zero"
+msgstr ""
+
+msgid "Table must be \"Config\" or \"ConfigSettings\""
+msgstr ""
+
+msgid "Add field"
+msgstr ""
+
+msgid "Register Trajectory"
+msgstr ""
+
+msgid "Use this page to manage the configuration of the study's diagnosis trajectory."
+msgstr ""
+
+msgid "Ymd (EX: 2015-12-28)"
+msgstr ""
+
+msgid "Ym (EX: 2015-12)"
+msgstr ""
+
+msgid "Debug"
+msgstr ""
+
+msgid "Info"
+msgstr ""
+
+msgid "Notice"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Critical"
+msgstr ""
+
+msgid "Alert"
+msgstr ""
+
+msgid "Emergency"
+msgstr ""
+
+msgid "PatientID"
+msgstr ""
+
+msgid "PatientName"
+msgstr ""
+
+msgid "Closest Test Battery"
+msgstr ""
+
+msgid "Optimal Visit Window for Visit Label"
+msgstr ""
+
+msgid "This field is required!"
+msgstr ""
+
+msgid "This field is required! Entry must be included in provided list of options."
+msgstr ""
+
+msgid "This field is required! Please click \"Add Field\" before saving."
+msgstr ""

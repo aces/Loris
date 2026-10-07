@@ -87,3 +87,5 @@ msgstr ""
 msgid "Transverse"
 msgstr ""
 
+msgid "Blend (0.0 to 1.0)"
+msgstr ""

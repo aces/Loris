@@ -12,6 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Report-Msgid-Bugs-to: https://github.com/aces/Loris/issues\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #, fuzzy
 msgid "AOSI"

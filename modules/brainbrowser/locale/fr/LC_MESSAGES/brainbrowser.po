@@ -18,6 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Brainbrowser"
 msgstr "Navigateur cérébral"
@@ -92,11 +93,14 @@ msgstr "Afficher les tranches"
 
 #, fuzzy
 msgid "Sagittal"
-msgstr "Sagittal"
+msgstr "Sagittales"
 
 msgid "Coronal"
-msgstr "Coronaire"
+msgstr "Coronaires"
 
 #, fuzzy
 msgid "Transverse"
-msgstr "Transversal"
+msgstr "Transversales"
+
+msgid "Blend (0.0 to 1.0)"
+msgstr "Mélange (de 0,0 à 1,0)"

@@ -1,6 +1,9 @@
+import i18n from 'I18nSetup';
 import swal from 'sweetalert2';
+import lorisFetch from 'jslib/lorisFetch';
 
 $(function() {
+  const {t} = i18n;
   'use strict';
 
   $('div').tooltip();
@@ -47,23 +50,35 @@ $(function() {
       .attr('data-original-title');
 
     swal.fire({
-      text: 'Please confirm you want to delete the option "' +
-                selectedOption
-                + '" of the field "' + fieldName + '".',
+      text: t(
+        'Please confirm you want to delete the option'
+        + ' "{{option}}" of the field "{{field}}".',
+        {
+          ns: 'configuration',
+          option: selectedOption,
+          field: fieldName,
+        }
+      ),
       type: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Confirm',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: t('Confirm', {ns: 'configuration'}),
+      cancelButtonText: t('Cancel', {ns: 'loris'}),
     }).then((result) => {
       if (result.value) {
         let id = $(this).attr('name');
         let button = this;
 
-        $.ajax({
-          type: 'post',
-          url: loris.BaseURL + '/configuration/ajax/process.php',
-          data: {remove: id},
-          success: function() {
+        lorisFetch(loris.BaseURL + '/configuration/ajax/process.php', {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          },
+          body: new URLSearchParams({remove: id}),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('request_failed');
+            }
             if ($(button)
               .parent().parent().parent().children()
               .length > 1
@@ -83,12 +98,10 @@ $(function() {
                 .addClass('remove-new')
                 .removeClass('btn-remove');
             }
-          },
-          error: function(xhr, desc, err) {
-            console.error(xhr);
-            console.error('Details: ' + desc + '\nError:' + err);
-          },
-        });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       }
     });
   });
@@ -158,23 +171,34 @@ $(function() {
     // Clear previous feedback
     $('.submit-area > label').remove();
 
-    $.ajax({
-      type: 'post',
-      url: loris.BaseURL + '/configuration/ajax/process.php',
-      data: form,
-      success: function() {
-        let html = '<label>Submitted</label>';
+    lorisFetch(loris.BaseURL + '/configuration/ajax/process.php', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      },
+      body: form,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let text = await response.text();
+          let error = new Error('request_failed');
+          error.lorisMessage = text;
+          throw error;
+        }
+        let html = '<label>' + t(
+          'Submitted',
+          {ns: 'configuration'}
+        ) + '</label>';
         $(html)
           .hide()
           .appendTo('.submit-area')
           .fadeIn(500).delay(1000).fadeOut(500);
         location.reload();
-      },
-      error: function(xhr, desc, err) {
-        let html = '<label>' + xhr.responseText + '</label>';
+      })
+      .catch((error) => {
+        let html = '<label>' + (error.lorisMessage || '') + '</label>';
         $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000);
-      },
-    });
+      });
   });
 
   // On form reset, to delete the elements added with the "Add field" button that were not submitted.

@@ -111,11 +111,9 @@ class ModuleManagerIndex extends Component {
           swal.fire({
             title: t('Success!', {ns: 'loris'}),
             text: t(
-              'Updated {{name}} status!',
+              'Updated {{name}} status! To apply changes the interface ' +
+              'must be reloaded. Proceed?',
               {ns: 'module_manager', name: name}
-            ) + t(
-              'To apply changes the interface must be reloaded. Proceed?',
-              {ns: 'module_manager'}
             ),
             type: 'success',
             showCancelButton: true,
@@ -207,7 +205,7 @@ class ModuleManagerIndex extends Component {
     if (this.state.error) {
       const {t} = this.props;
       return (
-        <h3>{t('An error occured while loading the page.', {ns: 'loris'})}</h3>
+        <h3>{t('An error occurred while loading the page.', {ns: 'loris'})}</h3>
       );
     }
 

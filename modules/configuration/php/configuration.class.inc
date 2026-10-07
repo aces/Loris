@@ -64,8 +64,8 @@ class Configuration extends \NDB_Form
 
         $date_format = [
             ''    => '',
-            'Ymd' => 'Ymd (EX: 2015-12-28)',
-            'Ym'  => 'Ym (EX: 2015-12)'
+            'Ymd' => dgettext('configuration', 'Ymd (EX: 2015-12-28)'),
+            'Ym'  => dgettext('configuration', 'Ym (EX: 2015-12)')
         ];
 
         $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
@@ -77,22 +77,22 @@ class Configuration extends \NDB_Form
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
         $this->tpl_data['log_levels']      = [
-            'none'      => 'None',
-            'debug'     => 'Debug',
-            'info'      => 'Info',
-            'notice'    => 'Notice',
-            'warning'   => 'Warning',
-            'error'     => 'Error',
-            'critical'  => 'Critical',
-            'alert'     => 'Alert',
-            'emergency' => 'Emergency',
+            'none'      => dgettext('loris', 'None'),
+            'debug'     => dgettext('configuration', 'Debug'),
+            'info'      => dgettext('configuration', 'Info'),
+            'notice'    => dgettext('configuration', 'Notice'),
+            'warning'   => dgettext('configuration', 'Warning'),
+            'error'     => dgettext('configuration', 'Error'),
+            'critical'  => dgettext('configuration', 'Critical'),
+            'alert'     => dgettext('configuration', 'Alert'),
+            'emergency' => dgettext('configuration', 'Emergency'),
         ];
 
         $this->tpl_data['date_format']   = $date_format;
         $this->tpl_data['lookup_center'] = [
             ''            => '',
-            'PatientID'   => 'PatientID',
-            'PatientName' => 'PatientName',
+            'PatientID'   => dgettext('configuration', 'PatientID'),
+            'PatientName' => dgettext('configuration', 'PatientName'),
         ];
 
         try {
@@ -129,12 +129,17 @@ class Configuration extends \NDB_Form
 
         $parentConfigItems = $DB->pselect(
             "SELECT Label, Name
-             FROM ConfigSettings
-             WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
+             FROM ConfigCategories
+             WHERE Visible=1 ORDER BY OrderNumber",
             []
         );
 
-        return iterator_to_array($parentConfigItems);
+        // Convert the labels to the appropriate language
+        $parentConfigItems = iterator_to_array($parentConfigItems);
+        foreach ($parentConfigItems as &$setting) {
+            $setting['Label'] = dgettext('ConfigSettings', $setting['Label']);
+        }
+        return $parentConfigItems;
     }
 
     /**
@@ -149,6 +154,19 @@ class Configuration extends \NDB_Form
     {
         $config = \NDB_Config::singleton();
         $DB     = $this->loris->getDatabaseConnection();
+        $lang   = \User::singleton()->getLanguageCode();
+
+        $categories = iterator_to_array(
+            $DB->pselect(
+                "SELECT ID, Name, Description, Visible, 0 AS AllowMultiple,
+                    NULL AS DataType, NULL AS Parent, Label, OrderNumber,
+                    0 AS Multilingual
+                 FROM ConfigCategories
+                 WHERE Visible=1
+                 ORDER BY OrderNumber",
+                []
+            )
+        );
 
         // Get the names and meta-information for the config settings in the database
         $configs = iterator_to_array(
@@ -158,24 +176,32 @@ class Configuration extends \NDB_Form
             )
         );
 
+        // Convert the labels and descriptions to the appropriate language
+        foreach ($configs as &$setting) {
+            $setting['Label']       = dgettext('ConfigSettings', $setting['Label']);
+            $setting['Description'] = dgettext(
+                'ConfigSettings',
+                $setting['Description']
+            );
+        }
+
         // Check whether any setting is overwritten in the config.xml
         // Add this info to the array so form entries can be disabled in front end
         // Update the value for the setting to the value from the config.xml
         foreach ($configs as &$setting) {
             try {
                 $setting['Disabled'] = 'Yes';
-                if ($setting['Parent'] != null) {
-                    $valueFromXML = $config->getSettingFromXML($setting['Name']);
-                    if (!is_array($valueFromXML)) {
-                        $setting['Value'][0] = $valueFromXML;
-                    } else {
-                        $setting['Value'] = $valueFromXML;
-                    }
+                $valueFromXML        = $config->getSettingFromXML($setting['Name']);
+                if (!is_array($valueFromXML)) {
+                    $setting['Value'][0] = $valueFromXML;
+                } else {
+                    $setting['Value'] = $valueFromXML;
                 }
             } catch (\ConfigurationException $e) {
                 $setting['Disabled'] = 'No';
             }
         }
+        unset($setting);
 
         // Now check for config settings from the database for the fields not
         // overridden in the config.xml
@@ -187,23 +213,50 @@ class Configuration extends \NDB_Form
                 );
                 if ($value) {
                     foreach ($value as $subvalue) {
-                        $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                        if ($setting['Multilingual']) {
+                            $setting['Value'][$subvalue['ID']]
+                                = $config->getMultilingualSetting(
+                                    $lang,
+                                    $setting['Name']
+                                );
+                        } else {
+                            $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                        }
                     }
                 }
             }
         }
+        unset($setting);
 
         // build a tree from configs array
-        $tree = [];
+        $settingsByID       = [];
+        $settingsByCategory = [];
         foreach ($configs as &$node) {
-            $node['Children']          = [];
-            $tree[intval($node['ID'])] = &$node;
+            $node['Children'] = [];
+            $settingsByID[intval($node['ID'])] = &$node;
         }
-        foreach ($configs as &$node) {
-            $tree[$node['Parent']]['Children'][] = &$node;
-        }
+        unset($node);
 
-        return $configs;
+        foreach ($configs as &$node) {
+            if ($node['Parent'] !== null) {
+                $settingsByID[intval($node['Parent'])]['Children'][] = &$node;
+                continue;
+            }
+
+            if ($node['CategoryID'] !== null) {
+                $settingsByCategory[intval($node['CategoryID'])][] = &$node;
+            }
+        }
+        unset($node);
+
+        foreach ($categories as &$category) {
+            $category['Disabled'] = 'No';
+            $category['Children'] = $settingsByCategory[intval($category['ID'])]
+                ?? [];
+        }
+        unset($category);
+
+        return $categories;
     }
 
     /**
