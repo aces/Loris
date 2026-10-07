@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 
@@ -20,6 +20,35 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
 class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
 {
     protected $candidTest = '300001';
+
+    /**
+     * The released API retains its candidate response fields.
+     *
+     * @return void
+     */
+    public function testReleasedCandidatesOmitRegistrationCohort(): void
+    {
+        $response = $this->client->request(
+            'GET',
+            '../v0.0.3/candidates',
+            ['headers' => $this->headers]
+        );
+        $this->assertSame(200, $response->getStatusCode());
+        $candidates = json_decode((string) $response->getBody(), true);
+        $this->assertArrayNotHasKey(
+            'RegistrationCohort',
+            $candidates['Candidates'][0]
+        );
+
+        $response = $this->client->request(
+            'GET',
+            '../v0.0.3/candidates/' . $this->candidTest,
+            ['headers' => $this->headers]
+        );
+        $this->assertSame(200, $response->getStatusCode());
+        $candidate = json_decode((string) $response->getBody(), true);
+        $this->assertArrayNotHasKey('RegistrationCohort', $candidate['Meta']);
+    }
 
     /**
      * Tests the HTTP GET request for the endpoint /candidates
@@ -68,6 +97,12 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
             'string'
         );
         $this->assertSame(
+            gettype(
+                $candidatesArray['Candidates']['0']['RegistrationCohort']
+            ),
+            'string'
+        );
+        $this->assertSame(
             gettype($candidatesArray['Candidates']['0']['PSCID']),
             'string'
         );
@@ -96,6 +131,10 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         );
         $this->assertArrayHasKey(
             'Project',
+            $candidatesArray['Candidates']['0']
+        );
+        $this->assertArrayHasKey(
+            'RegistrationCohort',
             $candidatesArray['Candidates']['0']
         );
         $this->assertArrayHasKey(
@@ -159,6 +198,10 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
             'string'
         );
         $this->assertSame(
+            gettype($candidatesCandidArray['Meta']['RegistrationCohort']),
+            'string'
+        );
+        $this->assertSame(
             gettype($candidatesCandidArray['Meta']['PSCID']),
             'string'
         );
@@ -213,11 +256,12 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $json_new     = [
             'Candidate' =>
                 [
-                    'Project' => "Rye",
-                    'Site'    => "Data Coordinating Center",
-                    'EDC'     => "2020-01-03",
-                    'DoB'     => "2020-01-03",
-                    'Sex'     => "Male"
+                    'Project'              => "Rye",
+                    'RegistrationCohortID' => 3,
+                    'Site'                 => "Data Coordinating Center",
+                    'EDC'                  => "2020-01-03",
+                    'DoB'                  => "2020-01-03",
+                    'Sex'                  => "Male"
                 ]
         ];
         $response_new = $this->client->request(
@@ -233,6 +277,8 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         // Verify the endpoint has a body
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
+        $created = json_decode((string) $body, true);
+        $this->assertArrayHasKey('RegistrationCohort', $created);
 
         // Erase sites that were setup in LorisApiAuthenticatedTest
         // setup for data access in other tests.
@@ -246,11 +292,12 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $json_new     = [
             'Candidate' =>
                 [
-                    'Project' => "Rye",
-                    'Site'    => "Montreal",
-                    'EDC'     => "2020-01-03",
-                    'DoB'     => "2020-01-03",
-                    'Sex'     => "Male"
+                    'Project'              => "Rye",
+                    'RegistrationCohortID' => 3,
+                    'Site'                 => "Montreal",
+                    'EDC'                  => "2020-01-03",
+                    'DoB'                  => "2020-01-03",
+                    'Sex'                  => "Male"
                 ]
         ];
         $response_new = $this->client->request(
@@ -267,6 +314,49 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         // Verify the endpoint has a body
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
+
+        // A registration cohort must belong to the selected project.
+        $json_new     = [
+            'Candidate' => [
+                'Project'              => "Rye",
+                'RegistrationCohortID' => 1,
+                'Site'                 => "Data Coordinating Center",
+                'EDC'                  => "2020-01-03",
+                'DoB'                  => "2020-01-03",
+                'Sex'                  => "Male"
+            ]
+        ];
+        $response_new = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_new
+            ]
+        );
+        $this->assertEquals(400, $response_new->getStatusCode());
+
+        // A registration cohort is required when the setting is enabled.
+        $json_new     = [
+            'Candidate' => [
+                'Project' => "Rye",
+                'Site'    => "Data Coordinating Center",
+                'EDC'     => "2020-01-03",
+                'DoB'     => "2020-01-03",
+                'Sex'     => "Male"
+            ]
+        ];
+        $response_new = $this->client->request(
+            'POST',
+            "candidates",
+            [
+                'headers'     => $this->headers,
+                'http_errors' => false,
+                'json'        => $json_new
+            ]
+        );
+        $this->assertEquals(400, $response_new->getStatusCode());
 
         $json_new     = [
             'Candidate' =>

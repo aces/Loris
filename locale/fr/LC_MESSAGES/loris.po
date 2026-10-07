@@ -674,3 +674,5 @@ msgstr "Type de fichier non autorisé"
 msgid "Could not upload file"
 msgstr "Impossible de téléverser le fichier"
 
+msgid "Registration Cohort"
+msgstr "Cohorte d’inscription"

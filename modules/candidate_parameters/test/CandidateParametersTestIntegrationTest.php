@@ -51,6 +51,7 @@ class CandidateParametersTestIntegrationTest
             "An error occurred while loading the page.",
             $bodyText
         );
+        $this->assertStringContainsString("Registration Project", $bodyText);
+        $this->assertStringContainsString("Registration Cohort", $bodyText);
     }
 }
-

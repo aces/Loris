@@ -90,11 +90,16 @@ function getCandInfoFields()
         $caveat_options[$row['ID']] = $row['Description'];
     }
 
-    // get pscid
-    $pscid = $db->pselectOne(
-        'SELECT PSCID FROM candidate WHERE CandID = :candid',
+    $candidateInfo = $db->pselectRow(
+        'SELECT c.PSCID, p.Name AS RegistrationProject,
+            ch.title AS RegistrationCohort
+        FROM candidate c
+        LEFT JOIN Project p ON p.ProjectID=c.RegistrationProjectID
+        LEFT JOIN cohort ch ON ch.CohortID=c.RegistrationCohortID
+        WHERE c.CandID=:candid',
         ['candid' => $candID]
     );
+    assert($candidateInfo !== null);
 
     $flag = $db->pselectOne(
         'SELECT flagged_caveatemptor FROM candidate WHERE CandID = :candid',
@@ -136,8 +141,16 @@ function getCandInfoFields()
     }
 
     $result = [
-        'pscid'                => $pscid,
+        'pscid'                => $candidateInfo['PSCID'],
         'candID'               => $candID->__toString(),
+        'registrationProject'  => dgettext(
+            'Project',
+            $candidateInfo['RegistrationProject'] ?? ''
+        ),
+        'registrationCohort'   => dgettext(
+            'cohort',
+            $candidateInfo['RegistrationCohort'] ?? ''
+        ),
         'caveatReasonOptions'  => $caveat_options,
         'flagged_caveatemptor' => $flag,
         'flagged_reason'       => $reason,
@@ -735,4 +748,3 @@ function formatCandidateDate(?string $date, string $format): ?string
 
     return $dateTime->format($format);
 }
-

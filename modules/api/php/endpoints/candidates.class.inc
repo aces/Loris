@@ -187,7 +187,8 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner(
-            $this->loris
+            $this->loris,
+            $request->getAttribute('LORIS-API-Version') === 'v0.0.4-dev'
         )
         )
             ->filter($filter)
@@ -249,6 +250,23 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
+        $registrationCohortID = null;
+        $config = \NDB_Factory::singleton()->config();
+        if ($request->getAttribute('LORIS-API-Version') === 'v0.0.4-dev'
+            && $config->settingEnabled('useRegistrationCohort')
+        ) {
+            $registrationCohortID
+                = filter_var(
+                    $data['Candidate']['RegistrationCohortID'] ?? null,
+                    FILTER_VALIDATE_INT
+                );
+            if ($registrationCohortID === false) {
+                return new \LORIS\Http\Response\JSON\BadRequest(
+                    'Registration cohort must be specified'
+                );
+            }
+        }
+
         $centerid = array_search(
             $data['Candidate']['Site'],
             \Utility::getSiteList()
@@ -265,7 +283,8 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 $data['Candidate']['EDC'] ?? null,
                 $sex,
                 $pscid,
-                $project->getId()
+                $project->getId(),
+                $registrationCohortID
             );
         } catch (\ConflictException $e) {
             return new \LORIS\Http\Response\JSON\Conflict(
@@ -279,7 +298,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $candidate = \NDB_Factory::singleton()->candidate($candid);
 
-        $body = (new \LORIS\api\Views\Candidate($candidate))->toArray()['Meta'];
+        $body = (new \LORIS\api\Views\Candidate(
+            $candidate,
+            $request->getAttribute('LORIS-API-Version') === 'v0.0.4-dev'
+        ))->toArray()['Meta'];
         $link = '/'. $request->getURI()->getPath() . '/' . $candid;
 
         return (new \LORIS\Http\Response\JsonResponse($body))

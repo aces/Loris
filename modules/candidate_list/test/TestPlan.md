@@ -31,3 +31,8 @@
 Alternatively, an incorrect PSCID/DCCID combination in the Selection Filter form should not give such an error; it should return that no results were found.
 14. Enter a correct PSCID/DCCID combination in the 'Open Profile' form and ensure that it loads the correct Candidate Profile page
 15. In the Configuration module, set the Study variable 'Use EDC' to _No_. Ensure that the _EDC_ filter and the _EDC_ column are removed from the Selection Filter form and data table, respectively.
+16. For a candidate with a registration cohort and no started visits, confirm
+that the registration cohort appears in the Cohort column and can be filtered.
+17. For a candidate with both a registration cohort and started visits, confirm
+that the Cohort column includes the registration cohort and all distinct visit
+cohorts without duplicates.
