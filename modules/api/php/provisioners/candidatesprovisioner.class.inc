@@ -35,11 +35,13 @@ class CandidatesProvisioner extends DBRowProvisioner
      * Create a RowProvisioner, which gets rows for candidates/
      * endpoint.
      *
-     * @param \LORIS\LorisInstance $loris The LORIS instance to retrieve data
-     *                                    from.
+     * @param \LORIS\LorisInstance $loris         The LORIS instance to retrieve data
+     *                                            from.
+     * @param bool                 $includeCohort Include cohort metadata.
      */
     function __construct(
-        protected \LORIS\LorisInstance $loris
+        protected \LORIS\LorisInstance $loris,
+        private bool $includeCohort = false
     ) {
         parent::__construct(
             $this->loris,
@@ -80,6 +82,6 @@ class CandidatesProvisioner extends DBRowProvisioner
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        return new CandidatesRow($row);
+        return new CandidatesRow($row, $this->includeCohort);
     }
 }

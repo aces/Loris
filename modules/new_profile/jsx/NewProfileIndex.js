@@ -237,7 +237,7 @@ class NewProfileIndex extends React.Component {
   render() {
     // If error occurs, return a message.
     if (this.state.error) {
-      return <h3>{this.props.t('An error occured while loading the page.',
+      return <h3>{this.props.t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
@@ -315,7 +315,7 @@ class NewProfileIndex extends React.Component {
       cohort =
         <SelectElement
           name = "cohort"
-          label = {this.props.t('Registration Cohort', {ns: 'new_profile'})}
+          label = {this.props.t('Registration Cohort', {ns: 'loris'})}
           options = {cohorts}
           onUserInput = {this.setFormData}
           value = {this.state.formData.cohort}
@@ -396,7 +396,7 @@ class NewProfileIndex extends React.Component {
         ),
       },
       {
-        label: this.props.t('Registration Cohort', {ns: 'new_profile'}),
+        label: this.props.t('Registration Cohort', {ns: 'loris'}),
         element: cohort,
       },
 
@@ -442,7 +442,7 @@ window.addEventListener('load', () => {
   ).render(
     <NPIndex
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
-      submitURL = {`${loris.BaseURL}/api/v0.0.3/candidates/`}
+      submitURL = {`${loris.BaseURL}/api/v0.0.4-dev/candidates/`}
       hasPermission = {loris.userHasPermission}
     />
   );

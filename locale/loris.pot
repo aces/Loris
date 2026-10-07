@@ -301,7 +301,7 @@ msgstr ""
 msgid "Complete"
 msgstr ""
 
-msgid "An error occured while loading the page."
+msgid "An error occurred while loading the page."
 msgstr ""
 
 msgid "Active"
@@ -359,6 +359,18 @@ msgid "Saving"
 msgstr ""
 
 msgid "Reset"
+msgstr ""
+
+msgid "Minimum"
+msgstr ""
+
+msgid "Maximum"
+msgstr ""
+
+msgid "{{label}} Minimum"
+msgstr ""
+
+msgid "{{label}} Maximum"
 msgstr ""
 
 msgid "Note"
@@ -606,6 +618,7 @@ msgid "QC Status"
 msgstr ""
 
 msgid "TarchiveID"
+msgstr ""
 
 msgid "Upload successful!"
 msgstr ""
@@ -622,9 +635,6 @@ msgstr ""
 msgid "Upload directory is not writable"
 msgstr ""
 
-msgid "Upload directory is not writable"
-msgstr ""
-
 msgid "Path traversal not allowed"
 msgstr ""
 
@@ -635,4 +645,7 @@ msgid "File type not allowed"
 msgstr ""
 
 msgid "Could not upload file"
+msgstr ""
+
+msgid "Registration Cohort"
 msgstr ""

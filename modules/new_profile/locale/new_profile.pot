@@ -48,6 +48,3 @@ msgstr ""
 
 msgid "Access Profile"
 msgstr ""
-
-msgid "Registration Cohort"
-msgstr ""

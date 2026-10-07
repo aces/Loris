@@ -187,7 +187,8 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner(
-            $this->loris
+            $this->loris,
+            $request->getAttribute('LORIS-API-Version') === 'v0.0.4-dev'
         )
         )
             ->filter($filter)
@@ -251,7 +252,9 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $registrationCohortID = null;
         $config = \NDB_Factory::singleton()->config();
-        if ($config->settingEnabled('useRegistrationCohort')) {
+        if ($request->getAttribute('LORIS-API-Version') === 'v0.0.4-dev'
+            && $config->settingEnabled('useRegistrationCohort')
+        ) {
             $registrationCohortID
                 = filter_var(
                     $data['Candidate']['RegistrationCohortID'] ?? null,
@@ -295,7 +298,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $candidate = \NDB_Factory::singleton()->candidate($candid);
 
-        $body = (new \LORIS\api\Views\Candidate($candidate))->toArray()['Meta'];
+        $body = (new \LORIS\api\Views\Candidate(
+            $candidate,
+            $request->getAttribute('LORIS-API-Version') === 'v0.0.4-dev'
+        ))->toArray()['Meta'];
         $link = '/'. $request->getURI()->getPath() . '/' . $candid;
 
         return (new \LORIS\Http\Response\JsonResponse($body))

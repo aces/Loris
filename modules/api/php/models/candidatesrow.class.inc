@@ -38,10 +38,13 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
     /**
      * Create a new CandidatesRow.
      *
-     * @param array $row An array of candidate's properties
+     * @param array $row           An array of candidate's properties
+     * @param bool  $includeCohort Include cohort metadata.
      */
-    public function __construct(array $row)
-    {
+    public function __construct(
+        array $row,
+        private bool $includeCohort = false
+    ) {
         $this->_candid      = strval($row['CandID']) ?? null;
         $this->_projectname = $row['ProjectName'] ?? null;
         if ($row['ProjectID'] !== null) {
@@ -64,15 +67,18 @@ class CandidatesRow implements \LORIS\Data\DataInstance,
     public function jsonSerialize() : array
     {
         $obj = [
-            'CandID'             => $this->_candid,
-            'Project'            => $this->_projectname,
-            'RegistrationCohort' => $this->_registrationcohort,
-            'PSCID'              => $this->_pscid,
-            'Site'               => $this->_sitename,
-            'EDC'                => $this->_edc,
-            'DoB'                => $this->_dob,
-            'Sex'                => $this->_sex,
+            'CandID'  => $this->_candid,
+            'Project' => $this->_projectname,
+            'PSCID'   => $this->_pscid,
+            'Site'    => $this->_sitename,
+            'EDC'     => $this->_edc,
+            'DoB'     => $this->_dob,
+            'Sex'     => $this->_sex,
         ];
+
+        if ($this->includeCohort) {
+            $obj['RegistrationCohort'] = $this->_registrationcohort;
+        }
 
         return $obj;
     }

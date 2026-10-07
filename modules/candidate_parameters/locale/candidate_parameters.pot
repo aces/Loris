@@ -252,6 +252,3 @@ msgstr ""
 
 msgid "Registration Project"
 msgstr ""
-
-msgid "Registration Cohort"
-msgstr ""

@@ -13,7 +13,7 @@ INSERT INTO ConfigSettings (
     Visible,
     AllowMultiple,
     DataType,
-    Parent,
+    CategoryID,
     Label,
     OrderNumber
 )
@@ -26,7 +26,7 @@ SELECT
     ID,
     'Use registration cohorts',
     32
-FROM ConfigSettings
+FROM ConfigCategories
 WHERE Name = 'study';
 
 INSERT INTO Config (ConfigID, Value)
