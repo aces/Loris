@@ -320,11 +320,6 @@ class DashboardTest extends LorisIntegrationTest
             "conflicts_unresolved",
             ['TestName' => 'TestTestTest']
         );
-        $this->DB->update(
-            "Config",
-            ["Value" => null],
-            ["ConfigID" => 48]
-        );
         $user_id = $this->DB->pselectOne(
             "SELECT ID FROM users WHERE UserID=:test_user_id",
             ["test_user_id" => 'testUser1']
@@ -659,11 +654,9 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan3()
     {
         $this->safeGet($this->url . '/configuration/');
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
-            )
-        )->click();
+        $this->safeClick(
+            WebDriverBy::cssSelector("a[href='#dashboard']")
+        );
 
         $this->safeFindElement(
             WebDriverBy::Xpath(
@@ -738,4 +731,3 @@ class DashboardTest extends LorisIntegrationTest
         );
     }
 }
-
