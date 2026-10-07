@@ -19,6 +19,8 @@ if (!$user->hasPermission('config')) {
     exit(0);
 }
 
+header('Content-Type: application/json');
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
@@ -30,7 +32,7 @@ $ProjectList  = Utility::getProjectList();
 $projectName  = $_POST['Name'] ?? '';
 $projectAlias = $_POST['Alias'] ?? '';
 $recTarget    = empty($_POST['recruitmentTarget'])
-    ? null : $_POST['recruitmentTarget'];
+    ? null : intval($_POST['recruitmentTarget']);
 $projectID    = $_POST['ProjectID'] ?? null;
 $cohortIDs    = $_POST['CohortIDs'] ?? [];
 
@@ -100,4 +102,3 @@ if (!empty($cohortIDs)) {
 http_response_code(200);
 echo json_encode(['ok' => 'Success']);
 exit(0);
-

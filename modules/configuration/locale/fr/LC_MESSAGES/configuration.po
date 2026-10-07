@@ -1,0 +1,215 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 29\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "Related Cohorts"
+msgstr "Cohortes associées"
+
+msgid "Diagnosis Evolution"
+msgstr "Évolution du diagnostic"
+
+msgid "An error occurred while loading the page."
+msgstr "Une erreur est survenue lors du chargement de la page."
+
+msgid "Submitted"
+msgstr "Soumis"
+
+msgid "Use this page to manage the configuration of existing cohorts, or to add a new one."
+msgstr "Utilisez cette page pour gérer la configuration des cohortes existantes ou pour en ajouter une nouvelle."
+
+msgid "New CohortID"
+msgstr "Nouvel identifiant de cohorte"
+
+msgid "Cohort Name"
+msgstr "Nom de la cohorte"
+
+msgid "Use EDC"
+msgstr "Utiliser l'EDC"
+
+msgid "Calculate Window Difference For Instruments Based On"
+msgstr "Calculer la différence de fenêtre des instruments en fonction de"
+
+msgid "Recruitment Target"
+msgstr "Objectif de recrutement"
+
+msgid "New Cohort"
+msgstr "Nouvelle cohorte"
+
+msgid "After adding a new cohort, Visit labels for this cohort can only be created by editing the configuration file, \"config.xml\". Please contact your administrator if you need more information."
+msgstr "Après l'ajout d'une nouvelle cohorte, les libellés de visite de cette cohorte ne peuvent être créés qu'en modifiant le fichier de configuration « config.xml ». Veuillez communiquer avec votre administrateur si vous avez besoin de plus d'informations."
+
+msgid "Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide."
+msgstr "Veuillez saisir les différentes variables de configuration dans les champs ci-dessous. Pour savoir comment configurer LORIS, consultez la section Aide et/ou le guide du développeur."
+
+msgid "To configure study cohorts"
+msgstr "Pour configurer les cohortes de l'étude"
+
+msgid "To configure study projects"
+msgstr "Pour configurer les projets de l'étude"
+
+msgid "click here"
+msgstr "cliquez ici"
+
+msgid "To configure the diagnosis trajectory of the study"
+msgstr "Pour configurer la trajectoire diagnostique de l'étude"
+
+msgid "Use this page to manage the configuration of existing projects, or to add a new one."
+msgstr "Utilisez cette page pour gérer la configuration des projets existants ou pour en ajouter un nouveau."
+
+msgid "New ProjectID"
+msgstr "Nouvel identifiant de projet"
+
+msgid "Project Name"
+msgstr "Nom du projet"
+
+msgid "Alias"
+msgstr "Alias"
+
+msgid "Affiliated Cohorts"
+msgstr "Cohortes affiliées"
+
+msgid "New Project"
+msgstr "Nouveau projet"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Trajectory Name"
+msgstr "Nom de la trajectoire"
+
+msgid "Source Field"
+msgstr "Champ source"
+
+msgid "Order Number"
+msgstr "Numéro d'ordre"
+
+msgid "Please add a recruitment target here"
+msgstr "Veuillez saisir un objectif de recrutement."
+
+msgid "Please add a cohort title here"
+msgstr "Veuillez saisir un titre de cohorte."
+
+msgid "Please add a project title here"
+msgstr "Veuillez saisir un titre de projet."
+
+msgid "Please add an alias here"
+msgstr "Veuillez saisir un alias."
+
+msgid "New Diagnosis Trajectory"
+msgstr "Nouvelle trajectoire diagnostique"
+
+msgid "Are you sure you want to delete this diagnosis trajectory?"
+msgstr "Êtes-vous certain de vouloir supprimer cette trajectoire diagnostique ?"
+
+msgid "Deletion Successful!"
+msgstr "Suppression réussie !"
+
+msgid "Please confirm you want to delete the option \"{{option}}\" of the field \"{{field}}\"."
+msgstr "Veuillez confirmer que vous souhaitez supprimer l'option « {{option}} » du champ « {{field}} »."
+
+msgid "Confirm"
+msgstr "Confirmer"
+
+msgid "Please fill out all fields!"
+msgstr "Veuillez remplir tous les champs !"
+
+msgid "Visit is not defined for selected Project."
+msgstr "La visite n'est pas définie pour le projet sélectionné."
+
+msgid "Instrument does not exist in selected visit."
+msgstr "L'instrument n'existe pas pour la visite sélectionnée."
+
+msgid "Source Field does not exist in instrument."
+msgstr "Le champ source n'existe pas dans l'instrument."
+
+msgid "Order Number not unique for this Project! Already used in Trajectory: %s"
+msgstr "Le numéro d'ordre n'est pas unique pour ce projet ! Il est déjà utilisé dans la trajectoire : %s"
+
+msgid "Trajectory Name already exists."
+msgstr "Le nom de la trajectoire existe déjà."
+
+msgid "Recruitment Target must be an integer greater than zero"
+msgstr "L'objectif de recrutement doit être un entier supérieur à zéro."
+
+msgid "Table must be \"Config\" or \"ConfigSettings\""
+msgstr "La table doit être « Config » ou « ConfigSettings »."
+
+msgid "Add field"
+msgstr "Ajouter un champ"
+
+msgid "Register Trajectory"
+msgstr "Créer une trajectoire"
+
+msgid "Use this page to manage the configuration of the study's diagnosis trajectory."
+msgstr "Utilisez cette page pour gérer la configuration de la trajectoire diagnostique de l'étude."
+
+msgid "Ymd (EX: 2015-12-28)"
+msgstr "Ymd (p. ex. 2015-12-28)"
+
+msgid "Ym (EX: 2015-12)"
+msgstr "Ym (p. ex. 2015-12)"
+
+msgid "Debug"
+msgstr "Débogage"
+
+msgid "Info"
+msgstr "Information"
+
+msgid "Notice"
+msgstr "Avis"
+
+msgid "Warning"
+msgstr "Avertissement"
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "Critical"
+msgstr "Critique"
+
+msgid "Alert"
+msgstr "Alerte"
+
+msgid "Emergency"
+msgstr "Urgence"
+
+msgid "PatientID"
+msgstr "Identifiant du patient"
+
+msgid "PatientName"
+msgstr "Nom du patient"
+
+msgid "Closest Test Battery"
+msgstr "Batterie de tests la plus proche"
+
+msgid "Optimal Visit Window for Visit Label"
+msgstr "Fenêtre de visite optimale pour le libellé de visite"
+
+msgid "This field is required!"
+msgstr "Ce champ est obligatoire !"
+
+msgid "This field is required! Entry must be included in provided list of options."
+msgstr "Ce champ est obligatoire ! La valeur saisie doit faire partie de la liste des options proposées."
+
+msgid "This field is required! Please click \"Add Field\" before saving."
+msgstr "Ce champ est obligatoire ! Veuillez cliquer sur « Ajouter un champ » avant d'enregistrer."

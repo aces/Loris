@@ -38,6 +38,7 @@ class Module extends \Module
         if (strpos($request->getUri()->getPath(), "/edit_user/") === 0) {
             $loris = $request->getAttribute("loris");
             $page  = $this->loadPage($loris, "edit_user");
+            $page->loadResources($request->getAttribute("user"), $request);
             return $page->process($request, $page);
         }
         return parent::handle($request);

@@ -1,0 +1,122 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 29\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Acknowledgements"
+msgstr "Remerciements"
+
+msgid "Douglas"
+msgstr "Douglas"
+
+msgid "McGill"
+msgstr "McGill"
+
+msgid "Bachelors"
+msgstr "Licences"
+
+msgid "Masters"
+msgstr "Maîtrises"
+
+msgid "PhD"
+msgstr "Doctorat"
+
+msgid "Postdoctoral"
+msgstr "Postdoctoral"
+
+msgid "MD"
+msgstr "Doctorat en médecine"
+
+msgid "Registered Nurse"
+msgstr "Infirmier(ère) autorisé(e)"
+
+msgid "Investigators"
+msgstr "Chercheurs"
+
+msgid "Project Administration"
+msgstr "Gestion de projet"
+
+msgid "Database Management"
+msgstr "Gestion des bases de données"
+
+msgid "Interview Data Collection"
+msgstr "Collecte de données d'entrevue"
+
+msgid "Data Analyses"
+msgstr "Analyses de données"
+
+msgid "MRI Acquisition"
+msgstr "Acquisition d'IRM"
+
+msgid "Data Entry"
+msgstr "Saisie de données"
+
+msgid "Database Programming"
+msgstr "Programmation de bases de données"
+
+msgid "Imaging Processing and Evaluation"
+msgstr "Traitement et évaluation des images"
+
+msgid "Genetic Analysis"
+msgstr "Analyse génétique"
+
+msgid "Randomization and Pharmacy Allocation"
+msgstr "Randomisation et attribution pharmaceutique"
+
+msgid "Consultants"
+msgstr "Consultants"
+
+msgid "LP/CSF Collection"
+msgstr "Collecte de PL/LCR"
+
+msgid "Acknowledgement added."
+msgstr "Ajout d'une mention de remerciement."
+
+msgid "Citation Policy"
+msgstr "Politique de citation"
+
+msgid "Ordering"
+msgstr "Ordre"
+
+msgid "Full Name"
+msgstr "Nom complet"
+
+msgid "Citation Name"
+msgstr "Nom de la référence"
+
+msgid "Degrees"
+msgstr "Diplômes"
+
+msgid "Roles"
+msgstr "Rôles"
+
+msgid "Start Date"
+msgstr "Date de début"
+
+msgid "End Date"
+msgstr "Date de fin"
+
+msgid "Present"
+msgstr "Actif"
+
+msgid "Add Acknowledgement"
+msgstr "Ajouter une mention de remerciement"
+
+msgid "An unexpected error occurred."
+msgstr "Une erreur inattendue est survenue."

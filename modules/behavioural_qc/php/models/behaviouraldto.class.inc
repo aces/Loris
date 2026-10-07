@@ -151,7 +151,7 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
             'instrument'      => $this->_instrument,
             'candID'          => $this->_candID,
             'pscID'           => $this->_pscID,
-            'visit'           => $this->_visit,
+            'visit'           => dgettext('visit', $this->_visit),
             'project'         => $this->_project,
             'cohort'          => $this->_cohort,
             'site'            => $this->_site,
@@ -161,7 +161,10 @@ class BehaviouralDTO implements \LORIS\Data\DataInstance,
             'feedback_level'  => $this->_feedback_level,
             'test_name'       => $this->_test_name,
             'field_name'      => $this->_field_name,
-            'feedback_status' => $this->_feedback_status,
+            'feedback_status' => dgettext(
+                'feedback_bvl_thread',
+                $this->_feedback_status
+            ),
         ];
     }
 }

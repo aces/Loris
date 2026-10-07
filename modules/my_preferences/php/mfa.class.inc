@@ -87,7 +87,7 @@ class MFA extends \NDB_Page
     {
         if (!isset($values['code']) || !isset($values['secret'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Missing code or secret to validate'
+                dgettext('my_preferences', 'Missing code or secret to validate')
             );
         }
         $base32Decoder = new Base32();
@@ -97,7 +97,10 @@ class MFA extends \NDB_Page
         $wantCode      = $validator->getCode($counter, 6);
         if ($wantCode !== strval($values['code'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid code provided. MFA not registered.'
+                dgettext(
+                    'my_preferences',
+                    'Invalid code provided. MFA not registered.'
+                )
             );
         }
         $db = $this->loris->getDatabaseConnection();

@@ -112,11 +112,6 @@ class DirectDataEntryMainPage
             $this->TestName,
         );
 
-        $user = \User::singleton();
-        if ($instrumentObj->isAccessibleBy($user) !== true) {
-            throw new \Exception("Permission denied", 403);
-        }
-
         $subtests       = $instrumentObj->getSubtestList();
         $this->NumPages = count($subtests) + 1;
 

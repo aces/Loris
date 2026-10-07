@@ -12,9 +12,6 @@ const siteColours = [
   '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5',
 ];
 
-// Colours for the recruitment bar chart: breakdown by sex
-const sexColours = ['#2FA4E7', '#1C70B6'];
-
 let charts = []
 const resizeGraphs = (chartDetails) => {
   Object.keys(chartDetails).forEach((section) => {
@@ -61,22 +58,21 @@ const formatPieData = (data) => {
 /**
  * formatBarData - used for the recruitment widget
  * @param {object} data
- * @return {[]}
+ * @return {{columns: Array, colours: Array}}
  */
 const formatBarData = (data) => {
-  const processedData = [];
+  const columns = [];
+  const colours = [];
   if (data['datasets']) {
-    const females = ['Female'];
-    processedData.push(females.concat(data['datasets']['female']));
+    Object.values(data['datasets']).forEach((dataset) => {
+      columns.push([dataset.label].concat(dataset.data));
+      colours.push(dataset.colour || '#000000');
+    });
   }
-  if (data['datasets']) {
-    const males = ['Male'];
-    processedData.push(males.concat(data['datasets']['male']));
-  }
-  return processedData;
+  return {columns, colours};
 };
 
-const createPieChart = (columns, id, targetModal, colours) => {
+const createPieChart = (columns, id, targetModal, colours, units = null, showPieLabelRatio = true) => {
   let newChart = c3.generate({
     bindto: targetModal ? targetModal : id,
     data: {
@@ -92,13 +88,22 @@ const createPieChart = (columns, id, targetModal, colours) => {
     pie: {
       label: {
         format: function(value, ratio, id) {
-          return value + "("+Math.round(100*ratio)+"%)";
+          if (units) {
+            value = `${value} ${units}`;
+          }
+          if (showPieLabelRatio) {
+            value = `${value} (${(ratio * 100).toFixed(0)}%)`;
+          }
+          return value;
         }
       }
     },
     tooltip: {
       format: {
         value: function (value, ratio) {
+          if (units) {
+            value = `${value} ${units}`;
+          }
           return `${value} (${(ratio * 100).toFixed(0)}%)`;
         },
       },
@@ -107,7 +112,7 @@ const createPieChart = (columns, id, targetModal, colours) => {
   return newChart;
 }
 
-const createBarChart = (t, labels, columns, id, targetModal, colours, dataType) => {
+const createBarChart = (labels, columns, id, targetModal, colours, dataType, yLabel) => {
   let newChart = c3.generate({
     bindto: targetModal ? targetModal : id,
     data: {
@@ -119,10 +124,10 @@ const createBarChart = (t, labels, columns, id, targetModal, colours, dataType) 
             return colours[d.index];
           }
         } :
-        {
-          [columns[0][0]]: colours[0],
-          [columns[1][0]]: colours[1],
-        }
+        columns.reduce((accumulator, column, index) => {
+          accumulator[column[0]] = colours[index];
+          return accumulator;
+        }, {})
     },
     size: {
       height: targetModal ? 500 : 300,
@@ -130,11 +135,11 @@ const createBarChart = (t, labels, columns, id, targetModal, colours, dataType) 
     axis: {
       x: {
         type: 'category',
-        categories: labels, 
+        categories: labels,
       },
       y: {
         label: {
-          text: t('Candidates registered', { ns: 'statistics'}),
+          text: yLabel,
           position: 'inner-top'
         },
       },
@@ -167,6 +172,7 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
       }
     }
   }
+
   let newChart = c3.generate({
     size: {
       height: targetModal && 500,
@@ -226,10 +232,8 @@ const createLineChart = (data, columns, id, label, targetModal, titlePrefix) => 
 
           name = nameFormat(d[i].name);
           value = valueFormat(d[i].value, d[i].ratio, d[i].id, d[i].index);
-          
           // Calculate percentage based on grand total of entire dataset
           let percentage = grandTotal > 0 ? ((d[i].value / grandTotal) * 100).toFixed(1) : 0;
-          
           bgcolor = $$.levelColor ? $$.levelColor(d[i].value) : color(d[i].id);
 
           text += "<tr class='" + $$.CLASS.tooltipName + "-" + d[i].id + "'>";
@@ -305,17 +309,18 @@ const setupCharts = async (t, targetIsModal, chartDetails, totalLabel) => {
               columns = newColumns;
             }
           } else if (chart.dataType === 'bar') {
-            columns = formatBarData(chartData);
+            const formattedBarData = formatBarData(chartData);
+            columns = formattedBarData.columns;
             labels = chartData.labels;
-            colours = sexColours;
+            colours = formattedBarData.colours;
           } else if (chart.dataType === 'line') {
             columns = formatLineData(chartData, totalLabel);
           }
           let chartObject = null;
           if (chart.chartType === 'pie') {
-            chartObject = createPieChart(columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours);
+            chartObject = createPieChart(columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.units, chart.showPieLabelRatio);
           } else if (chart.chartType === 'bar') {
-            chartObject = createBarChart(t, labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType);
+            chartObject = createBarChart(labels, columns, `#${chartID}`, targetIsModal && '#dashboardModal', colours, chart.dataType, chart.yLabel);
           } else if (chart.chartType === 'line') {
             chartObject = createLineChart(chartData, columns, `#${chartID}`, chart.label, targetIsModal && '#dashboardModal', chart.titlePrefix);
           }

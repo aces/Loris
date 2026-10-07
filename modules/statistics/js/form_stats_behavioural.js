@@ -1,17 +1,22 @@
 /*global document, $, window, scrollContent*/
+var lorisFetch = window.lorisFetch || fetch;
 function updateBehaviouralTab() {
     var BehaviouralProject = document.getElementById("BehaviouralProject");
-    var request            = $.ajax(
-        {
-            url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' + (BehaviouralProject==null ? "" : BehaviouralProject.value),
-            type: 'GET',
-            data: 'html',
-            success: function (response) {
-                $('#data_entry').html(response);
-                $(".dynamictable").DynamicTable();
+    lorisFetch(
+        loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' +
+        (BehaviouralProject==null ? "" : BehaviouralProject.value),
+        {credentials: 'same-origin'}
+    )
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('request_failed');
             }
-        }
-    );
+            return response.text();
+        })
+        .then(function(response) {
+            $('#data_entry').html(response);
+            $(".dynamictable").DynamicTable();
+        });
 }
 function checkOverflow() {
     'use strict';

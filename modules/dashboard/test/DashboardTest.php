@@ -353,7 +353,7 @@ class DashboardTest extends LorisIntegrationTest
             $bodyText
         );
         $this->assertStringNotContainsString(
-            "An error occured while loading the page.",
+            "An error occurred while loading the page.",
             $bodyText
         );
     }
@@ -466,7 +466,8 @@ class DashboardTest extends LorisIntegrationTest
                 "conflict_resolver",
                 "access_all_profiles",
                 "data_dict_edit",
-                "data_dict_view"
+                "data_dict_view",
+                "view_instrument_data",
             ]
         );
         $this->safeGet($this->url . '/dashboard/');
@@ -652,26 +653,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan3()
     {
-        $this->safeGet($this->url . '/configuration/');
-        $this->safeClick(
-            WebDriverBy::cssSelector("a[href='#dashboard']")
-        );
-
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='49']/input"
-            )
-        )->clear();
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='49']/input"
-            )
-        )->sendKeys('888');
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
-            )
-        )->click();
+        $this->setupConfigSetting('recruitmentTarget', '888');
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
             WebDriverBy::Id("overall-recruitment")
@@ -680,6 +662,7 @@ class DashboardTest extends LorisIntegrationTest
             "888",
             $testText
         );
+        $this->restoreConfigSetting("recruitmentTarget");
     }
 
     /**

@@ -113,7 +113,7 @@ class ViewProject extends React.Component {
       if (!response.ok) {
         console.error(response.status);
         this.setState({
-          error: t('An error occured while loading the page.', {ns: 'loris'}),
+          error: t('An error occurred while loading the page.', {ns: 'loris'}),
         });
         return;
       }
@@ -175,7 +175,7 @@ class ViewProject extends React.Component {
       // Network error
       console.error(error);
       this.setState({
-        error: t('An error occured while loading the page.', {ns: 'loris'}),
+        error: t('An error occurred while loading the page.', {ns: 'loris'}),
       });
     });
   }

@@ -5,6 +5,10 @@ import FilterableDataTable from 'FilterableDataTable';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line no-unused-vars
 import i18n from 'I18nSetup';
+import {withTranslation} from 'react-i18next';
+
+import frStrings from '../locale/fr/LC_MESSAGES/imaging_qc.json';
+
 /**
  * Imaging Quality Control React Component
  */
@@ -35,7 +39,7 @@ class ImagingQCIndex extends Component {
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'Scan Done in MRI PF':
+    case 'Scan Done in MRI Parameter Form':
       if (cell == 'Yes') {
         let mpfURL = loris.BaseURL
                        + '/instruments/mri_parameter_form/?commentID='
@@ -103,6 +107,7 @@ class ImagingQCIndex extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     if (!this.state.isLoadedImg) {
       return <Loader/>;
     }
@@ -111,104 +116,107 @@ class ImagingQCIndex extends Component {
 
       const ImgFields = [
         {
-          label: 'PSCID', show: true, filter: {
+          label: t('PSCID', {ns: 'loris'}), show: true, filter: {
             name: 'pSCID',
             type: 'text',
           },
         },
-        {label: 'Session ID', show: true},
+        {label: t('SessionID', {ns: 'loris'}), show: true},
         {
-          label: 'DCCID', show: true, filter: {
+          label: t('DCCID', {ns: 'loris'}), show: true, filter: {
             name: 'candId',
             type: 'text',
           },
         },
         {
-          label: 'Site', show: true, filter: {
+          label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
             name: 'site',
             type: 'select',
             options: ImgOptions.site,
           },
         },
         {
-          label: 'Project', show: true, filter: {
+          label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
             name: 'project',
             type: 'select',
             options: ImgOptions.project,
           },
         },
         {
-          label: 'Cohort', show: true, filter: {
+          label: t('Cohort', {ns: 'loris', count: 1}), show: true, filter: {
             name: 'cohort',
             type: 'select',
             options: ImgOptions.cohort,
           },
         },
         {
-          label: 'Visit Label', show: true, filter: {
+          label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
             name: 'visitLabel',
             type: 'select',
             options: ImgOptions.visitLabel,
           },
         },
         {
-          label: 'Scan Type', show: true, filter: {
+          label: t('Scan Type', {ns: 'loris'}), show: true, filter: {
             name: 'scanType',
             type: 'select',
             options: ImgOptions.scanType,
           },
         },
         {
-          label: 'MRI Parameter Form', show: true, filter: {
+          label: t('MRI Parameter Form', {ns: 'imaging_qc'}), show: true,
+          filter: {
             name: 'mRIParameterForm',
             type: 'select',
             options: ImgOptions.mRIParameterForm,
           },
         },
         {
-          label: 'Scan Done in MRI PF', show: true, filter: {
-            name: 'scanDoneInMRIPF',
+          label: t('Scan Done in MRI Parameter Form', {ns: 'imaging_qc'}),
+          show: true,
+          filter: {
+            name: 'scanDoneInMRIParameterForm',
             type: 'select',
-            options: ImgOptions.scanDoneInMRIPF,
+            options: ImgOptions.scanDoneInMRIParameterForm,
           },
         },
         {
-          label: 'Tarchive', show: true, filter: {
+          label: t('Tarchive', {ns: 'imaging_qc'}), show: true, filter: {
             name: 'tarchive',
             type: 'select',
             options: ImgOptions.tarchive,
           },
         },
         {
-          label: 'Scan Location', show: true, filter: {
+          label: t('Scan Location', {ns: 'imaging_qc'}), show: true, filter: {
             name: 'scanLocation',
             type: 'select',
             options: ImgOptions.scanLocation,
           },
         },
         {
-          label: 'QC Status', show: true, filter: {
+          label: t('QC Status', {ns: 'loris'}), show: true, filter: {
             name: 'qCStatus',
             type: 'select',
             options: ImgOptions.qCStatus,
           },
         },
         {
-          label: 'Uploaded By', show: true, filter: {
+          label: t('Uploaded By', {ns: 'loris'}), show: true, filter: {
             name: 'uploadedBy',
             type: 'select',
             options: ImgOptions.uploadedBy,
           },
         },
         {
-          label: 'Selected', show: true, filter: {
+          label: t('Selected', {ns: 'loris'}), show: true, filter: {
             name: 'selected',
             type: 'select',
             options: ImgOptions.selected,
           },
         },
-        {label: 'CommentID', show: false},
-        {label: 'TarchiveID', show: false},
+        {label: t('CommentID', {ns: 'imaging_qc'}), show: false},
+        {label: t('TarchiveID', {ns: 'loris'}), show: false},
       ];
 
       const datatable = (
@@ -251,13 +259,18 @@ class ImagingQCIndex extends Component {
 ImagingQCIndex.propTypes = {
   ImgDataURL: PropTypes.string.isRequired,
   hasPermission: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
 window.addEventListener('load', () => {
+  i18n.addResourceBundle('fr', 'imaging_qc', frStrings);
+  const TranslatedImagingQCIndex = withTranslation(
+    ['imaging_qc', 'loris']
+  )(ImagingQCIndex);
   createRoot(
     document.getElementById('lorisworkspace')
   ).render(
-    <ImagingQCIndex
+    <TranslatedImagingQCIndex
       ImgDataURL={`${loris.BaseURL}/imaging_qc/?format=json`}
       hasPermission={loris.userHasPermission}
     />

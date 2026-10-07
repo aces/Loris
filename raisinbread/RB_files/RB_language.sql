@@ -6,5 +6,6 @@ INSERT INTO `language` (`language_id`, `language_code`, `language_label`) VALUES
 INSERT INTO `language` (`language_id`, `language_code`, `language_label`) VALUES (2,'fr_CA','Français');
 INSERT INTO `language` (`language_id`, `language_code`, `language_label`) VALUES (3,'ja_JP','日本語');
 INSERT INTO `language` (`language_id`, `language_code`, `language_label`) VALUES (4,'hi_IN','हिनदी');
+INSERT INTO `language` (`language_id`, `language_code`, `language_label`) VALUES (5,'zh_CN','中文');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

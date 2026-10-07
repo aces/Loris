@@ -92,7 +92,7 @@ type CProps = {
   viewerWidth: number,
   viewerHeight: number,
   interval: [number, number],
-  domain: number,
+  domain: [number, number],
   amplitudeScale: number,
   rightPanel: RightPanel,
   timeSelection?: [number, number],
@@ -995,6 +995,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
     'HED_ENDORSEMENT': 'HED Endorsements',
   }
 
+  const canEditEvents = chunksURL[0]?.includes('Face13');
+
   return (
     <>
 {/*      {channels.length > 0 ? (*/}
@@ -1010,7 +1012,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
           <div id="right-panel-controls">
             <button
               className={'btn btn-primary'}
-              disabled={!chunksURL || !chunksURL[0].includes('Face13') || rightPanel === 'annotationForm'}
+              disabled={!chunksURL || !canEditEvents || rightPanel === 'annotationForm'}
               onClick={() => {
                 confirmPanelClose(() => {
                   setRightPanel('annotationForm')
@@ -1390,8 +1392,8 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
                         R.compose(dragStart, R.nth(0))(v);
                       }, [bounds])}
                       showOverflow={showOverflow}
-                      chunksURL={chunksURL}
                       cssClass={''}
+                      domain={domain}
                     >
                       <EpochsLayer/>
                       <ChannelsLayer
@@ -1579,7 +1581,7 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               </div>
               {
                 rightPanel === 'annotationForm' &&
-                chunksURL[0].includes('Face13') &&
+                canEditEvents &&
                 <AnnotationForm
                   panelIsDirty={panelIsDirty}
                   setPanelIsDirty={setPanelIsDirty}
@@ -1589,12 +1591,12 @@ const SeriesRenderer: FunctionComponent<CProps> = ({
               }
               {
                 rightPanel === 'eventList' &&
-                <EventManager canEdit={chunksURL[0].includes('Face13')} />
+                <EventManager canEdit={canEditEvents} />
               }
               {
                 rightPanel === 'hedEndorsement' &&
                 <HEDEndorsement
-                  canEndorse={chunksURL[0].includes('Face13')}
+                  canEndorse={canEditEvents}
                   pressedKey={pressedKey}
                 />
               }

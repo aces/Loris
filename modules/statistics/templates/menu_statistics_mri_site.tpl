@@ -13,8 +13,8 @@
 <h2>{$SiteName} MRI Integrity Statistics</h2>
 <table class="fancytable" width="100%">
     <tr>
-        <th width="10%">Issue type</th>
-        <th colspan="{$NumVisitLabels}" width="80%">Incomplete Entries</th>
+        <th width="10%">{dgettext('statistics', 'Issue type')}</th>
+        <th colspan="{$NumVisitLabels}" width="80%">{dgettext('statistics', 'Incomplete Entries')}</th>
     </tr>
     <tr>
         <th>&nbsp;</th>

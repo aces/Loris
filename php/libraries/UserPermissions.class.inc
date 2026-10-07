@@ -341,8 +341,21 @@ class UserPermissions
             if (!empty($perm['moduleID'])) {
                 $newDesc = $modules[$perm['moduleID']]->getLongName() . ": ";
             }
-            $newDesc .= empty($perm['action']) ? "" : $perm['action'] . " ";
-            $newDesc .= $perm['description'];
+            $translatedAction = '';
+            if (!empty($perm['action'])) {
+                $actions           = explode('/', $perm['action']);
+                $translatedActions = [];
+                foreach ($actions as $action) {
+                    $translatedActions[] = dgettext(
+                        'permissions_action',
+                        trim($action)
+                    );
+                }
+                $translatedAction = implode('/', $translatedActions);
+            }
+
+            $newDesc .= empty($translatedAction) ? "" : $translatedAction . " ";
+            $newDesc .= dgettext('permissions', $perm['description']);
 
             $results[$key]          = $perm;
             $results[$key]['label'] = $newDesc;

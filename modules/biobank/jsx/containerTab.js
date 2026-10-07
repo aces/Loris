@@ -53,7 +53,7 @@ class ContainerTab extends Component {
    */
   mapContainerColumns(column, value) {
     switch (column) {
-    case this.props.t('Type', {ns: 'biobank'}):
+    case this.props.t('Type', {ns: 'loris'}):
       return this.props.options.container.types[value].label;
     case this.props.t('Status', {ns: 'biobank'}):
       return this.props.options.container.stati[value].label;
@@ -151,7 +151,7 @@ class ContainerTab extends Component {
         name: 'barcode',
         type: 'text',
       }},
-      {label: t('Type', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Type', {ns: 'loris'}), show: true, filter: {
         name: 'type',
         type: 'select',
         options: containerTypesNonPrimary,

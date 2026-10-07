@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import FilterableDataTable from 'jsx/FilterableDataTable';
 import Loader from 'jsx/Loader';
+import {withTranslation} from 'react-i18next';
 
 /**
  * SNP Component.
@@ -97,6 +98,7 @@ class SNP extends Component {
    * @return {DOMRect}
    */
   render() {
+    const {t} = this.props;
     // Waiting for async data to load.
     if (!this.state.isLoaded) {
       return <Loader/>;
@@ -108,7 +110,7 @@ class SNP extends Component {
     // The fields configured for display/hide.
     let fields = [
       {
-        label: 'Site',
+        label: t('Site', {ns: 'loris', count: 1}),
         show: false,
         filter: {
           name: 'Site',
@@ -117,7 +119,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'DCCID',
+        label: t('DCCID', {ns: 'loris'}),
         show: false,
         filter: {
           name: 'DCCID',
@@ -125,7 +127,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'PSCID',
+        label: t('PSCID', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'PSCID',
@@ -133,7 +135,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Sex',
+        label: t('Sex', {ns: 'loris'}),
         show: true,
         filter: {
           name: 'Sex',
@@ -142,7 +144,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Cohort',
+        label: t('Cohort', {ns: 'loris', count: 1}),
         show: true,
         filter: {
           name: 'Cohort',
@@ -151,11 +153,11 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Date of Birth',
+        label: t('Date of Birth', {ns: 'loris'}),
         show: false,
       },
       {
-        label: 'External ID',
+        label: t('External ID', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'External ID',
@@ -163,7 +165,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Build',
+        label: t('Build', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Build',
@@ -174,7 +176,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Strand',
+        label: t('Strand', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Strand',
@@ -186,19 +188,19 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Start Loc',
+        label: t('Start Loc', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'End Loc',
+        label: t('End Loc', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Gene',
+        label: t('Gene', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Gene Name',
+        label: t('Gene Name', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Gene Name',
@@ -206,7 +208,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Platform',
+        label: t('Platform', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Platform',
@@ -215,7 +217,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'rsID',
+        label: t('rsID', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'rsID',
@@ -223,7 +225,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'SNP Name',
+        label: t('SNP Name', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'SNP Name',
@@ -231,7 +233,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Description',
+        label: t('Description', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Description',
@@ -239,7 +241,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'External Source',
+        label: t('External Source', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'External Source',
@@ -247,7 +249,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Allele A',
+        label: t('Allele A', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Allele A',
@@ -261,7 +263,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Allele B',
+        label: t('Allele B', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Allele B',
@@ -275,7 +277,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Reference Base',
+        label: t('Reference Base', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Reference Base',
@@ -289,7 +291,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Minor Allele',
+        label: t('Minor Allele', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Minor Allele',
@@ -303,29 +305,29 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Array Report',
+        label: t('Array Report', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Array Report',
           type: 'select',
           options: {
-            Abnormal: 'Abnormal',
-            Normal: 'Normal',
-            Pending: 'Pending',
-            Uncertain: 'Uncertain',
+            Abnormal: t('Abnormal', {ns: 'genomic_browser'}),
+            Normal: t('Normal', {ns: 'genomic_browser'}),
+            Pending: t('Pending', {ns: 'loris'}),
+            Uncertain: t('Uncertain', {ns: 'genomic_browser'}),
           },
         },
       },
       {
-        label: 'Markers',
+        label: t('Markers', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Validation Method',
+        label: t('Validation Method', {ns: 'genomic_browser'}),
         show: false,
       },
       {
-        label: 'Validated',
+        label: t('Validated', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Validated',
@@ -337,22 +339,22 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Function Prediction',
+        label: t('Function Prediction', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Function Prediction',
           type: 'select',
           options: {
-            exonic: 'exonic',
-            ncRNAexonic: 'ncRNAexonic',
-            splicing: 'splicing',
-            UTR3: 'UTR3',
-            UTR5: 'UTR5',
+            exonic: t('exonic', {ns: 'genomic_browser'}),
+            ncRNAexonic: t('ncRNAexonic', {ns: 'genomic_browser'}),
+            splicing: t('splicing', {ns: 'genomic_browser'}),
+            UTR3: t('UTR3', {ns: 'genomic_browser'}),
+            UTR5: t('UTR5', {ns: 'genomic_browser'}),
           },
         },
       },
       {
-        label: 'Damaging',
+        label: t('Damaging', {ns: 'genomic_browser'}),
         show: true,
         filter: {
           name: 'Damaging',
@@ -364,11 +366,11 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Genotype Quality',
+        label: t('Genotype Quality', {ns: 'genomic_browser'}),
         show: true,
       },
       {
-        label: 'Exonic Function',
+        label: t('Exonic Function', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Exonic Function',
@@ -376,7 +378,7 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Genomic Range',
+        label: t('Genomic Range', {ns: 'genomic_browser'}),
         show: false,
         filter: {
           name: 'Genomic Range',
@@ -404,6 +406,7 @@ SNP.propTypes = {
   display: PropTypes.bool,
   data: PropTypes.object,
   baseURL: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
 };
 
-export default SNP;
+export default withTranslation(['genomic_browser', 'loris'])(SNP);

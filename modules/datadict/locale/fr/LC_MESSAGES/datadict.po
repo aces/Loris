@@ -18,10 +18,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.8\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #, fuzzy
 msgid "Data Dictionary (Legacy)"
-msgstr "Dictionnaire de données (hérité)"
+msgstr "Dictionnaire de données (Ancienne version)"
 
 msgid "Source From"
 msgstr "Source provenant de"

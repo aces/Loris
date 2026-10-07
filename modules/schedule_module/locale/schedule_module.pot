@@ -30,9 +30,6 @@ msgstr ""
 msgid "Appointment Type"
 msgstr ""
 
-msgid "AppointmentTypeName"
-msgstr ""
-
 msgid "Edit"
 msgstr ""
 

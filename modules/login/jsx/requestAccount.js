@@ -175,7 +175,12 @@ class RequestAccount extends Component {
         <div className='g-recaptcha'
           data-sitekey={this.state.form.captcha}/>
         <span id='helpBlock' className='help-block'>
-          <b className='text-danger'>Please complete the reCaptcha!</b>
+          <b className='text-danger'>{
+            this.props.t(
+              'Please complete the reCaptcha!',
+              {ns: 'login'}
+            )
+          }</b>
         </span>
       </div>
     ) : null;

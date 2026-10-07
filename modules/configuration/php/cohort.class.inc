@@ -28,6 +28,13 @@ namespace LORIS\configuration;
 class Cohort extends \NDB_Form
 {
     /**
+     * Render the cohort manager with React instead of Smarty.
+     *
+     * @var bool
+     */
+    public $skipTemplate = true;
+
+    /**
      * Determine whether the user has access to configure cohorts
      *
      * @param \User $user The user whose access is being checked
@@ -61,8 +68,8 @@ class Cohort extends \NDB_Form
 
         $this->tpl_data['useEDCOptions']
             = [
-                '1' => 'Yes',
-                '0' => 'No',
+                '1' => dgettext('loris', 'Yes'),
+                '0' => dgettext('loris', 'No'),
             ];
         $this->tpl_data['useDoBOptions']
             = [
@@ -72,8 +79,44 @@ class Cohort extends \NDB_Form
 
         $this->tpl_data['WindowDifferenceOptions']
             = [
-                'battery' => 'Closest Test Battery',
-                'optimal' => 'Optimal Visit Window for Visit Label',
+                'battery' => dgettext('configuration', 'Closest Test Battery'),
+                'optimal' => dgettext(
+                    'configuration',
+                    'Optimal Visit Window for Visit Label'
+                ),
             ];
+    }
+
+    /**
+     * Return the cohort manager data for the React page.
+     *
+     * @return array<string, mixed>
+     */
+    #[\Override]
+    function toArray(): array
+    {
+        return [
+            'cohorts'                 => $this->tpl_data['cohorts'] ?? [],
+            'useEDCOptions'           => $this->tpl_data['useEDCOptions'] ?? [],
+            'windowDifferenceOptions' =>
+                $this->tpl_data['WindowDifferenceOptions'] ?? [],
+        ];
+    }
+
+    /**
+     * Add the React entry point for the cohort manager.
+     *
+     * @return array<string> JavaScript dependencies
+     */
+    #[\Override]
+    function getJSDependencies(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . '/configuration/js/formCohort.js']
+        );
     }
 }

@@ -10,8 +10,18 @@
 
 ## Permissions
 
-- Go into /user_accounts/ and select the following permission
+The following permissions are required for the page to load:
+
+- `conflict_resolver` (Conflict Resolver: Resolve Conflicts)
+- At least one of `data_dict_view` (Data Dictionary: View Parameter Type Descriptions) or `data_dict_edit` (Data Dictionary: Edit Parameter Type Descriptions)
+- `view_instrument_data` (Instruments: View Data)
+
+### Conflict Resolver permission
+
+- Go into /user_accounts/ and select **all three** required permissions:
   - [x] Conflict Resolver: Resolve Conflicts
+  - [x] Instruments: View Data
+  - [x] Data Dictionary: View Parameter Type Descriptions (or Data Dictionary: Edit Parameter Type Descriptions)
 - Assert that the 'Clinical/Conflict Resolver' menu item appears
 - Assert that clicking on this loads the page `/conflict_resolver`
 - Assert that, when unchecked, the following permission hides the menu item
@@ -19,10 +29,24 @@
   - try the URL: `/conflict_resolver`, and assert that the page is blocked with a 403 error
   - Check this box again
     - [x] Conflict Resolver: Resolve Conflicts
-- Uncheck **both** of the following permissions
-  - [ ] Dictionary: Edit Parameter Type Descriptions
-  - [ ] Dictionary: View Parameter Type Descriptions
-  - Assert that access to the page is blocked, drawing a 403 error.
+
+### Dictionary permissions
+
+- Having only `conflict_resolver` and `view_instrument_data` but neither `data_dict_view` nor `data_dict_edit` should block the page
+  - Uncheck **both** of the following permissions
+    - [ ] Data Dictionary: View Parameter Type Descriptions
+    - [ ] Data Dictionary: Edit Parameter Type Descriptions
+  - Assert that access to the page is blocked, drawing a 403 error
+  - Re-check at least one of the Dictionary permissions
+
+### Instruments: View Data
+
+- Having only `conflict_resolver` and a Dictionary permission but **not** `view_instrument_data` should block the page
+  - Uncheck the following permission
+    - [ ] Instruments: View Data
+  - Assert that access to the page is blocked, drawing a 403 error
+  - Check this box again
+    - [x] Instruments: View Data
 
 ## Unresolved Conflicts
 

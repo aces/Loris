@@ -1,5 +1,18 @@
 <?php declare(strict_types=1);
 
+/**
+ * Issue Tracker edit endpoint.
+ *
+ * PHP Version 8
+ *
+ * @category Loris
+ * @package  Issue_Tracker
+ * @author   Caitrin Armstrong <caitrin.mcin@gmail.com>
+ *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
 namespace LORIS\issue_tracker;
 
 use LORIS\issue_tracker\Provisioners\AttachmentProvisioner;
@@ -57,15 +70,6 @@ class Edit extends \NDB_Page implements ETagCalculator
 
         $user = $request->getAttribute('user');
         $db   = $this->loris->getDatabaseConnection();
-
-        // Check if batch mode is enabled
-        $batch_mode = filter_input(INPUT_GET, 'batch', FILTER_VALIDATE_BOOLEAN);
-
-        if ($batch_mode) {
-            // Fetch all issues
-            $allIssues = $this->_getAllIssues($user);
-            return new \LORIS\Http\Response\JsonResponse($allIssues);
-        }
 
         // get field options
         $sites = Issue_Tracker::getSites(false, true);
@@ -158,7 +162,10 @@ class Edit extends \NDB_Page implements ETagCalculator
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
-                $categories[$categoryName] = $categoryName;
+                $categories[$categoryName] = dgettext(
+                    "issues_categories",
+                    $categoryName,
+                );
             }
         }
 
@@ -307,226 +314,6 @@ class Edit extends \NDB_Page implements ETagCalculator
     }
 
     /**
-     * Fetches all issues including related data and top comments.
-     *
-     * @param \User $user The current user.
-     *
-     * @return array Contains issues, assignees, and other watchers information.
-     */
-    private function _getAllIssues(\User $user): array
-    {
-        $db            = $this->loris->getDatabaseConnection();
-        $assignees     = [];
-        $otherWatchers = [];
-        $centerIDsArray = [];
-        $dccID          = null;
-        $centerPlaceholders = '';
-
-        // Initialize variables based on permissions
-        if (!$user->hasPermission('issue_tracker_all_issue')) {
-            $centerIDsArray = array_map(
-                fn($centerID) => (int)$centerID->__toString(),
-                $user->getCenterIDs()
-            );
-
-            if (empty($centerIDsArray)) {
-                return [
-                    'issues'        => [],
-                    'assignees'     => [],
-                    'otherWatchers' => [],
-                ];
-            }
-
-            // Fetch DCC ID
-            $dccRow = $db->pselectOne(
-                "SELECT CenterID FROM psc WHERE Name = :name",
-                ['name' => 'DCC']
-            );
-            $dccID  = $dccRow ? (int)$dccRow: null;
-
-            // Prepare placeholders
-            $centerPlaceholders = implode(
-                ',',
-                array_fill(0, count($centerIDsArray), '?')
-            );
-        }
-
-        // Prepare assignee query
-        if ($user->hasPermission('issue_tracker_all_issue')) {
-            $assigneeQuery  = "
-                SELECT Real_name, UserID, Active
-                FROM users
-                WHERE Pending_approval = 'N'
-            ";
-            $assigneeParams = [];
-        } else {
-            $assigneeQuery  = "
-                SELECT DISTINCT u.Real_name, u.UserID, u.Active
-                FROM users u
-                INNER JOIN user_psc_rel upr ON upr.UserID = u.ID
-                WHERE (upr.CenterID IN ($centerPlaceholders) OR upr.CenterID = ?)
-                AND u.Pending_approval = 'N'
-            ";
-            $assigneeParams = array_merge($centerIDsArray, [$dccID]);
-        }
-
-        // Fetch assignees
-        $assigneeRows = iterator_to_array(
-            $db->pselect($assigneeQuery, $assigneeParams)
-        );
-
-        foreach ($assigneeRows as $a_row) {
-            if (!empty($a_row['UserID'])) {
-                $assignees[$a_row['UserID']] = $this->formatUserInformation(
-                    $a_row['UserID']
-                );
-            }
-        }
-
-        // Fetch potential watchers
-        $currentUsername = $user->getUsername();
-
-        $potentialWatchers = iterator_to_array(
-            $db->pselect(
-                "SELECT Real_name, UserID
-                FROM users
-                WHERE Active = 'Y' AND Pending_approval = 'N'",
-                []
-            )
-        );
-
-        foreach ($potentialWatchers as $w_row) {
-            if (!empty($w_row['UserID']) && $w_row['UserID'] != $currentUsername) {
-                $otherWatchers[$w_row['UserID']] = $this->formatUserInformation(
-                    $w_row['UserID']
-                );
-            }
-        }
-
-        // Fetch issues
-        $baseQuery = "
-            SELECT i.*, c.PSCID, s.Visit_label AS visitLabel
-            FROM issues AS i
-            LEFT JOIN candidate c ON i.CandidateID = c.ID
-            LEFT JOIN session s ON i.sessionID = s.ID
-        ";
-
-        $issueParams = [];
-        if (!$user->hasPermission('issue_tracker_all_issue')) {
-            $baseQuery  .= " WHERE i.centerID IN ($centerPlaceholders)";
-            $issueParams = $centerIDsArray;
-        }
-
-        $baseQuery .= " ORDER BY i.issueID DESC";
-
-        $issues = iterator_to_array($db->pselect($baseQuery, $issueParams));
-
-        if (empty($issues)) {
-            return [
-                'issues'        => [],
-                'assignees'     => $assignees,
-                'otherWatchers' => $otherWatchers,
-            ];
-        }
-
-        // Get all issue IDs
-        $issueIDs = array_column($issues, 'issueID');
-
-        // Fetch watchers for these issues
-        $watchingPlaceholders = implode(',', array_fill(0, count($issueIDs), '?'));
-        $watchersRows         = iterator_to_array(
-            $db->pselect(
-                "SELECT issueID, userID
-                FROM issues_watching
-                WHERE issueID IN ($watchingPlaceholders)",
-                $issueIDs
-            )
-        );
-
-        // Organize watchers by issue
-        $othersWatchingByIssue = [];
-        foreach ($watchersRows as $row) {
-            if (!empty($row['userID'])) {
-                $issueID = (int)$row['issueID'];
-                $othersWatchingByIssue[$issueID][] = $row['userID'];
-            }
-        }
-
-        // Format the issues data
-        foreach ($issues as &$issue) {
-            $issueID = (int)$issue['issueID'];
-
-            // Set watching status
-            $isWatching        = in_array(
-                $currentUsername,
-                $othersWatchingByIssue[$issueID] ?? []
-            );
-            $issue['watching'] = $isWatching ? 'Yes' : 'No';
-
-            $assigneeUserID = $issue['assignee'] ?? null;
-
-            // Exclude assignee from othersWatching
-            if (!empty($assigneeUserID) && isset($othersWatchingByIssue[$issueID])) {
-                $filteredWatchers = array_filter(
-                    $othersWatchingByIssue[$issueID],
-                    fn($watcherUserID) => $watcherUserID !== $assigneeUserID
-                );
-                $othersWatchingByIssue[$issueID] = array_values($filteredWatchers);
-            }
-
-            $issue['othersWatching'] = $othersWatchingByIssue[$issueID] ?? [];
-
-            $issue['reporter']      = !empty($issue['reporter'])
-                ? $this->formatUserInformation($issue['reporter'])
-                : null;
-            $issue['lastUpdatedBy'] = !empty($issue['lastUpdatedBy'])
-                ? $this->formatUserInformation($issue['lastUpdatedBy'])
-                : null;
-
-            $issue['topComments'] = $this->getTopComments($issueID);
-            unset($issue['CandidateID']);
-        }
-
-        return [
-            'issues'        => $issues,
-            'assignees'     => $assignees,
-            'otherWatchers' => $otherWatchers,
-        ];
-    }
-
-    /**
-     * Fetches the top 3 most recent comments for an issue.
-     *
-     * @param int $issueID The ID of the issue.
-     *
-     * @return array Top 3 comments with comment text, date, and author.
-     */
-    function getTopComments(int $issueID): array
-    {
-        $db = $this->loris->getDatabaseConnection();
-
-        $comments = $db->pselect(
-            "SELECT issueComment, dateAdded, addedBy
-             FROM issues_comments
-             WHERE issueID = :issueID
-             ORDER BY dateAdded DESC
-             LIMIT 3",
-            ['issueID' => $issueID]
-        );
-
-        $topComments = [];
-        foreach ($comments as $comment) {
-            $topComments[] = [
-                'issueComment' => $comment['issueComment'],
-                'dateAdded'    => $comment['dateAdded'],
-                'addedBy'      => $this->formatUserInformation($comment['addedBy']),
-            ];
-        }
-
-        return $topComments;
-    }
-
-    /**
      * If issueID is passed retrieves issue data from database,
      * otherwise return empty issue data object
      *
@@ -648,6 +435,13 @@ class Edit extends \NDB_Page implements ETagCalculator
                 $comment['newValue'] = $visitLabel;
                 $comment['fieldChanged'] = 'Visit Label';
             } else if ($comment['fieldChanged'] === 'assignee'
+                && $comment['newValue'] === ''
+            ) {
+                $comment['newValue'] = dgettext(
+                    'issue_tracker',
+                    'Unassigned'
+                );
+            } else if ($comment['fieldChanged'] === 'assignee'
                 || $comment['fieldChanged'] === 'lastUpdatedBy'
             ) {
                 $comment['newValue']
@@ -739,7 +533,7 @@ class Edit extends \NDB_Page implements ETagCalculator
         $values = $request->getParsedBody();
         if (!is_array($values)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                dgettext('issue_tracker', 'Invalid request')
             );
         }
 
@@ -771,7 +565,10 @@ class Edit extends \NDB_Page implements ETagCalculator
             && $values['reporter'] === $user->getUserName()))
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'User does not have permission to edit issues.'
+                dgettext(
+                    'issue_tracker',
+                    'User does not have permission to edit issues.'
+                )
             );
         }
 
@@ -856,142 +653,151 @@ class Edit extends \NDB_Page implements ETagCalculator
             $user
         );
 
-        if (!empty($issueID)) {
-            try {
-                $db->unsafeUpdate('issues', $issueValues, ['issueID' => $issueID]);
-            } catch (\Exception $ex) {
-                return new \LORIS\Http\Response\JSON\InternalServerError();
+        try {
+            $db->beginTransaction();
+
+            if (!empty($issueID)) {
+                try {
+                    $db->unsafeUpdate(
+                        'issues',
+                        $issueValues,
+                        ['issueID' => $issueID]
+                    );
+                } catch (\Exception $ex) {
+                    return new \LORIS\Http\Response\JSON\InternalServerError();
+                }
+            } else {
+                $issueValues['reporter']    = $user->getUsername();
+                $issueValues['dateCreated'] = date('Y-m-d H:i:s');
+                $db->unsafeInsert('issues', $issueValues);
+                $issueID = intval($db->getLastInsertId());
             }
-        } else {
-            $issueValues['reporter']    = $user->getUsername();
-            $issueValues['dateCreated'] = date('Y-m-d H:i:s');
-            $db->unsafeInsert('issues', $issueValues);
-            $issueID = intval($db->getLastInsertId());
-        }
 
-        // convert the aspect of 'lastUpdatedBy' to Fullname
-        // once the db has registered the username (userID)
-        $issueValues['lastUpdatedBy']
-            = $this->formatUserInformation($user->getUserName());
+            $this->updateHistory($historyValues, $issueID, $user);
+            $this->updateComments($values['comment'], $issueID, $user);
 
-        $this->updateHistory($historyValues, $issueID, $user);
-        $this->updateComments($values['comment'], $issueID, $user);
-
-        // Attachment for new issue.
-        $uploadedFiles = $request->getUploadedFiles();
-        if (!empty($uploadedFiles)) {
-            $attachment = new \LORIS\issue_tracker\UploadHelper();
-            $success    = $attachment->setupUploading(
-                $user,
-                $uploadedFiles,
-                [
-                    'fileDescription' => '',
-                    'issueID'         => $issueID,
-                ]
-            );
-            if (!$success) {
-                $this->logger->log(
-                    \Psr\Log\LogLevel::ERROR,
-                    $attachment->errorMessage
+            // Attachment for new issue.
+            $uploadedFiles = $request->getUploadedFiles();
+            if (!empty($uploadedFiles)) {
+                $attachment = new \LORIS\issue_tracker\UploadHelper();
+                $success    = $attachment->setupUploading(
+                    $user,
+                    $uploadedFiles,
+                    [
+                        'fileDescription' => '',
+                        'issueID'         => $issueID,
+                    ]
                 );
-                return new \LORIS\Http\Response\JSON\Conflict(
-                    $attachment->errorMessage
-                );
-            }
-        }
-
-        // Get users watching all issues
-        $usersWatching = $db->pselectCol(
-            "SELECT u.UserID
-                FROM users_notifications_rel unr
-                JOIN users u ON unr.user_id=u.ID
-                WHERE unr.module_id=
-                (SELECT id FROM notification_modules
-                    WHERE module_name='issue_tracker'
-                    AND operation_type='create/edit'
-                )",
-            []
-        );
-        // If the assignee is watching, add them
-        if ($values['watching'] == 'Yes'
-            && $issueValues['assignee'] == $user->getUsername()
-        ) {
-            $usersWatching[] = $issueValues['assignee'];
-        }
-        // Add new watchers (if any)
-        if (isset($values['othersWatching'])) {
-            $usersWatching = array_unique(
-                array_merge(
-                    $usersWatching,
-                    explode(',', $values['othersWatching'] ?? '')
-                )
-            );
-        }
-
-        // Adding others from multiselect to watching table.
-        if (isset($usersWatching)) {
-            // Clear the list of current watchers
-            $db->delete(
-                'issues_watching',
-                ['issueID' => $issueID]
-            );
-
-            foreach ($usersWatching as $userWatching) {
-                if ($userWatching) {
-                    $db->replace(
-                        'issues_watching',
-                        [
-                            'userID'  => $userWatching,
-                            'issueID' => $issueID,
-                        ]
+                if (!$success) {
+                    $db->rollBack();
+                    $this->logger->log(
+                        \Psr\Log\LogLevel::ERROR,
+                        $attachment->errorMessage
+                    );
+                    return new \LORIS\Http\Response\JSON\Conflict(
+                        $attachment->errorMessage
                     );
                 }
             }
+
+            // Get users watching all issues
+            $usersWatching = $db->pselectCol(
+                "SELECT u.UserID
+                    FROM users_notifications_rel unr
+                    JOIN users u ON unr.user_id=u.ID
+                    WHERE unr.module_id=
+                    (SELECT id FROM notification_modules
+                        WHERE module_name='issue_tracker'
+                        AND operation_type='create/edit'
+                    )",
+                []
+            );
+            // If the assignee is watching, add them
+            if ($values['watching'] == 'Yes'
+                && $issueValues['assignee'] == $user->getUsername()
+            ) {
+                $usersWatching[] = $issueValues['assignee'];
+            }
+            // Add new watchers (if any)
+            if (isset($values['othersWatching'])) {
+                $usersWatching = array_unique(
+                    array_merge(
+                        $usersWatching,
+                        explode(',', $values['othersWatching'] ?? '')
+                    )
+                );
+            }
+
+            // Adding others from multiselect to watching table.
+            if (isset($usersWatching)) {
+                // Clear the list of current watchers
+                $db->delete(
+                    'issues_watching',
+                    ['issueID' => $issueID]
+                );
+
+                foreach ($usersWatching as $userWatching) {
+                    if ($userWatching) {
+                        $db->replace(
+                            'issues_watching',
+                            [
+                                'userID'  => $userWatching,
+                                'issueID' => $issueID,
+                            ]
+                        );
+                    }
+                }
+            }
+
+            // Add editor to the watching table unless they don't want to be added.
+            if (isset($values['watching'])
+                && $values['watching'] == 'Yes'
+                && (!isset($issueValues['assignee'])
+                || $issueValues['assignee'] !== $user->getUsername())
+            ) {
+                $nowWatching = [
+                    'userID'  => $user->getUsername(),
+                    'issueID' => $issueID,
+                ];
+                $db->replace('issues_watching', $nowWatching);
+            } else if (isset($values['watching'])
+                && $values['watching'] == 'No'
+                && (!isset($issueValues['assignee'])
+                || $issueValues['assignee'] !== $user->getUsername())
+            ) {
+                $db->delete(
+                    'issues_watching',
+                    [
+                        'issueID' => $issueID,
+                        'userID'  => $user->getUsername(),
+                    ]
+                );
+            }
+            $flag           = 'false';
+            $assigneeString = '';
+            // Adding new assignee to watching
+            if (isset($issueValues['assignee'])
+                && $issueValues['assignee'] !== $assignee
+            ) {
+                $nowWatching = [
+                    'userID'  => $issueValues['assignee'],
+                    'issueID' => $issueID
+                ];
+                $db->replace('issues_watching', $nowWatching);
+                // sending email
+                $assigneeString = $issueValues['assignee'];
+            } else if (isset($issueValues['assignee'])
+                && $issueValues['assignee'] === $assignee
+            ) {
+                $flag           = 'true';
+                $assigneeString = $issueValues['assignee'];
+            }
+            $db->commit();
+        } catch (\DatabaseException $ex) {
+            $db->rollBack();
+            return new \LORIS\Http\Response\JSON\InternalServerError();
         }
 
-        // Add editor to the watching table unless they don't want to be added.
-        if (isset($values['watching'])
-            && $values['watching'] == 'Yes'
-            && (!isset($issueValues['assignee'])
-            || $issueValues['assignee'] !== $user->getUsername())
-        ) {
-            $nowWatching = [
-                'userID'  => $user->getUsername(),
-                'issueID' => $issueID,
-            ];
-            $db->replace('issues_watching', $nowWatching);
-        } else if (isset($values['watching'])
-            && $values['watching'] == 'No'
-            && (!isset($issueValues['assignee'])
-            || $issueValues['assignee'] !== $user->getUsername())
-        ) {
-            $db->delete(
-                'issues_watching',
-                [
-                    'issueID' => $issueID,
-                    'userID'  => $user->getUsername(),
-                ]
-            );
-        }
-        $flag           = 'false';
-        $assigneeString = '';
-        // Adding new assignee to watching
-        if (isset($issueValues['assignee'])
-            && $issueValues['assignee'] !== $assignee
-        ) {
-            $nowWatching = [
-                'userID'  => $issueValues['assignee'],
-                'issueID' => $issueID
-            ];
-            $db->replace('issues_watching', $nowWatching);
-            // sending email
-            $assigneeString = $issueValues['assignee'];
-        } else if (isset($issueValues['assignee'])
-            && $issueValues['assignee'] === $assignee
-        ) {
-            $flag           = 'true';
-            $assigneeString = $issueValues['assignee'];
-        }
         $this->emailUser(
             $issueID,
             $assigneeString,
@@ -1188,7 +994,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'PSCID and Center ID do not match a valid session!'
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID and Center ID do not match a valid session!'
+                    dgettext(
+                        'issue_tracker',
+                        'PSCID and Center ID do not match a valid session!'
+                    )
                 );
             }
         }
@@ -1215,7 +1024,11 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'PSCID and Visit Label do not match a valid candidate session!'
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID and Visit Label do not match a valid candidate session!'
+                    dgettext(
+                        'issue_tracker',
+                        'PSCID and Visit Label do not match a valid candidate'
+                        . ' session!'
+                    )
                 );
             }
             return $result;
@@ -1240,7 +1053,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                     'PSCID does not match a valid candidate!'
                 );
                 return new \LORIS\Http\Response\JSON\Conflict(
-                    'PSCID does not match a valid candidate!'
+                    dgettext(
+                        'issue_tracker',
+                        'PSCID does not match a valid candidate!'
+                    )
                 );
             }
 
@@ -1254,7 +1070,10 @@ class Edit extends \NDB_Page implements ETagCalculator
                 'Visit Label must be accompanied by a PSCID'
             );
             return new \LORIS\Http\Response\JSON\Conflict(
-                'Visit Label must be accompanied by a PSCID'
+                dgettext(
+                    'issue_tracker',
+                    'Visit Label must be accompanied by a PSCID'
+                )
             );
         }
         return $result;

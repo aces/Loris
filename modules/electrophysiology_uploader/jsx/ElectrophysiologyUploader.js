@@ -59,11 +59,6 @@ function ElectrophysiologyUploader(props) {
     });
   };
 
-  const refreshForm = () => {
-    setData({});
-    fetchData();
-  };
-
   if (!isLoaded) {
     return <Loader />;
   }
@@ -96,7 +91,7 @@ function ElectrophysiologyUploader(props) {
         <TabPane TabId={tabList[1].id}>
           <UploadForm
             uploadURL={`${DataURL}/upload`}
-            refreshPage={refreshForm}
+            browseURL={`${DataURL}#browse`}
             t={t}
           />
         </TabPane>

@@ -9,6 +9,9 @@ import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
 import hiStrings from '../locale/hi/LC_MESSAGES/survey_accounts.json';
+import jaStrings from '../locale/ja/LC_MESSAGES/survey_accounts.json';
+import frStrings from '../locale/fr/LC_MESSAGES/survey_accounts.json';
+import zhStrings from '../locale/zh/LC_MESSAGES/survey_accounts.json';
 /**
  * Survey Account React Component
  */
@@ -93,7 +96,7 @@ class SurveyAccountsIndex extends Component {
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
       return <h3>{t(
-        'An error occured while loading the page.',
+        'An error occurred while loading the page.',
         {ns: 'loris'}
       )}</h3>;
     }
@@ -123,7 +126,9 @@ class SurveyAccountsIndex extends Component {
         },
       },
       {
-        label: t('Instrument', {ns: 'loris', count: 1}), show: true, filter: {
+        label: t('Instrument', {ns: 'loris', count: 1}),
+        show: true,
+        filter: {
           name: 'instrument',
           type: 'select',
           options: options.instruments,
@@ -139,7 +144,10 @@ class SurveyAccountsIndex extends Component {
       },
     ];
     const addSurvey = () => {
-      location.href = '/survey_accounts/addSurvey/';
+      const params = new URLSearchParams(window.location.search);
+      const lang = params.get('lang');
+      const query = lang ? `?lang=${encodeURIComponent(lang)}` : '';
+      location.href = `${loris.BaseURL}/survey_accounts/addSurvey/${query}`;
     };
     const actions = [
       {label: t('Add Survey', {ns: 'survey_accounts'}), action: addSurvey},
@@ -167,8 +175,9 @@ SurveyAccountsIndex.propTypes = {
 window.addEventListener(
   'load', () => {
     i18n.addResourceBundle('hi', 'survey_accounts', hiStrings);
-    i18n.addResourceBundle('ja', 'survey_accounts', {});
-    i18n.addResourceBundle('zh', 'survey_accounts', {});
+    i18n.addResourceBundle('ja', 'survey_accounts', jaStrings);
+    i18n.addResourceBundle('fr', 'survey_accounts', frStrings);
+    i18n.addResourceBundle('zh', 'survey_accounts', zhStrings);
     const Index = withTranslation(
       ['survey_accounts']
     )(SurveyAccountsIndex);

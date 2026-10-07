@@ -107,7 +107,7 @@ class IssueTrackerIndex extends Component {
     const siteKey = t('Site', {ns: 'loris', count: 1});
     const pscidKey = t('PSCID', {ns: 'loris'});
     const visitLabelKey = t('Visit Label', {ns: 'loris'});
-    const sessionIDKey = t('Session ID', {ns: 'loris'});
+    const sessionIDKey = t('SessionID', {ns: 'loris'});
     const dccidKey = t('DCCID', {ns: 'loris'});
     const statusKey = t('Status', {ns: 'loris'});
     const categoryKey = t('Category', {ns: 'issue_tracker'});
@@ -165,11 +165,11 @@ class IssueTrackerIndex extends Component {
       break;
     case statusKey:
       // Display status values as-is (not translated)
-      result = <td>{cell}</td>;
+      result = <td>{t(cell, {ns: 'issue_tracker'})}</td>;
       break;
     case categoryKey:
       // Display category values as-is (not translated)
-      result = <td>{cell || ''}</td>;
+      result = <td>{t(cell, {ns: 'issues_categories'}) || ''}</td>;
       break;
     case siteKey:
       // if cell is an array containing all sites values
@@ -177,7 +177,7 @@ class IssueTrackerIndex extends Component {
         JSON.stringify(
           Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
       ) {
-        result = <td>All Sites</td>;
+        result = <td>{t('All Sites', {ns: 'issue_tracker'})}</td>;
       } else {
         result = <td>
           {cell.map((v) =>
@@ -223,7 +223,7 @@ class IssueTrackerIndex extends Component {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
+      return <h3>{t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 
@@ -295,7 +295,7 @@ class IssueTrackerIndex extends Component {
         type: 'date',
       }},
       {label: t('Last Update', {ns: 'issue_tracker'}), show: true},
-      {label: t('SessionID', {ns: 'issue_tracker'}), show: false},
+      {label: t('SessionID', {ns: 'loris'}), show: false},
       {label: t('DCCID', {ns: 'loris'}), show: false},
       {label: t('Watching', {ns: 'issue_tracker'}), show: false, filter: {
         name: 'watching',
@@ -346,8 +346,10 @@ class IssueTrackerIndex extends Component {
       },
     ];
 
+    const canBatchEdit = this.props.hasPermission('issue_tracker_all_issue');
+
     // Only display the Batch mode tab if user has the required permission
-    if (this.props.hasPermission('issue_tracker_all_issue')) {
+    if (canBatchEdit) {
       tabList.push({
         id: 'batch',
         label: t('Batch Edit', {ns: 'issue_tracker'}),
@@ -358,7 +360,7 @@ class IssueTrackerIndex extends Component {
       <Tabs
         tabs={tabList}
         defaultTab={this.state.activeTab}
-        updateURL={true}
+        updateURL={canBatchEdit}
         onTabChange={this.handleTabChange}
       >
         <TabPane TabId="browse">
@@ -371,18 +373,25 @@ class IssueTrackerIndex extends Component {
             getFormattedCell={this.formatColumn}
           />
         </TabPane>
-        <TabPane TabId="batch">
-          <IssueTrackerBatchMode
-            issues={this.state.data.data}
-            options={{
-              priorities: this.state.data.fieldOptions.priorities,
-              statuses: this.state.data.fieldOptions.statuses,
-              categories: this.state.data.fieldOptions.categories,
-              sites: this.state.data.fieldOptions.sites,
-              assignees: this.state.data.fieldOptions.assignees,
-            }}
-          />
-        </TabPane>
+        {canBatchEdit && (
+          <TabPane TabId="batch">
+            <IssueTrackerBatchMode
+              issues={this.state.data.data}
+              canCloseIssues={[
+                'issue_tracker_close_all_issue',
+                'issue_tracker_close_site_issue',
+                'issue_tracker_own_issue',
+              ].some((permission) => this.props.hasPermission(permission))}
+              options={{
+                priorities: this.state.data.fieldOptions.priorities,
+                statuses: this.state.data.fieldOptions.statuses,
+                categories: this.state.data.fieldOptions.categories,
+                sites: this.state.data.fieldOptions.sites,
+                assignees: this.state.data.fieldOptions.assignees,
+              }}
+            />
+          </TabPane>
+        )}
       </Tabs>
     );
   }

@@ -35,6 +35,15 @@ class PublicationIndex extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
+    this.formatColumn = this.formatColumn.bind(this);
+
+    this.dateFormatter = new Intl.DateTimeFormat(
+      loris.user.langpref.replace('_', '-'),
+      {
+        dateStyle: 'short',
+        timeZone: 'UTC',
+      }
+    );
   }
 
   /**
@@ -231,6 +240,7 @@ class PublicationIndex extends React.Component {
    * @return {JSX} - React markup for the component
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+    const {t} = this.props;
     // If a column if set as hidden, don't display it
     if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
@@ -243,6 +253,10 @@ class PublicationIndex extends React.Component {
           <a href={viewURL}>{cell}</a>
         </td>
       );
+    }
+    if (column === t('Date Proposed', {ns: 'publication'})
+      || column === t('Date Published', {ns: 'publication'})) {
+      return <td>{cell ? this.dateFormatter.format(new Date(cell)) : ''}</td>;
     }
     return <td>{cell}</td>;
   }
@@ -266,4 +280,3 @@ window.addEventListener('load', () => {
     </div>
   );
 });
-

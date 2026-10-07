@@ -163,7 +163,12 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
     private function _saveInstance(Test $test , $method=null)
     {
         if (!$this->user->hasPermission('battery_manager_edit')) {
-            return new \LORIS\Http\Response\JSON\Forbidden('Edit Permission Denied');
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                dgettext(
+                    "battery_manager",
+                    "Edit Permission Denied"
+                )
+            );
         }
 
         // validate instance
@@ -177,7 +182,10 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
         // check if instance is duplicate
         if ($this->_isDuplicate($test) && $method =='post') {
             return new \LORIS\Http\Response\JSON\Conflict(
-                'This Test already exists in the database'
+                dgettext(
+                    "battery_manager",
+                    "This Test already exists in the database"
+                )
             );
         }
 
@@ -186,7 +194,10 @@ class TestEndpoint extends \NDB_Page implements RequestHandlerInterface
             return new \LORIS\Http\Response\JSON\OK();
         } catch (\DatabaseException $e) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'Could not add entry to the Test Battery'
+                dgettext(
+                    "battery_manager",
+                    "Could not add entry to the Test Battery"
+                )
             );
         }
     }

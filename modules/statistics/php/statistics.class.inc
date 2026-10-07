@@ -49,13 +49,22 @@ class Statistics extends \NDB_Form
         parent::setup();
 
         $DB = $this->loris->getDatabaseConnection();
-        $this->tpl_data['StatsTabs'] = $DB->pselect(
-            "SELECT ModuleName, SubModuleName, Description
-                 FROM StatisticsTabs
-                 ORDER BY OrderNo",
-            []
+        $this->tpl_data['StatsTabs'] = iterator_to_array(
+            $DB->pselect(
+                "SELECT ModuleName, SubModuleName, Description
+                     FROM StatisticsTabs
+                     ORDER BY OrderNo",
+                []
+            )
         );
 
+        foreach ($this->tpl_data['StatsTabs'] as &$tab) {
+            $tab['Description'] = dgettext(
+                'StatisticsTabs',
+                $tab['Description']
+            );
+        }
+        unset($tab);
     }
 
     /**

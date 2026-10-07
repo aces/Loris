@@ -17,6 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "Examiner"
 msgstr "審査官"
@@ -84,3 +85,8 @@ msgstr "新しい日付"
 msgid "No changes have been made"
 msgstr "変更はありません"
 
+msgid "Permission denied: You cannot assign examiner to this Site."
+msgstr "権限がありません: このサイトに検査担当者を割り当てることはできません。"
+
+msgid "This examiner already exists."
+msgstr "この検査担当者は既に存在します。"

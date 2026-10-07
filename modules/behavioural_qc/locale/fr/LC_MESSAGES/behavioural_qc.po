@@ -66,3 +66,6 @@ msgstr "Nom du test"
 
 msgid "Feedback Status"
 msgstr "État de la rétroaction"
+
+msgid "Profile"
+msgstr "Profil"

@@ -22,24 +22,24 @@
     <div class="col-sm-4">
       {html_options id="DemographicInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
     </div>
-    <input type="checkbox" id="showVL" checked/> Show Visit Labels
-    <button onClick="updateDemographicInstrument()" class="btn btn-primary btn-small">Submit Query</button>
+    <input type="checkbox" id="showVL" checked/> {dgettext('statistics', 'Show Visit Labels')}
+    <button onClick="updateDemographicInstrument()" class="btn btn-primary btn-small">{dgettext('statistics', 'Submit Query')}</button>
   {/if}
 
   {if $Subsection=="mri" }
     <div class="col-sm-2">
       {html_options id="mri_type" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
     </div>
-    <input type="checkbox" id="showVL" checked/> Show Visit Labels
-    <button onClick="updateMRITable()" class="btn btn-primary btn-small">Submit Query</button>
+    <input type="checkbox" id="showVL" checked/>{dgettext('statistics', 'Show Visit Labels')}
+    <button onClick="updateMRITable()" class="btn btn-primary btn-small">{dgettext('statistics', 'Submit Query')}</button>
   {/if}
 
   {if $Subsection=="data_entry" }
     <div class="col-sm-2">
       {html_options id="BehaviouralInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
     </div>
-    <input type="checkbox" id="showVL" checked/> Show Visit Labels
-    <button onClick="updateBehaviouralInstrument()" class="btn btn-primary btn-small">Submit Query</button>
+    <input type="checkbox" id="showVL" checked/> {dgettext('statistics', 'Show Visit Labels')}
+    <button onClick="updateBehaviouralInstrument()" class="btn btn-primary btn-small">{dgettext('statistics', 'Submit Query')}</button>
   {/if}
 </div>
 <br>
@@ -48,15 +48,15 @@
   <table id="bigtable" class="data table table-primary table-bordered dynamictable">
     <thead>
     <tr>
-      <th rowspan="1" id="tpcol">Cohort</th>
+      <th rowspan="1" id="tpcol">{dngettext('loris', 'Cohort', 'Cohorts', 1)}</th>
       {assign var='colspan' value=count($Subcategories)}
       {foreach key=proj item=name from=$Cohorts}
         <th colspan="{$colspan}">{$name|capitalize}</th>
       {/foreach}
-      <th colspan="{$colspan}">Total Across Cohorts</th>
+      <th colspan="{$colspan}">{dgettext('statistics', 'Total Across Cohorts')}</th>
     </tr>
     <tr>
-      <th>Categories</th>
+      <th>{dgettext('statistics', 'Categories')}</th>
       {foreach key=proj item=name from=$Cohorts}
         {* Go through each category once, and add the total
            for each cohort *}
@@ -123,7 +123,7 @@
       </tr>
     {/foreach}
     <tr>
-      <td class="subtotal">Site Total Across All Visits</td>
+      <td class="subtotal">{dgettext('statistics', 'Site Total Across All Visits')}</td>
       {assign var="totalsitetotal" value="0"}
       {foreach key=proj item=value from=$Cohorts}
         {assign var="sitetotal" value="0"}
@@ -164,7 +164,7 @@
     {* Totals at the bottom *}
     <tr>
       {assign var='colspan' value=(count($Subcategories))*(count($Cohorts)+1)}
-      <th>Total</th>
+      <th>{dgettext('loris', 'Total')}</th>
       <th colspan="{$colspan}" width="50%"></th>
     </tr>
     {foreach from=$Visits item=visit key=title}
@@ -206,7 +206,7 @@
     {/foreach}
 
     <tr>
-      <td class="total">Grand Total</td>
+      <td class="total">{dgettext('statistics', 'Grand Total')}</td>
       {foreach key=proj item=name from=$Cohorts}
         {* Calculate the total instead of just looking it up, because of the potential
            for invalid visit labels throwing off the lookup, or some visits intentionally
@@ -248,7 +248,8 @@
 {elseif $Subsection=="mri"}
   {*The rendertable was set to false, which means there is a problem preventing the table from rendering. In the case of MRI, the problem is the ScanDone column not existing in the database*}
   <br><br>
-  <h2>Oops</h2>
-  <p> It seems like the scan type selected does not have a corresponding column in the mri_parameter_form table in the database.<br>
-    In order to display the statistics for the scan type, make sure the mri_parameter_form table contains a column in the exact format SCANTYPE_Scan_done</p>
+  <h2>{dgettext('statistics', 'Oops')}</h2>
+  <p> {dgettext('statistics', 'It seems like the scan type selected does not have a corresponding column in the mri_parameter_form table in the database.')}<br>
+    {dgettext('statistics', 'In order to display the statistics for the scan type, make sure the mri_parameter_form table contains a column in the exact format SCANTYPE_Scan_done')}
+  </p>
 {/if}

@@ -17,6 +17,8 @@ import SavedQueriesList from './react.savedqueries';
 import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
 import {getSessions} from '../js/arrayintersect';
+import lorisFetch from 'jslib/lorisFetch';
+import DQTClient from './DQTClient';
 
 /**
  * DataQueryApp component
@@ -32,6 +34,7 @@ class DataQueryApp extends Component {
    */
   constructor(props) {
     super(props);
+    this.client = new DQTClient();
     this.state = {
       displayType: 'Cross-sectional',
       fields: [],
@@ -137,19 +140,14 @@ class DataQueryApp extends Component {
       if (this.state.queryIDs.hasOwnProperty(key)) {
         for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
           let curRequest;
-          curRequest = Promise.resolve(
-            $.ajax(loris.BaseURL
-              + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
-              + encodeURIComponent(this.state.queryIDs[key][i])), {
-              data: {
-                DocID: this.state.queryIDs[key][i],
-              },
-              dataType: 'json',
-            }).then((value) => {
-            let queries = this.state.savedQueries;
-            queries[value._id] = value;
-            this.setState({savedQueries: queries});
-          });
+          curRequest = this.client.getDoc(
+            this.state.queryIDs[key][i]
+          )
+            .then((value) => {
+              let queries = this.state.savedQueries;
+              queries[value._id] = value;
+              this.setState({savedQueries: queries});
+            });
           promises.push(curRequest);
         }
       }
@@ -165,84 +163,47 @@ class DataQueryApp extends Component {
    * @param {function} callback
    */
   async handleProgressBarSetup(callback) {
-    const response = await fetch(
-      `${loris.BaseURL}/dqt/dqt_setup/?format=json`,
-      {credentials: 'same-origin', method: 'GET'}
-    );
-    const reader = await response.body.getReader();
-    const contentLength = await response.headers.get('Content-Length');
-    let receivedLength = 0; // received that many bytes at the moment
-    let chunks = ''; // array of received binary chunks (comprises the body)
-    for (;;) {
-      const {done, value} = await reader.read();
-      if (done) {
-        // finished reading chunks from stream reader.
-        this.setState((prevState) => {
-          return {
-            ...prevState,
-            progressbar: {
-              message: 'Data Query Tool is configuring data!',
-              hidden: prevState.progressbar.hidden,
-              percentage: 100,
-            },
-          };
-        });
-        reader.closed.then(() => {
-          let data;
-          try {
-            data = JSON.parse(chunks);
-          } catch (exception) {
-            return callback(false);
-          }
-          let categories = [];
-          for (const [key, value] of Object.entries(data.categories)) {
-            categories.push({
-              category: key,
-              numFields: value,
-            });
-          }
-          data.categories = categories;
-          setTimeout(async () => {
-            await this.setState((prevState) => {
-              return {
-                ...prevState,
-                progressbar: {
-                  message: prevState.progressbar.message,
-                  hidden: true,
-                  percentage: prevState.progressbar.percentage,
-                },
-                queryIDs: data.savedqueries,
-                categories: data.categories,
-                UpdatedTime: `Data was last updated on ${data.updatetime}`,
-                SavedQueries: data.savedqueries,
-                Visits: data.visits,
-              };
-            }, () => {
-              return callback(true);
-            });
-          }, 1200); // wait 1.2 seconds
-        }).catch((error) => {
-          if (error) {
-            return callback(false);
-          }
-        });
-        break;
-      } else {
-        // Continue reading chunks from stream reader.
-        const decode = new TextDecoder('utf-8').decode(value);
-        chunks += decode;
-        receivedLength += value.length;
-        this.setState((prevState) => {
-          return {
-            ...prevState,
-            progressbar: {
-              hidden: prevState.progressbar.hidden,
-              percentage: Math.round((receivedLength / contentLength) * 100),
-              message: prevState.progressbar.message,
-            },
-          };
+    try {
+      const data = await this.client.getSetup();
+      this.setState((prevState) => {
+        return {
+          ...prevState,
+          progressbar: {
+            message: 'Data Query Tool is configuring data!',
+            hidden: prevState.progressbar.hidden,
+            percentage: 100,
+          },
+        };
+      });
+      let categories = [];
+      for (const [key, value] of Object.entries(data.categories)) {
+        categories.push({
+          category: key,
+          numFields: value,
         });
       }
+      data.categories = categories;
+      setTimeout(async () => {
+        await this.setState((prevState) => {
+          return {
+            ...prevState,
+            progressbar: {
+              message: prevState.progressbar.message,
+              hidden: true,
+              percentage: prevState.progressbar.percentage,
+            },
+            queryIDs: data.savedqueries,
+            categories: data.categories,
+            UpdatedTime: `Data was last updated on ${data.updatetime}`,
+            SavedQueries: data.savedqueries,
+            Visits: data.visits,
+          };
+        }, () => {
+          return callback(true);
+        });
+      }, 1200);
+    } catch (error) {
+      return callback(false);
     }
   }
 
@@ -252,46 +213,22 @@ class DataQueryApp extends Component {
    * @param {function} callback
    */
   async requestSessions(callback) {
-    const response = await fetch(
-      `${loris.BaseURL}/dqt/sessions/?format=json`,
-      {credentials: 'same-origin', method: 'GET'}
-    );
-    const reader = await response.body.getReader();
-    let chunks = ''; // array of received binary chunks (comprises the body)
-    for (;;) {
-      const {done, value} = await reader.read();
-      if (done) {
-        // finished reading chunks from stream reader.
-        reader.closed.then(async () => {
-          let data;
-          try {
-            data = JSON.parse(chunks);
-          } catch (exception) {
-            return callback(false);
-          }
-          await this.setState((prevState) => {
-            return {
-              ...prevState,
-              filter: {
-                ...prevState.filter,
-                session: data.sessions,
-              },
-              allSessions: data.sessions,
-            };
-          }, () => {
-            return callback(true);
-          });
-        }).catch((error) => {
-          if (error) {
-            return callback(false);
-          }
-        });
-        break;
-      } else {
-        // Continue reading chunks from stream reader.
-        const decode = new TextDecoder('utf-8').decode(value);
-        chunks += decode;
-      }
+    try {
+      const data = await this.client.getSessions();
+      await this.setState((prevState) => {
+        return {
+          ...prevState,
+          filter: {
+            ...prevState.filter,
+            session: data.sessions,
+          },
+          allSessions: data.sessions,
+        };
+      }, () => {
+        return callback(true);
+      });
+    } catch (error) {
+      return callback(false);
     }
   }
 
@@ -377,52 +314,68 @@ class DataQueryApp extends Component {
     let filter = this.saveFilterGroup(this.state.filter);
     const fields = JSON.stringify(this.state.selectedFields);
 
-    $.post(loris.BaseURL
-      + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
-      Fields: fields,
-      Filters: filter,
-      QueryName: name,
-      SharedQuery: shared,
-      OverwriteQuery: override,
-    }, (data) => {
-      // Once saved, add the query to the list of saved queries
-      const id = JSON.parse(data).id;
-      const queryIDs = this.state.queryIDs;
-      if (!override) {
-        if (shared === true) {
-          queryIDs.Shared.push(id);
-        } else {
-          queryIDs.User.push(id);
+    lorisFetch(
+      loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=saveQuery.php',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        },
+        body: new URLSearchParams({
+          Fields: fields,
+          Filters: filter,
+          QueryName: name,
+          SharedQuery: shared,
+          OverwriteQuery: override,
+        }),
+      }
+    )
+      .then(async (response) => {
+        const text = await response.text();
+        if (!response.ok) {
+          let error = new Error('request_failed');
+          error.status = response.status;
+          error.body = text;
+          throw error;
         }
-      }
-      $.get(loris.BaseURL
-        + '/AjaxHelper.php?Module=dqt&script=GetDoc.php&DocID='
-        + id,
-      (value) => {
-        let queries = this.state.savedQueries;
-
-        queries[value._id] = value;
-        this.setState({
-          savedQueries: queries,
-          queryIDs: queryIDs,
-          alertLoaded: false,
-          alertSaved: true,
-          alertConflict: {
-            show: false,
-          },
+        const saved = JSON.parse(text);
+        // Once saved, add the query to the list of saved queries
+        const id = saved.id;
+        const queryIDs = this.state.queryIDs;
+        if (!override) {
+          if (shared === true) {
+            queryIDs.Shared.push(id);
+          } else {
+            queryIDs.User.push(id);
+          }
+        }
+        return this.client.getDoc(
+          id
+        ).then((value) => {
+          let queries = this.state.savedQueries;
+          queries[value._id] = value;
+          this.setState({
+            savedQueries: queries,
+            queryIDs: queryIDs,
+            alertLoaded: false,
+            alertSaved: true,
+            alertConflict: {
+              show: false,
+            },
+          });
         });
+      })
+      .catch((error) => {
+        if (error.status === 409) {
+          this.setState({
+            alertConflict: {
+              show: true,
+              QueryName: name,
+              SharedQuery: shared,
+            },
+          });
+        }
       });
-    }).fail((data) => {
-      if (data.status === 409) {
-        this.setState({
-          alertConflict: {
-            show: true,
-            QueryName: name,
-            SharedQuery: shared,
-          },
-        });
-      }
-    });
   }
 
   /**
@@ -442,7 +395,7 @@ class DataQueryApp extends Component {
    * @param {object} rule
    * @return {object} rule
    */
-  loadFilterRule(rule) {
+  async loadFilterRule(rule) {
     // Used to load in a filter rule
 
     let script;
@@ -451,17 +404,15 @@ class DataQueryApp extends Component {
     }
 
     // Get given fields of the instrument for the rule.
-    // This call is made synchronously
-    $.ajax({
-      url: loris.BaseURL
-        + '/AjaxHelper.php?Module=dqt&script=datadictionary.php',
-      success: (data) => {
-        rule.fields = data;
-      },
-      async: false,
-      data: {category: rule.instrument},
-      dataType: 'json',
-    });
+    rule.fields = [];
+    try {
+      const data = await this.client.getDataDictionaryByCategory(
+        rule.instrument
+      );
+      rule.fields = data;
+    } catch (error) {
+      rule.fields = [];
+    }
 
     // Find the rules selected field's data type
     for (let i = 0; i < rule.fields.length; i++) {
@@ -497,9 +448,14 @@ class DataQueryApp extends Component {
     default:
       break;
     }
-    $.ajax({
-      url: loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=' + script,
-      success: (data) => {
+    if (script) {
+      try {
+        const data = await this.client.getMatches(
+          script,
+          rule.instrument,
+          rule.field,
+          rule.value
+        );
         let i;
         let allSessions = {};
         let allCandiates = {};
@@ -528,15 +484,10 @@ class DataQueryApp extends Component {
             rule.session = [];
           }
         }
-      },
-      async: false,
-      data: {
-        category: rule.instrument,
-        field: rule.field,
-        value: rule.value,
-      },
-      dataType: 'json',
-    });
+      } catch (error) {
+        // Leave rule unchanged if request fails.
+      }
+    }
 
     return rule;
   }
@@ -547,7 +498,7 @@ class DataQueryApp extends Component {
    * @param {object} group
    * @return {object} group
    */
-  loadFilterGroup(group) {
+  async loadFilterGroup(group) {
     // Used to load in a filter group
 
     // Recursively load the children on the group
@@ -556,9 +507,9 @@ class DataQueryApp extends Component {
         if (!group.children[i].type) {
           group.children[i].type = 'group';
         }
-        group.children[i] = this.loadFilterGroup(group.children[i]);
+        group.children[i] = await this.loadFilterGroup(group.children[i]);
       } else {
-        group.children[i] = this.loadFilterRule(group.children[i]);
+        group.children[i] = await this.loadFilterRule(group.children[i]);
       }
     }
     group.session = getSessions(group);
@@ -590,7 +541,7 @@ class DataQueryApp extends Component {
    * @param {string[]|object} fields
    * @param {object[]|object} criteria
    */
-  loadSavedQuery(fields, criteria) {
+  async loadSavedQuery(fields, criteria) {
     let filterState = {};
     let selectedFields = {};
     let fieldsList = [];
@@ -673,7 +624,7 @@ class DataQueryApp extends Component {
       }
     }
     if (filterState.children && filterState.children.length > 0) {
-      filterState = this.loadFilterGroup(filterState);
+      filterState = await this.loadFilterGroup(filterState);
     } else {
       filterState.children = [
         {
@@ -690,9 +641,8 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
-    $.ajax({
-      url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
-      success: (data) => {
+    this.client.getDataDictionaryByKeys(fieldsList)
+      .then((data) => {
         for (let i = 0; i < fieldsList.length; i++) {
           if (data[i] && data[i].value.IsFile) {
             let key = data[i].key[0] + ',' + data[i].key[1];
@@ -703,10 +653,7 @@ class DataQueryApp extends Component {
             });
           }
         }
-      },
-      data: {keys: JSON.stringify(fieldsList)},
-      dataType: 'json',
-    });
+      });
   }
 
   /**
@@ -908,17 +855,29 @@ class DataQueryApp extends Component {
         // keep track of the number of requests waiting for a response
         semaphore++;
         sectionedSessions = JSON.stringify(sessionInfo);
-        $.ajax({
-          type: 'POST',
-          url: loris.BaseURL
+        lorisFetch(
+          loris.BaseURL
             + '/AjaxHelper.php?Module=dqt&script='
             + 'retrieveCategoryDocs.php',
-          data: {
-            DocType: category,
-            Sessions: sectionedSessions,
-          },
-          dataType: 'text',
-          success: (data) => {
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type':
+                'application/x-www-form-urlencoded; charset=UTF-8',
+            },
+            body: new URLSearchParams({
+              DocType: category,
+              Sessions: sectionedSessions,
+            }),
+          }
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('request_failed');
+            }
+            return response.text();
+          })
+          .then((data) => {
             if (data) {
               let i;
               let row;
@@ -948,10 +907,11 @@ class DataQueryApp extends Component {
               }
               this.setState({'sessiondata': sessiondata});
             }
+          })
+          .finally(() => {
             semaphore--;
             ajaxComplete();
-          },
-        });
+          });
       }
     }
   }

@@ -14,6 +14,8 @@ if (!$user->hasPermission('config')) {
     exit(0);
 }
 
+header('Content-Type: application/json');
+
 require_once __DIR__ . "/../../../vendor/autoload.php";
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -28,7 +30,13 @@ $recTarget  = $_POST['RecruitmentTarget'];
 if (!Utility::valueIsPositiveInteger($recTarget)) {
     printAndExit(
         400,
-        ['error' => 'Recruitment Target must be an integer greater than zero']
+        [
+            'error' =>
+            dgettext(
+                'configuration',
+                'Recruitment Target must be an integer greater than zero'
+            )
+        ]
     );
 }
 

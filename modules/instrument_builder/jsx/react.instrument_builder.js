@@ -227,10 +227,15 @@ class SavePane extends Component {
     this.state = {
       fileName: '',
       instrumentName: '',
+      alert: '',
+      alertMessage: '',
     };
     this.loadState = this.loadState.bind(this);
     this.onChangeFile = this.onChangeFile.bind(this);
     this.onChangeInst = this.onChangeInst.bind(this);
+    this.validateFileName = this.validateFileName.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.resetAlert = this.resetAlert.bind(this);
   }
 
   /**
@@ -274,19 +279,115 @@ class SavePane extends Component {
   }
 
   /**
+   * Reset alert
+   */
+  resetAlert() {
+    this.setState({
+      alert: '',
+      alertMessage: '',
+    });
+  }
+
+  /**
+   * Validate the filename before saving
+   *
+   * @return {boolean} - True if valid file name
+   */
+  validateFileName() {
+    const {t} = this.props;
+    const fileName = this.state.fileName;
+
+    // Only allow letters, numbers, and underscores (_)
+    const validNamePattern = /^[a-zA-Z0-9_]+$/;
+    // File name cannot end with special characters
+    const invalidTrailingChars = /[^a-zA-Z0-9]$/;
+
+    let errorMessage = '';
+
+    if (/\s/.test(fileName)) {
+      errorMessage = t(
+        'Spaces are not allowed in the file name.',
+        {ns: 'instrument_builder'}
+      );
+    } else if ((fileName.match(/\./g) || []).length > 0) {
+      errorMessage = t(
+        'Multiple periods in the file name are not allowed.',
+        {ns: 'instrument_builder'}
+      );
+    } else if (!validNamePattern.test(fileName)) {
+      errorMessage = t(
+        'Special characters are not allowed (only letters, numbers, and _).',
+        {ns: 'instrument_builder'}
+      );
+    } else if (invalidTrailingChars.test(fileName)) {
+      errorMessage = t(
+        'File name cannot end with a special character.',
+        {ns: 'instrument_builder'}
+      );
+    }
+
+    if (errorMessage) {
+      this.setState({
+        alert: 'typeError',
+        alertMessage: errorMessage,
+      });
+      return false;
+    }
+
+    this.setState({
+      alert: '',
+      alertMessage: '',
+    });
+
+    return true;
+  }
+
+  /**
+   * Save if file name is valid
+   */
+  handleSave() {
+    if (this.validateFileName()) {
+      this.props.save();
+    }
+  }
+
+  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
     const {t} = this.props;
-    let value = this.state.fileName;
+
+    let alert = {
+      message: '',
+      details: '',
+      display: 'none',
+    };
+
+    if (this.state.alert === 'typeError') {
+      alert = {
+        message: t('Error!', {ns: 'loris'}),
+        details: this.state.alertMessage,
+        display: 'block',
+        class: 'alert alert-danger alert-dismissable',
+      };
+    }
     return (
       <TabPane
         Title={t('Save Instrument', {ns: 'instrument_builder'})}
         {...this.props}
       >
         <div className='form-group'>
+          <div style={{display: alert.display}}
+            className={alert.class} role='alert'
+          >
+            <button type='button' className='close' onClick={this.resetAlert}>
+              <span aria-hidden='true'>&times;</span>
+            </button>
+            <strong>{alert.message}</strong><br/>
+            {alert.details}
+          </div>
           <div className='col-xs-12'>
             <label className='col-sm-2 control-label'>
               {t('Filename:', {ns: 'instrument_builder'})}{' '}
@@ -294,7 +395,7 @@ class SavePane extends Component {
             <div className='col-sm-4'>
               <input className='form-control'
                 type='text' id='filename'
-                value={value}
+                value={this.state.fileName}
                 onChange={this.onChangeFile}
               />
             </div>
@@ -315,7 +416,7 @@ class SavePane extends Component {
             <div className='col-xs-12 col-sm-4 col-sm-offset-2'>
               <input className='btn btn-primary col-xs-12'
                 type='submit' value={t('Save', {ns: 'loris'})}
-                onClick={this.props.save}
+                onClick={this.handleSave}
               />
             </div>
           </div>

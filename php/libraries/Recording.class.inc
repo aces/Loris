@@ -62,10 +62,39 @@ class Recording
                        FileType                 as filetype,
                        s.CenterID               as centerid,
                        c.Entity_type            as entitytype,
-                       pc.FilePath              as channel_file_path,
-                       pe.FilePath              as electrode_file_path,
-                       pte.FilePath             as event_file_path,
-                       pa.FilePath              as archive_file_path
+                       (
+                         SELECT pc.FilePath
+                         FROM physiological_channel pc
+                         WHERE pc.PhysiologicalFileID = f.PhysiologicalFileID
+                         ORDER BY pc.PhysiologicalChannelID
+                         LIMIT 1
+                       ) as channel_file_path,
+                       (
+                         SELECT pe.FilePath
+                         FROM physiological_electrode pe
+                         INNER JOIN physiological_coord_system_electrode_rel pcser
+                           USING (PhysiologicalElectrodeID)
+                         WHERE pcser.PhysiologicalFileID
+                           = f.PhysiologicalFileID
+                         ORDER BY pe.PhysiologicalElectrodeID
+                         LIMIT 1
+                       ) as electrode_file_path,
+                       (
+                         SELECT pef.FilePath
+                         FROM physiological_task_event pte
+                         INNER JOIN physiological_event_file pef
+                           USING (EventFileID)
+                         WHERE pte.PhysiologicalFileID = f.PhysiologicalFileID
+                         ORDER BY pte.PhysiologicalTaskEventID
+                         LIMIT 1
+                       ) as event_file_path,
+                       (
+                         SELECT pa.FilePath
+                         FROM physiological_archive pa
+                         WHERE pa.PhysiologicalFileID = f.PhysiologicalFileID
+                         ORDER BY pa.PhysiologicalArchiveID
+                         LIMIT 1
+                       ) as archive_file_path
                      FROM
                        physiological_file f
                      LEFT JOIN session s
@@ -80,30 +109,6 @@ class Recording
                        ON (
                         pm.PhysiologicalModalityID = f.PhysiologicalModalityID
                        )
-                     LEFT JOIN (
-                       SELECT PhysiologicalFileID, FilePath
-                       FROM physiological_channel
-                       LIMIT 1
-                     ) pc
-                       ON (pc.PhysiologicalFileID = f.PhysiologicalFileID)
-                     LEFT JOIN (
-                       SELECT pcser.PhysiologicalFileID, pe2.FilePath
-                       FROM physiological_electrode pe2
-                        INNER JOIN physiological_coord_system_electrode_rel pcser
-                        USING (PhysiologicalElectrodeID)
-                       LIMIT 1
-                     ) pe
-                       ON (pe.PhysiologicalFileID = f.PhysiologicalFileID)
-                     LEFT JOIN (
-                       SELECT pte.PhysiologicalFileID, pef.FilePath
-                       FROM physiological_task_event pte
-                        INNER JOIN physiological_event_file pef
-                        USING (EventFileID)
-                       LIMIT 1
-                     ) pte
-                       ON (pte.PhysiologicalFileID = f.PhysiologicalFileID)
-                     LEFT JOIN physiological_archive pa
-                       ON (pa.PhysiologicalFileID = f.PhysiologicalFileID)
                      WHERE f.PhysiologicalFileID = :v_fileid
                     ',
                     ['v_fileid' => $fileid]

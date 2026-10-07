@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+
+"Project-Id-Version: LORIS 29.0\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: 2026-07-27 14:37-0400\n"
+"Last-Translator: Shen Wang <wangshen.mcin@gmail.com>\n"
+
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "Living_Phantom_DCC_SD_3dwi"
+msgstr "Living_Phantom_DCC_SD_3dwi"
+
+msgid "Living_Phantom_DCC_SD_3mprage"
+msgstr "Living_Phantom_DCC_SD_3mprage"
+
+msgid "Living_Phantom_DCC_SD_3t2"
+msgstr "Living_Phantom_DCC_SD_3t2"
+
+msgid "V1"
+msgstr "第一次访视"
+
+msgid "V2"
+msgstr "第二次访视"
+
+msgid "V3"
+msgstr "第三次访视"
+
+msgid "V4"
+msgstr "第四次访视"
+
+msgid "V5"
+msgstr "第五次访视"
+
+msgid "V6"
+msgstr "第六次访视"

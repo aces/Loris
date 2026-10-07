@@ -101,8 +101,8 @@ class IssueUploadAttachmentForm extends Component {
             uploadProgress: -1,
           });
           swal.fire(
-            this.props.t('Upload Successful!',
-              {ns: 'issue_tracker'}),
+            this.props.t('Upload successful!',
+              {ns: 'loris'}),
             '',
             'success'
           );

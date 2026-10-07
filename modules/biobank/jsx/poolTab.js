@@ -65,7 +65,7 @@ class PoolTab extends Component {
   mapPoolColumns(column, value) {
     const {options} = this.props;
     switch (column) {
-    case this.props.t('Type', {ns: 'biobank'}):
+    case this.props.t('Type', {ns: 'loris'}):
       return options.specimen.types[value].label;
     case this.props.t('Site', {ns: 'loris', count: 1}):
       return options.centers[value];
@@ -209,7 +209,7 @@ class PoolTab extends Component {
         name: 'session',
         type: 'text',
       }},
-      {label: t('Type', {ns: 'biobank'}), show: true, filter: {
+      {label: t('Type', {ns: 'loris'}), show: true, filter: {
         name: 'type',
         type: 'select',
         options: specimenTypes,

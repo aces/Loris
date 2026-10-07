@@ -71,12 +71,6 @@ msgstr "生物学的性別"
 msgid "You do not have access to any timepoints registered for this candidate."
 msgstr "この候補者に対して登録されたタイムポイントにアクセスできません。"
 
-msgid " y / "
-msgstr ""
-
-msgid " m"
-msgstr ""
-
 msgid "Not Done"
 msgstr "未完了"
 

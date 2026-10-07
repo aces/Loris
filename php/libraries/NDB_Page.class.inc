@@ -778,7 +778,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
                 ->process(
                     $request,
                     new \LORIS\Http\StringStream(
-                        dgettext("loris", "Permission Denied")
+                        dgettext("loris", "Permission denied")
                     )
                 )->withStatus(403);
         }

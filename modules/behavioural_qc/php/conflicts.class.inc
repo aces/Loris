@@ -94,7 +94,8 @@ class Conflicts extends \NDB_Page implements ETagCalculator
         ServerRequestInterface $request
     ) : array {
         $user         = $request->getAttribute('user');
-        $visit_array  = \Utility::getVisitList();
+        $visits       = \Utility::getVisitList();
+        $visit_array  = array_combine($visits, $visits);
         $userProjects = $user->getProjects();
         $projects     = [];
         foreach ($userProjects as $project) {

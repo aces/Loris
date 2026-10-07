@@ -1,0 +1,537 @@
+# Default LORIS strings to be translated (English)
+# Copyright (C) 2026
+# This file is distributed under the same license as the LORIS package.
+# Henri Rabalais <henri.j.rabalais@gmail.com>, 2026
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 29\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-05 08:40-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+msgid "Biobank"
+msgstr "Biobanco"
+
+msgid "Biospecimens"
+msgstr "Muestras biológicas"
+
+#: jsx/poolSpecimenForm.js:157 jsx/batchEditForm.js:213
+#: jsx/batchProcessForm.js:129
+msgid "Oops!"
+msgstr "¡Ups!"
+
+#: jsx/poolSpecimenForm.js:158
+msgid ""
+"Specimens must be of the same PSCID,\n"
+"Visit Label, Type and Site"
+msgstr ""
+"Los especímenes deben tener el mismo PSCID,\n"
+"la misma etiqueta de visita, el mismo tipo y el mismo sitio."
+
+#: jsx/poolSpecimenForm.js:207
+msgid "Pooling Note"
+msgstr "Nota de agrupación"
+
+#: jsx/poolSpecimenForm.js:217 jsx/globals.js:30 jsx/batchProcessForm.js:262
+#: jsx/specimenForm.js:601
+msgid "Specimen Type"
+msgstr "Tipo de espécimen"
+
+#: jsx/poolSpecimenForm.js:268
+msgid "Label"
+msgstr "Etiqueta"
+
+#: jsx/poolSpecimenForm.js:276 jsx/processForm.js:106 jsx/processForm.js:210
+#: jsx/batchEditForm.js:258 jsx/globals.js:80
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: jsx/poolSpecimenForm.js:284 jsx/processForm.js:114 jsx/batchEditForm.js:265
+#: jsx/specimenForm.js:294
+msgid "Unit"
+msgstr "Unidad"
+
+#: jsx/poolSpecimenForm.js:324
+msgid "Pool Specimens"
+msgstr "Agrupar especímenes"
+
+#: jsx/poolSpecimenForm.js:417 jsx/batchEditForm.js:624
+#: jsx/batchProcessForm.js:403
+msgid "Specimen"
+msgstr "Espécimen"
+
+#: jsx/containerDisplay.js:129 jsx/containerDisplay.js:183 jsx/search.js:44
+#: jsx/specimenTab.js:99 jsx/containerTab.js:78 jsx/containerForm.js:166
+#: jsx/specimenForm.js:593
+#: jsx/shipmentTab.js:81 jsx/shipmentTab.js:100 jsx/shipmentTab.js:127
+msgid "Barcode"
+msgstr "Código de barras"
+
+#: jsx/containerDisplay.js:132 jsx/search.js:48
+msgid "Please Scan or Type Barcode"
+msgstr "Escanee o introduzca el código de barras"
+
+#: jsx/containerDisplay.js:142 jsx/containerDisplay.js:199
+#: jsx/specimenForm.js:188 jsx/specimenForm.js:198
+msgid "Note"
+msgstr "Nota"
+
+#: jsx/containerDisplay.js:143
+msgid ""
+"Scan Containers to be Loaded. If Sequential is checked,\n"
+"the Coordinate will Auto-Increment after each Load."
+msgstr ""
+"Escanee los contenedores que desea cargar. Si la opción «Secuencial»\n"
+"está activada, la coordenada se incrementará automáticamente después\n"
+"de cada carga."
+
+#: jsx/containerDisplay.js:148
+msgid "Sequential"
+msgstr "Secuencial"
+
+#: jsx/containerDisplay.js:154
+msgid "Load"
+msgstr "Cargar"
+
+#: jsx/containerDisplay.js:189
+msgid "Please Scan or Select Barcode"
+msgstr "Escanee o seleccione un código de barras"
+
+#: jsx/containerDisplay.js:200
+msgid ""
+"Click, Select or Scan Containers to be\n"
+"Unloaded and Press 'Confirm'"
+msgstr ""
+"Haga clic, seleccione o escanee los contenedores que desea descargar\n"
+"y pulse «Confirmar»."
+
+#: jsx/containerDisplay.js:205
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: jsx/header.js:51
+msgid "Make Aliquots"
+msgstr "Crear alícuotas"
+
+#: jsx/header.js:55
+msgid "Add Aliquots"
+msgstr "Agregar alícuotas"
+
+#: jsx/header.js:74
+msgid "Alter Lot Number"
+msgstr "Modificar el número de lote"
+
+#: jsx/header.js:91
+msgid "Alter Expiration Date"
+msgstr "Modificar la fecha de vencimiento"
+
+#: jsx/header.js:107
+msgid "Edit Lot Number"
+msgstr "Editar el número de lote"
+
+#: jsx/header.js:114 jsx/containerForm.js:183 jsx/batchEditForm.js:291
+#: jsx/specimenForm.js:620
+msgid "Lot Number"
+msgstr "Número de lote"
+
+#: jsx/header.js:123
+msgid "Edit Expiration Date"
+msgstr "Editar la fecha de vencimiento"
+
+#: jsx/header.js:130 jsx/containerForm.js:190 jsx/specimenForm.js:627
+msgid "Expiration Date"
+msgstr "Fecha de vencimiento"
+
+#: jsx/header.js:147
+msgid "Print Barcode Number"
+msgstr "Imprimir el número del código de barras"
+
+#: jsx/header.js:166
+msgid "Print Barcode"
+msgstr "Imprimir código de barras"
+
+#: jsx/header.js:276
+msgid "Checkout Container"
+msgstr "Retirar contenedor"
+
+#: jsx/processForm.js:62
+msgid "Update"
+msgstr "Actualización"
+
+#: jsx/processForm.js:127 jsx/processForm.js:217 jsx/batchEditForm.js:310
+#: jsx/batchEditForm.js:335
+msgid "Protocol"
+msgstr "Protocolo"
+
+#: jsx/processForm.js:143 jsx/processForm.js:225
+msgid "Done By"
+msgstr "Realizado por"
+
+#: jsx/processForm.js:172 jsx/processForm.js:239
+#: jsx/shipmentTab.js:306
+msgid "Comments"
+msgstr "Comentarios"
+
+#: jsx/specimenTab.js:62 jsx/containerForm.js:174 jsx/batchEditForm.js:283
+#: jsx/globals.js:49 jsx/specimenForm.js:610
+msgid "Container Type"
+msgstr "Tipo de contenedor"
+
+#: jsx/specimenTab.js:64
+msgid "Diagnosis"
+msgstr "Diagnóstico"
+
+#: jsx/specimenTab.js:71 jsx/containerTab.js:58 jsx/batchEditForm.js:298
+#: jsx/globals.js:205
+#: jsx/shipmentTab.js:96 jsx/shipmentTab.js:136 jsx/shipmentTab.js:290
+msgid "Status"
+msgstr "Estado"
+
+#: jsx/specimenTab.js:73 jsx/globals.js:243
+msgid "Current Site"
+msgstr "Sitio actual"
+
+#: jsx/specimenTab.js:75 jsx/globals.js:234
+msgid "Draw Site"
+msgstr "Sitio del sorteo"
+
+#: jsx/container.js:54
+msgid "Checkout Child Containers"
+msgstr "Retirar contenedores secundarios"
+
+#: jsx/containerForm.js:81
+msgid "Add New Container"
+msgstr "Agregar un nuevo contenedor"
+
+#: jsx/biobankIndex.js:343
+msgid "Print Barcodes?"
+msgstr "¿Imprimir códigos de barras?"
+
+#: jsx/biobankIndex.js:479
+msgid "Batch Preparation Successful!"
+msgstr "¡Preparación por lote completada con éxito!"
+
+#: jsx/biobankIndex.js:518
+msgid "This field must not be negative."
+msgstr "Este campo no puede ser negativo."
+
+#: jsx/biobankIndex.js:526
+msgid "This field must be an integer."
+msgstr "Este campo debe ser un número entero."
+
+#: jsx/biobankIndex.js:597 jsx/biobankIndex.js:699 jsx/biobankIndex.js:736
+#: jsx/biobankIndex.js:636 jsx/biobankIndex.js:506
+msgid "This field is required."
+msgstr "Este campo es obligatorio."
+
+#: jsx/biobankIndex.js:604 jsx/biobankIndex.js:705 jsx/biobankIndex.js:741
+#: jsx/biobankIndex.js:644 jsx/biobankIndex.js:512
+msgid "This field must be a number."
+msgstr "Este campo debe ser un número."
+
+#: jsx/biobankIndex.js:611 jsx/biobankIndex.js:652 jsx/biobankIndex.js:747
+msgid "This field must be a valid date."
+msgstr "Este campo debe contener una fecha válida."
+
+#: jsx/biobankIndex.js:617 jsx/biobankIndex.js:660 jsx/biobankIndex.js:753
+msgid "This field must be a valid time."
+msgstr "Este campo debe contener una hora válida."
+
+#: jsx/biobankIndex.js:711
+msgid "Barcode must be unique."
+msgstr "El código de barras debe ser único."
+
+#: jsx/biobankIndex.js:757
+msgid "Pooling requires at least 2 specimens"
+msgstr "La agrupación requiere al menos 2 especímenes."
+
+#: jsx/shipmentTab.js:69 jsx/shipmentTab.js:141
+msgid "Origin Site"
+msgstr "Sitio de origen"
+
+#: jsx/shipmentTab.js:71 jsx/shipmentTab.js:146
+msgid "Destination Site"
+msgstr "Sitio de destino"
+
+#: jsx/shipmentTab.js:95 jsx/shipmentTab.js:151
+msgid "Actions"
+msgstr "Acciones"
+
+#: jsx/shipmentTab.js:157
+msgid "Add Shipment"
+msgstr "Agregar envío"
+
+#: jsx/shipmentTab.js:298
+msgid "Date & Time"
+msgstr "Fecha y hora"
+
+#: jsx/shipmentTab.js:302
+msgid "User"
+msgstr "Usuario"
+
+#: jsx/batchEditForm.js:214
+msgid "Specimens must be of the same Type and Site"
+msgstr "Los especímenes deben ser del mismo tipo y del mismo sitio"
+
+#: jsx/batchEditForm.js:274 jsx/globals.js:144
+msgid "Freeze-Thaw Cycle"
+msgstr "Ciclo de congelación-descongelación"
+
+#: jsx/batchEditForm.js:380
+msgid "Global"
+msgstr "Global"
+
+#: jsx/batchEditForm.js:387
+msgid "Collection"
+msgstr "Colección"
+
+#: jsx/batchEditForm.js:395
+msgid "Preparation"
+msgstr "Preparación"
+
+#: jsx/batchEditForm.js:469 jsx/batchEditForm.js:496
+msgid "Editing Note"
+msgstr "Nota de edición"
+
+#: jsx/batchEditForm.js:487
+msgid "Edit Specimens"
+msgstr "Editar especímenes"
+
+#: jsx/batchEditForm.js:517 jsx/globals.js:69
+msgid "Pool"
+msgstr "Agrupación"
+
+#: jsx/containerParentForm.js:59
+msgid "Available Spots"
+msgstr "Posiciones disponibles"
+
+#: jsx/containerParentForm.js:111
+msgid "Parent Container Barcode"
+msgstr "Código de barras del contenedor padre"
+
+#: jsx/globals.js:153
+msgid "fTCycle"
+msgstr "Ciclo C/D"
+
+#: jsx/globals.js:167
+#: jsx/shipmentTab.js:294
+msgid "Temperature"
+msgstr "Temperatura"
+
+#: jsx/globals.js:252
+msgid "Shipment"
+msgstr "Envío"
+
+#: jsx/batchProcessForm.js:130
+msgid "Specimens must be of the same Type"
+msgstr "Los especímenes deben ser del mismo tipo"
+
+#: jsx/batchProcessForm.js:153
+msgid "Warning!"
+msgstr "¡Advertencia!"
+
+#: jsx/batchProcessForm.js:255
+msgid "Processing Note"
+msgstr "Nota de procesamiento"
+
+#: jsx/batchProcessForm.js:315
+msgid "Process Specimens"
+msgstr "Procesar especímenes"
+
+#: jsx/poolTab.js:95
+msgid "Pooled Specimens"
+msgstr "Especímenes agrupados"
+
+#: jsx/specimenForm.js:189
+msgid ""
+"To create new aliquots, enter a Barcode, fill out the\n"
+"coresponding sub-form and press Submit. Press \"New Entry\" "
+"button\n"
+"to add another barcode field, or press for the \"Copy\" "
+"button to\n"
+"duplicate the previous entry."
+msgstr ""
+"Para crear nuevas alícuotas, introduzca un código de barras, complete\n"
+"el subformulario correspondiente y pulse «Enviar». Pulse el botón\n"
+"«Nueva entrada» para agregar otro campo de código de barras, o pulse\n"
+"el botón «Copiar» para duplicar la entrada anterior."
+
+#: jsx/specimenForm.js:199
+msgid ""
+"To create new specimens, first select a PSCID and Visit Label.\n"
+"Then, enter a Barcode, fill out the coresponding sub-form "
+"and\n"
+"press submit. Press \"New Entry\" button to add another "
+"barcode\n"
+"field, or press for the \"Copy\" button to duplicate the\n"
+"previous entry."
+msgstr ""
+"Para crear nuevos especímenes, primero seleccione un PSCID y una\n"
+"etiqueta de visita. Luego introduzca un código de barras, complete\n"
+"el subformulario correspondiente y pulse «Enviar». Pulse el botón\n"
+"«Nueva entrada» para agregar otro campo de código de barras o el\n"
+"botón «Copiar» para duplicar la entrada anterior."
+
+#: jsx/specimenForm.js:219
+msgid "Parent Specimen(s)"
+msgstr "Espécimen(es) padre"
+
+#: jsx/specimenForm.js:255
+msgid "Search for a PSCID"
+msgstr "Buscar un PSCID"
+
+#: jsx/specimenForm.js:287
+msgid "Remaining Quantity"
+msgstr "Cantidad restante"
+
+#: jsx/specimenForm.js:366
+msgid "Generate Barcodes"
+msgstr "Generar códigos de barras"
+
+#: jsx/specimenForm.js:373
+msgid "Print Barcodes"
+msgstr "Imprimir códigos de barras"
+
+msgid "Age at Collection"
+msgstr "Edad en el momento de la recogida"
+
+msgid "Container Barcode"
+msgstr "Código de barras del contenedor"
+
+msgid "Go To Specimen"
+msgstr "Ir al espécimen"
+
+msgid "Assigned Containers"
+msgstr "Contenedores asignados"
+
+msgid "Unassigned Containers"
+msgstr "Contenedores no asignados"
+
+msgid "Parent Barcode"
+msgstr "Código de barras del espécimen padre"
+
+msgid "Go To Container"
+msgstr "Ir al contenedor"
+
+msgid "Add Container"
+msgstr "Agregar contenedor"
+
+msgid "Specimens"
+msgstr "Especímenes"
+
+msgid "Pools"
+msgstr "Grupos"
+
+msgid "Shipments"
+msgstr "Envíos"
+
+msgid "Parent Specimen"
+msgstr "Espécimen padre"
+
+msgid "Move Container"
+msgstr "Mover contenedor"
+
+msgid "Update Parent Container"
+msgstr "Actualizar contenedor padre"
+
+msgid "None"
+msgstr "Ninguno"
+
+msgid "Coordinate"
+msgstr "Coordenada"
+
+msgid "Aliquot"
+msgstr "Alícuota"
+
+msgid "Aliquot Pool"
+msgstr "Grupo de alícuotas"
+
+msgid "Origin Center"
+msgstr "Centro de origen"
+
+msgid "Destination Center"
+msgstr "Centro de destino"
+
+msgid "Parent Specimens"
+msgstr "Especímenes padre"
+
+msgid "F/T Cycle"
+msgstr "Ciclo de congelación/descongelación"
+
+msgid "Male"
+msgstr "Hombre"
+
+msgid "Female"
+msgstr "Mujer"
+
+msgid "Collection Date"
+msgstr "Fecha de recolección"
+
+msgid "Collection Time"
+msgstr "Hora de recolección"
+
+msgid "Preparation Time"
+msgstr "Tiempo de preparación"
+
+msgid "Add Specimen"
+msgstr "Agregar espécimen"
+
+msgid "Add New Specimen"
+msgstr "Agregar nuevo espécimen"
+
+msgid "Create Shipment"
+msgstr "Crear envío"
+
+msgid "Receive Shipment"
+msgstr "Recibir envío"
+
+msgid "Done by"
+msgstr "Realizado por"
+
+msgid "Any container or specimen added to this form will be dissassociated from its parent. Any children of the containers listed will also be added to the shipment."
+msgstr "Todo contenedor o espécimen agregado a este formulario será desvinculado de su contenedor padre. Todos los contenedores hijos de los contenedores incluidos también se agregarán al envío."
+
+msgid "{{label}} Input"
+msgstr "Entrada de {{label}}"
+
+msgid "{{label}} List"
+msgstr "Lista de {{label}}"
+
+msgid "Select or Scan the specimens to be pooled. Specimens must have a Status of 'Available', have a Quantity of greater than 0, and share the same Type, PSCID, Visit Label and Current Site. Pooled specimens cannot already belong to a pool. Once pooled, the Status of specimen will be changed to 'Dispensed' and their Quantity set to '0'."
+msgstr "Seleccione o escanee los especímenes que se van a agrupar. Los especímenes deben tener el estado 'Disponible', una cantidad superior a 0 y compartir el mismo Tipo, PSCID, Etiqueta de visita y Sitio actual. Los especímenes agrupados no pueden pertenecer ya a un grupo. Una vez agrupados, el estado de los especímenes cambiará a 'Dispensado' y su cantidad se establecerá en '0'."
+
+msgid "Select or Scan the specimens to be prepared. Specimens must have a Status of 'Available', and share the same Type. Any previous value associated with a Specimen will be overwritten if one is added on this form."
+msgstr "Seleccione o escanee los especímenes que se prepararán. Los especímenes deben tener el estado «Disponible» y ser del mismo tipo. Cualquier valor previamente asociado a un espécimen será reemplazado si se agrega uno nuevo en este formulario."
+
+msgid "Barcode Input"
+msgstr "Entrada de códigos de barras"
+
+msgid "Barcode List"
+msgstr "Lista de códigos de barras"
+
+msgid "Preparation for specimen(s) <b>{{barcodes}}</b> already exists. By completing this form, the previous preparation will be overwritten."
+msgstr "Ya existe una preparación para el/los espécimen(es) <b>{{barcodes}}</b>. Al completar este formulario, la preparación anterior será reemplazada."
+
+msgid "Select a form for the list to edit the specimen values. Any previous value associated with a Specimen for a given field will be overwritten if one is added on this form."
+msgstr "Seleccione un formulario de la lista para editar los valores de los especímenes. Cualquier valor anterior asociado a un espécimen para un campo determinado será reemplazado si se introduce un nuevo valor en este formulario."
+
+msgid "Select or Scan the specimens to be edited. Specimens must share the same Type."
+msgstr "Seleccione o escanee los especímenes que se van a editar. Los especímenes deben ser del mismo tipo."
+
+msgid "To create new specimens, first select a PSCID and Visit Label. Then, enter a Barcode, fill out the coresponding sub-form and press submit. Press 'New Entry' button to add another barcode field, or press for the 'Copy' button to duplicate the previous entry."
+msgstr "Para crear nuevos especímenes, primero seleccione un PSCID y una etiqueta de visita. Luego introduzca un código de barras, complete el subformulario correspondiente y pulse «Enviar». Pulse el botón «Nueva entrada» para agregar otro campo de código de barras o el botón «Copiar» para duplicar la entrada anterior."
+
+msgid "New Entry"
+msgstr "Nueva entrada"
+
+msgid "Containers"
+msgstr "Contenedores"

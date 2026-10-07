@@ -57,7 +57,7 @@ class SpecimenTab extends Component {
   mapSpecimenColumns(column, value) {
     const {options} = this.props;
     switch (column) {
-    case this.props.t('Type', {ns: 'biobank'}):
+    case this.props.t('Type', {ns: 'loris'}):
       return options.specimen.types[value].label;
     case this.props.t('Container Type', {ns: 'biobank'}):
       return options.container.typesPrimary[value].label;
@@ -239,7 +239,7 @@ class SpecimenTab extends Component {
         name: 'barcode',
         type: 'text',
       }},
-      {label: this.props.t('Type', {ns: 'biobank'}), show: true, filter: {
+      {label: this.props.t('Type', {ns: 'loris'}), show: true, filter: {
         name: 'type',
         type: 'select',
         options: specimenTypes,

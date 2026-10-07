@@ -1442,7 +1442,7 @@ class LorisForm
             }
             return true;
         case '>=':
-            if ($this->getValue($controlElement) <= $format['value']) {
+            if ($this->getValue($controlElement) >= $format['value']) {
                 return $this->getValue($ruleElement) != '';
             }
             return true;
