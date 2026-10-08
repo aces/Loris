@@ -52,8 +52,8 @@ msgstr "是否为幻影"
 msgid "Tarchive Metadata"
 msgstr "归档元数据"
 
-msgid "Acquisition ID"
-msgstr "采集ID"
+msgid "Study Instance UID"
+msgstr "研究实例 UID"
 
 msgid "Patient Birthdate"
 msgstr "患者出生日期"
@@ -73,8 +73,8 @@ msgstr "序列号"
 msgid "Scanner Software Version"
 msgstr "扫描仪软件版本"
 
-msgid "Acquired at"
-msgstr "采集于"
+msgid "Institution Name"
+msgstr "机构名称"
 
 msgid "Number of Acquisitions"
 msgstr "采集数量"
@@ -88,14 +88,8 @@ msgstr "最后更新"
 msgid "Never"
 msgstr "从不"
 
-msgid "Summary type version"
-msgstr "摘要类型版本"
-
 msgid "Source location"
 msgstr "源位置"
-
-msgid "Archive type version"
-msgstr "存档类型版本"
 
 msgid "Archive location"
 msgstr "存档位置"
