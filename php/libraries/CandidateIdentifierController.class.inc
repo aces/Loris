@@ -89,35 +89,35 @@ class CandidateIdentifierController
     }
 
     /**
- * Gets all identifiers for a candidate
- *
- * @param int $candidateID Candidate ID
- *
- * @return CandidateIdentifier[] Candidate identifiers
- */
-public function getCandidateIdentifiers(
-    int $candidateID
-): array {
-    $identifierIDs = $this->database->pselectCol(
-        "SELECT CandidateIdentifierID
-         FROM candidate_identifiers
-         WHERE CandidateID = :candidateID
-         ORDER BY CandidateIdentifierID",
-        [
-            'candidateID' => $candidateID,
-        ]
-    );
-
-    $identifiers = [];
-
-    foreach ($identifierIDs as $identifierID) {
-        $identifiers[] = $this->getCandidateIdentifierFromID(
-            (int) $identifierID
+     * Gets all identifiers for a candidate
+     *
+     * @param int $candidateID Candidate ID
+     *
+     * @return CandidateIdentifier[] Candidate identifiers
+     */
+    public function getCandidateIdentifiers(
+        int $candidateID
+    ): array {
+        $identifierIDs = $this->database->pselectCol(
+            "SELECT CandidateIdentifierID
+            FROM candidate_identifiers
+            WHERE CandidateID = :candidateID
+            ORDER BY CandidateIdentifierID",
+            [
+                'candidateID' => $candidateID,
+            ]
         );
-    }
 
-    return $identifiers;
-}
+        $identifiers = [];
+
+        foreach ($identifierIDs as $identifierID) {
+            $identifiers[] = $this->getCandidateIdentifierFromID(
+                (int) $identifierID
+            );
+        }
+
+        return $identifiers;
+    }
 
     /**
      * Creates a candidate identifier

@@ -266,6 +266,65 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200_2'
+  '/candidates/{id}/identifiers':
+    get:
+      tags:
+        - Candidates
+      summary: Get all identifiers for a candidate
+      parameters:
+        - name: id
+          in: path
+          description: The candidate identifier. Either a PSCID or CandID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The candidate identifiers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateIdentifiers'
+    post:
+      tags:
+        - Candidates
+      summary: Create a candidate identifier
+      parameters:
+        - name: id
+          in: path
+          description: The candidate identifier. Either a PSCID or CandID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Identifier:
+                  type: object
+                  required:
+                    - CandidateIdentifierTypeID
+                  properties:
+                    CandidateIdentifierTypeID:
+                      type: integer
+                    Value:
+                      type: string
+      responses:
+        '201':
+          description: The candidate identifier was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateIdentifier'
+        '400':
+          description: The candidate identifier could not be created
   '/candidates/{id}/{visit}':
     get:
       tags:
@@ -2126,6 +2185,22 @@ components:
             - Female
             - Male
             - Other
+    CandidateIdentifiers:
+      type: object
+      properties:
+        Identifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CandidateIdentifier'
+    CandidateIdentifier:
+      type: object
+      properties:
+        CandidateIdentifierID:
+          type: integer
+        Type:
+          type: string
+        Value:
+          type: string
     NewCandidate:
       type: object
       properties:
