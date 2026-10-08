@@ -284,11 +284,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("#tab-tabFiles")
         );sleep(2);
         $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "div.panel:nth-child(2) > div:nth-child(1)".
-                  " > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) >".
-                " div:nth-child(1) > div:nth-child(1) > button:nth-child(1)"
-            )
+            WebDriverBy::cssSelector("button.action-uploadFile")
         )->click();
         $value    = "#tabFiles > div:nth-child(1) > div > div:nth-child(1)";
             $text = $this->webDriver->executescript(
