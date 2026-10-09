@@ -212,3 +212,48 @@ msgstr ""
 
 msgid "This field is required! Please click \"Add Field\" before saving."
 msgstr ""
+
+msgid "Full descriptive title of the cohort"
+msgstr ""
+
+msgid "Include field for EDC (Expected Date of Confinement) in Candidate Parameters to record subject's due date if applicable"
+msgstr ""
+
+msgid "Choose a method by which Window Difference will be calculated. It will be displayed in days at the head of every instrument form"
+msgstr ""
+
+msgid "The target number will be used to generate the recruitment progress bar on the dashboard"
+msgstr ""
+
+msgid "Failed to save"
+msgstr ""
+
+msgid "Successfully saved"
+msgstr ""
+
+msgid "To configure study cohorts <0>click here</0>."
+msgstr ""
+
+msgid "Full descriptive title of the project"
+msgstr ""
+
+msgid "Short name of the project (4 characters or less)"
+msgstr ""
+
+msgid "These cohorts will be automatically displayed for any candidate affiliated with this project at timepoint creation."
+msgstr ""
+
+msgid "Failed to save, must enter a Project Name!"
+msgstr ""
+
+msgid "Failed to save, must enter an Alias!"
+msgstr ""
+
+msgid "Failed to save, recruitment target must be an integer!"
+msgstr ""
+
+msgid "Failed to save, Alias should be at most 4 characters long!"
+msgstr ""
+
+msgid "Failed to save, same name already exist!"
+msgstr ""
