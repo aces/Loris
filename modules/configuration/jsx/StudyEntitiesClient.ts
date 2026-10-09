@@ -37,7 +37,7 @@ export default class StudyEntitiesClient<T> extends Client<T> {
       ) {
         const responseData = await error.response.json() as SaveResponse;
         if (responseData.error) {
-          throw new Error(responseData.error);
+          error.message = responseData.error;
         }
       }
       throw error;

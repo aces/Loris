@@ -6,8 +6,16 @@ import {
   WithTranslation,
 } from 'react-i18next';
 
+import {Errors} from 'jslib';
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
+import {TabPane, VerticalTabs} from 'Tabs';
+import {
+  FormElement,
+  TextboxElement,
+  SelectElement,
+  ButtonElement,
+} from 'jsx/Form';
 import StudyEntitiesClient from './StudyEntitiesClient';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/configuration.json';
@@ -54,12 +62,6 @@ type ProjectFormProps = {
   t: WithTranslation['t'],
 };
 
-type FormRowProps = {
-  children: React.ReactNode,
-  label: string,
-  tooltip: string,
-};
-
 const EMPTY_PROJECT: Project = {
   Alias: '',
   Name: '',
@@ -86,33 +88,13 @@ function formValues(project: Project): ProjectValues {
 }
 
 /**
- * Render one labelled project form row.
- *
- * @param {FormRowProps} props Row properties
- * @return {React.ReactElement}
- */
-function FormRow(props: FormRowProps): React.ReactElement {
-  return (
-    <div className="form-group">
-      <div
-        className="col-sm-12 col-md-3"
-        title={props.tooltip}
-      >
-        <label className="col-sm-12 control-label">{props.label}</label>
-      </div>
-      <div className="col-sm-12 col-md-9">{props.children}</div>
-    </div>
-  );
-}
-
-/**
  * Create or edit one project through the established guarded endpoint.
  *
  * @param {ProjectFormProps} props Form properties
  * @return {React.ReactElement}
  */
 function ProjectForm(props: ProjectFormProps): React.ReactElement {
-  const [defaults] = useState(() => formValues(props.project));
+  const [defaults, setDefaults] = useState(() => formValues(props.project));
   const [values, setValues] = useState<ProjectValues>(defaults);
   const [status, setStatus] = useState<SaveStatus>(null);
   const [saving, setSaving] = useState(false);
@@ -120,12 +102,12 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
   /**
    * Update one controlled field and clear its prior save status.
    *
-   * @param {keyof ProjectValues} name Field name
-   * @param {string} value Field value
+   * @param {string} name Field name
+   * @param {string|string[]} value Field value
    */
   const updateValue = (
-    name: Exclude<keyof ProjectValues, 'CohortIDs'>,
-    value: string
+    name: string,
+    value: string | string[]
   ) => {
     setValues((current) => ({...current, [name]: value}));
     setStatus(null);
@@ -165,9 +147,9 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
   /**
    * Submit the project values to the existing update endpoint.
    *
-   * @param {React.FormEvent<HTMLFormElement>} event Submit event
+   * @param {React.SyntheticEvent} event Submit event
    */
-  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     const error = validationError();
     if (error !== null) {
@@ -193,6 +175,7 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
         body
       );
 
+      setDefaults(values);
       setStatus({
         message: props.t('Successfully saved', {ns: 'configuration'}),
         type: 'success',
@@ -203,8 +186,10 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
         props.onSaved(props.projectID, values);
       }
     } catch (error) {
+      const conflict = error instanceof Errors.ApiResponse
+        && error.response?.status === 409;
       setStatus({
-        message: error instanceof Error
+        message: error instanceof Error && !conflict
           ? error.message
           : props.t(
             'Failed to save, same name already exist!',
@@ -222,13 +207,7 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
     : `project-${props.projectID}`;
 
   return (
-    <form
-      className="form-horizontal"
-      id={`form${fieldPrefix}`}
-      method="post"
-      onSubmit={submit}
-      role="form"
-    >
+    <FormElement name={fieldPrefix} id={`form${fieldPrefix}`} onSubmit={submit}>
       <fieldset>
         <input
           className="ProjectID"
@@ -236,18 +215,15 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
           type="hidden"
           value={props.projectID}
         />
-        <FormRow
-          label={props.t('Project Name', {ns: 'configuration'})}
-          tooltip={props.t(
-            'Full descriptive title of the project',
-            {ns: 'configuration'}
-          )}
-        >
-          <input
-            className="form-control projectName"
+        <div title={props.t(
+          'Full descriptive title of the project',
+          {ns: 'configuration'}
+        )}>
+          <TextboxElement
+            label={props.t('Project Name', {ns: 'configuration'})}
             id={`${fieldPrefix}-name`}
             name="Name"
-            onChange={(event) => updateValue('Name', event.target.value)}
+            onUserInput={updateValue}
             placeholder={props.isNew
               ? props.t(
                 'Please add a project title here',
@@ -256,111 +232,86 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
               : undefined}
             value={values.Name}
           />
-        </FormRow>
-        <FormRow
-          label={props.t('Alias', {ns: 'configuration'})}
-          tooltip={props.t(
-            'Short name of the project (4 characters or less)',
-            {ns: 'configuration'}
-          )}
-        >
-          <input
-            className="form-control projectAlias"
+        </div>
+        <div title={props.t(
+          'Short name of the project (4 characters or less)',
+          {ns: 'configuration'}
+        )}>
+          <TextboxElement
+            label={props.t('Alias', {ns: 'configuration'})}
             id={`${fieldPrefix}-alias`}
             name="Alias"
-            onChange={(event) => updateValue('Alias', event.target.value)}
+            onUserInput={updateValue}
             placeholder={props.isNew
               ? props.t('Please add an alias here', {ns: 'configuration'})
               : undefined}
             value={values.Alias}
           />
-        </FormRow>
-        <FormRow
-          label={props.t('Recruitment Target', {ns: 'configuration'})}
-          tooltip={props.t(
-            'The target number will be used to generate the recruitment '
-              + 'progress bar on the dashboard',
-            {ns: 'configuration'}
-          )}
-        >
-          <input
-            className="form-control projectrecruitmentTarget"
+        </div>
+        <div title={props.t(
+          'The target number will be used to generate the recruitment '
+            + 'progress bar on the dashboard',
+          {ns: 'configuration'}
+        )}>
+          <TextboxElement
+            label={props.t('Recruitment Target', {ns: 'configuration'})}
             id={`${fieldPrefix}-recruitment-target`}
             name="recruitmentTarget"
-            onChange={(event) => updateValue(
-              'recruitmentTarget',
-              event.target.value
-            )}
+            onUserInput={updateValue}
             placeholder={props.t(
               'Please add a recruitment target here',
               {ns: 'configuration'}
             )}
             value={values.recruitmentTarget}
           />
-        </FormRow>
-        <FormRow
-          label={props.t('Affiliated Cohorts', {ns: 'configuration'})}
-          tooltip={props.t(
-            'These cohorts will be automatically displayed for any candidate '
-              + 'affiliated with this project at timepoint creation.',
-            {ns: 'configuration'}
-          )}
-        >
-          <select
-            className="form-control projectCohortIDs"
+        </div>
+        <div title={props.t(
+          'These cohorts will be automatically displayed for any candidate '
+            + 'affiliated with this project at timepoint creation.',
+          {ns: 'configuration'}
+        )}>
+          <SelectElement
+            label={props.t('Affiliated Cohorts', {ns: 'configuration'})}
             id={`${fieldPrefix}-cohorts`}
             multiple={true}
             name="CohortIDs"
-            onChange={(event) => {
-              const CohortIDs = Array.from(
-                event.target.selectedOptions,
-                (option) => option.value
-              );
-              setValues((current) => ({...current, CohortIDs}));
-              setStatus(null);
-            }}
+            onUserInput={updateValue}
             value={values.CohortIDs}
-          >
-            {Object.entries(props.cohorts).map(([cohortID, title]) => (
-              <option key={cohortID} value={cohortID}>
-                {title}
-              </option>
-            ))}
-          </select>
-        </FormRow>
-        <div className="form-group">
-          <div className="col-sm-offset-3 col-sm-9">
-            <button
-              className="btn btn-primary saveproject submit-area"
-              disabled={saving}
-              id={`saveproject${props.projectID}`}
-              type="submit"
-            >
-              {props.t('Save', {ns: 'loris'})}
-            </button>{' '}
-            <button
-              className="btn btn-default submit-area"
-              onClick={() => {
-                setValues(defaults);
-                setStatus(null);
-              }}
-              type="button"
-            >
-              {props.t('Reset', {ns: 'loris'})}
-            </button>{' '}
-            {status && (
-              <label
-                className={
-                  status.type === 'success' ? 'text-success' : 'text-danger'
-                }
-              >
-                {status.message}
-              </label>
-            )}
-          </div>
+            options={props.cohorts}
+            emptyOption={false}
+            autoSelect={false}
+            sortByValue={false}
+          />
         </div>
+        <ButtonElement
+          label={props.t('Save', {ns: 'loris'})}
+          disabled={saving}
+          id={`saveproject${props.projectID}`}
+          type="submit"
+          onUserInput={submit}
+        />
+        <ButtonElement
+          label={props.t('Reset', {ns: 'loris'})}
+          buttonClass="btn btn-default"
+          onUserInput={() => {
+            setValues(defaults);
+            setStatus(null);
+          }}
+          type="button"
+        />
+        {status && (
+          <div className="col-sm-offset-3 col-sm-9">
+            <label
+              className={
+                status.type === 'success' ? 'text-success' : 'text-danger'
+              }
+            >
+              {status.message}
+            </label>
+          </div>
+        )}
       </fieldset>
-    </form>
+    </FormElement>
   );
 }
 
@@ -371,7 +322,6 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
  * @return {React.ReactElement}
  */
 function ProjectManager(props: ProjectManagerProps): React.ReactElement {
-  const [activeID, setActiveID] = useState('new');
   const [projects, setProjects] = useState(props.data.projects);
 
   /**
@@ -415,88 +365,47 @@ function ProjectManager(props: ProjectManagerProps): React.ReactElement {
           t={props.t}
         />
       </p>
-      <div className="col-md-3">
-        <ul
-          className="nav nav-pills nav-stacked"
-          data-tabs="tabs"
-          role="tablist"
-        >
-          <li className={activeID === 'new' ? 'active' : undefined}>
-            <a
-              aria-selected={activeID === 'new'}
-              href="#projectnew"
-              id="#projectnew"
-              onClick={(event) => {
-                event.preventDefault();
-                setActiveID('new');
-              }}
-              role="tab"
-            >
-              {props.t('New ProjectID', {ns: 'configuration'})}
-            </a>
-          </li>
-          {Object.entries(projects).map(([projectID, project]) => (
-            <li
-              className={activeID === projectID ? 'active' : undefined}
-              key={projectID}
-            >
-              <a
-                aria-selected={activeID === projectID}
-                href={`#project${projectID}`}
-                id={`#project${projectID}`}
-                onClick={(event) => {
-                  event.preventDefault();
-                  setActiveID(projectID);
-                }}
-                role="tab"
-              >
-                {project.Name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="col-md-7">
-        <div className="tab-content">
-          {Object.entries(projects).map(([projectID, project]) => (
-            <div
-              className={
-                `tab-pane${activeID === projectID ? ' active' : ''}`
-              }
-              hidden={activeID !== projectID}
-              id={`project${projectID}`}
-              key={projectID}
-            >
-              <h2>{project.Name} (ProjectID: {projectID})</h2>
-              <br/>
-              <ProjectForm
-                cohorts={props.data.cohorts}
-                isNew={false}
-                onSaved={updateProject}
-                project={project}
-                projectID={projectID}
-                t={props.t}
-              />
-            </div>
-          ))}
-          <div
-            className={`tab-pane${activeID === 'new' ? ' active' : ''}`}
-            hidden={activeID !== 'new'}
-            id="projectnew"
-          >
-            <h2>{props.t('New Project', {ns: 'configuration'})}</h2>
+      <VerticalTabs
+        tabs={[
+          {
+            id: 'projectnew',
+            label: props.t('New ProjectID', {ns: 'configuration'}),
+          },
+          ...Object.entries(projects).map(([projectID, project]) => ({
+            id: `project${projectID}`,
+            label: project.Name,
+          })),
+        ]}
+        defaultTab="projectnew"
+        updateURL={false}
+      >
+        {Object.entries(projects).map(([projectID, project]) => (
+          <TabPane TabId={`project${projectID}`} key={projectID}>
+            <h2>{project.Name} (ProjectID: {projectID})</h2>
             <br/>
             <ProjectForm
               cohorts={props.data.cohorts}
-              isNew={true}
-              onSaved={() => undefined}
-              project={EMPTY_PROJECT}
-              projectID="new"
+              project={project}
+              projectID={projectID}
+              isNew={false}
+              onSaved={updateProject}
               t={props.t}
             />
-          </div>
-        </div>
-      </div>
+          </TabPane>
+        ))}
+        <TabPane TabId="projectnew">
+          <h2>{props.t('New Project', {ns: 'configuration'})}</h2>
+          <br/>
+          <ProjectForm
+            cohorts={props.data.cohorts}
+            project={EMPTY_PROJECT}
+            projectID="new"
+            isNew={true}
+            onSaved={() => undefined}
+            t={props.t}
+          />
+        </TabPane>
+      </VerticalTabs>
     </>
   );
 }

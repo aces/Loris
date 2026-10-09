@@ -126,7 +126,7 @@ class ConfigurationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/configuration/cohort/");
         $newTab = $this->safeFindElement(
-            WebDriverBy::cssSelector("#\#cohortnew")
+            WebDriverBy::cssSelector("#tab-cohortnew")
         );
         $this->assertStringContainsString("CohortID", $newTab->getText());
         $this->assertStringContainsString(
@@ -160,7 +160,7 @@ class ConfigurationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/configuration/project/");
         $newTab = $this->safeFindElement(
-            WebDriverBy::cssSelector("#\#projectnew")
+            WebDriverBy::cssSelector("#tab-projectnew")
         );
         $this->assertStringContainsString("ProjectID", $newTab->getText());
         $this->assertStringContainsString(

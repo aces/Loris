@@ -4,6 +4,13 @@ import {withTranslation, WithTranslation} from 'react-i18next';
 
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
+import {TabPane, VerticalTabs} from 'Tabs';
+import {
+  FormElement,
+  TextboxElement,
+  SelectElement,
+  ButtonElement,
+} from 'jsx/Form';
 import StudyEntitiesClient from './StudyEntitiesClient';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/configuration.json';
@@ -54,12 +61,6 @@ type CohortFormProps = {
   windowDifferenceOptions: Record<string, string>,
 };
 
-type FormRowProps = {
-  children: React.ReactNode,
-  label: string,
-  tooltip: string,
-};
-
 const EMPTY_COHORT: Cohort = {
   RecruitmentTarget: '',
   id: 'new',
@@ -88,33 +89,13 @@ function formValues(cohort: Cohort): CohortValues {
 }
 
 /**
- * Render one labelled cohort form row.
- *
- * @param {FormRowProps} props Row properties
- * @return {React.ReactElement}
- */
-function FormRow(props: FormRowProps): React.ReactElement {
-  return (
-    <div className="form-group">
-      <div
-        className="col-sm-12 col-md-3"
-        title={props.tooltip}
-      >
-        <label className="col-sm-12 control-label">{props.label}</label>
-      </div>
-      <div className="col-sm-12 col-md-9">{props.children}</div>
-    </div>
-  );
-}
-
-/**
  * Create or edit one cohort through the established guarded endpoint.
  *
  * @param {CohortFormProps} props Form properties
  * @return {React.ReactElement}
  */
 function CohortForm(props: CohortFormProps): React.ReactElement {
-  const [defaults] = useState(() => formValues(props.cohort));
+  const [defaults, setDefaults] = useState(() => formValues(props.cohort));
   const [values, setValues] = useState<CohortValues>(defaults);
   const [status, setStatus] = useState<SaveStatus>(null);
   const [saving, setSaving] = useState(false);
@@ -122,10 +103,10 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
   /**
    * Update one controlled field and clear its prior save status.
    *
-   * @param {keyof CohortValues} name Field name
+   * @param {string} name Field name
    * @param {string} value Field value
    */
-  const updateValue = (name: keyof CohortValues, value: string) => {
+  const updateValue = (name: string, value: string) => {
     setValues((current) => ({...current, [name]: value}));
     setStatus(null);
   };
@@ -133,9 +114,9 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
   /**
    * Submit the cohort values to the existing update endpoint.
    *
-   * @param {React.FormEvent<HTMLFormElement>} event Submit event
+   * @param {React.SyntheticEvent} event Submit event
    */
-  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     setSaving(true);
     setStatus(null);
@@ -154,6 +135,7 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
         body
       );
 
+      setDefaults(values);
       setStatus({
         message: responseData.ok
           ?? props.t('Successfully saved', {ns: 'configuration'}),
@@ -179,13 +161,7 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
   const fieldPrefix = props.isNew ? 'new-cohort' : `cohort-${props.cohortID}`;
 
   return (
-    <form
-      className="form-horizontal"
-      id={`form${fieldPrefix}`}
-      method="post"
-      onSubmit={submit}
-      role="form"
-    >
+    <FormElement name={fieldPrefix} id={`form${fieldPrefix}`} onSubmit={submit}>
       <fieldset>
         <input
           className="cohortID"
@@ -205,18 +181,15 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
             )}
           </div>
         )}
-        <FormRow
-          label={props.t('Cohort Name', {ns: 'configuration'})}
-          tooltip={props.t(
-            'Full descriptive title of the cohort',
-            {ns: 'configuration'}
-          )}
-        >
-          <input
-            className="form-control cohortTitle"
+        <div title={props.t(
+          'Full descriptive title of the cohort',
+          {ns: 'configuration'}
+        )}>
+          <TextboxElement
+            label={props.t('Cohort Name', {ns: 'configuration'})}
             id={`${fieldPrefix}-title`}
             name="title"
-            onChange={(event) => updateValue('title', event.target.value)}
+            onUserInput={updateValue}
             placeholder={props.isNew
               ? props.t(
                 'Please add a cohort title here',
@@ -225,76 +198,65 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
               : undefined}
             value={values.title}
           />
-        </FormRow>
-        <FormRow
-          label={props.t('Use EDC', {ns: 'configuration'})}
-          tooltip={props.t(
-            'Include field for EDC (Expected Date of Confinement) in '
-              + 'Candidate Parameters to record subject\'s due date if '
-              + 'applicable',
-            {ns: 'configuration'}
-          )}
-        >
-          <select
-            className="form-control cohortuseEDC"
+        </div>
+        <div title={props.t(
+          'Include field for EDC (Expected Date of Confinement) in '
+            + 'Candidate Parameters to record subject\'s due date if '
+            + 'applicable',
+          {ns: 'configuration'}
+        )}>
+          <SelectElement
+            label={props.t('Use EDC', {ns: 'configuration'})}
             id={`${fieldPrefix}-use-edc`}
             name="useEDC"
-            onChange={(event) => updateValue('useEDC', event.target.value)}
+            onUserInput={updateValue}
             value={values.useEDC}
-          >
-            {Object.entries(props.useEDCOptions).map(([value, label]) => (
-              <option key={value} value={value}>
-                {props.t(label, {ns: 'loris'})}
-              </option>
+            options={Object.fromEntries(Object.entries(props.useEDCOptions).map(
+              ([value, label]) => [value, props.t(label, {ns: 'loris'})]
             ))}
-          </select>
-        </FormRow>
-        <FormRow
-          label={props.t(
-            'Calculate Window Difference For Instruments Based On',
-            {ns: 'configuration'}
-          )}
-          tooltip={props.t(
-            'Choose a method by which Window Difference will be calculated. '
-              + 'It will be displayed in days at the head of every '
-              + 'instrument form',
-            {ns: 'configuration'}
-          )}
-        >
-          <select
-            className="form-control cohortWindowDifference"
+            emptyOption={false}
+            autoSelect={false}
+            sortByValue={false}
+          />
+        </div>
+        <div title={props.t(
+          'Choose a method by which Window Difference will be calculated. '
+            + 'It will be displayed in days at the head of every '
+            + 'instrument form',
+          {ns: 'configuration'}
+        )}>
+          <SelectElement
+            label={props.t(
+              'Calculate Window Difference For Instruments Based On',
+              {ns: 'configuration'}
+            )}
             id={`${fieldPrefix}-window-difference`}
             name="WindowDifference"
-            onChange={(event) => updateValue(
-              'WindowDifference',
-              event.target.value
-            )}
+            onUserInput={updateValue}
             value={values.WindowDifference}
-          >
-            {Object.entries(props.windowDifferenceOptions).map(
-              ([value, label]) => (
-                <option key={value} value={value}>
-                  {props.t(label, {ns: 'configuration'})}
-                </option>
+            options={Object.fromEntries(
+              Object.entries(props.windowDifferenceOptions).map(
+                ([value, label]) => [
+                  value, props.t(label, {ns: 'configuration'}),
+                ]
               )
             )}
-          </select>
-        </FormRow>
-        <FormRow
-          label={props.t('Recruitment Target', {ns: 'configuration'})}
-          tooltip={props.t(
-            'The target number will be used to generate the recruitment '
-              + 'progress bar on the dashboard',
-            {ns: 'configuration'}
-          )}
-        >
-          <input
-            className="form-control cohortRecruitmentTarget"
+            emptyOption={false}
+            autoSelect={false}
+            sortByValue={false}
+          />
+        </div>
+        <div title={props.t(
+          'The target number will be used to generate the recruitment '
+            + 'progress bar on the dashboard',
+          {ns: 'configuration'}
+        )}>
+          <TextboxElement
+            label={props.t('Recruitment Target', {ns: 'configuration'})}
             id={`${fieldPrefix}-recruitment-target`}
             name="target"
-            onChange={(event) => updateValue(
-              'RecruitmentTarget',
-              event.target.value
+            onUserInput={(_name, value) => updateValue(
+              'RecruitmentTarget', value
             )}
             placeholder={props.t(
               'Please add a recruitment target here',
@@ -302,40 +264,36 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
             )}
             value={values.RecruitmentTarget}
           />
-        </FormRow>
-        <div className="form-group">
-          <div className="col-sm-offset-3 col-sm-9">
-            <button
-              className="btn btn-primary savecohort"
-              disabled={saving}
-              id={`savecohort${props.cohortID}`}
-              type="submit"
-            >
-              {props.t('Save', {ns: 'loris'})}
-            </button>{' '}
-            <button
-              className="btn btn-default"
-              onClick={() => {
-                setValues(defaults);
-                setStatus(null);
-              }}
-              type="button"
-            >
-              {props.t('Reset', {ns: 'loris'})}
-            </button>{' '}
-            {status && (
-              <label
-                className={
-                  status.type === 'success' ? 'text-success' : 'text-danger'
-                }
-              >
-                {status.message}
-              </label>
-            )}
-          </div>
         </div>
+        <ButtonElement
+          label={props.t('Save', {ns: 'loris'})}
+          disabled={saving}
+          id={`savecohort${props.cohortID}`}
+          type="submit"
+          onUserInput={submit}
+        />
+        <ButtonElement
+          label={props.t('Reset', {ns: 'loris'})}
+          buttonClass="btn btn-default"
+          onUserInput={() => {
+            setValues(defaults);
+            setStatus(null);
+          }}
+          type="button"
+        />
+        {status && (
+          <div className="col-sm-offset-3 col-sm-9">
+            <label
+              className={
+                status.type === 'success' ? 'text-success' : 'text-danger'
+              }
+            >
+              {status.message}
+            </label>
+          </div>
+        )}
       </fieldset>
-    </form>
+    </FormElement>
   );
 }
 
@@ -346,7 +304,6 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
  * @return {React.ReactElement}
  */
 function CohortManager(props: CohortManagerProps): React.ReactElement {
-  const [activeID, setActiveID] = useState('new');
   const [cohorts, setCohorts] = useState(props.data.cohorts);
 
   /**
@@ -379,92 +336,49 @@ function CohortManager(props: CohortManagerProps): React.ReactElement {
           {ns: 'configuration'}
         )}
       </p>
-      <div className="col-md-3">
-        <ul
-          className="nav nav-pills nav-stacked"
-          data-tabs="tabs"
-          role="tablist"
-        >
-          <li className={activeID === 'new' ? 'active' : undefined}>
-            <a
-              aria-selected={activeID === 'new'}
-              href="#cohortnew"
-              id="#cohortnew"
-              onClick={(event) => {
-                event.preventDefault();
-                setActiveID('new');
-              }}
-              role="tab"
-            >
-              {props.t('New CohortID', {ns: 'configuration'})}
-            </a>
-          </li>
-          {Object.entries(cohorts).map(([cohortID, cohort]) => (
-            <li
-              className={activeID === cohortID ? 'active' : undefined}
-              key={cohortID}
-            >
-              <a
-                aria-selected={activeID === cohortID}
-                href={`#cohort${cohortID}`}
-                id={`#cohort${cohortID}`}
-                onClick={(event) => {
-                  event.preventDefault();
-                  setActiveID(cohortID);
-                }}
-                role="tab"
-              >
-                {cohort.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="col-md-7">
-        <div className="tab-content">
-          {Object.entries(cohorts).map(([cohortID, cohort]) => (
-            <div
-              className={
-                `tab-pane${activeID === cohortID ? ' active' : ''}`
-              }
-              hidden={activeID !== cohortID}
-              id={`cohort${cohortID}`}
-              key={cohortID}
-            >
-              <h2>{cohort.title} (CohortID: {cohortID})</h2>
-              <br/>
-              <CohortForm
-                cohort={cohort}
-                cohortID={cohortID}
-                isNew={false}
-                onSaved={updateCohort}
-                t={props.t}
-                useEDCOptions={props.data.useEDCOptions}
-                windowDifferenceOptions={
-                  props.data.windowDifferenceOptions
-                }
-              />
-            </div>
-          ))}
-          <div
-            className={`tab-pane${activeID === 'new' ? ' active' : ''}`}
-            hidden={activeID !== 'new'}
-            id="cohortnew"
-          >
-            <h2>{props.t('New Cohort', {ns: 'configuration'})}</h2>
+      <VerticalTabs
+        tabs={[
+          {
+            id: 'cohortnew',
+            label: props.t('New CohortID', {ns: 'configuration'}),
+          },
+          ...Object.entries(cohorts).map(([cohortID, cohort]) => ({
+            id: `cohort${cohortID}`,
+            label: cohort.title,
+          })),
+        ]}
+        defaultTab="cohortnew"
+        updateURL={false}
+      >
+        {Object.entries(cohorts).map(([cohortID, cohort]) => (
+          <TabPane TabId={`cohort${cohortID}`} key={cohortID}>
+            <h2>{cohort.title} (CohortID: {cohortID})</h2>
             <br/>
             <CohortForm
-              cohort={EMPTY_COHORT}
-              cohortID="new"
-              isNew={true}
-              onSaved={() => undefined}
+              cohort={cohort}
+              cohortID={cohortID}
+              isNew={false}
+              onSaved={updateCohort}
               t={props.t}
               useEDCOptions={props.data.useEDCOptions}
               windowDifferenceOptions={props.data.windowDifferenceOptions}
             />
-          </div>
-        </div>
-      </div>
+          </TabPane>
+        ))}
+        <TabPane TabId="cohortnew">
+          <h2>{props.t('New Cohort', {ns: 'configuration'})}</h2>
+          <br/>
+          <CohortForm
+            cohort={EMPTY_COHORT}
+            cohortID="new"
+            isNew={true}
+            onSaved={() => undefined}
+            t={props.t}
+            useEDCOptions={props.data.useEDCOptions}
+            windowDifferenceOptions={props.data.windowDifferenceOptions}
+          />
+        </TabPane>
+      </VerticalTabs>
     </>
   );
 }
