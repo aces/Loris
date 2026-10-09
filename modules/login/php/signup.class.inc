@@ -63,6 +63,63 @@ class Signup extends \NDB_Page implements ETagCalculator
     }
 
     /**
+     * Checks if the given email or its domain is present in the blocklist.
+     * Evaluates allowed rules before blocked rules.
+     *
+     * @param string    $email The submitted email address
+     * @param \Database $DB    The database connection
+     *
+     * @return bool True if the request should be blocked
+     */
+    private function isRequestBlocked(string $email, \Database $DB): bool
+    {
+        $rawEmail = strtolower((trim($email)));
+        $normalizedEmail = preg_replace('/\+[^@]*/', '', $rawEmail);
+        $domainParts = explode('@', $rawEmail);
+        $domain = $domainParts[1] ?? '';
+
+        $query = "
+            SELECT Type
+            FROM account_request_filter
+            WHERE IsActive = 1
+                AND (ExpiresAt IS NULL OR ExpiresAt > NOW())
+                AND (
+                    (Type = 'AllowedEmail' AND Value IN (:rawEmail, :normEmail)) OR
+                    (Type = 'AllowedDomain' AND Value = :domain) OR
+                    (Type = 'BlockedEmail' AND Value IN (:rawEmail, :normEmail)) OR
+                    (Type = 'BlockedDomain' AND Value = :domain)
+                )
+        ";
+
+        $rules = iterator_to_array(
+            $DB->pselect(
+                $query,
+                [
+                    'rawEmail' => $rawEmail,
+                    'normEmail' => $normalizedEmail,
+                    'domain' => $domain
+                ]
+            )
+        );
+
+        $isBlocked = false;
+        $precedence = ['AllowedEmail', 'AllowedDomain', 'BlockedEmail', 'BlockedDomain'];
+    
+        foreach ($precedence as $rule) {
+            foreach ($rules as $r){
+                if ($r['Type'] === $rule) {
+                    if ($rule === 'BlockedEmail' || $rule === 'BlockedDomain'){
+                        $isBlocked = true;
+                    }
+                    break 2;
+                }
+            }
+        }
+
+        return $isBlocked;
+    }
+
+    /**
      * Process request account form.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request.
@@ -152,6 +209,12 @@ class Signup extends \NDB_Page implements ETagCalculator
             return new \LORIS\Http\Response\JSON\Conflict(
                 dgettext('login', 'Please provide a valid email address!')
             );
+        }
+
+        // Blocklist Check: Fail fast and silently reject if the email or domain is blocked.
+        if ($this->isRequestBlocked($from, $DB)){
+            //Return a fake 200 OK success JSON response, as following the security concept called "Tarpitting" or "Silent Rejection"
+            return new \LORIS\Http\Response\JsonResponse($values);
         }
 
         // Check email address' uniqueness
