@@ -1,10 +1,10 @@
 -- =============================================================================
 -- Author:    Priyavrat Dev Sharma
--- Purpose:   Creates the account_request_blocklist table to block or allow
+-- Purpose:   Creates the account_request_filter table to block or allow
 --            account requests by email address or domain.
 -- =============================================================================
 
-CREATE TABLE IF NOT EXISTS `account_request_blocklist` (
+CREATE TABLE IF NOT EXISTS `account_request_filter` (
   `BlockID`      INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `Type`         VARCHAR(32)      NOT NULL
                  COMMENT 'Rule type: BlockedEmail, BlockedDomain, AllowedEmail, AllowedDomain',

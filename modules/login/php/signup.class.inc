@@ -71,12 +71,12 @@ class Signup extends \NDB_Page implements ETagCalculator
      *
      * @return bool True if the request should be blocked
      */
-    private function isRequestBlocked(string $email, \Database $DB): bool
+    private function _isRequestBlocked(string $email, \Database $DB): bool
     {
-        $rawEmail = strtolower((trim($email)));
+        $rawEmail        = strtolower((trim($email)));
         $normalizedEmail = preg_replace('/\+[^@]*/', '', $rawEmail);
-        $domainParts = explode('@', $rawEmail);
-        $domain = $domainParts[1] ?? '';
+        $domainParts     = explode('@', $rawEmail);
+        $domain          = $domainParts[1] ?? '';
 
         $query = "
             SELECT Type
@@ -95,20 +95,26 @@ class Signup extends \NDB_Page implements ETagCalculator
             $DB->pselect(
                 $query,
                 [
-                    'rawEmail' => $rawEmail,
+                    'rawEmail'  => $rawEmail,
                     'normEmail' => $normalizedEmail,
-                    'domain' => $domain
+                    'domain'    => $domain
                 ]
             )
         );
 
-        $isBlocked = false;
-        $precedence = ['AllowedEmail', 'AllowedDomain', 'BlockedEmail', 'BlockedDomain'];
-    
+        $isBlocked  = false;
+        $precedence
+            = [
+                'AllowedEmail',
+                'AllowedDomain',
+                'BlockedEmail',
+                'BlockedDomain'
+            ];
+
         foreach ($precedence as $rule) {
-            foreach ($rules as $r){
+            foreach ($rules as $r) {
                 if ($r['Type'] === $rule) {
-                    if ($rule === 'BlockedEmail' || $rule === 'BlockedDomain'){
+                    if ($rule === 'BlockedEmail' || $rule === 'BlockedDomain') {
                         $isBlocked = true;
                     }
                     break 2;
@@ -211,9 +217,12 @@ class Signup extends \NDB_Page implements ETagCalculator
             );
         }
 
-        // Blocklist Check: Fail fast and silently reject if the email or domain is blocked.
-        if ($this->isRequestBlocked($from, $DB)){
-            //Return a fake 200 OK success JSON response, as following the security concept called "Tarpitting" or "Silent Rejection"
+        // Blocklist Check: Fail fast and silently reject if
+        // the email or domain is blocked.
+        if ($this->_isRequestBlocked($from, $DB)) {
+            // Return a fake 200 OK success JSON response,
+            // as following the security concept
+            // called "Tarpitting" or "Silent Rejection".
             return new \LORIS\Http\Response\JsonResponse($values);
         }
 
