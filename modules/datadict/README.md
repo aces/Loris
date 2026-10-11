@@ -11,7 +11,7 @@ The module displays and manages the data dictionary for fields
 already stored in the LORIS `parameter_type` table. This table is
 generally autopopulated and provides a dictionary for imaging headers
 (populated by the imaging pipeline) and behavioural instruments
-(populated by the `lorisform_parser.php` script).
+(populated by the `tools/ip_output_builder.php` script).
 
 It does not provide a way to enter new fields into the data dictionary,
 or describe the data dictionary for arbitrary SQL fields which are
@@ -34,7 +34,7 @@ The data comes from two sources:
 1. The LORIS imaging pipeline scripts, which must be setup separately
 2. The `tools/data_dictionary_builder.php` script, which loads the
    behavioural data dictionary based on the `ip_output.txt` file created
-   by `tools/lorisform_parser.php`
+   by `tools/ip_output_builder.php`
 
 ## Interactions with LORIS
 

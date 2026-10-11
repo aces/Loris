@@ -255,11 +255,9 @@ function writeLINSTFile(
         } else {
             // write field line
             fwrite($fp, "$field\n");
-
         }
     }
 
-    fwrite($fp, "{-@-}\n");
     fclose($fp);
 
     // META file
