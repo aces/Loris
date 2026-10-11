@@ -87,13 +87,42 @@ class Methylation extends Component {
       const url = `${this.props.baseURL}/${rowData.DCCID}/`;
       reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
       break;
+
+    case 'CPG Name':
+    case 'Gene':
+    case 'Accession number':
+    case 'Island Loc':
+      reactElement = (
+        <td>
+          {String(cell || '')
+            .split(',')
+            .map((v) => v.trim())
+            .filter(Boolean)
+            .map((val, i, arr) => (
+              <span key={i}>
+                <a
+                  href={
+                    'https://genome.ucsc.edu/cgi-bin/' +
+                    `hgTracks?db=hg19&position=${val}`
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {val}
+                </a>
+                {i < arr.length - 1 ? ', ' : ''}
+              </span>
+            ))}
+        </td>
+      );
+      break;
+
     default:
       reactElement = <td>{cell}</td>;
       break;
     }
     return reactElement;
   }
-
   /**
    * @return {DOMRect}
    */
@@ -162,7 +191,7 @@ class Methylation extends Component {
       },
       {
         label: t('CPG Name', {ns: 'genomic_browser'}),
-        show: false,
+        show: true,
         filter: {
           name: 'File',
           type: 'text',
