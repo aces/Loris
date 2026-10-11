@@ -136,7 +136,7 @@ class SurveyAccountsIndex extends Component {
       },
       {label: t('URL', {ns: 'survey_accounts'}), show: true},
       {
-        label: t('Status', {ns: 'survey_accounts'}), show: true, filter: {
+        label: t('Status', {ns: 'loris'}), show: true, filter: {
           name: 'Status',
           type: 'select',
           options: options.statusOptions,
