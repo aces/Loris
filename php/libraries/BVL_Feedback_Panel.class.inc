@@ -112,7 +112,7 @@ class BVL_Feedback_Panel
         // Get field names
         $field_names = Utility::getSourcefields($test_name);
         $fields      = [];
-        $fields['Across All Fields'] = 'Across All Fields';
+        $fields['Across All Fields'] = dgettext('bvl_feedback', 'Across All Fields');
         foreach ($field_names as $field_name) {
             $fields[$field_name['SourceField']] = $field_name['SourceField'];
         }

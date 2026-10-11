@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 
-import {withTranslation} from 'react-i18next';
+import {withTranslation, Trans} from 'react-i18next';
 import i18n from 'I18nSetup';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/bvl_feedback.json';
@@ -189,7 +189,7 @@ class FeedbackPanelContent extends Component {
 
     return (
       <div className='panel-body'>{t(
-        'There are no threads for this user!'
+        'There are no threads for this user!', {ns: 'bvl_feedback'}
       )}</div>
     );
   }
@@ -359,10 +359,11 @@ class FeedbackPanelRow extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
+    const {t} = this.props;
     let arrow = 'glyphicon glyphicon-chevron-right glyphs';
     let threadEntries = [];
 
-    let buttonText = 'closed';
+    let buttonText = t('closed', {ns: 'bvl_feedback'});
     let buttonClass = 'btn btn-success dropdown-toggle btn-sm';
     let dropdown = (<li><a onClick={this.props.onClickOpen}>{this.props.t(
       'Open',
@@ -425,7 +426,7 @@ class FeedbackPanelRow extends Component {
     }
 
     if (this.props.status === 'opened') {
-      buttonText = 'opened';
+      buttonText = t('opened', {ns: 'bvl_feedback'});
       buttonClass = 'btn btn-danger dropdown-toggle btn-sm';
       dropdown = (<li><a onClick={this.props.onClickClose}>{this.props.t(
         'Close',
@@ -445,7 +446,17 @@ class FeedbackPanelRow extends Component {
           {this.props.fieldname ?
             <td>{this.props.fieldname}<br/>{this.props.type}</td> :
             <td>{this.props.type}</td>}
-          <td>{this.props.author} on:<br/>{this.props.date}</td>
+          <td>
+            <Trans
+              ns="bvl_feedback"
+              defaults="{{author}} on:<0/>{{date}}"
+              components={[<br />]}
+              values={{
+                author: this.props.author,
+                date: this.props.date,
+              }}
+            />
+          </td>
           <td>
             <div className='btn-group'>
               <button name='thread_button' type='button' className={buttonClass}
@@ -986,7 +997,7 @@ class FeedbackSummaryPanel extends Component {
             <tr className='info' key='info'>
               <th>{this.props.t('QC Class', {ns: 'bvl_feedback'})}</th>
               <th>{this.props.t('Instrument', {ns: 'loris', count: 1})}</th>
-              <th>{this.props.t('Visit', {ns: 'loris', count: 1})}</th>
+              <th>{this.props.t('Visit Label', {ns: 'loris'})}</th>
               <th>{this.props.t('# Threads', {ns: 'bvl_feedback'})}</th>
             </tr>
           </thead>
