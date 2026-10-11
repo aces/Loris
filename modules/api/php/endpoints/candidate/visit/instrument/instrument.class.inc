@@ -97,7 +97,10 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (!$this->_instrument->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'This user can not update this instrument'
+                dgettext(
+                    'api',
+                    'This user can not update this instrument'
+                )
             );
         }
 
@@ -173,20 +176,29 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Can not update instruments that are flagged as complete.'
+                dgettext(
+                    'api',
+                    'Can not update instruments that are flagged as complete.'
+                )
             );
         }
 
         $data = json_decode((string) $request->getBody(), true);
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                dgettext(
+                    'api',
+                    'Invalid request'
+                )
             );
         }
 
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+                dgettext(
+                    'api',
+                    'Could not update.'
+                )
             );
         }
 
@@ -220,20 +232,29 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Can not update instruments that are flagged as complete.'
+                dgettext(
+                    'api',
+                    'Can not update instruments that are flagged as complete.'
+                )
             );
         }
 
         $data = json_decode((string) $request->getBody(), true);
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Invalid request'
+                dgettext(
+                    'api',
+                    'Invalid request'
+                )
             );
         }
 
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                'Could not update.'
+                dgettext(
+                    'api',
+                    'Could not update.'
+                )
             );
         }
 

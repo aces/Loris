@@ -62,7 +62,9 @@ abstract class Endpoint extends LORISEndpoint implements RequestHandlerInterface
         if (!in_array($version, $versions)) {
             // If it's not supported by a version of the API, that means the
             // endpoint for that version should be not found
-            return new \LORIS\Http\Response\JSON\NotFound('Unsupported version');
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext('api', 'Unsupported version')
+            );
         }
 
         return parent::process($request, $handler);
