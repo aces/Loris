@@ -128,11 +128,7 @@ class Edit_Help_Content extends \NDB_Form
         if ($data['helpid']) {
             $help_data          = HelpFile::factory($data['helpid'])->toArray();
             $data['title']      = $help_data['topic'];
-            $data['content']    = htmlspecialchars_decode(
-                trim(
-                    $help_data['content']
-                )
-            );
+            $data['content']    = trim($help_data['content']);
             $data['instrument'] = $help_data['instrument'];
             $data['instrumentslist'] = [];
             $instrumentList          = \NDB_BVL_Instrument::getInstrumentNamesList(
@@ -161,7 +157,13 @@ class Edit_Help_Content extends \NDB_Form
 
         $data['edit_help_text'] = dgettext('help_editor', 'Edit Help Content');
         $data['display_title']  = !empty($data['title']) ? $data['title'] :
-         $data['edit_help_text'];
+        $data['edit_help_text'];
+
+        $data['title']      = json_encode($data['title']);
+        $data['content']    = json_encode($data['content']);
+        $data['section']    = json_encode($data['section']);
+        $data['subsection'] = json_encode($data['subsection']);
+        $data['instrument'] = json_encode($data['instrument'] ?? null);
 
         $this->tpl_data = $data;
         return (new \LORIS\Http\Response())

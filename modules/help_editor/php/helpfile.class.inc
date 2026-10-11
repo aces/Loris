@@ -99,7 +99,7 @@ class HelpFile
         $DB = \NDB_Factory::singleton()->database();
 
         // insert a help file
-        $DB->insert('help', $set);
+        $DB->unsafeinsert('help', $set);
         // return the help ID
         return intval($DB->lastInsertID);
     }
@@ -115,7 +115,7 @@ class HelpFile
     {
         // update the help file
         \NDB_Factory::singleton()->database()
-            ->update('help', $set, ['helpID' => $this->helpID]);
+            ->unsafeupdate('help', $set, ['helpID' => $this->helpID]);
 
         return true;
     }
