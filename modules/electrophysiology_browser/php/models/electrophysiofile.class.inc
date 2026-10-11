@@ -192,4 +192,35 @@ class ElectrophysioFile implements \LORIS\Data\DataInstance
     {
         return '';
     }
+
+    /**
+     * Check whether a user can access this data instance.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool
+    {
+        $sessionID = $this->getParameter('SessionID');
+        if ($sessionID === '') {
+            return false;
+        }
+
+        try {
+            $timepoint = \NDB_Factory::singleton()->timepoint(
+                new \SessionID($sessionID)
+            );
+        } catch (\Throwable) {
+            return false;
+        }
+
+        return (
+            $user->hasPermission('electrophysiology_browser_view_allsites')
+            || (
+                $user->hasCenter($timepoint->getCenterID())
+                && $user->hasPermission('electrophysiology_browser_view_site')
+            )
+        ) && $user->hasProject($timepoint->getProject()->getId());
+    }
 }

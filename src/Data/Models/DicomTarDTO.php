@@ -68,6 +68,7 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
     {
         return $this->tarname;
     }
+
     /**
      * Accessor for ArchiveLocation
      *
@@ -118,5 +119,17 @@ class DicomTarDTO implements \LORIS\Data\DataInstance
                 'patientname' => $this->patientname,
                 'series'      => $series,
                ];
+    }
+
+    /**
+     * Check whether a user can access this data instance.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    public function isAccessibleBy(\User $user): bool
+    {
+        return true;
     }
 }
