@@ -48,6 +48,25 @@ msgstr "Se déconnecter"
 msgid "My Preferences"
 msgstr "Mes préférences"
 
+msgid "by"
+msgstr "par"
+
+msgid "Powered by"
+msgstr "Développé par"
+
+msgid "Created by"
+msgstr "Créé par"
+
+msgid "Developed at"
+msgstr "Développé par"
+
+msgid "The Neuro (Montreal Neurological Institute-Hospital)"
+msgstr "Le Neuro (L'Institut-Hôpital neurologique de Montréal)"
+
+msgid "All rights reserved."
+msgstr "Tous droits réservés."
+
+
 # Auto extracted strings from PHP
 # Menu categories
 #: modules/configuration/php/module.class.inc:50
