@@ -40,11 +40,13 @@ class CNV
      */
     public function __construct($platform_options, $sites, $cohorts)
     {
+        $sexes = \Utility::getSexList();
+        $sexes = array_combine($sexes, $sexes);
         $this->_formElement = [
             'Sites'    => $sites,
             'Cohorts'  => $cohorts,
             'Platform' => $platform_options,
-            'Sex'      => \Utility::getSexList(),
+            'Sex'      => $sexes,
         ];
     }
 

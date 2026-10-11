@@ -257,12 +257,14 @@ class SnpDTO implements DataInstance, SiteHaver
      */
     public function jsonSerialize(): array
     {
+        $cohort = $this->_Cohort;
         return [
-            'PSC'                 => $this->_PSC,
+            'PSC'                 => dgettext("psc", $this->_PSC),
             'DCCID'               => $this->_DCCID,
             'PSCID'               => $this->_PSCID,
-            'Sex'                 => $this->_Sex,
-            'Cohort'              => $this->_Cohort,
+            'Sex'                 => dgettext("sex", $this->_Sex),
+            'Cohort'              => $cohort ?
+                dgettext("cohort", $cohort) : $cohort,
             'externalID'          => $this->_externalID,
             'Chromosome'          => $this->_Chromosome,
             'Strand'              => $this->_Strand,
