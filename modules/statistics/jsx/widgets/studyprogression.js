@@ -8,6 +8,7 @@ import {setupCharts} from './helpers/chartBuilder';
 import {useTranslation} from 'react-i18next';
 import jaStrings from '../../locale/ja/LC_MESSAGES/statistics.json';
 import frStrings from '../../locale/fr/LC_MESSAGES/statistics.json';
+import zhStrings from '../../locale/zh/LC_MESSAGES/statistics.json';
 
 /**
  * StudyProgression - a widget containing statistics for study data.
@@ -23,6 +24,7 @@ const StudyProgression = (props) => {
   useEffect( () => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
     i18n.addResourceBundle('fr', 'statistics', frStrings);
+    i18n.addResourceBundle('zh', 'statistics', zhStrings);
 
     // Re-set default state that depended on the translation
     let newdetails = {...chartDetails};
@@ -30,6 +32,7 @@ const StudyProgression = (props) => {
       = t('Scan sessions per site', {ns: 'statistics'});
     newdetails['total_recruitment']['siterecruitment_bymonth']['title']
       = t('Recruitment per site', {ns: 'statistics'});
+
     newdetails['project_sizes']['size_byproject']['title']
       = t('Dataset size breakdown by project', {ns: 'statistics'});
     newdetails['project_sizes']['size_byproject']['label']
@@ -40,6 +43,11 @@ const StudyProgression = (props) => {
       = t('Size (GB)', {ns: 'statistics'});
     newdetails['project_sizes']['size_byproject']['titlePrefix']
       = t('Project', {ns: 'loris'});
+    newdetails['project_sizes']['size_byproject']['title']
+      = t('Dataset size breakdown by project', {ns: 'statistics'});
+
+    newdetails['project_sizes']['size_byproject']['label']
+      = t('Size (GB)', {ns: 'statistics'});
     setChartDetails(newdetails);
   }, []);
 
