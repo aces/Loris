@@ -89,16 +89,28 @@ class Module extends \Module
 
         $categoryitems = [];
 
-        // Get the instruments that the user has access to based on their Projects
-        $userVisits  = $user->getVisits();
+        // Get the instruments that the user has access to based on their visits.
+        $params       = [];
+        $placeholders = [];
+        foreach (array_keys($user->getVisits()) as $i => $visitLabel) {
+            $params["vl$i"] = $visitLabel;
+            $placeholders[] = ":vl$i";
+        }
         $instruments = [];
-        foreach ($userVisits as $visitLabel => $_) {
-            $visitInstruments = \Utility::getVisitInstruments($visitLabel);
-            foreach ($visitInstruments as $testName => $fullName) {
-                if (!isset($instruments[$testName])) {
-                    $instruments[$testName] = $fullName;
-                }
-            }
+        if (count($placeholders) > 0) {
+            $instruments = array_flip(
+                $loris->getDatabaseConnection()->pselectCol(
+                    "SELECT DISTINCT t.Test_name
+                    FROM session s
+                    JOIN candidate c ON (c.ID=s.CandidateID)
+                    JOIN flag f ON (f.sessionID=s.id)
+                    JOIN test_names t ON (f.TestID=t.ID)
+                    WHERE c.Active='Y' AND s.Active='Y'
+                    AND s.Visit_label IN (" . join(',', $placeholders) . ")
+                    AND s.CenterID != '1' AND c.Entity_type != 'Scanner'",
+                    $params
+                )
+            );
         }
         foreach ($modules as $module) {
             if ($formodule !== null && $module->getName() !== $formodule) {
