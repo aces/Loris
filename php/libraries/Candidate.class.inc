@@ -1350,15 +1350,16 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                     "/FORMAT{$escaped}:(numeric|alphanumeric|alpha)/i",
                     $matches[3],
                     $type
-                )) {
+                )
+                ) {
                     switch (strtolower($type[1])) {
-                        case 'alphanumeric':
-                            $characters = '[0-9A-Z]';
-                            break;
+                    case 'alphanumeric':
+                        $characters = '[0-9A-Z]';
+                        break;
 
-                        case 'alpha':
-                            $characters = '[A-Z]';
-                            break;
+                    case 'alpha':
+                        $characters = '[A-Z]';
+                        break;
                     }
                 }
 
@@ -1368,7 +1369,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         );
 
         $regex = preg_replace_callback(
-            "/{$escaped}\{(NUMERIC|ALPHANUMERIC|ALPHA){$escaped}:(\d+){$escaped}\}/i",
+            "/{$escaped}\{(NUMERIC|ALPHANUMERIC|ALPHA)"
+                . "{$escaped}:(\d+){$escaped}\}/i",
             function ($matches) {
                 $characters = match (strtoupper($matches[1])) {
                     'NUMERIC'      => '[0-9]',
