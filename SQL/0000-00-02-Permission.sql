@@ -179,6 +179,10 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('biobank_pool_create','Pools',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
     ('biobank_fullsiteaccess','Full Site Access',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
     ('biobank_fullprojectaccess','Full Project Access',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('view_policy_decisions', 'Policy Decisions',
+        (SELECT ID FROM modules WHERE Name='policy_tracker'), 2),
+    ('edit_policies', 'Policies',
+        (SELECT ID FROM modules WHERE Name='policy_tracker'), 2),
     ('dataquery_view','Cross-Modality Data',(SELECT ID FROM modules WHERE Name='dataquery'),2);
 
 INSERT INTO `user_perm_rel` (userID, permID)
@@ -289,6 +293,9 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'biobank_pool_create'),2),
   ((SELECT permID FROM permissions WHERE code = 'biobank_fullsiteaccess'),1),
   ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1),
+  ((SELECT permID FROM permissions WHERE code = 'view_policy_decisions'),1),
+  ((SELECT permID FROM permissions WHERE code = 'edit_policies'),2),
+  ((SELECT permID FROM permissions WHERE code = 'edit_policies'),3),
   ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1),
   ((SELECT permID FROM permissions WHERE code = 'dqt_view'),1),
   ((SELECT permID FROM permissions WHERE code = 'dqt_view'),8);
