@@ -1302,55 +1302,41 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $escaped = '\\\\';
 
         $regex = preg_replace_callback(
-            "/{$escaped}\{SEQUENCE{$escaped}:(\d+)([^}]*){$escaped}\}/i",
+            "/{$escaped}\{(SEQUENCE|RANDOM){$escaped}:(\d+)([^}]*){$escaped}\}/i",
             function ($matches) use ($escaped) {
                 $characters = '[0-9]';
 
                 if (preg_match(
                     "/FORMAT{$escaped}:(numeric|alphanumeric|alpha)/i",
-                    $matches[2],
+                    $matches[3],
                     $type
-                )
-                ) {
+                )) {
                     switch (strtolower($type[1])) {
-                    case 'alphanumeric':
-                        $characters = '[0-9A-Z]';
-                        break;
+                        case 'alphanumeric':
+                            $characters = '[0-9A-Z]';
+                            break;
 
-                    case 'alpha':
-                        $characters = '[A-Z]';
-                        break;
+                        case 'alpha':
+                            $characters = '[A-Z]';
+                            break;
                     }
                 }
 
-                return $characters . '{' . $matches[1] . '}';
+                return $characters . '{' . $matches[2] . '}';
             },
             $regex
         );
 
         $regex = preg_replace_callback(
-            "/{$escaped}\{RANDOM{$escaped}:(\d+)([^}]*){$escaped}\}/i",
-            function ($matches) use ($escaped) {
-                $characters = '[0-9]';
+            "/{$escaped}\{(NUMERIC|ALPHANUMERIC|ALPHA){$escaped}:(\d+){$escaped}\}/i",
+            function ($matches) {
+                $characters = match (strtoupper($matches[1])) {
+                    'NUMERIC'      => '[0-9]',
+                    'ALPHANUMERIC' => '[0-9A-Z]',
+                    'ALPHA'        => '[A-Z]',
+                };
 
-                if (preg_match(
-                    "/FORMAT{$escaped}:(numeric|alphanumeric|alpha)/i",
-                    $matches[2],
-                    $type
-                )
-                ) {
-                    switch (strtolower($type[1])) {
-                    case 'alphanumeric':
-                        $characters = '[0-9A-Z]';
-                        break;
-
-                    case 'alpha':
-                        $characters = '[A-Z]';
-                        break;
-                    }
-                }
-
-                return $characters . '{' . $matches[1] . '}';
+                return $characters . '{' . $matches[2] . '}';
             },
             $regex
         );

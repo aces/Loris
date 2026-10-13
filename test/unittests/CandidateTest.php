@@ -1152,6 +1152,34 @@ class CandidateTest extends TestCase
                 'RANDALPHANUM-{RANDOM:4,FORMAT:alphanumeric}'
             )
         );
+
+        $this->assertEquals(
+            '/^NUM\-[0-9]{4}$/i',
+            Candidate::structureToPCRE(
+                'NUM-{NUMERIC:4}'
+            )
+        );
+
+        $this->assertEquals(
+            '/^ALPHA\-[A-Z]{4}$/i',
+            Candidate::structureToPCRE(
+                'ALPHA-{ALPHA:4}'
+            )
+        );
+
+        $this->assertEquals(
+            '/^ALPHANUM\-[0-9A-Z]{6}$/i',
+            Candidate::structureToPCRE(
+                'ALPHANUM-{ALPHANUMERIC:6}'
+            )
+        );
+
+        // Valid and invalid manually entered values.
+        $pattern = Candidate::structureToPCRE('NUM-{NUMERIC:4}');
+
+        $this->assertSame(1, preg_match($pattern, 'NUM-1234'));
+        $this->assertSame(0, preg_match($pattern, 'NUM-12AB'));
+        $this->assertSame(0, preg_match($pattern, 'NUM-12345'));
     }
 
     /**

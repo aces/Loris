@@ -89,6 +89,37 @@ class CandidateIdentifierGeneratorTest extends TestCase
     }
 
     /**
+     * Tests that automatic generation requires SEQUENCE or RANDOM
+     *
+     * @return void
+     * @covers CandidateIdentifierGenerator::__construct
+     */
+    public function testGenerateRejectsManualOnlyFormat(): void
+    {
+        $identifierType = new \LORIS\IdentifierType(
+            candidateIdentifierTypeID: 1,
+            name: 'TestID',
+            format: '{NUMERIC:4}',
+            isRequired: true,
+            isUnique: true,
+            autoGenerate: true,
+            allowMultiple: false,
+        );
+
+        $this->expectException(\ConfigurationException::class);
+        $this->expectExceptionMessage(
+            'Invalid generation template for identifier type TestID'
+        );
+
+        new CandidateIdentifierGenerator(
+            $this->DB,
+            $identifierType,
+            'MTL',
+            'P1'
+        );
+    }
+
+    /**
      * Tests that the next sequential numeric identifier is generated correctly
      *
      * @return void
