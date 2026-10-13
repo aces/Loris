@@ -297,6 +297,82 @@ class CandidateIdentifierControllerTest extends TestCase
     }
 
     /**
+     * Tests that a manually entered identifier follows its format
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::createCandidateIdentifier
+     */
+    public function testCreateManualCandidateIdentifier(): void
+    {
+        $this->DB->update(
+            'candidate_identifier_types',
+            [
+                'Format'       => '{NUMERIC:4}',
+                'AutoGenerate' => 0,
+            ],
+            [
+                'CandidateIdentifierTypeID' => 1,
+            ]
+        );
+
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: null,
+                candidateID: 2,
+                type: $identifierType,
+                value: '5678',
+            );
+
+        $created = $this->candidateIdentifierController
+            ->createCandidateIdentifier($candidateIdentifier);
+
+        $this->assertSame('5678', $created->value);
+        $this->assertFalse($created->type->autoGenerate);
+    }
+
+    /**
+     * Tests that an invalid manually entered identifier is rejected
+     *
+     * @return void
+     * @covers \LORIS\CandidateIdentifierController::createCandidateIdentifier
+     */
+    public function testCreateManualCandidateIdentifierInvalidFormat(): void
+    {
+        $this->DB->update(
+            'candidate_identifier_types',
+            [
+                'Format'       => '{NUMERIC:4}',
+                'AutoGenerate' => 0,
+            ],
+            [
+                'CandidateIdentifierTypeID' => 1,
+            ]
+        );
+
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromID(1);
+
+        $candidateIdentifier
+            = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+                candidateIdentifierID: null,
+                candidateID: 2,
+                type: $identifierType,
+                value: '12AB',
+            );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Candidate identifier does not match the identifier type format'
+        );
+
+        $this->candidateIdentifierController
+            ->createCandidateIdentifier($candidateIdentifier);
+    }
+
+    /**
      * Tests that site and project aliases are resolved in the identifier format
      *
      * @return void
