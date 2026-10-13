@@ -66,6 +66,11 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function testdicomArchiveViewDetailsDoespageLoad()
     {
         $this->safeGet($this->url . "/dicom_archive/viewDetails/?tarchiveID=27");
+        $heading = $this->safeFindElement(
+            WebDriverBy::cssSelector('#lorisworkspace h2')
+        );
+        $this->assertSame('Tarchive Metadata', $heading->getText());
+
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString("View Details", $bodyText);
@@ -76,6 +81,59 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "An error occurred while loading the page.",
             $bodyText
+        );
+        $this->assertStringContainsString("Acquisition ID", $bodyText);
+        $this->assertStringContainsString("Show/Hide series", $bodyText);
+        $this->assertStringContainsString("Show/Hide files", $bodyText);
+
+        $seriesToggle = WebDriverBy::cssSelector(
+            'a[aria-controls="series-data"]'
+        );
+        $this->safeClick($seriesToggle);
+        $seriesTable = $this->safeFindElement(
+            WebDriverBy::cssSelector('#series-data table')
+        );
+        $this->assertTrue($seriesTable->isDisplayed());
+
+        $filesToggle = WebDriverBy::cssSelector(
+            'a[aria-controls="files-data"]'
+        );
+        $this->safeClick($filesToggle);
+        $filesTable = $this->safeFindElement(
+            WebDriverBy::cssSelector('#files-data table')
+        );
+        $this->assertTrue($filesTable->isDisplayed());
+    }
+
+    /**
+     * Tests that the view-details JSON contains only page metadata.
+     *
+     * @return void
+     */
+    function testDicomArchiveViewDetailsJsonDoesNotExposeUnusedColumns()
+    {
+        $this->safeGet(
+            $this->url
+            . "/dicom_archive/viewDetails/?tarchiveID=27&format=json"
+        );
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+            ->getText();
+        $data     = json_decode($bodyText, true, flags: JSON_THROW_ON_ERROR);
+
+        $this->assertArrayHasKey('archive', $data);
+        $this->assertArrayHasKey('archiveSeries', $data);
+        $this->assertArrayHasKey('archiveFiles', $data);
+        $this->assertArrayNotHasKey('AcquisitionMetadata', $data['archive']);
+        $this->assertArrayNotHasKey('SessionID', $data['archive']);
+        $this->assertArrayNotHasKey('TarchiveID', $data['archive']);
+        $this->assertArrayNotHasKey('Modality', $data['archiveSeries'][0]);
+        $this->assertArrayNotHasKey(
+            'TarchiveSeriesID',
+            $data['archiveSeries'][0]
+        );
+        $this->assertArrayNotHasKey(
+            'TarchiveFileID',
+            $data['archiveFiles'][0]
         );
     }
 
