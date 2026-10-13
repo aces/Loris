@@ -1188,9 +1188,13 @@ class CandidateTest extends TestCase
         // Valid and invalid manually entered values.
         $pattern = Candidate::structureToPCRE('NUM-{NUMERIC:4}');
 
-        $this->assertSame(1, preg_match($pattern, 'NUM-1234'));
-        $this->assertSame(0, preg_match($pattern, 'NUM-12AB'));
-        $this->assertSame(0, preg_match($pattern, 'NUM-12345'));
+        $validValue        = 'NUM-1234';
+        $invalidCharacters = 'NUM-12AB';
+        $invalidLength     = 'NUM-12345';
+
+        $this->assertSame(1, preg_match($pattern, $validValue));
+        $this->assertSame(0, preg_match($pattern, $invalidCharacters));
+        $this->assertSame(0, preg_match($pattern, $invalidLength));
     }
 
     /**
