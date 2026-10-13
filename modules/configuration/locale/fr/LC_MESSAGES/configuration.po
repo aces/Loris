@@ -64,14 +64,17 @@ msgstr "Veuillez saisir les différentes variables de configuration dans les cha
 msgid "To configure study cohorts"
 msgstr "Pour configurer les cohortes de l'étude"
 
-msgid "To configure study projects"
-msgstr "Pour configurer les projets de l'étude"
-
 msgid "click here"
 msgstr "cliquez ici"
 
-msgid "To configure the diagnosis trajectory of the study"
-msgstr "Pour configurer la trajectoire diagnostique de l'étude"
+msgid "To configure study cohorts <0>click here</0>."
+msgstr "Pour configurer les cohortes de l'étude, <0>cliquez ici</0>."
+
+msgid "To configure study projects <0>click here</0>."
+msgstr "Pour configurer les projets de l'étude, <0>cliquez ici</0>."
+
+msgid "To configure the diagnosis trajectory of the study <0>click here</0>."
+msgstr "Pour configurer la trajectoire diagnostique de l'étude, <0>cliquez ici</0>."
 
 msgid "Use this page to manage the configuration of existing projects, or to add a new one."
 msgstr "Utilisez cette page pour gérer la configuration des projets existants ou pour en ajouter un nouveau."
