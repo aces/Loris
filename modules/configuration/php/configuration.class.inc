@@ -94,6 +94,27 @@ class Configuration extends \NDB_Form
             'PatientID'   => dgettext('configuration', 'PatientID'),
             'PatientName' => dgettext('configuration', 'PatientName'),
         ];
+
+        try {
+            $lorisRoot       = $config->getSetting('base');
+            $uploadDirectory = $config->getSetting('config_upload_path');
+            if (!is_string($lorisRoot) || !is_string($uploadDirectory)) {
+                throw new \ConfigurationException(
+                    'The configuration image paths are invalid'
+                );
+            }
+            $images = new ImageFiles(
+                $lorisRoot,
+                $uploadDirectory
+            );
+            $this->tpl_data['image_options']        = $images->getOptions();
+            $this->tpl_data['image_upload_enabled']
+                = $images->getUploadDirectory()->isWritable();
+        } catch (\ConfigurationException $e) {
+            $this->tpl_data['image_options']        = [];
+            $this->tpl_data['image_upload_enabled'] = false;
+            $this->tpl_data['image_upload_error']   = $e->getMessage();
+        }
     }
 
     /**
