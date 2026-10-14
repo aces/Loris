@@ -6,6 +6,11 @@ type TableRow = (string|null)[]
 type Field = {
     show: boolean
     label: string
+    name?: string
+    filter?: object
+    value?: (row: any) => any
+    display?: (value: any, row: any) => any
+    format?: (value: any, row: any) => ReactNode
 }
 
 type hideOptions = {
@@ -14,9 +19,9 @@ type hideOptions = {
     defaultColumn: boolean
 }
 type DataTableProps = {
-    data: TableRow[]
+    data: TableRow[]|object[]
     rowNumLabel?: string
-    getFormattedCell: (label: string,
+    getFormattedCell?: (label: string,
         data: string,
         row: TableRow,
         headers: string[],
