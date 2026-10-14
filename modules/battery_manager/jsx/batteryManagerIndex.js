@@ -140,10 +140,9 @@ class BatteryManagerIndex extends Component {
    *
    * @param {string} column - column name
    * @param {string} cell - cell content
-   * @param {object} row - row content indexed by column
    * @return {*} a formated table cell for a given column
    */
-  formatColumn(column, cell, row) {
+  formatColumn(column, cell) {
     const {t} = this.props;
     cell = this.mapColumn(column, cell);
     let result = <td>{cell}</td>;
@@ -201,25 +200,69 @@ class BatteryManagerIndex extends Component {
   }
 
   /**
-   * Activate Test
+   * Sets the active status of one or more tests and reports the result
+   * once. A test is not activated if an identical active test exists.
    *
-   * @param {number} id
+   * @param {object[]} changes - {id, active} for each test to update
+   * @return {object} promise
    */
-  activateTest(id) {
-    const test = this.state.tests.find((test) => test.id === id);
-    test.active = 'Y';
-    this.saveTest(test, 'PUT');
-  }
+  setActive(changes) {
+    const {t} = this.props;
+    const tests = this.state.tests.map((test) => ({...test}));
+    const updated = [];
+    const skipped = [];
 
-  /**
-   * Deactivate Test
-   *
-   * @param {number} id
-   */
-  deactivateTest(id) {
-    const test = this.state.tests.find((test) => test.id === id);
-    test.active = 'N';
-    this.saveTest(test, 'PUT');
+    changes.forEach(({id, active}) => {
+      const test = tests.find((test) => test.id === id);
+      const duplicate = this.findDuplicate(test, tests);
+      if (active === 'Y' && duplicate && duplicate.active === 'Y') {
+        skipped.push(this.state.options.instruments[test.testName]);
+        return;
+      }
+      test.active = active;
+      updated.push(test);
+    });
+
+    const requests = updated.map((test) => fetch(
+      this.props.testEndpoint + test.id,
+      {
+        credentials: 'same-origin',
+        method: 'PUT',
+        body: JSON.stringify(test),
+      }
+    ).then((response) => {
+      if (!response.ok) {
+        return response.json()
+          .then((body) => Promise.reject(new Error(body.error)));
+      }
+    }));
+
+    return Promise.all(requests)
+      .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
+      .then(() => {
+        if (skipped.length > 0) {
+          swal.fire({
+            title: t('Test Duplicate', {ns: 'battery_manager'}),
+            text: t('You cannot duplicate an active test',
+              {ns: 'battery_manager'}) + ': ' + skipped.join(', '),
+            icon: 'warning',
+          });
+        } else {
+          swal.fire(
+            t('Submission Successful!', {ns: 'loris'}),
+            '',
+            'success'
+          );
+        }
+      })
+      .catch((e) => {
+        swal.fire({
+          title: t('Error', {ns: 'loris'}),
+          text: e.message || t('An error occurred while saving the test.',
+            {ns: 'battery_manager'}),
+          icon: 'error',
+        });
+      });
   }
 
   /**
@@ -417,29 +460,32 @@ class BatteryManagerIndex extends Component {
         label: t('Edit Metadata', {ns: 'battery_manager'}),
         title: t('Edit Test', {ns: 'battery_manager'}),
         isMulti: false,
+        throwWarning: true,
         show: hasPermission('battery_manager_edit'),
         onSubmit: () => this.saveTest(test, 'PUT'),
         onClose: this.closeForm,
         onUserInput: (rows) => this.loadTest(rows[0][0]),
-        renderForm: (rows) => {
-          return (
-            <BatteryManagerForm
-              test={test}
-              setTest={this.setTest}
-              add={add}
-              options={options}
-              errors={errors}
-            />
-          );
-        },
+        renderForm: () => (
+          <BatteryManagerForm
+            test={test}
+            setTest={this.setTest}
+            add={add}
+            options={options}
+            errors={errors}
+          />
+        ),
       },
       {
         name: 'activate',
         label: t('Activate', {ns: 'battery_manager'}),
         isMulti: true,
         show: hasPermission('battery_manager_edit'),
-        onUserInput: (rows) => rows.forEach(
-          (row) => this.activateTest(row[0])
+        validate: (rows) => (rows.every((row) => row[11] === 'Y')
+          ? t('The selected tests are already active.',
+            {ns: 'battery_manager'})
+          : null),
+        onUserInput: (rows) => this.setActive(
+          rows.map((row) => ({id: row[0], active: 'Y'}))
         ),
       },
       {
@@ -447,8 +493,12 @@ class BatteryManagerIndex extends Component {
         label: t('Deactivate', {ns: 'battery_manager'}),
         isMulti: true,
         show: hasPermission('battery_manager_edit'),
-        onUserInput: (rows) => rows.forEach(
-          (row) => this.deactivateTest(row[0])
+        validate: (rows) => (rows.every((row) => row[11] === 'N')
+          ? t('The selected tests are already inactive.',
+            {ns: 'battery_manager'})
+          : null),
+        onUserInput: (rows) => this.setActive(
+          rows.map((row) => ({id: row[0], active: 'N'}))
         ),
       },
     ];
@@ -501,6 +551,29 @@ class BatteryManagerIndex extends Component {
   }
 
   /**
+   * Finds another test with the same configuration as the given test.
+   *
+   * @param {object} test
+   * @param {object[]} tests - tests to search
+   * @return {object|undefined} the duplicate test, if any
+   */
+  findDuplicate(test, tests) {
+    const fields = [
+      'testName',
+      'ageMinDays',
+      'ageMaxDays',
+      'stage',
+      'cohort',
+      'visitLabel',
+      'centerId',
+      'firstVisit',
+      'DoubleDataEntryEnabled',
+    ];
+    return tests.find((other) => other.id !== test.id
+      && fields.every((field) => test[field] == other[field]));
+  }
+
+  /**
    * Checks whether the Test is a duplicate of an existing Test.
    *
    * @param {object} test
@@ -508,26 +581,10 @@ class BatteryManagerIndex extends Component {
    */
   checkDuplicate(test) {
     return new Promise((resolve, reject) => {
-      let duplicate;
-      this.state.tests.forEach((testCheck) => {
-        if (
-          test.testName == testCheck.testName &&
-          test.ageMinDays == testCheck.ageMinDays &&
-          test.ageMaxDays == testCheck.ageMaxDays &&
-          test.stage == testCheck.stage &&
-          test.cohort == testCheck.cohort &&
-          test.visitLabel == testCheck.visitLabel &&
-          test.centerId == testCheck.centerId &&
-          test.firstVisit == testCheck.firstVisit &&
-          test.DoubleDataEntryEnabled == testCheck.DoubleDataEntryEnabled
-        ) {
-          duplicate = testCheck;
-        }
-      });
-
+      const duplicate = this.findDuplicate(test, this.state.tests);
       const {t} = this.props;
 
-      if (duplicate && duplicate.id !== test.id) {
+      if (duplicate) {
         if (duplicate.active === 'N') {
           const edit = test.id
             ? t('This will deactivate the current test.',
@@ -554,10 +611,11 @@ class BatteryManagerIndex extends Component {
             showCancelButton: true,
           }).then((result) => {
             if (result.value) {
-              this.activateTest(duplicate.id);
-              if (test.id && (test.id !== duplicate.id)) {
-                this.deactivateTest(test.id);
+              const changes = [{id: duplicate.id, active: 'Y'}];
+              if (test.id) {
+                changes.push({id: test.id, active: 'N'});
               }
+              this.setActive(changes);
               this.closeForm();
             }
           });

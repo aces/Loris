@@ -282,8 +282,8 @@ class BatteryManagerTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests changing the status of the selected test through the
-     * Deactivate row action.
+     * Tests changing the status of the selected test through whichever of
+     * the Activate and Deactivate row actions applies to it.
      *
      * @return void
      */
@@ -291,7 +291,14 @@ class BatteryManagerTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/battery_manager/");
         $this->safeClick(WebDriverBy::cssSelector(self::$firstRowCheckbox));
-        $this->safeClick(WebDriverBy::cssSelector(self::$deactivate));
+        $deactivate = $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$deactivate)
+        );
+        if ($deactivate->isEnabled()) {
+            $deactivate->click();
+        } else {
+            $this->safeClick(WebDriverBy::cssSelector(self::$activate));
+        }
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#swal2-title")
         )->getText();

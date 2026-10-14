@@ -158,3 +158,9 @@ msgstr "Permission de modification refusée"
 
 msgid "Could not add entry to the Test Battery"
 msgstr "Impossible d'ajouter l'entrée à la batterie de tests."
+
+msgid "The selected tests are already active."
+msgstr "Les tests sélectionnés sont déjà actifs."
+
+msgid "The selected tests are already inactive."
+msgstr "Les tests sélectionnés sont déjà inactifs."

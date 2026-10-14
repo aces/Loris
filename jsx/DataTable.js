@@ -170,30 +170,42 @@ const DataTable = ({
    * @param {number} idx - The row's index into `data`
    */
   const toggleRow = (idx) => {
-    const newSelection = new Set(selectedRows);
-    if (newSelection.has(idx)) {
-      newSelection.delete(idx);
-    } else {
-      newSelection.add(idx);
-    }
-    setSelectedRows(newSelection);
+    setSelectedRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) {
+        next.delete(idx);
+      } else {
+        next.add(idx);
+      }
+      return next;
+    });
   };
 
   /**
    * Toggle selection of every row on the current page.
    */
   const toggleAllPageRows = () => {
-    const allSelected = paginatedRows.every((r) => selectedRows.has(r.RowIdx));
-    const newSelection = new Set(selectedRows);
-    paginatedRows.forEach((r) => {
-      if (allSelected) {
-        newSelection.delete(r.RowIdx);
-      } else {
-        newSelection.add(r.RowIdx);
-      }
+    setSelectedRows((prev) => {
+      const next = new Set(prev);
+      const allSelected = paginatedRows.every((r) => prev.has(r.RowIdx));
+      paginatedRows.forEach((r) => {
+        if (allSelected) {
+          next.delete(r.RowIdx);
+        } else {
+          next.add(r.RowIdx);
+        }
+      });
+      return next;
     });
-    setSelectedRows(newSelection);
   };
+
+  const filterKey = JSON.stringify(filters);
+
+  // Row indexes stop pointing at the same rows when the data or the filters
+  // change, so the selection is cleared.
+  useEffect(() => {
+    setSelectedRows(new Set());
+  }, [data.length, filterKey]);
 
   /**
    * Updates page state
@@ -483,6 +495,15 @@ const DataTable = ({
     marginLeft: 'auto',
   };
 
+  const rowActionsStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '5px',
+    marginRight: '15px',
+    paddingRight: '15px',
+    borderRight: '1px solid #ddd',
+  };
+
   const visibleRowActions = (rowActions || []).filter(
     (action) => action.show !== false
   );
@@ -491,59 +512,43 @@ const DataTable = ({
   /**
    * Renders the bulk action buttons for the currently selected rows.
    *
-   * @return {JSX.Element[]|null}
+   * @return {JSX.Element[]}
    */
   const renderRowActions = () => {
     const selectedData = Array.from(selectedRows).map((idx) => data[idx]);
+    const count = selectedData.length;
+    const clearSelection = () => setSelectedRows(new Set());
 
     return visibleRowActions.map((action) => {
-      const count = selectedData.length;
-      let isDisabled = false;
-      let tooltip = '';
-
+      let reason = null;
       if (count === 0) {
-        isDisabled = true;
-        tooltip = t('Please select at least one row.');
+        reason = t('Please select at least one row.');
       } else if (!action.isMulti && count > 1) {
-        isDisabled = true;
-        tooltip = t('This action only supports a single row.');
+        reason = t('This action only supports a single row.');
+      } else if (action.validate) {
+        reason = action.validate(selectedData);
       }
-
-      if (!isDisabled && action.validate) {
-        const result = action.validate(selectedData);
-        if (result.disabled) {
-          isDisabled = true;
-          tooltip = result.reason;
-        }
-      }
-
-      const sharedProps = {
-        label: action.label,
-        disabled: isDisabled,
-        tooltip: tooltip,
-        onUserInput: () => action.onUserInput?.(selectedData),
-      };
 
       const content = action.renderForm ? (
         <TriggerableModal
-          {...sharedProps}
+          label={action.label}
+          disabled={!!reason}
           title={action.title}
+          throwWarning={action.throwWarning}
+          onUserInput={() => action.onUserInput?.(selectedData)}
           onSubmit={action.onSubmit}
+          onSuccess={clearSelection}
           onClose={action.onClose}
-          onSuccess={(res) => {
-            action.onSuccess?.(res);
-            if (action.isMulti) setSelectedRows(new Set());
-          }}
         >
           {count > 0 ? action.renderForm(selectedData) : null}
         </TriggerableModal>
       ) : (
         <CTA
-          {...sharedProps}
+          label={action.label}
+          disabled={!!reason}
           onUserInput={() => {
-            sharedProps.onUserInput();
-            action.onSuccess?.();
-            if (action.isMulti) setSelectedRows(new Set());
+            action.onUserInput?.(selectedData);
+            clearSelection();
           }}
         />
       );
@@ -552,7 +557,7 @@ const DataTable = ({
         <span
           key={action.name || action.label}
           className={action.name ? `action-${action.name}` : undefined}
-          title={tooltip}
+          title={reason || undefined}
         >
           {content}
         </span>
@@ -564,19 +569,21 @@ const DataTable = ({
     <div className="row">
       <div style={tableControlStyle}>
         <div style={{order: '1', padding: '5px 0'}}>
-          {showActions && renderRowActions()}
-          {showActions && selectedRows.size > 0 && (
-            <span style={{fontSize: '12px', marginRight: '8px'}}>
-              <strong style={{color: '#E89A0C'}}>{selectedRows.size}</strong>
-              <span style={{color: '#666', marginLeft: '4px'}}>
-                {t('selected')}
-              </span>
+          {showActions && hasRowActions && (
+            <span style={rowActionsStyle}>
+              {renderRowActions()}
+              {selectedRows.size > 0 && (
+                <span>
+                  <strong>{selectedRows.size}</strong> {t('selected')}
+                </span>
+              )}
             </span>
           )}
           {t('{{pageCount}} rows displayed of {{totalCount}}.', {
             pageCount: paginatedRows.length,
             totalCount: filteredRowIndexes.length,
           })}
+          {' '}
           <span>
             ({t('Maximum rows per page:')}
             <select
@@ -649,6 +656,7 @@ const DataTable = ({
               <th style={{width: '40px', textAlign: 'center'}}>
                 <input
                   type="checkbox"
+                  aria-label={t('Select all rows on this page')}
                   onChange={toggleAllPageRows}
                   checked={
                     paginatedRows.length > 0 &&
@@ -699,6 +707,7 @@ const DataTable = ({
                   <td style={{textAlign: 'center'}}>
                     <input
                       type="checkbox"
+                      aria-label={t('Select row')}
                       checked={isSelected}
                       onChange={() => toggleRow(item.RowIdx)}
                     />

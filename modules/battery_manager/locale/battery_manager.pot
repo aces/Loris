@@ -137,3 +137,9 @@ msgstr ""
 
 msgid "Could not add entry to the Test Battery"
 msgstr ""
+
+msgid "The selected tests are already active."
+msgstr ""
+
+msgid "The selected tests are already inactive."
+msgstr ""

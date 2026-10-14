@@ -1,5 +1,5 @@
 import React, {useState, ElementType} from 'react';
-import Modal, {FormModal, ModalProps, FormModalProps} from 'Modal';
+import Modal, {FormModal, ModalProps} from 'Modal';
 import Form from 'jsx/Form';
 
 interface TriggerableModalProps<T>
@@ -11,7 +11,6 @@ interface TriggerableModalProps<T>
   onUserInput?: () => void; // Optional callback when the trigger is activated
   TriggerTag?: ElementType; // Custom component for the modal trigger
   disabled?: boolean;
-  tooltip?: string;
 }
 
 /**
@@ -20,19 +19,17 @@ interface TriggerableModalProps<T>
  * Renders a modal triggered by a custom or default CTA component, with `show`
  * controlled internally.
  *
- * @param root0 - props
+ * @param root0 - The component props
  * @param root0.label - Label for the default CTA trigger button
  * @param root0.onUserInput - Optional callback when the trigger is activated
  * @param root0.TriggerTag - Custom component for the modal trigger
- * @param root0.disabled - disabled state of trigger
- * @param root0.tooltip - tooltip for trigger
+ * @param root0.disabled - Whether the trigger is disabled
  */
 function TriggerableModal<T>({
   label,
   onUserInput,
   TriggerTag = Form.CTA, // Default trigger component is CTA
   disabled = false,
-  tooltip = '',
   ...modalProps // Spread other modal-related props to pass to Modal
 }: TriggerableModalProps<T>) {
   const [open, setOpen] = useState(false);
@@ -53,7 +50,6 @@ function TriggerableModal<T>({
   const trigger = (
     <TriggerTag
       label={label}
-      title={tooltip}
       disabled={disabled}
       onUserInput={() => {
         onUserInput?.(); // Call onUserInput if it exists
