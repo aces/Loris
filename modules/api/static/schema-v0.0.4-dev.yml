@@ -2489,8 +2489,8 @@ components:
       properties:
         Project:
           type: string
-        RegistrationCohortID:
-          type: integer
+        RegistrationCohort:
+          type: string
         PSCID:
           type: string
         Site:

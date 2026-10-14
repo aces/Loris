@@ -256,12 +256,12 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $json_new     = [
             'Candidate' =>
                 [
-                    'Project'              => "Rye",
-                    'RegistrationCohortID' => 3,
-                    'Site'                 => "Data Coordinating Center",
-                    'EDC'                  => "2020-01-03",
-                    'DoB'                  => "2020-01-03",
-                    'Sex'                  => "Male"
+                    'Project'            => "Rye",
+                    'RegistrationCohort' => 'Low Yeast',
+                    'Site'               => "Data Coordinating Center",
+                    'EDC'                => "2020-01-03",
+                    'DoB'                => "2020-01-03",
+                    'Sex'                => "Male"
                 ]
         ];
         $response_new = $this->client->request(
@@ -278,7 +278,7 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
         $created = json_decode((string) $body, true);
-        $this->assertArrayHasKey('RegistrationCohort', $created);
+        $this->assertSame('Low Yeast', $created['RegistrationCohort']);
 
         // Erase sites that were setup in LorisApiAuthenticatedTest
         // setup for data access in other tests.
@@ -292,12 +292,12 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         $json_new     = [
             'Candidate' =>
                 [
-                    'Project'              => "Rye",
-                    'RegistrationCohortID' => 3,
-                    'Site'                 => "Montreal",
-                    'EDC'                  => "2020-01-03",
-                    'DoB'                  => "2020-01-03",
-                    'Sex'                  => "Male"
+                    'Project'            => "Rye",
+                    'RegistrationCohort' => 'Low Yeast',
+                    'Site'               => "Montreal",
+                    'EDC'                => "2020-01-03",
+                    'DoB'                => "2020-01-03",
+                    'Sex'                => "Male"
                 ]
         ];
         $response_new = $this->client->request(
@@ -318,12 +318,12 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         // A registration cohort must belong to the selected project.
         $json_new     = [
             'Candidate' => [
-                'Project'              => "Rye",
-                'RegistrationCohortID' => 1,
-                'Site'                 => "Data Coordinating Center",
-                'EDC'                  => "2020-01-03",
-                'DoB'                  => "2020-01-03",
-                'Sex'                  => "Male"
+                'Project'            => "Rye",
+                'RegistrationCohort' => 'Stale',
+                'Site'               => "Data Coordinating Center",
+                'EDC'                => "2020-01-03",
+                'DoB'                => "2020-01-03",
+                'Sex'                => "Male"
             ]
         ];
         $response_new = $this->client->request(
@@ -336,6 +336,20 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
             ]
         );
         $this->assertEquals(400, $response_new->getStatusCode());
+
+        foreach (['Unknown cohort', 3] as $cohort) {
+            $json_new['Candidate']['RegistrationCohort'] = $cohort;
+            $response_new = $this->client->request(
+                'POST',
+                "candidates",
+                [
+                    'headers'     => $this->headers,
+                    'http_errors' => false,
+                    'json'        => $json_new
+                ]
+            );
+            $this->assertEquals(400, $response_new->getStatusCode());
+        }
 
         // A registration cohort is required when the setting is enabled.
         $json_new     = [

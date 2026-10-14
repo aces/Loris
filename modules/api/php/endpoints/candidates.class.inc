@@ -255,16 +255,17 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         if ($request->getAttribute('LORIS-API-Version') === 'v0.0.4-dev'
             && $config->settingEnabled('useRegistrationCohort')
         ) {
-            $registrationCohortID
-                = filter_var(
-                    $data['Candidate']['RegistrationCohortID'] ?? null,
-                    FILTER_VALIDATE_INT
-                );
+            $registrationCohortID = array_search(
+                $data['Candidate']['RegistrationCohort'] ?? null,
+                \Utility::getCohortsForProject($project->getId()),
+                true
+            );
             if ($registrationCohortID === false) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
-                    'Registration cohort must be specified'
+                    'A valid registration cohort must be specified'
                 );
             }
+            $registrationCohortID = (int) $registrationCohortID;
         }
 
         $centerid = array_search(
