@@ -251,7 +251,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 && ($guarantee_exists === true
                 && !file_exists($base."project/instruments/$class.class.inc"))
             ) {
-                throw new NotFound("Instrument does not exist");
+                throw new NotFound("Instrument $instrument does not exist");
             }
             if (!class_exists($class)) {
                 include_once $base."project/instruments/$class.class.inc";
@@ -2311,19 +2311,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
             $where = 'WHERE ' . join(' AND ', $conditions);
             $query = "SELECT CandID,
-		    	SessionID,
-                        CommentID,
-                        session.Visit_label as VisitLabel,
-			flag.Administration,
-			flag.Data_entry as DataEntry,
-			flag.Validity,
-                        Data
-                    FROM flag
-                        JOIN session s ON (session.ID=flag.SessionID)
-                        JOIN candidate c ON c.ID=s.CandidateID
-                        JOIN instrument_data ON (flag.DataID=instrument_data.ID)
-			JOIN test_names tn ON (tn.ID=flag.TestID)
-			$where";
+                           SessionID,
+                           CommentID,
+                           s.Visit_label as VisitLabel,
+                           f.Administration,
+                           f.Data_entry,
+                           f.Validity,
+                           f.Data
+                    FROM flag f
+                    	    JOIN session s ON (s.ID=f.SessionID)
+                    	    JOIN candidate c ON (c.ID=s.CandidateID)
+                    	    JOIN instrument_data id ON (f.DataID=id.ID)
+                            JOIN test_names tn ON (tn.ID=f.TestID)
+			                $where";
             \Profiler::checkpoint("Running query (JSON data): " . $query);
             $jsondata = $db->pselect($query, $params);
             foreach ($jsondata as $row) {

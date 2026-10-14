@@ -186,7 +186,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
 
         $DB     = \NDB_Factory::singleton()->database();
         $visits = $DB->pselectCol(
-            "SELECT DISTINCT s.Visit_Label
+            "SELECT DISTINCT s.Visit_label
                 FROM flag f
                    JOIN test_names tn ON (tn.ID=f.TestID)
                    JOIN session s ON (f.SessionID=s.ID)
@@ -237,6 +237,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
             }
 
         }
+
         $DB = $this->loris->getDatabaseConnection();
 
         // Put candidates into a temporary table so that it can be used in a join
@@ -260,7 +261,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
         }
         $rows = $DB->pselect(
             "SELECT c.CandID, CommentID FROM flag f
-		JOIN test_names tn ON (f.TestID=tn.ID)
+                JOIN test_names tn ON (f.TestID=tn.ID)
                 JOIN session s ON (f.SessionID=s.ID)
                 JOIN candidate c ON (s.CandidateID=c.ID)
              WHERE f.CommentID NOT LIKE 'DDE%'
