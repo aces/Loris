@@ -86,7 +86,7 @@ class UploadFileForm extends Component {
         />
         <SelectElement
           name='project'
-          label={t('Project', {ns: 'loris'})}
+          label={t('Project', {ns: 'loris', count: 1})}
           onUserInput={this.updateFormElement}
           required={true}
           value={this.state.formData.project}
