@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
-  ButtonElement,
-  FormElement,
   StaticElement,
   SelectElement,
   NumericElement,
@@ -23,7 +21,7 @@ class BatteryManagerForm extends Component {
    * @return {*}
    */
   render() {
-    const {test, options, setTest, add, errors, handleSubmit, t} = this.props;
+    const {test, options, setTest, add, errors, t} = this.props;
 
     // Inform users about duplicate entries
     const renderHelpText = () => {
@@ -67,10 +65,7 @@ class BatteryManagerForm extends Component {
     };
 
     return (
-      <FormElement
-        name="battery_manager_form"
-        onSubmit={handleSubmit}
-      >
+      <>
         <StaticElement
           label={t('Note', {ns: 'loris'})}
           text={renderHelpText()}
@@ -173,10 +168,7 @@ class BatteryManagerForm extends Component {
           errorMessage={errors.DoubleDataEntryEnabled}
           emptyOption={false}
         />
-        <ButtonElement
-          label={t('Submit', {ns: 'battery_manager'})}
-        />
-      </FormElement>
+      </>
     );
   }
 }
@@ -187,7 +179,6 @@ BatteryManagerForm.propTypes = {
   options: PropTypes.object.isRequired,
   add: PropTypes.bool,
   errors: PropTypes.object,
-  handleSubmit: PropTypes.func.isRequired,
   t: PropTypes.func,
 };
 
