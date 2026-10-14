@@ -226,7 +226,7 @@ class NewProfileIndex extends React.Component {
   render() {
     // If error occurs, return a message.
     if (this.state.error) {
-      return <h3>{this.props.t('An error occured while loading the page.',
+      return <h3>{this.props.t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 

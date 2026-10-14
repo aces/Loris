@@ -551,7 +551,17 @@ export class SelectElement extends Component {
           newOptions[options[key]] = key;
         }
       }
-      optionList = Object.keys(newOptions).sort().map(function(option) {
+      let sortedOptions = Object.keys(newOptions).sort();
+      if (this.props.pinnedOption
+          && options.hasOwnProperty(this.props.pinnedOption)
+      ) {
+        const pinnedValue = options[this.props.pinnedOption];
+        sortedOptions = sortedOptions.filter(
+          (option) => option !== pinnedValue
+        );
+        sortedOptions.unshift(pinnedValue);
+      }
+      optionList = sortedOptions.map(function(option) {
         let isDisabled = (newOptions[option] in disabledOptions);
         return (
           <option
@@ -655,6 +665,7 @@ SelectElement.propTypes = {
   noMargins: PropTypes.bool,
   placeholder: PropTypes.string,
   sortByValue: PropTypes.bool,
+  pinnedOption: PropTypes.string,
   labelPlacementTop: PropTypes.bool,
 };
 
@@ -676,6 +687,7 @@ SelectElement.defaultProps = {
   },
   noMargins: false,
   placeholder: '',
+  pinnedOption: null,
   labelPlacementTop: false,
 };
 

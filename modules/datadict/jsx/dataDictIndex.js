@@ -155,7 +155,7 @@ class DataDictIndex extends Component {
     const {t} = this.props;
 
     if (this.state.error) {
-      return <h3>{t('An error occured while loading the page.',
+      return <h3>{t('An error occurred while loading the page.',
         {ns: 'loris'})}</h3>;
     }
 

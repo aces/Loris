@@ -157,7 +157,7 @@ class UserAccountsIndex extends Component {
     if (this.state.error) {
       return (
         <h3>
-          {t('An error occured while loading the page.', {ns: 'loris'})}
+          {t('An error occurred while loading the page.', {ns: 'loris'})}
         </h3>
       );
     }

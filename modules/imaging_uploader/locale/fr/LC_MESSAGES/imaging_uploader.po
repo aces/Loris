@@ -110,7 +110,7 @@ msgstr ""
 "Sélectionnez ce téléversement dans le tableau des résultats pour afficher la "
 "progression du traitement."
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr "Échec du téléversement : une erreur réseau s'est produite."
 
 #, fuzzy

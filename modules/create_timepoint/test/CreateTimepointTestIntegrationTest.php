@@ -73,7 +73,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $bodyText
         );
         $this->assertStringNotContainsString(
-            "An error occured while loading the page.",
+            "An error occurred while loading the page.",
             $bodyText
         );
     }
@@ -99,7 +99,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $bodyText
         );
         $this->assertStringNotContainsString(
-            "An error occured while loading the page.",
+            "An error occurred while loading the page.",
             $bodyText
         );
     }

@@ -45,7 +45,7 @@ const lorisModules: Record<string, string[]> = {
     'react.sidebar',
     'react.tabs',
   ],
-  dicom_archive: ['dicom_archive'],
+  dicom_archive: ['dicom_archive', 'viewDetails'],
   genomic_browser: ['genomicBrowserIndex'],
   electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
@@ -78,6 +78,7 @@ const lorisModules: Record<string, string[]> = {
   statistics: ['WidgetIndex'],
   instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
   candidate_profile: ['CandidateInfo'],
+  timepoint_list: ['timepointList'],
   schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
   dashboard: ['welcome'],

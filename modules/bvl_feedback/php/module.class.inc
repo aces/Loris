@@ -140,6 +140,9 @@ class Module extends \Module
                 $row['URL']          = $url;
                 $frontend_feedback[] = $row;
             }
+            if (empty($frontend_feedback)) {
+                return [];
+            }
             return [
                 new \LORIS\dashboard\Widget(
                     new \LORIS\dashboard\WidgetContent(
