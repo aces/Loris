@@ -68,7 +68,16 @@ class SpecimenTab extends Component {
     const diagnoses = mapFormOptions(options.diagnoses, 'label');
     const specimenData = Object.values(data.specimens);
     const containerOf = (specimen) => data.containers[specimen.containerId];
-    const candidateOf = (specimen) => options.candidates[specimen.candidateId];
+    const candidatesByPSCID = Object.values(options.candidates)
+      .reduce((result, candidate) => {
+        if (candidate) {
+          result[candidate.pscid] = candidate;
+        }
+        return result;
+      }, {});
+    const candidateOf = (specimen) => (
+      candidatesByPSCID[specimen.candidatePSCID]
+    );
     const barcodeLink = (barcode) => (
       <Link to={`/barcode=${barcode}`}>{barcode}</Link>
     );
@@ -169,11 +178,11 @@ class SpecimenTab extends Component {
         filter: {name: 'pscid', type: 'text'},
         value: (specimen) => specimen.candidatePSCID,
         format: (pscid, specimen) => {
-          if (!candidateOf(specimen)) {
+          const candidate = candidateOf(specimen);
+          if (!candidate) {
             return pscid;
           }
-          const candidateURL = loris.BaseURL + '/' + specimen.candidateId;
-          return <a href={candidateURL}>{pscid}</a>;
+          return <a href={loris.BaseURL + '/' + candidate.id}>{pscid}</a>;
         },
       },
       {
@@ -214,11 +223,12 @@ class SpecimenTab extends Component {
         filter: {name: 'session', type: 'text'},
         value: (specimen) => options.sessions[specimen.sessionId]?.label,
         format: (visitLabel, specimen) => {
-          if (!candidateOf(specimen)) {
+          const candidate = candidateOf(specimen);
+          if (!candidate) {
             return visitLabel;
           }
           const visitLabelURL = loris.BaseURL + '/instrument_list/?candID='
-            + specimen.candidateId + '&sessionID=' + specimen.sessionId;
+            + candidate.id + '&sessionID=' + specimen.sessionId;
           return <a href={visitLabelURL}>{visitLabel}</a>;
         },
       },

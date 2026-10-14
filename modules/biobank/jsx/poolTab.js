@@ -103,7 +103,14 @@ class PoolTab extends Component {
       options.specimen.types, 'label'
     );
     const poolData = Object.values(data.pools);
-    const candidateOf = (pool) => options.candidates[pool.candidateId];
+    const candidatesByPSCID = Object.values(options.candidates)
+      .reduce((result, candidate) => {
+        if (candidate) {
+          result[candidate.pscid] = candidate;
+        }
+        return result;
+      }, {});
+    const candidateOf = (pool) => candidatesByPSCID[pool.candidatePSCID];
 
     const fields = [
       {
@@ -139,10 +146,11 @@ class PoolTab extends Component {
         filter: {name: 'pscid', type: 'text'},
         value: (pool) => pool.candidatePSCID,
         format: (pscid, pool) => {
-          if (!candidateOf(pool)) {
+          const candidate = candidateOf(pool);
+          if (!candidate) {
             return pscid;
           }
-          return <a href={loris.BaseURL + '/' + pool.candidateId}>{pscid}</a>;
+          return <a href={loris.BaseURL + '/' + candidate.id}>{pscid}</a>;
         },
       },
       {
@@ -160,7 +168,7 @@ class PoolTab extends Component {
             return visitLabel;
           }
           const visitLabelURL = loris.BaseURL + '/instrument_list/?candID='
-            + pool.candidateId + '&sessionID=' + sessId;
+            + candidate.id + '&sessionID=' + sessId;
           return <a href={visitLabelURL}>{visitLabel}</a>;
         },
       },
