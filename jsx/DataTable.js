@@ -325,6 +325,9 @@ const DataTable = ({
       let keywordMatch = 0;
 
       fields.forEach((field, j) => {
+        if (!useKeyword && !filters[(field.filter || {}).name]) {
+          return;
+        }
         const cellData = row ? getCellValue(field, row, j) : null;
 
         if (hasFilterKeyword(
