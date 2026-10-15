@@ -63,91 +63,80 @@ function ShipmentTab({
     });
   };
 
-  const mapShipmentColumns = (column, value) => {
-    switch (column) {
-    case t('Origin Site', {ns: 'biobank'}):
-      return options.centers[value];
-    case t('Destination Site', {ns: 'biobank'}):
-      return options.centers[value];
-    default:
-      return value;
-    }
-  };
-
-  const formatShipmentColumns = (column, value, row) => {
-    value = mapShipmentColumns(column, value);
-    switch (column) {
-    case t('Barcode', {ns: 'biobank'}):
-      return (
-        <td>
-          <TriggerableModal
-            label={value}
-            title={value+' Information'}
-          >
-            <ShipmentInformation
-              shipment={shipments[value]}
-              centers={options.centers}
-            />
-          </TriggerableModal>
-        </td>
-      );
-    case t('Actions', {ns: 'biobank'}):
-      if (row[t('Status', {ns: 'biobank'})] !== 'received') {
-        return (
-          <td>
-            <ReceiveShipment
-              shipment={shipments[row[t('Barcode', {ns: 'biobank'})]]}
-              users={users}
-              updateShipments={updateShipments}
-              setData={setData}
-            />
-          </td>
-        );
-      }
-      return <td></td>;
-    default:
-      return <td>{value}</td>;
-    }
-  };
-
-  const shipmentData = Object.values(shipments).map((shipment) => {
-    return [
-      shipment.id,
-      shipment.barcode,
-      shipment.type,
-      shipment.status,
-      shipment.originCenterId,
-      shipment.destinationCenterId,
-    ];
-  });
+  const shipmentData = Object.values(shipments);
 
   const fields = [
-    {label: 'ID', show: false},
-    {label: t('biobank:Barcode', {count: 1}), show: true, filter: {
+    {
       name: 'barcode',
-      type: 'text',
-    }},
-    {label: t('Type', {ns: 'loris'}), show: true, filter: {
+      label: t('biobank:Barcode', {count: 1}),
+      show: true,
+      filter: {name: 'barcode', type: 'text'},
+      value: (shipment) => shipment.barcode,
+      format: (barcode, shipment) => (
+        <TriggerableModal label={barcode} title={barcode+' Information'}>
+          <ShipmentInformation
+            shipment={shipment}
+            centers={options.centers}
+          />
+        </TriggerableModal>
+      ),
+    },
+    {
       name: 'type',
-      type: 'select',
-      options: options.shipment.types,
-    }},
-    {label: t('Status', {ns: 'biobank'}), show: true, filter: {
+      label: t('Type', {ns: 'loris'}),
+      show: true,
+      filter: {name: 'type', type: 'select', options: options.shipment.types},
+      value: (shipment) => shipment.type,
+    },
+    {
       name: 'status',
-      type: 'select',
-      options: options.shipment.statuses,
-    }},
-    {label: t('Origin Site', {ns: 'biobank'}), show: true, filter: {
+      label: t('Status', {ns: 'biobank'}),
+      show: true,
+      filter: {
+        name: 'status',
+        type: 'select',
+        options: options.shipment.statuses,
+      },
+      value: (shipment) => shipment.status,
+    },
+    {
       name: 'originCenterId',
-      type: 'select',
-      options: options.centers,
-    }},
-    {label: t('Destination Site', {ns: 'biobank'}), show: true, filter: {
+      label: t('Origin Site', {ns: 'biobank'}),
+      show: true,
+      filter: {
+        name: 'originCenterId',
+        type: 'select',
+        options: options.centers,
+      },
+      value: (shipment) => shipment.originCenterId,
+      display: (centerId) => options.centers[centerId],
+    },
+    {
       name: 'destinationCenterId',
-      type: 'select',
-      options: options.centers,
-    }},
-    {label: t('Actions', {ns: 'biobank'}), show: true},
+      label: t('Destination Site', {ns: 'biobank'}),
+      show: true,
+      filter: {
+        name: 'destinationCenterId',
+        type: 'select',
+        options: options.centers,
+      },
+      value: (shipment) => shipment.destinationCenterId,
+      display: (centerId) => options.centers[centerId],
+    },
+    {
+      name: 'actions',
+      label: t('Actions', {ns: 'biobank'}),
+      show: true,
+      value: () => null,
+      format: (_, shipment) => shipment.status !== 'received' && (
+        <ReceiveShipment
+          shipment={shipment}
+          users={users}
+          updateShipments={updateShipments}
+          setData={setData}
+        />
+      ),
+    },
   ];
 
   const actions = [
@@ -178,8 +167,6 @@ function ShipmentTab({
         data={shipmentData}
         fields={fields}
         actions={actions}
-        getMappedCell={mapShipmentColumns}
-        getFormattedCell={formatShipmentColumns}
       />
     </>
   );
