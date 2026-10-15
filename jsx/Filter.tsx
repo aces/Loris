@@ -1,0 +1,282 @@
+import React, {useEffect} from 'react';
+import {
+  CheckboxElement,
+  DateElement,
+  DateRangeElement,
+  FieldsetElement,
+  TimeElement,
+  FormElement,
+  NumericElement,
+  NumericRangeElement,
+  SelectElement,
+  TextboxElement,
+} from 'jsx/Form';
+import DateTimePartialElement from 'jsx/form/DateTimePartialElement';
+import {useTranslation} from 'react-i18next';
+import './Filter.css';
+import type {Filter, Filters, Field, FilterConfig} from './DataTable.d';
+
+export type FieldWithFilter = Field & { filter: FilterConfig };
+
+export interface FilterPreset {
+    label: string;
+    filter: Filters;
+}
+
+interface FilterProps {
+    id?: string;
+    name?: string;
+    columns?: number;
+    title?: string;
+    fields: FieldWithFilter[];
+    filters: Filters;
+    addFilter: (
+      name: string,
+      value: Filter['value'],
+      exactMatch: boolean
+    ) => void;
+    removeFilter: (name: string) => void;
+    updateFilters: (filters: Filters) => void;
+    clearFilters: () => void;
+    filterPresets?: FilterPreset[];
+}
+
+/**
+ * Filter component
+ * A wrapper for form elements inside a selection filter.
+ *
+ * Constructs filter fields based on this.props.fields configuration object
+ *
+ * Alters the filter object and sends it to parent on every update.
+ *
+ * @param {props} props - Component properties
+ * @return {JSX}
+ */
+function Filter({
+  fields,
+  filters,
+  addFilter,
+  removeFilter,
+  updateFilters,
+  clearFilters,
+  id = '',
+  name = '',
+  columns = 1,
+  title = '',
+  filterPresets,
+}: FilterProps) {
+  const {t} = useTranslation(['loris']);
+  /**
+   * Takes query params from url and triggers an update of the fields that are
+   * associated with those params, if they exist.
+   */
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    fields.forEach((field) => {
+      const filter = field.filter;
+      if (!filter) {
+        return;
+      }
+      if (filter.type === 'number-range' || filter.type === 'date-range') {
+        const min = searchParams.get(`${filter.name}Min`) || '';
+        const max = searchParams.get(`${filter.name}Max`) || '';
+        if (min !== '' || max !== '') {
+          onFieldUpdate(filter.name, {min, max});
+        }
+        return;
+      }
+
+      const values = searchParams.getAll(filter.name);
+      if (values.length === 0) {
+        return;
+      }
+
+      onFieldUpdate(
+        filter.name,
+        filter.type === 'multiselect' ? values : values[0]
+      );
+    });
+  }, []);
+
+  /**
+   * Sets filter object to reflect values of input fields.
+   *
+   * @param {string} name - form element type (i.e component name)
+   * @param {string} value - the name of the form element
+   */
+  const onFieldUpdate = (name: string, value: any) => {
+    const field = fields.find((f) => f.filter?.name === name);
+    if (!field) return;
+
+    const type = field.filter.type;
+    const exactMatch = !['text', 'date', 'datetime', 'date-range',
+      'multiselect', 'number-range'].includes(type);
+
+    const emptyRange =
+      value !== null &&
+      typeof value === 'object' &&
+      !Array.isArray(value) &&
+      (value.min || '') === '' &&
+      (value.max || '') === '';
+
+    const isEmpty =
+      value === null ||
+      value === '' ||
+      (Array.isArray(value) && value.length === 0) ||
+      emptyRange ||
+      (type === 'checkbox' && value === false);
+
+    if (isEmpty) {
+      removeFilter(name);
+    } else {
+      addFilter(name, value, exactMatch);
+    }
+  };
+
+  /**
+   * Renders the filters based on the defined fields.
+   *
+   * @return {array}
+   */
+  const renderFilterFields = () => {
+    return fields.filter((field) => !field.filter.hide).map((field) => {
+      const filter = field.filter;
+
+      // Shared props for all elements
+      const commonProps = {
+        key: filter.name,
+        name: filter.name,
+        label: field.label,
+        value: filters[filter.name]?.value ?? (
+          (filter.type === 'number-range' || filter.type === 'date-range')
+            ? {} : undefined
+        ),
+        onUserInput: onFieldUpdate,
+        labelPlacementTop: true,
+        disabled: filter.disabled,
+      };
+
+      switch (filter.type) {
+      case 'text':
+        return <TextboxElement {...commonProps} />;
+      case 'select':
+      case 'multiselect':
+        return (
+          <SelectElement
+            {...commonProps}
+            options={filter.options}
+            sortByValue={filter.sortByValue}
+            multiple={filter.type === 'multiselect'}
+            // A plain select keeps its default empty option so the first real
+            // option isn't pre-selected (which would make re-selecting it a
+            // no-op that never fires the filter). Only multiselect drops it.
+            emptyOption={filter.type !== 'multiselect'}
+            autoSelect={false}
+          />
+        );
+      case 'numeric':
+        return <NumericElement {...commonProps} />;
+      case 'number-range':
+        return (
+          <NumericRangeElement
+            {...commonProps}
+            min={filter.min}
+            max={filter.max}
+            step={filter.step}
+            minLabel={filter.minLabel}
+            maxLabel={filter.maxLabel}
+          />
+        );
+      case 'date':
+        return <DateElement {...commonProps} />;
+      case 'date-range':
+        return (
+          <DateRangeElement
+            {...commonProps}
+            dateFormat={filter.dateFormat}
+            minYear={filter.minYear}
+            maxYear={filter.maxYear}
+            minLabel={filter.minLabel}
+            maxLabel={filter.maxLabel}
+          />
+        );
+      case 'datetime':
+        return <DateTimePartialElement {...commonProps} />;
+      case 'checkbox':
+        return <CheckboxElement {...commonProps} />;
+      case 'time':
+        return <TimeElement {...commonProps} />;
+      default:
+        return <TextboxElement {...commonProps} />;
+      }
+    });
+  };
+
+  /**
+   *
+   */
+  const renderPresets = () => {
+    if (!filterPresets) return null;
+
+    return (
+      <li className="dropdown">
+        <a
+          className="dropdown-toggle"
+          data-toggle="dropdown"
+          role="button"
+          style={{cursor: 'pointer'}}
+        >
+          {t('Load Filter Preset')} <span className="caret" />
+        </a>
+        <ul className="dropdown-menu" role="menu">
+          {filterPresets.map((preset) => (
+            <li key={preset.label}>
+              <a
+                onClick={() => updateFilters(preset.filter)}
+                style={{cursor: 'pointer'}}
+              >
+                {preset.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </li>
+    );
+  };
+
+  return (
+    <FormElement
+      id={id}
+      name={name}
+      onSubmit={(e) => e.preventDefault()}
+    >
+      <FieldsetElement columns={columns} legend={title}>
+        <ul
+          className="nav nav-tabs navbar-right"
+          style={{borderBottom: 'none'}}
+        >
+          {renderPresets()}
+          <li>
+            <a
+              role="button"
+              onClick={clearFilters}
+              style={{cursor: 'pointer'}}
+              // `name` is valid DOM on <a> but absent from React's anchor
+              // types; the integration suite locates this button via
+              // a[name="reset"], so set it through a typed spread.
+              {...({name: 'reset'} as unknown as
+                React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+            >
+              {t('Clear Filters')}
+            </a>
+          </li>
+        </ul>
+        <div className='filter-container'>
+          {renderFilterFields()}
+        </div>
+      </FieldsetElement>
+    </FormElement>
+  );
+}
+
+export default Filter;
