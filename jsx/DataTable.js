@@ -108,6 +108,40 @@ const hasFilterKeyword = (name, data, filters, filter = {}) => {
   return result;
 };
 
+/**
+ * Whether a field builds its own cells through value, display or format
+ * rather than through getFormattedCell and getMappedCell.
+ *
+ * @param {object} field - the field configuration
+ * @return {boolean}
+ */
+const definesCell = (field) => !!(field.value || field.display || field.format);
+
+/**
+ * Gets the raw value of a cell, which filtering matches against.
+ *
+ * @param {object} field - the field configuration
+ * @param {object|array} row - the row's record
+ * @param {number} index - the field's position
+ * @return {*}
+ */
+const getCellValue = (field, row, index) => (
+  field.value ? field.value(row) : row[index]
+);
+
+/**
+ * Gets the text of a cell, which the CSV and sorting use.
+ *
+ * @param {object} field - the field configuration
+ * @param {object|array} row - the row's record
+ * @param {number} index - the field's position
+ * @return {*}
+ */
+const getCellDisplay = (field, row, index) => {
+  const value = getCellValue(field, row, index);
+  return field.display ? field.display(value, row) : value;
+};
+
 
 /**
  * Data Table component
@@ -122,7 +156,10 @@ const hasFilterKeyword = (name, data, filters, filter = {}) => {
  * @param {boolean}   props.nullTableShow    - Whether to show table if data is null
  * @param {boolean}   props.noDynamicTable   - Whether to disable jQuery DynamicTable
  * @param {function}  props.getMappedCell    - Function to map cell data for CSV
- * @param {array}     props.fields           - Field configurations
+ * @param {array}     props.fields           - Field configurations. A field
+ *   can build its own cells: value(row) gives the raw value used for
+ *   filtering, display(value, row) the text used for the CSV and sorting,
+ *   and format(value, row) what the cell shows, defaulting to display.
  * @param {array}     props.RowNameMap       - Mapping for row identifiers
  * @param {object}    props.filters          - Active filters
  * @param {string}    props.freezeColumn     - Column ID to freeze
@@ -225,22 +262,15 @@ const DataTable = ({
     let csvData = filteredRowIndexes.map((id) => data[id]);
 
     // Map cell data to proper values if applicable.
-    if (getMappedCell) {
-      csvData = csvData
-        .map((row) => visibleFields
-          .map(({field, index}) => getMappedCell(
-            field.label,
-            row[index],
-            row,
-            headers,
-            index
-          ))
-        );
-    } else {
-      csvData = csvData.map(
-        (row) => visibleFields.map(({index}) => row[index])
-      );
-    }
+    csvData = csvData.map((row) => visibleFields.map(({field, index}) => {
+      if (definesCell(field)) {
+        return getCellDisplay(field, row, index);
+      }
+      if (getMappedCell) {
+        return getMappedCell(field.label, row[index], row, headers, index);
+      }
+      return row[index];
+    }));
 
     const csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
@@ -295,7 +325,10 @@ const DataTable = ({
       let keywordMatch = 0;
 
       fields.forEach((field, j) => {
-        const cellData = row ? row[j] : null;
+        if (!useKeyword && !filters[(field.filter || {}).name]) {
+          return;
+        }
+        const cellData = row ? getCellValue(field, row, j) : null;
 
         if (hasFilterKeyword(
           (field.filter || {}).name, cellData, filters, field.filter || {}
@@ -337,7 +370,10 @@ const DataTable = ({
       if (sort.column === -1) {
         val = idx + 1;
       } else {
-        val = data[idx][sort.column] || undefined;
+        const field = fields[sort.column];
+        val = (definesCell(field)
+          ? getCellDisplay(field, data[idx], sort.column)
+          : data[idx][sort.column]) || undefined;
       }
 
       const isString = (typeof val === 'string' || val instanceof String);
@@ -382,7 +418,7 @@ const DataTable = ({
     });
 
     return index;
-  }, [filteredRowIndexes, data, RowNameMap, sort]);
+  }, [filteredRowIndexes, data, fields, RowNameMap, sort]);
 
   useEffect(() => {
     if (!noDynamicTable) {
@@ -534,7 +570,7 @@ const DataTable = ({
               if (field.show !== true) return null;
               return (
                 <th
-                  key={`th_col_${i+1}`}
+                  key={`th_col_${field.name || i+1}`}
                   id={field.freezeColumn === true ? freezeColumn : undefined}
                   onClick={() => setSortColumn(i)}
                 >
@@ -561,6 +597,17 @@ const DataTable = ({
                 )}
                 {fields.map((field, j) => {
                   if (field.show === false) return null;
+
+                  if (definesCell(field)) {
+                    const value = getCellValue(field, rowData, j);
+                    return (
+                      <td key={`td_col_${field.name || j}`}>
+                        {field.format
+                          ? field.format(value, rowData)
+                          : getCellDisplay(field, rowData, j)}
+                      </td>
+                    );
+                  }
 
                   if (getFormattedCell) {
                     const cell = getFormattedCell(
