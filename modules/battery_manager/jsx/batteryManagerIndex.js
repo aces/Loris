@@ -7,9 +7,8 @@ import {withTranslation} from 'react-i18next';
 
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import swal from 'sweetalert2';
-import {CTA} from 'jsx/Form';
 
 import BatteryManagerForm from './batteryManagerForm';
 import hiStrings from '../locale/hi/LC_MESSAGES/battery_manager.json';
@@ -38,7 +37,6 @@ class BatteryManagerIndex extends Component {
       tests: {},
       test: {},
       add: false,
-      edit: false,
       error: false,
       errors: {},
       isLoaded: false,
@@ -108,7 +106,6 @@ class BatteryManagerIndex extends Component {
                 'success'
               ).then((result) => {
                 if (result.value) {
-                  this.closeForm();
                   resolve(body.message);
                 }
               });
@@ -125,7 +122,7 @@ class BatteryManagerIndex extends Component {
    * Modify value of specified column cells in the Data Table component
    *
    * @param {string} column - column name
-   * @param {string} value - cell value
+   * @param {string} cell - cell value
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, cell) {
@@ -135,9 +132,6 @@ class BatteryManagerIndex extends Component {
     } else if (cell === 'N') {
       return t('No', {ns: 'loris'});
     }
-    if (column === 'Change Status' || column === 'Edit Metadata') {
-      return '';
-    }
     return cell;
   }
 
@@ -146,22 +140,17 @@ class BatteryManagerIndex extends Component {
    *
    * @param {string} column - column name
    * @param {string} cell - cell content
-   * @param {object} row - row content indexed by column
    * @return {*} a formated table cell for a given column
    */
-  formatColumn(column, cell, row) {
+  formatColumn(column, cell) {
     const {t} = this.props;
     cell = this.mapColumn(column, cell);
     let result = <td>{cell}</td>;
-    const testId = row['ID'];
 
     // Get translated column names for comparison
     const labelInstrument = t('Instrument', {ns: 'battery_manager'});
     const labelCohort = t('Cohort', {ns: 'loris', count: 1});
     const labelSite = t('Site', {ns: 'loris', count: 1});
-    const labelActive = t('Active', {ns: 'loris'});
-    const labelChangeStatus = t('Change Status', {ns: 'battery_manager'});
-    const labelEditMetadata = t('Edit Metadata', {ns: 'battery_manager'});
 
     // Check both English and translated column names
     if (column === 'Instrument' || column === labelInstrument) {
@@ -170,44 +159,6 @@ class BatteryManagerIndex extends Component {
       result = <td>{this.state.options.cohorts[cell]}</td>;
     } else if (column === 'Site' || column === labelSite) {
       result = <td>{this.state.options.sites[cell]}</td>;
-    } else if (column === 'Change Status' || column === labelChangeStatus) {
-      const activeValue = row[labelActive] || row['Active'];
-      if (activeValue === 'Y' || activeValue === t('Yes', {ns: 'loris'})) {
-        result = (
-          <td>
-            <CTA
-              label={t('Deactivate', {ns: 'battery_manager'})}
-              onUserInput={() => {
-                this.deactivateTest(testId);
-              }}
-            />
-          </td>
-        );
-      } else if (
-        activeValue === 'N' || activeValue === t('No', {ns: 'loris'})
-      ) {
-        result = (
-          <td>
-            <CTA
-              label={t('Activate', {ns: 'battery_manager'})}
-              onUserInput={() => {
-                this.activateTest(testId);
-              }}
-            />
-          </td>
-        );
-      }
-    } else if (column === 'Edit Metadata' || column === labelEditMetadata) {
-      const editButton = (
-        <CTA
-          label={t('Edit', {ns: 'battery_manager'})}
-          onUserInput={() => {
-            this.loadTest(testId);
-            this.setState({edit: true});
-          }}
-        />
-      );
-      result = <td>{editButton}</td>;
     }
 
     return result;
@@ -245,29 +196,73 @@ class BatteryManagerIndex extends Component {
    * Close the Form
    */
   closeForm() {
-    this.setState({add: false, edit: false, test: {}, errors: {}});
+    this.setState({add: false, test: {}, errors: {}});
   }
 
   /**
-   * Activate Test
+   * Sets the active status of one or more tests and reports the result
+   * once. A test is not activated if an identical active test exists.
    *
-   * @param {number} id
+   * @param {object[]} changes - {id, active} for each test to update
+   * @return {object} promise
    */
-  activateTest(id) {
-    const test = this.state.tests.find((test) => test.id === id);
-    test.active = 'Y';
-    this.saveTest(test, 'PUT');
-  }
+  setActive(changes) {
+    const {t} = this.props;
+    const tests = this.state.tests.map((test) => ({...test}));
+    const updated = [];
+    const skipped = [];
 
-  /**
-   * Deactivate Test
-   *
-   * @param {number} id
-   */
-  deactivateTest(id) {
-    const test = this.state.tests.find((test) => test.id === id);
-    test.active = 'N';
-    this.saveTest(test, 'PUT');
+    changes.forEach(({id, active}) => {
+      const test = tests.find((test) => test.id === id);
+      const duplicate = this.findDuplicate(test, tests);
+      if (active === 'Y' && duplicate && duplicate.active === 'Y') {
+        skipped.push(this.state.options.instruments[test.testName]);
+        return;
+      }
+      test.active = active;
+      updated.push(test);
+    });
+
+    const requests = updated.map((test) => fetch(
+      this.props.testEndpoint + test.id,
+      {
+        credentials: 'same-origin',
+        method: 'PUT',
+        body: JSON.stringify(test),
+      }
+    ).then((response) => {
+      if (!response.ok) {
+        return response.json()
+          .then((body) => Promise.reject(new Error(body.error)));
+      }
+    }));
+
+    return Promise.all(requests)
+      .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
+      .then(() => {
+        if (skipped.length > 0) {
+          swal.fire({
+            title: t('Test Duplicate', {ns: 'battery_manager'}),
+            text: t('You cannot duplicate an active test',
+              {ns: 'battery_manager'}) + ': ' + skipped.join(', '),
+            icon: 'warning',
+          });
+        } else {
+          swal.fire(
+            t('Submission Successful!', {ns: 'loris'}),
+            '',
+            'success'
+          );
+        }
+      })
+      .catch((e) => {
+        swal.fire({
+          title: t('Error', {ns: 'loris'}),
+          text: e.message || t('An error occurred while saving the test.',
+            {ns: 'battery_manager'}),
+          icon: 'error',
+        });
+      });
   }
 
   /**
@@ -336,7 +331,7 @@ class BatteryManagerIndex extends Component {
      * XXX: Currently, the order of these fields MUST match the order of the
      * queried columns in _setupVariables() in battery_manager.class.inc
      */
-    const {options, test, tests, errors, add, edit} = this.state;
+    const {options, test, tests, errors, add} = this.state;
     const {hasPermission} = this.props;
     const fields = [
       {label: 'ID', show: false},
@@ -445,24 +440,66 @@ class BatteryManagerIndex extends Component {
           },
         },
       },
-      {
-        label: t('Change Status', {ns: 'battery_manager'}),
-        show: hasPermission('battery_manager_edit'),
-      },
-      {
-        label: t('Edit Metadata', {ns: 'battery_manager'}),
-        show: hasPermission('battery_manager_edit'),
-      },
     ];
 
     const actions = [
       {
+        name: 'new-test',
         label: t('New Test', {ns: 'battery_manager'}),
         action: () => this.setState({
           add: true,
           test: {DoubleDataEntryEnabled: 'N'},
         }),
         show: hasPermission('battery_manager_edit'),
+      },
+    ];
+
+    const rowActions = [
+      {
+        name: 'edit-metadata',
+        label: t('Edit Metadata', {ns: 'battery_manager'}),
+        title: t('Edit Test', {ns: 'battery_manager'}),
+        isMulti: false,
+        throwWarning: true,
+        show: hasPermission('battery_manager_edit'),
+        onSubmit: () => this.saveTest(test, 'PUT'),
+        onClose: this.closeForm,
+        onUserInput: (rows) => this.loadTest(rows[0][0]),
+        renderForm: () => (
+          <BatteryManagerForm
+            test={test}
+            setTest={this.setTest}
+            add={add}
+            options={options}
+            errors={errors}
+          />
+        ),
+      },
+      {
+        name: 'activate',
+        label: t('Activate', {ns: 'battery_manager'}),
+        isMulti: true,
+        show: hasPermission('battery_manager_edit'),
+        validate: (rows) => (rows.every((row) => row[11] === 'Y')
+          ? t('The selected tests are already active.',
+            {ns: 'battery_manager'})
+          : null),
+        onUserInput: (rows) => this.setActive(
+          rows.map((row) => ({id: row[0], active: 'Y'}))
+        ),
+      },
+      {
+        name: 'deactivate',
+        label: t('Deactivate', {ns: 'battery_manager'}),
+        isMulti: true,
+        show: hasPermission('battery_manager_edit'),
+        validate: (rows) => (rows.every((row) => row[11] === 'N')
+          ? t('The selected tests are already inactive.',
+            {ns: 'battery_manager'})
+          : null),
+        onUserInput: (rows) => this.setActive(
+          rows.map((row) => ({id: row[0], active: 'N'}))
+        ),
       },
     ];
 
@@ -483,12 +520,6 @@ class BatteryManagerIndex extends Component {
       ];
     });
 
-    const modalTitle = edit
-      ? t('Edit Test', {ns: 'battery_manager'})
-      : t('Add New Test', {ns: 'battery_manager'});
-    const request = edit ? 'PUT' : 'POST';
-    const handleSubmit = () => this.saveTest(test, request);
-
     return (
       <div>
         <FilterableDataTable
@@ -496,13 +527,15 @@ class BatteryManagerIndex extends Component {
           data={testsArray}
           fields={fields}
           actions={actions}
+          rowActions={rowActions}
           getFormattedCell={this.formatColumn.bind(this)}
           getMappedCell={this.mapColumn.bind(this)}
         />
-        <Modal
-          title={modalTitle}
-          show={add || edit}
+        <FormModal
+          title={t('Add New Test', {ns: 'battery_manager'})}
+          show={add}
           onClose={this.closeForm}
+          onSubmit={() => this.saveTest(test, 'POST')}
           throwWarning={Object.keys(test).length !== 0}
         >
           <BatteryManagerForm
@@ -511,11 +544,33 @@ class BatteryManagerIndex extends Component {
             options={options}
             add={add}
             errors={errors}
-            handleSubmit={handleSubmit}
           />
-        </Modal>
+        </FormModal>
       </div>
     );
+  }
+
+  /**
+   * Finds another test with the same configuration as the given test.
+   *
+   * @param {object} test
+   * @param {object[]} tests - tests to search
+   * @return {object|undefined} the duplicate test, if any
+   */
+  findDuplicate(test, tests) {
+    const fields = [
+      'testName',
+      'ageMinDays',
+      'ageMaxDays',
+      'stage',
+      'cohort',
+      'visitLabel',
+      'centerId',
+      'firstVisit',
+      'DoubleDataEntryEnabled',
+    ];
+    return tests.find((other) => other.id !== test.id
+      && fields.every((field) => test[field] == other[field]));
   }
 
   /**
@@ -526,26 +581,10 @@ class BatteryManagerIndex extends Component {
    */
   checkDuplicate(test) {
     return new Promise((resolve, reject) => {
-      let duplicate;
-      this.state.tests.forEach((testCheck) => {
-        if (
-          test.testName == testCheck.testName &&
-          test.ageMinDays == testCheck.ageMinDays &&
-          test.ageMaxDays == testCheck.ageMaxDays &&
-          test.stage == testCheck.stage &&
-          test.cohort == testCheck.cohort &&
-          test.visitLabel == testCheck.visitLabel &&
-          test.centerId == testCheck.centerId &&
-          test.firstVisit == testCheck.firstVisit &&
-          test.DoubleDataEntryEnabled == testCheck.DoubleDataEntryEnabled
-        ) {
-          duplicate = testCheck;
-        }
-      });
-
+      const duplicate = this.findDuplicate(test, this.state.tests);
       const {t} = this.props;
 
-      if (duplicate && duplicate.id !== test.id) {
+      if (duplicate) {
         if (duplicate.active === 'N') {
           const edit = test.id
             ? t('This will deactivate the current test.',
@@ -572,10 +611,11 @@ class BatteryManagerIndex extends Component {
             showCancelButton: true,
           }).then((result) => {
             if (result.value) {
-              this.activateTest(duplicate.id);
-              if (test.id && (test.id !== duplicate.id)) {
-                this.deactivateTest(test.id);
+              const changes = [{id: duplicate.id, active: 'Y'}];
+              if (test.id) {
+                changes.push({id: test.id, active: 'N'});
               }
+              this.setActive(changes);
               this.closeForm();
             }
           });
@@ -593,7 +633,6 @@ class BatteryManagerIndex extends Component {
       }
     });
   }
-
 
   /**
    * Checks that test fields are valide
