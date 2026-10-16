@@ -118,6 +118,40 @@ class IdentifierTypeControllerTest extends TestCase
     }
 
     /**
+     * Tests that an identifier type can be retrieved by name
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::getIdentifierTypeFromName
+     */
+    public function testGetIdentifierTypeFromName(): void
+    {
+        $identifierType = $this->identifierTypeController
+            ->getIdentifierTypeFromName('TestID');
+
+        $this->assertSame(1, $identifierType->candidateIdentifierTypeID);
+        $this->assertSame('TestID', $identifierType->name);
+        $this->assertSame(
+            '{SEQUENCE:4,FORMAT:numeric}',
+            $identifierType->format
+        );
+    }
+
+    /**
+     * Tests that retrieving a nonexistent identifier type by name
+     * throws NotFound
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::getIdentifierTypeFromName
+     */
+    public function testGetIdentifierTypeFromNameNotFound(): void
+    {
+        $this->expectException(\NotFound::class);
+
+        $this->identifierTypeController
+            ->getIdentifierTypeFromName('NonexistentID');
+    }
+
+    /**
      * Tests that an identifier type can be created
      *
      * @return void
