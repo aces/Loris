@@ -116,3 +116,4 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `CategoryID`, `Label`, `OrderNumber`, `Multilingual`) VALUES (142,'EEGChunksPath','Path to store the EEG chunks for Visualization',1,0,'text',45,'EEG chunks path',16,0);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `CategoryID`, `Label`, `OrderNumber`, `Multilingual`) VALUES (143,'useRegistrationCohort','Require a registration cohort when creating a candidate',1,0,'boolean',1,'Use registration cohorts',32,0);

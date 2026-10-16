@@ -101,7 +101,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy,
-            c.UserID, c.RegistrationProjectID
+            c.UserID, c.RegistrationProjectID, c.RegistrationCohortID
             FROM candidate as c
             LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
@@ -253,6 +253,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
      * @param ?ProjectID  $registrationProjectID The project ID, if available
+     * @param ?int        $registrationCohortID  The cohort ID, if available
      *
      * @return CandID   $candID      candidate id of the new candidate
      * @throws Exception
@@ -264,7 +265,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         ?string $edc,
         Sex $sex,
         ?string $PSCID = null,
-        ?ProjectID $registrationProjectID = null
+        ?ProjectID $registrationProjectID = null,
+        ?int $registrationCohortID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -272,6 +274,17 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $site = \Site::singleton($centerID);
 
         $project = \Project::getProjectFromID($registrationProjectID);
+
+        if ($registrationCohortID !== null
+            && !array_key_exists(
+                $registrationCohortID,
+                \Utility::getCohortsForProject($registrationProjectID)
+            )
+        ) {
+            throw new \InvalidArgumentException(
+                'Registration cohort is not associated with the selected project'
+            );
+        }
 
         if (isset($_SESSION['State'])) {
             $user = \User::singleton($_SESSION['State']->getUsername());
@@ -399,6 +412,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             'EDC'                   => $edc,
             'Sex'                   => $sex,
             'RegistrationProjectID' => $registrationProjectID,
+            'RegistrationCohortID'  => $registrationCohortID,
             'Date_active'           => date('Y-m-d'),
             'Date_registered'       => date('Y-m-d'),
             'Entity_type'           => 'Human',
@@ -586,6 +600,32 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     {
         $ProjectList = Utility::getProjectList();
         return $ProjectList[$this->getProjectID()->__toString()] ?? '';
+    }
+
+    /**
+     * Returns the registration cohort ID for the current candidate.
+     *
+     * @return int|null Registration cohort ID
+     */
+    function getRegistrationCohortID(): ?int
+    {
+        $cohortID = $this->candidateInfo['RegistrationCohortID'] ?? null;
+        return $cohortID === null ? null : (int) $cohortID;
+    }
+
+    /**
+     * Returns the title of the candidate's registration cohort.
+     *
+     * @return string Registration cohort title
+     */
+    function getRegistrationCohortTitle(): string
+    {
+        $cohortID = $this->getRegistrationCohortID();
+        if ($cohortID === null) {
+            return '';
+        }
+
+        return \Utility::getCohortList()[$cohortID] ?? '';
     }
 
     /**
