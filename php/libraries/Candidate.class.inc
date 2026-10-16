@@ -1042,7 +1042,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     ): bool {
 
         $factory = NDB_Factory::singleton();
-        $db = $factory->database();
+        $db      = $factory->database();
 
         $identifierTypeController = new IdentifierTypeController($db);
         $PSCIDType = $identifierTypeController->getIdentifierTypeFromName('PSCID');

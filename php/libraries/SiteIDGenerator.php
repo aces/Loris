@@ -160,12 +160,13 @@ class SiteIDGenerator extends IdentifierGenerator
         $db = \NDB_Factory::singleton()->database();
 
         $identifierTypeController = new \LORIS\IdentifierTypeController($db);
-        $identifierType = $identifierTypeController->getIdentifierTypeFromName(
-            $this->kind
-        );
+        $identifierType           = $identifierTypeController
+            ->getIdentifierTypeFromName(
+                $this->kind
+            );
 
         $kind = [
-            'structure' => $identifierType->format,
+            'structure'  => $identifierType->format,
             'generation' => !$identifierType->autoGenerate
                 ? 'user'
                 : (
