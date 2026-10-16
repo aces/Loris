@@ -1,12 +1,13 @@
-Subject: Lost Password - {$study}
+Subject: Password Change Request - {$study}
 
 {$realname},
 
 
-Your password has been reset to:
-{$password}
+You have submitted a password change request.
 
-Please try to login again. You will be prompted to change your password after logging in.
+If it wasn't you please disregard this email and make sure you can still login to your account. If it was you, then use the following link to change your password.
+
+{$resetpasswordurl}
 
 Thank you,
 
