@@ -89,6 +89,33 @@ class IdentifierTypeController
     }
 
     /**
+     * Gets an identifier type by name
+     *
+     * @param string $name Identifier type name
+     *
+     * @return IdentifierType Identifier type associated with the name
+     *
+     * @throws \NotFound If the identifier type does not exist
+     */
+    public function getIdentifierTypeFromName(string $name): IdentifierType
+    {
+        $identifierTypeID = $this->database->pselectOne(
+            "SELECT CandidateIdentifierTypeID
+         FROM candidate_identifier_types
+         WHERE Name = :name",
+            ['name' => $name]
+        );
+
+        if (empty($identifierTypeID)) {
+            throw new \NotFound(
+                "No identifier type found in the database with name: " . $name
+            );
+        }
+
+        return $this->getIdentifierTypeFromID((int) $identifierTypeID);
+    }
+
+    /**
      * Gets the projects associated with an identifier type
      *
      * @param int $candidateIdentifierTypeID Identifier type ID
