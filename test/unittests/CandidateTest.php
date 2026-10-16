@@ -851,16 +851,27 @@ class CandidateTest extends TestCase
      */
     public function testValidateProjectPSCID()
     {
-        $this->_configMap = [
-            ['PSCID', [
-                'generation' => 'sequential',
-                'structure'  => '{PROJECT:ALIAS}{SEQUENCE:4,FORMAT:numeric}',
-            ]
-            ],
-        ];
+        $this->_dbMock->expects($this->atLeastOnce())
+            ->method('isConnected')
+            ->willReturn(true);
 
-        $this->_configMock->method('getSetting')
-            ->willReturnMap($this->_configMap);   // <-- modern replacement
+        $this->_dbMock->method('pselectOne')
+            ->willReturn('1');
+
+        $this->_dbMock->method('pselectRow')
+            ->willReturn(
+                [
+                    'CandidateIdentifierTypeID' => 1,
+                    'Name'                      => 'PSCID',
+                    'Format'                    =>
+                    '{PROJECT:ALIAS}{SEQUENCE:4,FORMAT:numeric}',
+                    'IsRequired'                => 1,
+                    'IsUnique'                  => 1,
+                    'AutoGenerate'              => 1,
+                    'AllowMultiple'             => 0,
+                    'permID'                    => null,
+                ]
+            );
 
         $this->assertEquals(
             1,
