@@ -7,6 +7,7 @@
  * @license GPLv3 <http://www.gnu.org/licenses/gpl-3.0.en.html>
  */
 
+use LORIS\IdentifierTypeController;
 use LORIS\StudyEntities\Candidate\CandID;
 use LORIS\StudyEntities\Candidate\EntityType;
 use LORIS\StudyEntities\Candidate\Sex;
@@ -296,10 +297,13 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             );
         }
 
-        // figure out how to generate PSCID
-        $config        = $factory->config();
-        $PSCIDSettings = $config->getSetting('PSCID');
-        $useEDC        = $config->getSetting('useEDC');
+        // Get PSCID configuration from the database
+        $config = $factory->config();
+
+        $identifierTypeController = new IdentifierTypeController($db);
+        $PSCIDType = $identifierTypeController->getIdentifierTypeFromName('PSCID');
+
+        $useEDC = $config->getSetting('useEDC');
 
         // Get expected format from config
         $dobFormat = $config->getSetting('dobFormat');
@@ -355,7 +359,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             }
         }
 
-        if ($PSCIDSettings['generation'] == 'user') {
+        if (!$PSCIDType->autoGenerate) {
             // check pscid is specified
             if (empty($PSCID)) {
                 throw new Exception(
@@ -391,7 +395,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             )
             ) {
                 $expected = Candidate::structureToPattern(
-                    $PSCIDSettings['structure'],
+                    $PSCIDType->format,
                     $site->getSiteAlias(),
                     $project->getAlias()
                 );
@@ -1038,11 +1042,13 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
     ): bool {
 
         $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
+        $db = $factory->database();
 
-        $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = self::structureToPCRE(
-            $PSCIDSettings['structure'],
+        $identifierTypeController = new IdentifierTypeController($db);
+        $PSCIDType = $identifierTypeController->getIdentifierTypeFromName('PSCID');
+
+        $regex = self::structureToPCRE(
+            $PSCIDType->format,
             $siteAbbrev,
             $projectAbbrev
         );
