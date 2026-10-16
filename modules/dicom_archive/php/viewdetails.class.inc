@@ -188,11 +188,11 @@ class ViewDetails extends \NDB_Form
     private function _getArchive(int $tarchiveID): array
     {
         $archive = $this->DB->pselectRow(
-            "SELECT DicomArchiveID, PatientID, PatientName, PatientDoB,
+            "SELECT StudyInstanceUID, PatientID, PatientName, PatientDoB,
                 PatientSex, DateAcquired, ScannerManufacturer, ScannerModel,
-                ScannerSerialNumber, ScannerSoftwareVersion, CenterName,
-                AcquisitionCount, CreatingUser, LastUpdate, sumTypeVersion,
-                SourceLocation, tarTypeVersion, ArchiveLocation, CreateInfo,
+                ScannerSerialNumber, ScannerSoftwareVersion, InstitutionName,
+                AcquisitionCount, CreatingUser, LastUpdate, SourceLocation,
+                ArchiveLocation, CreateInfo,
                 md5sumArchive, md5sumDicomOnly
             FROM tarchive
             WHERE TarchiveID = :ID",

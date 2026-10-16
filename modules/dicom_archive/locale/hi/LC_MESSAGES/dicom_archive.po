@@ -52,8 +52,8 @@ msgstr "क्या फैंटम है"
 msgid "Tarchive Metadata"
 msgstr "टीआर्काइव मेटाडाटा"
 
-msgid "Acquisition ID"
-msgstr "अर्जन आईडी"
+msgid "Study Instance UID"
+msgstr "अध्ययन इंस्टेंस यूआईडी"
 
 msgid "Patient Birthdate"
 msgstr "रोगी जन्म तिथि"
@@ -73,8 +73,8 @@ msgstr "सीरियल नंबर"
 msgid "Scanner Software Version"
 msgstr "स्कैनर सॉफ़्टवेयर संस्करण"
 
-msgid "Acquired at"
-msgstr "अर्जित स्थान"
+msgid "Institution Name"
+msgstr "संस्थान का नाम"
 
 msgid "Number of Acquisitions"
 msgstr "अर्जनों की संख्या"
@@ -88,14 +88,8 @@ msgstr "अंतिम अपडेट"
 msgid "Never"
 msgstr "कभी नहीं"
 
-msgid "Summary type version"
-msgstr "सारांश प्रकार संस्करण"
-
 msgid "Source location"
 msgstr "स्रोत स्थान"
-
-msgid "Archive type version"
-msgstr "संग्रह प्रकार संस्करण"
 
 msgid "Archive location"
 msgstr "संग्रह स्थान"
