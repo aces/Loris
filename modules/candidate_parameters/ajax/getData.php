@@ -111,15 +111,20 @@ function getCandInfoFields()
         ['candid' => $candID]
     );
 
-    $extra_parameters = $db->pselect(
-        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name,
-        pt.Type, pt.Description
-        FROM parameter_type pt
-        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
-        JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
-        WHERE ptc.Name='Candidate Parameters'
-        ORDER BY pt.ParameterTypeID, pt.name ASC",
-        []
+    $extra_parameters = iterator_to_array(
+        $db->pselect(
+            "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name,
+            pt.Type, pt.Description, pcr.Required
+            FROM parameter_type pt
+            JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
+            JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+            JOIN parameter_candidate_rules pcr USING (ParameterTypeID)
+            JOIN candidate c ON c.RegistrationProjectID = pcr.ProjectID
+            WHERE ptc.Name='Candidate Parameters'
+            AND c.CandID = :candid
+            ORDER BY pt.ParameterTypeID, pt.name ASC",
+            ['candid' => $candID]
+        )
     );
 
     $fields = $db->pselect(
@@ -735,4 +740,3 @@ function formatCandidateDate(?string $date, string $format): ?string
 
     return $dateTime->format($format);
 }
-
