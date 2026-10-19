@@ -338,6 +338,16 @@ CREATE TABLE `candidate_identifier_types` (
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO `candidate_identifier_types`
+    (`Name`, `Format`, `IsRequired`, `IsUnique`,
+     `AutoGenerate`, `AllowMultiple`)
+VALUES
+    (
+        'PSCID',
+        '{SITE:ALIAS}{SEQUENCE:4,FORMAT:alphanumeric}',
+        1, 1, 1, 0
+    );
+
 CREATE TABLE `candidate_identifier_types_project_rel` (
   `CandidateIdentifierTypeID` int(10) unsigned NOT NULL,
   `ProjectID` int(10) unsigned NOT NULL,
