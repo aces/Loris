@@ -50,3 +50,9 @@ msgstr ""
 
 msgid "Start the \"%s\" Stage"
 msgstr ""
+
+msgid "BVL QC Type"
+msgstr ""
+
+msgid "BVL QC Status"
+msgstr ""

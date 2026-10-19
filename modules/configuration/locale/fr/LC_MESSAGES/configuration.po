@@ -213,3 +213,6 @@ msgstr "Ce champ est obligatoire ! La valeur saisie doit faire partie de la list
 
 msgid "This field is required! Please click \"Add Field\" before saving."
 msgstr "Ce champ est obligatoire ! Veuillez cliquer sur « Ajouter un champ » avant d'enregistrer."
+
+msgid "Conflict!"
+msgstr "Conflit !"

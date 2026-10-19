@@ -58,7 +58,7 @@
 	</ul>
 
 
-	<h3 class="controlPanelSection">{dgettext("timepoint_list", "BVL QC")}</h3>
+	<h3 class="controlPanelSection">{dgettext("instrument_list", "BVL QC Type")}</h3>
 	<ul class="controlPanel fa-ul">
 		<li>
 			<span class="fa-li"><i class="{$bvl_qc_type_none.icon|default:'far fa-square'}"></i></span>
@@ -87,7 +87,7 @@
 		</li>
 	</ul>
 
-	<h3 class="controlPanelSection">{dgettext("timepoint_list", "BVL QC")}</h3>
+	<h3 class="controlPanelSection">{dgettext("instrument_list", "BVL QC Status")}</h3>
 	<ul class="controlPanel fa-ul">
 		<li>
 			<span class="fa-li"><i class="{$bvl_qc_status_none.icon|default:'far fa-square'}"></i></span>

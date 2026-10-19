@@ -166,7 +166,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>{t('Visit', {ns: 'loris'})}</label>
+              display: 'block'}}>{t('Visit Label', {ns: 'loris'})}</label>
             <SelectElement
               name ='selectedVisits'
               options ={{__clear__: clearSelection,

@@ -117,38 +117,6 @@ msgstr "{{title}}は受け入れられませんでした"
 msgid "You must accept the {{title}} before requesting an account."
 msgstr "アカウントをリクエストする前に {{title}} に同意する必要があります。"
 
-# Hack for the login page.
-# These strings come from the database and are
-# the defaults in the login_summary_statistics table
-
-msgid "EEG Recording"
-msgid_plural "EEG Recordings"
-msgstr[0] "脳波記録"
-
-msgid "Female Participant"
-msgid_plural "Female Participants"
-msgstr[0] "女性参加者"
-
-msgid "Instrument"
-msgid_plural "Instruments"
-msgstr[0] "楽器"
-
-msgid "Male Participant"
-msgid_plural "Male Participants"
-msgstr[0] "男性参加者"
-
-msgid "Scan"
-msgid_plural "Scans"
-msgstr[0] "スキャン"
-
-msgid "Site"
-msgid_plural "Sites"
-msgstr[0] "サイト"
-
-msgid "Visit"
-msgid_plural "Visits"
-msgstr[0] "訪問"
-
 msgid "Missing code"
 msgstr "コードがありません"
 
@@ -196,3 +164,9 @@ msgstr "パートナー"
 
 msgid "Password expired for user."
 msgstr "ユーザーのパスワードの有効期限が切れています。"
+
+msgid "Statistic"
+msgstr "統計"
+
+msgid "Value"
+msgstr "値"

@@ -520,3 +520,48 @@ msgstr "Nouvelle entrée"
 
 msgid "Containers"
 msgstr "Conteneurs"
+
+msgid "Specimen Collection and Availability"
+msgstr "Prélèvement et disponibilité des échantillons"
+
+msgid "Whether the session has any specimen collected"
+msgstr "Indique si des échantillons ont été prélevés lors de la session"
+
+msgid "Whether the session has any specimen currently available"
+msgstr "Indique si des échantillons de la session sont actuellement disponibles"
+
+msgid "Type of specimen"
+msgstr "Type d'échantillon"
+
+msgid "Barcode for specimen"
+msgstr "Code-barres de l'échantillon"
+
+msgid "Current quantity of specimen"
+msgstr "Quantité actuelle de l'échantillon"
+
+msgid "Unit of measurement for specimen quantity"
+msgstr "Unité de mesure de la quantité de l'échantillon"
+
+msgid "Whether specimen is available or used/discarded"
+msgstr "Indique si l'échantillon est disponible, utilisé ou éliminé"
+
+msgid "Number of freeze-thaw cycles for specimen"
+msgstr "Nombre de cycles de congélation-décongélation de l'échantillon"
+
+msgid "Date specimen was collected"
+msgstr "Date de prélèvement de l'échantillon"
+
+msgid "Time specimen was collected"
+msgstr "Heure de prélèvement de l'échantillon"
+
+msgid "Collection protocol used for specimen"
+msgstr "Protocole de prélèvement utilisé pour l'échantillon"
+
+msgid "Center where specimen was collected"
+msgstr "Centre où l'échantillon a été prélevé"
+
+msgid "Type of container holding specimen"
+msgstr "Type de contenant de l'échantillon"
+
+msgid "Storage temperature for specimen"
+msgstr "Température de conservation de l'échantillon"

@@ -47,6 +47,25 @@ class Edit_User extends \NDB_Form
     }
 
     /**
+     * This function can be overridden in a module's page to load the necessary
+     * resources to check the permissions of a user.
+     *
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
+        $matches = [];
+        preg_match('#.*/edit_user/(.*)#', $request->getUri()->getPath(), $matches);
+        if (!empty($matches[1])) {
+            $this->identifier = $matches[1];
+        }
+    }
+
+    /**
      * Controls who's got access to this page, namely those who have the
      * 'user_accounts' and who either have permission
      * 'user_accounts_multisite' or whose site matches the site of the user they
@@ -62,7 +81,6 @@ class Edit_User extends \NDB_Form
         if ($editor->hasPermission('user_accounts_multisite')) {
             return true;
         }
-
         if ($editor->hasPermission('user_accounts')) {
             if ($this->isCreatingNewUser()) {
                 return true;
@@ -649,12 +667,8 @@ class Edit_User extends \NDB_Form
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $matches = [];
-        preg_match('#.*/edit_user/(.*)#', $request->getUri()->getPath(), $matches);
-        if (!empty($matches[1])) {
-            $this->identifier = $matches[1];
-        }
         $this->tpl_data['isSelfEdit'] = $this->_isEditingOwnAccount();
+
         $response = parent::handle($request);
         if (!empty($this->redirect)) {
             return $response

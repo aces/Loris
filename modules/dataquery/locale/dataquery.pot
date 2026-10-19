@@ -250,9 +250,6 @@ msgstr ""
 msgid "No visits selected for criteria."
 msgstr ""
 
-msgid "Add criteria"
-msgstr ""
-
 msgid "Field"
 msgid_plural "Fields"
 msgstr[0] ""

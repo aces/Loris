@@ -38,7 +38,7 @@ msgid "Imaging Scan Done"
 msgstr "Scan d'imagerie complété"
 
 msgid "BVL QC"
-msgstr "CQ comportemental"
+msgstr "Contrôle qualité comportemental"
 
 msgid "BVL Exclusion"
 msgstr "Exclusion comportementale"
@@ -83,4 +83,4 @@ msgid "Hardcopy"
 msgstr "Copie papier"
 
 msgid "Complete"
-msgstr "Compléter"
+msgstr "Complété"

@@ -53,3 +53,9 @@ msgstr "Étape: %s"
 
 msgid "Start the \"%s\" Stage"
 msgstr "Débuter l'étape de la « %s »"
+
+msgid "BVL QC Type"
+msgstr "Type de contrôle qualité comportemental"
+
+msgid "BVL QC Status"
+msgstr "Statut du contrôle qualité comportemental"

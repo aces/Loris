@@ -16,5 +16,5 @@
 {/if}
 {/foreach}
 {else}
-No open tasks for you.
+{dgettext('dashboard', 'No open tasks for you.')}
 {/if}
