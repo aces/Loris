@@ -255,11 +255,6 @@ msgstr "Sexe biologique du candidat"
 
 msgid "Expected Date of Confinement"
 msgstr "Date prévue d'accouchement"
-msgid "Candidate Demographics"
-msgstr "Données démographiques du participant"
-
-msgid "Candidate Identifiers"
-msgstr "Identifiants du participant"
 
 msgid "Other parameters"
 msgstr "Autres paramètres"
