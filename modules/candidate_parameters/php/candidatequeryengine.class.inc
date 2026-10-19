@@ -29,7 +29,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 
         $ids = new \LORIS\Data\Dictionary\Category(
             "Identifiers",
-            "Candidate Identifiers"
+            dgettext("candidate_parameters", "Candidate Identifiers")
         );
 
         $ids = $ids->withItems(
@@ -74,7 +74,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 
         $demographics = new \LORIS\Data\Dictionary\Category(
             "Demographics",
-            "Candidate Demographics",
+            dgettext("candidate_parameters", "Candidate Demographics"),
         );
         $sexList      = array_keys(\Utility::getSexList());
         $t            = new Enumeration(...$sexList);
@@ -111,7 +111,13 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             ]
         );
 
-        $meta = new \LORIS\Data\Dictionary\Category("Meta", "Other parameters");
+        $meta = new \LORIS\Data\Dictionary\Category(
+            "Meta",
+            dgettext(
+                "candidate_parameters",
+                "Other parameters"
+            )
+        );
 
         $db = $this->loris->getDatabaseConnection();
         $participantstatus_options = $db->pselectCol(
