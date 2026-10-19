@@ -214,9 +214,6 @@ msgstr "डुप्लिकेट प्रश्न नाम"
 msgid "Top"
 msgstr "शीर्ष"
 
-msgid "Browse"
-msgstr "ब्राउज़ करें"
-
 msgid "Delete"
 msgstr "हटाएं"
 

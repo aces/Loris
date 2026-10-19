@@ -67,8 +67,12 @@ async function fetchDataStream(dataURL, rowcb, chunkcb, endstreamcb, method) {
 
   let remainder = [];
   let doneLoop = false;
+  let ended = false;
   while (!doneLoop) {
     await reader.read().then(({done, value}) => {
+      if (done) {
+        return {remainder: [], eos: true};
+      }
       let combined;
       if (remainder.length == 0) {
         combined = value;
@@ -83,7 +87,10 @@ async function fetchDataStream(dataURL, rowcb, chunkcb, endstreamcb, method) {
           combined[i+remainder.length] = value[i];
         }
       }
-      return processLines(combined, rowcb, endstreamcb);
+      return processLines(combined, rowcb, (row) => {
+        ended = true;
+        endstreamcb(row);
+      });
     }).then(({remainder: rem, eos}) => {
       chunkcb(eos);
       doneLoop = eos;
@@ -92,6 +99,13 @@ async function fetchDataStream(dataURL, rowcb, chunkcb, endstreamcb, method) {
       console.error(err);
       doneLoop = true;
     });
+  }
+
+  // The caller waits on the end of stream callback to know it can stop. A
+  // stream that errors, or that closes without its terminating byte, must
+  // still reach it or the caller waits forever.
+  if (!ended) {
+    endstreamcb([]);
   }
 }
 

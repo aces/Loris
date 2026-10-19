@@ -214,8 +214,5 @@ msgstr "问题名称重复"
 msgid "Top"
 msgstr "顶部"
 
-msgid "Browse"
-msgstr "浏览"
-
 msgid "Delete"
 msgstr "删除"
