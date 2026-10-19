@@ -39,6 +39,8 @@ class Methylation
      */
     public function __construct($sites, $cohorts)
     {
+        $sexes = \Utility::getSexList();
+        $sexes = array_combine($sexes, $sexes);
         $this->_formElement = [
             'Sites'           => $sites,
             'Cohorts'         => $cohorts,
@@ -58,7 +60,7 @@ class Methylation
                 'genotyping_platform',
                 'Name'
             ),
-            'Sex'             => \Utility::getSexList(),
+            'Sex'             => $sexes,
         ];
     }
 

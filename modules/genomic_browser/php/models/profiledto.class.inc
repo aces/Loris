@@ -126,11 +126,12 @@ class ProfileDTO implements DataInstance, SiteHaver
     public function jsonSerialize(): array
     {
         return [
-            'centerID'   => $this->_PSC,
+            'centerID'   => dgettext("psc", $this->_PSC),
             'DCCID'      => $this->_DCCID,
             'PSCID'      => $this->_PSCID,
-            'Sex'        => $this->_Sex,
-            'Cohort'     => $this->_Cohort,
+            'Sex'        => dgettext("sex", $this->_Sex),
+            'Cohort'     => $this->_Cohort ? dgettext("cohort", $this->_Cohort)
+                : $this->_Cohort,
             'externalID' => $this->_externalID,
             'File'       => $this->_File,
             'SNP'        => $this->_SNP,

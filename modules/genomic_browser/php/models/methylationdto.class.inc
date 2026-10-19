@@ -271,7 +271,7 @@ class MethylationDTO implements DataInstance, SiteHaver
             'PSC'              => $this->_PSC,
             'DCCID'            => $this->_DCCID,
             'PSCID'            => $this->_PSCID,
-            'Sex'              => $this->_Sex,
+            'Sex'              => dgettext("sex", $this->_Sex),
             'Cohort'           => $this->_Cohort,
             'Sample'           => $this->_Sample,
             'cpg_name'         => $this->_cpg_name,
@@ -284,7 +284,7 @@ class MethylationDTO implements DataInstance, SiteHaver
             'Probe_Loc_B'      => $this->_Probe_Loc_B,
             'Probe_Seq_B'      => $this->_Probe_Seq_B,
             'Design'           => $this->_Design,
-            'Color'            => $this->_Color,
+            'Color'            => dgettext("genomics_browser", $this->_Color),
             'Assembly'         => $this->_Assembly,
             'SNP_10'           => $this->_SNP_10,
             'Gene'             => $this->_Gene,
@@ -299,7 +299,7 @@ class MethylationDTO implements DataInstance, SiteHaver
             'Reg_Feature_Loc'  => $this->_Reg_Feature_Loc,
             'Reg_Feature_Grp'  => $this->_Reg_Feature_Grp,
             'DHS'              => $this->_DHS,
-            'Platform'         => $this->_Platform,
+            'Platform'         => dgettext("genotyping_platform", $this->_Platform),
         ];
     }
 
