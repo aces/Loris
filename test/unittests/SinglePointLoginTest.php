@@ -158,4 +158,29 @@ class SinglePointLoginTest extends TestCase
 
         $this->assertFalse($this->_login->JWTAuthenticate($token));
     }
+
+    /**
+     * Test that inactivity is based only on successful login attempts
+     *
+     * @return void
+     * @covers SinglePointLogin::disabledDueToInactivity
+     */
+    function testInactivityCheckOnlyConsidersSuccessfulLogins()
+    {
+        $mockdb = $this->getMockBuilder("\Database")->getMock();
+        $mockdb->expects($this->once())
+            ->method('pselectRow')
+            ->with(
+                $this->callback(
+                    fn($query) => str_contains($query, "Success = 'Y'")
+                ),
+                ['username' => 'UnitTester']
+            )
+            ->willReturn(null);
+
+        NDB_Factory::singleton()->setDatabase($mockdb);
+
+        $login = new SinglePointLogin();
+        $this->assertFalse($login->disabledDueToInactivity('UnitTester', 30));
+    }
 }
