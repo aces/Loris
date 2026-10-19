@@ -212,3 +212,6 @@ msgstr ""
 
 msgid "This field is required! Please click \"Add Field\" before saving."
 msgstr ""
+
+msgid "Conflict!"
+msgstr ""

@@ -234,3 +234,12 @@ msgstr ""
 
 msgid "Consent Type"
 msgstr ""
+
+msgid "Candidate Demographics"
+msgstr ""
+
+msgid "Candidate Identifiers"
+msgstr ""
+
+msgid "Other parameters"
+msgstr ""
