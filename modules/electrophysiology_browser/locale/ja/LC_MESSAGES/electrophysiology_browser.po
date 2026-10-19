@@ -242,8 +242,8 @@ msgid "Updated!"
 msgstr "更新しました！"
 
 # EventManager
-msgid "Total events in recording {{total}}"
-msgstr "記録中のイベントの合計数 {{total}}"
+msgid "Total events in recording: {{total}}"
+msgstr "記録中のイベントの合計数: {{total}}"
 
 msgid "Display by:"
 msgstr "表示順:"
