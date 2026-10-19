@@ -247,9 +247,6 @@ msgstr "Autre raison de l'indicateur Caveat Emptor du candidat, veuillez précis
 msgid "Candidate Demographics"
 msgstr "Données démographiques du candidat"
 
-msgid "Date of Birth"
-msgstr "Date de naissance"
-
 msgid "Date of Death"
 msgstr "Date de décès"
 

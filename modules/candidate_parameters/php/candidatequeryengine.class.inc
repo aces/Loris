@@ -95,7 +95,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
             [
                 new DictionaryItem(
                     "DoB",
-                    dgettext("candidate_parameters", "Date of Birth"),
+                    dgettext("loris", "Date of Birth"),
                     $candscope,
                     new \LORIS\Data\Types\DateType(),
                     new Cardinality(Cardinality::SINGLE),

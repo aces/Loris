@@ -249,9 +249,6 @@ msgstr ""
 msgid "Candidate Demographics"
 msgstr ""
 
-msgid "Date of Birth"
-msgstr ""
-
 msgid "Date of Death"
 msgstr ""
 
