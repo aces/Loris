@@ -533,3 +533,6 @@ msgstr "無効なタブ"
 
 msgid "or"
 msgstr "または"
+
+msgid "Show candidates with no data"
+msgstr "データのない候補者を表示"
