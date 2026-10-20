@@ -2,6 +2,7 @@ import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import {CTA} from 'jsx/Form';
+import TriggerableModal from './TriggerableModal';
 import {useTranslation} from 'react-i18next';
 
 /**
@@ -118,6 +119,7 @@ const hasFilterKeyword = (name, data, filters, filter = {}) => {
  * @param {string}    props.rowNumLabel      - Label for the row number column
  * @param {function}  props.getFormattedCell - Function to format cell content
  * @param {array}     props.actions          - Action buttons to render
+ * @param {array}     props.rowActions       - Row-based bulk action configs
  * @param {object}    props.hide             - Configuration to hide specific UI elements
  * @param {boolean}   props.nullTableShow    - Whether to show table if data is null
  * @param {boolean}   props.noDynamicTable   - Whether to disable jQuery DynamicTable
@@ -133,6 +135,7 @@ const DataTable = ({
   rowNumLabel = 'No.',
   getFormattedCell,
   actions,
+  rowActions,
   hide = {
     rowsPerPage: false,
     downloadCSV: false,
@@ -158,6 +161,51 @@ const DataTable = ({
     column: -1,
     ascending: true,
   });
+
+  const [selectedRows, setSelectedRows] = useState(new Set());
+
+  /**
+   * Toggle selection of a single row by its data index.
+   *
+   * @param {number} idx - The row's index into `data`
+   */
+  const toggleRow = (idx) => {
+    setSelectedRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) {
+        next.delete(idx);
+      } else {
+        next.add(idx);
+      }
+      return next;
+    });
+  };
+
+  /**
+   * Toggle selection of every row on the current page.
+   */
+  const toggleAllPageRows = () => {
+    setSelectedRows((prev) => {
+      const next = new Set(prev);
+      const allSelected = paginatedRows.every((r) => prev.has(r.RowIdx));
+      paginatedRows.forEach((r) => {
+        if (allSelected) {
+          next.delete(r.RowIdx);
+        } else {
+          next.add(r.RowIdx);
+        }
+      });
+      return next;
+    });
+  };
+
+  const filterKey = JSON.stringify(filters);
+
+  // Row indexes stop pointing at the same rows when the data or the filters
+  // change, so the selection is cleared.
+  useEffect(() => {
+    setSelectedRows(new Set());
+  }, [data.length, filterKey]);
 
   /**
    * Updates page state
@@ -446,14 +494,96 @@ const DataTable = ({
     padding: '5px 0',
     marginLeft: 'auto',
   };
+
+  const rowActionsStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '5px',
+    marginRight: '15px',
+    paddingRight: '15px',
+    borderRight: '1px solid #ddd',
+  };
+
+  const visibleRowActions = (rowActions || []).filter(
+    (action) => action.show !== false
+  );
+  const hasRowActions = visibleRowActions.length > 0;
+
+  /**
+   * Renders the bulk action buttons for the currently selected rows.
+   *
+   * @return {JSX.Element[]}
+   */
+  const renderRowActions = () => {
+    const selectedData = Array.from(selectedRows).map((idx) => data[idx]);
+    const count = selectedData.length;
+    const clearSelection = () => setSelectedRows(new Set());
+
+    return visibleRowActions.map((action) => {
+      let reason = null;
+      if (count === 0) {
+        reason = t('Please select at least one row.');
+      } else if (!action.isMulti && count > 1) {
+        reason = t('This action only supports a single row.');
+      } else if (action.validate) {
+        reason = action.validate(selectedData);
+      }
+
+      const content = action.renderForm ? (
+        <TriggerableModal
+          label={action.label}
+          disabled={!!reason}
+          title={action.title}
+          throwWarning={action.throwWarning}
+          onUserInput={() => action.onUserInput?.(selectedData)}
+          onSubmit={action.onSubmit}
+          onSuccess={clearSelection}
+          onClose={action.onClose}
+        >
+          {count > 0 ? action.renderForm(selectedData) : null}
+        </TriggerableModal>
+      ) : (
+        <CTA
+          label={action.label}
+          disabled={!!reason}
+          onUserInput={() => {
+            action.onUserInput?.(selectedData);
+            clearSelection();
+          }}
+        />
+      );
+
+      return (
+        <span
+          key={action.name || action.label}
+          className={action.name ? `action-${action.name}` : undefined}
+          title={reason || undefined}
+        >
+          {content}
+        </span>
+      );
+    });
+  };
+
   const renderTableControls = (showActions) => (
     <div className="row">
       <div style={tableControlStyle}>
         <div style={{order: '1', padding: '5px 0'}}>
+          {showActions && hasRowActions && (
+            <span style={rowActionsStyle}>
+              {renderRowActions()}
+              {selectedRows.size > 0 && (
+                <span>
+                  <strong>{selectedRows.size}</strong> {t('selected')}
+                </span>
+              )}
+            </span>
+          )}
           {t('{{pageCount}} rows displayed of {{totalCount}}.', {
             pageCount: paginatedRows.length,
             totalCount: filteredRowIndexes.length,
           })}
+          {' '}
           <span>
             ({t('Maximum rows per page:')}
             <select
@@ -510,7 +640,7 @@ const DataTable = ({
 
   return (
     <div style={{margin: '14px'}}>
-      {hide.rowsPerPage !== true && (
+      {(hide.rowsPerPage !== true || hasRowActions) && (
         <div className="table-header">
           {renderTableControls(true)}
         </div>
@@ -522,6 +652,19 @@ const DataTable = ({
       >
         <thead>
           <tr className="info">
+            {hasRowActions && (
+              <th style={{width: '40px', textAlign: 'center'}}>
+                <input
+                  type="checkbox"
+                  aria-label={t('Select all rows on this page')}
+                  onChange={toggleAllPageRows}
+                  checked={
+                    paginatedRows.length > 0 &&
+                    paginatedRows.every((r) => selectedRows.has(r.RowIdx))
+                  }
+                />
+              </th>
+            )}
             {hide.defaultColumn !== true && (
               <th
                 key='th_col_0'
@@ -553,9 +696,23 @@ const DataTable = ({
             const rowObj = {};
             fields.forEach((f, k) => rowObj[f.label] = rowData[k]);
             const fieldLabels = fields.map((f) => f.label);
+            const isSelected = selectedRows.has(item.RowIdx);
 
             return (
-              <tr key={`tr_${item.RowIdx}`}>
+              <tr
+                key={`tr_${item.RowIdx}`}
+                className={isSelected ? 'table-row-selected' : ''}
+              >
+                {hasRowActions && (
+                  <td style={{textAlign: 'center'}}>
+                    <input
+                      type="checkbox"
+                      aria-label={t('Select row')}
+                      checked={isSelected}
+                      onChange={() => toggleRow(item.RowIdx)}
+                    />
+                  </td>
+                )}
                 {hide.defaultColumn !== true && (
                   <td key={`td_${item.RowIdx}`}>{item.Content}</td>
                 )}
@@ -596,6 +753,7 @@ DataTable.propTypes = {
   rowNumLabel: PropTypes.string,
   getFormattedCell: PropTypes.func,
   actions: PropTypes.array,
+  rowActions: PropTypes.array,
   hide: PropTypes.object,
   nullTableShow: PropTypes.bool,
   noDynamicTable: PropTypes.bool,
