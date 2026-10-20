@@ -237,6 +237,16 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
     /**
      * {@inheritDoc}
      *
+     * @return \LORIS\Data\Dictionary\DictionaryItem[]
+     */
+    public function getDataAvailabilityItems() : iterable
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param \Loris\Data\Dictionary\Category       $cat  The dictionaryItem
      *                                                    category
      * @param \Loris\Data\Dictionary\DictionaryItem $item The item
