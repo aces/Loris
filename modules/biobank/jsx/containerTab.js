@@ -21,8 +21,6 @@ class ContainerTab extends Component {
     this.state = {editable: {}};
     this.edit = this.edit.bind(this);
     this.clearEditable = this.clearEditable.bind(this);
-    this.mapContainerColumns = this.mapContainerColumns.bind(this);
-    this.formatContainerColumns = this.formatContainerColumns.bind(this);
   }
 
   /**
@@ -45,70 +43,13 @@ class ContainerTab extends Component {
   }
 
   /**
-   * Map the columns for this container
-   *
-   * @param {string} column - the column name
-   * @param {string} value - the column value
-   * @return {string}
-   */
-  mapContainerColumns(column, value) {
-    switch (column) {
-    case this.props.t('Type', {ns: 'loris'}):
-      return this.props.options.container.types[value].label;
-    case this.props.t('Status', {ns: 'biobank'}):
-      return this.props.options.container.stati[value].label;
-    case this.props.t('Site', {ns: 'loris', count: 1}):
-      return this.props.options.centers[value];
-    default:
-      return value;
-    }
-  }
-
-  /**
-   * Format the cells for a column in the container
-   *
-   * @param {string} column - the column name to format
-   * @param {string} value - the value of the column
-   * @param {object} row - the rest of the row
-   * @return {JSX} a table cell
-   */
-  formatContainerColumns(column, value, row) {
-    value = this.mapContainerColumns(column, value);
-    switch (column) {
-    case this.props.t('Barcode', {ns: 'biobank'}):
-      return <td><Link to={`/barcode=${value}`}>{value}</Link></td>;
-    case this.props.t('Status', {ns: 'biobank'}):
-      const style = {};
-      switch (value) {
-      case 'Available':
-        style.color = 'green';
-        break;
-      case 'Reserved':
-        style.color = 'orange';
-        break;
-      case 'Dispensed':
-        style.color = 'red';
-        break;
-      case 'Discarded':
-        style.color = 'red';
-        break;
-      }
-      return <td style={style}>{value}</td>;
-    case this.props.t('Parent Barcode', {ns: 'biobank'}):
-      return <td><Link to={`/barcode=${value}`}>{value}</Link></td>;
-    default:
-      return <td>{value}</td>;
-    }
-  }
-
-  /**
    * Render React component
    *
    * @return {JSX}
    */
   render() {
     const {editable} = this.state;
-    const {t} = this.props;
+    const {t, options} = this.props;
 
     const stati = mapFormOptions(
       this.props.options.container.stati, 'label'
@@ -134,42 +75,70 @@ class ContainerTab extends Component {
       containersNonPrimary, 'barcode'
     );
 
-    const data = Object.values(containersNonPrimary).map(
-      (container) => {
-        return [
-          container.barcode,
-          container.typeId,
-          container.statusId,
-          container.centerId,
-          container.parentContainerBarcode,
-        ];
-      }
+    const data = Object.values(containersNonPrimary);
+    const barcodeLink = (barcode) => (
+      <Link to={`/barcode=${barcode}`}>{barcode}</Link>
     );
+    const statusColors = {
+      Available: 'green',
+      Reserved: 'orange',
+      Dispensed: 'red',
+      Discarded: 'red',
+    };
 
     const fields = [
-      {label: t('Barcode', {ns: 'biobank'}), show: true, filter: {
+      {
         name: 'barcode',
-        type: 'text',
-      }},
-      {label: t('Type', {ns: 'loris'}), show: true, filter: {
+        label: t('Barcode', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'barcode', type: 'text'},
+        value: (container) => container.barcode,
+        format: barcodeLink,
+      },
+      {
         name: 'type',
-        type: 'select',
-        options: containerTypesNonPrimary,
-      }},
-      {label: t('Status', {ns: 'biobank'}), show: true, filter: {
+        label: t('Type', {ns: 'loris'}),
+        show: true,
+        filter: {
+          name: 'type',
+          type: 'select',
+          options: containerTypesNonPrimary,
+        },
+        value: (container) => container.typeId,
+        display: (typeId) => options.container.types[typeId].label,
+      },
+      {
         name: 'status',
-        type: 'select',
-        options: stati,
-      }},
-      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
+        label: t('Status', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'status', type: 'select', options: stati},
+        value: (container) => container.statusId,
+        display: (statusId) => options.container.stati[statusId].label,
+        format: (statusId) => {
+          const status = options.container.stati[statusId].label;
+          return <span style={{color: statusColors[status]}}>{status}</span>;
+        },
+      },
+      {
         name: 'currentSite',
-        type: 'select',
-        options: this.props.options.centers,
-      }},
-      {label: t('Parent Barcode', {ns: 'biobank'}), show: true, filter: {
+        label: t('Site', {ns: 'loris', count: 1}),
+        show: true,
+        filter: {
+          name: 'currentSite',
+          type: 'select',
+          options: options.centers,
+        },
+        value: (container) => container.centerId,
+        display: (centerId) => options.centers[centerId],
+      },
+      {
         name: 'parentBarcode',
-        type: 'text',
-      }},
+        label: t('Parent Barcode', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'parentBarcode', type: 'text'},
+        value: (container) => container.parentContainerBarcode,
+        format: (barcode) => barcode && barcodeLink(barcode),
+      },
     ];
 
     const openSearchContainer = () => this.edit('searchContainer');
@@ -195,8 +164,6 @@ class ContainerTab extends Component {
           data={data}
           fields={fields}
           actions={actions}
-          getFormattedCell={this.formatContainerColumns}
-          getMappedCell={this.mapContainerColumns}
           progress={this.props.loading}
         />
         <Search

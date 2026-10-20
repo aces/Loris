@@ -24,8 +24,6 @@ class SpecimenTab extends Component {
     this.state = {editable: {}};
     this.edit = this.edit.bind(this);
     this.clearEditable = this.clearEditable.bind(this);
-    this.mapSpecimenColumns = this.mapSpecimenColumns.bind(this);
-    this.formatSpecimenColumns = this.formatSpecimenColumns.bind(this);
   }
 
   /**
@@ -45,110 +43,6 @@ class SpecimenTab extends Component {
    */
   clearEditable() {
     this.setState({editable: {}});
-  }
-
-  /**
-   * Map a specimen id to a string value for display.
-   *
-   * @param {string} column - the column name being mapped
-   * @param {string} value - the value being mapped
-   * @return {string}
-   */
-  mapSpecimenColumns(column, value) {
-    const {options} = this.props;
-    switch (column) {
-    case this.props.t('Type', {ns: 'loris'}):
-      return options.specimen.types[value].label;
-    case this.props.t('Container Type', {ns: 'biobank'}):
-      return options.container.typesPrimary[value].label;
-    case this.props.t('Diagnosis', {ns: 'biobank'}):
-      if (Array.isArray(value) && value.length > 0) {
-        return value.map((id) => options.diagnoses[id].label);
-      }
-      break;
-    case this.props.t('Visit Label', {ns: 'loris'}):
-      return options.sessions[value].label;
-    case this.props.t('Status', {ns: 'biobank'}):
-      return options.container.stati[value].label;
-    case this.props.t('Current Site', {ns: 'biobank'}):
-      return options.centers[value];
-    case this.props.t('Draw Site', {ns: 'biobank'}):
-      return options.centers[value];
-    case this.props.t('Project', {ns: 'loris'}):
-      return options.projects[value];
-    default:
-      return value;
-    }
-  }
-
-  /**
-   * Format columns for a specimen row
-   *
-   * @param {string} column - the column name being mapped
-   * @param {string} value - the value being mapped
-   * @param {array} row - an array of the row values
-   * @return {JSX}
-   */
-  formatSpecimenColumns(column, value, row) {
-    const {t, data, options} = this.props;
-    const display = this.mapSpecimenColumns(column, value);
-    const candidate = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row[t('PSCID', {ns: 'loris'})]);
-    const candidatePermission = candidate !== undefined;
-    switch (column) {
-    case this.props.t('Barcode', {ns: 'biobank'}):
-      return <td><Link to={`/barcode=${display}`}>{display}</Link></td>;
-    case this.props.t('Parent Specimens', {ns: 'biobank'}):
-      // TODO: if the user doesn't have access then these shouldn't be hyperlinked
-      const barcodes = display && display.map((id, key) => {
-        return <Link key={key} to={`/barcode=${display}`}>{display}</Link>;
-      }).reduce((prev, curr) => [prev, ', ', curr]);
-      return <td>{barcodes}</td>;
-    case this.props.t('PSCID', {ns: 'loris'}):
-      if (candidatePermission) {
-        return (
-          <td>
-            <a href={loris.BaseURL + '/' + candidate.id}>{display}</a>
-          </td>
-        );
-      }
-      return <td>{display}</td>;
-    case this.props.t('Visit Label', {ns: 'loris'}):
-      if (candidatePermission) {
-        const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
-          candidate.id+'&sessionID='+value;
-        return <td><a href={visitLabelURL}>{display}</a></td>;
-      }
-      return <td>{display}</td>;
-    case this.props.t('Status', {ns: 'biobank'}):
-      const style = {};
-      switch (display) {
-      case 'Available':
-        style.color = 'green';
-        break;
-      case 'Reserved':
-        style.color = 'orange';
-        break;
-      case 'Dispensed':
-        style.color = 'red';
-        break;
-      case 'Discarded':
-        style.color = 'red';
-        break;
-      }
-      return <td style={style}>{display}</td>;
-    case this.props.t('Container Barcode', {ns: 'biobank'}):
-      // check if container has be queried
-      if (
-        Object.values(data.containers)
-          .find((container) => container.barcode == display)
-      ) {
-        return <td><Link to={`/barcode=${display}`}>{display}</Link></td>;
-      }
-      return <td>{display}</td>;
-    default:
-      return <td>{display}</td>;
-    }
   }
 
   /**
@@ -172,161 +66,263 @@ class SpecimenTab extends Component {
     );
     const stati = mapFormOptions(options.container.stati, 'label');
     const diagnoses = mapFormOptions(options.diagnoses, 'label');
-    const specimenData = Object.values(data.specimens).map((specimen) => {
-      const container = data.containers[specimen.containerId];
-      let specimenAttributeData = [];
-      Object.keys(options.specimen.processAttributes)
-        .forEach((processId) => {
-          Object.keys(options.specimen.processAttributes[processId])
-            .forEach((attributeId) => {
-              const sopt = options.specimen;
-              const process = sopt.processes[processId].label.toLowerCase();
-              if ((specimen[process]||{}).data) {
-                const processIdStr = specimen[process].protocolId.toString();
-                const attrs = options.specimen.processAttributes;
-                const protocols = attrs[processId][attributeId].protocolIds;
-                if (protocols.includes(processIdStr)) {
-                  const data = specimen[process].data[attributeId];
-                  specimenAttributeData.push(data);
-                } else {
-                  specimenAttributeData.push(null);
-                }
-              }
-            });
-        });
-      const candidate = options.candidates[specimen.candidateId];
-      return [
-        specimen.barcode,
-        specimen.typeId,
-        container.typeId,
-        specimen.quantity+' '+options.specimen.units[specimen.unitId].label,
-        specimen.fTCycle || null,
-        specimen.parentSpecimenBarcodes,
-        specimen.candidatePSCID,
-        candidate?.sex || null,
-        specimen.candidateAge,
-        candidate?.diagnosisIds || null,
-        specimen.sessionId,
-        specimen.poolId ? (data.pools[specimen.poolId]||{}).label : null,
-        container.statusId,
-        specimen.projectId,
-        specimen.centerId,
-        options.sessions[specimen.sessionId]?.centerId,
-        specimen.collection.date,
-        specimen.collection.time,
-        (specimen.preparation||{}).time,
-        container.parentContainerBarcode,
-        container.coordinate,
-        ...specimenAttributeData,
-      ];
-    });
+    const specimenData = Object.values(data.specimens);
+    const containerOf = (specimen) => data.containers[specimen.containerId];
+    const candidatesByPSCID = Object.values(options.candidates)
+      .reduce((result, candidate) => {
+        if (candidate) {
+          result[candidate.pscid] = candidate;
+        }
+        return result;
+      }, {});
+    const candidateOf = (specimen) => (
+      candidatesByPSCID[specimen.candidatePSCID]
+    );
+    const barcodeLink = (barcode) => (
+      <Link to={`/barcode=${barcode}`}>{barcode}</Link>
+    );
+    const statusColors = {
+      Available: 'green',
+      Reserved: 'orange',
+      Dispensed: 'red',
+      Discarded: 'red',
+    };
 
     let specimenAttributeFields = [];
     Object.keys(options.specimen.processAttributes)
       .forEach((processId) => {
+        const process = options.specimen.processes[processId]
+          .label.toLowerCase();
         Object.keys(options.specimen.processAttributes[processId])
           .forEach((attributeId) => {
+            const protocolIds = options.specimen
+              .processAttributes[processId][attributeId].protocolIds;
             specimenAttributeFields.push(
               {
+                name: `attribute_${processId}_${attributeId}`,
                 label: options.specimen.attributes[attributeId].label,
                 show: true,
+                value: (specimen) => {
+                  const processData = specimen[process];
+                  if (!processData?.data
+                    || !protocolIds.includes(processData.protocolId.toString())
+                  ) {
+                    return null;
+                  }
+                  return processData.data[attributeId];
+                },
               },
             );
           });
       });
     const fields = [
-      {label: t('Barcode', {ns: 'biobank'}), show: true, filter: {
+      {
         name: 'barcode',
-        type: 'text',
-      }},
-      {label: this.props.t('Type', {ns: 'loris'}), show: true, filter: {
+        label: t('Barcode', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'barcode', type: 'text'},
+        value: (specimen) => specimen.barcode,
+        format: barcodeLink,
+      },
+      {
         name: 'type',
-        type: 'select',
-        options: specimenTypes,
-      }},
-      {label: t('Container Type', {ns: 'biobank'}), show: true, filter: {
+        label: t('Type', {ns: 'loris'}),
+        show: true,
+        filter: {name: 'type', type: 'select', options: specimenTypes},
+        value: (specimen) => specimen.typeId,
+        display: (typeId) => options.specimen.types[typeId].label,
+      },
+      {
         name: 'containerType',
-        type: 'select',
-        options: containerTypesPrimary,
-      }},
-      {label: this.props.t('Quantity', {ns: 'biobank'}), show: true},
-      {label: t('F/T Cycle', {ns: 'biobank'}), show: false, filter: {
-        name: 'fTCycle',
-        type: 'text',
-        hide: true,
-      }},
-      {label: t('Parent Specimen(s)', {ns: 'biobank'}), show: false, filter: {
-        name: 'parentSpecimens',
-        type: 'text',
-        hide: true,
-      }},
-      {label: this.props.t('PSCID', {ns: 'loris'}), show: true, filter: {
-        name: 'pscid',
-        type: 'text',
-      }},
-      {label: this.props.t('Sex', {ns: 'loris'}), show: true, filter: {
-        name: 'sex',
-        type: 'select',
-        options: {
-          Male: t('Male', {ns: 'biobank'}),
-          Female: t('Female', {ns: 'biobank'}),
+        label: t('Container Type', {ns: 'biobank'}),
+        show: true,
+        filter: {
+          name: 'containerType',
+          type: 'select',
+          options: containerTypesPrimary,
         },
-      }},
-      {label: t('Age at Collection', {ns: 'biobank'}), show: true, filter: {
+        value: (specimen) => containerOf(specimen).typeId,
+        display: (typeId) => options.container.typesPrimary[typeId].label,
+      },
+      {
+        name: 'quantity',
+        label: t('Quantity', {ns: 'biobank'}),
+        show: true,
+        value: (specimen) => specimen.quantity,
+        display: (quantity, specimen) => quantity + ' '
+          + options.specimen.units[specimen.unitId].label,
+      },
+      {
+        name: 'fTCycle',
+        label: t('F/T Cycle', {ns: 'biobank'}),
+        show: false,
+        filter: {name: 'fTCycle', type: 'text', hide: true},
+        value: (specimen) => specimen.fTCycle || null,
+      },
+      {
+        name: 'parentSpecimens',
+        label: t('Parent Specimen(s)', {ns: 'biobank'}),
+        show: false,
+        filter: {name: 'parentSpecimens', type: 'text', hide: true},
+        value: (specimen) => specimen.parentSpecimenBarcodes,
+        format: (barcodes) => barcodes && barcodes
+          .map((barcode) => (
+            <Link key={barcode} to={`/barcode=${barcode}`}>{barcode}</Link>
+          ))
+          .reduce((prev, curr) => [prev, ', ', curr]),
+      },
+      {
+        name: 'pscid',
+        label: t('PSCID', {ns: 'loris'}),
+        show: true,
+        filter: {name: 'pscid', type: 'text'},
+        value: (specimen) => specimen.candidatePSCID,
+        format: (pscid, specimen) => {
+          const candidate = candidateOf(specimen);
+          if (!candidate) {
+            return pscid;
+          }
+          return <a href={loris.BaseURL + '/' + candidate.id}>{pscid}</a>;
+        },
+      },
+      {
+        name: 'sex',
+        label: t('Sex', {ns: 'loris'}),
+        show: true,
+        filter: {
+          name: 'sex',
+          type: 'select',
+          options: {
+            Male: t('Male', {ns: 'biobank'}),
+            Female: t('Female', {ns: 'biobank'}),
+          },
+        },
+        value: (specimen) => candidateOf(specimen)?.sex || null,
+      },
+      {
         name: 'age',
-        type: 'number-range',
-      }},
-      {label: this.props.t('Diagnosis', {ns: 'biobank'}), show: true, filter: {
+        label: t('Age at Collection', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'age', type: 'number-range'},
+        value: (specimen) => specimen.candidateAge,
+      },
+      {
         name: 'diagnosis',
-        type: 'multiselect',
-        options: diagnoses,
-      }},
-      {label: this.props.t('Visit Label', {ns: 'loris'}), show: true, filter: {
+        label: t('Diagnosis', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'diagnosis', type: 'multiselect', options: diagnoses},
+        value: (specimen) => candidateOf(specimen)?.diagnosisIds || null,
+        display: (diagnosisIds) => (diagnosisIds || [])
+          .map((id) => options.diagnoses[id].label)
+          .join(', '),
+      },
+      {
         name: 'session',
-        type: 'text',
-      }},
-      {label: this.props.t('Pool', {ns: 'biobank'}), show: false, filter: {
+        label: t('Visit Label', {ns: 'loris'}),
+        show: true,
+        filter: {name: 'session', type: 'text'},
+        value: (specimen) => options.sessions[specimen.sessionId]?.label,
+        format: (visitLabel, specimen) => {
+          const candidate = candidateOf(specimen);
+          if (!candidate) {
+            return visitLabel;
+          }
+          const visitLabelURL = loris.BaseURL + '/instrument_list/?candID='
+            + candidate.id + '&sessionID=' + specimen.sessionId;
+          return <a href={visitLabelURL}>{visitLabel}</a>;
+        },
+      },
+      {
         name: 'pool',
-        type: 'text',
-        hide: true,
-      }},
-      {label: this.props.t('Status', {ns: 'biobank'}), show: true, filter: {
+        label: t('Pool', {ns: 'biobank'}),
+        show: false,
+        filter: {name: 'pool', type: 'text', hide: true},
+        value: (specimen) => specimen.poolId
+          ? (data.pools[specimen.poolId] || {}).label
+          : null,
+      },
+      {
         name: 'status',
-        type: 'select',
-        options: stati,
-      }},
-      {label: this.props.t('Project', {ns: 'loris'}), show: true, filter: {
+        label: t('Status', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'status', type: 'select', options: stati},
+        value: (specimen) => containerOf(specimen).statusId,
+        display: (statusId) => options.container.stati[statusId].label,
+        format: (statusId) => {
+          const status = options.container.stati[statusId].label;
+          return <span style={{color: statusColors[status]}}>{status}</span>;
+        },
+      },
+      {
         name: 'project',
-        type: 'multiselect',
-        options: options.projects,
-      }},
-      {label: t('Current Site', {ns: 'biobank'}), show: true, filter: {
+        label: t('Project', {ns: 'loris'}),
+        show: true,
+        filter: {
+          name: 'project',
+          type: 'multiselect',
+          options: options.projects,
+        },
+        value: (specimen) => specimen.projectId,
+        display: (projectId) => options.projects[projectId],
+      },
+      {
         name: 'currentSite',
-        type: 'select',
-        options: options.centers,
-      }},
-      {label: this.props.t('Draw Site', {ns: 'biobank'}), show: true, filter: {
+        label: t('Current Site', {ns: 'biobank'}),
+        show: true,
+        filter: {
+          name: 'currentSite',
+          type: 'select',
+          options: options.centers,
+        },
+        value: (specimen) => specimen.centerId,
+        display: (centerId) => options.centers[centerId],
+      },
+      {
         name: 'drawSite',
-        type: 'select',
-        options: options.centers,
-      }},
-      {label: t('Collection Date', {ns: 'biobank'}), show: true, filter: {
+        label: t('Draw Site', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'drawSite', type: 'select', options: options.centers},
+        value: (specimen) => options.sessions[specimen.sessionId]?.centerId,
+        display: (centerId) => options.centers[centerId],
+      },
+      {
         name: 'collectionDate',
-        type: 'date',
-      }},
-      {label: t('Collection Time', {ns: 'biobank'}), show: true, filter: {
+        label: t('Collection Date', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'collectionDate', type: 'date'},
+        value: (specimen) => specimen.collection.date,
+      },
+      {
         name: 'collectionTime',
-        type: 'text',
-      }},
-      {label: t('Preparation Time', {ns: 'biobank'}), show: true, filter: {
+        label: t('Collection Time', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'collectionTime', type: 'text'},
+        value: (specimen) => specimen.collection.time,
+      },
+      {
         name: 'preparationTime',
-        type: 'text',
-      }},
-      {label: t('Container Barcode', {ns: 'biobank'}), show: true, filter: {
+        label: t('Preparation Time', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'preparationTime', type: 'text'},
+        value: (specimen) => (specimen.preparation || {}).time,
+      },
+      {
         name: 'containerBarcode',
-        type: 'text',
-      }},
-      {label: this.props.t('Coordinate', {ns: 'biobank'}), show: true},
+        label: t('Container Barcode', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'containerBarcode', type: 'text'},
+        value: (specimen) => containerOf(specimen).parentContainerBarcode,
+        format: (barcode, specimen) => {
+          const parentId = containerOf(specimen).parentContainerId;
+          return data.containers[parentId] ? barcodeLink(barcode) : barcode;
+        },
+      },
+      {
+        name: 'coordinate',
+        label: t('Coordinate', {ns: 'biobank'}),
+        show: true,
+        value: (specimen) => containerOf(specimen).coordinate,
+      },
       ...specimenAttributeFields,
     ];
 
@@ -370,8 +366,6 @@ class SpecimenTab extends Component {
           data={specimenData}
           fields={fields}
           actions={actions}
-          getFormattedCell={this.formatSpecimenColumns}
-          getMappedCell={this.mapSpecimenColumns}
           progress={this.props.loading}
         />
         <Search

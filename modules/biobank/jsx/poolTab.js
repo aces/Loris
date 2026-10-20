@@ -23,8 +23,6 @@ class PoolTab extends Component {
     this.edit = this.edit.bind(this);
     this.clearEditable = this.clearEditable.bind(this);
     this.openAliquotForm = this.openAliquotForm.bind(this);
-    this.mapPoolColumns = this.mapPoolColumns.bind(this);
-    this.formatPoolColumns = this.formatPoolColumns.bind(this);
   }
 
   /**
@@ -54,78 +52,6 @@ class PoolTab extends Component {
   openAliquotForm(poolId) {
     this.setState({poolId}, () => this.edit('aliquotForm'));
   }
-
-  /**
-   * Map IDs in the pool columns to a string value.
-   *
-   * @param {string} column - the column name being mapped
-   * @param {string} value - the column value being mapped
-   * @return {string}
-   */
-  mapPoolColumns(column, value) {
-    const {options} = this.props;
-    switch (column) {
-    case this.props.t('Type', {ns: 'loris'}):
-      return options.specimen.types[value].label;
-    case this.props.t('Site', {ns: 'loris', count: 1}):
-      return options.centers[value];
-    default:
-      return value;
-    }
-  }
-
-  /**
-   * Format a row of columns for the pooled specimen.
-   *
-   * @param {string} column - the column name
-   * @param {string} value - the column value
-   * @param {object} row - all the values from the row
-   * @return {JSX}
-   */
-  formatPoolColumns(column, value, row) {
-    const {t, options} = this.props;
-    value = this.mapPoolColumns(column, value);
-    const candId = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row[t('PSCID', {ns: 'loris'})])?.id;
-
-    // If candId is defined, then the user has access to the candidate and a
-    // hyperlink can be established.
-    const candidatePermission = candId !== undefined;
-    switch (column) {
-    case this.props.t('Pooled Specimens', {ns: 'biobank'}):
-      const barcodes = value
-        .map((barcode, i) => {
-          return <Link key={i} to={`/barcode=${barcode}`}>{barcode}</Link>;
-        })
-        .reduce((prev, curr) => [prev, ', ', curr]);
-      return <td>{barcodes}</td>;
-    case this.props.t('PSCID', {ns: 'loris'}):
-      if (candidatePermission) {
-        return <td><a href={loris.BaseURL + '/' + candId}>{value}</a></td>;
-      }
-      return <td>{value}</td>;
-    case this.props.t('Visit Label', {ns: 'loris'}):
-      if (candidatePermission) {
-        const sessId = Object.values(options.candidates[candId]).find(
-          (sess) => sess.label == value
-        )?.id;
-        const sessionPermission = sessId !== undefined;
-        if (sessionPermission) {
-          const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
-            candId+'&sessionID='+sessId;
-          return <td><a href={visitLabelURL}>{value}</a></td>;
-        }
-      }
-      return <td>{value}</td>;
-    case this.props.t('Aliquot', {ns: 'biobank'}):
-      const onClick = () => this.openAliquotForm(row['ID']);
-      const label = t('Aliquot', {ns: 'biobank'});
-      return <td><CTA label={label} onUserInput={onClick}/></td>;
-    default:
-      return <td>{value}</td>;
-    }
-  }
-
 
   /**
    * Render the aliquot form
@@ -176,52 +102,116 @@ class PoolTab extends Component {
     const specimenTypes = mapFormOptions(
       options.specimen.types, 'label'
     );
-    const poolData = Object.values(data.pools).map((pool) => {
-      return [
-        pool.id,
-        pool.label,
-        Math.round(pool.quantity*100)/100 +
-           ' ' +
-            options.specimen.units[pool.unitId].label,
-        pool.specimenBarcodes,
-        pool.candidatePSCID,
-        options.sessions[pool.sessionId].label,
-        pool.typeId,
-        pool.centerId,
-        pool.date,
-        pool.time,
-      ];
-    });
+    const poolData = Object.values(data.pools);
+    const candidatesByPSCID = Object.values(options.candidates)
+      .reduce((result, candidate) => {
+        if (candidate) {
+          result[candidate.pscid] = candidate;
+        }
+        return result;
+      }, {});
+    const candidateOf = (pool) => candidatesByPSCID[pool.candidatePSCID];
 
     const fields = [
-      {label: 'ID', show: false},
-      {label: t('Label', {ns: 'biobank'}), show: true, filter: {
+      {
         name: 'barcode',
-        type: 'text',
-      }},
-      {label: t('Quantity', {ns: 'biobank'}), show: true},
-      {label: t('Pooled Specimens', {ns: 'biobank'}), show: true},
-      {label: t('PSCID', {ns: 'loris'}), show: true, filter: {
+        label: t('Label', {ns: 'biobank'}),
+        show: true,
+        filter: {name: 'barcode', type: 'text'},
+        value: (pool) => pool.label,
+      },
+      {
+        name: 'quantity',
+        label: t('Quantity', {ns: 'biobank'}),
+        show: true,
+        value: (pool) => pool.quantity,
+        display: (quantity, pool) => Math.round(quantity*100)/100 + ' '
+          + options.specimen.units[pool.unitId].label,
+      },
+      {
+        name: 'pooledSpecimens',
+        label: t('Pooled Specimens', {ns: 'biobank'}),
+        show: true,
+        value: (pool) => pool.specimenBarcodes,
+        format: (barcodes) => barcodes
+          .map((barcode) => (
+            <Link key={barcode} to={`/barcode=${barcode}`}>{barcode}</Link>
+          ))
+          .reduce((prev, curr) => [prev, ', ', curr]),
+      },
+      {
         name: 'pscid',
-        type: 'text',
-      }},
-      {label: t('Visit Label', {ns: 'loris'}), show: true, filter: {
+        label: t('PSCID', {ns: 'loris'}),
+        show: true,
+        filter: {name: 'pscid', type: 'text'},
+        value: (pool) => pool.candidatePSCID,
+        format: (pscid, pool) => {
+          const candidate = candidateOf(pool);
+          if (!candidate) {
+            return pscid;
+          }
+          return <a href={loris.BaseURL + '/' + candidate.id}>{pscid}</a>;
+        },
+      },
+      {
         name: 'session',
-        type: 'text',
-      }},
-      {label: t('Type', {ns: 'loris'}), show: true, filter: {
+        label: t('Visit Label', {ns: 'loris'}),
+        show: true,
+        filter: {name: 'session', type: 'text'},
+        value: (pool) => options.sessions[pool.sessionId].label,
+        format: (visitLabel, pool) => {
+          const candidate = candidateOf(pool);
+          const sessId = candidate && Object.values(candidate).find(
+            (sess) => sess.label == visitLabel
+          )?.id;
+          if (sessId === undefined) {
+            return visitLabel;
+          }
+          const visitLabelURL = loris.BaseURL + '/instrument_list/?candID='
+            + candidate.id + '&sessionID=' + sessId;
+          return <a href={visitLabelURL}>{visitLabel}</a>;
+        },
+      },
+      {
         name: 'type',
-        type: 'select',
-        options: specimenTypes,
-      }},
-      {label: t('Site', {ns: 'loris', count: 1}), show: true, filter: {
+        label: t('Type', {ns: 'loris'}),
+        show: true,
+        filter: {name: 'type', type: 'select', options: specimenTypes},
+        value: (pool) => pool.typeId,
+        display: (typeId) => options.specimen.types[typeId].label,
+      },
+      {
         name: 'site',
-        type: 'select',
-        options: options.centers,
-      }},
-      {label: t('Date', {ns: 'loris'}), show: true},
-      {label: t('Time', {ns: 'loris'}), show: true},
-      {label: t('Aliquot', {ns: 'biobank'}), show: true},
+        label: t('Site', {ns: 'loris', count: 1}),
+        show: true,
+        filter: {name: 'site', type: 'select', options: options.centers},
+        value: (pool) => pool.centerId,
+        display: (centerId) => options.centers[centerId],
+      },
+      {
+        name: 'date',
+        label: t('Date', {ns: 'loris'}),
+        show: true,
+        value: (pool) => pool.date,
+      },
+      {
+        name: 'time',
+        label: t('Time', {ns: 'loris'}),
+        show: true,
+        value: (pool) => pool.time,
+      },
+      {
+        name: 'aliquot',
+        label: t('Aliquot', {ns: 'biobank'}),
+        show: true,
+        value: () => null,
+        format: (_, pool) => (
+          <CTA
+            label={t('Aliquot', {ns: 'biobank'})}
+            onUserInput={() => this.openAliquotForm(pool.id)}
+          />
+        ),
+      },
     ];
 
     return (
@@ -230,8 +220,6 @@ class PoolTab extends Component {
           name='pool'
           data={poolData}
           fields={fields}
-          getFormattedCell={this.formatPoolColumns}
-          getMappedCell={this.mapPoolColumns}
           progress={this.props.loading}
         />
         {this.renderAliquotForm()}
