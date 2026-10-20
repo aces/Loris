@@ -36,12 +36,6 @@ msgstr ""
 msgid "CommentID"
 msgstr ""
 
-msgid "Found in Imaging Browser"
-msgstr ""
-
-msgid "Found in MRI Violated Scans"
-msgstr ""
-
 msgid "Missing"
 msgstr ""
 
@@ -52,4 +46,10 @@ msgid "Complete"
 msgstr ""
 
 msgid "In DICOM Archives"
+msgstr ""
+
+msgid "In Imaging Browser"
+msgstr ""
+
+msgid "In MRI Violated Scans"
 msgstr ""
