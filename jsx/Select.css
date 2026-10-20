@@ -1,0 +1,380 @@
+/**
+ * Select styles. Values come from htdocs/css/tokens.css.
+ */
+
+.loris-select {
+    position: relative;
+    display: flex;
+}
+
+/* The control lifts rather than the panel: a z-index on the panel only ranks it
+   inside this element's own stacking context. */
+.loris-select.open {
+    z-index: 1001;
+}
+
+/* The trigger draws its own field rather than borrowing .form-control. */
+.loris-select-trigger {
+    flex: 1 1 auto;
+    width: 100%;
+    height: var(--loris-control-height);
+    padding: var(--loris-field-padding);
+    font-family: var(--loris-font-family);
+    font-size: var(--loris-font-size);
+    line-height: var(--loris-line-height);
+    color: var(--loris-text);
+    background: var(--loris-field-bg);
+    border: 1px solid var(--loris-field-border);
+    border-radius: var(--loris-radius);
+    box-shadow: var(--loris-field-shadow);
+    display: flex;
+    align-items: center;
+    gap: var(--loris-space-sm);
+    text-align: left;
+    cursor: pointer;
+}
+
+/* Indicators sit hard right, so a badge keeps its place whatever the selection
+   says. */
+.loris-select-indicators {
+    margin-left: auto;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--loris-space-md);
+}
+
+.loris-select-trigger:disabled {
+    cursor: not-allowed;
+}
+
+.loris-select-value {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--loris-space-sm);
+    overflow: hidden;
+}
+
+/* Names are plain text. Only the tags display draws tags. */
+.loris-select-names {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.loris-select-placeholder {
+    color: var(--loris-text-muted);
+}
+
+/* Rows must not take the text selection highlight while a run is dragged. */
+.loris-select-list {
+    user-select: none;
+}
+
+.loris-select-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--loris-space-xs);
+    overflow: hidden;
+}
+
+/* A tag is a settled choice, so it takes the selected colour. */
+.loris-select-tag {
+    background: var(--loris-state-selected);
+    border: 1px solid var(--loris-color-accent-border);
+    color: var(--loris-color-accent-strong);
+    border-radius: var(--loris-radius-sm);
+    padding: 1px var(--loris-space-sm);
+    white-space: nowrap;
+}
+
+.loris-select-panel {
+    position: absolute;
+    z-index: 1000;
+    top: 100%;
+    left: 0;
+    margin-top: var(--loris-space-xs);
+    min-width: 100%;
+    width: var(--loris-select-panel-width, 320px);
+    max-width: 90vw;
+    background: var(--loris-surface);
+    border: 1px solid var(--loris-border);
+    border-radius: var(--loris-radius);
+    box-shadow: var(--loris-shadow-overlay);
+    padding: var(--loris-space-md);
+}
+
+.loris-select-controls {
+    display: flex;
+    gap: var(--loris-space-sm);
+    margin-bottom: var(--loris-space-sm);
+    align-items: center;
+}
+
+.loris-select-search {
+    flex: 1 1 0;
+    min-width: 0;
+    height: var(--loris-control-height-sm);
+    padding: var(--loris-space-xs) var(--loris-space-lg);
+    font-family: var(--loris-font-family);
+    font-size: var(--loris-font-size);
+    color: var(--loris-text);
+    background: var(--loris-field-bg);
+    border: 1px solid var(--loris-field-border);
+    border-radius: var(--loris-radius);
+}
+
+/* With a label, the outline draws the field and the trigger gives up its border
+   and shadow. Nothing cuts a shadow the way the legend cuts the border, so it
+   would draw a hairline across the label. */
+.loris-select:has(.loris-select-outline) .loris-select-trigger,
+.loris-select:has(.loris-select-outline) .loris-select-trigger:focus-visible {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.loris-select-trigger:focus-visible,
+.loris-select-search:focus {
+    outline: 0;
+    border-color: var(--loris-field-border-focus);
+    box-shadow: var(--loris-field-shadow-focus);
+}
+
+/* A labelled field focuses with the border and the label, no glow: a glow spreads
+   from the border the label sits on. Matched from the wrapper, since the outline
+   is drawn before the trigger. */
+.loris-select:has(.loris-select-trigger:focus-visible) .loris-select-outline,
+.loris-select.open .loris-select-outline {
+    border-color: var(--loris-field-border-focus);
+}
+
+.loris-select:has(.loris-select-trigger:focus-visible) .loris-select-label.raised,
+.loris-select.open .loris-select-label.raised {
+    color: var(--loris-color-accent);
+}
+
+.loris-select-list {
+    max-height: 220px;
+    overflow-y: auto;
+    border: 1px solid var(--loris-border-subtle);
+    border-radius: var(--loris-radius);
+}
+
+.loris-select-group {
+    position: sticky;
+    top: 0;
+    background: var(--loris-surface-sunken);
+    border-top: 1px solid var(--loris-border-subtle);
+    padding: 7px var(--loris-space-lg) 3px;
+    font-size: var(--loris-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--loris-text-faint);
+}
+
+.loris-select-option {
+    display: flex;
+    align-items: center;
+    gap: var(--loris-space-md);
+    padding: var(--loris-space-xs) var(--loris-space-lg);
+    margin: 0;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.loris-select-option:hover {
+    background: var(--loris-state-hover);
+}
+
+/* Outranks bootstrap's 4px top margin on radios and checkboxes, qualified by
+   type to beat it on specificity. */
+.loris-select-option input[type="checkbox"] {
+    margin: 0;
+}
+
+/* A single selection marks the chosen row instead of drawing a radio. */
+.loris-select-option input[type="radio"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* The chosen row takes the selected colour, one step up from hover. */
+.loris-select-option.chosen {
+    background: var(--loris-state-selected);
+    box-shadow: inset 2px 0 0 var(--loris-state-selected-solid);
+    color: var(--loris-color-accent-strong);
+    font-weight: 600;
+}
+
+.loris-select-option.disabled {
+    cursor: not-allowed;
+    opacity: .6;
+}
+
+.loris-select-option.disabled:hover {
+    background: none;
+}
+
+.loris-select-empty {
+    padding: var(--loris-space-md) var(--loris-space-lg);
+    color: var(--loris-text-muted);
+}
+
+.loris-select-counts {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--loris-space-md);
+    padding: var(--loris-space-sm) 2px 0;
+    font-size: var(--loris-font-size-sm);
+    color: var(--loris-text-muted);
+}
+
+/* A caller's footer runs the full width on its own ground, so it reads as a
+   footer rather than as more of the list. */
+.loris-select-footer {
+    margin: var(--loris-space-md) calc(-1 * var(--loris-space-md))
+            calc(-1 * var(--loris-space-md));
+    padding: var(--loris-space-md);
+    border-top: 1px solid var(--loris-border);
+    background: var(--loris-surface-sunken);
+    border-radius: 0 0 var(--loris-radius) var(--loris-radius);
+}
+
+/* The run a drag is sweeping over. Drawn in the secondary: these rows are not
+   chosen, they are what changes when the pointer comes up. */
+.loris-select-option.marked {
+    background: var(--loris-state-active);
+    box-shadow: inset 2px 0 0 var(--loris-state-active-solid);
+}
+
+.loris-select-tag.muted {
+    background: var(--loris-surface-sunken);
+    border-color: var(--loris-border-subtle);
+    color: var(--loris-text-muted);
+}
+
+/* Two halves of one decision, kept on one line. The switch's description wraps
+   rather than pushing the button under it. */
+.visit-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--loris-space-lg);
+    flex-wrap: nowrap;
+}
+
+.visit-controls .loris-toggle {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.visit-controls .loris-button {
+    flex: none;
+}
+
+.visit-inherit-badge {
+    color: var(--loris-color-accent-strong);
+}
+
+/* The badge keeps its place on and off. On, it takes the information colour. */
+.visit-inherit-badge {
+    color: var(--loris-text-disabled);
+}
+
+.visit-inherit-badge.on {
+    color: var(--loris-color-info);
+}
+
+/* The label sits where the value would be while nothing is held, and rises onto
+   the top edge once something is. */
+.loris-select-label {
+    position: absolute;
+    left: var(--loris-space-lg);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--loris-text-muted);
+    pointer-events: none;
+    transition: top .12s ease, font-size .12s ease, color .12s ease;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .loris-select-label {
+        transition: none;
+    }
+}
+
+/* Raised, it sits in the gap the legend leaves in the border, so it needs no
+   backdrop. Muted grey, because the faint grey is not readable at this size. */
+.loris-select-label.raised {
+    top: 0;
+    font-size: var(--loris-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--loris-text-muted);
+    background: none;
+    padding: 0 var(--loris-space-xs);
+    left: var(--loris-space-sm);
+    z-index: 1;
+}
+
+/* The border comes from a fieldset behind the control. Its legend reserves the
+   width of the label, leaving a real gap in the border. */
+.loris-select-outline {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0 var(--loris-space-sm);
+    border: 1px solid var(--loris-field-border);
+    border-radius: var(--loris-radius);
+    pointer-events: none;
+    min-width: 0;
+}
+
+.loris-select-outline legend {
+    width: auto;
+    max-width: 100%;
+    padding: 0;
+    border: 0;
+
+    /* The cut straddles the border. A legend's box starts inside the fieldset, so
+       without this the top sliver shows as a hairline through the label. */
+    height: 4px;
+    margin: -2px 0 0;
+    visibility: hidden;
+    font-size: var(--loris-font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    white-space: nowrap;
+}
+
+/* Nothing is raised, so the border closes up. */
+.loris-select-outline legend.closed {
+    max-width: 0;
+}
+
+.loris-select-outline legend span {
+    display: inline-block;
+    padding: 0 var(--loris-space-xs);
+}
+
+/* Identifiers are set in the monospace. A count such as "All (354)" is not one of
+   the values, so it is not. */
+.loris-select.mono .loris-select-option,
+.loris-select.mono .loris-select-names,
+.loris-select.mono .loris-select-tag {
+    font-family: var(--loris-font-family-mono);
+    font-size: var(--loris-font-size-sm);
+}
+
+.loris-select.mono .loris-select-count {
+    font-family: var(--loris-font-family);
+    font-size: var(--loris-font-size);
+}
