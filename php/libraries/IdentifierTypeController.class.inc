@@ -43,6 +43,26 @@ class IdentifierTypeController
     }
 
     /**
+     * Gets all candidate identifier types.
+     *
+     * @return IdentifierType[] All identifier types
+     */
+    public function getAllIdentifierTypes(): array
+    {
+        $rows = $this->database->pselectCol(
+            "SELECT CandidateIdentifierTypeID
+         FROM candidate_identifier_types
+         ORDER BY Name",
+            []
+        );
+
+        return array_map(
+            fn($id) => $this->getIdentifierTypeFromID((int) $id),
+            $rows
+        );
+    }
+
+    /**
      * Gets an identifier type by ID
      *
      * @param int $candidateIdentifierTypeID Identifier type ID

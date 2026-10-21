@@ -80,6 +80,30 @@ class IdentifierTypeControllerTest extends TestCase
     }
 
     /**
+     * Tests that all identifier types can be retrieved.
+     *
+     * @return void
+     * @covers \LORIS\IdentifierTypeController::getAllIdentifierTypes
+     */
+    public function testGetAllIdentifierTypes(): void
+    {
+        $identifierTypes = $this->identifierTypeController
+            ->getAllIdentifierTypes();
+
+        $this->assertCount(1, $identifierTypes);
+        $this->assertInstanceOf(
+            \LORIS\IdentifierType::class,
+            $identifierTypes[0]
+        );
+        $this->assertSame(
+            1,
+            $identifierTypes[0]->candidateIdentifierTypeID
+        );
+        $this->assertSame('TestID', $identifierTypes[0]->name);
+        $this->assertSame([], $identifierTypes[0]->projects);
+    }
+
+    /**
      * Tests that an identifier can be retrieved by ID
      *
      * @return void
