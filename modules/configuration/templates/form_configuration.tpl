@@ -162,8 +162,13 @@
 {/function}
 
 <p>{dgettext('configuration', 'Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer\'s guide.')}</p>
-<p>{dgettext('configuration', 'To configure study cohorts')} <a href="{$baseurl|default}/configuration/cohort/">{dgettext('configuration', 'click here')}</a>.
-    {dgettext('configuration', 'To configure study projects')} <a href="{$baseurl|default}/configuration/project/">{dgettext('configuration', 'click here')}</a>.
+<p>
+    {dgettext('configuration', 'To configure study cohorts')}
+    <a href="{$baseurl|default}/configuration/cohort/">{dgettext('configuration', 'click here')}</a>.
+    {dgettext('configuration', 'To configure study projects')}
+    <a href="{$baseurl|default}/configuration/project/">{dgettext('configuration', 'click here')}</a>.
+    {dgettext('configuration', 'To configure candidate identifier types')}
+    <a href="{$baseurl|default}/configuration/candidate_identifier_types/">{dgettext('configuration', 'click here')}</a>.
 </p>
 <p>{dgettext('configuration', 'To configure the diagnosis trajectory of the study')} <a href="{$baseurl}/configuration/diagnosis_evolution/">{dgettext('configuration', 'click here')}</a>.
 <br>
