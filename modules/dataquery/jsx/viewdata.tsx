@@ -191,6 +191,14 @@ function useRunQuery(
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    if (fields.length === 0) {
+      setLoading(false);
+      swal.fire({
+        type: 'error',
+        text: 'Please select at least one field.',
+      });
+      return;
+    }
     setLoading(true);
     const payload: APIQueryObject = calcPayload(fields, filters);
     fetch(
