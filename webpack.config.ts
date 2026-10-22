@@ -18,10 +18,10 @@ const lorisModules: Record<string, string[]> = {
   candidate_parameters: ['CandidateParameters', 'ConsentWidget', 'DiagnosisEvolution'],
   configuration: [
     'CohortRelations',
-    'configuration_helper',
     'DiagnosisEvolution',
     'formCohort',
     'formProject',
+    'index',
   ],
   conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
   battery_manager: ['batteryManagerIndex'],
