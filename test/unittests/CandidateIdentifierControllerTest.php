@@ -87,6 +87,8 @@ class CandidateIdentifierControllerTest extends TestCase
                     'CandidateID'               => 1,
                     'CandidateIdentifierTypeID' => 1,
                     'Value'                     => '1234',
+                    'DateAdded'  => '2026-01-01 12:00:00',
+                    'DateEdited' => null,
                 ],
             ]
         );
@@ -174,6 +176,12 @@ class CandidateIdentifierControllerTest extends TestCase
         $this->assertFalse($candidateIdentifier->type->allowMultiple);
         $this->assertSame([], $candidateIdentifier->type->projects);
         $this->assertNull($candidateIdentifier->type->permissionID);
+
+        $this->assertSame(
+            '2026-01-01 12:00:00',
+            $candidateIdentifier->dateAdded
+        );
+        $this->assertNull($candidateIdentifier->dateEdited);
     }
 
     /**

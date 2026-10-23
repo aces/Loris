@@ -34,12 +34,16 @@ class CandidateIdentifier
      * @param int            $candidateID           Candidate ID
      * @param IdentifierType $type                  Identifier type
      * @param string         $value                 Identifier value
+     * @param string|null    $dateAdded             Creation timestamp
+     * @param string|null    $dateEdited            Last modification timestamp
      */
     public function __construct(
         public readonly ?int $candidateIdentifierID,
         public readonly int $candidateID,
         public readonly IdentifierType $type,
         public string $value,
+        public readonly ?string $dateAdded = null,
+        public readonly ?string $dateEdited = null,
     ) {
     }
 }
