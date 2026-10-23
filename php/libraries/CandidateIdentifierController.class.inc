@@ -61,7 +61,9 @@ class CandidateIdentifierController
             "SELECT ci.CandidateIdentifierID,
             ci.CandidateID,
             ci.CandidateIdentifierTypeID,
-            ci.Value
+            ci.Value,
+            ci.DateAdded,
+            ci.DateEdited
          FROM candidate_identifiers AS ci
          WHERE ci.CandidateIdentifierID = :candidateIdentifierID",
             ['candidateIdentifierID' => $candidateIdentifierID]
@@ -85,6 +87,8 @@ class CandidateIdentifierController
                 (int) $row['CandidateIdentifierTypeID']
             ),
             value: $row['Value'],
+            dateAdded: $row['DateAdded'],
+            dateEdited: $row['DateEdited'],
         );
     }
 
