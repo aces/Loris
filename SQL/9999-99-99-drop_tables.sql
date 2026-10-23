@@ -29,6 +29,7 @@ DROP TABLE IF EXISTS `biobank_specimen_collection`;
 DROP TABLE IF EXISTS `biobank_specimen_freezethaw`;
 DROP TABLE IF EXISTS `biobank_specimen`;
 DROP TABLE IF EXISTS `biobank_specimen_protocol_attribute_rel`;
+DROP TABLE IF EXISTS `biobank_specimen_protocol_type_rel`;
 DROP TABLE IF EXISTS `biobank_specimen_protocol`;
 DROP TABLE IF EXISTS `biobank_specimen_attribute`;
 DROP TABLE IF EXISTS `biobank_specimen_attribute_datatype`;

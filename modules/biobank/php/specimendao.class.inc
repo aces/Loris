@@ -237,10 +237,20 @@ class SpecimenDAO extends \LORIS\Data\ProvisionerInstance
     {
         $query     = "SELECT SpecimenProtocolID as id,
                          Label as label,
-                         SpecimenProcessID as processId,
-                         SpecimenTypeID as typeId
+                         SpecimenProcessID as processId
                   FROM biobank_specimen_protocol";
         $protocols = $this->db->pselectWithIndexKey($query, [], 'id');
+        foreach ($protocols as $id => $protocol) {
+            $protocols[$id]['typeIds'] = [];
+        }
+
+        $query  = "SELECT SpecimenProtocolID as id,
+                         SpecimenTypeID as typeId
+                  FROM biobank_specimen_protocol_type_rel";
+        $result = $this->db->pselect($query, []);
+        foreach ($result as $row) {
+            $protocols[$row['id']]['typeIds'][] = $row['typeId'];
+        }
 
         return $protocols;
     }
