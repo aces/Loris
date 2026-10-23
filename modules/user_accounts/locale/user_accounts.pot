@@ -214,4 +214,13 @@ msgid "This action cannot be undone."
 msgstr ""
 
 msgid "Yes, reject user!"
-msgstr "
+msgstr ""
+
+msgid "User account saved successfully."
+msgstr ""
+
+msgid "Any unsaved changes will be lost."
+msgstr ""
+
+msgid "Account Status"
+msgstr ""
