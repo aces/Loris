@@ -12,6 +12,8 @@
 ### Candidate Information Tab
 1. Confirm that all the fields in this panel correspond to what's stored in the candidate table and the corresponding parameter_candidate.
 	* PSCID
+	* Registration Project
+	* Registration Cohort
 	* Caveat Emptor flag for Candidate
 	* Reason for Caveat Emptor flag
 	* Any other fields in `SELECT * FROM parameter_type WHERE ParameterTypeID IN (SELECT distinct(ptcr.ParameterTypeID) FROM parameter_type_category ptc JOIN parameter_type_category_rel ptcr USING (ParameterTypeCategoryID) WHERE ptc.NAME='Candidate Parameters');`
