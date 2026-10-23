@@ -851,31 +851,27 @@ class CandidateTest extends TestCase
      */
     public function testValidateProjectPSCID()
     {
-        $seq = [
-            'seq' => [
-                0 => [
-                    '#' => '',
-                    '@' => ['type' => 'projectAbbrev'],
-                ],
-                1 => [
-                    '#' => '',
-                    '@' => [
-                        'type'   => 'numeric',
-                        'length' => '4',
-                    ],
-                ],
-            ],
-        ];
-        $this->_configMap = [
-            ['PSCID', [
-                'generation' => 'sequential',
-                'structure'  => $seq,
-            ]
-            ],
-        ];
+        $this->_dbMock->expects($this->atLeastOnce())
+            ->method('isConnected')
+            ->willReturn(true);
 
-        $this->_configMock->method('getSetting')
-            ->willReturnMap($this->_configMap);   // <-- modern replacement
+        $this->_dbMock->method('pselectOne')
+            ->willReturn('1');
+
+        $this->_dbMock->method('pselectRow')
+            ->willReturn(
+                [
+                    'CandidateIdentifierTypeID' => 1,
+                    'Name'                      => 'PSCID',
+                    'Format'                    =>
+                    '{PROJECT:ALIAS}{SEQUENCE:4,FORMAT:numeric}',
+                    'IsRequired'                => 1,
+                    'IsUnique'                  => 1,
+                    'AutoGenerate'              => 1,
+                    'AllowMultiple'             => 0,
+                    'permID'                    => null,
+                ]
+            );
 
         $this->assertEquals(
             1,
@@ -1119,32 +1115,86 @@ class CandidateTest extends TestCase
      */
     public function testStructureToPCRE()
     {
-        $structure = [
-            'seq' => [
-                0 => ['@' => ['type' => 'alpha',
-                    'minLength' => '1',
-                    'maxLength' => '5'
-                ]
-                ],
-                1 => ['@' => ['type' => 'alphanumeric',
-                    'length' => '2'
-                ]
-                ],
-                2 => ['@' => ['type' => 'static'],
-                    '#' => '1-3'
-                ],
-                3 => ['@' => ['type' => 'set'],
-                    '#' => '1||3'
-                ],
-                4 => ['@' => ['type' => 'set'],
-                    '#' => '1-3'
-                ],
-            ]
-        ];
         $this->assertEquals(
-            '/^[a-z]{1,5}[0-9a-z]{2,2}(1-3){1,1}(1||3){1,1}[1-3]{1,1}$/i',
-            Candidate::structureToPCRE($structure)
+            '/^TEST\-[0-9]{4}$/i',
+            Candidate::structureToPCRE(
+                'TEST-{SEQUENCE:4}'
+            )
         );
+
+        $this->assertEquals(
+            '/^NUM\-[0-9]{4}$/i',
+            Candidate::structureToPCRE(
+                'NUM-{SEQUENCE:4,FORMAT:numeric}'
+            )
+        );
+
+        $this->assertEquals(
+            '/^ALPHA\-[A-Z]{4}$/i',
+            Candidate::structureToPCRE(
+                'ALPHA-{SEQUENCE:4,FORMAT:alpha}'
+            )
+        );
+
+        $this->assertEquals(
+            '/^ALPHANUM\-[0-9A-Z]{4}$/i',
+            Candidate::structureToPCRE(
+                'ALPHANUM-{SEQUENCE:4,FORMAT:alphanumeric}'
+            )
+        );
+
+        $this->assertEquals(
+            '/^RAND\-[0-9]{4}$/i',
+            Candidate::structureToPCRE(
+                'RAND-{RANDOM:4,FORMAT:numeric}'
+            )
+        );
+
+        $this->assertEquals(
+            '/^RANDALPHA\-[A-Z]{4}$/i',
+            Candidate::structureToPCRE(
+                'RANDALPHA-{RANDOM:4,FORMAT:alpha}'
+            )
+        );
+
+        $this->assertEquals(
+            '/^RANDALPHANUM\-[0-9A-Z]{4}$/i',
+            Candidate::structureToPCRE(
+                'RANDALPHANUM-{RANDOM:4,FORMAT:alphanumeric}'
+            )
+        );
+
+        $this->assertEquals(
+            '/^NUM\-[0-9]{4}$/i',
+            Candidate::structureToPCRE(
+                'NUM-{NUMERIC:4}'
+            )
+        );
+
+        $this->assertEquals(
+            '/^ALPHA\-[A-Z]{4}$/i',
+            Candidate::structureToPCRE(
+                'ALPHA-{ALPHA:4}'
+            )
+        );
+
+        $this->assertEquals(
+            '/^ALPHANUM\-[0-9A-Z]{6}$/i',
+            Candidate::structureToPCRE(
+                'ALPHANUM-{ALPHANUMERIC:6}'
+            )
+        );
+
+        // Valid and invalid manually entered values.
+        $pattern = Candidate::structureToPCRE('NUM-{NUMERIC:4}');
+
+        $validValue        = 'NUM-1234';
+        $invalidCharacters = 'NUM-12AB';
+        $invalidLength     = 'NUM-12345';
+
+        $this->assertSame(1, preg_match($pattern, $validValue));
+        $this->assertSame(0, preg_match($pattern, $invalidCharacters));
+        $this->assertSame(0, preg_match($pattern, $invalidLength));
     }
 
     /**
@@ -1155,23 +1205,83 @@ class CandidateTest extends TestCase
      */
     public function testStructureToPCREWithAbbreviations()
     {
-        $structure = [
-            'seq' => [
-                0 => ['@' => ['type' => 'siteAbbrev',
-                    'minLength' => '1',
-                    'maxLength' => '5'
-                ]
-                ],
-                1 => ['@' => ['type' => 'projectAbbrev',
-                    'minLength' => '1',
-                    'maxLength' => '5'
-                ]
-                ]
-            ]
-        ];
         $this->assertEquals(
-            '/^MTL{1,5}P1{1,5}$/i',
-            Candidate::structureToPCRE($structure, "MTL", "P1")
+            '/^MTL[0-9]{4}$/i',
+            Candidate::structureToPCRE(
+                '{SITE:ALIAS}{SEQUENCE:4}',
+                'MTL'
+            )
+        );
+
+        $this->assertEquals(
+            '/^P1[0-9]{4}$/i',
+            Candidate::structureToPCRE(
+                '{PROJECT:ALIAS}{SEQUENCE:4}',
+                null,
+                'P1'
+            )
+        );
+    }
+
+    /**
+     * Test that structureToPattern returns a human-readable pattern
+     * for the given identifier structure.
+     *
+     * @covers Candidate::structureToPattern
+     * @return void
+     */
+    public function testStructureToPattern(): void
+    {
+        $this->assertSame(
+            'TEST-####, where # represents a number (0-9).',
+            Candidate::structureToPattern(
+                'TEST-{SEQUENCE:4}'
+            )
+        );
+
+        $this->assertSame(
+            'NUM-####, where # represents a number (0-9).',
+            Candidate::structureToPattern(
+                'NUM-{SEQUENCE:4,FORMAT:numeric}'
+            )
+        );
+
+        $this->assertSame(
+            'ALPHA-####, where # represents a letter (A-Z).',
+            Candidate::structureToPattern(
+                'ALPHA-{SEQUENCE:4,FORMAT:alpha}'
+            )
+        );
+
+        $this->assertSame(
+            'ALPHANUM-####, where # represents a number (0-9) or letter (A-Z).',
+            Candidate::structureToPattern(
+                'ALPHANUM-{SEQUENCE:4,FORMAT:alphanumeric}'
+            )
+        );
+
+        $this->assertSame(
+            'RAND-####, where # represents a number (0-9).',
+            Candidate::structureToPattern(
+                'RAND-{RANDOM:4,FORMAT:numeric}'
+            )
+        );
+
+        $this->assertSame(
+            'TST####, where # represents a number (0-9) or letter (A-Z).',
+            Candidate::structureToPattern(
+                '{SITE:ALIAS}{SEQUENCE:4,FORMAT:alphanumeric}',
+                'TST'
+            )
+        );
+
+        $this->assertSame(
+            'P1####, where # represents a number (0-9).',
+            Candidate::structureToPattern(
+                '{PROJECT:ALIAS}{SEQUENCE:4,FORMAT:numeric}',
+                null,
+                'P1'
+            )
         );
     }
 
