@@ -217,7 +217,9 @@ CREATE TABLE IF NOT EXISTS `physiological_coord_system` (
   `UnitID`                      INT(10)     UNSIGNED  NOT NULL,
   `ModalityID`                  INT(5)      UNSIGNED  NOT NULL,
   `FilePath`                    VARCHAR(255)          NULL,
+  `BidsFileID`                  INT(10)     UNSIGNED  NULL,
   PRIMARY KEY (`PhysiologicalCoordSystemID`),
+  KEY `physiological_coord_system_bids_file_id_fk_idx` (`BidsFileID`),
   CONSTRAINT `FK_PhysCoordSystemType_type`
     FOREIGN KEY (`TypeID`)
     REFERENCES `physiological_coord_system_type` (`PhysiologicalCoordSystemTypeID`),
@@ -229,7 +231,10 @@ CREATE TABLE IF NOT EXISTS `physiological_coord_system` (
     REFERENCES `physiological_coord_system_unit` (`PhysiologicalCoordSystemUnitID`),
   CONSTRAINT `FK_PhysCoordSystemModality_modality`
     FOREIGN KEY (`ModalityID`)
-    REFERENCES `physiological_modality` (`PhysiologicalModalityID`)
+    REFERENCES `physiological_modality` (`PhysiologicalModalityID`),
+  CONSTRAINT `physiological_coord_system_bids_file_id_fk`
+    FOREIGN KEY (`BidsFileID`)
+    REFERENCES `bids_file` (`ID`) ON DELETE SET NULL
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 -- Create point_3d table
