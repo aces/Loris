@@ -47,6 +47,8 @@ class CandidateIdentifier
             'CandidateIdentifierID' => $this->identifier->candidateIdentifierID,
             'Type'                  => $this->identifier->type->name,
             'Value'                 => $this->identifier->value,
+            'DateAdded'             => $this->identifier->dateAdded,
+            'DateEdited'            => $this->identifier->dateEdited,
         ];
     }
 }
