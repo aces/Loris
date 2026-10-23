@@ -17,3 +17,34 @@
     display: flex;
     justify-content: center;
 }
+
+.configuration-mapping-row {
+    align-items: stretch;
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.configuration-mapping-fields {
+    display: grid;
+    flex: 1 1 auto;
+    gap: 10px;
+    grid-template-columns: minmax(160px, 1fr) minmax(220px, 2fr);
+    min-width: 0;
+}
+
+.configuration-mapping-fields .form-control {
+    height: 34px;
+    min-width: 0;
+}
+
+@media (max-width: 767px) {
+    .configuration-mapping-row {
+        flex-wrap: wrap;
+    }
+
+    .configuration-mapping-fields {
+        flex-basis: 100%;
+        grid-template-columns: 1fr;
+    }
+}
