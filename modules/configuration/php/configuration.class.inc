@@ -250,11 +250,19 @@ class Configuration extends \NDB_Form
         }
 
         $values = $DB->pselect(
-            "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
+            "SELECT c.ID, c.Value, cm.Value AS MappedValue
+             FROM Config c
+             LEFT JOIN ConfigMappings cm ON (c.ID=cm.ConfigID)
+             WHERE c.ConfigID=:ID",
             ['ID' => $setting['ID']]
         );
         foreach ($values as $subvalue) {
-            if ($setting['Multilingual']) {
+            if ($setting['DataType'] === 'mapping') {
+                $setting['Value'][$subvalue['ID']] = [
+                    'Value'       => $subvalue['Value'],
+                    'MappedValue' => $subvalue['MappedValue'] ?? '',
+                ];
+            } elseif ($setting['Multilingual']) {
                 $setting['Value'][$subvalue['ID']]
                     = $config->getMultilingualSetting(
                         $lang,
