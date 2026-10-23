@@ -2,10 +2,10 @@ CREATE TABLE `candidate_identifier_types` (
   `CandidateIdentifierTypeID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(100) NOT NULL,
   `Format` varchar(255) NOT NULL,
-  `IsRequired` boolean NOT NULL DEFAULT 1,
-  `IsUnique` boolean NOT NULL DEFAULT 1,
-  `AutoGenerate` boolean NOT NULL DEFAULT 1,
-  `AllowMultiple` boolean NOT NULL DEFAULT 0,
+  `IsRequired` boolean NOT NULL,
+  `IsUnique` boolean NOT NULL,
+  `AutoGenerate` boolean NOT NULL,
+  `AllowMultiple` boolean NOT NULL,
   `permID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`CandidateIdentifierTypeID`),
   UNIQUE KEY (`Name`),
@@ -46,6 +46,8 @@ CREATE TABLE `candidate_identifiers` (
   `CandidateID` int(10) unsigned NOT NULL,
   `CandidateIdentifierTypeID` int(10) unsigned NOT NULL,
   `Value` varchar(255) NOT NULL,
+  `DateAdded` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `DateEdited` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`CandidateIdentifierID`),
   CONSTRAINT `FK_candidate_identifier_candidate`
     FOREIGN KEY (`CandidateID`)
