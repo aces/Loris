@@ -74,7 +74,7 @@ class SpecimenTab extends Component {
       return options.centers[value];
     case this.props.t('Draw Site', {ns: 'biobank'}):
       return options.centers[value];
-    case this.props.t('Project', {ns: 'loris'}):
+    case this.props.t('Project', {ns: 'loris', count: 1}):
       return options.projects[value];
     default:
       return value;
@@ -285,7 +285,7 @@ class SpecimenTab extends Component {
         name: 'session',
         type: 'text',
       }},
-      {label: this.props.t('Pool', {ns: 'biobank'}), show: false, filter: {
+      {label: t('Pool', {ns: 'biobank', count: 1}), show: false, filter: {
         name: 'pool',
         type: 'text',
         hide: true,
@@ -295,7 +295,7 @@ class SpecimenTab extends Component {
         type: 'select',
         options: stati,
       }},
-      {label: this.props.t('Project', {ns: 'loris'}), show: true, filter: {
+      {label: t('Project', {ns: 'loris', count: 1}), show: true, filter: {
         name: 'project',
         type: 'multiselect',
         options: options.projects,

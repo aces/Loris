@@ -112,7 +112,20 @@ class Signup extends \NDB_Page implements ETagCalculator
             false
         );
         $site     = $values['site'];
-        $project  = $values['project'];
+        $projects = $values['project'] ?? [];
+        if (!is_array($projects)) {
+            $projects = [$projects];
+        }
+        $projectList         = \Utility::getProjectList();
+        $projects            = array_values(
+            array_unique(
+                array_filter(
+                    $projects,
+                    fn($project) => (is_string($project) || is_int($project))
+                        && array_key_exists($project, $projectList)
+                )
+            )
+        );
         $language_preference = $values['language_preference'] ?? null;
         $fullname            = $name . ' ' . $lastname;
 
@@ -178,8 +191,7 @@ class Signup extends \NDB_Page implements ETagCalculator
             }
 
             // verify project exists
-            $projectList = \Utility::getProjectList();
-            if (!is_null($project) && array_key_exists($project, $projectList)) {
+            foreach ($projects as $project) {
                 $DB->insert(
                     'user_project_rel',
                     [
@@ -227,10 +239,20 @@ class Signup extends \NDB_Page implements ETagCalculator
         }
 
         // Don't send out emails if this is a sandbox VM.
-        if (!$factory->config()->settingEnabled('sandbox')) {
+        if (!$factory->config()->settingEnabled('sandbox')
+            && !empty($projects)
+        ) {
+            $params = ['center' => $site];
+            $projectPlaceholders = [];
+            foreach ($projects as $index => $project) {
+                $key = 'project' . $index;
+                $projectPlaceholders[] = ':' . $key;
+                $params[$key]          = $project;
+            }
+
             // Send an email to all users meeting the following criteria:
             //     - Associated with the Site
-            //     - Associated with the Project
+            //     - Associated with at least one requested Project
             //     - Have the User Management permission
             $query  = "
                 SELECT DISTINCT
@@ -242,11 +264,10 @@ class Signup extends \NDB_Page implements ETagCalculator
                     JOIN user_project_rel uprojr ON u.ID = uprojr.UserID
                 WHERE
                     upr.CenterID = :center
-                    AND uprojr.ProjectID = :project";
-            $result = $DB->pselect(
-                $query,
-                ['center' => $site, 'project' => $project]
-            );
+                    AND uprojr.ProjectID IN ("
+                    . implode(',', $projectPlaceholders)
+                    . ")";
+            $result = $DB->pselect($query, $params);
             foreach ($result as $row) {
                 $hasPermission = \User::factory($row['userID'])
                     ->hasAnyPermission(

@@ -284,7 +284,7 @@ class BatchProcessForm extends React.PureComponent {
               />
               <SearchableDropdown
                 name={'poolId'}
-                label={t('Pool', {ns: 'biobank'})}
+                label={t('Pool', {ns: 'biobank', count: 1})}
                 onUserInput={handlePoolInput}
                 options={pools}
                 value={poolId}
@@ -415,7 +415,7 @@ class BarcodeInput extends PureComponent {
     return (
       <SearchableDropdown
         name={'containerId'}
-        label={t('Specimen', {ns: 'biobank'})}
+        label={t('Specimen', {ns: 'biobank', count: 1})}
         onUserInput={handleInput}
         options={barcodesPrimary}
         value={containerId}
