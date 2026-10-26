@@ -64,6 +64,12 @@ msgstr "Veuillez saisir les différentes variables de configuration dans les cha
 msgid "To configure study cohorts"
 msgstr "Pour configurer les cohortes de l'étude"
 
+msgid "To configure study projects"
+msgstr "Pour configurer les projets de l'étude"
+
+msgid "To configure candidate identifier types"
+msgstr "Pour configurer les types d'identifiants de candidats"
+
 msgid "click here"
 msgstr "cliquez ici"
 
@@ -222,3 +228,48 @@ msgstr "Valeur"
 
 msgid "Mapped value"
 msgstr "Valeur correspondante"
+
+msgid "Use this page to manage the configuration of candidate identifier types, or to add a new one."
+msgstr "Utilisez cette page pour gérer la configuration des types d'identifiants de candidats ou pour en ajouter un nouveau."
+
+msgid "New Identifier Type"
+msgstr "Nouveau type d'identifiant"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Required"
+msgstr "Obligatoire"
+
+msgid "Unique"
+msgstr "Unique"
+
+msgid "Auto Generate"
+msgstr "Génération automatique"
+
+msgid "Allow Multiple"
+msgstr "Autoriser plusieurs valeurs"
+
+msgid "Identifier name, e.g. PSCID or ExternalID"
+msgstr "Nom de l'identifiant, p. ex. PSCID ou ExternalID"
+
+msgid "Template used to generate or validate identifier values."
+msgstr "Modèle utilisé pour générer ou valider les valeurs des identifiants."
+
+msgid "Whether candidates using this identifier type must have at least one value"
+msgstr "Indique si les candidats utilisant ce type d'identifiant doivent avoir au moins une valeur"
+
+msgid "Whether identifier values must be unique across candidates"
+msgstr "Indique si les valeurs des identifiants doivent être uniques parmi les candidats"
+
+msgid "Whether LORIS generates the value automatically from the format"
+msgstr "Indique si LORIS génère automatiquement la valeur à partir du format"
+
+msgid "Whether a candidate can have more than one value of this type"
+msgstr "Indique si un candidat peut avoir plusieurs valeurs de ce type"
+
+msgid "Projects in which this identifier type can be used. An identifier type can be associated with multiple projects."
+msgstr "Projets dans lesquels ce type d'identifiant peut être utilisé. Un type d'identifiant peut être associé à plusieurs projets."

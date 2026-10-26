@@ -35,8 +35,8 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label"
                         data-toggle="tooltip"
-                        data-placement="top"
-                        title="Identifier name, e.g. PSCID or ExternalID">
+                        data-placement="right"
+                        title="{dgettext('configuration', 'Identifier name, e.g. PSCID or ExternalID')}">
                         {dgettext('configuration', 'Name')}
                     </label>
                     <div class="col-sm-9">
@@ -48,8 +48,8 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label"
                         data-toggle="tooltip"
-                        data-placement="top"
-                        title="Template used to generate or validate identifier values.">
+                        data-placement="right"
+                        title="{dgettext('configuration', 'Template used to generate or validate identifier values.')}">
                         {dgettext('configuration', 'Format')}
                     </label>
                     <div class="col-sm-9">
@@ -67,11 +67,11 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label"
                         data-toggle="tooltip"
-                        data-placement="top"
-                        title="{if $field == 'IsRequired'}Whether candidates using this identifier type must have at least one value
-                            {elseif $field == 'IsUnique'}Whether identifier values must be unique across candidates
-                            {elseif $field == 'AutoGenerate'}Whether LORIS generates the value automatically from the format
-                            {elseif $field == 'AllowMultiple'}Whether a candidate can have more than one value of this type{/if}">
+                        data-placement="right"
+                        title="{if $field == 'IsRequired'}{dgettext('configuration', 'Whether candidates using this identifier type must have at least one value')}
+                            {elseif $field == 'IsUnique'}{dgettext('configuration', 'Whether identifier values must be unique across candidates')}
+                            {elseif $field == 'AutoGenerate'}{dgettext('configuration', 'Whether LORIS generates the value automatically from the format')}
+                            {elseif $field == 'AllowMultiple'}{dgettext('configuration', 'Whether a candidate can have more than one value of this type')}{/if}">
                         {dgettext('configuration', $label)}
                     </label>
                     <div class="col-sm-9">
@@ -89,9 +89,9 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label"
                         data-toggle="tooltip"
-                        data-placement="top"
-                        title="Projects in which this identifier type can be used. An identifier type can be associated with multiple projects.">
-                        {dgettext('configuration', 'Projects')}
+                        data-placement="right"
+                        title="{dgettext('configuration', 'Projects in which this identifier type can be used. An identifier type can be associated with multiple projects.')}">
+                        {dngettext('loris', 'Project', 'Projects', 99)}
                     </label>
                     <div class="col-sm-9">
                         <select name="ProjectIDs" class="form-control identifierProjects" multiple>
@@ -134,8 +134,8 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label"
                         data-toggle="tooltip"
-                        data-placement="top"
-                        title="Identifier name, e.g. PSCID or ExternalID">
+                        data-placement="right"
+                        title="{dgettext('configuration', 'Identifier name, e.g. PSCID or ExternalID')}">
                         {dgettext('configuration', 'Name')}
                     </label>
                     <div class="col-sm-9">
@@ -146,8 +146,8 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label"
                         data-toggle="tooltip"
-                        data-placement="top"
-                        title="Template used to generate or validate identifier values.">
+                        data-placement="right"
+                        title="{dgettext('configuration', 'Template used to generate or validate identifier values.')}">
                         {dgettext('configuration', 'Format')}
                     </label>
                     <div class="col-sm-9">
@@ -164,11 +164,11 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label"
                         data-toggle="tooltip"
-                        data-placement="top"
-                        title="{if $field == 'IsRequired'}Whether candidates using this identifier type must have at least one value
-                            {elseif $field == 'IsUnique'}Whether identifier values must be unique across candidates
-                            {elseif $field == 'AutoGenerate'}Whether LORIS generates the value automatically from the format
-                            {elseif $field == 'AllowMultiple'}Whether a candidate can have more than one value of this type{/if}">
+                        data-placement="right"
+                        title="{if $field == 'IsRequired'}{dgettext('configuration', 'Whether candidates using this identifier type must have at least one value')}
+                            {elseif $field == 'IsUnique'}{dgettext('configuration', 'Whether identifier values must be unique across candidates')}
+                            {elseif $field == 'AutoGenerate'}{dgettext('configuration', 'Whether LORIS generates the value automatically from the format')}
+                            {elseif $field == 'AllowMultiple'}{dgettext('configuration', 'Whether a candidate can have more than one value of this type')}{/if}">
                         {dgettext('configuration', $label)}
                     </label>
                     <div class="col-sm-9">
@@ -180,9 +180,9 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label"
                         data-toggle="tooltip"
-                        data-placement="top"
-                        title="Projects in which this identifier type can be used. An identifier type can be associated with multiple projects.">
-                        {dgettext('configuration', 'Projects')}
+                        data-placement="right"
+                        title="{dgettext('configuration', 'Projects in which this identifier type can be used. An identifier type can be associated with multiple projects.')}">
+                        {dngettext('loris', 'Project', 'Projects', 99)}
                     </label>
                     <div class="col-sm-9">
                         <select name="ProjectIDs" class="form-control identifierProjects" multiple>
