@@ -25,8 +25,10 @@ namespace LORIS\configuration;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class Configuration extends \NDB_Form
+class Configuration extends \NDB_Page
 {
+    public $skipTemplate = true;
+
     /**
      * _has_access returns true
      * if the user has the specific permission
@@ -39,264 +41,6 @@ class Configuration extends \NDB_Form
     public function isAccessibleBy(\User $user) : bool
     {
         return $user->hasPermission('config');
-    }
-
-     /**
-      * Loads the main configuration module page.
-      *
-      * @return void
-      */
-    function setup()
-    {
-        parent::setup();
-        $config = \NDB_Config::singleton();
-        $DB     = $this->loris->getDatabaseConnection();
-
-        $scans      = $DB->pselect(
-            "SELECT MriScanTypeName FROM mri_scan_type",
-            []
-        );
-        $scan_types = ['' => ''];
-        foreach ($scans as $type) {
-            $val = $type['MriScanTypeName'];
-            $scan_types[$val] = $val;
-        }
-
-        $date_format = [
-            ''    => '',
-            'Ymd' => dgettext('configuration', 'Ymd (EX: 2015-12-28)'),
-            'Ym'  => dgettext('configuration', 'Ym (EX: 2015-12)')
-        ];
-
-        $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
-        $instruments[''] = '';
-
-        $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
-        $this->tpl_data['config']          = $this->_getConfigSettingTree();
-        $this->tpl_data['instruments']     = $instruments;
-        $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
-        $this->tpl_data['scan_types']      = $scan_types;
-        $this->tpl_data['log_levels']      = [
-            'none'      => dgettext('loris', 'None'),
-            'debug'     => dgettext('configuration', 'Debug'),
-            'info'      => dgettext('configuration', 'Info'),
-            'notice'    => dgettext('configuration', 'Notice'),
-            'warning'   => dgettext('configuration', 'Warning'),
-            'error'     => dgettext('configuration', 'Error'),
-            'critical'  => dgettext('configuration', 'Critical'),
-            'alert'     => dgettext('configuration', 'Alert'),
-            'emergency' => dgettext('configuration', 'Emergency'),
-        ];
-
-        $this->tpl_data['date_format']   = $date_format;
-        $this->tpl_data['lookup_center'] = [
-            ''            => '',
-            'PatientID'   => dgettext('configuration', 'PatientID'),
-            'PatientName' => dgettext('configuration', 'PatientName'),
-        ];
-    }
-
-    /**
-     * Gets an array of the top level configuration items
-     * This is used to create the configuration setting category menu
-     *
-     * @return array of parent config items
-     */
-    function _getParentConfigLabels()
-    {
-        $DB = $this->loris->getDatabaseConnection();
-
-        $parentConfigItems = $DB->pselect(
-            "SELECT Label, Name
-             FROM ConfigCategories
-             WHERE Visible=1 ORDER BY OrderNumber",
-            []
-        );
-
-        // Convert the labels to the appropriate language
-        $parentConfigItems = iterator_to_array($parentConfigItems);
-        foreach ($parentConfigItems as &$setting) {
-            $setting['Label'] = dgettext('ConfigSettings', $setting['Label']);
-        }
-        return $parentConfigItems;
-    }
-
-    /**
-     * Returns an array of configuration settings in a tree format.
-     * The array contains all of the settings that are in config table
-     * in the database. However, if the value if overridden in the config.xml,
-     * the value for that setting is replaced with the value from the config.xml
-     *
-     * @return array of config settings
-     */
-    function _getConfigSettingTree()
-    {
-        $config = \NDB_Config::singleton();
-        $DB     = $this->loris->getDatabaseConnection();
-        $lang   = \User::singleton()->getLanguageCode();
-
-        $categories = iterator_to_array(
-            $DB->pselect(
-                "SELECT ID, Name, Description, Visible, 0 AS AllowMultiple,
-                    NULL AS DataType, NULL AS Parent, Label, OrderNumber,
-                    0 AS Multilingual
-                 FROM ConfigCategories
-                 WHERE Visible=1
-                 ORDER BY OrderNumber",
-                []
-            )
-        );
-
-        foreach ($categories as &$category) {
-            $category['Label']       = dgettext(
-                'ConfigSettings',
-                $category['Label']
-            );
-            $category['Description'] = dgettext(
-                'ConfigSettings',
-                $category['Description']
-            );
-        }
-        unset($category);
-
-        $configs = iterator_to_array(
-            $DB->pselect(
-                "SELECT *
-                 FROM ConfigSettings
-                 WHERE Visible=1
-                 ORDER BY CategoryID, Parent, OrderNumber, ID",
-                []
-            )
-        );
-
-        $childrenByParent   = [];
-        $settingsByCategory = [];
-        foreach ($configs as $setting) {
-            $setting = $this->_formatConfigSetting(
-                $setting,
-                $config,
-                $DB,
-                $lang
-            );
-            if ($setting['Parent'] !== null) {
-                $childrenByParent[strval($setting['Parent'])][] = $setting;
-                continue;
-            }
-
-            if ($setting['CategoryID'] !== null) {
-                $settingsByCategory[intval($setting['CategoryID'])][] = $setting;
-            }
-        }
-
-        foreach ($categories as &$category) {
-            $category['Disabled'] = 'No';
-            $category['Value']    = [];
-            $category['Children'] = [];
-            $categorySettings     = $settingsByCategory[intval($category['ID'])]
-                ?? [];
-            foreach ($categorySettings as $setting) {
-                $setting['Children']    = $this->_buildConfigSettingTree(
-                    $childrenByParent,
-                    intval($setting['ID'])
-                );
-                $category['Children'][] = $setting;
-            }
-        }
-        unset($category);
-
-        return $categories;
-    }
-
-    /**
-     * Add value and override metadata to a config setting row.
-     *
-     * @param array       $setting The config setting row
-     * @param \NDB_Config $config  Runtime configuration object
-     * @param \Database   $DB      Database handle
-     * @param string      $lang    Current language code
-     *
-     * @return array
-     */
-    private function _formatConfigSetting(
-        array $setting,
-        \NDB_Config $config,
-        \Database $DB,
-        string $lang
-    ) : array {
-        $setting['Label']       = dgettext('ConfigSettings', $setting['Label']);
-        $setting['Description'] = dgettext(
-            'ConfigSettings',
-            $setting['Description']
-        );
-        $setting['Children']    = [];
-        $setting['Value']       = [];
-
-        if ($setting['DataType'] === null) {
-            $setting['Disabled'] = 'No';
-            return $setting;
-        }
-
-        try {
-            $setting['Disabled'] = 'Yes';
-            $valueFromXML        = $config->getSettingFromXML($setting['Name']);
-            if (!is_array($valueFromXML)) {
-                $setting['Value'][0] = $valueFromXML;
-            } else {
-                $setting['Value'] = $valueFromXML;
-            }
-            return $setting;
-        } catch (\ConfigurationException $e) {
-            $setting['Disabled'] = 'No';
-        }
-
-        $values = $DB->pselect(
-            "SELECT c.ID, c.Value, cm.Value AS MappedValue
-             FROM Config c
-             LEFT JOIN ConfigMappings cm ON (c.ID=cm.ConfigID)
-             WHERE c.ConfigID=:ID",
-            ['ID' => $setting['ID']]
-        );
-        foreach ($values as $subvalue) {
-            if ($setting['DataType'] === 'mapping') {
-                $setting['Value'][$subvalue['ID']] = [
-                    'Value'       => $subvalue['Value'],
-                    'MappedValue' => $subvalue['MappedValue'] ?? '',
-                ];
-            } elseif ($setting['Multilingual']) {
-                $setting['Value'][$subvalue['ID']]
-                    = $config->getMultilingualSetting(
-                        $lang,
-                        $setting['Name']
-                    );
-            } else {
-                $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
-            }
-        }
-
-        return $setting;
-    }
-
-    /**
-     * Build a recursive config setting tree from settings grouped by parent.
-     *
-     * @param array $childrenByParent Config settings grouped by parent ID
-     * @param int   $parentID         Parent ID to build from
-     *
-     * @return array
-     */
-    private function _buildConfigSettingTree(
-        array $childrenByParent,
-        int $parentID
-    ) : array {
-        $settings = [];
-        foreach ($childrenByParent[strval($parentID)] ?? [] as $setting) {
-            $setting['Children'] = $this->_buildConfigSettingTree(
-                $childrenByParent,
-                intval($setting['ID'])
-            );
-            $settings[]          = $setting;
-        }
-        return $settings;
     }
 
     /**
@@ -313,17 +57,17 @@ class Configuration extends \NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/configuration/js/configuration_helper.js",
+                $baseURL . "/configuration/js/index.js",
             ]
         );
     }
 
-     /**
-      * Include additional CSS files:
-      *  1. configuration
-      *
-      * @return array of CSS to be inserted
-      */
+    /**
+     * Include additional CSS files:
+     *  1. configuration
+     *
+     * @return array of CSS to be inserted
+     */
     function getCSSDependencies()
     {
         $factory = \NDB_Factory::singleton();

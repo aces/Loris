@@ -249,3 +249,6 @@ msgstr ""
 
 msgid "Consent Type"
 msgstr ""
+
+msgid "Registration Project"
+msgstr ""

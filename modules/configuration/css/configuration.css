@@ -34,18 +34,6 @@
     margin-right: 6px;
 }
 
-.configuration-tree-icon-expanded {
-    display: none;
-}
-
-.configuration-tree-header[aria-expanded="true"] .configuration-tree-icon-collapsed {
-    display: none;
-}
-
-.configuration-tree-header[aria-expanded="true"] .configuration-tree-icon-expanded {
-    display: inline-block;
-}
-
 .configuration-tree-label {
     font-weight: 600;
 }

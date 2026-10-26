@@ -91,28 +91,36 @@ class Signup extends \NDB_Page implements ETagCalculator
             }
         }
 
-        $factory  = \NDB_Factory::singleton();
-        $DB       = \NDB_Factory::singleton()->database();
-        $name     = htmlspecialchars(
+        $factory     = \NDB_Factory::singleton();
+        $DB          = \NDB_Factory::singleton()->database();
+        $name        = htmlspecialchars(
             $values['firstname'],
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
         );
-        $lastname = htmlspecialchars(
+        $lastname    = htmlspecialchars(
             $values['lastname'],
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
         );
-        $from     = htmlspecialchars(
+        $from        = htmlspecialchars(
             $values['email'],
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
         );
-        $site     = $values['site'];
-        $project  = $values['project'];
+        $site        = $values['site'];
+        $project     = $values['project'];
+        $examiner    = filter_var(
+            $values['examiner'] ?? false,
+            FILTER_VALIDATE_BOOL
+        );
+        $radiologist = filter_var(
+            $values['radiologist'] ?? false,
+            FILTER_VALIDATE_BOOL
+        );
         $language_preference = $values['language_preference'] ?? null;
         $fullname            = $name . ' ' . $lastname;
 
@@ -155,11 +163,12 @@ class Signup extends \NDB_Page implements ETagCalculator
         }
 
         // Check email address' uniqueness
-        $result   = $DB->pselectOne(
+        $result      = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email=:VEmail OR UserID=:VEmail",
             ['VEmail' => $from]
         );
-        $siteList = \Utility::getSiteList();
+        $siteList    = \Utility::getSiteList();
+        $projectList = \Utility::getProjectList();
         if ($result == 0) {
             // insert into DB only if email address doesn't exist
             $DB->insert('users', $vals);
@@ -178,7 +187,6 @@ class Signup extends \NDB_Page implements ETagCalculator
             }
 
             // verify project exists
-            $projectList = \Utility::getProjectList();
             if (!is_null($project) && array_key_exists($project, $projectList)) {
                 $DB->insert(
                     'user_project_rel',
@@ -189,11 +197,8 @@ class Signup extends \NDB_Page implements ETagCalculator
                 );
             }
 
-            if ($values['examiner'] == 'true') {
-                $rad = 0;
-                if ($values['radiologist'] == 'true') {
-                    $rad = 1;
-                }
+            if ($examiner) {
+                $rad = $radiologist ? 1 : 0;
                 //insert in DB as inactive until account approved
                 $examinerID = $DB->pselect(
                     "SELECT e.examinerID
@@ -259,16 +264,22 @@ class Signup extends \NDB_Page implements ETagCalculator
                 // Send email to users with User Management permissions.
                 $config    = \NDB_Factory::singleton()->config();
                 $studyName = $config->getSetting('title');
-                $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
+                if (is_array($studyName)) {
+                    $studyName = implode('', $studyName);
+                }
+                $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
                 \Email::send(
                     $row['Email'],
                     'request_account.tpl',
                     [
-                        'Study'     => $studyName,
-                        'Site'      => $siteList[$site],
-                        'Real_name' => $fullname,
-                        'Email'     => $from,
-                        'URL'       => $baseURL
+                        'Study'       => $studyName,
+                        'Site'        => $siteList[$site],
+                        'Project'     => $projectList[$project],
+                        'Real_name'   => $fullname,
+                        'Email'       => $from,
+                        'Examiner'    => $examiner ? 'Yes' : 'No',
+                        'Radiologist' => $radiologist ? 'Yes' : 'No',
+                        'URL'         => $baseURL
                                        . "/user_accounts/?pendingApproval=Y",
                     ]
                 );
