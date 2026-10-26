@@ -58,7 +58,17 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.CandID AS DCCID,
                 GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel,
                 psc.Name AS RegistrationSite,
-                GROUP_CONCAT(DISTINCT sp.title) AS Cohort,
+                CONCAT_WS(
+                    ',',
+                    rc.title,
+                    GROUP_CONCAT(
+                        DISTINCT CASE
+                            WHEN s.CohortID <> c.RegistrationCohortID
+                                OR c.RegistrationCohortID IS NULL
+                            THEN sp.title
+                        END
+                    )
+                ) AS Cohort,
                 c.Entity_type AS EntityType,
                 CASE
                     WHEN COUNT(s.ID) = 0 THEN NULL
@@ -87,6 +97,8 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                     LEFT JOIN participant_status_options pso
                         ON (ps.participant_status=pso.ID)
                     LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
+                    LEFT JOIN cohort rc
+                        ON (c.RegistrationCohortID=rc.CohortID)
                     LEFT JOIN cohort sp ON (s.CohortID=sp.CohortID)
                     LEFT JOIN files f ON f.SessionID=s.ID
                     LEFT JOIN mri_upload mu ON mu.SessionID=s.ID
@@ -95,7 +107,7 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 AND c.RegistrationProjectID IS NOT NULL
                 GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex, c.Entity_type,
                     pso.Description, c.DOB, c.Date_registered, p.Name,
-                    c.RegistrationCenterID, c.RegistrationProjectID
+                    c.RegistrationCenterID, c.RegistrationProjectID, rc.title
                 ORDER BY c.PSCID ASC
             ",
             []

@@ -117,3 +117,4 @@ INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMult
 INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `CategoryID`, `Label`, `OrderNumber`, `Multilingual`) VALUES (143,'visit_mappings','Map LORIS visit labels to external visit labels',1,1,'mapping',1,'Visit mappings',31,0);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
+INSERT INTO `ConfigSettings` (`ID`, `Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `CategoryID`, `Label`, `OrderNumber`, `Multilingual`) VALUES (144,'useRegistrationCohort','Require a registration cohort when creating a candidate',1,0,'boolean',1,'Use registration cohorts',32,0);
