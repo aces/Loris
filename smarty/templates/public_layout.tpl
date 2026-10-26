@@ -79,13 +79,13 @@
   </section>
 
   <footer class="footer">
-    Powered by <a href="https://loris.ca/" target="_blank">LORIS</a>
+    {dgettext("loris", "Powered by")} <a href="https://loris.ca/" target="_blank">LORIS</a>
     | GPL-3.0 &copy; {$currentyear} <br/>
-    Developed at
+    {dgettext("loris", "Developed at")}
     <a href="https://mcgill.ca/neuro/" target="_blank">
-      The Neuro (Montreal Neurological Institute-Hospital)
+      {dgettext("loris", "The Neuro (Montreal Neurological Institute-Hospital)")}
     </a>
-    by <a href="https://mcin.ca/" target="_blank">MCIN</a>
+    {dgettext("loris", "by")} <a href="https://mcin.ca/" target="_blank">MCIN</a>
   </footer>
   <script src="{$baseurl}/js/modernizr/modernizr.min.js"/>
   <script>
