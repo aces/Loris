@@ -11,6 +11,7 @@ MODIFY COLUMN DataType ENUM(
     'path',
     'web_path',
     'log_level',
+    'mapping',
     'image'
 );
 
