@@ -30,7 +30,9 @@ const DATA_TYPE_OPTIONS: Record<string, ConfigOptionKey> = {
   scan_type: 'scanTypes',
 };
 
-type ConfigValue = string | number | boolean | string[] | null;
+type ConfigMapping = {Value: string, MappedValue: string};
+type ConfigEntry = string | ConfigMapping;
+type ConfigValue = string | number | boolean | ConfigEntry[] | null;
 
 type ConfigCategory = {
   Name: string,
@@ -105,9 +107,9 @@ type MultiValueRowProps = {
   disabled: boolean,
   name: string,
   onRemove: () => void,
-  onChange: (newValue: string) => void,
+  onChange: (newValue: ConfigEntry) => void,
   options: ConfigOptions,
-  value?: string,
+  value?: ConfigEntry,
 };
 
 type RenderInputConfig = {
@@ -238,7 +240,7 @@ function SettingLabel(
  */
 function valueKey(value: ConfigValue): string {
   if (Array.isArray(value)) {
-    return JSON.stringify(value.map(String));
+    return JSON.stringify(value);
   }
   return String(value ?? '');
 }
@@ -254,6 +256,9 @@ function settingPayload(
   item: ConfigItem,
   value: ConfigValue
 ): Record<string, unknown> {
+  if (item.DataType === 'mapping') {
+    return {values: Array.isArray(value) ? value : []};
+  }
   if (item.AllowMultiple) {
     return {values: Array.isArray(value) ? value.map(String) : []};
   }
@@ -395,7 +400,7 @@ function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
  */
 function ItemDisplay(props: ItemDisplayProps): React.ReactElement {
   const item = props.item;
-  if (item.AllowMultiple) {
+  if (item.AllowMultiple || item.DataType === 'mapping') {
     return (
       <MultiValueInput
         item={item}
@@ -454,14 +459,16 @@ function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
  */
 function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
   const {t} = useTranslation(['configuration']);
-  const values = Array.isArray(props.value) ? props.value.map(String) : [];
+  const values = Array.isArray(props.value) ? props.value : [];
+  const emptyValue = props.item.DataType === 'mapping'
+    ? {Value: '', MappedValue: ''} : '';
 
   /**
    * Update the draft values for this setting.
    *
-   * @param {string[]} newValues Draft values
+   * @param {ConfigEntry[]} newValues Draft values
    */
-  const setValues = (newValues: string[]) => props.onChange(
+  const setValues = (newValues: ConfigEntry[]) => props.onChange(
     props.item,
     newValues
   );
@@ -471,7 +478,7 @@ function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
       dataType={props.item.DataType}
       disabled={props.item.Disabled}
       key={`${props.item.Name}-${idx}`}
-      name={props.item.Name}
+      name={`${props.item.Name}-${idx}`}
       onRemove={() => setValues(values.filter((_el, i) => i !== idx))}
       onChange={(newValue) => {
         const newValues = [...values];
@@ -495,7 +502,7 @@ function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
         <button
           className="btn btn-success add"
           disabled={props.item.Disabled}
-          onClick={() => setValues([...values, ''])}
+          onClick={() => setValues([...values, emptyValue])}
           type="button"
         >
           <span className="glyphicon glyphicon-plus"></span>{' '}
@@ -530,9 +537,34 @@ function MultiValueRow({
     String(newValue ?? '')
   );
 
+  const mapping = typeof initialValue === 'object' ? initialValue : null;
   return (
-    <div className="input-group entry">
-      {renderInput({
+    <div className={`input-group entry ${mapping
+      ? 'configuration-mapping-row' : ''}`}>
+      {mapping ? (
+        <div className="configuration-mapping-fields">
+          <TextboxElement
+            disabled={disabled}
+            name={name}
+            noMargins
+            placeholder={i18n.t('Value', {ns: 'configuration'})}
+            value={mapping.Value}
+            onUserInput={(_name: string, value: string) => {
+              onChange({...mapping, Value: value});
+            }}
+          />
+          <TextboxElement
+            disabled={disabled}
+            name={`mapping-${name}`}
+            noMargins
+            placeholder={i18n.t('Mapped value', {ns: 'configuration'})}
+            value={mapping.MappedValue}
+            onUserInput={(_name: string, value: string) => {
+              onChange({...mapping, MappedValue: value});
+            }}
+          />
+        </div>
+      ) : renderInput({
         dataType: dataType,
         disabled: disabled,
         label: '',
@@ -540,7 +572,7 @@ function MultiValueRow({
         noMargins: true,
         onChange: updateValue,
         options: options,
-        value: initialValue,
+        value: String(initialValue),
       })}
       <div className="input-group-btn">
         <button

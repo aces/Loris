@@ -124,6 +124,11 @@ class Categories extends \LORIS\Http\Endpoint
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
+        /**
+         * Configuration setting rows.
+         *
+         * @var array<array<string, mixed>> $configs
+         */
         $configs = iterator_to_array(
             $DB->pselect(
                 "SELECT *
@@ -155,14 +160,30 @@ class Categories extends \LORIS\Http\Endpoint
                     : $valueFromXML;
             } catch (\ConfigurationException $e) {
                 $setting['Disabled'] = false;
+                /**
+                 * Stored configuration and mapping rows.
+                 *
+                 * @var array<array<string, mixed>> $value
+                 */
                 $value = iterator_to_array(
                     $DB->pselect(
-                        "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
+                        "SELECT c.ID, c.Value, cm.Value AS MappedValue
+                         FROM Config c
+                         LEFT JOIN ConfigMappings cm ON (c.ID=cm.ConfigID)
+                         WHERE c.ConfigID=:ID",
                         ['ID' => $setting['ID']]
                     )
                 );
 
-                if (!empty($setting['Multilingual'])) {
+                if ($setting['DataType'] === 'mapping') {
+                    $setting['Value'] = array_map(
+                        static fn(array $row) => [
+                            'Value'       => $row['Value'],
+                            'MappedValue' => $row['MappedValue'] ?? '',
+                        ],
+                        $value
+                    );
+                } else if (!empty($setting['Multilingual'])) {
                     $setting['Value'] = $config->getMultilingualSetting(
                         $lang,
                         $settingName

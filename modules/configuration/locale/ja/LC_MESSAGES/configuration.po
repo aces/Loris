@@ -30,3 +30,9 @@ msgstr ""
 
 msgid "To configure the diagnosis trajectory of the study <0>click here</0>."
 msgstr ""
+
+msgid "Value"
+msgstr "値"
+
+msgid "Mapped value"
+msgstr "対応する値"

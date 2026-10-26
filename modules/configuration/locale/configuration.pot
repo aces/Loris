@@ -257,3 +257,9 @@ msgstr ""
 
 msgid "Failed to save, same name already exist!"
 msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Mapped value"
+msgstr ""

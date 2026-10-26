@@ -60,7 +60,7 @@ class Setting extends \LORIS\Http\Endpoint
         $DB = $this->loris->getDatabaseConnection();
 
         $settingData = $DB->pselectRow(
-            "SELECT ID, AllowMultiple
+            "SELECT ID, AllowMultiple, DataType
              FROM ConfigSettings
              WHERE Name=:setting AND Visible=1",
             ['setting' => $setting]
@@ -69,23 +69,57 @@ class Setting extends \LORIS\Http\Endpoint
             return new \LORIS\Http\Response\JSON\NotFound("Setting not found");
         }
 
-        if (!empty($settingData['AllowMultiple'])) {
+        $isMapping = $settingData['DataType'] === 'mapping';
+        if ($isMapping || !empty($settingData['AllowMultiple'])) {
             if (!isset($input['values']) || !is_array($input['values'])) {
                 return new \LORIS\Http\Response\JSON\BadRequest(
                     "Missing setting values"
                 );
             }
 
+            if ($isMapping) {
+                foreach ($input['values'] as $value) {
+                    if (!is_array($value)
+                        || !isset($value['Value'], $value['MappedValue'])
+                        || !is_string($value['Value'])
+                        || !is_string($value['MappedValue'])
+                    ) {
+                        return new \LORIS\Http\Response\JSON\BadRequest(
+                            "Invalid mapping row"
+                        );
+                    }
+                    $emptyValue  = trim($value['Value']) === '';
+                    $emptyMapped = trim($value['MappedValue']) === '';
+                    if ($emptyValue !== $emptyMapped) {
+                        return new \LORIS\Http\Response\JSON\BadRequest(
+                            "Mapping rows need both a value and mapped value."
+                        );
+                    }
+                }
+            }
+
             $DB->beginTransaction();
             $DB->delete("Config", ['ConfigID' => $settingData['ID']]);
             foreach ($input['values'] as $value) {
+                if ($isMapping && trim($value['Value']) === '') {
+                    continue;
+                }
                 $DB->unsafeInsert(
                     "Config",
                     [
                         'ConfigID' => $settingData['ID'],
-                        'Value'    => $value,
+                        'Value'    => $isMapping ? $value['Value'] : $value,
                     ]
                 );
+                if ($isMapping) {
+                    $DB->unsafeInsert(
+                        "ConfigMappings",
+                        [
+                            'ConfigID' => $DB->getLastInsertId(),
+                            'Value'    => $value['MappedValue'],
+                        ]
+                    );
+                }
             }
             $DB->commit();
             return new \LORIS\Http\Response\JSON\OK(['ok' => true]);
