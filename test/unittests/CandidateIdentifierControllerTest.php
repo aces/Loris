@@ -87,8 +87,8 @@ class CandidateIdentifierControllerTest extends TestCase
                     'CandidateID'               => 1,
                     'CandidateIdentifierTypeID' => 1,
                     'Value'                     => '1234',
-                    'DateAdded'  => '2026-01-01 12:00:00',
-                    'DateEdited' => null,
+                    'DateAdded'                 => '2026-01-01 12:00:00',
+                    'DateEdited'                => null,
                 ],
             ]
         );
