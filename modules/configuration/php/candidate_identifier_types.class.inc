@@ -28,8 +28,14 @@ namespace LORIS\configuration;
 class Candidate_Identifier_Types extends \NDB_Form
 {
     /**
-     * _has_access returns true
-     * if the user has the specific permission
+     * Render the candidate identifier type manager with React.
+     *
+     * @var bool
+     */
+    public $skipTemplate = true;
+
+    /**
+     * Determine whether the user can configure identifier types.
      *
      * @param \User $user The user whose access is being checked
      *
@@ -42,7 +48,7 @@ class Candidate_Identifier_Types extends \NDB_Form
     }
 
     /**
-     * Loads the candidate identifier types page.
+     * Load candidate identifier types and available projects.
      *
      * @return void
      */
@@ -55,26 +61,77 @@ class Candidate_Identifier_Types extends \NDB_Form
             $factory->database()
         );
 
-        $this->tpl_data['identifierTypes']
-            = $controller->getAllIdentifierTypes();
+        $identifierTypes = [];
 
-        $this->tpl_data['projects'] = \Utility::getProjectList();
+        foreach ($controller->getAllIdentifierTypes() as $identifierType) {
+            $id = $identifierType->candidateIdentifierTypeID;
+
+            $identifierTypes[$id] = [
+                'candidateIdentifierTypeID' => $id,
+                'name'                      => $identifierType->name,
+                'format'                    => $identifierType->format,
+                'isRequired'                => $identifierType->isRequired,
+                'isUnique'                  => $identifierType->isUnique,
+                'autoGenerate'              => $identifierType->autoGenerate,
+                'allowMultiple'             => $identifierType->allowMultiple,
+                'projectIDs'                => array_map(
+                    static fn($project) => strval($project->getId()),
+                    $identifierType->projects
+                ),
+            ];
+        }
+
+        $this->tpl_data['identifierTypes'] = $identifierTypes;
+        $this->tpl_data['projects']        = \Utility::getProjectList();
     }
 
     /**
-     * Include additional CSS files:
-     *  1. configuration
+     * Return the identifier type manager data for the React page.
      *
-     * @return array of CSS to be inserted
+     * @return array<string, mixed>
      */
-    function getCSSDependencies()
+    #[\Override]
+    function toArray(): array
+    {
+        return [
+            'identifierTypes' => $this->tpl_data['identifierTypes'] ?? [],
+            'projects'        => $this->tpl_data['projects'] ?? [],
+        ];
+    }
+
+    /**
+     * Include the configuration stylesheet.
+     *
+     * @return array<string> CSS dependencies
+     */
+    #[\Override]
+    function getCSSDependencies(): array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
+
         return array_merge(
             $deps,
-            [$baseURL . "/configuration/css/configuration.css"]
+            [$baseURL . '/configuration/css/configuration.css']
+        );
+    }
+
+    /**
+     * Add the React entry point for the identifier type manager.
+     *
+     * @return array<string> JavaScript dependencies
+     */
+    #[\Override]
+    function getJSDependencies(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+
+        return array_merge(
+            $deps,
+            [$baseURL . '/configuration/js/formCandidateIdentifierTypes.js']
         );
     }
 }

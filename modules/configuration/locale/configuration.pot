@@ -270,7 +270,7 @@ msgstr ""
 msgid "Mapped value"
 msgstr ""
 
-msgid "Use this page to manage the configuration of candidate identifier types, or to add a new one."
+msgid "Use this page to manage the configuration of existing candidate identifier types, or to add a new one."
 msgstr ""
 
 msgid "New Identifier Type"

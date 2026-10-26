@@ -19,6 +19,8 @@ if (!$user->hasPermission('config')) {
     exit(0);
 }
 
+header('Content-Type: application/json');
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
@@ -28,14 +30,16 @@ $db         = $factory->database();
 $controller = new \LORIS\IdentifierTypeController($db);
 
 $identifierTypeID = $_POST['CandidateIdentifierTypeID'] ?? null;
-$name             = trim($_POST['Name'] ?? '');
-$format           = trim($_POST['Format'] ?? '');
-$projectIDs       = $_POST['ProjectIDs'] ?? [];
+$name       = trim($_POST['Name'] ?? '');
+$format     = trim($_POST['Format'] ?? '');
+$projectIDs = $_POST['ProjectIDs'] ?? [];
 
 if (empty($name)
     || empty($format)
     || ($identifierTypeID !== 'new'
     && filter_var($identifierTypeID, FILTER_VALIDATE_INT) === false)
+    || ($identifierTypeID !== 'new'
+    && (int) $identifierTypeID <= 0)
     || !is_array($projectIDs)
 ) {
     http_response_code(400);
@@ -53,9 +57,9 @@ foreach ($projectIDs as $projectID) {
     }
 }
 
-$isRequired = ($_POST['IsRequired'] ?? '0') === '1';
-$isUnique = ($_POST['IsUnique'] ?? '0') === '1';
-$autoGenerate = ($_POST['AutoGenerate'] ?? '0') === '1';
+$isRequired    = ($_POST['IsRequired'] ?? '0') === '1';
+$isUnique      = ($_POST['IsUnique'] ?? '0') === '1';
+$autoGenerate  = ($_POST['AutoGenerate'] ?? '0') === '1';
 $allowMultiple = ($_POST['AllowMultiple'] ?? '0') === '1';
 
 try {
@@ -71,7 +75,7 @@ try {
         && ($identifierTypeID === 'new'
         || $existingType->candidateIdentifierTypeID !== (int) $identifierTypeID)
     ) {
-        http_response_code(400);
+        http_response_code(409);
         echo json_encode(
             ['error' => 'Failed to save, identifier type name already exists!']
         );

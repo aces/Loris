@@ -229,8 +229,8 @@ msgstr "Valeur"
 msgid "Mapped value"
 msgstr "Valeur correspondante"
 
-msgid "Use this page to manage the configuration of candidate identifier types, or to add a new one."
-msgstr "Utilisez cette page pour gérer la configuration des types d'identifiants de candidats ou pour en ajouter un nouveau."
+msgid "Use this page to manage the configuration of existing candidate identifier types, or to add a new one."
+msgstr "Utilisez cette page pour gérer la configuration des types d’identifiants de candidats existants ou pour en ajouter un nouveau."
 
 msgid "New Identifier Type"
 msgstr "Nouveau type d'identifiant"
