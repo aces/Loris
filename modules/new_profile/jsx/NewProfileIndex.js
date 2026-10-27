@@ -149,6 +149,10 @@ class NewProfileIndex extends React.Component {
     if (this.state.configData['pscidSet'] === 'true') {
       candidateObject.Candidate.PSCID = formData.pscid;
     }
+    if (this.state.configData.useRegistrationCohort) {
+      candidateObject.Candidate.RegistrationCohort =
+        this.state.configData.cohort[formData.project][formData.cohort];
+    }
 
     this.setState({submitDisabled: true});
 
@@ -225,9 +229,17 @@ class NewProfileIndex extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    this.setState((prevState) => ({
-      formData: Object.assign({}, prevState.formData, {[formElement]: value}),
-    }));
+    this.setState((prevState) => {
+      const formData = Object.assign(
+        {},
+        prevState.formData,
+        {[formElement]: value}
+      );
+      if (formElement === 'project') {
+        delete formData.cohort;
+      }
+      return {formData};
+    });
   }
 
   /**
@@ -299,6 +311,7 @@ class NewProfileIndex extends React.Component {
     let edc = null;
     let pscid = null;
     let site = null;
+    let cohort = null;
     let minYear = this.state.configData.minYear;
     let thisYear = (new Date()).getFullYear();
     let dobMaxYear = this.state.configData.maxYear;
@@ -355,6 +368,21 @@ class NewProfileIndex extends React.Component {
           value = {this.state.formData.site}
           required = {true}
           autoSelect = {true}
+        />;
+    }
+    if (this.state.configData.useRegistrationCohort) {
+      const cohorts = this.state.configData.cohort[
+        this.state.formData.project
+      ] || {};
+      cohort =
+        <SelectElement
+          name = "cohort"
+          label = {this.props.t('Registration Cohort', {ns: 'loris'})}
+          options = {cohorts}
+          onUserInput = {this.setFormData}
+          value = {this.state.formData.cohort}
+          required = {true}
+          disabled = {!this.state.formData.project}
         />;
     }
     const fields = [
@@ -429,6 +457,10 @@ class NewProfileIndex extends React.Component {
           />
         ),
       },
+      {
+        label: this.props.t('Registration Cohort', {ns: 'loris'}),
+        element: cohort,
+      },
 
     ];
 
@@ -475,7 +507,7 @@ window.addEventListener('load', () => {
   ).render(
     <NPIndex
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
-      submitURL = {`${loris.BaseURL}/api/v0.0.3/candidates/`}
+      submitURL = {`${loris.BaseURL}/api/v0.0.4-dev/candidates/`}
       hasPermission = {loris.userHasPermission}
     />
   );

@@ -63,10 +63,21 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
     function testTimepointListPageLoad()
     {
         $this->safeGet($this->url . "/" . self::$_TST0001_CANDID . "/");
+        $this->safeFindElement(
+            WebDriverBy::cssSelector("#lorisworkspace .dynamictable")
+        );
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Candidate Profile", $bodyText);
+        $this->assertStringContainsString("Derived Age", $bodyText);
+        $this->assertStringContainsString(
+            "List of Visits (Time Points)",
+            $bodyText
+        );
+        $this->assertStringContainsString("Create time point", $bodyText);
+        $this->assertStringContainsString("Candidate Info", $bodyText);
+        $this->assertStringContainsString("View Imaging datasets", $bodyText);
         $this->assertStringNotContainsString(
             "You do not have access to this page.",
             $bodyText
@@ -87,6 +98,9 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     private function _validateSessionTableContents($expectedSessions)
     {
+        $this->safeFindElement(
+            WebDriverBy::cssSelector("#lorisworkspace .dynamictable")
+        );
         $sessionTable        = $this->webDriver->findElements(
             WebDriverBy::ClassName('dynamictable')
         );
@@ -174,4 +188,3 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->delete('candidate', ['CandID' => 900001]);
     }
 }
-

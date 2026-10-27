@@ -6,3 +6,7 @@ js/configuration_helper.js
 js/CohortRelations.js.map
 js/configuration_helper.js.map
 js/DiagnosisEvolution.js
+js/formCohort.js
+js/formCohort.js.map
+js/formProject.js
+js/formProject.js.map

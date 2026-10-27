@@ -51,6 +51,10 @@ class New_Profile extends \NDB_Form
         $edc       = $config->getSetting('useEDC');
         $sex       = \Utility::getSexList();
 
+        $useRegistrationCohort = $config->settingEnabled(
+            'useRegistrationCohort'
+        );
+
         $pscidSet = "false";
         $minYear  = (isset($startYear, $ageMax)) ? $startYear - $ageMax : null;
         $maxYear  = (isset($endYear, $ageMin)) ? $endYear - $ageMin : null;
@@ -61,6 +65,14 @@ class New_Profile extends \NDB_Form
 
         // Get projects for the select dropdown
         $projList = $user->getProjectNames();
+        $cohorts  = [];
+        if ($useRegistrationCohort) {
+            foreach ($user->getProjects() as $project) {
+                $cohorts[$project->getName()] = \Utility::getCohortsForProject(
+                    $project->getId()
+                );
+            }
+        }
 
         $extraParameters = $db->pselect(
             "SELECT pt.ParameterTypeID, pt.Type, pt.Description,
@@ -83,15 +95,17 @@ class New_Profile extends \NDB_Form
         }
 
         $this->fieldOptions = [
-            'minYear'         => $minYear,
-            'maxYear'         => $maxYear,
-            'dobFormat'       => $dobFormat,
-            'edc'             => $edc,
-            'sex'             => $sex,
-            'pscidSet'        => $pscidSet,
-            'site'            => $site,
-            'project'         => $projList,
-            'extraParameters' => iterator_to_array($extraParameters),
+            'minYear'               => $minYear,
+            'maxYear'               => $maxYear,
+            'dobFormat'             => $dobFormat,
+            'edc'                   => $edc,
+            'sex'                   => $sex,
+            'pscidSet'              => $pscidSet,
+            'site'                  => $site,
+            'project'               => $projList,
+            'useRegistrationCohort' => $useRegistrationCohort,
+            'cohort'                => $cohorts,
+            'extraParameters'       => iterator_to_array($extraParameters),
         ];
     }
 

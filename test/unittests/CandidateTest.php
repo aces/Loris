@@ -158,6 +158,7 @@ class CandidateTest extends TestCase
             'RegisteredBy'          => 'Admin Admin',
             'UserID'                => 'admin',
             'RegistrationProjectID' => 1,
+            'RegistrationCohortID'  => 1,
             'ProjectTitle'          => '',
         ];
         $this->_candidate     = new Candidate();
@@ -347,6 +348,23 @@ class CandidateTest extends TestCase
             ->willReturn(["1"=>'testProject']);
 
         $this->assertEquals("testProject", $this->_candidate->getProjectTitle());
+    }
+
+    /**
+     * Test getRegistrationCohortID returns the candidate registration cohort.
+     *
+     * @covers Candidate::getRegistrationCohortID
+     * @return void
+     */
+    public function testGetRegistrationCohortID(): void
+    {
+        $this->_setUpTestDoublesForSelectCandidate();
+        $this->_candidate->select($this->_candidateInfo['CandID']);
+
+        $this->assertEquals(
+            $this->_candidateInfo['RegistrationCohortID'],
+            $this->_candidate->getRegistrationCohortID()
+        );
     }
 
     /**
