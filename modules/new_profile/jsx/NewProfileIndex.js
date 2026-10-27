@@ -11,6 +11,8 @@ import {
   FormElement,
   ButtonElement,
   FieldsetElement,
+  NumericElement,
+  TextareaElement,
 } from 'jsx/Form';
 
 import i18n from 'I18nSetup';
@@ -122,12 +124,22 @@ class NewProfileIndex extends React.Component {
     const formData = this.state.formData;
     const configData = this.state.configData;
 
+    const parameters = {};
+    this.getVisibleExtraParameters().forEach((parameter) => {
+      const name = `PTID${parameter.ParameterTypeID}`;
+      const value = formData[name];
+      if (value !== undefined && value !== '') {
+        parameters[parameter.ParameterTypeID] = value;
+      }
+    });
+
     let candidateObject = {
       'Candidate': {
         'Project': formData.project,
         'DoB': formData.dobDate,
         'Sex': formData.sex,
         'Site': configData.site[formData.site],
+        'Parameters': parameters,
       },
     };
 
@@ -138,7 +150,8 @@ class NewProfileIndex extends React.Component {
       candidateObject.Candidate.PSCID = formData.pscid;
     }
     if (this.state.configData.useRegistrationCohort) {
-      candidateObject.Candidate.RegistrationCohortID = formData.cohort;
+      candidateObject.Candidate.RegistrationCohort =
+        this.state.configData.cohort[formData.project][formData.cohort];
     }
 
     this.setState({submitDisabled: true});
@@ -227,6 +240,55 @@ class NewProfileIndex extends React.Component {
       }
       return {formData};
     });
+  }
+
+  /**
+   * Return the candidate parameters configured for the selected project.
+   *
+   * @return {Array}
+   */
+  getVisibleExtraParameters() {
+    const extraParameters = this.state.configData.extraParameters || [];
+    return extraParameters.filter(
+      (parameter) => parameter.Project === this.state.formData.project
+    );
+  }
+
+  /**
+   * Render a configured candidate parameter.
+   *
+   * @param {object} parameter Candidate parameter configuration
+   * @return {JSX}
+   */
+  renderExtraParameter(parameter) {
+    const name = `PTID${parameter.ParameterTypeID}`;
+    const props = {
+      label: parameter.Description,
+      name,
+      value: this.state.formData[name],
+      onUserInput: this.setFormData,
+      required: Number(parameter.Required) === 1,
+    };
+
+    if (parameter.Type.startsWith('enum')) {
+      const options = {};
+      const values = parameter.Type.match(/'[^']*'/g) || [];
+      values.forEach((value) => {
+        const option = value.slice(1, -1);
+        options[option] = option;
+      });
+      return <SelectElement key={name} {...props} options={options}/>;
+    }
+
+    if (parameter.Type.startsWith('date')) {
+      return <DateElement key={name} {...props}/>;
+    }
+
+    if (parameter.Type.startsWith('numeric')) {
+      return <NumericElement key={name} {...props}/>;
+    }
+
+    return <TextareaElement key={name} {...props}/>;
   }
 
   /**
@@ -410,6 +472,9 @@ class NewProfileIndex extends React.Component {
           onSubmit = {this.handleSubmit}
         >
           {fields.map((field, idx) => field.element)}
+          {this.getVisibleExtraParameters().map(
+            (parameter) => this.renderExtraParameter(parameter)
+          )}
           <ButtonElement
             name = "fire_away"
             label = {this.props.t('Create', {ns: 'loris'})}
