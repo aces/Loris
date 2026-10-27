@@ -63,13 +63,16 @@ msgstr ""
 msgid "To configure study cohorts"
 msgstr ""
 
-msgid "To configure study projects"
-msgstr ""
-
 msgid "click here"
 msgstr ""
 
-msgid "To configure the diagnosis trajectory of the study"
+msgid "To configure study cohorts <0>click here</0>."
+msgstr ""
+
+msgid "To configure study projects <0>click here</0>."
+msgstr ""
+
+msgid "To configure the diagnosis trajectory of the study <0>click here</0>."
 msgstr ""
 
 msgid "Use this page to manage the configuration of existing projects, or to add a new one."
@@ -231,9 +234,6 @@ msgstr ""
 msgid "Successfully saved"
 msgstr ""
 
-msgid "To configure study cohorts <0>click here</0>."
-msgstr ""
-
 msgid "Full descriptive title of the project"
 msgstr ""
 
@@ -256,4 +256,10 @@ msgid "Failed to save, Alias should be at most 4 characters long!"
 msgstr ""
 
 msgid "Failed to save, same name already exist!"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Mapped value"
 msgstr ""

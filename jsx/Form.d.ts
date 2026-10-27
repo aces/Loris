@@ -100,7 +100,7 @@ type selectElementProps = {
     name: string
     options: {[name: string]: string}
     disabledOptions?: {[name: string]: string}
-    label: string
+    label: ReactNode
     value: string|string[]
     id?: string
     multiple?: boolean
@@ -112,7 +112,7 @@ type selectElementProps = {
     onUserInput: (name: string, value: any) => void
     noMargins?: boolean
     placeholder?: string
-    sortByValue: boolean
+    sortByValue?: boolean
     pinnedOption?: string
 }
 
@@ -250,7 +250,7 @@ export class ButtonElement {
 
 type textboxProps = {
     name: string
-    label?: string
+    label?: ReactNode
     value?: string
     id?: string
     class?: string
@@ -261,6 +261,45 @@ type textboxProps = {
     errorMessage?: string;
     onUserInput: (name: string, value: any) => void;
     onUserBlur?: (name: string, value: any) => void;
+    noMargins?: boolean
+    labelPlacementTop?: boolean
+}
+
+type emailProps = textboxProps
+/**
+ * EmailElement class. See Form.js
+ */
+export class EmailElement {
+    props: emailProps
+    state: any
+    context: object
+    refs: {[key: string]: ReactInstance}
+
+    /**
+     * Construct an EmailElement
+     *
+     * @param {emailProps} props - React props
+     */
+    constructor(props: emailProps)
+
+    /**
+     * React lifecycle method
+     *
+     * @returns {ReactNode} - the element
+     */
+    render(): ReactNode
+
+    /**
+     * React lifecycle method
+     *
+     * @param {object} newstate - the state to override
+     */
+    setState(newstate: object): void
+
+    /**
+     * React lifecycle method.
+     */
+    forceUpdate(): void
 }
 /**
  * TextboxElement class. See Form.js
@@ -603,7 +642,7 @@ export class TimeElement {
 
 type textareaElementProps = {
     name: string
-    label?: string
+    label?: ReactNode
     value?: string
     placeholder?: string
     id?: string
@@ -611,7 +650,9 @@ type textareaElementProps = {
     required?: boolean
     rows?: number
     cols?: number
+    noMargins?: boolean
     onUserInput: (name: string, value: any) => void
+    onUserBlur?: (name: string, value: any) => void
 }
 /**
  * TextareaElement class. See Form.js
@@ -697,14 +738,15 @@ export class DateTimeElement {
 
 type radioElementProps = {
     name: string
-    label?: string
+    label?: ReactNode
     options: {[name: string]: string}
     disabled?: boolean
     required?: boolean
     vertical?: boolean
-    checked: boolean
+    checked: string|boolean
     errorMessage?: string
     elementClass?: boolean
+    noMargins?: boolean
     onUserInput: (name: string, value: any) => void
 }
 /**
@@ -751,6 +793,7 @@ export default {
   SelectElement,
   TagsElement,
   TextboxElement,
+  EmailElement,
   SearchableDropdown,
   TextareaElement,
   PasswordElement,

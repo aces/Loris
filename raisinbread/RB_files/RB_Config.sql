@@ -112,6 +112,7 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (135,140,'https://github
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (136,142,'/data-raisinbread/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (137,143,'V1');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (138,143,'V2');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (139,144,'/var/www/loris/htdocs/images/configuration/');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (139,144,'true');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (140,145,'/var/www/loris/htdocs/images/configuration/');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

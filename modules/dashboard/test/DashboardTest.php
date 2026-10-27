@@ -654,15 +654,18 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan3()
     {
         $this->setupConfigSetting('recruitmentTarget', '888');
-        $this->safeGet($this->url . '/dashboard/');
-        $testText = $this->safeFindElement(
-            WebDriverBy::Id("overall-recruitment")
-        )->getText();
-        $this->assertStringContainsString(
-            "888",
-            $testText
-        );
-        $this->restoreConfigSetting("recruitmentTarget");
+        try {
+            $this->safeGet($this->url . '/dashboard/');
+            $testText = $this->safeFindElement(
+                WebDriverBy::Id("overall-recruitment")
+            )->getText();
+            $this->assertStringContainsString(
+                "888",
+                $testText
+            );
+        } finally {
+            $this->restoreConfigSetting("recruitmentTarget");
+        }
     }
 
     /**
