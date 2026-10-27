@@ -45,7 +45,8 @@ type ConfigItem = {
   Label: string,
   Description: string,
   Value: ConfigValue,
-  DataType: string,
+  DataType: string | null,
+  Children: ConfigItem[],
   Disabled: boolean,
   AllowMultiple: boolean,
 };
@@ -100,6 +101,13 @@ type ItemDisplayProps = {
   onChange: (item: ConfigItem, value: ConfigValue) => void,
   options: ConfigOptions,
   value: ConfigValue,
+};
+
+type SettingNodeProps = {
+  item: ConfigItem,
+  drafts: Record<string, ConfigValue>,
+  onChange: ItemDisplayProps['onChange'],
+  options: ConfigOptions,
 };
 
 type MultiValueRowProps = {
@@ -276,6 +284,79 @@ function booleanValue(value: ConfigValue): boolean {
 }
 
 /**
+ * Include descendants when tracking category draft values.
+ *
+ * @param {ConfigItem[]} items Configuration settings
+ * @return {ConfigItem[]}
+ */
+function flattenSettings(items: ConfigItem[]): ConfigItem[] {
+  return items.flatMap((item) => [item, ...flattenSettings(item.Children)]);
+}
+
+/**
+ * Render a nested configuration setting with its existing input controls.
+ *
+ * @param {SettingNodeProps} props React props
+ * @return {JSX}
+ */
+function SettingNode(
+  props: SettingNodeProps
+): React.ReactElement {
+  const [expanded, setExpanded] = useState(false);
+  const {item} = props;
+  const children = item.Children.map((child) => (
+    <SettingNode {...props} key={child.ID} item={child} />
+  ));
+
+  if (item.DataType === null) {
+    const id = `config-node-${item.ID}`;
+    return (
+      <div className="configuration-tree-node">
+        <button
+          aria-controls={id}
+          aria-expanded={expanded}
+          className="configuration-tree-header"
+          onClick={() => setExpanded(!expanded)}
+          type="button"
+        >
+          <span className={'glyphicon configuration-tree-icon '
+            + (expanded ? 'glyphicon-chevron-down' : 'glyphicon-chevron-right')}
+          />
+          <span className="configuration-tree-label">{item.Label}</span>
+          {props.options.sandbox && (
+            <span className="configuration-tree-name"><i>{item.Name}</i></span>
+          )}
+          {item.Description && (
+            <span className="configuration-tree-description">
+              {item.Description}
+            </span>
+          )}
+        </button>
+        <div className="configuration-tree-children" hidden={!expanded} id={id}>
+          {children}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {item.DataType !== null && (
+        <ItemDisplay
+          item={item}
+          onChange={props.onChange}
+          options={props.options}
+          value={props.drafts[item.Name] ?? item.Value}
+        />
+      )}
+      {children.length > 0 && (
+        <div className="configuration-tree-children">{children}</div>
+      )}
+    </div>
+  );
+}
+
+/**
  * Category body.
  *
  * @param {CategoryDisplayProps} props React props
@@ -283,13 +364,14 @@ function booleanValue(value: ConfigValue): boolean {
  */
 function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
   const {t} = useTranslation(['configuration', 'loris']);
+  const items = flattenSettings(props.items);
   /**
    * Build draft values from the loaded category items.
    *
    * @return {object}
    */
   const initialDrafts = () => Object.fromEntries(
-    props.items.map((item) => [item.Name, item.Value])
+    items.map((item) => [item.Name, item.Value])
   ) as Record<string, ConfigValue>;
   const [drafts, setDrafts] = useState<Record<string, ConfigValue>>(
     initialDrafts
@@ -302,7 +384,7 @@ function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
   }, [props.items]);
 
   const itemByName = Object.fromEntries(
-    props.items.map((item) => [item.Name, item])
+    items.map((item) => [item.Name, item])
   ) as Record<string, ConfigItem>;
   const changedNames = Object.keys(changed);
 
@@ -353,12 +435,12 @@ function CategoryDisplay(props: CategoryDisplayProps): React.ReactElement {
   };
 
   const rows = props.items.map((item) => (
-    <ItemDisplay
+    <SettingNode
       key={item.ID}
+      drafts={drafts}
       item={item}
       onChange={updateDraft}
       options={props.options}
-      value={drafts[item.Name] ?? item.Value}
     />
   ));
 
@@ -441,7 +523,7 @@ function SingleValueInput(props: ItemDisplayProps): React.ReactElement {
   );
 
   return renderInput({
-    dataType: props.item.DataType,
+    dataType: props.item.DataType ?? '',
     disabled: props.item.Disabled,
     label: <SettingLabel item={props.item} options={props.options} />,
     name: props.item.Name,
@@ -475,7 +557,7 @@ function MultiValueInput(props: ItemDisplayProps): React.ReactElement {
 
   const rows = values.map((value, idx) => (
     <MultiValueRow
-      dataType={props.item.DataType}
+      dataType={props.item.DataType ?? ''}
       disabled={props.item.Disabled}
       key={`${props.item.Name}-${idx}`}
       name={`${props.item.Name}-${idx}`}

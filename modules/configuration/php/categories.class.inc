@@ -139,6 +139,21 @@ class Categories extends \LORIS\Http\Endpoint
             )
         );
 
+        return new \LORIS\Http\Response\JSON\OK(
+            ['category' => $this->_getSettings($configs)]
+        );
+    }
+
+    /**
+     * Load values and descendants for configuration settings.
+     *
+     * @param array<array<string, mixed>> $configs Configuration setting rows
+     *
+     * @return array<array<string, mixed>>
+     */
+    private function _getSettings(array $configs) : array
+    {
+        $DB     = $this->loris->getDatabaseConnection();
         $config = \NDB_Config::singleton();
         $lang   = \User::singleton()->getLanguageCode();
         foreach ($configs as &$setting) {
@@ -152,6 +167,25 @@ class Categories extends \LORIS\Http\Endpoint
             );
             $setting['AllowMultiple'] = boolval($setting['AllowMultiple']);
             $settingName = strval($setting['Name']);
+            /**
+             * Visible child setting rows.
+             *
+             * @var array<array<string, mixed>> $children
+             */
+            $children            = iterator_to_array(
+                $DB->pselect(
+                    "SELECT * FROM ConfigSettings
+                     WHERE Visible=1 AND Parent=:parent
+                     ORDER BY OrderNumber, ID",
+                    ['parent' => $setting['ID']]
+                )
+            );
+            $setting['Children'] = $this->_getSettings($children);
+            if ($setting['DataType'] === null) {
+                $setting['Disabled'] = false;
+                $setting['Value']    = '';
+                continue;
+            }
             try {
                 $valueFromXML        = $config->getSettingFromXML($settingName);
                 $setting['Disabled'] = true;
@@ -219,6 +253,6 @@ class Categories extends \LORIS\Http\Endpoint
             }
         }
 
-        return new \LORIS\Http\Response\JSON\OK(['category' => $configs]);
+        return $configs;
     }
 }
