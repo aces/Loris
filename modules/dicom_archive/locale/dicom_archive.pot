@@ -51,7 +51,7 @@ msgstr ""
 msgid "Tarchive Metadata"
 msgstr ""
 
-msgid "Acquisition ID"
+msgid "Study Instance UID"
 msgstr ""
 
 msgid "Patient Birthdate"
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Scanner Software Version"
 msgstr ""
 
-msgid "Acquired at"
+msgid "Institution Name"
 msgstr ""
 
 msgid "Number of Acquisitions"
@@ -87,13 +87,7 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-msgid "Summary type version"
-msgstr ""
-
 msgid "Source location"
-msgstr ""
-
-msgid "Archive type version"
 msgstr ""
 
 msgid "Archive location"

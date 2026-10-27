@@ -23,7 +23,7 @@ CREATE TABLE `ConfigSettings` (
     `Description` varchar(255) DEFAULT NULL,
     `Visible` tinyint(1) DEFAULT '0',
     `AllowMultiple` tinyint(1) DEFAULT '0',
-    `DataType` ENUM('text','boolean','email','instrument','textarea','scan_type','date_format','lookup_center','path','web_path', 'log_level') DEFAULT NULL,
+    `DataType` ENUM('text','boolean','email','instrument','textarea','scan_type','date_format','lookup_center','path','web_path', 'log_level','mapping') DEFAULT NULL,
     `Parent` int(11) DEFAULT NULL,
     `CategoryID` int(11) DEFAULT NULL,
     `Label` varchar(255) DEFAULT NULL,
@@ -59,6 +59,19 @@ CREATE TABLE `Config` (
   CONSTRAINT `fk_Config_1`
   FOREIGN KEY (`ConfigID`)
     REFERENCES `ConfigSettings` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `ConfigMappings` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ConfigID` int(11) NOT NULL,
+  `Value` text,
+  PRIMARY KEY (`ID`),
+  KEY `fk_ConfigMappings_ConfigID_idx` (`ConfigID`),
+  CONSTRAINT `fk_ConfigMappings_ConfigID`
+  FOREIGN KEY (`ConfigID`)
+    REFERENCES `Config` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -100,6 +113,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, CategoryID, Label, OrderNumber) SELECT 'adminContactEmail', 'An email address that users can write to in order to report issues or ask question', 1, 0, 'text', ID, 'Administrator Email', 29 FROM ConfigCategories WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, CategoryID, Label, OrderNumber) SELECT 'UserMaximumDaysInactive', 'The maximum number of days since last login before making a user inactive', 1, 0, 'text', ID, 'Maximum Days Before Making User Inactive', 30 FROM ConfigCategories WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, CategoryID, Label, OrderNumber) SELECT 'useDoB', 'Use DoB (Date of Birth)', 1, 0, 'boolean', ID, 'Use DoB', 31 FROM ConfigCategories WHERE Name="study";
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, CategoryID, Label, OrderNumber) SELECT 'useRegistrationCohort', 'Require a registration cohort when creating a candidate', 1, 0, 'boolean', ID, 'Use registration cohorts', 32 FROM ConfigCategories WHERE Name="study";
 
 INSERT INTO ConfigCategories (Name, Description, Visible, Label, OrderNumber) VALUES ('paths', 'Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality.', 1, 'Paths', 2);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, CategoryID, Label, OrderNumber) SELECT 'imagePath', 'Path to images for display in Imaging Browser (e.g. /data/$project/data/) ', 1, 0, 'text', ID, 'Images', 9 FROM ConfigCategories WHERE Name="paths";

@@ -126,6 +126,14 @@ class Signup extends \NDB_Page implements ETagCalculator
                 )
             )
         );
+        $examiner            = filter_var(
+            $values['examiner'] ?? false,
+            FILTER_VALIDATE_BOOL
+        );
+        $radiologist         = filter_var(
+            $values['radiologist'] ?? false,
+            FILTER_VALIDATE_BOOL
+        );
         $language_preference = $values['language_preference'] ?? null;
         $fullname            = $name . ' ' . $lastname;
 
@@ -168,11 +176,12 @@ class Signup extends \NDB_Page implements ETagCalculator
         }
 
         // Check email address' uniqueness
-        $result   = $DB->pselectOne(
+        $result      = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email=:VEmail OR UserID=:VEmail",
             ['VEmail' => $from]
         );
-        $siteList = \Utility::getSiteList();
+        $siteList    = \Utility::getSiteList();
+        $projectList = \Utility::getProjectList();
         if ($result == 0) {
             // insert into DB only if email address doesn't exist
             $DB->insert('users', $vals);
@@ -201,11 +210,8 @@ class Signup extends \NDB_Page implements ETagCalculator
                 );
             }
 
-            if ($values['examiner'] == 'true') {
-                $rad = 0;
-                if ($values['radiologist'] == 'true') {
-                    $rad = 1;
-                }
+            if ($examiner) {
+                $rad = $radiologist ? 1 : 0;
                 //insert in DB as inactive until account approved
                 $examinerID = $DB->pselect(
                     "SELECT e.examinerID
@@ -280,16 +286,28 @@ class Signup extends \NDB_Page implements ETagCalculator
                 // Send email to users with User Management permissions.
                 $config    = \NDB_Factory::singleton()->config();
                 $studyName = $config->getSetting('title');
-                $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
+                if (is_array($studyName)) {
+                    $studyName = implode('', $studyName);
+                }
+                $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
                 \Email::send(
                     $row['Email'],
                     'request_account.tpl',
                     [
-                        'Study'     => $studyName,
-                        'Site'      => $siteList[$site],
-                        'Real_name' => $fullname,
-                        'Email'     => $from,
-                        'URL'       => $baseURL
+                        'Study'       => $studyName,
+                        'Site'        => $siteList[$site],
+                        'Project'     => implode(
+                            ', ',
+                            array_map(
+                                fn($project) => $projectList[$project],
+                                $projects
+                            )
+                        ),
+                        'Real_name'   => $fullname,
+                        'Email'       => $from,
+                        'Examiner'    => $examiner ? 'Yes' : 'No',
+                        'Radiologist' => $radiologist ? 'Yes' : 'No',
+                        'URL'         => $baseURL
                                        . "/user_accounts/?pendingApproval=Y",
                     ]
                 );

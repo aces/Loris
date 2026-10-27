@@ -201,3 +201,12 @@ msgstr "यह क्रिया पूर्ववत नहीं की ज�
 
 msgid "Yes, reject user!"
 msgstr "हाँ, उपयोगकर्ता को अस्वीकार करें!"
+
+msgid "User account saved successfully."
+msgstr "उपयोगकर्ता खाता सफलतापूर्वक सहेजा गया।"
+
+msgid "Any unsaved changes will be lost."
+msgstr "सहेजे नहीं गए सभी परिवर्तन खो जाएंगे।"
+
+msgid "Account Status"
+msgstr "खाता स्थिति"
