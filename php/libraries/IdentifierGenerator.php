@@ -27,8 +27,8 @@
  */
 abstract class IdentifierGenerator
 {
-    private const RANGE_FULL = 'Cannot create new identifier because all ' .
-        ' valid identifiers are in use!';
+    private const RANGE_FULL = 'Cannot create new identifier because all'
+        . ' valid identifiers are in use!';
     /**
      * How the ID will be generated. 'sequential' or 'random'.
      *
@@ -42,6 +42,14 @@ abstract class IdentifierGenerator
      *                              range() which is used to generate the alphabet.
      */
     protected $alphabet = [];
+
+    /**
+     * Character used to pad identifiers to their configured length.
+     *
+     * @var string
+     */
+    protected string $padding = '0';
+
     /**
      * The length of the "suffix" portion of the ID.
      * e.g. for an ID `MON1234` with prefix `MON`, the suffix is length 4.
@@ -140,7 +148,7 @@ abstract class IdentifierGenerator
             return str_pad(
                 strval($this->minValue),
                 $this->length,
-                "0",
+                $this->padding,
                 STR_PAD_LEFT
             );
         }
@@ -207,8 +215,8 @@ abstract class IdentifierGenerator
     abstract protected function getExistingIDs(): array;
 
     /**
-     * Ensure that an ID is the correct length by prepending the first character
-     * of the alphabet to the ID if the ID's length is shorter than it should be.
+     * Ensure that an ID is the correct length by prepending the configured
+     * padding character if the ID's length is shorter than it should be.
      *
      * @param string $id The ID to pad.
      *
@@ -219,7 +227,7 @@ abstract class IdentifierGenerator
         return str_pad(
             $id,
             $this->length,
-            strval($this->alphabet[0]),
+            $this->padding,
             STR_PAD_LEFT
         );
     }
