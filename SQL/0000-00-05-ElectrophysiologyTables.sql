@@ -157,7 +157,7 @@ CREATE TABLE `physiological_channel_type` (
 CREATE TABLE `physiological_channel` (
   `PhysiologicalChannelID`     INT(10)    UNSIGNED NOT NULL      AUTO_INCREMENT,
   `PhysiologicalFileID`        INT(10)    UNSIGNED NOT NULL,
-  `PhysiologicalChannelTypeID` INT(5)     UNSIGNED NOT NULL,
+  `PhysiologicalChannelTypeID` INT(5)     UNSIGNED DEFAULT NULL,
   `PhysiologicalStatusTypeID`  INT(5)     UNSIGNED DEFAULT NULL,
   `InsertTime`                 TIMESTAMP           NOT NULL      DEFAULT CURRENT_TIMESTAMP,
   `Name`                       VARCHAR(50)         NOT NULL,
