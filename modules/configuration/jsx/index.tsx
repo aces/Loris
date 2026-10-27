@@ -178,7 +178,9 @@ function IntroText(props: BaseURLProps): React.ReactElement {
             + ' <0>click here</0>.'}
           components={[
             <a
-              href={`${props.baseURL}/configuration/candidate_identifier_types/`}
+              href={
+                `${props.baseURL}/configuration/candidate_identifier_types/`
+              }
             />,
           ]}
         />
