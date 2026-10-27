@@ -282,7 +282,7 @@ function ShipmentInformation({
         <h4>Shipment Log {i+1}</h4>
         <HorizontalRule/>
         <StaticElement
-          label={t('Site', {ns: 'loris'})}
+          label={t('Site', {ns: 'loris', count: 1})}
           text={centers[log.centerId]}
         />
         <StaticElement

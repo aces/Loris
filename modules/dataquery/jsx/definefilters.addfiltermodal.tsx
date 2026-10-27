@@ -412,7 +412,7 @@ function valueInput(fielddict: FieldDictionary,
       onUserInput={(name: string, value: string) => setValue(value)} />;
   }
 
-  const dropdownTitle = t('Value', {ns: 'dataquery'});
+  const dropdownTitle = t('Value', {ns: 'dataquery', count: 1});
 
   switch (fielddict.type) {
   case 'date':

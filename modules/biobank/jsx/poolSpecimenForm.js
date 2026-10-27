@@ -419,7 +419,7 @@ class BarcodeInput extends PureComponent {
     return (
       <SearchableDropdown
         name={'containerId'}
-        label={t('Specimen', {ns: 'biobank'})}
+        label={t('Specimen', {ns: 'biobank', count: 1})}
         onUserInput={handleInput}
         options={barcodesPrimary}
         value={containerId}

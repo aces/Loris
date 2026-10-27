@@ -91,33 +91,46 @@ class Signup extends \NDB_Page implements ETagCalculator
             }
         }
 
-        $factory     = \NDB_Factory::singleton();
-        $DB          = \NDB_Factory::singleton()->database();
-        $name        = htmlspecialchars(
+        $factory  = \NDB_Factory::singleton();
+        $DB       = \NDB_Factory::singleton()->database();
+        $name     = htmlspecialchars(
             $values['firstname'],
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
         );
-        $lastname    = htmlspecialchars(
+        $lastname = htmlspecialchars(
             $values['lastname'],
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
         );
-        $from        = htmlspecialchars(
+        $from     = htmlspecialchars(
             $values['email'],
             ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
             'UTF-8',
             false
         );
-        $site        = $values['site'];
-        $project     = $values['project'];
-        $examiner    = filter_var(
+        $site     = $values['site'];
+        $projects = $values['project'] ?? [];
+        if (!is_array($projects)) {
+            $projects = [$projects];
+        }
+        $projectList         = \Utility::getProjectList();
+        $projects            = array_values(
+            array_unique(
+                array_filter(
+                    $projects,
+                    fn($project) => (is_string($project) || is_int($project))
+                        && array_key_exists($project, $projectList)
+                )
+            )
+        );
+        $examiner            = filter_var(
             $values['examiner'] ?? false,
             FILTER_VALIDATE_BOOL
         );
-        $radiologist = filter_var(
+        $radiologist         = filter_var(
             $values['radiologist'] ?? false,
             FILTER_VALIDATE_BOOL
         );
@@ -187,7 +200,7 @@ class Signup extends \NDB_Page implements ETagCalculator
             }
 
             // verify project exists
-            if (!is_null($project) && array_key_exists($project, $projectList)) {
+            foreach ($projects as $project) {
                 $DB->insert(
                     'user_project_rel',
                     [
@@ -232,10 +245,20 @@ class Signup extends \NDB_Page implements ETagCalculator
         }
 
         // Don't send out emails if this is a sandbox VM.
-        if (!$factory->config()->settingEnabled('sandbox')) {
+        if (!$factory->config()->settingEnabled('sandbox')
+            && !empty($projects)
+        ) {
+            $params = ['center' => $site];
+            $projectPlaceholders = [];
+            foreach ($projects as $index => $project) {
+                $key = 'project' . $index;
+                $projectPlaceholders[] = ':' . $key;
+                $params[$key]          = $project;
+            }
+
             // Send an email to all users meeting the following criteria:
             //     - Associated with the Site
-            //     - Associated with the Project
+            //     - Associated with at least one requested Project
             //     - Have the User Management permission
             $query  = "
                 SELECT DISTINCT
@@ -247,11 +270,10 @@ class Signup extends \NDB_Page implements ETagCalculator
                     JOIN user_project_rel uprojr ON u.ID = uprojr.UserID
                 WHERE
                     upr.CenterID = :center
-                    AND uprojr.ProjectID = :project";
-            $result = $DB->pselect(
-                $query,
-                ['center' => $site, 'project' => $project]
-            );
+                    AND uprojr.ProjectID IN ("
+                    . implode(',', $projectPlaceholders)
+                    . ")";
+            $result = $DB->pselect($query, $params);
             foreach ($result as $row) {
                 $hasPermission = \User::factory($row['userID'])
                     ->hasAnyPermission(
@@ -274,7 +296,13 @@ class Signup extends \NDB_Page implements ETagCalculator
                     [
                         'Study'       => $studyName,
                         'Site'        => $siteList[$site],
-                        'Project'     => $projectList[$project],
+                        'Project'     => implode(
+                            ', ',
+                            array_map(
+                                fn($project) => $projectList[$project],
+                                $projects
+                            )
+                        ),
                         'Real_name'   => $fullname,
                         'Email'       => $from,
                         'Examiner'    => $examiner ? 'Yes' : 'No',
