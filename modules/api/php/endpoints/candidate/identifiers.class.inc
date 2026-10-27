@@ -36,6 +36,13 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private $_candidate;
 
     /**
+     * Permission codes indexed by permission ID.
+     *
+     * @var array<int, string|null>
+     */
+    private array $_permissionCodes = [];
+
+    /**
      * Constructor
      *
      * @param \LORIS\LorisInstance $loris     The LORIS instance to retrieve data
@@ -88,7 +95,7 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         switch ($request->getMethod()) {
         case 'GET':
-            return $this->_handleGET();
+            return $this->_handleGET($request);
 
         case 'POST':
             return $this->_handlePOST($request);
@@ -104,12 +111,71 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
     }
 
     /**
+     * Checks whether a user can access an identifier type for this candidate.
+     *
+     * @param \User                 $user           Requesting user
+     * @param \LORIS\IdentifierType $identifierType Identifier type
+     *
+     * @return bool Whether access is permitted
+     */
+    private function _canAccessIdentifierType(
+        \User $user,
+        \LORIS\IdentifierType $identifierType
+    ): bool {
+        $projectID = $this->_candidate->getProjectID();
+
+        if (!empty($identifierType->projects)) {
+            $projectAllowed = false;
+
+            foreach ($identifierType->projects as $project) {
+                if ($project->getId() == $projectID) {
+                    $projectAllowed = true;
+                    break;
+                }
+            }
+
+            if (!$projectAllowed || !$user->hasProject($projectID)) {
+                return false;
+            }
+        }
+
+        if ($identifierType->permissionID !== null) {
+            $database = $this->loris->getDatabaseConnection();
+
+            $permissionID = $identifierType->permissionID;
+
+            if (!array_key_exists($permissionID, $this->_permissionCodes)) {
+                $permission = $database->pselectRow(
+                    "SELECT code FROM permissions WHERE permID = :permID",
+                    ['permID' => $permissionID]
+                );
+
+                $this->_permissionCodes[$permissionID]
+                    = $permission['code'] ?? null;
+            }
+
+            $permissionCode = $this->_permissionCodes[$permissionID];
+
+            if ($permissionCode === null
+                || !$user->hasPermission($permissionCode)
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Returns the candidate's identifiers
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET() : ResponseInterface
-    {
+    private function _handleGET(
+        ServerRequestInterface $request
+    ): ResponseInterface {
         $controller = new \LORIS\CandidateIdentifierController(
             $this->loris->getDatabaseConnection()
         );
@@ -118,8 +184,14 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
             (int) $this->_candidate->getID()
         );
 
+        $user = $request->getAttribute('user');
+
         $data = [];
         foreach ($identifiers as $identifier) {
+            if (!$this->_canAccessIdentifierType($user, $identifier->type)) {
+                continue;
+            }
+
             $data[] = (
                 new \LORIS\api\Views\CandidateIdentifier($identifier)
             )->toArray();
@@ -167,6 +239,14 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
         } catch (\NotFound $e) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 $e->getMessage()
+            );
+        }
+
+        $user = $request->getAttribute('user');
+
+        if (!$this->_canAccessIdentifierType($user, $identifierType)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'You cannot add an identifier of this type'
             );
         }
 
@@ -221,6 +301,6 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function ETag(ServerRequestInterface $request) : string
     {
-        return md5(json_encode($this->_handleGET()->getBody()));
+        return md5(json_encode($this->_handleGET($request)->getBody()));
     }
 }
