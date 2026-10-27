@@ -271,7 +271,8 @@ function IdentifierTypeForm(
         </div>
 
         <div title={props.t(
-          'Whether candidates using this identifier type must have at least one value',
+          'Whether candidates using this identifier type must have at least'
+          + ' one value',
           {ns: 'configuration'}
         )}>
           <CheckboxElement
@@ -323,7 +324,8 @@ function IdentifierTypeForm(
         </div>
 
         <div title={props.t(
-          'Projects in which this identifier type can be used. An identifier type can be associated with multiple projects.',
+          'Projects in which this identifier type can be used. An identifier'
+          + ' type can be associated with multiple projects.',
           {ns: 'configuration'}
         )}>
           <SelectElement

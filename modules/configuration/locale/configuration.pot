@@ -60,15 +60,6 @@ msgstr ""
 msgid "Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide."
 msgstr ""
 
-msgid "To configure study cohorts"
-msgstr ""
-
-msgid "To configure study projects"
-msgstr ""
-
-msgid "To configure candidate identifier types"
-msgstr ""
-
 msgid "click here"
 msgstr ""
 
@@ -76,6 +67,9 @@ msgid "To configure study cohorts <0>click here</0>."
 msgstr ""
 
 msgid "To configure study projects <0>click here</0>."
+msgstr ""
+
+msgid "To configure candidate identifier types <0>click here</0>."
 msgstr ""
 
 msgid "To configure the diagnosis trajectory of the study <0>click here</0>."
