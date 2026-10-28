@@ -66,8 +66,6 @@ class SpecimenTab extends Component {
         return value.map((id) => options.diagnoses[id].label);
       }
       break;
-    case this.props.t('Visit Label', {ns: 'loris'}):
-      return options.sessions[value].label;
     case this.props.t('Status', {ns: 'biobank'}):
       return options.container.stati[value].label;
     case this.props.t('Current Site', {ns: 'biobank'}):
@@ -115,8 +113,10 @@ class SpecimenTab extends Component {
       return <td>{display}</td>;
     case this.props.t('Visit Label', {ns: 'loris'}):
       if (candidatePermission) {
+        const sessionId = candidate.sessionIds
+          .find((id) => options.sessions[id]?.label === value);
         const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
-          candidate.id+'&sessionID='+value;
+          candidate.id+'&sessionID='+sessionId;
         return <td><a href={visitLabelURL}>{display}</a></td>;
       }
       return <td>{display}</td>;
@@ -206,7 +206,7 @@ class SpecimenTab extends Component {
         candidate?.sex || null,
         specimen.candidateAge,
         candidate?.diagnosisIds || null,
-        specimen.sessionId,
+        options.sessions[specimen.sessionId]?.label,
         specimen.poolId ? (data.pools[specimen.poolId]||{}).label : null,
         container.statusId,
         specimen.projectId,
@@ -282,8 +282,9 @@ class SpecimenTab extends Component {
         options: diagnoses,
       }},
       {label: this.props.t('Visit Label', {ns: 'loris'}), show: true, filter: {
-        name: 'session',
-        type: 'text',
+        name: 'visitLabel',
+        type: 'select',
+        options: options.visitLabels,
       }},
       {label: t('Pool', {ns: 'biobank', count: 1}), show: false, filter: {
         name: 'pool',
@@ -471,6 +472,7 @@ SpecimenTab.propTypes = {
     projects: PropTypes.arrayOf(PropTypes.string).isRequired,
     candidates: PropTypes.arrayOf(PropTypes.string).isRequired,
     sessions: PropTypes.arrayOf(PropTypes.string).isRequired,
+    visitLabels: PropTypes.object,
   }).isRequired,
 
   // Data prop: Contains containers, specimens, and pools data

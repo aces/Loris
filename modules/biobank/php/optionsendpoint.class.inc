@@ -190,6 +190,14 @@ class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
           AND s.ProjectID IN ($userProjects)";
         $sessions     = $db->pselectWithIndexKey($sessionQuery, [], 'id');
 
+        $visitLabels = $db->pselectCol(
+            "SELECT DISTINCT s.Visit_label
+            FROM biobank_specimen bs
+              JOIN session s ON (bs.SessionID=s.ID)",
+            []
+        );
+        $visitLabels = array_combine($visitLabels, $visitLabels);
+
         // XXX: This should eventually be replaced by a call directly to a
         // Examiner endpoint or Examiner controller that will be able to provide
         // Examiner Objects.
@@ -218,16 +226,17 @@ class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
         ];
 
         return [
-            'candidates' => $candidates,
-            'diagnoses'  => $diagnoses,
-            'sessions'   => $sessions,
-            'projects'   => \Utility::getProjectList(),
-            'centers'    => $centers,
-            'examiners'  => $examiners,
-            'users'      => $users,
-            'container'  => $contCont->getOptions(),
-            'specimen'   => $specCont->getOptions(),
-            'shipment'   => $shipment,
+            'candidates'  => $candidates,
+            'diagnoses'   => $diagnoses,
+            'sessions'    => $sessions,
+            'visitLabels' => $visitLabels,
+            'projects'    => \Utility::getProjectList(),
+            'centers'     => $centers,
+            'examiners'   => $examiners,
+            'users'       => $users,
+            'container'   => $contCont->getOptions(),
+            'specimen'    => $specCont->getOptions(),
+            'shipment'    => $shipment,
         ];
     }
 }
