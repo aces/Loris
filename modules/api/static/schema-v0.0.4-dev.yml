@@ -325,6 +325,55 @@ paths:
                 $ref: '#/components/schemas/CandidateIdentifier'
         '400':
           description: The candidate identifier could not be created
+    put:
+      tags:
+        - Candidates
+      summary: Update a candidate identifier
+      parameters:
+        - name: id
+          in: path
+          description: The candidate identifier. Either a PSCID or CandID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - Identifier
+              properties:
+                Identifier:
+                  type: object
+                  required:
+                    - CandidateIdentifierID
+                    - CandidateIdentifierTypeID
+                    - Value
+                  properties:
+                    CandidateIdentifierID:
+                      type: integer
+                      description: ID of the existing identifier to update
+                    CandidateIdentifierTypeID:
+                      type: integer
+                    Value:
+                      type: string
+      responses:
+        '200':
+          description: The candidate identifier was updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidateIdentifier'
+        '400':
+          description: Invalid identifier data
+        '403':
+          description: Permission denied
+        '404':
+          description: Candidate or identifier not found
   '/candidates/{id}/{visit}':
     get:
       tags:

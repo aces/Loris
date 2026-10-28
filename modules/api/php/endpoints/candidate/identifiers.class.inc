@@ -63,7 +63,7 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return ['GET', 'POST'];
+        return ['GET', 'POST', 'PUT'];
     }
 
     /**
@@ -99,6 +99,10 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         case 'POST':
             return $this->_handlePOST($request);
+
+        case 'PUT':
+            return $this->_handlePUT($request);
+
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
                 ->withHeader('Allow', $this->allowedMethods());
@@ -214,6 +218,9 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
     ): ResponseInterface {
         $data = json_decode((string) $request->getBody(), true);
 
+        error_log('Candidate identifiers POST body: ' . (string) $request->getBody());
+        error_log('Candidate identifiers POST decoded: ' . var_export($data, true));
+
         if (!isset($data['Identifier'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'There is no Identifier object in the POST data'
@@ -290,6 +297,110 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         return (new \LORIS\Http\Response\JsonResponse($body))
             ->withStatus(201);
+    }
+
+    /**
+     * Updates a candidate identifier
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface
+     */
+    private function _handlePUT(
+        ServerRequestInterface $request
+    ): ResponseInterface {
+        $data = json_decode((string) $request->getBody(), true);
+
+        if (
+            !isset($data['Identifier'])
+            || !is_array($data['Identifier'])
+        ) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'There is no Identifier object in the PUT data'
+            );
+        }
+
+        $identifierData = $data['Identifier'];
+
+        if (
+            !isset($identifierData['CandidateIdentifierID'])
+            || !isset($identifierData['CandidateIdentifierTypeID'])
+            || !isset($identifierData['Value'])
+        ) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'CandidateIdentifierID, CandidateIdentifierTypeID and Value are required'
+            );
+        }
+
+        $database = $this->loris->getDatabaseConnection();
+
+        $controller = new \LORIS\CandidateIdentifierController(
+            $database
+        );
+
+        try {
+            $existingIdentifier = $controller->getCandidateIdentifierFromID(
+                (int) $identifierData['CandidateIdentifierID']
+            );
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
+
+        // Prevent updating an identifier belonging to another candidate.
+        if (
+            $existingIdentifier->candidateID
+            !== (int) $this->_candidate->getID()
+        ) {
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
+
+        $typeController = new \LORIS\IdentifierTypeController(
+            $database
+        );
+
+        try {
+            $identifierType = $typeController->getIdentifierTypeFromID(
+                (int) $identifierData['CandidateIdentifierTypeID']
+            );
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                $e->getMessage()
+            );
+        }
+
+        $user = $request->getAttribute('user');
+
+        if (
+            !$this->_canAccessIdentifierType($user, $existingIdentifier->type)
+            || !$this->_canAccessIdentifierType($user, $identifierType)
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'You cannot edit an identifier of this type'
+            );
+        }
+
+        $identifier = new \LORIS\StudyEntities\Candidate\CandidateIdentifier(
+            candidateIdentifierID: $existingIdentifier->candidateIdentifierID,
+            candidateID: (int) $this->_candidate->getID(),
+            type: $identifierType,
+            value: $identifierData['Value'],
+        );
+
+        try {
+            $identifier = $controller->updateCandidateIdentifier(
+                $identifier
+            );
+        } catch (\InvalidArgumentException | \ConflictException $e) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                $e->getMessage()
+            );
+        }
+
+        $body = (
+            new \LORIS\api\Views\CandidateIdentifier($identifier)
+        )->toArray();
+
+        return new \LORIS\Http\Response\JsonResponse($body);
     }
 
     /**
