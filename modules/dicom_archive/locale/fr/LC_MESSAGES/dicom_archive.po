@@ -61,8 +61,8 @@ msgstr "Fantôme data?"
 msgid "Tarchive Metadata"
 msgstr "Métadonnées de l'archive"
 
-msgid "Acquisition ID"
-msgstr "ID d'acquisition"
+msgid "Study Instance UID"
+msgstr "UID de l'instance d'étude"
 
 #, fuzzy
 msgid "Patient Birthdate"
@@ -86,9 +86,8 @@ msgstr "Numéro de série"
 msgid "Scanner Software Version"
 msgstr "Version du logiciel du scanner"
 
-#, fuzzy
-msgid "Acquired at"
-msgstr "Acquis à"
+msgid "Institution Name"
+msgstr "Nom de l'établissement"
 
 #, fuzzy
 msgid "Number of Acquisitions"
@@ -104,16 +103,8 @@ msgstr "Dernière mise à jour"
 msgid "Never"
 msgstr "Jamais"
 
-#, fuzzy
-msgid "Summary type version"
-msgstr "Version résumée"
-
 msgid "Source location"
 msgstr "Emplacement Original"
-
-#, fuzzy
-msgid "Archive type version"
-msgstr "Version du type d'archive"
 
 #, fuzzy
 msgid "Archive location"

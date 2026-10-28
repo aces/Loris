@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
 
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import {ListForm, ListItem} from './listForm.js';
 import {
   SelectElement,
@@ -78,8 +78,8 @@ class ContainerForm extends Component {
     const {options, show} = this.props;
     const handleClose = () => this.setState(initialState, this.props.onClose);
     return (
-      <Modal
-        title={t('Add New Container', {ns: 'biobank'})}
+      <FormModal
+        title={t('Add New Container')}
         show={show}
         onClose={handleClose}
         onSubmit={this.handleSubmit}
@@ -89,7 +89,7 @@ class ContainerForm extends Component {
           <div className="col-xs-11">
             <SelectElement
               name="centerId"
-              label={t('Site', {ns: 'loris'})}
+              label={t('Site', {ns: 'loris', count: 1})}
               options={options.centers}
               onUserInput={this.setCurrent}
               required={true}
@@ -106,7 +106,7 @@ class ContainerForm extends Component {
         >
           <ContainerSubForm options={options} t={t}/>
         </ListForm>
-      </Modal>
+      </FormModal>
     );
   }
 }

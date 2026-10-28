@@ -1,4 +1,4 @@
-import Modal from 'jsx/Modal';
+import {FormModal} from 'jsx/Modal';
 import {QueryGroup, QueryTerm} from './querydef';
 import {useState} from 'react';
 import Papa from 'papaparse';
@@ -12,11 +12,13 @@ import {useTranslation} from 'react-i18next';
  * @param {object} props - React props
  * @param {function} props.setQuery - Function to set the current criteria
  * @param {function} props.closeModal - Callback to close the current modal
+ * @param {string[]} props.visitLabels - Array of allowed visit label values
  * @returns {React.ReactElement} - The import modal window
  */
 function ImportCSVModal(props: {
     setQuery: (root: QueryGroup) => void,
     closeModal: () => void,
+    visitLabels: string[],
 }) {
   const {t} = useTranslation('dataquery');
   const [csvFile, setCSVFile] = useState<string|null>(null);
@@ -93,6 +95,21 @@ function ImportCSVModal(props: {
         setCSVFile(null);
         return;
       }
+
+      // Second column must contain visit labels
+      if (csvType === 'session') {
+        const visitLabelVal = value.data[i][1]?.trim();
+        if (!props.visitLabels.includes(visitLabelVal)) {
+          swal.fire({
+            type: 'error',
+            title: t('Invalid value', {ns: 'dataquery'}),
+            text: t('Invalid visit label {{visitLabelVal}} on line {{line}}.',
+              {ns: 'dataquery', visitLabelVal, line: i+1}),
+          });
+          return;
+        }
+      }
+
       if (idType === 'CandID') {
         if (candIDRegex.test(value.data[i][0]) !== true) {
           swal.fire({
@@ -164,7 +181,7 @@ function ImportCSVModal(props: {
     marginTop: '1em',
   };
 
-  return <Modal title={t('Import Population From CSV', {ns: 'dataquery'})}
+  return <FormModal title={t('Import Population From CSV', {ns: 'dataquery'})}
     show={true}
     throwWarning={true}
     onClose={props.closeModal}
@@ -241,7 +258,7 @@ function ImportCSVModal(props: {
         </dl>
       </div>
     </fieldset>
-  </Modal>;
+  </FormModal>;
 }
 
 export default ImportCSVModal;

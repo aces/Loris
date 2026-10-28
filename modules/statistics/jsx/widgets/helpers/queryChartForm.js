@@ -135,7 +135,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px', display: 'block'}}>
-              {t('Project', {ns: 'loris'})}</label>
+              {t('Project', {ns: 'loris', count: 1})}</label>
             <SelectElement
               name ='selectedProjects'
               options ={{__clear__: clearSelection,
@@ -181,7 +181,7 @@ const QueryChartForm = (props) => {
           <div>
             <label style ={{fontWeight: 'bold',
               marginBottom: '5px',
-              display: 'block'}}>{t('Site', {ns: 'loris'})}</label>
+              display: 'block'}}>{t('Site', {ns: 'loris', count: 1})}</label>
             <SelectElement
               name ='selectedSites'
               options ={{__clear__: clearSelection, ...options.sites}}
@@ -210,6 +210,7 @@ const QueryChartForm = (props) => {
                 ...options.visits}}
               multiple ={true}
               emptyOption ={false}
+              pinnedOption ='__clear__'
               value ={formDataObj['selectedVisits'] || []}
               onUserInput ={(name, value) => {
                 setFormData(name, value);

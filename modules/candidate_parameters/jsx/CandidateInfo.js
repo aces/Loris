@@ -10,7 +10,10 @@ import {
   DateElement,
   ButtonElement,
   TextareaElement,
+  NumericElement,
 } from 'jsx/Form';
+import CandidateParametersClient from './CandidateParametersClient';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Candiate info component
@@ -35,6 +38,7 @@ class CandidateInfo extends Component {
       isLoaded: false,
       loadedData: 0,
     };
+    this.client = new CandidateParametersClient();
     this.setFormData = this.setFormData.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -46,35 +50,28 @@ class CandidateInfo extends Component {
    */
   componentDidMount() {
     const {t} = this.props;
-    let that = this;
-    $.ajax(
-      this.props.dataURL,
-      {
-        dataType: 'json',
-        success: function(data) {
-          let formData = {
-            flaggedCaveatemptor: data.flagged_caveatemptor,
-            flaggedOther: data.flagged_other,
-            flaggedReason: data.flagged_reason,
-          };
+    this.client.getData(this.props.candID, this.props.tabName)
+      .then((data) => {
+        let formData = {
+          flaggedCaveatemptor: data.flagged_caveatemptor,
+          flaggedOther: data.flagged_other,
+          flaggedReason: data.flagged_reason,
+        };
 
-          // Add parameter values to formData
-          Object.assign(formData, data.parameter_values);
+        // Add parameter values to formData
+        Object.assign(formData, data.parameter_values);
 
-          that.setState({
-            Data: data,
-            isLoaded: true,
-            formData: formData,
-          });
-        },
-        error: function(data, errorCode, errorMsg) {
-          that.setState({
-            error: t('An error occurred while loading the page.',
-              {ns: 'loris'}),
-          });
-        },
-      }
-    );
+        this.setState({
+          Data: data,
+          isLoaded: true,
+          formData: formData,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          error: t('An error occurred while loading the page.', {ns: 'loris'}),
+        });
+      });
   }
 
   /**
@@ -192,6 +189,7 @@ class CandidateInfo extends Component {
         let paramTypeID = extraParameters[key2].ParameterTypeID;
         let name = paramTypeID;
         let value = this.state.formData[paramTypeID];
+        const required = Number(extraParameters[key2].Required) === 1;
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
         case 'enu':
@@ -215,6 +213,7 @@ class CandidateInfo extends Component {
               onUserInput={this.setFormData}
               ref={name}
               disabled={disabled}
+              required={required}
               key={key2}
             />
           );
@@ -228,6 +227,21 @@ class CandidateInfo extends Component {
               onUserInput={this.setFormData}
               ref={name}
               disabled={disabled}
+              required={required}
+              key={key2}
+            />
+          );
+          break;
+        case 'num':
+          extraParameterFields.push(
+            <NumericElement
+              label={extraParameters[key2].Description}
+              name={name}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+              required={required}
               key={key2}
             />
           );
@@ -241,6 +255,7 @@ class CandidateInfo extends Component {
               onUserInput={this.setFormData}
               ref={name}
               disabled={disabled}
+              required={required}
               key={key2}
             />
           );
@@ -279,6 +294,14 @@ class CandidateInfo extends Component {
           <StaticElement
             label={t('DCCID', {ns: 'loris'})}
             text={this.state.Data.candID}
+          />
+          <StaticElement
+            label={t('Registration Project', {ns: 'candidate_parameters'})}
+            text={this.state.Data.registrationProject}
+          />
+          <StaticElement
+            label={t('Registration Cohort', {ns: 'loris'})}
+            text={this.state.Data.registrationCohort}
           />
           <SelectElement
             label={
@@ -335,37 +358,43 @@ class CandidateInfo extends Component {
 
     formData.append('tab', this.props.tabName);
     formData.append('candID', this.state.Data.candID);
-    $.ajax(
-      {
-        type: 'POST',
-        url: self.props.action,
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(data) {
+    lorisFetch(self.props.action, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          let errorMessage = '';
+          let text = await response.text();
+          if (text) {
+            try {
+              errorMessage = JSON.parse(text).message || '';
+            } catch (err) {
+              errorMessage = '';
+            }
+          }
+          let error = new Error('request_failed');
+          error.lorisMessage = errorMessage;
+          throw error;
+        }
+        self.setState(
+          {
+            updateResult: 'success',
+          }
+        );
+        self.showAlertMessage();
+      })
+      .catch((err) => {
+        if (err.lorisMessage !== undefined && err.lorisMessage !== '') {
           self.setState(
             {
-              updateResult: 'success',
+              updateResult: 'error',
+              errorMessage: err.lorisMessage,
             }
           );
           self.showAlertMessage();
-        },
-        error: function(err) {
-          if (err.responseText !== '') {
-            let errorMessage = JSON.parse(err.responseText).message;
-            self.setState(
-              {
-                updateResult: 'error',
-                errorMessage: errorMessage,
-              }
-            );
-            self.showAlertMessage();
-          }
-        },
-
-      }
-    );
+        }
+      });
   }
 
   /**
@@ -391,8 +420,8 @@ class CandidateInfo extends Component {
   }
 }
 CandidateInfo.propTypes = {
-  dataURL: PropTypes.string,
-  tabName: PropTypes.string,
+  candID: PropTypes.string.isRequired,
+  tabName: PropTypes.string.isRequired,
   action: PropTypes.string,
   t: PropTypes.func.isRequired,
 };

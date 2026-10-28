@@ -119,6 +119,30 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     }
 
     /**
+     * Tests that a candidate's registration cohort appears before a visit is
+     * started for that cohort.
+     *
+     * @return void
+     */
+    function testRegistrationCohortAppearsWithoutVisit(): void
+    {
+        $this->DB->update(
+            'candidate',
+            ['RegistrationCohortID' => 1],
+            ['CandID' => '900000']
+        );
+        $this->DB->delete('session', ['CandidateID' => 1]);
+
+        $this->safeGet($this->url . "/candidate_list/?pscid=TST0001");
+        $tableText = $this->safeFindElement(
+            WebDriverBy::Id('dynamictable')
+        )->getText();
+
+        $this->assertStringContainsString('TST0001', $tableText);
+        $this->assertStringContainsString('Stale', $tableText);
+    }
+
+    /**
      * Tests that, after clicking the "Advanced" button, all of the
      * advanced filters appear on the page and are the correct element type.
      *
