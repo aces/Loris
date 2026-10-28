@@ -9,7 +9,7 @@
 :root {
     /* ---- Colour -------------------------------------------------- */
 
-    /* Actions. solid, then pressed, border, fill and highlight of the same hue. */
+    /* Actions: solid, then pressed, border, fill and highlight of the same hue. */
     --accent: #064785;
     --accent-strong: #042d54;
     --accent-border: #246eb6;
@@ -88,8 +88,8 @@
     --space-lg: 10px;
     --space-xl: 16px;
 
-    /* Type. The size, family and line height record what bootstrap's base
-       already sets. */
+    /* Type. The family is the operating system's own interface face; the
+       size and line height record what bootstrap's base already sets. */
     --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
                    "Helvetica Neue", Arial, sans-serif;
 
