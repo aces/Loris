@@ -18,19 +18,33 @@
 
     --secondary: #e89a0c;
     --secondary-fill: #fcf3e2;
+    --secondary-highlight: #fefaf2;
 
     /* Help, notices, and rules that govern what the next action does */
     --info: #a6d3f5;
     --info-fill: #d4eafa;
+    --info-highlight: #ecf6fd;
 
     /* Edge for a control drawn in the info colour, which is too light to
        define a shape against white on its own */
     --info-edge: #246eb6;
 
     --warning: #e89a0c;
+
     --success: #0f9d58;
+    --success-fill: #e5f4ed;
+    --success-highlight: #f3faf7;
+
     --danger: #c0402a;
     --danger-strong: #963221;
+    --danger-fill: #f8eae8;
+    --danger-highlight: #fcf6f4;
+
+    /* Telling categories apart, where blue and orange already carry a
+       meaning */
+    --category: #690096;
+    --category-fill: #f2e9f6;
+    --category-highlight: #f9f5fb;
 
     /* States: hover is the pointer, selected is a settled choice, active is a
        state being passed through */

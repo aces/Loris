@@ -28,7 +28,8 @@ Tokens are named for what they are used for (`--accent`, `--border`, `--text-mut
 rather than for their value, so changing a token's value restyles everything that
 uses it.
 
-A suffix on a colour token indicates which shade of the colour it uses:
+Every colour has a base token, a `-fill` and a `-highlight`. A suffix on a colour token
+indicates which shade of the colour it uses:
 
 | Suffix | Shade | Used for |
 |---|---|---|
@@ -61,6 +62,7 @@ interface. A colour that is not in these tables should be added here and to
 |---|---|---|---|
 | ![](images/palette/sky.svg) | `--info` | `#a6d3f5` | Help text, notices, a toggle that is on |
 | ![](images/palette/sky-100.svg) | `--info-fill` | `#d4eafa` | Background for help text and notices |
+| ![](images/palette/sky-50.svg) | `--info-highlight` | `#ecf6fd` | Hover on help text and notices |
 
 ### Orange (secondary)
 
@@ -70,14 +72,35 @@ Orange marks an in-progress state, such as the rows a drag is currently selectin
 |---|---|---|---|
 | ![](images/palette/orange.svg) | `--secondary`, `--warning` | `#e89a0c` | Active border, warnings |
 | ![](images/palette/orange-100.svg) | `--secondary-fill` | `#fcf3e2` | Active background |
+| ![](images/palette/orange-50.svg) | `--secondary-highlight` | `#fefaf2` | Hover on an active element |
 
-### Success and danger
+### Green (success)
 
 | | Token | Hex | Used for |
 |---|---|---|---|
 | ![](images/palette/green.svg) | `--success` | `#0f9d58` | Success |
+| ![](images/palette/green-100.svg) | `--success-fill` | `#e5f4ed` | Success background |
+| ![](images/palette/green-50.svg) | `--success-highlight` | `#f3faf7` | Hover on a success message |
+
+### Red (danger)
+
+| | Token | Hex | Used for |
+|---|---|---|---|
 | ![](images/palette/red-700.svg) | `--danger-strong` | `#963221` | Pressed danger button |
 | ![](images/palette/red.svg) | `--danger` | `#c0402a` | Errors, danger buttons |
+| ![](images/palette/red-100.svg) | `--danger-fill` | `#f8eae8` | Error background |
+| ![](images/palette/red-50.svg) | `--danger-highlight` | `#fcf6f4` | Hover on an error message |
+
+### Purple (category)
+
+Purple has no fixed meaning, so it is used to tell categories apart where blue and
+orange already carry one.
+
+| | Token | Hex | Used for |
+|---|---|---|---|
+| ![](images/palette/purple.svg) | `--category` | `#690096` | Categories |
+| ![](images/palette/purple-100.svg) | `--category-fill` | `#f2e9f6` | Category background |
+| ![](images/palette/purple-50.svg) | `--category-highlight` | `#f9f5fb` | Hover on a category |
 
 ### Grey
 
