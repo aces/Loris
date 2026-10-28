@@ -91,6 +91,7 @@ DROP TABLE IF EXISTS `help`;
 
 -- 0000-00-03-ConfigTables.sql
 DROP TABLE IF EXISTS `ConfigI18n`;
+DROP TABLE IF EXISTS `ConfigMappings`;
 DROP TABLE IF EXISTS `Config`;
 DROP TABLE IF EXISTS `ConfigSettings`;
 DROP TABLE IF EXISTS `ConfigCategories`;
@@ -169,6 +170,7 @@ DROP TABLE IF EXISTS `login_summary_statistics`;
 
 DROP TABLE IF EXISTS `parameter_session`;
 DROP TABLE IF EXISTS `parameter_file`;
+DROP TABLE IF EXISTS `parameter_candidate_rules`;
 DROP TABLE IF EXISTS `parameter_candidate`;
 DROP TABLE IF EXISTS `parameter_type_override`;
 DROP TABLE IF EXISTS `parameter_type_category_rel`;

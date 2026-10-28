@@ -82,7 +82,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             "An error occurred while loading the page.",
             $bodyText
         );
-        $this->assertStringContainsString("Acquisition ID", $bodyText);
+        $this->assertStringContainsString("Study Instance UID", $bodyText);
         $this->assertStringContainsString("Show/Hide series", $bodyText);
         $this->assertStringContainsString("Show/Hide files", $bodyText);
 
@@ -123,6 +123,12 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->assertArrayHasKey('archive', $data);
         $this->assertArrayHasKey('archiveSeries', $data);
         $this->assertArrayHasKey('archiveFiles', $data);
+        $this->assertArrayHasKey('StudyInstanceUID', $data['archive']);
+        $this->assertArrayHasKey('InstitutionName', $data['archive']);
+        $this->assertArrayNotHasKey('DicomArchiveID', $data['archive']);
+        $this->assertArrayNotHasKey('CenterName', $data['archive']);
+        $this->assertArrayNotHasKey('sumTypeVersion', $data['archive']);
+        $this->assertArrayNotHasKey('tarTypeVersion', $data['archive']);
         $this->assertArrayNotHasKey('AcquisitionMetadata', $data['archive']);
         $this->assertArrayNotHasKey('SessionID', $data['archive']);
         $this->assertArrayNotHasKey('TarchiveID', $data['archive']);

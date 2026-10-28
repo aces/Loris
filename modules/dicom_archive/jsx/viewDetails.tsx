@@ -18,27 +18,25 @@ type NumericValue = number | string;
 type Archive = {
   AcquisitionCount: NumericValue,
   ArchiveLocation: null | string,
-  CenterName: string,
   CreateInfo: null | string,
   CreatingUser: string,
   DateAcquired: null | string,
-  DicomArchiveID: string,
+  InstitutionName: null | string,
   LastUpdate: null | string,
   PatientDoB: null | string,
   PatientID: string,
   PatientName: string,
   PatientSex: null | string,
-  ScannerManufacturer: string,
-  ScannerModel: string,
-  ScannerSerialNumber: string,
-  ScannerSoftwareVersion: string,
+  ScannerManufacturer: null | string,
+  ScannerModel: null | string,
+  ScannerSerialNumber: null | string,
+  ScannerSoftwareVersion: null | string,
   SourceLocation: string,
-  md5sumArchive: null | string,
-  md5sumDicomOnly: null | string,
+  StudyInstanceUID: string,
+  md5sumArchive: string,
+  md5sumDicomOnly: string,
   patientIDValid: number,
   patientNameValid: number,
-  sumTypeVersion: NumericValue,
-  tarTypeVersion: null | NumericValue,
 };
 
 type ArchiveSeries = {
@@ -138,9 +136,9 @@ function ArchiveMetadata({
       <h2>{t('Tarchive Metadata', {ns: 'dicom_archive'})}</h2>
       <table className={DETAILS_TABLE_CLASS}>
         <tbody>
-          <DetailRow label={t('Acquisition ID', {ns: 'dicom_archive'})}>
+          <DetailRow label={t('Study Instance UID', {ns: 'dicom_archive'})}>
             <a href={violationsURL}>
-              {displayValue(archive.DicomArchiveID)}
+              {displayValue(archive.StudyInstanceUID)}
             </a>
           </DetailRow>
           <DetailRow
@@ -179,8 +177,8 @@ function ArchiveMetadata({
           >
             {displayValue(archive.ScannerSoftwareVersion)}
           </DetailRow>
-          <DetailRow label={t('Acquired at', {ns: 'dicom_archive'})}>
-            {displayValue(archive.CenterName)}
+          <DetailRow label={t('Institution Name', {ns: 'dicom_archive'})}>
+            {displayValue(archive.InstitutionName)}
           </DetailRow>
           <DetailRow
             label={t('Number of Acquisitions', {ns: 'dicom_archive'})}
@@ -195,18 +193,8 @@ function ArchiveMetadata({
               ? t('Never', {ns: 'dicom_archive'})
               : ''}
           </DetailRow>
-          <DetailRow
-            label={t('Summary type version', {ns: 'dicom_archive'})}
-          >
-            {displayValue(archive.sumTypeVersion)}
-          </DetailRow>
           <DetailRow label={t('Source location', {ns: 'dicom_archive'})}>
             {displayValue(archive.SourceLocation)}
-          </DetailRow>
-          <DetailRow
-            label={t('Archive type version', {ns: 'dicom_archive'})}
-          >
-            {displayValue(archive.tarTypeVersion)}
           </DetailRow>
           <DetailRow label={t('Archive location', {ns: 'dicom_archive'})}>
             {displayValue(archive.ArchiveLocation)}

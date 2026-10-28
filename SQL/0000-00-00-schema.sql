@@ -165,6 +165,7 @@ CREATE TABLE `candidate` (
   `Sex` varchar(255) DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL,
   `RegistrationProjectID` int(10) unsigned NOT NULL,
+  `RegistrationCohortID` int(10) unsigned DEFAULT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `Date_active` date DEFAULT NULL,
@@ -188,9 +189,11 @@ CREATE TABLE `candidate` (
   KEY `PSCID` (`PSCID`),
   KEY `FK_candidate_sex_1` (`Sex`),
   KEY `FK_candidate_sex_2` (`ProbandSex`),
+  KEY `FK_candidate_RegistrationCohortID` (`RegistrationCohortID`),
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`RegistrationCenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `FK_candidate_RegistrationProjectID` FOREIGN KEY (`RegistrationProjectID`) REFERENCES `Project` (`ProjectID`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_candidate_RegistrationCohortID` FOREIGN KEY (`RegistrationCohortID`) REFERENCES `cohort` (`CohortID`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `FK_candidate_sex_1` FOREIGN KEY (`Sex`) REFERENCES `sex` (`Name`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `FK_candidate_sex_2` FOREIGN KEY (`ProbandSex`) REFERENCES `sex` (`Name`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -385,13 +388,12 @@ CREATE TABLE `Visit_Windows` (
 
 
 CREATE TABLE `tarchive` (
-  `DicomArchiveID` varchar(255) NOT NULL default '',
+  `StudyInstanceUID` varchar(255) NOT NULL,
   `PatientID` varchar(255) NOT NULL default '',
   `PatientName` varchar(255) NOT NULL default '',
   `PatientDoB` date default NULL,
   `PatientSex` varchar(255) default NULL,
-  `neurodbCenterName` varchar(255) default NULL,
-  `CenterName` varchar(255) NOT NULL default '',
+  `InstitutionName` varchar(255) NULL,
   `LastUpdate` datetime default NULL,
   `DateAcquired` date default NULL,
   `DateFirstArchived` datetime default NULL,
@@ -399,24 +401,18 @@ CREATE TABLE `tarchive` (
   `AcquisitionCount` int(11) NOT NULL default 0,
   `NonDicomFileCount` int(11) NOT NULL default 0,
   `DicomFileCount` int(11) NOT NULL default 0,
-  `md5sumDicomOnly` varchar(255) default NULL,
-  `md5sumArchive` varchar(255) default NULL,
-  `CreatingUser` varchar(255) NOT NULL default '',
-  `sumTypeVersion` tinyint(4) NOT NULL default 0,
-  `tarTypeVersion` tinyint(4) default NULL,
-  `SourceLocation` varchar(255) NOT NULL default '',
-  `ArchiveLocation` varchar(255) default NULL,
-  `ScannerManufacturer` varchar(255) NOT NULL default '',
-  `ScannerModel` varchar(255) NOT NULL default '',
-  `ScannerSerialNumber` varchar(255) NOT NULL default '',
-  `ScannerSoftwareVersion` varchar(255) NOT NULL default '',
+  `md5sumDicomOnly` varchar(255) NOT NULL,
+  `md5sumArchive` varchar(255) NOT NULL,
+  `CreatingUser` varchar(255) NOT NULL,
+  `SourceLocation` varchar(255) NOT NULL,
+  `ArchiveLocation` varchar(255) NOT NULL,
+  `ScannerManufacturer` varchar(255) NULL,
+  `ScannerModel` varchar(255) NULL,
+  `ScannerSerialNumber` varchar(255) NULL,
+  `ScannerSoftwareVersion` varchar(255) NULL,
   `SessionID` int(10) unsigned default NULL,
-  `uploadAttempt` tinyint(4) NOT NULL default 0,
   `CreateInfo` text,
-  `AcquisitionMetadata` longtext NOT NULL,
   `TarchiveID` int(11) NOT NULL auto_increment,
-  `DateSent` datetime DEFAULT NULL,
-  `PendingTransfer` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY  (`TarchiveID`),
   KEY `SessionID` (`SessionID`),
   CONSTRAINT `FK_tarchive_sessionID`
@@ -1953,6 +1949,17 @@ CREATE TABLE `parameter_candidate` (
   CONSTRAINT `FK_parameter_candidate_2` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`ID`),
   CONSTRAINT `FK_parameter_candidate_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='per-candidate equivalent of parameter_session';
+
+CREATE TABLE `parameter_candidate_rules` (
+  `ParameterTypeID` int(10) unsigned NOT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
+  `Required` tinyint(1) NOT NULL DEFAULT 0,
+  `ShowOnRegistration` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`ParameterTypeID`, `ProjectID`),
+  KEY `FK_parameter_candidate_rules_2` (`ProjectID`),
+  CONSTRAINT `FK_parameter_candidate_rules_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`) ON DELETE CASCADE,
+  CONSTRAINT `FK_parameter_candidate_rules_2` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='project-specific candidate parameter rules';
 
 CREATE TABLE `parameter_file` (
   `ParameterFileID` int(10) unsigned NOT NULL auto_increment,

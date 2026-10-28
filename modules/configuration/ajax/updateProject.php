@@ -19,6 +19,8 @@ if (!$user->hasPermission('config')) {
     exit(0);
 }
 
+header('Content-Type: application/json');
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();

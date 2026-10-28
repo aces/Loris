@@ -618,6 +618,7 @@ msgid "QC Status"
 msgstr ""
 
 msgid "TarchiveID"
+msgstr ""
 
 msgid "Upload successful!"
 msgstr ""
@@ -629,9 +630,6 @@ msgid "Type"
 msgstr ""
 
 msgid "Upload directory is not a directory"
-msgstr ""
-
-msgid "Upload directory is not writable"
 msgstr ""
 
 msgid "Upload directory is not writable"
@@ -659,4 +657,7 @@ msgid "Select all rows on this page"
 msgstr ""
 
 msgid "Select row"
+msgstr ""
+
+msgid "Registration Cohort"
 msgstr ""
