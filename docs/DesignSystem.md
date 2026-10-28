@@ -1,18 +1,22 @@
-# Design system
+# Design System
 
-The values LORIS styles itself with live in [`htdocs/css/tokens.css`](../htdocs/css/tokens.css),
-which every page loads. This document says what is in there and how to use it. See
-[CodingStandards.md](CodingStandards.md) for language conventions.
+## Overview
 
-## Never hardcode a value
+This document describes the design tokens used to style LORIS and the conventions
+for using them. The tokens are defined in [`htdocs/css/tokens.css`](../htdocs/css/tokens.css),
+which is loaded on every page. For language conventions, see
+[CodingStandards.md](CodingStandards.md).
 
-Colours, spacing and radii come from `tokens.css`. If no token fits, add one.
+## Tokens
+
+Colours, spacing and border radii should come from `tokens.css` rather than being
+hardcoded. If no existing token fits, a new one should be added to `tokens.css`.
 
 ```css
-/* No */
+/* Avoid */
 .thing { background: #eaf1f8; border-radius: 4px; padding: 8px; }
 
-/* Yes */
+/* Prefer */
 .thing {
     background: var(--accent-fill);
     border-radius: var(--radius);
@@ -20,138 +24,131 @@ Colours, spacing and radii come from `tokens.css`. If no token fits, add one.
 }
 ```
 
-## Names
+Tokens are named for what they are used for (`--accent`, `--border`, `--text-muted`)
+rather than for their value, so changing a token's value restyles everything that
+uses it.
 
-Every token is named for the job it does (`--accent`, `--border`, `--text-muted`). Repointing one
-restyles everything that plays that part. The colours below are the ones the tokens draw from, and
-a value outside them means LORIS has a new colour.
+A suffix on a colour token indicates which shade of the colour it uses:
 
-A suffix says which step of a hue a token takes:
-
-| Suffix | What it is | Used for |
+| Suffix | Shade | Used for |
 |---|---|---|
-| none | The colour itself | A border, an icon, a filled button, text |
-| `-strong` | Darker | Pressed |
-| `-fill` | A tint you can see is coloured | The ground something sits on: a selected row, a tag |
-| `-highlight` | Barely there | Hover |
+| none | The base colour | Borders, icons, filled buttons, text |
+| `-strong` | Darker | Pressed buttons |
+| `-fill` | Light tint | Backgrounds such as a selected row or a tag |
+| `-highlight` | Very light tint | Hover |
 
-## Colour
+## Colours
 
-`htdocs/bootstrap/css/custom-css.css` carries a header called "Loris color palette v.0.1" declaring
-two blues and an orange, in a comment where no code can reference it. These are those values, with
-the steps the interface needs around them.
+The header of `htdocs/bootstrap/css/custom-css.css` lists a "Loris color palette
+v.0.1" with two blues and an orange, but only as a comment, so no code can reference
+it. The colours below start from those values and add the shades needed by the
+interface. A colour that is not in these tables should be added here and to
+`tokens.css` before it is used.
 
-### Blue, the accent
+### Blue (accent)
 
 | | Token | Hex | Used for |
 |---|---|---|---|
 | ![](images/palette/blue-900.svg) | `--accent-strong` | `#042d54` | Pressed |
 | ![](images/palette/blue-700.svg) | `--accent` | `#064785` | Navigation, panel headings |
-| ![](images/palette/blue-500.svg) | `--accent-border`, `--info-edge` | `#246eb6` | Borders, the focus ring, the edge of a sky control |
-| ![](images/palette/blue-100.svg) | `--accent-fill` | `#e4ebf2` | Fill, selected row |
-| ![](images/palette/blue-50.svg) | `--accent-highlight` | `#f3f6f9` | Highlight, hovered row |
+| ![](images/palette/blue-500.svg) | `--accent-border`, `--info-edge` | `#246eb6` | Borders, the focus ring, the outline of an info-coloured control |
+| ![](images/palette/blue-100.svg) | `--accent-fill` | `#e4ebf2` | Selected row |
+| ![](images/palette/blue-50.svg) | `--accent-highlight` | `#f3f6f9` | Hovered row |
 
-### Sky, the information colour
-
-The navy's hue carried light and saturated.
+### Light blue (info)
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/sky.svg) | `--info` | `#a6d3f5` | Help, notices, a standing rule, a switch that is on |
-| ![](images/palette/sky-100.svg) | `--info-fill` | `#d4eafa` | Information ground |
+| ![](images/palette/sky.svg) | `--info` | `#a6d3f5` | Help text, notices, a toggle that is on |
+| ![](images/palette/sky-100.svg) | `--info-fill` | `#d4eafa` | Background for help text and notices |
 
-### Orange, the secondary
+### Orange (secondary)
 
-Marks a state the interface is passing through, or one governing what other actions will do.
+Orange marks an in-progress state, such as the rows a drag is currently selecting.
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/orange.svg) | `--secondary`, `--warning` | `#e89a0c` | Active border, warning |
-| ![](images/palette/orange-100.svg) | `--secondary-fill` | `#fcf3e2` | Active ground |
+| ![](images/palette/orange.svg) | `--secondary`, `--warning` | `#e89a0c` | Active border, warnings |
+| ![](images/palette/orange-100.svg) | `--secondary-fill` | `#fcf3e2` | Active background |
 
 ### Success and danger
 
-| | Token | Hex | Meaning |
+| | Token | Hex | Used for |
 |---|---|---|---|
 | ![](images/palette/green.svg) | `--success` | `#0f9d58` | Success |
-| ![](images/palette/red-700.svg) | `--danger-strong` | `#963221` | Danger, pressed |
-| ![](images/palette/red.svg) | `--danger` | `#c0402a` | Error, danger |
+| ![](images/palette/red-700.svg) | `--danger-strong` | `#963221` | Pressed danger button |
+| ![](images/palette/red.svg) | `--danger` | `#c0402a` | Errors, danger buttons |
 
 ### Grey
 
 | | Token | Hex | Used for |
 |---|---|---|---|
 | ![](images/palette/grey-800.svg) | `--text` | `#333333` | Text |
-| ![](images/palette/grey-600.svg) | `--text-muted`, `--control-off-edge` | `#666666` | Muted text, the edge of a control that is off |
-| ![](images/palette/grey-500.svg) | `--text-faint`, `--control-off` | `#999999` | Faint text |
-| ![](images/palette/grey-300.svg) | `--border`, `--text-disabled` | `#cccccc` | Borders and dividers |
-| ![](images/palette/grey-150.svg) | `--border-subtle` | `#efefef` | Subtle border |
-| ![](images/palette/grey-50.svg) | `--surface-sunken` | `#f8f8f8` | Sunken ground |
-| ![](images/palette/white.svg) | `--surface` | `#ffffff` | Surface |
+| ![](images/palette/grey-600.svg) | `--text-muted`, `--control-off-edge` | `#666666` | Muted text, the outline of a toggle that is off |
+| ![](images/palette/grey-500.svg) | `--text-faint`, `--control-off` | `#999999` | Faint text, a toggle that is off |
+| ![](images/palette/grey-300.svg) | `--border`, `--text-disabled` | `#cccccc` | Borders, dividers, disabled text |
+| ![](images/palette/grey-150.svg) | `--border-subtle` | `#efefef` | Subtle borders |
+| ![](images/palette/grey-50.svg) | `--surface-sunken` | `#f8f8f8` | Recessed backgrounds |
+| ![](images/palette/white.svg) | `--surface` | `#ffffff` | Backgrounds |
 
-## The three states
+## States
 
-| State | Token | Says |
+| State | Tokens | Meaning |
 |---|---|---|
-| **Hover** | `--state-hover` | Where the pointer is |
-| **Selected** | `--state-selected`, `--state-selected-solid` | What is chosen |
-| **Active** | `--state-active`, `--state-active-solid` | Something being passed through, about to change on release |
+| Hover | `--state-hover` | The pointer is over the element |
+| Selected | `--state-selected`, `--state-selected-solid` | The element has been chosen, e.g. a checked option in a dropdown |
+| Active | `--state-active`, `--state-active-solid` | The element is in a temporary state that changes when the action finishes, e.g. rows a drag is passing over |
 
-Selected is a settled choice: a ticked row in a dropdown. Active is a state the interface passes
-through, such as the run a drag is sweeping over before the pointer comes up. A rule that is merely
-standing is neither, it is information and takes the sky.
+Buttons do not have a selected state. On hover, a button's border and label change
+colour and its background stays the same.
 
-A button has no selected state. Its hover moves the outline and the label and leaves the ground where
-it is.
+## Accessibility
 
-## Colour that carries meaning
+- Colour should never be the only way a state is shown. A selected or active row
+  should also have a bar on its left edge, a checkbox should show a tick, and a
+  toggle should move its handle.
+- Two states should differ in lightness, not only in hue, so they can be told apart
+  by someone who cannot distinguish the colours.
+- Light colours (`--info`, `--secondary`) should not be used for text. Text should
+  use the text tokens, placed on a `-fill` background where a colour is needed.
+- A control drawn in a light colour should have an outline so it is visible against
+  a white page (`--info-edge`, `--control-off-edge`). Use an `inset` box-shadow for
+  the outline so the control does not change size when its state changes.
 
-**Never let colour be the only difference.** The state grounds sit close together on purpose, and
-they work only because something else carries the meaning: a bar down the left edge of a selected or
-active row, a ticked control, a thumb at the other end of a track. Remove the colour and the
-interface still says the same thing.
+If a token's value does not meet these rules, the value should be changed in
+`tokens.css` so the fix applies everywhere.
 
-**A light solid is not a text colour.** Text goes on the pale fills, which is what keeps it
-readable. The orange and the sky are grounds and marks.
+## Fonts
 
-**A pale control needs an edge.** A control drawn in the sky or a light grey cannot be found against
-a white page on its own, so it carries an edge in a colour that can: `--info-edge`,
-`--control-off-edge`. Draw the ring with `inset` so turning a control on moves nothing.
-
-**Two states must never differ in hue alone.** Change the lightness too, so a reader who cannot
-separate the hues still sees on and off.
-
-If a value cannot meet these, change it in `tokens.css` so everything moves together.
-
-## Type
-
-| Token | Face | Used for |
+| Token | Font | Used for |
 |---|---|---|
-| --font-family | The operating system's own interface face | Labels, descriptions, buttons, headings |
-| --font-family-mono | The system monospace | Identifiers |
+| `--font-family` | The operating system's default interface font | All text |
+| `--font-family-mono` | The operating system's default monospace font | Identifiers |
 
-Monospace marks a value someone might copy or transcribe: PSCIDs, DCCIDs, visit labels, barcodes,
-filenames and paths. Not field names, not counts, not anything read as a sentence.
+The monospace font should be used for values someone might copy or type out:
+PSCIDs, DCCIDs, visit labels, barcodes, file names and paths. It should not be used
+for field names, counts or sentences.
 
-## Where styles live
+## Where styles go
 
 | What | Where |
 |---|---|
 | Values shared by more than one component | `htdocs/css/tokens.css` |
-| A component's own appearance | A stylesheet beside it, imported by it |
-| A module's own layout | `modules/<module>/css/`, imported by the JSX |
-| Anything with a `:hover`, `:focus` or `:disabled` state | A stylesheet, never an inline style |
+| A component's own styling | A CSS file next to the component, imported by it |
+| A module's own layout | `modules/<module>/css/`, imported by the module's JSX |
+| Anything with a `:hover`, `:focus` or `:disabled` state | A CSS file, not an inline style |
 
-Inline styles cannot express states or media queries. Use them for values computed at runtime.
+Inline styles cannot express states or media queries, so they should only be used
+for values calculated at runtime.
 
 ## Bootstrap
 
-LORIS is built on Bootstrap 3, which has had no security patches since 2019. It stays, because
-removing it touches every module, but new components do not build on it. Give a new component its own
-appearance from tokens.
+LORIS uses Bootstrap 3, which stopped receiving security updates in 2019. Removing it
+would affect every module, so it remains for now, but new components should not
+depend on it and should take their styling from the tokens instead.
 
-Borrowing a bootstrap class and laying it out differently also puts you in a specificity fight:
-`.form-control` sets `display: block`, `.input-group` sets `display: table` and
-`.list-group-item.active` sets `z-index: 2`, each beating an equally specific rule of your own on
-source order. Qualify with the element, as in `button.my-trigger`, rather than reaching for
-`!important`.
+Reusing a Bootstrap class with a different layout leads to specificity conflicts.
+For example, `.form-control` sets `display: block`, `.input-group` sets
+`display: table` and `.list-group-item.active` sets `z-index: 2`, and each can
+override a rule of equal specificity depending on load order. Qualify the selector with
+the element (e.g. `button.my-trigger`) instead of using `!important`.
