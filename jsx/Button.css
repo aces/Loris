@@ -1,0 +1,87 @@
+/**
+ * Button styles. Values come from htdocs/css/tokens.css.
+ */
+
+.loris-button {
+    height: var(--control-height);
+    padding: 0 var(--space-lg);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    background: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.loris-button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.loris-button.primary {
+    background: var(--accent);
+    border-color: var(--accent-strong);
+    color: var(--surface);
+}
+
+/* Hover deepens the fill. A button has no selected state to be told apart from. */
+.loris-button.primary:hover:not(:disabled),
+.loris-button.primary:focus-visible {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+}
+
+/* Outlined rather than filled, so it does not claim a primary's weight. */
+.loris-button.secondary {
+    background: var(--field-bg);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* The outline and the label carry the state. The ground stays put, so the label
+   keeps the contrast it was chosen against. */
+.loris-button.secondary:hover:not(:disabled),
+.loris-button.secondary:focus-visible {
+    background: var(--state-hover);
+    border-color: var(--accent-strong);
+    color: var(--accent-strong);
+}
+
+/* Aimed at a marked run, so it takes the run's colour. Hover draws a ring rather
+   than moving the ground, which would break the link. */
+.loris-button.secondary.targeted,
+.loris-button.secondary.targeted:hover:not(:disabled),
+.loris-button.secondary.targeted:focus-visible {
+    background: var(--state-active);
+    border-color: var(--state-active-solid);
+    color: var(--text);
+}
+
+.loris-button.secondary.targeted:hover:not(:disabled),
+.loris-button.secondary.targeted:focus-visible {
+    box-shadow: 0 0 0 3px var(--state-active);
+}
+
+/* Available without competing with the action beside it. */
+.loris-button.quiet {
+    color: var(--accent);
+    padding: 0 var(--space-sm);
+}
+
+.loris-button.quiet:hover:not(:disabled),
+.loris-button.quiet:focus-visible {
+    color: var(--accent-strong);
+    text-decoration: underline;
+}
+
+.loris-button.danger {
+    color: var(--danger);
+}
+
+.loris-button.danger:hover:not(:disabled),
+.loris-button.danger:focus-visible {
+    color: var(--danger-strong);
+    text-decoration: underline;
+}

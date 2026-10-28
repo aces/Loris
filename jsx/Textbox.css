@@ -1,0 +1,165 @@
+/**
+ * Textbox styles. Values come from htdocs/css/tokens.css.
+ */
+
+.loris-textbox {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* The input draws its own field rather than borrowing .form-control. */
+.loris-textbox-input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    height: var(--control-height);
+    padding: var(--field-padding);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    color: var(--text);
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: var(--radius);
+    box-shadow: var(--field-shadow);
+}
+
+/* With a label, the outline draws the field and the input gives up its border and
+   shadow. Nothing cuts a shadow the way the legend cuts the border, so it would
+   draw a hairline across the label. */
+.loris-textbox:has(.loris-textbox-outline) .loris-textbox-input,
+.loris-textbox:has(.loris-textbox-outline) .loris-textbox-input:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.loris-textbox-input:focus {
+    outline: 0;
+    border-color: var(--field-border-focus);
+    box-shadow: var(--field-shadow-focus);
+}
+
+/* A labelled field focuses with the border and the label, no glow: a glow spreads
+   from the border the label sits on. Matched from the wrapper, since the outline
+   is drawn before the input. */
+.loris-textbox:has(.loris-textbox-input:focus) .loris-textbox-outline {
+    border-color: var(--field-border-focus);
+}
+
+.loris-textbox:has(.loris-textbox-input:focus) .loris-textbox-label.raised {
+    color: var(--accent);
+}
+
+.loris-textbox-input:disabled {
+    background: var(--surface-sunken);
+    cursor: not-allowed;
+}
+
+/* Room for whichever affordance sits inside the field. */
+.loris-textbox.searchable .loris-textbox-input {
+    padding-right: calc(var(--control-height) - var(--space-xs));
+}
+
+.loris-textbox-icon,
+.loris-textbox-clear {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: var(--control-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-faint);
+}
+
+.loris-textbox-icon {
+    pointer-events: none;
+}
+
+.loris-textbox-clear {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+
+.loris-textbox-clear:hover,
+.loris-textbox-clear:focus-visible {
+    color: var(--accent-strong);
+}
+
+/* Matches the select's label, so the two read as one control set in a toolbar. */
+.loris-textbox-label {
+    position: absolute;
+    left: var(--space-lg);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: top .12s ease, font-size .12s ease;
+    z-index: 1;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .loris-textbox-label {
+        transition: none;
+    }
+}
+
+/* Raised, it sits in the gap the legend leaves in the border, so it needs no
+   backdrop. Matches the select's label. */
+.loris-textbox-label.raised {
+    top: 0;
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text-muted);
+    background: none;
+    padding: 0 var(--space-xs);
+    left: var(--space-sm);
+    z-index: 1;
+}
+
+/* The border comes from a fieldset behind the control. Its legend reserves the
+   width of the label, leaving a real gap in the border. */
+.loris-textbox-outline {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0 var(--space-sm);
+    border: 1px solid var(--field-border);
+    border-radius: var(--radius);
+    pointer-events: none;
+    min-width: 0;
+}
+
+.loris-textbox-outline legend {
+    width: auto;
+    max-width: 100%;
+    padding: 0;
+    border: 0;
+
+    /* The cut straddles the border. A legend's box starts inside the fieldset, so
+       without this the top sliver shows as a hairline through the label. */
+    height: 4px;
+    margin: -2px 0 0;
+    visibility: hidden;
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    white-space: nowrap;
+}
+
+/* Nothing is raised, so the border closes up. */
+.loris-textbox-outline legend.closed {
+    max-width: 0;
+}
+
+.loris-textbox-outline legend span {
+    display: inline-block;
+    padding: 0 var(--space-xs);
+}
