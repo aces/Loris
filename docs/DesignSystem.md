@@ -18,25 +18,29 @@ hardcoded. If no existing token fits, a new one should be added to `tokens.css`.
 
 /* Prefer */
 .thing {
-    background: var(--accent-fill);
+    background: var(--primary-fill);
     border-radius: var(--radius);
     padding: var(--space-md);
 }
 ```
 
-Tokens are named for what they are used for (`--accent`, `--border`, `--text-muted`)
+Tokens are named for what they are used for (`--primary`, `--border`, `--text-muted`)
 rather than for their value, so changing a token's value restyles everything that
 uses it.
 
-Every colour has a base token, a `-fill` and a `-highlight`. A suffix on a colour token
-indicates which shade of the colour it uses:
+Every colour has the same five shades, named by suffix:
 
-| Suffix | Shade | Used for |
-|---|---|---|
-| none | The base colour | Borders, icons, filled buttons, text |
-| `-strong` | Darker | Pressed buttons |
-| `-fill` | Light tint | Backgrounds such as a selected row or a tag |
-| `-highlight` | Very light tint | Hover |
+| Suffix | Shade | Used for | Contrast |
+|---|---|---|---|
+| `-strong` | Darkest | Pressed states, text in that colour, a filled button with white text when the base is too light | At least 4.5:1 against white and against the colour's `-fill` |
+| none | The base colour | Navigation, icons, filled buttons | Varies, see below |
+| `-border` | Mid | Borders, outlines and chart marks | At least 3:1 against white and against the colour's `-fill` |
+| `-fill` | Light tint | Backgrounds such as a selected row or a tag | `--text` on it is at least 4.5:1 |
+| `-highlight` | Very light tint | Hover | `--text` on it is at least 4.5:1 |
+
+Since every colour has the same shades, any of them can be used where colours only
+need to tell things apart, such as the series of a chart. Chart marks should use the
+`-border` shade or darker.
 
 ## Colours
 
@@ -46,73 +50,88 @@ it. The colours below start from those values and add the shades needed by the
 interface. A colour that is not in these tables should be added here and to
 `tokens.css` before it is used.
 
-### Blue (accent)
+### Blue (primary)
+
+Used for actions, navigation and panel headings.
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/blue-900.svg) | `--accent-strong` | `#042d54` | Pressed |
-| ![](images/palette/blue-700.svg) | `--accent` | `#064785` | Navigation, panel headings |
-| ![](images/palette/blue-500.svg) | `--accent-border`, `--info-edge` | `#246eb6` | Borders, the focus ring, the outline of an info-coloured control |
-| ![](images/palette/blue-100.svg) | `--accent-fill` | `#e4ebf2` | Selected row |
-| ![](images/palette/blue-50.svg) | `--accent-highlight` | `#f3f6f9` | Hovered row |
+| ![](images/palette/primary-strong.svg) | `--primary-strong` | `#042d54` | Pressed buttons, text in blue |
+| ![](images/palette/primary.svg) | `--primary` | `#064785` | Navigation, panel headings, filled buttons |
+| ![](images/palette/primary-border.svg) | `--primary-border` | `#246eb6` | Borders, the focus ring, chart marks |
+| ![](images/palette/primary-fill.svg) | `--primary-fill` | `#e4ebf2` | Selected row |
+| ![](images/palette/primary-highlight.svg) | `--primary-highlight` | `#f3f6f9` | Hovered row |
 
 ### Light blue (info)
 
+Used for help text, notices and a toggle that is on.
+
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/sky.svg) | `--info` | `#a6d3f5` | Help text, notices, a toggle that is on |
-| ![](images/palette/sky-100.svg) | `--info-fill` | `#d4eafa` | Background for help text and notices |
-| ![](images/palette/sky-50.svg) | `--info-highlight` | `#ecf6fd` | Hover on help text and notices |
+| ![](images/palette/info-strong.svg) | `--info-strong` | `#345d7b` | Text in light blue, filled buttons |
+| ![](images/palette/info.svg) | `--info` | `#a6d3f5` | A toggle that is on |
+| ![](images/palette/info-border.svg) | `--info-border` | `#5f89a9` | Borders, the outline of a toggle that is on, chart marks |
+| ![](images/palette/info-fill.svg) | `--info-fill` | `#d4eafa` | Background for help text and notices |
+| ![](images/palette/info-highlight.svg) | `--info-highlight` | `#ecf6fd` | Hover |
 
 ### Orange (secondary)
 
-Orange marks an in-progress state, such as the rows a drag is currently selecting.
+Used for an in-progress state, such as the rows a drag is currently selecting, and for warnings.
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/orange.svg) | `--secondary`, `--warning` | `#e89a0c` | Active border, warnings |
-| ![](images/palette/orange-100.svg) | `--secondary-fill` | `#fcf3e2` | Active background |
-| ![](images/palette/orange-50.svg) | `--secondary-highlight` | `#fefaf2` | Hover on an active element |
+| ![](images/palette/secondary-strong.svg) | `--secondary-strong` | `#7b5002` | Text in orange, filled buttons |
+| ![](images/palette/secondary.svg) | `--secondary`, `--warning` | `#e89a0c` | Warnings |
+| ![](images/palette/secondary-border.svg) | `--secondary-border`, `--state-active-solid` | `#c07e04` | The edge of an active row, chart marks |
+| ![](images/palette/secondary-fill.svg) | `--secondary-fill` | `#fcf3e2` | Active background |
+| ![](images/palette/secondary-highlight.svg) | `--secondary-highlight` | `#fefaf2` | Hover |
 
 ### Green (success)
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/green.svg) | `--success` | `#0f9d58` | Success |
-| ![](images/palette/green-100.svg) | `--success-fill` | `#e5f4ed` | Success background |
-| ![](images/palette/green-50.svg) | `--success-highlight` | `#f3faf7` | Hover on a success message |
+| ![](images/palette/success-strong.svg) | `--success-strong` | `#036737` | Text in green, filled buttons |
+| ![](images/palette/success.svg) | `--success` | `#0f9d58` | Success icons |
+| ![](images/palette/success-border.svg) | `--success-border` | `#0f9d58` | Borders, chart marks |
+| ![](images/palette/success-fill.svg) | `--success-fill` | `#e5f4ed` | Success background |
+| ![](images/palette/success-highlight.svg) | `--success-highlight` | `#f3faf7` | Hover |
 
 ### Red (danger)
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/red-700.svg) | `--danger-strong` | `#963221` | Pressed danger button |
-| ![](images/palette/red.svg) | `--danger` | `#c0402a` | Errors, danger buttons |
-| ![](images/palette/red-100.svg) | `--danger-fill` | `#f8eae8` | Error background |
-| ![](images/palette/red-50.svg) | `--danger-highlight` | `#fcf6f4` | Hover on an error message |
+| ![](images/palette/danger-strong.svg) | `--danger-strong` | `#963221` | Pressed danger button, text in red |
+| ![](images/palette/danger.svg) | `--danger` | `#c0402a` | Errors, danger buttons |
+| ![](images/palette/danger-border.svg) | `--danger-border` | `#e25f48` | Borders, chart marks |
+| ![](images/palette/danger-fill.svg) | `--danger-fill` | `#f8eae8` | Error background |
+| ![](images/palette/danger-highlight.svg) | `--danger-highlight` | `#fcf6f4` | Hover |
 
 ### Purple (category)
 
-Purple has no fixed meaning, so it is used to tell categories apart where blue and
-orange already carry one.
+Purple has no fixed meaning, so it is used to tell categories apart where the other colours already carry one.
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/purple.svg) | `--category` | `#690096` | Categories |
-| ![](images/palette/purple-100.svg) | `--category-fill` | `#f2e9f6` | Category background |
-| ![](images/palette/purple-50.svg) | `--category-highlight` | `#f9f5fb` | Hover on a category |
+| ![](images/palette/category-strong.svg) | `--category-strong` | `#4a016b` | Pressed, text in purple |
+| ![](images/palette/category.svg) | `--category` | `#690096` | Categories, filled buttons |
+| ![](images/palette/category-border.svg) | `--category-border` | `#b562e9` | Borders, chart marks |
+| ![](images/palette/category-fill.svg) | `--category-fill` | `#f2e9f6` | Category background |
+| ![](images/palette/category-highlight.svg) | `--category-highlight` | `#f9f5fb` | Hover |
 
 ### Grey
 
+The greys are one scale, from text down to surfaces.
+
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/grey-800.svg) | `--text` | `#333333` | Text |
-| ![](images/palette/grey-600.svg) | `--text-muted`, `--control-off-edge` | `#666666` | Muted text, the outline of a toggle that is off |
-| ![](images/palette/grey-500.svg) | `--text-faint`, `--control-off` | `#999999` | Faint text, a toggle that is off |
-| ![](images/palette/grey-300.svg) | `--border`, `--text-disabled` | `#cccccc` | Borders, dividers, disabled text |
-| ![](images/palette/grey-150.svg) | `--border-subtle` | `#efefef` | Subtle borders |
-| ![](images/palette/grey-50.svg) | `--surface-sunken` | `#f8f8f8` | Recessed backgrounds |
-| ![](images/palette/white.svg) | `--surface` | `#ffffff` | Backgrounds |
+| ![](images/palette/text.svg) | `--text` | `#333333` | Text |
+| ![](images/palette/text-muted.svg) | `--text-muted`, `--control-off-edge` | `#666666` | Muted text, the outline of a toggle that is off |
+| ![](images/palette/text-faint.svg) | `--text-faint` | `#717171` | Faint text |
+| ![](images/palette/border-strong.svg) | `--border-strong`, `--field-border`, `--control-off` | `#8f8f8f` | Field borders, a toggle that is off |
+| ![](images/palette/border.svg) | `--border`, `--text-disabled` | `#cccccc` | Dividers, disabled text |
+| ![](images/palette/border-subtle.svg) | `--border-subtle` | `#efefef` | Subtle dividers |
+| ![](images/palette/surface-sunken.svg) | `--surface-sunken` | `#f8f8f8` | Recessed backgrounds |
+| ![](images/palette/surface.svg) | `--surface` | `#ffffff` | Backgrounds |
 
 ## States
 
@@ -127,15 +146,25 @@ colour and its background stays the same.
 
 ## Accessibility
 
+Every pairing in this document meets [WCAG 2.2](https://www.w3.org/TR/WCAG22/) level AA:
+4.5:1 for text and 3:1 for borders, icons and chart marks. New tokens should meet it
+too.
+
 - Colour should never be the only way a state is shown. A selected or active row
   should also have a bar on its left edge, a checkbox should show a tick, and a
   toggle should move its handle.
 - Two states should differ in lightness, not only in hue, so they can be told apart
   by someone who cannot distinguish the colours.
-- Light colours (`--info`, `--secondary`) should not be used for text. Text should
-  use the text tokens, placed on a `-fill` background where a colour is needed.
+- Text in a colour should use its `-strong` shade. The light blue, orange and green
+  bases are too light for text, and too light for white text on top of them, so a
+  filled button in one of those colours should use `-strong` as its background.
+- `--text-faint` meets 4.5:1 on `--surface` and `--surface-sunken` only. On a
+  coloured `-fill`, use `--text` or `--text-muted`.
+- A field or control should have a border that meets 3:1 against white
+  (`--field-border`, a `-border` shade). `--border` and `--border-subtle` are for
+  dividers, which do not need to.
 - A control drawn in a light colour should have an outline so it is visible against
-  a white page (`--info-edge`, `--control-off-edge`). Use an `inset` box-shadow for
+  a white page (`--info-border`, `--control-off-edge`). Use an `inset` box-shadow for
   the outline so the control does not change size when its state changes.
 
 If a token's value does not meet these rules, the value should be changed in

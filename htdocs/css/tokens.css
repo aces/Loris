@@ -9,78 +9,87 @@
 :root {
     /* ---- Colour -------------------------------------------------- */
 
-    /* Actions: solid, then pressed, border, fill and highlight of the same hue. */
-    --accent: #064785;
-    --accent-strong: #042d54;
-    --accent-border: #246eb6;
-    --accent-fill: #e4ebf2;
-    --accent-highlight: #f3f6f9;
+    /* Every colour has the same five shades: -strong for pressed states and
+       for text in that colour, the base, -border for edges and chart marks,
+       -fill for backgrounds and -highlight for hover. -strong and -border
+       meet WCAG AA against white and against the colour's own -fill. */
 
-    --secondary: #e89a0c;
-    --secondary-fill: #fcf3e2;
-    --secondary-highlight: #fefaf2;
+    /* Actions, navigation and panel headings */
+    --primary-strong: #042d54;
+    --primary: #064785;
+    --primary-border: #246eb6;
+    --primary-fill: #e4ebf2;
+    --primary-highlight: #f3f6f9;
 
     /* Help, notices, and rules that govern what the next action does */
+    --info-strong: #345d7b;
     --info: #a6d3f5;
+    --info-border: #5f89a9;
     --info-fill: #d4eafa;
     --info-highlight: #ecf6fd;
 
-    /* Edge for a control drawn in the info colour, which is too light to
-       define a shape against white on its own */
-    --info-edge: #246eb6;
+    /* A state being passed through, such as the rows a drag is selecting */
+    --secondary-strong: #7b5002;
+    --secondary: #e89a0c;
+    --secondary-border: #c07e04;
+    --secondary-fill: #fcf3e2;
+    --secondary-highlight: #fefaf2;
 
-    --warning: #e89a0c;
+    --warning: var(--secondary);
 
+    --success-strong: #036737;
     --success: #0f9d58;
+    --success-border: #0f9d58;
     --success-fill: #e5f4ed;
     --success-highlight: #f3faf7;
 
-    --danger: #c0402a;
     --danger-strong: #963221;
+    --danger: #c0402a;
+    --danger-border: #e25f48;
     --danger-fill: #f8eae8;
     --danger-highlight: #fcf6f4;
 
-    /* Telling categories apart, where blue and orange already carry a
+    /* Telling categories apart, where the other colours already carry a
        meaning */
+    --category-strong: #4a016b;
     --category: #690096;
+    --category-border: #b562e9;
     --category-fill: #f2e9f6;
     --category-highlight: #f9f5fb;
 
     /* States: hover is the pointer, selected is a settled choice, active is a
        state being passed through */
-    --state-hover: var(--accent-highlight);
-    --state-selected: var(--accent-fill);
-    --state-selected-solid: var(--accent);
+    --state-hover: var(--primary-highlight);
+    --state-selected: var(--primary-fill);
+    --state-selected-solid: var(--primary);
     --state-active: var(--secondary-fill);
-    --state-active-solid: var(--secondary);
+    --state-active-solid: var(--secondary-border);
 
-    /* Surfaces */
-    --surface: #fff;
-    --surface-sunken: #f8f8f8;
-
-    /* Borders */
-    --border: #ccc;
-    --border-subtle: #efefef;
-
-    /* Text */
+    /* Grey, one scale from text down to surfaces */
     --text: #333;
     --text-muted: #666;
-    --text-faint: #999;
+    --text-faint: #717171;
+    --border-strong: #8f8f8f;
+    --border: #ccc;
     --text-disabled: #ccc;
+    --border-subtle: #efefef;
+    --surface-sunken: #f8f8f8;
+    --surface: #fff;
 
     /* Controls. The off track and its edge differ from the on state in
        lightness, not only in hue. */
-    --control-off: #999;
-    --control-off-edge: #666;
+    --control-off: var(--border-strong);
+    --control-off-edge: var(--text-muted);
 
     /* Elevation */
     --shadow-overlay: 0 6px 18px rgba(0, 0, 0, .18);
     --shadow-raised: 0 1px 2px rgba(0, 0, 0, .3);
 
-    /* Fields, so a control outside a form matches one inside it */
+    /* Fields, so a control outside a form matches one inside it. The border
+       meets 3:1 against white so the field can be found. */
     --field-bg: var(--surface);
-    --field-border: var(--border);
-    --field-border-focus: var(--accent-border);
+    --field-border: var(--border-strong);
+    --field-border-focus: var(--primary-border);
     --field-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
 
     /* The focus glow on its own, for a field whose border something else
