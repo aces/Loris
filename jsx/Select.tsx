@@ -516,6 +516,7 @@ function Select(props: {
 
   return (
     <div ref={wrapper}
+      data-name={props.name}
       className={'loris-select'
         + (props.mono ? ' mono' : '')
         + (open ? ' open' : '')}>
