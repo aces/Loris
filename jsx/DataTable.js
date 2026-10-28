@@ -503,6 +503,15 @@ const DataTable = ({
     paddingRight: '15px',
     borderRight: '1px solid #ddd',
   };
+  const checkboxCellStyle = {
+    width: '40px',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+  };
+  const checkboxStyle = {
+    display: 'block',
+    margin: '0 auto',
+  };
 
   const visibleRowActions = (rowActions || []).filter(
     (action) => action.show !== false
@@ -565,20 +574,22 @@ const DataTable = ({
     });
   };
 
+  const rowActionsBar = hasRowActions && (
+    <span style={rowActionsStyle}>
+      {renderRowActions()}
+      {selectedRows.size > 0 && (
+        <span>
+          <strong>{selectedRows.size}</strong> {t('selected')}
+        </span>
+      )}
+    </span>
+  );
+
   const renderTableControls = (showActions) => (
     <div className="row">
       <div style={tableControlStyle}>
         <div style={{order: '1', padding: '5px 0'}}>
-          {showActions && hasRowActions && (
-            <span style={rowActionsStyle}>
-              {renderRowActions()}
-              {selectedRows.size > 0 && (
-                <span>
-                  <strong>{selectedRows.size}</strong> {t('selected')}
-                </span>
-              )}
-            </span>
-          )}
+          {showActions && rowActionsBar}
           {t('{{pageCount}} rows displayed of {{totalCount}}.', {
             pageCount: paginatedRows.length,
             totalCount: filteredRowIndexes.length,
@@ -640,9 +651,13 @@ const DataTable = ({
 
   return (
     <div style={{margin: '14px'}}>
-      {(hide.rowsPerPage !== true || hasRowActions) && (
+      {hide.rowsPerPage !== true ? (
         <div className="table-header">
           {renderTableControls(true)}
+        </div>
+      ) : hasRowActions && (
+        <div className="table-header">
+          <div style={{padding: '5px 0'}}>{rowActionsBar}</div>
         </div>
       )}
 
@@ -653,9 +668,10 @@ const DataTable = ({
         <thead>
           <tr className="info">
             {hasRowActions && (
-              <th style={{width: '40px', textAlign: 'center'}}>
+              <th style={checkboxCellStyle}>
                 <input
                   type="checkbox"
+                  style={checkboxStyle}
                   aria-label={t('Select all rows on this page')}
                   onChange={toggleAllPageRows}
                   checked={
@@ -704,9 +720,10 @@ const DataTable = ({
                 className={isSelected ? 'table-row-selected' : ''}
               >
                 {hasRowActions && (
-                  <td style={{textAlign: 'center'}}>
+                  <td style={checkboxCellStyle}>
                     <input
                       type="checkbox"
+                      style={checkboxStyle}
                       aria-label={t('Select row')}
                       checked={isSelected}
                       onChange={() => toggleRow(item.RowIdx)}

@@ -89,33 +89,21 @@ class BatteryManagerIndex extends Component {
    * @return {object} promise
    */
   postData(url, data, method) {
-    return new Promise((resolve, reject) => {
-      const dataClone = JSON.parse(JSON.stringify(data));
-      return fetch(url, {
-        credentials: 'same-origin',
-        method: method,
-        body: JSON.stringify(dataClone),
-      })
-        .then((response) => response.text()
-          .then((body) => {
-            body = JSON.parse(body);
-            if (response.ok) {
-              swal.fire(
-                this.props.t('Submission Successful!', {ns: 'loris'}),
-                body.message,
-                'success'
-              ).then((result) => {
-                if (result.value) {
-                  resolve(body.message);
-                }
-              });
-            } else {
-              swal.fire(body.error, '', 'error');
-              reject(body.error);
-            }
-          })
-          .catch((e) => reject(e)));
-    });
+    return fetch(url, {
+      credentials: 'same-origin',
+      method: method,
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json().then((body) => {
+        if (!response.ok) {
+          throw new Error(body.error);
+        }
+        return swal.fire(
+          this.props.t('Submission Successful!', {ns: 'loris'}),
+          body.message,
+          'success'
+        ).then(() => body.message);
+      }));
   }
 
   /**
@@ -273,34 +261,31 @@ class BatteryManagerIndex extends Component {
    * @return {object} promise
    */
   saveTest(test, request) {
-    return new Promise((resolve, reject) => {
-      Object.keys(test).forEach((key) => {
-        if (test[key] === '') {
-          test[key] = null;
-        }
-      });
-      this.checkDuplicate(test)
-        .then((test) => this.validateTest(test))
-        .then((test) => this.postData(
+    Object.keys(test).forEach((key) => {
+      if (test[key] === '') {
+        test[key] = null;
+      }
+    });
+    return this.checkDuplicate(test)
+      .then((activated) => activated || this.validateTest(test)
+        .then(() => this.postData(
           this.props.testEndpoint + (test.id || ''),
           test,
           request
         ))
-        .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests'))
-        .then(() => resolve())
-        .catch((e) => {
-          if (e.message !== 'Validation failed') {
-            const {t} = this.props;
-            swal.fire({
-              title: t('Error', {ns: 'loris'}),
-              text: e.message || t('An error occurred while saving the test.',
-                {ns: 'battery_manager'}),
-              icon: 'error',
-            });
-          }
-          reject(e);
-        });
-    });
+        .then(() => this.fetchData(this.props.testEndpoint, 'GET', 'tests')))
+      .catch((e) => {
+        if (!['Validation failed', 'Duplicate test'].includes(e.message)) {
+          const {t} = this.props;
+          swal.fire({
+            title: t('Error', {ns: 'loris'}),
+            text: e.message || t('An error occurred while saving the test.',
+              {ns: 'battery_manager'}),
+            icon: 'error',
+          });
+        }
+        throw e;
+      });
   }
 
   /**
@@ -574,63 +559,63 @@ class BatteryManagerIndex extends Component {
   }
 
   /**
-   * Checks whether the Test is a duplicate of an existing Test.
+   * Checks whether the Test is a duplicate of an existing Test. A duplicate
+   * of an inactive test can be saved by activating that test instead.
    *
    * @param {object} test
-   * @return {object} promise
+   * @return {object} promise resolving to true if the existing test was
+   *                  activated, or false if the Test is not a duplicate
    */
   checkDuplicate(test) {
-    return new Promise((resolve, reject) => {
-      const duplicate = this.findDuplicate(test, this.state.tests);
-      const {t} = this.props;
+    const duplicate = this.findDuplicate(test, this.state.tests);
+    const {t} = this.props;
 
-      if (duplicate) {
-        if (duplicate.active === 'N') {
-          const edit = test.id
-            ? t('This will deactivate the current test.',
-              {ns: 'battery_manager'})
-            : '';
-          swal.fire({
-            title: t('Test Duplicate', {ns: 'battery_manager'}),
-            text:
-              t(
-                'The information provided corresponds with a deactivated test' +
-                ' that already exists in the system.',
-                {ns: 'battery_manager'}
-              ) +
-              ' ' +
-              t(
-                'Would you to like activate that test?',
-                {ns: 'battery_manager'}
-              ) +
-              ' ' +
-              edit,
-            icon: 'warning',
-            confirmButtonText: t('Activate', {ns: 'battery_manager'}),
-            cancelButtonText: t('Cancel', {ns: 'loris'}),
-            showCancelButton: true,
-          }).then((result) => {
-            if (result.value) {
-              const changes = [{id: duplicate.id, active: 'Y'}];
-              if (test.id) {
-                changes.push({id: test.id, active: 'N'});
-              }
-              this.setActive(changes);
-              this.closeForm();
-            }
-          });
-        } else if (duplicate.active === 'Y') {
-          swal.fire({
-            title: t('Test Duplicate', {ns: 'battery_manager'}),
-            text: t('You cannot duplicate an active test',
-              {ns: 'battery_manager'}),
-            icon: 'error',
-          });
-        }
-        reject();
-      } else {
-        resolve(test);
+    if (!duplicate) {
+      return Promise.resolve(false);
+    }
+
+    if (duplicate.active === 'Y') {
+      swal.fire({
+        title: t('Test Duplicate', {ns: 'battery_manager'}),
+        text: t('You cannot duplicate an active test',
+          {ns: 'battery_manager'}),
+        icon: 'error',
+      });
+      return Promise.reject(new Error('Duplicate test'));
+    }
+
+    const edit = test.id
+      ? t('This will deactivate the current test.',
+        {ns: 'battery_manager'})
+      : '';
+    return swal.fire({
+      title: t('Test Duplicate', {ns: 'battery_manager'}),
+      text:
+        t(
+          'The information provided corresponds with a deactivated test' +
+          ' that already exists in the system.',
+          {ns: 'battery_manager'}
+        ) +
+        ' ' +
+        t(
+          'Would you to like activate that test?',
+          {ns: 'battery_manager'}
+        ) +
+        ' ' +
+        edit,
+      icon: 'warning',
+      confirmButtonText: t('Activate', {ns: 'battery_manager'}),
+      cancelButtonText: t('Cancel', {ns: 'loris'}),
+      showCancelButton: true,
+    }).then((result) => {
+      if (!result.value) {
+        throw new Error('Duplicate test');
       }
+      const changes = [{id: duplicate.id, active: 'Y'}];
+      if (test.id) {
+        changes.push({id: test.id, active: 'N'});
+      }
+      return this.setActive(changes).then(() => true);
     });
   }
 
