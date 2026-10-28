@@ -21,23 +21,23 @@
 }
 
 .loris-button.primary {
-    background: var(--accent);
-    border-color: var(--accent-strong);
+    background: var(--primary);
+    border-color: var(--primary-strong);
     color: var(--surface);
 }
 
 /* Hover deepens the fill. A button has no selected state to be told apart from. */
 .loris-button.primary:hover:not(:disabled),
 .loris-button.primary:focus-visible {
-    background: var(--accent-strong);
-    border-color: var(--accent-strong);
+    background: var(--primary-strong);
+    border-color: var(--primary-strong);
 }
 
 /* Outlined rather than filled, so it does not claim a primary's weight. */
 .loris-button.secondary {
     background: var(--field-bg);
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 /* The outline and the label carry the state. The ground stays put, so the label
@@ -45,8 +45,8 @@
 .loris-button.secondary:hover:not(:disabled),
 .loris-button.secondary:focus-visible {
     background: var(--state-hover);
-    border-color: var(--accent-strong);
-    color: var(--accent-strong);
+    border-color: var(--primary-strong);
+    color: var(--primary-strong);
 }
 
 /* Aimed at a marked run, so it takes the run's colour. Hover draws a ring rather
@@ -66,13 +66,13 @@
 
 /* Available without competing with the action beside it. */
 .loris-button.quiet {
-    color: var(--accent);
+    color: var(--primary);
     padding: 0 var(--space-sm);
 }
 
 .loris-button.quiet:hover:not(:disabled),
 .loris-button.quiet:focus-visible {
-    color: var(--accent-strong);
+    color: var(--primary-strong);
     text-decoration: underline;
 }
 

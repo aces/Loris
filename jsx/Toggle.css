@@ -61,7 +61,7 @@
    hue. */
 .loris-toggle.as-switch input:checked + .loris-toggle-track {
     background: var(--info);
-    box-shadow: inset 0 0 0 1px var(--info-edge);
+    box-shadow: inset 0 0 0 1px var(--info-border);
 }
 
 .loris-toggle.as-switch input:checked + .loris-toggle-track .loris-toggle-thumb {
@@ -69,7 +69,7 @@
 }
 
 .loris-toggle.as-switch input:focus-visible + .loris-toggle-track {
-    outline: 2px solid var(--accent-strong);
+    outline: 2px solid var(--primary-strong);
     outline-offset: 2px;
 }
 

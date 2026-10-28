@@ -49,7 +49,7 @@
 }
 
 .loris-textbox:has(.loris-textbox-input:focus) .loris-textbox-label.raised {
-    color: var(--accent);
+    color: var(--primary);
 }
 
 .loris-textbox-input:disabled {
@@ -88,7 +88,7 @@
 
 .loris-textbox-clear:hover,
 .loris-textbox-clear:focus-visible {
-    color: var(--accent-strong);
+    color: var(--primary-strong);
 }
 
 /* Matches the select's label, so the two read as one control set in a toolbar. */

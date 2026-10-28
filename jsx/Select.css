@@ -81,8 +81,8 @@
 /* A tag is a settled choice, so it takes the selected colour. */
 .loris-select-tag {
     background: var(--state-selected);
-    border: 1px solid var(--accent-border);
-    color: var(--accent-strong);
+    border: 1px solid var(--primary-border);
+    color: var(--primary-strong);
     border-radius: var(--radius-sm);
     padding: 1px var(--space-sm);
     white-space: nowrap;
@@ -150,7 +150,7 @@
 
 .loris-select:has(.loris-select-trigger:focus-visible) .loris-select-label.raised,
 .loris-select.open .loris-select-label.raised {
-    color: var(--accent);
+    color: var(--primary);
 }
 
 .loris-select-list {
@@ -209,7 +209,7 @@
 .loris-select-option.chosen {
     background: var(--state-selected);
     box-shadow: inset 2px 0 0 var(--state-selected-solid);
-    color: var(--accent-strong);
+    color: var(--primary-strong);
     font-weight: 600;
 }
 
@@ -280,7 +280,7 @@
 }
 
 .visit-inherit-badge {
-    color: var(--accent-strong);
+    color: var(--primary-strong);
 }
 
 /* The badge keeps its place on and off. On, it takes the information colour. */
