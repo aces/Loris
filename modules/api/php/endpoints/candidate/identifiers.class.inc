@@ -218,9 +218,6 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
     ): ResponseInterface {
         $data = json_decode((string) $request->getBody(), true);
 
-        error_log('Candidate identifiers POST body: ' . (string) $request->getBody());
-        error_log('Candidate identifiers POST decoded: ' . var_export($data, true));
-
         if (!isset($data['Identifier'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'There is no Identifier object in the POST data'
@@ -311,8 +308,7 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
     ): ResponseInterface {
         $data = json_decode((string) $request->getBody(), true);
 
-        if (
-            !isset($data['Identifier'])
+        if (!isset($data['Identifier'])
             || !is_array($data['Identifier'])
         ) {
             return new \LORIS\Http\Response\JSON\BadRequest(
@@ -322,13 +318,13 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $identifierData = $data['Identifier'];
 
-        if (
-            !isset($identifierData['CandidateIdentifierID'])
+        if (!isset($identifierData['CandidateIdentifierID'])
             || !isset($identifierData['CandidateIdentifierTypeID'])
             || !isset($identifierData['Value'])
         ) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'CandidateIdentifierID, CandidateIdentifierTypeID and Value are required'
+                'CandidateIdentifierID, CandidateIdentifierTypeID and Value'
+                . ' are required'
             );
         }
 
@@ -347,9 +343,7 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Prevent updating an identifier belonging to another candidate.
-        if (
-            $existingIdentifier->candidateID
-            !== (int) $this->_candidate->getID()
+        if ($existingIdentifier->candidateID !== (int) $this->_candidate->getID()
         ) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }
@@ -370,8 +364,7 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $user = $request->getAttribute('user');
 
-        if (
-            !$this->_canAccessIdentifierType($user, $existingIdentifier->type)
+        if (!$this->_canAccessIdentifierType($user, $existingIdentifier->type)
             || !$this->_canAccessIdentifierType($user, $identifierType)
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
