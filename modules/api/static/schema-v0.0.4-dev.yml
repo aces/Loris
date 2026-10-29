@@ -374,6 +374,53 @@ paths:
           description: Permission denied
         '404':
           description: Candidate or identifier not found
+    delete:
+      tags:
+        - Candidates
+      summary: Delete a candidate identifier
+      parameters:
+        - name: id
+          in: path
+          description: The candidate identifier. Either a PSCID or CandID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - Identifier
+              properties:
+                Identifier:
+                  type: object
+                  required:
+                    - CandidateIdentifierID
+                  properties:
+                    CandidateIdentifierID:
+                      type: integer
+                      minimum: 1
+                      description: ID of the existing identifier to delete
+      responses:
+        '200':
+          description: The candidate identifier was deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Invalid identifier data
+        '403':
+          description: Permission denied
+        '404':
+          description: Candidate or identifier not found
   '/candidates/{id}/{visit}':
     get:
       tags:

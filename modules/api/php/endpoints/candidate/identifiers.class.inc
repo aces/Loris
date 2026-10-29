@@ -63,7 +63,7 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return ['GET', 'POST', 'PUT'];
+        return ['GET', 'POST', 'PUT', 'DELETE'];
     }
 
     /**
@@ -102,6 +102,9 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         case 'PUT':
             return $this->_handlePUT($request);
+
+        case 'DELETE':
+            return $this->_handleDELETE($request);
 
         case 'OPTIONS':
             return (new \LORIS\Http\Response())
@@ -342,7 +345,6 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        // Prevent updating an identifier belonging to another candidate.
         if ($existingIdentifier->candidateID !== (int) $this->_candidate->getID()
         ) {
             return new \LORIS\Http\Response\JSON\NotFound();
@@ -394,6 +396,71 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
         )->toArray();
 
         return new \LORIS\Http\Response\JsonResponse($body);
+    }
+
+    /**
+     * Deletes an existing candidate identifier.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    private function _handleDELETE(
+        ServerRequestInterface $request
+    ): ResponseInterface {
+        $data = json_decode((string) $request->getBody(), true);
+
+        if (!isset($data['Identifier']['CandidateIdentifierID'])) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'CandidateIdentifierID is required'
+            );
+        }
+
+        $candidateIdentifierID = filter_var(
+            $data['Identifier']['CandidateIdentifierID'],
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
+
+        if ($candidateIdentifierID === false) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'CandidateIdentifierID must be a positive integer'
+            );
+        }
+
+        $database = $this->loris->getDatabaseConnection();
+
+        $controller = new \LORIS\CandidateIdentifierController(
+            $database
+        );
+
+        try {
+            $existingIdentifier = $controller->getCandidateIdentifierFromID(
+                $candidateIdentifierID
+            );
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
+
+        if (
+            $existingIdentifier->candidateID !== (int) $this->_candidate->getID()
+        ) {
+            return new \LORIS\Http\Response\JSON\NotFound();
+        }
+
+        $user = $request->getAttribute('user');
+
+        if (!$this->_canAccessIdentifierType($user, $existingIdentifier->type)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'You cannot delete an identifier of this type'
+            );
+        }
+
+        $controller->deleteCandidateIdentifier($candidateIdentifierID);
+
+        return new \LORIS\Http\Response\JsonResponse(
+            ['success' => true]
+        );
     }
 
     /**
