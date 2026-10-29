@@ -317,7 +317,7 @@ class Recording
                          pc.FilePath            as filepath
                        FROM
                          physiological_channel pc
-                       JOIN physiological_channel_type pct
+                       LEFT JOIN physiological_channel_type pct
                          USING (PhysiologicalChannelTypeID)
                        JOIN physiological_status_type pst
                          USING (PhysiologicalStatusTypeID)
