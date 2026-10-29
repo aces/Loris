@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {createContext, useContext, useEffect, useRef, useState}
+  from 'react';
 import {createRoot} from 'react-dom/client';
 import {Trans, useTranslation} from 'react-i18next';
 import i18n from 'I18nSetup';
@@ -60,7 +61,20 @@ type ConfigOptions = {
   scanTypes: ConfigOptionMap,
 };
 
-type CategoriesResponse = ConfigOptions & {
+type ImageOptions = {
+  imageOptions: string[],
+  imageUploadEnabled: boolean,
+  imageUploadError: string,
+};
+
+type ImageUploadState = ImageOptions & {
+  baseURL: string,
+  onUploaded: (path: string) => void,
+};
+
+const ImageUploadContext = createContext<ImageUploadState | null>(null);
+
+type CategoriesResponse = ConfigOptions & ImageOptions & {
   categories: ConfigCategory[],
 };
 
@@ -671,6 +685,127 @@ function MultiValueRow({
 }
 
 /**
+ * Select an existing image or upload an image for this draft setting.
+ *
+ * @param {RenderInputConfig} config Render config
+ * @return {JSX}
+ */
+function ImageInput(config: RenderInputConfig): React.ReactElement {
+  const images = useContext(ImageUploadContext);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const currentChange = useRef(config.onChange);
+  currentChange.current = config.onChange;
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState('');
+  if (images === null) {
+    throw new Error('Configuration image options are unavailable');
+  }
+  const value = String(config.value ?? '');
+  const options = Object.fromEntries(images.imageOptions.map((path) => [
+    path === `/${value}` ? value : path, path,
+  ]));
+  if (value && !options[value]) {
+    options[value] = `${value} (current)`;
+  }
+  const uploadDisabled = config.disabled || !images.imageUploadEnabled
+    || uploading;
+
+  /** Upload the file without saving the setting's draft value. */
+  const upload = async () => {
+    if (file === null) {
+      setMessage(i18n.t('Choose an image to upload.', {ns: 'configuration'}));
+      return;
+    }
+    const body = new FormData();
+    body.append('file', file);
+    setUploading(true);
+    setMessage('');
+    try {
+      const response = await lorisFetch(
+        `${images.baseURL}/configuration/upload`, {method: 'POST', body}
+      );
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error);
+      }
+      const unchanged = fileInput.current !== null
+        && currentChange.current === config.onChange;
+      images.onUploaded(result.path);
+      if (unchanged) {
+        config.onChange(result.path);
+      }
+      setFile(null);
+      if (fileInput.current) {
+        fileInput.current.value = '';
+      }
+      setMessage(unchanged ? i18n.t(
+        'Image uploaded. Submit the form to save this selection.',
+        {ns: 'configuration'}
+      ) : i18n.t(
+        'Image uploaded. Select it from the list and submit to save.',
+        {ns: 'configuration'}
+      ));
+    } catch (error) {
+      setMessage(String(error));
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="configuration-image-input">
+      <SelectElement
+        autoSelect={false}
+        disabled={config.disabled}
+        label={config.label}
+        name={config.name}
+        noMargins={config.noMargins}
+        onUserInput={(_name: string, path: string) => config.onChange(path)}
+        options={options}
+        value={value}
+      />
+      <div className={config.noMargins ? '' : 'row'}>
+        <div className={config.noMargins ? '' : 'col-sm-offset-3 col-sm-9'}>
+          <div className="input-group configuration-image-upload">
+            <input
+              accept="image/gif,image/jpeg,image/png,image/webp"
+              aria-label={i18n.t(
+                'Choose image to upload', {ns: 'configuration'}
+              )}
+              className="form-control configuration-image-file"
+              disabled={uploadDisabled}
+              onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+              ref={fileInput}
+              type="file"
+            />
+            <span className="input-group-btn">
+              <button
+                className="btn btn-default configuration-image-upload-button"
+                disabled={uploadDisabled}
+                onClick={upload}
+                type="button"
+              >
+                {i18n.t('Upload image', {ns: 'configuration'})}
+              </button>
+            </span>
+          </div>
+          <p className="help-block" role="status">
+            {message || (images.imageUploadEnabled
+              ? i18n.t('Use a filename like partner_logo_name.png.',
+                {ns: 'configuration'})
+              : images.imageUploadError || i18n.t(
+                'The configuration upload directory is not writable.',
+                {ns: 'configuration'}
+              ))}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Render the proper form element for a config data type.
  *
  * @param {RenderInputConfig} config Render config
@@ -680,6 +815,8 @@ function renderInput(config: RenderInputConfig): React.ReactElement {
   const value = String(config.value ?? '');
 
   switch (config.dataType) {
+  case 'image':
+    return <ImageInput {...config} />;
   case 'boolean':
     return (
       <RadioElement
@@ -824,6 +961,11 @@ function ConfigurationIndex(props: BaseURLProps): React.ReactElement {
     scanTypes: {},
   });
   const [reloadKey, setReloadKey] = useState(0);
+  const [images, setImages] = useState<ImageOptions>({
+    imageOptions: [],
+    imageUploadEnabled: false,
+    imageUploadError: '',
+  });
 
   useEffect(() => {
     lorisFetch(`${props.baseURL}/configuration/categories`, {
@@ -835,6 +977,11 @@ function ConfigurationIndex(props: BaseURLProps): React.ReactElement {
       return resp.json() as Promise<CategoriesResponse>;
     }).then((data) => {
       setCategories(data.categories);
+      setImages({
+        imageOptions: data.imageOptions,
+        imageUploadEnabled: data.imageUploadEnabled,
+        imageUploadError: data.imageUploadError,
+      });
       setOptions({
         dateFormat: data.dateFormat,
         instruments: data.instruments,
@@ -869,6 +1016,16 @@ function ConfigurationIndex(props: BaseURLProps): React.ReactElement {
     });
   }, [activeCategory, props.baseURL, reloadKey]);
 
+  /**
+   * Make a new upload available to every image selector.
+   *
+   * @param {string} path Public image path
+   */
+  const addImageOption = (path: string) => setImages((current) => ({
+    ...current,
+    imageOptions: [...new Set([...current.imageOptions, path])],
+  }));
+
   return (
     <div>
       <IntroText baseURL={props.baseURL} />
@@ -878,12 +1035,18 @@ function ConfigurationIndex(props: BaseURLProps): React.ReactElement {
           categories={categories}
           setActive={setActiveCategory}
         />
-        <CategoryDisplay
-          baseURL={props.baseURL}
-          items={categoryItems}
-          options={options}
-          reloadCategory={() => setReloadKey((current) => current + 1)}
-        />
+        <ImageUploadContext.Provider value={{
+          ...images,
+          baseURL: props.baseURL,
+          onUploaded: addImageOption,
+        }}>
+          <CategoryDisplay
+            baseURL={props.baseURL}
+            items={categoryItems}
+            options={options}
+            reloadCategory={() => setReloadKey((current) => current + 1)}
+          />
+        </ImageUploadContext.Provider>
       </div>
     </div>
   );

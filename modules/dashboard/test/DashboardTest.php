@@ -320,11 +320,6 @@ class DashboardTest extends LorisIntegrationTest
             "conflicts_unresolved",
             ['TestName' => 'TestTestTest']
         );
-        $this->DB->update(
-            "Config",
-            ["Value" => null],
-            ["ConfigID" => 48]
-        );
         $user_id = $this->DB->pselectOne(
             "SELECT ID FROM users WHERE UserID=:test_user_id",
             ["test_user_id" => 'testUser1']
