@@ -350,6 +350,21 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
+        if ($existingIdentifier->type->name === 'PSCID') {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'PSCID identifiers cannot be edited'
+            );
+        }
+
+        if (
+            (int) $identifierData['CandidateIdentifierTypeID']
+            !== $existingIdentifier->type->candidateIdentifierTypeID
+        ) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'CandidateIdentifierTypeID cannot be changed'
+            );
+        }
+
         $typeController = new \LORIS\IdentifierTypeController(
             $database
         );
@@ -456,13 +471,13 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        $controller->deleteCandidateIdentifier($candidateIdentifierID);
-
         if ($existingIdentifier->type->isRequired) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Required identifiers cannot be deleted'
             );
         }
+
+        $controller->deleteCandidateIdentifier($candidateIdentifierID);
 
         return new \LORIS\Http\Response\JsonResponse(
             ['success' => true]
