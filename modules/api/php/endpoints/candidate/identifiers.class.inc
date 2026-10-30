@@ -458,6 +458,12 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $controller->deleteCandidateIdentifier($candidateIdentifierID);
 
+        if ($existingIdentifier->type->isRequired) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'Required identifiers cannot be deleted'
+            );
+        }
+
         return new \LORIS\Http\Response\JsonResponse(
             ['success' => true]
         );
