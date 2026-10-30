@@ -100,6 +100,25 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Delegate to sub-endpoints
+        if ($pathparts[0] === 'identifiers') {
+            array_shift($pathparts);
+
+            $newrequest = $request->withAttribute(
+                'pathparts',
+                $pathparts
+            );
+
+            $handler = new Identifiers(
+                $this->loris,
+                $this->_candidate
+            );
+
+            return $handler->process(
+                $newrequest,
+                $handler
+            );
+        }
+
         $visit_label = urldecode(array_shift($pathparts));
         $newrequest  = $request
             ->withAttribute('pathparts', $pathparts);
