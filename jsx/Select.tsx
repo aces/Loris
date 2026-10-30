@@ -49,6 +49,17 @@ type OptionGroup = {
  * @param {boolean|undefined} props.mono - Sets the options in the monospace, for
  *                                         identifiers
  * @param {string|undefined} props.name - Name given to the checkbox inputs
+ * @param {string|undefined} props.appearance - "field" (the default), or
+ *                                              "button" for a quiet button
+ *                                              naming the label and the
+ *                                              selection, for toolbars
+ * @param {React.ReactNode|undefined} props.icon - Shown before the label in the
+ *                                                 button appearance
+ * @param {boolean|undefined} props.clearable - Show a control inside the field
+ *                                             that clears it once it holds a
+ *                                             selection
+ * @param {string|undefined} props.clearLabel - Accessible name for the clear
+ *                                              control
  * @returns {React.ReactElement} - The dropdown
  */
 function Select(props: {
@@ -71,6 +82,10 @@ function Select(props: {
     multiple?: boolean,
     mono?: boolean,
     name?: string,
+    clearable?: boolean,
+    clearLabel?: string,
+    appearance?: 'field' | 'button',
+    icon?: React.ReactNode,
 }): React.ReactElement {
   const [open, setOpen] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('');
@@ -514,12 +529,35 @@ function Select(props: {
     </div>;
   }
 
+  const canClear = props.clearable && !props.disabled && selected.size > 0;
+  if (props.appearance === 'button') {
+    return (
+      <div ref={wrapper}
+        className={'loris-select as-button' + (open ? ' open' : '')}>
+        <button type="button"
+          className="loris-button quiet loris-select-button"
+          disabled={props.disabled}
+          aria-expanded={open}
+          aria-haspopup="true"
+          onClick={() => setOpen(!open)}>
+          {props.icon}
+          {props.label ? <span>{props.label}</span> : null}
+          <span className="loris-select-button-value">
+            {renderSelection()}
+          </span>
+          <span className="caret" />
+        </button>
+        {panel}
+      </div>
+    );
+  }
   return (
     <div ref={wrapper}
       data-name={props.name}
       className={'loris-select'
         + (props.mono ? ' mono' : '')
-        + (open ? ' open' : '')}>
+        + (open ? ' open' : '')
+        + (canClear ? ' has-clear' : '')}>
       {props.label ?
         <fieldset className="loris-select-outline" aria-hidden="true">
           <legend className={selected.size > 0 || open ? '' : 'closed'}>
@@ -547,6 +585,15 @@ function Select(props: {
           <span className="caret" />
         </span>
       </button>
+      {canClear ?
+        <button type="button"
+          className="loris-field-clear"
+          aria-label={props.clearLabel || 'Clear'}
+          title={props.clearLabel || 'Clear'}
+          onClick={() => props.onChange([])}>
+          ×
+        </button> :
+        null}
       {panel}
     </div>
   );

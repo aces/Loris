@@ -378,3 +378,66 @@
     font-family: var(--font-family);
     font-size: var(--font-size);
 }
+
+/* The clear control sits inside the field, before the caret. It is a sibling
+   of the trigger rather than inside it, since a button cannot hold a button. */
+.loris-field-clear {
+    position: absolute;
+    top: 50%;
+    right: 22px;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-top: -12px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--text-muted);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.loris-field-clear:hover {
+    background: var(--state-hover);
+    color: var(--text);
+}
+
+/* Room left of the caret for the clear control, so the selection never runs
+   under it. */
+.loris-select.has-clear .loris-select-indicators {
+    padding-left: 28px;
+}
+
+/* The button appearance: a quiet button for a toolbar, naming the label and
+   the selection, opening the same panel. */
+.loris-select.as-button {
+    display: inline-flex;
+}
+
+.loris-select-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    white-space: nowrap;
+}
+
+.loris-select-button-value {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.loris-select-button-value .loris-select-names,
+.loris-select-button-value .loris-select-count {
+    color: inherit;
+}
+
+.loris-select.as-button .loris-select-panel {
+    right: 0;
+    left: auto;
+    min-width: 220px;
+}

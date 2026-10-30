@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import InputLabel from 'jsx/form/InputLabel';
 import Select from 'jsx/Select';
 import Textbox from 'jsx/Textbox';
+import DateRange from 'jsx/DateRange';
 import {withTranslation} from 'react-i18next';
 
 /**
@@ -1775,48 +1776,73 @@ class DateRangeElementBase extends Component {
             fullWidth={this.props.labelPlacementTop}
           />
         )}
-        <div className={wrapperClass}>
-          <div style={{display: 'flex', gap: '8px'}}>
-            <div style={{flex: 1}}>
-              <label htmlFor={minID}>
-                {minLabel}
-              </label>
-              <input
-                type={inputType}
-                className="form-control"
-                name={`${this.props.name}Min`}
-                data-range-bound="min"
-                id={minID}
-                min={minFullDate}
-                max={maxFullDate}
-                value={value.min || ''}
-                placeholder={minLabel}
-                required={this.props.required}
-                disabled={this.props.disabled}
-                onChange={this.handleChange}
-              />
-            </div>
-            <div style={{flex: 1}}>
-              <label htmlFor={maxID}>
-                {maxLabel}
-              </label>
-              <input
-                type={inputType}
-                className="form-control"
-                name={`${this.props.name}Max`}
-                data-range-bound="max"
-                id={maxID}
-                min={minFullDate}
-                max={maxFullDate}
-                value={value.max || ''}
-                placeholder={maxLabel}
-                required={this.props.required}
-                disabled={this.props.disabled}
-                onChange={this.handleChange}
-              />
+        {inputType === 'date' && !this.props.required ? (
+          <div className={wrapperClass}>
+            {this.props.labelPlacementTop && this.props.label && (
+              <label>{this.props.label}</label>
+            )}
+            <DateRange
+              name={this.props.name}
+              value={value}
+              minYear={Number(this.props.minYear) || undefined}
+              maxYear={Number(this.props.maxYear) || undefined}
+              placeholder={this.props.t('Any date', {ns: 'loris'})}
+              fromLabel={minRangeLabel}
+              toLabel={maxRangeLabel}
+              clearLabel={this.props.t('Clear', {ns: 'loris'})}
+              doneLabel={this.props.t('Done', {ns: 'loris'})}
+              previousLabel={this.props.t('Previous month', {ns: 'loris'})}
+              nextLabel={this.props.t('Next month', {ns: 'loris'})}
+              disabled={this.props.disabled}
+              onChange={(range) => this.props.onUserInput(
+                this.props.name, range
+              )}
+            />
+          </div>
+        ) : (
+          <div className={wrapperClass}>
+            <div style={{display: 'flex', gap: '8px'}}>
+              <div style={{flex: 1}}>
+                <label htmlFor={minID}>
+                  {minLabel}
+                </label>
+                <input
+                  type={inputType}
+                  className="form-control"
+                  name={`${this.props.name}Min`}
+                  data-range-bound="min"
+                  id={minID}
+                  min={minFullDate}
+                  max={maxFullDate}
+                  value={value.min || ''}
+                  placeholder={minLabel}
+                  required={this.props.required}
+                  disabled={this.props.disabled}
+                  onChange={this.handleChange}
+                />
+              </div>
+              <div style={{flex: 1}}>
+                <label htmlFor={maxID}>
+                  {maxLabel}
+                </label>
+                <input
+                  type={inputType}
+                  className="form-control"
+                  name={`${this.props.name}Max`}
+                  data-range-bound="max"
+                  id={maxID}
+                  min={minFullDate}
+                  max={maxFullDate}
+                  value={value.max || ''}
+                  placeholder={maxLabel}
+                  required={this.props.required}
+                  disabled={this.props.disabled}
+                  onChange={this.handleChange}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }

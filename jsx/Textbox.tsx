@@ -14,6 +14,9 @@ import './Textbox.css';
  * @param {string|undefined} props.label - Names the control, and rises onto the
  *                                         top edge once it holds text
  * @param {boolean|undefined} props.search - Show the search affordances
+ * @param {boolean|undefined} props.clearable - Show the clear control once the
+ *                                             input holds text, without the
+ *                                             magnifier
  * @param {string|undefined} props.placeholder - Placeholder for the input
  * @param {string|undefined} props.clearLabel - Accessible name for the clear control
  * @param {boolean|undefined} props.disabled - Disables the input
@@ -29,6 +32,7 @@ function Textbox(props: {
     onChange: (value: string) => void,
     label?: string,
     search?: boolean,
+    clearable?: boolean,
     placeholder?: string,
     clearLabel?: string,
     disabled?: boolean,
@@ -41,7 +45,16 @@ function Textbox(props: {
   const [focused, setFocused] = useState<boolean>(false);
   const raised = props.value !== '' || focused;
   let affordance = null;
-  if (props.search) {
+  if (props.clearable && !props.search && props.value !== '') {
+    affordance =
+      <button type="button"
+        className="loris-textbox-clear"
+        disabled={props.disabled}
+        aria-label={props.clearLabel || 'Clear'}
+        onClick={() => props.onChange('')}>
+        <span className="glyphicon glyphicon-remove" aria-hidden="true" />
+      </button>;
+  } else if (props.search) {
     affordance = props.value === '' ?
       <span className="loris-textbox-icon" aria-hidden="true">
         <span className="glyphicon glyphicon-search" />
@@ -55,7 +68,8 @@ function Textbox(props: {
       </button>;
   }
   return (
-    <div className={'loris-textbox' + (props.search ? ' searchable' : '')}>
+    <div className={'loris-textbox'
+      + (props.search || affordance ? ' searchable' : '')}>
       {props.label ?
         <fieldset className="loris-textbox-outline" aria-hidden="true">
           <legend className={raised ? '' : 'closed'}>
