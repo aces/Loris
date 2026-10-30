@@ -196,6 +196,16 @@ class QueryEngine extends SQLQueryEngine
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Dictionary\DictionaryItem[]
+     */
+    public function getDataAvailabilityItems() : iterable
+    {
+        return [];
+    }
+
+    /**
      * Get list of specimen types from the database
      *
      * @return string[] Array of specimen type labels
