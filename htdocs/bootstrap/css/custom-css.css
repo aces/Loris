@@ -260,6 +260,10 @@ table th {
     font-weight: bold;
 }
 
+.table-row-selected {
+    background-color: rgb(255 165 0 / 10%) !important;
+}
+
 /*
  *	CSS for the footer
  */
