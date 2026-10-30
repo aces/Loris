@@ -1,0 +1,1054 @@
+/**
+ * Record table styles. Values come from htdocs/css/tokens.css. Three text
+ * sizes: the title, the body and the small print.
+ */
+
+.rt-page {
+    margin: var(--space-xl) 0;
+    color: var(--text);
+    font-size: var(--font-size);
+}
+
+/* The box holds the drawer beside the table. The drawer grows with its
+   fields and the page scrolls, so nothing scrolls inside it. */
+
+.rt {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--font-size);
+}
+
+.rt button:focus-visible {
+    outline: 2px solid var(--field-border-focus);
+    outline-offset: 2px;
+}
+
+.rt-icon {
+    width: 1.1em;
+    text-align: center;
+}
+
+.rt .loris-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    white-space: nowrap;
+}
+
+.rt-badge {
+    min-width: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--primary);
+    color: var(--surface);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+/* The table's name. */
+
+.rt-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.rt-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-xl);
+}
+
+.rt-tab {
+    display: inline-flex;
+    align-items: center;
+    height: 47px;
+    padding: 0;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.rt-tab:hover {
+    color: var(--text);
+}
+
+.rt-tab-on,
+.rt-tab-on:hover {
+    border-bottom-color: var(--primary);
+    color: var(--primary);
+}
+
+.rt-tab-label {
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.rt-tab-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-left: 2px;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+}
+
+.rt-tab-remove:hover {
+    background: var(--state-hover);
+    color: var(--text);
+}
+
+.rt-actions {
+    display: flex;
+    gap: var(--space-md);
+    margin-left: auto;
+}
+
+.rt-menu-anchor {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.rt-menu {
+    position: absolute;
+    top: calc(100% + var(--space-xs));
+    right: 0;
+    z-index: 1002;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-width: 240px;
+    padding: var(--space-md) var(--space-lg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-overlay);
+}
+
+.rt-menu-start {
+    right: auto;
+    left: 0;
+}
+
+.rt-menu-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-xs);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.rt-drawer {
+    flex: 0 0 280px;
+    border-right: 1px solid var(--border);
+    border-radius: var(--radius) 0 0 var(--radius);
+    background: var(--surface-sunken);
+}
+
+/* The drawer's head and the toolbar share one height and one rule, so the
+   two columns start on one line. */
+
+.rt-drawer-head {
+    box-sizing: border-box;
+    min-height: 48px;
+    border-bottom: 1px solid var(--border);
+}
+
+.rt-toolbar {
+    box-sizing: border-box;
+    min-height: 56px;
+    border-bottom: 1px solid var(--border);
+}
+
+.rt-drawer-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 0 var(--space-md) 0 var(--space-xl);
+}
+
+.rt-drawer-title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin: 0 auto 0 0;
+    font-size: var(--font-size);
+    font-weight: 600;
+}
+
+.rt-drawer-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    padding: var(--space-xl);
+}
+
+.rt-drawer-field {
+    display: flex;
+}
+
+.rt-drawer-field > * {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.rt-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* One toolbar: the table's name and views on the left, search and display in
+   the middle, output and creation at the end. */
+
+.rt-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md) var(--space-xl);
+    padding: var(--space-sm) var(--space-xl);
+}
+
+.rt-search {
+    flex: 0 1 300px;
+    min-width: 200px;
+}
+
+/* Each group of controls is set apart by a rule: what is shown, then what
+   is taken away. */
+
+.rt-toolbar-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md);
+    padding-left: var(--space-xl);
+    border-left: 1px solid var(--border);
+}
+
+.rt-search + .rt-toolbar-group {
+    margin-left: auto;
+}
+
+.rt-hint {
+    max-width: 240px;
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.rt-table thead th.rt-drop {
+    box-shadow: inset 2px 0 0 var(--primary);
+}
+
+.rt-table thead th[draggable] {
+    cursor: grab;
+}
+
+/* Selection: one bar, with what is selected and what can be done to it. */
+
+.rt-selection {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm) var(--space-xl);
+    border-bottom: 1px solid var(--primary-border);
+    background: var(--state-selected);
+}
+
+.rt-selected-count {
+    margin-right: var(--space-sm);
+    color: var(--primary-strong);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.rt-selection-end {
+    display: flex;
+    gap: var(--space-xs);
+    margin-left: auto;
+}
+
+/* Table */
+
+.rt-scroll {
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.rt-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.rt-table th,
+.rt-table td {
+    height: 44px;
+    padding: 0 var(--space-xl);
+    border-bottom: 1px solid var(--border-subtle);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.rt-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 48px;
+    padding: 0 var(--space-md);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.rt-table tbody tr:hover {
+    background: var(--state-hover);
+}
+
+.rt-table tbody tr.rt-selected {
+    background: var(--state-selected);
+}
+
+.rt-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: 32px;
+    padding: 0 var(--space-md);
+    border: none;
+    border-radius: var(--radius);
+    background: none;
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.rt-sort:hover {
+    background: var(--state-hover);
+}
+
+.rt-number .rt-sort {
+    flex-direction: row-reverse;
+}
+
+.rt-sort-icon {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    opacity: 0;
+    transition: transform .15s, opacity .15s;
+}
+
+.rt-sort:hover .rt-sort-icon,
+.rt-sort:focus-visible .rt-sort-icon,
+.rt-sorted .rt-sort-icon {
+    opacity: 1;
+}
+
+.rt-sorted .rt-sort-icon {
+    color: var(--primary);
+}
+
+.rt-sort-down {
+    transform: rotate(180deg);
+}
+
+.rt-sort-order {
+    min-width: 16px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: var(--primary-fill);
+    color: var(--primary);
+    font-size: var(--font-size-sm);
+    line-height: 16px;
+}
+
+.rt-number {
+    text-align: right;
+}
+
+.rt-table .rt-check-cell {
+    width: 40px;
+    padding: 0 0 0 var(--space-xl);
+}
+
+.rt-check-cell input,
+.rt-card-title input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--primary);
+}
+
+.rt-group-row td {
+    height: 36px;
+    padding: 0 var(--space-md);
+    background: var(--surface-sunken);
+}
+
+.rt-group-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    width: 100%;
+    min-height: 32px;
+    padding: 0 var(--space-sm);
+    border: none;
+    background: none;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+
+.rt-caret {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    transition: transform .15s;
+}
+
+.rt-caret-closed {
+    transform: rotate(-90deg);
+}
+
+.rt-group-count {
+    padding: 0 var(--space-sm);
+    border-radius: 9px;
+    background: var(--border-subtle);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: normal;
+    font-variant-numeric: tabular-nums;
+}
+
+.rt-empty {
+    padding: 48px var(--space-xl);
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* Cards */
+
+.rt-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-xl);
+    padding: var(--space-xl);
+    background: var(--surface-sunken);
+}
+
+.rt-card-group {
+    grid-column: 1 / -1;
+}
+
+.rt-card {
+    padding: var(--space-xl);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.rt-card.rt-selected {
+    border-color: var(--primary-border);
+    background: var(--state-selected);
+}
+
+.rt-card-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+    font-weight: 600;
+}
+
+.rt-card-fields {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-xs) var(--space-lg);
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-variant-numeric: tabular-nums;
+}
+
+.rt-card-fields dt {
+    color: var(--text-muted);
+    font-weight: normal;
+}
+
+.rt-card-fields dd {
+    margin: 0;
+}
+
+/* Footer: Material's pagination row. */
+
+.rt-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    min-height: 52px;
+    padding: var(--space-xs) var(--space-md) var(--space-xs) var(--space-xl);
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-variant-numeric: tabular-nums;
+}
+
+.rt-footer > .rt-muted {
+    margin-right: auto;
+}
+
+.rt-pagesize {
+    width: 80px;
+}
+
+.rt-range {
+    margin: 0 var(--space-lg);
+    color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-sort-icon,
+.rt-caret {
+        transition: none;
+    }
+}
+
+.rt-selection-note {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.rt-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Column bands: a header over the columns that share a group. */
+
+.rt-table thead tr.rt-band-row th {
+    height: 32px;
+    padding: 0 var(--space-xl);
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--surface-sunken);
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-align: left;
+}
+
+.rt-table thead tr.rt-band-row th.rt-band:not(:empty) {
+    border-left: 1px solid var(--border);
+}
+
+.rt-table thead tr.rt-under-band th {
+    top: 32px;
+}
+
+/* A column held in place while the table scrolls sideways. */
+
+.rt-table .rt-sticky {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--surface);
+    box-shadow: inset -1px 0 0 var(--border-subtle);
+}
+
+.rt-table thead .rt-sticky {
+    z-index: 2;
+}
+
+.rt-table tbody tr:hover .rt-sticky {
+    background: var(--state-hover);
+}
+
+.rt-table tbody tr.rt-selected .rt-sticky {
+    background: var(--state-selected);
+}
+
+/* A record's own actions, in the last column, held at the right edge. */
+
+.rt-table .rt-actions-cell {
+    position: sticky;
+    right: 0;
+    width: 1%;
+    padding: 0 var(--space-md);
+    background: var(--surface);
+    box-shadow: inset 1px 0 0 var(--border-subtle);
+    text-align: right;
+}
+
+.rt-table tbody tr:hover .rt-actions-cell {
+    background: var(--state-hover);
+}
+
+.rt-row-menu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.rt-row-menu:hover {
+    background: var(--state-hover);
+    color: var(--text);
+}
+
+.rt-menu-item {
+    padding: var(--space-sm) var(--space-md);
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--text);
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.rt-menu-item:hover {
+    background: var(--state-hover);
+}
+
+.rt-actions-cell .rt-menu {
+    min-width: 180px;
+    gap: 0;
+    padding: var(--space-xs);
+}
+
+/* Loading */
+
+.rt-progress {
+    height: 3px;
+    overflow: hidden;
+    background: var(--primary-fill);
+}
+
+.rt-progress span {
+    display: block;
+    height: 100%;
+    background: var(--primary);
+    transform-origin: left;
+    transition: transform .2s;
+}
+
+.rt-skeleton td span {
+    display: block;
+    height: 12px;
+    border-radius: var(--radius-sm);
+    background: var(--border-subtle);
+}
+
+/* Compact: a small table inside a page or a modal. */
+
+.rt-compact {
+    display: block;
+}
+
+/* Full page: the table takes the window below the page's own header, and
+   only its rows scroll. */
+
+.rt-page.rt-fill {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--rt-top, 0px));
+    margin: 0;
+}
+
+/* Edge to edge: the filters open from the window's left side and the record
+   from its right, with the data between. */
+
+.rt-fill .rt {
+    flex: 1 1 auto;
+    min-height: 0;
+    border-width: 1px 0 0;
+    border-radius: 0;
+}
+
+.rt-fill .rt-drawer,
+.rt-fill .rt-record {
+    border-radius: 0;
+}
+
+.rt-fill .rt-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.rt-fill .rt-scroll,
+.rt-fill .rt-cards {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: auto;
+}
+
+.rt-fill .rt-drawer {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-progress span {
+        transition: none;
+    }
+}
+
+/* Record drawer: one record beside the table, opened by clicking its row. */
+
+.rt-table tbody tr {
+    cursor: pointer;
+}
+
+.rt-table tbody tr:focus-visible {
+    outline: 2px solid var(--field-border-focus);
+    outline-offset: -2px;
+}
+
+.rt-table tbody tr.rt-open,
+.rt-table tbody tr.rt-open .rt-sticky,
+.rt-table tbody tr.rt-open .rt-actions-cell {
+    background: var(--state-selected);
+}
+
+/* One bar marks the open row, on its first cell only. */
+
+.rt-table tbody tr.rt-open > td:first-child {
+    box-shadow: inset 3px 0 0 var(--primary);
+}
+
+.rt-record {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--surface);
+}
+
+.rt-record-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: 0 var(--space-md) 0 var(--space-xl);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.rt-record-title {
+    margin: 0 auto 0 0;
+    font-size: var(--font-size);
+    font-weight: 600;
+}
+
+.rt-record-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--space-xl);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.rt-record-fields {
+    display: grid;
+    grid-template-columns: minmax(110px, auto) 1fr;
+    gap: var(--space-md) var(--space-lg);
+    margin: 0;
+    padding: var(--space-xl);
+    font-variant-numeric: tabular-nums;
+}
+
+.rt-record-fields dt {
+    color: var(--text-muted);
+    font-weight: normal;
+}
+
+.rt-record-fields dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.rt-record-detail {
+    padding: 0 var(--space-xl) var(--space-xl);
+}
+
+.rt-record-keys {
+    margin-top: auto;
+    max-width: none;
+    padding: var(--space-md) var(--space-xl);
+    border-top: 1px solid var(--border-subtle);
+}
+
+/* Only the rows give way to the window; the bars above and below keep their
+   height, wrapped or not. */
+
+.rt-fill .rt-main > :not(.rt-scroll):not(.rt-cards):not(.rt-content) {
+    flex: none;
+}
+
+.rt-toolbar .rt-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+.rt-toolbar .rt-search {
+    flex: 0 1 240px;
+    margin-left: auto;
+}
+
+.rt-search + .rt-toolbar-group {
+    margin-left: 0;
+}
+
+.rt-toolbar .rt-actions {
+    display: contents;
+}
+
+.rt-drawer-head,
+.rt-toolbar {
+    min-height: 56px;
+}
+
+/* The rows and the record panel share one area, so the panel can slide over
+   the rows' right side without moving anything. */
+
+.rt-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.rt-fill .rt-content {
+    flex: 1 1 auto;
+}
+
+.rt-content > .rt-scroll,
+.rt-content > .rt-cards {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.rt-record {
+    flex: 0 0 360px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-left: 1px solid var(--border);
+    border-radius: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    width: 380px;
+    max-width: 90%;
+    box-shadow: var(--shadow-overlay);
+    animation: rt-slide-in .18s ease-out;
+}
+
+@keyframes rt-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Filters fold to a rail at the window's edge rather than leaving. */
+
+.rt-rail {
+    flex: 0 0 48px;
+    border-right: 1px solid var(--border);
+    background: var(--surface-sunken);
+}
+
+.rt-rail-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    width: 100%;
+    padding: var(--space-lg) 0;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.rt-rail-button:hover {
+    color: var(--text);
+    background: var(--state-hover);
+}
+
+.rt-drawer {
+    animation: rt-fade-in .18s ease-out;
+}
+
+@keyframes rt-fade-in {
+    from {
+        opacity: 0;
+        transform: translateX(-12px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-record,
+.rt-drawer {
+        animation: none;
+    }
+}
+
+.rt-search-closed {
+    margin-left: auto;
+}
+
+.rt-toolbar .rt-toolbar-group {
+    gap: var(--space-xs);
+    padding-left: var(--space-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rt-toolbar .rt-search {
+        animation: none;
+    }
+}
+
+/* The toolbar holds one line and the search field gives way first; only a
+   narrow table lets it wrap. */
+
+.rt-main {
+    container-type: inline-size;
+}
+
+.rt-toolbar .rt-search {
+    min-width: 120px;
+    animation: rt-fade-in .15s ease-out;
+    flex: 0 1 220px;
+}
+
+.rt-toolbar > * {
+    flex-shrink: 0;
+}
+
+.rt-toolbar > .rt-search {
+    flex-shrink: 1;
+}
+
+@container (max-width: 1000px) {
+    .rt-toolbar {
+        flex-wrap: wrap;
+    }
+}
+
+/* In a full-page table the rows' area takes what the bars leave, and only it
+   scrolls, so the header row stays in place above the rows. */
+
+.rt-fill .rt-main > .rt-content {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* The heading: the table's name, or a switcher between a module's tables,
+   with its views directly beneath. */
+
+.rt-toolbar {
+    gap: var(--space-md) var(--space-lg);
+    flex-wrap: nowrap;
+    min-height: 64px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.rt-drawer-head {
+    min-height: 64px;
+}
+
+.rt-heading {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-self: stretch;
+    gap: 3px;
+    padding-top: var(--space-md);
+}
+
+.rt-toolbar .rt-tabs {
+    align-self: stretch;
+    align-items: stretch;
+    margin-bottom: -1px;
+    gap: var(--space-xl);
+}
+
+.rt-toolbar .rt-tab {
+    height: 26px;
+    align-items: flex-start;
+}
+
+.rt-title-switch .loris-select-button {
+    padding-left: 0;
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.rt-title-switch .loris-select-button-value {
+    font-weight: 600;
+}
+
+/* A form opened from the table, in the same panel as a record. */
+
+.rt-record-wide {
+    width: 520px;
+}
+
+.rt-record-form {
+    padding: var(--space-xl);
+}

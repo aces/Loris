@@ -47,3 +47,21 @@ msgstr ""
 
 msgid "Comment"
 msgstr ""
+# Candidate list table strings
+msgid "By site"
+msgstr ""
+
+msgid "Candidates"
+msgstr ""
+
+msgid "New Profile"
+msgstr ""
+
+msgid "Open profile"
+msgstr ""
+
+msgid "Scanned"
+msgstr ""
+
+msgid "View imaging"
+msgstr ""
