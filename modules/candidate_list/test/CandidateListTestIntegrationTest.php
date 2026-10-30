@@ -28,12 +28,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     //filter location
     static $PSCID          = 'input[name="pscid"]';
     static $DCCID          = 'input[name="dccid"]';
-    static $visitLabel     = 'select[name="visitLabel"]';
-    static $site           = 'select[name="site"]';
+    static $visitLabel     = '.loris-select[data-name="visitLabel"]';
+    static $site           = '.loris-select[data-name="site"]';
     static $entityType     = 'select[name="entityType"]';
     static $sex            = 'select[name="sex"]';
     static $project        = 'select[name="project"]';
-    static $cohort         = 'select[name="cohort"]';
+    static $cohort         = '.loris-select[data-name="cohort"]';
     static $advancedFilter = ".panel-body .btn-primary:nth-child(1)";
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';

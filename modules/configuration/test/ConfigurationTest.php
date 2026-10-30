@@ -172,7 +172,7 @@ class ConfigurationTest extends LorisIntegrationTest
         foreach (["Name", "Alias", "recruitmentTarget", "CohortIDs"] as $name) {
             $this->safeFindElement(
                 WebDriverBy::cssSelector(
-                    "#projectnew [name='$name']"
+                    "#projectnew [name='$name'], #projectnew [data-name='$name']"
                 )
             );
         }
