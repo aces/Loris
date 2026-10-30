@@ -356,10 +356,10 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
             );
         }
 
-        if (
-            (int) $identifierData['CandidateIdentifierTypeID']
-            !== $existingIdentifier->type->candidateIdentifierTypeID
-        ) {
+        $requestedTypeID = (int) $identifierData['CandidateIdentifierTypeID'];
+        $existingTypeID  = $existingIdentifier->type->candidateIdentifierTypeID;
+
+        if ($requestedTypeID !== $existingTypeID) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'CandidateIdentifierTypeID cannot be changed'
             );
@@ -457,8 +457,7 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
             return new \LORIS\Http\Response\JSON\NotFound();
         }
 
-        if (
-            $existingIdentifier->candidateID !== (int) $this->_candidate->getID()
+        if ($existingIdentifier->candidateID !== (int) $this->_candidate->getID()
         ) {
             return new \LORIS\Http\Response\JSON\NotFound();
         }
