@@ -45,15 +45,16 @@ class Projects
     public function toArray(): array
     {
         $config = \NDB_Factory::singleton()->config();
+        $db     = \NDB_Factory::singleton()->database();
 
         $useEDC = $config->getSetting("useEDC");
-        $PSCID  = $config->getSetting("PSCID");
 
-        $PSCIDFormat = \Candidate::structureToPCRE($PSCID['structure'], "SITE");
+        $identifierTypeController = new \LORIS\IdentifierTypeController($db);
+        $PSCIDType = $identifierTypeController->getIdentifierTypeFromName('PSCID');
 
-        $type = in_array($PSCID['generation'], ['sequential', 'random'], true)
-            ? 'auto'
-            : 'prompt';
+        $PSCIDFormat = \Candidate::structureToPCRE($PSCIDType->format, "SITE");
+
+        $type = $PSCIDType->autoGenerate ? 'auto' : 'prompt';
 
         $settings = [
             "useEDC" => $useEDC,

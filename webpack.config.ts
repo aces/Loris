@@ -22,6 +22,7 @@ const lorisModules: Record<string, string[]> = {
     'formCohort',
     'formProject',
     'index',
+    'formCandidateIdentifierTypes',
   ],
   conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
   battery_manager: ['batteryManagerIndex'],
