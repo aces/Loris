@@ -555,6 +555,7 @@
 /* Column bands: a header over the columns that share a group. */
 
 .rt-table thead tr.rt-band-row th {
+    box-sizing: border-box;
     height: 32px;
     padding: 0 var(--space-xl);
     border-bottom: 1px solid var(--border-subtle);
