@@ -168,7 +168,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Name("participantStatus")
         );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
-           $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoBMin"));
+           // The date range's inputs are hidden behind its calendar
+           $dobOptions = $this->webDriver->findElement(WebDriverBy::Name("DoBMin"));
            $this->assertEquals("input", $dobOptions->getTagName());
            // Not currently done
            //$this->assertEquals("date",$dobOptions->getAttribute("type"));
