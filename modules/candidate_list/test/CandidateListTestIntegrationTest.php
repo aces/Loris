@@ -380,8 +380,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeClick(
             WebDriverBy::cssSelector(self::$scanDoneLink)
         );
+        $this->assertStringContainsString(
+            "/imaging_browser/?PSCID=MTL022",
+            $this->webDriver->getCurrentURL()
+        );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(self::$pscidLink)
+            WebDriverBy::cssSelector("#lorisworkspace")
         )->getText();
         $this->assertStringContainsString(
             "MTL022",
