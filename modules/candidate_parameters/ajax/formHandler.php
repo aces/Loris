@@ -294,8 +294,8 @@ function editFamilyInfoFields(\Database $db)
             $db->insert('family', $updateValues);
 
             $candidateID = $db->pselectOne(
-            "SELECT ID FROM candidate WHERE CandID=:candID",
-            ['candID' => $candID]
+                "SELECT ID FROM candidate WHERE CandID=:candID",
+                ['candID' => $candID]
             );
 
             $updateValues['CandidateID'] = $candidateID;
