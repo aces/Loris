@@ -1,0 +1,47 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 29\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Candidate Identifiers"
+msgstr "Identifiants des candidats"
+
+msgid "Add Identifier"
+msgstr "Ajouter un identifiant"
+
+msgid "Edit Identifier"
+msgstr "Modifier un identifiant"
+
+msgid "Identifier Type"
+msgstr "Type d'identifiant"
+
+msgid "Identifier Value"
+msgstr "Valeur de l'identifiant"
+
+msgid "Date Added"
+msgstr "Date d'ajout"
+
+msgid "Date Edited"
+msgstr "Date de modification"
+
+msgid "Yes, delete it!"
+msgstr "Oui, le supprimer !"
+
+msgid "Delete"
+msgstr "Supprimer"

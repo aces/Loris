@@ -149,3 +149,6 @@ dicom_archive: $(filter modules/dicom_archive/%,$(MOFILES)) $(filter modules/dic
 
 configuration: $(filter modules/configuration/%,$(MOFILES)) $(filter modules/configuration/%,$(I18NJSONFILES))
 	target=configuration npm run compile
+
+candidate_identifiers: $(filter modules/candidate_identifiers/%,$(MOFILES)) $(filter modules/candidate_identifiers/%,$(I18NJSONFILES))
+	target=candidate_identifiers npm run compile
