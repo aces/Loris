@@ -75,6 +75,7 @@ class Log implements \JsonSerializable, \LORIS\Data\DataInstance
         $this->time        = isset($data['time'])
             ? new \DateTime($data['time'])
             : null;
+        $this->comments    = $data['comments'] ?? null;
     }
 
     /**
