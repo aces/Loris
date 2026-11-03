@@ -67,10 +67,29 @@ class Categories extends \LORIS\Http\Endpoint
         $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
         $instruments[''] = '';
 
+        $config       = \NDB_Config::singleton();
+        $imageOptions = [];
+        $imageUploadEnabled = false;
+        $imageUploadError   = '';
+        try {
+            $lorisRoot       = $config->getSetting('base');
+            $uploadDirectory = $config->getSetting('config_upload_path');
+            if (!is_string($lorisRoot) || !is_string($uploadDirectory)) {
+                throw new \ConfigurationException(
+                    'The configuration image paths are invalid'
+                );
+            }
+            $images       = new ImageFiles($lorisRoot, $uploadDirectory);
+            $imageOptions = $images->getOptions();
+            $imageUploadEnabled = $images->getUploadDirectory()->isWritable();
+        } catch (\ConfigurationException $e) {
+            $imageUploadError = $e->getMessage();
+        }
+
         return new \LORIS\Http\Response\JSON\OK(
             [
-                'categories'   => $parentConfigItems,
-                'dateFormat'   => [
+                'categories'         => $parentConfigItems,
+                'dateFormat'         => [
                     ''    => '',
                     'Ymd' => dgettext(
                         'configuration',
@@ -78,8 +97,11 @@ class Categories extends \LORIS\Http\Endpoint
                     ),
                     'Ym'  => dgettext('configuration', 'Ym (EX: 2015-12)'),
                 ],
-                'instruments'  => $instruments,
-                'logLevels'    => [
+                'imageOptions'       => $imageOptions,
+                'imageUploadEnabled' => $imageUploadEnabled,
+                'imageUploadError'   => $imageUploadError,
+                'instruments'        => $instruments,
+                'logLevels'          => [
                     'none'      => dgettext('loris', 'None'),
                     'debug'     => dgettext('configuration', 'Debug'),
                     'info'      => dgettext('configuration', 'Info'),
@@ -90,15 +112,15 @@ class Categories extends \LORIS\Http\Endpoint
                     'alert'     => dgettext('configuration', 'Alert'),
                     'emergency' => dgettext('configuration', 'Emergency'),
                 ],
-                'lookupCenter' => [
+                'lookupCenter'       => [
                     ''            => '',
                     'PatientID'   => dgettext('configuration', 'PatientID'),
                     'PatientName' => dgettext('configuration', 'PatientName'),
                 ],
-                'sandbox'      => boolval(
+                'sandbox'            => boolval(
                     \NDB_Config::singleton()->getSetting("sandbox")
                 ),
-                'scanTypes'    => $scanTypes,
+                'scanTypes'          => $scanTypes,
             ]
         );
     }

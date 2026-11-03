@@ -95,3 +95,7 @@
         grid-template-columns: 1fr;
     }
 }
+
+.configuration-image-upload {
+    margin-top: 8px;
+}
