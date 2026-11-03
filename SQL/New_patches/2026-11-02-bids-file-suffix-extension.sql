@@ -1,0 +1,3 @@
+ALTER TABLE `bids_file`
+  ADD COLUMN `Suffix` VARCHAR(255) NULL AFTER `Path`,
+  ADD COLUMN `Extension` VARCHAR(255) NULL AFTER `Suffix`;
