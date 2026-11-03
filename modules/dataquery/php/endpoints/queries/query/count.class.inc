@@ -61,11 +61,11 @@ class Count extends \LORIS\Http\Endpoint
             $query = new \LORIS\dataquery\Query($this->loris, $queryID);
 
             \Profiler::checkpoint("Matching candidates");
-            $candidates = \iterator_to_array($query->matchCandidates($user));
+            $numCandidates = \iterator_count($query->matchCandidates($user));
             \Profiler::checkpoint("Returning count");
             return new \LORIS\Http\Response\JSON\OK(
                 [
-                    'count' => count($candidates),
+                    'count' => $numCandidates,
                 ]
             );
         } catch (\LorisException $e) {
