@@ -182,15 +182,17 @@ class SpecimenTab extends Component {
               const sopt = options.specimen;
               const process = sopt.processes[processId].label.toLowerCase();
               if ((specimen[process]||{}).data) {
-                const processIdStr = specimen[process].protocolId.toString();
+                const protocolId = specimen[process].protocolId;
                 const attrs = options.specimen.processAttributes;
                 const protocols = attrs[processId][attributeId].protocolIds;
-                if (protocols.includes(processIdStr)) {
+                if (protocols.includes(protocolId)) {
                   const data = specimen[process].data[attributeId];
                   specimenAttributeData.push(data);
                 } else {
                   specimenAttributeData.push(null);
                 }
+              } else {
+                specimenAttributeData.push(null);
               }
             });
         });
