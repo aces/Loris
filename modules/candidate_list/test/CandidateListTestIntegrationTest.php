@@ -26,32 +26,25 @@ require_once __DIR__
 class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     //filter location
-    static $PSCID          = 'input[name="pscid"]';
-    static $DCCID          = 'input[name="dccid"]';
-    static $visitLabel     = 'select[name="visitLabel"]';
-    static $site           = 'select[name="site"]';
-    static $entityType     = 'select[name="entityType"]';
-    static $sex            = 'select[name="sex"]';
-    static $project        = 'select[name="project"]';
-    static $cohort         = 'select[name="cohort"]';
-    static $advancedFilter = ".panel-body .btn-primary:nth-child(1)";
-    // advanced filter
-    static $scanDone    = 'select[name="scanDone"]';
-    static $Participant = 'select[name="participantStatus"]';
+    static $PSCID       = 'input[name="pscid"]';
+    static $DCCID       = 'input[name="dccid"]';
+    static $visitLabel  = '.loris-select[data-name="visitLabel"]';
+    static $site        = '.loris-select[data-name="site"]';
+    static $entityType  = '.loris-select[data-name="entityType"]';
+    static $sex         = '.loris-select[data-name="sex"]';
+    static $project     = '.loris-select[data-name="project"]';
+    static $cohort      = '.loris-select[data-name="cohort"]';
+    static $scanDone    = '.loris-select[data-name="scanDone"]';
+    static $Participant = '.loris-select[data-name="participantStatus"]';
     static $dob         = 'input[name="DoBMin"]';
     static $visitCount  = 'input[name="visitCount"]';
-    static $feedback    = 'select[name="feedback"]';
+    static $feedback    = '.loris-select[data-name="feedback"]';
     static $edc         = 'input[name="edc"]';
 
-
-
-
-
-
-    static $openProfile = "div:nth-child(2) > .btn:nth-child(2)";
-    static $clearFilter = ".nav-tabs a";
-    static $display     = ".table-header > div > div > div:nth-child(1)";
-    static $pscidLink   = "tr:nth-child(1) a";
+    static $openProfile  = ".action-openProfile button";
+    static $clearFilter  = ".rt-clear-all button";
+    static $scanDoneLink = '.rt-table tbody tr a[href*="imaging_browser"]';
+    static $pscidLink    = "tr:nth-child(1) a";
 
     /**
      * Backs up the useEDC config value and sets the value to a known
@@ -98,7 +91,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
     /**
      * Tests that, when loading the candidate_list module, the breadcrumb
-     * appears and the default filters are set to "Basic" mode.
+     * appears and the filters are shown beside the table.
      *
      * @return void
      */
@@ -109,13 +102,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Access Profile", $bodyText);
-        // Ensure that the default is basic mode (which means the button
-        // says "Advanced")
-        $btn        = self::$advancedFilter;
-        $buttonText = $this->safeFindElement(
-            WebDriverBy::cssSelector($btn)
+        $drawerText = $this->safeFindElement(
+            WebDriverBy::cssSelector(".rt-drawer")
         )->getText();
-        $this->assertStringContainsString("Advanced", $buttonText);
+        $this->assertStringContainsString("Filters", $drawerText);
     }
 
     /**
@@ -135,7 +125,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         $this->safeGet($this->url . "/candidate_list/?pscid=TST0001");
         $tableText = $this->safeFindElement(
-            WebDriverBy::Id('dynamictable')
+            WebDriverBy::cssSelector('.rt-table')
         )->getText();
 
         $this->assertStringContainsString('TST0001', $tableText);
@@ -143,49 +133,36 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     }
 
     /**
-     * Tests that, after clicking the "Advanced" button, all of the
-     * advanced filters appear on the page and are the correct element type.
+     * Tests that every filter appears in the drawer.
      *
      * @return void
      */
-    function testCandidateListAdvancedOptionsAppear()
+    function testCandidateListFiltersAppear()
     {
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#breadcrumbs")
         )->getText();
         $this->assertStringContainsString("Access Profile", $bodyText);
-        // Switch to Advanced mode
-        $btn = self::$advancedFilter;
-        $this->safeClick(WebDriverBy::cssSelector($btn));
-           // Go through each element and ensure it's on the page after clicking
-           // advanced
-        $scanDoneOptions = $this->safeFindElement(
-            WebDriverBy::Name("scanDone")
-        );
-           $this->assertEquals("select", $scanDoneOptions->getTagName());
-        $participantsStatusOptions = $this->safeFindElement(
-            WebDriverBy::Name("participantStatus")
-        );
-           $this->assertEquals("select", $participantsStatusOptions->getTagName());
-           $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoBMin"));
-           $this->assertEquals("input", $dobOptions->getTagName());
-           // Not currently done
-           //$this->assertEquals("date",$dobOptions->getAttribute("type"));
-           $sexOptions = $this->safeFindElement(WebDriverBy::Name("sex"));
-           $this->assertEquals("select", $sexOptions->getTagName());
-           $this->assertEquals("input", $dobOptions->getTagName());
-           // Not currently done in Loris.
-           //$this->assertEquals("number",$dobOptions->getAttribute("type"));
-           //$this->assertEquals("0",$dobOptions->getAttribute("min"));
-           $edcOptions = $this->safeFindElement(WebDriverBy::Name("edc"));
-           $this->assertEquals("input", $edcOptions->getTagName());
-           // Not currently done
-           //$this->assertEquals("date",$edcOptions->getAttribute("type"));
-        $feedbackOptions = $this->safeFindElement(
-            WebDriverBy::Name("feedback")
-        );
-           $this->assertEquals("select", $feedbackOptions->getTagName());
+        $this->safeFindElement(WebDriverBy::cssSelector(".rt-drawer"));
+        $filters = [
+            self::$scanDone,
+            self::$Participant,
+            self::$sex,
+            self::$feedback,
+            self::$visitCount,
+            self::$edc,
+            self::$dob,
+        ];
+        foreach ($filters as $filter) {
+            $this->assertCount(
+                1,
+                $this->webDriver->findElements(
+                    WebDriverBy::cssSelector(".rt-drawer $filter")
+                ),
+                "Missing filter $filter"
+            );
+        }
     }
 
     /**
@@ -199,124 +176,135 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         $this->_filterTest(
             self::$PSCID,
-            self::$display,
+            $this->_total(0),
             self::$clearFilter,
             'test',
-            "0 rows",
+            '0',
         );
         $this->_filterTest(
             self::$PSCID,
-            self::$display,
+            $this->_total(1),
             self::$clearFilter,
             'MTL001',
-            "1 rows"
+            '1'
         );
         $this->_filterTest(
             self::$DCCID,
-            self::$display,
+            $this->_total(1),
             self::$clearFilter,
             '300001',
-            "1 rows"
+            '1'
         );
         $this->_filterTest(
             self::$DCCID,
-            self::$display,
+            $this->_total(0),
             self::$clearFilter,
             'test',
-            '0 row'
+            '0'
         );
         $this->_filterTest(
             self::$visitLabel,
-            self::$display,
+            $this->_total(362),
             self::$clearFilter,
             'V1',
-            "362"
+            '362'
         );
         $this->_filterTest(
             self::$visitLabel,
-            self::$display,
+            $this->_total(223),
             self::$clearFilter,
             'V2',
-            "223"
+            '223'
         );
         $this->_filterTest(
             self::$site,
-            self::$display,
+            $this->_total(7),
             self::$clearFilter,
             'Data Coordinating Center',
-            '7 rows'
+            '7'
         );
         $this->_filterTest(
             self::$site,
-            self::$display,
+            $this->_total(165),
             self::$clearFilter,
             "Montreal",
             '165'
         );
         $this->_filterTest(
             self::$entityType,
-            self::$display,
+            $this->_total(436),
             self::$clearFilter,
             "Human",
             '436'
         );
-        $this->safeClick(WebDriverBy::cssSelector(self::$advancedFilter));
         $this->_filterTest(
             self::$sex,
-            self::$display,
+            $this->_total(226),
             self::$clearFilter,
             "Female",
             '226'
         );
         $this->_filterTest(
             self::$sex,
-            self::$display,
+            $this->_total(210),
             self::$clearFilter,
             "Male",
             '210'
         );
         $this->_filterTest(
             self::$scanDone,
-            self::$display,
+            $this->_total(17),
             self::$clearFilter,
             "Yes",
-            '17 rows'
+            '17'
         );
         $this->_filterTest(
             self::$Participant,
-            self::$display,
+            $this->_total(436),
             self::$clearFilter,
             "Active",
             '436'
         );
         $this->_filterTest(
             self::$visitCount,
-            self::$display,
+            $this->_total(79),
             self::$clearFilter,
             "3",
             '79'
         );
         $this->_filterTest(
             self::$feedback,
-            self::$display,
+            $this->_total(11),
             self::$clearFilter,
             "Closed",
-            '11 rows'
+            '11'
         );
         $this->_filterTest(
             self::$edc,
-            self::$display,
+            $this->_total(1),
             self::$clearFilter,
             "2003-07-30",
-            '1 row'
+            '1'
         );
         $this->_filterTest(
             self::$cohort,
-            self::$display,
+            $this->_total(2),
             self::$clearFilter,
             "High Yeast",
-            '2 rows'
+            '2'
         );
+    }
+
+    /**
+     * Gives the selector for the table's count once it shows a total
+     *
+     * @param int $total The number of rows expected
+     *
+     * @return string
+     */
+    private function _total(int $total): string
+    {
+        return ".rt-range[data-total=\"$total\"]";
     }
 
     /**
@@ -383,21 +371,21 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->safeGet($this->url . "/candidate_list/?pscid=MTL022");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "#dynamictable > tbody > tr > td.scanDoneLink"
-            )
+            WebDriverBy::cssSelector(self::$scanDoneLink)
         )->getText();
         $this->assertStringContainsString(
             "Y",
             $bodyText
         );
         $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#dynamictable > tbody > tr > td.scanDoneLink"
-            )
+            WebDriverBy::cssSelector(self::$scanDoneLink)
+        );
+        $this->assertStringContainsString(
+            "/imaging_browser/?PSCID=MTL022",
+            $this->webDriver->getCurrentURL()
         );
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(self::$pscidLink)
+            WebDriverBy::cssSelector("#lorisworkspace")
         )->getText();
         $this->assertStringContainsString(
             "MTL022",

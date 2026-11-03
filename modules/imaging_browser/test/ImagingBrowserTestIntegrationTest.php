@@ -36,8 +36,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     static $project       = 'select[name="project"]';
     static $visitLabel    = 'input[name="visitLabel"]';
     static $visitQCStatus = 'select[name="visitQCStatus"]';
-    static $sequenceType  = 'select[name="sequenceType"]';
-    static $pendingNew    = 'select[name="pendingNew"]';
+    static $sequenceType  = '.loris-select[data-name="sequenceType"]';
+    static $pendingNew    = '.loris-select[data-name="pendingNew"]';
 
     //General locations
     static $display      = '.table-header > div > div > div:nth-child(1)';

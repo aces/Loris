@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 import {CTA} from 'jsx/Form';
 import {useTranslation} from 'react-i18next';
+import {matchesFilter} from 'jsx/table/filterMatch';
 
 /**
  * Searches for the filter keyword in the column cell
@@ -16,97 +17,9 @@ import {useTranslation} from 'react-i18next';
  * @return {boolean} true, if filter value is found to be a substring
  * of one of the column values, false otherwise.
  */
-const hasFilterKeyword = (name, data, filters, filter = {}) => {
-  let filterData = null;
-  let exactMatch = false;
-  let opposite = false;
-  let result = false;
-
-  // Accessing filters directly from props
-  if (filters[name]) {
-    filterData = filters[name].value;
-    exactMatch = filters[name].exactMatch;
-    opposite = filters[name].opposite;
-  }
-
-  // Handle null inputs
-  if (filterData === null || data === null) {
-    return false;
-  }
-
-  // Handle date range inputs.
-  if (filter.type === 'date-range' &&
-    typeof filterData === 'object' &&
-    !Array.isArray(filterData)) {
-    const dateData = (data !== null && data !== undefined) ?
-      data.toString() : '';
-    const min = filterData.min || '';
-    const max = filterData.max || '';
-
-    return dateData !== '' &&
-      (min === '' || dateData >= min) &&
-      (max === '' || dateData <= max);
-  }
-
-  // Handle numeric inputs
-  if (typeof filterData === 'number') {
-    let intData = Number.parseInt(data, 10);
-    return (filterData === intData);
-  }
-
-  // Handle string inputs
-  if (typeof filterData === 'string') {
-    const searchKey = filterData.toLowerCase();
-
-    if (Array.isArray(data)) {
-      let searchArray = data.map((e) => e.toLowerCase());
-      if (exactMatch) {
-        return searchArray.includes(searchKey);
-      }
-      return searchArray.some((e) => e.indexOf(searchKey) > -1);
-    }
-
-    const searchString = (data !== null && data !== undefined) ?
-      data.toString().toLowerCase() : '';
-
-    if (exactMatch) {
-      result = (searchString === searchKey);
-    } else if (opposite) {
-      result = (searchString !== searchKey);
-    } else {
-      result = (searchString.indexOf(searchKey) > -1);
-    }
-    return result;
-  }
-
-  // Handle boolean inputs
-  if (typeof filterData === 'boolean') {
-    return (filterData === data);
-  }
-
-  // Handle numeric range inputs
-  if (filter.type === 'number-range' &&
-    typeof filterData === 'object' &&
-    !Array.isArray(filterData)) {
-    const numericData = Number.parseFloat(data);
-    const min = Number.parseFloat(filterData.min);
-    const max = Number.parseFloat(filterData.max);
-    return !Number.isNaN(numericData) &&
-      (Number.isNaN(min) || numericData >= min) &&
-      (Number.isNaN(max) || numericData <= max);
-  }
-
-  // Handle array inputs for multiselects
-  if (typeof filterData === 'object' && Array.isArray(filterData)) {
-    const searchString = (data !== null && data !== undefined) ?
-      data.toString().toLowerCase() : '';
-    let searchArray = searchString.split(',');
-
-    return filterData.some((val) => searchArray.includes(val.toLowerCase()));
-  }
-
-  return result;
-};
+const hasFilterKeyword = (name, data, filters, filter = {}) => (
+  filters[name] ? matchesFilter(filters[name], data, filter.type) : false
+);
 
 
 /**
