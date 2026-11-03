@@ -40,7 +40,6 @@ class Preparations implements RequestHandlerInterface
      *
      * @return bool
      */
-    #[\Override]
     public function isAccessibleBy(\User $user) : bool
     {
         return true;
