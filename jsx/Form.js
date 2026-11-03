@@ -1004,30 +1004,27 @@ export class TextareaElement extends Component {
   render() {
     return (
       <Field
+        id={this.props.id}
         label={this.props.label}
         required={this.props.required}
         errorMessage={this.props.errorMessage}
         noMargins={this.props.noMargins}
       >
-        {(control) => (
-          <Textarea
-            {...control}
-            cols={this.props.cols}
-            rows={this.props.rows}
-            name={this.props.name}
-            id={this.props.id}
-            value={this.props.value || ''}
-            placeholder={this.props.placeholder}
-            required={this.props.required}
-            disabled={this.props.disabled}
-            onChange={(value) => this.props.onUserInput(
-              this.props.name, value
-            )}
-            onBlur={(value) => this.props.onUserBlur(
-              this.props.name, value
-            )}
-          />
-        )}
+        <Textarea
+          cols={this.props.cols}
+          rows={this.props.rows}
+          name={this.props.name}
+          value={this.props.value || ''}
+          placeholder={this.props.placeholder}
+          required={this.props.required}
+          disabled={this.props.disabled}
+          onChange={(value) => this.props.onUserInput(
+            this.props.name, value
+          )}
+          onBlur={(value) => this.props.onUserBlur(
+            this.props.name, value
+          )}
+        />
       </Field>
     );
   }
@@ -1999,27 +1996,24 @@ export class NumericElement extends Component {
   render() {
     return (
       <Field
+        id={this.props.id}
         label={this.props.label || undefined}
         required={this.props.required}
         errorMessage={this.props.errorMessage}
         labelPlacementTop={this.props.labelPlacementTop}
       >
-        {(control) => (
-          <Numeric
-            {...control}
-            name={this.props.name}
-            id={this.props.id}
-            min={this.props.min}
-            max={this.props.max}
-            step={this.props.step}
-            value={this.props.value || ''}
-            disabled={this.props.disabled}
-            required={this.props.required}
-            onChange={(value) => this.props.onUserInput(
-              this.props.name, value
-            )}
-          />
-        )}
+        <Numeric
+          name={this.props.name}
+          min={this.props.min}
+          max={this.props.max}
+          step={this.props.step}
+          value={this.props.value || ''}
+          disabled={this.props.disabled}
+          required={this.props.required}
+          onChange={(value) => this.props.onUserInput(
+            this.props.name, value
+          )}
+        />
       </Field>
     );
   }

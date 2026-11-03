@@ -1,4 +1,5 @@
 import React from 'react';
+import {useFieldControl} from 'jsx/form/Field';
 
 type TextareaProps = {
   // The current text
@@ -22,26 +23,30 @@ type TextareaProps = {
 
 /**
  * Multiline text input React component
+ * Inside a Field, it takes its id and invalid state from the Field.
  *
  * @param props The props of the component
  * @returns The corresponding React element
  */
-const Textarea: React.FC<TextareaProps> = (props) => (
-  <textarea
-    cols={props.cols}
-    rows={props.rows}
-    className="form-control"
-    name={props.name}
-    id={props.id}
-    value={props.value}
-    placeholder={props.placeholder}
-    required={props.required}
-    disabled={props.disabled}
-    aria-invalid={props.invalid || undefined}
-    aria-describedby={props.describedBy}
-    onChange={(e) => props.onChange(e.target.value)}
-    onBlur={(e) => props.onBlur?.(e.target.value)}
-  />
-);
+const Textarea: React.FC<TextareaProps> = (props) => {
+  const control = useFieldControl(props);
+  return (
+    <textarea
+      cols={props.cols}
+      rows={props.rows}
+      className="form-control"
+      name={props.name}
+      id={control.id}
+      value={props.value}
+      placeholder={props.placeholder}
+      required={props.required}
+      disabled={props.disabled}
+      aria-invalid={control.invalid || undefined}
+      aria-describedby={control.describedBy}
+      onChange={(e) => props.onChange(e.target.value)}
+      onBlur={(e) => props.onBlur?.(e.target.value)}
+    />
+  );
+};
 
 export default Textarea;
