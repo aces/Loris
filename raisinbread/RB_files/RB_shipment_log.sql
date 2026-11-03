@@ -1,5 +1,10 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `shipment_log`;
 LOCK TABLES `shipment_log` WRITE;
+INSERT INTO `shipment_log` (`ShipmentID`, `CenterID`, `StatusID`, `Date`, `Time`, `UserID`, `Temperature`, `DateTimeCreate`, `DateTimeUpdate`, `Comments`) VALUES (1,2,3,'2016-08-18','10:30:00',1,-75.00,'2016-08-18 10:30:00','2016-08-18 10:30:00','Dry ice still present');
+INSERT INTO `shipment_log` (`ShipmentID`, `CenterID`, `StatusID`, `Date`, `Time`, `UserID`, `Temperature`, `DateTimeCreate`, `DateTimeUpdate`, `Comments`) VALUES (1,4,2,'2016-08-16','09:00:00',1,-80.00,'2016-08-16 09:00:00','2016-08-16 09:00:00',NULL);
+INSERT INTO `shipment_log` (`ShipmentID`, `CenterID`, `StatusID`, `Date`, `Time`, `UserID`, `Temperature`, `DateTimeCreate`, `DateTimeUpdate`, `Comments`) VALUES (1,4,5,'2016-08-16','14:00:00',1,-78.00,'2016-08-16 14:00:00','2016-08-16 14:00:00',NULL);
+INSERT INTO `shipment_log` (`ShipmentID`, `CenterID`, `StatusID`, `Date`, `Time`, `UserID`, `Temperature`, `DateTimeCreate`, `DateTimeUpdate`, `Comments`) VALUES (2,4,2,'2016-08-22','09:00:00',1,-80.00,'2016-08-22 09:00:00','2016-08-22 09:00:00',NULL);
+INSERT INTO `shipment_log` (`ShipmentID`, `CenterID`, `StatusID`, `Date`, `Time`, `UserID`, `Temperature`, `DateTimeCreate`, `DateTimeUpdate`, `Comments`) VALUES (2,4,5,'2016-08-22','14:00:00',1,-78.00,'2016-08-22 14:00:00','2016-08-22 14:00:00',NULL);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

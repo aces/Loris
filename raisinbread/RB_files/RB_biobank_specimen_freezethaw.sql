@@ -5,5 +5,7 @@ INSERT INTO `biobank_specimen_freezethaw` (`SpecimenID`, `FreezeThawCycle`) VALU
 INSERT INTO `biobank_specimen_freezethaw` (`SpecimenID`, `FreezeThawCycle`) VALUES (3,1);
 INSERT INTO `biobank_specimen_freezethaw` (`SpecimenID`, `FreezeThawCycle`) VALUES (8,0);
 INSERT INTO `biobank_specimen_freezethaw` (`SpecimenID`, `FreezeThawCycle`) VALUES (11,0);
+INSERT INTO `biobank_specimen_freezethaw` (`SpecimenID`, `FreezeThawCycle`) VALUES (12,0);
+INSERT INTO `biobank_specimen_freezethaw` (`SpecimenID`, `FreezeThawCycle`) VALUES (13,0);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

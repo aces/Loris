@@ -5,5 +5,7 @@ INSERT INTO `biobank_specimen_parent` (`SpecimenID`, `ParentSpecimenID`) VALUES 
 INSERT INTO `biobank_specimen_parent` (`SpecimenID`, `ParentSpecimenID`) VALUES (3,1);
 INSERT INTO `biobank_specimen_parent` (`SpecimenID`, `ParentSpecimenID`) VALUES (8,7);
 INSERT INTO `biobank_specimen_parent` (`SpecimenID`, `ParentSpecimenID`) VALUES (11,10);
+INSERT INTO `biobank_specimen_parent` (`SpecimenID`, `ParentSpecimenID`) VALUES (12,7);
+INSERT INTO `biobank_specimen_parent` (`SpecimenID`, `ParentSpecimenID`) VALUES (13,7);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

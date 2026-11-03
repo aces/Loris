@@ -1,5 +1,12 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `biobank_specimen_protocol_attribute_rel`;
 LOCK TABLES `biobank_specimen_protocol_attribute_rel` WRITE;
+INSERT INTO `biobank_specimen_protocol_attribute_rel` (`SpecimenProtocolID`, `SpecimenAttributeID`, `Required`, `showInDataTable`, `OrderIndex`) VALUES (1,1,1,1,1);
+INSERT INTO `biobank_specimen_protocol_attribute_rel` (`SpecimenProtocolID`, `SpecimenAttributeID`, `Required`, `showInDataTable`, `OrderIndex`) VALUES (1,2,0,0,2);
+INSERT INTO `biobank_specimen_protocol_attribute_rel` (`SpecimenProtocolID`, `SpecimenAttributeID`, `Required`, `showInDataTable`, `OrderIndex`) VALUES (2,5,1,1,1);
+INSERT INTO `biobank_specimen_protocol_attribute_rel` (`SpecimenProtocolID`, `SpecimenAttributeID`, `Required`, `showInDataTable`, `OrderIndex`) VALUES (3,2,0,1,1);
+INSERT INTO `biobank_specimen_protocol_attribute_rel` (`SpecimenProtocolID`, `SpecimenAttributeID`, `Required`, `showInDataTable`, `OrderIndex`) VALUES (4,3,1,0,1);
+INSERT INTO `biobank_specimen_protocol_attribute_rel` (`SpecimenProtocolID`, `SpecimenAttributeID`, `Required`, `showInDataTable`, `OrderIndex`) VALUES (4,4,1,0,2);
+INSERT INTO `biobank_specimen_protocol_attribute_rel` (`SpecimenProtocolID`, `SpecimenAttributeID`, `Required`, `showInDataTable`, `OrderIndex`) VALUES (5,5,1,1,1);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

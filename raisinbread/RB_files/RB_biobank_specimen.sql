@@ -7,10 +7,12 @@ INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `
 INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (4,7,1,0.000,1,2,1);
 INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (5,8,1,0.000,1,2,2);
 INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (6,9,1,0.800,1,3,1);
-INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (7,10,1,0.700,1,166,1);
+INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (7,10,1,0.300,1,166,1);
 INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (8,11,2,300.000,2,166,2);
 INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (9,12,1,0.750,1,167,1);
 INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (10,13,1,0.750,1,547,1);
 INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (11,14,2,200.000,2,547,2);
+INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (12,15,2,0.000,2,166,3);
+INSERT INTO `biobank_specimen` (`SpecimenID`, `ContainerID`, `SpecimenTypeID`, `Quantity`, `UnitID`, `SessionID`, `SampleNumber`) VALUES (13,16,2,0.000,2,166,4);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
