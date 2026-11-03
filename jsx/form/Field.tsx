@@ -1,30 +1,49 @@
 import React, {createContext, useContext, useId, useMemo} from 'react';
 import InputLabel from 'jsx/form/InputLabel';
 
-type FieldControl = {
+type FieldState = {
   // The id of the control, which the label points to
   id?: string;
   // Whether the control holds an invalid value
   invalid?: boolean;
+  // Whether the control must be filled in
+  required?: boolean;
+  // Whether the control is disabled
+  disabled?: boolean;
   // The id of the error message describing the control
   describedBy?: string;
 };
 
-const FieldContext = createContext<FieldControl>({});
+const FieldContext = createContext<FieldState>({});
+
+type ControlProps = {
+  id?: string;
+  invalid?: boolean;
+  required?: boolean;
+  disabled?: boolean;
+  'aria-describedby'?: string;
+};
 
 /**
- * Resolve a control's id and invalid state, taking them from the enclosing
+ * Resolve the attributes a control renders, taking each from the enclosing
  * Field unless the control is given its own.
  *
  * @param props The control's own props
- * @returns The id, invalid state and description id to render
+ * @returns The id, required, disabled and aria attributes to spread on the
+ *          control's input
  */
-export function useFieldControl(props: FieldControl): FieldControl {
+export function useFieldControl(props: ControlProps) {
   const field = useContext(FieldContext);
+  const invalid = props.invalid ?? field.invalid;
+  const describedBy = [props['aria-describedby'], field.describedBy]
+    .filter(Boolean)
+    .join(' ');
   return {
-    id: props.id ?? field.id,
-    invalid: props.invalid ?? field.invalid,
-    describedBy: props.describedBy ?? field.describedBy,
+    'id': props.id ?? field.id,
+    'required': props.required ?? field.required,
+    'disabled': props.disabled ?? field.disabled,
+    'aria-invalid': invalid || undefined,
+    'aria-describedby': describedBy || undefined,
   };
 }
 
@@ -33,8 +52,10 @@ type FieldProps = {
   id?: string | null;
   // The label, shown in its own column when given, even if empty
   label?: React.ReactNode;
-  // Whether the field is required, `false` by default
+  // Whether the control must be filled in, `false` by default
   required?: boolean;
+  // Whether the control is disabled, `false` by default
+  disabled?: boolean;
   // The error message shown under the control
   errorMessage?: string | null;
   // Whether the label sits above the control rather than beside it
@@ -48,73 +69,60 @@ type FieldProps = {
 /**
  * Form field React component
  * Lays out a control in a form row with its label and error message, and
- * gives the control its id and invalid state.
+ * gives the control its id, required, disabled and invalid state.
  *
  * @param props The props of the component
- * @param props.id The id of the control
- * @param props.label The label content
- * @param props.required Whether the field is required
- * @param props.errorMessage The error message
- * @param props.labelPlacementTop Whether the label sits above the control
- * @param props.noMargins Whether to render the control alone
- * @param props.children The control
  * @returns The corresponding React element
  */
-const Field: React.FC<FieldProps> = ({
-  id,
-  label,
-  required,
-  errorMessage,
-  labelPlacementTop,
-  noMargins,
-  children,
-}) => {
+function Field(props: FieldProps) {
   const generatedId = useId();
-  const controlId = id || generatedId;
-  const errorId = controlId + '-error';
-  const invalid = !!errorMessage;
-  const showLabel = !noMargins && label !== undefined;
+  const id = props.id || generatedId;
+  const errorId = id + '-error';
+  const invalid = !!props.errorMessage;
+  const showLabel = !props.noMargins && props.label !== undefined;
 
-  const control = useMemo(() => ({
-    id: controlId,
+  const state = useMemo(() => ({
+    id,
     invalid,
+    required: props.required,
+    disabled: props.disabled,
     describedBy: invalid ? errorId : undefined,
-  }), [controlId, invalid, errorId]);
+  }), [id, invalid, props.required, props.disabled, errorId]);
 
-  let elementClass = noMargins ? '' : 'row form-group';
+  let elementClass = props.noMargins ? '' : 'row form-group';
   if (invalid) {
-    elementClass = noMargins ? 'has-error' : 'row form-group has-error';
+    elementClass = props.noMargins ? 'has-error' : 'row form-group has-error';
   }
 
-  let inputClass = noMargins ? '' : 'col-sm-12';
+  let inputClass = props.noMargins ? '' : 'col-sm-12';
   if (showLabel) {
-    inputClass = `col-sm-${labelPlacementTop ? '12' : '9'}`;
+    inputClass = `col-sm-${props.labelPlacementTop ? '12' : '9'}`;
   }
 
   return (
     <div
       className={elementClass}
-      style={labelPlacementTop ? {
+      style={props.labelPlacementTop ? {
         display: 'flex',
         flexDirection: 'column',
       } : {}}
     >
       {showLabel && (
         <InputLabel
-          label={label}
-          required={required}
-          fullWidth={labelPlacementTop}
-          htmlFor={controlId}
+          label={props.label}
+          required={props.required}
+          fullWidth={props.labelPlacementTop}
+          htmlFor={id}
         />
       )}
       <div className={inputClass}>
-        <FieldContext.Provider value={control}>
-          {children}
+        <FieldContext.Provider value={state}>
+          {props.children}
         </FieldContext.Provider>
-        {invalid && <span id={errorId}>{errorMessage}</span>}
+        {invalid && <span id={errorId}>{props.errorMessage}</span>}
       </div>
     </div>
   );
-};
+}
 
 export default Field;

@@ -1007,6 +1007,7 @@ export class TextareaElement extends Component {
         id={this.props.id}
         label={this.props.label}
         required={this.props.required}
+        disabled={this.props.disabled}
         errorMessage={this.props.errorMessage}
         noMargins={this.props.noMargins}
       >
@@ -1016,8 +1017,6 @@ export class TextareaElement extends Component {
           name={this.props.name}
           value={this.props.value || ''}
           placeholder={this.props.placeholder}
-          required={this.props.required}
-          disabled={this.props.disabled}
           onChange={(value) => this.props.onUserInput(
             this.props.name, value
           )}
@@ -1999,6 +1998,7 @@ export class NumericElement extends Component {
         id={this.props.id}
         label={this.props.label || undefined}
         required={this.props.required}
+        disabled={this.props.disabled}
         errorMessage={this.props.errorMessage}
         labelPlacementTop={this.props.labelPlacementTop}
       >
@@ -2008,8 +2008,6 @@ export class NumericElement extends Component {
           max={this.props.max}
           step={this.props.step}
           value={this.props.value || ''}
-          disabled={this.props.disabled}
-          required={this.props.required}
           onChange={(value) => this.props.onUserInput(
             this.props.name, value
           )}

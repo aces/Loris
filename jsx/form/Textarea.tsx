@@ -1,52 +1,43 @@
-import React from 'react';
+import React, {forwardRef} from 'react';
 import {useFieldControl} from 'jsx/form/Field';
 
-type TextareaProps = {
+type TextareaProps = Omit<
+  React.ComponentPropsWithoutRef<'textarea'>,
+  'value' | 'onChange' | 'onBlur'
+> & {
   // The current text
   value: string;
   // Called with the new text
   onChange: (value: string) => void;
   // Called with the text when the textarea loses focus
   onBlur?: (value: string) => void;
-  name?: string;
-  id?: string;
-  placeholder?: string;
-  rows?: number;
-  cols?: number;
-  disabled?: boolean;
-  required?: boolean;
   // Whether the textarea holds an invalid value
   invalid?: boolean;
-  // The id of the element describing the textarea
-  describedBy?: string;
 };
 
 /**
  * Multiline text input React component
- * Inside a Field, it takes its id and invalid state from the Field.
- *
- * @param props The props of the component
- * @returns The corresponding React element
+ * Takes any textarea attribute. Inside a Field, it takes its id, required,
+ * disabled and invalid state from the Field.
  */
-const Textarea: React.FC<TextareaProps> = (props) => {
-  const control = useFieldControl(props);
-  return (
-    <textarea
-      cols={props.cols}
-      rows={props.rows}
-      className="form-control"
-      name={props.name}
-      id={control.id}
-      value={props.value}
-      placeholder={props.placeholder}
-      required={props.required}
-      disabled={props.disabled}
-      aria-invalid={control.invalid || undefined}
-      aria-describedby={control.describedBy}
-      onChange={(e) => props.onChange(e.target.value)}
-      onBlur={(e) => props.onBlur?.(e.target.value)}
-    />
-  );
-};
+const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
+  function Textarea(
+    {value, onChange, onBlur, invalid, className, ...props},
+    ref,
+  ) {
+    const control = useFieldControl({...props, invalid});
+    return (
+      <textarea
+        {...props}
+        {...control}
+        ref={ref}
+        className={className ? 'form-control ' + className : 'form-control'}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onBlur={(e) => onBlur?.(e.target.value)}
+      />
+    );
+  }
+);
 
 export default Textarea;
