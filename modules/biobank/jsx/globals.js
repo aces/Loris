@@ -1,5 +1,5 @@
 import React from 'react';
-import {withTranslation} from 'react-i18next';
+import {withTranslation, useTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import {mapFormOptions} from './helpers.js';
@@ -27,7 +27,7 @@ function Globals(props) {
 
   const specimenTypeField = specimen && (
     <InlineField
-      label={this.props.t('Specimen Type', {ns: 'biobank'})}
+      label={t('Specimen Type', {ns: 'biobank'})}
       value={options.specimen.types[specimen.typeId].label}
     />
   );
@@ -46,7 +46,7 @@ function Globals(props) {
   const containerTypeField = (
     <InlineField
       loading={props.loading}
-      label={this.props.t('Container Type', {ns: 'biobank'})}
+      label={t('Container Type', {ns: 'biobank'})}
       updateValue={updateContainer}
       clearAll={props.clearAll}
       pencil={true}
@@ -66,7 +66,7 @@ function Globals(props) {
 
   const poolField = (specimen||{}).poolId ? (
     <InlineField
-      label={this.props.t('Pool', {ns: 'biobank', count: 1})}
+      label={t('Pool', {ns: 'biobank', count: 1})}
       value={data.pools[specimen.poolId].label}
     />
   ) : null;
@@ -77,7 +77,7 @@ function Globals(props) {
   const quantityField = specimen ? (
     <InlineField
       loading={props.loading}
-      label={this.props.t('Quantity', {ns: 'biobank'})}
+      label={t('Quantity', {ns: 'biobank'})}
       clearAll={props.clearAll}
       updateValue={()=>props.updateSpecimen(current.specimen)}
       edit={() => props.edit('quantity')}
@@ -141,7 +141,7 @@ function Globals(props) {
       return (
         <InlineField
           loading={props.loading}
-          label={this.props.t('Freeze-Thaw Cycle', {ns: 'biobank'})}
+          label={t('Freeze-Thaw Cycle', {ns: 'biobank'})}
           clearAll={props.clearAll}
           updateValue={() => props.updateSpecimen(props.current.specimen)}
           edit={editFTCycle}
@@ -150,7 +150,7 @@ function Globals(props) {
           editable={editable.fTCycle}
         >
           <NumericElement
-            name={this.props.t('fTCycle', {ns: 'biobank'})}
+            name={t('fTCycle', {ns: 'biobank'})}
             onUserInput={props.setSpecimen}
             value={props.current.specimen.fTCycle}
             errorMessage={props.errors.specimen.fTCycle}
@@ -164,7 +164,7 @@ function Globals(props) {
   const temperatureField = (
     <InlineField
       loading={props.loading}
-      label={this.props.t('Temperature', {ns: 'biobank'})}
+      label={t('Temperature', {ns: 'biobank'})}
       clearAll={props.clearAll}
       updateValue={updateContainer}
       edit={!container.parentContainerId && editTemperature}
@@ -202,7 +202,7 @@ function Globals(props) {
   const statusField = (
     <InlineField
       loading={props.loading}
-      label={this.props.t('Status', {ns: 'biobank'})}
+      label={t('Status', {ns: 'biobank'})}
       clearAll={props.clearAll}
       updateValue={updateContainer}
       edit={() => props.edit('status')}
@@ -224,14 +224,14 @@ function Globals(props) {
 
   const projectField = () => specimen && (
     <InlineField
-      label={this.props.t('Project', {ns: 'loris', count: 1})}
+      label={t('Project', {ns: 'loris', count: 1})}
       value={options.projects[specimen.projectId]}
     />
   );
 
   const drawField = specimen && (
     <InlineField
-      label={this.props.t('Draw Site', {ns: 'biobank'})}
+      label={t('Draw Site', {ns: 'biobank'})}
       value={options.centers[
         options.sessions[specimen.sessionId]?.centerId
       ]}
@@ -240,7 +240,7 @@ function Globals(props) {
 
   const centerField = (
     <InlineField
-      label={this.props.t('Current Site', {ns: 'biobank'})}
+      label={t('Current Site', {ns: 'biobank'})}
       value={options.centers[container.centerId]}
     />
   );
@@ -249,7 +249,7 @@ function Globals(props) {
     if (container.shipmentBarcodes.length !== 0) {
       return (
         <InlineField
-          label={this.props.t('Shipment', {ns: 'biobank', count: 1})}
+          label={t('Shipment', {ns: 'biobank', count: 1})}
           value={container.shipmentBarcodes.slice(-1)[0]}
         />
       );
@@ -263,14 +263,14 @@ function Globals(props) {
 
     const {parentSpecimenIds, parentSpecimenBarcodes} = specimen;
     const value = parentSpecimenIds.length === 0
-      ? this.props.t('None', {ns: 'loris'})
+      ? t('None', {ns: 'loris'})
       : parentSpecimenBarcodes
         .map((barcode) => <Link to={`/barcode=${barcode}`}>{barcode}</Link>)
         .reduce((prev, curr, index) => [prev, index == 0 ? '' : ', ', curr]);
 
     return (
       <InlineField
-        label={this.props.t('Parent Specimen', {ns: 'biobank'})}
+        label={t('Parent Specimen', {ns: 'biobank'})}
         value={value}
       />
     );
@@ -354,12 +354,12 @@ function Globals(props) {
   const candidateSessionField = specimen ? (
     <div>
       <InlineField
-        label={this.props.t('PSCID', {ns: 'loris'})}
+        label={t('PSCID', {ns: 'loris'})}
         value={options.candidates[specimen.candidateId].pscid}
         link={loris.BaseURL+'/'+specimen.candidateId}
       />
       <InlineField
-        label={this.props.t('Visit Label', {ns: 'loris'})}
+        label={t('Visit Label', {ns: 'loris'})}
         value={options.sessions[specimen.sessionId].label}
         link={
           loris.BaseURL+'/instrument_list/?candID='+
@@ -577,7 +577,7 @@ Item.propTypes = {
  * @return {JSX}
  */
 function InlineField(props) {
-  const {t} = this.props;
+  const {t} = useTranslation(['biobank', 'loris']);
   const fields = React.Children.map(
     props.children, (child) => {
       return (
@@ -626,7 +626,7 @@ function InlineField(props) {
     <React.Fragment>
       <div style={{flex: '0 1 15%', margin: '0 1%'}}>
         <CTA
-          label={this.props.t('Update', {ns: 'biobank'})}
+          label={t('Update', {ns: 'biobank'})}
           onUserInput={props.updateValue}
         />
       </div>
