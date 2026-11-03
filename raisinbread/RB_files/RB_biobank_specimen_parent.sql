@@ -1,5 +1,9 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `biobank_specimen_parent`;
 LOCK TABLES `biobank_specimen_parent` WRITE;
+INSERT INTO `biobank_specimen_parent` (`SpecimenID`, `ParentSpecimenID`) VALUES (2,1);
+INSERT INTO `biobank_specimen_parent` (`SpecimenID`, `ParentSpecimenID`) VALUES (3,1);
+INSERT INTO `biobank_specimen_parent` (`SpecimenID`, `ParentSpecimenID`) VALUES (8,7);
+INSERT INTO `biobank_specimen_parent` (`SpecimenID`, `ParentSpecimenID`) VALUES (11,10);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
