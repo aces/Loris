@@ -88,9 +88,13 @@ class New_Profile extends \NDB_Form
             []
         );
 
-        // Get setting through pscid
-        $PSCIDsettings = $config->getSetting('PSCID');
-        if ($PSCIDsettings['generation'] == 'user') {
+        // Determine whether PSCID must be entered manually
+        $identifierTypeController = new \LORIS\IdentifierTypeController(
+            $factory->database()
+        );
+        $PSCIDType = $identifierTypeController->getIdentifierTypeFromName('PSCID');
+
+        if (!$PSCIDType->autoGenerate) {
             $pscidSet = "true";
         }
 
