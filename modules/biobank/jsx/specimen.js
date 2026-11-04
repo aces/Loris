@@ -136,7 +136,7 @@ function ProcessPanel(props) {
 
   const protocolExists = Object.values(options.specimen.protocols).find(
     (protocol) => {
-      return protocol.typeId == specimen.typeId &&
+      return protocol.typeIds.some((id) => id == specimen.typeId) &&
             options.specimen.processes[protocol.processId].label ==
             process.replace(/^\w/, (c) => c.toUpperCase());
     }
