@@ -438,7 +438,7 @@ class Pool implements
             $this->setCenterId(new \CenterID(strval($data['centerId'])));
         }
         if (isset($data['projectId'])) {
-            $this->setProjectId($data['projectId']);
+            $this->setProjectId(new \ProjectID(strval($data['projectId'])));
         }
         if (isset($data['date'])) {
             $this->setDate(new \DateTime($data['date']));
