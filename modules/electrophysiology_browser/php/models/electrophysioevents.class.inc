@@ -83,7 +83,7 @@ class ElectrophysioEvents
 
         $this->_data = [
             'instances'         => $taskEvents,
-            'extra_columns'     => $extraColumns,
+            'extra_columns'     => iterator_to_array($extraColumns),
             'hed_tags'          => array_map(
                 function ($hedTag) {
                     $hedTag['TaggerName']
