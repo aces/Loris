@@ -36,11 +36,11 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
     private $_candidate;
 
     /**
-     * Permission codes indexed by permission ID.
+     * Controller for identifier type access checks.
      *
-     * @var array<int, string|null>
+     * @var \LORIS\IdentifierTypeController|null
      */
-    private array $_permissionCodes = [];
+    private ?\LORIS\IdentifierTypeController $_typeController = null;
 
     /**
      * Constructor
@@ -129,48 +129,15 @@ class Identifiers extends Endpoint implements \LORIS\Middleware\ETagCalculator
         \User $user,
         \LORIS\IdentifierType $identifierType
     ): bool {
-        $projectID = $this->_candidate->getProjectID();
+        $this->_typeController ??= new \LORIS\IdentifierTypeController(
+            $this->loris->getDatabaseConnection()
+        );
 
-        if (!empty($identifierType->projects)) {
-            $projectAllowed = false;
-
-            foreach ($identifierType->projects as $project) {
-                if ($project->getId() == $projectID) {
-                    $projectAllowed = true;
-                    break;
-                }
-            }
-
-            if (!$projectAllowed || !$user->hasProject($projectID)) {
-                return false;
-            }
-        }
-
-        if ($identifierType->permissionID !== null) {
-            $database = $this->loris->getDatabaseConnection();
-
-            $permissionID = $identifierType->permissionID;
-
-            if (!array_key_exists($permissionID, $this->_permissionCodes)) {
-                $permission = $database->pselectRow(
-                    "SELECT code FROM permissions WHERE permID = :permID",
-                    ['permID' => $permissionID]
-                );
-
-                $this->_permissionCodes[$permissionID]
-                    = $permission['code'] ?? null;
-            }
-
-            $permissionCode = $this->_permissionCodes[$permissionID];
-
-            if ($permissionCode === null
-                || !$user->hasPermission($permissionCode)
-            ) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->_typeController->canAccessIdentifierType(
+            $user,
+            $identifierType,
+            $this->_candidate
+        );
     }
 
     /**

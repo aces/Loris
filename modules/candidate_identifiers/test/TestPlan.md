@@ -19,3 +19,24 @@
 13. Verify that available identifier types match those configured in the Configuration module.
 14. Verify that required and automatically generated identifier types are handled according to their configuration.
 15. Verify that invalid identifier values are rejected with an appropriate error message.
+
+## Widgets
+
+1. Access a candidate in the `candidate_profile` module.
+
+### Candidate Identifiers Widget
+
+1. Verify that the "Candidate Identifiers" card appears for users
+   with access to the module.
+2. Verify that the identifier types and values displayed match
+   those stored for the candidate.
+3. Verify that identifiers are displayed in a read-only table.
+4. Verify that "No identifiers found" is displayed when the
+   candidate has no accessible identifiers.
+5. Verify that identifiers requiring a specific permission are
+   only displayed to users with that permission.
+6. Verify that project-restricted identifiers are only displayed
+   when the candidate's registration project matches an allowed
+   project and the user has access to that project.
+7. Verify that the widget labels and empty-state message are
+   correctly translated when switching between English and French.

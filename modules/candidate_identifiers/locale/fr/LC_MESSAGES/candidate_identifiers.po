@@ -81,3 +81,6 @@ msgstr "Identifiant ou candidat introuvable."
 
 msgid "Candidate not found."
 msgstr "Candidat introuvable."
+
+msgid "No identifiers found"
+msgstr "Aucun identifiant trouvé"

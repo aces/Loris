@@ -26,6 +26,13 @@ namespace LORIS;
 class IdentifierTypeController
 {
     /**
+     * Permission codes indexed by permission ID.
+     *
+     * @var array<int, string|null>
+     */
+    private array $_permissionCodes = [];
+
+    /**
      * Creates an IdentifierTypeController
      *
      * @param \Database $database Database connection
@@ -40,6 +47,62 @@ class IdentifierTypeController
                 "IdentifierTypeController - Database not connected"
             );
         }
+    }
+
+    /**
+     * Checks whether a user can access an identifier type for a candidate.
+     *
+     * @param \User          $user           Requesting user
+     * @param IdentifierType $identifierType Identifier type
+     * @param \Candidate     $candidate      Requested candidate
+     *
+     * @return bool Whether access is permitted
+     */
+    public function canAccessIdentifierType(
+        \User $user,
+        IdentifierType $identifierType,
+        \Candidate $candidate
+    ): bool {
+        $projectID = $candidate->getProjectID();
+
+        if (!empty($identifierType->projects)) {
+            $projectAllowed = false;
+
+            foreach ($identifierType->projects as $project) {
+                if ($project->getId() == $projectID) {
+                    $projectAllowed = true;
+                    break;
+                }
+            }
+
+            if (!$projectAllowed || !$user->hasProject($projectID)) {
+                return false;
+            }
+        }
+
+        if ($identifierType->permissionID !== null) {
+            $permissionID = $identifierType->permissionID;
+
+            if (!array_key_exists($permissionID, $this->_permissionCodes)) {
+                $permission = $this->database->pselectRow(
+                    "SELECT code FROM permissions WHERE permID = :permID",
+                    ['permID' => $permissionID]
+                );
+
+                $this->_permissionCodes[$permissionID]
+                    = $permission['code'] ?? null;
+            }
+
+            $permissionCode = $this->_permissionCodes[$permissionID];
+
+            if ($permissionCode === null
+                || !$user->hasPermission($permissionCode)
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

@@ -13,7 +13,10 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
+
 namespace LORIS\candidate_identifiers;
+
+use LORIS\candidate_profile\CandidateWidget;
 
 /**
  * Class module implements the basic LORIS module functionality
@@ -34,7 +37,7 @@ class Module extends \Module
      *
      * @return bool Whether access is granted
      */
-    public function hasAccess(\User $user) : bool
+    public function hasAccess(\User $user): bool
     {
         return parent::hasAccess($user) &&
             $user->hasAnyPermission(['data_entry', 'access_all_profiles']);
@@ -45,7 +48,7 @@ class Module extends \Module
      *
      * @return ?\LORIS\GUI\MenuCategory
      */
-    public function getMenuCategory() : ?\LORIS\GUI\MenuCategory
+    public function getMenuCategory(): ?\LORIS\GUI\MenuCategory
     {
         return \LORIS\GUI\MenuCategory::singleton("Candidate");
     }
@@ -55,8 +58,76 @@ class Module extends \Module
      *
      * @return string The human-readable module name
      */
-    public function getLongName() : string
+    public function getLongName(): string
     {
         return dgettext("candidate_identifiers", "Candidate Identifiers");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $type    Widget type
+     * @param \User  $user    Current user
+     * @param array  $options Widget options
+     *
+     * @return \LORIS\GUI\Widget[]
+     */
+    public function getWidgets(string $type, \User $user, array $options): array
+    {
+        if ($type !== 'candidate') {
+            return [];
+        }
+
+        $candidate = $options['candidate'] ?? null;
+
+        if ($candidate === null || !$this->hasAccess($user)) {
+            return [];
+        }
+
+        $controller = new \LORIS\CandidateIdentifierController(
+            \NDB_Factory::singleton()->database()
+        );
+
+        $identifiers = $controller->getCandidateIdentifiers(
+            (int) $candidate->getID()
+        );
+
+        $data = [];
+
+        $typeController = new \LORIS\IdentifierTypeController(
+            \NDB_Factory::singleton()->database()
+        );
+
+        foreach ($identifiers as $identifier) {
+            $identifierType = $identifier->type;
+
+            if (!$typeController->canAccessIdentifierType(
+                $user,
+                $identifierType,
+                $candidate
+            )
+            ) {
+                continue;
+            }
+
+            $data[] = [
+                'ID'    => $identifier->candidateIdentifierID,
+                'Type'  => $identifierType->name,
+                'Value' => $identifier->value,
+            ];
+        }
+
+        $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+
+        return [
+            new CandidateWidget(
+                dgettext("candidate_identifiers", "Candidate Identifiers"),
+                $baseURL . "/candidate_identifiers/js/CandidateIdentifiersWidget.js",
+                "lorisjs.candidate_identifiers.CandidateIdentifiersWidget.default",
+                ['Identifiers' => $data],
+                1,
+                1,
+            ),
+        ];
     }
 }

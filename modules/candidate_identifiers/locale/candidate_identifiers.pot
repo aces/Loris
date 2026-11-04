@@ -80,3 +80,6 @@ msgstr ""
 
 msgid "Candidate not found."
 msgstr ""
+
+msgid "No identifiers found"
+msgstr ""
