@@ -31,7 +31,10 @@ const lorisModules: Record<string, string[]> = {
   biobank: ['biobankIndex'],
   create_timepoint: ['createTimepointIndex'],
   candidate_list: ['openProfileForm', 'candidateListIndex'],
-  candidate_identifiers: ['candidateIdentifiersIndex'],
+  candidate_identifiers: [
+    'candidateIdentifiersIndex',
+    'CandidateIdentifiersWidget',
+  ],
   datadict: ['dataDictIndex'],
   dataquery: ['index'],
   data_release: ['dataReleaseIndex'],

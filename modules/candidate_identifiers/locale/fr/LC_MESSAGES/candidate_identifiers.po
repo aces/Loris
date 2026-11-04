@@ -45,3 +45,6 @@ msgstr "Oui, le supprimer !"
 
 msgid "Delete"
 msgstr "Supprimer"
+
+msgid "No identifiers found"
+msgstr "Aucun identifiant trouvé"
