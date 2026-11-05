@@ -55,6 +55,29 @@ function TableCell(props: {data: string}) {
   return <td>{cellValue(props.data)}</td>;
 }
 
+/**
+ * Joins the values of a cardinality many field into a string, each value
+ * prefixed with its key unless the field is a URI or the key is the value
+ * itself.
+ *
+ * @param {object} values - The values, keyed by their key
+ * @param {FieldDictionary} dictionary - The field's dictionary
+ * @returns {string} - The joined values
+ */
+function joinManyValues(
+  values: {[key: string]: any},
+  dictionary: FieldDictionary
+): string {
+  return Object.keys(values)
+    .map((key) => {
+      if (dictionary.type === 'URI' || key == values[key]) {
+        return values[key];
+      }
+      return key + '=' + values[key];
+    })
+    .join(';');
+}
+
 enum EnumDisplayTypes {
     EnumLabel,
     EnumValue
@@ -603,17 +626,7 @@ function organizeData(
                         if (!thevalues) {
                           dataRow.push(null);
                         } else {
-                          const mappedVals = Object.keys(thevalues)
-                            .map((key) => {
-                            // If it's a URI, don't prepend the key/label
-                              if (dictionary.type === 'URI') {
-                                return thevalues[key];
-                              }
-                              // Otherwise, concatenate key and value
-                              return key + '=' + thevalues[key];
-                            })
-                            .join(';');
-                          dataRow.push(mappedVals);
+                          dataRow.push(joinManyValues(thevalues, dictionary));
                         }
                       }
                       break;
@@ -791,17 +804,10 @@ function expandLongitudinalCells(
             if (thissession.values === undefined) {
               return {value: null, dictionary: fielddict};
             }
-            const thevalues = thissession.values;
-            return {value: Object.keys(thevalues)
-              .map( (key) => {
-                // If it's a URI, don't prepend the key/label
-                if (fielddict.type === 'URI') {
-                  return thevalues[key];
-                }
-                // Otherwise concatenate key with value.
-                return key + '=' + thevalues[key];
-              })
-              .join(';'), dictionary: fielddict};
+            return {
+              value: joinManyValues(thissession.values, fielddict),
+              dictionary: fielddict,
+            };
           default:
             if (thissession.value !== undefined) {
               return {
@@ -966,7 +972,7 @@ function organizedFormatter(
                             <div style={{
                               margin: '1ex',
                             }}>
-                              <dt>{keyid}</dt>
+                              {keyid != val && <dt>{keyid}</dt>}
                               <dd>{dval}</dd>
                             </div>
                           );
