@@ -138,7 +138,7 @@ function uploadPublication() : void
         showPublicationError($e->getMessage(), 500);
     }
 
-    notify($pubID, 'submission', $_POST['baseURL']);
+    notify($pubID, 'submission');
 }
 
 /**
@@ -426,13 +426,12 @@ function cleanup(int $pubID) : void
 /**
  * Send out email notifications for project submission
  *
- * @param int    $pubID   publication ID
- * @param string $type    The notification type i.e., submission|edit|review
- * @param string $baseURL the base URL of the loris site
+ * @param int    $pubID publication ID
+ * @param string $type  The notification type i.e., submission|edit|review
  *
  * @return void
  */
-function notify($pubID, $type, $baseURL) : void
+function notify($pubID, $type) : void
 {
     $acceptedTypes = [
         'submission',
@@ -469,14 +468,12 @@ function notify($pubID, $type, $baseURL) : void
     $emailData['Title']       = $data['Title'];
     $emailData['Date']        = $data['DateProposed'];
     $emailData['User']        = $user->getFullname();
-    $emailData['URL']         = $baseURL . '/publication/view_project/?id='.$pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
     $Notifier = new \NDB_Notifier(
         "publication",
         $type
     );
     $msg_data = [
-        'URL'         => $emailData['URL'],
         'Title'       => $emailData['Title'],
         'User'        => $emailData['User'],
         'ProjectName' => $emailData['ProjectName'],
@@ -618,10 +615,10 @@ function editProject() : void
     processFiles($id);
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
-        notify($id, 'review', $_POST['baseURL']);
+        notify($id, 'review');
     } else {
         // otherwise send edit email
-        notify($id, 'edit', $_POST['baseURL']);
+        notify($id, 'edit');
     }
     if (!empty($toUpdate)) {
         $db->update(
