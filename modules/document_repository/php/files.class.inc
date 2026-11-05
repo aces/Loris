@@ -77,7 +77,7 @@ class Files extends \NDB_Page
                 ['file_dir' => mb_substr($filename, 1)]
             );
 
-            if (! $user->hasCenter(\CenterID::singleton((int)$forSite))) {
+            if (! $user->hasCenter(new \CenterID((string)$forSite))) {
                 return (new \LORIS\Http\Response\JSON\Forbidden());
             }
         }
