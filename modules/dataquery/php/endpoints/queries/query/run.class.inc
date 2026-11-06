@@ -76,8 +76,7 @@ class Run extends \LORIS\Http\Endpoint
             function (
                 $candid,
                 $rowsArray,
-                /* @phan-suppress-next-line PhanUnusedClosureParameter */
-                $rowsBinary,
+                $unusedRowsBinary,
                 bool $end
             ) use (&$values, &$db, &$runid) {
                 $values[intval($candid)] = json_encode($rowsArray);
