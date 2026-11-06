@@ -28,12 +28,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     //filter location
     static $PSCID          = 'input[name="pscid"]';
     static $DCCID          = 'input[name="dccid"]';
-    static $visitLabel     = 'select[name="visitLabel"]';
-    static $site           = 'select[name="site"]';
+    static $visitLabel     = '.loris-select[data-name="visitLabel"]';
+    static $site           = '.loris-select[data-name="site"]';
     static $entityType     = 'select[name="entityType"]';
     static $sex            = 'select[name="sex"]';
     static $project        = 'select[name="project"]';
-    static $cohort         = 'select[name="cohort"]';
+    static $cohort         = '.loris-select[data-name="cohort"]';
     static $advancedFilter = ".panel-body .btn-primary:nth-child(1)";
     // advanced filter
     static $scanDone    = 'select[name="scanDone"]';
@@ -168,7 +168,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Name("participantStatus")
         );
            $this->assertEquals("select", $participantsStatusOptions->getTagName());
-           $dobOptions = $this->safeFindElement(WebDriverBy::Name("DoBMin"));
+           // The date range's inputs are hidden behind its calendar
+           $dobOptions = $this->webDriver->findElement(WebDriverBy::Name("DoBMin"));
            $this->assertEquals("input", $dobOptions->getTagName());
            // Not currently done
            //$this->assertEquals("date",$dobOptions->getAttribute("type"));
