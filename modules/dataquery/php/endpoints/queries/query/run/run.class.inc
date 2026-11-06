@@ -105,26 +105,19 @@ class Run extends \LORIS\Http\Endpoint
             ]
         );
 
-        $accessible = [];
-        $filtered   = \Candidate::filterInaccessibleCandIDs(
-            $this->loris,
-            array_map(
-                function ($candID) {
-                    return new CandID(strval($candID));
-                },
-                $candIDs
-            ),
-            $user
-        );
-        foreach ($filtered as $candID) {
-            $accessible[strval($candID)] = true;
-        }
-        $candIDs = array_values(
-            array_filter(
-                $candIDs,
-                function ($candID) use ($accessible) {
-                    return isset($accessible[$candID]);
-                }
+        $candIDs = array_map(
+            'strval',
+            \iterator_to_array(
+                \Candidate::filterInaccessibleCandIDs(
+                    $this->loris,
+                    array_map(
+                        function ($candID) {
+                            return new CandID(strval($candID));
+                        },
+                        $candIDs
+                    ),
+                    $user
+                )
             )
         );
 
