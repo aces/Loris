@@ -158,6 +158,12 @@ class Media extends \DataFrameworkMenu
             // We don't filter out hidden files.
             return $provisioner;
         }
+        if (!$user->hasPermission('access_all_profiles')) {
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
+        }
+
         return $provisioner->filter(new HideFileFilter());
     }
 
