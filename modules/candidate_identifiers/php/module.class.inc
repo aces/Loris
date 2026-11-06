@@ -152,4 +152,14 @@ class Module extends \Module
             ),
         ];
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return iterable
+     */
+    public function getQueryEngines(): iterable
+    {
+        return [new QueryEngine($this->loris)];
+    }
 }

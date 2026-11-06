@@ -629,6 +629,25 @@ function organizeData(
                   default:
                     throw new Error('Too many visit values');
                   }
+                } else if (dictionary?.scope === 'candidate' &&
+                  dictionary.cardinality === 'many' &&
+                  candidaterow[i]) {
+                  try {
+                    const values = JSON.parse(
+                      candidaterow[i] as string
+                    ).values || {};
+                    const display = Object.keys(values)
+                      .map((key) => {
+                        if (dictionary.type === 'URI') {
+                          return values[key];
+                        }
+                        return key + '=' + values[key];
+                      })
+                      .join(';');
+                    dataRow.push(display);
+                  } catch (e) {
+                    dataRow.push(null);
+                  }
                 } else {
                   dataRow.push(candidaterow[i]);
                 }
@@ -750,7 +769,26 @@ function expandLongitudinalCells(
   switch (fielddict.scope) {
   case 'candidate':
     if (fielddict.cardinality == 'many') {
-      throw new Error('Candidate cardinality many not implemented');
+      let celldata: {values?: {[key: string]: string}};
+      try {
+        celldata = JSON.parse(value || '{}');
+      } catch (e) {
+        console.error('Internal error parsing: "' + value + '"');
+        return [{value: null, dictionary: fielddict}];
+      }
+
+      const values = celldata.values || {};
+      return [{
+        value: Object.keys(values)
+          .map((key) => {
+            if (fielddict.type === 'URI') {
+              return values[key];
+            }
+            return key + '=' + values[key];
+          })
+          .join(';'),
+        dictionary: fielddict,
+      }];
     }
     return [{value: value, dictionary: fielddict}];
   case 'session':
@@ -891,8 +929,26 @@ function organizedFormatter(
           return <td><i>{t('(No data)', {ns: 'dataquery'})}</i></td>;
         }
         switch (fielddict.cardinality) {
-        case 'many':
-          return <td><i>{t('(Not implemented)', {ns: 'dataquery'})}</i></td>;
+        case 'many': {
+          let values: { [key: string]: string };
+
+          try {
+            values = JSON.parse(cell).values || {};
+          } catch (e) {
+            return <td><i>{t('(No data)', {ns: 'dataquery'})}</i></td>;
+          }
+
+          const display = Object.keys(values)
+            .map((key) => {
+              if (fielddict.type === 'URI') {
+                return values[key];
+              }
+              return key + '=' + values[key];
+            })
+            .join('; ');
+
+          return <TableCell data={display} />;
+        }
         case 'single':
         case 'unique':
         case 'optional':
