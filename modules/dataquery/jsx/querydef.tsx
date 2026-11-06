@@ -34,6 +34,22 @@ export class QueryTerm {
       this.value = value;
       this.visits = visits;
     }
+
+    /**
+     * Returns a copy of this term
+     *
+     * @returns {QueryTerm} - the copy
+     */
+    clone(): QueryTerm {
+      return new QueryTerm(
+        this.module,
+        this.category,
+        this.fieldname,
+        this.op,
+        Array.isArray(this.value) ? [...this.value] : this.value,
+        this.visits ? [...this.visits] : undefined,
+      );
+    }
 }
 
 /**
@@ -85,5 +101,16 @@ export class QueryGroup {
       // there would be no reason for a new group
       const newOp = this.operator == 'and' ? 'or' : 'and';
       this.group.push(new QueryGroup(newOp));
+    }
+
+    /**
+     * Returns a copy of this group and everything under it
+     *
+     * @returns {QueryGroup} - the copy
+     */
+    clone(): QueryGroup {
+      const copy = new QueryGroup(this.operator);
+      copy.group = this.group.map((item) => item.clone());
+      return copy;
     }
 }
