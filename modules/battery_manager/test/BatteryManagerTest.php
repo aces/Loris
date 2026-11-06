@@ -38,6 +38,14 @@ class BatteryManagerTest extends LorisIntegrationTest
     //General locations
     static $display     = '.table-header > div > div > div:nth-child(1)';
     static $clearFilter = '.nav-tabs a';
+    //Action locations
+    static $newTest          = 'button.action-new-test';
+    static $editMetadata     = '.action-edit-metadata button';
+    static $activate         = '.action-activate button';
+    static $deactivate       = '.action-deactivate button';
+    static $firstRowCheckbox = '#dynamictable > tbody > tr:nth-child(1) '
+        . 'input[type="checkbox"]';
+    static $modalForm        = 'form[name="modal"]';
 
     /**
      * Tests that, when loading the BatteryManager module, some
@@ -89,6 +97,12 @@ class BatteryManagerTest extends LorisIntegrationTest
         $this->assertStringNotContainsString(
             "Edit Metadata",
             $bodyText
+        );
+        $this->assertCount(
+            0,
+            $this->webDriver->findElements(
+                WebDriverBy::cssSelector(self::$editMetadata)
+            )
         );
         $this->resetPermissions();
     }
@@ -195,8 +209,8 @@ class BatteryManagerTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that the page does not load if the user does not have correct
-     * permissions
+     * Tests that a user with edit permission sees the row actions and can
+     * open the edit form for a selected row.
      *
      * @return void
      */
@@ -211,27 +225,13 @@ class BatteryManagerTest extends LorisIntegrationTest
             "You do not have access to this page.",
             $bodyText
         );
+        $this->safeFindElement(WebDriverBy::cssSelector(self::$editMetadata));
+        $this->safeFindElement(WebDriverBy::cssSelector(self::$activate));
+        $this->safeFindElement(WebDriverBy::cssSelector(self::$deactivate));
+
+        $this->_openEditForm();
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#dynamictable > thead > tr")
-        )->getText();
-        $this->assertStringContainsString(
-            "Change Status",
-            $bodyText
-        );
-        $this->assertStringContainsString(
-            "Edit Metadata",
-            $bodyText
-        );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(14) > button"
-            )
-        );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div >".
-                " div:nth-child(2) > div > div:nth-child(1)"
-            )
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
             "Edit Test",
@@ -242,152 +242,129 @@ class BatteryManagerTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that the page does not load if the user does not have correct
-     * permissions
+     * Tests editing the selected test through the Edit Metadata row action.
      *
      * @return void
      */
     function testEditform()
     {
         $this->safeGet($this->url . "/battery_manager/");
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#dynamictable > tbody > tr > td:nth-child(14) > button"
-            )
-        );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div:nth-child(1) > div:nth-child(2) > ".
-                "div:nth-child(1) > div:nth-child(2) > div:nth-child(1) >".
-                " form:nth-child(1) > div:nth-child(1) >div:nth-child(2) >".
-                " div:nth-child(1) > div:nth-child(2) > select:nth-child(1) >" .
-                " option:nth-child(3)"
-            ),
-            5
-        );
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "div:nth-child(3) > div:nth-child(1) >".
-                " div:nth-child(2) > input:nth-child(1)",
-                1
-            )
-        )->clear()->sendKeys('0');
-
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "div.col-sm-12:nth-child(4)>div:nth-child(1)".
-                ">div:nth-child(2)>input:nth-child(1)"
-            ),
-            1
-        )->clear()->sendKeys('1');
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "div:nth-child(5) > div:nth-child(1) > div:nth-child(2) > ".
-                "select:nth-child(1) > option:nth-child(2)"
-            ),
-            1
-        );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "div.col-sm-9:nth-child(1) > button:nth-child(1)"
-            ),
-            1
-        );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#swal2-title"),
-            1
-        )->getText();
-        $this->assertStringContainsString(
-            "Submission Successful!",
-            $bodyText
-        );
-    }
-
-    /**
-     * Tests that the page does not load if the user does not have correct
-     * permissions
-     *
-     * @return void
-     */
-    function testAddNew()
-    {
-        $this->safeGet($this->url . "/battery_manager/");
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#default-panel > div > div > div.table-header >".
-                " div > div > div:nth-child(2) > button:nth-child(1)"
-            )
-        );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div:nth-child(1) > div:nth-child(2) >".
-                " div:nth-child(1) > div:nth-child(2) > div:nth-child(1) >".
-                " form:nth-child(1) > div:nth-child(1) >div:nth-child(2) > ".
-                "div:nth-child(1) > div:nth-child(2) > select:nth-child(1) >".
-                " option:nth-child(3)"
-            ),
-            5
-        );
-
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "div:nth-child(3) > div:nth-child(1) > ".
-                "div:nth-child(2) > input:nth-child(1)",
-                1
-            )
-        )->clear()->sendKeys('0');
-
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "div.col-sm-12:nth-child(4)>div:nth-child(1)>".
-                "div:nth-child(2) >input:nth-child(1)"
-            ),
-            1
-        )->clear()->sendKeys('1');
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "div:nth-child(5) > div:nth-child(1) > div:nth-child(2) >".
-                " select:nth-child(1) > option:nth-child(2)
-"
-            ),
-            1
-        );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "div.col-sm-9:nth-child(1) > button:nth-child(1)"
-            ),
-            1
-        );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#swal2-title"),
-            1
-        )->getText();
-        $this->assertStringContainsString(
-            "Submission Successful!",
-            $bodyText
-        );
-    }
-
-    /**
-     * Tests that the page does not load if the user does not have correct
-     * permissions
-     *
-     * @return void
-     */
-    function testActivebtn()
-    {
-        $this->safeGet($this->url . "/battery_manager/");
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(13) > button"
-            )
-        );
+        $this->_openEditForm();
+        $this->_fillTestForm();
+        $this->_submitTestForm();
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("#swal2-title")
         )->getText();
         $this->assertStringContainsString(
             "Submission Successful!",
             $bodyText
+        );
+    }
+
+    /**
+     * Tests adding a new test through the New Test action.
+     *
+     * @return void
+     */
+    function testAddNew()
+    {
+        $this->safeGet($this->url . "/battery_manager/");
+        $this->safeClick(WebDriverBy::cssSelector(self::$newTest));
+        $this->_fillTestForm();
+        $this->_submitTestForm();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#swal2-title")
+        )->getText();
+        $this->assertStringContainsString(
+            "Submission Successful!",
+            $bodyText
+        );
+    }
+
+    /**
+     * Tests changing the status of the selected test through whichever of
+     * the Activate and Deactivate row actions applies to it.
+     *
+     * @return void
+     */
+    function testActivebtn()
+    {
+        $this->safeGet($this->url . "/battery_manager/");
+        $this->safeClick(WebDriverBy::cssSelector(self::$firstRowCheckbox));
+        $deactivate = $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$deactivate)
+        );
+        if ($deactivate->isEnabled()) {
+            $deactivate->click();
+        } else {
+            $this->safeClick(WebDriverBy::cssSelector(self::$activate));
+        }
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#swal2-title")
+        )->getText();
+        $this->assertStringContainsString(
+            "Submission Successful!",
+            $bodyText
+        );
+    }
+
+    /**
+     * Selects the first row and opens the Edit Metadata form.
+     *
+     * @return void
+     */
+    private function _openEditForm(): void
+    {
+        $this->safeClick(WebDriverBy::cssSelector(self::$firstRowCheckbox));
+        $this->safeClick(WebDriverBy::cssSelector(self::$editMetadata));
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$modalForm . ' [name="ageMinDays"]')
+        );
+    }
+
+    /**
+     * Fills the open test form with valid values.
+     *
+     * @return void
+     */
+    private function _fillTestForm(): void
+    {
+        $instrument = new WebDriverSelect(
+            $this->safeFindElement(
+                WebDriverBy::cssSelector(
+                    self::$modalForm . ' select[name="testName"]'
+                )
+            )
+        );
+        $instrument->selectByIndex(2);
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$modalForm . ' [name="ageMinDays"]')
+        )->clear()->sendKeys('0');
+        $this->safeFindElement(
+            WebDriverBy::cssSelector(self::$modalForm . ' [name="ageMaxDays"]')
+        )->clear()->sendKeys('1');
+        $stage = new WebDriverSelect(
+            $this->safeFindElement(
+                WebDriverBy::cssSelector(
+                    self::$modalForm . ' select[name="stage"]'
+                )
+            )
+        );
+        $stage->selectByIndex(1);
+    }
+
+    /**
+     * Submits the open test form.
+     *
+     * @return void
+     */
+    private function _submitTestForm(): void
+    {
+        $this->safeClick(
+            WebDriverBy::xpath(
+                '//form[@name="modal"][.//*[@name="ageMinDays"]]' .
+                '//button[@type="submit"]'
+            )
         );
     }
 }
