@@ -203,7 +203,7 @@ abstract class SQLQueryEngine implements QueryEngine
             $inset = [];
             $i     = count($prepbindings);
             foreach ($visitlist as $vl) {
-                $prepname = ':val' . $i++;
+                $prepname = ':visit' . $i++;
                 $inset[]  = $prepname;
                 $prepbindings[$prepname] = $vl;
             }
@@ -593,7 +593,7 @@ abstract class SQLQueryEngine implements QueryEngine
             $inset = [];
             $i     = count($prepbindings);
             foreach ($visitlist as $vl) {
-                $prepname = ':val' . ++$i;
+                $prepname = ':visit' . ++$i;
                 $inset[]  = $prepname;
                 $prepbindings[$prepname] = $vl;
             }
