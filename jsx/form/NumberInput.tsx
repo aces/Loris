@@ -1,7 +1,7 @@
 import React, {forwardRef} from 'react';
 import {useFieldControl} from 'jsx/form/Field';
 
-type NumericProps = Omit<
+type NumberInputProps = Omit<
   React.ComponentPropsWithoutRef<'input'>,
   'type' | 'value' | 'onChange'
 > & {
@@ -18,8 +18,8 @@ type NumericProps = Omit<
  * Takes any input attribute. Inside a Field, it takes its id, required,
  * disabled and invalid state from the Field.
  */
-const Numeric = forwardRef<HTMLInputElement, NumericProps>(
-  function Numeric({value, onChange, invalid, className, ...props}, ref) {
+const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
+  function NumberInput({value, onChange, invalid, className, ...props}, ref) {
     const control = useFieldControl({...props, invalid});
     return (
       <input
@@ -35,4 +35,4 @@ const Numeric = forwardRef<HTMLInputElement, NumericProps>(
   }
 );
 
-export default Numeric;
+export default NumberInput;

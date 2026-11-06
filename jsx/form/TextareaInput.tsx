@@ -1,7 +1,7 @@
 import React, {forwardRef} from 'react';
 import {useFieldControl} from 'jsx/form/Field';
 
-type TextareaProps = Omit<
+type TextareaInputProps = Omit<
   React.ComponentPropsWithoutRef<'textarea'>,
   'value' | 'onChange' | 'onBlur'
 > & {
@@ -20,8 +20,8 @@ type TextareaProps = Omit<
  * Takes any textarea attribute. Inside a Field, it takes its id, required,
  * disabled and invalid state from the Field.
  */
-const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  function Textarea(
+const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
+  function TextareaInput(
     {value, onChange, onBlur, invalid, className, ...props},
     ref,
   ) {
@@ -40,4 +40,4 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   }
 );
 
-export default Textarea;
+export default TextareaInput;

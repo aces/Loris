@@ -9,8 +9,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputLabel from 'jsx/form/InputLabel';
 import Field from 'jsx/form/Field';
-import Textarea from 'jsx/form/Textarea';
-import Numeric from 'jsx/form/Numeric';
+import TextareaInput from 'jsx/form/TextareaInput';
+import NumberInput from 'jsx/form/NumberInput';
 import {withTranslation} from 'react-i18next';
 
 /**
@@ -1011,7 +1011,7 @@ export class TextareaElement extends Component {
         errorMessage={this.props.errorMessage}
         noMargins={this.props.noMargins}
       >
-        <Textarea
+        <TextareaInput
           cols={this.props.cols}
           rows={this.props.rows}
           name={this.props.name}
@@ -2002,7 +2002,7 @@ export class NumericElement extends Component {
         errorMessage={this.props.errorMessage}
         labelPlacementTop={this.props.labelPlacementTop}
       >
-        <Numeric
+        <NumberInput
           name={this.props.name}
           min={this.props.min}
           max={this.props.max}
