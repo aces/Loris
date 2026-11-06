@@ -34,7 +34,7 @@ following the documentation.
 **PHP instruments** behave slightly differently than LINST instruments and 
 require more manual steps for installation. In order to be able to generate the 
 SQL table for PHP instruments, they must first be parsed. The LORIS codebase 
-includes a tool under the `tools/` directory called the `lorisform_parser.php` 
+includes a tool under the `tools/` directory called the `ip_output_builder.php`
 allowing for a PHP instrument to be parsed into an intermediary serialized format 
 and automatically stored in the `tools/ip_output.txt` file.
 
@@ -48,11 +48,11 @@ Follow the steps below to install a new PHP instrument.
   1. Move your newly created instrument `NDB_BVL_Instrument_TEST_NAME.class.inc` 
   into the `project/instruments/` directory.
   2. Navigate to the LORIS `tools/` directory.
-  3. Run the instrument through the `lorisform_parser.php` to parse the PHP 
+  3. Run the instrument through the `ip_output_builder.php` to parse the PHP
   instrument into the intermediary serialed format.
-  		```
-  		ls ../project/instruments/NDB_BVL_Instrument_TEST_NAME.class.inc | php lorisform_parser.php
-  		```
+        ```
+        php ip_output_builder.php --one-instrument=TEST_NAME
+        ```
   4. Run the `generate_tables_sql.php` tool to converted the serialized format 
   into an SQL `CREATE TABLE` SQL patch. The patch will be created in the `project/` 
   directory by default.
@@ -64,10 +64,9 @@ Follow the steps below to install a new PHP instrument.
   6. Register the instrument in the `test_names` table of the database by running 
   the following command. Make sure to replace the `'TEST_NAME'` value with the 
   actual test name used in your instrument. 
-  
-  	```
-  	INSERT INTO test_names (Test_name,Sub_group) SELECT 'TEST_NAME', ID FROM test_subgroups WHERE Subgroup_name='Instruments';
-  	```
+        ```
+        INSERT INTO test_names (Test_name,Sub_group) SELECT 'TEST_NAME', ID FROM test_subgroups WHERE Subgroup_name='Instruments';
+        ```
   	
   > _**Note:** The `Sub_group` entry in the query above is necessary for the 
   > instrument registration. See the [Instrument Grouping](#instrument-grouping) 
@@ -119,7 +118,3 @@ assigned to categories and sorted accordingly on the user's interface.
 New entries can be added to the `test_subgroups` table to create new categories
  and instruments can be assigned a category by updating the `Sub_group` column 
  in the `test_names` table with the desired `ID` from the `test_subgroups` table.
-
-
-
-

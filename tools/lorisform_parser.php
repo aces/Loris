@@ -19,6 +19,9 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
 
+// depreaction notice
+fprintf(STDERR, "Tool is deprecated. Use 'tools/ip_output_builder.php' instead.\n");
+
 $instrumentsToSkip = [];
 $instruments       = getExcludedInstruments();
 foreach ($instruments as $instrument) {

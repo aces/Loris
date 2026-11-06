@@ -6,7 +6,7 @@ use \LORIS\Data\Scope;
 use \LORIS\Data\Cardinality;
 /**
  * Helper to extract a dictionary from a LorisForm, primarily
- * used by instruments. This is based on lorisform_parser.php
+ * used by instruments. This is based on ip_output_builder.php
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */

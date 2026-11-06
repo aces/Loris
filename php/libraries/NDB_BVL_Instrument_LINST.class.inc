@@ -32,6 +32,11 @@ use \LORIS\Data\Types\DateType;
  */
 class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 {
+    /**
+     * Line read size buffer.
+     */
+    public const int LINE_BUFFER_SIZE = 131072;
+
     public $InstrumentType = 'LINST';
 
     public $LinstQuestions = [];
@@ -394,7 +399,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             ];
 
             // Buffer = 128KB
-            while (($line = fgets($fp, 131072)) !== false) {
+            while (($line = fgets($fp, self::LINE_BUFFER_SIZE)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
                 $this->LinstLines[] = $pieces;
 
