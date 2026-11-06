@@ -29,7 +29,7 @@ class CandidateQueryEngine extends \LORIS\Data\Query\SQLQueryEngine
 
         $ids = new \LORIS\Data\Dictionary\Category(
             "Identifiers",
-            dgettext("candidate_parameters", "Candidate Identifiers")
+            "Legacy Candidate Identifiers"
         );
 
         $ids = $ids->withItems(
