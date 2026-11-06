@@ -152,6 +152,7 @@ class FeedbackMRI
         $query .= match ($this->objectType) {
             'volume' => " WHERE FileID=:FileID",
             'visit'  => " WHERE SessionID=:SessionID",
+            default  => throw new InvalidArgumentException("Unknown objectType"),
         };
 
         $result = $DB->pselect($query, $this->_buildWhereAssoc());
