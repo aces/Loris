@@ -81,7 +81,7 @@ class DataReleaseIndex extends Component {
   formatColumn(column, cell, row) {
     const {t} = this.props;
     // Set class to 'bg-danger' if file is hidden.
-    let hidden = row['Hidden By ID']
+    let hidden = row[t('Hidden By ID', {ns: 'data_release'})]
       && this.props.hasPermission('data_release_hide');
     let result = <td
       className={hidden ? 'bg-danger' : ''}
@@ -93,9 +93,9 @@ class DataReleaseIndex extends Component {
             || this.props.hasPermission('data_release_upload')
             || this.props.hasPermission('data_release_edit_file_access')) {
         const downloadURL = loris.BaseURL
-            + '/data_release/files/'
-            + encodeURIComponent(row[t('Data Release ID',
-              {ns: 'data_release'})]);
+             + '/data_release/files/'
+             + encodeURIComponent(row[t('Data Release ID',
+               {ns: 'data_release'})]);
         result = (
           <td
             className={hidden ? 'bg-danger' : ''}
@@ -117,12 +117,18 @@ class DataReleaseIndex extends Component {
                 <a
                   style={{marginLeft: 'auto'}}
                   onClick={() => {
+                    const fileName = t('File Name', {ns: 'data_release'});
+                    const version = t('Version', {ns: 'data_release'});
+                    const hiddenById = t('Hidden By ID',
+                      {ns: 'data_release'});
+                    const dataReleaseID = t('Data Release ID',
+                      {ns: 'data_release'});
                     this.setState({
                       managingFile: {
-                        fileName: row['File Name'],
-                        version: row['Version'],
-                        hiddenById: row['Hidden By ID'],
-                        dataReleaseID: row['Data Release ID'],
+                        fileName: row[fileName],
+                        version: row[version],
+                        hiddenById: row[hiddenById],
+                        dataReleaseID: row[dataReleaseID],
                       },
                     });
                     this.show('manageFileForm');
@@ -135,7 +141,7 @@ class DataReleaseIndex extends Component {
         );
       }
       break;
-    case 'Version':
+    case t('Version', {ns: 'data_release'}):
       result = <td
         className={hidden ? 'bg-danger' : ''}>
         {cell}
@@ -332,4 +338,3 @@ window.addEventListener('load', () => {
     />
   );
 });
-
