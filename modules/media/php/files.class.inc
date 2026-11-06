@@ -34,7 +34,7 @@ class Files extends \LORIS\Http\FilesPassthroughEndpoint
         \Psr\Http\Message\ServerRequestInterface $request
     ) : \Psr\Http\Message\ResponseInterface {
         $user = \User::singleton();
-        if (!$this->isAccessibleBy($user)) {
+        if (!$this->_hasAccess($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden("Permission Denied");
         }
 
