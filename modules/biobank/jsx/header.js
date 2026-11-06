@@ -183,6 +183,7 @@ class Header extends Component {
             editContainer={this.props.editContainer}
             setContainer={this.props.setContainer}
             updateContainer={this.props.updateContainer}
+            t={this.props.t}
           />
         </div>
         <LifeCycle
@@ -282,7 +283,7 @@ function ContainerCheckout(props) {
       <div className='action'>
         <div
           className='action-button update'
-          title={this.props.t('Checkout Container', {ns: 'biobank'})}
+          title={props.t('Checkout Container', {ns: 'biobank'})}
           onClick={checkoutContainer}
         >
           <span className='glyphicon glyphicon-share'/>
