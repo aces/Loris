@@ -81,11 +81,26 @@ class SNP extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+    const {t} = this.props;
     let reactElement;
     switch (column) {
     case 'PSCID':
       const url = `${this.props.baseURL}/${rowData.DCCID}/`;
       reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
+      break;
+    case t('rsID', {ns: 'genomic_browser'}):
+      if (!cell) {
+        reactElement = <td>{cell}</td>;
+        break;
+      }
+      const rsIdUrl = `https://www.ncbi.nlm.nih.gov/snp/${cell}`;
+      reactElement = (
+        <td>
+          <a href={rsIdUrl} target="_blank" rel="noopener noreferrer">
+            {cell}
+          </a>
+        </td>
+      );
       break;
     default:
       reactElement = <td>{cell}</td>;
@@ -93,7 +108,6 @@ class SNP extends Component {
     }
     return reactElement;
   }
-
   /**
    * @return {DOMRect}
    */
@@ -218,7 +232,7 @@ class SNP extends Component {
       },
       {
         label: t('rsID', {ns: 'genomic_browser'}),
-        show: false,
+        show: true,
         filter: {
           name: 'rsID',
           type: 'text',

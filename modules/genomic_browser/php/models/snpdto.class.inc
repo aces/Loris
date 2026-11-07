@@ -263,6 +263,7 @@ class SnpDTO implements DataInstance, SiteHaver
             'PSCID'               => $this->_PSCID,
             'Sex'                 => $this->_Sex,
             'Cohort'              => $this->_Cohort,
+            'Date_of_Birth'       => "",
             'externalID'          => $this->_externalID,
             'Chromosome'          => $this->_Chromosome,
             'Strand'              => $this->_Strand,
@@ -287,6 +288,7 @@ class SnpDTO implements DataInstance, SiteHaver
             'Damaging'            => $this->_Damaging,
             'Genotype_Quality'    => $this->_Genotype_Quality,
             'Exonic_Function'     => $this->_Exonic_Function,
+            'Genomic_Range'       => "",
         ];
     }
 
