@@ -81,6 +81,7 @@ class Methylation extends Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
+    const {t} = this.props;
     let reactElement;
     switch (column) {
     case 'PSCID':
@@ -88,14 +89,25 @@ class Methylation extends Component {
       reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
       break;
 
-    case 'CPG Name':
-    case 'Gene':
-    case 'Accession number':
-    case 'Island Loc':
+    case t('CPG Name', {ns: 'genomic_browser'}):
+    case t('Gene', {ns: 'genomic_browser'}):
+    case t('Accession number', {ns: 'genomic_browser'}):
+    case t('Island Loc', {ns: 'genomic_browser'}): {
+      const isCpg = column === t('CPG Name', {ns: 'genomic_browser'});
+      const chr = String(
+        rowData[t('Chromosome', {ns: 'genomic_browser'})] || ''
+      );
+      const start = parseInt(
+        rowData[t('Start Loc', {ns: 'genomic_browser'})],
+        10
+      );
+      const chrName = chr.startsWith('chr') ? chr : `chr${chr}`;
+      const cpgPosition = `${chrName}:${start - 1000}-${start + 1000}`;
+
       reactElement = (
         <td>
           {String(cell || '')
-            .split(',')
+            .split(/[;,]/)
             .map((v) => v.trim())
             .filter(Boolean)
             .map((val, i, arr) => (
@@ -103,7 +115,8 @@ class Methylation extends Component {
                 <a
                   href={
                     'https://genome.ucsc.edu/cgi-bin/' +
-                    `hgTracks?db=hg19&position=${val}`
+                    'hgTracks?db=hg19&position=' +
+                    (isCpg ? cpgPosition : val)
                   }
                   target="_blank"
                   rel="noopener noreferrer"
@@ -116,6 +129,7 @@ class Methylation extends Component {
         </td>
       );
       break;
+    }
 
     default:
       reactElement = <td>{cell}</td>;
