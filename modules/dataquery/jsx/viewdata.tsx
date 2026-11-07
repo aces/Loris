@@ -179,12 +179,14 @@ type RunQueryType = {
  * @param {APIQueryField[]} fields - The fields selected
  * @param {QueryGroup} filters - The filters selected
  * @param {function} onRun - Callback to call when the query is run
+ * @param {any} t - useTranslation
  * @returns {RunQueryType} - a description of the status of the loading and the loaded values
  */
 function useRunQuery(
   fields: APIQueryField[],
   filters: QueryGroup,
-  onRun: () => void
+  onRun: () => void,
+  t: any
 ): RunQueryType {
   const [expectedResults, setExpectedResults] = useState<number>(0);
   const [resultData, setResultData] = useState<string[][]>([]);
@@ -195,7 +197,7 @@ function useRunQuery(
       setLoading(false);
       swal.fire({
         type: 'error',
-        text: 'Please select at least one field.',
+        text: t('Please select at least one field.', {ns: 'dataquery'}),
       });
       return;
     }
@@ -354,7 +356,7 @@ function ViewData(props: {
         = useState<HeaderDisplayType>('fieldnamedesc');
   const [enumDisplay, setEnumDisplay]
         = useState<EnumDisplayTypes>(EnumDisplayTypes.EnumLabel);
-  const queryData = useRunQuery(props.fields, props.filters, props.onRun);
+  const queryData = useRunQuery(props.fields, props.filters, props.onRun, t);
   const organizedData = useDataOrganization(
     queryData,
     visitOrganization,
