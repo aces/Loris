@@ -57,10 +57,8 @@ const Modal = ({
         cancelButtonText: t('Cancel', {ns: 'loris'}),
         focusCancel: true,
         reverseButtons: true,
-        customClass: {
-          confirmButton: 'btn-secondary',
-          cancelButton: 'btn-primary',
-        },
+        confirmButtonColor: '#777',
+        cancelButtonColor: '#337ab7',
       }).then((result) => result.value && onClose());
     } else {
       onClose(); // Close immediately if no warning
