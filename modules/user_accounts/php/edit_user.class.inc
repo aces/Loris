@@ -408,14 +408,16 @@ class Edit_User extends \NDB_Form
         // END PROJECT UPDATE
 
         // EXAMINER UPDATE
-        $ex_labtechnician = 0;
+        $ex_labtechnician = null;
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
-            $ex_curr_sites    = $values['examiner_sites'] ?? [];
-            $ex_prev_sites    = [];
-            $ex_radiologist   = $values['examiner_radiologist'] ?? 'N';
-            $ex_labtechnician = ($values['examiner_labtechnician'] ?? '') === 'Y'
-                ? 1 : 0;
+            $ex_curr_sites      = $values['examiner_sites'] ?? [];
+            $ex_prev_sites      = [];
+            $ex_radiologist     = $values['examiner_radiologist'] ?? 'N';
+            $labTechnicianValue = $values['examiner_labtechnician'] ?? '';
+            if ($labTechnicianValue !== '') {
+                $ex_labtechnician = $labTechnicianValue === 'Y' ? 1 : 0;
+            }
         }
 
         unset($values['examiner_sites']);
@@ -490,7 +492,7 @@ class Edit_User extends \NDB_Form
                     [
                         'full_name'     => $values['Real_name'],
                         'radiologist'   => $ex_radiologist,
-                        'LabTechnician' => $ex_labtechnician,
+                        'LabTechnician' => $ex_labtechnician ?? 0,
                         'userID'        => $uid,
                     ]
                 );
@@ -510,13 +512,16 @@ class Edit_User extends \NDB_Form
                 // radiologist, pending and current sites fields all set or
                 // unset update the examiner table with new values
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
+                $examinerValues = [
+                    'radiologist' => $ex_radiologist,
+                    'full_name'   => $values['Real_name'],
+                ];
+                if ($ex_labtechnician !== null) {
+                    $examinerValues['LabTechnician'] = $ex_labtechnician;
+                }
                 $DB->update(
                     'examiners',
-                    [
-                        'radiologist'   => $ex_radiologist,
-                        'LabTechnician' => $ex_labtechnician,
-                        'full_name'     => $values['Real_name']
-                    ],
+                    $examinerValues,
                     [
                         'userID' => $uid
                     ]
@@ -1652,6 +1657,7 @@ class Edit_User extends \NDB_Form
                 }
             } elseif ($values['examiner_radiologist'] !== ''
                 || $values['examiner_pending'] ?? '' !== ''
+                || ($values['examiner_labtechnician'] ?? '') === 'Y'
             ) {
                 $errors['examiner_sites'] = dgettext(
                     "user_accounts",
