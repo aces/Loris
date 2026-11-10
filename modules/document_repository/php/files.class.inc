@@ -61,26 +61,55 @@ class Files extends \NDB_Page
             $config->getSetting("documentRepositoryPath")
         );
 
+        // There should have been a /Files/...  URI path to get here.
+        $unhandledRequest = $request->getAttribute("unhandledURI");
+        $unhandledPath    = $unhandledRequest->getPath();
+
+        if (str_starts_with($unhandledPath, "/Files/") !== true
+            && ($unhandledPath !== '' && $request->getMethod() != "POST")
+        ) {
+            $this->logger->warning("Suspicious URI access for {filename}", ['filename' => $filename]);
+            return new \LORIS\Http\Response\JSON\BadRequest();
+        }
+
+        // The unhandled part should now just be /filename
+        $request = $request->withAttribute(
+            "unhandledURI",
+            $unhandledRequest->withPath(substr($unhandledPath, 6))
+        );
+
+        // Remove temporary variables so they're not accidentally used and
+        // $request is the only source of truth.
+        unset($unhandledRequest, $unhandledPath);
+
         if ($request->getMethod() != "POST") {
             $factory = \NDB_Factory::singleton();
             $user    = $factory->user();
             $db      = $factory->database();
 
-            $filename = explode(
-                'Files',
-                urldecode($request->getUri()->getPath())
-            )[1];
+            $filename = $request->getAttribute("unhandledURI")->getPath();
+            if (str_ends_with($filename, '/meta')) {
+                $metadata = true;
+                $filename = substr($filename, 0, -5);
+            }
+            // Get rid of slash at the start of the URI, and then url decode
+            // to get the filename
+            $filename = urldecode(substr($filename, 1));
 
-            $forSite = $db->pselectOne(
-                "SELECT For_site
+            $data = $db->pselectRow(
+                "SELECT record_id, For_site
                  FROM document_repository
                  WHERE Data_dir = :file_dir",
-                ['file_dir' => mb_substr($filename, 1)]
+                ['file_dir' => $filename]
             );
+            if (count($data) == 0) {
+                return (new \LORIS\Http\Response\JSON\NotFound());
+            }
 
-            if (! $user->hasCenter(\CenterID::singleton((int)$forSite))) {
+            if (!$user->hasCenter(\CenterID::singleton($data['For_site']))) {
                 return (new \LORIS\Http\Response\JSON\Forbidden());
             }
+            $fileid = $data['record_id'];
         }
 
         switch ($request->getMethod()) {
@@ -89,28 +118,16 @@ class Files extends \NDB_Page
         case "PUT":
             return $this->editDocFile($request);
         case "DELETE":
-            $id = basename($request->getUri()->getPath());
-            $this->deleteFile($id);
+            $this->deleteFile($fileid);
             return (new \LORIS\Http\Response\JSON\OK(
                 ['message' => 'File deleted.']
             ));
         case "GET":
-            $route = explode('/', $request->getUri()->getPath());
-            if ($route[2] == 'meta') {
-                $id = urldecode(basename($request->getUri()->getPath()));
-                return (new \LORIS\Http\Response())
-                    ->withHeader("Content-Type", "text/plain")
-                    ->withBody(
-                        new \LORIS\Http\StringStream(
-                            json_encode($this->getUploadDocFields($id))
-                        )
-                    );
+            if ($metadata) {
+                return new \LORIS\Http\Response\JSON\OK(
+                    $this->getUploadDocFields($fileid)
+                );
             }
-
-            $filename = explode(
-                'Files',
-                $request->getUri()->getPath()
-            )[1];
 
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo(
@@ -139,7 +156,7 @@ class Files extends \NDB_Page
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
         $db      = $factory->database();
-        if (! $user->hasPermission('document_repository_upload_edit')) {
+        if (!$user->hasPermission('document_repository_upload_edit')) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 self::FORBIDDEN
             );
@@ -186,19 +203,19 @@ class Files extends \NDB_Page
     /**
      * Handles the document deleting process
      *
-     * @param string $rid the file id
+     * @param int $rid the file id
      *
      * @throws \DatabaseException
      *
      * @return void
      */
-    function deleteFile($rid): void
+    function deleteFile(int $rid): void
     {
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
         $user    = $factory->user();
         $config  = $factory->config();
-        if (! $user->hasPermission('document_repository_delete')) {
+        if (!$user->hasPermission('document_repository_delete')) {
             return;
         }
         $path = \Utility::appendForwardSlash(
@@ -226,7 +243,7 @@ class Files extends \NDB_Page
             'document'       => $fileName,
         ];
         $Notifier->notify($msg_data);
-        $path = $path.$dataDir;
+        $path = \Utility::pathJoin($path, $dataDir);
 
         if (file_exists($path)) {
             unlink($path);
@@ -236,11 +253,11 @@ class Files extends \NDB_Page
     /**
      * Returns a list of categories fields from database
      *
-     * @param String $id id of the Doc file
+     * @param int $id id of the Doc file
      *
      * @return array
      */
-    function getUploadDocFields(string $id): array
+    function getUploadDocFields(int $id): array
     {
         $db    = $this->loris->getDatabaseConnection();
         $query = $db->pselect(
