@@ -281,10 +281,6 @@ jobs:
       run: npm install -g protoc-gen-js
 
     - name: Install package dependencies
-      # We only need to install protobuf-compiler
-      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
-      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
-      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
         sudo apt-get update
         sudo apt install -y protobuf-compiler gettext
