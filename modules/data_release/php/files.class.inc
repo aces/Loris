@@ -171,50 +171,45 @@ class Files extends \NDB_Page
             ['f' => $fileName]
         );
 
-        if (!isset($duplicateFile)) {
-            // File doesn't exist, user can upload as long as they have
-            // permission.
+        $ProjectID = $DB->pselectOne(
+            "SELECT ProjectID FROM Project WHERE Name=:project",
+            ['project' => $projectName]
+        );
 
-            // Get ProjectID
-            $ProjectID = $DB->pselectOne(
-                "SELECT ProjectID FROM Project WHERE Name=:project",
-                ['project' => $projectName]
+        if (
+            !$user->hasPermission("data_release_upload") ||
+            !$user->hasProject(\ProjectID::singleton((int)$ProjectID))
+        ) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                dgettext("data_release", "Permission denied.")
             );
-
-            if (!$user->hasPermission("data_release_upload")
-                || !$user->hasProject(
-                    \ProjectID::singleton((int)$ProjectID)
-                )
-            ) {
-                return new \LORIS\Http\Response\JSON\Forbidden(
-                    dgettext("data_release", "Permission denied.")
-                );
-            }
-            return null;
         }
 
-        if ($overwrite) {
-            // File is duplicate and overwrite is set, verify permission
-            $userPermission = $DB->pselectRow(
-                "SELECT userid FROM data_release_permissions
+        if (isset($duplicateFile)) {
+            if ($overwrite) {
+                // File is duplicate and overwrite is set, verify permission
+                $userPermission = $DB->pselectRow(
+                    "SELECT userid FROM data_release_permissions
                     WHERE userid=:u AND data_release_id=:d",
-                ['u' => $user->getId(), 'd' => $duplicateFile['id']]
-            );
-            if (!isset($userPermission) && !$user->hasPermission('superuser')) {
-                return new \LORIS\Http\Response\JSON\Forbidden(
-                    dgettext(
-                        "data_release",
-                        "Overwrite failed. A file of this name already exists which"
-                        . " you do not have permission to overwrite."
-                    )
+                    ['u' => $user->getId(), 'd' => $duplicateFile['id']]
+                );
+                if (!isset($userPermission) && !$user->hasPermission('superuser')) {
+                    return new \LORIS\Http\Response\JSON\Forbidden(
+                        dgettext(
+                            "data_release",
+                            "Overwrite failed. A file of this name already exists which"
+                            . " you do not have permission to overwrite."
+                        )
+                    );
+                }
+            } else {
+                // File is duplicate and overwrite not declared
+                return new \LORIS\Http\Response\JSON\Conflict(
+                    dgettext("data_release", "Can not upload duplicate file.")
                 );
             }
-        } else {
-            // File is duplicate and overwrite not declared
-            return new \LORIS\Http\Response\JSON\Conflict(
-                dgettext("data_release", "Can not upload duplicate file.")
-            );
         }
+
         return null;
     }
 
