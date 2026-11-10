@@ -1,5 +1,12 @@
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE `biobank_container_parent`;
 LOCK TABLES `biobank_container_parent` WRITE;
+INSERT INTO `biobank_container_parent` (`ContainerID`, `ParentContainerID`, `Coordinate`) VALUES (2,1,1);
+INSERT INTO `biobank_container_parent` (`ContainerID`, `ParentContainerID`, `Coordinate`) VALUES (4,2,1);
+INSERT INTO `biobank_container_parent` (`ContainerID`, `ParentContainerID`, `Coordinate`) VALUES (5,2,2);
+INSERT INTO `biobank_container_parent` (`ContainerID`, `ParentContainerID`, `Coordinate`) VALUES (6,2,3);
+INSERT INTO `biobank_container_parent` (`ContainerID`, `ParentContainerID`, `Coordinate`) VALUES (9,2,4);
+INSERT INTO `biobank_container_parent` (`ContainerID`, `ParentContainerID`, `Coordinate`) VALUES (10,3,1);
+INSERT INTO `biobank_container_parent` (`ContainerID`, `ParentContainerID`, `Coordinate`) VALUES (11,3,2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
