@@ -193,7 +193,8 @@ class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
         // XXX: This should eventually be replaced by a call directly to a
         // Examiner endpoint or Examiner controller that will be able to provide
         // Examiner Objects.
-        $query     = 'SELECT examinerID as id, full_name as label FROM examiners';
+        $query     = 'SELECT examinerID as id, full_name as label, '
+            . 'LabTechnician as labTechnician FROM examiners';
         $examiners = $db->pselectWithIndexKey($query, [], 'id');
 
         // XXX: This should eventually be replaced by a call directly to a

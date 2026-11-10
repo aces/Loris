@@ -135,14 +135,22 @@ const SpecimenProcessForm = (props) => {
     />
   );
 
-  const examiners = mapFormOptions(options.examiners, 'label');
+  const labTechExaminers = mapFormOptions(
+    Object.fromEntries(
+      Object.entries(options.examiners).filter(
+        ([id, examiner]) =>
+          Number(examiner.labTechnician) === 1 || id == process.examinerId
+      )
+    ),
+    'label'
+  );
   if (typeId && edit === true) {
     const elements = [
       protocolField,
       <SelectElement
         name="examinerId"
         label={t('Done By', {ns: 'biobank'})}
-        options={examiners}
+        options={labTechExaminers}
         onUserInput={setProcess}
         required={true}
         value={process.examinerId}

@@ -193,6 +193,15 @@ class Edit_User extends \NDB_Form
             }
             unset($defaults['examiner']);
 
+            $labTechnician = \NDB_Factory::singleton()->database()->pselectOne(
+                'SELECT LabTechnician FROM examiners WHERE userID=:uid',
+                ['uid' => $user->getId()]
+            );
+            if ($labTechnician !== null) {
+                $defaults['examiner_labtechnician'] = intval($labTechnician) === 1
+                    ? 'Y' : 'N';
+            }
+
             // Notification defaults
             // "notif_".$module."_".$operation."_".$service
             $user_id  = $user->getId() ?? -1;
@@ -399,15 +408,19 @@ class Edit_User extends \NDB_Form
         // END PROJECT UPDATE
 
         // EXAMINER UPDATE
+        $ex_labtechnician = 0;
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
-            $ex_curr_sites  = $values['examiner_sites'] ?? [];
-            $ex_prev_sites  = [];
-            $ex_radiologist = $values['examiner_radiologist'] ?? 'N';
+            $ex_curr_sites    = $values['examiner_sites'] ?? [];
+            $ex_prev_sites    = [];
+            $ex_radiologist   = $values['examiner_radiologist'] ?? 'N';
+            $ex_labtechnician = ($values['examiner_labtechnician'] ?? '') === 'Y'
+                ? 1 : 0;
         }
 
         unset($values['examiner_sites']);
         unset($values['examiner_radiologist']);
+        unset($values['examiner_labtechnician']);
         $ex_pending = $values['examiner_pending'];
         unset($values['examiner_pending']);
         // END SETUP EXAMINER VALUES
@@ -475,9 +488,10 @@ class Edit_User extends \NDB_Form
                 $DB->insert(
                     'examiners',
                     [
-                        'full_name'   => $values['Real_name'],
-                        'radiologist' => $ex_radiologist,
-                        'userID'      => $uid,
+                        'full_name'     => $values['Real_name'],
+                        'radiologist'   => $ex_radiologist,
+                        'LabTechnician' => $ex_labtechnician,
+                        'userID'        => $uid,
                     ]
                 );
                 $examinerID = $DB->pselectOne(
@@ -499,8 +513,9 @@ class Edit_User extends \NDB_Form
                 $DB->update(
                     'examiners',
                     [
-                        'radiologist' => $ex_radiologist,
-                        'full_name'   => $values['Real_name']
+                        'radiologist'   => $ex_radiologist,
+                        'LabTechnician' => $ex_labtechnician,
+                        'full_name'     => $values['Real_name']
                     ],
                     [
                         'userID' => $uid
@@ -968,6 +983,19 @@ class Edit_User extends \NDB_Form
             $examinerGroup[] = $this->createSelect(
                 "examiner_radiologist",
                 dgettext("user_accounts", "Radiologist") . ": ",
+                [
+                    ''  => "",
+                    'Y' => dgettext("loris", "Yes"),
+                    'N' => dgettext("loris", "No"),
+                ]
+            );
+
+            $examinerGroup[] = $this->createLabel(
+                dgettext("user_accounts", "Lab Technician") . ": "
+            );
+            $examinerGroup[] = $this->createSelect(
+                "examiner_labtechnician",
+                dgettext("user_accounts", "Lab Technician") . ": ",
                 [
                     ''  => "",
                     'Y' => dgettext("loris", "Yes"),
