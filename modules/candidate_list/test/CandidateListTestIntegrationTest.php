@@ -12,6 +12,7 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
 /**
@@ -384,12 +385,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "/imaging_browser/?PSCID=MTL022",
             $this->webDriver->getCurrentURL()
         );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#lorisworkspace")
-        )->getText();
-        $this->assertStringContainsString(
-            "MTL022",
-            $bodyText
+        $this->webDriver->wait(15, 500)->until(
+            WebDriverExpectedCondition::textToBePresentInElement(
+                WebDriverBy::cssSelector("#lorisworkspace"),
+                "MTL022"
+            )
         );
     }
 }
