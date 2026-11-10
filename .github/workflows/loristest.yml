@@ -17,14 +17,9 @@ jobs:
         run: npm install -g protoc-gen-js
 
       - name: Install EEG package dependencies
-      # We only need to install protobuf-compiler
-      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
-      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
-      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
         run: |
           sudo apt-get update 
-          sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
-             libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler
+          sudo apt install -y protobuf-compiler
           cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
           protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
@@ -165,7 +160,7 @@ jobs:
 
     - name: Set up MySQL
       run: |
-        sudo /etc/init.d/mysql start
+        sudo systemctl start mysql.service
         mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -uroot -proot
         mysql -e "CREATE USER '${{env.DB_USER}}'@'localhost' IDENTIFIED BY '${{env.DB_PASSWORD}}'" -uroot -proot
         mysql -e "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON ${{env.DB_DATABASE}}.* TO '${{env.DB_USER}}'@'localhost'" -uroot -proot
@@ -286,14 +281,9 @@ jobs:
       run: npm install -g protoc-gen-js
 
     - name: Install package dependencies
-      # We only need to install protobuf-compiler
-      # Other deps were added to fix an apt dependency issue introduced by a new github Ubuntu image
-      # (see https://github.com/actions/runner-images/blob/releases/ubuntu22/20230305/images/linux/Ubuntu2204-Readme.md)
-      # that updated the list of installed apt packages/apt repositories. That issue may disappear in future Ubuntu images.
       run: |
         sudo apt-get update
-        sudo apt install -y imagemagick-6-common libmagickcore-6.q16-7t64 libmagickwand-6.q16-7t64 \
-           libprotobuf-dev libprotobuf32t64 libprotoc32t64 protobuf-compiler gettext
+        sudo apt install -y protobuf-compiler gettext
         cd modules/electrophysiology_browser/jsx/react-series-data-viewer/
         protoc protocol-buffers/chunk.proto --js_out=import_style=commonjs,binary:./src/
 
