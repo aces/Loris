@@ -160,7 +160,7 @@ jobs:
 
     - name: Set up MySQL
       run: |
-        sudo /etc/init.d/mysql start
+        sudo systemctl start mysql.service
         mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -uroot -proot
         mysql -e "CREATE USER '${{env.DB_USER}}'@'localhost' IDENTIFIED BY '${{env.DB_PASSWORD}}'" -uroot -proot
         mysql -e "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON ${{env.DB_DATABASE}}.* TO '${{env.DB_USER}}'@'localhost'" -uroot -proot
