@@ -1057,10 +1057,10 @@ class Database implements LoggerAwareInterface
         foreach ($dataArray as $key => $item ) {
             if (is_null($item)) {
                 $output[] = $clause == 'where_'
-                ? "`$key` IS NULL" : "`$key` = NULL";
+                ? $this->escape($key) . " IS NULL" : $this->escape($key) . " = NULL";
             } else {
                 $item     = $this->quote((string) $item);
-                $output[] = "`$key`=$item";
+                $output[] = $this->escape($key) . "=$item";
             }
         }
         return implode($glue, $output);
@@ -1102,9 +1102,9 @@ class Database implements LoggerAwareInterface
             $varname = str_replace("%", "_percent_", $key);
             if (is_null($item)) {
                 $output[] = $prefix == 'where_'
-                ? "`$key` IS NULL" : "`$key` = NULL";
+                ? $this->escape($key) . " IS NULL" : $this->escape($key) . " = NULL";
             } else {
-                $output[] = "`$key`=:$prefix$varname";
+                $output[] = $this->escape($key) . "=:$prefix$varname";
                 if ($exec_vals !== null) {
                     $exec_vals["$prefix$varname"] = $item;
                 }
