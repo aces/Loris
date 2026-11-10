@@ -1,5 +1,8 @@
 import {Query, QueryParam} from './Query';
 import {Errors} from '../';
+import lorisFetch from '../lorisFetch';
+
+declare const loris: {BaseURL: string};
 
 export interface ErrorContext {
   key: string | number; // The key that triggered the custom message (e.g., 'ApiNetworkError' or 404)
@@ -25,12 +28,10 @@ export class Client<T> {
   /**
    * Creates a new API client instance.
    *
-   * @param baseURL The base URL for the API requests.
+   * @param baseURL The API path, relative to LORIS's base URL.
    */
   constructor(baseURL: string) {
-    const origin = window.location.origin; // always https://...
-    const full = `${origin}/${baseURL}/`;
-    this.baseURL = new URL(full);
+    this.baseURL = new URL(`${loris.BaseURL}/${baseURL}/`);
   }
 
   /**
@@ -82,15 +83,13 @@ export class Client<T> {
   /**
    * Creates a new resource on the server.
    *
-   * @param data   The resource data to be created.
-   * @param mapper An optional function to map the input data before sending.
+   * @param data The request body to send.
    */
-  async create<U = T>(data: T, mapper?: (data: T) => U): Promise<T> {
-    const payload = mapper ? mapper(data) : data;
-    return this.fetchJSON<T>(this.buildURL(), {
+  async create<Res = T, Req = T>(data: Req): Promise<Res> {
+    return this.fetchJSON<Res>(this.buildURL(), {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload),
+      body: JSON.stringify(data),
     });
   }
 
@@ -121,47 +120,61 @@ export class Client<T> {
     const request = new Request(url, options);
 
     try {
-      const response = await fetch(request);
+      const response = await lorisFetch(request);
 
-      // 1. Handle HTTP status errors (e.g., 404, 500)
+      // 1. Handle HTTP status errors (e.g., 404, 500), using the server's
+      // own message when the body carries one
       if (!response.ok) {
         throw new Errors.ApiResponse(
           request,
           response,
           this.getErrorMessage('ApiResponseError', request, response)
+            ?? await this.readErrorMessage(response)
         );
       }
 
-      // 2. Handle HTTP 204 No Content (Success, but nothing to parse)
-      if (response.status === 204) {
-        return {} as U;
+      // 2. Handle a success with no body (e.g., 204, or an empty 201)
+      const body = await response.text();
+      if (body === '') {
+        return undefined as U;
       }
 
-      // 3. Validate JSON Content-Type
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Errors.NoContent(
-          request,
-          response,
-          this.getErrorMessage('NoContentError', request, response)
-        );
-      }
-
-      // 4. Parse JSON
+      // 3. Parse JSON
       try {
-        const data = await response.json();
-        return data as U;
+        return JSON.parse(body) as U;
       } catch (e) {
         const message = this.getErrorMessage('JsonParseError', request);
         throw new Errors.JsonParse(request, message);
       }
     } catch (error) {
-      // 5. Re-throw custom errors; wrap native network errors
+      // 4. Re-throw custom errors; wrap native network errors
       if (error instanceof Errors.Http || error instanceof Errors.ApiResponse) {
         throw error; // Re-throw our custom errors
       }
       const message = this.getErrorMessage('ApiNetworkError', request);
       throw new Errors.ApiNetwork(request, message);
+    }
+  }
+
+  /**
+   * Reads the `error` field from a JSON error response, leaving the
+   * response's own body unread for the caller.
+   *
+   * @param response The non-OK HTTP Response.
+   * @returns The server's error message, if it sent one.
+   */
+  private async readErrorMessage(
+    response: Response
+  ): Promise<string | undefined> {
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      return undefined;
+    }
+    try {
+      const data = await response.clone().json();
+      return typeof data?.error === 'string' ? data.error : undefined;
+    } catch (e) {
+      return undefined;
     }
   }
 
