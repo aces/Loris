@@ -45,6 +45,9 @@ msgstr ""
 msgid "Radiologist"
 msgstr ""
 
+msgid "Lab Technician"
+msgstr ""
+
 msgid "Account Request Date"
 msgstr ""
 
