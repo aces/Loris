@@ -674,5 +674,17 @@ msgstr "Type de fichier non autorisé"
 msgid "Could not upload file"
 msgstr "Impossible de téléverser le fichier"
 
+msgid "Please select at least one row."
+msgstr "Veuillez sélectionner au moins une ligne."
+
+msgid "This action only supports a single row."
+msgstr "Cette action ne s'applique qu'à une seule ligne."
+
+msgid "Select all rows on this page"
+msgstr "Sélectionner toutes les lignes de cette page"
+
+msgid "Select row"
+msgstr "Sélectionner la ligne"
+
 msgid "Registration Cohort"
 msgstr "Cohorte d’inscription"

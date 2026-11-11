@@ -647,5 +647,17 @@ msgstr ""
 msgid "Could not upload file"
 msgstr ""
 
+msgid "Please select at least one row."
+msgstr ""
+
+msgid "This action only supports a single row."
+msgstr ""
+
+msgid "Select all rows on this page"
+msgstr ""
+
+msgid "Select row"
+msgstr ""
+
 msgid "Registration Cohort"
 msgstr ""
