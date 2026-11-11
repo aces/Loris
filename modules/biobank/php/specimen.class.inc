@@ -56,6 +56,7 @@ class Specimen implements
      * @var string      $candidatePSCID
      * @var int         $candidateAge
      * @var int         $sessionId
+     * @var string      $sessionLabel
      * @var \CenterID   $sessionCenterId
      * @var int         $poolId
      * @var Collection  $collection
@@ -78,6 +79,7 @@ class Specimen implements
     private $candidatePSCID;
     private $candidateAge;
     private $sessionId;
+    private $sessionLabel;
     private $sessionCenterId;
     private $poolId;
     private $collection;
@@ -411,6 +413,31 @@ class Specimen implements
     }
 
     /**
+     * Sets the visit label of the candidate's session/timepoint in which the
+     * specimen was collected.
+     *
+     * @param string $sessionLabel the visit label of the specimen's session
+     *                             of collection
+     *
+     * @return void
+     */
+    public function setSessionLabel(string $sessionLabel) : void
+    {
+        $this->sessionLabel = $sessionLabel;
+    }
+
+    /**
+     * Gets the visit label of the candidate's session/timepoint in which the
+     * specimen was collected.
+     *
+     * @return ?string
+     */
+    public function getSessionLabel() : ?string
+    {
+        return $this->sessionLabel;
+    }
+
+    /**
      * Sets the Centeer of the candidate's session/timepoint in which the specimen
      * was collected.
      *
@@ -691,6 +718,7 @@ class Specimen implements
             'candidatePSCID'         => $this->candidatePSCID,
             'candidateAge'           => $this->candidateAge,
             'sessionId'              => $this->sessionId,
+            'sessionLabel'           => $this->sessionLabel,
             'sessionCenterId'        => $this->sessionCenterId,
             'poolId'                 => $this->poolId,
             'collection'             => $this->collection->jsonSerialize(),
