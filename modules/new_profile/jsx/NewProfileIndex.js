@@ -15,6 +15,8 @@ import {
   TextareaElement,
 } from 'jsx/Form';
 
+import * as Candidate from './candidates';
+
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
 
@@ -156,66 +158,35 @@ class NewProfileIndex extends React.Component {
 
     this.setState({submitDisabled: true});
 
-    fetch(this.props.submitURL, {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      body: JSON.stringify(candidateObject),
-    })
-      .then((resp) => {
-        if (resp.ok && resp.status === 201) {
-          resp.json().then((data) => {
-            swal.fire({
-              icon: 'success',
-              title: this.props.t('New Candidate Created',
-                {ns: 'new_profile'}),
-              html: this.props.t('DCCID',
-                {ns: 'loris'}) + ': ' + data.CandID + ' '
-                  + this.props.t('PSCID',
-                    {ns: 'loris'}) + ': ' + data.PSCID + ' ',
-              confirmButtonText: this.props.t('Access Profile',
-                {ns: 'new_profile'}),
-              showCancelButton: true,
-              cancelButtonColor: '#3085d6',
-              cancelButtonText: this.props.t('Recruit another candidate',
-                {ns: 'new_profile'}),
-            }).then((result) => {
-              window.location.href = result.value === true
-                ? '/' + data.CandID
-                : window.location.href;
-            });
-          })
-            .catch((error) => {
-              swal.fire({
-                icon: 'error',
-                title: this.props.t('Error!', {ns: 'loris'}),
-                text: error,
-                confirmButtonText: t('OK', {ns: 'loris'}),
-              });
-              console.error(error);
-            });
-        } else {
-          resp.json().then((message) => {
-            // enable button for form resubmission.
-            this.setState({submitDisabled: false});
-            swal.fire(this.props.t('Error!',
-              {ns: 'loris'}), message.error, 'error');
-          }).catch((error) => {
-            swal.fire({
-              icon: 'error',
-              title: this.props.t('Error!', {ns: 'loris'}),
-              text: error,
-              confirmButtonText: t('OK', {ns: 'loris'}),
-            });
-            console.error(error);
-          });
-        }
+    Candidate.create(candidateObject)
+      .then((data) => {
+        swal.fire({
+          icon: 'success',
+          title: this.props.t('New Candidate Created',
+            {ns: 'new_profile'}),
+          html: this.props.t('DCCID',
+            {ns: 'loris'}) + ': ' + data.CandID + ' '
+              + this.props.t('PSCID',
+                {ns: 'loris'}) + ': ' + data.PSCID + ' ',
+          confirmButtonText: this.props.t('Access Profile',
+            {ns: 'new_profile'}),
+          showCancelButton: true,
+          cancelButtonColor: '#3085d6',
+          cancelButtonText: this.props.t('Recruit another candidate',
+            {ns: 'new_profile'}),
+        }).then((result) => {
+          window.location.href = result.value === true
+            ? loris.BaseURL + '/' + data.CandID
+            : window.location.href;
+        });
       })
       .catch((error) => {
+        // enable button for form resubmission.
+        this.setState({submitDisabled: false});
         swal.fire({
           icon: 'error',
           title: this.props.t('Error!', {ns: 'loris'}),
-          text: error,
+          text: error.message,
           confirmButtonText: t('OK', {ns: 'loris'}),
         });
         console.error(error);
@@ -490,7 +461,6 @@ class NewProfileIndex extends React.Component {
 
 NewProfileIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
-  submitURL: PropTypes.string.isRequired,
   t: PropTypes.func,
 };
 
@@ -507,7 +477,6 @@ window.addEventListener('load', () => {
   ).render(
     <NPIndex
       dataURL = {`${loris.BaseURL}/new_profile/?format=json`}
-      submitURL = {`${loris.BaseURL}/api/v0.0.4-dev/candidates/`}
       hasPermission = {loris.userHasPermission}
     />
   );
