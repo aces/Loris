@@ -5,20 +5,20 @@ import type {Filters} from './filterMatch';
  * Returns the text a column shows for a value
  *
  * @param {Column} column - the column
- * @param {any} value - the column's value for the record
+ * @param {unknown} value - the column's value for the record
  * @param {object} record - the record
  * @return {string}
  */
 export function displayOf<R>(
   column: Column<R>,
-  value: any,
+  value: unknown,
   record: R,
 ): string {
   if (column.display) {
     return column.display(value, record);
   }
   if (column.filter?.options && value !== null && value !== undefined) {
-    const label = column.filter.options[value];
+    const label = column.filter.options[String(value)];
     if (label !== undefined) {
       return label;
     }
@@ -33,11 +33,15 @@ export function displayOf<R>(
  * Compares two values of a column for sorting, empty values last
  *
  * @param {ColumnType} type - the column's type
- * @param {any} a - first value
- * @param {any} b - second value
+ * @param {unknown} a - first value
+ * @param {unknown} b - second value
  * @return {number}
  */
-export function compareValues(type: ColumnType, a: any, b: any): number {
+export function compareValues(
+  type: ColumnType,
+  a: unknown,
+  b: unknown,
+): number {
   const emptyA = a === null || a === undefined || a === '';
   const emptyB = b === null || b === undefined || b === '';
   if (emptyA || emptyB) {

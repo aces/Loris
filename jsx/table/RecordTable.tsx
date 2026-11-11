@@ -22,12 +22,12 @@ export type ColumnFilter = {
   options?: {[key: string]: string},
 };
 
-export type Column<R> = {
+export type Column<R, V = unknown> = {
   name: string,
   label: string,
-  value: (record: R) => any,
-  display?: (value: any, record: R) => string,
-  format?: (value: any, record: R) => ReactNode,
+  value(record: R): V,
+  display?(value: V, record: R): string,
+  format?(value: V, record: R): ReactNode,
   type?: ColumnType,
   filter?: ColumnFilter,
   hidden?: boolean,
@@ -35,6 +35,17 @@ export type Column<R> = {
   sticky?: boolean,
   group?: string,
 };
+
+/**
+ * Checks a column's display and format against the type its value returns,
+ * and lets columns of different value types share one array.
+ *
+ * @param {Column} column - the column
+ * @return {Column}
+ */
+export function col<R, V>(column: Column<R, V>): Column<R, unknown> {
+  return column;
+}
 
 export type TableAction = {
   name: string,

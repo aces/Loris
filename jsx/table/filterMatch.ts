@@ -12,13 +12,13 @@ export type Filters = {[name: string]: FilterValue};
  * Note: Search is case-insensitive.
  *
  * @param {FilterValue} filter - the filter set on the column
- * @param {any} data - the column's value for one record
+ * @param {unknown} data - the column's value for one record
  * @param {string} type - the column filter's type
  * @return {boolean} true if the value matches the filter
  */
 export function matchesFilter(
   filter: FilterValue,
-  data: any,
+  data: unknown,
   type?: string,
 ): boolean {
   const filterData = filter.value;
@@ -31,7 +31,7 @@ export function matchesFilter(
   if (type === 'date-range' &&
     typeof filterData === 'object' &&
     !Array.isArray(filterData)) {
-    const dateData = data.toString();
+    const dateData = String(data);
     const min = filterData.min || '';
     const max = filterData.max || '';
     return dateData !== '' &&
@@ -42,7 +42,7 @@ export function matchesFilter(
   if (type === 'number-range' &&
     typeof filterData === 'object' &&
     !Array.isArray(filterData)) {
-    const numericData = Number.parseFloat(data);
+    const numericData = Number.parseFloat(String(data));
     const min = Number.parseFloat(filterData.min);
     const max = Number.parseFloat(filterData.max);
     return !Number.isNaN(numericData) &&
@@ -51,7 +51,7 @@ export function matchesFilter(
   }
 
   if (typeof filterData === 'number') {
-    return filterData === Number.parseInt(data, 10);
+    return filterData === Number.parseInt(String(data), 10);
   }
 
   if (typeof filterData === 'boolean') {
@@ -69,7 +69,7 @@ export function matchesFilter(
       return searchArray.some((e) => e.indexOf(searchKey) > -1);
     }
 
-    const searchString = data.toString().toLowerCase();
+    const searchString = String(data).toLowerCase();
     if (exactMatch) {
       return searchString === searchKey;
     }
@@ -82,9 +82,9 @@ export function matchesFilter(
   if (Array.isArray(filterData)) {
     const searchArray = Array.isArray(data)
       ? data.map((e) => String(e).toLowerCase())
-      : data.toString().toLowerCase().split(',');
+      : String(data).toLowerCase().split(',');
     return filterData.some(
-      (val: any) => searchArray.includes(String(val).toLowerCase())
+      (val: unknown) => searchArray.includes(String(val).toLowerCase())
     );
   }
 

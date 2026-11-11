@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Loader from 'Loader';
-import RecordTable from 'jsx/table/RecordTable';
+import RecordTable, {col} from 'jsx/table/RecordTable';
 import Modal from 'Modal';
 
 import fetchDataStream from 'jslib/fetchDataStream';
@@ -157,21 +157,21 @@ class CandidateListIndex extends Component {
       : baseURL + '/' + dccid + '/';
 
     const columns = [
-      {
+      col({
         name: 'pscid',
         label: t('PSCID', {ns: 'loris'}),
         sticky: true,
         value: (c) => c.pscid,
         format: (pscid, c) => <a href={profileURL(c.dccid)}>{pscid}</a>,
         filter: {type: 'text'},
-      },
-      {
+      }),
+      col({
         name: 'dccid',
         label: t('DCCID', {ns: 'loris'}),
         value: (c) => c.dccid,
         filter: {type: 'text'},
-      },
-      {
+      }),
+      col({
         name: 'visitLabel',
         label: t('Visit Label', {ns: 'loris'}),
         value: (c) => c.visitLabel,
@@ -180,29 +180,29 @@ class CandidateListIndex extends Component {
           type: 'multiselect',
           options: options.visitlabel,
         },
-      },
-      {
+      }),
+      col({
         name: 'site',
         label: t('Site', {ns: 'loris', count: 1}),
         value: (c) => c.site,
         groupable: true,
         filter: {type: 'multiselect', options: options.site},
-      },
-      {
+      }),
+      col({
         name: 'cohort',
         label: t('Cohort', {ns: 'loris', count: 1}),
         value: (c) => c.cohort,
         groupable: true,
         filter: {type: 'multiselect', options: options.cohort},
-      },
-      {
+      }),
+      col({
         name: 'entityType',
         label: t('Entity Type', {ns: 'loris'}),
         value: (c) => c.entityType,
         groupable: true,
         filter: {type: 'select', options: options.entitytype},
-      },
-      {
+      }),
+      col({
         name: 'scanDone',
         label: t('Scan Done', {ns: 'loris'}),
         value: (c) => c.scanDone,
@@ -216,15 +216,15 @@ class CandidateListIndex extends Component {
           type: 'select',
           options: {'Y': t('Yes', {ns: 'loris'}), 'N': t('No', {ns: 'loris'})},
         },
-      },
-      {
+      }),
+      col({
         name: 'participantStatus',
         label: t('Participant Status', {ns: 'loris'}),
         value: (c) => c.participantStatus,
         groupable: true,
         filter: {type: 'select', options: options.participantstatus},
-      },
-      {
+      }),
+      col({
         name: 'DoB',
         label: t('DoB', {ns: 'loris'}),
         type: 'date',
@@ -232,8 +232,8 @@ class CandidateListIndex extends Component {
         display: formatDate,
         groupable: true,
         filter: {type: 'date-range'},
-      },
-      {
+      }),
+      col({
         name: 'Date_registered',
         label: t('Date of registration', {ns: 'loris'}),
         type: 'date',
@@ -241,22 +241,22 @@ class CandidateListIndex extends Component {
         display: formatDate,
         groupable: true,
         filter: {type: 'date-range'},
-      },
-      {
+      }),
+      col({
         name: 'sex',
         label: t('Sex', {ns: 'loris'}),
         value: (c) => c.sex,
         groupable: true,
         filter: {type: 'select', options: options.Sex},
-      },
-      {
+      }),
+      col({
         name: 'visitCount',
         label: t('Visit Count', {ns: 'candidate_list'}),
         type: 'number',
         value: (c) => c.visitCount,
         filter: {type: 'numeric'},
-      },
-      {
+      }),
+      col({
         name: 'feedback',
         label: t('Feedback', {ns: 'loris'}),
         value: (c) => c.feedback,
@@ -270,25 +270,25 @@ class CandidateListIndex extends Component {
           </span>
           : feedbackOptions['0'],
         filter: {type: 'select', options: feedbackOptions},
-      },
-      {
+      }),
+      col({
         name: 'project',
         label: t('Project', {ns: 'loris', count: 1}),
         value: (c) => c.project,
         groupable: true,
         filter: {type: 'select', options: options.project},
-      },
+      }),
     ];
 
     if (options.useedc === 'true') {
-      columns.push({
+      columns.push(col({
         name: 'edc',
         label: t('EDC', {ns: 'loris'}),
         type: 'date',
         value: (c) => c.edc,
         display: formatDate,
         filter: {type: 'date'},
-      });
+      }));
     }
 
     const actions = [
