@@ -122,7 +122,7 @@ export class Client<T> {
     try {
       const response = await lorisFetch(request);
 
-      // 1. Handle HTTP status errors (e.g., 404, 500), using the server's
+      // Handle HTTP status errors (e.g., 404, 500), using the server's
       // own message when the body carries one
       if (!response.ok) {
         throw new Errors.ApiResponse(
@@ -133,13 +133,13 @@ export class Client<T> {
         );
       }
 
-      // 2. Handle a success with no body (e.g., 204, or an empty 201)
+      // Handle a success with no body (e.g., 204, or an empty 201)
       const body = await response.text();
       if (body === '') {
         return undefined as U;
       }
 
-      // 3. Parse JSON
+      // Parse JSON
       try {
         return JSON.parse(body) as U;
       } catch (e) {
@@ -147,7 +147,7 @@ export class Client<T> {
         throw new Errors.JsonParse(request, message);
       }
     } catch (error) {
-      // 4. Re-throw custom errors; wrap native network errors
+      // Re-throw custom errors; wrap native network errors
       if (error instanceof Errors.Http || error instanceof Errors.ApiResponse) {
         throw error; // Re-throw our custom errors
       }
@@ -188,11 +188,11 @@ export class Client<T> {
    * @returns A fully constructed URL object.
    */
   private buildURL(path = '', query?: Query): URL {
-    // 1. Resolve segments (this.baseURL + subEndpoint + id/path)
+    // Resolve segments (this.baseURL + subEndpoint + id/path)
     const segments = [this.subEndpoint, path].filter(Boolean).join('/');
     const url = new URL(segments, this.baseURL);
 
-    // 2. Append the pre-built query string
+    // Append the pre-built query string
     if (query) {
       url.search = query.build();
     }
