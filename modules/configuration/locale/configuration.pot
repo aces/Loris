@@ -60,9 +60,6 @@ msgstr ""
 msgid "Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide."
 msgstr ""
 
-msgid "To configure study cohorts"
-msgstr ""
-
 msgid "click here"
 msgstr ""
 
@@ -70,6 +67,9 @@ msgid "To configure study cohorts <0>click here</0>."
 msgstr ""
 
 msgid "To configure study projects <0>click here</0>."
+msgstr ""
+
+msgid "To configure candidate identifier types <0>click here</0>."
 msgstr ""
 
 msgid "To configure the diagnosis trajectory of the study <0>click here</0>."
@@ -262,4 +262,49 @@ msgid "Value"
 msgstr ""
 
 msgid "Mapped value"
+msgstr ""
+
+msgid "Use this page to manage the configuration of existing candidate identifier types, or to add a new one."
+msgstr ""
+
+msgid "New Identifier Type"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Unique"
+msgstr ""
+
+msgid "Auto Generate"
+msgstr ""
+
+msgid "Allow Multiple"
+msgstr ""
+
+msgid "Identifier name, e.g. PSCID or ExternalID"
+msgstr ""
+
+msgid "Template used to generate or validate identifier values."
+msgstr ""
+
+msgid "Whether candidates using this identifier type must have at least one value"
+msgstr ""
+
+msgid "Whether identifier values must be unique across candidates"
+msgstr ""
+
+msgid "Whether LORIS generates the value automatically from the format"
+msgstr ""
+
+msgid "Whether a candidate can have more than one value of this type"
+msgstr ""
+
+msgid "Projects in which this identifier type can be used. An identifier type can be associated with multiple projects."
 msgstr ""
