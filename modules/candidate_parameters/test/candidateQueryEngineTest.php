@@ -44,7 +44,7 @@ class CandidateQueryEngineTest extends TestCase
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
 
-        $this->config = $this->factory->Config("../project/config.xml");
+        $this->config = $this->factory->Config(CONFIG_XML);
 
         $database = $this->config->getSetting('database');
 
@@ -1084,6 +1084,64 @@ class CandidateQueryEngineTest extends TestCase
         $this->assertMatchOne($result, "123456");
 
         // <, <=, >, >= not valid because visit label is a string
+        $this->DB->run("DROP TEMPORARY TABLE IF EXISTS session");
+    }
+
+    /**
+     * Test that several session scoped terms with a visit list can
+     * be run in sequence without their prepared statement bindings
+     * overwriting each other.
+     *
+     * This runs in a separate process so that the bindings start from
+     * the same state as they do for the first query of a request.
+     *
+     * @return void
+     */
+    #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
+    #[\PHPUnit\Framework\Attributes\PreserveGlobalState(false)]
+    function testSequentialVisitListMatches()
+    {
+        $this->DB->setFakeTableData(
+            "session",
+            [
+                [
+                    'ID'          => 1,
+                    'CandidateID' => 1,
+                    'CenterID'    => '1',
+                    'ProjectID'   => '1',
+                    'Active'      => 'Y',
+                    'Visit_label' => 'V1',
+                ],
+                [
+                    'ID'          => 2,
+                    'CandidateID' => 1,
+                    'CenterID'    => '2',
+                    'ProjectID'   => '1',
+                    'Active'      => 'Y',
+                    'Visit_label' => 'V2',
+                ],
+            ]
+        );
+
+        $candiddict = $this->_getDictItem("VisitLabel");
+        $result     = $this->engine->getCandidateMatches(
+            new QueryTerm($candiddict, new Equal("V1")),
+            ['V1', 'V2']
+        );
+        $this->assertMatchOne($result, "123456");
+
+        $result = $this->engine->getCandidateMatches(
+            new QueryTerm($candiddict, new Equal("V2")),
+            ['V1']
+        );
+        $this->assertMatchNone($result);
+
+        $result = $this->engine->getCandidateMatches(
+            new QueryTerm($candiddict, new In("V1", "V2")),
+            ['V2']
+        );
+        $this->assertMatchOne($result, "123456");
+
         $this->DB->run("DROP TEMPORARY TABLE IF EXISTS session");
     }
 
