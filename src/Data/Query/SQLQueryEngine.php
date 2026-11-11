@@ -55,7 +55,7 @@ abstract class SQLQueryEngine implements QueryEngine
 
     /**
      * {@inheritDoc}
-    *
+     *
      * @return \LORIS\Data\Dictionary\Category[]
      */
     abstract public function getDataDictionary() : iterable;
@@ -63,7 +63,7 @@ abstract class SQLQueryEngine implements QueryEngine
     /**
      * {@inheritDoc}
      *
-     * @param \LORIS\Data\Dictionary\Category $inst       The item category
+     * @param \LORIS\Data\Dictionary\Category       $inst The item category
      * @param \LORIS\Data\Dictionary\DictionaryItem $item The item itself
      *
      * @return string[]
@@ -505,8 +505,20 @@ abstract class SQLQueryEngine implements QueryEngine
                         }
                     }
                 } elseif ($field->getCardinality()->__toString() === 'many') {
-                    // FIXME: Implement this.
-                    throw new \Exception("Cardinality many for candidate variables not handled");
+                    if (!isset($candval[$fname])) {
+                        $candval[$fname] =
+                        [
+                         'keytype' => $this->getCorrespondingKeyFieldType($field),
+                         'values'  => [],
+                        ];
+                    }
+
+                    $key = $row[$fname . ':key'];
+                    $val = $this->displayValue($field, $row[$fname]);
+
+                    if ($key !== null && $val !== null) {
+                        $candval[$fname]['values'][$key] = $val;
+                    }
                 } else {
                     // It was a candidate variable that isn't cardinality::many.
                     // Just store the value directly.
