@@ -167,14 +167,21 @@ CREATE TABLE `biobank_specimen_protocol` (
   `SpecimenProtocolID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Label` varchar(100) NOT NULL,
   `SpecimenProcessID` int(10) unsigned NOT NULL,
-  `SpecimenTypeID` int(10) unsigned NOT NULL,
   PRIMARY KEY (`SpecimenProtocolID`),
   UNIQUE KEY `UK_biobank_specimen_protocol_Label_SpecimenProcessID` (`Label`,`SpecimenProcessID`),
   KEY `FK_biobank_specimen_protocol_SpecimenProcessID` (`SpecimenProcessID`),
-  KEY `FK_biobank_specimen_protocol_SpecimenTypeID` (`SpecimenTypeID`),
-  CONSTRAINT `FK_biobank_specimen_protocol_SpecimenProcessID` FOREIGN KEY (`SpecimenProcessID`) REFERENCES `biobank_specimen_process` (`SpecimenProcessID`),
-  CONSTRAINT `FK_biobank_specimen_protocol_SpecimenTypeID` FOREIGN KEY (`SpecimenTypeID`) REFERENCES `biobank_specimen_type` (`SpecimenTypeID`)
+  CONSTRAINT `FK_biobank_specimen_protocol_SpecimenProcessID` FOREIGN KEY (`SpecimenProcessID`) REFERENCES `biobank_specimen_process` (`SpecimenProcessID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Table structure for table `biobank_specimen_protocol_type_rel`
+CREATE TABLE `biobank_specimen_protocol_type_rel` (
+  `SpecimenProtocolID` int(10) unsigned NOT NULL,
+  `SpecimenTypeID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`SpecimenProtocolID`,`SpecimenTypeID`),
+  KEY `FK_biobank_specimen_protocol_type_rel_SpecimenTypeID` (`SpecimenTypeID`),
+  CONSTRAINT `FK_biobank_specimen_protocol_type_rel_SpecimenProtocolID` FOREIGN KEY (`SpecimenProtocolID`) REFERENCES `biobank_specimen_protocol` (`SpecimenProtocolID`),
+  CONSTRAINT `FK_biobank_specimen_protocol_type_rel_SpecimenTypeID` FOREIGN KEY (`SpecimenTypeID`) REFERENCES `biobank_specimen_type` (`SpecimenTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Table structure for table `biobank_specimen_protocol_attribute_rel`
 CREATE TABLE `biobank_specimen_protocol_attribute_rel` (
@@ -395,9 +402,10 @@ VALUES (1,'Brand','Product Number 1','Vial',1,1,1),
        (2,'Brand','Product Number 2','Matrix Box',0,NULL,2),
        (3,'Brand','Product Number 3','Rack',0,NULL,3);
 INSERT INTO `biobank_specimen_protocol`
-VALUES (1,'Blood Collection',1,1),
-       (2,'Blood Preparation',2,1),
-       (3,'Serum Collection',1,2);
+VALUES (1,'Blood Collection',1),
+       (2,'Blood Preparation',2),
+       (3,'Serum Collection',1);
+INSERT INTO `biobank_specimen_protocol_type_rel` VALUES (1,1),(2,1),(3,2);
 INSERT INTO `biobank_specimen_type_unit_rel` VALUES (1,1),(2,2);
 INSERT INTO `biobank_specimen_type_parent` VALUES (2,1);
 INSERT INTO `biobank_specimen_type_container_type_rel` VALUES (1,1),(2,1);
