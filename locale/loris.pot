@@ -649,3 +649,16 @@ msgstr ""
 
 msgid "Registration Cohort"
 msgstr ""
+
+# Date range strings
+msgid "Any date"
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+msgid "Next month"
+msgstr ""
+
+msgid "Previous month"
+msgstr ""

@@ -696,7 +696,9 @@ abstract class LorisIntegrationTest extends TestCase
     function _filterTest($element,$row,$btn,$test_value, $expect_records): void
     {
         // get element from the page
-        if (strpos($element, "select") === false) {
+        if (strpos($element, "loris-select") !== false) {
+            $this->selectOption($element, $test_value);
+        } elseif (strpos($element, "select") === false) {
             $el = $this->safeFindElement(WebDriverBy::cssSelector("$element"));
             $el->sendKeys($test_value);
         } else {
@@ -715,6 +717,35 @@ abstract class LorisIntegrationTest extends TestCase
         $this->assertStringContainsString($expect_records, $bodyText);
         //test clear filter
         $this->safeClick(WebDriverBy::cssSelector("$btn"));
+    }
+
+    /**
+     * Opens a Select, clicks the option with the given text and closes it again
+     *
+     * @param string $select The Select's css selector, e.g.
+     *                       .loris-select[data-name="site"]
+     * @param string $text   The visible text of the option
+     *
+     * @return void
+     */
+    function selectOption(string $select, string $text): void
+    {
+        $trigger = WebDriverBy::cssSelector("$select .loris-select-trigger");
+        $this->safeClick($trigger);
+        $this->safeFindElement(
+            WebDriverBy::cssSelector("$select .loris-select-list")
+        );
+        $options = $this->webDriver->findElements(
+            WebDriverBy::cssSelector("$select .loris-select-list label")
+        );
+        foreach ($options as $option) {
+            if (trim($option->getText()) === $text) {
+                $option->click();
+                $this->safeClick($trigger);
+                return;
+            }
+        }
+        $this->fail("No option \"$text\" in $select");
     }
 
     /**
