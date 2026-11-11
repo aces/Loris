@@ -595,6 +595,8 @@ CREATE TABLE `bids_file` (
   `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `DatasetID` INT(10) UNSIGNED NOT NULL,
   `Path` VARCHAR(255) NOT NULL,
+  `Suffix` VARCHAR(50) NULL,
+  `Extension` VARCHAR(20) NULL,
   `SourcePath` VARCHAR(255) NULL,
   `InsertTime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Blake2bHash` CHAR(128) NOT NULL,
@@ -604,6 +606,16 @@ CREATE TABLE `bids_file` (
   KEY `bids_file_dataset_id_fk_idx` (`DatasetID`),
   CONSTRAINT `bids_file_dataset_id_fk`
     FOREIGN KEY (`DatasetID`) REFERENCES `bids_dataset` (`ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `bids_file_entity` (
+  `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `FileID` INT(10) UNSIGNED NOT NULL,
+  `Key` VARCHAR(20) NOT NULL,
+  `Value` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `bids_file_entity_file_id_fk`
+    FOREIGN KEY (`FileID`) REFERENCES `bids_file` (`ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `files` (
