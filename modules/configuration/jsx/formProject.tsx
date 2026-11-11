@@ -16,7 +16,8 @@ import {
   SelectElement,
   ButtonElement,
 } from 'jsx/Form';
-import StudyEntitiesClient from './StudyEntitiesClient';
+import {client} from 'jslib/http';
+import * as StudyEntity from './studyEntities';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/configuration.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/configuration.json';
@@ -170,7 +171,7 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
     });
 
     try {
-      await new StudyEntitiesClient('configuration').save(
+      await StudyEntity.save(
         `${loris.BaseURL}/configuration/ajax/updateProject.php`,
         body
       );
@@ -423,8 +424,7 @@ function ProjectPage(props: WithTranslation): React.ReactElement {
   useEffect(() => {
     const dataURL = new URL(window.location.href);
     dataURL.searchParams.set('format', 'json');
-    new StudyEntitiesClient<ProjectData>('configuration')
-      .getById(dataURL.toString())
+    client.get<ProjectData>(dataURL.toString())
       .then((responseData: ProjectData) => setData(responseData))
       .catch(() => setError(true));
   }, []);

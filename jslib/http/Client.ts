@@ -1,4 +1,4 @@
-import {Query, QueryParam} from './Query';
+import {Query} from './Query';
 import {Errors} from '../';
 import lorisFetch from '../lorisFetch';
 
@@ -11,11 +11,12 @@ export interface ErrorContext {
 }
 
 /**
- * A basic client for making HTTP requests to a REST API endpoint.
+ * A client for making HTTP requests to LORIS. It handles what every LORIS
+ * request shares (the base URL, the session, error messages) and knows
+ * nothing about any one endpoint. Endpoints are functions that call it with
+ * their own request and response types.
  */
-export class Client<T> {
-  protected baseURL: URL;
-  protected subEndpoint?: string;
+export class Client {
   /**
    * Function to retrieve a custom error message for a given error context.
    */
@@ -26,67 +27,26 @@ export class Client<T> {
   ) => string | undefined = () => undefined;
 
   /**
-   * Creates a new API client instance.
+   * Fetches a resource.
    *
-   * @param baseURL The API path, relative to LORIS's base URL.
-   */
-  constructor(baseURL: string) {
-    this.baseURL = new URL(`${loris.BaseURL}/${baseURL}/`);
-  }
-
-  /**
-   * Sets an optional sub-endpoint path.
-   *
-   * @param subEndpoint An optional endpoint segment to append to the baseURL.
-   */
-  setSubEndpoint(subEndpoint: string): this {
-    this.subEndpoint = subEndpoint;
-    return this;
-  }
-
-
-  /**
-   * Fetches a collection of resources.
-   *
+   * @param path  The resource's path, relative to LORIS's base URL.
    * @param query A Query object to build the URL query string.
    */
-  async get<U = T>(query?: Query): Promise<U[]> {
-    return this.fetchJSON<U[]>(this.buildURL('', query), {
+  async get<Res>(path: string, query?: Query): Promise<Res> {
+    return this.request<Res>(path, {
       method: 'GET',
       headers: {'Accept': 'application/json'},
-    });
+    }, query);
   }
 
   /**
-   * Fetches a list of unique labels for the resource type based on query parameters.
+   * Creates a resource on the server.
    *
-   * @param {...QueryParam} params One or more QueryParam objects to filter the labels.
-   */
-  async getLabels(...params: QueryParam[]): Promise<string[]> {
-    const query = new Query();
-    params.forEach((param) => query.addParam(param));
-    return this.get<string>(query.addField('label'));
-  }
-
-  /**
-   * Fetches a single resource by its ID.
-   *
-   * @param id The unique identifier of the resource to fetch.
-   */
-  async getById(id: string): Promise<T> {
-    return this.fetchJSON<T>(this.buildURL(id), {
-      method: 'GET',
-      headers: {'Accept': 'application/json'},
-    });
-  }
-
-  /**
-   * Creates a new resource on the server.
-   *
+   * @param path The path to post to, relative to LORIS's base URL.
    * @param data The request body to send.
    */
-  async create<Res = T, Req = T>(data: Req): Promise<Res> {
-    return this.fetchJSON<Res>(this.buildURL(), {
+  async post<Res, Req>(path: string, data: Req): Promise<Res> {
+    return this.request<Res>(path, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data),
@@ -94,13 +54,13 @@ export class Client<T> {
   }
 
   /**
-   * Updates an existing resource on the server.
+   * Updates a resource on the server.
    *
-   * @param id The unique identifier of the resource to update.
-   * @param data The new resource data.
+   * @param path The resource's path, relative to LORIS's base URL.
+   * @param data The request body to send.
    */
-  async update(id: string, data: T): Promise<T> {
-    return this.fetchJSON<T>(this.buildURL(id), {
+  async put<Res, Req>(path: string, data: Req): Promise<Res> {
+    return this.request<Res>(path, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data),
@@ -110,13 +70,19 @@ export class Client<T> {
   /**
    * Handles the actual fetching and JSON parsing, including error handling.
    *
-   * @param url     The URL to which the request will be made.
+   * @param path    The path to request, relative to LORIS's base URL.
    * @param options The Fetch API request initialization options.
+   * @param query   A Query object to build the URL query string.
    */
-  protected async fetchJSON<U>(
-    url: URL,
-    options: RequestInit
-  ): Promise<U> {
+  async request<Res>(
+    path: string,
+    options: RequestInit,
+    query?: Query
+  ): Promise<Res> {
+    const url = new URL(path, `${loris.BaseURL}/`);
+    if (query) {
+      url.search = query.build();
+    }
     const request = new Request(url, options);
 
     try {
@@ -136,12 +102,12 @@ export class Client<T> {
       // Handle a success with no body (e.g., 204, or an empty 201)
       const body = await response.text();
       if (body === '') {
-        return undefined as U;
+        return undefined as Res;
       }
 
       // Parse JSON
       try {
-        return JSON.parse(body) as U;
+        return JSON.parse(body) as Res;
       } catch (e) {
         const message = this.getErrorMessage('JsonParseError', request);
         throw new Errors.JsonParse(request, message);
@@ -177,26 +143,9 @@ export class Client<T> {
       return undefined;
     }
   }
-
-  /**
-   * Constructs a full URL by combining the base URL, sub-endpoint,
-   * and an optional path or resource ID, then appends query parameters.
-   *
-   * @param path  - An optional sub-path or resource ID (e.g., '123' or 'details').
-   * Defaults to an empty string.
-   * @param query - An optional Query object used to build the URL's search parameters.
-   * @returns A fully constructed URL object.
-   */
-  private buildURL(path = '', query?: Query): URL {
-    // Resolve segments (this.baseURL + subEndpoint + id/path)
-    const segments = [this.subEndpoint, path].filter(Boolean).join('/');
-    const url = new URL(segments, this.baseURL);
-
-    // Append the pre-built query string
-    if (query) {
-      url.search = query.build();
-    }
-
-    return url;
-  }
 }
+
+/**
+ * The client that endpoint functions share.
+ */
+export const client = new Client();
