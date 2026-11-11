@@ -557,9 +557,11 @@ msgstr "Partager"
 msgid "Query Loaded"
 msgstr "Requête chargée"
 
-#, fuzzy
-msgid "Successfully loaded query."
-msgstr "Requête chargée avec succès."
+msgid "Return to the previous page to run or modify your query."
+msgstr "Retournez à la page précédente pour exécuter ou modifier votre requête."
+
+msgid "Return"
+msgstr "Retour"
 
 #, fuzzy
 msgid "(Run on {{runTime}})"

@@ -404,7 +404,10 @@ msgstr ""
 msgid "Query Loaded"
 msgstr ""
 
-msgid "Successfully loaded query."
+msgid "Return to the previous page to run or modify your query."
+msgstr ""
+
+msgid "Return"
 msgstr ""
 
 msgid "(Run on {{runTime}})"
