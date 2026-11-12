@@ -171,6 +171,8 @@ class Authentication extends \NDB_Page implements ETagCalculator
         if ($success) {
             // login success.
             $values['status']  = 'success';
+            $values['mfa']     = \User::factory($values['username'])
+                ->totpRequired();
             $_SESSION['State'] =& State::singleton();
             $_SESSION['State']->setProperty('login', $login);
             $login->setState();

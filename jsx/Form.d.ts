@@ -337,6 +337,43 @@ export class TextboxElement {
     forceUpdate(): void
 }
 
+type passwordProps = Omit<textboxProps, 'noMargins' | 'labelPlacementTop'>
+/**
+ * PasswordElement class. See Form.js
+ */
+export class PasswordElement {
+    props: passwordProps
+    state: any
+    context: object
+    refs: {[key: string]: ReactInstance}
+
+    /**
+     * Construct a PasswordElement
+     *
+     * @param {passwordProps} props - React props
+     */
+    constructor(props: passwordProps)
+
+    /**
+     * React lifecycle method
+     *
+     * @returns {ReactNode} - the element
+     */
+    render(): ReactNode
+
+    /**
+     * React lifecycle method
+     *
+     * @param {object} newstate - the state to override
+     */
+    setState(newstate: object): void
+
+    /**
+     * React lifecycle method.
+     */
+    forceUpdate(): void
+}
+
 type fileElementProps = {
     name: string
     label?: string

@@ -219,6 +219,8 @@ class MediaEditForm extends Component {
         swal.fire(t('Upload successful!', {ns: 'loris'}),
           '', 'success');
         this.props.fetchData();
+      } else if (xhr.status === 401) {
+        window.LoginDialog?.show();
       } else {
         console.error(xhr.status + ': ' + xhr.statusText);
         let msg = t('Error updating file', {ns: 'media'});

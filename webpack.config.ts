@@ -357,6 +357,7 @@ configs.push({
     PolicyButton: './jsx/PolicyButton.js',
     CSSGrid: './jsx/CSSGrid',
     Help: './jsx/Help.js',
+    LoginDialog: './jsx/LoginDialog.tsx',
     ...getModulesEntries(),
   },
   output: {

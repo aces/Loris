@@ -20,7 +20,8 @@ use \Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * AuthMiddleware is a type of Middleware which determines whether or
- * not a request is properly authenticated, and returns a 403 if not.
+ * not a request is properly authenticated, and returns a 401 if nobody is
+ * logged in or a 403 if the user does not have access.
  *
  * @category Router
  * @package  Middleware
@@ -48,7 +49,8 @@ class AuthMiddleware implements MiddlewareInterface, MiddlewareChainer
 
     /**
      * Calls $handler if the request is properly authenticated, otherwise
-     * returns a 403.
+     * returns a 401 when nobody is logged in and a 403 when the user does not
+     * have access.
      *
      * @param ServerRequestInterface  $request The incoming request
      * @param RequestHandlerInterface $handler The handler to delegate
@@ -63,15 +65,23 @@ class AuthMiddleware implements MiddlewareInterface, MiddlewareChainer
         if ($this->authenticator->authenticate($request) === true) {
             return $this->next->process($request, $handler);
         }
+        $user = $request->getAttribute("user") ?? new \LORIS\AnonymousUser();
+        if ($user instanceof \LORIS\AnonymousUser) {
+            $status  = 401;
+            $message = "You must log in to view this page.";
+        } else {
+            $status  = 403;
+            $message = "You do not have access to this page.";
+        }
         return (new \LORIS\Middleware\PageDecorationMiddleware(
-            $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+            $user
         ))->process(
             $request,
             new \LORIS\Router\NoopResponder(
                 new \LORIS\Http\Error(
                     $request,
-                    403,
-                    "You do not have access to this page."
+                    $status,
+                    $message
                 )
             )
         );
