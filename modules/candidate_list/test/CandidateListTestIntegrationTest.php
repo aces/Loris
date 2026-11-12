@@ -386,7 +386,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->webDriver->getCurrentURL()
         );
         $this->webDriver->wait(15, 500)->until(
-            WebDriverExpectedCondition::textToBePresentInElement(
+            WebDriverExpectedCondition::elementTextContains(
                 WebDriverBy::cssSelector("#lorisworkspace"),
                 "MTL022"
             )
