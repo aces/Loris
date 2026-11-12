@@ -8,7 +8,7 @@ type SaveResponse = {
 /**
  * Submit form values to the existing guarded endpoint.
  *
- * @param url Save endpoint
+ * @param url Save endpoint, relative to the LORIS base URL
  * @param body Form values
  * @return Parsed save response
  */
@@ -18,7 +18,6 @@ export async function save(
 ): Promise<SaveResponse> {
   return client.request<SaveResponse>(url, {
     body,
-    credentials: 'same-origin',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     },

@@ -17,8 +17,6 @@ import * as StudyEntity from './studyEntities';
 import jaStrings from '../locale/ja/LC_MESSAGES/configuration.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/configuration.json';
 
-declare const loris: {BaseURL: string};
-
 type Cohort = {
   RecruitmentTarget: null | number | string,
   id: number | string,
@@ -132,7 +130,7 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
 
     try {
       const responseData = await StudyEntity.save(
-        `${loris.BaseURL}/configuration/ajax/updateCohort.php`,
+        'configuration/ajax/updateCohort.php',
         body
       );
 
