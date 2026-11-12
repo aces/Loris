@@ -3,11 +3,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Loader from 'Loader';
-import FilterableDataTable from 'FilterableDataTable';
+import RecordTable from 'jsx/table/RecordTable';
 import Modal from 'Modal';
 
 import fetchDataStream from 'jslib/fetchDataStream';
 import OpenProfileForm from './openProfileForm';
+import NewProfileForm from '../../new_profile/jsx/NewProfileForm';
 
 import i18n from 'I18nSetup';
 import {withTranslation} from 'react-i18next';
@@ -16,6 +17,8 @@ import jaStrings from '../locale/ja/LC_MESSAGES/candidate_list.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/candidate_list.json';
 import frStrings from '../locale/fr/LC_MESSAGES/candidate_list.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/candidate_list.json';
+
+const DEFAULT_SORT = [{name: 'pscid', ascending: true}];
 
 /**
  * Candidate List
@@ -37,14 +40,11 @@ class CandidateListIndex extends Component {
       data: [],
       error: false,
       isLoaded: false,
-      hideFilter: true,
       fieldOptions: {},
       show: {profileForm: false},
     };
 
     this.fetchData = this.fetchData.bind(this);
-    this.formatColumn = this.formatColumn.bind(this);
-    this.toggleFilters = this.toggleFilters.bind(this);
 
     this.dateFormatter = new Intl.DateTimeFormat(
       loris.user.langpref.replace('_', '-'),
@@ -94,11 +94,25 @@ class CandidateListIndex extends Component {
     );
 
     this.fetchData();
+  }
 
-    const searchParams = new URLSearchParams(location.search);
-    if (searchParams.has('hide')) {
-      this.setState({hideFilter: JSON.parse(searchParams.get('hide'))});
-    }
+  /**
+   * Turns a row from the data stream into a candidate record
+   *
+   * @param {array} row - the row, in the order the provisioner queries it
+   * @return {object}
+   */
+  toRecord(row) {
+    const [
+      pscid, dccid, visitLabel, site, cohort, entityType, scanDone,
+      participantStatus, dob, dateRegistered, sex, visitCount, feedback,
+      project, edc,
+    ] = row;
+    return {
+      pscid, dccid, visitLabel, site, cohort, entityType, scanDone,
+      participantStatus, dob, dateRegistered, sex, visitCount, feedback,
+      project, edc,
+    };
   }
 
   /**
@@ -109,91 +123,231 @@ class CandidateListIndex extends Component {
    * @return {object}
    */
   fetchData() {
+    const rows = [];
     fetchDataStream(this.props.dataURL,
-      (row) => this.state.data.push(row),
-      (end) => {
-        this.setState({data: this.state.data});
-      },
-      () => {
-        this.setState({isLoaded: true});
-      },
+      (row) => rows.push(this.toRecord(row)),
+      () => this.setState({data: rows}),
+      () => this.setState({data: rows, isLoaded: true}),
     );
   }
 
   /**
-   * Basic/Advanced toggle
-   */
-  toggleFilters() {
-    const hideFilter = !this.state.hideFilter;
-    this.setState({hideFilter});
-
-    // Updates query params to reflect advance filter toggle.
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set('hide', hideFilter);
-    history.replaceState(history.state, '', `?${searchParams.toString()}`);
-  }
-
-  /**
-   * Modify behaviour of specified column cells in the Data Table component
+   * Builds the table's columns, actions and views for a set of field
+   * options. Called again only when the options change.
    *
-   * @param {string} column - column name
-   * @param {string} cell - cell content
-   * @param {object} row - row content indexed by column
-   * @return {*} a formated table cell for a given column
+   * @param {object} options - field options from /candidate_list/options
+   * @return {object}
    */
-  formatColumn(column, cell, row) {
-    if (column === this.props.t('PSCID', {ns: 'loris'})) {
-      let url;
-      const dccid = row[this.props.t('DCCID', {ns: 'loris'})];
-      if (this.props.betaProfileLink) {
-        url = this.props.baseURL + '/candidate_profile/' + dccid + '/';
-      } else {
-        url = this.props.baseURL + '/' + dccid + '/';
-      }
+  tableConfig(options) {
+    const {t, baseURL, betaProfileLink} = this.props;
+    const formatDate = (value) => value
+      ? this.dateFormatter.format(new Date(value)) : '';
+    const feedbackColours = {
+      '1': '#E4A09E', '2': '#EEEEAA', '3': '#99CC99', '4': '#99CCFF',
+    };
+    const feedbackOptions = {
+      '0': t('None', {ns: 'loris'}),
+      '1': t('Opened', {ns: 'candidate_list'}),
+      '2': t('Answered', {ns: 'candidate_list'}),
+      '3': t('Closed', {ns: 'candidate_list'}),
+      '4': t('Comment', {ns: 'candidate_list'}),
+    };
+    const profileURL = (dccid) => betaProfileLink
+      ? baseURL + '/candidate_profile/' + dccid + '/'
+      : baseURL + '/' + dccid + '/';
 
-      return <td><a href ={url}>{cell}</a></td>;
-    }
-    if (column === this.props.t('DoB', {ns: 'loris'})
-      || column === this.props.t('Date of registration', {ns: 'loris'})) {
-      if (cell) {
-        const date = new Date(cell);
-        return <td>{this.dateFormatter.format(date)}</td>;
-      }
-      return <td></td>;
-    }
-    if (column === this.props.t('Feedback', {ns: 'loris'})) {
-      switch (cell) {
-      case '1': return <td style={{background: '#E4A09E'}}>
-        {this.props.t('Opened', {ns: 'candidate_list'})}</td>;
-      case '2': return <td style={{background: '#EEEEAA'}}>
-        {this.props.t('Answered', {ns: 'candidate_list'})}</td>;
-      case '3': return <td style={{background: '#99CC99'}}>
-        {this.props.t('Closed', {ns: 'candidate_list'})}</td>;
-      case '4': return <td style={{background: '#99CCFF'}}>
-        {this.props.t('Comment', {ns: 'candidate_list'})}</td>;
-      default: return <td>{this.props.t('None', {ns: 'loris'})}</td>;
-      }
-    }
-    if (column === this.props.t('Scan Done', {ns: 'loris'})) {
-      if (cell === 'Y') {
-        const pscid = row[this.props.t('PSCID', {ns: 'loris'})];
-        let url = this.props.baseURL + '/imaging_browser/?PSCID=' + pscid;
-        return (
-          <td className="scanDoneLink">
-            <a href={url}>{this.props.t('Yes', {ns: 'loris'})}</a>
-          </td>
-        );
-      } else if (cell === 'N') {
-        return <td>{this.props.t('No', {ns: 'loris'})}</td>;
-      }
+    const columns = [
+      {
+        name: 'pscid',
+        label: t('PSCID', {ns: 'loris'}),
+        sticky: true,
+        value: (c) => c.pscid,
+        format: (pscid, c) => <a href={profileURL(c.dccid)}>{pscid}</a>,
+        filter: {type: 'text'},
+      },
+      {
+        name: 'dccid',
+        label: t('DCCID', {ns: 'loris'}),
+        value: (c) => c.dccid,
+        filter: {type: 'text'},
+      },
+      {
+        name: 'visitLabel',
+        label: t('Visit Label', {ns: 'loris'}),
+        value: (c) => c.visitLabel,
+        hidden: true,
+        filter: {
+          type: 'multiselect',
+          options: options.visitlabel,
+        },
+      },
+      {
+        name: 'site',
+        label: t('Site', {ns: 'loris', count: 1}),
+        value: (c) => c.site,
+        groupable: true,
+        filter: {type: 'multiselect', options: options.site},
+      },
+      {
+        name: 'cohort',
+        label: t('Cohort', {ns: 'loris', count: 1}),
+        value: (c) => c.cohort,
+        groupable: true,
+        filter: {type: 'multiselect', options: options.cohort},
+      },
+      {
+        name: 'entityType',
+        label: t('Entity Type', {ns: 'loris'}),
+        value: (c) => c.entityType,
+        groupable: true,
+        filter: {type: 'select', options: options.entitytype},
+      },
+      {
+        name: 'scanDone',
+        label: t('Scan Done', {ns: 'loris'}),
+        value: (c) => c.scanDone,
+        groupable: true,
+        format: (scanDone, c) => scanDone === 'Y'
+          ? <a href={baseURL + '/imaging_browser/?PSCID=' + c.pscid}>
+            {t('Yes', {ns: 'loris'})}
+          </a>
+          : t('No', {ns: 'loris'}),
+        filter: {
+          type: 'select',
+          options: {'Y': t('Yes', {ns: 'loris'}), 'N': t('No', {ns: 'loris'})},
+        },
+      },
+      {
+        name: 'participantStatus',
+        label: t('Participant Status', {ns: 'loris'}),
+        value: (c) => c.participantStatus,
+        groupable: true,
+        filter: {type: 'select', options: options.participantstatus},
+      },
+      {
+        name: 'DoB',
+        label: t('DoB', {ns: 'loris'}),
+        type: 'date',
+        value: (c) => c.dob,
+        display: formatDate,
+        groupable: true,
+        filter: {type: 'date-range'},
+      },
+      {
+        name: 'Date_registered',
+        label: t('Date of registration', {ns: 'loris'}),
+        type: 'date',
+        value: (c) => c.dateRegistered,
+        display: formatDate,
+        groupable: true,
+        filter: {type: 'date-range'},
+      },
+      {
+        name: 'sex',
+        label: t('Sex', {ns: 'loris'}),
+        value: (c) => c.sex,
+        groupable: true,
+        filter: {type: 'select', options: options.Sex},
+      },
+      {
+        name: 'visitCount',
+        label: t('Visit Count', {ns: 'candidate_list'}),
+        type: 'number',
+        value: (c) => c.visitCount,
+        filter: {type: 'numeric'},
+      },
+      {
+        name: 'feedback',
+        label: t('Feedback', {ns: 'loris'}),
+        value: (c) => c.feedback,
+        groupable: true,
+        format: (feedback) => feedbackColours[feedback]
+          ? <span
+            className="feedback-chip"
+            style={{background: feedbackColours[feedback]}}
+          >
+            {feedbackOptions[feedback]}
+          </span>
+          : feedbackOptions['0'],
+        filter: {type: 'select', options: feedbackOptions},
+      },
+      {
+        name: 'project',
+        label: t('Project', {ns: 'loris', count: 1}),
+        value: (c) => c.project,
+        groupable: true,
+        filter: {type: 'select', options: options.project},
+      },
+    ];
+
+    if (options.useedc === 'true') {
+      columns.push({
+        name: 'edc',
+        label: t('EDC', {ns: 'loris'}),
+        type: 'date',
+        value: (c) => c.edc,
+        display: formatDate,
+        filter: {type: 'date'},
+      });
     }
 
-    if (column === this.props.t('Cohort', {ns: 'loris', count: 1})) {
-      let result = (cell) ? <td>{cell}</td> : <td></td>;
-      return result;
-    }
+    const actions = [
+      {
+        name: 'openProfile',
+        label: t('Open Profile', {ns: 'candidate_list'}),
+        onClick: () => this.show('profileForm'),
+        show: !this.props.hasPermission('access_all_profiles'),
+      },
+      {
+        name: 'newProfile',
+        label: t('New Profile', {ns: 'candidate_list'}),
+        show: this.props.hasPermission('data_entry'),
+        renderForm: (close) => (
+          <NewProfileForm
+            dataURL={`${baseURL}/new_profile/?format=json`}
+            submitURL={`${baseURL}/api/v0.0.4-dev/candidates/`}
+            onCreated={() => {
+              close();
+              this.fetchData();
+            }}
+          />
+        ),
+      },
+    ];
 
-    return <td>{cell}</td>;
+    const recordActions = [
+      {
+        name: 'profile',
+        label: t('Open profile', {ns: 'candidate_list'}),
+        onClick: (candidate) => {
+          window.location.href = profileURL(candidate.dccid);
+        },
+      },
+      {
+        name: 'imaging',
+        label: t('View imaging', {ns: 'candidate_list'}),
+        show: (candidate) => candidate.scanDone === 'Y',
+        onClick: (candidate) => {
+          window.location.href = baseURL + '/imaging_browser/?PSCID='
+            + candidate.pscid;
+        },
+      },
+    ];
+
+    const views = [
+      {
+        id: 'scanned',
+        name: t('Scanned', {ns: 'candidate_list'}),
+        state: {filters: {scanDone: {value: 'Y', exactMatch: true}}},
+      },
+      {
+        id: 'bySite',
+        name: t('By site', {ns: 'candidate_list'}),
+        state: {groupBy: 'site'},
+      },
+    ];
+
+    return {columns, actions, recordActions, views};
   }
 
   /**
@@ -213,165 +367,13 @@ class CandidateListIndex extends Component {
       return <Loader/>;
     }
 
-    /**
-     * XXX: Currently, the order of these fields MUST match the order of the
-     * queried columns in _setupVariables() in candidate_list.class.inc
-     */
-    // const options = this.state.data.fieldOptions;
     const options = this.state.fieldOptions;
-    const fields = [
-      {
-        label: this.props.t('PSCID', {ns: 'loris'}),
-        show: true,
-        filter: {
-          name: 'pscid',
-          type: 'text',
-        },
-      },
-      {
-        label: this.props.t('DCCID', {ns: 'loris'}),
-        show: true,
-        filter: {
-          name: 'dccid',
-          type: 'text',
-        },
-      },
-      {
-        label: this.props.t('Visit Label', {ns: 'loris'}),
-        show: false,
-        filter: {
-          name: 'visitLabel',
-          type: 'multiselect',
-          options: options.visitlabel,
-          sortByValue: false,
-        },
-      },
-      {
-        label: this.props.t('Site', {ns: 'loris', count: 1}),
-        show: true,
-        filter: {
-          name: 'site',
-          type: 'multiselect',
-          options: options.site,
-        },
-      },
-      {
-        'label': this.props.t('Cohort', {ns: 'loris', count: 1}),
-        'show': true,
-        'filter': {
-          name: 'cohort',
-          type: 'multiselect',
-          options: options.cohort,
-        },
-      },
-      {
-        label: this.props.t('Entity Type', {ns: 'loris'}),
-        show: true,
-        filter: {
-          name: 'entityType',
-          type: 'select',
-          options: options.entitytype,
-        },
-      },
-      {
-        'label': this.props.t('Scan Done', {ns: 'loris'}),
-        'show': true,
-        'filter': {
-          name: 'scanDone',
-          type: 'select',
-          hide: this.state.hideFilter,
-          options: {
-            'Y': this.props.t('Yes', {ns: 'loris'}),
-            'N': this.props.t('No', {ns: 'loris'}),
-          },
-        },
-      },
-      {
-        'label': this.props.t('Participant Status', {ns: 'loris'}),
-        'show': true,
-        'filter': {
-          name: 'participantStatus',
-          type: 'select',
-          hide: this.state.hideFilter,
-          options: options.participantstatus,
-        },
-      },
-      {
-        'label': this.props.t('DoB', {ns: 'loris'}),
-        'show': true,
-        'filter': {
-          name: 'DoB',
-          type: 'date-range',
-          hide: this.state.hideFilter,
-        },
-      },
-      {
-        'label': this.props.t('Date of registration', {ns: 'loris'}),
-        'show': true,
-        'filter': {
-          name: 'Date_registered',
-          type: 'date',
-        },
-      },
-      {
-        label: this.props.t('Sex', {ns: 'loris'}),
-        show: true,
-        filter: {
-          name: 'sex',
-          type: 'select',
-          hide: this.state.hideFilter,
-          options: options.Sex,
-        },
-      },
-      {
-        'label': this.props.t('Visit Count', {ns: 'candidate_list'}),
-        'show': true,
-        'filter': {
-          name: 'visitCount',
-          type: 'text',
-          hide: this.state.hideFilter,
-        },
-      },
-      {
-        'label': this.props.t('Feedback', {ns: 'loris'}),
-        'show': true,
-        'filter': {
-          name: 'feedback',
-          type: 'select',
-          hide: this.state.hideFilter,
-          options: {
-            '0': this.props.t('None', {ns: 'loris'}),
-            '1': this.props.t('Opened', {ns: 'candidate_list'}),
-            '2': this.props.t('Answered', {ns: 'candidate_list'}),
-            '3': this.props.t('Closed', {ns: 'candidate_list'}),
-            '4': this.props.t('Comment', {ns: 'candidate_list'}),
-          },
-        },
-      },
-      {
-        'label': this.props.t('Project', {ns: 'loris', count: 1}),
-        'show': true,
-        'filter': {
-          name: 'project',
-          type: 'select',
-          options: options.project,
-        },
-      },
-    ];
-
-    if (options.useedc === 'true') {
-      fields.push(
-        {
-          'label': this.props.t('EDC', {ns: 'loris'}),
-          'show': true,
-          'filter': {
-            name: 'edc',
-            type: 'date',
-            hide: this.state.hideFilter,
-          },
-        }
-      );
+    if (this.configOptions !== options) {
+      this.configOptions = options;
+      this.config = this.tableConfig(options);
     }
+    const {columns, actions, recordActions, views} = this.config;
+    const {t} = this.props;
 
     // Open profile modal window
     const profileForm = (
@@ -387,32 +389,22 @@ class CandidateListIndex extends Component {
       </Modal>
     );
 
-    // Add action buttons for toggle and open profile
-    // FIXME: move toggle button in the filter component next to the clear button
-    const actions = [
-      {
-        label: this.state.hideFilter ?
-          this.props.t('Show Advanced Filters', {ns: 'loris'}) :
-          this.props.t('Hide Advanced Filters', {ns: 'loris'}),
-        action: this.toggleFilters,
-        name: 'advanced',
-      },
-      {
-        label: this.props.t('Open Profile', {ns: 'candidate_list'}),
-        action: () => this.show('profileForm'),
-        show: !this.props.hasPermission('access_all_profiles'),
-      },
-    ];
-
     return (
       <div>
         {profileForm}
-        <FilterableDataTable
+        <RecordTable
           name="candidateList"
-          data={this.state.data}
-          fields={fields}
+          title={t('Candidates', {ns: 'candidate_list'})}
+          records={this.state.data}
+          columns={columns}
+          recordKey={(c) => c.dccid}
           actions={actions}
-          getFormattedCell={this.formatColumn}
+          recordActions={recordActions}
+          views={views}
+          selectable
+          fill
+          csv={{filename: 'candidates'}}
+          defaultSort={DEFAULT_SORT}
         />
       </div>
     );
