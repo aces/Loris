@@ -2,7 +2,8 @@ import React, {ReactElement, ReactNode, useEffect, useId, useRef} from 'react';
 import './Tooltip.css';
 
 type TooltipProps = {
-  // What the tooltip shows. Nothing is rendered when this is empty.
+  // What the tooltip shows. The element is rendered without a tooltip when
+  // this is empty.
   content: ReactNode;
   // The element the tooltip describes. It must pass `aria-describedby`, `style`
   // and the pointer and focus handlers on to a DOM element.
