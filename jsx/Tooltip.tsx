@@ -14,7 +14,8 @@ import './Tooltip.css';
 type Placement = 'top' | 'bottom' | 'left' | 'right';
 
 type TooltipProps = {
-  // What the tooltip shows. Nothing is rendered when this is empty.
+  // What the tooltip shows. The element is rendered without a tooltip when
+  // this is empty.
   content: ReactNode;
   // The element the tooltip describes. It must pass `aria-describedby` and
   // the pointer and focus handlers on to a DOM element.
@@ -89,24 +90,23 @@ function position(
     : fits(OPPOSITE[preferred], anchor, size) ? OPPOSITE[preferred]
       : preferred;
 
-  /**
-   *
-   * @param value
-   * @param size
-   * @param limit
-   */
-  const centreX = anchor.left + (anchor.width - size.width) / 2;
-  const centreY = anchor.top + (anchor.height - size.height) / 2;
-
   let top: number;
   let left: number;
   if (placement === 'top' || placement === 'bottom') {
-    left = clamp(centreX, size.width, width);
+    left = clamp(
+      anchor.left + (anchor.width - size.width) / 2,
+      size.width,
+      width
+    );
     top = placement === 'top'
       ? anchor.top - GAP - size.height
       : anchor.bottom + GAP;
   } else {
-    top = clamp(centreY, size.height, height);
+    top = clamp(
+      anchor.top + (anchor.height - size.height) / 2,
+      size.height,
+      height
+    );
     left = placement === 'left'
       ? anchor.left - GAP - size.width
       : anchor.right + GAP;
@@ -212,13 +212,20 @@ const Tooltip = ({
         setOpen(false);
       }
     };
+    let frame = 0;
+    /** Reposition once per animation frame, however many events arrive. */
+    const onMove = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(reposition);
+    };
     document.addEventListener('keydown', onKeyDown);
-    window.addEventListener('resize', reposition);
-    window.addEventListener('scroll', reposition, true);
+    window.addEventListener('resize', onMove);
+    window.addEventListener('scroll', onMove, true);
     return () => {
+      cancelAnimationFrame(frame);
       document.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('resize', reposition);
-      window.removeEventListener('scroll', reposition, true);
+      window.removeEventListener('resize', onMove);
+      window.removeEventListener('scroll', onMove, true);
     };
   }, [open, reposition]);
 
@@ -304,7 +311,7 @@ const Tooltip = ({
   return (
     <>
       {described}
-      {open && hasContent && createPortal(
+      {open && createPortal(
         <div
           ref={tip}
           id={id}
