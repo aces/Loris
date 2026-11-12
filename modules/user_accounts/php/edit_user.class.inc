@@ -197,7 +197,9 @@ class Edit_User extends \NDB_Form
                 'SELECT LabTechnician FROM examiners WHERE userID=:uid',
                 ['uid' => $user->getId()]
             );
-            if ($labTechnician !== null) {
+            if ($labTechnician !== null
+                && !empty($defaults['examiner_sites'])
+            ) {
                 $defaults['examiner_labtechnician'] = intval($labTechnician) === 1
                     ? 'Y' : 'N';
             }

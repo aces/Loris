@@ -124,12 +124,13 @@ class AddExaminer extends \NDB_Page
                 ]
             );
         } else {
+            $examinerValues = ['radiologist' => $radiologist];
+            if ($labTechnician === 1) {
+                $examinerValues['LabTechnician'] = 1;
+            }
             $DB->update(
                 'examiners',
-                [
-                    'radiologist'   => $radiologist,
-                    'LabTechnician' => $labTechnician,
-                ],
+                $examinerValues,
                 ['examinerID' => $examinerID]
             );
         }
