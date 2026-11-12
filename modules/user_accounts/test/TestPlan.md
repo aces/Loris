@@ -49,6 +49,8 @@ When creating or editing a user: (subtest: edit_user)
 18. Check that selecting sites for the "Examiner At:" Section and saving, adds user X to the Examiner list (and in examiners table).
 19. Check that de-selecting sites from the "Examiner At:" section and saving, does NOT delete X from the Examiner table but rather sets them as inactive for that site.
 20. Check that setting the radiologist to Yes/No changes the values for X for all sites
+    Check that setting Lab Technician to Yes adds X to the 'Done By' list when processing a biobank specimen,
+    and that setting it to No removes X from the list.
 21. Setting the Pending Approval for user X prevents user X from logging in until his/her account is approved.
 22. Setting the Active=”No” for user X prevents user X from logging in until his/her account is active again.
 23. Check that the values entered in 'Active from' and 'Active to' are validated properly. Any combination that has from <= to or either one or both fields null is valid

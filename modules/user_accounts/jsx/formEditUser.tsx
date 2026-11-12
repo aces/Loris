@@ -86,6 +86,7 @@ const ERROR_KEYS: Record<string, string[]> = {
   ProjectIDs: ['ProjectIDs', 'projects_group'],
   examiner_sites: ['examiner_sites'],
   examiner_radiologist: ['examiner_group'],
+  examiner_labtechnician: ['examiner_group'],
   examiner_pending: ['examiner_pending'],
   active_from: ['active_from'],
   active_to: ['active_to'],
@@ -713,6 +714,7 @@ function EditUserForm(props: EditUserFormProps): React.ReactElement {
           <div className="panel-body">
             {renderField('examiner_sites')}
             {renderField('examiner_radiologist')}
+            {renderField('examiner_labtechnician')}
             {renderField('examiner_pending')}
           </div>
         </div>
