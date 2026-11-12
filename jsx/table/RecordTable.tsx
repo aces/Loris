@@ -43,7 +43,7 @@ export type Column<R, V = unknown> = {
  * @param {Column} column - the column
  * @return {Column}
  */
-export function col<R, V>(column: Column<R, V>): Column<R, unknown> {
+export function defineColumn<R, V>(column: Column<R, V>): Column<R, unknown> {
   return column;
 }
 
