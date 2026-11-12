@@ -103,8 +103,6 @@ class DataAvailabilityItem extends DictionaryItem
                     . SQLQueryEngine::sqlOperator($criteria) . ' '
                     . SQLQueryEngine::sqlValue($this, $criteria, $prepbindings);
             }
-            // Not EXISTS, which the database can turn into a join over every
-            // candidate
             $found[] = '(SELECT 1 FROM ' . $source->from
                 . ' WHERE ' . join(' AND ', $where) . ' LIMIT 1) IS NOT NULL';
         }

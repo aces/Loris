@@ -70,7 +70,7 @@ function joinManyValues(
 ): string {
   return Object.keys(values)
     .map((key) => {
-      if (dictionary.type === 'URI' || key == values[key]) {
+      if (dictionary.type === 'URI' || key === values[key]) {
         return values[key];
       }
       return key + '=' + values[key];
@@ -972,7 +972,7 @@ function organizedFormatter(
                             <div style={{
                               margin: '1ex',
                             }}>
-                              {keyid != val && <dt>{keyid}</dt>}
+                              {keyid !== val && <dt>{keyid}</dt>}
                               <dd>{dval}</dd>
                             </div>
                           );

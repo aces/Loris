@@ -458,7 +458,16 @@ class ImagingQueryEngineTest extends TestCase
      */
     function testDataAvailability()
     {
-        $this->DB->setFakeTableData("tarchive", []);
+        $this->DB->setFakeTableData(
+            "tarchive",
+            [
+                [
+                    'TarchiveID'          => 1,
+                    'SessionID'           => 2,
+                    'AcquisitionMetadata' => '',
+                ],
+            ]
+        );
         $this->DB->setFakeTableData("mri_upload", []);
 
         $names = [];
@@ -475,8 +484,8 @@ class ImagingQueryEngineTest extends TestCase
             $names
         );
 
-        // Both candidates have a scan at TestMRIVisit, and only 123457 has
-        // a ScanType2 scan.
+        // Both candidates have a scan at TestMRIVisit, only 123457 has
+        // a ScanType2 scan, and 123456 has a DICOM archive at TestBvlVisit.
         $hasdata = $this->_getDictItem("imaging_browser_HasData");
         $this->assertEquals(
             [new CandID("123456"), new CandID("123457")],
@@ -495,10 +504,28 @@ class ImagingQueryEngineTest extends TestCase
             )
         );
         $this->assertEquals(
-            [],
+            [new CandID("123456")],
+            iterator_to_array(
+                $this->engine->getCandidateMatches(
+                    new QueryTerm($hasdata, new Equal("DICOM"))
+                )
+            )
+        );
+        $this->assertEquals(
+            [new CandID("123456")],
             iterator_to_array(
                 $this->engine->getCandidateMatches(
                     new QueryTerm($hasdata, new NotNull()),
+                    ["TestBvlVisit"]
+                )
+            )
+        );
+        $inserted = $this->_getDictItem("imaging_browser_Inserted");
+        $this->assertEquals(
+            [],
+            iterator_to_array(
+                $this->engine->getCandidateMatches(
+                    new QueryTerm($inserted, new NotNull()),
                     ["TestBvlVisit"]
                 )
             )
