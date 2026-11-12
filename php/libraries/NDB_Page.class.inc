@@ -939,6 +939,7 @@ class NDB_Page extends \LORIS\Http\Endpoint implements
             $baseurl . '/js/components/PolicyButton.js',
             $baseurl . "/js/util/queryString.js",
             $baseurl . '/js/components/Help.js',
+            $baseurl . '/js/components/LoginDialog.js',
         ];
         return $files;
     }
