@@ -172,7 +172,7 @@ function ProjectForm(props: ProjectFormProps): React.ReactElement {
 
     try {
       await StudyEntity.save(
-        `${loris.BaseURL}/configuration/ajax/updateProject.php`,
+        'configuration/ajax/updateProject.php',
         body
       );
 
