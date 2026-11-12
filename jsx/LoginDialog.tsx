@@ -1,7 +1,9 @@
 import {useState, FormEvent} from 'react';
 import {createRoot} from 'react-dom/client';
 import {useTranslation} from 'react-i18next';
+import lorisFetch from 'jslib/lorisFetch';
 import Modal from './Modal';
+import {TextboxElement, PasswordElement} from './Form';
 
 declare const loris: {BaseURL: string};
 
@@ -39,9 +41,9 @@ function LoginDialog({onClose}: LoginDialogProps) {
     setSubmitting(true);
     setError(null);
     try {
-      const response = await fetch(`${loris.BaseURL}/login/Authentication`, {
+      const url = `${loris.BaseURL}/login/Authentication`;
+      const response = await lorisFetch(url, {
         method: 'POST',
-        credentials: 'same-origin',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           login: 'true',
@@ -87,29 +89,20 @@ function LoginDialog({onClose}: LoginDialogProps) {
           {t('Log in again to continue where you left off.', {ns: 'loris'})}
         </p>
         {error && <p className='text-danger'>{error}</p>}
-        <div className='form-group'>
-          <input
-            className='form-control'
-            type='text'
-            name='username'
-            autoComplete='username'
-            placeholder={t('Username', {ns: 'loris'})}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoFocus
-          />
-        </div>
-        <div className='form-group'>
-          <input
-            className='form-control'
-            type='password'
-            name='password'
-            autoComplete='current-password'
-            placeholder={t('Password', {ns: 'loris'})}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+        <TextboxElement
+          name='username'
+          label={t('Username', {ns: 'loris'})}
+          value={username}
+          autoComplete='username'
+          onUserInput={(_name: string, value: string) => setUsername(value)}
+        />
+        <PasswordElement
+          name='password'
+          label={t('Password', {ns: 'loris'})}
+          value={password}
+          autoComplete='current-password'
+          onUserInput={(_name: string, value: string) => setPassword(value)}
+        />
       </form>
     </Modal>
   );
