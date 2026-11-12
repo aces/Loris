@@ -117,4 +117,6 @@
 6. Assert that: the `Download table as CSV` button triggers the file download with the right information in it.
 7. Assert that: table pagination buttons work.
 8. Assert that: table maximum number of rows per page dropdown modifies the number of displayed rows.
+9. Select the `Data availability` fields of `Imaging Browser` and run the query.
+   1. Assert that: each visit lists the scan types held, each one once rather than as `name=name`, in every `Display visits as` option.
 

@@ -120,6 +120,16 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
     /**
      * {@inheritDoc}
      *
+     * @return \LORIS\Data\Dictionary\DictionaryItem[]
+     */
+    public function getDataAvailabilityItems() : iterable
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param \LORIS\Data\Query\QueryTerm $term      The criteria being matched
      * @param ?array                      $visitlist The list of visits that must
      *                                               match for session scoped
