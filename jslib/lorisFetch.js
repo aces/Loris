@@ -1,8 +1,8 @@
 /**
  * Wrapper around fetch that keeps credentials on same-origin requests.
  *
- * The global helper in loris-scripts.js owns login modal handling for 401s.
- * Bundled modules import this file to use that shared helper when it exists.
+ * The global helper in loris-scripts.js opens the login dialog (jsx/LoginDialog.tsx)
+ * on a 401. Bundled modules import this file to use that shared helper when it exists.
  *
  * @param {*} input
  * @param {object=} init

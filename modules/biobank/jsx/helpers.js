@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import lorisFetch from 'jslib/lorisFetch';
 
 /**
  * Clone an object
@@ -159,7 +160,7 @@ export async function get(url, callBack) {
  * @return {Promise}
  */
 export async function post(data, url, method, onSuccess) {
-  const response = await fetch(
+  const response = await lorisFetch(
     url, {
       credentials: 'same-origin',
       method: method,
@@ -174,6 +175,8 @@ export async function post(data, url, method, onSuccess) {
     // json format.
     return response.json()
       .catch((data) => data);
+  } else if (response.status === 401) {
+    return Promise.reject('Unauthorized');
   } else {
     const data = await response.json();
 
