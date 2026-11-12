@@ -1,3 +1,5 @@
+import Tooltip from 'Tooltip';
+
 /**
  * progressBarBuilder - generates the graph content.
  *
@@ -22,26 +24,31 @@ const progressBarBuilder = (t, data) => {
       return null;
     }
 
-    return <div
-      key={sexData.key || sexData.label}
-      className ='progress-bar'
-      role ='progressbar'
-      style ={{
-        width: `${width}%`,
-        backgroundColor: sexData.colour || '#000000',
-      }}
-      data-toggle ='tooltip'
-      data-placement ='bottom'
-      title ={
-        `${sexData.label}:
-          ${sexData.total} participants
-          (${formatPercent(width)})`
-      }>
-      <p>
-        {sexData.total}<br/>
-        {sexData.label}
-      </p>
-    </div>;
+    return (
+      <Tooltip
+        key={sexData.key || sexData.label}
+        placement='bottom'
+        content={
+          `${sexData.label}: ${sexData.total} participants `
+          + `(${formatPercent(width)})`
+        }
+      >
+        <div
+          className='progress-bar'
+          role='progressbar'
+          tabIndex={0}
+          style={{
+            width: `${width}%`,
+            backgroundColor: sexData.colour || '#000000',
+          }}
+        >
+          <p>
+            {sexData.total}<br/>
+            {sexData.label}
+          </p>
+        </div>
+      </Tooltip>
+    );
   };
 
   let title;

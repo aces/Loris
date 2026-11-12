@@ -1,0 +1,40 @@
+.loris-tooltip {
+  --tooltip-background: #1f2937;
+  --tooltip-color: #ffffff;
+
+  inset: auto;
+  margin: 8px;
+  border: 0;
+  overflow: visible;
+  max-width: 20rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 4px;
+  background: var(--tooltip-background);
+  color: var(--tooltip-color);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  position-area: block-start;
+  position-try-fallbacks: flip-block, flip-inline;
+}
+
+.loris-tooltip[data-placement='bottom'] {
+  position-area: block-end;
+}
+
+.loris-tooltip[data-placement='left'] {
+  position-area: inline-start;
+}
+
+.loris-tooltip[data-placement='right'] {
+  position-area: inline-end;
+}
+
+/* Browsers without anchor positioning show it at the bottom of the screen. */
+@supports not (position-area: block-start) {
+  .loris-tooltip {
+    inset: auto 0 1rem;
+    width: fit-content;
+    margin-inline: auto;
+  }
+}
