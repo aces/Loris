@@ -29,7 +29,8 @@ export class Client {
   /**
    * Fetches a resource.
    *
-   * @param path  The resource's path, relative to LORIS's base URL.
+   * @param path  The resource's path, relative to LORIS's base URL, or an
+   *              absolute URL.
    * @param query A Query object to build the URL query string.
    */
   async get<Res>(path: string, query?: Query): Promise<Res> {
@@ -70,7 +71,8 @@ export class Client {
   /**
    * Handles the actual fetching and JSON parsing, including error handling.
    *
-   * @param path    The path to request, relative to LORIS's base URL.
+   * @param path    The path to request, relative to LORIS's base URL, or an
+   *                absolute URL.
    * @param options The Fetch API request initialization options.
    * @param query   A Query object to build the URL query string.
    */
