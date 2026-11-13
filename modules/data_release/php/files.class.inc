@@ -176,9 +176,8 @@ class Files extends \NDB_Page
             ['project' => $projectName]
         );
 
-        if (
-            !$user->hasPermission("data_release_upload") ||
-            !$user->hasProject(\ProjectID::singleton((int)$ProjectID))
+        if (!$user->hasPermission("data_release_upload")
+            || !$user->hasProject(\ProjectID::singleton((int)$ProjectID))
         ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 dgettext("data_release", "Permission denied.")
@@ -197,8 +196,8 @@ class Files extends \NDB_Page
                     return new \LORIS\Http\Response\JSON\Forbidden(
                         dgettext(
                             "data_release",
-                            "Overwrite failed. A file of this name already exists which"
-                            . " you do not have permission to overwrite."
+                            "Overwrite failed. A file of this name already exists"
+                            . " which you do not have permission to overwrite."
                         )
                     );
                 }

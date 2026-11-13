@@ -397,8 +397,12 @@ class DataTable extends Component {
         searchString = (data !== null && data !== undefined) ?
           data.toString().toLowerCase() : '';
 
-        let searchArray = searchString.split(',');
-        match = (searchArray.includes(searchKey));
+        if (searchKey.includes(',')) {
+          match = (searchString == searchKey);
+        } else {
+          let searchArray = searchString.split(',');
+          match = (searchArray.includes(searchKey));
+        }
         if (match) {
           result = true;
         }

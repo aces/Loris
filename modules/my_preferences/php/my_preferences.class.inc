@@ -172,13 +172,31 @@ class My_Preferences extends \NDB_Form
             unset($values['Password_hash']);
         }
         foreach ($values as $key => $value) {
-            // Password updates are handled separately. Password_hash is removed
-            // from the initial update as otherwise it will be recorded in the
-            // history table unencrypted.
-            if (!empty($value) && $key != 'Password_hash') {
-                $set[$key] = $value;
-            } else {
-                $set[$key] = null;
+            switch ($key) {
+            case 'Password_hash':
+            case '__Confirm':
+                // Password updates are handled separately. Password_hash is removed
+                // from the initial update as otherwise it will be recorded in the
+                // history table unencrypted.
+                break;
+
+            case 'First_name':
+            case 'Last_name':
+            case 'Email':
+            case 'language_preference':
+            case '':
+                if (!empty($value)) {
+                    $set[$key] = $value;
+                } else {
+                    $set[$key] = null;
+                }
+                break;
+            default:
+                $this->logger->warning(
+                    "Suspicious activity detected. "
+                    . "Invalid key submitted to my_preferences"
+                );
+                break;
             }
         }
         // update the user
