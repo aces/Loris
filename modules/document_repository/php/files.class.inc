@@ -68,7 +68,10 @@ class Files extends \NDB_Page
         if (str_starts_with($unhandledPath, "/Files/") !== true
             && ($unhandledPath !== '' && $request->getMethod() != "POST")
         ) {
-            $this->logger->warning("Suspicious URI access for {filename}", ['filename' => $filename]);
+            $this->logger->warning(
+                "Suspicious URI access for {filename}",
+                ['filename' => $unhandledPath]
+            );
             return new \LORIS\Http\Response\JSON\BadRequest();
         }
 
@@ -82,12 +85,21 @@ class Files extends \NDB_Page
         // $request is the only source of truth.
         unset($unhandledRequest, $unhandledPath);
 
+        // Phan isn't smart enough to realize that $fileid and $meta
+        // are always defined (other than for POST) because it's set inside
+        // the if  $request->getMethod != 'POST' block.. so just initialize
+        // it to something here.
+        //
+        // Also define filename outside the if statement for the
+        // same reason.
+        $fileid   = -1;
+        $metadata = false;
+        $filename = $request->getAttribute("unhandledURI")->getPath();
         if ($request->getMethod() != "POST") {
             $factory = \NDB_Factory::singleton();
             $user    = $factory->user();
             $db      = $factory->database();
 
-            $filename = $request->getAttribute("unhandledURI")->getPath();
             if (str_ends_with($filename, '/meta')) {
                 $metadata = true;
                 $filename = substr($filename, 0, -5);
