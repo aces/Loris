@@ -1,3 +1,4 @@
+import {useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
 import Swal from 'sweetalert2';
@@ -40,6 +41,16 @@ function ContainerDisplay(props) {
     edit,
   } = props;
 
+  const displayRef = useRef(null);
+
+  useEffect(() => {
+    const nodes = $(
+      displayRef.current.querySelectorAll('[data-toggle="tooltip"]')
+    );
+    nodes.tooltip({container: 'body'});
+    return () => nodes.tooltip('hide');
+  });
+
   const redirectURL = (e) => {
     let coordinate = e.target.id;
     if (coordinates[coordinate]) {
@@ -51,6 +62,7 @@ function ContainerDisplay(props) {
   const allowDrop = (e) => e.preventDefault();
 
   const drag = (e) => {
+    $(e.target).tooltip('hide');
     let container = JSON.stringify(
       data.containers[coordinates[e.target.id]]
     );
@@ -377,7 +389,7 @@ function ContainerDisplay(props) {
         {checkout}
         {load}
       </div>
-      <div className='display'>
+      <div className='display' ref={displayRef}>
         {display}
       </div>
     </div>
