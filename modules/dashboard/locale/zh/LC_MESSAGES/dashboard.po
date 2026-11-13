@@ -37,5 +37,5 @@ msgstr "...绝不。欢迎！"
 msgid "Welcome, %s!"
 msgstr "欢迎，%s！"
 
-msgid "Last login:"
+msgid "Last login: "
 msgstr "上次登录："
