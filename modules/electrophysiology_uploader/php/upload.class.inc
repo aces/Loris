@@ -88,20 +88,15 @@ class Upload extends \NDB_Page
             );
         }
 
-        $filename      = urldecode(basename($file));
-        $pos           = strrpos($file, '/');
-        $file_rel_path = $pos === false ? '' : substr($file, 0, $pos);
-        $config        = \NDB_Config::singleton();
-        $upload_dir    = new \SplFileInfo(
-            $config->getSetting('EEGUploadIncomingPath')
-        );
+        $config     = \NDB_Config::singleton();
+        $upload_dir = $config->getSetting('EEGUploadIncomingPath');
 
         $downloader = new \LORIS\FilesDownloadHandler(
-            new \SPLFileInfo($upload_dir . '/' . $file_rel_path)
+            new \SPLFileInfo($upload_dir)
         );
 
         return $downloader->handle(
-            $request->withAttribute('filename', $filename)
+            $request->withAttribute('filename', $file)
         );
     }
 
