@@ -1,12 +1,13 @@
-Subject: Contraseña olvidada - {$study}
+Subject: Solicitud de cambio de contraseña - {$study}
 
 {$realname},
 
 
-Su contraseña ha sido restablecida:
-{$password}
+Ha enviado una solicitud de cambio de contraseña.
 
-Intente iniciar sesión nuevamente. Se le pedirá que cambie su contraseña después de iniciar sesión.
+Si no ha sido usted, ignore este correo electrónico y asegúrese de que aún puede iniciar sesión en su cuenta. Si ha sido usted, utilice el siguiente enlace para cambiar su contraseña.
+
+{$resetpasswordurl}
 
 Gracias,
 

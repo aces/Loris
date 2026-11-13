@@ -602,14 +602,11 @@ class User extends UserPermissions implements
      * database.
      *
      * @param \Password $password The plain text password to be hashed and saved.
-     * @param bool      $expired  Whether the password is expired. If so, a reset
-     *                            will be triggered on the user's next login.
      *
      * @return void
      */
     function updatePassword(
-        \Password $password,
-        bool $expired = false
+        \Password $password
     ): void {
         if (password_verify($this->userInfo['Email'], (string) $password)) {
             throw new \InvalidArgumentException(
@@ -624,11 +621,9 @@ class User extends UserPermissions implements
         $this->update(
             [
                 'Password_hash'          => $password,
-                'PasswordChangeRequired' => $expired ? 1 : 0
             ]
         );
-        $this->userInfo['Password_hash']          = (string) $password;
-        $this->userInfo['PasswordChangeRequired'] = $expired;
+        $this->userInfo['Password_hash'] = (string) $password;
     }
 
     /**
