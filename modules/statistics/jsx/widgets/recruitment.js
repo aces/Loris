@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
-import Panel from 'Panel';
+import Panel, {PanelViews} from 'Panel';
 import {QueryChartForm} from './helpers/queryChartForm';
 import {progressBarBuilder} from './helpers/progressbarBuilder';
 import {useTranslation} from 'react-i18next';
@@ -188,8 +188,7 @@ const Recruitment = (props) => {
     + ' — ' + t(subtitle, {ns: 'statistics'});
   return loading ? <Panel title ='Recruitment'><Loader/></Panel> : (
     <>
-      <Panel
-        title={t('Recruitment', {ns: 'statistics'})}
+      <PanelViews
         id ='statistics_recruitment'
         onChangeView ={(index) => {
           setupCharts(t, false, chartDetails, t('Total', {ns: 'loris'}));
