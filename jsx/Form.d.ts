@@ -651,6 +651,7 @@ type textareaElementProps = {
     rows?: number
     cols?: number
     noMargins?: boolean
+    errorMessage?: string
     onUserInput: (name: string, value: any) => void
     onUserBlur?: (name: string, value: any) => void
 }
