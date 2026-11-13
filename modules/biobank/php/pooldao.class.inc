@@ -87,7 +87,7 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
         ?array $conditions = [],
         $operator = 'AND'
     ) : array {
-        $query = "SELECT bp.PoolID,
+        $query  = "SELECT bp.PoolID,
                          bp.Label,
                          bp.Quantity,
                          bp.UnitID,
@@ -102,19 +102,19 @@ class PoolDAO extends \LORIS\Data\ProvisionerInstance
                       biobank_specimen bs ON bs.SpecimenID=bspr.SpecimenID
                   LEFT JOIN
                       biobank_container bc ON bc.ContainerID=bs.ContainerID";
+        $params = [];
         if (!empty($conditions)) {
             $whereClause = [];
+            $i           = 0;
             foreach ($conditions as $condition) {
-                $whereClause[] = $condition['column']
-                    . '='
-                    . '"'
-                    . $condition['value']
-                    . '"';
+                $key           = 'param'.$i++;
+                $whereClause[] = $condition['column'].'=:'.$key;
+                $params[$key]  = $condition['value'];
             }
             $query .= ' WHERE '.implode(" $operator ", $whereClause);
         }
         $query   .= ' GROUP BY bp.PoolID';
-        $poolRows = $this->db->pselectWithIndexKey($query, [], 'PoolID');
+        $poolRows = $this->db->pselectWithIndexKey($query, $params, 'PoolID');
 
         $pools       = [];
         $specimenDAO = new SpecimenDAO($this->loris);
