@@ -4,7 +4,7 @@ import {withTranslation, WithTranslation} from 'react-i18next';
 
 import i18n from 'I18nSetup';
 import Loader from 'Loader';
-import {Client} from 'jslib/http';
+import {client} from 'jslib/http';
 
 import frStrings from '../locale/fr/LC_MESSAGES/dicom_archive.json';
 import hiStrings from '../locale/hi/LC_MESSAGES/dicom_archive.json';
@@ -83,8 +83,7 @@ function ViewDetails({dataURL, t}: ViewDetailsProps): React.ReactElement {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const client = new Client<ViewDetailsData>('dicom_archive');
-    client.getById(dataURL)
+    client.get<ViewDetailsData>(dataURL)
       .then(setData)
       .catch(() => setError(true));
   }, [dataURL]);

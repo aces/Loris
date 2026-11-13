@@ -11,12 +11,11 @@ import {
   SelectElement,
   ButtonElement,
 } from 'jsx/Form';
-import StudyEntitiesClient from './StudyEntitiesClient';
+import {client} from 'jslib/http';
+import * as StudyEntity from './studyEntities';
 
 import jaStrings from '../locale/ja/LC_MESSAGES/configuration.json';
 import zhStrings from '../locale/zh/LC_MESSAGES/configuration.json';
-
-declare const loris: {BaseURL: string};
 
 type Cohort = {
   RecruitmentTarget: null | number | string,
@@ -130,8 +129,8 @@ function CohortForm(props: CohortFormProps): React.ReactElement {
     });
 
     try {
-      const responseData = await new StudyEntitiesClient('configuration').save(
-        `${loris.BaseURL}/configuration/ajax/updateCohort.php`,
+      const responseData = await StudyEntity.save(
+        'configuration/ajax/updateCohort.php',
         body
       );
 
@@ -396,8 +395,7 @@ function CohortPage(props: WithTranslation): React.ReactElement {
   useEffect(() => {
     const dataURL = new URL(window.location.href);
     dataURL.searchParams.set('format', 'json');
-    new StudyEntitiesClient<CohortData>('configuration')
-      .getById(dataURL.toString())
+    client.get<CohortData>(dataURL.toString())
       .then((responseData: CohortData) => setData(responseData))
       .catch(() => setError(true));
   }, []);
