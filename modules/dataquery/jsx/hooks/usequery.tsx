@@ -136,7 +136,7 @@ function useQuery(): useQueryReturnType {
     if (!filters) {
       setCriteria(new QueryGroup('and'));
     } else {
-      setCriteria(filters);
+      setCriteria(filters.clone());
     }
   };
   const fieldActions: FieldActions = {
