@@ -867,7 +867,7 @@ window.addEventListener('load', () => {
       containerAPI={`${biobank}containerendpoint/`}
       poolAPI={`${biobank}poolendpoint/`}
       optionsAPI={`${biobank}optionsendpoint/`}
-      labelAPI={`${loris.BaseURL}${loris.config('printEndpoint')}`}
+      labelAPI={`${loris.BaseURL}${loris.config.printEndpoint}`}
     />
   );
 });

@@ -82,7 +82,7 @@ function MFAIndex(): React.ReactElement {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [key] = useState<string>(genPotentialSecret());
   const {t} = useTranslation();
-  const studyTitle = loris.config('studyTitle');
+  const studyTitle = loris.config.studyTitle ?? '';
   const mfaUrl = 'otpauth://totp/'
     + encodeURI(studyTitle)
     + ':' + encodeURI(loris.user.username)

@@ -11,6 +11,7 @@ import React, {Component} from 'react';
 import ModalImportCSV from './react.importCSV';
 import {getSessions, enumToArray} from '../js/arrayintersect';
 import PropTypes from 'prop-types';
+import {debounce} from './debounce';
 
 /**
  * LogicOperator Component
@@ -108,7 +109,7 @@ class FilterRule extends Component {
    * Component will mount
    */
   componentWillMount() {
-    this.valueSet = loris.debounce(this.valueSet, 1000);
+    this.valueSet = debounce(this.valueSet, 1000);
   }
 
   /**
