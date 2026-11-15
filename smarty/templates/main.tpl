@@ -8,12 +8,11 @@
         <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 
         {*
-        This can't be loaded from getJSDependencies(), because it's needs access to smarty
-           variables to be instantiated, so that other js files don't need access to smarty variables
-           and can access them through the loris global (ie. loris.BaseURL) *}
-        <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
+        Initialize the shared helper with PHP data before loading module scripts,
+        so they can access page settings through the loris global. *}
+        <script src="{$baseurl}/js/components/loris.js" type="text/javascript"></script>
         <script language="javascript" type="text/javascript">
-        let loris = new LorisHelper({$userjson}, {$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
+        let loris = lorisjs.loris.createLoris({$userjson}, {$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
 
         const switchLanguage = (selectEl) => {
           const queryParams = new URLSearchParams(window.location.search);

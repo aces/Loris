@@ -352,6 +352,7 @@ const configs: webpack.Configuration[] = [];
 
 configs.push({
   entry: {
+    loris: './jslib/loris.ts',
     MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
     Breadcrumbs: './jsx/Breadcrumbs.js',
     PolicyButton: './jsx/PolicyButton.js',
