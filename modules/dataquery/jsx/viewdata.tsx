@@ -26,8 +26,8 @@ type SessionRowCell = {
  * Convert a piece of data from JSON to the format to be displayed
  * in the cell. Used for either CSV or frontend display.
  *
- * @param {string} data - the raw, unparsed string data.
- * @returns {string} the non-JSON value
+ * @param data - the raw, unparsed string data.
+ * @returns the non-JSON value
  */
 function cellValue(data: string) {
   try {
@@ -47,9 +47,9 @@ function cellValue(data: string) {
  * Renders a single table cell value, converting from JSON string to
  * normal string if necessary.
  *
- * @param {object} props - React props
- * @param {string} props.data - The JSON string to display
- * @returns {React.ReactElement} - the Table Cell
+ * @param props - React props
+ * @param props.data - The JSON string to display
+ * @returns - the Table Cell
  */
 function TableCell(props: {data: string}) {
   return <td>{cellValue(props.data)}</td>;
@@ -63,11 +63,11 @@ enum EnumDisplayTypes {
 /**
  * Returns the value to display for a field.
  *
- * @param {object} props - React props
- * @param {any} props.value - the value to be formatted
- * @param {FieldDictionary} props.dictionary - The field's dictionary
- * @param {EnumDisplayTypes} props.enumDisplay - The format to display enums
- * @returns {React.ReactElement} - the mapped value
+ * @param props - React props
+ * @param props.value - the value to be formatted
+ * @param props.dictionary - The field's dictionary
+ * @param props.enumDisplay - The format to display enums
+ * @returns - the mapped value
  */
 function DisplayValue(props: {
     value: any,
@@ -122,11 +122,11 @@ function DisplayValue(props: {
 /**
  * Display a progress bar.
  *
- * @param {object} props - React props
- * @param {string} props.type - the type of progress being displayed
- * @param {number} props.value - The current value
- * @param {number} props.max - The maximum value
- * @returns {React.ReactElement} - The ProgressBar element
+ * @param props - React props
+ * @param props.type - the type of progress being displayed
+ * @param props.value - The current value
+ * @param props.max - The maximum value
+ * @returns - The ProgressBar element
  */
 function ProgressBar(props: {type: string, value: number, max: number}) {
   const {t} = useTranslation('dataquery');
@@ -175,10 +175,10 @@ type RunQueryType = {
 /**
  * React hook to run a given query.
  *
- * @param {APIQueryField[]} fields - The fields selected
- * @param {QueryGroup} filters - The filters selected
- * @param {function} onRun - Callback to call when the query is run
- * @returns {RunQueryType} - a description of the status of the loading and the loaded values
+ * @param fields - The fields selected
+ * @param filters - The filters selected
+ * @param onRun - Callback to call when the query is run
+ * @returns - a description of the status of the loading and the loaded values
  */
 function useRunQuery(
   fields: APIQueryField[],
@@ -263,12 +263,12 @@ type DataOrganizationType = {
 /**
  * Hook to re-organize tabulated data returned from the API into the format selected by the user
  *
- * @param {RunQueryType} queryData - The data returned by the API
- * @param {string} visitOrganization - The type of data organization selected by the user
- * @param {string} headerDisplay - The display to use for the headers
- * @param {APIQueryField[]} fields - The fields that need to be organized
- * @param {FullDictionary} fulldictionary - The full dictionary of all selected modules
- * @returns {object} - the headers and data re-organised according to the user's selection
+ * @param queryData - The data returned by the API
+ * @param visitOrganization - The type of data organization selected by the user
+ * @param headerDisplay - The display to use for the headers
+ * @param fields - The fields that need to be organized
+ * @param fulldictionary - The full dictionary of all selected modules
+ * @returns - the headers and data re-organised according to the user's selection
  */
 function useDataOrganization(
   queryData: RunQueryType,
@@ -323,13 +323,13 @@ function useDataOrganization(
 /**
  * The View Data tab
  *
- * @param {object} props - React props
- * @param {TFunction} props.t - useTranslation
- * @param {APIQueryField[]} props.fields - The selected fields
- * @param {QueryGroup} props.filters - The selected filters
- * @param {object} props.fulldictionary - the data dictionary
- * @param {function} props.onRun - Callback for when the query is run
- * @returns {React.ReactElement} - The ViewData tab
+ * @param props - React props
+ * @param props.t - useTranslation
+ * @param props.fields - The selected fields
+ * @param props.filters - The selected filters
+ * @param props.fulldictionary - the data dictionary
+ * @param props.onRun - Callback for when the query is run
+ * @returns - The ViewData tab
  */
 function ViewData(props: {
     t: TFunction,
@@ -503,13 +503,13 @@ function ViewData(props: {
  * Organize the session data into tabular data based on
  * the visit organization settings
  *
- * @param {array} resultData - The result of the query as returned by the API
- * @param {string} visitOrganization - The visit organization
+ * @param resultData - The result of the query as returned by the API
+ * @param visitOrganization - The visit organization
  *                                     option selected
- * @param {FullDictionary} fulldict - the full data dictionary
- * @param {APIQueryField[]} fields - the selected fields from the query.
- * @param {function} onProgress - Callback to update progress status display.
- * @returns {string[][]} - The data organized into a tabulated form
+ * @param fulldict - the full data dictionary
+ * @param fields - the selected fields from the query.
+ * @param onProgress - Callback to update progress status display.
+ * @returns - The data organized into a tabulated form
  *    such that the result matches the visual table shown by the
  *    frontend cell-for-cell. This may involve adding rows or columns
  *    for the sessions or headers.
@@ -654,11 +654,11 @@ function organizeData(
 /**
  * Return a cell formatter specific to the options chosen for a CSV
  *
- * @param {string} visitOrganization - The visit organization
+ * @param visitOrganization - The visit organization
  *                                     option selected
- * @param {array} fields - The fields selected
- * @param {array} dict - The full dictionary
- * @returns {function} - the appropriate column formatter for this data organization
+ * @param fields - The fields selected
+ * @param dict - The full dictionary
+ * @returns - the appropriate column formatter for this data organization
  */
 function organizedMapper(
   visitOrganization: VisitOrgType,
@@ -714,11 +714,11 @@ type LongitudinalExpansion = {
  * n cells to be displayed in the longitudinal display, for either
  * CSV or display.
  *
- * @param {string|null} value - The raw cell value
- * @param {number} fieldNo - the raw index of the field
- * @param {array} fields - The fields selected
- * @param {array} dict - The full dictionary
- * @returns {(LongitudinalExpansion)|null} - Expanded array of cells mapped
+ * @param value - The raw cell value
+ * @param fieldNo - the raw index of the field
+ * @param fields - The fields selected
+ * @param dict - The full dictionary
+ * @returns - Expanded array of cells mapped
  *     to display value. Null in an array of LongitudinalExpansion[] implies
  *     the cell has no data. null being returned directly implies that
  *     there are no table cells to be added based on this data.
@@ -820,18 +820,18 @@ function expandLongitudinalCells(
 /**
  * Return a cell formatter specific to the options chosen
  *
- * @param {array} resultData - The result of the query
- * @param {string} visitOrganization - The visit organization
+ * @param resultData - The result of the query
+ * @param visitOrganization - The visit organization
  *                                     option selected
- * @param {array} fields - The fields selected
- * @param {array} dict - The full dictionary
- * @param {boolean} displayEmptyVisits -  Whether visits with
+ * @param fields - The fields selected
+ * @param dict - The full dictionary
+ * @param displayEmptyVisits -  Whether visits with
  *                                        no data should be displayed
- * @param {EnumDisplayTypes} enumDisplay -  The format to display
+ * @param enumDisplay -  The format to display
  *                                          enum values
- * @param {TFunction} t - useTranslation
+ * @param t - useTranslation
 
- * @returns {function} - the appropriate column formatter for
+ * @returns - the appropriate column formatter for
                          this data organization
  */
 function organizedFormatter(
@@ -850,9 +850,9 @@ function organizedFormatter(
      * Callback to return the raw JSON data as returned by the API, in
      * table form for the DataTable
      *
-     * @param {string} label - The table header
-     * @param {string} cell - The cell value
-     * @returns {React.ReactElement} - The table cell
+     * @param label - The table header
+     * @param cell - The cell value
+     * @returns - The table cell
      */
     callback = (label: string, cell: string): ReactNode => {
       return <td>{cell}</td>;
@@ -863,12 +863,12 @@ function organizedFormatter(
      * Callback to format the data as inline data, with a list for each
      * session inside of a cell for the candidate.
      *
-     * @param {string} label - The table header
-     * @param {string} cell - The cell value
-     * @param {string[]} row - The entire row
-     * @param {string[]} headers - The entire row's headers
-     * @param {number} fieldNo - the cell index
-     * @returns {React.ReactElement} - The table cell
+     * @param label - The table header
+     * @param cell - The cell value
+     * @param row - The entire row
+     * @param headers - The entire row's headers
+     * @param fieldNo - the cell index
+     * @returns - The table cell
      */
     callback = (
       label: string,
@@ -926,9 +926,9 @@ function organizedFormatter(
              * API to a string to display to the user in the
              * frontend for this visit.
              *
-             * @param {string} visit - The visit being displayed
-             * @param {string} cell - The raw cell value
-             * @returns {string|null} - the display string
+             * @param visit - The visit being displayed
+             * @param cell - The raw cell value
+             * @returns - the display string
              */
             const visitval = (visit: string, cell: string) => {
               if (cell === '') {
@@ -1020,10 +1020,10 @@ function organizedFormatter(
              * Maps the JSON value from the session to a list of
              * values to display to the user
              *
-             * @param {string} visit - The visit label
-             * @param {string} cell - The JSON returned by the API
+             * @param visit - The visit label
+             * @param cell - The JSON returned by the API
              *                        for this cell
-             * @returns {React.ReactElement} - The HTML list react element
+             * @returns - The HTML list react element
              */
             const visitval = (visit: string, cell: string) => {
               if (cell === '') {
@@ -1095,12 +1095,12 @@ function organizedFormatter(
     /**
      * Callback to organize this data longitudinally
      *
-     * @param {string} label - The header label
-     * @param {string} cell - the JSON value of the cell
-     * @param {string[]} row - the entire row
-     * @param {string[]} headers - the headers for the table
-     * @param {number} fieldNo - The field number of this cell
-     * @returns {React.ReactElement} - The table cell
+     * @param label - The header label
+     * @param cell - the JSON value of the cell
+     * @param row - the entire row
+     * @param headers - the headers for the table
+     * @param fieldNo - The field number of this cell
+     * @returns - The table cell
      */
     callback = (
       label: string,
@@ -1131,12 +1131,12 @@ function organizedFormatter(
     /**
      * Callback that organizes data cross-sectionally
      *
-     * @param {string} label - The header label
-     * @param {string} cell - the JSON value of the cell
-     * @param {string[]} row - the entire row
-     * @param {string[]} headers - the headers for the table
-     * @param {number} fieldNo - The field number of this cell
-     * @returns {React.ReactElement} - The table cell for this cell.
+     * @param label - The header label
+     * @param cell - the JSON value of the cell
+     * @param row - the entire row
+     * @param headers - the headers for the table
+     * @param fieldNo - The field number of this cell
+     * @returns - The table cell for this cell.
      */
     callback = (
       label: string,
@@ -1173,9 +1173,9 @@ function organizedFormatter(
 /**
  * Get the data dictionary for a specific field
  *
- * @param {APIQueryField} fieldobj - The field in the format of props.fields
- * @param {FullDictionary} dict - the full data dictionary
- * @returns {FieldDictionary?} - The field dictionary for this field
+ * @param fieldobj - The field in the format of props.fields
+ * @param dict - the full data dictionary
+ * @returns - The field dictionary for this field
  */
 function getDictionary(
   fieldobj: APIQueryField,
@@ -1197,13 +1197,13 @@ type HeaderDisplayType = 'fieldname' | 'fielddesc' | 'fieldnamedesc';
  * Generate the appropriate table headers based on the visit
  * organization
  *
- * @param {array} fields - the selected fields
- * @param {string} org - the visit organization
- * @param {string} display - the header display format
- * @param {object} fulldict - the data dictionary
- * @param {TFunction} t - useTranslation
- * @param {function} onProgress - Callback to indicate progress in processing
- * @returns {array} - A promise which resolves to the array of headers to display
+ * @param fields - the selected fields
+ * @param org - the visit organization
+ * @param display - the header display format
+ * @param fulldict - the data dictionary
+ * @param t - useTranslation
+ * @param onProgress - Callback to indicate progress in processing
+ * @returns - A promise which resolves to the array of headers to display
  *                    in the frontend table
  */
 function organizeHeaders(
@@ -1216,8 +1216,8 @@ function organizeHeaders(
   /**
    * Format a header according to the selected display type
    *
-   * @param {APIQueryField} header - The header to format
-   * @returns {string} - The string to display to the user
+   * @param header - The header to format
+   * @returns - The string to display to the user
    */
   const formatHeader = (header: APIQueryField): string => {
     switch (display) {

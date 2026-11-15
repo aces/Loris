@@ -19,9 +19,9 @@ export type Action = (_: (_: any) => void) => void;
 /**
  * applyFilter
  *
- * @param {object} coefficients - The coefficients a, b
- * @param {Float32Array} input - The input signal
- * @returns {Float32Array} - The output signal
+ * @param coefficients - The coefficients a, b
+ * @param input - The input signal
+ * @returns - The output signal
  */
 const applyFilter = (coefficients, input) => {
   const diffFilter = new DifferenceEquationSignal1D();
@@ -205,7 +205,7 @@ export const LOW_PASS_FILTERS = {
 /**
  * createLowPassFilterEpic
  *
- * @returns {Observable<Action>} - A stream of actions
+ * @returns - A stream of actions
  */
 export const createLowPassFilterEpic = () => (
   action$: Observable<any>,
@@ -365,7 +365,7 @@ export const HIGH_PASS_FILTERS = {
 /**
  * createHighPassFilterEpic
  *
- * @returns {Observable<Action>} - A stream of actions
+ * @returns - A stream of actions
  */
 export const createHighPassFilterEpic = () => (
   action$: Observable<any>,

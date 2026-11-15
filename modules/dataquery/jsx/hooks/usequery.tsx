@@ -44,7 +44,7 @@ type useQueryReturnType = [
 /**
  * React hook to manage loading of queries.
  *
- * @returns {useQueryReturnType} - A veritable plethora of actions and values
+ * @returns - A veritable plethora of actions and values
  */
 function useQuery(): useQueryReturnType {
   const [fields, setFields] = useState<APIQueryField[]>([{
@@ -57,9 +57,9 @@ function useQuery(): useQueryReturnType {
   /**
    * Add a term to the current QueryGroup
    *
-   * @param {QueryGroup} querygroup - The group to add the term to
-   * @param {QueryTerm} condition - The term to add to the group
-   * @returns {QueryGroup} - The new QueryGroup
+   * @param querygroup - The group to add the term to
+   * @param condition - The term to add to the group
+   * @returns - The new QueryGroup
    */
   const addQueryGroupItem = (
     querygroup: QueryGroup,
@@ -82,9 +82,9 @@ function useQuery(): useQueryReturnType {
    * Remove a given index from the current QueryGroup and return
    * a new group.
    *
-   * @param {QueryGroup} querygroup - The querygroup to remove an item from
-   * @param {number} idx - The index to remove
-   * @returns {QueryGroup} - the new QueryGroup
+   * @param querygroup - The querygroup to remove an item from
+   * @param idx - The index to remove
+   * @returns - the new QueryGroup
    */
   const removeQueryGroupItem = (
     querygroup: QueryGroup,
@@ -106,8 +106,7 @@ function useQuery(): useQueryReturnType {
   /**
    * Add a new, empty query group to the end of a QueryGroup
    *
-   * @param {QueryGroup} parentgroup - the group to get a new querygroup child
-   * @returns {void}
+   * @param parentgroup - the group to get a new querygroup child
    */
   const addNewQueryGroup = (parentgroup: QueryGroup): void => {
     // Add to this level of the tree
@@ -124,9 +123,8 @@ function useQuery(): useQueryReturnType {
   /**
    * Load a new query as the currently managed query by this hook.
    *
-   * @param {APIQueryField[]} fields - The fields of the new query
-   * @param {QueryGroup} filters - The filters of the new query.
-   * @returns {void}
+   * @param fields - The fields of the new query
+   * @param filters - The filters of the new query.
    */
   const loadQuery = (
     fields: APIQueryField[],
@@ -142,8 +140,6 @@ function useQuery(): useQueryReturnType {
   const fieldActions: FieldActions = {
     /**
      * Clear all fields from this query
-     *
-     * @returns {void}
      */
     clear: function() {
       setFields([]);
@@ -151,10 +147,9 @@ function useQuery(): useQueryReturnType {
     /**
      * Remove a field from this query
      *
-     * @param {string} module - The module of the field to remove
-     * @param {string} category - The category of the field to remove
-     * @param {string} field - The field to remove
-     * @returns {void}
+     * @param module - The module of the field to remove
+     * @param category - The category of the field to remove
+     * @param field - The field to remove
      */
     remove: (
       module: string,
@@ -164,8 +159,8 @@ function useQuery(): useQueryReturnType {
       /**
        * Returns true if an element in fields is equal to this field
        *
-       * @param {APIQueryField} element - The element to compare
-       * @returns {boolean} - true if equal
+       * @param element - The element to compare
+       * @returns - true if equal
        */
       const equalField = (element: APIQueryField): boolean => {
         return (element.module == module
@@ -178,11 +173,10 @@ function useQuery(): useQueryReturnType {
     /**
      * Modify the visits for a selected field
      *
-     * @param {string} module - The module of the field to modify
-     * @param {string} category - The category of the field to modify
-     * @param {string} field - The field to modify
-     * @param {string[]} visits - The new visits for the field
-     * @returns {void}
+     * @param module - The module of the field to modify
+     * @param category - The category of the field to modify
+     * @param field - The field to modify
+     * @param visits - The new visits for the field
      */
     modifyVisits: (
       module: string,
@@ -195,8 +189,8 @@ function useQuery(): useQueryReturnType {
       /**
        * Returns true if an element in fields is equal to this field
        *
-       * @param {APIQueryField} element - The element to compare
-       * @returns {boolean} - true if equal
+       * @param element - The element to compare
+       * @returns - true if equal
        */
       const equalField = (element: APIQueryField) => {
         return (element.module == module
@@ -216,10 +210,10 @@ function useQuery(): useQueryReturnType {
      * Toggle whether a field is present by adding it if missing or removing it if
      * present.
      *
-     * @param {string} module - the module for the field
-     * @param {string} category - the category for the field
-     * @param {string} field - the field name
-     * @param {string[]} visits - the list of visits to add if adding
+     * @param module - the module for the field
+     * @param category - the category for the field
+     * @param field - the field name
+     * @param visits - the list of visits to add if adding
      */
     addRemoveField: (
       module: string,
@@ -236,8 +230,8 @@ function useQuery(): useQueryReturnType {
       /**
        * Returns true if an element in fields is equal to this field
        *
-       * @param {APIQueryField} element - The element to compare
-       * @returns {boolean} - true if equal
+       * @param element - The element to compare
+       * @returns - true if equal
        */
       const equalField = (element: APIQueryField) => {
         return (element.module == module
@@ -259,16 +253,15 @@ function useQuery(): useQueryReturnType {
     /**
      * Remove multiple elements from the current query
      *
-     * @param {APIQueryField[]} removeelements - The elements to remove
-     * @returns {void}
+     * @param removeelements - The elements to remove
      */
     removeMany: (removeelements: APIQueryField[]): void => {
       /**
        * Returns true if el1 is equal to el2
        *
-       * @param {APIQueryField} el1 - The first element to compare
-       * @param {APIQueryField} el2 - The second element to compare
-       * @returns {boolean} - true if equal
+       * @param el1 - The first element to compare
+       * @param el2 - The second element to compare
+       * @returns - true if equal
        */
       const equalField = (
         el1: APIQueryField,
@@ -289,8 +282,7 @@ function useQuery(): useQueryReturnType {
     /**
      * Adds many fields to the selected query
      *
-     * @param {APIQueryField[]} elements - the fields to add
-     * @returns {void}
+     * @param elements - the fields to add
      */
     addMany: (elements: APIQueryField[]): void => {
       let newfields = fields;
@@ -299,8 +291,8 @@ function useQuery(): useQueryReturnType {
         /**
          * Returns true if an element in fields is equal to this field
          *
-         * @param {APIQueryField} element - The element to compare
-         * @returns {boolean} - true if equal
+         * @param element - The element to compare
+         * @returns - true if equal
          */
         const equalField = (element: APIQueryField) => {
           return (element.module == newFieldObj.module

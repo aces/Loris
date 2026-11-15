@@ -7,12 +7,12 @@ import {useTranslation} from 'react-i18next';
 /**
  * Render a modal window for naming a query
  *
- * @param {object} props - React props
- * @param {number} props.QueryID - The QueryID being modified
- * @param {string} props.defaultName - The default name to show before edited by the user
- * @param {function} props.closeModal - A callback to close the modal
- * @param {function} props.onSubmit - A callback to call on submit
- * @returns {React.ReactElement} - the query modal element
+ * @param props - React props
+ * @param props.QueryID - The QueryID being modified
+ * @param props.defaultName - The default name to show before edited by the user
+ * @param props.closeModal - A callback to close the modal
+ * @param props.onSubmit - A callback to call on submit
+ * @returns - the query modal element
  */
 function NameQueryModal(props: {
     QueryID: number,
@@ -25,7 +25,7 @@ function NameQueryModal(props: {
   /**
    * Convert the onSubmit callback function to a promise expected by Modal
    *
-   * @returns {Promise<any>} - The submit promise
+   * @returns - The submit promise
    */
   const submitPromise = (): Promise<string|void> => {
     const sbmt = new Promise<string>((resolve, reject) => {

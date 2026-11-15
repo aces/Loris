@@ -22,8 +22,8 @@ interface FlattenedQueryMap {
  * React hook for triggering toggling of starred queries
  * on a LORIS server.
  *
- * @param {function} onCompleteCallback - an action to perform after pinning
- * @returns {array} - QueryAction functions
+ * @param onCompleteCallback - an action to perform after pinning
+ * @returns - QueryAction functions
  */
 function useStarredQueries(onCompleteCallback: () => void): QueryActionType {
   const [starQueryID, setStarQueryID] = useState<number|null>(null);
@@ -54,8 +54,8 @@ function useStarredQueries(onCompleteCallback: () => void): QueryActionType {
  * React hook for triggering toggling of shared queries
  * on a LORIS server.
  *
- * @param {function} onCompleteCallback - an action to perform after pinning
- * @returns {array} - QueryAction functions
+ * @param onCompleteCallback - an action to perform after pinning
+ * @returns - QueryAction functions
  */
 function useShareQueries(onCompleteCallback: () => void): QueryActionType {
   const [shareQueryID, setShareQueryID] = useState<number|null>(null);
@@ -99,7 +99,7 @@ type SharedQueriesType = [
 /**
  * React hook to load recent and shared queries from the server
  *
- * @returns {array} - [{queries}, reload function(), {queryActions}]
+ * @returns - [{queries}, reload function(), {queryActions}]
  */
 function useSharedQueries(): SharedQueriesType {
   const [recentQueries, setRecentQueries] = useState<FlattenedQuery[]>([]);
@@ -110,8 +110,6 @@ function useSharedQueries(): SharedQueriesType {
   const [loadQueriesForce, setLoadQueriesForce] = useState<number>(0);
   /**
    * Force the client to reload queries
-   *
-   * @returns {void}
    */
   const reloadQueries = () => setLoadQueriesForce(loadQueriesForce+1);
   const [setStarQueryID, setStarAction] = useStarredQueries(reloadQueries);
@@ -189,8 +187,7 @@ function useSharedQueries(): SharedQueriesType {
       /**
        * Stars a query on the server
        *
-       * @param {number} queryID - The queryID to star
-       * @returns {void}
+       * @param queryID - The queryID to star
        */
       star: (queryID: number) => {
         setShareQueryID(null);
@@ -200,8 +197,7 @@ function useSharedQueries(): SharedQueriesType {
       /**
        * Unstars a query on the server
        *
-       * @param {number} queryID - The queryID to unstar
-       * @returns {void}
+       * @param queryID - The queryID to unstar
        */
       unstar: (queryID: number) => {
         setShareQueryID(null);
@@ -211,8 +207,7 @@ function useSharedQueries(): SharedQueriesType {
       /**
        * Shares a query on the server
        *
-       * @param {number} queryID - The queryID to share
-       * @returns {void}
+       * @param queryID - The queryID to share
        */
       share: (queryID: number) => {
         setStarQueryID(null);
@@ -222,8 +217,7 @@ function useSharedQueries(): SharedQueriesType {
       /**
        * Unshares a query on the server
        *
-       * @param {number} queryID - The queryID to unshare
-       * @returns {void}
+       * @param queryID - The queryID to unshare
        */
       unshare: (queryID: number) => {
         setStarQueryID(null);
@@ -238,8 +232,8 @@ function useSharedQueries(): SharedQueriesType {
  * Check if a term from a sub-term from query group is an APIQueryGroupField
  * or an APIQueryCriteriaGroup
  *
- * @param {APIQueryGroupField|APIQueryCriteriaGroup} term - The term to check
- * @returns {boolean} - true if the term is an APIQueryCriteriaGroup
+ * @param term - The term to check
+ * @returns - true if the term is an APIQueryCriteriaGroup
  */
 function isAPIQueryCriteriaGroup(
   term: APIQueryGroupField|APIQueryCriteriaGroup
@@ -250,8 +244,8 @@ function isAPIQueryCriteriaGroup(
  * Takes a saved query from a JSON object and marshal
  * it into a QueryGroup object
  *
- * @param {object} query - the json object
- * @returns {QueryGroup} - The object converted into a QueryGroup
+ * @param query - the json object
+ * @returns - The object converted into a QueryGroup
  */
 function unserializeSavedQuery(query: APIQueryCriteriaGroup): QueryGroup {
   if (!query.operator) {
@@ -292,7 +286,7 @@ function unserializeSavedQuery(query: APIQueryCriteriaGroup): QueryGroup {
 /**
  * React hook to load a query if one was passed in the URL.
  *
- * @param {function} loadQuery - function to load the query into React state
+ * @param loadQuery - function to load the query into React state
  */
 function useLoadQueryFromURL(
   loadQuery: (fields: APIQueryField[], filters: QueryGroup|null) => void
@@ -341,8 +335,8 @@ function useLoadQueryFromURL(
  * Convert a query from the format returned by the API to the format
  * used by the displayed query list on the main page.
  *
- * @param {APIQuery} query - The query to convert
- * @returns {FlattenedQuery} - The query converted to the new type
+ * @param query - The query to convert
+ * @returns - The query converted to the new type
  */
 function query2flattened(query: APIQuery): FlattenedQuery {
   const rv: FlattenedQuery = {

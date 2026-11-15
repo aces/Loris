@@ -9,8 +9,8 @@ declare const loris: any;
 /**
  * Update the DQT breadcrumbs based on the active tab
  *
- * @param {string} activeTab - The active tab
- * @param {function} setActiveTab - set the state on click
+ * @param activeTab - The active tab
+ * @param setActiveTab - set the state on click
  */
 function useBreadcrumbs(
   activeTab: string,
@@ -25,8 +25,7 @@ function useBreadcrumbs(
         /**
          * OnClick handler for the main breadcrumb
          *
-         * @param {React.MouseEvent<HTMLElement>} e - Callback for when hovering over the delete icon
-         * @returns {void}
+         * @param e - Callback for when hovering over the delete icon
          */
         onClick: (e: React.MouseEvent) => {
           e.preventDefault();
@@ -42,8 +41,7 @@ function useBreadcrumbs(
         /**
          * OnClick handler for the define fields breadcrumb
          *
-         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-         * @returns {void}
+         * @param e - Callback for when hovering over the delete icon
          */
         onClick: (e) => {
           e.preventDefault();
@@ -58,8 +56,7 @@ function useBreadcrumbs(
         /**
          * OnClick handler for the define filters breadcrumb
          *
-         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-         * @returns {void}
+         * @param e - Callback for when hovering over the delete icon
          */
         onClick: (e) => {
           e.preventDefault();
@@ -74,8 +71,7 @@ function useBreadcrumbs(
         /**
          * OnClick handler for the View Data breadcrumb
          *
-         * @param {React.MouseEventHandler<HTMLElement>} e - Callback for when hovering over the delete icon
-         * @returns {void}
+         * @param e - Callback for when hovering over the delete icon
          */
         onClick: (e) => {
           e.preventDefault();
