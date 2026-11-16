@@ -329,7 +329,7 @@ const EventManager = ({
         <div>
           <span style={{fontSize: '0.75em',}}>
             {t(
-              'Total events in recording {{total}}', {
+              'Total events in recording: {{total}}', {
                 ns: 'electrophysiology_browser',
                 total: epochs.length
               }
@@ -710,7 +710,7 @@ const EventManager = ({
                         </span>
                       </div>
                       {epoch.properties.length > 0 &&
-                        <div><strong>Additional Columns </strong>
+                        <div><strong>{t('Additional Columns', {ns: 'electrophysiology_browser'})} </strong>
                           {
                             epoch.properties.map((property) => {
                               return <div>
@@ -727,7 +727,7 @@ const EventManager = ({
                         </div>
                       }
                       {
-                        <div><strong>HED </strong>
+                        <div><strong>{t('HED', {ns: 'electrophysiology_browser'})} </strong>
                           {
                             [
                               ...epoch.hed,

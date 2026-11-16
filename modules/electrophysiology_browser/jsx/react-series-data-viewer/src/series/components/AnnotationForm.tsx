@@ -639,7 +639,7 @@ const AnnotationForm = ({
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!',
+        confirmButtonText: t('Yes, delete it!', {ns: 'electrophysiology_browser'}),
       }).then((result) => {
         // if isConfirmed
         if (result.value) {
@@ -1088,7 +1088,7 @@ const AnnotationForm = ({
                 id="start-time"
                 min={domain[0]}
                 max={domain[1]}
-                label="onset"
+                label={t('onset', {ns: 'electrophysiology_browser'})}
                 noMargins={true}
                 elementClass={'form-element-row numeric-element-row'}
                 inputClass={"form-control input-sm" + (
@@ -1109,7 +1109,7 @@ const AnnotationForm = ({
                 id="duration"
                 min={domain[0]}
                 max={domain[1]}
-                label="duration"
+                label={t('duration', {ns: 'electrophysiology_browser'})}
                 noMargins={true}
                 elementClass={'form-element-row numeric-element-row'}
                 inputClass={"form-control input-sm" + (
@@ -1136,7 +1136,7 @@ const AnnotationForm = ({
                 id="end-time"
                 min={domain[0]}
                 max={domain[1]}
-                label="end time"
+                label={t('end time', {ns: 'electrophysiology_browser'})}
                 noMargins={true}
                 elementClass={'form-element-row numeric-element-row'}
                 inputClass={"form-control input-sm" + (
@@ -1575,8 +1575,8 @@ const AnnotationForm = ({
                     ),
                     type: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Proceed',
-                    cancelButtonText: 'Cancel',
+                    confirmButtonText: t('Proceed', {ns: 'loris'}),
+                    cancelButtonText: t('Cancel', {ns: 'loris'}),
                   }).then((result) => {
                     if (result.value) {
                       closePanel();

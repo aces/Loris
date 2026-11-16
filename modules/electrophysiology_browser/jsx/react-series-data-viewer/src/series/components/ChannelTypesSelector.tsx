@@ -29,7 +29,7 @@ const ChannelTypesSelector = ({channelTypes, setChannelTypes}: {
   return (
     <div style={{position: 'relative'}}>
       <button className="btn btn-primary dropdown" data-toggle="dropdown">
-        {t('Channel Types')}
+        {t('Channel Types', {ns : 'electrophysiology_browser'})}
       </button>
       <ul className="dropdown-menu">
         {Object.entries(channelTypes).map(([name, {visible, channelsCount}]) => (
