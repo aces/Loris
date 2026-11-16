@@ -114,9 +114,8 @@ class AcknowledgementsIndex extends Component {
    */
   async fetchData() {
     const query = new Query().addParam({field: 'format', value: 'json'});
-    const client = new Acknowledgement.Client();
     try {
-      const acknowledgements = await client.get(query);
+      const acknowledgements = await Acknowledgement.getAll(query);
       this.setState({data: {...acknowledgements}});
     } catch (error) {
       this.setState({error: true});
@@ -170,9 +169,7 @@ class AcknowledgementsIndex extends Component {
     this.setState({submitting: true}); // set submitting to true
 
     try {
-      const client = new Acknowledgement.Client()
-        .setSubEndpoint('AcknowledgementsProcess');
-      await client.create(formData);
+      await Acknowledgement.create(formData);
 
       await swal.fire(t('Success!', {ns: 'loris'}),
         t('Acknowledgement added.', {ns: 'acknowledgements'}),

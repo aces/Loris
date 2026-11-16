@@ -80,13 +80,13 @@ class PoolTab extends Component {
    * @param {string} column - the column name
    * @param {string} value - the column value
    * @param {object} row - all the values from the row
+   * @param {Map} candidatesByPSCID - candidates keyed by PSCID
    * @return {JSX}
    */
-  formatPoolColumns(column, value, row) {
+  formatPoolColumns(column, value, row, candidatesByPSCID) {
     const {t, options} = this.props;
     value = this.mapPoolColumns(column, value);
-    const candId = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row[t('PSCID', {ns: 'loris'})])?.id;
+    const candId = candidatesByPSCID.get(row[t('PSCID', {ns: 'loris'})])?.id;
 
     // If candId is defined, then the user has access to the candidate and a
     // hyperlink can be established.
@@ -106,9 +106,8 @@ class PoolTab extends Component {
       return <td>{value}</td>;
     case this.props.t('Visit Label', {ns: 'loris'}):
       if (candidatePermission) {
-        const sessId = Object.values(options.candidates[candId]).find(
-          (sess) => sess.label == value
-        )?.id;
+        const sessId = options.candidates[candId].sessionIds
+          .find((id) => options.sessions[id]?.label === value);
         const sessionPermission = sessId !== undefined;
         if (sessionPermission) {
           const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
@@ -176,6 +175,10 @@ class PoolTab extends Component {
     const specimenTypes = mapFormOptions(
       options.specimen.types, 'label'
     );
+    const candidatesByPSCID = new Map(Object.values(options.candidates)
+      .map((cand) => [cand?.pscid, cand]));
+    const formatPoolColumns = (column, value, row) =>
+      this.formatPoolColumns(column, value, row, candidatesByPSCID);
     const poolData = Object.values(data.pools).map((pool) => {
       return [
         pool.id,
@@ -230,7 +233,7 @@ class PoolTab extends Component {
           name='pool'
           data={poolData}
           fields={fields}
-          getFormattedCell={this.formatPoolColumns}
+          getFormattedCell={formatPoolColumns}
           getMappedCell={this.mapPoolColumns}
           progress={this.props.loading}
         />

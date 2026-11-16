@@ -18,7 +18,7 @@ import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
 import {getSessions} from '../js/arrayintersect';
 import lorisFetch from 'jslib/lorisFetch';
-import DQTClient from './DQTClient';
+import * as dqt from './dqt';
 
 /**
  * DataQueryApp component
@@ -34,7 +34,6 @@ class DataQueryApp extends Component {
    */
   constructor(props) {
     super(props);
-    this.client = new DQTClient();
     this.state = {
       displayType: 'Cross-sectional',
       fields: [],
@@ -140,7 +139,7 @@ class DataQueryApp extends Component {
       if (this.state.queryIDs.hasOwnProperty(key)) {
         for (let i = 0; i < this.state.queryIDs[key].length; i += 1) {
           let curRequest;
-          curRequest = this.client.getDoc(
+          curRequest = dqt.getDoc(
             this.state.queryIDs[key][i]
           )
             .then((value) => {
@@ -164,7 +163,7 @@ class DataQueryApp extends Component {
    */
   async handleProgressBarSetup(callback) {
     try {
-      const data = await this.client.getSetup();
+      const data = await dqt.getSetup();
       this.setState((prevState) => {
         return {
           ...prevState,
@@ -214,7 +213,7 @@ class DataQueryApp extends Component {
    */
   async requestSessions(callback) {
     try {
-      const data = await this.client.getSessions();
+      const data = await dqt.getSessions();
       await this.setState((prevState) => {
         return {
           ...prevState,
@@ -349,7 +348,7 @@ class DataQueryApp extends Component {
             queryIDs.User.push(id);
           }
         }
-        return this.client.getDoc(
+        return dqt.getDoc(
           id
         ).then((value) => {
           let queries = this.state.savedQueries;
@@ -406,7 +405,7 @@ class DataQueryApp extends Component {
     // Get given fields of the instrument for the rule.
     rule.fields = [];
     try {
-      const data = await this.client.getDataDictionaryByCategory(
+      const data = await dqt.getDataDictionaryByCategory(
         rule.instrument
       );
       rule.fields = data;
@@ -450,7 +449,7 @@ class DataQueryApp extends Component {
     }
     if (script) {
       try {
-        const data = await this.client.getMatches(
+        const data = await dqt.getMatches(
           script,
           rule.instrument,
           rule.field,
@@ -641,7 +640,7 @@ class DataQueryApp extends Component {
       alertSaved: false,
       loading: false,
     });
-    this.client.getDataDictionaryByKeys(fieldsList)
+    dqt.getDataDictionaryByKeys(fieldsList)
       .then((data) => {
         for (let i = 0; i < fieldsList.length; i++) {
           if (data[i] && data[i].value.IsFile) {
