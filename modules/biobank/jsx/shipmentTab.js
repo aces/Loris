@@ -296,8 +296,7 @@ function ShipmentInformation({
         />
         <StaticElement
           label={t('Date & Time', {ns: 'biobank'})}
-          text={log.date.date.substring(0, 10)
-            + ' ' + log.time.date.substring(11, 16)}
+          text={`${log.date} ${log.time}`}
         />
         <StaticElement
           label={t('User', {ns: 'biobank'})}
