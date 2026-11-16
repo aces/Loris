@@ -8,6 +8,11 @@ core section.***
 - ***When possible please provide the number of the pull request(s) containing the 
 changes in the following format: PR #1234***
 
+## Unreleased
+### Data Query Tool
+#### Updates and Improvements
+- Use a candidate-ID lookup set when filtering saved query results to avoid repeated linear scans.
+
 ## LORIS 28.0 (Release Date: 2026-02-27)
 ### Core
 #### Summary

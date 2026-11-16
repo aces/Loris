@@ -108,14 +108,19 @@ class Run extends \LORIS\Http\Endpoint
      * Convert json encoded database result back to an array
      *
      * @param iterable $results The results to decode
-     * @param array    $CandIDs The CandIDs to limit the results to
+     * @param CandID[] $CandIDs The CandIDs to limit the results to
      *
      * @return \Traversable
      */
     private function _jsondecoded(iterable $results, array $CandIDs)
     {
-        foreach ($results as $row ) {
-            if (in_array(new CandID(strval($row['CandID'])), $CandIDs)) {
+        $accessibleCandIDs = [];
+        foreach ($CandIDs as $candID) {
+            $accessibleCandIDs[(string) $candID] = true;
+        }
+
+        foreach ($results as $row) {
+            if (isset($accessibleCandIDs[strval($row['CandID'])])) {
                 yield json_decode($row['RowData']);
             }
         }
