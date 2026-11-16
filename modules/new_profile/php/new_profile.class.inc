@@ -88,7 +88,6 @@ class New_Profile extends \NDB_Form
             []
         );
 
-        // Determine whether PSCID must be entered manually
         $identifierTypeController = new \LORIS\IdentifierTypeController(
             $factory->database()
         );
@@ -96,6 +95,42 @@ class New_Profile extends \NDB_Form
 
         if (!$PSCIDType->autoGenerate) {
             $pscidSet = "true";
+        }
+
+        $identifierTypes = [];
+
+        foreach ($identifierTypeController->getAllIdentifierTypes() as $type) {
+            if ($type->name === 'PSCID') {
+                continue;
+            }
+
+            if ($type->permissionID !== null) {
+                $permission = $db->pselectRow(
+                    "SELECT code FROM permissions WHERE permID = :permID",
+                    ['permID' => $type->permissionID]
+                );
+
+                if (!isset($permission['code'])
+                    || !$user->hasPermission($permission['code'])
+                ) {
+                    continue;
+                }
+            }
+
+            $projects = [];
+
+            foreach ($type->projects as $project) {
+                $projects[] = $project->getName();
+            }
+
+            $identifierTypes[] = [
+                'CandidateIdentifierTypeID' => $type->candidateIdentifierTypeID,
+                'Name'                      => $type->name,
+                'Required'                  => $type->isRequired,
+                'AutoGenerate'              => $type->autoGenerate,
+                'AllowMultiple'             => $type->allowMultiple,
+                'Projects'                  => $projects,
+            ];
         }
 
         $this->fieldOptions = [
@@ -110,6 +145,7 @@ class New_Profile extends \NDB_Form
             'useRegistrationCohort' => $useRegistrationCohort,
             'cohort'                => $cohorts,
             'extraParameters'       => iterator_to_array($extraParameters),
+            'identifierTypes'       => $identifierTypes,
         ];
     }
 
