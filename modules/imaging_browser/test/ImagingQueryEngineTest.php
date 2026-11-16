@@ -462,9 +462,14 @@ class ImagingQueryEngineTest extends TestCase
             "tarchive",
             [
                 [
-                    'TarchiveID'          => 1,
-                    'SessionID'           => 2,
-                    'AcquisitionMetadata' => '',
+                    'TarchiveID'       => 1,
+                    'SessionID'        => 2,
+                    'StudyInstanceUID' => '1.2.3',
+                    'md5sumDicomOnly'  => '',
+                    'md5sumArchive'    => '',
+                    'CreatingUser'     => 'lorisdev',
+                    'SourceLocation'   => '/data/incoming/test',
+                    'ArchiveLocation'  => 'test.tar',
                 ],
             ]
         );
