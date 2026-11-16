@@ -123,7 +123,12 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if (empty($entry)) {
             // The instrument must exists in the flag table. (start next stage)
-            return new \LORIS\Http\Response\JSON\NotFound('Instrument not found');
+            return new \LORIS\Http\Response\JSON\NotFound(
+                dgettext(
+                    'api',
+                    'Instrument not found'
+                )
+            );
         }
 
         $dde       = array_search('dde', $pathparts) !== false;
@@ -208,7 +213,10 @@ class Instruments extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 }
             } catch (\NotFound $e) {
                 return new \LORIS\Http\Response\JSON\NotFound(
-                    "Instrument does not exist"
+                    dgettext(
+                        'api',
+                        'Instrument does not exist'
+                    )
                 );
             } catch (\Exception $e) {
                 return new \LORIS\Http\Response\JSON\InternalServerError();

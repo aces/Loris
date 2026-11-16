@@ -1,0 +1,184 @@
+# Default LORIS strings to be translated (English)
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "API"
+msgstr ""
+
+msgid "Invalid ProcessType."
+msgstr ""
+
+msgid "No file found, there should be one file uploaded per request. If a file was uploaded, it might be larger than the maximum upload file size that is configured on this server."
+msgstr ""
+
+msgid "Multiple files found, there should only be one file uploaded per request."
+msgstr ""
+
+msgid "The request should have a "File" attribute with the uploaded file."
+msgstr ""
+
+msgid "The request should have a "Json" form attribute containing the request data."
+msgstr ""
+     
+msgid "CandID in POST data do not match URL."
+msgstr ""
+
+msgid "PSCID and CandID in POST data do not refer to the same candidate."
+msgstr ""
+
+msgid "Visit label in URL and POST data do not match."
+msgstr ""
+
+msgid "IsPhantom must be a boolean."
+msgstr ""
+
+msgid "Overwrite must be a boolean."
+msgstr ""
+
+msgid "Filename must start with %s."
+msgstr ""
+
+msgid "Candidate from URL does not match JSON metadata."
+msgstr ""
+
+msgid "Visit from URL does not match JSON metadata."
+msgstr ""
+
+msgid "File name from URL does not match JSON metadata."
+msgstr ""
+
+msgid "QC status not updated."
+msgstr ""
+
+msgid "Invalid request"
+msgstr ""
+
+msgid "Could not update."
+msgstr ""
+
+msgid "Can not update instruments that are flagged as complete."
+msgstr ""
+
+msgid "CandID is invalid"
+msgstr ""
+
+msgid "Candidate from URL does not match metadata"
+msgstr ""
+
+msgid "Visit from URL does not match metadata"
+msgstr ""
+
+msgid "MRIQCStatus value not acceptable"
+msgstr ""
+
+msgid "MRIQCPending value not acceptable"
+msgstr ""
+
+msgid "CandID does not match this candidate"
+msgstr ""
+
+msgid "The CandID field does not match this candidate"
+msgstr ""
+
+msgid "The request is not a valid json object"
+msgstr ""
+
+msgid "The Visit field does not match this visit"
+msgstr ""
+
+msgid "Stages.Visit.Date is invalid or missing"
+msgstr ""
+
+msgid "Stages.Visit.Status is invalid or missing"
+msgstr ""
+
+msgid "Candidate identifier is not unique"
+msgstr ""
+
+msgid "There is no Candidate object in the POST data"
+msgstr ""
+
+msgid "Missing username or password"
+msgstr ""
+
+msgid "You must specify a version of the API to use in the URL"
+msgstr ""
+
+msgid "This visit is already started"
+msgstr ""
+
+msgid "This user can not update this instrument"
+msgstr ""
+
+msgid "You can not edit imaging QC for this visit"
+msgstr ""
+
+msgid "You can't create or modify that candidate"
+msgstr ""
+
+msgid "You can't create or modify candidates visit for the site %s"
+msgstr ""
+
+msgid "You can't modify that candidate"
+msgstr ""
+
+msgid "You can't create or modify candidates' visits for the site %s"
+msgstr ""
+
+msgid "You are not affiliated with the candidate's site"
+msgstr ""
+
+msgid "You are not affiliated with the candidate's project"
+msgstr ""
+
+msgid "MRI upload process can not be launched (see error log)"
+msgstr ""
+
+msgid "Upload failed, please contact your LORIS administrator."
+msgstr ""
+
+msgid "Database insertion failed, please contact your LORIS administrator."
+msgstr ""
+
+msgid "Invalid MINCToolsPath configuration setting: MINCToolsPath is null"
+msgstr ""
+
+msgid "Invalid MINCToolsPath configuration setting: MINCToolsPath is not a directory or is not readable"
+msgstr ""
+
+msgid "Unacceptable JWT key"
+msgstr ""
+
+msgid "Unsupported version"
+msgstr ""
+
+msgid "Filename and MRIUploadID do not match"
+msgstr ""
+
+msgid "Instrument not found"
+msgstr ""
+
+msgid "Instrument does not exist"
+msgstr ""
+
+msgid "Visit not found"
+msgstr ""
+   
+msgid "Candidate not found"
+msgstr ""

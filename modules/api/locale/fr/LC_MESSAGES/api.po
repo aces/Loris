@@ -1,0 +1,185 @@
+# Default LORIS strings to be translated (English)
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2025
+# This file is distributed under the same license as the LORIS package.
+# Dave MacFarlane <dave.macfarlane@mcin.ca>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2025-04-08 14:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "API"
+msgstr "API"
+
+msgid "Invalid ProcessType."
+msgstr "Type de processus invalide."
+
+msgid "No file found, there should be one file uploaded per request. If a file was uploaded, it might be larger than the maximum upload file size that is configured on this server."
+msgstr "Aucun fichier trouvé. Une seule requête doit contenir un seul fichier téléversé. Si un fichier a été téléversé, il est peut-être plus volumineux que la taille maximale autorisée sur ce serveur."
+
+msgid "Multiple files found, there should only be one file uploaded per request."
+msgstr "Plusieurs fichiers ont été trouvés. Une seule requête doit contenir un seul fichier téléversé."
+
+msgid "The request should have a \"File\" attribute with the uploaded file."
+msgstr "La requête doit contenir un attribut « File » avec le fichier téléversé."
+
+msgid "The request should have a \"Json\" form attribute containing the request data."
+msgstr "La requête doit contenir un attribut de formulaire « Json » contenant les données de la requête."
+
+msgid "CandID in POST data do not match URL."
+msgstr "Le CandID des données POST ne correspond pas à l'URL."
+
+msgid "PSCID and CandID in POST data do not refer to the same candidate."
+msgstr "Le PSCID et le CandID des données POST ne correspondent pas au même candidat."
+
+msgid "Visit label in URL and POST data do not match."
+msgstr "Le libellé de visite de l'URL ne correspond pas à celui des données POST."
+
+msgid "IsPhantom must be a boolean."
+msgstr "IsPhantom doit être une valeur booléenne."
+
+msgid "Overwrite must be a boolean."
+msgstr "Overwrite doit être une valeur booléenne."
+
+msgid "Filename must start with %s."
+msgstr "Le nom du fichier doit commencer par %s."
+
+msgid "Candidate from URL does not match JSON metadata."
+msgstr "Le candidat de l'URL ne correspond pas aux métadonnées JSON."
+
+msgid "Visit from URL does not match JSON metadata."
+msgstr "La visite de l'URL ne correspond pas aux métadonnées JSON."
+
+msgid "File name from URL does not match JSON metadata."
+msgstr "Le nom du fichier de l'URL ne correspond pas aux métadonnées JSON."
+
+msgid "QC status not updated."
+msgstr "Le statut du CQ n'a pas été mis à jour."
+
+msgid "Invalid request"
+msgstr "Requête invalide"
+
+msgid "Could not update."
+msgstr "La mise à jour a échoué."
+
+msgid "Can not update instruments that are flagged as complete."
+msgstr "Impossible de mettre à jour les instruments marqués comme terminés."
+
+msgid "CandID is invalid"
+msgstr "Le CandID est invalide."
+
+msgid "Candidate from URL does not match metadata"
+msgstr "Le candidat de l'URL ne correspond pas aux métadonnées."
+
+msgid "Visit from URL does not match metadata"
+msgstr "La visite de l'URL ne correspond pas aux métadonnées."
+
+msgid "MRIQCStatus value not acceptable"
+msgstr "La valeur de MRIQCStatus n'est pas valide."
+
+msgid "MRIQCPending value not acceptable"
+msgstr "La valeur de MRIQCPending n'est pas valide."
+
+msgid "CandID does not match this candidate"
+msgstr "Le CandID ne correspond pas à ce candidat."
+
+msgid "The CandID field does not match this candidate"
+msgstr "Le champ CandID ne correspond pas à ce candidat."
+
+msgid "The request is not a valid json object"
+msgstr "La requête n'est pas un objet JSON valide."
+
+msgid "The Visit field does not match this visit"
+msgstr "Le champ Visit ne correspond pas à cette visite."
+
+msgid "Stages.Visit.Date is invalid or missing"
+msgstr "Stages.Visit.Date est invalide ou manquant."
+
+msgid "Stages.Visit.Status is invalid or missing"
+msgstr "Stages.Visit.Status est invalide ou manquant."
+
+msgid "Candidate identifier is not unique"
+msgstr "L'identifiant du candidat n'est pas unique."
+
+msgid "There is no Candidate object in the POST data"
+msgstr "Aucun objet Candidate n'est présent dans les données POST."
+
+msgid "Missing username or password"
+msgstr "Nom d'utilisateur ou mot de passe manquant."
+
+msgid "You must specify a version of the API to use in the URL"
+msgstr "Vous devez spécifier une version de l'API dans l'URL."
+
+msgid "This visit is already started"
+msgstr "Cette visite a déjà été commencée."
+
+msgid "This user can not update this instrument"
+msgstr "Cet utilisateur ne peut pas mettre à jour cet instrument."
+
+msgid "You can not edit imaging QC for this visit"
+msgstr "Vous ne pouvez pas modifier le contrôle qualité de l'imagerie pour cette visite."
+
+msgid "You can't create or modify that candidate"
+msgstr "Vous ne pouvez pas créer ou modifier ce candidat."
+
+msgid "You can't create or modify candidates visit for the site %s"
+msgstr "Vous ne pouvez pas créer ou modifier la visite d'un candidat pour le site %s."
+
+msgid "You can't modify that candidate"
+msgstr "Vous ne pouvez pas modifier ce candidat."
+
+msgid "You can't create or modify candidates' visits for the site %s"
+msgstr "Vous ne pouvez pas créer ou modifier les visites des candidats pour le site %s."
+
+msgid "You are not affiliated with the candidate's site"
+msgstr "Vous n'êtes pas affilié au site du candidat."
+
+msgid "You are not affiliated with the candidate's project"
+msgstr "Vous n'êtes pas affilié au projet du candidat."
+
+msgid "MRI upload process can not be launched (see error log)"
+msgstr "Le processus de téléversement IRM ne peut pas être lancé (consultez le journal des erreurs)."
+
+msgid "Upload failed, please contact your LORIS administrator."
+msgstr "Le téléversement a échoué. Veuillez communiquer avec votre administrateur LORIS."
+
+msgid "Database insertion failed, please contact your LORIS administrator."
+msgstr "L'insertion dans la base de données a échoué. Veuillez communiquer avec votre administrateur LORIS."
+
+msgid "Invalid MINCToolsPath configuration setting: MINCToolsPath is null"
+msgstr "Configuration MINCToolsPath invalide : MINCToolsPath est nul."
+
+msgid "Invalid MINCToolsPath configuration setting: MINCToolsPath is not a directory or is not readable"
+msgstr "Configuration MINCToolsPath invalide : MINCToolsPath n'est pas un répertoire ou n'est pas accessible en lecture."
+
+msgid "Unacceptable JWT key"
+msgstr "Clé JWT invalide."
+
+msgid "Unsupported version"
+msgstr "Version non prise en charge."
+
+msgid "Filename and MRIUploadID do not match"
+msgstr "Le nom du fichier et le MRIUploadID ne correspondent pas."
+
+msgid "Instrument not found"
+msgstr "Instrument introuvable."
+
+msgid "Instrument does not exist"
+msgstr "L'instrument n'existe pas."
+
+msgid "Visit not found"
+msgstr "Visite introuvable."
+
+msgid "Candidate not found"
+msgstr "Candidat introuvable."

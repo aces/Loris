@@ -201,22 +201,32 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $files = $request->getUploadedFiles();
         if (count($files) === 0) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'No file found, there should be one file uploaded per request. '
+                dgettext(
+                    'api',
+                    'No file found, there should be one file uploaded per request. '
                     . 'If a file was uploaded, it might be larger than the maximum '
                     . 'upload file size that is configured on this server.'
+                )
             );
         }
 
         if (count($files) > 1) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Multiple files found, there should only be one file uploaded per '
-                    . 'request.'
+                dgettext(
+                    'api',
+                    'Multiple files found, there should only be one file uploaded '
+                    . 'per request.'
+                )
             );
         }
 
         if (!isset($files['File'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'The request should have a "File" attribute with the uploaded file.'
+                dgettext(
+                    'api',
+                    'The request should have a "File" attribute with the uploaded'
+                    . ' file.'
+                )
             );
         }
 
@@ -225,8 +235,11 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $request_body = $request->getParsedBody();
         if (!isset($request_body['Json'])) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'The request should have a "Json" form attribute containing the '
+                dgettext(
+                    'api',
+                    'The request should have a "Json" form attribute containing the '
                     . 'request data.'
+                )
             );
         }
 
@@ -236,35 +249,51 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $visit_candid = $this->_visit->getCandID();
         if ((string) $input_candid !== (string) $visit_candid) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'CandID in POST data do not match URL.'
+                dgettext(
+                    'api',
+                    'CandID in POST data do not match URL.'
+                )
             );
         }
 
         $pscid = $data['PSCID'] ?? null;
         if (!\Candidate::candidateExists($visit_candid, $pscid)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'PSCID and CandID in POST data do not refer to the same candidate.'
+                dgettext(
+                    'api',
+                    'PSCID and CandID in POST data do not refer to the same'
+                    . ' candidate.'
+                )
             );
         }
 
         $visit_label = $data['VisitLabel'] ?? null;
         if ($visit_label !== $this->_visit->getVisitLabel()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Visit label in URL and POST data do not match.'
+                dgettext(
+                    'api',
+                    'Visit label in URL and POST data do not match.'
+                )
             );
         }
 
         $is_phantom = $data['IsPhantom'] ?? null;
         if (!is_bool($is_phantom)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'IsPhantom must be a boolean.'
+                dgettext(
+                    'api',
+                    'IsPhantom must be a boolean.'
+                )
             );
         }
 
         $overwrite = $data['Overwrite'] ?? false;
         if (!is_bool($overwrite)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'Overwrite must be a boolean.'
+                dgettext(
+                    'api',
+                    'Overwrite must be a boolean.'
+                )
             );
         }
 
@@ -272,7 +301,13 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $patient_name = $pscid . "_" . $input_candid . "_" . $visit_label;
         if (!preg_match("/^{$patient_name}/", $file_name) && !$is_phantom) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                "Filename must start with $patient_name."
+                sprintf(
+                    dgettext(
+                        'api',
+                        "Filename must start with %s."
+                    ),
+                    $patient_name
+                )
             );
         }
 
@@ -309,7 +344,10 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $file_info = new \SplFileInfo($file_path);
         if (!$file_info->isFile()) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'Upload failed, please contact your LORIS administrator.'
+                dgettext(
+                    'api',
+                    'Upload failed, please contact your LORIS administrator.'
+                )
             );
         }
 
@@ -323,8 +361,11 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         } catch (\Throwable $e) {
             $this->logger->log(\Psr\Log\LogLevel::ERROR, $e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError(
-                'Database insertion failed, please contact your LORIS '
+                dgettext(
+                    'api',
+                    'Database insertion failed, please contact your LORIS '
                     . 'administrator.'
+                )
             );
         }
 
