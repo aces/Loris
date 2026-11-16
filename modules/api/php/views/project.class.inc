@@ -53,9 +53,13 @@ class Project
     {
         $meta = ['Project' => $this->_project->getName()];
 
+        $centerIDs = \User::singleton()->hasPermission('access_all_profiles')
+            ? []
+            : \User::singleton()->getCenterIDs();
+
         $obj = [
             'Meta'        => $meta,
-            'Candidates'  => $this->_project->getCandidateIds(),
+            'Candidates'  => $this->_project->getCandidateIds($centerIDs),
             'Instruments' => array_keys(\Utility::getAllInstruments()),
             'Visits'      => $this->_getVisits(),
         ];
@@ -84,9 +88,13 @@ class Project
     {
         $meta = ['Project' => $this->_project->getName()];
 
+        $centerIDs = \User::singleton()->hasPermission('access_all_profiles')
+            ? []
+            : \User::singleton()->getCenterIDs();
+
         return [
             'Meta'       => $meta,
-            'Candidates' => $this->_project->getCandidateIds(),
+            'Candidates' => $this->_project->getCandidateIds($centerIDs),
         ];
     }
 
