@@ -30,7 +30,8 @@ const CLOSE_DELAY = 100;
  *
  * The browser places the tooltip (CSS anchor positioning) and draws it in the
  * top layer, so no ancestor clips it. It stays open while the pointer is over
- * it, and its content is React, so nothing is parsed as HTML.
+ * it, and its content is React, so nothing is parsed as HTML. After Escape it
+ * stays closed until the pointer leaves the element or focus moves away.
  *
  * @param props The props of the component
  * @param props.content What the tooltip shows
@@ -50,6 +51,7 @@ const Tooltip = ({
   const tip = useRef<HTMLDivElement>(null);
   const timer = useRef<number>();
   const held = useRef({hover: false, focus: false});
+  const dismissed = useRef(false);
   const [shown, setShown] = useState(false);
   const own = children.props;
 
@@ -61,6 +63,7 @@ const Tooltip = ({
   const onEscape = useRef((e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       clearTimeout(timer.current);
+      dismissed.current = true;
       tip.current?.hidePopover();
       setShown(false);
     }
@@ -80,6 +83,9 @@ const Tooltip = ({
    */
   const open = (wait: number) => {
     clearTimeout(timer.current);
+    if (dismissed.current) {
+      return;
+    }
     timer.current = window.setTimeout(() => {
       tip.current?.showPopover();
       setShown(true);
@@ -134,6 +140,7 @@ const Tooltip = ({
         'onPointerLeave': (e: React.PointerEvent) => {
           own.onPointerLeave?.(e);
           held.current.hover = false;
+          dismissed.current = false;
           release();
         },
         /**
@@ -156,6 +163,7 @@ const Tooltip = ({
         'onBlur': (e: React.FocusEvent) => {
           own.onBlur?.(e);
           held.current.focus = false;
+          dismissed.current = false;
           release();
         },
       })}
