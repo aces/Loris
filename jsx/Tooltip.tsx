@@ -1,4 +1,11 @@
-import React, {ReactElement, ReactNode, useEffect, useId, useRef} from 'react';
+import React, {
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react';
 import './Tooltip.css';
 
 type TooltipProps = {
@@ -43,6 +50,7 @@ const Tooltip = ({
   const tip = useRef<HTMLDivElement>(null);
   const timer = useRef<number>();
   const held = useRef({hover: false, focus: false});
+  const [shown, setShown] = useState(false);
   const own = children.props;
 
   /**
@@ -52,13 +60,16 @@ const Tooltip = ({
    */
   const onEscape = useRef((e: KeyboardEvent) => {
     if (e.key === 'Escape') {
+      clearTimeout(timer.current);
       tip.current?.hidePopover();
+      setShown(false);
     }
   });
 
   /** Close the tooltip. */
   const close = () => {
     tip.current?.hidePopover();
+    setShown(false);
     document.removeEventListener('keydown', onEscape.current);
   };
 
@@ -71,6 +82,7 @@ const Tooltip = ({
     clearTimeout(timer.current);
     timer.current = window.setTimeout(() => {
       tip.current?.showPopover();
+      setShown(true);
       document.addEventListener('keydown', onEscape.current);
     }, wait);
   };
@@ -98,7 +110,9 @@ const Tooltip = ({
   return (
     <>
       {React.cloneElement(children, {
-        'aria-describedby': id,
+        'aria-describedby': shown
+          ? [own['aria-describedby'], id].filter(Boolean).join(' ')
+          : own['aria-describedby'],
         'style': {...own.style, anchorName: anchor},
         /**
          * Open after a pause when a mouse or pen rests on the element.
