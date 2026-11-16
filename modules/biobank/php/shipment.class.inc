@@ -63,7 +63,7 @@ class Shipment implements
      */
     function __construct(array $data)
     {
-        $this->id      = $data['id'] ?? null;
+        $this->id      = isset($data['id']) ? (string)$data['id'] : null;
         $this->barcode = $data['barcode'] ?? null;
         $this->type    = $data['type'] ?? null;
         $this->destinationCenterId = isset($data['destinationCenterId'])
