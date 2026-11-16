@@ -6,6 +6,8 @@ type InputLabelProps = {
   // Whether or not the input is required, `false` by default
   required?: boolean;
   fullWidth?: boolean;
+  // The id of the labelled input
+  htmlFor?: string;
 };
 
 /**
@@ -15,16 +17,18 @@ type InputLabelProps = {
  * @param props.label The label content
  * @param props.required Whether the input is required
  * @param props.fullWidth Whether the label should span the full row
+ * @param props.htmlFor The id of the labelled input
  * @returns The corresponding React element
  */
 const InputLabel: React.FC<InputLabelProps> = ({
   label,
   required,
   fullWidth,
+  htmlFor,
 }) => (
   <label
     className={`col-sm-${fullWidth ? '12' : '3'} control-label`}
-    htmlFor={typeof label === 'string' ? label : undefined}
+    htmlFor={htmlFor ?? (typeof label === 'string' ? label : undefined)}
     style={fullWidth ? {textAlign: 'left'} : {}}
   >
     {label}

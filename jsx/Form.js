@@ -8,6 +8,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InputLabel from 'jsx/form/InputLabel';
+import Field from 'jsx/form/Field';
+import TextareaInput from 'jsx/form/TextareaInput';
+import NumberInput from 'jsx/form/NumberInput';
 import {withTranslation} from 'react-i18next';
 
 /**
@@ -994,61 +997,34 @@ TagsElement.defaultProps = {
  */
 export class TextareaElement extends Component {
   /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
-  }
-
-  /**
-   * Handle change
-   *
-   * @param {object} e - Event
-   */
-  handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
-  }
-
-  /**
-   * Handle blur
-   *
-   * @param {object} e - Event
-   */
-  handleBlur(e) {
-    this.props.onUserBlur(this.props.name, e.target.value);
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
     return (
-      <div className={this.props.noMargins ? '' : 'row form-group'}>
-        {!this.props.noMargins && (
-          <InputLabel label={this.props.label} required={this.props.required} />
-        )}
-        <div className={this.props.noMargins ? '' : 'col-sm-9'}>
-          <textarea
-            cols={this.props.cols}
-            rows={this.props.rows}
-            className="form-control"
-            name={this.props.name}
-            id={this.props.id}
-            value={this.props.value || ''}
-            placeholder={this.props.placeholder}
-            required={this.props.required}
-            disabled={this.props.disabled}
-            onChange={this.handleChange}
-            onBlur={this.handleBlur}
-          >
-          </textarea>
-        </div>
-      </div>
+      <Field
+        id={this.props.id}
+        label={this.props.label}
+        required={this.props.required}
+        disabled={this.props.disabled}
+        errorMessage={this.props.errorMessage}
+        noMargins={this.props.noMargins}
+      >
+        <TextareaInput
+          cols={this.props.cols}
+          rows={this.props.rows}
+          name={this.props.name}
+          value={this.props.value || ''}
+          placeholder={this.props.placeholder}
+          onChange={(value) => this.props.onUserInput(
+            this.props.name, value
+          )}
+          onBlur={(value) => this.props.onUserBlur(
+            this.props.name, value
+          )}
+        />
+      </Field>
     );
   }
 }
@@ -1064,6 +1040,7 @@ TextareaElement.propTypes = {
   rows: PropTypes.number,
   cols: PropTypes.number,
   noMargins: PropTypes.bool,
+  errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func,
 };
@@ -2011,70 +1988,31 @@ DateTimeElement.defaultProps = {
  */
 export class NumericElement extends Component {
   /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  /**
-   * Handle change
-   *
-   * @param {object} e - Event
-   */
-  handleChange(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
    */
   render() {
-    let errorMessage = null;
-    let elementClass = 'row form-group';
-    const wrapperClass =
-      this.props.label && !this.props.labelPlacementTop ?
-        'col-sm-9' : 'col-sm-12';
-
-    // Add error message
-    if (this.props.errorMessage) {
-      errorMessage = <span>{this.props.errorMessage}</span>;
-      elementClass = 'row form-group has-error';
-    }
-
     return (
-      <div
-        className={elementClass}
-        style={this.props.labelPlacementTop ?
-          {display: 'flex', flexDirection: 'column'} : {}}>
-        {this.props.label && (
-          <InputLabel
-            label={this.props.label}
-            required={this.props.required}
-            fullWidth={this.props.labelPlacementTop}
-          />
-        )}
-        <div className={wrapperClass}>
-          <input
-            type="number"
-            className="form-control"
-            name={this.props.name}
-            id={this.props.id}
-            min={this.props.min}
-            max={this.props.max}
-            step={this.props.step}
-            value={this.props.value || ''}
-            disabled={this.props.disabled}
-            required={this.props.required}
-            onChange={this.handleChange}
-          />
-          {errorMessage}
-        </div>
-      </div>
+      <Field
+        id={this.props.id}
+        label={this.props.label || undefined}
+        required={this.props.required}
+        disabled={this.props.disabled}
+        errorMessage={this.props.errorMessage}
+        labelPlacementTop={this.props.labelPlacementTop}
+      >
+        <NumberInput
+          name={this.props.name}
+          min={this.props.min}
+          max={this.props.max}
+          step={this.props.step}
+          value={this.props.value || ''}
+          onChange={(value) => this.props.onUserInput(
+            this.props.name, value
+          )}
+        />
+      </Field>
     );
   }
 }
