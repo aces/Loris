@@ -50,3 +50,6 @@ msgstr "Recruter un autre candidat"
 
 msgid "Access Profile"
 msgstr "Accéder au profil"
+
+msgid "Generate {{name}}"
+msgstr "Générer {{name}}"

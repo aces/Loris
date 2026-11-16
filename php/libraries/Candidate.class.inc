@@ -432,9 +432,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             'UserID'                => $user->getUsername(),
         ];
 
-        if (!$useGenericIdentifiers
-            && $config->getSetting('useExternalID') === 'true'
-        ) {
+        if ($config->getSetting('useExternalID') === 'true') {
             $externalID = (new \ExternalIDGenerator(
                 $site->getSiteAlias(),
                 $project->getAlias()

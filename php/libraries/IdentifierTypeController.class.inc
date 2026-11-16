@@ -63,8 +63,27 @@ class IdentifierTypeController
         IdentifierType $identifierType,
         \Candidate $candidate
     ): bool {
-        $projectID = $candidate->getProjectID();
+        return $this->canAccessIdentifierTypeForProject(
+            $user,
+            $identifierType,
+            $candidate->getProjectID()
+        );
+    }
 
+    /**
+     * Checks whether a user can access an identifier type for a project.
+     *
+     * @param \User          $user           Requesting user
+     * @param IdentifierType $identifierType Identifier type
+     * @param \ProjectID     $projectID      Requested project
+     *
+     * @return bool Whether access is permitted
+     */
+    public function canAccessIdentifierTypeForProject(
+        \User $user,
+        IdentifierType $identifierType,
+        \ProjectID $projectID
+    ): bool {
         if (!empty($identifierType->projects)) {
             $projectAllowed = false;
 
@@ -80,6 +99,21 @@ class IdentifierTypeController
             }
         }
 
+        return $this->hasIdentifierTypePermission($user, $identifierType);
+    }
+
+    /**
+     * Checks whether a user has the permission required by an identifier type.
+     *
+     * @param \User          $user           Requesting user
+     * @param IdentifierType $identifierType Identifier type
+     *
+     * @return bool Whether access is permitted
+     */
+    public function hasIdentifierTypePermission(
+        \User $user,
+        IdentifierType $identifierType
+    ): bool {
         if ($identifierType->permissionID !== null) {
             $permissionID = $identifierType->permissionID;
 
