@@ -1,0 +1,96 @@
+# Default LORIS strings to be translated (English).
+# Copy this to a language specific file and add translations to the
+# new file.
+# Copyright (C) 2026
+# This file is distributed under the same license as the LORIS package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LORIS 27\n"
+"Report-Msgid-Bugs-To: https://github.com/aces/Loris/issues\n"
+"POT-Creation-Date: 2026-07-10 14:09-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Policy Tracker"
+msgstr ""
+
+msgid "Accepted"
+msgstr ""
+
+msgid "Declined"
+msgstr ""
+
+msgid "Policy version created"
+msgstr ""
+
+msgid "Policy translation saved"
+msgstr ""
+
+msgid "Policy"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Decision"
+msgstr ""
+
+msgid "Decision Date"
+msgstr ""
+
+msgid "Days"
+msgstr ""
+
+msgid "Months"
+msgstr ""
+
+msgid "Years"
+msgstr ""
+
+msgid "Hours"
+msgstr ""
+
+msgid "Create New Policy Version"
+msgstr ""
+
+msgid "Source Policy"
+msgstr ""
+
+msgid "Days to Renew"
+msgstr ""
+
+msgid "Renewal Unit"
+msgstr ""
+
+msgid "Header Button"
+msgstr ""
+
+msgid "Header Button Text"
+msgstr ""
+
+msgid "Modal Title"
+msgstr ""
+
+msgid "Accept Button Text"
+msgstr ""
+
+msgid "Decline Button Text"
+msgstr ""
+
+msgid "Create Version"
+msgstr ""
+
+msgid "Edit Policy Translation"
+msgstr ""
+
+msgid "Save Translation"
+msgstr ""
+
+msgid "Could not load policy tracker data"
+msgstr ""

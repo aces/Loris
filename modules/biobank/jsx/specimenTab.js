@@ -66,8 +66,6 @@ class SpecimenTab extends Component {
         return value.map((id) => options.diagnoses[id].label);
       }
       break;
-    case this.props.t('Visit Label', {ns: 'loris'}):
-      return options.sessions[value].label;
     case this.props.t('Status', {ns: 'biobank'}):
       return options.container.stati[value].label;
     case this.props.t('Current Site', {ns: 'biobank'}):
@@ -87,13 +85,14 @@ class SpecimenTab extends Component {
    * @param {string} column - the column name being mapped
    * @param {string} value - the value being mapped
    * @param {array} row - an array of the row values
+   * @param {object} lookups - candidates by PSCID and container barcodes
    * @return {JSX}
    */
-  formatSpecimenColumns(column, value, row) {
-    const {t, data, options} = this.props;
+  formatSpecimenColumns(column, value, row, lookups) {
+    const {t} = this.props;
     const display = this.mapSpecimenColumns(column, value);
-    const candidate = Object.values(options.candidates)
-      .find((cand) => cand?.pscid == row[t('PSCID', {ns: 'loris'})]);
+    const candidate = lookups.candidatesByPSCID
+      .get(row[t('PSCID', {ns: 'loris'})]);
     const candidatePermission = candidate !== undefined;
     switch (column) {
     case this.props.t('Barcode', {ns: 'biobank'}):
@@ -115,8 +114,10 @@ class SpecimenTab extends Component {
       return <td>{display}</td>;
     case this.props.t('Visit Label', {ns: 'loris'}):
       if (candidatePermission) {
+        const sessionId = candidate.sessionIds
+          .find((id) => options.sessions[id]?.label === value);
         const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
-          candidate.id+'&sessionID='+value;
+          candidate.id+'&sessionID='+sessionId;
         return <td><a href={visitLabelURL}>{display}</a></td>;
       }
       return <td>{display}</td>;
@@ -139,10 +140,7 @@ class SpecimenTab extends Component {
       return <td style={style}>{display}</td>;
     case this.props.t('Container Barcode', {ns: 'biobank'}):
       // check if container has be queried
-      if (
-        Object.values(data.containers)
-          .find((container) => container.barcode == display)
-      ) {
+      if (lookups.containerBarcodes.has(display)) {
         return <td><Link to={`/barcode=${display}`}>{display}</Link></td>;
       }
       return <td>{display}</td>;
@@ -166,6 +164,14 @@ class SpecimenTab extends Component {
         }
         return result;
       }, {});
+    const lookups = {
+      candidatesByPSCID: new Map(Object.values(options.candidates)
+        .map((cand) => [cand?.pscid, cand])),
+      containerBarcodes: new Set(Object.values(data.containers)
+        .map((container) => container.barcode)),
+    };
+    const formatSpecimenColumns = (column, value, row) =>
+      this.formatSpecimenColumns(column, value, row, lookups);
     const specimenTypes = mapFormOptions(options.specimen.types, 'label');
     const containerTypesPrimary = mapFormOptions(
       options.container.typesPrimary, 'label'
@@ -206,7 +212,7 @@ class SpecimenTab extends Component {
         candidate?.sex || null,
         specimen.candidateAge,
         candidate?.diagnosisIds || null,
-        specimen.sessionId,
+        options.sessions[specimen.sessionId]?.label,
         specimen.poolId ? (data.pools[specimen.poolId]||{}).label : null,
         container.statusId,
         specimen.projectId,
@@ -282,8 +288,9 @@ class SpecimenTab extends Component {
         options: diagnoses,
       }},
       {label: this.props.t('Visit Label', {ns: 'loris'}), show: true, filter: {
-        name: 'session',
-        type: 'text',
+        name: 'visitLabel',
+        type: 'select',
+        options: options.visitLabels,
       }},
       {label: t('Pool', {ns: 'biobank', count: 1}), show: false, filter: {
         name: 'pool',
@@ -370,7 +377,7 @@ class SpecimenTab extends Component {
           data={specimenData}
           fields={fields}
           actions={actions}
-          getFormattedCell={this.formatSpecimenColumns}
+          getFormattedCell={formatSpecimenColumns}
           getMappedCell={this.mapSpecimenColumns}
           progress={this.props.loading}
         />
@@ -471,6 +478,7 @@ SpecimenTab.propTypes = {
     projects: PropTypes.arrayOf(PropTypes.string).isRequired,
     candidates: PropTypes.arrayOf(PropTypes.string).isRequired,
     sessions: PropTypes.arrayOf(PropTypes.string).isRequired,
+    visitLabels: PropTypes.object,
   }).isRequired,
 
   // Data prop: Contains containers, specimens, and pools data

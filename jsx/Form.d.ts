@@ -651,6 +651,7 @@ type textareaElementProps = {
     rows?: number
     cols?: number
     noMargins?: boolean
+    errorMessage?: string
     onUserInput: (name: string, value: any) => void
     onUserBlur?: (name: string, value: any) => void
 }
@@ -786,6 +787,48 @@ export class RadioElement {
     forceUpdate(): void
 }
 
+
+type ctaProps = {
+    label?: string;
+    buttonClass?: string;
+    onUserInput?: (e: any) => void;
+}
+
+/**
+ * CTA class. See Form.js
+ */
+export class CTA {
+    props: ctaProps
+    state: any
+    context: object
+    refs: {[key: string]: ReactInstance}
+
+    /**
+     * Construct a CTA
+     *
+     * @param {ctaProps} props - React props
+     */
+    constructor(props: ctaProps)
+
+    /**
+     * React lifecycle method
+     *
+     * @returns {ReactNode} - the element
+     */
+    render(): ReactNode
+
+    /**
+     * React lifecycle method
+     *
+     * @param {object} newstate - the state to override
+     */
+    setState(newstate: object): void
+
+    /**
+     * React lifecycle method.
+     */
+    forceUpdate(): void
+}
 
 export default {
   FormElement,

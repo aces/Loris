@@ -27,7 +27,7 @@ function NextSteps(props: {
 
   const canRun = (props.fields && props.fields.length > 0);
   const fieldLabel = (props.fields && props.fields.length > 0)
-    ? t('Modify Fields', {ns: 'dataquery'})
+    ? t('Define Fields', {ns: 'dataquery'})
     : t('Choose Fields', {ns: 'dataquery'});
   const filterLabel = (props.filters && props.filters.group.length > 0)
     ? t('Modify Filters', {ns: 'dataquery'})
