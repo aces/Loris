@@ -108,7 +108,7 @@ class SpecimenTab extends Component {
       if (candidatePermission) {
         return (
           <td>
-            <a href={loris.BaseURL + '/' + candidate.id}>{display}</a>
+            <a href={loris.BaseURL + '/' + candidate.candID}>{display}</a>
           </td>
         );
       }
@@ -116,7 +116,7 @@ class SpecimenTab extends Component {
     case this.props.t('Visit Label', {ns: 'loris'}):
       if (candidatePermission) {
         const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
-          candidate.id+'&sessionID='+value;
+          candidate.candID+'&sessionID='+value;
         return <td><a href={visitLabelURL}>{display}</a></td>;
       }
       return <td>{display}</td>;

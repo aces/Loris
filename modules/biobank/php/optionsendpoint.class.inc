@@ -142,6 +142,7 @@ class OptionsEndpoint extends \NDB_Page implements RequestHandlerInterface
         $query      = "
             SELECT
                 c.ID as id,
+                c.CandID as candID,
                 PSCID as pscid,
                 Sex as sex,
                 GROUP_CONCAT(DISTINCT DxEvolutionID) as diagnosisIds,
