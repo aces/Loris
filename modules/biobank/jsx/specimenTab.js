@@ -85,7 +85,7 @@ class SpecimenTab extends Component {
    * @param {string} column - the column name being mapped
    * @param {string} value - the value being mapped
    * @param {array} row - an array of the row values
-   * @param {object} lookups - candidates by PSCID and container barcodes
+   * @param {object} lookups - candidates by PSCID, sessions and container barcodes
    * @return {JSX}
    */
   formatSpecimenColumns(column, value, row, lookups) {
@@ -115,7 +115,7 @@ class SpecimenTab extends Component {
     case this.props.t('Visit Label', {ns: 'loris'}):
       if (candidatePermission) {
         const sessionId = candidate.sessionIds
-          .find((id) => options.sessions[id]?.label === value);
+          .find((id) => lookups.sessions[id]?.label === value);
         const visitLabelURL = loris.BaseURL+'/instrument_list/?candID='+
           candidate.id+'&sessionID='+sessionId;
         return <td><a href={visitLabelURL}>{display}</a></td>;
@@ -167,6 +167,7 @@ class SpecimenTab extends Component {
     const lookups = {
       candidatesByPSCID: new Map(Object.values(options.candidates)
         .map((cand) => [cand?.pscid, cand])),
+      sessions: options.sessions,
       containerBarcodes: new Set(Object.values(data.containers)
         .map((container) => container.barcode)),
     };
