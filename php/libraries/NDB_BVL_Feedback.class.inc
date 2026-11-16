@@ -250,7 +250,7 @@ class NDB_BVL_Feedback
             $list[$record['Type']] = [
                 'Type'  => $record['Type'],
                 'Name'  => $record['Name'],
-                'Label' => $record['Description'],
+                'Label' => dgettext('feedback_bvl_type', $record['Description']),
             ];
         }
         return $list;

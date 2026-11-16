@@ -29,25 +29,8 @@ msgstr ""
 # Comments from dashboard widget on raisinbread.
 # These are dynamically entered user data, but having
 # the test set value on demo translated looks better
-msgid "Input"
-msgstr ""
-
-msgid "Input Errors"
-msgstr ""
-
-msgid "Scoring"
-msgstr ""
-
-msgid "Scoring Errors"
-msgstr ""
-
-msgid "Other"
-msgstr ""
 
 msgid "Feedback Type"
-msgstr ""
-
-msgid "Feedback description"
 msgstr ""
 
 msgid "Feedback for PSCID: {{PSCID}}"
@@ -111,4 +94,13 @@ msgid "Feedback Threads"
 msgstr ""
 
 msgid "Field Name"
+msgstr ""
+
+msgid "opened"
+msgstr ""
+
+msgid "closed"
+msgstr ""
+
+msgid "{{author}} on:<0/>{{date}}"
 msgstr ""
