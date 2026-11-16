@@ -36,7 +36,7 @@ msgstr ""
 msgid "Welcome, %s!"
 msgstr ""
 
-msgid "Last login:"
+msgid "Last login: "
 msgstr ""
 
 msgid "No open tasks for you."

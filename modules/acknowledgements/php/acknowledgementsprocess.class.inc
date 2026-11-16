@@ -66,9 +66,6 @@ class Acknowledgementsprocess extends \NDB_Page
         $roles        = "";
         $values       = json_decode($req->getBody()->getContents(), true);
         if (isset($values) && !is_null($values)) {
-            if (isset($values['addPresent']) && $values['addPresent'] === 'Yes') {
-                $values['addEndDate'] = null;
-            }
             if (isset($values['addAffiliations'])
                 && !is_null($values['addAffiliations'])
             ) {

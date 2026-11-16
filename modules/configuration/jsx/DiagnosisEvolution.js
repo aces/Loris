@@ -432,7 +432,7 @@ class DiagnosisEvolution extends Component {
       } else {
         resp.json().then((msg) => {
           let status = resp.status == 409 ?
-            'Conflict!' : 'Error!';
+            t('Conflict!', {ns: 'configuration'}) : t('Error!', {ns: 'loris'});
           swal.fire({
             title: status,
             text: msg.error,
@@ -532,7 +532,7 @@ class DiagnosisEvolution extends Component {
       } else {
         resp.json().then((msg) => {
           let status = resp.status == 409 ?
-            'Conflict!' : 'Error!';
+            t('Conflict!', {ns: 'configuration'}) : t('Error!', {ns: 'loris'});
           swal.fire({
             title: status,
             text: msg.error,

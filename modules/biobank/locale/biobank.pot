@@ -507,3 +507,48 @@ msgstr ""
 
 msgid "Containers"
 msgstr ""
+
+msgid "Specimen Collection and Availability"
+msgstr ""
+
+msgid "Whether the session has any specimen collected"
+msgstr ""
+
+msgid "Whether the session has any specimen currently available"
+msgstr ""
+
+msgid "Type of specimen"
+msgstr ""
+
+msgid "Barcode for specimen"
+msgstr ""
+
+msgid "Current quantity of specimen"
+msgstr ""
+
+msgid "Unit of measurement for specimen quantity"
+msgstr ""
+
+msgid "Whether specimen is available or used/discarded"
+msgstr ""
+
+msgid "Number of freeze-thaw cycles for specimen"
+msgstr ""
+
+msgid "Date specimen was collected"
+msgstr ""
+
+msgid "Time specimen was collected"
+msgstr ""
+
+msgid "Collection protocol used for specimen"
+msgstr ""
+
+msgid "Center where specimen was collected"
+msgstr ""
+
+msgid "Type of container holding specimen"
+msgstr ""
+
+msgid "Storage temperature for specimen"
+msgstr ""
