@@ -17,24 +17,24 @@
 
     /* Actions, navigation and panel headings */
     --primary: #064785;
-    --primary-strong: #013262;
-    --primary-border: #4983c6;
-    --primary-fill: #eaf3ff;
-    --primary-highlight: #f5f9ff;
+    --primary-strong: #01376b;
+    --primary-border: #528cd0;
+    --primary-fill: #f7faff;
+    --primary-highlight: #fbfdff;
 
     /* Help, notices, and rules that govern what the next action does */
     --info: #a6d3f5;
-    --info-strong: #0369a1;
-    --info-border: #0284c7;
-    --info-fill: #e8f4fe;
-    --info-highlight: #f4fafe;
+    --info-strong: #047693;
+    --info-border: #0496ba;
+    --info-fill: #f4fcff;
+    --info-highlight: #fafdff;
 
     /* A state being passed through, such as the rows a drag is selecting */
     --secondary: #e89a0c;
-    --secondary-strong: #b45309;
-    --secondary-border: #d97706;
-    --secondary-fill: #fffbeb;
-    --secondary-highlight: #fffdf3;
+    --secondary-strong: #a85500;
+    --secondary-border: #c97401;
+    --secondary-fill: #fffae9;
+    --secondary-highlight: #fffdf5;
 
     --warning: var(--secondary);
     --warning-strong: var(--secondary-strong);
@@ -43,24 +43,24 @@
     --warning-highlight: var(--secondary-highlight);
 
     --success: #059669;
-    --success-strong: #047857;
-    --success-border: #059669;
-    --success-fill: #e8f7ef;
-    --success-highlight: #f4fbf7;
+    --success-strong: #037b55;
+    --success-border: #1a9d70;
+    --success-fill: #eefff6;
+    --success-highlight: #f8fffb;
 
-    --danger: #bc1616;
-    --danger-strong: #8f1e19;
-    --danger-border: #cb473c;
-    --danger-fill: #feeeec;
-    --danger-highlight: #fff7f5;
+    --danger: #cc1e1e;
+    --danger-strong: #a92420;
+    --danger-border: #ec5449;
+    --danger-fill: #fff8f7;
+    --danger-highlight: #fffcfc;
 
     /* Telling categories apart, where the other colours already carry a
        meaning */
-    --category: #96398c;
-    --category-strong: #7a2472;
-    --category-border: #af50a4;
-    --category-fill: #faeef8;
-    --category-highlight: #fdf7fb;
+    --category: #9137bb;
+    --category-strong: #79329b;
+    --category-border: #b665e0;
+    --category-fill: #fcf8ff;
+    --category-highlight: #fefcff;
 
     /* States: hover is the pointer, selected is a settled choice, active is a
        state being passed through */

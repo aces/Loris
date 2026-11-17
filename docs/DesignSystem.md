@@ -45,12 +45,14 @@ need to tell things apart, such as the series of a chart. Chart marks should use
 ## Colours
 
 The navy and the orange come from the "Loris color palette v.0.1" in the header of
-`htdocs/bootstrap/css/custom-css.css`, and the red and the purple from the biobank
-module's buttons. The green, the light blue's darker shades and the orange's darker
-shades follow Tailwind CSS's emerald, sky and amber scales. The darker shades of the
-navy, the red and the purple are derived from their bases in OKLCH. Each `-fill` and
-`-highlight` is a faint tint of its colour, kept light so text on it stays easy to
-read.
+`htdocs/bootstrap/css/custom-css.css`. Every colour's other four shades come from
+its base by one rule, worked out in OKLCH at the base's hue: `-strong` is the
+lightest shade that reaches 5:1 against white and against its `-fill`, `-border` is
+the lightest that reaches 3.3:1, and `-fill` and `-highlight` are faint tints at one
+lightness for every colour, kept light so text on them stays easy to read. Orange's
+darker shades lean towards red and its tints towards yellow, since orange turns
+muddy at its own hue, and light blue's shades lean towards cyan so they stay clear
+of navy's.
 
 A colour that is not in these tables should be added here and to `tokens.css`
 before it is used, with every pairing checked against the rules under
@@ -63,10 +65,10 @@ Used for actions, navigation and panel headings.
 | | Token | Hex | Used for |
 |---|---|---|---|
 | ![](images/palette/primary.svg) | `--primary` | `#064785` | Navigation, panel headings, filled buttons |
-| ![](images/palette/primary-strong.svg) | `--primary-strong` | `#013262` | Pressed buttons, text in blue |
-| ![](images/palette/primary-border.svg) | `--primary-border` | `#4983c6` | Borders, the focus ring, chart marks |
-| ![](images/palette/primary-fill.svg) | `--primary-fill` | `#eaf3ff` | Selected row |
-| ![](images/palette/primary-highlight.svg) | `--primary-highlight` | `#f5f9ff` | Hovered row |
+| ![](images/palette/primary-strong.svg) | `--primary-strong` | `#01376b` | Pressed buttons, text in blue |
+| ![](images/palette/primary-border.svg) | `--primary-border` | `#528cd0` | Borders, the focus ring, chart marks |
+| ![](images/palette/primary-fill.svg) | `--primary-fill` | `#f7faff` | Selected row |
+| ![](images/palette/primary-highlight.svg) | `--primary-highlight` | `#fbfdff` | Hovered row |
 
 ### Light blue (info)
 
@@ -75,10 +77,10 @@ Used for help text, notices and a toggle that is on.
 | | Token | Hex | Used for |
 |---|---|---|---|
 | ![](images/palette/info.svg) | `--info` | `#a6d3f5` | A toggle that is on |
-| ![](images/palette/info-strong.svg) | `--info-strong` | `#0369a1` | Text in light blue, filled buttons |
-| ![](images/palette/info-border.svg) | `--info-border` | `#0284c7` | Borders, the outline of a toggle that is on, chart marks |
-| ![](images/palette/info-fill.svg) | `--info-fill` | `#e8f4fe` | Background for help text and notices |
-| ![](images/palette/info-highlight.svg) | `--info-highlight` | `#f4fafe` | Hover |
+| ![](images/palette/info-strong.svg) | `--info-strong` | `#047693` | Text in light blue, filled buttons |
+| ![](images/palette/info-border.svg) | `--info-border` | `#0496ba` | Borders, the outline of a toggle that is on, chart marks |
+| ![](images/palette/info-fill.svg) | `--info-fill` | `#f4fcff` | Background for help text and notices |
+| ![](images/palette/info-highlight.svg) | `--info-highlight` | `#fafdff` | Hover |
 
 ### Orange (secondary)
 
@@ -87,30 +89,30 @@ Used for an in-progress state, such as the rows a drag is currently selecting, a
 | | Token | Hex | Used for |
 |---|---|---|---|
 | ![](images/palette/secondary.svg) | `--secondary`, `--warning` | `#e89a0c` | Warnings |
-| ![](images/palette/secondary-strong.svg) | `--secondary-strong`, `--warning-strong` | `#b45309` | Text in orange, filled buttons |
-| ![](images/palette/secondary-border.svg) | `--secondary-border`, `--warning-border`, `--state-active-solid` | `#d97706` | The edge of an active row, chart marks |
-| ![](images/palette/secondary-fill.svg) | `--secondary-fill`, `--warning-fill` | `#fffbeb` | Active background |
-| ![](images/palette/secondary-highlight.svg) | `--secondary-highlight`, `--warning-highlight` | `#fffdf3` | Hover |
+| ![](images/palette/secondary-strong.svg) | `--secondary-strong`, `--warning-strong` | `#a85500` | Text in orange, filled buttons |
+| ![](images/palette/secondary-border.svg) | `--secondary-border`, `--warning-border`, `--state-active-solid` | `#c97401` | The edge of an active row, chart marks |
+| ![](images/palette/secondary-fill.svg) | `--secondary-fill`, `--warning-fill` | `#fffae9` | Active background |
+| ![](images/palette/secondary-highlight.svg) | `--secondary-highlight`, `--warning-highlight` | `#fffdf5` | Hover |
 
 ### Green (success)
 
 | | Token | Hex | Used for |
 |---|---|---|---|
 | ![](images/palette/success.svg) | `--success` | `#059669` | Success icons |
-| ![](images/palette/success-strong.svg) | `--success-strong` | `#047857` | Text in green, filled buttons |
-| ![](images/palette/success-border.svg) | `--success-border` | `#059669` | Borders, chart marks |
-| ![](images/palette/success-fill.svg) | `--success-fill` | `#e8f7ef` | Success background |
-| ![](images/palette/success-highlight.svg) | `--success-highlight` | `#f4fbf7` | Hover |
+| ![](images/palette/success-strong.svg) | `--success-strong` | `#037b55` | Text in green, filled buttons |
+| ![](images/palette/success-border.svg) | `--success-border` | `#1a9d70` | Borders, chart marks |
+| ![](images/palette/success-fill.svg) | `--success-fill` | `#eefff6` | Success background |
+| ![](images/palette/success-highlight.svg) | `--success-highlight` | `#f8fffb` | Hover |
 
 ### Red (danger)
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/danger.svg) | `--danger` | `#bc1616` | Errors, danger buttons |
-| ![](images/palette/danger-strong.svg) | `--danger-strong` | `#8f1e19` | Pressed danger button, text in red |
-| ![](images/palette/danger-border.svg) | `--danger-border` | `#cb473c` | Borders, chart marks |
-| ![](images/palette/danger-fill.svg) | `--danger-fill` | `#feeeec` | Error background |
-| ![](images/palette/danger-highlight.svg) | `--danger-highlight` | `#fff7f5` | Hover |
+| ![](images/palette/danger.svg) | `--danger` | `#cc1e1e` | Errors, danger buttons |
+| ![](images/palette/danger-strong.svg) | `--danger-strong` | `#a92420` | Pressed danger button, text in red |
+| ![](images/palette/danger-border.svg) | `--danger-border` | `#ec5449` | Borders, chart marks |
+| ![](images/palette/danger-fill.svg) | `--danger-fill` | `#fff8f7` | Error background |
+| ![](images/palette/danger-highlight.svg) | `--danger-highlight` | `#fffcfc` | Hover |
 
 ### Purple (category)
 
@@ -118,11 +120,11 @@ Purple has no fixed meaning, so it is used to tell categories apart where the ot
 
 | | Token | Hex | Used for |
 |---|---|---|---|
-| ![](images/palette/category.svg) | `--category` | `#96398c` | Categories, filled buttons |
-| ![](images/palette/category-strong.svg) | `--category-strong` | `#7a2472` | Pressed, text in purple |
-| ![](images/palette/category-border.svg) | `--category-border` | `#af50a4` | Borders, chart marks |
-| ![](images/palette/category-fill.svg) | `--category-fill` | `#faeef8` | Category background |
-| ![](images/palette/category-highlight.svg) | `--category-highlight` | `#fdf7fb` | Hover |
+| ![](images/palette/category.svg) | `--category` | `#9137bb` | Categories, filled buttons |
+| ![](images/palette/category-strong.svg) | `--category-strong` | `#79329b` | Pressed, text in purple |
+| ![](images/palette/category-border.svg) | `--category-border` | `#b665e0` | Borders, chart marks |
+| ![](images/palette/category-fill.svg) | `--category-fill` | `#fcf8ff` | Category background |
+| ![](images/palette/category-highlight.svg) | `--category-highlight` | `#fefcff` | Hover |
 
 ### Grey
 
