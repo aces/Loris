@@ -2112,6 +2112,8 @@ components:
           type: string
         Project:
           type: string
+        RegistrationCohort:
+          type: string
         PSCID:
           type: string
         Site:
@@ -2486,6 +2488,8 @@ components:
       type: object
       properties:
         Project:
+          type: string
+        RegistrationCohort:
           type: string
         PSCID:
           type: string

@@ -115,7 +115,7 @@ class ResolvedFilterableDataTable extends Component {
     if (this.state.error) {
       return (
         <div className="alert alert-danger" role="alert">
-          <h4>{t('An error occured while loading the page.',
+          <h4>{t('An error occurred while loading the page.',
             {ns: 'loris'})}</h4>
           {this.state.error.message}
         </div>

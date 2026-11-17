@@ -247,7 +247,7 @@ class {$mname}Test extends LorisIntegrationTest {
                 \$bodyText
         );
         \$this->assertStringNotContainsString(
-            "An error occured while loading the page.",
+            "An error occurred while loading the page.",
             \$bodyText
         );
     }

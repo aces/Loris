@@ -8,6 +8,7 @@ import {setupCharts} from './helpers/chartBuilder';
 import {useTranslation} from 'react-i18next';
 import jaStrings from '../../locale/ja/LC_MESSAGES/statistics.json';
 import frStrings from '../../locale/fr/LC_MESSAGES/statistics.json';
+import hiStrings from '../../locale/hi/LC_MESSAGES/statistics.json';
 
 /**
  * StudyProgression - a widget containing statistics for study data.
@@ -23,6 +24,7 @@ const StudyProgression = (props) => {
   useEffect( () => {
     i18n.addResourceBundle('ja', 'statistics', jaStrings);
     i18n.addResourceBundle('fr', 'statistics', frStrings);
+    i18n.addResourceBundle('hi', 'statistics', hiStrings);
 
     // Re-set default state that depended on the translation
     let newdetails = {...chartDetails};
@@ -39,7 +41,7 @@ const StudyProgression = (props) => {
     newdetails['project_sizes']['size_byproject']['yLabel']
       = t('Size (GB)', {ns: 'statistics'});
     newdetails['project_sizes']['size_byproject']['titlePrefix']
-      = t('Project', {ns: 'loris'});
+      = t('Project', {ns: 'loris', count: 1});
     setChartDetails(newdetails);
   }, []);
 
@@ -89,7 +91,7 @@ const StudyProgression = (props) => {
         options: {pie: 'pie', bar: 'bar'},
         chartObject: null,
         yLabel: t('Size (GB)', {ns: 'statistics'}),
-        titlePrefix: t('Project', {ns: 'loris'}),
+        titlePrefix: t('Project', {ns: 'loris', count: 1}),
       },
     },
   });

@@ -233,6 +233,12 @@ msgstr "Ajouter la condition « et »"
 msgid "Add \"or\" condition"
 msgstr "Ajouter la condition « ou »"
 
+msgid "This will remove all currently selected filters"
+msgstr "Ceci supprimera tous les filtres actuellement sélectionnés."
+
+msgid "Remove all filters"
+msgstr "Supprimer tous les filtres"
+
 msgid "Delete Item"
 msgstr "Supprimer l'élément"
 
@@ -405,6 +411,10 @@ msgstr "Le fichier CSV téléversé est vide."
 #, fuzzy
 msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
 msgstr "{{expectedLength}} colonnes attendues dans le fichier CSV. {{gotLength}} colonne(s) trouvée(s) à la ligne {{line}}."
+
+#, fuzzy
+msgid "Invalid visit label {{visitLabelVal}} on line {{line}}."
+msgstr "Le libellé de la visite {{visitLabelVal}} est invalide (ligne {{line}})"
 
 #, fuzzy
 msgid "Invalid DCCID"

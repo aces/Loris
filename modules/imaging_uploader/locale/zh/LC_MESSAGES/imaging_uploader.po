@@ -88,7 +88,7 @@ msgstr "MRI 管道已开始处理此文件"
 msgid "Select this upload in the result table to view the processing progress"
 msgstr "在结果表中选择本次上传即可查看处理进度"
 
-msgid "Upload failed: a network error occured"
+msgid "Upload failed: a network error occurred"
 msgstr "上传失败：出现网络错误"
 
 msgid "Please make sure files are not larger than {{maxFileSize}}"

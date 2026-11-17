@@ -112,6 +112,9 @@ msgstr "群组细分"
 msgid "Total Participants: {{count}}"
 msgstr "参与者总数：{{count}}"
 
+msgid "No data collected yet"
+msgstr "尚未收集数据"
+
 msgid "Projects: {{count}}"
 msgstr "项目：{{count}}"
 

@@ -100,7 +100,7 @@ type selectElementProps = {
     name: string
     options: {[name: string]: string}
     disabledOptions?: {[name: string]: string}
-    label: string
+    label: ReactNode
     value: string|string[]
     id?: string
     multiple?: boolean
@@ -112,7 +112,8 @@ type selectElementProps = {
     onUserInput: (name: string, value: any) => void
     noMargins?: boolean
     placeholder?: string
-    sortByValue: boolean
+    sortByValue?: boolean
+    pinnedOption?: string
 }
 
 /**
@@ -249,7 +250,7 @@ export class ButtonElement {
 
 type textboxProps = {
     name: string
-    label?: string
+    label?: ReactNode
     value?: string
     id?: string
     class?: string
@@ -260,6 +261,45 @@ type textboxProps = {
     errorMessage?: string;
     onUserInput: (name: string, value: any) => void;
     onUserBlur?: (name: string, value: any) => void;
+    noMargins?: boolean
+    labelPlacementTop?: boolean
+}
+
+type emailProps = textboxProps
+/**
+ * EmailElement class. See Form.js
+ */
+export class EmailElement {
+    props: emailProps
+    state: any
+    context: object
+    refs: {[key: string]: ReactInstance}
+
+    /**
+     * Construct an EmailElement
+     *
+     * @param {emailProps} props - React props
+     */
+    constructor(props: emailProps)
+
+    /**
+     * React lifecycle method
+     *
+     * @returns {ReactNode} - the element
+     */
+    render(): ReactNode
+
+    /**
+     * React lifecycle method
+     *
+     * @param {object} newstate - the state to override
+     */
+    setState(newstate: object): void
+
+    /**
+     * React lifecycle method.
+     */
+    forceUpdate(): void
 }
 /**
  * TextboxElement class. See Form.js
@@ -501,6 +541,59 @@ export class DateElement {
     forceUpdate(): void
 }
 
+type dateRangeElementProps = {
+    name: string
+    label?: string
+    value?: {
+        min?: string
+        max?: string
+    }
+    id?: string
+    maxYear?: string|number
+    minYear?: string|number
+    dateFormat?: string
+    disabled?: boolean
+    required?: boolean
+    minLabel?: string
+    maxLabel?: string
+    onUserInput: (name: string, value: any) => void
+};
+/**
+ * DateRangeElement class. See Form.js
+ */
+export class DateRangeElement {
+    props: dateRangeElementProps
+    state: any
+    context: object
+    refs: {[key: string]: ReactInstance}
+
+    /**
+     * Construct a DateRangeElement
+     *
+     * @param {dateRangeElementProps} props - React props
+     */
+    constructor(props: dateRangeElementProps)
+
+    /**
+     * React lifecycle method
+     *
+     * @returns {ReactNode} - the element
+     */
+    render(): ReactNode
+
+    /**
+     * React lifecycle method
+     *
+     * @param {object} newstate - the state to override
+     */
+    setState(newstate: object): void
+
+    /**
+     * React lifecycle method.
+     */
+    forceUpdate(): void
+}
+
 type timeElementProps = {
     name: string
     label?: string
@@ -549,7 +642,7 @@ export class TimeElement {
 
 type textareaElementProps = {
     name: string
-    label?: string
+    label?: ReactNode
     value?: string
     placeholder?: string
     id?: string
@@ -557,7 +650,10 @@ type textareaElementProps = {
     required?: boolean
     rows?: number
     cols?: number
+    noMargins?: boolean
+    errorMessage?: string
     onUserInput: (name: string, value: any) => void
+    onUserBlur?: (name: string, value: any) => void
 }
 /**
  * TextareaElement class. See Form.js
@@ -643,14 +739,15 @@ export class DateTimeElement {
 
 type radioElementProps = {
     name: string
-    label?: string
+    label?: ReactNode
     options: {[name: string]: string}
     disabled?: boolean
     required?: boolean
     vertical?: boolean
-    checked: boolean
+    checked: string|boolean
     errorMessage?: string
     elementClass?: boolean
+    noMargins?: boolean
     onUserInput: (name: string, value: any) => void
 }
 /**
@@ -691,16 +788,60 @@ export class RadioElement {
 }
 
 
+type ctaProps = {
+    label?: string;
+    buttonClass?: string;
+    onUserInput?: (e: any) => void;
+}
+
+/**
+ * CTA class. See Form.js
+ */
+export class CTA {
+    props: ctaProps
+    state: any
+    context: object
+    refs: {[key: string]: ReactInstance}
+
+    /**
+     * Construct a CTA
+     *
+     * @param {ctaProps} props - React props
+     */
+    constructor(props: ctaProps)
+
+    /**
+     * React lifecycle method
+     *
+     * @returns {ReactNode} - the element
+     */
+    render(): ReactNode
+
+    /**
+     * React lifecycle method
+     *
+     * @param {object} newstate - the state to override
+     */
+    setState(newstate: object): void
+
+    /**
+     * React lifecycle method.
+     */
+    forceUpdate(): void
+}
+
 export default {
   FormElement,
   FieldsetElement,
   SelectElement,
   TagsElement,
   TextboxElement,
+  EmailElement,
   SearchableDropdown,
   TextareaElement,
   PasswordElement,
   DateElement,
+  DateRangeElement,
   TimeElement,
   DateTimeElement,
   NumericElement,

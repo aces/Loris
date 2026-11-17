@@ -64,11 +64,11 @@ class Dataquery extends \NDB_Page
     }
 
     /**
-     * Include additional CSS files
+     * Include module-specific CSS for customizing the help panel
      *
-     * @return array of css to be inserted
+     * @return array of CSS to be inserted
      */
-    function getCSSDependencies(): array
+    function getCSSDependencies()
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();

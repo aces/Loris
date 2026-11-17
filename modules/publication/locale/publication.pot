@@ -123,6 +123,12 @@ msgstr ""
 msgid "Project Proposal Creator"
 msgstr ""
 
+msgid "In Progress"
+msgstr ""
+
+msgid "Submitted"
+msgstr ""
+
 msgid "Published"
 msgstr ""
 

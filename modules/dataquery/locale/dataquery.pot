@@ -190,6 +190,12 @@ msgstr ""
 msgid "Add \"or\" condition"
 msgstr ""
 
+msgid "This will remove all currently selected filters"
+msgstr ""
+
+msgid "Remove all filters"
+msgstr ""
+
 msgid "Delete Item"
 msgstr ""
 
@@ -334,6 +340,9 @@ msgid "The uploaded CSV file is empty."
 msgstr ""
 
 msgid "Expected {{expectedLength}} columns in CSV. Got {{gotLength}} on line {{line}}."
+msgstr ""
+
+msgid "Invalid visit label {{visitLabelVal}} on line {{line}}."
 msgstr ""
 
 msgid "Invalid DCCID"

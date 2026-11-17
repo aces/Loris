@@ -32,6 +32,7 @@ class Files extends \NDB_Page
         return $user->hasAnyPermission(
             [
                 'data_release_view',
+                'data_release_download_all',
                 'data_release_upload',
                 'data_release_edit_file_access'
             ]
@@ -360,8 +361,13 @@ class Files extends \NDB_Page
                 );
             }
 
-            $user = $request->getAttribute("user");
-            if (!$user->hasPermission("data_release_view")) {
+            $user           = $request->getAttribute("user");
+            $canDownloadAll = $user->hasPermission(
+                "data_release_download_all"
+            );
+            if (!$canDownloadAll
+                && !$user->hasPermission("data_release_view")
+            ) {
                 return new \LORIS\Http\Response\JSON\Forbidden(
                     dgettext(
                         "loris",
@@ -370,20 +376,23 @@ class Files extends \NDB_Page
                 );
             }
 
-            $hasFilePerm = $DB->pselectOne(
-                "SELECT 'x' FROM data_release_permissions WHERE
-                    data_release_id=:fileid AND userid = :user",
-                ['fileid' => $fileID,
-                    'user'   => $user->getId()
-                ]
-            );
-            if ($hasFilePerm === null) {
-                return new \LORIS\Http\Response\JSON\Forbidden(
-                    dgettext(
-                        "loris",
-                        "Permission denied"
-                    )
+            if (!$canDownloadAll) {
+                $hasFilePerm = $DB->pselectOne(
+                    "SELECT 'x' FROM data_release_permissions WHERE
+                        data_release_id=:fileid AND userid = :user",
+                    [
+                        'fileid' => $fileID,
+                        'user'   => $user->getId(),
+                    ]
                 );
+                if ($hasFilePerm === null) {
+                    return new \LORIS\Http\Response\JSON\Forbidden(
+                        dgettext(
+                            "loris",
+                            "Permission denied"
+                        )
+                    );
+                }
             }
 
             try {

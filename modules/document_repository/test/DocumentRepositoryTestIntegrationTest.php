@@ -68,7 +68,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
         $this->assertStringNotContainsString(
-            "An error occured while loading the page.",
+            "An error occurred while loading the page.",
             $bodyText
         );
         $this->resetPermissions();

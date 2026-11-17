@@ -131,6 +131,7 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('imaging_browser_phantom_allsites', 'Phantom Scans - All Sites',(SELECT ID FROM modules WHERE Name='imaging_browser'),2),
     ('imaging_browser_phantom_ownsite', 'Phantom Scans - Own Sites',(SELECT ID FROM modules WHERE Name='imaging_browser'),2),
     ('data_release_view', 'Release Files',(SELECT ID FROM modules WHERE Name='data_release'),2),
+    ('data_release_download_all', 'All Release Files',(SELECT ID FROM modules WHERE Name='data_release'),2),
     ('data_release_upload', 'Release Files',(SELECT ID FROM modules WHERE Name='data_release'),2),
     ('data_release_edit_file_access', 'Grant Other Users Access to Releases',(SELECT ID FROM modules WHERE Name='data_release'),2),
     ('data_release_hide', 'Hide data release files',(SELECT ID FROM modules WHERE Name='data_release'), 2),
@@ -179,6 +180,10 @@ INSERT INTO `permissions` (code, description, moduleID, categoryID) VALUES
     ('biobank_pool_create','Pools',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
     ('biobank_fullsiteaccess','Full Site Access',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
     ('biobank_fullprojectaccess','Full Project Access',(SELECT ID FROM modules WHERE Name='biobank'), '2'),
+    ('view_policy_decisions', 'Policy Decisions',
+        (SELECT ID FROM modules WHERE Name='policy_tracker'), 2),
+    ('edit_policies', 'Policies',
+        (SELECT ID FROM modules WHERE Name='policy_tracker'), 2),
     ('dataquery_view','Cross-Modality Data',(SELECT ID FROM modules WHERE Name='dataquery'),2);
 
 INSERT INTO `user_perm_rel` (userID, permID)
@@ -241,6 +246,8 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'imaging_browser_phantom_allsites'),1),
   ((SELECT permID FROM permissions WHERE code = 'imaging_browser_phantom_ownsite'),1),
   ((SELECT permID FROM permissions WHERE code = 'data_release_view'),1),
+  ((SELECT permID FROM permissions WHERE code = 'data_release_download_all'),1),
+  ((SELECT permID FROM permissions WHERE code = 'data_release_download_all'),8),
   ((SELECT permID FROM permissions WHERE code = 'data_release_upload'),9),
   ((SELECT permID FROM permissions WHERE code = 'instrument_manager_read'),1),
   ((SELECT permID FROM permissions WHERE code = 'publication_view'),1),
@@ -289,6 +296,9 @@ INSERT INTO `perm_perm_action_rel` (permID, actionID) VALUES
   ((SELECT permID FROM permissions WHERE code = 'biobank_pool_create'),2),
   ((SELECT permID FROM permissions WHERE code = 'biobank_fullsiteaccess'),1),
   ((SELECT permID FROM permissions WHERE code = 'biobank_fullprojectaccess'),1),
+  ((SELECT permID FROM permissions WHERE code = 'view_policy_decisions'),1),
+  ((SELECT permID FROM permissions WHERE code = 'edit_policies'),2),
+  ((SELECT permID FROM permissions WHERE code = 'edit_policies'),3),
   ((SELECT permID FROM permissions WHERE code = 'view_instrument_data'),1),
   ((SELECT permID FROM permissions WHERE code = 'dqt_view'),1),
   ((SELECT permID FROM permissions WHERE code = 'dqt_view'),8);

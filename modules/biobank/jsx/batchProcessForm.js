@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
 import SpecimenProcessForm from './processForm';
 import {VerticalTabs, TabPane} from 'Tabs';
-import Modal from 'Modal';
+import {FormModal} from 'Modal';
 import Loader from 'Loader';
 import {mapFormOptions, clone, isEmpty} from './helpers.js';
 import {
@@ -284,7 +284,7 @@ class BatchProcessForm extends React.PureComponent {
               />
               <SearchableDropdown
                 name={'poolId'}
-                label={t('Pool', {ns: 'biobank'})}
+                label={t('Pool', {ns: 'biobank', count: 1})}
                 onUserInput={handlePoolInput}
                 options={pools}
                 value={poolId}
@@ -325,7 +325,7 @@ class BatchProcessForm extends React.PureComponent {
       });
     };
     return (
-      <Modal
+      <FormModal
         title={t('Process Specimens', {ns: 'biobank'})}
         show={this.props.show}
         onClose={handleClose}
@@ -333,7 +333,7 @@ class BatchProcessForm extends React.PureComponent {
         throwWarning={true}
       >
         {form}
-      </Modal>
+      </FormModal>
     );
   }
 }
@@ -415,7 +415,7 @@ class BarcodeInput extends PureComponent {
     return (
       <SearchableDropdown
         name={'containerId'}
-        label={t('Specimen', {ns: 'biobank'})}
+        label={t('Specimen', {ns: 'biobank', count: 1})}
         onUserInput={handleInput}
         options={barcodesPrimary}
         value={containerId}

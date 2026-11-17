@@ -1,4 +1,4 @@
-import Modal from 'jsx/Modal';
+import {FormModal} from 'jsx/Modal';
 import swal from 'sweetalert2';
 import {useState} from 'react';
 import {TextboxElement, FieldsetElement} from 'jsx/Form';
@@ -44,7 +44,7 @@ function NameQueryModal(props: {
     }
     return sbmt;
   };
-  return <Modal title={t('Name Query', {ns: 'dataquery'})}
+  return <FormModal title={t('Name Query', {ns: 'dataquery'})}
     show={true}
     throwWarning={true}
     onClose={props.closeModal}
@@ -59,7 +59,7 @@ function NameQueryModal(props: {
         }
       />
     </FieldsetElement>
-  </Modal>;
+  </FormModal>;
 }
 
 export default NameQueryModal;

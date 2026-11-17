@@ -191,7 +191,8 @@ class DiagnosisEvolution extends Component {
                 label={t('Project', {ns: 'loris', count: 1})}
                 options={this.state.formData.projects}
                 onUserInput={this.setFormData}
-                value={JSON.stringify(trajectoryData.ProjectID)}
+                value={trajectoryData.ProjectID === null ?
+                  null : JSON.stringify(trajectoryData.ProjectID)}
                 required={true}
                 errorMessage={errorMessage.ProjectID}
               />
@@ -273,7 +274,7 @@ class DiagnosisEvolution extends Component {
     if (this.state.error) {
       return <h3>{t(
         'An error occurred while loading the page.',
-        {ns: 'configuration'}
+        {ns: 'loris'}
       )}</h3>;
     }
 

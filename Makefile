@@ -12,7 +12,7 @@ all: node_modules locales VERSION vendor
 	msgfmt --use-fuzzy -o $@ $<
 
 %.json: %.po
-	npx i18next-conv -l UNUSED -t $@ -s $< --compatibilityJSON v4
+	npx i18next-conv -l $(notdir $(patsubst %/LC_MESSAGES/,%,$(dir $<))) -t $@ -s $< --compatibilityJSON v4
 
 # If anything changes, re-generate the VERSION file
 VERSION: .
@@ -81,6 +81,9 @@ create_timepoint: $(filter modules/create_timepoint/%,$(MOFILES)) $(filter modul
 data_release: $(filter modules/data_release/%,$(MOFILES)) $(filter modules/data_release/%,$(I18NJSONFILES))
 	target=data_release npm run compile
 
+user_accounts: $(filter modules/user_accounts/%,$(MOFILES)) $(filter modules/user_accounts/%,$(I18NJSONFILES))
+	target=user_accounts npm run compile
+
 instrument_manager: $(filter modules/instrument_manager/%,$(MOFILES)) $(filter modules/instrument_manager/%,$(I18NJSONFILES))
 	target=instrument_manager npm run compile
 
@@ -113,6 +116,9 @@ dashboard: $(filter modules/dashboard/%,$(MOFILES)) $(filter modules/dashboard/%
 
 brainbrowser: $(filter modules/brainbrowser/%,$(MOFILES)) $(filter modules/brainbrowser/%,$(I18NJSONFILES))
 	target=brainbrowser npm run compile
+
+timepoint_list: $(filter modules/timepoint_list/%,$(MOFILES)) $(filter modules/timepoint_list/%,$(I18NJSONFILES))
+	target=timepoint_list npm run compile
 
 schedule_module: $(filter modules/schedule_module/%,$(MOFILES)) $(filter modules/schedule_module/%,$(I18NJSONFILES))
 	target=schedule_module npm run compile

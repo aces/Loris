@@ -57,7 +57,7 @@
     [Manual Testing]
 6.  Under 'View Details' Check to make sure all the specific parameters are Populated
     [Manual Testing]
-7.  Under 'View Details' Click on 'Acquisition ID' to view the violated scans (if there are any) if the
+7.  Under 'View Details' Click on 'Study Instance UID' to view the violated scans (if there are any) if the
     'MRI Violated Scans: View Violated Scans - All Sites' or 'MRI Violated Scans: View Violated Scans - Own Sites' is set.
     [Manual Testing]
 8.  Under 'View Details' Click on 'Show/Hide Series' and 'Show/Hide Files' to view a list of all DICOM Series/Files,

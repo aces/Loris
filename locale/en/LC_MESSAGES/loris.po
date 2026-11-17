@@ -150,7 +150,9 @@ msgid "Module"
 msgstr "Module"
 
 msgid "Project"
-msgstr "Project"
+msgid_plural "Projects"
+msgstr[0] "Project"
+msgstr[1] "Projects"
 
 msgid "Cohort"
 msgid_plural "Cohorts"
@@ -190,8 +192,8 @@ msgstr "Date of Birth"
 msgid "Visits"
 msgstr "Visits"
 
-msgid "An error occured while loading the page."
-msgstr "An error occured while loading the page."
+msgid "An error occurred while loading the page."
+msgstr "An error occurred while loading the page."
 
 msgid "Entity Type"
 msgstr "Entity Type"

@@ -113,6 +113,9 @@ msgstr "कोहोर्ट विभाजन"
 msgid "Total Participants: {{count}}"
 msgstr "कुल प्रतिभागी: {{count}}"
 
+msgid "No data collected yet"
+msgstr "अभी तक कोई डेटा एकत्र नहीं किया गया"
+
 msgid "Projects: {{count}}"
 msgstr "परियोजनाएँ: {{count}}"
 
