@@ -26,7 +26,6 @@ html, body {
    	margin: 0px 0px 0px 0px;
     height: 100%;
     background-color: #e2e2e2; /*#EEF; */
-	font-family: verdana, sans-serif;
 	font-size: 90%;
 }
 
@@ -76,7 +75,6 @@ a:hover {
 	text-indent: 5px;
 }
 h3.controlPanelSection, td.controlPanelSection {
-   	font-family: verdana, sans-serif;
 	font-size: 95%;
     }
 
@@ -310,7 +308,6 @@ table.fancytable caption, table.listColorCoded caption {
 .button
 {
    font-size:13.5px;
-   font-family:Verdana,sans-serif;
    color:white;
    background-color:#064785;
    margin-top: 3px;
@@ -331,7 +328,6 @@ table.fancytable caption, table.listColorCoded caption {
 }
 
 input.text {
-  font-family:TrebuchetMS;
   font-size:9pt;
   font-weight:bold;
   background-color:336699;

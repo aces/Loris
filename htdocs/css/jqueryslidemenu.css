@@ -10,8 +10,6 @@
 }
 
 .jqueryslidemenu {
-    font: Verdana-sans-serif;
-
     z-index: 10;
 }
 
@@ -83,7 +81,8 @@
 
 /* Sub level menu links style */
 .jqueryslidemenu ul li ul li a {
-    font: normal 13px Verdana;
+    font-size: 13px;
+    font-weight: normal;
     width: 160px; /*width of sub menus*/
     padding: 5px;
     margin: 0;
